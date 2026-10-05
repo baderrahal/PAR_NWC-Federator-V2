@@ -469,6 +469,11 @@ BLD-ST-Framing-vs-BLD-ST-Columns found 27 clashes where the original found 25, s
 asks Bader before F132's add-in commit, the design's own rule. The chain was paused after P1 for the
 put back of Q128, P2 reading the pause, turn5\probes-1-result.json, and a new chain from P2 began
 at 13:22:20, turn5\workflow-starts.txt.
+The new chain answered P2 yes, TestsRemoveAt removes exactly one test with its results, P4 the worksets of
+1A04PK's HV and FP models, P8 yes, the 2813 legacy viewpoints found by the design's rule, P9 yes, the
+tool's mark written as a comment by AddComment, and P10 no, a view the tool makes carries no Guid,
+each in docs\history\scan.md on the branch fix-F114-probes. It was paused at 15:40 after P11 for the
+removal of the three autosaves and the measurement of Q133.
 
 Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 at 15:42. Merged so
 far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
@@ -621,9 +626,9 @@ What waits on Bader's answer. A finding moves here when it survives three fix at
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
 
-OPEN IN THE FORM NOW: Q133, written on 2026-10-05 from probe P1, a mirrored test that found 27 clashes
-where the test it mirrors found 25, the build going on with A until he answers, and the run's three
-autosaves of Q128 for him to remove. Before it, none. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
+OPEN IN THE FORM NOW: none. Q133 was ANSWERED D on 2026-10-05, both tests of a mirrored pair run and
+their clashes merged by the pair of items, and he allowed the removal of the run's three autosaves of
+Q128. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
 each answer under its question in steps\02_questions.md with what it changes, and his order of the
 work, Q132, gives in his words the order of the message headed THE VIEWPOINTS COME FIRST, whose own
 words never reached this session. Q113 was ANSWERED on 2026-10-04 in the evening.
