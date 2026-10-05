@@ -1,7 +1,98 @@
 # log
 
 Newest entry at the top.
-## 2026-10-05 The loop, turn 5, F131 the teams, FR-180 and FR-181, CORE HALF DONE and built, wave 2b, attempt 2 on the readers' findings, written by the lead's delegate
+## 2026-10-05 The loop, turn 5, F131 the teams, FR-180 and FR-181, CORE HALF DONE and built, wave 2b, attempt 3 on the readers' findings of attempt 2, written by the lead's delegate
+
+### Attempt 3, on the readings of attempt 2
+
+The readers' findings are in %LOCALAPPDATA%\NwcFederatorLoop\turn5\wave2-a2-result.json under
+F131, the reviewer's in reads[0], APPROVE, and the breaker's in reads[1], CHANGES on one finding.
+Below, R and a number is the reviewer's finding of that index in this reading and B and a number
+the breaker's.
+
+main 35bd7fd, PR 114 and PR 115, the records of turn 5, was merged in first at 1b87137, message in
+a file, turn5\f131-a3-merge-msg.txt. It touched steps\02_questions.md, steps\fix-round.md and
+steps\loop.md and no file of this branch, so nothing conflicted, turn5\f131-a3-merge.txt. A merge
+runs no pre-commit, and no pre-merge-commit hook is in .githooks, so the tests of that tree are the
+before run below.
+
+Core tests, all with 0 skipped:
+- 1966 passed, 0 failed before, at 1b87137, turn5\f131-a3-core-before.txt
+- with the new tests on 1b87137, 3 failed and 14 passed of SilentMissTests, each for the reason its
+  finding names, turn5\f131-a3-before-fail.txt. The no pair case sits after the empty list case in
+  its test, so it was run alone against the old judge in a probe file deleted after, and failed
+  with the all clear, turn5\f131-a3-before-fail-nopair.txt
+- 1968 passed, 0 failed after, on the tree of 11457ff, turn5\f131-a3-core-after.txt, and by the
+  pre-commit of 11457ff, turn5\f131-a3-precommit-1.txt. The records commit changes no code and no
+  test, and its pre-commit is turn5\f131-a3-precommit-2.txt, read after this entry was written
+
+The solution builds whole at 11457ff, the last code commit, with --no-incremental, Federator.Core,
+Federator.Core.Tests and Federator.Addin each built, 0 warnings and 0 errors, with git rev-parse
+--short HEAD and an empty git status at its top, turn5\f131-a3-build-code.txt. check-locals and
+check-imports pass on src, turn5\f131-a3-check-locals.txt and f131-a3-check-imports.txt, and again
+in the pre-commit of 11457ff.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for edits of
+  text files, and powershell for the process reads. None of them starts a Navisworks
+- Get-Process Roamer found no Roamer running before any work, at 11:58:46,
+  turn5\f131-a3-roamer-before.txt, and none after the code, the build and the tests, at
+  12:24:06, turn5\f131-a3-roamer-after.txt. This pass started no Navisworks and touched none
+
+What was done, each finding with its commit and the test seen failing first:
+- B0 with R0, blocking, 11457ff. `SilentMisses.Find` read only a null list as not handed in, so an
+  EMPTY list of sets or of models judged no pair and `Lines` printed the all clear over it, while
+  .claude\rules\core.md said nothing handed in is never an all clear. At the root the all clear was
+  printed wherever no line stood, whether or not any pair was judged. `Find` now counts the pairs
+  of one team with another code it judges, and where none is, `Lines` says nothing was judged and
+  why where the all clear would stand: no set handed in, no model handed in, both, or no model of
+  the group of a set's team with a code other than the set's. A list holding none reads as no
+  list. The line for a list not handed in, which said no sets or no models, now names which, so
+  the two asserts of ASetOrAModelWithNoCodeIsCountedAndSaid read the line that names it. Failing
+  first: NothingJudgedIsSaidAsNothingJudgedWithWhyAndNeverAsTheAllClear, the all clear printed for
+  an empty list of sets, ASetOrAModelWithNoCodeIsCountedAndSaid, and the no pair probe, the all
+  clear printed for a group of one AR model
+- B2, 11457ff, the house rules one rule in one place and UNKNOWN rather than a gap filled. `Judge`
+  read an empty workset value as a name no model carries, so a set asking it was a miss whose line
+  named the workset as nothing, while every other reader of workset values skips an empty one.
+  `Judge` now skips a condition whose value is empty. Failing first:
+  AnEmptyWorksetValueAsksNoNameAndIsNeverAMiss, 1 candidate found where none is
+- R5, 11457ff, the house rule no second copy. `WorksetAsk.MissesByCaseAlone` in
+  src\Federator.Core\Health\ExportCheck.cs wrote the Ordinal half of `ExportCheck.WorksetFinds`
+  inline and now reads it, keeping only its case blind half. It was on main before this branch.
+  The two agreed, so no test of behaviour could fail first. The 53 tests whose names hold ExportCheck or
+  SilentMissTests pass after, turn5\f131-a3-after-focused.txt, with the full set
+- R6, records. The Files bullet of the F131 section of steps\01_next.md now names the files of
+  attempts 2 and 3
+- .claude\rules\core.md, the rule WHAT IS NOT JUDGED IS SAID BESIDE THE ALL CLEAR, now says the
+  rule the code holds
+
+No public member is added, renamed or moved. `SilentMisses.Find`, `Lines`, `Found`, `Unjudged`,
+`SetsWithNoCode` and `ModelsWithNoCode` keep their names and shapes, and `TeamPair` and `TeamMap`
+are not touched, so F114, which has merged origin/fix-F131 and reads `TeamPair` and the team map,
+meets no change of a member it reads. The private field `handedIn` became `notJudged`, the why.
+
+Not fixed, each a row under Known bugs below: R1 is F131-K18, B1 is F131-K19, R4 with B3 is
+F131-K20, B6 is F131-K21, B8 is F131-K22 and R7 is F131-K23. B4 stands as F131-K3, B5 as F131-K1
+with F131-K11 and B7 as F131-K13. Two touch a house rule and stay for the lead to rule, as on
+attempts 1 and 2: R2, `TeamPair.For`, `TeamMap.Compare` and `TeamMap.CarriesSizeFolder` with
+their caller in F114, F131-K8, kept because steps\fix-round.md line 123 has this branch hold the
+team pairs for F114 and deleting them would break F114's branch, and R3, Navisworks' property name
+`LcOaNodeSourceFile` in src beside the two EmptySets holds, F131-K4. R8 and B9 found nothing.
+
+### Every file written outside the repo, attempt 3
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f131, on branch fix-F131
+- turn5\f131-a3-roamer-before.txt, f131-a3-merge-msg.txt, f131-a3-merge.txt,
+  f131-a3-core-before.txt, f131-a3-before-fail.txt, f131-a3-before-fail-nopair.txt,
+  f131-a3-after-focused.txt, f131-a3-core-after.txt, f131-a3-check-locals.txt,
+  f131-a3-check-imports.txt, f131-a3-commit-1-msg.txt, f131-a3-precommit-1.txt,
+  f131-a3-build-code.txt, f131-a3-roamer-after.txt, f131-a3-commit-2-msg.txt,
+  f131-a3-precommit-2.txt and f131-a3-push.txt
+- a copy of the fixed SilentMisses.cs in the session's scratch folder under the user's temp
+  folder, held while the old judge ran the probe, which nothing reads after
+- the probe file tests\Federator.Core.Tests\Teams\TempNoPairProbe.cs in the worktree, deleted
+  before the commit and never committed
 
 ### Attempt 2, on the readings of attempt 1
 
@@ -323,10 +414,42 @@ Programs and Navisworks:
 - F131-K17, B9, src\Federator.Core\Teams\SilentMisses.cs Lines and Drafts. A draft left out
   because a workset name holds the bar, space bar space, is said as a spelling that is UNKNOWN
   rather than as a name a line of the list cannot hold. No measured name holds it
+- F131-K18, attempt 2's R1, src\Federator.Core\Teams\SilentMisses.cs Find and Lines, the line for
+  sets with no code. A set whose code is on neither the map nor a model of the group is counted as
+  of a team that is UNKNOWN, though Bader's point 1 makes any other code a team of its own. With
+  his full map only BLD-Security Devices is counted. On another project's partial map it is one
+  line per group, the 45 sets of the test with a map of Architecture alone, a wording and not a
+  wrong verdict. The lead may want them counted as sets with no model of their team in the group
+- F131-K19, attempt 2's B1, src\Federator.Core\Teams\SilentMisses.cs Find with TeamMap.cs TeamOf
+  from line 358. A model whose code is on no line of the map, a one letter slip such as Hv in part
+  5, is a team of its own, so no set of another code is judged against it and no line counts it.
+  The all clear stays true of what was judged and does not say that model was judged against
+  nothing. Q114 point 1 makes such a code a team of its own on purpose, so whether to name those
+  models on every group of a map that does not list every code is a question for Bader
+- F131-K20, attempt 2's R4 and B3, src\Federator.Core\Teams\TeamMap.cs Unseen from line 334, with
+  src\Federator.Core\Health\InvisibleDifference.cs IsInvisible. A soft hyphen U+00AD, a left to
+  right or right to left mark U+200E or U+200F, or a word joiner U+2060 in a code or a team name is
+  neither white space nor a character `InvisibleDifference` names, so the map reads as whole and
+  the code makes a team of its own, while .claude\rules\core.md and the class comment of `TeamMap`
+  say a character a person cannot see. The one definition is `InvisibleDifference`, so the remedy,
+  reading the Unicode format and control categories there, changes every check reading it and is a
+  change of its own. No measured file holds one
+- F131-K21, attempt 2's B6, src\Federator.Core\Exchange\MatrixCorrectionList.cs Spellings from
+  line 104, with MatrixCorrections.cs ReadPicked. A spelling written by hand on an also-ask line,
+  with a slip such as HV-Ductwrk, is handed to the EMPTY SETS judge as a name the project carries,
+  so a set asking it is not said to ask a name no model carries. A draft the tool writes is always
+  read off a measured model
+- F131-K22, attempt 2's B8, src\Federator.Core\Teams\TeamMap.cs TeamOf and the reader of the team
+  lines. A team named like a code no line lists, `team: EL | EV | ES` with a model code EL on no
+  line, takes that code with no word said, and a team named UNKNOWN takes every name with no code.
+  The reader refuses neither. It takes a map written that way by hand
+- F131-K23, attempt 2's R7, src\Federator.Core\Teams\TeamMap.cs line 31, a short reflowed comment
+  line, and src\Federator.Core\Exchange\MatrixCorrectionList.cs line 12, an overlong one. Layout
+  alone, no writing rule broken
 
 ### What comes next
 
-- the reviewer and the breaker on attempt 2, d563624 and its records commit, then the add-in half,
+- the reviewer and the breaker on attempt 3, 11457ff and its records commit, then the add-in half,
   its COVERAGE part after F127
 
 The Core half was proved here. The add-in half and every line it writes wait for the local machine.
