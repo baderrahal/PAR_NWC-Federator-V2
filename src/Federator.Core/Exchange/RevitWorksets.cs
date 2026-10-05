@@ -6,15 +6,20 @@ using System.Reflection;
 namespace Federator.Core.Exchange
 {
     /// <summary>
-    /// Every workset name a Revit model in this project really carries, measured off the
-    /// models and never typed, Q68 and Q69.
+    /// Every workset name the C02 census measured in this project's Revit models, read off
+    /// the models and never typed, Q68 and Q69, and no other. What the list does not hold is
+    /// UNKNOWN, not absent. Spellings measured since on other run sets belong to the project
+    /// and not to the tool, so they are kept as workset lines in the project's list of
+    /// corrections beside the picked clash XML, Q113 answered B on 2026-10-04,
+    /// MatrixCorrectionList, and read beside these.
     ///
     /// IT IS THE SPELLINGS AND NOT A JUDGEMENT. The client's matrix asks for a workset
-    /// called `ME-DUCTWORK` and every model writes `ME-Ductwork`, and a search condition
-    /// compares a value CASE SENSITIVELY unless a flag nothing sets is set, so three
-    /// mechanical sets found nothing in every group of every run, 5q. `MatrixCorrections`
-    /// corrects the matrix to the spelling the models use and THIS is where the spellings
-    /// come from. Nothing in this tool ever invents one.
+    /// called `ME-DUCTWORK` and the C02 models write `ME-Ductwork`, and a search condition
+    /// compares a value CASE SENSITIVELY unless a flag nothing sets is set, so a set asking
+    /// one spelling finds nothing in the models writing another, 5q and Q102.
+    /// `MatrixCorrections` asks every spelling measured here and in the project's list, as Or
+    /// groups, where there are two or more, and the one measured where there is one, and
+    /// THESE two are where the spellings come from. Nothing in this tool ever invents one.
     ///
     /// IT IS NOT THE PENETRATION LISTS AND NOT THE CATEGORY LIST. Those two say what
     /// somebody has decided about a category. This says what is in the models, the same
@@ -39,10 +44,32 @@ namespace Federator.Core.Exchange
         private static List<string> known;
         private static List<string[]> decided;
 
-        /// <summary>Every workset the list names, in the order the file wrote them.</summary>
-        public static IList<string> All()
+        /// <summary>
+        /// Every workset spelling measured for a picked clash XML: the names this list holds, then
+        /// the workset lines of the project's list beside that XML, each once, Q113. THE ONE PLACE
+        /// the two are put together. The corrections take their spellings from it and the judge
+        /// of a set that found nothing is handed the same ones, so the log never says in a MATRIX
+        /// line that a spelling was measured and in the EMPTY SETS block that no model carries
+        /// it, F116. Null adds nothing, which is the names inside Core alone.
+        /// </summary>
+        internal static IList<string> With(IEnumerable<string> listed)
         {
-            return new List<string>(Load());
+            List<string> measured = new List<string>(Load());
+
+            if (listed == null)
+            {
+                return measured;
+            }
+
+            foreach (string spelling in listed)
+            {
+                if (!string.IsNullOrEmpty(spelling) && !measured.Contains(spelling))
+                {
+                    measured.Add(spelling);
+                }
+            }
+
+            return measured;
         }
 
         /// <summary>

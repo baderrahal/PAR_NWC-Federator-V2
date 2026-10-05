@@ -155,6 +155,124 @@ The set level number cannot be used for the damaged export check. On Infra it
 gives 6, because the sets differ in how many copies of the one rule they hold,
 and 6 does not read as broken.
 
+### The picked file is corrected before a set is built, F116
+
+- WHICHEVER CLASH XML IS PICKED IS CORRECTED BY THE LIST BESIDE IT, Q104 and Q113 answered
+  by Bader on 2026-10-04. `MatrixCorrections.ReadPicked` is the only way the add-in reads the
+  picked file, at the pick, the run, the open file run and both hand buttons, so the list is
+  read wherever the XML is. It reads the file as `ExchangeReader.ReadFile` did, in the
+  encoding the file declares, through `ExchangeReader.ReadFileText`, reads the list beside it,
+  applies the code that writes the exchange file, `ForPickedFile`, before any set is built,
+  and the document carries one line per correction, `ExchangeDocument.Corrections`, which the
+  window writes as MATRIX lines after the line saying which file it read. The HEALTH block at
+  the pick judges the corrected sets, because those are the sets the run builds
+- THE CORRECTIONS ARE ONE PROJECT'S DATA, KEPT BESIDE THE PICKED XML AND NEVER IN CORE, Q113
+  answered B: the tool serves many projects, and nothing in src may name one project's file.
+  The list is a plain file named after the XML, its name without the extension and
+  `CorrectionListSettings.Suffix`, default `.corrections.txt`, one full path tested with
+  File.Exists and never a search or a wildcard, `MatrixCorrectionList.Beside`. It holds the
+  renames, the catch-all sets, the Source File rules and the workset spellings measured in
+  the project's models, one a line, the format at the top of this project's list,
+  exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, kept beside the corrected XML
+  so the two are copied together. The FIRST MATRIX line names the list in full and how many
+  corrections and workset spellings it holds. No list there corrects nothing, the file is
+  read as written, and the first MATRIX line names the path looked for. A list that cannot
+  be read, a line it does not know, a rename it cannot use, bytes that are not UTF-8 in a
+  list with no byte order mark or a file that will not open, corrects NOTHING and the first
+  MATRIX line says why, never a part of it and never a throw. A list saved as UTF-16 with its
+  byte order mark is read as UTF-16. A list that is there and HOLDS NONE, no bytes, comments
+  or blank lines, corrects nothing and its first MATRIX line says so, as no list does, F116.
+  `revit-worksets.txt` inside Core holds the C02 census alone, the 39 names measured before
+  F116. Q113 D keeps all four categories of Q103 in this project's list
+- THE CENSUS AND THE LIST ARE PUT TOGETHER IN ONE PLACE, `RevitWorksets.With`, F116 on the
+  readings of the Q113 pass. The corrections take their spellings from it and the EMPTY SETS
+  judge is handed the same ones, through `ExchangeDocument.Worksets` and
+  `SetBuildPlan.Worksets` to `EmptySets.Why`, so a spelling a MATRIX line says was measured is
+  never one that block calls carried by no model. A file read as it stands is judged against
+  the census alone
+- A WORKSET VALUE IS CORRECTED ONLY WHERE THE LIST NAMES A SPELLING OF IT, the same but for
+  its case, `MatrixCorrectionList.NamesASpellingOf`, F116 on the breaker's finding: a value is
+  corrected only from what the list beside the XML says. It is then asked in every spelling
+  the census and the list hold between them. A value the list names none of is left as the
+  file asks and its line says so, so a list with no workset line corrects no value, as no
+  list does
+- WHAT THE CORRECTIONS CODE NAMES. MatrixCorrections, MatrixCorrectionList,
+  CorrectionListSettings and the classes they read the file with name no set, folder,
+  category or spelling in a code line. Their comments, and comments elsewhere in Core, give
+  the C02 example ME-DUCTWORK against ME-Ductwork. The EXPORT CHECK line that typed that
+  pair into every group is gone since F112's FR-028, which names the pairs a group has
+- THE CASE WARNING OF THE EXPORT CHECK LEAVES OUT A SET THAT ALSO ASKS THE CARRIED SPELLING
+  EXACTLY, F116 once F112's FR-028 merged. Since Q102 the corrections ask a workset in every
+  spelling measured, so a set asks ME-DUCTWORK or ME-Ductwork and finds the items carrying
+  either. `ExportCheck` names a pair only with the sets that ask the other spelling and do
+  not also ask the carried one, not negated, as a whole name or, for contains, a part of it,
+  and a pair no set is left for is not named. A set asking the carried spelling only negated
+  finds none of those items and is still named
+- A SET OR CONDITION THE CORRECTIONS CANNOT READ IS COUNTED AND SAID, NEVER THROWN, F116.
+  `WrittenCondition.Read` gives null for an element that will not parse as one condition or
+  holds a value it could not rewrite, `SetConditionsText.Read` then gives null for the set,
+  and `ForPickedFile` counts every such set on a NOT EVERY SET COULD BE READ line. The set is
+  built exactly as the file asks. A file that will not read as XML at all throws, as
+  ReadFile's did
+- ONE ESCAPE, ONE WAY TO EDIT A CONDITION, ONE WAY TO FIND A SET, F116.
+  `WrittenCondition.Read` reads through `ExchangeReader.ReadCondition`, so a condition
+  corrected and a condition built are read one way. `WrittenCondition.Escaped` is the only
+  escape, for every value written and every name looked for. `WithValue`, `WithFlags` and
+  `WithTest` are the only edits of a condition's text, the catch-all builds its conditions
+  through them and `ValuesGiven` is the one place the category rewrite and the one spelling
+  correction give a condition another value. A set
+  is found by its name through `Named`, and by its folders and its name through `Key` and
+  `KeyOf` where the folder matters, the Source File rule, so a set of one name in another
+  folder is never given what this one asks
+- A WORKSET VALUE ASKS EVERY SPELLING MEASURED, Q102. One measured spelling that differs by
+  case alone is the correction, Q68. Two or more are all asked, as Or groups, where until
+  Q102 they were refused and the value left as it was. A spelling no model was measured
+  carrying is never asked. The spellings go in Ordinal order whichever one the file asked,
+  once per workset, so the client's matrix, the one corrected before and the exchange file
+  come out as the SAME sets, condition for condition, which a test proves on all three
+- A VALUE CORRECTION TOUCHES ONLY A WORKSET CONDITION THAT IS NOT NEGATED, F116. A negation
+  asked in a second spelling is (X and not A) or (X and not B), every X, because no element
+  sits on both spellings, so `WorksetValuesIn` skips a negated condition and widening, the Or
+  rows and the one spelling correction read the condition's property and flags, not its value
+  alone. A condition on another property whose value reads like a workset is not a workset.
+  A file holding a negated workset condition gets a MATRIX line saying it is left as asked
+- THE MATRIX LINES CLAIM ONLY WHAT WAS MEASURED, F116. The spellings are the C02 census in
+  Core and, in the list beside the picked file, at most ten names a group of C06 for this
+  project's, so a line says every
+  spelling measured so far in this project's models, never every spelling the models carry,
+  and no model measured so far, never no model in this run. Each correction that changes
+  nothing says which kind of zero it is, already made, nothing in the file to change, or not
+  readable, and where nothing changed the last line says no correction was applied and counts
+  each kind. It never says the file carries every correction, which a count of zero cannot
+  tell from a file none of them acts on
+- WHERE THE CORRECTIONS REACH IS SAID ON EVERY PICKED FILE, F116, the one a list corrected,
+  the one with no list beside it and the one whose list could not be read. One line before
+  the last says a set already in an NWF keeps the conditions it was built with and is not
+  given what the file asks unless the box `SetRebuildSettings.TickLabel` names is ticked,
+  Q72, and that the SETS block names each such set as DRIFTED, so a log naming corrections
+  over an NWF built before them is not read as corrected sets
+- THE OR ROW IS THE WHOLE GROUP COPIED, FR-025. A group asking one spelling is written once
+  per spelling with the rest of the group in it, so (Ducts and ME-DUCTWORK) or (Ducts and
+  ME-Ductwork). One flags 64 condition after the workset, what Q69's row was until F116,
+  started a group holding the workset alone, which takes every element on that workset
+  whatever its category. The text groups conditions by the plan's own rule,
+  `PlannedSet.GroupsOf` and `PlannedCondition.StartsAGroupWith`, so the two cannot disagree
+- A CATEGORY REWRITE CHANGES A WHOLE VALUE AND NEVER A NAME, FR-026, so a set whose name
+  holds the value is not renamed and a second run counts zero
+- A SET BESIDE THE ONES ASKING A SOURCE FILE CONDITION ASKS IT TOO where another discipline
+  also uses its category, Q103: every AR set whose category another discipline also uses
+  gets Source File contains -AR-. The condition, the folder and the category property are
+  read off the file, and so are the categories another folder's sets ask for. A category no
+  other folder's set asks for that another discipline's MODELS carry can only be measured,
+  an AR set finding items in a group holding no AR model, and those are the categories
+  after the bar in the project's list, proved by a test against the logs they came from
+- THE ROW FILE NAMES EVERY WORKSET OF EVERY MODEL, one model worksets row each, because
+  the EXPORT CHECK block lists ten a group and counts the rest, and the spellings a run
+  shows are what the workset list is measured from. Where a model's element walk stopped
+  part way, `ModelExport.WalkFinished` false, the row's number is empty and its text
+  UNKNOWN, `ExportCheck.WorksetCount` and `EveryWorkset`, never the names seen before it
+  stopped as if they were all
+
 ## Rules the code holds
 
 - A locator that does not resolve to a set: report the test by name, skip it.

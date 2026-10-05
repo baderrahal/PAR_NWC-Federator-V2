@@ -353,7 +353,24 @@ namespace Federator.Core.Exchange
             BatchTests = new ReadOnlyCollection<BatchTestDefinition>(batchTests);
             Tests = new ReadOnlyCollection<ClashTestDefinition>(tests);
             Sets = new ReadOnlyCollection<SelectionSetDefinition>(sets);
+            Corrections = new ReadOnlyCollection<string>(new List<string>());
+            Worksets = new ReadOnlyCollection<string>(RevitWorksets.With(null));
         }
+
+        /// <summary>
+        /// The workset spellings this file's sets are judged against when one finds nothing, the
+        /// ones its corrections were chosen from, RevitWorksets.With: the names inside Core and
+        /// those of the list beside the picked file, F116. The names inside Core alone for a
+        /// document read as the file stands.
+        /// </summary>
+        internal ReadOnlyCollection<string> Worksets { get; private set; }
+
+        /// <summary>
+        /// What MatrixCorrections did to the file before it was read, the list beside it first
+        /// and then one line per correction, for the log, Q104 and Q113. Empty for a document
+        /// read as the file stands.
+        /// </summary>
+        public ReadOnlyCollection<string> Corrections { get; private set; }
 
         /// <summary>Null when the document was read from a string or a stream.</summary>
         public string SourcePath { get; private set; }
@@ -366,6 +383,12 @@ namespace Federator.Core.Exchange
         public ReadOnlyCollection<ClashTestDefinition> Tests { get; private set; }
 
         public ReadOnlyCollection<SelectionSetDefinition> Sets { get; private set; }
+
+        internal void Corrected(IList<string> lines, IList<string> worksets)
+        {
+            Corrections = new ReadOnlyCollection<string>(new List<string>(lines));
+            Worksets = new ReadOnlyCollection<string>(new List<string>(worksets));
+        }
 
         public bool HasTests
         {

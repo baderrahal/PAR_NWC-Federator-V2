@@ -2006,6 +2006,7 @@ namespace Federator.Addin.Ui
                     log.Line("RUN      it holds " + exchange.Sets.Count
                         + (exchange.Sets.Count == 1 ? " set and " : " sets and ")
                         + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test" : " tests"));
+                    SayCorrections(exchange);
                 }
 
                 ReportOptions options = ReportsWanted();
@@ -2168,7 +2169,7 @@ namespace Federator.Addin.Ui
 
             try
             {
-                exchange = new ExchangeReader().ReadFile(path);
+                exchange = MatrixCorrections.ReadPicked(path);
             }
             catch (Exception error)
             {
@@ -2182,6 +2183,9 @@ namespace Federator.Addin.Ui
                 + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test." : " tests.");
 
             log.Line("PICK     " + path + " holds " + held);
+
+            // Q104. The health check judges the sets as the run will build them, corrected.
+            SayCorrections(exchange);
 
             HealthCheckResult health = HealthCheck.Run(exchange);
             log.Block("HEALTH " + Path.GetFileName(path), health.Summary());
@@ -2206,9 +2210,10 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The one file picked in the Clash step, read once. Null when nothing was
-        /// picked, and then the run builds no set and creates no test, which is a step
-        /// switched off rather than a failure.
+        /// The one file picked in the Clash step, read once, with MatrixCorrections applied
+        /// before any set is built, Q104. Null when nothing was picked, and then the run
+        /// builds no set and creates no test, which is a step switched off rather than a
+        /// failure.
         /// </summary>
         private ExchangeDocument PickedExchange()
         {
@@ -2216,7 +2221,19 @@ namespace Federator.Addin.Ui
 
             return path.Length == 0 || !File.Exists(path)
                 ? null
-                : new ExchangeReader().ReadFile(path);
+                : MatrixCorrections.ReadPicked(path);
+        }
+
+        /// <summary>
+        /// Every correction MatrixCorrections made to the picked file, one log line each,
+        /// Q104, written wherever a run or a pick says which file it read.
+        /// </summary>
+        private void SayCorrections(ExchangeDocument exchange)
+        {
+            foreach (string line in exchange.Corrections)
+            {
+                log.Line(line);
+            }
         }
 
         /// <summary>
@@ -2258,8 +2275,9 @@ namespace Federator.Addin.Ui
             {
                 if (path.Length > 0 && File.Exists(path))
                 {
-                    exchange = new ExchangeReader().ReadFile(path);
+                    exchange = MatrixCorrections.ReadPicked(path);
                     log.Line("OPEN     clash file " + path);
+                    SayCorrections(exchange);
                 }
                 else
                 {
@@ -2429,7 +2447,8 @@ namespace Federator.Addin.Ui
             try
             {
                 log.Line("SETS     started by hand, reading " + path);
-                ExchangeDocument exchange = new ExchangeReader().ReadFile(path);
+                ExchangeDocument exchange = MatrixCorrections.ReadPicked(path);
+                SayCorrections(exchange);
 
                 FederationEngine engine = new FederationEngine(SetProgress, log, exchange, ReportsWanted());
                 SetBuildOutcome outcome = engine.BuildSetsByHand();
@@ -2479,7 +2498,8 @@ namespace Federator.Addin.Ui
             try
             {
                 log.Line("CLASH    started by hand, reading " + path);
-                ExchangeDocument exchange = new ExchangeReader().ReadFile(path);
+                ExchangeDocument exchange = MatrixCorrections.ReadPicked(path);
+                SayCorrections(exchange);
 
                 FederationEngine engine = new FederationEngine(SetProgress, log, exchange, ReportsWanted());
                 ClashRunOutcome outcome = engine.RunTestsByHand();

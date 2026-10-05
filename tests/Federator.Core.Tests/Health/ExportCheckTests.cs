@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
+using Federator.Core.Sets;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests.Health
@@ -49,6 +50,29 @@ namespace Federator.Core.Tests.Health
                 + "<property><name internal=\"" + property + "\">a property</name></property>"
                 + "<value><data type=\"wstring\">" + value + "</data></value></condition>"
                 + "</conditions></findspec></selectionset></selectionsets></exchange>").Sets;
+        }
+
+        /// <summary>One workset condition with those flags, 64 starting an Or group and 32 negating it.</summary>
+        private static string WorksetCondition(int flags, string value)
+        {
+            return "<condition test=\"equals\" flags=\"" + flags + "\">"
+                + "<category><name internal=\"LcRevitData_Element\">Element</name></category>"
+                + "<property><name internal=\"" + EmptySets.WorksetProperty + "\">Workset</name></property>"
+                + "<value><data type=\"wstring\">" + value + "</data></value></condition>";
+        }
+
+        /// <summary>The sets of a clash file holding those sets, each a name and its conditions.</summary>
+        private static IList<SelectionSetDefinition> SetsAsking(params string[] nameThenConditions)
+        {
+            string sets = string.Empty;
+
+            for (int i = 0; i + 1 < nameThenConditions.Length; i += 2)
+            {
+                sets += "<selectionset name=\"" + nameThenConditions[i] + "\"><findspec mode=\"all\" disjoint=\"0\"><conditions>"
+                    + nameThenConditions[i + 1] + "</conditions></findspec></selectionset>";
+            }
+
+            return new ExchangeReader().ReadText("<exchange units=\"ft\"><selectionsets>" + sets + "</selectionsets></exchange>").Sets;
         }
 
         /// <summary>The real 1A02MM, where every model carries both on every element.</summary>
@@ -176,7 +200,11 @@ namespace Federator.Core.Tests.Health
             Assert.That(block, Does.Not.Contain("PL-Drainage\" in"), "asked and carried in the same case, so not named");
         }
 
-        /// <summary>The other half of the proof: a group where no name differs prints no warning.</summary>
+        /// <summary>
+        /// The other half of the proof: a group where no set misses a name by letter case alone
+        /// prints no warning. Since F116 the corrected matrix asks every spelling measured, so a
+        /// set asking ME-DUCTWORK also asks ME-Ductwork, the spelling this group carries.
+        /// </summary>
         [Test]
         public void AGroupWhereNoAskedNameDiffersByCaseGetsNoWarning()
         {
@@ -189,12 +217,14 @@ namespace Federator.Core.Tests.Health
         }
 
         /// <summary>
-        /// The real 1B06BC of the C06 run, log line 605: its models carry the capitals, and
-        /// the corrected matrix asks for ME-Ductwork, so the same trouble lands on this group
-        /// the other way round, Q102. The rule names it in whichever direction it runs.
+        /// The real 1B06BC of the C06 run, log line 605: its models carry the capitals. A file
+        /// asking the title case alone, as the corrected matrix did until F116, lands the same
+        /// trouble on this group the other way round, Q102, and the rule names it in whichever
+        /// direction it runs. The corrected matrix since F116 asks both spellings in every set
+        /// asking one, so against it nothing is named for this group.
         /// </summary>
         [Test]
-        public void TheCapitalsOf1B06BCAgainstTheCorrectedMatrixAreNamed()
+        public void TheCapitalsOf1B06BCAgainstAFileAskingTitleCaseAreNamed()
         {
             IList<ModelExport> models = new List<ModelExport>
             {
@@ -202,12 +232,47 @@ namespace Federator.Core.Tests.Health
                     new List<string> { "ME-DUCTWORK", "ME-EQUIPMENT", "ME-PIPING" })
             };
 
-            string block = Joined(ExportCheck.Lines(models, SetsOf(Samples.CorrectedMatrix())));
+            IList<SelectionSetDefinition> titleCase = SetsAsking(
+                "BLD-ME-Ducts&amp;Duct Fittings", WorksetCondition(0, "ME-Ductwork"),
+                "BLD-ME-Mechanical Equipment", WorksetCondition(0, "ME-Equipment"),
+                "BLD-ME-Pipes&amp;Pipe Fittings", WorksetCondition(0, "ME-Piping"));
+
+            string block = Joined(ExportCheck.Lines(models, titleCase));
 
             Assert.That(block, Does.Contain("3 pair(s) of workset names differ by letter case alone"));
             Assert.That(block, Does.Contain(
                 "the file asks for \"ME-Equipment\" in BLD-ME-Mechanical Equipment, and a model here carries \"ME-EQUIPMENT\""));
             Assert.That(block, Does.Contain("and a model here carries \"ME-DUCTWORK\""));
+
+            string corrected = Joined(ExportCheck.Lines(models, SetsOf(Samples.CorrectedMatrix())));
+
+            Assert.That(corrected, Does.Not.Contain("CASE SENSITIVE"), corrected);
+            Assert.That(corrected, Does.Contain(
+                "no workset name a set of the picked file asks for differs by letter case alone from one a model here carries"));
+        }
+
+        /// <summary>
+        /// A set that also asks the carried spelling exactly is not named as missing it, F116 once
+        /// F112 merged. The corrections ask a workset in every spelling measured, so a set asks
+        /// ME-DUCTWORK or ME-Ductwork and finds the items carrying either, and naming it would be
+        /// the overclaim this check is there to end. A set asking the other spelling alone is
+        /// still named, and so is one asking the carried spelling negated, which finds none of
+        /// those items.
+        /// </summary>
+        [Test]
+        public void ASetThatAlsoAsksTheCarriedSpellingIsNotNamedAsMissingIt()
+        {
+            IList<SelectionSetDefinition> sets = SetsAsking(
+                "BLD-Both", WorksetCondition(0, "ME-DUCTWORK") + WorksetCondition(64, "ME-Ductwork"),
+                "BLD-Capitals", WorksetCondition(0, "ME-DUCTWORK"),
+                "BLD-Negated", WorksetCondition(0, "ME-DUCTWORK") + WorksetCondition(32, "ME-Ductwork"));
+
+            string block = Joined(ExportCheck.Lines(TheRealGroup(), sets));
+
+            Assert.That(block, Does.Contain("1 pair(s) of workset names differ by letter case alone"), block);
+            Assert.That(block, Does.Contain(
+                "   the file asks for \"ME-DUCTWORK\" in BLD-Capitals, and BLD-Negated, and a model here carries \"ME-Ductwork\""), block);
+            Assert.That(block, Does.Not.Contain("BLD-Both"), block);
         }
 
         [Test]
@@ -521,6 +586,50 @@ namespace Federator.Core.Tests.Health
             Assert.That(block, Does.Contain("Juliett"));
             Assert.That(block, Does.Not.Contain("Kilo"));
             Assert.That(block, Does.Contain("and 4 more, counted and not listed"));
+        }
+
+        /// <summary>
+        /// F116. The block names ten and counts the rest, so in nine groups of set 03 on C06,
+        /// whose worksets seen lines end "and N more, counted and not listed" at lines 605,
+        /// 1354, 3248, 3928, 4670, 5071, 6482, 6853 and 7254 of its log, which spelling the
+        /// models past the tenth name carry was UNKNOWN, and the matrix corrections act on
+        /// exactly that. The row file carries every name of a model in
+        /// full, in the order the model gave them, split by a bar so a name holding a comma
+        /// stays one name.
+        /// </summary>
+        [Test]
+        public void TheRowFileCarriesEveryWorksetOfAModelWhereTheBlockCountsTheRest()
+        {
+            List<string> many = new List<string>
+            {
+                "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf",
+                "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November, and more"
+            };
+
+            string every = ExportCheck.EveryWorkset(new ModelExport("a.nwc", "ME", 100, 100, 100, many));
+
+            Assert.That(every.Split(new[] { " | " }, System.StringSplitOptions.None), Is.EqualTo(many));
+            Assert.That(every, Does.Not.Contain("counted and not listed"));
+            Assert.That(ExportCheck.EveryWorkset(Model("EL", 494, 0, 494)), Is.Empty);
+            Assert.That(ExportCheck.WorksetCount(new ModelExport("a.nwc", "ME", 100, 100, 100, many)), Is.EqualTo("14"));
+        }
+
+        /// <summary>
+        /// F116. A model whose element walk stopped part way hands back the worksets it saw
+        /// before it stopped, and those are not every workset of the model. So the row leaves
+        /// the count empty and says UNKNOWN, never a short list as every workset, because these
+        /// rows are what the next spelling decision is measured from.
+        /// </summary>
+        [Test]
+        public void TheRowFileSaysUnknownWhereAModelsWalkDidNotFinish()
+        {
+            ModelExport stopped = new ModelExport(
+                "a.nwc", "ME", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted,
+                new List<string> { "ME-Ductwork", "ME-Piping" });
+
+            Assert.That(ExportCheck.EveryWorkset(stopped), Does.StartWith("UNKNOWN"));
+            Assert.That(ExportCheck.EveryWorkset(stopped), Does.Not.Contain("ME-Ductwork"));
+            Assert.That(ExportCheck.WorksetCount(stopped), Is.Empty);
         }
 
         [Test]
