@@ -182,6 +182,54 @@ Core tests 1865 passed, 0 failed, 0 skipped at 61ea726, turn5\f112f-precommit.tx
 worktree folder are removed, while git's own entry for the worktree could not be deleted,
 Permission denied, turn5\precommit-records-12.txt. Q110 and Q111 reach the form with it. The add-in half waits for the
 test of wave 1. Wave 1 now holds F113 and F112 on main, and F116 is in its fix pass.
+F116 MERGED as PR 98, 7793b9e, at 04:25:57 on 2026-10-05, green in Actions on its last commit
+8f65042, run 37251236132, turn5\actions-reads-pr98.txt. It carries Bader's answers to Q102 to
+Q104 and to Q113: this project's list of corrections is exchange\
+1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt beside exchange\
+1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, and Bader was told in the Claude tab at about 04:27
+that it is there, a reply kept in no file. Its last reviewer approved with nothing blocking,
+turn5\f116e-read-review.txt, after five passes, attempt 1, attempt 2, the Q113 pass, the pass on
+the readings of the Q113 pass, and the closing pass that took out RevitWorksets.All, which a
+reviewer and a claim-checker read and no breaker, its one code change the deletion of a member
+with no caller. Core tests 1912 passed, 0 failed, 0 skipped at 8f65042, turn5\f116f-precommit.txt,
+and the Release build 0 warnings and 0 errors at 23ec179, turn5\f116e-build-after.txt, a40ff59
+the last commit changing code and 8f65042 after it changing steps\log.md only,
+turn5\f116f-diffstat.txt. Its branch and worktree folder are removed, while git's own entry for the worktree could not
+be deleted, Permission denied, turn5\precommit-records-15.txt. ALL OF WAVE 1's PRODUCT
+CODE IS NOW ON MAIN, F113, F112 and F116, with F125 for the driver. What the test of wave 1 waited
+for first, Navisworks free of the C04 baseline, came at 06:38, see the paragraph below. It then
+waits for main to be installed in place, F126's merge for the rule-off run, its harness having
+run in that gap, 52 passed and 0 failed on the branch, turn5\f126-proof\prove-f126-after.txt
+line 312, and the list copied from exchange\ beside the XML
+in the run set's own copy.
+THE BASELINE, ITEM 1 ON C04, ENDED HUNG. Started at 21:16:46 by turn4\start-run.ps1 as run.ps1 pid
+45316 from wt-base, Roamer reading 0 at 21:16:45, its Navisworks pid 32136. The driver pressed Run
+and answered the confirm, driver.txt. The clash step began at 21:18:57, its first test read at
+21:29:32, run log lines 62 and 297, and reached test 400 of 561 with 8470 clashes at 05:59, its pace
+uneven, 2 h 27 min on the tests from 75 to 100 and seconds on others, turn5\c04-rate-2.txt. Two clash pictures then failed, IMAGE failed for Clash404 and
+Clash405, InvalidOperationException, run log lines 332 and 333, and with the log still since 06:31:47
+and no processor time for 300 s the hang rule closed it through the held handle at 06:36:58,
+VERDICT: STOPPED, something of Bader's was not put back, NOT PUT BACK, record.txt line 3468. No
+workbook was written. The put back wrote nothing, because a Roamer, pid 46148, was first seen by the watchdog at 06:31:47 with no start time the loop could read, watch.txt line 316, listed by the lead's waiter every minute from 06:32:02 to 06:37:02, a minute past the close of the loop's own, and gone by 06:38:02, turn5\wait-run04-item1-C04.txt lines 550 to 556,
+and whose it was is UNKNOWN: 34 registry values, InfoCenter.log and six AutoSave changes, three
+of his autosaves of 1A04PK gone and three the run added, are listed in record.txt from line 3398,
+with the backup kept in runs\04\item1-C04\settings and his autosaves held in autosave-backup. Q128
+asks him, the loop going on with B, leave it as it is. M5: 14 keys and 2765 files listed in m5.txt,
+which stays out of the evidence, and left.
+The evidence is masked into steps\runs\04\item1-C04 with no copy differing,
+turn5\mask-run04-item1-C04.txt. The loop's Navisworks was gone at 06:36:58 and no Roamer has run since 06:38:02, the waiter's lines
+556 to 561 and the lead's read of 0 at 06:53:29, turn5\f126-proof\roamer-reads-harness.txt.
+F126 MERGED as PR 112, 15bdbec, at 08:23:04 on 2026-10-05, green in Actions on its last commit
+5ede455, run 37267277611, turn5\actions-reads-pr112.txt. The lead ran its harness in that first
+gap: 52 passed and 0 failed on the branch at f9834e4, 8 passed and 41 failed of 49 on main's tools,
+Get-Process Roamer 0 before and after, turn5\f126-proof\prove-f126-after.txt, prove-f126-before.txt
+and roamer-reads-harness.txt. Its reviewer and breaker approved under Q93 with nothing blocking,
+turn5\f126-read-review.txt and f126-read-break.txt, and two claim-checks made its records true, the
+last turn5\f126-proof\read-claims-16b5eb7.txt. The driver can now untick a box named by its
+AutomationId before Run, for the run with F112's rule off in the test of wave 1. Its branch and
+worktree folder are removed. THE WEEKLY BASELINE ON C02, item 2, started at 07:26:06 from wt-base,
+Roamer reading 0 at 07:26:05, turn4\roamer-reads.txt, and at 08:23 had run its 528 saved tests with
+2939 clashes, the same count as item 1, and was in its VIEWS step.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -359,11 +407,9 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    steps\runs\04\findings.md, short, in the shape of set 03's, merged within the hour. The hung
    first attempt is kept as steps\runs\04\item1-C02-hung
 2. Wave 1: F125's second pass and F126, the driver unticking a named box, each read under Q93
-   and merged. F112 fix attempt 2 read and merged. F116 fix attempt 2, attempt 1 being aefb416
-   read in turn5\f116-read-review.txt, f116-read-break.txt and f116-read-claims.txt, then
-   Bader's answer to Q113, the list as a file beside the picked XML and this project's list in
-   exchange\, then its merge after F112, Bader told when the list is on main. Each with a reviewer, a breaker and the claim-checker, Actions green, merged one
-   at a time
+   and merged. F125 MERGED as PR 102, F112 MERGED as PR 106 and F116 MERGED as PR 98 with this
+   project's list in exchange\, Bader told at about 04:27. F126's harness ran in the first gap
+   on 2026-10-05, 52 passed and 0 failed on the branch, and its pull request 112 waits to merge
 3. The test of wave 1: main installed in place as on 2026-10-01 and its stamp read back, both
    buildings run, item 1 and item 2, and a building whose models are off the shared coordinates
    run once more with the rule switched off by its tick box. Compared with the baseline through
@@ -511,8 +557,10 @@ OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its ch
   new views written before old ones are removed, whose cost is UNKNOWN until probe P18 and which is
   asked if that cost is large, and one, a comment that does not survive a save, waits for P9
 - Q124, written on 2026-10-05: the baseline of 1A04PK takes a day or more, so whether to let it
-  run, the loop going on with A, let it run, until he answers. Its note of 03:20: under A the
-  ceiling of Q84 closes the C04 run at about 09:18 if it has not ended
+  run, the loop going on with A, let it run, until he answers. Its note of 06:45: the run ended
+  HUNG at 06:36, so it now stands for C04's weekly run, item 2
+- Q128, written on 2026-10-05: what the C04 run did not put back, the loop going on with B, leave
+  it as it is with the backups kept, until he answers
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:
@@ -647,7 +695,7 @@ an F number only when it becomes work. Most harmful first when the loop picks, a
 wrong number ranks above a loud failure. Done in code but not proved by a run means the
 baseline run proves it or contradicts it.
 
-336 rows, by status, after turn 4's eighteen additions and turn 5's twenty two:
+337 rows, by status, after turn 4's eighteen additions and turn 5's twenty three:
 
 - 125 done in code, not proved by a run
 - 3 reported by the read, not verified, T1-N, T1-UNCALLED and T1-CATCH
@@ -670,6 +718,7 @@ baseline run proves it or contradicts it.
 - 1 built and read safe, F104, its first real read waiting
 - 7 register rows of F104's readings, F104-R1 to F104-R7, under Q93
 - 14 register rows of F125's readings, F125-R1 to F125-R14, under Q93, for F122 the loop tools in wave 4, F125-R2 answered for C02
+- 1 built on its branch, F126, the window driver unticking a named tick box, read by a reviewer and a breaker with nothing blocking under Q93, its harness run by the lead on 2026-10-05 in the first gap, 52 passed and 0 failed against 8 passed and 41 failed of 49 on main's tools, and its run with F112's rule off waiting for wave 1's test
 - 1 seen on an old build, the baseline answers it for main
 - 1 open, after the faults
 - 1 closed, not there at 42499bf
@@ -746,6 +795,7 @@ baseline run proves it or contradicts it.
 | F125-R12 | the breaker of F125's second pass, its fifth point, turn5\f125b-read-break.txt | StateWords writes the handle and enabled state of an owner that belongs to another process, where OwnerText writes only that it is a window of another process, so one masking rule has two copies. A handle and True or False only, nothing naming the program. nw-guard.ps1 lines 586 to 589, now 587 to 590, run.ps1 line 1603 and 1650 to 1654, drive-window-run.ps1 lines 301 and 310 at 03aa6c0 | one copy of the words for an owner of another process | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
 | F125-R13 | the breaker of F125's second pass, its sixth point, turn5\f125b-read-break.txt | The driver's count of passes after Run counts passes that held any window, so three different passing windows on three passes stop it, DIALOG exit 8, while its comment says one window read on three passes running. Loud, and older than F125. drive-window-run.ps1 lines 306 to 308 and 389 to 397 at 03aa6c0 | a count per window, or the comment made true | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
 | F125-R14 | the reviewer of F125's second pass, turn5\f125b-read-review.txt, points the records pass left | nw-guard.ps1's header still says that is not modal and lists neither PaneWords nor StateWords, KindStateWords and StateWords are two forms of one set of words, the order line, the section heading and THE TEST of F125 in steps\01_next.md still say not modal, and the new count rule has no test that breaks it. Also PaneWords still writes a window that is not modal for a window whose owner reads enabled, nw-guard.ps1 line 582, which a modal dialog owned by a window of another thread would read too, a shape no row names, and nw-guard.ps1 lines 566 and 567 and the F125 section of steps\01_next.md say a window whose state is not read stays a DIALOG, where prove-f125-after2.txt line 620 reads PANE for an owner read enabled and an own state not read | the words made true and one form of them, and a breaking stand-in case for the count rule | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| F126 | Bader's message of 15:42 on 2026-10-04 and his answers to Q99 and Q100, the brief turn5\f126-brief.md | Nothing in the loop can untick a tick box, so the test of wave 1 cannot run a building off the shared coordinates once more with F112's rule switched off by its tick box SkipClashOffCoordinates. tools\probes\drive-window-run.ps1 lines 1 to 14, 214 to 217, 338 and 378 and tools\loop\run.ps1 lines 1 to 14 and 2177 to 2183 at 1ae6771, steps\runs\04\item1-C02\driver.txt lines 5 and 19, a run on F125's first pass driver, sha256 7E9ABA1B by record.txt line 1 there, the blob of 5fa98a8, whose cited lines carry the same words, turn5\f126-proof\first-pass-lines.txt. The box is not remembered between runs, FederatorWindow.xaml.cs line 1198 on fix-F112 at e6d6f73, the same line at main ddb059b where F112 is merged, turn5\f126-proof\f112-lines-ddb059b.txt | turn5\f126-proof\prove-f126.ps1 against the stand-in failing on main's tools and passing on the branch, run by the lead in the first gap with Get-Process Roamer at 0 before the pull request merges, then the lead's run of 1A02MM with -Untick SkipClashOffCoordinates once main, F112 in it since ddb059b, is installed, its driver.txt reading the box toggled Off and its log the rule switched off | built on fix-F126, its code at e45ffbb, main ddb059b merged in at 1e06b7e, main 3ee01ab at 16b5eb7 and main c101f6c at 37ee68e, and read under Q93 by a reviewer and a breaker, both VERDICT APPROVE with nothing blocking, turn5\f126-read-review.txt and turn5\f126-read-break.txt. The harness ran on 2026-10-05 in the first gap, run by the lead, 52 passed and 0 failed on the branch, turn5\f126-proof\prove-f126-after.txt line 312, and 8 passed and 41 failed of 49 on main's tools, whose run.ps1 has no DriverArguments, prove-f126-before.txt line 177, four of the 8 passing only because main's driver fell over at parameter binding, the stand-in started 11 and 12 times and still running 0, Get-Process Roamer 0 at 06:53:29 and 06:58:45, turn5\f126-proof\roamer-reads-harness.txt, and at each pass's start and end, prove-f126-before.txt lines 4 and 175 and prove-f126-after.txt lines 4 and 310. On 2026-10-04 it had not run, no gap with Get-Process Roamer at 0 having come: it read 1 at all 19 of the waiter's reads, about 5 minutes apart, from 23:51:20 on 2026-10-04 to 01:22:18 on 2026-10-05, 91 minutes, pid 32136 started at 21:17:06, turn5\f126-proof\roamer-reads.txt, and at the records pass's reads, turn5\f126-proof\roamer-reads-claims.txt, steps\01_next.md F126 | 112, open as a draft | none yet |
 | Q88-IDS | Q88 | GitHub keeps the commits 464f79f and c98c6f3 readable through PR 74's own refs, and they hold the licensing agent's analytics id and a session id | only the repository's owner can ask GitHub support to purge them | known item, Bader's, the repository is private | 74 | no run applies |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
 | RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |
