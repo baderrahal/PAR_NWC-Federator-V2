@@ -137,6 +137,13 @@ namespace ViewpointProbe
                     {
                         MeasureSetRename(parameters[2]);
                     }
+                    else if (mode == "mirror")
+                    {
+                        MeasureMirrorSwap(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -6772,6 +6779,551 @@ namespace ViewpointProbe
             {
                 return false;
             }
+        }
+
+        // ---------- P1 of Q114, a test with its sides swapped, run beside the original ----------
+
+        /// <summary>
+        /// P1 of Q114, scan.md 5z-k. Finds the test named testName in a copy, adds a copy of it
+        /// whose side A is the original's side B and whose side B is the original's side A, clears
+        /// the copy's results, runs the copy and the original, and compares the clashes each finds
+        /// as UNORDERED pairs of item index paths. The copy is saved to saveAs for P2.
+        /// </summary>
+        private void MeasureMirrorSwap(string nwf, string testName, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(testName))
+            {
+                Say("UNKNOWN: no test name was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count + ", document units " + document.Units);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                Model model = document.Models[m];
+                Say("   model " + m + "  " + Path.GetFileName(model.FileName)
+                    + "  under the loop folder " + (model.FileName ?? string.Empty).StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            DocumentClashTests clashTests = document.GetClash().TestsData;
+            Say("tests at the root " + clashTests.Tests.Count);
+
+            int matches;
+            List<int> address = FindTest(clashTests.Tests, testName, new List<int>(), out matches);
+            Say("tests named \"" + testName + "\": " + matches);
+
+            string[] halves = testName.Split(new[] { "-vs-" }, StringSplitOptions.None);
+
+            if (halves.Length == 2)
+            {
+                int mirrors;
+                FindTest(clashTests.Tests, halves[1] + "-vs-" + halves[0], new List<int>(), out mirrors);
+                Say("tests named \"" + halves[1] + "-vs-" + halves[0] + "\", its mirror by name: " + mirrors);
+            }
+
+            if (address == null || matches != 1)
+            {
+                Say("UNKNOWN: the test is not there exactly once, so nothing is created");
+                return;
+            }
+
+            Say("its address " + string.Join(".", Strings(address.ToArray())));
+
+            PairsFound stored;
+
+            using (ClashTest original = ResolveTest(clashTests, address))
+            {
+                SayTest(document, original, "THE ORIGINAL as the NWF holds it");
+                stored = ReadPairs(document, original.Children);
+            }
+
+            SayPairs(stored, "the original's results as the NWF holds them");
+
+            string swapName = testName + " P1 swap";
+            int before = clashTests.Tests.Count;
+            clock = System.Diagnostics.Stopwatch.StartNew();
+
+            // Run 1 made the swap with the original's CreateCopy, and TestsAddCopy threw
+            // "Contains an item whose GUID is already present in the group", because the copy
+            // keeps the original's Guid. So the swap is a new ClashTest, built the way
+            // ClashRunner.Create builds one, carrying every setting SayTest prints, and the
+            // ignore rules are checked to be none, since a new test carries none.
+            using (ClashTest original = ResolveTest(clashTests, address))
+            {
+                if (original.IgnoreRules.Count != 0)
+                {
+                    Say("UNKNOWN: the original carries " + original.IgnoreRules.Count + " ignore rules, which a new test does not, so nothing is created");
+                    return;
+                }
+
+                using (ClashTest swap = new ClashTest())
+                {
+                    swap.DisplayName = swapName;
+                    swap.TestType = original.TestType;
+                    swap.Tolerance = original.Tolerance;
+                    swap.MergeComposites = original.MergeComposites;
+                    swap.SimulationType = original.SimulationType;
+
+                    using (ClashSelection originalA = original.SelectionA)
+                    using (ClashSelection originalB = original.SelectionB)
+                    using (ClashSelection swapA = swap.SelectionA)
+                    using (ClashSelection swapB = swap.SelectionB)
+                    {
+                        swapA.CopyFrom(originalB);
+                        swapB.CopyFrom(originalA);
+                    }
+
+                    clashTests.TestsAddCopy(swap);
+                }
+            }
+
+            int after = clashTests.Tests.Count;
+            Say("new ClashTest, its settings, the two CopyFrom and TestsAddCopy took " + Seconds(clock) + ", tests at the root " + before + " then " + after);
+
+            if (after != before + 1)
+            {
+                Say("UNKNOWN: the root did not grow by one, so the swap cannot be found by its place");
+                return;
+            }
+
+            List<int> swapAddress = new List<int> { before };
+
+            using (ClashTest swap = ResolveTest(clashTests, swapAddress))
+            {
+                if (swap == null || swap.DisplayName != swapName)
+                {
+                    Say("UNKNOWN: the last test at the root is not the swap, it reads " + (swap == null ? "null" : "\"" + swap.DisplayName + "\""));
+                    return;
+                }
+
+                SayTest(document, swap, "THE SWAP as added");
+                Say("   results it carried in from the copy: " + ReadPairs(document, swap.Children).Leaves);
+            }
+
+            using (ClashTest swap = ResolveTest(clashTests, swapAddress))
+            {
+                clashTests.TestsClearResults(swap);
+            }
+
+            using (ClashTest swap = ResolveTest(clashTests, swapAddress))
+            {
+                Say("   results after TestsClearResults: " + ReadPairs(document, swap.Children).Leaves);
+            }
+
+            using (ClashTest swap = ResolveTest(clashTests, swapAddress))
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                clashTests.TestsRunTest(swap);
+                Say("TestsRunTest on the swap took " + Seconds(clock));
+            }
+
+            PairsFound swapped;
+
+            using (ClashTest swap = ResolveTest(clashTests, swapAddress))
+            {
+                Say("   the swap after its run: status " + swap.Status + ", last run " + (swap.LastRun.HasValue ? "set" : "never"));
+                swapped = ReadPairs(document, swap.Children);
+            }
+
+            SayPairs(swapped, "the swap's results after its run");
+
+            using (ClashTest original = ResolveTest(clashTests, address))
+            {
+                if (original == null || original.DisplayName != testName)
+                {
+                    Say("UNKNOWN: the original is no longer at its address");
+                    return;
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                clashTests.TestsRunTest(original);
+                Say("TestsRunTest on the original took " + Seconds(clock));
+            }
+
+            PairsFound rerun;
+
+            using (ClashTest original = ResolveTest(clashTests, address))
+            {
+                rerun = ReadPairs(document, original.Children);
+            }
+
+            SayPairs(rerun, "the original's results after it ran again beside the swap");
+
+            bool swapVsStored = ComparePairs("the swap", swapped, "the original as stored", stored);
+            bool swapVsRerun = ComparePairs("the swap", swapped, "the original run again", rerun);
+            bool rerunVsStored = ComparePairs("the original run again", rerun, "the original as stored", stored);
+
+            int open = stored.Open.Count;
+            bool readable = stored.NullItems == 0 && swapped.NullItems == 0 && rerun.NullItems == 0;
+
+            if (!readable)
+            {
+                Say("P1 UNKNOWN   a result had an item that did not read, so a pair is not whole");
+            }
+            else if (swapVsStored && swapVsRerun)
+            {
+                Say("P1 YES   the swap finds " + swapped.Open.Count + " clashes, the original " + open
+                    + " as stored and " + rerun.Open.Count + " run again, over the same unordered pairs of item index paths");
+            }
+            else
+            {
+                Say("P1 NO   the swap finds " + swapped.Open.Count + " clashes, the original " + open
+                    + " as stored and " + rerun.Open.Count + " run again, and the unordered pairs differ, see the lists above");
+            }
+
+            Say("the original run again finds what it held: " + rerunVsStored);
+
+            if (!string.IsNullOrEmpty(saveAs))
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                document.SaveFile(saveAs);
+                Say("SaveFile of the copy with the swap into " + Path.GetFileName(saveAs) + " took " + Seconds(clock)
+                    + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            }
+        }
+
+        private sealed class PairsFound
+        {
+            public int Leaves;
+            public int Groups;
+            public int NullItems;
+            public int Duplicates;
+            public readonly Dictionary<string, int> ByStatus = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            // Every result whose status is not Resolved, by its unordered pair, holding its
+            // ordered pair and its distance.
+            public readonly Dictionary<string, string> Open = new Dictionary<string, string>(StringComparer.Ordinal);
+            public readonly Dictionary<string, double> Distance = new Dictionary<string, double>(StringComparer.Ordinal);
+        }
+
+        private static string Seconds(System.Diagnostics.Stopwatch clock)
+        {
+            return clock.Elapsed.TotalSeconds.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s";
+        }
+
+        /// <summary>Tests at the root and in folders, a test being a leaf even though it holds results.</summary>
+        private static List<int> FindTest(SavedItemCollection items, string name, List<int> at, out int matches)
+        {
+            matches = 0;
+            List<int> found = null;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    List<int> here = new List<int>(at) { i };
+
+                    if (item is ClashTest)
+                    {
+                        if (string.Equals(item.DisplayName, name, StringComparison.Ordinal))
+                        {
+                            matches++;
+                            found = here;
+                        }
+
+                        continue;
+                    }
+
+                    GroupItem folder = item as GroupItem;
+
+                    if (folder != null)
+                    {
+                        int below;
+                        List<int> under = FindTest(folder.Children, name, here, out below);
+                        matches += below;
+
+                        if (under != null)
+                        {
+                            found = under;
+                        }
+                    }
+                }
+            }
+
+            return found;
+        }
+
+        /// <summary>A fresh handle by address, each level read from the collection again.</summary>
+        private static ClashTest ResolveTest(DocumentClashTests clashTests, List<int> address)
+        {
+            SavedItemCollection children = clashTests.Tests;
+
+            for (int level = 0; level < address.Count; level++)
+            {
+                int index = address[level];
+
+                if (children == null || index < 0 || index >= children.Count)
+                {
+                    return null;
+                }
+
+                SavedItem item = children[index];
+
+                if (level + 1 == address.Count)
+                {
+                    return item as ClashTest;
+                }
+
+                GroupItem folder = item as GroupItem;
+                children = folder == null ? null : folder.Children;
+            }
+
+            return null;
+        }
+
+        private void SayTest(Document document, ClashTest test, string label)
+        {
+            string rules;
+
+            try
+            {
+                rules = test.IgnoreRules.Count.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+            catch (Exception error)
+            {
+                rules = "UNKNOWN, " + error.GetType().Name;
+            }
+
+            Say(label + ": \"" + test.DisplayName + "\"");
+            Say("   type " + test.TestType + ", tolerance " + test.Tolerance.ToString("R", System.Globalization.CultureInfo.InvariantCulture)
+                + ", merge composites " + test.MergeComposites + ", status " + test.Status
+                + ", last run " + (test.LastRun.HasValue ? "set" : "never") + ", ignore rules " + rules
+                + ", simulation " + test.SimulationType);
+
+            using (ClashSelection a = test.SelectionA)
+            {
+                SaySide(document, a, "   side A");
+            }
+
+            using (ClashSelection b = test.SelectionB)
+            {
+                SaySide(document, b, "   side B");
+            }
+        }
+
+        private void SaySide(Document document, ClashSelection side, string label)
+        {
+            List<string> names = new List<string>();
+            int items = -1;
+            bool explicitItems;
+
+            using (Selection selection = side.Selection)
+            {
+                explicitItems = selection.HasExplicitSelection;
+                SelectionSourceCollection sources = selection.SelectionSources;
+
+                for (int i = 0; i < sources.Count; i++)
+                {
+                    try
+                    {
+                        using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[i]))
+                        {
+                            names.Add(pointed == null ? "a source that resolves to nothing" : "\"" + pointed.DisplayName + "\"");
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        names.Add("a source that threw " + error.GetType().Name);
+                    }
+                }
+
+                try
+                {
+                    using (ModelItemCollection got = selection.GetSelectedItems(document))
+                    {
+                        items = got.Count;
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say(label + " GetSelectedItems threw " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+
+            Say(label + ": sets " + (names.Count == 0 ? "none" : string.Join(", ", names.ToArray()))
+                + ", explicit items " + explicitItems + ", items selected " + items
+                + ", self intersect " + side.SelfIntersect + ", primitive types " + side.PrimitiveTypes);
+        }
+
+        private static PairsFound ReadPairs(Document document, SavedItemCollection children)
+        {
+            PairsFound found = new PairsFound();
+            ReadPairsUnder(document, children, found);
+            return found;
+        }
+
+        private static void ReadPairsUnder(Document document, SavedItemCollection children, PairsFound found)
+        {
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem item = children[i])
+                {
+                    ClashResultGroup group = item as ClashResultGroup;
+
+                    if (group != null)
+                    {
+                        found.Groups++;
+                        ReadPairsUnder(document, group.Children, found);
+                        continue;
+                    }
+
+                    ClashResult result = item as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    found.Leaves++;
+                    string status = result.Status.ToString();
+                    int had;
+                    found.ByStatus.TryGetValue(status, out had);
+                    found.ByStatus[status] = had + 1;
+
+                    string first = ItemPath(document, result.Item1);
+                    string second = ItemPath(document, result.Item2);
+
+                    if (first == null || second == null)
+                    {
+                        found.NullItems++;
+                        continue;
+                    }
+
+                    if (result.Status == ClashResultStatus.Resolved)
+                    {
+                        continue;
+                    }
+
+                    string key = string.CompareOrdinal(first, second) <= 0 ? first + " | " + second : second + " | " + first;
+
+                    if (found.Open.ContainsKey(key))
+                    {
+                        found.Duplicates++;
+                        continue;
+                    }
+
+                    found.Open[key] = first + " | " + second;
+                    found.Distance[key] = result.Distance;
+                }
+            }
+        }
+
+        private static string ItemPath(Document document, ModelItem item)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+            using (item)
+            {
+                return string.Join(".", Strings(PathOf(document, item)));
+            }
+        }
+
+        private void SayPairs(PairsFound found, string label)
+        {
+            List<string> statuses = new List<string>();
+
+            foreach (KeyValuePair<string, int> pair in found.ByStatus)
+            {
+                statuses.Add(pair.Key + " " + pair.Value);
+            }
+
+            statuses.Sort(StringComparer.Ordinal);
+            Say(label + ": results " + found.Leaves + ", groups " + found.Groups
+                + ", by status " + (statuses.Count == 0 ? "none" : string.Join(", ", statuses.ToArray()))
+                + ", not Resolved " + found.Open.Count + ", an item that did not read " + found.NullItems
+                + ", a pair met twice " + found.Duplicates);
+
+            List<string> keys = new List<string>(found.Open.Keys);
+            keys.Sort(StringComparer.Ordinal);
+
+            foreach (string key in keys)
+            {
+                Say("      " + found.Open[key] + "   distance " + found.Distance[key].ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+            }
+        }
+
+        /// <summary>True when both hold the same unordered pairs. Says the pairs in one only, which way round each common pair is held, and the largest distance difference.</summary>
+        private bool ComparePairs(string leftLabel, PairsFound left, string rightLabel, PairsFound right)
+        {
+            List<string> onlyLeft = new List<string>();
+            List<string> onlyRight = new List<string>();
+            int same = 0;
+            int reversed = 0;
+            int common = 0;
+            double largest = 0;
+
+            foreach (string key in left.Open.Keys)
+            {
+                if (!right.Open.ContainsKey(key))
+                {
+                    onlyLeft.Add(key);
+                    continue;
+                }
+
+                common++;
+
+                if (left.Open[key] == right.Open[key])
+                {
+                    same++;
+                }
+                else
+                {
+                    reversed++;
+                }
+
+                largest = Math.Max(largest, Math.Abs(left.Distance[key] - right.Distance[key]));
+            }
+
+            foreach (string key in right.Open.Keys)
+            {
+                if (!left.Open.ContainsKey(key))
+                {
+                    onlyRight.Add(key);
+                }
+            }
+
+            onlyLeft.Sort(StringComparer.Ordinal);
+            onlyRight.Sort(StringComparer.Ordinal);
+            Say("COMPARE " + leftLabel + " " + left.Open.Count + " against " + rightLabel + " " + right.Open.Count
+                + ": in both " + common + ", in " + leftLabel + " only " + onlyLeft.Count + ", in " + rightLabel + " only " + onlyRight.Count);
+            Say("   of the " + common + " in both, the same item first " + same + ", the items the other way round " + reversed
+                + ", the largest difference in distance " + largest.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+
+            foreach (string key in onlyLeft)
+            {
+                Say("   only in " + leftLabel + ": " + key);
+            }
+
+            foreach (string key in onlyRight)
+            {
+                Say("   only in " + rightLabel + ": " + key);
+            }
+
+            return onlyLeft.Count == 0 && onlyRight.Count == 0;
         }
     }
 }

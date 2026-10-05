@@ -5780,3 +5780,115 @@ STILL UNKNOWN, because it needs Navisworks running and this read ran none of it:
 `savedViewpoint.Redlines.Size()` on a tool view and again after Bader draws one redline on
 it, and only after P20 may the mark's judge read redlines. Until then the judge says
 redlines are UNKNOWN.
+
+## 5z-k. DOES A TEST WITH ITS SIDES SWAPPED FIND THE SAME CLASHES, MEASURED 2026-10-05
+
+P1 of Q114, the views by team design, part 3, and the first of its probes that runs inside
+Navisworks. F132's mirror rule keeps one of two tests that ask the same pair of sets the
+other way round, on the belief that a swap finds the same clashes. Nothing had measured it.
+The question: does the swap of BLD-ST-Framing-vs-BLD-ST-Columns, created and run beside it,
+find the same 25 clashes over the same unordered pairs of item index paths? A yes means the
+rule stands as written. A no means both counts go in the MIRROR line and Bader sees it before
+F132's add-in commit.
+
+HOW. `tools\probes\ViewpointProbe\probe-mirror-swap.ps1` starts one Navisworks through the
+automation API under the loop's guard, tools\loop\nw-guard.ps1 dot-sourced: the refusal while
+any Roamer runs, read before anything and again before the constructor, the settings backup,
+the adoption by AdoptStart's four conditions, Dispose, the one close through the held handle
+when needed, and the put back by SettingsPutBack. Get-Process Roamer read 0 before each run.
+It copies the C02 NWF of run set 04, `runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`,
+41,317,271 bytes, sha256 0944C100, into a new folder under
+`%LOCALAPPDATA%\NwcFederatorLoop\probes`, loads `ViewpointProbe.dll` with AddPluginAssembly and
+runs its new mode `mirror` with one ExecuteAddInPlugin. The mode opens the copy, finds the test
+by name, adds a test whose side A is the original's side B and whose side B is the original's
+side A by ClashSelection.CopyFrom, clears its results, runs it with TestsRunTest, runs the
+original again, and compares the results that are not Resolved as unordered pairs of the index
+paths of Item1 and Item2, read with DocumentModels.CreateIndexPath. Run from Windows PowerShell
+5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-mirror-swap.ps1 -Out tools\probes\ViewpointProbe\p1-mirror-swap-result-20261005.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf -TestName BLD-ST-Framing-vs-BLD-ST-Columns
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+
+TWO RUNS, BOTH KEPT, the machine name on line 1 of each masked by hand as `[machine]` and nothing
+else changed.
+
+- RUN 1 at 12:53, `p1-mirror-swap-run1-result-20261005.txt`, Navisworks pid 39216. The swap was
+  made with the original's CreateCopy, and TestsAddCopy threw `ArgumentException: Contains an item
+  whose GUID is already present in the group`, lines 95 and 96. So a copy made by CreateCopy keeps
+  the original's Guid and cannot be added beside it. Nothing of P1 was measured. ExecuteAddInPlugin
+  returned 1, line 48, Dispose returned and pid 39216 was gone 6.9 s later, not forced, lines 104
+  and 105
+- RUN 2 at 12:56, `p1-mirror-swap-result-20261005.txt`, Navisworks pid 54784, adopted on all four
+  conditions, line 37. The swap is a new ClashTest built the way ClashRunner.Create builds one, with
+  the original's type, tolerance, merge composites and simulation type. The original carries no
+  ignore rules, line 66, so a new test misses none. ExecuteAddInPlugin returned 0 after 26.12 s,
+  line 48. Dispose returned and pid 54784 was gone 8.0 s later, not forced, lines 175 and 176
+
+The two sides, plugin lines in run 2's result, lines 66 to 68 and 97 to 99:
+
+```
+original  type HardConservative, tolerance 0.0820209974 ft, merge composites True, ignore rules 0
+          side A  "BLD-ST-Framing"  27 items selected
+          side B  "BLD-ST-Columns"   8 items selected
+swap      the same settings, side A "BLD-ST-Columns" 8 items, side B "BLD-ST-Framing" 27 items
+```
+
+**THE ANSWER IS NO.** Lines 69, 104, 133 and 159 to 169 of run 2's result:
+
+```
+the original as the NWF holds it      25 results, New 25
+the swap after its run                27 results, New 27
+the original run again beside it      25 results, Active 25
+the swap against the original         in both 25, in the swap only 2, in the original only 0
+the original run again against itself in both 25, the same 25 pairs, largest distance change 3.7E-09
+only in the swap   3.1.0.0.0.0.0 | 3.4.1.0.0.3.0   distance -1.3940146831272822
+only in the swap   3.1.0.0.0.3.0 | 3.3.1.0.0.4.0   distance -1.3940188019622104
+```
+
+1. The swap finds every one of the original's 25 pairs and 2 more, so it is not a mirror of the
+   original on this test. The original run again finds exactly the 25 it held, so the 2 come from
+   the swap and not from a run that differs from the one before
+2. On every one of the 25 pairs in both, Item1 is the item of side A, so the swap holds each
+   pair the other way round, line 160
+3. The distance of the same pair differs between the two, by up to 1.5331472298816213 ft, line 160.
+   The swap's 27 distances are lines 105 to 131, the original's 25 lines 70 to 94. Run again, the
+   original's distances moved by at most 3.7E-09 ft, line 168
+4. Each of the 2 extra pairs has a distance of about -1.394 ft, far past the tolerance of 0.082 ft,
+   so neither sits on the tolerance's edge
+5. TryOpenFile of the copy took 4.667 s, TestsRunTest 6.161 s on the swap and 6.454 s on the
+   original, and SaveFile of the copy with the swap 8.729 s, 41,319,419 bytes read back, lines 55,
+   102, 132 and 171
+
+**BADER'S THINGS.** The NWF the copy was made from read sha256 0944C100 at the start and at the end
+of both runs. Run 1 put back 36 registry values and run 2 39, each read again with 0 still
+differing, and each put back InfoCenter.log and LastSession.xml reading their backup's sha256. The
+tool's own logs folder had nothing added or changed. Run 1 added no AutoSave file. Run 2's
+Navisworks added two to his AutoSave folder, `1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave1.nwf` and
+`.Autosave2.nwf`, lines 264 and 265, which the probe compares and does not write. After the probe,
+by the rule of run.ps1's PutBackAutoSave, Q86, with no Roamer running and each reading the sha256
+the compare read, the prober removed both and read each back gone, and the folder lists 199 files
+again, the count the backup listed. That removal is in no result file.
+
+**P1'S COPY FOR P2.** `%LOCALAPPDATA%\NwcFederatorLoop\probes\mirror-swap-20261005-125658\p1-copy-with-swap.nwf`
+holds the 528 tests of the baseline and the swap last at the root, index 528, named
+`BLD-ST-Framing-vs-BLD-ST-Columns P1 swap`, with its 27 New results. The original's 25 results
+there read Active, not New, because it was run again.
+
+**STILL UNKNOWN.**
+
+- why the swap finds 2 more. Whether Hard Conservative is not symmetric by design, or what in
+  these four items makes the difference, is not read here
+- whether any other test swaps the same way. One test of one type in one NWF was measured
+- whether the Clash Detective panel shows 27 for the swap. The panel was not read
+- whether the swap's results read the same after a save and a reopen. The copy was saved and not
+  reopened
+- whether a test made by the XML import and swapped behaves as this new ClashTest did. The original
+  came from the import, the swap from new ClashTest
+- which way round a person's mirror test in a real NWF was written, and so which of the two the
+  rule would remove
+
+**WHAT THIS DECIDES.** By the row of P1, both counts go in the MIRROR line, and Bader sees before
+F132's add-in commit that on BLD-ST-Framing-vs-BLD-ST-Columns the swap found 27 where the original
+found 25, every one of the 25 among them. A test and its swap cannot be taken to find the same
+clashes, so removing either one can lose clashes.
