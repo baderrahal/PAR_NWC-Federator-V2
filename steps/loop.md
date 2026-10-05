@@ -511,7 +511,8 @@ OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its ch
   new views written before old ones are removed, whose cost is UNKNOWN until probe P18 and which is
   asked if that cost is large, and one, a comment that does not survive a save, waits for P9
 - Q124, written on 2026-10-05: the baseline of 1A04PK takes a day or more, so whether to let it
-  run, the loop going on with A, let it run, until he answers
+  run, the loop going on with A, let it run, until he answers. Its note of 03:20: under A the
+  ceiling of Q84 closes the C04 run at about 09:18 if it has not ended
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:

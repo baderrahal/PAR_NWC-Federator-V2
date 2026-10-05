@@ -1625,6 +1625,11 @@ row and no SKIPPED group, so the reason rows add up to less than the total.
   NoTolerance (ClashTestPlan.cs:447). Not reached in set 03: no NoTolerance skip, and every
   group's reason rows added up to its skipped total. T1-S25 also sits on FR-031 as a side note,
   both placements right.
+- Confirmed again on 2026-10-05 by F132's Core half: its test over every skip reason failed on
+  NoTolerance alone, turn5\f132-finding-notolerance.txt, against a stub run that cannot be repeated
+  from what is kept. F132 took that test out of its tree rather than fix this item, which stays
+  F119's in wave 3b, and F132's branch adds Mirror to the same list, so the two meet at
+  ClashRunOutcome.cs lines 479 to 492
 
 ### FR-053 tolerance-set-on-count-counts-tests-not-edited
 
