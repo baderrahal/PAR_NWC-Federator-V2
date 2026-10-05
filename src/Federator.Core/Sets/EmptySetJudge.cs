@@ -22,10 +22,24 @@ namespace Federator.Core.Sets
     public sealed class EmptySetJudge
     {
         internal EmptySetJudge(IList<string> worksets, string runProject)
+            : this(worksets, runProject, null)
+        {
+        }
+
+        internal EmptySetJudge(IList<string> worksets, string runProject, IList<string> groupWorksets)
         {
             Worksets = new ReadOnlyCollection<string>(new List<string>(worksets ?? new List<string>()));
             RunProject = runProject;
+            GroupWorksets = new ReadOnlyCollection<string>(new List<string>(groupWorksets ?? new List<string>()));
         }
+
+        /// <summary>
+        /// Every workset this group's models carry, as this run's EXPORT CHECK read them, FR-027.
+        /// A value among them IS carried, measured now and whatever project the lists are of. A
+        /// value not among them says nothing about the project, so it is never a reason on its
+        /// own to call a value carried by no model.
+        /// </summary>
+        public ReadOnlyCollection<string> GroupWorksets { get; private set; }
 
         /// <summary>
         /// The workset spellings the picked file's corrections were chosen from,
@@ -52,7 +66,39 @@ namespace Federator.Core.Sets
                 throw new ArgumentNullException("plan");
             }
 
-            return new EmptySetJudge(plan.Worksets, ProjectOf(models, names));
+            return new EmptySetJudge(plan.Worksets, ProjectOf(models, names), WorksetsOf(models));
+        }
+
+        /// <summary>
+        /// Every workset those models carry, each once, in the order first seen, FR-027. A model
+        /// whose walk stopped part way gives the ones it saw, which it does carry.
+        /// </summary>
+        internal static IList<string> WorksetsOf(IList<ModelExport> models)
+        {
+            List<string> carried = new List<string>();
+
+            if (models == null)
+            {
+                return carried;
+            }
+
+            foreach (ModelExport model in models)
+            {
+                if (model == null)
+                {
+                    continue;
+                }
+
+                foreach (string workset in model.Worksets)
+                {
+                    if (!string.IsNullOrEmpty(workset) && !carried.Contains(workset))
+                    {
+                        carried.Add(workset);
+                    }
+                }
+            }
+
+            return carried;
         }
 
         /// <summary>
@@ -105,19 +151,36 @@ namespace Federator.Core.Sets
                 }
 
                 string why = WhyNotThisProjects(RevitCategories.Project);
-                return why == null ? Known.Complete(RevitCategories.All()) : Known.Unknown(why);
+                return why == null ? Known.Complete(RevitCategories.All()) : Known.Unknown(why, new List<string>());
             }
 
             if (string.Equals(propertyInternalName, EmptySets.WorksetProperty, StringComparison.Ordinal))
             {
-                // FR-012. A list not read is said, never read as one holding no name.
+                // FR-012. A list not read is said, never read as one holding no name. What this
+                // group's models carry is carried whatever the lists say, FR-027.
                 if (!RevitWorksets.ResourceFound)
                 {
-                    return Known.Unknown("the workset list inside Federator.Core.dll could not be read");
+                    return Known.Unknown("the workset list inside Federator.Core.dll could not be read", GroupWorksets);
                 }
 
                 string why = WhyNotThisProjects(RevitWorksets.Project);
-                return why == null ? Known.Complete(Worksets) : Known.Unknown(why);
+
+                if (why != null)
+                {
+                    return Known.Unknown(why, GroupWorksets);
+                }
+
+                List<string> carried = new List<string>(Worksets);
+
+                foreach (string workset in GroupWorksets)
+                {
+                    if (!carried.Contains(workset))
+                    {
+                        carried.Add(workset);
+                    }
+                }
+
+                return Known.Complete(carried);
             }
 
             return null;
@@ -171,9 +234,10 @@ namespace Federator.Core.Sets
                 return new Known(carried, true, null);
             }
 
-            internal static Known Unknown(string whyNot)
+            /// <summary>Knowledge that is not this project's: only what is known carried, and why the rest is not known.</summary>
+            internal static Known Unknown(string whyNot, IList<string> carried)
             {
-                return new Known(new List<string>(), false, whyNot);
+                return new Known(carried, false, whyNot);
             }
         }
     }

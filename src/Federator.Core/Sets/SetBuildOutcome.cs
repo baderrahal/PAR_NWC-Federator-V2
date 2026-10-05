@@ -222,6 +222,23 @@ namespace Federator.Core.Sets
             return result;
         }
 
+        /// <summary>
+        /// A set this build created from that plan, with what it found, judged by that judge
+        /// where it found nothing, FR-027. Only a set already in the NWF was judged, so no EMPTY
+        /// SETS block was written on a first run, the run that creates every set.
+        /// </summary>
+        public SetResult AddCreated(PlannedSet planned, int itemCount, EmptySetJudge judge)
+        {
+            if (planned == null)
+            {
+                throw new ArgumentNullException("planned");
+            }
+
+            SetResult result = AddCreated(planned.Path, planned.Name, planned.ConditionCount, itemCount, planned.Describe());
+            JudgeIfEmpty(result, ReadCondition.Of(planned), judge);
+            return result;
+        }
+
         public SetResult AddFailed(string path, string name, int conditionCount, string error)
         {
             SetResult result = new SetResult(

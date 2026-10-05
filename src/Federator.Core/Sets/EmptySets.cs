@@ -59,7 +59,11 @@ namespace Federator.Core.Sets
                     return Path + "   asks for \"" + Asked + "\" and NO MODEL IN THIS PROJECT CARRIES IT"
                         + (Nearest.Length == 0
                             ? ", and nothing the models carry is close to it"
-                            : ". The nearest the models carry is \"" + Nearest + "\", which is a suggestion and not a correction");
+                            : string.Equals(Nearest, Asked, StringComparison.OrdinalIgnoreCase)
+                                // FR-027. Letter case alone is the whole of what is wrong, Q68.
+                                ? ". The nearest the models carry is \"" + Nearest + "\", which differs from it by letter case"
+                                    + " alone, and the match is case sensitive. It is a suggestion and not a correction"
+                                : ". The nearest the models carry is \"" + Nearest + "\", which is a suggestion and not a correction");
 
                 case EmptyReason.TheValueIsThereAnyway:
                     // WHAT THIS READER ACTUALLY KNOWS. The measured lists are the whole

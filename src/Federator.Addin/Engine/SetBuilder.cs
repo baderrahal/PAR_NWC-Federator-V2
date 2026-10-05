@@ -863,8 +863,8 @@ namespace Federator.Addin.Engine
                             items = Resolve(document, created, search);
                         }
 
-                        outcome.AddCreated(
-                            planned.Path, planned.Name, planned.ConditionCount, items, planned.Describe());
+                        // Judged where it found nothing, as a set already there is, FR-027.
+                        outcome.AddCreated(planned, items, judge);
                         log.Line("SET      " + outcome.Results[outcome.Results.Count - 1].Line());
                     }
                 }

@@ -238,6 +238,69 @@ namespace Federator.Core.Tests.Sets
                 Is.EqualTo(EmptyReason.CannotTell));
         }
 
+        // ---------- the worksets this group's models carry, FR-027 ----------
+
+        /// <summary>
+        /// A WORKSET THIS GROUP'S MODELS CARRY IS CARRIED, FR-027, measured by this run's own
+        /// EXPORT CHECK. With no list beside the picked file the names inside Core are the C02
+        /// census, and 1B06BC, whose models carry ME-DUCTWORK, set 03 log line 605, would be
+        /// told no model in this project carries it.
+        /// </summary>
+        [Test]
+        public void AWorksetThisGroupsModelsCarryIsCarried()
+        {
+            List<ModelExport> models = new List<ModelExport>
+            {
+                new ModelExport("1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc", "ME", 10, 10, 10, new List<string> { "ME-DUCTWORK", "ME-EQUIPMENT" })
+            };
+
+            EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+
+            Assert.That(group.GroupWorksets, Is.EqualTo(new[] { "ME-DUCTWORK", "ME-EQUIPMENT" }));
+            Assert.That(
+                EmptySets.Why("a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") }, group).Reason,
+                Is.EqualTo(EmptyReason.TheValueIsThereAnyway));
+        }
+
+        /// <summary>And for a group of another project, a workset its own models carry is still carried.</summary>
+        [Test]
+        public void AWorksetAGroupOfAnotherProjectCarriesIsCarried()
+        {
+            List<ModelExport> models = new List<ModelExport>
+            {
+                new ModelExport("2207-PAR-0001AA-ZZZ-ME-MOD-000001.nwc", "ME", 10, 10, 10, new List<string> { "ME-DUCTWORK" })
+            };
+
+            EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+
+            Assert.That(
+                EmptySets.Why("a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") }, group).Reason,
+                Is.EqualTo(EmptyReason.TheValueIsThereAnyway));
+            Assert.That(
+                EmptySets.Why("a/BLD-ME-Pipes", new List<ReadCondition> { Workset("ME-PIPING") }, group).Reason,
+                Is.EqualTo(EmptyReason.CannotTell), "a workset this group lacks says nothing about another project");
+        }
+
+        /// <summary>
+        /// A NEAREST VALUE DIFFERING ONLY BY LETTER CASE SAYS SO, FR-027, because the match is
+        /// case sensitive and that is the whole of what is wrong with such a set, Q68.
+        /// </summary>
+        [Test]
+        public void ANearestValueDifferingByCaseAloneSaysSo()
+        {
+            EmptySet why = Why("a/BLD-AR-Walls", new List<ReadCondition> { Workset("AR-Exterior") });
+
+            Assert.That(why.Reason, Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
+            Assert.That(why.Nearest, Is.EqualTo("AR-EXTERIOR"));
+            Assert.That(why.Line(), Does.EndWith(
+                "The nearest the models carry is \"AR-EXTERIOR\", which differs from it by letter case alone, and the match is case sensitive. It is a suggestion and not a correction"));
+        }
+
+        private static SetBuildPlan Plan()
+        {
+            return SetBuildPlan.From(new List<SelectionSetDefinition>());
+        }
+
         // ---------- the lists are one project's, FR-011 ----------
 
         /// <summary>

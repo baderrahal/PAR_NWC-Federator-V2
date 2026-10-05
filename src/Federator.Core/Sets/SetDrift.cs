@@ -57,6 +57,32 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
+        /// The conditions a planned set asks, in the shape a set read off the document has, so a
+        /// set this run CREATED is judged by the same judge as one already there, FR-027.
+        /// </summary>
+        public static IList<ReadCondition> Of(PlannedSet planned)
+        {
+            List<ReadCondition> read = new List<ReadCondition>();
+
+            if (planned == null)
+            {
+                return read;
+            }
+
+            foreach (PlannedCondition condition in planned.Conditions)
+            {
+                read.Add(new ReadCondition(
+                    condition.HasCategory ? condition.CategoryInternalName : string.Empty,
+                    condition.PropertyInternalName,
+                    condition.TestWord,
+                    condition.Value,
+                    condition.Flags));
+            }
+
+            return read;
+        }
+
+        /// <summary>
         /// The keys of a set's conditions in order, or NONE where a value of one would not read,
         /// FR-017, so a set read in part pairs with nothing, as a set asking nothing never does.
         /// </summary>

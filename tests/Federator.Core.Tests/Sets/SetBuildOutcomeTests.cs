@@ -441,6 +441,67 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Empty[0].Path, Is.EqualTo("a/One"));
         }
 
+        // ---------- a created set judged, FR-027 ----------
+
+        private static PlannedSet PlannedAsking(string name, string category)
+        {
+            return new PlannedSet(
+                name,
+                "lcop_selection_set_tree/Electrical/" + name,
+                new List<string> { "Electrical" },
+                new List<PlannedCondition>
+                {
+                    new PlannedCondition(
+                        ConditionTest.Equals, 0, "LcRevitData_Element", "Element", EmptySets.CategoryProperty, "Category", "wstring", category)
+                });
+        }
+
+        /// <summary>
+        /// A CREATED SET THAT FOUND NOTHING IS JUDGED, FR-027. Only a set already in the NWF was
+        /// judged, so no EMPTY SETS block was ever written on a first run, the run that creates
+        /// every set, and set 03's 22 groups had sets at zero in every one. It is judged on what
+        /// the file asks, read into Core's condition shape, and a created set that found items is
+        /// not judged.
+        /// </summary>
+        [Test]
+        public void ACreatedSetAtZeroLandsInEmptyWithAReason()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+
+            SetResult zero = outcome.AddCreated(PlannedAsking("BLD-EL-Nurse Call", "Nurse Call Devices"), 0, OnThisProject());
+            outcome.AddCreated(PlannedAsking("BLD-EL-Lighting Fixtures", "Lighting Fixtures"), 49, OnThisProject());
+
+            Assert.That(zero.IsZero, Is.True);
+            Assert.That(zero.Line(), Does.Contain("asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals \"Nurse Call Devices\""));
+            Assert.That(outcome.Empty.Count, Is.EqualTo(1));
+            Assert.That(outcome.Empty[0].Path, Is.EqualTo("lcop_selection_set_tree/Electrical/BLD-EL-Nurse Call"));
+            Assert.That(outcome.Empty[0].Reason, Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
+            Assert.That(outcome.Empty[0].Asked, Is.EqualTo("Nurse Call Devices"));
+        }
+
+        /// <summary>The planned conditions read into Core's condition shape, flags and test kept, FR-027.</summary>
+        [Test]
+        public void APlannedSetReadsIntoTheConditionsTheJudgeReads()
+        {
+            PlannedSet planned = new PlannedSet(
+                "BLD-EL-Devices",
+                "a/BLD-EL-Devices",
+                new List<string>(),
+                new List<PlannedCondition>
+                {
+                    new PlannedCondition(ConditionTest.Contains, 0, "LcRevitData_Element", "Element", EmptySets.CategoryProperty, "Category", "wstring", "Devices"),
+                    new PlannedCondition(ConditionTest.Equals, PlannedCondition.NegateFlag, null, null, "LcOaNodeSourceFile", "Source File", "wstring", "-AR-")
+                });
+
+            IList<ReadCondition> read = ReadCondition.Of(planned);
+
+            Assert.That(read.Count, Is.EqualTo(2));
+            Assert.That(read[0].Key(), Is.EqualTo(planned.Conditions[0].Key()));
+            Assert.That(read[1].Key(), Is.EqualTo(planned.Conditions[1].Key()));
+            Assert.That(read[1].CategoryInternalName, Is.Empty);
+            Assert.That(read[1].Flags, Is.EqualTo(PlannedCondition.NegateFlag));
+        }
+
         // ---------- the one summary line, F34 ----------
 
         [Test]
