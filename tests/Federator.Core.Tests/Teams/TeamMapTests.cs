@@ -158,6 +158,48 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// The breaker's finding on attempt 1. A code holding a tab, a no-break space, a thin
+        /// space, a zero width space or a byte order mark never equals the code read off a file
+        /// name, so it made a team of its own while the map read as whole and the TEAMS line
+        /// looked normal. Each is refused with its line, the character named the way
+        /// InvisibleDifference names it. A team name holding one of the characters a person cannot
+        /// see is refused too, on a team line and on a size-folder line, because two names that
+        /// look the same would be two teams.
+        /// </summary>
+        [Test]
+        public void ACharacterNobodyCanSeeInACodeOrATeamUnreadsTheMapAndIsNamed()
+        {
+            const string HasNone = ", and a code read off a file name has none";
+
+            string[][] faults =
+            {
+                new[] { "team: Electrical | EL | EV\t\n", "line 1, \"team: Electrical | EL | EV\t\", holds the code \"EV\t\", which has TAB (U+0009) in it" + HasNone },
+                new[] { "team: Electrical | EL | E\u00A0V\n", "line 1, \"team: Electrical | EL | E\u00A0V\", holds the code \"E\u00A0V\", which has NON-BREAKING SPACE (U+00A0) in it" + HasNone },
+                new[] { "team: Electrical | EL | EV\u2009\n", "line 1, \"team: Electrical | EL | EV\u2009\", holds the code \"EV\u2009\", which has \"\u2009\" (U+2009) in it" + HasNone },
+                new[] { "team: Electrical | EL | EV\u200B\n", "line 1, \"team: Electrical | EL | EV\u200B\", holds the code \"EV\u200B\", which has ZERO WIDTH SPACE (U+200B) in it" + HasNone },
+                new[] { "team: Electrical | \uFEFFEL\n", "line 1, \"team: Electrical | \uFEFFEL\", holds the code \"\uFEFFEL\", which has ZERO WIDTH NO-BREAK SPACE (U+FEFF) in it" + HasNone },
+                new[] { "team: Elec\u00A0trical | EL\n", "line 1, \"team: Elec\u00A0trical | EL\", names the team \"Elec\u00A0trical\", which has NON-BREAKING SPACE (U+00A0) in it" },
+                new[] { "team: Electrical\u200B | EL\n", "line 1, \"team: Electrical\u200B | EL\", names the team \"Electrical\u200B\", which has ZERO WIDTH SPACE (U+200B) in it" },
+                new[] { "team: Electrical | EL\nsize-folder: Elec\u00A0trical\n", "line 2, \"size-folder: Elec\u00A0trical\", names the team \"Elec\u00A0trical\", which has NON-BREAKING SPACE (U+00A0) in it" },
+                new[] { "team: Electrical | EL\nsize-folder: Electrical\t\n", "line 2, \"size-folder: Electrical\t\", names the team \"Electrical\t\" with a space at its start or end" }
+            };
+
+            foreach (string[] fault in faults)
+            {
+                TeamMap map = MapOf(fault[0]);
+
+                Assert.That(map.Unread, Is.EqualTo(fault[1]), fault[0]);
+                Assert.That(map.Teams.Count, Is.EqualTo(0), fault[0]);
+                Assert.That(map.TeamOf("EV"), Is.EqualTo("EV"), fault[0]);
+            }
+
+            TeamMap spaced = MapOf("team: Fire Protection | FP\nsize-folder: Fire Protection\n");
+
+            Assert.That(spaced.Unread, Is.Null, "an ordinary space inside a team name is a team name");
+            Assert.That(spaced.TeamOf("FP"), Is.EqualTo("Fire Protection"));
+        }
+
         [Test]
         public void ASizeFolderLineBeforeItsTeamLineIsRead()
         {
