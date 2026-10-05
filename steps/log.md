@@ -304,7 +304,7 @@ Programs and Navisworks:
   taken in at 8a32795, both sides kept. steps\log.md and steps\01_next.md conflicted: this entry
   stays on top with main's entries after it in main's order, and F112 takes order line 40 and
   F116 41, F112's section after F125's and F116's last. origin/main had already moved on to
-  ce6eedb at the fetch of 02:04:12, before the merge at 02:07:11 and the push of 1ee0d93 at
+  ce6eedb at the fetch of 02:04:12, line 45 of its reflog in f116e-main-order.txt, before the merge at 02:07:11 and the push of 1ee0d93 at
   02:25:46, the reflogs in turn5\f116e-main-order.txt, so 8a32795 took in ddb059b and not the
   head of main. ce6eedb's changes were under steps\ alone, and a trial merge of it into 1ee0d93
   read after the push was clean, turn5\f116d-main-after-push.txt
@@ -361,7 +361,7 @@ Programs and Navisworks:
   the tool does read UTF-32 with its mark, turn5\f116e-reader-measure.txt, which is not a test
 - the breaker's point on a UTF-8 list with its byte order mark, read here, not fixed. A
   StreamReader built as MatrixCorrectionList.cs line 136 builds it, under this machine's .NET
-  Framework 4.8 through powershell, throws on a 0xA0 byte with no mark and reads it as U+FFFD
+  Framework 4.8.1, mscorlib 4.8.9345.0, through powershell, throws on a 0xA0 byte with no mark and reads it as U+FFFD
   with the UTF-8 mark, turn5\f116e-reader-measure.txt. So core.md now says bytes that are not
   UTF-8 are refused in a list with no byte order mark, and the case is under Known bugs
 - the same-sets read of the pass before, run again on the Release Core of a40ff59 by
