@@ -1,21 +1,34 @@
 # log
 
 Newest entry at the top.
-## 2026-10-04 The loop, turn 5, F126 the window driver unticks a named tick box, built and read by a reviewer and a breaker with nothing blocking under Q93, its harness run in the first gap on 2026-10-05, 52 passed and 0 failed
+## 2026-10-05 The loop, turn 5, F126 the window driver unticks a named tick box, built on 2026-10-04 and read by a reviewer and a breaker with nothing blocking under Q93, its harness run in the first gap on 2026-10-05, 52 passed and 0 failed
 
-Nothing under src or tests changed: git diff --name-only 1ae6771 66dfdf5 -- src tests prints
-nothing, and so does the same from main ddb059b to the merge 1e06b7e,
-turn5\f126-proof\diff-names.txt. Core tests 1756 passed, 0 failed, 0 skipped before, on main
-1ae6771 with F125 merged, core-tests-before.txt there, whose line 1 is the commit, and 1756
-passed, 0 failed, 0 skipped after the change, by hand, core-tests-after.txt, a file with no
-commit and no time in it, and by the pre-commit of each of the four commits, precommit-1.txt to
-precommit-4.txt. After main ddb059b, F112 in it, was merged in at 1e06b7e, 1865 passed, 0
-failed, 0 skipped by the pre-commit of the merge, precommit-claims-merge.txt, and by hand at
-1e06b7e, core-tests-claims.txt, whose line 1 is the commit. core-tests-before.txt line 12,
+F126's own commits changed nothing under src or tests: git diff --name-only 1ae6771 66dfdf5
+-- src tests prints nothing, and so does the same from main ddb059b to the merge 1e06b7e,
+turn5\f126-proof\diff-names.txt. Against main the branch changes six files under tools and none
+under src or tests: git diff --name-only 3ee01ab 16b5eb7 -- src tests tools lists
+tools\loop\README.md, tools\loop\StandIn\ToolWindow.cs, tools\loop\nw-guard.ps1,
+tools\loop\run.ps1, tools\probes\README.md and tools\probes\drive-window-run.ps1, exit 0, and
+git diff --name-only c101f6c 37ee68e -- src tests tools lists the same six. The 18 files under
+src and 7 under tests that git diff --name-only 1e06b7e 16b5eb7 -- src tests tools lists, exit
+0, came in with main 3ee01ab, F116 in it, at the merge 16b5eb7, since 16b5eb7 differs from
+3ee01ab under tools alone, turn5\f126-proof\diff-since-1e06b7e.txt. Core tests 1756 passed, 0
+failed, 0 skipped before, on main 1ae6771 with F125 merged, core-tests-before.txt there, whose
+line 1 is the commit, and 1756 passed, 0 failed, 0 skipped after the change, by hand,
+core-tests-after.txt, a file with no commit and no time in it, and by the pre-commit of each of
+the four commits, precommit-1.txt to precommit-4.txt. After main ddb059b, F112 in it, was merged
+in at 1e06b7e, 1865 passed, 0 failed, 0 skipped by the pre-commit of the merge,
+precommit-claims-merge.txt, and by hand at 1e06b7e, core-tests-claims.txt, whose line 1 is the
+commit. The pre-commit of the lead's records commit e712a11 read 1865 passed, 0 failed, 0
+skipped, precommit-ran.txt, and those of the merges of main 3ee01ab at 16b5eb7 and of main
+c101f6c at 37ee68e 1912 passed, 0 failed, 0 skipped each, F116's tests now in,
+precommit-merge-main2.txt and precommit-merge-main3.txt. core-tests-before.txt line 12,
 core-tests-after.txt line 2 and core-tests-claims.txt line 13 print one test,
 WriteTheCorrectedFile, as Skipped. It is the one [Explicit] test, MatrixCorrectionsTests.cs
 lines 559 and 560, run by hand only, and it is in none of the counts, whose summary lines read
-Skipped: 0. No Navisworks and no stand-in was started.
+Skipped: 0. No Navisworks was started. The stand-in was started by the lead's harness alone, on
+2026-10-05, 11 times in the pass on main's tools and 12 on the branch, still running 0 after
+each, prove-f126-before.txt line 175 and prove-f126-after.txt line 310.
 
 ### What was done
 
@@ -77,7 +90,8 @@ Skipped: 0. No Navisworks and no stand-in was started.
   parse reads the scripts of 66dfdf5
 - the proof written, turn5\f126-proof\prove-f126.ps1, 52 checks on the branch's tools, each way
   the untick can fail broken on its own and its line asserted to name the box, to run once on
-  main's tools at 1ae6771, exported into before-tree, and once on the branch. It has not run
+  main's tools at 1ae6771, exported into before-tree, and once on the branch. The lead ran both
+  on 2026-10-05, below
 - the wait. Get-Process Roamer read 1 at 23:21:37 and 23:39:19, then the waiter
   turn5\f126-proof\wait-and-prove.sh read it 19 times, about 5 minutes apart, 5 min 3 s or
   5 min 4 s between reads, from 23:51:20 to 01:22:18 on 2026-10-05, 90 min 58 s, every read 1,
@@ -87,8 +101,30 @@ Skipped: 0. No Navisworks and no stand-in was started.
   23:39:19 and 01:31:32, lines 2 and 23 there, gave a count and no pid, so the file does not
   show they were the same Roamer. This records pass read it at 02:14:59 and again before its
   commit, 1 each time, pid 32136 started at 21:17:06 on 2026-10-04, roamer-reads-claims.txt
-- so the harness did not run on 2026-10-04, no gap with Get-Process Roamer at 0 having come.
-  THE LEAD RAN IT on 2026-10-05 in the first gap, after the C04 baseline ended at 06:36: Get-Process Roamer read 0 at 06:53:29, the pass on main's tools in before-tree gave 8 passed and 41 failed, prove-f126-before.txt, the pass on the branch at f9834e4 gave 52 passed and 0 failed, prove-f126-after.txt, the stand-ins started 12 and still running 0, and Roamer read 0 at 06:58:40 and 06:58:45, roamer-reads-harness.txt, every file in turn5\f126-proof
+- so the harness did not run on 2026-10-04, no gap with Get-Process Roamer at 0 having come. THE
+  LEAD RAN IT on 2026-10-05 in the first gap, after the C04 baseline ended at 06:36. Get-Process
+  Roamer read 0 at 06:53:29, turn5\f126-proof\roamer-reads-harness.txt line 1. The pass on
+  main's tools at 1ae6771 in before-tree ran from 06:53:51 to 06:55:06 and gave 8 passed and 41
+  failed of 49 checks, prove-f126-before.txt line 177, the stand-in started 11 times and still
+  running 0, line 175. Main's tools take 49 checks where the branch takes 52 because their
+  run.ps1 has no DriverArguments, so the case driving the stand-in through it is one check
+  there, line 147, and four on the branch, prove-f126-after.txt lines 278 to 281. Four of the 8
+  passes, lines 16, 26, 114 and 124, are checks that nothing was pressed, which pass only
+  because main's driver fell over at parameter binding, exit 1, A parameter cannot be found that
+  matches parameter name 'Untick'. The other four are untick-none, which hands no -Untick, lines
+  70 to 72, and ParamRefusal's case that a run of item 1 with -Untick is not refused, line 150.
+  The pass on the branch ran from 06:55:12 to 06:58:40 and gave 52 passed and 0 failed,
+  prove-f126-after.txt line 312, the stand-in started 12 times and still running 0, line 310,
+  the one more being the DriverArguments case at line 246. Roamer read 0 at the start and end of
+  each pass, prove-f126-before.txt lines 4 and 175 and prove-f126-after.txt lines 4 and 310, and
+  again at 06:58:45, roamer-reads-harness.txt line 2. The three scripts each pass read are by
+  sha256 those of 1ae6771 and of f9834e4, the branch's tip from 02:30:00 until e712a11 at
+  07:01:49, after the harness ended, by the reflog, turn5\f126-proof\reflog-harness.txt. So the
+  stand-in's box, the toggle, the read back, each UNTICK stop, run.ps1's Check lines and the
+  three stand-in modes are proved on the stand-in, skip-off at prove-f126-after.txt lines 94 to
+  127, skip-sticky at 202 to 213 and skip-scan at 214 to 243, and tools\loop\README.md lines 555
+  and 556, which say prove-f126.ps1 proves the three modes, are true. The work folders of the
+  two passes are turn5\f126-proof\work-before-065350 and work-after-065511
 - what ran with no stand-in and no window, on e45ffbb, pure-reads.txt, whose lines 1 and 2 are
   the commit and the time. pure-reads.ps1 prints and asserts nothing, so its answers were
   compared by hand with what prove-f126.ps1 asserts: ParamRefusal's seven cases, lines 3 to 9,
@@ -116,22 +152,26 @@ Skipped: 0. No Navisworks and no stand-in was started.
   Then the claim-checker's nine points made true in this entry, the section F126 in
   steps\01_next.md, the register row F126 and its count line in steps\loop.md and the body
   turn5\pr-f126.md. Two of its points also name lines under tools and in .claude\rules, which
-  this pass did not change, What remains
+  that pass did not change. The lead corrected tools\loop\README.md lines 345 and 346 and
+  .claude\rules\loop.md lines 112 and 113 in e712a11, after the harness, to name ddb059b beside
+  e6d6f73, and README lines 555 and 556 came true when the harness ran
+- the records made true again on 2026-10-05 after the harness. The lead's records commit e712a11
+  at 07:01:49, its pre-commit 1865 passed, 0 failed, 0 skipped,
+  turn5\f126-proof\precommit-ran.txt line 14, then main 3ee01ab merged in at 16b5eb7 with both
+  sides kept, F116 order line 41 and F126 42, its pre-commit 1912 passed, 0 failed, 0 skipped,
+  F116's tests now in, precommit-merge-main2.txt line 14, each file naming its commit at line
+  30, read off git log. Then main c101f6c, the record of the C04 baseline and Q128, merged in at
+  37ee68e with no conflict, 1912 passed, 0 failed, 0 skipped, precommit-merge-main3.txt line 14,
+  and the claim-checker's reading of 16b5eb7, its points handed to this pass by the lead, made
+  true in this entry, the section F126 in steps\01_next.md, steps\loop.md and the body
+  turn5\pr-f126.md
 
 ### What remains
 
-- the harness, both passes, prove-f126.ps1 on main's tools in before-tree and on the branch, run
-  by the lead in the first gap with Get-Process Roamer at 0, before the pull request merges, its
-  output kept as prove-f126-before.txt and prove-f126-after.txt
-- tools\loop\README.md lines 555 and 556 say the stand-in's three modes are proved by
-  prove-f126.ps1, which is not so until the harness has run, the claim-checker's first point.
-  tools\loop\README.md line 345 and .claude\rules\loop.md line 112 cite FederatorWindow.xaml.cs
-  line 1198 on the branch fix-F112 at e6d6f73, a branch gone from origin since F112 merged,
-  though e6d6f73 is an ancestor of main ddb059b and the line reads the same there,
-  f112-lines-ddb059b.txt. This pass changed nothing under tools, by the lead's word, and left
-  the rule as it was, so the three lines wait for the lead
-- the lead's run of 1A02MM with -Untick SkipClashOffCoordinates once main, F112 in it since
-  ddb059b, is installed, whose driver.txt reads the box toggled Off on the real window
+- the run with F112's rule switched off in the test of wave 1, the lead's run of 1A02MM with
+  -Untick SkipClashOffCoordinates once main, F112 in it since ddb059b, is installed, whose
+  driver.txt reads the box toggled Off on the real window
+- pull request 112, open as a draft, merged once Actions is green
 
 ### Known bugs
 
@@ -154,12 +194,11 @@ Skipped: 0. No Navisworks and no stand-in was started.
   not one of them, f126-read-review.txt line 26. git printed failed to delete for 12 worktree
   entries after each commit, outside this change, f126-read-review.txt line 32. No register row
   was added for these notes
-- tools\loop\README.md lines 555 and 556 read proved where nothing has run, What remains
 
 ### What comes next
 
-- the harness in the first gap, by the lead, then the README's sentence, then the merge, then
-  the run of wave 1's test with the rule off
+- the merge of pull request 112 once Actions is green, then the run of wave 1's test with the
+  rule off
 
 ### Every program started, every file written outside the repo
 
@@ -169,13 +208,27 @@ solution twice and the stand-in twice, dotnet test twice by hand, sh for check-l
 check-imports and the waiter, Windows PowerShell 5.1 for the parser, for array tests and the
 pure reads, for the driver twice, each time refused before any window is read, and for the
 22 reads of Get-Process Roamer, the last at 01:31:32 after the records, reading 1, and tar to
-unpack main's tools. No Navisworks, no stand-in, no harness run and nothing installed.
+unpack main's tools. That day no Navisworks, no stand-in, no harness run and nothing
+installed.
 The records pass on 2026-10-05 started git, to fetch, merge, show, diff, log, ls-remote, reflog,
 status, commit and push, and the pre-commit hook twice, python for the merge resolver and the line
 finder, Windows PowerShell 5.1 for parse.ps1 and the reads of Get-Process Roamer, dotnet build
 for the solution twice, the first output written over by the second with --no-incremental, and
 for the stand-in once, never started, dotnet test once by hand, and sh for check-locals and
-check-imports. No Navisworks, no stand-in, no harness run and nothing installed.
+check-imports. In that pass no Navisworks, no stand-in, no harness run and nothing
+installed.
+The lead on 2026-10-05 read Get-Process Roamer at 06:53:29 and 06:58:45, 0 each time,
+roamer-reads-harness.txt, and ran prove-f126.ps1 twice, pid 47424 on main's tools in before-tree
+and pid 46684 on the branch, line 1 of each output, which read Roamer at its start and end,
+started the stand-in as its copy Decoy.exe 11 times and 12 times, still running 0 after each,
+prove-f126-before.txt line 175 and prove-f126-after.txt line 310, and started child
+powershell.exe for the driver and for run.ps1 -Mode Check. No Navisworks and nothing installed.
+The lead's records commit e712a11 and the merge 16b5eb7 started git and the pre-commit hook
+twice. This records pass started git, to fetch, merge-tree, merge, diff, log, show, reflog,
+rev-parse, commit and push, the pre-commit hook twice, which runs check-locals, check-imports,
+the evidence check and dotnet test, bash from Git for Windows with cat, sed, grep, awk, stat,
+sha256sum and date for the reads and the evidence, gh to read pull request 112, and python for
+the record edits. No Navisworks, no stand-in, no harness run and nothing installed.
 
 Written outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop\turn5\f126-proof:
 core-tests-before.txt, core-tests-after.txt, sln-build-before.txt, sln-build-after.txt,
@@ -198,6 +251,19 @@ f126-log-entry-claims.md and f126-next-section-claims.md, the texts of this entr
 section F126, f126-records-claims.py, which wrote them and the register row in,
 f126-added-claims.tmp, the added lines read for a dash or a semicolon, deleted once read,
 f126-msg-merge.txt and f126-msg-5.txt, the two commit messages, and pr-f126.md, rewritten.
+The lead's harness wrote, under turn5\f126-proof, prove-f126-before.txt, prove-f126-after.txt,
+roamer-reads-harness.txt and the work folders of the two passes, work-before-065350 and
+work-after-065511, copied Decoy.exe and Decoy.exe.config into standin-bin, and wrote runs\97
+under %LOCALAPPDATA%\NwcFederatorLoop, removed by each pass at its end, prove-f126-before.txt
+line 176 and prove-f126-after.txt line 311. The lead's records commit e712a11 and the merge
+16b5eb7 wrote precommit-ran.txt and precommit-merge-main2.txt there, and under turn5, by their
+file times from 07:00:59 to 07:07:40, f126-ran.py, f126-merge-main.txt and f126-resolve.py, and
+pr-f126.md, rewritten. This records pass wrote, under turn5\f126-proof, reflog-harness.txt,
+diff-since-1e06b7e.txt, msg-merge-main3.txt, precommit-merge-main3.txt, msg-records-harness.txt,
+precommit-records-harness.txt and push-records-harness.txt, and added the line naming its commit
+at the end of precommit-ran.txt, precommit-merge-main2.txt and precommit-merge-main3.txt, and
+under turn5 pr-f126.md, rewritten. In the session's scratch folder under %TEMP%\claude:
+f126-records-harness.py, which made the edits.
 
 
 ## 2026-10-05 The loop, turn 5, F116 the clash XML, DONE in Core and built, wave 1, with Bader's answer to Q113, the readings of that pass, F112 taken in and a closing pass
