@@ -1,6 +1,174 @@
 # log
 
 Newest entry at the top.
+## 2026-10-05 The loop, turn 5, F131 the teams, the add-in half built on Bader's answers to Q115 to Q117 and Q123, wave 2b, written by the developer as the lead's delegate, pushed on its branch, no pull request
+
+Bader answered on 2026-10-05, his words at %LOCALAPPDATA%\NwcFederatorLoop\turn5\q132-words.txt:
+Q115 A, Q116 A, Q117 "C, and A where the XML's set tree names no team", and Q123 "B. The window
+keeps the last team map used, for runs with no XML, and the log names it". His order of the same
+day, Q132, is F136, then F131, then F132, then F114, each merged before the next starts where
+they share a file. F136 merged as 6802e1a and touched FederatorWindow.xaml and .xaml.cs and
+FederationEngine.cs, so main 6802e1a was merged into fix-F131 first, at 6f9b33e, message in a
+file, turn5\f131-ad-merge-msg.txt. steps\01_next.md and steps\log.md conflicted, and both sides
+of each were kept by turn5\f131-ad-resolve-merge.py: F136 stays order line 43 as on main and
+F131 is 44, both sections are kept, and the F136 entries stand above the F131 entry here. The
+three files of F136 merged with no conflict. The pre-commit of the merge passed 1982, 0 failed,
+0 skipped, turn5\f131-ad-precommit-merge.txt line 14.
+
+Core tests, all with 0 skipped:
+- 1982 passed, 0 failed before, at 6f9b33e, turn5\f131-ad-core-before.txt
+- with the new and changed tests on stubs of the new members, 21 failed and 23 passed of the
+  44 tests of TeamMapTests, TeamMapMemoryTests, SilentMissTests and ProjectTeamMapTests, each
+  for the reason its rule names, turn5\f131-ad-before-fail.txt. Then the test of the one rule
+  for the map of a run and the block's title, 2 failed of 2 on stubs,
+  turn5\f131-ad-before-fail-2.txt, and the SILENT MISS line naming the set's code and team, 3
+  failed of 19 on the code before it, turn5\f131-ad-before-fail-3.txt. 11 new tests and 11
+  changed, all 22 seen failing first
+- 1993 passed, 0 failed after, at c3a30bc, turn5\f131-ad-core-after.txt, and by the pre-commit
+  of c3a30bc, turn5\f131-ad-precommit-1.txt. The records commit changes no code and no test,
+  and its pre-commit is turn5\f131-ad-precommit-2.txt, read after this entry was written
+
+The solution builds whole at c3a30bc, the last code commit, with --no-incremental,
+Federator.Core, Federator.Core.Tests and Federator.Addin each built, 0 warnings and 0 errors,
+with git rev-parse --short HEAD and an empty git status at its top,
+turn5\f131-ad-build-code.txt. check-locals and check-imports pass on src,
+turn5\f131-ad-check-locals.txt and f131-ad-check-imports.txt, and again in the pre-commit.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for edits of
+  text files, and powershell for the process reads. None of them starts a Navisworks
+- Get-Process Roamer found no Roamer running before any work, at 14:09:56,
+  turn5\f131-ad-roamer-before.txt, and none after the code, the build and the tests, at
+  15:24:54, turn5\f131-ad-roamer-after.txt. This pass started no Navisworks and touched none
+
+### What was done
+
+- c3a30bc, Q117 answered C, and A where the set tree names no team. `TeamMap.TeamOfSet`: the
+  team of the code a set name carries, and where it carries none the folder above the set in
+  the clash XML's set tree whose whole name is a team of the map, the nearest first, Ordinal,
+  and UNKNOWN where none does or no map maps a team. `TeamMap.SetLines` names each set of the
+  picked XML with no code of the map on a TEAMS line, with its team or UNKNOWN, after the map's
+  own lines. On the corrected XML with this project's map that is one set, BLD-Security
+  Devices, Electrical by its folder. `SilentMisses` judges such a set by its folder's team, and
+  counts as UNKNOWN only the sets whose folders name no team. Failing first:
+  ASetWithNoCodeTakesTheTeamItsFolderNamesAndUnknownWhereNone,
+  EachSetWithNoCodeIsNamedWithItsTeamOrUnknown,
+  TheClientsOneSetWithNoCodeIsNamedAndTakesElectricalFromItsFolder,
+  ASetWithNoCodeTakesTheTeamItsFolderNamesAndIsJudged, and nine SilentMissTests whose lines
+  counted BLD-Security Devices as UNKNOWN before Bader's answer
+- c3a30bc, Q123 answered B. `TeamMapMemory` keeps the full path of the last map a run with an
+  XML read whole with a team, `kept: path` in team-map.txt beside the logs, read by `ListFile`,
+  the way `FolderMemory` keeps the picker folders, so the map read is the file beside the XML
+  and never a copy. A map missing, unread or holding no team is never kept and the line names
+  the map that stays. `TeamMap.Kept` reads the kept map at its path and every TEAMS line and
+  the grey line say it is the kept map, gone, unread or holding no team. A memory that cannot
+  be read, a line it does not know, a second map or a path that is not a full one, is said
+  and maps nothing, and one that cannot be written is said on the run's line.
+  `TeamMapMemory.ForRun` is the one rule for the map of a run, and refuses a document not read
+  by `ReadPicked`, the breaker's finding K14. Failing first: the five TeamMapMemoryTests,
+  AKeptMapIsReadForARunWithNoXmlAndSaysSo, and the two TeamMapTests whose words for a run with
+  no XML changed
+- c3a30bc, Q116 answered A and the per model count. `SilentMisses.GroupLines` is the group's
+  TEAMS block: each model's line, its code with its team beside it, and how many of the sets of
+  its team with another code cannot reach it, could not be judged, or that all can, so a model
+  missed by many sets is one line, K13 in part. Then the models of the group not handed in,
+  counted against the document's model count, K9. `ExportCheck.Named`, the model's code and
+  file as the EXPORT CHECK block writes them, is read for it, not copied. The SILENT MISS line
+  writes the set's code with its team, or that it is in its team by its folder, which gives
+  `SilentMiss.SetCode` and `Team`, read only by tests until now, a caller. Failing first:
+  EachModelLineCarriesItsTeamAndHowManySetsCannotReachIt and three tests asserting a SILENT
+  MISS line
+- c3a30bc, the add-in, the calls alone. The window writes the TEAMS lines, the sets with no
+  code and, for the scanned run and the open file run, the kept map line, before the MATRIX
+  lines, in one method at the pick, both runs and both hand buttons. A run with no XML writes
+  the kept map's TEAMS lines. A TEAMS KEPT block is written at the open beside FOLDERS
+  REMEMBERED, and a grey line under the Clash XML box, TeamsLine, says which map a run reads.
+  The engine takes the run's map in its two constructors and writes a TEAMS block per group
+  after the EXPORT CHECK block, in WhatTheModelsCarry, with no coverage count handed in. Undo
+  and Probe hand it no map. Built, never run here
+- c3a30bc, records of the rule: .claude\rules\core.md, The teams of the picked file, and the
+  F85 rule's note on a set with no code, and .claude\rules\addin.md, THE TEAMS. The comments
+  that cited Q115, Q116, Q117 and Q123 by their defaults now cite the answers, and this
+  project's map in exchange\ says what Q117 C does
+- the records: this entry, the order line 44 and the F131 section of steps\01_next.md, and
+  steps 417 to 445 of steps\03_bader_next.md, F131 second after F136 with the viewpoints box
+  unticked in both runs, Q131
+
+The members of attempts 1 to 3 with no caller in src, as the lead asked: `TeamMap`,
+`TeamMap.Lines`, `WindowLine`, `CodeWithTeam`, `TeamMap.NoXml`, `SilentMisses.Find` with
+`Lines`, `Found`, `Unjudged`, `SetsWithNoCode` and `ModelsWithNoCode`, `SilentMiss` and its
+members, and `ExchangeDocument.Teams` are now called from the window and the engine, through
+the calls above. Still with no caller in src: `TeamPair.For` and `TeamPair`'s members,
+`TeamMap.Compare` and `TeamMap.CarriesSizeFolder` past the TEAMS line it writes, because their
+caller is F114's views, another branch, which Bader's order of Q132 starts after F132.
+steps\fix-round.md line 123 has this branch hold the team pairs for F114, so they are kept,
+F131-K8 for the lead.
+
+### Choices the developer made, for the reader to check
+
+- THE KEPT MAP IS A PATH, NOT A COPY, as FolderMemory keeps a folder and as the lead's brief
+  read Q123. A copy would survive the XML's folder being moved, and would go stale the moment
+  the map beside the XML is edited. A kept path that is gone is said and maps nothing
+- A MAP IS KEPT BY A RUN, NOT BY A PICK, because Bader's words are the last team map used. The
+  scanned run and the open file run keep it. The pick and the two hand buttons only read it
+- A FOLDER NAMES A TEAM WHEN ITS WHOLE NAME IS A TEAM OF THE MAP, Ordinal, the folder nearest
+  the set first, so Mechanical-HVAC under Mechanical gives Mechanical. A folder named by a code,
+  such as EL, names no team. With no map no folder names a team
+- A SET WITH NO CODE IS JUDGED FOR A SILENT MISS BY ITS FOLDER'S TEAM, against every model of
+  that team. BLD-Security Devices asks a category alone, so it reaches every model and is never
+  a miss
+- THE PER MODEL COUNT IS THE COUNT OF SETS THAT CANNOT REACH THE MODEL, not F127's count of
+  items no set catches, which is not on main. With no coverage count handed in, no miss is named
+- A RUN WITH NO XML JUDGES NO SET, because it reads no XML, and its TEAMS block says so. Reading
+  the sets saved in the NWF for it is not built
+
+### What remains
+
+- every line above on the local machine, steps 417 to 445 of steps\03_bader_next.md, with the
+  viewpoints box unticked until F114 merges
+- F127's COVERAGE rows with the team beside the code, and the coverage count handed to
+  `SilentMisses.Find`, which is what lets a SILENT MISS line be written at all. So F127's rows
+  wait for F127, which is not on main
+- a place in the window for the silent misses beyond its log pane, Q114 point 3's form, with
+  the COVERAGE work
+- probe P4, so whether 1A04PK holds a silent miss is UNKNOWN
+
+### Known bugs
+
+- F131-K24, src\Federator.Addin\Ui\FederatorWindow.xaml.cs ShowTeamsLine. The grey line reads
+  the map beside the path in the box on every change of the box, so typing a path by hand
+  reads a file for each letter once the path names one. The map is a few lines. Not measured
+- F131-K25, src\Federator.Core\Teams\TeamMapMemory.cs Remember. The kept path is compared case
+  blind, as Windows compares paths, and two spellings of one folder through a mapped drive and
+  its UNC name are two maps to it, so the memory is written again. Nothing is lost
+- F131-K26, src\Federator.Core\Teams\TeamMap.cs MemoryUnread. Where the memory itself cannot be
+  read, the TEAMS line names the memory's path where the kept map's would stand, under the
+  words THE TEAM MAP KEPT FROM THE LAST RUN WITH ONE, with the memory's own why after it
+- F131-K27, src\Federator.Addin\Engine\FederationEngine.cs WhatTheModelsCarry. A run with no
+  XML hands the TEAMS block no set, so its line says no set was handed in, though the NWF holds
+  the sets it saved. The words are Core's and true of what was judged
+- F131-K8 stands: `TeamPair` and `TeamMap.Compare` and `CarriesSizeFolder` wait for F114. K1 to
+  K7, K10 to K12 and K15 to K23 stand as written below. K9 and K14 are closed by this pass,
+  and K13 in part, a model's sets counted on one line
+
+### What comes next
+
+- the reviewer and the breaker on c3a30bc and its records commit, then the pull request, then
+  steps 417 to 445, then F132 in Bader's order
+
+### Every file written outside the repo, the add-in pass
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f131, on branch fix-F131
+- turn5\f131-ad-roamer-before.txt, f131-ad-merge-msg.txt, f131-ad-merge.txt,
+  f131-ad-resolve-merge.py, f131-ad-precommit-merge.txt, f131-ad-core-before.txt,
+  f131-ad-before-fail.txt, f131-ad-before-fail-2.txt, f131-ad-before-fail-3.txt,
+  f131-ad-commit-1-msg.txt, f131-ad-precommit-1.txt, f131-ad-build-code.txt,
+  f131-ad-core-after.txt, f131-ad-check-locals.txt, f131-ad-check-imports.txt,
+  f131-ad-roamer-after.txt, f131-ad-commit-2-msg.txt, f131-ad-precommit-2.txt and
+  f131-ad-push.txt
+- the edit scripts, in the session's scratch folder under the user's temp folder, which nothing
+  reads after the commit
+
 ## 2026-10-05 The loop, turn 5, F136 attempt 2, the viewpoints box opens unticked until F114 on Bader's answer B to Q131, written by the developer as the lead's delegate, built and pushed on its branch, pull request 117 a draft
 
 Attempt 1 was read by the reviewer and the breaker and both approved it with nothing blocking,
