@@ -483,12 +483,14 @@ once the chain ends, each value read back, register row T5-R-GUARDRACE. It was p
 pause and running nothing, turn5\probes-2-result.json, for the removal of the three autosaves, done at
 15:49 and each named under Q128, and for the measurement of Q133, which began at 15:50:12 with P11 to P19 after it,
 turn5\workflow-starts.txt, F132 before F114 in his order.
-BADER'S MESSAGE ON AUTOSAVE COPIES, Q135, 2026-10-05 in the evening. Auto-Save measured, its switch one value
-inside the 22.0 key every start backs up and puts back, off the safe choice. A probe's Navisworks had
-rotated away his 1A02MM Autosave0, put back at 17:31 from the one backup with the probe's four autosaves
-removed, each named, and 199 duplicate files and 288,915,844 bytes freed in the loop's folder,
-turn5\q135\cleanup.txt. The probes are paused, turn5\probes-pause.txt, until F138 switches Auto-Save off
-for every loop start. The Q133 measurement on 1A02MM is under Q133, 1A04PK's waits for F138.
+BADER'S MESSAGE ON AUTOSAVE COPIES, Q135, 2026-10-05. Auto-Save measured, its switch one value inside the
+22.0 key every start backs up and puts back, off the safer choice, whether off holds UNKNOWN until F138's
+first start. His 1A02MM Autosave0 went while a probe's Navisworks ran, most likely by its rotation, and was
+put back at 17:31 from the one backup, the probe's four autosaves removed from his folder, each named, and
+in the loop's folder 196 duplicate files and the 3 copies of the C04 run's own autosaves, 203 files and
+425,773,088 bytes in all, turn5\q135\cleanup.txt, its first try refused at 17:30:20 by a Roamer that was
+gone at the next. By the lead's choice the probes are paused, turn5\probes-pause.txt, until F138, FR-196,
+switches Auto-Save off for every loop start. The Q133 measurement on 1A02MM is under Q133, 1A04PK's waits for F138.
 
 Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 at 15:42. Merged so
 far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
