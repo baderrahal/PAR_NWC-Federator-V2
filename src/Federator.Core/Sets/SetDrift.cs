@@ -39,12 +39,16 @@ namespace Federator.Core.Sets
         /// </summary>
         public int Flags { get; private set; }
 
-        /// <summary>What this condition asks, written the way SetBuildPlan.Describe writes one, so the two read as one sentence.</summary>
+        /// <summary>
+        /// What this condition asks, written the way SetBuildPlan.Describe writes one, so the two
+        /// read as one sentence: its own test, never equals for a test that is not, and not before
+        /// it where it is negated, FR-016.
+        /// </summary>
         public string Describe()
         {
             return (CategoryInternalName.Length == 0 ? string.Empty : CategoryInternalName + "/")
                 + PropertyInternalName
-                + (string.Equals(Test, "contains", StringComparison.Ordinal) ? " contains " : " equals ")
+                + PlannedCondition.TestWordsOf(Test, Flags)
                 + "\"" + Value + "\"";
         }
 
@@ -100,12 +104,14 @@ namespace Federator.Core.Sets
     /// </summary>
     public sealed class SetDrift
     {
-        private SetDrift(string path, bool couldNotRead, IList<ReadCondition> asked, IList<string> wanted)
+        private readonly PlannedSet wanted;
+
+        private SetDrift(bool couldNotRead, IList<ReadCondition> asked, PlannedSet wanted)
         {
-            Path = path ?? string.Empty;
+            Path = wanted.Path ?? string.Empty;
             CouldNotRead = couldNotRead;
             Asked = asked ?? new List<ReadCondition>();
-            Wanted = wanted ?? new List<string>();
+            this.wanted = wanted;
         }
 
         public string Path { get; private set; }
@@ -115,9 +121,6 @@ namespace Federator.Core.Sets
 
         /// <summary>What the set in the document asks.</summary>
         public IList<ReadCondition> Asked { get; private set; }
-
-        /// <summary>What the picked file asks, already described.</summary>
-        public IList<string> Wanted { get; private set; }
 
         /// <summary>Whether the two differ. False where it could not be read, because not knowing is not a difference.</summary>
         public bool Drifted { get; private set; }
@@ -137,15 +140,13 @@ namespace Federator.Core.Sets
             }
 
             List<string> wantedKeys = new List<string>();
-            List<string> wantedDescribed = new List<string>();
 
             foreach (PlannedCondition condition in planned.Conditions)
             {
                 wantedKeys.Add(condition.Key());
-                wantedDescribed.Add(condition.Describe());
             }
 
-            SetDrift drift = new SetDrift(planned.Path, asked == null, asked, wantedDescribed);
+            SetDrift drift = new SetDrift(asked == null, asked, planned);
 
             if (asked == null)
             {
@@ -170,7 +171,10 @@ namespace Federator.Core.Sets
             return drift;
         }
 
-        /// <summary>What the set asks now, as one sentence.</summary>
+        /// <summary>
+        /// What the set asks now, as one sentence, its groups bracketed and joined by or by the
+        /// bit it carries, the way a planned set is said, FR-016.
+        /// </summary>
         public string AskedNow()
         {
             if (CouldNotRead)
@@ -183,27 +187,14 @@ namespace Federator.Core.Sets
                 return "nothing at all";
             }
 
-            List<string> parts = new List<string>();
-
-            for (int i = 0; i < Asked.Count; i++)
-            {
-                parts.Add(Asked[i].Describe());
-            }
-
-            return string.Join(" and ", parts.ToArray());
+            return PlannedSet.Describe(
+                Asked, condition => PlannedCondition.StartsAGroupWith(condition.Flags), condition => condition.Describe());
         }
 
-        /// <summary>What the picked file asks, as one sentence.</summary>
+        /// <summary>What the picked file asks, as one sentence, the planned set's own, FR-016.</summary>
         public string WantedNow()
         {
-            if (Wanted.Count == 0)
-            {
-                return "nothing at all";
-            }
-
-            string[] array = new string[Wanted.Count];
-            Wanted.CopyTo(array, 0);
-            return string.Join(" and ", array);
+            return wanted.ConditionCount == 0 ? "nothing at all" : wanted.Describe();
         }
 
         /// <summary>The two lines the log writes for one drifted set, the old question and the new one.</summary>

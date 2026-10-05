@@ -215,6 +215,74 @@ namespace Federator.Core.Tests.Sets
                 "the same condition without the group bit is another question");
         }
 
+        // ---------- what the lines say, FR-016 ----------
+
+        /// <summary>
+        /// BLD-ME-Ducts&amp;Duct Fittings, an Or of two groups, read off the document and asked by
+        /// the file. Both lines say the two bracketed groups joined by or, the way F78 made a
+        /// created set's line read. They joined every condition with and, a four way And no
+        /// element can answer, in the SET DRIFT lines and the SETS ACROSS THE RUN line.
+        /// </summary>
+        [Test]
+        public void BothSidesOfAnOrSetReadAsItsGroupsJoinedByOr()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition>
+                {
+                    Asked(Category, "equals", "Ducts"),
+                    Asked(Workset, "equals", "ME-DUCTWORK"),
+                    Asked(Category, "equals", "Duct Fittings", PlannedCondition.StartGroupFlag),
+                    Asked(Workset, "equals", "ME-DUCTWORK")
+                },
+                Planned(
+                    "a/Mechanical/BLD-ME-Ducts&Duct Fittings",
+                    Wants(Category, ConditionTest.Equals, "Ducts"),
+                    Wants(Workset, ConditionTest.Equals, "ME-Ductwork"),
+                    Wants(Category, ConditionTest.Equals, "Duct Fittings", PlannedCondition.StartGroupFlag),
+                    Wants(Workset, ConditionTest.Equals, "ME-Ductwork")));
+
+            Assert.That(
+                drift.AskedNow(),
+                Is.EqualTo("(" + Element + "/" + Category + " equals \"Ducts\" and " + Element + "/" + Workset + " equals \"ME-DUCTWORK\")"
+                    + " or (" + Element + "/" + Category + " equals \"Duct Fittings\" and " + Element + "/" + Workset + " equals \"ME-DUCTWORK\")"));
+            Assert.That(drift.WantedNow(), Does.StartWith("(").And.Contain("\") or (").And.EndWith("\"ME-Ductwork\")"));
+            Assert.That(drift.WantedNow(), Does.Not.Contain("\" and " + Element + "/" + Category + " equals \"Duct Fittings\""));
+        }
+
+        /// <summary>
+        /// A negated condition says not. Since FR-015 a condition and its negation are two
+        /// questions, and the two lines of a set that drifted by a negation read the same.
+        /// </summary>
+        [Test]
+        public void ANegatedConditionReadsAsNotOnBothSides()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition>
+                {
+                    Asked(Category, "contains", "Devices"),
+                    Asked(Category, "equals", "Telephone Devices")
+                },
+                Planned(
+                    "a/Electrical/BLD-EL-Devices",
+                    Wants(Category, ConditionTest.Contains, "Devices"),
+                    Wants(Category, ConditionTest.Equals, "Telephone Devices", PlannedCondition.NegateFlag)));
+
+            Assert.That(drift.WantedNow(), Does.Contain(Category + " not equals \"Telephone Devices\""));
+            Assert.That(drift.AskedNow(), Does.Contain(Category + " equals \"Telephone Devices\""));
+            Assert.That(drift.AskedNow(), Does.Not.Contain(" not "));
+        }
+
+        /// <summary>A comparison the file never writes is said by its own name and never as equals.</summary>
+        [Test]
+        public void AnotherComparisonIsSaidByItsOwnName()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition> { Asked(Category, "NotEqual", "Floors") },
+                Planned("a/path/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors")));
+
+            Assert.That(drift.AskedNow(), Is.EqualTo(Element + "/" + Category + " NotEqual \"Floors\""));
+        }
+
         // ---------- the tick box ----------
 
         [Test]

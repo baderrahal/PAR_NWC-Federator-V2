@@ -97,6 +97,22 @@ namespace Federator.Core.Sets
             return flags & (StartGroupFlag | NegateFlag);
         }
 
+        /// <summary>Whether a condition carrying those flags is negated, by the bit QuestionFlagsOf counts.</summary>
+        internal static bool NegatedWith(int flags)
+        {
+            return (flags & NegateFlag) == NegateFlag;
+        }
+
+        /// <summary>
+        /// The words between a condition's property and its value: the test, with not before it
+        /// where the condition is negated, FR-016. One rule for a condition the file plans and one
+        /// read off the document, so the two lines of a drifted set say the same thing the same way.
+        /// </summary>
+        internal static string TestWordsOf(string test, int flags)
+        {
+            return (NegatedWith(flags) ? " not " : " ") + test + " ";
+        }
+
         /// <summary>
         /// The key this condition is compared by against a set in the document, in the one shape
         /// `ReadCondition.KeyOf` builds, so the file's side and the document's side are put
@@ -152,7 +168,7 @@ namespace Federator.Core.Sets
             return (HasCategory ? CategoryInternalName + "/" : string.Empty)
                 + PropertyInternalName
                 + Friendly()
-                + (Test == ConditionTest.Contains ? " contains " : " equals ")
+                + TestWordsOf(TestWord, Flags)
                 + "\"" + Value + "\"";
         }
 
@@ -229,7 +245,17 @@ namespace Federator.Core.Sets
         /// </summary>
         public string Describe()
         {
-            IList<IList<PlannedCondition>> groups = Groups();
+            return Describe(Conditions, condition => condition.StartsAGroup, condition => condition.Describe());
+        }
+
+        /// <summary>
+        /// Any conditions said as their groups, bracketed and joined by or where there is more than
+        /// one, by the plan's own grouping rule, so a set read off the document is said the way a
+        /// planned one is, FR-016. The SET DRIFT lines joined every condition with and.
+        /// </summary>
+        internal static string Describe<T>(IEnumerable<T> conditions, Func<T, bool> startsAGroup, Func<T, string> describe)
+        {
+            IList<IList<T>> groups = GroupsOf(conditions, startsAGroup);
 
             if (groups.Count == 0)
             {
@@ -238,13 +264,13 @@ namespace Federator.Core.Sets
 
             List<string> said = new List<string>();
 
-            foreach (IList<PlannedCondition> group in groups)
+            foreach (IList<T> group in groups)
             {
                 List<string> parts = new List<string>();
 
-                foreach (PlannedCondition condition in group)
+                foreach (T condition in group)
                 {
-                    parts.Add(condition.Describe());
+                    parts.Add(describe(condition));
                 }
 
                 string joined = string.Join(" and ", parts.ToArray());
