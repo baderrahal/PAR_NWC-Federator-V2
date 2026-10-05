@@ -1,6 +1,38 @@
 # log
 
 Newest entry at the top.
+## 2026-10-05 The loop, turn 5, FR-052 confirmed again and the ceiling under Q124
+
+Nothing under src, tests or tools changed. Core tests 1865 passed, 0 failed, 0 skipped before, at
+turn5\precommit-records-13b.txt, and after, at turn5\precommit-records-14.txt.
+
+### What was done
+
+- FR-052 confirmed again by F132's Core half, a test the XML gives no tolerance counted as
+  skipped and named on no SKIPPED line, turn5\f132-finding-notolerance.txt. A claim-checker found
+  the first commit had written it as a new FR-190, which is taken out, FR-052 staying F119's in
+  wave 3b. F132 took its test over every skip reason out of its tree rather than fix it there
+- the lead's note on Q124: no progress line of the C04 run after test 75 at 00:59, and under its
+  default A the ceiling of Q84, 43200 s from adoption at about 21:18:25, closes the run at about
+  09:18 if it has not ended
+- F132's Core half built on its branch, 1908 tests passed, unmerged until its add-in half, and
+  read now by a reviewer and a breaker, while F127's Core steps 1 to 3 are with a developer
+
+### What remains
+
+- the readings of F132's Core half, F127's Core steps, F116's closing pass, and the gap for the
+  harness of F126 and the probes
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- F116's merge once its closing pass reads clean
+
+Nothing in this record waits for the local machine.
+
 ## 2026-10-05 The loop, turn 5, the design of F127 coverage, Q126 and Q127
 
 Nothing under src, tests or tools changed. Core tests 1865 passed, 0 failed, 0 skipped before, at
