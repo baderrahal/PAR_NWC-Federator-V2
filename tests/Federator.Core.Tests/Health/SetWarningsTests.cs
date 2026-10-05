@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
+using Federator.Core.Sets;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests
@@ -29,9 +30,9 @@ namespace Federator.Core.Tests
                 : "<viewfolder name=\"" + folder + "\">" + body + "</viewfolder>";
         }
 
-        private static string Condition(string test, string property, string value)
+        private static string Condition(string test, string property, string value, int flags = 0)
         {
-            return "<condition test=\"" + test + "\" flags=\"0\">"
+            return "<condition test=\"" + test + "\" flags=\"" + flags + "\">"
                 + "<category><name internal=\"LcRevitData_Element\">Element</name></category>"
                 + "<property><name internal=\"" + property + "\">Category</name></property>"
                 + "<value><data type=\"wstring\">" + value + "</data></value></condition>";
@@ -181,6 +182,60 @@ namespace Federator.Core.Tests
                 Category);
 
             Assert.That(found.Count, Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// A NEGATED CONDITION IS NOT A CATEGORY THE SET ASKS FOR, FR-023. BLD-EL-Devices asks
+        /// contains Devices and not each Devices category a sibling set claims, flags 32, and was
+        /// reported as asking for Telephone Devices, which it only leaves out. A negation of a
+        /// category no model carries leaves out nothing, 5g, and stops nothing.
+        /// </summary>
+        [Test]
+        public void ANegatedCategoryIsNotReportedAsOneTheSetAsksFor()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set(
+                    "BLD-EL-Devices",
+                    null,
+                    Condition("contains", Category, "Devices")
+                        + Condition("equals", Category, "Telephone Devices", PlannedCondition.NegateFlag))),
+                Category);
+
+            Assert.That(found, Is.Empty);
+        }
+
+        /// <summary>
+        /// A set of two Or groups where one asks a category no model carries can still match
+        /// through the other, so it is named with the groups that ask it, FR-023, and not as a
+        /// set that can never match anything.
+        /// </summary>
+        [Test]
+        public void ASetAskingAnUnknownCategoryInOneOfItsOrGroupsSaysSo()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set(
+                    "BLD-EL-Phones",
+                    null,
+                    Condition("equals", Category, "Telephone Equipment")
+                        + Condition("equals", Category, "Communication Devices", PlannedCondition.StartGroupFlag))),
+                Category);
+
+            Assert.That(found.Count, Is.EqualTo(1));
+            Assert.That(found[0].GroupsAsking, Is.EqualTo(1));
+            Assert.That(found[0].Groups, Is.EqualTo(2));
+            Assert.That(found[0].ToString(), Is.EqualTo(
+                "BLD-EL-Phones asks for \"Telephone Equipment\" in 1 of its 2 Or groups, so a group without it can still match"));
+        }
+
+        /// <summary>A set asking it in every group it holds is named as before, with no groups said.</summary>
+        [Test]
+        public void ASetAskingAnUnknownCategoryInEveryGroupIsNamedAsBefore()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set("A", null, Condition("equals", Category, "Telephone Equipment"))),
+                Category);
+
+            Assert.That(found[0].ToString(), Is.EqualTo("A asks for \"Telephone Equipment\""));
         }
 
         /// <summary>
@@ -349,10 +404,14 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// All three checks run on the client's corrected matrix. Since the category list
-        /// was measured off the ten C02 federations, 5i, fourteen of the 61 sets ask for a
+        /// was measured off the ten C02 federations, 5i, thirteen of the 61 sets ask for a
         /// category none of those models carries, Ramps and Roofs among them, which is
         /// information about C02 and not a fault in the file: those buildings have no
         /// item of that category. The block names five and counts the rest.
+        ///
+        /// THIRTEEN AND NOT FOURTEEN SINCE FR-023. The fourteenth was BLD-EL-Devices, named as
+        /// asking for Telephone Devices, which it leaves out with a negated condition, flags 32,
+        /// and does not ask for. The count moved because the rule did.
         /// </summary>
         [Test]
         public void TheHealthBlockCarriesAllThreeCountsAndEveryCheckRan()
@@ -363,9 +422,14 @@ namespace Federator.Core.Tests
 
             Assert.That(all, Does.Contain("Sets asking exactly the same question: 1"));
             Assert.That(all, Does.Contain("Revit categories known: 374"));
-            Assert.That(all, Does.Contain("Sets asking for a category no model carries: 14"));
+            Assert.That(all, Does.Contain("Sets asking for a category no model carries: 13"));
             Assert.That(all, Does.Contain("BLD-AR-Roofs asks for \"Roofs\""));
-            Assert.That(all, Does.Contain("and 9 more, counted and not listed"));
+            Assert.That(all, Does.Contain("and 8 more, counted and not listed"));
+
+            foreach (CategoryNobodyHas one in result.CategoriesNobodyHas)
+            {
+                Assert.That(one.Set.Name, Is.Not.EqualTo("BLD-EL-Devices"), "it asks for no category the models lack");
+            }
             Assert.That(all, Does.Contain("Set names breaking their folder's pattern: 1"));
             Assert.That(all, Does.Contain("BLD-Security Devices"));
         }

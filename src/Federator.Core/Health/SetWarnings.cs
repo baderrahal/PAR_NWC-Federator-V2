@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Federator.Core.Exchange;
+using Federator.Core.Sets;
 
 namespace Federator.Core.Health
 {
@@ -44,15 +45,20 @@ namespace Federator.Core.Health
     }
 
     /// <summary>
-    /// A set asking for a category value no model in this project carries, F84. It can
-    /// never match anything, so every clash test that names it can never find a clash.
+    /// A set asking for a category value no model in this project carries, F84. A group of
+    /// its conditions that asks it can never match, so a set asking it in every group can
+    /// never match anything and every clash test that names it can never find a clash. A set
+    /// of Or groups where only some ask it can still match through the others, and its line
+    /// says how many ask it, FR-023.
     /// </summary>
     public sealed class CategoryNobodyHas
     {
-        internal CategoryNobodyHas(SelectionSetDefinition set, string category)
+        internal CategoryNobodyHas(SelectionSetDefinition set, string category, int groupsAsking, int groups)
         {
             Set = set;
             Category = category;
+            GroupsAsking = groupsAsking;
+            Groups = groups;
         }
 
         public SelectionSetDefinition Set { get; private set; }
@@ -60,9 +66,18 @@ namespace Federator.Core.Health
         /// <summary>The value the set asked for, exactly as the file wrote it.</summary>
         public string Category { get; private set; }
 
+        /// <summary>How many of the set's Or groups ask for it.</summary>
+        public int GroupsAsking { get; private set; }
+
+        /// <summary>How many Or groups the set holds, one more than the conditions starting a group, F78.</summary>
+        public int Groups { get; private set; }
+
         public override string ToString()
         {
-            return Set.Name + " asks for \"" + Category + "\"";
+            return Set.Name + " asks for \"" + Category + "\""
+                + (GroupsAsking < Groups
+                    ? " in " + GroupsAsking + " of its " + Groups + " Or groups, so a group without it can still match"
+                    : string.Empty);
         }
     }
 
@@ -218,12 +233,11 @@ namespace Federator.Core.Health
                     continue;
                 }
 
+                IList<IList<SearchConditionDefinition>> groups = GroupsOf(set);
+
                 foreach (SearchConditionDefinition condition in set.Conditions)
                 {
-                    if (condition.Property == null
-                        || !string.Equals(
-                            condition.Property.InternalName, categoryPropertyInternalName,
-                            StringComparison.Ordinal))
+                    if (!AsksTheCategory(condition, categoryPropertyInternalName))
                     {
                         continue;
                     }
@@ -238,11 +252,55 @@ namespace Federator.Core.Health
                         continue;
                     }
 
-                    found.Add(new CategoryNobodyHas(set, asked));
+                    found.Add(new CategoryNobodyHas(
+                        set, asked, GroupsAsking(groups, condition, categoryPropertyInternalName), groups.Count));
                 }
             }
 
             return found;
+        }
+
+        /// <summary>
+        /// Whether that condition asks for a category, on the category property and NOT NEGATED,
+        /// FR-023. A negated condition asks for everything but its value, so BLD-EL-Devices, which
+        /// leaves out Telephone Devices with flags 32, was named as asking for it, and a negation
+        /// of a category no model carries leaves out nothing and stops nothing, 5g.
+        /// </summary>
+        private static bool AsksTheCategory(SearchConditionDefinition condition, string categoryPropertyInternalName)
+        {
+            return condition.Property != null
+                && string.Equals(condition.Property.InternalName, categoryPropertyInternalName, StringComparison.Ordinal)
+                && !PlannedCondition.NegatedWith(condition.Flags);
+        }
+
+        /// <summary>The set's conditions in their Or groups, by the plan's own grouping rule, F78.</summary>
+        private static IList<IList<SearchConditionDefinition>> GroupsOf(SelectionSetDefinition set)
+        {
+            return PlannedSet.GroupsOf(set.Conditions, condition => PlannedCondition.StartsAGroupWith(condition.Flags));
+        }
+
+        /// <summary>How many of those groups ask for that condition's category the way it does.</summary>
+        private static int GroupsAsking(
+            IList<IList<SearchConditionDefinition>> groups, SearchConditionDefinition asked, string categoryPropertyInternalName)
+        {
+            int asking = 0;
+
+            foreach (IList<SearchConditionDefinition> group in groups)
+            {
+                foreach (SearchConditionDefinition condition in group)
+                {
+                    if (AsksTheCategory(condition, categoryPropertyInternalName)
+                        && string.Equals(condition.Test, asked.Test, StringComparison.Ordinal)
+                        && condition.Value != null
+                        && string.Equals(condition.Value.Data, asked.Value.Data, StringComparison.Ordinal))
+                    {
+                        asking++;
+                        break;
+                    }
+                }
+            }
+
+            return asking;
         }
 
         private static bool AlreadyFound(IList<CategoryNobodyHas> found, SelectionSetDefinition set, string asked)
