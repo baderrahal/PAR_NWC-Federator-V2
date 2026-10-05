@@ -240,6 +240,73 @@ namespace Federator.Core.Tests.Sets
             Assert.That(drift.AskedNow(), Does.StartWith("UNKNOWN"));
         }
 
+        // ---------- a set that would not read is said in the run, with why ----------
+
+        /// <summary>
+        /// A SET WHOSE SEARCH WOULD NOT READ HAS LINES OF ITS OWN, AND THEY SAY WHY, the reviewer's
+        /// finding on attempt 1. The add-in's two catches, the search and a value, kept neither
+        /// the error's type nor its message, and a run wrote no line for such a set beyond its
+        /// present line, which says left alone. The lines name the set, say what it asks is
+        /// UNKNOWN and carry the error as the add-in caught it.
+        /// </summary>
+        [Test]
+        public void ASetWhoseSearchWouldNotReadWritesItsLinesWithWhy()
+        {
+            SetDrift drift = SetDrift.Compare(
+                null,
+                Planned("a/path/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors")),
+                "InvalidOperationException: the search is gone");
+
+            IList<string> lines = drift.Lines();
+
+            Assert.That(lines.Count, Is.EqualTo(3));
+            Assert.That(lines[0], Is.EqualTo("SET NOT READ a/path/BLD-AR-Floors"));
+            Assert.That(lines[1], Is.EqualTo(
+                "   it asks  : UNKNOWN, its search would not read, because InvalidOperationException: the search is gone"));
+            Assert.That(lines[2], Does.StartWith("   file asks: "));
+            Assert.That(lines[2], Does.Contain("Floors"));
+        }
+
+        /// <summary>A value that would not read carries its own error into the lines, FR-017.</summary>
+        [Test]
+        public void AValueThatWouldNotReadCarriesWhyIntoTheLines()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition>
+                {
+                    Asked(Category, "equals", "Floors"),
+                    ReadCondition.Unread(Element, Workset, "equals", 0, "FormatException: not a string")
+                },
+                Planned(
+                    "a/path/BLD-AR-Floors",
+                    Wants(Category, ConditionTest.Equals, "Floors"),
+                    Wants(Workset, ConditionTest.Equals, "AR-EXTERIOR")));
+
+            Assert.That(drift.Lines()[1], Is.EqualTo(
+                "   it asks  : UNKNOWN, the value of a condition in its search would not read, because FormatException: not a string"));
+        }
+
+        /// <summary>A read that failed with no error handed over says so, and never leaves the why out.</summary>
+        [Test]
+        public void ASetThatWouldNotReadWithNoErrorSaysWhyIsUnknown()
+        {
+            SetDrift drift = SetDrift.Compare(
+                null, Planned("a/path/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors")));
+
+            Assert.That(drift.Lines()[1], Does.EndWith("its search would not read, and why is UNKNOWN"));
+        }
+
+        /// <summary>Core decides which sets have lines: a set asking what the file asks has none.</summary>
+        [Test]
+        public void ASetAskingWhatTheFileAsksHasNoLines()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition> { Asked(Category, "equals", "Floors") },
+                Planned("a/path/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors")));
+
+            Assert.That(drift.Lines(), Is.Empty);
+        }
+
         // ---------- what the lines say, FR-016 ----------
 
         /// <summary>

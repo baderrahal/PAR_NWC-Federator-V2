@@ -46,13 +46,20 @@ namespace Federator.Core.Sets
         public bool ValueUnread { get; private set; }
 
         /// <summary>
-        /// A condition whose value would not read, FR-017. It was read as an empty string, so its
-        /// set was called drifted, asking for "", and replaced with the box on.
+        /// Why the value would not read, the error's type and message as the add-in caught it, or
+        /// empty where none was handed over. Said in the set's SET NOT READ lines, SetDrift.Lines.
         /// </summary>
-        public static ReadCondition Unread(string categoryInternalName, string propertyInternalName, string test, int flags)
+        public string WhyUnread { get; private set; }
+
+        /// <summary>
+        /// A condition whose value would not read, and why, FR-017. It was read as an empty string,
+        /// so its set was called drifted, asking for "", and replaced with the box on.
+        /// </summary>
+        public static ReadCondition Unread(string categoryInternalName, string propertyInternalName, string test, int flags, string why = null)
         {
             ReadCondition unread = new ReadCondition(categoryInternalName, propertyInternalName, test, null, flags);
             unread.ValueUnread = true;
+            unread.WhyUnread = why ?? string.Empty;
             return unread;
         }
 
@@ -170,12 +177,15 @@ namespace Federator.Core.Sets
     {
         private readonly PlannedSet wanted;
 
-        private SetDrift(bool couldNotRead, IList<ReadCondition> asked, PlannedSet wanted)
+        private readonly string whyNotRead;
+
+        private SetDrift(bool couldNotRead, IList<ReadCondition> asked, PlannedSet wanted, string whyNotRead)
         {
             Path = wanted.Path ?? string.Empty;
             CouldNotRead = couldNotRead;
             Asked = asked ?? new List<ReadCondition>();
             this.wanted = wanted;
+            this.whyNotRead = whyNotRead ?? string.Empty;
         }
 
         public string Path { get; private set; }
@@ -198,8 +208,10 @@ namespace Federator.Core.Sets
         /// one asking B and then A once a StartGroup bit is involved, and this tool does
         /// not pretend to know which orderings are equivalent. The file's side is keyed off
         /// the planned set here in Core, FR-015, and never a second time in the add-in.
+        /// Where the search would not read, asked is null and whyNotRead is the error the
+        /// add-in caught, and where a value would not, the error rides on its condition.
         /// </summary>
-        public static SetDrift Compare(IList<ReadCondition> asked, PlannedSet planned)
+        public static SetDrift Compare(IList<ReadCondition> asked, PlannedSet planned, string whyNotRead = null)
         {
             if (planned == null)
             {
@@ -213,7 +225,8 @@ namespace Federator.Core.Sets
                 wantedKeys.Add(condition.Key());
             }
 
-            SetDrift drift = new SetDrift(asked == null || AnyUnread(asked), asked, planned);
+            SetDrift drift = new SetDrift(
+                asked == null || AnyUnread(asked), asked, planned, asked == null ? whyNotRead : FirstWhyUnread(asked));
 
             if (drift.CouldNotRead)
             {
@@ -236,6 +249,20 @@ namespace Federator.Core.Sets
             }
 
             return drift;
+        }
+
+        /// <summary>Why the first of those conditions whose value would not read did not, or null where none failed.</summary>
+        private static string FirstWhyUnread(IList<ReadCondition> asked)
+        {
+            foreach (ReadCondition condition in asked)
+            {
+                if (condition != null && condition.ValueUnread)
+                {
+                    return condition.WhyUnread;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>Whether a value of one of those conditions would not read, FR-017.</summary>
@@ -280,10 +307,32 @@ namespace Federator.Core.Sets
             return wanted.ConditionCount == 0 ? "nothing at all" : wanted.Describe();
         }
 
-        /// <summary>The two lines the log writes for one drifted set, the old question and the new one.</summary>
+        /// <summary>
+        /// The lines the log writes for this set, decided here and nowhere else. For a drifted set
+        /// the old question and the new one. For one whose search, or a value in it, would not
+        /// read, what would not read and WHY, the error's type and message as the add-in caught
+        /// it, the reviewer's finding on attempt 1: the add-in's two catches kept neither, and a
+        /// run wrote no line for such a set beyond its present line. None for a set asking what
+        /// the file asks.
+        /// </summary>
         public IList<string> Lines()
         {
             List<string> lines = new List<string>();
+
+            if (CouldNotRead)
+            {
+                lines.Add("SET NOT READ " + Path);
+                lines.Add("   it asks  : " + AskedNow() + ", "
+                    + (whyNotRead.Length == 0 ? "and why is UNKNOWN" : "because " + whyNotRead));
+                lines.Add("   file asks: " + WantedNow());
+                return lines;
+            }
+
+            if (!Drifted)
+            {
+                return lines;
+            }
+
             lines.Add("SET DRIFT " + Path);
             lines.Add("   it asks  : " + AskedNow());
             lines.Add("   file asks: " + WantedNow());

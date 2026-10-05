@@ -41,10 +41,12 @@ namespace Federator.Addin.Engine
         /// read until 5w measured that it works on every set of all ten of his groups.
         /// A search that will not read comes back as NOT READ and is never called
         /// drifted, the way a census count that could not be taken is never called a move.
+        /// Why it would not read goes with it, and SetDrift.Lines says it in the run log.
         /// </summary>
         private static SetDrift DriftOf(PlannedSet planned, SelectionSet existing)
         {
             List<ReadCondition> asked = null;
+            string whyNotRead = null;
 
             try
             {
@@ -61,15 +63,22 @@ namespace Federator.Addin.Engine
                         }
                     }
                 }
+                else
+                {
+                    whyNotRead = "it holds no search, it is a selection of items";
+                }
             }
-            catch (Exception)
+            catch (Exception error)
             {
+                // Carried, not swallowed: the error's type and message go to Core with the set,
+                // and BuildOne writes them in its SET NOT READ lines in the run log.
                 asked = null;
+                whyNotRead = error.GetType().Name + ": " + error.Message;
             }
 
             // The file's side is keyed in Core off the planned set, FR-015, so the two sides
             // are put in one shape by one rule.
-            return SetDrift.Compare(asked, planned);
+            return SetDrift.Compare(asked, planned, whyNotRead);
         }
 
         /// <summary>
@@ -84,11 +93,12 @@ namespace Federator.Addin.Engine
             string test = TestOf(condition.Comparison);
             int flags = (int)condition.Options;
             string value;
+            string whyNot;
 
             // FR-017. A value that would not read is UNKNOWN in Core, never an empty value.
-            return ValueOf(condition.Value, out value)
+            return ValueOf(condition.Value, out value, out whyNot)
                 ? new ReadCondition(category, property, test, value, flags)
-                : ReadCondition.Unread(category, property, test, flags);
+                : ReadCondition.Unread(category, property, test, flags, whyNot);
         }
 
         /// <summary>
@@ -109,13 +119,14 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// A condition's value as text, read BY ITS KIND through ClashHarvest.Text, addin.md, so a
         /// value that is not a string reads rather than throwing, FR-017. False where it still
-        /// would not read, and the caller marks it unread in Core, which says UNKNOWN. It used to
-        /// read every kind but an identifier as a display string and give an empty string for the
-        /// throw, so the set was called drifted asking for "".
+        /// would not read, with why, and the caller marks it unread in Core, which says UNKNOWN.
+        /// It used to read every kind but an identifier as a display string and give an empty
+        /// string for the throw, so the set was called drifted asking for "".
         /// </summary>
-        private static bool ValueOf(VariantData value, out string text)
+        private static bool ValueOf(VariantData value, out string text, out string whyNot)
         {
             text = string.Empty;
+            whyNot = null;
 
             if (value == null)
             {
@@ -127,10 +138,12 @@ namespace Federator.Addin.Engine
                 text = ClashHarvest.Text(value);
                 return true;
             }
-            catch (Exception)
+            catch (Exception error)
             {
-                // Said, not swallowed: the condition is marked unread and its set reads UNKNOWN
-                // in the SET DRIFT lines and is never called drifted or rebuilt.
+                // Carried, not swallowed: the error's type and message ride on the unread
+                // condition, and BuildOne writes them in the set's SET NOT READ lines in the run
+                // log, SetDrift.Lines. The set is never called drifted and never rebuilt.
+                whyNot = error.GetType().Name + ": " + error.Message;
                 return false;
             }
         }
@@ -757,6 +770,7 @@ namespace Federator.Addin.Engine
                         // question and called a set wrong that had just been corrected.
                         IList<ReadCondition> asking = drift.CouldNotRead ? null : drift.Asked;
                         string askedNow = drift.AskedNow();
+                        SetDrift after = null;
 
                         // AND AFTER A REBUILD THROUGH A PARENT RESOLVED FRESH, FR-019. The one
                         // from EnsureFolders was held across the ReplaceWithCopy, and a handle
@@ -776,7 +790,7 @@ namespace Federator.Addin.Engine
 
                                     if (rebuilt)
                                     {
-                                        SetDrift after = DriftOf(planned, now);
+                                        after = DriftOf(planned, now);
                                         asking = after.CouldNotRead ? null : after.Asked;
                                         askedNow = after.AskedNow();
                                     }
@@ -813,18 +827,31 @@ namespace Federator.Addin.Engine
                         // and the lines never claim it asks what the file asks, FR-021.
                         outcome.AddDrift(drift, rebuilt);
 
+                        // Core decides which sets have lines and what they say: the old question
+                        // and the new one for a drifted set, and for one whose search or a value
+                        // in it would not read, what would not read and why. None for a set
+                        // asking what the file asks.
+                        foreach (string line in drift.Lines())
+                        {
+                            log.Line("SET      " + line);
+                        }
+
                         if (drift.Drifted)
                         {
-                            foreach (string line in drift.Lines())
-                            {
-                                log.Line("SET      " + line);
-                            }
-
                             log.Line("SET      " + (!rebuilt
                                 ? "   left alone. Tick \"" + SetRebuildSettings.TickLabel + "\" to rebuild it, Q72"
                                 : found < 0
                                     ? "   REBUILT from the picked file, and it could not be found again to count, so what it finds is UNKNOWN"
                                     : "   REBUILT from the picked file, and it now finds " + found + " item(s). The clash tests pointing at it keep their results and their statuses, 5v"));
+                        }
+
+                        // A rebuilt set read again whose search would not read says why as well.
+                        if (after != null && after.CouldNotRead)
+                        {
+                            foreach (string line in after.Lines())
+                            {
+                                log.Line("SET      " + line);
+                            }
                         }
 
                         return;
