@@ -117,7 +117,7 @@ holds them. Each area takes the F number shown.
   - F113 clash counts: FR-031, FR-032, FR-033, FR-034
   - F116 the clash XML: FR-008, FR-009, FR-025, FR-026, FR-030. Noise kept here: FR-030, Bader put the XML corrections of Q102 to Q104 in wave 1
 - Wave 2, in three parts since Bader's views by team, Q114, each part at most three areas:
-  - 2a, F127 coverage first, Bader's request 2: FR-176
+  - 2a, F127 coverage first, Bader's request 2: FR-176, and FR-190 found by F132's Core half
   - 2a, F132 mirrored tests, Q114: FR-182, FR-183. F127 and F132 both change which tests are created and run, so they merge one after the other, F127 first
   - 2a, F115 sets: FR-010, FR-011, FR-012, FR-013, FR-014, FR-015, FR-016, FR-017, FR-018, FR-019, FR-020, FR-021, FR-022, FR-023, FR-024, FR-027
   - 2b, F131 teams, Q114: FR-180, FR-181. It merges before F114, which reads the team pairs
@@ -4684,6 +4684,18 @@ was done, what the test showed, and anything for Bader.
   the list was written, so outside the counts of the table below
 - Proof: a Core member of RunLog that takes the publish result, with a test that breaks it, then
   a run where the publish is made to fail if one can be made safely
+
+### FR-190 skip-reasons-in-order-leave-out-no-tolerance
+
+- Sources: F132's Core half, turn5\f132-finding-notolerance.txt. Area F127, wave 2a, since its
+  coverage names a reason for every test
+- Evidence: ClashRunOutcome.SkipReasonsInOrder, src\Federator.Core\Clash\ClashRunOutcome.cs about
+  lines 479 to 492, leaves out ClashSkipReason.NoTolerance, which F45 added at 6442977, so a test
+  the XML gives no tolerance is counted under tests skipped but named on no SKIPPED line and no
+  reason row of the CLASH block. F132's test over every skip reason failed on NoTolerance alone
+- Root cause: the reason list was not extended when the reason was added
+- Class: silent wrong number, a skip counted and never said
+- Proof: a Core test over every skip reason, which fails today on NoTolerance
 
 ## Bader's views by team, FR-180 to FR-188
 

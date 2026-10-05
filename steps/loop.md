@@ -493,7 +493,8 @@ OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its ch
 - Q110, a skipped group creates only the tests whose sides both find something, where his answer
   also says the NWF is built with all its tests, and Q111, a model that names no site at all still
   fails its group with the rule on, both from F112's readings and on main since F112 merged, and
-  Q125, a group that runs no clash test with a model off the shared coordinates.
+  Q125, a group that runs no clash test with a model off the shared coordinates. Q124's note of
+  03:20: under A the ceiling of Q84 closes the C04 run at about 09:17 if it has not ended.
 - Q126 and Q127, written on 2026-10-05 from the design of F127, turn5\f127-design.md: a group
   whose clash is skipped has no workbook for the Coverage sheet, and how RESULT counts the XML's
   tests, each with the choice the build goes on with until he answers.
