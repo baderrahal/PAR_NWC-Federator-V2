@@ -1,7 +1,156 @@
 # log
 
 Newest entry at the top.
-## 2026-10-05 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 4 on the readers' findings of attempt 3, after attempt 3 on Bader's answer B to Q119, written by the lead's delegate
+## 2026-10-05 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 5 on the readers' findings of attempt 4, after attempt 3 on Bader's answer B to Q119, written by the lead's delegate
+
+### Attempt 5, on the readings of attempt 4
+
+The readers' findings are in %LOCALAPPDATA%\NwcFederatorLoop\turn5\f114-a4-result.json under
+reads, the reviewer's in reads[0], APPROVE, and the breaker's in reads[1], CHANGES with one
+blocking finding. Below, R and a number is the reviewer's finding of that index and B and a number
+the breaker's, both of attempt 4. B0 blocked.
+
+THIS IS THE THIRD ATTEMPT ON ONE CLASS, check 3 or 4 counted as holding over a name it could not
+tie to a model: attempt 3 on a read back missing, attempt 4 on a home that matched no model, and
+B0 here on a hidden model read back that matched no model. By the house rule a finding that
+survives three attempts goes to Bader, so this attempt closes the class whole and not for one
+input, as the lead asked. Should a reader find the class open again, what was tried and what each
+run showed is in the attempt 3, 4 and 5 sections of this entry.
+
+MAIN 503eaa4 IS TAKEN IN at 5bfa246, the records of PR 121: Bader's answer D to Q133, Q128 carried
+out whole, and Q134. Only steps\02_questions.md and steps\loop.md changed on main, and neither
+conflicted. Message in turn5\f114-a5-msg-merge-main.txt.
+
+Core tests, all with 0 skipped:
+- 2119 passed, 0 failed before, at 5bfa246 after the merge, by its pre-commit,
+  turn5\f114-a5-precommit-merge-main.txt, and again by hand, turn5\f114-a5-core-before.txt
+- the 6 new check tests against 5bfa246 with no change to src, 6 failed and 55 passed of the 61
+  tests in ViewsTreeCheckTests and WhatAViewShowsTests, turn5\f114-a5-before-fail.txt. The new
+  ShownModels test did not compile, 1 error, the use of `ShownModels.HomesOfManyModels`,
+  turn5\f114-a5-before-compile.txt. With that member a stub naming nothing and nothing else
+  changed, 7 failed and 55 passed of 62, turn5\f114-a5-before-fail-2.txt. Each failed on its own
+  assert: Expected False But was True for the five that held, and for the null painted item the
+  failure line the read back does not show
+- 2126 passed, 0 failed after, at 8626019 by its pre-commit, turn5\f114-a5-precommit-code.txt, and
+  by hand after the build, turn5\f114-a5-core-after.txt. 7 new tests, none deleted, none weakened,
+  2119 and 7 is 2126. The records commit changes no code
+
+The solution builds whole at 8626019, the last code commit, with --no-incremental, Federator.Core,
+Federator.Core.Tests and Federator.Addin each built, 0 warnings and 0 errors, exit 0, with git
+rev-parse --short HEAD and an empty git status at its top, turn5\f114-a5-build-code.txt.
+check-locals and check-imports pass on src at 8626019, turn5\f114-a5-checks.txt, and in the
+pre-commit of 8626019.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, perl for edits of text
+  files in the worktree, and powershell for the process reads. None of them starts a Navisworks.
+  One command of this pass also called python with an empty script, which waited on its input.
+  Its two processes, pids 42524 and 57868, both started at 16:43, were stopped by pid. They
+  touched no file
+- Get-Process Roamer read ONE ROAMER RUNNING at 16:22:33, before any work, pid 52324, started at
+  16:04:25, eighteen minutes before this pass began, turn5\f114-a5-roamer-before.txt. This pass
+  did not start it and did not touch it. Whose it was is UNKNOWN. None was running at 17:27:06,
+  after the code, the build and the tests, turn5\f114-a5-roamer-after.txt. This pass started no
+  Navisworks and touched none
+
+What was done, in 8626019:
+- B0, blocking. Root cause: check 3 read the models a view shows as every model no hidden name
+  matched, ViewsTreeCheck.cs:303 at 5bfa246, and the tree line the same, ViewsTree.cs:289, and a
+  hidden name that matched no model was passed over without a word. So a hidden read back of names
+  the stem rule does not reach, a display name with a dot or one that is not the file's name, read
+  as nothing hidden, every model counted as shown, and where none was of a third team check 3 held.
+  Where one was, it failed on a model the read back may well hide. The fix closes the class.
+  ONE RULE TIES EVERY NAME, `ModelNames`, new: the group's models kept under `ContainerName.Stem`
+  with `ContainerName.StemComparer`, new, the comparer `SameName` now reads for SimilarNames, so
+  the two cannot judge a name two ways. Its `Tie` gives, for a list of names, the models reached,
+  the models not reached, and each name blank, of no model or of more than one, in `NamesTied`,
+  new. The plan, the tree line and check 3 read it for the homes and for the hidden models read
+  back alike. `ModelTeam.IsAmong`, `ShownModels.GroupOf` and `ViewsTreeFacts.ModelsHandedIn` lost
+  their callers and are gone. A NAME NOT TIED IS NEVER COUNTED AS HOLDING: a view with a home or a
+  hidden name that is blank, of no model or of more than one is named in check 3's `NotRead` and
+  is not judged, since a model it would name as shown may be the one that name means. The tree
+  line counts the hidden names it could not tie. Failing first:
+  Check3RanInPartWhereAHiddenModelReadBackIsNoModelOfTheGroup, which also asserts no failure in a
+  group with a third team, and Check3RanInPartWhereAHiddenModelReadBackHasNoName
+- A NAME OF TWO MODELS, the lead's ask and the breaker's B1. A group gathered with subfolders can
+  hold one file name in two folders, and the stem rule tied a home to both and showed both with no
+  word. Such a home, or such a hidden name, is now named and the view is not judged. A home of two
+  models still shows both, `ShownModels.HomesOfManyModels`, new. The rule picks no exact full path
+  over the stem, because a second way to tie a name would be a second rule, register row F114-K26.
+  Failing first: Check3RanInPartWhereAHomeOrAHiddenNameIsTheNameOfTwoModels and
+  AHomeThatIsTheNameOfTwoModelsShowsBothAndIsNamedOnce. The first was written with its two Ducts
+  lines in the wrong order. After the fix it failed on that order alone, the Over 150mm view coming
+  after the pair's own view as the plan orders the views, and its two lines were put in the
+  plan's order. The words of each line were not changed
+- THE PAINTED SIDE. A painted read back holds item paths, `ItemPath`, and no name, so the matching
+  rule has nothing in it to tie. Check 4 ties a painted read back to the view's clashes by the
+  path, and the same class was open there: a clashing item that could not be pointed at is in no
+  paint plan, so check 4 held over a view whose paint of that item is UNKNOWN, and a null item read
+  back was counted as an item painted by mistake. Each now names the view in check 4's `NotRead`
+  and the view is not judged. Failing first:
+  Check4RanInPartWhereAClashingItemCouldNotBePointedAt and
+  Check4NamesAPaintedItemReadBackWithNoPathAsNotRead
+- A MODEL NO NAME CAN REACH, the breaker's B3, second half. A model whose file name has no stem was
+  counted as shown in every read back and judged by its team. It is named once in check 3's
+  `NotRead` and not judged. Failing first: Check3NamesAModelWithNoFileNameOnce
+- A CHOICE TO CHECK. In attempt 4 a view with a home not tied was named and still judged. It is
+  now named and not judged, the same as a hidden name not tied, for the same reason: a third team
+  it allows under Q118 A may be the model that home means
+
+The non-blocking findings of attempt 4 that break a house rule, fixed the same way:
+- R0, CLAUDE.md, the whole set passes off Windows. Three tests handed in backslash folders, which
+  only Windows splits. They write the folders with forward slashes, which both split, and assert
+  the same
+- R1 and R2, comments not true to the code. The NotRead doc and the class header of
+  `ViewsTreeCheck` name every kind of thing not read, `SecondHome` and `FirstHome` say a home may
+  be a path, a file name or a display name tied by `ModelNames`, and the two read back
+  dictionaries say what a name or a null item does
+- R3, a near copy. Check 4 kept its own copy of the read back lookup `HiddenOf` makes. Both kinds
+  are looked up in one place, `ViewsTreeFacts.ReadBackOf`, through `HiddenOf` and `PaintedOf`.
+  `StateOf` reads `view.Key` in place of building the same key again
+- B4, scale, in part. `ModelNames` takes each model's stem once per check, and `Tie` takes the
+  stem of each distinct text once, so a home repeated by 2566 clashes is read once per view, and
+  a name holding a character not legal in a path takes `Stem`'s catch once and not per comparison
+
+The rules: .claude\rules\core.md, the per test views bullet with the one rule `ModelNames` and a
+name not tied, and the VIEWS TREE bullet with A NAME OR AN ITEM NOT TIED IS NEVER COUNTED AS
+HOLDING. The F114 section of steps\01_next.md and its order line 45.
+
+### Known bugs, attempt 5
+
+Rows F114-K1 to F114-K25 stand as attempts 2 to 4 wrote them, each read again against 8626019,
+with the changes said here. None breaks a house rule of CLAUDE.md as read by this developer.
+
+- F114-K13 again, B2 of attempt 4, for Bader, unchanged. Check 3 tests a read back for a third
+  team's model alone, though the plan's hidden models are in hand. A read back that shows a model
+  of the pair's own team no clashing item lives in, hides a home, or hides nothing at all where the
+  plan hides some breaks Q119 B and not check 3. An empty hidden list is read as a view that hides
+  nothing, since the contract says null where not read
+- F114-K17 again, scale of the lines, a little worse. Check 3 now names each hidden name not tied
+  as well, never cut. The cost of the stems is fixed, B4 above
+- F114-K23, changed. Two models whose names differ only in extension or case, or one name in two
+  folders, are no longer matched silently: a name of both is named and the view not judged
+- F114-K24, unchanged, for the add-in pass. A display name with a dot, such as Level 1.5 AR, is cut
+  at the dot by `Stem` and misses, and is now named as no model of this group
+- F114-K26, new, for the lead or Bader. A home or a hidden name written as the full path of one of
+  two models of one file name is not tied, though the path tells them apart. Taking the exact path
+  first would be a second way to tie a name. Which is wanted is theirs to say
+- F114-K27, new, B3 of attempt 4, first half, wording. The tree line names models by code, so a
+  view of a group with two AR models that shows one and hides the other reads shows AR, hides AR
+- F114-K28, new, wording. Where no view's names can be tied, check 3 reads RAN IN PART, 0 broke it,
+  with every view named, and not DID NOT RUN. It is not counted as holding either way
+- K20, K21, K22 and K25 stand. B5 of attempt 3, Q117 C not carried, stands
+
+### Every file written outside the repo, attempt 5
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-a5-roamer-before.txt, f114-a5-msg-merge-main.txt, f114-a5-precommit-merge-main.txt,
+  f114-a5-core-before.txt, f114-a5-before-fail.txt, f114-a5-before-compile.txt,
+  f114-a5-before-fail-2.txt, f114-a5-msg-code.txt, f114-a5-precommit-code.txt,
+  f114-a5-build-code.txt, f114-a5-checks.txt, f114-a5-core-after.txt, f114-a5-roamer-after.txt,
+  f114-a5-msg-records.txt, f114-a5-precommit-records.txt and f114-a5-push.txt
+- for a while and then removed: turn5\ShownModels.stub-backup.cs, the source kept while the stub
+  ran, and the helper files of the text edits
 
 ### Attempt 4, on the readings of attempt 3
 
