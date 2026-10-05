@@ -220,3 +220,19 @@ jobs:
       - name: The workbook comparison names every fault it was written for
         shell: powershell
         run: powershell -NoProfile -ExecutionPolicy Bypass -File tools\loop\prove-compare.ps1
+
+      # F133, Bader's message of 5 Oct 2026, Q129. Status lives in steps\tracker.csv only, and
+      # steps\tracker.md is what tools\tracker\make-tracker.ps1 makes from it. This refuses a csv
+      # that does not parse, an id twice, an UNKNOWN id, an empty cell, a status off the list, an
+      # FR item of steps\fix-round.md with no row, and a tracker.md that is not what the script
+      # makes, each naming its line. Windows PowerShell 5.1, which this runner carries.
+      - name: The tracker reads clean and tracker.md is what its script makes
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File tools\tracker\check-tracker.ps1
+
+      # A check that only ever runs against a clean tree proves nothing. Each fixture under
+      # tools\tracker\fixtures is the good one with one thing broken, and the check has to name
+      # exactly its line, and the maker has to refuse a csv with a fault and write nothing.
+      - name: The tracker check names every fault it was written for
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File tools\tracker\prove-tracker.ps1

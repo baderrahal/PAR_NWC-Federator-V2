@@ -1,0 +1,29 @@
+# The work tracker
+
+Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
+
+- By status, of 6 rows: open 1, in progress 1, in review 0, merged 2, proven by a run 1, waiting for Bader 1, dropped 0
+- By wave: 1 3, 2a 2, none 1
+- In progress now: F2 the second area, and 0 FR items
+- Waits for Bader, 1 rows: Q1
+
+## Wave 1
+
+| id | short title | area | class | status | PR | run that proved it | date of last change |
+|---|---|---|---|---|---|---|---|
+| FR-001 | first item | F1 | noise | merged | 12 | none | 2026-10-05 |
+| FR-002 | second item, with a comma | F1 | noise | proven by a run | 13 | steps\runs\05 shows "it" | 2026-10-05 |
+| F1 | the first area | F1 | fix | merged | 12 | none | 2026-10-05 |
+
+## Wave 2a
+
+| id | short title | area | class | status | PR | run that proved it | date of last change |
+|---|---|---|---|---|---|---|---|
+| FR-003 | third \| item | F2 | noise | open | none | none | UNKNOWN |
+| F2 | the second area | F2 | fix | in progress | none, branch fix-F2 | none | 2026-10-05 |
+
+## none
+
+| id | short title | area | class | status | PR | run that proved it | date of last change |
+|---|---|---|---|---|---|---|---|
+| Q1 | a question | F2 | question | waiting for Bader | none | none | 2026-10-04 |
