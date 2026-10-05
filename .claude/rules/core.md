@@ -1490,17 +1490,23 @@ Bader's request 2 under Q112: after each group, every test of the picked XML, or
 tests saved in the document where none was picked, against what happened to it, with one
 reason for each test that has no results. The design is
 %LOCALAPPDATA%\NwcFederatorLoop\turn5\f127-design.md. Its Core steps 1 to 3 are built on
-branch fix-F127. The COVERAGE block, the Coverage sheet, the RESULT lines and the add-in half
-come after F116 merges and the probes of its section 5 are read, so NOTHING IN SRC CALLS THE
-COVERAGE YET and the branch is not merged before its add-in half.
+branch fix-F127, with main taken in after F116 merged, and the RESULT lines of the count
+check with them. The COVERAGE block, the Coverage sheet, the rest of RESULT and the add-in
+half come after the probes of its section 5 are read. NOTHING IN THE ADD-IN HANDS IN A
+COVERAGE YET, so a build of the branch writes that no coverage was taken, and the branch is
+not merged before its add-in half.
 
 - THE REASON IS THE RUNNER'S OWN RECORD, READ IN THE ORDER THE CODE APPLIES IT.
   `Federator.Core.Coverage.CoverageRule.For` takes the plan, the clash step's
   `ClashRunOutcome`, the discipline codes of the group's files and of every file of the run,
   and the settings that say which codes a set name carries, and gives one `TestCoverage` per
-  test in the order of the file. A test the plan dropped before the model, or one naming a
-  set not in the document, reads the test was not created, beside the words of
-  `ClashTestPlan.Describe`. F77's creation plan comes next, so a test it kept out of a group
+  test in the order of the file. A test of the picked file the plan dropped before the
+  model, or one naming a set not in the document, reads the test was not created, beside the
+  words of `ClashTestPlan.Describe`. With no XML picked the plan is read off the tests saved
+  in the document, and a saved test it drops, a type number this tool does not run or no
+  name, was read out of the document, so it reads already there and not run,
+  `CoverageReason.SavedTestNotRun`, with the plan's own words, and never the test was not
+  created. F77's creation plan comes next, so a test it kept out of a group
   whose clash the coordinates rule skipped keeps its side reason and never reads as a
   coordinates skip, which would hide every gap of the matrix on both wave buildings. Then
   the coordinates rule, the one discipline rule, the run time side check and the run
@@ -1519,8 +1525,10 @@ COVERAGE YET and the branch is not merged before its add-in half.
   group carries and a file of the run does reads the discipline is not in the group. A code
   a file of the group carries reads a side's set found no items in this group. A code no
   file of the run carries, FF, PL and DR on this project, a name carrying no code,
-  BLD-Security Devices, and a run whose codes were not handed in each say the set found no
-  items and that whether its discipline is in the group is UNKNOWN. Where both sides found
+  BLD-Security Devices, and a run whose codes were not handed in or a group whose files gave
+  no code, an empty set read as not read, each say the set found no items and that whether
+  its discipline is in the group is UNKNOWN, and never the definite the discipline is not in
+  the group. Where both sides found
   nothing the stronger is given in that order and both sets are named. On the exchange file
   with the counts of group 100000 of set 03's C06 run that is 36 tests both find, then 969,
   561, 255 and 9, held by a test
@@ -1528,8 +1536,10 @@ COVERAGE YET and the branch is not merged before its add-in half.
   UNKNOWN, and a side that did find nothing beside it still gives its reason, because a
   definite reason is given wherever one exists
 - TWO TESTS OF ONE NAME READ UNKNOWN, because the runner keys its record on the name and a
-  guess would hand one test the other's result. A group with no clash step reads UNKNOWN,
-  but for the tests the plan dropped itself
+  guess would hand one test the other's result. That holds for a test sharing its name with
+  one the plan dropped too, since the runner adds the plan's skips to its record first. The
+  dropped test keeps the plan's own reason, which the plan keys on its place in the file. A
+  group with no clash step reads UNKNOWN, but for the tests the plan dropped itself
 - EVERY KIND THE RUNNER RECORDS MAPS TO A REASON, `CoverageRule.ReasonFor`, and a test
   enumerates `ClashSkipReason`, so F132's Mirror fails it until it is mapped rather than
   reading UNKNOWN on every test it skips
@@ -1537,29 +1547,41 @@ COVERAGE YET and the branch is not merged before its add-in half.
   The design's row for a test that ran with its count UNKNOWN is not built, because the
   runner records a test as ran only once it has counted it and records it Failed otherwise
 - A CLASH COUNT IN CLASH DETECTIVE THAT DIFFERS FROM THE WORKBOOK ROWS IS A FAILED LINE, his
-  words, and it is F104's checks 1 and 2 restated in Core, `CountCheck.Judge`: the clash rows
-  under a test's block against the document's results at the top level, a result group
-  counting as one, and the Clashes cell against every clash in the test, the clashes inside
-  each group counted. Both exact. Agree only where both equal, or where the test is not in
-  the document and its block reads no row and Clashes nought, a test F77 did not create.
-  Failed for any other difference, for a test the document holds with no block, and for a
-  block with numbers that the document does not hold. NOT COMPARED, NEVER AGREE, where a
-  count on either side is minus one, a name is on two tests of one side, a test is in
-  neither, or the workbook or the document's counts were not read, with the reason. The
-  tests the document holds and the file does not are named and not judged.
-  compare-document.ps1 stays the independent witness, because this reads the document
-  through the add-in as the harvest does, and a check sharing the code it checks cannot catch
-  a fault common to both
-- WHERE THE RUN KNOWS WHY A COUNT DIFFERS, THE LINE SAYS IT: a test not run this run whose NWF
-  still holds an earlier run's results, the design's decision 4 at its default A, and
-  Resolved clashes Compact removed after the workbook's rows were read
+  words, and it is F104's checks 1 and 2 restated in Core, not copied, `CountCheck.Judge`:
+  the clash rows under a test's block against the document's results at the top level, a
+  result group counting as one, and the Clashes cell against every clash in the test, the
+  clashes inside each group counted. Both exact. Two differences from compare-document.ps1:
+  its check 2 names an empty result group, which the harvest counts as one clash, and this
+  has no such words, and a test in the workbook only whose every number is nought is counted
+  and not judged there, where here it is a test F77 did not create and agrees. Agree only
+  where both equal, or where a test the run did not hold as in the document is not there and
+  its block reads no row and Clashes nought. Failed for any other difference, for a test the
+  document holds with no block, and for a block with numbers that the document does not
+  hold. NOT COMPARED, NEVER AGREE, where a count on either side is minus one, the workbook's
+  included, so a block that could not be read whole is never a FAILED line, a name is on two
+  tests of one side, a test is in neither, a test the run holds as created or already there
+  was not returned by the read of the document, or the workbook or the document's counts
+  were not read, with the reason. The tests the document holds and the file does not are
+  named and not judged. compare-document.ps1 stays the independent witness, because this
+  reads the document through the add-in as the harvest does, and a check sharing the code it
+  checks cannot catch a fault common to both
+- WHERE THE RUN KNOWS WHY A COUNT DIFFERS, THE LINE SAYS IT, AND ONLY WHAT THE RECORD PROVES.
+  The runner records a test as Failed for a throw anywhere from its creation to its count,
+  its harvest included, and never as ran, so a Failed test is never said to be not run: one
+  created this run that Clash Detective holds results for ran this run and then threw before
+  its rows or count were taken, and any other says whether it ran is UNKNOWN, each with what
+  it threw. A test already in the document and not run this run still holds an earlier
+  run's results, the design's decision 4 at its default A, and only such a test is given
+  that cause. Compact is named where its count of Resolved clashes removed across the group
+  is at least the test's gap, and where it is fewer the line says so
 - THE DOCUMENT'S SIDE IS `DocumentTestCount`, plain numbers the add-in fills from one walk of
   the tests after the clash step, so they are what the NWF holds after Compact and include
   the tests a weekly run did not run. A count not taken is minus one and never zero.
   Statuses are not read, because they are not judged, PQ4 of F104 being unmeasured
 - THE CLIENT'S SHEET IS READ BACK TEST BY TEST, `Federator.Core.Report.WorkbookTests.Read`, by
   the name in column A, in both shapes: a full block gives the clash rows under it, counted
-  the way WorkbookCheck counts them, and its Clashes cell, and the one row of a test that
+  the way WorkbookCheck counts them, a second reader of one layout that is a known bug until
+  F118 makes the BLOCKS line read through this one, and its Clashes cell, and the one row of a test that
   found nothing, Q73, gives no rows and its Clashes cell. It takes a sheet of a workbook
   already open, so the file is loaded once. A name on two tests of the sheet, a test row with
   no name, a Clashes cell that is no whole number and a block with no clash table under it
@@ -1569,8 +1591,18 @@ COVERAGE YET and the branch is not merged before its add-in half.
   holds no test of that name, adds the reason where known, and ends saying the group keeps
   its own result. THE GROUP KEEPS IT BY CONSTRUCTION: GroupFacts has no coverage member and
   nothing in the coverage adds an error, which is his answer to the notes under Q112 and the
-  rule that a report check never fails a group. A test holds a DONE group beside a COVERAGE
-  FAILED line to groups done 1, groups failed 0 and Nothing failed in RESULT
+  rule that a report check never fails a group
+- RESULT CARRIES EVERY FAILED LINE, his answer, a FAILED line in COVERAGE and RESULT.
+  `CoverageAcrossTheRun` rolls in each group's check, and `RunLog.WriteResultBlock` takes it
+  beside the coordinates tally, handed in by the run and never kept on the log. It writes
+  `COVERAGE checked :` with how many were compared, agreed, FAILED in how many groups, and
+  not compared, a label that is not the FAILED prefix, then every FAILED line in full.
+  Nothing compared reads UNKNOWN and never nought FAILED, because both wave buildings skip
+  their clash under F112 and compare nothing. A group whose coverage could not be taken is
+  counted not checked. Where no group failed and no error was logged but a count differs,
+  RESULT closes on a line saying so and never on Nothing failed, and the group's count,
+  facts and judgement do not move. A run that hands in no coverage writes that none was
+  taken, because a missing line reads as a check that did not run
 - EVERY NUMBER THAT SHAPES THE COVERAGE IS A SETTING, `CoverageSettings`: the sheet's name,
   Coverage by default and refused where Excel would refuse it, by `SheetNames`' own rule, the
   examples named per reason, five off `RunLog.KeptOfARepeat`, the categories no set catches
@@ -1582,7 +1614,9 @@ COVERAGE YET and the branch is not merged before its add-in half.
   lower case hexadecimal characters, so a run says which bytes it read. Set 03's C06 run
   carried none, and its XML had to be told from the exchange file by its SET lines asking
   ME-PIPING where the exchange file asks ME-Piping. A file not there throws naming its path
-  and nothing is caught, because a fingerprint that could not be read is not one
+  and nothing is caught, because a fingerprint that could not be read is not one. It reads
+  the file again when asked, so a file changed during a run would be described by other
+  bytes than the plan parsed, a known bug for the add-in half to close
 - THE MIRRORED PAIRS OF Q114 POINT 5 ARE F132'S `MirrorRule.Pairs`, built on branch fix-F132
   before this design was written, though the design's step 3 names them. The COVERAGE block
   lists them off that one rule once both branches are on main, and F127 builds no second copy
