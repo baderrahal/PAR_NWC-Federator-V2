@@ -97,6 +97,14 @@ namespace Federator.Core.Clash
 
         public PlannedClashSide Right { get; private set; }
 
+        /// <summary>The same test under another name, everything else as it was, F132's mirror name.</summary>
+        internal PlannedClashTest Named(string name)
+        {
+            return new PlannedClashTest(
+                name, TestType, TestTypeName, ToleranceInFileUnits, FileUnits, Tolerance, DocumentUnits,
+                MergeComposites, Left, Right, FileIndex, Address);
+        }
+
         /// <summary>
         /// Both tolerances with both unit names. Which units ClashTest.Tolerance is
         /// measured in is UNKNOWN until a test runs against a real model, so both numbers

@@ -132,9 +132,17 @@ namespace Federator.Core.Report
             ImageFile = string.Empty;
             ImageLink = string.Empty;
             ImagePath = string.Empty;
+            FoundOnlyByMirror = string.Empty;
         }
 
         public string Name { get; set; }
+
+        /// <summary>
+        /// The name of the mirror test that alone found this clash, F132, Bader's answer D to
+        /// Q133, so the workbook and the view name it as found by the mirror only. Empty for a
+        /// clash the test itself found. Set by MirrorMerge and nothing else.
+        /// </summary>
+        public string FoundOnlyByMirror { get; internal set; }
 
         /// <summary>
         /// The client's Description column, which is the clash's own description and

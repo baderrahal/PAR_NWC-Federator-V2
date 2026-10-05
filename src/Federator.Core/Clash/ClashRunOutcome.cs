@@ -483,7 +483,6 @@ namespace Federator.Core.Clash
                     ClashSkipReason.SingleDiscipline,
                     ClashSkipReason.EmptySide,
                     ClashSkipReason.LocatorNotResolved,
-                    ClashSkipReason.Mirror,
                     ClashSkipReason.UnknownTestType,
                     ClashSkipReason.NoLocator,
                     ClashSkipReason.UnknownUnits,

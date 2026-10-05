@@ -385,14 +385,16 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// Moves every mirror the rule found out of the buildable list and into the skipped
-        /// list, F132, each naming the test it is a mirror of, so it is not created and not
-        /// run and its row in the workbook says why. The rule is the one built over this
-        /// plan's own buildable tests, and a test is matched as the same object. A rule built
-        /// over another list would move nothing while its lines said each mirror is not run,
-        /// so a mirror that is not one of this plan's buildable tests is refused.
+        /// The same plan with every mirror the rule found under the name it is created and
+        /// run under, F132, Bader's answer D to Q133, so both tests of a pair are created and
+        /// run and the mirror stays in Clash Detective with its name ending as the setting
+        /// says. A mirror read off the document keeps its name and its address. The rule is
+        /// the one built over this plan's own buildable tests, and a test is matched as the
+        /// same object. A rule built over another list would rename nothing while its lines
+        /// named each mirror by its new name, so a mirror that is not one of this plan's
+        /// buildable tests is refused.
         /// </summary>
-        public ClashTestPlan WithoutMirrors(MirrorRule mirrors)
+        public ClashTestPlan WithMirrorsNamed(MirrorRule mirrors)
         {
             if (mirrors == null)
             {
@@ -400,39 +402,35 @@ namespace Federator.Core.Clash
             }
 
             HashSet<PlannedClashTest> ours = new HashSet<PlannedClashTest>(buildable);
-            Dictionary<PlannedClashTest, MirrorPair> byMirror = new Dictionary<PlannedClashTest, MirrorPair>();
+            Dictionary<PlannedClashTest, string> byMirror = new Dictionary<PlannedClashTest, string>();
 
             foreach (MirrorPair pair in mirrors.Pairs)
             {
                 if (!ours.Contains(pair.Mirror))
                 {
                     throw new ArgumentException(
-                        "The mirror rule was built over other tests than this plan's, so it would move nothing "
-                            + "while its lines say each mirror is not run. " + pair.Mirror.Name + " is not one of them.",
+                        "The mirror rule was built over other tests than this plan's, so it would rename nothing "
+                            + "while its lines name each mirror by its new name. " + pair.Mirror.Name
+                            + " is not one of them.",
                         "mirrors");
                 }
 
-                byMirror[pair.Mirror] = pair;
+                byMirror[pair.Mirror] = pair.MirrorName;
             }
 
-            List<PlannedClashTest> stillBuildable = new List<PlannedClashTest>();
-            List<SkippedClashTest> nowSkipped = new List<SkippedClashTest>(skipped);
+            List<PlannedClashTest> named = new List<PlannedClashTest>();
 
             foreach (PlannedClashTest test in buildable)
             {
-                MirrorPair pair;
+                string name;
 
-                if (byMirror.TryGetValue(test, out pair))
-                {
-                    nowSkipped.Add(new SkippedClashTest(test.Name, ClashSkipReason.Mirror, pair.Why(), test.FileIndex));
-                    continue;
-                }
-
-                stillBuildable.Add(test);
+                named.Add(byMirror.TryGetValue(test, out name) && !string.Equals(name, test.Name, StringComparison.Ordinal)
+                    ? test.Named(name)
+                    : test);
             }
 
             return new ClashTestPlan(
-                Source, TestsInFile, DocumentUnits, stillBuildable, nowSkipped, unknownTestTypes);
+                Source, TestsInFile, DocumentUnits, named, new List<SkippedClashTest>(skipped), unknownTestTypes);
         }
 
         private static string Unresolved(bool leftKnown, bool rightKnown, PlannedClashTest test)
@@ -509,8 +507,6 @@ namespace Federator.Core.Clash
                     return "the group's models are not on the same shared coordinates, so its clash is skipped";
                 case ClashSkipReason.Failed:
                     return "creating or running it threw";
-                case ClashSkipReason.Mirror:
-                    return "a mirror of a test that is kept, the same two sets swapped";
                 default:
                     return "UNKNOWN";
             }
