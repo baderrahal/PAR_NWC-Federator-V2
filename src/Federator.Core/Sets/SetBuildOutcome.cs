@@ -237,14 +237,17 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// True when this build put at least one set into the document. That is what
-        /// decides whether the NWF is saved again after the sets. A set already there
-        /// was left alone and put nothing in, so it does not count either way: a rerun
-        /// that finds sixty present and creates one still put one in.
+        /// True when this build changed the document: a set created, a drifted set rebuilt
+        /// from the picked file, FR-020, or a set the file no longer names removed or renamed.
+        /// That is what decides whether the NWF is saved again after the sets. A set already
+        /// there and left alone put nothing in, so it does not count either way: a rerun that
+        /// finds sixty present and creates one still put one in. A rebuild was left out, so
+        /// with no test created or run the NWD was published from the rebuilt document and
+        /// the NWF on disk kept the old sets.
         /// </summary>
         public bool PutAnythingIn
         {
-            get { return CreatedCount > 0; }
+            get { return CreatedCount > 0 || RebuiltCount > 0 || ActedOnLeftovers > 0; }
         }
 
         /// <summary>Created sets that found at least one item.</summary>

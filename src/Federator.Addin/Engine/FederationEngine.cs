@@ -2677,7 +2677,9 @@ namespace Federator.Addin.Engine
                     return false;
                 }
 
-                return sets.PutAnythingIn || sets.ActedOnLeftovers > 0;
+                // Every change the sets made, a set created, rebuilt or brought up to date as a
+                // leftover, is in the one answer Core keeps, FR-020.
+                return sets.PutAnythingIn;
             }
             catch (Exception error)
             {

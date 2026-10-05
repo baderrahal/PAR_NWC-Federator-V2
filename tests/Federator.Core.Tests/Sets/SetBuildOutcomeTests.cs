@@ -314,6 +314,69 @@ namespace Federator.Core.Tests
             Assert.That(outcome.TotalItems, Is.EqualTo(3), "the present sets do not add their items");
         }
 
+        /// <summary>
+        /// A SET REBUILT FROM THE PICKED FILE CHANGED THE DOCUMENT, FR-020. ReplaceWithCopy puts
+        /// a new set in the slot, and with nothing created the sets step did not ask for the
+        /// NWF to be saved, so where no test was created or run the NWD was published from the
+        /// rebuilt document and the NWF on disk kept the old sets.
+        /// </summary>
+        [Test]
+        public void ADriftRebuiltWithNothingCreatedPutSomethingIn()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Ducts", "Ducts", 1, 12);
+            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), true);
+
+            Assert.That(outcome.CreatedCount, Is.EqualTo(0));
+            Assert.That(outcome.RebuiltCount, Is.EqualTo(1));
+            Assert.That(outcome.PutAnythingIn, Is.True);
+        }
+
+        /// <summary>A drift left alone, the box off, changed nothing.</summary>
+        [Test]
+        public void ADriftLeftAlonePutNothingIn()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Ducts", "Ducts", 1, 12);
+            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), false);
+
+            Assert.That(outcome.PutAnythingIn, Is.False);
+        }
+
+        /// <summary>
+        /// A leftover removed or renamed changed the document too, which the engine added beside
+        /// this answer. Now the one answer holds every change the sets step makes, FR-020.
+        /// </summary>
+        [Test]
+        public void ALeftoverActedOnPutSomethingIn()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            IList<LeftoverSet> leftovers = SetLeftovers.For(
+                new List<DocumentSet> { new DocumentSet("a/Old", "Old", new List<string> { "k" }, 0) },
+                new List<string> { "New" });
+
+            outcome.AddLeftover(leftovers[0], false);
+            Assert.That(outcome.PutAnythingIn, Is.False, "a leftover not acted on changed nothing");
+
+            outcome.AddLeftover(leftovers[0], true);
+            Assert.That(outcome.PutAnythingIn, Is.True);
+        }
+
+        private static SetDrift OneDrift(string path)
+        {
+            return SetDrift.Compare(
+                new List<ReadCondition> { new ReadCondition("LcRevitData_Element", EmptySets.WorksetProperty, "equals", "ME-DUCTWORK") },
+                new PlannedSet(
+                    path.Substring(path.LastIndexOf('/') + 1),
+                    path,
+                    new List<string>(),
+                    new List<PlannedCondition>
+                    {
+                        new PlannedCondition(
+                            ConditionTest.Equals, 0, "LcRevitData_Element", "Element", EmptySets.WorksetProperty, "Workset", "wstring", "ME-Ductwork")
+                    }));
+        }
+
         [Test]
         public void APresentLineCarriesItsItemCountAndIsNotCreated()
         {
