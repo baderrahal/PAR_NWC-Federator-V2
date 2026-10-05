@@ -316,6 +316,58 @@ namespace Federator.Core.Sets
             }
         }
 
+        /// <summary>Sets already there that found at least one item, FR-022.</summary>
+        public int PresentFindingItemsCount
+        {
+            get { return PresentWhere(result => result.ItemCount > 0); }
+        }
+
+        /// <summary>Sets already there that found nothing. One whose count is UNKNOWN is not among them, FR-018.</summary>
+        public int PresentZeroCount
+        {
+            get { return PresentWhere(result => result.ItemCount == 0); }
+        }
+
+        /// <summary>Sets already there whose count could not be taken, FR-018.</summary>
+        public int PresentNotCountedCount
+        {
+            get { return PresentWhere(result => result.ItemCount < 0); }
+        }
+
+        /// <summary>The items the sets already there found, a count not taken left out.</summary>
+        public int PresentItems
+        {
+            get
+            {
+                int total = 0;
+
+                foreach (SetResult result in results)
+                {
+                    if (result.Present && result.ItemCount > 0)
+                    {
+                        total += result.ItemCount;
+                    }
+                }
+
+                return total;
+            }
+        }
+
+        private int PresentWhere(Func<SetResult, bool> counts)
+        {
+            int count = 0;
+
+            foreach (SetResult result in results)
+            {
+                if (result.Present && counts(result))
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
         private int Count(bool created, bool withItems)
         {
             int count = 0;
@@ -358,10 +410,19 @@ namespace Federator.Core.Sets
                     : "This file holds no sets. Nothing to build.";
             }
 
-            return CreatedCount + " created, "
-                + AlreadyPresentCount + " already there, "
-                + FindingItemsCount + " finding items, "
-                + ZeroCount + " at zero"
+            // FR-022. The finding and zero counts sit beside the kind of set they count. They
+            // followed both counts and counted the sets created alone, so a weekly run whose
+            // sets were all already there read 0 finding items and 0 at zero.
+            return CreatedCount + " created"
+                + (CreatedCount > 0
+                    ? " (" + FindingItemsCount + " finding items, " + ZeroCount + " at zero)"
+                    : string.Empty)
+                + ", " + AlreadyPresentCount + " already there"
+                + (AlreadyPresentCount > 0
+                    ? " (" + PresentFindingItemsCount + " finding items, " + PresentZeroCount + " at zero"
+                        + (PresentNotCountedCount > 0 ? ", " + PresentNotCountedCount + " not counted" : string.Empty)
+                        + ")"
+                    : string.Empty)
                 + (FailedCount > 0 ? ", " + FailedCount + " failed" : string.Empty)
                 + (SkippedCount > 0 ? ", " + SkippedCount + " skipped" : string.Empty)
                 + ".";
@@ -388,7 +449,12 @@ namespace Federator.Core.Sets
             lines.Add(string.Empty);
             lines.Add("ran against       : "
                 + (string.IsNullOrEmpty(OpenDocument) ? "UNKNOWN" : OpenDocument));
+            // FR-022. Each count sits under the kind of set it counts, the created and the
+            // already there, and said nowhere that it counted only the sets created.
             lines.Add("sets created      : " + CreatedCount);
+            lines.Add("   finding items  : " + FindingItemsCount);
+            lines.Add("   at zero        : " + ZeroCount);
+            lines.Add("   items found    : " + TotalItems);
 
             if (AlreadyPresentCount > 0)
             {
@@ -442,9 +508,16 @@ namespace Federator.Core.Sets
                 {
                     lines.Add("      " + NotRead.Count + " more could not be read, so " + WhetherTheyAsk(NotRead.Count));
                 }
+
+                lines.Add("   finding items  : " + PresentFindingItemsCount);
+                lines.Add("   at zero        : " + PresentZeroCount);
+                lines.Add("   items found    : " + PresentItems);
+
+                if (PresentNotCountedCount > 0)
+                {
+                    lines.Add("   not counted    : " + PresentNotCountedCount + ", not found again to count, so what they find is UNKNOWN");
+                }
             }
-            lines.Add("sets finding items: " + FindingItemsCount);
-            lines.Add("sets at zero      : " + ZeroCount);
 
             if (FailedCount > 0)
             {
@@ -456,7 +529,6 @@ namespace Federator.Core.Sets
                 lines.Add("sets skipped      : " + SkippedCount);
             }
 
-            lines.Add("items found       : " + TotalItems);
             return lines;
         }
     }

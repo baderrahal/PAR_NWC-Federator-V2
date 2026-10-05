@@ -88,11 +88,14 @@ namespace Federator.Core.Tests
                 "created should be exactly those finding items plus those at zero");
             Assert.That(outcome.TotalItems, Is.EqualTo(147));
 
+            // The labels sit under the count of the sets created since FR-022, which said
+            // nowhere that they counted only those. The numbers are the same.
             string all = string.Join(Environment.NewLine, new List<string>(outcome.Lines()).ToArray());
-            Assert.That(all, Does.Contain("sets created      : 4"));
-            Assert.That(all, Does.Contain("sets finding items: 2"));
-            Assert.That(all, Does.Contain("sets at zero      : 2"));
-            Assert.That(all, Does.Contain("items found       : 147"));
+            Assert.That(all, Does.Contain(
+                "sets created      : 4" + Environment.NewLine
+                + "   finding items  : 2" + Environment.NewLine
+                + "   at zero        : 2" + Environment.NewLine
+                + "   items found    : 147"));
         }
 
         [Test]
@@ -207,8 +210,8 @@ namespace Federator.Core.Tests
             string all = string.Join(Environment.NewLine, new List<string>(outcome.Lines()).ToArray());
 
             Assert.That(all, Does.Contain("sets created      : 0"));
-            Assert.That(all, Does.Contain("sets finding items: 0"));
-            Assert.That(all, Does.Contain("sets at zero      : 0"));
+            Assert.That(all, Does.Contain("   finding items  : 0"));
+            Assert.That(all, Does.Contain("   at zero        : 0"));
             Assert.That(all, Does.Not.Contain("sets that failed"));
             Assert.That(all, Does.Not.Contain("sets skipped"));
         }
@@ -443,8 +446,51 @@ namespace Federator.Core.Tests
             outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Three", "Three", 2, 5);
             outcome.AddFailed("lcop_selection_set_tree/A/Four", "Four", 1, "it threw");
 
+            // The finding and zero counts sit beside the kind of set they count since FR-022.
             Assert.That(outcome.Summary(),
-                Is.EqualTo("2 created, 1 already there, 1 finding items, 1 at zero, 1 failed."));
+                Is.EqualTo("2 created (1 finding items, 1 at zero), 1 already there (1 finding items, 0 at zero), 1 failed."));
+        }
+
+        /// <summary>
+        /// THE SETS ALREADY THERE ARE COUNTED TOO, FR-022. A weekly run where every set is
+        /// already there read 0 finding items and 0 at zero while the present sets found
+        /// thousands of items and many found none, because both counts were of the sets this
+        /// build created, and nothing in the words said so. The created counts stay as they are.
+        /// </summary>
+        [Test]
+        public void SixtyOnePresentWithThirtyEightAtZeroDoNotReadAsNoneFindingAndNoneAtZero()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+
+            for (int i = 0; i < 61; i++)
+            {
+                outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Set" + i, "Set" + i, 1, i < 38 ? 0 : 100);
+            }
+
+            Assert.That(outcome.FindingItemsCount, Is.EqualTo(0), "the created count stays");
+            Assert.That(outcome.ZeroCount, Is.EqualTo(0), "the created count stays");
+            Assert.That(outcome.PresentFindingItemsCount, Is.EqualTo(23));
+            Assert.That(outcome.PresentZeroCount, Is.EqualTo(38));
+            Assert.That(outcome.Summary(), Is.EqualTo("0 created, 61 already there (23 finding items, 38 at zero)."));
+
+            string all = string.Join(Environment.NewLine, new List<string>(outcome.Lines()).ToArray());
+            Assert.That(all, Does.Contain(
+                "   finding items  : 23" + Environment.NewLine
+                + "   at zero        : 38" + Environment.NewLine
+                + "   items found    : 2300"));
+        }
+
+        /// <summary>A present set whose count is UNKNOWN, FR-018, is in neither count and is said apart.</summary>
+        [Test]
+        public void APresentSetNotCountedIsInNeitherPresentCount()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent("a/One", "One", 1, 0);
+            outcome.AddAlreadyPresent("a/Two", "Two", 1, SetResult.NotCounted);
+
+            Assert.That(outcome.PresentZeroCount, Is.EqualTo(1));
+            Assert.That(outcome.PresentFindingItemsCount, Is.EqualTo(0));
+            Assert.That(outcome.Summary(), Is.EqualTo("0 created, 2 already there (0 finding items, 1 at zero, 1 not counted)."));
         }
 
         [Test]
