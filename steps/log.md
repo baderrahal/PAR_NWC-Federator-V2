@@ -2,6 +2,189 @@
 
 Newest entry at the top.
 
+## 2026-10-05 The loop, turn 5, F115 the sets area of the fix round, DONE in Core and built, wave 2a, FR-010 to FR-024 and FR-027
+
+Written by the developer of F115 as the lead's delegate, on the lead's task of turn 5, which
+named this entry. The task was given in the session and is kept in no file, beside the briefs
+turn5\f115-brief.md and turn5\area-brief-common.md.
+
+Core tests, all with 0 skipped:
+- 1912 passed and 0 failed before the first change, at 7793b9e, turn5\f115-core-before.txt
+- 1956 passed and 0 failed after the last code commit, 3c60036, at its pre-commit,
+  turn5\f115-precommit-ctor.txt, and again at the merge of main, f115-precommit-merge.txt. The
+  run kept whole after the records commit is turn5\f115-core-after.txt, read after this entry was
+  written. The 44 more are F115's own, and no test was deleted
+- every run above but the pre-commit files, which run the tests quietly, also lists the one
+  [Explicit] generator test, WriteTheCorrectedFile, as skipped, and the adapter does not count it
+
+Build: every code commit built the whole solution, dotnet build ParsonsNwcFederator.sln -c
+Release, Federator.Core, Federator.Core.Tests and Federator.Addin each built, with 0 warnings and
+0 errors. The build kept whole with --no-incremental, git rev-parse --short HEAD and a clean git
+status at its top is turn5\f115-build-after.txt, on the records commit, which changes no code,
+read after this entry was written. check-locals and check-imports pass at every pre-commit and in
+turn5\f115-checks-after.txt.
+Every file named is under %LOCALAPPDATA%\NwcFederatorLoop\turn5 unless it is a path of the repo.
+
+Programs and Navisworks:
+- started dotnet build, dotnet test, git, python for the edit scripts and the stub runs, sh for
+  the stub runs and, through the pre-commit, the checks, powershell for the Roamer reads, and Git
+  Bash's own tools such as grep, sed, diff, cp, file and tail. None of them starts a Navisworks
+- Get-Process Roamer read one process, 32136, started 2026-10-04 21:17:06, before the first
+  command of the session, the time of that read not kept, and at 04:37:16 before the first edit,
+  turn5\f115-roamer-before.txt. The read after the push is turn5\f115-roamer-after.txt. Two reads
+  of one process cannot exclude a Navisworks started and closed between them
+
+### What was done
+
+Each item is its own commit with its tests. Each test file was first run against a stub, the
+change with the old behaviour put back in its new members, and the stub's diff, the git status
+and the failing output are kept in turn5\f115-fr0NN-before-fail.txt, one file per item with a
+Core test. Against the code before the change most of the new tests do not build.
+
+- FR-015, 8a7a52e. The drift key carried no flag and the add-in read every comparison but
+  contains as equals. `PlannedCondition.QuestionFlagsOf` is the one rule for the bits part of
+  the question, 32 and 64, never the Ignore bits, and `ReadCondition.KeyOf` the one shape of a
+  key, read for the file's side by `PlannedCondition.Key`. SetBuilder.KeyOf is gone,
+  `SetDrift.Compare` takes the planned set, and SetBuilder reads `Options` and names another
+  comparison by its own name. MatrixCorrections.NegateCondition, F116's file, is the plan's
+  constant, one line. 6 new tests, 4 failing on the stub. SetDriftTests' older tests build their
+  file side as planned sets, every assert kept
+- FR-016, 6ea7e46. `PlannedSet.Describe` describes any conditions, so AskedNow brackets the
+  document's groups and joins them with or, WantedNow is the planned set's own, a negation reads
+  not and another comparison its name. SetDrift.Wanted, read by nothing in src, is gone. 3 new
+  tests, 3 failing
+- FR-023, 050e0a0. A negated category is not one asked, and a set of Or groups where only some
+  ask an unknown category is named with how many do. The corrected matrix reads 13 sets where it
+  read 14, and that pin moved with its reason and an assert that BLD-EL-Devices is not named.
+  HealthCheckResult.cs changed in a comment. 3 new tests, 2 failing, and the moved pin failing
+- FR-024, abae26b. The set signature carries the question bits. 2 new tests, 1 failing, the
+  other a guard that the Ignore bits still pair
+- FR-017, e0a0e94. A value is read by its kind through ClashHarvest.Text and one that still
+  throws is `ReadCondition.Unread`, never drifted, `ReadCondition.KeysOf` giving no key so it
+  pairs with nothing. 2 new tests, 2 failing
+- FR-021, e49f9c2. `SetBuildOutcome.AddDrift` takes every present set and keeps the ones not
+  read, `NotRead`, and Lines claims a match only where every present set was read. 2 new tests, 2
+  failing
+- FR-013, 9166fd1. `DocumentSet.SidesNotCounted` and `LeftoverSet.SidesUnknown`: one set whose
+  sides were not counted refuses every leftover of its document. SidesBySetName gives null for a
+  read or a side that threw and says so through log.Failure, and the catch in CountSide is gone.
+  2 new tests, 2 failing
+- FR-014, 07ae1a7. The walk descends every Clash Detective folder and reads every source of a
+  side, each set counted once per side, disposing each item and side as SavedTests does. Add-in
+  only, no test
+- FR-018, 1e2620e. `SetResult.NotCounted`, printed UNKNOWN, and `SetBuildOutcome.JudgeIfEmpty`,
+  the one rule for which sets are judged. 2 new tests, 1 failing, the other a guard
+- FR-019, 65e4451. A rebuilt set is read through a parent resolved fresh and the set replaced
+  is released before ReplaceWithCopy. The Rebuild comment says what the code does. Add-in only,
+  no test
+- FR-020, 1d3b712. `PutAnythingIn` is true for a set created, rebuilt or a leftover acted on,
+  and BuildTheSetsFromTheFile returns it alone. 3 new tests, 2 failing, the other a guard
+- FR-022, 8a132b1. The present counts and the summary pairing each count with its kind of set.
+  2 new tests, 2 failing. Three pins moved because the words moved, the summary line and the
+  created counts of two tests, now one block under sets created, every number kept. The summary
+  pin fails on the stub too, and the two others do not, the stub keeping the new block
+- FR-012, a79bba9. `RevitWorksets.Read`, `ResourceFound`, and the EXPORT CHECK line saying the
+  decided pairs are UNKNOWN, ExportCheck.cs, F112's file, changed in AddDisagreements and one
+  internal Lines overload. 4 new tests, 3 failing, the other a guard that the list in the DLL is
+  read
+- FR-010, 1bed64c. `EmptySets.Carries` is the one rule for a value and its test, read by the
+  HEALTH block too, and the judge skips a negation and a comparison the file never writes.
+  RevitCategories.Holds had no caller in src after it, so it is gone and its test reads the one
+  rule with every assert kept. 3 new tests, 3 failing
+- FR-011, 6fea9f2. revit-categories.txt and revit-worksets.txt each name their project,
+  `project: 1104`, read off the result files of 5i and 5t by a test. `EmptySetJudge` holds the
+  plan's spellings and the project the group's models name, read off the model exports the
+  EXPORT CHECK read, FederationEngine.groupExports, set in WhatTheModelsCarry and null on the
+  Build sets button. A list is a group's only where the projects are the same, and otherwise the
+  judge cannot tell and says why, `EmptySet.WhyNotTold`. HealthCheck.CategoryPropertyInternalName
+  is gone. 5 new tests, 3 failing, the other two new members and data. The judge is handed to the
+  older tests in place of the spellings, the helper of EmptySetsTests and SetBuildOutcomeTests and
+  one call in MatrixCorrectionsTests, every assert kept
+- FR-027, aac7c30. `SetBuildOutcome.AddCreated` with the planned set judges a set created at
+  zero, read into the judge's shape by `ReadCondition.Of`. The judge knows the worksets this
+  group's models carry, and a nearest value differing by case alone says so. 5 new tests, 4
+  failing, the fifth a new member
+- 3c60036 deletes the judge's two argument constructor, called by tests alone after FR-027
+- 2dcf34d takes in main c101f6c, whose changes since 7793b9e are under steps alone. It was first
+  committed with a placeholder message by a mistaken -m, and amended with turn5\f115-msg-merge.txt
+  before any push
+- the records commit: this entry, the order line 42 and the F115 section of steps\01_next.md, and
+  the rules, the section The sets compared, judged and counted, F115, in .claude\rules\core.md
+  with its F116 bullet on the judge brought to the judge class, and The sets in the document,
+  F115, in .claude\rules\addin.md
+
+### Choices the developer made, for the reader to check
+
+- THE FLAG RULE LIVES ON PlannedCondition, beside StartGroupFlag, as QuestionFlagsOf, NegatedWith
+  and TestWordsOf, and every reader goes through it, the drift key, the leftover keys, the HEALTH
+  signature and category check, and the judge
+- THE DRIFT LINES SAY NOT, part of FR-016 and not asked by the list, because once FR-015 made a
+  negation a drift the two lines of such a set read the same. It reaches the ZERO line of a
+  created set too, BLD-EL-Devices among them
+- HOW THE JUDGE KNOWS THE LISTS ARE THE RUN'S PROJECT, FR-011's design step: each list names the
+  project of the models it was measured on, and the group's project is the one the project part
+  of every model's name reads with the scan's naming settings. A group whose names will not all
+  read, or read two projects, is judged CANNOT TELL with its reason, the safe direction. Whether
+  the lists stay inside Core is not decided here
+- WHAT A GROUP'S MODELS CARRY IS CARRIED whatever project the lists are of, FR-027, the
+  worksets of every model the EXPORT CHECK read, a model whose walk stopped included for the
+  names it saw. A workset not among them says nothing about the project
+- ONE SET NOT COUNTED REFUSES EVERY LEFTOVER of its document, FR-013's proof as written, and a
+  side counted once per set however many of its sources name that set, FR-014
+- THE SUMMARY WORDS of FR-022 are the counts in brackets after created and after already there,
+  shown only where that count is above zero
+
+### What remains
+
+- the test of wave 2a on 1A02MM and 1A04PK, every line EXPECTED and none seen in Navisworks: on
+  a first run with the XML, an EMPTY SETS block after the CLASH block in every group with a set at
+  zero and .tsv rows of kind set finding nothing, which set 03 had none of, BLD-EL-Cable Trays,
+  Conduit and Devices never called carried by no model, and the SETS step finish phrase N
+  created (F finding items, Z at zero), 0 already there. On a weekly run with the XML picked, 0
+  created, 61 already there (F finding items, Z at zero), and a set this tool built from the
+  same file not DRIFTED. The HEALTH block through Browse reads 13 sets asking a category no model
+  carries
+- FR-012, FR-013, FR-014, FR-017, FR-018, FR-019, FR-020, FR-021 and FR-024 are not reached by the
+  standard runs. Each needs the rebuild box ticked on a rerun with the XML picked, a read that
+  fails, or a file shape the client's files do not hold
+- no proof steps are written in steps\03_bader_next.md, the wave 2a test standing for them
+
+### Known bugs
+
+- WHETHER SearchCondition.Options READS BACK THE START OF AN OR GROUP, 64, IS UNKNOWN. 5g measured
+  32 alone. If it does not, the five Or sets read DRIFTED on every weekly run with the XML picked,
+  and with the box ticked are rebuilt and the NWF saved on every run. The SET DRIFT lines of the
+  wave 2a weekly run show it
+- the EMPTY SETS block lists every set at zero of a group, so a first run writes it in every group,
+  52 sets at zero in the group of set 03's log line 288. Whether the log stays under its size bar
+  is UNKNOWN
+- the HEALTH block's category check still reads the 374 categories for any picked XML whatever
+  project, SetWarnings.FindCategoriesNobodyHas, the same root as FR-011 and not in its proof
+- the MATRIX lines still say nothing where the workset list inside Core was not read,
+  MatrixCorrections.cs being F116's, FR-012's other half
+- the walk of FR-014 leaves side.Selection and each SelectionSource undisposed, FR-029 and Q28,
+  wave 5
+- SetWarnings.ContainsTest is a second copy of SetBuildPlan.ContainsTest, read by ExportCheck.cs,
+  noise, left
+- FederationEngine.cs is shared with every product area. Its set methods and WhatTheModelsCarry
+  changed, the last by two lines of code and their comment
+
+### What comes next
+
+- the reviewer and the breaker on fix-F115, then the test of wave 1, then this branch's pull
+  request, which the lead opens
+
+### Every file written outside the repo
+
+- under %LOCALAPPDATA%\NwcFederatorLoop\turn5: f115-roamer-before.txt, f115-core-before.txt, the
+  fourteen f115-fr0NN-before-fail.txt, the msg and precommit file of each commit,
+  f115-msg-fr015.txt to f115-msg-fr027.txt, f115-msg-ctor.txt and f115-msg-merge.txt with their
+  f115-precommit-*.txt, and those written after this entry, named in the report: the records
+  commit's message and pre-commit, f115-core-after.txt, f115-checks-after.txt,
+  f115-build-after.txt, f115-push.txt, f115-diff.txt and f115-roamer-after.txt
+- the session's scratchpad under %TEMP%\claude: the edit scripts, stubrun.sh, sub.py, crlf.py,
+  the replacement texts, and the folders the tests make under %TEMP% and remove
+
 ## 2026-10-05 The loop, turn 5, F116 the clash XML, DONE in Core and built, wave 1, with Bader's answer to Q113, the readings of that pass, F112 taken in and a closing pass
 
 Core tests, all with 0 failed and 0 skipped:

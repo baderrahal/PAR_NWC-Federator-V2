@@ -187,9 +187,9 @@ and 6 does not read as broken.
 - THE CENSUS AND THE LIST ARE PUT TOGETHER IN ONE PLACE, `RevitWorksets.With`, F116 on the
   readings of the Q113 pass. The corrections take their spellings from it and the EMPTY SETS
   judge is handed the same ones, through `ExchangeDocument.Worksets` and
-  `SetBuildPlan.Worksets` to `EmptySets.Why`, so a spelling a MATRIX line says was measured is
-  never one that block calls carried by no model. A file read as it stands is judged against
-  the census alone
+  `SetBuildPlan.Worksets` to `EmptySetJudge`, which `EmptySets.Why` reads, so a spelling a
+  MATRIX line says was measured is never one that block calls carried by no model. A file
+  read as it stands is judged against the census alone
 - A WORKSET VALUE IS CORRECTED ONLY WHERE THE LIST NAMES A SPELLING OF IT, the same but for
   its case, `MatrixCorrectionList.NamesASpellingOf`, F116 on the breaker's finding: a value is
   corrected only from what the list beside the XML says. It is then asked in every spelling
@@ -272,6 +272,71 @@ and 6 does not read as broken.
   part way, `ModelExport.WalkFinished` false, the row's number is empty and its text
   UNKNOWN, `ExportCheck.WorksetCount` and `EveryWorkset`, never the names seen before it
   stopped as if they were all
+
+### The sets compared, judged and counted, F115
+
+- TWO FLAG BITS ARE PART OF THE QUESTION A CONDITION ASKS, FR-015: the negation, 32, and the
+  start of an Or group, 64, `PlannedCondition.QuestionFlagsOf`, the one rule. A condition and
+  its negation ask opposite questions, and four conditions in two groups ask an Or where the
+  same four in one group ask an And no element answers. The Ignore bits are never part of it,
+  because a set this tool built carries them, 37 for a negated condition in 5g, and 1A02MM's
+  original import carries none, 5w, and those sets find the same items. The drift key, the
+  leftover pairing and the HEALTH block's identical sets read the one rule
+- ONE SHAPE OF A CONDITION'S KEY, `ReadCondition.KeyOf`, FR-015, for a condition read off the
+  document and one the file plans, `PlannedCondition.Key`, so the file's side is keyed in Core
+  and never a second time in the add-in. `SetDrift.Compare` takes the planned set. A comparison
+  other than equals and contains keeps its own name and is another question
+- A SET IS SAID AS ITS GROUPS AND ITS NEGATIONS on both lines of a drift, FR-016.
+  `PlannedSet.Describe` is the one describer for any conditions, by the plan's own grouping
+  rule, so `SetDrift.AskedNow` brackets the document's groups and joins them with or, and
+  `WantedNow` is the planned set's own. A negated condition reads not before its test,
+  `PlannedCondition.TestWordsOf`, and a comparison the file never writes reads by its own name
+- A VALUE THAT WOULD NOT READ IS UNKNOWN AND NEVER AN EMPTY VALUE, FR-017. `ReadCondition.Unread`
+  marks it, `SetDrift` then gives CouldNotRead and never Drifted, and `ReadCondition.KeysOf`
+  gives no key, so the set pairs with no twin
+- A PRESENT SET NOT READ IS NEVER SAID TO ASK WHAT THE FILE ASKS, FR-021.
+  `SetBuildOutcome.AddDrift` takes every present set compared and keeps the drifted and the
+  not read apart, `NotRead`, and the claim that every set asks what the file asks is made only
+  where every present set was read
+- A SIDE COUNT NOT TAKEN IS UNKNOWN AND REFUSES EVERY LEFTOVER, FR-013.
+  `DocumentSet.SidesNotCounted` is never zero, and one set of a document whose sides were not
+  counted refuses every leftover of it, `LeftoverSet.SidesUnknown`, with its own line and
+  count, because a side not counted makes a set look unused and an unused set is removed
+- A COUNT NOT TAKEN IS `SetResult.NotCounted`, printed UNKNOWN, FR-018. `JudgeIfEmpty` is the
+  one rule for which sets are judged: one at zero items, never one whose count is UNKNOWN
+  and never one whose question could not be read
+- EVERY CHANGE THE SETS STEP MAKES ASKS FOR THE NWF SAVE, FR-020. `PutAnythingIn` is true for a
+  set created, a drifted set rebuilt and a leftover removed or renamed, the one answer. Whether
+  the save itself is checked is the run log area's
+- EACH SETS COUNT SITS BESIDE THE KIND OF SET IT COUNTS, FR-022. The finding, zero and items
+  counts of the sets created stay as they were, and the sets already there have their own,
+  `PresentFindingItemsCount`, `PresentZeroCount`, `PresentNotCountedCount` and `PresentItems`.
+  The summary reads for example 0 created, 61 already there (23 finding items, 38 at zero).
+- A NEGATED CATEGORY IS NOT ONE THE SET ASKS FOR, FR-023, and a set of Or groups where only
+  some ask a category no model carries is named with how many ask it, so a group without it
+  can still match. The client's corrected matrix reads 13 such sets, where BLD-EL-Devices was
+  the fourteenth for the Telephone Devices it leaves out
+- THE SIGNATURE OF A SET CARRIES THE QUESTION BITS, FR-024, so two sets differing only by an Or
+  group or a negation are not called identical. `RuleSignature` still leaves every flag out,
+  because the distinct rule count reads it
+- THE WORKSET LIST INSIDE CORE NOT READ IS SAID, FR-012. `RevitWorksets.Read` reads it from a
+  given stream and says whether it was read, a null stream and one that throws each false and
+  never a throw, `ResourceFound` carries the DLL's answer, and the EXPORT CHECK block says the
+  decided pairs are UNKNOWN where it was not read. The MATRIX lines do not say it yet
+- ONE RULE FOR A VALUE AND ITS TEST, `EmptySets.Carries`, FR-010, read by the EMPTY SETS judge
+  and the HEALTH block: equals the whole value, contains a part of a name. A negated condition
+  and a comparison the file never writes are not judged as a value the set asks for
+- THE LISTS INSIDE CORE ARE ONE PROJECT'S, FR-011. Each names the project its models were
+  measured on on a line beginning `RevitCategories.ProjectMarker`, read by
+  `RevitCategories.Project` and `RevitWorksets.Project`, and a test reads it off the result file
+  of the walk that measured each. `EmptySetJudge` reads a list as a group's only where every
+  model of the group names the same project, read off their names with the scan's naming
+  settings, and otherwise says it cannot tell and why, `EmptySet.WhyNotTold`. Each property's
+  internal name is typed once under src, in `EmptySets`
+- A SET CREATED AT ZERO IS JUDGED, FR-027, `SetBuildOutcome.AddCreated` with the planned set, so
+  a first run writes the EMPTY SETS block. The judge knows the worksets this group's models
+  carry, `EmptySetJudge.GroupWorksets`, and a value among them is carried whatever project the
+  lists are of. A nearest value differing by letter case alone says so in words
 
 ## Rules the code holds
 

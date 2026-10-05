@@ -441,6 +441,24 @@ well as to pass.
   own under Things that destroy data, because they do not belong beside ordinary output
   options. Fewer decisions is the goal, not more words explaining them
 
+### The sets in the document, F115
+
+- `SetBuilder.Read` reads a condition's `Options` as a number and its comparison in the
+  file's words for the two `BuildCondition` builds and by its own name for any other, FR-015,
+  and Core keys both sides. The value is read by its kind through `ClashHarvest.Text`, and one
+  that still throws is marked unread in Core and never read as an empty string, FR-017
+- The walk counting what the clash tests point at descends into every Clash Detective folder,
+  reads every source of a side and counts each set once per side, FR-014, disposing each item
+  and each side the way SavedTests does. A whole read or one side that throws makes the count
+  UNKNOWN for every set of the document, logged through log.Failure with the first error, and
+  Core refuses every leftover, FR-013
+- The wrapper of a set being rebuilt is released BEFORE `ReplaceWithCopy`, and the rebuilt set
+  is read again through a parent resolved from a fresh root, never through the one held across
+  the mutator, FR-019. One not found again is counted UNKNOWN, FR-018
+- The judge of a set that found nothing is built from the models the EXPORT CHECK read for
+  this group, `FederationEngine.groupExports`, null until they are read and on the Build sets
+  button, FR-011 and FR-027
+
 ## What a tick box says
 
 A tick box is a SHORT LABEL and one grey line under it. Bader called the long ones a
