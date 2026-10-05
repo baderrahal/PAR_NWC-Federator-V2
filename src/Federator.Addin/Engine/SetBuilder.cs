@@ -141,9 +141,11 @@ namespace Federator.Addin.Engine
         /// the replace keeps the clash test pointing at it, its results, its statuses and
         /// its place in the tree, through a save and a reopen.
         ///
-        /// The parent is resolved FRESH and the index read off the tree at the moment of
-        /// the call, because the walk that found the set released its own wrappers on the
-        /// way out and a folder handed across that boundary is refused by name.
+        /// The parent is the folder BuildOne resolved from a fresh root, with no mutator
+        /// between, and the index is read off the tree at the moment of the call. AFTER the
+        /// ReplaceWithCopy that handle has been held across a mutator, so BuildOne reads the
+        /// set again through a parent resolved fresh, FR-019, the way the create path does
+        /// after its AddCopy. This comment said the parent here was resolved fresh.
         /// </summary>
         private bool Rebuild(Document document, DocumentSelectionSets sets, PlannedSet planned, GroupItem parent)
         {
@@ -733,12 +735,14 @@ namespace Federator.Addin.Engine
                         // rebuild was recorded at 0 items and judged empty on the old question.
                         int found = SetResult.NotCounted;
 
+                        // Released BEFORE the rebuild, FR-019, so no wrapper of the set it
+                        // replaces is held across the ReplaceWithCopy.
+                        existing.Dispose();
+
                         if (drift.Drifted && rebuilds.RebuildDriftedSets)
                         {
                             rebuilt = Rebuild(document, sets, planned, parent);
                         }
-
-                        existing.Dispose();
 
                         // THE SET IS READ AGAIN AFTER THE REBUILD AND NEVER BEFORE IT.
                         // ReplaceWithCopy puts a new object in the slot, so the wrapper
@@ -750,17 +754,28 @@ namespace Federator.Addin.Engine
                         IList<ReadCondition> asking = drift.CouldNotRead ? null : drift.Asked;
                         string askedNow = drift.AskedNow();
 
-                        using (SelectionSet now = FindSelectionSet(parent, planned.Name))
+                        // AND AFTER A REBUILD THROUGH A PARENT RESOLVED FRESH, FR-019. The one
+                        // from EnsureFolders was held across the ReplaceWithCopy, and a handle
+                        // held across an AddCopy does not show the new child, EnsureFolders'
+                        // own reading, so the count and the judgement could come off the old
+                        // set. What ReplaceWithCopy does to a held parent is UNKNOWN. A folder
+                        // that will not resolve again leaves the count UNKNOWN, FR-018.
+                        using (GroupItem fresh = rebuilt ? ResolveFolders(sets, planned.Folders, planned.Folders.Count) : null)
                         {
-                            if (now != null)
-                            {
-                                found = CountOf(document, now);
+                            GroupItem readFrom = rebuilt ? fresh : parent;
 
-                                if (rebuilt)
+                            using (SelectionSet now = readFrom == null ? null : FindSelectionSet(readFrom, planned.Name))
+                            {
+                                if (now != null)
                                 {
-                                    SetDrift after = DriftOf(planned, now);
-                                    asking = after.CouldNotRead ? null : after.Asked;
-                                    askedNow = after.AskedNow();
+                                    found = CountOf(document, now);
+
+                                    if (rebuilt)
+                                    {
+                                        SetDrift after = DriftOf(planned, now);
+                                        asking = after.CouldNotRead ? null : after.Asked;
+                                        askedNow = after.AskedNow();
+                                    }
                                 }
                             }
                         }
