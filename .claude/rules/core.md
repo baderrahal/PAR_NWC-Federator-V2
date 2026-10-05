@@ -300,7 +300,8 @@ and 6 does not read as broken.
   sets as another test's, swapped, so the two find the same clashes and the workbook, the
   viewpoints and every count would hold each of them twice. `Federator.Core.Clash
   .MirrorRule` pairs the tests on their two locators either way round, Ordinal and never
-  trimmed. Of each pair THE HIGHER PRIORITY IS KEPT, off the priority file the run picked,
+  trimmed, on the key the by design pairs are found on, `ByDesignPairs.KeyFor`, and on no
+  copy of it. Of each pair THE HIGHER PRIORITY IS KEPT, off the priority file the run picked,
   A before B before C before none, and where equal the one first in the XML, by its
   FileIndex. With no XML the tests saved in the document are read in the order the
   document holds them, and the log says that order stands for the XML's. Every test in the

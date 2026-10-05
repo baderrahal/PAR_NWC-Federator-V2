@@ -144,6 +144,20 @@ namespace Federator.Core.Tests
             Assert.That(plan.WithoutMirrors(rule).Buildable.Count, Is.EqualTo(2));
         }
 
+        // One rule in one place. The two sets of a test either way round are the key the by
+        // design pairs are found on, ByDesignPairs.KeyFor, and the mirror rule pairs on that
+        // same key and not on a copy of it.
+        [Test]
+        public void TheMirrorRulePairsOnTheByDesignKey()
+        {
+            ClashTestPlan plan = Plan(
+                Test(DuctsVsColumns, Ducts, Columns),
+                Test(ColumnsVsDucts, Columns, Ducts));
+
+            Assert.That(MirrorRule.SetsKey(plan.Buildable[0]), Is.EqualTo(ByDesignPairs.KeyFor(Ducts, Columns)));
+            Assert.That(MirrorRule.SetsKey(plan.Buildable[1]), Is.EqualTo(ByDesignPairs.KeyFor(Ducts, Columns)));
+        }
+
         [Test]
         public void ASavedSideThatCouldNotBeReadIsNeverPaired()
         {

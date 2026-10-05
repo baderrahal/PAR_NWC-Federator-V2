@@ -33,9 +33,6 @@ namespace Federator.Core.Clash
         /// <summary>The word that begins every line this rule writes.</summary>
         public const string Prefix = "MIRROR";
 
-        /// <summary>A character no locator carries, so two different pairs of sets never share a key.</summary>
-        private const char Separator = '\u001F';
-
         private readonly List<PlannedClashTest> tests;
         private readonly List<MirrorPair> pairs;
         private readonly List<KeyValuePair<PlannedClashTest, PlannedClashTest>> duplicates;
@@ -271,8 +268,9 @@ namespace Federator.Core.Clash
         /// <summary>
         /// The two sets a test names, the same key whichever way round, or null where the
         /// test can be no test's mirror: a side nobody could read, or one set on both sides.
+        /// The key is the by design pairs' own, ByDesignPairs.KeyFor, one rule in one place.
         /// </summary>
-        private static string SetsKey(PlannedClashTest test)
+        internal static string SetsKey(PlannedClashTest test)
         {
             string left = test.Left == null ? null : test.Left.Locator;
             string right = test.Right == null ? null : test.Right.Locator;
@@ -282,9 +280,7 @@ namespace Federator.Core.Clash
                 return null;
             }
 
-            return string.CompareOrdinal(left, right) < 0
-                ? left + Separator + right
-                : right + Separator + left;
+            return ByDesignPairs.KeyFor(left, right);
         }
 
         private static bool WasRead(string locator)
