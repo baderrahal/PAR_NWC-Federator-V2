@@ -643,9 +643,10 @@ What waits on Bader's answer. A finding moves here when it survives three fix at
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
 
-OPEN IN THE FORM NOW: Q136, written on 2026-10-05, what becomes of the old tests of an NWF made before the
-mirror rule, the loop going on with B, leave them, and Q134, written on 2026-10-05, whether three members F131 built for F114's views
-stay on main with no caller until F114 merges, the loop going on with A, keep them. Q133 was ANSWERED D on 2026-10-05, both tests of a mirrored pair run and
+OPEN IN THE FORM NOW: none. Q134 was ANSWERED B and Q136 A on 2026-10-05, decided and not yet built: F131's
+three members for F114 to go with F114, and the old tests of an NWF to be renamed by their own names with
+(mirror) at the end and run, each under its question.
+Q133 was ANSWERED D on 2026-10-05, both tests of a mirrored pair run and
 their clashes merged by the pair of items, and he allowed the removal of the run's three autosaves of
 Q128, removed at 15:49, turn5\remove-run-autosaves.txt. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
 each answer under its question in steps\02_questions.md with what it changes, and his order of the
