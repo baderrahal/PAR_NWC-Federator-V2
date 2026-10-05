@@ -1,0 +1,37 @@
+# The teams of this project, read by the NWC Federator beside the picked clash XML and named
+# after it: the XML's name without its extension, then .teams.txt. So
+# 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml is read with 1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt
+# in the same folder, beside its list of corrections and never inside it, so a fault in one
+# cannot leave the other unread. The tool reads this file when the XML is picked and names it in
+# the log on its TEAMS lines. Bader's message of 2026-10-04, Q114 points 1, 2, 11 and 12, and
+# Q115 by its default A. F131.
+#
+# TO USE IT WITH ANOTHER XML of this project, copy it beside that XML and rename it after it.
+#
+# THE FORMAT. One line a team: a word and a colon, a space, then its parts split by a space, a
+# bar and a space. A line starting with # is a comment and a blank line is skipped. Nothing is
+# trimmed. A line the tool does not know, a code on two teams, a team named twice or with no
+# code, makes the whole map unread, so the tool maps nothing and says so in the log, never half.
+#
+#   team: <the team's name> | <a discipline code> | <a discipline code> ...
+#   size-folder: <a team> | <a team> ...
+#
+# A discipline code is part 5 of an NWC name, such as HV in 1104-PAR-1A04PK-ZZZ-HV-MOD-000001,
+# and the code a set name carries, such as ME in BLD-ME-Ducts&Duct Fittings. Any code on no line
+# is a team of its own, named by its code. A name with no code is UNKNOWN.
+#
+# THE ORDER OF THE TEAM LINES is the order a pair of teams is written in, point 12, so one pair
+# never becomes two folders: Architecture, Structure, Mechanical, Electrical, then any other team
+# by its name, then UNKNOWN.
+#
+# SIZE-FOLDER names the teams whose pair folders carry the folder of services over the size,
+# Over 150mm, point 11. It sits inside each pair folder holding one of them, never shared.
+#
+# Point 1 in Bader's words: the mechanical models are now split into HV, PL, FP and ME, and all
+# four belong to one team. Mechanical is HV, PL, FP, ME, DR and FF. Electrical is EL and EV.
+# Architecture is AR. Structure is ST. Any other code is a team of its own, named by its code.
+team: Architecture | AR
+team: Structure | ST
+team: Mechanical | HV | PL | FP | ME | DR | FF
+team: Electrical | EL | EV
+size-folder: Mechanical | Electrical

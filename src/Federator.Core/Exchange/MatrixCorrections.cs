@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Federator.Core.Sets;
+using Federator.Core.Teams;
 
 namespace Federator.Core.Exchange
 {
@@ -559,7 +560,8 @@ namespace Federator.Core.Exchange
         /// THE LIST IS READ WHEN THE XML IS, beside it and named after it, CorrectionListSettings,
         /// so every place that reads a picked file reads its list too. No list there, or one that
         /// cannot be read, corrects nothing and the first line says so, and the file is read as
-        /// it is written.
+        /// it is written. THE TEAM MAP beside it is read here too, its own file, TeamMap.Beside,
+        /// and the document carries it in Teams, F131.
         ///
         /// IT IS THE CODE THAT WROTE THE EXCHANGE FILE, so the client's uncorrected matrix,
         /// the one corrected before F116 and the one in the exchange folder, each with the
@@ -590,6 +592,9 @@ namespace Federator.Core.Exchange
             // The spellings the corrections were chosen from, so the judge of a set that finds
             // nothing reads the same ones, F116.
             document.Corrected(outcome.Lines(), RevitWorksets.With(list.Worksets));
+
+            // The team map beside the same file, its own file, F131, Q115 by its default A.
+            document.TeamsBeside(TeamMap.Beside(path, new TeamMapSettings()));
             return document;
         }
 
@@ -645,6 +650,11 @@ namespace Federator.Core.Exchange
                 null,
                 list.SourceFiles);
 
+            foreach (string[] alsoAsk in list.AlsoAsks)
+            {
+                outcome.Text = AlsoAsk(outcome.Text, alsoAsk, outcome);
+            }
+
             outcome.Heading(list.Said());
             int asking = 0;
 
@@ -675,6 +685,48 @@ namespace Federator.Core.Exchange
 
             outcome.Note(SetsAlreadyInAnNwf);
             return outcome;
+        }
+
+        /// <summary>
+        /// One also-ask line of the list, F131, FR-181: every group of a set asking one of the
+        /// line's spellings, as a workset not negated, is written once for each of them, the
+        /// spellings in Ordinal order, through AskEverySpelling, the way Q102 asks every spelling
+        /// measured. Applied after every other correction, so a group the Source File rule of Q103
+        /// gave a condition is copied with it. No two lines share a spelling, MatrixCorrectionList,
+        /// so no line acts on what another wrote, and a second run changes nothing.
+        /// </summary>
+        private static string AlsoAsk(string xml, string[] line, CorrectionOutcome outcome)
+        {
+            List<string> spellings = new List<string>(line);
+            spellings.Sort(StringComparer.Ordinal);
+
+            int asked;
+            int added;
+            string text = AskEverySpelling(
+                xml,
+                one => AsksAWorkset(one) && spellings.Exists(spelling => string.Equals(spelling, one.Value, StringComparison.Ordinal)),
+                spellings,
+                out asked,
+                out added);
+
+            List<string> others = new List<string>(line);
+            others.RemoveAt(0);
+
+            outcome.Add(
+                "the value " + line[0] + " also accepts "
+                    + (others.Count == 1
+                        ? others[0]
+                        : string.Join(", ", others.GetRange(0, others.Count - 1).ToArray()) + " and " + others[others.Count - 1])
+                    + ", a line of the list beside this file",
+                added,
+                added > 0
+                    ? null
+                    : asked > 0
+                        ? "every set asking for it already asks every spelling the line names"
+                        : "this file holds no condition asking for any spelling the line names",
+                asked > 0 ? NoChange.AlreadyMade : NoChange.NothingToChange);
+
+            return text;
         }
 
         /// <summary>
