@@ -70,10 +70,13 @@ namespace Federator.Core.Views
         /// <summary>The clash centre in document units, or null where it could not be read.</summary>
         public Point3 Centre { get; private set; }
 
-        /// <summary>The name of the model the first item lives in, a path or a file name, matched to a model by ModelTeam.IsAmong, or empty where it could not be read.</summary>
+        /// <summary>
+        /// The name of the model the first item lives in, a path, a file name or a display name
+        /// with no extension, tied to a model by ModelNames, or empty where it could not be read.
+        /// </summary>
         public string FirstHome { get; private set; }
 
-        /// <summary>The file name of the model the second item lives in, or empty.</summary>
+        /// <summary>The name of the model the second item lives in, read as FirstHome is.</summary>
         public string SecondHome { get; private set; }
 
         /// <summary>The test and the clash, the one key a clash is known by across views.</summary>

@@ -145,7 +145,7 @@ namespace Federator.Core.Tests
 
             ShownModels shown = ShownModels.For(PairOf("ST", "EL"), models, new[]
             {
-                @"C:\Projects\1A02MM\" + Model("EL").FileName,
+                "C:/Projects/1A02MM/" + Model("EL").FileName,
                 "D:/federated/" + Model("ST").FileName.ToUpperInvariant()
             });
 
@@ -162,7 +162,7 @@ namespace Federator.Core.Tests
         [Test]
         public void AModelHandedInByItsPathIsMatchedByItsFileName()
         {
-            ModelTeam el = new ModelTeam(@"C:\Projects\1A02MM\" + Model("EL").FileName, "EL", "Electrical");
+            ModelTeam el = new ModelTeam("C:/Projects/1A02MM/" + Model("EL").FileName, "EL", "Electrical");
             ModelTeam st = new ModelTeam("D:/federated/" + Model("ST").FileName, "ST", "Structure");
             string stStem = Model("ST").FileName.Substring(0, Model("ST").FileName.Length - ".nwc".Length);
 
@@ -170,6 +170,27 @@ namespace Federator.Core.Tests
 
             Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "EL", "ST" }));
             Assert.That(shown.HomesNotInGroup, Is.EqualTo(new[] { Model("ST", "000002").FileName }));
+        }
+
+        /// <summary>
+        /// F114 attempt 5, the breaker's finding 2 of attempt 4. A group gathered with subfolders
+        /// can hold one file name in two folders. A home of that name reaches both, so both are
+        /// shown, and the home is named once, since which of them the item lives in is UNKNOWN.
+        /// </summary>
+        [Test]
+        public void AHomeThatIsTheNameOfTwoModelsShowsBothAndIsNamedOnce()
+        {
+            ModelTeam current = new ModelTeam("Current/" + Model("EL").FileName, "EL", "Electrical");
+            ModelTeam old = new ModelTeam("Old/" + Model("EL").FileName, "EL", "Electrical");
+
+            ShownModels shown = ShownModels.For(PairOf("ST", "EL"), new[] { Model("AR"), current, old, Model("ST") }, new[]
+            {
+                "Current/" + Model("EL").FileName, Model("ST").FileName, Model("EL").FileName.ToUpperInvariant()
+            });
+
+            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "EL", "EL", "ST" }));
+            Assert.That(shown.HomesOfManyModels, Is.EqualTo(new[] { "Current/" + Model("EL").FileName }));
+            Assert.That(shown.HomesNotInGroup, Is.Empty);
         }
 
         /// <summary>Q119 B: a model whose code will not read is hidden where no item lives in it, and shown where one does.</summary>

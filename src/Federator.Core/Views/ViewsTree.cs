@@ -38,11 +38,11 @@ namespace Federator.Core.Views
             }
 
             List<string> lines = new List<string>();
-            List<ModelTeam> models = facts.ModelsHandedIn();
+            ModelNames models = new ModelNames(facts.Models);
 
             lines.Add(Title + " " + facts.Group);
             lines.Add("team map   : " + MapWords(facts));
-            lines.Add("models     : " + ModelWords(models));
+            lines.Add("models     : " + ModelWords(models.Group));
             lines.Add("before     : " + BeforeWords(facts));
 
             List<string> tree = TreeLines(facts, models);
@@ -240,7 +240,7 @@ namespace Federator.Core.Views
                 + changed + " this tool's changed by a person, " + notOurs + " not this tool's";
         }
 
-        private static List<string> TreeLines(ViewsTreeFacts facts, List<ModelTeam> models)
+        private static List<string> TreeLines(ViewsTreeFacts facts, ModelNames models)
         {
             List<string> lines = new List<string>();
             string priority = null;
@@ -276,7 +276,12 @@ namespace Federator.Core.Views
             return lines;
         }
 
-        private static string ShowsAndHides(ViewsTreeFacts facts, List<ModelTeam> models, PlannedTestView view)
+        /// <summary>
+        /// What the view shows and hides, off its read back where there is one and off the plan
+        /// where not, the names tied to models by ModelNames as check 3 ties them, and the names
+        /// read back that could not be tied to one model counted on the line, F114 attempt 5.
+        /// </summary>
+        private static string ShowsAndHides(ViewsTreeFacts facts, ModelNames models, PlannedTestView view)
         {
             IList<string> hiddenNames = facts.HiddenOf(view);
 
@@ -286,7 +291,12 @@ namespace Federator.Core.Views
                 return ShowsAndHides(planned.Shown, planned.Hidden);
             }
 
-            return ShowsAndHides(models.FindAll(model => !model.IsAmong(hiddenNames)), models.FindAll(model => model.IsAmong(hiddenNames)));
+            NamesTied hides = models.Tie(hiddenNames);
+            string line = ShowsAndHides(hides.NotReached, hides.Reached);
+
+            return hides.NotTied == 0
+                ? line
+                : line + ", " + hides.NotTied + (hides.NotTied == 1 ? " name" : " names") + " read back as hidden tied to no one model";
         }
 
         private static string ShowsAndHides(IEnumerable<ModelTeam> shown, IEnumerable<ModelTeam> hidden)
@@ -318,7 +328,7 @@ namespace Federator.Core.Views
         {
             WrittenView written = null;
 
-            string place = ViewPlace.Key(view.Folders, view.Name, false);
+            string place = view.Key;
 
             foreach (WrittenView one in facts.Written ?? new WrittenView[0])
             {

@@ -110,13 +110,20 @@ namespace Federator.Core.Naming
         }
 
         /// <summary>
-        /// Whether two names are one file's: their stems equal without case, as Windows reads a
-        /// file name. The one place two names are judged the same, read by SimilarNames for the
-        /// NWF folder and by ModelTeam for the model a clashing item lives in, F114 attempt 4.
+        /// How two stems are compared, without case, as Windows reads a file name. Read by
+        /// SameName and by ModelNames, which keeps the group's models under their stems, so the
+        /// two cannot judge a name two ways, F114 attempt 5.
+        /// </summary>
+        internal static readonly StringComparer StemComparer = StringComparer.OrdinalIgnoreCase;
+
+        /// <summary>
+        /// Whether two names are one file's: their stems equal under StemComparer. Read by
+        /// SimilarNames for the NWF folder. ModelNames ties a name to a model by the same Stem
+        /// and the same comparer, F114 attempt 5.
         /// </summary>
         internal static bool SameName(string first, string second)
         {
-            return string.Equals(Stem(first), Stem(second), StringComparison.OrdinalIgnoreCase);
+            return StemComparer.Equals(Stem(first), Stem(second));
         }
 
         /// <summary>

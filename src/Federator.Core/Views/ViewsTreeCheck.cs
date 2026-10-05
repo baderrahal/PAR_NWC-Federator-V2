@@ -34,6 +34,15 @@ namespace Federator.Core.Views
     /// Check 3 with no view read back did not run at all, because what is left is the plan's own
     /// list, which cannot fail against the plan. A read back is read under PlannedTestView.Key
     /// alone, and read backs handed in under any other key are counted in a note.
+    ///
+    /// A NAME OR AN ITEM NOT TIED IS NEVER COUNTED AS HOLDING, F114 attempts 4 and 5. Check 3 ties
+    /// every name it reads, the homes and the hidden models read back alike, to the group's
+    /// models through ModelNames. A name that is blank, reaches no model or reaches more than one
+    /// makes that view one check 3 did not run for, named and not judged, and a model whose file
+    /// name no name can reach is named once. A painted read back holds item paths and no name, so
+    /// check 4 ties it to the view's clashes by the path: a clashing item that could not be
+    /// pointed at, or an item read back with no path, makes that view one check 4 did not run for,
+    /// named and not judged.
     /// </summary>
     public sealed class ViewsTreeCheck
     {
@@ -70,7 +79,8 @@ namespace Federator.Core.Views
 
         /// <summary>
         /// What the check ran without, each named: a view whose read back is missing, a planned
-        /// view not found in the walk, or a list not handed in. A check with any never holds.
+        /// view not found in the walk, a list not handed in, a name or an item it could not tie,
+        /// or a model shown whose team is UNKNOWN. A check with any never holds.
         /// </summary>
         public ReadOnlyCollection<string> NotRead
         {
@@ -267,10 +277,17 @@ namespace Federator.Core.Views
             int views = read.Plan.Views.Count;
             int offTheDocument = 0;
             List<string> notReadBack = new List<string>();
+            List<ModelTeam> unnamed = read.Names.Unnamed;
+
+            foreach (ModelTeam model in unnamed)
+            {
+                check.CouldNotRead("a model of this group" + (model.Code.Length == 0 ? string.Empty : " of code " + model.Code)
+                    + " has no file name, so no clashing item and no hidden model read back can be tied to it");
+            }
 
             foreach (PlannedTestView view in read.Plan.Views)
             {
-                ShownModels planned = ShownModels.For(view.Pair, read.Models, view.Homes);
+                ShownModels planned = ShownModels.For(view.Pair, read.Names, view.Homes);
 
                 foreach (ModelTeam exception in planned.Exceptions)
                 {
@@ -290,6 +307,12 @@ namespace Federator.Core.Views
                         + ", whose file name is no model of this group, so whether that model is shown is UNKNOWN");
                 }
 
+                foreach (string home in planned.HomesOfManyModels)
+                {
+                    check.CouldNotRead(view + ", a clashing item lives in " + home
+                        + ", whose file name is the name of more than one model of this group, so which one it lives in is UNKNOWN");
+                }
+
                 IList<string> hidden = read.Facts.HiddenOf(view);
 
                 if (hidden == null)
@@ -299,8 +322,34 @@ namespace Federator.Core.Views
                 }
 
                 offTheDocument++;
+                NamesTied hides = read.Names.Tie(hidden);
 
-                foreach (ModelTeam model in read.Models.FindAll(one => !one.IsAmong(hidden)))
+                if (hides.Blank > 0)
+                {
+                    check.CouldNotRead(view + ", " + hides.Blank
+                        + " of the hidden models it reads back have no name, so what it hides is UNKNOWN");
+                }
+
+                foreach (string name in hides.OfNoModel)
+                {
+                    check.CouldNotRead(view + ", it reads back " + name
+                        + " as hidden, whose file name is no model of this group, so what it hides is UNKNOWN");
+                }
+
+                foreach (string name in hides.OfManyModels)
+                {
+                    check.CouldNotRead(view + ", it reads back " + name
+                        + " as hidden, whose file name is the name of more than one model of this group, so which one it hides is UNKNOWN");
+                }
+
+                // A view with a name not tied is named above and not judged: a model it would name as
+                // shown may be the one that name means, and a third team it allows may be missed.
+                if (hides.NotTied > 0 || planned.HomesNotRead > 0 || planned.HomesNotInGroup.Count > 0 || planned.HomesOfManyModels.Count > 0)
+                {
+                    continue;
+                }
+
+                foreach (ModelTeam model in hides.NotReached.FindAll(one => !unnamed.Contains(one)))
                 {
                     if (model.Code.Length == 0)
                     {
@@ -354,7 +403,7 @@ namespace Federator.Core.Views
                     }
                 }
 
-                IList<ItemPath> readBack = read.PaintedReadBack(view);
+                IList<ItemPath> readBack = read.Facts.PaintedOf(view);
 
                 if (readBack == null)
                 {
@@ -363,8 +412,43 @@ namespace Federator.Core.Views
                 }
 
                 painted++;
-                HashSet<ItemPath> wanted = new HashSet<ItemPath>(PaintPlan.For(view.Clashes).Solid);
-                HashSet<ItemPath> found = new HashSet<ItemPath>(readBack);
+                PaintPlan paint = PaintPlan.For(view.Clashes);
+                HashSet<ItemPath> found = new HashSet<ItemPath>();
+                int noPath = 0;
+
+                foreach (ItemPath item in readBack)
+                {
+                    if (item == null)
+                    {
+                        noPath++;
+                    }
+                    else
+                    {
+                        found.Add(item);
+                    }
+                }
+
+                if (paint.NotPointedAt > 0)
+                {
+                    check.CouldNotRead(view + ", " + paint.NotPointedAt + (paint.NotPointedAt == 1
+                        ? " of its clashes has an item that could not be pointed at, so whether it is painted is UNKNOWN"
+                        : " of its clashes have an item that could not be pointed at, so whether those are painted is UNKNOWN"));
+                }
+
+                if (noPath > 0)
+                {
+                    check.CouldNotRead(view + ", " + noPath
+                        + " of the items it reads back as painted could not be pointed at, so whether its paint is right is UNKNOWN");
+                }
+
+                // A view with an item not tied to a path is named above and not judged: the item
+                // missing or the item too many may be the one that could not be pointed at.
+                if (paint.NotPointedAt > 0 || noPath > 0)
+                {
+                    continue;
+                }
+
+                HashSet<ItemPath> wanted = new HashSet<ItemPath>(paint.Solid);
                 int missing = 0;
 
                 foreach (ItemPath item in wanted)
@@ -579,7 +663,7 @@ namespace Federator.Core.Views
                 Settings = facts.Settings ?? new ViewpointSettings();
                 Plan = facts.Plan;
                 After = new List<ViewNode>(facts.After ?? new ViewNode[0]);
-                Models = facts.ModelsHandedIn();
+                Names = new ModelNames(facts.Models);
                 Inventory = facts.Inventory == null ? new List<InventoryItem>() : new List<InventoryItem>(facts.Inventory.Items);
                 Mine = string.IsNullOrEmpty(facts.RunStamp) ? new List<ViewNode>() : After.FindAll(node =>
                 {
@@ -608,7 +692,8 @@ namespace Federator.Core.Views
 
             internal List<ViewNode> After { get; private set; }
 
-            internal List<ModelTeam> Models { get; private set; }
+            /// <summary>The group's models found by name, the one place check 3 ties a home or a hidden name to a model.</summary>
+            internal ModelNames Names { get; private set; }
 
             internal List<InventoryItem> Inventory { get; private set; }
 
@@ -736,12 +821,6 @@ namespace Federator.Core.Views
                 }
 
                 return false;
-            }
-
-            internal IList<ItemPath> PaintedReadBack(PlannedTestView view)
-            {
-                IList<ItemPath> painted;
-                return Facts.PaintedReadBack != null && Facts.PaintedReadBack.TryGetValue(view.Key, out painted) ? painted : null;
             }
 
             internal bool IsLegacy(ViewNode node)

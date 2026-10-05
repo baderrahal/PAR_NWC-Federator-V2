@@ -570,7 +570,7 @@ namespace Federator.Core.Tests
         [Test]
         public void HomesAndReadBacksWrittenAsPathsAreMatchedByFileNameInTheTreeAndCheck3()
         {
-            string folder = @"C:\Projects\1A02MM\";
+            string folder = "C:/Projects/1A02MM/";
             ViewClash[] clashes =
             {
                 new ViewClash(Ducts, "Clash2", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New, ClashPriority.A, SizeVerdict.Small,
@@ -591,6 +591,166 @@ namespace Federator.Core.Tests
             Assert.That(readLine, Does.Contain(Ducts + "  1 open clashes, shows ME ST, hides AR EL"));
             Assert.That(checks[2].Holds, Is.True, Joined(checks[2].Failures) + Joined(checks[2].NotRead));
             Assert.That(checks[2].Notes, Is.Empty);
+        }
+
+        /// <summary>
+        /// F114 attempt 5, the breaker's blocking finding of attempt 4, the hidden side of the
+        /// homes finding of attempt 3. A hidden model read back whose name is no model of the group
+        /// was read as nothing hidden, so every model counted as shown, and where none was of a
+        /// third team check 3 held. Where one was, it failed on a model the read back may well
+        /// hide. Such a view is one check 3 did not run for, named, and is not judged.
+        /// </summary>
+        [Test]
+        public void Check3RanInPartWhereAHiddenModelReadBackIsNoModelOfTheGroup()
+        {
+            ViewClash[] clashes = { Clash(Ducts, "Clash2", "BLD-ME-Ducts", "BLD-ST-Columns", ClashPriority.A, SizeVerdict.Small, 2, 2, "ME", "ST") };
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), new string[0], Settings);
+            facts.Models = new List<ModelTeam> { Model("ME"), Model("ST"), new ModelTeam("1A02MM-ME2.nwc", "ME", Map().TeamOf("ME")) };
+            facts.HiddenReadBack = new Dictionary<string, IList<string>> { { ReadBackKey(facts.Plan.Views[0]), new List<string> { "Level 1.5 ME2" } } };
+            string place = facts.Plan.Views[0].ToString();
+
+            IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+            string block = Joined(ViewsTree.Lines(facts, checks, 0));
+
+            Assert.That(checks[2].Holds, Is.False, "the read back hid a name of no model, and check 3 held");
+            Assert.That(checks[2].NotRead, Is.EqualTo(new[]
+            {
+                place + ", it reads back Level 1.5 ME2 as hidden, whose file name is no model of this group, so what it hides is UNKNOWN"
+            }));
+            Assert.That(block, Does.Contain(Ducts + "  1 open clashes, shows ME ST, hides nothing, 1 name read back as hidden tied to no one model"));
+
+            facts.Models = Models();
+            ViewsTreeCheck withAThirdTeam = Check(facts, 3);
+
+            Assert.That(withAThirdTeam.Failures, Is.Empty, "a model the read back may hide is not named as shown");
+            Assert.That(withAThirdTeam.Holds, Is.False);
+        }
+
+        /// <summary>F114 attempt 5: a hidden model read back with no name was passed over, so what the view hides is UNKNOWN.</summary>
+        [Test]
+        public void Check3RanInPartWhereAHiddenModelReadBackHasNoName()
+        {
+            Tree tree = Good();
+            string walls = "B/Architecture vs Structure/" + Walls;
+            tree.Hidden[ReadBackKey(Planned(tree, walls))] = new List<string> { string.Empty, Model("EL").FileName, null, Model("ME").FileName };
+
+            ViewsTreeCheck check = Check(FactsOf(tree), 3);
+
+            Assert.That(check.Holds, Is.False);
+            Assert.That(check.Failures, Is.Empty);
+            Assert.That(check.NotRead, Is.EqualTo(new[] { walls + ", 2 of the hidden models it reads back have no name, so what it hides is UNKNOWN" }));
+        }
+
+        /// <summary>
+        /// F114 attempt 5, the breaker's finding 2 of attempt 4. With subfolders ticked a group can
+        /// hold one file name in two folders, and the one rule of what a name is, its stem, ties a
+        /// home or a hidden name to both. Which model is meant is UNKNOWN, so a view with such a
+        /// home or such a hidden name is one check 3 did not run for, named.
+        /// </summary>
+        [Test]
+        public void Check3RanInPartWhereAHomeOrAHiddenNameIsTheNameOfTwoModels()
+        {
+            List<ModelTeam> models = new List<ModelTeam>
+            {
+                Model("AR"), Model("EL"), Model("ST"),
+                new ModelTeam("Current/" + Model("ME").FileName, "ME", Map().TeamOf("ME")),
+                new ModelTeam("Old/" + Model("ME").FileName, "ME", Map().TeamOf("ME"))
+            };
+            Tree tree = Good();
+
+            foreach (PlannedTestView view in tree.Plan.Views)
+            {
+                tree.Hidden[ReadBackKey(view)] = FileNames(ShownModels.For(view.Pair, models, view.Homes).Hidden);
+            }
+
+            ViewsTreeFacts facts = FactsOf(tree);
+            facts.Models = models;
+            string twice = ", whose file name is the name of more than one model of this group, so ";
+
+            ViewsTreeCheck check = Check(facts, 3);
+
+            Assert.That(check.Holds, Is.False, "a name of two models was tied to both and check 3 held");
+            Assert.That(check.Failures, Is.Empty);
+            Assert.That(check.NotRead, Is.EqualTo(new[]
+            {
+                "A/Structure vs Mechanical/" + Ducts + ", a clashing item lives in " + Model("ME").FileName + twice + "which one it lives in is UNKNOWN",
+                "A/Structure vs Mechanical/Over 150mm/" + Ducts + ", a clashing item lives in " + Model("ME").FileName + twice + "which one it lives in is UNKNOWN",
+                "A/Structure vs Electrical/" + Lights + ", it reads back Current/" + Model("ME").FileName + " as hidden" + twice + "which one it hides is UNKNOWN",
+                "B/Architecture vs Structure/" + Walls + ", it reads back Current/" + Model("ME").FileName + " as hidden" + twice + "which one it hides is UNKNOWN"
+            }));
+        }
+
+        /// <summary>
+        /// F114 attempt 5, the breaker's finding 4 of attempt 4. A model whose file name is blank
+        /// can be reached by no home and no hidden name, so the read back always counted it as
+        /// shown and judged it by its team. It is named once, and check 3 does not hold.
+        /// </summary>
+        [Test]
+        public void Check3NamesAModelWithNoFileNameOnce()
+        {
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.Models = new List<ModelTeam>(Models()) { new ModelTeam(" ", "ST", Map().TeamOf("ST")) };
+
+            ViewsTreeCheck check = Check(facts, 3);
+
+            Assert.That(check.Holds, Is.False, "a model no name can reach was counted as shown and held");
+            Assert.That(check.Failures, Is.Empty);
+            Assert.That(check.NotRead, Is.EqualTo(new[]
+            {
+                "a model of this group of code ST has no file name, so no clashing item and no hidden model read back can be tied to it"
+            }));
+        }
+
+        /// <summary>
+        /// F114 attempt 5, the painted side of the same class. A painted read back holds item paths
+        /// and no name, so it is tied to a clash by the path. A clashing item that could not be
+        /// pointed at is in no paint plan, so check 4 held over a view whose paint of that item is
+        /// UNKNOWN. That view is one check 4 did not run for, named.
+        /// </summary>
+        [Test]
+        public void Check4RanInPartWhereAClashingItemCouldNotBePointedAt()
+        {
+            ViewClash[] clashes =
+            {
+                new ViewClash(Walls, "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.B, null,
+                    new ItemPath(new[] { 0, 4 }), null, Camera, Model("AR").FileName, Model("ST").FileName)
+            };
+            ViewsTreeFacts facts = FactsOf(Good());
+            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), new string[0], Settings);
+            PlannedTestView walls = facts.Plan.Views[0];
+            facts.PaintedReadBack = new Dictionary<string, IList<ItemPath>> { { ReadBackKey(walls), new List<ItemPath>(PaintPlan.For(walls.Clashes).Solid) } };
+
+            ViewsTreeCheck check = Check(facts, 4);
+
+            Assert.That(check.Holds, Is.False, "an item not pointed at was left out of the paint and check 4 held");
+            Assert.That(check.Failures, Is.Empty);
+            Assert.That(check.NotRead, Is.EqualTo(new[]
+            {
+                walls + ", 1 of its clashes has an item that could not be pointed at, so whether it is painted is UNKNOWN"
+            }));
+        }
+
+        /// <summary>
+        /// F114 attempt 5: an item read back as painted that could not be pointed at, a null in the
+        /// list, was counted as painted and not of the view's clashes, a failure the read back does
+        /// not show. Which item it is is UNKNOWN, so the view is one check 4 did not run for.
+        /// </summary>
+        [Test]
+        public void Check4NamesAPaintedItemReadBackWithNoPathAsNotRead()
+        {
+            Tree tree = Good();
+            string walls = "B/Architecture vs Structure/" + Walls;
+            tree.Painted[ReadBackKey(Planned(tree, walls))].Add(null);
+
+            ViewsTreeCheck check = Check(FactsOf(tree), 4);
+
+            Assert.That(check.Holds, Is.False);
+            Assert.That(check.Failures, Is.Empty, "a null read back is not an item painted by mistake");
+            Assert.That(check.NotRead, Is.EqualTo(new[]
+            {
+                walls + ", 1 of the items it reads back as painted could not be pointed at, so whether its paint is right is UNKNOWN"
+            }));
         }
 
         /// <summary>

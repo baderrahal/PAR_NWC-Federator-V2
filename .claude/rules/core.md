@@ -1209,11 +1209,15 @@ and 6 does not read as broken.
   is counted and one naming no model of the group is named, since whether that model is
   shown is UNKNOWN. A VIEW'S HOMES ARE GATHERED ONCE, `PlannedTestView.Homes`, each clash's
   first home then its second, read by the tree line and check 3 through `ShownModels`, F114
-  attempt 4. A NAME IS MATCHED TO A MODEL BY ONE RULE, `ModelTeam.IsAmong`, for a home and
-  for a hidden model read back alike: `ContainerName.SameName`, the stem of the file name
-  compared without case, the rule SimilarNames reads for the NWF folder, so a path, a bare
-  file name and a display name with no extension all reach the model, F114 attempt 4 on the
-  breaker's finding that a home written as a path missed every model. `PaintPlan` paints
+  attempt 4. A NAME IS TIED TO A MODEL BY ONE RULE, `ModelNames`, for a home and for a
+  hidden model read back alike, in the plan, the tree line and check 3: `ContainerName.Stem`
+  under `ContainerName.StemComparer`, without case, the stem and the comparer `SameName`
+  reads for SimilarNames and the NWF folder, so a path, a bare file name and a display name
+  with no extension all reach the model, F114 attempt 4 on the breaker's finding that a home
+  written as a path missed every model. A NAME THAT REACHES NO MODEL, OR MORE THAN ONE, IS
+  NOT TIED and is named, F114 attempt 5: more than one is one file name in two folders,
+  which a group gathered with subfolders can hold, and a home of two models shows both. A
+  model whose file name has no stem can be reached by no name and is named. `PaintPlan` paints
   every first item red and every second green unless already red. `FramingBox` frames the
   open clash centres padded by `FramingMarginMillimetres`, chosen and not measured, through
   UnitTable, and gives a view of one clash no box so it keeps Clash Detective's own camera
@@ -1258,7 +1262,17 @@ and 6 does not read as broken.
   team is UNKNOWN for check 3, a view with a clashing item whose model could not be read or
   whose home matches no model of the group for check 3, F114 attempt 4, since a view whose
   homes all miss hides every model and would otherwise hold over a blank view, and the tests
-  run or the walk after for check 5 where there are mirrors. Each is named under the check, which reads RAN IN PART where nothing broke it, and
+  run or the walk after for check 5 where there are mirrors. A NAME OR AN ITEM NOT TIED IS
+  NEVER COUNTED AS HOLDING, F114 attempt 5, closing the class whole: every name check 3
+  reads, homes and hidden models read back alike, goes through `ModelNames`, and a name that
+  is blank, reaches no model or reaches more than one makes that view one check 3 did not
+  run for, named and not judged, since a model it would name as shown may be the one that
+  name means. A model whose file name has no stem is named once. A painted read back holds
+  item paths and no name, so check 4 ties it to the view's clashes by the path: a clashing
+  item that could not be pointed at, or a null item read back, makes that view one check 4
+  did not run for, named and not judged. The tree line counts the hidden names it could not
+  tie, and a view's read back of either kind is looked up in one place, `ViewsTreeFacts`.
+  Each is named under the check, which reads RAN IN PART where nothing broke it, and
   read backs handed in under a key no planned view gives are counted in a note. The tests that
   ran with no open clash are counted off the tests the clash step ran, UNKNOWN where those
   were not handed in, since a test with no clash at all never reaches the plan. `ViewsTree.Lines` cuts the tree at `TreeLinesInLog` for the
