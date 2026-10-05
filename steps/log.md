@@ -169,7 +169,7 @@ F131-K8 for the lead.
 - the edit scripts, in the session's scratch folder under the user's temp folder, which nothing
   reads after the commit
 
-## 2026-10-05 The loop, turn 5, F136 attempt 2, the viewpoints box opens unticked until F114 on Bader's answer B to Q131, written by the developer as the lead's delegate, built and pushed on its branch, pull request 117 a draft
+## 2026-10-05 The loop, turn 5, F136 attempt 2, the viewpoints box opens unticked until F114 on Bader's answer B to Q131, written by the developer as the lead's delegate, built and pushed on its branch, pull request 117, MERGED as 6802e1a at 14:08:32
 
 Attempt 1 was read by the reviewer and the breaker and both approved it with nothing blocking,
 %LOCALAPPDATA%\NwcFederatorLoop\turn5\f136-result.json. Main 83445cb was merged into fix-F136 at

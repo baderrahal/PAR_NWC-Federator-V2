@@ -450,7 +450,8 @@ desktop.
 ## Next action
 
 SINCE BADER'S ORDER OF 2026-10-05, Q132, the new viewpoints come first, ahead of everything else in wave 2.
-1. F136 merged with the box unticked when the window opens, Q131 B
+1. F136 merged with the box unticked when the window opens, Q131 B. MERGED as PR 117, 6802e1a, at
+   14:08:32 on 2026-10-05. F131's add-in half began after it, by his order
 2. F131 with its add-in half and Q117 C and Q123 B, merged
 3. F132 with its add-in half and Q121 B, once probes P1 and P2 are read, merged
 4. F114 with its add-in half and Q119 B, once its probes are read, merged, ticking the box again
