@@ -297,8 +297,9 @@ and 6 does not read as broken.
   from it reads as a test nobody ran rather than as a test that could not clash
 - A MIRRORED TEST IS NOT CREATED AND NOT RUN, F132, Bader's Q114 points 4 to 6 and 8, a
   rule of the code for any project. A mirror is a test whose two sides are the same two
-  sets as another test's, swapped, so the two find the same clashes and the workbook, the
-  viewpoints and every count would hold each of them twice. `Federator.Core.Clash
+  sets as another test's, swapped. Bader's point 4 takes the two to find the same clashes,
+  so the workbook, the viewpoints and every count would hold each of them twice. That is
+  his word and not a measurement, UNKNOWN until probe P1 runs. `Federator.Core.Clash
   .MirrorRule` pairs the tests on their two locators either way round, Ordinal and never
   trimmed, on the key the by design pairs are found on, `ByDesignPairs.KeyFor`, and on no
   copy of it. Of each pair THE HIGHER PRIORITY IS KEPT, off the priority file the run
@@ -339,23 +340,43 @@ and 6 does not read as broken.
   order the NWF saved them in, and a saved test the XML does not hold is a mirror where its
   two sets are a running test of the XML swapped, or another such saved test's swapped
   with the rule keeping the other. With no XML the rule over the saved tests decides. WHAT
-  PROVES THIS TOOL CREATED IT: its name and both its locators equal a mirror of the picked
-  XML exactly, Ordinal, because that is how this tool creates a test and nothing else on a
-  test says who made it. So WITH NO XML NOTHING IS EVER REMOVED, and a swap the picked XML
-  does not hold, one whose sides differ from the XML's, or one whose sides were not read is
-  left, the last said UNKNOWN and never with a placeholder quoted as a set. WHOSE A STATUS
-  IS, Q122's default A: every status but New is a person's, `StatusesAPersonSet`, except a
-  Reviewed carrying this tool's own record still reading as ours, judged by
-  `UndoAutoReview.Judge`, the judge the Undo auto Reviewed button runs, so a mirror whose
-  results a rerun moved to Active or Resolved is left. A result that could not be read
-  leaves it too, and a test with no results carries no status. FAIL CLOSED: Core cannot
-  tell a test with no results from a walk of its results that never ran, threw or stopped
-  part way, so nothing is removed until the add-in says the walk reached its end,
-  `MirrorInDocument.AllResultsAdded`, after the last result, and a result handed after that
-  must be followed by it again. A mirror left is never run and is named on a MIRROR line
-  with the test it mirrors, every reason it was left and its statuses with their counts,
-  for the form. Its caller is the add-in half, which waits for probes P1 and P2, P2 being
-  whether a test can be removed at all, and until it lands nothing in src calls the rule.
+  PROVES THIS TOOL CREATED IT: its name is a mirror of the picked XML's and it is the very
+  test the XML would create, both locators Ordinal and every setting `TestDrift.Compare`
+  compares, the tolerance within its epsilon, the test type, merge composites and each
+  side's self intersect and primitive types, because that is how this tool creates a test
+  and nothing else on a test says who made it. A mirror a person tuned after this tool made
+  it is not proved, and neither is one whose name another saved test carries too, because
+  a removal that finds its test by name could take the other. THE PROOF NEEDS THE XML'S OWN
+  RULE: `MirrorInDocument.Find` refuses, loud, a rule holding any test read off the
+  document as the picked XML's, read by `MirrorRule.FirstReadOffTheDocument` off
+  `IsFromDocument`, which only `ClashTestPlan.FromDocument` sets, because a rule over the
+  saved tests matches each saved swap with itself and a person's test would be removed as
+  one created from an XML nobody picked. It refuses a test not read off the document as a
+  saved one, the same fault the other way round. With no XML the rule handed is null, and
+  a rule over no test at all holds no pair and removes nothing. So WITH NO XML NOTHING IS
+  EVER REMOVED, and a swap the picked XML does not hold, one that differs from the XML's
+  in its sets or a setting, or one whose sides were not read is left, the last said UNKNOWN
+  and never with a placeholder quoted as a set. WHOSE A STATUS IS, Q122's default A: every
+  status but New is a person's, `StatusesAPersonSet`, except a Reviewed carrying this
+  tool's own record still reading as ours, judged by `UndoAutoReview.Judge`, the judge the
+  Undo auto Reviewed button runs, so a mirror whose results a rerun moved to Active or
+  Resolved is left. A result that could not be read leaves it too, and a test with no
+  results carries no status. FAIL CLOSED: Core cannot tell a test with no results from a
+  walk of its results that never ran, threw or stopped part way, so nothing is removed
+  until the add-in says the walk reached its end, `MirrorInDocument.AllResultsAdded`, after
+  the last result, with how many results the test holds, counted off the document's own
+  count of the children at each level and never off the walk's own calls, and every one of
+  them was handed to `AddResult` or `ResultNotRead`. A walk that skipped a child or
+  swallowed a read leaves the test, and a result handed after that must be followed by it
+  again. A mirror left is never run and is named on a MIRROR line with the test it mirrors,
+  every reason it was left and its statuses with their counts, for the form. The same
+  reason a result could not be read is said once with its count, five named and the rest
+  counted. The line counts how many of this tool's Reviewed were Active before it moved
+  them, since a plain Active counts as a person's and Q122 is open on it. Where the walk is
+  not proved to have handed every result, what it handed is never given as all of them, and
+  with nothing handed the results are UNKNOWN, never none. Its caller is the add-in half,
+  which waits for probes P1 and P2, P2 being whether a test can be removed at all, and
+  until it lands nothing in src calls the rule.
   Probe P3, a step for Bader, reads who set a status and is what Q122 would turn on
 - The Revit container inside an NWC is often a different building from the NWC.
   Where the building code parsed from the NWC name differs from the code in the
