@@ -299,53 +299,88 @@ and 6 does not read as broken.
 - BOTH TESTS OF A MIRRORED PAIR ARE CREATED AND RUN, AND THEIR CLASHES ARE MERGED INTO THE
   ONE KEPT, F132, Bader's Q114 points 4 to 6 and 8, his answer B to Q121 and his answer D to
   Q133, a rule of the code for any project. A MIRROR is a test that asks another test's
-  question: its two sides are the same two sets swapped, or its sets carry the same rule
-  lists as the other test's, in either order. Two sets carry one rule list where
-  `SetWarnings.FindIdentical` finds them alike, the HEALTH block's rule and no copy of it,
-  over the picked XML's sets handed to `Federator.Core.Clash.MirrorRule.Of`. With no XML no
-  rule list was read, only the same two sets swapped pair, and a MIRROR line says so. A side
-  is matched by its locator, Ordinal and never trimmed, on the key the by design pairs are
-  found on, `ByDesignPairs.KeyFor`. Of each pair THE HIGHER PRIORITY IS KEPT, A before B
-  before C before none, and where equal the one first in the XML, by its FileIndex, and with
-  no XML the document's order stands for the XML's. WHY BOTH RUN: probe P1 measured that a
-  swap can find more than the test it mirrors, 27 on the swap of a test that found 25, all
-  25 among them, docs\history\scan.md 5z-k on the branch fix-F114-probes, so leaving the
-  mirror out could lose a clash. THE MIRROR'S NAME: a mirror of the XML is created under the
-  XML's name, one space and the ending of `MirrorSettings`, a setting whose default is his
-  word (mirror), and it stays in Clash Detective. A name that already ends with the space and
-  the ending gets no second one, so a rerun finds the mirror it made. A mirror read off the
-  document keeps its saved name, because this tool renames no test it did not create. Where
-  another test handed to the rule already carries the name with the ending, the mirror keeps
-  the XML's name and its line says why, so no two tests of one name are created.
+  question: its two sides are the same two sets swapped, or its sets ask the same whole
+  questions as the other test's, in either order. Two sets ask one WHOLE QUESTION where the
+  findspec's mode, disjoint and start and every condition's rule signature and flags are the
+  same, `SelectionSetDefinition.WholeQuestion`, grouped by `SetWarnings.FindIdentical`, the
+  HEALTH block's grouping handed this signature, over the picked XML's sets handed to
+  `Federator.Core.Clash.MirrorRule.Of`. THE FLAGS ARE WHOLE, every bit of
+  SearchConditionOptions, the negation, the Or group, ignoring case and the ignore name bits,
+  docs\history\scan.md What flags 64 means, because the merge acts on this comparison and adds
+  one test's clashes to another's count. The HEALTH block's own signature, `SignatureOf`, is
+  not changed by F132. F115's FR-024 adds the negation and the Or group to it and keeps the
+  ignore bits out on purpose, with a test that two sets apart only by them are still a pair,
+  so the mirror's stricter signature is a second signature over one grouping and not a copy
+  of F115's rule, and F132 does not wait on F115. Both matrices write flags 0, 32 and 64 only
+  and mode all, disjoint 0 and start / on every set, docs\history\scan.md 5z-mirrors, so the
+  whole question pairs the same 117 and 59 as the rule signature alone. A side is matched by
+  its locator, Ordinal and never trimmed, on the key the by design pairs are found on,
+  `ByDesignPairs.KeyFor`. Of each pair THE HIGHER PRIORITY IS KEPT, A before B before C before
+  none, and where equal the one first in the XML, by its FileIndex. WHY BOTH RUN: probe P1
+  measured that a swap can find more than the test it mirrors, 27 on the swap of a test that
+  found 25, all 25 among them, docs\history\scan.md 5z-k on the branch fix-F114-probes, so
+  leaving the mirror out could lose a clash. THE MIRROR'S NAME, attempt 5: a mirror of the XML
+  is created under THE KEPT TEST'S NAME, one space and the ending of `MirrorSettings`, a
+  setting whose default is his word (mirror), X (mirror), and it stays in Clash Detective.
+  Where that name is taken, by another test of the XML or an earlier mirror of the same kept
+  test, the next number from 2 goes before the ending, X 2 (mirror), so every mirror's name
+  ends with the ending and no two tests share a name, `MirrorSettings.NameFor`.
   `ClashTestPlan.WithMirrorsNamed` gives the plan those names, refusing a rule built over any
-  list but that plan's own buildable tests. THE MERGE, `Federator.Core.Report.MirrorMerge`,
+  list but that plan's own buildable tests. WITH NO XML A SAVED TEST PAIRS BY NAME ONLY: the
+  add-in reads no set off a saved test and hands `SavedClashTest.LeftAsSaved` and
+  `RightAsSaved`, so a saved test whose name is another saved test's with the ending,
+  `MirrorSettings.KeptNameOf`, the exact name first and then a number of 2 or more off its
+  end, is that test's mirror, `MirrorKind.Named`, run as it is saved, its sides read as they
+  are. The name says which is kept, never a priority or an order read again, so the roles hold
+  from the XML run to the run with no XML. A saved test that is itself a mirror is never a
+  test kept. A saved test with the ending whose test kept is not saved keeps its own clashes
+  and is named on a MIRROR line. Saved tests under other names are not paired, and one MIRROR
+  line says that whether they ask one question is UNKNOWN. A mirror read off the document
+  keeps its saved name, because this tool renames no test it did not create. THE
+  DIFFERENCES: a pair that differs in priority, or in any setting `TestDrift.Compare` reads,
+  the tolerance within its epsilon, the test type, merge composites and each side's self
+  intersect and primitive types, the mirror's side set against the kept test's side it stands
+  for, is named with both values, by that one comparison and no copy of it. A pair found by
+  name has no XML name for a priority and no set to align a side, so only the tolerance, the
+  type and merge composites are compared for it. THE MERGE, `Federator.Core.Report.MirrorMerge`,
   one per test kept over all its mirrors, so a clash two mirrors find and the kept test does
   not is added once: a clash is the unordered pair of its two items' keys, the add-in's to
-  read. A clash both find is kept once under the kept test and the mirror's copy is not
-  reported. A clash only a mirror finds is added to the kept test's report, marked
-  `ClashRow.FoundOnlyByMirror` with that mirror's name, so the workbook and the view can
-  name it, and the report's rows and every count are read off the merged list. FAIL CLOSED:
-  a mirror's clash with an item not read is not added and is said UNKNOWN, and a kept test's
-  clash with an item not read is counted, since up to that many of the clashes said found
-  by a mirror only may be its own. A group is refused, each clash under it is handed. The
-  MIRROR lines name, for each mirror, what each test found, how many both found and how many
-  the mirror only, then every clash the mirror alone found by its name, its mirror and its
-  two items, then what the report holds under the kept test. The COVERAGE SHEET'S NAMES,
-  F127's data, are `MirrorRule.CoverageNames`, each test of a pair once in the XML's order:
-  a mirror as a mirror of the test kept, how the two ask one question with the sets of one
-  rule list named, and the name it runs under, and a test kept with the mirrors whose
-  clashes are added to it. A test with one set on both sides, or two sets of one rule list,
-  is its own swap. A second test with the same two sets in the kept test's own order is a
-  DUPLICATE and not a mirror by his words, named and run as before. A SIDE NOT READ IS
-  UNKNOWN: an empty locator, UNKNOWN, or one of the placeholders `SavedClashTest.LeftAsSaved`
-  and `RightAsSaved`, so such a test is never paired, and one MIRROR line says how many. The
-  client's matrix holds no two tests swapped, and by rule list 117 pairs, from its two pairs
-  of sets of one rule list, `MirrorRuleTests.TheClientsMatrixHoldsNoSwapAnd117PairsByRuleList`.
-  The corrected matrix holds 59, the 59 of turn5\measure-mirrors.md, every test still
-  created and run, `TheCorrectedMatrixHolds59PairsByRuleListAndEveryTestStillRuns`. NOTHING
-  IS REMOVED FROM AN NWF: the removal of a mirror this tool made, Q114 point 7 and FR-183,
-  went with Q133 D, and so did MirrorInDocument. Its callers are the add-in half, which
-  waits for F131's merge, and until it lands nothing in src calls these rules
+  read. `AddTo(ClashReport)` is called once the run has set every test's state, and it reads
+  ran off `TestReport.State`, never off a count of calls: a kept test that did not run, or is
+  not in the report exactly once, merges nothing and each mirror is reported as its own test,
+  and a mirror that did not run, or is not in the report exactly once, is said UNKNOWN and
+  never 0 and keeps its place. A clash both find is kept once under the kept test, and where
+  the mirror's copy carries another status the MIRROR line counts it. A clash only a mirror
+  finds is added to the kept test, marked `ClashRow.FoundOnlyByMirror` with that mirror's name,
+  and a kept test that had passed then found clashes. THE MIRROR'S OWN RESULTS ARE NOT
+  REPORTED A SECOND TIME: AddTo takes each mirror that ran out of the group's report,
+  `ClashReport.TakeOut`, so every writer and every count over `ClashReport.Tests` holds each
+  clash once. THE WORKBOOK AND THE CLASH XML the page is drawn from write every row under
+  `ClashRow.WrittenName`, which names a clash only a mirror found as found by the mirror only
+  in that mirror, so two rows of one block never share a name. FAIL CLOSED: a mirror's clash
+  with an item not read is not added and is said UNKNOWN, and a kept test's clash with an item
+  not read is counted, since up to that many of the clashes said found by a mirror only may be
+  its own. A group is refused, each clash under it is handed. The MIRROR lines name, for each
+  mirror, what each test found, how many both found and how many the mirror only, then every
+  clash the mirror alone found by its name, its mirror and its two items, then what the report
+  holds under the kept test. THE COUNT CHECK OF DONE MEANS 3, `ReportedCount.Line` with the
+  clashes only its mirrors found, `MirrorMerge.FoundByTheMirrorsOnly`: the kept test's rows
+  are its panel count plus that many, which the line names and explains, and only rows past
+  them read THERE ARE MORE ROWS THAN CLASHES. The COVERAGE SHEET'S NAMES, F127's data, are
+  `MirrorRule.CoverageNames`, each test of a pair once in the XML's order: a mirror as a mirror
+  of the test kept, how the two ask one question with the sets of one rule list named, and the
+  name it runs under, and a test kept with the mirrors whose clashes are added to it. A test
+  with one set on both sides, or two sets of one rule list, is its own swap. A second test with
+  the same two sets in the kept test's own order is a DUPLICATE and not a mirror by his words,
+  named and run as before. A SIDE NOT READ IS UNKNOWN: an XML test with an empty locator,
+  UNKNOWN, or a placeholder is never paired, and one MIRROR line says how many. The client's
+  matrix holds no two tests swapped, and by rule list 117 pairs,
+  `MirrorRuleTests.TheClientsMatrixHoldsNoSwapAnd117PairsByRuleList`. The corrected matrix
+  holds 59, docs\history\scan.md 5z-mirrors, every test still created and run,
+  `TheCorrectedMatrixHolds59PairsByRuleListAndEveryTestStillRuns`. NOTHING IS REMOVED FROM AN
+  NWF: the removal of a mirror this tool made, Q114 point 7 and FR-183, went with Q133 D, and
+  so did MirrorInDocument. Its callers are the add-in half, which waits for F131's merge, and
+  until it lands nothing in src calls these rules but the writers' WrittenName
 - The Revit container inside an NWC is often a different building from the NWC.
   Where the building code parsed from the NWC name differs from the code in the
   Revit source name, report SOURCE MISMATCH naming both, and where one Revit
