@@ -79,9 +79,12 @@ namespace Federator.Core.Sets
     /// content. Those are two completely different problems and only one of them is his.
     ///
     /// THE VALUES ARE MEASURED AND NEVER TYPED. `RevitCategories` holds the 374 category
-    /// values the models really carry, measured in 5i, and `RevitWorksets` the 39 workset
-    /// names, measured in 5t. A set asking for something neither list holds is asking for
-    /// something no model in this project has.
+    /// values the models really carry, measured in 5i. The workset spellings are handed in,
+    /// the ones the picked file's corrections were chosen from, `RevitWorksets.With`: the 39
+    /// names measured in 5t inside Core and the workset lines of the list beside the picked
+    /// file, Q113, so a spelling a MATRIX line says was measured is never one this calls
+    /// carried by no model, F116. A set asking for something neither holds is asking for
+    /// something no model measured so far in this project has.
     ///
     /// WHILE A LIST IS UNMEASURED THIS SAYS IT CANNOT TELL. A check that compared against
     /// an empty list would report every set in the file as asking for something nobody
@@ -104,10 +107,11 @@ namespace Federator.Core.Sets
 
         /// <summary>
         /// Why that set found nothing, judged on the FIRST condition this reader knows
-        /// how to judge. One reason per set, because a set asking two things nobody has
-        /// is still one wrong set and a person fixes it once.
+        /// how to judge, against those workset spellings, SetBuildPlan.Worksets. One reason
+        /// per set, because a set asking two things nobody has is still one wrong set and a
+        /// person fixes it once.
         /// </summary>
-        public static EmptySet Why(string path, IList<ReadCondition> asked)
+        public static EmptySet Why(string path, IList<ReadCondition> asked, IList<string> worksets)
         {
             if (asked == null || asked.Count == 0)
             {
@@ -118,7 +122,7 @@ namespace Federator.Core.Sets
 
             for (int i = 0; i < asked.Count; i++)
             {
-                IList<string> known = KnownFor(asked[i].PropertyInternalName);
+                IList<string> known = KnownFor(asked[i].PropertyInternalName, worksets);
 
                 if (known == null || known.Count == 0)
                 {
@@ -137,7 +141,7 @@ namespace Federator.Core.Sets
             }
 
             return judgedAny
-                ? new EmptySet(path, EmptyReason.TheValueIsThereAnyway, FirstJudgeable(asked), null)
+                ? new EmptySet(path, EmptyReason.TheValueIsThereAnyway, FirstJudgeable(asked, worksets), null)
                 : new EmptySet(path, EmptyReason.CannotTell, null, null);
         }
 
@@ -225,11 +229,11 @@ namespace Federator.Core.Sets
             return count;
         }
 
-        private static string FirstJudgeable(IList<ReadCondition> asked)
+        private static string FirstJudgeable(IList<ReadCondition> asked, IList<string> worksets)
         {
             for (int i = 0; i < asked.Count; i++)
             {
-                IList<string> known = KnownFor(asked[i].PropertyInternalName);
+                IList<string> known = KnownFor(asked[i].PropertyInternalName, worksets);
 
                 if (known != null && known.Count > 0)
                 {
@@ -241,11 +245,11 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// The measured list for that property, or null where this tool has no list and
-        /// therefore no opinion. Never a guess: a property nobody measured is one this
-        /// reader says it cannot tell about.
+        /// The measured list for that property, the workset spellings handed in for the
+        /// workset, or null where this tool has no list and therefore no opinion. Never a
+        /// guess: a property nobody measured is one this reader says it cannot tell about.
         /// </summary>
-        private static IList<string> KnownFor(string propertyInternalName)
+        private static IList<string> KnownFor(string propertyInternalName, IList<string> worksets)
         {
             if (string.Equals(propertyInternalName, CategoryProperty, StringComparison.Ordinal))
             {
@@ -254,7 +258,7 @@ namespace Federator.Core.Sets
 
             if (string.Equals(propertyInternalName, WorksetProperty, StringComparison.Ordinal))
             {
-                return RevitWorksets.All();
+                return worksets;
             }
 
             return null;

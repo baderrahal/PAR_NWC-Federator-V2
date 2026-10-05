@@ -182,6 +182,24 @@ Core tests 1865 passed, 0 failed, 0 skipped at 61ea726, turn5\f112f-precommit.tx
 worktree folder are removed, while git's own entry for the worktree could not be deleted,
 Permission denied, turn5\precommit-records-12.txt. Q110 and Q111 reach the form with it. The add-in half waits for the
 test of wave 1. Wave 1 now holds F113 and F112 on main, and F116 is in its fix pass.
+F116 MERGED as PR 98, 7793b9e, at 04:25:57 on 2026-10-05, green in Actions on its last commit
+8f65042, run 37251236132, turn5\actions-reads-pr98.txt. It carries Bader's answers to Q102 to
+Q104 and to Q113: this project's list of corrections is exchange\
+1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt beside exchange\
+1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, and Bader was told in the Claude tab at about 04:27
+that it is there, a reply kept in no file. Its last reviewer approved with nothing blocking,
+turn5\f116e-read-review.txt, after five passes, attempt 1, attempt 2, the Q113 pass, the pass on
+the readings of the Q113 pass, and the closing pass that took out RevitWorksets.All, which a
+reviewer and a claim-checker read and no breaker, its one code change the deletion of a member
+with no caller. Core tests 1912 passed, 0 failed, 0 skipped at 8f65042, turn5\f116f-precommit.txt,
+and the Release build 0 warnings and 0 errors at 23ec179, turn5\f116e-build-after.txt, a40ff59
+the last commit changing code and 8f65042 after it changing steps\log.md only,
+turn5\f116f-diffstat.txt. Its branch and worktree folder are removed, while git's own entry for the worktree could not
+be deleted, Permission denied, turn5\precommit-records-15.txt. ALL OF WAVE 1's PRODUCT
+CODE IS NOW ON MAIN, F113, F112 and F116, with F125 for the driver. What the test of wave 1 waits
+for: Navisworks free of the C04 baseline, Q124, so that main can be installed in place, F126's
+harness run and its merge for the rule-off run, and the list copied from exchange\ beside the XML
+in the run set's own copy.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -359,11 +377,9 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    steps\runs\04\findings.md, short, in the shape of set 03's, merged within the hour. The hung
    first attempt is kept as steps\runs\04\item1-C02-hung
 2. Wave 1: F125's second pass and F126, the driver unticking a named box, each read under Q93
-   and merged. F112 fix attempt 2 read and merged. F116 fix attempt 2, attempt 1 being aefb416
-   read in turn5\f116-read-review.txt, f116-read-break.txt and f116-read-claims.txt, then
-   Bader's answer to Q113, the list as a file beside the picked XML and this project's list in
-   exchange\, then its merge after F112, Bader told when the list is on main. Each with a reviewer, a breaker and the claim-checker, Actions green, merged one
-   at a time
+   and merged. F125 MERGED as PR 102, F112 MERGED as PR 106 and F116 MERGED as PR 98 with this
+   project's list in exchange\, Bader told at about 04:27. F126 waits for its harness in the first
+   gap with no Navisworks, then its pull request
 3. The test of wave 1: main installed in place as on 2026-10-01 and its stamp read back, both
    buildings run, item 1 and item 2, and a building whose models are off the shared coordinates
    run once more with the rule switched off by its tick box. Compared with the baseline through
@@ -511,7 +527,8 @@ OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its ch
   new views written before old ones are removed, whose cost is UNKNOWN until probe P18 and which is
   asked if that cost is large, and one, a comment that does not survive a save, waits for P9
 - Q124, written on 2026-10-05: the baseline of 1A04PK takes a day or more, so whether to let it
-  run, the loop going on with A, let it run, until he answers
+  run, the loop going on with A, let it run, until he answers. Its note of 03:20: under A the
+  ceiling of Q84 closes the C04 run at about 09:18 if it has not ended
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:
