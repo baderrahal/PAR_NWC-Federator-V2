@@ -196,10 +196,28 @@ and the Release build 0 warnings and 0 errors at 23ec179, turn5\f116e-build-afte
 the last commit changing code and 8f65042 after it changing steps\log.md only,
 turn5\f116f-diffstat.txt. Its branch and worktree folder are removed, while git's own entry for the worktree could not
 be deleted, Permission denied, turn5\precommit-records-15.txt. ALL OF WAVE 1's PRODUCT
-CODE IS NOW ON MAIN, F113, F112 and F116, with F125 for the driver. What the test of wave 1 waits
-for: Navisworks free of the C04 baseline, Q124, so that main can be installed in place, F126's
+CODE IS NOW ON MAIN, F113, F112 and F116, with F125 for the driver. What the test of wave 1 waited
+for first, Navisworks free of the C04 baseline, came at 06:38, see the paragraph below. It then
+waits for main to be installed in place, F126's
 harness run and its merge for the rule-off run, and the list copied from exchange\ beside the XML
 in the run set's own copy.
+THE BASELINE, ITEM 1 ON C04, ENDED HUNG. Started at 21:16:46 by turn4\start-run.ps1 as run.ps1 pid
+45316 from wt-base, Roamer reading 0 at 21:16:45, its Navisworks pid 32136. The driver pressed Run
+and answered the confirm, driver.txt. The clash step began at 21:18:57, its first test read at
+21:29:32, run log lines 62 and 297, and reached test 400 of 561 with 8470 clashes at 05:59, its pace
+uneven, 2 h 27 min on the tests from 75 to 100 and seconds on others, turn5\c04-rate-2.txt. Two clash pictures then failed, IMAGE failed for Clash404 and
+Clash405, InvalidOperationException, run log lines 332 and 333, and with the log still since 06:31:47
+and no processor time for 300 s the hang rule closed it through the held handle at 06:36:58,
+VERDICT: STOPPED, something of Bader's was not put back, NOT PUT BACK, record.txt line 3468. No
+workbook was written. The put back wrote nothing, because a Roamer, pid 46148, was first seen by the watchdog at 06:31:47 with no start time the loop could read, watch.txt line 316, listed by the lead's waiter every minute from 06:32:02 to 06:37:02, a minute past the close of the loop's own, and gone by 06:38:02, turn5\wait-run04-item1-C04.txt lines 550 to 556,
+and whose it was is UNKNOWN: 34 registry values, InfoCenter.log and six AutoSave changes, three
+of his autosaves of 1A04PK gone and three the run added, are listed in record.txt from line 3398,
+with the backup kept in runs\04\item1-C04\settings and his autosaves held in autosave-backup. Q128
+asks him, the loop going on with B, leave it as it is. M5: 14 keys and 2765 files listed in m5.txt,
+which stays out of the evidence, and left.
+The evidence is masked into steps\runs\04\item1-C04 with no copy differing,
+turn5\mask-run04-item1-C04.txt. The loop's Navisworks was gone at 06:36:58 and no Roamer has run since 06:38:02, the waiter's lines
+556 to 561 and the lead's read of 0 at 06:53:29, turn5\f126-proof\roamer-reads-harness.txt.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -527,8 +545,10 @@ OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its ch
   new views written before old ones are removed, whose cost is UNKNOWN until probe P18 and which is
   asked if that cost is large, and one, a comment that does not survive a save, waits for P9
 - Q124, written on 2026-10-05: the baseline of 1A04PK takes a day or more, so whether to let it
-  run, the loop going on with A, let it run, until he answers. Its note of 03:20: under A the
-  ceiling of Q84 closes the C04 run at about 09:18 if it has not ended
+  run, the loop going on with A, let it run, until he answers. Its note of 06:45: the run ended
+  HUNG at 06:36, so it now stands for C04's weekly run, item 2
+- Q128, written on 2026-10-05: what the C04 run did not put back, the loop going on with B, leave
+  it as it is with the backups kept, until he answers
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:
