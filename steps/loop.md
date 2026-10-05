@@ -483,6 +483,12 @@ once the chain ends, each value read back, register row T5-R-GUARDRACE. It was p
 pause and running nothing, turn5\probes-2-result.json, for the removal of the three autosaves, done at
 15:49 and each named under Q128, and for the measurement of Q133, which began at 15:50:12 with P11 to P19 after it,
 turn5\workflow-starts.txt, F132 before F114 in his order.
+BADER'S MESSAGE ON AUTOSAVE COPIES, Q135, 2026-10-05 in the evening. Auto-Save measured, its switch one value
+inside the 22.0 key every start backs up and puts back, off the safe choice. A probe's Navisworks had
+rotated away his 1A02MM Autosave0, put back at 17:31 from the one backup with the probe's four autosaves
+removed, each named, and 199 duplicate files and 288,915,844 bytes freed in the loop's folder,
+turn5\q135\cleanup.txt. The probes are paused, turn5\probes-pause.txt, until F138 switches Auto-Save off
+for every loop start. The Q133 measurement on 1A02MM is under Q133, 1A04PK's waits for F138.
 
 Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 at 15:42. Merged so
 far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
@@ -635,7 +641,8 @@ What waits on Bader's answer. A finding moves here when it survives three fix at
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
 
-OPEN IN THE FORM NOW: Q134, written on 2026-10-05, whether three members F131 built for F114's views
+OPEN IN THE FORM NOW: Q136, written on 2026-10-05, what becomes of the old tests of an NWF made before the
+mirror rule, the loop going on with B, leave them, and Q134, written on 2026-10-05, whether three members F131 built for F114's views
 stay on main with no caller until F114 merges, the loop going on with A, keep them. Q133 was ANSWERED D on 2026-10-05, both tests of a mirrored pair run and
 their clashes merged by the pair of items, and he allowed the removal of the run's three autosaves of
 Q128, removed at 15:49, turn5\remove-run-autosaves.txt. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
