@@ -343,7 +343,7 @@ modes:
   their own, which Check prints under its own heading. SkipClashOffCoordinates is not remembered
   between runs: the window sets it from AlignmentCheck.DefaultSkipClashOffCoordinates every time
   it opens, src\Federator.Addin\Ui\FederatorWindow.xaml.cs line 1198 on the branch fix-F112 at
-  e6d6f73, and the one state the window reads back at its next open is FolderMemory's
+  e6d6f73, the same line on main since F112 merged as ddb059b, and the one state the window reads back at its next open is FolderMemory's
   folders.txt, which keeps picker folders only, so nothing of the box needs reading before the
   loop or putting back after
 

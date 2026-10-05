@@ -110,6 +110,7 @@ and nothing is fixed until a real run on real files shows it fixed.
   SkipClashOffCoordinates, which a run may untick since F126, is not one: the window sets it
   from AlignmentCheck.DefaultSkipClashOffCoordinates every time it opens,
   src\Federator.Addin\Ui\FederatorWindow.xaml.cs line 1198 on the branch fix-F112 at e6d6f73,
+  the same line on main since F112 merged as ddb059b,
   and the one state it reads back at its next open is FolderMemory's picker folders
 - Close what you open. Every Navisworks the loop proves its own, by the rule below, is
   closed, and when the Automation API does not close it, through the handle its adoption

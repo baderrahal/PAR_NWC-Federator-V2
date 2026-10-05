@@ -1,7 +1,7 @@
 # log
 
 Newest entry at the top.
-## 2026-10-04 The loop, turn 5, F126 the window driver unticks a named tick box, built and read by a reviewer and a breaker with nothing blocking under Q93, its harness not run because no gap came in 91 minutes
+## 2026-10-04 The loop, turn 5, F126 the window driver unticks a named tick box, built and read by a reviewer and a breaker with nothing blocking under Q93, its harness run in the first gap on 2026-10-05, 52 passed and 0 failed
 
 Nothing under src or tests changed: git diff --name-only 1ae6771 66dfdf5 -- src tests prints
 nothing, and so does the same from main ddb059b to the merge 1e06b7e,
@@ -87,10 +87,8 @@ Skipped: 0. No Navisworks and no stand-in was started.
   23:39:19 and 01:31:32, lines 2 and 23 there, gave a count and no pid, so the file does not
   show they were the same Roamer. This records pass read it at 02:14:59 and again before its
   commit, 1 each time, pid 32136 started at 21:17:06 on 2026-10-04, roamer-reads-claims.txt
-- so THE HARNESS HAS NOT RUN, because no gap with Get-Process Roamer at 0 came. The toggle on
-  the stand-in's box, the read back, each UNTICK stop, run.ps1's Check lines and the stand-in's
-  three modes are UNPROVED by a run. The lead runs both passes in the first gap, before the
-  pull request merges
+- so the harness did not run on 2026-10-04, no gap with Get-Process Roamer at 0 having come.
+  THE LEAD RAN IT on 2026-10-05 in the first gap, after the C04 baseline ended at 06:36: Get-Process Roamer read 0 at 06:53:29, the pass on main's tools in before-tree gave 8 passed and 41 failed, prove-f126-before.txt, the pass on the branch at f9834e4 gave 52 passed and 0 failed, prove-f126-after.txt, the stand-ins started 12 and still running 0, and Roamer read 0 at 06:58:40 and 06:58:45, roamer-reads-harness.txt, every file in turn5\f126-proof
 - what ran with no stand-in and no window, on e45ffbb, pure-reads.txt, whose lines 1 and 2 are
   the commit and the time. pure-reads.ps1 prints and asserts nothing, so its answers were
   compared by hand with what prove-f126.ps1 asserts: ParamRefusal's seven cases, lines 3 to 9,
