@@ -97,6 +97,15 @@ namespace Federator.Addin.Engine
         /// </summary>
         public OffCoordinatesAcrossTheRun CoordinatesAcrossTheRun { get; private set; }
 
+        /// <summary>
+        /// Whether this run had the viewpoints box ticked, F136, read off the options the
+        /// engine was made with, so the RESULT block names the same state the groups read.
+        /// </summary>
+        public bool MakesViewpoints
+        {
+            get { return reports.MakeViewpoints; }
+        }
+
         /// <summary>What every set did across this run, for the block the window writes.</summary>
         public SetsAcrossTheRun SetsAcrossTheRun
         {

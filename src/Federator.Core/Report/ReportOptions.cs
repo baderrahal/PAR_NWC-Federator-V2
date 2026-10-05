@@ -260,7 +260,8 @@ namespace Federator.Core.Report
 
         /// <summary>
         /// Whether a group makes its saved viewpoints, F136, the box on the Clash step.
-        /// ON by default, Q131 default A. Off, no group asks for one and none can fail it.
+        /// OFF by default, Bader's answer B to Q131, until F114 merges. Off, no group asks for
+        /// one and none can fail it.
         /// </summary>
         public bool MakeViewpoints { get; set; }
 

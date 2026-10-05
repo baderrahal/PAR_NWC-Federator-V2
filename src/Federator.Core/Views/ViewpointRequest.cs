@@ -18,16 +18,26 @@ namespace Federator.Core.Views
     public static class ViewpointRequest
     {
         /// <summary>
-        /// Whether the box starts ticked, Q131 default A. A setting,
-        /// ReportOptions.MakeViewpoints, read off here and never typed into the window.
+        /// Whether the box starts ticked. UNTICKED, Bader's answer B to Q131 on 2026-10-05,
+        /// so nobody makes the old viewpoints until F114, the new viewpoints, merges. His
+        /// same answer ticks it once F114 merges, so F114's pull request sets this back to
+        /// true. A setting, ReportOptions.MakeViewpoints, read off here and never typed into
+        /// the window.
         /// </summary>
-        public const bool DefaultMakeViewpoints = true;
+        public const bool DefaultMakeViewpoints = false;
 
-        /// <summary>The tick box on the Clash step. Seven words.</summary>
-        public const string TickLabel = "Make a saved viewpoint for every clash";
+        /// <summary>
+        /// The tick box on the Clash step. It does not say every clash, because a service of
+        /// 150 mm and under gets no viewpoint, SizeSettings.
+        /// </summary>
+        public const string TickLabel = "Make saved viewpoints for the clashes";
 
-        /// <summary>The grey line under it. Twelve words.</summary>
-        public const string HelpLine = "Unticked, no viewpoint is made. The clash, workbook and NWD still run";
+        /// <summary>
+        /// The grey line under it, what the box costs. The hours are measured: the C02 weekly
+        /// run of 2026-10-05 sat in VIEWS for 3 h 15 min and never left it, Q130,
+        /// steps\runs\04\item2-C02.
+        /// </summary>
+        public const string HelpLine = "Each viewpoint adds time, so a big run can take hours";
 
         /// <summary>
         /// Why the group asks for no viewpoint, or null when it asks for them. The box
@@ -62,8 +72,21 @@ namespace Federator.Core.Views
         public static string SettingsLine(bool makeViewpoints)
         {
             return "viewpoints       : " + (makeViewpoints
-                ? "yes, one saved viewpoint per clash"
+                ? "yes, saved viewpoints are made for the clashes"
                 : "no, the box was unticked, so no group makes a viewpoint");
+        }
+
+        /// <summary>
+        /// The one line the RESULT block carries where the box was unticked, aligned with the
+        /// group counts it sits under, or null where it was ticked. A group of an unticked run
+        /// is judged DONE without a viewpoint, so RESULT read alone would show the same DONE
+        /// count as a run that made them.
+        /// </summary>
+        public static string ResultLine(bool makeViewpoints)
+        {
+            return makeViewpoints
+                ? null
+                : "viewpoints     : none made, the box was unticked for this run";
         }
     }
 }

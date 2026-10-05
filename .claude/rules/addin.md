@@ -262,10 +262,15 @@ well as to pass.
   `ViewpointRequest.WhyNone`, the box on the Clash step, the clash skipped and no report,
   and BuildViewpoints calls it in place of the two checks it held before. Unticked, no
   viewpoint is made, ViewpointsRequested is false so the group cannot fail at them, and
-  one VIEWS line names the box. The box, x:Name MakeViewpoints, is set off
-  `ReportOptions.MakeViewpoints` in the constructor, which runs at every open because the
-  plugin makes the window new each time, the way the shared coordinates box is set. Its
-  state is named in the RUN SETTINGS lines and at the start of the open file run.
+  one VIEWS line names the box, in every group that reaches the viewpoints step. The box,
+  x:Name MakeViewpoints, is set off `ReportOptions.MakeViewpoints` in the constructor,
+  which runs at every open because the plugin makes the window new each time, the way the
+  shared coordinates box is set, so it opens UNTICKED until F114 merges, Q131. Its state
+  is named in the RUN SETTINGS lines, at the start of the open file run, and in one RESULT
+  line where it was unticked, which the window takes off the run's engine,
+  FederationEngine.MakesViewpoints, so RESULT names the state the groups read. It sits up
+  front on the Clash step and NEVER under an expander, for the reason the tick box section
+  below gives.
   SavedViewpoints.CanBuild is true since the viewpoints round on 2026-09-19 and nothing
   in src reads it, read on 2026-10-05
 - SINCE F85 A VIEWPOINT IS PER CLASH, which REVERSES what this rule said before it. It
@@ -440,8 +445,8 @@ well as to pass.
   is not readable off the DLL, so it is not claimed. The words DID NOT FOLLOW are gone from
   the log. The combo on the Outputs step is MODEL units, defaulting to Meters, and its help
   line says the report is always in metres
-- A tick box has to earn being a decision. Fifteen went to eleven, and F72 makes twelve, of
-  which TWO are visible without opening anything. Republishing the NWD, writing the client page and rendering the
+- A tick box has to earn being a decision. How many there are and how many sit up front is
+  counted once, in What a tick box says below. Republishing the NWD, writing the client page and rendering the
   photos are fixed ON, because a weekly run wants all three every time. Client columns only
   is gone outright, dead since the workbook became one sheet with none of ours on it.
   Dating the NWD, the clash XML, the thumbnails and the five image status boxes are
@@ -465,8 +470,15 @@ and they explained the off state as well as the on state, so nothing stood out.
 The numbers in a help line are measured, never estimated. Photos are about 0.08 seconds
 each and 213 took 17 seconds. Pasting them takes the workbook from 0.3 MB to 52 MB.
 
-There were fifteen, then eleven, and F72 makes twelve, of which TWO are visible without
-opening anything. A box only stays if a normal weekly run genuinely has to choose, and
+There were fifteen, then eleven, and F72 made twelve, of which two were visible without
+opening anything. F72b, Q72, Q99 and F136 each added one up front on the Clash step, so
+src\Federator.Addin\Ui\FederatorWindow.xaml holds SIXTEEN, of which SIX sit under no
+expander, by x:Name IncludeSubfolders on the Source step and MarkPenetrations,
+MarkByDesign, RebuildDriftedSets, SkipClashOffCoordinates and MakeViewpoints on the Clash
+step. The
+other ten are eight under More, rarely changed and two under Things that destroy data. Read
+off the XAML on 2026-10-05 by its CheckBox and Expander lines. probe-window-labels.ps1 was
+not run on this count. A box only stays if a normal weekly run genuinely has to choose, and
 Mark penetrations as Reviewed earns it: it writes statuses into the NWF, which is the only
 record of what has been fixed, so a run has to be told to do that rather than told not to. Everything else became a
 fixed behaviour with the sensible answer chosen, or moved under an expander. The two that
@@ -478,3 +490,11 @@ of this, so the limits are proved rather than remembered. It OPENS every expande
 because a collapsed one has no visual tree behind it and the probe found one box and
 reported no problems, and it says how many are visible without opening anything, which is
 the number the window is judged on.
+
+THE VIEWPOINTS BOX NEVER GOES UNDER AN EXPANDER, F136, for the same reason. The loop's test
+runs leave the viewpoints off with run.ps1 -Untick MakeViewpoints, F126, and the driver,
+tools\probes\drive-window-run.ps1 FindOnTabs, finds a box by its name in the visual tree of
+each tab in turn. A collapsed expander has no visual tree behind it, so a box under one is
+found on none of the tabs and the driver stops UNTICK with nothing pressed. Once F114 merges
+the box opens ticked, Q131, and a test run that must leave the viewpoints off can only do it
+through a box the driver can find.

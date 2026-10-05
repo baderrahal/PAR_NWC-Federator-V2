@@ -70,11 +70,16 @@ namespace Federator.Core.Tests
                 Is.EqualTo(ViewpointRequest.WhyNone(true, true, true)));
         }
 
+        /// <summary>
+        /// Bader's answer B to Q131 on 2026-10-05: unticked when the window opens until F114
+        /// merges, so nobody makes the old viewpoints. The window opens with the setting's
+        /// value, so the setting is what this pins.
+        /// </summary>
         [Test]
-        public void TheBoxStartsTickedOffTheSetting()
+        public void TheBoxStartsUntickedOffTheSetting()
         {
-            Assert.That(ViewpointRequest.DefaultMakeViewpoints, Is.True, "Q131 default A");
-            Assert.That(new ReportOptions().MakeViewpoints, Is.EqualTo(ViewpointRequest.DefaultMakeViewpoints));
+            Assert.That(ViewpointRequest.DefaultMakeViewpoints, Is.False, "Q131 answer B, unticked until F114 merges");
+            Assert.That(new ReportOptions().MakeViewpoints, Is.False, "the window opens with the box unticked");
         }
 
         [Test]
@@ -85,11 +90,28 @@ namespace Federator.Core.Tests
             Assert.That(ViewpointRequest.TickLabel, Is.Not.EqualTo(ViewpointRequest.TickLabel.ToUpperInvariant()));
         }
 
+        /// <summary>
+        /// A service of 150 mm and under gets no viewpoint, so a label or a settings line
+        /// saying every clash, or one per clash, says more than the code does.
+        /// </summary>
         [Test]
-        public void TheGreyLineIsTwelveWordsAtMost()
+        public void TheLabelAndTheSettingsLineDoNotClaimEveryClash()
+        {
+            Assert.That(ViewpointRequest.TickLabel, Does.Not.Contain("every"));
+            Assert.That(ViewpointRequest.SettingsLine(true), Does.Not.Contain("every"));
+            Assert.That(ViewpointRequest.SettingsLine(true), Does.Not.Contain("per clash"));
+        }
+
+        /// <summary>
+        /// The tick box rule says the grey line names what the box costs and does not describe
+        /// the off state, so a line about what happens unticked breaks it.
+        /// </summary>
+        [Test]
+        public void TheGreyLineIsTwelveWordsAtMostAndDoesNotDescribeTheOffState()
         {
             Assert.That(ViewpointRequest.HelpLine.Split(' ').Length, Is.LessThanOrEqualTo(12));
             Assert.That(ViewpointRequest.HelpLine, Does.Not.Contain("MakeViewpoints"));
+            Assert.That(ViewpointRequest.HelpLine, Does.Not.Contain("nticked"));
         }
 
         [Test]
@@ -98,6 +120,23 @@ namespace Federator.Core.Tests
             Assert.That(ViewpointRequest.SettingsLine(true), Does.StartWith("viewpoints       : yes"));
             Assert.That(ViewpointRequest.SettingsLine(false), Does.StartWith("viewpoints       : no"));
             Assert.That(ViewpointRequest.SettingsLine(false), Does.Contain("unticked"));
+        }
+
+        /// <summary>
+        /// The RESULT block names the viewpoints off in one line, aligned with the group
+        /// counts above it, and says nothing where the box was ticked.
+        /// </summary>
+        [Test]
+        public void TheResultLineNamesTheViewpointsOffOnlyWhereTheBoxWasUnticked()
+        {
+            Assert.That(ViewpointRequest.ResultLine(true), Is.Null);
+
+            string off = ViewpointRequest.ResultLine(false);
+
+            Assert.That(off, Is.Not.Null, "an unticked run said nothing about viewpoints in RESULT");
+            Assert.That(off, Does.StartWith("viewpoints     : "));
+            Assert.That(off, Does.Contain("unticked"));
+            Assert.That(off.Split('\n').Length, Is.EqualTo(1), "one line");
         }
     }
 }

@@ -1204,8 +1204,9 @@ namespace Federator.Addin.Ui
             }
 
             // F136. The same shape, ticked or not off the setting the run reads, and set
-            // here because the window is made new at every open, so a box unticked for
-            // one run is ticked again the next time the window opens.
+            // here because the window is made new at every open. The setting is unticked
+            // until F114 merges, Q131, so a box ticked for one run is unticked again the
+            // next time the window opens.
             if (MakeViewpoints != null)
             {
                 MakeViewpoints.Content = ViewpointRequest.TickLabel;
@@ -2105,21 +2106,24 @@ namespace Federator.Addin.Ui
             {
                 // The result block and the second copy are written whatever happened, so a
                 // run that stopped still leaves a readable log with its summary at the end.
-                WriteTheResultAndCopyTheLog(nwfFolder, engine == null ? null : engine.CoordinatesAcrossTheRun);
+                WriteTheResultAndCopyTheLog(nwfFolder, engine);
                 running = false;
                 RunButton.IsEnabled = true;
             }
         }
 
         /// <summary>
-        /// The RESULT block of one run and the second copy of the log. thisRun is what the
-        /// shared coordinates rule did in that run, from that run's engine, or null.
+        /// The RESULT block of one run and the second copy of the log. engine is that run's
+        /// engine, or null where the run stopped before one was made, and then the block says
+        /// nothing of the shared coordinates rule or the viewpoints box rather than guess.
         /// </summary>
-        private void WriteTheResultAndCopyTheLog(string nwfFolder, OffCoordinatesAcrossTheRun thisRun)
+        private void WriteTheResultAndCopyTheLog(string nwfFolder, FederationEngine engine)
         {
             try
             {
-                log.WriteResultBlock(thisRun);
+                log.WriteResultBlock(
+                    engine == null ? null : engine.CoordinatesAcrossTheRun,
+                    engine == null || engine.MakesViewpoints);
             }
             catch (Exception error)
             {
@@ -2370,8 +2374,7 @@ namespace Federator.Addin.Ui
                 // happened, the same as the scanned run. The copy goes beside the open
                 // file, where the scanned run puts it beside the NWF folder. This used to
                 // be missing, so an open file run ended with no RESULT block and no copy.
-                WriteTheResultAndCopyTheLog(
-                    OpenDocumentJob.FolderOf(open), engine == null ? null : engine.CoordinatesAcrossTheRun);
+                WriteTheResultAndCopyTheLog(OpenDocumentJob.FolderOf(open), engine);
                 running = false;
                 RunOpenButton.IsEnabled = true;
                 ShowOpenDocument();
