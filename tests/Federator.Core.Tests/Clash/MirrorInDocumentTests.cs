@@ -17,6 +17,7 @@ namespace Federator.Core.Tests
     {
         private const string Ducts = MirrorRuleTests.Ducts;
         private const string Columns = MirrorRuleTests.Columns;
+        private const string Walls = MirrorRuleTests.Walls;
         private const string DuctsVsColumns = MirrorRuleTests.DuctsVsColumns;
         private const string ColumnsVsDucts = MirrorRuleTests.ColumnsVsDucts;
 
@@ -226,7 +227,45 @@ namespace Federator.Core.Tests
             Assert.That(mirror.Removes, Is.False);
         }
 
+        // Two saved tests the XML does not hold, each the other's swap and neither the swap
+        // of a test the XML runs. The rule over the two keeps the first the NWF holds, and
+        // nothing proves this tool created the other.
+        [Test]
+        public void TwoSavedTestsTheXmlDoesNotHoldAreAPair()
+        {
+            ClashTestPlan xml = MirrorRuleTests.Plan(MirrorRuleTests.Test(DuctsVsColumns, Ducts, Columns));
+            MirrorInDocument mirror = TheOneFound(
+                SavedInTheDocument(
+                    MirrorRuleTests.Saved(DuctsVsColumns, Ducts, Columns, 0),
+                    MirrorRuleTests.Saved("Walls against Ducts by hand", Walls, Ducts, 1),
+                    MirrorRuleTests.Saved("Ducts against Walls by hand", Ducts, Walls, 2)),
+                MirrorRule.Of(xml.Buildable, PriorityMap.NothingPicked()));
+
+            mirror.AddResult(ClashStatus.New, null);
+
+            Assert.That(mirror.Saved.Name, Is.EqualTo("Ducts against Walls by hand"));
+            Assert.That(mirror.Removes, Is.False);
+            Assert.That(mirror.Line(), Does.Contain("a mirror of Walls against Ducts by hand"));
+            Assert.That(mirror.Line(), Does.Contain("does not hold"));
+        }
+
         // ---------- what is never judged ----------
+
+        // A saved test the XML does not hold, in the order of the test the XML keeps. Its
+        // swap is the XML's mirror, which this run never runs, so it is the kept test's
+        // duplicate and no test's mirror.
+        [Test]
+        public void ASavedTestInTheKeptTestsOwnOrderIsNoMirror()
+        {
+            IList<MirrorInDocument> found = MirrorInDocument.Find(
+                SavedInTheDocument(
+                    MirrorRuleTests.Saved(DuctsVsColumns, Ducts, Columns, 0),
+                    MirrorRuleTests.Saved("Ducts against Columns by hand", Ducts, Columns, 1)),
+                TheXmlHoldingBoth(),
+                PriorityMap.NothingPicked());
+
+            Assert.That(found.Count, Is.EqualTo(0));
+        }
 
         // The XML keeps the test it holds first and the NWF saved them the other way round.
         // The picked XML decides what this run creates and runs, so the test it keeps is

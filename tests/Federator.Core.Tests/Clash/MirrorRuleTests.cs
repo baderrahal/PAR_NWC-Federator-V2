@@ -23,7 +23,7 @@ namespace Federator.Core.Tests
         internal const string Ducts = Root + "/Mechanical/BLD-ME-Ducts";
         internal const string Columns = Root + "/Structure/BLD-ST-Columns";
         private const string ArColumns = Root + "/Architecture/BLD-AR-Columns";
-        private const string Walls = Root + "/Architecture/BLD-AR-Walls";
+        internal const string Walls = Root + "/Architecture/BLD-AR-Walls";
 
         internal const string DuctsVsColumns = "BLD-ME-Ducts-vs-BLD-ST-Columns";
         internal const string ColumnsVsDucts = "BLD-ST-Columns-vs-BLD-ME-Ducts";
