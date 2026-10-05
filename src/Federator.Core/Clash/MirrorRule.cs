@@ -151,9 +151,10 @@ namespace Federator.Core.Clash
         /// run and a count of pairs alone reads as a check of every test. Then once, where
         /// any test has a side not read, how many, said UNKNOWN. Then every pair whose two
         /// tests differ in priority, type or tolerance, each with both values, because Bader
-        /// asked for both in the log. Then the pairs alike in everything, five named and the
-        /// rest counted, the rule every repeated line here follows, since the skip block
-        /// already names each mirror with the test it mirrors. Then the duplicates the same way.
+        /// asked for both in the log. Then the pairs alike in those three, the only three
+        /// compared and so never said to be alike in everything, five named and the rest
+        /// counted, the rule every repeated line here follows, since the skip block already
+        /// names each mirror with the test it mirrors. Then the duplicates the same way.
         /// </summary>
         public IList<string> Lines()
         {
@@ -206,7 +207,8 @@ namespace Federator.Core.Clash
                     }
                 }
 
-                AddFive(lines, alike, " more pairs alike in everything, counted and not listed");
+                AddFive(lines, alike, " more pairs alike in priority, test type and tolerance, "
+                    + "counted and not listed");
             }
 
             List<string> repeated = new List<string>();

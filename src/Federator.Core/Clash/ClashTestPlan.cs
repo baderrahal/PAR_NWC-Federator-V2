@@ -388,8 +388,9 @@ namespace Federator.Core.Clash
         /// Moves every mirror the rule found out of the buildable list and into the skipped
         /// list, F132, each naming the test it is a mirror of, so it is not created and not
         /// run and its row in the workbook says why. The rule is the one built over this
-        /// plan's own buildable tests, and a test is matched as the same object, so a rule
-        /// built over another list moves nothing.
+        /// plan's own buildable tests, and a test is matched as the same object. A rule built
+        /// over another list would move nothing while its lines said each mirror is not run,
+        /// so a mirror that is not one of this plan's buildable tests is refused.
         /// </summary>
         public ClashTestPlan WithoutMirrors(MirrorRule mirrors)
         {
@@ -398,10 +399,19 @@ namespace Federator.Core.Clash
                 throw new ArgumentNullException("mirrors");
             }
 
+            HashSet<PlannedClashTest> ours = new HashSet<PlannedClashTest>(buildable);
             Dictionary<PlannedClashTest, MirrorPair> byMirror = new Dictionary<PlannedClashTest, MirrorPair>();
 
             foreach (MirrorPair pair in mirrors.Pairs)
             {
+                if (!ours.Contains(pair.Mirror))
+                {
+                    throw new ArgumentException(
+                        "The mirror rule was built over other tests than this plan's, so it would move nothing "
+                            + "while its lines say each mirror is not run. " + pair.Mirror.Name + " is not one of them.",
+                        "mirrors");
+                }
+
                 byMirror[pair.Mirror] = pair;
             }
 

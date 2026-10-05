@@ -301,32 +301,35 @@ and 6 does not read as broken.
   viewpoints and every count would hold each of them twice. `Federator.Core.Clash
   .MirrorRule` pairs the tests on their two locators either way round, Ordinal and never
   trimmed, on the key the by design pairs are found on, `ByDesignPairs.KeyFor`, and on no
-  copy of it. Of each pair THE HIGHER PRIORITY IS KEPT, off the priority file the run picked,
-  A before B before C before none, and where equal the one first in the XML, by its
-  FileIndex. With no XML the tests saved in the document are read in the order the
+  copy of it. Of each pair THE HIGHER PRIORITY IS KEPT, off the priority file the run
+  picked, A before B before C before none, and where equal the one first in the XML, by
+  its FileIndex. With no XML the tests saved in the document are read in the order the
   document holds them, and the log says that order stands for the XML's. Every test in the
   other order is a mirror of the one kept, and `ClashTestPlan.WithoutMirrors` moves it to
   the skipped list under `ClashSkipReason.Mirror`, its reason naming the test kept, so the
   creation plan never sees it, it is never run, and the workbook still carries its block
-  with that reason. A test with one set on both sides is no test's mirror. A SIDE NOT READ
-  IS UNKNOWN: an empty locator, UNKNOWN, or one of the two placeholders the add-in hands
-  for every saved test's sides, `SavedClashTest.LeftAsSaved` and `RightAsSaved`, which live
-  in Core for that reason. Read as sets the placeholders would make every saved test a
-  duplicate of the first, so a test with a side not read is never paired, never a mirror
-  and never a duplicate, and one MIRROR line says how many, once. A second test with the same two sets in the kept test's own order is a
-  DUPLICATE and not a mirror by his words, so it is named and created and run as before.
-  Two sets with different names are two sets even where their rules read alike, Q121's
-  default A, so BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices make no pair. The
-  MIRROR lines are one line counting the pairs among the tests whose two sets were read,
-  always, so a check of no test never reads as a check of every test, then the line of the
-  tests not read where there are any, then every pair whose two tests
-  differ in priority, test type or tolerance, with both values, the tolerance compared
-  within `TestDrift.ToleranceEpsilon`, then the pairs alike in everything, five named and
-  the rest counted, then the duplicates the same way. The picked XML and the client's
-  matrix hold no pair and no duplicate, turn5\measure-mirrors.md, and a test holds that on
-  both files, so on them the rule leaves every test where it was. The rule holds no number
-  that shapes a run. Its caller is the add-in half, which waits for probes P1 and P2, and
-  until it lands nothing in src calls the rule
+  with that reason. A rule built over any list but that plan's own buildable tests is
+  refused, because it would move nothing while its lines said each mirror is not run. A
+  test with one set on both sides is no test's mirror. A SIDE NOT READ IS UNKNOWN: an empty
+  locator, UNKNOWN, or one of the two placeholders the add-in hands for every saved test's
+  sides, `SavedClashTest.LeftAsSaved` and `RightAsSaved`, which live in Core for that
+  reason. Read as sets the placeholders would make every saved test a duplicate of the
+  first, so a test with a side not read is never paired, never a mirror and never a
+  duplicate, and one MIRROR line says how many, once. A second test with the same two sets
+  in the kept test's own order is a DUPLICATE and not a mirror by his words, so it is named
+  and created and run as before. Two sets with different names are two sets even where
+  their rules read alike, Q121's default A, so BLD-EL-Telecom Fixtures and BLD-EL-Telephone
+  Devices make no pair. The MIRROR lines are one line counting the pairs among the tests
+  whose two sets were read, always, so a check of no test never reads as a check of every
+  test, then the line of the tests not read where there are any, then every pair whose two
+  tests differ in priority, test type or tolerance, with both values, the tolerance
+  compared within `TestDrift.ToleranceEpsilon`, then the pairs alike in those three, the
+  only three compared, five named and the rest counted, then the duplicates the same way.
+  The picked XML and the client's matrix hold no pair and no duplicate, which
+  `MirrorRuleTests.TheClientsMatrixHoldsNoPair` and `TheCorrectedMatrixHoldsNoPair` prove,
+  so on them the rule leaves every test where it was. The rule holds no number that shapes
+  a run. Its caller is the add-in half, which waits for probes P1 and P2, and until it
+  lands nothing in src calls the rule
 - A MIRROR ALREADY IN THE NWF IS NOT RUN, AND IS REMOVED ONLY WHERE THIS TOOL IS PROVED TO
   HAVE CREATED IT AND NO PERSON SET A STATUS ON IT, F132, Bader's Q114 point 7, the one
   place this tool removes a test, by his word. `Federator.Core.Clash.MirrorInDocument`
@@ -339,18 +342,19 @@ and 6 does not read as broken.
   PROVES THIS TOOL CREATED IT: its name and both its locators equal a mirror of the picked
   XML exactly, Ordinal, because that is how this tool creates a test and nothing else on a
   test says who made it. So WITH NO XML NOTHING IS EVER REMOVED, and a swap the picked XML
-  does not hold, one whose sides differ from the XML's, or one whose sides were not read,
-  is left, the last said UNKNOWN and never with a placeholder quoted as a set. WHOSE A STATUS IS,
-  Q122's default A: every status but New is a person's, `StatusesAPersonSet`, except a
-  Reviewed carrying this tool's own record still reading as ours, `AutoReviewRecord
-  .MayUndo`, the undo's own judge, so a mirror whose results a rerun moved to Active or
-  Resolved is left. A result that could not be read leaves it too, and a test with no
-  results carries no status. FAIL CLOSED: Core cannot tell a test with no results from a
-  walk of its results that never ran, threw or stopped part way, so nothing is removed
-  until the add-in says the walk reached its end, `MirrorInDocument.AllResultsAdded`, after
-  the last result, and a result handed after that must be followed by it again. A mirror left is never run and is named on a MIRROR line with
-  the test it mirrors, every reason it was left and its statuses with their counts, for
-  the form. Its caller is the add-in half, which waits for probes P1 and P2, P2 being
+  does not hold, one whose sides differ from the XML's, or one whose sides were not read is
+  left, the last said UNKNOWN and never with a placeholder quoted as a set. WHOSE A STATUS
+  IS, Q122's default A: every status but New is a person's, `StatusesAPersonSet`, except a
+  Reviewed carrying this tool's own record still reading as ours, judged by
+  `UndoAutoReview.Judge`, the judge the Undo auto Reviewed button runs, so a mirror whose
+  results a rerun moved to Active or Resolved is left. A result that could not be read
+  leaves it too, and a test with no results carries no status. FAIL CLOSED: Core cannot
+  tell a test with no results from a walk of its results that never ran, threw or stopped
+  part way, so nothing is removed until the add-in says the walk reached its end,
+  `MirrorInDocument.AllResultsAdded`, after the last result, and a result handed after that
+  must be followed by it again. A mirror left is never run and is named on a MIRROR line
+  with the test it mirrors, every reason it was left and its statuses with their counts,
+  for the form. Its caller is the add-in half, which waits for probes P1 and P2, P2 being
   whether a test can be removed at all, and until it lands nothing in src calls the rule.
   Probe P3, a step for Bader, reads who set a status and is what Q122 would turn on
 - The Revit container inside an NWC is often a different building from the NWC.

@@ -22,10 +22,11 @@ namespace Federator.Core.Clash
     ///
     /// WHOSE A STATUS IS, Q122's default A. Every status but New counts as a person's,
     /// `StatusesAPersonSet`, with one exception its record proves: a Reviewed carrying this
-    /// tool's own record still reading as ours, the undo's own judge,
-    /// `AutoReviewRecord.MayUndo`. So a mirror whose results a rerun moved to Active or
-    /// Resolved is left. A result that could not be read is left as well, because a status
-    /// nobody read is not a status nobody set. A test with no results carries no status.
+    /// tool's own record still reading as ours, judged by `UndoAutoReview.Judge`, the judge
+    /// the Undo auto Reviewed button runs, so a result it would put back is the one taken as
+    /// this tool's. So a mirror whose results a rerun moved to Active or Resolved is left. A
+    /// result that could not be read is left as well, because a status nobody read is not a
+    /// status nobody set. A test with no results carries no status.
     ///
     /// FAIL CLOSED. Core cannot tell a test with no results from a walk of its results that
     /// never ran or stopped part way, so nothing is removed until the add-in says the walk
@@ -142,7 +143,9 @@ namespace Federator.Core.Clash
             walkComplete = false;
             statuses.Add(status);
 
-            if (AutoReviewRecord.MayUndo(comment, status))
+            ClashStatus putBackTo;
+
+            if (UndoAutoReview.Judge(comment, status, out putBackTo) == UndoVerdict.PutBack)
             {
                 reviewedByThisTool++;
             }

@@ -264,7 +264,9 @@ namespace Federator.Core.Tests
                 stillRun.Add(test.Name);
             }
 
-            Assert.That(stillRun, Is.EqualTo(new[] { DuctsVsColumns, "Ducts against Columns again" }));
+            Assert.That(stillRun.Count, Is.EqualTo(2));
+            Assert.That(stillRun[0], Is.EqualTo(DuctsVsColumns));
+            Assert.That(stillRun[1], Is.EqualTo("Ducts against Columns again"));
         }
 
         // ---------- what the log says ----------
@@ -352,17 +354,20 @@ namespace Federator.Core.Tests
             return named;
         }
 
-        // Five sets both ways round are ten pairs alike in everything. The skip block already
-        // names five and counts the rest, so the MIRROR lines do the same and say so.
+        // Five sets both ways round are ten pairs alike in priority, test type and tolerance.
+        // The skip block already names five and counts the rest, so the MIRROR lines do the
+        // same, and say alike in those three, the three compared, and never in everything.
         [Test]
-        public void PairsAlikeInEverythingNameFiveAndCountTheRest()
+        public void PairsAlikeInPriorityTypeAndToleranceNameFiveAndCountTheRest()
         {
             MirrorRule rule = BothWaysRound(5);
             string all = Text(rule.Lines());
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(10));
             Assert.That(LinesNamingAPair(rule), Is.EqualTo(5));
-            Assert.That(all, Does.Contain("and 5 more pairs alike in everything, counted and not listed"));
+            Assert.That(all, Does.Contain(
+                "and 5 more pairs alike in priority, test type and tolerance, counted and not listed"));
+            Assert.That(all, Does.Not.Contain("everything"));
         }
 
         // Bader asked for both named where the two differ, so a pair that differs is never
@@ -395,6 +400,23 @@ namespace Federator.Core.Tests
 
             Assert.That(line, Does.Contain("tolerance 0.025 m"));
             Assert.That(line, Does.Contain("0.075 m"));
+        }
+
+        // A tolerance travels through a unit conversion, so two written a hair apart are one
+        // tolerance, compared within TestDrift.ToleranceEpsilon and never exactly.
+        [Test]
+        public void TolerancesWithinTheEpsilonAreAlike()
+        {
+            ClashTestPlan plan = Plan(
+                Test(DuctsVsColumns, Ducts, Columns, Mm25),
+                Test(ColumnsVsDucts, Columns, Ducts, "0.08202099"));
+
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked());
+
+            Assert.That(plan.Buildable[0].Tolerance, Is.Not.EqualTo(plan.Buildable[1].Tolerance),
+                "the two are written apart, by less than the epsilon");
+            Assert.That(rule.Pairs.Count, Is.EqualTo(1));
+            Assert.That(LineNaming(rule, ColumnsVsDucts), Does.Not.Contain("tolerance"));
         }
 
         [Test]
@@ -435,7 +457,7 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void APairAlikeInEverythingNamesNoDifference()
+        public void APairAlikeInPriorityTypeAndToleranceNamesNoDifference()
         {
             ClashTestPlan plan = Plan(
                 Test(DuctsVsColumns, Ducts, Columns),
@@ -530,7 +552,8 @@ namespace Federator.Core.Tests
             }
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));
-            Assert.That(lines[0], Does.Contain("1 pair of tests with the same two sets swapped among the 2 tests whose two sets were read"));
+            Assert.That(lines[0], Does.Contain(
+                "1 pair of tests with the same two sets swapped among the 2 tests whose two sets were read"));
             Assert.That(sayingNotRead, Is.EqualTo(1));
             Assert.That(Text(lines), Does.Contain(
                 "1 of the 3 tests has a side whose set was not read, so whether it is a mirror "
@@ -594,6 +617,26 @@ namespace Federator.Core.Tests
             Assert.That(without.Skipped[0].Kind, Is.EqualTo(ClashSkipReason.Mirror));
         }
 
+        // The rule is matched to the plan's tests as the same objects. A rule built over a
+        // second read of the same tests would move nothing while its lines said each mirror
+        // is not run, so it is refused.
+        [Test]
+        public void ARuleBuiltOverAnotherReadOfTheTestsIsRefused()
+        {
+            List<SavedClashTest> saved = new List<SavedClashTest>
+            {
+                Saved(DuctsVsColumns, Ducts, Columns, 0),
+                Saved(ColumnsVsDucts, Columns, Ducts, 1)
+            };
+
+            ClashTestPlan plan = ClashTestPlan.FromDocument(saved, "m");
+            MirrorRule overAnotherRead = MirrorRule.Of(
+                ClashTestPlan.FromDocument(saved, "m").Buildable, PriorityMap.NothingPicked());
+
+            Assert.That(overAnotherRead.Pairs.Count, Is.EqualTo(1));
+            Assert.Throws<ArgumentException>(() => plan.WithoutMirrors(overAnotherRead));
+        }
+
         // A reason missing from the skip block's order is counted and never said, so a
         // mirror would vanish from the CLASH block while its count stayed in the total.
         [Test]
@@ -621,9 +664,9 @@ namespace Federator.Core.Tests
             return ClashTestPlan.From(new ExchangeReader().ReadFile(path), "m");
         }
 
-        // turn5\measure-mirrors.md: 1830 tests, every unordered pair of 61 sets once, so no
-        // test is another's mirror and the rule drops nothing. The tests are counted first,
-        // because nought pairs out of nought tests proves nothing.
+        // The client's matrix holds 1830 tests and no test is another's mirror, so the rule
+        // drops nothing. The tests are counted first, because nought pairs out of nought
+        // tests proves nothing.
         [Test]
         public void TheClientsMatrixHoldsNoPair()
         {
