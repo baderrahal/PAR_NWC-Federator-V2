@@ -19,8 +19,10 @@ namespace Federator.Core.Teams
     /// EVERY GROUP of the set asks, not negated, a workset the model's whole workset list does not
     /// carry, or a Source File its file name does not hold. So it is a candidate whether or not the
     /// set found items in other models, which is point 3's case on 1A04PK, four ME models feeding
-    /// a set while the HV model is missed. Workset values compare Ordinal, as measured, and a
-    /// Source File asks contains, read against the NWC's file name, Bader's file name.
+    /// a set while the HV model is missed. Whether a workset asked finds a name the model carries
+    /// is ExportCheck.WorksetFinds, the one place that is said. A Source File asks contains, read
+    /// against the NWC's file name, Bader's file name, which STANDS IN for the Source File its
+    /// items carry. That is not read here, and the line of each such miss says so.
     ///
     /// A WORKSET LIST THAT IS NOT WHOLE GIVES UNKNOWN, NEVER A MISS. A model whose element walk did
     /// not finish carries no names, ModelExport.Counted, so a pair blocked only by its worksets is
@@ -29,13 +31,19 @@ namespace Federator.Core.Teams
     /// NAMED ONLY WHERE THE COVERAGE CONFIRMS IT, the judge's rule of the design: the count of items
     /// of the set's categories in that model that no set catches, Q112 request 2, handed in by the
     /// caller, must be above zero. Otherwise a model with no ducts would be named against every
-    /// duct set. Without that count a candidate is counted on one line that says UNKNOWN.
+    /// duct set. Without that count a candidate is counted on one line that says UNKNOWN. A count
+    /// not taken, null or below zero as ModelExport.NotCounted is, is never read as a zero.
     ///
     /// THE CORRECTION IS DRAFTED AND NEVER APPLIED. For each workset value asked, the model's
-    /// spellings whose text after the prefix, split on the separator, is the value's, compared case
-    /// blind, go on one also-ask line of the list of corrections, which Bader approves by copying.
-    /// Where no spelling matches, the spelling is UNKNOWN and nothing is drafted. A Source File has
-    /// no line in the list, so nothing is drafted for one.
+    /// spellings whose text after the prefix, WorksetDisagreements.BodyOf, the one place a
+    /// workset name's prefix is split, is the value's, compared case blind, go on one also-ask
+    /// line of the list of corrections, which Bader approves by copying. Where no spelling
+    /// matches, the spelling is UNKNOWN and nothing is drafted. A Source File has no line in the
+    /// list, so nothing is drafted for one.
+    ///
+    /// WHAT IS NOT JUDGED IS COUNTED AND SAID. A set whose name carries no code the map or a model
+    /// of the group knows, and a model whose code was not read, have a team that is UNKNOWN, so
+    /// they are judged against nothing, and the lines count them beside the all clear.
     ///
     /// WITH NO TEAM MAP every code is a team of its own, so no set is judged against another code.
     /// </summary>
@@ -46,10 +54,15 @@ namespace Federator.Core.Teams
 
         private readonly TeamMap map;
 
-        private SilentMisses(IList<SilentMiss> found, int unjudged, TeamMap map)
+        private readonly bool handedIn;
+
+        private SilentMisses(IList<SilentMiss> found, int unjudged, int setsWithNoCode, int modelsWithNoCode, bool handedIn, TeamMap map)
         {
             Found = new ReadOnlyCollection<SilentMiss>(found);
             Unjudged = unjudged;
+            SetsWithNoCode = setsWithNoCode;
+            ModelsWithNoCode = modelsWithNoCode;
+            this.handedIn = handedIn;
             this.map = map;
         }
 
@@ -59,10 +72,16 @@ namespace Federator.Core.Teams
         /// <summary>How many set and model pairs of one team could not be judged, the model's worksets not all read.</summary>
         public int Unjudged { get; private set; }
 
+        /// <summary>How many sets carry no code in their name that the map or a model of the group knows, so their team is UNKNOWN and they were judged against no model.</summary>
+        public int SetsWithNoCode { get; private set; }
+
+        /// <summary>How many models carry no code, their file name not read for one, so their team is UNKNOWN and no set was judged against them.</summary>
+        public int ModelsWithNoCode { get; private set; }
+
         /// <summary>
         /// The candidates among those sets and the group's models, with that map, the separator of a
-        /// set name's parts and of a workset's prefix, ViewpointSettings.SetNameSeparator, and the
-        /// coverage count of a model file and a category, null where none was taken.
+        /// set name's parts, ViewpointSettings.SetNameSeparator, and the coverage count of a model
+        /// file and a category, null or below zero where none was taken.
         /// </summary>
         public static SilentMisses Find(
             IEnumerable<SelectionSetDefinition> sets,
@@ -77,17 +96,29 @@ namespace Federator.Core.Teams
             }
 
             List<SilentMiss> found = new List<SilentMiss>();
-            int unjudged = 0;
 
-            if (map.Teams.Count == 0 || sets == null || models == null)
+            if (sets == null || models == null)
             {
-                return new SilentMisses(found, unjudged, map);
+                return new SilentMisses(found, 0, 0, 0, false, map);
             }
 
+            if (map.Teams.Count == 0)
+            {
+                return new SilentMisses(found, 0, 0, 0, true, map);
+            }
+
+            int unjudged = 0;
+            int setsWithNoCode = 0;
+            int modelsWithNoCode = 0;
             List<string> groupCodes = new List<string>();
 
             foreach (ModelExport model in models)
             {
+                if (string.IsNullOrEmpty(model.Discipline))
+                {
+                    modelsWithNoCode++;
+                }
+
                 groupCodes.Add(model.Discipline);
             }
 
@@ -99,6 +130,7 @@ namespace Federator.Core.Teams
 
                 if (code.Length == 0)
                 {
+                    setsWithNoCode++;
                     continue;
                 }
 
@@ -128,6 +160,9 @@ namespace Federator.Core.Teams
                         continue;
                     }
 
+                    bool whole;
+                    int? count = Count(model.File, reach.Categories, uncaught, out whole);
+
                     found.Add(new SilentMiss(
                         set.Name,
                         code,
@@ -137,18 +172,20 @@ namespace Federator.Core.Teams
                         reach.Worksets,
                         reach.FileNames,
                         reach.Categories,
-                        Count(model.File, reach.Categories, uncaught),
-                        Drafts(reach.Worksets, model.Worksets, separator)));
+                        count,
+                        whole,
+                        Drafts(reach.Worksets, model.Worksets)));
                 }
             }
 
-            return new SilentMisses(found, unjudged, map);
+            return new SilentMisses(found, unjudged, setsWithNoCode, modelsWithNoCode, true, map);
         }
 
         /// <summary>
         /// The lines for the COVERAGE block and the form: one SILENT MISS line for each confirmed
         /// candidate with its drafted correction under it, then a count of the candidates the
-        /// coverage did not confirm, of those it could not say, and of the pairs not judged.
+        /// coverage did not confirm, of those no count can confirm, of those it could not say, and
+        /// of the pairs not judged, then the sets and the models with no code.
         /// </summary>
         public IList<string> Lines()
         {
@@ -160,14 +197,29 @@ namespace Federator.Core.Teams
                 return lines;
             }
 
+            if (!handedIn)
+            {
+                lines.Add("no set was judged against the models of its team, because no sets or no models were handed in");
+                return lines;
+            }
+
             int notConfirmed = 0;
+            int noCategory = 0;
             int notCounted = 0;
 
             foreach (SilentMiss miss in Found)
             {
                 if (!miss.Uncaught.HasValue)
                 {
-                    notCounted++;
+                    if (miss.Categories.Count == 0)
+                    {
+                        noCategory++;
+                    }
+                    else
+                    {
+                        notCounted++;
+                    }
+
                     continue;
                 }
 
@@ -178,9 +230,10 @@ namespace Federator.Core.Teams
                 }
 
                 lines.Add("SILENT MISS  " + miss.SetName + " finds nothing in " + miss.Model + ", " + map.CodeWithTeam(miss.ModelCode)
-                    + ", because it asks " + Asks(miss) + ". That model holds "
+                    + ", because it asks " + Asks(miss) + ". That model holds " + (miss.UncaughtWhole ? string.Empty : "at least ")
                     + miss.Uncaught.Value.ToString(CultureInfo.InvariantCulture) + " item(s) of "
-                    + string.Join(" or ", new List<string>(miss.Categories).ToArray()) + " that no set catches");
+                    + string.Join(" or ", new List<string>(miss.Categories).ToArray()) + " that no set catches"
+                    + (miss.UncaughtWhole ? string.Empty : ", because a count of some of them was not taken"));
 
                 foreach (string draft in miss.Drafted)
                 {
@@ -195,6 +248,7 @@ namespace Federator.Core.Teams
 
                 if (miss.FileNameAsks.Count > 0)
                 {
+                    lines.Add("   the model's file name stands in for the Source File of its items, which is not read here");
                     lines.Add("   no line is drafted for a Source File, which the list of corrections has no line for");
                 }
             }
@@ -204,6 +258,13 @@ namespace Federator.Core.Teams
                 lines.Add(notConfirmed.ToString(CultureInfo.InvariantCulture)
                     + " set and model pair(s) of one team where the set cannot reach the model are not listed, because the model"
                     + " holds no item of the set's categories that no set catches");
+            }
+
+            if (noCategory > 0)
+            {
+                lines.Add(noCategory.ToString(CultureInfo.InvariantCulture)
+                    + " set and model pair(s) of one team where the set cannot reach the model are not listed, because the set"
+                    + " asks no category by its whole name, so no coverage count can confirm them");
             }
 
             if (notCounted > 0)
@@ -222,6 +283,19 @@ namespace Federator.Core.Teams
             if (lines.Count == 0)
             {
                 lines.Add("no set asks a workset or a file name that a model of its own team with another code does not carry");
+            }
+
+            if (SetsWithNoCode > 0)
+            {
+                lines.Add(SetsWithNoCode.ToString(CultureInfo.InvariantCulture)
+                    + " set(s) carry no discipline code in their name that the map or a model of the group knows, so their team is"
+                    + " UNKNOWN and they were judged against no model");
+            }
+
+            if (ModelsWithNoCode > 0)
+            {
+                lines.Add(ModelsWithNoCode.ToString(CultureInfo.InvariantCulture)
+                    + " model(s) carry no discipline code in their file name, so their team is UNKNOWN and no set was judged against them");
             }
 
             return lines;
@@ -318,13 +392,12 @@ namespace Federator.Core.Teams
             return reach;
         }
 
+        /// <summary>Whether a workset asked that way finds any name of that list, by ExportCheck.WorksetFinds.</summary>
         private static bool Carries(IList<string> worksets, string value, bool contains)
         {
             foreach (string workset in worksets)
             {
-                if (contains
-                    ? workset.IndexOf(value, StringComparison.Ordinal) >= 0
-                    : string.Equals(workset, value, StringComparison.Ordinal))
+                if (ExportCheck.WorksetFinds(value, contains, workset))
                 {
                     return true;
                 }
@@ -334,31 +407,35 @@ namespace Federator.Core.Teams
         }
 
         /// <summary>
-        /// The coverage count of those categories in that model, added up: above zero where any is,
-        /// zero where every one was counted and none is, and null where no count was handed in, one
-        /// was not taken, or the set asks no category.
+        /// The coverage count of those categories in that model, added up over the ones counted,
+        /// and whether every one was. Above zero where any counted is. Zero where every one was
+        /// counted and none is. Null where no count was handed in, the set asks no category by its
+        /// whole name, or none counted is above zero and one was not counted. A count is not taken
+        /// where it is null or below zero, as ModelExport.NotCounted is, and is never read as zero.
         /// </summary>
-        private static int? Count(string file, IList<string> categories, Func<string, string, int?> uncaught)
+        private static int? Count(string file, IList<string> categories, Func<string, string, int?> uncaught, out bool whole)
         {
+            whole = false;
+
             if (uncaught == null || categories.Count == 0)
             {
                 return null;
             }
 
             int sum = 0;
-            bool unknown = false;
+            whole = true;
 
             foreach (string category in categories)
             {
                 int? count = uncaught(file, category);
 
-                if (count.HasValue)
+                if (count.HasValue && count.Value >= 0)
                 {
-                    sum += Math.Max(0, count.Value);
+                    sum += count.Value;
                 }
                 else
                 {
-                    unknown = true;
+                    whole = false;
                 }
             }
 
@@ -367,41 +444,40 @@ namespace Federator.Core.Teams
                 return sum;
             }
 
-            return unknown ? (int?)null : 0;
+            return whole ? 0 : (int?)null;
         }
 
         /// <summary>
         /// One also-ask line for each workset value asked, the first value of those spelled alike
-        /// but for their case, Q102's, with every spelling of the model whose text after its prefix
-        /// is the value's, case blind. A line of the list cannot hold the bar that splits its
-        /// parts, so a name holding it is never drafted.
+        /// but for their case, Q102's, with every spelling of the model whose text after its
+        /// prefix, WorksetDisagreements.BodyOf, is the value's, case blind. A line of the list
+        /// cannot hold the bar that splits its parts, so a name holding it is never drafted.
         /// </summary>
-        private static IList<string> Drafts(IList<string> asked, IList<string> carried, char separator)
+        private static IList<string> Drafts(IList<string> asked, IList<string> carried)
         {
             List<string> drafts = new List<string>();
             List<string> done = new List<string>();
 
             foreach (string value in asked)
             {
-                string after = AfterPrefix(value, separator);
+                string body = WorksetDisagreements.BodyOf(value);
 
-                if (after == null
+                if (body == null
                     || value.IndexOf(ListFile.Bar, StringComparison.Ordinal) >= 0
-                    || done.Exists(one => string.Equals(one, after, StringComparison.OrdinalIgnoreCase)))
+                    || done.Exists(one => string.Equals(one, body, StringComparison.OrdinalIgnoreCase)))
                 {
                     continue;
                 }
 
-                done.Add(after);
+                done.Add(body);
                 List<string> line = new List<string> { value };
 
                 foreach (string workset in carried)
                 {
-                    string theirs = AfterPrefix(workset, separator);
+                    string theirs = WorksetDisagreements.BodyOf(workset);
 
                     if (theirs != null
-                        && string.Equals(theirs, after, StringComparison.OrdinalIgnoreCase)
-                        && !asked.Contains(workset)
+                        && string.Equals(theirs, body, StringComparison.OrdinalIgnoreCase)
                         && !line.Contains(workset)
                         && workset.IndexOf(ListFile.Bar, StringComparison.Ordinal) < 0)
                     {
@@ -416,14 +492,6 @@ namespace Federator.Core.Teams
             }
 
             return drafts;
-        }
-
-        /// <summary>The text after the first separator, or null where there is none or nothing after it.</summary>
-        private static string AfterPrefix(string name, char separator)
-        {
-            int at = name.IndexOf(separator);
-
-            return at < 0 || at == name.Length - 1 ? null : name.Substring(at + 1);
         }
 
         private static void Once(IList<string> into, string value)

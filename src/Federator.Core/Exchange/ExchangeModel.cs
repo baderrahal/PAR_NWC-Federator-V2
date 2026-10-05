@@ -359,10 +359,10 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// The workset spellings this file's sets are judged against when one finds nothing, the
-        /// ones its corrections were chosen from, RevitWorksets.With: the names inside Core and
-        /// those of the list beside the picked file, F116. The names inside Core alone for a
-        /// document read as the file stands.
+        /// The workset spellings this file's sets are judged against when one finds nothing, every
+        /// one its corrections ask, RevitWorksets.With: the names inside Core and the spellings
+        /// the list beside the picked file names, MatrixCorrectionList.Spellings, F116 and F131.
+        /// The names inside Core alone for a document read as the file stands.
         /// </summary>
         internal ReadOnlyCollection<string> Worksets { get; private set; }
 

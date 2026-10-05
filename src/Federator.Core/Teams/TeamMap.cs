@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using Federator.Core.Exchange;
+using Federator.Core.Health;
 
 namespace Federator.Core.Teams
 {
@@ -23,9 +24,11 @@ namespace Federator.Core.Teams
     ///
     /// A MAP THAT CANNOT BE READ IS SAID, NEVER HALF READ AND NEVER A THROW. A line this does not
     /// know, a code on two teams or twice on one, a team named twice, a team with no code, an
-    /// empty team name or code, a code holding a space, a team name with a space at its start or
-    /// end, a size-folder line naming a team no team line names, or bytes that are not UTF-8,
-    /// make the whole map Unread with its line and why. A map unread, missing, holding no team or
+    /// empty team name or code, a code holding any space or a character a person cannot see, a
+    /// team name with a space at its start or end or such a character anywhere, on a team line
+    /// or a size-folder line, InvisibleDifference naming it, a size-folder line naming a team no
+    /// team line names, or bytes that are not UTF-8, make the whole map Unread with its line and
+    /// why. A map unread, missing, holding no team or
     /// with no XML picked maps nothing: every code is a team of its own and no team carries the
     /// size folder, Q123 by its default A, and the TEAMS lines say which of these it was.
     ///
@@ -205,9 +208,11 @@ namespace Federator.Core.Teams
                 {
                     foreach (string team in parts)
                     {
-                        if (team.Length == 0)
+                        string fault = team.Length == 0 ? "names no team" : TeamNameFault(team);
+
+                        if (fault != null)
                         {
-                            return Nothing(path, false, false, at + "names no team", settings.UnknownTeam);
+                            return Nothing(path, false, false, at + fault, settings.UnknownTeam);
                         }
 
                         sizeFolderLines.Add(new[] { team, at });
@@ -246,9 +251,11 @@ namespace Federator.Core.Teams
                 return "names no team";
             }
 
-            if (team.Trim().Length != team.Length)
+            string nameFault = TeamNameFault(team);
+
+            if (nameFault != null)
             {
-                return "names the team \"" + team + "\" with a space at its start or end";
+                return nameFault;
             }
 
             if (teams.Contains(team))
@@ -273,9 +280,13 @@ namespace Federator.Core.Teams
                     return "holds an empty code";
                 }
 
-                if (code.IndexOf(' ') >= 0)
+                int unseen = Unseen(code, true);
+
+                if (unseen >= 0)
                 {
-                    return "holds the code \"" + code + "\", which has a space in it, and a code read off a file name has none";
+                    return "holds the code \"" + code + "\", which has "
+                        + (code[unseen] == ' ' ? "a space" : InvisibleDifference.Describe(code[unseen]))
+                        + " in it, and a code read off a file name has none";
                 }
 
                 if (seen.Contains(code))
@@ -292,6 +303,47 @@ namespace Federator.Core.Teams
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// What is wrong with a team's name on a team line or a size-folder line, or null where
+        /// nothing is: a space at its start or end, or a character a person cannot see as what
+        /// it is anywhere in it, so two names that look the same are never two teams. An
+        /// ordinary space inside a name is part of it.
+        /// </summary>
+        private static string TeamNameFault(string team)
+        {
+            if (team.Trim().Length != team.Length)
+            {
+                return "names the team \"" + team + "\" with a space at its start or end";
+            }
+
+            int unseen = Unseen(team, false);
+
+            return unseen < 0
+                ? null
+                : "names the team \"" + team + "\", which has " + InvisibleDifference.Describe(team[unseen]) + " in it";
+        }
+
+        /// <summary>
+        /// Where the first character of that name stands that a person cannot see as what it is,
+        /// any space but the ordinary one or a character InvisibleDifference names, and the
+        /// ordinary space too where asked, or -1. A code read off a file name holds none of
+        /// them, and one that did would never equal it and would make a team of its own.
+        /// </summary>
+        private static int Unseen(string name, bool ordinarySpaceToo)
+        {
+            for (int i = 0; i < name.Length; i++)
+            {
+                char one = name[i];
+
+                if (one == ' ' ? ordinarySpaceToo : (char.IsWhiteSpace(one) || InvisibleDifference.IsInvisible(one)))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         private static TeamMap Nothing(string path, bool missing, bool noXml, string unread, string unknownTeam)

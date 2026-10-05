@@ -440,12 +440,24 @@ namespace Federator.Core.Health
             }
         }
 
+        /// <summary>
+        /// Whether a workset asked that way finds that carried name as it is spelled, the whole name
+        /// or, for contains, a part of it. The one place this is said, read by this check and by the
+        /// judge of a set that cannot reach a model of its own team, SilentMisses, F131.
+        /// </summary>
+        internal static bool WorksetFinds(string asked, bool contains, string carried)
+        {
+            return contains
+                ? carried.IndexOf(asked, StringComparison.Ordinal) >= 0
+                : string.Equals(carried, asked, StringComparison.Ordinal);
+        }
+
         /// <summary>Whether that set also asks, not negated, for a workset that finds the carried name exactly, F116.</summary>
         private static bool AlsoFinds(Dictionary<string, List<WorksetAsk>> askedBy, string setName, string carried)
         {
             List<WorksetAsk> asked;
 
-            return askedBy.TryGetValue(setName, out asked) && asked.Exists(one => one.Finds(carried));
+            return askedBy.TryGetValue(setName, out asked) && asked.Exists(one => WorksetFinds(one.Value, one.Contains, carried));
         }
 
         /// <summary>The sets that ask, as a list, with the rest counted past namesShown the way the names are.</summary>
@@ -483,14 +495,6 @@ namespace Federator.Core.Health
             internal bool Contains { get; private set; }
 
             internal List<string> Sets { get; private set; }
-
-            /// <summary>Whether this ask finds that carried name as it is spelled, the whole name or, for contains, a part of it.</summary>
-            internal bool Finds(string carried)
-            {
-                return Contains
-                    ? carried.IndexOf(Value, StringComparison.Ordinal) >= 0
-                    : string.Equals(carried, Value, StringComparison.Ordinal);
-            }
 
             /// <summary>Whether this ask misses that carried name by letter case alone, and finds it once case is set aside.</summary>
             internal bool MissesByCaseAlone(string carried)

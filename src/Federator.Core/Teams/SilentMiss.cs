@@ -21,6 +21,7 @@ namespace Federator.Core.Teams
             IList<string> fileNameAsks,
             IList<string> categories,
             int? uncaught,
+            bool uncaughtWhole,
             IList<string> drafted)
         {
             SetName = setName;
@@ -32,6 +33,7 @@ namespace Federator.Core.Teams
             FileNameAsks = new ReadOnlyCollection<string>(new List<string>(fileNameAsks));
             Categories = new ReadOnlyCollection<string>(new List<string>(categories));
             Uncaught = uncaught;
+            UncaughtWhole = uncaughtWhole;
             Drafted = new ReadOnlyCollection<string>(new List<string>(drafted));
         }
 
@@ -61,10 +63,18 @@ namespace Federator.Core.Teams
 
         /// <summary>
         /// How many items of those categories the model holds that no set catches, the coverage
-        /// count of Q112 request 2, or null where it is UNKNOWN: no count was handed in, one of
-        /// the categories was not counted, or the set asks no category.
+        /// count of Q112 request 2, added up over the categories counted. Null where it is
+        /// UNKNOWN: no count was handed in, the set asks no category by its whole name, or no
+        /// category counted above zero and one was not counted. A count not taken, null or
+        /// below zero as ModelExport.NotCounted is, is never read as a zero.
         /// </summary>
         public int? Uncaught { get; private set; }
+
+        /// <summary>
+        /// Whether every category of the set was counted, so Uncaught is the whole count. False
+        /// where one above zero stands beside one not taken, and Uncaught is then a lower bound.
+        /// </summary>
+        public bool UncaughtWhole { get; private set; }
 
         /// <summary>
         /// The correction drafted for Bader to approve, one line of the list of corrections each,

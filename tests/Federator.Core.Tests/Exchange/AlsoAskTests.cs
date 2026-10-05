@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Federator.Core.Exchange;
 using Federator.Core.Sets;
 using NUnit.Framework;
@@ -162,6 +163,90 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Lines(), Has.Member(
                 "MATRIX   the value HV-Nothing also accepts HV-Other, a line of the list beside this file"
                     + "  0 occurrences. this file holds no condition asking for any spelling the line names"));
+        }
+
+        /// <summary>
+        /// The spellings the list says a model carries: its workset lines, then every spelling an
+        /// also-ask line accepts beside its value, each once. The value of an also-ask line is what
+        /// a set asks, measured or not, so it is not among them, and the workset lines and the
+        /// count on the first line are as they were.
+        /// </summary>
+        [Test]
+        public void TheListsSpellingsAreItsWorksetLinesThenEverySpellingAnAlsoAskAccepts()
+        {
+            MatrixCorrectionList list = ListOf(
+                "workset: ME-Ductwork\n" + Draft + "\nalso-ask: ME-Piping | HV-Piping | ME-Ductwork | HV-Ductwork-2\n");
+
+            Assert.That(list.Unread, Is.Null);
+            TeamMapTests.Same(list.Spellings, "ME-Ductwork", "HV-Ductwork", "HV-Piping", "HV-Ductwork-2");
+            TeamMapTests.Same(list.Worksets, "ME-Ductwork");
+            Assert.That(list.Said(), Does.EndWith(", and 1 workset spelling"));
+        }
+
+        /// <summary>
+        /// The readers' finding on attempt 1, against F116's rule that the census and the list are
+        /// put together in one place, RevitWorksets.With. With the draft copied into this project's
+        /// list, the mechanical sets ask HV-Ductwork, first in Ordinal order, and the judge of a set
+        /// that found nothing was handed the census and the workset lines alone, so it called
+        /// HV-Ductwork a value NO MODEL IN THIS PROJECT CARRIES although the line was drafted from
+        /// a model measured carrying it. Every value the corrected file asks is now one the judge
+        /// says models in this project carry, and so is BLD-ME-Ducts&amp;Duct Fittings judged on
+        /// its own conditions.
+        /// </summary>
+        [Test]
+        public void EverySpellingAnAlsoAskLineAcceptsIsOneTheEmptySetJudgeKnows()
+        {
+            string folder = TempFolder.Make("f131-judge");
+
+            try
+            {
+                string picked = Path.Combine(folder, "picked.xml");
+                File.Copy(Samples.Matrix(), picked);
+                File.WriteAllText(
+                    new CorrectionListSettings().PathBeside(picked),
+                    File.ReadAllText(Samples.CorrectionList()) + Draft + "\n",
+                    new UTF8Encoding(false));
+
+                ExchangeDocument document = MatrixCorrections.ReadPicked(picked);
+                SetBuildPlan plan = SetBuildPlan.From(document);
+                IList<string> asked = MatrixCorrections.WorksetValuesIn(document);
+                List<string> calledWrong = new List<string>();
+
+                foreach (string value in asked)
+                {
+                    EmptySet why = EmptySets.Why(
+                        "a/" + value,
+                        new List<ReadCondition> { new ReadCondition(string.Empty, EmptySets.WorksetProperty, SetBuildPlan.EqualsTest, value) },
+                        plan.Worksets);
+
+                    if (why.Reason != EmptyReason.TheValueIsThereAnyway)
+                    {
+                        calledWrong.Add(why.Line());
+                    }
+                }
+
+                Assert.That(asked, Has.Member("HV-Ductwork"));
+                Assert.That(calledWrong, Is.Empty);
+
+                SelectionSetDefinition ducts = new List<SelectionSetDefinition>(document.Sets)
+                    .Find(set => set.Name == "BLD-ME-Ducts&Duct Fittings");
+                List<ReadCondition> itsConditions = new List<ReadCondition>();
+
+                foreach (SearchConditionDefinition condition in ducts.Conditions)
+                {
+                    itsConditions.Add(new ReadCondition(string.Empty, condition.Property.InternalName, condition.Test, condition.Value.Data));
+                }
+
+                Assert.That(itsConditions[1].Value, Is.EqualTo("HV-Ductwork"), "the spelling the judge reads first");
+
+                EmptySet judged = EmptySets.Why("a/BLD-ME-Ducts&Duct Fittings", itsConditions, plan.Worksets);
+
+                Assert.That(judged.Reason, Is.EqualTo(EmptyReason.TheValueIsThereAnyway), judged.Line());
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
         }
     }
 }

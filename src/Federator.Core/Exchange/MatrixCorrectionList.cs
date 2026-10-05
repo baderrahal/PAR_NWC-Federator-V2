@@ -89,10 +89,38 @@ namespace Federator.Core.Exchange
 
         /// <summary>
         /// The workset spellings measured in the project's models, each once, which
-        /// RevitWorksets.With puts beside the names inside Core for the corrections and for the
-        /// judge of a set that found nothing.
+        /// RevitWorksets.With puts beside the names inside Core for the case corrections of Q102.
         /// </summary>
         internal ReadOnlyCollection<string> Worksets { get; private set; }
+
+        /// <summary>
+        /// Every workset spelling the list says a model of the project carries, each once: its
+        /// workset lines, then every spelling an also-ask line accepts beside its value. The value
+        /// of an also-ask line is what a set asks, measured or not, so it is not among them. The
+        /// judge of a set that found nothing is handed these beside the names inside Core,
+        /// RevitWorksets.With, so every spelling the corrections ask is one it knows, F131 on the
+        /// readers' finding against F116's rule.
+        /// </summary>
+        internal IList<string> Spellings
+        {
+            get
+            {
+                List<string> spellings = new List<string>(Worksets);
+
+                foreach (string[] line in AlsoAsks)
+                {
+                    for (int i = 1; i < line.Length; i++)
+                    {
+                        if (!spellings.Contains(line[i]))
+                        {
+                            spellings.Add(line[i]);
+                        }
+                    }
+                }
+
+                return spellings;
+            }
+        }
 
         /// <summary>Whether the list is there, was read and holds no correction and no workset spelling, F116.</summary>
         internal bool HoldsNone

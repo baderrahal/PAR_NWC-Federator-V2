@@ -46,11 +46,13 @@ namespace Federator.Core.Exchange
 
         /// <summary>
         /// Every workset spelling measured for a picked clash XML: the names this list holds, then
-        /// the workset lines of the project's list beside that XML, each once, Q113. THE ONE PLACE
-        /// the two are put together. The corrections take their spellings from it and the judge
-        /// of a set that found nothing is handed the same ones, so the log never says in a MATRIX
-        /// line that a spelling was measured and in the EMPTY SETS block that no model carries
-        /// it, F116. Null adds nothing, which is the names inside Core alone.
+        /// the spellings the project's list beside that XML names, each once, Q113. THE ONE PLACE
+        /// the two are put together. The case corrections of Q102 take their spellings from it
+        /// with the list's workset lines, and the judge of a set that found nothing is handed it
+        /// with those and every spelling an also-ask line accepts, MatrixCorrectionList.Spellings,
+        /// so the log never says in a MATRIX line that a spelling was measured or accepted and in
+        /// the EMPTY SETS block that no model carries it, F116 and F131. Null adds nothing, which
+        /// is the names inside Core alone.
         /// </summary>
         internal static IList<string> With(IEnumerable<string> listed)
         {

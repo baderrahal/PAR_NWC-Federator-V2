@@ -38,6 +38,16 @@ namespace Federator.Core.Tests
             " set and model pair(s) of one team where the set cannot reach the model are not listed, because whether the"
             + " model holds items of the set's categories that no set catches is UNKNOWN until the coverage counts them";
 
+        /// <summary>The line for the sets whose name carries no code the map or a model of the group knows, the client's BLD-Security Devices among them.</summary>
+        private const string NoCodeSets =
+            " set(s) carry no discipline code in their name that the map or a model of the group knows, so their team is"
+            + " UNKNOWN and they were judged against no model";
+
+        private const string AllClear =
+            "no set asks a workset or a file name that a model of its own team with another code does not carry";
+
+        private const string StandsIn = "   the model's file name stands in for the Source File of its items, which is not read here";
+
         /// <summary>One spelling of every workset value the picked file's mechanical sets ask, so a model carrying them is reached by every one.</summary>
         private static readonly string[] EveryMechanicalWorkset =
         {
@@ -113,7 +123,12 @@ namespace Federator.Core.Tests
                     + " the workset ME-DUCTWORK or ME-Ductwork, which that model does not carry. That model holds 12 item(s) of"
                     + " Ducts or Duct Fittings that no set catches",
                 "   to approve it, copy this line into the list of corrections beside the XML: also-ask: ME-DUCTWORK | HV-Ductwork",
-                "24" + NotListed);
+                "24" + NotListed,
+                "1" + NoCodeSets);
+
+            Assert.That(ducts.UncaughtWhole, Is.True);
+            Assert.That(misses.SetsWithNoCode, Is.EqualTo(1));
+            Assert.That(misses.ModelsWithNoCode, Is.EqualTo(0));
 
             MatrixCorrectionList approved = MatrixCorrectionList.Read(new StringReader(ducts.Drafted[0] + "\n"), "a list in a test");
 
@@ -156,7 +171,7 @@ namespace Federator.Core.Tests
 
             Assert.That(misses.Found.Count, Is.EqualTo(25));
             Assert.That(Found(misses).TrueForAll(one => !one.Uncaught.HasValue && !one.Confirmed), Is.True);
-            TeamMapTests.Same(misses.Lines(), "25" + NotCounted);
+            TeamMapTests.Same(misses.Lines(), "25" + NotCounted, "1" + NoCodeSets);
 
             SilentMiss accessory = Found(misses).Find(one => one.SetName == "BLD-ME-Duct Accessory");
 
@@ -174,7 +189,7 @@ namespace Federator.Core.Tests
                 Uncaught(HvFile, "Ducts", 12));
 
             Assert.That(misses.Found.Count, Is.EqualTo(0));
-            TeamMapTests.Same(misses.Lines(), "no set asks a workset or a file name that a model of its own team with another code does not carry");
+            TeamMapTests.Same(misses.Lines(), AllClear, "1" + NoCodeSets);
         }
 
         /// <summary>A model of another team is never named against a set, whatever it holds.</summary>
@@ -215,13 +230,17 @@ namespace Federator.Core.Tests
             Assert.That(misses.Unjudged, Is.EqualTo(25));
             TeamMapTests.Same(
                 misses.Lines(),
-                "25 set and model pair(s) of one team could not be judged, because the model's worksets were not all read");
+                "25 set and model pair(s) of one team could not be judged, because the model's worksets were not all read",
+                "1" + NoCodeSets);
         }
 
         /// <summary>
         /// Point 3's file name case. With AX on Architecture's line, an AX model's name does not
         /// hold -AR-, so the seven AR sets asking Source File contains -AR-, Q103 among them, reach
         /// none of its items. Only BLD-AR-Walls is confirmed, and no line is drafted for a Source File.
+        /// The line says the model's file name stands in for the Source File its items carry, which
+        /// is not read, the readers' finding on attempt 1. The 45 sets of other teams carry no code
+        /// this map or the AX model knows, and are counted.
         /// </summary>
         [Test]
         public void ASetAskingASourceFileTheModelsNameDoesNotHoldIsNamed()
@@ -248,8 +267,10 @@ namespace Federator.Core.Tests
                 misses.Lines(),
                 "SILENT MISS  BLD-AR-Walls finds nothing in " + AxFile + ", AX in Architecture, because it asks a Source File"
                     + " holding -AR-, which that model's file name does not hold. That model holds 5 item(s) of Walls that no set catches",
+                StandsIn,
                 "   no line is drafted for a Source File, which the list of corrections has no line for",
-                "6" + NotListed);
+                "6" + NotListed,
+                "45" + NoCodeSets);
         }
 
         /// <summary>A confirmed miss whose model carries no spelling of the value after its prefix drafts nothing and says the spelling is UNKNOWN.</summary>
@@ -294,7 +315,7 @@ namespace Federator.Core.Tests
             Assert.That(misses.Found.Count, Is.EqualTo(6));
             Assert.That(Found(misses).TrueForAll(one => one.SetName.StartsWith("BLD-FF-", StringComparison.Ordinal)), Is.True);
             Assert.That(Found(misses).TrueForAll(one => one.ModelCode == "ME"), Is.True);
-            TeamMapTests.Same(misses.Lines(), "6" + NotCounted);
+            TeamMapTests.Same(misses.Lines(), "6" + NotCounted, "1" + NoCodeSets);
         }
 
         /// <summary>Q123 by its default A: with no map every code is a team of its own, so no set is judged against another code.</summary>
@@ -311,6 +332,165 @@ namespace Federator.Core.Tests
             Assert.That(misses.Found.Count, Is.EqualTo(0));
             TeamMapTests.Same(misses.Lines(), "no set was judged against the models of its team, because no team map maps a code");
             Assert.That(() => SilentMisses.Find(TheSets(), new ModelExport[0], null, Hyphen, null), Throws.ArgumentNullException);
+        }
+
+        // ---------- attempt 2, the readers' findings on attempt 1 ----------
+
+        /// <summary>
+        /// The reviewer's finding. A workset name's prefix is split by the one rule the
+        /// disagreements read, WorksetDisagreements.PrefixOf, and never at the separator of a set
+        /// name's parts, which is another setting. With set names split on an underscore the draft
+        /// is the same, and a name with nothing before its separator, which PrefixOf reads as
+        /// carrying no prefix, is never drafted.
+        /// </summary>
+        [Test]
+        public void AWorksetsPrefixIsSplitByTheDisagreementsRuleAndNotTheSetNameSeparator()
+        {
+            List<SelectionSetDefinition> underscored = new List<SelectionSetDefinition>();
+
+            foreach (SelectionSetDefinition set in TheSets())
+            {
+                underscored.Add(new SelectionSetDefinition(
+                    set.Name.Replace('-', '_'), set.Folders, set.Path, set.FindSpecMode, set.Disjoint, set.FindSpecLocator, set.Conditions));
+            }
+
+            SilentMisses misses = SilentMisses.Find(
+                underscored,
+                new[] { Model(HvFile, "HV", "HV-Ductwork"), Model(MeFile, "ME", EveryMechanicalWorkset) },
+                Map(),
+                '_',
+                Uncaught(HvFile, "Ducts", 12));
+
+            SilentMiss ducts = Found(misses).Find(one => one.Confirmed);
+
+            Assert.That(ducts.SetName, Is.EqualTo("BLD_ME_Ducts&Duct Fittings"));
+            TeamMapTests.Same(ducts.Drafted, "also-ask: ME-DUCTWORK | HV-Ductwork");
+
+            SilentMisses noPrefix = SilentMisses.Find(
+                TheSets(),
+                new[] { Model(HvFile, "HV", "-Ductwork"), Model(MeFile, "ME", EveryMechanicalWorkset) },
+                Map(),
+                Hyphen,
+                Uncaught(HvFile, "Ducts", 12));
+
+            TeamMapTests.Same(Found(noPrefix).Find(one => one.Confirmed).Drafted);
+        }
+
+        /// <summary>
+        /// The breaker's finding. A count that could not be taken is minus one in this repo,
+        /// ModelExport.NotCounted, and never a zero. With every count minus one each pair is
+        /// UNKNOWN and counted so, never called a model holding no such item.
+        /// </summary>
+        [Test]
+        public void ACountThatCouldNotBeTakenIsUnknownAndNeverZero()
+        {
+            SilentMisses misses = SilentMisses.Find(
+                TheSets(),
+                new[] { Model(HvFile, "HV", "HV-Ductwork"), Model(MeFile, "ME", EveryMechanicalWorkset) },
+                Map(),
+                Hyphen,
+                (model, category) => ModelExport.NotCounted);
+
+            Assert.That(misses.Found.Count, Is.EqualTo(25));
+            Assert.That(Found(misses).TrueForAll(one => !one.Uncaught.HasValue && !one.Confirmed), Is.True);
+            TeamMapTests.Same(misses.Lines(), "25" + NotCounted, "1" + NoCodeSets);
+        }
+
+        /// <summary>
+        /// The breaker's finding. Where one category is counted above zero and another could not be
+        /// counted, minus one or null, the sum is a lower bound: the miss is confirmed and its line
+        /// says at least, and why.
+        /// </summary>
+        [Test]
+        public void ASumBesideACountNotTakenIsALowerBoundAndSaysSo()
+        {
+            foreach (int? notTaken in new int?[] { ModelExport.NotCounted, null })
+            {
+                SilentMisses misses = SilentMisses.Find(
+                    TheSets(),
+                    new[] { Model(HvFile, "HV", "HV-Ductwork"), Model(MeFile, "ME", EveryMechanicalWorkset) },
+                    Map(),
+                    Hyphen,
+                    (model, category) => model != HvFile ? 0 : category == "Ducts" ? 12 : category == "Duct Fittings" ? notTaken : 0);
+
+                SilentMiss ducts = Found(misses).Find(one => one.Confirmed);
+
+                Assert.That(ducts.Uncaught, Is.EqualTo(12), "not taken " + notTaken);
+                Assert.That(ducts.UncaughtWhole, Is.False, "not taken " + notTaken);
+                Assert.That(misses.Lines()[0], Does.EndWith(
+                    "That model holds at least 12 item(s) of Ducts or Duct Fittings that no set catches, because a count of"
+                        + " some of them was not taken"), "not taken " + notTaken);
+            }
+        }
+
+        /// <summary>
+        /// The readers' findings. A set whose name carries no code the map or a model of the group
+        /// knows, the client's BLD-Security Devices, and a model whose code was not read are judged
+        /// against nothing, and the lines count them, so the all clear is never read as every set
+        /// and every model judged. Nothing handed in is said too.
+        /// </summary>
+        [Test]
+        public void ASetOrAModelWithNoCodeIsCountedAndSaid()
+        {
+            SilentMisses misses = SilentMisses.Find(
+                TheSets(),
+                new[]
+                {
+                    Model(HvFile, "HV", EveryMechanicalWorkset),
+                    Model(MeFile, "ME", EveryMechanicalWorkset),
+                    Model("1104-PAR-1A04PK-ZZZ-MOD-000001.nwc", string.Empty, "HV-Ductwork")
+                },
+                Map(),
+                Hyphen,
+                Uncaught(HvFile, "Ducts", 12));
+
+            Assert.That(misses.Found.Count, Is.EqualTo(0));
+            Assert.That(misses.SetsWithNoCode, Is.EqualTo(1));
+            Assert.That(misses.ModelsWithNoCode, Is.EqualTo(1));
+            TeamMapTests.Same(
+                misses.Lines(),
+                AllClear,
+                "1" + NoCodeSets,
+                "1 model(s) carry no discipline code in their file name, so their team is UNKNOWN and no set was judged against them");
+
+            const string NothingHandedIn = "no set was judged against the models of its team, because no sets or no models were handed in";
+
+            TeamMapTests.Same(SilentMisses.Find(null, new[] { Model(MeFile, "ME") }, Map(), Hyphen, null).Lines(), NothingHandedIn);
+            TeamMapTests.Same(SilentMisses.Find(TheSets(), null, Map(), Hyphen, null).Lines(), NothingHandedIn);
+        }
+
+        /// <summary>
+        /// The breaker's finding. A set asking its category only by contains has no category the
+        /// coverage counts by its whole name, so no count can ever confirm it, and its line says
+        /// that and not UNKNOWN until the coverage counts them.
+        /// </summary>
+        [Test]
+        public void ASetAskingNoCategoryByItsWholeNameIsSaidSo()
+        {
+            const string Element = "<category><name internal=\"LcRevitData_Element\">Element</name></category>";
+            string xml = "<?xml version='1.0' encoding='UTF-8'?>\n<exchange units=\"ft\"><selectionsets><viewfolder name=\"Mechanical\">"
+                + "<selectionset name=\"BLD-ME-Any Duct\" guid=\"x\"><findspec mode=\"all\" disjoint=\"0\"><conditions>"
+                + "<condition test=\"contains\" flags=\"0\">" + Element
+                + "<property><name internal=\"LcRevitPropertyElementCategory\">Category</name></property>"
+                + "<value><data type=\"wstring\">Duct</data></value></condition>"
+                + "<condition test=\"equals\" flags=\"0\">" + Element
+                + "<property><name internal=\"lcldrevit_parameter_-1002053\">Workset</name></property>"
+                + "<value><data type=\"wstring\">ME-Ductwork</data></value></condition>"
+                + "</conditions><locator>/</locator></findspec></selectionset></viewfolder></selectionsets></exchange>\n";
+
+            SilentMisses misses = SilentMisses.Find(
+                new ExchangeReader().ReadText(xml).Sets,
+                new[] { Model(HvFile, "HV", "HV-Ductwork"), Model(MeFile, "ME", "ME-Ductwork") },
+                Map(),
+                Hyphen,
+                (model, category) => 7);
+
+            Assert.That(misses.Found.Count, Is.EqualTo(1));
+            Assert.That(misses.Found[0].Categories.Count, Is.EqualTo(0));
+            TeamMapTests.Same(
+                misses.Lines(),
+                "1 set and model pair(s) of one team where the set cannot reach the model are not listed, because the set"
+                    + " asks no category by its whole name, so no coverage count can confirm them");
         }
     }
 }
