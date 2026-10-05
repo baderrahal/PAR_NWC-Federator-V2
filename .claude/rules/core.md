@@ -177,11 +177,11 @@ and 6 does not read as broken.
   so the two are copied together. The FIRST MATRIX line names the list in full and how many
   corrections and workset spellings it holds. No list there corrects nothing, the file is
   read as written, and the first MATRIX line names the path looked for. A list that cannot
-  be read, a line it does not know, a rename it cannot use, bytes that are not UTF-8 or a
-  file that will not open, corrects NOTHING and the first MATRIX line says why, never a part
-  of it and never a throw. A list saved as UTF-16 or UTF-32 with its byte order mark is read
-  in that encoding. A list that is there and HOLDS NONE, no bytes, comments or blank lines,
-  corrects nothing and its first MATRIX line says so, as no list does, F116.
+  be read, a line it does not know, a rename it cannot use, bytes that are not UTF-8 in a
+  list with no byte order mark or a file that will not open, corrects NOTHING and the first
+  MATRIX line says why, never a part of it and never a throw. A list saved as UTF-16 with its
+  byte order mark is read as UTF-16. A list that is there and HOLDS NONE, no bytes, comments
+  or blank lines, corrects nothing and its first MATRIX line says so, as no list does, F116.
   `revit-worksets.txt` inside Core holds the C02 census alone, the 39 names measured before
   F116. Q113 D keeps all four categories of Q103 in this project's list
 - THE CENSUS AND THE LIST ARE PUT TOGETHER IN ONE PLACE, `RevitWorksets.With`, F116 on the
