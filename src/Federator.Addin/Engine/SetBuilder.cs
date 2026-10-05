@@ -728,7 +728,10 @@ namespace Federator.Addin.Engine
                         // the document nowhere and nothing said so. Q72.
                         SetDrift drift = DriftOf(planned, existing);
                         bool rebuilt = false;
-                        int found = 0;
+
+                        // UNKNOWN until it is counted, FR-018. A set not found again after a
+                        // rebuild was recorded at 0 items and judged empty on the old question.
+                        int found = SetResult.NotCounted;
 
                         if (drift.Drifted && rebuilds.RebuildDriftedSets)
                         {
@@ -744,7 +747,7 @@ namespace Federator.Addin.Engine
                         // 0 items for every set this run rebuilt and said "left alone"
                         // about a set it had just replaced, and 3b then judged the OLD
                         // question and called a set wrong that had just been corrected.
-                        IList<ReadCondition> asking = drift.Asked;
+                        IList<ReadCondition> asking = drift.CouldNotRead ? null : drift.Asked;
                         string askedNow = drift.AskedNow();
 
                         using (SelectionSet now = FindSelectionSet(parent, planned.Name))
@@ -756,7 +759,7 @@ namespace Federator.Addin.Engine
                                 if (rebuilt)
                                 {
                                     SetDrift after = DriftOf(planned, now);
-                                    asking = after.Asked;
+                                    asking = after.CouldNotRead ? null : after.Asked;
                                     askedNow = after.AskedNow();
                                 }
                             }
@@ -783,11 +786,9 @@ namespace Federator.Addin.Engine
                         // those sets is wrong and which is a model with no such content.
                         // Judged on what it asks NOW, so a set this run corrected is not
                         // reported as asking the question it no longer asks, and against the
-                        // workset spellings the corrections were chosen from, F116.
-                        if (found == 0 && !drift.CouldNotRead)
-                        {
-                            outcome.AddEmpty(EmptySets.Why(planned.Path, asking, worksets));
-                        }
+                        // workset spellings the corrections were chosen from, F116. Core decides
+                        // which sets are judged, never one whose count is UNKNOWN, FR-018.
+                        outcome.JudgeIfEmpty(present, asking, worksets);
 
                         // Every present set, so one whose search could not be read is counted
                         // and the lines never claim it asks what the file asks, FR-021.
@@ -800,9 +801,11 @@ namespace Federator.Addin.Engine
                                 log.Line("SET      " + line);
                             }
 
-                            log.Line("SET      " + (rebuilt
-                                ? "   REBUILT from the picked file, and it now finds " + found + " item(s). The clash tests pointing at it keep their results and their statuses, 5v"
-                                : "   left alone. Tick \"" + SetRebuildSettings.TickLabel + "\" to rebuild it, Q72"));
+                            log.Line("SET      " + (!rebuilt
+                                ? "   left alone. Tick \"" + SetRebuildSettings.TickLabel + "\" to rebuild it, Q72"
+                                : found < 0
+                                    ? "   REBUILT from the picked file, and it could not be found again to count, so what it finds is UNKNOWN"
+                                    : "   REBUILT from the picked file, and it now finds " + found + " item(s). The clash tests pointing at it keep their results and their statuses, 5v"));
                         }
 
                         return;

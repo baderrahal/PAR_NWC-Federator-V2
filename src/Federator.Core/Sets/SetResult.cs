@@ -40,7 +40,10 @@ namespace Federator.Core.Sets
 
         public int ConditionCount { get; private set; }
 
-        /// <summary>How many items it found. Minus one when it never resolved.</summary>
+        /// <summary>An item count that was not taken, UNKNOWN and never zero.</summary>
+        public const int NotCounted = -1;
+
+        /// <summary>How many items it found. NotCounted when it never resolved, or when a present set could not be found again to count, FR-018.</summary>
         public int ItemCount { get; private set; }
 
         /// <summary>Null when the set was created and resolved, or was already there.</summary>
@@ -71,9 +74,11 @@ namespace Federator.Core.Sets
         {
             if (Present)
             {
+                // FR-018. A present set whose count could not be taken says UNKNOWN, never -1.
                 return "present " + Path + "  " + ConditionCount
                     + Word(ConditionCount, " condition", " conditions") + "  "
-                    + ItemCount + Word(ItemCount, " item", " items") + "  already there, left alone";
+                    + (ItemCount < 0 ? "UNKNOWN items" : ItemCount + Word(ItemCount, " item", " items"))
+                    + "  already there, left alone";
             }
 
             if (!Created)

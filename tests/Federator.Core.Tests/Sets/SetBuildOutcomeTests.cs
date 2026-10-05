@@ -325,6 +325,50 @@ namespace Federator.Core.Tests
             Assert.That(result.IsZero, Is.False);
             Assert.That(result.Line(), Is.EqualTo("present lcop_selection_set_tree/B/Ducts  1 condition  140 items  already there, left alone"));
         }
+        // ---------- a count that could not be taken, FR-018 ----------
+
+        private static readonly List<ReadCondition> AsksTheOldSpelling = new List<ReadCondition>
+        {
+            new ReadCondition("LcRevitData_Element", EmptySets.WorksetProperty, "equals", "ME-DUCTWORK")
+        };
+
+        /// <summary>
+        /// A PRESENT SET WHOSE COUNT IS UNKNOWN FOUND NOTHING NOBODY KNOWS OF, FR-018. A set
+        /// rebuilt and not found again was recorded at 0 items, judged empty on the question it
+        /// asked before the rebuild and counted at zero across the run. Minus one is UNKNOWN: it
+        /// is not judged, not counted at zero, and its line says UNKNOWN.
+        /// </summary>
+        [Test]
+        public void APresentSetWhoseCountIsUnknownIsNotJudgedEmptyNorCountedAtZero()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            SetResult present = outcome.AddAlreadyPresent("a/Mechanical/BLD-ME-Ducts", "BLD-ME-Ducts", 1, -1);
+
+            outcome.JudgeIfEmpty(present, AsksTheOldSpelling, RevitWorksets.With(null));
+
+            Assert.That(outcome.Empty, Is.Empty);
+            Assert.That(outcome.ZeroCount, Is.EqualTo(0));
+            Assert.That(present.Line(), Is.EqualTo("present a/Mechanical/BLD-ME-Ducts  1 condition  UNKNOWN items  already there, left alone"));
+
+            SetsAcrossTheRun run = new SetsAcrossTheRun();
+            run.Add(outcome);
+            Assert.That(run.All(), Is.Empty, "a set whose count is UNKNOWN is in neither count across the run");
+        }
+
+        /// <summary>A present set at zero is judged, and one whose question could not be read is not.</summary>
+        [Test]
+        public void APresentSetAtZeroIsJudgedAndOneNotReadIsNot()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+
+            outcome.JudgeIfEmpty(outcome.AddAlreadyPresent("a/One", "One", 1, 0), AsksTheOldSpelling, RevitWorksets.With(null));
+            outcome.JudgeIfEmpty(outcome.AddAlreadyPresent("a/Two", "Two", 1, 0), null, RevitWorksets.With(null));
+            outcome.JudgeIfEmpty(outcome.AddAlreadyPresent("a/Three", "Three", 1, 5), AsksTheOldSpelling, RevitWorksets.With(null));
+
+            Assert.That(outcome.Empty.Count, Is.EqualTo(1));
+            Assert.That(outcome.Empty[0].Path, Is.EqualTo("a/One"));
+        }
+
         // ---------- the one summary line, F34 ----------
 
         [Test]
