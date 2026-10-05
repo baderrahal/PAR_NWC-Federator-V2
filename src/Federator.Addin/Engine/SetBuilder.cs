@@ -299,30 +299,7 @@ namespace Federator.Addin.Engine
 
             try
             {
-                Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
-
-                for (int t = 0; t < tests.Tests.Count; t++)
-                {
-                    Autodesk.Navisworks.Api.Clash.ClashTest test = tests.Tests[t] as Autodesk.Navisworks.Api.Clash.ClashTest;
-
-                    if (test == null)
-                    {
-                        continue;
-                    }
-
-                    foreach (Autodesk.Navisworks.Api.Clash.ClashSelection side in new[] { test.SelectionA, test.SelectionB })
-                    {
-                        try
-                        {
-                            CountSide(document, side, sides);
-                        }
-                        catch (Exception error)
-                        {
-                            notRead++;
-                            first = first ?? error;
-                        }
-                    }
-                }
+                CountSidesIn(document, document.GetClash().TestsData.Tests, sides, ref notRead, ref first);
             }
             catch (Exception error)
             {
@@ -347,24 +324,88 @@ namespace Federator.Addin.Engine
             return sides;
         }
 
+        /// <summary>
+        /// Every test under those items, INTO EVERY CLASH DETECTIVE FOLDER, FR-014, the walk
+        /// SavedTests and UndoAutoReviewed already make. Only the root tests were read, so a set
+        /// pointed at only by tests a person moved into a folder counted 0 sides and was removed.
+        /// Each item read out of the collection and each side is this tool's wrapper and is
+        /// disposed, the way SavedTests disposes them. A side that throws is counted as not read.
+        /// </summary>
+        private static void CountSidesIn(
+            Document document, SavedItemCollection items, Dictionary<string, int> sides, ref int notRead, ref Exception first)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    Autodesk.Navisworks.Api.Clash.ClashTest test = item as Autodesk.Navisworks.Api.Clash.ClashTest;
+
+                    if (test != null)
+                    {
+                        using (Autodesk.Navisworks.Api.Clash.ClashSelection left = test.SelectionA)
+                        using (Autodesk.Navisworks.Api.Clash.ClashSelection right = test.SelectionB)
+                        {
+                            foreach (Autodesk.Navisworks.Api.Clash.ClashSelection side in new[] { left, right })
+                            {
+                                try
+                                {
+                                    CountSide(document, side, sides);
+                                }
+                                catch (Exception error)
+                                {
+                                    notRead++;
+                                    first = first ?? error;
+                                }
+                            }
+                        }
+
+                        continue;
+                    }
+
+                    GroupItem folder = item as GroupItem;
+
+                    if (folder != null)
+                    {
+                        CountSidesIn(document, folder.Children, sides, ref notRead, ref first);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The sets one side points at, EVERY SOURCE OF IT, FR-014, and each set once per side.
+        /// Only the first source was read, so a set named second in a side counted 0 sides from it.
+        /// </summary>
         private static void CountSide(
             Document document, Autodesk.Navisworks.Api.Clash.ClashSelection side, Dictionary<string, int> sides)
         {
             SelectionSourceCollection sources = side.Selection.SelectionSources;
 
-            if (sources == null || sources.Count == 0)
+            if (sources == null)
             {
                 return;
             }
 
-            using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[0]))
-            {
-                if (pointed == null)
-                {
-                    return;
-                }
+            HashSet<string> named = new HashSet<string>(StringComparer.Ordinal);
 
-                string name = pointed.DisplayName ?? string.Empty;
+            for (int s = 0; s < sources.Count; s++)
+            {
+                using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[s]))
+                {
+                    if (pointed != null)
+                    {
+                        named.Add(pointed.DisplayName ?? string.Empty);
+                    }
+                }
+            }
+
+            foreach (string name in named)
+            {
                 sides[name] = sides.ContainsKey(name) ? sides[name] + 1 : 1;
             }
         }
