@@ -336,8 +336,12 @@ and 6 does not read as broken.
 - WHAT IS NOT JUDGED IS SAID BESIDE THE ALL CLEAR. A set whose name carries no code the map or
   a model of the group knows, the client's BLD-Security Devices, and a model whose code was not
   read have a team that is UNKNOWN, so they are judged against nothing, and `SilentMisses.Lines`
-  counts each kind on a line of its own. No sets or no models handed in is said, never an all
-  clear
+  counts each kind on a line of its own. WHERE NO PAIR IS JUDGED THE LINE SAYS SO AND WHY, NEVER
+  THE ALL CLEAR: no set or no model handed in, a list holding none read the same as no list, or
+  no model of the group of a set's team with another code. F131 on the breaker's finding of its
+  second attempt, an empty list of models printing the all clear over nothing read. A condition
+  whose value is empty asks no name and closes nothing, as every reader of workset values skips
+  one
 - THE CORRECTION FOR A SILENT MISS IS DRAFTED AND NEVER APPLIED, one also-ask line of the
   list of corrections, `also-ask: value | spelling | spelling`, the value and every spelling
   of the model whose text after its prefix is the value's, compared case blind. The prefix is
