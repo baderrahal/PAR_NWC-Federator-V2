@@ -638,7 +638,8 @@ namespace Federator.Core.Diagnostics
         /// what five examples and a count look like should not have to learn a second
         /// shape. THE ONE NUMBER, A14: the skips, the drift, the priorities, the probe, the
         /// health findings and the sizes all read this and name this many. SetsAcrossTheRun
-        /// names ten and its own comment says why it differs.
+        /// names every set that found nothing unless a setting caps it, F127, and its own
+        /// comment says why it differs.
         /// </summary>
         public const int KeptOfARepeat = 5;
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Coverage;
 
 namespace Federator.Core.Sets
 {
@@ -76,16 +77,35 @@ namespace Federator.Core.Sets
         /// <summary>The title of the block, so nothing else spells it.</summary>
         public const string BlockTitle = "SETS ACROSS THE RUN";
 
-        /// <summary>
-        /// How many are named before the count takes over. TEN and not the five every other
-        /// list reads off RunLog.KeptOfARepeat, A14. Why ten is UNKNOWN: F82 chose it and its
-        /// log entry does not say, so it is left as F82 wrote it rather than changed on a guess.
-        /// </summary>
-        public const int ExamplesShown = 10;
-
         private readonly List<string> order = new List<string>();
         private readonly Dictionary<string, SetAcrossTheRun> byPath =
             new Dictionary<string, SetAcrossTheRun>(StringComparer.Ordinal);
+
+        /// <summary>
+        /// How many are named before the count takes over, nought for every one. It was a
+        /// constant TEN that F82 chose for a reason its log entry does not say, and set 03's
+        /// C06 run named 10 of its 14, log lines 8346 to 8357. Bader's request 2 under Q112
+        /// asks for every set that found no items in any group of the run, so a set spelled
+        /// wrong or pointing at nothing shows at once, and a number that shapes the run is a
+        /// setting, CoverageSettings.SetsAtZeroNamedInTheRun, F127, whose default names every one.
+        /// </summary>
+        private readonly int named;
+
+        /// <summary>The run's tally with the default settings, which name every set that found nothing.</summary>
+        public SetsAcrossTheRun()
+            : this(new CoverageSettings())
+        {
+        }
+
+        public SetsAcrossTheRun(CoverageSettings settings)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            named = settings.SetsAtZeroNamedInTheRun;
+        }
 
         /// <summary>How many groups have been added.</summary>
         public int Groups { get; private set; }
@@ -163,9 +183,10 @@ namespace Federator.Core.Sets
 
         /// <summary>
         /// The block. The sets that found nothing anywhere first, because that is the
-        /// finding, then the counts. Ten are named and the rest are counted, and the block
-        /// SAYS it truncated, because a truncated list that does not say so is the fault
-        /// this log has already been caught by once.
+        /// finding, then the counts. Every one is named by default, and where the setting
+        /// caps them the rest are counted and the block SAYS it truncated, because a
+        /// truncated list that does not say so is the fault this log has already been caught
+        /// by once.
         /// </summary>
         public IList<string> Lines()
         {
@@ -180,7 +201,7 @@ namespace Federator.Core.Sets
 
             foreach (SetAcrossTheRun set in nowhere)
             {
-                if (shown == ExamplesShown)
+                if (named > 0 && shown == named)
                 {
                     break;
                 }

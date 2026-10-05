@@ -1357,9 +1357,14 @@ is exactly it, found by an audit of every file under src. The run says it itself
   and is left out of both counts, the same way a census minus one is never called a move.
   A set a group never looked at was not at zero there, so the tally counts groups SEEN as
   well as groups at zero
-- TEN ARE NAMED AND THE REST ARE COUNTED, and the block SAYS it truncated. One row per set
-  is written on its own, because `Block` writes no row at all and the .tsv has to carry
-  what the block carries
+- EVERY SET THAT FOUND NOTHING IN EVERY GROUP IS NAMED, F127, Bader's request 2 under Q112,
+  so a set spelled wrong or pointing at nothing shows at once. It was TEN NAMED AND THE REST
+  COUNTED, a constant F82 chose for a reason its entry does not say, and set 03's C06 run
+  named 10 of its 14, log lines 8346 to 8357. How many are named is the setting
+  `CoverageSettings.SetsAtZeroNamedInTheRun`, nought for every one by default, and where it
+  caps them the rest are counted and the block SAYS it truncated. One row per set is written
+  on its own, because `Block` writes no row at all and the .tsv has to carry what the block
+  carries
 
 ### Coverage of the picked tests, F127
 
@@ -1448,6 +1453,21 @@ COVERAGE YET and the branch is not merged before its add-in half.
   nothing in the coverage adds an error, which is his answer to the notes under Q112 and the
   rule that a report check never fails a group. A test holds a DONE group beside a COVERAGE
   FAILED line to groups done 1, groups failed 0 and Nothing failed in RESULT
+- EVERY NUMBER THAT SHAPES THE COVERAGE IS A SETTING, `CoverageSettings`: the sheet's name,
+  Coverage by default and refused where Excel would refuse it, by `SheetNames`' own rule, the
+  examples named per reason, five off `RunLog.KeptOfARepeat`, the categories no set catches
+  named per model in the log, ten by the design's choice and measured by nothing, and the
+  FAILED lines in RESULT and the sets named across the run, nought for every one. A count of
+  lines below one, or a cap below nought, is refused where it is set. The width of each
+  column of the sheet joins them with the sheet, the design's step 6
+- THE PICKED XML IS FINGERPRINTED, `Federator.Core.Diagnostics.FileFingerprint.Sha256`, 64
+  lower case hexadecimal characters, so a run says which bytes it read. Set 03's C06 run
+  carried none, and its XML had to be told from the exchange file by its SET lines asking
+  ME-PIPING where the exchange file asks ME-Piping. A file not there throws naming its path
+  and nothing is caught, because a fingerprint that could not be read is not one
+- THE MIRRORED PAIRS OF Q114 POINT 5 ARE F132'S `MirrorRule.Pairs`, built on branch fix-F132
+  before this design was written, though the design's step 3 names them. The COVERAGE block
+  lists them off that one rule once both branches are on main, and F127 builds no second copy
 
 ### The machine readable log, F64
 
