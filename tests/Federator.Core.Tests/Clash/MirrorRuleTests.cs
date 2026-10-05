@@ -10,8 +10,9 @@ namespace Federator.Core.Tests
 {
     /// <summary>
     /// F132, FR-182, Bader's Q114 points 4 to 6 and 8. A test whose two sides are another
-    /// test's two sets swapped finds the same clashes twice and doubles the workbook rows,
-    /// the viewpoints and the time. One test of each pair is kept, the higher priority, A
+    /// test's two sets swapped is taken, on his point 4, to find the same clashes twice and
+    /// double the workbook rows, the viewpoints and the time, which probe P1 has still to
+    /// measure. One test of each pair is kept, the higher priority, A
     /// before B before C, and where equal the one first in the XML. The other is not
     /// created and not run. The set and test names in here are sample data and not
     /// settings, and nothing in the rule names any of them.
@@ -368,6 +369,33 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Contain(
                 "and 5 more pairs alike in priority, test type and tolerance, counted and not listed"));
             Assert.That(all, Does.Not.Contain("everything"));
+        }
+
+        // Four sets both ways round are six pairs, five named and one counted, in the singular.
+        [Test]
+        public void OneMorePairAlikeIsSaidInTheSingular()
+        {
+            MirrorRule rule = BothWaysRound(4);
+
+            Assert.That(rule.Pairs.Count, Is.EqualTo(6));
+            Assert.That(Text(rule.Lines()), Does.Contain(
+                "and 1 more pair alike in priority, test type and tolerance, counted and not listed"));
+        }
+
+        // Six duplicates of one test, five named and one counted, in the singular.
+        [Test]
+        public void OneMoreDuplicateIsSaidInTheSingular()
+        {
+            List<string> tests = new List<string> { Test(DuctsVsColumns, Ducts, Columns) };
+
+            for (int i = 1; i <= 6; i++)
+            {
+                tests.Add(Test(DuctsVsColumns + " copy " + i, Ducts, Columns));
+            }
+
+            MirrorRule rule = MirrorRule.Of(Plan(tests.ToArray()).Buildable, PriorityMap.NothingPicked());
+
+            Assert.That(Text(rule.Lines()), Does.Contain("and 1 more duplicate, counted and not listed"));
         }
 
         // Bader asked for both named where the two differ, so a pair that differs is never

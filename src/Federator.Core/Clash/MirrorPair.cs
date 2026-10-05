@@ -5,9 +5,10 @@ namespace Federator.Core.Clash
 {
     /// <summary>
     /// Two tests whose two sides are the same two sets swapped, F132, Bader's Q114 points
-    /// 4 to 6. The one kept is created and run. Its mirror is not, because the two find the
-    /// same clashes and the workbook, the viewpoints and every count would hold each of
-    /// them twice. Built by MirrorRule and nothing else.
+    /// 4 to 6. The one kept is created and run. Its mirror is not, because his point 4 takes
+    /// the two to find the same clashes, so the workbook, the viewpoints and every count
+    /// would hold each of them twice. Whether they do is UNKNOWN until probe P1 measures it.
+    /// Built by MirrorRule and nothing else.
     /// </summary>
     public sealed class MirrorPair
     {

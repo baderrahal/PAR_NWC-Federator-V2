@@ -10,11 +10,14 @@ namespace Federator.Core.Clash
     /// any project.
     ///
     /// WHAT A MIRROR IS. A test whose two sides are the same two sets as another test's,
-    /// swapped, such as Ducts against Columns and Columns against Ducts. The two find the
-    /// same clashes, so the workbook rows, the viewpoints, the time and every count would
-    /// hold each clash twice. The sets are compared by their locators, Ordinal and never
-    /// trimmed, because two set names in the reference file end in a space. Two sets with
-    /// different names are two sets even where their rules read alike, Q121's default A.
+    /// swapped, such as Ducts against Columns and Columns against Ducts. Bader's point 4
+    /// takes the two to find the same clashes, so the workbook rows, the viewpoints, the
+    /// time and every count would hold each clash twice. That is his word and not a
+    /// measurement: whether a test and its swap find the same clashes is UNKNOWN until probe
+    /// P1 of the add-in half runs on Navisworks. The sets are compared by their locators,
+    /// Ordinal and never trimmed, because two set names in the reference file end in a
+    /// space. Two sets with different names are two sets even where their rules read alike,
+    /// Q121's default A.
     ///
     /// WHICH ONE IS KEPT. The higher priority off the priority file, A before B before C
     /// before none, and where equal the one first in the XML. With no XML the tests saved
@@ -207,7 +210,7 @@ namespace Federator.Core.Clash
                     }
                 }
 
-                AddFive(lines, alike, " more pairs alike in priority, test type and tolerance, "
+                AddFive(lines, alike, "pair", "pairs", " alike in priority, test type and tolerance, "
                     + "counted and not listed");
             }
 
@@ -220,7 +223,7 @@ namespace Federator.Core.Clash
                     + (duplicate.Value.IsFromDocument ? "run" : "created and run") + " as before");
             }
 
-            AddFive(lines, repeated, " more duplicates, counted and not listed");
+            AddFive(lines, repeated, "duplicate", "duplicates", ", counted and not listed");
             return lines;
         }
 
@@ -308,15 +311,16 @@ namespace Federator.Core.Clash
             return false;
         }
 
-        private static void AddFive(List<string> lines, List<string> from, string rest)
+        private static void AddFive(List<string> lines, List<string> from, string one, string many, string rest)
         {
             int shown = Math.Min(from.Count, RunLog.KeptOfARepeat);
+            int more = from.Count - shown;
 
             lines.AddRange(from.GetRange(0, shown));
 
-            if (from.Count > shown)
+            if (more > 0)
             {
-                lines.Add(Prefix + "   and " + (from.Count - shown) + rest);
+                lines.Add(Prefix + "   and " + more + " more " + (more == 1 ? one : many) + rest);
             }
         }
 

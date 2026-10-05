@@ -251,6 +251,151 @@ namespace Federator.Core.Tests
             Assert.That(mirror.Line(), Does.Contain("side"));
         }
 
+        // A person opened the mirror, raised its tolerance from 25 mm to 100 mm and ran it,
+        // setting no status yet. Its name and sides are still the XML's mirror, but it is not
+        // the test the XML would create, so nothing proves this tool created it.
+        [Test]
+        public void ASavedMirrorWhoseToleranceWasRaisedIsLeft()
+        {
+            MirrorInDocument mirror = TheOneFound(
+                SavedInTheDocument(
+                    MirrorRuleTests.Saved(DuctsVsColumns, Ducts, Columns, 0),
+                    new SavedClashTest(ColumnsVsDucts, 1, 0.1, true, false, 1, Columns, false, 1, Ducts, new[] { 1 })),
+                TheXmlHoldingBoth());
+
+            mirror.AddResult(ClashStatus.New, null);
+            mirror.AllResultsAdded();
+
+            Assert.That(mirror.Removes, Is.False);
+            Assert.That(mirror.Line(), Does.Contain("not the test the picked XML would create"));
+            Assert.That(mirror.Line(), Does.Contain("the tolerance 0.025 in the XML and 0.1 saved"));
+        }
+
+        // The same for a side's own setting, read on the same side the XML's mirror has it.
+        [Test]
+        public void ASavedMirrorWithSelfIntersectTurnedOnIsLeft()
+        {
+            MirrorInDocument mirror = TheOneFound(
+                SavedInTheDocument(
+                    MirrorRuleTests.Saved(DuctsVsColumns, Ducts, Columns, 0),
+                    new SavedClashTest(ColumnsVsDucts, 1, 0.025, true, true, 1, Columns, false, 1, Ducts, new[] { 1 })),
+                TheXmlHoldingBoth());
+
+            mirror.AddResult(ClashStatus.New, null);
+            mirror.AllResultsAdded();
+
+            Assert.That(mirror.Removes, Is.False);
+            Assert.That(mirror.Line(), Does.Contain("the left side self intersect off in the XML and on saved"));
+        }
+
+        // Two saved tests carry the mirror's name, one in another folder. Each matches the
+        // XML on its own, and a removal that finds its test by name could take the other.
+        [Test]
+        public void TwoSavedTestsWithTheMirrorsNameAreBothLeft()
+        {
+            IList<MirrorInDocument> found = MirrorInDocument.Find(
+                SavedInTheDocument(
+                    MirrorRuleTests.Saved(DuctsVsColumns, Ducts, Columns, 0),
+                    MirrorRuleTests.Saved(ColumnsVsDucts, Columns, Ducts, 1),
+                    MirrorRuleTests.Saved(ColumnsVsDucts, Columns, Ducts, 2)),
+                TheXmlHoldingBoth(),
+                PriorityMap.NothingPicked());
+
+            Assert.That(found.Count, Is.EqualTo(2));
+
+            foreach (MirrorInDocument mirror in found)
+            {
+                mirror.AddResult(ClashStatus.New, null);
+                mirror.AllResultsAdded();
+
+                Assert.That(mirror.Removes, Is.False);
+                Assert.That(mirror.Line(), Does.Contain("another saved test carries the same name"));
+            }
+        }
+
+        // The same reason a result could not be read, again and again, is said once with its
+        // count, never repeated once per result.
+        [Test]
+        public void OneReasonAResultCouldNotBeReadIsSaidOnceWithItsCount()
+        {
+            MirrorInDocument mirror = TheXmlsMirror();
+
+            for (int i = 0; i < 7; i++)
+            {
+                mirror.ResultNotRead("the status threw");
+            }
+
+            mirror.AllResultsAdded();
+            string line = mirror.Line();
+
+            Assert.That(mirror.Removes, Is.False);
+            Assert.That(line, Does.Contain("7 results could not be read: the status threw 7 times"));
+            Assert.That(line.Split(new[] { "the status threw" }, StringSplitOptions.None).Length - 1, Is.EqualTo(1));
+        }
+
+        // More than five reasons: five named and the rest counted.
+        [Test]
+        public void ManyReasonsAResultCouldNotBeReadAreFiveNamedAndTheRestCounted()
+        {
+            MirrorInDocument mirror = TheXmlsMirror();
+
+            for (int i = 1; i <= 7; i++)
+            {
+                mirror.ResultNotRead("reason " + i);
+            }
+
+            mirror.AllResultsAdded();
+            string line = mirror.Line();
+
+            Assert.That(line, Does.Contain("7 results could not be read: reason 1, reason 2"));
+            Assert.That(line, Does.Contain("reason 5, and 2 more reasons"));
+            Assert.That(line, Does.Not.Contain("reason 6"));
+        }
+
+        // Q122's default A: a Reviewed carrying this tool's record counts as this tool's,
+        // also where the record says it was Active before. The line says how many were.
+        [Test]
+        public void ReviewedByThisToolOffActiveIsCountedInTheLine()
+        {
+            MirrorInDocument mirror = TheXmlsMirror();
+            mirror.AddResult(ClashStatus.Reviewed, OurRecord(ClashStatus.Active));
+            mirror.AddResult(ClashStatus.Reviewed, OurRecord(ClashStatus.Active));
+            mirror.AddResult(ClashStatus.Reviewed, OurRecord(ClashStatus.New));
+            mirror.AllResultsAdded();
+
+            Assert.That(mirror.Removes, Is.True);
+            Assert.That(mirror.Line(), Does.Contain("3 of the Reviewed set by this tool, 2 of them Active before it moved them"));
+        }
+
+        // A walk never said complete leaves the results UNKNOWN, never none.
+        [Test]
+        public void AWalkNeverSaidCompleteGivesItsResultsAsUnknown()
+        {
+            MirrorInDocument mirror = TheXmlsMirror();
+
+            Assert.That(mirror.Line(), Does.EndWith("Its results: UNKNOWN"));
+        }
+
+        // A walk that stopped part way names what it read and says the rest is UNKNOWN.
+        [Test]
+        public void AWalkThatStoppedPartWaySaysWhetherThatIsAllIsUnknown()
+        {
+            MirrorInDocument mirror = TheXmlsMirror();
+            mirror.AddResult(ClashStatus.New, null);
+
+            Assert.That(mirror.Line(), Does.EndWith("Its results: New 1, and whether that is all of them is UNKNOWN"));
+        }
+
+        // A walk said complete over no result has none, and says so.
+        [Test]
+        public void AWalkSaidCompleteOverNoResultSaysNone()
+        {
+            MirrorInDocument mirror = TheXmlsMirror();
+            mirror.AllResultsAdded();
+
+            Assert.That(mirror.Line(), Does.EndWith("Its results: none"));
+        }
+
         // The add-in hands every saved test the same two placeholders for its sides. A name
         // the picked XML calls a mirror is still that mirror, since the XML decides what
         // runs, but its sides are UNKNOWN, so nothing proves this tool created it and its

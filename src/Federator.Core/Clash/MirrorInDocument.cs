@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Clash
 {
@@ -11,16 +12,21 @@ namespace Federator.Core.Clash
     /// not run, and named for Bader.
     ///
     /// WHAT PROVES THIS TOOL CREATED IT. This tool creates a test off the picked XML, under
-    /// the XML's name and with the XML's two sets. So a saved test is taken as this tool's
-    /// only where its name and both its locators equal a mirror of the picked XML exactly,
-    /// Ordinal. Nothing else on a test says who made it, so with no XML picked nothing
-    /// proves it and nothing is ever removed, and a swap the picked XML does not hold was
-    /// made by a person or by an older XML and is left. A saved side that was not read,
-    /// MirrorRule.BothSidesRead, proves nothing either, so a name the XML calls a mirror
-    /// whose sides were not read is left and its line says UNKNOWN. By its sides alone such
-    /// a test is never a mirror. The proof needs the XML's own rule, so Find refuses a rule
-    /// holding a test read off the document as the picked XML's, and a test not read off
-    /// the document as a saved one, since either would match itself.
+    /// the XML's name, with the XML's two sets and the XML's settings. So a saved test is
+    /// taken as this tool's only where its name is a mirror of the picked XML's and it is
+    /// the very test the XML would create, both locators Ordinal and every setting the drift
+    /// rule compares, TestDrift.Compare: the tolerance within its epsilon, the test type,
+    /// merge composites and each side's self intersect and primitive types. A mirror a
+    /// person tuned after this tool made it is not proved to be this tool's. Nothing else on
+    /// a test says who made it, so with no XML picked nothing proves it and nothing is ever
+    /// removed, and a swap the picked XML does not hold was made by a person or by an older
+    /// XML and is left. A saved side that was not read, MirrorRule.BothSidesRead, proves
+    /// nothing either, so a name the XML calls a mirror whose sides were not read is left
+    /// and its line says UNKNOWN. By its sides alone such a test is never a mirror. The
+    /// proof needs the XML's own rule, so Find refuses a rule holding a test read off the
+    /// document as the picked XML's, and a test not read off the document as a saved one,
+    /// since either would match itself. A saved test whose name another saved test carries
+    /// too is left, because a removal that finds its test by name could take the other.
     ///
     /// WHOSE A STATUS IS, Q122's default A. Every status but New counts as a person's,
     /// `StatusesAPersonSet`, with one exception its record proves: a Reviewed carrying this
@@ -28,7 +34,9 @@ namespace Federator.Core.Clash
     /// the Undo auto Reviewed button runs, so a result it would put back is the one taken as
     /// this tool's. So a mirror whose results a rerun moved to Active or Resolved is left. A
     /// result that could not be read is left as well, because a status nobody read is not a
-    /// status nobody set. A test with no results carries no status.
+    /// status nobody set. A test with no results carries no status. Where the record says a
+    /// Reviewed of this tool's was Active before, the line counts how many, since a plain
+    /// Active counts as a person's and Q122 is open on it.
     ///
     /// FAIL CLOSED. Core cannot tell a test with no results from a walk of its results that
     /// never ran or stopped part way, so nothing is removed until the add-in says the walk
@@ -48,18 +56,24 @@ namespace Federator.Core.Clash
         private readonly string keptName;
         private readonly bool xmlPicked;
         private readonly MirrorPair ofThePickedXml;
+        private readonly bool nameShared;
         private readonly ClashTally statuses = new ClashTally();
-        private readonly List<string> notRead = new List<string>();
+        private readonly List<string> notReadWhy = new List<string>();
+        private readonly Dictionary<string, int> notReadTimes = new Dictionary<string, int>(StringComparer.Ordinal);
+        private int notRead;
         private int setByAPerson;
         private int reviewedByThisTool;
+        private int reviewedOffActive;
         private bool walkComplete;
 
-        private MirrorInDocument(PlannedClashTest saved, string keptName, bool xmlPicked, MirrorPair ofThePickedXml)
+        private MirrorInDocument(
+            PlannedClashTest saved, string keptName, bool xmlPicked, MirrorPair ofThePickedXml, bool nameShared)
         {
             Saved = saved;
             this.keptName = keptName;
             this.xmlPicked = xmlPicked;
             this.ofThePickedXml = ofThePickedXml;
+            this.nameShared = nameShared;
         }
 
         /// <summary>The test as it is saved in the document, carrying the address it is found at.</summary>
@@ -126,11 +140,14 @@ namespace Federator.Core.Clash
                 }
             }
 
+            HashSet<string> shared = NamesSaidTwice(all);
+
             if (ofThePickedXml == null)
             {
                 foreach (MirrorPair pair in MirrorRule.Of(all, priorities).Pairs)
                 {
-                    found.Add(new MirrorInDocument(pair.Mirror, pair.Kept.Name, false, null));
+                    found.Add(new MirrorInDocument(
+                        pair.Mirror, pair.Kept.Name, false, null, shared.Contains(pair.Mirror.Name)));
                 }
 
                 return found;
@@ -144,7 +161,7 @@ namespace Federator.Core.Clash
 
                 if (xmlPair != null)
                 {
-                    found.Add(new MirrorInDocument(test, xmlPair.Kept.Name, true, xmlPair));
+                    found.Add(new MirrorInDocument(test, xmlPair.Kept.Name, true, xmlPair, shared.Contains(test.Name)));
                     continue;
                 }
 
@@ -157,7 +174,7 @@ namespace Federator.Core.Clash
 
                 if (run != null)
                 {
-                    found.Add(new MirrorInDocument(test, run.Name, true, null));
+                    found.Add(new MirrorInDocument(test, run.Name, true, null, shared.Contains(test.Name)));
                     continue;
                 }
 
@@ -166,10 +183,28 @@ namespace Federator.Core.Clash
 
             foreach (MirrorPair pair in MirrorRule.Of(outsideTheXml, priorities).Pairs)
             {
-                found.Add(new MirrorInDocument(pair.Mirror, pair.Kept.Name, true, null));
+                found.Add(new MirrorInDocument(
+                    pair.Mirror, pair.Kept.Name, true, null, shared.Contains(pair.Mirror.Name)));
             }
 
             return found;
+        }
+
+        /// <summary>Every name more than one saved test carries, Ordinal and never trimmed.</summary>
+        private static HashSet<string> NamesSaidTwice(List<PlannedClashTest> all)
+        {
+            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+            HashSet<string> twice = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (PlannedClashTest test in all)
+            {
+                if (!seen.Add(test.Name))
+                {
+                    twice.Add(test.Name);
+                }
+            }
+
+            return twice;
         }
 
         /// <summary>One result of the saved test, its status and its comment as the document holds them.</summary>
@@ -183,6 +218,11 @@ namespace Federator.Core.Clash
             if (UndoAutoReview.Judge(comment, status, out putBackTo) == UndoVerdict.PutBack)
             {
                 reviewedByThisTool++;
+
+                if (putBackTo == ClashStatus.Active)
+                {
+                    reviewedOffActive++;
+                }
             }
             else if (StatusesAPersonSet.Counts(status))
             {
@@ -190,11 +230,24 @@ namespace Federator.Core.Clash
             }
         }
 
-        /// <summary>A result, or the list of them, that could not be read, with what stopped it.</summary>
+        /// <summary>
+        /// A result, or the list of them, that could not be read, with what stopped it. The
+        /// same reason handed again is counted and said once.
+        /// </summary>
         public void ResultNotRead(string why)
         {
             walkComplete = false;
-            notRead.Add(string.IsNullOrEmpty(why) ? "UNKNOWN" : why);
+            notRead++;
+
+            string reason = string.IsNullOrEmpty(why) ? "UNKNOWN" : why;
+            int times;
+
+            if (!notReadTimes.TryGetValue(reason, out times))
+            {
+                notReadWhy.Add(reason);
+            }
+
+            notReadTimes[reason] = times + 1;
         }
 
         /// <summary>
@@ -253,12 +306,25 @@ namespace Federator.Core.Clash
                 reasons.Add("its name is a mirror of the picked XML and its sides were not read, UNKNOWN, "
                     + "so nothing proves this tool created it");
             }
-            else if (!SameSides(Saved, ofThePickedXml.Mirror))
+            else
             {
-                reasons.Add("its name is a test of the picked XML and its sides are not, left \""
-                    + Saved.Left.Locator + "\" and right \"" + Saved.Right.Locator + "\" where the XML has \""
-                    + ofThePickedXml.Mirror.Left.Locator + "\" and \"" + ofThePickedXml.Mirror.Right.Locator
-                    + "\", so nothing proves this tool created it");
+                // The drift rule's own compare, so the saved test is the very test the XML
+                // would create, in its sets and in every setting, and one a person tuned after
+                // this tool made it is not proved to be this tool's.
+                IList<TestDifference> differences = TestDrift.Compare(
+                    Saved.Name, TestSettings.FromFile(ofThePickedXml.Mirror), TestSettings.FromFile(Saved));
+
+                if (differences.Count > 0)
+                {
+                    reasons.Add("it is not the test the picked XML would create, " + Described(differences)
+                        + ", so nothing proves this tool created it");
+                }
+            }
+
+            if (nameShared)
+            {
+                reasons.Add("another saved test carries the same name, so which of them a removal by name "
+                    + "would take is UNKNOWN");
             }
 
             if (!walkComplete)
@@ -267,10 +333,9 @@ namespace Federator.Core.Clash
                     + "set a status on one is UNKNOWN");
             }
 
-            if (notRead.Count > 0)
+            if (notRead > 0)
             {
-                reasons.Add(notRead.Count + (notRead.Count == 1 ? " result" : " results")
-                    + " could not be read, " + string.Join(", ", notRead.ToArray()));
+                reasons.Add(notRead + (notRead == 1 ? " result" : " results") + " could not be read: " + WhyNotRead());
             }
 
             if (setByAPerson > 0)
@@ -282,17 +347,61 @@ namespace Federator.Core.Clash
             return reasons;
         }
 
-        private string Results()
+        private static string Described(IList<TestDifference> differences)
         {
-            return statuses.Describe()
-                + (reviewedByThisTool > 0 ? ", " + reviewedByThisTool + " of the Reviewed set by this tool" : string.Empty)
-                + (notRead.Count > 0 ? ", " + notRead.Count + " not read" : string.Empty);
+            List<string> said = new List<string>();
+
+            foreach (TestDifference difference in differences)
+            {
+                said.Add(difference.Field + " " + difference.InFile + " in the XML and " + difference.InDocument + " saved");
+            }
+
+            return string.Join(", ", said.ToArray());
         }
 
-        private static bool SameSides(PlannedClashTest saved, PlannedClashTest inTheXml)
+        /// <summary>Each reason once with how many times it came, five named and the rest counted.</summary>
+        private string WhyNotRead()
         {
-            return string.Equals(saved.Left.Locator, inTheXml.Left.Locator, StringComparison.Ordinal)
-                && string.Equals(saved.Right.Locator, inTheXml.Right.Locator, StringComparison.Ordinal);
+            int shown = Math.Min(notReadWhy.Count, RunLog.KeptOfARepeat);
+            List<string> said = new List<string>();
+
+            for (int i = 0; i < shown; i++)
+            {
+                int times = notReadTimes[notReadWhy[i]];
+                said.Add(times == 1 ? notReadWhy[i] : notReadWhy[i] + " " + times + " times");
+            }
+
+            int more = notReadWhy.Count - shown;
+
+            return string.Join(", ", said.ToArray())
+                + (more > 0 ? ", and " + more + (more == 1 ? " more reason" : " more reasons") : string.Empty);
+        }
+
+        /// <summary>
+        /// The statuses with their counts. Where the walk was not said complete, what it read
+        /// is never given as all of them, and with nothing read the results are UNKNOWN.
+        /// </summary>
+        private string Results()
+        {
+            if (!walkComplete && statuses.Total == 0 && notRead == 0)
+            {
+                return "UNKNOWN";
+            }
+
+            string read = statuses.Total > 0 ? statuses.Describe() : notRead > 0 ? "none read" : "none";
+
+            if (reviewedByThisTool > 0)
+            {
+                read += ", " + reviewedByThisTool + " of the Reviewed set by this tool"
+                    + (reviewedOffActive > 0 ? ", " + reviewedOffActive + " of them Active before it moved them" : string.Empty);
+            }
+
+            if (notRead > 0)
+            {
+                read += ", " + notRead + " not read";
+            }
+
+            return walkComplete ? read : read + ", and whether that is all of them is UNKNOWN";
         }
     }
 }
