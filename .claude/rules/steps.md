@@ -20,7 +20,8 @@ paths:
   and runs make-tracker.ps1, before it merges, so a row reaches main as merged with its
   number. A pull request that adds an FR item to steps\fix-round.md adds its row, and one
   that writes a new question or Bader's answer under one in steps\02_questions.md adds or
-  sets the question's row, in the same way. Status lives in the tracker, and
+  sets the question's row, in the same way, and one that writes a request of his there, an
+  item whose text starts From Bader, adds its row. Status lives in the tracker, and
   .claude\rules\tracker.md says how a row is written
 - steps\02_questions.md holds every question put to Bader, numbered once and never
   renumbered, with his answer under it and the fix that carried it out. A new question

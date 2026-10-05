@@ -2,14 +2,14 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 382 rows: open 150, in progress 51, in review 0, merged 135, proven by a run 21, waiting for Bader 23, dropped 2
-- By wave: 1 22, 2a 28, 2a and 2b 1, 2b 32, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before any test run 4, before the test of wave 1 2, before the waves 111, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 24, outside the waves 2
-- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, and 39 FR items
+- By status, of 392 rows: open 151, in progress 52, in review 0, merged 139, proven by a run 22, waiting for Bader 23, dropped 5
+- By wave: 1 19, 2a 28, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before any test run 3, before the test of wave 1 4, before the waves 114, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 35, outside the waves 2
+- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, and 39 FR items
 - Waits for Bader, 23 rows: F18, Q25, Q27, Q28, Q29, Q30, Q31, Q35, Q36, Q37, Q38, Q39, Q40, Q45, Q46, Q47, Q49, Q50, Q51, Q76, Q77, Q78, Q134
 
 ## Wave 1
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-001 | far model group stays done | F112 | silent wrong number | merged | 106 | none | 2026-10-05 |
 | FR-002 | model site read failure reads as no site | F112 | silent wrong number | merged | 106 | none | 2026-10-05 |
@@ -30,13 +30,10 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F112 | alignment | F112 | fix | merged | 106 | none | 2026-10-05 |
 | F113 | clash counts | F113 | fix | merged | 95 | none | 2026-10-04 |
 | F116 | the clash XML | F116 | fix | merged | 98 | none | 2026-10-05 |
-| Q110 | a skipped group and its tests | F112 | question | merged | 118 | none | 2026-10-05 |
-| Q111 | a model that names no site at all | F112 | question | merged | 118 | none | 2026-10-05 |
-| Q125 | a group that runs no clash test, a model off the coordinates | F112 | question | merged | 118 | none | 2026-10-05 |
 
 ## Wave 2a
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-010 | empty sets contains judged as equals | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
 | FR-011 | empty sets names and lists typed in core | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
@@ -69,13 +66,13 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 ## Wave 2a and 2b
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | Q114 | one view per clash test by team (FR-180 to FR-188) | F131, F132, F114 | Bader's request | in progress | none, branches fix-F131, fix-F132, fix-F114 | none | 2026-10-05 |
 
 ## Wave 2b
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-065 | viewpoint dimming carries between viewpoints | F114 | silent wrong number | in progress | none, branch fix-F114 | none | 2026-10-04 |
 | FR-066 | size text reads tail of word digits | F114 | silent wrong number | in progress | none, branch fix-F114 | none | 2026-10-04 |
@@ -98,8 +95,6 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F128 | generic models | F128 | fix | open | none | none | 2026-10-04 |
 | F131 | teams | F131 | fix | in progress | none, branch fix-F131 | none | 2026-10-05 |
 | Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | open | none | none | 2026-10-04 |
-| Q35 | the GAP block, Family reaches no output | F114 | question | waiting for Bader | none | none | 2026-09-19 |
-| Q40 | the GAP block, Id From | F114 | question | waiting for Bader | none | none | 2026-09-19 |
 | Q77 | the clear and rebuild does not copy the viewpoints | F114 | question | waiting for Bader | none | none | 2026-09-21 |
 | Q115 | where the team map lives | F131 | question | merged | 118 | none | 2026-10-05 |
 | Q116 | where the team map applies | F131 | question | merged | 118 | none | 2026-10-05 |
@@ -108,11 +103,16 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q119 | which models a view shows | F114 | question | merged | 118 | none | 2026-10-05 |
 | Q120 | a view the tool made that a person changed | F114 | question | merged | 118 | none | 2026-10-05 |
 | Q123 | a run with no XML picked and the team map | F131 | question | merged | 118 | none | 2026-10-05 |
-| Q134 | code that waits for F114 by Bader's order | F131 | question | waiting for Bader | none | none | 2026-10-05 |
+
+## Wave 2b and before any test run
+
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
+|---|---|---|---|---|---|---|---|
+| Q131 | the default of the viewpoints box | F114, F136 | question | merged | 118 | none | 2026-10-05 |
 
 ## Wave 2c
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-035 | workbook check counts only blocks with clashes | F118 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-036 | skipped test row keeps old tolerance after chosen edit | F118 | silent wrong number | open | none | none | 2026-10-04 |
@@ -123,7 +123,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 ## Wave 3a
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-075 | picture rename two pass has no undo | F120 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-076 | image guard per group not per run | F120 | broken feature | open | none | none | 2026-10-04 |
@@ -139,7 +139,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 ## Wave 3b
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-043 | reshaped group done but nwf never saved | F119 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-044 | nwf save false return ignored after rebuild | F119 | silent wrong number | open | none | none | 2026-10-04 |
@@ -164,7 +164,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 ## Wave 4
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-082 | clash xml copy not the exchange matrix | F122 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-083 | f106 verdict ran ignores group results | F122 | silent wrong number | open | none | none | 2026-10-04 |
@@ -211,7 +211,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 ## Wave 5
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-007 | invisible difference fallback for visible space | F123 | noise | open | none | none | 2026-10-04 |
 | FR-029 | set builder handles never disposed | F123 | noise | open | none | none | 2026-10-04 |
@@ -284,29 +284,30 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 ## all
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | Q98 | the full fix round | all | Bader's request | in progress | none | none | 2026-10-04 |
 
 ## before any test run
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-194 | viewpoints switched off for test runs | F136 | Bader's decision | merged | 117 | none | 2026-10-05 |
 | F136 | the viewpoints switch | F136 | fix | merged | 117 | none | 2026-10-05 |
 | Q130 | stop the C02 weekly run and no viewpoints in test runs until F114 merges (FR-194) | F136 | Bader's request | merged | 117 for F136, 116 records the stop | none | 2026-10-05 |
-| Q131 | the default of the viewpoints box | F136 | question | merged | 118 | none | 2026-10-05 |
 
 ## before the test of wave 1
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-195 | no site and no clash groups end partial | F137 | Bader's decision | open | none | none | 2026-10-05 |
 | F137 | no site and no clash groups | F137 | fix | open | none | none | 2026-10-05 |
+| Q111 | a model that names no site at all | F137 | question | merged | 118 | none | 2026-10-05 |
+| Q125 | a group that runs no clash test, a model off the coordinates | F137 | question | merged | 118 | none | 2026-10-05 |
 
 ## before the waves
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | F1 | fix the test name typo | F1 | fix | merged | merge 0432e82 | none | 2026-09-07 |
 | F2 | fix the hardcoded probe path | F2 | fix | merged | merge 0432e82 | none | 2026-09-07 |
@@ -412,6 +413,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F98 | the close round heading back in steps\log.md | F98 | fix | merged | 73 | none | 2026-09-28 |
 | F99 | the git wall through PowerShell | F99 | fix | merged | 72 | none | 2026-09-28 |
 | F100 | a start of Navisworks with no click, measured | F100 | fix | merged | 74 | none | 2026-09-29 |
+| F101 | the no-click entry, built first only if the window cannot be driven, D4 of Q80, never started | F101 | fix | open | none | none | 2026-09-29 |
 | F102 | every result file read for a machine name or licensing id | F102 | fix | merged | 76 | none | 2026-10-01 |
 | F103 | tools\loop\run.ps1, part 1 | F103 | fix | proven by a run | 78 | steps\runs\02\item0 | 2026-10-01 |
 | F104 | the check of a workbook against its document | F104 | fix | merged | 96 | none | 2026-10-04 |
@@ -419,10 +421,12 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F106 | the window run, items 1 to 5 through the real window | F106 | fix | merged | 88 | steps\runs\03 shows item 1 only | 2026-10-04 |
 | F107 | the name of the machine of 2026-09-19 masked on main | F107 | fix | merged | 92 | none | 2026-10-04 |
 | F108 | a fresh copy of the real files for each run set | F108 | fix | merged | 84 | none | 2026-10-04 |
+| F110 | of 2026-10-01, no commit of its own, folded into the workbook and run log areas F118 and F119, which into which UNKNOWN | F110 | fix | dropped | none | none | 2026-10-04 |
+| F111 | of 2026-10-01, no commit of its own, folded into the workbook and run log areas F118 and F119, which into which UNKNOWN | F111 | fix | dropped | none | none | 2026-10-04 |
 
 ## beside the waves
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-191 | work tracker one place for status | F133 | Bader's decision | merged | 122 | none | 2026-10-05 |
 | FR-192 | code health gate lists only shrink | F134 | Bader's decision | in progress | none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health | none | 2026-10-05 |
@@ -434,28 +438,37 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 ## first of all since Bader's order of 2026-10-05
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | Q132 | the new viewpoints first, F136 then F131, F132 and F114 | F136, F131, F132, F114 | Bader's request | in progress | 117 merged for F136, branches fix-F131, fix-F132, fix-F114 | none | 2026-10-05 |
 
 ## none
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-125 | five failed groups need note for modellers | none | loud failure | merged | 89 | none | 2026-10-04 |
 | FR-137 | rules loop md says logs never pushed out | none | noise | merged | 83 | none | 2026-10-04 |
 | FR-138 | rules say loop never writes autosave | none | noise | merged | 83 | none | 2026-10-04 |
 | FR-175 | no sleep and keep awake | none | Bader's request | merged | 99, records only, nothing to merge | none | 2026-10-04 |
+| Q81 | local main tracked origin/master, its upstream set to origin/main | none | Bader's request | merged | 74, records only, nothing to merge | none | 2026-09-29 |
+| Q93 | a reading of the loop's own scripts blocks a run only for harm or wrong evidence | none | Bader's request | merged | 83 | none | 2026-10-04 |
+| Q94 | code runs every real file itself, full runs of main and the fixes they show | none | Bader's request | in progress | none | steps\runs\03 and steps\runs\04 so far | 2026-10-04 |
+| Q95 | keep the PC awake for the whole loop | none | Bader's request | merged | 82, records only, nothing to merge | none | 2026-10-01 |
+| Q96 | main installed and the first run of C06 through the real window | none | Bader's request | proven by a run | 85 | steps\runs\03 | 2026-10-01 |
+| Q97-1 | the findings of the first C06 run in steps\runs\03\findings.md | none | Bader's request | merged | 86 | none | 2026-10-01 |
+| Q97-2 | the first run of C07 and the run set that night, replaced by Q98's no run of C07 now | none | Bader's request | dropped | none | none | 2026-10-04 |
 | Q112-1 | no sleep and keep awake (FR-175) | none | Bader's request | merged | 99, records only, nothing to merge | none | 2026-10-04 |
 | Q25 | five clash item properties reach no output, split into Q35 to Q40 | none | question | waiting for Bader | none | none | 2026-09-12 |
 | Q27 | the two choice rule for still outstanding lost every reader | none | question | waiting for Bader | none | none | 2026-09-12 |
 | Q29 | three settable properties nothing outside the code sets | none | question | waiting for Bader | none | none | 2026-09-12 |
 | Q30 | the bundle manifest points at the old scan.md path | none | question | waiting for Bader | none | none | 2026-09-12 |
 | Q31 | five names listed wrongly in the F40 entry | none | question | waiting for Bader | none | none | 2026-09-18 |
+| Q35 | the GAP block, Family reaches no output | none | question | waiting for Bader | none | none | 2026-09-19 |
 | Q36 | the GAP block, Type Name | none | question | waiting for Bader | none | none | 2026-09-19 |
 | Q37 | the GAP block, Material | none | question | waiting for Bader | none | none | 2026-09-19 |
 | Q38 | the GAP block, Source File | none | question | waiting for Bader | none | none | 2026-09-19 |
 | Q39 | the GAP block, Discipline | none | question | waiting for Bader | none | none | 2026-09-19 |
+| Q40 | the GAP block, Id From | none | question | waiting for Bader | none | none | 2026-09-19 |
 | Q45 | a count of the clashes this run moved to Reviewed | none | question | waiting for Bader | none | none | 2026-09-19 |
 | Q46 | F77 against the single discipline rule | none | question | waiting for Bader | none | none | 2026-09-19 |
 | Q47 | four service categories not on the service list | none | question | waiting for Bader | none | none | 2026-09-19 |
@@ -464,12 +477,14 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q51 | the first size property or the largest | none | question | waiting for Bader | none | none | 2026-09-19 |
 | Q76 | the source file column empty on every row | none | question | waiting for Bader | none | none | 2026-09-21 |
 | Q78 | C04 models naming misspelled shared sites | none | question | waiting for Bader | none | none | 2026-09-21 |
+| Q110 | a skipped group and its tests | none | question | merged | 118 | none | 2026-10-05 |
 | Q124 | the baseline of 1A04PK takes a day or more | none | question | merged | 118 | none | 2026-10-05 |
 | Q128 | what the C04 baseline run did not put back | none | question | merged | 118 | none | 2026-10-05 |
+| Q134 | code that waits for F114 by Bader's order | none | question | waiting for Bader | none | none | 2026-10-05 |
 
 ## outside the waves
 
-| id | short title | area | class | status | PR | run that proved it | date of last change |
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | F125 | a window that is not modal is a pane and not a dialog | F125 | fix | merged | 102 | steps\runs\04\item1-C02 shows the first pass only | 2026-10-04 |
 | F126 | the window driver unticks a tick box by its AutomationId | F126 | fix | merged | 112 | none | 2026-10-05 |

@@ -9,9 +9,9 @@ by the Actions windows-latest runner, whose workflow already runs `prove-compare
 
 | File | What it does |
 |---|---|
-| `tracker-rules.ps1` | the one place the rules live: the nine columns, the seven statuses, the csv reader, the row rules, the FR items of fix-round.md with their class, area and wave, the shapes of a line of its waves section, the questions of 02_questions.md and whether each is answered, and the shape of tracker.md. make-tracker.ps1 and check-tracker.ps1 read it with a dot |
+| `tracker-rules.ps1` | the one place the rules live: the nine columns, the seven statuses, the csv reader, the row rules, the FR items of fix-round.md with their class, area and wave, the shapes of a line of its waves section, the questions of 02_questions.md, whether each is answered and the area and the wave the FR items naming it give, Bader's requests there, and the shape of tracker.md. make-tracker.ps1 and check-tracker.ps1 read it with a dot |
 | `make-tracker.ps1` | makes `steps\tracker.md` from `steps\tracker.csv`, and refuses, writing nothing, when the csv has a fault |
-| `check-tracker.ps1` | refuses each fault its header lists, the one list of them, each naming its line. Exits 2 when the csv, fix-round.md or 02_questions.md is not there. Actions runs it on every pull request |
+| `check-tracker.ps1` | refuses each fault its header lists, the one list of them, each naming its line. Exits 2 when the csv, fix-round.md or 02_questions.md is not there, and 1 for any fault, a tracker.md that is not there among them. Actions runs it on every pull request |
 | `prove-tracker.ps1` | runs the check over every fixture and asserts the exact line and exit code of each, then, on copies, that the maker refuses a csv with a fault and a folder with no csv, that the good fixture with CRLF line ends and a byte order mark reads clean, and that it is refused with its fix-round.md in UTF-16, which no committed fixture may be. Actions runs it on every pull request |
 | `fixtures\good` | a small tracker that reads clean, its tracker.md made by the maker |
 | `fixtures\<kind>` | the good one with one thing broken, one folder per fault kind and per file that is not there, named for it, written by a script kept outside the repo that refuses an edit matching other than once |

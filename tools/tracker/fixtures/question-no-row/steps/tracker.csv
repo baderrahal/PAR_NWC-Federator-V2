@@ -1,4 +1,4 @@
-id,short title,area,wave,class,status,PR,run that proved it,date of last change
+id,short title,area,wave,class,status,PR,the run that proved it,the date of the last change
 FR-001,first item,F1,1,noise,merged,12,none,2026-10-05
 FR-002,"second item, with a comma",F1,1,noise,proven by a run,13,"steps\runs\05 shows ""it""",2026-10-05
 FR-003,third | item,F2,2a,noise,in progress,"none, branch fix-F2",none,UNKNOWN
@@ -7,8 +7,13 @@ F2,the second area,F2,2a,fix,in progress,"none, branch fix-F2",none,2026-10-05
 FR-005,fifth item,F3,beside the waves,broken feature,in review,UNKNOWN,none,2026-10-05
 FR-006,sixth item,none,none,UNKNOWN,dropped,none,none,2026-10-05
 FR-007,seventh item closed before the waves,none,none,noise,merged,9,none,2026-10-03
-FR-008,eighth item,F4,before any test run,Bader's decision,in progress,"14, open",none,2026-10-05
-Q2,a question Bader answered,F4,before any test run,question,merged,18,none,2026-10-05
-Q3,a question answered on a branch,none,none,question,in review,UNKNOWN,none,2026-10-05
+FR-008,eighth item,F4,before any test run,Bader's request,in progress,"14, open",none,2026-10-05
+Q2,a question Bader answered,"F2, F4",2a and before any test run,question,merged,18,none,2026-10-05
+Q3,a question answered on a branch,F2,2a,question,in review,UNKNOWN,none,2026-10-05
 F3,the third area,F3,beside the waves,fix,in review,UNKNOWN,none,2026-10-05
 F4,the fourth area,F4,before any test run,fix,in progress,"14, open",none,2026-10-05
+F5,the fifth area,F5,2a,fix,open,none,none,2026-10-05
+F6,the sixth area,F6,none,fix,open,none,none,2026-10-05
+Q4-1,the first of two requests,none,none,Bader's request,merged,19,none,2026-10-05
+Q4-2,the second of two requests,F2,2a,Bader's request,in progress,"none, branch fix-F2",none,2026-10-05
+Q5,a request of one row,none,none,Bader's request,open,none,none,2026-10-05
