@@ -67,35 +67,39 @@ namespace Federator.Addin.Engine
                 asked = null;
             }
 
-            List<string> keys = new List<string>();
-            List<string> described = new List<string>();
-
-            foreach (PlannedCondition condition in planned.Conditions)
-            {
-                keys.Add(KeyOf(condition));
-                described.Add(condition.Describe());
-            }
-
-            return SetDrift.Compare(planned.Path, asked, keys, described);
+            // The file's side is keyed in Core off the planned set, FR-015, so the two sides
+            // are put in one shape by one rule.
+            return SetDrift.Compare(asked, planned);
         }
 
-        /// <summary>One condition off a set in the document, in the plain strings Core compares.</summary>
+        /// <summary>
+        /// One condition off a set in the document, in the plain strings Core compares, with its
+        /// options as a number, because the negation and the start of an Or group are part of
+        /// what it asks, FR-015.
+        /// </summary>
         private static ReadCondition Read(SearchCondition condition)
         {
             return new ReadCondition(
                 condition.CategoryCombinedName == null ? string.Empty : Words.Or(condition.CategoryCombinedName.Name, string.Empty),
                 condition.PropertyCombinedName == null ? string.Empty : Words.Or(condition.PropertyCombinedName.Name, string.Empty),
-                condition.Comparison == SearchConditionComparison.DisplayStringContains ? "contains" : "equals",
-                ValueOf(condition.Value));
+                TestOf(condition.Comparison),
+                ValueOf(condition.Value),
+                (int)condition.Options);
         }
 
-        /// <summary>The same key from the FILE's side, so the two are compared on one shape.</summary>
-        private static string KeyOf(PlannedCondition condition)
+        /// <summary>
+        /// The comparison in the words the file writes for the two BuildCondition builds, and by
+        /// its own name for any other, FR-015. Every comparison but contains read as equals, so a
+        /// set asking NotEqual read as the same question as one asking Equal.
+        /// </summary>
+        private static string TestOf(SearchConditionComparison comparison)
         {
-            return (condition.HasCategory ? condition.CategoryInternalName : string.Empty)
-                + "|" + condition.PropertyInternalName
-                + "|" + (condition.Test == ConditionTest.Contains ? "contains" : "equals")
-                + "|" + condition.Value;
+            if (comparison == SearchConditionComparison.DisplayStringContains)
+            {
+                return SetBuildPlan.ContainsTest;
+            }
+
+            return comparison == SearchConditionComparison.Equal ? SetBuildPlan.EqualsTest : comparison.ToString();
         }
 
         private static string ValueOf(VariantData value)

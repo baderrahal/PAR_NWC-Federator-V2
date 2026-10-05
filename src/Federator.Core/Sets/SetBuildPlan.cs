@@ -77,6 +77,45 @@ namespace Federator.Core.Sets
         public const int StartGroupFlag = 64;
 
         /// <summary>
+        /// The bit that says this condition is negated, NegateCondition in Navisworks'
+        /// SearchConditionOptions. Measured in 5g to go into an NWF and come back out of it.
+        /// </summary>
+        public const int NegateFlag = 32;
+
+        /// <summary>
+        /// The flag bits that are PART OF THE QUESTION a condition asks, FR-015: the negation
+        /// and the start of a group. A condition and its negation ask opposite questions, and
+        /// four conditions in two groups ask an Or where the same four in one group ask an And
+        /// that no element answers. Every other bit is left out, the two Ignore bits above all,
+        /// because a set this tool built carries them, 37 for a negated condition in 5g, and
+        /// 1A02MM's original import carries none, 5w, and those sets find the same items. THE
+        /// ONE RULE for which bits count, read by the drift key, the leftover pairing and the
+        /// HEALTH block, so the three cannot disagree.
+        /// </summary>
+        internal static int QuestionFlagsOf(int flags)
+        {
+            return flags & (StartGroupFlag | NegateFlag);
+        }
+
+        /// <summary>
+        /// The key this condition is compared by against a set in the document, in the one shape
+        /// `ReadCondition.KeyOf` builds, so the file's side and the document's side are put
+        /// together by one rule in Core, FR-015. The add-in built this side a second time, with
+        /// no flags.
+        /// </summary>
+        internal string Key()
+        {
+            return ReadCondition.KeyOf(
+                HasCategory ? CategoryInternalName : string.Empty, PropertyInternalName, TestWord, Flags, Value);
+        }
+
+        /// <summary>The test in the words the file writes, equals or contains.</summary>
+        internal string TestWord
+        {
+            get { return Test == ConditionTest.Contains ? SetBuildPlan.ContainsTest : SetBuildPlan.EqualsTest; }
+        }
+
+        /// <summary>
         /// Whether this condition STARTS a new group, F78. The first group of a set is
         /// implicit and carries no flag, so this is false on the first condition of every
         /// set and true on the first condition of every group after it.

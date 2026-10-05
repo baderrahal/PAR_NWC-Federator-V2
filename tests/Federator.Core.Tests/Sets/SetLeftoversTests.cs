@@ -139,6 +139,36 @@ namespace Federator.Core.Tests.Sets
             Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Refuse));
         }
 
+        /// <summary>
+        /// Two sets differing only by a flag that is part of the question are not twins, FR-015.
+        /// One ORs two groups and the other ANDs the same four conditions, which nothing answers,
+        /// and a condition against its negation asks the opposite. Pairing them would rename a set
+        /// onto a name asking another question. The keys are read the way the add-in reads them.
+        /// </summary>
+        [Test]
+        public void TwoSetsDifferingOnlyByTheGroupOrTheNegationBitAreNotTwins()
+        {
+            const string Element = "LcRevitData_Element";
+            const string Category = "LcRevitPropertyElementCategory";
+
+            foreach (int bit in new[] { PlannedCondition.StartGroupFlag, PlannedCondition.NegateFlag })
+            {
+                string first = new ReadCondition(Element, Category, "equals", "Ducts").Key();
+                string plain = new ReadCondition(Element, Category, "equals", "Duct Fittings").Key();
+                string flagged = new ReadCondition(Element, Category, "equals", "Duct Fittings", bit).Key();
+
+                IList<LeftoverSet> leftovers = SetLeftovers.For(
+                    new List<DocumentSet>
+                    {
+                        Set("BLD-Broken", 60, first, plain),
+                        Set("BLD-Corrected", 0, first, flagged)
+                    },
+                    new List<string> { "BLD-Corrected" });
+
+                Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Refuse), "bit " + bit);
+            }
+        }
+
         /// <summary>A set asking nothing at all pairs with nothing, or every unreadable set would pair.</summary>
         [Test]
         public void ASetAskingNothingNeverPairs()

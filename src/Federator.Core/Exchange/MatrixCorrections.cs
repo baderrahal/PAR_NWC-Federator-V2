@@ -1831,8 +1831,12 @@ namespace Federator.Core.Exchange
             return string.IsNullOrEmpty(why) ? note : why + ". " + note;
         }
 
-        /// <summary>NegateCondition in Navisworks' SearchConditionOptions, which the file's flags attribute is, F78 and 5g.</summary>
-        public const int NegateCondition = 32;
+        /// <summary>
+        /// NegateCondition in Navisworks' SearchConditionOptions, which the file's flags attribute
+        /// is, F78 and 5g. The plan's own constant, as StartGroup is, so the corrections and the
+        /// key a set is compared by read one bit, FR-015.
+        /// </summary>
+        public const int NegateCondition = PlannedCondition.NegateFlag;
 
         /// <summary>How a set's conditions open and close, and one condition, read by SetConditionsText as well.</summary>
         internal const string ConditionsOpen = "<conditions>";

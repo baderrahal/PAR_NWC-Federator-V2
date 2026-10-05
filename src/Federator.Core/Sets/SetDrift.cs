@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Federator.Core.Sets
 {
@@ -9,22 +10,34 @@ namespace Federator.Core.Sets
     /// </summary>
     public sealed class ReadCondition
     {
-        public ReadCondition(string categoryInternalName, string propertyInternalName, string test, string value)
+        public ReadCondition(
+            string categoryInternalName, string propertyInternalName, string test, string value, int flags = 0)
         {
             CategoryInternalName = categoryInternalName ?? string.Empty;
             PropertyInternalName = propertyInternalName ?? string.Empty;
             Test = test ?? string.Empty;
             Value = value ?? string.Empty;
+            Flags = flags;
         }
 
         public string CategoryInternalName { get; private set; }
 
         public string PropertyInternalName { get; private set; }
 
-        /// <summary>"equals" or "contains", the two the client's files use, in the words SetBuildPlan writes.</summary>
+        /// <summary>
+        /// "equals" or "contains", the two the client's files use, in the words SetBuildPlan
+        /// writes, or the comparison's own name for any other, FR-015, so it never reads as one
+        /// of the two.
+        /// </summary>
         public string Test { get; private set; }
 
         public string Value { get; private set; }
+
+        /// <summary>
+        /// The condition's options as the set in the document carries them, read as a number.
+        /// Only the bits `PlannedCondition.QuestionFlagsOf` names are part of what it asks, FR-015.
+        /// </summary>
+        public int Flags { get; private set; }
 
         /// <summary>What this condition asks, written the way SetBuildPlan.Describe writes one, so the two read as one sentence.</summary>
         public string Describe()
@@ -43,7 +56,22 @@ namespace Federator.Core.Sets
         /// </summary>
         public string Key()
         {
-            return CategoryInternalName + "|" + PropertyInternalName + "|" + Test + "|" + Value;
+            return KeyOf(CategoryInternalName, PropertyInternalName, Test, Flags, Value);
+        }
+
+        /// <summary>
+        /// THE ONE SHAPE of a condition's key, for a condition read off the document and for one
+        /// the picked file plans, `PlannedCondition.Key`, FR-015. It carries the flag bits that
+        /// are part of the question and no other, so a negation or the start of an Or group is
+        /// a different question, and the Ignore bits are not.
+        /// </summary>
+        internal static string KeyOf(string category, string property, string test, int flags, string value)
+        {
+            return (category ?? string.Empty)
+                + "|" + (property ?? string.Empty)
+                + "|" + (test ?? string.Empty)
+                + "|" + PlannedCondition.QuestionFlagsOf(flags).ToString(CultureInfo.InvariantCulture)
+                + "|" + (value ?? string.Empty);
         }
     }
 
@@ -60,13 +88,15 @@ namespace Federator.Core.Sets
     /// conditions across his ten groups ask `ME-DUCTWORK`, `ME-PIPING`, `ME-EQUIPMENT` or
     /// `PL-Domestic Water` where the corrected file asks the spelling the models carry.
     ///
-    /// WHAT IS COMPARED IS THE QUESTION AND NOT THE FLAGS. A condition also carries the
-    /// Ignore bits that say whether a display name has to match, and 5w found 1A02MM's 61
-    /// sets carrying none of them where every other group's carry both, because that
-    /// file's sets are an original import and the rest are this tool's own. Rebuilding on
-    /// a flag difference would replace 61 sets in one group over something not shown to
-    /// break anything, since those sets do find items. So the flags are REPORTED and
-    /// never acted on, and the question is what decides.
+    /// WHAT IS COMPARED IS THE QUESTION, AND TWO FLAG BITS ARE PART OF IT, FR-015. A
+    /// condition also carries the Ignore bits that say whether a display name has to match,
+    /// and 5w found 1A02MM's 61 sets carrying none of them where every other group's carry
+    /// both, because that file's sets are an original import and the rest are this tool's
+    /// own. Rebuilding on those would replace 61 sets in one group over something not shown
+    /// to break anything, since those sets do find items, so they are left out. The
+    /// negation, 32, and the start of an Or group, 64, are compared, because a set without
+    /// them asks another question, `PlannedCondition.QuestionFlagsOf`. The key left every
+    /// bit out until FR-015, so a set that had lost its Or or its negation read as the same.
     /// </summary>
     public sealed class SetDrift
     {
@@ -96,13 +126,28 @@ namespace Federator.Core.Sets
         /// Compares what the set carries against what the file asks. The conditions are
         /// compared IN ORDER, because a set asking A and then B is not the same set as
         /// one asking B and then A once a StartGroup bit is involved, and this tool does
-        /// not pretend to know which orderings are equivalent.
+        /// not pretend to know which orderings are equivalent. The file's side is keyed off
+        /// the planned set here in Core, FR-015, and never a second time in the add-in.
         /// </summary>
-        public static SetDrift Compare(string path, IList<ReadCondition> asked, IList<string> wantedKeys, IList<string> wantedDescribed)
+        public static SetDrift Compare(IList<ReadCondition> asked, PlannedSet planned)
         {
-            SetDrift drift = new SetDrift(path, asked == null, asked, wantedDescribed);
+            if (planned == null)
+            {
+                throw new ArgumentNullException("planned");
+            }
 
-            if (asked == null || wantedKeys == null)
+            List<string> wantedKeys = new List<string>();
+            List<string> wantedDescribed = new List<string>();
+
+            foreach (PlannedCondition condition in planned.Conditions)
+            {
+                wantedKeys.Add(condition.Key());
+                wantedDescribed.Add(condition.Describe());
+            }
+
+            SetDrift drift = new SetDrift(planned.Path, asked == null, asked, wantedDescribed);
+
+            if (asked == null)
             {
                 return drift;
             }

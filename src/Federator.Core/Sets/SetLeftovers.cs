@@ -109,7 +109,9 @@ namespace Federator.Core.Sets
     ///
     /// THE PAIRING IS MEASURED AND NOT GUESSED. The two sets ask the IDENTICAL question,
     /// same category, same property, same values, same flags, read off his own files on
-    /// 2026-09-20. That is what makes them a pair rather than two sets with similar names,
+    /// 2026-09-20. The flags compared are the two that are part of the question, the
+    /// negation and the start of an Or group, `PlannedCondition.QuestionFlagsOf`, which the
+    /// keys carry since FR-015 and did not before. That is what makes them a pair rather than two sets with similar names,
     /// and it is also the cleanest evidence there is that F28 kept the correction out of
     /// the document: the corrected set was built from the corrected file and never used.
     ///
