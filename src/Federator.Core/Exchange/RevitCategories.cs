@@ -70,21 +70,6 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// Whether that value is a category this project's models carry. Compared Ordinal
-        /// and never trimmed, the same as every other name read out of the exchange file.
-        /// Always TRUE while the list is unmeasured, so nothing is reported on a guess.
-        /// </summary>
-        public static bool Holds(string category)
-        {
-            if (!Measured || string.IsNullOrEmpty(category))
-            {
-                return true;
-            }
-
-            return Load().Contains(category);
-        }
-
-        /// <summary>
         /// Whether the list could be READ out of the DLL at all, A11. A resource that is
         /// missing or will not read is a different fact from a list nobody has filled in
         /// yet, and the two used to give the same empty list and the same words, so a

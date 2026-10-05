@@ -122,7 +122,7 @@ namespace Federator.Core.Sets
 
             for (int i = 0; i < asked.Count; i++)
             {
-                IList<string> known = KnownFor(asked[i].PropertyInternalName, worksets);
+                IList<string> known = Judgeable(asked[i]) ? KnownFor(asked[i].PropertyInternalName, worksets) : null;
 
                 if (known == null || known.Count == 0)
                 {
@@ -131,7 +131,7 @@ namespace Federator.Core.Sets
 
                 judgedAny = true;
 
-                if (Holds(known, asked[i].Value))
+                if (Carries(known, asked[i].Test, asked[i].Value))
                 {
                     continue;
                 }
@@ -229,11 +229,47 @@ namespace Federator.Core.Sets
             return count;
         }
 
+        /// <summary>
+        /// Whether this reader can judge that condition at all, FR-010: one asking equals or
+        /// contains, the two the file writes, and NOT NEGATED. A negation asks for everything
+        /// but its value, so a value no model carries leaves out nothing and stops nothing, 5g,
+        /// the rule the HEALTH block reads, FR-023. Another comparison is never read as equals.
+        /// </summary>
+        private static bool Judgeable(ReadCondition condition)
+        {
+            return !PlannedCondition.NegatedWith(condition.Flags)
+                && (string.Equals(condition.Test, SetBuildPlan.EqualsTest, StringComparison.Ordinal)
+                    || string.Equals(condition.Test, SetBuildPlan.ContainsTest, StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Whether those measured values carry what a condition asks, THE ONE RULE for a value
+        /// and its test, read by this judge and by the HEALTH block, FR-010. Equals is the whole
+        /// value, Ordinal. Contains is a stem, so Cable Tray is carried by Cable Trays and Cable
+        /// Tray Fittings and is asked for by part of a name. It was read as equals here.
+        /// </summary>
+        internal static bool Carries(IList<string> known, string test, string value)
+        {
+            bool contains = string.Equals(test, SetBuildPlan.ContainsTest, StringComparison.OrdinalIgnoreCase);
+
+            for (int i = 0; i < known.Count; i++)
+            {
+                if (contains
+                    ? known[i].IndexOf(value, StringComparison.Ordinal) >= 0
+                    : string.Equals(known[i], value, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private static string FirstJudgeable(IList<ReadCondition> asked, IList<string> worksets)
         {
             for (int i = 0; i < asked.Count; i++)
             {
-                IList<string> known = KnownFor(asked[i].PropertyInternalName, worksets);
+                IList<string> known = Judgeable(asked[i]) ? KnownFor(asked[i].PropertyInternalName, worksets) : null;
 
                 if (known != null && known.Count > 0)
                 {
@@ -262,19 +298,6 @@ namespace Federator.Core.Sets
             }
 
             return null;
-        }
-
-        private static bool Holds(IList<string> known, string value)
-        {
-            for (int i = 0; i < known.Count; i++)
-            {
-                if (string.Equals(known[i], value, StringComparison.Ordinal))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         /// <summary>The nearest value the models carry, or empty where nothing is close.</summary>

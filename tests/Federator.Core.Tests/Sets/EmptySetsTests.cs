@@ -173,6 +173,58 @@ namespace Federator.Core.Tests.Sets
         }
 
         /// <summary>
+        /// A CONTAINS CONDITION IS A STEM AND NOT A WHOLE VALUE, FR-010. The corrected matrix asks
+        /// contains Cable Tray, Conduit and Devices, and the models carry Cable Trays, Conduits and
+        /// five Devices categories. Compared as equals, each was called a value NO MODEL IN THIS
+        /// PROJECT CARRIES, where the HEALTH block, by the same list, says they are carried.
+        /// </summary>
+        [Test]
+        public void AContainsConditionIsJudgedByThePartOfANameItAsksFor()
+        {
+            foreach (string stem in new[] { "Cable Tray", "Conduit", "Devices" })
+            {
+                EmptySet why = Why("a/BLD-EL-" + stem, new List<ReadCondition>
+                {
+                    new ReadCondition("LcRevitData_Element", EmptySets.CategoryProperty, "contains", stem)
+                });
+
+                Assert.That(why.Reason, Is.EqualTo(EmptyReason.TheValueIsThereAnyway), stem);
+            }
+
+            Assert.That(
+                Why("a", new List<ReadCondition> { new ReadCondition("LcRevitData_Element", EmptySets.CategoryProperty, "contains", "Nurse Call") }).Reason,
+                Is.EqualTo(EmptyReason.NoModelCarriesTheValue),
+                "a stem no measured category holds is still carried by no model");
+        }
+
+        /// <summary>
+        /// A NEGATED CONDITION ASKS FOR EVERYTHING BUT ITS VALUE, FR-010 with FR-023's rule. A
+        /// negation of a category no model carries leaves out nothing and stops nothing, 5g, so
+        /// BLD-EL-Devices is never judged on the Telephone Devices it leaves out.
+        /// </summary>
+        [Test]
+        public void ANegatedConditionIsNotJudgedAsAValueTheSetAsksFor()
+        {
+            EmptySet why = Why("a/BLD-EL-Devices", new List<ReadCondition>
+            {
+                new ReadCondition("LcRevitData_Element", EmptySets.CategoryProperty, "contains", "Devices"),
+                new ReadCondition("LcRevitData_Element", EmptySets.CategoryProperty, "equals", "Telephone Devices", PlannedCondition.NegateFlag)
+            });
+
+            Assert.That(why.Reason, Is.EqualTo(EmptyReason.TheValueIsThereAnyway));
+            Assert.That(why.Asked, Is.EqualTo("Devices"));
+        }
+
+        /// <summary>A comparison the file never writes is one this reader cannot judge, never read as equals.</summary>
+        [Test]
+        public void AnotherComparisonIsNotJudged()
+        {
+            Assert.That(
+                Why("a", new List<ReadCondition> { new ReadCondition("LcRevitData_Element", EmptySets.CategoryProperty, "NotEqual", "Nurse Call Devices") }).Reason,
+                Is.EqualTo(EmptyReason.CannotTell));
+        }
+
+        /// <summary>
         /// A category value the models really carry, off the measured 374, so the bucket
         /// rule is proved against the real list and not only against worksets.
         /// </summary>

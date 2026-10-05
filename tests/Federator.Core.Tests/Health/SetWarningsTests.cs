@@ -272,14 +272,19 @@ namespace Federator.Core.Tests
         /// <summary>
         /// A measured list holds what it names and nothing else, Ordinal, so a category
         /// spelt with a different case or an extra space is one the models do not carry.
+        /// Read through EmptySets.Carries, the one rule the HEALTH block and the EMPTY SETS
+        /// judge read since FR-010, where RevitCategories.Holds, which nothing in src called
+        /// any more, was read. Every assert is kept.
         /// </summary>
         [Test]
         public void AMeasuredListHoldsWhatItNamesAndNothingElse()
         {
-            Assert.That(RevitCategories.Holds("Walls"), Is.True);
-            Assert.That(RevitCategories.Holds("walls"), Is.False);
-            Assert.That(RevitCategories.Holds("Walls "), Is.False);
-            Assert.That(RevitCategories.Holds("anything at all"), Is.False);
+            IList<string> measured = RevitCategories.All();
+
+            Assert.That(EmptySets.Carries(measured, "equals", "Walls"), Is.True);
+            Assert.That(EmptySets.Carries(measured, "equals", "walls"), Is.False);
+            Assert.That(EmptySets.Carries(measured, "equals", "Walls "), Is.False);
+            Assert.That(EmptySets.Carries(measured, "equals", "anything at all"), Is.False);
             Assert.That(RevitCategories.All().Count, Is.EqualTo(374));
         }
 
