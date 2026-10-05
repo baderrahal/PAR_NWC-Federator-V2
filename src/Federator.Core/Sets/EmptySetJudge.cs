@@ -21,11 +21,17 @@ namespace Federator.Core.Sets
     /// </summary>
     public sealed class EmptySetJudge
     {
-        internal EmptySetJudge(IList<string> worksets, string runProject, IList<string> groupWorksets)
+        /// <summary>Why the project is not known where no model of the group was read at all.</summary>
+        private const string ModelsNotRead = "this group's models were not read, so which project they are of is UNKNOWN";
+
+        private readonly string whyNoProject;
+
+        internal EmptySetJudge(IList<string> worksets, string runProject, IList<string> groupWorksets, string whyNoProject = null)
         {
             Worksets = new ReadOnlyCollection<string>(new List<string>(worksets ?? new List<string>()));
             RunProject = runProject;
             GroupWorksets = new ReadOnlyCollection<string>(new List<string>(groupWorksets ?? new List<string>()));
+            this.whyNoProject = whyNoProject;
         }
 
         /// <summary>
@@ -61,8 +67,14 @@ namespace Federator.Core.Sets
                 throw new ArgumentNullException("plan");
             }
 
-            // The group's worksets by the EXPORT CHECK's own rule, one list for both blocks.
-            return new EmptySetJudge(plan.Worksets, ProjectOf(models, names), ExportCheck.WorksetsOf(models));
+            // A group whose models were not read, as on the Build sets button, is said as not read
+            // and never as names that would not read, which reports a read that never ran. The
+            // group's worksets by the EXPORT CHECK's own rule, one list for both blocks.
+            return new EmptySetJudge(
+                plan.Worksets,
+                ProjectOf(models, names),
+                ExportCheck.WorksetsOf(models),
+                models == null || models.Count == 0 ? ModelsNotRead : null);
         }
 
         /// <summary>
@@ -160,8 +172,8 @@ namespace Federator.Core.Sets
 
             if (RunProject == null)
             {
-                return "the lists inside this tool were measured on project " + measuredOn
-                    + "'s models and which project this group's models are of could not be read off their names";
+                return "the lists inside this tool were measured on project " + measuredOn + "'s models and "
+                    + (whyNoProject ?? "which project this group's models are of could not be read off their names");
             }
 
             if (!string.Equals(RunProject, measuredOn, StringComparison.Ordinal))

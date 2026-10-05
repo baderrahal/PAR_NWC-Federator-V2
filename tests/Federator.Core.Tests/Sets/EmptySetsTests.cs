@@ -359,6 +359,29 @@ namespace Federator.Core.Tests.Sets
         }
 
         /// <summary>
+        /// A GROUP WHOSE MODELS WERE NOT READ IS SAID AS NOT READ, and never as names that would not
+        /// read, the reviewer's finding on attempt 1. On the Build sets button no model is read,
+        /// and the line said which project the models are of could not be read off their names,
+        /// which reports a read that never ran.
+        /// </summary>
+        [Test]
+        public void AGroupWhoseModelsWereNotReadIsSaidAsNotReadAndNeverAsNamesThatWouldNotRead()
+        {
+            foreach (List<ModelExport> none in new[] { null, new List<ModelExport>() })
+            {
+                EmptySet why = EmptySets.Why(
+                    "a/BLD-X",
+                    new List<ReadCondition> { Category("Nurse Call Devices") },
+                    EmptySetJudge.For(Plan(), none, new ContainerNameSettings()));
+
+                Assert.That(why.Reason, Is.EqualTo(EmptyReason.CannotTell));
+                Assert.That(why.Line(), Does.Not.Contain("could not be read off their names"));
+                Assert.That(why.Line(), Does.EndWith(
+                    "'s models and this group's models were not read, so which project they are of is UNKNOWN"));
+            }
+        }
+
+        /// <summary>
         /// The project of a group is the one the project part of every model's name reads, with
         /// the naming settings the scan reads, and UNKNOWN where one would not read or two differ,
         /// never a guess, FR-011.
