@@ -258,8 +258,16 @@ well as to pass.
   timed like every other step and it is the one step allowed to move the viewpoint count,
   Federator.Core.Diagnostics.CensusRule. The VIEWS block names five and counts the rest,
   because a group puts hundreds in. A group whose viewpoints failed is not DONE.
-  SavedViewpoints.CanBuild is true since the viewpoints round on 2026-09-19 and it is the
-  one switch
+  THE SWITCH IS THE BOX, F136. Whether a group asks for its viewpoints is Core's
+  `ViewpointRequest.WhyNone`, the box on the Clash step, the clash skipped and no report,
+  and BuildViewpoints calls it in place of the two checks it held before. Unticked, no
+  viewpoint is made, ViewpointsRequested is false so the group cannot fail at them, and
+  one VIEWS line names the box. The box, x:Name MakeViewpoints, is set off
+  `ReportOptions.MakeViewpoints` in the constructor, which runs at every open because the
+  plugin makes the window new each time, the way the shared coordinates box is set. Its
+  state is named in the RUN SETTINGS lines and at the start of the open file run.
+  SavedViewpoints.CanBuild is true since the viewpoints round on 2026-09-19 and nothing
+  in src reads it, read on 2026-10-05
 - SINCE F85 A VIEWPOINT IS PER CLASH, which REVERSES what this rule said before it. It
   said no clash is ever saved as a viewpoint and that a discipline viewpoint is not a
   clash viewpoint. The first real run answered the question the other way: the thing a

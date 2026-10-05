@@ -1203,6 +1203,20 @@ namespace Federator.Addin.Ui
                 SkipClashOffCoordinatesHelp.Text = AlignmentCheck.HelpLine(new ReportOptions().FarModelMillimetres);
             }
 
+            // F136. The same shape, ticked or not off the setting the run reads, and set
+            // here because the window is made new at every open, so a box unticked for
+            // one run is ticked again the next time the window opens.
+            if (MakeViewpoints != null)
+            {
+                MakeViewpoints.Content = ViewpointRequest.TickLabel;
+                MakeViewpoints.IsChecked = new ReportOptions().MakeViewpoints;
+            }
+
+            if (MakeViewpointsHelp != null)
+            {
+                MakeViewpointsHelp.Text = ViewpointRequest.HelpLine;
+            }
+
             if (ByDesignHelp != null)
             {
                 ByDesignHelp.Text = "Read only with the box below on. Columns "
@@ -1524,6 +1538,7 @@ namespace Federator.Addin.Ui
             options.MarkByDesign = MarkByDesign.IsChecked == true;
             options.RebuildDriftedSets = RebuildDriftedSets.IsChecked == true;
             options.SkipClashOffCoordinates = SkipClashOffCoordinates.IsChecked == true;
+            options.MakeViewpoints = MakeViewpoints.IsChecked == true;
             options.ByDesignPath = Trimmed(ByDesignBox.Text);
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
@@ -1811,6 +1826,7 @@ namespace Federator.Addin.Ui
             log.Line("by design        : " + (MarkByDesign.IsChecked == true
                 ? "YES, a clash between two sets the pairs file names becomes Reviewed"
                 : "no, the pairs file is not read"));
+            log.Line(ViewpointRequest.SettingsLine(MakeViewpoints.IsChecked == true));
             log.Line("NWD naming       : "
                 + (DateTheNwd.IsChecked == true
                     ? "dated, so every week is kept"
@@ -2286,6 +2302,10 @@ namespace Federator.Addin.Ui
                 }
 
                 ReportOptions options = ReportsWanted();
+
+                // F136. The open file run has no RUN SETTINGS block, and the box holds for
+                // it too, so its state is said here before the group starts.
+                log.Line(ViewpointRequest.SettingsLine(options.MakeViewpoints));
 
                 // No folder is handed in. The engine reads the report folder off the open
                 // file through OpenDocumentJob.ReportFolder, the same rule ShowOpenDocument

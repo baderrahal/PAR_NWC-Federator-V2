@@ -1046,6 +1046,16 @@ and 6 does not read as broken.
   a leaf named after the clash alone would collide and the already there check and the
   read back would both stop meaning anything. How many viewpoints one test may write is a
   SETTING, off by default, the same shape and the same reason the images cap has
+- WHETHER A GROUP ASKS FOR ITS VIEWPOINTS IS ONE RULE, `ViewpointRequest.WhyNone`, F136,
+  Bader's word of 2026-10-05 that every test run has viewpoints switched off until F114 is
+  merged. Three things stop them, named in this order: the box on the Clash step unticked,
+  the clash skipped because a model is not on the same shared coordinates, and no report
+  built. The box comes first because it is the run's own choice and holds for every group,
+  so every group of an unticked run says the same line. A group that asks for none cannot
+  fail at them, F52's rule for a step not asked for. The box is a SETTING,
+  `ReportOptions.MakeViewpoints`, defaulting to `ViewpointRequest.DefaultMakeViewpoints`,
+  ON, Q131 default A. Its label, its grey line and the RUN SETTINGS line,
+  `ViewpointRequest.SettingsLine`, are read off Core and never typed into the window
 - Pipes, ducts, cable trays and their fittings OVER 150 mm go in the viewpoints and
   smaller ones do not, and the large ones of Mechanical and Electrical sit in a sub group
   of their own. 150 is a setting in millimetres, named once in

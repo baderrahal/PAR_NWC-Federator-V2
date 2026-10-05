@@ -4,7 +4,7 @@
 
 One action per step. Do them in order. One build, one install and one Navisworks session cover every proof: the window checks first, then the C06 rebuild run, then one building twice, then the rest.
 
-F34 comes first, because it is the largest add-in change of the round, the window, the XAML, the engine and the job all changed, and it is proved by opening the window and looking, before any run. If the window does not open or the Clash step is wrong, nothing after it can be read, so it is checked before a single group runs. F33 is checked in the same look, because it is one combo on the same window. F27 is next, because it costs one Scan and no run at all: its block is read off the 1B06PH run further down. Then the C06 run, which proves F24, F29, F30 and F33 in one press, then F28 and F31 together, because both are one building run twice. F32 and F35 need a different file open or a folder made for them, so they come after the ordinary runs.
+F136 comes first of all, steps 400 to 415 right after the install, because since your word of 2026-10-05 every test run has viewpoints switched off and that box is what switches them off. Then F34, because it is the largest add-in change of the round, the window, the XAML, the engine and the job all changed, and it is proved by opening the window and looking, before any run. If the window does not open or the Clash step is wrong, nothing after it can be read, so it is checked before a single group runs. F33 is checked in the same look, because it is one combo on the same window. F27 is next, because it costs one Scan and no run at all: its block is read off the 1B06PH run further down. Then the C06 run, which proves F24, F29, F30 and F33 in one press, then F28 and F31 together, because both are one building run twice. F32 and F35 need a different file open or a folder made for them, so they come after the ordinary runs.
 
 ## THIS FILE NOW COVERS TWO FOLDERS, AND THE OLD ONE NEVER EXISTED
 
@@ -117,6 +117,34 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 ```
 
 23. Read the last lines of the install. Look for: a line saying all the expected files are present and a line saying every reference is satisfied. If it stops with Install incomplete, copy the whole output into the chat
+
+## Proof F136 FIRST, the viewpoints box, added 2026-10-05
+
+THESE STEPS COME BEFORE EVERY OTHER PROOF IN THIS FILE, right after the install. Your word
+of 2026-10-05 is that every test run has viewpoints switched off until F114, the new
+viewpoints, is merged, and this box is how they are switched off. If it does not stop
+them, every run after it pays for the old viewpoints again, which is what stopped the C02
+weekly run. They are numbered 400 to 415 because the numbers below were already taken.
+The fixture is the one step 393 names, measured there on 2026-09-21. Whether it is still
+on your machine is UNKNOWN. If it is not, use one small group of C02 instead and read the
+same lines.
+
+400. Close Navisworks if it is open
+401. Open Navisworks Manage 2025 with nothing open
+402. Open the add-in from the ribbon
+403. Look for: the title bar carries the commit and the time of the build you made at step 8
+404. Go to the `4. Clash` step
+405. Look for: a tick box reading `Make a saved viewpoint for every clash`, TICKED, just under `Skip clash when models sit off shared coordinates`, with the grey line `Unticked, no viewpoint is made. The clash, workbook and NWD still run`
+406. Untick it
+407. Close the add-in window
+408. Open the add-in from the ribbon again
+409. Look for: the box is TICKED again. The window is made new at every open and sets the box off the setting each time, so an untick lasts one window and no longer
+410. Fill the four folders for the fixture, on `1. Source` the folder `<temp>\round-close\fixture\NWC`, and on `3. Outputs` the folders `<temp>\round-close\fixture\NWF`, `<temp>\round-close\fixture\NWD` and `<temp>\round-close\fixture\Report`, then press Scan
+411. On `4. Clash` pick the clash XML, 1104-PAR_CLASH_AllInOne, and untick `Make a saved viewpoint for every clash`
+412. Press Run and answer the dialog with OK
+413. Look for, in the lines under RUN SETTINGS before the GROUPS block: `viewpoints       : no, the box was unticked, so no group makes a viewpoint`
+414. Look for, in the group: `VIEWS    the box Make a saved viewpoint for every clash was unticked, so no viewpoint is made`, and NO block headed `VIEWS BUILT`. The clash, the workbook and the NWD still run, and no viewpoint failure is named against the group, because a step not asked for cannot fail it
+415. Send the log file named on the `log file` line of the SESSION block
 
 ## Proof F34, the window, and F33, the units combo
 
@@ -471,7 +499,7 @@ viewpoint and the writer has been building them since the viewpoints round on 20
 245. Look for: the number in the folder name is the threshold in use. If you change the threshold and it still reads `Over 150mm`, that is a fault and the folder and the rule have drifted apart
 246. DONE since the viewpoints round on 2026-09-19. It said to wait for the writing half of F52. Run one Mechanical building
 247. GONE, and this is worth knowing rather than just deleting. It said to look for a `SIZE` block per group with three numbers. `Federator.Core.Views.SizeTally` still writes that block and NOTHING IN SRC CALLS IT, so no SIZE block is written on any run. What replaced it is one line inside the `VIEWS` block: `size could not be read : N, every one of them is in its pair folder and none was dropped`. The dead class is raised under the CLAUDE.md rule about a public member nothing in src calls
-248. Look for, and this was rewritten AGAIN by the worksets round because the number changed: `size could not be read : N`. It is EXPECTED TO BE ZERO now, on every group. It used to be large, 59 and 36 and 8 on the run before, because a fitting was thought to carry no size property. 5s found that every one of them did, written as words, `53 mmø` for a conduit and `600 mmx100 mm` per connector for a cable tray fitting, and `ItemSizes` was dropping every string. `Federator.Core.Views.SizeText` reads them now. A number ABOVE zero here is a size shape `SizeText` has not been taught and is worth sending.
+248. Look for, and this was rewritten AGAIN by the worksets round because the number changed: `size could not be read : N`. It is EXPECTED TO BE ZERO now, on every group. It used to be large, 59 and 36 and 8 on the run before, because a fitting was thought to carry no size property. 5s found that every one of them did, written as words, `53 mmï¿½` for a conduit and `600 mmx100 mm` per connector for a cable tray fitting, and `ItemSizes` was dropping every string. `Federator.Core.Views.SizeText` reads them now. A number ABOVE zero here is a size shape `SizeText` has not been taught and is worth sending.
 249. GONE with the number it read. It said to read the names under that line and judge whether they were all fittings. No names are written under it, `ClashViewpointPlan.Lines` writes the count alone, and the count is zero on every group since 5s. Where one ever comes back non zero, the `.tsv` rows are where the names are.
 250. Open the NWF and press any viewpoint under a folder named `Over 150mm`, which sits under a PAIR folder such as `A/ME vs ST/Over 150mm`, and never a folder called `ME over 150mm`, which was the shape before F85 and which step 244 above already corrects.
 251. Look for: large pipes, ducts and trays showing, small ones hidden, and the fittings still there. A fitting missing means the include on unknown rule is not working and that `size could not be read` line is the evidence
