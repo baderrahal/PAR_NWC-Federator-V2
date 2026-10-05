@@ -164,9 +164,10 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// Reads the list once, out of the DLL, through Read. A resource that cannot be read is
-        /// an EMPTY list and never a throw, and an empty list corrects nothing, which is the
-        /// safe answer, and ResourceFound says it was not read, FR-012.
+        /// Reads the list once, out of the DLL, through Read, which opens it inside its own try. A
+        /// resource that will not open or will not read is an EMPTY list and never a throw, and an
+        /// empty list corrects nothing, which is the safe answer, and ResourceFound says it was
+        /// not read, FR-012. The opening sat outside any try, so a throw from it left every caller.
         /// </summary>
         private static List<string> Load()
         {
@@ -180,10 +181,8 @@ namespace Federator.Core.Exchange
                 List<string> names;
                 List<string[]> pairs;
 
-                using (Stream stream = typeof(RevitWorksets).Assembly.GetManifestResourceStream(ResourceName))
-                {
-                    resourceFound = Read(stream, out names, out pairs, out project);
-                }
+                resourceFound = Read(
+                    () => typeof(RevitWorksets).Assembly.GetManifestResourceStream(ResourceName), out names, out pairs, out project);
 
                 decided = pairs;
                 known = names;
@@ -192,49 +191,52 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// The list read from that stream, the names and the decided pairs, and whether it was
-        /// read, FR-012. A null stream is a list not in the DLL and a stream that throws is a list
-        /// not read: each answers false with both lists empty, and never throws, because a
-        /// health check is information and information never stops a run. The one reader of
-        /// the list, so the DLL's copy and a test's are read by the same lines.
+        /// The list read from the stream that opens, the names and the decided pairs, and whether
+        /// it was read, FR-012. A null stream is a list not in the DLL, and an opening or a stream
+        /// that throws is a list not read: each answers false with both lists empty, and never
+        /// throws, because a health check is information and information never stops a run. The
+        /// one reader of the list, so the DLL's copy and a test's are read by the same lines.
         /// </summary>
-        internal static bool Read(Stream stream, out List<string> names, out List<string[]> pairs, out string measuredOn)
+        internal static bool Read(Func<Stream> open, out List<string> names, out List<string[]> pairs, out string measuredOn)
         {
             names = new List<string>();
             pairs = new List<string[]>();
             measuredOn = null;
 
-            if (stream == null)
-            {
-                return false;
-            }
-
             try
             {
-                using (StreamReader reader = new StreamReader(stream))
+                using (Stream stream = open())
                 {
-                    string line;
-
-                    while ((line = reader.ReadLine()) != null)
+                    if (stream == null)
                     {
-                        if (line.Length == 0 || line[0] == '#')
-                        {
-                            continue;
-                        }
+                        return false;
+                    }
 
-                        if (line.IndexOf(DecidedMarker, StringComparison.Ordinal) == 0)
-                        {
-                            AddDecided(line, pairs);
-                            continue;
-                        }
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        string line;
 
-                        if (RevitCategories.ProjectIn(line) != null)
+                        while ((line = reader.ReadLine()) != null)
                         {
-                            measuredOn = RevitCategories.ProjectIn(line);
-                            continue;
-                        }
+                            if (line.Length == 0 || line[0] == '#')
+                            {
+                                continue;
+                            }
 
-                        names.Add(line);
+                            if (line.IndexOf(DecidedMarker, StringComparison.Ordinal) == 0)
+                            {
+                                AddDecided(line, pairs);
+                                continue;
+                            }
+
+                            if (RevitCategories.ProjectIn(line) != null)
+                            {
+                                measuredOn = RevitCategories.ProjectIn(line);
+                                continue;
+                            }
+
+                            names.Add(line);
+                        }
                     }
                 }
 

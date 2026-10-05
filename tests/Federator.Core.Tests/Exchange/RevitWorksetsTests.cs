@@ -175,7 +175,29 @@ namespace Federator.Core.Tests
             List<string[]> pairs;
             string project;
 
-            Assert.That(RevitWorksets.Read(null, out names, out pairs, out project), Is.False);
+            Assert.That(RevitWorksets.Read(() => null, out names, out pairs, out project), Is.False);
+            Assert.That(names, Is.Empty);
+            Assert.That(pairs, Is.Empty);
+        }
+
+        /// <summary>
+        /// A LIST THAT WILL NOT EVEN OPEN IS A LIST NOT READ AND NEVER A THROW, the reviewer's and
+        /// the breaker's finding on attempt 1. The resource was opened outside the reader's try,
+        /// so a FileLoadException or a BadImageFormatException from that call would leave every
+        /// caller, the plan of the sets and the EXPORT CHECK among them, while the comment said
+        /// never a throw. The opening is the reader's own, inside its try.
+        /// </summary>
+        [Test]
+        public void AListThatWillNotOpenIsAListNotReadAndNeverAThrow()
+        {
+            List<string> names = null;
+            List<string[]> pairs = null;
+            string project = null;
+            bool read = true;
+
+            Assert.DoesNotThrow(() => read = RevitWorksets.Read(
+                () => { throw new FileLoadException("the resource will not load"); }, out names, out pairs, out project));
+            Assert.That(read, Is.False);
             Assert.That(names, Is.Empty);
             Assert.That(pairs, Is.Empty);
         }
@@ -190,7 +212,7 @@ namespace Federator.Core.Tests
 
             using (ThrowingStream stream = new ThrowingStream())
             {
-                Assert.That(RevitWorksets.Read(stream, out names, out pairs, out project), Is.False);
+                Assert.That(RevitWorksets.Read(() => stream, out names, out pairs, out project), Is.False);
             }
 
             Assert.That(names, Is.Empty);
@@ -210,7 +232,7 @@ namespace Federator.Core.Tests
 
             using (Stream stream = typeof(RevitWorksets).Assembly.GetManifestResourceStream(RevitWorksets.ResourceName))
             {
-                Assert.That(RevitWorksets.Read(stream, out names, out pairs, out project), Is.True);
+                Assert.That(RevitWorksets.Read(() => stream, out names, out pairs, out project), Is.True);
             }
 
             Assert.That(names, Is.EquivalentTo(RevitWorksets.With(null)));
