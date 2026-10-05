@@ -1,6 +1,94 @@
 # log
 
 Newest entry at the top.
+## 2026-10-05 The loop, turn 5, F127 the coverage of Bader's request 2, FR-176, the Core steps 1 to 3 built and held on its branch
+
+Written by F127's developer as the lead's delegate. Core tests 1865 passed, 0 failed, 0 skipped
+before the first change, at 0c64018, 1904 passed after step 1, at 809e179, 1935 after step 2,
+at 5454357, and 1958 passed, 0 failed, 0 skipped after step 3, at 8601a6e, run by hand and by
+the pre-commit at each commit, the files f127-core-before.txt, f127-step1-after.txt to
+f127-step3-after.txt and f127-precommit-step1.txt to f127-precommit-step3.txt under
+%LOCALAPPDATA%\NwcFederatorLoop\turn5. The solution built with 0 errors and 0 warnings before
+the first change, f127-build-before.txt, and after the last, on the tree 8601a6e commits,
+f127-build-after.txt, and check-locals and check-imports exit 0 over src. This developer
+started no Navisworks, and Get-Process Roamer read the loop's baseline, pid 32136 started at
+21:17:06 on 2026-10-04, before any change, turn5\f127-roamer-before.txt, after the commit of
+step 2, turn5\f127-roamer-mid.txt, and after the last command, turn5\f127-roamer-after.txt.
+
+### What was done
+
+- step 1, 809e179, the design's section 1.2. ClashRunOutcome hands out its created and already
+  there names, the tests that ran and the skips as read only views, keeps a copy of the counts
+  the creation plan decided on and the two side counts the run time check read per test.
+  CoverageRule.For gives every test of the picked file one TestCoverage, its presence and one
+  reason read off the runner's record in the order the code applies it, so a test F77 kept out
+  of a group the coordinates rule skipped keeps its side reason. An empty side is judged by its
+  set's code against the group's codes and the run's, a count of minus one is never a set that
+  found nothing, two tests of one name read UNKNOWN, and every ClashSkipReason maps to a reason,
+  held by a test that enumerates it. On the exchange file with group 100000's counts of set
+  03's C06 run it gives the design's split, 36 run, 969, 561, 255 and 9. 39 tests
+- step 2, 5454357, the design's section 1.3. DocumentTestCount for the add-in to fill.
+  WorkbookTests.Read reads the client's sheet test by test in both shapes, the full block and
+  the one row of Q73, with its doubts. CountCheck.Judge restates F104's checks 1 and 2 exactly,
+  Agree, Failed or Not compared, never Agree on a minus one or a doubted name, the reason in the
+  line where the run knows it. The FAILED line starts COVERAGE FAILED, gives all four numbers
+  and says the group keeps its own result, and a test holds a DONE group beside it to groups
+  failed 0 and Nothing failed in RESULT. 31 tests
+- step 3, 8601a6e, the design's sections 1.1, 1.5 and 1.7. CoverageSettings, each number that
+  shapes the coverage a setting refused where it cannot work. SETS ACROSS THE RUN names every
+  set that found nothing in every group by default, where it named a constant ten and C06 named
+  10 of its 14, and the two LogTrimmingTests that pinned the ten are rewritten to the rule in
+  the same commit, the cap of ten held as a setting, turn5\f127-step3-rewritten-tests.diff.txt.
+  FileFingerprint.Sha256 for the picked XML. 23 tests, 25 with the two rewritten
+- each step test first. Against the code before no step's tests built,
+  turn5\f127-step1-nobuild-before-fail.txt, f127-step1-nobuild-views-before-fail.txt,
+  f127-step2-nobuild-before-fail.txt and f127-step3-nobuild-before-fail.txt. Against a stub of
+  the new members 37 of step 1's 39 tests failed, 30 of step 2's 31 and 23 of step 3's 25,
+  turn5\f127-step1-stub-before-fail.txt to f127-step3-stub-before-fail.txt with the stubs in
+  f127-step1-stub.diff.txt to f127-step3-stub.diff.txt. The ones passing against a stub assert
+  what an empty or unchanged stub also gives
+- each step's rule in .claude\rules\core.md in that step's commit, a section Coverage of the
+  picked tests, F127, and the F82 bullet on the ten, and the order line 41 and the F127 section
+  of steps\01_next.md with this entry in the records commit. No file under src or tests that
+  F116 changes was touched. Nothing in the add-in
+
+### What remains
+
+- step 4 after F116 merges and probes P2 to P5 are read, steps 5 to 7, the COVERAGE block, the
+  Coverage sheet, RESULT, the workbook check's sheet list and the loop's two scripts, then the
+  add-in half after probes P1 to P7, read twice and proved by a run. NOTHING IN SRC CALLS THE
+  NEW MEMBERS YET but CoverageSettings.SetsAtZeroNamedInTheRun, which SETS ACROSS THE RUN reads
+  through the constructor the engine already calls, so the branch stays unmerged until the
+  add-in half. The members waiting for a caller are named in the F127 section of
+  steps\01_next.md
+- the mirrored pairs the design's step 3 names are F132's MirrorRule.Pairs, built on fix-F132
+  at f5db538 before the design's commit 63c52eb. F127 builds no second copy and the block
+  reads F132's once both are on main
+- the width of each column of the Coverage sheet, with the sheet in step 6
+
+### Known bugs
+
+- found outside F127's steps and not changed here: ExportCheck.NamesShown's comment, lines 166
+  and 167 of src\Federator.Core\Health\ExportCheck.cs on main, says ten is the same number SETS
+  ACROSS THE RUN names, which step 3 makes untrue. ExportCheck.cs is a file F116 changes, so its words
+  wait for F116's merge. For the register
+- F127 and F132 both wait for their add-in halves, F132's record says F127 merges first, both
+  add an order line 41 to steps\01_next.md and both change ClashRunOutcome.cs. F132's
+  ClashSkipReason.Mirror fails F127's EverySkipReasonTheRunnerRecordsMapsToACoverageReason
+  when the two meet, by design, until CoverageRule.ReasonFor maps it. The order is the lead's
+- the split test reads the exchange file with C06's SET counts for group 100000, while C06
+  itself picked other bytes, its SET lines asking ME-PIPING where the exchange file asks
+  ME-Piping. The test names, locators and set codes are the same in both, so the split is the
+  design's, and whether a run of the exchange file gives it is UNKNOWN until wave 2a
+- the codes CoverageRule judges a side by come from the group's files and the run's. What the
+  open file run hands in is UNKNOWN until the add-in half, and with none handed in every coded
+  empty side reads that the codes were not read
+
+### What comes next
+
+- the lead's reviewer and breaker on fix-F127, then F116's merge, the probes on Navisworks once
+  none of the loop runs, and step 4
+
 ## 2026-10-05 The loop, turn 5, the design of F127 coverage, Q126 and Q127
 
 Nothing under src, tests or tools changed. Core tests 1865 passed, 0 failed, 0 skipped before, at
