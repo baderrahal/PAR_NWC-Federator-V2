@@ -90,6 +90,37 @@ namespace Federator.Core.Tests
                     + Condition("equals", Category, "Walls")))), Is.Empty);
         }
 
+        /// <summary>
+        /// Two sets whose conditions differ only in a flag that is part of the question ask two
+        /// questions, FR-024: one Ors two groups and the other Ands the same four conditions,
+        /// which nothing answers, and a condition against its negation asks the opposite. The
+        /// signature left every flag out while its comment said the grouping kept them apart.
+        /// </summary>
+        [Test]
+        public void TwoSetsDifferingOnlyByTheGroupOrTheNegationAreNotAPair()
+        {
+            string ducts = Condition("equals", Category, "Ducts") + Condition("equals", "Workset", "ME-Ductwork");
+            string fittings = Condition("equals", "Workset", "ME-Ductwork");
+
+            Assert.That(SetWarnings.FindIdentical(Sets(
+                Set("Or", null, ducts + Condition("equals", Category, "Duct Fittings", PlannedCondition.StartGroupFlag) + fittings)
+                + Set("And", null, ducts + Condition("equals", Category, "Duct Fittings") + fittings))), Is.Empty);
+
+            Assert.That(SetWarnings.FindIdentical(Sets(
+                Set("Asks", null, Condition("contains", Category, "Devices") + Condition("equals", Category, "Data Devices"))
+                + Set("Leaves out", null, Condition("contains", Category, "Devices")
+                    + Condition("equals", Category, "Data Devices", PlannedCondition.NegateFlag)))), Is.Empty);
+        }
+
+        /// <summary>The Ignore bits are not part of the question, so two sets differing only by them are still a pair.</summary>
+        [Test]
+        public void TwoSetsDifferingOnlyByTheIgnoreBitsAreStillAPair()
+        {
+            Assert.That(SetWarnings.FindIdentical(Sets(
+                Set("A", null, Condition("equals", Category, "Walls"))
+                + Set("B", null, Condition("equals", Category, "Walls", 5)))).Count, Is.EqualTo(1));
+        }
+
         [Test]
         public void ASetWithNoConditionIsNotACopyOfEveryOtherEmptySet()
         {

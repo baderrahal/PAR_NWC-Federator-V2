@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using Federator.Core.Exchange;
 using Federator.Core.Sets;
 
@@ -131,12 +132,16 @@ namespace Federator.Core.Health
         /// is the same test as the matching test of the other, so 60 tests of each pair
         /// are run twice for the same answer.
         ///
-        /// THE SIGNATURE LEAVES THE FLAGS OUT, which is SearchConditionDefinition's own
-        /// rule and is right here too: two sets that differ only in how their conditions
-        /// are grouped ask a different question and are not identical. It is the ORDERED
-        /// list, because the same two conditions in the other order are the same question
-        /// only when the grouping is the same, and comparing them unordered would report
-        /// a pair that is not one.
+        /// THE SIGNATURE CARRIES THE TWO FLAG BITS THAT ARE PART OF THE QUESTION, FR-024: the
+        /// negation and the start of an Or group, `PlannedCondition.QuestionFlagsOf`, the rule
+        /// the drift key reads. Two sets that differ only in how their conditions are grouped,
+        /// or in a negation, ask a different question and are not identical. It left every
+        /// flag out, by SearchConditionDefinition's RuleSignature, while this comment said
+        /// the opposite. RuleSignature itself still leaves them out, because the distinct rule
+        /// count reads it, and the Ignore bits stay out of both. It is the ORDERED list,
+        /// because the same two conditions in the other order are the same question only when
+        /// the grouping is the same, and comparing them unordered would report a pair that is
+        /// not one.
         /// </summary>
         public static IList<IdenticalSets> FindIdentical(IEnumerable<SelectionSetDefinition> sets)
         {
@@ -195,10 +200,11 @@ namespace Federator.Core.Health
 
             foreach (SearchConditionDefinition condition in set.Conditions)
             {
-                parts.Add(condition.RuleSignature);
+                parts.Add(condition.RuleSignature + "\u0002"
+                    + PlannedCondition.QuestionFlagsOf(condition.Flags).ToString(CultureInfo.InvariantCulture));
             }
 
-            // A separator no rule signature carries, so two different lists cannot join
+            // Separators no rule signature carries, so two different lists cannot join
             // into one string that reads the same.
             return string.Join("\u0001", parts.ToArray());
         }
