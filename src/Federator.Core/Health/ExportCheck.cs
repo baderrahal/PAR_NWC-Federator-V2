@@ -496,17 +496,17 @@ namespace Federator.Core.Health
 
             internal List<string> Sets { get; private set; }
 
-            /// <summary>Whether this ask misses that carried name by letter case alone, and finds it once case is set aside.</summary>
+            /// <summary>
+            /// Whether this ask misses that carried name by letter case alone, and finds it once case
+            /// is set aside. The miss is WorksetFinds, the one place a find is said.
+            /// </summary>
             internal bool MissesByCaseAlone(string carried)
             {
-                if (Contains)
-                {
-                    return carried.IndexOf(Value, StringComparison.Ordinal) < 0
-                        && carried.IndexOf(Value, StringComparison.OrdinalIgnoreCase) >= 0;
-                }
+                bool findsCaseBlind = Contains
+                    ? carried.IndexOf(Value, StringComparison.OrdinalIgnoreCase) >= 0
+                    : string.Equals(carried, Value, StringComparison.OrdinalIgnoreCase);
 
-                return !string.Equals(carried, Value, StringComparison.Ordinal)
-                    && string.Equals(carried, Value, StringComparison.OrdinalIgnoreCase);
+                return findsCaseBlind && !WorksetFinds(Value, Contains, carried);
             }
         }
 

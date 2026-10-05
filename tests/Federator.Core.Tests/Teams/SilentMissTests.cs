@@ -46,6 +46,9 @@ namespace Federator.Core.Tests
         private const string AllClear =
             "no set asks a workset or a file name that a model of its own team with another code does not carry";
 
+        /// <summary>The start of the line for nothing judged, its why after it.</summary>
+        private const string NothingJudged = "no set was judged against the models of its team, because ";
+
         private const string StandsIn = "   the model's file name stands in for the Source File of its items, which is not read here";
 
         /// <summary>One spelling of every workset value the picked file's mechanical sets ask, so a model carrying them is reached by every one.</summary>
@@ -453,10 +456,80 @@ namespace Federator.Core.Tests
                 "1" + NoCodeSets,
                 "1 model(s) carry no discipline code in their file name, so their team is UNKNOWN and no set was judged against them");
 
-            const string NothingHandedIn = "no set was judged against the models of its team, because no sets or no models were handed in";
+            TeamMapTests.Same(SilentMisses.Find(null, new[] { Model(MeFile, "ME") }, Map(), Hyphen, null).Lines(), NothingJudged + "no set was handed in");
+            TeamMapTests.Same(SilentMisses.Find(TheSets(), null, Map(), Hyphen, null).Lines(), NothingJudged + "no model was handed in");
+        }
 
-            TeamMapTests.Same(SilentMisses.Find(null, new[] { Model(MeFile, "ME") }, Map(), Hyphen, null).Lines(), NothingHandedIn);
-            TeamMapTests.Same(SilentMisses.Find(TheSets(), null, Map(), Hyphen, null).Lines(), NothingHandedIn);
+        /// <summary>
+        /// The breaker's finding on F131's second attempt. An EMPTY list of sets or of models,
+        /// a group whose models were all dropped or a picked file holding no set, judges nothing
+        /// just as a list not handed in does, and a group where no model shares a set's team
+        /// with another code judges nothing too. Each is said as nothing judged, with why, and
+        /// never as the all clear, which would be a statement about sets and models never read.
+        /// </summary>
+        [Test]
+        public void NothingJudgedIsSaidAsNothingJudgedWithWhyAndNeverAsTheAllClear()
+        {
+            ModelExport[] me = { Model(MeFile, "ME", EveryMechanicalWorkset) };
+            SelectionSetDefinition[] noSet = new SelectionSetDefinition[0];
+            ModelExport[] noModel = new ModelExport[0];
+
+            TeamMapTests.Same(SilentMisses.Find(noSet, me, Map(), Hyphen, null).Lines(), NothingJudged + "no set was handed in");
+            TeamMapTests.Same(SilentMisses.Find(TheSets(), noModel, Map(), Hyphen, null).Lines(), NothingJudged + "no model was handed in");
+            TeamMapTests.Same(SilentMisses.Find(noSet, noModel, Map(), Hyphen, null).Lines(), NothingJudged + "no set and no model were handed in");
+            TeamMapTests.Same(SilentMisses.Find(null, null, Map(), Hyphen, null).Lines(), NothingJudged + "no set and no model were handed in");
+
+            const string NoPair = "no model of the group is of a set's team with a code other than the set's";
+
+            SilentMisses architecture = SilentMisses.Find(
+                TheSets(),
+                new[] { Model("1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc", "AR", "AR-Walls") },
+                Map(),
+                Hyphen,
+                (model, category) => 99);
+
+            Assert.That(architecture.Found.Count, Is.EqualTo(0));
+            TeamMapTests.Same(architecture.Lines(), NothingJudged + NoPair, "1" + NoCodeSets);
+
+            List<SelectionSetDefinition> noCode = new List<SelectionSetDefinition>(TheSets()).FindAll(
+                set => set.Name == "BLD-Security Devices");
+
+            Assert.That(noCode.Count, Is.EqualTo(1));
+            TeamMapTests.Same(
+                SilentMisses.Find(noCode, me, Map(), Hyphen, null).Lines(),
+                NothingJudged + NoPair,
+                "1" + NoCodeSets);
+        }
+
+        /// <summary>
+        /// The breaker's finding on F131's second attempt. A workset condition whose value is
+        /// empty asks no name, so it closes nothing, as every other reader of workset values
+        /// skips it. It is never a set that cannot reach a model, never a line naming the
+        /// workset as nothing, and the pair is judged open.
+        /// </summary>
+        [Test]
+        public void AnEmptyWorksetValueAsksNoNameAndIsNeverAMiss()
+        {
+            const string Element = "<category><name internal=\"LcRevitData_Element\">Element</name></category>";
+            string xml = "<?xml version='1.0' encoding='UTF-8'?>\n<exchange units=\"ft\"><selectionsets><viewfolder name=\"Mechanical\">"
+                + "<selectionset name=\"BLD-ME-Ducts\" guid=\"x\"><findspec mode=\"all\" disjoint=\"0\"><conditions>"
+                + "<condition test=\"equals\" flags=\"0\">" + Element
+                + "<property><name internal=\"LcRevitPropertyElementCategory\">Category</name></property>"
+                + "<value><data type=\"wstring\">Ducts</data></value></condition>"
+                + "<condition test=\"equals\" flags=\"0\">" + Element
+                + "<property><name internal=\"lcldrevit_parameter_-1002053\">Workset</name></property>"
+                + "<value><data type=\"wstring\"></data></value></condition>"
+                + "</conditions><locator>/</locator></findspec></selectionset></viewfolder></selectionsets></exchange>\n";
+
+            SilentMisses misses = SilentMisses.Find(
+                new ExchangeReader().ReadText(xml).Sets,
+                new[] { Model(HvFile, "HV", "HV-Ductwork"), Model(MeFile, "ME", "ME-Ductwork") },
+                Map(),
+                Hyphen,
+                (model, category) => 7);
+
+            Assert.That(misses.Found.Count, Is.EqualTo(0));
+            TeamMapTests.Same(misses.Lines(), AllClear);
         }
 
         /// <summary>

@@ -43,7 +43,14 @@ namespace Federator.Core.Teams
     ///
     /// WHAT IS NOT JUDGED IS COUNTED AND SAID. A set whose name carries no code the map or a model
     /// of the group knows, and a model whose code was not read, have a team that is UNKNOWN, so
-    /// they are judged against nothing, and the lines count them beside the all clear.
+    /// they are judged against nothing, and the lines count them beside the all clear. Where NO
+    /// PAIR is judged, no set or no model handed in, a list of none being the same as no list, or
+    /// no model of a set's team with another code, the lines say nothing was judged and why, and
+    /// never the all clear, which would speak of sets and models never read. F131, the breaker's
+    /// finding on its second attempt.
+    ///
+    /// AN EMPTY VALUE ASKS NO NAME. A condition whose value is empty closes nothing, as every
+    /// other reader of workset values in this repo skips one.
     ///
     /// WITH NO TEAM MAP every code is a team of its own, so no set is judged against another code.
     /// </summary>
@@ -54,15 +61,16 @@ namespace Federator.Core.Teams
 
         private readonly TeamMap map;
 
-        private readonly bool handedIn;
+        /// <summary>Why no pair was judged, or null where one was.</summary>
+        private readonly string notJudged;
 
-        private SilentMisses(IList<SilentMiss> found, int unjudged, int setsWithNoCode, int modelsWithNoCode, bool handedIn, TeamMap map)
+        private SilentMisses(IList<SilentMiss> found, int unjudged, int setsWithNoCode, int modelsWithNoCode, string notJudged, TeamMap map)
         {
             Found = new ReadOnlyCollection<SilentMiss>(found);
             Unjudged = unjudged;
             SetsWithNoCode = setsWithNoCode;
             ModelsWithNoCode = modelsWithNoCode;
-            this.handedIn = handedIn;
+            this.notJudged = notJudged;
             this.map = map;
         }
 
@@ -96,17 +104,23 @@ namespace Federator.Core.Teams
             }
 
             List<SilentMiss> found = new List<SilentMiss>();
+            List<SelectionSetDefinition> setList = sets == null ? new List<SelectionSetDefinition>() : new List<SelectionSetDefinition>(sets);
+            bool noSet = setList.Count == 0;
+            bool noModel = models == null || models.Count == 0;
 
-            if (sets == null || models == null)
+            if (noSet || noModel)
             {
-                return new SilentMisses(found, 0, 0, 0, false, map);
+                string none = noSet && noModel ? "no set and no model were handed in" : noSet ? "no set was handed in" : "no model was handed in";
+
+                return new SilentMisses(found, 0, 0, 0, none, map);
             }
 
             if (map.Teams.Count == 0)
             {
-                return new SilentMisses(found, 0, 0, 0, true, map);
+                return new SilentMisses(found, 0, 0, 0, null, map);
             }
 
+            int pairs = 0;
             int unjudged = 0;
             int setsWithNoCode = 0;
             int modelsWithNoCode = 0;
@@ -124,7 +138,7 @@ namespace Federator.Core.Teams
 
             IList<string> known = map.KnownCodes(groupCodes);
 
-            foreach (SelectionSetDefinition set in sets)
+            foreach (SelectionSetDefinition set in setList)
             {
                 string code = CodeOf.Set(set.Name, known, separator);
 
@@ -147,6 +161,7 @@ namespace Federator.Core.Teams
                         continue;
                     }
 
+                    pairs++;
                     Reach reach = Judge(groups, model);
 
                     if (reach.Open)
@@ -178,14 +193,17 @@ namespace Federator.Core.Teams
                 }
             }
 
-            return new SilentMisses(found, unjudged, setsWithNoCode, modelsWithNoCode, true, map);
+            string noPair = pairs == 0 ? "no model of the group is of a set's team with a code other than the set's" : null;
+
+            return new SilentMisses(found, unjudged, setsWithNoCode, modelsWithNoCode, noPair, map);
         }
 
         /// <summary>
         /// The lines for the COVERAGE block and the form: one SILENT MISS line for each confirmed
         /// candidate with its drafted correction under it, then a count of the candidates the
         /// coverage did not confirm, of those no count can confirm, of those it could not say, and
-        /// of the pairs not judged, then the sets and the models with no code.
+        /// of the pairs not judged, then the sets and the models with no code. Where no pair was
+        /// judged, the line that says so and why stands where the all clear would.
         /// </summary>
         public IList<string> Lines()
         {
@@ -194,12 +212,6 @@ namespace Federator.Core.Teams
             if (map.Teams.Count == 0)
             {
                 lines.Add("no set was judged against the models of its team, because no team map maps a code");
-                return lines;
-            }
-
-            if (!handedIn)
-            {
-                lines.Add("no set was judged against the models of its team, because no sets or no models were handed in");
                 return lines;
             }
 
@@ -282,7 +294,9 @@ namespace Federator.Core.Teams
 
             if (lines.Count == 0)
             {
-                lines.Add("no set asks a workset or a file name that a model of its own team with another code does not carry");
+                lines.Add(notJudged == null
+                    ? "no set asks a workset or a file name that a model of its own team with another code does not carry"
+                    : "no set was judged against the models of its team, because " + notJudged);
             }
 
             if (SetsWithNoCode > 0)
@@ -343,13 +357,16 @@ namespace Federator.Core.Teams
 
                 foreach (SearchConditionDefinition condition in group)
                 {
-                    if (condition.Property == null || condition.Value == null || (condition.Flags & MatrixCorrections.NegateCondition) != 0)
+                    if (condition.Property == null
+                        || condition.Value == null
+                        || string.IsNullOrEmpty(condition.Value.Data)
+                        || (condition.Flags & MatrixCorrections.NegateCondition) != 0)
                     {
                         continue;
                     }
 
                     string property = condition.Property.InternalName;
-                    string value = condition.Value.Data ?? string.Empty;
+                    string value = condition.Value.Data;
                     bool equals = string.Equals(condition.Test, SetBuildPlan.EqualsTest, StringComparison.Ordinal);
                     bool contains = string.Equals(condition.Test, SetBuildPlan.ContainsTest, StringComparison.Ordinal);
 
