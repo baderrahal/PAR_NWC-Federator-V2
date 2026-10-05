@@ -9,15 +9,16 @@ record's, turn5\precommit-records-13.txt.
 
 ### What was done
 
-- the design of F127, the coverage of Bader's request 2, by three plans written apart and a
-  judge, turn5\f127-design.md, scored evidence 26.5, the rules in Core 26 and the cost 25.5 of 30,
+- the design of F127, the coverage of Bader's request 2, by three plans each its own agent,
+  turn5\f127-plans.txt, and a judge, turn5\f127-design.md, scored evidence 26.5, the rules in Core 26 and the cost 25.5 of 30,
   evidence the base. FR-176 names its part, its eight probes and its added run time
 - Q126 and Q127, two of its eight questions, each with the choice the build goes on with. The
   other six his words or the lead's reading settle, named on FR-176
 
 ### What remains
 
-- its probes on Navisworks once no Navisworks of the loop runs, Q124, then F127 in wave 2a
+- its seven probes on Navisworks once no Navisworks of the loop runs, Q124, and an eighth only if
+  P2 fails
 
 ### Known bugs
 
@@ -25,7 +26,8 @@ record's, turn5\precommit-records-13.txt.
 
 ### What comes next
 
-- the probes, then F127's Core part test first
+- F127's Core steps 1 to 3 test first now, step 4 after F116 merges and P2 to P5 are read, the
+  add-in after P1 to P7
 
 The probes on Navisworks wait for the local machine.
 
