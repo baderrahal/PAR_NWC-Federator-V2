@@ -275,7 +275,6 @@ namespace Federator.Core.Health
             int withoutEveryId = 0;
             int withNoElement = 0;
             int notCounted = 0;
-            List<string> everyWorkset = new List<string>();
 
             for (int i = 0; i < models.Count; i++)
             {
@@ -315,10 +314,9 @@ namespace Federator.Core.Health
                     lines.Add("      re-export with Convert element Ids switched on, or "
                         + Count(model.Elements - model.WithElementId) + " element(s) reach the report with an empty id cell");
                 }
-
-                Gather(everyWorkset, model.Worksets);
             }
 
+            IList<string> everyWorkset = WorksetsOf(models);
             lines.Add(Sentence(models.Count, withoutAnyWorkset, withSomeWorkset, withoutEveryId, withNoElement, notCounted));
             AddWorksets(lines, everyWorkset, namesShown);
             AddCaseDifferences(lines, everyWorkset, sets, namesShown);
@@ -671,15 +669,38 @@ namespace Federator.Core.Health
             return string.Join(", ", head) + ", and " + parts[parts.Count - 1];
         }
 
-        private static void Gather(IList<string> into, IList<string> worksets)
+        /// <summary>
+        /// Every workset those models carry, each once, in the order first seen, THE ONE RULE the
+        /// EXPORT CHECK block and the EMPTY SETS judge read, FR-027. A model whose walk stopped
+        /// carries no names at all, ModelExport, so it adds none, and an empty name is not a name.
+        /// The judge gathered its own copy, which dropped an empty name where this block kept it.
+        /// </summary>
+        internal static IList<string> WorksetsOf(IList<ModelExport> models)
         {
-            for (int i = 0; i < worksets.Count; i++)
+            List<string> every = new List<string>();
+
+            if (models == null)
             {
-                if (!into.Contains(worksets[i]))
+                return every;
+            }
+
+            foreach (ModelExport model in models)
+            {
+                if (model == null)
                 {
-                    into.Add(worksets[i]);
+                    continue;
+                }
+
+                foreach (string workset in model.Worksets)
+                {
+                    if (!string.IsNullOrEmpty(workset) && !every.Contains(workset))
+                    {
+                        every.Add(workset);
+                    }
                 }
             }
+
+            return every;
         }
 
         private static string Named(ModelExport model)

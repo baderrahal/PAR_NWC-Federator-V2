@@ -61,39 +61,8 @@ namespace Federator.Core.Sets
                 throw new ArgumentNullException("plan");
             }
 
-            return new EmptySetJudge(plan.Worksets, ProjectOf(models, names), WorksetsOf(models));
-        }
-
-        /// <summary>
-        /// Every workset those models carry, each once, in the order first seen, FR-027. A model
-        /// whose walk stopped part way gives the ones it saw, which it does carry.
-        /// </summary>
-        internal static IList<string> WorksetsOf(IList<ModelExport> models)
-        {
-            List<string> carried = new List<string>();
-
-            if (models == null)
-            {
-                return carried;
-            }
-
-            foreach (ModelExport model in models)
-            {
-                if (model == null)
-                {
-                    continue;
-                }
-
-                foreach (string workset in model.Worksets)
-                {
-                    if (!string.IsNullOrEmpty(workset) && !carried.Contains(workset))
-                    {
-                        carried.Add(workset);
-                    }
-                }
-            }
-
-            return carried;
+            // The group's worksets by the EXPORT CHECK's own rule, one list for both blocks.
+            return new EmptySetJudge(plan.Worksets, ProjectOf(models, names), ExportCheck.WorksetsOf(models));
         }
 
         /// <summary>

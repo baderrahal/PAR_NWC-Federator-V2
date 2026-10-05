@@ -282,6 +282,29 @@ namespace Federator.Core.Tests.Sets
         }
 
         /// <summary>
+        /// THE JUDGE AND THE EXPORT CHECK READ ONE LIST OF THE GROUP'S WORKSETS, the reviewer's
+        /// finding on attempt 1. The judge gathered its own copy of the rule, every workset the
+        /// models carry each once first seen first, and the copy already differed from the EXPORT
+        /// CHECK's: one dropped an empty name and the other kept it. A model whose walk stopped
+        /// carries no names at all, ModelExport, so it adds none.
+        /// </summary>
+        [Test]
+        public void TheJudgeAndTheExportCheckReadOneListOfTheGroupsWorksets()
+        {
+            List<ModelExport> models = new List<ModelExport>
+            {
+                new ModelExport("1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc", "ME", 10, 10, 10, new List<string> { "ME-Ductwork", string.Empty, "ME-Piping" }),
+                new ModelExport("1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc", "AR", 10, 10, 10, new List<string> { "ME-Ductwork", "AR-EXTERIOR" }),
+                new ModelExport("1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc", "ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, new List<string> { "ST-SUB" })
+            };
+
+            EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+
+            Assert.That(group.GroupWorksets, Is.EqualTo(ExportCheck.WorksetsOf(models)));
+            Assert.That(group.GroupWorksets, Is.EqualTo(new[] { "ME-Ductwork", "ME-Piping", "AR-EXTERIOR" }));
+        }
+
+        /// <summary>
         /// A NEAREST VALUE DIFFERING ONLY BY LETTER CASE SAYS SO, FR-027, because the match is
         /// case sensitive and that is the whole of what is wrong with such a set, Q68.
         /// </summary>
