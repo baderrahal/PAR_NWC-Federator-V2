@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -46,7 +47,39 @@ namespace Federator.Core.Exchange
             return Read(document, path);
         }
 
+        /// <summary>
+        /// The whole text of a file, decoded the way ReadFile's XmlReader decodes it: a byte
+        /// order mark first, then the encoding the declaration names, then UTF-8. The text
+        /// MatrixCorrections rewrites before it is read, so a file declared windows-1252 keeps
+        /// its accented names, as it did when the add-in read it through ReadFile, F116.
+        /// </summary>
+        internal static string ReadFileText(string path)
+        {
+            byte[] bytes = File.ReadAllBytes(path);
+            Encoding declared = null;
+
+            using (XmlReader reader = XmlReader.Create(new MemoryStream(bytes), SafeSettings()))
+            {
+                if (reader.Read() && reader.NodeType == XmlNodeType.XmlDeclaration)
+                {
+                    string name = reader.GetAttribute("encoding");
+                    declared = string.IsNullOrEmpty(name) ? null : Encoding.GetEncoding(name);
+                }
+            }
+
+            using (StreamReader text = new StreamReader(new MemoryStream(bytes), declared ?? new UTF8Encoding(false), true))
+            {
+                return text.ReadToEnd();
+            }
+        }
+
         internal ExchangeDocument ReadText(string xml)
+        {
+            return ReadText(xml, null);
+        }
+
+        /// <summary>The same, naming the file the text came from, which MatrixCorrections.ReadPicked corrected first.</summary>
+        internal ExchangeDocument ReadText(string xml, string sourcePath)
         {
             if (xml == null)
             {
@@ -56,7 +89,7 @@ namespace Federator.Core.Exchange
             using (StringReader text = new StringReader(xml))
             using (XmlReader reader = XmlReader.Create(text, SafeSettings()))
             {
-                return Read(XDocument.Load(reader), null);
+                return Read(XDocument.Load(reader), sourcePath);
             }
         }
 
@@ -255,7 +288,11 @@ namespace Federator.Core.Exchange
                 conditions);
         }
 
-        private static SearchConditionDefinition ReadCondition(XElement condition)
+        /// <summary>
+        /// One condition element read. Also how WrittenCondition reads the text MatrixCorrections
+        /// rewrites, so the condition corrected and the condition built are read one way, F116.
+        /// </summary>
+        internal static SearchConditionDefinition ReadCondition(XElement condition)
         {
             return new SearchConditionDefinition(
                 Attribute(condition, "test"),

@@ -27521,6 +27521,14 @@
                   <data type="wstring">Ramps</data>
                 </value>
               </condition>
+              <condition test="contains" flags="0">
+                <property>
+                  <name internal="LcOaNodeSourceFile">Source File</name>
+                </property>
+                <value>
+                  <data type="wstring">-AR-</data>
+                </value>
+              </condition>
             </conditions>
             <locator>/</locator>
           </findspec>
@@ -27709,6 +27717,14 @@
                   <data type="wstring">Furniture</data>
                 </value>
               </condition>
+              <condition test="contains" flags="0">
+                <property>
+                  <name internal="LcOaNodeSourceFile">Source File</name>
+                </property>
+                <value>
+                  <data type="wstring">-AR-</data>
+                </value>
+              </condition>
             </conditions>
             <locator>/</locator>
           </findspec>
@@ -27745,6 +27761,14 @@
                   <data type="wstring">Railings</data>
                 </value>
               </condition>
+              <condition test="contains" flags="0">
+                <property>
+                  <name internal="LcOaNodeSourceFile">Source File</name>
+                </property>
+                <value>
+                  <data type="wstring">-AR-</data>
+                </value>
+              </condition>
             </conditions>
             <locator>/</locator>
           </findspec>
@@ -27761,6 +27785,14 @@
                 </property>
                 <value>
                   <data type="wstring">Site</data>
+                </value>
+              </condition>
+              <condition test="contains" flags="0">
+                <property>
+                  <name internal="LcOaNodeSourceFile">Source File</name>
+                </property>
+                <value>
+                  <data type="wstring">-AR-</data>
                 </value>
               </condition>
             </conditions>
@@ -27926,7 +27958,51 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
+                    <data type="wstring">ME-DUCTWORK</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Ducts</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
                     <data type="wstring">ME-Ductwork</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Duct Fittings</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
+                    <data type="wstring">ME-DUCTWORK</data>
                   </value>
                 </condition>
                 <condition test="equals" flags="64">
@@ -27977,6 +28053,28 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
+                    <data type="wstring">ME-DUCTWORK</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Duct Accessories</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
                     <data type="wstring">ME-Ductwork</data>
                   </value>
                 </condition>
@@ -27988,6 +28086,28 @@
             <findspec mode="all" disjoint="0">
               <conditions>
                 <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Mechanical Equipment</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
+                    <data type="wstring">ME-EQUIPMENT</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
                   <category>
                     <name internal="LcRevitData_Element">Element</name>
                   </category>
@@ -28035,6 +28155,28 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
+                    <data type="wstring">ME-DUCTWORK</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Flex Ducts</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
                     <data type="wstring">ME-Ductwork</data>
                   </value>
                 </condition>
@@ -28046,6 +28188,28 @@
             <findspec mode="all" disjoint="0">
               <conditions>
                 <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Air Terminals</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
+                    <data type="wstring">ME-DUCTWORK</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
                   <category>
                     <name internal="LcRevitData_Element">Element</name>
                   </category>
@@ -28093,7 +28257,51 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
+                    <data type="wstring">ME-PIPING</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Pipes</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
                     <data type="wstring">ME-Piping</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Pipe Fittings</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
+                    <data type="wstring">ME-PIPING</data>
                   </value>
                 </condition>
                 <condition test="equals" flags="64">
@@ -28144,6 +28352,28 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
+                    <data type="wstring">ME-PIPING</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Pipe Accessories</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
                     <data type="wstring">ME-Piping</data>
                   </value>
                 </condition>
@@ -28173,6 +28403,28 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
+                    <data type="wstring">ME-PIPING</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Plumbing Fixtures</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
                     <data type="wstring">ME-Piping</data>
                   </value>
                 </condition>
@@ -28184,6 +28436,28 @@
             <findspec mode="all" disjoint="0">
               <conditions>
                 <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Flex Pipes</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
+                    <data type="wstring">ME-PIPING</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
                   <category>
                     <name internal="LcRevitData_Element">Element</name>
                   </category>
@@ -28233,7 +28507,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">FF-FIRE FIGHTING</data>
+                    <data type="wstring">FF-Fire Fighting</data>
                   </value>
                 </condition>
               </conditions>
@@ -28371,7 +28645,7 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
-                    <data type="wstring">FF-FIRE FIGHTING</data>
+                    <data type="wstring">FF-Fire Fighting</data>
                   </value>
                 </condition>
               </conditions>
@@ -28431,6 +28705,28 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
+                    <data type="wstring">PL-Domestic Water</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Mechanical Equipment</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
                     <data type="wstring">PL-Domestic water</data>
                   </value>
                 </condition>
@@ -28460,7 +28756,51 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
+                    <data type="wstring">PL-Domestic Water</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Pipes</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
                     <data type="wstring">PL-Domestic water</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Pipe Fittings</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
+                    <data type="wstring">PL-Domestic Water</data>
                   </value>
                 </condition>
                 <condition test="equals" flags="64">
@@ -28511,6 +28851,28 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
+                    <data type="wstring">PL-Domestic Water</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Pipe Accessories</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
                     <data type="wstring">PL-Domestic water</data>
                   </value>
                 </condition>
@@ -28540,6 +28902,28 @@
                     <name internal="lcldrevit_parameter_-1002053">Workset</name>
                   </property>
                   <value>
+                    <data type="wstring">PL-Domestic Water</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Pipe Insulation</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
                     <data type="wstring">PL-Domestic water</data>
                   </value>
                 </condition>
@@ -28551,6 +28935,28 @@
             <findspec mode="all" disjoint="0">
               <conditions>
                 <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="LcRevitPropertyElementCategory">Category</name>
+                  </property>
+                  <value>
+                    <data type="wstring">Plumbing Fixtures</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="0">
+                  <category>
+                    <name internal="LcRevitData_Element">Element</name>
+                  </category>
+                  <property>
+                    <name internal="lcldrevit_parameter_-1002053">Workset</name>
+                  </property>
+                  <value>
+                    <data type="wstring">PL-Domestic Water</data>
+                  </value>
+                </condition>
+                <condition test="equals" flags="64">
                   <category>
                     <name internal="LcRevitData_Element">Element</name>
                   </category>
@@ -28899,7 +29305,8 @@
                 <value>
                   <data type="wstring">Telephone Devices</data>
                 </value>
-              </condition></conditions>
+              </condition>
+            </conditions>
             <locator>/</locator>
           </findspec>
         </selectionset>

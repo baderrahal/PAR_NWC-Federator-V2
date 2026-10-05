@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Federator.Core.Exchange;
 using Federator.Core.Sets;
 using NUnit.Framework;
 
@@ -24,6 +25,12 @@ namespace Federator.Core.Tests.Sets
             return new ReadCondition("LcRevitData_Element", EmptySets.WorksetProperty, "equals", value);
         }
 
+        /// <summary>Judged against the names inside Core alone, which is a file read with no list beside it.</summary>
+        private static EmptySet Why(string path, List<ReadCondition> asked)
+        {
+            return EmptySets.Why(path, asked, RevitWorksets.With(null));
+        }
+
         private static string Joined(IList<string> lines)
         {
             return string.Join("\n", new List<string>(lines).ToArray());
@@ -37,7 +44,7 @@ namespace Federator.Core.Tests.Sets
         [Test]
         public void ASetAskingForAValueNoModelCarriesIsNamedWithTheNearestOneThatIs()
         {
-            EmptySet why = EmptySets.Why(
+            EmptySet why = Why(
                 "a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") });
 
             Assert.That(why.Reason, Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
@@ -47,11 +54,29 @@ namespace Federator.Core.Tests.Sets
             Assert.That(why.Line(), Does.Contain("a suggestion and not a correction"));
         }
 
+        /// <summary>
+        /// The judge knows the spellings it is handed, the names inside Core and those of the list
+        /// beside the picked XML, RevitWorksets.With, the ones the corrections asked, F116 on the
+        /// Q113 pass. ME-DUCTWORK is a spelling of this project's list and not of Core, so with the
+        /// list models in this project carry it and with Core's names alone none does.
+        /// </summary>
+        [Test]
+        public void ASpellingTheListBesideThePickedFileHoldsIsOneTheModelsCarry()
+        {
+            EmptySet withTheList = EmptySets.Why(
+                "a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") }, RevitWorksets.With(new[] { "ME-DUCTWORK" }));
+
+            Assert.That(withTheList.Reason, Is.EqualTo(EmptyReason.TheValueIsThereAnyway), withTheList.Line());
+            Assert.That(
+                EmptySets.Why("a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") }, RevitWorksets.With(null)).Reason,
+                Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
+        }
+
         /// <summary>Bucket two. The value is really there, so the fault is somewhere else and a person looks.</summary>
         [Test]
         public void ASetAskingForAValueTheModelsDoCarrySaysSomethingElseIsWrong()
         {
-            EmptySet why = EmptySets.Why(
+            EmptySet why = Why(
                 "a/BLD-ME-Piping", new List<ReadCondition> { Workset("ME-Piping") });
 
             Assert.That(why.Reason, Is.EqualTo(EmptyReason.TheValueIsThereAnyway));
@@ -72,7 +97,7 @@ namespace Federator.Core.Tests.Sets
         [Test]
         public void ASetAskingOnAPropertyWithNoMeasuredListSaysItCannotTell()
         {
-            EmptySet why = EmptySets.Why(
+            EmptySet why = Why(
                 "a/BLD-AR-Source",
                 new List<ReadCondition> { new ReadCondition(string.Empty, "LcOaNodeSourceFile", "contains", "-AR-") });
 
@@ -84,7 +109,7 @@ namespace Federator.Core.Tests.Sets
         public void ASetWithNoConditionsAtAllAlsoSaysItCannotTell()
         {
             Assert.That(
-                EmptySets.Why("a/b", new List<ReadCondition>()).Reason,
+                Why("a/b", new List<ReadCondition>()).Reason,
                 Is.EqualTo(EmptyReason.CannotTell));
         }
 
@@ -97,7 +122,7 @@ namespace Federator.Core.Tests.Sets
         {
             IList<EmptySet> empty = new List<EmptySet>
             {
-                EmptySets.Why("a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") })
+                Why("a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") })
             };
 
             string block = Joined(EmptySets.Lines(empty, 1677, 1830));
@@ -111,9 +136,9 @@ namespace Federator.Core.Tests.Sets
         {
             IList<EmptySet> empty = new List<EmptySet>
             {
-                EmptySets.Why("a", new List<ReadCondition> { Workset("ME-DUCTWORK") }),
-                EmptySets.Why("b", new List<ReadCondition> { Workset("ME-Piping") }),
-                EmptySets.Why("c", new List<ReadCondition>())
+                Why("a", new List<ReadCondition> { Workset("ME-DUCTWORK") }),
+                Why("b", new List<ReadCondition> { Workset("ME-Piping") }),
+                Why("c", new List<ReadCondition>())
             };
 
             string block = Joined(EmptySets.Lines(empty, 10, 100));
@@ -141,7 +166,7 @@ namespace Federator.Core.Tests.Sets
         {
             IList<EmptySet> empty = new List<EmptySet>
             {
-                EmptySets.Why("a", new List<ReadCondition> { Workset("ME-DUCTWORK") })
+                Why("a", new List<ReadCondition> { Workset("ME-DUCTWORK") })
             };
 
             Assert.That(Joined(EmptySets.Lines(empty, 0, 0)), Does.Contain("UNKNOWN"));
@@ -155,11 +180,11 @@ namespace Federator.Core.Tests.Sets
         public void TheCategoryListIsReadTheSameWayTheWorksetListIs()
         {
             Assert.That(
-                EmptySets.Why("a", new List<ReadCondition> { Category("Floors") }).Reason,
+                Why("a", new List<ReadCondition> { Category("Floors") }).Reason,
                 Is.EqualTo(EmptyReason.TheValueIsThereAnyway));
 
             Assert.That(
-                EmptySets.Why("a", new List<ReadCondition> { Category("Nurse Call Devices") }).Reason,
+                Why("a", new List<ReadCondition> { Category("Nurse Call Devices") }).Reason,
                 Is.EqualTo(EmptyReason.NoModelCarriesTheValue),
                 "the fallback F87 removed asked for a category no model in this project has");
         }

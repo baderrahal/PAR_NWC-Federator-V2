@@ -23,7 +23,16 @@ namespace Federator.Core.Sets
             Buildable = new ReadOnlyCollection<PlannedSet>(buildable);
             Skipped = new ReadOnlyCollection<SkippedSet>(skipped);
             UnknownTestValues = new ReadOnlyCollection<string>(unknownTests);
+            Worksets = new ReadOnlyCollection<string>(RevitWorksets.With(null));
         }
+
+        /// <summary>
+        /// The workset spellings a set of this plan that finds nothing is judged against, the
+        /// ones the picked file's corrections were chosen from, F116: the names inside Core and
+        /// those of the list beside the picked file. The names inside Core alone for sets handed
+        /// in without their document.
+        /// </summary>
+        public ReadOnlyCollection<string> Worksets { get; private set; }
 
         public ReadOnlyCollection<PlannedSet> Buildable { get; private set; }
 
@@ -99,7 +108,9 @@ namespace Federator.Core.Sets
                 throw new ArgumentNullException("document");
             }
 
-            return From(document.Sets);
+            SetBuildPlan plan = From(document.Sets);
+            plan.Worksets = document.Worksets;
+            return plan;
         }
 
         /// <summary>
