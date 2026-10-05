@@ -22,15 +22,16 @@ Core tests, all with 0 failed and 0 skipped:
   tree of 8a32795 before its commit, turn5\f116d-fr028-after.txt, and at its pre-commit,
   turn5\f116d-precommit-merge.txt. Main's own count is 1865 at the pre-commits of its records of
   pull requests 107 and 108, turn5\precommit-records-12b.txt and precommit-records-13.txt, as
-  main's own entry of the design of F127 says, and main's changes from ddb059b to 0c64018 are
-  under steps\ alone, turn5\f116e-main-since.txt. So F116's own tests are 47 of the 1912, the
-  20, 14, 6, 6 and 1 of its passes
+  main's own entry of the design of F127 says, and 1865 again at f38a369's records, main's entry
+  of FR-052. Main's changes from ddb059b to f38a369 are under steps\ alone,
+  turn5\f116e-main-since.txt. So F116's own tests are 47 of the 1912, the 20, 14, 6, 6 and 1 of
+  its passes
 - 1912 passed before the closing pass at 1ee0d93, turn5\f116e-core-before.txt, and 1912 after it
   with RevitWorksets.All deleted, read on the tree of a40ff59 before its commit,
   turn5\f116e-core-after.txt. No test was added or deleted. The pre-commits of the closing pass
-  read 1912 each, turn5\f116e-precommit-merge.txt, f116e-precommit-1.txt and
-  f116e-precommit-merge-2.txt, and that of its records commit is turn5\f116e-precommit-2.txt,
-  read after this entry was written
+  read 1912 each, turn5\f116e-precommit-merge.txt, f116e-precommit-1.txt,
+  f116e-precommit-merge-2.txt, f116e-precommit-2.txt and f116e-precommit-merge-3.txt, and that of
+  its last records commit is turn5\f116e-precommit-3.txt, read after this entry was written
 
 Every test run named above but f116-core-after.txt and the pre-commit files, which run the tests
 quietly, also lists the one [Explicit] generator test, WriteTheCorrectedFile, as skipped, and the
@@ -42,8 +43,9 @@ was a plain Release build, not built whole, with 0 warnings and 0 errors,
 turn5\f116c-build-after.txt line 4. On 1ee0d93 it was built whole, turn5\f116d-build-after.txt,
 and on a40ff59, the closing pass's code commit, built whole with git rev-parse --short HEAD and a
 clean git status at its top, 0 warnings and 0 errors, turn5\f116e-build-code.txt. The records
-commits 41c52a1, 1ee0d93 and the closing pass's last change no code. The build of the last
-commit is kept in turn5\f116e-build-after.txt, read after this entry was written.
+commits 41c52a1, 1ee0d93 and the closing pass's two, and its three merges of main, change no
+code. The build of the last commit is kept in turn5\f116e-build-after.txt, read after this entry
+was written.
 Every file named is under %LOCALAPPDATA%\NwcFederatorLoop\turn5 unless it is a path of the repo.
 
 Programs and Navisworks:
@@ -335,10 +337,10 @@ Programs and Navisworks:
   turn5\f116d-read-claims.txt. The lead's task for this pass was given in the session and is kept
   in no file
 - main ce6eedb was taken in at fa66a26 with no conflict, its changes steps\02_questions.md and
-  steps\loop.md, and main 0c64018, which came while this pass ran, at d418c56. In d418c56
-  steps\log.md conflicted and both sides are kept: this entry on top, main's entry of the design
-  of F127 after it, then main's in main's order. Neither merge changes a file under src or tests,
-  turn5\f116e-main-since.txt
+  steps\loop.md. Main 0c64018 and then main f38a369 came while this pass ran and were taken in at
+  d418c56 and fae143f. In each steps\log.md conflicted and both sides are kept: this entry on top,
+  main's entries of FR-052 and of the design of F127 after it, then main's in main's order. No
+  merge changes a file under src or tests, turn5\f116e-main-since.txt
 - a40ff59, the reviewer's blocking finding. RevitWorksets.All() at RevitWorksets.cs line 48 had
   no caller in src once 0bf09b3 moved EmptySets and MatrixCorrections onto RevitWorksets.With,
   and it was a second way to get what With(null) gives, new List(Load()) in both. No decision in
@@ -368,8 +370,9 @@ Programs and Navisworks:
   turn5\f116d-same-sets.txt line for line, turn5\f116e-same-sets-compare.txt: 61 sets and 1830
   tests for each file with the list beside it, 16 MATRIX lines under main\, 13 outcome lines, 9
   of them changing something, and 23 changes in all
-- the closing pass's records commit, this entry, the F116 section of steps\01_next.md and the
-  rule in core.md, records only
+- f51de84, records only: this entry, the F116 section of steps\01_next.md and the rule in
+  core.md. The records commit after fae143f brings this entry and the section to that merge,
+  records only
 
 ### Choices the developers made, for the reader to check
 
@@ -535,8 +538,9 @@ The add-in half waits for the local machine, in the test of wave 1.
   f116e-same-sets.ps1, f116e-same-sets.txt and the folder f116e-same-sets of copies,
   f116e-same-sets-compare.txt, f116e-names-in-src.txt, f116e-addin-diff.txt,
   f116e-comment-commits.txt, f116e-main-counts.txt, f116e-main-order.txt,
-  f116e-msg-merge-2.txt, f116e-precommit-merge-2.txt, f116e-main-since.txt, and the files of the
-  records commit and the push named in turn5\pr-f116.md, which this pass rewrote
+  f116e-msg-merge-2.txt, f116e-precommit-merge-2.txt, f116e-main-since.txt, f116e-msg-2.txt,
+  f116e-precommit-2.txt, f116e-msg-merge-3.txt, f116e-precommit-merge-3.txt, and the files of
+  the last records commit and the push named in turn5\pr-f116.md, which this pass rewrote
 - the session's scratchpad under %TEMP%\claude: the files of the reader measure, the trees of
   main dd55e4b and c4fd0d4 unpacked by git archive with their builds, a list of the names looked
   for, the output of a test run, and the folders the tests make under %TEMP% and remove
