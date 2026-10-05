@@ -137,6 +137,10 @@ holds them. Each area takes the F number shown.
   - F123 docs and words, and the noise of every area: FR-007, FR-029, FR-038, FR-039, FR-042, FR-058, FR-059, FR-060, FR-061, FR-062, FR-063, FR-064, FR-074, FR-081, FR-105, FR-106, FR-107, FR-108, FR-111, FR-112, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118, FR-119, FR-120, FR-121, FR-122, FR-123, FR-124, FR-126, FR-127, FR-128, FR-129, FR-130, FR-131, FR-132, FR-133, FR-134, FR-135, FR-136, FR-139, FR-140, FR-141, FR-142, FR-143, FR-144, FR-145, FR-146, FR-147, FR-148, FR-167, FR-168, FR-169, FR-170, FR-171, FR-172, FR-173. Closed in part, the part that stays: FR-139, FR-146. The finds of Q108 on FR-136 and Q26 on FR-172 first. Closed already: FR-125, FR-137, FR-138
   - F117 the names, by Bader's answer to Q105 to Q107: FR-109, FR-110, FR-149
   - then F124 D1, one public type per file: FR-174, moves only, last
+- Beside the waves, Bader's lane of 2026-10-05, Q129, worked by a fourth worker in its own worktree and
+  never on a file a fix lane is changing at the time: F133 the work tracker, FR-191, F134 the code
+  health gate, FR-192, and F135 the analyser settings that touch every project, FR-193, merged alone at
+  a quiet moment. The gate's lists are the work list of waves 4 and 5
 
 Bader's five requests of the evening of 2026-10-04, Q112, are added to the round as FR-175 to
 FR-179, under their own heading below, each measured before it is written, test first, and
@@ -4826,6 +4830,54 @@ below. His points 3 and 5 ask for a measurement first, and his proof, points 18 
   Detective for one clash close up
 - Class: Bader's decision
 - Designed on 2026-10-05, turn5\q114-design.md section 7
+
+## Bader's tracker and code health gate, FR-191 to FR-193
+
+Added by Bader's message of the morning of 2026-10-05 headed A CLEAN TRACKER AND A CODE HEALTH GATE,
+IN PARALLEL WITH THE FIXES, in his words under Q129 of steps\02_questions.md. Decisions, not faults
+found, so they sit outside the counts of the table below. A lane of its own beside the waves, which
+never holds back the viewpoints.
+
+### FR-191 work-tracker-one-place-for-status
+
+- Sources: Q129, part 1. Area F133, beside the waves
+- What he decided: steps\tracker.csv, one row per FR item, F area, request of his and question
+  waiting for him, with the columns id, short title, area, wave, class, status, PR, the run that
+  proved it and the date of the last change. Status is one of open, in progress, in review, merged,
+  proven by a run, waiting for Bader and dropped. steps\tracker.md is made from it by a script under
+  tools\tracker, its counts and what is in progress and waiting at the top in under 15 lines. Every
+  pull request that changes an item's status updates its row. steps\loop.md and this file keep their
+  narrative and point at the tracker for status
+- Proof: a check in Actions that fails when the tracker does not parse, an id appears twice, a status
+  is not one of the list or an FR item of this file has no row, each failure shown by a fixture that
+  breaks one thing
+- Class: Bader's decision
+
+### FR-192 code-health-gate-lists-only-shrink
+
+- Sources: Q129, part 2. Area F134, beside the waves
+- What he decided: nine counts measured first and written as the starting line of
+  steps\code-health.md: members with no caller in src, private members, locals, parameters and
+  usings nothing uses by the compiler's own analysers, catches that swallow an error, files holding
+  more than one public type, files over 1,000 lines, doubled or orphan summary blocks, window
+  controls with no handler and handlers with no control, settings nothing reads, and test files with
+  no source file and source files with no test file. Each gets a check in Actions on every pull
+  request with today's offenders in a baseline list that only shrinks, and steps\code-health.md one
+  row per merge
+- Measure first: on main 6fff40a, %LOCALAPPDATA%\NwcFederatorLoop\health, each count proved by a
+  second reader that plants a known offender, before its check is trusted. Actions has no Navisworks,
+  so what each check misses for the add-in is said
+- Proof: each check refuses a fixture holding one new offender, and passes when one is taken off
+- Class: Bader's decision
+
+### FR-193 analyser-settings-merged-alone
+
+- Sources: Q129, parts 2 and 3. Area F135, beside the waves
+- What he decided: the compiler's analysers turned on in the build of every project, merged alone at
+  a quiet moment so no fix branch is left on red
+- Proof: the full solution built on main and on every open fix branch merged with it, each with its
+  warning and error counts
+- Class: Bader's decision
 
 ## The areas at a glance
 
