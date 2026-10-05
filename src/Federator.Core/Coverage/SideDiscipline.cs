@@ -21,7 +21,7 @@ namespace Federator.Core.Coverage
         /// <summary>The set's name carries no discipline code.</summary>
         NoCode,
 
-        /// <summary>The codes of the group's files or of the run's were not handed in.</summary>
+        /// <summary>The codes of the group's files or of the run's were not handed in, or the group's files gave none.</summary>
         CodesNotRead,
 
         /// <summary>The side's count is minus one, UNKNOWN and never zero.</summary>

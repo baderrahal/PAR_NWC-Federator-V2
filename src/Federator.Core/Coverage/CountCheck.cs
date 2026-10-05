@@ -12,22 +12,29 @@ namespace Federator.Core.Coverage
     /// not a note, and to use the F104 check for it, and his answer to the lead's notes says
     /// the FAILED line goes in COVERAGE and RESULT and the group keeps its own result.
     ///
-    /// F104'S CHECKS 1 AND 2, RESTATED. The clash rows under a test's block against the
-    /// document's results at the top level, a result group counting as one, and the Clashes
-    /// cell against every clash in the test, the clashes inside each group counted. Both
-    /// exact. compare-document.ps1 stays the independent witness, because this check reads
-    /// the document through the add-in, which the harvest reads through too, and a check
-    /// sharing the code it checks cannot catch a fault common to both.
+    /// F104'S CHECKS 1 AND 2, RESTATED, not copied. The clash rows under a test's block
+    /// against the document's results at the top level, a result group counting as one, and
+    /// the Clashes cell against every clash in the test, the clashes inside each group
+    /// counted. Both exact. Two differences from compare-document.ps1, said so neither is
+    /// read as the other: its check 2 names an empty result group, which the harvest counts
+    /// as one clash, and this check has no such words, and a test in the workbook only whose
+    /// every number is nought is counted there and not judged, where here it is a test F77
+    /// did not create and AGREES. compare-document.ps1 stays the independent witness, because
+    /// this check reads the document through the add-in, which the harvest reads through too,
+    /// and a check sharing the code it checks cannot catch a fault common to both.
     ///
-    /// AGREE only when both numbers equal on both sides, or when the test is not in the
-    /// document and its block reads no row and Clashes nought, which is a test F77 did not
-    /// create. FAILED for every other difference, a test the document holds with no block,
-    /// and a block with numbers for a test the document does not hold. Where the run knows
-    /// why, the line says it: a test not run this run whose NWF still holds an earlier run's
-    /// results, decision 4 of the design at its default A, and results Compact removed after
-    /// the rows were read. NOT COMPARED, never Agree, where a count on either side is minus
-    /// one, a name is on two tests of one side, a test is in neither, or a side was not read,
-    /// with the reason.
+    /// AGREE only when both numbers equal on both sides, or when a test the run did not hold
+    /// as in the document is not there and its block reads no row and Clashes nought, which
+    /// is a test F77 did not create. FAILED for every other difference, a test the document
+    /// holds with no block, and a block with numbers for a test the document does not hold.
+    /// Where the run knows why, the line says it, and only what the record proves: a test
+    /// already in the NWF and not run this run still holds an earlier run's results,
+    /// decision 4 of the design at its default A, a test created this run that Clash
+    /// Detective holds results for ran and then threw before its rows or count were taken,
+    /// and Compact removed Resolved clashes after the rows were read where its count is at
+    /// least the gap. NOT COMPARED, never Agree, where a count on either side is minus one, a
+    /// name is on two tests of one side, a test is in neither, a side was not read, or a test
+    /// the run holds as in the document was not returned by the read of it, with the reason.
     ///
     /// THE GROUP KEEPS ITS OWN RESULT BY CONSTRUCTION. Nothing here touches GroupFacts or
     /// adds an error, and a report check never fails a group.
@@ -124,6 +131,22 @@ namespace Federator.Core.Coverage
                 + ". The group keeps its own result";
         }
 
+        /// <summary>How many tests got that verdict, so nought FAILED is never read without what was compared.</summary>
+        public int CountOf(CountVerdict verdict)
+        {
+            int count = 0;
+
+            foreach (CountedTest test in tests)
+            {
+                if (test.Verdict == verdict)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
         /// <summary>Every FAILED line of this check, in the order of the file.</summary>
         public IList<string> FailedLines(string group)
         {
@@ -208,9 +231,19 @@ namespace Federator.Core.Coverage
 
             if (d == null)
             {
-                return new CountedTest(test.Name,
-                    w.Rows == 0 && w.Clashes == 0 ? CountVerdict.Agree : CountVerdict.Failed,
-                    false, -1, -1, true, rows, clashes, string.Empty);
+                if (w.Rows != 0 || w.Clashes != 0)
+                {
+                    return new CountedTest(test.Name, CountVerdict.Failed, false, -1, -1, true, rows, clashes, string.Empty);
+                }
+
+                // A test the runner created or found already there that the read did not
+                // return has gone from the document, a walk that stopped early or a name
+                // Navisworks changed, and a block of nought matches nothing.
+                return test.Presence == TestPresence.CreatedThisRun || test.Presence == TestPresence.AlreadyThere
+                    ? new CountedTest(test.Name, CountVerdict.NotCompared, false, -1, -1, true, rows, clashes,
+                        "the run holds it as " + CoverageWords.For(test.Presence)
+                            + " and the read of Clash Detective did not return it")
+                    : new CountedTest(test.Name, CountVerdict.Agree, false, -1, -1, true, rows, clashes, string.Empty);
             }
 
             if (w == null)
@@ -227,19 +260,39 @@ namespace Federator.Core.Coverage
                 WhyItDiffers(test, d, w, compacted));
         }
 
-        /// <summary>The reason the run knows for a difference, or empty where it knows none.</summary>
+        /// <summary>
+        /// The reason the run knows for a difference, or empty where it knows none. Only what
+        /// the record proves. The runner records a test as Failed for a throw anywhere from
+        /// its creation to its count, its harvest included, and never as ran, so a Failed test
+        /// is never said to be not run. A test created this run starts with no results, so
+        /// one Clash Detective holds results for ran this run. Compact's count is the group's,
+        /// so it is named as the cause only where it is at least this test's gap.
+        /// </summary>
         private static string WhyItDiffers(TestCoverage test, DocumentTestCount d, WorkbookTest w, int compacted)
         {
-            if (!test.Ran && d.Leaves > w.Clashes)
+            if (test.Reason == CoverageReason.Failed)
             {
-                return "it was not run this run, so the NWF still holds an earlier run's results "
-                    + "and the workbook carries none of them";
+                return test.Presence == TestPresence.CreatedThisRun && (d.TopLevel > 0 || d.Leaves > 0)
+                    ? "it was created this run and Clash Detective holds results for it, so it ran this run, "
+                        + "and then the clash step threw before its rows or its count were taken: " + test.Detail
+                    : "the clash step threw on it, so whether it ran this run is UNKNOWN: " + test.Detail;
+            }
+
+            if (!test.Ran && test.Presence == TestPresence.AlreadyThere && d.Leaves > w.Clashes)
+            {
+                return "it was already in the document and was not run this run, "
+                    + "so Clash Detective still holds an earlier run's results";
             }
 
             if (test.Ran && compacted > 0 && w.Clashes > d.Leaves)
             {
+                int gap = w.Clashes - d.Leaves;
+
                 return "Compact removed " + Count(compacted, "Resolved clash", "Resolved clashes")
-                    + " from the document after the workbook's rows were read";
+                    + " across the group after the workbook's rows were read, "
+                    + (gap <= compacted
+                        ? "as many as or more than this test's gap of " + gap
+                        : "fewer than this test's gap of " + gap + ", so Compact is not the whole of it");
             }
 
             return string.Empty;

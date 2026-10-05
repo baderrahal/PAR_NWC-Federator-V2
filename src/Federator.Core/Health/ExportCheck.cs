@@ -202,9 +202,11 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// How many workset names are listed before the rest are counted. Ten, the same
-        /// number SetsAcrossTheRun names, and the block SAYS it truncated rather than
-        /// leaving a reader to wonder.
+        /// How many workset names are listed before the rest are counted, and the block SAYS
+        /// it truncated rather than leaving a reader to wonder. Ten, taken when the block was
+        /// written from the ten SetsAcrossTheRun named then. That number is no longer shared:
+        /// since F127 SetsAcrossTheRun names every set that found nothing, through
+        /// CoverageSettings.SetsAtZeroNamedInTheRun, and this one stays ten.
         /// </summary>
         public const int NamesShown = 10;
 

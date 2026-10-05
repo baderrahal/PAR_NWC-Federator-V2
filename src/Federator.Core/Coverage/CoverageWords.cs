@@ -23,6 +23,8 @@ namespace Federator.Core.Coverage
                     return "ran and found no clashes";
                 case CoverageReason.NotCreated:
                     return "the test was not created";
+                case CoverageReason.SavedTestNotRun:
+                    return "already in the document and not run, a saved test this tool does not run";
                 case CoverageReason.NoTestResolvesASet:
                     return "the test was not created, no test of the file resolves a set";
                 case CoverageReason.DisciplineNotInGroup:
@@ -36,7 +38,7 @@ namespace Federator.Core.Coverage
                     return "a side's set found no items and its name carries no discipline code, "
                         + "so whether its discipline is in the group is UNKNOWN";
                 case CoverageReason.CodesNotRead:
-                    return "a side's set found no items and the disciplines of the models were not read, "
+                    return "a side's set found no items and the discipline codes of the models are not known, "
                         + "so whether its discipline is in the group is UNKNOWN";
                 case CoverageReason.SideNotCounted:
                     return "a side was not counted, so why it has no results is UNKNOWN";
@@ -45,7 +47,7 @@ namespace Federator.Core.Coverage
                 case CoverageReason.OneDiscipline:
                     return "not run, the group holds one discipline";
                 case CoverageReason.Failed:
-                    return "creating or running it threw";
+                    return "creating it, running it or reading its results threw";
                 case CoverageReason.NotReached:
                     return "not reached, the run was stopped";
                 default:

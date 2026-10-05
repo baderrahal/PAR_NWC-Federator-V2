@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Federator.Core.Coverage;
-using Federator.Core.Diagnostics;
 using Federator.Core.Report;
-using Federator.Core.Rerun;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests
@@ -49,6 +45,27 @@ namespace Federator.Core.Tests
         {
             return new TestCoverage(1, name, string.Empty, string.Empty, 0, 2, TestPresence.AlreadyThere,
                 false, -1, CoverageReason.SideFoundNothing, string.Empty);
+        }
+
+        /// <summary>A test F77 kept out: not in the document and never run.</summary>
+        private static TestCoverage KeptOut(string name)
+        {
+            return new TestCoverage(1, name, string.Empty, string.Empty, 0, 2, TestPresence.NotInDocument,
+                false, -1, CoverageReason.SideFoundNothing, string.Empty);
+        }
+
+        /// <summary>A test the clash step recorded as Failed, with what it threw.</summary>
+        private static TestCoverage Threw(string name, TestPresence presence, string what)
+        {
+            return new TestCoverage(1, name, string.Empty, string.Empty, 2, 2, presence,
+                false, -1, CoverageReason.Failed, what);
+        }
+
+        /// <summary>A test created this run and not run, its clash skipped by the coordinates rule.</summary>
+        private static TestCoverage CreatedNotRun(string name)
+        {
+            return new TestCoverage(1, name, string.Empty, string.Empty, 2, 2, TestPresence.CreatedThisRun,
+                false, -1, CoverageReason.CoordinatesRule, string.Empty);
         }
 
         private static IList<TestCoverage> Tests(params TestCoverage[] tests)
@@ -123,9 +140,26 @@ namespace Federator.Core.Tests
         [Test]
         public void ATestNotInTheDocumentThatTheWorkbookReadsAsNoneAgrees()
         {
-            CountCheck check = Judge(Tests(NotRun("T")), Document(), Workbook("T", 0, 0));
+            CountCheck check = Judge(Tests(KeptOut("T")), Document(), Workbook("T", 0, 0));
 
             Assert.That(Judged(check, "T").Verdict, Is.EqualTo(CountVerdict.Agree));
+        }
+
+        /// <summary>
+        /// The breaker's reading of attempt 1. A test the runner holds as created this run
+        /// or already there that the read of Clash Detective does not return has gone from
+        /// the document, a walk that stopped early or a name Navisworks changed. Its block
+        /// reading nought matches nothing, so it is never Agree and says why.
+        /// </summary>
+        [Test]
+        public void ATestTheRunHoldsAsPresentThatTheDocumentDidNotReturnIsNotComparedNeverAgree()
+        {
+            CountCheck check = Judge(Tests(Ran("T"), NotRun("U")), Document(), Workbook("T", 0, 0, "U", 0, 0));
+
+            Assert.That(Judged(check, "T").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "T").Why, Does.Contain("created this run"));
+            Assert.That(Judged(check, "U").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "U").Why, Does.Contain("already there"));
         }
 
         // ---------- failed, each by one number ----------
@@ -211,6 +245,80 @@ namespace Federator.Core.Tests
             Assert.That(test.Why, Does.Contain("Compact"));
         }
 
+        /// <summary>
+        /// The breaker's reading of attempt 1. Compact's count is the group's, so it explains
+        /// a test's gap only where it is at least that gap. A test whose workbook reads two
+        /// clashes more than the document beside a Compact of one is never read as explained.
+        /// </summary>
+        [Test]
+        public void CompactIsNeverGivenAsTheCauseOfAGapBiggerThanWhatItRemoved()
+        {
+            CountCheck check = CountCheck.Judge(Tests(Ran("T")), Document(InDocument("T", 1, 1)),
+                Workbook("T", 3, 0), null, 1);
+            CountedTest test = Judged(check, "T");
+
+            Assert.That(test.Verdict, Is.EqualTo(CountVerdict.Failed));
+            Assert.That(test.Why, Does.Contain("fewer than this test's gap of 2"));
+            Assert.That(test.Why, Does.Not.Contain("after the workbook's rows were read, as many"));
+        }
+
+        /// <summary>
+        /// The breaker's blocking finding on attempt 1. A test this run created and ran,
+        /// whose harvest or count then threw, is recorded Failed and never as ran. Clash
+        /// Detective holds its results and the workbook none. The line must never say it was
+        /// not run, or that the NWF holds an earlier run's results, because a test created
+        /// this run holds none, and it carries what was thrown.
+        /// </summary>
+        [Test]
+        public void ATestCreatedAndRunWhoseRowsOrCountThenThrewIsNeverSaidToBeNotRun()
+        {
+            CountCheck check = Judge(
+                Tests(Threw("T", TestPresence.CreatedThisRun, "InvalidOperationException: the harvest broke")),
+                Document(InDocument("T", 40, 40)), Workbook("T", 0, 0));
+            CountedTest test = Judged(check, "T");
+
+            Assert.That(test.Verdict, Is.EqualTo(CountVerdict.Failed));
+            Assert.That(test.Why, Does.Not.Contain("not run this run"));
+            Assert.That(test.Why, Does.Not.Contain("earlier run"));
+            Assert.That(test.Why, Does.Contain("ran this run"));
+            Assert.That(test.Why, Does.Contain("the harvest broke"));
+            Assert.That(CountCheck.FailedLine("100000", test), Does.Contain(test.Why));
+        }
+
+        /// <summary>
+        /// A test already in the NWF that threw: whether its results are this run's or an
+        /// earlier run's cannot be told off the record, so it says UNKNOWN and never names
+        /// the weekly run as the cause.
+        /// </summary>
+        [Test]
+        public void AnAlreadyThereTestThatThrewSaysWhetherItRanIsUnknown()
+        {
+            CountCheck check = Judge(
+                Tests(Threw("T", TestPresence.AlreadyThere, "COMException: the test is busy")),
+                Document(InDocument("T", 4, 4)), Workbook("T", 0, 0));
+            CountedTest test = Judged(check, "T");
+
+            Assert.That(test.Verdict, Is.EqualTo(CountVerdict.Failed));
+            Assert.That(test.Why, Does.Contain("UNKNOWN"));
+            Assert.That(test.Why, Does.Not.Contain("not run this run"));
+            Assert.That(test.Why, Does.Contain("the test is busy"));
+        }
+
+        /// <summary>
+        /// The weekly cause belongs to a test already in the NWF alone. A test created this
+        /// run and skipped by the coordinates rule holds no earlier run's results, so a
+        /// difference there is said with no cause rather than the wrong one.
+        /// </summary>
+        [Test]
+        public void ATestCreatedThisRunAndNotRunIsNeverSaidToHoldAnEarlierRunsResults()
+        {
+            CountCheck check = Judge(Tests(CreatedNotRun("T")), Document(InDocument("T", 2, 2)), Workbook("T", 0, 0));
+            CountedTest test = Judged(check, "T");
+
+            Assert.That(test.Verdict, Is.EqualTo(CountVerdict.Failed));
+            Assert.That(test.Why, Does.Not.Contain("earlier run"));
+        }
+
         // ---------- not compared, and never agree ----------
 
         [Test]
@@ -227,6 +335,75 @@ namespace Federator.Core.Tests
             CountCheck check = Judge(Tests(Ran("T")), Document(InDocument("T", 0, -1)), Workbook("T", 0, 0));
 
             Assert.That(Judged(check, "T").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+        }
+
+        /// <summary>
+        /// The reviewer's blocking finding on attempt 1: minus one on the workbook's side. A
+        /// real xlsx with one Clashes cell broken reads minus one there, and the count check
+        /// says its block could not be read whole, NOT COMPARED, and never a FAILED line
+        /// against the document's two.
+        /// </summary>
+        [Test]
+        public void ABlockWhoseClashesCellIsNoWholeNumberIsNotComparedAndNeverFailed()
+        {
+            ClashReport report = new ClashReport("100000", "1104-PAR-100000-ZZZ-BM-RPT-000001");
+            WorkbookTestsTests.AddTest(report, "T", 2, 0);
+            string path = WorkbookTestsTests.Write(report, folder);
+
+            using (ClosedXML.Excel.XLWorkbook workbook = new ClosedXML.Excel.XLWorkbook(path))
+            {
+                ClosedXML.Excel.IXLWorksheet sheet = workbook.Worksheet(1);
+                sheet.Cell(RowOf(sheet, "T") + 1, WorkbookWriter.ColumnTestHeader + 1).Value = "two";
+                workbook.Save();
+            }
+
+            WorkbookTests read = WorkbookTestsTests.ReadBack(path);
+            CountCheck check = Judge(Tests(Ran("T")), Document(InDocument("T", 2, 2)), read);
+            CountedTest test = Judged(check, "T");
+
+            Assert.That(read.Named("T")[0].Clashes, Is.EqualTo(-1), "the broken cell reads minus one");
+            Assert.That(test.Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(test.Why, Does.Contain("could not be read whole"));
+            Assert.That(check.FailedLines("100000"), Is.Empty);
+        }
+
+        /// <summary>The same for a full block whose clash table is gone, its rows read as minus one.</summary>
+        [Test]
+        public void ABlockWithNoClashTableUnderItIsNotComparedAndNeverFailed()
+        {
+            ClashReport report = new ClashReport("100000", "1104-PAR-100000-ZZZ-BM-RPT-000001");
+            WorkbookTestsTests.AddTest(report, "T", 2, 0);
+            string path = WorkbookTestsTests.Write(report, folder);
+
+            using (ClosedXML.Excel.XLWorkbook workbook = new ClosedXML.Excel.XLWorkbook(path))
+            {
+                ClosedXML.Excel.IXLWorksheet sheet = workbook.Worksheet(1);
+                sheet.Cell(RowOf(sheet, "T") + 4, WorkbookWriter.ColumnClashName).Clear(ClosedXML.Excel.XLClearOptions.Contents);
+                workbook.Save();
+            }
+
+            WorkbookTests read = WorkbookTestsTests.ReadBack(path);
+            CountCheck check = Judge(Tests(Ran("T")), Document(InDocument("T", 2, 2)), read);
+            CountedTest test = Judged(check, "T");
+
+            Assert.That(read.Named("T")[0].Rows, Is.EqualTo(-1), "no clash table reads minus one rows");
+            Assert.That(test.Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(test.Why, Does.Contain("could not be read whole"));
+        }
+
+        private static int RowOf(ClosedXML.Excel.IXLWorksheet sheet, string name)
+        {
+            int last = sheet.LastRowUsed().RowNumber();
+
+            for (int row = 1; row <= last; row++)
+            {
+                if (sheet.Cell(row, 1).GetString() == name)
+                {
+                    return row;
+                }
+            }
+
+            throw new InvalidOperationException(name + " is not on the sheet");
         }
 
         [Test]
@@ -322,55 +499,19 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// THE GROUP KEEPS ITS OWN RESULT, by construction. GroupFacts has no coverage member
-        /// and nothing here adds an error, so a group judged DONE stays DONE beside a COVERAGE
-        /// FAILED line, RESULT counts no failed group, and the line is in the log.
+        /// The totals RESULT reads, one per verdict, so a run where nothing was compared
+        /// never reads as nought FAILED and nothing else, the breaker's reading of attempt 1.
         /// </summary>
         [Test]
-        public void ADoneGroupBesideACoverageFailedLineStaysDoneAndResultCountsNoFailedGroup()
+        public void TheCheckCountsEachVerdictAndTheyAddUpToTheTests()
         {
-            GroupFacts facts = new GroupFacts
-            {
-                Decision = RerunDecision.Build,
-                NwfOnDisk = true,
-                NwdRequested = true,
-                NwdOnDisk = true,
-                NwdPublishReportedSuccess = true,
-                AppendedCount = 3,
-                FileCount = 3,
-                FailedFileCount = 0
-            };
+            CountCheck check = Judge(Tests(Ran("A"), Ran("B"), Ran("C"), Ran("D")),
+                Document(InDocument("A", 1, 1), InDocument("B", 2, 2), InDocument("C", -1, -1)),
+                Workbook("A", 1, 0, "B", 1, 0, "C", 0, 0));
 
-            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
-
-            CountCheck check = Judge(Tests(Ran("T")), Document(InDocument("T", 1, 1)), Workbook("T", 2, 0));
-            string logFolder = Path.Combine(folder, "logs");
-
-            using (RunLog log = RunLog.Start(logFolder, new DateTime(2026, 10, 5, 3, 0, 0)))
-            {
-                foreach (string line in check.FailedLines("100000"))
-                {
-                    log.Line(line);
-                }
-
-                log.GroupFinished("100000", GroupJudgement.Judge(facts), 1.0, null, null);
-                log.WriteResultBlock();
-
-                string text;
-
-                using (FileStream stream = new FileStream(log.Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                {
-                    text = reader.ReadToEnd();
-                }
-
-                Assert.That(text, Does.Contain("COVERAGE FAILED  100000  T  "));
-                Assert.That(text, Does.Contain("groups done    : 1"));
-                Assert.That(text, Does.Contain("groups failed  : 0"));
-                Assert.That(text, Does.Contain("Nothing failed."));
-                Assert.That(facts.HasErrors, Is.False);
-                Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
-            }
+            Assert.That(check.CountOf(CountVerdict.Agree), Is.EqualTo(1), "A");
+            Assert.That(check.CountOf(CountVerdict.Failed), Is.EqualTo(1), "B");
+            Assert.That(check.CountOf(CountVerdict.NotCompared), Is.EqualTo(2), "C counted minus one, D in neither");
         }
 
         [Test]

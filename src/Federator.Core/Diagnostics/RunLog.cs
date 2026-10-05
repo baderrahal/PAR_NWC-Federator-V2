@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using Federator.Core.Clash;
+using Federator.Core.Coverage;
 using Federator.Core.Health;
 using Federator.Core.Rerun;
 
@@ -1773,8 +1774,15 @@ namespace Federator.Core.Diagnostics
         /// window, so a second run of a window can never carry the first run's groups. A group
         /// whose clash was skipped is NOT in ClashesFound, because a clash that never ran is
         /// not a clash count of zero.
+        ///
+        /// coverage is the count check of the same run, F127, handed in the same way and
+        /// never kept. Bader's answer to the lead's notes under Q112: a count that differs is
+        /// a FAILED line in COVERAGE and RESULT, and the group keeps its own result. So every
+        /// FAILED line is written here in full, no group's count moves, and the block never
+        /// closes on Nothing failed beside one. Null writes one line saying no coverage was
+        /// taken, because a missing line reads as a check that did not run.
         /// </summary>
-        public void WriteResultBlock(OffCoordinatesAcrossTheRun thisRun = null)
+        public void WriteResultBlock(OffCoordinatesAcrossTheRun thisRun = null, CoverageAcrossTheRun coverage = null)
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
             // to be scrolled for, and so where the time went is read on the way to it.
@@ -1869,6 +1877,22 @@ namespace Federator.Core.Diagnostics
                 }
             }
 
+            // F127. Beside the clash total, because it says whether the workbook carries
+            // what Clash Detective holds.
+            Blank();
+
+            if (coverage == null)
+            {
+                Line(CoverageAcrossTheRun.NoneTaken());
+            }
+            else
+            {
+                foreach (string line in coverage.ResultLines())
+                {
+                    Line(line);
+                }
+            }
+
             Blank();
 
             // F83. Clashes by priority across the run, only where a file was picked, for
@@ -1917,9 +1941,13 @@ namespace Federator.Core.Diagnostics
             int total = failedGroups.Count + errors.Count;
             Blank();
 
+            // F127. A COVERAGE FAILED line leaves every group its result, so it is not in
+            // the errors, and the block still never says Nothing failed beside one.
+            string coverageFailed = coverage == null ? null : coverage.InsteadOfNothingFailed();
+
             if (total == 0)
             {
-                Line("Nothing failed.");
+                Line(coverageFailed ?? "Nothing failed.");
             }
             else
             {

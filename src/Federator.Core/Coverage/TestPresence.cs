@@ -18,8 +18,9 @@ namespace Federator.Core.Coverage
         NotInDocument,
 
         /// <summary>
-        /// The runner never looked: the plan dropped the test before the model, a set it
-        /// names is not in the document, no test resolved a set, or the run never reached it.
+        /// The runner never looked: the plan dropped a test of the picked file before the
+        /// model, a set it names is not in the document, no test resolved a set, or the run
+        /// never reached it.
         /// </summary>
         Unknown
     }

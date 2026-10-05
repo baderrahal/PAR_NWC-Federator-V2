@@ -15,14 +15,22 @@ namespace Federator.Core.Coverage
         RanAndFoundNone,
 
         /// <summary>
-        /// The test was not created: the plan dropped it before the model, an unknown test
-        /// type, no locator, no tolerance, no name or units it cannot convert, or a set it
-        /// names is not in the document. The words of ClashTestPlan.Describe go beside it.
+        /// The test was not created: the plan dropped a test of the picked file before the
+        /// model, an unknown test type, no locator, no tolerance, no name or units it cannot
+        /// convert, or a set it names is not in the document. The words of
+        /// ClashTestPlan.Describe go beside it.
         /// </summary>
         NotCreated,
 
         /// <summary>The test was not created because no test of the file resolves a set.</summary>
         NoTestResolvesASet,
+
+        /// <summary>
+        /// With no XML picked, a test saved in the document that the plan leaves out, a type
+        /// number this tool does not run or no name. It was read out of the document, so it
+        /// is there, and it was not run. The plan's own words go beside it.
+        /// </summary>
+        SavedTestNotRun,
 
         /// <summary>A side's set found no items and its discipline code is carried by no file of this group.</summary>
         DisciplineNotInGroup,
@@ -41,8 +49,9 @@ namespace Federator.Core.Coverage
         SetNameCarriesNoCode,
 
         /// <summary>
-        /// A side's set found no items and the disciplines of the models were not handed in,
-        /// so whether its discipline is in the group is UNKNOWN.
+        /// A side's set found no items and the discipline codes of the models are not known,
+        /// not handed in or none given by the group's files, so whether its discipline is in
+        /// the group is UNKNOWN.
         /// </summary>
         CodesNotRead,
 
@@ -55,7 +64,10 @@ namespace Federator.Core.Coverage
         /// <summary>It was not run because the group holds one discipline.</summary>
         OneDiscipline,
 
-        /// <summary>Creating or running it threw.</summary>
+        /// <summary>
+        /// The clash step threw on it, anywhere from creating it to counting its results, its
+        /// harvest included, so whether it ran is not on the record.
+        /// </summary>
         Failed,
 
         /// <summary>The run was stopped before it reached this test.</summary>

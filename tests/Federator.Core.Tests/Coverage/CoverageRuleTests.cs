@@ -515,6 +515,96 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// The reviewer's and the breaker's reading of attempt 1. A test the plan dropped
+        /// shares its name with one F77 kept out. The runner adds the plan's skip first, so
+        /// the kept out test's record by name is the dropped test's, and it would read the
+        /// test was not created with the other test's words. It reads UNKNOWN, and the
+        /// dropped test keeps the plan's own reason, which the plan keys on its place.
+        /// </summary>
+        [Test]
+        public void ATestSharingItsNameWithOneThePlanDroppedIsUnknownRatherThanGivenTheOthersReason()
+        {
+            ClashTestPlan plan = Plan(Test("T", ArWalls, ArFloors, "bogus", true), Test("T", ArStairs, ArFloors));
+            IList<TestCoverage> rows = Coverage(plan, RunAsTheRunnerDoes(plan, Counts(ArStairs, 0, ArFloors, 2)));
+
+            Assert.That(rows.Count, Is.EqualTo(2));
+            Assert.That(rows[0].Reason, Is.EqualTo(CoverageReason.NotCreated));
+            Assert.That(rows[0].Detail, Does.Contain("bogus"));
+            Assert.That(rows[1].Reason, Is.EqualTo(CoverageReason.Unknown));
+            Assert.That(rows[1].Detail, Does.Contain("2 tests"));
+            Assert.That(rows[1].Detail, Does.Not.Contain("bogus"));
+        }
+
+        /// <summary>
+        /// The breaker's reading of attempt 1. A group whose files gave no code carries an
+        /// empty set of codes, which is not a read that found the discipline missing, so it
+        /// is UNKNOWN and never the definite the discipline is not in the group.
+        /// </summary>
+        [Test]
+        public void AGroupWhoseFilesGaveNoCodeIsUnknownAndNeverTheDisciplineNotInTheGroup()
+        {
+            ClashTestPlan plan = Plan(Test("T", StFoundation, ArFloors));
+            IList<TestCoverage> rows = CoverageRule.For(plan,
+                RunAsTheRunnerDoes(plan, Counts(StFoundation, 0, ArFloors, 2)), new string[0], RunCodes,
+                new ViewpointSettings());
+
+            Assert.That(rows[0].Reason, Is.EqualTo(CoverageReason.CodesNotRead));
+            Assert.That(rows[0].Detail, Does.Contain("the group's files carry no discipline code"));
+        }
+
+        // ---------- the saved tests with no XML ----------
+
+        /// <summary>
+        /// The reviewer's blocking finding on attempt 1. With no XML picked the plan is read
+        /// off the tests saved in the document, and it drops a saved test whose type number
+        /// is not one this tool runs and one with no name. Both were read out of the
+        /// document, so they are in it, already there and not run, with the plan's own
+        /// words, and never the test was not created. The same with no clash step at all.
+        /// </summary>
+        [Test]
+        public void ASavedTestThePlanDropsIsAlreadyThereAndNotRunNeverNotCreated()
+        {
+            SavedClashTest odd = new SavedClashTest("Odd", 9, 0.08, true,
+                false, 1, ArWalls, false, 1, ArFloors, new[] { 0 });
+            SavedClashTest nameless = new SavedClashTest(string.Empty, (int)ClashTestKind.HardConservative, 0.08, true,
+                false, 1, ArWalls, false, 1, ArFloors, new[] { 1 });
+            SavedClashTest kept = new SavedClashTest("T", (int)ClashTestKind.HardConservative, 0.08, true,
+                false, 1, ArWalls, false, 1, ArFloors, new[] { 2 });
+            ClashTestPlan plan = ClashTestPlan.FromDocument(new[] { odd, nameless, kept }, "ft");
+            Assert.That(plan.Skipped.Count, Is.EqualTo(2), "the plan drops the odd type and the nameless test");
+
+            ClashRunOutcome outcome = new ClashRunOutcome();
+
+            foreach (SkippedClashTest skipped in plan.Skipped)
+            {
+                outcome.AddSkipped(skipped);
+            }
+
+            outcome.AddAlreadyPresent("T");
+            outcome.AddRan("T", 2, 2, Clashes(1), 0.1);
+
+            foreach (ClashRunOutcome run in new[] { outcome, null })
+            {
+                IList<TestCoverage> rows = Coverage(plan, run);
+
+                Assert.That(rows.Count, Is.EqualTo(3));
+
+                for (int i = 0; i < 2; i++)
+                {
+                    Assert.That(rows[i].Reason, Is.EqualTo(CoverageReason.SavedTestNotRun), rows[i].Name);
+                    Assert.That(rows[i].Reason, Is.Not.EqualTo(CoverageReason.NotCreated));
+                    Assert.That(rows[i].Presence, Is.EqualTo(TestPresence.AlreadyThere), rows[i].Name);
+                    Assert.That(rows[i].Ran, Is.False);
+                }
+
+                Assert.That(rows[0].Detail, Does.Contain("type number 9"));
+                Assert.That(rows[1].Detail, Does.Contain("carries no name"));
+            }
+
+            Assert.That(Coverage(plan, outcome)[2].Reason, Is.EqualTo(CoverageReason.HasClashes));
+        }
+
         // ---------- the whole file ----------
 
         [Test]

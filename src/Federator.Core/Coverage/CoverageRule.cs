@@ -31,10 +31,16 @@ namespace Federator.Core.Coverage
     /// and reads UNKNOWN, and a side that did find nothing beside it still gives its reason,
     /// because a definite reason is given wherever one exists.
     ///
-    /// THE RUNNER KEYS ITS RECORD ON THE NAME, so two tests of the file with one name cannot
-    /// be told apart in it and both read UNKNOWN rather than one taking the other's result.
-    /// A run with no record at all reads UNKNOWN, except for the tests the plan itself
-    /// dropped, whose reason the plan holds.
+    /// THE RUNNER KEYS ITS RECORD ON THE NAME, so a test sharing its name with another test
+    /// of the file, one the plan dropped included, reads UNKNOWN wherever its reason would
+    /// come off that record, rather than taking the other's result. A test the plan dropped
+    /// keeps the plan's own reason, because the plan keys it on its place in the file. A run
+    /// with no record at all reads UNKNOWN, except for the tests the plan itself dropped.
+    ///
+    /// THE SAVED TESTS WITH NO XML. The plan is then read off the tests saved in the
+    /// document, and a test it drops, a type number this tool does not run or no name, was
+    /// read out of the document. It is already there and not run, with the plan's words, and
+    /// never the test was not created.
     /// </summary>
     public static class CoverageRule
     {
@@ -43,7 +49,9 @@ namespace Federator.Core.Coverage
         /// the plan was read off the tests saved there. The outcome is the clash step's
         /// record, null where it never ran. The codes are the discipline codes of the
         /// group's files and of every file of the run, null where they were not read, and
-        /// the settings say which codes a set name can carry.
+        /// an empty set of the group's is read as not read too, because a group whose files
+        /// gave no code says nothing about which disciplines it holds. The settings say
+        /// which codes a set name can carry.
         /// </summary>
         public static IList<TestCoverage> For(
             ClashTestPlan plan,
@@ -83,6 +91,12 @@ namespace Federator.Core.Coverage
                 if (!buildable.ContainsKey(test.FileIndex) && !dropped.ContainsKey(test.FileIndex))
                 {
                     dropped.Add(test.FileIndex, test);
+
+                    // The runner adds the plan's own skips to its record first, under the
+                    // same name, so a buildable test of this name cannot be told from it.
+                    int already;
+                    testsNamed.TryGetValue(test.Name, out already);
+                    testsNamed[test.Name] = already + 1;
                 }
             }
 
@@ -104,9 +118,13 @@ namespace Federator.Core.Coverage
                 }
 
                 SkippedClashTest skipped = dropped[index];
-                rows.Add(new TestCoverage(
-                    index + 1, skipped.Name, string.Empty, string.Empty, -1, -1,
-                    TestPresence.Unknown, false, -1, CoverageReason.NotCreated, NotCreatedDetail(skipped)));
+                rows.Add(plan.Source == ClashPlanSource.Document
+                    ? new TestCoverage(
+                        index + 1, skipped.Name, string.Empty, string.Empty, -1, -1,
+                        TestPresence.AlreadyThere, false, -1, CoverageReason.SavedTestNotRun, skipped.Reason)
+                    : new TestCoverage(
+                        index + 1, skipped.Name, string.Empty, string.Empty, -1, -1,
+                        TestPresence.Unknown, false, -1, CoverageReason.NotCreated, NotCreatedDetail(skipped)));
             }
 
             return rows;
@@ -165,7 +183,7 @@ namespace Federator.Core.Coverage
                 return SideDiscipline.InGroup;
             }
 
-            if (judged.Group == null || judged.Run == null)
+            if (judged.Group == null || judged.Group.Count == 0 || judged.Run == null)
             {
                 return SideDiscipline.CodesNotRead;
             }
