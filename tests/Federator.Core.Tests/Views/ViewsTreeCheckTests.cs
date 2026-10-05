@@ -384,7 +384,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// F114 attempt 3, the breaker's finding 4 of attempt 2. This replaces attempt 2's test of a
+        /// F114 attempt 3, the breaker's finding 3 of attempt 2. This replaces attempt 2's test of a
         /// view the plan made for a mirror: the plan now takes the one mirror list, so it cannot
         /// make one, and reading its views tested the plan against itself. A mirror not run this
         /// week keeps this tool's view of an earlier run in the tree, and check 5 reads the walk.
@@ -586,7 +586,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The breaker's finding 0 of attempt 2, its second input, with its finding 6: read backs
+        /// The breaker's finding 0 of attempt 2, its second input, with its finding 5: read backs
         /// kept under the written place, which two views can share, or any key but the one a
         /// planned view gives, all miss. Check 3 did not run and says how many missed.
         /// </summary>

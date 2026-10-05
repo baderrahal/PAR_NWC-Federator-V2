@@ -70,7 +70,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// F114 attempt 3, the breaker's finding 6 of attempt 2. A test named Over 150mm/Pipes in a
+        /// F114 attempt 3, the breaker's finding 5 of attempt 2. A test named Over 150mm/Pipes in a
         /// pair folder and a test named Pipes in that pair's size folder share one written place.
         /// Their read backs are kept under two keys, so one cannot answer for the other.
         /// </summary>
