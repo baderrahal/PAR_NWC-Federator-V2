@@ -139,6 +139,9 @@ holds them. Each area takes the F number shown.
   - then F124 D1, one public type per file: FR-174, moves only, last
 - Before any test run, Bader's stop of 2026-10-05, Q130: F136 the viewpoints switch, FR-194. Until F114
   merges every test run has viewpoints switched off
+- First of all since Bader's order of 2026-10-05, Q132: F136, then F131, then F132, then F114, each merged
+  before the next starts where they share a file, then 1A02MM and 1A04PK with the new views on
+- Before the test of wave 1, Bader's answers to Q111 and Q125: F137 no site and no clash groups, FR-195
 - Beside the waves, Bader's lane of 2026-10-05, Q129, worked by a fourth worker in its own worktree and
   never on a file a fix lane is changing at the time: F133 the work tracker, FR-191, F134 the code
   health gate, FR-192, and F135 the analyser settings that touch every project, FR-193, merged alone at
@@ -4908,6 +4911,21 @@ steps\02_questions.md. A decision, outside the counts of the table below.
   until F114 merges. Its default is Q131, A until Bader answers
 - Proof: a Core test of the rule that decides whether viewpoints are asked for, and the test of wave 1
   run with the box unticked, its log saying no viewpoint was made and why
+- Class: Bader's decision
+
+## Bader's answers of 2026-10-05, FR-195
+
+Added by Bader's answers to Q111 and Q125, in his words under them in steps\02_questions.md. Decisions,
+outside the counts of the table below.
+
+### FR-195 no-site-and-no-clash-groups-end-partial
+
+- Sources: Q111 B and Q125 B. Area F137, before the test of wave 1
+- What he decided: a model naming no site is not on the same coordinates, so its group skips its clash,
+  ends PARTIAL, and its line in the note and the list says no site is named. A group that runs no clash
+  test with a model off the shared coordinates ends PARTIAL with the reason models not on the same
+  shared coordinates, though no clash was skipped
+- Proof: Core tests of both rules that fail first, and the test of wave 1
 - Class: Bader's decision
 
 ## The areas at a glance

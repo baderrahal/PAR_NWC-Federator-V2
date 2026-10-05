@@ -445,6 +445,17 @@ desktop.
 
 ## Next action
 
+SINCE BADER'S ORDER OF 2026-10-05, Q132, the new viewpoints come first, ahead of everything else in wave 2.
+1. F136 merged with the box unticked when the window opens, Q131 B
+2. F131 with its add-in half and Q117 C and Q123 B, merged
+3. F132 with its add-in half and Q121 B, once probes P1 and P2 are read, merged
+4. F114 with its add-in half and Q119 B, once its probes are read, merged, ticking the box again
+5. Main installed in place against bundle-backup-e4484d15, 1A02MM and 1A04PK run with the new views
+   on, and the VIEWS seconds and the total of each set against set 04
+6. Then the items below as planned, with F137 for Q111 and Q125 before the test of wave 1
+Q128 A is the lead's at once: the C04 run's changes put back from its backups while no Navisworks
+runs, each read back. Until F114 merges every test run has the viewpoints box unticked.
+
 Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 at 15:42. Merged so
 far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
 51a0cb6, PR 83 as 086a348, PR 90, F105, as 2c89788, PR 91, the fix list, as 0e76b16, PR 92, F107,
@@ -596,34 +607,10 @@ What waits on Bader's answer. A finding moves here when it survives three fix at
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
 
-OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its choices:
-- none of the turn 5 form. Q113 ANSWERED on 2026-10-04 in the evening: B, the correction list a plain file beside
-  the picked XML, this project's in exchange\, and D, all four categories. F116 carries it
-- Q110, a skipped group creates only the tests whose sides both find something, where his answer
-  also says the NWF is built with all its tests, and Q111, a model that names no site at all still
-  fails its group with the rule on, both from F112's readings and on main since F112 merged, and
-  Q125, a group that runs no clash test with a model off the shared coordinates.
-- Q126 and Q127, written on 2026-10-05 from the design of F127, turn5\f127-design.md: a group
-  whose clash is skipped has no workbook for the Coverage sheet, and how RESULT counts the XML's
-  tests, each with the choice the build goes on with until he answers.
-  Q112 is his own message of the five requests. The two readings in its lead's notes he
-  answered on 2026-10-04 in the evening, right as read: a count that differs is a FAILED line in
-  COVERAGE and RESULT and the group keeps its own result, and a Shift click the driver cannot make
-  without real input becomes numbered steps for him in steps\03_bader_next.md
-- Q115 to Q123, written on 2026-10-05 from the design of Q114, turn5\q114-design.md section 9,
-  each with the choice the build goes on with until he answers: Q115 where the team map lives,
-  Q116 where it applies, Q117 a set name with no discipline code, Q118 a clashing item in a model
-  of a third team, Q119 which models a view shows, Q120 a view of the tool a person changed, Q121
-  Telecom Fixtures and Telephone Devices, Q122 whose status a result carries, Q123 a run with no
-  XML. Four of the design's questions are not asked: two his words settle, no priority file means
-  No priority, point 9, and the pair's order is point 12's, one is the lead's choice for safety,
-  new views written before old ones are removed, whose cost is UNKNOWN until probe P18 and which is
-  asked if that cost is large, and one, a comment that does not survive a save, waits for P9
-- Q124, written on 2026-10-05: the baseline of 1A04PK takes a day or more, so whether to let it
-  run, the loop going on with A, let it run, until he answers. Its note of 06:45: the run ended
-  HUNG at 06:36, so it now stands for C04's weekly run, item 2
-- Q128, written on 2026-10-05: what the C04 run did not put back, the loop going on with B, leave
-  it as it is with the backups kept, until he answers
+OPEN IN THE FORM NOW: none. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
+each answer under its question in steps\02_questions.md with what it changes, and his order of the
+work, Q132, gives the words of the message headed THE VIEWPOINTS COME FIRST that never reached this
+session. Q113 was ANSWERED on 2026-10-04 in the evening.
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:
@@ -859,6 +846,7 @@ baseline run proves it or contradicts it.
 | F125-R13 | the breaker of F125's second pass, its sixth point, turn5\f125b-read-break.txt | The driver's count of passes after Run counts passes that held any window, so three different passing windows on three passes stop it, DIALOG exit 8, while its comment says one window read on three passes running. Loud, and older than F125. drive-window-run.ps1 lines 306 to 308 and 389 to 397 at 03aa6c0 | a count per window, or the comment made true | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
 | F125-R14 | the reviewer of F125's second pass, turn5\f125b-read-review.txt, points the records pass left | nw-guard.ps1's header still says that is not modal and lists neither PaneWords nor StateWords, KindStateWords and StateWords are two forms of one set of words, the order line, the section heading and THE TEST of F125 in steps\01_next.md still say not modal, and the new count rule has no test that breaks it. Also PaneWords still writes a window that is not modal for a window whose owner reads enabled, nw-guard.ps1 line 582, which a modal dialog owned by a window of another thread would read too, a shape no row names, and nw-guard.ps1 lines 566 and 567 and the F125 section of steps\01_next.md say a window whose state is not read stays a DIALOG, where prove-f125-after2.txt line 620 reads PANE for an owner read enabled and an own state not read | the words made true and one form of them, and a breaking stand-in case for the count rule | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
 | F126 | Bader's message of 15:42 on 2026-10-04 and his answers to Q99 and Q100, the brief turn5\f126-brief.md | Nothing in the loop can untick a tick box, so the test of wave 1 cannot run a building off the shared coordinates once more with F112's rule switched off by its tick box SkipClashOffCoordinates. tools\probes\drive-window-run.ps1 lines 1 to 14, 214 to 217, 338 and 378 and tools\loop\run.ps1 lines 1 to 14 and 2177 to 2183 at 1ae6771, steps\runs\04\item1-C02\driver.txt lines 5 and 19, a run on F125's first pass driver, sha256 7E9ABA1B by record.txt line 1 there, the blob of 5fa98a8, whose cited lines carry the same words, turn5\f126-proof\first-pass-lines.txt. The box is not remembered between runs, FederatorWindow.xaml.cs line 1198 on fix-F112 at e6d6f73, the same line at main ddb059b where F112 is merged, turn5\f126-proof\f112-lines-ddb059b.txt | turn5\f126-proof\prove-f126.ps1 against the stand-in failing on main's tools and passing on the branch, run by the lead in the first gap with Get-Process Roamer at 0 before the pull request merges, then the lead's run of 1A02MM with -Untick SkipClashOffCoordinates once main, F112 in it since ddb059b, is installed, its driver.txt reading the box toggled Off and its log the rule switched off | built on fix-F126, its code at e45ffbb, main ddb059b merged in at 1e06b7e, main 3ee01ab at 16b5eb7 and main c101f6c at 37ee68e, and read under Q93 by a reviewer and a breaker, both VERDICT APPROVE with nothing blocking, turn5\f126-read-review.txt and turn5\f126-read-break.txt. The harness ran on 2026-10-05 in the first gap, run by the lead, 52 passed and 0 failed on the branch, turn5\f126-proof\prove-f126-after.txt line 312, and 8 passed and 41 failed of 49 on main's tools, whose run.ps1 has no DriverArguments, prove-f126-before.txt line 177, four of the 8 passing only because main's driver fell over at parameter binding, the stand-in started 11 and 12 times and still running 0, Get-Process Roamer 0 at 06:53:29 and 06:58:45, turn5\f126-proof\roamer-reads-harness.txt, and at each pass's start and end, prove-f126-before.txt lines 4 and 175 and prove-f126-after.txt lines 4 and 310. On 2026-10-04 it had not run, no gap with Get-Process Roamer at 0 having come: it read 1 at all 19 of the waiter's reads, about 5 minutes apart, from 23:51:20 on 2026-10-04 to 01:22:18 on 2026-10-05, 91 minutes, pid 32136 started at 21:17:06, turn5\f126-proof\roamer-reads.txt, and at the records pass's reads, turn5\f126-proof\roamer-reads-claims.txt, steps\01_next.md F126 | 112, open as a draft | none yet |
+| T5-R-CLOSE | the claim-checker of PR 116, the close of the C02 weekly on Bader's word, Q130 | The lead closed the adopted Navisworks with a copy of the Kill of nw-guard.ps1's CloseAdopted in its own script, turn5\close-c02-weekly.ps1, and not a call of it, against the rule of one copy of every guard. A run.ps1 that is alive has no way to be asked to close its Navisworks, and CloseOwn writes its own VERDICT into a record run.ps1 still writes | a close on request that run.ps1 makes itself, or CloseOwn able to close without a VERDICT while run.ps1 lives, each with a stand-in case | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
 | Q88-IDS | Q88 | GitHub keeps the commits 464f79f and c98c6f3 readable through PR 74's own refs, and they hold the licensing agent's analytics id and a session id | only the repository's owner can ask GitHub support to purge them | known item, Bader's, the repository is private | 74 | no run applies |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
 | RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |
