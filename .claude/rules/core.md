@@ -345,7 +345,10 @@ and 6 does not read as broken.
   Reviewed carrying this tool's own record still reading as ours, `AutoReviewRecord
   .MayUndo`, the undo's own judge, so a mirror whose results a rerun moved to Active or
   Resolved is left. A result that could not be read leaves it too, and a test with no
-  results carries no status. A mirror left is never run and is named on a MIRROR line with
+  results carries no status. FAIL CLOSED: Core cannot tell a test with no results from a
+  walk of its results that never ran, threw or stopped part way, so nothing is removed
+  until the add-in says the walk reached its end, `MirrorInDocument.AllResultsAdded`, after
+  the last result, and a result handed after that must be followed by it again. A mirror left is never run and is named on a MIRROR line with
   the test it mirrors, every reason it was left and its statuses with their counts, for
   the form. Its caller is the add-in half, which waits for probes P1 and P2, P2 being
   whether a test can be removed at all, and until it lands nothing in src calls the rule.

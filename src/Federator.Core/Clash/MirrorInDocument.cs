@@ -27,6 +27,10 @@ namespace Federator.Core.Clash
     /// Resolved is left. A result that could not be read is left as well, because a status
     /// nobody read is not a status nobody set. A test with no results carries no status.
     ///
+    /// FAIL CLOSED. Core cannot tell a test with no results from a walk of its results that
+    /// never ran or stopped part way, so nothing is removed until the add-in says the walk
+    /// reached its end, AllResultsAdded, after the last result.
+    ///
     /// WHICH SAVED TESTS ARE MIRRORS. With an XML picked, the XML decides what this run
     /// creates and runs, so a saved test is a mirror where its name is a mirror of the
     /// XML's, and a test the XML holds and keeps is never one, whatever order the NWF saved
@@ -45,6 +49,7 @@ namespace Federator.Core.Clash
         private readonly List<string> notRead = new List<string>();
         private int setByAPerson;
         private int reviewedByThisTool;
+        private bool walkComplete;
 
         private MirrorInDocument(PlannedClashTest saved, string keptName, bool xmlPicked, MirrorPair ofThePickedXml)
         {
@@ -134,6 +139,7 @@ namespace Federator.Core.Clash
         /// <summary>One result of the saved test, its status and its comment as the document holds them.</summary>
         public void AddResult(ClashStatus status, string comment)
         {
+            walkComplete = false;
             statuses.Add(status);
 
             if (AutoReviewRecord.MayUndo(comment, status))
@@ -149,7 +155,20 @@ namespace Federator.Core.Clash
         /// <summary>A result, or the list of them, that could not be read, with what stopped it.</summary>
         public void ResultNotRead(string why)
         {
+            walkComplete = false;
             notRead.Add(string.IsNullOrEmpty(why) ? "UNKNOWN" : why);
+        }
+
+        /// <summary>
+        /// Says the walk of the saved test's results reached its end, every result handed to
+        /// AddResult or ResultNotRead, called once after the last of them. FAIL CLOSED: Core
+        /// cannot tell a test with no results from a walk that never ran, threw or stopped
+        /// part way, so until this is said Removes is false. A result handed after it means
+        /// the walk went on, and it must be said again.
+        /// </summary>
+        public void AllResultsAdded()
+        {
+            walkComplete = true;
         }
 
         /// <summary>Whether it is removed from the NWF. Only when nothing at all says leave it.</summary>
@@ -202,6 +221,12 @@ namespace Federator.Core.Clash
                     + Saved.Left.Locator + "\" and right \"" + Saved.Right.Locator + "\" where the XML has \""
                     + ofThePickedXml.Mirror.Left.Locator + "\" and \"" + ofThePickedXml.Mirror.Right.Locator
                     + "\", so nothing proves this tool created it");
+            }
+
+            if (!walkComplete)
+            {
+                reasons.Add("the walk of its results was not said to be complete, so whether a person "
+                    + "set a status on one is UNKNOWN");
             }
 
             if (notRead.Count > 0)
