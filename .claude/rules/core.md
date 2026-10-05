@@ -1129,6 +1129,26 @@ and 6 does not read as broken.
   a leaf named after the clash alone would collide and the already there check and the
   read back would both stop meaning anything. How many viewpoints one test may write is a
   SETTING, off by default, the same shape and the same reason the images cap has
+- WHETHER A GROUP ASKS FOR ITS VIEWPOINTS IS ONE RULE, `ViewpointRequest.WhyNone`, F136,
+  Bader's word of 2026-10-05 that every test run has viewpoints switched off until F114 is
+  merged. Three things stop them, named in this order: the box on the Clash step unticked,
+  the clash skipped because a model is not on the same shared coordinates, and no report
+  built. The box comes first because it is the run's own choice and holds for the whole
+  run, so in every group that reaches the viewpoints step an unticked run says the same
+  line. A group that returns before that step, such as on a bad units name, says nothing
+  about viewpoints. A group that asks for none cannot fail at them, F52's rule for a step
+  not asked for. The box is a SETTING, `ReportOptions.MakeViewpoints`, defaulting to
+  `ViewpointRequest.DefaultMakeViewpoints`, OFF, Bader's answer B to Q131 on 2026-10-05,
+  so nobody makes the old viewpoints until F114 merges. His same answer ticks it once F114
+  merges, so F114's pull request sets the default back to on. Its label, its grey line,
+  the RUN SETTINGS line `ViewpointRequest.SettingsLine` and the one RESULT line
+  `ViewpointRequest.ResultLine` are read off Core and never typed into the window. The
+  label does not say every clash, because a service of 150 mm and under gets no viewpoint,
+  and the grey line says what the box costs, measured on the C02 weekly of 2026-10-05,
+  which sat in VIEWS for 3 h 15 min, Q130. The RESULT line sits under the group counts and
+  is written only where the run had the box unticked, because a group of such a run is
+  DONE without a viewpoint and RESULT read alone would show the same DONE count as a run
+  that made them
 - Pipes, ducts, cable trays and their fittings OVER 150 mm go in the viewpoints and
   smaller ones do not, and the large ones of Mechanical and Electrical sit in a sub group
   of their own. 150 is a setting in millimetres, named once in

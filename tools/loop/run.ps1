@@ -10,7 +10,8 @@ param(
   [string]$For = "",
   [string]$PictureStatuses = "",
   [string]$PictureCap = "",
-  [switch]$PriorityPicked
+  [switch]$PriorityPicked,
+  [string]$Untick = ""
 )
 $ErrorActionPreference = "Stop"
 
@@ -46,7 +47,11 @@ $ErrorActionPreference = "Stop"
 #                              -Xml, a file under runs\NN\NMFed. Item 5 takes -OpenFile, the
 #                              plain name of an .nwf in NMFed\NWF\<Folder> or an .nwd in
 #                              NMFed\NWD\<Folder>, copied into the run folder's open\ and
-#                              opened there
+#                              opened there. F126: -Untick names tick boxes of the tool's window
+#                              by their AutomationId, joined by commas, such as
+#                              SkipClashOffCoordinates, and is handed to the driver, which
+#                              unticks each before it presses anything. Check with -Item 1 to 5
+#                              takes it too and names the boxes. The record names them
 #   CloseOwn -RunFolder <runs\NN\item...>
 #                              closes the loop's own Navisworks after a run.ps1 died, only
 #                              when its mypid.txt, name, path, command line and start ticks all
@@ -227,7 +232,9 @@ function ModeOf($mode) {
 # window run they read, -OpenFile for item 5 alone, which names that run, no -Stamp and no
 # -Xml, and alone take the three switches handed to compare-document.ps1. Their words are
 # judged by compare-document.ps1, the one place that knows them, and only their shape here.
-function ParamRefusal($mode, $set, $item, $stamp, $runFolder, $folder, $xml, $openFile, $extra, $loopRoot, $repo, $for, $pictureStatuses, $pictureCap, [bool]$priorityPicked, $docStamp) {
+# F126: -Untick only for a window run, Run or Check with -Item 1 to 5 and never for a documents
+# read, its ids judged by UntickRefusal in nw-guard.ps1, the one rule the driver keeps too.
+function ParamRefusal($mode, $set, $item, $stamp, $runFolder, $folder, $xml, $openFile, $extra, $loopRoot, $repo, $for, $pictureStatuses, $pictureCap, [bool]$priorityPicked, $docStamp, $untick) {
   $why = New-Object System.Collections.Generic.List[string]
   foreach ($a in @($extra)) { $why.Add("the argument " + $a + " is not a parameter of run.ps1") }
   $m = ModeOf $mode
@@ -282,7 +289,10 @@ function ParamRefusal($mode, $set, $item, $stamp, $runFolder, $folder, $xml, $op
     if ($item -eq "5" -and $openFile -eq "") { $why.Add("-OpenFile is missing, and item 5 needs the plain name of an .nwf in NMFed\NWF\<Folder> or an .nwd in NMFed\NWD\<Folder>") }
     elseif ($item -eq "5" -and $openFile -notmatch '^[^\\/:*?"<>|]+\.(nwf|nwd)$') { $why.Add("-OpenFile is " + $openFile + ", not the plain name of an .nwf or an .nwd file") }
     if ($item -ne "5" -and $openFile -ne "") { $why.Add("-OpenFile is " + $openFile + ", and only item 5 takes it") }
+    if ($docs -and [string]$untick -ne "") { $why.Add("-Untick is " + (MaskLine $untick) + ", and a documents read takes none, it presses nothing in the tool's window") }
+    elseif ([string]$untick -ne "") { foreach ($u in (UntickRefusal $untick)) { $why.Add($u) } }
   } else {
+    if ([string]$untick -ne "") { $why.Add("-Untick is " + (MaskLine $untick) + ", and only a window run, item 1 to 5, takes it") }
     foreach ($pair in @(@("-Folder", $folder), @("-Xml", $xml), @("-OpenFile", $openFile))) {
       if ([string]$pair[1] -ne "") { $why.Add($pair[0] + " is " + $pair[1] + ", and " + $(if ($item -eq "0") { "item 0" } else { "-Mode " + $mode }) + " takes none") }
     }
@@ -1802,9 +1812,31 @@ function PairLine($pair) {
   if ($pair.WorkbookName -ne "") { $wb = "workbooks\" + $pair.WorkbookName } elseif ($null -ne $pair.Xlsx) { $wb = "the read-out of its workbook is not usable, see the refusals" }
   return ($pair.Group + "`t" + $nwf + "`t" + $wb)
 }
+# F106, the driver's command line, moved into this function by F126 with the -Untick it hands on,
+# so the harness builds it the way a run does: the adopted pid and start ticks, the set, the
+# stamp and the notes file, then -OpenRun for item 5 or the four folders, with item 1's XML.
+function DriverArguments($drv, $ownerPid, $ownerTicks, $set, $stamp, $notes, $item, $paths, $untick) {
+  $a = "-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $drv + "`" -OwnerPid " + $ownerPid + " -OwnerStartTicks " + $ownerTicks + " -Set " + $set + " -Stamp " + $stamp + " -Notes `"" + $notes + "`""
+  if ($item -eq "5") { $a += " -OpenRun" }
+  else {
+    $a += " -Source `"" + $paths.Nwc + "`" -Nwf `"" + $paths.Nwf + "`" -Nwd `"" + $paths.Nwd + "`" -Excel `"" + $paths.Report + "`""
+    if ($item -eq "1") { $a += " -Xml `"" + $paths.XmlFile + "`"" }
+  }
+  $ids = @(UntickIds $untick)
+  if ($ids.Count -gt 0) { $a += " -Untick " + ($ids -join ",") }
+  return $a
+}
+# F126. The one line, for the record of a window run and for Check, naming the tick boxes the
+# driver unticks, or saying it unticks none.
+function UntickWords($untick) {
+  $ids = @(UntickIds $untick)
+  if ($ids.Count -eq 0) { return "the driver unticks no tick box, every one is left as the window opens it" }
+  return ("the driver unticks, by AutomationId, before it presses anything: " + ($ids -join ", ") + ". Each is read, toggled only when it reads On, read back Off, and read Off again before Run or Run the open file is pressed, and any other reading stops the driver, UNTICK, with neither pressed. Every other tick box is left as the window opens it")
+}
 # With $docs, Check -For Documents: the same reads, then the refusals a documents read would
-# give in its order, and the pairs it would read.
-function CheckMode($paths, $stamp, $item, $docs, $probe) {
+# give in its order, and the pairs it would read. F126: for a window run the tick boxes the driver
+# would untick.
+function CheckMode($paths, $stamp, $item, $docs, $probe, $untick) {
   Say "==== CHECK, reading only, writing nothing ===="
   Say "---- every Roamer ----"
   [void](RoamerRefusal)
@@ -1850,6 +1882,10 @@ function CheckMode($paths, $stamp, $item, $docs, $probe) {
     if ($r.Count -eq 0) { return 0 }
     return 2
   }
+  if ([string]$item -match '^[1-5]$') {
+    Say "---- the tick boxes the driver would untick ----"
+    Say ("  " + (UntickWords $untick))
+  }
   Say "---- the refusals Run would give, in Run's order ----"
   $wtc = $null; if ([string]$item -match '^[1-5]$') { $wtc = (NewWinTypes).WinType }
   $r = RunRefusals $paths $stamp $false $item $wtc
@@ -1873,7 +1909,7 @@ if ($hostWhy.Count -gt 0) {
 # F104 part 2. A documents read's own folder is named by the moment it was called, so every
 # call has a new one and none is ever emptied or used again.
 $docStamp = $T0.ToString("yyyyMMdd-HHmmss")
-$paramWhy = ParamRefusal $Mode $Set $Item $Stamp $RunFolder $Folder $Xml $OpenFile $args $loopRoot $repo $For $PictureStatuses $PictureCap $PriorityPicked.IsPresent $docStamp
+$paramWhy = ParamRefusal $Mode $Set $Item $Stamp $RunFolder $Folder $Xml $OpenFile $args $loopRoot $repo $For $PictureStatuses $PictureCap $PriorityPicked.IsPresent $docStamp $Untick
 if ($paramWhy.Count -gt 0) {
   foreach ($w in $paramWhy) { Say ("REFUSED: " + $w + ". Nothing was started and nothing was written.") }
   exit 2
@@ -1886,7 +1922,7 @@ $paths = RunPaths $loopRoot $repo $Set $Item $Folder $Xml $OpenFile $(if ($docsM
 $docRead = $null; $probeRead = $null
 if ($docsMode) { $docRead = ReadPairs $paths; $probeRead = ProbeRead $paths.ProbeDll }
 
-if ($Mode -eq "Check") { exit (CheckMode $paths $Stamp $Item $docRead $probeRead) }
+if ($Mode -eq "Check") { exit (CheckMode $paths $Stamp $Item $docRead $probeRead $Untick) }
 
 $mutex = New-Object System.Threading.Mutex($false, "Local\NwcFederatorLoop.run")
 $haveLock = $false
@@ -2014,10 +2050,11 @@ try {
       New-Item -ItemType Directory -Path $paths.RunDir -ErrorAction Stop | Out-Null
       $script:RecordFile = Join-Path $paths.RunDir "record.txt"
       if ($docsMode) { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", compare-document.ps1 sha256 " + (Get-FileHash -LiteralPath (Join-Path $repo "tools\loop\compare-document.ps1") -Algorithm SHA256).Hash + ", -Mode Documents -Set " + $Set + " -Item " + $Item + " -Folder " + $Folder + $(if ($OpenFile -ne "") { " -OpenFile " + $OpenFile } else { "" }) + $(if ($PictureStatuses -ne "") { " -PictureStatuses " + $PictureStatuses } else { "" }) + $(if ($PictureCap -ne "") { " -PictureCap " + $PictureCap } else { "" }) + $(if ($PriorityPicked) { " -PriorityPicked" } else { "" }) + ", the documents read of steps\runs\" + $Set + "\" + $paths.RunName) }
-      elseif ($win) { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", drive-window-run.ps1 sha256 " + (Get-FileHash -LiteralPath (Join-Path $repo "tools\probes\drive-window-run.ps1") -Algorithm SHA256).Hash + ", -Mode Run -Set " + $Set + " -Item " + $Item + " -Folder " + $Folder + $(if ($Xml -ne "") { " -Xml " + (MaskLine $Xml) } else { "" }) + $(if ($OpenFile -ne "") { " -OpenFile " + $OpenFile } else { "" }) + " -Stamp " + $Stamp + ", the window run") }
+      elseif ($win) { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", drive-window-run.ps1 sha256 " + (Get-FileHash -LiteralPath (Join-Path $repo "tools\probes\drive-window-run.ps1") -Algorithm SHA256).Hash + ", -Mode Run -Set " + $Set + " -Item " + $Item + " -Folder " + $Folder + $(if ($Xml -ne "") { " -Xml " + (MaskLine $Xml) } else { "" }) + $(if ($OpenFile -ne "") { " -OpenFile " + $OpenFile } else { "" }) + $(if ($Untick -ne "") { " -Untick " + (@(UntickIds $Untick) -join ",") } else { "" }) + " -Stamp " + $Stamp + ", the window run") }
       else { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", -Mode Run -Set " + $Set + " -Item 0 -Stamp " + $Stamp + ", the start with no window") }
       Say ("  the run folder " + (Mask $paths.RunDir) + ", every line from here is also in its record.txt")
       foreach ($al in $asideLines) { Say $al }
+      if ($win) { Say ("  " + (UntickWords $Untick)) }
       if ($docsMode) {
         # The pairs as checks 11 and 19 read them, written into pairs.txt, one line per group,
         # the NWF, a tab and the workbook read-out, a dash when the group wrote none.
@@ -2175,12 +2212,7 @@ try {
           # that cannot hold the run open.
           $sync.CallLimit = 0; $sync.CallSinceUtc = [DateTime]::UtcNow; $sync.CallName = "ExecuteAddInPlugin"
           $drv = Join-Path $repo "tools\probes\drive-window-run.ps1"
-          $dargs = "-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $drv + "`" -OwnerPid " + $myPid + " -OwnerStartTicks " + $myTicks + " -Set " + $Set + " -Stamp " + $Stamp + " -Notes `"" + $sync.DriverNotes + "`""
-          if ($Item -eq "5") { $dargs += " -OpenRun" }
-          else {
-            $dargs += " -Source `"" + $paths.Nwc + "`" -Nwf `"" + $paths.Nwf + "`" -Nwd `"" + $paths.Nwd + "`" -Excel `"" + $paths.Report + "`""
-            if ($Item -eq "1") { $dargs += " -Xml `"" + $paths.XmlFile + "`"" }
-          }
+          $dargs = DriverArguments $drv $myPid $myTicks $Set $Stamp $sync.DriverNotes $Item $paths $Untick
           $psi = New-Object System.Diagnostics.ProcessStartInfo
           $psi.FileName = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
           $psi.Arguments = $dargs

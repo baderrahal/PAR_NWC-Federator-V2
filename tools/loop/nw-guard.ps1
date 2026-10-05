@@ -41,6 +41,13 @@
 #   is enabled, read with IsWindowEnabled and no message, and WindowKind, which takes that and
 #   its owner's state and calls PANE a WinForms window owned by a visible window that is not
 #   modal
+#
+# WHAT F126 CHANGED OR ADDED, so a window run can switch off a rule of the tool by its tick box,
+# F112's SkipClashOffCoordinates among them:
+# - changed: DriverCodes, which gains UNTICK, the driver's stop on a tick box it was told to
+#   untick and could not
+# - added: UntickIds and UntickRefusal, the one reading of the list of tick boxes that run.ps1's
+#   -Untick and the driver's -Untick take
 # The rules these functions keep are written at the top of the probe and in
 # .claude\rules\loop.md, and are not repeated here.
 #
@@ -621,8 +628,29 @@ function PathsOutside($text, $root) {
 # F106. The driver's exit codes, one table: the driver ends with one of them and run.ps1 reads
 # them for its verdict. PRESSED is Run with OK on the confirm, or Run the open file. TOOL
 # REFUSED is Run the open file read disabled, the tool's own refusal. Every other code means
-# nothing that runs was pressed.
-function DriverCodes { return [ordered]@{ "PRESSED" = 0; "FAULT" = 1; "REFUSED" = 2; "OWNER" = 3; "NO WINDOW" = 4; "STAMP" = 5; "BOX" = 6; "TOLERANCE" = 7; "DIALOG" = 8; "CANCELLED" = 9; "TOOL REFUSED" = 10; "OPEN LINE" = 11; "WINDOW GONE" = 12 } }
+# nothing that runs was pressed. F126: UNTICK is a tick box named by -Untick that is on no tab,
+# answers no TogglePattern, or does not read Off after the untick or again just before Run.
+function DriverCodes { return [ordered]@{ "PRESSED" = 0; "FAULT" = 1; "REFUSED" = 2; "OWNER" = 3; "NO WINDOW" = 4; "STAMP" = 5; "BOX" = 6; "TOLERANCE" = 7; "DIALOG" = 8; "CANCELLED" = 9; "TOOL REFUSED" = 10; "OPEN LINE" = 11; "WINDOW GONE" = 12; "UNTICK" = 13 } }
+# F126. The tick boxes a window run unticks, named by their AutomationId, the x:Name WPF exposes,
+# and joined by commas. UntickIds splits the list, and UntickRefusal says why a list is refused,
+# one line each, or nothing: an id that is not the plain shape of an x:Name, or one named twice.
+# run.ps1 refuses its -Untick with it before anything is written, and the driver its own before
+# any window is read. A caller wraps UntickIds in @(), because in Windows PowerShell 5.1 one id
+# returned comes back bare and none comes back as nothing.
+function UntickIds($untick) {
+  if ([string]$untick -eq "") { return @() }
+  return @(([string]$untick).Split(',') | ForEach-Object { $_.Trim() })
+}
+function UntickRefusal($untick) {
+  $why = New-Object System.Collections.Generic.List[string]
+  $seen = @{}
+  foreach ($u in @(UntickIds $untick)) {
+    if ($u -cnotmatch '^[A-Za-z_][A-Za-z0-9_]*$') { $why.Add("-Untick names " + $(if ($u -eq "") { "an empty id" } else { MaskLine $u }) + ", not the plain shape of an x:Name") }
+    elseif ($seen.ContainsKey($u)) { $why.Add("-Untick names " + $u + " twice") }
+    else { $seen[$u] = $true }
+  }
+  return ,$why
+}
 function DriverCode($name) {
   $c = DriverCodes
   if (-not $c.Contains($name)) { throw ("there is no driver code named " + $name) }

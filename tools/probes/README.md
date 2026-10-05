@@ -72,8 +72,14 @@ inside a running Navisworks:
   desktop. Since F125 a window of that Navisworks that the one rule in tools\loop\nw-guard.ps1
   reads as a pane and is up before Run, such as a floating pane, is noted with both its states
   and left, and a window that comes up after Run and is not the confirm still stops it unless it
-  is that same pane, the line for it naming the rule's kind and both states. Its header says
-  what was measured about the window
+  is that same pane, the line for it naming the rule's kind and both states. Since F126 it
+  takes -Untick, tick boxes named by their AutomationId and joined by commas, such as
+  SkipClashOffCoordinates, the box of F112's rule. Before it presses anything it finds each on
+  the four tabs, toggles it through TogglePattern only when it reads On, reads it back Off and
+  writes one line per box with its id, its tab, before and after, then reads each again before
+  Run. A box on no tab, one with no TogglePattern, or one that does not read Off stops it with
+  UNTICK, exit 13, and a line naming the box, with Run unpressed. Every other tick box is left as
+  the window opened it. Its header says what was measured about the window
 
 One probe starts a Navisworks of its own. It refuses to start one while any Navisworks
 runs, whatever its command line and whoever started it, so the code keeps that rule, not
