@@ -80,6 +80,12 @@ namespace Federator.Addin.Engine
         /// </summary>
         private readonly SetsAcrossTheRun setsAcrossTheRun = new SetsAcrossTheRun();
 
+        /// <summary>
+        /// The models of the group the EXPORT CHECK last read, for the judge of a set that found
+        /// nothing, FR-011. Null where they were not read for this group.
+        /// </summary>
+        private IList<ModelExport> groupExports;
+
         // What the two new blocks found across the whole run, for the RESULT block. A
         // count and never an action: the tool reports what it noticed and Bader decides.
         private int alignmentDifferences;
@@ -2194,9 +2200,14 @@ namespace Federator.Addin.Engine
         /// </summary>
         private void WhatTheModelsCarry(Document document, FederationJob job)
         {
+            // Null until this group's models are read, so the sets step never reads another
+            // group's, FR-011.
+            groupExports = null;
+
             try
             {
                 IList<ModelExport> exports = ModelFactsReader.Exports(document, reports.Names, log);
+                groupExports = exports;
 
                 // S03-2. The names are compared by letter case with what the picked file's
                 // sets ask, and with no file picked the block says nothing was compared.
@@ -2573,6 +2584,9 @@ namespace Federator.Addin.Engine
             FederationJob job = OpenJob(Words.Or(document.FileName, "none"));
             JobOutcome outcome = new JobOutcome(job);
 
+            // No EXPORT CHECK reads the models on this button, so none of a group read earlier
+            // reaches its judge, FR-011.
+            groupExports = null;
             BuildTheSets(document, job, outcome);
             return outcome.Sets ?? new SetBuildOutcome();
         }
@@ -2646,7 +2660,11 @@ namespace Federator.Addin.Engine
                 log.Line("SETS     " + job.Building + ", " + plan.Buildable.Count + " to build, "
                     + plan.Skipped.Count + " skipped");
 
-                SetBuildOutcome sets = new SetBuilder(Tick, log, Rebuilds()).Build(plan);
+                // FR-011. The judge of a set that found nothing reads the lists inside this
+                // tool as this group's only where the group's models name the project they were
+                // measured on, read off the models the EXPORT CHECK read for this group.
+                SetBuildOutcome sets = new SetBuilder(Tick, log, Rebuilds())
+                    .Build(plan, EmptySetJudge.For(plan, groupExports, reports.Names));
                 outcome.Sets = sets;
                 setsAcrossTheRun.Add(sets);
 

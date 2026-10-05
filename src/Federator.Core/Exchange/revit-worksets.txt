@@ -43,6 +43,12 @@
 not-a-typo: AR-EXTERIOR | AR-INTERIOR
 not-a-typo: ST-SUB | ST-SUP
 
+# THE PROJECT IT WAS MEASURED ON, FR-011: the project part of the names of every model the
+# census read, 1104 in every one, which a test reads off the result file. The EMPTY SETS
+# judge reads these names as this project's only where the group's own models name the
+# same project, and otherwise says it cannot tell.
+project: 1104
+
 # One name per line. A line starting with # is a comment and a blank line is skipped.
 
 +Link-ST-***

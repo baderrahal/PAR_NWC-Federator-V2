@@ -44,6 +44,20 @@ namespace Federator.Core.Exchange
         private static List<string> known;
         private static List<string[]> decided;
         private static bool resourceFound;
+        private static string project;
+
+        /// <summary>
+        /// The project the names were measured on, read off the list's project line, or null
+        /// where it names none or was not read, FR-011.
+        /// </summary>
+        public static string Project
+        {
+            get
+            {
+                Load();
+                return project;
+            }
+        }
 
         /// <summary>
         /// Whether the list could be READ out of the DLL at all, FR-012, shaped like
@@ -168,7 +182,7 @@ namespace Federator.Core.Exchange
 
                 using (Stream stream = typeof(RevitWorksets).Assembly.GetManifestResourceStream(ResourceName))
                 {
-                    resourceFound = Read(stream, out names, out pairs);
+                    resourceFound = Read(stream, out names, out pairs, out project);
                 }
 
                 decided = pairs;
@@ -184,10 +198,11 @@ namespace Federator.Core.Exchange
         /// health check is information and information never stops a run. The one reader of
         /// the list, so the DLL's copy and a test's are read by the same lines.
         /// </summary>
-        internal static bool Read(Stream stream, out List<string> names, out List<string[]> pairs)
+        internal static bool Read(Stream stream, out List<string> names, out List<string[]> pairs, out string measuredOn)
         {
             names = new List<string>();
             pairs = new List<string[]>();
+            measuredOn = null;
 
             if (stream == null)
             {
@@ -213,6 +228,12 @@ namespace Federator.Core.Exchange
                             continue;
                         }
 
+                        if (RevitCategories.ProjectIn(line) != null)
+                        {
+                            measuredOn = RevitCategories.ProjectIn(line);
+                            continue;
+                        }
+
                         names.Add(line);
                     }
                 }
@@ -225,6 +246,7 @@ namespace Federator.Core.Exchange
                 // CHECK block says the decided pairs are UNKNOWN, FR-012.
                 names = new List<string>();
                 pairs = new List<string[]>();
+                measuredOn = null;
                 return false;
             }
         }

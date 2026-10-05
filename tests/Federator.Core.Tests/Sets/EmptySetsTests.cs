@@ -1,5 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 using Federator.Core.Exchange;
+using Federator.Core.Health;
+using Federator.Core.Naming;
 using Federator.Core.Sets;
 using NUnit.Framework;
 
@@ -25,10 +30,19 @@ namespace Federator.Core.Tests.Sets
             return new ReadCondition("LcRevitData_Element", EmptySets.WorksetProperty, "equals", value);
         }
 
-        /// <summary>Judged against the names inside Core alone, which is a file read with no list beside it.</summary>
+        /// <summary>
+        /// Judged against the names inside Core alone, which is a file read with no list beside
+        /// it, for a group of the project the lists were measured on, FR-011.
+        /// </summary>
         private static EmptySet Why(string path, List<ReadCondition> asked)
         {
-            return EmptySets.Why(path, asked, RevitWorksets.With(null));
+            return EmptySets.Why(path, asked, Judge(null, RevitCategories.Project));
+        }
+
+        /// <summary>A judge holding the names inside Core and those listed, for a group of that project.</summary>
+        private static EmptySetJudge Judge(IEnumerable<string> listed, string project)
+        {
+            return new EmptySetJudge(RevitWorksets.With(listed), project);
         }
 
         private static string Joined(IList<string> lines)
@@ -64,11 +78,11 @@ namespace Federator.Core.Tests.Sets
         public void ASpellingTheListBesideThePickedFileHoldsIsOneTheModelsCarry()
         {
             EmptySet withTheList = EmptySets.Why(
-                "a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") }, RevitWorksets.With(new[] { "ME-DUCTWORK" }));
+                "a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") }, Judge(new[] { "ME-DUCTWORK" }, RevitWorksets.Project));
 
             Assert.That(withTheList.Reason, Is.EqualTo(EmptyReason.TheValueIsThereAnyway), withTheList.Line());
             Assert.That(
-                EmptySets.Why("a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") }, RevitWorksets.With(null)).Reason,
+                EmptySets.Why("a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") }, Judge(null, RevitWorksets.Project)).Reason,
                 Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
         }
 
@@ -222,6 +236,148 @@ namespace Federator.Core.Tests.Sets
             Assert.That(
                 Why("a", new List<ReadCondition> { new ReadCondition("LcRevitData_Element", EmptySets.CategoryProperty, "NotEqual", "Nurse Call Devices") }).Reason,
                 Is.EqualTo(EmptyReason.CannotTell));
+        }
+
+        // ---------- the lists are one project's, FR-011 ----------
+
+        /// <summary>
+        /// THE LISTS INSIDE THIS TOOL ARE ONE PROJECT'S, FR-011. A value they do not hold was
+        /// called one NO MODEL IN THIS PROJECT CARRIES whatever project the run's models are of,
+        /// so another project's XML would be told no model carries values its models do carry.
+        /// For a group of another project the judge cannot tell, and says why.
+        /// </summary>
+        [Test]
+        public void AGroupOfAnotherProjectIsToldTheReaderCannotTellAndWhy()
+        {
+            EmptySetJudge another = Judge(null, "2207");
+
+            foreach (ReadCondition asked in new[] { Workset("ME-DUCTWORK"), Category("Nurse Call Devices"), Category("Floors") })
+            {
+                EmptySet why = EmptySets.Why("a/BLD-X", new List<ReadCondition> { asked }, another);
+
+                Assert.That(why.Reason, Is.EqualTo(EmptyReason.CannotTell), asked.Value);
+                Assert.That(why.Line(), Does.EndWith(
+                    "THIS READER CANNOT TELL WHY, because the lists inside this tool were measured on project "
+                    + RevitCategories.Project + "'s models and this group's are of project 2207"));
+            }
+        }
+
+        /// <summary>A group whose models' project could not be read is not one of the lists' project, FR-011.</summary>
+        [Test]
+        public void AGroupWhoseProjectCouldNotBeReadIsToldTheReaderCannotTell()
+        {
+            EmptySet why = EmptySets.Why("a/BLD-X", new List<ReadCondition> { Category("Nurse Call Devices") }, Judge(null, null));
+
+            Assert.That(why.Reason, Is.EqualTo(EmptyReason.CannotTell));
+            Assert.That(why.Line(), Does.Contain("which project this group's models are of could not be read off their names"));
+        }
+
+        /// <summary>
+        /// The project of a group is the one the project part of every model's name reads, with
+        /// the naming settings the scan reads, and UNKNOWN where one would not read or two differ,
+        /// never a guess, FR-011.
+        /// </summary>
+        [Test]
+        public void TheProjectOfAGroupIsTheOneEveryModelNameReads()
+        {
+            ContainerNameSettings names = new ContainerNameSettings();
+
+            Assert.That(
+                EmptySetJudge.ProjectOf(new List<ModelExport> { Model("1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"), Model("1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc") }, names),
+                Is.EqualTo("1104"));
+            Assert.That(
+                EmptySetJudge.ProjectOf(new List<ModelExport> { Model("1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"), Model("2207-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc") }, names),
+                Is.Null, "two projects in one group");
+            Assert.That(
+                EmptySetJudge.ProjectOf(new List<ModelExport> { Model("1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"), Model("site model.nwc") }, names),
+                Is.Null, "a name that will not read");
+            Assert.That(EmptySetJudge.ProjectOf(new List<ModelExport>(), names), Is.Null, "no model read");
+            Assert.That(EmptySetJudge.ProjectOf(null, names), Is.Null, "the models were not read for this group");
+        }
+
+        private static ModelExport Model(string file)
+        {
+            return new ModelExport(file, string.Empty, 1, 1, 1, new List<string>());
+        }
+
+        /// <summary>
+        /// Each list names the project it was measured on, and the name is read off the result
+        /// file of the walk that measured it, FR-011: the project part of every federation the
+        /// category walk opened, 5i, and of every model the workset census read, 5t.
+        /// </summary>
+        [Test]
+        public void EachListNamesTheProjectOfTheModelsItWasMeasuredOn()
+        {
+            ContainerNameSettings names = new ContainerNameSettings();
+            List<string> walked = new List<string>();
+            List<string> census = new List<string>();
+
+            foreach (string line in File.ReadAllLines(Samples.ProbeResult("5i-result-20260920.txt")))
+            {
+                Match opened = Regex.Match(line, @"opening .*\\([^\\]+\.nwf)$");
+
+                if (opened.Success)
+                {
+                    walked.Add(ContainerName.Parse(opened.Groups[1].Value, names).Project);
+                }
+            }
+
+            foreach (string line in File.ReadAllLines(Samples.ProbeResult("5t-5u-result-20260920.txt")))
+            {
+                Match model = Regex.Match(line, @"\s(\S+\.nwc)\s+site \[");
+
+                if (model.Success)
+                {
+                    census.Add(ContainerName.Parse(model.Groups[1].Value, names).Project);
+                }
+            }
+
+            Assert.That(walked.Count, Is.EqualTo(10), "the ten C02 federations of 5i");
+            Assert.That(census.Count, Is.GreaterThan(0));
+            Assert.That(walked, Is.All.EqualTo(RevitCategories.Project));
+            Assert.That(census, Is.All.EqualTo(RevitWorksets.Project));
+            Assert.That(RevitCategories.Project, Is.Not.Null);
+        }
+
+        /// <summary>
+        /// ONE CONSTANT HOLDS EACH PROPERTY INTERNAL NAME, FR-011. The category name was typed in
+        /// EmptySets and again in HealthCheck. Every code file under src is read for the two names
+        /// in quotes, and each is found once.
+        /// </summary>
+        [Test]
+        public void OneConstantInSrcHoldsEachPropertyInternalName()
+        {
+            string src = Path.Combine(Samples.Repo(), "src");
+            int category = 0;
+            int workset = 0;
+
+            foreach (string file in Directory.GetFiles(src, "*.cs", SearchOption.AllDirectories))
+            {
+                if (file.IndexOf(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar, StringComparison.Ordinal) >= 0
+                    || file.IndexOf(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.Ordinal) >= 0)
+                {
+                    continue;
+                }
+
+                string text = File.ReadAllText(file);
+                category += Count(text, "\"" + EmptySets.CategoryProperty + "\"");
+                workset += Count(text, "\"" + EmptySets.WorksetProperty + "\"");
+            }
+
+            Assert.That(category, Is.EqualTo(1), "the category property's internal name, in quotes, under src");
+            Assert.That(workset, Is.EqualTo(1), "the workset property's internal name, in quotes, under src");
+        }
+
+        private static int Count(string text, string what)
+        {
+            int count = 0;
+
+            for (int at = text.IndexOf(what, StringComparison.Ordinal); at >= 0; at = text.IndexOf(what, at + what.Length, StringComparison.Ordinal))
+            {
+                count++;
+            }
+
+            return count;
         }
 
         /// <summary>

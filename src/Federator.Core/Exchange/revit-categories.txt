@@ -27,10 +27,18 @@
 # reason: the Navisworks units enum never changes.
 #
 # THE FORMAT. One category per line, exactly as the model spells it, Ordinal and never
-# trimmed. A line beginning # is a comment. A blank line is ignored. Nothing else.
+# trimmed. A line beginning # is a comment. A blank line is ignored. One line beginning
+# project: names the project it was measured on. Nothing else.
+#
+# THE PROJECT IT WAS MEASURED ON, FR-011: the project part of the names of the ten
+# federations the walk opened, 1104 in every one, which a test reads off the result file.
+# The EMPTY SETS judge says a set asks for a category no model in this project carries
+# only where the group's own models name the same project, and otherwise that it cannot
+# tell, because another project's models are not these.
 #
 # It is NOT the penetration rule's service or solid list. Those are a handful of
 # categories this tool has made a judgement about. This is every category that exists.
+project: 1104
 Acacia farnesiana
 Air Terminals
 Assembled Stair

@@ -546,7 +546,11 @@ namespace Federator.Addin.Engine
             return -1;
         }
 
-        public SetBuildOutcome Build(SetBuildPlan plan)
+        /// <summary>
+        /// Builds the plan's sets. The judge says why a set that found nothing found nothing,
+        /// by what it knows of the values this group's models carry, FR-011.
+        /// </summary>
+        public SetBuildOutcome Build(SetBuildPlan plan, EmptySetJudge judge)
         {
             if (plan == null)
             {
@@ -581,7 +585,7 @@ namespace Federator.Addin.Engine
             {
                 PlannedSet planned = plan.Buildable[i];
                 progress("Set " + (i + 1) + " of " + plan.Buildable.Count + ": " + planned.Name);
-                BuildOne(document, sets, planned, plan.Worksets, outcome);
+                BuildOne(document, sets, planned, judge, outcome);
             }
 
             // Q74. EVERY SET IN THE NWF THE PICKED FILE NO LONGER NAMES, and what to do
@@ -711,7 +715,7 @@ namespace Federator.Addin.Engine
         }
 
         private void BuildOne(
-            Document document, DocumentSelectionSets sets, PlannedSet planned, IList<string> worksets, SetBuildOutcome outcome)
+            Document document, DocumentSelectionSets sets, PlannedSet planned, EmptySetJudge judge, SetBuildOutcome outcome)
         {
             try
             {
@@ -800,10 +804,10 @@ namespace Federator.Addin.Engine
                         // set that never produces a clash, and nothing told him which of
                         // those sets is wrong and which is a model with no such content.
                         // Judged on what it asks NOW, so a set this run corrected is not
-                        // reported as asking the question it no longer asks, and against the
-                        // workset spellings the corrections were chosen from, F116. Core decides
-                        // which sets are judged, never one whose count is UNKNOWN, FR-018.
-                        outcome.JudgeIfEmpty(present, asking, worksets);
+                        // reported as asking the question it no longer asks, by what the judge
+                        // knows of this group's models, F116 and FR-011. Core decides which sets
+                        // are judged, never one whose count is UNKNOWN, FR-018.
+                        outcome.JudgeIfEmpty(present, asking, judge);
 
                         // Every present set, so one whose search could not be read is counted
                         // and the lines never claim it asks what the file asks, FR-021.

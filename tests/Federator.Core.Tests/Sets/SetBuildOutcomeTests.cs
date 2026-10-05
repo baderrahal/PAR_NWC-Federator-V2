@@ -393,6 +393,12 @@ namespace Federator.Core.Tests
         }
         // ---------- a count that could not be taken, FR-018 ----------
 
+        /// <summary>A judge for a group of the project the lists inside Core were measured on, FR-011.</summary>
+        private static EmptySetJudge OnThisProject()
+        {
+            return new EmptySetJudge(RevitWorksets.With(null), RevitWorksets.Project);
+        }
+
         private static readonly List<ReadCondition> AsksTheOldSpelling = new List<ReadCondition>
         {
             new ReadCondition("LcRevitData_Element", EmptySets.WorksetProperty, "equals", "ME-DUCTWORK")
@@ -410,7 +416,7 @@ namespace Federator.Core.Tests
             SetBuildOutcome outcome = new SetBuildOutcome();
             SetResult present = outcome.AddAlreadyPresent("a/Mechanical/BLD-ME-Ducts", "BLD-ME-Ducts", 1, -1);
 
-            outcome.JudgeIfEmpty(present, AsksTheOldSpelling, RevitWorksets.With(null));
+            outcome.JudgeIfEmpty(present, AsksTheOldSpelling, OnThisProject());
 
             Assert.That(outcome.Empty, Is.Empty);
             Assert.That(outcome.ZeroCount, Is.EqualTo(0));
@@ -427,9 +433,9 @@ namespace Federator.Core.Tests
         {
             SetBuildOutcome outcome = new SetBuildOutcome();
 
-            outcome.JudgeIfEmpty(outcome.AddAlreadyPresent("a/One", "One", 1, 0), AsksTheOldSpelling, RevitWorksets.With(null));
-            outcome.JudgeIfEmpty(outcome.AddAlreadyPresent("a/Two", "Two", 1, 0), null, RevitWorksets.With(null));
-            outcome.JudgeIfEmpty(outcome.AddAlreadyPresent("a/Three", "Three", 1, 5), AsksTheOldSpelling, RevitWorksets.With(null));
+            outcome.JudgeIfEmpty(outcome.AddAlreadyPresent("a/One", "One", 1, 0), AsksTheOldSpelling, OnThisProject());
+            outcome.JudgeIfEmpty(outcome.AddAlreadyPresent("a/Two", "Two", 1, 0), null, OnThisProject());
+            outcome.JudgeIfEmpty(outcome.AddAlreadyPresent("a/Three", "Three", 1, 5), AsksTheOldSpelling, OnThisProject());
 
             Assert.That(outcome.Empty.Count, Is.EqualTo(1));
             Assert.That(outcome.Empty[0].Path, Is.EqualTo("a/One"));

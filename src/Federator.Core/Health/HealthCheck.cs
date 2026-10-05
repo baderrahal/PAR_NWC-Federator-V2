@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Exchange;
+using Federator.Core.Sets;
 using Federator.Core.Views;
 
 namespace Federator.Core.Health
@@ -117,16 +118,9 @@ namespace Federator.Core.Health
                 FindDuplicateNames(setList),
                 FindSetsAtRoot(setList),
                 SetWarnings.FindIdentical(setList),
-                SetWarnings.FindCategoriesNobodyHas(setList, CategoryPropertyInternalName),
+                SetWarnings.FindCategoriesNobodyHas(setList, EmptySets.CategoryProperty),
                 SetWarnings.FindOddNames(setList, SetNameSeparator));
         }
-
-        /// <summary>
-        /// The property internal name a category condition carries, F84. It is the name
-        /// the API matches on and not the word a person reads, which is Category, and it
-        /// is named here once so the warning and the reader cannot drift.
-        /// </summary>
-        public const string CategoryPropertyInternalName = "LcRevitPropertyElementCategory";
 
         /// <summary>What separates the parts of a set name, F84. Read off ViewpointSettings, the
         /// one place it is named, because a second copy here drifted from the first, A12, and

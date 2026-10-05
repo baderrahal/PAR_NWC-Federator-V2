@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Federator.Core.Exchange;
 
 namespace Federator.Core.Sets
 {
@@ -21,12 +20,21 @@ namespace Federator.Core.Sets
     public sealed class EmptySet
     {
         internal EmptySet(string path, EmptyReason reason, string asked, string nearest)
+            : this(path, reason, asked, nearest, null)
+        {
+        }
+
+        internal EmptySet(string path, EmptyReason reason, string asked, string nearest, string whyNotTold)
         {
             Path = path ?? string.Empty;
             Reason = reason;
             Asked = asked ?? string.Empty;
             Nearest = nearest ?? string.Empty;
+            WhyNotTold = whyNotTold ?? string.Empty;
         }
+
+        /// <summary>Why this reader cannot tell, or empty where it does not know why, FR-011.</summary>
+        public string WhyNotTold { get; private set; }
 
         public string Path { get; private set; }
 
@@ -66,7 +74,8 @@ namespace Federator.Core.Sets
                         + " which is ordinary, or something else is wrong, and this reader cannot tell which";
 
                 default:
-                    return Path + "   found nothing and THIS READER CANNOT TELL WHY";
+                    return Path + "   found nothing and THIS READER CANNOT TELL WHY"
+                        + (WhyNotTold.Length == 0 ? string.Empty : ", because " + WhyNotTold);
             }
         }
     }
@@ -84,7 +93,9 @@ namespace Federator.Core.Sets
     /// names measured in 5t inside Core and the workset lines of the list beside the picked
     /// file, Q113, so a spelling a MATRIX line says was measured is never one this calls
     /// carried by no model, F116. A set asking for something neither holds is asking for
-    /// something no model measured so far in this project has.
+    /// something no model measured so far in this project has. THE LISTS ARE ONE PROJECT'S,
+    /// each names its project, and `EmptySetJudge` reads them as a group's only where the
+    /// group's models name the same project, FR-011.
     ///
     /// WHILE A LIST IS UNMEASURED THIS SAYS IT CANNOT TELL. A check that compared against
     /// an empty list would report every set in the file as asking for something nobody
@@ -106,42 +117,60 @@ namespace Federator.Core.Sets
         public const string WorksetProperty = "lcldrevit_parameter_-1002053";
 
         /// <summary>
-        /// Why that set found nothing, judged on the FIRST condition this reader knows
-        /// how to judge, against those workset spellings, SetBuildPlan.Worksets. One reason
-        /// per set, because a set asking two things nobody has is still one wrong set and a
-        /// person fixes it once.
+        /// Why that set found nothing, judged on the FIRST condition this reader knows how to
+        /// judge, by what that judge knows, EmptySetJudge. One reason per set, because a set
+        /// asking two things nobody has is still one wrong set and a person fixes it once. A
+        /// value is said to be carried by no model only against a list of this project's
+        /// models, FR-011, and where the judge knows of no such list it says it cannot tell
+        /// and why.
         /// </summary>
-        public static EmptySet Why(string path, IList<ReadCondition> asked, IList<string> worksets)
+        public static EmptySet Why(string path, IList<ReadCondition> asked, EmptySetJudge judge)
         {
-            if (asked == null || asked.Count == 0)
+            if (asked == null || asked.Count == 0 || judge == null)
             {
                 return new EmptySet(path, EmptyReason.CannotTell, null, null);
             }
 
-            bool judgedAny = false;
+            string carried = null;
+            string cannotTell = null;
 
             for (int i = 0; i < asked.Count; i++)
             {
-                IList<string> known = Judgeable(asked[i]) ? KnownFor(asked[i].PropertyInternalName, worksets) : null;
+                EmptySetJudge.Known known = Judgeable(asked[i]) ? judge.KnownFor(asked[i].PropertyInternalName) : null;
 
-                if (known == null || known.Count == 0)
+                if (known == null)
                 {
                     continue;
                 }
 
-                judgedAny = true;
+                if (Carries(known.Carried, asked[i].Test, asked[i].Value))
+                {
+                    carried = carried ?? asked[i].Value;
+                    continue;
+                }
 
-                if (Carries(known, asked[i].Test, asked[i].Value))
+                if (!known.IsComplete)
+                {
+                    cannotTell = cannotTell ?? known.WhyNot;
+                    continue;
+                }
+
+                if (known.Carried.Count == 0)
                 {
                     continue;
                 }
 
                 return new EmptySet(
-                    path, EmptyReason.NoModelCarriesTheValue, asked[i].Value, NearestIn(known, asked[i].Value));
+                    path, EmptyReason.NoModelCarriesTheValue, asked[i].Value, NearestIn(known.Carried, asked[i].Value));
             }
 
-            return judgedAny
-                ? new EmptySet(path, EmptyReason.TheValueIsThereAnyway, FirstJudgeable(asked, worksets), null)
+            if (cannotTell != null)
+            {
+                return new EmptySet(path, EmptyReason.CannotTell, null, null, cannotTell);
+            }
+
+            return carried != null
+                ? new EmptySet(path, EmptyReason.TheValueIsThereAnyway, carried, null)
                 : new EmptySet(path, EmptyReason.CannotTell, null, null);
         }
 
@@ -263,41 +292,6 @@ namespace Federator.Core.Sets
             }
 
             return false;
-        }
-
-        private static string FirstJudgeable(IList<ReadCondition> asked, IList<string> worksets)
-        {
-            for (int i = 0; i < asked.Count; i++)
-            {
-                IList<string> known = Judgeable(asked[i]) ? KnownFor(asked[i].PropertyInternalName, worksets) : null;
-
-                if (known != null && known.Count > 0)
-                {
-                    return asked[i].Value;
-                }
-            }
-
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// The measured list for that property, the workset spellings handed in for the
-        /// workset, or null where this tool has no list and therefore no opinion. Never a
-        /// guess: a property nobody measured is one this reader says it cannot tell about.
-        /// </summary>
-        private static IList<string> KnownFor(string propertyInternalName, IList<string> worksets)
-        {
-            if (string.Equals(propertyInternalName, CategoryProperty, StringComparison.Ordinal))
-            {
-                return RevitCategories.Measured ? RevitCategories.All() : null;
-            }
-
-            if (string.Equals(propertyInternalName, WorksetProperty, StringComparison.Ordinal))
-            {
-                return worksets;
-            }
-
-            return null;
         }
 
         /// <summary>The nearest value the models carry, or empty where nothing is close.</summary>

@@ -173,8 +173,9 @@ namespace Federator.Core.Tests
         {
             List<string> names;
             List<string[]> pairs;
+            string project;
 
-            Assert.That(RevitWorksets.Read(null, out names, out pairs), Is.False);
+            Assert.That(RevitWorksets.Read(null, out names, out pairs, out project), Is.False);
             Assert.That(names, Is.Empty);
             Assert.That(pairs, Is.Empty);
         }
@@ -185,10 +186,11 @@ namespace Federator.Core.Tests
         {
             List<string> names;
             List<string[]> pairs;
+            string project;
 
             using (ThrowingStream stream = new ThrowingStream())
             {
-                Assert.That(RevitWorksets.Read(stream, out names, out pairs), Is.False);
+                Assert.That(RevitWorksets.Read(stream, out names, out pairs, out project), Is.False);
             }
 
             Assert.That(names, Is.Empty);
@@ -204,14 +206,16 @@ namespace Federator.Core.Tests
 
             List<string> names;
             List<string[]> pairs;
+            string project;
 
             using (Stream stream = typeof(RevitWorksets).Assembly.GetManifestResourceStream(RevitWorksets.ResourceName))
             {
-                Assert.That(RevitWorksets.Read(stream, out names, out pairs), Is.True);
+                Assert.That(RevitWorksets.Read(stream, out names, out pairs, out project), Is.True);
             }
 
             Assert.That(names, Is.EquivalentTo(RevitWorksets.With(null)));
             Assert.That(pairs.Count, Is.EqualTo(RevitWorksets.DecidedCount));
+            Assert.That(project, Is.EqualTo(RevitWorksets.Project));
         }
 
         /// <summary>

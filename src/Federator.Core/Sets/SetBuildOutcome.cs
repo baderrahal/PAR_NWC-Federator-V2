@@ -97,20 +97,20 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// Judges that set when it found nothing, on what it asks, against those workset
-        /// spellings, SetBuildPlan.Worksets, F116. THE ONE RULE for which sets are judged: one
-        /// at zero items, and never one whose count is UNKNOWN, minus one, FR-018, nor one whose
-        /// question could not be read, asked null. A set rebuilt and not found again was
+        /// Judges that set when it found nothing, on what it asks, by what that judge knows of
+        /// the values this group's models carry, FR-011. THE ONE RULE for which sets are judged:
+        /// one at zero items, and never one whose count is UNKNOWN, minus one, FR-018, nor one
+        /// whose question could not be read, asked null. A set rebuilt and not found again was
         /// recorded at 0 and judged empty on the question it asked before the rebuild.
         /// </summary>
-        public void JudgeIfEmpty(SetResult result, IList<ReadCondition> asked, IList<string> worksets)
+        public void JudgeIfEmpty(SetResult result, IList<ReadCondition> asked, EmptySetJudge judge)
         {
             if (result == null || result.ItemCount != 0 || asked == null)
             {
                 return;
             }
 
-            AddEmpty(EmptySets.Why(result.Path, asked, worksets));
+            AddEmpty(EmptySets.Why(result.Path, asked, judge));
         }
 
         /// <summary>The sets that found nothing and why.</summary>
