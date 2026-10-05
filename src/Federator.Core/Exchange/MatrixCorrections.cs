@@ -269,56 +269,6 @@ namespace Federator.Core.Exchange
             return rewrites;
         }
     }
-    /// <summary>
-    /// One value the matrix asks for, carrying a SECOND spelling beside it as an Or row,
-    /// Q69 answered b on 2026-09-20.
-    ///
-    /// WHY. Where this project's own models disagree about the name of a workset, a set
-    /// asking for one spelling finds only the models that used it. Carrying both means
-    /// the set finds everything it was meant to find while the models are still wrong.
-    ///
-    /// THE OR ROW IS THE WHOLE GROUP COPIED, FR-025. `flags="64"` is StartGroup, which this
-    /// repo already measured, F78: a condition with that bit starts a new group, the
-    /// conditions inside a group are ANDed and the groups are ORed. A set of Category X and
-    /// Workset V becomes (X and V) or (X and the other spelling), so every group still asks
-    /// for its category. One condition with that bit put straight after the workset, which
-    /// is what this wrote until F116, started a group holding the workset alone, and that
-    /// group took every element on the other spelling whatever its category.
-    ///
-    /// IT IS BUILT FROM WHAT WAS MEASURED IN THE MODELS AND NEVER FROM A LIST IN THE
-    /// CODE, and it never runs on a spelling no model carries, because the whole reason
-    /// it exists is that a real model somewhere used the other word.
-    ///
-    /// AND THE EXPORT CHECK STILL NAMES THE PAIR AS MISSPELLED. Absorbing a typo and
-    /// saying nothing would mean nobody ever fixes the model and the next building
-    /// repeats it, which is `Federator.Core.Health.WorksetDisagreements`.
-    /// </summary>
-    public sealed class ValueOrRow
-    {
-        public ValueOrRow(string value, string alsoAccept)
-        {
-            Value = value ?? string.Empty;
-            AlsoAccept = alsoAccept ?? string.Empty;
-        }
-
-        /// <summary>The value the matrix already asks for.</summary>
-        public string Value { get; private set; }
-
-        /// <summary>The other spelling a model carries, added beside it as an Or row.</summary>
-        public string AlsoAccept { get; private set; }
-
-        /// <summary>Whether there is anything to do. Two identical spellings are not a disagreement.</summary>
-        public bool Adds
-        {
-            get
-            {
-                return Value.Length > 0
-                    && AlsoAccept.Length > 0
-                    && !string.Equals(Value, AlsoAccept, StringComparison.Ordinal);
-            }
-        }
-    }
-
     /// <summary>Why a correction changed nothing, so the last line can say why none was applied, F116.</summary>
     internal enum NoChange
     {
@@ -589,9 +539,9 @@ namespace Federator.Core.Exchange
             CorrectionOutcome outcome = ForPickedFile(xml, list);
             ExchangeDocument document = new ExchangeReader().ReadText(outcome.Text, path);
 
-            // The spellings the corrections were chosen from, so the judge of a set that finds
-            // nothing reads the same ones, F116.
-            document.Corrected(outcome.Lines(), RevitWorksets.With(list.Worksets));
+            // Every spelling the corrections ask, the workset lines and those an also-ask line
+            // accepts, so the judge of a set that finds nothing knows each, F116 and F131.
+            document.Corrected(outcome.Lines(), RevitWorksets.With(list.Spellings));
 
             // The team map beside the same file, its own file, F131, Q115 by its default A.
             document.TeamsBeside(TeamMap.Beside(path, new TeamMapSettings()));
@@ -602,10 +552,10 @@ namespace Federator.Core.Exchange
         /// Every correction of that list, applied to that text: the renames, the catch-all sets
         /// with the categories other sets claim read off the file, every workset value the file
         /// asks for that the list names a spelling of, asked in the spellings RevitWorksets.With
-        /// gives, the names inside Core and the list's, and the Source File rules. The one place
-        /// the corrections are chosen, for the tool and for the test proving the exchange file is
-        /// exactly what they make from the sample. The first line names the list and what it
-        /// holds, Q113.
+        /// gives, the names inside Core and the list's workset lines, the Source File rules, and
+        /// last the also-ask lines. The one place the corrections are chosen, for the tool and for
+        /// the test proving the exchange file is exactly what they make from the sample. The first
+        /// line names the list and what it holds, Q113.
         ///
         /// NO LIST, ONE THAT COULD NOT BE READ OR ONE HOLDING NONE CORRECTS NOTHING AND SAYS SO,
         /// and a set the text walk could not read is counted and said, so a picked file is never
@@ -647,7 +597,6 @@ namespace Federator.Core.Exchange
                 null,
                 catchAlls,
                 values,
-                null,
                 list.SourceFiles);
 
             foreach (string[] alsoAsk in list.AlsoAsks)
@@ -694,6 +643,13 @@ namespace Federator.Core.Exchange
         /// measured. Applied after every other correction, so a group the Source File rule of Q103
         /// gave a condition is copied with it. No two lines share a spelling, MatrixCorrectionList,
         /// so no line acts on what another wrote, and a second run changes nothing.
+        ///
+        /// THE ONE WAY A VALUE ALSO ASKS ANOTHER SPELLING, the Or row of Q69 answered b on
+        /// 2026-09-20: where the project's own models spell a workset two ways, a set asking one
+        /// finds only the models that used it, and asking both finds everything while the models
+        /// are still wrong. The export check still names the pair, WorksetDisagreements, so the
+        /// models get fixed. ValueOrRow, a row of one other spelling that nothing in src called,
+        /// was deleted with its overload of Apply on F131's second attempt.
         /// </summary>
         private static string AlsoAsk(string xml, string[] line, CorrectionOutcome outcome)
         {
@@ -915,25 +871,10 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// The same, plus the Or rows of Q69: a second spelling a model carries, accepted
-        /// beside the one the matrix asks for. Pass null and it is the five argument form.
-        /// </summary>
-        public static CorrectionOutcome Apply(
-            string xml,
-            IList<SetRename> renames,
-            IList<CategoryRewrite> rewrites,
-            IList<ConditionsRewrite> conditions,
-            IList<ValueRewrite> values,
-            IList<ValueOrRow> orRows)
-        {
-            return Apply(xml, renames, rewrites, conditions, values, orRows, null);
-        }
-
-        /// <summary>
         /// The same, plus the Source File rule of Q103: a set beside the ones asking that
         /// Source File condition asks it too where another discipline also uses its
         /// category. Applied last, so it reads the sets as every other correction left them.
-        /// Pass null and it is the six argument form.
+        /// Pass null and it is the five argument form.
         /// </summary>
         public static CorrectionOutcome Apply(
             string xml,
@@ -941,7 +882,6 @@ namespace Federator.Core.Exchange
             IList<CategoryRewrite> rewrites,
             IList<ConditionsRewrite> conditions,
             IList<ValueRewrite> values,
-            IList<ValueOrRow> orRows,
             IList<SourceFileRule> sourceFiles)
         {
             if (xml == null)
@@ -1092,51 +1032,6 @@ namespace Federator.Core.Exchange
                         "the value " + value.From + " becomes " + value.To + ", the one spelling of it measured so far in this project's models",
                         changed,
                         changed == 0 ? "this file does not ask for that value" : null);
-                }
-            }
-
-            if (orRows != null)
-            {
-                foreach (ValueOrRow row in orRows)
-                {
-                    if (row == null)
-                    {
-                        continue;
-                    }
-
-                    if (!row.Adds)
-                    {
-                        outcome.Add(
-                            "the value " + row.Value + " gains no Or row",
-                            0,
-                            "no model carries a second spelling of it that this tool would accept");
-                        continue;
-                    }
-
-                    int asked;
-                    int added;
-                    List<string> both = new List<string> { row.Value, row.AlsoAccept };
-                    both.Sort(StringComparer.Ordinal);
-
-                    text = AskEverySpelling(
-                        text,
-                        one => AsksAWorkset(one)
-                            && (string.Equals(one.Value, row.Value, StringComparison.Ordinal)
-                                || string.Equals(one.Value, row.AlsoAccept, StringComparison.Ordinal)),
-                        both,
-                        out asked,
-                        out added);
-
-                    outcome.Add(
-                        "the value " + row.Value + " also accepts " + row.AlsoAccept
-                            + ", which a model was measured spelling that way",
-                        added,
-                        added > 0
-                            ? null
-                            : asked > 0
-                                ? "every set asking for it already asks for both"
-                                : "this file holds no condition asking for that value",
-                        asked > 0 ? NoChange.AlreadyMade : NoChange.NothingToChange);
                 }
             }
 
