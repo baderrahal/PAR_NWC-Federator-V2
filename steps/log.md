@@ -1,7 +1,178 @@
 # log
 
 Newest entry at the top.
-## 2026-10-05 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, written by the lead's delegate
+## 2026-10-05 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 2 on the readers' findings, written by the lead's delegate
+
+### Attempt 2, on the readings of attempt 1
+
+The readers' findings are in %LOCALAPPDATA%\NwcFederatorLoop\turn5\f114-core-result.json under
+reads, the reviewer's in reads[0] and the breaker's in reads[1], both CHANGES. Below, R and a
+number is the reviewer's finding of that index and B and a number the breaker's. Four blocked:
+R0, R1, B0 and B1.
+
+F114 STILL MERGES AFTER F131. fix-F131's attempt 2 is taken in at 197aefa as it stood at 9fafddd,
+and main at 83445cb at 07100af, each with its message in a file. F132 is not merged into this
+branch or into main, so THE MIRROR RULE IS HANDED IN AS A PLAIN LIST OF TEST NAMES,
+`TestViewPlan.For`'s mirrors and `ViewsTreeFacts.Mirrors`, the same list, and null where no mirror
+rule ran. Once fix-F132 is merged, the add-in hands in the mirror tests of F132's `MirrorRule`, and
+nothing in Core changes for it.
+
+Core tests, all with 0 skipped:
+- 2067 passed, 0 failed before, at 197aefa after both merges, by its pre-commit,
+  turn5\f114-a2-precommit-merge-f131.txt, and again by hand, turn5\f114-a2-core-before.txt. 2057
+  at the merge of main, turn5\f114-a2-precommit-merge-main.txt, and F131's attempt 2 brings 10
+- the new tests and the changed ones did not compile against 197aefa, 63 errors, every one a
+  member of this pass, turn5\f114-a2-before-compile.txt
+- 16 failed and 78 passed of the view tests against the shape of the fix with the old behaviour:
+  `ViewPlace` and the place read through it, `ToolViewMark` taking the folders, the plan taking
+  the mirrors and ignoring them, `Ran` always true, and `ShownModels` counting no home, each
+  failing for the reason its finding names, turn5\f114-a2-before-fail.txt
+- 2088 passed, 0 failed after, at 31bd24a by its pre-commit, turn5\f114-a2-precommit-code.txt,
+  and by hand after the build, turn5\f114-a2-core-after.txt. 21 new tests, none deleted, 2067
+  and 21 is 2088. The records commit changes no code and no test
+
+The solution builds whole at 31bd24a with --no-incremental, Federator.Core, Federator.Core.Tests
+and Federator.Addin each built, 0 warnings and 0 errors, with git rev-parse --short HEAD and an empty git
+status at its top, turn5\f114-a2-build-code.txt. check-locals and check-imports pass on src,
+turn5\f114-a2-checks.txt, and again in the pre-commit of 31bd24a.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for edits of
+  text files in the worktree, and powershell for the process reads. None of them starts a
+  Navisworks
+- Get-Process Roamer read none running at 12:20:52, before any work, turn5\f114-a2-roamer-before.txt,
+  and none running at 13:16:09 after the code, the build and the tests, turn5\f114-a2-roamer-after.txt. This pass started no Navisworks and touched none
+
+What was done, each finding with the test seen failing first, all in 31bd24a:
+- R0, blocking. The place of a view was written three times, `PlannedTestView.FolderPath`,
+  `ViewNode.FolderPath` and inline in `ViewsTree.StateOf`, and handed to `ToolViewMark` as a
+  joined string. `ViewPlace` writes it once, the folders and the name joined by a slash for a
+  person to read, and `PlannedTestView`, `ViewNode`, `ViewsTree` and `ToolViewMark` read it there.
+  `ToolViewMark.Body` and `Judge` now take the folders, so no caller can hand it a place joined
+  another way. Failing first: ViewPlaceTests did not compile, and with it every test that hands
+  the mark its folders, turn5\f114-a2-before-compile.txt. The copies agreed, so no test of
+  behaviour could fail before the change
+- R1, blocking. `ViewsInventory` and `ViewsTreeCheck` each held a private key of a place. The one
+  key is `ViewPlace.Key`, folders, name and whether it is a folder, and `ViewPlace.ParentKey` for
+  the removal order. It tells a folder from a view of one name and a folder named A/B from two
+  folders, which the slash joined place cannot. Failing first: ViewPlaceTests, by compile
+- B0 with B5, blocking. Check 5 with no mirror rule counted as holding and the last line read 7 of
+  7. A check that could not run now says DID NOT RUN and why, `ViewsTreeCheck.Ran` and
+  `NotRunWhy`, never holds, and the last line counts it apart, as CLAUDE.md says never to report a
+  check that did not run. The same holds for checks 1 and 2 with no walk, no run stamp or not one
+  planned view found marked by this run, B5, check 3 with no models, checks 6 and 7 with no walk
+  or no inventory, and 7 with no codes or test names. Failing first:
+  Check5DidNotRunWithNoMirrorRuleAndIsNotCountedAsHolding, TheChecksOfTheWalkDidNotRunWithNoWalk,
+  ChecksOneAndTwoDidNotRunWithNoRunStamp, ChecksOneAndTwoDidNotRunWhenNoPlannedViewIsFoundMarked,
+  ChecksSixAndSevenDidNotRunWithNoInventory, CheckSevenDidNotRunWithNoCodesOrTestNames and
+  CheckThreeDidNotRunWithNoModels. The old test Check5SaysItProvesNothingWithNoMirrorRuleOrNoMirror
+  asserted a note saying UNKNOWN beside a check counted as holding, the fault itself. Its half with
+  0 mirrors stands as Check5SaysItProvesNothingWithNoMirror, and its half with no mirror rule is
+  the first test above, asserting more than it did
+- B1, blocking. Check 5 read only the tests run, and the plan took no mirror, so a mirror not run
+  this week whose earlier results the add-in read got a view and the check held. `TestViewPlan.For`
+  takes the mirrors: a mirrored test gets no view, its clashes are counted apart in
+  `LeftOutAsMirrors` and it is named in `Mirrored` and in the lines, and with no mirror rule
+  handed in the lines say a mirror gets a view as any test does. Check 5 reads the tests the plan
+  made views for as well as the tests run. Failing first: AMirroredTestGetsNoViewAndIsNamed,
+  APlanHandedNoMirrorRuleSaysSo, Check5NamesAMirrorThatHasAViewThoughItWasNotRun and
+  Check5HoldsWhenThePlanTookTheMirrors
+
+The non-blocking findings that break a house rule of CLAUDE.md, fixed the same way:
+- R5, every check gets a test that breaks it. `AddsUp` could not be false, so its DOES NOT ADD UP
+  line could never be written. Both are gone, and the plan's first line says how the clashes
+  looked at were dealt with, in views, left out by status and of mirrored tests. Its four asserts
+  in TestViewPlanTests now assert the sum itself. No test can fail first for a check that never
+  acts
+- R6, a test gap. ASetNameWithNoCodeIsNamedInTheLines asserts the set half of the plan's lines
+  names BLD-Security Devices under its count. It passed at once, the code being right
+- R7 with B6, a check that does not cover what it names. Check 6 followed two decisions only, so
+  a person's view under two folders of one name could go unseen. It follows every item the
+  inventory kept, and its words say so. Failing first:
+  Check6NamesAPersonsViewUnderTwinFoldersMissingAfter
+- B2, say UNKNOWN rather than fill a gap. `ShownModels` dropped a home not read without a word.
+  It counts them, `HomesNotRead`, names a home of no model of the group, `HomesNotInGroup`, and
+  check 3 says each for its view. Failing first: AHomeNotReadOrOfNoModelOfTheGroupIsCountedAndNamed
+  and Check3SaysAClashingItemWhoseModelIsUnknown
+- B3, a number that reads as the whole. The block's tests that ran with no open clash counted only
+  tests with a clash left out by status. It counts off the tests the clash step ran, UNKNOWN where
+  those were not handed in, and the plan's count says which tests it counts. Failing first:
+  TheBlockCountsTheTestsThatRanWithNoOpenClashOffTheTestsRun and
+  ThePlanSaysWhichTestsWithNoOpenClashItCounts
+- R3 and R4 with the records half of B11, records not true. core.md said the size lines name each
+  size not read, and the block that runs only counts them, so it now says they do once the add-in
+  pass wires them, and that the Over 150mm view holds only the sizes read over the threshold.
+  `SizeSettings` no longer says the first property found wins
+
+The rules: .claude\rules\core.md, the per test views bullet with the mirrors and the homes, the
+mark bullet with the one place, the VIEWS TREE bullet with checks 5 and 6 and the checks that did
+not run, and the size bullet. The F114 section of steps\01_next.md and its order line 44.
+
+### Known bugs, attempt 2
+
+The findings not fixed, as register rows for the lead. None is fixed here because none breaks a
+house rule of CLAUDE.md as read by this developer. B10 is for the lead to rule, a person's comment
+throwing where the inventory reads it.
+
+- F114-K1, R2, a contract for the add-in pass. `ToolViewMark.Judge` keeps a view whose redlines are
+  null, and `ViewsInventory` judges a folder through it with the folder's redlines. A folder
+  carries no redline list in the API as far as read, so an add-in handing null for a folder makes
+  every marked tool folder ChangedByAPerson, never removed. The add-in pass hands 0 for a folder,
+  or Judge says a folder has none, with a test of a folder at null
+- F114-K2, R8, a rule outside Core, before this branch. `Penetrations.Larger` in the add-in reads
+  a readable small service against an unreadable one as Small, never SizeUnknown, so under F114
+  that clash goes in the pair view unnamed. The add-in pass moves it into Core with its ViewClash
+- F114-K3, R11, wording. The team map line leaves out the size folder teams, and a view line reads
+  1 open clashes. For the add-in pass to settle with the block
+- F114-K4, B4. Two tests of one name merge into one view, the pair read off the first clash of the
+  first. Whether Clash Detective can hold two tests of one name is UNKNOWN here
+- F114-K5, B7. On the first run after this change the legacy tree holds folders of the same names
+  the new tree uses. If the add-in writes its folders fresh, each is a twin, so everything under
+  them is KeepPlaceNotUnique and the tree grows each week. The add-in pass reuses an existing folder
+  by its path, and a Core rule and test say so
+- F114-K6, B8. The mark writes the camera to a thousandth and `CameraReadBackTolerance` is 0.001, so
+  rounding alone reaches 0.00087, a smaller tolerance makes every tool view moved, and a camera far
+  from the origin read back in single precision may drift past it. The tolerance is absolute and
+  not tied to the decimals written. P10 and the add-in pass measure it
+- F114-K7, B9. A person's change of hidden items or appearance through Update Viewpoint, with name,
+  place, comment, camera, Guid and redlines unchanged, is not seen, and the view is replaced next
+  week. By design, the sentence of the mark says how to keep a view, and the loss is silent
+- F114-K8, B10, `SizeText`. 300x150 mm reads 150, refusing the 300 with no unit, and 6 1/2 in reads
+  2 in. Both read as a real size and decide which view a clash goes in. The client's strings so
+  far carry a unit on each number
+- F114-K9, B11's contract half. `ViewClash.ServiceSize` null means no service and is also what an
+  add-in that never read the size hands, so a size never read puts every large service in the
+  pair view with nothing said. The add-in pass reads it in every pair carrying the size folder
+- F114-K10, B12. `ToolViewMark.CountedAt` adds a length read off a comment to an index, so
+  stamp=2147483647: wraps, passes the bounds test and Substring throws, and a person's comment
+  stops the inventory for the group. A camera of NaN reads as unchanged. For the lead to rule
+  whether the first breaks a house rule
+- F114-K11, B13. `FramingBox` reads the unit before its one-centre return, so a unit the table does
+  not know throws for a view that needs no box. Loud, by F33's rule
+- F114-K12, B3's second half, a contract for the add-in pass. `ViewsInventory.Plan`'s testsRead must
+  be the tests the clash step ran. Built from the plan's tests, a test whose last open clash was
+  fixed keeps its old views as KeepTestNotRead
+- F114-K13, B2's other direction, for Bader. Check 3 does not fail where the read back hides the
+  model a clashing item lives in. Its words are his, so whether it should is his to say
+- F114-K14, R0's own point. The mark compares the slash joined place, so a view moved from folder
+  A/B holding C to A holding B/C reads as unmoved. The key tells them apart. No folder name in the
+  tree read so far holds a slash
+- R9 and B14, evidence, and R10, process: this pass keeps every pre-commit output whole and saves
+  the build command at the top of its file
+
+### Every file written outside the repo, attempt 2
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-a2-roamer-before.txt, f114-a2-msg-merge-main.txt, f114-a2-precommit-merge-main.txt,
+  f114-a2-msg-merge-f131.txt, f114-a2-precommit-merge-f131.txt, f114-a2-core-before.txt,
+  f114-a2-before-compile.txt, f114-a2-before-fail.txt, f114-a2-checks.txt, f114-a2-msg-code.txt,
+  f114-a2-precommit-code.txt, f114-a2-build-code.txt, f114-a2-core-after.txt,
+  f114-a2-msg-records.txt, f114-a2-precommit-records.txt, f114-a2-roamer-after.txt and
+  f114-a2-push.txt
+- the edit scripts and the text of this entry, in the session's scratch folder under the user's
+  temp folder, which nothing reads after the commit
+
+### Attempt 1
 
 F114 MERGES AFTER F131. It reads F131's TeamPair, TeamMap and CodeOf, merged into this branch at
 52cf57c from origin/fix-F131 as it stood at 89854fa, unmerged and being changed by its own
