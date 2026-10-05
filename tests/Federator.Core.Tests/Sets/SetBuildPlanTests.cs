@@ -464,12 +464,14 @@ namespace Federator.Core.Tests
         /// <summary>
         /// Measured off the client's own matrix on 2026-09-19. Five conditions of 102 carry
         /// the flag, one in each of the five sets that hold four conditions, and every one
-        /// of those five reads as two groups ORed.
+        /// of those five reads as two groups ORed. Read off the client's file under samples,
+        /// because the corrected one in the exchange folder asks every spelling the models
+        /// carry as Or groups since F116 and holds more.
         /// </summary>
         [Test]
         public void FiveSetsInTheClientsMatrixAskAnOrAndTheRestDoNot()
         {
-            ExchangeDocument document = new ExchangeReader().ReadFile(Samples.CorrectedMatrix());
+            ExchangeDocument document = new ExchangeReader().ReadFile(Samples.Matrix());
             SetBuildPlan plan = SetBuildPlan.From(document);
 
             int withAnOr = 0;

@@ -162,6 +162,28 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// A set asking one category in two of its groups is ONE set asking for it. Since
+        /// F116 a set asks every spelling of its workset as Or groups, each carrying the
+        /// category, so BLD-ME-Flex Ducts asks for Flex Ducts twice, and the block, which
+        /// counts sets, read 16 on the client's matrix where 14 sets ask for a category no
+        /// model carries.
+        /// </summary>
+        [Test]
+        public void ASetAskingOneCategoryInTwoGroupsIsCountedOnce()
+        {
+            string twice = "<condition test=\"equals\" flags=\"64\">"
+                + "<category><name internal=\"LcRevitData_Element\">Element</name></category>"
+                + "<property><name internal=\"" + Category + "\">Category</name></property>"
+                + "<value><data type=\"wstring\">Telephone Equipment</data></value></condition>";
+
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set("A", null, Condition("equals", Category, "Telephone Equipment") + twice)),
+                Category);
+
+            Assert.That(found.Count, Is.EqualTo(1));
+        }
+
+        /// <summary>
         /// A measured list holds what it names and nothing else, Ordinal, so a category
         /// spelt with a different case or an extra space is one the models do not carry.
         /// </summary>

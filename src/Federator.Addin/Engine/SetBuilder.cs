@@ -494,7 +494,7 @@ namespace Federator.Addin.Engine
             {
                 PlannedSet planned = plan.Buildable[i];
                 progress("Set " + (i + 1) + " of " + plan.Buildable.Count + ": " + planned.Name);
-                BuildOne(document, sets, planned, outcome);
+                BuildOne(document, sets, planned, plan.Worksets, outcome);
             }
 
             // Q74. EVERY SET IN THE NWF THE PICKED FILE NO LONGER NAMES, and what to do
@@ -624,7 +624,7 @@ namespace Federator.Addin.Engine
         }
 
         private void BuildOne(
-            Document document, DocumentSelectionSets sets, PlannedSet planned, SetBuildOutcome outcome)
+            Document document, DocumentSelectionSets sets, PlannedSet planned, IList<string> worksets, SetBuildOutcome outcome)
         {
             try
             {
@@ -697,10 +697,11 @@ namespace Federator.Addin.Engine
                         // set that never produces a clash, and nothing told him which of
                         // those sets is wrong and which is a model with no such content.
                         // Judged on what it asks NOW, so a set this run corrected is not
-                        // reported as asking the question it no longer asks.
+                        // reported as asking the question it no longer asks, and against the
+                        // workset spellings the corrections were chosen from, F116.
                         if (found == 0 && !drift.CouldNotRead)
                         {
-                            outcome.AddEmpty(EmptySets.Why(planned.Path, asking));
+                            outcome.AddEmpty(EmptySets.Why(planned.Path, asking, worksets));
                         }
 
                         if (drift.Drifted)

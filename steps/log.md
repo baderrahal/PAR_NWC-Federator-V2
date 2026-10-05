@@ -1,6 +1,7 @@
 # log
 
 Newest entry at the top.
+
 ## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built and held on its branch
 
 Written by F132's developer as the lead's delegate. Core tests 1865 passed, 0 failed, 0 skipped
@@ -72,6 +73,626 @@ turn5\f132-roamer-mid.txt, and after the last command, turn5\f132-roamer-after.t
 ### What comes next
 
 - the lead's reviewer and breaker on fix-F132, then probes P1 and P2 and the add-in half
+
+## 2026-10-05 The loop, turn 5, F116 the clash XML, DONE in Core and built, wave 1, with Bader's answer to Q113, the readings of that pass, F112 taken in and a closing pass
+
+Core tests, all with 0 failed and 0 skipped:
+- 1746 passed before attempt 1, turn5\f116-core-before.txt, and 1776 at aefb416 after it with
+  main c4fd0d4 taken in, turn5\f116b-core-before.txt. turn5\f116-core-after.txt holds the 1776
+  on one line with no commit and no time. Main's own tests number 1746 at dd55e4b, where attempt
+  1 branched off, and 1756 at c4fd0d4, the totals of turn5\f116e-main-counts.txt, so 10 of the
+  30 are main's and F116's own are 20. In that file 51 tests of each tree fail, those of c4fd0d4
+  each a workbook test that cannot load an assembly in a tree extracted with no .git, so only
+  its totals are read
+- 1776 passed before attempt 2 at aefb416, turn5\f116b-core-before.txt, and 1790 after it at
+  9d8e3b2, turn5\f116b-core-after.txt
+- 1790 passed before the Q113 pass at aa7ec30, turn5\f116c-core-before.txt, and 1796 after it at
+  5de2b21, turn5\f116c-core-after.txt
+- 1796 passed before the pass on its readings at 5de2b21, turn5\f116d-core-before.txt, and 1802
+  after it at 0bf09b3, turn5\f116d-core-after.txt
+- 1912 passed once main ddb059b, F112 among it, was taken in with the FR-028 change, read on the
+  tree of 8a32795 before its commit, turn5\f116d-fr028-after.txt, and at its pre-commit,
+  turn5\f116d-precommit-merge.txt. Main's own count is 1865 at the pre-commits of its records of
+  pull requests 107 and 108, turn5\precommit-records-12b.txt and precommit-records-13.txt, as
+  main's own entry of the design of F127 says, and 1865 again at f38a369's records, main's entry
+  of FR-052. Main's changes from ddb059b to f38a369 are under steps\ alone,
+  turn5\f116e-main-since.txt. So F116's own tests are 47 of the 1912, the 20, 14, 6, 6 and 1 of
+  its passes
+- 1912 passed before the closing pass at 1ee0d93, turn5\f116e-core-before.txt, and 1912 after it
+  with RevitWorksets.All deleted, read on the tree of a40ff59 before its commit,
+  turn5\f116e-core-after.txt. No test was added or deleted. The pre-commits of the closing pass
+  read 1912 each, turn5\f116e-precommit-merge.txt, f116e-precommit-1.txt,
+  f116e-precommit-merge-2.txt, f116e-precommit-2.txt and f116e-precommit-merge-3.txt, and that of
+  its last records commit is turn5\f116e-precommit-3.txt, read after this entry was written
+
+Every test run named above but f116-core-after.txt and the pre-commit files, which run the tests
+quietly, also lists the one [Explicit] generator test, WriteTheCorrectedFile, as skipped, and the
+adapter does not count it.
+The solution builds with 0 warnings and 0 errors on 0bf09b3, built whole with --no-incremental,
+Federator.Core, Federator.Core.Tests and Federator.Addin each built, turn5\f116d-build-code.txt,
+the output kept with git rev-parse --short HEAD and a clean git status at its top. On 5de2b21 it
+was a plain Release build, not built whole, with 0 warnings and 0 errors,
+turn5\f116c-build-after.txt line 4. On 1ee0d93 it was built whole, turn5\f116d-build-after.txt,
+and on a40ff59, the closing pass's code commit, built whole with git rev-parse --short HEAD and a
+clean git status at its top, 0 warnings and 0 errors, turn5\f116e-build-code.txt. The records
+commits 41c52a1, 1ee0d93 and the closing pass's two, and its three merges of main, change no
+code. The build of the last commit is kept in turn5\f116e-build-after.txt, read after this entry
+was written.
+Every file named is under %LOCALAPPDATA%\NwcFederatorLoop\turn5 unless it is a path of the repo.
+
+Programs and Navisworks:
+- attempt 1's entry named dotnet build and dotnet test as the programs it started, and its
+  commits were made with git. Its line "No Navisworks was started" rested on no process read
+- attempt 2 started dotnet build, dotnet test, git, python, powershell for the evidence scripts,
+  which load only Federator.Core.dll, and the repo's check scripts through the pre-commit.
+  Get-Process Roamer read process 49016, started 18:55:27, before the first command at 19:52:28,
+  turn5\f116b-roamer-before.txt, and process 32136, started 21:17:06, after the last at 22:04:53,
+  f116b-roamer-after.txt. So a Navisworks started inside that window. None of the developer's
+  programs starts one, and who started it is UNKNOWN to those reads
+- the Q113 pass started dotnet build, dotnet test, git, sh for the two checks and the pre-commit,
+  and powershell for the Roamer reads and turn5\f116c-same-sets.ps1, which loads only
+  Federator.Core.dll. Get-Process Roamer read process 32136, started 21:17:06, at 22:26:01 before
+  the first command and at 00:18:33 on 2026-10-05 after the last, turn5\f116c-roamer-before.txt
+  and f116c-roamer-after.txt
+- the pass on its readings started dotnet build, dotnet test, git, sh for the two checks and the
+  pre-commit, python to edit files and to write the stubs, powershell for the Roamer reads and
+  turn5\f116d-same-sets.ps1, which loads only Federator.Core.dll, and Git Bash's own tools such as
+  grep, sed, awk, diff, od and sha256sum. Get-Process Roamer read process 32136, started 21:17:06,
+  at 00:56:17, after the readings were read and before the first build, test or edit,
+  turn5\f116d-roamer-before.txt, and at 01:35:18 after the code commit and its reads,
+  turn5\f116d-roamer-mid.txt. The read after the push is turn5\f116d-roamer-after.txt
+- the closing pass started dotnet build, dotnet test, git, sh for the two checks and the
+  pre-commit, tar to unpack two trees of main, powershell for the Roamer reads, the reader
+  measure and turn5\f116e-same-sets.ps1, which loads only Federator.Core.dll, and Git Bash's own
+  tools such as grep, sed, awk, diff and date. Get-Process Roamer read process 32136, started
+  21:17:06, at 02:46:30, before the first build, test or edit, the first of which,
+  turn5\f116e-core-before.txt, reads 02:47:52, turn5\f116e-roamer-before.txt. The read after the
+  push is turn5\f116e-roamer-after.txt
+- none of these programs starts a Navisworks. Two reads of one process cannot exclude a
+  Navisworks started and closed between them
+
+### What attempt 1 did
+
+- Bader's answer to Q104, FR-030, b68a785: the picked clash XML is corrected by MatrixCorrections
+  before any set is built, at every place the window reads it. That is the pick, the run, the
+  open file run and both hand buttons, which read it raw before. The log names every correction
+  in a MATRIX line after the line naming the file. Bader's test passes: the old uncorrected
+  sample, the exchange file and the sample with the hyphen alone corrected give the same sets. By
+  hand, the sample, the exchange file as main had it, sha256 792b01fb, his older -OLD file and the
+  regenerated exchange file give the same 61 sets and 1830 tests line for line,
+  turn5\f116-same-sets.txt
+- Bader's answer to Q102, FR-008 and FR-025, 045b7df, 76af22d and 1f5cf21: a workset the models
+  carry in two or more spellings is asked in every one of them. Each spelling is an Or group
+  copied whole, so every group still asks its category. Before, the one Or condition held the
+  workset alone. revit-worksets.txt gained the 30 names the C06 log's EXPORT CHECK lines list,
+  and the Q113 pass later moved them into this project's list. The row file gains one model
+  worksets row per model naming every workset in full, so the next run measures every spelling
+- Bader's answer to Q103, FR-009, 06a89bb: an AR set whose category another discipline also uses
+  asks Source File contains -AR-. On the client's matrix BLD-AR-Ramps, Furniture, Railings and
+  Site gain it and no other set changes
+- FR-026, e959c7f: a category rewrite changes whole values and never the set's own name
+- the six code commits, 1f5cf21, e959c7f, 045b7df, 06a89bb, b68a785 and 76af22d, each carry new
+  tests seen failing first, turn5\f116-fr025-before-fail.txt, f116-fr026-before-fail.txt,
+  f116-fr008-before-fail.txt, f116-fr009-before-fail.txt, f116-fr030-before-fail.txt and
+  f116-worksets-row-before-fail.txt. 19 of the 20 new tests failed there, and the 20th, the
+  shipped list test, failed in attempt 2 against an emptied list,
+  turn5\f116b-shipped-list-before-fail.txt
+- b6aa492, records only: the rule in .claude\rules\core.md, "The picked file is corrected before
+  a set is built, F116", the order line and the F116 section in steps\01_next.md. aefb416, records
+  only: this entry as attempt 1 wrote it
+
+### What attempt 2 did
+
+- On the reviewer's, the breaker's and the claim-checker's readings of aefb416,
+  turn5\f116-read-review.txt, f116-read-break.txt and f116-read-claims.txt. Items 1 to 6 are five
+  commits, each with new tests seen failing first. Item 7 is two commits of comments, d0db33d is
+  the rule and the section, records only, and item 8 is a read with no commit
+- 1, cfb057e: a value correction touches only a condition on the workset property that is not
+  negated. Before, a negated workset condition asked in a second spelling took the whole
+  category, and a condition on another property whose value read like a workset was widened too.
+  A file with a negated workset condition gets a MATRIX line saying it is left as the file asks.
+  Three new tests fail before, turn5\f116b-negated-before-fail.txt. Five older tests fed the rule
+  a bare data element or a condition with no property, which it no longer reads as a workset, and
+  their inputs became a set in the client's shape, every assertion kept, the tests' diff of that
+  commit in turn5\f116d-cfb057e-tests.txt. AddingTheOrRowTwiceAddsItOnce had passed with nothing
+  to add and gained an assertion that the first run adds the row. The commit message counts three
+  of them and the Or row test, and no run shows the five failing before the change
+- 2, 3e66536: one rule in one place. WrittenCondition reads through ExchangeReader.ReadCondition.
+  WrittenCondition.Escaped is the one escape. WithValue, WithFlags and WithTest are the one way to
+  edit a condition. OneCondition, ReplaceOpeningTag, ReplaceInnerText, FirstCondition,
+  RewriteValue, AttributeText and Noted are folded in, and every lookup of a set by its name uses
+  the same escaped name. Three new tests fail before, turn5\f116b-one-place-before-fail.txt. The
+  catch-all now keeps the line break before its closing conditions tag, so the exchange file was
+  regenerated by its generator, sha256 94897667, turn5\f116b-same-sets.txt line 53, where it was
+  ee1d2f3e, turn5\f116-same-sets.txt line 48. The one line diff and its 151 changes in all are in
+  turn5\f116b-regenerate.txt
+- 3, c36490f: ReadPicked reads the file in the encoding it declares, through
+  ExchangeReader.ReadFileText. A set or condition the corrections cannot read is counted on the
+  NOT EVERY SET COULD BE READ line and never thrown. The Source File rule finds a set by its
+  folders and its name. Four new tests fail before, turn5\f116b-read-before-fail.txt
+- 4 and 5, af2c758: the MATRIX lines say "every spelling measured so far in this project's
+  models" and "no model measured so far". Where nothing changed, the last line says no correction
+  was applied and counts what was already made, what found nothing to change and what could not
+  be read. One line before the last, on every picked file, says a set already in an NWF keeps the
+  conditions it was built with unless the box Rebuild sets that drifted from the file is ticked,
+  and that the SETS block names each such set as DRIFTED. Three new tests, and six older tests
+  moved onto the new wording, fail before, turn5\f116b-lines-before-fail.txt. The empty
+  selectionset line has no test seen failing, turn5\f116b-read-review.txt lines 47 to 49
+- 6, e4a645d: the model worksets row writes an empty number and UNKNOWN where a model's element
+  walk stopped part way, through ExportCheck.WorksetCount and EveryWorkset, with one call changed
+  in FederationEngine. The new test fails against a stub, turn5\f116b-worksets-row-before-fail.txt
+- 7, cc04402 and 9d8e3b2, no code line, turn5\f116e-comment-commits.txt: cc04402 changes
+  comments under src and tests, and 9d8e3b2 code comments, the rule in .claude\rules\core.md and
+  the F116 section of steps\01_next.md. The comments made true. The C06 log has nine groups whose
+  worksets line counts the rest, at its lines 605, 1354, 3248, 3928, 4670, 5071, 6482, 6853 and
+  7254. The nine AR sets left without -AR- are named, turn5\f116b-ar-sets.txt
+- 8, a read: the rename alone, applied to samples\1104-PAR_CLASH_AllInOne_25mm.xml read only, is
+  byte for byte Bader's older file, 1,443,383 bytes and sha256 36ab2739 both,
+  turn5\f116b-hyphen-only.txt
+- By hand on the Core of cc04402, the four files give the same 61 sets and 1830 tests line for
+  line, turn5\f116b-same-sets.txt. Builds of 0 warnings and 0 errors are in
+  turn5\f116b-build-negated.txt, f116b-build-one-place.txt, f116b-build-read.txt,
+  f116b-build-lines.txt, f116b-build-worksets-row.txt and f116b-build-after.txt. The pre-commits
+  are in turn5\f116b-precommit-1.txt to -8.txt
+
+### What the Q113 pass did
+
+- On Bader's answer to Q113 of 2026-10-04, B and D, the brief turn5\f116c-brief.md, after attempt
+  2's readings, turn5\f116b-read-review.txt and f116b-read-break.txt, both APPROVE with nothing
+  blocking
+- Main 6cc0283 was taken in at aa7ec30 and main bd05bc5 at 5de2b21, both sides kept each time.
+  The F116 entry stays on top of steps\log.md, and in steps\01_next.md F116's order line, 40
+  then, and its section come after F125's
+- 7e40a8a, items 2 to 5 of the brief and the first half of item 1.
+  src\Federator.Core\Exchange\matrix-corrections.txt and its embedding in Federator.Core.csproj
+  are gone, with MatrixCorrectionList.Shipped. The list is a plain file beside the picked XML,
+  named after it: the XML's name without its extension and CorrectionListSettings.Suffix, default
+  .corrections.txt. It is one full path tested with File.Exists, never a search.
+  MatrixCorrections.ReadPicked reads it through MatrixCorrectionList.Beside, so the pick, the run,
+  the open file run and both hand buttons read it. The first MATRIX line names the list in full
+  and what it holds. With no list there, the first MATRIX line names the path looked for and says
+  nothing is corrected, and the file is read as written. A list it cannot read corrects nothing
+  and the first line says why, never a throw. A line it does not know and bytes that are not
+  UTF-8 were tested in that pass, and a file that will not open and a rename it cannot use only in
+  the pass after. The format is the old one plus workset lines, one spelling a line. This
+  project's list is exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, sha256 3f40d5cc
+  then, turn5\f116c-same-sets.txt. Its 30 spellings were copied byte for byte off
+  revit-worksets.txt, the no-break space kept. On 9d8e3b2 they were the C06 block of that file,
+  lines 86 to 130, the names at lines 101 to 130, and ReadPicked handed the shipped list to
+  ForPickedFile at MatrixCorrections.cs line 552, turn5\f116d-9d8e3b2-lines.txt
+- in turn5\f116c-beside-before-fail.txt 1788 passed and 8 failed. Seven are tests of 7e40a8a, run
+  against stubs that keep the list in Core. The eighth is 039192a's test of the 39 names, failing
+  because revit-worksets.txt still held 69, and it is seen failing again in
+  turn5\f116c-worksets-before-fail.txt. The stub was not kept, so that run is described and
+  cannot be repeated from what is kept. After, 1796 pass, turn5\f116c-beside-after.txt. The new
+  first line moved some tests, and every assertion was kept. Two read the NOT EVERY SET line at
+  index 1. One counts 16 lines where it counted 15. The tests that picked the sample where it sits
+  now pick a copy with the list beside it, and the sample where it sits stands for a file with no
+  list
+- 039192a, item 1: the 30 spellings F116 added left revit-worksets.txt, which holds the 39 names
+  of the C02 census again. EmptySetsTests was main's again, because F116 had changed it only
+  because the 30 names were in Core. In turn5\f116c-worksets-before-fail.txt 1793 passed and 3
+  failed, in a run whose own git status shows revit-worksets.txt modified, so the list it read was
+  not HEAD's byte for byte. The 30 extra names in the failure show the 30 were in it. That run too
+  is described and cannot be repeated. After, 1796 pass, turn5\f116c-worksets-after.txt
+- 83fda52, item 7, comments only: no set, Source File value or category of the list is left in a
+  line F116 added under src, and of its workset spellings only main's own ME-DUCTWORK and
+  ME-Ductwork example, in 4 comment lines reworded to say C02, read in the pass after at 0bf09b3,
+  before the merge with F112, turn5\f116d-names-in-src.txt. At a40ff59 the same search finds 6
+  comment lines and no other line, the 2 more being F116's own comment in ExportCheck.cs that came
+  with the merge 8a32795, turn5\f116e-names-in-src.txt. SourceFileRule.cs names the C06 run of
+  set 03, a run and not a name of the matrix. 1796 passed, turn5\f116c-comments-after.txt
+- 50169d8, records only: the rule in .claude\rules\core.md, the corrections as one project's data
+  beside the picked XML, and the F116 section of steps\01_next.md. The ValuesGiven sentence of
+  core.md now says what the code's own doc says, the attempt 2 reviewer's point
+- item 6, Q113 D: no change. The four categories stay in the list's source-file line
+- No add-in file changed from 9d8e3b2 to 5de2b21, turn5\f116d-addin-range.txt, read in the pass
+  after
+- By hand on the Release Core of 83fda52, turn5\f116c-same-sets.txt. The sample, set 04's copy of
+  sha256 792b01fb, Bader's older file of sha256 36ab2739 and the exchange file of sha256 94897667,
+  each with the list beside it, give the same 61 sets and 1830 tests line for line. Set 04's copy
+  with no list beside it gives the sets ExchangeReader.ReadFile gives it as written. The sample
+  and the exchange file read the same sha256 after the read as before
+- Builds of 0 warnings and 0 errors on the trees of 7e40a8a and 039192a and on 83fda52:
+  turn5\f116c-build-beside.txt, f116c-build-worksets.txt and f116c-build-comments.txt.
+  check-locals and check-imports pass on 5de2b21, turn5\f116c-checks-after.txt. The pre-commits
+  of the pass's four commits and of the second merge each read 1796 passed,
+  turn5\f116c-precommit-1.txt to -4.txt and f116c-precommit-merge-2.txt, and the first merge's
+  read 1790, f116c-precommit-merge.txt. The full git diff --stat origin/main...HEAD, 26 files, is
+  turn5\f116c-diffstat.txt. Pushed, origin/fix-F116 at 5de2b21, turn5\f116c-push.txt. Before the
+  push, the second merge's title was amended twice, because printf had turned the \01 of
+  steps\01_next.md into a control character and the first amend read the same file
+
+### What the pass on the readings of the Q113 pass did
+
+- On turn5\f116c-read-review.txt and f116c-read-break.txt, each CHANGES with one blocking
+  finding, and the claim-checker's 18 points, turn5\f116c-read-claims.txt, read with Bader's answer
+  under Q113 in steps\02_questions.md: a picked XML with no list beside it is corrected by
+  nothing, and the log says so. The lead's task for this pass was given in the session and is
+  kept in no file
+- 0bf09b3, the reviewer's blocking finding. The EMPTY SETS judge read RevitWorksets.All(), the 39
+  names inside Core, at EmptySets.cs line 257, while the corrections read those and the list's
+  workset lines, at MatrixCorrections.cs lines 568 and 596 to 597. So a set the corrections made to
+  ask ME-DUCTWORK was called a value no model in this project carries, while the MATRIX line said
+  it was measured. RevitWorksets.With is now the one place the two are put together. ReadPicked
+  hands what it gives to ExchangeDocument.Worksets, SetBuildPlan.From carries it to
+  SetBuildPlan.Worksets, and SetBuilder hands that to EmptySets.Why, which judges against the
+  spellings it is handed and reads no list of its own. That is one file of the add-in,
+  SetBuilder.cs, three edits: the call of BuildOne passes plan.Worksets, BuildOne takes them as
+  a parameter, and its EmptySets.Why call hands them on, with a comment, the diff kept in
+  turn5\f116e-addin-diff.txt. The two argument Why is gone, so EmptySetsTests judges through a
+  helper handing in the names inside Core alone
+- 0bf09b3, the breaker's blocking finding. A list that was there and read went on to the value
+  correction with the 39 names, so a list of no bytes, of comments or with no workset line
+  rewrote ME-DUCTWORK to ME-Ductwork, more than no list does. A list holding none now corrects
+  nothing and its first MATRIX line says so, as no list does, MatrixCorrectionList.HoldsNone. A
+  workset value is corrected only where the list names a spelling of it, NamesASpellingOf. A
+  value it names none of is left as the file asks, on a line saying the list beside this file
+  names no spelling of it
+- the four new tests of the two findings fail against stubs that add the new members with the old
+  behaviour, 4 failed of 4, the stub diff and git status kept in
+  turn5\f116d-judge-and-list-before-fail.txt, and pass after, turn5\f116d-judge-and-list-after.txt.
+  One older test, the one reading the client's matrix values, pins PL-Drainage's whole line now,
+  where it read its first words
+- 0bf09b3, the reviewer's test gap and the claim-checker's seventh point. One test holds the list
+  open with FileShare.None, then writes a rename whose new name holds the old one, and asserts for
+  each that the first MATRIX line names why and nothing throws. Another pins that a UTF-16 list
+  with its byte order mark is read, so the list's header and core.md say so where they said a list
+  that is not UTF-8 is not read. In turn5\f116d-cannot-use-before-fail.txt the first run, its two
+  catches rethrowing and its reader ignoring the mark, fails the held-open half and the UTF-16
+  test, and the second, the rename catch alone rethrowing, fails the rename half, each run with
+  its stub diff. The summary of NoListOfCorrectionsIsInsideCore says what it checks and no more,
+  the reviewer's point
+- the six new tests take Core from 1796 to 1802. The commit message of 0bf09b3 counts two tests for
+  the two branches and one more, where they are one test holding both and the UTF-16 test, and it
+  says two bullets are new in core.md, where there are three
+- 0bf09b3, the list's header says 1B06G1 carries ME-DUCTWORK, ME-EQUIPMENT and ME-PIPING in
+  capitals and 1B06BC the first two among the ten names its line lists, C06 log lines 1354 and
+  605, the claim-checker's sixteenth point. Its workset lines are now lines 73 to 102, sha256
+  afc463be, turn5\f116d-same-sets.txt
+- 0bf09b3, the rule in .claude\rules\core.md: three bullets new, the one place, a value corrected
+  only where the list names it, and what the corrections code names, with the ExportCheck.cs log
+  line named, the claim-checker's fifth point, and the list bullet made exact
+- the claim-checker's 18 points made true in this entry, the F116 section of steps\01_next.md and
+  turn5\pr-f116.md, with the files read for them: turn5\f116d-addin-range.txt,
+  f116d-names-in-src.txt, f116d-main-trial-merge.txt, f116d-9d8e3b2-lines.txt and
+  f116d-cfb057e-tests.txt
+- the pre-commit of 0bf09b3 read 1802 passed, turn5\f116d-precommit-1.txt. check-locals and
+  check-imports pass on 0bf09b3, turn5\f116d-checks-after.txt
+- By hand on the Release Core of 0bf09b3, turn5\f116d-same-sets.txt. The sample, set 04's copy of
+  sha256 792b01fb, Bader's older file and the exchange file, each with the list beside it, give
+  the same 61 sets and 1830 tests line for line, and the exchange XML is unchanged at sha256
+  94897667. Set 04's copy with no list, with a list of no bytes or with a list of the rename
+  alone keeps every workset value it asks, the first two on 3 MATRIX lines. The EMPTY SETS judge,
+  handed the spellings the plan carries, calls every workset value the corrected file asks one
+  models in this project carry, where the names inside Core alone call ME-DUCTWORK, ME-EQUIPMENT,
+  ME-PIPING, FF-Fire Fighting, FP-PIPING and PL-Domestic Water carried by no model
+- F112 was not on main at b2afb2d. Main's changes from bd05bc5 to b2afb2d are 4 files under
+  steps\, and a trial merge of b2afb2d into 0bf09b3 conflicts in steps\log.md alone,
+  turn5\f116d-main-trial-merge.txt
+- 41c52a1, records only: this entry and the F116 section of steps\01_next.md as written before
+  F112 merged
+- F112 merged on main as ddb059b, pull request 106, while this pass ran, and main ddb059b was
+  taken in at 8a32795, both sides kept. steps\log.md and steps\01_next.md conflicted: this entry
+  stays on top with main's entries after it in main's order, and F112 takes order line 40 and
+  F116 41, F112's section after F125's and F116's last. origin/main had already moved on to
+  ce6eedb at the fetch of 02:04:12, line 45 of its reflog in f116e-main-order.txt, before the merge at 02:07:11 and the push of 1ee0d93 at
+  02:25:46, the reflogs in turn5\f116e-main-order.txt, so 8a32795 took in ddb059b and not the
+  head of main. ce6eedb's changes were under steps\ alone, and a trial merge of it into 1ee0d93
+  read after the push was clean, turn5\f116d-main-after-push.txt
+- 8a32795, F112's FR-028 case lines. On the merged tree F112's own test
+  AGroupWhereNoAskedNameDiffersByCaseGetsNoWarning failed, because the corrected matrix asks
+  ME-DUCTWORK or ME-Ductwork in every set asking one and the case lines named those sets as
+  missing ME-Ductwork. ExportCheck.AddCaseDifferences now names a pair only with the sets that
+  ask the other spelling and do not also ask the carried one, not negated, as a whole name or
+  for contains a part of it, WorksetAsk.Finds and AlsoFinds, and a pair no set is left for is
+  not named. A set asking the carried spelling only negated is still named. The change rides in
+  the merge commit because the pre-commit refuses a commit that fails a test
+- the tests of it: F112's test, its comment made true, the new
+  ASetThatAlsoAsksTheCarriedSpellingIsNotNamedAsMissingIt, and F112's 1B06BC test, which read the
+  corrected matrix as main had it, asking the title case alone. That one is now
+  TheCapitalsOf1B06BCAgainstAFileAskingTitleCaseAreNamed, its three assertions kept against sets
+  asking the title case alone, and it also asserts the corrected matrix since F116 names nothing
+  for that group. The three fail on the merged tree before the change, 3 failed of 3, the git
+  status and the test diff kept, turn5\f116d-fr028-before-fail.txt, and pass after, 1912 in all,
+  turn5\f116d-fr028-after.txt
+- 8a32795, the rule in .claude\rules\core.md: a bullet on the case warning, and the bullet on what
+  the corrections code names no longer says ExportCheck.cs types the pair, a sentence F112's
+  FR-028 removed
+- 1ee0d93, records only: this entry and the F116 section brought to the merge. Pushed,
+  origin/fix-F116 at 1ee0d93, turn5\f116d-push.txt
+
+### What the closing pass did
+
+- On the readings of 1ee0d93, turn5\f116d-read-review.txt, CHANGES with one blocking finding,
+  turn5\f116d-read-break.txt, APPROVE, and the claim-checker's 12 points,
+  turn5\f116d-read-claims.txt. The lead's task for this pass was given in the session and is kept
+  in no file
+- main ce6eedb was taken in at fa66a26 with no conflict, its changes steps\02_questions.md and
+  steps\loop.md. Main 0c64018 and then main f38a369 came while this pass ran and were taken in at
+  d418c56 and fae143f. In each steps\log.md conflicted and both sides are kept: this entry on top,
+  main's entries of FR-052 and of the design of F127 after it, then main's in main's order. No
+  merge changes a file under src or tests, turn5\f116e-main-since.txt
+- a40ff59, the reviewer's blocking finding. RevitWorksets.All() at RevitWorksets.cs line 48 had
+  no caller in src once 0bf09b3 moved EmptySets and MatrixCorrections onto RevitWorksets.With,
+  and it was a second way to get what With(null) gives, new List(Load()) in both. No decision in
+  steps\02_questions.md keeps it, so it is deleted. No test is deleted, because each of the five
+  test calls proved something With(null) does, so each now reads With(null) and every assert is
+  kept: TheListInsideCoreIsExactlyTheNamesMeasuredOnC02 and
+  BothSpellingsOfTheFourWorksetsTheBuildingsSpellTwoWaysAreMeasured in RevitWorksetsTests, and
+  TheCommittedFileAsksEveryMeasuredSpellingWithItsCategoryInEveryGroup,
+  TheValueLinesClaimOnlyWhatWasMeasured and EverySpellingTheCorrectionsAskIsOneTheEmptySetJudgeKnows
+  in MatrixCorrectionsTests. git grep finds no RevitWorksets.All under src or tests, and
+  check-locals and check-imports pass, turn5\f116e-checks.txt. A deleted member has no test to
+  see failing first. The build is the proof that nothing called it
+- the claim-checker's 12 points made true in this entry, the F116 section of steps\01_next.md and
+  turn5\pr-f116.md, with the files read for them: turn5\f116e-main-order.txt,
+  f116e-names-in-src.txt, f116e-addin-diff.txt, f116e-comment-commits.txt and
+  f116e-main-counts.txt. The rule in .claude\rules\core.md said a list saved as UTF-16 or UTF-32
+  is read, and no Core test reads UTF-32, so it says UTF-16 alone. The same reader built outside
+  the tool does read UTF-32 with its mark, turn5\f116e-reader-measure.txt, which is not a test
+- the breaker's point on a UTF-8 list with its byte order mark, read here, not fixed. A
+  StreamReader built as MatrixCorrectionList.cs line 136 builds it, under this machine's .NET
+  Framework 4.8.1, mscorlib 4.8.9345.0, through powershell, throws on a 0xA0 byte with no mark and reads it as U+FFFD
+  with the UTF-8 mark, turn5\f116e-reader-measure.txt. So core.md now says bytes that are not
+  UTF-8 are refused in a list with no byte order mark, and the case is under Known bugs
+- the same-sets read of the pass before, run again on the Release Core of a40ff59 by
+  turn5\f116e-same-sets.ps1, whose one change is that the names inside Core alone are read off the
+  plan of the file read as written, since All is gone. Past its first line it is the same as
+  turn5\f116d-same-sets.txt line for line, turn5\f116e-same-sets-compare.txt: 61 sets and 1830
+  tests for each file with the list beside it, 16 MATRIX lines under main\, 13 outcome lines, 9
+  of them changing something, and 23 changes in all
+- f51de84, records only: this entry, the F116 section of steps\01_next.md and the rule in
+  core.md. The records commit after fae143f brings this entry and the section to that merge,
+  records only
+
+### Choices the developers made, for the reader to check
+
+- Q103 READ WIDER THAN THE MATRIX ALONE. Read off the matrix only, no other folder's set asks
+  Ramps, Railings, Furniture or Site. So the rule would change nothing, and the 414 BLD-AR-Ramps
+  clashes of 1B06PK would stay. So the rule also takes categories measured in the logs: AR sets
+  that found items in groups with no AR model. Ramps and Railings come from the C06 log lines
+  4304, 7979 and 4316, Furniture and Site from the C04 partial log lines 200 and 203, and a test
+  reads them against those lines. Any other category another discipline carries only beside an AR
+  model is UNKNOWN. Bader kept all four, Q113 answered D on 2026-10-04
+- THE CORRECTIONS WERE DATA IN CORE until Bader answered Q113 B on 2026-10-04. They are now this
+  project's list, a plain file beside the picked XML. The copy in exchange\ sits beside the
+  corrected XML, so Bader can copy both into his folder
+- THE LIST'S LINE IS THE FIRST MATRIX LINE. With no list, one that cannot be read or one holding
+  none, the line saying so is first, and the two lines every picked file carries follow it, 3
+  MATRIX lines, turn5\f116d-same-sets.txt
+- A LIST WHOSE BYTES ARE NOT UTF-8 IS NOT READ when it carries no byte order mark, because a
+  default reader would put a replacement character for the no-break space of EL-Fire alarm and
+  ask a spelling no model carries. One saved as UTF-16 with its byte order mark is read as
+  UTF-16, which a test pins. One with the UTF-8 mark is read with a replacement character for a
+  bad byte, measured in the closing pass and under Known bugs
+- THE SUFFIX IS A SETTING WITH ITS DEFAULT ONLY, the shape ProbeSettings has. Nothing in the window
+  sets it
+- A VALUE THE LIST NAMES NO SPELLING OF IS LEFT ALONE, every such value, and not only one the
+  names inside Core would change. So with this project's list PL-Drainage is left alone because
+  the list names no spelling of it, where before it was left alone because the models spell it as
+  the matrix does, the same set either way. A value the list does name is asked in every spelling
+  of the names inside Core and the list together, as the lead's task put it
+- THE SPELLINGS REACH THE JUDGE ON THE PLAN, SetBuildPlan.Worksets, and not through SetBuilder's
+  constructor, so a Core test proves the plan carries what the corrections used and the add-in
+  change is one parameter passed through, three edits in SetBuilder.cs
+
+### What remains
+
+- the add-in half, the test of wave 1 on 1A02MM and 1A04PK, with the list copied out of exchange\
+  beside set 04's copy of the FIXED XML of sha256 792b01fb, %LOCALAPPDATA%\NwcFederatorLoop\runs\04
+  manifest line 1, and named 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt. Every line of
+  this bullet is EXPECTED, read off Core or off the XML text, and none was seen in Navisworks.
+  The wave 1 run is its proof. Expected on the first run with the XML: 16 MATRIX lines after the
+  line naming the file, as turn5\f116e-same-sets.txt has them under main\ on the Release Core of
+  a40ff59. The first names the list and says it holds 3 corrections, 1 rename, 1 catch-all and 1
+  Source File rule, and 30 workset spellings. Then come 13 outcome lines, 9 of them changing
+  something, the PL-Drainage line saying the list beside this file names no spelling of it. Then
+  the line saying a set already in an NWF keeps its conditions unless the box Rebuild sets that
+  drifted from the file is ticked, and `MATRIX   23 changes in all`. Expected with no list beside
+  it, or a list holding none: 3 MATRIX lines, the first saying so, and the sets built as the file
+  asks. Expected built fresh, or with the box ticked: BLD-ME-Ducts&Duct Fittings asking 8
+  conditions where main's exchange file asks 4, and BLD-AR-Ramps 2 where it asks 1, counted as
+  condition elements in the XML text and not in a built set, turn5\f116c-condition-counts.txt.
+  Expected on an NWF from set 04 with the box off: those sets keep their old conditions and the
+  SETS block names them DRIFTED. Expected for a set already in the NWF that finds nothing and asks
+  a spelling of the list, such as ME-DUCTWORK: the EMPTY SETS block counts it among the values
+  models in this project DO carry. Expected in the EXPORT CHECK block of 1A02MM: a set asking
+  ME-DUCTWORK or ME-Ductwork is not named as missing either, as
+  AGroupWhereNoAskedNameDiffersByCaseGetsNoWarning shows on that group's worksets measured in 5q,
+  and for a workset 5q did not read it is UNKNOWN. Expected in the .tsv: one model worksets row
+  per model, UNKNOWN where a walk stopped. Expected on the weekly run: no XML picked and no MATRIX
+  line. Whether BLD-AR-Ramps finds fewer items in 1A04PK is UNKNOWN until the run
+- the open file run and both hand buttons read the list through the same ReadPicked and have no
+  run proof yet. No F116 proof steps are written in steps\03_bader_next.md, and the wave 1 run
+  stands for the Run path alone
+- Bader is told once F116 merges that the list is on main at
+  exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, beside the corrected XML
+
+### Known bugs
+
+- a value line says "measured so far in this project's models" of a spelling that comes from the
+  39 names inside Core, the C02 census of project 1104, MatrixCorrections.cs lines 1014 and 1040.
+  With another project's list naming ME-DUCTWORK the line would call ME-Ductwork that project's,
+  because RevitWorksets.With, RevitWorksets.cs lines 55 to 73, puts the 39 beside any list, and
+  the EMPTY SETS judge would call a workset in neither list carried by no model and name a 1104
+  name as nearest. Whether the 39 stay in Core is Bader's to say, the Q113 pass reviewer's
+  question and both readings of 1ee0d93, turn5\f116d-read-review.txt and f116d-read-break.txt.
+  It is not in steps\02_questions.md, whose last on main is now 127, and is for the lead to put
+- the readings of 1ee0d93 that did not block, left as they were:
+  - the EMPTY SETS judge compares the value of a contains condition to the measured categories by
+    Ordinal equality and never reads the test or the negate flag, src\Federator.Core\Sets\EmptySets.cs
+    lines 114 to 146 and 267 to 278. So BLD-EL-Devices, which asks Category contains Devices, is
+    said in that block to ask a value NO MODEL IN THIS PROJECT CARRIES when it finds nothing, while
+    the HEALTH block reads contains as a part of a name, SetWarnings.cs lines 264 to 280, and the
+    one log disagrees with itself. Older than F116, the breaker's
+  - a rename is a text replace over the whole XML text, MatrixCorrections.cs lines 912 to 913, so
+    a From that is a part of other names rewrites those too, and the log gives one count and not
+    where. SetRename, MatrixCorrections.cs lines 10 to 42, refuses an empty name and a To holding
+    its From, and nothing else, the breaker's
+  - a list that is there and holds none, MatrixCorrectionList.cs lines 89 to 97 and 255 to 259, is
+    said in lower case as a project needing none is, where an unreadable list gets capitals, and a
+    failed save looks the same. Whether it takes the capital form is the lead's call, the breaker's
+  - in this project's list 24 of the 30 workset lines match no value of the client's matrix but for
+    case, the breaker's count, and feed only the EMPTY SETS judge, RevitWorksets.cs lines 55 to 73,
+    MatrixCorrectionList.cs lines 219 to 229 and 261 to 266, MatrixCorrections.cs lines 623 to 626,
+    and the list's lines 73 to 102. The first MATRIX line says 30 workset spellings and nothing
+    says how many were used. A mistyped line makes the judge say carried, and a line differing from
+    a value by a no-break space is not a spelling of it, the breaker's
+  - a UTF-8 list WITH its byte order mark is read with U+FFFD for a byte that is not UTF-8 and is
+    never refused, MatrixCorrectionList.cs lines 46 and 136, measured with the same reader in
+    turn5\f116e-reader-measure.txt. The summary at MatrixCorrectionList.cs lines 20 to 23 and the
+    list's header lines 70 to 72 say a list that is not UTF-8 is not read, which holds only with
+    no mark. The breaker's, UNKNOWN there and measured in the closing pass
+  - the case warning keys a set by its name alone, ExportCheck.cs lines 336 to 389, 417 and 442 to
+    448. AlsoFinds counts a set as asking the carried spelling when any condition of it does, not
+    negated, whatever Or group it sits in, so a set asking it in one group and not the other, or a
+    namesake in another folder that asks it, keeps a set from being named. The client's 61 sets
+    have unique names and copy every Or group whole, so nothing is hit today. No test covers it,
+    the reviewer's and the breaker's
+  - the class comment of RevitWorksets, RevitWorksets.cs lines 20 to 22, still says MatrixCorrections
+    asks every spelling measured in Core and the list, where since 0bf09b3 a value is corrected
+    only where the list names a spelling of it, the reviewer's. ValueRewrite's summary and core.md
+    say it right
+  - the add-in changed in SetBuilder.cs lines 497, 626 and 704, and steps\03_bader_next.md has no
+    F116 proof steps, the reviewer's, disclosed under What remains
+- the workset spellings past the tenth name of a group are UNKNOWN until the wave 1 .tsv rows
+- FR-012 is still open: an unreadable workset list inside Core corrects nothing, silently
+- still without a caller in src: CategoryRewrite, ValueOrRow, the shorter Apply overloads and
+  ExchangeReader.ReadFile, FR-172 and Q26
+- on an NWF built from the raw XML, the rename also renames the 120 test names, so new tests are
+  created beside the old ones, the attempt 2 breaker's finding
+- the two MATRIX warnings are log lines only, and the RESULT block does not repeat them
+- where a walk did not finish, the model export row writes -1 as its number and the EXPORT CHECK
+  block writes worksets NONE, both older than F116
+- FR-030's proof asked for a Core test that the picked file's outcome lines reach the HEALTH
+  block. No pass did it: the MATRIX lines go to the log before the HEALTH block, and the tests
+  prove only that they ride on the document
+- the Q113 pass breaker's points that did not block, left as they were, turn5\f116c-read-break.txt:
+  - the list is found by the XML's name alone, and when none is found only the first MATRIX line
+    says so, not the label after the pick nor the RESULT block
+  - the same folder run with and without the list renames sets and tests both ways
+  - a value with one measured spelling drops the matrix's own, FF-FIRE FIGHTING
+  - a rename is a raw text replace, so a name holding an ampersand is not found
+  - a catch-all on a set the same list renames
+  - a trailing space in a line of the list
+  - File.Exists is false for a path too long, so the list is said to be not there
+  - the Suffix setting is not checked
+- the Q113 pass reviewer's points that did not block, left: CLAUDE.md's line on the exchange
+  folder no longer describes the list kept there, Bader's to change
+- the other non-blocking points of attempt 2's readings are left as they were,
+  turn5\f116b-read-review.txt and f116b-read-break.txt:
+  - a value correction never counts a set it cannot read as not readable
+  - ReadFileText puts a replacement character for a bad byte
+  - a single quoted flags attribute gets written twice
+  - the empty selectionset tag has no test seen failing
+  - the Source File rule's Asks and WrittenAsking read a negated condition
+  - the catch in WrittenCondition.Read names no set
+  - the negated workset warning gives the widening reason in the one spelling case
+  - one test feeds a bare data element
+  - two summary blocks sit on the WorksetSet helper
+  - the DRIFTED line overclaims for a set whose search will not read
+  - two sets of one name in one folder
+  - the workset property constant
+
+### What comes next
+
+- the reviewer, the breaker and the claim-checker on the closing pass and on the two merges of
+  main. Then F116 merges, and Bader is told the list is on main
+
+The add-in half waits for the local machine, in the test of wave 1.
+
+### Every file written outside the repo, the closing pass
+
+- under %LOCALAPPDATA%\NwcFederatorLoop\turn5: f116e-roamer-before.txt, f116e-core-before.txt,
+  f116e-msg-merge.txt, f116e-precommit-merge.txt, f116e-core-after.txt, f116e-checks.txt,
+  f116e-reader-measure.txt, f116e-msg-1.txt, f116e-precommit-1.txt, f116e-build-code.txt,
+  f116e-same-sets.ps1, f116e-same-sets.txt and the folder f116e-same-sets of copies,
+  f116e-same-sets-compare.txt, f116e-names-in-src.txt, f116e-addin-diff.txt,
+  f116e-comment-commits.txt, f116e-main-counts.txt, f116e-main-order.txt,
+  f116e-msg-merge-2.txt, f116e-precommit-merge-2.txt, f116e-main-since.txt, f116e-msg-2.txt,
+  f116e-precommit-2.txt, f116e-msg-merge-3.txt, f116e-precommit-merge-3.txt, and the files of
+  the last records commit and the push named in turn5\pr-f116.md, which this pass rewrote
+- the session's scratchpad under %TEMP%\claude: the files of the reader measure, the trees of
+  main dd55e4b and c4fd0d4 unpacked by git archive with their builds, a list of the names looked
+  for, the output of a test run, and the folders the tests make under %TEMP% and remove
+
+### Every file written outside the repo, the pass on the readings
+
+- under %LOCALAPPDATA%\NwcFederatorLoop\turn5: f116d-roamer-before.txt, f116d-roamer-mid.txt,
+  f116d-core-before.txt, f116d-judge-and-list-before-fail.txt, f116d-judge-and-list-after.txt,
+  f116d-cannot-use-before-fail.txt, f116d-msg-1.txt, f116d-precommit-1.txt, f116d-same-sets.ps1,
+  f116d-same-sets.txt and the folder f116d-same-sets of copies, f116d-addin-range.txt,
+  f116d-9d8e3b2-lines.txt, f116d-main-trial-merge.txt, f116d-names-in-src.txt,
+  f116d-cfb057e-tests.txt, f116d-build-code.txt, f116d-checks-after.txt, f116d-core-after.txt,
+  f116d-msg-2.txt, f116d-precommit-2.txt, f116d-fr028-before-fail.txt, f116d-fr028-after.txt,
+  f116d-msg-merge.txt and f116d-precommit-merge.txt, and the files of the last records commit
+  and the push named in turn5\pr-f116.md
+- the session's scratchpad under %TEMP%\claude, the edit scripts and a copy of
+  MatrixCorrectionList.cs kept while it was stubbed, and the folders the tests make under %TEMP%
+  and remove
+
+## 2026-10-05 The loop, turn 5, FR-052 confirmed again and the ceiling under Q124
+
+Nothing under src, tests or tools changed. Core tests 1865 passed, 0 failed, 0 skipped before, at
+turn5\precommit-records-13b.txt, and after, at turn5\precommit-records-14.txt.
+
+### What was done
+
+- FR-052 confirmed again by F132's Core half, a test the XML gives no tolerance counted as
+  skipped and named on no SKIPPED line, turn5\f132-finding-notolerance.txt. A claim-checker found
+  the first commit had written it as a new FR-190, which is taken out, FR-052 staying F119's in
+  wave 3b. F132 took its test over every skip reason out of its tree rather than fix it there
+- the lead's note on Q124: no progress line of the C04 run after test 75 at 00:59, and under its
+  default A the ceiling of Q84, 43200 s from adoption at about 21:18:25, closes the run at about
+  09:18 if it has not ended
+- F132's Core half built on its branch, 1908 tests passed, unmerged until its add-in half, and
+  read now by a reviewer and a breaker, while F127's Core steps 1 to 3 are with a developer
+
+### What remains
+
+- the readings of F132's Core half, F127's Core steps, F116's closing pass, and the gap for the
+  harness of F126 and the probes
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- F116's merge once its closing pass reads clean
+
+Nothing in this record waits for the local machine.
+
+## 2026-10-05 The loop, turn 5, the design of F127 coverage, Q126 and Q127
+
+Nothing under src, tests or tools changed. Core tests 1865 passed, 0 failed, 0 skipped before, at
+the pre-commit of PR 107's last commit, turn5\precommit-records-12b.txt, and after, at this
+record's, turn5\precommit-records-13.txt.
+
+### What was done
+
+- the design of F127, the coverage of Bader's request 2, by three plans each its own agent,
+  turn5\f127-plans.txt, and a judge, turn5\f127-design.md, scored evidence 26.5, the rules in Core 26 and the cost 25.5 of 30,
+  evidence the base. FR-176 names its part, its eight probes and its added run time
+- Q126 and Q127, two of its eight questions, each with the choice the build goes on with. The
+  other six his words or the lead's reading settle, named on FR-176
+
+### What remains
+
+- its seven probes on Navisworks once no Navisworks of the loop runs, Q124, and an eighth only if
+  P2 fails
+
+### Known bugs
+
+- none new in this record
+
+### What comes next
+
+- F127's Core steps 1 to 3 test first now, step 4 after F116 merges and P2 to P5 are read, the
+  add-in after P1 to P7
+
+The probes on Navisworks wait for the local machine.
 
 ## 2026-10-04 The loop, turn 5, F112 the alignment area of the fix round, FR-001 to FR-006 and FR-028, DONE in Core and built, after a third attempt and a closing pass
 

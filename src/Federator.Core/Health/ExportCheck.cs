@@ -55,6 +55,16 @@ namespace Federator.Core.Health
         /// <summary>The distinct workset names, in the order they were first seen. None where the model was not counted.</summary>
         public IList<string> Worksets { get; private set; }
 
+        /// <summary>
+        /// Whether the walk over the model's elements finished. A walk that threw part way
+        /// counts nothing, every count NotCounted, and the worksets it hands back are only
+        /// those seen before it stopped, F116.
+        /// </summary>
+        public bool WalkFinished
+        {
+            get { return Elements != NotCounted; }
+        }
+
         /// <summary>Whether any element in this model carries a workset at all.</summary>
         public bool CarriesAWorkset
         {
@@ -161,6 +171,35 @@ namespace Federator.Core.Health
     {
         /// <summary>The block's title, which the add-in puts the building after.</summary>
         public const string BlockTitle = "EXPORT CHECK";
+
+        /// <summary>
+        /// Every workset name of one model, in the order the model gave them, for the row
+        /// file, F116. The block lists ten a group and counts the rest, and which spelling
+        /// each building's models carry is what the matrix corrections act on, Q102, so the
+        /// row file carries them all. A bar splits them, because a name can hold a comma.
+        /// UNKNOWN where the walk over the model did not finish, never the names it saw before
+        /// it stopped as if they were all.
+        /// </summary>
+        public static string EveryWorkset(ModelExport model)
+        {
+            if (!model.WalkFinished)
+            {
+                return "UNKNOWN, the walk over this model's elements stopped part way, so the "
+                    + model.Worksets.Count + " workset name(s) it saw before stopping are not every workset the model carries";
+            }
+
+            return string.Join(" | ", new List<string>(model.Worksets).ToArray());
+        }
+
+        /// <summary>
+        /// The number column of the same row: how many worksets the model carries, or empty
+        /// where its element walk did not finish, because a count of the names seen before it
+        /// stopped is not a count of the model's worksets, F116.
+        /// </summary>
+        public static string WorksetCount(ModelExport model)
+        {
+            return model.WalkFinished ? model.Worksets.Count.ToString(CultureInfo.InvariantCulture) : string.Empty;
+        }
 
         /// <summary>
         /// How many workset names are listed before the rest are counted. Ten, the same
@@ -287,11 +326,18 @@ namespace Federator.Core.Health
         /// IT REPLACES ONE FIXED SENTENCE. 'The match is CASE SENSITIVE, so ME-Ductwork does
         /// not match ME-DUCTWORK' was written in all 22 groups of set 03, whether any name
         /// differed or not, with one project's two spellings typed into it, log line 210.
+        ///
+        /// A SET THAT ALSO ASKS THE CARRIED SPELLING EXACTLY IS LEFT OUT, F116. The corrections
+        /// ask a workset in every spelling measured, Q102, so a set asks ME-DUCTWORK or
+        /// ME-Ductwork and finds the items carrying either. Naming it as missing one spelling
+        /// would be the overclaim this check is there to end. A set asking the carried spelling
+        /// only negated finds none of those items and is still named.
         /// </summary>
         private static void AddCaseDifferences(
             IList<string> lines, IList<string> carried, IEnumerable<SelectionSetDefinition> sets, int namesShown)
         {
             List<WorksetAsk> asks = new List<WorksetAsk>();
+            Dictionary<string, List<WorksetAsk>> askedBy = new Dictionary<string, List<WorksetAsk>>(StringComparer.Ordinal);
             bool anySet = false;
 
             if (sets != null)
@@ -331,6 +377,16 @@ namespace Federator.Core.Health
                         {
                             ask.Sets.Add(setName);
                         }
+
+                        if ((condition.Flags & MatrixCorrections.NegateCondition) == 0)
+                        {
+                            if (!askedBy.ContainsKey(setName))
+                            {
+                                askedBy[setName] = new List<WorksetAsk>();
+                            }
+
+                            askedBy[setName].Add(ask);
+                        }
                     }
                 }
             }
@@ -353,9 +409,16 @@ namespace Federator.Core.Health
             {
                 foreach (string name in carried)
                 {
-                    if (ask.MissesByCaseAlone(name))
+                    if (!ask.MissesByCaseAlone(name))
                     {
-                        pairs.Add("   the file asks for \"" + ask.Value + "\" in " + SetNames(ask.Sets, namesShown)
+                        continue;
+                    }
+
+                    List<string> missing = ask.Sets.FindAll(setName => !AlsoFinds(askedBy, setName, name));
+
+                    if (missing.Count > 0)
+                    {
+                        pairs.Add("   the file asks for \"" + ask.Value + "\" in " + SetNames(missing, namesShown)
                             + ", and a model here carries \"" + name + "\"");
                     }
                 }
@@ -375,6 +438,14 @@ namespace Federator.Core.Health
             {
                 lines.Add(pairs[i]);
             }
+        }
+
+        /// <summary>Whether that set also asks, not negated, for a workset that finds the carried name exactly, F116.</summary>
+        private static bool AlsoFinds(Dictionary<string, List<WorksetAsk>> askedBy, string setName, string carried)
+        {
+            List<WorksetAsk> asked;
+
+            return askedBy.TryGetValue(setName, out asked) && asked.Exists(one => one.Finds(carried));
         }
 
         /// <summary>The sets that ask, as a list, with the rest counted past namesShown the way the names are.</summary>
@@ -412,6 +483,14 @@ namespace Federator.Core.Health
             internal bool Contains { get; private set; }
 
             internal List<string> Sets { get; private set; }
+
+            /// <summary>Whether this ask finds that carried name as it is spelled, the whole name or, for contains, a part of it.</summary>
+            internal bool Finds(string carried)
+            {
+                return Contains
+                    ? carried.IndexOf(Value, StringComparison.Ordinal) >= 0
+                    : string.Equals(carried, Value, StringComparison.Ordinal);
+            }
 
             /// <summary>Whether this ask misses that carried name by letter case alone, and finds it once case is set aside.</summary>
             internal bool MissesByCaseAlone(string carried)

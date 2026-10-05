@@ -1,0 +1,102 @@
+# The corrections the NWC Federator makes to a clash XML of this project before it builds a
+# set, kept BESIDE the XML and named after it: the XML's name without its extension, then
+# .corrections.txt. So 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml is corrected by
+# 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt in the same folder. The tool reads this
+# file when the XML is picked and names it in the log, with how many corrections it holds.
+# An XML with no list beside it is corrected by nothing, and the log says so. Bader's answers
+# of 2026-10-04: Q104, the tool uses the code that builds the corrected XML, and Q113 B, the
+# list of what one project needs is a plain file beside the picked XML and never inside the
+# tool, because the tool serves many projects. F116.
+#
+# TO USE IT WITH ANOTHER XML of this project, copy it beside that XML and rename it after it.
+#
+# THE FORMAT. One correction a line: a word and a colon, a space, then its parts split by a
+# space, a bar and a space. A line starting with # is a comment and a blank line is skipped.
+# Nothing is trimmed, because two of the client's set names end in a space. A line the tool
+# does not know makes the whole list unread, so the tool corrects nothing and says so in the
+# log, and never half.
+#
+#   rename: <a name wrong everywhere it appears> | <the name it should be>
+#   catch-all: <a set> | <the value its category must hold>
+#   source-file: <what a Source File condition asks> | <a category> | <a category> ...
+#   workset: <one workset spelling measured in this project's models>
+#
+# RENAME, F87, decided on 2026-09-19. BLD-DRPipe Accessories is missing a hyphen in the set
+# name, its locator and all 120 test names, 121 occurrences in the client's matrix.
+rename: BLD-DRPipe Accessories | BLD-DR-Pipe Accessories
+#
+# CATCH-ALL, F87 in full since docs\history\scan.md 5g measured on 2026-09-20 that a negated
+# condition imports. The set asks for a category holding the value and, negated, none of the
+# categories holding it that another set of the file asks for, so it never counts what its
+# siblings hold. Those categories are read off the picked file and never listed here.
+catch-all: BLD-EL-Devices | Devices
+#
+# SOURCE-FILE, Q103 answered on 2026-10-04: every AR set whose category another discipline
+# also uses gets Source File contains -AR-. The sets beside the ones already asking -AR- are
+# given it where another folder's set asks for their category, read off the picked file, or
+# where another discipline's models were MEASURED carrying it, which are the categories named
+# after the bar: an AR set asking only for its category found items in a group holding no AR
+# model. Ramps 36 in 1B06PK and 17 in 1C06PK, and Railings 18 in 1B06PK, set 03 on C06,
+# steps\runs\03\item1-C06\run-20261001-140037.log lines 4304, 7979 and 4316. Furniture 29 and
+# Site 18 in 1A0415, the partial C04 run of 2026-09-21, steps\logs\c04-partial-run-20260921-085105.log
+# lines 200 and 203. A test proves these are exactly what those logs show. A category another
+# discipline carries only in a group that also holds an AR model cannot be told apart by a set
+# count and is UNKNOWN. Furniture and Site in 1A0415 are the landscape models' items, and Bader
+# kept all four, Q113 answered D on 2026-10-04: an AR set only takes items from an AR file.
+# Where that leaves a set empty in a landscape group, the coverage sheet of wave 2 shows it.
+source-file: -AR- | Ramps | Railings | Furniture | Site
+#
+# WORKSET, Q102 answered on 2026-10-04: a set asks every spelling of a workset measured in the
+# models, as Or groups, where there are two or more, and the one measured where there is one,
+# Q68. The tool reads the spellings below together with the 39 names its own list holds, the
+# C02 census of 2026-09-20, docs\history\scan.md 5t, which stays inside the tool, and judges a
+# set that found nothing against the same ones. It corrects a value the XML asks only where a
+# line below is a spelling of it but for its case, and leaves every other value as the XML
+# asks, F116.
+#
+# MEASURED on 2026-10-01 off the C06 run of set 03: the names its 22 EXPORT CHECK blocks list
+# on their "worksets seen" lines, steps\runs\03\item1-C06\run-20261001-140037.log, that the C02
+# census does not hold. A test proves these are exactly those names. Each of those lines names
+# at most ten worksets and counts the rest, so this is every name they list and NOT every
+# workset C06 carries. The rest are UNKNOWN until a run writes the "model worksets" rows of its
+# tsv, which name every workset of every model in full, F116.
+#
+# THEY ARE WHY Q102 WAS ASKED. 1B06G1 carries ME-DUCTWORK, ME-EQUIPMENT and ME-PIPING in
+# capitals and 1B06BC the first two among the ten names its line lists, where the C02 models
+# write ME-Ductwork, ME-Equipment and ME-Piping, and 1B06G1, 1B06K1, 1B06P1 and 1B06PK write
+# PL-Domestic Water where C02 writes PL-Domestic water.
+#
+# One of them is EL-Fire alarm written by 1B06PO and 1B06WO with a no-break space, U+00A0,
+# between its two words, which is a different name from the C02 one with a space. This file is
+# UTF-8. A list whose bytes are not UTF-8 is not read, and one saved as UTF-16 with its byte
+# order mark is read as UTF-16.
+workset: +LINK-ST-Boundary Wall Layout
+workset: +Link-AR-***
+workset: 00-EL-LEVELS GRIDS
+workset: ARC-INTERIOR ELEMENTS
+workset: ARC-RVT LINKS
+workset: ARC-SKIN COMPONANTS
+workset: ARC-STAIR AND RAILING
+workset: EL-Cable Tray
+workset: EL-Emergency lighting
+workset: EL-Fire alarm
+workset: EL-Lighting Protection
+workset: ELE-CCTV SYSTEM
+workset: ELE-POWER SYSTEM 1
+workset: ELE-POWER SYSTEM 3
+workset: ELL-INDOOR LIGHTING SYSTEM
+workset: ELP-EARTHING AND LIGHTNING SYSTEM
+workset: EV-CCTV system
+workset: EV-Cctv system
+workset: EV-ICT Containment
+workset: FAE-EMERGENCY LIGHTING SYSTEM
+workset: FAE-FIRE ALARM SYSTEM
+workset: FF-Fire Fighting
+workset: FP-PIPING
+workset: LTC-ACCESS CONTROL SYSTEM
+workset: ME-DUCTWORK
+workset: ME-EQUIPMENT
+workset: ME-PIPING
+workset: PL-Domestic Water
+workset: PL-Drainage Equipment
+workset: TEL-TELECOM SYSTEM
