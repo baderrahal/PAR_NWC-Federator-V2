@@ -1,6 +1,204 @@
 # log
 
 Newest entry at the top.
+## 2026-10-05 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, written by the lead's delegate
+
+F114 MERGES AFTER F131. It reads F131's TeamPair, TeamMap and CodeOf, merged into this branch at
+52cf57c from origin/fix-F131 as it stood at 89854fa, unmerged and being changed by its own
+attempt 2 now, and edits none of F131's files. When F131's attempt 2 lands, fix-F114 takes it in
+again before its own merge.
+
+Core tests, all with 0 failed and 0 skipped:
+- 1988 passed before at 52cf57c, the merge of fix-F131, by its pre-commit,
+  turn5\f114-precommit-merge-f131.txt
+- 2057 passed after at 4706f0d, by its pre-commit, turn5\f114-precommit-code.txt, and again by hand
+  after the build, turn5\f114-core-after.txt. The records commit adds and changes no test
+- 80 new tests, 11 gone with the members they pinned, 1988 less 11 and more 80 is 2057
+
+The solution builds whole with --no-incremental at 4706f0d, Federator.Core, Federator.Core.Tests and
+Federator.Addin each built, 0 warnings and 0 errors, with git rev-parse --short HEAD and an empty
+git status at its top, turn5\f114-build-code.txt. check-locals and check-imports pass on src,
+turn5\f114-checks.txt. The records commit changes no code.
+Every file named is under %LOCALAPPDATA%\NwcFederatorLoop\turn5 unless it is a path of the repo.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for edits of
+  text files in the worktree, and powershell for the process reads. None of them starts a
+  Navisworks
+- Get-Process Roamer read process 29372, started 07:26:26 on 2026-10-05, a loop run's, at 09:52:53
+  before anything was written, turn5\f114-roamer-before.txt, and no Roamer at all at 11:54:05
+  after the code, the build and the tests, turn5\f114-roamer-after.txt. That process ended
+  between the two reads. This pass made no call that starts, attaches to or closes a Navisworks,
+  so what ended it is the loop's record to say and UNKNOWN here. The probes of the design's part 3
+  did not run
+
+### The merges, and the three commits of the earlier pass
+
+- 9f81260 takes in origin/main of 2026-10-05. Two conflicts in FederationEngine.cs, both sides
+  kept: the open file run writes the list for the modellers and then the TIMING BESIDE SIZE
+  block, and WhereTheModelsSit takes main's runsATest while WhatTheModelsCarry keeps the outcome
+  Q101 counts its elements into. Built at 0 warnings and 0 errors before the commit. Its
+  pre-commit passed and made the commit, and its output was cut by the developer's own tail and
+  is not kept
+- 52cf57c's first commit was stopped by the session at its 600 s limit while its pre-commit ran
+  check-locals, and made nothing. The second made it, its pre-commit in
+  turn5\f114-precommit-merge-f131.txt, where one line of the stopped run, a local declared twice
+  in one file, is interleaved into the second's, which reads no local declared twice. check-locals
+  run alone after the code reads the same, turn5\f114-checks.txt
+- 52cf57c takes in origin/fix-F131. One conflict, steps\01_next.md, both kept: F126 stays order
+  line 42 as main has it, F131 becomes 43, and both sections stand
+- 3a44f2d, FR-073, the VIEWS seconds split call by call: KEPT. Its parts for a per test view, the
+  inventory, the frame, the mark, the removal and the tree read, go into `ViewsPart` in the add-in
+  pass with the calls they time, so no part is added that nothing times
+- 1d58798, FR-065, each viewpoint written with its own dimming and paint: CHANGED. The rule holds
+  for a per test view, what the view before left taken off first. Its code in ViewpointBuilder is
+  replaced when the builder moves to per test views in the add-in pass
+- f915396, Q101, each group's time beside its NWC sizes and item counts: KEPT as it is, as Q114's
+  lead note keeps it. Its viewpoints column counts views once the builder writes them
+
+### What was done
+
+- 4706f0d, FR-066. `SizeText` takes a whole run of digits after a letter with the word, so DN150 mm
+  is no size and never 50 mm, and DN200 mm never 0 mm. 1 new test, seen failing at 50,
+  turn5\f114-fr066-before-fail.txt
+- 4706f0d, FR-184 and FR-185, points 9 to 15. `TestViewPlan`, `TestViewPlanOutcome`,
+  `PlannedTestView`, `ViewClash` and `ViewTeams`. One view per test of its clashes at the
+  `ViewStatuses` setting, New and Active, in its priority folder, always there, then its team
+  pair through F131's `TeamPair`, then Over 150mm for the clashes whose larger service is over the
+  threshold in a pair carrying the size folder, every other clash in the pair view, no clash in
+  two views, no view for a test with no open clash, in the order a person reads the tree. A size
+  not read in such a pair is named with its test and clash, every one or as many as the size
+  settings say, FR-068, and a set name with no code is named once, FR-074. 19 new tests, 18 seen
+  failing against a stub of the shape, turn5\f114-testviewplan-before-fail.txt, the other that no
+  clashes give no views. One of them runs 50 rounds of 200 generated clashes and holds every open
+  clash in exactly one view and none at another status
+- 4706f0d, FR-185, point 13 with Q118 and Q119 by their defaults A. `ShownModels`, `ModelTeam`,
+  `PaintPlan`, `FramingBox`, `ItemPath` and `Point3`. A view shows the pair's two teams' models,
+  1A04PK's FP, HV, four ME and two ST in Structure vs Mechanical, the model each clashing item
+  lives in, a third team's named as an exception, and every model whose code will not read, and
+  hides the rest. Red is every first item and green every second not already red. The framing box
+  is the open clash centres padded by a margin in millimetres through UnitTable, feet and metres
+  framing the same place, an unknown unit refused, and one clash gets no box. 13 new tests, 11
+  seen failing against stubs, turn5\f114-whataviewshows-before-fail.txt, the other two ones a stub
+  returning nothing passes, the same paint twice and no box for one centre
+- 4706f0d, FR-186, points 16 and 17 with Q120 by its default A. `ToolViewMark`, `MarkJudgement`,
+  `ViewOwner` and `LegacyClashView`. The mark is one comment, the sentence of the setting then a
+  line holding the run's stamp, the place, the name, the camera to a thousandth and the Guid where
+  one is written, each text written as its length and itself, so a name with a trailing space or
+  the mark's own words in it reads back exactly, and found wherever it sits in the body. The stamp
+  reads the same under th-TH, de-DE, ar-SA and fa-IR. Renamed, moved, turned, commented on, drawn
+  on, copied, or with redlines, Guid or camera not readable, a view is a person's. F85's per clash
+  viewpoints are known by their strict shape, the baseline's first one among them. 13 new tests,
+  12 seen failing against stubs, turn5\f114-mark-legacy-before-fail.txt, the other the list of
+  shapes that are a person's, which a stub refusing everything passes
+- 4706f0d, FR-186. `ViewsInventory`, `ViewNode`, `WrittenView`, `InventoryDecision` and
+  `InventoryItem`. Every item of the tree after the new views are written gets one of thirteen
+  decisions by the design's four safety rules, and the removals come deepest first and latest
+  index first. 16 new tests, all 16 seen failing against a stub, turn5\f114-inventory-before-fail.txt
+- 4706f0d, FR-187, point 19. `ViewsTreeCheck`, `ViewsTreeFacts` and `ViewsTree`. The seven checks
+  and the VIEWS TREE block: a whole good tree passes all seven, each check broken once names what
+  broke it, the allowed exception of Q118 A is named and holds, check 3 says when it rests on the
+  plan, check 5 says it proves nothing with 0 mirrors and UNKNOWN with no mirror rule, and the
+  block cut at the setting keeps every check line. 15 new tests, all 15 seen failing against
+  stubs, turn5\f114-viewstree-before-fail.txt
+- 4706f0d, FR-071. `ViewsProgress`, a VIEWS progress line due every `ProgressEverySeconds`, 60, from
+  the step's start or the last line, saying the view reached, the views written and the seconds.
+  3 new tests, all 3 seen failing against a stub, turn5\f114-fr071-before-fail.txt
+- 4706f0d, the settings of the design's 1.11 in `ViewpointSettings`: `ViewStatuses`,
+  `FramingMarginMillimetres`, `MarkSentence`, `MarkTag`, `LegacyClashPrefix`, `TreeLinesInLog`,
+  `FolderGoesWithChildren` and `ProgressEverySeconds`, each a setting with the reason for its
+  default where it is declared, and the chosen ones saying they are chosen
+- 4706f0d, the deletions nothing in src calls, with their tests: `ViewpointSettings.NameSuffix`,
+  `FolderNameFor` and `ViewpointNameFor`, F52's leftovers, `SizeRule.Decide` with `SizeDecision`,
+  F53's first property reading, and `SizeTally` with its 9 tests. Of Decide's tests the two that
+  pinned its own reading, the first property winning and the words of its reason, went with it,
+  and the ones pinning a rule the live reading also holds, the units, an unknown unit, exactly
+  150, a size not read, the threshold and the names as settings, now test that reading,
+  `LargestMillimetres` with `VerdictFor`. Three asserts of PenetrationRuleTests moved the same way,
+  one line of them, Decide's 150 off a 150 by 600 duct, going with Decide
+- the records: this entry, the F114 order line 44 and its section in steps\01_next.md, and in
+  .claude\rules\core.md three new bullets for the per test views, the mark and the inventory, and
+  the VIEWS TREE block, a line saying the five F85 bullets are what runs until the add-in pass, and
+  the size bullets made true after the deletions and FR-066
+
+### Choices the developer made, for the reader to check
+
+- NO TeamPairRule. F131's `TeamPair` already holds the design's 1.6 whole, so writing it again in
+  Views would be a second copy. `ViewTeams` is the one place the views read a team
+- ONE NAME SEPARATOR. The design's `LegacyNameSeparator` would hold the same two spaces as
+  `NameSeparator`, which the per clash plan still reads, so `LegacyClashView` reads
+  `NameSeparator` and the rename waits for the add-in pass that deletes the per clash plan.
+  `UnknownDiscipline` stays the unknown word for the same reason, and it already reads F131's
+  `TeamMapSettings.DefaultUnknownTeam`
+- TWO FOLDERS OF ONE NAME SIDE BY SIDE keep everything under them, `KeepPlaceNotUnique`, because
+  a removal is given as a parent path and an index and such a path finds either folder. The
+  design does not name this case
+- THE TOOL'S EARLIER VIEW OF A TEST waits for every view of that test this run planned, and a per
+  clash viewpoint for the whole new tree, so a test whose view moved to another priority folder
+  keeps its old view until the new one reads back
+- WHAT CANNOT BE PROVED IS A PERSON'S. Redlines, a Guid or a camera that could not be read make
+  a marked view ChangedByAPerson, kept and named, by S1, so a view of the tool is never removed on
+  a read that failed. If the add-in cannot read redlines, every view of the tool stays and piles
+  up, which the add-in pass must measure, P7 having found a Size() on the redline list
+- A FOLDER IS A VIEW'S PLACE AND NO MORE. The mark's place is its folders joined by a slash, and a
+  folder name holding a slash could make two places read alike, a case nothing in the tree has
+  shown
+- THE PLAN TAKES THE PRIORITY OFF THE FIRST CLASH OF A TEST, since every clash of one test
+  carries the test's priority as the add-in copies it today
+- THE P8 TEST IS NOT WRITTEN as a test that only skips. It needs P8's dump of the baseline tree,
+  and until that is committed nothing of the legacy rule removes a viewpoint on a real run
+
+### What remains
+
+- the add-in half, a later pass of this branch once the probes of the design's part 3 have run on
+  Navisworks, only when no loop run holds it: SavedViewpoints, ViewpointBuilder, FederationEngine
+  and Penetrations onto the per test plan, the mark written and read back, the inventory's
+  removals, the VIEWS TREE block and its .tsv rows through RunLog, the new `ViewsPart` parts,
+  FR-067 and FR-072. UNTIL THEN NOTHING IN SRC CALLS THE NEW TYPES OF THIS PASS, by the exception
+  for a later pass of the same branch: `TestViewPlan`, `TestViewPlanOutcome`, `PlannedTestView`,
+  `ViewClash`, `ViewTeams`, `ItemPath`, `Point3`, `ModelTeam`, `ShownModels`, `PaintPlan`,
+  `FramingBox`, `ToolViewMark`, `MarkJudgement`, `ViewOwner`, `LegacyClashView`, `ViewNode`,
+  `WrittenView`, `InventoryDecision`, `InventoryItem`, `ViewsInventory`, `ViewsTreeFacts`,
+  `ViewsTreeCheck`, `ViewsTree` and `ViewsProgress`, and the eight new settings. `ShownModels.NoCode`
+  is read by tests only until the add-in counts it in the VIEWS block
+- in that pass, deleted with their tests once ViewpointBuilder no longer calls them:
+  `ClashViewpointPlan`, `DisciplinePairRule` and the per clash settings, `MaxPerTest`,
+  `DisciplineCodes`, `SubGroupDisciplines`, `HasSubGroup`, `NameSeparator` and
+  `UnknownDiscipline`, with the five F85 bullets of core.md and the three rules of addin.md that
+  FR-186 names
+- the tests that wait for a run or a probe: LegacyClashView over P8's dump reading exactly 2813
+  and none of the 34, the .tsv rows equal to the block, and the baseline's 59 tests giving 12 pair
+  folders, which needs the baseline log read by the test and not copied into it
+- docs\workflow.md for FR-188, and the proof steps in steps\03_bader_next.md with Runs A, B and B2
+
+### Known bugs
+
+- none found in the Core half
+
+### Found and left, for the code health lane
+
+- `SizeRule.LargestProperty` has no caller in src. PenetrationRuleTests alone reads it. It is the
+  penetration rule's as much as the views', the design's deletions do not name it, and this pass
+  left it
+
+### What comes next
+
+- the reviewer and the breaker on 4706f0d and the records commit, then the probes on Navisworks and
+  the add-in half, after F131 merges
+
+The Core half was proved here. The add-in half and every line it writes wait for the local machine.
+
+### Every file written outside the repo, this pass
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-roamer-before.txt, f114-precommit-merge-f131.txt, f114-fr066-before-fail.txt,
+  f114-testviewplan-before-fail.txt, f114-whataviewshows-before-fail.txt,
+  f114-mark-legacy-before-fail.txt, f114-inventory-before-fail.txt, f114-viewstree-before-fail.txt,
+  f114-fr071-before-fail.txt, f114-checks.txt, f114-precommit-code.txt, f114-build-code.txt,
+  f114-core-after.txt, f114-roamer-after.txt, f114-precommit-records.txt and f114-push.txt
+- the commit messages, the section and this entry, in the session's scratch folder under the
+  user's temp folder, which nothing reads after the commit
+
 ## 2026-10-05 The loop, turn 5, F126 the window driver unticks a named tick box, built on 2026-10-04 and read by a reviewer and a breaker with nothing blocking under Q93, its harness run in the first gap on 2026-10-05, 52 passed and 0 failed
 
 F126's own commits changed nothing under src or tests: git diff --name-only 1ae6771 66dfdf5
