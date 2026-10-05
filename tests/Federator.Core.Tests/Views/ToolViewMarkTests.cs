@@ -1,0 +1,171 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
+using Federator.Core.Views;
+using NUnit.Framework;
+
+namespace Federator.Core.Tests
+{
+    /// <summary>
+    /// F114, Q114 point 16 and Q120 by its default A. Every view and folder this tool makes
+    /// carries one comment: a sentence a person reads and a fingerprint of where it was written,
+    /// its name, its camera and, where P10 shows it holds, its Guid. A view is the tool's only
+    /// while that one comment is there and every part still reads as written. Renamed, moved,
+    /// turned, commented on, drawn on, copied or not provable, it is a person's from then on.
+    /// </summary>
+    [TestFixture]
+    public class ToolViewMarkTests
+    {
+        private const string Path = "A/Structure vs Mechanical";
+        private const string Name = "BLD-ME-Ducts-vs-BLD-ST-Columns";
+
+        private static readonly ViewpointSettings Settings = new ViewpointSettings();
+
+        private static readonly Point3 Camera = new Point3(12.3456, -7.0, 1000.25);
+
+        private static string Stamp()
+        {
+            return ToolViewMark.StampOf(new DateTime(2026, 10, 5, 9, 52, 53, DateTimeKind.Utc));
+        }
+
+        private static string BodyOf(string path, string name, Point3 camera, string guid = null)
+        {
+            return ToolViewMark.Body(Stamp(), path, name, camera, guid, Settings);
+        }
+
+        private static MarkJudgement Judge(string path, string name, Point3 camera, IList<string> comments, int? redlines = 0, string guid = null)
+        {
+            return ToolViewMark.Judge(path, name, camera, comments, redlines, guid, Settings);
+        }
+
+        [Test]
+        public void AMarkWrittenThenReadGivesTheSameFingerprint()
+        {
+            string body = BodyOf(Path, Name, Camera, "a1b2");
+            ToolViewMark mark = ToolViewMark.Read(body, Settings);
+
+            Assert.That(body, Does.StartWith(ViewpointSettings.DefaultMarkSentence), "a person reads the sentence first");
+            Assert.That(mark, Is.Not.Null);
+            Assert.That(mark.Stamp, Is.EqualTo("2026-10-05T09:52:53Z"));
+            Assert.That(mark.FolderPath, Is.EqualTo(Path));
+            Assert.That(mark.Name, Is.EqualTo(Name));
+            Assert.That(mark.Camera.DistanceTo(Camera), Is.LessThan(0.001));
+            Assert.That(mark.Guid, Is.EqualTo("a1b2"));
+        }
+
+        /// <summary>Names the mark's own words could break: a trailing space, the field words themselves, colons and digits.</summary>
+        [Test]
+        public void AnyNameReadsBackExactly()
+        {
+            foreach (string name in new[] { "Walls-vs-Columns ", " guid=7:x name=3:abc", "12:34", string.Empty, "Over 150mm" })
+            {
+                ToolViewMark mark = ToolViewMark.Read(BodyOf(Path + "/Over 150mm", name, null), Settings);
+
+                Assert.That(mark, Is.Not.Null, name);
+                Assert.That(mark.Name, Is.EqualTo(name));
+                Assert.That(mark.Camera, Is.Null, "a folder's mark carries no camera");
+                Assert.That(mark.Guid, Is.Null);
+            }
+        }
+
+        /// <summary>Whether a comment keeps its line break is UNKNOWN until P9, so the mark is found wherever it sits in the body.</summary>
+        [Test]
+        public void TheMarkIsReadWhereverItSitsInTheBody()
+        {
+            string body = BodyOf(Path, Name, Camera).Replace("\r\n", " ").Replace("\n", " ");
+
+            Assert.That(ToolViewMark.Read(body, Settings), Is.Not.Null);
+        }
+
+        [Test]
+        public void TheStampIsTheSameUnderEveryCulture()
+        {
+            CultureInfo was = Thread.CurrentThread.CurrentCulture;
+
+            try
+            {
+                foreach (string culture in new[] { "th-TH", "de-DE", "ar-SA", "fa-IR" })
+                {
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
+                    Assert.That(Stamp(), Is.EqualTo("2026-10-05T09:52:53Z"), culture);
+                    Assert.That(ToolViewMark.Read(BodyOf(Path, Name, Camera), Settings).Camera.X, Is.EqualTo(12.346).Within(1e-9), culture);
+                }
+            }
+            finally
+            {
+                Thread.CurrentThread.CurrentCulture = was;
+            }
+        }
+
+        [Test]
+        public void AViewAsTheToolWroteItIsOurs()
+        {
+            MarkJudgement judged = Judge(Path, Name, new Point3(12.3455, -7.0002, 1000.2501), new[] { BodyOf(Path, Name, Camera) });
+
+            Assert.That(judged.Owner, Is.EqualTo(ViewOwner.Ours), judged.Why);
+            Assert.That(judged.Mark.Stamp, Is.EqualTo(Stamp()));
+        }
+
+        [Test]
+        public void AFolderAsTheToolWroteItIsOurs()
+        {
+            MarkJudgement judged = Judge("A", "Structure vs Mechanical", null, new[] { BodyOf("A", "Structure vs Mechanical", null) });
+
+            Assert.That(judged.Owner, Is.EqualTo(ViewOwner.Ours), judged.Why);
+        }
+
+        [Test]
+        public void EachChangeAPersonMakesMakesItTheirs()
+        {
+            string[] body = { BodyOf(Path, Name, Camera) };
+
+            Assert.That(Judge(Path, Name + " mine", Camera, body).Owner, Is.EqualTo(ViewOwner.ChangedByAPerson), "renamed");
+            Assert.That(Judge("B/Structure vs Mechanical", Name, Camera, body).Owner, Is.EqualTo(ViewOwner.ChangedByAPerson), "moved");
+            Assert.That(Judge(Path, Name, new Point3(12.3456, -7.0, 1001.0), body).Owner, Is.EqualTo(ViewOwner.ChangedByAPerson), "turned");
+            Assert.That(Judge(Path, Name, Camera, new[] { body[0], "check this one, Rami" }).Owner, Is.EqualTo(ViewOwner.ChangedByAPerson), "commented on");
+            Assert.That(Judge(Path, Name, Camera, body, 1).Owner, Is.EqualTo(ViewOwner.ChangedByAPerson), "drawn on");
+            Assert.That(Judge(Path, Name, Camera, body).Owner, Is.EqualTo(ViewOwner.Ours), "and unchanged it is still ours");
+        }
+
+        /// <summary>A copy a person made in another folder carries the same comment and fails the fingerprint.</summary>
+        [Test]
+        public void ACopyInAnotherFolderIsAPersons()
+        {
+            MarkJudgement judged = Judge("My views", Name, Camera, new[] { BodyOf(Path, Name, Camera) });
+
+            Assert.That(judged.Owner, Is.EqualTo(ViewOwner.ChangedByAPerson));
+            Assert.That(judged.Why, Does.Contain("My views"));
+        }
+
+        /// <summary>S1: what cannot be proved unchanged is kept. Redlines or a Guid that could not be read prove nothing.</summary>
+        [Test]
+        public void WhatCannotBeReadToProveItKeepsTheView()
+        {
+            Assert.That(Judge(Path, Name, Camera, new[] { BodyOf(Path, Name, Camera) }, null).Owner,
+                Is.EqualTo(ViewOwner.ChangedByAPerson), "redlines not read");
+            Assert.That(Judge(Path, Name, Camera, new[] { BodyOf(Path, Name, Camera, "a1b2") }, 0, null).Owner,
+                Is.EqualTo(ViewOwner.ChangedByAPerson), "the Guid not read");
+            Assert.That(Judge(Path, Name, Camera, new[] { BodyOf(Path, Name, Camera, "a1b2") }, 0, "c3d4").Owner,
+                Is.EqualTo(ViewOwner.ChangedByAPerson), "another Guid, a copy");
+            Assert.That(Judge(Path, Name, Camera, new[] { BodyOf(Path, Name, Camera, "a1b2") }, 0, "a1b2").Owner,
+                Is.EqualTo(ViewOwner.Ours), "the same Guid");
+            Assert.That(Judge(Path, Name, null, new[] { BodyOf(Path, Name, Camera) }).Owner,
+                Is.EqualTo(ViewOwner.ChangedByAPerson), "a camera that could not be read");
+        }
+
+        [Test]
+        public void NoMarkOrAMarkThatDoesNotReadIsNotOurs()
+        {
+            string body = BodyOf(Path, Name, Camera);
+            string broken = body.Substring(0, body.Length - 3);
+
+            Assert.That(ToolViewMark.Read(broken, Settings), Is.Null);
+            Assert.That(Judge(Path, Name, Camera, new[] { broken }).Owner, Is.EqualTo(ViewOwner.NotOurs));
+            Assert.That(Judge(Path, Name, Camera, new[] { "a view Rami saved" }).Owner, Is.EqualTo(ViewOwner.NotOurs));
+            Assert.That(Judge(Path, Name, Camera, new string[0]).Owner, Is.EqualTo(ViewOwner.NotOurs));
+            Assert.That(Judge(Path, Name, Camera, null).Owner, Is.EqualTo(ViewOwner.NotOurs));
+            Assert.That(ToolViewMark.Read(ViewpointSettings.DefaultMarkTag + " stamp=99:x", Settings), Is.Null, "a length past the end");
+        }
+    }
+}

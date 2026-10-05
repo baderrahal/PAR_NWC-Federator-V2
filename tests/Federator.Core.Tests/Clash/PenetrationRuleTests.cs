@@ -101,10 +101,10 @@ namespace Federator.Core.Tests
 
             Dictionary<string, double> read = new Dictionary<string, double>();
             read.Add("Diameter", sizes.ThresholdMillimetres);
-            SizeDecision viewpoint = SizeRule.Decide(read, "Millimeters", sizes);
+            SizeVerdict viewpoint = SizeRule.VerdictFor(SizeRule.LargestMillimetres(read, "Millimeters", sizes), sizes);
 
             Assert.That(penetration.Moves, Is.True);
-            Assert.That(viewpoint.Verdict, Is.EqualTo(SizeVerdict.Small));
+            Assert.That(viewpoint, Is.EqualTo(SizeVerdict.Small));
         }
 
         [Test]
@@ -166,7 +166,6 @@ namespace Federator.Core.Tests
             read.Add("Height", 600.0);
 
             Assert.That(SizeRule.LargestMillimetres(read, "Millimeters", Sizes()), Is.EqualTo(600.0));
-            Assert.That(SizeRule.Decide(read, "Millimeters", Sizes()).Millimetres, Is.EqualTo(150.0));
         }
 
         [Test]
@@ -273,11 +272,11 @@ namespace Federator.Core.Tests
             PenetrationDecision penetration =
                 Decide(Side("Pipes", null), Side("Walls", null), ClashStatus.New);
 
-            SizeDecision viewpoint =
-                SizeRule.Decide(new Dictionary<string, double>(), "Millimeters", Sizes());
+            SizeVerdict viewpoint = SizeRule.VerdictFor(
+                SizeRule.LargestMillimetres(new Dictionary<string, double>(), "Millimeters", Sizes()), Sizes());
 
             Assert.That(penetration.Moves, Is.False);
-            Assert.That(viewpoint.Included, Is.True);
+            Assert.That(viewpoint, Is.EqualTo(SizeVerdict.SizeUnknown), "a size not read stays in its view and is named");
         }
 
         [Test]

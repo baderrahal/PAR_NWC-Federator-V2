@@ -1068,6 +1068,9 @@ and 6 does not read as broken.
 - Every check gets a test that BREAKS one thing and asserts the check names it. A test that
   only asserts the good file passes would have passed against all eight of the differences
   above. Fourteen of them live in WorkbookCellCheckTests
+- WHAT RUNS UNTIL THE ADD-IN PASS OF F114: the per clash viewpoints of F85 in the five bullets
+  below. Q114 replaced them with one view per clash test, the block after them, whose Core
+  half is built and whose add-in half waits for the probes of the design's part 3
 - THE SAVED VIEWPOINTS ARE THREE FOLDERS DEEP AND ONE PER CLASH, F85, planned by
   `Federator.Core.Views.ClashViewpointPlan` with `DisciplinePairRule` for layer 2. ONE PER
   CLASH AND NOT PER TEST, because the thing a person presses has to be the thing they are
@@ -1092,9 +1095,8 @@ and 6 does not read as broken.
   rather than by the status filter. The three statuses are read off
   `OpenClashes.StatusesFor(NavisworksOpen)` and never typed, because the image filter
   reads the same place
-- F85 BRANCHES ON `SizeVerdict` AND NEVER ON `SizeDecision.Included`, which folds Large
-  and SizeUnknown together for F53's own reasons and would put every fitting with no size
-  property into Over 150mm. A size that could not be read goes in the PAIR folder and is
+- F85 BRANCHES ON `SizeVerdict` AND NEVER ON A READING THAT FOLDS Large and SizeUnknown
+  together, which would put every fitting with no size property into Over 150mm. A size that could not be read goes in the PAIR folder and is
   COUNTED, and none is dropped. A clash side is read the way F72a reads one, the LARGEST
   size property the item carries, or the same 600 by 150 duct could be set Reviewed by
   F72a as a large service and filed here as a small one. Q51
@@ -1108,9 +1110,10 @@ and 6 does not read as broken.
   of their own. 150 is a setting in millimetres, named once in
   Federator.Core.Views.SizeSettings, and over 150 means over: exactly 150 is out. Which
   properties carry a size is a setting too, Diameter, Width, Height, Size, Nominal
-  Diameter and Overall Size, tried in that order with the first found winning, because
-  which one holds the size differs per kind and per exporter and reading one name would
-  drop every item that calls it something else. The number a property hands back is in the
+  Diameter and Overall Size, and the LARGEST of them is the size, `SizeRule.LargestMillimetres`,
+  F72a's reading, because which one holds the size differs per kind and per exporter and
+  reading one name would drop every item that calls it something else, and a 600 by 150
+  duct is 600. The number a property hands back is in the
   DOCUMENT'S units and is converted through UnitTable before anything is compared, never
   compared raw: a document in feet reporting 0.5 is 152.4 mm and is IN, and comparing 0.5
   against 150 would put it out while the same model in millimetres put it in, so one
@@ -1118,14 +1121,58 @@ and 6 does not read as broken.
   changed. A unit the table does not know FAILS rather than falling back, which is F33's
   rule. ANYTHING WHOSE SIZE CANNOT BE READ IS INCLUDED, because a fitting usually carries
   no size property at all and dropping it would leave real geometry out of a viewpoint with
-  nothing in the output to say so. Every one of them is named in the SIZE block under a
-  line saying how many are in for that reason and that nothing was dropped. That is a
+  nothing in the output to say so. Every one of them in a pair carrying the size folder is
+  named with its test and clash in the VIEWS block, `TestViewPlanOutcome.Lines`, under a
+  line saying how many and that none was dropped. That is a
   deliberate departure from the rule about logging a count and five examples, which is
   about many lines saying ONE thing: these lines each name a different item that may be
   wrongly in or out, and reading five tells you nothing about the sixth. Naming every one
   is a setting and turning it off makes the block SAY it truncated. The whole rule is
-  Federator.Core.Views, SizeSettings, SizeRule and SizeTally, with its tests. The add-in
-  reads the properties and calls it and has no opinion about any number in it
+  Federator.Core.Views, SizeSettings, SizeRule and SizeText, with their tests. SizeTally,
+  SizeRule.Decide and SizeDecision, F53's first property reading, had no caller in src and
+  went with their tests in F114. The add-in reads the properties and calls it and has no
+  opinion about any number in it. A SIZE WRITTEN INSIDE A WORD IS REFUSED WHOLE, FR-066:
+  DN150 mm is no size, never 50 mm, because `SizeText` takes the whole run of digits after
+  a letter with the word
+- ONE VIEW PER CLASH TEST OF ITS OPEN CLASHES, IN FOLDERS BY PRIORITY AND TEAM PAIR, Bader's
+  Q114 points 9 to 19, F114, its Core half, with Q117 to Q120 and Q123 by their defaults A.
+  `TestViewPlan` gives each test one view of its clashes at the `ViewStatuses` setting, New
+  and Active, in the folder of its priority, A, B, C or No priority, always there, then its
+  team pair, F131's `TeamPair` read through `ViewTeams`, the one place the views read a team,
+  and never copied. In a pair carrying the size folder a clash whose larger service is over
+  the threshold goes in the test's view under Over 150mm and every other clash in its view
+  in the pair folder, so no clash is in two views, and a test with no open clash gets no
+  view. The views come in the order a person reads them, priority, pair in the map's order,
+  the pair's views, its size folder, test name Ordinal. `ShownModels` shows the pair's two
+  teams' models, the model each clashing item lives in, a third team's named as an
+  exception, and every model whose code will not read, and hides the rest. `PaintPlan` paints
+  every first item red and every second green unless already red. `FramingBox` frames the
+  open clash centres padded by `FramingMarginMillimetres`, chosen and not measured, through
+  UnitTable, and gives a view of one clash no box so it keeps Clash Detective's own camera
+- ONLY WHAT THIS TOOL MADE IS EVER REMOVED, Q114 point 16, F114, by the design's four safety
+  rules. `ToolViewMark` writes one comment on every view and folder the tool makes, a
+  sentence a person reads and a fingerprint of its place, name, camera and, once P10 holds,
+  its Guid, each text written with its length so any name reads back exactly. It is the
+  tool's only while that one comment is there and everything reads as written, and
+  renamed, moved, turned, commented on, drawn on, copied or not provable it is a person's
+  and kept and named, Q120 A. `LegacyClashView` knows F85's unmarked per clash viewpoints by
+  their strict shape. `ViewsInventory` decides every item after the new views are written:
+  the tool's earlier view goes only once every view of its test this run planned is
+  written, marked and read back, a per clash viewpoint only once the whole new tree is, a
+  view this run could not mark or read back goes at once, a test not read keeps its views,
+  nothing goes when the clash step was not sound, nothing goes under two folders of one
+  name side by side, and a folder goes only when it is the tool's and this run empties it.
+  Removals go deepest first and latest index first, 5z, and `FolderGoesWithChildren`, false
+  until P14, says whether a folder takes its views in one call
+- THE VIEWS TREE BLOCK AND ITS SEVEN CHECKS, Q114 point 19, F114. `ViewsTreeCheck.Of` reads
+  a fresh walk after the removals where the document can say and the plan where it cannot,
+  and says which: no pair folder holds another pair's test, no Over 150mm outside its own
+  pair, no view shows a third team's model beyond the named exceptions, no clash in two
+  views, no mirrored test run, every view not the tool's still there, and no per clash
+  viewpoint left without a reason. A failed check is a FAILED line naming what broke it and
+  the group keeps its own result. `ViewsTree.Lines` cuts the tree at `TreeLinesInLog` for the
+  .log and says so, the .tsv whole, and never cuts a check. `ViewsProgress` writes a VIEWS
+  line at least every `ProgressEverySeconds`, FR-071
 - A group about to BUILD an NWF beside a file whose name is nearly the one it would write
   says so, and does nothing about it. On the run of 2026-09-19 Bader got First run on
   buildings that already had an NWF, because the NWF folder and the name pattern together

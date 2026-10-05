@@ -294,9 +294,8 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Branched on the verdict and never on SizeDecision.Included, which folds Large
-        /// and SizeUnknown together for F53's own reasons and would put every fitting with
-        /// no size property into Over 150mm.
+        /// Branched on the verdict and never on a reading that folds Large and SizeUnknown
+        /// together, which would put every fitting with no size property into Over 150mm.
         /// </summary>
         [Test]
         public void ASizeThatCouldNotBeReadGoesInThePairFolderAndIsCounted()
