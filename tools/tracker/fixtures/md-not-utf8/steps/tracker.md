@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 12 rows: open 0, in progress 3, in review 2, merged 4, proven by a run 1, waiting for Bader 1, dropped 1
-- By wave: 1 3, 2a 2, before any test run 2, beside the waves 1, none 4
-- In progress now: F2 the second area, and 2 FR items
+- By status, of 14 rows: open 0, in progress 4, in review 3, merged 4, proven by a run 1, waiting for Bader 1, dropped 1
+- By wave: 1 3, 2a 2, before any test run 3, beside the waves 2, none 4
+- In progress now: F2 the second area, F4 the fourth area, and 2 FR items
 - Waits for Bader, 1 row: Q1
 
 ## Wave 1
@@ -28,12 +28,14 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 |---|---|---|---|---|---|---|---|
 | FR-008 | eighth item | F4 | Bader's decision | in progress | 14, open | none | 2026-10-05 |
 | Q2 | a question Bader answered | F4 | question | merged | 18 | none | 2026-10-05 |
+| F4 | the fourth area | F4 | fix | in progress | 14, open | none | 2026-10-05 |
 
 ## beside the waves
 
 | id | short title | area | class | status | PR | run that proved it | date of last change |
 |---|---|---|---|---|---|---|---|
 | FR-005 | fifth item | F3 | broken feature | in review | UNKNOWN | none | 2026-10-05 |
+| F3 | the third area | F3 | fix | in review | UNKNOWN | none | 2026-10-05 |
 
 ## none
 

@@ -20,10 +20,14 @@
       knows, an area line with no wave line above it, an FR id named where the reader places
       no item, and an item two lines place in two areas or at two waves. tracker-rules.ps1
       lists the shapes
+    - an F area that an area line or a stage line of the waves section places an item in,
+      with no row written with its exact id
     - an FR row whose class, area or wave is not what fix-round.md gives
     - a row of class question that names no question of steps\02_questions.md, and one whose
       question shows Bader's answer there and that reads neither merged with a pull request
       number nor in review
+    - a question of 02_questions.md with no answer, its Answer line empty or not there, and no
+      row written Q followed by its number
     - a steps\tracker.md that is not what make-tracker.ps1 makes from the csv, naming the
       first line that differs. It is compared only when the csv has no fault, since nothing
       is made from a csv with one
@@ -60,15 +64,19 @@ $faults = New-Object System.Collections.Generic.List[string]
 foreach ($f in $read.Faults) { $faults.Add($f) }
 $parsed = $faults.Count -eq 0
 $items = 0
+$areas = 0
 $asked = 0
+$waiting = 0
 if ($parsed) {
     foreach ($f in (Test-TrackerRows $read.Rows)) { $faults.Add($f) }
     $against = Test-TrackerFixRound $read.Rows $round
     foreach ($f in $against.Faults) { $faults.Add($f) }
     $items = $against.Count
+    $areas = $against.Areas
     $answers = Test-TrackerQuestions $read.Rows $questions
     foreach ($f in $answers.Faults) { $faults.Add($f) }
     $asked = $answers.Count
+    $waiting = $answers.Waiting
 }
 
 $csvClean = $faults.Count -eq 0
@@ -104,5 +112,5 @@ if ($faults.Count -gt 0) {
     Write-Output ("check-tracker: REFUSED, " + $faults.Count + " fault(s) above")
     exit 1
 }
-Write-Output ("check-tracker: the tracker reads clean, " + $read.Rows.Count + " rows, each of the $items FR items of fix-round.md has one with its class, area and wave, the $asked rows of class question each name a question of 02_questions.md and read as its answer says, and tracker.md is what make-tracker.ps1 makes")
+Write-Output ("check-tracker: the tracker reads clean, " + $read.Rows.Count + " rows, each of the $items FR items of fix-round.md has one with its class, area and wave, each of the $areas areas its waves section places an item in has one, each of the $waiting questions of 02_questions.md with no answer has one, the $asked rows of class question each name a question of 02_questions.md and read as its answer says, and tracker.md is what make-tracker.ps1 makes")
 exit 0

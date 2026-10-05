@@ -17,7 +17,11 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
 - One row per item: every FR item of steps\fix-round.md, every F area, each of Bader's
   requests and every question in steps\02_questions.md waiting for his answer, whose row
   stays once he answers. The columns are id, short title, area, wave, class, status, PR, run
-  that proved it and date of last change, in that order
+  that proved it and date of last change, in that order. The check refuses an FR item, an F
+  area that the waves section of fix-round.md places an item in, and a question with no
+  answer, its Answer line empty or not there, when no row carries its id written exactly. An
+  F area that no line of the waves section places an item in, an F section of steps\01_next.md
+  alone, is not read by the check, so only a reader sees it has no row
 - A question's row, class question and id Q followed by its number, reads waiting for Bader
   until his answer is under it in steps\02_questions.md. Once the record of his answer is on
   main it reads merged, with the number of the pull request that put the record there, PR 118

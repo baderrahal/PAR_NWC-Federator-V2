@@ -234,15 +234,17 @@ function Find-WavesLine($Entry, [string] $Id) {
 # 'Closed already:' the items closed before the waves, which read as none for both. An FR id
 # named anywhere else in a wave, area or stage line is a fault, so no item reads as in no area
 # in silence. So is an area line with no wave line above it, an item two lines place in two
-# areas or at two waves, and a file with no waves section.
+# areas or at two waves, and a file with no waves section. Areas holds each F area an area line
+# or a stage line places an item in, with the first line that does.
 function Get-FixRoundWaves([string[]] $Lines) {
     $of = New-Object 'System.Collections.Generic.Dictionary[string,object]' ([StringComparer]::Ordinal)
+    $areas = New-Object 'System.Collections.Generic.Dictionary[string,int]' ([StringComparer]::Ordinal)
     $faults = New-Object System.Collections.Generic.List[string]
     $start = -1
     for ($k = 0; $k -lt $Lines.Length; $k++) { if ($Lines[$k].StartsWith("## The waves")) { $start = $k; break } }
     if ($start -lt 0) {
         $faults.Add("fix-round.md has no section headed ## The waves, so no FR row's area or wave was checked")
-        return @{ Of = $of; Faults = $faults; Read = $false }
+        return @{ Of = $of; Areas = $areas; Faults = $faults; Read = $false }
     }
     $noShape = ", in the waves section, is in no shape the waves reader knows, so nothing on it was read"
 
@@ -325,23 +327,25 @@ function Get-FixRoundWaves([string[]] $Lines) {
     }
 
     foreach ($one in $named) {
+        if ($one.Area -cne "none" -and -not $areas.ContainsKey($one.Area)) { $areas[$one.Area] = $one.Line }
         if (-not $of.ContainsKey($one.Id)) { $of[$one.Id] = $one; continue }
         $was = $of[$one.Id]
         if ($was.Area -cne $one.Area) { $faults.Add("fix-round.md line " + $one.Line + " names " + $one.Id + " in area " + $one.Area + ", and line " + $was.Line + " in area " + $was.Area) }
         elseif ($was.Wave -cne $one.Wave) { $faults.Add("fix-round.md line " + $one.Line + " names " + $one.Id + " at wave " + $one.Wave + ", and line " + $was.Line + " at wave " + $was.Wave) }
     }
-    return @{ Of = $of; Faults = $faults; Read = $true }
+    return @{ Of = $of; Areas = $areas; Faults = $faults; Read = $true }
 }
 
 # The FR rows against fix-round.md: every item has a row with its id written exactly, every
 # row whose id starts FR- in any case has its item, and the row's class, area and wave are what
-# fix-round.md gives. Returns the faults and the count of items read.
+# fix-round.md gives, and every F area the waves section places an item in has a row with its
+# id. Returns the faults, the count of items read and the count of areas.
 function Test-TrackerFixRound($Rows, [string] $RoundPath) {
     $faults = New-Object System.Collections.Generic.List[string]
     $round = Read-TrackerText $RoundPath "fix-round.md"
     if ($null -ne $round.Fault) {
         $faults.Add($round.Fault)
-        return @{ Faults = $faults; Count = 0 }
+        return @{ Faults = $faults; Count = 0; Areas = 0 }
     }
     $lines = $round.Text.Split("`n")
     $read = Get-FixRoundItems $lines
@@ -376,6 +380,9 @@ function Test-TrackerFixRound($Rows, [string] $RoundPath) {
             }
         }
     }
+    foreach ($area in $waves.Areas.Keys) {
+        if (-not $byId.ContainsKey($area)) { $faults.Add("fix-round.md line " + $waves.Areas[$area] + " places an item in area $area and tracker.csv has no row for it") }
+    }
     if ($read.Items.Count -gt 0) {
         foreach ($row in $Rows) {
             $id = $row["id"].Trim()
@@ -384,7 +391,7 @@ function Test-TrackerFixRound($Rows, [string] $RoundPath) {
             }
         }
     }
-    return @{ Faults = $faults; Count = $read.Items.Count }
+    return @{ Faults = $faults; Count = $read.Items.Count; Areas = $waves.Areas.Count }
 }
 
 # Every question of steps\02_questions.md by its number, a line '<n>. ' at the start, with its
@@ -411,12 +418,14 @@ function Get-Questions([string[]] $Lines) {
 # The rows of class question against steps\02_questions.md: each names a question there as
 # Q<number>, and a question whose Answer line holds Bader's answer reads merged with the number
 # of the pull request that put the answer on main, or in review on the branch that records it.
+# Every question with no answer of his, an Answer line left empty or none at all, has a row
+# Q<number>.
 function Test-TrackerQuestions($Rows, [string] $QuestionsPath) {
     $faults = New-Object System.Collections.Generic.List[string]
     $read = Read-TrackerText $QuestionsPath "02_questions.md"
     if ($null -ne $read.Fault) {
         $faults.Add($read.Fault)
-        return @{ Faults = $faults; Count = 0 }
+        return @{ Faults = $faults; Count = 0; Waiting = 0 }
     }
     $questions = Get-Questions ($read.Text.Split("`n"))
     $count = 0
@@ -435,7 +444,15 @@ function Test-TrackerQuestions($Rows, [string] $QuestionsPath) {
         if (($status -ceq "merged" -and $row["PR"] -match '^\d+$') -or $status -ceq "in review") { continue }
         $faults.Add("${where}: 02_questions.md line " + $q.AnswerLine + " holds Bader's answer, so the row reads merged with the number of the pull request that put it on main, or in review on the branch that records it, and not '$status' with PR '" + $row["PR"] + "'")
     }
-    return @{ Faults = $faults; Count = $count }
+    $ids = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    foreach ($row in $Rows) { [void]$ids.Add($row["id"]) }
+    $waiting = 0
+    foreach ($number in $questions.Keys) {
+        if ($questions[$number].Answered) { continue }
+        $waiting++
+        if (-not $ids.Contains("Q$number")) { $faults.Add("02_questions.md line " + $questions[$number].Line + " asks question $number, which has no answer, and tracker.csv has no row Q$number for it") }
+    }
+    return @{ Faults = $faults; Count = $count; Waiting = $waiting }
 }
 
 # A wave that starts with a digit sorts before one that does not, each group in ordinal order.

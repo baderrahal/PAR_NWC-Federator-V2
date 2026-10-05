@@ -11,3 +11,5 @@ FR-007,seventh item closed before the waves,none,none,noise,merged,9,none,2026-1
 FR-008,eighth item,F4,before any test run,Bader's decision,in progress,"14, open",none,2026-10-05
 Q2,a question Bader answered,F4,before any test run,question,merged,none,none,2026-10-05
 Q3,a question answered on a branch,none,none,question,in review,UNKNOWN,none,2026-10-05
+F3,the third area,F3,beside the waves,fix,in review,UNKNOWN,none,2026-10-05
+F4,the fourth area,F4,before any test run,fix,in progress,"14, open",none,2026-10-05
