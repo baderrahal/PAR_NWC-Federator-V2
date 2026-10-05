@@ -6122,3 +6122,124 @@ of a Revit.exe, pid 37712, that the probe did not start, and the probe touched n
 1A04PK, each list whole. The HV model carries ME- and PL- names and the FP model carries one FF-
 name, so the also-ask spellings for these two models are drafted from the names above. Which
 lines are drafted is the rule's work in F131, and is not decided here.
+
+## 5z-n. WHICH SAVED VIEWPOINTS OF THE BASELINE NWF ARE F85'S, MEASURED 2026-10-05
+
+P8 of Q114, the views by team design, part 3, read only. F114 removes the per-clash views F85
+wrote, and those carry no mark, so LegacyClashView of the design's 1.9 tells them by their folders
+and their name alone. The question: does the saved viewpoint tree of the baseline's 1A02MM NWF hold
+2847 viewpoints, 2813 under code pair folders with leaves named test, two spaces, Clash and digits,
+and 34 elsewhere? The dump gives every item's folder path, name, folder or viewpoint, comment count
+and Guid. By the row of P8, exactly 2813 legacy and none of the 34 lets LegacyClashView's test run
+over the committed dump. Any other count stops the legacy removal until the rule is fixed. It also
+counts the leaves under Over 150mm per test.
+
+HOW. `tools\probes\ViewpointProbe\probe-viewpoint-tree.ps1` is P4's `probe-model-worksets.ps1` with
+the new mode `vptree` of `ViewpointProbe.dll` in place of `worksets` and `-Dump` in place of
+`-Codes`. The guard is the loop's, tools\loop\nw-guard.ps1 dot-sourced, with the Roamer refusal,
+the settings backup, the adoption by AdoptStart's four conditions, Dispose, the close through the
+held handle only when needed, and SettingsPutBack. Get-Process Roamer read 0 before the run and 0
+after it. The probe copied the C02 NWF of run set 04,
+`%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`,
+41,317,271 bytes, sha256 0944C100, into the new folder `probes\viewpoint-tree-20261005-142446`, and
+the mode, on that copy:
+
+1. opens the copy and says for each model whether it was read from under the loop folder
+2. reads the name of every ClashTest in the test tree, root and folders
+3. walks the whole saved viewpoint tree from `SavedViewpoints.RootItem`, each item in its own try,
+   and writes one dump row per item: index path, depth, folder or viewpoint, child count,
+   `Comments.Count`, `SavedViewpoint.Redlines.Size()` on a viewpoint, `SavedItem.Guid`, the legacy
+   verdict, the first condition failed, folder path and name. A tab, a line break, any other
+   control character and a backslash are written as \uXXXX, so one row stays one row
+4. judges every item by the five conditions of 1.9 as written there, with F85's defaults read off
+   src\Federator.Core\Views: the priority words A, B, C and No priority as an optional first
+   folder, then a pair folder of two of AR, ST, ME, FF, PL, DR, EL and UNKNOWN with " vs " between
+   and the first not after the second Ordinal, then an optional Over 150mm, at depth 1 to 3. The
+   item a viewpoint. The name a test name, two spaces, Clash and digits only. The test name one of
+   the document's own. No comment and no redline
+5. saves nothing. The script copies the dump out of the work folder and reads its sha256 back
+
+This is the probe's own reading of 1.9's text. LegacyClashView is not written yet, so its test
+has not run over the dump. Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-viewpoint-tree.ps1 -Out tools\probes\ViewpointProbe\p8-viewpoint-tree-result-20261005.txt -Dump tools\probes\ViewpointProbe\p8-viewpoint-tree-dump-20261005.tsv -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+One run at 14:24, `p8-viewpoint-tree-result-20261005.txt`, the machine name on line 1 masked by hand
+as `[machine]` and nothing else changed. The dump is `p8-viewpoint-tree-dump-20261005.tsv`, 2869
+rows and a header, 376,451 bytes, sha256 6B9D1DCE, line 214. Navisworks pid 13668, adopted on all
+four conditions, line 37. TryOpenFile of the copy returned True after 6.362 s with 4 models, every
+one read from under the loop folder, lines 55 to 60. ExecuteAddInPlugin returned 0 after 6.55 s,
+line 48. Dispose returned and pid 13668 was gone 6.1 s later, not forced, line 218.
+
+**THE ANSWER IS YES.** Lines 61 to 212 of the result:
+
+```
+tests in the document 528, distinct names 528
+the root              a FolderItem with 16 children
+items 2869            folders 22, viewpoints 2847, other kinds 0, reads that threw 0
+viewpoints by depth   2780 at depth 1, 67 at depth 2
+comments              0 on every item, 0 counts that threw
+redlines              0 on every viewpoint, 0 reads that threw
+Guids                 2869 read, every one 00000000-0000-0000-0000-000000000000
+LEGACY BY THE RULE OF 1.9: 2813, NOT LEGACY: 56 of which viewpoints 34 and folders 22
+   not legacy, 1 no sorted code pair folder where one belongs: 34
+   not legacy, 2 not a viewpoint: 22
+P8 YES   viewpoints 2847 against 2847, legacy 2813 against 2813, viewpoints not legacy 34 against 34
+```
+
+1. The tree holds 2847 viewpoints. 2813 are legacy by the rule, equal to the 2813 the baseline
+   created, log line 438 of `runs\04\NMFed\NWF\C02\run-20261004-185652.log`, read by the prober.
+   The prober also recounted the dump on its own after the run: 2813 viewpoint rows whose name
+   reads test, two spaces, Clash and digits, all of them legacy, 34 viewpoints and 22 folders not
+2. The 34 that are not legacy sit in four folders at the root the NWCs brought, lines 122 to 155:
+   `PAR-AR-VEW-3D View` 11, `3D View` 8, `MEC-MEC-3D VIEW-PAR` 9 and `PAR-ST-3D View` 6. Each fails
+   condition 1, a folder that is not a sorted code pair. None of them is legacy
+3. The 22 folders are the 4 above, 12 pair folders at the root and 6 Over 150mm folders, one
+   below each of 6 pairs, lines 77 to 98. The 2813 sit in 16 of them, lines 104 to 119, since
+   ME vs ME and ME vs PL hold only their Over 150mm folder:
+   AR vs AR 2617, EL vs ST 56 and 42 Over 150mm, ST vs ST 33, AR vs DR 17, EL vs EL 2 and 9 Over
+   150mm, AR vs ME 8 and 8 Over 150mm, EL vs UNKNOWN 6 and 1 Over 150mm, ME vs ME 0 and 6 Over
+   150mm, ST vs UNKNOWN 3, DR vs DR 2, DR vs PL 2, ME vs PL 0 and 1 Over 150mm. No priority folder,
+   since the baseline picked no priority file, log line 426
+4. Over 150mm holds 67 legacy viewpoints of 17 tests, lines 158 to 209. Each of those 17 tests has
+   all its legacy viewpoints there and none in its pair folder, so each test's views sit in one
+   folder: 51 tests hold legacy viewpoints, and there are 51 distinct pairs of test and folder,
+   line 210. BLD-AR-Curtain Mullions-vs-BLD-AR-Windows alone holds 2568 of them, line 159
+5. Every name of the tree is free of a leading or trailing space, line 72
+6. EVERY GUID READ IS THE EMPTY GUID. `SavedItem.Guid` returned 00000000-0000-0000-0000-000000000000
+   on all 2869 items, folders and viewpoints alike, of a document read off this NWF, line 71. The
+   read threw on none. This is the read through the .NET SavedItem only. Nothing here asked
+   ResolveGuid or the COM view for an id
+7. The walk of 2869 items took 0.038 s, line 63
+
+**BADER'S THINGS.** The NWF the copy was made from read sha256 0944C100 at the start and at the
+end, lines 22 and 306. 36 registry values were put back, each read again with 0 still differing,
+line 295. InfoCenter.log and LastSession.xml were put back reading their backup's sha256, lines 299
+to 301. No AutoSave file was added, changed or gone, line 302. The prober also listed the AutoSave
+folder with each file's sha256 before the run and again after it: 202 files both times, 0
+differing. The tool's own logs folder had nothing added or changed, line 303. One
+AdskLicensingAgent, pid 22100, child of pid 13668, read STILL RUNNING at the end, line 250. Read
+again by the prober after the run, no process held pid 22100. The two AdskLicensingAgent processes
+still running, pids 9444 and 41324, are the Revit children 5z-m names, and the probe touched
+neither.
+
+**STILL UNKNOWN.**
+
+- whether LegacyClashView, once written, gives the same 2813. This is the probe's reading of 1.9's
+  text, and the test over the dump runs only when the class exists
+- condition 4 read the document's test names only. The test names of the picked XML were not read
+- whether a viewpoint's Guid is empty in a document where the views were just made and not yet saved,
+  and whether a Guid set by the tool survives a save. P10 asks that. Here every Guid read empty
+  after the open, so a Guid read this way cannot tell two items of this tree apart
+- whether a priority folder tree, from a run with a priority file, reads the same. The baseline had
+  none, so condition 1's first folder was never met
+- whether redlines of zero here mean no redline was drawn or that Size() reads 0 on a document read
+  off an NWF. P20 asks that
+- the Clash Detective panel and the Saved Viewpoints window were not read
+
+**WHAT THIS DECIDES.** By the row of P8, the count is the one the row asks: 2847 viewpoints, 2813
+legacy and none of the 34 the NWCs brought. The dump is committed for LegacyClashView's test to run
+over, and that test has to read exactly 2813 legacy and 34 not, or the legacy removal stops until
+the rule is fixed. The 67 leaves under Over 150mm in 17 tests are part 6's lower bound. The empty
+Guid on every item is new, and goes to P10 and P11 before the Guid is put in the mark.

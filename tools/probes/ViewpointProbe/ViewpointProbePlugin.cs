@@ -157,6 +157,12 @@ namespace ViewpointProbe
                             parameters[2],
                             parameters.Length > 3 ? parameters[3] : null);
                     }
+                    else if (mode == "vptree")
+                    {
+                        DumpViewpointTree(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -8051,6 +8057,522 @@ namespace ViewpointProbe
             }
 
             return notes.Count == 0 ? "plain ASCII" : string.Join(", ", notes.ToArray());
+        }
+
+        // ---------- P8 of Q114, the whole saved viewpoint tree, read only ----------
+
+        /// <summary>
+        /// P8 of Q114, scan.md 5z-n. Read only: opens the copy, writes nothing to it and saves
+        /// nothing. Every item of the saved viewpoint tree goes in the dump with its index
+        /// path, depth, folder or viewpoint, child count, comment count, redline count, Guid,
+        /// folder path and name. Each item is judged by the legacy rule of the design's 1.9 as
+        /// written there, with F85's own defaults: the priority words A, B, C and No priority,
+        /// the codes AR ST ME FF PL DR EL and UNKNOWN sorted Ordinal with " vs " between, the
+        /// size folder Over 150mm, the name separator of two spaces and the prefix Clash. The
+        /// test names are the document's own. The XML's are not read.
+        /// </summary>
+        private void DumpViewpointTree(string nwf, string dumpPath)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(dumpPath))
+            {
+                Say("UNKNOWN: no dump path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count + ", document units " + document.Units);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            HashSet<string> testNames = new HashSet<string>(StringComparer.Ordinal);
+            int testCount = 0;
+            CollectTestNames(document.GetClash().TestsData.Tests, testNames, ref testCount);
+            Say("tests in the document " + testCount + ", distinct names " + testNames.Count);
+
+            TreeTally tally = new TreeTally();
+            List<string> rows = new List<string>();
+            rows.Add("index_path\tdepth\tkind\tchildren\tcomments\tredlines\tguid\tlegacy\twhy\tfolder_path\tname");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                Say("the root: a " + root.GetType().Name + " with " + root.Children.Count + " children");
+                WalkViewpointTree(root, string.Empty, new List<string>(), testNames, rows, tally);
+            }
+
+            Say("the walk took " + Seconds(clock) + ", items " + (rows.Count - 1));
+
+            using (StreamWriter dump = new StreamWriter(dumpPath, false, new UTF8Encoding(false)))
+            {
+                foreach (string row in rows)
+                {
+                    dump.Write(row);
+                    dump.Write("\r\n");
+                }
+            }
+
+            Say("the dump written, " + rows.Count + " lines with its header, " + Bytes(dumpPath) + " bytes read back off the disk");
+            Say(string.Empty);
+            Say("items " + tally.Items + ", folders " + tally.Folders + ", viewpoints " + tally.Viewpoints
+                + ", other kinds " + tally.Other);
+            Say("items whose read threw " + tally.Threw);
+            Say("comment counts that threw " + tally.CommentThrew + ", redline reads that threw " + tally.RedlineThrew);
+            Say("items carrying at least one comment " + tally.WithComments + ", comments in all " + tally.Comments);
+            Say("viewpoints carrying at least one redline " + tally.WithRedlines);
+            Say("Guids read " + tally.Guids.Count + ", empty " + tally.EmptyGuids + ", distinct " + DistinctCount(tally.Guids)
+                + ", Guid reads that threw " + tally.GuidThrew);
+            Say("names with a leading or trailing space " + tally.SpaceEdged);
+
+            foreach (KeyValuePair<int, int> pair in Sorted(tally.ViewpointsAtDepth))
+            {
+                Say("   viewpoints at depth " + pair.Key + ": " + pair.Value);
+            }
+
+            Say(string.Empty);
+            Say("EVERY FOLDER, its index path, depth, children, viewpoints under it and comments:");
+
+            foreach (string line in tally.FolderLines)
+            {
+                Say("   " + line);
+            }
+
+            Say(string.Empty);
+            Say("LEGACY BY THE RULE OF 1.9: " + tally.Legacy + ", NOT LEGACY: " + tally.NotLegacy
+                + " of which viewpoints " + tally.NotLegacyViewpoints + " and folders " + (tally.NotLegacy - tally.NotLegacyViewpoints));
+
+            foreach (KeyValuePair<string, int> pair in SortedText(tally.WhyNot))
+            {
+                Say("   not legacy, " + pair.Key + ": " + pair.Value);
+            }
+
+            Say("legacy viewpoints by folder path:");
+
+            foreach (KeyValuePair<string, int> pair in SortedText(tally.LegacyByFolder))
+            {
+                Say("   " + pair.Value.ToString().PadLeft(5) + "  " + pair.Key);
+            }
+
+            Say(string.Empty);
+            Say("EVERY VIEWPOINT THAT IS NOT LEGACY, its index path, depth, comments, redlines, Guid, why, folder path and [name]:");
+
+            foreach (string line in tally.NotLegacyViewpointLines)
+            {
+                Say("   " + line);
+            }
+
+            Say(string.Empty);
+            Say("legacy viewpoints by test, all of them and those under Over 150mm, for "
+                + tally.LegacyByTest.Count + " tests:");
+            int underOver = 0;
+            int testsWithOver = 0;
+
+            foreach (KeyValuePair<string, int> pair in SortedText(tally.LegacyByTest))
+            {
+                int over;
+                tally.OverByTest.TryGetValue(pair.Key, out over);
+                underOver += over;
+
+                if (over > 0)
+                {
+                    testsWithOver++;
+                }
+
+                Say("   " + pair.Value.ToString().PadLeft(5) + "  over " + over.ToString().PadLeft(5) + "  [" + Shown(pair.Key) + "]");
+            }
+
+            Say("legacy viewpoints under Over 150mm " + underOver + ", in " + testsWithOver + " tests");
+            Say("distinct folders holding a legacy viewpoint " + tally.LegacyByFolder.Count
+                + ", distinct pairs of test and folder path " + tally.TestFolderPairs.Count);
+            Say(string.Empty);
+
+            bool total = tally.Viewpoints == 2847;
+            bool legacy = tally.Legacy == 2813;
+            bool other = tally.NotLegacyViewpoints == 34;
+            Say("P8 " + (total && legacy && other && tally.Threw == 0 ? "YES" : "NO")
+                + "   viewpoints " + tally.Viewpoints + " against 2847, legacy " + tally.Legacy + " against 2813, viewpoints not legacy "
+                + tally.NotLegacyViewpoints + " against 34, items whose read threw " + tally.Threw);
+        }
+
+        private sealed class TreeTally
+        {
+            public int Items;
+            public int Folders;
+            public int Viewpoints;
+            public int Other;
+            public int Threw;
+            public int CommentThrew;
+            public int RedlineThrew;
+            public int GuidThrew;
+            public int WithComments;
+            public int Comments;
+            public int WithRedlines;
+            public int EmptyGuids;
+            public int SpaceEdged;
+            public int Legacy;
+            public int NotLegacy;
+            public int NotLegacyViewpoints;
+            public readonly List<Guid> Guids = new List<Guid>();
+            public readonly Dictionary<int, int> ViewpointsAtDepth = new Dictionary<int, int>();
+            public readonly Dictionary<string, int> WhyNot = new Dictionary<string, int>(StringComparer.Ordinal);
+            public readonly Dictionary<string, int> LegacyByFolder = new Dictionary<string, int>(StringComparer.Ordinal);
+            public readonly Dictionary<string, int> LegacyByTest = new Dictionary<string, int>(StringComparer.Ordinal);
+            public readonly Dictionary<string, int> OverByTest = new Dictionary<string, int>(StringComparer.Ordinal);
+            public readonly HashSet<string> TestFolderPairs = new HashSet<string>(StringComparer.Ordinal);
+            public readonly List<string> FolderLines = new List<string>();
+            public readonly List<string> NotLegacyViewpointLines = new List<string>();
+        }
+
+        private static readonly string[] LegacyPriorityWords = { "A", "B", "C", "No priority" };
+        private static readonly string[] LegacyCodes = { "AR", "ST", "ME", "FF", "PL", "DR", "EL", "UNKNOWN" };
+        private const string LegacyPairSeparator = " vs ";
+        private const string LegacySizeFolder = "Over 150mm";
+        private const string LegacyNameSeparator = "  ";
+        private const string LegacyClashPrefix = "Clash";
+
+        /// <summary>Walks one folder. Returns the viewpoints under it, so a folder's line can carry them.</summary>
+        private int WalkViewpointTree(GroupItem folder, string indexPath, List<string> folders, HashSet<string> testNames, List<string> rows, TreeTally tally)
+        {
+            int under = 0;
+            SavedItemCollection children = folder.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                string at = indexPath.Length == 0 ? i.ToString() : indexPath + "." + i;
+
+                try
+                {
+                    using (SavedItem child = children[i])
+                    {
+                        tally.Items++;
+                        string name = child.DisplayName ?? string.Empty;
+                        int depth = folders.Count;
+                        string folderPath = string.Join("/", folders.ToArray());
+
+                        if (name.Length > 0 && (char.IsWhiteSpace(name[0]) || char.IsWhiteSpace(name[name.Length - 1])))
+                        {
+                            tally.SpaceEdged++;
+                        }
+
+                        string comments = "UNKNOWN";
+                        int commentCount = -1;
+
+                        try
+                        {
+                            commentCount = child.Comments.Count;
+                            comments = commentCount.ToString();
+                            tally.Comments += commentCount;
+
+                            if (commentCount > 0)
+                            {
+                                tally.WithComments++;
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            tally.CommentThrew++;
+                            comments = "THREW " + error.GetType().Name;
+                        }
+
+                        string guid = "UNKNOWN";
+
+                        try
+                        {
+                            Guid g = child.Guid;
+                            guid = g.ToString("D");
+                            tally.Guids.Add(g);
+
+                            if (g == Guid.Empty)
+                            {
+                                tally.EmptyGuids++;
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            tally.GuidThrew++;
+                            guid = "THREW " + error.GetType().Name;
+                        }
+
+                        GroupItem group = child as GroupItem;
+                        SavedViewpoint viewpoint = child as SavedViewpoint;
+                        string kind;
+                        string childCount = string.Empty;
+                        string redlines = string.Empty;
+                        int redlineCount = 0;
+
+                        if (group != null)
+                        {
+                            kind = "folder";
+                            tally.Folders++;
+                            childCount = group.Children.Count.ToString();
+                        }
+                        else if (viewpoint != null)
+                        {
+                            kind = "viewpoint";
+                            tally.Viewpoints++;
+                            under++;
+                            int had;
+                            tally.ViewpointsAtDepth.TryGetValue(depth, out had);
+                            tally.ViewpointsAtDepth[depth] = had + 1;
+
+                            try
+                            {
+                                redlineCount = viewpoint.Redlines.Size();
+                                redlines = redlineCount.ToString();
+
+                                if (redlineCount > 0)
+                                {
+                                    tally.WithRedlines++;
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                tally.RedlineThrew++;
+                                redlineCount = -1;
+                                redlines = "THREW " + error.GetType().Name;
+                            }
+                        }
+                        else
+                        {
+                            kind = child.GetType().Name;
+                            tally.Other++;
+                        }
+
+                        string why = LegacyWhyNot(folders, name, viewpoint != null, commentCount, redlineCount, testNames);
+                        bool isLegacy = why.Length == 0;
+
+                        if (isLegacy)
+                        {
+                            tally.Legacy++;
+                            Bump(tally.LegacyByFolder, folderPath);
+                            string test = name.Substring(0, name.LastIndexOf(LegacyNameSeparator + LegacyClashPrefix, StringComparison.Ordinal));
+                            Bump(tally.LegacyByTest, test);
+                            tally.TestFolderPairs.Add(test + "\n" + folderPath);
+
+                            if (folders[folders.Count - 1] == LegacySizeFolder)
+                            {
+                                Bump(tally.OverByTest, test);
+                            }
+                        }
+                        else
+                        {
+                            tally.NotLegacy++;
+                            Bump(tally.WhyNot, why);
+
+                            if (viewpoint != null)
+                            {
+                                tally.NotLegacyViewpoints++;
+                                tally.NotLegacyViewpointLines.Add(at + "  depth " + depth + "  comments " + comments + "  redlines " + redlines
+                                    + "  " + guid + "  " + why + "  " + Shown(folderPath) + "  [" + Shown(name) + "]");
+                            }
+                        }
+
+                        rows.Add(at + "\t" + depth + "\t" + kind + "\t" + childCount + "\t" + comments + "\t" + redlines + "\t" + guid
+                            + "\t" + (isLegacy ? "legacy" : "no") + "\t" + why + "\t" + Shown(folderPath) + "\t" + Shown(name));
+
+                        if (group != null)
+                        {
+                            folders.Add(name);
+                            int inside = WalkViewpointTree(group, at, folders, testNames, rows, tally);
+                            folders.RemoveAt(folders.Count - 1);
+                            under += inside;
+                            tally.FolderLines.Add(at + "  depth " + depth + "  children " + childCount + "  viewpoints under it " + inside
+                                + "  comments " + comments + "  " + guid + "  [" + Shown(folderPath.Length == 0 ? name : folderPath + "/" + name) + "]");
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    tally.Threw++;
+                    rows.Add(at + "\t\tTHREW\t\t\t\t\t\t" + error.GetType().Name + ": " + Shown(error.Message) + "\t\t");
+                }
+            }
+
+            return under;
+        }
+
+        /// <summary>Empty when the item is legacy by the rule of 1.9, else the first condition it fails.</summary>
+        private static string LegacyWhyNot(List<string> folders, string name, bool isViewpoint, int comments, int redlines, HashSet<string> testNames)
+        {
+            if (!isViewpoint)
+            {
+                return "2 not a viewpoint";
+            }
+
+            if (folders.Count < 1 || folders.Count > 3)
+            {
+                return "1 depth " + folders.Count;
+            }
+
+            int at = 0;
+
+            if (folders.Count > 1 && Array.IndexOf(LegacyPriorityWords, folders[0]) >= 0)
+            {
+                at = 1;
+            }
+
+            if (at >= folders.Count || !IsSortedPair(folders[at]))
+            {
+                return "1 no sorted code pair folder where one belongs";
+            }
+
+            at++;
+
+            if (at < folders.Count && folders[at] == LegacySizeFolder)
+            {
+                at++;
+            }
+
+            if (at != folders.Count)
+            {
+                return "1 a folder the rule does not allow";
+            }
+
+            int split = name.LastIndexOf(LegacyNameSeparator + LegacyClashPrefix, StringComparison.Ordinal);
+
+            if (split <= 0)
+            {
+                return "3 no test, two spaces and Clash";
+            }
+
+            string digits = name.Substring(split + LegacyNameSeparator.Length + LegacyClashPrefix.Length);
+
+            if (digits.Length == 0)
+            {
+                return "3 Clash with no digits";
+            }
+
+            foreach (char c in digits)
+            {
+                if (c < '0' || c > '9')
+                {
+                    return "3 Clash followed by more than digits";
+                }
+            }
+
+            if (!testNames.Contains(name.Substring(0, split)))
+            {
+                return "4 the test is not in the document";
+            }
+
+            if (comments != 0)
+            {
+                return comments < 0 ? "5 comments UNKNOWN" : "5 carries a comment";
+            }
+
+            if (redlines != 0)
+            {
+                return redlines < 0 ? "5 redlines UNKNOWN" : "5 carries a redline";
+            }
+
+            return string.Empty;
+        }
+
+        private static bool IsSortedPair(string folder)
+        {
+            int split = folder.IndexOf(LegacyPairSeparator, StringComparison.Ordinal);
+
+            if (split <= 0)
+            {
+                return false;
+            }
+
+            string first = folder.Substring(0, split);
+            string second = folder.Substring(split + LegacyPairSeparator.Length);
+
+            return Array.IndexOf(LegacyCodes, first) >= 0
+                && Array.IndexOf(LegacyCodes, second) >= 0
+                && string.CompareOrdinal(first, second) <= 0;
+        }
+
+        private static void CollectTestNames(SavedItemCollection items, HashSet<string> names, ref int count)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    if (item is ClashTest)
+                    {
+                        count++;
+                        names.Add(item.DisplayName ?? string.Empty);
+                        continue;
+                    }
+
+                    GroupItem folder = item as GroupItem;
+
+                    if (folder != null)
+                    {
+                        CollectTestNames(folder.Children, names, ref count);
+                    }
+                }
+            }
+        }
+
+        private static int DistinctCount(List<Guid> guids)
+        {
+            return new HashSet<Guid>(guids).Count;
+        }
+
+        private static List<KeyValuePair<int, int>> Sorted(Dictionary<int, int> counts)
+        {
+            List<KeyValuePair<int, int>> list = new List<KeyValuePair<int, int>>(counts);
+            list.Sort((a, b) => a.Key.CompareTo(b.Key));
+            return list;
+        }
+
+        private static List<KeyValuePair<string, int>> SortedText(Dictionary<string, int> counts)
+        {
+            List<KeyValuePair<string, int>> list = new List<KeyValuePair<string, int>>(counts);
+            list.Sort((a, b) => string.CompareOrdinal(a.Key, b.Key));
+            return list;
+        }
+
+        /// <summary>The text as it is, but a tab, a line break or any other control character written as \uXXXX, so a dump row stays one row.</summary>
+        private static string Shown(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return string.Empty;
+            }
+
+            StringBuilder built = new StringBuilder(text.Length);
+
+            foreach (char c in text)
+            {
+                if (c < 0x20 || c == 0x7f || c == '\\')
+                {
+                    built.Append("\\u").Append(((int)c).ToString("X4"));
+                }
+                else
+                {
+                    built.Append(c);
+                }
+            }
+
+            return built.ToString();
         }
     }
 }
