@@ -145,6 +145,20 @@ namespace Federator.Core.Report
         public string FoundOnlyByMirror { get; internal set; }
 
         /// <summary>
+        /// The name the workbook and the clash XML write this row under, the one place both
+        /// read it, F132 attempt 5. A clash the test itself found is written under its own
+        /// name. A clash only a mirror found is written as found by the mirror only, with the
+        /// mirror's name, where Clash Detective shows it, because its own name, Clash1 or any
+        /// other, can be a name the kept test's own rows already carry.
+        /// </summary>
+        public string WrittenName()
+        {
+            return string.IsNullOrEmpty(FoundOnlyByMirror)
+                ? Name
+                : Name + ", found by the mirror only in " + FoundOnlyByMirror;
+        }
+
+        /// <summary>
         /// The client's Description column, which is the clash's own description and
         /// reads Hard (Conservative) on every row of the accepted report. Read off the
         /// result, never filled in from the test type here.
@@ -779,6 +793,20 @@ namespace Federator.Core.Report
             TestReport test = new TestReport(tests.Count + 1, name);
             tests.Add(test);
             return test;
+        }
+
+        /// <summary>
+        /// Takes a mirror's test out of the report once its clashes are merged into the test
+        /// kept, F132, Bader's answer D to Q133, so its own results are not reported a second
+        /// time by any writer or count. Called by MirrorMerge and nothing else.
+        /// </summary>
+        internal void TakeOut(TestReport test)
+        {
+            if (!tests.Remove(test))
+            {
+                throw new ArgumentException("The test " + (test == null ? "UNKNOWN" : test.Name)
+                    + " is not in this report, so it cannot be taken out of it.", "test");
+            }
         }
 
         public int CountOf(TestState state)

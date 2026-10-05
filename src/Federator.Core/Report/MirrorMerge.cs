@@ -33,12 +33,22 @@ namespace Federator.Core.Report
     /// kept test with an item not read could match a clash of a mirror, so the log says how
     /// many of those said to be found by a mirror only may be the kept test's own.
     ///
+    /// RAN IS READ OFF THE REPORT, never off a count of calls. A kept test that did not run
+    /// found nothing to compare, so nothing is merged into it and each mirror is reported as
+    /// its own test. A mirror that did not run found UNKNOWN and never 0. Both are read off
+    /// TestReport.State, so AddTo is called once the run has set every test's state.
+    ///
+    /// THE MIRROR'S OWN RESULTS ARE NOT REPORTED A SECOND TIME, Q133 D, and this is the one
+    /// rule that carries it. AddTo takes each mirror that ran out of the group's report, its
+    /// test and its rows, so every writer and every count that walks ClashReport.Tests holds
+    /// each clash once without knowing about mirrors at all.
+    ///
     /// The add-in hands every clash of the kept test and of each mirror, each clash under a
-    /// group on its own and never the group, then calls AddTo once with the kept test's report.
+    /// group on its own and never the group, then calls AddTo once with the group's report.
     /// </summary>
     public sealed class MirrorMerge
     {
-        private readonly HashSet<string> keptPairs = new HashSet<string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, ClashStatus> keptPairs = new Dictionary<string, ClashStatus>(StringComparer.Ordinal);
         private readonly HashSet<string> addedPairs = new HashSet<string>(StringComparer.Ordinal);
         private readonly List<MirrorCounts> mirrors = new List<MirrorCounts>();
         private readonly List<Handed> handed = new List<Handed>();
@@ -46,6 +56,7 @@ namespace Federator.Core.Report
         private int keptNotRead;
         private int held = -1;
         private bool added;
+        private string notMerged;
 
         private MirrorMerge(PlannedClashTest kept, List<MirrorPair> pairs)
         {
@@ -117,8 +128,11 @@ namespace Federator.Core.Report
             get { return Sum(counts => counts.NotRead); }
         }
 
-        /// <summary>One clash of the kept test, by the keys of its two items, a clash under a group included.</summary>
-        public void KeptFound(string firstItem, string secondItem)
+        /// <summary>
+        /// One clash of the kept test, by the keys of its two items, with the status it
+        /// carries, a clash under a group included.
+        /// </summary>
+        public void KeptFound(string firstItem, string secondItem, ClashStatus status)
         {
             StillOpen();
             keptFound++;
@@ -131,7 +145,10 @@ namespace Federator.Core.Report
                 return;
             }
 
-            keptPairs.Add(key);
+            if (!keptPairs.ContainsKey(key))
+            {
+                keptPairs.Add(key, status);
+            }
         }
 
         /// <summary>
@@ -159,81 +176,157 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// Adds every clash only a mirror found to the kept test's report, once, marked with
-        /// that mirror's name, so the report's rows and every count it gives are read off the
-        /// merged list. Called once, with the kept test's own report.
+        /// Merges the clashes of every mirror that ran into the kept test of the group's
+        /// report, once. Each clash only a mirror found is added to the kept test, marked with
+        /// that mirror's name, ClashRow.FoundOnlyByMirror, and each mirror that ran is taken out
+        /// of the report, so its own results are not reported a second time. Nothing is merged
+        /// where the kept test did not run or is not in the report exactly once, and a mirror
+        /// that did not run, or is not in the report exactly once, keeps its place and merges
+        /// nothing. Every one of those is said by Lines.
         /// </summary>
-        public void AddTo(TestReport kept)
+        public void AddTo(ClashReport report)
         {
-            if (kept == null)
+            if (report == null)
             {
-                throw new ArgumentNullException("kept");
-            }
-
-            if (!string.Equals(kept.Name, Kept.Name, StringComparison.Ordinal))
-            {
-                throw new ArgumentException(
-                    "The clashes of the mirrors of " + Kept.Name + " go to " + Kept.Name + ", and " + kept.Name
-                        + " was handed.",
-                    "kept");
+                throw new ArgumentNullException("report");
             }
 
             StillOpen();
             added = true;
 
+            IList<TestReport> keptReports = Named(report, Kept.Name);
+
+            if (keptReports.Count != 1)
+            {
+                notMerged = Kept.Name + " is in the report " + keptReports.Count + (keptReports.Count == 1 ? " time" : " times")
+                    + ", so which one its mirrors' clashes go to is UNKNOWN and nothing is merged";
+                return;
+            }
+
+            TestReport kept = keptReports[0];
+
+            if (kept.State == TestState.Skipped)
+            {
+                notMerged = Kept.Name + " did not run, so nothing is merged into it and each of its mirrors is reported "
+                    + "as its own test";
+                return;
+            }
+
             foreach (MirrorCounts counts in mirrors)
             {
-                HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+                IList<TestReport> mirrorReports = Named(report, counts.Pair.MirrorName);
 
-                foreach (Handed clash in handed)
+                counts.InTheReport = mirrorReports.Count;
+
+                if (mirrorReports.Count != 1 || mirrorReports[0].State == TestState.Skipped)
                 {
-                    if (!ReferenceEquals(clash.Counts, counts))
-                    {
-                        continue;
-                    }
-
-                    if (clash.Key == null)
-                    {
-                        counts.NotRead++;
-                    }
-                    else if (!seen.Add(clash.Key))
-                    {
-                        counts.Repeats++;
-                    }
-                    else if (keptPairs.Contains(clash.Key))
-                    {
-                        counts.Both++;
-                    }
-                    else if (!addedPairs.Add(clash.Key))
-                    {
-                        counts.Earlier++;
-                    }
-                    else
-                    {
-                        clash.Row.FoundOnlyByMirror = counts.Pair.MirrorName;
-                        counts.Only.Add(clash.Row);
-                        kept.Add(clash.Row);
-                    }
+                    continue;
                 }
+
+                counts.Ran = true;
+                Merge(counts, kept);
+                report.TakeOut(mirrorReports[0]);
+            }
+
+            if (kept.State == TestState.Passed && FoundByTheMirrorsOnly > 0)
+            {
+                kept.State = TestState.FoundClashes;
             }
 
             held = kept.RawClashes;
         }
 
+        /// <summary>Every clash one mirror handed, each counted once under the first thing it is.</summary>
+        private void Merge(MirrorCounts counts, TestReport kept)
+        {
+            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (Handed clash in handed)
+            {
+                if (!ReferenceEquals(clash.Counts, counts))
+                {
+                    continue;
+                }
+
+                ClashStatus keptStatus;
+
+                if (clash.Key == null)
+                {
+                    counts.NotRead++;
+                }
+                else if (!seen.Add(clash.Key))
+                {
+                    counts.Repeats++;
+                }
+                else if (keptPairs.TryGetValue(clash.Key, out keptStatus))
+                {
+                    counts.Both++;
+
+                    if (keptStatus != clash.Row.Status)
+                    {
+                        counts.StatusDiffers++;
+                    }
+                }
+                else if (!addedPairs.Add(clash.Key))
+                {
+                    counts.Earlier++;
+                }
+                else
+                {
+                    clash.Row.FoundOnlyByMirror = counts.Pair.MirrorName;
+                    counts.Only.Add(clash.Row);
+                    kept.Add(clash.Row);
+                }
+            }
+        }
+
+        private static IList<TestReport> Named(ClashReport report, string name)
+        {
+            List<TestReport> named = new List<TestReport>();
+
+            foreach (TestReport test in report.Tests)
+            {
+                if (string.Equals(test.Name, name, StringComparison.Ordinal))
+                {
+                    named.Add(test);
+                }
+            }
+
+            return named;
+        }
+
         /// <summary>
-        /// The MIRROR lines for the log, once AddTo has run: for each mirror what it and the
-        /// kept test found, then every clash only that mirror found, each named, his words,
-        /// then once each what could not be compared and what it repeated. Last, what the
-        /// report holds under the kept test.
+        /// The MIRROR lines for the log, once AddTo has run. Where nothing was merged, the one
+        /// line saying why. Otherwise for each mirror that ran what it and the kept test found,
+        /// then every clash only that mirror found, each named, his words, then once each what
+        /// could not be compared, what it repeated, how many clashes both found carry another
+        /// status under it, and that it was taken out of the report. A mirror that did not run
+        /// is one line saying so, UNKNOWN and never 0. Last, what the report holds under the
+        /// kept test.
         /// </summary>
         public IList<string> Lines()
         {
             string kept = Kept.Name;
             List<string> lines = new List<string>();
 
+            if (notMerged != null)
+            {
+                lines.Add(MirrorRule.Prefix + "   " + notMerged);
+                return lines;
+            }
+
             foreach (MirrorCounts counts in mirrors)
             {
                 string mirror = counts.Pair.MirrorName;
+
+                if (added && !counts.Ran)
+                {
+                    lines.Add(MirrorRule.Prefix + "   " + mirror + (counts.InTheReport == 1
+                        ? " did not run, so what it finds is UNKNOWN and nothing of it is merged into " + kept
+                        : " is in the report " + counts.InTheReport + " times, so whether it ran is UNKNOWN and "
+                            + "nothing of it is merged into " + kept));
+                    continue;
+                }
 
                 lines.Add(MirrorRule.Prefix + "   " + kept + " and its mirror " + mirror + ": " + kept + " found "
                     + keptFound + ", the mirror " + counts.Found + ", " + counts.Both + " by both and "
@@ -264,6 +357,20 @@ namespace Federator.Core.Report
                         + (counts.Repeats == 1
                             ? " clash of " + mirror + " repeats a pair of items it already gave, so it is counted once"
                             : " clashes of " + mirror + " repeat a pair of items it already gave, so each is counted once"));
+                }
+
+                if (counts.StatusDiffers > 0)
+                {
+                    lines.Add(MirrorRule.Prefix + "   " + counts.StatusDiffers
+                        + (counts.StatusDiffers == 1 ? " clash both found carries" : " clashes both found carry")
+                        + " another status under " + mirror + " than under " + kept
+                        + ", and the report shows the status under " + kept);
+                }
+
+                if (counts.Ran)
+                {
+                    lines.Add(MirrorRule.Prefix + "   " + mirror
+                        + " is taken out of the report, so its own results are not reported a second time");
                 }
             }
 
@@ -358,6 +465,14 @@ namespace Federator.Core.Report
             internal int Both { get; set; }
 
             internal int Earlier { get; set; }
+
+            internal int StatusDiffers { get; set; }
+
+            /// <summary>Whether the mirror is in the report once and ran, read by AddTo off its state.</summary>
+            internal bool Ran { get; set; }
+
+            /// <summary>How many tests of the mirror's name the report held.</summary>
+            internal int InTheReport { get; set; }
 
             internal List<ClashRow> Only { get; private set; }
         }

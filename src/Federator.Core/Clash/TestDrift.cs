@@ -120,6 +120,12 @@ namespace Federator.Core.Clash
         /// </summary>
         public const double ToleranceEpsilon = 0.0000001;
 
+        /// <summary>
+        /// The words a tolerance difference is named by, so the MIRROR line, which reads this
+        /// comparison too, can put each test's units beside its number.
+        /// </summary>
+        internal const string ToleranceField = "the tolerance";
+
         public static IList<TestDifference> Compare(
             string testName, TestSettings inFile, TestSettings inDocument)
         {
@@ -137,7 +143,7 @@ namespace Federator.Core.Clash
 
             if (Math.Abs(inFile.Tolerance - inDocument.Tolerance) > ToleranceEpsilon)
             {
-                Add(found, testName, "the tolerance",
+                Add(found, testName, ToleranceField,
                     Number(inFile.Tolerance), Number(inDocument.Tolerance));
             }
 
@@ -240,8 +246,7 @@ namespace Federator.Core.Clash
             found.Add(new TestDifference(testName, field, inFile, inDocument));
         }
 
-        /// <summary>A tolerance as the DRIFT block and the MIRROR line both write it.</summary>
-        internal static string Number(double value)
+        private static string Number(double value)
         {
             return value.ToString("0.##########", CultureInfo.InvariantCulture);
         }

@@ -7,9 +7,16 @@ namespace Federator.Core.Clash
         Swapped,
 
         /// <summary>
-        /// Two sets that differ by name carry the same rule list, so the two tests ask the
+        /// Two sets that differ by name ask the same whole question, so the two tests ask the
         /// same question, Bader's answer B to Q121.
         /// </summary>
-        SameRules
+        SameRules,
+
+        /// <summary>
+        /// Two tests saved in the document, read with no XML, one named as the other's mirror:
+        /// its name is the other's with the ending, MirrorSettings. The add-in reads no set off
+        /// a saved test, so the name is the one thing a run with no XML can pair them by.
+        /// </summary>
+        Named
     }
 }

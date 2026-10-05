@@ -11,11 +11,12 @@ namespace Federator.Core.Tests
     /// <summary>
     /// F132, FR-182, Bader's Q114 points 4 to 6 and 8, his answer B to Q121 and his answer D
     /// to Q133. A test whose two sides are another test's two sets swapped, or whose sets
-    /// carry the same rule lists as another test's, is its mirror. Both are created and run,
-    /// the mirror under its name with the ending (mirror), and their clashes are merged into
-    /// the one kept, the higher priority, A before B before C, and where equal the one first
-    /// in the XML. The set and test names in here are sample data and not settings, and
-    /// nothing in the rule names any of them.
+    /// ask the same whole questions as another test's, is its mirror. Both are created and
+    /// run, the mirror under the kept test's name with the ending (mirror), and their clashes
+    /// are merged into the one kept, the higher priority, A before B before C, and where equal
+    /// the one first in the XML. With no XML a saved test pairs by that name only. The set and
+    /// test names in here are sample data and not settings, and nothing in the rule names any
+    /// of them.
     /// </summary>
     [TestFixture]
     public class MirrorRuleTests
@@ -131,6 +132,62 @@ namespace Federator.Core.Tests
         internal static SavedClashTest Saved(string name, string left, string right, int address)
         {
             return new SavedClashTest(name, 1, 0.025, true, false, 1, left, false, 1, right, new[] { address });
+        }
+
+        /// <summary>
+        /// A test saved in the document as the add-in hands it, SavedTests.Read: its name, and
+        /// the two placeholders for its sides, because the add-in reads no set off a saved test.
+        /// </summary>
+        internal static SavedClashTest AsHanded(string name, int address)
+        {
+            return Saved(name, SavedClashTest.LeftAsSaved, SavedClashTest.RightAsSaved, address);
+        }
+
+        /// <summary>The plan of a run with no XML over saved tests of those names, in that order.</summary>
+        internal static ClashTestPlan SavedPlan(params string[] names)
+        {
+            List<SavedClashTest> saved = new List<SavedClashTest>();
+
+            for (int i = 0; i < names.Length; i++)
+            {
+                saved.Add(AsHanded(names[i], i));
+            }
+
+            return ClashTestPlan.FromDocument(saved, "m");
+        }
+
+        /// <summary>
+        /// One selection set at that locator, its findspec and its conditions written as the
+        /// reference file writes them, so a test can change one part of what the set asks.
+        /// </summary>
+        private static string SetXml(string locator, string conditions, string mode = "all", string disjoint = "0", string start = "/")
+        {
+            string[] parts = locator.Split('/');
+            string set = "<selectionset name=\"" + parts[parts.Length - 1] + "\"><findspec mode=\"" + mode
+                + "\" disjoint=\"" + disjoint + "\"><conditions>" + conditions + "</conditions><locator>" + start
+                + "</locator></findspec></selectionset>";
+
+            for (int folder = parts.Length - 2; folder >= 1; folder--)
+            {
+                set = "<viewfolder name=\"" + parts[folder] + "\">" + set + "</viewfolder>";
+            }
+
+            return set;
+        }
+
+        /// <summary>One condition, Category equals or contains that value, with those flags.</summary>
+        private static string Condition(string value, int flags, string test = "equals")
+        {
+            return "<condition test=\"" + test + "\" flags=\"" + flags + "\">"
+                + "<category><name internal=\"LcRevitData_Element\">Element</name></category>"
+                + "<property><name internal=\"" + Category + "\">Category</name></property>"
+                + "<value><data type=\"wstring\">" + value + "</data></value></condition>";
+        }
+
+        private static IList<SelectionSetDefinition> SetsOf(params string[] sets)
+        {
+            return new ExchangeReader().ReadText(
+                "<exchange units=\"ft\"><selectionsets>" + string.Concat(sets) + "</selectionsets></exchange>").Sets;
         }
 
         private static string Text(IList<string> lines)
@@ -288,6 +345,79 @@ namespace Federator.Core.Tests
             Assert.That(rule.Pairs.Count, Is.EqualTo(0));
         }
 
+        // ---------- every part of a set's question, F132 attempt 5 item 4 ----------
+
+        // The breaker's first finding. Two sets of one rule signature that differ in a
+        // condition's flags, or in the set's search, ask two questions. Paired, the clashes of
+        // one would be added to the other as found by the mirror only, so they are not paired.
+        private static int PairsOver(string first, string second)
+        {
+            ClashTestPlan plan = Plan(
+                Test(TelecomVsWalls, Telecom, Walls),
+                Test(TelephoneVsWalls, Telephone, Walls));
+
+            return MirrorRule.Of(
+                plan.Buildable,
+                PriorityMap.NothingPicked(),
+                SetsOf(first, second, SetXml(Walls, Condition("Walls", 0))),
+                new MirrorSettings()).Pairs.Count;
+        }
+
+        [Test]
+        public void TheSameSearchWrittenTwiceIsOnePair()
+        {
+            Assert.That(PairsOver(
+                SetXml(Telecom, Condition("Telephone Devices", 0)),
+                SetXml(Telephone, Condition("Telephone Devices", 0))), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void ANegatedConditionIsAnotherQuestion()
+        {
+            Assert.That(PairsOver(
+                SetXml(Telecom, Condition("Telephone Devices", 0)),
+                SetXml(Telephone, Condition("Telephone Devices", 32))), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void AnOrGroupIsAnotherQuestionThanAnAnd()
+        {
+            Assert.That(PairsOver(
+                SetXml(Telecom, Condition("Devices", 0, "contains") + Condition("Telephone Devices", 0)),
+                SetXml(Telephone, Condition("Devices", 0, "contains") + Condition("Telephone Devices", 64))), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void IgnoringTheCaseOfTheValueIsAnotherQuestion()
+        {
+            Assert.That(PairsOver(
+                SetXml(Telecom, Condition("Telephone Devices", 0)),
+                SetXml(Telephone, Condition("Telephone Devices", 16))), Is.EqualTo(0));
+        }
+
+        // The ignore name bits 1, 2, 4 and 8, the pairs 5 and 10 the names are written with,
+        // and the accent and width bits 128 and 256, docs\history\scan.md, What flags 64 means.
+        [Test]
+        public void EachIgnoreNameBitIsAnotherQuestion()
+        {
+            foreach (int bits in new[] { 1, 2, 4, 5, 8, 10, 128, 256 })
+            {
+                Assert.That(PairsOver(
+                    SetXml(Telecom, Condition("Telephone Devices", 0)),
+                    SetXml(Telephone, Condition("Telephone Devices", bits))), Is.EqualTo(0), "flags " + bits);
+            }
+        }
+
+        [Test]
+        public void TheSetsModeDisjointAndStartAreEachPartOfTheQuestion()
+        {
+            string asked = Condition("Telephone Devices", 0);
+
+            Assert.That(PairsOver(SetXml(Telecom, asked), SetXml(Telephone, asked, mode: "below")), Is.EqualTo(0), "mode");
+            Assert.That(PairsOver(SetXml(Telecom, asked), SetXml(Telephone, asked, disjoint: "1")), Is.EqualTo(0), "disjoint");
+            Assert.That(PairsOver(SetXml(Telecom, asked), SetXml(Telephone, asked, start: "/Model")), Is.EqualTo(0), "start");
+        }
+
         // With no XML no rule list was read, so only the same two sets swapped pair, and the
         // log says so rather than reading as a check of the rule lists.
         [Test]
@@ -322,7 +452,7 @@ namespace Federator.Core.Tests
             Assert.That(LineNaming(rule, TelephoneVsWalls), Is.EqualTo(MirrorRule.Prefix + "   " + TelecomVsWalls
                 + " is kept, " + TelephoneVsWalls + " is its mirror, its sets carry the same rule lists as "
                 + TelecomVsWalls + "'s, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as "
-                + TelephoneVsWalls + " (mirror)"));
+                + TelecomVsWalls + " (mirror)"));
         }
 
         // One rule in one place. The two sets of a test either way round are the key the by
@@ -448,7 +578,7 @@ namespace Federator.Core.Tests
             Assert.That(stillRun.Count, Is.EqualTo(3));
             Assert.That(stillRun[0], Is.EqualTo(DuctsVsColumns));
             Assert.That(stillRun[1], Is.EqualTo("Ducts against Columns again"));
-            Assert.That(stillRun[2], Is.EqualTo(ColumnsVsDucts + " (mirror)"));
+            Assert.That(stillRun[2], Is.EqualTo(DuctsVsColumns + " (mirror)"));
         }
 
         // ---------- what the log says ----------
@@ -487,7 +617,7 @@ namespace Federator.Core.Tests
 
             Assert.That(first, Does.StartWith(MirrorRule.Prefix + " "));
             Assert.That(first, Does.Contain(DuctsVsColumns));
-            Assert.That(first, Does.Contain("the same two sets swapped, created and run as " + ColumnsVsDucts + " (mirror)"));
+            Assert.That(first, Does.Contain("the same two sets swapped, created and run as " + DuctsVsColumns + " (mirror)"));
             Assert.That(second, Does.Contain("BLD-ME-Ducts-vs-BLD-AR-Walls"));
 
             foreach (string line in lines)
@@ -548,7 +678,7 @@ namespace Federator.Core.Tests
             Assert.That(rule.Pairs.Count, Is.EqualTo(10));
             Assert.That(LinesNamingAPair(rule), Is.EqualTo(5));
             Assert.That(all, Does.Contain(
-                "and 5 more pairs alike in priority, test type and tolerance, counted and not listed"));
+                "and 5 more pairs alike in priority and in every test setting compared, counted and not listed"));
             Assert.That(all, Does.Not.Contain("everything"));
         }
 
@@ -560,7 +690,7 @@ namespace Federator.Core.Tests
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(6));
             Assert.That(Text(rule.Lines()), Does.Contain(
-                "and 1 more pair alike in priority, test type and tolerance, counted and not listed"));
+                "and 1 more pair alike in priority and in every test setting compared, counted and not listed"));
         }
 
         // Six duplicates of one test, five named and one counted, in the singular.
@@ -662,7 +792,59 @@ namespace Federator.Core.Tests
 
             string line = LineNaming(Rule(plan.Buildable, PriorityMap.NothingPicked()), ColumnsVsDucts);
 
-            Assert.That(line, Does.Contain("type hard_conservative and hard"));
+            Assert.That(line, Does.Contain("the test type HardConservative and Hard"));
+        }
+
+        /// <summary>One clashtest whose merge composites and side flags are given, the rest as Test writes it.</summary>
+        private static string TestWithFlags(
+            string name, string left, string right, string mergeComposites, string leftSelf, string leftPrimitives,
+            string rightSelf, string rightPrimitives)
+        {
+            return "<clashtest name=\"" + name + "\" test_type=\"hard_conservative\" status=\"new\""
+                + " tolerance=\"" + Mm25 + "\" merge_composites=\"" + mergeComposites + "\">"
+                + "<left><clashselection selfintersect=\"" + leftSelf + "\" primtypes=\"" + leftPrimitives
+                + "\"><locator>" + left + "</locator></clashselection></left>"
+                + "<right><clashselection selfintersect=\"" + rightSelf + "\" primtypes=\"" + rightPrimitives
+                + "\"><locator>" + right + "</locator></clashselection></right>"
+                + "</clashtest>";
+        }
+
+        // F132 attempt 5, the breaker's second finding. Merge composites and each side's self
+        // intersect and primitive types change what a test finds, so a pair that differs in
+        // one is named with both values, by the one comparison the DRIFT block reads,
+        // TestDrift.Compare, and never by a second copy of it.
+        [Test]
+        public void DifferentMergeCompositesNameBoth()
+        {
+            ClashTestPlan plan = Plan(
+                Test(DuctsVsColumns, Ducts, Columns),
+                TestWithFlags(ColumnsVsDucts, Columns, Ducts, "0", "0", "1", "0", "1"));
+
+            string line = LineNaming(Rule(plan.Buildable, PriorityMap.NothingPicked()), ColumnsVsDucts);
+
+            Assert.That(line, Does.Contain("The two differ, the kept test first: merge composites on and off"));
+        }
+
+        // The swap's left side is the kept test's right side, so its flags are compared with
+        // the kept test's right side and named under that side.
+        [Test]
+        public void TheSideFlagsOfASwapAreComparedSideForSide()
+        {
+            ClashTestPlan alike = Plan(
+                TestWithFlags(DuctsVsColumns, Ducts, Columns, "1", "1", "1", "0", "2"),
+                TestWithFlags(ColumnsVsDucts, Columns, Ducts, "1", "0", "2", "1", "1"));
+
+            Assert.That(LineNaming(Rule(alike.Buildable, PriorityMap.NothingPicked()), ColumnsVsDucts),
+                Does.Not.Contain("differ"));
+
+            ClashTestPlan differ = Plan(
+                TestWithFlags(DuctsVsColumns, Ducts, Columns, "1", "1", "1", "0", "2"),
+                TestWithFlags(ColumnsVsDucts, Columns, Ducts, "1", "0", "1", "0", "1"));
+
+            string line = LineNaming(Rule(differ.Buildable, PriorityMap.NothingPicked()), ColumnsVsDucts);
+
+            Assert.That(line, Does.Contain("the left side self intersect on and off"));
+            Assert.That(line, Does.Contain("the right side primitive types 2 and 1"));
         }
 
         [Test]
@@ -679,61 +861,115 @@ namespace Federator.Core.Tests
             Assert.That(line, Does.Not.Contain("differ"));
         }
 
-        // ---------- with no XML, the saved tests ----------
+        // ---------- with no XML, the saved tests, F132 attempt 5 item 1 ----------
 
+        // The run the reviewer named: no XML, and an NWF holding X and X (mirror), each handed
+        // with the two placeholders because the add-in reads no set off a saved test. The pair
+        // is found by the name ending, the saved sides are read as they are, and both are run
+        // as saved, so each clash is counted once.
         [Test]
-        public void TheSavedTestsArePairedTheSameWayInDocumentOrder()
+        public void ANoXmlRunOverXAndXMirrorPairsThemByTheNameEnding()
         {
-            ClashTestPlan plan = ClashTestPlan.FromDocument(
-                new List<SavedClashTest>
-                {
-                    Saved(ColumnsVsDucts, Columns, Ducts, 0),
-                    Saved(DuctsVsColumns, Ducts, Columns, 1)
-                },
-                "m");
+            ClashTestPlan plan = SavedPlan(DuctsVsColumns, DuctsVsColumns + " (mirror)", "BLD-ME-Ducts-vs-BLD-AR-Walls");
 
             MirrorRule rule = SavedRule(plan.Buildable);
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));
-            Assert.That(rule.Pairs[0].Kept.Name, Is.EqualTo(ColumnsVsDucts));
-            Assert.That(rule.Pairs[0].Mirror.Name, Is.EqualTo(DuctsVsColumns));
+            Assert.That(rule.Pairs[0].Kind, Is.EqualTo(MirrorKind.Named));
+            Assert.That(rule.Pairs[0].Kept.Name, Is.EqualTo(DuctsVsColumns));
+            Assert.That(rule.Pairs[0].Mirror.Name, Is.EqualTo(DuctsVsColumns + " (mirror)"));
+            Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(DuctsVsColumns + " (mirror)"));
+            Assert.That(rule.Pairs[0].Mirror.Left.Locator, Is.EqualTo(SavedClashTest.LeftAsSaved),
+                "the saved sides are read as they are");
 
-            string all = Text(rule.Lines());
-            string pair = LineNaming(rule, DuctsVsColumns + " is its mirror");
+            string pair = LineNaming(rule, " is its mirror");
 
-            Assert.That(all, Does.Contain("no XML was picked"));
-            Assert.That(pair, Does.Contain("run as it is saved"));
-            Assert.That(pair, Does.Not.Contain("created"));
+            Assert.That(pair, Is.EqualTo(MirrorRule.Prefix + "   " + DuctsVsColumns + " is kept, " + DuctsVsColumns
+                + " (mirror) is its mirror, named as its mirror by the ending, run as it is saved"));
         }
 
-        // The add-in reads a saved test off the document and not which sets its sides point
-        // at, so it hands every saved test the same two placeholders. Read as sets, every
-        // test would be a duplicate of the first. A placeholder is UNKNOWN, so no test is
-        // paired, merged or named a duplicate, and that is said once with the count.
+        // The mirror comes first in the document and the order changes nothing, because the
+        // name says which is the mirror and no priority or order is read for it.
         [Test]
-        public void ThePlaceholderSidesOfSavedTestsAreUnknownAndSaidOnce()
+        public void TheNameSaysWhichIsTheMirrorWhicheverIsSavedFirst()
         {
-            ClashTestPlan plan = ClashTestPlan.FromDocument(
-                new List<SavedClashTest>
-                {
-                    Saved(DuctsVsColumns, SavedClashTest.LeftAsSaved, SavedClashTest.RightAsSaved, 0),
-                    Saved(ColumnsVsDucts, SavedClashTest.LeftAsSaved, SavedClashTest.RightAsSaved, 1),
-                    Saved("BLD-ME-Ducts-vs-BLD-AR-Walls", SavedClashTest.LeftAsSaved, SavedClashTest.RightAsSaved, 2)
-                },
-                "m");
+            MirrorRule rule = MirrorRule.Of(
+                SavedPlan(DuctsVsColumns + " (mirror)", DuctsVsColumns).Buildable,
+                Priorities(DuctsVsColumns + " (mirror)", "A", DuctsVsColumns, "C"),
+                null,
+                new MirrorSettings());
+
+            Assert.That(rule.Pairs.Count, Is.EqualTo(1));
+            Assert.That(rule.Pairs[0].Kept.Name, Is.EqualTo(DuctsVsColumns));
+            Assert.That(rule.Pairs[0].Mirror.Name, Is.EqualTo(DuctsVsColumns + " (mirror)"));
+        }
+
+        // What an XML run names its mirrors is what a run with no XML after it pairs, the
+        // numbered second mirror included, and the test kept stays the one kept, whatever
+        // order the document holds them in. A role read again off priority and order could
+        // flip between the two runs, the breaker's finding.
+        [Test]
+        public void TheNamesAnXmlRunGivesAreThePairsARunWithNoXmlFinds()
+        {
+            ClashTestPlan xml = Plan(
+                Test(TelephoneVsWalls, Telephone, Walls),
+                Test(WallsVsTelephone, Walls, Telephone),
+                Test(TelecomVsWalls, Telecom, Walls));
+
+            MirrorRule first = Rule(xml.Buildable, Priorities(TelecomVsWalls, "A"));
+            ClashTestPlan named = xml.WithMirrorsNamed(first);
+            List<string> saved = new List<string>();
+
+            foreach (PlannedClashTest test in named.Buildable)
+            {
+                saved.Add(test.Name);
+            }
+
+            MirrorRule again = SavedRule(SavedPlan(saved.ToArray()).Buildable);
+
+            Assert.That(first.Pairs.Count, Is.EqualTo(2));
+            Assert.That(again.Pairs.Count, Is.EqualTo(2));
+
+            for (int i = 0; i < 2; i++)
+            {
+                Assert.That(again.Pairs[i].Kept.Name, Is.EqualTo(first.Pairs[i].Kept.Name));
+                Assert.That(again.Pairs[i].MirrorName, Is.EqualTo(first.Pairs[i].MirrorName));
+            }
+
+            Assert.That(first.Pairs[0].MirrorName, Is.EqualTo(TelecomVsWalls + " (mirror)"));
+            Assert.That(first.Pairs[1].MirrorName, Is.EqualTo(TelecomVsWalls + " 2 (mirror)"));
+        }
+
+        // A saved test whose name carries the ending while no saved test carries the name
+        // before it is a mirror of a test that is gone. It keeps its own clashes and is said,
+        // never merged into a test chosen by a guess.
+        [Test]
+        public void ASavedMirrorOfNoSavedTestKeepsItsClashesAndIsSaid()
+        {
+            MirrorRule rule = SavedRule(SavedPlan("Gone-vs-BLD-AR-Walls (mirror)", DuctsVsColumns).Buildable);
+
+            Assert.That(rule.Pairs.Count, Is.EqualTo(0));
+            Assert.That(rule.Lines(), Does.Contain(MirrorRule.Prefix + "   Gone-vs-BLD-AR-Walls (mirror) carries the "
+                + "ending and no saved test is named Gone-vs-BLD-AR-Walls, so it keeps its own clashes"));
+        }
+
+        // Saved tests under other names pair only by the ending, because the add-in hands no
+        // set for a saved side. That two of them ask one question under other names is
+        // UNKNOWN, and the lines say so once, never a count of tests whose sets were read.
+        [Test]
+        public void SavedTestsUnderOtherNamesAreNotPairedAndTheLinesSayWhy()
+        {
+            ClashTestPlan plan = SavedPlan(DuctsVsColumns, ColumnsVsDucts, "BLD-ME-Ducts-vs-BLD-AR-Walls");
 
             MirrorRule rule = SavedRule(plan.Buildable);
             IList<string> lines = rule.Lines();
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(0));
-            Assert.That(lines.Count, Is.EqualTo(3), "the count, no rule list read, and the one line saying UNKNOWN");
-            Assert.That(lines[0], Is.EqualTo(MirrorRule.Prefix
-                + "   0 pairs among the 0 tests whose two sets were read, so every test keeps its own clashes"));
-            Assert.That(lines[1], Is.EqualTo(MirrorRule.Prefix
-                + "   no rule list of a set was read, so only tests with the same two sets swapped are paired"));
-            Assert.That(lines[2], Is.EqualTo(MirrorRule.Prefix
-                + "   3 of the 3 tests have a side whose set was not read, so whether each is a mirror "
-                + "or a duplicate is UNKNOWN and none of their clashes is merged"));
+            Assert.That(lines.Count, Is.EqualTo(1));
+            Assert.That(lines[0], Is.EqualTo(MirrorRule.Prefix + "   0 pairs among the 3 tests saved in the document, "
+                + "which pair only by name, a test and its name with the ending (mirror), because the sides of a "
+                + "saved test are read as they are saved and never as sets. Whether two saved tests under other "
+                + "names ask one question is UNKNOWN, so each keeps its own clashes"));
         }
 
         // One test whose side was not read among tests whose sides were. The pair is still
@@ -741,16 +977,24 @@ namespace Federator.Core.Tests
         [Test]
         public void OneTestNotReadAmongTestsReadIsSaidOnce()
         {
-            ClashTestPlan plan = ClashTestPlan.FromDocument(
-                new List<SavedClashTest>
-                {
-                    Saved(DuctsVsColumns, Ducts, Columns, 0),
-                    Saved(ColumnsVsDucts, Columns, Ducts, 1),
-                    Saved("BLD-ME-Ducts-vs-BLD-AR-Walls", Ducts, TestSettings.UnknownLocator, 2)
-                },
-                "m");
+            ClashTestPlan plan = Plan(
+                Test(DuctsVsColumns, Ducts, Columns),
+                Test(ColumnsVsDucts, Columns, Ducts));
+            PlannedClashTest first = plan.Buildable[0];
+            PlannedClashTest notRead = new PlannedClashTest(
+                "BLD-ME-Ducts-vs-BLD-AR-Walls",
+                first.TestType,
+                first.TestTypeName,
+                first.ToleranceInFileUnits,
+                first.FileUnits,
+                first.Tolerance,
+                first.DocumentUnits,
+                first.MergeComposites,
+                first.Left,
+                new PlannedClashSide(false, 1, TestSettings.UnknownLocator),
+                2);
 
-            MirrorRule rule = SavedRule(plan.Buildable);
+            MirrorRule rule = Rule(new List<PlannedClashTest> { first, plan.Buildable[1], notRead }, PriorityMap.NothingPicked());
             IList<string> lines = rule.Lines();
             int sayingNotRead = 0;
 
@@ -798,9 +1042,9 @@ namespace Federator.Core.Tests
 
             Assert.That(rule.CoverageNames().Count, Is.EqualTo(2));
             Assert.That(Words(rule, DuctsVsColumns), Is.EqualTo(
-                "kept of a mirrored pair, the clashes only its mirror " + ColumnsVsDucts + " (mirror) finds are added to it"));
+                "kept of a mirrored pair, the clashes only its mirror " + DuctsVsColumns + " (mirror) finds are added to it"));
             Assert.That(Words(rule, ColumnsVsDucts), Is.EqualTo(
-                "a mirror of " + DuctsVsColumns + ", the same two sets swapped, created and run as " + ColumnsVsDucts
+                "a mirror of " + DuctsVsColumns + ", the same two sets swapped, created and run as " + DuctsVsColumns
                     + " (mirror), its clashes merged into " + DuctsVsColumns + "'s"));
         }
 
@@ -813,7 +1057,7 @@ namespace Federator.Core.Tests
 
             Assert.That(Words(Rule(plan.Buildable, PriorityMap.NothingPicked()), TelephoneVsWalls), Is.EqualTo(
                 "a mirror of " + TelecomVsWalls + ", its sets carry the same rule lists as " + TelecomVsWalls
-                    + "'s, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as " + TelephoneVsWalls
+                    + "'s, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as " + TelecomVsWalls
                     + " (mirror), its clashes merged into " + TelecomVsWalls + "'s"));
         }
 
@@ -835,23 +1079,17 @@ namespace Federator.Core.Tests
             Assert.That(names[1].Key, Is.EqualTo(WallsVsTelephone));
             Assert.That(names[2].Key, Is.EqualTo(TelecomVsWalls));
             Assert.That(names[2].Value, Is.EqualTo("kept of 2 mirrored pairs, the clashes only its mirrors "
-                + TelephoneVsWalls + " (mirror) and " + WallsVsTelephone + " (mirror) find are added to it"));
+                + TelecomVsWalls + " (mirror) and " + TelecomVsWalls + " 2 (mirror) find are added to it"));
         }
 
         [Test]
         public void ASavedMirrorIsNamedAsRunAsItIsSaved()
         {
-            ClashTestPlan plan = ClashTestPlan.FromDocument(
-                new List<SavedClashTest>
-                {
-                    Saved(DuctsVsColumns, Ducts, Columns, 0),
-                    Saved(ColumnsVsDucts, Columns, Ducts, 1)
-                },
-                "m");
+            ClashTestPlan plan = SavedPlan(DuctsVsColumns, DuctsVsColumns + " (mirror)");
 
-            Assert.That(Words(SavedRule(plan.Buildable), ColumnsVsDucts), Is.EqualTo(
-                "a mirror of " + DuctsVsColumns + ", the same two sets swapped, run as it is saved, its clashes merged into "
-                    + DuctsVsColumns + "'s"));
+            Assert.That(Words(SavedRule(plan.Buildable), DuctsVsColumns + " (mirror)"), Is.EqualTo(
+                "a mirror of " + DuctsVsColumns + ", named as its mirror by the ending, run as it is saved, its clashes "
+                    + "merged into " + DuctsVsColumns + "'s"));
         }
 
         [Test]
@@ -928,8 +1166,8 @@ namespace Federator.Core.Tests
 
         // The corrected matrix, where Devices no longer asks what Electrical Fixtures asks,
         // F87: one pair of sets of one rule list, so 59 pairs of tests, the 59 measured in
-        // turn5\measure-mirrors.md, and every test is still created and run, 59 of them
-        // under the name with the ending.
+        // docs\history\scan.md 5z-mirrors, and every test is still created and run, 59 of
+        // them under a name with the ending.
         [Test]
         public void TheCorrectedMatrixHolds59PairsByRuleListAndEveryTestStillRuns()
         {

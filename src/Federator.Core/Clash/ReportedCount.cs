@@ -21,7 +21,9 @@ namespace Federator.Core.Clash
     ///
     /// What IS a finding is more rows than clashes. Nothing in this tool produces that,
     /// so the line says so in capitals and leaves it to Bader, which is the rule: the
-    /// tool reports what it noticed and never acts on it.
+    /// tool reports what it noticed and never acts on it. The one exception is a test kept
+    /// of a mirrored pair, F132, whose rows carry the clashes only its mirror found, and
+    /// the line for it names them and counts only the rows past them.
     /// </summary>
     public static class ReportedCount
     {
@@ -34,23 +36,44 @@ namespace Federator.Core.Clash
         /// </summary>
         public static string Line(string testName, int rowsForTheWorkbook, int clashesInTheDocument)
         {
+            return Line(testName, rowsForTheWorkbook, clashesInTheDocument, 0);
+        }
+
+        /// <summary>
+        /// The line for a test kept of a mirrored pair, F132, Bader's answer D to Q133. The
+        /// clashes only its mirrors found are added to it, one row each, and the panel shows
+        /// them under the mirror and not under this test. So the rows are the panel's own
+        /// count plus that many, which this tool explains, and only rows past them are the
+        /// finding nothing explains. The number is MirrorMerge.FoundByTheMirrorsOnly. With
+        /// none it is the line above, word for word.
+        /// </summary>
+        public static string Line(
+            string testName, int rowsForTheWorkbook, int clashesInTheDocument, int foundOnlyByAMirror)
+        {
+            int own = rowsForTheWorkbook - foundOnlyByAMirror;
             string head = Prefix + Words(testName) + "  "
                 + rowsForTheWorkbook + Row(rowsForTheWorkbook) + " for the workbook, "
-                + clashesInTheDocument + Clash(clashesInTheDocument) + " in the document";
+                + clashesInTheDocument + Clash(clashesInTheDocument) + " in the document"
+                + (foundOnlyByAMirror == 0
+                    ? string.Empty
+                    : ", " + foundOnlyByAMirror + (foundOnlyByAMirror == 1
+                        ? " of the rows is a clash only its mirror found"
+                        : " of the rows are clashes only its mirror found")
+                        + ", which the panel shows under the mirror");
 
-            if (rowsForTheWorkbook == clashesInTheDocument)
+            if (own == clashesInTheDocument)
             {
                 return head + ", they agree";
             }
 
-            if (rowsForTheWorkbook < clashesInTheDocument)
+            if (own < clashesInTheDocument)
             {
                 return head + ". The difference is the result groups, which are one row each "
                     + "in the workbook and one row each in the panel, carrying the clashes inside them";
             }
 
             return head + ". THERE ARE MORE ROWS THAN CLASHES, by "
-                + (rowsForTheWorkbook - clashesInTheDocument)
+                + (own - clashesInTheDocument)
                 + ", and nothing in this tool explains that. The workbook will not match the panel";
         }
 

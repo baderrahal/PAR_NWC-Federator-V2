@@ -512,7 +512,7 @@ namespace Federator.Core.Report
             WriteImageCell(sheet, sheet.Cell(row, ColumnImage), clash);
             sheet.Range(row, ColumnImage, row, ColumnImage + 1).Merge();
 
-            sheet.Cell(row, ColumnClashName).Value = clash.Name;
+            sheet.Cell(row, ColumnClashName).Value = clash.WrittenName();
             sheet.Range(row, ColumnClashName, row, ColumnClashName + 1).Merge();
 
             sheet.Cell(row, ColumnStatus).Value = clash.Status.ToString();

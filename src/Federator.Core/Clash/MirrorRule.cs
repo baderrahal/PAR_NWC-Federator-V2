@@ -13,16 +13,25 @@ namespace Federator.Core.Clash
     ///
     /// WHAT A MIRROR IS. A test that asks another test's question: its two sides are the
     /// same two sets swapped, such as Ducts against Columns and Columns against Ducts, or
-    /// its sets carry the same rule lists as the other test's, in either order, Q121 B. Two
-    /// sets carry the same rule list where SetWarnings.FindIdentical finds them alike, the
-    /// HEALTH block's own rule, so a rule list is compared one way in one place. The sets are
-    /// the picked XML's. With no XML they were not read, and only the same two sets swapped
-    /// pair, which the log says. A side is matched by its locator, Ordinal and never trimmed,
-    /// because two set names in the reference file end in a space.
+    /// its sets ask the same whole questions as the other test's, in either order, Q121 B.
+    /// Two sets ask one whole question where their findspec mode, disjoint and start, and
+    /// every condition's rule and flags, are the same, SelectionSetDefinition.WholeQuestion,
+    /// grouped by SetWarnings.FindIdentical, the HEALTH block's own grouping. The flags are
+    /// whole, the negation, the Or group, the ignore case and the ignore name bits, because
+    /// the merge acts on this comparison. The sets are the picked XML's. A side is matched by
+    /// its locator, Ordinal and never trimmed, because two set names in the reference file
+    /// end in a space.
+    ///
+    /// WITH NO XML, BY NAME ONLY. The add-in reads no set off a saved test and hands the two
+    /// placeholders SavedClashTest.LeftAsSaved and RightAsSaved, so a saved test pairs only
+    /// by its name: a saved test named as another's with the ending, MirrorSettings
+    /// .KeptNameOf, is that test's mirror, run as it is saved, its sides read as they are.
+    /// That is the name an XML run gives it, so the run after finds the pair the run before
+    /// made, and the name says which is kept, never a priority or an order read again.
     ///
     /// WHAT IS DONE WITH ONE, Q133 D. Both tests of a pair are created and run. The mirror is
-    /// created under its XML name with the ending of MirrorSettings, and stays in Clash
-    /// Detective. Their clashes are merged by the pair of items into the one kept,
+    /// created under the kept test's name with the ending of MirrorSettings, and stays in
+    /// Clash Detective. Their clashes are merged by the pair of items into the one kept,
     /// Report.MirrorMerge, so the report, the views and every count hold each clash once,
     /// and a clash only the mirror finds is added to the kept test and named as found by the
     /// mirror only. Probe P1 measured that a swap can find more, docs\history\scan.md 5z-k on
@@ -30,8 +39,7 @@ namespace Federator.Core.Clash
     ///
     /// WHICH ONE IS KEPT, Q114 point 6. The higher priority off the priority file, A before
     /// B before C before none, and where equal the one first in the XML. With no XML the
-    /// tests saved in the document are read in the order they are saved, and the log says
-    /// that order stands for the XML's.
+    /// one whose name carries no ending.
     ///
     /// WHAT IS NOT A MIRROR. A test with one set on both sides, or two sets of one rule list,
     /// is its own swap. A second test with the same two sets in the kept test's own order is
@@ -48,24 +56,33 @@ namespace Federator.Core.Clash
         /// <summary>The word that begins every line this rule writes.</summary>
         public const string Prefix = "MIRROR";
 
-        private readonly List<PlannedClashTest> tests;
+        private readonly int fromTheXml;
+        private readonly int saved;
         private readonly int notRead;
         private readonly bool rulesRead;
+        private readonly string ending;
         private readonly List<MirrorPair> pairs;
         private readonly List<KeyValuePair<PlannedClashTest, PlannedClashTest>> duplicates;
+        private readonly List<string> noTestKept;
 
         private MirrorRule(
-            List<PlannedClashTest> tests,
+            int fromTheXml,
+            int saved,
             int notRead,
             bool rulesRead,
+            string ending,
             List<MirrorPair> pairs,
-            List<KeyValuePair<PlannedClashTest, PlannedClashTest>> duplicates)
+            List<KeyValuePair<PlannedClashTest, PlannedClashTest>> duplicates,
+            List<string> noTestKept)
         {
-            this.tests = tests;
+            this.fromTheXml = fromTheXml;
+            this.saved = saved;
             this.notRead = notRead;
             this.rulesRead = rulesRead;
+            this.ending = ending;
             this.pairs = pairs;
             this.duplicates = duplicates;
+            this.noTestKept = noTestKept;
             Pairs = new ReadOnlyCollection<MirrorPair>(pairs);
         }
 
@@ -76,8 +93,8 @@ namespace Federator.Core.Clash
         /// The rule over tests in the XML's order, or in the document's where no XML was
         /// picked. The priority file is the one the run picked, NothingPicked where none was,
         /// and then every pair keeps the one first in the XML. The sets are the picked XML's,
-        /// ExchangeDocument.Sets, whose rule lists pair two tests of two sets alike, or null
-        /// where no XML was picked.
+        /// ExchangeDocument.Sets, whose whole questions pair two tests of two sets alike, or
+        /// null where no XML was picked. A test read off the document pairs by its name only.
         /// </summary>
         public static MirrorRule Of(
             IEnumerable<PlannedClashTest> tests,
@@ -96,7 +113,8 @@ namespace Federator.Core.Clash
             }
 
             SetIdentity identity = new SetIdentity(sets);
-            List<PlannedClashTest> all = new List<PlannedClashTest>();
+            List<PlannedClashTest> fromTheXml = new List<PlannedClashTest>();
+            List<PlannedClashTest> saved = new List<PlannedClashTest>();
             HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);
             int notRead = 0;
             List<string> keyOrder = new List<string>();
@@ -112,8 +130,15 @@ namespace Federator.Core.Clash
                         continue;
                     }
 
-                    all.Add(test);
                     names.Add(test.Name ?? string.Empty);
+
+                    if (test.IsFromDocument)
+                    {
+                        saved.Add(test);
+                        continue;
+                    }
+
+                    fromTheXml.Add(test);
 
                     if (!BothSidesRead(test))
                     {
@@ -164,10 +189,9 @@ namespace Federator.Core.Clash
                     }
 
                     bool swapped = Same(other.Left, kept.Right) && Same(other.Right, kept.Left);
-                    string wanted = other.IsFromDocument ? other.Name : settings.NameOf(other.Name);
-                    bool endingTaken = !string.Equals(wanted, other.Name, StringComparison.Ordinal)
-                        && names.Contains(wanted);
+                    string name = settings.NameFor(kept.Name, names);
 
+                    names.Add(name);
                     pairs.Add(new MirrorPair(
                         kept,
                         priorities.Of(kept.Name),
@@ -175,66 +199,148 @@ namespace Federator.Core.Clash
                         priorities.Of(other.Name),
                         swapped ? MirrorKind.Swapped : MirrorKind.SameRules,
                         swapped ? null : identity.Alike(other, kept),
-                        endingTaken ? other.Name : wanted,
-                        endingTaken));
+                        name,
+                        swapped || identity.SidesSwapped(other, kept)));
                 }
             }
 
-            return new MirrorRule(all, notRead, identity.RulesRead, pairs, duplicates);
+            List<string> noTestKept = new List<string>();
+            PairByName(saved, priorities, settings, pairs, noTestKept);
+
+            return new MirrorRule(
+                fromTheXml.Count, saved.Count, notRead, identity.RulesRead, settings.Ending, pairs, duplicates, noTestKept);
         }
 
         /// <summary>
-        /// The MIRROR lines for the log. One line counting the pairs among the tests whose
-        /// two sets were read, always, because a missing line reads as a check that did not
-        /// run and a count of pairs alone reads as a check of every test. Then once, where
-        /// no rule list was read, that only the same two sets swapped pair. Then once, where
-        /// any test has a side not read, how many, said UNKNOWN. Then every pair whose two
-        /// tests differ in priority, type or tolerance, each with both values, because Bader
-        /// asked for both in the log. Then the pairs alike in those three, the only three
-        /// compared and so never said to be alike in everything, five named and the rest
-        /// counted, the rule every repeated line here follows. Then the duplicates the same way.
+        /// The pairs among the tests saved in the document, read with no XML, by name only. A
+        /// saved test named as another with the ending is its mirror, in the order the mirrors
+        /// are saved. A saved test that is itself a mirror is never a test kept, so a chain of
+        /// endings is not followed. A name with the ending whose test kept is not saved is
+        /// said and keeps its own clashes, never merged into a test chosen by a guess.
+        /// </summary>
+        private static void PairByName(
+            List<PlannedClashTest> saved,
+            PriorityMap priorities,
+            MirrorSettings settings,
+            List<MirrorPair> pairs,
+            List<string> noTestKept)
+        {
+            HashSet<string> savedNames = new HashSet<string>(StringComparer.Ordinal);
+            Dictionary<string, PlannedClashTest> first = new Dictionary<string, PlannedClashTest>(StringComparer.Ordinal);
+
+            foreach (PlannedClashTest test in saved)
+            {
+                string name = test.Name ?? string.Empty;
+
+                savedNames.Add(name);
+
+                if (!first.ContainsKey(name))
+                {
+                    first.Add(name, test);
+                }
+            }
+
+            HashSet<string> mayBeKept = new HashSet<string>(savedNames, StringComparer.Ordinal);
+
+            foreach (PlannedClashTest test in saved)
+            {
+                if (settings.KeptNameOf(test.Name, savedNames) != null)
+                {
+                    mayBeKept.Remove(test.Name);
+                }
+            }
+
+            foreach (PlannedClashTest test in saved)
+            {
+                if (!settings.CarriesTheEnding(test.Name))
+                {
+                    continue;
+                }
+
+                string keptName = settings.KeptNameOf(test.Name, mayBeKept);
+
+                if (keptName == null)
+                {
+                    string mirrorItself = settings.KeptNameOf(test.Name, savedNames);
+
+                    noTestKept.Add(Prefix + "   " + test.Name + (mirrorItself == null
+                        ? " carries the ending and no saved test is named "
+                            + test.Name.Substring(0, test.Name.Length - settings.Ending.Length - 1)
+                        : " carries the ending, and " + mirrorItself + ", the test before it, is a mirror itself")
+                        + ", so it keeps its own clashes");
+                    continue;
+                }
+
+                PlannedClashTest kept = first[keptName];
+
+                pairs.Add(new MirrorPair(
+                    kept, priorities.Of(kept.Name), test, ClashPriority.None, MirrorKind.Named, null, test.Name, false));
+            }
+        }
+
+        /// <summary>
+        /// The MIRROR lines for the log. One line counting the pairs among the XML's tests whose
+        /// two sets were read, always where the XML's tests were handed, because a missing line
+        /// reads as a check that did not run and a count of pairs alone reads as a check of
+        /// every test. Then once, where no rule list was read, that only the same two sets
+        /// swapped pair. Then, where tests saved in the document were handed, one line counting
+        /// the pairs found by name and saying that saved tests under other names are UNKNOWN.
+        /// Then once, where any test has a side not read, how many, said UNKNOWN. Then each
+        /// saved test named as a mirror of no saved test. Then every pair whose two tests
+        /// differ in priority or in a setting TestDrift compares, each with both values,
+        /// because Bader asked for both in the log. Then the pairs alike in those, never said
+        /// to be alike in everything, five named and the rest counted, the rule every repeated
+        /// line here follows. Then the duplicates the same way.
         /// </summary>
         public IList<string> Lines()
         {
             List<string> lines = new List<string>();
-            int read = tests.Count - notRead;
-            string among = " among the " + read + (read == 1 ? " test" : " tests") + " whose two sets were read";
+            int swapped = OfKind(MirrorKind.Swapped);
+            int sameRules = OfKind(MirrorKind.SameRules);
+            int named = OfKind(MirrorKind.Named);
 
-            if (pairs.Count == 0)
+            if (fromTheXml > 0 || saved == 0)
             {
-                lines.Add(Prefix + "   0 pairs" + among + ", so every test keeps its own clashes");
-            }
-            else
-            {
-                int swapped = 0;
+                int read = fromTheXml - notRead;
+                string among = " among the " + read + (read == 1 ? " test" : " tests") + " whose two sets were read";
 
-                foreach (MirrorPair pair in pairs)
+                if (swapped + sameRules == 0)
                 {
-                    if (pair.Kind == MirrorKind.Swapped)
-                    {
-                        swapped++;
-                    }
+                    lines.Add(Prefix + "   0 pairs" + among + ", so every test keeps its own clashes");
+                }
+                else
+                {
+                    lines.Add(Prefix + "   " + (swapped + sameRules) + (swapped + sameRules == 1 ? " pair" : " pairs")
+                        + " of tests that ask the same question" + among + ", " + swapped
+                        + " with the same two sets swapped and " + sameRules + " whose sets carry the same rule lists. "
+                        + "Both tests of each pair are created and run, and their clashes are merged by the pair of "
+                        + "items into the one kept, the higher priority, A before B before C before no priority, "
+                        + "and where equal the one first in the XML");
                 }
 
-                int sameRules = pairs.Count - swapped;
-
-                lines.Add(Prefix + "   " + pairs.Count + (pairs.Count == 1 ? " pair" : " pairs")
-                    + " of tests that ask the same question" + among + ", " + swapped
-                    + " with the same two sets swapped and " + sameRules + " whose sets carry the same rule lists. "
-                    + "Both tests of each pair are created and run, and their clashes are merged by the pair of "
-                    + "items into the one kept, the higher priority, A before B before C before no priority, "
-                    + "and where equal the one first in the XML");
+                if (!rulesRead)
+                {
+                    lines.Add(Prefix + "   no rule list of a set was read, so only tests with the same two sets "
+                        + "swapped are paired");
+                }
             }
 
-            if (!rulesRead)
+            if (saved > 0)
             {
-                lines.Add(Prefix + "   no rule list of a set was read, so only tests with the same two sets "
-                    + "swapped are paired");
+                lines.Add(Prefix + "   " + named + (named == 1 ? " pair" : " pairs") + " among the " + saved
+                    + (saved == 1 ? " test" : " tests") + " saved in the document, which pair only by name, a test "
+                    + "and its name with the ending " + ending + ", because the sides of a saved test are read as "
+                    + "they are saved and never as sets. Whether two saved tests under other names ask one question "
+                    + "is UNKNOWN, so each keeps its own clashes"
+                    + (named == 0
+                        ? string.Empty
+                        : ". Both tests of each pair are run as they are saved, and their clashes are merged by the "
+                            + "pair of items into the one without the ending"));
             }
 
             if (notRead > 0)
             {
-                lines.Add(Prefix + "   " + notRead + " of the " + tests.Count
+                lines.Add(Prefix + "   " + notRead + " of the " + fromTheXml
                     + (notRead == 1
                         ? " tests has a side whose set was not read, so whether it is a mirror or a duplicate "
                             + "is UNKNOWN and its clashes are not merged"
@@ -242,14 +348,11 @@ namespace Federator.Core.Clash
                             + "is UNKNOWN and none of their clashes is merged"));
             }
 
+            AddFive(lines, noTestKept, "saved test named as a mirror of no saved test",
+                "saved tests named as a mirror of no saved test", ", each keeps its own clashes, counted and not listed");
+
             if (pairs.Count > 0)
             {
-                if (pairs[0].Mirror.IsFromDocument)
-                {
-                    lines.Add(Prefix + "   no XML was picked, so the order the tests are saved in the document "
-                        + "stands for the order of the XML");
-                }
-
                 List<string> alike = new List<string>();
 
                 foreach (MirrorPair pair in pairs)
@@ -264,7 +367,7 @@ namespace Federator.Core.Clash
                     }
                 }
 
-                AddFive(lines, alike, "pair", "pairs", " alike in priority, test type and tolerance, "
+                AddFive(lines, alike, "pair", "pairs", " alike in priority and in every test setting compared, "
                     + "counted and not listed");
             }
 
@@ -329,6 +432,21 @@ namespace Federator.Core.Clash
             }
 
             return names;
+        }
+
+        private int OfKind(MirrorKind kind)
+        {
+            int count = 0;
+
+            foreach (MirrorPair pair in pairs)
+            {
+                if (pair.Kind == kind)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         /// <summary>Names joined with commas and a last and.</summary>
@@ -448,7 +566,7 @@ namespace Federator.Core.Clash
                     }
                 }
 
-                foreach (IdenticalSets alike in SetWarnings.FindIdentical(all))
+                foreach (IdenticalSets alike in SetWarnings.FindIdentical(all, set => set.WholeQuestion))
                 {
                     foreach (SelectionSetDefinition set in alike.Sets)
                     {
@@ -492,8 +610,7 @@ namespace Federator.Core.Clash
             /// </summary>
             internal string Alike(PlannedClashTest mirror, PlannedClashTest kept)
             {
-                bool straight = string.Equals(
-                    Standing(mirror.Left.Locator), Standing(kept.Left.Locator), StringComparison.Ordinal);
+                bool straight = !SidesSwapped(mirror, kept);
                 PlannedClashSide keptForLeft = straight ? kept.Left : kept.Right;
                 PlannedClashSide keptForRight = straight ? kept.Right : kept.Left;
                 List<string> said = new List<string>();
@@ -501,6 +618,16 @@ namespace Federator.Core.Clash
                 Say(said, mirror.Left, keptForLeft);
                 Say(said, mirror.Right, keptForRight);
                 return string.Join(" and ", said.ToArray());
+            }
+
+            /// <summary>
+            /// Whether the mirror's left side stands for the kept test's right side, read by
+            /// the sets each stands for, so its flags are compared side for side.
+            /// </summary>
+            internal bool SidesSwapped(PlannedClashTest mirror, PlannedClashTest kept)
+            {
+                return !string.Equals(
+                    Standing(mirror.Left.Locator), Standing(kept.Left.Locator), StringComparison.Ordinal);
             }
 
             private void Say(List<string> said, PlannedClashSide mirror, PlannedClashSide kept)
