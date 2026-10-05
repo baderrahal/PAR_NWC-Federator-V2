@@ -390,4 +390,6 @@ Q127,how RESULT counts the tests of the XML,F127,2a,question,merged,118,none,202
 Q128,what the C04 baseline run did not put back,none,none,question,merged,118,none,2026-10-05
 Q131,the default of the viewpoints box,"F114, F136",2b and before any test run,question,merged,118,none,2026-10-05
 Q133,a mirrored test can find more than the one it mirrors,F132,2a,question,merged,121,none,2026-10-05
-Q134,code that waits for F114 by Bader's order,none,none,question,waiting for Bader,none,none,2026-10-05
+Q134,code that waits for F114 by Bader's order,none,none,question,merged,124,none,2026-10-05
+FR-196,loop runs write no autosave and copy his folder once,none,none,Bader's decision,in progress,"none, branch fix-F138",none,2026-10-05
+Q135,too many autosave copies,none,none,Bader's request,in progress,"none, branch fix-F138",none,2026-10-05

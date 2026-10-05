@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 392 rows: open 151, in progress 52, in review 0, merged 139, proven by a run 22, waiting for Bader 23, dropped 5
-- By wave: 1 19, 2a 28, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before any test run 3, before the test of wave 1 4, before the waves 114, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 35, outside the waves 2
-- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, and 39 FR items
-- Waits for Bader, 23 rows: F18, Q25, Q27, Q28, Q29, Q30, Q31, Q35, Q36, Q37, Q38, Q39, Q40, Q45, Q46, Q47, Q49, Q50, Q51, Q76, Q77, Q78, Q134
+- By status, of 394 rows: open 151, in progress 54, in review 0, merged 140, proven by a run 22, waiting for Bader 22, dropped 5
+- By wave: 1 19, 2a 28, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before any test run 3, before the test of wave 1 4, before the waves 114, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 37, outside the waves 2
+- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, and 40 FR items
+- Waits for Bader, 22 rows: F18, Q25, Q27, Q28, Q29, Q30, Q31, Q35, Q36, Q37, Q38, Q39, Q40, Q45, Q46, Q47, Q49, Q50, Q51, Q76, Q77, Q78
 
 ## Wave 1
 
@@ -480,7 +480,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q110 | a skipped group and its tests | none | question | merged | 118 | none | 2026-10-05 |
 | Q124 | the baseline of 1A04PK takes a day or more | none | question | merged | 118 | none | 2026-10-05 |
 | Q128 | what the C04 baseline run did not put back | none | question | merged | 118 | none | 2026-10-05 |
-| Q134 | code that waits for F114 by Bader's order | none | question | waiting for Bader | none | none | 2026-10-05 |
+| Q134 | code that waits for F114 by Bader's order | none | question | merged | 124 | none | 2026-10-05 |
+| FR-196 | loop runs write no autosave and copy his folder once | none | Bader's decision | in progress | none, branch fix-F138 | none | 2026-10-05 |
+| Q135 | too many autosave copies | none | Bader's request | in progress | none, branch fix-F138 | none | 2026-10-05 |
 
 ## outside the waves
 
