@@ -198,8 +198,8 @@ turn5\f116f-diffstat.txt. Its branch and worktree folder are removed, while git'
 be deleted, Permission denied, turn5\precommit-records-15.txt. ALL OF WAVE 1's PRODUCT
 CODE IS NOW ON MAIN, F113, F112 and F116, with F125 for the driver. What the test of wave 1 waited
 for first, Navisworks free of the C04 baseline, came at 06:38, see the paragraph below. It then
-waits for main to be installed in place, F126's merge for the rule-off run, its harness having
-run in that gap, 52 passed and 0 failed on the branch, turn5\f126-proof\prove-f126-after.txt
+waits for main to be installed in place, F126 having merged as PR 112 for the rule-off run, its
+harness having run in that gap against its stand-in window, 52 passed and 0 failed on the branch, turn5\f126-proof\prove-f126-after.txt
 line 312, and the list copied from exchange\ beside the XML
 in the run set's own copy.
 THE BASELINE, ITEM 1 ON C04, ENDED HUNG. Started at 21:16:46 by turn4\start-run.ps1 as run.ps1 pid
@@ -217,19 +217,35 @@ with the backup kept in runs\04\item1-C04\settings and his autosaves held in aut
 asks him, the loop going on with B, leave it as it is. M5: 14 keys and 2765 files listed in m5.txt,
 which stays out of the evidence, and left.
 The evidence is masked into steps\runs\04\item1-C04 with no copy differing,
-turn5\mask-run04-item1-C04.txt. The loop's Navisworks was gone at 06:36:58 and no Roamer has run since 06:38:02, the waiter's lines
-556 to 561 and the lead's read of 0 at 06:53:29, turn5\f126-proof\roamer-reads-harness.txt.
+turn5\mask-run04-item1-C04.txt. The loop's Navisworks was gone at 06:36:58 and no Roamer ran from 06:38:02 to the lead's read of 0
+at 06:58:45, the waiter's lines 556 to 561 and the lead's reads of 0 at 06:53:29 and 06:58:45,
+turn5\f126-proof\roamer-reads-harness.txt.
 F126 MERGED as PR 112, 15bdbec, at 08:23:04 on 2026-10-05, green in Actions on its last commit
-5ede455, run 37267277611, turn5\actions-reads-pr112.txt. The lead ran its harness in that first
-gap: 52 passed and 0 failed on the branch at f9834e4, 8 passed and 41 failed of 49 on main's tools,
+5ede455, run 37267277611, turn5\actions-reads-pr112.txt. The lead ran its harness between those two
+reads of 0, against its stand-in window in turn5\f126-proof\standin-bin and not the tool's real
+window: 52 passed and 0 failed on the branch at f9834e4, 8 passed and 41 failed of 49 on main's
+tools, four of the 8 only because the old driver failed at parameter binding,
 Get-Process Roamer 0 before and after, turn5\f126-proof\prove-f126-after.txt, prove-f126-before.txt
 and roamer-reads-harness.txt. Its reviewer and breaker approved under Q93 with nothing blocking,
-turn5\f126-read-review.txt and f126-read-break.txt, and two claim-checks made its records true, the
-last turn5\f126-proof\read-claims-16b5eb7.txt. The driver can now untick a box named by its
-AutomationId before Run, for the run with F112's rule off in the test of wave 1. Its branch and
-worktree folder are removed. THE WEEKLY BASELINE ON C02, item 2, started at 07:26:06 from wt-base,
-Roamer reading 0 at 07:26:05, turn4\roamer-reads.txt, and at 08:23 had run its 528 saved tests with
-2939 clashes, the same count as item 1, and was in its VIEWS step.
+turn5\f126-read-review.txt and f126-read-break.txt, and two claim-checks found points the lead
+corrected, the second turn5\f126-proof\read-claims-16b5eb7.txt, the corrections not read again. The driver can now untick a box named by its
+AutomationId before Run, for the run with F112's rule off in the test of wave 1, the first time
+it meets the tool's real box, which the installed e4484d15 does not have until main is installed.
+Its branch and worktree folder are removed, while git's own entry for the worktree could not be
+deleted, Permission denied, turn5\precommit-records-17.txt. THE WEEKLY BASELINE ON C02, item 2, started at 07:26:06 from wt-base,
+Roamer reading 0 at 07:26:05, turn4\roamer-reads.txt, and its clash step read 528 of 528 tests,
+527 run and 0 skipped, with 2939 clashes at 08:21:31, the same count as item 1 on C02, its census
+before VIEWS reading 2939 results at 08:22:25, and was in its VIEWS step from 08:23:01,
+turn4\run04-item2-C02-console.txt lines 549, 555 and 561. Which test was neither run nor skipped
+is UNKNOWN until its log is read. At 08:39:40 its log had been still for 996 s while its
+Navisworks used 316.797 s of processor in the last 300 s, so it is not hung by Q83.
+PR 113 MERGED at 08:37:01 as a069259 WITH ITS FIRST COMMIT 7bb7008 ALONE. Its claim-checker found
+the numbers right and eight points to make plainer, the stand-in window chief among them. The
+lead's edit for them stopped at its first match, and the commands after it went on, wrote a note
+in the pull request calling them made, and merged it. The note was corrected on the merged pull
+request at about 08:42, turn5\pr-records-17.md, and the eight points are made in the record after
+it. The lead's records commands now stop at their first failure and merge only in a call of their
+own after the commit is read back.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -409,7 +425,8 @@ and planned in the turn 5 entry of steps\log.md headed with them.
 2. Wave 1: F125's second pass and F126, the driver unticking a named box, each read under Q93
    and merged. F125 MERGED as PR 102, F112 MERGED as PR 106 and F116 MERGED as PR 98 with this
    project's list in exchange\, Bader told at about 04:27. F126's harness ran in the first gap
-   on 2026-10-05, 52 passed and 0 failed on the branch, and its pull request 112 waits to merge
+   on 2026-10-05 against its stand-in window, 52 passed and 0 failed on the branch, and F126
+   MERGED as PR 112 at 08:23:04
 3. The test of wave 1: main installed in place as on 2026-10-01 and its stamp read back, both
    buildings run, item 1 and item 2, and a building whose models are off the shared coordinates
    run once more with the rule switched off by its tick box. Compared with the baseline through
@@ -430,7 +447,11 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    measure-teams.md and measure-views.md, then a design of the tree by a panel of plans. Wave 3 in
    two halves, 3a F129 start from an NWF with F120 harvest and pictures and F109 install, 3b F130
    the Shift range with F119 run log and RESULT. Then waves 4 and 5, as steps\fix-round.md lists
-   them. Every wave test from wave 2 on shows the Coverage sheet
+   them. Every wave test from wave 2 on shows the Coverage sheet.
+   F115 and F131 attempt 1 built on their branches with 1956 Core tests passed each, and their
+   readers asked for changes, F115 one blocking point from each reader, F131 three from each with
+   one found by both, turn5\wave2-f115-f131-result.json. Attempt 2 of both is with developers
+   from about 08:50 on 2026-10-05
 Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes. The
 keep-awake is checked every 30 minutes.
 
