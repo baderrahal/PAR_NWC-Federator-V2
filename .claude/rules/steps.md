@@ -18,8 +18,10 @@ paths:
   finishes as in review with PR UNKNOWN, since the number is not known before the pull
   request opens. The lead sets them to merged with the pull request's number on the branch,
   and runs make-tracker.ps1, before it merges, so a row reaches main as merged with its
-  number. A pull request that adds an FR item to steps\fix-round.md adds its row. Status
-  lives in the tracker, and .claude\rules\tracker.md says how a row is written
+  number. A pull request that adds an FR item to steps\fix-round.md adds its row, and one
+  that writes a new question or Bader's answer under one in steps\02_questions.md adds or
+  sets the question's row, in the same way. Status lives in the tracker, and
+  .claude\rules\tracker.md says how a row is written
 - steps\02_questions.md holds every question put to Bader, numbered once and never
   renumbered, with his answer under it and the fix that carried it out. A new question
   goes after the last one
