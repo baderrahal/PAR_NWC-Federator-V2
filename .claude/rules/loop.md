@@ -152,6 +152,10 @@ and nothing is fixed until a real run on real files shows it fixed.
   also refused while any Roamer runs, whatever its command line and whoever started it,
   read before the backup and again just before the start, and the code keeps that rule,
   not a person, run.ps1 at its checks 6 and 18. docs\history\scan.md 5z-d
+- NO RECORD OR QUESTION ABOUT AUTOSAVES unless something of Bader's actually changed, his word of 2026-10-05,
+  Q135. Once F138, FR-196, merges, Auto-Save is switched off for every loop start, and once its second part
+  merges his AutoSave folder has one backup only, autosave-backup, compared by names, sizes and times before
+  and after each run. Until then the rule below stands
 - His AutoSave folder, %APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave, is where the
   loop's Navisworks may autosave under his document names. Before every start each file of
   it that %LOCALAPPDATA%\NwcFederatorLoop\autosave-backup does not already hold, by name and
