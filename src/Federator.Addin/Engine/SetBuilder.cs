@@ -726,10 +726,12 @@ namespace Federator.Addin.Engine
                             outcome.AddEmpty(EmptySets.Why(planned.Path, asking, worksets));
                         }
 
+                        // Every present set, so one whose search could not be read is counted
+                        // and the lines never claim it asks what the file asks, FR-021.
+                        outcome.AddDrift(drift, rebuilt);
+
                         if (drift.Drifted)
                         {
-                            outcome.AddDrift(drift, rebuilt);
-
                             foreach (string line in drift.Lines())
                             {
                                 log.Line("SET      " + line);

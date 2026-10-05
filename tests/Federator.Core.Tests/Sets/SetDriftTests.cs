@@ -417,6 +417,49 @@ namespace Federator.Core.Tests.Sets
         }
 
         /// <summary>
+        /// A SET WHOSE SEARCH COULD NOT BE READ IS NOT ONE THAT ASKS WHAT THE FILE ASKS, FR-021.
+        /// The block said every set in the document asks what the file asks whenever nothing
+        /// drifted, because the outcome kept no count of the sets it could not read.
+        /// </summary>
+        [Test]
+        public void ThePresentSetsBlockSaysHowManyCouldNotBeReadAndClaimsNoMatch()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent("a/BLD-ME-Ducts", "BLD-ME-Ducts", 1, 0);
+            outcome.AddAlreadyPresent("a/BLD-AR-Floors", "BLD-AR-Floors", 1, 4);
+            outcome.AddDrift(
+                SetDrift.Compare(null, Planned("a/BLD-ME-Ducts", Wants(Workset, ConditionTest.Equals, "ME-Ductwork"))),
+                false);
+            outcome.AddDrift(
+                SetDrift.Compare(
+                    new List<ReadCondition> { Asked(Category, "equals", "Floors") },
+                    Planned("a/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors"))),
+                false);
+
+            string block = SetsBlock(outcome);
+
+            Assert.That(outcome.NotRead.Count, Is.EqualTo(1));
+            Assert.That(outcome.Drifted.Count, Is.EqualTo(0), "a set compared and the same is neither");
+            Assert.That(block, Does.Not.Contain("Every set in the document asks what the file asks"));
+            Assert.That(block, Does.Contain("none of the 1 read drifted"));
+            Assert.That(block, Does.Contain("1 could not be read, so whether it asks what the file asks is UNKNOWN"));
+        }
+
+        /// <summary>And beside a drift, the sets not read are counted too.</summary>
+        [Test]
+        public void ThePresentSetsBlockCountsTheSetsNotReadBesideADrift()
+        {
+            SetBuildOutcome outcome = OutcomeWithOnePresentSet();
+            outcome.AddAlreadyPresent("a/BLD-AR-Floors", "BLD-AR-Floors", 1, 4);
+            outcome.AddDrift(OneDrift(), false);
+            outcome.AddDrift(
+                SetDrift.Compare(null, Planned("a/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors"))),
+                false);
+
+            Assert.That(SetsBlock(outcome), Does.Contain("1 more could not be read, so whether it asks what the file asks is UNKNOWN"));
+        }
+
+        /// <summary>
         /// The whole block is under the already-there count, so a run that created every
         /// set fresh carries none of it. Nothing drifted, because nothing was there.
         /// </summary>

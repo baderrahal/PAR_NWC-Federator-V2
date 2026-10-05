@@ -13,6 +13,7 @@ namespace Federator.Core.Sets
         private readonly List<SetResult> results = new List<SetResult>();
         private readonly List<SkippedSet> skipped = new List<SkippedSet>();
         private readonly List<SetDrift> drifted = new List<SetDrift>();
+        private readonly List<SetDrift> notRead = new List<SetDrift>();
         private readonly List<EmptySet> empty = new List<EmptySet>();
         private int rebuiltCount;
         private readonly List<LeftoverSet> leftovers = new List<LeftoverSet>();
@@ -51,13 +52,26 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// Every set whose question in the document differs from what the picked file
-        /// asks, Q72, and whether this run rebuilt it. Kept apart from the results list
-        /// because a drifted set is still a present set and is counted as one.
+        /// Every present set compared with what the picked file asks, Q72, and whether this
+        /// run rebuilt it. One whose question differs is kept as drifted, one whose search
+        /// could not be read as not read, FR-021, and one asking what the file asks is not
+        /// kept. Apart from the results list because a drifted set is still a present set and
+        /// is counted as one.
         /// </summary>
         public void AddDrift(SetDrift drift, bool rebuilt)
         {
             if (drift == null)
+            {
+                return;
+            }
+
+            if (drift.CouldNotRead)
+            {
+                notRead.Add(drift);
+                return;
+            }
+
+            if (!drift.Drifted)
             {
                 return;
             }
@@ -132,6 +146,15 @@ namespace Federator.Core.Sets
         public ReadOnlyCollection<SetDrift> Drifted
         {
             get { return new ReadOnlyCollection<SetDrift>(drifted); }
+        }
+
+        /// <summary>
+        /// Present sets whose search, or a value in it, could not be read, so whether they ask
+        /// what the file asks is UNKNOWN, FR-021. Never counted as asking it.
+        /// </summary>
+        public ReadOnlyCollection<SetDrift> NotRead
+        {
+            get { return new ReadOnlyCollection<SetDrift>(notRead); }
         }
 
         /// <summary>How many of them this run rebuilt. Zero where the box is off, which is the default.</summary>
@@ -295,6 +318,11 @@ namespace Federator.Core.Sets
             return count;
         }
 
+        private static string WhetherTheyAsk(int notRead)
+        {
+            return (notRead == 1 ? "whether it asks" : "whether they ask") + " what the file asks is UNKNOWN";
+        }
+
         /// <summary>
         /// One line for the window and the log, the same words whether the sets were
         /// built by the run or by the Build sets button. Counted off the same list the
@@ -367,9 +395,16 @@ namespace Federator.Core.Sets
                 lines.Add("      a set already in the NWF keeps the conditions it was built with, so a value");
                 lines.Add("      corrected in the picked file since then does not reach it on its own. Q72");
 
-                if (Drifted.Count == 0)
+                // FR-021. A set whose search could not be read is not one that asks what the
+                // file asks, so the claim that every set does is made only where all were read.
+                if (Drifted.Count == 0 && NotRead.Count == 0)
                 {
                     lines.Add("      none of them drifted. Every set in the document asks what the file asks");
+                }
+                else if (Drifted.Count == 0)
+                {
+                    lines.Add("      none of the " + (AlreadyPresentCount - NotRead.Count) + " read drifted. "
+                        + NotRead.Count + " could not be read, so " + WhetherTheyAsk(NotRead.Count));
                 }
                 else if (RebuiltCount == 0)
                 {
@@ -381,6 +416,11 @@ namespace Federator.Core.Sets
                     lines.Add("      " + Drifted.Count + " of them DRIFTED and " + RebuiltCount
                         + " were REBUILT from the picked file. The clash tests");
                     lines.Add("      pointing at a rebuilt set keep their results and their statuses, measured 5v");
+                }
+
+                if (Drifted.Count > 0 && NotRead.Count > 0)
+                {
+                    lines.Add("      " + NotRead.Count + " more could not be read, so " + WhetherTheyAsk(NotRead.Count));
                 }
             }
             lines.Add("sets finding items: " + FindingItemsCount);
