@@ -1361,6 +1361,59 @@ is exactly it, found by an audit of every file under src. The run says it itself
   is written on its own, because `Block` writes no row at all and the .tsv has to carry
   what the block carries
 
+### Coverage of the picked tests, F127
+
+Bader's request 2 under Q112: after each group, every test of the picked XML, or of the
+tests saved in the document where none was picked, against what happened to it, with one
+reason for each test that has no results. The design is
+%LOCALAPPDATA%\NwcFederatorLoop\turn5\f127-design.md. Its Core steps 1 to 3 are built on
+branch fix-F127. The COVERAGE block, the Coverage sheet, the RESULT lines and the add-in half
+come after F116 merges and the probes of its section 5 are read, so NOTHING IN SRC CALLS THE
+COVERAGE YET and the branch is not merged before its add-in half.
+
+- THE REASON IS THE RUNNER'S OWN RECORD, READ IN THE ORDER THE CODE APPLIES IT.
+  `Federator.Core.Coverage.CoverageRule.For` takes the plan, the clash step's
+  `ClashRunOutcome`, the discipline codes of the group's files and of every file of the run,
+  and the settings that say which codes a set name carries, and gives one `TestCoverage` per
+  test in the order of the file. A test the plan dropped before the model, or one naming a
+  set not in the document, reads the test was not created, beside the words of
+  `ClashTestPlan.Describe`. F77's creation plan comes next, so a test it kept out of a group
+  whose clash the coordinates rule skipped keeps its side reason and never reads as a
+  coordinates skip, which would hide every gap of the matrix on both wave buildings. Then
+  the coordinates rule, the one discipline rule, the run time side check and the run
+- THE RUNNER'S RECORD IS READ AND NEVER CHANGED. `ClashRunOutcome` hands out its created and
+  already there names, the tests that ran and the skips as read only views, keeps a copy of
+  the counts the creation plan decided on, `KeepItemsByLocator`, and the two counts the run
+  time check read off each test's own sides, `RecordSides`. A side reason reads the run time
+  counts where the check reached the test, because they decided the skip, and the creation
+  plan's where it did not
+- PRESENCE IS SAID APART FROM THE REASON, `TestPresence`: created this run, already there,
+  not created by F77, or UNKNOWN where the runner never looked. The words for both are
+  `CoverageWords`, and no reason claims a test was created, because a test already in the
+  NWF is skipped for the same reasons as one created a minute ago
+- A SIDE THAT FOUND NOTHING IS JUDGED BY ITS SET'S CODE, read off the set's own name through
+  `DisciplinePairRule.CodeIn` until F131 re-points it to the team map. A code no file of the
+  group carries and a file of the run does reads the discipline is not in the group. A code
+  a file of the group carries reads a side's set found no items in this group. A code no
+  file of the run carries, FF, PL and DR on this project, a name carrying no code,
+  BLD-Security Devices, and a run whose codes were not handed in each say the set found no
+  items and that whether its discipline is in the group is UNKNOWN. Where both sides found
+  nothing the stronger is given in that order and both sets are named. On the exchange file
+  with the counts of group 100000 of set 03's C06 run that is 36 tests both find, then 969,
+  561, 255 and 9, held by a test
+- A COUNT OF MINUS ONE IS NEVER A SET THAT FOUND NOTHING. It reads a side was not counted,
+  UNKNOWN, and a side that did find nothing beside it still gives its reason, because a
+  definite reason is given wherever one exists
+- TWO TESTS OF ONE NAME READ UNKNOWN, because the runner keys its record on the name and a
+  guess would hand one test the other's result. A group with no clash step reads UNKNOWN,
+  but for the tests the plan dropped itself
+- EVERY KIND THE RUNNER RECORDS MAPS TO A REASON, `CoverageRule.ReasonFor`, and a test
+  enumerates `ClashSkipReason`, so F132's Mirror fails it until it is mapped rather than
+  reading UNKNOWN on every test it skips
+- A test that ran reads has clashes or ran and found no clashes off the runner's own count.
+  The design's row for a test that ran with its count UNKNOWN is not built, because the
+  runner records a test as ran only once it has counted it and records it Failed otherwise
+
 ### The machine readable log, F64
 
 A second file beside the text log, same name and a different extension, `.tsv`. One row
