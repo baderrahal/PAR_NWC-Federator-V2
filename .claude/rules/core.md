@@ -1413,6 +1413,41 @@ COVERAGE YET and the branch is not merged before its add-in half.
 - A test that ran reads has clashes or ran and found no clashes off the runner's own count.
   The design's row for a test that ran with its count UNKNOWN is not built, because the
   runner records a test as ran only once it has counted it and records it Failed otherwise
+- A CLASH COUNT IN CLASH DETECTIVE THAT DIFFERS FROM THE WORKBOOK ROWS IS A FAILED LINE, his
+  words, and it is F104's checks 1 and 2 restated in Core, `CountCheck.Judge`: the clash rows
+  under a test's block against the document's results at the top level, a result group
+  counting as one, and the Clashes cell against every clash in the test, the clashes inside
+  each group counted. Both exact. Agree only where both equal, or where the test is not in
+  the document and its block reads no row and Clashes nought, a test F77 did not create.
+  Failed for any other difference, for a test the document holds with no block, and for a
+  block with numbers that the document does not hold. NOT COMPARED, NEVER AGREE, where a
+  count on either side is minus one, a name is on two tests of one side, a test is in
+  neither, or the workbook or the document's counts were not read, with the reason. The
+  tests the document holds and the file does not are named and not judged.
+  compare-document.ps1 stays the independent witness, because this reads the document
+  through the add-in as the harvest does, and a check sharing the code it checks cannot catch
+  a fault common to both
+- WHERE THE RUN KNOWS WHY A COUNT DIFFERS, THE LINE SAYS IT: a test not run this run whose NWF
+  still holds an earlier run's results, the design's decision 4 at its default A, and
+  Resolved clashes Compact removed after the workbook's rows were read
+- THE DOCUMENT'S SIDE IS `DocumentTestCount`, plain numbers the add-in fills from one walk of
+  the tests after the clash step, so they are what the NWF holds after Compact and include
+  the tests a weekly run did not run. A count not taken is minus one and never zero.
+  Statuses are not read, because they are not judged, PQ4 of F104 being unmeasured
+- THE CLIENT'S SHEET IS READ BACK TEST BY TEST, `Federator.Core.Report.WorkbookTests.Read`, by
+  the name in column A, in both shapes: a full block gives the clash rows under it, counted
+  the way WorkbookCheck counts them, and its Clashes cell, and the one row of a test that
+  found nothing, Q73, gives no rows and its Clashes cell. It takes a sheet of a workbook
+  already open, so the file is loaded once. A name on two tests of the sheet, a test row with
+  no name, a Clashes cell that is no whole number and a block with no clash table under it
+  are each a doubt, the last two read as minus one. Names are read exactly and never trimmed
+- THE FAILED LINE STARTS COVERAGE FAILED, `CountCheck.FailedPrefix`, so it is never read as a
+  group's FAILED, names the group and the test, gives all four numbers or says which side
+  holds no test of that name, adds the reason where known, and ends saying the group keeps
+  its own result. THE GROUP KEEPS IT BY CONSTRUCTION: GroupFacts has no coverage member and
+  nothing in the coverage adds an error, which is his answer to the notes under Q112 and the
+  rule that a report check never fails a group. A test holds a DONE group beside a COVERAGE
+  FAILED line to groups done 1, groups failed 0 and Nothing failed in RESULT
 
 ### The machine readable log, F64
 
