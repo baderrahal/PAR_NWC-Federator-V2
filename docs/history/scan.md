@@ -5659,3 +5659,64 @@ STILL UNKNOWN, because it needs Navisworks running and this read ran none of it:
 **WHAT THIS DECIDES.** FramingBox's two corners build the box with
 `new BoundingBox3D(new Point3D(x, y, z), new Point3D(x, y, z))`, so P16 probes ZoomBox with
 a box built this way.
+
+## 5z-i. CAN A COMMENT BE PUT ON THE COM VIEW BEFORE IT IS ADDED, MEASURED 2026-10-05
+
+P6 of Q114, the views by team design, part 3. F114 marks every view the tool writes with a
+comment, and writes each view through the COM API's InwOpView before
+InwOpFolderView.SavedViews().Add puts it in its folder, 5m. 5z-f printed that InwOpView has
+a Comments() method, viewpoint-calls-result line 244, and nothing had read what that
+collection lets a caller do or what object goes in it. A yes means P9 tries the comment on
+the COM view before the add first, which costs no extra call per view. A no means the mark
+is DocumentSavedViewpoints.AddComment after the add.
+
+Read off the metadata of the installed DLL by its one full path, with
+`ReflectionOnlyLoadFrom`, so no line of it ran and no Navisworks was started. Get-Process
+Roamer read 0 processes before the read and 0 after, printed by the probe itself. Run from
+Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-com-view-comments.ps1
+
+The whole output is `tools\probes\ViewpointProbe\p6-com-view-comments-result-20261005.txt`,
+the machine's name masked, exit 0. Autodesk.Navisworks.Interop.ComApi 22.0.0.0, file
+22.5.1433.58. The result lines:
+
+```
+  members of InwOpView and the interfaces it inherits that name or return a comment type:
+    InwOpView.public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+    InwOpSavedView.public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+  members of InwCommentsColl that add, insert, replace or set:
+    public System.Void Replace(System.Int32 ndx, System.Object p_newVal)   dispid 1610743816
+    public System.Void Insert(System.Int32 ndx, System.Object p_newVal)   dispid 1610743817
+    public System.Void Add(System.Object p_newVal)   dispid 1610743818
+    property System.Object Item[System.Object vIndex] { get; set }   dispid 0
+  nwEObjectType values that make a comment through ObjectFactory:
+    eObjectType_nwOpComment = 8
+  P6 YES   InwOpView hands out its comments collection, the collection has a member that adds, and ObjectFactory has a comment type to add
+```
+
+**THE ANSWER IS YES, ON THE METADATA.** InwOpView, inheriting InwOpSavedView, has
+`InwCommentsColl Comments()` and no comment property with a setter. InwCommentsColl has
+Add(Object), Insert(Int32, Object), Replace(Int32, Object), Remove(Int32), RemoveLast(),
+Clear(), Last(), Count, an Item indexer with get and set, and a `ReadOnly { get }`. The
+object to add is made by `InwOpState10.ObjectFactory(nwEObjectType.eObjectType_nwOpComment)`,
+value 8, the same factory 5m makes the view with at value 11. The comment interfaces are
+InwOpComment with Body, User and Date, each with get and set, InwOpComment2 adding
+CommentID, and InwOpComment3 adding status of nwECommentStatus, NEW 0, ACTIVE 1, APPROVED 2
+and RESOLVED 3. InwOpFolderView has the same Comments() method, so a folder can carry one
+the same way.
+
+STILL UNKNOWN, because it needs Navisworks running and this read ran none of it:
+
+- which of InwOpComment, 2 or 3 the factory's object implements at run time
+- what ReadOnly reads on the collection of a view that is not yet in a folder, and whether
+  Add on it is refused
+- whether a comment added before InwSavedViewsColl.Add is kept by the add, and whether it
+  reads back off SavedItem.Comments with the same body and author after a save, a clear and
+  a reopen, P9
+- whether the User set here is what SavedItem.Comments reads as Author, P9
+
+**WHAT THIS DECIDES.** P9 tries the COM route first: a comment made by ObjectFactory at
+eObjectType_nwOpComment, its Body and User set, added to the COM view's Comments() before
+the view is added to its folder. If P9 finds it is not kept or not read back, the mark is
+AddComment after the add.
