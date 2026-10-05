@@ -264,6 +264,18 @@ reader. F132 attempt 3 was read with nothing blocking by its reviewer and its
 breaker, 1986 Core tests passed at 190e7f1 and the build 0 warnings and 0 errors,
 turn5\f132c-result.json, and its add-in half waits for the probes P1 and P2. F114's Core half took
 the slot it freed, its developer from 09:46:44, the viewpoints first by Bader's word.
+THE WEEKLY BASELINE ON C02 STOPPED BY BADER, Q130. The C02 weekly ran its 528 saved tests to 2939 clashes by 08:21:31, its census before VIEWS reading 2939 results and 2847 views at 08:22:25, then sat in VIEWS from 08:23:01 with no further log line for 3 h 15 min until its Navisworks was closed at 11:38:13, and wrote no workbook, NWF or NWD of its own, steps\runs\04\item2-C02, run log lines 185, 284 and 287, outputs.txt. On his word the lead closed it the
+guards' way at 11:38:13 by its own script, turn5\close-c02-weekly.ps1 and close-c02-weekly.txt: the
+proofs CloseOwn makes, then nw-guard.ps1's one close, Kill on the adopted pid 29372, Dispose not
+first because run.ps1 was blocked in its call into the add-in. run.ps1 then put back 35 registry
+values, InfoCenter.log and the AutoSave folder, each read back, with no other Navisworks in its
+record, record.txt lines 1702 to 1775, VERDICT: STOPPED, the adopted Navisworks ended by itself, line
+1788, its own words for a close it did not make. Evidence masked into steps\runs\04\item2-C02 with no
+copy differing, turn5\mask-run04-item2-C02.txt. Its workbook read-out is item 1's workbook, every
+output in the folder written at 21:09 on 2026-10-04. No test run is made until F136, the viewpoints
+switch, FR-194, is merged and installed, and the C04 weekly is not run. The Shift measurement ran at
+11:45 on its stand-in once Roamer read 0: the driver cannot make a Shift click without real input,
+turn5\measure-shift-driver-result.md, so F130's test goes to Bader as numbered steps.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -439,13 +451,15 @@ and planned in the turn 5 entry of steps\log.md headed with them.
 1. The baseline, set 04: item 1 on C02 rerun from F125's commit 5fa98a8 at 18:55, then item 1 on
    C04, item 2 on C02 and item 2 on C04, each after a fresh Roamer read, then
    steps\runs\04\findings.md, short, in the shape of set 03's, merged within the hour. The hung
-   first attempt is kept as steps\runs\04\item1-C02-hung
+   first attempt is kept as steps\runs\04\item1-C02-hung. Item 2 on C02 STOPPED by Bader at 11:38
+   on 2026-10-05, Q130, and item 2 on C04 is not run, so the set closes with findings.md now
 2. Wave 1: F125's second pass and F126, the driver unticking a named box, each read under Q93
    and merged. F125 MERGED as PR 102, F112 MERGED as PR 106 and F116 MERGED as PR 98 with this
    project's list in exchange\, Bader told at about 04:27. F126's harness ran in the first gap
    on 2026-10-05 against its stand-in window, 52 passed and 0 failed on the branch, and F126
    MERGED as PR 112 at 08:23:04
-3. The test of wave 1: main installed in place as on 2026-10-01 and its stamp read back, both
+3. The test of wave 1, after F136 the viewpoints switch is merged, Q130, with the box unticked in
+   every run: main installed in place as on 2026-10-01 and its stamp read back, both
    buildings run, item 1 and item 2, and a building whose models are off the shared coordinates
    run once more with the rule switched off by its tick box. Compared with the baseline through
    turn5\wave-compare.py and F104's documents read: each group's result, the clash count per

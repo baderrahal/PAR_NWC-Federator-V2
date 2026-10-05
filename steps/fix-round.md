@@ -137,6 +137,8 @@ holds them. Each area takes the F number shown.
   - F123 docs and words, and the noise of every area: FR-007, FR-029, FR-038, FR-039, FR-042, FR-058, FR-059, FR-060, FR-061, FR-062, FR-063, FR-064, FR-074, FR-081, FR-105, FR-106, FR-107, FR-108, FR-111, FR-112, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118, FR-119, FR-120, FR-121, FR-122, FR-123, FR-124, FR-126, FR-127, FR-128, FR-129, FR-130, FR-131, FR-132, FR-133, FR-134, FR-135, FR-136, FR-139, FR-140, FR-141, FR-142, FR-143, FR-144, FR-145, FR-146, FR-147, FR-148, FR-167, FR-168, FR-169, FR-170, FR-171, FR-172, FR-173. Closed in part, the part that stays: FR-139, FR-146. The finds of Q108 on FR-136 and Q26 on FR-172 first. Closed already: FR-125, FR-137, FR-138
   - F117 the names, by Bader's answer to Q105 to Q107: FR-109, FR-110, FR-149
   - then F124 D1, one public type per file: FR-174, moves only, last
+- Before any test run, Bader's stop of 2026-10-05, Q130: F136 the viewpoints switch, FR-194. Until F114
+  merges every test run has viewpoints switched off
 - Beside the waves, Bader's lane of 2026-10-05, Q129, worked by a fourth worker in its own worktree and
   never on a file a fix lane is changing at the time: F133 the work tracker, FR-191, F134 the code
   health gate, FR-192, and F135 the analyser settings that touch every project, FR-193, merged alone at
@@ -4665,6 +4667,11 @@ was done, what the test showed, and anything for Bader.
   input, since it never clicks, sends no key and never moves the pointer, the loop's own choice.
   If it cannot, the way to test it goes to Bader
 - Class: Bader's request, a broken feature by his words
+- Measured on 2026-10-05 at 11:45 on a stand-in window, turn5\measure-shift-driver-result.md: the
+  driver cannot make a Shift click without real input. UI Automation toggles a box with no Shift,
+  posted mouse messages toggle nothing, and a posted Shift key does not reach the keyboard state WPF
+  reads. So by Bader's note on Q112 its test is numbered steps in steps\03_bader_next.md when F130 is
+  built
 - Measured on 2026-10-04 off the window code, turn5\measure-shift.md: a range tick is not
   written. The Run column is a stock DataGridCheckBoxColumn bound to Include with no handler,
   FederatorWindow.xaml lines 184 to 191, and nothing under src reads Shift or the row selection.
@@ -4881,6 +4888,27 @@ never holds back the viewpoints.
   a quiet moment so no fix branch is left on red
 - Proof, the lead's: the full solution built on main and on each open fix branch merged with it, each
   with its warning and error counts
+- Class: Bader's decision
+
+## Bader's stop of the C02 weekly, FR-194
+
+Added by Bader's message of 2026-10-05 headed STOP THE C02 WEEKLY RUN NOW, in his words under Q130 of
+steps\02_questions.md. A decision, outside the counts of the table below.
+
+### FR-194 viewpoints-switched-off-for-test-runs
+
+- Sources: Q130. Area F136, before any test run
+- What he decided: until F114, the new viewpoints, is merged, every test run has viewpoints switched
+  off
+- Measured on 2026-10-05: the tool has no such switch. FederationEngine.BuildViewpoints makes them for
+  every group whose clash was not skipped and that has a report, src\Federator.Addin\Engine\
+  FederationEngine.cs on main 35bd7fd. The window has no viewpoints option
+- What is built: a tick box in the window with its own AutomationId, read by the engine, and when
+  unticked no viewpoint is made and none is asked for, so a group cannot fail at them, the rule F52 set
+  for a step not asked for. The loop's driver unticks it through F126's -Untick in every test run
+  until F114 merges. Its default is Q131, A until Bader answers
+- Proof: a Core test of the rule that decides whether viewpoints are asked for, and the test of wave 1
+  run with the box unticked, its log saying no viewpoint was made and why
 - Class: Bader's decision
 
 ## The areas at a glance
