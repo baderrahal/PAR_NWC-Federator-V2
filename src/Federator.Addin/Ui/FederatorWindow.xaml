@@ -513,6 +513,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <!-- F72. Visible rather than under an expander, because a weekly
@@ -560,9 +561,18 @@
                             <TextBlock x:Name="SkipClashOffCoordinatesHelp" Style="{StaticResource TickHelp}" />
                         </StackPanel>
 
+                        <!-- F136, Bader's word of 2026-10-05. Unticked, no group makes a
+                             saved viewpoint and none can fail at them. Its label, its grey
+                             line and whether it starts ticked are read off Core in the
+                             constructor and never typed here. -->
+                        <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,8">
+                            <CheckBox x:Name="MakeViewpoints" />
+                            <TextBlock x:Name="MakeViewpointsHelp" Style="{StaticResource TickHelp}" />
+                        </StackPanel>
+
                         <!-- The two that destroy data. Collapsed and on their own, because
                              they do not belong beside ordinary output options. -->
-                        <Expander Grid.Row="4" Grid.ColumnSpan="2" IsExpanded="False"
+                        <Expander Grid.Row="5" Grid.ColumnSpan="2" IsExpanded="False"
                                   Header="Things that destroy data" Margin="0,0,0,8">
                             <StackPanel Margin="20,4,0,0">
                                 <!-- One StackPanel each, never two boxes in one, because the

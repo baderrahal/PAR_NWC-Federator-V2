@@ -1203,6 +1203,21 @@ namespace Federator.Addin.Ui
                 SkipClashOffCoordinatesHelp.Text = AlignmentCheck.HelpLine(new ReportOptions().FarModelMillimetres);
             }
 
+            // F136. The same shape, ticked or not off the setting the run reads, and set
+            // here because the window is made new at every open. The setting is unticked
+            // until F114 merges, Q131, so a box ticked for one run is unticked again the
+            // next time the window opens.
+            if (MakeViewpoints != null)
+            {
+                MakeViewpoints.Content = ViewpointRequest.TickLabel;
+                MakeViewpoints.IsChecked = new ReportOptions().MakeViewpoints;
+            }
+
+            if (MakeViewpointsHelp != null)
+            {
+                MakeViewpointsHelp.Text = ViewpointRequest.HelpLine;
+            }
+
             if (ByDesignHelp != null)
             {
                 ByDesignHelp.Text = "Read only with the box below on. Columns "
@@ -1524,6 +1539,7 @@ namespace Federator.Addin.Ui
             options.MarkByDesign = MarkByDesign.IsChecked == true;
             options.RebuildDriftedSets = RebuildDriftedSets.IsChecked == true;
             options.SkipClashOffCoordinates = SkipClashOffCoordinates.IsChecked == true;
+            options.MakeViewpoints = MakeViewpoints.IsChecked == true;
             options.ByDesignPath = Trimmed(ByDesignBox.Text);
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
@@ -1811,6 +1827,7 @@ namespace Federator.Addin.Ui
             log.Line("by design        : " + (MarkByDesign.IsChecked == true
                 ? "YES, a clash between two sets the pairs file names becomes Reviewed"
                 : "no, the pairs file is not read"));
+            log.Line(ViewpointRequest.SettingsLine(MakeViewpoints.IsChecked == true));
             log.Line("NWD naming       : "
                 + (DateTheNwd.IsChecked == true
                     ? "dated, so every week is kept"
@@ -2089,21 +2106,24 @@ namespace Federator.Addin.Ui
             {
                 // The result block and the second copy are written whatever happened, so a
                 // run that stopped still leaves a readable log with its summary at the end.
-                WriteTheResultAndCopyTheLog(nwfFolder, engine == null ? null : engine.CoordinatesAcrossTheRun);
+                WriteTheResultAndCopyTheLog(nwfFolder, engine);
                 running = false;
                 RunButton.IsEnabled = true;
             }
         }
 
         /// <summary>
-        /// The RESULT block of one run and the second copy of the log. thisRun is what the
-        /// shared coordinates rule did in that run, from that run's engine, or null.
+        /// The RESULT block of one run and the second copy of the log. engine is that run's
+        /// engine, or null where the run stopped before one was made, and then the block says
+        /// nothing of the shared coordinates rule or the viewpoints box rather than guess.
         /// </summary>
-        private void WriteTheResultAndCopyTheLog(string nwfFolder, OffCoordinatesAcrossTheRun thisRun)
+        private void WriteTheResultAndCopyTheLog(string nwfFolder, FederationEngine engine)
         {
             try
             {
-                log.WriteResultBlock(thisRun);
+                log.WriteResultBlock(
+                    engine == null ? null : engine.CoordinatesAcrossTheRun,
+                    engine == null || engine.MakesViewpoints);
             }
             catch (Exception error)
             {
@@ -2287,6 +2307,10 @@ namespace Federator.Addin.Ui
 
                 ReportOptions options = ReportsWanted();
 
+                // F136. The open file run has no RUN SETTINGS block, and the box holds for
+                // it too, so its state is said here before the group starts.
+                log.Line(ViewpointRequest.SettingsLine(options.MakeViewpoints));
+
                 // No folder is handed in. The engine reads the report folder off the open
                 // file through OpenDocumentJob.ReportFolder, the same rule ShowOpenDocument
                 // uses for the line above the button. Handing the report folder in as the
@@ -2350,8 +2374,7 @@ namespace Federator.Addin.Ui
                 // happened, the same as the scanned run. The copy goes beside the open
                 // file, where the scanned run puts it beside the NWF folder. This used to
                 // be missing, so an open file run ended with no RESULT block and no copy.
-                WriteTheResultAndCopyTheLog(
-                    OpenDocumentJob.FolderOf(open), engine == null ? null : engine.CoordinatesAcrossTheRun);
+                WriteTheResultAndCopyTheLog(OpenDocumentJob.FolderOf(open), engine);
                 running = false;
                 RunOpenButton.IsEnabled = true;
                 ShowOpenDocument();

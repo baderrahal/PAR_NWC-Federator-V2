@@ -5,6 +5,7 @@ using System.Text;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Rerun;
+using Federator.Core.Views;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests
@@ -703,6 +704,40 @@ namespace Federator.Core.Tests
                     text.IndexOf(line, StringComparison.Ordinal),
                     Is.GreaterThan(text.IndexOf("RESULT", StringComparison.Ordinal)),
                     "the by design line is inside the RESULT block and not before it");
+            }
+        }
+
+        /// <summary>
+        /// F136. A run with the viewpoints box unticked says so inside RESULT, under the group
+        /// counts, because a group judged DONE there made no viewpoint.
+        /// </summary>
+        [Test]
+        public void TheResultBlockNamesTheViewpointsOffWhereTheBoxWasUnticked()
+        {
+            using (RunLog log = Start())
+            {
+                log.WriteResultBlock(null, false);
+
+                string text = ReadWhileOpen(log);
+                string line = ViewpointRequest.ResultLine(false);
+
+                Assert.That(line, Is.Not.Null, "the rule gave no line for an unticked run");
+                Assert.That(text, Does.Contain(line));
+                Assert.That(
+                    text.IndexOf(line, StringComparison.Ordinal),
+                    Is.GreaterThan(text.IndexOf("groups failed", StringComparison.Ordinal)),
+                    "the viewpoints line is under the group counts of the RESULT block");
+            }
+        }
+
+        /// <summary>F136. Ticked, the RESULT block carries no viewpoints line at all.</summary>
+        [Test]
+        public void TheResultBlockSaysNothingOfViewpointsWhereTheBoxWasTicked()
+        {
+            using (RunLog log = Start())
+            {
+                log.WriteResultBlock(null, true);
+                Assert.That(ReadWhileOpen(log), Does.Not.Contain("viewpoints     :"));
             }
         }
     }

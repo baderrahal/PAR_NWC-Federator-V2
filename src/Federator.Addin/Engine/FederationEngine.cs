@@ -103,6 +103,15 @@ namespace Federator.Addin.Engine
         /// </summary>
         public OffCoordinatesAcrossTheRun CoordinatesAcrossTheRun { get; private set; }
 
+        /// <summary>
+        /// Whether this run had the viewpoints box ticked, F136, read off the options the
+        /// engine was made with, so the RESULT block names the same state the groups read.
+        /// </summary>
+        public bool MakesViewpoints
+        {
+            get { return reports.MakeViewpoints; }
+        }
+
         /// <summary>What every set did across this run, for the block the window writes.</summary>
         public SetsAcrossTheRun SetsAcrossTheRun
         {
@@ -3490,22 +3499,19 @@ namespace Federator.Addin.Engine
         /// Returns whether anything went into the document, which is what asks for the
         /// second NWF save.
         ///
-        /// SavedViewpoints.CanBuild is the one switch, true since the viewpoints round.
+        /// Whether the group asks for them at all is Core's rule, ViewpointRequest, F136:
+        /// the box on the Clash step, the clash skipped, and no report.
         /// </summary>
         private bool BuildViewpoints(Document document, FederationJob job, JobOutcome outcome)
         {
-            if (outcome.ClashSkippedBecause != null)
-            {
-                // Bader's answer to Q99 and Q100: no viewpoint is made, so none is asked for
-                // and the group cannot fail at them, F52's rule for a step not asked for.
-                log.Line("VIEWS    " + OffCoordinates.ClashSkippedReason + ", so no viewpoint is made");
-                outcome.ViewpointsRequested = false;
-                return false;
-            }
+            string none = ViewpointRequest.WhyNone(
+                reports.MakeViewpoints, outcome.ClashSkippedBecause != null, outcome.Report != null);
 
-            if (outcome.Report == null)
+            if (none != null)
             {
-                log.Line("VIEWS    no report was built for this group, so there is nothing to plan a viewpoint from");
+                // None asked for, so the group cannot fail at them, F52's rule for a step
+                // not asked for.
+                log.Line("VIEWS    " + none);
                 outcome.ViewpointsRequested = false;
                 return false;
             }
