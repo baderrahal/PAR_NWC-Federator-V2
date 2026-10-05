@@ -117,8 +117,8 @@ holds them. Each area takes the F number shown.
   - F113 clash counts: FR-031, FR-032, FR-033, FR-034
   - F116 the clash XML: FR-008, FR-009, FR-025, FR-026, FR-030. Noise kept here: FR-030, Bader put the XML corrections of Q102 to Q104 in wave 1
 - Wave 2, in three parts since Bader's views by team, Q114, each part at most three areas:
-  - 2a, F127 coverage first, Bader's request 2: FR-176
-  - 2a, F132 mirrored tests, Q114: FR-182, FR-183. F127 and F132 both change which tests are created and run, so they merge one after the other, F127 first
+  - 2a, F127 coverage, Bader's request 2: FR-176. First of 2a until Bader's order of 2026-10-05, Q132, put F132 before it
+  - 2a, F132 mirrored tests, Q114: FR-182, FR-183. F127 and F132 both change which tests are created and run, so they merge one after the other, F132 first since Q132
   - 2a, F115 sets: FR-010, FR-011, FR-012, FR-013, FR-014, FR-015, FR-016, FR-017, FR-018, FR-019, FR-020, FR-021, FR-022, FR-023, FR-024, FR-027
   - 2b, F131 teams, Q114: FR-180, FR-181. It merges before F114, which reads the team pairs
   - 2b, F114 views: FR-065, FR-066, FR-067, FR-068, FR-069, FR-070, FR-071, FR-072, FR-073, and Q114's FR-184 to FR-188. Noise kept here: FR-073, committed by F114 before it paused
@@ -4908,7 +4908,7 @@ steps\02_questions.md. A decision, outside the counts of the table below.
 - What will be built: a tick box in the window with its own AutomationId, read by the engine, and when
   unticked no viewpoint is made and none is asked for, so a group cannot fail at them, the rule F52 set
   for a step not asked for. The loop's driver unticks it through F126's -Untick in every test run
-  until F114 merges. Its default is Q131, A until Bader answers
+  until F114 merges. Its default is unticked until F114 merges and ticked after, Bader's answer to Q131
 - Proof: a Core test of the rule that decides whether viewpoints are asked for, and the test of wave 1
   run with the box unticked, its log saying no viewpoint was made and why
 - Class: Bader's decision
@@ -4923,8 +4923,8 @@ outside the counts of the table below.
 - Sources: Q111 B and Q125 B. Area F137, before the test of wave 1
 - What he decided: a model naming no site is not on the same coordinates, so its group skips its clash,
   ends PARTIAL, and its line in the note and the list says no site is named. A group that runs no clash
-  test with a model off the shared coordinates ends PARTIAL with the reason models not on the same
-  shared coordinates, though no clash was skipped
+  test with a model off the shared coordinates, more than 1 m away or on Internal, for both, ends
+  PARTIAL with the reason models not on the same shared coordinates, though no clash was skipped
 - Proof: Core tests of both rules that fail first, and the test of wave 1
 - Class: Bader's decision
 

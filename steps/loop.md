@@ -214,7 +214,7 @@ workbook was written. The put back wrote nothing, because a Roamer, pid 46148, w
 and whose it was is UNKNOWN: 34 registry values, InfoCenter.log and six AutoSave changes, three
 of his autosaves of 1A04PK gone and three the run added, are listed in record.txt from line 3398,
 with the backup kept in runs\04\item1-C04\settings and his autosaves held in autosave-backup. Q128
-asks him, the loop going on with B, leave it as it is. M5: 14 keys and 2765 files listed in m5.txt,
+asked him, and he answered A on 2026-10-05, put it all back, carried out by the lead. M5: 14 keys and 2765 files listed in m5.txt,
 which stays out of the evidence, and left.
 The evidence is masked into steps\runs\04\item1-C04 with no copy differing,
 turn5\mask-run04-item1-C04.txt. The loop's Navisworks was gone at 06:36:58 and Roamer read 0 every minute from 06:38:02 to
@@ -451,7 +451,8 @@ SINCE BADER'S ORDER OF 2026-10-05, Q132, the new viewpoints come first, ahead of
 3. F132 with its add-in half and Q121 B, once probes P1 and P2 are read, merged
 4. F114 with its add-in half and Q119 B, once its probes are read, merged, ticking the box again
 5. Main installed in place against bundle-backup-e4484d15, 1A02MM and 1A04PK run with the new views
-   on, and the VIEWS seconds and the total of each set against set 04
+   on, and the VIEWS seconds and the total of each building against set 04, 1A04PK having no baseline
+   of either
 6. Then the items below as planned, with F137 for Q111 and Q125 before the test of wave 1
 Q128 A is the lead's at once: the C04 run's changes put back from its backups while no Navisworks
 runs, each read back. Until F114 merges every test run has the viewpoints box unticked.
@@ -467,7 +468,7 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    C04, item 2 on C02 and item 2 on C04, each after a fresh Roamer read, then
    steps\runs\04\findings.md, short, in the shape of set 03's, merged within the hour. The hung
    first attempt is kept as steps\runs\04\item1-C02-hung. Item 2 on C02 STOPPED by Bader at 11:38
-   on 2026-10-05, Q130, and item 2 on C04 is not run, so the set closes with findings.md now
+   on 2026-10-05, Q130, and item 2 on C04 is not run until the new views are in, Q124 B, so the set closes with findings.md now
 2. Wave 1: F125's second pass and F126, the driver unticking a named box, each read under Q93
    and merged. F125 MERGED as PR 102, F112 MERGED as PR 106 and F116 MERGED as PR 98 with this
    project's list in exchange\, Bader told at about 04:27. F126's harness ran in the first gap
@@ -609,8 +610,8 @@ in the form are the questions already in steps\02_questions.md and are not repea
 
 OPEN IN THE FORM NOW: none. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
 each answer under its question in steps\02_questions.md with what it changes, and his order of the
-work, Q132, gives the words of the message headed THE VIEWPOINTS COME FIRST that never reached this
-session. Q113 was ANSWERED on 2026-10-04 in the evening.
+work, Q132, gives in his words the order of the message headed THE VIEWPOINTS COME FIRST, whose own
+words never reached this session. Q113 was ANSWERED on 2026-10-04 in the evening.
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:
