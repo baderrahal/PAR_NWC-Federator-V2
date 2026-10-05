@@ -32,6 +32,7 @@ namespace Federator.Core.Report
             StopAfterFailures = RepeatedFailureGuard.DefaultThreshold;
             FarModelMillimetres = AlignmentCheck.DefaultFarModelMillimetres;
             SkipClashOffCoordinates = AlignmentCheck.DefaultSkipClashOffCoordinates;
+            MakeViewpoints = ViewpointRequest.DefaultMakeViewpoints;
 
             // Fixed on, and the window no longer sets them. A weekly run wants the page
             // and the units every time, so neither is a decision any more. F34.
@@ -256,6 +257,13 @@ namespace Federator.Core.Report
         /// more with it off so every other fix is proved on groups that clash.
         /// </summary>
         public bool SkipClashOffCoordinates { get; set; }
+
+        /// <summary>
+        /// Whether a group makes its saved viewpoints, F136, the box on the Clash step.
+        /// OFF by default, Bader's answer B to Q131, until F114 merges. Off, no group asks for
+        /// one and none can fail it.
+        /// </summary>
+        public bool MakeViewpoints { get; set; }
 
         /// <summary>How a discipline is read off a source file name.</summary>
         public ContainerNameSettings Names { get; set; }

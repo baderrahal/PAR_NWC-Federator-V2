@@ -214,7 +214,11 @@ workbook was written. The put back wrote nothing, because a Roamer, pid 46148, w
 and whose it was is UNKNOWN: 34 registry values, InfoCenter.log and six AutoSave changes, three
 of his autosaves of 1A04PK gone and three the run added, are listed in record.txt from line 3398,
 with the backup kept in runs\04\item1-C04\settings and his autosaves held in autosave-backup. Q128
-asked him, and he answered A on 2026-10-05, put it all back, carried out by the lead. M5: 14 keys and 2765 files listed in m5.txt,
+asked him, and he answered A on 2026-10-05, put it all back, carried out in part: the registry and
+InfoCenter.log put back at 13:05 with 0 differing after, his three autosaves copied back at 13:21 and
+read back, turn5\q128-after-diff.txt and q128-copy-his-three.txt, and the run's three left for him,
+the runner agent having reported its delete refused by Claude Code's permission system,
+turn5\q128-runner-return.txt. M5: 14 keys and 2765 files listed in m5.txt,
 which stays out of the evidence, and left.
 The evidence is masked into steps\runs\04\item1-C04 with no copy differing,
 turn5\mask-run04-item1-C04.txt. The loop's Navisworks was gone at 06:36:58 and Roamer read 0 every minute from 06:38:02 to
@@ -446,7 +450,8 @@ desktop.
 ## Next action
 
 SINCE BADER'S ORDER OF 2026-10-05, Q132, the new viewpoints come first, ahead of everything else in wave 2.
-1. F136 merged with the box unticked when the window opens, Q131 B
+1. F136 merged with the box unticked when the window opens, Q131 B. MERGED as PR 117, 6802e1a, at
+   14:08:32 on 2026-10-05. F131's add-in half began after it, by his order
 2. F131 with its add-in half and Q117 C and Q123 B, merged
 3. F132 with its add-in half and Q121 B, once probes P1 and P2 are read, merged
 4. F114 with its add-in half and Q119 B, once its probes are read, merged, ticking the box again
@@ -454,8 +459,16 @@ SINCE BADER'S ORDER OF 2026-10-05, Q132, the new viewpoints come first, ahead of
    on, and the VIEWS seconds and the total of each building against set 04, 1A04PK having no baseline
    of either
 6. Then the items below as planned, with F137 for Q111 and Q125 before the test of wave 1
-Q128 A is the lead's at once: the C04 run's changes put back from its backups while no Navisworks
-runs, each read back. Until F114 merges every test run has the viewpoints box unticked.
+Q128 A was carried out in part, the C04 paragraph above says what is left for Bader. Until F114 merges every test run has the viewpoints box unticked.
+Since then: F131's Core half was read with nothing blocking by both readers after its attempt 3,
+1968 Core tests at 11457ff, turn5\f131-a3-result.json. F114's Core half read CHANGES with 4 blocking
+points, turn5\f114-core-result.json. Its attempt 2 started at 12:18:59 and was with its developer at
+this record, and F136's attempt 2 for Q131 B started at 12:57:45, turn5\workflow-starts.txt. The probes of the Q114 design run on the branch fix-F114-probes: P5, P6 and P7 read off
+the DLLs, each yes, scan.md 5z-h to 5z-j, and P1 on Navisworks, NO, the swap of
+BLD-ST-Framing-vs-BLD-ST-Columns found 27 clashes where the original found 25, scan.md 5z-k, so Q133
+asks Bader before F132's add-in commit, the design's own rule. The chain was paused after P1 for the
+put back of Q128, P2 reading the pause, turn5\probes-1-result.json, and a new chain from P2 began
+at 13:22:20, turn5\workflow-starts.txt.
 
 Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 at 15:42. Merged so
 far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
@@ -608,7 +621,9 @@ What waits on Bader's answer. A finding moves here when it survives three fix at
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
 
-OPEN IN THE FORM NOW: none. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
+OPEN IN THE FORM NOW: Q133, written on 2026-10-05 from probe P1, a mirrored test that found 27 clashes
+where the test it mirrors found 25, the build going on with A until he answers, and the run's three
+autosaves of Q128 for him to remove. Before it, none. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
 each answer under its question in steps\02_questions.md with what it changes, and his order of the
 work, Q132, gives in his words the order of the message headed THE VIEWPOINTS COME FIRST, whose own
 words never reached this session. Q113 was ANSWERED on 2026-10-04 in the evening.
