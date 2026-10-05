@@ -1,6 +1,71 @@
 # log
 
 Newest entry at the top.
+## 2026-10-05 The loop, turn 5, F136 a tick box that switches the viewpoints off, written by the developer as the lead's delegate, built and pushed on its branch, no pull request
+
+Core tests 1912 passed, 0 failed, 0 skipped before, at main 35bd7fd,
+%LOCALAPPDATA%\NwcFederatorLoop\turn5\f136-core-tests-before.txt, whose line 1 is the commit,
+and 1922 passed, 0 failed, 0 skipped after, at 22ceb90, turn5\f136-core-tests-after.txt, and by
+the pre-commit of 22ceb90, turn5\f136-precommit-1.txt line 14. WriteTheCorrectedFile prints as
+Skipped in each and is the one [Explicit] test, in none of the counts. The full solution, dotnet
+build ParsonsNwcFederator.sln -c Release --no-incremental, at 22ceb90 with git status empty, 0
+warnings and 0 errors, turn5\f136-build.txt. check-locals and check-imports exit 0. Navisworks
+was not started, attached to or touched. Get-Process Roamer listed no process at 11:53:04,
+turn5\f136-roamer-before.txt, and read 0 at 12:33:42, turn5\f136-roamer-after.txt.
+
+### What was done
+
+- the root cause. Bader's word of 2026-10-05, turn5\q130-words.txt, is that every test run has
+  viewpoints switched off until F114 is merged, and the tool had no switch.
+  src\Federator.Addin\Engine\FederationEngine.cs at 35bd7fd, BuildViewpoints, lines 3433 to
+  3451, held back the viewpoints only where the clash was skipped or no report was built
+- the rule in Core, src\Federator.Core\Views\ViewpointRequest.cs. WhyNone names why a group asks
+  for no viewpoint, the box unticked first because it holds for every group, then the clash
+  skipped, then no report, or gives null when it asks for them. The setting is
+  ReportOptions.MakeViewpoints, on by default, Q131 default A as the lead named it. The label,
+  Make a saved viewpoint for every clash, seven words, the grey line, twelve words, and the line
+  under RUN SETTINGS sit beside it
+- failing first: ViewpointRequestTests, ten tests, run against WhyNone holding only the
+  engine's two checks and ReportOptions not setting the default, 3 failed and 7 passed,
+  turn5\f136-failing-first.txt
+- the engine calls WhyNone in place of its two checks, FederationEngine.cs lines 3436 and
+  3437. Unticked, it makes no viewpoint, sets ViewpointsRequested false so the group cannot
+  fail at them, F52's rule, and logs one line, VIEWS    the box Make a saved viewpoint for
+  every clash was unticked, so no viewpoint is made
+- the window. The box MakeViewpoints on 4. Clash, under the shared coordinates box,
+  FederatorWindow.xaml line 569, set off new ReportOptions().MakeViewpoints in the
+  constructor, FederatorWindow.xaml.cs line 1212, the way F112's box is set, which runs at
+  every open because FederatorPlugin.cs line 65 makes the window new each time. Its state is
+  named in the lines under RUN SETTINGS, line 1829, and at the start of the open file run,
+  line 2308, which has no RUN SETTINGS block
+- the rules, .claude\rules\core.md and .claude\rules\addin.md, the order line 43 and the F136
+  section of steps\01_next.md, and steps 400 to 415 of steps\03_bader_next.md, put first after
+  the install with the opening paragraph saying why
+
+### What remains
+
+- the add-in half, which no test here can prove: steps 400 to 415 on the local machine, or a
+  loop run with run.ps1 -Untick MakeViewpoints once a build carrying F136 is installed. Before
+  that the installed window has no such box and the driver stops UNTICK with nothing pressed
+- Q130 and Q131 are not in steps\02_questions.md on main at 35bd7fd. Their words here are the
+  lead's, and writing them in is the lead's
+- steps\tracker.csv does not exist on main at 35bd7fd, so no tracker row was written
+
+### Known bugs
+
+- SavedViewpoints.CanBuild, src\Federator.Addin\Engine\SavedViewpoints.cs line 59, has no
+  caller in src, read on 2026-10-05. It was there before F136 and is left for its own fix,
+  because nothing rides along
+- the shared coordinates box of F112 is not named in the lines under RUN SETTINGS, while this
+  box now is. Found while reading, not changed
+- the stand-in's window, tools\loop\StandIn\ToolWindow.cs, has no MakeViewpoints box, so a
+  stand-in run cannot prove the untick
+
+### What comes next
+
+- the reviewer and the breaker on fix-F136, then the pull request, then steps 400 to 415, and
+  every test run after the merge run with the box unticked until F114 is merged
+
 ## 2026-10-05 The loop, turn 5, F126 the window driver unticks a named tick box, built on 2026-10-04 and read by a reviewer and a breaker with nothing blocking under Q93, its harness run in the first gap on 2026-10-05, 52 passed and 0 failed
 
 F126's own commits changed nothing under src or tests: git diff --name-only 1ae6771 66dfdf5
