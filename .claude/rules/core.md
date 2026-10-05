@@ -149,7 +149,8 @@ file and they answer different questions:
   rule lists: Telecom Fixtures with Telephone Devices, and Electrical Fixtures
   with Devices. AFTER F87 IT IS 60, because Devices now asks for Nurse Call Devices
   and is no longer the same set as Electrical Fixtures. The Telecom pair is left
-  exactly as it is, waiting on the client, and F84 reporting it is correct
+  exactly as it is, waiting on the client, and F84 reporting it is correct. Since
+  Bader's answer B to Q121 the tests of those two sets pair as mirrors, F132, below
 
 The set level number cannot be used for the damaged export check. On Infra it
 gives 6, because the sets differ in how many copies of the one rule they hold,
@@ -295,89 +296,56 @@ and 6 does not read as broken.
   TEST IN THE FILE. Not creating a test changes what goes in the DOCUMENT and never what
   goes in the report, because the client's report is the whole matrix and a test missing
   from it reads as a test nobody ran rather than as a test that could not clash
-- A MIRRORED TEST IS NOT CREATED AND NOT RUN, F132, Bader's Q114 points 4 to 6 and 8, a
-  rule of the code for any project. A mirror is a test whose two sides are the same two
-  sets as another test's, swapped. Bader's point 4 takes the two to find the same clashes,
-  so the workbook, the viewpoints and every count would hold each of them twice. That is
-  his word and not a measurement, UNKNOWN until probe P1 runs. `Federator.Core.Clash
-  .MirrorRule` pairs the tests on their two locators either way round, Ordinal and never
-  trimmed, on the key the by design pairs are found on, `ByDesignPairs.KeyFor`, and on no
-  copy of it. Of each pair THE HIGHER PRIORITY IS KEPT, off the priority file the run
-  picked, A before B before C before none, and where equal the one first in the XML, by
-  its FileIndex. With no XML the tests saved in the document are read in the order the
-  document holds them, and the log says that order stands for the XML's. Every test in the
-  other order is a mirror of the one kept, and `ClashTestPlan.WithoutMirrors` moves it to
-  the skipped list under `ClashSkipReason.Mirror`, its reason naming the test kept, so the
-  creation plan never sees it, it is never run, and the workbook still carries its block
-  with that reason. A rule built over any list but that plan's own buildable tests is
-  refused, because it would move nothing while its lines said each mirror is not run. A
-  test with one set on both sides is no test's mirror. A SIDE NOT READ IS UNKNOWN: an empty
-  locator, UNKNOWN, or one of the two placeholders the add-in hands for every saved test's
-  sides, `SavedClashTest.LeftAsSaved` and `RightAsSaved`, which live in Core for that
-  reason. Read as sets the placeholders would make every saved test a duplicate of the
-  first, so a test with a side not read is never paired, never a mirror and never a
-  duplicate, and one MIRROR line says how many, once. A second test with the same two sets
-  in the kept test's own order is a DUPLICATE and not a mirror by his words, so it is named
-  and created and run as before. Two sets with different names are two sets even where
-  their rules read alike, Q121's default A, so BLD-EL-Telecom Fixtures and BLD-EL-Telephone
-  Devices make no pair. The MIRROR lines are one line counting the pairs among the tests
-  whose two sets were read, always, so a check of no test never reads as a check of every
-  test, then the line of the tests not read where there are any, then every pair whose two
-  tests differ in priority, test type or tolerance, with both values, the tolerance
-  compared within `TestDrift.ToleranceEpsilon`, then the pairs alike in those three, the
-  only three compared, five named and the rest counted, then the duplicates the same way.
-  The picked XML and the client's matrix hold no pair and no duplicate, which
-  `MirrorRuleTests.TheClientsMatrixHoldsNoPair` and `TheCorrectedMatrixHoldsNoPair` prove,
-  so on them the rule leaves every test where it was. The rule holds no number that shapes
-  a run. Its caller is the add-in half, which waits for probes P1 and P2, and until it
-  lands nothing in src calls the rule
-- A MIRROR ALREADY IN THE NWF IS NOT RUN, AND IS REMOVED ONLY WHERE THIS TOOL IS PROVED TO
-  HAVE CREATED IT AND NO PERSON SET A STATUS ON IT, F132, Bader's Q114 point 7, the one
-  place this tool removes a test, by his word. `Federator.Core.Clash.MirrorInDocument`
-  is the rule, over facts the add-in hands it. WHICH SAVED TESTS ARE MIRRORS: with an XML
-  picked the XML decides what this run creates and runs, so a saved test is a mirror where
-  its name is a mirror of the XML's, a test the XML holds and keeps is never one whatever
-  order the NWF saved them in, and a saved test the XML does not hold is a mirror where its
-  two sets are a running test of the XML swapped, or another such saved test's swapped
-  with the rule keeping the other. With no XML the rule over the saved tests decides. WHAT
-  PROVES THIS TOOL CREATED IT: its name is a mirror of the picked XML's and it is the very
-  test the XML would create, both locators Ordinal and every setting `TestDrift.Compare`
-  compares, the tolerance within its epsilon, the test type, merge composites and each
-  side's self intersect and primitive types, because that is how this tool creates a test
-  and nothing else on a test says who made it. A mirror a person tuned after this tool made
-  it is not proved, and neither is one whose name another saved test carries too, because
-  a removal that finds its test by name could take the other. THE PROOF NEEDS THE XML'S OWN
-  RULE: `MirrorInDocument.Find` refuses, loud, a rule holding any test read off the
-  document as the picked XML's, read by `MirrorRule.FirstReadOffTheDocument` off
-  `IsFromDocument`, which only `ClashTestPlan.FromDocument` sets, because a rule over the
-  saved tests matches each saved swap with itself and a person's test would be removed as
-  one created from an XML nobody picked. It refuses a test not read off the document as a
-  saved one, the same fault the other way round. With no XML the rule handed is null, and
-  a rule over no test at all holds no pair and removes nothing. So WITH NO XML NOTHING IS
-  EVER REMOVED, and a swap the picked XML does not hold, one that differs from the XML's
-  in its sets or a setting, or one whose sides were not read is left, the last said UNKNOWN
-  and never with a placeholder quoted as a set. WHOSE A STATUS IS, Q122's default A: every
-  status but New is a person's, `StatusesAPersonSet`, except a Reviewed carrying this
-  tool's own record still reading as ours, judged by `UndoAutoReview.Judge`, the judge the
-  Undo auto Reviewed button runs, so a mirror whose results a rerun moved to Active or
-  Resolved is left. A result that could not be read leaves it too, and a test with no
-  results carries no status. FAIL CLOSED: Core cannot tell a test with no results from a
-  walk of its results that never ran, threw or stopped part way, so nothing is removed
-  until the add-in says the walk reached its end, `MirrorInDocument.AllResultsAdded`, after
-  the last result, with how many results the test holds, counted off the document's own
-  count of the children at each level and never off the walk's own calls, and every one of
-  them was handed to `AddResult` or `ResultNotRead`. A walk that skipped a child or
-  swallowed a read leaves the test, and a result handed after that must be followed by it
-  again. A mirror left is never run and is named on a MIRROR line with the test it mirrors,
-  every reason it was left and its statuses with their counts, for the form. The same
-  reason a result could not be read is said once with its count, five named and the rest
-  counted. The line counts how many of this tool's Reviewed were Active before it moved
-  them, since a plain Active counts as a person's and Q122 is open on it. Where the walk is
-  not proved to have handed every result, what it handed is never given as all of them, and
-  with nothing handed the results are UNKNOWN, never none. Its caller is the add-in half,
-  which waits for probes P1 and P2, P2 being whether a test can be removed at all, and
-  until it lands nothing in src calls the rule.
-  Probe P3, a step for Bader, reads who set a status and is what Q122 would turn on
+- BOTH TESTS OF A MIRRORED PAIR ARE CREATED AND RUN, AND THEIR CLASHES ARE MERGED INTO THE
+  ONE KEPT, F132, Bader's Q114 points 4 to 6 and 8, his answer B to Q121 and his answer D to
+  Q133, a rule of the code for any project. A MIRROR is a test that asks another test's
+  question: its two sides are the same two sets swapped, or its sets carry the same rule
+  lists as the other test's, in either order. Two sets carry one rule list where
+  `SetWarnings.FindIdentical` finds them alike, the HEALTH block's rule and no copy of it,
+  over the picked XML's sets handed to `Federator.Core.Clash.MirrorRule.Of`. With no XML no
+  rule list was read, only the same two sets swapped pair, and a MIRROR line says so. A side
+  is matched by its locator, Ordinal and never trimmed, on the key the by design pairs are
+  found on, `ByDesignPairs.KeyFor`. Of each pair THE HIGHER PRIORITY IS KEPT, A before B
+  before C before none, and where equal the one first in the XML, by its FileIndex, and with
+  no XML the document's order stands for the XML's. WHY BOTH RUN: probe P1 measured that a
+  swap can find more than the test it mirrors, 27 on the swap of a test that found 25, all
+  25 among them, docs\history\scan.md 5z-k on the branch fix-F114-probes, so leaving the
+  mirror out could lose a clash. THE MIRROR'S NAME: a mirror of the XML is created under the
+  XML's name, one space and the ending of `MirrorSettings`, a setting whose default is his
+  word (mirror), and it stays in Clash Detective. A name that already ends with the space and
+  the ending gets no second one, so a rerun finds the mirror it made. A mirror read off the
+  document keeps its saved name, because this tool renames no test it did not create. Where
+  another test handed to the rule already carries the name with the ending, the mirror keeps
+  the XML's name and its line says why, so no two tests of one name are created.
+  `ClashTestPlan.WithMirrorsNamed` gives the plan those names, refusing a rule built over any
+  list but that plan's own buildable tests. THE MERGE, `Federator.Core.Report.MirrorMerge`,
+  one per test kept over all its mirrors, so a clash two mirrors find and the kept test does
+  not is added once: a clash is the unordered pair of its two items' keys, the add-in's to
+  read. A clash both find is kept once under the kept test and the mirror's copy is not
+  reported. A clash only a mirror finds is added to the kept test's report, marked
+  `ClashRow.FoundOnlyByMirror` with that mirror's name, so the workbook and the view can
+  name it, and the report's rows and every count are read off the merged list. FAIL CLOSED:
+  a mirror's clash with an item not read is not added and is said UNKNOWN, and a kept test's
+  clash with an item not read is counted, since up to that many of the clashes said found
+  by a mirror only may be its own. A group is refused, each clash under it is handed. The
+  MIRROR lines name, for each mirror, what each test found, how many both found and how many
+  the mirror only, then every clash the mirror alone found by its name, its mirror and its
+  two items, then what the report holds under the kept test. The COVERAGE SHEET'S NAMES,
+  F127's data, are `MirrorRule.CoverageNames`, each test of a pair once in the XML's order:
+  a mirror as a mirror of the test kept, how the two ask one question with the sets of one
+  rule list named, and the name it runs under, and a test kept with the mirrors whose
+  clashes are added to it. A test with one set on both sides, or two sets of one rule list,
+  is its own swap. A second test with the same two sets in the kept test's own order is a
+  DUPLICATE and not a mirror by his words, named and run as before. A SIDE NOT READ IS
+  UNKNOWN: an empty locator, UNKNOWN, or one of the placeholders `SavedClashTest.LeftAsSaved`
+  and `RightAsSaved`, so such a test is never paired, and one MIRROR line says how many. The
+  client's matrix holds no two tests swapped, and by rule list 117 pairs, from its two pairs
+  of sets of one rule list, `MirrorRuleTests.TheClientsMatrixHoldsNoSwapAnd117PairsByRuleList`.
+  The corrected matrix holds 59, the 59 of turn5\measure-mirrors.md, every test still
+  created and run, `TheCorrectedMatrixHolds59PairsByRuleListAndEveryTestStillRuns`. NOTHING
+  IS REMOVED FROM AN NWF: the removal of a mirror this tool made, Q114 point 7 and FR-183,
+  went with Q133 D, and so did MirrorInDocument. Its callers are the add-in half, which
+  waits for F131's merge, and until it lands nothing in src calls these rules
 - The Revit container inside an NWC is often a different building from the NWC.
   Where the building code parsed from the NWC name differs from the code in the
   Revit source name, report SOURCE MISMATCH naming both, and where one Revit
