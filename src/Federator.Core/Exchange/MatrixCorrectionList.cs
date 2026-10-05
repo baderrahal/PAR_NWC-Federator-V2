@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Text;
 
 namespace Federator.Core.Exchange
 {
@@ -20,7 +19,8 @@ namespace Federator.Core.Exchange
     /// A LIST THAT CANNOT BE READ IS SAID, NEVER AN EMPTY ONE. An empty list corrects nothing and
     /// looks like a file that needed nothing, so a list that cannot be opened, is not UTF-8 text
     /// or holds a line this does not know is Unread, carrying why, and the picked file is
-    /// corrected not at all and never in part. Never a throw.
+    /// corrected not at all and never in part. Never a throw. The file is read, and its lines
+    /// split, by ListFile, the one way the team map beside the XML is read too, F131.
     ///
     /// A LIST HOLDING NONE CORRECTS NOTHING, AS NO LIST DOES, and its first line says so, F116 on
     /// the breaker's finding: a file of no bytes, of comments or of blank lines. And a workset
@@ -37,13 +37,6 @@ namespace Federator.Core.Exchange
 
         /// <summary>One workset spelling measured in the project's models, a line of its own, Q102.</summary>
         internal const string WorksetMarker = "workset:";
-
-        /// <summary>
-        /// UTF-8 that refuses a byte it cannot read. The default puts a replacement character
-        /// in its place, and a measured spelling holding a no-break space would then ask a
-        /// workset no model carries and say nothing.
-        /// </summary>
-        private static readonly Encoding StrictUtf8 = new UTF8Encoding(false, true);
 
         private MatrixCorrectionList(
             string listPath,
@@ -131,25 +124,7 @@ namespace Federator.Core.Exchange
                     path, true, new List<SetRename>(), new List<string[]>(), new List<SourceFileRule>(), new List<string>(), null);
             }
 
-            try
-            {
-                using (StreamReader reader = new StreamReader(path, StrictUtf8, true))
-                {
-                    return Read(reader, path);
-                }
-            }
-            catch (DecoderFallbackException)
-            {
-                return Refused(path, "it is not UTF-8 text");
-            }
-            catch (IOException failed)
-            {
-                return Refused(path, "it could not be opened, " + failed.Message.TrimEnd('.'));
-            }
-            catch (UnauthorizedAccessException failed)
-            {
-                return Refused(path, "it could not be opened, " + failed.Message.TrimEnd('.'));
-            }
+            return ListFile.Read(path, reader => Read(reader, path), why => Refused(path, why));
         }
 
         /// <summary>
@@ -170,12 +145,12 @@ namespace Federator.Core.Exchange
             {
                 number++;
 
-                if (line.Trim().Length == 0 || line[0] == '#')
+                if (ListFile.Skipped(line))
                 {
                     continue;
                 }
 
-                string[] parts = PartsAfter(line, RenameMarker);
+                string[] parts = ListFile.PartsAfter(line, RenameMarker);
 
                 try
                 {
@@ -190,7 +165,7 @@ namespace Federator.Core.Exchange
                     return Refused(path, "line " + number + ", \"" + line + "\", is a rename that cannot be used: " + refused.Message);
                 }
 
-                parts = PartsAfter(line, CatchAllMarker);
+                parts = ListFile.PartsAfter(line, CatchAllMarker);
 
                 if (parts != null && parts.Length == 2 && parts[0].Length > 0 && parts[1].Length > 0)
                 {
@@ -198,7 +173,7 @@ namespace Federator.Core.Exchange
                     continue;
                 }
 
-                parts = PartsAfter(line, SourceFileMarker);
+                parts = ListFile.PartsAfter(line, SourceFileMarker);
 
                 if (parts != null && parts.Length >= 1 && parts[0].Length > 0)
                 {
@@ -216,7 +191,7 @@ namespace Federator.Core.Exchange
                     continue;
                 }
 
-                string spelling = After(line, WorksetMarker);
+                string spelling = ListFile.After(line, WorksetMarker);
 
                 if (!string.IsNullOrEmpty(spelling))
                 {
@@ -276,31 +251,5 @@ namespace Federator.Core.Exchange
             return new MatrixCorrectionList(
                 path, false, new List<SetRename>(), new List<string[]>(), new List<SourceFileRule>(), new List<string>(), why);
         }
-
-        /// <summary>
-        /// The parts after that marker and one space, split on a bar with a space each side,
-        /// or null where the line does not start with it. NEVER TRIMMED, because two of the
-        /// client's set names end in a space and a name is matched exactly, core.md.
-        /// </summary>
-        private static string[] PartsAfter(string line, string marker)
-        {
-            string rest = After(line, marker);
-
-            return rest == null ? null : rest.Split(new[] { Bar }, StringSplitOptions.None);
-        }
-
-        /// <summary>Everything after that marker and one space, never trimmed, or null where the line does not start with it.</summary>
-        private static string After(string line, string marker)
-        {
-            if (!line.StartsWith(marker + " ", StringComparison.Ordinal))
-            {
-                return null;
-            }
-
-            return line.Substring(marker.Length + 1);
-        }
-
-        /// <summary>What splits the parts of a line.</summary>
-        private const string Bar = " | ";
     }
 }
