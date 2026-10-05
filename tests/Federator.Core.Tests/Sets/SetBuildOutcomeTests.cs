@@ -396,7 +396,7 @@ namespace Federator.Core.Tests
         /// <summary>A judge for a group of the project the lists inside Core were measured on, FR-011.</summary>
         private static EmptySetJudge OnThisProject()
         {
-            return new EmptySetJudge(RevitWorksets.With(null), RevitWorksets.Project);
+            return new EmptySetJudge(RevitWorksets.With(null), RevitWorksets.Project, null);
         }
 
         private static readonly List<ReadCondition> AsksTheOldSpelling = new List<ReadCondition>

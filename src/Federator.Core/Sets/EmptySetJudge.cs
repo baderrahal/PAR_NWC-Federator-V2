@@ -21,11 +21,6 @@ namespace Federator.Core.Sets
     /// </summary>
     public sealed class EmptySetJudge
     {
-        internal EmptySetJudge(IList<string> worksets, string runProject)
-            : this(worksets, runProject, null)
-        {
-        }
-
         internal EmptySetJudge(IList<string> worksets, string runProject, IList<string> groupWorksets)
         {
             Worksets = new ReadOnlyCollection<string>(new List<string>(worksets ?? new List<string>()));

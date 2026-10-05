@@ -42,7 +42,7 @@ namespace Federator.Core.Tests.Sets
         /// <summary>A judge holding the names inside Core and those listed, for a group of that project.</summary>
         private static EmptySetJudge Judge(IEnumerable<string> listed, string project)
         {
-            return new EmptySetJudge(RevitWorksets.With(listed), project);
+            return new EmptySetJudge(RevitWorksets.With(listed), project, null);
         }
 
         private static string Joined(IList<string> lines)
