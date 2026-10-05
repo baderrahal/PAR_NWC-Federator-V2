@@ -8,13 +8,16 @@ namespace Federator.Core.Views
     /// The VIEWS TREE block, F114, Q114 point 19: the tree the VIEWS step left, priority, team
     /// pair, size folder and each view with its open clashes, the models it shows and hides and
     /// whether it read back, then what the step found before and did after, then the seven
-    /// checks, each FAILED line naming what broke it and each check that could not run saying
-    /// DID NOT RUN and why, then how many hold with those that did not run counted apart.
+    /// checks, each FAILED line naming what broke it, each check that could not run saying DID
+    /// NOT RUN and why, and each that ran without something it names saying RAN IN PART and
+    /// naming what it did not read, then how many hold with those that did not run, whole or in
+    /// part, counted apart, F114 attempt 3.
     ///
     /// The tree lines are cut at the TreeLinesInLog setting for the .log, which says it cut them,
     /// and the .tsv takes them whole, so a group of thousands of views cannot drown the log, Q108.
     /// The checks and the counts are never cut. The shown and hidden models of a view are read off
-    /// the document where the add-in read them back, and off the plan where it did not.
+    /// the document where the add-in read them back under PlannedTestView.Key, and off the plan
+    /// where it did not, which check 3 counts as a view it did not run for.
     /// </summary>
     public static class ViewsTree
     {
@@ -57,6 +60,8 @@ namespace Federator.Core.Views
 
             int holding = 0;
             int notRun = 0;
+            int inPart = 0;
+            int failed = 0;
 
             foreach (ViewsTreeCheck check in checks ?? new ViewsTreeCheck[0])
             {
@@ -64,20 +69,40 @@ namespace Federator.Core.Views
                 {
                     notRun++;
                     lines.Add("CHECK " + check.Number + "  " + check.Words + "  DID NOT RUN, " + check.NotRunWhy);
-                    continue;
                 }
-
-                if (check.Holds)
+                else
                 {
-                    holding++;
-                }
+                    string state;
 
-                lines.Add((check.Holds ? "CHECK " : "FAILED CHECK ") + check.Number + "  " + check.Words
-                    + "  " + check.Failures.Count + " broke it, " + check.Basis);
+                    if (check.Holds)
+                    {
+                        holding++;
+                        state = "CHECK ";
+                    }
+                    else if (check.Failures.Count > 0)
+                    {
+                        failed++;
+                        state = "FAILED CHECK ";
+                    }
+                    else
+                    {
+                        inPart++;
+                        state = "CHECK ";
+                    }
 
-                foreach (string failure in check.Failures)
-                {
-                    lines.Add("    " + failure);
+                    lines.Add(state + check.Number + "  " + check.Words + "  "
+                        + (check.Failures.Count == 0 && check.NotRead.Count > 0 ? "RAN IN PART, " : string.Empty)
+                        + check.Failures.Count + " broke it, " + check.Basis);
+
+                    foreach (string failure in check.Failures)
+                    {
+                        lines.Add("    " + failure);
+                    }
+
+                    foreach (string what in check.NotRead)
+                    {
+                        lines.Add("    not read: " + what);
+                    }
                 }
 
                 foreach (string note in check.Notes)
@@ -102,13 +127,25 @@ namespace Federator.Core.Views
 
             int all = checks == null ? 0 : checks.Count;
             string last = holding + " of " + all + " hold";
+            List<string> apart = new List<string>();
 
             if (notRun > 0)
             {
-                last += ", " + notRun + " did not run and " + (notRun == 1 ? "is" : "are") + " not counted as holding";
+                apart.Add(notRun + " did not run");
             }
 
-            if (holding + notRun < all)
+            if (inPart > 0)
+            {
+                apart.Add(inPart + " ran in part");
+            }
+
+            if (apart.Count > 0)
+            {
+                last += ", " + string.Join(" and ", apart.ToArray())
+                    + (notRun + inPart == 1 ? " and is not counted as holding" : ", none of them counted as holding");
+            }
+
+            if (failed > 0)
             {
                 last += ", each failure named above, and the group keeps its own result";
             }
@@ -244,7 +281,7 @@ namespace Federator.Core.Views
             IList<string> hiddenNames;
             List<ModelTeam> hidden;
 
-            if (facts.HiddenReadBack != null && facts.HiddenReadBack.TryGetValue(view.ToString(), out hiddenNames))
+            if (facts.HiddenReadBack != null && facts.HiddenReadBack.TryGetValue(view.Key, out hiddenNames))
             {
                 hidden = models.FindAll(model => hiddenNames.Contains(model.FileName));
             }

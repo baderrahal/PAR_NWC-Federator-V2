@@ -53,15 +53,24 @@ namespace Federator.Core.Tests
 
         private static TestViewPlanOutcome PlanOf(string lightsHome = "EL", ICollection<string> mirrors = null)
         {
-            ViewClash[] clashes =
+            return TestViewPlan.For(ClashesOf(lightsHome), new ViewTeams(Map(), Codes, Settings), mirrors ?? new string[0], Settings);
+        }
+
+        private static ViewClash[] ClashesOf(string lightsHome)
+        {
+            return new[]
             {
                 Clash(Ducts, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashPriority.A, SizeVerdict.Large, 1, 1, "ME", "ST"),
                 Clash(Ducts, "Clash2", "BLD-ME-Ducts", "BLD-ST-Columns", ClashPriority.A, SizeVerdict.Small, 2, 2, "ME", "ST"),
                 Clash(Lights, "Clash1", "BLD-EL-Lighting Fixtures", "BLD-ST-Floors", ClashPriority.A, null, 3, 3, lightsHome, "ST"),
                 Clash(Walls, "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashPriority.B, null, 4, 4, "AR", "ST")
             };
+        }
 
-            return TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), mirrors, Settings);
+        /// <summary>The same plan with no mirror rule handed to it.</summary>
+        private static TestViewPlanOutcome PlanWithNoMirrorRule()
+        {
+            return TestViewPlan.For(ClashesOf("EL"), new ViewTeams(Map(), Codes, Settings), null, Settings);
         }
 
         private static string[] MarkOf(IList<string> folders, string name, Point3 camera)
@@ -95,14 +104,34 @@ namespace Federator.Core.Tests
                     above.Add(folder);
                 }
 
-                int index = Next(next, view.FolderPath);
+                int index = Next(next, ViewPlace.FolderPath(view.Folders));
                 tree.After.Add(new ViewNode(view.Folders, view.Name, false, index, MarkOf(view.Folders, view.Name, Camera), 0, Camera, null, false));
                 tree.Written.Add(new WrittenView(view.Folders, view.Name, index, true, true));
-                tree.Hidden[view.ToString()] = FileNames(ShownModels.For(view.Pair, Models(), HomesOf(view)).Hidden);
-                tree.Painted[view.ToString()] = new List<ItemPath>(PaintPlan.For(view.Clashes).Solid);
+                tree.Hidden[ReadBackKey(view)] = FileNames(ShownModels.For(view.Pair, Models(), HomesOf(view)).Hidden);
+                tree.Painted[ReadBackKey(view)] = new List<ItemPath>(PaintPlan.For(view.Clashes).Solid);
             }
 
             return tree;
+        }
+
+        /// <summary>The key the add-in keeps a view's read backs under, the one a planned view gives.</summary>
+        private static string ReadBackKey(PlannedTestView view)
+        {
+            return view.Key;
+        }
+
+        /// <summary>The planned view at that written place.</summary>
+        private static PlannedTestView Planned(Tree tree, string place)
+        {
+            foreach (PlannedTestView view in tree.Plan.Views)
+            {
+                if (view.ToString() == place)
+                {
+                    return view;
+                }
+            }
+
+            throw new InvalidOperationException("no planned view at " + place);
         }
 
         private static int Next(Dictionary<string, int> next, string parent)
@@ -164,7 +193,6 @@ namespace Federator.Core.Tests
                 HiddenReadBack = tree.Hidden,
                 PaintedReadBack = tree.Painted,
                 TestsRun = tests,
-                Mirrors = new List<string>(),
                 KnownCodes = Codes,
                 TestNames = tests,
                 Settings = Settings
@@ -246,7 +274,7 @@ namespace Federator.Core.Tests
         public void Check3NamesAViewThatShowsAThirdTeamsModel()
         {
             Tree tree = Good();
-            tree.Hidden["A/Structure vs Mechanical/" + Ducts] = new List<string> { Model("EL").FileName };
+            tree.Hidden[ReadBackKey(Planned(tree, "A/Structure vs Mechanical/" + Ducts))] = new List<string> { Model("EL").FileName };
 
             ViewsTreeCheck check = Check(FactsOf(tree), 3);
 
@@ -264,16 +292,24 @@ namespace Federator.Core.Tests
             Assert.That(Joined(check.Notes), Does.Contain(Model("AR").FileName).And.Contain(Lights));
         }
 
+        /// <summary>
+        /// F114 attempt 3, the breaker's finding 0 of attempt 2. This test asserted the fault: with
+        /// nothing read back check 3 tested the plan against the plan and was counted as holding.
+        /// It did not run, and says so.
+        /// </summary>
         [Test]
-        public void Check3SaysWhereNothingWasReadBack()
+        public void Check3DidNotRunWhereNothingWasReadBack()
         {
             Tree tree = Good();
             tree.Hidden.Clear();
+            ViewsTreeFacts facts = FactsOf(tree);
+            IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+            string block = Joined(ViewsTree.Lines(facts, checks, 0));
 
-            ViewsTreeCheck check = Check(FactsOf(tree), 3);
-
-            Assert.That(check.Holds, Is.True);
-            Assert.That(check.Basis, Does.Contain("plan"));
+            Assert.That(checks[2].Ran, Is.False);
+            Assert.That(checks[2].Holds, Is.False);
+            Assert.That(block, Does.Contain("\nCHECK 3  no view shows a model of a third team  DID NOT RUN, the hidden models of none of the 4 views were read back"));
+            Assert.That(block, Does.Contain("\n6 of 7 hold, 1 did not run and is not counted as holding"));
         }
 
         [Test]
@@ -293,7 +329,7 @@ namespace Federator.Core.Tests
         public void Check4NamesAViewWhosePaintDoesNotReadBack()
         {
             Tree tree = Good();
-            tree.Painted["B/Architecture vs Structure/" + Walls] = new List<ItemPath> { new ItemPath(new[] { 0, 4 }) };
+            tree.Painted[ReadBackKey(Planned(tree, "B/Architecture vs Structure/" + Walls))] = new List<ItemPath> { new ItemPath(new[] { 0, 4 }) };
 
             ViewsTreeCheck check = Check(FactsOf(tree), 4);
 
@@ -304,8 +340,7 @@ namespace Federator.Core.Tests
         [Test]
         public void Check5NamesAMirrorThatWasRun()
         {
-            ViewsTreeFacts facts = FactsOf(Good());
-            facts.Mirrors = new List<string> { Walls };
+            ViewsTreeFacts facts = FactsOf(Good("EL", new[] { Walls }));
 
             ViewsTreeCheck check = Check(facts, 5);
 
@@ -334,14 +369,14 @@ namespace Federator.Core.Tests
         public void Check5DidNotRunWithNoMirrorRuleAndIsNotCountedAsHolding()
         {
             ViewsTreeFacts facts = FactsOf(Good());
-            facts.Mirrors = null;
+            facts.Plan = PlanWithNoMirrorRule();
             IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
             ViewsTreeCheck check = checks[4];
             string block = Joined(ViewsTree.Lines(facts, checks, 0));
 
             Assert.That(check.Ran, Is.False);
             Assert.That(check.Holds, Is.False);
-            Assert.That(check.NotRunWhy, Does.Contain("no mirror rule"));
+            Assert.That(check.NotRunWhy, Is.EqualTo("no mirror rule was handed to the plan, so whether a mirrored test ran or has a view is UNKNOWN"));
             Assert.That(block, Does.Contain("\nCHECK 5  no mirrored test is run or has a view  DID NOT RUN, no mirror rule"));
             Assert.That(block, Does.Contain("\n6 of 7 hold, 1 did not run"));
             Assert.That(block, Does.Not.Contain("7 of 7 hold"));
@@ -349,21 +384,26 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// F114 attempt 2, the breaker's finding 1. A mirror not run this week whose old results
-        /// the add-in read still got a view, and check 5 read only the tests run. It reads the tests
-        /// the plan made views for.
+        /// F114 attempt 3, the breaker's finding 4 of attempt 2. This replaces attempt 2's test of a
+        /// view the plan made for a mirror: the plan now takes the one mirror list, so it cannot
+        /// make one, and reading its views tested the plan against itself. A mirror not run this
+        /// week keeps this tool's view of an earlier run in the tree, and check 5 reads the walk.
         /// </summary>
         [Test]
-        public void Check5NamesAMirrorThatHasAViewThoughItWasNotRun()
+        public void Check5NamesAMirrorWhoseViewOfAnEarlierRunIsStillInTheTree()
         {
-            ViewsTreeFacts facts = FactsOf(Good());
-            facts.Mirrors = new List<string> { Walls };
+            Tree tree = Good("EL", new[] { Walls });
+            string[] folders = { "B", "Architecture vs Structure" };
+            string earlier = ToolViewMark.StampOf(new DateTime(2026, 9, 28, 10, 0, 0, DateTimeKind.Utc));
+            tree.After.Add(new ViewNode(folders, Walls, false, 0,
+                new[] { ToolViewMark.Body(earlier, folders, Walls, Camera, null, Settings) }, 0, Camera, null, false));
+            ViewsTreeFacts facts = FactsOf(tree);
             facts.TestsRun = new List<string> { Ducts, Lights };
 
             ViewsTreeCheck check = Check(facts, 5);
 
             Assert.That(check.Holds, Is.False);
-            Assert.That(Joined(check.Failures), Does.Contain(Walls + " is a mirror and has a view"));
+            Assert.That(Joined(check.Failures), Does.Contain("B/Architecture vs Structure/" + Walls + " is a view this tool made of a mirror"));
         }
 
         /// <summary>The plan takes the mirrors, so no mirrored test gets a view, Bader's point that there are no mirrored tests.</summary>
@@ -371,14 +411,13 @@ namespace Federator.Core.Tests
         public void Check5HoldsWhenThePlanTookTheMirrors()
         {
             ViewsTreeFacts facts = FactsOf(Good("EL", new[] { Walls }));
-            facts.Mirrors = new List<string> { Walls };
             facts.TestsRun = new List<string> { Ducts, Lights };
 
             ViewsTreeCheck check = Check(facts, 5);
 
             Assert.That(check.Ran, Is.True);
             Assert.That(check.Holds, Is.True, Joined(check.Failures));
-            Assert.That(check.Basis, Does.Contain("1 mirrors against the 2 tests the plan made views for and the 2 tests the clash step ran"));
+            Assert.That(check.Basis, Is.EqualTo("1 mirrors against the 2 tests the clash step ran and the 4 views of the walk after"));
         }
 
         /// <summary>The breaker's finding 5. The checks that read the walk after did not run with no walk.</summary>
@@ -469,11 +508,12 @@ namespace Federator.Core.Tests
             };
             ViewsTreeFacts facts = FactsOf(Good());
             facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), new string[0], Settings);
-            facts.HiddenReadBack = null;
 
             ViewsTreeCheck check = Check(facts, 3);
 
+            Assert.That(check.Ran, Is.True);
             Assert.That(check.Holds, Is.True, Joined(check.Failures));
+            Assert.That(check.Basis, Does.Contain("1 views, their hidden models read back off the document"));
             Assert.That(Joined(check.Notes), Does.Contain(Walls + " has 1 clashing items whose model could not be read"));
             Assert.That(Joined(check.Notes), Does.Contain("1A02MM-XX.nwc, which is no model of this group"));
         }
@@ -524,6 +564,143 @@ namespace Federator.Core.Tests
             Assert.That(Joined(check.Failures), Does.Contain(Ducts + "  Clash9"));
         }
 
+        // ---------- F114 attempt 3, a read back missing for a view is a check that did not run for it ----------
+
+        /// <summary>
+        /// The breaker's finding 0 of attempt 2. A view whose hidden models were not read back was
+        /// tested against the plan's own list, which cannot fail. Check 3 did not run for it.
+        /// </summary>
+        [Test]
+        public void Check3RanInPartWhereOneViewWasNotReadBackAndIsNotCountedAsHolding()
+        {
+            Tree tree = Good();
+            tree.Hidden.Remove(ReadBackKey(Planned(tree, "A/Structure vs Electrical/" + Lights)));
+            ViewsTreeFacts facts = FactsOf(tree);
+            IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+            string block = Joined(ViewsTree.Lines(facts, checks, 0));
+
+            Assert.That(checks[2].Holds, Is.False);
+            Assert.That(block, Does.Contain("\nCHECK 3  no view shows a model of a third team  RAN IN PART, 0 broke it, 3 of 4 views"));
+            Assert.That(block, Does.Contain("\n    not read: A/Structure vs Electrical/" + Lights + ", its hidden models were not read back"));
+            Assert.That(block, Does.Contain("\n6 of 7 hold, 1 ran in part and is not counted as holding"));
+        }
+
+        /// <summary>
+        /// The breaker's finding 0 of attempt 2, its second input, with its finding 6: read backs
+        /// kept under the written place, which two views can share, or any key but the one a
+        /// planned view gives, all miss. Check 3 did not run and says how many missed.
+        /// </summary>
+        [Test]
+        public void ReadBacksKeptUnderTheWrittenPlaceAreNotReadAndAreCounted()
+        {
+            Tree tree = Good();
+            ViewsTreeFacts facts = FactsOf(tree);
+            Dictionary<string, IList<string>> byWrittenPlace = new Dictionary<string, IList<string>>();
+
+            foreach (PlannedTestView view in tree.Plan.Views)
+            {
+                byWrittenPlace[view.ToString()] = FileNames(ShownModels.For(view.Pair, Models(), HomesOf(view)).Hidden);
+            }
+
+            facts.HiddenReadBack = byWrittenPlace;
+            ViewsTreeCheck check = Check(facts, 3);
+
+            Assert.That(check.Ran, Is.False);
+            Assert.That(check.Holds, Is.False);
+            Assert.That(Joined(check.Notes), Does.Contain("4 hidden read backs were handed in under a key no planned view gives, so none of them was read"));
+        }
+
+        /// <summary>The breaker's finding 0 of attempt 2, check 4: the painted half did not run for a view not read back.</summary>
+        [Test]
+        public void Check4RanInPartWhereNoPaintWasReadBack()
+        {
+            Tree tree = Good();
+            tree.Painted.Clear();
+            ViewsTreeFacts facts = FactsOf(tree);
+            IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+            string block = Joined(ViewsTree.Lines(facts, checks, 0));
+
+            Assert.That(checks[3].Holds, Is.False);
+            Assert.That(block, Does.Contain("\nCHECK 4  no clash is in two views  RAN IN PART, 0 broke it"));
+            Assert.That(block, Does.Contain("\n    not read: the painted items of all 4 views, none was read back"));
+            Assert.That(block, Does.Contain("\n6 of 7 hold, 1 ran in part"));
+        }
+
+        [Test]
+        public void Check4NamesTheViewWhosePaintWasNotReadBack()
+        {
+            Tree tree = Good();
+            tree.Painted.Remove(ReadBackKey(Planned(tree, "B/Architecture vs Structure/" + Walls)));
+
+            ViewsTreeCheck check = Check(FactsOf(tree), 4);
+
+            Assert.That(check.Holds, Is.False);
+            Assert.That(Joined(check.NotRead), Is.EqualTo("B/Architecture vs Structure/" + Walls + ", its painted items were not read back"));
+        }
+
+        /// <summary>
+        /// The reviewer's finding 2 and the breaker's finding 1 of attempt 2: checks 1 and 2 held
+        /// once one planned view of many was found marked. A planned view not found is one they
+        /// did not run for.
+        /// </summary>
+        [Test]
+        public void ChecksOneAndTwoRanInPartWhereAPlannedViewIsNotFoundMarked()
+        {
+            Tree tree = Good();
+            ViewsTreeFacts facts = FactsOf(tree);
+            facts.After = tree.After.FindAll(node => node.Name != Walls);
+            IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+
+            foreach (int number in new[] { 1, 2 })
+            {
+                Assert.That(checks[number - 1].Ran, Is.True, "check " + number);
+                Assert.That(checks[number - 1].Holds, Is.False, "check " + number);
+                Assert.That(Joined(checks[number - 1].NotRead),
+                    Is.EqualTo("B/Architecture vs Structure/" + Walls + ", not found marked by this run in the walk after"), "check " + number);
+            }
+        }
+
+        /// <summary>With a mirror to look for, check 5 run without the tests run or the walk after is a check that did not run for them.</summary>
+        [Test]
+        public void Check5RanInPartWithAMirrorAndNoTestsRunOrNoWalk()
+        {
+            ViewsTreeFacts facts = FactsOf(Good("EL", new[] { Walls }));
+            facts.TestsRun = null;
+            facts.After = null;
+
+            ViewsTreeCheck check = Check(facts, 5);
+
+            Assert.That(check.Ran, Is.True);
+            Assert.That(check.Holds, Is.False);
+            Assert.That(check.NotRead, Is.EqualTo(new[]
+            {
+                "the tests the clash step ran, which were not handed in",
+                "the walk of the tree after, which was not handed in"
+            }));
+        }
+
+        /// <summary>Q119 B with Q118 A: a view shows only its homes, so a model with no code it shows is one whose team is UNKNOWN.</summary>
+        [Test]
+        public void Check3DidNotRunForAViewShowingAModelWhoseCodeWillNotRead()
+        {
+            Tree tree = Good(string.Empty);
+            List<ModelTeam> models = new List<ModelTeam>(Models()) { Model(string.Empty) };
+
+            foreach (PlannedTestView view in tree.Plan.Views)
+            {
+                tree.Hidden[ReadBackKey(view)] = FileNames(ShownModels.For(view.Pair, models, HomesOf(view)).Hidden);
+            }
+
+            ViewsTreeFacts facts = FactsOf(tree);
+            facts.Models = models;
+
+            ViewsTreeCheck check = Check(facts, 3);
+
+            Assert.That(check.Holds, Is.False);
+            Assert.That(Joined(check.NotRead), Is.EqualTo("A/Structure vs Electrical/" + Lights + ", it shows "
+                + Model(string.Empty).FileName + " whose code will not read, so whether that is a third team is UNKNOWN"));
+        }
+
         // ---------- the block ----------
 
         [Test]
@@ -550,8 +727,7 @@ namespace Federator.Core.Tests
         [Test]
         public void AFailedCheckIsAFailedLineNamingWhatBrokeIt()
         {
-            ViewsTreeFacts facts = FactsOf(Good());
-            facts.Mirrors = new List<string> { Walls };
+            ViewsTreeFacts facts = FactsOf(Good("EL", new[] { Walls }));
             string block = Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0));
 
             Assert.That(block, Does.Contain("FAILED CHECK 5"));

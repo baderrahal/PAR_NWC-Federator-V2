@@ -6,15 +6,16 @@ using Federator.Core.Teams;
 namespace Federator.Core.Views
 {
     /// <summary>
-    /// Which models one view shows and which it hides, F114, Q114 point 13, with Q119 and Q118
-    /// by their defaults A.
+    /// Which models one view shows and which it hides, F114, Q114 point 13, on Bader's answer B
+    /// to Q119 on 2026-10-05, in his words: a view shows only the models its clashing items live
+    /// in. With Q118 by its answer A.
     ///
-    /// SHOWN: every model whose team is one of the pair's two, so a building whose mechanical
-    /// work is split over HV, FP and four ME models shows all six in a Mechanical pair, plus the
-    /// model each clashing item lives in, plus every model whose code will not read, which is
-    /// never hidden on a guess and is counted. A home in a model of a third team is shown and
-    /// named as an exception, the VIEWS TREE check 3 reports it. Every other model is hidden.
-    /// File names compare Ordinal, as the document holds them.
+    /// SHOWN: the model each clashing item lives in, and nothing else. Every other model is
+    /// hidden, a model of the pair's own two teams and a model whose code will not read among
+    /// them. A home in a model of a third team is shown and named as an exception, Q118 A, and
+    /// the VIEWS TREE check 3 reports it. A home whose model's code will not read is shown, and
+    /// whether it is of a third team is UNKNOWN, which check 3 says for its view. File names
+    /// compare Ordinal, as the document holds them.
     ///
     /// A HOME NOT KNOWN IS SAID, F114 attempt 2. A home that could not be read is counted, and one
     /// that names no model of the group is named, because whether the model of that clashing item
@@ -25,20 +26,19 @@ namespace Federator.Core.Views
         private readonly List<ModelTeam> shown = new List<ModelTeam>();
         private readonly List<ModelTeam> hidden = new List<ModelTeam>();
         private readonly List<ModelTeam> exceptions = new List<ModelTeam>();
-        private readonly List<ModelTeam> noCode = new List<ModelTeam>();
         private readonly List<string> homesNotInGroup = new List<string>();
 
         private ShownModels()
         {
         }
 
-        /// <summary>The models the view shows.</summary>
+        /// <summary>The models the view shows, the ones its clashing items live in.</summary>
         public ReadOnlyCollection<ModelTeam> Shown
         {
             get { return new ReadOnlyCollection<ModelTeam>(shown); }
         }
 
-        /// <summary>The models the view hides.</summary>
+        /// <summary>The models the view hides, every one no clashing item of it lives in.</summary>
         public ReadOnlyCollection<ModelTeam> Hidden
         {
             get { return new ReadOnlyCollection<ModelTeam>(hidden); }
@@ -48,12 +48,6 @@ namespace Federator.Core.Views
         public ReadOnlyCollection<ModelTeam> Exceptions
         {
             get { return new ReadOnlyCollection<ModelTeam>(exceptions); }
-        }
-
-        /// <summary>The models whose code would not read, shown and counted, never hidden on a guess.</summary>
-        public ReadOnlyCollection<ModelTeam> NoCode
-        {
-            get { return new ReadOnlyCollection<ModelTeam>(noCode); }
         }
 
         /// <summary>How many of the homes handed in could not be read, null or empty.</summary>
@@ -102,31 +96,29 @@ namespace Federator.Core.Views
 
                 fileNames.Add(model.FileName);
 
-                bool ofThePair = string.Equals(model.Team, pair.First, StringComparison.Ordinal)
-                    || string.Equals(model.Team, pair.Second, StringComparison.Ordinal);
-
-                if (model.Code.Length == 0)
-                {
-                    outcome.noCode.Add(model);
-                    outcome.shown.Add(model);
-                }
-                else if (ofThePair)
-                {
-                    outcome.shown.Add(model);
-                }
-                else if (homeNames.Contains(model.FileName))
-                {
-                    outcome.exceptions.Add(model);
-                    outcome.shown.Add(model);
-                }
-                else
+                if (!homeNames.Contains(model.FileName))
                 {
                     outcome.hidden.Add(model);
+                    continue;
+                }
+
+                outcome.shown.Add(model);
+
+                if (model.Code.Length > 0 && !IsOfThePair(model, pair))
+                {
+                    outcome.exceptions.Add(model);
                 }
             }
 
             outcome.homesNotInGroup.AddRange(homeNames.FindAll(home => !fileNames.Contains(home)));
             return outcome;
+        }
+
+        /// <summary>Whether the model's team is one of the pair's two, Ordinal, the one place a view's model is judged against its pair.</summary>
+        internal static bool IsOfThePair(ModelTeam model, TeamPair pair)
+        {
+            return string.Equals(model.Team, pair.First, StringComparison.Ordinal)
+                || string.Equals(model.Team, pair.Second, StringComparison.Ordinal);
         }
     }
 }

@@ -241,7 +241,7 @@ namespace Federator.Core.Tests
                 Clash("T", "Clash1", "BLD-AR-Walls", "BLD-ST-Columns", ClashStatus.New, ClashPriority.None));
 
             Assert.That(plan.Views[0].PriorityFolder, Is.EqualTo("No priority"));
-            Assert.That(plan.Views[0].FolderPath, Is.EqualTo("No priority/Architecture vs Structure"));
+            Assert.That(ViewPlace.FolderPath(plan.Views[0].Folders), Is.EqualTo("No priority/Architecture vs Structure"));
         }
 
         /// <summary>Point 10: two codes of one team, HV against PL, go in Mechanical vs Mechanical, and the group's own HV code is read.</summary>

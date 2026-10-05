@@ -12,9 +12,9 @@ namespace Federator.Core.Views
     ///
     ///   1  no team pair folder holds a test of another pair
     ///   2  no Over 150mm folder sits outside its own pair
-    ///   3  no view shows a model of a third team, the exceptions Q118 A allows named
+    ///   3  no view shows a model of a third team, the exceptions Q118 A allows named, read back
     ///   4  no clash is in two views, the plan's keys, and each view's painted items read back
-    ///   5  no mirrored test is run or has a view, against F132's mirror rule where one ran
+    ///   5  no mirrored test is run or has a view of this tool's, against the plan's mirror rule
     ///   6  every view and folder the inventory kept is there after, same place and name
     ///   7  no per clash viewpoint of an earlier run is left without a reason
     ///
@@ -26,11 +26,20 @@ namespace Federator.Core.Views
     /// and 2 with no walk, no run stamp or not one planned view found marked by this run, check 3
     /// with no models, checks 6 and 7 with no walk or no inventory, and 7 with no codes or test
     /// names, did not run. Each says why, and the block counts them apart from those that hold.
+    ///
+    /// A CHECK THAT RAN WITHOUT SOMETHING IT NAMES DID NOT RUN FOR THAT THING, F114 attempt 3, by
+    /// the same rule. A view whose read back is missing, a planned view not found marked by this
+    /// run in the walk, a view showing a model whose team is UNKNOWN, or a list check 5 needs that
+    /// was not handed in, is named in NotRead, and a check with any is never counted as holding.
+    /// Check 3 with no view read back did not run at all, because what is left is the plan's own
+    /// list, which cannot fail against the plan. A read back is read under PlannedTestView.Key
+    /// alone, and read backs handed in under any other key are counted in a note.
     /// </summary>
     public sealed class ViewsTreeCheck
     {
         private readonly List<string> failures = new List<string>();
         private readonly List<string> notes = new List<string>();
+        private readonly List<string> notRead = new List<string>();
 
         internal ViewsTreeCheck(int number, string words)
         {
@@ -59,6 +68,15 @@ namespace Federator.Core.Views
             get { return new ReadOnlyCollection<string>(notes); }
         }
 
+        /// <summary>
+        /// What the check ran without, each named: a view whose read back is missing, a planned
+        /// view not found in the walk, or a list not handed in. A check with any never holds.
+        /// </summary>
+        public ReadOnlyCollection<string> NotRead
+        {
+            get { return new ReadOnlyCollection<string>(notRead); }
+        }
+
         /// <summary>Why the check could not run, or null where it ran.</summary>
         public string NotRunWhy { get; private set; }
 
@@ -68,10 +86,10 @@ namespace Federator.Core.Views
             get { return NotRunWhy == null; }
         }
 
-        /// <summary>Whether it ran and nothing broke it. A check that did not run never holds.</summary>
+        /// <summary>Whether it ran over everything it names and nothing broke it. A check that did not run, whole or in part, never holds.</summary>
         public bool Holds
         {
-            get { return Ran && failures.Count == 0; }
+            get { return Ran && failures.Count == 0 && notRead.Count == 0; }
         }
 
         /// <summary>The seven checks over those facts, in their order.</summary>
@@ -104,6 +122,35 @@ namespace Federator.Core.Views
         internal void Note(string what)
         {
             notes.Add(what);
+        }
+
+        /// <summary>Names one thing the check ran without.</summary>
+        internal void CouldNotRead(string what)
+        {
+            notRead.Add(what);
+        }
+
+        /// <summary>
+        /// Names the views the check ran without because that read back is missing, each by its
+        /// written place, or all of them in one line where it ran without every one of several.
+        /// </summary>
+        internal void CouldNotReadViews(IList<string> places, int of, string readBack)
+        {
+            if (places.Count == 0)
+            {
+                return;
+            }
+
+            if (places.Count == of && of > 1)
+            {
+                notRead.Add("the " + readBack + " of all " + of + " views, none was read back");
+                return;
+            }
+
+            foreach (string place in places)
+            {
+                notRead.Add(place + ", its " + readBack + " were not read back");
+            }
         }
 
         /// <summary>Marks the check as not run, with why, where why is not null. True where it did not run.</summary>
@@ -149,6 +196,7 @@ namespace Federator.Core.Views
                 }
             }
 
+            read.NamePlannedNotFound(check);
             check.Basis = looked + " views of this run of " + read.Plan.Views.Count + " planned, off the document";
             return check;
         }
@@ -200,6 +248,7 @@ namespace Federator.Core.Views
                 }
             }
 
+            read.NamePlannedNotFound(check);
             check.Basis = looked + " size folders of this run, off the document";
             return check;
         }
@@ -215,7 +264,9 @@ namespace Federator.Core.Views
                 return check;
             }
 
+            int views = read.Plan.Views.Count;
             int offTheDocument = 0;
+            List<string> notReadBack = new List<string>();
 
             foreach (PlannedTestView view in read.Plan.Views)
             {
@@ -240,30 +291,43 @@ namespace Federator.Core.Views
                 }
 
                 IList<string> hidden = read.HiddenReadBack(view);
-                IList<ModelTeam> shown = new List<ModelTeam>(planned.Shown);
 
-                if (hidden != null)
+                if (hidden == null)
                 {
-                    offTheDocument++;
-                    shown = read.Models.FindAll(model => !hidden.Contains(model.FileName));
+                    notReadBack.Add(view.ToString());
+                    continue;
                 }
 
-                foreach (ModelTeam model in shown)
-                {
-                    bool ofThePair = string.Equals(model.Team, view.Pair.First, StringComparison.Ordinal)
-                        || string.Equals(model.Team, view.Pair.Second, StringComparison.Ordinal);
+                offTheDocument++;
 
-                    if (model.Code.Length > 0 && !ofThePair && !planned.Exceptions.Contains(model))
+                foreach (ModelTeam model in read.Models.FindAll(one => !hidden.Contains(one.FileName)))
+                {
+                    if (model.Code.Length == 0)
+                    {
+                        check.CouldNotRead(view + ", it shows " + model.FileName
+                            + " whose code will not read, so whether that is a third team is UNKNOWN");
+                        continue;
+                    }
+
+                    if (!ShownModels.IsOfThePair(model, view.Pair) && !planned.Exceptions.Contains(model))
                     {
                         check.Fail(view + " shows " + model.FileName + " of " + model.Team + ", a team of neither side");
                     }
                 }
             }
 
-            int views = read.Plan.Views.Count;
-            check.Basis = offTheDocument == views
-                ? views + " views, their hidden models read back off the document"
-                : offTheDocument + " of " + views + " views read back off the document, the rest off the plan's list";
+            read.NoteReadBacksOfNoView(check, read.Facts.HiddenReadBack == null ? null : read.Facts.HiddenReadBack.Keys, "hidden");
+            check.Basis = (offTheDocument == views ? views.ToString() : offTheDocument + " of " + views)
+                + " views, their hidden models read back off the document";
+
+            if (check.CouldNotRun(views > 0 && offTheDocument == 0
+                ? "the hidden models of none of the " + views + " views were read back, and the plan's own list cannot be tested against the plan"
+                : null))
+            {
+                return check;
+            }
+
+            check.CouldNotReadViews(notReadBack, views, "hidden models");
             return check;
         }
 
@@ -271,6 +335,7 @@ namespace Federator.Core.Views
         {
             ViewsTreeCheck check = new ViewsTreeCheck(4, "no clash is in two views");
             Dictionary<string, int> seen = new Dictionary<string, int>(StringComparer.Ordinal);
+            List<string> notPainted = new List<string>();
             int clashes = 0;
             int painted = 0;
 
@@ -293,6 +358,7 @@ namespace Federator.Core.Views
 
                 if (readBack == null)
                 {
+                    notPainted.Add(view.ToString());
                     continue;
                 }
 
@@ -318,48 +384,36 @@ namespace Federator.Core.Views
                 }
             }
 
+            read.NoteReadBacksOfNoView(check, read.Facts.PaintedReadBack == null ? null : read.Facts.PaintedReadBack.Keys, "painted");
+            check.CouldNotReadViews(notPainted, read.Plan.Views.Count, "painted items");
             check.Basis = "the plan's keys of " + clashes + " open clashes, and the painted items of "
                 + painted + " of " + read.Plan.Views.Count + " views read back off the document";
             return check;
         }
 
         /// <summary>
-        /// Check 5 reads the tests the plan made views for, since a mirror not run this week can
-        /// still hold the results of an earlier run in the document, and the tests the clash step ran.
+        /// Check 5 reads the plan's one mirror list against the tests the clash step ran and against
+        /// the walk after, since a mirror not run this week can keep this tool's view of an earlier
+        /// run in the tree, F114 attempt 3. The plan's own views are not read: the plan took the
+        /// same list, so they cannot hold a mirror's view and reading them would test the plan
+        /// against itself.
         /// </summary>
         private static ViewsTreeCheck NoMirrorRunOrViewed(Read read)
         {
             ViewsTreeCheck check = new ViewsTreeCheck(5, "no mirrored test is run or has a view");
-            ICollection<string> mirrors = read.Facts.Mirrors;
 
-            if (check.CouldNotRun(mirrors == null
-                ? "no mirror rule was handed in, F132 is not in this build, so whether a mirrored test ran or has a view is UNKNOWN"
-                : null))
+            if (check.CouldNotRun(read.Plan.MirrorRuleHandedIn
+                ? null
+                : "no mirror rule was handed to the plan, so whether a mirrored test ran or has a view is UNKNOWN"))
             {
                 return check;
             }
 
+            IList<string> mirrors = read.Plan.MirrorRule;
+
             if (mirrors.Count == 0)
             {
                 check.Note("the mirror rule found 0 mirrors in this matrix, so this check proves nothing here");
-            }
-
-            List<string> viewed = new List<string>();
-
-            foreach (PlannedTestView view in read.Plan.Views)
-            {
-                if (!viewed.Contains(view.Name))
-                {
-                    viewed.Add(view.Name);
-                }
-            }
-
-            foreach (string test in viewed)
-            {
-                if (mirrors.Contains(test))
-                {
-                    check.Fail(test + " is a mirror and has a view");
-                }
             }
 
             string ran;
@@ -367,6 +421,11 @@ namespace Federator.Core.Views
             if (read.Facts.TestsRun == null)
             {
                 ran = "not the tests the clash step ran, which were not handed in";
+
+                if (mirrors.Count > 0)
+                {
+                    check.CouldNotRead("the tests the clash step ran, which were not handed in");
+                }
             }
             else
             {
@@ -381,7 +440,40 @@ namespace Federator.Core.Views
                 }
             }
 
-            check.Basis = mirrors.Count + " mirrors against the " + viewed.Count + " tests the plan made views for and " + ran;
+            string walked;
+
+            if (read.Facts.After == null)
+            {
+                walked = "not the walk after, which was not handed in";
+
+                if (mirrors.Count > 0)
+                {
+                    check.CouldNotRead("the walk of the tree after, which was not handed in");
+                }
+            }
+            else
+            {
+                int views = 0;
+
+                foreach (ViewNode node in read.After)
+                {
+                    if (node.IsFolder)
+                    {
+                        continue;
+                    }
+
+                    views++;
+
+                    if (mirrors.Contains(node.Name) && read.JudgeOf(node).Owner == ViewOwner.Ours)
+                    {
+                        check.Fail(node + " is a view this tool made of a mirror");
+                    }
+                }
+
+                walked = "the " + views + " views of the walk after";
+            }
+
+            check.Basis = mirrors.Count + " mirrors against " + ran + " and " + walked;
             return check;
         }
 
@@ -491,11 +583,21 @@ namespace Federator.Core.Views
                 Inventory = facts.Inventory == null ? new List<InventoryItem>() : new List<InventoryItem>(facts.Inventory.Items);
                 Mine = string.IsNullOrEmpty(facts.RunStamp) ? new List<ViewNode>() : After.FindAll(node =>
                 {
-                    MarkJudgement judged = ToolViewMark.Judge(
-                        node.Folders, node.Name, node.Camera, node.Comments, node.Redlines, node.Guid, Settings);
-
+                    MarkJudgement judged = JudgeOf(node);
                     return judged.Owner == ViewOwner.Ours && string.Equals(judged.Mark.Stamp, facts.RunStamp, StringComparison.Ordinal);
                 });
+
+                HashSet<string> found = new HashSet<string>(StringComparer.Ordinal);
+
+                foreach (ViewNode node in Mine)
+                {
+                    if (!node.IsFolder)
+                    {
+                        found.Add(ViewPlace.Key(node.Folders, node.Name, false));
+                    }
+                }
+
+                PlannedNotFound = new List<PlannedTestView>(Plan.Views).FindAll(view => !found.Contains(view.Key));
             }
 
             internal ViewsTreeFacts Facts { get; private set; }
@@ -512,6 +614,49 @@ namespace Federator.Core.Views
 
             /// <summary>The views and folders of the walk this run marked.</summary>
             internal List<ViewNode> Mine { get; private set; }
+
+            /// <summary>The planned views not found among them, each a view checks 1 and 2 did not run for.</summary>
+            internal List<PlannedTestView> PlannedNotFound { get; private set; }
+
+            internal MarkJudgement JudgeOf(ViewNode node)
+            {
+                return ToolViewMark.Judge(node.Folders, node.Name, node.Camera, node.Comments, node.Redlines, node.Guid, Settings);
+            }
+
+            /// <summary>Names each planned view not found marked by this run in the walk after, on that check.</summary>
+            internal void NamePlannedNotFound(ViewsTreeCheck check)
+            {
+                foreach (PlannedTestView view in PlannedNotFound)
+                {
+                    check.CouldNotRead(view + ", not found marked by this run in the walk after");
+                }
+            }
+
+            /// <summary>Notes how many read backs of that kind were handed in under a key no planned view gives.</summary>
+            internal void NoteReadBacksOfNoView(ViewsTreeCheck check, IEnumerable<string> keys, string kind)
+            {
+                HashSet<string> planned = new HashSet<string>(StringComparer.Ordinal);
+
+                foreach (PlannedTestView view in Plan.Views)
+                {
+                    planned.Add(view.Key);
+                }
+
+                int stray = 0;
+
+                foreach (string key in keys ?? new string[0])
+                {
+                    if (!planned.Contains(key))
+                    {
+                        stray++;
+                    }
+                }
+
+                if (stray > 0)
+                {
+                    check.Note(stray + " " + kind + " read backs were handed in under a key no planned view gives, so none of them was read");
+                }
+            }
 
             /// <summary>The place an item is counted by, ViewPlace's one key.</summary>
             internal static string Place(ViewNode node)
@@ -546,7 +691,7 @@ namespace Federator.Core.Views
                     return "no run stamp was handed in, so this run's views cannot be told from the rest";
                 }
 
-                if (Plan.Views.Count > 0 && !Mine.Exists(node => !node.IsFolder))
+                if (Plan.Views.Count > 0 && PlannedNotFound.Count == Plan.Views.Count)
                 {
                     return "none of the " + Plan.Views.Count + " planned views was found marked by this run in the walk after,"
                         + " the tree lines say which were not written or not marked";
@@ -609,13 +754,13 @@ namespace Federator.Core.Views
             internal IList<string> HiddenReadBack(PlannedTestView view)
             {
                 IList<string> hidden;
-                return Facts.HiddenReadBack != null && Facts.HiddenReadBack.TryGetValue(view.ToString(), out hidden) ? hidden : null;
+                return Facts.HiddenReadBack != null && Facts.HiddenReadBack.TryGetValue(view.Key, out hidden) ? hidden : null;
             }
 
             internal IList<ItemPath> PaintedReadBack(PlannedTestView view)
             {
                 IList<ItemPath> painted;
-                return Facts.PaintedReadBack != null && Facts.PaintedReadBack.TryGetValue(view.ToString(), out painted) ? painted : null;
+                return Facts.PaintedReadBack != null && Facts.PaintedReadBack.TryGetValue(view.Key, out painted) ? painted : null;
             }
 
             internal bool IsLegacy(ViewNode node)

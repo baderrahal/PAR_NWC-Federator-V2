@@ -72,13 +72,17 @@ namespace Federator.Core.Views
             }
         }
 
-        /// <summary>The folders joined by a slash, ViewPlace's written place.</summary>
-        public string FolderPath
+        /// <summary>
+        /// The one key the add-in keeps this view's read backs under in ViewsTreeFacts, F114
+        /// attempt 3, ViewPlace's key of the view. Not the written place, which two views can share
+        /// where a folder or a test name holds a slash.
+        /// </summary>
+        public string Key
         {
-            get { return ViewPlace.FolderPath(Folders); }
+            get { return ViewPlace.Key(Folders, Name, false); }
         }
 
-        /// <summary>Its place, the key the read backs of ViewsTreeFacts are kept under.</summary>
+        /// <summary>Its written place, the way a person reads it in the log.</summary>
         public override string ToString()
         {
             return ViewPlace.Of(Folders, Name);

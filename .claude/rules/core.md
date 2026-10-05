@@ -1166,7 +1166,8 @@ and 6 does not read as broken.
   DN150 mm is no size, never 50 mm, because `SizeText` takes the whole run of digits after
   a letter with the word
 - ONE VIEW PER CLASH TEST OF ITS OPEN CLASHES, IN FOLDERS BY PRIORITY AND TEAM PAIR, Bader's
-  Q114 points 9 to 19, F114, its Core half, with Q117 to Q120 and Q123 by their defaults A.
+  Q114 points 9 to 19, F114, its Core half, with Q117, Q118, Q120 and Q123 by their answers
+  or defaults A and Q119 by Bader's answer B of 2026-10-05.
   `TestViewPlan` gives each test one view of its clashes at the `ViewStatuses` setting, New
   and Active, in the folder of its priority, A, B, C or No priority, always there, then its
   team pair, F131's `TeamPair` read through `ViewTeams`, the one place the views read a team,
@@ -1177,21 +1178,28 @@ and 6 does not read as broken.
   plan takes the tests F132's mirror rule names, a plain list of test names until fix-F132
   is merged, because a mirror not run this week can still hold an earlier run's results in
   the document. A mirror's clashes are left out and counted and the test named, and with no
-  mirror rule handed in the plan's lines say so. The views come in the order a person reads them, priority, pair in the map's order,
-  the pair's views, its size folder, test name Ordinal. `ShownModels` shows the pair's two
-  teams' models, the model each clashing item lives in, a third team's named as an
-  exception, and every model whose code will not read, and hides the rest. A home that could
-  not be read is counted and one naming no model of the group is named, since whether that
-  model is shown is UNKNOWN. `PaintPlan` paints
+  mirror rule handed in the plan's lines say so. The plan keeps the mirror list it was handed,
+  `MirrorRule`, the one copy of it the VIEWS TREE reads. The views come in the order a person
+  reads them, priority, pair in the map's order, the pair's views, its size folder, test name
+  Ordinal. A VIEW SHOWS ONLY THE MODELS ITS CLASHING ITEMS LIVE IN, Bader's answer B to Q119
+  on 2026-10-05: `ShownModels` shows the model each clashing item lives in and hides every
+  other, a model of the pair's own teams and a model whose code will not read among them. A
+  home in a third team's model is shown and named as an exception, Q118 A, and a home whose
+  model's code will not read is shown with its team UNKNOWN. A home that could not be read
+  is counted and one naming no model of the group is named, since whether that model is
+  shown is UNKNOWN. `PaintPlan` paints
   every first item red and every second green unless already red. `FramingBox` frames the
   open clash centres padded by `FramingMarginMillimetres`, chosen and not measured, through
   UnitTable, and gives a view of one clash no box so it keeps Clash Detective's own camera
 - ONLY WHAT THIS TOOL MADE IS EVER REMOVED, Q114 point 16, F114, by the design's four safety
   rules. THE PLACE OF A VIEW IS WRITTEN ONCE, `ViewPlace`: its folders and name joined by a
   slash for a person to read, and a key telling a folder from a view and a folder named A/B
-  from two folders, by which the mark, the plan, the walk, the block, the inventory and the
-  checks all compare a place. A second way of writing it would make every tool view read as
-  a person's. `ToolViewMark` writes one comment on every view and folder the tool makes, a
+  from two folders. The inventory, the block's state of a view, checks 1, 2, 6 and 7 and the
+  read backs compare a place by the key. The read backs of a view are kept under
+  `PlannedTestView.Key`, that key and no other shape, F114 attempt 3. The mark compares the
+  written place, so a view moved from folder A/B holding C to folder A holding B/C reads as
+  unmoved, row F114-K14. A second way of writing it would make every tool view read as a
+  person's. `ToolViewMark` writes one comment on every view and folder the tool makes, a
   sentence a person reads and a fingerprint of its place, name, camera and, once P10 holds,
   its Guid, each text written with its length so any name reads back exactly. It is the
   tool's only while that one comment is there and everything reads as written, and
@@ -1209,14 +1217,21 @@ and 6 does not read as broken.
   a fresh walk after the removals where the document can say and the plan where it cannot,
   and says which: no pair folder holds another pair's test, no Over 150mm outside its own
   pair, no view shows a third team's model beyond the named exceptions, no clash in two
-  views, no mirrored test run or given a view, read off the tests the plan made views for
-  and the tests run, every view and folder the inventory kept still there, and no per clash
-  viewpoint left without a reason. A failed check is a FAILED line naming what broke it and
-  the group keeps its own result. A CHECK THAT COULD NOT RUN IS NEVER COUNTED AS HOLDING:
-  check 5 with no mirror rule handed in, checks 1 and 2 with no walk, no run stamp or not one
-  planned view found marked by this run, check 3 with no models, checks 6 and 7 with no walk
-  or no inventory, and 7 with no codes or test names say DID NOT RUN and why, and the last
-  line counts them apart, CLAUDE.md, never report a check that did not run. The tests that
+  views, no mirrored test run or given a view of this tool's, read off the plan's one mirror
+  list against the tests run and the walk after, every view and folder the inventory kept
+  still there, and no per clash viewpoint left without a reason. A failed check is a FAILED
+  line naming what broke it and the group keeps its own result. A CHECK THAT COULD NOT RUN IS
+  NEVER COUNTED AS HOLDING: check 5 with no mirror rule handed to the plan, checks 1 and 2
+  with no walk, no run stamp or not one planned view found marked by this run, check 3 with
+  no models or no view's hidden models read back, checks 6 and 7 with no walk or no
+  inventory, and 7 with no codes or test names say DID NOT RUN and why, and the last line
+  counts them apart, CLAUDE.md, never report a check that did not run. A CHECK THAT RAN
+  WITHOUT SOMETHING IT NAMES DID NOT RUN FOR THAT THING and is never counted as holding
+  either, F114 attempt 3: a view whose read back is missing for check 3 or 4, a planned view
+  not found marked by this run for checks 1 and 2, a view showing a model whose team is
+  UNKNOWN for check 3, and the tests run or the walk after for check 5 where there are
+  mirrors. Each is named under the check, which reads RAN IN PART where nothing broke it, and
+  read backs handed in under a key no planned view gives are counted in a note. The tests that
   ran with no open clash are counted off the tests the clash step ran, UNKNOWN where those
   were not handed in, since a test with no clash at all never reaches the plan. `ViewsTree.Lines` cuts the tree at `TreeLinesInLog` for the
   .log and says so, the .tsv whole, and never cuts a check. `ViewsProgress` writes a VIEWS

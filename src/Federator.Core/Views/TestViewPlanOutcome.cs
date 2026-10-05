@@ -15,15 +15,31 @@ namespace Federator.Core.Views
         private readonly List<string> sizeUnknown = new List<string>();
         private readonly List<string> unknownSets = new List<string>();
         private readonly List<string> mirrored = new List<string>();
+        private readonly List<string> mirrorRule = new List<string>();
 
-        internal TestViewPlanOutcome(IList<ClashStatus> inScope, bool mirrorRuleHandedIn)
+        internal TestViewPlanOutcome(IList<ClashStatus> inScope, ICollection<string> mirrorRule)
         {
             InScope = new ReadOnlyCollection<ClashStatus>(new List<ClashStatus>(inScope));
-            MirrorRuleHandedIn = mirrorRuleHandedIn;
+            MirrorRuleHandedIn = mirrorRule != null;
+
+            if (mirrorRule != null)
+            {
+                this.mirrorRule.AddRange(mirrorRule);
+            }
         }
 
         /// <summary>Whether the mirror rule's tests were handed to the plan, so a mirror can be known.</summary>
         public bool MirrorRuleHandedIn { get; private set; }
+
+        /// <summary>
+        /// Every test the mirror rule names, each once, as the plan was handed them, and empty where
+        /// none was. The one mirror list of a run, F114 attempt 3: the VIEWS TREE check 5 reads it
+        /// here, and nothing hands it a second copy.
+        /// </summary>
+        public ReadOnlyCollection<string> MirrorRule
+        {
+            get { return new ReadOnlyCollection<string>(mirrorRule); }
+        }
 
         /// <summary>Each test the mirror rule names that the plan was handed clashes of, once, so it got no view.</summary>
         public ReadOnlyCollection<string> Mirrored

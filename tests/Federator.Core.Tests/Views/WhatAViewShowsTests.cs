@@ -8,12 +8,12 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// F114, Q114 point 13, what one view of a test's open clashes shows. The models of the
-    /// pair's two teams and the model each clashing item lives in are shown, Q119 by its default
-    /// A, a home in a third team's model is shown and named, Q118 by its default A, a model whose
-    /// code will not read is shown and counted, and every other model is hidden. The items are
-    /// red and green, and the camera is framed on a box over the open clash centres. The file
-    /// names here are sample data only.
+    /// F114, Q114 point 13, what one view of a test's open clashes shows. Only the models its
+    /// clashing items live in are shown, Bader's answer B to Q119 on 2026-10-05, a home in a third
+    /// team's model is shown and named, Q118 A, and every other model is hidden, a model of the
+    /// pair's own teams and a model whose code will not read among them. The items are red and
+    /// green, and the camera is framed on a box over the open clash centres. The file names here
+    /// are sample data only.
     /// </summary>
     [TestFixture]
     public class WhatAViewShowsTests
@@ -60,17 +60,32 @@ namespace Federator.Core.Tests
 
         // ---------- ShownModels ----------
 
+        /// <summary>
+        /// Q119 B: a view of Structure vs Electrical whose clashing items all live in the EL and ST
+        /// models shows those two and hides the rest.
+        /// </summary>
         [Test]
-        public void StructureVsElectricalShowsTheStructureAndElectricalModelsAndHidesTheRest()
+        public void StructureVsElectricalShowsTheModelsItsItemsLiveInAndHidesTheRest()
         {
             ModelTeam[] models = { Model("AR"), Model("EL"), Model("ME"), Model("ST") };
 
-            ShownModels shown = ShownModels.For(PairOf("ST", "EL"), models, new string[0]);
+            ShownModels shown = ShownModels.For(PairOf("ST", "EL"), models, new[] { Model("ST").FileName, Model("EL").FileName });
 
             Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "EL", "ST" }));
             Assert.That(CodesOf(shown.Hidden), Is.EqualTo(new[] { "AR", "ME" }));
             Assert.That(shown.Exceptions, Is.Empty);
-            Assert.That(shown.NoCode, Is.Empty);
+        }
+
+        /// <summary>Q119 B, Bader's words: a view shows only the models its clashing items live in, so a model of the pair's own team no item lives in is hidden.</summary>
+        [Test]
+        public void AModelOfThePairsTeamNoItemLivesInIsHidden()
+        {
+            ModelTeam[] models = { Model("AR"), Model("EL"), Model("ME"), Model("ST") };
+
+            ShownModels shown = ShownModels.For(PairOf("ST", "EL"), models, new[] { Model("EL").FileName });
+
+            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "EL" }));
+            Assert.That(CodesOf(shown.Hidden), Is.EqualTo(new[] { "AR", "ME", "ST" }));
         }
 
         /// <summary>A drainage item living in the ME model is in its own team, Mechanical, and is no exception.</summary>
@@ -81,7 +96,7 @@ namespace Federator.Core.Tests
 
             ShownModels shown = ShownModels.For(PairOf("AR", "DR"), models, new[] { Model("ME").FileName });
 
-            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "AR", "ME" }));
+            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "ME" }));
             Assert.That(shown.Exceptions, Is.Empty);
         }
 
@@ -93,9 +108,9 @@ namespace Federator.Core.Tests
 
             ShownModels shown = ShownModels.For(PairOf("ME", "EL"), models, new[] { Model("AR").FileName, string.Empty });
 
-            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "AR", "EL", "ME" }));
+            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "AR" }));
             Assert.That(CodesOf(shown.Exceptions), Is.EqualTo(new[] { "AR" }));
-            Assert.That(CodesOf(shown.Hidden), Is.EqualTo(new[] { "ST" }));
+            Assert.That(CodesOf(shown.Hidden), Is.EqualTo(new[] { "EL", "ME", "ST" }));
         }
 
         /// <summary>
@@ -113,26 +128,28 @@ namespace Federator.Core.Tests
 
             Assert.That(shown.HomesNotRead, Is.EqualTo(2));
             Assert.That(shown.HomesNotInGroup, Is.EqualTo(new[] { "elsewhere.nwc" }));
-            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "EL", "ME" }), "what is shown is unchanged");
+            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "ME" }), "only the home that was read and is of the group");
         }
 
+        /// <summary>Q119 B: a model whose code will not read is hidden where no item lives in it, and shown where one does.</summary>
         [Test]
-        public void AModelWhoseCodeWillNotReadIsShownAndCounted()
+        public void AModelWhoseCodeWillNotReadIsShownOnlyWhereAnItemLivesInIt()
         {
             ModelTeam odd = new ModelTeam("site survey.nwc", string.Empty, Map().TeamOf(string.Empty));
             ModelTeam[] models = { Model("AR"), odd, Model("ST") };
 
-            ShownModels shown = ShownModels.For(PairOf("ST", "ST"), models, new string[0]);
+            ShownModels away = ShownModels.For(PairOf("ST", "ST"), models, new[] { Model("ST").FileName });
+            ShownModels home = ShownModels.For(PairOf("ST", "ST"), models, new[] { Model("ST").FileName, "site survey.nwc" });
 
-            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { string.Empty, "ST" }));
-            Assert.That(shown.NoCode.Count, Is.EqualTo(1));
-            Assert.That(shown.NoCode[0].FileName, Is.EqualTo("site survey.nwc"));
-            Assert.That(CodesOf(shown.Hidden), Is.EqualTo(new[] { "AR" }));
+            Assert.That(CodesOf(away.Shown), Is.EqualTo(new[] { "ST" }));
+            Assert.That(CodesOf(away.Hidden), Is.EqualTo(new[] { "AR", string.Empty }));
+            Assert.That(CodesOf(home.Shown), Is.EqualTo(new[] { string.Empty, "ST" }));
+            Assert.That(home.Exceptions, Is.Empty, "its team is UNKNOWN, so it is no exception, and check 3 says so");
         }
 
-        /// <summary>1A04PK's ten models in Structure vs Mechanical: FP, HV, the four ME and the two ST shown, AR and EL hidden.</summary>
+        /// <summary>1A04PK's ten models in Structure vs Mechanical with its items in HV and the second ST: those two shown, the other eight hidden.</summary>
         [Test]
-        public void TenModelsOfOneBuildingShowBothTeamsWholeInStructureVsMechanical()
+        public void TenModelsOfOneBuildingShowOnlyTheTwoItsItemsLiveIn()
         {
             ModelTeam[] models =
             {
@@ -141,10 +158,12 @@ namespace Federator.Core.Tests
                 Model("ST", "000001"), Model("ST", "000002")
             };
 
-            ShownModels shown = ShownModels.For(PairOf("HV", "ST"), models, new string[0]);
+            ShownModels shown = ShownModels.For(
+                PairOf("HV", "ST"), models, new[] { Model("HV").FileName, Model("ST", "000002").FileName, Model("HV").FileName });
 
-            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "FP", "HV", "ME", "ME", "ME", "ME", "ST", "ST" }));
-            Assert.That(CodesOf(shown.Hidden), Is.EqualTo(new[] { "AR", "EL" }));
+            Assert.That(CodesOf(shown.Shown), Is.EqualTo(new[] { "HV", "ST" }));
+            Assert.That(shown.Shown[1].FileName, Is.EqualTo(Model("ST", "000002").FileName));
+            Assert.That(CodesOf(shown.Hidden), Is.EqualTo(new[] { "AR", "EL", "FP", "ME", "ME", "ME", "ME", "ST" }));
         }
 
         // ---------- PaintPlan ----------

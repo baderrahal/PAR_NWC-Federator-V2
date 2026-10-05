@@ -51,16 +51,18 @@ namespace Federator.Core.Views
             }
 
             IList<ClashStatus> inScope = OpenClashes.StatusesFor(settings.ViewStatuses);
-            TestViewPlanOutcome outcome = new TestViewPlanOutcome(inScope, mirrors != null);
             HashSet<string> mirrored = new HashSet<string>(StringComparer.Ordinal);
+            List<string> mirrorRule = mirrors == null ? null : new List<string>();
 
             foreach (string mirror in mirrors ?? new string[0])
             {
-                if (mirror != null)
+                if (mirror != null && mirrored.Add(mirror))
                 {
-                    mirrored.Add(mirror);
+                    mirrorRule.Add(mirror);
                 }
             }
+
+            TestViewPlanOutcome outcome = new TestViewPlanOutcome(inScope, mirrorRule);
 
             List<string> order = new List<string>();
             Dictionary<string, List<ViewClash>> byTest = new Dictionary<string, List<ViewClash>>(StringComparer.Ordinal);

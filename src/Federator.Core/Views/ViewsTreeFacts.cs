@@ -6,10 +6,11 @@ namespace Federator.Core.Views
     /// <summary>
     /// Everything the VIEWS TREE block and its seven checks read, F114, Q114 point 19, gathered by
     /// the add-in after the VIEWS step: the plan, the inventory, a fresh walk of the tree after
-    /// the removals, and what was read back off each view. A view is keyed by its written place,
-    /// ViewPlace.Of, which PlannedTestView.ToString gives. A read back that is null was not read,
-    /// and the check then rests on the plan and says so. A part the checks need that is null makes
-    /// those checks say they did not run, and they are never counted as holding.
+    /// the removals, and what was read back off each view. A read back is kept under one key,
+    /// PlannedTestView.Key, and under no other shape. A view whose read back is missing, because
+    /// the dictionary is null, holds no entry for it, or is kept under another key, is a view the
+    /// check did not run for, F114 attempt 3, and a check with such a view is never counted as
+    /// holding. A part the checks need that is null makes those checks say they did not run.
     /// </summary>
     public sealed class ViewsTreeFacts
     {
@@ -37,21 +38,14 @@ namespace Federator.Core.Views
         /// <summary>This run's stamp, as its marks carry it.</summary>
         public string RunStamp { get; set; }
 
-        /// <summary>Per view, the file names of the models it reads back as hiding, probe P19, or null where not read.</summary>
+        /// <summary>Per view by PlannedTestView.Key, the file names of the models it reads back as hiding, probe P19, or null where not read.</summary>
         public IDictionary<string, IList<string>> HiddenReadBack { get; set; }
 
-        /// <summary>Per view, the items it reads back as painted, or null where not read.</summary>
+        /// <summary>Per view by PlannedTestView.Key, the items it reads back as painted, or null where not read.</summary>
         public IDictionary<string, IList<ItemPath>> PaintedReadBack { get; set; }
 
         /// <summary>The tests the clash step ran, or null where not handed in, which makes the tests with no open clash UNKNOWN.</summary>
         public ICollection<string> TestsRun { get; set; }
-
-        /// <summary>
-        /// The tests the mirror rule says are mirrors and not run, F132, the same list the plan was
-        /// handed. A plain list of test names until fix-F132 is merged, and null where no mirror
-        /// rule ran, so check 5 did not run.
-        /// </summary>
-        public ICollection<string> Mirrors { get; set; }
 
         /// <summary>The codes a per clash viewpoint's pair folder is read against.</summary>
         public ICollection<string> KnownCodes { get; set; }
