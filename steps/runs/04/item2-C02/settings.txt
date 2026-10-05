@@ -1,0 +1,54 @@
+  the AutoSave compare reads autosave-before.txt back, 199 files
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\AutoRecover  FileWas  old String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\AutoRecover  ID  old DWord 32136  new DWord 29372
+  22.0\AutoRecover  LastSaved  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave520.nwf, sha1 0C07FB2F7BF5>  new String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave528.nwf, sha1 E21C3964B7FF>
+  22.0\AutoRecover  Time  old QWord 1791169169  new QWord 1791177697
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 155  new DWord 156
+  22.0\Recent File List\1  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134356115425356119  new QWord 134356481145729120
+  22.0\Recent File List\1  Path  old String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134355688037141969  new QWord 134355688045001624
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134356115377372880  new QWord 134356115425356119
+  22.0\Recent File List\2  Path  old String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc"  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\3  LastOpened  old QWord 134355877224561124  new QWord 134356115377372880
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\4  LastOpened  old QWord 134355851862024337  new QWord 134355877224561124
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\5  LastOpened  old QWord 134355688077859683  new QWord 134355851862024337
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134355688069609653  new QWord 134355688077859683
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134355688061539629  new QWord 134355688069609653
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134355688053453579  new QWord 134355688061539629
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134355688045001624  new QWord 134355688053453579
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>
+  registry: 35 values or keys differ from the backup
+  registry: 35 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 68868 bytes, sha256 4634F777C08B, written 2026-10-05 06:36:57  new 69523 bytes, sha256 808283CD6892, written 2026-10-05 11:38:12
+  files: 1 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  files: 1 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave0.nwf  old 65627 bytes, sha256 8120CE8E6FEE, written 2026-09-20 15:13:20  new absent
+  AutoSave AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave526.nwf  old absent  new 41317701 bytes, sha256 777AB3786830, written 2026-10-05 08:21:26
+  AutoSave AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave527.nwf  old absent  new 41317699 bytes, sha256 404251409B42, written 2026-10-05 08:21:31
+  AutoSave AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave528.nwf  old absent  new 41317702 bytes, sha256 A926007F12FF, written 2026-10-05 08:21:36
+  AutoSave files added, changed, gone or unreadable: 4
+---- his AutoSave folder, Q86 ----
+  AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave0.nwf GONE, put back from autosave-backup, read back, sha256 matches
+  AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave526.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave527.nwf ADDED by the run, removed, read back gone
+  AutoSave\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave528.nwf ADDED by the run, removed, read back gone
+  AutoSave: 4 put back as they were and read back, 0 not as they were before the run

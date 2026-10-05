@@ -255,6 +255,31 @@ its edits in turn5\pr113-body-edits.json, no second commit was made,
 turn5\precommit-records-17b.txt, and the points are made in the record after it. The lead will run
 its records commands so that they stop at their first failure and merge only in a call of their
 own after the commit is read back.
+BADER'S LANE, Q129, 2026-10-05 in the morning: a work tracker and a code health gate beside the fixes,
+his words under Q129, F133, F134 and F135 with FR-191 to FR-193. It began at 09:46:09 as a
+workflow of the lead's, turn5\lane-start-times.txt: F133 being built by a fourth worker in its own
+worktree, wt-f133, while nine counts are being measured on main 6fff40a in scratch copies under
+%LOCALAPPDATA%\NwcFederatorLoop\health, none finished at this record, each to be checked by a second
+reader. F132 attempt 3 was read with nothing blocking by its reviewer and its
+breaker, 1986 Core tests passed at 190e7f1 and the build 0 warnings and 0 errors,
+turn5\f132c-result.json, and its add-in half waits for the probes P1 and P2. F114's Core half took
+the slot it freed, its developer from 09:46:44, the viewpoints first by Bader's word.
+THE WEEKLY BASELINE ON C02 STOPPED BY BADER, Q130. What it reached, in one line, as he asked: the C02 weekly ran its 528 saved tests to 2939 clashes by 08:21:31, its census before VIEWS reading 2939 results and 2847 views at 08:22:25, then sat in VIEWS with no log line after 08:23:01 for 3 h 15 min until its Navisworks was read gone at 11:38:13, and wrote its 2939 clash pictures but no workbook, NWF or NWD of its own, steps\runs\04\item2-C02, run log lines 185, 284, 279 and 287, outputs.txt. On his word the lead closed it by its own
+script, turn5\close-c02-weekly.ps1 and close-c02-weekly.txt: the proofs CloseOwn makes, then a copy
+of the Kill of nw-guard.ps1's CloseAdopted, not a call of it, sent to the adopted pid 29372 just after
+11:38:11.699 and read gone at 11:38:13.084. That copy stands against the rule of one copy of every
+guard, register row T5-R-CLOSE. Dispose did not come first, the lead's reading being that run.ps1
+was blocked in its call into the add-in and that nothing outside it reached what it would dispose. run.ps1 then put back 35 registry
+values, InfoCenter.log and the AutoSave folder, each read back, with no other Navisworks in its
+record, record.txt lines 1702 to 1775, VERDICT: STOPPED, the adopted Navisworks ended by itself, line
+1788, its own words for a close it did not make. Evidence masked into steps\runs\04\item2-C02 with no
+copy differing, turn5\mask-run04-item2-C02.txt. Its workbook read-out is item 1's workbook: the
+workbook, NWF, NWD and html in the folder were written at 21:09 on 2026-10-04, and its 2939 pictures
+by this run from 07:29. By the lead's reading of his word, no test run is made until F136, the
+viewpoints switch, FR-194, is merged and installed, and the C04 weekly is not run. The Shift
+measurement ran at 11:45 on a stand-in window of the lead's own once Roamer read 0: none of the
+three ways open to the driver, which never sends real input, carried Shift,
+turn5\measure-shift-driver-result.md, so F130's test goes to Bader as numbered steps.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -430,13 +455,15 @@ and planned in the turn 5 entry of steps\log.md headed with them.
 1. The baseline, set 04: item 1 on C02 rerun from F125's commit 5fa98a8 at 18:55, then item 1 on
    C04, item 2 on C02 and item 2 on C04, each after a fresh Roamer read, then
    steps\runs\04\findings.md, short, in the shape of set 03's, merged within the hour. The hung
-   first attempt is kept as steps\runs\04\item1-C02-hung
+   first attempt is kept as steps\runs\04\item1-C02-hung. Item 2 on C02 STOPPED by Bader at 11:38
+   on 2026-10-05, Q130, and item 2 on C04 is not run, so the set closes with findings.md now
 2. Wave 1: F125's second pass and F126, the driver unticking a named box, each read under Q93
    and merged. F125 MERGED as PR 102, F112 MERGED as PR 106 and F116 MERGED as PR 98 with this
    project's list in exchange\, Bader told at about 04:27. F126's harness ran in the first gap
    on 2026-10-05 against its stand-in window, 52 passed and 0 failed on the branch, and F126
    MERGED as PR 112 at 08:23:04
-3. The test of wave 1: main installed in place as on 2026-10-01 and its stamp read back, both
+3. The test of wave 1, after F136 the viewpoints switch is merged, Q130, with the box unticked in
+   every run: main installed in place as on 2026-10-01 and its stamp read back, both
    buildings run, item 1 and item 2, and a building whose models are off the shared coordinates
    run once more with the rule switched off by its tick box. Compared with the baseline through
    turn5\wave-compare.py and F104's documents read: each group's result, the clash count per
@@ -449,7 +476,8 @@ and planned in the turn 5 entry of steps\log.md headed with them.
 5. To measure from the baseline before wave 2: which property and value name Generic Models on
    1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test of the coverage,
    why the Shift range fails in the window code, and whether the driver can test a Shift click
-   without real input
+   without real input, measured on 2026-10-04 and 2026-10-05, turn5\measure-shift.md and
+   measure-shift-driver-result.md
 6. Wave 2 in three parts since Bader's views by team, Q114: 2a F127 coverage first with F132
    mirrored tests and F115 sets, 2b F131 teams, F114 views reshaped by Q114 and F128 generic
    models, 2c F118 workbook and report. Q114's measurements first, turn5\measure-mirrors.md,
@@ -461,7 +489,11 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    readers asked for changes, F115 one blocking point from each reader, F131 three from each with
    one found by both, turn5\wave2-f115-f131-result.json. Attempt 2 of both is with developers
    from about 08:46 on 2026-10-05, their first Roamer reads at 08:46:44 and 08:47:00,
-   turn5\f131-a2-roamer-before.txt and f115-a2-roamer-before.txt
+   turn5\f131-a2-roamer-before.txt and f115-a2-roamer-before.txt. F132 attempt 3 read with nothing
+   blocking, F114's Core half with a developer from 09:46:44
+7. Bader's lane of Q129 beside the waves, a fourth worker: F133 the tracker, F134 the code health gate
+   from the nine counts measured first, and F135 the analyser settings merged alone at a quiet moment,
+   in that order by the lead's choice. Three lines in the tab when the tracker is live and three when the gate is live
 Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes. The
 keep-awake is checked every 30 minutes.
 
