@@ -43,6 +43,22 @@ namespace Federator.Core.Exchange
         private static readonly object Gate = new object();
         private static List<string> known;
         private static List<string[]> decided;
+        private static bool resourceFound;
+
+        /// <summary>
+        /// Whether the list could be READ out of the DLL at all, FR-012, shaped like
+        /// RevitCategories.ResourceFound. A list missing or not readable read the same as an
+        /// empty one, with no flag and no line, so the export check named the pairs a person
+        /// already decided are not typos with nothing saying why.
+        /// </summary>
+        public static bool ResourceFound
+        {
+            get
+            {
+                Load();
+                return resourceFound;
+            }
+        }
 
         /// <summary>
         /// Every workset spelling measured for a picked clash XML: the names this list holds, then
@@ -114,7 +130,7 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>One decided line, split on the marker and the bar. A line that will not split is skipped.</summary>
-        private static void AddDecided(string line)
+        private static void AddDecided(string line, List<string[]> into)
         {
             string both = line.Substring(DecidedMarker.Length);
             int bar = both.IndexOf('|');
@@ -129,13 +145,14 @@ namespace Federator.Core.Exchange
 
             if (first.Length > 0 && second.Length > 0)
             {
-                decided.Add(new[] { first, second });
+                into.Add(new[] { first, second });
             }
         }
 
         /// <summary>
-        /// Reads the list once. A resource that cannot be read is an EMPTY list and never
-        /// a throw, and an empty list corrects nothing, which is the safe answer.
+        /// Reads the list once, out of the DLL, through Read. A resource that cannot be read is
+        /// an EMPTY list and never a throw, and an empty list corrects nothing, which is the
+        /// safe answer, and ResourceFound says it was not read, FR-012.
         /// </summary>
         private static List<string> Load()
         {
@@ -146,50 +163,69 @@ namespace Federator.Core.Exchange
                     return known;
                 }
 
-                known = new List<string>();
-                decided = new List<string[]>();
+                List<string> names;
+                List<string[]> pairs;
 
-                try
+                using (Stream stream = typeof(RevitWorksets).Assembly.GetManifestResourceStream(ResourceName))
                 {
-                    Assembly assembly = typeof(RevitWorksets).Assembly;
+                    resourceFound = Read(stream, out names, out pairs);
+                }
 
-                    using (Stream stream = assembly.GetManifestResourceStream(ResourceName))
+                decided = pairs;
+                known = names;
+                return known;
+            }
+        }
+
+        /// <summary>
+        /// The list read from that stream, the names and the decided pairs, and whether it was
+        /// read, FR-012. A null stream is a list not in the DLL and a stream that throws is a list
+        /// not read: each answers false with both lists empty, and never throws, because a
+        /// health check is information and information never stops a run. The one reader of
+        /// the list, so the DLL's copy and a test's are read by the same lines.
+        /// </summary>
+        internal static bool Read(Stream stream, out List<string> names, out List<string[]> pairs)
+        {
+            names = new List<string>();
+            pairs = new List<string[]>();
+
+            if (stream == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string line;
+
+                    while ((line = reader.ReadLine()) != null)
                     {
-                        if (stream == null)
+                        if (line.Length == 0 || line[0] == '#')
                         {
-                            return known;
+                            continue;
                         }
 
-
-                        using (StreamReader reader = new StreamReader(stream))
+                        if (line.IndexOf(DecidedMarker, StringComparison.Ordinal) == 0)
                         {
-                            string line;
-
-                            while ((line = reader.ReadLine()) != null)
-                            {
-                                if (line.Length == 0 || line[0] == '#')
-                                {
-                                    continue;
-                                }
-
-                                if (line.IndexOf(DecidedMarker, StringComparison.Ordinal) == 0)
-                                {
-                                    AddDecided(line);
-                                    continue;
-                                }
-
-                                known.Add(line);
-                            }
+                            AddDecided(line, pairs);
+                            continue;
                         }
+
+                        names.Add(line);
                     }
                 }
-                catch (Exception)
-                {
-                    known = new List<string>();
-                decided = new List<string[]>();
-                }
 
-                return known;
+                return true;
+            }
+            catch (Exception)
+            {
+                // Not swallowed: the answer is false, ResourceFound carries it, and the EXPORT
+                // CHECK block says the decided pairs are UNKNOWN, FR-012.
+                names = new List<string>();
+                pairs = new List<string[]>();
+                return false;
             }
         }
     }

@@ -153,6 +153,67 @@ namespace Federator.Core.Tests
             Assert.That(worksets.Count, Is.EqualTo(30));
         }
 
+        /// <summary>A stream whose every read throws, the list that is in the DLL and will not read.</summary>
+        private sealed class ThrowingStream : MemoryStream
+        {
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                throw new IOException("this stream will not read");
+            }
+        }
+
+        /// <summary>
+        /// A LIST NOT IN THE DLL IS NOT AN EMPTY LIST, FR-012. It read the same as one, with no
+        /// flag and no line, so the export check could name the two pairs a person already
+        /// decided are not typos and the empty set judge could not tell, with no reason. The
+        /// seam reads a list from a given stream and says whether it was read.
+        /// </summary>
+        [Test]
+        public void ANullStreamIsAListNotFoundAndNeverAnEmptyOne()
+        {
+            List<string> names;
+            List<string[]> pairs;
+
+            Assert.That(RevitWorksets.Read(null, out names, out pairs), Is.False);
+            Assert.That(names, Is.Empty);
+            Assert.That(pairs, Is.Empty);
+        }
+
+        /// <summary>A stream that throws is a list not read, said and never thrown, FR-012.</summary>
+        [Test]
+        public void AStreamThatThrowsIsAListNotRead()
+        {
+            List<string> names;
+            List<string[]> pairs;
+
+            using (ThrowingStream stream = new ThrowingStream())
+            {
+                Assert.That(RevitWorksets.Read(stream, out names, out pairs), Is.False);
+            }
+
+            Assert.That(names, Is.Empty);
+            Assert.That(pairs, Is.Empty);
+        }
+
+        /// <summary>The list in the DLL is found and read, the names and the two decided pairs, FR-012.</summary>
+        [Test]
+        public void TheListInTheDllIsFoundAndRead()
+        {
+            Assert.That(RevitWorksets.ResourceFound, Is.True,
+                "the embedded resource " + RevitWorksets.ResourceName + " is not in Federator.Core.dll");
+
+            List<string> names;
+            List<string[]> pairs;
+
+            using (Stream stream = typeof(RevitWorksets).Assembly.GetManifestResourceStream(RevitWorksets.ResourceName))
+            {
+                Assert.That(RevitWorksets.Read(stream, out names, out pairs), Is.True);
+            }
+
+            Assert.That(names, Is.EquivalentTo(RevitWorksets.With(null)));
+            Assert.That(pairs.Count, Is.EqualTo(RevitWorksets.DecidedCount));
+        }
+
         /// <summary>
         /// The spellings Q102 was asked about, each measured in both forms between the list
         /// inside Core and this project's list, which is what lets a set ask both.
