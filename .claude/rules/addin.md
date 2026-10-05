@@ -446,7 +446,11 @@ well as to pass.
 - `SetBuilder.Read` reads a condition's `Options` as a number and its comparison in the
   file's words for the two `BuildCondition` builds and by its own name for any other, FR-015,
   and Core keys both sides. The value is read by its kind through `ClashHarvest.Text`, and one
-  that still throws is marked unread in Core and never read as an empty string, FR-017
+  that still throws is marked unread in Core with the error's type and message and never read
+  as an empty string, FR-017. A search that throws hands its error to Core the same way, and a
+  selection with no search says so. `BuildOne` writes the lines `SetDrift.Lines` gives for every
+  present set, and for a rebuilt set whose second read would not read. Neither catch keeps the
+  error to itself
 - The walk counting what the clash tests point at descends into every Clash Detective folder,
   reads every source of a side and counts each set once per side, FR-014, disposing each item
   and each side the way SavedTests does. A whole read or one side that throws makes the count
@@ -454,7 +458,11 @@ well as to pass.
   Core refuses every leftover, FR-013
 - The wrapper of a set being rebuilt is released BEFORE `ReplaceWithCopy`, and the rebuilt set
   is read again through a parent resolved from a fresh root, never through the one held across
-  the mutator, FR-019. One not found again is counted UNKNOWN, FR-018
+  the mutator, FR-019. One not found again is counted UNKNOWN, FR-018, and so is a read of
+  what a set finds that gives nothing back, `SetResult.NotCounted` in CountOf and Resolve,
+  never zero items
+- The SETS line of what a group's build put in is Core's, `SetBuildOutcome.PutInLine`, which
+  says a rebuilt set apart from one left alone
 - The judge of a set that found nothing is built from the models the EXPORT CHECK read for
   this group, `FederationEngine.groupExports`, null until they are read and on the Build sets
   button, FR-011 and FR-027
