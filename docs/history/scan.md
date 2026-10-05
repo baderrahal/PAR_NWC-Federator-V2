@@ -5615,3 +5615,47 @@ STILL UNKNOWN, because it needs Navisworks running and this read ran none of it:
 through Navisworks' own factor, so the harvest's UnitTable and the check never share a
 number, and `tools\loop\compare-document.ps1` marks the tolerances and distances NOT
 COMPARED when the probe could not read the factor and the document is not in metres.
+
+## 5z-h. CAN A BOUNDINGBOX3D BE BUILT FROM TWO POINT3D, MEASURED 2026-10-05
+
+P5 of Q114, the views by team design, part 3. F114 frames one view per test on the box of
+that test's open clash centres, FramingBox's two corners, and hands the box to
+Viewpoint.ZoomBox. Nothing had read whether Autodesk.Navisworks.Api.BoundingBox3D can be
+made from two Point3D. A yes means FramingBox's corners build the box. A no means only the
+camera arithmetic route is probed in P16.
+
+Read off the metadata of the installed DLL by its one full path, with
+`ReflectionOnlyLoadFrom`, so no line of it ran and no Navisworks was started. Get-Process
+Roamer read 0 processes before the read and 0 after, printed by the probe itself. Run from
+Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-boundingbox-ctor.ps1
+
+The whole output is `tools\probes\ViewpointProbe\p5-boundingbox-result-20261005.txt`, the
+machine's name masked, exit 0. Autodesk.Navisworks.Api 22.0.0.0, file 22.5.1433.58. The
+result lines:
+
+```
+  P5 YES   public .ctor(Autodesk.Navisworks.Api.Point3D minPoint, Autodesk.Navisworks.Api.Point3D maxPoint)
+  first parameter minPoint, second maxPoint
+  implementation Managed, 289 bytes of IL
+```
+
+**THE ANSWER IS YES.** BoundingBox3D is a public class based on NativeHandle with three
+constructors: the public one from two Point3D named minPoint and maxPoint, a public one with
+no parameters, and a protected one for the native handle. It also has a public static Empty.
+Point3D has a public constructor from three doubles x, y and z. The same read prints
+`public System.Void ZoomBox(Autodesk.Navisworks.Api.BoundingBox3D box)` on Viewpoint, the
+one member of that name.
+
+STILL UNKNOWN, because it needs Navisworks running and this read ran none of it:
+
+- what the box holds once built, and whether the constructor accepts, swaps or refuses a
+  minPoint that is not below maxPoint on every axis. FramingBox should hand the corners in
+  min then max order until a run says otherwise
+- which units the box is read in
+- what ZoomBox does with the box, P16
+
+**WHAT THIS DECIDES.** FramingBox's two corners build the box with
+`new BoundingBox3D(new Point3D(x, y, z), new Point3D(x, y, z))`, so P16 probes ZoomBox with
+a box built this way.
