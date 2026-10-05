@@ -5720,3 +5720,63 @@ STILL UNKNOWN, because it needs Navisworks running and this read ran none of it:
 eObjectType_nwOpComment, its Body and User set, added to the COM view's Comments() before
 the view is added to its folder. If P9 finds it is not kept or not read back, the mark is
 AddComment after the add.
+
+## 5z-j. DOES THE TYPE OF SAVEDVIEWPOINT.REDLINES EXPOSE A COUNT, MEASURED 2026-10-05
+
+P7 of Q114, the views by team design, part 3. F114's judge of a view the tool wrote asks
+whether a person has drawn on it, and the one place a saved viewpoint holds its redlines is
+SavedViewpoint.Redlines, whose type 5z-f printed as LcOpRedlineList, viewpoints-result line
+55. Nothing had read whether that type can say how many redlines it holds. A yes means P20
+reads it on a tool view and again after Bader draws a redline on it. A no means redlines are
+UNKNOWN in the mark's judge, and the log says so.
+
+Read off the metadata of the installed DLL by its one full path, with
+`ReflectionOnlyLoadFrom`, so no line of it ran and no Navisworks was started. The type was
+read off the Redlines property itself, not looked up by name. Get-Process Roamer read 0
+processes before the read and 0 after, printed by the probe itself. Run from Windows
+PowerShell 5.1 as
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-redline-list-count.ps1
+
+The whole output is `tools\probes\ViewpointProbe\p7-redline-list-count-result-20261005.txt`,
+the machine's name masked, exit 0. Autodesk.Navisworks.Api 22.0.0.0, file 22.5.1433.58. The
+result lines:
+
+```
+  public type of Redlines: Autodesk.Navisworks.Api.Interop.LcOpRedlineList
+  public members of it, inherited ones included, that read a count:
+    public System.Int32 Size()   declared on LcOpRedlineListBase
+  how each counting member and ItemAt are implemented, read off the method body:
+    LcOpRedlineListBase.Size   implementation Managed, 45 bytes of IL
+    LcOpRedlineListBase.ItemAt   implementation Managed, 58 bytes of IL
+  collection interfaces it implements:
+    none
+  P7 YES   the type of SavedViewpoint.Redlines has a public member that reads a count
+```
+
+**THE ANSWER IS YES, ON THE METADATA, AND THE COUNT IS A METHOD NAMED Size.** The type is
+`Autodesk.Navisworks.Api.Interop.LcOpRedlineList`, defined in Autodesk.Navisworks.Api itself,
+a public class based on LcOpRedlineListBase and then NativeHandle, implementing IDisposable
+alone, result lines 13 to 16. It has no Count property and implements no ICollection, IList
+or IEnumerable, so it cannot be counted with Count or walked with foreach. The count is the
+public method `Int32 Size()` declared on LcOpRedlineListBase, line 48, and each redline is
+read with `LcOpRedline ItemAt(Int32 n)`, line 49. LcOpRedlineList adds `Add(LcOpRedline)`,
+`Clear()` and an `IsReadOnly { get }`, lines 22 to 25. On SavedViewpoint, `Redlines` has a
+getter and no setter, line 7, and `EditRedlines()` returns the same type, line 9. The
+assembly also has the public redline element types LcOpRedline, LcOpRedlineArrow,
+LcOpRedlineCloud, LcOpRedlineEllipse, LcOpRedlineLine, LcOpRedlineText and
+LcOpRedlinePointList, lines 85 to 97.
+
+STILL UNKNOWN, because it needs Navisworks running and this read ran none of it:
+
+- what Size() reads on a view the tool wrote, and whether it rises by one when Bader draws a
+  redline on it, P20
+- whether Size() counts a redline element or a group of them, so whether one drawn cloud
+  with text reads 1 or 2
+- whether reading Redlines on a viewpoint of a document read off an NWF throws, and whether
+  the list must be disposed after the read
+
+**WHAT THIS DECIDES.** P20 runs, since a count exists. It reads
+`savedViewpoint.Redlines.Size()` on a tool view and again after Bader draws one redline on
+it, and only after P20 may the mark's judge read redlines. Until then the judge says
+redlines are UNKNOWN.
