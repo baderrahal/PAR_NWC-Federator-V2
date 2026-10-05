@@ -199,29 +199,6 @@ namespace Federator.Core.Views
         /// </summary>
         public int MaxPerTest { get; set; }
 
-        /// <summary>
-        /// Whether that word is a discipline code this tool knows. Matched Ordinal and
-        /// never trimmed or cased, the same way HasSubGroup matches, because a code is
-        /// read off a name and every other comparison here treats it as it was read.
-        /// </summary>
-        public bool IsADisciplineCode(string code)
-        {
-            if (string.IsNullOrEmpty(code) || DisciplineCodes == null)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < DisciplineCodes.Count; i++)
-            {
-                if (string.Equals(DisciplineCodes[i], code, StringComparison.Ordinal))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         /// <summary>Which disciplines carry a sub group for their large items.</summary>
         public IList<string> SubGroupDisciplines { get; set; }
 
