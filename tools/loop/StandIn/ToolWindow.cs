@@ -39,6 +39,13 @@ namespace NwcFederatorLoop.StandIn
     ///   pane-dialog   as pane, and Run shows a warning that is not the confirm
     ///   pane-new      as pane, and Run shows a new WinForms window owned by this one, not modal,
     ///                 and no confirm
+    /// F126 added the tick box SkipClashOffCoordinates on 4. Clash, the x:Name of F112's box,
+    /// ticked when the window opens as F112's is. Each tick and untick of it is written to the
+    /// events file, and so is what it reads when Run or Run the open file is pressed. Three modes
+    /// change it, each one way the driver's untick can fail or be needed:
+    ///   skip-off      the box opens unticked
+    ///   skip-sticky   the box ticks itself again whenever it is unticked
+    ///   skip-scan     Scan ticks the box again
     /// </summary>
     internal static class ToolWindow
     {
@@ -115,6 +122,17 @@ namespace NwcFederatorLoop.StandIn
             TextBox priority = new TextBox { Name = "PriorityBox" };
             CheckBox penetrations = new CheckBox { Name = "MarkPenetrations", Content = "Mark penetrations", IsChecked = false };
             CheckBox byDesign = new CheckBox { Name = "MarkByDesign", Content = "Mark by design", IsChecked = false };
+            CheckBox skip = new CheckBox { Name = "SkipClashOffCoordinates", Content = "The stand-in's box for F112's rule", IsChecked = mode != "skip-off" };
+            skip.Checked += delegate { Event(eventsFile, "SkipClashOffCoordinates ticked"); };
+            skip.Unchecked += delegate
+            {
+                Event(eventsFile, "SkipClashOffCoordinates unticked");
+
+                if (mode == "skip-sticky")
+                {
+                    skip.Dispatcher.BeginInvoke(new Action(delegate { skip.IsChecked = true; }));
+                }
+            };
             Button runOpen = new Button { Name = "RunOpenButton", Content = "Run the open file" };
             TextBlock openLine = new TextBlock { Name = "OpenDocumentLine", Text = "Nothing is open." };
             Button run = new Button { Name = "RunButton", Content = "Run" };
@@ -152,7 +170,7 @@ namespace NwcFederatorLoop.StandIn
             steps.Items.Add(new TabItem { Header = "1. Source", Content = Stack(source, subfolders, scan, summary, filesGrid) });
             steps.Items.Add(new TabItem { Header = "2. Grouping", Content = Stack(groupsGrid) });
             steps.Items.Add(new TabItem { Header = "3. Outputs", Content = Stack(nwf, nwd, excel) });
-            steps.Items.Add(new TabItem { Header = "4. Clash", Content = Stack(exchange, tolerance, priority, penetrations, byDesign, runOpen, openLine) });
+            steps.Items.Add(new TabItem { Header = "4. Clash", Content = Stack(exchange, tolerance, priority, penetrations, byDesign, skip, runOpen, openLine) });
 
             DockPanel dock = new DockPanel();
             DockPanel.SetDock(run, Dock.Bottom);
@@ -184,6 +202,11 @@ namespace NwcFederatorLoop.StandIn
                 groups.Add(new GroupLine { Include = true, Building = "STANDIN2" });
                 summary.Text = found.Length.ToString(CultureInfo.InvariantCulture) + " NWC found, " + found.Length.ToString(CultureInfo.InvariantCulture) + " readable, 0 that cannot be read.";
 
+                if (mode == "skip-scan")
+                {
+                    skip.IsChecked = true;
+                }
+
                 if (log != null)
                 {
                     log.ScanStarted(folder, subfolders.IsChecked == true);
@@ -196,6 +219,7 @@ namespace NwcFederatorLoop.StandIn
             run.Click += delegate
             {
                 Event(eventsFile, "Run pressed");
+                Event(eventsFile, "at Run SkipClashOffCoordinates reads " + skip.IsChecked);
 
                 if (mode == "dialog" || mode == "pane-dialog")
                 {
@@ -241,6 +265,7 @@ namespace NwcFederatorLoop.StandIn
             runOpen.Click += delegate
             {
                 Event(eventsFile, "RunOpenButton pressed");
+                Event(eventsFile, "at Run the open file SkipClashOffCoordinates reads " + skip.IsChecked);
 
                 if (log != null)
                 {
