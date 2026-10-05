@@ -182,6 +182,20 @@ Core tests 1865 passed, 0 failed, 0 skipped at 61ea726, turn5\f112f-precommit.tx
 worktree folder are removed, while git's own entry for the worktree could not be deleted,
 Permission denied, turn5\precommit-records-12.txt. Q110 and Q111 reach the form with it. The add-in half waits for the
 test of wave 1. Wave 1 now holds F113 and F112 on main, and F116 is in its fix pass.
+F116 MERGED as PR 98, 7793b9e, at 04:25:57 on 2026-10-05, green in Actions on its last commit
+8f65042, run 37251236132, turn5\actions-reads-pr98.txt. It carries Bader's answers to Q102 to
+Q104 and to Q113: this project's list of corrections is exchange\
+1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt beside exchange\
+1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, and Bader was told in the tab that it is there. Its last
+reviewer approved with nothing blocking, turn5\f116e-read-review.txt, after four passes on
+attempt 1, attempt 2, the Q113 pass and its readings, and the closing pass that took out
+RevitWorksets.All. Core tests 1912 passed, 0 failed, 0 skipped at 8f65042, turn5\f116f-precommit.txt,
+and the Release build 0 warnings and 0 errors at 23ec179, turn5\f116e-build-after.txt, the last
+commit changing steps only. Its branch and worktree folder are removed. ALL OF WAVE 1's PRODUCT
+CODE IS NOW ON MAIN, F113, F112 and F116, with F125 for the driver. What the test of wave 1 waits
+for: Navisworks free of the C04 baseline, Q124, so that main can be installed in place, F126's
+harness run and its merge for the rule-off run, and the list copied from exchange\ beside the XML
+in the run set's own copy.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
