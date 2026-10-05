@@ -258,6 +258,55 @@ namespace Federator.Core.Tests
                 "BLD-EL-Phones asks for \"Telephone Equipment\" in 1 of its 2 Or groups, so a group without it can still match"));
         }
 
+        /// <summary>
+        /// A SET WHOSE EVERY OR GROUP ASKS A CATEGORY NO MODEL CARRIES CAN NEVER MATCH, even where
+        /// each group asks a different one, and it is ONE set, the breaker's finding on FR-023. The
+        /// F116 Or shape, a group asking one missing category and a group asking another, was
+        /// named twice, each line saying a group without it can still match, and the block
+        /// counted the one set twice. Neither group can match, so no line may say one can.
+        /// </summary>
+        [Test]
+        public void ASetWhoseEveryOrGroupAsksADifferentMissingCategoryIsOneSetThatCannotMatch()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set(
+                    "BLD-EL-Phones",
+                    null,
+                    Condition("equals", Category, "Telephone Equipment")
+                        + Condition("equals", Category, "Roofs", PlannedCondition.StartGroupFlag))),
+                Category);
+
+            Assert.That(found.Count, Is.EqualTo(1), "one set, counted once");
+            Assert.That(found[0].Categories, Is.EqualTo(new[] { "Telephone Equipment", "Roofs" }));
+            Assert.That(found[0].GroupsAsking, Is.EqualTo(2));
+            Assert.That(found[0].Groups, Is.EqualTo(2));
+            Assert.That(found[0].ToString(), Is.EqualTo("BLD-EL-Phones asks for \"Telephone Equipment\" and \"Roofs\""));
+            Assert.That(found[0].ToString(), Does.Not.Contain("can still match"));
+        }
+
+        /// <summary>
+        /// The claim is made per set: a group can still match only where some group asks none of
+        /// the missing categories, and the groups said are those asking any of them.
+        /// </summary>
+        [Test]
+        public void ASetWithAGroupFreeOfEveryMissingCategorySaysAGroupCanStillMatch()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set(
+                    "BLD-EL-Phones",
+                    null,
+                    Condition("equals", Category, "Telephone Equipment")
+                        + Condition("equals", Category, "Roofs", PlannedCondition.StartGroupFlag)
+                        + Condition("equals", Category, "Communication Devices", PlannedCondition.StartGroupFlag))),
+                Category);
+
+            Assert.That(found.Count, Is.EqualTo(1));
+            Assert.That(found[0].GroupsAsking, Is.EqualTo(2));
+            Assert.That(found[0].Groups, Is.EqualTo(3));
+            Assert.That(found[0].ToString(), Is.EqualTo(
+                "BLD-EL-Phones asks for \"Telephone Equipment\" and \"Roofs\" in 2 of its 3 Or groups, so a group without them can still match"));
+        }
+
         /// <summary>A set asking it in every group it holds is named as before, with no groups said.</summary>
         [Test]
         public void ASetAskingAnUnknownCategoryInEveryGroupIsNamedAsBefore()

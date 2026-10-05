@@ -46,28 +46,31 @@ namespace Federator.Core.Health
     }
 
     /// <summary>
-    /// A set asking for a category value no model in this project carries, F84. A group of
-    /// its conditions that asks it can never match, so a set asking it in every group can
+    /// A set asking for category values no model in this project carries, F84, ONE FINDING PER
+    /// SET however many such values it asks, because the block counts sets. A group of its
+    /// conditions that asks one can never match, so a set whose every Or group asks one can
     /// never match anything and every clash test that names it can never find a clash. A set
-    /// of Or groups where only some ask it can still match through the others, and its line
-    /// says how many ask it, FR-023.
+    /// with a group asking none of them can still match through that group, and its line says
+    /// how many groups ask one, FR-023. It was one finding per value, each counting only the
+    /// groups that asked that value, so a set whose two groups asked two different missing
+    /// values was named twice, each line saying a group could still match, and counted twice.
     /// </summary>
     public sealed class CategoryNobodyHas
     {
-        internal CategoryNobodyHas(SelectionSetDefinition set, string category, int groupsAsking, int groups)
+        internal CategoryNobodyHas(SelectionSetDefinition set, IList<string> categories, int groupsAsking, int groups)
         {
             Set = set;
-            Category = category;
+            Categories = new ReadOnlyCollection<string>(new List<string>(categories));
             GroupsAsking = groupsAsking;
             Groups = groups;
         }
 
         public SelectionSetDefinition Set { get; private set; }
 
-        /// <summary>The value the set asked for, exactly as the file wrote it.</summary>
-        public string Category { get; private set; }
+        /// <summary>Every value the set asks that no model carries, each once, exactly as the file wrote it, in the file's order.</summary>
+        public ReadOnlyCollection<string> Categories { get; private set; }
 
-        /// <summary>How many of the set's Or groups ask for it.</summary>
+        /// <summary>How many of the set's Or groups ask for one of them, and so can never match.</summary>
         public int GroupsAsking { get; private set; }
 
         /// <summary>How many Or groups the set holds, one more than the conditions starting a group, F78.</summary>
@@ -75,9 +78,17 @@ namespace Federator.Core.Health
 
         public override string ToString()
         {
-            return Set.Name + " asks for \"" + Category + "\""
+            List<string> quoted = new List<string>();
+
+            foreach (string category in Categories)
+            {
+                quoted.Add("\"" + category + "\"");
+            }
+
+            return Set.Name + " asks for " + string.Join(" and ", quoted.ToArray())
                 + (GroupsAsking < Groups
-                    ? " in " + GroupsAsking + " of its " + Groups + " Or groups, so a group without it can still match"
+                    ? " in " + GroupsAsking + " of its " + Groups + " Or groups, so a group without "
+                        + (Categories.Count == 1 ? "it" : "them") + " can still match"
                     : string.Empty);
         }
     }
@@ -241,29 +252,61 @@ namespace Federator.Core.Health
 
                 IList<IList<SearchConditionDefinition>> groups = GroupsOf(set);
 
-                foreach (SearchConditionDefinition condition in set.Conditions)
+                // ONE FINDING PER SET, however many of its groups ask a missing value and however
+                // many values, because the block counts sets. Since F116 a set asks each spelling
+                // of its workset in a group of its own, each carrying the category. A group is
+                // counted as asking one when ANY of its conditions asks any missing value, so the
+                // claim that a group can still match is made only where some group asks none.
+                List<string> missing = new List<string>();
+                int groupsAsking = 0;
+
+                foreach (IList<SearchConditionDefinition> group in groups)
                 {
-                    if (!AsksTheCategory(condition, categoryPropertyInternalName))
+                    bool asksOne = false;
+
+                    foreach (SearchConditionDefinition condition in group)
                     {
-                        continue;
+                        string asked = MissingCategory(condition, categoryPropertyInternalName);
+
+                        if (asked == null)
+                        {
+                            continue;
+                        }
+
+                        asksOne = true;
+
+                        if (!missing.Contains(asked))
+                        {
+                            missing.Add(asked);
+                        }
                     }
 
-                    string asked = condition.Value == null ? string.Empty : condition.Value.Data;
-
-                    // ONE SET ASKING ONE CATEGORY IS ONE FINDING, however many of its groups
-                    // ask it, because the block counts sets. Since F116 a set asks each
-                    // spelling of its workset in a group of its own, each carrying the category.
-                    if (asked.Length == 0 || Known(condition.Test, asked) || AlreadyFound(found, set, asked))
+                    if (asksOne)
                     {
-                        continue;
+                        groupsAsking++;
                     }
+                }
 
-                    found.Add(new CategoryNobodyHas(
-                        set, asked, GroupsAsking(groups, condition, categoryPropertyInternalName), groups.Count));
+                if (missing.Count > 0)
+                {
+                    found.Add(new CategoryNobodyHas(set, missing, groupsAsking, groups.Count));
                 }
             }
 
             return found;
+        }
+
+        /// <summary>The category value that condition asks and no model carries, or null where it asks none.</summary>
+        private static string MissingCategory(SearchConditionDefinition condition, string categoryPropertyInternalName)
+        {
+            if (!AsksTheCategory(condition, categoryPropertyInternalName))
+            {
+                return null;
+            }
+
+            string asked = condition.Value == null ? string.Empty : condition.Value.Data;
+
+            return asked.Length == 0 || Known(condition.Test, asked) ? null : asked;
         }
 
         /// <summary>
@@ -283,43 +326,6 @@ namespace Federator.Core.Health
         private static IList<IList<SearchConditionDefinition>> GroupsOf(SelectionSetDefinition set)
         {
             return PlannedSet.GroupsOf(set.Conditions, condition => PlannedCondition.StartsAGroupWith(condition.Flags));
-        }
-
-        /// <summary>How many of those groups ask for that condition's category the way it does.</summary>
-        private static int GroupsAsking(
-            IList<IList<SearchConditionDefinition>> groups, SearchConditionDefinition asked, string categoryPropertyInternalName)
-        {
-            int asking = 0;
-
-            foreach (IList<SearchConditionDefinition> group in groups)
-            {
-                foreach (SearchConditionDefinition condition in group)
-                {
-                    if (AsksTheCategory(condition, categoryPropertyInternalName)
-                        && string.Equals(condition.Test, asked.Test, StringComparison.Ordinal)
-                        && condition.Value != null
-                        && string.Equals(condition.Value.Data, asked.Value.Data, StringComparison.Ordinal))
-                    {
-                        asking++;
-                        break;
-                    }
-                }
-            }
-
-            return asking;
-        }
-
-        private static bool AlreadyFound(IList<CategoryNobodyHas> found, SelectionSetDefinition set, string asked)
-        {
-            foreach (CategoryNobodyHas one in found)
-            {
-                if (ReferenceEquals(one.Set, set) && string.Equals(one.Category, asked, StringComparison.Ordinal))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         /// <summary>The test attribute a condition carries when its value is a stem.</summary>
