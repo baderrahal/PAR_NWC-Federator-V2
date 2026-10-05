@@ -236,6 +236,29 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// A COMPARISON THE FILE NEVER WRITES IS JUDGED BY NEITHER BLOCK, the reviewer's and the
+        /// breaker's finding on attempt 1. The EMPTY SETS judge reads only equals and contains,
+        /// EmptySets.Judgeable, and the HEALTH block read every other test as equals, so a set
+        /// asking a test this tool has not been taught was named as asking a category nobody has
+        /// while the judge said it cannot tell. The two read one rule and never disagree.
+        /// </summary>
+        [Test]
+        public void AComparisonTheFileNeverWritesIsNotReportedAndTheJudgeAgrees()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set("BLD-EL-Phones", null, Condition("wildcard", Category, "Telephone Equipment"))),
+                Category);
+
+            Assert.That(found, Is.Empty);
+            Assert.That(
+                EmptySets.Why(
+                    "a/BLD-EL-Phones",
+                    new List<ReadCondition> { new ReadCondition("LcRevitData_Element", Category, "wildcard", "Telephone Equipment") },
+                    new EmptySetJudge(RevitWorksets.With(null), RevitCategories.Project, null)).Reason,
+                Is.EqualTo(EmptyReason.CannotTell));
+        }
+
+        /// <summary>
         /// A set of two Or groups where one asks a category no model carries can still match
         /// through the other, so it is named with the groups that ask it, FR-023, and not as a
         /// set that can never match anything.

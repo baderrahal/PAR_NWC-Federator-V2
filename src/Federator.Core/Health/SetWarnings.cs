@@ -310,16 +310,18 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// Whether that condition asks for a category, on the category property and NOT NEGATED,
-        /// FR-023. A negated condition asks for everything but its value, so BLD-EL-Devices, which
-        /// leaves out Telephone Devices with flags 32, was named as asking for it, and a negation
-        /// of a category no model carries leaves out nothing and stops nothing, 5g.
+        /// Whether that condition asks for a category, on the category property, and is one the
+        /// EMPTY SETS judge would judge, by its one rule, EmptySets.Judgeable: NOT NEGATED, FR-023,
+        /// and asking equals or contains. A negated condition asks for everything but its value, so
+        /// BLD-EL-Devices, which leaves out Telephone Devices with flags 32, was named as asking for
+        /// it. A test the file never writes was read as equals here while the judge said it cannot
+        /// tell, so the two blocks disagreed about one set.
         /// </summary>
         private static bool AsksTheCategory(SearchConditionDefinition condition, string categoryPropertyInternalName)
         {
             return condition.Property != null
                 && string.Equals(condition.Property.InternalName, categoryPropertyInternalName, StringComparison.Ordinal)
-                && !PlannedCondition.NegatedWith(condition.Flags);
+                && EmptySets.Judgeable(condition.Test, condition.Flags);
         }
 
         /// <summary>The set's conditions in their Or groups, by the plan's own grouping rule, F78.</summary>
@@ -333,8 +335,9 @@ namespace Federator.Core.Health
 
         /// <summary>
         /// Whether the measured categories carry what the condition asks, by the one rule the
-        /// EMPTY SETS judge reads too, EmptySets.Carries, FR-010, so the HEALTH block and that
-        /// block never disagree about a contains condition.
+        /// EMPTY SETS judge reads too, EmptySets.Carries, FR-010, read only for a condition both
+        /// blocks judge, AsksTheCategory, so the two never disagree about a contains condition
+        /// nor about a test the file never writes.
         /// </summary>
         private static bool Known(string test, string asked)
         {

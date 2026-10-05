@@ -140,7 +140,7 @@ namespace Federator.Core.Sets
 
             for (int i = 0; i < asked.Count; i++)
             {
-                EmptySetJudge.Known known = Judgeable(asked[i]) ? judge.KnownFor(asked[i].PropertyInternalName) : null;
+                EmptySetJudge.Known known = Judgeable(asked[i].Test, asked[i].Flags) ? judge.KnownFor(asked[i].PropertyInternalName) : null;
 
                 if (known == null)
                 {
@@ -263,16 +263,18 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// Whether this reader can judge that condition at all, FR-010: one asking equals or
-        /// contains, the two the file writes, and NOT NEGATED. A negation asks for everything
-        /// but its value, so a value no model carries leaves out nothing and stops nothing, 5g,
-        /// the rule the HEALTH block reads, FR-023. Another comparison is never read as equals.
+        /// Whether a condition with that test and those flags can be judged at all, FR-010, THE ONE
+        /// RULE this judge and the HEALTH block read, SetWarnings: one asking equals or contains,
+        /// the two the file writes, and NOT NEGATED. A negation asks for everything but its value,
+        /// so a value no model carries leaves out nothing and stops nothing, 5g, FR-023. Another
+        /// comparison is never read as equals. The HEALTH block kept only the negation half and
+        /// read every other test as equals, so the two blocks disagreed about such a set.
         /// </summary>
-        private static bool Judgeable(ReadCondition condition)
+        internal static bool Judgeable(string test, int flags)
         {
-            return !PlannedCondition.NegatedWith(condition.Flags)
-                && (string.Equals(condition.Test, SetBuildPlan.EqualsTest, StringComparison.Ordinal)
-                    || string.Equals(condition.Test, SetBuildPlan.ContainsTest, StringComparison.Ordinal));
+            return !PlannedCondition.NegatedWith(flags)
+                && (string.Equals(test, SetBuildPlan.EqualsTest, StringComparison.Ordinal)
+                    || string.Equals(test, SetBuildPlan.ContainsTest, StringComparison.Ordinal));
         }
 
         /// <summary>
