@@ -20,10 +20,10 @@ b1fb474 on a clean tree, turn5\f127b-build-code.txt, so no new warning, and chec
 check-imports exit 0 over src. This developer started no Navisworks. Get-Process Roamer read the
 loop's baseline, pid 32136 started at 21:17:06 on 2026-10-04, before any change of attempt 1,
 turn5\f127-roamer-before.txt, after the commit of step 2, turn5\f127-roamer-mid.txt, and after
-its last command, turn5\f127-roamer-after.txt. Before attempt 2 it read pid 32136 and a second,
-pid 46148, with no start time it would give and a working set of 61440 bytes, what it is
-UNKNOWN, turn5\f127b-roamer-before.txt, and after attempt 2's last command,
-turn5\f127b-roamer-after.txt.
+its last command, turn5\f127-roamer-after.txt. Before attempt 2, at 06:35:13, it read pid 32136
+and a second, pid 46148, with no start time it would give and a working set of 61440 bytes,
+turn5\f127b-roamer-before.txt, the Roamer Q128 names, what it is UNKNOWN there too, and after
+attempt 2's last command, turn5\f127b-roamer-after.txt.
 
 ### What was done
 
@@ -61,7 +61,10 @@ turn5\f127b-roamer-after.txt.
 - main 3ee01ab taken in at be229e5 before any change of attempt 2, F116 merged on main at
   7793b9e and the turn 5 records, both sides kept: in steps\01_next.md F116 keeps the order line
   41 main gives it and F127 moves to 42, with F116's section before F127's, in steps\log.md this
-  entry stays on top with main's entries whole under it, and core.md merged with no conflict
+  entry stays on top with main's entries whole under it, and core.md merged with no conflict.
+  Main moved again while attempt 2 was worked, and c101f6c, the C04 baseline's record and
+  Q128, was taken in at a794d3d after the records commit with no conflict, its pre-commit 2023
+  passed, turn5\f127b-precommit-merge2.txt
 - ATTEMPT 2, b1fb474, on the reviewer's reading of 0867a65, turn5\f127a-read-review.txt, CHANGES
   with three blocking findings, and the breaker's, turn5\f127a-read-break.txt, CHANGES with one.
   One code commit, every new test seen failing first
