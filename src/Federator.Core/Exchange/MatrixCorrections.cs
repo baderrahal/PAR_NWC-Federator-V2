@@ -650,6 +650,11 @@ namespace Federator.Core.Exchange
                 null,
                 list.SourceFiles);
 
+            foreach (string[] alsoAsk in list.AlsoAsks)
+            {
+                outcome.Text = AlsoAsk(outcome.Text, alsoAsk, outcome);
+            }
+
             outcome.Heading(list.Said());
             int asking = 0;
 
@@ -680,6 +685,48 @@ namespace Federator.Core.Exchange
 
             outcome.Note(SetsAlreadyInAnNwf);
             return outcome;
+        }
+
+        /// <summary>
+        /// One also-ask line of the list, F131, FR-181: every group of a set asking one of the
+        /// line's spellings, as a workset not negated, is written once for each of them, the
+        /// spellings in Ordinal order, through AskEverySpelling, the way Q102 asks every spelling
+        /// measured. Applied after every other correction, so a group the Source File rule of Q103
+        /// gave a condition is copied with it. No two lines share a spelling, MatrixCorrectionList,
+        /// so no line acts on what another wrote, and a second run changes nothing.
+        /// </summary>
+        private static string AlsoAsk(string xml, string[] line, CorrectionOutcome outcome)
+        {
+            List<string> spellings = new List<string>(line);
+            spellings.Sort(StringComparer.Ordinal);
+
+            int asked;
+            int added;
+            string text = AskEverySpelling(
+                xml,
+                one => AsksAWorkset(one) && spellings.Exists(spelling => string.Equals(spelling, one.Value, StringComparison.Ordinal)),
+                spellings,
+                out asked,
+                out added);
+
+            List<string> others = new List<string>(line);
+            others.RemoveAt(0);
+
+            outcome.Add(
+                "the value " + line[0] + " also accepts "
+                    + (others.Count == 1
+                        ? others[0]
+                        : string.Join(", ", others.GetRange(0, others.Count - 1).ToArray()) + " and " + others[others.Count - 1])
+                    + ", a line of the list beside this file",
+                added,
+                added > 0
+                    ? null
+                    : asked > 0
+                        ? "every set asking for it already asks every spelling the line names"
+                        : "this file holds no condition asking for any spelling the line names",
+                asked > 0 ? NoChange.AlreadyMade : NoChange.NothingToChange);
+
+            return text;
         }
 
         /// <summary>

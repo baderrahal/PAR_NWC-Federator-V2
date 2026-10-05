@@ -9,7 +9,7 @@ namespace Federator.Core.Exchange
     /// The corrections one project needs, read off the list kept BESIDE the picked clash XML and
     /// named after it, Q113 answered B by Bader on 2026-10-04: the renames, the catch-all sets,
     /// the Source File rules of Q103 and the workset spellings measured in that project's
-    /// models. The tool serves many projects, so no project's list is inside it, and the code
+    /// models, and since F131 the also-ask lines Bader approves out of a silent miss. The tool serves many projects, so no project's list is inside it, and the code
     /// that applies a list, MatrixCorrections, names no set, folder, category or spelling.
     ///
     /// ONE FULL PATH, tested with File.Exists, CorrectionListSettings. A picked XML with no list
@@ -38,6 +38,14 @@ namespace Federator.Core.Exchange
         /// <summary>One workset spelling measured in the project's models, a line of its own, Q102.</summary>
         internal const string WorksetMarker = "workset:";
 
+        /// <summary>
+        /// A workset value a set asks and every other spelling it also accepts, one line, F131,
+        /// FR-181: the correction SilentMisses drafts for a set that cannot reach a model of its
+        /// own team, Q114 point 3, which Bader approves by copying it into the list. The tool never
+        /// writes it into a list.
+        /// </summary>
+        internal const string AlsoAskMarker = "also-ask:";
+
         private MatrixCorrectionList(
             string listPath,
             bool missing,
@@ -45,6 +53,7 @@ namespace Federator.Core.Exchange
             IList<string[]> catchAlls,
             IList<SourceFileRule> sourceFiles,
             IList<string> worksets,
+            IList<string[]> alsoAsks,
             string unread)
         {
             ListPath = listPath;
@@ -53,8 +62,15 @@ namespace Federator.Core.Exchange
             CatchAlls = new ReadOnlyCollection<string[]>(catchAlls);
             SourceFiles = new ReadOnlyCollection<SourceFileRule>(sourceFiles);
             Worksets = new ReadOnlyCollection<string>(worksets);
+            AlsoAsks = new ReadOnlyCollection<string[]>(alsoAsks);
             Unread = unread;
         }
+
+        /// <summary>
+        /// Each also-ask line, the value first and then every other spelling it accepts. No
+        /// spelling is on two lines, so no two lines act on one condition, F131.
+        /// </summary>
+        internal ReadOnlyCollection<string[]> AlsoAsks { get; private set; }
 
         /// <summary>The full path the list was read from, or looked for where none is there.</summary>
         internal string ListPath { get; private set; }
@@ -85,7 +101,7 @@ namespace Federator.Core.Exchange
             {
                 return !Missing
                     && Unread == null
-                    && Renames.Count + CatchAlls.Count + SourceFiles.Count + Worksets.Count == 0;
+                    && Renames.Count + CatchAlls.Count + SourceFiles.Count + Worksets.Count + AlsoAsks.Count == 0;
             }
         }
 
@@ -121,7 +137,7 @@ namespace Federator.Core.Exchange
             if (!File.Exists(path))
             {
                 return new MatrixCorrectionList(
-                    path, true, new List<SetRename>(), new List<string[]>(), new List<SourceFileRule>(), new List<string>(), null);
+                    path, true, new List<SetRename>(), new List<string[]>(), new List<SourceFileRule>(), new List<string>(), new List<string[]>(), null);
             }
 
             return ListFile.Read(path, reader => Read(reader, path), why => Refused(path, why));
@@ -138,6 +154,8 @@ namespace Federator.Core.Exchange
             List<string[]> catchAlls = new List<string[]>();
             List<SourceFileRule> sourceFiles = new List<SourceFileRule>();
             List<string> worksets = new List<string>();
+            List<string[]> alsoAsks = new List<string[]>();
+            Dictionary<string, int> namedOn = new Dictionary<string, int>(StringComparer.Ordinal);
             string line;
             int number = 0;
 
@@ -203,10 +221,99 @@ namespace Federator.Core.Exchange
                     continue;
                 }
 
+                parts = ListFile.PartsAfter(line, AlsoAskMarker);
+
+                if (parts != null)
+                {
+                    string fault = AlsoAskFault(parts, alsoAsks, namedOn);
+
+                    if (fault != null)
+                    {
+                        return Refused(path, "line " + number + ", \"" + line + "\", " + fault);
+                    }
+
+                    if (!alsoAsks.Exists(one => SameLine(one, parts)))
+                    {
+                        alsoAsks.Add(parts);
+
+                        foreach (string named in parts)
+                        {
+                            namedOn[named] = number;
+                        }
+                    }
+
+                    continue;
+                }
+
                 return Refused(path, "line " + number + ", \"" + line + "\", is not a correction this tool knows");
             }
 
-            return new MatrixCorrectionList(path, false, renames, catchAlls, sourceFiles, worksets, null);
+            return new MatrixCorrectionList(path, false, renames, catchAlls, sourceFiles, worksets, alsoAsks, null);
+        }
+
+        /// <summary>
+        /// What is wrong with an also-ask line, or null where nothing is. It needs a value and at
+        /// least one other spelling, each named once. A spelling another line names is refused,
+        /// unless the two lines are the same line written twice, which is kept once: two lines
+        /// sharing a spelling would ask each value where the other is asked, or move the file on
+        /// every run, F131.
+        /// </summary>
+        private static string AlsoAskFault(string[] parts, List<string[]> alsoAsks, IDictionary<string, int> namedOn)
+        {
+            List<string> seen = new List<string>();
+
+            foreach (string named in parts)
+            {
+                if (named.Length == 0 || seen.Contains(named))
+                {
+                    return "is an also-ask that cannot be used: it needs the value a set asks and at least one other spelling"
+                        + " to accept beside it, each named once";
+                }
+
+                seen.Add(named);
+            }
+
+            if (parts.Length < 2)
+            {
+                return "is an also-ask that cannot be used: it needs the value a set asks and at least one other spelling"
+                    + " to accept beside it, each named once";
+            }
+
+            if (alsoAsks.Exists(one => SameLine(one, parts)))
+            {
+                return null;
+            }
+
+            foreach (string named in parts)
+            {
+                int earlier;
+
+                if (namedOn.TryGetValue(named, out earlier))
+                {
+                    return "names " + named + ", which line " + earlier
+                        + " names already. A value and every spelling it also accepts go on one line";
+                }
+            }
+
+            return null;
+        }
+
+        private static bool SameLine(string[] one, string[] other)
+        {
+            if (one.Length != other.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < one.Length; i++)
+            {
+                if (!string.Equals(one[i], other[i], StringComparison.Ordinal))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -233,11 +340,20 @@ namespace Federator.Core.Exchange
                     + ListPath + ", holds none. Every set is built exactly as the file asks";
             }
 
+            // The also-asks are named only where the list holds one, so the line of a list
+            // holding none reads as it did before F131.
+            string kinds = AlsoAsks.Count == 0
+                ? Counted(Renames.Count, "rename", "renames") + ", "
+                    + Counted(CatchAlls.Count, "catch-all", "catch-alls") + " and "
+                    + Counted(SourceFiles.Count, "Source File rule", "Source File rules")
+                : Counted(Renames.Count, "rename", "renames") + ", "
+                    + Counted(CatchAlls.Count, "catch-all", "catch-alls") + ", "
+                    + Counted(SourceFiles.Count, "Source File rule", "Source File rules") + " and "
+                    + Counted(AlsoAsks.Count, "also-ask", "also-asks");
+
             return "the corrections are read from " + ListPath + ", the list beside this file. It holds "
-                + Counted(Renames.Count + CatchAlls.Count + SourceFiles.Count, "correction", "corrections") + ", "
-                + Counted(Renames.Count, "rename", "renames") + ", "
-                + Counted(CatchAlls.Count, "catch-all", "catch-alls") + " and "
-                + Counted(SourceFiles.Count, "Source File rule", "Source File rules") + ", and "
+                + Counted(Renames.Count + CatchAlls.Count + SourceFiles.Count + AlsoAsks.Count, "correction", "corrections") + ", "
+                + kinds + ", and "
                 + Counted(Worksets.Count, "workset spelling", "workset spellings");
         }
 
@@ -249,7 +365,7 @@ namespace Federator.Core.Exchange
         private static MatrixCorrectionList Refused(string path, string why)
         {
             return new MatrixCorrectionList(
-                path, false, new List<SetRename>(), new List<string[]>(), new List<SourceFileRule>(), new List<string>(), why);
+                path, false, new List<SetRename>(), new List<string[]>(), new List<SourceFileRule>(), new List<string>(), new List<string[]>(), why);
         }
     }
 }
