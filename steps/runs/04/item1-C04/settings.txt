@@ -1,0 +1,58 @@
+  the AutoSave compare reads autosave-before.txt back, 199 files
+  NOTHING IS PUT BACK AND NOTHING IS WRITTEN, because:
+    Roamer 46148 was seen at a watchdog pass with no readable start time, and cannot be shown to be the adopted one
+  the backup is kept in "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\item1-C04\settings"
+  22.0\AutoRecover  FileWas  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\AutoRecover  ID  old DWord 47204  new DWord 32136
+  22.0\AutoRecover  LastSaved  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave115.nwf, sha1 799DBE31D042>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave520.nwf, sha1 0C07FB2F7BF5>
+  22.0\AutoRecover  Time  old QWord 1791115744  new QWord 1791169169
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 154  new DWord 155
+  22.0\Recent File List\1  LastOpened  old QWord 134355877224561124  new QWord 134356115425356119
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134355688021584428  new QWord 134355688037141969
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc, sha1 E0ADB5881390>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"  new String "1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\2  LastOpened  old QWord 134355851862024337  new QWord 134356115377372880
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  LastOpened  old QWord 134355688077859683  new QWord 134355877224561124
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\4  LastOpened  old QWord 134355688069609653  new QWord 134355851862024337
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134355688061539629  new QWord 134355688077859683
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134355688053453579  new QWord 134355688069609653
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134355688045001624  new QWord 134355688061539629
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134355688037141969  new QWord 134355688053453579
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134355688029411525  new QWord 134355688045001624
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc, sha1 947D2594C4F9>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>
+  registry: 34 values or keys differ from the backup
+  registry: nothing written
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 67617 bytes, sha256 5AC073CD8DAF, written 2026-10-04 21:13:59  new 68868 bytes, sha256 4634F777C08B, written 2026-10-05 06:36:57
+  files: 1 differ from the backup
+  files: nothing written
+  AutoSave AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave113.nwf  old 1625727 bytes, sha256 5E49EDCDD776, written 2026-10-04 15:08:31  new absent
+  AutoSave AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave114.nwf  old 1644708 bytes, sha256 A4E8E7E2CAF3, written 2026-10-04 15:09:00  new absent
+  AutoSave AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave115.nwf  old 1645508 bytes, sha256 18D8654C8C68, written 2026-10-04 15:09:03  new absent
+  AutoSave AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave518.nwf  old absent  new 1022073 bytes, sha256 1AAA62B615ED, written 2026-10-05 05:59:24
+  AutoSave AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave519.nwf  old absent  new 1022131 bytes, sha256 F738BDABF5EA, written 2026-10-05 05:59:25
+  AutoSave AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave520.nwf  old absent  new 1022502 bytes, sha256 54DA0A618497, written 2026-10-05 05:59:29
+  AutoSave files added, changed, gone or unreadable: 6
+---- his AutoSave folder, Q86 ----
+  AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave113.nwf GONE, left as it is, nothing written
+  AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave114.nwf GONE, left as it is, nothing written
+  AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave115.nwf GONE, left as it is, nothing written
+  AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave518.nwf ADDED by the run, left as it is, nothing written
+  AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave519.nwf ADDED by the run, left as it is, nothing written
+  AutoSave\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave520.nwf ADDED by the run, left as it is, nothing written
+  AutoSave: 0 put back as they were and read back, 6 not as they were before the run, because nothing is written while a reason above stands
