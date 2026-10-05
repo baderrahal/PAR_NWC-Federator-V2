@@ -4937,6 +4937,27 @@ outside the counts of the table below.
 - Proof: Core tests of both rules that fail first, and the test of wave 1
 - Class: Bader's decision
 
+## Bader's autosave copies, FR-196
+
+Added by Bader's message of 2026-10-05 headed TOO MANY AUTOSAVE COPIES, in his words under Q135 of
+steps\02_questions.md. A decision, outside the counts of the table below.
+
+### FR-196 loop-runs-write-no-autosave-and-copy-his-folder-once
+
+- Sources: Q135. Area F138, before any probe or run starts again
+- What he decided: for every loop run Auto-Save is switched off, or its folder pointed at the run's own
+  work folder, whichever the measurement shows is safe, inside the settings the run backs up and puts back,
+  so a loop run never writes an autosave into his AutoSave folder. His AutoSave folder is copied once,
+  the one backup kept, and each run compares names, sizes and times before and after, putting back from
+  that backup what changed and saying so in one line
+- Measured on 2026-10-05, turn5\q135\measure.md: the switch is enable under GlobalOptions\general\autosave
+  of the 22.0 key, off the safer choice, written "3 0" by the form of the key's other booleans
+- Part 1, in tools\loop\nw-guard.ps1, switches it off for every start, run and probe. Part 2, in run.ps1
+  after F131 merges, makes the per-run copy a compare against the one backup
+- Proof: the proof harness for the write and its read back, and the first real start writing no file into
+  his AutoSave folder, by name, size and time
+- Class: Bader's decision
+
 ## The areas at a glance
 
 | Area | Items | Count | Silent wrong number | Broken feature | Slow | Loud failure | Noise | Needs Bader |
