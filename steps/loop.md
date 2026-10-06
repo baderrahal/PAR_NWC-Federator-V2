@@ -1,6 +1,6 @@
 # The loop
 
-STATE OPEN
+STATE NIGHT
 
 STATUS of every FR item, F area, request of Bader's and question waiting for him lives in
 steps\tracker.csv only, made readable as steps\tracker.md by tools\tracker\make-tracker.ps1,
@@ -451,6 +451,49 @@ test already saved in an NWF keeps its own tolerance. Nothing is written into NM
 desktop.
 
 ## Next action
+
+NIGHT STOP OF 2026-10-06, Bader's message headed STOP SAFELY FOR THE NIGHT. Nothing runs. No Navisworks was
+started tonight and Get-Process Roamer read 0 at 18:42 and 19:04, so no settings were put back. The probe pause is
+back, turn5\probes-pause.txt, written 18:41:58. The keep-awake is stopped and its 30 minute check deleted. Every
+branch below is pushed and read back. The morning session reads this paragraph, then works the lanes in Bader's
+order, F131, F132, F114, then main installed and the runs of 1A02MM and 1A04PK, F139 and the tracker lane beside.
+1. F131, branch fix-F131, worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f131, head 0e262d3, pushed. Its harness pass
+   is DONE: main 37f37d4 merged in at 5e3cd26, the full harness on that head with its limits, 310 passed and 9
+   failed in 3017 s, turn5\f131-ad5-prove-after.txt. Eight are the older failures that fail on main too. Which
+   check is the ninth is UNKNOWN, read nowhere yet. HALF DONE: the developer was stopped after its push at 19:03,
+   before it opened the draft pull request. NEXT: read the ninth failure in f131-ad5-prove-after.txt and the
+   entry draft turn5\f131-ad5-log-entry.md, fix it at its root if it is new, then one draft pull request for
+   fix-F131 with Bader's add-in steps in steps\03_bader_next.md, the reviewer's reading of the code being
+   turn5\lanes-review-F131-addin.json, APPROVE, its rows F131, FR-180, FR-181 and the questions it answers set in
+   the pull request, merged once green
+2. THE PROBES, branch fix-F114-probes, worktree wt-probes, head 51dd8c5, pushed, P11's code committed there as
+   written and never run. NOT STARTED tonight: the lane's workflow, turn5\after-f138.js, was stopped at 19:03
+   after F131's harness, before its first probe. NEXT, once F131's pull request is open and no harness runs:
+   remove turn5\probes-pause.txt, then run the probe part of turn5\after-f138.js, the Q133 measurement on 1A04PK
+   first, then P11 to P19, one Navisworks at a time. Its first start is also the first real proof that the
+   switch "3 0" keeps Auto-Save off, read by name, size, time and sha256 of his AutoSave folder
+3. F132, branch fix-F132, worktree wt-f132, head 93b45b1, pushed. Attempt 8 under Bader's rule of Q140 fixed the
+   five faults that could change a clash count or put a clash under the wrong test, Core 2092 passed. Its
+   reviewer APPROVE, the no caller point being the known state, turn5\lanes-a8-review8-F132.json. Its breaker
+   CHANGES with ONE blocking point that Q140 counts: on an XML run over an NWF holding a test under the kept test's
+   own name with other sets than the XML gives it, the document's X runs and Y (mirror)'s clashes are added to it,
+   clashes under the wrong test, MirrorRule.cs lines 247 to 288, turn5\lanes-a8-break8-F132.json. NEXT: attempt 9
+   on that one point only, test first, then its readers, then the add-in half after F131 merges. The stopped
+   first attempt 8 is kept as turn5\f132i-stopped-attempt8.patch
+4. F139, Bader's one page progress file, Q139, branch fix-F139, worktree wt-f139, head 388d8b8, pushed, pull
+   request 130 open as a draft. Attempt 1 read CHANGES with one blocking point, the gate's merge test by file time
+   that a checkout defeats, turn5\lanes-review-F139.json. Attempt 2 was STOPPED at 18:43: its new gate cases in
+   tools\loop\prove-hooks.sh are committed in 388d8b8, and their fail-first run against the gate at 7314873 was
+   ended at 19:04, its output as it stood in turn5\f139b-prove-hooks-before.txt. NEXT: run the brief kept as
+   turn5\f139-attempt2.js again, the gate reading the page by its content, the reviewer's points 2 to 10, the
+   proofs, then its reviewer, then merge. After its merge the keep-awake reads steps\PROGRESS.md, F139-R1
+5. F114, branch fix-F114 at e77e8a7, pushed. Waits for F131's merge to carry TeamPair, TeamMap.Compare and
+   CarriesSizeFolder in its own files by Q134 B, for P11 to P19, and for F132's merge
+6. Q141, drafted in turn5\q140-draft.txt under the number 140 before Bader's F132 rule took it: the status of a
+   clash under a result group under Q138 B. Written to steps\02_questions.md as Q141 after F139 merges
+7. Beside them: F134 the code health gate then F135, Q129's lane. FR-196's part 2 in run.ps1 after F131. Then
+   the rest of wave 2, F137, the test of wave 1 and waves 3 to 5 as steps\fix-round.md places them
+Merged today: PR 125 to PR 132, the last b5f1393. Open: pull request 130, F139, a draft.
 
 PICKED UP ON 2026-10-06 after the laptop went off at 19:31:09 on 2026-10-05, Bader's message headed
 CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, the plan in the newest steps\log.md entry. Cut at the

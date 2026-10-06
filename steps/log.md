@@ -1,6 +1,14 @@
 # log
 
 Newest entry at the top.
+## 2026-10-06 The loop, turn 5, stopped safely for the night, STATE NIGHT
+
+By Bader's message headed STOP SAFELY FOR THE NIGHT. F139's attempt 2 and the lane that runs alone were stopped
+at safe points, F131's harness having finished first, and every worktree's work in progress was committed and
+pushed: fix-F139 at 388d8b8, fix-F114-probes at 51dd8c5, fix-F131 at 0e262d3, each read back with ls-remote.
+No Navisworks ran tonight and Roamer read 0. The probe pause is back and the keep-awake is stopped. The exact
+next action of each lane is the NIGHT STOP paragraph under Next action in steps\loop.md.
+
 ## 2026-10-06 The loop, turn 5, F138 MERGED as pull request 127, 37f37d4, at 17:08:09
 
 Attempt 2 read by a reviewer, APPROVE with nothing blocking, turn5\lanes-review2-F138.json. The lead's 0f29508

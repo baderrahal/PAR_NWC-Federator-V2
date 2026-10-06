@@ -56,7 +56,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-183 | mirrored tests in an existing nwf | F132 | Bader's decision | in progress | none, branch fix-F132 | none | 2026-10-05 |
 | F115 | sets | F115 | fix | in progress | none, branch fix-F115 | none | 2026-10-05 |
 | F127 | coverage of the clash XML | F127 | fix | in progress | none, branch fix-F127 | none | 2026-10-05 |
-| F132 | mirrored tests | F132 | fix | in progress | none, branch fix-F132 | none | 2026-10-05 |
+| F132 | mirrored tests | F132 | fix | in progress | none, branch fix-F132 at 93b45b1, attempt 9 on one blocking point next | none | 2026-10-06 |
 | Q112-2 | coverage of the clash XML (FR-176) | F127 | Bader's request | in progress | none, branch fix-F127 | none | 2026-10-05 |
 | Q46 | F77 against the single discipline rule | F127 | question | merged | 131 | none | 2026-10-06 |
 | Q121 | telecom fixtures and telephone devices | F132 | question | merged | 118 | none | 2026-10-05 |
@@ -94,9 +94,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-186 | views made fresh only the tools own | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
 | FR-187 | views proof on 1a02mm and the views tree block | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
 | FR-188 | views rules in docs workflow | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| F114 | views | F114 | fix | in progress | none, branch fix-F114 | none | 2026-10-04 |
+| F114 | views | F114 | fix | in progress | none, branch fix-F114 at e77e8a7, waits for F131 and F132 | none | 2026-10-06 |
 | F128 | generic models | F128 | fix | open | none | none | 2026-10-04 |
-| F131 | teams | F131 | fix | in progress | none, branch fix-F131 | none | 2026-10-05 |
+| F131 | teams | F131 | fix | in progress | none, branch fix-F131 at 0e262d3, its harness read, its pull request not yet opened | none | 2026-10-06 |
 | Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | open | none | none | 2026-10-04 |
 | Q77 | the clear and rebuild does not copy the viewpoints | F114 | question | merged | 131 | none | 2026-10-06 |
 | Q115 | where the team map lives | F131 | question | merged | 118 | none | 2026-10-05 |
