@@ -1,6 +1,16 @@
 # log
 
 Newest entry at the top.
+## 2026-10-06 The loop, turn 5, F133 the work tracker MERGED as pull request 122, 025b5eb, at 14:54:14
+
+Attempt 6 read by a reviewer, CHANGES with one blocking point, the rows of Q137 and Q138 once PR 128 put his
+answers on main, closed by the lead's commit 7b4d6a1 with the reviewer's four other points and the rows of
+FR-191, F133, Q129, F138, FR-196 and Q135 set for the merge, turn5\lanes-review6-F133.json and
+f133j-precommit.txt. At 7b4d6a1 check-tracker read clean and prove-tracker 76 cases right of 76,
+turn5\f133j-check.txt and f133j-prove.txt, Core 1926 passed, 0 failed, 0 skipped, and Actions run 37459059241
+a success, turn5\actions-reads-pr122.txt. The tracker is live, steps\tracker.md, and its three lines were given
+in the tab. Next beside the viewpoints: F139, Bader's one page progress file of Q139, built on it.
+
 ## 2026-10-06 The loop, turn 5, F133 the work tracker, one place for status, attempts 1 to 6 on fix-F133, pull request 122, written by the fourth worker as the lead's delegate
 
 - BUILT, part 1 of Bader's message of 5 Oct 2026, Q129, his words in q129-words.txt, FR-191, area F133, in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f133, first committed on main 35bd7fd: steps\tracker.csv, one row per FR item of steps\fix-round.md, per F area, per request of Bader's and per question waiting for him or that once had a row, in his nine columns in his order. tools\tracker\make-tracker.ps1 makes steps\tracker.md from it. check-tracker.ps1 refuses each fault its header lists, naming its line, and prove-tracker.ps1 runs it over a good fixture and one broken copy per fault kind, both run by Actions on every pull request from two steps of .github\workflows\tests.yml. The rules live in tools\tracker\tracker-rules.ps1 and .claude\rules\tracker.md, which says how each value is read, the row rule beside the DONE line rule in .claude\rules\steps.md, and fix-round.md and loop.md point at the tracker for status. Nothing under src or tests changed, and of steps\01_next.md only the F133 section and its order line
