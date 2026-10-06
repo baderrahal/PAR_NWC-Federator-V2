@@ -226,6 +226,24 @@ and nothing is fixed until a real run on real files shows it fixed.
   Bader too. The record then says so: for a stop before the start the backup's one switched
   off line says a stop leaves it off, for a put back refused or the deadline one LEFT OFF
   line, and for CloseOwn its list of differences names enable. The lead puts it back by hand.
+- NO HARNESS RUN AND NO WAIT FOR ONE RUNS WITHOUT A TIME LIMIT, Bader's message headed CONTINUE
+  THE LOOP AFTER THE LAPTOP WENT OFF, item 6, F138. The harness is started as
+  tools\loop\prove-run.ps1 with its limits, never through a wrapper that waits on a pid or a
+  folder. The run has -RunLimitSeconds, 5400 by default, each case -CaseLimitSeconds, 600, with
+  H6 at -H6LimitSeconds, 900, and H17 at -H17LimitSeconds, 2400, each child the limit its call
+  gives or -ChildLimitSeconds, 300, a run of the real run.ps1 -RealLimitSeconds, 600, and the
+  cleanup -CleanupLimitSeconds, 120. The defaults are margins chosen over what was read, the
+  longest whole run 3240 s, H17 about 1394 s and H6 about 355 s,
+  %LOCALAPPDATA%\NwcFederatorLoop\turn5\restart\harness.md, and are not measurements. Past a
+  limit one TIME LIMIT line names the run, the case or the child and the seconds, the harness
+  closes only its own stand-ins and children through their held handles, goes to CLEANUP and
+  exits 3, and a harness that does not reach the end of its cleanup within that limit ends itself
+  with exit 3 and names -Work and the throwaway key as maybe left. A lane that must wait for a
+  Roamer or another harness passes -WaitSeconds, read again every -WaitPollSeconds, and past it
+  the harness refuses with exit 2 naming what still runs. A -Work that is there already, as a cut
+  run leaves it, is refused at once and never waited on. H0 reads prove-run.ps1 for a WaitForExit
+  with no argument, a .Result outside EndChild, a loop whose condition is always true and a call of
+  run.ps1's RunChild, and H21 proves each limit on copies of the harness.
 - No NWC, NWF, NWD, workbook or picture is ever committed
 - No licensing id, session id or anything else that names Bader's Autodesk licence or his
   machine is ever committed. Every file of a run or a probe is read by

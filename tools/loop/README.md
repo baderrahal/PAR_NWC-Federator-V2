@@ -537,13 +537,42 @@ end of a run, the call deadline, the verdict, the one listing reader and the bou
 and since F138 H20, Auto-Save switched off on the throwaway key: a write that reads back and
 is put back, a write SetValue is denied on, a key that is not there, a put back refused, a
 put back stopped by a stand-in, a switch the backup held off already and the constructor
-deadline in a child:
+deadline in a child, and H21, its own time limits on copies of itself whose cases are replaced
+by one trial each: a child past its limit, a case past its limit, the run past its limit, a
+harness blocked where nothing can be closed, and the wait before a run:
 
     powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\prove-run.ps1 -Work <a new folder under %LOCALAPPDATA%\NwcFederatorLoop>
 
-It refuses while any Roamer runs and refuses a -Work folder that is there already, and
-before and after every case it reads the process list again and stops on a Roamer it did
-not start or a list it cannot read. It loads run.ps1's functions through the parser, so
+NO HARNESS RUN AND NO WAIT FOR ONE RUNS WITHOUT A TIME LIMIT, since F138, Bader's message
+headed CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, item 6. The harness is started as
+prove-run.ps1 with its limits, never through a wrapper that waits on a pid or a folder. Each
+limit is a setting:
+
+- -RunLimitSeconds, 5400, the whole run from the moment -Work is made
+- -CaseLimitSeconds, 600, each case, with -H6LimitSeconds, 900, and -H17LimitSeconds, 2400,
+  given on the Case lines of H6 and H17
+- each child the limit its call gives, -ChildLimitSeconds, 300, where it gave none, and
+  -RealLimitSeconds, 600, for a run of the real run.ps1. EndChild, the one place a child's output
+  is read, bounds the read of its output by the same limit after it ends
+- -CleanupLimitSeconds, 120
+- -WaitSeconds, 0, and -WaitPollSeconds, 10, the wait before the run
+
+The defaults are margins over what was read, the longest whole run 3240 s, H17 about 1394 s and
+H6 about 355 s, %LOCALAPPDATA%\NwcFederatorLoop\turn5\restart\harness.md, not measurements.
+Past a limit one TIME LIMIT line names the run, the case or the child and the seconds, the
+harness closes only the stand-ins and children it started, through their held handles, goes to
+CLEANUP and exits 3, where 0 is all passed, 1 a failure and 2 a refusal. A deadline runspace
+watches the run's and the case's clocks, and when the harness has not reached the end of its
+cleanup within -CleanupLimitSeconds after a limit, it writes one line naming -Work and the
+throwaway key as maybe left and ends the harness with exit 3.
+
+It refuses while any Roamer or any other proof harness runs, a powershell whose command line
+starts a script named prove-run.ps1 with -File, other than itself and those it was started from.
+With -WaitSeconds above 0 it reads again every -WaitPollSeconds and, once that limit passes,
+refuses in one line naming what still runs, exit 2. It refuses a -Work folder that is there
+already at once, before any wait, so a -Work a cut run left is named and never waited on. Before
+and after every case it reads the process list again and stops on a Roamer it did not start or a
+list it cannot read. It loads run.ps1's functions through the parser, so
 run.ps1's main flow never runs in it, and calls the real run.ps1 only in Check, which reads
 only, in Run and Install calls made to be refused, each made only after it reads a stand-in
 Roamer running and an installed stamp that is not the one passed, so two other checks would
@@ -577,7 +606,9 @@ again whenever it is unticked, and skip-scan, Scan ticking it again. They are pr
 - starts: dotnet build and dotnet build-server shutdown, the stand-ins, child powershell.exe
   processes, among them the copies of build\install.ps1 and of run.ps1 under -Work and one
   that loads a copy of Federator.Core.dll, reg.exe export, git for scratch repositories
-  under -Work, and cmd.exe for one junction under -Work
+  under -Work, and cmd.exe for one junction under -Work, and since F138 in H21 copies of
+  prove-run.ps1 under -Work, each with a child powershell that runs until its harness closes it
+  or ends, and one powershell that sleeps 20 s under a script named prove-run.ps1
 
 Proved on 2026-09-29 with no Navisworks started: 142 checks passed and 0 failed, 28
 stand-ins each closed through its held handle, Bader's folders, bundle and key read the same
