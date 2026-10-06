@@ -87,7 +87,7 @@ and nothing is fixed until a real run on real files shows it fixed.
   backed up first as the install rule above says, whose files an install replaces or
   removes. His Navisworks settings, put back to what the backup holds under the settings
   rule below, which can remove a value or key the loop's own Navisworks added, and whose
-  Auto-Save switch the loop itself writes off before every start, F138. His oldest
+  Auto-Save switch the loop itself writes "3 0" before every start, F138. His oldest
   run logs, which the tool itself prunes when a loop run opens its window, each held in
   logs-backup by sha256 and put back after the loop, Bader's answer Q82. And his AutoSave
   folder, where the loop removes the autosaves its runs added and puts back from the backup
@@ -214,7 +214,9 @@ and nothing is fixed until a real run on real files shows it fixed.
 - THE AUTO-SAVE SWITCH IS WRITTEN "3 0" FOR EVERY LOOP START, run or probe, so that a loop
   run never writes an autosave into his AutoSave folder, Bader's message of 2026-10-05, Q135
   point 2. It is written after the last read before the constructor, run.ps1's check 18 and
-  the probe's last read, so no stop before the start leaves it written. There the one
+  the probe's last read, so no stop before the switch leaves it written, and the switch's
+  own refusal leaves it written only where its line says so or the key's close throws after the
+  write. There the one
   SwitchAutoSaveOff in tools\loop\nw-guard.ps1 writes the value enable under
   GlobalOptions\general\autosave of the 22.0 key as "3 0", opens the key again and reads it
   back, and refuses the start with one line when it does not read back or the key is not

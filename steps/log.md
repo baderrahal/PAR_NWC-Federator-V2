@@ -50,6 +50,14 @@ Register rows for the lead, one line each:
   7, a unique prefix, set RunLimitSeconds to 7, and -RunLimitSecs 7, not a prefix, went into $args
   and the default 5400 held with no word said. [CmdletBinding()] would refuse a name it does not
   know
+- T5-R-M5AUTOSAVE, from the reviewer of attempt 2. The switch now comes after M5's read of the key
+  times, run.ps1 line 2133 against the switch at line 2152, so a real run's m5.txt names the autosave
+  key as changed while the start ran, the loop's own write, against M5's stated intent at lines 2304
+  to 2306. The m5 reader to leave out the loop's own write, or the switch read before M5
+- T5-R-HELDOFF, from the reviewer of attempt 2. Where one run leaves enable at "3 0" for Bader with
+  its LEFT OFF line, the next run's backup reads "3 0" as his value and no later record names it,
+  H20 F asserting so, the same as every other setting under D2. The lead puts it back by hand after
+  the first LEFT OFF line, and a check of a held "3 0" against the one backup of Q135 would name it
 
 What waits: the reviewer and the breaker on attempt 2, the lead's next probe that a real start
 writes no autosave, and FR-196's part 2 after F131. The rows of F138, FR-196 and Q135 in

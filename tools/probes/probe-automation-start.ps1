@@ -152,7 +152,9 @@ $ErrorActionPreference = "Stop"
 # automation-start-yyyyMMdd-HHmmss beside it, and a rename that fails stops the probe
 # before step 2. The window reader is built in memory with Reflection.Emit, so no
 # compiler runs and nothing is written under %TEMP%. Everything written goes under
-# %LOCALAPPDATA%\NwcFederatorLoop\probes, bar the -Out file and what is put back. Run it
+# %LOCALAPPDATA%\NwcFederatorLoop\probes, bar the -Out file, what is put back, and the Auto-Save
+# switch, enable written "3 0" into his 22.0 key just before the constructor and put back with
+# his other settings, F138. Run it
 # with Windows PowerShell 5.1, 64 bit:
 #
 #   powershell -NoProfile -ExecutionPolicy Bypass -File tools\probes\probe-automation-start.ps1 -Out tools\probes\automation-start-result-20260928.txt

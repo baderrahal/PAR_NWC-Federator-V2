@@ -509,8 +509,9 @@ one SwitchAutoSaveOff writes enable under GlobalOptions\general\autosave of the 
 "3 0", opens the key again and reads it back, and refuses the start with one line when it does
 not read back or the key is not there, which it never makes. That line says whether his value
 reads what the backup holds, reads something else and must be put back by hand, or cannot be
-read and is UNKNOWN. BackupSettings writes nothing, so no stop before the start leaves the
-switch written. So the switch is written "3 0" for every start of the probe and of run.ps1,
+read and is UNKNOWN. BackupSettings writes nothing, so no stop before the switch leaves it
+written, and the switch's own refusal leaves it written only where its line says his value is
+changed and must be put back by hand, or where the key's close throws after the write. So the switch is written "3 0" for every start of the probe and of run.ps1,
 and the put back returns it. That Navisworks reads "3 0" as off is UNKNOWN until a start
 writes no autosave. SettingsPutBack and the watchdog's constructor deadline block each write
 one LEFT OFF line when enable still reads "3 0" and the backup held something else.
