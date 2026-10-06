@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-06 16:00
+STATE OPEN, 2026-10-06 16:59
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,16 +15,16 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 0 | 0 | 0 | 0 | 20 | 0 | 20 |
 | 4 | 0 | 0 | 0 | 0 | 56 | 0 | 56 |
 | 5 | 0 | 0 | 0 | 1 | 67 | 0 | 68 |
-| outside the waves | 133 | 10 | 3 | 20 | 37 | 3 | 206 |
-| total | 165 | 56 | 3 | 22 | 196 | 3 | 445 |
+| outside the waves | 133 | 10 | 3 | 20 | 43 | 3 | 212 |
+| total | 165 | 56 | 3 | 22 | 202 | 3 | 451 |
 <!-- the end of the counts -->
 
 ## Now
-- F138 Auto-Save off and the harness time limits: attempt 2 at 9ef6309, PR 127 draft, merging main 2eda020
-- F132 mirrored tests: attempt 7 for Q137 A and Q138 B on fix-F132, merging main 2eda020
+- F138 Auto-Save off and the harness time limits: attempt 2 records at 823866b with main 2eda020 in, PR 127 draft
+- F132 mirrored tests: attempt 7 for Q137 A and Q138 B at 34cd532 with main 2eda020 in, no pull request yet
 - F131 teams: add-in attempt 3 at c436715, read APPROVE, its harness after F138 merges
 - F114 views: at e77e8a7 since 2026-10-05, its add-in half after F132's
-- F139 this page: one pull request on fix-F139, the lead's readings under Q139 his to correct
+- F139 this page: built on fix-F139 to 1887472 and after, one draft pull request, the lead's readings under Q139 his to correct
 - Probes and runs: paused since 2026-10-05 17:08 until F138 merges, turn5\probes-pause.txt
 
 ## Next
