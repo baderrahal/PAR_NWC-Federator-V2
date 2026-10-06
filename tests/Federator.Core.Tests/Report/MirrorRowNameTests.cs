@@ -47,7 +47,9 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// A group's report after the merge: the kept test's own Clash1, and the mirror's own
-        /// Clash1, which only the mirror found, added by the merge and marked by it.
+        /// Clash1, which only the mirror found, added by the merge and marked by it. The mirror's
+        /// Clash2 is the kept test's Clash1 found again, Approved under the mirror and New under
+        /// the kept test, Q138.
         /// </summary>
         private static ClashReport Merged()
         {
@@ -60,14 +62,88 @@ namespace Federator.Core.Tests
             TestReport kept = report.AddTest(Kept);
             kept.State = TestState.FoundClashes;
             kept.Add(Row("Clash1", "duct 1", "column 1"));
-            merge.KeptFound("item 1", "item 101", ClashStatus.New);
+            merge.KeptFound("item 1", "item 101", ClashStatus.New, kept.Rows[0]);
 
             report.AddTest(Mirror).State = TestState.FoundClashes;
             merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash1", "column 8", "duct 7"));
+
+            ClashRow approved = Row("Clash2", "column 1", "duct 1");
+
+            approved.Status = ClashStatus.Approved;
+            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", approved);
             merge.AddTo(report);
 
             Assert.That(kept.Rows.Count, Is.EqualTo(2));
             return report;
+        }
+
+        // Bader's answer B to Q138, the rule read by the workbook. The kept test's Clash1 is
+        // New and the mirror's copy of it Approved, so the workbook writes Approved on its row,
+        // and the block's one other row, the clash only the mirror found, is the only New.
+        [Test]
+        public void TheWorkbookShowsTheStatusTheRuleGivesAClashBothFound()
+        {
+            string path = new WorkbookWriter(new ReportOptions()).Write(Merged(), Path.Combine(folder, "status.xlsx"));
+            string ownRow = null;
+            string mirrorsRow = null;
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+                int last = sheet.LastRowUsed().RowNumber();
+
+                for (int row = 1; row <= last; row++)
+                {
+                    string name = sheet.Cell(row, WorkbookWriter.ColumnClashName).GetString();
+                    string status = sheet.Cell(row, WorkbookWriter.ColumnStatus).GetString();
+
+                    if (name == "Clash1")
+                    {
+                        ownRow = status;
+                    }
+
+                    if (name == "Clash1, found by the mirror only in " + Mirror)
+                    {
+                        mirrorsRow = status;
+                    }
+                }
+            }
+
+            Assert.That(ownRow, Is.EqualTo("Approved"));
+            Assert.That(mirrorsRow, Is.EqualTo("New"));
+        }
+
+        // The same rule read by the clash XML the HTML page is drawn from: the row's status and
+        // the test's summary count of Approved.
+        [Test]
+        public void TheClashXmlShowsTheStatusTheRuleGivesAClashBothFound()
+        {
+            XDocument xml = new ClashReportXml().Build(Merged());
+            XElement test = null;
+
+            foreach (XElement candidate in xml.Descendants("clashtest"))
+            {
+                if ((string)candidate.Attribute("name") == Kept)
+                {
+                    test = candidate;
+                }
+            }
+
+            Assert.That(test, Is.Not.Null);
+            Assert.That((string)test.Element("summary").Attribute("approved"), Is.EqualTo("1"));
+            Assert.That((string)test.Element("summary").Attribute("new"), Is.EqualTo("1"), "the clash only the mirror found");
+
+            string status = null;
+
+            foreach (XElement result in test.Descendants("clashresult"))
+            {
+                if ((string)result.Attribute("name") == "Clash1")
+                {
+                    status = (string)result.Element("resultstatus");
+                }
+            }
+
+            Assert.That(status, Is.EqualTo("Approved"));
         }
 
         [Test]

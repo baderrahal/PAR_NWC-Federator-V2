@@ -58,14 +58,32 @@ namespace Federator.Core.Tests
         /// </summary>
         private static ClashReport TheReport(MirrorMerge merge, int keptClashes)
         {
-            ClashReport report = new ClashReport("1A02MM", "a report");
-            TestReport kept = report.AddTest(merge.Kept.Name);
-            kept.State = keptClashes > 0 ? TestState.FoundClashes : TestState.Passed;
+            List<ClashStatus> statuses = new List<ClashStatus>();
 
             for (int i = 1; i <= keptClashes; i++)
             {
-                kept.Add(Row("Clash" + i, ClashStatus.New, "duct " + i, "column " + i));
-                merge.KeptFound("item " + i, "item " + (100 + i), ClashStatus.New);
+                statuses.Add(ClashStatus.New);
+            }
+
+            return TheReportWith(merge, statuses.ToArray());
+        }
+
+        /// <summary>
+        /// The same report, its kept test's clashes carrying those statuses in that order,
+        /// each handed with its status and its row, Bader's answer B to Q138.
+        /// </summary>
+        private static ClashReport TheReportWith(MirrorMerge merge, params ClashStatus[] keptStatuses)
+        {
+            ClashReport report = new ClashReport("1A02MM", "a report");
+            TestReport kept = report.AddTest(merge.Kept.Name);
+            kept.State = keptStatuses.Length > 0 ? TestState.FoundClashes : TestState.Passed;
+
+            for (int i = 1; i <= keptStatuses.Length; i++)
+            {
+                ClashRow row = Row("Clash" + i, keptStatuses[i - 1], "duct " + i, "column " + i);
+
+                kept.Add(row);
+                merge.KeptFound("item " + i, "item " + (100 + i), row.Status, row);
             }
 
             foreach (MirrorPair pair in merge.Pairs)
@@ -113,7 +131,7 @@ namespace Federator.Core.Tests
             merge.AddTo(report);
 
             Assert.That(merge.FoundByBoth, Is.EqualTo(25));
-            Assert.That(merge.FoundByTheMirrorsOnly, Is.EqualTo(2));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(2));
             Assert.That(kept.Rows.Count, Is.EqualTo(27));
             Assert.That(kept.RawClashes, Is.EqualTo(27));
             Assert.That(kept.Tally.Total, Is.EqualTo(27));
@@ -149,7 +167,7 @@ namespace Federator.Core.Tests
             merge.AddTo(report);
 
             Assert.That(merge.FoundByBoth, Is.EqualTo(1));
-            Assert.That(merge.FoundByTheMirrorsOnly, Is.EqualTo(0));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
             Assert.That(Named(report, Kept).Rows.Count, Is.EqualTo(1));
         }
 
@@ -163,7 +181,7 @@ namespace Federator.Core.Tests
             merge.MirrorFound(merge.Pairs[0], "item 8", "item 7", Row("Clash3", ClashStatus.New, "duct 8", "column 7"));
             merge.AddTo(report);
 
-            Assert.That(merge.FoundByTheMirrorsOnly, Is.EqualTo(1));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
             Assert.That(Named(report, Kept).Rows.Count, Is.EqualTo(2));
         }
 
@@ -198,7 +216,7 @@ namespace Federator.Core.Tests
                 merge.AddTo(report);
 
                 Assert.That(merge.NotCompared, Is.EqualTo(1), "read as \"" + unread + "\"");
-                Assert.That(merge.FoundByTheMirrorsOnly, Is.EqualTo(0));
+                Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
                 Assert.That(Named(report, Kept).Rows.Count, Is.EqualTo(1));
             }
         }
@@ -233,7 +251,8 @@ namespace Federator.Core.Tests
 
             merge.AddTo(report);
 
-            Assert.Throws<InvalidOperationException>(() => merge.KeptFound("item 7", "item 8", ClashStatus.New));
+            Assert.Throws<InvalidOperationException>(
+                () => merge.KeptFound("item 7", "item 8", ClashStatus.New, Row("Clash2", ClashStatus.New, "duct 7", "column 8")));
             Assert.Throws<InvalidOperationException>(
                 () => merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8")));
         }
@@ -296,7 +315,7 @@ namespace Federator.Core.Tests
             Assert.That(report.Tests.Count, Is.EqualTo(1));
             Assert.That(report.Totals.Total, Is.EqualTo(3));
             Assert.That(merge.FoundByBoth, Is.EqualTo(1));
-            Assert.That(merge.FoundByTheMirrorsOnly, Is.EqualTo(1));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
         }
 
         // The reviewer's fifth finding. A kept test that found nothing holds clashes once its
@@ -331,7 +350,7 @@ namespace Federator.Core.Tests
             Assert.That(report.Tests.Count, Is.EqualTo(2));
             Assert.That(Named(report, Kept).Rows.Count, Is.EqualTo(0));
             Assert.That(Named(report, Mirror).Rows.Count, Is.EqualTo(1));
-            Assert.That(merge.FoundByTheMirrorsOnly, Is.EqualTo(0));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
             Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   " + Kept + " did not run, so nothing is "
                 + "merged into it and each of its mirrors is reported as its own test"));
         }
@@ -367,27 +386,249 @@ namespace Federator.Core.Tests
             merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
-            Assert.That(merge.FoundByTheMirrorsOnly, Is.EqualTo(0));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
             Assert.That(report.Tests.Count, Is.EqualTo(3));
             Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   " + Kept + " is in the report 2 times, "
                 + "so which one its mirrors' clashes go to is UNKNOWN and nothing is merged"));
         }
 
-        // The breaker's fifth finding. A person can set a status on the mirror's copy of a
-        // clash both find. The report shows the kept test's, and the line says how many differ.
+        // ---------- the status of a clash both find, Bader's answer B to Q138 ----------
+
+        // The breaker's fifth finding on attempt 5, and the first shape of Q138. A person set
+        // Approved on the mirror's copy, the old test renamed under Q136 A keeping it, and the
+        // kept test's copy reads New. A status a person sets wins, so the Approved reaches the
+        // report's row and every count by status, and the clash is named with both statuses
+        // and the one the report shows. Until Q138 the report showed New and the log gave a count.
         [Test]
-        public void AStatusThatDiffersOnAClashBothFoundIsSaid()
+        public void AStatusAPersonSetOnTheMirrorsCopyReachesTheReportAndIsNamed()
         {
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 2);
+            TestReport kept = Named(report, Kept);
 
             merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "column 1", "duct 1"));
             merge.MirrorFound(merge.Pairs[0], "item 102", "item 2", Row("Clash2", ClashStatus.New, "column 2", "duct 2"));
             merge.AddTo(report);
 
-            Assert.That(Named(report, Kept).Tally.Of(ClashStatus.Approved), Is.EqualTo(0));
-            Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   1 clash both found carries another status "
-                + "under " + Mirror + " than under " + Kept + ", and the report shows the status under " + Kept));
+            Assert.That(kept.Rows[0].Status, Is.EqualTo(ClashStatus.Approved));
+            Assert.That(kept.Rows[1].Status, Is.EqualTo(ClashStatus.New));
+            Assert.That(kept.Tally.Of(ClashStatus.Approved), Is.EqualTo(1));
+            Assert.That(kept.Tally.Of(ClashStatus.New), Is.EqualTo(1));
+            Assert.That(kept.Tally.Total, Is.EqualTo(2));
+            Assert.That(report.Totals.Of(ClashStatus.Approved), Is.EqualTo(1));
+
+            IList<string> lines = merge.Lines();
+
+            Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   1 clash both found carries another status under "
+                + Mirror + " than under " + Kept + ", each named with the status the report shows"));
+            Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   Clash1 of " + Kept + ", duct 1 against column 1, is "
+                + "New in the report under " + Kept + " and Approved under " + Mirror + ", a status a person sets wins, so "
+                + "the report shows Approved"));
+            Assert.That(Text(lines), Does.Not.Contain("Clash2 of " + Kept));
+        }
+
+        // The second shape of Q138. Navisworks marked the kept test's copy Resolved, while the
+        // mirror still finds the clash live. A live status wins over Resolved, so the workbook
+        // does not show a live clash as Resolved.
+        [Test]
+        public void ALiveClashTheKeptTestMarkedResolvedReadsLiveInTheReport()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReportWith(merge, ClashStatus.Resolved);
+            TestReport kept = Named(report, Kept);
+
+            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Active, "column 1", "duct 1"));
+            merge.AddTo(report);
+
+            Assert.That(kept.Rows[0].Status, Is.EqualTo(ClashStatus.Active));
+            Assert.That(kept.Resolved, Is.EqualTo(0));
+            Assert.That(kept.Tally.Of(ClashStatus.Active), Is.EqualTo(1));
+            Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   Clash1 of " + Kept + ", duct 1 against "
+                + "column 1, is Resolved in the report under " + Kept + " and Active under " + Mirror + ", a live status "
+                + "wins over Resolved, so the report shows Active"));
+        }
+
+        // The kept test's status wins the other way round as well: a mirror's Resolved does not
+        // hide the kept test's live clash.
+        [Test]
+        public void AResolvedCopyUnderTheMirrorLeavesTheKeptTestsLiveStatus()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReportWith(merge, ClashStatus.New);
+
+            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Resolved, "column 1", "duct 1"));
+            merge.AddTo(report);
+
+            Assert.That(Named(report, Kept).Rows[0].Status, Is.EqualTo(ClashStatus.New));
+            Assert.That(Named(report, Kept).Tally.Of(ClashStatus.New), Is.EqualTo(1));
+            Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   Clash1 of " + Kept + ", duct 1 against "
+                + "column 1, is New in the report under " + Kept + " and Resolved under " + Mirror + ", a live status "
+                + "wins over Resolved, so the report shows New"));
+        }
+
+        // The lead's note under Q138: where his words do not choose, both a person's or both
+        // live, the kept test's status stays and the clash is named.
+        [Test]
+        public void WhereHisWordsDoNotChooseTheKeptTestsStatusStaysAndTheClashIsNamed()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReportWith(merge, ClashStatus.Reviewed, ClashStatus.New);
+            TestReport kept = Named(report, Kept);
+
+            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "column 1", "duct 1"));
+            merge.MirrorFound(merge.Pairs[0], "item 102", "item 2", Row("Clash2", ClashStatus.Active, "column 2", "duct 2"));
+            merge.AddTo(report);
+
+            Assert.That(kept.Rows[0].Status, Is.EqualTo(ClashStatus.Reviewed));
+            Assert.That(kept.Rows[1].Status, Is.EqualTo(ClashStatus.New));
+
+            IList<string> lines = merge.Lines();
+
+            Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   2 clashes both found carry another status under "
+                + Mirror + " than under " + Kept + ", each named with the status the report shows"));
+            Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   Clash1 of " + Kept + ", duct 1 against column 1, is "
+                + "Reviewed in the report under " + Kept + " and Approved under " + Mirror + ", both are a person's and "
+                + "the kept test's stays, so the report shows Reviewed"));
+            Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   Clash2 of " + Kept + ", duct 2 against column 2, is "
+                + "New in the report under " + Kept + " and Active under " + Mirror + ", both are live and the kept "
+                + "test's stays, so the report shows New"));
+        }
+
+        // A group is one row of the report standing for every clash under it, with the group's
+        // status, so the status the rule gives one clash under it cannot reach the workbook
+        // without changing the others. The group is left as it is and the line says so.
+        [Test]
+        public void AClashUnderAGroupOfTheKeptTestLeavesTheGroupAsItIsAndIsSaid()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 0);
+            TestReport kept = Named(report, Kept);
+            ClashRow group = ClashRow.ForGroup(2);
+
+            group.Name = "Group1";
+            group.Status = ClashStatus.New;
+            kept.Add(group);
+            kept.State = TestState.FoundClashes;
+            merge.KeptFound("item 1", "item 101", ClashStatus.New, group);
+            merge.KeptFound("item 2", "item 102", ClashStatus.New, group);
+            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "column 1", "duct 1"));
+            merge.AddTo(report);
+
+            Assert.That(group.Status, Is.EqualTo(ClashStatus.New));
+            Assert.That(kept.Tally.Of(ClashStatus.New), Is.EqualTo(2));
+            Assert.That(kept.Tally.Of(ClashStatus.Approved), Is.EqualTo(0));
+            Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   a clash both found under the group Group1 of "
+                + Kept + ", column 1 against duct 1, is New under " + Kept + " and Approved under " + Mirror + ", a status "
+                + "a person sets wins, so the rule gives Approved, and the report shows the group's New for its 2 clashes, "
+                + "not changed for one of them"));
+        }
+
+        // A row the report does not hold under the kept test cannot carry the status the rule
+        // gives, and whether the clashes handed are the report's at all is then UNKNOWN. Nothing
+        // is merged and the line says why, the way a kept test in the report twice is said.
+        [Test]
+        public void AKeptClashHandedWithARowTheReportDoesNotHoldMergesNothing()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 1);
+
+            merge.KeptFound("item 2", "item 102", ClashStatus.New, Row("Clash2", ClashStatus.New, "duct 2", "column 2"));
+            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash3", ClashStatus.New, "column 7", "duct 8"));
+            merge.AddTo(report);
+
+            Assert.That(report.Tests.Count, Is.EqualTo(2), "the mirror is reported as its own test");
+            Assert.That(Named(report, Kept).Rows.Count, Is.EqualTo(1));
+            Assert.That(merge.Lines(), Is.EqualTo(new[]
+            {
+                MirrorRule.Prefix + "   1 clash of " + Kept + " was handed with a row the report does not hold under it, "
+                    + "so which row carries its status is UNKNOWN and nothing is merged"
+            }));
+        }
+
+        // A clash and its row are handed together, and the row of one clash carries that
+        // clash's own status, so two statuses for one clash are refused rather than one chosen.
+        [Test]
+        public void AKeptClashHandedWithAStatusItsOwnRowDoesNotCarryIsRefused()
+        {
+            MirrorMerge merge = TheMerge();
+
+            Assert.Throws<ArgumentException>(() => merge.KeptFound(
+                "item 1", "item 101", ClashStatus.Approved, Row("Clash1", ClashStatus.New, "duct 1", "column 1")));
+            Assert.Throws<ArgumentNullException>(() => merge.KeptFound("item 1", "item 101", ClashStatus.New, null));
+        }
+
+        // The report's own rule for a status changed on a row: only a row of one clash it holds,
+        // and its count by status moves with it, so the cells by status read the rows.
+        [Test]
+        public void ARestatedRowMovesItsCountAndOnlyARowOfOneClashHeldIsRestated()
+        {
+            ClashReport report = new ClashReport("1A02MM", "a report");
+            TestReport test = report.AddTest(Kept);
+            ClashRow row = Row("Clash1", ClashStatus.New, "duct 1", "column 1");
+            ClashRow group = ClashRow.ForGroup(3);
+
+            test.Add(row);
+            test.Add(group);
+            test.Restate(row, ClashStatus.Approved);
+
+            Assert.That(row.Status, Is.EqualTo(ClashStatus.Approved));
+            Assert.That(test.Tally.Of(ClashStatus.New), Is.EqualTo(3), "the group's three, New");
+            Assert.That(test.Tally.Of(ClashStatus.Approved), Is.EqualTo(1));
+            Assert.That(test.Tally.Total, Is.EqualTo(4));
+            Assert.Throws<ArgumentException>(() => test.Restate(group, ClashStatus.Approved));
+            Assert.Throws<ArgumentException>(() => test.Restate(Row("Clash9", ClashStatus.New, "a", "b"), ClashStatus.Approved));
+            Assert.Throws<ArgumentException>(() => test.Restate(null, ClashStatus.Approved));
+        }
+
+        // ---------- what a merge does not know reads UNKNOWN, the breaker's finding on attempt 6 ----------
+
+        // A mirror that did not run was never compared, so what the mirrors found by both and
+        // with an item not read is UNKNOWN, never a plain 0 added to the sum. What was added to
+        // the kept test is a count taken, nothing of the mirror that did not run among it.
+        [Test]
+        public void AMirrorThatDidNotRunLeavesWhatTheMirrorsFoundUnknown()
+        {
+            MirrorMerge merge = TheMergeOfTwoMirrors();
+            ClashReport report = TheReport(merge, 1);
+
+            Named(report, SecondMirror + " (mirror)").State = TestState.Skipped;
+            merge.MirrorFound(merge.Pairs[0], "item 1", "item 101", Row("Clash1", ClashStatus.New, "phone 1", "wall 1"));
+            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "phone 7", "wall 8"));
+            merge.AddTo(report);
+
+            Assert.That(merge.FoundByBoth, Is.Null);
+            Assert.That(merge.NotCompared, Is.Null);
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
+        }
+
+        // The same where the kept test did not run and nothing was merged.
+        [Test]
+        public void AKeptTestThatMergedNothingLeavesWhatTheMirrorsFoundUnknown()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 0);
+
+            Named(report, Kept).State = TestState.Skipped;
+            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash1", ClashStatus.New, "column 7", "duct 8"));
+            merge.AddTo(report);
+
+            Assert.That(merge.FoundByBoth, Is.Null);
+            Assert.That(merge.NotCompared, Is.Null);
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
+        }
+
+        // A mirror in the report twice was never compared either.
+        [Test]
+        public void AMirrorInTheReportTwiceLeavesWhatTheMirrorsFoundUnknown()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 1);
+
+            report.AddTest(Mirror).State = TestState.FoundClashes;
+            merge.AddTo(report);
+
+            Assert.That(merge.FoundByBoth, Is.Null);
+            Assert.That(merge.NotCompared, Is.Null);
         }
 
         // ---------- a test kept over two mirrors, Q121 B ----------
@@ -424,13 +665,38 @@ namespace Federator.Core.Tests
             merge.MirrorFound(merge.Pairs[1], "item 8", "item 7", Row("Clash1", ClashStatus.New, "wall 8", "phone 7"));
             merge.AddTo(report);
 
-            Assert.That(merge.FoundByTheMirrorsOnly, Is.EqualTo(1));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
             Assert.That(kept.Rows.Count, Is.EqualTo(1));
             Assert.That(kept.Rows[0].FoundOnlyByMirror, Is.EqualTo(FirstMirror + " (mirror)"));
             Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   " + KeptOfTwo + " and its mirror "
                 + SecondMirror + " (mirror): " + KeptOfTwo + " found 0, the mirror 1, 0 by both and 0 by the mirror only, "
                 + "added to " + KeptOfTwo + ", and 1 found by an earlier mirror of " + KeptOfTwo + " as well, added once"));
             Assert.That(report.Tests.Count, Is.EqualTo(1), "both mirrors are taken out of the report");
+        }
+
+        // Q138 B over a test kept with two mirrors: each mirror's copy is weighed against the
+        // status the report holds under the kept test when it comes, in the rule's order, so
+        // the three copies end on the status the rule gives all three, and each line says it.
+        [Test]
+        public void TwoMirrorsCopiesAreWeighedInTurnAgainstWhatTheReportHolds()
+        {
+            MirrorMerge merge = TheMergeOfTwoMirrors();
+            ClashReport report = TheReport(merge, 1);
+
+            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "phone 1", "wall 1"));
+            merge.MirrorFound(merge.Pairs[1], "item 1", "item 101", Row("Clash1", ClashStatus.Resolved, "wall 1", "telecom 1"));
+            merge.AddTo(report);
+
+            Assert.That(Named(report, KeptOfTwo).Rows[0].Status, Is.EqualTo(ClashStatus.Approved));
+
+            IList<string> lines = merge.Lines();
+
+            Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   Clash1 of " + KeptOfTwo + ", duct 1 against column 1, "
+                + "is New in the report under " + KeptOfTwo + " and Approved under " + FirstMirror + " (mirror), a status a "
+                + "person sets wins, so the report shows Approved"));
+            Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   Clash1 of " + KeptOfTwo + ", duct 1 against column 1, "
+                + "is Approved in the report under " + KeptOfTwo + " and Resolved under " + SecondMirror + " (mirror), a "
+                + "status a person sets wins, so the report shows Approved"));
         }
 
         [Test]
@@ -510,7 +776,7 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 1);
 
-            merge.KeptFound(TestSettings.UnknownLocator, "item 5", ClashStatus.New);
+            merge.KeptFound(TestSettings.UnknownLocator, "item 5", ClashStatus.New, Row("Clash2", ClashStatus.New, "duct 5", "column 5"));
             merge.MirrorFound(merge.Pairs[0], null, "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
@@ -567,9 +833,9 @@ namespace Federator.Core.Tests
             TheReport(merge, 2);
             merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash1", ClashStatus.New, "column 7", "duct 8"));
 
-            Assert.Throws<InvalidOperationException>(() => { int count = merge.FoundByBoth; });
-            Assert.Throws<InvalidOperationException>(() => { int count = merge.FoundByTheMirrorsOnly; });
-            Assert.Throws<InvalidOperationException>(() => { int count = merge.NotCompared; });
+            Assert.Throws<InvalidOperationException>(() => { int? count = merge.FoundByBoth; });
+            Assert.Throws<InvalidOperationException>(() => { int count = merge.AddedToTheKeptTest; });
+            Assert.Throws<InvalidOperationException>(() => { int? count = merge.NotCompared; });
             Assert.That(merge.Lines(), Is.EqualTo(new[]
             {
                 MirrorRule.Prefix + "   the clashes of the mirrors of " + Kept + " are not merged into it yet, so what "

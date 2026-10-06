@@ -82,7 +82,7 @@ namespace Federator.Core.Clash
         private readonly SetIdentity identity;
         private readonly List<MirrorPair> pairs;
         private readonly List<KeyValuePair<PlannedClashTest, PlannedClashTest>> duplicates;
-        private readonly List<string> noTestKept;
+        private readonly List<NotPaired> noTestKept;
 
         private MirrorRule(
             int fromTheXml,
@@ -93,7 +93,7 @@ namespace Federator.Core.Clash
             SetIdentity identity,
             List<MirrorPair> pairs,
             List<KeyValuePair<PlannedClashTest, PlannedClashTest>> duplicates,
-            List<string> noTestKept)
+            List<NotPaired> noTestKept)
         {
             this.fromTheXml = fromTheXml;
             this.saved = saved;
@@ -226,7 +226,7 @@ namespace Federator.Core.Clash
                 }
             }
 
-            List<string> noTestKept = new List<string>();
+            List<NotPaired> noTestKept = new List<NotPaired>();
             PairBySides(saved, priorities, settings, identity, pairs, noTestKept);
 
             return new MirrorRule(
@@ -248,7 +248,7 @@ namespace Federator.Core.Clash
             MirrorSettings settings,
             SetIdentity identity,
             List<MirrorPair> pairs,
-            List<string> notPaired)
+            List<NotPaired> notPaired)
         {
             foreach (PlannedClashTest test in saved)
             {
@@ -261,8 +261,9 @@ namespace Federator.Core.Clash
 
                 if (!BothSidesRead(test))
                 {
-                    notPaired.Add(said + "a side of it was not read, so which saved test it mirrors is UNKNOWN"
-                        + MayBeCountedTwice);
+                    notPaired.Add(new NotPaired(
+                        said + "a side of it was not read, so which saved test it mirrors is UNKNOWN" + MayBeCountedTwice,
+                        true));
                     continue;
                 }
 
@@ -296,7 +297,10 @@ namespace Federator.Core.Clash
 
                 if (asked.Count != 1)
                 {
-                    notPaired.Add(said + WhyNotPaired(asked, askedWithTheEnding, unknown));
+                    bool mayBeCountedTwice;
+                    string why = WhyNotPaired(asked, askedWithTheEnding, unknown, out mayBeCountedTwice);
+
+                    notPaired.Add(new NotPaired(said + why, mayBeCountedTwice));
                     continue;
                 }
 
@@ -318,11 +322,14 @@ namespace Federator.Core.Clash
         /// <summary>
         /// Why a saved test with the ending whose sides were read is not paired: two or more
         /// saved tests without the ending ask its question, or none does and whether one does
-        /// is UNKNOWN for some, or only tests with the ending ask it, each UNKNOWN, or no other
-        /// saved test asks it at all.
+        /// is UNKNOWN for some, or only tests with the ending ask it, each UNKNOWN and a clash
+        /// both find may be counted twice, or no other saved test asks it at all.
         /// </summary>
-        private static string WhyNotPaired(List<PlannedClashTest> asked, List<string> askedWithTheEnding, int unknown)
+        private static string WhyNotPaired(
+            List<PlannedClashTest> asked, List<string> askedWithTheEnding, int unknown, out bool mayBeCountedTwice)
         {
+            mayBeCountedTwice = true;
+
             if (asked.Count > 1)
             {
                 List<string> names = new List<string>();
@@ -350,6 +357,7 @@ namespace Federator.Core.Clash
                     + ", so which of them is kept is UNKNOWN" + MayBeCountedTwice;
             }
 
+            mayBeCountedTwice = false;
             return "its sides ask the question of no other saved test as a mirror, so it keeps its own clashes";
         }
 
@@ -466,7 +474,9 @@ namespace Federator.Core.Clash
         /// the pairs found by their sides and saying that saved tests whose names do not end
         /// with the ending are UNKNOWN. Then once, where any test has a side not read, how
         /// many, said UNKNOWN. Then each saved test with the ending not paired, with why, five
-        /// named and the rest counted. Then every pair whose two tests
+        /// named and the rest counted, the count saying how many of them may have a clash both
+        /// find counted twice and how many ask a question no other saved test asks, Bader's
+        /// answer A to Q137. Then every pair whose two tests
         /// differ in priority or in a setting TestDrift compares, each with both values,
         /// because Bader asked for both in the log. Then the pairs alike in those, never said
         /// to be alike in everything, five named and the rest counted, the rule every repeated
@@ -531,8 +541,7 @@ namespace Federator.Core.Clash
                             + "is UNKNOWN and none of their clashes is merged"));
             }
 
-            AddFive(lines, noTestKept, "saved test with the ending not paired",
-                "saved tests with the ending not paired", ", each keeps its own clashes, counted and not listed");
+            AddNotPaired(lines);
 
             if (pairs.Count > 0)
             {
@@ -653,6 +662,45 @@ namespace Federator.Core.Clash
             }
         }
 
+        /// <summary>
+        /// The saved tests with the ending not paired, five named with why and then one line
+        /// counting the rest, Bader's answer A to Q137: how many of them are UNKNOWN, so a clash
+        /// both find may be counted twice, and how many ask a question no other saved test asks
+        /// as a mirror, so nothing is counted twice, each keeping its own clashes.
+        /// </summary>
+        private void AddNotPaired(List<string> lines)
+        {
+            int shown = Math.Min(noTestKept.Count, RunLog.KeptOfARepeat);
+            int twice = 0;
+            int alone = 0;
+
+            for (int i = 0; i < noTestKept.Count; i++)
+            {
+                if (i < shown)
+                {
+                    lines.Add(noTestKept[i].Line);
+                }
+                else if (noTestKept[i].MayBeCountedTwice)
+                {
+                    twice++;
+                }
+                else
+                {
+                    alone++;
+                }
+            }
+
+            int more = twice + alone;
+
+            if (more > 0)
+            {
+                lines.Add(Prefix + "   and " + more + (more == 1 ? " more saved test" : " more saved tests")
+                    + " with the ending not paired, each keeping its own clashes, counted and not listed: " + twice
+                    + " for which the saved test it mirrors is UNKNOWN, so a clash both find may be counted twice, and "
+                    + alone + " whose question no other saved test asks as a mirror");
+            }
+        }
+
         private static bool Same(PlannedClashSide one, PlannedClashSide other)
         {
             return string.Equals(one.Locator, other.Locator, StringComparison.Ordinal);
@@ -707,6 +755,20 @@ namespace Federator.Core.Clash
             }
 
             return kept;
+        }
+
+        /// <summary>One saved test with the ending not paired: its line, and whether a clash both find may be counted twice.</summary>
+        private sealed class NotPaired
+        {
+            internal NotPaired(string line, bool mayBeCountedTwice)
+            {
+                Line = line;
+                MayBeCountedTwice = mayBeCountedTwice;
+            }
+
+            internal string Line { get; private set; }
+
+            internal bool MayBeCountedTwice { get; private set; }
         }
 
         /// <summary>

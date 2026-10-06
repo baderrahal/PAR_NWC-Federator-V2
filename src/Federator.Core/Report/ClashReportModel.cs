@@ -440,6 +440,26 @@ namespace Federator.Core.Report
             tally.Add(row.Status, row.RawClashes);
         }
 
+        /// <summary>
+        /// Sets the status of the row of one clash this test holds and moves its count by
+        /// status with it, F132, Bader's answer B to Q138, so the cells by status read what
+        /// the rows show. A group stands for every clash under it and is never restated for
+        /// one of them. Called by MirrorMerge and nothing else.
+        /// </summary>
+        internal void Restate(ClashRow row, ClashStatus status)
+        {
+            if (row == null || row.IsGroup || !rows.Contains(row))
+            {
+                throw new ArgumentException(
+                    "Only the row of one clash this test holds is restated, so its counts by status stay its rows' own.",
+                    "row");
+            }
+
+            tally.Add(row.Status, -row.RawClashes);
+            tally.Add(status, row.RawClashes);
+            row.Status = status;
+        }
+
         /// <summary>Counts by status, over the raw clashes rather than over the rows.</summary>
         public ClashTally Tally
         {

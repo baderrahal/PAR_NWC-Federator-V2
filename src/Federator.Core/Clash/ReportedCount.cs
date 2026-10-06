@@ -44,7 +44,7 @@ namespace Federator.Core.Clash
         /// clashes only its mirrors found are added to it, one row each, and the panel shows
         /// them under the mirror and not under this test. So the rows are the panel's own
         /// count plus that many, which this tool explains, and only rows past them are the
-        /// finding nothing explains. The number is MirrorMerge.FoundByTheMirrorsOnly. With
+        /// finding nothing explains. The number is MirrorMerge.AddedToTheKeptTest. With
         /// none it is the line above, word for word.
         /// </summary>
         public static string Line(

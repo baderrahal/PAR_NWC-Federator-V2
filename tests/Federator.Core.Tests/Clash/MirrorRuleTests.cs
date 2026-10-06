@@ -1184,6 +1184,68 @@ namespace Federator.Core.Tests
                 + "clashes"));
         }
 
+        // ---------- the count line after the five named, Bader's answer A to Q137 ----------
+
+        // The breaker's finding on attempt 6, on the trigger it named: all 59 mirrors of the
+        // corrected matrix saved, their sides handed as the placeholders. Five are named with
+        // the words that a clash both find may be counted twice, and the count line of the
+        // other 54 says the same of them by number, where it said only that each keeps its own.
+        [Test]
+        public void TheCountLineAfterTheFiveNamedSaysHowManyMayBeCountedTwice()
+        {
+            List<string> names = new List<string> { DuctsVsColumns };
+
+            for (int i = 1; i <= 59; i++)
+            {
+                names.Add("BLD-EL-Test " + i + " (mirror)");
+            }
+
+            MirrorRule rule = SavedRule(SavedPlan(names.ToArray()).Buildable);
+            IList<string> lines = rule.Lines();
+            int named = 0;
+
+            foreach (string line in lines)
+            {
+                if (line.EndsWith(MayBeCountedTwice, StringComparison.Ordinal))
+                {
+                    named++;
+                }
+            }
+
+            Assert.That(named, Is.EqualTo(5));
+            Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   and 54 more saved tests with the ending not paired, "
+                + "each keeping its own clashes, counted and not listed: 54 for which the saved test it mirrors is UNKNOWN, "
+                + "so a clash both find may be counted twice, and 0 whose question no other saved test asks as a mirror"));
+        }
+
+        // The breaker's second half: the count line mixed the case nobody else asks with the
+        // UNKNOWN ones. Here the sixth is UNKNOWN, a side not read, and the seventh and eighth
+        // ask a question no other saved test asks, so the count line tells them apart.
+        [Test]
+        public void TheCountLineTellsTheUnknownFromTheMirrorsNoOtherTestAsks()
+        {
+            List<string> saved = new List<string> { DuctsVsColumns, Ducts, Columns };
+
+            for (int i = 1; i <= 6; i++)
+            {
+                saved.Add("BLD-EL-Test " + i + " (mirror)");
+                saved.Add(SavedClashTest.LeftAsSaved);
+                saved.Add(SavedClashTest.RightAsSaved);
+            }
+
+            saved.AddRange(new[] { WallsVsDucts + " (mirror)", Walls, Ducts });
+            saved.AddRange(new[] { "BLD-ST-Columns-vs-BLD-AR-Walls (mirror)", Columns, Walls });
+
+            MirrorRule rule = SavedRuleWithTheSets(SavedWithSides(saved.ToArray()).Buildable);
+            IList<string> lines = rule.Lines();
+
+            Assert.That(rule.Pairs.Count, Is.EqualTo(0));
+            Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   and 3 more saved tests with the ending not paired, "
+                + "each keeping its own clashes, counted and not listed: 1 for which the saved test it mirrors is UNKNOWN, "
+                + "so a clash both find may be counted twice, and 2 whose question no other saved test asks as a mirror"));
+            Assert.That(Text(lines), Does.Not.Contain(WallsVsDucts + " (mirror) ends with"), "counted, not named");
+        }
+
         // One test whose side was not read among tests whose sides were. The pair is still
         // found, and the one not read is said once and counted apart.
         [Test]
