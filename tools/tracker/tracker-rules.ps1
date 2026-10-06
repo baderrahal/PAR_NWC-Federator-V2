@@ -3,11 +3,13 @@
     with a dot. F133, Bader's message of 5 Oct 2026, Q129.
 
     steps\tracker.csv holds one row per item: every FR item of steps\fix-round.md, every F
-    area, Bader's requests and every question waiting for him. Its columns are the nine
-    below, in Bader's order. A status is one of the seven below and nothing else. UNKNOWN is
-    written where a value cannot be read, and is refused in the id and the status in any case.
-    No cell is empty or blank, no cell holds a line break, since tracker.md gives each row one
-    line, and no id has a space before or after it.
+    area, Bader's requests and every question waiting for him, whose row stays once he answers.
+    A question answered before it ever had a row has none. Its columns are the nine below, in
+    Bader's order. A status is one of the seven below and nothing else. UNKNOWN is written
+    where a value cannot be read, and is refused in the id and the status in any case. No cell
+    is empty or blank, no cell holds a line break, since tracker.md gives each row one line, no
+    id has a space before or after it, and only a row proven by a run names a run in the run
+    column, every other row reading none there.
 
     The class, the area and the wave of an FR row are read off fix-round.md, so the check
     compares them with it, and an FR row with no item there is refused. So are the area and the
@@ -141,9 +143,11 @@ function Read-TrackerCsv([string] $Path) {
 }
 
 # The faults of rows that parsed: an empty or blank cell, a line break in a cell, an id with a
-# space before or after it, an id twice, UNKNOWN in the id, and a status off the list. Each
-# names the line and the id. Two ids that differ only in case or in a space around them count
-# as the same id twice, and UNKNOWN in any case is refused in the id.
+# space before or after it, an id twice, UNKNOWN in the id, a status off the list, and a run
+# named in the run column of a row whose status is another of the seven than proven by a run,
+# where only none is right, UNKNOWN included, since no run proved it. Each names the line and
+# the id. Two ids that differ only in case or in a space around them count as the same id
+# twice, and UNKNOWN in any case is refused in the id.
 function Test-TrackerRows($Rows) {
     $faults = New-Object System.Collections.Generic.List[string]
     $seen = New-Object 'System.Collections.Generic.Dictionary[string,int]' ([StringComparer]::OrdinalIgnoreCase)
@@ -167,6 +171,10 @@ function Test-TrackerRows($Rows) {
             $why = "${where}: the status '$status' is not one of " + ($TrackerStatuses -join ", ")
             if ($status -ceq "UNKNOWN") { $why += ", and UNKNOWN is accepted only outside the id and status columns" }
             $faults.Add($why)
+        }
+        $run = $row["the run that proved it"]
+        if ($TrackerStatuses -ccontains $status -and $status -cne "proven by a run" -and $run.Trim().Length -gt 0 -and $run -cne "none") {
+            $faults.Add("${where}: the run that proved it reads '$run' while the status is '$status', and only a row proven by a run names a run, so it reads none")
         }
     }
     return $faults

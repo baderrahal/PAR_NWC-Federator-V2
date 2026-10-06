@@ -19,12 +19,16 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   status, PR or run last changed
 - One row per item, Bader's four kinds: every FR item of steps\fix-round.md, every F area,
   each of his requests, and every question in steps\02_questions.md waiting for his answer,
-  whose row stays once he answers. The check refuses an FR item, an F area that an area line
-  or a stage line of the waves section of fix-round.md names, a request of his and a question
-  with no answer when no row carries its id written exactly. An F area that no such line names
-  is not read by the check, so a reader gives it its row by hand: every F section of
-  steps\01_next.md, and an F number given to work elsewhere, such as F101 in the turn 3 plan of
-  steps\log.md and F110 and F111 in steps\loop.md and the turn 5 plan
+  whose row stays once he answers. A question he answered before any row was written for it
+  has none, as Q136, asked by PR 123 and answered by PR 124 before the tracker reached main,
+  and as every question answered before the tracker began. So of the questions the tracker
+  holds only those waiting for him and those that once had a row. The check refuses an FR
+  item, an F area that an area line or a stage line of the waves section of fix-round.md
+  names, a request of his and a question with no answer when no row carries its id written
+  exactly. An F area that no such line names is not read by the check, so a reader gives it
+  its row by hand: every F section of steps\01_next.md, and an F number given to work
+  elsewhere, such as F101 in the turn 3 plan of steps\log.md and F110 and F111 in
+  steps\loop.md and the turn 5 plan
 - A request of Bader's is an item of 02_questions.md whose text starts From Bader, as he
   wrote it, not a question put to him but a fault he found, a rule, an instruction or his
   decisions, Q81, Q93 to Q98, Q112, Q114, Q129, Q130 and Q132 today. Its row is class Bader's
@@ -40,9 +44,13 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
 - A question's row, class question and id Q followed by its number, reads waiting for Bader
   while every Answer line under it is empty or there is none. Once the record of his answer is
   on main it reads merged, with the number of the pull request whose merge put that record on
-  main, read by git off origin/main, and that date. On the branch that records the answer it may
-  read in review. The check refuses a question row that reads otherwise either way, and a
-  question row naming no question of the file or naming a request
+  main, read by git off origin/main, and that date. A question he answered twice reads the pull
+  request whose merge put the later answer on main and that merge's date, since that is the
+  row's last change, as Q128 reads 121, his leave to remove the three autosaves, where his A
+  reached main with 118. On the branch that records the answer it may read in review. The
+  check refuses a question row that reads otherwise either way, and a question row naming no
+  question of the file or naming a request. It reads that the PR cell is a number and not
+  which merge put the answer there, which a reader reads by git
 - A question row's area and wave are read off fix-round.md, one rule for every question: the
   FR items whose section names it, Q and its number or a range Q<a> to Q<b>, give their areas
   in file order joined by a comma and their waves joined by and, leaving out an item in no
@@ -54,13 +62,16 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   its pull request to merge, merged that its fix is on main and no run since has proved it,
   proven by a run that a named run folder under steps\runs shows the code that merged, which
   goes in the run column. A run of an earlier pass of the same fix does not prove what merged,
-  and the run column says which pass it showed
+  and neither does a run that showed part of the work, as set 03 showed F106's item 1 alone.
+  The run column holds only the run that proved the row, so a row with any other status reads
+  none there, and the check refuses anything else, UNKNOWN included. What a run showed short
+  of proving a row is told in steps\log.md and steps\loop.md
 - Every value is read off the repo, never from memory: a DONE line in steps\01_next.md, a
   merge in git log of origin/main, a branch in git branch -r, a closing line in
   steps\fix-round.md, an answer in steps\02_questions.md. A PR cell written merge and a hash is
   a merge on origin/main's first parent with two parents, read by git. A value that cannot be
-  read is UNKNOWN, which the check accepts in every column but the id and the status. No cell
-  is empty or blank, and none holds a line break
+  read is UNKNOWN, which the check accepts in every column but the id, the status and the run
+  column of a row not proven by a run. No cell is empty or blank, and none holds a line break
 - An FR row's class, area and wave are what steps\fix-round.md gives: the class the first
   words of the item's Class line up to a comma, and the area and the wave those of the line of
   its waves section that places the item. An area line under a wave line places its area at

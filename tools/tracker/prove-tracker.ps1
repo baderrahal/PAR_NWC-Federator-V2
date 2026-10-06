@@ -103,6 +103,7 @@ $cases = [ordered]@{
     "questions-not-utf8"             = Want 1 @("02_questions.md line 9 $notUtf8")
     "request-no-row"                 = Want 1 @("02_questions.md line 23 holds request 5 of Bader's, and tracker.csv has no row Q5, or Q5- and a number, of class Bader's request for it")
     "request-row-no-request"         = Want 1 @("tracker.csv line 21, id Q2-1: its class is Bader's request and 02_questions.md has no request of his by that number")
+    "run-cell-not-proven"            = Want 1 @("tracker.csv line 2, id FR-001: the run that proved it reads 'steps\runs\05 shows the first pass only' while the status is 'merged', and only a row proven by a run names a run, so it reads none")
     "status-off-list"                = Want 1 @("tracker.csv line 3, id FR-002: the status 'done' is not one of $statuses")
     "status-unknown"                 = Want 1 @("tracker.csv line 4, id FR-003: the status 'UNKNOWN' is not one of $statuses, and $onlyOutside")
     "waves-area-line-shape"          = Want 1 @("fix-round.md line 14, $noShape")

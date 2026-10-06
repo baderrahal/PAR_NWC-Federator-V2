@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 394 rows: open 151, in progress 54, in review 0, merged 140, proven by a run 22, waiting for Bader 22, dropped 5
-- By wave: 1 19, 2a 28, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before any test run 3, before the test of wave 1 4, before the waves 114, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 37, outside the waves 2
-- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, and 40 FR items
+- By status, of 395 rows: open 153, in progress 55, in review 0, merged 140, proven by a run 22, waiting for Bader 22, dropped 3
+- By wave: 1 19, 2a 28, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before any probe or run starts again 3, before any test run 3, before the test of wave 1 4, before the waves 114, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 35, outside the waves 2
+- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, F138 loop starts with Auto-Save off, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, and 40 FR items
 - Waits for Bader, 22 rows: F18, Q25, Q27, Q28, Q29, Q30, Q31, Q35, Q36, Q37, Q38, Q39, Q40, Q45, Q46, Q47, Q49, Q50, Q51, Q76, Q77, Q78
 
 ## Wave 1
@@ -288,6 +288,14 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 |---|---|---|---|---|---|---|---|
 | Q98 | the full fix round | all | Bader's request | in progress | none | none | 2026-10-04 |
 
+## before any probe or run starts again
+
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
+|---|---|---|---|---|---|---|---|
+| F138 | loop starts with Auto-Save off | F138 | fix | in progress | none, branch fix-F138 | none | 2026-10-05 |
+| FR-196 | loop runs write no autosave and copy his folder once | F138 | Bader's decision | in progress | none, branch fix-F138 | none | 2026-10-05 |
+| Q135 | too many autosave copies | F138 | Bader's request | in progress | none, branch fix-F138 | none | 2026-10-05 |
+
 ## before any test run
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
@@ -418,11 +426,11 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F103 | tools\loop\run.ps1, part 1 | F103 | fix | proven by a run | 78 | steps\runs\02\item0 | 2026-10-01 |
 | F104 | the check of a workbook against its document | F104 | fix | merged | 96 | none | 2026-10-04 |
 | F105 | four reads off the install with no Navisworks started | F105 | fix | merged | 90 | none | 2026-10-04 |
-| F106 | the window run, items 1 to 5 through the real window | F106 | fix | merged | 88 | steps\runs\03 shows item 1 only | 2026-10-04 |
+| F106 | the window run, items 1 to 5 through the real window | F106 | fix | merged | 88 | none | 2026-10-06 |
 | F107 | the name of the machine of 2026-09-19 masked on main | F107 | fix | merged | 92 | none | 2026-10-04 |
 | F108 | a fresh copy of the real files for each run set | F108 | fix | merged | 84 | none | 2026-10-04 |
-| F110 | of 2026-10-01, no commit of its own, folded into the workbook and run log areas F118 and F119, which into which UNKNOWN | F110 | fix | dropped | none | none | 2026-10-04 |
-| F111 | of 2026-10-01, no commit of its own, folded into the workbook and run log areas F118 and F119, which into which UNKNOWN | F111 | fix | dropped | none | none | 2026-10-04 |
+| F110 | the WORKBOOK CHECK counts only the blocks that found clashes, set 03 finding 4 (FR-035) | F110 | fix | open | none | none | 2026-10-06 |
+| F111 | the RESULT block prints file sizes that are not the files', set 03 finding 5 (FR-046) | F111 | fix | open | none | none | 2026-10-06 |
 
 ## beside the waves
 
@@ -452,7 +460,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-175 | no sleep and keep awake | none | Bader's request | merged | 99, records only, nothing to merge | none | 2026-10-04 |
 | Q81 | local main tracked origin/master, its upstream set to origin/main | none | Bader's request | merged | 74, records only, nothing to merge | none | 2026-09-29 |
 | Q93 | a reading of the loop's own scripts blocks a run only for harm or wrong evidence | none | Bader's request | merged | 83 | none | 2026-10-04 |
-| Q94 | code runs every real file itself, full runs of main and the fixes they show | none | Bader's request | in progress | none | steps\runs\03 and steps\runs\04 so far | 2026-10-04 |
+| Q94 | code runs every real file itself, full runs of main and the fixes they show | none | Bader's request | in progress | none | none | 2026-10-06 |
 | Q95 | keep the PC awake for the whole loop | none | Bader's request | merged | 82, records only, nothing to merge | none | 2026-10-01 |
 | Q96 | main installed and the first run of C06 through the real window | none | Bader's request | proven by a run | 85 | steps\runs\03 | 2026-10-01 |
 | Q97-1 | the findings of the first C06 run in steps\runs\03\findings.md | none | Bader's request | merged | 86 | none | 2026-10-01 |
@@ -479,14 +487,12 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q78 | C04 models naming misspelled shared sites | none | question | waiting for Bader | none | none | 2026-09-21 |
 | Q110 | a skipped group and its tests | none | question | merged | 118 | none | 2026-10-05 |
 | Q124 | the baseline of 1A04PK takes a day or more | none | question | merged | 118 | none | 2026-10-05 |
-| Q128 | what the C04 baseline run did not put back | none | question | merged | 118 | none | 2026-10-05 |
+| Q128 | what the C04 baseline run did not put back | none | question | merged | 121 | none | 2026-10-05 |
 | Q134 | code that waits for F114 by Bader's order | none | question | merged | 124 | none | 2026-10-05 |
-| FR-196 | loop runs write no autosave and copy his folder once | none | Bader's decision | in progress | none, branch fix-F138 | none | 2026-10-05 |
-| Q135 | too many autosave copies | none | Bader's request | in progress | none, branch fix-F138 | none | 2026-10-05 |
 
 ## outside the waves
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| F125 | a window that is not modal is a pane and not a dialog | F125 | fix | merged | 102 | steps\runs\04\item1-C02 shows the first pass only | 2026-10-04 |
+| F125 | a window that is not modal is a pane and not a dialog | F125 | fix | merged | 102 | none | 2026-10-06 |
 | F126 | the window driver unticks a tick box by its AutomationId | F126 | fix | merged | 112 | none | 2026-10-05 |

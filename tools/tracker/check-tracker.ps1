@@ -13,6 +13,8 @@
       only in case or in such a space as the same, an id that reads UNKNOWN in any case, an
       empty or blank cell, a cell holding a line break, and a status that is not one of the
       seven, UNKNOWN included
+    - a row whose status is one of the seven but proven by a run and whose run column reads
+      anything but none, UNKNOWN included, since only a run that proved the row goes there
     - an FR item of steps\fix-round.md, by its heading, with no row written with its exact id,
       a heading naming an FR number in another shape, a second heading of one item, a
       fix-round.md with no item heading, and a row whose id starts FR- with no item headed so
