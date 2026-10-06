@@ -20,13 +20,20 @@ run() {
 }
 
 gate() {
-    # $1 block or allow, $2 case name, $3 project dir. A Stop hook exits 0 either way.
+    # $1 block or allow, $2 case name, $3 project dir, $4 words the reason of a block must hold.
+    # JSON on standard input. A Stop hook exits 0 either way. LOCALAPPDATA points at a throwaway
+    # folder, so the gate never reads the loop's real run folders here.
     json=$(cat)
-    o=$(printf '%s' "$json" | CLAUDE_PROJECT_DIR="$3" sh "$hooks/loop-gate.sh" 2>/dev/null)
+    o=$(printf '%s' "$json" | LOCALAPPDATA="$lapp" CLAUDE_PROJECT_DIR="$3" sh "$hooks/loop-gate.sh" 2>/dev/null)
     code=$?
     case "$o" in *'"decision": "block"'*) got=block ;; *) got=allow ;; esac
-    if [ "$got" = "$1" ] && [ "$code" = 0 ]; then v=ok; else v=WRONG; fi
+    v=ok
+    if [ "$got" != "$1" ] || [ "$code" != 0 ]; then v=WRONG; fi
+    if [ "$got" = block ] && [ -n "$4" ]; then
+        case "$o" in *"$4"*) ;; *) v=WRONG ;; esac
+    fi
     printf '%-5s %s, exit %s (want %s)  %s\n' "$v" "$got" "$code" "$1" "$2" | tee -a "$out"
+    [ "$v" = WRONG ] && [ -n "$o" ] && printf '        %s\n' "$o"
 }
 
 W='C:\\Users\\p003653k\\OneDrive - Parsons Corp\\Documents\\GitHub\\PAR_NWC-Federator'
@@ -54,7 +61,7 @@ echo '{"tool_name":"Write","tool_input":{"file_path":"C:/Users/p003653k/ONEDRI~1
 echo '{"tool_name":"Write","tool_input":{"file_path":"C:/Users/p003653k/OneDrive - Parsons Corp/Desktop/q\"/../NM Fed/a.txt","content":"x"}}' | run $P 2 "Write to a path holding a quote" "$repo"
 echo '{"tool_name":"Write","tool_input":{"content":"file_path","file_path":"'"$NM"'\\a.txt"}}' | run $P 2 "Write whose content is the word file_path, before the key" "$repo"
 echo '{"tool_name":"Write","tool_input":{"file_path":"'"$repo"'/src/Federator.Core/X.cs","content":"a"}}' | run $P 0 "Write under src" "$repo"
-echo '{"tool_name":"Write","tool_input":{"file_path":"'"$repo"'/steps/loop.md","content":"NM Fed is copied by prepare-copy, file_path"}}' | run $P 0 "Write to steps/loop.md, content naming NM Fed" "$repo"
+echo '{"tool_name":"Write","tool_input":{"file_path":"'"$repo"'/steps/PROGRESS.md","content":"NM Fed is copied by prepare-copy, file_path"}}' | run $P 0 "Write to steps/PROGRESS.md, content naming NM Fed" "$repo"
 echo '{"tool_name":"Write","tool_input":{"file_path":"'"$repo"'/src/logs/x.cs","content":"a"}}' | run $P 0 "a folder named logs that is not steps/logs" "$repo"
 echo '{"tool_name":"NotebookEdit","tool_input":{"notebook_path":"'"$repo"'/tools/n.ipynb","new_source":"a"}}' | run $P 0 "NotebookEdit under tools" "$repo"
 echo '{"tool_name":"Write","tool_input":{"content":"a"}}' | run $P 0 "a file tool call with no path" "$repo"
@@ -143,41 +150,144 @@ echo '{"tool_name":"Bash","tool_input":{"command":"git checkout - && git commit 
 echo '{"tool_name":"Bash","tool_input":{"command":"git branch -d fix-F97 && git fetch origin","description":"x"}}' | run $G 0 "delete a local branch and fetch" "$clone"
 echo '{"tool_name":"Bash","tool_input":{"command":"git commit -m \"a; git push origin main\"","description":"x"}}' | run $G 0 "a commit on a fix branch whose message names a push to main" "$clone"
 
-echo "== the Stop gate, a throwaway project folder"
+echo "== the Stop gate, a throwaway project folder with no git"
+# F139: the gate reads steps/PROGRESS.md. Every case of the page's STATE line, and the send back
+# once per change of the page while it reads OPEN, in a folder where no merge can be read.
+lapp="$scratch/local"
+mkdir -p "$lapp"
 proj="$scratch/proj"
 mkdir -p "$proj/steps" "$proj/.claude/hooks"
 A='{"session_id":"A","hook_event_name":"Stop","stop_hook_active":false}'
 A2='{"session_id":"A","hook_event_name":"Stop","stop_hook_active":true}'
 B='{"session_id":"B","hook_event_name":"Stop","stop_hook_active":false}'
-echo "$A" | gate allow "no steps/loop.md" "$proj"
-printf '# The loop\n\nno state line here\n' > "$proj/steps/loop.md"
-echo "$A" | gate allow "steps/loop.md with no STATE line" "$proj"
-printf '# The loop\n\nSTATE OPEN\n\nturn 1\n' > "$proj/steps/loop.md"
-echo "$A" | gate block "OPEN, the first stop of session A" "$proj"
-echo "$A2" | gate allow "OPEN, session A again, file unchanged" "$proj"
-echo "$B" | gate block "OPEN, the first stop of session B, same file" "$proj"
-sleep 2; printf '# The loop\n\nSTATE OPEN\n\nturn 1, one item done\n' > "$proj/steps/loop.md"
-echo "$B" | gate block "OPEN, session B, the file changed since" "$proj"
+NC="The loop is not closed"
+echo "$A" | gate allow "no steps/PROGRESS.md" "$proj"
+printf '# a page\n\nno state line here\n' > "$proj/steps/PROGRESS.md"
+echo "$A" | gate allow "steps/PROGRESS.md with no STATE line" "$proj"
+printf 'STATE OPEN, 2026-10-06 16:00\n\n## Now\n- a lane\n' > "$proj/steps/PROGRESS.md"
+echo "$A" | gate block "OPEN, 2026-10-06 16:00, the page's own shape, the first stop of session A" "$proj" "$NC"
+echo "$A2" | gate allow "OPEN, session A again, the page unchanged" "$proj"
+echo "$B" | gate block "OPEN, the first stop of session B, the same page" "$proj" "$NC"
+sleep 1; printf 'STATE OPEN, 2026-10-06 16:05\n\n## Now\n- a lane, one item done\n' > "$proj/steps/PROGRESS.md"
+echo "$B" | gate block "OPEN, session B, the page rewritten since" "$proj" "$NC"
 echo "$B" | gate allow "OPEN, session B once more, nothing changed" "$proj"
-for s in WAITING RESTART CLOSED; do
-    printf '# The loop\n\nSTATE %s\n' "$s" > "$proj/steps/loop.md"
+for s in "WAITING" "RESTART" "CLOSED" "NEXT WAVE"; do
+    printf 'STATE %s, 2026-10-06 16:10\n\n## Now\n- a lane\n' "$s" > "$proj/steps/PROGRESS.md"
     echo "$A" | gate allow "$s" "$proj"
 done
-printf '# The loop\n\nSTATE OPENING\n' > "$proj/steps/loop.md"
+printf 'STATE OPENING\n' > "$proj/steps/PROGRESS.md"
 echo "$A" | gate allow "a word that only starts with OPEN" "$proj"
-printf '# The loop\n\n**STATE** OPEN\n' > "$proj/steps/loop.md"
-echo '{"session_id":"C","hook_event_name":"Stop"}' | gate block "**STATE** OPEN, markdown emphasis" "$proj"
-printf '# The loop\n\nSTATE: Open\n' > "$proj/steps/loop.md"
-echo '{"session_id":"D","hook_event_name":"Stop"}' | gate block "STATE: Open, a colon and mixed case" "$proj"
-printf '# The loop\r\n\r\nSTATE OPEN\r\n' > "$proj/steps/loop.md"
-echo '{"session_id":"E","hook_event_name":"Stop"}' | gate block "STATE OPEN with Windows line endings" "$proj"
-printf '# The loop\n\nSTATE OPEN\n\nturn 2\n' > "$proj/steps/loop.md"
-echo '{"session_id":"G","hook_event_name":"Stop"}' | gate block "OPEN, session G first" "$proj"
-echo '{"session_id":"H","hook_event_name":"Stop"}' | gate block "OPEN, session H first, same file" "$proj"
+printf '# a page\n\n**STATE** OPEN\n' > "$proj/steps/PROGRESS.md"
+echo '{"session_id":"C","hook_event_name":"Stop"}' | gate block "**STATE** OPEN, markdown emphasis" "$proj" "$NC"
+printf '# a page\n\nSTATE: Open\n' > "$proj/steps/PROGRESS.md"
+echo '{"session_id":"D","hook_event_name":"Stop"}' | gate block "STATE: Open, a colon and mixed case" "$proj" "$NC"
+printf 'STATE OPEN, 2026-10-06 16:20\r\n\r\n## Now\r\n' > "$proj/steps/PROGRESS.md"
+echo '{"session_id":"E","hook_event_name":"Stop"}' | gate block "STATE OPEN with Windows line endings" "$proj" "$NC"
+printf 'STATE 2026-10-06 OPEN\n' > "$proj/steps/PROGRESS.md"
+echo '{"session_id":"E2","hook_event_name":"Stop"}' | gate allow "a date before the word reads no state" "$proj"
+printf 'STATE OPEN, 2026-10-06 16:30\n\n## Now\n- a lane, turn 2\n' > "$proj/steps/PROGRESS.md"
+echo '{"session_id":"G","hook_event_name":"Stop"}' | gate block "OPEN, session G first" "$proj" "$NC"
+echo '{"session_id":"H","hook_event_name":"Stop"}' | gate block "OPEN, session H first, the same page" "$proj" "$NC"
 echo '{"session_id":"G","hook_event_name":"Stop","stop_hook_active":true}' | gate allow "OPEN, session G again after H, nothing changed" "$proj"
-rm -f "$proj/.claude/hooks/.loop-gate-last"; mkdir "$proj/.claude/hooks/.loop-gate-last"
+rm -f "$proj/.claude/hooks/.loop-gate-F"; mkdir "$proj/.claude/hooks/.loop-gate-F"
 echo '{"session_id":"F","hook_event_name":"Stop","stop_hook_active":true}' | gate allow "OPEN, the note cannot be written, never blocks" "$proj"
 echo '{"session_id":"F","hook_event_name":"Stop","stop_hook_active":true}' | gate allow "OPEN, the note still cannot be written" "$proj"
+printf 'STATE OPEN, 2026-10-06 16:40\n' > "$proj/steps/loop.md"
+rm -f "$proj/steps/PROGRESS.md"
+echo '{"session_id":"L","hook_event_name":"Stop"}' | gate allow "no PROGRESS.md, an old steps/loop.md reading OPEN is not read" "$proj"
+
+echo "== the Stop gate, a throwaway clone of a throwaway origin, merges made by git's plumbing"
+# A merge is read off .git/logs/refs/remotes/origin/main, which every fetch that moves main
+# writes, and the one git call asks whether the merge at main's head changed the STATE line.
+# Commits are made with hash-object, mktree and commit-tree, which run no hook.
+og="$scratch/origin.git"
+git init -q --bare "$og"
+commit() {
+    # $1 the page, $2 a file of code, then the parents. Prints the new commit's sha.
+    pb=$(printf '%s' "$1" | git --git-dir="$og" hash-object -w --stdin)
+    cb=$(printf '%s' "$2" | git --git-dir="$og" hash-object -w --stdin)
+    st=$(printf '100644 blob %s\tPROGRESS.md\n' "$pb" | git --git-dir="$og" mktree)
+    rt=$(printf '040000 tree %s\tsteps\n100644 blob %s\tcode.txt\n' "$st" "$cb" | git --git-dir="$og" mktree)
+    t=$1; c=$2; shift 2
+    ps=
+    for p in "$@"; do ps="$ps -p $p"; done
+    GIT_AUTHOR_NAME=proof GIT_AUTHOR_EMAIL=proof@example.invalid GIT_COMMITTER_NAME=proof GIT_COMMITTER_EMAIL=proof@example.invalid \
+        git --git-dir="$og" commit-tree "$rt" $ps -m "a commit of the proof"
+}
+merge_to_main() {
+    git --git-dir="$og" update-ref refs/heads/main "$1"
+    git -C "$repo2" fetch -q origin
+}
+P1='STATE OPEN, 2026-10-06 10:00
+<!-- counts -->
+| 1 | 3 |
+<!-- end -->
+'
+P2='STATE OPEN, 2026-10-06 11:00
+<!-- counts -->
+| 1 | 3 |
+<!-- end -->
+'
+P3='STATE OPEN, 2026-10-06 11:00
+<!-- counts -->
+| 1 | 4 |
+<!-- end -->
+'
+repo2="$scratch/repo2"
+git init -q "$repo2"
+git -C "$repo2" remote add origin "$og"
+mkdir -p "$repo2/steps" "$repo2/.claude/hooks"
+c0=$(commit "$P1" "code 0")
+merge_to_main "$c0"
+echo "origin/main at $(git -C "$repo2" rev-parse --short origin/main), the reflog $(ls "$repo2/.git/logs/refs/remotes/origin/main" 2>&1)"
+sleep 1; printf '%s' "$P1" > "$repo2/steps/PROGRESS.md"
+S='{"session_id":"S","hook_event_name":"Stop"}'
+echo "$S" | gate block "the page written after the last fetch of main, sent back once" "$repo2" "$NC"
+echo "$S" | gate allow "the same, let through the second time" "$repo2"
+fix=$(commit "$P1" "code 1, a fix" "$c0")
+m1=$(commit "$P1" "code 1, a fix" "$c0" "$fix")
+sleep 1; merge_to_main "$m1"
+echo "$S" | gate block "a stale page after a merge that did not change its STATE line" "$repo2" "merge"
+echo "$S" | gate block "the same stale page, every stop refused while it is stale" "$repo2" "merge"
+sleep 1; printf '%s' "$P2" > "$repo2/steps/PROGRESS.md"
+echo "$S" | gate block "the page rewritten after the merge, sent back once for the change" "$repo2" "$NC"
+echo "$S" | gate allow "the page rewritten after the merge, then let through" "$repo2"
+rec=$(commit "$P2" "code 1, a fix" "$m1")
+m2=$(commit "$P2" "code 1, a fix" "$m1" "$rec")
+sleep 1; merge_to_main "$m2"
+echo "$S" | gate allow "a page rewritten and merged, the merge at main's head changed its STATE line" "$repo2"
+counts=$(commit "$P3" "code 2, a fix that changed a row" "$m2")
+m3=$(commit "$P3" "code 2, a fix that changed a row" "$m2" "$counts")
+sleep 1; merge_to_main "$m3"
+echo "$S" | gate block "a merge that changed only the counts of the page, not its STATE line" "$repo2" "merge"
+sleep 1; printf '%s' "$P3" > "$repo2/steps/PROGRESS.md"
+echo "$S" | gate block "rewritten again, sent back once" "$repo2" "$NC"
+echo "$S" | gate allow "rewritten again, let through" "$repo2"
+mkdir -p "$lapp/NwcFederatorLoop/runs/05/item1" "$lapp/NwcFederatorLoop/runs/05/item2"
+sleep 1; printf 'a line of the run\r\nVERDICT: RAN\r\n' > "$lapp/NwcFederatorLoop/runs/05/item1/record.txt"
+echo "$S" | gate block "a page older than a finished run, its record.txt holding a VERDICT line" "$repo2" "05/item1"
+echo "$S" | gate block "the same, every stop refused while the page is older" "$repo2" "A run finished"
+sleep 1; printf '%s' "$P3" > "$repo2/steps/PROGRESS.md"
+echo "$S" | gate block "the page rewritten after the run, sent back once" "$repo2" "$NC"
+echo "$S" | gate allow "the page rewritten after the run, let through" "$repo2"
+sleep 1; printf 'a line of a run still going\r\n' > "$lapp/NwcFederatorLoop/runs/05/item2/record.txt"
+echo "$S" | gate allow "a run still going, its record.txt with no VERDICT line, newer than the page" "$repo2"
+printf 'STATE NEXT WAVE, 2026-10-06 12:00\n' > "$repo2/steps/PROGRESS.md"
+touch -d '2026-01-01 00:00:00' "$repo2/steps/PROGRESS.md"
+echo "$S" | gate allow "NEXT WAVE, a page older than the merge and the run, let through" "$repo2"
+wt="$scratch/wt"
+git -C "$repo2" worktree add -q --no-checkout --detach "$wt" origin/main
+mkdir -p "$wt/steps" "$wt/.claude/hooks"
+echo "the worktree's .git reads: $(cat "$wt/.git")"
+W='{"session_id":"W","hook_event_name":"Stop"}'
+printf '%s' "$P3" > "$wt/steps/PROGRESS.md"
+touch -d '2026-01-01 00:00:00' "$wt/steps/PROGRESS.md" "$lapp/NwcFederatorLoop/runs/05/item1/record.txt"
+echo "$W" | gate block "a worktree session, its page older than the last fetch of main, read through its .git file" "$wt" "merge"
+sleep 1; printf '%s' "$P3" > "$wt/steps/PROGRESS.md"
+echo "$W" | gate block "a worktree session, its page rewritten, sent back once" "$wt" "$NC"
+echo "$W" | gate allow "a worktree session, its page rewritten, let through" "$wt"
+rm -f "$wt/steps/PROGRESS.md"
+echo "$W" | gate allow "a worktree session with no page" "$wt"
 
 echo
 echo "cases right: $(grep -c '^ok' "$out"), cases wrong: $(grep -c '^WRONG' "$out")"

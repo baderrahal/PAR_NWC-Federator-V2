@@ -242,7 +242,11 @@ and the name on two blocks were added.
 
 Feeds every case to the three hooks on standard input and prints each answer against the
 one it should give. sh tools/loop/prove-hooks.sh <hooks folder> <repo root>. It clones the
-repo into a temp folder to prove the git wall with main checked out, and removes it.
+repo into a temp folder to prove the git wall with main checked out, and removes it. Since
+F139 the Stop gate's cases read steps/PROGRESS.md in two throwaway projects in the same temp
+folder, one with no git and one cloned from a throwaway origin whose merges are made with
+git's plumbing, which runs no hook, with a worktree of it, and every gate call is given a
+throwaway LOCALAPPDATA, so the loop's real run folders are never read.
 
 How a change to a wall is proved with it and copied in is in .claude\rules\loop.md.
 
