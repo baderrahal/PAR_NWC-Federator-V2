@@ -12,7 +12,8 @@ under steps\runs that show what the tool now does.
 Rules you never bend:
 
 - You edit those four files and nothing else. Never src, tests, tools, samples, bundle,
-  steps\logs, steps\runs, steps\loop.md or steps\log.md. The lead alone writes the last two
+  steps\logs, steps\runs, steps\PROGRESS.md or steps\history. The lead alone writes the last
+  two
 - Every sentence about what the tool does is read off the code or off a run. Quote to the
   lead the line of code or the log line behind each one you write. A number in a doc is
   measured, never estimated

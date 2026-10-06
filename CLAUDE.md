@@ -11,6 +11,9 @@ The reasons and the measurements behind every rule, with the dates they were rea
 off a run or a DLL, are in docs\history\claude-md-history.md, kept whole. When a
 rule here or in .claude\rules seems wrong, read the reason there before changing it.
 
+Every session reads CLAUDE.md, .claude\rules and steps\PROGRESS.md first, and opens
+steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
+
 ## Host and target
 
 - Navisworks Manage 2025 only. API series Nw22, bundle folder Contents\v22
@@ -48,7 +51,9 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
     exchange                what this tool wrote from a sample, such as the corrected
                             matrix. Committed, and proved by a test to be exactly what
                             the rule produces from the sample, so it cannot drift
-    steps                   plan, questions, Bader's steps, log, and loop.md, read first
+    steps                   PROGRESS.md, the one page read first, START.md, plan,
+                            questions, Bader's steps and the tracker
+    steps\history           loop.md and log.md, the long history, opened for a line
     steps\runs              the loop's run evidence, one folder per run set
     bundle                  one hand written manifest, PackageContents.xml, copied by
                             install.ps1. Not build output and not edited in a fix
@@ -98,8 +103,9 @@ rule here or in .claude\rules seems wrong, read the reason there before changing
 2. Branch fix-FNN off main
 3. Change the code, and the rule in .claude\rules where the rule changed
 4. Run the Core tests and keep the before and after counts
-5. Write the entry at the top of steps\log.md, the DONE line in steps\01_next.md,
-   and the proof steps in steps\03_bader_next.md where the add-in changed
+5. Write the entry at the top of steps\history\log.md, the DONE line in
+   steps\01_next.md, and the proof steps in steps\03_bader_next.md where the add-in
+   changed
 6. One draft pull request, whose body says what was proved here and what waits for
    the local machine. Merge it when Actions is green. Never merge red, never stop
    with a pull request open
@@ -162,11 +168,14 @@ change in the number.
 tool under samples, steps\logs, steps\runs, bundle, .claude\hooks or .claude\settings, and
 any file write or command naming NM Fed or ACCDocs. It reads words and is not a sandbox.
 The branch wall reads each git call on its own and refuses a commit on main and any push
-landing on main. Both exit 2 with one line saying why. The Stop gate sends a session back
-once while steps\loop.md reads STATE OPEN. All three need a POSIX sh, and Claude Code on
-Windows finds Git for Windows' sh without help, measured on 2026-09-27. Starting a program
-costs about two seconds here, so the walls read the call with shell builtins and start a
-program only for a call naming a protected folder, or git and a word such as commit.
+landing on main. Both exit 2 with one line saying why. While steps\PROGRESS.md reads
+STATE OPEN the Stop gate refuses a stop until the page is rewritten since the last merge
+and the last run, and sends a session back once per change of it. All three need a
+POSIX sh, and Claude Code on Windows finds Git for Windows' sh without help, measured on
+2026-09-27. Starting a program costs about two seconds here, so the walls read the call
+with shell builtins and start a program only for a call naming a protected folder, or git
+and a word such as commit, and the gate starts one git only when a merge was fetched
+after the page was last written.
 
 They also need LF. sh reads a carriage return as part of the word, so a CRLF copy dies
 on its first case line and exits 2, which is the code that refuses, so the walls jam

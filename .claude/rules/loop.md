@@ -2,7 +2,9 @@
 paths:
   - "tools/loop/**"
   - "steps/runs/**"
-  - "steps/loop.md"
+  - "steps/PROGRESS.md"
+  - "steps/START.md"
+  - "steps/history/**"
   - ".claude/agents/**"
   - ".claude/hooks/**"
 ---
@@ -17,25 +19,45 @@ and nothing is fixed until a real run on real files shows it fixed.
 
 ## Where the state lives
 
-- steps\loop.md holds the loop state and is read FIRST by every session. Its first line
-  after the title is STATE followed by one word: OPEN, WAITING, RESTART or CLOSED. It
-  also holds the turn number, the main commit, the next action, the register, the form,
-  and per turn the runs, the findings, what was fixed, what is still open, every program
-  started and every file written outside the repo. A new session carries on from it
-  alone. A finished phase is never done again
-- The lead alone writes steps\loop.md and steps\log.md
+- steps\PROGRESS.md holds the loop state, at most 60 lines, and every session reads it FIRST
+  after CLAUDE.md and .claude\rules, Bader's message of 2026-10-06, Q139. Its first line is
+  STATE, then one of OPEN, WAITING, RESTART, CLOSED or NEXT WAVE, a comma, and the date and
+  time of its last update, such as STATE OPEN, 2026-10-06 16:00. Then, in his order, the counts
+  by wave, now, what each lane is doing, one line each, next, the next three steps in order,
+  waiting for Bader, each question with its number or none, at most five lines of blockers
+  and known bugs that matter now, and where the long history is. A new session carries on
+  from it alone and opens steps\history only for a line it needs. A finished phase is never
+  done again
+- The counts are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv and never
+  typed, .claude\rules\tracker.md. The lead rewrites the other lines, never appends, after
+  every merge, every run, every answer from Bader and before any stop. When a wave merges the
+  lead rewrites the page, sets STATE to NEXT WAVE and says in the tab that a fresh session can
+  start, which Bader starts with steps\START.md, a start prompt of under 20 lines that reads
+  CLAUDE.md, .claude\rules and the page and carries on
+- steps\history\loop.md and steps\history\log.md are the long history, moved there whole by
+  F139 as they were on 2026-10-06, and kept and written there: per turn the runs, what was
+  fixed, every program started and every file written outside the repo, the form, and one
+  entry per fix in log.md, newest at the top. The turn number, the main commit, the next
+  action and the register were in loop.md until then, and are in PROGRESS.md and the tracker
+  since
+- The lead alone writes steps\PROGRESS.md, steps\history\loop.md and steps\history\log.md
 - steps\runs\NN is one run set, 00 the baseline. Each run of the set has its own folder
   holding the text log, the tsv, a listing of every output file with its size, and a
   read-out of every workbook. A file over 20 MB is never committed, zipped or not. It stays
   in its run folder under %LOCALAPPDATA%\NwcFederatorLoop and the turn names it with its
   size and sha256, Bader's answer Q90 A
-- .claude\hooks\loop-gate.sh is the Stop hook. ONLY OPEN SENDS A SESSION BACK, and only
-  once per session per change to steps\loop.md. CLOSED, WAITING, RESTART, any other word,
-  no STATE line and no file all let the stop through, and so does a note it cannot write,
-  because a gate that cannot tell must never be what traps a session
-- While the loop runs, a finding lives in the register in steps\loop.md. A finding that
-  becomes a fix also gets its section and its DONE line in steps\01_next.md in the pull
-  request that merges it, so the two never disagree about what is done
+- .claude\hooks\loop-gate.sh is the Stop hook. ONLY OPEN BLOCKS. While steps\PROGRESS.md
+  reads OPEN it refuses every stop while the page is older than the last merge fetched from
+  origin/main and that merge did not change its STATE line, or older than the record.txt of a
+  run.ps1 run that finished, and it sends a session back once per session per change of the
+  page. WAITING, RESTART, CLOSED, NEXT WAVE, any other word, no STATE line and no page all let
+  the stop through, and so does a note it cannot write, because a gate that cannot tell must
+  never be what traps a session. Its header says how each is read, what each costs and its
+  limits, and tools\loop\prove-hooks.sh holds its cases
+- A finding is a row of steps\tracker.csv, of class register row, by .claude\rules\tracker.md,
+  never a bullet of a log entry or a row of a table in steps\history. A finding that becomes
+  a fix also gets its section and its DONE line in steps\01_next.md in the pull request that
+  merges it, so the two never disagree about what is done
 
 ## Guards that never bend
 
@@ -94,7 +116,7 @@ and nothing is fixed until a real run on real files shows it fixed.
   overwrites nothing else of his, bar its own logs and tsv files, which it takes out of his
   logs folder after the loop. Once it went further with a file of his: on 2026-10-01 Bader
   asked it to fix an error OneDrive showed, and the lead chose to delete a testhost.exe of his
-  other repo, its own choice of fix, recorded in steps\loop.md. From now on the loop names a
+  other repo, its own choice of fix, recorded in steps\history\loop.md. From now on the loop names a
   removal of anything of his to Bader before it makes it, its own rule
 - Before the first run his logs folder, %LOCALAPPDATA%\ParsonsNwcFederator\logs, is copied
   into logs-backup, and before every start each file of his the backup does not hold is
@@ -164,17 +186,17 @@ and nothing is fixed until a real run on real files shows it fixed.
 - While a Navisworks the loop did not start runs, there is no start, no install and no put
   back. The loop reads the processes every 10 minutes and carries on by itself once none
   runs, Bader's standing rule of 2026-10-04, Q98. run.ps1 only refuses. The waiting is the
-  lead's, through its own waiter outside the repo, named in steps\loop.md
+  lead's, through its own waiter outside the repo, named in steps\PROGRESS.md while it waits
 - The PC is kept awake for the whole loop, not only during runs, Q95, by the rule Bader set
   on 2026-10-04, Q98. keep-awake.ps1 runs as its own hidden process, not a child of Claude
   Code, and holds ES_CONTINUOUS, ES_SYSTEM_REQUIRED and ES_DISPLAY_REQUIRED. It changes none
   of his power, screen saver or lock settings. Since his message of the five requests, Q112,
   it keeps running while the Claude Code session of the loop is open, STATE WAITING included,
-  and stops itself, taking the request back first, only when steps\loop.md reads STATE CLOSED
+  and stops itself, taking the request back first, only when steps\PROGRESS.md reads STATE CLOSED
   or no claude.exe of the Claude Code extension runs. It is the lead's own script outside the
   repo, checked alive by a schedule of the session every 30 minutes while the session is idle
-  and by the lead at the start of every turn, and started again when it is gone. Its path, its process id and when it started and stopped are named in
-  steps\loop.md
+  and by the lead at the start of every turn, and started again when it is gone. Its path, its
+  process id and when it started and stopped are named in steps\history\loop.md
 - One change to his power settings is allowed, Q112: sleep when plugged in set to Never on the
   current scheme with powercfg, its old value saved in the turn's work folder first and put
   back when the loop closes. On 2026-10-04 it already read Never when plugged in, so nothing was written
@@ -240,7 +262,7 @@ and nothing is fixed until a real run on real files shows it fixed.
 3. A Core test that fails before the fix and passes after, or for a fault only Navisworks
    shows, a run that shows it before and not after
 4. One finding, one branch fix-F<n>, one pull request. Nothing rides along, except
-   steps\loop.md and the steps\runs folders the pull request relies on
+   steps\PROGRESS.md, steps\history and the steps\runs folders the pull request relies on
 5. No member without a caller in src, no second copy of logic, no catch that swallows an
    error, no Navisworks type in Federator.Core, .NET Framework 4.8 and C# 7.3
 6. Never weaken, skip or delete a test to get green. Never change a Look for line to
