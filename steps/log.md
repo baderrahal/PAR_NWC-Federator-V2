@@ -168,7 +168,7 @@ Register rows, the findings that break no rule of CLAUDE.md or are Bader's call,
 - F133-R25, by the rule in steps.md the lead sets a row merged with the pull request's number on the branch before the merge, so a pull request closed and opened again under another number would leave rows naming a number that is not their record, and the check reads clean either way
 - F133-R26, the check reads that a merged question row's PR is a number, not that its merge put the answer on main, which is how Q128 read 118 until attempt 5. A reader reads it by git, as f133h-question-prs.py does
 
-## 2026-10-06 The loop, turn 5, F131 add-in attempt 3, every line of the tool's log naming his logs folder or the kept map masked, and Bader's answer B to Q134, written by the developer as the lead's delegate, pushed on its branch, no pull request
+## 2026-10-06 The loop, turn 5, F131 add-in attempt 3, every line of the tool's log naming his logs folder or the kept map masked, and Bader's answer B to Q134, written by the developer as the lead's delegate, its harness on the merged head 5e3cd26, pushed on its branch, one draft pull request
 
 Attempt 2 at 0cf4048 and d392170 was read by the reviewer, APPROVE, and the breaker, CHANGES on
 one blocking finding, %LOCALAPPDATA%\NwcFederatorLoop\turn5\f131-ad2-result.json. The first try
@@ -204,7 +204,8 @@ The loop's harness, tools\loop\prove-run.ps1, was NOT RUN in this pass, as the b
 the harness runs alone and F138 runs it now. The lead runs it once F138 has merged. What did run,
 none of it the harness and none of it starting a stand-in or a Navisworks:
 - the K2 block of prove-run.ps1, read out of the file and run alone in a scratch PowerShell with
-  only the five functions it calls loaded from run.ps1 through the parser, and ReadShared from
+  only five functions of run.ps1 loaded through the parser, the four K2 reaches and TeamMapName,
+  which it names in a source string only, and ReadShared from
   nw-guard.ps1, writing only under the session's scratch folder. On run.ps1 as at a1017c0, 1
   passed and 8 failed of 9, turn5\f131-ad4-k2-alone-before.txt, the one pass being the check that
   no line is added or lost. With the change, 11 passed and 0 failed of 11,
@@ -216,6 +217,32 @@ none of it the harness and none of it starting a stand-in or a Navisworks:
   and twelfth, which name the log's own path in his logs folder, and no line naming that folder
   is left, turn5\f131-ad4-real-log.txt
 
+THE HARNESS PASS, 2026-10-06, after F138 merged as 37f37d4. Main was merged in at 5e3cd26,
+turn5\f131-ad5-merge-msg.txt. prove-run.ps1, steps\log.md and steps\01_next.md conflicted and
+turn5\f131-ad5-resolve-merge.py kept F131's H19, K2, RC1 and RC8 and F138's H20, H21 and limits
+whole. F131's child calls already went through F138's bounded functions, so H0's static read
+of the waits read 0 faults with nothing changed. At 5e3cd26 with an empty git status the
+solution builds with 0 warnings and 0 errors, turn5\f131-ad5-build.txt, and the Core tests
+read 1987 passed, 0 failed, 0 skipped, turn5\f131-ad5-core.txt. The full harness then ran once
+with its default limits, started directly with -Work
+%LOCALAPPDATA%\NwcFederatorLoop\test-f131-ad5-after, 17:43:12 to 18:33:30,
+turn5\f131-ad5-prove-after.txt, exit 1. A first start a minute before
+lost the backslashes of the script's path and powershell refused it before the script ran,
+turn5\f131-ad5-prove-start-bad-path.txt:
+- 310 passed and 9 failed of 319. K2 11 of 11, its BREAKS IT naming exactly the two lines
+  ending "remembered in X:\His\Logs\team-map.txt" and "X:\his\logs\run-1.log" and its held
+  copy case passing with the exception message. Every H19 check 32 of 32, RC1 8 of 8, RC8 3 of
+  3, H20 15 of 15, H21 14 of 14 and F138's nine checks of H0. Every BaderSame that ran, 19,
+  read his state unchanged. CLEANUP: stand-ins 48 and children 96 still running 0, the test key
+  gone, Get-Process Roamer 0. No TIME LIMIT line
+- 8 failures are the older ones of turn5\f138b-prove-after.txt: H0's "delete no file", K37, and
+  "four modes in one place", HangVerdict both flat 25 s and both flat exactly 20 s, the
+  unreadable sample and the sample after it, live 1 and live 3
+- the 9th is NEW and not F131's, a HARNESS FAULT in BaderSame "H21" after every H21 check had
+  passed, so BaderSame after H21 and H15's three checks did not run. Known bugs below
+- the K2 checks' failing first stays the replay at a1017c0 above, since no harness run without
+  limits may run now
+
 Programs and Navisworks:
 - dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for the edits
   of steps files and the merge, and powershell for the process reads, the parser reads and the
@@ -223,6 +250,10 @@ Programs and Navisworks:
 - Get-Process Roamer read 0 at 11:28:57 before any work, turn5\f131-ad4-roamer-before.txt, and 0
   at 12:31:42 after the build and the Core tests, turn5\f131-ad4-roamer-after.txt. No test folder
   was under NwcFederatorLoop at either read
+- the harness pass: the harness's own stand-ins and children, never a Navisworks. Get-Process
+  Roamer read 0 at 17:10:39 before, turn5\f131-ad5-roamer-before.txt, and 0 at 18:45:41 after,
+  f131-ad5-roamer-after.txt, with no test folder and no test key left. The race was measured
+  by churn-race.ps1 in the session's scratch folder only
 
 ### What was done
 
@@ -277,16 +308,18 @@ Programs and Navisworks:
 - `PathsOfHis` READS THE kept: LINE ONLY, the one line `TeamMapMemory` writes. A memory holding a
   line it does not know is unread, and its TEAMS line then names the memory in his logs folder,
   which the logs folder masks
-- A team-map.txt THAT CANNOT BE READ AT THE END stops the run's whole evidence step, the tool's
-  log, outputs.txt and the workbooks' read-outs, because they share one try, and the try names
-  it. The put back read the same file moments before
+- A team-map.txt THAT CANNOT BE READ AT THE END stops the rest of the run's evidence try: the
+  tool's log, outputs.txt, the workbooks' read-outs, and watch.txt, settings.txt, driver.txt
+  and toollog-name.txt, which join the evidence later in the same try, as the reviewer read. The
+  try names it. The put back read the same file moments before
 - THE OLDER H19 K CASE IS UNCHANGED. It calls `MaskRemembered` with no paths and passes alone
 
 ### What remains
 
-- the harness, by the lead once F138 has merged, with its new time limits: the K2 checks at
-  a1017c0, where run.ps1 holds none of the change, and at cdbf638 or later
-- one reviewer on a1017c0 to the records commit
+- BaderSame after H21 and H15, which the new fault cut, on the harness's next run once that
+  fault is fixed
+- the reviewer approved a1017c0 to c436715, turn5\lanes-review-F131-addin.json. The merge
+  5e3cd26 and the records after it are the lead's to read
 - F114 carrying `TeamPair`, `TeamMap.Compare` and `TeamMap.CarriesSizeFolder` in its own files and
   calling them, the lead's copy
 - a loop window run on Navisworks to read the mask in a real record, and every line of the add-in
@@ -294,8 +327,9 @@ Programs and Navisworks:
 
 ### Known bugs and register rows
 
-- F131-K8 is closed by Q134 B. F131-K35 is half closed: the lines of a run of items 2 to 5 naming
-  the kept map are masked now. That such a run reads Bader's own kept map stands
+- F131-K8 is closed by Q134 B. F131-K35 is half closed: the lines naming the kept map are masked
+  now. That a run reads Bader's own kept map stands, and the reviewer read it for every window
+  run, item 1 included, since the window reads the kept map when it opens
 - F131-K24, K25, K28 to K34, K36 and K37 stand. K34, the breaker's again on attempt 2:
   `ReadPicked` makes its own TeamMapSettings while the window keeps one. Both are defaults no
   window control changes, the rule lives once in `TeamMap.Beside`, and `ReadPicked` does the same
@@ -321,10 +355,22 @@ Programs and Navisworks:
   their own count line, not on the model's
 - F131-K43, the breaker's on attempt 2: the six reads of attempt 2's before harness that his
   AutoSave folder changed, 208 lines, cause UNKNOWN. For the lead beside the three C04 autosaves
+- NEW, for the lead's register, the harness's and not F131's: BaderState walks the whole loop
+  folder with Get-ChildItem -Recurse, prove-run.ps1 line 169, through the turn folders, every
+  lane's worktree and its own -Work, and drops those only after. Windows PowerShell 5.1 then
+  throws a Win32Exception, The system cannot find the file specified, when a folder under the
+  walk is removed while it walks: 8 of 488 and 8 of 619 walks threw with folders made and
+  removed under a wt- folder, 0 of 455 with files only, and 0 of 1176 and 0 of 1211 with the
+  wt- folder left out before the walk, turn5\f131-ad5-race.txt. The lane in wt-f139 wrote
+  build output from 18:31:22 and again from 18:33:33, read off its file times. Which folder
+  went, and whose, is UNKNOWN. The fix it points at: list the loop folder's own children,
+  leave out the turn folders, the wt- folders and -Work by the same rule, and walk only the rest
 
 ### What comes next
 
-- the lead's harness run and one reviewer, then the pull request
+- the lead reads the draft pull request and merges it once Actions is green, then reads the
+  first loop window record with F131 for the masked count and the toollog copy for his paths,
+  as the reviewer asked
 
 ### Every file written outside the repo, add-in attempt 3
 
@@ -338,6 +384,14 @@ Programs and Navisworks:
   f131-ad4-core-after.txt, f131-ad4-check-locals.txt, f131-ad4-check-imports.txt,
   f131-ad4-roamer-after.txt, f131-ad4-records.py, f131-ad4-log-entry.md,
   f131-ad4-commit-4-msg.txt, f131-ad4-precommit-4.txt and f131-ad4-push.txt
+- the harness pass: turn5\f131-ad5-roamer-before.txt, f131-ad5-merge-msg.txt, f131-ad5-merge.txt,
+  f131-ad5-resolve-merge.py, f131-ad5-precommit-merge.txt, f131-ad5-build.txt, f131-ad5-core.txt,
+  f131-ad5-check-locals.txt, f131-ad5-check-imports.txt, f131-ad5-prove-start-bad-path.txt and
+  its .exit.txt, f131-ad5-prove-after.txt and its .exit.txt, f131-ad5-race.txt,
+  f131-ad5-roamer-after.txt, f131-ad5-records.py, f131-ad5-log-entry.md, f131-ad5-commit-msg.txt,
+  f131-ad5-precommit-1.txt, f131-ad5-push.txt, f131-ad5-pr-body.md and f131-ad5-pr.txt, the
+  harness's -Work, which it removed itself, and in the session's scratch folder waitfaults.ps1,
+  churn-race.ps1 and its folders race1 to race5, which nothing reads after the commit
 - the scratch scripts k2-alone.ps1, k-alone.ps1 and real-log.ps1, a copy of run.ps1 as at
   a1017c0, and the folders k2-before, k2-after and k-after, in the session's scratch folder under
   the user's temp folder, which nothing reads after the commit

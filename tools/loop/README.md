@@ -437,9 +437,9 @@ the close, the watchdog's end, the put back, the keep awake release or the verdi
 - writes of a window run, F106: runs\NN\item<K>-<Folder> with driver.txt, toollog-name.txt,
   toollog\ with the tool's log, its FOLDERS REMEMBERED block masked, Q87, its TEAMS KEPT
   block masked, Q123, and every other line naming his logs folder or the kept map masked,
-  F131, and its .tsv, copied as it is,
-  outputs.txt, item 5's open\, and what the tool writes into the copy's NWF, NWD and Clash
-  Report folders. A read-out of every workbook by tools\loop\read-workbook.ps1 goes into the
+  F131, and its .tsv, copied as it is, outputs.txt, item 5's open\, and what the tool writes
+  into the copy's NWF, NWD and Clash Report folders. A read-out of every workbook by
+  tools\loop\read-workbook.ps1 goes into the
   evidence, and a file over 20 MB is named with its size and sha256 and not copied, Q90.
   It starts the driver, powershell.exe, and read-workbook.ps1 once per workbook
 - writes of a documents read, F104 part 2: runs\NN\item<K>-<Folder>-document-yyyyMMdd-HHmmss,
@@ -555,6 +555,9 @@ run against a fake APPDATA, H16, a window whose thread is blocked, and H17, a co
 run.ps1 whose constructor line is removed, run against fake LOCALAPPDATA and APPDATA folders
 through checks 13, 14, 15 and 18 and to the removed line, and since fix attempt 2: H18, the
 end of a run, the call deadline, the verdict, the one listing reader and the bounded walk,
+since F131 H19, team-map.txt read before every start and put back after it, with RC1 and RC8
+of H17 reading the same in the run flow, its TEAMS KEPT block masked and, K2, every other line
+of the tool's log naming his logs folder or the kept map masked,
 and since F138 H20, the Auto-Save switch written "3 0" on the throwaway key: a backup that
 writes nothing and a switch after it that reads back and is put back, a write that throws, a
 write another writer changes before the read back, a read back that cannot be read, a key that
