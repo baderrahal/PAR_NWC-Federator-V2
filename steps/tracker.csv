@@ -310,7 +310,7 @@ F110,"the WORKBOOK CHECK counts only the blocks that found clashes, set 03 findi
 F111,"the RESULT block prints file sizes that are not the files', set 03 finding 5 (FR-046)",F111,before the waves,fix,open,none,none,2026-10-06
 F112,alignment,F112,1,fix,merged,106,none,2026-10-05
 F113,clash counts,F113,1,fix,merged,95,none,2026-10-04
-F114,views,F114,2b,fix,in progress,"none, branch fix-F114",none,2026-10-04
+F114,views,F114,2b,fix,in progress,"none, branch fix-F114 at e77e8a7, waits for F131 and F132",none,2026-10-06
 F115,sets,F115,2a,fix,in progress,"none, branch fix-F115",none,2026-10-05
 F116,the clash XML,F116,1,fix,merged,98,none,2026-10-05
 F117,the names,F117,5,fix,open,none,none,2026-10-04
@@ -327,8 +327,8 @@ F127,coverage of the clash XML,F127,2a,fix,in progress,"none, branch fix-F127",n
 F128,generic models,F128,2b,fix,open,none,none,2026-10-04
 F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
 F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
-F131,teams,F131,2b,fix,in progress,"none, branch fix-F131",none,2026-10-05
-F132,mirrored tests,F132,2a,fix,in progress,"none, branch fix-F132",none,2026-10-05
+F131,teams,F131,2b,fix,in progress,"none, branch fix-F131 at 0e262d3, its harness read, its pull request not yet opened",none,2026-10-06
+F132,mirrored tests,F132,2a,fix,in progress,"none, branch fix-F132 at 93b45b1, attempt 9 on one blocking point next",none,2026-10-06
 F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-06
 F134,the code health gate,F134,beside the waves,fix,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 F135,the analyser settings that touch every project,F135,beside the waves,fix,open,none,none,2026-10-05
