@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 405 rows: open 158, in progress 56, in review 0, merged 165, proven by a run 22, waiting for Bader 0, dropped 4
+- By status, of 405 rows: open 158, in progress 55, in review 0, merged 166, proven by a run 22, waiting for Bader 0, dropped 4
 - By wave: 1 19, 2a 31, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 43, 5 71, 5 and 4 1, all 1, before any probe or run starts again 3, before any test run 3, before the test of wave 1 6, before the waves 114, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 23, outside the waves 2
-- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, F138 loop starts with Auto-Save off, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 40 FR items
+- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 40 FR items
 - Waits for Bader: nothing
 
 ## Wave 1
@@ -317,9 +317,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| F138 | loop starts with Auto-Save off | F138 | fix | in progress | 127 open as a draft, branch fix-F138 | none | 2026-10-06 |
-| FR-196 | loop runs write no autosave and copy his folder once | F138 | Bader's decision | in progress | 127 open as a draft, branch fix-F138 | none | 2026-10-06 |
-| Q135 | too many autosave copies | F138 | Bader's request | in progress | 127 open as a draft, branch fix-F138 | none | 2026-10-06 |
+| F138 | loop starts with Auto-Save off | F138 | fix | merged | 127 | none | 2026-10-06 |
+| FR-196 | loop runs write no autosave and copy his folder once | F138 | Bader's decision | in progress | 127 merged for part 1, part 2 in run.ps1 after F131 | none | 2026-10-06 |
+| Q135 | too many autosave copies | F138 | Bader's request | in progress | 127 merged for part 1, part 2 in run.ps1 after F131 | none | 2026-10-06 |
 
 ## before any test run
 
