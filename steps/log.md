@@ -1,6 +1,16 @@
 # log
 
 Newest entry at the top.
+## 2026-10-06 The loop, turn 5, F138 MERGED as pull request 127, 37f37d4, at 17:08:09
+
+Attempt 2 read by a reviewer, APPROVE with nothing blocking, turn5\lanes-review2-F138.json. The lead's 0f29508
+before the merge set F138 merged with 127 and FR-196 and Q135 in progress until part 2 in run.ps1 after F131,
+made the reviewer's words true and wrote its two findings as register rows T5-R-M5AUTOSAVE and T5-R-HELDOFF,
+turn5\f138d-precommit.txt, Core 1926 passed, 0 failed, 0 skipped, and Actions run 37475846934 a success on it,
+turn5\actions-reads-pr127.txt. The probe pause was lifted at its merge, turn5\probes-pause-lifted.txt, and the
+lane that runs alone began at 17:09, F131's harness on main with the time limits first, then the probes with
+the switch written "3 0". Whether Navisworks reads "3 0" as off is UNKNOWN until that first real start.
+
 ## 2026-10-06 The loop, turn 5, Bader's answers to the 22 old items and his F132 rule, recorded
 
 His message headed BADER'S ANSWERS, 6 OCT 2026, THE 22 OLD ITEMS AND F132'S NEXT READING, his words whole at
