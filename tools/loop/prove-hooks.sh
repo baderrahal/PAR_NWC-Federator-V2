@@ -153,8 +153,15 @@ echo '{"tool_name":"Bash","tool_input":{"command":"git commit -m \"a; git push o
 echo "== the Stop gate, a throwaway project folder with no git"
 # F139: the gate reads steps/PROGRESS.md. Every case of the page's STATE line, and the send back
 # once per change of the page while it reads OPEN, in a folder where no merge can be read.
-lapp="$scratch/local"
-mkdir -p "$lapp"
+# LOCALAPPDATA reaches the gate spelt the Windows way, a drive and backslashes, as Claude Code
+# hands it to a hook on this machine, so the glob over its runs folder is proved in that spelling.
+# lappu is the same folder spelt for this script. With no cygpath, as in a container, both are
+# the POSIX path.
+lappu="$scratch/local"
+mkdir -p "$lappu"
+lapp=$(cygpath -w "$lappu" 2>/dev/null) || lapp=
+[ -n "$lapp" ] || lapp=$lappu
+echo "LOCALAPPDATA as the gate reads it: $lapp"
 proj="$scratch/proj"
 mkdir -p "$proj/steps" "$proj/.claude/hooks"
 A='{"session_id":"A","hook_event_name":"Stop","stop_hook_active":false}'
@@ -196,96 +203,188 @@ printf 'STATE OPEN, 2026-10-06 16:40\n' > "$proj/steps/loop.md"
 rm -f "$proj/steps/PROGRESS.md"
 echo '{"session_id":"L","hook_event_name":"Stop"}' | gate allow "no PROGRESS.md, an old steps/loop.md reading OPEN is not read" "$proj"
 
-echo "== the Stop gate, a throwaway clone of a throwaway origin, merges made by git's plumbing"
-# A merge is read off .git/logs/refs/remotes/origin/main, which every fetch that moves main
-# writes, and the one git call asks whether the merge at main's head changed the STATE line.
-# Commits are made with hash-object, mktree and commit-tree, which run no hook.
+echo "== the Stop gate, the lead's flow, a clone of a throwaway origin checked out as the lead does"
+# F139, attempt 2. A merge on GitHub is made in a throwaway bare origin by git's plumbing, which
+# runs no hook. The clone fetches it and checks out origin/main detached, as the lead does after
+# every merge, with core.autocrlf true as Git for Windows sets it on this machine, so a checkout
+# that changes the page writes it with CRLF, as the working copy of the main clone holds it. The
+# lead's rewrite is the page written on a records branch with CRLF, staged with git add,
+# committed by write-tree and commit-tree, fetched into the origin and merged there. The merge
+# test reads the STATE line of the page in the working copy against the one at the first parent
+# of origin/main, so what a checkout does to the page's file time does not move it.
 og="$scratch/origin.git"
 git init -q --bare "$og"
-commit() {
-    # $1 the page, $2 a file of code, then the parents. Prints the new commit's sha.
+repo2="$scratch/repo2"
+git init -q "$repo2"
+git -C "$repo2" config core.autocrlf true
+git -C "$repo2" remote add origin "$og"
+mkdir -p "$repo2/.claude/hooks"
+cr=$(printf '\r')
+who() {
+    GIT_AUTHOR_NAME=proof GIT_AUTHOR_EMAIL=proof@example.invalid GIT_COMMITTER_NAME=proof GIT_COMMITTER_EMAIL=proof@example.invalid "$@"
+}
+tree_of() {
+    # $1 the page, $2 a file of code. Prints a tree of the origin holding steps/PROGRESS.md and code.txt.
     pb=$(printf '%s' "$1" | git --git-dir="$og" hash-object -w --stdin)
     cb=$(printf '%s' "$2" | git --git-dir="$og" hash-object -w --stdin)
     st=$(printf '100644 blob %s\tPROGRESS.md\n' "$pb" | git --git-dir="$og" mktree)
-    rt=$(printf '040000 tree %s\tsteps\n100644 blob %s\tcode.txt\n' "$st" "$cb" | git --git-dir="$og" mktree)
-    t=$1; c=$2; shift 2
+    printf '040000 tree %s\tsteps\n100644 blob %s\tcode.txt\n' "$st" "$cb" | git --git-dir="$og" mktree
+}
+commit() {
+    # $1 a tree, then the parents. Prints the new commit of the origin.
+    tree=$1
+    shift
     ps=
     for p in "$@"; do ps="$ps -p $p"; done
-    GIT_AUTHOR_NAME=proof GIT_AUTHOR_EMAIL=proof@example.invalid GIT_COMMITTER_NAME=proof GIT_COMMITTER_EMAIL=proof@example.invalid \
-        git --git-dir="$og" commit-tree "$rt" $ps -m "a commit of the proof"
+    who git --git-dir="$og" commit-tree "$tree" $ps -m "a commit of the proof"
 }
-merge_to_main() {
+merge_on_github() {
+    # $1 the branch commit. A merge commit on the origin's main, its first parent main, holding
+    # the branch's tree, as GitHub makes it for a branch that has main in. Prints it.
+    commit "$(git --git-dir="$og" rev-parse "$1^{tree}")" "$(git --git-dir="$og" rev-parse main)" "$1"
+}
+land() {
+    # main of the origin moves to $1, then the clone fetches and checks out origin/main detached.
     git --git-dir="$og" update-ref refs/heads/main "$1"
     git -C "$repo2" fetch -q origin
+    git -C "$repo2" checkout -q --detach origin/main
 }
-P1='STATE OPEN, 2026-10-06 10:00
+rewrite() {
+    # The lead's rewrite: the page $1 written with CRLF line ends on a new branch $2 of the clone,
+    # staged, committed by plumbing and fetched into the origin. Prints the commit.
+    git -C "$repo2" checkout -q -b "$2"
+    printf '%s' "$1" | sed "s/\$/$cr/" > "$repo2/steps/PROGRESS.md"
+    git -C "$repo2" add steps/PROGRESS.md
+    rt=$(git -C "$repo2" write-tree)
+    rc=$(who git -C "$repo2" commit-tree "$rt" -p HEAD -m "the lead's records")
+    git -C "$repo2" update-ref "refs/heads/$2" "$rc"
+    git --git-dir="$og" fetch -q "$repo2" "refs/heads/$2:refs/heads/$2"
+    printf '%s\n' "$rc"
+}
+looks() {
+    # How the page in the working copy reads: its carriage returns, and whether its file time is
+    # newer than the reflog of origin/main, which is what the gate before attempt 2 read.
+    n_cr=$(grep -c "$cr" "$repo2/steps/PROGRESS.md")
+    if [ "$repo2/steps/PROGRESS.md" -nt "$repo2/.git/logs/refs/remotes/origin/main" ]; then nt=newer; else nt="not newer"; fi
+    echo "    the page: $n_cr lines ending in CRLF, its file time $nt than the last fetch of main, its STATE line: $(head -n 1 "$repo2/steps/PROGRESS.md" | tr -d '\r')"
+}
+P0='STATE OPEN, 2026-10-06 10:00
 <!-- counts -->
 | 1 | 3 |
 <!-- end -->
 '
-P2='STATE OPEN, 2026-10-06 11:00
+P1='STATE OPEN, 2026-10-06 11:00
 <!-- counts -->
 | 1 | 3 |
 <!-- end -->
 '
-P3='STATE OPEN, 2026-10-06 11:00
+P1C='STATE OPEN, 2026-10-06 11:00
 <!-- counts -->
 | 1 | 4 |
 <!-- end -->
 '
-repo2="$scratch/repo2"
-git init -q "$repo2"
-git -C "$repo2" remote add origin "$og"
-mkdir -p "$repo2/steps" "$repo2/.claude/hooks"
-c0=$(commit "$P1" "code 0")
-merge_to_main "$c0"
-echo "origin/main at $(git -C "$repo2" rev-parse --short origin/main), the reflog $(ls "$repo2/.git/logs/refs/remotes/origin/main" 2>&1)"
-sleep 1; printf '%s' "$P1" > "$repo2/steps/PROGRESS.md"
+P2='STATE OPEN, 2026-10-06 12:00
+<!-- counts -->
+| 1 | 4 |
+<!-- end -->
+'
+P3='STATE OPEN, 2026-10-06 13:00
+<!-- counts -->
+| 1 | 4 |
+<!-- end -->
+'
 S='{"session_id":"S","hook_event_name":"Stop"}'
-echo "$S" | gate block "the page written after the last fetch of main, sent back once" "$repo2" "$NC"
-echo "$S" | gate allow "the same, let through the second time" "$repo2"
-fix=$(commit "$P1" "code 1, a fix" "$c0")
-m1=$(commit "$P1" "code 1, a fix" "$c0" "$fix")
-sleep 1; merge_to_main "$m1"
-echo "$S" | gate block "a stale page after a merge that did not change its STATE line" "$repo2" "merge"
-echo "$S" | gate block "the same stale page, every stop refused while it is stale" "$repo2" "merge"
-sleep 1; printf '%s' "$P2" > "$repo2/steps/PROGRESS.md"
-echo "$S" | gate block "the page rewritten after the merge, sent back once for the change" "$repo2" "$NC"
-echo "$S" | gate allow "the page rewritten after the merge, then let through" "$repo2"
-rec=$(commit "$P2" "code 1, a fix" "$m1")
-m2=$(commit "$P2" "code 1, a fix" "$m1" "$rec")
-sleep 1; merge_to_main "$m2"
-echo "$S" | gate allow "a page rewritten and merged, the merge at main's head changed its STATE line" "$repo2"
-counts=$(commit "$P3" "code 2, a fix that changed a row" "$m2")
-m3=$(commit "$P3" "code 2, a fix that changed a row" "$m2" "$counts")
-sleep 1; merge_to_main "$m3"
-echo "$S" | gate block "a merge that changed only the counts of the page, not its STATE line" "$repo2" "merge"
+ML="STATE line"
+c0=$(commit "$(tree_of "$P0" "code 0")")
+land "$c0"
+echo "origin/main at $(git -C "$repo2" rev-parse --short origin/main), the clone detached at $(git -C "$repo2" rev-parse --short HEAD)"
+looks
+echo "$S" | gate block "the page new on main, whose head has no parent, sent back once" "$repo2" "$NC"
+echo "$S" | gate allow "the same, let through, a head with no parent is no merge to read" "$repo2"
+r1=$(rewrite "$P1" records-1)
+looks
+echo "$S" | gate block "the lead's rewrite on a records branch, not merged yet, sent back once" "$repo2" "$NC"
+echo "$S" | gate allow "the same, let through" "$repo2"
+sleep 1; land "$(merge_on_github "$r1")"
+echo "a records merge carrying the rewrite, fetched and checked out"
+looks
+echo "$S" | gate allow "a records merge carrying the rewrite, fetched and checked out, let through" "$repo2"
+fx=$(commit "$(tree_of "$P1C" "code 1, a fix that changed a row")" "$(git --git-dir="$og" rev-parse main)")
+sleep 1; land "$(merge_on_github "$fx")"
+echo "a fix merge that changed the counts, fetched, then origin/main checked out, which writes the page"
+looks
+echo "$S" | gate block "a fix merge that changed the counts, the page written by the checkout after the fetch, refused" "$repo2" "$ML"
+echo "$S" | gate block "the same, every stop refused until the lead rewrites" "$repo2" "$ML"
+r2=$(rewrite "$P2" records-2)
+looks
+echo "$S" | gate block "the lead rewrites after the merge, sent back once for the change" "$repo2" "$NC"
+echo "$S" | gate allow "the lead rewrites after the merge, let through" "$repo2"
+sleep 1; land "$(merge_on_github "$r2")"
+looks
+echo "$S" | gate allow "the merge carrying the rewrite, fetched and checked out, let through" "$repo2"
+fy=$(commit "$(tree_of "$P2" "code 2, a fix that left the page alone")" "$(git --git-dir="$og" rev-parse main)")
+sleep 1; land "$(merge_on_github "$fy")"
+echo "a fix merge that left the page alone, fetched and checked out"
+looks
+echo "$S" | gate block "a fix merge that left the page alone, refused until the lead rewrites" "$repo2" "$ML"
 sleep 1; printf '%s' "$P3" > "$repo2/steps/PROGRESS.md"
-echo "$S" | gate block "rewritten again, sent back once" "$repo2" "$NC"
-echo "$S" | gate allow "rewritten again, let through" "$repo2"
-mkdir -p "$lapp/NwcFederatorLoop/runs/05/item1" "$lapp/NwcFederatorLoop/runs/05/item2"
-sleep 1; printf 'a line of the run\r\nVERDICT: RAN\r\n' > "$lapp/NwcFederatorLoop/runs/05/item1/record.txt"
-echo "$S" | gate block "a page older than a finished run, its record.txt holding a VERDICT line" "$repo2" "05/item1"
-echo "$S" | gate block "the same, every stop refused while the page is older" "$repo2" "A run finished"
-sleep 1; printf '%s' "$P3" > "$repo2/steps/PROGRESS.md"
-echo "$S" | gate block "the page rewritten after the run, sent back once" "$repo2" "$NC"
-echo "$S" | gate allow "the page rewritten after the run, let through" "$repo2"
-sleep 1; printf 'a line of a run still going\r\n' > "$lapp/NwcFederatorLoop/runs/05/item2/record.txt"
-echo "$S" | gate allow "a run still going, its record.txt with no VERDICT line, newer than the page" "$repo2"
-printf 'STATE NEXT WAVE, 2026-10-06 12:00\n' > "$repo2/steps/PROGRESS.md"
-touch -d '2026-01-01 00:00:00' "$repo2/steps/PROGRESS.md"
-echo "$S" | gate allow "NEXT WAVE, a page older than the merge and the run, let through" "$repo2"
+echo "$S" | gate block "the page rewritten with LF line ends, as a script writes it, sent back once" "$repo2" "$NC"
+echo "$S" | gate allow "the same, let through" "$repo2"
+
+echo "== the Stop gate, the runs, LOCALAPPDATA spelt the Windows way"
+# F139, attempt 2. The page names on its STATE line the run it was last rewritten after. A run
+# whose record.txt holds a VERDICT line and is newer than the named run's record refuses every
+# stop until the page names it. A checkout or the maker writing the page moves the page's time,
+# never a record's, so what the page says is the test.
+runs="$lappu/NwcFederatorLoop/runs"
+mkdir -p "$runs/05/item1" "$runs/05/item2" "$runs/06/item1"
+sleep 1; printf 'a line of the run\r\nVERDICT: RAN\r\n' > "$runs/05/item1/record.txt"
+echo "$S" | gate block "a run that finished, which the page does not name, refused naming it" "$repo2" "05/item1"
+echo "$S" | gate block "the same, every stop refused" "$repo2" "05/item1"
+sleep 1; printf 'STATE OPEN, 2026-10-06 13:00\n<!-- counts -->\n| 1 | 5 |\n<!-- end -->\n' > "$repo2/steps/PROGRESS.md"
+echo "    the page written again after the run, as the maker writes new counts, its STATE line as it was"
+echo "$S" | gate block "the page newer than the run's record, still not naming the run, refused" "$repo2" "05/item1"
+sleep 1; printf 'STATE OPEN, 2026-10-06 14:00, last run 05/item1\n<!-- counts -->\n| 1 | 5 |\n<!-- end -->\n' > "$repo2/steps/PROGRESS.md"
+echo "$S" | gate block "the page naming the run on its STATE line, sent back once for the change" "$repo2" "$NC"
+echo "$S" | gate allow "the page naming the run, let through" "$repo2"
+sleep 1; printf 'a line of a run still going\r\n' > "$runs/05/item2/record.txt"
+echo "$S" | gate allow "a run still going, its record.txt with no VERDICT line, newer than the named run" "$repo2"
+sleep 1; printf 'VERDICT: STOPPED\r\n' >> "$runs/05/item2/record.txt"
+echo "$S" | gate block "that run finished, the page naming the run before it, refused naming the new one" "$repo2" "05/item2"
+sleep 1; printf 'STATE OPEN, 2026-10-06 15:00, last run 05\\item2\r\n<!-- counts -->\r\n| 1 | 5 |\r\n<!-- end -->\r\n' > "$repo2/steps/PROGRESS.md"
+echo "$S" | gate block "the page naming it with a backslash and CRLF line ends, sent back once" "$repo2" "$NC"
+echo "$S" | gate allow "the same, let through" "$repo2"
+sleep 1; printf 'a line\r\nVERDICT: RAN\r\n' > "$runs/06/item1/record.txt"
+sleep 1; printf 'STATE OPEN, 2026-10-06 16:00, last run 06/item10\n<!-- counts -->\n| 1 | 5 |\n<!-- end -->\n' > "$repo2/steps/PROGRESS.md"
+echo "$S" | gate block "a page naming 06/item10, written after 06/item1 finished, does not name 06/item1, refused" "$repo2" "06/item1 under"
+sleep 1; printf 'STATE OPEN, 2026-10-06 16:05, last run 06/item1.\n<!-- counts -->\n| 1 | 5 |\n<!-- end -->\n' > "$repo2/steps/PROGRESS.md"
+echo "$S" | gate block "the page naming 06/item1 at the end of a sentence, sent back once" "$repo2" "$NC"
+echo "$S" | gate allow "the same, let through" "$repo2"
+sleep 1; printf 'a line\r\nVERDICT: RAN\r\n' > "$runs/05/item1/record.txt"
+sleep 1; printf 'a line of a run still going, the newest of all\r\n' > "$runs/05/item2/record.txt"
+echo "$S" | gate block "the newest run still going, and a run newer than the named one finished before it, refused naming the finished one" "$repo2" "05/item1 under"
+printf 'STATE NEXT WAVE, 2026-10-06 17:00\n' > "$repo2/steps/PROGRESS.md"
+echo "$S" | gate allow "NEXT WAVE, naming no run, let through" "$repo2"
+
+echo "== the Stop gate, a worktree session"
+# The worktree's .git is a file naming its folder under the clone's .git, whose commondir names
+# that .git, so the reflog and git's answer are the clone's. Main gets a records merge carrying
+# the page of 13:00 and then a fix merge that leaves the page alone.
+rc3=$(commit "$(tree_of "$P3" "code 2, a fix that left the page alone")" "$(git --git-dir="$og" rev-parse main)")
+git --git-dir="$og" update-ref refs/heads/main "$(merge_on_github "$rc3")"
+fz=$(commit "$(tree_of "$P3" "code 3, a fix that left the page alone")" "$(git --git-dir="$og" rev-parse main)")
+git --git-dir="$og" update-ref refs/heads/main "$(merge_on_github "$fz")"
+git -C "$repo2" fetch -q origin
 wt="$scratch/wt"
-git -C "$repo2" worktree add -q --no-checkout --detach "$wt" origin/main
-mkdir -p "$wt/steps" "$wt/.claude/hooks"
+git -C "$repo2" worktree add -q --detach "$wt" origin/main
+mkdir -p "$wt/.claude/hooks"
 echo "the worktree's .git reads: $(cat "$wt/.git")"
+echo "    its page as checked out: $(grep -c "$cr" "$wt/steps/PROGRESS.md") lines ending in CRLF, its STATE line: $(head -n 1 "$wt/steps/PROGRESS.md" | tr -d '\r')"
 W='{"session_id":"W","hook_event_name":"Stop"}'
-printf '%s' "$P3" > "$wt/steps/PROGRESS.md"
-touch -d '2026-01-01 00:00:00' "$wt/steps/PROGRESS.md" "$lapp/NwcFederatorLoop/runs/05/item1/record.txt"
-echo "$W" | gate block "a worktree session, its page older than the last fetch of main, read through its .git file" "$wt" "merge"
-sleep 1; printf '%s' "$P3" > "$wt/steps/PROGRESS.md"
-echo "$W" | gate block "a worktree session, its page rewritten, sent back once" "$wt" "$NC"
-echo "$W" | gate allow "a worktree session, its page rewritten, let through" "$wt"
+echo "$W" | gate block "a worktree session, its page as checked out holding the STATE line main held before its head, read through its .git file, refused" "$wt" "$ML"
+sleep 1; printf 'STATE OPEN, 2026-10-06 18:00, last run 05/item1\n<!-- counts -->\n| 1 | 4 |\n<!-- end -->\n' > "$wt/steps/PROGRESS.md"
+echo "$W" | gate block "a worktree session, its page rewritten, naming the last finished run, sent back once" "$wt" "$NC"
+echo "$W" | gate allow "the same, let through" "$wt"
 rm -f "$wt/steps/PROGRESS.md"
 echo "$W" | gate allow "a worktree session with no page" "$wt"
 
