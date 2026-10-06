@@ -1,6 +1,58 @@
 # log
 
 Newest entry at the top.
+## 2026-10-06 The loop, turn 5, picked up after the laptop went off, Bader's message headed CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, and the plan
+
+Why it went off: the System log reads shutdown.exe starting a shutdown for NT AUTHORITY\SYSTEM at
+19:31:09 on 2026-10-05, reason code 0x800000ff, the system down at 19:32:14 and up at 09:44:55 on
+2026-10-06, turn5\restart\settings.md. What called shutdown.exe is UNKNOWN, and his 22:24 matches no
+event in that log. Get-Process Roamer read 0 at 10:08 and at every read after. The keep-awake started
+again at 10:12:11 as pid 2076, turn5\keep-awake-checks.txt.
+
+His settings: PUT BACK at 11:01:38, 44 values of the 22.0 key and InfoCenter.log and LastSession.xml
+from P10's backup, through the guard's own PutBackRegistry and PutBackFiles, 0 left different on the
+read back, his AutoSave folder of 199 files, folders.txt and team-map.txt needing nothing,
+turn5\restart\putback-p10-write-20261006-110126.txt. The key and the two files as they read before
+were copied first, beside it. 40 of the 44 had gone back to values older than any backup the loop
+took, by a writer UNKNOWN, register row T5-R-OLDKEY. Auto-Save enable read "0" before and after, F138's
+"3 0" never having reached his key.
+
+What the shutdown cut, turn5\restart\trees.md:
+- F131's add-in attempt 3: main 1a202c0 merged in as 26c62df, not pushed, and the test first K2 checks
+  in prove-run.ps1 not committed, run.ps1 not yet changed, its harness never started
+- F133's attempt 5: reads only, nothing written, PR 122 still at efc3c44
+- F138: its four files not committed, its full harness on the new guard cut in H7
+- F132's attempt 6: 14 files staged, its pre-commit killed by the shutdown, no commit
+
+The harness was not hung. The cut run had run 13 min 31 s and was in H7 at the pace of the runs
+before it. The 2 h 30 min is nearest the F138 workflow's 2 h 21 min 34 s, about 72 min of it in two
+wrappers waiting with no limit on F131's two harness runs, turn5\restart\harness.md. The cut run's
+-Work, which would have held F131's wrapper for ever, was removed at 10:30:10, its files listed in
+turn5\restart\test-f138-after-removed.txt. The fix is register row T5-R-HARNESSLIMIT, built in F138's
+branch.
+
+The plan, in Bader's order:
+1. F138 with the time limits, its full harness on the new guard, one reviewer, merged before any
+   probe or run
+2. F131's add-in attempt 3, the K2 mask fix and Q134 B, its harness once F138 has merged, one
+   reviewer, merged
+3. F132's attempt 6 again, every mirror named by its own name with (mirror) and Q136 A, then its
+   add-in half after F131, a reviewer and a breaker, merged
+4. F114 carrying the three members of Q134 B, its probes P11 to P19 and the Q133 measurement on
+   1A04PK once F138 has merged, its add-in half after F132, a reviewer and a breaker, merged with the
+   viewpoints box ticked again
+5. Main installed in place, 1A02MM and 1A04PK run with the new views, VIEWS seconds and totals against
+   2 h 12 min for 1A02MM and the hung run for 1A04PK
+6. Beside them, F133's attempt 5 and PR 122 merged, then F134 the gate and F135
+7. Then the rest of wave 2, F137 and the test of wave 1, then waves 3 to 5
+
+Every harness run and every probe runs alone, since each stops on the other's stand-ins or
+Navisworks. Checks from now, by his item 16: each fix its test first, a clean build, green Core tests
+and one reviewer, a breaker only on alignment, sets, clash counts, mirrors and views, no
+claim-checker on records, one short record per merge or run.
+
+STATE OPEN.
+
 ## 2026-10-05 The loop, turn 5, F131 add-in attempt 2, team-map.txt put back after every loop start and the readings' house rule findings, written by the developer as the lead's delegate, pushed on its branch, no pull request
 
 The add-in half at c3a30bc and 58df8b8 was read by the reviewer, CHANGES with two blocking
