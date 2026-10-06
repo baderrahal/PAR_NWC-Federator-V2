@@ -503,6 +503,19 @@ before Run with both states and goes on, and its line for any window it stops on
 kind and both states. The monitor writes a PANE without counting it a DIALOG finding, and a PANE
 never holds back WM_CLOSE.
 
+What F138 changed, which its header lists too, Bader's message of 2026-10-05, Q135 point 2:
+BackupSettings, once it has read the 22.0 key for the backup, writes enable under its
+GlobalOptions\general\autosave as "3 0", Auto-Save off, opens the key again and reads it back,
+and refuses the start with one line when it does not read back or the key is not there, which
+it never makes. So every start of the probe and of run.ps1 has Auto-Save off, and the put back
+returns it. SettingsPutBack and the watchdog's constructor deadline block each write one line
+when Auto-Save is left off for Bader, that is when enable still reads "3 0" and the backup held
+something else. That Navisworks reads "3 0" as off is UNKNOWN until a start writes no autosave.
+
+- writes outside the repo: since F138 the one value enable under
+  HKCU\Software\Autodesk\Navisworks Manage\22.0\GlobalOptions\general\autosave, before every
+  start of the probe and of run.ps1, put back by the settings put back
+
 How the record stays bounded since F125's second pass: the monitor writes each window at first
 sight, keyed by its handle, class and caption, and writes it again, an AGAIN line naming its reads
 before and now, only when the rule's kind for it, its own enabled state or its owner's changes. A
@@ -520,7 +533,11 @@ the part 1 modes and M1 to M3, and since fix attempt 1: H12b, copies of build\in
 run against a fake APPDATA, H16, a window whose thread is blocked, and H17, a copy of
 run.ps1 whose constructor line is removed, run against fake LOCALAPPDATA and APPDATA folders
 through checks 13, 14, 15 and 18 and to the removed line, and since fix attempt 2: H18, the
-end of a run, the call deadline, the verdict, the one listing reader and the bounded walk:
+end of a run, the call deadline, the verdict, the one listing reader and the bounded walk,
+and since F138 H20, Auto-Save switched off on the throwaway key: a write that reads back and
+is put back, a write SetValue is denied on, a key that is not there, a put back refused, a
+put back stopped by a stand-in, a switch the backup held off already and the constructor
+deadline in a child:
 
     powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\prove-run.ps1 -Work <a new folder under %LOCALAPPDATA%\NwcFederatorLoop>
 

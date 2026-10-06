@@ -48,6 +48,14 @@
 #   untick and could not
 # - added: UntickIds and UntickRefusal, the one reading of the list of tick boxes that run.ps1's
 #   -Untick and the driver's -Untick take
+#
+# WHAT F138 CHANGED OR ADDED, so a loop start never autosaves into Bader's AutoSave folder,
+# his message of 2026-10-05, Q135 point 2:
+# - changed: BackupSettings, which switches Auto-Save off once the backup is taken and refuses
+#   when the switch does not read back, SettingsPutBack and the watchdog's constructor deadline
+#   block, which each say in one line when Auto-Save is left off for Bader
+# - added: AutoSaveSwitchKey, AutoSaveSwitchOff, AutoSaveSwitchHeld, SwitchAutoSaveOff and
+#   AutoSaveLeftLine
 # The rules these functions keep are written at the top of the probe and in
 # .claude\rules\loop.md, and are not repeated here.
 #
@@ -1152,6 +1160,8 @@ function Watchdog($sync) {
             $dr = DiffRegistry $sync.RegBefore $ra $sync.RegRoot
             foreach ($l in $dr.Lines) { $block.Add("  " + $l) }
             $block.Add("  registry: " + @($dr.Changes | Where-Object { $_.Op -ne "CreateKey" }).Count + " values or keys differ from the backup, nothing written")
+            $al = AutoSaveLeftLine $sync.RegSub $sync.RegRoot $sync.RegBefore
+            if ($null -ne $al) { $block.Add("  " + $al) }
             $sa = SettingsRead $sync.NwAppData
             foreach ($m in $sa.Messages) { $block.Add("  " + $m) }
             $df = DiffFiles $sync.FilesBefore $sync.NotBacked $sa $sync.NwAppData
@@ -1269,8 +1279,71 @@ Say ("  %APPDATA%\Autodesk\Navisworks Manage 2025: " + $filesBefore.Count + " fi
 $fedBefore = SettingsRead $fedLogs
 Say ("  the tool's own logs folder listed: " + $fedBefore.Files.Count + " files")
   $bs.RegRoot = $regRoot; $bs.RegFile = $regFile; $bs.RegBefore = $regBefore; $bs.AppBackup = $appBackup; $bs.FilesBefore = $filesBefore; $bs.AutoBefore = $autoBefore; $bs.NotBacked = $notBacked; $bs.FedBefore = $fedBefore
+  # F138. Auto-Save off for the start, written after the key was read for the backup, so the put
+  # back returns it to what the backup holds.
+  $ao = SwitchAutoSaveOff $regSub $regRoot $regBefore
+  if (-not $ao.Ok) { $bs.Why = "STOP before the constructor: " + $ao.Line; return $bs }
+  Say ("  " + $ao.Line)
   $bs.Ok = $true
   return $bs
+}
+
+# F138, Bader's message of 2026-10-05, Q135 point 2: a loop start never autosaves into his
+# AutoSave folder. Navisworks keeps its Auto-Save switch in the value enable of
+# GlobalOptions\general\autosave under the 22.0 key, measured on 2026-10-05 in
+# %LOCALAPPDATA%\NwcFederatorLoop\turn5\q135\measure.md and read again in measure-check.md.
+# Every Auto-Save value there read "0", on that key's evidence a value never set, so the
+# default, on, holds, and each set boolean of that key reads "3 0" or "3 1". So off is written
+# "3 0". That Navisworks reads it as off is UNKNOWN until a start writes no autosave. The value
+# is written through its key as it stands and never through CreateSubKey, so a key that is not
+# there is never made and the start is refused.
+function AutoSaveSwitchKey($regSub) { return ("HKEY_CURRENT_USER\" + $regSub + "\GlobalOptions\general\autosave") }
+function AutoSaveSwitchOff { return [pscustomobject]@{ Kind = [Microsoft.Win32.RegistryValueKind]::String; Data = "3 0" } }
+# The value enable the backup read, or null when it read none.
+function AutoSaveSwitchHeld($regBefore, $regSub) {
+  $vals = $regBefore.Read[(AutoSaveSwitchKey $regSub)]
+  if ($null -eq $vals) { return $null }
+  return $vals["enable"]
+}
+# Writes off, then opens the key again and reads it back. Ok is true only when it reads off.
+# Line is the record's one line: what was written and what the backup holds, or why the start
+# is refused and whether enable still reads what the backup holds.
+function SwitchAutoSaveOff($regSub, $regRoot, $regBefore) {
+  $r = [pscustomobject]@{ Ok = $false; Line = "" }
+  $name = AutoSaveSwitchKey $regSub
+  $off = AutoSaveSwitchOff
+  $held = AutoSaveSwitchHeld $regBefore $regSub
+  $where = "enable under " + (ShortKey $name $regRoot)
+  $werr = ""
+  try {
+    $k = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey((HkcuSub $name), $true)
+    if ($null -eq $k) { $werr = "its key is not there, and a key is never made" }
+    else { try { $k.SetValue("enable", $off.Data, $off.Kind) } finally { $k.Close() } }
+  } catch { $werr = "the write threw, " + (Err $_.Exception) }
+  $now = RegValueNow $name "enable"
+  if ($werr -eq "" -and $now.Ok -and (RegSame $now.Value $off)) {
+    $r.Ok = $true
+    $r.Line = "Auto-Save switched off for this start, Q135: " + $where + " written " + (RegText $off) + " and read back so, the backup holds " + (RegText $held) + ". Until the put back it is off for Bader too, and a stop before the start puts nothing back, so then it is left off and must be put back by hand"
+    return $r
+  }
+  $read = "it could not be read again, " + $now.Error
+  if ($now.Ok) { $read = "it reads " + (RegText $now.Value) }
+  $same = ($now.Ok -and (RegSame $now.Value $held))
+  $r.Line = "Auto-Save could not be switched off, " + $where + $(if ($werr -ne "") { ", " + $werr.TrimEnd('.') } else { " was written and does not read back " + (RegText $off) }) + ", " + $read + $(if ($same) { ", what the backup holds" } else { ", and the backup holds " + (RegText $held) + ", so it must be put back by hand" })
+  return $r
+}
+# After the put back, or where none was made, the one line saying Auto-Save is left off for
+# Bader: enable reads the off this loop writes and the backup held something else. Null when
+# it does not, and an UNKNOWN line when enable cannot be read again.
+function AutoSaveLeftLine($regSub, $regRoot, $regBefore) {
+  $name = AutoSaveSwitchKey $regSub
+  $off = AutoSaveSwitchOff
+  $held = AutoSaveSwitchHeld $regBefore $regSub
+  if (RegSame $held $off) { return $null }
+  $now = RegValueNow $name "enable"
+  if (-not $now.Ok) { return ("UNKNOWN whether Auto-Save is left off for Bader, enable under " + (ShortKey $name $regRoot) + " could not be read again, " + $now.Error) }
+  if (-not (RegSame $now.Value $off)) { return $null }
+  return ("Auto-Save is LEFT OFF for Bader: enable under " + (ShortKey $name $regRoot) + " reads " + (RegText $off) + " and the backup holds " + (RegText $held) + ". It must be put back by hand")
 }
 
 # The adoption, after the constructor returned or threw. Adopted is true only when all four
@@ -1405,6 +1478,8 @@ function SettingsPutBack($putBack, $why, $work, $regSub, $regBefore, $regRoot, $
       $left = RegVerify $pr.Written $regRoot
       Say ("  registry: " + $pr.Done + " values put back of which " + $pr.ValueDeletes + " were deletes of a value that appeared, " + $pr.KeysMade + " keys made again, " + $pr.KeysRemoved + " keys removed, " + $pr.Failed + " failed, " + $pr.Skipped + " not written, stopped by a Roamer " + $pr.Stopped + ", and read again " + $left + " still differ")
     } else { Say "  registry: nothing written" }
+    $al = AutoSaveLeftLine $regSub $regRoot $regBefore
+    if ($null -ne $al) { Say ("  " + $al) }
     $sAfter = SettingsRead $nwAppData
     foreach ($m in $sAfter.Messages) { Say ("  " + $m) }
     $df = DiffFiles $filesBefore $notBacked $sAfter $nwAppData

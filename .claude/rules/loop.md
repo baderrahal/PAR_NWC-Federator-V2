@@ -86,7 +86,8 @@ and nothing is fixed until a real run on real files shows it fixed.
 - Nothing of Bader's is deleted or overwritten, bar four things. The installed add-in,
   backed up first as the install rule above says, whose files an install replaces or
   removes. His Navisworks settings, put back to what the backup holds under the settings
-  rule below, which can remove a value or key the loop's own Navisworks added. His oldest
+  rule below, which can remove a value or key the loop's own Navisworks added, and whose
+  Auto-Save switch the loop itself writes off before every start, F138. His oldest
   run logs, which the tool itself prunes when a loop run opens its window, each held in
   logs-backup by sha256 and put back after the loop, Bader's answer Q82. And his AutoSave
   folder, where the loop removes the autosaves its runs added and puts back from the backup
@@ -206,6 +207,21 @@ and nothing is fixed until a real run on real files shows it fixed.
   loop did not start ran at any point from the backup to then. Otherwise nothing is
   written, every change is listed with its old and new value in the turn's record, and the
   backup is kept for Bader
+- AUTO-SAVE IS OFF FOR EVERY LOOP START, run or probe, so a loop run never writes an
+  autosave into his AutoSave folder, Bader's message of 2026-10-05, Q135 point 2. Once the
+  22.0 key is read for the backup, BackupSettings in tools\loop\nw-guard.ps1 writes the value
+  enable under its GlobalOptions\general\autosave as "3 0", opens the key again and reads it
+  back, and refuses the start with one line when it does not read back or the key is not
+  there, a key it never makes. Where the switch and its form come from was measured on
+  2026-10-05, %LOCALAPPDATA%\NwcFederatorLoop\turn5\q135\measure.md and measure-check.md:
+  every Auto-Save value read "0", a value never set, so the default, on, held, and the set
+  booleans of that key read "3 0" or "3 1". That Navisworks reads "3 0" as off is UNKNOWN until
+  a start writes no autosave. The put back returns enable to what the backup holds. Where no
+  put back is made, a stop before the start, a put back refused because another Navisworks
+  ran, the constructor deadline or a CloseOwn after run.ps1 died, Auto-Save is left off for
+  Bader too. The record then says so: for a stop before the start the backup's one switched
+  off line says a stop leaves it off, for a put back refused or the deadline one LEFT OFF
+  line, and for CloseOwn its list of differences names enable. The lead puts it back by hand.
 - No NWC, NWF, NWD, workbook or picture is ever committed
 - No licensing id, session id or anything else that names Bader's Autodesk licence or his
   machine is ever committed. Every file of a run or a probe is read by
