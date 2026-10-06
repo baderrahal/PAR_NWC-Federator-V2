@@ -118,22 +118,37 @@ namespace Federator.Core.Tests
                 Telephone, "Telephone Devices");
         }
 
-        /// <summary>The rule over tests of an XML that holds the usual sets, with the default settings.</summary>
+        /// <summary>
+        /// The rule over tests of an XML that holds the usual sets, with the default settings,
+        /// run over a document that holds no test yet.
+        /// </summary>
         internal static MirrorRule Rule(IEnumerable<PlannedClashTest> tests, PriorityMap priorities)
         {
-            return MirrorRule.Of(tests, priorities, TheUsualSets(), new MirrorSettings());
+            return RuleOver(tests, priorities, NothingSaved());
+        }
+
+        /// <summary>The rule over tests of an XML that holds the usual sets, run over a document holding those saved tests.</summary>
+        internal static MirrorRule RuleOver(IEnumerable<PlannedClashTest> tests, PriorityMap priorities, ClashTestPlan saved)
+        {
+            return MirrorRule.Of(tests, priorities, TheUsualSets(), new MirrorSettings(), saved);
+        }
+
+        /// <summary>The plan of a document that holds no clash test, as an XML run over a new NWF reads it.</summary>
+        internal static ClashTestPlan NothingSaved()
+        {
+            return ClashTestPlan.FromDocument(new List<SavedClashTest>(), "m");
         }
 
         /// <summary>The rule over tests saved in the document, with no XML and so no rule list read.</summary>
         private static MirrorRule SavedRule(IEnumerable<PlannedClashTest> tests)
         {
-            return MirrorRule.Of(tests, PriorityMap.NothingPicked(), null, new MirrorSettings());
+            return MirrorRule.Of(tests, PriorityMap.NothingPicked(), null, new MirrorSettings(), null);
         }
 
         /// <summary>The rule over tests saved in the document, with the usual sets handed as the document's.</summary>
         private static MirrorRule SavedRuleWithTheSets(IEnumerable<PlannedClashTest> tests)
         {
-            return MirrorRule.Of(tests, PriorityMap.NothingPicked(), TheUsualSets(), new MirrorSettings());
+            return MirrorRule.Of(tests, PriorityMap.NothingPicked(), TheUsualSets(), new MirrorSettings(), null);
         }
 
         /// <summary>
@@ -379,7 +394,7 @@ namespace Federator.Core.Tests
 
             MirrorRule rule = MirrorRule.Of(
                 plan.Buildable, PriorityMap.NothingPicked(), TheSets(Telecom, null, Telephone, null, Walls, "Walls"),
-                new MirrorSettings());
+                new MirrorSettings(), NothingSaved());
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(0));
         }
@@ -399,7 +414,8 @@ namespace Federator.Core.Tests
                 plan.Buildable,
                 PriorityMap.NothingPicked(),
                 SetsOf(first, second, SetXml(Walls, Condition("Walls", 0))),
-                new MirrorSettings()).Pairs.Count;
+                new MirrorSettings(),
+                NothingSaved()).Pairs.Count;
         }
 
         [Test]
@@ -466,7 +482,7 @@ namespace Federator.Core.Tests
                 Test(TelecomVsWalls, Telecom, Walls),
                 Test(TelephoneVsWalls, Telephone, Walls));
 
-            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings());
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), NothingSaved());
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(0));
             Assert.That(rule.Lines(), Does.Contain(MirrorRule.Prefix
@@ -943,7 +959,8 @@ namespace Federator.Core.Tests
                 SavedWithSides(ColumnsVsDucts + " (mirror)", Columns, Ducts, DuctsVsColumns, Ducts, Columns).Buildable,
                 Priorities(ColumnsVsDucts + " (mirror)", "A", DuctsVsColumns, "C"),
                 null,
-                new MirrorSettings());
+                new MirrorSettings(),
+                null);
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));
             Assert.That(rule.Pairs[0].Kept.Name, Is.EqualTo(DuctsVsColumns));
@@ -1170,9 +1187,12 @@ namespace Federator.Core.Tests
         }
 
         // A saved test with the ending whose sides are X's own in the same order is a
-        // duplicate of X, which this tool never names as a mirror, so it is not paired.
+        // duplicate of X, which this tool never names as a mirror, so it is not paired. It
+        // finds what X finds, so its line says a clash both find may be counted twice, the
+        // breaker's blocking point on attempt 7, where it said it keeps its own clashes and
+        // asks the question of no other saved test.
         [Test]
-        public void ASavedDuplicateNamedWithTheEndingIsNotPaired()
+        public void ASavedDuplicateNamedWithTheEndingIsNotPairedAndMayBeCountedTwice()
         {
             MirrorRule rule = SavedRule(SavedWithSides(
                 DuctsVsColumns, Ducts, Columns,
@@ -1180,8 +1200,51 @@ namespace Federator.Core.Tests
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(0));
             Assert.That(rule.Lines(), Does.Contain(MirrorRule.Prefix + "   " + DuctsVsColumns + " (mirror) ends with "
-                + "(mirror), and its sides ask the question of no other saved test as a mirror, so it keeps its own "
-                + "clashes"));
+                + "(mirror), and its sides are the two sets of " + DuctsVsColumns + " in the same order, so it is a "
+                + "duplicate and no mirror" + MayBeCountedTwice));
+        }
+
+        // The breaker's shape on attempt 7: an NWF where a change of roles between two XML runs
+        // left the old Y (mirror) beside the new Y, with the old X renamed X (mirror). On a run
+        // with no XML and no sets handed, whether Y (mirror) asks X (mirror)'s question is
+        // UNKNOWN, and its sides are Y's two sets in Y's order, so it is said a duplicate of Y
+        // whose clashes may be counted twice, where it read as asking no other test's question.
+        [Test]
+        public void AnOldMirrorLeftBesideTheTestItDuplicatesIsSaidToBeADuplicate()
+        {
+            MirrorRule rule = SavedRule(SavedWithSides(
+                TelecomVsWalls + " (mirror)", Telecom, Walls,
+                TelephoneVsWalls + " (mirror)", Telephone, Walls,
+                TelephoneVsWalls, Telephone, Walls).Buildable);
+
+            Assert.That(rule.Pairs.Count, Is.EqualTo(0));
+            Assert.That(rule.Lines(), Does.Contain(MirrorRule.Prefix + "   " + TelephoneVsWalls + " (mirror) ends with "
+                + "(mirror), and its sides are the two sets of " + TelephoneVsWalls + " in the same order, so it is a "
+                + "duplicate and no mirror" + MayBeCountedTwice));
+        }
+
+        // A duplicate past the five named is counted among those whose clashes may be counted
+        // twice, never among those whose question no other saved test asks.
+        [Test]
+        public void TheCountLineCountsADuplicateAmongThoseThatMayBeCountedTwice()
+        {
+            List<string> saved = new List<string> { DuctsVsColumns, Ducts, Columns };
+
+            for (int i = 1; i <= 5; i++)
+            {
+                saved.Add("BLD-EL-Test " + i + " (mirror)");
+                saved.Add(SavedClashTest.LeftAsSaved);
+                saved.Add(SavedClashTest.RightAsSaved);
+            }
+
+            saved.AddRange(new[] { DuctsVsColumns + " (mirror)", Ducts, Columns });
+
+            IList<string> lines = SavedRuleWithTheSets(SavedWithSides(saved.ToArray()).Buildable).Lines();
+
+            Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   and 1 more saved test with the ending not paired, "
+                + "each keeping its own clashes, counted and not listed: 1 for which the saved test it mirrors is UNKNOWN "
+                + "or which is a duplicate of another saved test, so a clash both find may be counted twice, and 0 whose "
+                + "question no other saved test asks as a mirror"));
         }
 
         // ---------- the count line after the five named, Bader's answer A to Q137 ----------
@@ -1214,8 +1277,9 @@ namespace Federator.Core.Tests
 
             Assert.That(named, Is.EqualTo(5));
             Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   and 54 more saved tests with the ending not paired, "
-                + "each keeping its own clashes, counted and not listed: 54 for which the saved test it mirrors is UNKNOWN, "
-                + "so a clash both find may be counted twice, and 0 whose question no other saved test asks as a mirror"));
+                + "each keeping its own clashes, counted and not listed: 54 for which the saved test it mirrors is UNKNOWN "
+                + "or which is a duplicate of another saved test, so a clash both find may be counted twice, and 0 whose "
+                + "question no other saved test asks as a mirror"));
         }
 
         // The breaker's second half: the count line mixed the case nobody else asks with the
@@ -1241,8 +1305,9 @@ namespace Federator.Core.Tests
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(0));
             Assert.That(lines, Does.Contain(MirrorRule.Prefix + "   and 3 more saved tests with the ending not paired, "
-                + "each keeping its own clashes, counted and not listed: 1 for which the saved test it mirrors is UNKNOWN, "
-                + "so a clash both find may be counted twice, and 2 whose question no other saved test asks as a mirror"));
+                + "each keeping its own clashes, counted and not listed: 1 for which the saved test it mirrors is UNKNOWN "
+                + "or which is a duplicate of another saved test, so a clash both find may be counted twice, and 2 whose "
+                + "question no other saved test asks as a mirror"));
             Assert.That(Text(lines), Does.Not.Contain(WallsVsDucts + " (mirror) ends with"), "counted, not named");
         }
 
@@ -1430,7 +1495,7 @@ namespace Federator.Core.Tests
             ExchangeDocument matrix = Read(Samples.Matrix());
             ClashTestPlan plan = ClashTestPlan.From(matrix, "m");
             PriorityMap priorities = TheSamplePriorities();
-            MirrorRule rule = MirrorRule.Of(plan.Buildable, priorities, matrix.Sets, new MirrorSettings());
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, priorities, matrix.Sets, new MirrorSettings(), NothingSaved());
 
             Assert.That(plan.Buildable.Count, Is.EqualTo(1830));
             Assert.That(OfKind(rule, MirrorKind.Swapped), Is.EqualTo(0));
@@ -1448,7 +1513,7 @@ namespace Federator.Core.Tests
             ExchangeDocument matrix = Read(Samples.CorrectedMatrix());
             ClashTestPlan plan = ClashTestPlan.From(matrix, "m");
             PriorityMap priorities = TheSamplePriorities();
-            MirrorRule rule = MirrorRule.Of(plan.Buildable, priorities, matrix.Sets, new MirrorSettings());
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, priorities, matrix.Sets, new MirrorSettings(), NothingSaved());
             ClashTestPlan named = plan.WithMirrorsNamed(rule);
             int ending = 0;
 
@@ -1505,7 +1570,7 @@ namespace Federator.Core.Tests
             List<PlannedClashTest> tests = new List<PlannedClashTest>(plan.Buildable);
             tests.Add(swapped);
 
-            MirrorRule rule = MirrorRule.Of(tests, TheSamplePriorities(), matrix.Sets, new MirrorSettings());
+            MirrorRule rule = MirrorRule.Of(tests, TheSamplePriorities(), matrix.Sets, new MirrorSettings(), NothingSaved());
             MirrorPair theSwap = null;
 
             foreach (MirrorPair pair in rule.Pairs)

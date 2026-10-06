@@ -24,7 +24,13 @@ namespace Federator.Core.Tests
             Assert.That(MirrorSettings.DefaultEnding, Is.EqualTo("(mirror)"));
         }
 
-        private static readonly string[] NoneTaken = new string[0];
+        private static readonly Func<string, bool> NoneTaken = Taken();
+
+        /// <summary>Those names taken, as the rule asks NameFor whether a name is taken.</summary>
+        private static Func<string, bool> Taken(params string[] names)
+        {
+            return new HashSet<string>(names, StringComparer.Ordinal).Contains;
+        }
 
         [Test]
         public void TheEndingGoesAfterTheNameAndOneSpace()
@@ -39,8 +45,8 @@ namespace Federator.Core.Tests
         {
             MirrorSettings settings = new MirrorSettings();
 
-            Assert.That(settings.NameFor(Name, new[] { Name + " (mirror)" }), Is.EqualTo(Name + " 2 (mirror)"));
-            Assert.That(settings.NameFor(Name, new[] { Name + " (mirror)", Name + " 2 (mirror)" }),
+            Assert.That(settings.NameFor(Name, Taken(Name + " (mirror)")), Is.EqualTo(Name + " 2 (mirror)"));
+            Assert.That(settings.NameFor(Name, Taken(Name + " (mirror)", Name + " 2 (mirror)")),
                 Is.EqualTo(Name + " 3 (mirror)"));
         }
 
@@ -52,8 +58,34 @@ namespace Federator.Core.Tests
         {
             MirrorSettings settings = new MirrorSettings();
 
-            Assert.That(settings.NameFor(Name + " (mirror)", new[] { Name + " (mirror)" }), Is.EqualTo(Name + " (mirror)"));
+            Assert.That(settings.NameFor(Name + " (mirror)", Taken(Name + " (mirror)")), Is.EqualTo(Name + " (mirror)"));
             Assert.That(settings.NameFor(Name + " (mirror)", NoneTaken), Is.EqualTo(Name + " (mirror)"));
+        }
+
+        // F132 attempt 8. On an XML run a name is read back only to find the mirror an earlier
+        // run made of a test now run under its own name, and only a name NameFor gives that
+        // test is one: its own name with the ending, or numbered from 2 before the ending.
+        [Test]
+        public void ANameIsReadBackOnlyWhereNameForGivesIt()
+        {
+            MirrorSettings settings = new MirrorSettings();
+
+            Assert.That(settings.IsANameFor(Name, Name + " (mirror)"), Is.True);
+            Assert.That(settings.IsANameFor(Name, Name + " 2 (mirror)"), Is.True);
+            Assert.That(settings.IsANameFor(Name, Name + " 12 (mirror)"), Is.True);
+
+            foreach (string other in new[]
+            {
+                Name, Name + " 1 (mirror)", Name + " 02 (mirror)", Name + " +2 (mirror)", Name + " 2a (mirror)",
+                Name + "  2 (mirror)", Name + " (mirror) (mirror)", "BLD-ST-Columns-vs-BLD-AR-Walls (mirror)",
+                Name + "2 (mirror)", null
+            })
+            {
+                Assert.That(settings.IsANameFor(Name, other), Is.False, "\"" + other + "\"");
+            }
+
+            Assert.That(settings.IsANameFor(Name + " (mirror)", Name + " (mirror) (mirror)"), Is.False,
+                "a name that carries the ending is its own mirror's name");
         }
 
         [Test]
@@ -143,7 +175,7 @@ namespace Federator.Core.Tests
                 MirrorRuleTests.ColumnsVsDucts + " (mirror)", MirrorRuleTests.Columns, MirrorRuleTests.Ducts,
                 "a swap a person made", MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
 
-            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings());
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null);
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));
             Assert.That(rule.Pairs[0].Kept.Name, Is.EqualTo(MirrorRuleTests.DuctsVsColumns));
@@ -237,7 +269,7 @@ namespace Federator.Core.Tests
             ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
                 MirrorRuleTests.DuctsVsColumns, MirrorRuleTests.Ducts, MirrorRuleTests.Columns,
                 MirrorRuleTests.ColumnsVsDucts + " (mirror)", MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
-            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings());
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null);
             ClashTestPlan named = plan.WithMirrorsNamed(rule);
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));

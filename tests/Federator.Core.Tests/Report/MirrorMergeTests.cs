@@ -107,6 +107,17 @@ namespace Federator.Core.Tests
             return null;
         }
 
+        /// <summary>
+        /// One clash of a mirror as the run leaves it: a row of the mirror's own report, and
+        /// handed to the merge, which since attempt 8 merges a mirror only where the clashes
+        /// handed are as many as its report holds.
+        /// </summary>
+        private static void Found(ClashReport report, MirrorMerge merge, int pair, string first, string second, ClashRow row)
+        {
+            Named(report, merge.Pairs[pair].MirrorName).Add(row);
+            merge.MirrorFound(merge.Pairs[pair], first, second, row);
+        }
+
         private static string Text(IList<string> lines)
         {
             return string.Join("\n", new List<string>(lines).ToArray());
@@ -123,11 +134,11 @@ namespace Federator.Core.Tests
 
             for (int i = 1; i <= 25; i++)
             {
-                merge.MirrorFound(merge.Pairs[0], "item " + (100 + i), "item " + i, Row("Clash" + i, ClashStatus.New, "column " + i, "duct " + i));
+                Found(report, merge, 0, "item " + (100 + i), "item " + i, Row("Clash" + i, ClashStatus.New, "column " + i, "duct " + i));
             }
 
-            merge.MirrorFound(merge.Pairs[0], "item 201", "item 301", Row("Clash26", ClashStatus.New, "column 26", "duct 26"));
-            merge.MirrorFound(merge.Pairs[0], "item 202", "item 302", Row("Clash27", ClashStatus.New, "column 27", "duct 27"));
+            Found(report, merge, 0, "item 201", "item 301", Row("Clash26", ClashStatus.New, "column 26", "duct 26"));
+            Found(report, merge, 0, "item 202", "item 302", Row("Clash27", ClashStatus.New, "column 27", "duct 27"));
             merge.AddTo(report);
 
             Assert.That(merge.FoundByBoth, Is.EqualTo(25));
@@ -146,8 +157,8 @@ namespace Federator.Core.Tests
             ClashReport report = TheReport(merge, 2);
             TestReport kept = Named(report, Kept);
 
-            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
             Assert.That(kept.Rows[0].FoundOnlyByMirror, Is.Empty);
@@ -163,7 +174,7 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 1);
 
-            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
             merge.AddTo(report);
 
             Assert.That(merge.FoundByBoth, Is.EqualTo(1));
@@ -177,8 +188,8 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 1);
 
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
-            merge.MirrorFound(merge.Pairs[0], "item 8", "item 7", Row("Clash3", ClashStatus.New, "duct 8", "column 7"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            Found(report, merge, 0, "item 8", "item 7", Row("Clash3", ClashStatus.New, "duct 8", "column 7"));
             merge.AddTo(report);
 
             Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
@@ -194,7 +205,7 @@ namespace Federator.Core.Tests
             ClashReport report = TheReport(merge, 3);
             TestReport kept = Named(report, Kept);
 
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash4", ClashStatus.Active, "column 7", "duct 8"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash4", ClashStatus.Active, "column 7", "duct 8"));
             merge.AddTo(report);
 
             Assert.That(kept.Tally.Of(ClashStatus.New), Is.EqualTo(3));
@@ -212,7 +223,7 @@ namespace Federator.Core.Tests
                 MirrorMerge merge = TheMerge();
                 ClashReport report = TheReport(merge, 1);
 
-                merge.MirrorFound(merge.Pairs[0], unread, "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+                Found(report, merge, 0, unread, "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
                 merge.AddTo(report);
 
                 Assert.That(merge.NotCompared, Is.EqualTo(1), "read as \"" + unread + "\"");
@@ -236,7 +247,7 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 1);
 
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
             Assert.Throws<InvalidOperationException>(() => merge.AddTo(report));
@@ -298,7 +309,7 @@ namespace Federator.Core.Tests
             ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
                 Kept, MirrorRuleTests.Ducts, MirrorRuleTests.Columns, Mirror, MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
             IList<MirrorMerge> merges = MirrorMerge.Of(
-                MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings()));
+                MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null));
 
             Assert.That(merges.Count, Is.EqualTo(1), "the pair is found by the sides of the test with the ending");
 
@@ -326,7 +337,7 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 0);
 
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash1", ClashStatus.New, "column 7", "duct 8"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash1", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
             Assert.That(Named(report, Kept).State, Is.EqualTo(TestState.FoundClashes));
@@ -383,7 +394,7 @@ namespace Federator.Core.Tests
             ClashReport report = TheReport(merge, 1);
 
             report.AddTest(Kept).State = TestState.Passed;
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
             Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
@@ -406,8 +417,8 @@ namespace Federator.Core.Tests
             ClashReport report = TheReport(merge, 2);
             TestReport kept = Named(report, Kept);
 
-            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "column 1", "duct 1"));
-            merge.MirrorFound(merge.Pairs[0], "item 102", "item 2", Row("Clash2", ClashStatus.New, "column 2", "duct 2"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 102", "item 2", Row("Clash2", ClashStatus.New, "column 2", "duct 2"));
             merge.AddTo(report);
 
             Assert.That(kept.Rows[0].Status, Is.EqualTo(ClashStatus.Approved));
@@ -437,7 +448,7 @@ namespace Federator.Core.Tests
             ClashReport report = TheReportWith(merge, ClashStatus.Resolved);
             TestReport kept = Named(report, Kept);
 
-            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Active, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.Active, "column 1", "duct 1"));
             merge.AddTo(report);
 
             Assert.That(kept.Rows[0].Status, Is.EqualTo(ClashStatus.Active));
@@ -456,7 +467,7 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReportWith(merge, ClashStatus.New);
 
-            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Resolved, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.Resolved, "column 1", "duct 1"));
             merge.AddTo(report);
 
             Assert.That(Named(report, Kept).Rows[0].Status, Is.EqualTo(ClashStatus.New));
@@ -475,8 +486,8 @@ namespace Federator.Core.Tests
             ClashReport report = TheReportWith(merge, ClashStatus.Reviewed, ClashStatus.New);
             TestReport kept = Named(report, Kept);
 
-            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "column 1", "duct 1"));
-            merge.MirrorFound(merge.Pairs[0], "item 102", "item 2", Row("Clash2", ClashStatus.Active, "column 2", "duct 2"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 102", "item 2", Row("Clash2", ClashStatus.Active, "column 2", "duct 2"));
             merge.AddTo(report);
 
             Assert.That(kept.Rows[0].Status, Is.EqualTo(ClashStatus.Reviewed));
@@ -511,7 +522,7 @@ namespace Federator.Core.Tests
             kept.State = TestState.FoundClashes;
             merge.KeptFound("item 1", "item 101", ClashStatus.New, group);
             merge.KeptFound("item 2", "item 102", ClashStatus.New, group);
-            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "column 1", "duct 1"));
             merge.AddTo(report);
 
             Assert.That(group.Status, Is.EqualTo(ClashStatus.New));
@@ -533,7 +544,7 @@ namespace Federator.Core.Tests
             ClashReport report = TheReport(merge, 1);
 
             merge.KeptFound("item 2", "item 102", ClashStatus.New, Row("Clash2", ClashStatus.New, "duct 2", "column 2"));
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash3", ClashStatus.New, "column 7", "duct 8"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash3", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
             Assert.That(report.Tests.Count, Is.EqualTo(2), "the mirror is reported as its own test");
@@ -543,6 +554,105 @@ namespace Federator.Core.Tests
                 MirrorRule.Prefix + "   1 clash of " + Kept + " was handed with a row the report does not hold under it, "
                     + "so which row carries its status is UNKNOWN and nothing is merged"
             }));
+        }
+
+        // ---------- what was handed against what the report holds, both ways, F132 attempt 8 ----------
+
+        // The breaker's point on attempt 7. The kept test's report holds two clashes and only
+        // one was handed. Until attempt 8 the mirror's copy of the other read as found by the
+        // mirror only and was added a second time, so one clash was counted twice under the
+        // kept test. Now every row the kept test holds must be handed with as many clashes as
+        // it stands for, or nothing is merged and the line says why.
+        [Test]
+        public void AKeptTestWhoseRowsWereNotAllHandedMergesNothing()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 1);
+
+            Named(report, Kept).Add(Row("Clash2", ClashStatus.New, "duct 2", "column 2"));
+            Found(report, merge, 0, "item 102", "item 2", Row("Clash2", ClashStatus.New, "column 2", "duct 2"));
+            merge.AddTo(report);
+
+            Assert.That(Named(report, Kept).Rows.Count, Is.EqualTo(2), "no clash added a second time");
+            Assert.That(report.Tests.Count, Is.EqualTo(2), "the mirror is reported as its own test");
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
+            Assert.That(merge.FoundByBoth, Is.Null);
+            Assert.That(merge.Lines(), Is.EqualTo(new[]
+            {
+                MirrorRule.Prefix + "   " + Kept + " holds 2 clashes in the report and 1 was handed, 1 row holding another "
+                    + "number of clashes than was handed with it, so which of its clashes a mirror found too is UNKNOWN and "
+                    + "nothing is merged"
+            }));
+        }
+
+        // The same for a group: it stands for two clashes and one was handed with it.
+        [Test]
+        public void AGroupHandedWithFewerClashesThanItHoldsMergesNothing()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 0);
+            TestReport kept = Named(report, Kept);
+            ClashRow group = ClashRow.ForGroup(2);
+
+            group.Name = "Group1";
+            group.Status = ClashStatus.New;
+            kept.Add(group);
+            kept.State = TestState.FoundClashes;
+            merge.KeptFound("item 1", "item 101", ClashStatus.New, group);
+            Found(report, merge, 0, "item 102", "item 2", Row("Clash1", ClashStatus.New, "column 2", "duct 2"));
+            merge.AddTo(report);
+
+            Assert.That(kept.Rows.Count, Is.EqualTo(1));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
+            Assert.That(merge.Lines(), Is.EqualTo(new[]
+            {
+                MirrorRule.Prefix + "   " + Kept + " holds 2 clashes in the report and 1 was handed, 1 row holding another "
+                    + "number of clashes than was handed with it, so which of its clashes a mirror found too is UNKNOWN and "
+                    + "nothing is merged"
+            }));
+        }
+
+        // The other way. The mirror's report holds two clashes and one was handed. Until
+        // attempt 8 the mirror was taken out of the report with both, so the one not handed was
+        // in no block and nothing said so. Now the mirror is not merged, it stays in the report
+        // as its own test, and the line says a clash both find is then counted twice.
+        [Test]
+        public void AMirrorHandedFewerClashesThanItsReportHoldsIsNotMergedAndStays()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 1);
+
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
+            Named(report, Mirror).Add(Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            merge.AddTo(report);
+
+            Assert.That(report.Tests.Count, Is.EqualTo(2));
+            Assert.That(report.MirrorsMerged, Is.EqualTo(0));
+            Assert.That(report.Totals.Total, Is.EqualTo(3), "the clash not handed is still in a block");
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
+            Assert.That(merge.FoundByBoth, Is.Null);
+            Assert.That(merge.NotCompared, Is.Null);
+            Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   1 clash of " + Mirror + " was handed to the "
+                + "merge and its report holds 2, so which clashes it found is UNKNOWN, nothing of it is merged into " + Kept
+                + ", and it stays in the report as its own test, where a clash both find is counted twice"));
+            Assert.That(Text(merge.Lines()), Does.Not.Contain("is taken out of the report"));
+        }
+
+        // A mirror handed a clash its report does not hold is not merged either.
+        [Test]
+        public void AMirrorHandedMoreClashesThanItsReportHoldsIsNotMerged()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 1);
+
+            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            merge.AddTo(report);
+
+            Assert.That(Named(report, Kept).Rows.Count, Is.EqualTo(1));
+            Assert.That(report.Tests.Count, Is.EqualTo(2));
+            Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   1 clash of " + Mirror + " was handed to the "
+                + "merge and its report holds 0, so which clashes it found is UNKNOWN, nothing of it is merged into " + Kept
+                + ", and it stays in the report as its own test, where a clash both find is counted twice"));
         }
 
         // A clash and its row are handed together, and the row of one clash carries that
@@ -592,8 +702,8 @@ namespace Federator.Core.Tests
             ClashReport report = TheReport(merge, 1);
 
             Named(report, SecondMirror + " (mirror)").State = TestState.Skipped;
-            merge.MirrorFound(merge.Pairs[0], "item 1", "item 101", Row("Clash1", ClashStatus.New, "phone 1", "wall 1"));
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "phone 7", "wall 8"));
+            Found(report, merge, 0, "item 1", "item 101", Row("Clash1", ClashStatus.New, "phone 1", "wall 1"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash2", ClashStatus.New, "phone 7", "wall 8"));
             merge.AddTo(report);
 
             Assert.That(merge.FoundByBoth, Is.Null);
@@ -609,7 +719,7 @@ namespace Federator.Core.Tests
             ClashReport report = TheReport(merge, 0);
 
             Named(report, Kept).State = TestState.Skipped;
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash1", ClashStatus.New, "column 7", "duct 8"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash1", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
             Assert.That(merge.FoundByBoth, Is.Null);
@@ -661,8 +771,8 @@ namespace Federator.Core.Tests
             ClashReport report = TheReport(merge, 0);
             TestReport kept = Named(report, KeptOfTwo);
 
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash1", ClashStatus.New, "phone 7", "wall 8"));
-            merge.MirrorFound(merge.Pairs[1], "item 8", "item 7", Row("Clash1", ClashStatus.New, "wall 8", "phone 7"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash1", ClashStatus.New, "phone 7", "wall 8"));
+            Found(report, merge, 1, "item 8", "item 7", Row("Clash1", ClashStatus.New, "wall 8", "phone 7"));
             merge.AddTo(report);
 
             Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
@@ -683,8 +793,8 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMergeOfTwoMirrors();
             ClashReport report = TheReport(merge, 1);
 
-            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "phone 1", "wall 1"));
-            merge.MirrorFound(merge.Pairs[1], "item 1", "item 101", Row("Clash1", ClashStatus.Resolved, "wall 1", "telecom 1"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.Approved, "phone 1", "wall 1"));
+            Found(report, merge, 1, "item 1", "item 101", Row("Clash1", ClashStatus.Resolved, "wall 1", "telecom 1"));
             merge.AddTo(report);
 
             Assert.That(Named(report, KeptOfTwo).Rows[0].Status, Is.EqualTo(ClashStatus.Approved));
@@ -725,8 +835,8 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 2);
 
-            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
             IList<string> lines = merge.Lines();
@@ -742,8 +852,8 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 1);
 
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
-            merge.MirrorFound(merge.Pairs[0], "item 9", "item 10", Row("Clash3", ClashStatus.New, "column 9", "duct 10"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            Found(report, merge, 0, "item 9", "item 10", Row("Clash3", ClashStatus.New, "column 9", "duct 10"));
             merge.AddTo(report);
 
             IList<string> lines = merge.Lines();
@@ -760,7 +870,7 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 1);
 
-            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
             merge.AddTo(report);
 
             IList<string> lines = merge.Lines();
@@ -776,8 +886,12 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 1);
 
-            merge.KeptFound(TestSettings.UnknownLocator, "item 5", ClashStatus.New, Row("Clash2", ClashStatus.New, "duct 5", "column 5"));
-            merge.MirrorFound(merge.Pairs[0], null, "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            ClashRow notRead = Row("Clash2", ClashStatus.New, "duct 5", "column 5");
+
+            // The kept test's report holds the clash handed, as the run leaves it.
+            Named(report, Kept).Add(notRead);
+            merge.KeptFound(TestSettings.UnknownLocator, "item 5", ClashStatus.New, notRead);
+            Found(report, merge, 0, null, "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
             string all = Text(merge.Lines());
@@ -795,8 +909,8 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 1);
 
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
-            merge.MirrorFound(merge.Pairs[0], "item 8", "item 7", Row("Clash3", ClashStatus.New, "duct 8", "column 7"));
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            Found(report, merge, 0, "item 8", "item 7", Row("Clash3", ClashStatus.New, "duct 8", "column 7"));
             merge.AddTo(report);
 
             Assert.That(Text(merge.Lines()), Does.Contain(MirrorRule.Prefix + "   1 clash of " + Mirror
@@ -814,7 +928,7 @@ namespace Federator.Core.Tests
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 1);
 
-            merge.MirrorFound(merge.Pairs[0], null, "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            Found(report, merge, 0, null, "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
             Assert.That(Text(merge.Lines()), Does.Contain(MirrorRule.Prefix + "   1 clash of " + Mirror

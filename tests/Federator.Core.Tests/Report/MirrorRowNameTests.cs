@@ -56,7 +56,7 @@ namespace Federator.Core.Tests
             ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
                 Kept, MirrorRuleTests.Ducts, MirrorRuleTests.Columns, Mirror, MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
             MirrorMerge merge = MirrorMerge.Of(
-                MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings()))[0];
+                MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null))[0];
 
             ClashReport report = new ClashReport("1A02MM", "a report");
             TestReport kept = report.AddTest(Kept);
@@ -64,12 +64,16 @@ namespace Federator.Core.Tests
             kept.Add(Row("Clash1", "duct 1", "column 1"));
             merge.KeptFound("item 1", "item 101", ClashStatus.New, kept.Rows[0]);
 
-            report.AddTest(Mirror).State = TestState.FoundClashes;
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash1", "column 8", "duct 7"));
+            // The mirror's own report holds the two clashes handed, as the run leaves it.
+            TestReport mirror = report.AddTest(Mirror);
+            mirror.State = TestState.FoundClashes;
+            mirror.Add(Row("Clash1", "column 8", "duct 7"));
+            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", mirror.Rows[0]);
 
             ClashRow approved = Row("Clash2", "column 1", "duct 1");
 
             approved.Status = ClashStatus.Approved;
+            mirror.Add(approved);
             merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", approved);
             merge.AddTo(report);
 

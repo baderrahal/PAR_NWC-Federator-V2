@@ -62,9 +62,10 @@ namespace Federator.Core.Clash
         /// <summary>
         /// The name the mirror is created and run under: its own name with the ending, never
         /// the kept test's, MirrorSettings.NameFor, numbered before the ending where that name
-        /// is taken. A test read off the document with no XML keeps its saved name. A test
-        /// saved before the mirror rule under the XML's name of a mirror is renamed to this
-        /// name, Q136 A, MirrorRule.RenamesIn.
+        /// is taken, in the XML or in the document by a test that is not this mirror. A test
+        /// read off the document with no XML keeps its saved name. A test saved before the
+        /// mirror rule under the XML's name of a mirror is renamed to this name, Q136 A,
+        /// MirrorRule.Renames.
         /// </summary>
         public string MirrorName { get; private set; }
 
