@@ -56,7 +56,8 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   FR items whose section names it, Q and its number or a range Q<a> to Q<b>, give their areas
   in file order joined by a comma and their waves joined by and, leaving out an item in no
   area. With no such item both read none. A line outside an item does not count, such as the
-  Source ids left out naming Q35 to Q40, so those six read none alike. The check compares them
+  Source ids left out naming Q35 to Q40, which gives those six no area of its own. The check
+  compares them
 - A status is one of open, in progress, in review, merged, proven by a run, waiting for
   Bader and dropped, and nothing else. In progress means work on it has begun, on a branch or
   in a measurement steps\loop.md records, in review that its branch is finished and waits for

@@ -759,8 +759,10 @@ and 6 does not read as broken.
   the proof: 1A04WE has it and 1A02WE does not, from the same tool, because one export
   carried layer data and the other did not. Those two were measured on Bader's machine and
   are recorded in docs\history, and they are not the exports in samples\client-report,
-  which are 1A02WN and 1A04WN and both carry the column. Never write a column list for that
-  page, write the data and let the stylesheet decide
+  which are 1A02WN and 1A04WN and both carry the column. 1A04WE is not a client file: it is
+  the clash report Bader exported from Navisworks and pasted into an empty Excel workbook,
+  his words of 2026-10-06. Never write a column list for that page, write the data and let
+  the stylesheet decide
 - Our XML feeds that stylesheet, so its shape is not ours to choose either. Measured on
   2026-09-01, it answered every column test but three: description, smarttags and the href
   on a result, which are the Description column, the Item Name and Item Type columns, and

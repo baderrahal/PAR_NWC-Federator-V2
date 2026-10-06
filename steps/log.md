@@ -1,6 +1,25 @@
 # log
 
 Newest entry at the top.
+## 2026-10-06 The loop, turn 5, Bader's answers to the 22 old items and his F132 rule, recorded
+
+His message headed BADER'S ANSWERS, 6 OCT 2026, THE 22 OLD ITEMS AND F132'S NEXT READING, his words whole at
+turn5\q-old22-words.txt, recorded by pull request 131. Each answer is under its question in
+steps\02_questions.md in his words with a lead's note, Q25, Q27 to Q31, Q35 to Q40, Q45 to Q47, Q49 to Q51 and
+Q76 to Q78. F18 DROPPED, the 1A04WE file being the clash report he exported from Navisworks and pasted into an
+empty Excel workbook and not a client file, its words corrected in .claude\rules\core.md, steps\00_analysis.md,
+where M7 closes, steps\01_next.md and the register of steps\loop.md. His F132 rule is Q140, an order, and a
+bullet of the F132 section of steps\01_next.md, F132's attempt 8 stopped at 16:53:29 and begun again under it
+at 16:53:31. The work of his answers, each measured off main 2eda020 first, is FR-198 to FR-204 of
+steps\fix-round.md, all after the viewpoints: FR-198 the harvests and the GAP block, F120, 3a, FR-199 the
+blocks in the measured order with a priority file, F118, 2c, FR-200 every test not created on the Coverage
+sheet, F127, 2a, FR-201 a site named DEFAULT, F137, which main already does, FR-202 the ownership measured
+first, F121, 4, FR-203 the open statuses rule, F123, which main already does, and FR-204 the manifest's line
+9 in a pull request of its own, F123, 5. Q77 is a line under FR-067. Q29, Q31, Q47, Q50 and Q51 close with no
+work. The rows set by the tracker rule, turn5\records31-check.txt and records31-prove.txt. Nothing under src
+or tests changed, and the Core tests ran in the pre-commit of 3af4c3c, 1926 passed, 0 failed, 0 skipped,
+turn5\records31-precommit-1.txt.
+
 ## 2026-10-06 The loop, turn 5, F138 attempt 2, the Auto-Save switch written after the last read before the constructor, and attempt 1, the switch and a time limit on every harness run, written by the developer as the lead's delegate, pushed on its branch, draft pull request 127
 
 ATTEMPT 2, on the reviewer's CHANGES on attempt 1, turn5\lanes-review-F138.json, two points blocking:
