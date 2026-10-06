@@ -2,7 +2,9 @@
 
 F133, Bader's message of 5 Oct 2026, Q129. One place for status: `steps\tracker.csv`, one row
 per item, covering every FR item of `steps\fix-round.md`, every F area, Bader's requests and
-every question waiting for him. The rule is `.claude\rules\tracker.md`.
+every question waiting for him. A question keeps its row once he answers, so of the questions
+the tracker holds those waiting for him and those that once had a row, and a question he
+answered before any row was written for it has none. The rule is `.claude\rules\tracker.md`.
 
 Windows PowerShell 5.1, measured on this machine at 5.1.26100.9444 on 2026-10-05, and carried
 by the Actions windows-latest runner, whose workflow already runs `prove-compare.ps1` with it.

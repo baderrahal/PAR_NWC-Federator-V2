@@ -31,11 +31,12 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   steps\loop.md and the turn 5 plan
 - A request of Bader's is an item of 02_questions.md whose text starts From Bader, as he
   wrote it, not a question put to him but a fault he found, a rule, an instruction or his
-  decisions, Q81, Q93 to Q98, Q112, Q114, Q129, Q130 and Q132 today. Its row is class Bader's
-  request, id Q and its number, or Q, its number, a dash and a number when one item holds
-  several, as Q97-1 and Q97-2 and Q112-1 to Q112-5, and it follows the work it asked for and not
-  his answer under it. An FR row may read class Bader's request too, since its class is the one
-  fix-round.md gives, and the check does not read it as a request
+  decisions. Which items those are is read off steps\02_questions.md, as the check reads them,
+  and is listed nowhere else. Its row is class Bader's request, id Q and its number, or Q, its
+  number, a dash and a number when one item holds several, as Q97-1 and Q97-2 and Q112-1 to
+  Q112-5, and it follows the work it asked for and not his answer under it. An FR row may read
+  class Bader's request too, since its class is the one fix-round.md gives, and the check does
+  not read it as a request
 - A question whose Answer line holds Bader's words is not waiting for him, even when those
   words hand the choice back as work, as Q24, Q26, Q108 and Q109 do, his find the mistake first,
   do not pick an answer. Such a question has no row of its own, since the work his answer asks
