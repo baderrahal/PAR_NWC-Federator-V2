@@ -2,6 +2,10 @@
 
 STATE OPEN
 
+STATUS of every FR item, F area, request of Bader's and question waiting for him lives in
+steps\tracker.csv only, made readable as steps\tracker.md by tools\tracker\make-tracker.ps1,
+Bader's word of 2026-10-05, Q129. This file keeps the narrative and points there for status.
+
 TURN 5, THE FULL FIX ROUND, opened on 2026-10-04 by Bader's message headed 4 Oct 2026, Q98. No
 run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05, since
 replaced by Bader's waves of 15:42, each tested on two buildings of C02 and C04. The plan
