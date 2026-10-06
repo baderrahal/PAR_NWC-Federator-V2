@@ -394,3 +394,5 @@ Q133,a mirrored test can find more than the one it mirrors,F132,2a,question,merg
 Q134,code that waits for F114 by Bader's order,none,none,question,merged,124,none,2026-10-05
 FR-196,loop runs write no autosave and copy his folder once,F138,before any probe or run starts again,Bader's decision,in progress,"none, branch fix-F138",none,2026-10-05
 Q135,too many autosave copies,F138,before any probe or run starts again,Bader's request,in progress,"none, branch fix-F138",none,2026-10-05
+Q137,a saved mirror whose kept test the document does not say,none,none,question,waiting for Bader,none,none,2026-10-06
+Q138,"a clash both tests find, with two statuses",none,none,question,waiting for Bader,none,none,2026-10-06
