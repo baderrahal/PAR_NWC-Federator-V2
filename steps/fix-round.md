@@ -4,6 +4,9 @@ Written when the round ends.
 
 # Fix round, turn 5
 
+Status lives in steps\tracker.csv, one row per FR item, and reads in steps\tracker.md. This file
+keeps each item's narrative.
+
 The fix list of Bader's full fix round, Q98, written on 2026-10-04 before the first fix, from
 the returns of five readers: the findings of set 03, the confirmed bugs of turn 1 in two halves,
 the register in steps\loop.md, and the readings of the fixes in flight. Their 196 raw items
@@ -142,6 +145,7 @@ holds them. Each area takes the F number shown.
 - First of all since Bader's order of 2026-10-05, Q132: F136, then F131, then F132, then F114, each merged
   before the next starts where they share a file, then 1A02MM and 1A04PK with the new views on
 - Before the test of wave 1, Bader's answers to Q111 and Q125: F137 no site and no clash groups, FR-195
+- Before any probe or run starts again, Bader's message of 2026-10-05, Q135: F138 loop starts with Auto-Save off, FR-196
 - Beside the waves, Bader's lane of 2026-10-05, Q129, worked by a fourth worker in its own worktree and
   never on a file a fix lane is changing at the time: F133 the work tracker, FR-191, F134 the code
   health gate, FR-192, and F135 the analyser settings that touch every project, FR-193, merged alone at

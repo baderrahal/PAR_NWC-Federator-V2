@@ -2,6 +2,10 @@
 
 STATE OPEN
 
+STATUS of every FR item, F area, request of Bader's and question waiting for him lives in
+steps\tracker.csv only, made readable as steps\tracker.md by tools\tracker\make-tracker.ps1,
+Bader's word of 2026-10-05, Q129. This file keeps the narrative and points there for status.
+
 TURN 5, THE FULL FIX ROUND, opened on 2026-10-04 by Bader's message headed 4 Oct 2026, Q98. No
 run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05, since
 replaced by Bader's waves of 15:42, each tested on two buildings of C02 and C04. The plan
@@ -554,7 +558,9 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    blocking, F114's Core half with a developer from 09:46:44
 7. Bader's lane of Q129 beside the waves, a fourth worker: F133 the tracker, F134 the code health gate
    from the nine counts measured first, and F135 the analyser settings merged alone at a quiet moment,
-   in that order by the lead's choice. Three lines in the tab when the tracker is live and three when the gate is live
+   in that order by the lead's choice. Three lines in the tab when the tracker is live and three when the gate is live.
+   F133 MERGED as PR 122, 025b5eb, at 14:54:14 on 2026-10-06, the tracker live and its three lines given. F139,
+   Bader's one page progress file of Q139, follows it as one PR beside the viewpoints
 Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes. The
 keep-awake is checked every 30 minutes.
 
@@ -657,9 +663,10 @@ What waits on Bader's answer. A finding moves here when it survives three fix at
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
 
-OPEN IN THE FORM NOW: none. Q134 was ANSWERED B and Q136 A on 2026-10-05, decided and not yet built: F131's
-three members for F114 to go with F114, and the old tests of an NWF to be renamed by their own names with
-(mirror) at the end and run, each under its question.
+OPEN IN THE FORM NOW: none. Q137 was ANSWERED A and Q138 B on 2026-10-06, Q137 A as built on fix-F132 at
+e7cbaba, Q138 B to be built in F132's next pass, each under its question. Q134 B is built on fix-F131 at
+ec311bb, the three members out, and Q136 A on fix-F132 at e7cbaba, every mirror named by its own name with
+(mirror) at the end, neither merged yet.
 Q133 was ANSWERED D on 2026-10-05, both tests of a mirrored pair run and
 their clashes merged by the pair of items, and he allowed the removal of the run's three autosaves of
 Q128, removed at 15:49, turn5\remove-run-autosaves.txt. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
