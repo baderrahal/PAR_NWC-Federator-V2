@@ -1,6 +1,59 @@
 # log
 
 Newest entry at the top.
+## 2026-10-06 The loop, turn 5, F138 Auto-Save off for every loop start and a time limit on every harness run, written by the developer as the lead's delegate, built and pushed on its branch, one draft pull request
+
+Picked up from the cut, turn5\restart\trees.md section F138. Part 1, FR-196, its four files left
+uncommitted by the shutdown, was committed as 8eff675 with its message made true, the new case named
+H20 and the rule paragraph given its full stop, its pre-commit 1926 passed,
+turn5\f138b-precommit-1.txt. Main 6d2a203 was merged in as 6dc82f6, turn5\f138b-precommit-merge.txt.
+
+The time limits, his item 6, register row T5-R-HARNESSLIMIT, built by turn5\restart\harness.md and
+committed as a2e4d6b, turn5\f138b-precommit-2.txt:
+- root cause: prove-run.ps1 had no limit for the run or a case, and at 8eff675 the new static read
+  names 24 calls of run.ps1's RunChild, Reflect's WaitForExit and two reads of .Result with no
+  limit, and EndChild's WaitForExit with none, turn5\f138b-static-before.txt. The lanes waited on
+  each other through wrappers of their own with none
+- the fix: a limit for the run, each case, H6, H17, each child, a run of run.ps1 and the cleanup,
+  each a setting, a deadline runspace that writes the TIME LIMIT line and closes only the harness's
+  own stand-ins and children through their held handles, exit 3, -WaitSeconds that refuses with
+  exit 2 naming what still runs, a -Work there already refused at once, the static read in H0 and
+  H21
+- failing first: THE STAND-IN, H0 and H21 alone on the harness without the limit code, 23 passed and
+  16 failed, turn5\f138b-limits-before.txt. Its own known offender check showed the static read
+  missed a WaitForExit with no argument, the parser holding null for its arguments, which was fixed
+- after, the same cut: 37 passed and 2 failed, the two older H0 checks, turn5\f138b-limits-after.txt.
+  Three cut runs before it each found a fault of the new code, kept as turn5\f138b-limits-after-1.txt
+  to -3.txt: the state named $L met a loop's $l, since PowerShell names match in any case, @() of a
+  List handed in as a parameter throws in Windows PowerShell 5.1, and the T4 pattern read "so it
+  ends itself" where the line says "so the harness ends itself", the words harness.md gives. The
+  first left its own harness, pid 43180, held up by the deadline runspace's thread after its finally
+  threw. It was ended by its pid and its -Work removed, and the finally now lets that runspace go
+  whatever the cleanup does
+- the solution built Release, 0 warnings and 0 errors, turn5\f138b-build.txt. Core 1926 passed, 0
+  failed, 0 skipped, before at 8eff675's pre-commit and after, turn5\f138b-core-tests.txt.
+  check-locals and check-imports pass, turn5\f138b-checks.txt
+
+The full harness once on a2e4d6b, started as powershell -File tools\loop\prove-run.ps1 with its
+default limits and -Work test-f138b-after, from 12:49:40 to 13:31:32: 268 passed and 8 failed in
+2511 s, exit 1, turn5\f138b-prove-after.txt. The 8 are the checks that failed on main's guard too,
+turn5\f138-prove-before.txt, reading as they did: the static words read, the four modes in one
+place, two HangVerdict cases, two clock restart cases, live 1 and live 3. No new failure. H20, RC1,
+RC5, the static read and H21 pass whole. 46 stand-ins and 96 children were each closed or ended,
+and the test key and -Work are gone. H17 took about 745 s and H6 about 332 s, under their 2400 s
+and 900 s.
+
+Roamer read 0 before, turn5\f138b-roamer-before.txt, and 0 after with his 22.0 Auto-Save enable
+still "0", turn5\f138b-roamer-after.txt.
+
+What waits: the reviewer, and the lead's next probe, since whether Navisworks reads "3 0" as off is
+UNKNOWN until a real start writes no autosave. FR-196's part 2, the compare against the one backup
+in run.ps1, is not in this branch and waits for F131. Commit a2e4d6b is titled F138 part 2, which
+is the time limits and not FR-196's part 2. The waits on the monitor and watchdog runspaces through
+EndInvoke, run.ps1's own RunChild under TreeRefusal and the guard's reg.exe export in BackupSettings
+have no limit of their own and rest on the deadline runspace. No add-in file changed, so
+steps\03_bader_next.md is unchanged.
+
 ## 2026-10-06 The loop, turn 5, picked up after the laptop went off, Bader's message headed CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, and the plan
 
 Why it went off: the System log reads shutdown.exe starting a shutdown for NT AUTHORITY\SYSTEM at
