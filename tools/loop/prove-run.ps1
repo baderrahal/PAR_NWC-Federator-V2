@@ -6,7 +6,8 @@ $ErrorActionPreference = "Stop"
 # proof without navisworks, H0 to H15 for the part 1 modes and M1 to M3, since fix attempt
 # 1 H12b, H16 and H17, and since fix attempt 2 H18, each grown by the cases of fix attempt
 # 3. F131 added H19, team-map.txt read before every start and put back after it, and its
-# TEAMS KEPT block masked, with RC1 and RC8 of H17 reading the same in the run flow. Run it as
+# TEAMS KEPT block masked, with RC1 and RC8 of H17 reading the same in the run flow, and its
+# K2 every other line of the tool's log naming his logs folder or the kept map masked. Run it as
 #
 #   powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\prove-run.ps1 -Work <folder>
 #
@@ -1591,6 +1592,51 @@ try {
   Check "H19 K: no line of the TEAMS KEPT block names the kept map after the mask, and each is said to be masked" ((@($ml19 | Where-Object { $_.Contains("X:\kept") }).Count -eq 0) -and (@($ml19 | Where-Object { $_ -match '^10:00:00\.01[012]  \+0000\.11[012]s  <a line of the kept team map, masked by run\.ps1, Q123>$' }).Count -eq 3)) ""
   Check "H19 K: the FOLDERS REMEMBERED line is still masked, and the line after both blocks is kept" ((@($ml19 | Where-Object { $_ -match '<a remembered folder, masked by run\.ps1, Q87>$' }).Count -eq 1) -and ($ml19 -contains "10:00:03.000  +0003.000s  SCAN     started  X:\scanned  top folder only") -and $ml19.Count -eq $log19.Count) ([string]$ml19.Count + " lines out of " + $log19.Count)
   Check "H19 K: the mask counts the lines of each block" ($mr19.Masked -eq 1 -and $mr19.MaskedTeams -eq 3) ("folders " + $mr19.Masked + ", teams " + $mr19.MaskedTeams)
+
+  O "  K2, F131 attempt 3, the breaker's finding on attempt 2: every line of the tool's log naming his logs folder or the kept map is masked, wherever it sits"
+  $k2Dir = Join-Path $tmDir "k2"
+  New-Item -ItemType Directory -Path $k2Dir | Out-Null
+  $k2Copy = Join-Path $k2Dir "team-map.txt"
+  [System.IO.File]::WriteAllText($k2Copy, "# The team map of the last run with a clash XML, read by a run with none. Safe to delete.`r`nkept: X:\kept\A.teams.txt`r`n", $utf8)
+  $k2Logs = "X:\his\logs"
+  $k2Map = "X:\kept\A.teams.txt"
+  $k2Has = $null -ne (Get-Command -Name PathsOfHis -CommandType Function -ErrorAction SilentlyContinue)
+  Check "H19 K2: run.ps1 holds PathsOfHis" $k2Has ""
+  if ($k2Has) {
+    $k2Paths = @(PathsOfHis ($k2Logs + "\") @($k2Copy, (Join-Path $k2Dir "not-there.txt")))
+    Check "H19 K2: PathsOfHis gives his logs folder and the path the copy of team-map.txt names, and nothing for a file that is not there" ($k2Paths.Count -eq 2 -and $k2Paths[0] -ceq $k2Logs -and $k2Paths[1] -ceq $k2Map) ($k2Paths -join " | ")
+    $k2Held = [System.IO.File]::Open($k2Copy, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
+    $k2Why = ""
+    try { try { PathsOfHis $k2Logs @($k2Copy) | Out-Null } catch { $k2Why = [string]$_.Exception.Message } } finally { $k2Held.Dispose() }
+    Check "H19 K2, BREAKS IT: a copy of team-map.txt held so it cannot be read makes PathsOfHis throw, never a list that leaves its path out" ($k2Why -ne "") $k2Why
+  }
+  $kept19 = [regex]::Matches([System.IO.File]::ReadAllText((Join-Path $repo "src\Federator.Core\Teams\TeamMapMemory.cs")), 'const string KeptMarker = "([^"]+)";')
+  $k2Marker = $(if ($null -ne (Get-Command -Name TeamMapKept -CommandType Function -ErrorAction SilentlyContinue)) { TeamMapKept } else { "none" })
+  Check "H19 K2: the line PathsOfHis reads starts with TeamMapMemory.KeptMarker, read off src\Federator.Core\Teams\TeamMapMemory.cs" ($kept19.Count -eq 1 -and $k2Marker -ceq $kept19[0].Groups[1].Value) ("run.ps1 names " + $k2Marker + ", the source holds " + $kept19.Count + " KeptMarker lines")
+  $k2Log = @(
+    "", $bar19, "TEAMS KEPT", $bar19,
+    "10:00:00.010  +0000.110s  TEAMS    no clash XML was picked, so the teams are read from X:\kept\A.teams.txt, the team map kept from the last run with one. It holds 2 teams and 3 codes",
+    "", $bar19, "RUN SETTINGS", $bar19,
+    "10:05:00.000  +0300.000s  TEAMS    no clash XML was picked, so the teams are read from X:\kept\A.teams.txt, the team map kept from the last run with one. It holds 2 teams and 3 codes",
+    "10:05:00.001  +0300.001s  TEAMS    Mechanical is HV and PL",
+    "10:05:00.002  +0300.002s  TEAMS    the map kept for a run with no clash XML stays x:\KEPT\a.teams.txt, because this run's map was not read whole with a team",
+    "10:05:00.003  +0300.003s  TEAMS    this map is now the one kept for a run with no clash XML, remembered in X:\His\Logs\team-map.txt",
+    "                          the log  : X:\his\logs\run-1.log",
+    "10:05:01.000  +0301.000s  SCAN     started  X:\scanned  top folder only"
+  )
+  function Left19($lines) { return @($lines | Where-Object { $_.IndexOf($k2Map, [StringComparison]::OrdinalIgnoreCase) -ge 0 -or $_.IndexOf($k2Logs, [StringComparison]::OrdinalIgnoreCase) -ge 0 }) }
+  $k2Mr = MaskRemembered $k2Log @($k2Logs, $k2Map)
+  $k2Ml = @($k2Mr.Lines)
+  foreach ($l in $k2Ml) { if ($l -ne "") { O ("    | " + $l) } }
+  $k2Left = Left19 $k2Ml
+  Check "H19 K2: no line names his logs folder or the kept map after the mask, in any case of its letters, in the TEAMS KEPT block or after it" ($k2Left.Count -eq 0) ($k2Left -join " | ")
+  Check "H19 K2: each masked run line keeps its stamp and says it was masked, and a line with no stamp keeps its indent" ((@($k2Ml | Where-Object { $_ -match '^10:05:00\.00[023]  \+0300\.00[023]s  <a line naming his logs folder or the kept team map, masked by run\.ps1, F131>$' }).Count -eq 3) -and ($k2Ml -contains "                          <a line naming his logs folder or the kept team map, masked by run.ps1, F131>")) ""
+  Check "H19 K2: a run line naming neither is kept, the TEAMS KEPT block is masked as before, and no line is added or lost" (($k2Ml -contains "10:05:00.001  +0300.001s  TEAMS    Mechanical is HV and PL") -and ($k2Ml -contains "10:05:01.000  +0301.000s  SCAN     started  X:\scanned  top folder only") -and $k2Ml.Count -eq $k2Log.Count -and $k2Mr.MaskedTeams -eq 1) ([string]$k2Ml.Count + " lines out of " + $k2Log.Count)
+  Check "H19 K2: the mask counts the lines naming his paths" ($k2Mr.MaskedPaths -eq 4) ("paths " + $k2Mr.MaskedPaths)
+  $k2Broken = Left19 @((MaskRemembered $k2Log @($k2Map)).Lines)
+  Check "H19 K2, BREAKS IT: handed the kept map and not his logs folder, the read above names the two lines left naming his logs folder" ($k2Broken.Count -eq 2 -and $k2Broken[0].EndsWith("remembered in X:\His\Logs\team-map.txt") -and $k2Broken[1].EndsWith("X:\his\logs\run-1.log")) ($k2Broken -join " | ")
+  Check "H19 K2: the run's tool log goes into the evidence through MaskRemembered with PathsOfHis of his logs folder, the copy of team-map.txt in the run folder and his own team-map.txt, and the record says how many lines it masked" ($rt19.Contains('$mr = MaskRemembered $tl (PathsOfHis $paths.HisLogs @((Join-Path (Join-Path $paths.RunDir "teammap") (TeamMapName)), (Join-Path $paths.HisLogs (TeamMapName))))') -and $rt19.Contains('$mr.MaskedPaths')) ""
+  Check "H19 K2: the mask is made before the masked copy of the tool's log is written, so a team-map.txt that cannot be read leaves no copy" ($rt19.IndexOf('$mr = MaskRemembered $tl (PathsOfHis') -gt 0 -and $rt19.IndexOf('$mr = MaskRemembered $tl (PathsOfHis') -lt $rt19.IndexOf('[System.IO.File]::WriteAllLines($mlog')) ""
   BaderSame "H19"
 
   # =====================================================================================
