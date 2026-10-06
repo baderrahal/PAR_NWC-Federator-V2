@@ -1,6 +1,180 @@
 # log
 
 Newest entry at the top.
+## 2026-10-06 The loop, turn 5, F131 add-in attempt 3, every line of the tool's log naming his logs folder or the kept map masked, and Bader's answer B to Q134, written by the developer as the lead's delegate, pushed on its branch, no pull request
+
+Attempt 2 at 0cf4048 and d392170 was read by the reviewer, APPROVE, and the breaker, CHANGES on
+one blocking finding, %LOCALAPPDATA%\NwcFederatorLoop\turn5\f131-ad2-result.json. The first try
+of this attempt was cut when the laptop went off at 19:31 on 2026-10-05, turn5\restart\trees.md
+section F131. It had merged main 1a202c0 in as 26c62df, not pushed, and left the K2 checks in
+prove-run.ps1 not committed. This pass took them up from there. Main had moved to 6d2a203, the
+records of PR 125, and was merged in at 99ba08d, message in a file, turn5\f131-ad4-merge-msg.txt.
+Only steps\log.md conflicted, and both sides were kept by turn5\f131-ad4-resolve-merge.py, main's
+entry of 2026-10-06 first. Its pre-commit passed 1994, turn5\f131-ad4-precommit-merge.txt.
+
+Commits, in order, each with its pre-commit passing and its output in turn5:
+- a1017c0, the K2 checks of prove-run.ps1 alone, before run.ps1 changed, f131-ad4-precommit-1.txt
+- 99ba08d, the merge of main 6d2a203
+- cdbf638, the mask in run.ps1, with .claude\rules\loop.md and tools\loop\README.md,
+  f131-ad4-precommit-2.txt
+- ec311bb, Q134 B, the three members out with their tests, and .claude\rules\core.md,
+  f131-ad4-precommit-3.txt
+- the records commit with this entry, f131-ad4-precommit-4.txt
+
+Core tests, all with 0 skipped:
+- 1994 passed, 0 failed before, at 26c62df with only the K2 checks changed in the tree,
+  turn5\f131-ad4-core-before.txt
+- 1987 passed, 0 failed after, at ec311bb, turn5\f131-ad4-core-after.txt. The 7 fewer are the 5
+  of TeamPairTests and the 2 of TeamMapTests that tested only Compare and CarriesSizeFolder
+
+The solution builds whole at ec311bb with --no-incremental, Federator.Core, Federator.Core.Tests
+and Federator.Addin each built, 0 warnings and 0 errors, the same counts as at 0cf4048, with git
+rev-parse --short HEAD and an empty git status at its top, turn5\f131-ad4-build.txt. check-locals
+and check-imports pass on src at ec311bb, turn5\f131-ad4-check-locals.txt and
+f131-ad4-check-imports.txt, and in each pre-commit.
+
+The loop's harness, tools\loop\prove-run.ps1, was NOT RUN in this pass, as the brief said, because
+the harness runs alone and F138 runs it now. The lead runs it once F138 has merged. What did run,
+none of it the harness and none of it starting a stand-in or a Navisworks:
+- the K2 block of prove-run.ps1, read out of the file and run alone in a scratch PowerShell with
+  only the five functions it calls loaded from run.ps1 through the parser, and ReadShared from
+  nw-guard.ps1, writing only under the session's scratch folder. On run.ps1 as at a1017c0, 1
+  passed and 8 failed of 9, turn5\f131-ad4-k2-alone-before.txt, the one pass being the check that
+  no line is added or lost. With the change, 11 passed and 0 failed of 11,
+  turn5\f131-ad4-k2-alone-after.txt
+- the older K block the same way on the changed run.ps1, 3 passed and 0 failed,
+  turn5\f131-ad4-k-alone-after.txt, so the call with no paths masks the two blocks as before
+- MaskRemembered with PathsOfHis of his logs folder alone on the committed tool log
+  steps\runs\03\item1-C06\run-20261001-140037.log: of its 8585 lines it masks 3, the first, second
+  and twelfth, which name the log's own path in his logs folder, and no line naming that folder
+  is left, turn5\f131-ad4-real-log.txt
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for the edits
+  of steps files and the merge, and powershell for the process reads, the parser reads and the
+  scratch runs above. None of them starts a Navisworks or a stand-in
+- Get-Process Roamer read 0 at 11:28:57 before any work, turn5\f131-ad4-roamer-before.txt, and 0
+  at 12:31:42 after the build and the Core tests, turn5\f131-ad4-roamer-after.txt. No test folder
+  was under NwcFederatorLoop at either read
+
+### What was done
+
+- THE BREAKER'S BLOCKING FINDING ON ATTEMPT 2, ROOT CAUSE. tools\loop\run.ps1's `MaskRemembered`
+  masked the lines of the TEAMS KEPT and FOLDERS REMEMBERED blocks only. A window run's own TEAMS
+  lines name the kept map when no XML is picked, `TeamMap.Lines`, and his logs folder when a map
+  is kept, `TeamMapMemory.Remember`, and the log names its own path in his logs folder on its
+  first lines, `RunLog`. None of them sits in a block, so each reached the copy of the log that
+  goes into steps\runs, on item 1 and on items 2 to 5 alike
+- THE ONE RULE. `MaskRemembered` takes a list of paths and masks every other line naming one of
+  them, in any case of its letters, wherever it sits, its stamp or its indent kept, as `<a line
+  naming his logs folder or the kept team map, masked by run.ps1, F131>`, and counts them as
+  MaskedPaths. The run hands in `PathsOfHis`: his logs folder, and the map named by the copy of
+  team-map.txt taken at check 13b and by his team-map.txt at the end, read on the line starting
+  `TeamMapKept` and one space, KeptMarker of TeamMapMemory.cs, which K2 reads off the source. A
+  team-map.txt that cannot be read throws before the copy is written, so no half masked copy is
+  made, and the try around it names the fault. The record line counts the lines each rule masked.
+  mask-evidence.ps1 is not changed. It masks the kinds of evidence-ids.txt, ids and the machine
+  name, and these paths are known only to the run
+- THE K2 CHECKS, committed alone first in a1017c0: `PathsOfHis` gives his logs folder and the
+  kept map and nothing for a file that is not there, its marker is KeptMarker, every line naming
+  either is masked in any case of its letters, the stamp and the indent are kept, no line is
+  added or lost, the count is 4, and the run flow calls the mask with `PathsOfHis` before the
+  copy is written. Two BREAKS IT cases: handed the kept map and not his logs folder, the read
+  names the two lines left, and a copy of team-map.txt held so it cannot be read makes
+  `PathsOfHis` throw
+- Q134 B, in Bader's words: "B. No code waits on main for a later step. The three members go
+  with F114, which calls them." Read first on cdbf638, turn5\f131-ad4-callers.txt: Compare and
+  CarriesSizeFolder are called only by `TeamPair.For`, `TeamPair` by nothing in src, and no Sort,
+  comparer, Sorted collection or IComparer parameter in src is handed a TeamMap. `TeamPair.cs`,
+  TeamMap's IComparer<string>, `Compare` and `CarriesSizeFolder` are taken out with TeamPairTests
+  and the two TeamMapTests that test only them. LineOf stays, FolderNamingATeam calls it. The
+  reader of the size-folder line stays with its refusals, and the TEAMS lines still say the map's
+  order and its size folder. Where a test read the size folder through CarriesSizeFolder, the
+  same fact is read on the TEAMS lines now, and an assert with nothing left to read went with the
+  member. fix-F114 is not touched. F131-K8 closes
+- THE REVIEWER'S RULE TEXT FINDING ON ATTEMPT 2: .claude\rules\loop.md listed four things of
+  Bader's the loop overwrites while its team map rule overwrote a fifth. The list now names
+  team-map.txt
+- THE REVIEWER'S WORDING FINDING: the attempt 2 entry below read "BEFORE: BEFORE," and "AFTER:
+  AFTER,", and three of its lines were not wrapped. Each now reads once and is wrapped
+- Rules: .claude\rules\loop.md, the mask and the list of what of his is overwritten, and
+  .claude\rules\core.md, the pair rule replaced by Bader's answer B to Q134. tools\loop\README.md
+  names the mask
+
+### Choices the developer made, for the reader to check
+
+- THE MASK IS IN `MaskRemembered`, NOT mask-evidence.ps1, because the paths are known only to the
+  run, and evidence-ids.txt holds kinds of ids that are the same for every run
+- A LINE IS MASKED WHOLE, as the two blocks are, so the log's first lines no longer name its own
+  path. The copy keeps the log's file name, and toollog-name.txt names it
+- `PathsOfHis` READS THE kept: LINE ONLY, the one line `TeamMapMemory` writes. A memory holding a
+  line it does not know is unread, and its TEAMS line then names the memory in his logs folder,
+  which the logs folder masks
+- A team-map.txt THAT CANNOT BE READ AT THE END stops the run's whole evidence step, the tool's
+  log, outputs.txt and the workbooks' read-outs, because they share one try, and the try names
+  it. The put back read the same file moments before
+- THE OLDER H19 K CASE IS UNCHANGED. It calls `MaskRemembered` with no paths and passes alone
+
+### What remains
+
+- the harness, by the lead once F138 has merged, with its new time limits: the K2 checks at
+  a1017c0, where run.ps1 holds none of the change, and at cdbf638 or later
+- one reviewer on a1017c0 to the records commit
+- F114 carrying `TeamPair`, `TeamMap.Compare` and `TeamMap.CarriesSizeFolder` in its own files and
+  calling them, the lead's copy
+- a loop window run on Navisworks to read the mask in a real record, and every line of the add-in
+  half on the local machine, steps 417 to 445 of steps\03_bader_next.md
+
+### Known bugs and register rows
+
+- F131-K8 is closed by Q134 B. F131-K35 is half closed: the lines of a run of items 2 to 5 naming
+  the kept map are masked now. That such a run reads Bader's own kept map stands
+- F131-K24, K25, K28 to K34, K36 and K37 stand. K34, the breaker's again on attempt 2:
+  `ReadPicked` makes its own TeamMapSettings while the window keeps one. Both are defaults no
+  window control changes, the rule lives once in `TeamMap.Beside`, and `ReadPicked` does the same
+  with CorrectionListSettings since F116, so it stays a row. K37, both readers on attempt 2: the
+  H0 check `delete no file` was red before F131 and stays red, so the delete in `PutBackOne` has
+  no allowed site and a new delete would not change the count
+- F131-K38, new: after Q134 B the TEAMS lines still say "a pair is written in the order ..." and
+  "a pair holding ... carries the size folder", which F114's views apply. Until F114 merges F131
+  writes no pair, and the viewpoints box opens unticked by F136. For the lead, whether the two
+  lines wait for F114
+- F131-K39, new: the tool's .tsv goes into the evidence as it is. By a read of src no row carries
+  the kept map or his logs folder, the two Row calls with a Path taking a set's path in the clash
+  XML, and the committed .tsv of steps\runs\03\item1-C06 names his logs folder on no row. A row
+  added later that named one would not be masked
+- F131-K40, the breaker's on attempt 2: after a run ends NOT PUT BACK, team-map.txt names the
+  loop's map, and the next run's check 13b copies that as his and puts it back as it was. His own
+  file is then only in the earlier run folder's teammap
+- F131-K41, the breaker's on attempt 2: the team map put back runs after the AutoSave put back,
+  and `PutBackOne` reads the Roamer list at one instant, so a short lived Navisworks of his that
+  rewrites team-map.txt in between is not seen and its file is put back over
+- F131-K42, the breaker's on attempt 2: a model line's "none of the N set(s) of its team with
+  another code" counts only the sets whose team is known. The sets whose team is UNKNOWN are on
+  their own count line, not on the model's
+- F131-K43, the breaker's on attempt 2: the six reads of attempt 2's before harness that his
+  AutoSave folder changed, 208 lines, cause UNKNOWN. For the lead beside the three C04 autosaves
+
+### What comes next
+
+- the lead's harness run and one reviewer, then the pull request
+
+### Every file written outside the repo, add-in attempt 3
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f131, on branch fix-F131
+- turn5\f131-ad4-roamer-before.txt, f131-ad4-core-before.txt, f131-ad4-commit-1-msg.txt,
+  f131-ad4-precommit-1.txt, f131-ad4-merge-msg.txt, f131-ad4-merge.txt,
+  f131-ad4-resolve-merge.py, f131-ad4-precommit-merge.txt, f131-ad4-k2-alone-before.txt,
+  f131-ad4-k2-alone-after.txt, f131-ad4-k-alone-after.txt, f131-ad4-real-log.txt,
+  f131-ad4-commit-2-msg.txt, f131-ad4-precommit-2.txt, f131-ad4-callers.txt,
+  f131-ad4-commit-3-msg.txt, f131-ad4-precommit-3.txt, f131-ad4-build.txt,
+  f131-ad4-core-after.txt, f131-ad4-check-locals.txt, f131-ad4-check-imports.txt,
+  f131-ad4-roamer-after.txt, f131-ad4-records.py, f131-ad4-log-entry.md,
+  f131-ad4-commit-4-msg.txt, f131-ad4-precommit-4.txt and f131-ad4-push.txt
+- the scratch scripts k2-alone.ps1, k-alone.ps1 and real-log.ps1, a copy of run.ps1 as at
+  a1017c0, and the folders k2-before, k2-after and k-after, in the session's scratch folder under
+  the user's temp folder, which nothing reads after the commit
+
 ## 2026-10-06 The loop, turn 5, picked up after the laptop went off, Bader's message headed CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, and the plan
 
 Why it went off: the System log reads shutdown.exe starting a shutdown for NT AUTHORITY\SYSTEM at
@@ -78,8 +252,20 @@ and check-imports pass on src, turn5\f131-ad2-check-locals.txt and f131-ad2-chec
 and again in the pre-commit.
 
 The loop's harness, tools\loop\prove-run.ps1, with its stand-in only:
-- BEFORE: BEFORE, run.ps1 as at d7de53c and every other file as at 0cf4048: 232 passed and 23 failed of 255, turn5\f131-ad2-prove-before.txt. Nine failures are the new cases failing as they should, the four static reads of H19, two of K, the two of RC1 and the first of RC8, with A to J and L not run because run.ps1 held none of the four functions. The other 14 are older: the 8 checks of F131-K37, and six reads that something of Bader's changed during the run, after H13, H14, H17, H18, H19 and H15, each naming his AutoSave folder, 208 lines differing, the first an autosave written on 2026-09-20. No case of the harness writes there, and what changed it is UNKNOWN. Roamer read 0 at 17:07:13 before it and 0 at 18:01:19 after it.
-- AFTER: AFTER, at 0cf4048 with an empty git status: 261 passed and 8 failed of 269, turn5\f131-ad2-prove-after.txt. The 8 are the older checks of F131-K37, failing before and after. Every team map case passes, the four static reads of H19, A to E that hold, F to J that break the put back and name it, K the mask, L the AutoSave put back through the shared write, and RC1 and RC8 in the run flow of H17. Bader's state read the same after every case. Roamer read 0 at 18:02:40 before it and 0 at 18:43:40 after it.
+- BEFORE, run.ps1 as at d7de53c and every other file as at 0cf4048: 232 passed and 23 failed of
+  255, turn5\f131-ad2-prove-before.txt. Nine failures are the new cases failing as they should,
+  the four static reads of H19, two of K, the two of RC1 and the first of RC8, with A to J and L
+  not run because run.ps1 held none of the four functions. The other 14 are older: the 8 checks of
+  F131-K37, and six reads that something of Bader's changed during the run, after H13, H14, H17,
+  H18, H19 and H15, each naming his AutoSave folder, 208 lines differing, the first an autosave
+  written on 2026-09-20. No case of the harness writes there, and what changed it is UNKNOWN.
+  Roamer read 0 at 17:07:13 before it and 0 at 18:01:19 after it.
+- AFTER, at 0cf4048 with an empty git status: 261 passed and 8 failed of 269,
+  turn5\f131-ad2-prove-after.txt. The 8 are the older checks of F131-K37, failing before and
+  after. Every team map case passes, the four static reads of H19, A to E that hold, F to J that
+  break the put back and name it, K the mask, L the AutoSave put back through the shared write,
+  and RC1 and RC8 in the run flow of H17. Bader's state read the same after every case. Roamer
+  read 0 at 18:02:40 before it and 0 at 18:43:40 after it.
 
 Programs and Navisworks:
 - dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for edits of
@@ -90,7 +276,10 @@ Programs and Navisworks:
   Roamer.exe, started 16:04:25, its window titled Working..., turn5\f131-ad2-roamer-before.txt.
   This pass never started it, attached to it, sent it anything or closed it. Who started it is
   UNKNOWN here. The harness refuses to start beside any Roamer, so it waited until that one was
-  gone, read none at 17:06:15. At 18:46:39, after both harness runs, two Roamers ran, pids 61576 and 62408, gone by 18:47:21 before their paths could be read, turn5\f131-ad2-roamer-after.txt. A second harness folder, test-f138-before, was made at 18:43:49, after this pass's harness ended, and its stand-ins fit those two, which is not proved here. This pass touched neither.
+  gone, read none at 17:06:15. At 18:46:39, after both harness runs, two Roamers ran, pids 61576
+  and 62408, gone by 18:47:21 before their paths could be read, turn5\f131-ad2-roamer-after.txt. A
+  second harness folder, test-f138-before, was made at 18:43:49, after this pass's harness ended,
+  and its stand-ins fit those two, which is not proved here. This pass touched neither.
 
 ### What was done
 
