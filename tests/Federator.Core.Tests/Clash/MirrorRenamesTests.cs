@@ -5,12 +5,13 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// F132 attempt 6, Bader's answer A to Q136. An NWF made before the mirror rule holds the
-    /// mirror of a kept test under the XML's own name of it. With the XML picked, each such
-    /// saved test whose sides ask the kept test's question as a mirror is planned to be
-    /// renamed to the name this tool gives that mirror, its statuses kept, and run as the
-    /// mirror, its clashes merged as Q133 D says. A rename is refused and named where the new
-    /// name is taken. The set and test names in here are sample data.
+    /// F132, Bader's answer A to Q136. An NWF made before the mirror rule holds the mirror of
+    /// a kept test under the XML's own name of it, Y. With the XML picked, each such saved
+    /// test whose sides ask the kept test's question as a mirror is planned to be renamed to
+    /// its own name with (mirror) at the end, Y (mirror), never the kept test's, its
+    /// statuses kept, and run as the mirror, its clashes merged as Q133 D says. A rename is
+    /// refused and named where the new name is taken. The set and test names in here are
+    /// sample data.
     /// </summary>
     [TestFixture]
     public class MirrorRenamesTests
@@ -20,7 +21,7 @@ namespace Federator.Core.Tests
         private const string Walls = MirrorRuleTests.Walls;
         private const string Kept = MirrorRuleTests.DuctsVsColumns;
         private const string Swap = MirrorRuleTests.ColumnsVsDucts;
-        private const string NewName = Kept + " (mirror)";
+        private const string NewName = Swap + " (mirror)";
 
         private static MirrorRule TheXmlRule()
         {
@@ -47,6 +48,7 @@ namespace Federator.Core.Tests
             Assert.That(renames.Planned[0].Saved.Name, Is.EqualTo(Swap));
             Assert.That(renames.Planned[0].Saved.Address[0], Is.EqualTo(1), "renamed where it sits");
             Assert.That(renames.Planned[0].NewName, Is.EqualTo(NewName));
+            Assert.That(renames.Planned[0].NewName, Is.Not.EqualTo(Kept + " (mirror)"), "never the kept test's name");
             Assert.That(renames.Planned[0].KeptName, Is.EqualTo(Kept));
             Assert.That(renames.Lines(), Is.EqualTo(new[]
             {
@@ -74,7 +76,7 @@ namespace Federator.Core.Tests
 
             Assert.That(renames.Planned.Count, Is.EqualTo(1));
             Assert.That(renames.Planned[0].Saved.Name, Is.EqualTo(MirrorRuleTests.TelephoneVsWalls));
-            Assert.That(renames.Planned[0].NewName, Is.EqualTo(MirrorRuleTests.TelecomVsWalls + " (mirror)"));
+            Assert.That(renames.Planned[0].NewName, Is.EqualTo(MirrorRuleTests.TelephoneVsWalls + " (mirror)"));
         }
 
         // The document already holds a test of the new name, a mirror an earlier run made or
@@ -148,8 +150,8 @@ namespace Federator.Core.Tests
             }));
         }
 
-        // The name the old test is renamed to is one made for that pair, so the run after
-        // with no XML pairs it with the kept test by the same rule.
+        // The old test renamed ends with (mirror), so the run after with no XML pairs it with
+        // the kept test by its sides, the same rule.
         [Test]
         public void TheRenamedTestIsTheMirrorARunWithNoXmlPairsAfter()
         {
@@ -168,6 +170,30 @@ namespace Federator.Core.Tests
             Assert.That(after.Pairs.Count, Is.EqualTo(1));
             Assert.That(after.Pairs[0].Kept.Name, Is.EqualTo(Kept));
             Assert.That(after.Pairs[0].Mirror.Name, Is.EqualTo(NewName));
+        }
+
+        // A mirror whose XML name already ends with (mirror) keeps that name, so the saved
+        // test of that name is the mirror as it stands. Nothing is renamed and nothing is
+        // refused, and it runs as the mirror where it sits.
+        [Test]
+        public void AMirrorWhoseXmlNameAlreadyEndsWithItIsNeitherRenamedNorRefused()
+        {
+            MirrorRule rule = MirrorRuleTests.Rule(
+                MirrorRuleTests.Plan(
+                    MirrorRuleTests.Test(Kept, Ducts, Columns),
+                    MirrorRuleTests.Test(NewName, Columns, Ducts)).Buildable,
+                PriorityMap.NothingPicked());
+
+            MirrorRenames renames = rule.RenamesIn(
+                MirrorRuleTests.SavedWithSides(Kept, Ducts, Columns, NewName, Columns, Ducts).Buildable);
+
+            Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(NewName));
+            Assert.That(renames.Planned, Is.Empty);
+            Assert.That(renames.Lines(), Is.EqualTo(new[]
+            {
+                MirrorRule.Prefix + "   0 of the 2 tests saved in the document are renamed as the mirror they were saved "
+                    + "for before the mirror rule, and 0 under the XML's name of a mirror are not"
+            }));
         }
 
         // A run with no XML has no mirror of the XML to rename for.

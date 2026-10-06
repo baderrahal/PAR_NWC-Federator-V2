@@ -22,39 +22,39 @@ namespace Federator.Core.Clash
     /// its locator, Ordinal and never trimmed, because two set names in the reference file
     /// end in a space.
     ///
-    /// WITH NO XML, BY A NAME MADE FOR THAT PAIR, F132 attempt 6. A saved test pairs by its
-    /// name only where the name was made by this tool for that pair: it is another saved
-    /// test's name with the ending, as MirrorSettings.NameFor writes it, MirrorSettings
-    /// .KeptNamesOf, AND its two sides ask that test's question as a mirror, AsAMirror, the
-    /// one rule the XML's tests pair by. That is the name an XML run gives a mirror, so the
-    /// run after finds the pair the run before made, and the name says which is kept, never
-    /// a priority or an order read again. A test the XML names with the ending is never
-    /// read as made by the tool: in a run with the XML every test of it pairs by its sets
-    /// alone and its name is never read, and with no XML a saved test whose sides do not ask
-    /// the question of the test its name points to is not paired, so a test a person named
-    /// X (mirror) that asks another question keeps its own clashes. A saved side the add-in
-    /// hands as a placeholder, SavedClashTest.LeftAsSaved and RightAsSaved, leaves whether
-    /// the name was made for that pair UNKNOWN, so that test is not paired either, and the
-    /// lines say it and that a clash both find may then be counted twice. The sets of a
-    /// saved test's sides are the ones handed, the picked XML's, the document's as the
-    /// add-in reads them, or none, and with none only the same two sets swapped are a pair.
+    /// WITH NO XML, BY THE SIDES AND NEVER BY A NAME, Bader's answers D to Q133 and A to
+    /// Q136. A mirror carries its own name with the ending, so a saved name says that a test
+    /// is a mirror and never which test it mirrors, and no name is read back to a test. A
+    /// saved test whose name ends with the ending pairs with the one saved test without it
+    /// whose question its sides ask as a mirror, AsAMirror, the one rule the XML's tests pair
+    /// by, and the one without the ending is kept, never a priority or an order read again.
+    /// It is not paired, and its line says so, where its sides were not read, where two or
+    /// more saved tests without the ending ask its question, where none does and whether
+    /// one does is UNKNOWN for a side or a set's rule list not read, and where only tests
+    /// with the ending ask it. Each of those is UNKNOWN and its line says that a clash both
+    /// find may then be counted twice. Where no other saved test asks its question it keeps
+    /// its own clashes and its line says so. A saved test with the ending is never a test kept. A
+    /// saved side the add-in hands as a placeholder, SavedClashTest.LeftAsSaved and
+    /// RightAsSaved, is a side not read. The sets of a saved test's sides are the ones
+    /// handed, the document's as the add-in reads them, or none, and with none only the same
+    /// two sets swapped ask one question.
     ///
     /// A TEST SAVED BEFORE THE MIRROR RULE, Bader's answer A to Q136. RenamesIn plans each
-    /// saved test under the XML's name of a mirror, whose sides ask the kept test's question
-    /// by the same rule, to be renamed to the name this tool gives that mirror, its statuses
-    /// kept, and run as the mirror, MirrorRenames.
+    /// saved test under the XML's name of a mirror, Y, whose sides ask the kept test's
+    /// question by the same rule, to be renamed to its own name with the ending, Y (mirror),
+    /// never the kept test's, its statuses kept, and run as the mirror, MirrorRenames.
     ///
     /// WHAT IS DONE WITH ONE, Q133 D. Both tests of a pair are created and run. The mirror is
-    /// created under the kept test's name with the ending of MirrorSettings, and stays in
-    /// Clash Detective. Their clashes are merged by the pair of items into the one kept,
-    /// Report.MirrorMerge, so the report, the views and every count hold each clash once,
+    /// created under its own name with the ending of MirrorSettings, MirrorSettings.NameFor,
+    /// and stays in Clash Detective. Their clashes are merged by the pair of items into the
+    /// one kept, Report.MirrorMerge, so the report, the views and every count hold each clash once,
     /// and a clash only the mirror finds is added to the kept test and named as found by the
     /// mirror only. Probe P1 measured that a swap can find more, docs\history\scan.md 5z-k on
     /// the branch fix-F114-probes.
     ///
     /// WHICH ONE IS KEPT, Q114 point 6. The higher priority off the priority file, A before
     /// B before C before none, and where equal the one first in the XML. With no XML the
-    /// one whose name carries no ending.
+    /// one whose name does not end with the ending.
     ///
     /// WHAT IS NOT A MIRROR. A test with one set on both sides, or two sets of one rule list,
     /// is its own swap. A second test with the same two sets in the kept test's own order is
@@ -70,6 +70,9 @@ namespace Federator.Core.Clash
     {
         /// <summary>The word that begins every line this rule writes.</summary>
         public const string Prefix = "MIRROR";
+
+        /// <summary>The words every line of a saved test with the ending not paired for an UNKNOWN ends with.</summary>
+        private const string MayBeCountedTwice = ". It keeps its own clashes, and a clash both find may be counted twice";
 
         private readonly int fromTheXml;
         private readonly int saved;
@@ -113,7 +116,7 @@ namespace Federator.Core.Clash
         /// and then every pair keeps the one first in the XML. The sets are the ones the
         /// tests' sides name, the picked XML's, ExchangeDocument.Sets, whose whole questions
         /// pair two tests of two sets alike, or null where none was read. A test read off the
-        /// document pairs by a name made for that pair, its name and its sides.
+        /// document with the ending pairs by its sides, never by its name.
         /// </summary>
         public static MirrorRule Of(
             IEnumerable<PlannedClashTest> tests,
@@ -208,7 +211,7 @@ namespace Federator.Core.Clash
                     }
 
                     bool swapped = Same(other.Left, kept.Right) && Same(other.Right, kept.Left);
-                    string name = settings.NameFor(kept.Name, names);
+                    string name = settings.NameFor(other.Name, names);
 
                     names.Add(name);
                     pairs.Add(new MirrorPair(
@@ -224,7 +227,7 @@ namespace Federator.Core.Clash
             }
 
             List<string> noTestKept = new List<string>();
-            PairByName(saved, priorities, settings, identity, pairs, noTestKept);
+            PairBySides(saved, priorities, settings, identity, pairs, noTestKept);
 
             return new MirrorRule(
                 fromTheXml.Count, saved.Count, notRead, identity.RulesRead, settings.Ending, identity, pairs, duplicates,
@@ -232,15 +235,14 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// The pairs among the tests saved in the document, read with no XML, by a name made
-        /// for that pair. A saved test with the ending pairs with the first saved test its name
-        /// could have been made for, MirrorSettings.KeptNamesOf, whose question its sides ask
-        /// as a mirror, AsAMirror, in the order the mirrors are saved. A saved test that is
-        /// itself a mirror is never a test kept, so a chain of endings is not followed. Every
-        /// saved test with the ending that is not paired is said and keeps its own clashes,
-        /// never merged into a test chosen by its name alone.
+        /// The pairs among the tests saved in the document, read with no XML, by their sides
+        /// and never by a name. Each saved test whose name ends with the ending, in the order
+        /// they are saved, is a mirror of the one saved test without the ending whose question
+        /// its sides ask as a mirror, AsAMirror, and that one is kept. A saved test with the
+        /// ending is never a test kept, so a chain of endings is not followed. Every saved test
+        /// with the ending that is not paired keeps its own clashes and is said with why.
         /// </summary>
-        private static void PairByName(
+        private static void PairBySides(
             List<PlannedClashTest> saved,
             PriorityMap priorities,
             MirrorSettings settings,
@@ -248,25 +250,6 @@ namespace Federator.Core.Clash
             List<MirrorPair> pairs,
             List<string> notPaired)
         {
-            HashSet<string> savedNames = new HashSet<string>(StringComparer.Ordinal);
-            Dictionary<string, PlannedClashTest> first = new Dictionary<string, PlannedClashTest>(StringComparer.Ordinal);
-
-            foreach (PlannedClashTest test in saved)
-            {
-                string name = test.Name ?? string.Empty;
-
-                savedNames.Add(name);
-
-                if (!first.ContainsKey(name))
-                {
-                    first.Add(name, test);
-                }
-            }
-
-            List<KeyValuePair<PlannedClashTest, PlannedClashTest>> found =
-                new List<KeyValuePair<PlannedClashTest, PlannedClashTest>>();
-            HashSet<PlannedClashTest> mirrors = new HashSet<PlannedClashTest>();
-
             foreach (PlannedClashTest test in saved)
             {
                 if (!settings.CarriesTheEnding(test.Name))
@@ -274,60 +257,50 @@ namespace Federator.Core.Clash
                     continue;
                 }
 
-                IList<string> keptNames = settings.KeptNamesOf(test.Name, savedNames);
+                string said = Prefix + "   " + test.Name + " ends with " + settings.Ending + ", and ";
 
-                if (keptNames.Count == 0)
+                if (!BothSidesRead(test))
                 {
-                    notPaired.Add(Prefix + "   " + test.Name + " carries the ending and no saved test is named "
-                        + settings.Before(test.Name) + ", so it keeps its own clashes");
+                    notPaired.Add(said + "a side of it was not read, so which saved test it mirrors is UNKNOWN"
+                        + MayBeCountedTwice);
                     continue;
                 }
 
-                PlannedClashTest kept = null;
-                bool unknown = false;
+                List<PlannedClashTest> asked = new List<PlannedClashTest>();
+                List<string> askedWithTheEnding = new List<string>();
+                int unknown = 0;
 
-                foreach (string keptName in keptNames)
+                foreach (PlannedClashTest other in saved)
                 {
-                    bool? mirror = identity.AsAMirror(test, first[keptName]);
-
-                    if (mirror == true)
+                    if (ReferenceEquals(other, test))
                     {
-                        kept = first[keptName];
-                        break;
+                        continue;
                     }
 
-                    unknown |= mirror == null;
+                    bool? mirror = identity.AsAMirror(test, other);
+                    bool otherIsAMirror = settings.CarriesTheEnding(other.Name);
+
+                    if (mirror == true && otherIsAMirror)
+                    {
+                        askedWithTheEnding.Add(other.Name);
+                    }
+                    else if (mirror == true)
+                    {
+                        asked.Add(other);
+                    }
+                    else if (mirror == null && !otherIsAMirror)
+                    {
+                        unknown++;
+                    }
                 }
 
-                if (kept == null)
+                if (asked.Count != 1)
                 {
-                    notPaired.Add(Prefix + "   " + test.Name + " carries the ending of a mirror of "
-                        + Joined(new List<string>(keptNames))
-                        + (unknown
-                            ? ", and whether its sides ask that question is UNKNOWN, a side or its set not read, so "
-                                + "whether this tool made it for that pair is UNKNOWN. It keeps its own clashes, and a "
-                                + "clash both find may be counted twice"
-                            : ", and its sides do not ask that question as a mirror, so this tool did not make it for "
-                                + "that pair and it keeps its own clashes"));
+                    notPaired.Add(said + WhyNotPaired(asked, askedWithTheEnding, unknown));
                     continue;
                 }
 
-                found.Add(new KeyValuePair<PlannedClashTest, PlannedClashTest>(test, kept));
-                mirrors.Add(test);
-            }
-
-            foreach (KeyValuePair<PlannedClashTest, PlannedClashTest> pair in found)
-            {
-                PlannedClashTest test = pair.Key;
-                PlannedClashTest kept = pair.Value;
-
-                if (mirrors.Contains(kept))
-                {
-                    notPaired.Add(Prefix + "   " + test.Name + " carries the ending, and " + kept.Name
-                        + ", the test before it, is a mirror itself, so it keeps its own clashes");
-                    continue;
-                }
-
+                PlannedClashTest kept = asked[0];
                 bool swapped = Same(test.Left, kept.Right) && Same(test.Right, kept.Left);
 
                 pairs.Add(new MirrorPair(
@@ -343,9 +316,48 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
+        /// Why a saved test with the ending whose sides were read is not paired: two or more
+        /// saved tests without the ending ask its question, or none does and whether one does
+        /// is UNKNOWN for some, or only tests with the ending ask it, each UNKNOWN, or no other
+        /// saved test asks it at all.
+        /// </summary>
+        private static string WhyNotPaired(List<PlannedClashTest> asked, List<string> askedWithTheEnding, int unknown)
+        {
+            if (asked.Count > 1)
+            {
+                List<string> names = new List<string>();
+
+                foreach (PlannedClashTest test in asked)
+                {
+                    names.Add(test.Name);
+                }
+
+                return "its sides ask the question of " + Joined(names) + " as a mirror, so which one it mirrors is "
+                    + "UNKNOWN" + MayBeCountedTwice;
+            }
+
+            if (unknown > 0)
+            {
+                return "whether its sides ask the question of " + unknown + (unknown == 1 ? " saved test" : " saved tests")
+                    + " is UNKNOWN, a side or a set's rule list not read, so which saved test it mirrors is UNKNOWN"
+                    + MayBeCountedTwice;
+            }
+
+            if (askedWithTheEnding.Count > 0)
+            {
+                return "its sides ask the question only of " + Joined(askedWithTheEnding)
+                    + (askedWithTheEnding.Count == 1 ? ", whose name ends with it too" : ", whose names end with it too")
+                    + ", so which of them is kept is UNKNOWN" + MayBeCountedTwice;
+            }
+
+            return "its sides ask the question of no other saved test as a mirror, so it keeps its own clashes";
+        }
+
+        /// <summary>
         /// Bader's answer A to Q136. Each test saved in the document under the XML's name of a
         /// mirror, which an NWF made before the mirror rule holds, is planned to be renamed to
-        /// the name this tool gives that mirror and run as it, its statuses kept, where its
+        /// its own name with the ending, the name this tool gives that mirror, MirrorPair
+        /// .MirrorName, never the kept test's, and run as it, its statuses kept, where its
         /// sides ask the kept test's question as a mirror by the rule the pair was read by,
         /// AsAMirror. Refused and said where the new name is taken in the document, where two
         /// saved tests carry the old name, and where its sides do not ask that question or
@@ -389,7 +401,11 @@ namespace Federator.Core.Clash
             {
                 List<PlannedClashTest> old;
 
-                if (pair.Mirror.IsFromDocument || !byName.TryGetValue(pair.Mirror.Name, out old))
+                // A mirror whose own name already ends with the ending is saved under the
+                // name it runs under, so there is nothing to rename.
+                if (pair.Mirror.IsFromDocument
+                    || string.Equals(pair.Mirror.Name, pair.MirrorName, StringComparison.Ordinal)
+                    || !byName.TryGetValue(pair.Mirror.Name, out old))
                 {
                     continue;
                 }
@@ -447,9 +463,10 @@ namespace Federator.Core.Clash
         /// reads as a check that did not run and a count of pairs alone reads as a check of
         /// every test. Then once, where no rule list was read, that only the same two sets
         /// swapped pair. Then, where tests saved in the document were handed, one line counting
-        /// the pairs found by name and saying that saved tests under other names are UNKNOWN.
-        /// Then once, where any test has a side not read, how many, said UNKNOWN. Then each
-        /// saved test named as a mirror of no saved test. Then every pair whose two tests
+        /// the pairs found by their sides and saying that saved tests whose names do not end
+        /// with the ending are UNKNOWN. Then once, where any test has a side not read, how
+        /// many, said UNKNOWN. Then each saved test with the ending not paired, with why, five
+        /// named and the rest counted. Then every pair whose two tests
         /// differ in priority or in a setting TestDrift compares, each with both values,
         /// because Bader asked for both in the log. Then the pairs alike in those, never said
         /// to be alike in everything, five named and the rest counted, the rule every repeated
@@ -491,10 +508,10 @@ namespace Federator.Core.Clash
             if (saved > 0)
             {
                 lines.Add(Prefix + "   " + named + (named == 1 ? " pair" : " pairs") + " among the " + saved
-                    + (saved == 1 ? " test" : " tests") + " saved in the document, which pair only by a name made for "
-                    + "that pair, a test and its name with the ending " + ending + " whose sides ask its question as a "
-                    + "mirror. Whether two saved tests under other names ask one question is UNKNOWN, so each keeps "
-                    + "its own clashes"
+                    + (saved == 1 ? " test" : " tests") + " saved in the document, which pair by their sides and never "
+                    + "by a name: a test whose name ends with " + ending + " pairs with the one saved test without it "
+                    + "whose question its sides ask as a mirror. Whether two saved tests whose names do not end with "
+                    + "it ask one question is UNKNOWN, so each keeps its own clashes"
                     + (rulesRead
                         ? string.Empty
                         : ". No rule list of a set was read, so only a test with the same two sets swapped pairs")
@@ -777,13 +794,14 @@ namespace Federator.Core.Clash
             }
 
             /// <summary>
-            /// Whether a test asks the question of the kept test as its mirror, F132 attempt 6,
-            /// the one rule a saved test is paired by its name and renamed by, Q136 A: true where
-            /// both tests' sides were read, the two are not the same two sets in the same order,
-            /// and their question keys are the same, false where the sides were read and the two
-            /// are a duplicate, or ask other questions with the rule list of each of their sets
-            /// read, and null, UNKNOWN, where a side was not read or a set's rule list was not,
-            /// since two sets of one whole question are only known by their rule lists.
+            /// Whether a test asks the question of the kept test as its mirror, the one rule a
+            /// saved test with the ending is paired by and an old test is renamed by, Q136 A:
+            /// true where both tests' sides were read, the two are not the same two sets in the
+            /// same order, and their question keys are the same, false where the sides were
+            /// read and the two are a duplicate, or ask other questions with the rule list of
+            /// each of their sets read, and null, UNKNOWN, where a side was not read or a set's
+            /// rule list was not, since two sets of one whole question are only known by their
+            /// rule lists.
             /// </summary>
             internal bool? AsAMirror(PlannedClashTest test, PlannedClashTest kept)
             {

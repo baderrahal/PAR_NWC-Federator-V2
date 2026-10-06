@@ -8,23 +8,19 @@ namespace Federator.Core.Clash
     /// What shapes the mirrored tests, F132, a setting and never a constant. Bader's answer D
     /// to Q133: in Clash Detective the mirror test stays, its name ending with (mirror).
     ///
-    /// A MIRROR IS NAMED AFTER THE TEST KEPT, F132 attempt 5: the kept test's name, one space
-    /// and the ending, X (mirror). An NWF holding X and X (mirror) says by its names which
-    /// test the mirror's clashes go to and which one is kept. Attempt 4 named the mirror after
-    /// its own XML name, which no run with no XML can read back to the test it mirrors.
-    ///
-    /// THE NAME ALONE IS NOT ENOUGH, F132 attempt 6. A test the XML itself names X (mirror)
-    /// may ask another question than X, and a person's test X 3 sits beside the third mirror
-    /// of X, X 3 (mirror). So KeptNamesOf gives every test a name could have been made for,
-    /// and MirrorRule pairs a saved test with one of them only where its sides ask that
-    /// test's question, the rule MirrorRule.Of pairs the XML's tests by.
+    /// A MIRROR IS NAMED BY ITS OWN NAME, his answers D to Q133 and A to Q136: the mirror's
+    /// own name, one space and the ending, Y (mirror) for the mirror Y of the kept test X,
+    /// never X (mirror). NameFor is the one place a mirror's name is made, for a mirror an
+    /// XML run creates and for a test saved before the rule that is renamed as one. The name
+    /// is never read back to a test: a run with no XML pairs a saved test with the ending by
+    /// its sides, MirrorRule.
     /// </summary>
     public sealed class MirrorSettings
     {
         /// <summary>His word for the ending.</summary>
         public const string DefaultEnding = "(mirror)";
 
-        /// <summary>The number the second mirror of one test kept carries before the ending.</summary>
+        /// <summary>The number a mirror carries before the ending where its own name with the ending is taken.</summary>
         private const int FirstNumber = 2;
 
         private string ending;
@@ -60,19 +56,28 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// The name a mirror this tool creates carries: the name of the test kept, one space
-        /// and the ending. Where that name is taken, by another test of the XML or by an
-        /// earlier mirror of the same test kept, Q121 B, the next number from 2 goes before
-        /// the ending, X 2 (mirror), so every mirror's name ends with the ending and no two
-        /// tests share one name. Ordinal, as every test name is compared.
+        /// The name a mirror carries in Clash Detective: its own name, one space and the
+        /// ending. A name that already ends with the space and the ending is given back as it
+        /// is, so a mirror never carries the ending twice. Where the name with the ending is
+        /// taken by another test of the XML, or by an earlier mirror of the same own name, the
+        /// next number from 2 goes before the ending, Y 2 (mirror), so every mirror's name
+        /// ends with the ending and no two tests share one name. Ordinal, as every test name
+        /// is compared.
         /// </summary>
-        internal string NameFor(string keptName, ICollection<string> taken)
+        internal string NameFor(string mirrorName, ICollection<string> taken)
         {
-            string name = WithTheEnding(keptName ?? string.Empty);
+            string own = mirrorName ?? string.Empty;
+
+            if (CarriesTheEnding(own))
+            {
+                return own;
+            }
+
+            string name = WithTheEnding(own);
 
             for (int number = FirstNumber; taken != null && taken.Contains(name); number++)
             {
-                name = WithTheEnding((keptName ?? string.Empty) + " " + number.ToString(CultureInfo.InvariantCulture));
+                name = WithTheEnding(own + " " + number.ToString(CultureInfo.InvariantCulture));
             }
 
             return name;
@@ -83,51 +88,6 @@ namespace Federator.Core.Clash
         {
             return name != null && name.Length > Suffix.Length
                 && name.EndsWith(Suffix, StringComparison.Ordinal);
-        }
-
-        /// <summary>
-        /// The names of the saved tests a saved name with the ending could have been made for
-        /// by NameFor, the exact name before the ending first, then that name with a number of
-        /// 2 or more taken off its end, each only where a saved test carries it. Empty where
-        /// the name carries no ending or no saved test carries a name before it. A name read
-        /// back is never a pair by itself: MirrorRule pairs the saved test with the first of
-        /// them whose question its sides ask, F132 attempt 6.
-        /// </summary>
-        internal IList<string> KeptNamesOf(string savedName, ICollection<string> savedNames)
-        {
-            List<string> names = new List<string>();
-
-            if (!CarriesTheEnding(savedName) || savedNames == null)
-            {
-                return names;
-            }
-
-            string before = savedName.Substring(0, savedName.Length - Suffix.Length);
-
-            if (savedNames.Contains(before))
-            {
-                names.Add(before);
-            }
-
-            int space = before.LastIndexOf(' ');
-            int number;
-
-            if (space > 0
-                && int.TryParse(before.Substring(space + 1), NumberStyles.None, CultureInfo.InvariantCulture, out number)
-                && number >= FirstNumber
-                && string.Equals(number.ToString(CultureInfo.InvariantCulture), before.Substring(space + 1), StringComparison.Ordinal)
-                && savedNames.Contains(before.Substring(0, space)))
-            {
-                names.Add(before.Substring(0, space));
-            }
-
-            return names;
-        }
-
-        /// <summary>The name before the ending, for a name that carries it.</summary>
-        internal string Before(string name)
-        {
-            return CarriesTheEnding(name) ? name.Substring(0, name.Length - Suffix.Length) : name;
         }
 
         private string Suffix

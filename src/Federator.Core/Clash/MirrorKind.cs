@@ -13,10 +13,10 @@ namespace Federator.Core.Clash
         SameRules,
 
         /// <summary>
-        /// Two tests saved in the document, read with no XML, one named as the other's mirror:
-        /// its name is the other's with the ending, MirrorSettings, and its sides ask the
-        /// other's question as a mirror, so the name was made by this tool for that pair, F132
-        /// attempt 6.
+        /// Two tests saved in the document, read with no XML: one whose name ends with the
+        /// ending of MirrorSettings, and the one saved test without it whose question its
+        /// sides ask as a mirror. Paired by the sides and never by the name, Bader's answers D
+        /// to Q133 and A to Q136.
         /// </summary>
         Named
     }

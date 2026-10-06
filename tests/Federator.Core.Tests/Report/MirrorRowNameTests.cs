@@ -19,7 +19,7 @@ namespace Federator.Core.Tests
     public class MirrorRowNameTests
     {
         private const string Kept = "BLD-ME-Ducts-vs-BLD-ST-Columns";
-        private const string Mirror = Kept + " (mirror)";
+        private const string Mirror = "BLD-ST-Columns-vs-BLD-ME-Ducts (mirror)";
 
         private string folder;
 

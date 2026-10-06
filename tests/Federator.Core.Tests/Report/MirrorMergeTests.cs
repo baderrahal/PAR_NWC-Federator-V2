@@ -38,7 +38,7 @@ namespace Federator.Core.Tests
 
         private static string Mirror
         {
-            get { return MirrorRuleTests.DuctsVsColumns + " (mirror)"; }
+            get { return MirrorRuleTests.ColumnsVsDucts + " (mirror)"; }
         }
 
         private static ClashRow Row(string name, ClashStatus status, string left, string right)
@@ -270,9 +270,9 @@ namespace Federator.Core.Tests
                 + " is taken out of the report, so its own results are not reported a second time"));
         }
 
-        // The run the reviewer named on attempt 4: no XML, an NWF holding X and X (mirror),
-        // the sides of each read. Paired by a name made for that pair, merged by the pair of
-        // items, so each clash is counted once.
+        // The run the reviewer named on attempt 4: no XML, an NWF holding X and its mirror under
+        // its own name with the ending, the sides of each read. Paired by the sides, merged by
+        // the pair of items, so each clash is counted once.
         [Test]
         public void ANoXmlRunOverXAndXMirrorCountsEachClashOnce()
         {
@@ -281,7 +281,7 @@ namespace Federator.Core.Tests
             IList<MirrorMerge> merges = MirrorMerge.Of(
                 MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings()));
 
-            Assert.That(merges.Count, Is.EqualTo(1), "the pair is found by the name ending");
+            Assert.That(merges.Count, Is.EqualTo(1), "the pair is found by the sides of the test with the ending");
 
             MirrorMerge merge = merges[0];
             ClashReport report = TheReport(merge, 2);
@@ -426,9 +426,9 @@ namespace Federator.Core.Tests
 
             Assert.That(merge.FoundByTheMirrorsOnly, Is.EqualTo(1));
             Assert.That(kept.Rows.Count, Is.EqualTo(1));
-            Assert.That(kept.Rows[0].FoundOnlyByMirror, Is.EqualTo(KeptOfTwo + " (mirror)"));
+            Assert.That(kept.Rows[0].FoundOnlyByMirror, Is.EqualTo(FirstMirror + " (mirror)"));
             Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   " + KeptOfTwo + " and its mirror "
-                + KeptOfTwo + " 2 (mirror): " + KeptOfTwo + " found 0, the mirror 1, 0 by both and 0 by the mirror only, "
+                + SecondMirror + " (mirror): " + KeptOfTwo + " found 0, the mirror 1, 0 by both and 0 by the mirror only, "
                 + "added to " + KeptOfTwo + ", and 1 found by an earlier mirror of " + KeptOfTwo + " as well, added once"));
             Assert.That(report.Tests.Count, Is.EqualTo(1), "both mirrors are taken out of the report");
         }

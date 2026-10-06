@@ -7,9 +7,10 @@ namespace Federator.Core.Tests
 {
     /// <summary>
     /// F132, Bader's answer D to Q133: in Clash Detective the mirror test stays, its name
-    /// ending with (mirror). The ending is a setting. A mirror is named after the test kept,
-    /// numbered before the ending where that name is taken, and the name is read back to the
-    /// test kept, so a run with no XML finds the pair by the name alone.
+    /// ending with (mirror), and his answer A to Q136, the old test renamed to its name with
+    /// (mirror) at the end. The ending is a setting. A mirror is named by its own name with
+    /// the ending, never the kept test's, numbered before the ending where that name is
+    /// taken. A run with no XML never reads the name back to a test, MirrorRuleTests.
     /// </summary>
     [TestFixture]
     public class MirrorSettingsTests
@@ -25,17 +26,14 @@ namespace Federator.Core.Tests
 
         private static readonly string[] NoneTaken = new string[0];
 
-        // F132 attempt 5. The mirror is named after the test kept, so a run with no XML reads
-        // off the name alone which test it mirrors, an NWF holding X and X (mirror).
         [Test]
-        public void TheMirrorIsNamedAfterTheTestKeptWithTheEndingAfterOneSpace()
+        public void TheEndingGoesAfterTheNameAndOneSpace()
         {
             Assert.That(new MirrorSettings().NameFor(Name, NoneTaken), Is.EqualTo(Name + " (mirror)"));
         }
 
-        // A test kept over more than one mirror, Q121 B, or a name another test already
-        // carries: the next number goes before the ending, so every mirror's name still ends
-        // with it, his words, and no two tests share one name.
+        // A name another test already carries: the next number goes before the ending, so
+        // every mirror's name still ends with it, his words, and no two tests share one name.
         [Test]
         public void ANameTakenGetsTheNextNumberBeforeTheEnding()
         {
@@ -46,36 +44,24 @@ namespace Federator.Core.Tests
                 Is.EqualTo(Name + " 3 (mirror)"));
         }
 
-        // What NameFor writes, KeptNamesOf reads back to the test kept, numbered or not, so
-        // the run after finds the test a mirror's name could have been made for.
+        // A mirror whose own name already ends with the ending is named as it is, so it
+        // never carries the ending twice. Its own name is among the names taken, as every
+        // name of the XML is, and is not taken from itself.
         [Test]
-        public void TheNameWrittenIsReadBackToTheTestKept()
+        public void ANameThatAlreadyEndsWithItGetsNoSecondEnding()
         {
             MirrorSettings settings = new MirrorSettings();
-            string[] saved = { Name, Name + " (mirror)", Name + " 2 (mirror)" };
 
-            Assert.That(settings.KeptNamesOf(Name + " (mirror)", saved), Is.EqualTo(new[] { Name }));
-            Assert.That(settings.KeptNamesOf(Name + " 2 (mirror)", saved), Is.EqualTo(new[] { Name }));
-            Assert.That(settings.KeptNamesOf(Name, saved), Is.Empty, "a name with no ending is no mirror");
-        }
-
-        // The breaker's finding on attempt 5. Where a person's test carries the name with a
-        // number, both tests the name could have been made for are given, the exact name
-        // first, and MirrorRule pairs with the one whose question the sides ask.
-        [Test]
-        public void ANumberedNameGivesBothTestsItCouldHaveBeenMadeFor()
-        {
-            string[] saved = { Name, Name + " 2", Name + " 2 (mirror)" };
-
-            Assert.That(new MirrorSettings().KeptNamesOf(Name + " 2 (mirror)", saved),
-                Is.EqualTo(new[] { Name + " 2", Name }));
+            Assert.That(settings.NameFor(Name + " (mirror)", new[] { Name + " (mirror)" }), Is.EqualTo(Name + " (mirror)"));
+            Assert.That(settings.NameFor(Name + " (mirror)", NoneTaken), Is.EqualTo(Name + " (mirror)"));
         }
 
         [Test]
-        public void ANameWhoseTestKeptIsNotSavedIsReadAsNoPair()
+        public void ANameEndingWithItAfterOneSpaceCarriesIt()
         {
-            Assert.That(new MirrorSettings().KeptNamesOf(Name + " (mirror)", new[] { Name + " (mirror)" }), Is.Empty);
             Assert.That(new MirrorSettings().CarriesTheEnding(Name + " (mirror)"), Is.True);
+            Assert.That(new MirrorSettings().CarriesTheEnding(Name), Is.False);
+            Assert.That(new MirrorSettings().CarriesTheEnding("(mirror)"), Is.False, "the ending alone names no test");
         }
 
         // Only the ending after one space is the ending. A name that ends with the word and
@@ -83,10 +69,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheWordWithNoSpaceBeforeItIsNotTheEnding()
         {
-            MirrorSettings settings = new MirrorSettings();
-
-            Assert.That(settings.CarriesTheEnding(Name + "(mirror)"), Is.False);
-            Assert.That(settings.KeptNamesOf(Name + "(mirror)", new[] { Name, Name + "(mirror)" }), Is.Empty);
+            Assert.That(new MirrorSettings().CarriesTheEnding(Name + "(mirror)"), Is.False);
         }
 
         [Test]
@@ -96,8 +79,8 @@ namespace Federator.Core.Tests
             settings.Ending = "[swap]";
 
             Assert.That(settings.NameFor(Name, NoneTaken), Is.EqualTo(Name + " [swap]"));
-            Assert.That(settings.KeptNamesOf(Name + " [swap]", new[] { Name }), Is.EqualTo(new[] { Name }));
-            Assert.That(settings.KeptNamesOf(Name + " (mirror)", new[] { Name }), Is.Empty);
+            Assert.That(settings.CarriesTheEnding(Name + " [swap]"), Is.True);
+            Assert.That(settings.CarriesTheEnding(Name + " (mirror)"), Is.False);
         }
 
         [Test]
@@ -112,10 +95,13 @@ namespace Federator.Core.Tests
             }
         }
 
-        // ---------- the rule gives every mirror that name ----------
+        // ---------- the rule gives every mirror its own name with the ending ----------
 
+        // Bader's words: the mirror test's own name ends with (mirror). The swap of Ducts
+        // against Columns is Columns against Ducts, and it is created as Columns against
+        // Ducts (mirror), never as Ducts against Columns (mirror).
         [Test]
-        public void TheMirrorOfTheXmlIsCreatedUnderItsNameWithTheEnding()
+        public void TheMirrorOfTheXmlIsCreatedUnderItsOwnNameWithTheEnding()
         {
             ClashTestPlan plan = MirrorRuleTests.Plan(
                 MirrorRuleTests.Test(MirrorRuleTests.DuctsVsColumns, MirrorRuleTests.Ducts, MirrorRuleTests.Columns),
@@ -123,25 +109,45 @@ namespace Federator.Core.Tests
 
             MirrorPair pair = MirrorRuleTests.Rule(plan.Buildable, PriorityMap.NothingPicked()).Pairs[0];
 
+            Assert.That(pair.Kept.Name, Is.EqualTo(MirrorRuleTests.DuctsVsColumns));
             Assert.That(pair.Mirror.Name, Is.EqualTo(MirrorRuleTests.ColumnsVsDucts));
-            Assert.That(pair.MirrorName, Is.EqualTo(MirrorRuleTests.DuctsVsColumns + " (mirror)"));
+            Assert.That(pair.MirrorName, Is.EqualTo(MirrorRuleTests.ColumnsVsDucts + " (mirror)"));
+            Assert.That(pair.MirrorName, Is.Not.EqualTo(MirrorRuleTests.DuctsVsColumns + " (mirror)"));
+        }
+
+        // A test of the XML whose own name already ends with (mirror) and is a mirror is
+        // created under that name, with no second ending.
+        [Test]
+        public void AMirrorTheXmlAlreadyNamesWithTheEndingKeepsThatName()
+        {
+            ClashTestPlan plan = MirrorRuleTests.Plan(
+                MirrorRuleTests.Test(MirrorRuleTests.DuctsVsColumns, MirrorRuleTests.Ducts, MirrorRuleTests.Columns),
+                MirrorRuleTests.Test(MirrorRuleTests.ColumnsVsDucts + " (mirror)", MirrorRuleTests.Columns, MirrorRuleTests.Ducts));
+
+            MirrorRule rule = MirrorRuleTests.Rule(plan.Buildable, PriorityMap.NothingPicked());
+
+            Assert.That(rule.Pairs.Count, Is.EqualTo(1));
+            Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(MirrorRuleTests.ColumnsVsDucts + " (mirror)"));
+            Assert.That(plan.WithMirrorsNamed(rule).Buildable[1].Name, Is.EqualTo(MirrorRuleTests.ColumnsVsDucts + " (mirror)"));
         }
 
         // A rerun with no XML reads the mirror it made as it is saved, and never adds the
-        // ending again. A swap a person made under a name of their own is not found by its
-        // name, so it keeps its own clashes.
+        // ending again. A swap a person made under a name of their own carries no ending, so
+        // it is not a mirror, and the saved mirror's sides ask the question of the one saved
+        // test without the ending they mirror.
         [Test]
         public void ASavedMirrorKeepsItsSavedName()
         {
             ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
                 MirrorRuleTests.DuctsVsColumns, MirrorRuleTests.Ducts, MirrorRuleTests.Columns,
-                MirrorRuleTests.DuctsVsColumns + " (mirror)", MirrorRuleTests.Columns, MirrorRuleTests.Ducts,
+                MirrorRuleTests.ColumnsVsDucts + " (mirror)", MirrorRuleTests.Columns, MirrorRuleTests.Ducts,
                 "a swap a person made", MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
 
             MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings());
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));
-            Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(MirrorRuleTests.DuctsVsColumns + " (mirror)"));
+            Assert.That(rule.Pairs[0].Kept.Name, Is.EqualTo(MirrorRuleTests.DuctsVsColumns));
+            Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(MirrorRuleTests.ColumnsVsDucts + " (mirror)"));
         }
 
         // A rerun with the XML picked makes the same name again, so it finds the mirror the
@@ -161,27 +167,26 @@ namespace Federator.Core.Tests
                 .Pairs[0].MirrorName;
 
             Assert.That(second, Is.EqualTo(first));
-            Assert.That(second, Is.EqualTo(MirrorRuleTests.DuctsVsColumns + " (mirror)"));
+            Assert.That(second, Is.EqualTo(MirrorRuleTests.ColumnsVsDucts + " (mirror)"));
         }
 
         // Another test of the XML already carries the name the mirror would take, so the
         // mirror takes the next number before the ending. Its name still ends with (mirror),
-        // his words, where attempt 4 fell back to the XML's own name, and no two tests share
-        // one name.
+        // his words, and no two tests share one name.
         [Test]
         public void ANameAnotherTestCarriesIsNotTakenAndTheEndingStays()
         {
             ClashTestPlan plan = MirrorRuleTests.Plan(
                 MirrorRuleTests.Test(MirrorRuleTests.DuctsVsColumns, MirrorRuleTests.Ducts, MirrorRuleTests.Columns),
                 MirrorRuleTests.Test(MirrorRuleTests.ColumnsVsDucts, MirrorRuleTests.Columns, MirrorRuleTests.Ducts),
-                MirrorRuleTests.Test(MirrorRuleTests.DuctsVsColumns + " (mirror)", MirrorRuleTests.Ducts, MirrorRuleTests.Walls));
+                MirrorRuleTests.Test(MirrorRuleTests.ColumnsVsDucts + " (mirror)", MirrorRuleTests.Ducts, MirrorRuleTests.Walls));
 
             MirrorRule rule = MirrorRuleTests.Rule(plan.Buildable, PriorityMap.NothingPicked());
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));
-            Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(MirrorRuleTests.DuctsVsColumns + " 2 (mirror)"));
+            Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(MirrorRuleTests.ColumnsVsDucts + " 2 (mirror)"));
             Assert.That(string.Join("\n", new List<string>(rule.Lines()).ToArray()), Does.Contain(
-                "created and run as " + MirrorRuleTests.DuctsVsColumns + " 2 (mirror)"));
+                "created and run as " + MirrorRuleTests.ColumnsVsDucts + " 2 (mirror)"));
         }
 
         // ---------- the plan creates it under that name ----------
@@ -201,7 +206,7 @@ namespace Federator.Core.Tests
             Assert.That(named.Buildable.Count, Is.EqualTo(2));
             Assert.That(named.Skipped.Count, Is.EqualTo(plan.Skipped.Count));
             Assert.That(named.Buildable[0].Name, Is.EqualTo(MirrorRuleTests.DuctsVsColumns));
-            Assert.That(named.Buildable[1].Name, Is.EqualTo(MirrorRuleTests.DuctsVsColumns + " (mirror)"));
+            Assert.That(named.Buildable[1].Name, Is.EqualTo(MirrorRuleTests.ColumnsVsDucts + " (mirror)"));
             Assert.That(named.Buildable[1].FileIndex, Is.EqualTo(1));
             Assert.That(named.Buildable[1].Left.Locator, Is.EqualTo(MirrorRuleTests.Columns));
             Assert.That(creation.CreateCount, Is.EqualTo(2));
@@ -231,13 +236,13 @@ namespace Federator.Core.Tests
         {
             ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
                 MirrorRuleTests.DuctsVsColumns, MirrorRuleTests.Ducts, MirrorRuleTests.Columns,
-                MirrorRuleTests.DuctsVsColumns + " (mirror)", MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
+                MirrorRuleTests.ColumnsVsDucts + " (mirror)", MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
             MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings());
             ClashTestPlan named = plan.WithMirrorsNamed(rule);
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));
             Assert.That(named.Buildable.Count, Is.EqualTo(2));
-            Assert.That(named.Buildable[1].Name, Is.EqualTo(MirrorRuleTests.DuctsVsColumns + " (mirror)"));
+            Assert.That(named.Buildable[1].Name, Is.EqualTo(MirrorRuleTests.ColumnsVsDucts + " (mirror)"));
             Assert.That(named.Buildable[1].Address[0], Is.EqualTo(1));
         }
     }
