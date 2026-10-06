@@ -504,7 +504,26 @@ f126-records-harness.py, which made the edits. Also /tmp/added.txt of Git for Wi
 lines read for a semicolon, deleted once read.
 
 
-## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built again after a sixth attempt on Bader's answers B to Q121, D to Q133 and A to Q136, finished on 2026-10-06, and held on its branch
+## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built again after a seventh attempt on Bader's answers B to Q121, D to Q133, A to Q136, A to Q137 and B to Q138, finished on 2026-10-06, and held on its branch
+
+Written by F132's developer as the lead's delegate. Attempt 7, on the reviewer's reading of
+attempt 6, APPROVE, and the breaker's, CHANGES, turn5\lanes-review-F132.json and
+lanes-break-F132.json, and Bader's answers A to Q137 and B to Q138 of 2026-10-06,
+turn5\q137-q138-words.txt, with the lead's note under Q138 for the ties. Core tests 2051
+passed, 0 failed, 0 skipped at 788635f with the tree clean, turn5\f132h-tests-before.txt. 22
+new tests failed first against 788635f with stubs that kept its behaviour behind the new
+members, 2050 passed, turn5\f132h-before-fail.txt. The code, dacd629, 2072 passed, 0 failed, 0
+skipped by its pre-commit, turn5\f132h-precommit-1.txt, the 21 more being 22 tests in and one
+out, named under What was done. Main 2eda020 taken in at 46e6a33, two conflicts resolved with
+both sides kept, 2072 passed by its pre-commit, turn5\f132h-precommit-merge.txt. `dotnet build
+ParsonsNwcFederator.sln -c Release --no-incremental` built Federator.Core, Federator.Core.Tests
+and Federator.Addin with 0 errors and 0 warnings at 46e6a33 with the tree clean, the three DLLs
+written at 15:20, turn5\f132h-build-code.txt, and again at the records commit,
+turn5\f132h-build-after.txt, whose first line carries its hash. check-locals and
+check-imports exit 0 over src, turn5\f132h-checks.txt. This developer started no Navisworks
+and touched none. Get-Process Roamer read no process at 14:22:59,
+turn5\f132h-roamer-before.txt, at 15:21:35, turn5\f132h-roamer-mid.txt, and after the last
+command, turn5\f132h-roamer-after.txt. No add-in file changed in attempt 7.
 
 Written by F132's developer as the lead's delegate. Attempt 6, on the reviewer's and the
 breaker's readings of d6cd3c2, both CHANGES, turn5\f132e-result.json, and Bader's answer A to
@@ -602,6 +621,61 @@ end of each, turn5\f132-roamer-after.txt, f132b-roamer-before.txt and f132b-roam
 
 ### What was done
 
+- attempt 7, dacd629, Q138 B, THE STATUS OF A CLASH BOTH FIND. The report took the kept test's
+  status and the log gave only a count, src\Federator.Core\Report\MirrorMerge.cs lines 264 to
+  271 and 374 to 379 at 788635f. Federator.Core.Clash.BothFoundStatus is the one rule: a status
+  a person sets, Reviewed or Approved, wins over the other statuses, otherwise New or Active
+  wins over Resolved, and where his words do not choose, both a person's or both live, or a
+  status not among the five, the kept test's stays, the lead's note. MirrorMerge.KeptFound now
+  takes the row of the kept test's report that holds the clash, its own or its group's,
+  refusing a status other than its own row's, and the merge sets the status the rule gives on
+  that row with its count by status, TestReport.Restate, so the workbook and the clash XML read
+  it. Each clash whose two statuses differ is named on a MIRROR line with both statuses and the
+  one the report shows, every one, his words, with no five and a count: the log's rule of five
+  examples is for tests skipped for one reason and for lines alike, and each of these names a
+  different clash, as the clashes only a mirror finds are each named under Q133 D. A clash under
+  a group of the kept test leaves the group as it is, its line saying what the rule gives and
+  what the report shows. A kept clash handed with a row the report does not hold merges
+  nothing, said. With two mirrors each copy is weighed in the rule's order against what the
+  report holds. In: the 6 tests of BothFoundStatusTests,
+  AStatusAPersonSetOnTheMirrorsCopyReachesTheReportAndIsNamed,
+  ALiveClashTheKeptTestMarkedResolvedReadsLiveInTheReport,
+  AResolvedCopyUnderTheMirrorLeavesTheKeptTestsLiveStatus,
+  WhereHisWordsDoNotChooseTheKeptTestsStatusStaysAndTheClashIsNamed,
+  AClashUnderAGroupOfTheKeptTestLeavesTheGroupAsItIsAndIsSaid,
+  AKeptClashHandedWithARowTheReportDoesNotHoldMergesNothing,
+  AKeptClashHandedWithAStatusItsOwnRowDoesNotCarryIsRefused,
+  ARestatedRowMovesItsCountAndOnlyARowOfOneClashHeldIsRestated,
+  TwoMirrorsCopiesAreWeighedInTurnAgainstWhatTheReportHolds,
+  TheWorkbookShowsTheStatusTheRuleGivesAClashBothFound and
+  TheClashXmlShowsTheStatusTheRuleGivesAClashBothFound. Out:
+  AStatusThatDiffersOnAClashBothFoundIsSaid, which held the kept test's status and the count
+  line that Q138 B replaces
+- attempt 7, dacd629, Q137 A, THE COUNT LINE, the breaker's point. Where more than five saved
+  mirrors are not paired, the count line after the five named said only that each keeps its
+  own clashes and mixed the case no other test asks with the UNKNOWN ones,
+  src\Federator.Core\Clash\MirrorRule.cs lines 534 to 535 and 643 to 654 at 788635f. It now
+  says how many of the rest may have a clash both find counted twice and how many ask a
+  question no other saved test asks as a mirror. In:
+  TheCountLineAfterTheFiveNamedSaysHowManyMayBeCountedTwice, on the breaker's trigger of 59
+  placeholders, and TheCountLineTellsTheUnknownFromTheMirrorsNoOtherTestAsks
+- attempt 7, dacd629, UNKNOWN READS UNKNOWN, the breaker's point. After AddTo a mirror that
+  did not run added a plain 0 to each count, MirrorMerge.cs lines 117 to 132 and 421 to 443 at
+  788635f. FoundByBoth and NotCompared are null, UNKNOWN, where nothing was merged or a mirror
+  did not run or is not in the report once. FoundByTheMirrorsOnly is named AddedToTheKeptTest,
+  the rows the merge added, the number the kept test's ROWS line reads, a count taken once
+  AddTo has run, since nothing of a mirror that did not run is added. In:
+  AMirrorThatDidNotRunLeavesWhatTheMirrorsFoundUnknown,
+  AKeptTestThatMergedNothingLeavesWhatTheMirrorsFoundUnknown and
+  AMirrorInTheReportTwiceLeavesWhatTheMirrorsFoundUnknown
+- attempt 7, main 2eda020 taken in at 46e6a33, its message turn5\f132h-merge-msg.txt, the two
+  conflicts resolved by turn5\f132h-resolve-merge.py: steps\02_questions.md is main's, which
+  holds every line the branch held with Bader's answers to Q137 and Q138, and in
+  steps\01_next.md F133 keeps order line 44 and F132 takes 45
+- attempt 7 records: the F132 rule in .claude\rules\core.md for Q137 A, Q138 B and the
+  counts, with a rule beside it for the order the add-in half keeps, order line 45 and the
+  ATTEMPT 7 bullet of the F132 section of steps\01_next.md, and this entry. steps\loop.md and
+  steps\tracker.csv not touched, F132's rows reading in progress as they stood
 - attempt 6, main 8beb9e9 taken in at b9a5672 on 2026-10-05, no conflict, its message
   turn5\f132f-merge-msg.txt, and main 6d2a203 at 302ad4a on 2026-10-06, no conflict, its message
   turn5\f132g-merge-msg.txt
@@ -893,22 +967,25 @@ end of each, turn5\f132-roamer-after.txt, f132b-roamer-before.txt and f132b-roam
 
 ### What remains
 
-- the add-in half, after F131 merges by Bader's order: hand MirrorRule.Of the picked XML's
-  ExchangeDocument.Sets, or with no XML the document's sets where their rule lists can be read
-  whole, UNKNOWN for the flags until measured, and each saved side as the set it points at in
-  place of the placeholders, so a saved mirror can pair by its sides, and a MirrorSettings the
-  window keeps. Call WithMirrorsNamed on the very plan the rule was built from before
-  ResolveAgainst makes a new one. With an XML picked, call MirrorRule.RenamesIn with the
-  document's saved tests, make each rename by the test's address before the tests are found by
-  name, its statuses kept, Q136 A, and write MirrorRenames.Lines. Run both tests, hand every
-  clash of the kept test with its status and of each mirror to MirrorMerge with an item key that
-  names one item, as P1 read DocumentModels.CreateIndexPath, each clash under a group on its own,
-  call AddTo with the group's report after every test's state is set, ClashRunner.cs line 915,
+- the add-in half, after F131 merges by Bader's order, in the order .claude\rules\core.md now
+  writes beside the F132 rule: hand each saved side as the set it points at before RenamesIn
+  is called and before any mirror is created, and the document's sets for a run with no XML
+  through a public Core member not yet written, since SelectionSetDefinition's constructor is
+  internal to Core. Hand MirrorRule.Of the picked XML's ExchangeDocument.Sets and a
+  MirrorSettings the window keeps. Call WithMirrorsNamed on the very plan the rule was built
+  from before ResolveAgainst makes a new one. With an XML picked, call MirrorRule.RenamesIn,
+  make each rename by the test's address before the tests are found by name, counting the
+  test's results and statuses before and after, and write MirrorRenames.Lines. Run both tests,
+  hand every clash of the kept test with its status and the row of the report that holds it,
+  and of each mirror, to MirrorMerge with an item key that names one item, as P1 read
+  DocumentModels.CreateIndexPath, each clash under a group on its own, call AddTo with the
+  group's report after every test's state is set and before the ROWS lines and the pictures,
   write MirrorMerge.Lines and MirrorRule.Lines in the log, write the kept test's ROWS line with
-  MirrorMerge.FoundByTheMirrorsOnly, and hand ClashReport.MirrorsMerged to
-  CreationPlan.BlockCountLine. NOTHING IN SRC CALLS MirrorRule, MirrorMerge, RenamesIn or the 4
-  argument ReportedCount.Line UNTIL IT LANDS, so the branch stays unmerged until then, and F127
-  merges first. A step for Bader in steps\03_bader_next.md goes with that half
+  MirrorMerge.AddedToTheKeptTest, and hand ClashReport.MirrorsMerged to
+  CreationPlan.BlockCountLine. NOTHING IN SRC CALLS MirrorRule, MirrorMerge, BothFoundStatus,
+  RenamesIn or the 4 argument ReportedCount.Line UNTIL IT LANDS, so the branch stays unmerged
+  until then, and F127 merges first. A step for Bader in steps\03_bader_next.md goes with that
+  half
 - the view names a clash only a mirror found, F114, off ClashRow.WrittenName
 - the COVERAGE sheet's names of the pairs are F127's, read off MirrorRule.CoverageNames
 - the measurement Q133 asks, on 1A02MM and 1A04PK: how often a mirror finds more, and the extra
@@ -917,10 +994,66 @@ end of each, turn5\f132-roamer-after.txt, f132b-roamer-before.txt and f132b-roam
   attempt 6 as MirrorRule.RenamesIn, the old test Y renamed Y (mirror), its statuses kept, the
   rename itself the add-in half's
 - Q137, a saved mirror whose question two saved tests without the ending ask, or only tests with
-  it: the build goes on with A, not paired and said, until Bader answers
+  it, answered A by Bader on 2026-10-06: built in Core at attempt 6, not paired and said, and the
+  count line after the five named at attempt 7
+- Q138, the two statuses of a clash both tests find, answered B by Bader on 2026-10-06: built in
+  Core at attempt 7 as BothFoundStatus, its MIRROR lines read by the add-in half
 
 ### Known bugs
 
+- attempt 7, for the register, the reviewer's and the breaker's point on a change of roles
+  between two XML runs: where the priority file or the XML's order changes so the other test of
+  a pair is kept, the old Y (mirror) is neither renamed nor named and stays with its statuses,
+  run every week, its clashes counted twice, and on a run with no XML it is a duplicate of the
+  new Y, AsAMirror false, so it reads as asking the question of no other saved test, with no
+  words that a clash both find is counted twice, and the count line counts it under that case.
+  The tool knows it is a duplicate and does not say so. Of never reads the ending, so an XML
+  test already named with it can be kept, while PairBySides never keeps one, so the core.md
+  words that the roles hold from the XML run to the run with no XML are false for that shape,
+  src\Federator.Core\Clash\MirrorRule.cs KeptOf, AsAMirror and WhyNotPaired
+- attempt 7, for the register, the reviewer's point: where the document holds a test under a
+  mirror's new name that the XML does not hold, a refused rename among them, the plan finds it
+  by name and runs it as the mirror, its sides compared by the DRIFT line alone, so a person's
+  or a stale Y (mirror) asking another question would have its clashes added to the kept test
+  as found by the mirror only. The breaker's with it: a taken name is looked for among the
+  tests handed alone, and FromDocument leaves out an unnamed test and one of a type number not
+  on the enum, so a rename can land on a name the document holds, and a mirror's name moves
+  between Y (mirror) and Y 2 (mirror) as the XML's other names change, leaving the earlier test
+  behind, MirrorRule.cs NameFor's names and RenamesIn
+- attempt 7, for the register, the breaker's point: AddTo merges the clashes handed and never
+  compares them with what the report held, so a caller handing fewer of a mirror's clashes than
+  its test holds loses the rest when TakeOut takes the mirror out, and one handing few of the
+  kept test's makes a clash both found read as found by the mirror only, added a second time.
+  The mirror's count found against its RawClashes and the kept test's against its own would name
+  either. The reviewer's with it: AddTo cannot tell a kept test that found nothing from one
+  whose clashes were never handed, src\Federator.Core\Report\MirrorMerge.cs
+- attempt 7, for the register, the reviewer's: in an XML run a pair is judged on the XML's sets
+  and not on the document's, and a mirror's clash with an item not read is said to be in no
+  block and is in no row, MirrorMerge.cs
+- attempt 7, for the register, the breaker's: the RenamesIn line says a test is renamed with its
+  statuses kept, and nothing has run DocumentClashTests.TestsEditDisplayName on a test holding
+  results and statuses, docs\history\scan.md listing the member alone, so the line states a
+  plan as a result until the add-in half counts them, MirrorRule.cs RenamesIn. Its lines are one
+  per rename and per refusal, not capped, up to 59 a group on the corrected matrix and 117 on
+  the client's on a first XML run over an NWF made before the rule
+- attempt 7, for the register, words and a small second copy, both readings: MirrorRule's
+  summary calls AsAMirror the rule the XML's tests pair by, while Of groups by QuestionKey and
+  writes its own duplicate check, one rule written twice in one file that agree today. The
+  Lines comment says where any test has a side not read, and notRead counts the XML's tests
+  alone. MirrorRule's count line and MirrorPair's line say the sets carry the same rule lists,
+  where the pair is judged on the whole question. ReportedCount says its mirror in the singular
+  where the number is summed over every mirror
+- attempt 7, for the lead, the breaker's: Q134 B says no code waits on main for a later step,
+  and F132's Core half has no caller in src until its add-in half, the known state, which the
+  lead may want Bader's word covers
+- attempt 7, new here: each clash whose two statuses differ is named, not capped, his words to
+  Q138 that the log names each. How many a first run over an NWF made before the rule names is
+  UNKNOWN. The add-in's NumberedRepeat, which keeps every line in the .tsv and trims the .log,
+  is where a cap goes, the add-in half's choice and the lead's
+- attempt 7, new here: a clash under a group of the kept test shows the group's status, which
+  the rule does not change for one clash, and whether a group's status in Navisworks follows
+  the clashes under it is UNKNOWN, not measured. BothFoundStatus reads Reviewed and Approved as
+  a person's by their names, as Q138 says, which statuses Navisworks sets by itself not measured
 - attempt 5, for the lead's register: the workbook's Clash Name cell of a clash only a mirror
   found reads "Clash1, found by the mirror only in Y (mirror)", words in a cell of the client's
   own layout that their export never writes, since their report has no merged mirrors. A column
@@ -986,8 +1119,9 @@ end of each, turn5\f132-roamer-after.txt, f132b-roamer-before.txt and f132b-roam
 
 ### What comes next
 
-- the lead's reviewer and breaker on fix-F132 at attempt 6, d30000d, e7cbaba and its records,
-  then the add-in half after F131 merges, then the run of Q133's measurement on 1A02MM and 1A04PK
+- the lead's reviewer and breaker on fix-F132 at attempt 7, dacd629, 46e6a33 and its records,
+  then the add-in half after F131 merges, in the order core.md writes, then the run of Q133's
+  measurement on 1A02MM and 1A04PK
 
 ## 2026-10-05 The loop, turn 5, F116 the clash XML, DONE in Core and built, wave 1, with Bader's answer to Q113, the readings of that pass, F112 taken in and a closing pass
 
