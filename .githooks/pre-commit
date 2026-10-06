@@ -88,7 +88,57 @@ if ! sh "$repo/tools/checks/check-imports.sh" src; then
     exit 1
 fi
 
-# Third, for a different reason. F102: a probe result committed from Bader's machine
+# Third, F139, Bader's message of 2026-10-06, Q139. Whenever steps/tracker.csv or
+# steps/PROGRESS.md is staged, steps/tracker.md and the counts of steps/PROGRESS.md are made again
+# from the csv and staged, so the numbers in a commit are never stale, and the page is checked for
+# its 60 lines and its counts. It comes before the evidence check, which then reads what the maker
+# wrote. The maker reads the files in the working copy, so either of the two with changes that are
+# not staged would put counts into the commit its csv does not hold, and the hook refuses that
+# instead. Its cost, measured in turn5\q139\hooks.md section 3: one git call on every commit,
+# about 1.6 s, and on a commit staging either file two more git calls and two powershell.exe,
+# about 8 s more.
+echo "pre-commit: making the counts again if steps/tracker.csv or steps/PROGRESS.md is staged"
+
+staged_status=0
+git diff --cached --quiet -- steps/tracker.csv steps/PROGRESS.md || staged_status=$?
+
+if [ "$staged_status" -gt 1 ]; then
+    echo "pre-commit: REFUSED. git could not say whether steps/tracker.csv or steps/PROGRESS.md is staged."
+    exit 1
+fi
+
+if [ "$staged_status" -eq 1 ]; then
+    unstaged_status=0
+    git diff --quiet -- steps/tracker.csv steps/PROGRESS.md || unstaged_status=$?
+
+    if [ "$unstaged_status" -ne 0 ]; then
+        echo "pre-commit: REFUSED. steps/tracker.csv or steps/PROGRESS.md has changes that are not staged, and the counts are made from the files as they are. Stage them or put them aside, then commit."
+        exit 1
+    fi
+
+    if ! command -v powershell >/dev/null 2>&1; then
+        echo "pre-commit: REFUSED. powershell was not found on PATH, so the counts could not be made."
+        exit 1
+    fi
+
+    if ! powershell -NoProfile -ExecutionPolicy Bypass -File "$repo/tools/tracker/make-tracker.ps1"; then
+        echo ""
+        echo "pre-commit: REFUSED. See the lines above."
+        exit 1
+    fi
+
+    git add -- steps/tracker.md steps/PROGRESS.md
+
+    if ! powershell -NoProfile -ExecutionPolicy Bypass -File "$repo/tools/tracker/check-progress.ps1"; then
+        echo ""
+        echo "pre-commit: REFUSED. See the lines above."
+        exit 1
+    fi
+else
+    echo "pre-commit: neither is staged, so nothing was made"
+fi
+
+# Fourth, for a different reason. F102: a probe result committed from Bader's machine
 # carried the machine's name and two Autodesk licensing ids, and nothing read a file for
 # them before it was committed. What is read is what the commit will hold, the staged
 # content, written into a temp folder by checkout-index and never read off the working

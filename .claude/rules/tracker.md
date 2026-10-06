@@ -2,18 +2,30 @@
 paths:
   - "steps/tracker.csv"
   - "steps/tracker.md"
+  - "steps/PROGRESS.md"
   - "tools/tracker/**"
 ---
 
 # Rules for the work tracker
 
-Bader's message of 5 Oct 2026, Q129, built by F133. The scripts and the fixtures are described
-in tools\tracker\README.md. The rule that every pull request changing an item's status
+Bader's message of 5 Oct 2026, Q129, built by F133, and the counts of steps\PROGRESS.md, his
+message of 6 Oct 2026, Q139, built by F139. The scripts and the fixtures are described in
+tools\tracker\README.md. The rule that every pull request changing an item's status
 updates its row in the same pull request lives in .claude\rules\steps.md, beside the DONE line
 rule, since steps.md loads for every file under steps, the DONE lines and the csv among them.
 
-- Status lives in steps\tracker.csv only. steps\loop.md and steps\fix-round.md keep their
-  narrative and point at the tracker for status
+- Status lives in steps\tracker.csv only. steps\history\loop.md and steps\fix-round.md keep
+  their narrative and point at the tracker for status
+- The register is in the tracker, Bader's words of Q139. A finding is a row of class register
+  row: a fault, a word or an edge case a reading, a run or a review found that is not an FR
+  item, its id the one it was found under, such as T5-R-OLDKEY or F133-R5, its status one of the
+  seven read off the repo, and its area and wave those of the work that will carry it, or none.
+  A new finding gets its row in the pull request that finds it and is never written as a bullet
+  of a log entry or a row of a table in steps\history. The register table of
+  steps\history\loop.md and the bullets of steps\history\log.md are the record of the rows
+  written before F139: every one that read open with no row of its own and no FR item naming it
+  got its row in F139, and the closed ones stay there as the record. The check reads a
+  register row by the rules for every row only, F133-R21
 - The columns are Bader's words, in his order: id, short title, area, wave, class, status, PR,
   the run that proved it, and the date of the last change. The date is the day the row's
   status, PR or run last changed
@@ -27,8 +39,8 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   names, a request of his and a question with no answer when no row carries its id written
   exactly. An F area that no such line names is not read by the check, so a reader gives it
   its row by hand: every F section of steps\01_next.md, and an F number given to work
-  elsewhere, such as F101 in the turn 3 plan of steps\log.md and F110 and F111 in
-  steps\loop.md and the turn 5 plan
+  elsewhere, such as F101 in the turn 3 plan of steps\history\log.md and F110 and F111 in
+  steps\history\loop.md and the turn 5 plan
 - A request of Bader's is an item of 02_questions.md whose text starts From Bader, as he
   wrote it, not a question put to him but a fault he found, a rule, an instruction or his
   decisions. Which items those are is read off steps\02_questions.md, as the check reads them,
@@ -59,14 +71,14 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   Source ids left out naming Q35 to Q40, so those six read none alike. The check compares them
 - A status is one of open, in progress, in review, merged, proven by a run, waiting for
   Bader and dropped, and nothing else. In progress means work on it has begun, on a branch or
-  in a measurement steps\loop.md records, in review that its branch is finished and waits for
+  in a measurement the loop records, in review that its branch is finished and waits for
   its pull request to merge, merged that its fix is on main and no run since has proved it,
   proven by a run that a named run folder under steps\runs shows the code that merged, which
   goes in the run column. A run of an earlier pass of the same fix does not prove what merged,
   and neither does a run that showed part of the work, as set 03 showed F106's item 1 alone.
   The run column holds only the run that proved the row, so a row with any other status reads
   none there, and the check refuses anything else, UNKNOWN included. What a run showed short
-  of proving a row is told in steps\log.md and steps\loop.md
+  of proving a row is told in the entry of steps\history\log.md for that run
 - Every value is read off the repo, never from memory: a DONE line in steps\01_next.md, a
   merge in git log of origin/main, a branch in git branch -r, a closing line in
   steps\fix-round.md, an answer in steps\02_questions.md. A PR cell written merge and a hash is
@@ -108,7 +120,34 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   not there among them. Every fault kind and every exit of 2 has a fixture under
   tools\tracker\fixtures that tools\tracker\prove-tracker.ps1 runs, and a new kind gets its
   fixture and its line in that header in the same pull request
-- The rules live in tools\tracker\tracker-rules.ps1 alone, and the maker and the check read
+- The rules live in tools\tracker\tracker-rules.ps1 alone, and the maker and the checks read
   it with a dot. A second copy of the status list or the columns in the maker or the check is
   a bug. prove-tracker.ps1 writes its expected lines out in full, the list and the header
   among them, since a proof asserts the text a person reads
+
+## The counts of steps\PROGRESS.md
+
+- The page is at most 60 lines, every line counted. Its counts sit between two marker lines
+  and are made by make-tracker.ps1 from the csv, never typed. The 60, the two marker lines, the
+  map of Bader's five words to the seven statuses and the rule of which wave a row counts under
+  live in tracker-rules.ps1 alone, $ProgressMaxLines, $ProgressStartMarker, $ProgressEndMarker,
+  $ProgressColumns and Get-ProgressWave
+- Done is merged and proven by a run together, and dropped stands beside his five words, so
+  every row is counted once and each line adds up, the lead's reading (a) of Q139. The waves
+  are one line for each product wave, a wave that starts with a digit, a value such as 2a and
+  2b counted under the first wave it names, then one line, outside the waves, for every other
+  value, then the total, the lead's reading (b)
+- make-tracker.ps1 writes tracker.md and the counts together, and refuses, writing neither,
+  when the page is not there, holds bytes that are not UTF-8, or its marker lines are missing,
+  there twice or in the wrong order. It writes the page only when its counts change
+- The pre-commit runs the maker whenever steps\tracker.csv or steps\PROGRESS.md is staged,
+  stages tracker.md and the page, and runs tools\tracker\check-progress.ps1. It refuses the
+  commit when either of the two holds changes that are not staged, since the maker reads the
+  working copy. Actions runs the check on every pull request. The check refuses each fault its
+  header lists, the one list of them, a page over 60 lines and counts that are not what the
+  maker makes from the csv among them, and exits 2 when the csv or the page is not there.
+  prove-progress.ps1 runs it over every fixture under tools\tracker\progress-fixtures, and a
+  new kind of fault gets its fixture and its line in that header in the same pull request
+- Two pull requests that each change the csv each carry the counts of their own csv, so the
+  second to merge meets the first in the page as in tracker.md, and runs the maker again,
+  F133-R10

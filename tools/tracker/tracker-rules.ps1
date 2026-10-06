@@ -1,6 +1,7 @@
 <#
-    The one place the tracker's rules live, read by make-tracker.ps1 and check-tracker.ps1
-    with a dot. F133, Bader's message of 5 Oct 2026, Q129.
+    The one place the tracker's rules live, read by make-tracker.ps1, check-tracker.ps1 and
+    check-progress.ps1 with a dot. F133, Bader's message of 5 Oct 2026, Q129, and for the counts
+    of steps\PROGRESS.md, F139, his message of 6 Oct 2026, Q139.
 
     steps\tracker.csv holds one row per item: every FR item of steps\fix-round.md, every F
     area, Bader's requests and every question waiting for him, whose row stays once he answers.
@@ -29,6 +30,25 @@
 
 $TrackerColumns = @("id", "short title", "area", "wave", "class", "status", "PR", "the run that proved it", "the date of the last change")
 $TrackerStatuses = @("open", "in progress", "in review", "merged", "proven by a run", "waiting for Bader", "dropped")
+
+# steps\PROGRESS.md, the one page a session starts from, F139. It is at most this many lines, and
+# its counts sit between these two marker lines, made by make-tracker.ps1 and never typed.
+$ProgressMaxLines = 60
+$ProgressStartMarker = "<!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->"
+$ProgressEndMarker = "<!-- the end of the counts -->"
+# Bader's five words in his order, each with the statuses of the seven it counts, then dropped
+# beside them, so every row is counted once and each line adds up. Done is merged and proven by
+# a run together, the lead's reading (a) under Q139.
+$ProgressColumns = [ordered]@{
+    "done"              = @("merged", "proven by a run")
+    "in progress"       = @("in progress")
+    "in review"         = @("in review")
+    "waiting for Bader" = @("waiting for Bader")
+    "open"              = @("open")
+    "dropped"           = @("dropped")
+}
+# The line of the counts for every wave value that does not start with a product wave.
+$ProgressOutside = "outside the waves"
 
 # A text file as UTF-8, past a byte order mark, with CRLF read as LF. Bytes that are not UTF-8,
 # a file saved as UTF-16 or in a Windows code page among them, give a fault naming the first
@@ -593,14 +613,19 @@ function Test-TrackerQuestions($Rows, [string] $QuestionsPath, $Places) {
 }
 
 # A wave that starts with a digit sorts before one that does not, each group in ordinal order.
-function Get-WaveOrder($Rows) {
-    $waves = New-Object System.Collections.Generic.List[string]
-    foreach ($row in $Rows) { if (-not $waves.Contains($row["wave"])) { $waves.Add($row["wave"]) } }
-    $numbered = [string[]]@($waves | Where-Object { $_ -match '^\d' })
-    $named = [string[]]@($waves | Where-Object { $_ -notmatch '^\d' })
+function Get-OrderedWaves([string[]] $Waves) {
+    $numbered = [string[]]@($Waves | Where-Object { $_ -match '^\d' })
+    $named = [string[]]@($Waves | Where-Object { $_ -notmatch '^\d' })
     [Array]::Sort($numbered, [StringComparer]::Ordinal)
     [Array]::Sort($named, [StringComparer]::Ordinal)
     return @($numbered) + @($named)
+}
+
+# The waves of the rows, each once, in the order Get-OrderedWaves gives.
+function Get-WaveOrder($Rows) {
+    $waves = New-Object System.Collections.Generic.List[string]
+    foreach ($row in $Rows) { if (-not $waves.Contains($row["wave"])) { $waves.Add($row["wave"]) } }
+    return Get-OrderedWaves $waves.ToArray()
 }
 
 function Format-TrackerCell([string] $Value) { return $Value.Replace("|", "\|") }
@@ -654,4 +679,82 @@ function Format-TrackerMarkdown($Rows) {
         }
     }
     return ($out -join "`n") + "`n"
+}
+
+# The wave a row of the csv is counted under in the counts of PROGRESS.md. A product wave is a
+# wave that starts with a digit, as Get-OrderedWaves sorts them, so a value that starts with one,
+# such as 2a or 2a and 2b, counts under the first wave it names, and any other value, such as none
+# or before the waves, under outside the waves, the lead's reading (b) under Q139.
+function Get-ProgressWave([string] $Wave) {
+    $m = [regex]::Match($Wave, '^\d+[a-z]*')
+    if ($m.Success) { return $m.Value }
+    return $ProgressOutside
+}
+
+# The lines between the two marker lines of PROGRESS.md, from rows Test-TrackerRows passed: one
+# line per product wave in the order Get-OrderedWaves gives, then outside the waves, then the
+# total, each counting its rows under each column of $ProgressColumns and its rows in all.
+function Format-ProgressCounts($Rows) {
+    $at = New-Object System.Collections.Generic.List[string]
+    $waves = New-Object System.Collections.Generic.List[string]
+    foreach ($row in $Rows) {
+        $wave = Get-ProgressWave $row["wave"]
+        $at.Add($wave)
+        if ($wave -cne $ProgressOutside -and -not $waves.Contains($wave)) { $waves.Add($wave) }
+    }
+    $order = @(Get-OrderedWaves $waves.ToArray()) + @($ProgressOutside)
+    $columns = @($ProgressColumns.Keys)
+    $out = New-Object System.Collections.Generic.List[string]
+    $out.Add("## Counts")
+    $out.Add("")
+    $out.Add("Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done is merged or proven by a run, and dropped stands beside the five so each line adds up.")
+    $out.Add("")
+    $out.Add("| wave | " + ($columns -join " | ") + " | rows |")
+    $out.Add("|" + ("---|" * ($columns.Length + 2)))
+    $sums = New-Object 'int[]' ($columns.Length + 1)
+    foreach ($wave in $order) {
+        $cells = New-Object 'int[]' ($columns.Length + 1)
+        for ($r = 0; $r -lt $Rows.Count; $r++) {
+            if ($at[$r] -cne $wave) { continue }
+            for ($k = 0; $k -lt $columns.Length; $k++) { if ($ProgressColumns[$columns[$k]] -ccontains $Rows[$r]["status"]) { $cells[$k]++ } }
+            $cells[$columns.Length]++
+        }
+        for ($k = 0; $k -lt $cells.Length; $k++) { $sums[$k] += $cells[$k] }
+        $out.Add("| $wave | " + ($cells -join " | ") + " |")
+    }
+    $out.Add("| total | " + ($sums -join " | ") + " |")
+    return $out.ToArray()
+}
+
+# The lines of a text as a person counts them: one for every line end, and one for a last line
+# with no line end after it.
+function Measure-ProgressLines([string] $Text) {
+    $count = $Text.Split("`n").Length - 1
+    if ($Text.Length -gt 0 -and -not $Text.EndsWith("`n")) { $count++ }
+    return $count
+}
+
+# Where the counts sit in the lines of PROGRESS.md: Start and End are the indexes of the two
+# marker lines, each read whole and case-sensitive. Faults names a marker line that is not there,
+# one that is there a second time and an end before the start, each with its line, and with any
+# of them the page has no place for the counts.
+function Find-ProgressBlock([string[]] $Lines) {
+    $faults = New-Object System.Collections.Generic.List[string]
+    $first = @{}
+    foreach ($mark in @(@{ Line = $ProgressStartMarker; Name = "the line above the counts" }, @{ Line = $ProgressEndMarker; Name = "the line below the counts" })) {
+        $at = -1
+        for ($k = 0; $k -lt $Lines.Length; $k++) {
+            if ($Lines[$k] -cne $mark.Line) { continue }
+            if ($at -lt 0) { $at = $k; continue }
+            $faults.Add("PROGRESS.md line " + ($k + 1) + " is " + $mark.Name + " a second time, the first at line " + ($at + 1))
+        }
+        if ($at -lt 0) { $faults.Add("PROGRESS.md has no line reading " + $mark.Line + ", " + $mark.Name) }
+        $first[$mark.Name] = $at
+    }
+    $start = $first["the line above the counts"]
+    $end = $first["the line below the counts"]
+    if ($faults.Count -eq 0 -and $end -lt $start) {
+        $faults.Add("PROGRESS.md line " + ($end + 1) + ", the line below the counts, comes before line " + ($start + 1) + ", the line above them")
+    }
+    return @{ Start = $start; End = $end; Faults = $faults }
 }
