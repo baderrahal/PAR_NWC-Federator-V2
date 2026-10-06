@@ -20,7 +20,7 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
 - One row per item, Bader's four kinds: every FR item of steps\fix-round.md, every F area,
   each of his requests, and every question in steps\02_questions.md waiting for his answer,
   whose row stays once he answers. A question he answered before any row was written for it
-  has none, as Q136, asked by PR 123 and answered by PR 124 before the tracker reached main,
+  has none, as Q136, asked by PR 123 and answered by PR 124,
   and as every question answered before the tracker began. So of the questions the tracker
   holds only those waiting for him and those that once had a row. The check refuses an FR
   item, an F area that an area line or a stage line of the waves section of fix-round.md
