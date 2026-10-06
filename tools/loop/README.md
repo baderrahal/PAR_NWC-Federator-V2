@@ -350,7 +350,8 @@ modes:
   team-map.txt before it, check 13b, a copy in the run folder's teammap read back by sha256,
   and puts it back after, or takes it out where it was not there, by the AutoSave put back's
   write and its reasons, and the tool's log goes into the evidence with its TEAMS KEPT block
-  masked as FOLDERS REMEMBERED is, Q87 and Q123
+  masked as FOLDERS REMEMBERED is, Q87 and Q123, and since F131 attempt 3 with every other line
+  masked that names his logs folder or the kept map, PathsOfHis, wherever it sits
 
 - Documents -Set NN -Item 1 to 5 -Folder <a folder of NMFed\NWC>, F104 part 2, the documents
   read of the window run whose evidence is steps\runs\NN\item<K>-<Folder>, item 5 also taking
@@ -434,8 +435,9 @@ the close, the watchdog's end, the put back, the keep awake release or the verdi
   from that copy or taken out where it was not there before, each only when the put back's
   reasons are all clear, and read back
 - writes of a window run, F106: runs\NN\item<K>-<Folder> with driver.txt, toollog-name.txt,
-  toollog\ with the tool's log, its FOLDERS REMEMBERED block masked, Q87, and its TEAMS KEPT
-  block masked, Q123, and its .tsv,
+  toollog\ with the tool's log, its FOLDERS REMEMBERED block masked, Q87, its TEAMS KEPT
+  block masked, Q123, and every other line naming his logs folder or the kept map masked,
+  F131, and its .tsv, copied as it is,
   outputs.txt, item 5's open\, and what the tool writes into the copy's NWF, NWD and Clash
   Report folders. A read-out of every workbook by tools\loop\read-workbook.ps1 goes into the
   evidence, and a file over 20 MB is named with its size and sha256 and not copied, Q90.

@@ -75,22 +75,25 @@ and nothing is fixed until a real run on real files shows it fixed.
   own folder shape, NWC\<community> into the NWF, NWD and Clash Report folders of the same
   name. The loop named it NMFed because the wall refuses any command naming NM Fed. Every
   output of a run goes under %LOCALAPPDATA%\NwcFederatorLoop, bar two kinds. The evidence
-  run.ps1 copies into steps\runs of the clone it runs from, masking only the remembered
-  folders block of the tool's log, which the lead masks whole with mask-evidence.ps1 before
-  any commit, as the rule below says. And what the tool and its
+  run.ps1 copies into steps\runs of the clone it runs from, masking in the tool's log only
+  the lines naming his logs folder or what his own runs remember, by the logs folder rule
+  below, which the lead masks whole with mask-evidence.ps1 before any commit, as the rule
+  below says. And what the tool and its
   Navisworks write where the loop cannot point them: the tool's own log and tsv in his logs
   folder, autosaves in his AutoSave folder and Navisworks's own settings, each kept by a rule
   below, and whatever else changes outside the loop folder while the start runs, such as the
   files of Autodesk's licensing and analytics, which run.ps1 lists as M5, by any program, and
   leaves as they are. Nothing is ever written into NM Fed
-- Nothing of Bader's is deleted or overwritten, bar four things. The installed add-in,
+- Nothing of Bader's is deleted or overwritten, bar five things. The installed add-in,
   backed up first as the install rule above says, whose files an install replaces or
   removes. His Navisworks settings, put back to what the backup holds under the settings
   rule below, which can remove a value or key the loop's own Navisworks added. His oldest
   run logs, which the tool itself prunes when a loop run opens its window, each held in
   logs-backup by sha256 and put back after the loop, Bader's answer Q82. And his AutoSave
   folder, where the loop removes the autosaves its runs added and puts back from the backup
-  any of his a run changed, Q86. Outside %LOCALAPPDATA%\NwcFederatorLoop the loop deletes or
+  any of his a run changed, Q86. And team-map.txt beside his logs, which run.ps1 copies back
+  after every start from the copy it took before it, or takes out where the run added it, by
+  the team map rule below, F131. Outside %LOCALAPPDATA%\NwcFederatorLoop the loop deletes or
   overwrites nothing else of his, bar its own logs and tsv files, which it takes out of his
   logs folder after the loop. Once it went further with a file of his: on 2026-10-01 Bader
   asked it to fix an error OneDrive showed, and the lead chose to delete a testhost.exe of his
@@ -106,7 +109,14 @@ and nothing is fixed until a real run on real files shows it fixed.
   tool writes his remembered folders into its log, reading only, which Bader allowed, Q87,
   and since F131 its TEAMS KEPT block, which names the team map his last run with an XML kept
   and that map's full path. run.ps1's MaskRemembered masks both blocks in every copy of a
-  loop log that is committed. Any choice the tool remembers between runs is read before the
+  loop log that is committed, and since F131 attempt 3 every other line naming his logs
+  folder or the kept map, wherever it sits, in any case of its letters, its stamp or indent
+  kept. A run's own TEAMS lines name the kept map when no XML is picked and his logs folder
+  when a map is kept, and the log names its own path there. The paths are PathsOfHis: his
+  logs folder, and the map named by the copy of team-map.txt taken at check 13b and by his
+  team-map.txt at the end. A team-map.txt that cannot be read throws, so no copy of the log
+  is written. The .tsv is copied as it is. Those lines go through RunLog.Line, which writes
+  the .log only. H19 K2 of tools\loop\prove-run.ps1 proves the mask. Any choice the tool remembers between runs is read before the
   loop and put back after it. F112's tick box SkipClashOffCoordinates, which a run may untick
   since F126, is not one: the window sets it from
   AlignmentCheck.DefaultSkipClashOffCoordinates every time it opens,

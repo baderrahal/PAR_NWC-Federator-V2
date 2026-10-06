@@ -694,6 +694,32 @@ function PutBackAutoSave($putBack, $before, $autoDir, $backupRoot) {
 # remembers between runs, after FolderMemory's folders.txt, and a window run that picks an XML
 # rewrites it, so it is read before every start and put back after it, .claude\rules\loop.md.
 function TeamMapName { return "team-map.txt" }
+# The start of the one line of team-map.txt that names the kept map, KeptMarker of
+# TeamMapMemory.cs, which H19 K2 of prove-run.ps1 reads off the source so the two never differ.
+function TeamMapKept { return "kept:" }
+# F131 attempt 3, the breaker's finding on attempt 2. The paths of Bader's a window run's log can
+# name outside its TEAMS KEPT block: his logs folder, which the log names as its own and the
+# TEAMS line of a run that keeps a map names, and the map each team-map.txt handed in keeps, the
+# text after TeamMapKept and one space, which the TEAMS lines of a run with no clash XML name.
+# A file that is not there names nothing. One that cannot be read throws, so the log is never
+# copied with that map's path left in it.
+function PathsOfHis($hisLogs, $teamMaps) {
+  $logs = ([string]$hisLogs).TrimEnd('\')
+  if ($logs -eq "") { throw "his logs folder is not named, so the lines naming it cannot be masked" }
+  $r = New-Object System.Collections.Generic.List[string]
+  $r.Add($logs)
+  $marker = (TeamMapKept) + " "
+  foreach ($f in @($teamMaps)) {
+    if (-not (Test-Path -LiteralPath $f)) { continue }
+    foreach ($l in (ReadShared $f).Split("`n")) {
+      $l = $l.TrimEnd("`r")
+      if (-not $l.StartsWith($marker, [StringComparison]::Ordinal)) { continue }
+      $p = $l.Substring($marker.Length)
+      if ($p -ne "" -and -not ($r -contains $p)) { $r.Add($p) }
+    }
+  }
+  return $r.ToArray()
+}
 # Before the start: the file copied into the run folder's teammap and read back by its sha256,
 # or named as not there, when no copy is made. Not Ok, with Why, stops the run.
 function TeamMapBefore($hisLogs, $runDir) {
@@ -1360,15 +1386,35 @@ function ToolLogVerdict($lines, $stamp, $item) {
 # starts TEAMS and four spaces. A line of another shape ends the block, unless it was written
 # within a second of the block's first line, so a line of the block is never left unmasked
 # because its shape was not foreseen. Masked counts the folder lines and MaskedTeams the others.
-function MaskRemembered($lines) {
+# F131 attempt 3, the breaker's finding on attempt 2: every other line naming one of $paths, in
+# any case of its letters, wherever it sits, is masked too, its stamp or its indent kept, and
+# MaskedPaths counts them. The run hands in PathsOfHis, his logs folder and the kept map, which
+# the TEAMS lines of a run and the log's own lines name outside the TEAMS KEPT block.
+function MaskRemembered($lines, $paths) {
+  $names = @()
+  if ($null -ne $paths) { $names = @(@($paths) | ForEach-Object { [string]$_ }) }
+  foreach ($p in $names) { if ($p -eq "") { throw "MaskRemembered was handed an empty path, which every line would name" } }
   $out = New-Object System.Collections.Generic.List[string]
   $n = 0
   $nt = 0
+  $np = 0
   $i = 0
   while ($i -lt $lines.Count) {
-    $out.Add($lines[$i])
     $teams = ($lines[$i] -ceq "TEAMS KEPT")
-    if (-not (($teams -or $lines[$i] -ceq "FOLDERS REMEMBERED") -and (LogTitleAt $lines $i))) { $i++; continue }
+    if (-not (($teams -or $lines[$i] -ceq "FOLDERS REMEMBERED") -and (LogTitleAt $lines $i))) {
+      $l = [string]$lines[$i]
+      $his = $false
+      foreach ($p in $names) { if ($l.IndexOf($p, [StringComparison]::OrdinalIgnoreCase) -ge 0) { $his = $true; break } }
+      if ($his) {
+        $m = [regex]::Match($l, '^(\d\d:\d\d:\d\d\.\d{3})  \+(\d+\.\d{3})s  ')
+        if ($m.Success) { $out.Add($m.Groups[1].Value + "  +" + $m.Groups[2].Value + "s  <a line naming his logs folder or the kept team map, masked by run.ps1, F131>") }
+        else { $out.Add([regex]::Match($l, '^\s*').Value + "<a line naming his logs folder or the kept team map, masked by run.ps1, F131>") }
+        $np++
+      } else { $out.Add($lines[$i]) }
+      $i++
+      continue
+    }
+    $out.Add($lines[$i])
     $out.Add($lines[$i + 1])
     $i += 2
     $first = $null
@@ -1386,7 +1432,7 @@ function MaskRemembered($lines) {
       $i++
     }
   }
-  return [pscustomobject]@{ Lines = $out; Masked = $n; MaskedTeams = $nt }
+  return [pscustomobject]@{ Lines = $out; Masked = $n; MaskedTeams = $nt; MaskedPaths = $np }
 }
 # F106. The driver's last line in its notes, which says how it ended.
 function DriverLastLine($notes) {
@@ -2494,16 +2540,18 @@ try {
                 Say ("  the tool's log on disk " + $(if ($logCheck -eq "") { "shows the run RAN: its RESULT block, its SESSION naming " + $Stamp + $(if ($Item -eq "1") { ", and its GROUPS block reading no group unticked" } else { "" }) } else { "does not show the run RAN, " + $logCheck }))
               }
               # The log and its tsv are copied into the run folder, the log with its FOLDERS
-              # REMEMBERED block masked, so what goes into the evidence and what stays when a file
-              # is over 20 MB are both under the loop folder, Q87 and Q90. The two in his logs
-              # folder are left there for the close of the loop, Q82.
-              $mr = MaskRemembered $tl
+              # REMEMBERED and TEAMS KEPT blocks masked and every other line naming his logs
+              # folder or the kept map, the map the copy taken at check 13b keeps and the one
+              # his team-map.txt keeps now, so what goes into the evidence and what stays when a
+              # file is over 20 MB are both under the loop folder, Q87, Q90 and F131. The two in
+              # his logs folder are left there for the close of the loop, Q82.
+              $mr = MaskRemembered $tl (PathsOfHis $paths.HisLogs @((Join-Path (Join-Path $paths.RunDir "teammap") (TeamMapName)), (Join-Path $paths.HisLogs (TeamMapName))))
               $tdir = Join-Path $paths.RunDir "toollog"
               New-Item -ItemType Directory -Force -Path $tdir | Out-Null
               $mlog = Join-Path $tdir (Split-Path $sync.ToolLog -Leaf)
               [System.IO.File]::WriteAllLines($mlog, $mr.Lines.ToArray(), $utf8)
               $evPlan.Add([pscustomobject]@{ Name = (Split-Path $mlog -Leaf); From = $mlog })
-              Say ("  the tool's log, " + $tl.Count + " lines, copied into the run folder's toollog with its FOLDERS REMEMBERED block masked, " + $mr.Masked + " lines, Q87, and its TEAMS KEPT block masked, " + $mr.MaskedTeams + " lines, Q123")
+              Say ("  the tool's log, " + $tl.Count + " lines, copied into the run folder's toollog with its FOLDERS REMEMBERED block masked, " + $mr.Masked + " lines, Q87, its TEAMS KEPT block masked, " + $mr.MaskedTeams + " lines, Q123, and every other line naming his logs folder or the kept team map masked, " + $mr.MaskedPaths + " lines, F131")
               $tsv = [System.IO.Path]::ChangeExtension($sync.ToolLog, ".tsv")
               if (Test-Path -LiteralPath $tsv) {
                 $ctsv = Join-Path $tdir (Split-Path $tsv -Leaf)
