@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 400 rows: open 153, in progress 55, in review 3, merged 142, proven by a run 22, waiting for Bader 22, dropped 3
-- By wave: 1 19, 2a 28, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before any probe or run starts again 3, before any test run 3, before the test of wave 1 4, before the waves 114, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 37, outside the waves 2, right after F133 merges 3
-- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, F138 loop starts with Auto-Save off, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, and 40 FR items
+- By status, of 445 rows: open 196, in progress 56, in review 3, merged 143, proven by a run 22, waiting for Bader 22, dropped 3
+- By wave: 1 19, 2a 28, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 6, 3a 11, 3b 20, 4 56, 5 68, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 4, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 66, outside the waves 2, right after F133 merges 3
+- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, F138 loop starts with Auto-Save off, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, T5-R-HARNESSLIMIT no harness run has a time limit, built in F138's branch, and 40 FR items
 - Waits for Bader, 22 rows: F18, Q25, Q27, Q28, Q29, Q30, Q31, Q35, Q36, Q37, Q38, Q39, Q40, Q45, Q46, Q47, Q49, Q50, Q51, Q76, Q77, Q78
 
 ## Wave 1
@@ -208,6 +208,20 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-166 | tolerance other blank stops hand buttons | F121 | loud failure | open | none | none | 2026-10-04 |
 | F121 | the rest | F121 | fix | open | none | none | 2026-10-04 |
 | F122 | the loop tools | F122 | fix | open | none | none | 2026-10-04 |
+| F125-R1 | a modeless window up after Run stops the driver while the monitor reads a pane | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R3 | a pane made again with a new handle after Run stops the driver | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R4 | a WPF pane and panes with other owners stay a dialog | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R5 | a message box owned by the pane before Run stops the driver after Run | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R6 | prove-run.ps1 has no PANE row and is out of date since F106 | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R7 | a modal dialog up when the window opens reads as a pane | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R8 | a dialog counted, then read as a pane, gets a line saying not a finding | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R9 | a noted pane that later reads as a dialog ends a finished run HUNG | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R10 | the monitor counts a dialog once per caption | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R11 | a window first written with children not read never gets its text | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R12 | two copies of the words for an owner of another process | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R13 | the driver counts passes after Run that held any window, not one window | F122 | register row | open | none | none | 2026-10-04 |
+| F125-R14 | nw-guard.ps1's header and the F125 section still say not modal | F122 | register row | open | none | none | 2026-10-04 |
+| T5-R-CLOSE | the C02 weekly closed by a copy of the guard's Kill, and run.ps1 cannot be asked to close | F122 | register row | open | none | none | 2026-10-05 |
 
 ## Wave 5
 
@@ -295,6 +309,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F138 | loop starts with Auto-Save off | F138 | fix | in progress | 127 open as a draft, branch fix-F138 | none | 2026-10-06 |
 | FR-196 | loop runs write no autosave and copy his folder once | F138 | Bader's decision | in progress | 127 open as a draft, branch fix-F138 | none | 2026-10-06 |
 | Q135 | too many autosave copies | F138 | Bader's request | in progress | 127 open as a draft, branch fix-F138 | none | 2026-10-06 |
+| T5-R-HARNESSLIMIT | no harness run has a time limit, built in F138's branch | F138 | register row | in progress | 127 open as a draft, branch fix-F138 | none | 2026-10-06 |
 
 ## before any test run
 
@@ -431,6 +446,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F108 | a fresh copy of the real files for each run set | F108 | fix | merged | 84 | none | 2026-10-04 |
 | F110 | the WORKBOOK CHECK counts only the blocks that found clashes, set 03 finding 4 (FR-035) | F110 | fix | open | none | none | 2026-10-06 |
 | F111 | the RESULT block prints file sizes that are not the files', set 03 finding 5 (FR-046) | F111 | fix | open | none | none | 2026-10-06 |
+| T3-B | the build stamp reads +edits for any untracked file, done by run.ps1's tree refusal | F103 | register row | merged | 78 | none | 2026-10-01 |
 
 ## beside the waves
 
@@ -491,6 +507,35 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q134 | code that waits for F114 by Bader's order | none | question | merged | 124 | none | 2026-10-05 |
 | Q137 | a saved mirror whose kept test the document does not say | none | question | merged | 128 | none | 2026-10-06 |
 | Q138 | a clash both tests find, with two statuses | none | question | merged | 128 | none | 2026-10-06 |
+| F105-R4 | probe comments say nothing is dropped where a read handed to no IlFail is in no count | none | register row | open | none | none | 2026-10-04 |
+| F104-R1 | a documents read ends READ when nothing was read | none | register row | open | none | none | 2026-10-04 |
+| F104-R2 | the picture and priority switches of a documents read are typed by hand | none | register row | open | none | none | 2026-10-04 |
+| F104-R3 | a group with no NWF and no workbook is in no count of a documents read | none | register row | open | none | none | 2026-10-04 |
+| F104-R4 | AGREE can stand while the panel count differs for a result group, PQ4 | none | register row | open | none | none | 2026-10-04 |
+| F104-R5 | the probe's viewpoint walk is unmeasured and unbounded | none | register row | open | none | none | 2026-10-04 |
+| F104-R6 | a documents read fills his recent files with the loop's NWFs | none | register row | open | none | none | 2026-10-04 |
+| F104-R7 | the other notes of both readers of F104 part 2 | none | register row | open | none | none | 2026-10-04 |
+| T5-R-GUARDRACE | the guard refused P10's put back over a sighting before the adoption | none | register row | open | none | none | 2026-10-05 |
+| T5-R-OLDKEY | 40 values of his 22.0 key went back to older values, the writer UNKNOWN, for Bader | none | register row | open | none | none | 2026-10-06 |
+| F133-R1 | an F number given to work elsewhere gets its tracker row by hand only | none | register row | open | none | none | 2026-10-05 |
+| F133-R4 | work done outside the repo has no status of the seven, for Bader | none | register row | open | none | none | 2026-10-05 |
+| F133-R5 | the PR column holds free text beside numbers | none | register row | open | none | none | 2026-10-05 |
+| F133-R6 | a row is checked against its own cells in one way only | none | register row | open | none | none | 2026-10-05 |
+| F133-R9 | a wave 10 would sort between 1 and 2a | none | register row | open | none | none | 2026-10-05 |
+| F133-R10 | two open pull requests both change the counts, of tracker.md and since F139 of the page | none | register row | open | none | none | 2026-10-05 |
+| F133-R12 | the counts count rows, and one piece of work can be three rows | none | register row | open | none | none | 2026-10-05 |
+| F133-R13 | no status of the seven names an order still in force | none | register row | open | none | none | 2026-10-05 |
+| F133-R16 | the tracker fixtures are written by scripts kept outside the repo | none | register row | open | none | none | 2026-10-05 |
+| F133-R17 | a request of Bader's is known only by From Bader at its start | none | register row | open | none | none | 2026-10-05 |
+| F133-R18 | a question row's area and wave come only from the FR items naming it | none | register row | open | none | none | 2026-10-05 |
+| F133-R19 | any text after Answer: reads as Bader's answer | none | register row | open | none | none | 2026-10-05 |
+| F133-R20 | lines error: failed to delete in the commit output, for the lead | none | register row | open | none | none | 2026-10-06 |
+| F133-R21 | the class column has an allowed value only on an FR row | none | register row | open | none | none | 2026-10-06 |
+| F133-R22 | only an indented Answer: line counts | none | register row | open | none | none | 2026-10-06 |
+| F133-R23 | the question reader ends an item only at the next item | none | register row | open | none | none | 2026-10-06 |
+| F133-R24 | rows of class Bader's request are checked for being there only | none | register row | open | none | none | 2026-10-06 |
+| F133-R25 | a pull request opened again under another number leaves rows naming the old one | none | register row | open | none | none | 2026-10-06 |
+| F133-R26 | the check reads that a merged question row's PR is a number, not which merge | none | register row | open | none | none | 2026-10-06 |
 
 ## outside the waves
 

@@ -399,3 +399,48 @@ Q138,"a clash both tests find, with two statuses",none,none,question,merged,128,
 F139,the one page progress file,F139,right after F133 merges,fix,in review,UNKNOWN,none,2026-10-06
 FR-197,one page progress file that keeps itself current,F139,right after F133 merges,Bader's decision,in review,UNKNOWN,none,2026-10-06
 Q139,a one page progress file that keeps itself current (FR-197),F139,right after F133 merges,Bader's request,in review,UNKNOWN,none,2026-10-06
+T3-B,"the build stamp reads +edits for any untracked file, done by run.ps1's tree refusal",F103,before the waves,register row,merged,78,none,2026-10-01
+F105-R4,probe comments say nothing is dropped where a read handed to no IlFail is in no count,none,none,register row,open,none,none,2026-10-04
+F104-R1,a documents read ends READ when nothing was read,none,none,register row,open,none,none,2026-10-04
+F104-R2,the picture and priority switches of a documents read are typed by hand,none,none,register row,open,none,none,2026-10-04
+F104-R3,a group with no NWF and no workbook is in no count of a documents read,none,none,register row,open,none,none,2026-10-04
+F104-R4,"AGREE can stand while the panel count differs for a result group, PQ4",none,none,register row,open,none,none,2026-10-04
+F104-R5,the probe's viewpoint walk is unmeasured and unbounded,none,none,register row,open,none,none,2026-10-04
+F104-R6,a documents read fills his recent files with the loop's NWFs,none,none,register row,open,none,none,2026-10-04
+F104-R7,the other notes of both readers of F104 part 2,none,none,register row,open,none,none,2026-10-04
+F125-R1,a modeless window up after Run stops the driver while the monitor reads a pane,F122,4,register row,open,none,none,2026-10-04
+F125-R3,a pane made again with a new handle after Run stops the driver,F122,4,register row,open,none,none,2026-10-04
+F125-R4,a WPF pane and panes with other owners stay a dialog,F122,4,register row,open,none,none,2026-10-04
+F125-R5,a message box owned by the pane before Run stops the driver after Run,F122,4,register row,open,none,none,2026-10-04
+F125-R6,prove-run.ps1 has no PANE row and is out of date since F106,F122,4,register row,open,none,none,2026-10-04
+F125-R7,a modal dialog up when the window opens reads as a pane,F122,4,register row,open,none,none,2026-10-04
+F125-R8,"a dialog counted, then read as a pane, gets a line saying not a finding",F122,4,register row,open,none,none,2026-10-04
+F125-R9,a noted pane that later reads as a dialog ends a finished run HUNG,F122,4,register row,open,none,none,2026-10-04
+F125-R10,the monitor counts a dialog once per caption,F122,4,register row,open,none,none,2026-10-04
+F125-R11,a window first written with children not read never gets its text,F122,4,register row,open,none,none,2026-10-04
+F125-R12,two copies of the words for an owner of another process,F122,4,register row,open,none,none,2026-10-04
+F125-R13,"the driver counts passes after Run that held any window, not one window",F122,4,register row,open,none,none,2026-10-04
+F125-R14,nw-guard.ps1's header and the F125 section still say not modal,F122,4,register row,open,none,none,2026-10-04
+T5-R-CLOSE,"the C02 weekly closed by a copy of the guard's Kill, and run.ps1 cannot be asked to close",F122,4,register row,open,none,none,2026-10-05
+T5-R-GUARDRACE,the guard refused P10's put back over a sighting before the adoption,none,none,register row,open,none,none,2026-10-05
+T5-R-HARNESSLIMIT,"no harness run has a time limit, built in F138's branch",F138,before any probe or run starts again,register row,in progress,"127 open as a draft, branch fix-F138",none,2026-10-06
+T5-R-OLDKEY,"40 values of his 22.0 key went back to older values, the writer UNKNOWN, for Bader",none,none,register row,open,none,none,2026-10-06
+F133-R1,an F number given to work elsewhere gets its tracker row by hand only,none,none,register row,open,none,none,2026-10-05
+F133-R4,"work done outside the repo has no status of the seven, for Bader",none,none,register row,open,none,none,2026-10-05
+F133-R5,the PR column holds free text beside numbers,none,none,register row,open,none,none,2026-10-05
+F133-R6,a row is checked against its own cells in one way only,none,none,register row,open,none,none,2026-10-05
+F133-R9,a wave 10 would sort between 1 and 2a,none,none,register row,open,none,none,2026-10-05
+F133-R10,"two open pull requests both change the counts, of tracker.md and since F139 of the page",none,none,register row,open,none,none,2026-10-05
+F133-R12,"the counts count rows, and one piece of work can be three rows",none,none,register row,open,none,none,2026-10-05
+F133-R13,no status of the seven names an order still in force,none,none,register row,open,none,none,2026-10-05
+F133-R16,the tracker fixtures are written by scripts kept outside the repo,none,none,register row,open,none,none,2026-10-05
+F133-R17,a request of Bader's is known only by From Bader at its start,none,none,register row,open,none,none,2026-10-05
+F133-R18,a question row's area and wave come only from the FR items naming it,none,none,register row,open,none,none,2026-10-05
+F133-R19,any text after Answer: reads as Bader's answer,none,none,register row,open,none,none,2026-10-05
+F133-R20,"lines error: failed to delete in the commit output, for the lead",none,none,register row,open,none,none,2026-10-06
+F133-R21,the class column has an allowed value only on an FR row,none,none,register row,open,none,none,2026-10-06
+F133-R22,only an indented Answer: line counts,none,none,register row,open,none,none,2026-10-06
+F133-R23,the question reader ends an item only at the next item,none,none,register row,open,none,none,2026-10-06
+F133-R24,rows of class Bader's request are checked for being there only,none,none,register row,open,none,none,2026-10-06
+F133-R25,a pull request opened again under another number leaves rows naming the old one,none,none,register row,open,none,none,2026-10-06
+F133-R26,"the check reads that a merged question row's PR is a number, not which merge",none,none,register row,open,none,none,2026-10-06
