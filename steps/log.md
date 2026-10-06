@@ -1,40 +1,37 @@
 # log
 
 Newest entry at the top.
-## 2026-10-05 The loop, turn 5, F133 the work tracker, one place for status, attempts 1 to 4 on fix-F133, pull request 122 open as a draft, written by the fourth worker as the lead's delegate
+## 2026-10-06 The loop, turn 5, F133 the work tracker, one place for status, attempts 1 to 5 on fix-F133, pull request 122, written by the fourth worker as the lead's delegate
 
 Part 1 of Bader's message of 5 Oct 2026, Q129, his words whole in
 %LOCALAPPDATA%\NwcFederatorLoop\turn5\q129-words.txt. FR-191, area F133. Worked in its own
 worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f133, made off origin/main 6fff40a and brought by a
-fast forward to main 35bd7fd, the lead's records PR 115, before its first commit. Main was merged
-in three times since, with both sides of every steps file kept: fdd05c2, PR 118, at a8ab7cb,
-b900464, PR 120, at 7232a02, and 503eaa4, PR 121, at 027c4be by the lead. Attempt 4 started on
-03d0b56 with origin/main still 503eaa4, so no merge was needed, and is the commit on top of it. It
-changes no file a fix lane is changing: nothing under src or tests, and of steps\01_next.md only
-the F133 section and its order line 44. The lead wrote, at ce48197, the rows of Q133 and Q134,
-the pointer line at the top of steps\loop.md and the entry of attempts 1 to 3 this one replaces,
-and, at 03d0b56, F133 and FR-191 merged with this pull request, 122.
+fast forward to main 35bd7fd, the lead's records PR 115, before its first commit. It changes no
+file a fix lane is changing: nothing under src or tests, and of steps\01_next.md only the F133
+section and its order line.
 
-Core tests, all in %LOCALAPPDATA%\NwcFederatorLoop\turn5. Attempt 1: 1912 passed, 0 failed, 0
-skipped before on 6fff40a and after on 35bd7fd, f133-core-tests-before.txt and
-f133-core-tests-after.txt. Attempt 2: 1912 before and after, f133b-core-tests-before.txt and
-f133b-core-tests-after.txt. Attempt 3: 1912 before and after its first pass,
-f133c-core-tests-before.txt and f133c-core-tests-after.txt. The merge 7232a02 brought F136's 14
-Core tests from main, 1926 in its pre-commit, f133c-precommit-merge-2.txt, and 1926 before and
-after the second pass, f133c-core-tests-before-2.txt and f133c-core-tests-after-2.txt. The lead's
-027c4be brought none, and 1926 passed in the pre-commits of ce48197 and 03d0b56,
-f133d-precommit.txt and f133e-precommit.txt. Attempt 4: 1926 before on 03d0b56,
-f133f-core-tests-before.txt, whose line 1 is the commit, 1926 after with the change in the tree,
-f133f-core-tests-after.txt, and the pre-commit of this commit ran the full set again,
-f133f-precommit.txt, whose count the pull request body carries. Every count is 0 failed and 0
-skipped. WriteTheCorrectedFile prints as Skipped, the one [Explicit] test, in none of the counts. No count moved by this work. dotnet build ParsonsNwcFederator.sln -c Release
---no-incremental on 03d0b56 with attempt 4 in the tree, Build succeeded, 0 Warning(s), 0 Error(s),
-f133f-sln-build.txt, as in each attempt before, f133-sln-build.txt, f133b-sln-build.txt,
-f133c-sln-build.txt and f133c-sln-build-2.txt. check-locals and check-imports over src exit 0,
-f133f-checks.txt. Nothing under src or tests changed. No Navisworks was started and nothing was
-installed. steps\loop.md was not written by the developer.
+The status of F133, FR-191 and Q129, and of every other item, and every count of rows, items,
+areas, requests and questions, are in steps\tracker.md, made from steps\tracker.csv. This entry
+holds what was built, how each value is read and what was proved, and copies no count or status
+out of the tracker, since each changes at the next merge of main. Every file named below with
+no folder is in %LOCALAPPDATA%\NwcFederatorLoop\turn5.
 
-### What was done
+Core tests, every count 0 failed and 0 skipped. Attempts 1 to 3: 1912 passed before and after
+each, f133-core-tests-before.txt and f133-core-tests-after.txt, f133b-core-tests-before.txt and
+f133b-core-tests-after.txt, f133c-core-tests-before.txt and f133c-core-tests-after.txt. The merge
+7232a02 brought F136's 14 tests from main, 1926 in its pre-commit, f133c-precommit-merge-2.txt.
+Attempt 4: 1926 before on 03d0b56 and after, f133f-core-tests-before.txt and
+f133f-core-tests-after.txt. Attempt 5: 1926 before on efc3c44, f133h-core-tests-before.txt, in
+the pre-commits of the merge ec5b032 and of 003d83f, f133h-precommit-merge.txt and
+f133h-precommit-1.txt, and after on 003d83f with the tree clean, f133h-core-tests-after.txt.
+WriteTheCorrectedFile prints as Skipped, the one [Explicit] test, in none of the counts. No count
+moved by this work. dotnet build ParsonsNwcFederator.sln -c Release --no-incremental, Build
+succeeded, 0 Warning(s), 0 Error(s), in every attempt, the last on 003d83f with the tree clean,
+f133h-sln-build.txt. check-locals and check-imports over src exit 0, f133h-checks.txt. Nothing
+under src or tests changed. No Navisworks was started and nothing was installed. steps\loop.md
+was not written by the developer.
+
+### What was built
 
 - the language, measured first: Windows PowerShell 5.1.26100.9444 here, powershell.exe in
   System32, and no pwsh. The windows-latest runner carries Windows PowerShell 5.1, which
@@ -42,210 +39,206 @@ installed. steps\loop.md was not written by the developer.
   3.14.7 is here too, and only the scripts outside the repo that wrote the fixtures and the
   rows use it
 - steps\tracker.csv, Bader's nine columns in his words and his order: id, short title, area,
-  wave, class, status, PR, the run that proved it, the date of the last change. 392 rows: 194 FR
-  rows, FR-001 to FR-189 and FR-191 to FR-195, 141 F rows, 17 rows for the 12 requests of
-  Bader's, Q81, Q93 to Q96, Q97-1 and Q97-2, Q98, Q112-1 to Q112-5, Q114, Q129, Q130 and Q132,
-  and 40 questions, 22 with no answer of his and 18 he answered, Q110, Q111, Q115 to Q128, Q131
-  and Q133. By status: open 151, in progress 52, in review 0, merged 139, proven by a run 22,
-  waiting for Bader 23, dropped 5. FR-190 has no row: no heading of fix-round.md on main names
-  it, read off git log -p of the file on main's first parent, turn5\f133-fix-round-history.txt
+  wave, class, status, PR, the run that proved it, the date of the last change. One row per FR
+  item of fix-round.md, per F area, per request of Bader's and per question waiting for him, a
+  question keeping its row once he answers. A question answered before any row was written for
+  it has none, as Q136
 - tools\tracker\tracker-rules.ps1, the one place the columns, the seven statuses, the csv reader
   by RFC 4180, the row rules, the FR items of fix-round.md, the shapes of a line of its waves
   section, the questions and requests of 02_questions.md and the shape of tracker.md live.
-  make-tracker.ps1 makes steps\tracker.md from the csv, its first 8 lines the counts by status and
-  by wave, what is in progress now and what waits for Bader, then a table per wave, and refuses,
-  writing nothing, a csv with a fault or a folder with no csv. check-tracker.ps1 refuses each fault
-  its header lists, the one list of them, each naming its line, exits 2 when the csv,
-  fix-round.md or 02_questions.md is not there and 1 for any fault, a tracker.md that is not there
-  among them. The rule, the README and the comment in tests.yml point at that header
-- what the check refuses, by attempt. Attempt 1: a csv that does not parse, an id twice, an
-  UNKNOWN id, an empty cell, a status off the list, an FR item with no row and a tracker.md that
-  is not what the maker makes. Attempt 2: a blank cell, a line break in a cell, an FR row whose
-  id differs from its item's only in case, an FR heading in another shape, a fix-round.md with
-  no item or no waves section, an item two areas name, and an FR row whose class, area or wave
-  is not what fix-round.md gives. Attempt 3: a line of the waves section in no shape the reader
-  knows, an FR id named where it places no item, an area line with no wave line above it, an
-  item at two waves, an FR heading in a looser shape, a second heading of one item, a row whose
-  id starts FR- with no item, an id with a space around it, UNKNOWN in the id in any case, a file
-  whose bytes are not UTF-8, a question row naming no question, an answered question's row that
-  reads neither merged with a number nor in review, a question with no answer and no row, and an
-  F area the waves section places an item in with no row. Attempt 4: the header in other words
-  than Bader's, a question row whose area or wave is not what the FR items naming its question
-  give, a question with no answer whose row reads anything but waiting for Bader or is of another
-  class, a question row naming a request, an item of 02_questions.md in another shape or numbered
-  twice, a request of Bader's with no row and a request row naming no request, an F area an area
-  line places with no item or a stage line names with no row, the row of an area the waves place
-  whose area is not its own id or whose wave is not its wave, an area placed at two waves, and a
-  line at the margin right under a wave, area or stage line
-- the waves reader reads six shapes of line: blank, prose, a wave line, an area line under a wave
-  line, a stage line such as Before any test run, First of all since Bader's order or Beside the
-  waves, and a line continuing one of them. Closed already reads as none. Prose, a line starting
-  with a letter after a blank line or another line of prose, is not read for ids, and the rule now
-  says so, where attempt 3's rule said no item reads as none in silence. A line starting with a
-  letter right under a wave, area or stage line, which Markdown joins to that line, is refused
-- the question reader reads every item at the margin as its number, a full stop and a space, and
-  every Answer line under it, so an answer under a second Answer line counts. An item whose text
-  starts From Bader, is a request of his. The area and the wave of a question row are those of
-  the FR items whose section names it, Q and its number or a range Q<a> to Q<b>, areas in file
-  order joined by a comma and waves by and, none and none when no item in an area names it. So Q35
-  to Q40 all read none, as the Source ids left out section names them outside any item, where Q35
-  and Q40 read F114 at 2b with nothing linking them. Q110 and Q134 read none, Q111 and Q125 F137
-  before the test of wave 1, by FR-195, and Q131 F114 and F136 at 2b and before any test run, by
-  FR-184 and FR-194. Q28 reads F123 at 5 by FR-029, Q77 F114 at 2b by FR-067, and the rest as
-  before. When fix-round.md has a fault no question row's area is compared, and the check prints
-  a line saying so beside the fault
-- tools\tracker\fixtures: good, which holds every shape of line, an area line that places no item,
-  a stage line naming an area it does not place, two lines of prose, questions named by an item
-  and by a range, a question answered under a second Answer line, a request with two rows and one
-  with one, and an FR row of class Bader's request, and 70 broken copies of it, one per fault kind
-  and per file that is not there, each one edit away, written by turn5\f133f-make-fixtures.py,
-  which refuses an edit that does not match exactly once. .gitattributes keeps the bytes of
-  csv-lone-cr and of the four not-UTF-8 fixtures as they are. prove-tracker.ps1 runs the check over
-  each in its own powershell.exe and asserts the exact lines and exit code, then, on copies under
-  the temp folder, that the maker refuses a csv with a fault and a folder with no csv and writes
-  nothing, that the good fixture with CRLF and a byte order mark reads clean, and that it is
-  refused with its fix-round.md in UTF-16. The temp folder is removed in a finally
-- .github\workflows\tests.yml, two steps at its end, the check and the proof
-- .claude\rules\tracker.md: status lives in the tracker only, Bader's column words and what the
-  date means, the four kinds of row and which the check demands, which items of 02_questions.md
-  are his requests and why Q24, Q26, Q108 and Q109, answered by his find the mistake first, have
-  no row of their own, their work being FR-160, FR-172, FR-136 and FR-161, a question answered
-  reading merged with the number of the pull request whose merge put the record of his answer on
-  main, read by git, where attempt 3's rule named PR 118 for every answer of 2026-10-05 and Q133's
-  is 121, the one rule for a question row's area and wave, the meaning of each status, and that a
-  run of an earlier pass does not prove what merged. .claude\rules\steps.md holds Bader's rule
-  that every pull request changing an item's status updates its row in the same pull request,
-  and now that one writing a request of his adds its row. steps\fix-round.md lines 7 and 8 and the
-  top of steps\loop.md point at the tracker for status
+  make-tracker.ps1 makes steps\tracker.md from the csv, the counts by status and by wave, what is
+  in progress now and what waits for Bader at its top, then a table per wave, and refuses,
+  writing nothing, a csv with a fault or a folder with no csv. check-tracker.ps1 refuses each
+  fault its header lists, the one list of them, each naming its line, and exits 2 when the csv,
+  fix-round.md or 02_questions.md is not there and 1 for any fault. prove-tracker.ps1 runs the
+  check over a good fixture and one broken copy of it per fault kind and per file that is not
+  there, asserting the exact lines and exit code of each, then, on copies under the temp folder,
+  the maker's two refusals, the good fixture with CRLF and a byte order mark, and the good
+  fixture with its fix-round.md in UTF-16. Two steps at the end of .github\workflows\tests.yml
+  run the check and the proof on every pull request
+- .claude\rules\tracker.md holds the rules, and .claude\rules\steps.md, beside the DONE line
+  rule, Bader's rule that every pull request changing an item's status updates its row in the
+  same pull request. steps\fix-round.md under its title, and steps\loop.md at its top, by the
+  lead at ce48197, point at the tracker for status. .gitattributes keeps the bytes of the
+  fixtures whose bytes are their fault
 
-How each status was read, never from memory:
-- FR rows. The title is the heading's key, the class the first words of its Class line up to a
-  comma, the area and the wave from the waves section, which the check compares. Merged: the
-  items of F112, PR 106, F113, PR 95, F116, PR 98, and FR-194 with F136, PR 117, by their DONE
-  lines in steps\01_next.md and the merges in git log --merges --first-parent origin/main.
-  FR-125, PR 89, FR-137 and FR-138, PR 83, by their Closed lines. FR-175 by its Closed line, done
-  by the lead with nothing in the repo to merge, its PR cell naming PR 99, the records that
-  carried the line. FR-191 merged with this pull request, 122, set by the lead. In progress: the
-  items of F114, F115, F127, F131 and F132, whose branches are being worked and unmerged, FR-078 to
-  FR-080 with F109, whose branch fix-F109 holds fix attempt 2 at a0c3829, unmerged, and FR-192,
-  whose counts steps\loop.md records as measured under %LOCALAPPDATA%\NwcFederatorLoop\health.
-  Open: every other item, the date that of the pull request that wrote it. None is proven by a
-  run: the run folders under steps\runs are sets 00 to 04, all run before those merges
-- F rows. Every F heading of steps\01_next.md, every area of the waves section, and F101, F110
-  and F111. The PR is the pull request of the merge that carried it, or merge and its hash for
-  the merges of 2026-09-06 to 2026-09-19 made with no pull request. Proven by a run: the twenty
-  rows fix-round.md lists as PROVED WORKING by set 03, steps\runs\03, and F103 by
-  steps\runs\02\item0. F106 and F125 read merged, each run cell naming the run and the pass or
-  item it showed. Merged: F136, PR 117, and F133, 122. Dropped: F19 on Q10, F23 on Q20, and F110
-  and F111, of 2026-10-01, which have no commit of their own, fix-F110 and fix-F111 both at
-  f38edd5, a merge on main, and which the turn 5 plan of this file says fold into the workbook
-  and run log areas, F118 and F119, which into which UNKNOWN. Open: F101, the no-click entry of
-  steps\notes\f101-design.md and item 10 of the turn 3 plan here, which D4 of Q80 builds first
-  only if the window cannot be driven, and the window has been driven since set 03. Waiting for
-  Bader: F18, the sample of Q9. In progress: F109, F114, F115, F127, F131, F132 and F134. Open
-  too: F96, F117 to F124, F128 to F130, F135 and F137
-- Bader's requests. Each follows the work it asked for, read off its Answer line and the merge
-  that put it on main, found by git log -S on 02_questions.md and the first commit on main's
-  first parent holding it. Q81 merged, PR 74, the records of his fault carried out on 2026-09-29
-  with nothing to merge. Q93 merged, PR 83, the rule written into .claude\rules\loop.md. Q94 in
-  progress, the full runs of every real file and the fixes they show, runs 03 and 04 so far. Q95
-  merged, PR 82, the keep-awake carried out with nothing to merge. Q96 proven by a run, PR 85,
-  steps\runs\03, main installed and the first run of C06 through the real window. Q97-1 merged,
-  PR 86, findings.md of set 03. Q97-2 dropped, the first run of C07 and the run set that night,
-  which Q98's no run of C07 now replaced. Q98 in progress. Q112-1 to Q112-5 the status of FR-175
-  to FR-179. Q114 in progress with F131, F132 and F114. Q129 in progress with F133 and F134. Q130
-  merged with F136, PR 117, its record PR 116. Q132 in progress, F136 merged as 117 and F131,
-  F132 and F114 on their branches
-- the questions. Every numbered question of steps\02_questions.md with no answer, every Answer
-  line under it empty or none there, Q25, Q27 to Q31, Q35 to Q40, Q45 to Q47, Q49 to Q51, Q76 to
-  Q78 and Q134, waiting for Bader. Every question whose Answer line holds his answer and that has
-  a row merged: Q110, Q111, Q115 to Q128 and Q131 with PR 118, the records of his answers of the
-  morning of 2026-10-05, and Q133 with PR 121, the records of his answer D
-- every PR cell read again by git on 2026-10-05 against origin/main 503eaa4. The 61 cells written
-  merge and a hash are each a merge of two parents on main's first parent whose subject names
-  the row or its area, but F47's, whose subject names F47c, the last of its three merges,
-  turn5\f133f-merge-cells.txt. The 102 cells starting with a number are each a merge on main's
-  first parent, Merge pull request #n or a squash ending (#n), but the two reading 122, F133
-  and FR-191, which is this pull request, turn5\f133f-pr-cells.txt
+### How each value is read, never from memory
 
-Proved here, every file in %LOCALAPPDATA%\NwcFederatorLoop\turn5:
-- prove-tracker.ps1, 75 cases right of 75, exit 0, f133f-make-check-prove-3.txt: the good fixture,
-  70 broken ones, the maker's two refusals, the CRLF copy and the UTF-16 copy
-- check-tracker.ps1 over the repo, clean, exit 0, in the same file: 392 rows, each of the 194 FR
-  items with its row, class, area and wave, each of the 25 areas the waves section names with its
-  row, each of the 22 questions with no answer and each of the 12 requests with its row, and 40
-  question rows each naming its question, reading the area and the wave of the items naming it
-  and reading as its answer says. make-tracker.ps1 wrote tracker.md from 392 rows, exit 0
-- test first, attempt 4, over the repo: the check of 03d0b56 read the repo clean, 382 rows,
-  f133f-before.txt. This attempt's check over the csv of 03d0b56 with only its header put in
-  Bader's words named 20 faults, exit 1, f133f-new-check-old-rows.txt: the area and the wave of
-  Q35, Q40, Q110, Q111, Q125, Q131 and Q134, and no row for Q81, Q93, Q94, Q95, Q96 and Q97
-- test first, attempt 4, over the fixtures: this proof over the check, rules and maker of
-  03d0b56, 64 WRONG and 11 RIGHT, exit 1, f133f-prove-before.txt, most of them by the header
-  alone. With the header put back to the words that check knows and tracker.md made again by its
-  own maker on copies, that check read 15 of the 17 new fixtures clean with exit 0,
-  f133f-before-silent.txt: area-line-no-item-no-row, area-named-no-row, area-own-id-differs, area-two-waves,
-  area-wave-differs, question-area-differs, question-area-not-none,
-  question-second-answer-waiting, question-waiting-merged, question-waiting-other-class,
-  questions-item-shape, questions-item-twice, request-no-row, request-row-no-request and
-  waves-lazy-line. Of the other two, it refused question-row-on-request for another reason,
-  reading Q4 as an answered question, and csv-header-old-words is the good fixture once its
-  header is put back
-- the proof can fail: the WRONG lines of f133f-prove-before.txt, and in attempt 3 a copy with one
-  expectation moved read WRONG for that case and exit 1, f133c-measure-proof-can-fail-2.txt
-- every script and fixture of tools\tracker in CRLF but csv-lone-cr and the four not-UTF-8
-  fixtures, 75 right of 75, exit 0, and the repo's tracker.csv, tracker.md, fix-round.md and
-  02_questions.md with CRLF and a byte order mark read clean, exit 0, f133f-measure-crlf.txt. Its
-  first line, 284 of 285 files with a CRLF, is a grep count that is wrong. A fresh copy written
-  the same way and read as bytes holds 264 of 285, the 21 others the empty csv-empty csv and the
-  20 files of csv-lone-cr and the four not-UTF-8 fixtures, kept as they are, f133f-crlf-count.txt
-- the attempts before, kept: attempt 3's 58 of 58, f133c-prove-tracker-6.txt, its 4 WRONG over the
-  check of 7232a02, f133c-prove-before-2.txt, attempt 2's 33 of 33 and 17 WRONG over attempt 1,
-  f133b-prove-tracker.txt and f133b-prove-before.txt
+- an FR row's title is its heading's key, its class the first words of its Class line up to a
+  comma, and its area and wave those of the line of the waves section that places it, all three
+  compared by the check. Its status is read off a DONE line in steps\01_next.md, a merge in git
+  log --merges --first-parent origin/main, a closing line of fix-round.md, or a branch being
+  worked
+- an F row for every F heading of steps\01_next.md, every area the waves section names, and F101,
+  F110 and F111, F numbers given to work elsewhere. Its PR is the pull request of the merge that
+  carried it, or merge and its hash for the merges of 2026-09-06 to 2026-09-19 made with no pull
+  request
+- a request row follows the work it asked for, read off its Answer line and the merge that put
+  it on main, found by git log -S on 02_questions.md and the first commit on main's first parent
+  holding it
+- a question row reads waiting for Bader while no Answer line under it holds words, and once his
+  answer is on main, merged with the pull request whose merge put it there and that merge's
+  date, the later answer when he answered twice. Its area and wave are those of the FR items
+  whose section names it
+- the run column names only a run folder under steps\runs that proved the row, and every other
+  row reads none there
+- every PR cell written merge and a hash, and every one starting with a number, was read again by
+  git against origin/main 503eaa4 in attempt 4, f133f-merge-cells.txt and f133f-pr-cells.txt,
+  each a merge on main's first parent, but the cells naming 122, this pull request, and F47's,
+  whose subject names F47c, the last of its three merges. Every row of class question was read
+  again in attempt 5 against origin/main 6d2a203, f133h-question-prs-before.txt, by the merge on
+  main's first parent where a piece of each answer's own words, found once in the file, first
+  appears
+
+### The attempts and their readings
+
+- ATTEMPT 1, 2026-10-05: the csv, the maker, the check and its proof, the check refusing a csv
+  that does not parse, an id twice, an UNKNOWN id, an empty cell, a status off the list, an FR
+  item with no row and a tracker.md that is not what the maker makes. READ by a reviewer and a
+  breaker, both CHANGES, lane-result.json under tracker.reads. Blocking: four faults of the csv
+  reader and the exit 2 with no fixture, the row rule out of sight of the developers who write
+  DONE lines, loop.md and fix-round.md not pointing at the tracker, FR-191 and F133 written in
+  progress, and F125 written proven by a run on a run of its first pass
+- ATTEMPT 2, 2026-10-05: a fixture and a case for each fault of the reader and both exits of 2.
+  The check also refuses a blank cell, a line break in a cell, an FR row whose id differs from
+  its item's only in case, an FR heading in another shape, a fix-round.md with no item or no
+  waves section, an item two areas name, and an FR row whose class, area or wave is not what
+  fix-round.md gives. The row rule went into .claude\rules\steps.md and fix-round.md points at
+  the tracker. READ AGAIN by a reviewer and a breaker, both CHANGES, f133b-result.json. Blocking:
+  the branch behind main, whose FR-194 and FR-195 had no row, the waves reader skipping the new
+  top level lines of the waves section in silence, and loop.md not yet pointing at the tracker
+- ATTEMPT 3, 2026-10-05, after main fdd05c2, PR 118, merged in at a8ab7cb and b900464, PR 120,
+  at 7232a02: the waves reader reads every line shape of the section and names any line it
+  cannot read. A question row whose question shows his answer reads merged with a number or in
+  review. Refused besides: a question with no answer and no row, an F area the waves section
+  places with no row, an FR heading in a looser shape, a second heading of one item, a row whose
+  id starts FR- with no item, an id with a space around it, UNKNOWN in the id in any case, and a
+  file whose bytes are not UTF-8. READ by a reviewer and a breaker, both APPROVE with nothing
+  blocking, f133c-result.json
+- THE LEAD, 2026-10-05: main 503eaa4, PR 121, merged in at 027c4be, the rows of Q133 and Q134,
+  the pointer line at the top of steps\loop.md and the entry of attempts 1 to 3 at ce48197, and
+  F133 and FR-191 set by the rule of steps.md at 03d0b56. READ by the claim-checker of pull
+  request 122, nine points: the records stale against the tree, the rule naming PR 118 for every
+  answer of that day where Q133's is 121, a register row saying F101, F110 and F111 were F
+  sections of 01_next.md, Q35 and Q40 reading an area with nothing linking them, the header not
+  in Bader's words, his requests and the questions he answered by asking for a find not said in
+  the rule, and attempt 3's readers' findings not yet worked
+- ATTEMPT 4, 2026-10-05, on 03d0b56: the header in Bader's words, a row of class Bader's request
+  for each request of his, refused when missing, one rule for a question row's area and wave,
+  compared by the check, the question reader reading every Answer line and refusing an item in
+  another shape or numbered twice, the rows of the areas the waves place compared, and every PR
+  cell read again by git. READ by a reviewer, APPROVE with nothing blocking, and a breaker,
+  CHANGES, f133f-result.json. Blocking: main had moved past 503eaa4 with FR-196, Q135 and Q136,
+  which had no rows. Its Actions run 37336430529 on 9b9ea77 failed at the tracker check on
+  exactly those three, read in attempt 5 by gh run view
+- THE LEAD, 2026-10-05: main 1a202c0, PRs 123 and 124, merged in at fcb5281, then at efc3c44 the
+  rows of FR-196 and Q135, and Q134 read by its answer on main. Actions run 37339273209 on
+  efc3c44 passed, read by gh pr checks. READ by the claim-checker of pull request 122, seven
+  points, worked by attempt 5
+- ATTEMPT 5, 2026-10-06. The laptop went off at 19:31 on 2026-10-05 and cut a first pass that had
+  only read, turn5\restart\trees.md. Main 6d2a203, PR 125, merged in at ec5b032, both entries at
+  the top of this file kept. Then, at 003d83f and in this entry, the seven points:
+  1. this entry and the F133 section and order line of steps\01_next.md hold what was built and
+     proved and point at steps\tracker.md for every count and status
+  2. Q128, answered twice, reads 121, the merge that put his second answer, his leave to remove
+     the three autosaves, on main, where his A reached main with 118. Every other question row
+     agreed with the merge that put its answer on main, f133h-question-prs-before.txt, and all of
+     them agree after, f133h-question-prs-after.txt. The rule says a question answered twice reads
+     the later answer
+  3. the waves section of fix-round.md gains the stage line of F138, in the shape of those of
+     FR-194 and FR-195, Before any probe or run starts again, Bader's message of 2026-10-05, Q135,
+     and the rows it asks for, F138 added and FR-196 and Q135 placed at F138, in progress on the
+     branch fix-F138, where FR-196 had read area none and wave none against its item's Area F138
+  4. F110 and F111 read open, with titles saying what each was: F110 the WORKBOOK CHECK counting
+     only the blocks that found clashes, set 03 finding 4, whose item is FR-035, and F111 the
+     RESULT block printing file sizes that are not the files', set 03 finding 5, whose item is
+     FR-046. Read off steps\loop.md, whose first findings of set 03 name the WORKBOOK CHECK and the
+     RESULT file sizes in that order, the turn 5 plan in this file, which folds F110 and F111 into
+     the workbook and run log areas in that order, and the workflow script that started both at
+     17:33 on 2026-10-01, kept with the lead's session outside the repo, which names F110 the
+     WORKBOOK CHECK block count and F111 the RESULT file sizes. Neither branch carries a commit of
+     its own and both worktrees are clean, so nothing shows either dropped
+  5. the run column holds only a run that proved its row. F106, F125 and Q94 read none there, and
+     the check refuses a run named on a row that is not proven by a run, UNKNOWN included, with
+     its fixture run-cell-not-proven and its case in prove-tracker.ps1
+  6. the rule says that of the questions the tracker holds only those waiting for him and those
+     that once had a row, so Q136, asked by PR 123 and answered by PR 124 before any row was
+     written for it, has none
+  7. the breaker's findings of attempt 4 left out of the records, and the 16 Permission denied
+     lines after the pre-commit, are the register rows F133-R20 to F133-R26 below
+
+### Proved here, attempt 5
+
+- test first: the fixture run-cell-not-proven and its case went in before the check knew the
+  fault. The proof over the check of ec5b032 read that case WRONG, refused only because the
+  fixture's tracker.md is the good one's, f133h-mcp-1-test-first.txt. With its tracker.md made
+  again by that check's own maker on a copy, that check read the fixture clean, exit 0,
+  f133h-before-silent.txt
+- the new check over the repo before the rows changed named the run cells of F106, F125 and Q94,
+  exit 1, and the maker refused and wrote nothing, f133h-mcp-2-check-before-rows.txt. With the
+  stage line of F138 in fix-round.md and before its rows, it named FR-196's area and wave and no
+  row for F138, exit 1, f133h-mcp-5-stage-line-before-rows.txt
+- make-tracker.ps1, check-tracker.ps1 and prove-tracker.ps1 ran after each change, each file
+  naming the commit and the paths changed in the tree: f133h-mcp-0-merge.txt on ec5b032,
+  f133h-mcp-3-run-cells.txt, f133h-mcp-4-q128-f110-f111.txt and f133h-mcp-6-f138-rows.txt in the
+  tree, and f133h-mcp-7-commit-003d83f.txt on 003d83f with the tree clean: the maker wrote
+  tracker.md and left it as committed, the check read clean, exit 0, and the proof read every
+  case right, exit 0, 76 of 76, the good fixture, 71 broken ones, the maker's two refusals and
+  the CRLF and UTF-16 copies
+- the records commit changes only steps\log.md and steps\01_next.md, neither of which the check
+  or the maker reads, and the three ran again with them in the tree, f133h-mcp-8-records.txt
+- the attempts before, kept: attempt 4's 75 of 75, f133f-make-check-prove-3.txt, and 64 WRONG
+  over the scripts of 03d0b56, f133f-prove-before.txt. Attempt 3's 58 of 58,
+  f133c-prove-tracker-6.txt, and 4 WRONG over the check of 7232a02, f133c-prove-before-2.txt.
+  Attempt 2's 33 of 33 and 17 WRONG over attempt 1, f133b-prove-tracker.txt and
+  f133b-prove-before.txt. Attempt 1's 13 of 13, f133-prove-tracker-2.txt. The proof can fail:
+  each WRONG line above, and a copy with one expectation moved, f133c-measure-proof-can-fail-2.txt.
+  Every script and fixture in CRLF, but those whose bytes are their fault, read every case right,
+  f133f-measure-crlf.txt
 
 ### What remains
 
-- the reviewer and the breaker on attempt 4, called by the lead, then the pull request out of
-  draft and merged once Actions is green, and the DONE line in the F133 section of 01_next.md
-- Actions runs the check and the proof on the push of this commit. Their result is not read here
+- one reviewer on attempt 5, by Bader's checks from now, called by the lead, then the pull
+  request out of draft and merged once Actions is green, and the DONE line in the F133 section of
+  steps\01_next.md
+- Actions runs the check and the proof on the push of attempt 5. Its result is not read here
 
 ### Known bugs, as register rows
 
 Findings of the readings that break no rule of CLAUDE.md, or that are Bader's call. Closed by
-attempt 4: R1's reason, which said F101, F110 and F111 were F sections of steps\01_next.md, which
-they are not, and the three now have rows. R11, every PR cell now read again by git. R14, a note
-that the brief of attempt 3's second pass named F136 in progress where main read merged, closed
-when its rows were read off the repo. R15, the missing blank line under this entry, put back by
-the lead at ce48197.
+attempt 4: R11, R14 and R15, and R1's reason. Closed by attempt 5: a run named on a row not
+proven by a run, which attempt 4's reviewer found and R6 did not name, now refused, and Q128's
+row, which attempt 4's breaker found.
 - F133-R1, coverage by hand. The check demands a row for an F area an area line or a stage line
   of the waves section names. It reads no F section of steps\01_next.md and no F number given to
   work elsewhere, as F101 in the turn 3 plan and F110 and F111 in steps\loop.md were, so a reader
   alone sees such an F number with no row, and the row of such an area is never compared
-- F133-R4, for Bader. FR-175, Q112-1, Q81 and Q95 read merged though the work was done outside the
-  repo and nothing of it is on main but its record, and no status of the seven names a request
-  done outside the repo
+- F133-R4, for Bader. Work done outside the repo, as FR-175, Q112-1, Q81 and Q95, has nothing on
+  main but its record, and no status of the seven names a request done outside the repo, so
+  their rows read the status of the record that carried it
 - F133-R5, data shape. The PR column holds free text beside numbers, a branch, a measurement
   folder or merge and a hash
-- F133-R6, no row is checked against its own cells: merged with PR none, proven by a run with run
-  none, a date that is not a date, and in review with PR UNKNOWN all read clean, on a branch and on
-  main alike, since the check cannot tell them apart, and nothing sees a status left stale after
-  its branch merges. Over the repo today no merged row has PR none, no proven row has run none and
-  no row reads in review, read by a count of the csv on 2026-10-05
-- F133-R9, a wave 10 would sort between 1 and 2a. No wave 10 exists today
+- F133-R6, a row is checked against its own cells in one way only, a run named on a row not
+  proven by a run. Merged with PR none, proven by a run with run none, a date that is not a date,
+  and in review with PR UNKNOWN all read clean, on a branch and on main alike, and nothing sees a
+  status left stale after its branch merges. At 9b9ea77 no merged row had PR none, no proven row
+  had run none and no row read in review, by a count of the csv
+- F133-R9, a wave 10 would sort between 1 and 2a. fix-round.md names no wave 10 at 003d83f
 - F133-R10, two pull requests open at once both change the counts at the top of tracker.md, so
   the second to merge conflicts there and runs make-tracker.ps1 again
 - F133-R12, the counts at the top of tracker.md count rows, and one piece of work can be up to
   three rows, such as FR-191, F133 and Q129. The line says rows, so it is true, but it reads like
   a count of work. Q94, Q98, Q114 and Q129 have no rule for when they close
-- F133-R13, a request with a standing effect. Q130 reads merged with F136, the work it asked for,
-  though its stop of the C02 weekly run holds until F114 merges. No status of the seven names an
-  order still in force
-- F133-R16, upkeep. The fixtures are written by turn5\f133f-make-fixtures.py, outside the repo,
-  so a person without that folder writes a new fixture by hand. The committed fixtures are small
-  and each is one edit of the good one
+- F133-R13, a request with a standing effect, as Q130, whose stop of the C02 weekly run holds
+  until F114 merges, reads the status of the work it asked for, F136. No status of the seven
+  names an order still in force
+- F133-R16, upkeep. The fixtures are written by scripts outside the repo, turn5\f133f-make-fixtures.py
+  and, for run-cell-not-proven, turn5\f133h-make-fixture.py, so a person without that folder
+  writes a new fixture by hand. The committed fixtures are small and each is one edit of the good
+  one
 - F133-R17, the request reader knows a request of Bader's only by From Bader, at the start of its
-  item. All 12 today start so. One written in another shape reads as a question, answered, so it
-  needs no row and nothing refuses that
+  item. Every request up to Q135 starts so, read at 003d83f. One written in another shape reads as
+  a question, answered, so it needs no row and nothing refuses that
 - F133-R18, a question row's area and wave come from the FR items naming it alone, so a question
   whose own text names an area, as Q110 names F112 and Q134 names F131, reads none until an item
   names it
@@ -253,60 +246,83 @@ the lead at ce48197.
   Answer line, before his words, would read as answered and lift the question off the list of
   what waits for him. Read on 2026-10-05, every Answer line holding text holds a decision, those
   of the first questions without his name at their start, and none is a note of the loop
+- F133-R20, from attempt 4's reviewer, f133f-result.json. After pre-commit: tests passed, the
+  outputs of the commits 9b9ea77, efc3c44, ec5b032 and 003d83f each hold 16 lines error: failed
+  to delete, each naming an admin folder under the main clone's .git\worktrees, Permission
+  denied, lines 16 to 31 of f133f-precommit.txt, f133g-precommit.txt, f133h-precommit-merge.txt
+  and f133h-precommit-1.txt, and the fetch of attempt 5 printed the same 16. They are the 16
+  folders turn5\restart\trees.md lists, holding only logs, ORIG_HEAD and refs, of worktrees whose
+  folders are gone. Each commit and the fetch still succeeded and nothing of Bader's was touched.
+  What runs the delete and why it is refused are UNKNOWN. Attempt 4's records called its
+  pre-commit clean and did not name them. For the lead
+- F133-R21, from attempt 4's breaker. The class column has an allowed value only on an FR row,
+  compared with fix-round.md. A question row whose class is mistyped, such as Question, is never
+  compared with its question, its area, its wave or its status, and an F row may carry any class
+- F133-R22, from attempt 4's breaker. Only a line matching an indented Answer: counts as an Answer
+  line. An answer written at the margin, in bold or under another word is not seen, so its
+  question reads as waiting and the check demands waiting for Bader. Every Answer line of
+  02_questions.md is indented today
+- F133-R23, from attempt 4's reviewer. The question reader ends an item only at the next item or at
+  a line in another item shape, not at a heading, so an indented Answer: line under a later
+  heading would count for the item before it. 02_questions.md has only its title heading today
+- F133-R24, from attempt 4's breaker and reviewer. Rows of class Bader's request are checked for
+  being there only. Their area, wave and status follow no rule, and at efc3c44 Q114 read 2a and
+  2b where the question rule would give 2b and 2a, Q132 read a wave of its own, and Q98 all.
+  Nothing ties the rows of one piece of work, such as F127, FR-176 and Q112-2, or Q114 and Q132
+  beside F131, F132 and F114, so a merge that sets one row leaves the others as they were and
+  the check reads clean
+- F133-R25, from attempt 4's breaker. By the rule in steps.md the lead sets a row merged with the
+  pull request's number on the branch before the merge, as F133 and FR-191 were at 03d0b56 while
+  pull request 122 was a draft. A pull request closed and opened again under another number
+  would leave rows naming a number that is not their record, and the check reads clean either way
+- F133-R26, from attempt 4's breaker. The check reads that a merged question row's PR is a number,
+  not that its merge put the answer on main, which is how Q128 read 118 until attempt 5. A reader
+  reads it by git, as f133h-question-prs.py does
 
 ### What comes next
 
-- the reviewer and the breaker on attempt 4, called by the lead. Then F134, the code health
-  gate, and F135, the analyser settings, which merge alone at a quiet moment
+- one reviewer on attempt 5, called by the lead. Then F134, the code health gate, and F135, the
+  analyser settings, which merge alone at a quiet moment
 
 ### Every program started, every file written outside the repo
 
-Attempt 1's list is in the F133 entry of steps\log.md at 109e49d, attempt 2's in
-turn5\f133b-log-entry.md and attempt 3's in the entry at 03d0b56, which this one replaces.
+Attempts 1 to 4 and the lead's commits between them list theirs in the F133 entry of
+steps\log.md at efc3c44, and the files of attempts 1 to 3 named there. The first pass of attempt
+5, cut at 19:31 on 2026-10-05, read and wrote nothing, turn5\restart\trees.md.
 
-The lead, between attempts 3 and 4, wrote under turn5: f133d-merge-msg.txt, f133d-merge.txt,
-f133d-lead.py, f133d-check.txt, f133d-msg.txt, f133d-precommit.txt, f133e-rows.py,
-f133e-check.txt, f133e-msg.txt and f133e-precommit.txt, for the merge 027c4be and the commits
-ce48197 and 03d0b56.
-
-Attempt 4 was begun by an earlier session, whose outputs are f133f-before.txt,
-f133f-core-tests-before.txt, f133f-merge-cells.py, a first f133f-merge-cells.txt,
-f133f-question-areas.py and an edit of tools\tracker\tracker-rules.ps1 in the worktree, not
-committed, which this session read whole and finished. What that session started beyond what
-those files show is UNKNOWN.
-
-Started by this session: git to read the worktree's status and diff, fetch, read logs, merges,
-first parents, the branches and worktrees of F110 and F111 and the history of 02_questions.md,
-show 03d0b56's scripts and csv, stage, commit and push, and the pre-commit the commit ran,
-check-locals, check-imports, the evidence check and dotnet test. dotnet build of the solution
-once and dotnet test once by hand. sh and bash for check-locals, check-imports,
-f133f-before-silent.sh twice, f133f-measure-crlf.sh once and the copy of its recount. Python 3.14.7 for
-f133f-edit-check.py, f133f-rows.py, f133f-make-fixtures.py, its good phase once and its rest phase
-once, f133f-edit-prove.py, f133f-merge-cells.py, f133f-pr-cells.py, f133f-question-areas.py,
-f133f-splice.py, and short reads and one-line edits of the csv, check-tracker.ps1, the README and
-two of these scripts, three of them stopped by their own check before writing. Windows PowerShell
-5.1 for make-tracker.ps1 over the repo four times, over the good fixture once and over copies,
-check-tracker.ps1 over the repo three times, over each fixture twice, over a copy of the old rows
-once, and prove-tracker.ps1 five times: three over the worktree, once over the scripts of 03d0b56
-and once over the CRLF copy, each starting a powershell.exe per case. The check of 03d0b56 over
-copies of each fixture, twice. No Navisworks, no stand-in, nothing installed.
+Started by this session: git to read the worktree's status, fetch, merge origin/main with no
+commit, add, commit, restore the csv after a write of its own and push, and to read logs, diffs,
+first parents, merges and the history of F110 and F111. The pre-commit each commit ran,
+check-locals, check-imports, the evidence check and dotnet test. gh pr checks 122, gh pr list,
+gh run list and gh run view, read only. dotnet test twice by hand and dotnet build of the solution
+once. sh for check-locals, check-imports, f133h-mcp.sh nine times, the last with the records in
+the tree before their commit, and f133h-before-silent.sh once. Python 3.14.7 for f133h-resolve.py, f133h-question-prs.py three times, f133h-make-fixture.py,
+f133h-rows.py six times, the second with no edit writing the file back unchanged,
+f133h-stage-line.py, f133h-splice.py and
+short reads of the csv and 02_questions.md. Windows PowerShell 5.1 for make-tracker.ps1,
+check-tracker.ps1 and prove-tracker.ps1 in each run of f133h-mcp.sh, prove-tracker.ps1 starting a
+powershell.exe per case, and the maker and the check once over a copy in f133h-before-silent.sh.
+grep over the lead's session transcripts, read only, which found the workflow script naming F110
+and F111. No Navisworks, no stand-in, no harness, nothing installed.
 
 Written outside the repo by this session, under %LOCALAPPDATA%\NwcFederatorLoop\turn5:
-f133f-edit-check.py, f133f-rows.py, f133f-new-check-old-rows.txt, f133f-make-fixtures.py,
-f133f-fixture-outputs.txt, f133f-cases.ps1.txt, f133f-edit-prove.py,
-f133f-make-check-prove-1.txt, f133f-make-check-prove-2.txt, whose fourth line heads a git diff
-that was never run, f133f-make-check-prove-3.txt, f133f-prove-before.txt,
-f133f-before-silent.sh, f133f-before-silent-1.txt, run with the fixtures' tracker.md not made
-again and so not used, f133f-before-silent.txt, f133f-measure-crlf.sh, f133f-measure-crlf.txt,
-f133f-crlf-count.txt,
-f133f-pr-cells.py, f133f-pr-cells.txt, f133f-merge-cells.txt written again with F47's merges
-under it, f133f-merge-cells.py edited for the new column name, f133f-sln-build.txt,
-f133f-core-tests-after.txt, f133f-checks.txt, f133f-next-section.md, f133f-splice.py, this draft,
-f133f-log-entry.md, f133f-commit-msg.txt, f133f-precommit.txt and f133f-push.txt. Five folders
-under turn5 for the copies, f133f-before-rows, f133f-before-scripts, f133f-before-silent,
-f133f-crlf and f133f-crlf-count, each removed by the command that made it. The worktree's bin and obj folders, written
-by dotnet. The output files of the session's background commands under the temp folder.
-prove-tracker.ps1 makes one folder under the temp folder per run and removes it in a finally.
+f133h-core-tests-before.txt, f133h-resolve.py, f133h-merge-msg.txt, f133h-precommit-merge.txt,
+f133h-mcp.sh, f133h-mcp-0-merge.txt, f133h-question-prs.py, f133h-question-prs-before.txt written
+twice, the first reading each answer by its first 120 characters, f133h-make-fixture.py,
+f133h-mcp-1-test-first.txt, f133h-before-silent.sh, f133h-before-silent.txt, its copy
+f133h-before-silent-copy removed by the script that made it, f133h-mcp-2-check-before-rows.txt,
+f133h-rows.py written twice, the first writing every line anew, whose run with no edit changed the
+quoting of one row, put back by git restore before any edit, f133h-edits-0-none.json,
+f133h-edits-1-run-cells.json, f133h-mcp-3-run-cells.txt, f133h-edits-2-q128-f110-f111.json,
+f133h-mcp-4-q128-f110-f111.txt, f133h-edits-3-f111-title.json, f133h-stage-line.py,
+f133h-mcp-5-stage-line-before-rows.txt, f133h-edits-4-f138.json, f133h-mcp-6-f138-rows.txt,
+f133h-msg-1.txt, f133h-precommit-1.txt, f133h-mcp-7-commit-003d83f.txt, f133h-sln-build.txt,
+f133h-checks.txt, f133h-core-tests-after.txt, f133h-question-prs-after.txt, this draft
+f133h-log-entry.md, f133h-next-section.md, f133h-splice.py, f133h-msg-2.txt,
+f133h-precommit-2.txt, f133h-mcp-8-records.txt and f133h-push.txt. The worktree's bin and obj
+folders, written by dotnet. The output files of the session's background commands under the temp
+folder. prove-tracker.ps1 makes one folder under the temp folder per run and removes it in a
+finally.
 
 ## 2026-10-06 The loop, turn 5, picked up after the laptop went off, Bader's message headed CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, and the plan
 
