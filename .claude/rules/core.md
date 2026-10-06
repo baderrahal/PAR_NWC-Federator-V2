@@ -343,10 +343,10 @@ and 6 does not read as broken.
   those of the group's own models. `DisciplinePairRule.CodeIn` reads through it with the
   views' seven codes until F114 replaces it. A model's code stays part 5 of its file name
   through `ContainerName.Parse`, and its team is the map's
-- A PAIR OF TEAMS IS WRITTEN ONE WAY ROUND, `TeamPair.For` with `TeamMap.Compare`: the map's
-  lines first, then any other team by its name, then UNKNOWN, so one pair is one folder. Two
-  codes of one team pair as that team against itself, point 10. A pair carries the size
-  folder where the map names one of its teams, and with no map none does
+- NO CODE WAITS ON MAIN FOR A LATER STEP, Bader's answer B to Q134 on 2026-10-05. The pair of
+  two teams, its one order and its size folder, Q114 points 10 to 12, are F114's, which calls
+  them, so F131 holds no member for them. F131 reads the map's order and its size-folder line,
+  refuses a map whose size-folder line is wrong, and says both on its TEAMS lines, nothing more
 - A SET THAT CANNOT REACH A MODEL OF ITS OWN TEAM IS A SILENT MISS, FR-181, Q114 point 3,
   `SilentMisses`: a set of team T and code C and a model of team T with another code, where
   every group of the set asks, not negated, a workset the model's whole list does not carry

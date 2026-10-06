@@ -36,15 +36,19 @@ namespace Federator.Core.Tests
                 Assert.That(map.TeamOf(code), Is.EqualTo(his.TeamOf(code)), code);
             }
 
-            foreach (string team in his.Teams)
+            // Every TEAMS line after the first, which names where each was read: the teams with
+            // their codes, the order of a pair and the teams whose pairs carry the size folder.
+            System.Collections.Generic.IList<string> read = map.Lines();
+            System.Collections.Generic.IList<string> want = his.Lines();
+
+            Assert.That(read.Count, Is.EqualTo(want.Count));
+
+            for (int i = 1; i < want.Count; i++)
             {
-                Assert.That(map.CarriesSizeFolder(team), Is.EqualTo(his.CarriesSizeFolder(team)), team);
+                Assert.That(read[i], Is.EqualTo(want[i]), "at " + i);
             }
 
-            Assert.That(map.CarriesSizeFolder("Mechanical"), Is.True);
-            Assert.That(map.CarriesSizeFolder("Electrical"), Is.True);
-            Assert.That(map.CarriesSizeFolder("Architecture"), Is.False);
-            Assert.That(map.CarriesSizeFolder("Structure"), Is.False);
+            Assert.That(read[read.Count - 1], Is.EqualTo("TEAMS    a pair holding Mechanical or Electrical carries the size folder"));
         }
 
         /// <summary>

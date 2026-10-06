@@ -155,7 +155,8 @@ namespace Federator.Core.Tests
                 Assert.That(map.IsRead, Is.False, fault[0]);
                 Assert.That(map.Teams.Count, Is.EqualTo(0), fault[0]);
                 Assert.That(map.TeamOf("AR"), Is.EqualTo("AR"), fault[0]);
-                Assert.That(map.CarriesSizeFolder("A"), Is.False, fault[0]);
+                Assert.That(map.Lines().Count, Is.EqualTo(1), fault[0]);
+                Assert.That(map.Lines()[0], Does.EndWith(NothingApplies), fault[0]);
             }
         }
 
@@ -207,7 +208,7 @@ namespace Federator.Core.Tests
             TeamMap map = MapOf("size-folder: A\nteam: A | AR\n");
 
             Assert.That(map.Unread, Is.Null);
-            Assert.That(map.CarriesSizeFolder("A"), Is.True);
+            Assert.That(map.Lines()[map.Lines().Count - 1], Is.EqualTo("TEAMS    a pair holding A carries the size folder"));
         }
 
         [Test]
@@ -261,54 +262,12 @@ namespace Federator.Core.Tests
                 Assert.That(map.IsRead, Is.False);
                 Assert.That(map.ListPath, Is.EqualTo(path));
                 Assert.That(map.TeamOf("HV"), Is.EqualTo("HV"));
-                Assert.That(map.CarriesSizeFolder("Mechanical"), Is.False);
                 Same(map.Lines(), "TEAMS    no team map is beside this file: " + path + " was looked for and is not there" + NothingApplies);
             }
             finally
             {
                 TempFolder.Remove(folder);
             }
-        }
-
-        /// <summary>
-        /// Point 12. A pair is always written the same way round, the teams in the order of the
-        /// map's lines, then any other team by its name, then UNKNOWN last. With no map every
-        /// code is a team of its own, by its name, and UNKNOWN still last.
-        /// </summary>
-        [Test]
-        public void TeamsAreOrderedByTheMapLinesThenOtherTeamsByNameThenUnknownLast()
-        {
-            TeamMap map = MapOf(BadersMap);
-            List<string> teams = new List<string> { "UNKNOWN", "LS", "Electrical", "CV", "Mechanical", "Structure", "Architecture" };
-
-            teams.Sort(map);
-
-            Same(teams, "Architecture", "Structure", "Mechanical", "Electrical", "CV", "LS", "UNKNOWN");
-            Assert.That(map.Compare("Mechanical", "Mechanical"), Is.EqualTo(0));
-
-            List<string> codes = new List<string> { "UNKNOWN", "XX", "ST", "EL", "AR" };
-
-            codes.Sort(TeamMap.NoXml(new TeamMapSettings()));
-
-            Same(codes, "AR", "EL", "ST", "XX", "UNKNOWN");
-        }
-
-        /// <summary>Point 11. Only a team the size-folder line names carries the size folder, and no team does with no map.</summary>
-        [Test]
-        public void OnlyTheTeamsTheMapNamesCarryTheSizeFolder()
-        {
-            TeamMap map = MapOf(BadersMap);
-
-            Assert.That(map.CarriesSizeFolder("Mechanical"), Is.True);
-            Assert.That(map.CarriesSizeFolder("Electrical"), Is.True);
-
-            foreach (string team in new[] { "Architecture", "Structure", "LS", "UNKNOWN", "mechanical" })
-            {
-                Assert.That(map.CarriesSizeFolder(team), Is.False, team);
-            }
-
-            Assert.That(MapOf("team: Mechanical | ME\n").CarriesSizeFolder("Mechanical"), Is.False);
-            Assert.That(TeamMap.NoXml(new TeamMapSettings()).CarriesSizeFolder("ME"), Is.False);
         }
 
         [Test]
@@ -499,7 +458,6 @@ namespace Federator.Core.Tests
                 Assert.That(kept.IsRead, Is.True);
                 Assert.That(kept.ListPath, Is.EqualTo(path));
                 Assert.That(kept.TeamOf("HV"), Is.EqualTo("Mechanical"));
-                Assert.That(kept.CarriesSizeFolder("Electrical"), Is.True);
                 Same(
                     kept.Lines(),
                     "TEAMS    no clash XML was picked, so the teams are read from " + path + ", the team map kept from the last run with"
