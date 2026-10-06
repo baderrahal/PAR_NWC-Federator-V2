@@ -14,7 +14,8 @@ namespace Federator.Core.Tests
     /// ask the same whole questions as another test's, is its mirror. Both are created and
     /// run, the mirror under the kept test's name with the ending (mirror), and their clashes
     /// are merged into the one kept, the higher priority, A before B before C, and where equal
-    /// the one first in the XML. With no XML a saved test pairs by that name only. The set and
+    /// the one first in the XML. With no XML a saved test pairs by that name only where its
+    /// sides ask the question of the test the name points to, a name made for that pair. The set and
     /// test names in here are sample data and not settings, and nothing in the rule names any
     /// of them.
     /// </summary>
@@ -127,6 +128,44 @@ namespace Federator.Core.Tests
         private static MirrorRule SavedRule(IEnumerable<PlannedClashTest> tests)
         {
             return MirrorRule.Of(tests, PriorityMap.NothingPicked(), null, new MirrorSettings());
+        }
+
+        /// <summary>The rule over tests saved in the document, with the usual sets handed as the document's.</summary>
+        private static MirrorRule SavedRuleWithTheSets(IEnumerable<PlannedClashTest> tests)
+        {
+            return MirrorRule.Of(tests, PriorityMap.NothingPicked(), TheUsualSets(), new MirrorSettings());
+        }
+
+        /// <summary>
+        /// The plan of a run with no XML over saved tests whose sides the add-in read as the
+        /// sets they point at, given as a name, its left set and its right set, again and
+        /// again, F132 attempt 6.
+        /// </summary>
+        internal static ClashTestPlan SavedWithSides(params string[] nameLeftRight)
+        {
+            List<SavedClashTest> saved = new List<SavedClashTest>();
+
+            for (int i = 0; i + 2 < nameLeftRight.Length; i += 3)
+            {
+                saved.Add(Saved(nameLeftRight[i], nameLeftRight[i + 1], nameLeftRight[i + 2], i / 3));
+            }
+
+            return ClashTestPlan.FromDocument(saved, "m");
+        }
+
+        /// <summary>Every test of a plan as a name, its left set and its right set, as an NWF the plan made would hold them.</summary>
+        internal static string[] AsSaved(ClashTestPlan plan)
+        {
+            List<string> saved = new List<string>();
+
+            foreach (PlannedClashTest test in plan.Buildable)
+            {
+                saved.Add(test.Name);
+                saved.Add(test.Left.Locator);
+                saved.Add(test.Right.Locator);
+            }
+
+            return saved.ToArray();
         }
 
         internal static SavedClashTest Saved(string name, string left, string right, int address)
@@ -264,8 +303,8 @@ namespace Federator.Core.Tests
 
         // ---------- two sets of one rule list, Q121 B ----------
 
-        private const string TelecomVsWalls = "BLD-EL-Telecom Fixtures-vs-BLD-AR-Walls";
-        private const string TelephoneVsWalls = "BLD-EL-Telephone Devices-vs-BLD-AR-Walls";
+        internal const string TelecomVsWalls = "BLD-EL-Telecom Fixtures-vs-BLD-AR-Walls";
+        internal const string TelephoneVsWalls = "BLD-EL-Telephone Devices-vs-BLD-AR-Walls";
         private const string WallsVsTelephone = "BLD-AR-Walls-vs-BLD-EL-Telephone Devices";
 
         [Test]
@@ -863,14 +902,17 @@ namespace Federator.Core.Tests
 
         // ---------- with no XML, the saved tests, F132 attempt 5 item 1 ----------
 
-        // The run the reviewer named: no XML, and an NWF holding X and X (mirror), each handed
-        // with the two placeholders because the add-in reads no set off a saved test. The pair
-        // is found by the name ending, the saved sides are read as they are, and both are run
-        // as saved, so each clash is counted once.
+        // The run the reviewer named on attempt 4: no XML, and an NWF holding X and X (mirror),
+        // the sides of each read as the sets they point at. The name made for that pair and
+        // sides that ask X's question swapped pair them, and both are run as saved, so each
+        // clash is counted once.
         [Test]
         public void ANoXmlRunOverXAndXMirrorPairsThemByTheNameEnding()
         {
-            ClashTestPlan plan = SavedPlan(DuctsVsColumns, DuctsVsColumns + " (mirror)", "BLD-ME-Ducts-vs-BLD-AR-Walls");
+            ClashTestPlan plan = SavedWithSides(
+                DuctsVsColumns, Ducts, Columns,
+                DuctsVsColumns + " (mirror)", Columns, Ducts,
+                "BLD-ME-Ducts-vs-BLD-AR-Walls", Ducts, Walls);
 
             MirrorRule rule = SavedRule(plan.Buildable);
 
@@ -879,13 +921,13 @@ namespace Federator.Core.Tests
             Assert.That(rule.Pairs[0].Kept.Name, Is.EqualTo(DuctsVsColumns));
             Assert.That(rule.Pairs[0].Mirror.Name, Is.EqualTo(DuctsVsColumns + " (mirror)"));
             Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(DuctsVsColumns + " (mirror)"));
-            Assert.That(rule.Pairs[0].Mirror.Left.Locator, Is.EqualTo(SavedClashTest.LeftAsSaved),
-                "the saved sides are read as they are");
+            Assert.That(rule.Pairs[0].Mirror.Left.Locator, Is.EqualTo(Columns), "the saved sides are read as they are");
 
             string pair = LineNaming(rule, " is its mirror");
 
             Assert.That(pair, Is.EqualTo(MirrorRule.Prefix + "   " + DuctsVsColumns + " is kept, " + DuctsVsColumns
-                + " (mirror) is its mirror, named as its mirror by the ending, run as it is saved"));
+                + " (mirror) is its mirror, named as its mirror by the ending, the same two sets swapped, run as it "
+                + "is saved"));
         }
 
         // The mirror comes first in the document and the order changes nothing, because the
@@ -894,7 +936,7 @@ namespace Federator.Core.Tests
         public void TheNameSaysWhichIsTheMirrorWhicheverIsSavedFirst()
         {
             MirrorRule rule = MirrorRule.Of(
-                SavedPlan(DuctsVsColumns + " (mirror)", DuctsVsColumns).Buildable,
+                SavedWithSides(DuctsVsColumns + " (mirror)", Columns, Ducts, DuctsVsColumns, Ducts, Columns).Buildable,
                 Priorities(DuctsVsColumns + " (mirror)", "A", DuctsVsColumns, "C"),
                 null,
                 new MirrorSettings());
@@ -918,14 +960,8 @@ namespace Federator.Core.Tests
 
             MirrorRule first = Rule(xml.Buildable, Priorities(TelecomVsWalls, "A"));
             ClashTestPlan named = xml.WithMirrorsNamed(first);
-            List<string> saved = new List<string>();
 
-            foreach (PlannedClashTest test in named.Buildable)
-            {
-                saved.Add(test.Name);
-            }
-
-            MirrorRule again = SavedRule(SavedPlan(saved.ToArray()).Buildable);
+            MirrorRule again = SavedRuleWithTheSets(SavedWithSides(AsSaved(named)).Buildable);
 
             Assert.That(first.Pairs.Count, Is.EqualTo(2));
             Assert.That(again.Pairs.Count, Is.EqualTo(2));
@@ -953,13 +989,17 @@ namespace Federator.Core.Tests
                 + "ending and no saved test is named Gone-vs-BLD-AR-Walls, so it keeps its own clashes"));
         }
 
-        // Saved tests under other names pair only by the ending, because the add-in hands no
-        // set for a saved side. That two of them ask one question under other names is
-        // UNKNOWN, and the lines say so once, never a count of tests whose sets were read.
+        // Saved tests under other names pair only by a name made for that pair, even where
+        // their sides are two sets swapped. That two of them ask one question under other
+        // names is UNKNOWN, and the lines say so once, never a count of tests whose sets were
+        // read.
         [Test]
         public void SavedTestsUnderOtherNamesAreNotPairedAndTheLinesSayWhy()
         {
-            ClashTestPlan plan = SavedPlan(DuctsVsColumns, ColumnsVsDucts, "BLD-ME-Ducts-vs-BLD-AR-Walls");
+            ClashTestPlan plan = SavedWithSides(
+                DuctsVsColumns, Ducts, Columns,
+                ColumnsVsDucts, Columns, Ducts,
+                "BLD-ME-Ducts-vs-BLD-AR-Walls", Ducts, Walls);
 
             MirrorRule rule = SavedRule(plan.Buildable);
             IList<string> lines = rule.Lines();
@@ -967,9 +1007,118 @@ namespace Federator.Core.Tests
             Assert.That(rule.Pairs.Count, Is.EqualTo(0));
             Assert.That(lines.Count, Is.EqualTo(1));
             Assert.That(lines[0], Is.EqualTo(MirrorRule.Prefix + "   0 pairs among the 3 tests saved in the document, "
-                + "which pair only by name, a test and its name with the ending (mirror), because the sides of a "
-                + "saved test are read as they are saved and never as sets. Whether two saved tests under other "
-                + "names ask one question is UNKNOWN, so each keeps its own clashes"));
+                + "which pair only by a name made for that pair, a test and its name with the ending (mirror) whose "
+                + "sides ask its question as a mirror. Whether two saved tests under other names ask one question is "
+                + "UNKNOWN, so each keeps its own clashes. No rule list of a set was read, so only a test with the "
+                + "same two sets swapped pairs"));
+        }
+
+        // ---------- a name made for that pair, F132 attempt 6 item 1 ----------
+
+        // The reviewer's finding on attempt 5. The XML itself names a test X (mirror) that asks
+        // another question than X, Ducts against Walls, beside X's swap, which the XML run
+        // creates as X 2 (mirror). On the run after with no XML, the name X (mirror) alone read
+        // it as X's mirror and merged every Ducts against Walls clash into X. Its sides do not
+        // ask X's question, so it is not paired, and X 2 (mirror) is.
+        [Test]
+        public void ATestTheXmlNamesWithTheEndingIsNotPairedOnALaterRunWithNoXml()
+        {
+            ClashTestPlan xml = Plan(
+                Test(DuctsVsColumns, Ducts, Columns),
+                Test(ColumnsVsDucts, Columns, Ducts),
+                Test(DuctsVsColumns + " (mirror)", Ducts, Walls));
+
+            MirrorRule first = Rule(xml.Buildable, PriorityMap.NothingPicked());
+            ClashTestPlan named = xml.WithMirrorsNamed(first);
+
+            Assert.That(first.Pairs.Count, Is.EqualTo(1));
+            Assert.That(first.Pairs[0].MirrorName, Is.EqualTo(DuctsVsColumns + " 2 (mirror)"));
+
+            foreach (MirrorRule again in new[]
+            {
+                SavedRule(SavedWithSides(AsSaved(named)).Buildable),
+                SavedRuleWithTheSets(SavedWithSides(AsSaved(named)).Buildable)
+            })
+            {
+                Assert.That(again.Pairs.Count, Is.EqualTo(1));
+                Assert.That(again.Pairs[0].Kept.Name, Is.EqualTo(DuctsVsColumns));
+                Assert.That(again.Pairs[0].Mirror.Name, Is.EqualTo(DuctsVsColumns + " 2 (mirror)"));
+                Assert.That(Text(again.Lines()), Does.Contain(MirrorRule.Prefix + "   " + DuctsVsColumns + " (mirror) "
+                    + "carries the ending of a mirror of " + DuctsVsColumns + ", and "));
+            }
+
+            Assert.That(Text(SavedRuleWithTheSets(SavedWithSides(AsSaved(named)).Buildable).Lines()), Does.Contain(
+                MirrorRule.Prefix + "   " + DuctsVsColumns + " (mirror) carries the ending of a mirror of " + DuctsVsColumns
+                    + ", and its sides do not ask that question as a mirror, so this tool did not make it for that "
+                    + "pair and it keeps its own clashes"));
+        }
+
+        // The add-in today hands a saved test's sides as two placeholders. With them, whether
+        // the name was made for that pair is UNKNOWN, so the test is not paired by its name
+        // alone, and the line says a clash both find may then be counted twice.
+        [Test]
+        public void ASavedTestWhoseSidesWereNotReadIsNotPairedByItsNameAlone()
+        {
+            MirrorRule rule = SavedRule(SavedPlan(DuctsVsColumns, DuctsVsColumns + " (mirror)").Buildable);
+
+            Assert.That(rule.Pairs.Count, Is.EqualTo(0));
+            Assert.That(rule.Lines(), Does.Contain(MirrorRule.Prefix + "   " + DuctsVsColumns + " (mirror) carries the "
+                + "ending of a mirror of " + DuctsVsColumns + ", and whether its sides ask that question is UNKNOWN, a "
+                + "side or its set not read, so whether this tool made it for that pair is UNKNOWN. It keeps its own "
+                + "clashes, and a clash both find may be counted twice"));
+        }
+
+        // The breaker's finding on attempt 5. The third mirror of X is X 3 (mirror), and a
+        // person's test X 3 sits beside it. The name before the ending is X 3, but its sides
+        // ask X's question, so it pairs with X and never with the person's X 3.
+        [Test]
+        public void AThirdMirrorBesideAPersonsTestOfItsNumberPairsWithTheTestItMirrors()
+        {
+            ClashTestPlan plan = SavedWithSides(
+                DuctsVsColumns, Ducts, Columns,
+                DuctsVsColumns + " 3", Ducts, Walls,
+                DuctsVsColumns + " 3 (mirror)", Columns, Ducts);
+
+            foreach (MirrorRule rule in new[] { SavedRule(plan.Buildable), SavedRuleWithTheSets(plan.Buildable) })
+            {
+                Assert.That(rule.Pairs.Count, Is.EqualTo(1));
+                Assert.That(rule.Pairs[0].Kept.Name, Is.EqualTo(DuctsVsColumns));
+                Assert.That(rule.Pairs[0].Mirror.Name, Is.EqualTo(DuctsVsColumns + " 3 (mirror)"));
+            }
+        }
+
+        // The pairs of the picked matrix are two sets of one rule list, Q121 B. With the sets
+        // handed, the saved mirror pairs by its name and its sets' rule lists. With none
+        // handed, whether its sets ask the kept test's question is UNKNOWN, and it is not
+        // paired.
+        [Test]
+        public void ASavedMirrorBySetsOfOneRuleListPairsOnlyWhereTheirRuleListsAreRead()
+        {
+            ClashTestPlan plan = SavedWithSides(
+                TelecomVsWalls, Telecom, Walls,
+                TelecomVsWalls + " (mirror)", Telephone, Walls);
+
+            MirrorRule withTheSets = SavedRuleWithTheSets(plan.Buildable);
+
+            Assert.That(withTheSets.Pairs.Count, Is.EqualTo(1));
+            Assert.That(LineNaming(withTheSets, " is its mirror"), Does.Contain(
+                "named as its mirror by the ending, its sets carry the same rule lists as " + TelecomVsWalls
+                    + "'s, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, run as it is saved"));
+            Assert.That(SavedRule(plan.Buildable).Pairs.Count, Is.EqualTo(0));
+            Assert.That(Text(SavedRule(plan.Buildable).Lines()), Does.Contain("is UNKNOWN"));
+        }
+
+        // A saved test named X (mirror) whose sides are X's own in the same order is a
+        // duplicate, which this tool never names as a mirror, so it is not paired.
+        [Test]
+        public void ASavedDuplicateNamedWithTheEndingIsNotPaired()
+        {
+            MirrorRule rule = SavedRule(SavedWithSides(
+                DuctsVsColumns, Ducts, Columns,
+                DuctsVsColumns + " (mirror)", Ducts, Columns).Buildable);
+
+            Assert.That(rule.Pairs.Count, Is.EqualTo(0));
+            Assert.That(Text(rule.Lines()), Does.Contain("its sides do not ask that question as a mirror"));
         }
 
         // One test whose side was not read among tests whose sides were. The pair is still
@@ -1085,11 +1234,11 @@ namespace Federator.Core.Tests
         [Test]
         public void ASavedMirrorIsNamedAsRunAsItIsSaved()
         {
-            ClashTestPlan plan = SavedPlan(DuctsVsColumns, DuctsVsColumns + " (mirror)");
+            ClashTestPlan plan = SavedWithSides(DuctsVsColumns, Ducts, Columns, DuctsVsColumns + " (mirror)", Columns, Ducts);
 
             Assert.That(Words(SavedRule(plan.Buildable), DuctsVsColumns + " (mirror)"), Is.EqualTo(
-                "a mirror of " + DuctsVsColumns + ", named as its mirror by the ending, run as it is saved, its clashes "
-                    + "merged into " + DuctsVsColumns + "'s"));
+                "a mirror of " + DuctsVsColumns + ", named as its mirror by the ending, the same two sets swapped, run "
+                    + "as it is saved, its clashes merged into " + DuctsVsColumns + "'s"));
         }
 
         [Test]

@@ -6,7 +6,8 @@ namespace Federator.Core.Clash
     /// <summary>
     /// Two tests that ask the same question, F132: the same two sets swapped, Bader's Q114
     /// point 4, two sets that ask the same whole question, his answer B to Q121, or, with no
-    /// XML, a saved test and the saved test of its name with the ending. Both are run, his
+    /// XML, a saved test and the saved test of its name with the ending, whose sides ask its
+    /// question as a mirror by the same rule, F132 attempt 6. Both are run, his
     /// answer D to Q133, and their clashes are merged by the pair of items into the one kept,
     /// Report.MirrorMerge, so the report, the views and every count hold each clash once. A
     /// swap can find more than the test it mirrors: probe P1 measured 27 clashes on the swap
@@ -61,22 +62,20 @@ namespace Federator.Core.Clash
         /// <summary>
         /// The name the mirror is created and run under: the kept test's name with the ending,
         /// MirrorSettings.NameFor, numbered before the ending where that name is taken. A test
-        /// read off the document keeps its saved name, because this tool renames no test it
-        /// did not create.
+        /// read off the document with no XML keeps its saved name, the one made for its pair.
+        /// A test saved before the mirror rule under the XML's name of a mirror is renamed to
+        /// this name, Q136 A, MirrorRule.RenamesIn.
         /// </summary>
         public string MirrorName { get; private set; }
 
         /// <summary>How the two tests ask the same question, in the words of the log and the coverage sheet.</summary>
         internal string How()
         {
-            if (Kind == MirrorKind.Named)
-            {
-                return "named as its mirror by the ending";
-            }
-
-            return Kind == MirrorKind.Swapped
+            string how = alikeSets.Length == 0
                 ? "the same two sets swapped"
                 : "its sets carry the same rule lists as " + Kept.Name + "'s, " + alikeSets;
+
+            return Kind == MirrorKind.Named ? "named as its mirror by the ending, " + how : how;
         }
 
         /// <summary>
@@ -121,8 +120,9 @@ namespace Federator.Core.Clash
         /// tolerance within TestDrift's epsilon, the test type, merge composites, and each
         /// side's self intersect and primitive types, the mirror's side set against the side
         /// of the kept test it stands for. A pair found by name, read off the document, has no
-        /// XML name to read a priority by and no set to tell which side stands for which, so
-        /// for it only the tolerance, the type and merge composites are compared.
+        /// XML name to read a priority by, so its priority is not compared. Its sides were read
+        /// and ask the kept test's question, F132 attempt 6, so they are compared side for side
+        /// as every other pair's.
         /// </summary>
         private IList<string> Differences()
         {
@@ -136,18 +136,10 @@ namespace Federator.Core.Clash
             TestSettings kept = TestSettings.FromFile(Kept);
             TestSettings mirror = SideForSide(TestSettings.FromFile(Mirror));
 
-            if (Kind == MirrorKind.Named)
-            {
-                kept.LeftLocator = kept.RightLocator = TestSettings.UnknownLocator;
-                mirror.LeftLocator = mirror.RightLocator = TestSettings.UnknownLocator;
-            }
-            else
-            {
-                // The sets are the same question by the rule that made the pair, so only the
-                // flags of each side are compared, never the set names.
-                mirror.LeftLocator = kept.LeftLocator;
-                mirror.RightLocator = kept.RightLocator;
-            }
+            // The sets are the same question by the rule that made the pair, so only the
+            // flags of each side are compared, never the set names.
+            mirror.LeftLocator = kept.LeftLocator;
+            mirror.RightLocator = kept.RightLocator;
 
             foreach (TestDifference difference in TestDrift.Compare(Kept.Name, kept, mirror))
             {

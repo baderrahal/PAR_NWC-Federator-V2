@@ -110,22 +110,25 @@ namespace Federator.Core.Report
         /// <summary>Every pair of the test kept, one per mirror.</summary>
         public ReadOnlyCollection<MirrorPair> Pairs { get; private set; }
 
-        /// <summary>The clashes of the mirrors the kept test found too, read once AddTo has run.</summary>
+        /// <summary>
+        /// The clashes of the mirrors the kept test found too. Refused before AddTo has run,
+        /// because the count is UNKNOWN until then and a 0 would read as a count taken.
+        /// </summary>
         public int FoundByBoth
         {
-            get { return Sum(counts => counts.Both); }
+            get { return Merged(counts => counts.Both); }
         }
 
-        /// <summary>The clashes added to the kept test, each once, read once AddTo has run.</summary>
+        /// <summary>The clashes added to the kept test, each once. Refused before AddTo has run.</summary>
         public int FoundByTheMirrorsOnly
         {
-            get { return Sum(counts => counts.Only.Count); }
+            get { return Merged(counts => counts.Only.Count); }
         }
 
-        /// <summary>The clashes of the mirrors with an item not read, never added, read once AddTo has run.</summary>
+        /// <summary>The clashes of the mirrors with an item not read, never added. Refused before AddTo has run.</summary>
         public int NotCompared
         {
-            get { return Sum(counts => counts.NotRead); }
+            get { return Merged(counts => counts.NotRead); }
         }
 
         /// <summary>
@@ -228,7 +231,7 @@ namespace Federator.Core.Report
                 report.TakeOut(mirrorReports[0]);
             }
 
-            if (kept.State == TestState.Passed && FoundByTheMirrorsOnly > 0)
+            if (kept.State == TestState.Passed && Sum(counts => counts.Only.Count) > 0)
             {
                 kept.State = TestState.FoundClashes;
             }
@@ -302,12 +305,19 @@ namespace Federator.Core.Report
         /// could not be compared, what it repeated, how many clashes both found carry another
         /// status under it, and that it was taken out of the report. A mirror that did not run
         /// is one line saying so, UNKNOWN and never 0. Last, what the report holds under the
-        /// kept test.
+        /// kept test. Before AddTo has run, one line saying what each found is UNKNOWN.
         /// </summary>
         public IList<string> Lines()
         {
             string kept = Kept.Name;
             List<string> lines = new List<string>();
+
+            if (!added)
+            {
+                lines.Add(MirrorRule.Prefix + "   the clashes of the mirrors of " + kept + " are not merged into it yet, "
+                    + "so what each found is UNKNOWN");
+                return lines;
+            }
 
             if (notMerged != null)
             {
@@ -319,7 +329,7 @@ namespace Federator.Core.Report
             {
                 string mirror = counts.Pair.MirrorName;
 
-                if (added && !counts.Ran)
+                if (!counts.Ran)
                 {
                     lines.Add(MirrorRule.Prefix + "   " + mirror + (counts.InTheReport == 1
                         ? " did not run, so what it finds is UNKNOWN and nothing of it is merged into " + kept
@@ -346,9 +356,11 @@ namespace Federator.Core.Report
                     lines.Add(MirrorRule.Prefix + "   " + counts.NotRead
                         + (counts.NotRead == 1
                             ? " clash of " + mirror + " has an item that was not read, so whether " + kept
-                                + " found it is UNKNOWN and it is not added"
+                                + " found it is UNKNOWN and it is not added, and with " + mirror
+                                + " taken out of the report it is in no block of it"
                             : " clashes of " + mirror + " have an item that was not read, so whether " + kept
-                                + " found them is UNKNOWN and they are not added"));
+                                + " found them is UNKNOWN and they are not added, and with " + mirror
+                                + " taken out of the report they are in no block of it"));
                 }
 
                 if (counts.Repeats > 0)
@@ -381,8 +393,7 @@ namespace Federator.Core.Report
                     + " of the clashes found by a mirror only may be " + kept + "'s own as well, UNKNOWN");
             }
 
-            lines.Add(MirrorRule.Prefix + "   the report holds "
-                + (held < 0 ? "UNKNOWN, the merge has not run," : held.ToString(CultureInfo.InvariantCulture))
+            lines.Add(MirrorRule.Prefix + "   the report holds " + held.ToString(CultureInfo.InvariantCulture)
                 + " under " + kept);
 
             return lines;
@@ -405,6 +416,18 @@ namespace Federator.Core.Report
 
             throw new ArgumentException(
                 pair.MirrorName + " is not a mirror of " + Kept.Name + ", so its clashes do not go to it.", "pair");
+        }
+
+        private int Merged(Func<MirrorCounts, int> of)
+        {
+            if (!added)
+            {
+                throw new InvalidOperationException(
+                    "The clashes of the mirrors of " + Kept.Name + " are not merged into it yet, so how many each "
+                        + "found is UNKNOWN. Read the counts once AddTo has run.");
+            }
+
+            return Sum(of);
         }
 
         private int Sum(Func<MirrorCounts, int> of)

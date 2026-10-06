@@ -270,13 +270,14 @@ namespace Federator.Core.Tests
                 + " is taken out of the report, so its own results are not reported a second time"));
         }
 
-        // The run the reviewer named, item 1: no XML, an NWF holding X and X (mirror), each
-        // handed with the placeholders for its sides. Paired by the name ending, merged by
-        // the pair of items, so each clash is counted once.
+        // The run the reviewer named on attempt 4: no XML, an NWF holding X and X (mirror),
+        // the sides of each read. Paired by a name made for that pair, merged by the pair of
+        // items, so each clash is counted once.
         [Test]
         public void ANoXmlRunOverXAndXMirrorCountsEachClashOnce()
         {
-            ClashTestPlan plan = MirrorRuleTests.SavedPlan(Kept, Mirror);
+            ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
+                Kept, MirrorRuleTests.Ducts, MirrorRuleTests.Columns, Mirror, MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
             IList<MirrorMerge> merges = MirrorMerge.Of(
                 MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings()));
 
@@ -534,6 +535,78 @@ namespace Federator.Core.Tests
 
             Assert.That(Text(merge.Lines()), Does.Contain(MirrorRule.Prefix + "   1 clash of " + Mirror
                 + " repeats a pair of items it already gave, so it is counted once"));
+        }
+
+        // ---------- F132 attempt 6 ----------
+
+        // Both readers' finding on attempt 5. A clash of the mirror with an item not read is
+        // not added, and the mirror that held it is taken out of the report, so it is in no
+        // block, and the line says so where it said only that it was not added.
+        [Test]
+        public void AMirrorClashWithAnItemNotReadIsSaidToBeInNoBlock()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 1);
+
+            merge.MirrorFound(merge.Pairs[0], null, "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
+            merge.AddTo(report);
+
+            Assert.That(Text(merge.Lines()), Does.Contain(MirrorRule.Prefix + "   1 clash of " + Mirror
+                + " has an item that was not read, so whether " + Kept + " found it is UNKNOWN and it is not added, "
+                + "and with " + Mirror + " taken out of the report it is in no block of it"));
+            Assert.That(report.Totals.Total, Is.EqualTo(1), "the clash is in no block, as the line says");
+        }
+
+        // The breaker's finding on attempt 5. Before AddTo has run what each mirror found is
+        // UNKNOWN, so the counts are refused and the lines say UNKNOWN, never a row of 0s.
+        [Test]
+        public void TheCountsAreRefusedAndTheLinesSayUnknownBeforeTheMergeHasRun()
+        {
+            MirrorMerge merge = TheMerge();
+
+            TheReport(merge, 2);
+            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", Row("Clash1", ClashStatus.New, "column 7", "duct 8"));
+
+            Assert.Throws<InvalidOperationException>(() => { int count = merge.FoundByBoth; });
+            Assert.Throws<InvalidOperationException>(() => { int count = merge.FoundByTheMirrorsOnly; });
+            Assert.Throws<InvalidOperationException>(() => { int count = merge.NotCompared; });
+            Assert.That(merge.Lines(), Is.EqualTo(new[]
+            {
+                MirrorRule.Prefix + "   the clashes of the mirrors of " + Kept + " are not merged into it yet, so what "
+                    + "each found is UNKNOWN"
+            }));
+        }
+
+        // The breaker's blocking finding on attempt 5, item 2. The report counts each mirror
+        // it took out, and the workbook check reads that number, so a group with a mirror
+        // merged is not a block missing.
+        [Test]
+        public void TheWorkbookCheckCountsEachMirrorTheReportTookOut()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 1);
+
+            Assert.That(report.MirrorsMerged, Is.EqualTo(0));
+            merge.AddTo(report);
+
+            Assert.That(report.MirrorsMerged, Is.EqualTo(1));
+            Assert.That(CreationPlan.BlockCountLine(report.Tests.Count, 2, report.MirrorsMerged), Is.EqualTo(
+                "BLOCKS   1 in the workbook, one for every test in the file, 2 less the 1 mirror merged into its kept test"));
+        }
+
+        // A mirror that did not run keeps its place in the report and is not counted as merged.
+        [Test]
+        public void AMirrorThatDidNotRunIsNotCountedAsMerged()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 1);
+
+            Named(report, Mirror).State = TestState.Skipped;
+            merge.AddTo(report);
+
+            Assert.That(report.MirrorsMerged, Is.EqualTo(0));
+            Assert.That(CreationPlan.BlockCountLine(report.Tests.Count, 2, report.MirrorsMerged),
+                Is.EqualTo(CreationPlan.BlockCountLine(2, 2)));
         }
     }
 }

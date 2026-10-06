@@ -46,33 +46,35 @@ namespace Federator.Core.Tests
                 Is.EqualTo(Name + " 3 (mirror)"));
         }
 
-        // What NameFor writes, KeptNameOf reads back to the test kept, numbered or not, so
-        // the run after finds the pair by the name and nothing else.
+        // What NameFor writes, KeptNamesOf reads back to the test kept, numbered or not, so
+        // the run after finds the test a mirror's name could have been made for.
         [Test]
         public void TheNameWrittenIsReadBackToTheTestKept()
         {
             MirrorSettings settings = new MirrorSettings();
             string[] saved = { Name, Name + " (mirror)", Name + " 2 (mirror)" };
 
-            Assert.That(settings.KeptNameOf(Name + " (mirror)", saved), Is.EqualTo(Name));
-            Assert.That(settings.KeptNameOf(Name + " 2 (mirror)", saved), Is.EqualTo(Name));
-            Assert.That(settings.KeptNameOf(Name, saved), Is.Null, "a name with no ending is no mirror");
+            Assert.That(settings.KeptNamesOf(Name + " (mirror)", saved), Is.EqualTo(new[] { Name }));
+            Assert.That(settings.KeptNamesOf(Name + " 2 (mirror)", saved), Is.EqualTo(new[] { Name }));
+            Assert.That(settings.KeptNamesOf(Name, saved), Is.Empty, "a name with no ending is no mirror");
         }
 
-        // The exact name before the ending wins over a number read off it, so a person's
-        // test named with a number of its own is its own test kept.
+        // The breaker's finding on attempt 5. Where a person's test carries the name with a
+        // number, both tests the name could have been made for are given, the exact name
+        // first, and MirrorRule pairs with the one whose question the sides ask.
         [Test]
-        public void TheExactNameBeforeTheEndingWinsOverANumber()
+        public void ANumberedNameGivesBothTestsItCouldHaveBeenMadeFor()
         {
             string[] saved = { Name, Name + " 2", Name + " 2 (mirror)" };
 
-            Assert.That(new MirrorSettings().KeptNameOf(Name + " 2 (mirror)", saved), Is.EqualTo(Name + " 2"));
+            Assert.That(new MirrorSettings().KeptNamesOf(Name + " 2 (mirror)", saved),
+                Is.EqualTo(new[] { Name + " 2", Name }));
         }
 
         [Test]
         public void ANameWhoseTestKeptIsNotSavedIsReadAsNoPair()
         {
-            Assert.That(new MirrorSettings().KeptNameOf(Name + " (mirror)", new[] { Name + " (mirror)" }), Is.Null);
+            Assert.That(new MirrorSettings().KeptNamesOf(Name + " (mirror)", new[] { Name + " (mirror)" }), Is.Empty);
             Assert.That(new MirrorSettings().CarriesTheEnding(Name + " (mirror)"), Is.True);
         }
 
@@ -84,7 +86,7 @@ namespace Federator.Core.Tests
             MirrorSettings settings = new MirrorSettings();
 
             Assert.That(settings.CarriesTheEnding(Name + "(mirror)"), Is.False);
-            Assert.That(settings.KeptNameOf(Name + "(mirror)", new[] { Name, Name + "(mirror)" }), Is.Null);
+            Assert.That(settings.KeptNamesOf(Name + "(mirror)", new[] { Name, Name + "(mirror)" }), Is.Empty);
         }
 
         [Test]
@@ -94,8 +96,8 @@ namespace Federator.Core.Tests
             settings.Ending = "[swap]";
 
             Assert.That(settings.NameFor(Name, NoneTaken), Is.EqualTo(Name + " [swap]"));
-            Assert.That(settings.KeptNameOf(Name + " [swap]", new[] { Name }), Is.EqualTo(Name));
-            Assert.That(settings.KeptNameOf(Name + " (mirror)", new[] { Name }), Is.Null);
+            Assert.That(settings.KeptNamesOf(Name + " [swap]", new[] { Name }), Is.EqualTo(new[] { Name }));
+            Assert.That(settings.KeptNamesOf(Name + " (mirror)", new[] { Name }), Is.Empty);
         }
 
         [Test]
@@ -126,13 +128,15 @@ namespace Federator.Core.Tests
         }
 
         // A rerun with no XML reads the mirror it made as it is saved, and never adds the
-        // ending again. This tool renames no saved test, and a swap a person made under a
-        // name of their own is not found by its name, so it keeps its own clashes.
+        // ending again. A swap a person made under a name of their own is not found by its
+        // name, so it keeps its own clashes.
         [Test]
         public void ASavedMirrorKeepsItsSavedName()
         {
-            ClashTestPlan plan = MirrorRuleTests.SavedPlan(
-                MirrorRuleTests.DuctsVsColumns, MirrorRuleTests.DuctsVsColumns + " (mirror)", "a swap a person made");
+            ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
+                MirrorRuleTests.DuctsVsColumns, MirrorRuleTests.Ducts, MirrorRuleTests.Columns,
+                MirrorRuleTests.DuctsVsColumns + " (mirror)", MirrorRuleTests.Columns, MirrorRuleTests.Ducts,
+                "a swap a person made", MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
 
             MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings());
 
@@ -225,8 +229,9 @@ namespace Federator.Core.Tests
         [Test]
         public void ASavedMirrorIsRunWhereItIsAndNotRenamed()
         {
-            ClashTestPlan plan = MirrorRuleTests.SavedPlan(
-                MirrorRuleTests.DuctsVsColumns, MirrorRuleTests.DuctsVsColumns + " (mirror)");
+            ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
+                MirrorRuleTests.DuctsVsColumns, MirrorRuleTests.Ducts, MirrorRuleTests.Columns,
+                MirrorRuleTests.DuctsVsColumns + " (mirror)", MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
             MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings());
             ClashTestPlan named = plan.WithMirrorsNamed(rule);
 

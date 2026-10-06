@@ -14,8 +14,9 @@ namespace Federator.Core.Clash
 
         /// <summary>
         /// Two tests saved in the document, read with no XML, one named as the other's mirror:
-        /// its name is the other's with the ending, MirrorSettings. The add-in reads no set off
-        /// a saved test, so the name is the one thing a run with no XML can pair them by.
+        /// its name is the other's with the ending, MirrorSettings, and its sides ask the
+        /// other's question as a mirror, so the name was made by this tool for that pair, F132
+        /// attempt 6.
         /// </summary>
         Named
     }

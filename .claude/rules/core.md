@@ -326,17 +326,45 @@ and 6 does not read as broken.
   test, the next number from 2 goes before the ending, X 2 (mirror), so every mirror's name
   ends with the ending and no two tests share a name, `MirrorSettings.NameFor`.
   `ClashTestPlan.WithMirrorsNamed` gives the plan those names, refusing a rule built over any
-  list but that plan's own buildable tests. WITH NO XML A SAVED TEST PAIRS BY NAME ONLY: the
-  add-in reads no set off a saved test and hands `SavedClashTest.LeftAsSaved` and
-  `RightAsSaved`, so a saved test whose name is another saved test's with the ending,
-  `MirrorSettings.KeptNameOf`, the exact name first and then a number of 2 or more off its
-  end, is that test's mirror, `MirrorKind.Named`, run as it is saved, its sides read as they
-  are. The name says which is kept, never a priority or an order read again, so the roles hold
-  from the XML run to the run with no XML. A saved test that is itself a mirror is never a
-  test kept. A saved test with the ending whose test kept is not saved keeps its own clashes
-  and is named on a MIRROR line. Saved tests under other names are not paired, and one MIRROR
+  list but that plan's own buildable tests. WITH NO XML A SAVED TEST PAIRS BY A NAME MADE FOR
+  THAT PAIR, attempt 6: its name is another saved test's with the ending, as NameFor writes
+  it, `MirrorSettings.KeptNamesOf`, which gives the exact name before the ending and then that
+  name with a number of 2 or more off its end, AND its two sides ask that test's question as a
+  mirror, `AsAMirror` inside `MirrorRule`, the one rule the XML's tests are paired by, read
+  over the sets handed. It pairs with the first of those names whose question its sides ask,
+  `MirrorKind.Named`, run as it is saved. The name alone is never enough: a test the XML
+  itself names X (mirror) that asks another question than X, the reviewer's finding on
+  attempt 5, and the person's test X 3 beside the third mirror of X, X 3 (mirror), the
+  breaker's, would each be merged wrongly by it. A TEST THE XML NAMES WITH THE ENDING IS NEVER
+  READ AS MADE BY THE TOOL: in a run with the XML its tests pair by their sets and their names
+  are never read, and with no XML a saved test whose sides do not ask the question of the test
+  its name points to keeps its own clashes. A saved side not read, the placeholders
+  `SavedClashTest.LeftAsSaved` and `RightAsSaved` the add-in hands today, or a set whose rule
+  list was not handed for two sets that differ by name, leaves whether the name was made for
+  that pair UNKNOWN, so the test is not paired and its MIRROR line says a clash both find may
+  then be counted twice. So the add-in half hands each saved side as the set it points at,
+  `DocumentSelectionSets.ResolveSelectionSource`, docs\history\scan.md, which resolved both
+  sides of all 1830 tests of one document, and the sets of the document's rule lists where it
+  can read them whole, which is UNKNOWN for the flags until it is measured. With no sets
+  handed only the same two sets swapped pair, and the 59 pairs of the corrected matrix, two
+  sets of one rule list, are then not paired with no XML, said. The name says which is kept,
+  never a priority or an order read again, so the roles hold from the XML run to the run with
+  no XML. A saved test that is itself a mirror is never a test kept. Every saved test with the
+  ending that is not paired keeps its own clashes and is named on a MIRROR line with why, five
+  named and the rest counted. Saved tests under other names are not paired, and one MIRROR
   line says that whether they ask one question is UNKNOWN. A mirror read off the document
-  keeps its saved name, because this tool renames no test it did not create. THE
+  keeps its saved name. A TEST SAVED BEFORE THE MIRROR RULE, Bader's answer A to Q136: an NWF
+  made before the rule holds a mirror under the XML's own name of it, and with the XML picked
+  `MirrorRule.RenamesIn` over the document's saved tests plans each saved test under the
+  XML's name of a mirror, whose sides ask the kept test's question as a mirror by the same
+  `AsAMirror`, to be renamed to the name this tool gives that mirror, `MirrorRenames`, its
+  statuses kept, and run as the mirror, its clashes merged as Q133 D says. A rename is refused
+  and named where the document already holds a test of the new name, where it holds two tests
+  of the old name, and where the sides do not ask that question or were not read, and the
+  refused test is left as it is and not run. One MIRROR line counts the renames and the
+  refusals, then one names each. The add-in half makes the rename, by the test's address,
+  before the tests are found by name, so the renamed test is found under the new name and run
+  where it sits. THE
   DIFFERENCES: a pair that differs in priority, or in any setting `TestDrift.Compare` reads,
   the tolerance within its epsilon, the test type, merge composites and each side's self
   intersect and primitive types, the mirror's side set against the kept test's side it stands

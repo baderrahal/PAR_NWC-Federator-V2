@@ -798,7 +798,8 @@ namespace Federator.Core.Report
         /// <summary>
         /// Takes a mirror's test out of the report once its clashes are merged into the test
         /// kept, F132, Bader's answer D to Q133, so its own results are not reported a second
-        /// time by any writer or count. Called by MirrorMerge and nothing else.
+        /// time by any writer or count, and counts it in MirrorsMerged. Called by MirrorMerge
+        /// and nothing else.
         /// </summary>
         internal void TakeOut(TestReport test)
         {
@@ -807,7 +808,18 @@ namespace Federator.Core.Report
                 throw new ArgumentException("The test " + (test == null ? "UNKNOWN" : test.Name)
                     + " is not in this report, so it cannot be taken out of it.", "test");
             }
+
+            MirrorsMerged++;
         }
+
+        /// <summary>
+        /// How many tests of the file this report holds no block for because each is a mirror
+        /// merged into its kept test, F132, counted by TakeOut, the one place a test leaves the
+        /// report. The workbook check reads this number, CreationPlan.BlockCountLine, so the
+        /// block it expects for every test in the file counts each merged mirror inside its
+        /// kept test's block, the same rule the report followed.
+        /// </summary>
+        public int MirrorsMerged { get; private set; }
 
         public int CountOf(TestState state)
         {

@@ -51,7 +51,8 @@ namespace Federator.Core.Tests
         /// </summary>
         private static ClashReport Merged()
         {
-            ClashTestPlan plan = MirrorRuleTests.SavedPlan(Kept, Mirror);
+            ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
+                Kept, MirrorRuleTests.Ducts, MirrorRuleTests.Columns, Mirror, MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
             MirrorMerge merge = MirrorMerge.Of(
                 MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings()))[0];
 
