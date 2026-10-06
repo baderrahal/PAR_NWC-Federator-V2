@@ -150,6 +150,7 @@ holds them. Each area takes the F number shown.
   never on a file a fix lane is changing at the time: F133 the work tracker, FR-191, F134 the code
   health gate, FR-192, and F135 the analyser settings that touch every project, FR-193, merged alone at
   a quiet moment. The gate's lists are the work list of waves 4 and 5
+- Right after F133 merges, beside the viewpoints, Bader's message of 2026-10-06, Q139: F139 the one page progress file, FR-197
 
 Bader's five requests of the evening of 2026-10-04, Q112, are added to the round as FR-175 to
 FR-179, under their own heading below, each measured before it is written, test first, and
@@ -4957,6 +4958,28 @@ steps\02_questions.md. A decision, outside the counts of the table below.
   after F131 merges, makes the per-run copy a compare against the one backup
 - Proof: the proof harness for the write and its read back, and the first real start writing no file into
   his AutoSave folder, by name, size and time
+- Class: Bader's decision
+
+## Bader's progress page, FR-197
+
+Added by Bader's message of 2026-10-06 headed A ONE PAGE PROGRESS FILE THAT KEEPS ITSELF CURRENT, in his
+words under Q139 of steps\02_questions.md. A decision, outside the counts of the table below.
+
+### FR-197 one-page-progress-file-that-keeps-itself-current
+
+- Sources: Q139. Area F139, right after F133 merges, beside the viewpoints
+- What he decided: steps\PROGRESS.md, never more than 60 lines, in his order: STATE with the date and
+  time of the last update, the counts by wave made from steps\tracker.csv and never typed, now, next,
+  waiting for Bader, at most five lines of blockers, and where the long history is. The pre-commit runs
+  the tracker script whenever the csv changes, the lead rewrites the other lines after every merge, run
+  and answer and before any stop, a check in the pre-commit and in Actions refuses a page over 60 lines
+  or counts that do not match the csv, and the Stop gate refuses a stop while STATE is OPEN until the
+  page is rewritten since the last merge or run. steps\loop.md and steps\log.md move to steps\history\.
+  Every session reads CLAUDE.md, .claude\rules and the page first. When a wave merges STATE reads NEXT
+  WAVE and a fresh session can start from steps\START.md, a start prompt of under 20 lines
+- Proof: the check refusing a fixture for each fault of the page, each breaking one thing, the maker
+  refusing a page or markers that are wrong and writing nothing, and the Stop gate's cases in
+  tools\loop\prove-hooks.sh, each run before its code and after
 - Class: Bader's decision
 
 ## The areas at a glance

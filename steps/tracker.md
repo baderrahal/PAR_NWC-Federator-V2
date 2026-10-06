@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 397 rows: open 153, in progress 55, in review 0, merged 142, proven by a run 22, waiting for Bader 22, dropped 3
-- By wave: 1 19, 2a 28, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before any probe or run starts again 3, before any test run 3, before the test of wave 1 4, before the waves 114, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 37, outside the waves 2
+- By status, of 400 rows: open 153, in progress 55, in review 3, merged 142, proven by a run 22, waiting for Bader 22, dropped 3
+- By wave: 1 19, 2a 28, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 6, 3a 11, 3b 20, 4 42, 5 68, all 1, before any probe or run starts again 3, before any test run 3, before the test of wave 1 4, before the waves 114, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 37, outside the waves 2, right after F133 merges 3
 - In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, F138 loop starts with Auto-Save off, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, and 40 FR items
 - Waits for Bader, 22 rows: F18, Q25, Q27, Q28, Q29, Q30, Q31, Q35, Q36, Q37, Q38, Q39, Q40, Q45, Q46, Q47, Q49, Q50, Q51, Q76, Q77, Q78
 
@@ -498,3 +498,11 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 |---|---|---|---|---|---|---|---|
 | F125 | a window that is not modal is a pane and not a dialog | F125 | fix | merged | 102 | none | 2026-10-06 |
 | F126 | the window driver unticks a tick box by its AutomationId | F126 | fix | merged | 112 | none | 2026-10-05 |
+
+## right after F133 merges
+
+| id | short title | area | class | status | PR | the run that proved it | the date of the last change |
+|---|---|---|---|---|---|---|---|
+| F139 | the one page progress file | F139 | fix | in review | UNKNOWN | none | 2026-10-06 |
+| FR-197 | one page progress file that keeps itself current | F139 | Bader's decision | in review | UNKNOWN | none | 2026-10-06 |
+| Q139 | a one page progress file that keeps itself current (FR-197) | F139 | Bader's request | in review | UNKNOWN | none | 2026-10-06 |
