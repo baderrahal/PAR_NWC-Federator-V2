@@ -507,6 +507,27 @@ before Run with both states and goes on, and its line for any window it stops on
 kind and both states. The monitor writes a PANE without counting it a DIALOG finding, and a PANE
 never holds back WM_CLOSE.
 
+What F138 changed, which its header lists too, Bader's message of 2026-10-05, Q135 point 2:
+after the last read before the constructor, run.ps1's check 18 and the probe's last read, the
+one SwitchAutoSaveOff writes enable under GlobalOptions\general\autosave of the 22.0 key as
+"3 0", opens the key again and reads it back, and refuses the start with one line when it does
+not read back or the key is not there, which it never makes. That line says whether his value
+reads what the backup holds, reads something else and must be put back by hand, or cannot be
+read and is UNKNOWN. BackupSettings writes nothing, so no stop before the switch leaves it
+written, and the switch's own refusal leaves it written only where its line says his value is
+changed and must be put back by hand, or where the key's close throws after the write. So the switch is written "3 0" for every start of the probe and of run.ps1,
+and the put back returns it. That Navisworks reads "3 0" as off is UNKNOWN until a start
+writes no autosave. SettingsPutBack and the watchdog's constructor deadline block each write
+one LEFT OFF line when enable still reads "3 0" and the backup held something else.
+
+- writes outside the repo: since F138 the one value enable under
+  HKCU\Software\Autodesk\Navisworks Manage\22.0\GlobalOptions\general\autosave, written "3 0"
+  just before every call of the constructor by the probe and by run.ps1, and put back by the
+  settings put back. Where the constructor was called and no put back is made, a put back
+  refused because nothing was adopted or another Navisworks ran, the constructor deadline or a
+  CloseOwn after run.ps1 died, it is left at "3 0" for Bader, the record says so in a LEFT OFF
+  line or, for CloseOwn, in its list of differences, and the lead puts it back by hand
+
 How the record stays bounded since F125's second pass: the monitor writes each window at first
 sight, keyed by its handle, class and caption, and writes it again, an AGAIN line naming its reads
 before and now, only when the rule's kind for it, its own enabled state or its owner's changes. A
@@ -524,13 +545,49 @@ the part 1 modes and M1 to M3, and since fix attempt 1: H12b, copies of build\in
 run against a fake APPDATA, H16, a window whose thread is blocked, and H17, a copy of
 run.ps1 whose constructor line is removed, run against fake LOCALAPPDATA and APPDATA folders
 through checks 13, 14, 15 and 18 and to the removed line, and since fix attempt 2: H18, the
-end of a run, the call deadline, the verdict, the one listing reader and the bounded walk:
+end of a run, the call deadline, the verdict, the one listing reader and the bounded walk,
+and since F138 H20, the Auto-Save switch written "3 0" on the throwaway key: a backup that
+writes nothing and a switch after it that reads back and is put back, a write that throws, a
+write another writer changes before the read back, a read back that cannot be read, a key that
+is not there, a put back refused, a put back stopped by a stand-in, a switch the backup held
+off already and the constructor deadline in a child, with H0 reading in run.ps1 and the probe
+that the switch comes after every refusal before the constructor and RC5 and RC6 of H17 that a
+stop at check 18 leaves it unwritten, and H21, its own time limits on copies of itself whose cases are replaced
+by one trial each: a child past its limit, a case past its limit, the run past its limit, a
+harness blocked where nothing can be closed, and the wait before a run:
 
     powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\prove-run.ps1 -Work <a new folder under %LOCALAPPDATA%\NwcFederatorLoop>
 
-It refuses while any Roamer runs and refuses a -Work folder that is there already, and
-before and after every case it reads the process list again and stops on a Roamer it did
-not start or a list it cannot read. It loads run.ps1's functions through the parser, so
+NO HARNESS RUN AND NO WAIT FOR ONE RUNS WITHOUT A TIME LIMIT, since F138, Bader's message
+headed CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, item 6. The harness is started as
+prove-run.ps1 with its limits, never through a wrapper that waits on a pid or a folder. Each
+limit is a setting:
+
+- -RunLimitSeconds, 5400, the whole run from the moment -Work is made
+- -CaseLimitSeconds, 600, each case, with -H6LimitSeconds, 900, and -H17LimitSeconds, 2400,
+  given on the Case lines of H6 and H17
+- each child the limit its call gives, -ChildLimitSeconds, 300, where it gave none, and
+  -RealLimitSeconds, 600, for a run of the real run.ps1. EndChild, the one place a child's output
+  is read, bounds the read of its output by the same limit after it ends
+- -CleanupLimitSeconds, 120
+- -WaitSeconds, 0, and -WaitPollSeconds, 10, the wait before the run
+
+The defaults are margins over what was read, the longest whole run 3240 s, H17 about 1394 s and
+H6 about 355 s, %LOCALAPPDATA%\NwcFederatorLoop\turn5\restart\harness.md, not measurements.
+Past a limit one TIME LIMIT line names the run, the case or the child and the seconds, the
+harness closes only the stand-ins and children it started, through their held handles, goes to
+CLEANUP and exits 3, where 0 is all passed, 1 a failure and 2 a refusal. A deadline runspace
+watches the run's and the case's clocks, and when the harness has not reached the end of its
+cleanup within -CleanupLimitSeconds after a limit, it writes one line naming -Work and the
+throwaway key as maybe left and ends the harness with exit 3.
+
+It refuses while any Roamer or any other proof harness runs, a powershell whose command line
+starts a script named prove-run.ps1 with -File, other than itself and those it was started from.
+With -WaitSeconds above 0 it reads again every -WaitPollSeconds and, once that limit passes,
+refuses in one line naming what still runs, exit 2. It refuses a -Work folder that is there
+already at once, before any wait, so a -Work a cut run left is named and never waited on. Before
+and after every case it reads the process list again and stops on a Roamer it did not start or a
+list it cannot read. It loads run.ps1's functions through the parser, so
 run.ps1's main flow never runs in it, and calls the real run.ps1 only in Check, which reads
 only, in Run and Install calls made to be refused, each made only after it reads a stand-in
 Roamer running and an installed stamp that is not the one passed, so two other checks would
@@ -564,7 +621,9 @@ again whenever it is unticked, and skip-scan, Scan ticking it again. They are pr
 - starts: dotnet build and dotnet build-server shutdown, the stand-ins, child powershell.exe
   processes, among them the copies of build\install.ps1 and of run.ps1 under -Work and one
   that loads a copy of Federator.Core.dll, reg.exe export, git for scratch repositories
-  under -Work, and cmd.exe for one junction under -Work
+  under -Work, and cmd.exe for one junction under -Work, and since F138 in H21 copies of
+  prove-run.ps1 under -Work, each with a child powershell that runs until its harness closes it
+  or ends, and one powershell that sleeps 20 s under a script named prove-run.ps1
 
 Proved on 2026-09-29 with no Navisworks started: 142 checks passed and 0 failed, 28
 stand-ins each closed through its held handle, Bader's folders, bundle and key read the same

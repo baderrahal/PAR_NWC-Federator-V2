@@ -334,7 +334,7 @@ F134,the code health gate,F134,beside the waves,fix,in progress,"none, measured 
 F135,the analyser settings that touch every project,F135,beside the waves,fix,open,none,none,2026-10-05
 F136,the viewpoints switch,F136,before any test run,fix,merged,117,none,2026-10-05
 F137,no site and no clash groups,F137,before the test of wave 1,fix,open,none,none,2026-10-05
-F138,loop starts with Auto-Save off,F138,before any probe or run starts again,fix,in progress,"127 open as a draft, branch fix-F138",none,2026-10-06
+F138,loop starts with Auto-Save off,F138,before any probe or run starts again,fix,merged,127,none,2026-10-06
 Q81,"local main tracked origin/master, its upstream set to origin/main",none,none,Bader's request,merged,"74, records only, nothing to merge",none,2026-09-29
 Q93,a reading of the loop's own scripts blocks a run only for harm or wrong evidence,none,none,Bader's request,merged,83,none,2026-10-04
 Q94,"code runs every real file itself, full runs of main and the fixes they show",none,none,Bader's request,in progress,none,none,2026-10-06
@@ -392,8 +392,8 @@ Q128,what the C04 baseline run did not put back,none,none,question,merged,121,no
 Q131,the default of the viewpoints box,"F114, F136",2b and before any test run,question,merged,118,none,2026-10-05
 Q133,a mirrored test can find more than the one it mirrors,F132,2a,question,merged,121,none,2026-10-05
 Q134,code that waits for F114 by Bader's order,none,none,question,merged,124,none,2026-10-05
-FR-196,loop runs write no autosave and copy his folder once,F138,before any probe or run starts again,Bader's decision,in progress,"127 open as a draft, branch fix-F138",none,2026-10-06
-Q135,too many autosave copies,F138,before any probe or run starts again,Bader's request,in progress,"127 open as a draft, branch fix-F138",none,2026-10-06
+FR-196,loop runs write no autosave and copy his folder once,F138,before any probe or run starts again,Bader's decision,in progress,"127 merged for part 1, part 2 in run.ps1 after F131",none,2026-10-06
+Q135,too many autosave copies,F138,before any probe or run starts again,Bader's request,in progress,"127 merged for part 1, part 2 in run.ps1 after F131",none,2026-10-06
 Q137,a saved mirror whose kept test the document does not say,none,none,question,merged,128,none,2026-10-06
 Q138,"a clash both tests find, with two statuses",none,none,question,merged,128,none,2026-10-06
 F139,the one page progress file,F139,right after F133 merges,fix,in review,UNKNOWN,none,2026-10-06

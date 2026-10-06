@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 451 rows: open 202, in progress 56, in review 3, merged 143, proven by a run 22, waiting for Bader 22, dropped 3
+- By status, of 451 rows: open 202, in progress 55, in review 3, merged 144, proven by a run 22, waiting for Bader 22, dropped 3
 - By wave: 1 19, 2a 28, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 6, 3a 11, 3b 20, 4 56, 5 68, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 4, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 72, outside the waves 2, right after F133 merges 3
-- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, F138 loop starts with Auto-Save off, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, T5-R-HARNESSLIMIT no harness run has a time limit, built in F138's branch, and 40 FR items
+- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, T5-R-HARNESSLIMIT no harness run has a time limit, built in F138's branch, and 40 FR items
 - Waits for Bader, 22 rows: F18, Q25, Q27, Q28, Q29, Q30, Q31, Q35, Q36, Q37, Q38, Q39, Q40, Q45, Q46, Q47, Q49, Q50, Q51, Q76, Q77, Q78
 
 ## Wave 1
@@ -306,9 +306,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| F138 | loop starts with Auto-Save off | F138 | fix | in progress | 127 open as a draft, branch fix-F138 | none | 2026-10-06 |
-| FR-196 | loop runs write no autosave and copy his folder once | F138 | Bader's decision | in progress | 127 open as a draft, branch fix-F138 | none | 2026-10-06 |
-| Q135 | too many autosave copies | F138 | Bader's request | in progress | 127 open as a draft, branch fix-F138 | none | 2026-10-06 |
+| F138 | loop starts with Auto-Save off | F138 | fix | merged | 127 | none | 2026-10-06 |
+| FR-196 | loop runs write no autosave and copy his folder once | F138 | Bader's decision | in progress | 127 merged for part 1, part 2 in run.ps1 after F131 | none | 2026-10-06 |
+| Q135 | too many autosave copies | F138 | Bader's request | in progress | 127 merged for part 1, part 2 in run.ps1 after F131 | none | 2026-10-06 |
 | T5-R-HARNESSLIMIT | no harness run has a time limit, built in F138's branch | F138 | register row | in progress | 127 open as a draft, branch fix-F138 | none | 2026-10-06 |
 
 ## before any test run
