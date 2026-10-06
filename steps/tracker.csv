@@ -423,7 +423,7 @@ F125-R13,"the driver counts passes after Run that held any window, not one windo
 F125-R14,nw-guard.ps1's header and the F125 section still say not modal,F122,4,register row,open,none,none,2026-10-04
 T5-R-CLOSE,"the C02 weekly closed by a copy of the guard's Kill, and run.ps1 cannot be asked to close",F122,4,register row,open,none,none,2026-10-05
 T5-R-GUARDRACE,the guard refused P10's put back over a sighting before the adoption,none,none,register row,open,none,none,2026-10-05
-T5-R-HARNESSLIMIT,"no harness run has a time limit, built in F138's branch",F138,before any probe or run starts again,register row,in progress,"127 open as a draft, branch fix-F138",none,2026-10-06
+T5-R-HARNESSLIMIT,"no harness run has a time limit, built in F138's branch",F138,before any probe or run starts again,register row,merged,127,none,2026-10-06
 T5-R-OLDKEY,"40 values of his 22.0 key went back to older values, the writer UNKNOWN, for Bader",none,none,register row,open,none,none,2026-10-06
 F133-R1,an F number given to work elsewhere gets its tracker row by hand only,none,none,register row,open,none,none,2026-10-05
 F133-R4,"work done outside the repo has no status of the seven, for Bader",none,none,register row,open,none,none,2026-10-05
@@ -450,3 +450,8 @@ F139-R3,a checkout that writes the page reads to the Stop gate as a rewrite,none
 F139-R4,the Stop gate's VERDICT rule is a copy in sh of run.ps1's HasVerdict,none,none,register row,open,none,none,2026-10-06
 F139-R5,"the needs Bader rows of steps 228-233, 346-352 and 364 have no tracker row and no question, the lead's call",none,none,register row,open,none,none,2026-10-06
 F139-R6,"tools\loop\prove-hooks.sh, which holds the Stop gate's cases, is not run by Actions",none,none,register row,open,none,none,2026-10-06
+T5-R-HARNESSWAITS,"waits of the harness with no limit of their own, the H0 read covering none of them",none,none,register row,open,none,none,2026-10-06
+T5-R-HARNESSARGS,prove-run.ps1's param block has no CmdletBinding so a misspelt limit is dropped in silence,none,none,register row,open,none,none,2026-10-06
+T5-R-M5AUTOSAVE,"the switch comes after M5's read, so m5.txt names the loop's own write of the autosave key",none,none,register row,open,none,none,2026-10-06
+T5-R-HELDOFF,"a run that leaves 3 0 makes the next backup read it as his value, put back by hand",none,none,register row,open,none,none,2026-10-06
+F139-R7,"a commit staging tracker.csv or the page is refused where no powershell is on PATH, such as a container",none,none,register row,open,none,none,2026-10-06

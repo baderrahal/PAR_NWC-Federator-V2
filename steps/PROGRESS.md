@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-06 16:59
+STATE OPEN, 2026-10-06 17:26
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,21 +15,21 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 0 | 0 | 0 | 0 | 20 | 0 | 20 |
 | 4 | 0 | 0 | 0 | 0 | 56 | 0 | 56 |
 | 5 | 0 | 0 | 0 | 1 | 67 | 0 | 68 |
-| outside the waves | 134 | 9 | 3 | 20 | 43 | 3 | 212 |
-| total | 166 | 55 | 3 | 22 | 202 | 3 | 451 |
+| outside the waves | 135 | 8 | 3 | 20 | 48 | 3 | 217 |
+| total | 167 | 54 | 3 | 22 | 207 | 3 | 456 |
 <!-- the end of the counts -->
 
 ## Now
-- F138 Auto-Save off and the harness time limits: attempt 2 records at 823866b with main 2eda020 in, PR 127 draft
+- F138 Auto-Save off and the harness time limits: MERGED as PR 127, 37f37d4, at 17:08, its part 2 in run.ps1 after F131
 - F132 mirrored tests: attempt 7 for Q137 A and Q138 B at 34cd532 with main 2eda020 in, no pull request yet
-- F131 teams: add-in attempt 3 at c436715, read APPROVE, its harness after F138 merges
+- F131 teams: add-in attempt 3 at c436715, read APPROVE, its harness next now that F138 has merged
 - F114 views: at e77e8a7 since 2026-10-05, its add-in half after F132's
-- F139 this page: built on fix-F139 to 1887472 and after, one draft pull request, the lead's readings under Q139 his to correct
-- Probes and runs: paused since 2026-10-05 17:08 until F138 merges, turn5\probes-pause.txt
+- F139 this page: one draft pull request on fix-F139 with main 37f37d4 in, the lead's readings under Q139 his to correct
+- Probes and runs: paused since 2026-10-05 17:08 until F138 merged, whether started again since is UNKNOWN here
 
 ## Next
-1. F138 read by one reviewer, its full harness alone, PR 127 merged before any probe or run
-2. F131's harness once F138 merges, then F131, F132 and F114 merged in the order of Q132
+1. A real start that writes no autosave into his folder, F138's proof, before any other run
+2. F131's harness, then F131, F132 and F114 merged in the order of Q132
 3. Main installed in place, then 1A02MM and 1A04PK run with the new views on, Q132
 Beside them: F139 merged, then F134 the code health gate and F135
 
@@ -38,8 +38,8 @@ Beside them: F139 merged, then F134 the code health gate and F135
 - F18, the 1A04WE sample, when he uploads it
 
 ## Blockers and known bugs
-- No probe, run or install until F138 merges, Q135
-- Whether Navisworks reads "3 0" as Auto-Save off is UNKNOWN until a real start
+- Whether Navisworks reads "3 0" as Auto-Save off is UNKNOWN until a real start writes no autosave
+- T5-R-HELDOFF: a run that leaves "3 0" makes the next backup read it as his, put back by hand
 - T5-R-OLDKEY: 40 values of his 22.0 key went back to older values, the writer UNKNOWN
 - Until F114 merges every test run has the viewpoints box unticked, and the C02 weekly stays stopped, Q130
 - The keep-awake reads steps\loop.md, which F139 moves, so it stops on STATE CLOSED only once it reads this page
