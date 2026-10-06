@@ -176,6 +176,12 @@ namespace ViewpointProbe
                             parameters[2],
                             parameters.Length > 3 ? parameters[3] : null);
                     }
+                    else if (mode == "vpcopy")
+                    {
+                        MeasureViewCopy(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
                     else if (mode == "vpcomment")
                     {
                         MeasureViewComments(
@@ -10421,6 +10427,591 @@ namespace ViewpointProbe
                         P10TreeUnder(group, tally);
                     }
                 }
+            }
+        }
+
+        // ---------- P11 of Q114, scan.md 5z-q, does AddCopy of a marked view give a new Guid, and does its comment travel ----------
+
+        private const string P11Top = "P11 probe";
+        private const string P11Sources = "P11 sources";
+        private const string P11SourceName = "P11 source guid set";
+        private const string P11Body = "P11 probe mark, written on the source whose Guid the probe set";
+
+        private sealed class P11State
+        {
+            public string Type = "NOT FOUND";
+            public string Name = string.Empty;
+            public string Guid = "UNKNOWN";
+            public int Siblings = -1;
+            public int InTree = -1;
+            public int Hidden = -2;
+            public int Material = -2;
+            public readonly List<string> Comments = new List<string>();
+            public readonly List<string> CommentIds = new List<string>();
+        }
+
+        private sealed class P11Item
+        {
+            public string Label;
+            public string Route;
+            public P11Item Source;
+            public List<string> Path;
+            public List<string> Folder;
+            public readonly Dictionary<string, P11State> At = new Dictionary<string, P11State>(StringComparer.Ordinal);
+        }
+
+        /// <summary>
+        /// P11: AddCopy of a view that carries the tool's mark, a comment written by AddComment. Does
+        /// the copy get a new Guid, and does the comment travel with it? Read on P9's COM view with
+        /// its AddComment comment, on F85's view P9 marked, and on a marked view whose Guid the probe
+        /// set, each copied by AddCopy of the document's item itself, of SavedItem.CreateCopy and of
+        /// SavedItem.CreateUniqueCopy, each copy into a folder of its own. Read right after the add,
+        /// before the save, and after a SaveFile, a Document.Clear and a TryOpenFile of the saved file.
+        /// </summary>
+        private void MeasureViewCopy(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            int folders0;
+            int comments0;
+            int views0 = TreeCounts(document, out folders0, out comments0);
+            Say("the tree at the open: viewpoints " + views0 + ", folders " + folders0 + ", comments on any item " + comments0);
+            GuidTally atOpen = P10Tree(document, "at the open");
+
+            List<P11Item> sources = new List<P11Item>();
+            P11Item s1 = P11Source(sources, "S1", "P9's COM view, the tool's view route, marked by AddComment after the add", P9Top, P9Sub, "P9 view addcomment after add");
+            List<string> legacyPath = FirstViewTwoDeep(document);
+            P11Item s2 = null;
+
+            if (legacyPath != null)
+            {
+                s2 = P11Source(sources, "S2", "an F85 view two folders deep, marked by P9's AddComment", legacyPath.ToArray());
+            }
+            else
+            {
+                Say("UNKNOWN: no viewpoint two folders deep, so S2 is not read");
+            }
+
+            P11Item s3 = new P11Item();
+            s3.Label = "S3";
+            s3.Route = "a copy of S1 by CreateCopy, its Guid set to Guid.NewGuid() and its name changed before AddCopy into a folder, marked";
+            s3.Folder = new List<string> { P11Top, P11Sources };
+            sources.Add(s3);
+
+            Say(string.Empty);
+            Say("STAGE open, the sources as P9's saved copy gives them:");
+
+            foreach (P11Item s in sources)
+            {
+                if (s != s3)
+                {
+                    P11Read(document, s, "open", atOpen);
+                }
+            }
+
+            Say(string.Empty);
+            Say("THE FOLDERS, each by FolderItem and AddCopy, one for the source S3 and one for each copy:");
+            List<P11Item> copies = new List<P11Item>();
+            P11Item c1 = P11Copy(copies, "C1", s1, "direct", "AddCopy(folder, S1 itself)");
+            P11Copy(copies, "C2", s1, "copy", "AddCopy(folder, S1.CreateCopy())");
+            P11Copy(copies, "C3", s1, "unique", "AddCopy(folder, S1.CreateUniqueCopy())");
+
+            if (s2 != null)
+            {
+                P11Copy(copies, "C4", s2, "direct", "AddCopy(folder, S2 itself)");
+            }
+
+            P11Copy(copies, "C5", s3, "direct", "AddCopy(folder, S3 itself)");
+            P11Copy(copies, "C6", s3, "copy", "AddCopy(folder, S3.CreateCopy())");
+            P11Copy(copies, "C7", s3, "unique", "AddCopy(folder, S3.CreateUniqueCopy())");
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                EnsureFolder(document, P11Top);
+                List<string> names = new List<string> { P11Sources };
+
+                foreach (P11Item c in copies)
+                {
+                    names.Add(c.Label);
+                }
+
+                foreach (string name in names)
+                {
+                    using (GroupItem top = (GroupItem)ResolveNames(document, new List<string> { P11Top }))
+                    using (FolderItem folder = new FolderItem())
+                    {
+                        folder.DisplayName = name;
+                        document.SavedViewpoints.AddCopy(top, folder);
+                    }
+                }
+
+                Say("\"" + P11Top + "\" at the root and " + names.Count + " folders under it made in " + Seconds(clock) + ": " + string.Join(", ", names.ToArray()));
+            }
+            catch (Exception error)
+            {
+                Say("the folders THREW " + error.GetType().Name + ": " + error.Message);
+                Say("P11 UNKNOWN   the folders could not be made, so nothing is copied");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("THE SOURCE S3, a copy of S1 with a Guid the probe set:");
+            Guid s3Guid = Guid.NewGuid();
+
+            try
+            {
+                using (SavedItem from = P11Resolve(document, s1))
+                using (GroupItem into = (GroupItem)ResolveNames(document, s3.Folder))
+                {
+                    if (from == null || into == null)
+                    {
+                        Say("S3 NOT MADE, S1 found " + (from != null) + ", the folder found " + (into != null));
+                    }
+                    else
+                    {
+                        using (SavedItem made = from.CreateCopy())
+                        {
+                            Say("S3 S1.CreateCopy() gave a " + made.GetType().Name + ", before anything is set: Guid " + made.Guid + ", name [" + Shown(made.DisplayName)
+                                + "], comments " + (made.Comments == null ? 0 : made.Comments.Count));
+                            made.DisplayName = P11SourceName;
+                            made.Guid = s3Guid;
+                            Say("S3 its name set to [" + P11SourceName + "] and its Guid set to " + s3Guid + ", read back off it before the AddCopy " + made.Guid);
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddCopy(into, made);
+                            Say("S3 AddCopy RETURNED after " + Seconds(clock));
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say("S3 THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            P11Read(document, s3, "add", null);
+            P11State s3Added;
+
+            if (s3.At.TryGetValue("add", out s3Added) && s3Added.Type != "NOT FOUND" && s3Added.Comments.Count == 0)
+            {
+                try
+                {
+                    using (SavedItem item = P11Resolve(document, s3))
+                    using (Comment comment = document.CreateCommentWithUniqueId(P11Body, CommentStatus.New, P9Author))
+                    {
+                        clock = System.Diagnostics.Stopwatch.StartNew();
+                        document.SavedViewpoints.AddComment(item, comment);
+                        Say("S3 carried no comment after its AddCopy, so it is marked here: AddComment RETURNED after " + Seconds(clock));
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("S3 AddComment THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P11Read(document, s3, "add", null);
+            }
+
+            Say(string.Empty);
+            Say("THE COPIES, each read back right after its add, as the one child of its own folder:");
+
+            foreach (P11Item c in copies)
+            {
+                P11MakeCopy(document, c);
+                P11Read(document, c, "add", null);
+            }
+
+            Say(string.Empty);
+            Say("STAGE before the save, the whole tree, every source and every copy:");
+            GuidTally beforeSave = P10Tree(document, "before the save");
+
+            foreach (P11Item s in sources)
+            {
+                P11Read(document, s, "save", beforeSave);
+            }
+
+            foreach (P11Item c in copies)
+            {
+                P11Read(document, c, "save", beforeSave);
+            }
+
+            P11ResolveSet(document, s3Guid, "before the save");
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (reopened)
+            {
+                Say(string.Empty);
+                Say("STAGE after a save, a clear and a reopen, the whole tree, every source and every copy:");
+                GuidTally reopenTally = P10Tree(document, "after the reopen");
+
+                foreach (P11Item s in sources)
+                {
+                    P11Read(document, s, "reopen", reopenTally);
+                }
+
+                foreach (P11Item c in copies)
+                {
+                    P11Read(document, c, "reopen", reopenTally);
+                }
+
+                P11ResolveSet(document, s3Guid, "after the reopen");
+                int folders1;
+                int comments1;
+                int views1 = TreeCounts(document, out folders1, out comments1);
+                Say("the tree after the reopen: viewpoints " + views1 + ", folders " + folders1 + ", comments on any item " + comments1);
+            }
+            else
+            {
+                Say("UNKNOWN: the saved file would not reopen, so nothing after a reopen is read");
+            }
+
+            Say(string.Empty);
+            Say("EACH COPY:  label | route | stage | the copy's Guid | the source's Guid | the Guid is | the comments the same as the source's, Body, Author and Status, Ordinal | the comment Ids and dates the same | Hidden and MaterialOverrides the same | its name the same");
+            int travelled = 0;
+            int notTravelled = 0;
+            Dictionary<string, int> guidKinds = new Dictionary<string, int>(StringComparer.Ordinal);
+            string c1Comment = "UNKNOWN";
+            string c1Guid = "UNKNOWN";
+
+            foreach (P11Item c in copies)
+            {
+                bool allTravel = true;
+                HashSet<string> kinds = new HashSet<string>(StringComparer.Ordinal);
+
+                foreach (string stage in new[] { "add", "save", "reopen" })
+                {
+                    P11State mine;
+
+                    if (!c.At.TryGetValue(stage, out mine))
+                    {
+                        Say("   " + c.Label + " | " + stage + " | not read");
+                        allTravel = false;
+                        kinds.Add("UNKNOWN");
+                        continue;
+                    }
+
+                    P11State theirs = P11SourceAt(c.Source, stage);
+
+                    if (mine.Type == "NOT FOUND" || theirs == null || theirs.Type == "NOT FOUND")
+                    {
+                        Say("   " + c.Label + " | " + stage + " | the copy found " + Yes(mine.Type != "NOT FOUND") + ", the source found " + Yes(theirs != null && theirs.Type != "NOT FOUND"));
+                        allTravel = false;
+                        kinds.Add("UNKNOWN");
+                        continue;
+                    }
+
+                    string kind = mine.Guid == Guid.Empty.ToString()
+                        ? (theirs.Guid == Guid.Empty.ToString() ? "empty, as the source's" : "empty, the source's is not")
+                        : mine.Guid == theirs.Guid ? "KEPT, the source's" : "NEW";
+                    bool sameComments = mine.Comments.Count > 0 && P11SameList(mine.Comments, theirs.Comments);
+                    bool sameIds = mine.CommentIds.Count > 0 && P11SameList(mine.CommentIds, theirs.CommentIds);
+                    bool sameCounts = mine.Hidden == theirs.Hidden && mine.Material == theirs.Material && mine.Hidden >= 0 && mine.Material >= 0;
+                    bool sameName = string.Equals(mine.Name, theirs.Name, StringComparison.Ordinal);
+                    kinds.Add(kind);
+
+                    if (!sameComments)
+                    {
+                        allTravel = false;
+                    }
+
+                    Say("   " + c.Label + " | " + c.Route + " | " + stage + " | " + mine.Guid + " | " + theirs.Guid + " | " + kind
+                        + " | " + Yes(sameComments) + " (" + mine.Comments.Count + " and " + theirs.Comments.Count + ")"
+                        + " | " + Yes(sameIds) + " | " + Yes(sameCounts) + " (" + mine.Hidden + ", " + mine.Material + " and " + theirs.Hidden + ", " + theirs.Material + ")"
+                        + " | " + Yes(sameName));
+                }
+
+                string kindText = string.Join(" then ", new List<string>(kinds).ToArray());
+                int seen;
+                guidKinds.TryGetValue(kindText, out seen);
+                guidKinds[kindText] = seen + 1;
+
+                if (allTravel)
+                {
+                    travelled++;
+                }
+                else
+                {
+                    notTravelled++;
+                }
+
+                if (c == c1)
+                {
+                    c1Comment = Yes(allTravel);
+                    c1Guid = kindText;
+                }
+
+                Say("   " + c.Label + " in all: the comment travelled at every stage " + Yes(allTravel) + ", the Guid " + kindText);
+            }
+
+            List<string> kindLines = new List<string>();
+
+            foreach (KeyValuePair<string, int> pair in guidKinds)
+            {
+                kindLines.Add(pair.Value + " " + pair.Key);
+            }
+
+            Say("P11 on the tool's marked view, C1, AddCopy of S1 itself: the comment travels " + c1Comment + ", the Guid " + c1Guid);
+            Say("P11 over all " + copies.Count + " copies: the comment travelled on " + travelled + " and not on " + notTravelled + ". The Guid: " + string.Join(", ", kindLines.ToArray()));
+        }
+
+        private static P11Item P11Source(List<P11Item> into, string label, string route, params string[] path)
+        {
+            P11Item item = new P11Item();
+            item.Label = label;
+            item.Route = route;
+            item.Path = new List<string>(path);
+            into.Add(item);
+            return item;
+        }
+
+        private static P11Item P11Copy(List<P11Item> into, string label, P11Item source, string how, string route)
+        {
+            P11Item item = new P11Item();
+            item.Label = label;
+            item.Route = route;
+            item.Source = source;
+            item.Path = null;
+            item.Folder = new List<string> { P11Top, label };
+            item.At["how"] = new P11State { Type = how };
+            into.Add(item);
+            return item;
+        }
+
+        private static P11State P11SourceAt(P11Item source, string stage)
+        {
+            P11State state;
+
+            foreach (string s in new[] { stage, "add", "open" })
+            {
+                if (source.At.TryGetValue(s, out state))
+                {
+                    return state;
+                }
+            }
+
+            return null;
+        }
+
+        private static bool P11SameList(List<string> a, List<string> b)
+        {
+            if (a.Count != b.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < a.Count; i++)
+            {
+                if (!string.Equals(a[i], b[i], StringComparison.Ordinal))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>The item by its path of names, or the first child of its folder, the folder's child count given out.</summary>
+        private static SavedItem P11Resolve(Document document, P11Item item, out int siblings)
+        {
+            siblings = -1;
+
+            if (item.Path != null)
+            {
+                return ResolveNames(document, item.Path);
+            }
+
+            using (SavedItem found = ResolveNames(document, item.Folder))
+            {
+                GroupItem folder = found as GroupItem;
+
+                if (folder == null)
+                {
+                    return null;
+                }
+
+                SavedItemCollection children = folder.Children;
+                siblings = children.Count;
+                return siblings > 0 ? children[0] : null;
+            }
+        }
+
+        private static SavedItem P11Resolve(Document document, P11Item item)
+        {
+            int siblings;
+            return P11Resolve(document, item, out siblings);
+        }
+
+        private void P11MakeCopy(Document document, P11Item copy)
+        {
+            string how = copy.At["how"].Type;
+
+            try
+            {
+                using (SavedItem source = P11Resolve(document, copy.Source))
+                using (GroupItem folder = (GroupItem)ResolveNames(document, copy.Folder))
+                {
+                    if (source == null || folder == null)
+                    {
+                        Say(copy.Label + " NOT MADE, the source found " + (source != null) + ", its folder found " + (folder != null));
+                        return;
+                    }
+
+                    System.Diagnostics.Stopwatch clock;
+
+                    if (how == "direct")
+                    {
+                        clock = System.Diagnostics.Stopwatch.StartNew();
+                        document.SavedViewpoints.AddCopy(folder, source);
+                        Say(copy.Label + " " + copy.Route + " RETURNED after " + Seconds(clock));
+                        return;
+                    }
+
+                    using (SavedItem made = how == "unique" ? source.CreateUniqueCopy() : source.CreateCopy())
+                    {
+                        Say(copy.Label + " " + (how == "unique" ? "CreateUniqueCopy" : "CreateCopy") + " of " + copy.Source.Label + " gave a " + made.GetType().Name
+                            + ", before the AddCopy: Guid " + made.Guid + ", the source's " + source.Guid + ", name [" + Shown(made.DisplayName)
+                            + "], comments " + (made.Comments == null ? 0 : made.Comments.Count));
+                        clock = System.Diagnostics.Stopwatch.StartNew();
+                        document.SavedViewpoints.AddCopy(folder, made);
+                        Say(copy.Label + " " + copy.Route + " RETURNED after " + Seconds(clock));
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say(copy.Label + " " + copy.Route + " THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        /// <summary>Reads one item at a stage: its type, name, Guid, comments, and for a view its Hidden and MaterialOverrides counts.</summary>
+        private void P11Read(Document document, P11Item target, string stage, GuidTally tally)
+        {
+            P11State state = new P11State();
+            target.At[stage] = state;
+
+            try
+            {
+                int siblings;
+
+                using (SavedItem item = P11Resolve(document, target, out siblings))
+                {
+                    state.Siblings = siblings;
+
+                    if (item == null)
+                    {
+                        Say("   " + target.Label + " at " + stage + ": NOT FOUND" + (siblings >= 0 ? ", its folder holds " + siblings : string.Empty));
+                        return;
+                    }
+
+                    Guid guid = item.Guid;
+                    state.Type = item.GetType().Name;
+                    state.Name = item.DisplayName ?? string.Empty;
+                    state.Guid = guid.ToString();
+                    SavedViewpoint view = item as SavedViewpoint;
+
+                    if (view != null)
+                    {
+                        state.Hidden = HiddenCount(view);
+                        state.Material = MaterialCount(view);
+                    }
+
+                    CommentCollection comments = item.Comments;
+                    int count = comments == null ? 0 : comments.Count;
+
+                    for (int c = 0; c < count; c++)
+                    {
+                        Comment comment = comments[c];
+                        state.Comments.Add("Body [" + Shown(comment.Body) + "] Author [" + Shown(comment.Author) + "] Status " + comment.Status);
+                        state.CommentIds.Add("Id " + comment.Id + " CreationDate "
+                            + comment.CreationDate.ToString("yyyy-MM-dd HH:mm:ss.fffffff", System.Globalization.CultureInfo.InvariantCulture));
+                    }
+
+                    string line = "   " + target.Label + " at " + stage + ": a " + state.Type + " [" + Shown(state.Name) + "], index path " + P10IndexPath(document, item)
+                        + ", Guid " + guid + (siblings >= 0 ? ", its folder holds " + siblings : string.Empty)
+                        + (view == null ? string.Empty : ", Hidden " + state.Hidden + ", MaterialOverrides " + state.Material)
+                        + ", comments " + count;
+
+                    if (tally != null)
+                    {
+                        int inTree;
+                        tally.Count.TryGetValue(guid, out inTree);
+                        state.InTree = inTree;
+                        line += ", items in the tree with this Guid " + inTree;
+                    }
+
+                    Say(line);
+
+                    for (int c = 0; c < count; c++)
+                    {
+                        Say("      comment " + c + ": " + state.Comments[c] + " " + state.CommentIds[c]);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                state.Type = "NOT FOUND";
+                Say("   " + target.Label + " at " + stage + ": the read THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        private void P11ResolveSet(Document document, Guid set, string when)
+        {
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                using (SavedItem found = document.SavedViewpoints.ResolveGuid(set))
+                {
+                    string seconds = Seconds(clock);
+                    Say("ResolveGuid of S3's set Guid " + set + " " + when + " returned after " + seconds + ": "
+                        + (found == null ? "null" : "a " + found.GetType().Name + " [" + Shown(found.DisplayName) + "] at " + P10IndexPath(document, found)));
+                }
+            }
+            catch (Exception error)
+            {
+                Say("ResolveGuid of S3's set Guid " + when + " THREW " + error.GetType().Name + ": " + error.Message);
             }
         }
     }
