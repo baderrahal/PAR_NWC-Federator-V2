@@ -87,7 +87,8 @@ and nothing is fixed until a real run on real files shows it fixed.
 - Nothing of Bader's is deleted or overwritten, bar five things. The installed add-in,
   backed up first as the install rule above says, whose files an install replaces or
   removes. His Navisworks settings, put back to what the backup holds under the settings
-  rule below, which can remove a value or key the loop's own Navisworks added. His oldest
+  rule below, which can remove a value or key the loop's own Navisworks added, and whose
+  Auto-Save switch the loop itself writes "3 0" before every start, F138. His oldest
   run logs, which the tool itself prunes when a loop run opens its window, each held in
   logs-backup by sha256 and put back after the loop, Bader's answer Q82. And his AutoSave
   folder, where the loop removes the autosaves its runs added and puts back from the backup
@@ -163,7 +164,7 @@ and nothing is fixed until a real run on real files shows it fixed.
   read before the backup and again just before the start, and the code keeps that rule,
   not a person, run.ps1 at its checks 6 and 18. docs\history\scan.md 5z-d
 - NO RECORD OR QUESTION ABOUT AUTOSAVES unless something of Bader's actually changed, his word of 2026-10-05,
-  Q135. Once F138, FR-196, merges, Auto-Save is switched off for every loop start, and once its second part
+  Q135. Once F138, FR-196, merges, the Auto-Save switch is written "3 0" for every loop start, and once its second part
   merges his AutoSave folder has one backup only, autosave-backup, compared by names, sizes and times before
   and after each run. Until then the rule below stands
 - His AutoSave folder, %APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave, is where the
@@ -233,6 +234,46 @@ and nothing is fixed until a real run on real files shows it fixed.
   loop did not start ran at any point from the backup to then. Otherwise nothing is
   written, every change is listed with its old and new value in the turn's record, and the
   backup is kept for Bader
+- THE AUTO-SAVE SWITCH IS WRITTEN "3 0" FOR EVERY LOOP START, run or probe, so that a loop
+  run never writes an autosave into his AutoSave folder, Bader's message of 2026-10-05, Q135
+  point 2. It is written after the last read before the constructor, run.ps1's check 18 and
+  the probe's last read, so no stop before the switch leaves it written, and the switch's
+  own refusal leaves it written only where its line says so or the key's close throws after the
+  write. There the one
+  SwitchAutoSaveOff in tools\loop\nw-guard.ps1 writes the value enable under
+  GlobalOptions\general\autosave of the 22.0 key as "3 0", opens the key again and reads it
+  back, and refuses the start with one line when it does not read back or the key is not
+  there, a key it never makes. That line says what happened: enable reads what the backup
+  holds, so nothing of his changed, or it reads something else and must be put back by hand,
+  or it cannot be read again and whether it changed is UNKNOWN. BackupSettings writes
+  nothing. Where the switch and its form come from was measured on 2026-10-05,
+  %LOCALAPPDATA%\NwcFederatorLoop\turn5\q135\measure.md and measure-check.md: every Auto-Save
+  value read "0", a value never set, so the default, on, held, and the set booleans of that
+  key read "3 0" or "3 1". That Navisworks reads "3 0" as off is UNKNOWN until a start writes
+  no autosave. The put back returns enable to what the backup holds. Where the constructor
+  was called and no put back is made, a put back refused because nothing was adopted or
+  another Navisworks ran, the constructor deadline or a CloseOwn after run.ps1 died, enable
+  is left at "3 0" for Bader. The record then says so: for a put back refused or the deadline
+  one LEFT OFF line, and for CloseOwn its list of differences names enable. The lead puts it
+  back by hand.
+- NO HARNESS RUN AND NO WAIT FOR ONE RUNS WITHOUT A TIME LIMIT, Bader's message headed CONTINUE
+  THE LOOP AFTER THE LAPTOP WENT OFF, item 6, F138. The harness is started as
+  tools\loop\prove-run.ps1 with its limits, never through a wrapper that waits on a pid or a
+  folder. The run has -RunLimitSeconds, 5400 by default, each case -CaseLimitSeconds, 600, with
+  H6 at -H6LimitSeconds, 900, and H17 at -H17LimitSeconds, 2400, each child the limit its call
+  gives or -ChildLimitSeconds, 300, a run of the real run.ps1 -RealLimitSeconds, 600, and the
+  cleanup -CleanupLimitSeconds, 120. The defaults are margins chosen over what was read, the
+  longest whole run 3240 s, H17 about 1394 s and H6 about 355 s,
+  %LOCALAPPDATA%\NwcFederatorLoop\turn5\restart\harness.md, and are not measurements. Past a
+  limit one TIME LIMIT line names the run, the case or the child and the seconds, the harness
+  closes only its own stand-ins and children through their held handles, goes to CLEANUP and
+  exits 3, and a harness that does not reach the end of its cleanup within that limit ends itself
+  with exit 3 and names -Work and the throwaway key as maybe left. A lane that must wait for a
+  Roamer or another harness passes -WaitSeconds, read again every -WaitPollSeconds, and past it
+  the harness refuses with exit 2 naming what still runs. A -Work that is there already, as a cut
+  run leaves it, is refused at once and never waited on. H0 reads prove-run.ps1 for a WaitForExit
+  with no argument, a .Result outside EndChild, a loop whose condition is always true and a call of
+  run.ps1's RunChild, and H21 proves each limit on copies of the harness.
 - No NWC, NWF, NWD, workbook or picture is ever committed
 - No licensing id, session id or anything else that names Bader's Autodesk licence or his
   machine is ever committed. Every file of a run or a probe is read by
