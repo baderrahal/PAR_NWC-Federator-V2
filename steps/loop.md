@@ -475,7 +475,7 @@ SINCE BADER'S ORDER OF 2026-10-05, Q132, the new viewpoints come first, ahead of
    on, and the VIEWS seconds and the total of each building against set 04, 1A04PK having no baseline
    of either
 6. Then the items below as planned, with F137 for Q111 and Q125 before the test of wave 1
-BADER'S ANSWERS OF 2026-10-06 TO THE 22 OLD ITEMS, recorded by this records pull request: the order of work unchanged, F18 dropped, his F132 rule Q140, under which F132's attempt 8 began again at 16:53:31, and the work of his answers FR-198 to FR-204 of steps\fix-round.md, each after the viewpoints.
+BADER'S ANSWERS OF 2026-10-06 TO THE 22 OLD ITEMS, recorded by pull request 131: the order of work unchanged, F18 dropped, his F132 rule Q140, under which F132's attempt 8 began again at 16:53:31, and the work of his answers FR-198 to FR-204 of steps\fix-round.md, each after the viewpoints.
 Q128 A was carried out whole at 15:49, the C04 paragraph above says how. Until F114 merges every test run has the viewpoints box unticked.
 Since then: F131's Core half was read with nothing blocking by both readers after its attempt 3,
 1968 Core tests at 11457ff, turn5\f131-a3-result.json. F114's Core half read CHANGES with 4 blocking

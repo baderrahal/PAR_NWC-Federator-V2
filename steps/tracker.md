@@ -2,7 +2,7 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 405 rows: open 158, in progress 56, in review 23, merged 142, proven by a run 22, waiting for Bader 0, dropped 4
+- By status, of 405 rows: open 158, in progress 56, in review 0, merged 165, proven by a run 22, waiting for Bader 0, dropped 4
 - By wave: 1 19, 2a 31, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 43, 5 71, 5 and 4 1, all 1, before any probe or run starts again 3, before any test run 3, before the test of wave 1 6, before the waves 114, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 23, outside the waves 2
 - In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, F138 loop starts with Auto-Save off, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 40 FR items
 - Waits for Bader: nothing
@@ -58,7 +58,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F127 | coverage of the clash XML | F127 | fix | in progress | none, branch fix-F127 | none | 2026-10-05 |
 | F132 | mirrored tests | F132 | fix | in progress | none, branch fix-F132 | none | 2026-10-05 |
 | Q112-2 | coverage of the clash XML (FR-176) | F127 | Bader's request | in progress | none, branch fix-F127 | none | 2026-10-05 |
-| Q46 | F77 against the single discipline rule | F127 | question | in review | UNKNOWN | none | 2026-10-06 |
+| Q46 | F77 against the single discipline rule | F127 | question | merged | 131 | none | 2026-10-06 |
 | Q121 | telecom fixtures and telephone devices | F132 | question | merged | 118 | none | 2026-10-05 |
 | Q122 | whose status a result carries | F132 | question | merged | 118 | none | 2026-10-05 |
 | Q126 | no workbook for the coverage sheet when the clash is skipped | F127 | question | merged | 118 | none | 2026-10-05 |
@@ -98,7 +98,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F128 | generic models | F128 | fix | open | none | none | 2026-10-04 |
 | F131 | teams | F131 | fix | in progress | none, branch fix-F131 | none | 2026-10-05 |
 | Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | open | none | none | 2026-10-04 |
-| Q77 | the clear and rebuild does not copy the viewpoints | F114 | question | in review | UNKNOWN | none | 2026-10-06 |
+| Q77 | the clear and rebuild does not copy the viewpoints | F114 | question | merged | 131 | none | 2026-10-06 |
 | Q115 | where the team map lives | F131 | question | merged | 118 | none | 2026-10-05 |
 | Q116 | where the team map applies | F131 | question | merged | 118 | none | 2026-10-05 |
 | Q117 | a set name with no discipline code | F114 | question | merged | 118 | none | 2026-10-05 |
@@ -123,8 +123,8 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-040 | item ids guid fallback counted missing | F118 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-041 | grid location empty on 345 rows | F118 | broken feature | open | none | none | 2026-10-04 |
 | F118 | workbook and report | F118 | fix | open | none | none | 2026-10-04 |
-| Q45 | a count of the clashes this run moved to Reviewed | F118 | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q49 | a priority file replaces the measured block order | F118 | question | in review | UNKNOWN | none | 2026-10-06 |
+| Q45 | a count of the clashes this run moved to Reviewed | F118 | question | merged | 131 | none | 2026-10-06 |
+| Q49 | a priority file replaces the measured block order | F118 | question | merged | 131 | none | 2026-10-06 |
 | FR-199 | blocks stay in measured order with a priority file | F118 | Bader's decision | open | none | none | 2026-10-06 |
 
 ## Wave 3a
@@ -142,14 +142,14 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F120 | harvest and pictures | F120 | fix | open | none | none | 2026-10-04 |
 | F129 | start from an existing NWF | F129 | fix | open | none | none | 2026-10-04 |
 | Q112-4 | start from an existing NWF (FR-178) | F129 | Bader's request | open | none | none | 2026-10-04 |
-| Q25 | five clash item properties reach no output, split into Q35 to Q40 | F120 | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q35 | the GAP block, Family reaches no output | F120 | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q36 | the GAP block, Type Name | F120 | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q37 | the GAP block, Material | F120 | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q38 | the GAP block, Source File | F120 | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q39 | the GAP block, Discipline | F120 | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q40 | the GAP block, Id From | F120 | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q76 | the source file column empty on every row | F120 | question | in review | UNKNOWN | none | 2026-10-06 |
+| Q25 | five clash item properties reach no output, split into Q35 to Q40 | F120 | question | merged | 131 | none | 2026-10-06 |
+| Q35 | the GAP block, Family reaches no output | F120 | question | merged | 131 | none | 2026-10-06 |
+| Q36 | the GAP block, Type Name | F120 | question | merged | 131 | none | 2026-10-06 |
+| Q37 | the GAP block, Material | F120 | question | merged | 131 | none | 2026-10-06 |
+| Q38 | the GAP block, Source File | F120 | question | merged | 131 | none | 2026-10-06 |
+| Q39 | the GAP block, Discipline | F120 | question | merged | 131 | none | 2026-10-06 |
+| Q40 | the GAP block, Id From | F120 | question | merged | 131 | none | 2026-10-06 |
+| Q76 | the source file column empty on every row | F120 | question | merged | 131 | none | 2026-10-06 |
 | FR-198 | item properties harvest deleted and gap says read and empty | F120 | Bader's decision | open | none | none | 2026-10-06 |
 
 ## Wave 3b
@@ -296,16 +296,16 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F117 | the names | F117 | fix | open | none | none | 2026-10-04 |
 | F123 | docs and words, and the noise of every area | F123 | fix | open | none | none | 2026-10-04 |
 | F124 | D1, one public type per file | F124 | fix | open | none | none | 2026-10-04 |
-| Q27 | the two choice rule for still outstanding lost every reader | F123 | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q30 | the bundle manifest points at the old scan.md path | F123 | question | in review | UNKNOWN | none | 2026-10-06 |
-| FR-203 | open statuses rule stays naming its reader | F123 | Bader's decision | in review | UNKNOWN | none | 2026-10-06 |
+| Q27 | the two choice rule for still outstanding lost every reader | F123 | question | merged | 131 | none | 2026-10-06 |
+| Q30 | the bundle manifest points at the old scan.md path | F123 | question | merged | 131 | none | 2026-10-06 |
+| FR-203 | open statuses rule stays naming its reader | F123 | Bader's decision | merged | 131, records only, main already does it | none | 2026-10-06 |
 | FR-204 | manifest line 9 and its one exception | F123 | Bader's decision | open | none | none | 2026-10-06 |
 
 ## Wave 5 and 4
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| Q28 | two handle reads left where they are | F123, F121 | question | in review | UNKNOWN | none | 2026-10-06 |
+| Q28 | two handle reads left where they are | F123, F121 | question | merged | 131 | none | 2026-10-06 |
 
 ## all
 
@@ -335,10 +335,10 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 |---|---|---|---|---|---|---|---|
 | FR-195 | no site and no clash groups end partial | F137 | Bader's decision | open | none | none | 2026-10-05 |
 | F137 | no site and no clash groups | F137 | fix | open | none | none | 2026-10-05 |
-| Q78 | C04 models naming misspelled shared sites | F137 | question | in review | UNKNOWN | none | 2026-10-06 |
+| Q78 | C04 models naming misspelled shared sites | F137 | question | merged | 131 | none | 2026-10-06 |
 | Q111 | a model that names no site at all | F137 | question | merged | 118 | none | 2026-10-05 |
 | Q125 | a group that runs no clash test, a model off the coordinates | F137 | question | merged | 118 | none | 2026-10-05 |
-| FR-201 | shared site named default reported only | F137 | Bader's decision | in review | UNKNOWN | none | 2026-10-06 |
+| FR-201 | shared site named default reported only | F137 | Bader's decision | merged | 131, records only, main already does it | none | 2026-10-06 |
 
 ## before the waves
 
@@ -361,7 +361,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F15 | dispose in SetBuilder and ClashRunner.Resolve, closed by F41 | F41 | fix | merged | merge 80023a6 | none | 2026-09-12 |
 | F16 | make the tests path neutral | F16 | fix | merged | merge 47e3a9f | none | 2026-09-12 |
 | F17 | picture numbering by block order | F17 | fix | merged | merge ff9811b | none | 2026-09-07 |
-| F18 | add the 1A04WE sample, dropped by Bader on 2026-10-06, Q9 | F18 | fix | dropped | UNKNOWN | none | 2026-10-06 |
+| F18 | add the 1A04WE sample, dropped by Bader on 2026-10-06, Q9 | F18 | fix | dropped | 131 | none | 2026-10-06 |
 | F19 | CI for the add-in, dropped on Q10 | F19 | fix | dropped | none | none | 2026-09-06 |
 | F20 | run the Core tests on every push to main | F20 | fix | merged | merge c58f4b1 | none | 2026-09-07 |
 | F21 | the log answers timing and counts, closed by F60 | F60 | fix | merged | merge 5e69c2b | none | 2026-09-19 |
@@ -493,11 +493,11 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q97-1 | the findings of the first C06 run in steps\runs\03\findings.md | none | Bader's request | merged | 86 | none | 2026-10-01 |
 | Q97-2 | the first run of C07 and the run set that night, replaced by Q98's no run of C07 now | none | Bader's request | dropped | none | none | 2026-10-04 |
 | Q112-1 | no sleep and keep awake (FR-175) | none | Bader's request | merged | 99, records only, nothing to merge | none | 2026-10-04 |
-| Q29 | three settable properties nothing outside the code sets | none | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q31 | five names listed wrongly in the F40 entry | none | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q47 | four service categories not on the service list | none | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q50 | F72c widens the one status guard for the undo | none | question | in review | UNKNOWN | none | 2026-10-06 |
-| Q51 | the first size property or the largest | none | question | in review | UNKNOWN | none | 2026-10-06 |
+| Q29 | three settable properties nothing outside the code sets | none | question | merged | 131 | none | 2026-10-06 |
+| Q31 | five names listed wrongly in the F40 entry | none | question | merged | 131 | none | 2026-10-06 |
+| Q47 | four service categories not on the service list | none | question | merged | 131 | none | 2026-10-06 |
+| Q50 | F72c widens the one status guard for the undo | none | question | merged | 131 | none | 2026-10-06 |
+| Q51 | the first size property or the largest | none | question | merged | 131 | none | 2026-10-06 |
 | Q110 | a skipped group and its tests | none | question | merged | 118 | none | 2026-10-05 |
 | Q124 | the baseline of 1A04PK takes a day or more | none | question | merged | 118 | none | 2026-10-05 |
 | Q128 | what the C04 baseline run did not put back | none | question | merged | 121 | none | 2026-10-05 |
