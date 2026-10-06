@@ -661,9 +661,10 @@ What waits on Bader's answer. A finding moves here when it survives three fix at
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
 
-OPEN IN THE FORM NOW: none. Q134 was ANSWERED B and Q136 A on 2026-10-05, decided and not yet built: F131's
-three members for F114 to go with F114, and the old tests of an NWF to be renamed by their own names with
-(mirror) at the end and run, each under its question.
+OPEN IN THE FORM NOW: Q137 and Q138, written on 2026-10-06 from F132, how a saved mirror pairs with no XML
+where its kept test is not one test, and which status a clash both tests find carries, the build going on
+with A in each until he answers. Q134 B is built on fix-F131 at ec311bb, the three members out, and Q136 A on
+fix-F132 at e7cbaba, every mirror named by its own name with (mirror) at the end, neither merged yet.
 Q133 was ANSWERED D on 2026-10-05, both tests of a mirrored pair run and
 their clashes merged by the pair of items, and he allowed the removal of the run's three autosaves of
 Q128, removed at 15:49, turn5\remove-run-autosaves.txt. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
