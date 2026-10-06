@@ -51,11 +51,12 @@
 #
 # WHAT F138 CHANGED OR ADDED, so a loop start never autosaves into Bader's AutoSave folder,
 # his message of 2026-10-05, Q135 point 2:
-# - changed: BackupSettings, which switches Auto-Save off once the backup is taken and refuses
-#   when the switch does not read back, SettingsPutBack and the watchdog's constructor deadline
-#   block, which each say in one line when Auto-Save is left off for Bader
+# - changed: SettingsPutBack and the watchdog's constructor deadline block, which each say in
+#   one line when Auto-Save is left off for Bader
 # - added: AutoSaveSwitchKey, AutoSaveSwitchOff, AutoSaveSwitchHeld, SwitchAutoSaveOff and
-#   AutoSaveLeftLine
+#   AutoSaveLeftLine. SwitchAutoSaveOff is called by run.ps1 and the probe after their last read
+#   before the constructor, and since attempt 2 no longer by BackupSettings, which writes
+#   nothing, so no stop before the start leaves the switch written
 # The rules these functions keep are written at the top of the probe and in
 # .claude\rules\loop.md, and are not repeated here.
 #
@@ -1279,11 +1280,6 @@ Say ("  %APPDATA%\Autodesk\Navisworks Manage 2025: " + $filesBefore.Count + " fi
 $fedBefore = SettingsRead $fedLogs
 Say ("  the tool's own logs folder listed: " + $fedBefore.Files.Count + " files")
   $bs.RegRoot = $regRoot; $bs.RegFile = $regFile; $bs.RegBefore = $regBefore; $bs.AppBackup = $appBackup; $bs.FilesBefore = $filesBefore; $bs.AutoBefore = $autoBefore; $bs.NotBacked = $notBacked; $bs.FedBefore = $fedBefore
-  # F138. Auto-Save off for the start, written after the key was read for the backup, so the put
-  # back returns it to what the backup holds.
-  $ao = SwitchAutoSaveOff $regSub $regRoot $regBefore
-  if (-not $ao.Ok) { $bs.Why = "STOP before the constructor: " + $ao.Line; return $bs }
-  Say ("  " + $ao.Line)
   $bs.Ok = $true
   return $bs
 }
@@ -1307,7 +1303,10 @@ function AutoSaveSwitchHeld($regBefore, $regSub) {
 }
 # Writes off, then opens the key again and reads it back. Ok is true only when it reads off.
 # Line is the record's one line: what was written and what the backup holds, or why the start
-# is refused and whether enable still reads what the backup holds.
+# is refused and what that leaves of his, nothing changed, his value changed and to be put back
+# by hand, or UNKNOWN when enable cannot be read again. run.ps1 and the probe call it after their
+# last read before the constructor and never BackupSettings, F138 attempt 2, so no stop before
+# the start but its own refusal comes after the write.
 function SwitchAutoSaveOff($regSub, $regRoot, $regBefore) {
   $r = [pscustomobject]@{ Ok = $false; Line = "" }
   $name = AutoSaveSwitchKey $regSub
@@ -1323,13 +1322,13 @@ function SwitchAutoSaveOff($regSub, $regRoot, $regBefore) {
   $now = RegValueNow $name "enable"
   if ($werr -eq "" -and $now.Ok -and (RegSame $now.Value $off)) {
     $r.Ok = $true
-    $r.Line = "Auto-Save switched off for this start, Q135: " + $where + " written " + (RegText $off) + " and read back so, the backup holds " + (RegText $held) + ". Until the put back it is off for Bader too, and a stop before the start puts nothing back, so then it is left off and must be put back by hand"
+    $r.Line = "Auto-Save switch written off for this start, Q135: " + $where + " written " + (RegText $off) + " and read back so, the backup holds " + (RegText $held) + ". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave"
     return $r
   }
-  $read = "it could not be read again, " + $now.Error
-  if ($now.Ok) { $read = "it reads " + (RegText $now.Value) }
-  $same = ($now.Ok -and (RegSame $now.Value $held))
-  $r.Line = "Auto-Save could not be switched off, " + $where + $(if ($werr -ne "") { ", " + $werr.TrimEnd('.') } else { " was written and does not read back " + (RegText $off) }) + ", " + $read + $(if ($same) { ", what the backup holds" } else { ", and the backup holds " + (RegText $held) + ", so it must be put back by hand" })
+  $left = ", it reads " + (RegText $now.Value) + ", and the backup holds " + (RegText $held) + ", so his value is changed and must be put back by hand"
+  if (-not $now.Ok) { $left = ", it could not be read again, " + $now.Error.TrimEnd('.') + ", and the backup holds " + (RegText $held) + ", so whether his value is changed is UNKNOWN and it must be read by hand" }
+  elseif (RegSame $now.Value $held) { $left = ", it reads " + (RegText $now.Value) + ", what the backup holds, so nothing of his was changed" }
+  $r.Line = "Auto-Save switch could not be written off, " + $where + $(if ($werr -ne "") { ", " + $werr.TrimEnd('.') } else { " was written and does not read back " + (RegText $off) }) + $left
   return $r
 }
 # After the put back, or where none was made, the one line saying Auto-Save is left off for

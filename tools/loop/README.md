@@ -504,17 +504,24 @@ kind and both states. The monitor writes a PANE without counting it a DIALOG fin
 never holds back WM_CLOSE.
 
 What F138 changed, which its header lists too, Bader's message of 2026-10-05, Q135 point 2:
-BackupSettings, once it has read the 22.0 key for the backup, writes enable under its
-GlobalOptions\general\autosave as "3 0", Auto-Save off, opens the key again and reads it back,
-and refuses the start with one line when it does not read back or the key is not there, which
-it never makes. So every start of the probe and of run.ps1 has Auto-Save off, and the put back
-returns it. SettingsPutBack and the watchdog's constructor deadline block each write one line
-when Auto-Save is left off for Bader, that is when enable still reads "3 0" and the backup held
-something else. That Navisworks reads "3 0" as off is UNKNOWN until a start writes no autosave.
+after the last read before the constructor, run.ps1's check 18 and the probe's last read, the
+one SwitchAutoSaveOff writes enable under GlobalOptions\general\autosave of the 22.0 key as
+"3 0", opens the key again and reads it back, and refuses the start with one line when it does
+not read back or the key is not there, which it never makes. That line says whether his value
+reads what the backup holds, reads something else and must be put back by hand, or cannot be
+read and is UNKNOWN. BackupSettings writes nothing, so no stop before the start leaves the
+switch written. So the switch is written "3 0" for every start of the probe and of run.ps1,
+and the put back returns it. That Navisworks reads "3 0" as off is UNKNOWN until a start
+writes no autosave. SettingsPutBack and the watchdog's constructor deadline block each write
+one LEFT OFF line when enable still reads "3 0" and the backup held something else.
 
 - writes outside the repo: since F138 the one value enable under
-  HKCU\Software\Autodesk\Navisworks Manage\22.0\GlobalOptions\general\autosave, before every
-  start of the probe and of run.ps1, put back by the settings put back
+  HKCU\Software\Autodesk\Navisworks Manage\22.0\GlobalOptions\general\autosave, written "3 0"
+  just before every call of the constructor by the probe and by run.ps1, and put back by the
+  settings put back. Where the constructor was called and no put back is made, a put back
+  refused because nothing was adopted or another Navisworks ran, the constructor deadline or a
+  CloseOwn after run.ps1 died, it is left at "3 0" for Bader, the record says so in a LEFT OFF
+  line or, for CloseOwn, in its list of differences, and the lead puts it back by hand
 
 How the record stays bounded since F125's second pass: the monitor writes each window at first
 sight, keyed by its handle, class and caption, and writes it again, an AGAIN line naming its reads
@@ -534,10 +541,13 @@ run against a fake APPDATA, H16, a window whose thread is blocked, and H17, a co
 run.ps1 whose constructor line is removed, run against fake LOCALAPPDATA and APPDATA folders
 through checks 13, 14, 15 and 18 and to the removed line, and since fix attempt 2: H18, the
 end of a run, the call deadline, the verdict, the one listing reader and the bounded walk,
-and since F138 H20, Auto-Save switched off on the throwaway key: a write that reads back and
-is put back, a write SetValue is denied on, a key that is not there, a put back refused, a
-put back stopped by a stand-in, a switch the backup held off already and the constructor
-deadline in a child, and H21, its own time limits on copies of itself whose cases are replaced
+and since F138 H20, the Auto-Save switch written "3 0" on the throwaway key: a backup that
+writes nothing and a switch after it that reads back and is put back, a write that throws, a
+write another writer changes before the read back, a read back that cannot be read, a key that
+is not there, a put back refused, a put back stopped by a stand-in, a switch the backup held
+off already and the constructor deadline in a child, with H0 reading in run.ps1 and the probe
+that the switch comes after every refusal before the constructor and RC5 and RC6 of H17 that a
+stop at check 18 leaves it unwritten, and H21, its own time limits on copies of itself whose cases are replaced
 by one trial each: a child past its limit, a case past its limit, the run past its limit, a
 harness blocked where nothing can be closed, and the wait before a run:
 

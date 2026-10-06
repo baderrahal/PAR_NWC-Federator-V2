@@ -241,14 +241,14 @@ function EnableNow($sub) {
   if (-not $v.Ok -or $null -eq $v.Value) { return $null }
   return ([string]$v.Value.Kind + " " + [string]$v.Value.Data)
 }
-# A deny of SetValue for this user on one test key, so a write to it fails as a write Windows
-# refuses, and its removal, so the cleanup can delete the key. ClearRegDeny says whether it
-# found a deny rule to remove.
-function DenyRegWrite($sub) {
+# A deny of the rights named, SetValue or QueryValues, for this user on one test key, so a write
+# to it or a read of it fails as one Windows refuses, and its removal, so the cleanup can delete
+# the key. ClearRegDeny says whether it found a deny rule to remove.
+function DenyReg($sub, $rights) {
   $k = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($sub, [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, [System.Security.AccessControl.RegistryRights]"ReadPermissions, ChangePermissions")
   try {
     $acl = $k.GetAccessControl()
-    $acl.AddAccessRule((New-Object System.Security.AccessControl.RegistryAccessRule([System.Security.Principal.WindowsIdentity]::GetCurrent().User, [System.Security.AccessControl.RegistryRights]::SetValue, [System.Security.AccessControl.AccessControlType]::Deny)))
+    $acl.AddAccessRule((New-Object System.Security.AccessControl.RegistryAccessRule([System.Security.Principal.WindowsIdentity]::GetCurrent().User, [System.Security.AccessControl.RegistryRights]$rights, [System.Security.AccessControl.AccessControlType]::Deny)))
     $k.SetAccessControl($acl)
   } finally { $k.Close() }
 }
@@ -535,6 +535,58 @@ try {
     $f = WaitFaults $copy
     $more = @($f | Where-Object { $_.StartsWith($k) }).Count - @($wf0 | Where-Object { $_.StartsWith($k) }).Count
     Check ("F138: the static read names a copy of prove-run.ps1 with one bad line added, " + $k + ", one more than prove-run.ps1 itself holds") ($more -eq 1) (@($f | Where-Object { $_.StartsWith($k) }) -join " | ")
+  }
+  # F138 attempt 2, Q135 point 2: the Auto-Save switch is written after the last read before the
+  # constructor, so no stop before the start leaves it written. run.ps1 and the probe each call
+  # SwitchAutoSaveOff once, after the last call of each refusal named here that comes before the
+  # constructor, with no STOP line between it and the constructor but its own.
+  $probeFile = Join-Path $repo "tools\probes\probe-automation-start.ps1"
+  function SwitchOrderFaults($f, $refusals) {
+    $faults = New-Object System.Collections.Generic.List[string]
+    $leaf = Split-Path $f -Leaf
+    $t6 = $null; $e6 = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($f, [ref]$t6, [ref]$e6)
+    if ($e6.Count -gt 0) { $faults.Add($leaf + " does not parse"); return ,$faults }
+    $ctor = @($ast.FindAll({ param($a) $a -is [System.Management.Automation.Language.InvokeMemberExpressionAst] -and [string]$a.Member.Value -eq "CreateInstance" }, $true))
+    $calls = @($ast.FindAll({ param($a) $a -is [System.Management.Automation.Language.CommandAst] }, $true))
+    $sw = @($calls | Where-Object { $_.GetCommandName() -eq "SwitchAutoSaveOff" })
+    if ($ctor.Count -ne 1) { $faults.Add($leaf + " calls the constructor " + $ctor.Count + " times, not once"); return ,$faults }
+    if ($sw.Count -ne 1) { $faults.Add($leaf + " calls SwitchAutoSaveOff " + $sw.Count + " times, not once"); return ,$faults }
+    $iC = $ctor[0].Extent.StartOffset
+    $iS = $sw[0].Extent.StartOffset
+    if ($iS -gt $iC) { $faults.Add($leaf + " calls SwitchAutoSaveOff after the constructor"); return ,$faults }
+    foreach ($r in $refusals) {
+      $last = $null
+      foreach ($c in @($calls | Where-Object { $_.GetCommandName() -eq $r -and $_.Extent.StartOffset -lt $iC })) { if ($null -eq $last -or $c.Extent.StartOffset -gt $last.Extent.StartOffset) { $last = $c } }
+      if ($null -eq $last) { $faults.Add($leaf + " calls " + $r + " nowhere before the constructor") }
+      elseif ($last.Extent.StartOffset -gt $iS) { $faults.Add($leaf + " calls " + $r + " after the switch, line " + $last.Extent.StartLineNumber) }
+    }
+    $stops = @($ast.FindAll({ param($a) ($a -is [System.Management.Automation.Language.StringConstantExpressionAst] -or $a -is [System.Management.Automation.Language.ExpandableStringExpressionAst]) -and [string]$a.Value -match 'STOP before' }, $true) | Where-Object { $_.Extent.StartOffset -gt $iS -and $_.Extent.StartOffset -lt $iC })
+    if ($stops.Count -ne 1) { $faults.Add($leaf + " holds " + $stops.Count + " STOP lines between the switch and the constructor, not its own one") }
+    return ,$faults
+  }
+  $runRefusals = @("BackupSettings", "KeepAwake", "UnprovedRefusal", "RoamerRefusal", "LockRefusal")
+  $probeRefusals = @("BackupSettings", "UnprovedRefusal", "RoamerRefusal")
+  # The faults are read into variables first, because @() of a call that returns a list holds the
+  # list as one item, measured on 2026-10-06.
+  $soRun = SwitchOrderFaults $runPs $runRefusals
+  $soProbe = SwitchOrderFaults $probeFile $probeRefusals
+  $so = @($soRun) + @($soProbe)
+  Check "F138 attempt 2: run.ps1 and the probe each write the Auto-Save switch once, after the last call of every refusal before the constructor, with no STOP line between it and the constructor but its own" ($so.Count -eq 0) (($so) -join " | ")
+  $badOrder = @(
+    @($runPs, 'Say "==== THE START ===="', 'if (RoamerRefusal) { $code = 2; break }', $runRefusals, "calls RoamerRefusal after the switch", "a Roamer read after the switch"),
+    @($runPs, 'Say "---- check 17, keep awake ----"', '$ao2 = SwitchAutoSaveOff $paths.RegSub $bs.RegRoot $bs.RegBefore', $runRefusals, "calls SwitchAutoSaveOff 2 times", "a second switch at check 17"),
+    @($probeFile, 'Say "==== STEP 3. Start one Navisworks through the API ===="', 'if (RoamerRefusal) { StopEarly "STOP before the constructor: a Navisworks is running" }', $probeRefusals, "calls RoamerRefusal after the switch", "a Roamer read after the switch"))
+  $n = 0
+  foreach ($bo in $badOrder) {
+    $n++
+    $src = [System.IO.File]::ReadAllText($bo[0])
+    $at = ([regex]::Matches($src, [regex]::Escape($bo[1]))).Count
+    if ($at -ne 1) { throw ("the anchor of a bad copy for the switch order is found " + $at + " times: " + $bo[1]) }
+    $copy = Join-Path $h0 ((Split-Path $bo[0] -Leaf).Replace(".ps1", "") + "-order-" + $n + ".ps1")
+    [System.IO.File]::WriteAllText($copy, $src.Replace($bo[1], $bo[2] + "`r`n        " + $bo[1]), $utf8)
+    $f = SwitchOrderFaults $copy $bo[3]
+    Check ("F138 attempt 2: the switch order read names a copy of " + (Split-Path $bo[0] -Leaf) + " with " + $bo[5]) (@($f | Where-Object { $_.Contains($bo[4]) }).Count -ge 1) (($f) -join " | ")
   }
 
   # =====================================================================================
@@ -1472,9 +1524,9 @@ try {
   Check "RC1: M5 is read before the settings compare, and the AutoSave compare reads autosave-before.txt back" ((At $rc1.Rec 'M5, what changed outside the loop folder while the start ran') -ge 0 -and (At $rc1.Rec 'M5, what changed outside the loop folder while the start ran') -lt (At $rc1.Rec "BADER'S SETTINGS, compared") -and (Has $rc1.Rec 'the AutoSave compare reads autosave-before.txt back, 1 files')) ""
   Check "RC1: his fake logs folder reads the same after as before" (Has $rc1.Rec 'logs-after.txt equals logs-before.txt, name for name, size, write time, sha256 and attributes: True') ""
   Check "RC1: the evidence is written into the copy's own steps\runs" (Test-Path -LiteralPath (Join-Path $rcRepo "steps\runs\91\item0\record.txt")) ""
-  $off17 = '^  Auto-Save switched off for this start, Q135: enable under 22\.0\\GlobalOptions\\general\\autosave written String "3 0" and read back so, the backup holds String "0"\. Until the put back it is off for Bader too, and a stop before the start puts nothing back, so then it is left off and must be put back by hand$'
+  $off17 = '^  Auto-Save switch written off for this start, Q135: enable under 22\.0\\GlobalOptions\\general\\autosave written String "3 0" and read back so, the backup holds String "0"\. Until the put back it reads so for Bader too\. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave$'
   $left17 = '^  Auto-Save is LEFT OFF for Bader: enable under 22\.0\\GlobalOptions\\general\\autosave reads String "3 0" and the backup holds String "0"\. It must be put back by hand$'
-  Check "RC1, F138: check 15 switches Auto-Save off and says so, and with nothing adopted, so nothing put back, the record says Auto-Save is left off and the test key reads 3 0" ((At $rc1.Rec $off17) -gt (At $rc1.Rec 'check 15, the settings backup') -and (At $rc1.Rec $off17) -lt (At $rc1.Rec 'HARNESS COPY') -and (At $rc1.Rec $left17) -gt (At $rc1.Rec "BADER'S SETTINGS, compared") -and (EnableNow $tsub) -eq "String 3 0") ("enable reads " + (EnableNow $tsub))
+  Check "RC1, F138 attempt 2: the switch is written after check 18's last read and before the constructor line, and says so in one line, and with nothing adopted, so nothing put back, the record says Auto-Save is left off and the test key reads 3 0" ((At $rc1.Rec $off17) -gt (At $rc1.Rec 'check 18, the last read before the constructor') -and (At $rc1.Rec $off17) -lt (At $rc1.Rec 'HARNESS COPY') -and (At $rc1.Rec $left17) -gt (At $rc1.Rec "BADER'S SETTINGS, compared") -and (EnableNow $tsub) -eq "String 3 0") ("enable reads " + (EnableNow $tsub))
 
   O "  RC2, a file of his fake logs folder held open with no sharing: check 13 must stop"
   $held2 = [System.IO.File]::Open((Join-Path $fl "ParsonsNwcFederator\logs\run-20260901-100000.log"), [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
@@ -1522,10 +1574,11 @@ try {
   $rc5 = RunCopy "95" { [void](StartStandin "sleep 120" $null $null); O ("    started a stand-in Roamer, Roamers now " + @(Get-Process -Name Roamer -ErrorAction SilentlyContinue).Count) }
   StopStandins
   Check "RC5: check 18 stops before the constructor on the Roamer, exit 2, and the keep awake request made at check 17 is let go" ($rc5.Exit -eq 2 -and (Has $rc5.Rec '^STOP before the constructor: Navisworks is running') -and (Has $rc5.Rec 'keep awake OFF returned 0x80000003') -and -not (Has $rc5.Rec 'HARNESS COPY')) ("exit " + $rc5.Exit)
-  Check "RC5, F138: a stop before the start puts nothing back, so the test key reads 3 0, and the one line of check 15 says it is then left off and must be put back by hand" ((Has $rc5.Rec $off17) -and (EnableNow $tsub) -eq "String 3 0") ("enable reads " + (EnableNow $tsub))
+  Check "RC5, F138 attempt 2: the stop at check 18 comes before the switch, so no line of the record names Auto-Save and the test key reads 0, what the fixture made" (-not (Has $rc5.Rec 'Auto-Save') -and (EnableNow $tsub) -eq "String 0") ("enable reads " + (EnableNow $tsub))
 
   O "  RC6, a start named in unproved-starts.txt that still runs, written while the copy waits at the hook, with no Roamer running"
   $fakeUnproved = Join-Path $fl "NwcFederatorLoop\probes\unproved-starts.txt"
+  AutoSaveFixture $tsub
   $rc6 = RunCopy "96" {
     $dec6 = StartStandin "sleep 120" $null (Join-Path $standinBin "Decoy.exe")
     New-Item -ItemType Directory -Force -Path (Split-Path $fakeUnproved -Parent) | Out-Null
@@ -1534,6 +1587,7 @@ try {
   }
   StopStandins
   Check "RC6: check 18 stops before the constructor on the unproved start, exit 2, with no Roamer running" ($rc6.Exit -eq 2 -and (Has $rc6.Rec '^STOP before the constructor: a start this probe could not prove is still running') -and -not (Has $rc6.Rec 'HARNESS COPY')) ("exit " + $rc6.Exit)
+  Check "RC6, F138 attempt 2: the stop on the unproved start comes before the switch, so no line of the record names Auto-Save and the test key reads 0, what the fixture made" (-not (Has $rc6.Rec 'Auto-Save') -and (EnableNow $tsub) -eq "String 0") ("enable reads " + (EnableNow $tsub))
   $CU.DeleteSubKeyTree($tkey, $false)
   O "  RC7, fix list 3 items 2 and 12: -Mode Install of the copy in a clean scratch git repository, whose build\install.ps1 is a stub that prints one REFUSED line naming a folder under APPDATA and exits 2"
   StopStandins
@@ -1708,13 +1762,13 @@ try {
 
   # =====================================================================================
   O ""
-  Case "==== H20, F138: AUTO-SAVE OFF FOR EVERY START, against HKCU\Software\NwcFederatorLoopTest\22.0 and a test folder ===="
+  Case "==== H20, F138: THE AUTO-SAVE SWITCH WRITTEN OFF FOR EVERY START, against HKCU\Software\NwcFederatorLoopTest\22.0 and a test folder ===="
   $g38 = Join-Path $Work "h20"
   $gapp = Join-Path $g38 "appdata\Autodesk\Navisworks Manage 2025"
   New-Item -ItemType Directory -Path $gapp, (Join-Path $gapp "AutoSave"), (Join-Path $g38 "fedlogs") | Out-Null
   [System.IO.File]::WriteAllText((Join-Path $gapp "a.xml"), "a", $utf8)
   $asSub = $tsub + "\GlobalOptions\general\autosave"
-  $off38 = '^  Auto-Save switched off for this start, Q135: enable under 22\.0\\GlobalOptions\\general\\autosave written String "3 0" and read back so, the backup holds String "0"\. Until the put back it is off for Bader too, and a stop before the start puts nothing back, so then it is left off and must be put back by hand$'
+  $off38 = '^Auto-Save switch written off for this start, Q135: enable under 22\.0\\GlobalOptions\\general\\autosave written String "3 0" and read back so, the backup holds String "0"\. Until the put back it reads so for Bader too\. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave$'
   $left38 = '  Auto-Save is LEFT OFF for Bader: enable under 22.0\GlobalOptions\general\autosave reads String "3 0" and the backup holds String "0". It must be put back by hand'
   function Fresh38 { $CU.DeleteSubKeyTree($tkey, $false); $k = $CU.CreateSubKey($tsub); $k.SetValue("A", "a1"); $k.Close(); AutoSaveFixture $tsub }
   function Lines38($label) { $f = Join-Path $g38 ($label + ".txt"); if (Test-Path -LiteralPath $f) { return @([System.IO.File]::ReadAllLines($f)) }; return @() }
@@ -1724,6 +1778,8 @@ try {
     try { $b = BackupSettings $wkx $tsub $gapp (Join-Path $g38 "fedlogs") } finally { $script:AlsoFile = $null }
     return $b
   }
+  # F138 attempt 2. The switch as run.ps1 and the probe call it, after the backup and its last read.
+  function Switch38($b) { return (SwitchAutoSaveOff $tsub $b.RegRoot $b.RegBefore) }
   function PutBack38($label, $putBack, $why, $b) {
     $script:AlsoFile = Join-Path $g38 ($label + "-putback.txt")
     try { $r = SettingsPutBack $putBack $why (Join-Path $g38 $label) $tsub $b.RegBefore $b.RegRoot $gapp $b.FilesBefore $b.NotBacked $b.AutoBefore $b.AppBackup } finally { $script:AlsoFile = $null }
@@ -1731,56 +1787,93 @@ try {
   }
   function Show38($lines) { foreach ($l in @($lines | Where-Object { $_ -match 'Auto-Save|enable' })) { O ("    | " + $l) } }
 
-  O "  A, the write reads back, and the put back returns it"
+  O "  A, the backup writes nothing, the switch after it reads back, and the put back returns it"
   Fresh38
   $bA = Backup38 "a"
   Show38 (Lines38 "a")
-  Check "A: BackupSettings is whole, enable reads 3 0 after it, and the record says in one line Auto-Save is switched off and what the backup holds" ($bA.Ok -and (EnableNow $tsub) -eq "String 3 0" -and @(Lines38 "a" | Where-Object { $_ -match $off38 }).Count -eq 1) ("enable reads " + (EnableNow $tsub) + ", " + $bA.Why)
+  Check "A, F138 attempt 2: BackupSettings is whole and writes nothing, enable still reads 0 after it, and no line of it names Auto-Save" ($bA.Ok -and (EnableNow $tsub) -eq "String 0" -and @(Lines38 "a" | Where-Object { $_ -match 'Auto-Save' }).Count -eq 0) ("enable reads " + (EnableNow $tsub) + ", " + $bA.Why)
+  $aoA = Switch38 $bA
+  O ("    | " + $aoA.Line)
+  Check "A: the switch writes enable 3 0 and reads it back, and its one line says so and what the backup holds" ($aoA.Ok -and (EnableNow $tsub) -eq "String 3 0" -and $aoA.Line -match $off38) ("enable reads " + (EnableNow $tsub))
   Check "A: the backup was read before the write, so it holds enable 0" ([string](AutoSaveSwitchHeld $bA.RegBefore $tsub).Data -eq "0") ""
   $spA = PutBack38 "a" $true @() $bA
   Show38 (Lines38 "a-putback")
   Check "A: the put back returns enable to 0, the test key reads exactly as the backup, the one difference is written, and no line says Auto-Save is left off" ((EnableNow $tsub) -eq "String 0" -and (TreeSame (RegRead $tsub).Read $bA.RegBefore.Read) -and $spA.Differ -eq 1 -and $spA.NotWritten -eq 0 -and @(Lines38 "a-putback" | Where-Object { $_ -match 'LEFT OFF' }).Count -eq 0) ("enable reads " + (EnableNow $tsub) + ", differ " + $spA.Differ + ", not written " + $spA.NotWritten)
 
-  O "  B, the write does not read back: SetValue denied to this user on the Auto-Save key"
+  O "  B, the write throws: SetValue denied to this user on the Auto-Save key"
   Fresh38
-  DenyRegWrite $asSub
+  $bB = Backup38 "b"
+  DenyReg $asSub "SetValue"
   $cleared = $false
-  try { $bB = Backup38 "b" } finally { $cleared = ClearRegDeny $asSub }
-  O ("    | " + $bB.Why)
-  Check "B: BackupSettings refuses the start with one line naming the switch and why, and enable still reads 0, what the backup holds" (-not $bB.Ok -and $bB.Why -match '^STOP before the constructor: Auto-Save could not be switched off, enable under 22\.0\\GlobalOptions\\general\\autosave, the write threw, .+, it reads String "0", what the backup holds$' -and $bB.Why -notmatch "[\r\n]" -and (EnableNow $tsub) -eq "String 0") ("enable reads " + (EnableNow $tsub))
-  Check "B: the refusal is never said as switched off, and the deny rule was removed after" (@(Lines38 "b" | Where-Object { $_ -match 'switched off for this start' }).Count -eq 0 -and $cleared) ""
+  try { $aoB = Switch38 $bB } finally { $cleared = ClearRegDeny $asSub }
+  O ("    | " + $aoB.Line)
+  Check "B: the switch refuses the start with one line naming the throw, what enable reads and that nothing of his was changed, and enable still reads 0" ($bB.Ok -and -not $aoB.Ok -and $aoB.Line -match '^Auto-Save switch could not be written off, enable under 22\.0\\GlobalOptions\\general\\autosave, the write threw, .+, it reads String "0", what the backup holds, so nothing of his was changed$' -and $aoB.Line -notmatch "[\r\n]" -and (EnableNow $tsub) -eq "String 0") ("enable reads " + (EnableNow $tsub))
+  Check "B: the refusal is never said as written off for this start, and the deny rule was removed after" ($aoB.Line -notmatch 'written off for this start' -and $cleared) ""
+
+  # F138 attempt 2. In B2 and B3 the write is real and so is the read back. Only the moment
+  # between them is reached, through RegValueNow, the one read back SwitchAutoSaveOff makes,
+  # shadowed in a child scope by one that first does what another program could do there and then
+  # reads through the real one. A function of a child scope is the one a function called from it
+  # finds, measured on 2026-10-06.
+  $realRead = ${function:RegValueNow}
+  O "  B2, the write works and does not read back: another writer sets enable to 1 1 between the write and the read back"
+  Fresh38
+  $bB2 = Backup38 "b2"
+  $aoB2 = & {
+    function RegValueNow($keyName, $valueName) { $k = $CU.OpenSubKey($asSub, $true); try { $k.SetValue("enable", "1 1") } finally { $k.Close() }; return (& $realRead $keyName $valueName) }
+    Switch38 $bB2
+  }
+  O ("    | " + $aoB2.Line)
+  Check "B2, F138 attempt 2: the switch refuses the start with one line saying enable was written and does not read back, what it reads, what the backup holds, and that his value is changed and must be put back by hand" ($bB2.Ok -and -not $aoB2.Ok -and $aoB2.Line -match '^Auto-Save switch could not be written off, enable under 22\.0\\GlobalOptions\\general\\autosave was written and does not read back String "3 0", it reads String "1 1", and the backup holds String "0", so his value is changed and must be put back by hand$' -and $aoB2.Line -notmatch "[\r\n]" -and (EnableNow $tsub) -eq "String 1 1") ("enable reads " + (EnableNow $tsub))
+
+  O "  B3, the write works and the read back cannot be read: the read of the key denied to this user between the write and the read back"
+  Fresh38
+  $bB3 = Backup38 "b3"
+  $cleared3 = $false
+  try {
+    $aoB3 = & {
+      function RegValueNow($keyName, $valueName) { DenyReg $asSub "QueryValues"; return (& $realRead $keyName $valueName) }
+      Switch38 $bB3
+    }
+  } finally { $cleared3 = ClearRegDeny $asSub }
+  O ("    | " + $aoB3.Line)
+  Check "B3, F138 attempt 2: the switch refuses the start with one line saying enable could not be read again and that whether his value is changed is UNKNOWN, and the deny rule was removed after" ($bB3.Ok -and -not $aoB3.Ok -and $aoB3.Line -match '^Auto-Save switch could not be written off, enable under 22\.0\\GlobalOptions\\general\\autosave was written and does not read back String "3 0", it could not be read again, .+[^.], and the backup holds String "0", so whether his value is changed is UNKNOWN and it must be read by hand$' -and $aoB3.Line -notmatch "[\r\n]" -and $cleared3 -and (EnableNow $tsub) -eq "String 3 0") ("enable reads " + (EnableNow $tsub))
 
   O "  C, the Auto-Save key is not there"
   Fresh38
   $CU.DeleteSubKeyTree($tsub + "\GlobalOptions", $false)
   $bC = Backup38 "c"
-  O ("    | " + $bC.Why)
-  Check "C: the start is refused in one line, and the key is never made" (-not $bC.Ok -and $bC.Why -match '^STOP before the constructor: Auto-Save could not be switched off, enable under 22\.0\\GlobalOptions\\general\\autosave, its key is not there, and a key is never made, it reads absent, what the backup holds$' -and $null -eq $CU.OpenSubKey($tsub + "\GlobalOptions")) ""
+  $aoC = Switch38 $bC
+  O ("    | " + $aoC.Line)
+  Check "C: the backup is whole, the switch refuses the start in one line saying nothing of his was changed, and the key is never made" ($bC.Ok -and -not $aoC.Ok -and $aoC.Line -match '^Auto-Save switch could not be written off, enable under 22\.0\\GlobalOptions\\general\\autosave, its key is not there, and a key is never made, it reads absent, what the backup holds, so nothing of his was changed$' -and $null -eq $CU.OpenSubKey($tsub + "\GlobalOptions")) ""
 
   O "  D, the put back refused for a reason PutBackReasons gives, such as another Navisworks that ran"
   Fresh38
   $bD = Backup38 "d"
+  $aoD = Switch38 $bD
   $spD = PutBack38 "d" $false @("Roamer 4242 started 12:00:00.000 was new at a watchdog pass and is not the adopted one") $bD
   Show38 (Lines38 "d-putback")
-  Check "D: nothing is written, enable stays 3 0, and one line says Auto-Save is left off for Bader and must be put back by hand" ($bD.Ok -and (EnableNow $tsub) -eq "String 3 0" -and @(Lines38 "d-putback" | Where-Object { $_ -ceq $left38 }).Count -eq 1 -and $spD.NotWritten -eq $spD.Differ -and $spD.Differ -eq 1) ("enable reads " + (EnableNow $tsub) + ", differ " + $spD.Differ + ", not written " + $spD.NotWritten)
+  Check "D: nothing is written, enable stays 3 0, and one line says Auto-Save is left off for Bader and must be put back by hand" ($bD.Ok -and $aoD.Ok -and (EnableNow $tsub) -eq "String 3 0" -and @(Lines38 "d-putback" | Where-Object { $_ -ceq $left38 }).Count -eq 1 -and $spD.NotWritten -eq $spD.Differ -and $spD.Differ -eq 1) ("enable reads " + (EnableNow $tsub) + ", differ " + $spD.Differ + ", not written " + $spD.NotWritten)
 
   O "  E, the put back stopped by a stand-in Roamer started just before its first write"
   Fresh38
   $bE = Backup38 "e"
+  $aoE = Switch38 $bE
   [void](StartStandin "sleep 120" $null $null)
   $spE = PutBack38 "e" $true @() $bE
   StopStandins
   Show38 (Lines38 "e-putback")
-  Check "E: the write of enable is stopped with every write after it, enable stays 3 0, and the record says Auto-Save is left off" ($bE.Ok -and (EnableNow $tsub) -eq "String 3 0" -and @(Lines38 "e-putback" | Where-Object { $_ -ceq $left38 }).Count -eq 1 -and $spE.NotWritten -eq $spE.Differ) ("enable reads " + (EnableNow $tsub) + ", differ " + $spE.Differ + ", not written " + $spE.NotWritten)
+  Check "E: the write of enable is stopped with every write after it, enable stays 3 0, and the record says Auto-Save is left off" ($bE.Ok -and $aoE.Ok -and (EnableNow $tsub) -eq "String 3 0" -and @(Lines38 "e-putback" | Where-Object { $_ -ceq $left38 }).Count -eq 1 -and $spE.NotWritten -eq $spE.Differ) ("enable reads " + (EnableNow $tsub) + ", differ " + $spE.Differ + ", not written " + $spE.NotWritten)
 
   O "  F, enable read 3 0 at the backup already, his own setting"
   Fresh38
   $k = $CU.OpenSubKey($asSub, $true); $k.SetValue("enable", "3 0"); $k.Close()
   $bF = Backup38 "f"
+  $aoF = Switch38 $bF
   $spF = PutBack38 "f" $false @("the harness's reason") $bF
-  Check "F: the switch reads back, nothing differs from the backup, and no line says Auto-Save is left off, because it is as he had it" ($bF.Ok -and (EnableNow $tsub) -eq "String 3 0" -and $spF.Differ -eq 0 -and @(Lines38 "f-putback" | Where-Object { $_ -match 'LEFT OFF' }).Count -eq 0) ("differ " + $spF.Differ)
+  Check "F: the switch reads back, nothing differs from the backup, and no line says Auto-Save is left off, because it is as he had it" ($bF.Ok -and $aoF.Ok -and (EnableNow $tsub) -eq "String 3 0" -and $spF.Differ -eq 0 -and @(Lines38 "f-putback" | Where-Object { $_ -match 'LEFT OFF' }).Count -eq 0) ("differ " + $spF.Differ)
 
-  O "  G, the watchdog's constructor deadline in a child powershell, whose settings backup switched Auto-Save off"
+  O "  G, the watchdog's constructor deadline in a child powershell, whose switch after the settings backup wrote Auto-Save off"
   Fresh38
   $out38 = Join-Path $g38 "g-out.txt"; $unp38 = Join-Path $g38 "g-unproved.txt"; $wf38 = Join-Path $g38 "g-watch.txt"; $wk38 = Join-Path $g38 "g"
   New-Item -ItemType Directory -Path $wk38 | Out-Null
@@ -1797,6 +1890,8 @@ try {
     ('$sync = WatchSync $all @{} ([DateTime]::Now) $loopRoot $nw 60 300 "' + $out38 + '" "' + $unp38 + '" "' + $wf38 + '" $guardText $wt.WinType $wt.ProcType'),
     ('$bs = BackupSettings "' + $wk38 + '" "' + $tsub + '" "' + $gapp + '" "' + (Join-Path $g38 "fedlogs") + '"'),
     'if (-not $bs.Ok) { [Console]::Out.WriteLine("THE BACKUP REFUSED, " + $bs.Why); exit 5 }',
+    ('$ao = SwitchAutoSaveOff "' + $tsub + '" $bs.RegRoot $bs.RegBefore'),
+    'if (-not $ao.Ok) { [Console]::Out.WriteLine("THE SWITCH REFUSED, " + $ao.Line); exit 5 }',
     ('$sync.RegSub = "' + $tsub + '"; $sync.RegRoot = $bs.RegRoot; $sync.RegBefore = $bs.RegBefore; $sync.FilesBefore = $bs.FilesBefore; $sync.NotBacked = $bs.NotBacked; $sync.AutoBefore = $bs.AutoBefore; $sync.NwAppData = "' + $gapp + '"; $sync.SettingsReady = $true'),
     '$sync.CallStartUtc = [DateTime]::UtcNow.AddSeconds(-61)',
     '$w = [PowerShell]::Create(); [void]$w.AddScript((WatchdogScript)).AddArgument($sync); $h = $w.BeginInvoke()',

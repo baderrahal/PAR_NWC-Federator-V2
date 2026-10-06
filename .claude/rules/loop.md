@@ -141,7 +141,7 @@ and nothing is fixed until a real run on real files shows it fixed.
   read before the backup and again just before the start, and the code keeps that rule,
   not a person, run.ps1 at its checks 6 and 18. docs\history\scan.md 5z-d
 - NO RECORD OR QUESTION ABOUT AUTOSAVES unless something of Bader's actually changed, his word of 2026-10-05,
-  Q135. Once F138, FR-196, merges, Auto-Save is switched off for every loop start, and once its second part
+  Q135. Once F138, FR-196, merges, the Auto-Save switch is written "3 0" for every loop start, and once its second part
   merges his AutoSave folder has one backup only, autosave-backup, compared by names, sizes and times before
   and after each run. Until then the rule below stands
 - His AutoSave folder, %APPDATA%\Autodesk\Navisworks Manage 2025\AutoSave, is where the
@@ -211,21 +211,26 @@ and nothing is fixed until a real run on real files shows it fixed.
   loop did not start ran at any point from the backup to then. Otherwise nothing is
   written, every change is listed with its old and new value in the turn's record, and the
   backup is kept for Bader
-- AUTO-SAVE IS OFF FOR EVERY LOOP START, run or probe, so a loop run never writes an
-  autosave into his AutoSave folder, Bader's message of 2026-10-05, Q135 point 2. Once the
-  22.0 key is read for the backup, BackupSettings in tools\loop\nw-guard.ps1 writes the value
-  enable under its GlobalOptions\general\autosave as "3 0", opens the key again and reads it
+- THE AUTO-SAVE SWITCH IS WRITTEN "3 0" FOR EVERY LOOP START, run or probe, so that a loop
+  run never writes an autosave into his AutoSave folder, Bader's message of 2026-10-05, Q135
+  point 2. It is written after the last read before the constructor, run.ps1's check 18 and
+  the probe's last read, so no stop before the start leaves it written. There the one
+  SwitchAutoSaveOff in tools\loop\nw-guard.ps1 writes the value enable under
+  GlobalOptions\general\autosave of the 22.0 key as "3 0", opens the key again and reads it
   back, and refuses the start with one line when it does not read back or the key is not
-  there, a key it never makes. Where the switch and its form come from was measured on
-  2026-10-05, %LOCALAPPDATA%\NwcFederatorLoop\turn5\q135\measure.md and measure-check.md:
-  every Auto-Save value read "0", a value never set, so the default, on, held, and the set
-  booleans of that key read "3 0" or "3 1". That Navisworks reads "3 0" as off is UNKNOWN until
-  a start writes no autosave. The put back returns enable to what the backup holds. Where no
-  put back is made, a stop before the start, a put back refused because another Navisworks
-  ran, the constructor deadline or a CloseOwn after run.ps1 died, Auto-Save is left off for
-  Bader too. The record then says so: for a stop before the start the backup's one switched
-  off line says a stop leaves it off, for a put back refused or the deadline one LEFT OFF
-  line, and for CloseOwn its list of differences names enable. The lead puts it back by hand.
+  there, a key it never makes. That line says what happened: enable reads what the backup
+  holds, so nothing of his changed, or it reads something else and must be put back by hand,
+  or it cannot be read again and whether it changed is UNKNOWN. BackupSettings writes
+  nothing. Where the switch and its form come from was measured on 2026-10-05,
+  %LOCALAPPDATA%\NwcFederatorLoop\turn5\q135\measure.md and measure-check.md: every Auto-Save
+  value read "0", a value never set, so the default, on, held, and the set booleans of that
+  key read "3 0" or "3 1". That Navisworks reads "3 0" as off is UNKNOWN until a start writes
+  no autosave. The put back returns enable to what the backup holds. Where the constructor
+  was called and no put back is made, a put back refused because nothing was adopted or
+  another Navisworks ran, the constructor deadline or a CloseOwn after run.ps1 died, enable
+  is left at "3 0" for Bader. The record then says so: for a put back refused or the deadline
+  one LEFT OFF line, and for CloseOwn its list of differences names enable. The lead puts it
+  back by hand.
 - NO HARNESS RUN AND NO WAIT FOR ONE RUNS WITHOUT A TIME LIMIT, Bader's message headed CONTINUE
   THE LOOP AFTER THE LAPTOP WENT OFF, item 6, F138. The harness is started as
   tools\loop\prove-run.ps1 with its limits, never through a wrapper that waits on a pid or a

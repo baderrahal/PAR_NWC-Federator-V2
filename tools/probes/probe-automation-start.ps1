@@ -20,7 +20,7 @@ $ErrorActionPreference = "Stop"
 # code keeps that rule, not a person. Step 2 refuses while any process named Roamer runs,
 # whatever its command line and whoever started it, names each by pid and start time, and
 # writes nothing and starts nothing. The same read is made again after the backups,
-# immediately before the constructor, and refuses the same way.
+# immediately before the Auto-Save switch and the constructor, and refuses the same way.
 #
 # IT REFUSES TO RUN when either deadline is below 60 seconds, and unless it is the script
 # its own powershell.exe was started to run with -File, read off
@@ -721,11 +721,16 @@ $disposed = $false
 $suppressed = $false
 $ctorSeconds = $null
 $startAfterCall = $null
-# The same read as step 2, made again after the backups, as the last thing before the try
+# The same read as step 2, made again after the backups, as the last read before the try
 # that calls the constructor. It is outside that try, so a refusal runs no close and no put
-# back, and writes nothing down.
+# back, and writes nothing down. Only the Auto-Save switch comes after it, F138, Q135 point 2,
+# so no stop before the start but the switch's own refusal comes after the write, and that
+# refusal's line says what it left of his.
 Say "==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ===="
 if (RoamerRefusal) { StopEarly "STOP before the constructor, so nothing is started and nothing of Bader's is written, the backup stays in the work folder: a Navisworks is running, and no start is made while any Navisworks runs, whatever its command line and whoever started it" }
+$ao = SwitchAutoSaveOff $regSub $regRoot $regBefore
+if (-not $ao.Ok) { StopEarly ("STOP before the constructor, so nothing is started, the backup stays in the work folder: " + $ao.Line) }
+Say ("  " + $ao.Line)
 Say ""
 try {
   # =====================================================================================
