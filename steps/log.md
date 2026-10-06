@@ -1,6 +1,122 @@
 # log
 
 Newest entry at the top.
+## 2026-10-06 The loop, turn 5, F138 attempt 2, the Auto-Save switch written after the last read before the constructor, and attempt 1, the switch and a time limit on every harness run, written by the developer as the lead's delegate, pushed on its branch, draft pull request 127
+
+ATTEMPT 2, on the reviewer's CHANGES on attempt 1, turn5\lanes-review-F138.json, two points blocking:
+- root cause: BackupSettings wrote enable "3 0" at check 15, nw-guard.ps1 line 1284 at cf6e5dc,
+  called at run.ps1 line 2127, and the stops at checks 17 and 18 and the probe's Roamer stop at its
+  line 728 came after it with nothing to put it back. RC5 asserted that as right
+- the fix, 9ef6309: BackupSettings writes nothing, as on main. The one SwitchAutoSaveOff is called
+  by run.ps1 after check 18's last refusal and by the probe after its last read, so no stop before
+  the start but its own refusal comes after the write, and the probe's line saying nothing of
+  Bader's is written is true. Its refusal says in each branch what it left of his: nothing
+  changed, his value changed and to be put back by hand, or UNKNOWN. Its written line says the
+  switch is written "3 0" and that whether Navisworks reads it as off is UNKNOWN. The rule in
+  .claude\rules\loop.md and tools\loop\README.md says so and names the cases where it is left at
+  "3 0" for Bader
+- failing first: H0 reads the switch order in run.ps1 and the probe, three bad copies each named.
+  RC1 reads the switch after check 18, RC5 and RC6 the test key unwritten after their stops. H20 A
+  reads a backup that writes nothing, B the write that throws, B2 a write another writer changes
+  before the read back, B3 a read back that cannot be read. On cf6e5dc the cut THE STAND-IN, H0,
+  H3, H10, H17 and H20 read 76 passed and 15 failed, turn5\f138c-before.txt, and after the fix
+  89 passed and 2 failed, the two older H0 checks, turn5\f138c-cut-after.txt
+- built: main 2eda020, F133 the tracker, merged in as d7192e4 with both sides of its two conflicts
+  kept, turn5\f138c-resolve.py. Release at d7192e4 with git status empty, 0 warnings and 0
+  errors, turn5\f138c-build.txt. Core 1926 passed, 0 failed, 0 skipped before at cf6e5dc,
+  turn5\f138b-precommit-3.txt, and after at d7192e4, turn5\f138c-core-tests.txt. check-locals
+  and check-imports exit 0, turn5\f138c-checks.txt
+- proved: the full harness once on d7192e4, started as powershell -File tools\loop\prove-run.ps1
+  with -Work test-f138c-after and its default limits, from 15:36:39 to 16:21:50: 276 passed and 8
+  failed in 2711 s, exit 1, turn5\f138c-prove-after.txt. The 8 are the eight older failures,
+  reading as on main, and none is new. The sha256 it printed for run.ps1, nw-guard.ps1 and itself
+  are those of d7192e4's files. 46 stand-ins and 96 children were each closed or ended. H17 took
+  about 814 s and H6 about 357 s. A first start was refused by PowerShell before anything ran, the
+  shell having taken the backslashes out of the path, turn5\f138c-prove-start-refused.txt
+- Roamer read 0 before and after, and his Auto-Save enable "0", turn5\f138c-roamer-before.txt,
+  f138c-roamer-before-prove.txt and f138c-roamer-after.txt
+
+Register rows for the lead, one line each:
+- T5-R-HARNESSWAITS, a harness fix that cannot harm evidence. Waits with no limit of their own:
+  Running's Get-CimInstance, read in the -WaitSeconds loop before the deadline runspace starts, so
+  a read that hangs there has no limit at all, the EndInvoke calls on the monitor and watchdog
+  runspaces in H6, H7 and H18, prove-run.ps1 lines 865, 902, 903, 930, 973, 1000, 1614, 1630,
+  1644 and 1665 at cf6e5dc, and the bare reg.exe export in BackupSettings, nw-guard.ps1 line 1240,
+  the last two resting only on the case limit and the cleanup limit. The H0 static read covers four
+  shapes and none of these, so the rule line that no wait for one runs without a time limit says
+  more than is proved
+- T5-R-HARNESSARGS, a harness fix. prove-run.ps1's param block has no [CmdletBinding()]. Measured on
+  2026-10-06 in Windows PowerShell 5.1 on a script with its first three parameters: -RunLimitSecond
+  7, a unique prefix, set RunLimitSeconds to 7, and -RunLimitSecs 7, not a prefix, went into $args
+  and the default 5400 held with no word said. [CmdletBinding()] would refuse a name it does not
+  know
+- T5-R-M5AUTOSAVE, from the reviewer of attempt 2. The switch now comes after M5's read of the key
+  times, run.ps1 line 2133 against the switch at line 2152, so a real run's m5.txt names the autosave
+  key as changed while the start ran, the loop's own write, against M5's stated intent at lines 2304
+  to 2306. The m5 reader to leave out the loop's own write, or the switch read before M5
+- T5-R-HELDOFF, from the reviewer of attempt 2. Where one run leaves enable at "3 0" for Bader with
+  its LEFT OFF line, the next run's backup reads "3 0" as his value and no later record names it,
+  H20 F asserting so, the same as every other setting under D2. The lead puts it back by hand after
+  the first LEFT OFF line, and a check of a held "3 0" against the one backup of Q135 would name it
+
+What waits: the reviewer and the breaker on attempt 2, the lead's next probe that a real start
+writes no autosave, and FR-196's part 2 after F131. The rows of F138, FR-196 and Q135 in
+steps\tracker.csv read in progress as the lead set them, and are unchanged. No add-in file
+changed, so steps\03_bader_next.md is unchanged.
+
+ATTEMPT 1, as written at its end:
+
+Picked up from the cut, turn5\restart\trees.md section F138. Part 1, FR-196, its four files left
+uncommitted by the shutdown, was committed as 8eff675 with its message made true, the new case named
+H20 and the rule paragraph given its full stop, its pre-commit 1926 passed,
+turn5\f138b-precommit-1.txt. Main 6d2a203 was merged in as 6dc82f6, turn5\f138b-precommit-merge.txt.
+
+The time limits, his item 6, register row T5-R-HARNESSLIMIT, built by turn5\restart\harness.md and
+committed as a2e4d6b, turn5\f138b-precommit-2.txt:
+- root cause: prove-run.ps1 had no limit for the run or a case, and at 8eff675 the new static read
+  names 24 calls of run.ps1's RunChild, Reflect's WaitForExit and two reads of .Result with no
+  limit, and EndChild's WaitForExit with none, turn5\f138b-static-before.txt. The lanes waited on
+  each other through wrappers of their own with none
+- the fix: a limit for the run, each case, H6, H17, each child, a run of run.ps1 and the cleanup,
+  each a setting, a deadline runspace that writes the TIME LIMIT line and closes only the harness's
+  own stand-ins and children through their held handles, exit 3, -WaitSeconds that refuses with
+  exit 2 naming what still runs, a -Work there already refused at once, the static read in H0 and
+  H21
+- failing first: THE STAND-IN, H0 and H21 alone on the harness without the limit code, 23 passed and
+  16 failed, turn5\f138b-limits-before.txt. Its own known offender check showed the static read
+  missed a WaitForExit with no argument, the parser holding null for its arguments, which was fixed
+- after, the same cut: 37 passed and 2 failed, the two older H0 checks, turn5\f138b-limits-after.txt.
+  Three cut runs before it each found a fault of the new code, kept as turn5\f138b-limits-after-1.txt
+  to -3.txt: the state named $L met a loop's $l, since PowerShell names match in any case, @() of a
+  List handed in as a parameter throws in Windows PowerShell 5.1, and the T4 pattern read "so it
+  ends itself" where the line says "so the harness ends itself", the words harness.md gives. The
+  first left its own harness, pid 43180, held up by the deadline runspace's thread after its finally
+  threw. It was ended by its pid and its -Work removed, and the finally now lets that runspace go
+  whatever the cleanup does
+- the solution built Release, 0 warnings and 0 errors, turn5\f138b-build.txt. Core 1926 passed, 0
+  failed, 0 skipped, before at 8eff675's pre-commit and after, turn5\f138b-core-tests.txt.
+  check-locals and check-imports pass, turn5\f138b-checks.txt
+
+The full harness once on a2e4d6b, started as powershell -File tools\loop\prove-run.ps1 with its
+default limits and -Work test-f138b-after, from 12:49:40 to 13:31:32: 268 passed and 8 failed in
+2511 s, exit 1, turn5\f138b-prove-after.txt. The 8 are the checks that failed on main's guard too,
+turn5\f138-prove-before.txt, reading as they did: the static words read, the four modes in one
+place, two HangVerdict cases, two clock restart cases, live 1 and live 3. No new failure. H20, RC1,
+RC5, the static read and H21 pass whole. 46 stand-ins and 96 children were each closed or ended,
+and the test key and -Work are gone. H17 took about 745 s and H6 about 332 s, under their 2400 s
+and 900 s.
+
+Roamer read 0 before, turn5\f138b-roamer-before.txt, and 0 after with his 22.0 Auto-Save enable
+still "0", turn5\f138b-roamer-after.txt.
+
+What waits: the reviewer, and the lead's next probe, since whether Navisworks reads "3 0" as off is
+UNKNOWN until a real start writes no autosave. FR-196's part 2, the compare against the one backup
+in run.ps1, is not in this branch and waits for F131. Commit a2e4d6b is titled F138 part 2, which
+is the time limits and not FR-196's part 2. The waits on the monitor and watchdog runspaces through
+EndInvoke, run.ps1's own RunChild under TreeRefusal and the guard's reg.exe export in BackupSettings
+have no limit of their own and rest on the deadline runspace. No add-in file changed, so
+steps\03_bader_next.md is unchanged.
+
 ## 2026-10-06 The loop, turn 5, F133 the work tracker MERGED as pull request 122, 025b5eb, at 14:54:14
 
 Attempt 6 read by a reviewer, CHANGES with one blocking point, the rows of Q137 and Q138 once PR 128 put his
