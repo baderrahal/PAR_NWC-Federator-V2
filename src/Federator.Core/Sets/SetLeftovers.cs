@@ -23,19 +23,18 @@ namespace Federator.Core.Sets
     /// <summary>One leftover set and what is to be done about it.</summary>
     public sealed class LeftoverSet
     {
-        internal LeftoverSet(string path, string name, int sides, LeftoverAction action, string twinPath, string twinName)
-            : this(path, name, sides, action, twinPath, twinName, false)
+        internal LeftoverSet(string path, string name, int sides, LeftoverAction action, string twinName)
+            : this(path, name, sides, action, twinName, false)
         {
         }
 
         internal LeftoverSet(
-            string path, string name, int sides, LeftoverAction action, string twinPath, string twinName, bool sidesUnknown)
+            string path, string name, int sides, LeftoverAction action, string twinName, bool sidesUnknown)
         {
             Path = path ?? string.Empty;
             Name = name ?? string.Empty;
             Sides = sides;
             Action = action;
-            TwinPath = twinPath ?? string.Empty;
             TwinName = twinName ?? string.Empty;
             SidesUnknown = sidesUnknown;
         }
@@ -55,9 +54,7 @@ namespace Federator.Core.Sets
 
         public LeftoverAction Action { get; private set; }
 
-        /// <summary>The unused set that gets removed first, or empty.</summary>
-        public string TwinPath { get; private set; }
-
+        /// <summary>The name of the unused set that gets removed first, or empty.</summary>
         public string TwinName { get; private set; }
 
         /// <summary>What the log says about it, naming what points at it every time.</summary>
@@ -212,13 +209,13 @@ namespace Federator.Core.Sets
 
                 if (!everyCounted)
                 {
-                    leftovers.Add(new LeftoverSet(set.Path, set.Name, set.Sides, LeftoverAction.Refuse, null, null, true));
+                    leftovers.Add(new LeftoverSet(set.Path, set.Name, set.Sides, LeftoverAction.Refuse, null, true));
                     continue;
                 }
 
                 if (set.Sides <= 0)
                 {
-                    leftovers.Add(new LeftoverSet(set.Path, set.Name, 0, LeftoverAction.Remove, null, null));
+                    leftovers.Add(new LeftoverSet(set.Path, set.Name, 0, LeftoverAction.Remove, null));
                     continue;
                 }
 
@@ -230,10 +227,10 @@ namespace Federator.Core.Sets
                 }
 
                 leftovers.Add(twin == null
-                    ? new LeftoverSet(set.Path, set.Name, set.Sides, LeftoverAction.Refuse, null, null)
+                    ? new LeftoverSet(set.Path, set.Name, set.Sides, LeftoverAction.Refuse, null)
                     : new LeftoverSet(
                         set.Path, set.Name, set.Sides,
-                        LeftoverAction.RemoveTheTwinThenRename, twin.Path, twin.Name));
+                        LeftoverAction.RemoveTheTwinThenRename, twin.Name));
             }
 
             return leftovers;

@@ -18,9 +18,6 @@ namespace Federator.Core.Probe
     /// </summary>
     public static class ProbeVerdict
     {
-        /// <summary>The two spellings looked for, and the reason each is on the list.</summary>
-        public static readonly string[] FireSuppressionWords = { "Fire Suppression", "FS" };
-
         /// <summary>
         /// Whether that text names fire suppression. "Fire Suppression" is matched
         /// anywhere, without case. "FS" is matched only as a WHOLE TOKEN, because it is
