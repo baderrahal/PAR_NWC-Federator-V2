@@ -588,6 +588,7 @@ namespace Federator.Core.Clash
                     ClashSkipReason.UnknownTestType,
                     ClashSkipReason.NoLocator,
                     ClashSkipReason.UnknownUnits,
+                    ClashSkipReason.NoTolerance,
                     ClashSkipReason.NoName,
                     ClashSkipReason.Failed
                 })
