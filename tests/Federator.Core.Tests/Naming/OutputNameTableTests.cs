@@ -125,15 +125,34 @@ namespace Federator.Core.Tests
             OutputNameTable table = Table(naming);
 
             Assert.That(OutputNameTable.DescribeRefill(table.Count, table.Refill(naming, Settings)),
-                Does.Contain("3 rows refilled."));
+                Does.Contain("3 rows refilled, every name of each."));
 
             table.Find("1C07BC").SetByHand(OutputKind.Nwf, "A");
             table.Find("1C07K1").SetByHand(OutputKind.Nwd, "B");
 
             string said = OutputNameTable.DescribeRefill(table.Count, table.Refill(naming, Settings));
 
-            Assert.That(said, Does.Contain("1 of 3 rows refilled"));
-            Assert.That(said, Does.Contain("2 rows were typed over by hand and left alone"));
+            Assert.That(said, Is.EqualTo("7 of 9 names refilled. 2 names were typed over by hand and left alone."));
+        }
+
+        /// <summary>
+        /// FR-130. A row with only its NWF name typed over has two of its three names refilled, and the
+        /// message counted rows, so it said a whole row was left alone. It counts names, and one row
+        /// with nothing kept is not said to be one name refilled.
+        /// </summary>
+        [Test]
+        public void TheRefillCountsNamesAndNeverCallsThreeNamesOne()
+        {
+            OutputNaming naming = new OutputNaming();
+            OutputNameTable table = Table(naming);
+
+            table.Find("1C07BC").SetByHand(OutputKind.Nwf, "A");
+
+            Assert.That(OutputNameTable.DescribeRefill(table.Count, table.Refill(naming, Settings)),
+                Is.EqualTo("8 of 9 names refilled. 1 name was typed over by hand and left alone."));
+            Assert.That(OutputNameTable.DescribeRefill(1, 0), Is.EqualTo("1 row refilled, every name of each."));
+            Assert.That(OutputNameTable.DescribeRefill(1, 0), Does.Not.Contain("1 name refilled"));
+            Assert.That(OutputNameTable.DescribeRefill(1, 1), Is.EqualTo("2 of 3 names refilled. 1 name was typed over by hand and left alone."));
         }
 
         // Setting a name back to what the pattern gives still counts as by hand, because

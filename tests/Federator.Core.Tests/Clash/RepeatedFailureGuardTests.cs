@@ -155,6 +155,32 @@ namespace Federator.Core.Tests
 
         // ---------- what it says when it fires ----------
 
+        /// <summary>
+        /// FR-129. Fifty failures in a row can follow any number of good tests, so the words never say
+        /// the first fifty tests failed, which tells a reader nothing ever worked.
+        /// </summary>
+        [Test]
+        public void FailuresAfterGoodTestsAreNeverCalledTheFirstTests()
+        {
+            RepeatedFailureGuard guard = new RepeatedFailureGuard();
+
+            for (int i = 0; i < 199; i++)
+            {
+                guard.RecordSuccess();
+            }
+
+            for (int i = 0; i < 50; i++)
+            {
+                guard.RecordFailure(Disposed);
+            }
+
+            Assert.That(guard.ShouldStopTheRun, Is.True);
+            Assert.That(guard.Reason, Does.Not.Contain("first"));
+            Assert.That(guard.ReasonInPlainWords, Does.Not.Contain("first"));
+            Assert.That(guard.Reason, Does.Contain("50 tests in a row all failed for the same reason"));
+            Assert.That(guard.ReasonInPlainWords, Does.Contain("50 tests in a row all failed the same way"));
+        }
+
         [Test]
         public void TheReasonNamesTheCountAndCarriesTheOriginalFailure()
         {

@@ -18,6 +18,24 @@ namespace Federator.Core.Tests
         private const string Source = @"C:\00_NM\NWC Fed\NWC\test001";
         private const string Nwf = @"C:\00_NM\NWC Fed\NWF\test001";
 
+        /// <summary>
+        /// FR-131. With the NWF folder inside the scanned folder the label said the NWF folder cannot be
+        /// read, which is not the reason. It names the scanned folder and carries no parameter name.
+        /// </summary>
+        [Test]
+        public void AnNwfFolderInsideTheScannedFolderIsSaidAsThatAndNotAsUnreadable()
+        {
+            string scanned = TestPaths.At("nwc", "test001");
+            string said = ReportPaths.WhereTheyGo(
+                string.Empty, TestPaths.At("nwc", "test001", "NWF"), scanned);
+
+            Assert.That(said, Does.Contain("is inside the folder being scanned"));
+            Assert.That(said, Does.Contain(scanned));
+            Assert.That(said, Does.Not.Contain("Parameter name"));
+            Assert.That(said, Does.Not.Contain("cannot be read"));
+            Assert.That(said, Does.Not.Contain("\n"));
+        }
+
         // The one the brief asks for by name.
         [Test]
         public void BeforeAnythingIsPickedItSaysSoRatherThanUnknown()
@@ -26,6 +44,21 @@ namespace Federator.Core.Tests
 
             Assert.That(said, Is.EqualTo("beside the NWF folder, once one is picked on this step"));
             Assert.That(said, Does.Not.Contain("UNKNOWN"));
+        }
+
+        /// <summary>
+        /// A path the framework refuses to join throws its own ArgumentException, whose message is
+        /// not the tool's to show. Only the refusal the tool throws on purpose is said as it is.
+        /// </summary>
+        [Test]
+        public void AFrameworkMessageAboutAPathNeverReachesTheLine()
+        {
+            string said = ReportPaths.WhereTheyGo(string.Empty, "C:\\nwf\0folder", Source);
+
+            Assert.That(said, Does.Not.Contain("Illegal"));
+            Assert.That(said, Does.Not.Contain("path"));
+            Assert.That(said, Is.EqualTo(
+                "not worked out yet, the NWF folder on this step cannot be read"));
         }
 
         // The one the brief asks for by name.
