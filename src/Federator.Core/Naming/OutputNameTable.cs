@@ -176,15 +176,11 @@ namespace Federator.Core.Naming
 
             foreach (OutputNameRow row in rows)
             {
-                if (row.WasEdited)
-                {
-                    kept++;
-                }
-
                 foreach (OutputKind kind in AllKinds())
                 {
                     if (row.IsByHand(kind))
                     {
+                        kept++;
                         continue;
                     }
 
@@ -204,11 +200,15 @@ namespace Federator.Core.Naming
         {
             if (kept == 0)
             {
-                return rowCount + (rowCount == 1 ? " name refilled." : " rows refilled.");
+                return rowCount + (rowCount == 1 ? " row" : " rows") + " refilled, every name of each.";
             }
 
-            return (rowCount - kept) + " of " + rowCount + " rows refilled. "
-                + kept + (kept == 1 ? " row was" : " rows were")
+            // Counted in names, FR-130. A row with one name typed over has its other names refilled,
+            // so a count of rows said a whole row was left alone.
+            int names = rowCount * AllKinds().Length;
+
+            return (names - kept) + " of " + names + " names refilled. "
+                + kept + (kept == 1 ? " name was" : " names were")
                 + " typed over by hand and left alone.";
         }
 

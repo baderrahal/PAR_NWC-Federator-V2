@@ -439,9 +439,9 @@ namespace Federator.Core.Findings
                             + " files, so there is nothing for them to clash against.",
                         "This run also has "
                             + string.Join(", ", Without(disciplinesInRun, group.Disciplines[0]).ToArray())
-                            + " files in other buildings. The federation is still built and every "
-                            + "clash test is still created, and none of them is run, because one "
-                            + "discipline cannot clash with itself. "
+                            + " files in other buildings. The federation is still built, the "
+                            + "clash tests whose two sides both find something are still created, and "
+                            + "none of them is run, because one discipline cannot clash with itself. "
                             + "Either the other disciplines have not been exported yet, or this "
                             + "building really is " + group.Disciplines[0] + " only.",
                         new List<string> { group.Building },

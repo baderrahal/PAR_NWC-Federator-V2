@@ -18,6 +18,24 @@ namespace Federator.Core.Tests
         private const string Source = @"C:\00_NM\NWC Fed\NWC\test001";
         private const string Nwf = @"C:\00_NM\NWC Fed\NWF\test001";
 
+        /// <summary>
+        /// FR-131. With the NWF folder inside the scanned folder the label said the NWF folder cannot be
+        /// read, which is not the reason. It names the scanned folder and carries no parameter name.
+        /// </summary>
+        [Test]
+        public void AnNwfFolderInsideTheScannedFolderIsSaidAsThatAndNotAsUnreadable()
+        {
+            string scanned = TestPaths.At("nwc", "test001");
+            string said = ReportPaths.WhereTheyGo(
+                string.Empty, TestPaths.At("nwc", "test001", "NWF"), scanned);
+
+            Assert.That(said, Does.Contain("is inside the folder being scanned"));
+            Assert.That(said, Does.Contain(scanned));
+            Assert.That(said, Does.Not.Contain("Parameter name"));
+            Assert.That(said, Does.Not.Contain("cannot be read"));
+            Assert.That(said, Does.Not.Contain("\n"));
+        }
+
         // The one the brief asks for by name.
         [Test]
         public void BeforeAnythingIsPickedItSaysSoRatherThanUnknown()

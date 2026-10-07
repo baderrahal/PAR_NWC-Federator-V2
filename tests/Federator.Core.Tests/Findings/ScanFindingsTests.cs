@@ -373,6 +373,25 @@ namespace Federator.Core.Tests
             Assert.That(single[0].Headline, Does.Contain("nothing for them to clash against"));
         }
 
+        /// <summary>
+        /// FR-126. The detail said every clash test is still created in a one discipline group, and the
+        /// CLASH block of the same group said 36 of 1830 were. Since F77 only the tests whose two sides
+        /// both find something are created, and it says that.
+        /// </summary>
+        [Test]
+        public void TheSingleDisciplineDetailNeverSaysEveryTestIsCreated()
+        {
+            ScanFindings findings = FindingsFor(Files(
+                FullGroup("1B06PK"),
+                new[] { Nwc("1B06BS", "EL") }));
+
+            string detail = findings.OfKind(FindingKind.SingleDiscipline)[0].Detail;
+
+            Assert.That(detail, Does.Not.Contain("every clash test is still created"));
+            Assert.That(detail, Does.Contain("the clash tests whose two sides both find something are still created"));
+            Assert.That(detail, Does.Contain("none of them is run"));
+        }
+
         [Test]
         public void ASingleDisciplineGroupIsNotAlsoReportedAsMissing()
         {

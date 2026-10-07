@@ -58,8 +58,8 @@ namespace Federator.Core.Clash
             get
             {
                 return ShouldStopTheRun
-                    ? "the first " + consecutive
-                        + " tests all failed for the same reason, so the rest of the run was not attempted. "
+                    ? consecutive
+                        + " tests in a row all failed for the same reason, so the rest of the run was not attempted. "
                         + firstReason
                     : null;
             }
@@ -78,8 +78,8 @@ namespace Federator.Core.Clash
         /// <summary>What the window says when the guard stops a run.</summary>
         public static string Stopped(int consecutive)
         {
-            return "The run was stopped. The first " + consecutive
-                + " tests all failed the same way, so the rest was not attempted. "
+            return "The run was stopped. " + consecutive
+                + " tests in a row all failed the same way, so the rest was not attempted. "
                 + "The log says what the failure was.";
         }
 

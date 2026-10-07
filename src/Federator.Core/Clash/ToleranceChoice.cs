@@ -76,7 +76,7 @@ namespace Federator.Core.Clash
 
         /// <summary>The grey line under it. Twelve words, which is the limit.</summary>
         public const string HelpLine =
-            "Beats the XML and the document. Changing a saved test resets results";
+            "Beats the XML and the document. Results and statuses are kept";
 
         /// <summary>The words that begin every line this rule writes.</summary>
         public const string Prefix = "TOLERANCE";
