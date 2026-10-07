@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-07 12:57, last run 04/item2-C02
+STATE OPEN, 2026-10-07 13:22, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,32 +15,31 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 0 | 0 | 0 | 0 | 20 | 0 | 20 |
 | 4 | 0 | 0 | 0 | 0 | 57 | 0 | 57 |
 | 5 | 4 | 0 | 0 | 0 | 68 | 0 | 72 |
-| outside the waves | 142 | 8 | 6 | 4 | 45 | 5 | 210 |
-| total | 192 | 53 | 6 | 4 | 209 | 5 | 469 |
+| outside the waves | 148 | 8 | 0 | 4 | 46 | 5 | 211 |
+| total | 198 | 53 | 0 | 4 | 210 | 5 | 470 |
 <!-- the end of the counts -->
 
 ## Now
-- F131 teams: MERGED as PR 135, 9c881d1, at 11:33:40 on 2026-10-07
-- F132 mirrored tests: attempt 10 under Q140 on fix-F132
-- F139 this page: attempt 2 on fix-F139, draft pull request 130, the Stop gate reading the page by content
-- F114 views: carries TeamPair, TeamMap.Compare and CarriesSizeFolder now that F131 merged, then P11 to P19
-- Probes: Q133 on 1A04PK done, F138's switch held on its real start, the probes go on at P11
+- F139 this page: merged with pull request 130, the Stop gate reading the page by its content
+- F132 mirrored tests: attempt 11 on fix-F132, one fail closed rule for every test of a pair, Q140
+- F114 views: attempt 7 on fix-F114, one rule for a set's team, then its add-in pass
+- Probes: Q133 1A04PK, P11 and P12 done, Auto-Save off held on each start, P13 to P19 go on
+- F131 merged as PR 135 and F138 as PR 127, the switch proven by the Q133 probe's real start
 
 ## Next
-1. The probes P11 to P19, one Navisworks at a time, then FR-196's part 2 in run.ps1
-2. F132: attempt 10 under Q140, then its readers, then its add-in half
-3. F139: the reviewer of attempt 2, then its merge, then Q141 written on main
+1. The probes P13 to P19, one Navisworks at a time, then FR-196's part 2 in run.ps1 with its harness
+2. F132: attempt 11 read, then its add-in half, then F114's add-in pass, in Bader's order
+3. Main installed in place and the runs of 1A02MM and 1A04PK with the new views
 
 ## Waiting for Bader
-- No question. Four rows wait for him: steps 228-233, 346-352 and 364 of steps\03_bader_next.md
-- and F139-R8, steps\logs\README.md line 11 still naming steps/log.md
+- No question. Four rows wait for him: steps 228-233, 346-352 and 364 of steps\03_bader_next.md, and F139-R8, steps\logs\README.md line 11
 
 ## Blockers and known bugs
 - T5-R-WALKRACE: the harness's walk of the loop folder races a lane's build and stops on a HARNESS FAULT
 - T5-R-HELDOFF: a run that leaves "3 0" makes the next backup read it as his, put back by hand
-- T5-R-OLDKEY: 40 values of his 22.0 key went back to older values, the writer UNKNOWN
+- T5-R-OLDKEY: his 22.0 key reads a July copy after each restart, the writer UNKNOWN, his own sessions run on it
 - Until F114 merges every test run has the viewpoints box unticked, and the C02 weekly stays stopped, Q130
-- The keep-awake reads steps\loop.md, which F139 moves, so it stops on STATE CLOSED only once it reads this page, F139-R1
+- The day closes from 18:40, before the company shutdown at about 19:30
 
 ## Where the long history is
 - steps\history\loop.md: every turn, the form and the register table, its closed rows the record

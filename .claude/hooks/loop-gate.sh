@@ -47,7 +47,7 @@
 #    read until one holds a VERDICT line, so none older than the newest finished run is read.
 #    LOCALAPPDATA reaches the gate with its drive and backslashes, C:\Users\<name>\AppData\Local,
 #    and the glob reads that spelling, proved by tools\loop\prove-hooks.sh and on the real runs
-#    folder, turn5\f139b-gate-real.txt.
+#    folder, turn5\f139b-gate-real-2.txt.
 # 3. A CHANGE. A note per session, .claude/hooks/.loop-gate-<session id>, which git ignores,
 #    written when the gate sends the session back. A note newer than the page lets the stop
 #    through, so a session is sent back once per change of the page, as the gate did for
