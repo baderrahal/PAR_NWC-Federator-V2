@@ -466,11 +466,18 @@ and 6 does not read as broken.
   a side or a set's rule list not read, two of the name, or one of a type this tool does not
   run, no pair of that kept test is made, each of its mirrors keeps its own clashes under its
   own name, and a MIRROR line says why, and that a clash both find may be counted twice where
-  it is UNKNOWN. A test there asking the XML's question, in its order or swapped, pairs only where every
-  setting `TestDrift.Compare` reads is the XML's, F132 attempt 10, `MirrorPair.SettingsDiffer`,
-  the one comparison the pair's line reads, its sides set against the XML's sides they stand
-  for, since the mirror runs at the XML's settings and a drifted test at its own, and where one
-  differs no pair is made and the line names each setting, the XML's value first. With
+  it is UNKNOWN. EVERY TEST OF A PAIR THE DOCUMENT HOLDS, F132 attempts 10 and 11: a test the document holds
+  runs as a test of a pair only where it is read whole, asks the XML test's question, in its
+  order or swapped, and carries every setting `TestDrift.Compare` reads as the XML test does,
+  `OtherSettings` inside `MirrorRule`, the one rule, through `MirrorPair.SettingsDiffer`, the one
+  comparison the pair's line reads, its sides set against the XML's sides they stand for,
+  since a drifted test is left as it is and runs at its own settings. Under the kept test's
+  name and under the mirror's, `HeldAs`, the mirror's own XML name with the ending among them,
+  which NameFor gives back without asking whether it is taken, where it fails no pair is made
+  and the line names why and each setting, the XML's value first. For an old test renamed as
+  the mirror and for an earlier mirror renamed back to a kept test, where it fails the rename
+  is not made and the test is created from the XML. An earlier mirror renamed back to a test
+  the XML runs alone merges nothing, so its settings are a drift the DRIFT block names. With
   the placeholders the add-in hands today, no kept test the document holds pairs. The
   saved tests are handed once, as the tests where no XML is picked and as the document
   where one is. `MirrorSettings.NameFor` is the one place a mirror's name is made. `ClashTestPlan.WithMirrorsNamed` gives the plan those names,
@@ -514,16 +521,18 @@ and 6 does not read as broken.
   A mirror whose XML name already ends with the ending is saved under the name it runs under,
   so it is neither renamed nor refused. A rename is refused and named where the document
   already holds any test of the new name, one FromDocument leaves out too, where it holds
-  two tests of the old name, and where the sides do not ask that question or were not read,
-  and the refused test is left as it is and not run. One MIRROR line counts the renames and
+  two tests of the old name, where the sides do not ask that question or were not read, and
+  where it carries other settings than the XML's mirror, F132 attempt 11, and the refused
+  test is left as it is and not run. One MIRROR line counts the renames and
   the refusals, then one names each. A CHANGE OF ROLES BETWEEN TWO XML RUNS, F132 attempt 8:
   where the priority file or the XML's order now keeps Y, whose mirror Y (mirror) an earlier
   run made, and the document does not hold Y, the one saved test carrying a name NameFor
   gives Y as a mirror, under no name the plan runs, with Y's two sets in Y's order, is
   planned to be renamed back to Y, its statuses kept, `MirrorSettings.IsANameFor` reading
   the name with NameFor's own pieces, so no second test of the question is created beside
-  it and every clash of it counted twice. Two that fit, or one whose sides were not read,
-  are refused and said, Y then created beside them. The same holds for a test the XML now
+  it and every clash of it counted twice. Two that fit, one whose sides were not read, or one
+  at other settings than Y where Y is kept in a pair, F132 attempt 11, are refused and said,
+  Y then created beside them. The same holds for a test the XML now
   runs alone. A second MIRROR line counts those, then one names each, then one names each
   pair not made for the kept test's name and each mirror passed over a name the document
   holds. No saved test is renamed twice and no two
@@ -580,9 +589,11 @@ and 6 does not read as broken.
   with an item not read is not added, and since F132 attempt 10 a mirror holding one is not
   merged and stays in the report as its own test with every clash it found, so no clash is in
   no block, and its line says whether the kept test found it is UNKNOWN and that a clash both
-  find is counted twice, and a kept test's clash with an item
-  not read is counted, since up to that many of the clashes said found by a mirror only may be
-  its own. A group is refused, each clash under it is handed. The MIRROR lines name, for each
+  find is counted twice. Since F132 attempt 11 a kept test holding a clash with an item not
+  read merges nothing, since a mirror's copy of that clash cannot be matched to it and would
+  be added as found by the mirror only and held twice, so each of its mirrors stays in the
+  report as its own test, and its line says why. A mirror is merged only where every clash on
+  both sides has both items read. A group is refused, each clash under it is handed. The MIRROR lines name, for each
   mirror, what each test found, how many both found and how many the mirror only, then every
   clash the mirror alone found by its name, its mirror and its two items, then what the report
   holds under the kept test. THE COUNT CHECK OF DONE MEANS 3, `ReportedCount.Line` with the

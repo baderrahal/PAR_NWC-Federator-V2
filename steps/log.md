@@ -1788,7 +1788,22 @@ f126-records-harness.py, which made the edits. Also /tmp/added.txt of Git for Wi
 lines read for a semicolon, deleted once read.
 
 
-## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built again after a tenth attempt on Bader's answers B to Q121, D to Q133, A to Q136, A to Q137 and B to Q138 and his rule of 2026-10-06 for its next reading, attempts 9 and 10 on 2026-10-07, and held on its branch
+## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built again after an eleventh attempt on Bader's answers B to Q121, D to Q133, A to Q136, A to Q137 and B to Q138 and his rule of 2026-10-06 for its next reading, attempts 9 to 11 on 2026-10-07, and held on its branch
+
+Written by F132's developer as the lead's delegate. Attempt 11, under Bader's rule Q140, on the two
+faults both readings of attempt 10 carry, turn5\lanes-1007-review10-F132.json and
+lanes-1007-break10-F132.json, each CHANGES, fixed at their root by one rule each. Core tests 2157
+passed, 0 failed, 0 skipped at e3614b4, turn5\f132m-core-before.txt. 6 tests failed first against
+the code of e3614b4, 5 new and 1 older one moved to the new rule, turn5\f132m-before-fail.txt. The
+code, 0ea3ee6, 2163 passed, 0 failed, 0 skipped by its pre-commit, turn5\f132m-precommit-code.txt.
+Main bb16672 taken in at 691fe6a with no conflict, so no pre-commit ran,
+turn5\f132m-precommit-merge.txt, and 2163 passed, 0 failed, 0 skipped at 691fe6a,
+turn5\f132m-core-after.txt. `dotnet build ParsonsNwcFederator.sln -c Release --no-incremental` built
+Federator.Core, Federator.Core.Tests and Federator.Addin with 0 errors and 0 warnings at 691fe6a
+with the tree clean, turn5\f132m-build-code.txt, whose first lines carry the hash and the empty
+status. check-locals and check-imports exit 0 over src at 691fe6a, turn5\f132m-checks.txt. This
+developer started no Navisworks, and Get-Process Roamer read no process at 13:38:16,
+turn5\f132m-roamer.txt. No add-in file changed in attempt 11.
 
 Written by F132's developer as the lead's delegate. Attempt 10, under Bader's rule Q140, on the two
 points of the readings of attempt 9 that can change a clash count,
@@ -1960,6 +1975,42 @@ end of each, turn5\f132-roamer-after.txt, f132b-roamer-before.txt and f132b-roam
 
 ### What was done
 
+- attempt 11, 0ea3ee6, EVERY TEST OF A PAIR THE DOCUMENT HOLDS, both readings' first finding on
+  attempt 10. INPUT: a week two XML run where the document holds the mirror under its own name, an
+  old test the run renames as the mirror, or an earlier mirror the run renames back to the kept test
+  after a change of roles, with a setting changed by hand, or holds anything under a mirror's own
+  XML name that ends with the ending. ROOT: only the document's test of the kept test's name was
+  judged on its settings. The mirror's name, the rename as the mirror and the rename back took a
+  test on its sets alone, src\Federator.Core\Clash\MirrorRule.cs lines 354 to 358, 661 to 676 and
+  717 to 726 at e3614b4, and NameFor gives a name with the ending back without asking whether it is
+  taken, MirrorSettings.cs line 71, so that test was never read at all. FIX:
+  MirrorRule.OtherSettings is the one rule every path reads, through MirrorPair.SettingsDiffer, and
+  HeldAs judges what the document holds under the kept test's name and under the mirror's once
+  NameFor gave it: read whole, the XML test's question, the XML test's settings. Where it fails no
+  pair is made, or the rename is not made and the test is created from the XML, and a MIRROR line
+  names why and each setting. An earlier mirror renamed back to a test the XML runs alone is renamed
+  as before, since it merges nothing and refused it would leave a second test of its question. In:
+  ATestUnderTheMirrorsNameWithASettingChangedByHandIsNotPaired,
+  ATestUnderAMirrorsOwnXmlNameWithTheEndingIsJudgedByTheSameRule,
+  AnOldTestWithASettingChangedByHandIsNotRenamedAsTheMirror and
+  AnEarlierMirrorWithASettingChangedByHandIsNotRenamedBack, each failing first, and
+  ATestTheXmlRunsAloneTakesBackItsEarlierMirrorAtOtherSettings guarding the alone case
+- attempt 11, 0ea3ee6, NO MERGE INTO A KEPT TEST WITH A CLASH NOT READ, both readings' second
+  finding on attempt 10, the attempt 10 register row. INPUT: a clash of the kept test with an item
+  key not read, and a mirror's clash of the same two items with both keys read. ROOT: KeptFound
+  counted it not read and kept it out of keptPairs, MirrorMerge.cs lines 186 to 192 at e3614b4, so
+  Merge added the mirror's copy as found by the mirror only, lines 341 to 350, and the kept block
+  held the clash twice. FIX: AddTo merges nothing into a kept test holding such a clash,
+  KeptNotRead, each mirror stays in the report as its own test, and the one line says why. A mirror
+  is merged only where every clash on both sides has both items read. The line saying up to N may be
+  the kept test's own could no longer be reached and is gone. In:
+  AKeptTestWithAClashOfAnItemNotReadMergesNothing, failing first.
+  AnItemNotReadOnEitherTestIsSaidUnknown asserted that line and now asserts the new one, failing
+  first
+- attempt 11, main bb16672 taken in at 691fe6a with no conflict. It changes steps files only
+- attempt 11 records: the rule in .claude\rules\core.md, EVERY TEST OF A PAIR THE DOCUMENT HOLDS,
+  the two renames and FAIL CLOSED, the ATTEMPT 11 bullet of steps\01_next.md, and this entry.
+  steps\loop.md, steps\tracker.csv and steps\02_questions.md not touched
 - attempt 10, eb11a06, THE KEPT TEST'S SETTINGS, the breaker's finding 1 on attempt 9. INPUT: a
   week two XML run over an NWF whose test of the kept test's name X has the XML's two sets but a
   tolerance, test type, merge composites, self intersect or primitive types changed by hand. ROOT:
@@ -2487,6 +2538,21 @@ end of each, turn5\f132-roamer-after.txt, f132b-roamer-before.txt and f132b-roam
 
 ### Known bugs
 
+- attempt 11, CLOSED: both readings' first finding on attempt 10, a test of a pair found under the
+  mirror's name or made by a rename with a setting changed by hand, fixed above
+- attempt 11, CLOSED: the attempt 10 register row below on a kept test's clash with an item not
+  read, fixed above
+- attempt 11, register, the reviewer's finding 3 and the breaker's finding 3 on attempt 10: with the
+  file settings applied, or the tolerance chosen in the tool, a pair is judged on the XML's settings
+  while the run sets others, so it is refused every week. Fail closed, each block holds what its
+  panel holds. The add-in half
+- attempt 11, register, the breaker's finding 4 on attempt 10: a kept test with two mirrors, the
+  first not merged and the second merged, and the first's line does not say a clash may repeat one
+  the second added. Words, no count moves
+- attempt 11, register, the reviewer's finding 6 on attempt 10: nothing in src calls MirrorRule or
+  MirrorMerge, the known state, which blocks the merge to main until the add-in half.
+  SettingsDiffer's callers are now MirrorPair and OtherSettings. The reviewer's finding 4, the up to
+  N line where no clash was added, is gone with that line
 - attempt 10, CLOSED: the breaker's finding 1 on attempt 9, a kept test with a setting changed by
   hand paired, fixed above
 - attempt 10, CLOSED: the attempt 9 row below on the breaker's finding 2, a mirror's clash with an
