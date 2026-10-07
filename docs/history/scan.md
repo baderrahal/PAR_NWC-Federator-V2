@@ -7711,3 +7711,166 @@ the end, line 91.
 **WHAT THIS DECIDES.** Nothing yet. The row of P15 is not answered, so FR-067's fallback is not known
 to keep the marks. A next run would read the count and the names first, then each property in its own
 call, writing a line before each read, to name the read that fails.
+
+## 5z-x. DOES ZOOMBOX ON THE FIRST CLASH'S CAMERA FRAME EVERY OPEN CLASH OF A TEST, MEASURED 2026-10-07
+
+P16 of Q114, the views by team design, part 3. The question: does Viewpoint.ZoomBox on a copy of the
+first open clash's camera, with the box of the test's open clash centres padded by the margin, keep
+the view direction and put every centre inside the recorded view after a reopen, each centre
+projected with the window's HeightField, 5m? By the row of P16: Yes, FramingBox and ZoomBox. The
+direction changes but every centre is in: used, and the change said. No: ViewFraming's arithmetic is
+built and probed the same way. Neither: the view keeps its first clash's camera, VIEWS TREE says it is
+not framed on all its clashes, and Bader is told point 13 is at risk. The row depends on P5, which
+said YES, 5z-h, so it runs.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-framing.ps1` is P14's `probe-folder-remove.ps1` with the
+new mode `vpframe` of `ViewpointProbe.dll`, the method MeasureFraming, a parameter `-MarginMm` handed
+on to the mode, and the plugin's output read with the file shared, because P15's script could not read
+it while a failing Navisworks held it, 5z-w. Nothing else in the script changed, F138's
+SwitchAutoSaveOff and the guard included. The branch was pulled first, up to date at 5f6d0f0, and P15's
+leftovers were committed as 5871d64 before this probe was written. tools\loop\nw-guard.ps1 read sha256
+E29D2733, line 4. Get-Process Roamer read 0 before the run and 0 after it. The probe copied the
+baseline `runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`, 41,317,271 bytes, sha256
+0944C100, into the new folder `probes\view-framing-20261007-155007`, line 22, and the mode, on that
+copy:
+
+1. reads every test and counts its results and its open results, open being New or Active, the
+   design's ViewStatuses. It takes the test with the most open clashes and the test with the fewest
+   open clashes above one. No test is named in the code
+2. for each, walks the results in tree order, reads every open result's Center, and takes the first
+   open result's camera from `DocumentClashTests.TestsViewpointForResult`, copied by CreateCopy
+3. builds the box over the open centres, each side padded by the margin turned into document units, by
+   `new BoundingBox3D(Point3D, Point3D)`, and calls `ZoomBox(box)` on a copy of that camera
+4. reads both cameras: position, rotation, the direction and up turned from (0, 0, -1) and (0, 1, 0)
+   by the rotation, HeightField, AspectRatio, projection, focal distance and the extents at it.
+   Counts the centres inside each, a centre being inside when it is in front of the camera and the
+   tangent of its angle off the axis is within half the field up and down and aspect times that
+   across, and prints the largest reach, 1 being the edge
+5. records the zoomed camera and the first clash's own camera through the COM view, the tool's route,
+   5m, into a folder `P16 probe` at the root, and reads each back
+6. saves into `p16-framed.nwf` in the work folder, calls Document.Clear and TryOpenFile of the saved
+   file, reads every open centre again, then reads each view as recorded, presses it through
+   CurrentSavedViewpoint, reads the window's camera off Document.CurrentViewpoint, and counts the
+   centres inside with the window's position, direction, field and aspect
+
+The margin is 500 mm, chosen for this probe and not measured, the design's FramingMarginMillimetres
+having no value yet. Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-framing.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p16-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf -MarginMm 500
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+0 warnings and 0 errors, DLL sha256 051157AC, script sha256 00CF5B4A, lines 24 and 3. One run at
+15:50, kept as `p16-view-framing-result-20261007.txt`, the machine name on line 1 masked as
+`[machine]` and the account folder on line 5 as `%USERPROFILE%`, nothing else changed. Navisworks pid
+40876, adopted on all four conditions, line 38. TryOpenFile of the copy returned True after 4.293 s
+with 4 models, every one read from under the loop folder, lines 54 to 59. ExecuteAddInPlugin returned
+0 after 43.16 s, line 48. Dispose returned and pid 40876 was gone 8.5 s later, not forced, line 158.
+
+**THE ANSWER: YES. ZOOMBOX KEPT THE VIEW DIRECTION EXACTLY AND PUT ALL 2568 OPEN CENTRES OF BLD-AR-CURTAIN
+MULLIONS-VS-BLD-AR-WINDOWS INSIDE THE VIEW, AND IT HELD THROUGH A SAVE, A REOPEN AND A PRESS IN THE
+WINDOW.** Lines 63 to 152 of the result:
+
+```
+                                         open    in view on the     in view, zoomed,   in view, zoomed view    largest reach,
+                                      centres    first clash's       before the save    pressed in the window   1 is the edge
+                                                 camera                                 after the reopen
+many  BLD-AR-Curtain Mullions-          2568     114, 1514 behind        2568                 2568                  0.933344
+      vs-BLD-AR-Windows
+few   BLD-ST-Floors-vs-BLD-ST-Framing      2     2                       2                    2                     0.450532
+
+direction moved by ZoomBox, both tests                     0.0000 deg, up 0.0000 deg
+direction, first clash's camera to the window after the reopen, both tests    0.0000 deg
+P16 YES
+```
+
+1. THE TESTS. 528 tests, 469 with no open clash, 11 with one and 48 with two or more, line 63. The
+   test of most open clashes is BLD-AR-Curtain Mullions-vs-BLD-AR-Windows, 2568 results, all 2568
+   open, line 64, the test the row names. The test of fewest above one is BLD-ST-Floors-vs-BLD-ST-
+   Framing, 2 results, both open, line 65
+2. THE CONVENTION IS MEASURED. On both first clash cameras the first clash's own centre lies 0.0000 deg
+   off the axis turned from (0, 0, -1), by the rotation read as an axis and an angle and as a
+   quaternion with A, B and C its vector part and D its scalar, the two agreeing to 0.0000 deg, lines
+   72 and 88. So a camera looks along its rotation of (0, 0, -1), and TestsViewpointForResult points it
+   straight at the clash. Every count below rests on that. Both cameras read field 0.785398, the
+   field the extents at the focal distance imply, and AspectRatio 2.635569, equal to the extents'
+   horizontal over vertical, lines 71 and 87. So HeightField is the full vertical angle in radians
+3. THE FIRST CLASH'S CAMERA ALONE FRAMES 114 OF 2568. The fallback of the row, the view keeping its
+   first clash's camera, shows 114 of the many test's open centres, with 1514 behind the camera, line
+   73, and the same 114 when pressed after the reopen, line 124. On the few test it shows both, line 89
+4. ZOOMBOX MOVES THE CAMERA BACK ALONG ITS OWN AXIS AND CHANGES NOTHING ELSE READ. On the many test the
+   box was 101.932 by 101.824 by 91.547 units, line 74. ZoomBox returned in 0.001 s, line 75, and moved
+   the position 229.139 units, with the direction, the up, the field and the aspect the same to 0.0000
+   deg and to six places, lines 76 and 77. It left the focal distance at 3.729, the first clash's,
+   line 76. On the few test it moved the position 105.049 units and nothing else, lines 92 and 93
+5. EVERY CENTRE IN. The zoomed camera holds 2568 of 2568, the largest reach 0.933344 up and down and
+   0.350665 across, line 78, and 2 of 2 on the few test, reach 0.450532, line 94
+6. IT HELD THROUGH THE RECORD, A SAVE, A REOPEN AND A PRESS. Each view read back off its folder with
+   the position moved 0 and the direction 0.0000 deg, lines 80, 82, 96 and 98. After SaveFile, 7.941 s,
+   line 101, Document.Clear and TryOpenFile of the saved file, the open centres read the same 2568 and
+   2 in the same order, a largest difference of 0, lines 107 and 132. Pressed, the window's camera read
+   the recorded position, direction, field and aspect exactly, and held 2568 of 2568 and 2 of 2, lines
+   110 to 113 and 135 to 138. The five centres nearest the edge on the many test all lie at X 130.756,
+   reach 0.885 to 0.933, lines 114 to 118
+7. THE WINDOW'S FIELD WAS THE RECORDED ONE IN THIS RUN. 5m read the window's field 0.953 after pressing
+   a view given 0.785. Here the window read 0.785398 and the aspect 2.635569 on every press, the values
+   the clash camera came with, lines 112, 123, 137 and 145. Whether a window of another shape or size
+   shows the same is UNKNOWN. Off the numbers above, and only if Navisworks holds the vertical field
+   when the window's shape changes, which is UNKNOWN, the many test's view stays whole across in any
+   window of aspect at or above 0.924, 0.350665 times 2.635569, and up and down it has 7 per cent to
+   spare
+8. WHAT THE RECORD COST. Each of the 4 views took 6.143 s to 6.737 s to record through the COM view
+   into its folder in a tree of 2847 viewpoints, lines 79, 81, 95 and 97, where ZoomBox took 0.001 s.
+   That is read once per view and is not P18's measurement of the per view sequence
+9. THE DOCUMENT. 4 models, 61 sets, 528 tests, 2939 results and 0 statuses a person set at the open
+   and after the reopen, viewpoints 2847 then 2851, the 4 the probe recorded, lines 62, 100 and 104.
+   The document is in feet, line 60. The saved copy is
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-framing-20261007-155007\p16-framed.nwf`, 41,317,755
+   bytes, sha256 9DC99432238D1CBFD6183E39D0B16258C386DEB9E999E47BEC06D2B1A1E5FD6E, line 154. It holds
+   the folder `P16 probe` with `P16 many framed`, `P16 many first clash camera`, `P16 few framed` and
+   `P16 few first clash camera`
+
+**BADER'S HAND STEP IS NOT DONE.** The row has Bader press both views by hand as one step. Nothing here
+shows what the picture on his screen looks like. The four views above are the ones to press, in the
+saved copy named in item 9, never in NM Fed.
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWF the copy was made from read sha256
+0944C100 at the start and at the end, lines 22 and 252. The guard wrote the Auto-Save switch "3 0" and
+read it back, line 28. The watchdog saw no other Navisworks, and the put back ran, line 201. 38
+registry values were put back, enable among them, line 206, and read again with 0 still differing,
+line 241. SessionCleanCloseCount went 93 to 94 and no crashCount changed, line 203, so this close was
+not recorded as a crash. InfoCenter.log and LastSession.xml were put back reading their backups'
+sha256, lines 245 and 246. The guard saw 0 AutoSave files added, changed or gone, line 248, and the
+tool's own logs folder had nothing added or changed, line 249. The prober read the switch and listed
+the AutoSave folder by name, size, write time and sha256 with `read-autosave-state.ps1`, kept in
+%LOCALAPPDATA%\NwcFederatorLoop\turn5 as `probe-p16-20261007-autosave-before.txt`, `-during.txt` and
+`-after.txt`: enable read String "0" at 15:49:44 before the start, "3 0" at 15:50:49 while the probe
+ran, and "0" at 15:53:21 after the put back, and the folder held the same 199 files with the same
+sizes, times and sha256 before and after, 0 lines differing.
+
+THE PROGRAMS. One Navisworks, pid 40876, started by the probe at 15:50:14, quit by Dispose and gone 8.5
+s after, not forced, lines 158 and 161. AdskLicensingAgent pid 51192, a child of pid 40876, and
+AdskLicensingInstHelper pids 41036 and 5088 under GenuineService.exe all read exited, lines 193 to
+195. No Roamer that was not there in step 2 ran at the end, line 196.
+
+**STILL UNKNOWN.**
+
+- what the views look like on Bader's screen. His hand step has not run
+- whether a window of another shape or size changes the field or the aspect a pressed view shows,
+  and so whether a centre near the edge, reach 0.933, leaves the picture. This run's window read the
+  recorded values. 5m's did not
+- whether a centre inside the view is also in front of the near clipping plane, and whether the clash
+  is drawn and not hidden behind other geometry. Only the centre was projected, not the items
+- why ZoomBox leaves the focal distance at the first clash's value, and what that does to orbiting
+  in the pressed view
+- why one COM record took 6.1 s to 6.7 s here. P18 measures the per view sequence
+- a test whose open clashes are spread so wide that the view from the first clash's direction sees
+  them edge on. Two tests were tried, both from the same direction, (-0.577, 0.577, -0.577)
+- a margin other than 500 mm
+- that Center and the camera are in the document's units, feet here. The margin was turned into feet on
+  that assumption, and it was not read
+
+**WHAT THIS DECIDES.** By the row of P16, YES: FramingBox and ZoomBox. A copy of the first open
+clash's camera from TestsViewpointForResult, zoomed to the box of the test's open clash centres padded
+by the margin, keeps the clash camera's direction, up, field and aspect exactly, moves only back along
+its own axis, and holds every open centre in view through the COM record, a save, a reopen and a press.
+ViewFraming's camera arithmetic is not built.

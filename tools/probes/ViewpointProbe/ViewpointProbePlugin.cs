@@ -206,6 +206,13 @@ namespace ViewpointProbe
                             parameters[2],
                             parameters.Length > 3 ? parameters[3] : null);
                     }
+                    else if (mode == "vpframe")
+                    {
+                        MeasureFraming(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
                     else if (mode == "vpcomment")
                     {
                         MeasureViewComments(
@@ -14052,6 +14059,935 @@ namespace ViewpointProbe
 
             Say("   ResolveGuid " + when + ": the item at its index path for " + found + " of " + sentinels.Count + " Guids set. The others: " + (other.Count == 0 ? "none" : string.Join("; ", other.ToArray())));
             return found;
+        }
+
+        // ---------- P16 of Q114, does ZoomBox on a copy of the first open clash's camera frame every open clash of a test ----------
+
+        private const string P16Top = "P16 probe";
+
+        private sealed class P16Cam
+        {
+            public bool Ok;
+            public string Why = string.Empty;
+            public double Px, Py, Pz;
+            public double Dx, Dy, Dz;
+            public double Ux, Uy, Uz;
+            public double QDx, QDy, QDz;
+            public double Hf;
+            public double Aspect;
+            public string Projection = string.Empty;
+            public bool HasFocal;
+            public double Focal;
+            public double VExt = double.NaN;
+            public double HExt = double.NaN;
+            public double RA, RB, RC, RD;
+            public double Angle;
+            public double Ax, Ay, Az;
+        }
+
+        private sealed class P16Case
+        {
+            public string Label = string.Empty;
+            public string Test = string.Empty;
+            public int Results;
+            public int Open;
+            public readonly List<double[]> Centres = new List<double[]>();
+            public string FirstName = string.Empty;
+            public double[] FirstCentre;
+            public P16Cam First;
+            public P16Cam Framed;
+            public string FramedView = string.Empty;
+            public string FirstView = string.Empty;
+            public bool ZoomReturned;
+            public double DirChange = double.NaN;
+            public int InFirst = -1;
+            public int InFramed = -1;
+            public int InWindow = -1;
+            public int InRecorded = -1;
+            public int InFirstWindow = -1;
+            public double DirChangeReopen = double.NaN;
+            public bool CentresSame;
+        }
+
+        /// <summary>
+        /// P16: ZoomBox on a copy of the first open clash's camera, with the box of the test's open clash
+        /// centres padded by a margin, keeps the view direction and puts every centre inside the recorded
+        /// view after a reopen, each centre projected with the window's HeightField, 5m. The open statuses
+        /// are New and Active, the design's ViewStatuses. Two tests are taken off the copy, none named in the
+        /// code: the one with the most open clashes, and the one with the fewest open clashes above one.
+        /// For each, the first open clash's camera comes from TestsViewpointForResult and is copied, the box
+        /// is built from two Point3D, the copy is zoomed, and both the zoomed camera and the first clash's
+        /// own are recorded through the COM view into the folder P16 probe at the root. Then SaveFile,
+        /// Document.Clear and TryOpenFile of the saved file, and each view is read as recorded and pressed,
+        /// and the window's camera is read back. A camera looks along its rotation of (0, 0, -1) with its
+        /// rotation of (0, 1, 0) up, and the probe reads how far the first clash's own centre sits from
+        /// that axis on the first clash's own camera, so the convention is measured and not taken on trust.
+        /// </summary>
+        private void MeasureFraming(string nwf, string saveAs, string marginText)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            double marginMm;
+
+            if (!double.TryParse(marginText ?? string.Empty, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out marginMm) || marginMm < 0)
+            {
+                Say("UNKNOWN: the margin [" + Shown(marginText) + "] is not a number of millimetres at or above 0");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            double mmPerUnit = P16MillimetresPer(document.Units);
+            string scale = "UNKNOWN";
+
+            try
+            {
+                scale = Round(UnitConversion.ScaleFactor(Units.Millimeters, document.Units));
+            }
+            catch (Exception error)
+            {
+                scale = "threw " + error.GetType().Name;
+            }
+
+            Say("document units " + document.Units + ", millimetres per unit by the probe's own table " + (double.IsNaN(mmPerUnit) ? "UNKNOWN" : Round(mmPerUnit))
+                + ", UnitConversion.ScaleFactor(Millimeters, " + document.Units + ") " + scale);
+
+            if (double.IsNaN(mmPerUnit))
+            {
+                Say("P16 UNKNOWN   the document's unit is not in the probe's table, so no margin can be set");
+                return;
+            }
+
+            double margin = marginMm / mmPerUnit;
+            Say("the margin: " + Round(marginMm) + " mm, chosen for this probe and not measured, " + margin.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture) + " in document units, added on every side of the box");
+            string counts0 = P13Counts(document);
+            Say("the document at the open: " + counts0 + ", viewpoints " + CountViewpoints(document));
+
+            DocumentClashTests data = document.GetClash().TestsData;
+            List<P16Case> all = new List<P16Case>();
+            P16ListTests(data.Tests, all);
+            int noOpen = 0;
+            int oneOpen = 0;
+
+            foreach (P16Case c in all)
+            {
+                if (c.Open == 0)
+                {
+                    noOpen++;
+                }
+                else if (c.Open == 1)
+                {
+                    oneOpen++;
+                }
+            }
+
+            Say("tests read " + all.Count + ", with no open clash " + noOpen + ", with one " + oneOpen + ", with two or more " + (all.Count - noOpen - oneOpen) + ". Open is New or Active");
+            P16Case many = null;
+            P16Case few = null;
+
+            foreach (P16Case c in all)
+            {
+                if (many == null || c.Open > many.Open)
+                {
+                    many = c;
+                }
+
+                if (c.Open >= 2 && (few == null || c.Open < few.Open))
+                {
+                    few = c;
+                }
+            }
+
+            if (many == null || few == null || many.Open < 2 || ReferenceEquals(many, few))
+            {
+                Say("P16 UNKNOWN   the copy does not hold two tests of two or more open clashes each");
+                return;
+            }
+
+            many.Label = "many";
+            few.Label = "few";
+            List<P16Case> cases = new List<P16Case> { many, few };
+
+            foreach (P16Case c in cases)
+            {
+                Say("the test of " + c.Label + ": [" + Shown(c.Test) + "], results " + c.Results + ", open " + c.Open);
+            }
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P16Top;
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                Say("the folder [" + P16Top + "] made at the root by FolderItem and AddCopy");
+            }
+            catch (Exception error)
+            {
+                Say("P16 UNKNOWN   the folder could not be made, " + error.GetType().Name + ": " + error.Message);
+                return;
+            }
+
+            InwOpState10 state = ComApiBridge.State;
+
+            foreach (P16Case c in cases)
+            {
+                Say(string.Empty);
+                Say("THE TEST OF " + c.Label.ToUpperInvariant() + ", [" + Shown(c.Test) + "]");
+                ClashResult first = null;
+
+                try
+                {
+                    ClashTest test = P16FindTest(data.Tests, c.Test);
+
+                    if (test == null)
+                    {
+                        Say("   the test was not found again by its name, so this test is not measured");
+                        continue;
+                    }
+
+                    P16Centres(test.Children, c.Centres, ref first);
+                }
+                catch (Exception error)
+                {
+                    Say("   the walk of its results THREW " + error.GetType().Name + ": " + error.Message);
+                    continue;
+                }
+
+                if (first == null || c.Centres.Count < 2)
+                {
+                    Say("   fewer than two open centres were read, " + c.Centres.Count + ", so this test is not measured");
+                    continue;
+                }
+
+                c.FirstName = first.DisplayName ?? string.Empty;
+                c.FirstCentre = c.Centres[0];
+                Say("   open centres read " + c.Centres.Count + ", the first open clash [" + Shown(c.FirstName) + "] status " + first.Status + " centre " + P16Point(c.FirstCentre));
+                Viewpoint firstCam = null;
+
+                try
+                {
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+
+                    using (Viewpoint fromClash = data.TestsViewpointForResult(first))
+                    {
+                        firstCam = fromClash == null ? null : fromClash.CreateCopy();
+                    }
+
+                    Say("   TestsViewpointForResult and CreateCopy took " + Seconds(clock) + ", " + (firstCam == null ? "null" : "a camera"));
+                }
+                catch (Exception error)
+                {
+                    Say("   TestsViewpointForResult THREW " + error.GetType().Name + ": " + error.Message);
+                }
+                finally
+                {
+                    first.Dispose();
+                }
+
+                if (firstCam == null)
+                {
+                    continue;
+                }
+
+                using (firstCam)
+                {
+                    c.First = P16Snap(firstCam);
+                    Say("   the first clash's camera: " + P16Says(c.First));
+                    P16Convention(c.First, c.FirstCentre);
+                    c.InFirst = P16CountIn(c.First, c.First.Hf, c.First.Aspect, c.Centres, "   the first clash's camera, its own field and aspect", 0);
+
+                    double minX = double.MaxValue, minY = double.MaxValue, minZ = double.MaxValue;
+                    double maxX = double.MinValue, maxY = double.MinValue, maxZ = double.MinValue;
+
+                    foreach (double[] p in c.Centres)
+                    {
+                        minX = Math.Min(minX, p[0]); minY = Math.Min(minY, p[1]); minZ = Math.Min(minZ, p[2]);
+                        maxX = Math.Max(maxX, p[0]); maxY = Math.Max(maxY, p[1]); maxZ = Math.Max(maxZ, p[2]);
+                    }
+
+                    Viewpoint framed = firstCam.CreateCopy();
+
+                    try
+                    {
+                        using (Point3D low = new Point3D(minX - margin, minY - margin, minZ - margin))
+                        using (Point3D high = new Point3D(maxX + margin, maxY + margin, maxZ + margin))
+                        using (BoundingBox3D box = new BoundingBox3D(low, high))
+                        {
+                            Say("   the box of the open centres padded by the margin: min " + P16Point(new[] { low.X, low.Y, low.Z }) + " max " + P16Point(new[] { high.X, high.Y, high.Z })
+                                + " size (" + Round(box.Size.X) + ", " + Round(box.Size.Y) + ", " + Round(box.Size.Z) + "), empty " + box.IsEmpty);
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            framed.ZoomBox(box);
+                            c.ZoomReturned = true;
+                            Say("   ZoomBox on the copy RETURNED after " + Seconds(clock));
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        Say("   ZoomBox THREW " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    using (framed)
+                    {
+                        c.Framed = P16Snap(framed);
+                        Say("   the zoomed camera: " + P16Says(c.Framed));
+                        c.DirChange = P16Angle(c.First.Dx, c.First.Dy, c.First.Dz, c.Framed.Dx, c.Framed.Dy, c.Framed.Dz);
+                        Say("   the view direction moved by " + P16Deg(c.DirChange) + ", the up by " + P16Deg(P16Angle(c.First.Ux, c.First.Uy, c.First.Uz, c.Framed.Ux, c.Framed.Uy, c.Framed.Uz))
+                            + ", the position by " + Round(P16Dist(c.First, c.Framed)) + " units, the field " + Round(c.First.Hf) + " to " + Round(c.Framed.Hf) + ", the aspect " + Round(c.First.Aspect) + " to " + Round(c.Framed.Aspect));
+                        c.InFramed = P16CountIn(c.Framed, c.Framed.Hf, c.Framed.Aspect, c.Centres, "   the zoomed camera, its own field and aspect", 0);
+                        c.FramedView = "P16 " + c.Label + " framed";
+                        c.FirstView = "P16 " + c.Label + " first clash camera";
+                        P16Record(state, document, c.FramedView, framed, c.Framed);
+                        P16Record(state, document, c.FirstView, firstCam, c.First);
+                    }
+                }
+            }
+
+            Say(string.Empty);
+            Say("the document before the save: " + P13Counts(document) + ", viewpoints " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P16 UNKNOWN   the saved file would not reopen, so nothing after a reopen is read");
+                return;
+            }
+
+            string counts2 = P13Counts(document);
+            Say("the document after the reopen: " + counts2 + ", viewpoints " + CountViewpoints(document));
+            data = document.GetClash().TestsData;
+
+            foreach (P16Case c in cases)
+            {
+                if (c.Framed == null)
+                {
+                    continue;
+                }
+
+                Say(string.Empty);
+                Say("AFTER THE REOPEN, THE TEST OF " + c.Label.ToUpperInvariant() + ", [" + Shown(c.Test) + "]");
+                List<double[]> again = new List<double[]>();
+                ClashResult firstAgain = null;
+
+                try
+                {
+                    ClashTest test = P16FindTest(data.Tests, c.Test);
+
+                    if (test != null)
+                    {
+                        P16Centres(test.Children, again, ref firstAgain);
+                    }
+
+                    if (firstAgain != null)
+                    {
+                        firstAgain.Dispose();
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("   the walk of its results THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                double worst = 0;
+                c.CentresSame = again.Count == c.Centres.Count;
+
+                for (int i = 0; c.CentresSame && i < again.Count; i++)
+                {
+                    worst = Math.Max(worst, Math.Abs(again[i][0] - c.Centres[i][0]) + Math.Abs(again[i][1] - c.Centres[i][1]) + Math.Abs(again[i][2] - c.Centres[i][2]));
+                }
+
+                c.CentresSame = c.CentresSame && worst < 1e-9;
+                Say("   open centres read again " + again.Count + ", the same as before the save, in order " + Yes(c.CentresSame) + ", the largest difference " + worst.ToString("0.###E+0", System.Globalization.CultureInfo.InvariantCulture));
+
+                using (GroupItem folder = FindFolderAtRoot(document, P16Top))
+                {
+                    if (folder == null)
+                    {
+                        Say("   the folder [" + P16Top + "] is not at the root after the reopen");
+                        continue;
+                    }
+
+                    foreach (string name in new[] { c.FramedView, c.FirstView })
+                    {
+                        bool isFramed = ReferenceEquals(name, c.FramedView);
+                        P16Cam made = isFramed ? c.Framed : c.First;
+
+                        using (SavedViewpoint view = FindUnder(folder, name))
+                        {
+                            if (view == null)
+                            {
+                                Say("   [" + name + "] NOT FOUND after the reopen");
+                                continue;
+                            }
+
+                            P16Cam recorded = P16Snap(view.Viewpoint);
+                            Say("   [" + name + "] as recorded: " + P16Says(recorded));
+                            Say("      against the camera recorded from: position moved " + Round(P16Dist(made, recorded)) + " units, direction " + P16Deg(P16Angle(made.Dx, made.Dy, made.Dz, recorded.Dx, recorded.Dy, recorded.Dz)));
+
+                            if (isFramed)
+                            {
+                                c.InRecorded = P16CountIn(recorded, recorded.Hf, recorded.Aspect, c.Centres, "      the recorded camera, its own field and aspect", 0);
+                            }
+
+                            P16Cam window = null;
+
+                            try
+                            {
+                                clock = System.Diagnostics.Stopwatch.StartNew();
+                                document.SavedViewpoints.CurrentSavedViewpoint = view;
+
+                                using (Viewpoint now = document.CurrentViewpoint.CreateCopy())
+                                {
+                                    window = P16Snap(now);
+                                }
+
+                                Say("      pressed in " + Seconds(clock) + ", the window's camera: " + P16Says(window));
+                            }
+                            catch (Exception error)
+                            {
+                                Say("      the press THREW " + error.GetType().Name + ": " + error.Message);
+                            }
+
+                            if (window == null || !window.Ok)
+                            {
+                                continue;
+                            }
+
+                            double dirMoved = P16Angle(recorded.Dx, recorded.Dy, recorded.Dz, window.Dx, window.Dy, window.Dz);
+                            Say("      the window against the recorded: position moved " + Round(P16Dist(recorded, window)) + " units, direction " + P16Deg(dirMoved)
+                                + ", field " + Round(recorded.Hf) + " to " + Round(window.Hf) + ", aspect " + Round(recorded.Aspect) + " to " + Round(window.Aspect));
+                            int inWin = P16CountIn(window, window.Hf, window.Aspect, c.Centres, "      the window's camera, the window's field and aspect", 5);
+
+                            if (isFramed)
+                            {
+                                c.InWindow = inWin;
+                                c.DirChangeReopen = P16Angle(c.First.Dx, c.First.Dy, c.First.Dz, window.Dx, window.Dy, window.Dz);
+                                P16CountIn(recorded, window.Hf, window.Aspect, c.Centres, "      the recorded position and direction with the window's field and aspect", 0);
+                            }
+                            else
+                            {
+                                c.InFirstWindow = inWin;
+                            }
+                        }
+                    }
+                }
+            }
+
+            Say(string.Empty);
+            bool allIn = true;
+            bool allKept = true;
+            bool allRead = true;
+
+            foreach (P16Case c in cases)
+            {
+                bool read = c.ZoomReturned && c.InWindow >= 0 && c.CentresSame;
+                bool kept = !double.IsNaN(c.DirChangeReopen) && c.DirChangeReopen * 180 / Math.PI < 0.01;
+                bool inside = c.InWindow == c.Centres.Count && c.Centres.Count > 0;
+                allRead &= read;
+                allKept &= kept;
+                allIn &= inside;
+                Say("SUMMARY " + c.Label + " [" + Shown(c.Test) + "]: open " + c.Centres.Count + ". In view: on the first clash's camera " + c.InFirst + ", on the zoomed camera " + c.InFramed
+                    + ", on the recorded view after the reopen " + c.InRecorded + ", pressed in the window " + c.InWindow + ", the first clash's view pressed in the window " + c.InFirstWindow
+                    + ". ZoomBox returned " + Yes(c.ZoomReturned) + ". Direction moved by ZoomBox " + P16Deg(c.DirChange) + ", from the first clash's camera to the window after the reopen " + P16Deg(c.DirChangeReopen));
+            }
+
+            if (!allRead)
+            {
+                Say("P16 UNKNOWN   a step of the measurement did not complete, so the row is not answered");
+            }
+            else if (allIn && allKept)
+            {
+                Say("P16 YES   ZoomBox kept the view direction and every open centre of both tests sits inside the recorded view pressed in the window after a reopen");
+            }
+            else if (allIn)
+            {
+                Say("P16 YES WITH THE DIRECTION CHANGED   every open centre of both tests sits inside the view pressed after a reopen, and the direction moved");
+            }
+            else
+            {
+                Say("P16 NO   on at least one test a centre falls outside the zoomed view pressed in the window after a reopen");
+            }
+        }
+
+        private static double P16MillimetresPer(Units units)
+        {
+            switch (units)
+            {
+                case Units.Meters: return 1000;
+                case Units.Centimeters: return 10;
+                case Units.Millimeters: return 1;
+                case Units.Feet: return 304.8;
+                case Units.Inches: return 25.4;
+                case Units.Yards: return 914.4;
+                case Units.Kilometers: return 1000000;
+                case Units.Miles: return 1609344;
+                case Units.Micrometers: return 0.001;
+                case Units.Mils: return 0.0254;
+                case Units.Microinches: return 0.0000254;
+                default: return double.NaN;
+            }
+        }
+
+        private static void P16ListTests(SavedItemCollection items, List<P16Case> into)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    ClashTest test = item as ClashTest;
+
+                    if (test != null)
+                    {
+                        P16Case c = new P16Case();
+                        c.Test = test.DisplayName ?? string.Empty;
+                        P16CountOpen(test.Children, ref c.Results, ref c.Open);
+                        into.Add(c);
+                        continue;
+                    }
+
+                    GroupItem group = item as GroupItem;
+
+                    if (group != null)
+                    {
+                        P16ListTests(group.Children, into);
+                    }
+                }
+            }
+        }
+
+        private static bool P16IsOpen(ClashResultStatus status)
+        {
+            return status == ClashResultStatus.New || status == ClashResultStatus.Active;
+        }
+
+        private static void P16CountOpen(SavedItemCollection items, ref int results, ref int open)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    ClashResultGroup group = item as ClashResultGroup;
+
+                    if (group != null)
+                    {
+                        P16CountOpen(group.Children, ref results, ref open);
+                        continue;
+                    }
+
+                    ClashResult result = item as ClashResult;
+
+                    if (result != null)
+                    {
+                        results++;
+
+                        if (P16IsOpen(result.Status))
+                        {
+                            open++;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static ClashTest P16FindTest(SavedItemCollection items, string name)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                SavedItem item = items[i];
+                ClashTest test = item as ClashTest;
+
+                if (test != null && string.Equals(test.DisplayName, name, StringComparison.Ordinal))
+                {
+                    return test;
+                }
+
+                GroupItem group = item as GroupItem;
+
+                if (test == null && group != null)
+                {
+                    ClashTest found = P16FindTest(group.Children, name);
+
+                    if (found != null)
+                    {
+                        return found;
+                    }
+                }
+
+                item.Dispose();
+            }
+
+            return null;
+        }
+
+        /// <summary>Every open result's centre in tree order, and the first open result kept for its camera.</summary>
+        private static void P16Centres(SavedItemCollection items, List<double[]> into, ref ClashResult first)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                SavedItem item = items[i];
+                ClashResultGroup group = item as ClashResultGroup;
+
+                if (group != null)
+                {
+                    P16Centres(group.Children, into, ref first);
+                    continue;
+                }
+
+                ClashResult result = item as ClashResult;
+
+                if (result == null || !P16IsOpen(result.Status))
+                {
+                    item.Dispose();
+                    continue;
+                }
+
+                using (Point3D c = result.Center)
+                {
+                    into.Add(new[] { c.X, c.Y, c.Z });
+                }
+
+                if (first == null)
+                {
+                    first = result;
+                }
+                else
+                {
+                    item.Dispose();
+                }
+            }
+        }
+
+        private static P16Cam P16Snap(Viewpoint v)
+        {
+            P16Cam cam = new P16Cam();
+
+            if (v == null)
+            {
+                cam.Why = "null";
+                return cam;
+            }
+
+            try
+            {
+                using (Point3D p = v.Position)
+                {
+                    cam.Px = p.X; cam.Py = p.Y; cam.Pz = p.Z;
+                }
+
+                using (Rotation3D r = v.Rotation)
+                {
+                    cam.RA = r.A; cam.RB = r.B; cam.RC = r.C; cam.RD = r.D;
+                    AxisAndAngleResult aa = r.ToAxisAndAngle();
+                    cam.Angle = aa.Angle;
+                    cam.Ax = aa.Axis.X; cam.Ay = aa.Axis.Y; cam.Az = aa.Axis.Z;
+                }
+
+                double[] d = P16Rodrigues(cam.Ax, cam.Ay, cam.Az, cam.Angle, 0, 0, -1);
+                double[] u = P16Rodrigues(cam.Ax, cam.Ay, cam.Az, cam.Angle, 0, 1, 0);
+                double[] q = P16Quaternion(cam.RA, cam.RB, cam.RC, cam.RD, 0, 0, -1);
+                cam.Dx = d[0]; cam.Dy = d[1]; cam.Dz = d[2];
+                cam.Ux = u[0]; cam.Uy = u[1]; cam.Uz = u[2];
+                cam.QDx = q[0]; cam.QDy = q[1]; cam.QDz = q[2];
+                cam.Hf = v.HeightField;
+                cam.Aspect = v.AspectRatio;
+                cam.Projection = v.Projection.ToString();
+                cam.HasFocal = v.HasFocalDistance;
+
+                if (cam.HasFocal)
+                {
+                    cam.Focal = v.FocalDistance;
+
+                    try
+                    {
+                        cam.VExt = v.VerticalExtentAtFocalDistance;
+                        cam.HExt = v.HorizontalExtentAtFocalDistance;
+                    }
+                    catch (Exception)
+                    {
+                        cam.VExt = double.NaN;
+                        cam.HExt = double.NaN;
+                    }
+                }
+
+                cam.Ok = true;
+            }
+            catch (Exception error)
+            {
+                cam.Why = "threw " + error.GetType().Name + ": " + error.Message;
+            }
+
+            return cam;
+        }
+
+        private static double[] P16Rodrigues(double kx, double ky, double kz, double angle, double vx, double vy, double vz)
+        {
+            double len = Math.Sqrt(kx * kx + ky * ky + kz * kz);
+
+            if (len < 1e-12)
+            {
+                return new[] { vx, vy, vz };
+            }
+
+            kx /= len; ky /= len; kz /= len;
+            double cos = Math.Cos(angle);
+            double sin = Math.Sin(angle);
+            double dot = kx * vx + ky * vy + kz * vz;
+            double cx = ky * vz - kz * vy;
+            double cy = kz * vx - kx * vz;
+            double cz = kx * vy - ky * vx;
+            return new[]
+            {
+                vx * cos + cx * sin + kx * dot * (1 - cos),
+                vy * cos + cy * sin + ky * dot * (1 - cos),
+                vz * cos + cz * sin + kz * dot * (1 - cos)
+            };
+        }
+
+        /// <summary>The vector turned by the unit quaternion read as A, B, C the vector part and D the scalar part.</summary>
+        private static double[] P16Quaternion(double a, double b, double c, double d, double vx, double vy, double vz)
+        {
+            double tx = 2 * (b * vz - c * vy);
+            double ty = 2 * (c * vx - a * vz);
+            double tz = 2 * (a * vy - b * vx);
+            return new[]
+            {
+                vx + d * tx + (b * tz - c * ty),
+                vy + d * ty + (c * tx - a * tz),
+                vz + d * tz + (a * ty - b * tx)
+            };
+        }
+
+        private static double P16Angle(double ax, double ay, double az, double bx, double by, double bz)
+        {
+            double la = Math.Sqrt(ax * ax + ay * ay + az * az);
+            double lb = Math.Sqrt(bx * bx + by * by + bz * bz);
+
+            if (la < 1e-12 || lb < 1e-12)
+            {
+                return double.NaN;
+            }
+
+            double cos = (ax * bx + ay * by + az * bz) / (la * lb);
+            return Math.Acos(Math.Max(-1, Math.Min(1, cos)));
+        }
+
+        private static string P16Deg(double radians)
+        {
+            return double.IsNaN(radians) ? "UNKNOWN" : (radians * 180 / Math.PI).ToString("0.0000", System.Globalization.CultureInfo.InvariantCulture) + " deg";
+        }
+
+        private static double P16Dist(P16Cam a, P16Cam b)
+        {
+            double dx = a.Px - b.Px, dy = a.Py - b.Py, dz = a.Pz - b.Pz;
+            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+        private static string P16Point(double[] p)
+        {
+            return "(" + Round(p[0]) + ", " + Round(p[1]) + ", " + Round(p[2]) + ")";
+        }
+
+        private static string P16Says(P16Cam c)
+        {
+            if (!c.Ok)
+            {
+                return "UNREAD, " + c.Why;
+            }
+
+            string focal = c.HasFocal ? Round(c.Focal) : "none";
+            string implied = "UNKNOWN";
+            string extRatio = "UNKNOWN";
+
+            if (c.HasFocal && c.Focal > 0 && !double.IsNaN(c.VExt))
+            {
+                implied = Round(2 * Math.Atan(c.VExt / (2 * c.Focal)));
+                extRatio = c.VExt > 0 ? Round(c.HExt / c.VExt) : "UNKNOWN";
+            }
+
+            return "position " + P16Point(new[] { c.Px, c.Py, c.Pz }) + ", rotation A B C D (" + Round6(c.RA) + ", " + Round6(c.RB) + ", " + Round6(c.RC) + ", " + Round6(c.RD) + ")"
+                + ", direction by axis and angle (" + Round6(c.Dx) + ", " + Round6(c.Dy) + ", " + Round6(c.Dz) + ") and by the quaternion (" + Round6(c.QDx) + ", " + Round6(c.QDy) + ", " + Round6(c.QDz) + ")"
+                + ", up (" + Round6(c.Ux) + ", " + Round6(c.Uy) + ", " + Round6(c.Uz) + "), projection " + c.Projection + ", HeightField " + Round6(c.Hf) + ", AspectRatio " + Round6(c.Aspect)
+                + ", focal " + focal + ", extents at the focal distance H " + (double.IsNaN(c.HExt) ? "UNKNOWN" : Round(c.HExt)) + " V " + (double.IsNaN(c.VExt) ? "UNKNOWN" : Round(c.VExt))
+                + ", the full vertical angle the extents imply " + implied + ", H over V " + extRatio;
+        }
+
+        private static string Round6(double d)
+        {
+            return d.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private void P16Convention(P16Cam cam, double[] centre)
+        {
+            if (!cam.Ok)
+            {
+                return;
+            }
+
+            double rx = centre[0] - cam.Px, ry = centre[1] - cam.Py, rz = centre[2] - cam.Pz;
+            Say("   the first clash's centre against the first clash's camera: " + Round(Math.Sqrt(rx * rx + ry * ry + rz * rz)) + " units away, off the axis turned from (0, 0, -1) by axis and angle "
+                + P16Deg(P16Angle(cam.Dx, cam.Dy, cam.Dz, rx, ry, rz)) + ", by the quaternion " + P16Deg(P16Angle(cam.QDx, cam.QDy, cam.QDz, rx, ry, rz))
+                + ", the two directions apart " + P16Deg(P16Angle(cam.Dx, cam.Dy, cam.Dz, cam.QDx, cam.QDy, cam.QDz)));
+        }
+
+        /// <summary>
+        /// Counts the centres inside the view of that position and direction with that field and aspect.
+        /// Perspective: in front, and the tangent of the angle off the axis within half the field up and
+        /// down and aspect times that across. Orthographic: within half the field up and down and aspect
+        /// times that across, an assumption the line says. Prints the reach, 1 being the edge.
+        /// </summary>
+        private int P16CountIn(P16Cam cam, double hf, double aspect, List<double[]> centres, string label, int worstToShow)
+        {
+            if (cam == null || !cam.Ok)
+            {
+                Say(label + ": the camera was not read");
+                return -1;
+            }
+
+            bool ortho = string.Equals(cam.Projection, "Orthographic", StringComparison.Ordinal);
+            double rx = cam.Dy * cam.Uz - cam.Dz * cam.Uy;
+            double ry = cam.Dz * cam.Ux - cam.Dx * cam.Uz;
+            double rz = cam.Dx * cam.Uy - cam.Dy * cam.Ux;
+            double tv = ortho ? hf / 2 : Math.Tan(hf / 2);
+            double th = aspect * tv;
+            int inside = 0;
+            int behind = 0;
+            double maxReach = 0;
+            double maxAcross = 0;
+            double maxUp = 0;
+            List<KeyValuePair<double, int>> reach = new List<KeyValuePair<double, int>>();
+
+            for (int i = 0; i < centres.Count; i++)
+            {
+                double[] p = centres[i];
+                double vx = p[0] - cam.Px, vy = p[1] - cam.Py, vz = p[2] - cam.Pz;
+                double depth = vx * cam.Dx + vy * cam.Dy + vz * cam.Dz;
+                double up = vx * cam.Ux + vy * cam.Uy + vz * cam.Uz;
+                double across = vx * rx + vy * ry + vz * rz;
+                double nx;
+                double ny;
+
+                if (ortho)
+                {
+                    nx = Math.Abs(across) / th;
+                    ny = Math.Abs(up) / tv;
+                }
+                else
+                {
+                    if (depth <= 0)
+                    {
+                        behind++;
+                        reach.Add(new KeyValuePair<double, int>(double.PositiveInfinity, i));
+                        continue;
+                    }
+
+                    nx = Math.Abs(across) / (depth * th);
+                    ny = Math.Abs(up) / (depth * tv);
+                }
+
+                double r = Math.Max(nx, ny);
+                maxAcross = Math.Max(maxAcross, nx);
+                maxUp = Math.Max(maxUp, ny);
+                maxReach = Math.Max(maxReach, r);
+                reach.Add(new KeyValuePair<double, int>(r, i));
+
+                if (r <= 1)
+                {
+                    inside++;
+                }
+            }
+
+            Say(label + " (field " + Round6(hf) + ", aspect " + Round6(aspect) + ", " + (ortho ? "orthographic, half the field taken as half the height" : "perspective") + "): inside " + inside + " of " + centres.Count
+                + ", behind the camera " + behind + ", the largest reach " + (behind > 0 ? "behind" : Round6(maxReach)) + " where 1 is the edge, across " + Round6(maxAcross) + ", up and down " + Round6(maxUp));
+
+            if (worstToShow > 0)
+            {
+                reach.Sort((a, b) => b.Key.CompareTo(a.Key));
+
+                for (int k = 0; k < Math.Min(worstToShow, reach.Count); k++)
+                {
+                    Say(label.Substring(0, label.Length - label.TrimStart().Length) + "   reach " + (double.IsPositiveInfinity(reach[k].Key) ? "behind" : Round6(reach[k].Key)) + " open centre " + reach[k].Value + " " + P16Point(centres[reach[k].Value]));
+                }
+            }
+
+            return inside;
+        }
+
+        private void P16Record(InwOpState10 state, Document document, string name, Viewpoint camera, P16Cam expected)
+        {
+            try
+            {
+                System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                InwOpView view = NewComView(state, name, camera);
+                InwOpFolderView folder = FindComFolderAt(state, P16Top);
+
+                if (folder == null)
+                {
+                    Say("   [" + name + "] NOT RECORDED, the COM folder [" + P16Top + "] was not found");
+                    return;
+                }
+
+                folder.SavedViews().Add(view);
+                Say("   [" + name + "] recorded through the COM view into [" + P16Top + "] in " + Seconds(clock));
+
+                using (GroupItem parent = FindFolderAtRoot(document, P16Top))
+                using (SavedViewpoint back = FindUnder(parent, name))
+                {
+                    if (back == null)
+                    {
+                        Say("      read back: NOT FOUND in the folder");
+                        return;
+                    }
+
+                    P16Cam read = P16Snap(back.Viewpoint);
+                    Say("      read back: position moved " + Round(P16Dist(expected, read)) + " units, direction " + P16Deg(P16Angle(expected.Dx, expected.Dy, expected.Dz, read.Dx, read.Dy, read.Dz))
+                        + ", HeightField " + Round6(read.Hf) + ", AspectRatio " + Round6(read.Aspect) + ", projection " + read.Projection);
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   [" + name + "] the record THREW " + error.GetType().Name + ": " + error.Message);
+            }
         }
     }
 }
