@@ -136,33 +136,6 @@ namespace Federator.Core.Tests
             return count;
         }
 
-        /// <summary>
-        /// A file that cannot be written, a full disk or a handle gone, stopped the run from a log line.
-        /// The first fault is said once to the window and the run goes on with the lines in memory. The
-        /// stream is closed from outside here, which is the one way a test can make the write throw.
-        /// </summary>
-        [Test]
-        public void ALogFileThatCannotBeWrittenNeverStopsTheRunAndSaysSoOnce()
-        {
-            using (RunLog log = Start())
-            {
-                List<string> heard = new List<string>();
-                log.LineWritten += line => heard.Add(line);
-
-                System.Reflection.FieldInfo field = typeof(RunLog).GetField(
-                    "stream", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                ((IDisposable)field.GetValue(log)).Dispose();
-
-                Assert.DoesNotThrow(() => log.Line("after the file went"));
-                Assert.DoesNotThrow(() => log.Line("and again"));
-
-                Assert.That(heard.FindAll(line => line.Contains("after the file went")).Count, Is.EqualTo(1));
-                Assert.That(heard.FindAll(line => line.Contains("and again")).Count, Is.EqualTo(1));
-                Assert.That(heard.FindAll(line => line.Contains("the log file could not be written")).Count, Is.EqualTo(1));
-                Assert.That(log.ReadAll(), Does.Contain("after the file went"));
-            }
-        }
-
         // ---------- FR-046, a file that exists is never said to be missing ----------
 
         /// <summary>
@@ -184,6 +157,7 @@ namespace Federator.Core.Tests
 
                 Assert.That(text, Does.Not.Contain("NOT ON DISK"));
                 Assert.That(text, Does.Contain("APPEND   ok"));
+                Assert.That(text, Does.Contain("2,048 bytes"));
             }
         }
 

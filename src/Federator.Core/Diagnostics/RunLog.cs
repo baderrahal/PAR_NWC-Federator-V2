@@ -68,7 +68,6 @@ namespace Federator.Core.Diagnostics
         // only exceptions reached. Everything about group outcomes now derives from here.
         private readonly List<GroupRecord> groupRecords = new List<GroupRecord>();
         private bool closed;
-        private string fileFault;
 
         // ---------- the steps, F59 ----------
         //
@@ -619,43 +618,23 @@ namespace Federator.Core.Diagnostics
 
         private void WriteRaw(string line)
         {
-            string fileNotice = null;
-
             lock (gate)
             {
                 mirror.Append(line).Append(Environment.NewLine);
 
-                if (!closed && writer != null && fileFault == null)
+                if (!closed && writer != null)
                 {
-                    // FR-057. A file that cannot be written, a full disk or a handle gone, never stops
-                    // the run from a log line. The first fault is kept and said once to the window,
-                    // and the lines after it are in memory only.
-                    try
-                    {
-                        writer.WriteLine(line);
-                        writer.Flush();
+                    writer.WriteLine(line);
+                    writer.Flush();
 
-                        // Flush(true) pushes the operating system buffers to the disk. Without
-                        // it a hard crash loses whatever was still in flight, which is exactly
-                        // the case this log exists for.
-                        stream.Flush(true);
-                    }
-                    catch (Exception error)
-                    {
-                        fileFault = error.GetType().Name + ": " + error.Message;
-                        fileNotice = "LOG      the log file could not be written, " + fileFault
-                            + ", so the run goes on and the lines after this one are in the window only, not on disk";
-                        mirror.Append(fileNotice).Append(Environment.NewLine);
-                    }
+                    // Flush(true) pushes the operating system buffers to the disk. Without
+                    // it a hard crash loses whatever was still in flight, which is exactly
+                    // the case this log exists for.
+                    stream.Flush(true);
                 }
             }
 
             Tell(line);
-
-            if (fileNotice != null)
-            {
-                Tell(fileNotice);
-            }
         }
 
         private void Tell(string line)
@@ -2223,24 +2202,10 @@ namespace Federator.Core.Diagnostics
         {
             lock (gate)
             {
-                // A file that could not be written holds less than was logged, so what was held in
-                // memory is the log.
-                if (fileFault != null)
-                {
-                    return mirror.ToString();
-                }
-
                 if (!closed && writer != null)
                 {
-                    try
-                    {
-                        writer.Flush();
-                        stream.Flush(true);
-                    }
-                    catch (Exception)
-                    {
-                        return mirror.ToString();
-                    }
+                    writer.Flush();
+                    stream.Flush(true);
                 }
 
                 if (writer == null)

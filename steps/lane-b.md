@@ -182,6 +182,13 @@ It has not stopped.
   though logs-backup still holds it. Bader's .tsv files that earlier builds left beside logs already
   deleted are not removed, only growth from now on is stopped. Lane B took FR-055's own note that they go
   with the pruned logs as the decision, and Q82 does not name them
+- FR-057's disk half is left open: WriteRaw's file write still has no try, so a full disk or a handle gone
+  still throws out of Line. Lane B wrapped it and took it out again after the second reading, because the
+  first write at open then no longer fell back to the temp folder and the window said the log was on disk,
+  and after a fault TryCopyTo and the RESULT size read a short file as whole and Dispose could leave the
+  handle open. A fix has to make a fault at open count as a failed open, make IsWritingToDisk false, and
+  mark every size and copy after a fault. Also the figure SizeOnDisk now falls back to for a file held
+  with no sharing is the directory's and can lag, and is not marked
 - The RETAIN line counts a .tsv that could not be deleted in the same number as a log that could not,
   and an unfinished run's timing block still prints an after the run finished row of 0.0 seconds
 - .claude\rules\core.md lines about retention and the size rule do not say the .tsv goes with its log,
