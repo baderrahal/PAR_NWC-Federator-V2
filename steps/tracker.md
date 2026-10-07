@@ -77,24 +77,24 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| FR-065 | viewpoint dimming carries between viewpoints | F114 | silent wrong number | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-066 | size text reads tail of word digits | F114 | silent wrong number | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-067 | clear rebuild drops viewpoints | F114 | broken feature | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-068 | size tally never constructed | F114 | broken feature | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-069 | views cost per viewpoint | F114 | slow | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-070 | views 45 minute basis and options | F114 | slow | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-071 | views log silent up to 21 minutes | F114 | slow | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-072 | penetrations upwards walk outside try | F114 | loud failure | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-073 | views seconds parts do not add | F114 | noise | in progress | none, branch fix-F114 | none | 2026-10-04 |
+| FR-065 | viewpoint dimming carries between viewpoints | F114 | silent wrong number | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-066 | size text reads tail of word digits | F114 | silent wrong number | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-067 | clear rebuild drops viewpoints | F114 | broken feature | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-068 | size tally never constructed | F114 | broken feature | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-069 | views cost per viewpoint | F114 | slow | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-070 | views 45 minute basis and options | F114 | slow | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-071 | views log silent up to 21 minutes | F114 | slow | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-072 | penetrations upwards walk outside try | F114 | loud failure | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-073 | views seconds parts do not add | F114 | noise | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-177 | generic models counted and a set per model | F128 | Bader's request | open | none | none | 2026-10-04 |
 | FR-180 | team map beside the picked xml | F131 | Bader's decision | merged | 135 | none | 2026-10-07 |
 | FR-181 | mechanical sets miss hv pl fp models | F131 | Bader's decision | in progress | 135 merged for F131, the COVERAGE block and the form wait for F127 | none | 2026-10-07 |
-| FR-184 | views tree by priority and team pair | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-185 | one view per test of its open clashes | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-186 | views made fresh only the tools own | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-187 | views proof on 1a02mm and the views tree block | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-188 | views rules in docs workflow | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| F114 | views | F114 | fix | in progress | none, branch fix-F114 at e77e8a7, waits for F131 and F132 | none | 2026-10-06 |
+| FR-184 | views tree by priority and team pair | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-185 | one view per test of its open clashes | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-186 | views made fresh only the tools own | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-187 | views proof on 1a02mm and the views tree block | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-188 | views rules in docs workflow | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| F114 | views | F114 | fix | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | F128 | generic models | F128 | fix | open | none | none | 2026-10-04 |
 | F131 | teams | F131 | fix | merged | 135 | none | 2026-10-07 |
 | Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | open | none | none | 2026-10-04 |
