@@ -1,6 +1,409 @@
 # log
 
 Newest entry at the top.
+## 2026-10-07 The loop, turn 5, picked up in the morning, Bader's message headed GOOD MORNING, CONTINUE THE LOOP, and the plan
+
+The System log reads the company's shutdown.exe starting the shutdown at 19:30:39 on 2026-10-06 and 19:31:09 on
+2026-10-05, so the day of 2026-10-06, closed at 19:21, closed in time, and today's close starts at 18:40. The PC
+started at 09:29:27. Get-Process Roamer read one at 10:28:40, pid 41872, started by hand at 10:28:15 with
+-licensing AdLM, Bader's own, so the waiting rule holds: no probe, harness, install or put back until it closes.
+Every lane is pushed and clean at the heads the night stop named. The keep-awake runs again as pid 35152.
+
+The plan, in Bader's order, each step by the NIGHT STOP paragraph of steps\loop.md:
+1. F131: read the ninth harness failure, fix it if new, open its pull request, merge once green
+2. F132: attempt 9 on the one point under Q140, then its readers
+3. F139: attempt 2 again, the gate by content, then its reviewer and merge, then Q141 on main
+4. Once his Navisworks closes: his settings against P10's backup, then the probes, Q133 on 1A04PK and P11 to P19
+5. F114 once F131 merges, then F132's add-in half, then main installed and the runs of 1A02MM and 1A04PK
+6. Close the day from 18:40, before the company shutdown at about 19:30
+
+STATE OPEN.
+
+## 2026-10-06 The loop, turn 5, stopped safely for the night, STATE NIGHT
+
+By Bader's message headed STOP SAFELY FOR THE NIGHT. F139's attempt 2 and the lane that runs alone were stopped
+at safe points, F131's harness having finished first, and every worktree's work in progress was committed and
+pushed: fix-F139 at 388d8b8, fix-F114-probes at 51dd8c5, fix-F131 at 0e262d3, each read back with ls-remote.
+No Navisworks ran tonight and Roamer read 0. The probe pause is back and the keep-awake is stopped. The exact
+next action of each lane is the NIGHT STOP paragraph under Next action in steps\loop.md.
+
+## 2026-10-06 The loop, turn 5, F138 MERGED as pull request 127, 37f37d4, at 17:08:09
+
+Attempt 2 read by a reviewer, APPROVE with nothing blocking, turn5\lanes-review2-F138.json. The lead's 0f29508
+before the merge set F138 merged with 127 and FR-196 and Q135 in progress until part 2 in run.ps1 after F131,
+made the reviewer's words true and wrote its two findings as register rows T5-R-M5AUTOSAVE and T5-R-HELDOFF,
+turn5\f138d-precommit.txt, Core 1926 passed, 0 failed, 0 skipped, and Actions run 37475846934 a success on it,
+turn5\actions-reads-pr127.txt. The probe pause was lifted at its merge, turn5\probes-pause-lifted.txt, and the
+lane that runs alone began at 17:09, F131's harness on main with the time limits first, then the probes with
+the switch written "3 0". Whether Navisworks reads "3 0" as off is UNKNOWN until that first real start.
+
+## 2026-10-06 The loop, turn 5, Bader's answers to the 22 old items and his F132 rule, recorded
+
+His message headed BADER'S ANSWERS, 6 OCT 2026, THE 22 OLD ITEMS AND F132'S NEXT READING, his words whole at
+turn5\q-old22-words.txt, recorded by pull request 131. Each answer is under its question in
+steps\02_questions.md in his words with a lead's note, Q25, Q27 to Q31, Q35 to Q40, Q45 to Q47, Q49 to Q51 and
+Q76 to Q78. F18 DROPPED, the 1A04WE file being the clash report he exported from Navisworks and pasted into an
+empty Excel workbook and not a client file, its words corrected in .claude\rules\core.md, steps\00_analysis.md,
+where M7 closes, steps\01_next.md and the register of steps\loop.md. His F132 rule is Q140, an order, and a
+bullet of the F132 section of steps\01_next.md, F132's attempt 8 stopped at 16:53:29 and begun again under it
+at 16:53:31. The work of his answers, each measured off main 2eda020 first, is FR-198 to FR-204 of
+steps\fix-round.md, all after the viewpoints: FR-198 the harvests and the GAP block, F120, 3a, FR-199 the
+blocks in the measured order with a priority file, F118, 2c, FR-200 every test not created on the Coverage
+sheet, F127, 2a, FR-201 a site named DEFAULT, F137, which main already does, FR-202 the ownership measured
+first, F121, 4, FR-203 the open statuses rule, F123, which main already does, and FR-204 the manifest's line
+9 in a pull request of its own, F123, 5. Q77 is a line under FR-067. Q29, Q31, Q47, Q50 and Q51 close with no
+work. The rows set by the tracker rule, turn5\records31-check.txt and records31-prove.txt. Nothing under src
+or tests changed, and the Core tests ran in the pre-commit of 3af4c3c, 1926 passed, 0 failed, 0 skipped,
+turn5\records31-precommit-1.txt.
+
+## 2026-10-06 The loop, turn 5, F138 attempt 2, the Auto-Save switch written after the last read before the constructor, and attempt 1, the switch and a time limit on every harness run, written by the developer as the lead's delegate, pushed on its branch, draft pull request 127
+
+ATTEMPT 2, on the reviewer's CHANGES on attempt 1, turn5\lanes-review-F138.json, two points blocking:
+- root cause: BackupSettings wrote enable "3 0" at check 15, nw-guard.ps1 line 1284 at cf6e5dc,
+  called at run.ps1 line 2127, and the stops at checks 17 and 18 and the probe's Roamer stop at its
+  line 728 came after it with nothing to put it back. RC5 asserted that as right
+- the fix, 9ef6309: BackupSettings writes nothing, as on main. The one SwitchAutoSaveOff is called
+  by run.ps1 after check 18's last refusal and by the probe after its last read, so no stop before
+  the start but its own refusal comes after the write, and the probe's line saying nothing of
+  Bader's is written is true. Its refusal says in each branch what it left of his: nothing
+  changed, his value changed and to be put back by hand, or UNKNOWN. Its written line says the
+  switch is written "3 0" and that whether Navisworks reads it as off is UNKNOWN. The rule in
+  .claude\rules\loop.md and tools\loop\README.md says so and names the cases where it is left at
+  "3 0" for Bader
+- failing first: H0 reads the switch order in run.ps1 and the probe, three bad copies each named.
+  RC1 reads the switch after check 18, RC5 and RC6 the test key unwritten after their stops. H20 A
+  reads a backup that writes nothing, B the write that throws, B2 a write another writer changes
+  before the read back, B3 a read back that cannot be read. On cf6e5dc the cut THE STAND-IN, H0,
+  H3, H10, H17 and H20 read 76 passed and 15 failed, turn5\f138c-before.txt, and after the fix
+  89 passed and 2 failed, the two older H0 checks, turn5\f138c-cut-after.txt
+- built: main 2eda020, F133 the tracker, merged in as d7192e4 with both sides of its two conflicts
+  kept, turn5\f138c-resolve.py. Release at d7192e4 with git status empty, 0 warnings and 0
+  errors, turn5\f138c-build.txt. Core 1926 passed, 0 failed, 0 skipped before at cf6e5dc,
+  turn5\f138b-precommit-3.txt, and after at d7192e4, turn5\f138c-core-tests.txt. check-locals
+  and check-imports exit 0, turn5\f138c-checks.txt
+- proved: the full harness once on d7192e4, started as powershell -File tools\loop\prove-run.ps1
+  with -Work test-f138c-after and its default limits, from 15:36:39 to 16:21:50: 276 passed and 8
+  failed in 2711 s, exit 1, turn5\f138c-prove-after.txt. The 8 are the eight older failures,
+  reading as on main, and none is new. The sha256 it printed for run.ps1, nw-guard.ps1 and itself
+  are those of d7192e4's files. 46 stand-ins and 96 children were each closed or ended. H17 took
+  about 814 s and H6 about 357 s. A first start was refused by PowerShell before anything ran, the
+  shell having taken the backslashes out of the path, turn5\f138c-prove-start-refused.txt
+- Roamer read 0 before and after, and his Auto-Save enable "0", turn5\f138c-roamer-before.txt,
+  f138c-roamer-before-prove.txt and f138c-roamer-after.txt
+
+Register rows for the lead, one line each:
+- T5-R-HARNESSWAITS, a harness fix that cannot harm evidence. Waits with no limit of their own:
+  Running's Get-CimInstance, read in the -WaitSeconds loop before the deadline runspace starts, so
+  a read that hangs there has no limit at all, the EndInvoke calls on the monitor and watchdog
+  runspaces in H6, H7 and H18, prove-run.ps1 lines 865, 902, 903, 930, 973, 1000, 1614, 1630,
+  1644 and 1665 at cf6e5dc, and the bare reg.exe export in BackupSettings, nw-guard.ps1 line 1240,
+  the last two resting only on the case limit and the cleanup limit. The H0 static read covers four
+  shapes and none of these, so the rule line that no wait for one runs without a time limit says
+  more than is proved
+- T5-R-HARNESSARGS, a harness fix. prove-run.ps1's param block has no [CmdletBinding()]. Measured on
+  2026-10-06 in Windows PowerShell 5.1 on a script with its first three parameters: -RunLimitSecond
+  7, a unique prefix, set RunLimitSeconds to 7, and -RunLimitSecs 7, not a prefix, went into $args
+  and the default 5400 held with no word said. [CmdletBinding()] would refuse a name it does not
+  know
+- T5-R-M5AUTOSAVE, from the reviewer of attempt 2. The switch now comes after M5's read of the key
+  times, run.ps1 line 2133 against the switch at line 2152, so a real run's m5.txt names the autosave
+  key as changed while the start ran, the loop's own write, against M5's stated intent at lines 2304
+  to 2306. The m5 reader to leave out the loop's own write, or the switch read before M5
+- T5-R-HELDOFF, from the reviewer of attempt 2. Where one run leaves enable at "3 0" for Bader with
+  its LEFT OFF line, the next run's backup reads "3 0" as his value and no later record names it,
+  H20 F asserting so, the same as every other setting under D2. The lead puts it back by hand after
+  the first LEFT OFF line, and a check of a held "3 0" against the one backup of Q135 would name it
+
+What waits: the reviewer and the breaker on attempt 2, the lead's next probe that a real start
+writes no autosave, and FR-196's part 2 after F131. The rows of F138, FR-196 and Q135 in
+steps\tracker.csv read in progress as the lead set them, and are unchanged. No add-in file
+changed, so steps\03_bader_next.md is unchanged.
+
+ATTEMPT 1, as written at its end:
+
+Picked up from the cut, turn5\restart\trees.md section F138. Part 1, FR-196, its four files left
+uncommitted by the shutdown, was committed as 8eff675 with its message made true, the new case named
+H20 and the rule paragraph given its full stop, its pre-commit 1926 passed,
+turn5\f138b-precommit-1.txt. Main 6d2a203 was merged in as 6dc82f6, turn5\f138b-precommit-merge.txt.
+
+The time limits, his item 6, register row T5-R-HARNESSLIMIT, built by turn5\restart\harness.md and
+committed as a2e4d6b, turn5\f138b-precommit-2.txt:
+- root cause: prove-run.ps1 had no limit for the run or a case, and at 8eff675 the new static read
+  names 24 calls of run.ps1's RunChild, Reflect's WaitForExit and two reads of .Result with no
+  limit, and EndChild's WaitForExit with none, turn5\f138b-static-before.txt. The lanes waited on
+  each other through wrappers of their own with none
+- the fix: a limit for the run, each case, H6, H17, each child, a run of run.ps1 and the cleanup,
+  each a setting, a deadline runspace that writes the TIME LIMIT line and closes only the harness's
+  own stand-ins and children through their held handles, exit 3, -WaitSeconds that refuses with
+  exit 2 naming what still runs, a -Work there already refused at once, the static read in H0 and
+  H21
+- failing first: THE STAND-IN, H0 and H21 alone on the harness without the limit code, 23 passed and
+  16 failed, turn5\f138b-limits-before.txt. Its own known offender check showed the static read
+  missed a WaitForExit with no argument, the parser holding null for its arguments, which was fixed
+- after, the same cut: 37 passed and 2 failed, the two older H0 checks, turn5\f138b-limits-after.txt.
+  Three cut runs before it each found a fault of the new code, kept as turn5\f138b-limits-after-1.txt
+  to -3.txt: the state named $L met a loop's $l, since PowerShell names match in any case, @() of a
+  List handed in as a parameter throws in Windows PowerShell 5.1, and the T4 pattern read "so it
+  ends itself" where the line says "so the harness ends itself", the words harness.md gives. The
+  first left its own harness, pid 43180, held up by the deadline runspace's thread after its finally
+  threw. It was ended by its pid and its -Work removed, and the finally now lets that runspace go
+  whatever the cleanup does
+- the solution built Release, 0 warnings and 0 errors, turn5\f138b-build.txt. Core 1926 passed, 0
+  failed, 0 skipped, before at 8eff675's pre-commit and after, turn5\f138b-core-tests.txt.
+  check-locals and check-imports pass, turn5\f138b-checks.txt
+
+The full harness once on a2e4d6b, started as powershell -File tools\loop\prove-run.ps1 with its
+default limits and -Work test-f138b-after, from 12:49:40 to 13:31:32: 268 passed and 8 failed in
+2511 s, exit 1, turn5\f138b-prove-after.txt. The 8 are the checks that failed on main's guard too,
+turn5\f138-prove-before.txt, reading as they did: the static words read, the four modes in one
+place, two HangVerdict cases, two clock restart cases, live 1 and live 3. No new failure. H20, RC1,
+RC5, the static read and H21 pass whole. 46 stand-ins and 96 children were each closed or ended,
+and the test key and -Work are gone. H17 took about 745 s and H6 about 332 s, under their 2400 s
+and 900 s.
+
+Roamer read 0 before, turn5\f138b-roamer-before.txt, and 0 after with his 22.0 Auto-Save enable
+still "0", turn5\f138b-roamer-after.txt.
+
+What waits: the reviewer, and the lead's next probe, since whether Navisworks reads "3 0" as off is
+UNKNOWN until a real start writes no autosave. FR-196's part 2, the compare against the one backup
+in run.ps1, is not in this branch and waits for F131. Commit a2e4d6b is titled F138 part 2, which
+is the time limits and not FR-196's part 2. The waits on the monitor and watchdog runspaces through
+EndInvoke, run.ps1's own RunChild under TreeRefusal and the guard's reg.exe export in BackupSettings
+have no limit of their own and rest on the deadline runspace. No add-in file changed, so
+steps\03_bader_next.md is unchanged.
+
+## 2026-10-06 The loop, turn 5, F133 the work tracker MERGED as pull request 122, 025b5eb, at 14:54:14
+
+Attempt 6 read by a reviewer, CHANGES with one blocking point, the rows of Q137 and Q138 once PR 128 put his
+answers on main, closed by the lead's commit 7b4d6a1 with the reviewer's four other points and the rows of
+FR-191, F133, Q129, F138, FR-196 and Q135 set for the merge, turn5\lanes-review6-F133.json and
+f133j-precommit.txt. At 7b4d6a1 check-tracker read clean and prove-tracker 76 cases right of 76,
+turn5\f133j-check.txt and f133j-prove.txt, Core 1926 passed, 0 failed, 0 skipped, and Actions run 37459059241
+a success, turn5\actions-reads-pr122.txt. The tracker is live, steps\tracker.md, and its three lines were given
+in the tab. Next beside the viewpoints: F139, Bader's one page progress file of Q139, built on it.
+
+## 2026-10-06 The loop, turn 5, F133 the work tracker, one place for status, attempts 1 to 6 on fix-F133, pull request 122, written by the fourth worker as the lead's delegate
+
+- BUILT, part 1 of Bader's message of 5 Oct 2026, Q129, his words in q129-words.txt, FR-191, area F133, in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f133, first committed on main 35bd7fd: steps\tracker.csv, one row per FR item of steps\fix-round.md, per F area, per request of Bader's and per question waiting for him or that once had a row, in his nine columns in his order. tools\tracker\make-tracker.ps1 makes steps\tracker.md from it. check-tracker.ps1 refuses each fault its header lists, naming its line, and prove-tracker.ps1 runs it over a good fixture and one broken copy per fault kind, both run by Actions on every pull request from two steps of .github\workflows\tests.yml. The rules live in tools\tracker\tracker-rules.ps1 and .claude\rules\tracker.md, which says how each value is read, the row rule beside the DONE line rule in .claude\rules\steps.md, and fix-round.md and loop.md point at the tracker for status. Nothing under src or tests changed, and of steps\01_next.md only the F133 section and its order line
+- PROVED here, every file named with no folder in %LOCALAPPDATA%\NwcFederatorLoop\turn5: in attempts 2 to 5 the new fault cases read WRONG over the check before them, and each attempt's proof read every case right, the files in its line below. Core tests 0 failed and 0 skipped in every count, 1912 passed before and after attempts 1 to 3 and 1926 since the merge 7232a02 brought F136's 14 tests, no count moved by this work. dotnet build ParsonsNwcFederator.sln -c Release --no-incremental, 0 warnings and 0 errors, in every attempt. check-locals and check-imports exit 0. No Navisworks was started and nothing was installed
+- STATUS AND COUNTS. steps\tracker.md, made from steps\tracker.csv, holds the status of F133, FR-191, Q129 and every other row and the counts of rows by status and by wave, and check-tracker.ps1 prints the counts of FR items, areas, requests and questions it read. Neither is copied here, since each changes at the next merge of main. This entry as it stood at 47d8e2f, git show 47d8e2f:steps/log.md, holds the longer record of attempts 1 to 5, how each value is read, and the programs started and files written outside the repo by attempt 5, and as it stood at efc3c44 those of attempts 1 to 4
+- NEXT, after the merge: F139, Bader's one page progress file of 6 Oct 2026, built on the tracker. Nothing waits for the local machine, since no add-in file changed
+- ATTEMPT 1, 2026-10-05, 7d59422: the csv, the maker, the check and its proof, 13 cases right of 13, f133-prove-tracker-2.txt. READ by a reviewer and a breaker, both CHANGES, lane-result.json under tracker.reads. Blocking: four faults of the csv reader and the exit 2 with no fixture, the row rule out of sight of the developers who write DONE lines, loop.md and fix-round.md not pointing at the tracker, FR-191 and F133 written in progress, and F125 written proven by a run of its first pass
+- ATTEMPT 2, 2026-10-05, 4e1f9fc and 4b72de5: a fixture and a case for each fault of the reader and both exits of 2, and more faults refused, 33 right of 33, f133b-prove-tracker.txt, and 17 WRONG over attempt 1's check, f133b-prove-before.txt. READ AGAIN by both, CHANGES, f133b-result.json. Blocking: the branch behind main with no row for FR-194 and FR-195, the waves reader skipping the new lines of the waves section in silence, and loop.md not pointing at the tracker
+- ATTEMPT 3, 2026-10-05, main fdd05c2 merged in at a8ab7cb, then 390ee4a, main b900464 merged in at 7232a02, then 109e49d: the waves reader reads every line shape and names one it cannot, and a question row reads by its answer, 58 right of 58, f133c-prove-tracker-6.txt, and 4 WRONG over the check of 7232a02, f133c-prove-before-2.txt. READ by both, APPROVE with nothing blocking, f133c-result.json
+- ATTEMPT 4, 2026-10-05, 9b9ea77. Before it the lead merged main 503eaa4 at 027c4be and wrote ce48197 and 03d0b56, READ by the claim-checker of pull request 122, nine points, which attempt 4 worked: the header in Bader's words, a row for each request of his, one rule for a question row's area and wave, every Answer line read, and every PR cell read again by git, 75 right of 75, f133f-make-check-prove-3.txt, and 64 WRONG over 03d0b56, f133f-prove-before.txt. READ by a reviewer, APPROVE, and a breaker, CHANGES, f133f-result.json. Blocking: main had moved past 503eaa4 with FR-196, Q135 and Q136, which had no rows, and Actions run 37336430529 on 9b9ea77 failed at the tracker check on those three
+- ATTEMPT 5, 2026-10-06, ec5b032, 003d83f and 47d8e2f. Before it the lead merged main 1a202c0 at fcb5281 and wrote the rows of FR-196 and Q135 at efc3c44, Actions run 37339273209 passing there, READ by the claim-checker, seven points. After the laptop went off at 19:31 on 2026-10-05, turn5\restart\trees.md, attempt 5 merged main 6d2a203 at ec5b032 and worked the points at 003d83f: Q128 set to 121, the merge of his later answer, f133h-question-prs-after.txt, F110 and F111 set open with their titles, F138 placed by its stage line with FR-196 and Q135, and the check refusing a run named on a row not proven by a run, test first, f133h-mcp-1-test-first.txt and f133h-before-silent.txt, 76 right of 76, f133h-mcp-7-commit-003d83f.txt. Actions on 47d8e2f a success, f133h-actions.txt. READ by a reviewer, CHANGES, lanes-review-F133.json. Blocking: a copy of the request list in .claude\rules\tracker.md, already false since Q135
+- ATTEMPT 6, 2026-10-06, 99ec938 and 09e4260 on 47d8e2f: the request list taken out of .claude\rules\tracker.md, which says the requests are read off steps\02_questions.md as the check reads them, tools\tracker\README.md naming the questions that once had a row, F133-R20 measured over every pre-commit file, the pointers saying which counts tracker.md holds and which the check prints, the statuses of attempt 5 written as set at 003d83f, and this entry cut to a short record by Bader's item 16 of 2026-10-06, with no script, fixture or row changed. Then main 3701511, PR 126, merged in at deff22f, on which the check refused Q137 and Q138 with no row, exit 1, f133i-mcp-4-merge-deff22f.txt, and their rows written in the commit after it, waiting for Bader with area and wave none, since no FR item names them. Core tests 1926 passed before on 47d8e2f and after, f133i-core-tests-before.txt and f133i-core-tests-after.txt, and over deff22f by the hook run by hand, since a merge runs no pre-commit here, f133i-precommit-merge-run.txt, the build 0 warnings and 0 errors, f133i-sln-build.txt, check-locals and check-imports exit 0, f133i-checks.txt, and the maker, the check and the proof clean, 76 right of 76, with the rule changes in the tree, f133i-mcp-1-rule-readme.txt, with the records, f133i-mcp-2-records.txt, and with the rows of Q137 and Q138, the maker writing tracker.md again, f133i-mcp-5-rows.txt. Not yet read
+
+Register rows, the findings that break no rule of CLAUDE.md or are Bader's call, one line each, a closed one naming what closed it:
+- F133-R1, coverage by hand. The check demands a row only for an F area a line of the waves section names, so an F number given to work elsewhere, as F101, F110 and F111, gets its row from a reader alone and that row is never compared. Its first reason, that the three were F sections of steps\01_next.md, closed by attempt 4
+- F133-R2, closed by attempt 3. F109 and FR-078 to FR-080 read open while origin/fix-F109 held a0c3829, then in progress, and its F114 half read right all along
+- F133-R3, closed by attempt 3. No rule said what status a question's row takes once Bader answers, then written and checked
+- F133-R4, for Bader. Work done outside the repo, as FR-175, Q112-1, Q81 and Q95, has nothing on main but its record, and no status of the seven names it, so its rows read the status of the record that carried it
+- F133-R5, data shape. The PR column holds free text beside numbers, a branch, a measurement folder or merge and a hash
+- F133-R6, a row is checked against its own cells in one way only, a run named on a row not proven by a run. Merged with PR none, proven by a run with run none, a date that is not a date and in review with PR UNKNOWN read clean, and nothing sees a status left stale after its branch merges
+- F133-R7, closed by attempt 3. A file not in UTF-8 read clean, then refused
+- F133-R8, closed by attempt 3. A space before or after an id read clean, then refused
+- F133-R9, a wave 10 would sort between 1 and 2a. fix-round.md named no wave 10 at 003d83f
+- F133-R10, two pull requests open at once both change the counts at the top of tracker.md, so the second to merge conflicts there and runs make-tracker.ps1 again
+- F133-R11, closed by attempt 4. The PR cells of the merges F1 to F95 were read off the records and not again by git, then every PR cell read again by git, f133f-merge-cells.txt and f133f-pr-cells.txt
+- F133-R12, the counts at the top of tracker.md count rows, and one piece of work can be up to three rows, as FR-191, F133 and Q129. Q94, Q98, Q114 and Q129 have no rule for when they close
+- F133-R13, a request with a standing effect, as Q130, whose stop of the C02 weekly run holds until F114 merges, reads the status of the work it asked for, F136. No status of the seven names an order still in force
+- F133-R14, closed by attempt 4. The brief of attempt 3's second pass named F136 in progress where main b900464 held its DONE line, and its rows were read off the repo
+- F133-R15, closed by the lead at ce48197. steps\log.md had no blank line between this entry and the F136 entry under it after the merge 7232a02, put back
+- F133-R16, upkeep. The fixtures are written by scripts outside the repo, f133f-make-fixtures.py and f133h-make-fixture.py, so a person without that folder writes a new one by hand, each one edit of the good one
+- F133-R17, the reader knows a request of Bader's only by From Bader, at the start of its item, as every request up to Q135 starts, read at 003d83f. One written in another shape reads as an answered question, and nothing refuses that
+- F133-R18, a question row's area and wave come from the FR items naming it alone, so a question whose own text names an area, as Q110 names F112 and Q134 names F131, reads none until an item names it
+- F133-R19, any text after Answer: reads as Bader's answer, so a note of the loop written on an Answer line would lift its question off what waits for him. Read on 2026-10-05, every Answer line holding text held a decision
+- F133-R20, for the lead. The output captured for 14 commits of this branch from 7d59422 to 47d8e2f holds lines error: failed to delete, printed by git after it writes the commit and not by the hook, since they follow the hook's tests passed line and the merge deff22f, which ran no hook, printed them too, and the lead's merges 027c4be and fcb5281 captured nothing, each naming an admin folder under the main clone's .git\worktrees, Permission denied, 15 in the four of 7d59422, 4e1f9fc, 4b72de5 and a8ab7cb, f133-precommit.txt, f133b-precommit.txt, f133b-precommit-2.txt and f133c-precommit-merge.txt, and 16 in the ten from 390ee4a to 47d8e2f, f133c-precommit.txt to f133h-precommit-2.txt, the sixteenth naming wt-f136, and fetches print the same, the first of attempt 6 among them. The commit 99ec938 of attempt 6 printed none, f133i-precommit.txt, and all 16 folders were still there after it. Each commit still succeeded. No record before attempt 5 named them. What runs the delete, why it is refused and why 99ec938 printed none are UNKNOWN
+- F133-R21, the class column has an allowed value only on an FR row, so a question row whose class is mistyped, such as Question, is never compared with its question, its area, its wave or its status, and an F row may carry any class
+- F133-R22, only an indented Answer: line counts, so an answer at the margin, in bold or under another word is not seen and its question reads waiting. All 136 Answer lines of 02_questions.md were indented at 47d8e2f
+- F133-R23, the question reader ends an item only at the next item or a line in another item shape, not at a heading, so an indented Answer: line under a later heading would count for the item before it. 02_questions.md had only its title heading at 47d8e2f
+- F133-R24, rows of class Bader's request are checked for being there only. Their area, wave and status follow no rule, as at efc3c44 Q114 read 2a and 2b, Q132 a wave of its own and Q98 all, and nothing ties the rows of one piece of work, so a merge that sets one leaves the others as they were and the check reads clean
+- F133-R25, by the rule in steps.md the lead sets a row merged with the pull request's number on the branch before the merge, so a pull request closed and opened again under another number would leave rows naming a number that is not their record, and the check reads clean either way
+- F133-R26, the check reads that a merged question row's PR is a number, not that its merge put the answer on main, which is how Q128 read 118 until attempt 5. A reader reads it by git, as f133h-question-prs.py does
+
+## 2026-10-06 The loop, turn 5, picked up after the laptop went off, Bader's message headed CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, and the plan
+
+Why it went off: the System log reads shutdown.exe starting a shutdown for NT AUTHORITY\SYSTEM at
+19:31:09 on 2026-10-05, reason code 0x800000ff, the system down at 19:32:14 and up at 09:44:55 on
+2026-10-06, turn5\restart\settings.md. What called shutdown.exe is UNKNOWN, and his 22:24 matches no
+event in that log. Get-Process Roamer read 0 at 10:08 and at every read after. The keep-awake started
+again at 10:12:11 as pid 2076, turn5\keep-awake-checks.txt.
+
+His settings: PUT BACK at 11:01:38, 44 values of the 22.0 key and InfoCenter.log and LastSession.xml
+from P10's backup, through the guard's own PutBackRegistry and PutBackFiles, 0 left different on the
+read back, his AutoSave folder of 199 files, folders.txt and team-map.txt needing nothing,
+turn5\restart\putback-p10-write-20261006-110126.txt. The key and the two files as they read before
+were copied first, beside it. 40 of the 44 had gone back to values older than any backup the loop
+took, by a writer UNKNOWN, register row T5-R-OLDKEY. Auto-Save enable read "0" before and after, F138's
+"3 0" never having reached his key.
+
+What the shutdown cut, turn5\restart\trees.md:
+- F131's add-in attempt 3: main 1a202c0 merged in as 26c62df, not pushed, and the test first K2 checks
+  in prove-run.ps1 not committed, run.ps1 not yet changed, its harness never started
+- F133's attempt 5: reads only, nothing written, PR 122 still at efc3c44
+- F138: its four files not committed, its full harness on the new guard cut in H7
+- F132's attempt 6: 14 files staged, its pre-commit killed by the shutdown, no commit
+
+The harness was not hung. The cut run had run 13 min 31 s and was in H7 at the pace of the runs
+before it. The 2 h 30 min is nearest the F138 workflow's 2 h 21 min 34 s, about 72 min of it in two
+wrappers waiting with no limit on F131's two harness runs, turn5\restart\harness.md. The cut run's
+-Work, which would have held F131's wrapper for ever, was removed at 10:30:10, its files listed in
+turn5\restart\test-f138-after-removed.txt. The fix is register row T5-R-HARNESSLIMIT, built in F138's
+branch.
+
+The plan, in Bader's order:
+1. F138 with the time limits, its full harness on the new guard, one reviewer, merged before any
+   probe or run
+2. F131's add-in attempt 3, the K2 mask fix and Q134 B, its harness once F138 has merged, one
+   reviewer, merged
+3. F132's attempt 6 again, every mirror named by its own name with (mirror) and Q136 A, then its
+   add-in half after F131, a reviewer and a breaker, merged
+4. F114 carrying the three members of Q134 B, its probes P11 to P19 and the Q133 measurement on
+   1A04PK once F138 has merged, its add-in half after F132, a reviewer and a breaker, merged with the
+   viewpoints box ticked again
+5. Main installed in place, 1A02MM and 1A04PK run with the new views, VIEWS seconds and totals against
+   2 h 12 min for 1A02MM and the hung run for 1A04PK
+6. Beside them, F133's attempt 5 and PR 122 merged, then F134 the gate and F135
+7. Then the rest of wave 2, F137 and the test of wave 1, then waves 3 to 5
+
+Every harness run and every probe runs alone, since each stops on the other's stand-ins or
+Navisworks. Checks from now, by his item 16: each fix its test first, a clean build, green Core tests
+and one reviewer, a breaker only on alignment, sets, clash counts, mirrors and views, no
+claim-checker on records, one short record per merge or run.
+
+STATE OPEN.
+
+## 2026-10-05 The loop, turn 5, F136 attempt 2, the viewpoints box opens unticked until F114 on Bader's answer B to Q131, written by the developer as the lead's delegate, built and pushed on its branch, pull request 117, MERGED as 6802e1a at 14:08:32
+
+Attempt 1 was read by the reviewer and the breaker and both approved it with nothing blocking,
+%LOCALAPPDATA%\NwcFederatorLoop\turn5\f136-result.json. Main 83445cb was merged into fix-F136 at
+c9fae54 with no conflict, turn5\f136b-merge.txt. Core tests 1922 passed, 0 failed, 0 skipped
+before, at c9fae54, turn5\f136b-core-tests-before.txt, and 1926 passed, 0 failed, 0 skipped
+after, turn5\f136b-core-tests-after.txt, and by the pre-commit of 8488bc4,
+turn5\f136b-precommit-1.txt line 14. WriteTheCorrectedFile prints as Skipped in each and is the
+one [Explicit] test, in none of the counts. The full solution, dotnet build
+ParsonsNwcFederator.sln -c Release --no-incremental, at 8488bc4 with git status empty, 0
+warnings and 0 errors, turn5\f136b-build.txt. check-locals and check-imports exit 0.
+Navisworks was not started, attached to or touched. Get-Process Roamer read one Roamer, Id
+54784, started at 12:57:04, before this pass began at 12:58:25, turn5\f136b-roamer-before.txt.
+It was not this pass's, which never started, attached to or closed it. The read after found
+none at 13:37:26, turn5\f136b-roamer-after.txt. Who closed it is UNKNOWN here.
+
+### What was done
+
+- Bader's answer to Q131 on 2026-10-05, turn5\q132-words.txt: "Q131: B until F114 merges, so
+  nobody makes the old viewpoints. Once F114 merges, ticked." ViewpointRequest.DefaultMakeViewpoints
+  is false, and its comment says F114's pull request sets it back to true
+- failing first: fourteen tests, ViewpointRequestTests and two new RunLogTests, 5 failed and 9
+  passed against stubs, turn5\f136b-failing-first.txt
+- the label is Make saved viewpoints for the clashes, because a service of 150 mm and under
+  gets no viewpoint. The grey line, Each viewpoint adds time, so a big run can take hours, says
+  what the box costs, measured on the C02 weekly that sat in VIEWS for 3 h 15 min, Q130. The
+  settings line no longer says one per clash. The comments that only counted words are gone
+- the RESULT block carries one line under the group counts where the run had the box
+  unticked, viewpoints     : none made, the box was unticked for this run, ViewpointRequest.ResultLine,
+  RunLog.WriteResultBlock taking the run's choice from FederationEngine.MakesViewpoints
+- .claude\rules\core.md and addin.md: the unticked line is written in every group that reaches
+  the viewpoints step, the tick boxes are sixteen with six under no expander, read off the
+  XAML and not by the probe, and the box never goes under an expander because the driver could
+  not find it there
+- steps\03_bader_next.md: the box stays unticked for every run until F114 merges, every step
+  that expected viewpoints made expects the unticked line or waits for F114, step 394's 27
+  viewpoints included, and steps 400 to 416 read the box unticked and the RESULT line. Step
+  248 has main's byte after 53 mm back, which attempt 1 had turned into a replacement character
+- Q130 and Q131 on main: main 83445cb holds both in steps\02_questions.md, Q130 with its answer
+  and Q131 with none under it. Writing Bader's answer under Q131 is the lead's
+
+### What remains
+
+- the add-in half: steps 400 to 416 on the local machine, or a loop run with run.ps1 -Untick
+  MakeViewpoints once a build carrying this is installed. Until then the installed window has
+  no such box and the driver stops UNTICK with nothing pressed
+- the tick box count was read off FederatorWindow.xaml, not by probe-window-labels.ps1, which
+  was not run
+
+### Known bugs
+
+- an unticked weekly run leaves the viewpoints an earlier ticked run put in the NWF and says
+  nothing of them, the breaker's point on attempt 1. Information, not changed
+- no test pins the order of the three values the engine hands WhyNone, the breaker's point.
+  The engine cannot run without Navisworks, so it stays with review
+- SavedViewpoints.CanBuild has no caller in src, F112's box is not named under RUN SETTINGS,
+  and the stand-in has no MakeViewpoints box, all as attempt 1 found them
+
+### What comes next
+
+- the reviewer and the breaker on attempt 2, then the lead's merge of pull request 117, then
+  F131, F132 and F114 in that order, every test run with the box unticked until F114 merges
+
+## 2026-10-05 The loop, turn 5, F136 a tick box that switches the viewpoints off, written by the developer as the lead's delegate, built and pushed on its branch, no pull request
+
+Core tests 1912 passed, 0 failed, 0 skipped before, at main 35bd7fd,
+%LOCALAPPDATA%\NwcFederatorLoop\turn5\f136-core-tests-before.txt, whose line 1 is the commit,
+and 1922 passed, 0 failed, 0 skipped after, at 22ceb90, turn5\f136-core-tests-after.txt, and by
+the pre-commit of 22ceb90, turn5\f136-precommit-1.txt line 14. WriteTheCorrectedFile prints as
+Skipped in each and is the one [Explicit] test, in none of the counts. The full solution, dotnet
+build ParsonsNwcFederator.sln -c Release --no-incremental, at 22ceb90 with git status empty, 0
+warnings and 0 errors, turn5\f136-build.txt. check-locals and check-imports exit 0. Navisworks
+was not started, attached to or touched. Get-Process Roamer listed no process at 11:53:04,
+turn5\f136-roamer-before.txt, and read 0 at 12:33:42, turn5\f136-roamer-after.txt.
+
+### What was done
+
+- the root cause. Bader's word of 2026-10-05, turn5\q130-words.txt, is that every test run has
+  viewpoints switched off until F114 is merged, and the tool had no switch.
+  src\Federator.Addin\Engine\FederationEngine.cs at 35bd7fd, BuildViewpoints, lines 3433 to
+  3451, held back the viewpoints only where the clash was skipped or no report was built
+- the rule in Core, src\Federator.Core\Views\ViewpointRequest.cs. WhyNone names why a group asks
+  for no viewpoint, the box unticked first because it holds for every group, then the clash
+  skipped, then no report, or gives null when it asks for them. The setting is
+  ReportOptions.MakeViewpoints, on by default, Q131 default A as the lead named it. The label,
+  Make a saved viewpoint for every clash, seven words, the grey line, twelve words, and the line
+  under RUN SETTINGS sit beside it
+- failing first: ViewpointRequestTests, ten tests, run against WhyNone holding only the
+  engine's two checks and ReportOptions not setting the default, 3 failed and 7 passed,
+  turn5\f136-failing-first.txt
+- the engine calls WhyNone in place of its two checks, FederationEngine.cs lines 3436 and
+  3437. Unticked, it makes no viewpoint, sets ViewpointsRequested false so the group cannot
+  fail at them, F52's rule, and logs one line, VIEWS    the box Make a saved viewpoint for
+  every clash was unticked, so no viewpoint is made
+- the window. The box MakeViewpoints on 4. Clash, under the shared coordinates box,
+  FederatorWindow.xaml line 569, set off new ReportOptions().MakeViewpoints in the
+  constructor, FederatorWindow.xaml.cs line 1212, the way F112's box is set, which runs at
+  every open because FederatorPlugin.cs line 65 makes the window new each time. Its state is
+  named in the lines under RUN SETTINGS, line 1829, and at the start of the open file run,
+  line 2308, which has no RUN SETTINGS block
+- the rules, .claude\rules\core.md and .claude\rules\addin.md, the order line 43 and the F136
+  section of steps\01_next.md, and steps 400 to 415 of steps\03_bader_next.md, put first after
+  the install with the opening paragraph saying why
+
+### What remains
+
+- the add-in half, which no test here can prove: steps 400 to 415 on the local machine, or a
+  loop run with run.ps1 -Untick MakeViewpoints once a build carrying F136 is installed. Before
+  that the installed window has no such box and the driver stops UNTICK with nothing pressed
+- Q130 and Q131 were not in steps\02_questions.md on main at 35bd7fd. Main 83445cb holds both,
+  Q131 with no answer under it, and was merged into fix-F136 at c9fae54, the attempt 2 entry
+  above
+- steps\tracker.csv does not exist on main at 35bd7fd, so no tracker row was written
+
+### Known bugs
+
+- SavedViewpoints.CanBuild, src\Federator.Addin\Engine\SavedViewpoints.cs line 59, has no
+  caller in src, read on 2026-10-05. It was there before F136 and is left for its own fix,
+  because nothing rides along
+- the shared coordinates box of F112 is not named in the lines under RUN SETTINGS, while this
+  box now is. Found while reading, not changed
+- the stand-in's window, tools\loop\StandIn\ToolWindow.cs, has no MakeViewpoints box, so a
+  stand-in run cannot prove the untick
+
+### What comes next
+
+- the reviewer and the breaker on fix-F136, then the pull request, then steps 400 to 415, and
+  every test run after the merge run with the box unticked until F114 is merged
+
 ## 2026-10-05 The loop, turn 5, F126 the window driver unticks a named tick box, built on 2026-10-04 and read by a reviewer and a breaker with nothing blocking under Q93, its harness run in the first gap on 2026-10-05, 52 passed and 0 failed
 
 F126's own commits changed nothing under src or tests: git diff --name-only 1ae6771 66dfdf5

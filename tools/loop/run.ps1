@@ -2146,6 +2146,12 @@ try {
           $l18 = LockRefusal $lt18
           if ($null -ne $l18) { $stopText = "STOP before the constructor: " + $l18.Replace(" Nothing was written", "") + " The backups stay in the run folder"; Say $stopText; $code = 2; break }
         }
+        # F138, Q135 point 2. The Auto-Save switch is written here, after the last read, so no stop
+        # before the start but its own refusal comes after it, and that refusal's line says what
+        # it left of his.
+        $ao = SwitchAutoSaveOff $paths.RegSub $bs.RegRoot $bs.RegBefore
+        if (-not $ao.Ok) { $stopText = "STOP before the constructor: " + $ao.Line + ". Nothing was started, and the backups stay in the run folder"; Say $stopText; $code = 2; break }
+        Say ("  " + $ao.Line)
 
         Say "==== THE START ===="
         $called = $true

@@ -2,6 +2,10 @@
 
 STATE OPEN
 
+STATUS of every FR item, F area, request of Bader's and question waiting for him lives in
+steps\tracker.csv only, made readable as steps\tracker.md by tools\tracker\make-tracker.ps1,
+Bader's word of 2026-10-05, Q129. This file keeps the narrative and points there for status.
+
 TURN 5, THE FULL FIX ROUND, opened on 2026-10-04 by Bader's message headed 4 Oct 2026, Q98. No
 run of C07 now: fix everything that is known, then prove the fixes on C06 in set 05, since
 replaced by Bader's waves of 15:42, each tested on two buildings of C02 and C04. The plan
@@ -214,7 +218,10 @@ workbook was written. The put back wrote nothing, because a Roamer, pid 46148, w
 and whose it was is UNKNOWN: 34 registry values, InfoCenter.log and six AutoSave changes, three
 of his autosaves of 1A04PK gone and three the run added, are listed in record.txt from line 3398,
 with the backup kept in runs\04\item1-C04\settings and his autosaves held in autosave-backup. Q128
-asks him, the loop going on with B, leave it as it is. M5: 14 keys and 2765 files listed in m5.txt,
+asked him, and he answered A on 2026-10-05, put it all back, carried out whole: the registry and
+InfoCenter.log put back at 13:05 with 0 differing after, his three autosaves copied back at 13:21 and
+read back, turn5\q128-after-diff.txt and q128-copy-his-three.txt, and the run's three removed at 15:49
+on his leave, each named under Q128, turn5\remove-run-autosaves.txt. M5: 14 keys and 2765 files listed in m5.txt,
 which stays out of the evidence, and left.
 The evidence is masked into steps\runs\04\item1-C04 with no copy differing,
 turn5\mask-run04-item1-C04.txt. The loop's Navisworks was gone at 06:36:58 and Roamer read 0 every minute from 06:38:02 to
@@ -264,6 +271,22 @@ reader. F132 attempt 3 was read with nothing blocking by its reviewer and its
 breaker, 1986 Core tests passed at 190e7f1 and the build 0 warnings and 0 errors,
 turn5\f132c-result.json, and its add-in half waits for the probes P1 and P2. F114's Core half took
 the slot it freed, its developer from 09:46:44, the viewpoints first by Bader's word.
+THE WEEKLY BASELINE ON C02 STOPPED BY BADER, Q130. What it reached, in one line, as he asked: the C02 weekly ran its 528 saved tests to 2939 clashes by 08:21:31, its census before VIEWS reading 2939 results and 2847 views at 08:22:25, then sat in VIEWS with no log line after 08:23:01 for 3 h 15 min until its Navisworks was read gone at 11:38:13, and wrote its 2939 clash pictures but no workbook, NWF or NWD of its own, steps\runs\04\item2-C02, run log lines 185, 284, 279 and 287, outputs.txt. On his word the lead closed it by its own
+script, turn5\close-c02-weekly.ps1 and close-c02-weekly.txt: the proofs CloseOwn makes, then a copy
+of the Kill of nw-guard.ps1's CloseAdopted, not a call of it, sent to the adopted pid 29372 just after
+11:38:11.699 and read gone at 11:38:13.084. That copy stands against the rule of one copy of every
+guard, register row T5-R-CLOSE. Dispose did not come first, the lead's reading being that run.ps1
+was blocked in its call into the add-in and that nothing outside it reached what it would dispose. run.ps1 then put back 35 registry
+values, InfoCenter.log and the AutoSave folder, each read back, with no other Navisworks in its
+record, record.txt lines 1702 to 1775, VERDICT: STOPPED, the adopted Navisworks ended by itself, line
+1788, its own words for a close it did not make. Evidence masked into steps\runs\04\item2-C02 with no
+copy differing, turn5\mask-run04-item2-C02.txt. Its workbook read-out is item 1's workbook: the
+workbook, NWF, NWD and html in the folder were written at 21:09 on 2026-10-04, and its 2939 pictures
+by this run from 07:29. By the lead's reading of his word, no test run is made until F136, the
+viewpoints switch, FR-194, is merged and installed, and the C04 weekly is not run. The Shift
+measurement ran at 11:45 on a stand-in window of the lead's own once Roamer read 0: none of the
+three ways open to the driver, which never sends real input, carried Shift,
+turn5\measure-shift-driver-result.md, so F130's test goes to Bader as numbered steps.
 
 PAUSED FOR BADER'S SHUTDOWN, 2026-10-01 at about 17:35, on his word "stop, i will close the pc".
 At the pause: Get-Process Roamer read 0 at 17:34:35, so no Navisworks of the loop runs and
@@ -429,6 +452,118 @@ desktop.
 
 ## Next action
 
+PICKED UP ON 2026-10-07 by Bader's message headed GOOD MORNING, CONTINUE THE LOOP. The company's shutdown.exe
+began the shutdown at 19:30:39 on 2026-10-06, 9 minutes after the day closed at 19:21, and at 19:31:09 the night
+before, so the day closes from 18:40. The PC started at 09:29:27. A Navisworks of Bader's runs, Roamer pid 41872,
+started by hand at 10:28:15 with -licensing AdLM, so by the waiting rule no probe, harness, install or put back
+runs until it closes, read every 10 minutes, and the compare of his settings with P10's backup waits for it too.
+Every lane below is pushed and clean at the head the night stop names. The keep-awake runs again, pid 35152.
+The lanes go on from the NIGHT STOP paragraph below, in its order, code first while his Navisworks runs.
+
+NIGHT STOP OF 2026-10-06, Bader's message headed STOP SAFELY FOR THE NIGHT. Nothing runs. No Navisworks was
+started tonight and Get-Process Roamer read 0 at 18:42 and 19:04, so no settings were put back. The probe pause is
+back, turn5\probes-pause.txt, written 18:41:58. The keep-awake is stopped and its 30 minute check deleted. Every
+branch below is pushed and read back. The morning session reads this paragraph, then works the lanes in Bader's
+order, F131, F132, F114, then main installed and the runs of 1A02MM and 1A04PK, F139 and the tracker lane beside.
+1. F131, branch fix-F131, worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f131, head 0e262d3, pushed. Its harness pass
+   is DONE: main 37f37d4 merged in at 5e3cd26, the full harness on that head with its limits, 310 passed and 9
+   failed in 3017 s, turn5\f131-ad5-prove-after.txt. Eight are the older failures that fail on main too. Which
+   check is the ninth is UNKNOWN, read nowhere yet. HALF DONE: the developer was stopped after its push at 19:03,
+   before it opened the draft pull request. NEXT: read the ninth failure in f131-ad5-prove-after.txt and the
+   entry draft turn5\f131-ad5-log-entry.md, fix it at its root if it is new, then one draft pull request for
+   fix-F131 with Bader's add-in steps in steps\03_bader_next.md, the reviewer's reading of the code being
+   turn5\lanes-review-F131-addin.json, APPROVE, its rows F131, FR-180, FR-181 and the questions it answers set in
+   the pull request, merged once green
+2. THE PROBES, branch fix-F114-probes, worktree wt-probes, head 51dd8c5, pushed, P11's code committed there as
+   written and never run. NOT STARTED tonight: the lane's workflow, turn5\after-f138.js, was stopped at 19:03
+   after F131's harness, before its first probe. NEXT, once F131's pull request is open and no harness runs:
+   remove turn5\probes-pause.txt, then run the probe part of turn5\after-f138.js, the Q133 measurement on 1A04PK
+   first, then P11 to P19, one Navisworks at a time. Its first start is also the first real proof that the
+   switch "3 0" keeps Auto-Save off, read by name, size, time and sha256 of his AutoSave folder
+3. F132, branch fix-F132, worktree wt-f132, head 93b45b1, pushed. Attempt 8 under Bader's rule of Q140 fixed the
+   five faults that could change a clash count or put a clash under the wrong test, Core 2092 passed. Its
+   reviewer APPROVE, the no caller point being the known state, turn5\lanes-a8-review8-F132.json. Its breaker
+   CHANGES with ONE blocking point that Q140 counts: on an XML run over an NWF holding a test under the kept test's
+   own name with other sets than the XML gives it, the document's X runs and Y (mirror)'s clashes are added to it,
+   clashes under the wrong test, MirrorRule.cs lines 247 to 288, turn5\lanes-a8-break8-F132.json. NEXT: attempt 9
+   on that one point only, test first, then its readers, then the add-in half after F131 merges. The stopped
+   first attempt 8 is kept as turn5\f132i-stopped-attempt8.patch
+4. F139, Bader's one page progress file, Q139, branch fix-F139, worktree wt-f139, head 388d8b8, pushed, pull
+   request 130 open as a draft. Attempt 1 read CHANGES with one blocking point, the gate's merge test by file time
+   that a checkout defeats, turn5\lanes-review-F139.json. Attempt 2 was STOPPED at 18:43: its new gate cases in
+   tools\loop\prove-hooks.sh are committed in 388d8b8, and their fail-first run against the gate at 7314873 was
+   ended at 19:04, its output as it stood in turn5\f139b-prove-hooks-before.txt. NEXT: run the brief kept as
+   turn5\f139-attempt2.js again, the gate reading the page by its content, the reviewer's points 2 to 10, the
+   proofs, then its reviewer, then merge. After its merge the keep-awake reads steps\PROGRESS.md, F139-R1
+5. F114, branch fix-F114 at e77e8a7, pushed. Waits for F131's merge to carry TeamPair, TeamMap.Compare and
+   CarriesSizeFolder in its own files by Q134 B, for P11 to P19, and for F132's merge
+6. Q141, drafted in turn5\q140-draft.txt under the number 140 before Bader's F132 rule took it: the status of a
+   clash under a result group under Q138 B. Written to steps\02_questions.md as Q141 after F139 merges
+7. Beside them: F134 the code health gate then F135, Q129's lane. FR-196's part 2 in run.ps1 after F131. Then
+   the rest of wave 2, F137, the test of wave 1 and waves 3 to 5 as steps\fix-round.md places them
+Merged today: PR 125 to PR 132, the last b5f1393. Open: pull request 130, F139, a draft.
+
+PICKED UP ON 2026-10-06 after the laptop went off at 19:31:09 on 2026-10-05, Bader's message headed
+CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, the plan in the newest steps\log.md entry. Cut at the
+shutdown, turn5\restart\trees.md: F131's add-in attempt 3 with main merged in as 26c62df not pushed and
+the K2 checks in prove-run.ps1 not committed, F133's attempt 5 after reads only, F138 with its four files
+not committed and its after run cut in H7, and F132's attempt 6 with 14 files staged and no commit. His
+settings PUT BACK at 11:01:38, turn5\restart\putback-p10-write-20261006-110126.txt. The harness was not
+hung, turn5\restart\harness.md, and every harness run gets a time limit, register row
+T5-R-HARNESSLIMIT, built in F138's branch. The order from here: F138 merged before any probe or run,
+then F131, F132 and F114 as items 2 to 5 below say, F133 and the gate beside them. Every harness run and
+every probe runs alone. Checks from now by his item 16: each fix its test first, a clean build, green
+Core tests and one reviewer, a breaker only on alignment, sets, clash counts, mirrors and views, no
+claim-checker on records, one short record per merge or run.
+
+SINCE BADER'S ORDER OF 2026-10-05, Q132, the new viewpoints come first, ahead of everything else in wave 2.
+1. F136 merged with the box unticked when the window opens, Q131 B. MERGED as PR 117, 6802e1a, at
+   14:08:32 on 2026-10-05. F131's add-in half began after it, by his order
+2. F131 with its add-in half and Q117 C and Q123 B, merged
+3. F132 with its add-in half and Q121 B, once probes P1 and P2 are read, merged
+4. F114 with its add-in half and Q119 B, once its probes are read, merged, ticking the box again
+5. Main installed in place against bundle-backup-e4484d15, 1A02MM and 1A04PK run with the new views
+   on, and the VIEWS seconds and the total of each building against set 04, 1A04PK having no baseline
+   of either
+6. Then the items below as planned, with F137 for Q111 and Q125 before the test of wave 1
+BADER'S ANSWERS OF 2026-10-06 TO THE 22 OLD ITEMS, recorded by pull request 131: the order of work unchanged, F18 dropped, his F132 rule Q140, under which F132's attempt 8 began again at 16:53:31, and the work of his answers FR-198 to FR-204 of steps\fix-round.md, each after the viewpoints.
+Q128 A was carried out whole at 15:49, the C04 paragraph above says how. Until F114 merges every test run has the viewpoints box unticked.
+F138 MERGED as PR 127, 37f37d4, at 17:08:09 on 2026-10-06, the probe pause lifted, F131's harness on main and then
+the probes running alone since 17:09.
+Since then: F131's Core half was read with nothing blocking by both readers after its attempt 3,
+1968 Core tests at 11457ff, turn5\f131-a3-result.json. F114's Core half read CHANGES with 4 blocking
+points, turn5\f114-core-result.json. Its attempt 2 started at 12:18:59 and was with its developer at
+this record, and F136's attempt 2 for Q131 B started at 12:57:45, turn5\workflow-starts.txt. The probes of the Q114 design run on the branch fix-F114-probes: P5, P6 and P7 read off
+the DLLs, each yes, scan.md 5z-h to 5z-j, and P1 on Navisworks, NO, the swap of
+BLD-ST-Framing-vs-BLD-ST-Columns found 27 clashes where the original found 25, scan.md 5z-k, so Q133
+asks Bader before F132's add-in commit, the design's own rule. The chain was paused after P1 for the
+put back of Q128, P2 reading the pause, turn5\probes-1-result.json, and a new chain from P2 began
+at 13:22:20, turn5\workflow-starts.txt.
+The new chain answered P2 yes, the call that removes a test took the one swapped test at the end of the
+root with its 27 results and nothing else, a test elsewhere in the tree UNKNOWN, P4 that 1A04PK's HV
+model carries ME-Ductwork, ME-PIPING and PL-Drainage and its FP model FF-Fire Fighting, FP-PIPING in
+neither, P8 yes, 2813 viewpoints legacy by the probe's own reading of the design's rule, P9 yes, the
+tool's mark kept as a comment written after the view is added, through a save, a clear and a reopen in
+the same Navisworks, and P10 no, every Guid of the tree's 2869 items read empty, each in
+docs\history\scan.md on the branch fix-F114-probes, turn5\probes-2-result.json. P10 LEFT BADER'S
+SETTINGS NOT PUT BACK: its guard refused, having sighted its own adopted Navisworks, pid 37232, on a
+pass before the adoption was read, so 40 registry values, InfoCenter.log and LastSession.xml still
+differ from its backup, kept in probes\view-guids-20261005-152023. No other Navisworks ran, by its
+watchdog's record. Every later probe puts back to what it found, so the lead puts P10's backup back
+once the chain ends, each value read back, register row T5-R-GUARDRACE. PUT BACK by the lead at 11:01:38 on
+2026-10-06, turn5\restart\putback-p10-write-20261006-110126.txt. It was paused at 15:40, P11 reading the
+pause and running nothing, turn5\probes-2-result.json, for the removal of the three autosaves, done at
+15:49 and each named under Q128, and for the measurement of Q133, which began at 15:50:12 with P11 to P19 after it,
+turn5\workflow-starts.txt, F132 before F114 in his order.
+BADER'S MESSAGE ON AUTOSAVE COPIES, Q135, 2026-10-05. Auto-Save measured, its switch one value inside the
+22.0 key every start backs up and puts back, off the safer choice, whether off holds UNKNOWN until F138's
+first start. His 1A02MM Autosave0 went while a probe's Navisworks ran, most likely by its rotation, and was
+put back at 17:31 from the one backup, the probe's four autosaves removed from his folder, each named, and
+in the loop's folder 196 duplicate files and the 3 copies of the C04 run's own autosaves, 203 files and
+425,773,088 bytes in all, turn5\q135\cleanup.txt, its first try refused at 17:30:20 by a Roamer that was
+gone at the next. By the lead's choice the probes are paused, turn5\probes-pause.txt, until F138, FR-196,
+switches Auto-Save off for every loop start. The Q133 measurement on 1A02MM is under Q133, 1A04PK's waits for F138.
+
 Turn 5, the full fix round, Q98, now in waves by Bader's message of 2026-10-04 at 15:42. Merged so
 far on 2026-10-04: PR 87 as 53c37b6, PR 84, F108, as c9b223b, PR 88, F106, as 3449521, PR 89 as
 51a0cb6, PR 83 as 086a348, PR 90, F105, as 2c89788, PR 91, the fix list, as 0e76b16, PR 92, F107,
@@ -439,13 +574,15 @@ and planned in the turn 5 entry of steps\log.md headed with them.
 1. The baseline, set 04: item 1 on C02 rerun from F125's commit 5fa98a8 at 18:55, then item 1 on
    C04, item 2 on C02 and item 2 on C04, each after a fresh Roamer read, then
    steps\runs\04\findings.md, short, in the shape of set 03's, merged within the hour. The hung
-   first attempt is kept as steps\runs\04\item1-C02-hung
+   first attempt is kept as steps\runs\04\item1-C02-hung. Item 2 on C02 STOPPED by Bader at 11:38
+   on 2026-10-05, Q130, and item 2 on C04 is not run until the new views are in, Q124 B, so the set closes with findings.md now
 2. Wave 1: F125's second pass and F126, the driver unticking a named box, each read under Q93
    and merged. F125 MERGED as PR 102, F112 MERGED as PR 106 and F116 MERGED as PR 98 with this
    project's list in exchange\, Bader told at about 04:27. F126's harness ran in the first gap
    on 2026-10-05 against its stand-in window, 52 passed and 0 failed on the branch, and F126
    MERGED as PR 112 at 08:23:04
-3. The test of wave 1: main installed in place as on 2026-10-01 and its stamp read back, both
+3. The test of wave 1, after F136 the viewpoints switch is merged, Q130, with the box unticked in
+   every run: main installed in place as on 2026-10-01 and its stamp read back, both
    buildings run, item 1 and item 2, and a building whose models are off the shared coordinates
    run once more with the rule switched off by its tick box. Compared with the baseline through
    turn5\wave-compare.py and F104's documents read: each group's result, the clash count per
@@ -458,7 +595,8 @@ and planned in the turn 5 entry of steps\log.md headed with them.
 5. To measure from the baseline before wave 2: which property and value name Generic Models on
    1A02MM and 1A04PK, what the log, .tsv and workbook hold today for each test of the coverage,
    why the Shift range fails in the window code, and whether the driver can test a Shift click
-   without real input
+   without real input, measured on 2026-10-04 and 2026-10-05, turn5\measure-shift.md and
+   measure-shift-driver-result.md
 6. Wave 2 in three parts since Bader's views by team, Q114: 2a F127 coverage first with F132
    mirrored tests and F115 sets, 2b F131 teams, F114 views reshaped by Q114 and F128 generic
    models, 2c F118 workbook and report. Q114's measurements first, turn5\measure-mirrors.md,
@@ -474,7 +612,9 @@ and planned in the turn 5 entry of steps\log.md headed with them.
    blocking, F114's Core half with a developer from 09:46:44
 7. Bader's lane of Q129 beside the waves, a fourth worker: F133 the tracker, F134 the code health gate
    from the nine counts measured first, and F135 the analyser settings merged alone at a quiet moment,
-   in that order by the lead's choice. Three lines in the tab when the tracker is live and three when the gate is live
+   in that order by the lead's choice. Three lines in the tab when the tracker is live and three when the gate is live.
+   F133 MERGED as PR 122, 025b5eb, at 14:54:14 on 2026-10-06, the tracker live and its three lines given. F139,
+   Bader's one page progress file of Q139, follows it as one PR beside the viewpoints
 Tests run only while no Navisworks of Bader's runs, the waiter reading every 10 minutes. The
 keep-awake is checked every 30 minutes.
 
@@ -577,34 +717,16 @@ What waits on Bader's answer. A finding moves here when it survives three fix at
 with what was tried and what each attempt showed. The register rows marked needs Bader,
 in the form are the questions already in steps\02_questions.md and are not repeated here.
 
-OPEN IN THE FORM NOW, each in steps\02_questions.md with its evidence and its choices:
-- none of the turn 5 form. Q113 ANSWERED on 2026-10-04 in the evening: B, the correction list a plain file beside
-  the picked XML, this project's in exchange\, and D, all four categories. F116 carries it
-- Q110, a skipped group creates only the tests whose sides both find something, where his answer
-  also says the NWF is built with all its tests, and Q111, a model that names no site at all still
-  fails its group with the rule on, both from F112's readings and on main since F112 merged, and
-  Q125, a group that runs no clash test with a model off the shared coordinates.
-- Q126 and Q127, written on 2026-10-05 from the design of F127, turn5\f127-design.md: a group
-  whose clash is skipped has no workbook for the Coverage sheet, and how RESULT counts the XML's
-  tests, each with the choice the build goes on with until he answers.
-  Q112 is his own message of the five requests. The two readings in its lead's notes he
-  answered on 2026-10-04 in the evening, right as read: a count that differs is a FAILED line in
-  COVERAGE and RESULT and the group keeps its own result, and a Shift click the driver cannot make
-  without real input becomes numbered steps for him in steps\03_bader_next.md
-- Q115 to Q123, written on 2026-10-05 from the design of Q114, turn5\q114-design.md section 9,
-  each with the choice the build goes on with until he answers: Q115 where the team map lives,
-  Q116 where it applies, Q117 a set name with no discipline code, Q118 a clashing item in a model
-  of a third team, Q119 which models a view shows, Q120 a view of the tool a person changed, Q121
-  Telecom Fixtures and Telephone Devices, Q122 whose status a result carries, Q123 a run with no
-  XML. Four of the design's questions are not asked: two his words settle, no priority file means
-  No priority, point 9, and the pair's order is point 12's, one is the lead's choice for safety,
-  new views written before old ones are removed, whose cost is UNKNOWN until probe P18 and which is
-  asked if that cost is large, and one, a comment that does not survive a save, waits for P9
-- Q124, written on 2026-10-05: the baseline of 1A04PK takes a day or more, so whether to let it
-  run, the loop going on with A, let it run, until he answers. Its note of 06:45: the run ended
-  HUNG at 06:36, so it now stands for C04's weekly run, item 2
-- Q128, written on 2026-10-05: what the C04 run did not put back, the loop going on with B, leave
-  it as it is with the backups kept, until he answers
+OPEN IN THE FORM NOW: none. Q137 was ANSWERED A and Q138 B on 2026-10-06, Q137 A as built on fix-F132 at
+e7cbaba, Q138 B to be built in F132's next pass, each under its question. Q134 B is built on fix-F131 at
+ec311bb, the three members out, and Q136 A on fix-F132 at e7cbaba, every mirror named by its own name with
+(mirror) at the end, neither merged yet.
+Q133 was ANSWERED D on 2026-10-05, both tests of a mirrored pair run and
+their clashes merged by the pair of items, and he allowed the removal of the run's three autosaves of
+Q128, removed at 15:49, turn5\remove-run-autosaves.txt. Q110, Q111, Q115 to Q128 and Q131 were ANSWERED by Bader on 2026-10-05,
+each answer under its question in steps\02_questions.md with what it changes, and his order of the
+work, Q132, gives in his words the order of the message headed THE VIEWPOINTS COME FIRST, whose own
+words never reached this session. Q113 was ANSWERED on 2026-10-04 in the evening.
 
 THE FORM OF TURN 5, written on 2026-10-04 from the fix list, steps\fix-round.md, each question in
 steps\02_questions.md with its evidence and its choices:
@@ -840,6 +962,10 @@ baseline run proves it or contradicts it.
 | F125-R13 | the breaker of F125's second pass, its sixth point, turn5\f125b-read-break.txt | The driver's count of passes after Run counts passes that held any window, so three different passing windows on three passes stop it, DIALOG exit 8, while its comment says one window read on three passes running. Loud, and older than F125. drive-window-run.ps1 lines 306 to 308 and 389 to 397 at 03aa6c0 | a count per window, or the comment made true | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
 | F125-R14 | the reviewer of F125's second pass, turn5\f125b-read-review.txt, points the records pass left | nw-guard.ps1's header still says that is not modal and lists neither PaneWords nor StateWords, KindStateWords and StateWords are two forms of one set of words, the order line, the section heading and THE TEST of F125 in steps\01_next.md still say not modal, and the new count rule has no test that breaks it. Also PaneWords still writes a window that is not modal for a window whose owner reads enabled, nw-guard.ps1 line 582, which a modal dialog owned by a window of another thread would read too, a shape no row names, and nw-guard.ps1 lines 566 and 567 and the F125 section of steps\01_next.md say a window whose state is not read stays a DIALOG, where prove-f125-after2.txt line 620 reads PANE for an owner read enabled and an own state not read | the words made true and one form of them, and a breaking stand-in case for the count rule | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
 | F126 | Bader's message of 15:42 on 2026-10-04 and his answers to Q99 and Q100, the brief turn5\f126-brief.md | Nothing in the loop can untick a tick box, so the test of wave 1 cannot run a building off the shared coordinates once more with F112's rule switched off by its tick box SkipClashOffCoordinates. tools\probes\drive-window-run.ps1 lines 1 to 14, 214 to 217, 338 and 378 and tools\loop\run.ps1 lines 1 to 14 and 2177 to 2183 at 1ae6771, steps\runs\04\item1-C02\driver.txt lines 5 and 19, a run on F125's first pass driver, sha256 7E9ABA1B by record.txt line 1 there, the blob of 5fa98a8, whose cited lines carry the same words, turn5\f126-proof\first-pass-lines.txt. The box is not remembered between runs, FederatorWindow.xaml.cs line 1198 on fix-F112 at e6d6f73, the same line at main ddb059b where F112 is merged, turn5\f126-proof\f112-lines-ddb059b.txt | turn5\f126-proof\prove-f126.ps1 against the stand-in failing on main's tools and passing on the branch, run by the lead in the first gap with Get-Process Roamer at 0 before the pull request merges, then the lead's run of 1A02MM with -Untick SkipClashOffCoordinates once main, F112 in it since ddb059b, is installed, its driver.txt reading the box toggled Off and its log the rule switched off | built on fix-F126, its code at e45ffbb, main ddb059b merged in at 1e06b7e, main 3ee01ab at 16b5eb7 and main c101f6c at 37ee68e, and read under Q93 by a reviewer and a breaker, both VERDICT APPROVE with nothing blocking, turn5\f126-read-review.txt and turn5\f126-read-break.txt. The harness ran on 2026-10-05 in the first gap, run by the lead, 52 passed and 0 failed on the branch, turn5\f126-proof\prove-f126-after.txt line 312, and 8 passed and 41 failed of 49 on main's tools, whose run.ps1 has no DriverArguments, prove-f126-before.txt line 177, four of the 8 passing only because main's driver fell over at parameter binding, the stand-in started 11 and 12 times and still running 0, Get-Process Roamer 0 at 06:53:29 and 06:58:45, turn5\f126-proof\roamer-reads-harness.txt, and at each pass's start and end, prove-f126-before.txt lines 4 and 175 and prove-f126-after.txt lines 4 and 310. On 2026-10-04 it had not run, no gap with Get-Process Roamer at 0 having come: it read 1 at all 19 of the waiter's reads, about 5 minutes apart, from 23:51:20 on 2026-10-04 to 01:22:18 on 2026-10-05, 91 minutes, pid 32136 started at 21:17:06, turn5\f126-proof\roamer-reads.txt, and at the records pass's reads, turn5\f126-proof\roamer-reads-claims.txt, steps\01_next.md F126 | 112, open as a draft | none yet |
+| T5-R-CLOSE | the claim-checker of PR 116, the close of the C02 weekly on Bader's word, Q130 | The lead closed the adopted Navisworks with a copy of the Kill of nw-guard.ps1's CloseAdopted in its own script, turn5\close-c02-weekly.ps1, and not a call of it, against the rule of one copy of every guard. A run.ps1 that is alive has no way to be asked to close its Navisworks, and CloseOwn writes its own VERDICT into a record run.ps1 still writes | a close on request that run.ps1 makes itself, or CloseOwn able to close without a VERDICT while run.ps1 lives, each with a stand-in case | open, register row under Q93, for F122 in wave 4 | none yet | no run applies |
+| T5-R-GUARDRACE | probe P10's return, turn5\probes-2-result.json | The guard refused P10's put back: its watchdog listed the adopted Roamer, pid 37232, with no readable start time on a pass before the adoption, and PutBackReasons read that as a Navisworks that cannot be shown to be the adopted one, so 40 registry values and two files of Bader's stayed changed by the loop's own Navisworks | a sighting of the adopted pid made before the adoption judged against the adopted start, with a stand-in case that breaks it, and the put back from the kept .reg export where the record proves only the adopted one ran | open for its fix, under Q93 as a fault that leaves Bader's things changed. Its values and two files were PUT BACK by the lead at 11:01:38 on 2026-10-06 from the kept export, through the guard's own PutBackRegistry and PutBackFiles, 44 values by then with T5-R-OLDKEY's, each read back the same, turn5\restart\putback-p10-write-20261006-110126.txt | none yet | no run applies |
+| T5-R-HARNESSLIMIT | Bader's message headed CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, item 6, turn5\restart\harness.md | No harness run has a time limit. prove-run.ps1 has none for the run or a case, about 20 of its child waits have none, and EndChild reads a child's output with none. The lanes waited for each other's runs through wrappers of their own in the session scratchpad, a WaitForExit with no limit and a loop on any test folder, so the F138 lane waited about 72 min on F131's runs and a leftover -Work would have held F131's wrapper for ever | prove-run.ps1 takes a limit for the run, each case and each child, stops with a TIME LIMIT line and exit 3 closing only what it started, and waits for a Roamer or another run only up to -WaitSeconds, so no lane writes a wrapper. A static read in H0, proved on a known offender, refuses a wait with no limit | open, a loop script fix that cannot harm evidence, built in F138's branch | none yet | no run applies |
+| T5-R-OLDKEY | the lead's read after the restart, turn5\restart\settings.md | After 17:06:08 on 2026-10-05, Q133's last put back, and before 10:26:37 on 2026-10-06, 40 values of Bader's 22.0 key went back to values older than any backup the loop took, the export of 2026-09-28 12:27:22 in every value but SessionStartCount, every key under 22.0 reading a write time of 2026-07-31 or earlier. Ten write times in his logs folder moved back too, and folders.txt and five tsv files gained NotContentIndexed, their content the same. No loop start ran in that span by the run and probe folders, and the harness runs in it wrote only their test key. What wrote them is UNKNOWN | the cause found first. The key was put back to P10's backup at 11:01:38 on 2026-10-06 with T5-R-GUARDRACE's values. The write times and the attribute are left, no guard writing either | open, the cause UNKNOWN, for Bader | none yet | no run applies |
 | Q88-IDS | Q88 | GitHub keeps the commits 464f79f and c98c6f3 readable through PR 74's own refs, and they hold the licensing agent's analytics id and a session id | only the repository's owner can ask GitHub support to purge them | known item, Bader's, the repository is private | 74 | no run applies |
 | D1 | loop prompt, the defaults | One public type per file, 46 files hold more than one top level type, steps\loop-read.md section 2 | core.md and addin.md say it, every file split, moves only, build, Core tests and a first run | open, after the faults | none yet | none yet |
 | RUN-1637 | Bader's run of 2026-09-27 16:37, run-20260927-163731.log in his logs folder | The run ended at 17:00:36 on the second NWF save into NM Fed, no RESULT, no workbook, no NWD, on build be0b9b37 | the baseline first run of main writes RESULT, the workbook and the NWD for every group, with its NWF saved twice | seen on an old build, the baseline answers it for main | none yet | none yet |
@@ -920,7 +1046,7 @@ baseline run proves it or contradicts it.
 | F96 | 01_next steps/01_next.md line 914, line 918, ord ..., also log.md steps/log.md lines 374-380 and 477 (clos ... | The restated facts check | tools/checks/check-restated-facts.sh exists and refuses a broken restatement of each of the four named facts: the solid list, the 150 mm threshold, the tick box ... | open fault | none yet | none yet |
 | Q67 | 01_next steps/01_next.md line 870, also log.md steps/log.md lines 1799-1803 (Known bugs ... | Question 67, subject not stated in 01_next.md | Bader's answer recorded under it in steps/02_questions.md. The question itself is not quoted in 01_next.md. | needs Bader, in the form | none yet | none yet |
 | Q68 | 01_next steps/01_next.md line 870 | Question 68, subject not stated in 01_next.md | Bader's answer recorded under it in steps/02_questions.md. The question itself is not quoted in 01_next.md. | needs Bader, in the form | none yet | none yet |
-| Q9 | steps/02_questions.md:39 | Commit the 1A04WE client export (F18) | The 1A04WE export committed under samples/client-report and read by the tests that name it. | needs Bader, in the form | none yet | none yet |
+| Q9 | steps/02_questions.md:39 | Commit the 1A04WE export (F18), Bader's own clash report and not a client file | The 1A04WE export committed under samples/client-report and read by the tests that name it. | needs Bader, in the form | none yet | none yet |
 | Q15 | steps/02_questions.md:63 | The local proofs P1 to P3 | A recorded Clash Detective panel count for three tests equal to their workbook block and ROWS line. A run over every ticked group whose run TIMING block reads i ... | needs Bader, in the form | none yet | none yet |
 | Q24 | steps/02_questions.md:113, also log.md steps/log.md lines 4516 (What remains, t ... | Give a typed name cell back to the pattern, or drop the rule | Bader's answer, then a Grouping step control that calls ReleaseToPattern, or the core.md sentence and the member removed with its test. | answered by Bader on 2026-10-04, find the mistake first, FR-160 in wave 4 | none yet | none yet |
 | Q26 | steps/02_questions.md:123, also log.md steps/log.md line 4871 (What remains, F4 ... | Members made internal because only a test reads them | Bader's answer, then the internal members kept with the decision written in a rule, or each deleted with its test. | answered by Bader on 2026-10-04, find the mistake first, FR-172 in wave 5 | none yet | none yet |
