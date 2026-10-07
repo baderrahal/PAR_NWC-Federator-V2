@@ -452,6 +452,57 @@ desktop.
 
 ## Next action
 
+PICKED UP ON 2026-10-07 by Bader's message headed GOOD MORNING, CONTINUE THE LOOP. The company's shutdown.exe
+began the shutdown at 19:30:39 on 2026-10-06, 9 minutes after the day closed at 19:21, and at 19:31:09 the night
+before, so the day closes from 18:40. The PC started at 09:29:27. A Navisworks of Bader's runs, Roamer pid 41872,
+started by hand at 10:28:15 with -licensing AdLM, so by the waiting rule no probe, harness, install or put back
+runs until it closes, read every 10 minutes, and the compare of his settings with P10's backup waits for it too.
+Every lane below is pushed and clean at the head the night stop names. The keep-awake runs again, pid 35152.
+The lanes go on from the NIGHT STOP paragraph below, in its order, code first while his Navisworks runs.
+
+NIGHT STOP OF 2026-10-06, Bader's message headed STOP SAFELY FOR THE NIGHT. Nothing runs. No Navisworks was
+started tonight and Get-Process Roamer read 0 at 18:42 and 19:04, so no settings were put back. The probe pause is
+back, turn5\probes-pause.txt, written 18:41:58. The keep-awake is stopped and its 30 minute check deleted. Every
+branch below is pushed and read back. The morning session reads this paragraph, then works the lanes in Bader's
+order, F131, F132, F114, then main installed and the runs of 1A02MM and 1A04PK, F139 and the tracker lane beside.
+1. F131, branch fix-F131, worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f131, head 0e262d3, pushed. Its harness pass
+   is DONE: main 37f37d4 merged in at 5e3cd26, the full harness on that head with its limits, 310 passed and 9
+   failed in 3017 s, turn5\f131-ad5-prove-after.txt. Eight are the older failures that fail on main too. Which
+   check is the ninth is UNKNOWN, read nowhere yet. HALF DONE: the developer was stopped after its push at 19:03,
+   before it opened the draft pull request. NEXT: read the ninth failure in f131-ad5-prove-after.txt and the
+   entry draft turn5\f131-ad5-log-entry.md, fix it at its root if it is new, then one draft pull request for
+   fix-F131 with Bader's add-in steps in steps\03_bader_next.md, the reviewer's reading of the code being
+   turn5\lanes-review-F131-addin.json, APPROVE, its rows F131, FR-180, FR-181 and the questions it answers set in
+   the pull request, merged once green
+2. THE PROBES, branch fix-F114-probes, worktree wt-probes, head 51dd8c5, pushed, P11's code committed there as
+   written and never run. NOT STARTED tonight: the lane's workflow, turn5\after-f138.js, was stopped at 19:03
+   after F131's harness, before its first probe. NEXT, once F131's pull request is open and no harness runs:
+   remove turn5\probes-pause.txt, then run the probe part of turn5\after-f138.js, the Q133 measurement on 1A04PK
+   first, then P11 to P19, one Navisworks at a time. Its first start is also the first real proof that the
+   switch "3 0" keeps Auto-Save off, read by name, size, time and sha256 of his AutoSave folder
+3. F132, branch fix-F132, worktree wt-f132, head 93b45b1, pushed. Attempt 8 under Bader's rule of Q140 fixed the
+   five faults that could change a clash count or put a clash under the wrong test, Core 2092 passed. Its
+   reviewer APPROVE, the no caller point being the known state, turn5\lanes-a8-review8-F132.json. Its breaker
+   CHANGES with ONE blocking point that Q140 counts: on an XML run over an NWF holding a test under the kept test's
+   own name with other sets than the XML gives it, the document's X runs and Y (mirror)'s clashes are added to it,
+   clashes under the wrong test, MirrorRule.cs lines 247 to 288, turn5\lanes-a8-break8-F132.json. NEXT: attempt 9
+   on that one point only, test first, then its readers, then the add-in half after F131 merges. The stopped
+   first attempt 8 is kept as turn5\f132i-stopped-attempt8.patch
+4. F139, Bader's one page progress file, Q139, branch fix-F139, worktree wt-f139, head 388d8b8, pushed, pull
+   request 130 open as a draft. Attempt 1 read CHANGES with one blocking point, the gate's merge test by file time
+   that a checkout defeats, turn5\lanes-review-F139.json. Attempt 2 was STOPPED at 18:43: its new gate cases in
+   tools\loop\prove-hooks.sh are committed in 388d8b8, and their fail-first run against the gate at 7314873 was
+   ended at 19:04, its output as it stood in turn5\f139b-prove-hooks-before.txt. NEXT: run the brief kept as
+   turn5\f139-attempt2.js again, the gate reading the page by its content, the reviewer's points 2 to 10, the
+   proofs, then its reviewer, then merge. After its merge the keep-awake reads steps\PROGRESS.md, F139-R1
+5. F114, branch fix-F114 at e77e8a7, pushed. Waits for F131's merge to carry TeamPair, TeamMap.Compare and
+   CarriesSizeFolder in its own files by Q134 B, for P11 to P19, and for F132's merge
+6. Q141, drafted in turn5\q140-draft.txt under the number 140 before Bader's F132 rule took it: the status of a
+   clash under a result group under Q138 B. Written to steps\02_questions.md as Q141 after F139 merges
+7. Beside them: F134 the code health gate then F135, Q129's lane. FR-196's part 2 in run.ps1 after F131. Then
+   the rest of wave 2, F137, the test of wave 1 and waves 3 to 5 as steps\fix-round.md places them
+Merged today: PR 125 to PR 132, the last b5f1393. Open: pull request 130, F139, a draft.
+
 PICKED UP ON 2026-10-06 after the laptop went off at 19:31:09 on 2026-10-05, Bader's message headed
 CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, the plan in the newest steps\log.md entry. Cut at the
 shutdown, turn5\restart\trees.md: F131's add-in attempt 3 with main merged in as 26c62df not pushed and
@@ -475,7 +526,10 @@ SINCE BADER'S ORDER OF 2026-10-05, Q132, the new viewpoints come first, ahead of
    on, and the VIEWS seconds and the total of each building against set 04, 1A04PK having no baseline
    of either
 6. Then the items below as planned, with F137 for Q111 and Q125 before the test of wave 1
+BADER'S ANSWERS OF 2026-10-06 TO THE 22 OLD ITEMS, recorded by pull request 131: the order of work unchanged, F18 dropped, his F132 rule Q140, under which F132's attempt 8 began again at 16:53:31, and the work of his answers FR-198 to FR-204 of steps\fix-round.md, each after the viewpoints.
 Q128 A was carried out whole at 15:49, the C04 paragraph above says how. Until F114 merges every test run has the viewpoints box unticked.
+F138 MERGED as PR 127, 37f37d4, at 17:08:09 on 2026-10-06, the probe pause lifted, F131's harness on main and then
+the probes running alone since 17:09.
 Since then: F131's Core half was read with nothing blocking by both readers after its attempt 3,
 1968 Core tests at 11457ff, turn5\f131-a3-result.json. F114's Core half read CHANGES with 4 blocking
 points, turn5\f114-core-result.json. Its attempt 2 started at 12:18:59 and was with its developer at
@@ -992,7 +1046,7 @@ baseline run proves it or contradicts it.
 | F96 | 01_next steps/01_next.md line 914, line 918, ord ..., also log.md steps/log.md lines 374-380 and 477 (clos ... | The restated facts check | tools/checks/check-restated-facts.sh exists and refuses a broken restatement of each of the four named facts: the solid list, the 150 mm threshold, the tick box ... | open fault | none yet | none yet |
 | Q67 | 01_next steps/01_next.md line 870, also log.md steps/log.md lines 1799-1803 (Known bugs ... | Question 67, subject not stated in 01_next.md | Bader's answer recorded under it in steps/02_questions.md. The question itself is not quoted in 01_next.md. | needs Bader, in the form | none yet | none yet |
 | Q68 | 01_next steps/01_next.md line 870 | Question 68, subject not stated in 01_next.md | Bader's answer recorded under it in steps/02_questions.md. The question itself is not quoted in 01_next.md. | needs Bader, in the form | none yet | none yet |
-| Q9 | steps/02_questions.md:39 | Commit the 1A04WE client export (F18) | The 1A04WE export committed under samples/client-report and read by the tests that name it. | needs Bader, in the form | none yet | none yet |
+| Q9 | steps/02_questions.md:39 | Commit the 1A04WE export (F18), Bader's own clash report and not a client file | The 1A04WE export committed under samples/client-report and read by the tests that name it. | needs Bader, in the form | none yet | none yet |
 | Q15 | steps/02_questions.md:63 | The local proofs P1 to P3 | A recorded Clash Detective panel count for three tests equal to their workbook block and ROWS line. A run over every ticked group whose run TIMING block reads i ... | needs Bader, in the form | none yet | none yet |
 | Q24 | steps/02_questions.md:113, also log.md steps/log.md lines 4516 (What remains, t ... | Give a typed name cell back to the pattern, or drop the rule | Bader's answer, then a Grouping step control that calls ReleaseToPattern, or the core.md sentence and the member removed with its test. | answered by Bader on 2026-10-04, find the mistake first, FR-160 in wave 4 | none yet | none yet |
 | Q26 | steps/02_questions.md:123, also log.md steps/log.md line 4871 (What remains, F4 ... | Members made internal because only a test reads them | Bader's answer, then the internal members kept with the decision written in a rule, or each deleted with its test. | answered by Bader on 2026-10-04, find the mistake first, FR-172 in wave 5 | none yet | none yet |
