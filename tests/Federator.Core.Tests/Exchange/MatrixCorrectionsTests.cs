@@ -939,11 +939,6 @@ namespace Federator.Core.Tests
         // ---------- Q69, the Or row for a workset his models spell two ways ----------
 
         /// <summary>
-        /// The Or row is flags="64", StartGroup, which F78 measured: a condition with
-        /// that bit starts a new group, conditions inside a group are ANDed and groups
-        /// are ORed. So the set finds both spellings while the models are still wrong.
-        /// </summary>
-        /// <summary>
         /// A set asking one workset, the condition on the workset property, which since F116 is
         /// the only condition an Or row or a spelling correction reads.
         /// </summary>
@@ -952,14 +947,28 @@ namespace Federator.Core.Tests
             return WrittenExchange(WrittenSet(name, WrittenCondition(0, WorksetProperty, "Workset", workset)));
         }
 
+        /// <summary>
+        /// A list of corrections holding that one line, the way the list beside a picked file is
+        /// read. Since F131 the Or row of Q69 is an also-ask line of the list, the one way a value
+        /// also asks another spelling, and ValueOrRow, which nothing in src called, is gone.
+        /// </summary>
+        private static MatrixCorrectionList ListHolding(string line)
+        {
+            return MatrixCorrectionList.Read(new StringReader(line + "\n"), "a list in a test");
+        }
+
+        /// <summary>
+        /// The Or row is flags="64", StartGroup, which F78 measured: a condition with
+        /// that bit starts a new group, conditions inside a group are ANDed and groups
+        /// are ORed. So the set finds both spellings while the models are still wrong.
+        /// </summary>
         [Test]
         public void AWorksetSpelledTwoWaysBuildsAnOrRowCarryingBoth()
         {
             string xml = WorksetSet("BLD-ME-Ducts", "PL-Drainage equipment");
 
-            CorrectionOutcome outcome = MatrixCorrections.Apply(
-                xml, null, null, null, null,
-                new List<ValueOrRow> { new ValueOrRow("PL-Drainage equipment", "PL-Drainage equipmen") });
+            CorrectionOutcome outcome = MatrixCorrections.ForPickedFile(
+                xml, ListHolding("also-ask: PL-Drainage equipment | PL-Drainage equipmen"));
 
             Assert.That(outcome.Text, Does.Contain("<data type=\"wstring\">PL-Drainage equipment</data>"));
             Assert.That(outcome.Text, Does.Contain("<data type=\"wstring\">PL-Drainage equipmen</data>"));
@@ -967,15 +976,16 @@ namespace Federator.Core.Tests
             Assert.That(outcome.TotalChanged, Is.EqualTo(1));
         }
 
+        /// <summary>Two identical spellings are not a disagreement. The line is refused, so the list corrects nothing.</summary>
         [Test]
         public void AWorksetSpelledOneWayBuildsOneConditionAndNoOrRow()
         {
             string xml = WorksetSet("BLD-ME-Ducts", "ME-Ductwork");
+            MatrixCorrectionList list = ListHolding("also-ask: ME-Ductwork | ME-Ductwork");
 
-            CorrectionOutcome outcome = MatrixCorrections.Apply(
-                xml, null, null, null, null,
-                new List<ValueOrRow> { new ValueOrRow("ME-Ductwork", "ME-Ductwork") });
+            CorrectionOutcome outcome = MatrixCorrections.ForPickedFile(xml, list);
 
+            Assert.That(list.Unread, Does.Contain("is an also-ask that cannot be used"));
             Assert.That(outcome.Text, Is.EqualTo(xml), "left exactly as it was");
             Assert.That(outcome.Text, Does.Not.Contain("flags=\"64\""));
             Assert.That(outcome.TotalChanged, Is.EqualTo(0));
@@ -984,15 +994,11 @@ namespace Federator.Core.Tests
         [Test]
         public void AddingTheOrRowTwiceAddsItOnce()
         {
-            IList<ValueOrRow> rows = new List<ValueOrRow>
-            {
-                new ValueOrRow("PL-Drainage equipment", "PL-Drainage equipmen")
-            };
+            MatrixCorrectionList rows = ListHolding("also-ask: PL-Drainage equipment | PL-Drainage equipmen");
 
-            CorrectionOutcome once = MatrixCorrections.Apply(
-                WorksetSet("BLD-ME-Ducts", "PL-Drainage equipment"), null, null, null, null, rows);
+            CorrectionOutcome once = MatrixCorrections.ForPickedFile(WorksetSet("BLD-ME-Ducts", "PL-Drainage equipment"), rows);
 
-            CorrectionOutcome twice = MatrixCorrections.Apply(once.Text, null, null, null, null, rows);
+            CorrectionOutcome twice = MatrixCorrections.ForPickedFile(once.Text, rows);
 
             Assert.That(once.TotalChanged, Is.EqualTo(1), "the first run adds the row");
             Assert.That(twice.Text, Is.EqualTo(once.Text));
@@ -1083,9 +1089,7 @@ namespace Federator.Core.Tests
         {
             string xml = WrittenExchange(WrittenSet("BLD-ME-Duct Accessory", CategoryAndWorkset(0, "Duct Accessories", "ME-Ductwork")));
 
-            CorrectionOutcome outcome = MatrixCorrections.Apply(
-                xml, null, null, null, null,
-                new List<ValueOrRow> { new ValueOrRow("ME-Ductwork", "ME-DUCTWORK") });
+            CorrectionOutcome outcome = MatrixCorrections.ForPickedFile(xml, ListHolding("also-ask: ME-Ductwork | ME-DUCTWORK"));
 
             PlannedSet set = PlannedOnly(outcome.Text);
             IList<IList<PlannedCondition>> groups = set.Groups();
@@ -1117,8 +1121,8 @@ namespace Federator.Core.Tests
                 "BLD-ME-Ducts&amp;Duct Fittings",
                 CategoryAndWorkset(0, "Ducts", "ME-Ductwork") + CategoryAndWorkset(MatrixCorrections.StartGroup, "Duct Fittings", "ME-Ductwork")));
 
-            IList<ValueOrRow> row = new List<ValueOrRow> { new ValueOrRow("ME-Ductwork", "ME-DUCTWORK") };
-            CorrectionOutcome once = MatrixCorrections.Apply(xml, null, null, null, null, row);
+            MatrixCorrectionList row = ListHolding("also-ask: ME-Ductwork | ME-DUCTWORK");
+            CorrectionOutcome once = MatrixCorrections.ForPickedFile(xml, row);
 
             PlannedSet set = PlannedOnly(once.Text);
             IList<IList<PlannedCondition>> groups = set.Groups();
@@ -1137,7 +1141,7 @@ namespace Federator.Core.Tests
                 "Ducts on ME-Ductwork", "Ducts on ME-DUCTWORK", "Duct Fittings on ME-Ductwork", "Duct Fittings on ME-DUCTWORK"
             }));
 
-            CorrectionOutcome twice = MatrixCorrections.Apply(once.Text, null, null, null, null, row);
+            CorrectionOutcome twice = MatrixCorrections.ForPickedFile(once.Text, row);
 
             Assert.That(twice.Text, Is.EqualTo(once.Text));
             Assert.That(twice.TotalChanged, Is.EqualTo(0));
@@ -1192,7 +1196,7 @@ namespace Federator.Core.Tests
 
         private static CorrectionOutcome WithSourceFile(string xml, IList<SourceFileRule> rules)
         {
-            return MatrixCorrections.Apply(xml, null, null, null, null, null, rules);
+            return MatrixCorrections.Apply(xml, null, null, null, null, rules);
         }
 
         /// <summary>Every set of that file by name, read back the way the add-in plans it.</summary>

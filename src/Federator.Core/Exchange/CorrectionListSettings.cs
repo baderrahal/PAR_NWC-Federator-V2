@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-
 namespace Federator.Core.Exchange
 {
     /// <summary>
@@ -12,6 +9,7 @@ namespace Federator.Core.Exchange
     /// the suffix, and that one path is tested with File.Exists. Nothing looks around the folder
     /// for a file that might be meant, because a list picked up by a near match would correct a
     /// file with another project's decisions and the log would read as if it had been asked.
+    /// The join is ListFile.PathBeside, which the team map beside the XML is found by too, F131.
     ///
     /// THE SUFFIX IS A SETTING, the rule for every name that shapes a run.
     /// </summary>
@@ -28,19 +26,10 @@ namespace Federator.Core.Exchange
         /// <summary>What follows the XML's name without its extension to make the list's name.</summary>
         public string Suffix { get; set; }
 
-        /// <summary>The full path of the list beside that XML, whether or not a file is there.</summary>
+        /// <summary>The full path of the list beside that XML, whether or not a file is there, ListFile.PathBeside.</summary>
         public string PathBeside(string xmlPath)
         {
-            if (string.IsNullOrEmpty(xmlPath))
-            {
-                throw new ArgumentException("A list is found beside a picked XML, and no XML was named.", "xmlPath");
-            }
-
-            string full = Path.GetFullPath(xmlPath);
-
-            return Path.Combine(
-                Path.GetDirectoryName(full),
-                Path.GetFileNameWithoutExtension(full) + (Suffix ?? string.Empty));
+            return ListFile.PathBeside(xmlPath, Suffix);
         }
     }
 }

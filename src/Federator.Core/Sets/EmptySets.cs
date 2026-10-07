@@ -80,11 +80,12 @@ namespace Federator.Core.Sets
     ///
     /// THE VALUES ARE MEASURED AND NEVER TYPED. `RevitCategories` holds the 374 category
     /// values the models really carry, measured in 5i. The workset spellings are handed in,
-    /// the ones the picked file's corrections were chosen from, `RevitWorksets.With`: the 39
-    /// names measured in 5t inside Core and the workset lines of the list beside the picked
-    /// file, Q113, so a spelling a MATRIX line says was measured is never one this calls
-    /// carried by no model, F116. A set asking for something neither holds is asking for
-    /// something no model measured so far in this project has.
+    /// every one the picked file's corrections ask, `RevitWorksets.With`: the 39 names measured
+    /// in 5t inside Core, the workset lines of the list beside the picked file, Q113, and every
+    /// spelling an also-ask line of it accepts, F131, so a spelling a MATRIX line says was
+    /// measured or accepted is never one this calls carried by no model, F116. A set asking for
+    /// something none of them holds is asking for something no model measured so far in this
+    /// project has.
     ///
     /// WHILE A LIST IS UNMEASURED THIS SAYS IT CANNOT TELL. A check that compared against
     /// an empty list would report every set in the file as asking for something nobody

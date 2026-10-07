@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 405 rows: open 158, in progress 55, in review 0, merged 166, proven by a run 22, waiting for Bader 0, dropped 4
+- By status, of 405 rows: open 158, in progress 53, in review 0, merged 168, proven by a run 22, waiting for Bader 0, dropped 4
 - By wave: 1 19, 2a 31, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 43, 5 71, 5 and 4 1, all 1, before any probe or run starts again 3, before any test run 3, before the test of wave 1 6, before the waves 114, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 23, outside the waves 2
-- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F131 teams, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 40 FR items
+- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 39 FR items
 - Waits for Bader: nothing
 
 ## Wave 1
@@ -71,7 +71,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| Q114 | one view per clash test by team (FR-180 to FR-188) | F131, F132, F114 | Bader's request | in progress | none, branches fix-F131, fix-F132, fix-F114 | none | 2026-10-05 |
+| Q114 | one view per clash test by team (FR-180 to FR-188) | F131, F132, F114 | Bader's request | in progress | 135 merged for F131, branches fix-F132, fix-F114 | none | 2026-10-07 |
 
 ## Wave 2b
 
@@ -87,8 +87,8 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-072 | penetrations upwards walk outside try | F114 | loud failure | in progress | none, branch fix-F114 | none | 2026-10-04 |
 | FR-073 | views seconds parts do not add | F114 | noise | in progress | none, branch fix-F114 | none | 2026-10-04 |
 | FR-177 | generic models counted and a set per model | F128 | Bader's request | open | none | none | 2026-10-04 |
-| FR-180 | team map beside the picked xml | F131 | Bader's decision | in progress | none, branch fix-F131 | none | 2026-10-05 |
-| FR-181 | mechanical sets miss hv pl fp models | F131 | Bader's decision | in progress | none, branch fix-F131 | none | 2026-10-05 |
+| FR-180 | team map beside the picked xml | F131 | Bader's decision | merged | 135 | none | 2026-10-07 |
+| FR-181 | mechanical sets miss hv pl fp models | F131 | Bader's decision | in progress | 135 merged for F131, the COVERAGE block and the form wait for F127 | none | 2026-10-07 |
 | FR-184 | views tree by priority and team pair | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
 | FR-185 | one view per test of its open clashes | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
 | FR-186 | views made fresh only the tools own | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
@@ -96,7 +96,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-188 | views rules in docs workflow | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
 | F114 | views | F114 | fix | in progress | none, branch fix-F114 at e77e8a7, waits for F131 and F132 | none | 2026-10-06 |
 | F128 | generic models | F128 | fix | open | none | none | 2026-10-04 |
-| F131 | teams | F131 | fix | in progress | none, branch fix-F131 at 0e262d3, its harness read, its pull request not yet opened | none | 2026-10-06 |
+| F131 | teams | F131 | fix | merged | 135 | none | 2026-10-07 |
 | Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | open | none | none | 2026-10-04 |
 | Q77 | the clear and rebuild does not copy the viewpoints | F114 | question | merged | 131 | none | 2026-10-06 |
 | Q115 | where the team map lives | F131 | question | merged | 118 | none | 2026-10-05 |
@@ -475,7 +475,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| Q132 | the new viewpoints first, F136 then F131, F132 and F114 | F136, F131, F132, F114 | Bader's request | in progress | 117 merged for F136, branches fix-F131, fix-F132, fix-F114 | none | 2026-10-05 |
+| Q132 | the new viewpoints first, F136 then F131, F132 and F114 | F136, F131, F132, F114 | Bader's request | in progress | 117 merged for F136, 135 for F131, branches fix-F132, fix-F114 | none | 2026-10-07 |
 
 ## none
 
