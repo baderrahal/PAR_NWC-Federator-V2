@@ -396,6 +396,71 @@ FR-196,loop runs write no autosave and copy his folder once,F138,before any prob
 Q135,too many autosave copies,F138,before any probe or run starts again,Bader's request,in progress,"127 merged for part 1, part 2 in run.ps1 after F131",none,2026-10-06
 Q137,a saved mirror whose kept test the document does not say,none,none,question,merged,128,none,2026-10-06
 Q138,"a clash both tests find, with two statuses",none,none,question,merged,128,none,2026-10-06
+F139,the one page progress file,F139,right after F133 merges,fix,merged,130,none,2026-10-07
+FR-197,one page progress file that keeps itself current,F139,right after F133 merges,Bader's decision,merged,130,none,2026-10-07
+Q139,a one page progress file that keeps itself current (FR-197),F139,right after F133 merges,Bader's request,merged,130,none,2026-10-07
+T3-B,"the build stamp reads +edits for any untracked file, done by run.ps1's tree refusal",F103,before the waves,register row,merged,78,none,2026-10-01
+F105-R4,probe comments say nothing is dropped where a read handed to no IlFail is in no count,none,none,register row,open,none,none,2026-10-04
+F104-R1,a documents read ends READ when nothing was read,none,none,register row,open,none,none,2026-10-04
+F104-R2,the picture and priority switches of a documents read are typed by hand,none,none,register row,open,none,none,2026-10-04
+F104-R3,a group with no NWF and no workbook is in no count of a documents read,none,none,register row,open,none,none,2026-10-04
+F104-R4,"AGREE can stand while the panel count differs for a result group, PQ4",none,none,register row,open,none,none,2026-10-04
+F104-R5,the probe's viewpoint walk is unmeasured and unbounded,none,none,register row,open,none,none,2026-10-04
+F104-R6,a documents read fills his recent files with the loop's NWFs,none,none,register row,open,none,none,2026-10-04
+F104-R7,the other notes of both readers of F104 part 2,none,none,register row,open,none,none,2026-10-04
+F125-R1,a modeless window up after Run stops the driver while the monitor reads a pane,F122,4,register row,open,none,none,2026-10-04
+F125-R3,a pane made again with a new handle after Run stops the driver,F122,4,register row,open,none,none,2026-10-04
+F125-R4,a WPF pane and panes with other owners stay a dialog,F122,4,register row,open,none,none,2026-10-04
+F125-R5,a message box owned by the pane before Run stops the driver after Run,F122,4,register row,open,none,none,2026-10-04
+F125-R6,prove-run.ps1 has no PANE row and is out of date since F106,F122,4,register row,open,none,none,2026-10-04
+F125-R7,a modal dialog up when the window opens reads as a pane,F122,4,register row,open,none,none,2026-10-04
+F125-R8,"a dialog counted, then read as a pane, gets a line saying not a finding",F122,4,register row,open,none,none,2026-10-04
+F125-R9,a noted pane that later reads as a dialog ends a finished run HUNG,F122,4,register row,open,none,none,2026-10-04
+F125-R10,the monitor counts a dialog once per caption,F122,4,register row,open,none,none,2026-10-04
+F125-R11,a window first written with children not read never gets its text,F122,4,register row,open,none,none,2026-10-04
+F125-R12,two copies of the words for an owner of another process,F122,4,register row,open,none,none,2026-10-04
+F125-R13,"the driver counts passes after Run that held any window, not one window",F122,4,register row,open,none,none,2026-10-04
+F125-R14,nw-guard.ps1's header and the F125 section still say not modal,F122,4,register row,open,none,none,2026-10-04
+T5-R-CLOSE,"the C02 weekly closed by a copy of the guard's Kill, and run.ps1 cannot be asked to close",F122,4,register row,open,none,none,2026-10-05
+T5-R-GUARDRACE,the guard refused P10's put back over a sighting before the adoption,none,none,register row,open,none,none,2026-10-05
+T5-R-HARNESSLIMIT,"no harness run has a time limit, built in F138's branch",F138,before any probe or run starts again,register row,merged,127,none,2026-10-06
+T5-R-OLDKEY,"40 values of his 22.0 key went back to older values, the writer UNKNOWN, for Bader",none,none,register row,open,none,none,2026-10-06
+F133-R1,an F number given to work elsewhere gets its tracker row by hand only,none,none,register row,open,none,none,2026-10-05
+F133-R4,"work done outside the repo has no status of the seven, for Bader",none,none,register row,open,none,none,2026-10-05
+F133-R5,the PR column holds free text beside numbers,none,none,register row,open,none,none,2026-10-05
+F133-R6,a row is checked against its own cells in one way only,none,none,register row,open,none,none,2026-10-05
+F133-R9,a wave 10 would sort between 1 and 2a,none,none,register row,open,none,none,2026-10-05
+F133-R10,"two open pull requests both change the counts, of tracker.md and since F139 of the page",none,none,register row,open,none,none,2026-10-05
+F133-R12,"the counts count rows, and one piece of work can be three rows",none,none,register row,open,none,none,2026-10-05
+F133-R13,no status of the seven names an order still in force,none,none,register row,open,none,none,2026-10-05
+F133-R16,the tracker fixtures are written by scripts kept outside the repo,none,none,register row,open,none,none,2026-10-05
+F133-R17,a request of Bader's is known only by From Bader at its start,none,none,register row,open,none,none,2026-10-05
+F133-R18,a question row's area and wave come only from the FR items naming it,none,none,register row,open,none,none,2026-10-05
+F133-R19,any text after Answer: reads as Bader's answer,none,none,register row,open,none,none,2026-10-05
+F133-R20,"lines error: failed to delete in the commit output, for the lead",none,none,register row,open,none,none,2026-10-06
+F133-R21,the class column has an allowed value only on an FR row,none,none,register row,open,none,none,2026-10-06
+F133-R22,only an indented Answer: line counts,none,none,register row,open,none,none,2026-10-06
+F133-R23,the question reader ends an item only at the next item,none,none,register row,open,none,none,2026-10-06
+F133-R24,rows of class Bader's request are checked for being there only,none,none,register row,open,none,none,2026-10-06
+F133-R25,a pull request opened again under another number leaves rows naming the old one,none,none,register row,open,none,none,2026-10-06
+F133-R26,"the check reads that a merged question row's PR is a number, not which merge",none,none,register row,open,none,none,2026-10-06
+F139-R1,"the keep-awake script reads steps\loop.md for STATE CLOSED, gone once F139 merges, for the lead",none,none,register row,proven by a run,"none, outside the repo",turn5\keep-awake.txt 13:38:15 reads steps\PROGRESS.md,2026-10-07
+F139-R2,"make-tracker.ps1 writing new counts moves the page's time, which the Stop gate reads as a rewrite until the next fetch",F139,right after F133 merges,register row,merged,130,none,2026-10-07
+F139-R3,a checkout that writes the page reads to the Stop gate as a rewrite,F139,right after F133 merges,register row,merged,130,none,2026-10-07
+F139-R4,the Stop gate's VERDICT rule is a copy in sh of run.ps1's HasVerdict,none,none,register row,open,none,none,2026-10-06
+F139-R5,"the needs Bader rows of steps 228-233, 346-352 and 364 have no tracker row and no question, the lead's call",F139,right after F133 merges,register row,merged,130,none,2026-10-07
+F139-R6,"tools\loop\prove-hooks.sh, which holds the Stop gate's cases, is not run by Actions",none,none,register row,open,none,none,2026-10-06
+T5-R-HARNESSWAITS,"waits of the harness with no limit of their own, the H0 read covering none of them",none,none,register row,open,none,none,2026-10-06
+T5-R-HARNESSARGS,prove-run.ps1's param block has no CmdletBinding so a misspelt limit is dropped in silence,none,none,register row,open,none,none,2026-10-06
+T5-R-M5AUTOSAVE,"the switch comes after M5's read, so m5.txt names the loop's own write of the autosave key",none,none,register row,open,none,none,2026-10-06
+T5-R-HELDOFF,"a run that leaves 3 0 makes the next backup read it as his value, put back by hand",none,none,register row,open,none,none,2026-10-06
+F139-R7,"a commit staging tracker.csv or the page is refused where no powershell is on PATH, such as a container, a stated limit the lead accepted",none,none,register row,dropped,none,none,2026-10-07
+F139-R8,"steps\logs\README.md line 11 names steps/log.md, in a folder never edited, for Bader",none,none,register row,waiting for Bader,none,none,2026-10-07
+F139-R9,"the Stop gate's merge test reads only a line starting STATE and a space in capitals, while its reader takes other spellings, so a page written another way is refused until respelled, the lead writing the plain form",none,none,register row,open,none,none,2026-10-07
+step 228-233,"the published NWD's file properties and its ACC upload never checked, ACC put off by Bader",none,none,register row,waiting for Bader,none,none,2026-10-07
+step 346-352,"the remote branches other than main not deleted, D6, read off the live list first",none,none,register row,waiting for Bader,none,none,2026-10-07
+step 364,the CSV of one mechanical NWC and its PROBE block not sent,none,none,register row,waiting for Bader,none,none,2026-10-07
+T5-R-WALKRACE,the harness's walk of the loop folder races a lane building under a wt- folder,none,none,register row,open,none,none,2026-10-07
 FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,open,none,none,2026-10-06
 FR-199,blocks stay in measured order with a priority file,F118,2c,Bader's decision,open,none,none,2026-10-06
 FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,open,none,none,2026-10-06
@@ -404,3 +469,5 @@ FR-202,sub object ownership measured before two reads change,F121,4,Bader's deci
 FR-203,open statuses rule stays naming its reader,F123,5,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
 FR-204,manifest line 9 and its one exception,F123,5,Bader's decision,open,none,none,2026-10-06
 Q140,F132's next attempt only for a fault that can change a clash count or its test,F132,2a,Bader's request,in progress,"none, branch fix-F132",none,2026-10-06
+Q141,a clash in a result group with two statuses,none,none,question,waiting for Bader,none,none,2026-10-07
+Q142,when a mirror's clashes may be merged,none,none,question,waiting for Bader,none,none,2026-10-07
