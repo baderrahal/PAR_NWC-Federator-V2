@@ -132,6 +132,13 @@ It has not stopped.
 - SetsAcrossTheRun counts a path twice where one group holds two sets of one name, and says found nothing
   in every group over the groups it looked at only. WorkbookTests.Read takes the first sheet and would
   read the Coverage sheet if that were inserted first
+- Found at the second reading, left open: a test whose presence is Unknown with an empty block lands under
+  held by neither side and should be not compared, because CountCheck sends only CreatedThisRun and
+  AlreadyThere there and the runner never looked at the others. The not named line counts names once per
+  group, so one old test in 46 groups reads 46 tests. The headline never prints the number of tests, so
+  its buckets cannot be added up by eye, and a group whose check is null has its tests in no bucket. Two
+  numbers in comments, 1794 of 1830, were not measured by lane B and should be read off a run or dropped.
+  The class summary of CountCheck still calls a test neither side holds AGREE in one sentence
 - Words: Q126's default A where Q126 was answered B, a design file named in comments that is not in the
   repo, two copies of the row count loop and of Count, and a double blank line in RESULT
 
