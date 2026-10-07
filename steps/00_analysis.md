@@ -144,7 +144,7 @@ Done means all three. None is proved.
 - M4 No `.claude` folder, no `.claude/rules`. CLAUDE.md is 893 lines and holds the rules, the history and the measurements together. See section 8
 - M5 CI runs the Core tests only, on `windows-latest`. The add-in is never built in CI, so a compile error in `Federator.Addin` reaches main unseen. 32 tests `Assert.Ignore` on the runner because it has no Navisworks
 - M6 No README at the repo root. A person landing on GitHub sees CLAUDE.md or nothing
-- M7 The 1A04WE client export, the one with the Layer column, is named in the docs and is not in `samples/client-report`. The two there are 1A02WN and 1A04WN. The Layer case has no sample to test against
+- M7 CLOSED on 2026-10-06 with no fix, F18 dropped by Bader that day, since the two exports in `samples/client-report` carry the Layer column and the case has its sample. As first written, its words on the file corrected: the 1A04WE export, the clash report Bader exported from Navisworks and pasted into an empty Excel workbook and not a client file, the one with the Layer column, is named in the docs and is not in `samples/client-report`. The two there are 1A02WN and 1A04WN. The Layer case has no sample to test against
 - M8 The tests are Windows only. 40 of 868 fail on Linux under mono on path separators, case, file locking and the illegal character set. They pass on Windows per the docs. Not verified on Windows in this pass
 
 ## 6 Tests
