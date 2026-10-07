@@ -466,7 +466,11 @@ and 6 does not read as broken.
   a side or a set's rule list not read, two of the name, or one of a type this tool does not
   run, no pair of that kept test is made, each of its mirrors keeps its own clashes under its
   own name, and a MIRROR line says why, and that a clash both find may be counted twice where
-  it is UNKNOWN. A test there asking the XML's question, in its order or swapped, pairs. With
+  it is UNKNOWN. A test there asking the XML's question, in its order or swapped, pairs only where every
+  setting `TestDrift.Compare` reads is the XML's, F132 attempt 10, `MirrorPair.SettingsDiffer`,
+  the one comparison the pair's line reads, its sides set against the XML's sides they stand
+  for, since the mirror runs at the XML's settings and a drifted test at its own, and where one
+  differs no pair is made and the line names each setting, the XML's value first. With
   the placeholders the add-in hands today, no kept test the document holds pairs. The
   saved tests are handed once, as the tests where no XML is picked and as the document
   where one is. `MirrorSettings.NameFor` is the one place a mirror's name is made. `ClashTestPlan.WithMirrorsNamed` gives the plan those names,
@@ -567,14 +571,16 @@ and 6 does not read as broken.
   workbook check `CreationPlan.BlockCountLine` takes that count, so it expects one block for
   every test in the file less the mirrors merged and says why, and with none merged its line
   is word for word the line before F132. The counts of a merge are refused before AddTo has
-  run, and its lines then say UNKNOWN, never 0. After it `FoundByBoth` and `NotCompared` are
+  run, and its lines then say UNKNOWN, never 0. After it `FoundByBoth` is
   null, UNKNOWN, where nothing was merged or a mirror was not merged,
   since its clashes were never compared, and `AddedToTheKeptTest` is the rows the merge added, a
   count taken. THE WORKBOOK AND THE CLASH XML the page is drawn from write every row under
   `ClashRow.WrittenName`, which names a clash only a mirror found as found by the mirror only
   in that mirror, so two rows of one block never share a name. FAIL CLOSED: a mirror's clash
-  with an item not read is not added and is said UNKNOWN, and its line says that with the
-  mirror taken out of the report it is in no block of it, and a kept test's clash with an item
+  with an item not read is not added, and since F132 attempt 10 a mirror holding one is not
+  merged and stays in the report as its own test with every clash it found, so no clash is in
+  no block, and its line says whether the kept test found it is UNKNOWN and that a clash both
+  find is counted twice, and a kept test's clash with an item
   not read is counted, since up to that many of the clashes said found by a mirror only may be
   its own. A group is refused, each clash under it is handed. The MIRROR lines name, for each
   mirror, what each test found, how many both found and how many the mirror only, then every
