@@ -15,10 +15,10 @@ namespace Federator.Core.Health
 
         /// <summary>
         /// A site whose read threw, which says nothing about the model. It is NOT an empty
-        /// site: an empty one is a model that names no shared site, which fails its group,
-        /// Q70, and a read that threw used to come back as that and fail the group with a
-        /// reason that read as a fact about the model. Null, because every site that was
-        /// read is a string.
+        /// site: an empty one is a model that names no shared site, which is off the shared
+        /// coordinates, Q111 B, and fails its group where no clash is skipped, Q70, and a
+        /// read that threw used to come back as that and fail the group with a reason that
+        /// read as a fact about the model. Null, because every site that was read is a string.
         /// </summary>
         public const string SiteNotRead = null;
 
@@ -94,7 +94,7 @@ namespace Federator.Core.Health
     ///
     /// Nothing here stops a run, Q65 answered: report it and run anyway. Two answers given
     /// later decide how a group ENDS, and the group still writes its NWF and its NWD either
-    /// way. Q70: a model naming no site at all fails its group. Q98 B2 with Bader's answer
+    /// way. Q70: a model naming no site at all fails its group, which Q111 B limits below. Q98 B2 with Bader's answer
     /// to Q99 and Q100, which replaces Q65 and Q70 for this case: a model naming Internal,
     /// or sitting more than the far model setting from its group's reference, is not on the
     /// same shared coordinates, and where the run would have run a clash test in the group
@@ -175,7 +175,7 @@ namespace Federator.Core.Health
         /// </summary>
         public static string HelpLine(double farModelMillimetres)
         {
-            return "Internal site or over " + Metres(farModelMillimetres) + " away. NWF and NWD still made";
+            return "No site, Internal or over " + Metres(farModelMillimetres) + ". NWF and NWD still made";
         }
 
         /// <summary>
@@ -484,8 +484,8 @@ namespace Federator.Core.Health
         /// </summary>
         public static string FailedRunLine(int groups)
         {
-            return "ALIGNMENT failed " + groups + " group(s), each because a model names no shared site, or was"
-                + " exported on the internal origin in a group whose clash was not skipped"
+            return "ALIGNMENT failed " + groups + " group(s), each because, in a group whose clash was not skipped,"
+                + " a model names no shared site or was exported on the internal origin"
                 + (groups == 0 ? string.Empty : ". The failure does not stop the group.");
         }
 

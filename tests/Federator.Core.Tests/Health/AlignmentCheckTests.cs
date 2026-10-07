@@ -328,7 +328,7 @@ namespace Federator.Core.Tests.Health
         /// it, both skip the clash, F137.
         /// </summary>
         [Test]
-        public void WithTheRuleOnNeitherModelFailsTheGroupAndBothAreOffTheCoordinates()
+        public void WithTheRuleOffBothModelsFailTheGroupAndWithItOnNeitherDoes()
         {
             IList<ModelPlacement> models = new List<ModelPlacement>
             {
@@ -563,9 +563,9 @@ namespace Federator.Core.Tests.Health
         {
             Assert.That(
                 AlignmentCheck.HelpLine(AlignmentCheck.DefaultFarModelMillimetres),
-                Is.EqualTo("Internal site or over 1 m away. NWF and NWD still made"));
+                Is.EqualTo("No site, Internal or over 1 m. NWF and NWD still made"));
             Assert.That(AlignmentCheck.HelpLine(AlignmentCheck.DefaultFarModelMillimetres).Split(' ').Length, Is.LessThanOrEqualTo(12));
-            Assert.That(AlignmentCheck.HelpLine(2500.0), Does.Contain("over 2.5 m away"));
+            Assert.That(AlignmentCheck.HelpLine(2500.0), Does.Contain("over 2.5 m."));
         }
 
         /// <summary>The proof the fix list asks for: a model at 0.9 m gives no line.</summary>
@@ -973,12 +973,12 @@ namespace Federator.Core.Tests.Health
         public void TheFailedRunLineNamesBothCausesAndClaimsNoFile()
         {
             Assert.That(AlignmentCheck.FailedRunLine(2), Is.EqualTo(
-                "ALIGNMENT failed 2 group(s), each because a model names no shared site, or was exported on the internal"
-                + " origin in a group whose clash was not skipped. The failure does not stop the group."));
+                "ALIGNMENT failed 2 group(s), each because, in a group whose clash was not skipped, a model names no"
+                + " shared site or was exported on the internal origin. The failure does not stop the group."));
             Assert.That(AlignmentCheck.FailedRunLine(2), Does.Not.Contain("written"));
             Assert.That(AlignmentCheck.FailedRunLine(0), Is.EqualTo(
-                "ALIGNMENT failed 0 group(s), each because a model names no shared site, or was exported on the internal"
-                + " origin in a group whose clash was not skipped"));
+                "ALIGNMENT failed 0 group(s), each because, in a group whose clash was not skipped, a model names no"
+                + " shared site or was exported on the internal origin"));
         }
     }
 }

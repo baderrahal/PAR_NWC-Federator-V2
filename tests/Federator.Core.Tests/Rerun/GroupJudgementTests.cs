@@ -718,6 +718,8 @@ namespace Federator.Core.Tests
         /// Internal, with a stale NWD, names all three, the model first and the skip last. The rule
         /// for the reason is read with the rule off, since F137 a no site model fails a group only
         /// where its clash is not skipped, and the skip is the fact the judgement is given beside it.
+        /// The engine can no longer make that pair for one group, so this is a test of how the
+        /// judgement joins the reasons and nothing more.
         /// </summary>
         [Test]
         public void AGroupFailedOnItsModelsWhoseClashWasSkippedNamesTheStaleNwdAndTheSkip()

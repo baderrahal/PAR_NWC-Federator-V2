@@ -75,7 +75,7 @@ namespace Federator.Core.Health
         /// coordinates, and a clash test this run would have run in it. A group with nothing
         /// to clash, no XML and no test saved, an XML of sets alone, or one discipline, has no
         /// clash to skip and is judged as before, the breaker's second finding at c5d8aa8, Q70's
-        /// failure for a model on Internal included, AlignmentCheck.WhyItFailsTheGroup.
+        /// failure for a model on Internal or naming no site included, AlignmentCheck.WhyItFailsTheGroup.
         /// </summary>
         public bool SkipsTheClash(bool ruleOn, bool runsATest)
         {
@@ -87,9 +87,9 @@ namespace Federator.Core.Health
         /// or null where it goes. It goes only when this run judged every model of the group
         /// and either found none of them off or clashed the group. A model whose placement or
         /// site is UNKNOWN, a group where no model was read, or a read that threw, judged null,
-        /// keeps it, because an unknown is not a pass. A group whose model is still on Internal
-        /// or still far, with no clash test run in it, keeps it too, because what the note says
-        /// is still so, which attempt 2 deleted.
+        /// keeps it, because an unknown is not a pass. A group whose model is still on Internal,
+        /// names no site or is still far, with no clash test run in it, keeps it too, because
+        /// what the note says is still so, which attempt 2 deleted.
         /// </summary>
         public static string EarlierNoteKeptBecause(OffCoordinates judged, bool ruleOn, bool runsATest)
         {
