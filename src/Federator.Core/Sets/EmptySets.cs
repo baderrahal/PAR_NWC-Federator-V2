@@ -121,12 +121,23 @@ namespace Federator.Core.Sets
         public const string WorksetProperty = "lcldrevit_parameter_-1002053";
 
         /// <summary>
-        /// Why that set found nothing, judged on the FIRST condition this reader knows how to
-        /// judge, by what that judge knows, EmptySetJudge. One reason per set, because a set
-        /// asking two things nobody has is still one wrong set and a person fixes it once. A
-        /// value is said to be carried by no model only against a list of this project's
-        /// models, FR-011, and where the judge knows of no such list it says it cannot tell
-        /// and why.
+        /// Why that set found nothing, by what that judge knows, EmptySetJudge. One reason per set,
+        /// because a set asking two things nobody has is still one wrong set and a person fixes
+        /// it once. A value is said to be carried by no model only against a list of this
+        /// project's models, FR-011, and where the judge knows of no such list it says it cannot
+        /// tell and why.
+        ///
+        /// JUDGED GROUP BY GROUP, the breaker's finding on F115's third pass. A set's Or groups are
+        /// asked one after another, F78, so it is WRONG only where EVERY group asks a value no
+        /// model carries, and where any group asks only values the models do carry the set can
+        /// match through it and found nothing here for another reason. The conditions were read
+        /// one by one and the set called wrong on the first value nothing carries, so a set of
+        /// (Ducts and a workset nobody has) or (Ducts and a workset the models carry), the shape
+        /// every also-ask line of F131 writes, was told its condition is wrong, and the team sent
+        /// to fix the spelling the also-ask line had made harmless. A group with no condition the
+        /// judge can read, a Source File alone, may still match, so a set wrong in one group and
+        /// unjudged in another is one this reader cannot tell about. A set of one group reads
+        /// exactly as it did.
         /// </summary>
         public static EmptySet Why(string path, IList<ReadCondition> asked, EmptySetJudge judge)
         {
@@ -135,21 +146,70 @@ namespace Federator.Core.Sets
                 return new EmptySet(path, EmptyReason.CannotTell, null, null);
             }
 
+            EmptySet wrong = null;
+            EmptySet there = null;
+            EmptySet cannot = null;
+            bool everyGroupWrong = true;
+
+            foreach (IList<ReadCondition> group in PlannedSet.GroupsOf(
+                asked, condition => condition != null && PlannedCondition.StartsAGroupWith(condition.Flags)))
+            {
+                EmptySet verdict = WhyGroup(path, group, judge);
+
+                if (verdict.Reason == EmptyReason.NoModelCarriesTheValue)
+                {
+                    wrong = wrong ?? verdict;
+                    continue;
+                }
+
+                everyGroupWrong = false;
+
+                if (verdict.Reason == EmptyReason.TheValueIsThereAnyway)
+                {
+                    there = there ?? verdict;
+                }
+                else
+                {
+                    cannot = cannot ?? verdict;
+                }
+            }
+
+            if (everyGroupWrong && wrong != null)
+            {
+                return wrong;
+            }
+
+            return there ?? cannot ?? new EmptySet(path, EmptyReason.CannotTell, null, null);
+        }
+
+        /// <summary>
+        /// Why one Or group of the set found nothing: wrong where any condition the judge can read
+        /// asks a value a complete list does not carry, cannot tell where one asks a value a list
+        /// that is not this project's does not carry, there where every judged value is carried,
+        /// and cannot tell where the judge can read none of its conditions.
+        /// </summary>
+        private static EmptySet WhyGroup(string path, IList<ReadCondition> group, EmptySetJudge judge)
+        {
             string carried = null;
             string cannotTell = null;
 
-            for (int i = 0; i < asked.Count; i++)
+            foreach (ReadCondition condition in group)
             {
-                EmptySetJudge.Known known = Judgeable(asked[i].Test, asked[i].Flags) ? judge.KnownFor(asked[i].PropertyInternalName) : null;
+                if (condition == null)
+                {
+                    continue;
+                }
+
+                EmptySetJudge.Known known = Judgeable(condition.Test, condition.Flags) ? judge.KnownFor(condition.PropertyInternalName) : null;
 
                 if (known == null)
                 {
                     continue;
                 }
 
-                if (Carries(known.Carried, asked[i].Test, asked[i].Value))
+                if (Carries(known.Carried, condition.Test, condition.Value))
                 {
-                    carried = carried ?? asked[i].Value;
+                    carried = carried ?? condition.Value;
                     continue;
                 }
 
@@ -165,7 +225,7 @@ namespace Federator.Core.Sets
                 }
 
                 return new EmptySet(
-                    path, EmptyReason.NoModelCarriesTheValue, asked[i].Value, NearestIn(known.Carried, asked[i].Value));
+                    path, EmptyReason.NoModelCarriesTheValue, condition.Value, NearestIn(known.Carried, condition.Value));
             }
 
             if (cannotTell != null)

@@ -13,7 +13,7 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 
 | Order | Item | Branch | State |
 |---|---|---|---|
-| 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | merged as pull request 142, add-in half and the loop's records wait for the laptop lane |
+| 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | code merged as pull request 142, its records and two fixes of a third reading as 144 by the worktree session, the add-in half waits for the laptop lane |
 | 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | Core half merged as pull request 145, the add-in half and the sheet writer wait |
 | 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 merged as pull request 146, Q125 B left for the laptop lane |
 | 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 merged as pull request 147, the rest left for the laptop lane |
@@ -26,7 +26,22 @@ None. The branch claude/lane-b-release-plan-zztyvx is the one branch this sessio
 from main after each merge. F115 merged as pull request 142, F127 as 145, F137 as 146, F118 as 147 and
 F119 as 148. fix-F115 and fix-F127 stay on origin and are not deleted, because their records are theirs.
 
-## How this session records, which differs from the rule above
+A second session of the lane, the worktree session in .claude\worktrees\agent-a9ff34180e9235316
+of the checkout on Bader's machine, writes the records the cloud session may not: F115's records
+and two fixes of the breaker's third reading on fix-F115, pull request 144, then the records of
+F127, F137, F118 and F119 each on its own branch, and the Core parts the cloud session left, the
+Coverage sheet writer of FR-200 first. It deletes fix-F115 once 144 merges and fix-F127 once
+F127's records merge.
+
+## How the worktree session records
+
+By CLAUDE.md and .claude\rules\steps.md: the rule in .claude\rules\core.md where a rule changed,
+the section and the DONE line in steps\01_next.md, the entry at the top of
+steps\history\log.md, the rows in steps\tracker.csv with the page and the counts made again, and
+this page, all in the item's pull request. Where the cloud session's pull request put an item's
+code on main first, the worktree session's pull request carries what that one left out.
+
+## How the cloud session records, which differs from the rule above
 
 Bader's instruction of 7 Oct 2026 for this session is that it writes its record in this page only.
 So its pull requests do not touch steps\tracker.csv, steps\tracker.md, steps\PROGRESS.md,
@@ -73,6 +88,7 @@ lane's to set in the tracker.
 | ID | What changed | PR | Status |
 |---|---|---|---|
 | F115 | fix-F115 carried on: main merged in, source conflicts resolved, main's AlsoAskTests moved to the judge form the branch introduced, and three lines made true after the first reading, the EMPTY SETS wording, the window totals for a rebuilt set and the row of a stopped walk | 142 | merged, 6729b9e |
+| F115 | the records of fix-F115 by the worktree session, the rules, the plan section, the log entry and the tracker rows, and two fixes of the breaker's third reading: the EMPTY SETS judge reads a set group by group, and one unused twin serves one leftover. Core tests 2203 before and 2207 after, 0 failed, 0 skipped | 144 | merged with this page |
 | F127 | fix-F127 carried on, Core half only: main merged in, WriteResultBlock takes thisRun, makeViewpoints and coverage in that order, and after the first reading the headline no longer counts a test neither side holds as agreeing, says how many tests Clash Detective holds that the picked file does not name, judges a name on two tests of the file on neither, calls Compact a possible cause and never the cause, and keeps a FAILED line to one line. The add-in has to build the CoverageAcrossTheRun in the engine and hand it to the window's call of WriteResultBlock, call ClashRunOutcome.RecordSides and KeepItemsByLocator in ClashRunner near its two skip sites, and the Coverage sheet writer is not written | 145 | merged, 2348b58 |
 | F137 | Part 1 of FR-195, Q111 B: a model whose site was read and names none is listed by AlignmentCheck as not on the same shared coordinates, so with the rule on and a test to run its group skips the clash and ends PARTIAL, its line says the model names no shared site at all, and it fails its group only where no clash is skipped. The grey line of the tick box and the failed run line say so. Q125 B, PARTIAL for a group that runs no clash test, needs JobOutcome and FederationEngine, which fix-F114's add-in pass changes, so it is left, and the test named StillFailsTheGroupUntilQ125IsWired flips when it lands | 146 | merged, f1557fe |
 | F118 | FR-035: the workbook check counts the tests of one row and the full blocks, says how many are of each, reads row 1 and the widths of a workbook with no full block and says no block layout was compared. FR-037: a test the priority file names twice is named in the log with both lines and both letters, the last letter still wins, and the row count is the rows of the file. FR-036, FR-040 and FR-199 need ClashRunner, ClashReportModel or the engine's call of the workbook check, which an open branch changes, and FR-041 needs a probe of the grid first | 147 | merged, a174ca0 |
