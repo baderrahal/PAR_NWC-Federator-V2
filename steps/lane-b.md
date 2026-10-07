@@ -15,15 +15,15 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 |---|---|---|---|
 | 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | merged as pull request 142, add-in half and the loop's records wait for the laptop lane |
 | 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | Core half merged as pull request 145, the add-in half and the sheet writer wait |
-| 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 in review, Q125 B left for the laptop lane |
-| 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 made |
+| 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 merged as pull request 146, Q125 B left for the laptop lane |
+| 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 in review, the rest left |
 | 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | waits |
 | 6 | F128's Core part, generic models, FR-177 | fix-F128 | waits |
 
 ## The item the lane is on
 
-F137, from the branch claude/lane-b-release-plan-zztyvx, the one branch this session may push,
-restarted from main after each merge. F115 merged as pull request 142 and F127 as 145. fix-F115 and fix-F127 stay on origin and
+F118, from the branch claude/lane-b-release-plan-zztyvx, the one branch this session may push,
+restarted from main after each merge. F115 merged as pull request 142, F127 as 145 and F137 as 146. fix-F115 and fix-F127 stay on origin and
 are not deleted, because their records are theirs.
 
 ## How this session records, which differs from the rule above
@@ -74,7 +74,8 @@ lane's to set in the tracker.
 |---|---|---|---|
 | F115 | fix-F115 carried on: main merged in, source conflicts resolved, main's AlsoAskTests moved to the judge form the branch introduced, and three lines made true after the first reading, the EMPTY SETS wording, the window totals for a rebuilt set and the row of a stopped walk | 142 | merged, 6729b9e |
 | F127 | fix-F127 carried on, Core half only: main merged in, WriteResultBlock takes thisRun, makeViewpoints and coverage in that order, and after the first reading the headline no longer counts a test neither side holds as agreeing, says how many tests Clash Detective holds that the picked file does not name, judges a name on two tests of the file on neither, calls Compact a possible cause and never the cause, and keeps a FAILED line to one line. The add-in has to build the CoverageAcrossTheRun in the engine and hand it to the window's call of WriteResultBlock, call ClashRunOutcome.RecordSides and KeepItemsByLocator in ClashRunner near its two skip sites, and the Coverage sheet writer is not written | 145 | merged, 2348b58 |
-| F137 | Part 1 of FR-195, Q111 B: a model whose site was read and names none is listed by AlignmentCheck as not on the same shared coordinates, so with the rule on and a test to run its group skips the clash and ends PARTIAL, its line says the model names no shared site at all, and it fails its group only where no clash is skipped. The grey line of the tick box and the failed run line say so. Q125 B, PARTIAL for a group that runs no clash test, needs JobOutcome and FederationEngine, which fix-F114's add-in pass changes, so it is left, and the test named StillFailsTheGroupUntilQ125IsWired flips when it lands | in review | in review |
+| F137 | Part 1 of FR-195, Q111 B: a model whose site was read and names none is listed by AlignmentCheck as not on the same shared coordinates, so with the rule on and a test to run its group skips the clash and ends PARTIAL, its line says the model names no shared site at all, and it fails its group only where no clash is skipped. The grey line of the tick box and the failed run line say so. Q125 B, PARTIAL for a group that runs no clash test, needs JobOutcome and FederationEngine, which fix-F114's add-in pass changes, so it is left, and the test named StillFailsTheGroupUntilQ125IsWired flips when it lands | 146 | merged, f1557fe |
+| F118 | FR-035: the workbook check counts the tests of one row and the full blocks, says how many are of each, reads row 1 and the widths of a workbook with no full block and says no block layout was compared. FR-037: a test the priority file names twice is named in the log with both lines and both letters, the last letter still wins, and the row count is the rows of the file. FR-036, FR-040 and FR-199 need ClashRunner, ClashReportModel or the engine's call of the workbook check, which an open branch changes, and FR-041 needs a probe of the grid first | in review | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -158,4 +159,17 @@ It has not stopped.
   say the same. Lane B may not edit the rule file
 - Q125 B: the tests of the group judgement that join a failure and a skip for one group describe a state
   the engine can no longer make
+
+## F118 points the readers raised that lane B left, for the laptop lane
+
+- FR-199 would take the priority sort out of ReportOrder.Tests, and then FederationEngine near line 3031
+  must stop telling WorkbookCheck a priority order was asked for, or the check calls a measured order
+  wrong. FR-040 and FR-036 are in ClashReportModel and ClashRunner, FR-041 needs a probe printing
+  ClosestIntersection for the empty rows first
+- The order check of WorkbookCheck reads the full blocks only, so a one row test placed before a full
+  block is not named as a wrong order. With a priority file picked the check does not run the Priority
+  heading check on a sheet with no full block
+- .claude\rules\core.md does not say that a repeated test name in the priority file is a named problem
+  or that a workbook of one row tests is counted. The engine writes each priority problem once as a line
+  and again under the match lines, which is older than this change
 
