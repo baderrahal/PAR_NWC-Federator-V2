@@ -124,6 +124,87 @@ namespace Federator.Core.Tests
             Assert.That(string.Join("\n", check.Lines()), Does.Not.Contain("no clash table at all"));
         }
 
+        /// <summary>
+        /// A workbook of one row tests has no heading row, so no block layout can be compared, and it
+        /// must not say it matched. It still reads row 1 and the widths, which hold without a block.
+        /// </summary>
+        [Test]
+        public void AWorkbookOfOneRowTestsSaysItComparedNoBlockLayout()
+        {
+            WorkbookCheck check = WorkbookCheck.Of(Written(T("BLD-A-vs-BLD-B", 0), T("BLD-A-vs-BLD-C", 0)));
+            string lines = string.Join("\n", check.Lines());
+
+            Assert.That(check.Passed, Is.True, lines);
+            Assert.That(lines, Does.Not.Contain("Every column, value shape, fill, border, row height"));
+            Assert.That(lines, Does.Contain("No test holds a clash, so no heading, cell, fill or border of a block was compared"));
+            Assert.That(check.Summary(), Does.Contain("no test holds a clash, so the layout of a block was not compared"));
+            Assert.That(check.Summary(), Does.Not.Contain("matching the client's layout"));
+        }
+
+        /// <summary>The sheet wide things a one row workbook can still be wrong in are still read.</summary>
+        [Test]
+        public void AWorkbookOfOneRowTestsStillNamesAWrongTitleAndAWrongWidth()
+        {
+            string title = Written(T("BLD-A-vs-BLD-B", 0));
+
+            using (XLWorkbook book = new XLWorkbook(title))
+            {
+                book.Worksheet(1).Cell(1, 4).Value = "Report";
+                book.Save();
+            }
+
+            WorkbookCheck wrongTitle = WorkbookCheck.Of(title);
+
+            Assert.That(wrongTitle.Passed, Is.False);
+            Assert.That(string.Join(" ", wrongTitle.Lines()), Does.Contain("Row 1 reads \"Report\""));
+
+            string widths = Written(T("BLD-A-vs-BLD-B", 0));
+
+            using (XLWorkbook book = new XLWorkbook(widths))
+            {
+                book.Worksheet(1).Column(6).Width = 3.0;
+                book.Save();
+            }
+
+            WorkbookCheck wrongWidth = WorkbookCheck.Of(widths);
+
+            Assert.That(wrongWidth.Passed, Is.False);
+            Assert.That(string.Join(" ", wrongWidth.Lines()), Does.Contain("Column F is"));
+        }
+
+        /// <summary>
+        /// With a priority file picked the order is A, B, C, so a test of one row can stand before and
+        /// between full blocks. Each is counted once and no clash row is counted as a test.
+        /// </summary>
+        [Test]
+        public void OneRowTestsBeforeAndBetweenFullBlocksAreCountedOnce()
+        {
+            ClashReport report = new ClashReport("1C07BC", OutputName);
+            report.DocumentUnits = "m";
+            AddTest(report, "T1-none-A", 0);
+            AddTest(report, "T2-two-B", 2);
+            AddTest(report, "T3-none-B", 0);
+            AddTest(report, "T4-three-C", 3);
+            AddTest(report, "T5-none-C", 0);
+            report.Priorities = PriorityMap.Read(
+                "test_name,left_set,right_set,priority\nT1-none-A,L,R,A\nT2-two-B,L,R,B\nT3-none-B,L,R,B\nT4-three-C,L,R,C\nT5-none-C,L,R,C\n",
+                "p.csv");
+
+            foreach (TestReport test in report.Tests)
+            {
+                test.Priority = report.Priorities.Of(test.Name);
+            }
+
+            string path = Path.Combine(folder, OutputName + ".xlsx");
+            new WorkbookWriter().Write(report, path);
+            WorkbookCheck check = WorkbookCheck.Of(path);
+
+            Assert.That(check.Blocks, Is.EqualTo(5));
+            Assert.That(check.FullBlocks, Is.EqualTo(2));
+            Assert.That(check.OneRowTests, Is.EqualTo(3));
+            Assert.That(check.Rows, Is.EqualTo(5));
+        }
+
         [Test]
         public void AWorkbookMissingAOneRowTestNamesTheShortfall()
         {

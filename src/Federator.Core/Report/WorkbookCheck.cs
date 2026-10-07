@@ -92,7 +92,7 @@ namespace Federator.Core.Report
         /// <summary>Clash rows across every block.</summary>
         public int Rows { get; private set; }
 
-        /// <summary>The clash count of each block, in the order they appear.</summary>
+        /// <summary>The clash count of each full block, in the order they appear. A test of one row has no entry, so the order check reads full blocks only.</summary>
         public IList<int> BlockCounts { get; private set; }
 
         /// <summary>Everything wrong, each a plain sentence, worst first.</summary>
@@ -284,6 +284,15 @@ namespace Federator.Core.Report
                 {
                     oneRow++;
                 }
+            }
+
+            // A sheet of one row tests has no heading row, so the block layout cannot be compared,
+            // and the check says so. Row 1 and the column widths hold without a block, so those two
+            // are still read.
+            if (full == 0 && oneRow > 0)
+            {
+                CheckWidths(sheet);
+                CheckTitle(sheet);
             }
 
             FullBlocks = full;
@@ -748,7 +757,12 @@ namespace Federator.Core.Report
                 lines.Add("         " + problem);
             }
 
-            if (problems.Count == 0)
+            if (problems.Count == 0 && FullBlocks == 0 && Blocks > 0)
+            {
+                lines.Add("         Row 1 and the column widths match the client's report. No test holds a clash, so no "
+                    + "heading, cell, fill or border of a block was compared.");
+            }
+            else if (problems.Count == 0)
             {
                 lines.Add("         Every column, value shape, fill, border, row height "
                     + "and column width matches the client's report, and the blocks are "
@@ -773,6 +787,12 @@ namespace Federator.Core.Report
             if (problems.Count > 0)
             {
                 return "Workbook: " + FirstDivergence;
+            }
+
+            if (FullBlocks == 0 && Blocks > 0)
+            {
+                return "Workbook: one sheet, " + Blocks + " tests, " + Rows
+                    + " rows, no test holds a clash, so the layout of a block was not compared.";
             }
 
             return "Workbook: one sheet, " + Blocks + " tests, " + Rows
