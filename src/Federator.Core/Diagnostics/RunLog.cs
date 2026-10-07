@@ -779,7 +779,21 @@ namespace Federator.Core.Diagnostics
             if (already == KeptOfARepeat)
             {
                 Line("         every further line of this kind is counted and not written out. "
-                    + "The machine readable log carries every one of them");
+                    + (RowsAreOpen()
+                        ? "The machine readable log carries every one of them"
+                        : "No machine readable log is open, so none of them is kept"));
+            }
+        }
+
+        /// <summary>
+        /// Whether the .tsv opened, so no sentence says a collapsed line is kept there when there is
+        /// no file to keep it, FR-061.
+        /// </summary>
+        private bool RowsAreOpen()
+        {
+            lock (gate)
+            {
+                return rows != null && rows.IsWritingToDisk;
             }
         }
 
@@ -792,6 +806,7 @@ namespace Federator.Core.Diagnostics
         {
             List<string> lines = new List<string>();
             List<string> keys;
+            bool rowsOpen = RowsAreOpen();
 
             lock (gate)
             {
@@ -809,7 +824,10 @@ namespace Federator.Core.Diagnostics
 
                     lines.Add(key + ": " + all + " written as " + KeptOfARepeat
                         + " and " + (all - KeptOfARepeat)
-                        + " counted. Every one is in the machine readable log");
+                        + " counted. "
+                        + (rowsOpen
+                            ? "Every one is in the machine readable log"
+                            : "None is kept, no machine readable log is open"));
                 }
             }
 
@@ -2096,7 +2114,9 @@ namespace Federator.Core.Diagnostics
             if (collapsed.Count > 0)
             {
                 Blank();
-                Line("lines collapsed in this file, all of them kept in the .tsv beside it:");
+                Line(RowsAreOpen()
+                    ? "lines collapsed in this file, all of them kept in the .tsv beside it:"
+                    : "lines collapsed in this file, and no .tsv is open, so none of them is kept:");
 
                 foreach (string line in collapsed)
                 {

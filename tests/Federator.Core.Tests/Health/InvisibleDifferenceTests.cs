@@ -60,6 +60,45 @@ namespace Federator.Core.Tests.Health
         }
 
         /// <summary>
+        /// FR-007. An ordinary space is not invisible, but two names that differ only by one were
+        /// described as differing in invisible characters, with no character named. The extra space is
+        /// named and where it sits, on whichever name holds it.
+        /// </summary>
+        [Test]
+        public void AnOrdinarySpaceThatOneNameHoldsAndTheOtherDoesNotIsNamedWithItsPlace()
+        {
+            string said = InvisibleDifference.Between("EL-Fire alarm", "EL-Firealarm");
+
+            Assert.That(said, Is.EqualTo("an ordinary space (U+0020) AT CHARACTER 8 of the first"));
+            Assert.That(InvisibleDifference.Between("EL-Firealarm", "EL-Fire alarm"),
+                Is.EqualTo("an ordinary space (U+0020) AT CHARACTER 8 of the second"));
+        }
+
+        [Test]
+        public void ALeadingTrailingAndDoubleOrdinarySpaceAreEachNamedWhereTheySit()
+        {
+            Assert.That(InvisibleDifference.Between(" ME-Piping", "ME-Piping"),
+                Is.EqualTo("an ordinary space (U+0020) AT CHARACTER 1 of the first"));
+            Assert.That(InvisibleDifference.Between("ME-Piping", "ME-Piping "),
+                Is.EqualTo("an ordinary space (U+0020) AT CHARACTER 10 of the second"));
+            Assert.That(InvisibleDifference.Between("a b", "a  b"),
+                Is.EqualTo("an ordinary space (U+0020) AT CHARACTER 3 of the second"));
+        }
+
+        [Test]
+        public void NoDifferenceOfLengthEverFallsBackToTheUnnamedSentence()
+        {
+            foreach (string[] pair in new[]
+            {
+                new[] { "a b", "ab" }, new[] { "a b", "a\tb" }, new[] { "ab", "a b " }, new[] { "a b c", "abc" }
+            })
+            {
+                Assert.That(InvisibleDifference.Between(pair[0], pair[1]),
+                    Does.Not.Contain("they differ only in invisible characters"), pair[0] + " against " + pair[1]);
+            }
+        }
+
+        /// <summary>
         /// A DIFFERENCE A PERSON CAN SEE IS NOT THIS RULE'S BUSINESS, and it returns null
         /// rather than an empty string, because nothing invisible and an unnamed invisible
         /// thing are different answers.
