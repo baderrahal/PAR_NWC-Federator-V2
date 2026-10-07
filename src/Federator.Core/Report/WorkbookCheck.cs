@@ -76,8 +76,18 @@ namespace Federator.Core.Report
 
         public string SheetName { get; private set; }
 
-        /// <summary>Test blocks found on the sheet.</summary>
+        /// <summary>
+        /// Every test the sheet carries, the full blocks and the tests of one row together, FR-035.
+        /// A test with no clash is one row since Q73 and is a block of its own for the count, so
+        /// this is the number to set beside the tests in the file.
+        /// </summary>
         public int Blocks { get; private set; }
+
+        /// <summary>The tests that hold clashes, each a full block with a heading row.</summary>
+        public int FullBlocks { get; private set; }
+
+        /// <summary>The tests that found nothing, each one row under no heading, Q73.</summary>
+        public int OneRowTests { get; private set; }
 
         /// <summary>Clash rows across every block.</summary>
         public int Rows { get; private set; }
@@ -196,6 +206,8 @@ namespace Federator.Core.Report
         private void ReadSheet(IXLWorksheet sheet)
         {
             List<int> counts = new List<int>();
+            List<int[]> spans = new List<int[]>();
+            int full = 0;
             int lastRow = sheet.LastRowUsed() == null ? 0 : sheet.LastRowUsed().RowNumber();
 
             for (int row = 1; row <= lastRow; row++)
@@ -206,10 +218,10 @@ namespace Federator.Core.Report
                     continue;
                 }
 
-                Blocks++;
+                full++;
                 CheckColumnOrder(sheet, row);
 
-                if (Blocks == 1)
+                if (full == 1)
                 {
                     CheckPriorityColumn(sheet, row);
                 }
@@ -217,7 +229,7 @@ namespace Federator.Core.Report
                 // Only the first block is walked cell by cell. Every block is painted by
                 // the same code, so a fault in one is a fault in all of them, and 1830
                 // blocks times nineteen columns is a check nobody reads.
-                if (Blocks == 1)
+                if (full == 1)
                 {
                     for (int at = row - 4; at <= row; at++)
                     {
@@ -243,17 +255,40 @@ namespace Federator.Core.Report
                     rows++;
                     Rows++;
 
-                    if (Blocks == 1 && rows == 1)
+                    if (full == 1 && rows == 1)
                     {
                         CheckCells(sheet, at, ClientLayout.RowKind.Clash);
                     }
 
-                    CheckShape(sheet, at, rows == 1 && Blocks == 1);
+                    CheckShape(sheet, at, rows == 1 && full == 1);
                 }
 
+                spans.Add(new[] { row - 4, row + rows });
                 counts.Add(rows);
             }
 
+            // FR-035. A test that found nothing is one row with no heading, so the loop above never
+            // saw it. It is a row below the title, outside every full block, holding a name or its
+            // tolerance, and the one place a test with no name still shows is the tolerance.
+            int oneRow = 0;
+
+            for (int row = 4; row <= lastRow; row++)
+            {
+                if (InAnySpan(spans, row))
+                {
+                    continue;
+                }
+
+                if (sheet.Cell(row, 1).GetString().Length > 0
+                    || sheet.Cell(row, WorkbookWriter.ColumnTestHeader).GetString().Length > 0)
+                {
+                    oneRow++;
+                }
+            }
+
+            FullBlocks = full;
+            OneRowTests = oneRow;
+            Blocks = full + oneRow;
             BlockCounts = counts;
             CheckOrder(counts);
 
@@ -262,6 +297,19 @@ namespace Federator.Core.Report
                 problems.Add("The sheet has no clash table at all, so nothing on it could "
                     + "be compared with the client's report.");
             }
+        }
+
+        private static bool InAnySpan(IList<int[]> spans, int row)
+        {
+            for (int i = 0; i < spans.Count; i++)
+            {
+                if (row >= spans[i][0] && row <= spans[i][1])
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         // ---------- which columns, in what order ----------
@@ -678,7 +726,8 @@ namespace Federator.Core.Report
 
             lines.Add("CHECK    " + Sheets + (Sheets == 1 ? " sheet, " : " sheets, ")
                 + Quote(SheetName) + ", " + Blocks + " test "
-                + (Blocks == 1 ? "block" : "blocks") + ", " + Rows + " clash "
+                + (Blocks == 1 ? "block" : "blocks") + " (" + FullBlocks + " with clashes and "
+                + OneRowTests + " of one row), " + Rows + " clash "
                 + (Rows == 1 ? "row" : "rows") + ".");
 
             if (BlockCounts.Count > 0)
