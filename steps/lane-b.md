@@ -261,7 +261,7 @@ and 148, and each ran its Core tests under mono here and on the Windows runner o
 ## F123 points lane B left, for the laptop lane
 
 - FR-172 is left in the main. Of its Core entries, the two above were the only ones no file under src, tests or
-  tools reads. Those read only by a test, 43 of the entries by a word match over src and tests that skips the definition file, are Bader's Q26 and wait for the
+  tools reads. Those read only by a test, at least 43 of the entries by a word match over src and tests that skips the definition file, which counts a common word such as Count or Path as read, are Bader's Q26 and wait for the
   steps he asked for, breaking each on purpose and checking its test fails. PenetrationSide.ItemName and the
   other add-in entries are read by no code, but PenetrationSide takes the name as an argument the add-in
   passes in Penetrations.cs, so deleting it needs the add-in changed in the same pull request
