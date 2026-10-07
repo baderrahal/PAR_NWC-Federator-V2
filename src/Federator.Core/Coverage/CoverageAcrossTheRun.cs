@@ -29,6 +29,23 @@ namespace Federator.Core.Coverage
         private readonly List<string> failedLines = new List<string>();
         private readonly int failedLinesShown;
 
+        // Q127 answered A: each test once across the run by name, with the sums over the
+        // groups beside it. A name is in the document once it was created or already there in
+        // any group, run once it ran in any, and with clashes once it had them in any.
+        private readonly HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<string> inTheDocumentOnce = new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<string> ranOnce = new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<string> withClashesOnce = new HashSet<string>(StringComparer.Ordinal);
+        private int groupsWithTests;
+        private int places;
+        private int created;
+        private int alreadyThere;
+        private int notCreated;
+        private int presenceUnknown;
+        private int ran;
+        private int withClashes;
+        private int inTheDocumentNotRun;
+
         public CoverageAcrossTheRun(CoverageSettings settings)
         {
             if (settings == null)
@@ -93,12 +110,106 @@ namespace Federator.Core.Coverage
         }
 
         /// <summary>
-        /// The lines RESULT writes: the totals, then every FAILED line in the order the groups
-        /// were added, or as many as the setting lists and a line counting the rest.
+        /// One group's tests, rolled in, FR-176 and Q127 answered A: the RESULT block counts the
+        /// tests of the picked file once across the run by name, and the sums over the groups
+        /// beside them. Counted apart from the check, so a group whose check could not be
+        /// made still counts its tests.
+        /// </summary>
+        public void AddTests(string group, IList<TestCoverage> tests)
+        {
+            if (tests == null)
+            {
+                return;
+            }
+
+            groupsWithTests++;
+
+            foreach (TestCoverage test in tests)
+            {
+                if (test == null)
+                {
+                    continue;
+                }
+
+                places++;
+                names.Add(test.Name);
+
+                switch (test.Presence)
+                {
+                    case TestPresence.CreatedThisRun:
+                        created++;
+                        inTheDocumentOnce.Add(test.Name);
+                        break;
+                    case TestPresence.AlreadyThere:
+                        alreadyThere++;
+                        inTheDocumentOnce.Add(test.Name);
+                        break;
+                    case TestPresence.NotInDocument:
+                        notCreated++;
+                        break;
+                    default:
+                        presenceUnknown++;
+                        break;
+                }
+
+                if (test.Ran)
+                {
+                    ran++;
+                    ranOnce.Add(test.Name);
+
+                    if (test.Reason == CoverageReason.HasClashes)
+                    {
+                        withClashes++;
+                        withClashesOnce.Add(test.Name);
+                    }
+                }
+                else if (test.Presence == TestPresence.CreatedThisRun || test.Presence == TestPresence.AlreadyThere)
+                {
+                    inTheDocumentNotRun++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The lines RESULT writes for the tests, Q127 answered A: each name once across the
+        /// run, then the sums over the groups. None where no group's tests were handed in,
+        /// since RESULT then says no coverage was taken.
+        /// </summary>
+        public IList<string> TestLines()
+        {
+            List<string> lines = new List<string>();
+
+            if (groupsWithTests == 0)
+            {
+                return lines;
+            }
+
+            int neverInTheDocument = names.Count - inTheDocumentOnce.Count;
+            int ranNeverWithAClash = ranOnce.Count - withClashesOnce.Count;
+
+            lines.Add("COVERAGE tests counted            : " + names.Count + " names, each once across "
+                + Count(groupsWithTests, "group", "groups"));
+            lines.Add("COVERAGE in the document in one group at least : " + inTheDocumentOnce.Count
+                + ", never in the document " + neverInTheDocument);
+            lines.Add("COVERAGE run in one group at least : " + ranOnce.Count);
+            lines.Add("COVERAGE with clashes in one group at least : " + withClashesOnce.Count);
+            lines.Add("COVERAGE run, never with a clash  : " + ranNeverWithAClash);
+            lines.Add("COVERAGE over " + Count(groupsWithTests, "group", "groups") + ", added up : " + places
+                + " places, " + created + " created this run, " + alreadyThere + " already there, " + notCreated
+                + " not created" + (presenceUnknown > 0 ? ", " + presenceUnknown + " whose presence is UNKNOWN" : string.Empty)
+                + ", " + ran + " run, " + withClashes + " with clashes, " + (ran - withClashes) + " without, "
+                + inTheDocumentNotRun + " in the document and not run");
+            return lines;
+        }
+
+        /// <summary>
+        /// The lines RESULT writes: the tests of Q127 where any were handed in, the totals of
+        /// the check, then every FAILED line in the order the groups were added, or as many as
+        /// the setting lists and a line counting the rest.
         /// </summary>
         public IList<string> ResultLines()
         {
-            List<string> lines = new List<string>();
+            List<string> lines = new List<string>(TestLines());
             int compared = Agree + Failed;
             string notChecked = GroupsNotChecked > 0
                 ? ", " + Count(GroupsNotChecked, "group", "groups") + " not checked"

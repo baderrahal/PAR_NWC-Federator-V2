@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 499 rows: open 219, in progress 42, in review 0, merged 205, proven by a run 26, waiting for Bader 2, dropped 5
-- By wave: 1 19, 2a 53, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 70, outside the waves 2, right after F133 merges 6
+- By status, of 500 rows: open 219, in progress 42, in review 0, merged 206, proven by a run 26, waiting for Bader 2, dropped 5
+- By wave: 1 19, 2a 54, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 70, outside the waves 2, right after F133 merges 6
 - In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, step 364 the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 25 FR items
 - Waits for Bader, 2 rows: step 228-233, F114-K29
 
@@ -51,20 +51,20 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-023 | set warnings negated category reported as asked | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
 | FR-024 | identical sets signature ignores flags | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
 | FR-027 | empty sets block never written on a first run | F115 | broken feature | merged | 142 | none | 2026-10-07 |
-| FR-176 | coverage of the clash xml | F127 | Bader's request | in progress | 145 Core half merged, the add-in half on the laptop | none | 2026-10-07 |
+| FR-176 | coverage of the clash xml | F127 | Bader's request | in progress | 145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop | none | 2026-10-07 |
 | FR-182 | mirrored tests kept once | F132 | Bader's decision | in progress | none, branch fix-F132 | none | 2026-10-05 |
 | FR-183 | mirrored tests in an existing nwf | F132 | Bader's decision | in progress | none, branch fix-F132 | none | 2026-10-05 |
 | F115 | sets | F115 | fix | merged | 142 | none | 2026-10-07 |
-| F127 | coverage of the clash XML | F127 | fix | in progress | 145 Core half merged, the add-in half on the laptop | none | 2026-10-07 |
+| F127 | coverage of the clash XML | F127 | fix | in progress | 145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop | none | 2026-10-07 |
 | F132 | mirrored tests | F132 | fix | in progress | none, branch fix-F132 at 93b45b1, attempt 9 on one blocking point next | none | 2026-10-06 |
-| Q112-2 | coverage of the clash XML (FR-176) | F127 | Bader's request | in progress | 145 Core half merged, the add-in half on the laptop | none | 2026-10-07 |
+| Q112-2 | coverage of the clash XML (FR-176) | F127 | Bader's request | in progress | 145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop | none | 2026-10-07 |
 | Q46 | F77 against the single discipline rule | F127 | question | merged | 131 | none | 2026-10-06 |
 | Q121 | telecom fixtures and telephone devices | F132 | question | merged | 118 | none | 2026-10-05 |
 | Q122 | whose status a result carries | F132 | question | merged | 118 | none | 2026-10-05 |
 | Q126 | no workbook for the coverage sheet when the clash is skipped | F127 | question | merged | 118 | none | 2026-10-05 |
 | Q127 | how RESULT counts the tests of the XML | F127 | question | merged | 118 | none | 2026-10-05 |
 | Q133 | a mirrored test can find more than the one it mirrors | F132 | question | merged | 121 | none | 2026-10-05 |
-| FR-200 | coverage sheet names every test not created | F127 | Bader's decision | open | none | none | 2026-10-06 |
+| FR-200 | coverage sheet names every test not created | F127 | Bader's decision | merged | 153 | none | 2026-10-07 |
 | Q140 | F132's next attempt only for a fault that can change a clash count or its test | F132 | Bader's request | in progress | none, branch fix-F132 | none | 2026-10-06 |
 | F115-R1 | side.Selection and every SelectionSource of the side walk are never disposed | F115 | register row | open | none | none | 2026-10-05 |
 | F115-R2 | a rebuild is recorded only after the re-read so a throw after ReplaceWithCopy reports FAILED and asks for no save | F115 | register row | open | none | none | 2026-10-05 |
@@ -88,6 +88,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F115-R21 | a side whose sources read as none counts as zero sides and never as not counted | F115 | register row | open | none | none | 2026-10-07 |
 | F115-R22 | a set created and then lost track of is reported FAILED and may not ask for the save | F115 | register row | open | none | none | 2026-10-07 |
 | F115-R23 | two sets of one name in the picked file are built as one set and counted as one created and one already there | F115 | register row | open | none | none | 2026-10-07 |
+| F127-R1 | read-workbook.ps1 reads every sheet as a test sheet so the Coverage sheet makes every F104 verdict NOT PROVED until it reads a sheet named Coverage into a section of its own | F127 | register row | open | none | none | 2026-10-07 |
 
 ## Wave 2a and 2b
 
