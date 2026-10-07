@@ -100,5 +100,20 @@ namespace Federator.Core.Tests.Views
             Assert.That(SizeText.LargestMillimetres("ELE-CNF-70mm BARE COPPER CABLE"), Is.EqualTo(70.0),
                 "a number with a unit inside a longer name is still a number with a unit");
         }
+
+        /// <summary>
+        /// FR-066. Digits written straight after a letter belong to that word, all of them. Read
+        /// from its second digit on, DN150 mm was 50 mm and DN200 mm was 0 mm, so a 200 mm service
+        /// fell under the 150 mm line and was filed as small. The whole run of digits is refused.
+        /// </summary>
+        [Test]
+        public void DigitsInsideAWordAreRefusedWholeAndNotReadFromTheirTail()
+        {
+            Assert.That(SizeText.Millimetres("DN150 mm"), Is.Empty, "DN150 is a word, not 50 mm");
+            Assert.That(SizeText.LargestMillimetres("DN200 mm"), Is.Null, "DN200 is a word, not 0 mm");
+            Assert.That(SizeText.LargestMillimetres("DN200 mm 250 mm"), Is.EqualTo(250.0),
+                "a measurement after the word is still read");
+            Assert.That(SizeText.LargestMillimetres("A2.5 mm"), Is.Null, "a decimal inside a word is refused too");
+        }
     }
 }

@@ -63,15 +63,15 @@ FR-061,log says tsv keeps collapsed lines when tsv did not open,F123,5,noise,ope
 FR-062,units line names unit when second read threw,F123,5,noise,open,none,none,2026-10-04
 FR-063,tolerance log line says read from xml on no xml run,F123,5,noise,open,none,none,2026-10-04
 FR-064,category line names no folder,F123,5,noise,open,none,none,2026-10-04
-FR-065,viewpoint dimming carries between viewpoints,F114,2b,silent wrong number,in progress,"none, branch fix-F114",none,2026-10-04
-FR-066,size text reads tail of word digits,F114,2b,silent wrong number,in progress,"none, branch fix-F114",none,2026-10-04
-FR-067,clear rebuild drops viewpoints,F114,2b,broken feature,in progress,"none, branch fix-F114",none,2026-10-04
-FR-068,size tally never constructed,F114,2b,broken feature,in progress,"none, branch fix-F114",none,2026-10-04
-FR-069,views cost per viewpoint,F114,2b,slow,in progress,"none, branch fix-F114",none,2026-10-04
-FR-070,views 45 minute basis and options,F114,2b,slow,in progress,"none, branch fix-F114",none,2026-10-04
-FR-071,views log silent up to 21 minutes,F114,2b,slow,in progress,"none, branch fix-F114",none,2026-10-04
-FR-072,penetrations upwards walk outside try,F114,2b,loud failure,in progress,"none, branch fix-F114",none,2026-10-04
-FR-073,views seconds parts do not add,F114,2b,noise,in progress,"none, branch fix-F114",none,2026-10-04
+FR-065,viewpoint dimming carries between viewpoints,F114,2b,silent wrong number,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-066,size text reads tail of word digits,F114,2b,silent wrong number,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-067,clear rebuild drops viewpoints,F114,2b,broken feature,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-068,size tally never constructed,F114,2b,broken feature,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-069,views cost per viewpoint,F114,2b,slow,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-070,views 45 minute basis and options,F114,2b,slow,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-071,views log silent up to 21 minutes,F114,2b,slow,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-072,penetrations upwards walk outside try,F114,2b,loud failure,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-073,views seconds parts do not add,F114,2b,noise,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
 FR-074,views unknown set not named,F123,5,noise,open,none,none,2026-10-04
 FR-075,picture rename two pass has no undo,F120,3a,silent wrong number,open,none,none,2026-10-04
 FR-076,image guard per group not per run,F120,3a,broken feature,open,none,none,2026-10-04
@@ -183,11 +183,11 @@ FR-180,team map beside the picked xml,F131,2b,Bader's decision,merged,135,none,2
 FR-181,mechanical sets miss hv pl fp models,F131,2b,Bader's decision,in progress,"135 merged for F131, the COVERAGE block and the form wait for F127",none,2026-10-07
 FR-182,mirrored tests kept once,F132,2a,Bader's decision,in progress,"none, branch fix-F132",none,2026-10-05
 FR-183,mirrored tests in an existing nwf,F132,2a,Bader's decision,in progress,"none, branch fix-F132",none,2026-10-05
-FR-184,views tree by priority and team pair,F114,2b,Bader's decision,in progress,"none, branch fix-F114",none,2026-10-04
-FR-185,one view per test of its open clashes,F114,2b,Bader's decision,in progress,"none, branch fix-F114",none,2026-10-04
-FR-186,views made fresh only the tools own,F114,2b,Bader's decision,in progress,"none, branch fix-F114",none,2026-10-04
-FR-187,views proof on 1a02mm and the views tree block,F114,2b,Bader's decision,in progress,"none, branch fix-F114",none,2026-10-04
-FR-188,views rules in docs workflow,F114,2b,Bader's decision,in progress,"none, branch fix-F114",none,2026-10-04
+FR-184,views tree by priority and team pair,F114,2b,Bader's decision,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-185,one view per test of its open clashes,F114,2b,Bader's decision,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-186,views made fresh only the tools own,F114,2b,Bader's decision,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-187,views proof on 1a02mm and the views tree block,F114,2b,Bader's decision,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
+FR-188,views rules in docs workflow,F114,2b,Bader's decision,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
 FR-191,work tracker one place for status,F133,beside the waves,Bader's decision,merged,122,none,2026-10-06
 FR-192,code health gate lists only shrink,F134,beside the waves,Bader's decision,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 FR-193,analyser settings merged alone,F135,beside the waves,Bader's decision,open,none,none,2026-10-05
@@ -310,7 +310,7 @@ F110,"the WORKBOOK CHECK counts only the blocks that found clashes, set 03 findi
 F111,"the RESULT block prints file sizes that are not the files', set 03 finding 5 (FR-046)",F111,before the waves,fix,open,none,none,2026-10-06
 F112,alignment,F112,1,fix,merged,106,none,2026-10-05
 F113,clash counts,F113,1,fix,merged,95,none,2026-10-04
-F114,views,F114,2b,fix,in progress,"none, branch fix-F114 at e77e8a7, waits for F131 and F132",none,2026-10-06
+F114,views,F114,2b,fix,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
 F115,sets,F115,2a,fix,merged,142,none,2026-10-07
 F116,the clash XML,F116,1,fix,merged,98,none,2026-10-05
 F117,the names,F117,5,fix,open,none,none,2026-10-04
@@ -485,3 +485,6 @@ F115-R10,the judge branch for the workset list inside Core not read has no test,
 F115-R11,the Build sets button judges every set at zero CANNOT TELL,F115,2a,register row,open,none,none,2026-10-05
 F115-R12,whether SearchCondition.Options reads back StartGroup 64 is UNKNOWN until the wave 2a weekly run,F115,2a,register row,open,none,none,2026-10-05
 F115-R13,the F115 log entry was written as the lead's delegate,none,none,register row,open,none,none,2026-10-05
+F114-K29,"a team map may name a team UNKNOWN, so a side with no code and a side of that team share a pair folder",F114,2b,register row,waiting for Bader,none,none,2026-10-07
+F114-K30,"a view side is read by its set name alone, so two sets of one name giving two teams read UNKNOWN in the views and two teams on the TEAMS lines",F114,2b,register row,open,none,none,2026-10-07
+F114-K31,"a set with no name in the clash XML gets a TEAMS line naming no set, TeamMap.SetLines",F114,2b,register row,open,none,none,2026-10-07

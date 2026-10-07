@@ -184,8 +184,8 @@ namespace Federator.Core.Health
         {
             if (!model.WalkFinished)
             {
-                return "UNKNOWN, the walk over this model's elements stopped part way, so the "
-                    + model.Worksets.Count + " workset name(s) it saw before stopping are not every workset the model carries";
+                return "UNKNOWN, the walk over this model's elements stopped part way, so no workset name"
+                    + " of it is listed, since the names it saw before stopping are not every workset the model carries";
             }
 
             return string.Join(" | ", new List<string>(model.Worksets).ToArray());

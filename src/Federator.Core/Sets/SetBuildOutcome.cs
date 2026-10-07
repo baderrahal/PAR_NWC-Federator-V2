@@ -528,7 +528,13 @@ namespace Federator.Core.Sets
 
             if (AlreadyPresentCount > 0)
             {
-                lines.Add("already there     : " + AlreadyPresentCount + ", left alone, not copied again");
+                // FR-020. The same words as PutInLine, so a set this run replaced is never said
+                // to be left alone in the window.
+                lines.Add("already there     : " + AlreadyPresentCount
+                    + (RebuiltCount > 0
+                        ? ", " + RebuiltCount + " of them rebuilt from the picked file and "
+                            + (AlreadyPresentCount - RebuiltCount) + " left alone, not copied again"
+                        : ", left alone, not copied again"));
 
                 // THE CORRECTED FILE DOES NOT REACH A SET THAT IS ALREADY THERE, and that
                 // was silent until the worksets round. A set in the NWF was built from

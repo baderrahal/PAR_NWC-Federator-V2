@@ -172,24 +172,14 @@ namespace Federator.Addin.Engine
         /// ContainsVisibilityOverrides true and the camera it was given, presses with
         /// both, and keeps both across a save and a reopen.
         ///
-        /// The COM collection adds at the ROOT, so the view is copied into the folder
-        /// with AddCopy, which keeps both, and the root one is removed, which is the
-        /// shape 5m measured. The root one is found as the LAST root child of that name,
-        /// because the add appends and a file may already hold a root item so named.
-        /// The caller reads the folder copy back rather than trusting any of it.
-        /// </summary>
-        public static void Record(Document document, IList<string> folders, string name, Viewpoint camera)
-        {
-            Record(document, folders, name, camera, false);
-        }
-
-        /// <summary>
-        /// The same, by one of two routes, Q59 answered d.
-        ///
-        /// throughTheFolder FALSE is the route above: add at the COM root, copy into the
-        /// folder, remove the root one. Three tree operations per viewpoint.
-        /// throughTheFolder TRUE finds the folder's OWN InwOpFolderView and adds straight
-        /// into its SavedViews collection. One tree operation.
+        /// BY ONE OF TWO ROUTES, Q59 answered d. throughTheFolder TRUE finds the folder's
+        /// OWN InwOpFolderView and adds straight into its SavedViews collection, one tree
+        /// operation. throughTheFolder FALSE is the route 5m measured: the COM collection
+        /// adds at the ROOT, so the view is copied into the folder with AddCopy, which
+        /// keeps both, and the root one is removed, three tree operations. The root one is
+        /// found as the LAST root child of that name, because the add appends and a file
+        /// may already hold a root item so named. The caller reads the folder copy back
+        /// rather than trusting any of it.
         ///
         /// BOTH ARE HERE ON PURPOSE AND THE CHEAP ONE IS NOT ASSUMED BETTER. MEASURED on
         /// 2026-09-20, docs\history\scan.md 5p: over twenty viewpoints both record the
@@ -198,32 +188,53 @@ namespace Federator.Addin.Engine
         /// suggests, because what grows is the tree the write walks and not the number of
         /// calls. Keeping both in the one binary is what makes the A against B on a real
         /// group an honest comparison rather than two builds being compared.
+        ///
+        /// EACH CALL IS TIMED ON ITS OWN, FR-073, into the seconds handed in: making the
+        /// view, finding its COM folder, the add, and on the root route the move. Set 03
+        /// timed all of it and the folders as one, 1602.798 s of 1B06G1's VIEWS step, and
+        /// which call that was is the question the speed work starts from.
         /// </summary>
         public static void Record(
-            Document document, IList<string> folders, string name, Viewpoint camera, bool throughTheFolder)
+            Document document, IList<string> folders, string name, Viewpoint camera, bool throughTheFolder, ViewsSeconds seconds)
         {
             if (document == null || folders == null || string.IsNullOrEmpty(name) || camera == null)
             {
                 throw new ArgumentException("A viewpoint needs a document, a folder path, a name and a camera.", "name");
             }
 
-            InwOpState10 state = ComApiBridge.State;
-            InwOpView view = (InwOpView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpView, null, null);
-            view.name = name;
-            view.ApplyHideAttribs = true;
+            if (seconds == null)
+            {
+                throw new ArgumentNullException("seconds");
+            }
 
-            // Both flags on since the dimming round. ApplyMaterialAttribs is what records
-            // that everything but the two clashing items is dimmed, MEASURED on 2026-09-20,
-            // docs\history\scan.md 5o: with it on the viewpoint carries one material
-            // override per item that has a material, and pressing it after a save and a
-            // reopen dims them again. With it off the viewpoint carries none, which is
-            // what F85 shipped and what Bader could not read.
-            view.ApplyMaterialAttribs = true;
-            view.anonview = ComApiBridge.ToInwOpAnonView(camera);
+            InwOpState10 state;
+            InwOpView view;
+
+            using (seconds.In(ViewsPart.MakingTheView))
+            {
+                state = ComApiBridge.State;
+                view = (InwOpView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpView, null, null);
+                view.name = name;
+                view.ApplyHideAttribs = true;
+
+                // Both flags on since the dimming round. ApplyMaterialAttribs is what records
+                // that everything but the two clashing items is dimmed, MEASURED on 2026-09-20,
+                // docs\history\scan.md 5o: with it on the viewpoint carries one material
+                // override per item that has a material, and pressing it after a save and a
+                // reopen dims them again. With it off the viewpoint carries none, which is
+                // what F85 shipped and what Bader could not read.
+                view.ApplyMaterialAttribs = true;
+                view.anonview = ComApiBridge.ToInwOpAnonView(camera);
+            }
 
             if (throughTheFolder)
             {
-                InwOpFolderView folder = FindComFolder(state, folders);
+                InwOpFolderView folder;
+
+                using (seconds.In(ViewsPart.FindingTheFolder))
+                {
+                    folder = FindComFolder(state, folders);
+                }
 
                 if (folder == null)
                 {
@@ -232,12 +243,20 @@ namespace Federator.Addin.Engine
                         + " was made and the COM view of it is not there, so the viewpoint has nowhere to go.");
                 }
 
-                folder.SavedViews().Add(view);
+                using (seconds.In(ViewsPart.AddingTheView))
+                {
+                    folder.SavedViews().Add(view);
+                }
+
                 return;
             }
 
-            state.SavedViews().Add(view);
+            using (seconds.In(ViewsPart.AddingTheView))
+            {
+                state.SavedViews().Add(view);
+            }
 
+            using (seconds.In(ViewsPart.MovingIntoTheFolder))
             using (SavedViewpoint atRoot = FindLastAtRoot(document, name))
             {
                 if (atRoot == null)

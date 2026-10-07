@@ -12,7 +12,7 @@ namespace Federator.Core.Sets
     ///
     /// THE LISTS INSIDE THIS TOOL ARE ONE PROJECT'S. The categories and the workset names were
     /// measured off the models of one project, and each list names it on its project line. A
-    /// value a list does not hold is one NO MODEL IN THIS PROJECT CARRIES only where the group's
+    /// value a list does not hold is one NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES only where the group's
     /// own models are of that project, read off the project part of their names with the naming
     /// settings the scan reads. For any other group, and for one whose project could not be
     /// read, the judge says it CANNOT TELL and why, because a list of one project's models says

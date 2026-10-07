@@ -56,7 +56,7 @@ namespace Federator.Core.Sets
             switch (Reason)
             {
                 case EmptyReason.NoModelCarriesTheValue:
-                    return Path + "   asks for \"" + Asked + "\" and NO MODEL IN THIS PROJECT CARRIES IT"
+                    return Path + "   asks for \"" + Asked + "\" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT"
                         + (Nearest.Length == 0
                             ? ", and nothing the models carry is close to it"
                             : string.Equals(Nearest, Asked, StringComparison.OrdinalIgnoreCase)
@@ -204,7 +204,8 @@ namespace Federator.Core.Sets
             int cannot = Of(empty, EmptyReason.CannotTell);
 
             lines.Add(empty.Count + " set(s) found nothing in this group, and this is why:");
-            lines.Add("   " + wrong + " ask for a value NO MODEL IN THIS PROJECT CARRIES, so the condition is wrong");
+            lines.Add("   " + wrong + " ask for a value NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES, so the condition is wrong"
+                + " or the project has not been measured that far");
             lines.Add("   " + there + " ask for a value models in this project DO carry, so either this group"
                 + " holds no model of that kind or something else is wrong");
             lines.Add("   " + cannot + " this reader cannot tell about");

@@ -79,16 +79,24 @@ namespace Federator.Addin.Engine
         private int painted;
         private bool dimmedAnything;
         private bool paintedAnything;
+
+        // FR-065. Whether this tool's dimming and paint are on the document right now,
+        // which the next viewpoint takes off before it is written, and what the written
+        // viewpoints read back of it, so a run can see that each carries its own.
+        private bool dimmedNow;
+        private int fewestOverrides;
+        private int mostOverrides;
+        private int undimmedCarrying;
         private Exception firstHomeError;
 
         // Where the VIEWS step's seconds go, per call, because the dimming took one
         // group from 7.5 seconds to 476 and the shape of the cost was not what it
         // looked like: the group with the MOST items was one of the fastest. A step
         // that got slower says which call did it rather than leaving it to be guessed.
-        private readonly System.Diagnostics.Stopwatch alreadyThereWatch = new System.Diagnostics.Stopwatch();
-        private readonly System.Diagnostics.Stopwatch dimWatch = new System.Diagnostics.Stopwatch();
-        private readonly System.Diagnostics.Stopwatch recordWatch = new System.Diagnostics.Stopwatch();
-        private readonly System.Diagnostics.Stopwatch readBackWatch = new System.Diagnostics.Stopwatch();
+        // FR-073: every call the work is made of is its own part, recording split into
+        // the folders, the view, the COM folder and the add, and what falls between the
+        // parts is said. The rule is Federator.Core.Views.ViewsSeconds, on the log's clock.
+        private ViewsSeconds seconds;
 
         /// <summary>
         /// Where one clash is: the models its two items live in, and the index path of
@@ -155,6 +163,7 @@ namespace Federator.Addin.Engine
                 return outcome;
             }
 
+            seconds = new ViewsSeconds(() => log.ElapsedSeconds);
             DocumentClashTests clashTests = document.GetClash().TestsData;
             List<ClashToPlan> clashes = new List<ClashToPlan>();
             Dictionary<string, Viewpoint> cameras = new Dictionary<string, Viewpoint>(StringComparer.Ordinal);
@@ -167,16 +176,19 @@ namespace Federator.Addin.Engine
             painted = 0;
             dimmedAnything = false;
             paintedAnything = false;
+            dimmedNow = false;
+            fewestOverrides = -1;
+            mostOverrides = 0;
+            undimmedCarrying = 0;
             firstHomeError = null;
-            alreadyThereWatch.Reset();
-            dimWatch.Reset();
-            recordWatch.Reset();
-            readBackWatch.Reset();
 
             try
             {
-                Collect(document, clashTests, report, clashes, cameras, places, ModelIndexByFile(document));
-                Plan = ClashViewpointPlan.For(clashes, views, priorityPicked);
+                using (seconds.In(ViewsPart.ReadingTheClashes))
+                {
+                    Collect(document, clashTests, report, clashes, cameras, places, ModelIndexByFile(document));
+                    Plan = ClashViewpointPlan.For(clashes, views, priorityPicked);
+                }
 
                 if (Plan.Planned.Count == 0)
                 {
@@ -187,7 +199,11 @@ namespace Federator.Addin.Engine
                 {
                     try
                     {
-                        progress("Viewpoint " + planned.Path);
+                        using (seconds.In(ViewsPart.SayingHowFar))
+                        {
+                            progress("Viewpoint " + planned.Path);
+                        }
+
                         WriteOne(document, planned, cameras, places, disciplines, outcome);
                     }
                     catch (Exception error)
@@ -209,18 +225,21 @@ namespace Federator.Addin.Engine
                         + views.CameraReadBackTolerance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
                         + " units of its clash camera, and the items each one hides and dims were counted off it and not trusted");
 
-                    log.Line("VIEWS    the step's seconds went: "
-                        + Seconds(alreadyThereWatch) + " looking whether each was already there, "
-                        + Seconds(dimWatch) + " dimming, "
-                        + Seconds(recordWatch) + " recording, "
-                        + Seconds(readBackWatch) + " reading back");
-
                     if (views.DimsAnything)
                     {
+                        // FR-065. The material overrides each one read back, the fewest
+                        // and the most, so a run shows that a viewpoint carries the
+                        // dimming of its own shown models and not what an earlier one
+                        // left on models it hides, and that one written undimmed carries
+                        // none of an earlier one's dimming or paint.
                         log.Line("VIEWS    dimmed to "
                             + views.DimTransparency.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
                             + " with the two clashing items left solid: " + dimmed + " viewpoint(s)"
-                            + (notDimmed > 0 ? ", and " + notDimmed + " written undimmed because their two items could not both be pointed at" : string.Empty));
+                            + (dimmed > 0 ? ", each carrying from " + fewestOverrides + " to " + mostOverrides + " material overrides" : string.Empty)
+                            + (notDimmed > 0
+                                ? ", and " + notDimmed + " written undimmed because their two items could not both be pointed at, "
+                                    + undimmedCarrying + " of them carrying a material override"
+                                : string.Empty));
                     }
 
                     if (paintedAnything)
@@ -238,7 +257,16 @@ namespace Federator.Addin.Engine
                     camera.Dispose();
                 }
 
-                PutBack(document);
+                using (seconds.In(ViewsPart.PuttingBack))
+                {
+                    PutBack(document);
+                }
+
+                // Last, so the whole runs from the first clash read to the document put
+                // back, and written whichever way the work ended, because time spent
+                // failing is time the run spent.
+                seconds.Ended();
+                log.Line(seconds.Line());
             }
 
             return outcome;
@@ -564,9 +592,12 @@ namespace Federator.Addin.Engine
             // Already there is left exactly as it is. F28's rule, carried to viewpoints: a
             // second copy at one path leaves the tree holding both and whichever came first
             // is what anything resolving that path finds.
-            alreadyThereWatch.Start();
-            bool alreadyThere = SavedViewpoints.Exists(document, planned.Folders, planned.Name);
-            alreadyThereWatch.Stop();
+            bool alreadyThere;
+
+            using (seconds.In(ViewsPart.LookingWhetherThere))
+            {
+                alreadyThere = SavedViewpoints.Exists(document, planned.Folders, planned.Name);
+            }
 
             if (alreadyThere)
             {
@@ -640,17 +671,24 @@ namespace Federator.Addin.Engine
                 hidesNothingBecause = "its pair has a code this tool does not know";
             }
 
-            Touch(document);
-
-            if (hidesNothingBecause == null)
-            {
-                SavedViewpoints.ShowOnlyModels(document, keep);
-            }
-            else
+            if (hidesNothingBecause != null)
             {
                 SayOnce("VIEWS    " + planned.Pair.Folder + ": " + hidesNothingBecause + ", so its viewpoints hide nothing");
                 hidden.Clear();
-                document.Models.ResetAllHidden();
+            }
+
+            using (seconds.In(ViewsPart.ShowingAndHiding))
+            {
+                Touch(document);
+
+                if (hidesNothingBecause == null)
+                {
+                    SavedViewpoints.ShowOnlyModels(document, keep);
+                }
+                else
+                {
+                    document.Models.ResetAllHidden();
+                }
             }
 
             // THE DIMMING, the whole of this round. Everything goes transparent and the
@@ -665,52 +703,77 @@ namespace Federator.Addin.Engine
             bool dimmedThisOne = false;
             bool paintedThisOne = false;
 
-            if (views.DimsAnything && place != null && place.BothPlaced)
+            // WHAT THE VIEWPOINT BEFORE LEFT IS TAKEN OFF FIRST, FR-065. The dimming and
+            // the paint are temporary materials on the document, so without this a
+            // viewpoint whose two items could not both be pointed at was recorded with the
+            // last one's dimming and red and green and counted as undimmed, and a model
+            // dimmed for an earlier pair stayed dimmed while hidden for a later one, which
+            // costs a material override per item in every viewpoint after it, the shape
+            // that once put 33 MB into a 120 KB NWF. Undim is scoped to the model roots
+            // and measured at under a millisecond, 5o.
+            if (dimmedNow)
             {
-                dimWatch.Start();
-
-                using (ModelItem firstItem = SavedViewpoints.ItemAt(document, place.FirstPath))
-                using (ModelItem secondItem = SavedViewpoints.ItemAt(document, place.SecondPath))
+                using (seconds.In(ViewsPart.Dimming))
                 {
-                    if (firstItem != null && secondItem != null)
-                    {
-                        solid = SavedViewpoints.DimAllBut(
-                            document, views.DimTransparency, hidesNothingBecause == null ? keep : null, firstItem, secondItem);
-                        dimmedThisOne = solid == 2;
-                        dimmedAnything = true;
-
-                        // THE PAINT GOES ON AFTER THE DIMMING, Q58. The transparency
-                        // override on the roots reaches every leaf, so painting first
-                        // would put the colour on and dim it off again in the same call.
-                        if (dimmedThisOne && views.ColoursAnything)
-                        {
-                            paintedThisOne = SavedViewpoints.PaintTwo(
-                                document,
-                                firstItem,
-                                views.FirstItemColour,
-                                secondItem,
-                                views.SecondItemColour) == 2;
-                            paintedAnything = true;
-                        }
-                    }
-                }
-
-                if (!dimmedThisOne)
-                {
-                    // Dimmed on a path that resolved nothing, so it is taken straight off
-                    // again and the viewpoint is written the way F85 wrote one.
                     SavedViewpoints.Undim(document);
-                    solid = 0;
-                    paintedThisOne = false;
+                    dimmedNow = false;
                 }
-
-                dimWatch.Stop();
             }
 
-            recordWatch.Start();
-            SavedViewpoints.EnsureFolders(document, planned.Folders);
-            SavedViewpoints.Record(document, planned.Folders, planned.Name, camera, views.RecordsThroughTheFolder);
-            recordWatch.Stop();
+            if (views.DimsAnything && place != null && place.BothPlaced)
+            {
+                using (seconds.In(ViewsPart.Dimming))
+                {
+                    using (ModelItem firstItem = SavedViewpoints.ItemAt(document, place.FirstPath))
+                    using (ModelItem secondItem = SavedViewpoints.ItemAt(document, place.SecondPath))
+                    {
+                        if (firstItem != null && secondItem != null)
+                        {
+                            // Before the call, so a dim that throws part way is still
+                            // taken off before the next viewpoint is written.
+                            dimmedNow = true;
+                            solid = SavedViewpoints.DimAllBut(
+                                document, views.DimTransparency, hidesNothingBecause == null ? keep : null, firstItem, secondItem);
+                            dimmedThisOne = solid == 2;
+                            dimmedAnything = true;
+
+                            // THE PAINT GOES ON AFTER THE DIMMING, Q58. The transparency
+                            // override on the roots reaches every leaf, so painting first
+                            // would put the colour on and dim it off again in the same call.
+                            if (dimmedThisOne && views.ColoursAnything)
+                            {
+                                paintedThisOne = SavedViewpoints.PaintTwo(
+                                    document,
+                                    firstItem,
+                                    views.FirstItemColour,
+                                    secondItem,
+                                    views.SecondItemColour) == 2;
+                                paintedAnything = true;
+                            }
+                        }
+                    }
+
+                    if (!dimmedThisOne)
+                    {
+                        // Dimmed on a path that resolved nothing, so it is taken straight off
+                        // again and the viewpoint is written the way F85 wrote one.
+                        SavedViewpoints.Undim(document);
+                        dimmedNow = false;
+                        solid = 0;
+                        paintedThisOne = false;
+                    }
+                }
+            }
+
+            // Recording, which was one watch around three calls and is now one part per
+            // call, FR-073: the folders here, and the view, its COM folder and the add
+            // inside Record, so the next run says which of them takes the time.
+            using (seconds.In(ViewsPart.MakingTheFolders))
+            {
+                SavedViewpoints.EnsureFolders(document, planned.Folders);
+            }
+
+            SavedViewpoints.Record(document, planned.Folders, planned.Name, camera, views.RecordsThroughTheFolder, seconds);
 
             // Read back rather than trusted, all three of it. The first run's tree looked
             // complete and every viewpoint opened on sky, because the route it used
@@ -718,19 +781,22 @@ namespace Federator.Addin.Engine
             // recorded camera is not the clash camera, or which carries no overrides
             // while it was meant to hide something, is not a viewpoint of that clash and
             // is counted as failed with the reason a person can check.
-            readBackWatch.Start();
-            ViewpointReadBack read = paintedThisOne
-                ? SavedViewpoints.ReadBack(
-                    document,
-                    planned.Folders,
-                    planned.Name,
-                    camera,
-                    place.FirstPath,
-                    views.FirstItemColour,
-                    place.SecondPath,
-                    views.SecondItemColour)
-                : SavedViewpoints.ReadBack(document, planned.Folders, planned.Name, camera);
-            readBackWatch.Stop();
+            ViewpointReadBack read;
+
+            using (seconds.In(ViewsPart.ReadingBack))
+            {
+                read = paintedThisOne
+                    ? SavedViewpoints.ReadBack(
+                        document,
+                        planned.Folders,
+                        planned.Name,
+                        camera,
+                        place.FirstPath,
+                        views.FirstItemColour,
+                        place.SecondPath,
+                        views.SecondItemColour)
+                    : SavedViewpoints.ReadBack(document, planned.Folders, planned.Name, camera);
+            }
 
             if (!read.Found)
             {
@@ -782,10 +848,17 @@ namespace Federator.Addin.Engine
             if (dimmedThisOne)
             {
                 dimmed++;
+                fewestOverrides = fewestOverrides < 0 ? read.MaterialOverrideCount : Math.Min(fewestOverrides, read.MaterialOverrideCount);
+                mostOverrides = Math.Max(mostOverrides, read.MaterialOverrideCount);
             }
             else
             {
                 notDimmed++;
+
+                if (read.MaterialOverrideCount > 0)
+                {
+                    undimmedCarrying++;
+                }
             }
 
             if (read.ColoursAsked && read.ColoursRight == 2)
@@ -866,12 +939,6 @@ namespace Federator.Addin.Engine
                     snapshot = null;
                 }
             }
-        }
-
-        /// <summary>One watch's total, in seconds, the way every other timing in the log reads.</summary>
-        private static string Seconds(System.Diagnostics.Stopwatch watch)
-        {
-            return (watch.ElapsedMilliseconds / 1000.0).ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + "s";
         }
 
         private void SayOnce(string line)

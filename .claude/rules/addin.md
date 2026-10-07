@@ -250,13 +250,20 @@ well as to pass.
   visibility overrides where it hides a discipline, and one that fails any of the three is
   FAILED with the reason. The hidden state the document held is read once off a capture
   that never enters the tree, 5k, and put back when the group's writing ends, whichever
-  way it ends, and read back as hidden. The window's view is never touched. Every folder
+  way it ends, and read back as hidden. The window's view is never touched. Each viewpoint
+  is written with its own dimming and paint and no other, FR-065: what the viewpoint before
+  left is taken off first, because both are temporary materials on the document, so one
+  whose two items could not both be pointed at carries none and a model hidden for this
+  pair carries no dimming from an earlier one, and the VIEWS lines say the fewest and the
+  most material overrides the dimmed viewpoints read back. Every folder
   is made outermost first and re-resolved from a fresh RootItem after every AddCopy, which
   is the shape SetBuilder measured for the sets. A viewpoint already at its path is left
   exactly as it is and counted as already there, never made again, because a second copy
   at one path leaves the tree holding both, which is F28's rule for sets. The VIEWS step is
   timed like every other step and it is the one step allowed to move the viewpoint count,
-  Federator.Core.Diagnostics.CensusRule. The VIEWS block names five and counts the rest,
+  Federator.Core.Diagnostics.CensusRule. Inside it every call the builder and Record make
+  is timed into its own part of Federator.Core.Views.ViewsSeconds, FR-073, so the folders,
+  the view, its COM folder and the add each carry their own seconds. The VIEWS block names five and counts the rest,
   because a group puts hundreds in. A group whose viewpoints failed is not DONE.
   THE SWITCH IS THE BOX, F136. Whether a group asks for its viewpoints is Core's
   `ViewpointRequest.WhyNone`, the box on the Clash step, the clash skipped and no report,
@@ -475,32 +482,6 @@ well as to pass.
   collapsed under More, rarely changed. The two that destroy data are collapsed on their
   own under Things that destroy data, because they do not belong beside ordinary output
   options. Fewer decisions is the goal, not more words explaining them
-
-### The sets in the document, F115
-
-- `SetBuilder.Read` reads a condition's `Options` as a number and its comparison in the
-  file's words for the two `BuildCondition` builds and by its own name for any other, FR-015,
-  and Core keys both sides. The value is read by its kind through `ClashHarvest.Text`, and one
-  that still throws is marked unread in Core with the error's type and message and never read
-  as an empty string, FR-017. A search that throws hands its error to Core the same way, and a
-  selection with no search says so. `BuildOne` writes the lines `SetDrift.Lines` gives for every
-  present set, and for a rebuilt set whose second read would not read. Neither catch keeps the
-  error to itself
-- The walk counting what the clash tests point at descends into every Clash Detective folder,
-  reads every source of a side and counts each set once per side, FR-014, disposing each item
-  and each side the way SavedTests does. A whole read or one side that throws makes the count
-  UNKNOWN for every set of the document, logged through log.Failure with the first error, and
-  Core refuses every leftover, FR-013
-- The wrapper of a set being rebuilt is released BEFORE `ReplaceWithCopy`, and the rebuilt set
-  is read again through a parent resolved from a fresh root, never through the one held across
-  the mutator, FR-019. One not found again is counted UNKNOWN, FR-018, and so is a read of
-  what a set finds that gives nothing back, `SetResult.NotCounted` in CountOf and Resolve,
-  never zero items
-- The SETS line of what a group's build put in is Core's, `SetBuildOutcome.PutInLine`, which
-  says a rebuilt set apart from one left alone
-- The judge of a set that found nothing is built from the models the EXPORT CHECK read for
-  this group, `FederationEngine.groupExports`, null until they are read and on the Build sets
-  button, FR-011 and FR-027
 
 ## What a tick box says
 

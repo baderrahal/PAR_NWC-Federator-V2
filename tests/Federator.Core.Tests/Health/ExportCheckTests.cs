@@ -632,6 +632,21 @@ namespace Federator.Core.Tests.Health
             Assert.That(ExportCheck.WorksetCount(stopped), Is.Empty);
         }
 
+        /// <summary>
+        /// A model that was not counted carries no names, so the row never says how many names it
+        /// saw before stopping: that number was always 0 and read as a count of worksets seen.
+        /// </summary>
+        [Test]
+        public void TheUnknownRowNamesNoCountOfNamesSeen()
+        {
+            ModelExport stopped = new ModelExport(
+                "a.nwc", "ME", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted,
+                new List<string> { "ME-Ductwork", "ME-Piping" });
+
+            Assert.That(ExportCheck.EveryWorkset(stopped), Does.Not.Contain("name(s) it saw"));
+            Assert.That(ExportCheck.EveryWorkset(stopped), Does.Contain("stopped part way"));
+        }
+
         [Test]
         public void WithNoModelAtAllItSaysSoRatherThanWritingAnEmptyBlock()
         {

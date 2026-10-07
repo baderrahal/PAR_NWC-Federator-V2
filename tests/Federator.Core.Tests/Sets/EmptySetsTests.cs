@@ -64,7 +64,7 @@ namespace Federator.Core.Tests.Sets
             Assert.That(why.Reason, Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
             Assert.That(why.Asked, Is.EqualTo("ME-DUCTWORK"));
             Assert.That(why.Nearest, Is.EqualTo("ME-Ductwork"));
-            Assert.That(why.Line(), Does.Contain("NO MODEL IN THIS PROJECT CARRIES IT"));
+            Assert.That(why.Line(), Does.Contain("NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT"));
             Assert.That(why.Line(), Does.Contain("a suggestion and not a correction"));
         }
 
@@ -158,7 +158,7 @@ namespace Federator.Core.Tests.Sets
             string block = Joined(EmptySets.Lines(empty, 10, 100));
 
             Assert.That(block, Does.Contain("3 set(s) found nothing"));
-            Assert.That(block, Does.Contain("1 ask for a value NO MODEL IN THIS PROJECT CARRIES"));
+            Assert.That(block, Does.Contain("1 ask for a value NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES"));
             Assert.That(block, Does.Contain("1 ask for a value models in this project DO carry"));
             Assert.That(block, Does.Contain("1 this reader cannot tell about"));
         }
