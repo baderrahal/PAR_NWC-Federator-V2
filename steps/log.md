@@ -1,6 +1,37 @@
 # log
 
 Newest entry at the top.
+## 2026-10-07 The loop, turn 5, F131 MERGED as pull request 135, the Q133 measurement on both buildings, and F138's first real start
+
+HIS SETTINGS at 10:46:57, after his own Navisworks of 10:28:15 closed: his 22.0 key read the July copy again, the
+same 43 values as on 2026-10-06 before the 11:01 put back, so it comes back with the restart and not by the loop,
+which started nothing since that put back. His own session ran on it, so nothing was put back, to leave his live
+state as he had it. His AutoSave folder, 199 files, folders.txt and the Auto-Save switch "0" read as on
+2026-10-06, turn5\restart\putback-p10-compare-20261007-104657.txt.
+
+F131 MERGED as PR 135, 9c881d1, at 11:33:40, Actions run 37594156319 a success on its last commit 963ba29,
+turn5\actions-reads-pr135.txt. Its harness on 5e3cd26 read 310 passed and 9 failed, the eight older failures and a
+HARNESS FAULT of the harness's own walk of the loop folder racing another lane's build, turn5\f131-ad5-race.txt,
+register row T5-R-WALKRACE. What the fault cut, H15 and the read of his state after it, ran alone on 0e262d3 at
+10:49, 4 passed and 0 failed, turn5\f131-h15-alone.txt, and only rule and steps files changed from there to
+963ba29.
+
+Q133, Bader's answer D: "Measure on 1A02MM and 1A04PK how often a mirror finds more, and the extra time running
+both costs, and give both in the next record."
+- 1A02MM, 2026-10-05, scan.md 5z-r on fix-F114-probes: of the 59 tests that find a clash, the swap finds more on
+  4 and other clashes on 1, 7 clashes only the swap finds. TestsRunTest 574.5 s for the originals, 1145.4 s for
+  both, 1.994 times
+- 1A04PK, 2026-10-07, scan.md 5z-s: 741 tests created, 174 find a clash. The swap finds more on 1, fewer on 2 and
+  other clashes on 14. 252 clashes only a swap finds, 244 of them on another part of an object the original
+  already lists and 8 new, 6 on BLD-ST-Framing-vs-BLD-ST-Columns and 2 on the conduits against electrical
+  equipment. TestsRunTest 13.1 s for the 174 originals and 25.7 s for both, 1.97 times, and 60.6 s against 48.0 s
+  over all 741, 1.26 times, turn5\probe-q133-1A04PK-result.txt
+
+F138 PROVEN BY A REAL START: the Q133 probe's Navisworks of 11:31:58 started with enable written "3 0" and read
+back, his AutoSave folder of 199 files read the same by name, size, write time and sha256 before, during and
+after, and the put back returned enable to "0" with 38 values and 2 files read back, turn5\probe-q133-1A04PK-
+autosave-before.txt, -during.txt and -after.txt.
+
 ## 2026-10-07 The loop, turn 5, picked up in the morning, Bader's message headed GOOD MORNING, CONTINUE THE LOOP, and the plan
 
 The System log reads the company's shutdown.exe starting the shutdown at 19:30:39 on 2026-10-06 and 19:31:09 on
