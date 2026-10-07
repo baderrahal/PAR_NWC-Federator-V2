@@ -2,6 +2,16 @@
 
 Newest entry at the top.
 
+## 2026-10-07 The loop, turn 5, Bader's answers to Q141, Q142 and his six rows, and the shutdown time read again
+
+His answers are under Q141 and Q142, A each, as built, and under steps 233, 352 and 364 of steps\03_bader_next.md.
+Line 11 of steps\logs\README.md names steps\history\log.md, the one edit he allowed there. THE SHUTDOWN TIME, read
+again with its zone: the machine is Arab Standard Time, UTC+3. The shutdown events read 19:31:09 local, 16:31:09 UTC,
+on 2026-10-05, and 19:30:39 local, 16:30:39 UTC, on 2026-10-06, and the OS's own event writes its system time as
+16:32:14Z and 16:31:32Z. The last commit of 2026-10-05 is 19:08:46 +0300 and the cut agents wrote last from 19:29:45
+to 19:31:41 local, turn5\restart\trees.md. So the shutdown comes at about 19:30 Riyadh time, not 22:31, and the day
+still closes from 18:40. A task shown running on his phone at 22:24 was one the laptop had stopped at 19:31.
+
 ## 2026-10-07 The loop, turn 5, Q142 for Bader, when a mirror's clashes may be merged
 
 F132's readers found new count faults after every attempt from 7 to 11, five after attempt 11,
