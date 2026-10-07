@@ -1,6 +1,69 @@
 # log
 
 Newest entry at the top.
+## 2026-10-07 The loop, turn 5, F137 no site and no clash groups end PARTIAL, FR-195, part 1 built by lane B's cloud session as PR 146, its records by the worktree session
+
+Bader's answers of 2026-10-05, Q111 B and Q125 B, FR-195 of steps\fix-round.md, before the test of
+wave 1. Lane B, the lane of his message of 7 Oct 2026 headed FAST TO A TEAM RELEASE, took the
+item on 2026-10-07. Its cloud session, which may push one branch and write its record in
+steps\lane-b.md alone, built part 1, Q111 B, with its tests and put it on main as PR 146, f1557fe,
+at 13:56, after a reviewer's and a breaker's reading, its record and the points it left on that
+page. This session, in the worktree .claude\worktrees\agent-a9ff34180e9235316 of this checkout,
+carries the records PR 146 left out on purpose: the rule in .claude\rules\core.md, the order
+line and the section of steps\01_next.md, this entry, and the lane page. It changes no code.
+
+What part 1 built, read off the diff of f1557fe against its first parent, 6 files, 223 lines
+in and 47 out, src\Federator.Core\Health\AlignmentCheck.cs, OffCoordinates.cs,
+src\Federator.Core\Rerun\GroupJudgement.cs and the tests under Health and Rerun:
+- A MODEL WHOSE SITE WAS READ AND NAMES NONE IS NOT ON THE SAME SHARED COORDINATES, Q111 B.
+  `AlignmentCheck.NotOnTheSameCoordinates` lists it beside a model on Internal and a far one,
+  its line saying the model names no shared site at all, `NamesNoSite`, the one test for it,
+  which a site whose read threw never passes, so a read fault is still not judged, FR-002. With
+  the rule on and a clash test to run its group skips the clash and ends PARTIAL by that, and
+  `WhyItFailsTheGroup` fails it no longer. Wherever no clash is skipped, the rule off or no
+  clash test to run, it fails the group as Q70 had it, which is what main does until Q125 B
+- the grey line of the tick box reads No site, Internal or over 1 m. NWF and NWD still made,
+  and the ALIGNMENT failed run line says, in a group whose clash was not skipped, a model
+  names no shared site or was exported on the internal origin
+- the note beside the NWD, the list for the modellers and the ALIGNMENT block carry the same
+  words for such a model, and a reference that itself names no site is named as both
+- seven new tests under OffCoordinatesTests, each breaking one thing, and the tests of
+  AlignmentCheck and GroupJudgement that pinned Q70's either way moved to the rule, with the
+  group judgement test that joins a failure and a skip for one group kept as a test of how the
+  reasons join, a pair the engine can no longer make for one group
+- Core tests under mono in the cloud session, read off its pull request: 2286 passed before
+  and 2301 after, 0 failed, 33 skipped, the Navisworks and Windows file system ones. On this
+  machine the whole set reads 2385 passed, 0 failed, 0 skipped on main dfe0fb0 with PR 146 in it
+
+NOT BUILT, Q125 B, PARTIAL for a group that runs no clash test with a model off the shared
+coordinates, more than 1 m away, on Internal or naming no site, with the reason models not on
+the same shared coordinates though no clash was skipped. The cloud session left it because the
+facts that say whether the group would have run a clash test are the engine's, JobOutcome and
+FederationEngine, which fix-F114's add-in pass changes, and a Core rule nothing calls would
+break the no member without a caller rule. The test
+WhereNoClashIsSkippedANoSiteModelStillFailsTheGroupUntilQ125IsWired pins what main does until
+then and flips when it lands. This session read `GroupJudgement` and `AlignmentCheck` and
+agrees: `WhyItFailsTheGroup` already takes the four inputs the block takes, so Q125 B is one
+more branch of it, PARTIAL with its reason where the rule is on, a model is off and no test
+would run, and the engine then reads that reason into the group's outcome as it reads the
+failure today, which is the add-in half.
+
+The points the cloud session's readers raised and it left, on its page, each for the laptop
+lane: `ModelFactsReader.SharedCoordinateOn` returns an empty site where the Location tab is
+missing or the property collection is null, so since Q111 B a read fault reads as a model
+naming no site and skips the clash where it used to fail the group and clash it, F137-R1; the
+reference model can itself name no site and every model is then measured from it, and
+`ModelsRead` counts placements and not the document's models, so a model whose read threw is
+never judged, F137-R2; and the comments of FederationEngine near lines 2154 and 2300 and
+ModelFactsReader near 154 still say a model naming no site fails its group either way, F137-R3.
+The rule file said so in two places, the FAILED line of the group judgement and the bullet of
+Q98 B2, and both now read as Q111 B has it.
+
+No Navisworks was started and nothing of the add-in was built. What waits for the local
+machine: Q125 B with the add-in half, the read of a missing Location tab as site not read,
+F137-R1, and the test of wave 1 on 1A02MM, whose ST model names no site, which with the rule on
+now ends PARTIAL with its clash skipped where set 04 failed it.
+
 ## 2026-10-05 The loop, turn 5, F127 the coverage of Bader's request 2, FR-176, the Core steps 1 to 3 built and held on its branch, with attempt 2 on the readings of 0867a65
 
 ### The Coverage sheet and the records, 2026-10-07, by lane B's worktree session
