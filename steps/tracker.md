@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 475 rows: open 211, in progress 53, in review 0, merged 175, proven by a run 24, waiting for Bader 7, dropped 5
-- By wave: 1 19, 2a 31, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 68, outside the waves 2, right after F133 merges 6
-- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 39 FR items
-- Waits for Bader, 7 rows: F139-R8, step 228-233, step 346-352, step 364, Q141, Q142, F114-K29
+- By status, of 476 rows: open 211, in progress 54, in review 0, merged 178, proven by a run 26, waiting for Bader 2, dropped 5
+- By wave: 1 19, 2a 31, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 69, outside the waves 2, right after F133 merges 6
+- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, step 364 the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 39 FR items
+- Waits for Bader, 2 rows: step 228-233, F114-K29
 
 ## Wave 1
 
@@ -560,14 +560,15 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | T5-R-M5AUTOSAVE | the switch comes after M5's read, so m5.txt names the loop's own write of the autosave key | none | register row | open | none | none | 2026-10-06 |
 | T5-R-HELDOFF | a run that leaves 3 0 makes the next backup read it as his value, put back by hand | none | register row | open | none | none | 2026-10-06 |
 | F139-R7 | a commit staging tracker.csv or the page is refused where no powershell is on PATH, such as a container, a stated limit the lead accepted | none | register row | dropped | none | none | 2026-10-07 |
-| F139-R8 | steps\logs\README.md line 11 names steps/log.md, in a folder never edited, for Bader | none | register row | waiting for Bader | none | none | 2026-10-07 |
+| F139-R8 | steps\logs\README.md line 11 names steps/log.md, in a folder never edited, for Bader | none | register row | merged | 139 | none | 2026-10-07 |
 | F139-R9 | the Stop gate's merge test reads only a line starting STATE and a space in capitals, while its reader takes other spellings, so a page written another way is refused until respelled, the lead writing the plain form | none | register row | open | none | none | 2026-10-07 |
-| step 228-233 | the published NWD's file properties and its ACC upload never checked, ACC put off by Bader | none | register row | waiting for Bader | none | none | 2026-10-07 |
-| step 346-352 | the remote branches other than main not deleted, D6, read off the live list first | none | register row | waiting for Bader | none | none | 2026-10-07 |
-| step 364 | the CSV of one mechanical NWC and its PROBE block not sent | none | register row | waiting for Bader | none | none | 2026-10-07 |
+| step 228-233 | the published NWD checked in ACC, by Bader himself at the final run after F114 merges | none | register row | waiting for Bader | none | none | 2026-10-07 |
+| step 346-352 | the remote branches other than main whose pull requests merged, deleted by the lead by Bader's answer, D6 | none | register row | proven by a run | none | turn5\d6-deleted.txt, 67 deleted and read back, 17 kept by his rule | 2026-10-07 |
+| step 364 | the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept | none | register row | in progress | none | none | 2026-10-07 |
 | T5-R-WALKRACE | the harness's walk of the loop folder races a lane building under a wt- folder | none | register row | open | none | none | 2026-10-07 |
-| Q141 | a clash in a result group with two statuses | none | question | waiting for Bader | none | none | 2026-10-07 |
-| Q142 | when a mirror's clashes may be merged | none | question | waiting for Bader | none | none | 2026-10-07 |
+| Q141 | a clash in a result group with two statuses | none | question | merged | 139 | none | 2026-10-07 |
+| Q142 | when a mirror's clashes may be merged | none | question | merged | 139 | none | 2026-10-07 |
+| T5-R-P15CRASH | probe P15 read a viewpoints copy after Document.Clear, Navisworks crashed and the guard refused the put back, put back by the lead at 14:53 from its backup | none | register row | proven by a run | none | turn5\restart\putback-rebuild-views-20261007-144356-write, 0 still different | 2026-10-07 |
 
 ## outside the waves
 

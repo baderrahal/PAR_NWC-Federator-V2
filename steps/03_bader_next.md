@@ -540,6 +540,7 @@ browser as well as Navisworks.
 231. Look for: no processing error and no warning triangle beside it once the translation finishes. That is the whole point of `AllowResave`. A warning still there means the flag did not take and the answer is a screenshot of the warning and the log line from step 227
 232. Open the NWD in the ACC viewer and click one object, any object
 233. Look for: a properties panel with real Revit properties in it, not one row reading Solid. Object properties missing means `EmbedDatabaseProperties` did not carry them and `PreventObjectPropertyExport` is the next thing to look at
+   Answer: Bader, 2026-10-07, his message headed BADER'S ANSWERS, 7 OCT 2026, THE SIX ROWS WAITING FOR HIM AND THE SHUTDOWN TIME: steps 228 to 233, the published NWD checked in ACC, Bader does himself at the final run, after F114 merges. The row waits for him until then.
 234. Q32 is whether the NWF needs to be in ACC at all. Nothing appears beside an NWF because ACC does not translate one: an NWF holds no geometry, only pointers to the NWCs, so there is no viewable file to make. Answer it in `steps/02_questions.md` when you have seen the NWD work
 
 ## Proof F52, a viewpoint per discipline
@@ -756,6 +757,7 @@ git push origin --delete analysis-pass fix-F16 fix-F27 fix-F28 fix-F29 fix-F30 f
 350. Run `git ls-remote --heads origin` again and look for: one line, `refs/heads/main`. If a branch you did not expect is there, it was pushed after the list above was read, so read what it holds before deleting it
 351. Run `git fetch --prune` so your own clone forgets the branches that are gone. Without it `git branch -r` keeps printing them
 352. If the command refuses a branch, open github.com, the repo, Branches, and press the bin icon beside every branch that is not main
+   Answer: Bader, 2026-10-07, his message headed BADER'S ANSWERS, 7 OCT 2026, THE SIX ROWS WAITING FOR HIM AND THE SHUTDOWN TIME: the lead deletes the remote branches other than main whose pull requests are merged and whose commits are all on main, reading the live list first and listing each one deleted, keeps any branch with an open pull request or a commit not on main, and lists for Bader any delete GitHub refuses.
 
 ## The first run round, F73 to F88
 
@@ -847,6 +849,7 @@ without reading the brief again.**
      WIRED on 2026-09-19 in the wiring round, F86, commit dcbbf67.
 364. Send the CSV for one mechanical NWC and the PROBE block beside it. That pair is what
      the mechanical sets get rewritten from, and rewriting them is a later round
+   Answer: Bader, 2026-10-07, his message headed BADER'S ANSWERS, 7 OCT 2026, THE SIX ROWS WAITING FOR HIM AND THE SHUTDOWN TIME: the lead runs the property probe on one mechanical NWC, by the guards, and keeps its CSV and its PROBE block as the evidence. Bader sends nothing.
 
 ### The add-in wiring each fix still needs
      WIRED on 2026-09-19 in the wiring round, F86, commit dcbbf67.

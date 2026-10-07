@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-07 14:01, last run 04/item2-C02
+STATE OPEN, 2026-10-07 14:55, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,15 +15,15 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 0 | 0 | 0 | 0 | 20 | 0 | 20 |
 | 4 | 0 | 0 | 0 | 0 | 57 | 0 | 57 |
 | 5 | 4 | 0 | 0 | 0 | 68 | 0 | 72 |
-| outside the waves | 149 | 8 | 0 | 6 | 45 | 5 | 213 |
-| total | 199 | 53 | 0 | 7 | 211 | 5 | 475 |
+| outside the waves | 154 | 9 | 0 | 1 | 45 | 5 | 214 |
+| total | 204 | 54 | 0 | 2 | 211 | 5 | 476 |
 <!-- the end of the counts -->
 
 ## Now
 - F139 this page: MERGED as PR 130, ce7fcf5, at 13:34, the keep-awake reading it since 13:38
 - F132 mirrored tests: attempt 12 on fix-F132, a merge only where the run created both tests, A of Q142
 - F114 views: attempt 7 on fix-F114, one rule for a set's team, then its add-in pass
-- Probes: Q133 1A04PK and P11 to P13 done, Auto-Save off held on each start, P14 to P19 go on
+- Probes: P11 to P14 done, P15 crashed and is run again, then P16 to P19 and step 364's property probe
 - F131 merged as PR 135 and F138 as PR 127, the switch proven by the Q133 probe's real start
 
 ## Next
@@ -32,16 +32,14 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 3. Main installed in place and the runs of 1A02MM and 1A04PK with the new views
 
 ## Waiting for Bader
-- Q141: the status of a clash under a result group, under Q138 B, the build going on with A
-- Q142: when a mirror's clashes may be merged, the build going on with A
-- Four rows: steps 228-233, 346-352 and 364 of steps\03_bader_next.md, and F139-R8, steps\logs\README.md line 11
+- No question. Steps 228 to 233, the published NWD in ACC, his at the final run after F114 merges
 
 ## Blockers and known bugs
 - T5-R-WALKRACE: the harness's walk of the loop folder races a lane's build and stops on a HARNESS FAULT
 - T5-R-HELDOFF: a run that leaves "3 0" makes the next backup read it as his, put back by hand
 - T5-R-OLDKEY: his 22.0 key reads a July copy after each restart, the writer UNKNOWN, his own sessions run on it
 - Until F114 merges every test run has the viewpoints box unticked, and the C02 weekly stays stopped, Q130
-- The day closes from 18:40, before the company shutdown at about 19:30
+- The day closes from 18:40, before the company shutdown at about 19:30 Riyadh time, read with its zone
 
 ## Where the long history is
 - steps\history\loop.md: every turn, the form and the register table, its closed rows the record
