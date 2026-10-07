@@ -1,0 +1,206 @@
+MACHINE   [machine]   2026-10-07 17:34:42
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 32036
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-property-run.ps1", sha256 432DD8E61FA5A644F206303FF66C0CA7103257EB97A7132AF4E3A93FF30BC204
+GUARD     tools\loop\nw-guard.ps1, sha256 E29D2733A227E6665551BD52866E7C2B40F5A5B09114ECB2AA2FFE233EA23C1A
+PROCESS   powershell.exe pid 32036, started to run -File %USERPROFILE%\AppData\Local\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-property-run.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 505
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\property-run-20261007-173442" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\property-run-20261007-173442\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123148 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 199 AutoSave files listed and not copied
+  the tool's own logs folder listed: 38 files
+
+==== THE COPIES, made before anything starts ====
+  the NWC "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc", 2006253 bytes, sha256 F0544034ED410215B556FAC3B0FACA7D1A67975651530D95642FFC74B53F4511
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\property-run-20261007-173442\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc", sha256 matches
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\PropertyProbeRun\bin\Release\net48\PropertyProbeRun.dll", 669696 bytes, written 2026-10-07 17:31:10, sha256 87410301DB1C60913FA3A5606812930EA33EA1915481454C025DD5AFB40107DB, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  17:34:49.166  t+6.2s  calling new NavisworksApplication()
+  17:36:09.168  t+86.2s  the constructor RETURNED after 80.00 s
+  Roamer processes new since step 2: 1
+    pid 38240, started 17:34:49.199, parent 1164 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 38240, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 38240, started 2026-10-07 17:34:49.199, start ticks UTC 639269804891997327
+  17:36:19.801  t+96.8s  Visible set True, read back True
+  visible top level windows of 38240: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  17:36:20.278  t+97.3s  AddPluginAssembly RETURNED after 0.079 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode properties on the copy, which it opens and does not save ====
+  17:36:20.286  t+97.3s  calling ExecuteAddInPlugin(PropertyProbeRun.PARS, properties, the plugin's output file, the copy, the work folder for the RunLog, the probe's lines file in the work folder)
+  17:36:24.727  t+101.8s  ExecuteAddInPlugin RETURNED 0 after 4.44 s
+  visible top level windows of 38240: 1, hidden: 76, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | 17:36:20.306  probe started, mode properties
+  | 17:36:20.315  the copy %LOCALAPPDATA%\NwcFederatorLoop\probes\property-run-20261007-173442\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, 2006253 bytes
+  | 17:36:20.315  ProbeSettings default: 17 categories, cap 100, category read from Category then Revit Category then Element Category
+  | 17:36:20.315  categories asked: Pipes | Pipe Fittings | Pipe Accessories | Pipe Insulation | Ducts | Duct Fittings | Duct Accessories | Flex Pipes | Flex Ducts | Cable Trays | Cable Tray Fittings | Conduits | Conduit Fittings | Air Terminals | Mechanical Equipment | Plumbing Fixtures | Sprinklers
+  | 17:36:20.316  models before the open 0
+  | 17:36:22.705  TryOpenFile returned True after 2.390 s
+  | 17:36:22.706  models after the open 1, waited 0.000 s
+  | 17:36:22.708  model FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\property-run-20261007-173442\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-ME-MOD-000001.rvt
+  | 17:36:22.708  its CSV goes to %LOCALAPPDATA%\NwcFederatorLoop\probes\property-run-20261007-173442\1104-PAR-1A02MM-ZZZ-ME-MOD-000001-properties.csv
+  | 17:36:22.728  RunLog at %LOCALAPPDATA%\NwcFederatorLoop\probes\property-run-20261007-173442\run-20261007-173622.log
+  | 17:36:24.717  PropertyProbe.ProbeModel over 1 model(s) took 2.008 s
+  | 17:36:24.721  the probe's own lines, 31, written to %LOCALAPPDATA%\NwcFederatorLoop\probes\property-run-20261007-173442\probe-lines.txt, every one:
+  | 17:36:24.721    | PROBE    1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  walked 3581 items in 1.9s
+  | 17:36:24.721    | PROBE    1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+  | 17:36:24.722    |          categories asked for : 17
+  | 17:36:24.722    |          categories found     : 10
+  | 17:36:24.722    |          categories with no elements at all : 7, Pipe Insulation, Flex Pipes, Flex Ducts, Cable Trays, Cable Tray Fittings, Conduits, Conduit Fittings
+  | 17:36:24.722    |          properties           : 2724
+  | 17:36:24.722    |          distinct values      : 10715
+  | 17:36:24.722    |          rows written         : 8823
+  | 17:36:24.722    |          properties capped at 100 : 18
+  | 17:36:24.722    |              Pipe Fittings / Element / Id
+  | 17:36:24.723    |              Pipe Fittings / Element / IfcGUID
+  | 17:36:24.723    |              Pipe Fittings / Element ID / Value
+  | 17:36:24.723    |              Pipe Fittings / Element Properties / UniqueId
+  | 17:36:24.723    |              Pipe Fittings / Id / IntegerValue
+  | 17:36:24.723    |              Pipe Fittings / Item / GUID
+  | 17:36:24.723    |              Pipes / Element / Area
+  | 17:36:24.723    |              Pipes / Element / Id
+  | 17:36:24.723    |              Pipes / Element / IfcGUID
+  | 17:36:24.723    |              Pipes / Element / Length
+  | 17:36:24.724    |              Pipes / Element / Lower End Bottom Elevation
+  | 17:36:24.724    |              Pipes / Element / Lower End Invert Elevation
+  | 17:36:24.724    |              Pipes / Element / Upper End Top Elevation
+  | 17:36:24.724    |              Pipes / Element ID / Value
+  | 17:36:24.724    |              Pipes / Element Properties / LevelOffset
+  | 17:36:24.724    |              Pipes / Element Properties / UniqueId
+  | 17:36:24.724    |              Pipes / Id / IntegerValue
+  | 17:36:24.725    |              Pipes / Item / GUID
+  | 17:36:24.725    |          FS or Fire Suppression appears in 1 row, first 1 shown
+  | 17:36:24.725    |              Mechanical Equipment / Element / zz FS = 1 (6)
+  | 17:36:24.725    |          written to           : %LOCALAPPDATA%\NwcFederatorLoop\probes\property-run-20261007-173442\1104-PAR-1A02MM-ZZZ-ME-MOD-000001-properties.csv
+  | 17:36:24.725    |          nothing in the model was changed, nothing was saved and nothing was published
+  | 17:36:24.725  probe finished, code 0
+  the probe's lines "%LOCALAPPDATA%\NwcFederatorLoop\probes\property-run-20261007-173442\probe-lines.txt", 1720 bytes, sha256 117AE8AA80BE4128742392EAC11AA0BDA03CC1589ED52F14C39A161505BB42D9
+  CSV files in the work folder: 1
+  the CSV 1104-PAR-1A02MM-ZZZ-ME-MOD-000001-properties.csv, 548664 bytes, sha256 2939B679E7CD032DBDDEB450BB474CF768D290786A44DAB736DD6B99C9C51CEB
+
+==== STEP 6. Quit through the API ====
+  17:36:25.740  t+102.8s  Dispose RETURNED after 0.70 s
+  17:36:32.909  t+109.9s  pid 38240 state gone, 7.2 s after Dispose returned, not forced
+
+==== FINALLY ====
+  17:36:32.917  t+109.9s  pid 38240 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 143, longest pass 8655 ms, longest gap between the starts of two passes 9159 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  17:34:44.285  t+1.3s  watchdog started
+  17:34:49.542  t+6.6s  Roamer pid 38240 seen with no readable start time, looked at again at the next pass
+  17:34:58.576  t+15.6s  new process Roamer pid 38240, parent 1164 svchost.exe, started 17:34:49.199, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  17:34:58.690  t+15.7s  Roamer 38240 visible top level windows: none
+  17:35:26.969  t+44.0s  new process AdskLicensingInstHelper pid 46048, parent 26096 GenuineService.exe, started 17:35:18.944, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  17:35:41.650  t+58.7s  new process AdskLicensingAgent pid 45024, parent 38240 Roamer.exe, started 17:35:34.056, command line holds the word embedding or automation: no
+  17:35:47.617  t+64.6s  new process AdskLicensingAgent pid 5816, parent 38240 Roamer.exe, started 17:35:34.527, command line holds the word embedding or automation: no
+  17:35:58.331  t+75.4s  Roamer 38240 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  17:36:06.921  t+83.9s  Roamer 38240 visible top level windows: none
+  17:36:15.972  t+93.0s  Roamer 38240 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  17:36:17.649  t+94.7s  Roamer 38240 visible top level windows: none
+  17:36:18.814  t+95.8s  Roamer 38240 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  17:36:21.045  t+98.1s  Roamer 38240 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+  17:36:21.655  t+98.7s  Roamer 38240 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;74b1ea84-b262-4840-849d-e0fc20dd8e1b]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+  17:36:22.781  t+99.8s  Roamer 38240 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+  17:36:25.600  t+102.6s  Roamer 38240 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  17:36:26.162  t+103.2s  Roamer 38240 visible top level windows: none
+  17:36:32.851  t+109.9s  Roamer 38240 has exited
+  17:36:33.360  t+110.4s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 38240, parent 1164 svchost.exe: exited
+  AdskLicensingInstHelper pid 46048, parent 26096 GenuineService.exe: exited
+  AdskLicensingAgent pid 45024, parent 38240 Roamer.exe: exited
+  AdskLicensingAgent pid 5816, parent 38240 Roamer.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40631684692700  new QWord 40632704525373
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 93  new DWord 94
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 152  new DWord 153
+  22.0\CER\22.5.1433.58  uptime  old QWord 2353627343750  new QWord 2354636718750
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,2064,84,1632,877"
+  22.0\Recent File List\1  DisplayName  old String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\1  LastOpened  old QWord 134290938074132508  new QWord 134358573806982276
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\property-run-20261007-173442\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\10  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134290938039044021  new QWord 134290938042577701
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc, sha1 B1CCD34DBC72>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>
+  22.0\Recent File List\2  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"  new String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"
+  22.0\Recent File List\2  LastOpened  old QWord 134290938070616743  new QWord 134290938074132508
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>  new String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>
+  22.0\Recent File List\3  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"  new String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"
+  22.0\Recent File List\3  LastOpened  old QWord 134290938066994697  new QWord 134290938070616743
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>
+  22.0\Recent File List\4  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134290938062820552  new QWord 134290938066994697
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>
+  22.0\Recent File List\5  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134290938058967255  new QWord 134290938062820552
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>
+  22.0\Recent File List\6  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134290938054115696  new QWord 134290938058967255
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>
+  22.0\Recent File List\7  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134290938049614120  new QWord 134290938054115696
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>
+  22.0\Recent File List\8  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134290938046297945  new QWord 134290938049614120
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>
+  22.0\Recent File List\9  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134290938042577701  new QWord 134290938046297945
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>
+  registry: 36 values or keys differ from the backup
+  registry: 36 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 68875 bytes, sha256 5771E12A2A08, written 2026-10-07 17:04:34  new 69021 bytes, sha256 50126DE30D5C, written 2026-10-07 17:36:25
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 CFB225D1EB92, written 2026-10-07 17:04:34  new 40079 bytes, sha256 8962B892509A, written 2026-10-07 17:36:25
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWC the copy was made from, at the end ----
+  sha256 F0544034ED410215B556FAC3B0FACA7D1A67975651530D95642FFC74B53F4511, the same as before the start
+---- the work folder at the end, sorted by name ----
+  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  2006253 bytes
+  1104-PAR-1A02MM-ZZZ-ME-MOD-000001-properties.csv  548664 bytes
+  hkcu-navisworks-manage-22.0-before.reg  123148 bytes
+  mypid.txt  36 bytes
+  plugin-output.txt  3878 bytes
+  probe-lines.txt  1720 bytes
+  PropertyProbeRun.dll  669696 bytes
+  run-20261007-173622.log  3225 bytes
+  run-20261007-173622.tsv  234 bytes
+  watch.txt  2561 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-07 17:36:42, 119 s in all

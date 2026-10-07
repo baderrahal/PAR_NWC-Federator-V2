@@ -8242,3 +8242,101 @@ it after the run. AdskLicensingAgent 51556 and AdskLicensingInstHelper 42536 and
 nearly all of it in the COM view's SavedViews().Add. By B8, writing first and removing after costs about
 6.3 s a view more, once per NWF holding the per-clash views. By the row of P19, YES: check 3 reads the
 shown models off the NWF, from each hidden root's Model.FileName.
+
+## 5z-za. WHAT THE PROPERTY PROBE OF F86 WRITES FOR ONE MECHANICAL NWC, MEASURED 2026-10-07
+
+Step 364 of steps\03_bader_next.md, on Bader's answer of 2026-10-07 under it: run the property probe
+on one mechanical NWC by the guards and keep its CSV and its PROBE block as the evidence. The question:
+what CSV and what PROBE block does the add-in's property probe, F86, steps 358 to 363, write for one
+mechanical NWC? The pair is what the mechanical sets get rewritten from, and that rewrite is a later
+round. No code changes on this answer. It is the evidence the later round reads.
+
+HOW. `tools\probes\ViewpointProbe\probe-property-run.ps1` is P18's `probe-view-rate.ps1` with the
+plugin `PropertyProbeRun` of `tools\probes\ViewpointProbe\PropertyProbeRun` in place of ViewpointProbe,
+-Nwc in place of -Nwf, the NWC extension checked, and the work folder prefix `property-run`. Nothing else
+changed, the guard and F138's SwitchAutoSaveOff included. tools\loop\nw-guard.ps1 read sha256 E29D2733,
+line 4. The plugin compiles the branch's src in as Q133Import does, every file of Federator.Core and every
+file of Federator.Addin\Engine but FederationEngine.cs, and changes nothing of src. It opens the copy with
+TryOpenFile, polls Models.Count for up to 60 s, and hands each model to the add-in's own PropertyProbe with
+`new ProbeSettings()`, the same class and the same settings both routes of the button construct,
+FederationEngine.cs lines 2514 and 2542, with a RunLog started in the work folder. Two things differ from
+the button: the open is TryOpenFile and a poll rather than OpenAndWaitForTheModels, and the folder route's
+header line, PROBE, the folder and its file count, is not written, because that line is
+FederationEngine's and not the probe's. The plugin refuses any model whose CSV would land outside the
+folder of the copy. It was built at 17:31 with 0 warnings and 0 errors, `PropertyProbeRun.dll` sha256
+87410301, line 24. The branch was pulled first, up to date at e6b66bd. Get-Process Roamer read 0 before
+the run and 0 after it. The NWC is run set 04's copy
+`runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc`, 2,006,253 bytes, sha256 F0544034, the
+mechanical NWC of the C02 building the earlier probes read, copied into the new folder
+`probes\property-run-20261007-173442` and read back with the same sha256, lines 22 and 23.
+
+    powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-property-run.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-step364-result.txt -Nwc %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+
+The result is `tools\probes\ViewpointProbe\step364-property-run-result-20261007.txt`, with the machine
+name on line 1 and the account folder on line 5 masked and nothing else changed.
+
+**ANSWER. THE PROBE RAN ONCE AND WROTE ONE CSV AND ONE PROBE BLOCK.**
+
+- TryOpenFile returned true after 2.390 s and the copy held 1 model, lines 57 and 58. Its
+  SourceFileName is the model's RVT on Autodesk Docs, line 59
+- The walk took 3581 items in 1.9 s, line 64, and ProbeModel 2.008 s in all, line 62
+- The PROBE block, lines 65 to 94, every line as the probe wrote it:
+  - categories asked for 17, found 10
+  - 7 with no element at all: Pipe Insulation, Flex Pipes, Flex Ducts, Cable Trays, Cable Tray
+    Fittings, Conduits, Conduit Fittings
+  - properties 2724, distinct values 10715, rows written 8823
+  - 18 properties capped at 100, every one on Pipes or Pipe Fittings and every one an id, a GUID or a
+    measure: Id, IfcGUID, Element ID Value, UniqueId, IntegerValue and GUID on both, and Area, Length,
+    Lower End Bottom Elevation, Lower End Invert Elevation, Upper End Top Elevation and LevelOffset on
+    Pipes
+  - FS or Fire Suppression appears in 1 row: Mechanical Equipment, tab Element, property `zz FS`, value
+    1, on 6 elements
+  - the closing line says nothing in the model was changed, saved or published
+- The CSV, `1104-PAR-1A02MM-ZZZ-ME-MOD-000001-properties.csv`, 548,664 bytes, sha256 2939B679, line 98.
+  Read by Python's csv reader it holds 8824 records, the header and the 8823 rows the block counts. It
+  holds 8830 lines because 3 values carry a line break. The header is category, property tab, property
+  name, distinct value, how many elements, as step 361 says
+- The elements per category, read off each category's Category tab Name row of the CSV: Air Terminals
+  12, Duct Accessories 16, Duct Fittings 43, Ducts 50, Mechanical Equipment 35, Pipe Accessories 18,
+  Pipe Fittings 222, Pipes 251, Plumbing Fixtures 7, Sprinklers 14
+- A capped property ends in one extra row, as step 362 says. For Pipes, Element, Id it reads "MORE VALUES
+  NOT LISTED, 151 more distinct values here, the cap is 100", with 151 in the count column
+
+**THE EVIDENCE, KEPT OUTSIDE THE REPO.** In %LOCALAPPDATA%\NwcFederatorLoop\turn5, each copied from the
+work folder and read back with its source's sha256: `step364-csv.txt`, the CSV byte for byte, sha256
+2939B679, `step364-probe-block.txt`, the probe's own 31 lines, sha256 117AE8AA, and
+`step364-runlog.txt`, the RunLog holding the same block with its CSV attempt and written lines, sha256
+1D8D09CF. The CSV is not committed. The work folder stays as it is.
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWC the copy was made from read sha256
+F0544034 at the start and at the end, lines 22 and 187. The guard wrote the Auto-Save switch "3 0" and
+read it back, line 28. The watchdog saw no other Navisworks, and the put back ran, line 138. 36 registry
+values were put back, enable among them, line 143, and read again with 0 still differing, line 176.
+SessionCleanCloseCount went 93 to 94, line 140, and no crashCount was among the values that differed, a
+clean close. InfoCenter.log and LastSession.xml were put back reading their backups' sha256, lines 180 and
+181. The guard saw 0 AutoSave files added, changed or gone, line 183, and the tool's own logs folder had
+nothing added or changed, line 184. The prober read the switch and listed the AutoSave folder by name,
+size, write time and sha256 with `read-autosave-state.ps1`, kept in %LOCALAPPDATA%\NwcFederatorLoop\turn5
+as `probe-step364-20261007-autosave-before.txt`, `-during.txt` and `-after.txt`: enable read String "0"
+at 17:34:27 before the start, "3 0" at 17:34:52 while the probe ran, and "0" at 17:36:55 after the put
+back, and the folder held the same 199 files with the same names, sizes, times and sha256 before and
+after, 0 lines differing.
+
+THE PROGRAMS. One Navisworks, pid 38240, started by the probe at 17:34:49, adopted, line 38, quit by
+Dispose and gone 7.2 s after, not forced, line 102. AdskLicensingAgent 45024 and 5816, children of 38240,
+and AdskLicensingInstHelper 46048 read exited at the end, lines 130 to 132. No Roamer that was not there
+in step 2 ran at the end, line 133.
+
+**STILL UNKNOWN.**
+
+- whether the other 29 NWCs named ME in run set 04, C02 to C07, carry the same categories, properties
+  and values. One was read
+- which property, if any, tells fire suppression pipework from domestic pipework. The block's search
+  found `zz FS` on 6 Mechanical Equipment elements and nothing on Pipes, and what `zz FS` means in the
+  model is UNKNOWN
+- whether the block written through the window reads line for line the same. The window was not used
+- which 3 values carry a line break. Not read
+- what the mechanical sets become. That is the later round's
+
+**WHAT THIS DECIDES.** Nothing in the code. It is the pair step 364 asked for, the CSV and the PROBE block
+of one mechanical NWC, kept for the round that rewrites the mechanical sets.
