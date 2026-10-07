@@ -86,7 +86,7 @@ namespace Federator.Core.Health
             // does.
             if (string.Equals(WithoutInvisibles(left), WithoutInvisibles(right), StringComparison.Ordinal))
             {
-                string extra = FirstInvisibleIn(left, right);
+                string extra = FirstInvisibleIn(left, right) ?? FirstExtraIn(left, right);
 
                 return extra ?? "they differ only in invisible characters";
             }
@@ -149,13 +149,55 @@ namespace Federator.Core.Health
             return null;
         }
 
+        /// <summary>
+        /// Where the two strings first part, walked together, and the character one of them holds that
+        /// the other does not there, an invisible one or an ordinary space, FR-007. Tried after the
+        /// invisible characters, since a tab or a no break space is the likelier culprit. Null only
+        /// where nothing lines up, which cannot be for two strings equal once those are taken out.
+        /// </summary>
+        private static string FirstExtraIn(string left, string right)
+        {
+            int i = 0;
+            int j = 0;
+
+            while (i < left.Length || j < right.Length)
+            {
+                if (i < left.Length && j < right.Length && left[i] == right[j])
+                {
+                    i++;
+                    j++;
+                    continue;
+                }
+
+                if (i < left.Length && IsExtra(left[i]))
+                {
+                    return Describe(left[i]) + " AT CHARACTER " + (i + 1) + " of the first";
+                }
+
+                if (j < right.Length && IsExtra(right[j]))
+                {
+                    return Describe(right[j]) + " AT CHARACTER " + (j + 1) + " of the second";
+                }
+
+                return null;
+            }
+
+            return null;
+        }
+
+        /// <summary>A character the comparison may skip: an invisible one or an ordinary space.</summary>
+        private static bool IsExtra(char value)
+        {
+            return IsInvisible(value) || value == ' ';
+        }
+
         private static string WithoutInvisibles(string value)
         {
             System.Text.StringBuilder kept = new System.Text.StringBuilder(value.Length);
 
             foreach (char one in value)
             {
-                if (!IsInvisible(one) && one != ' ')
+                if (!IsExtra(one))
                 {
                     kept.Append(one);
                 }

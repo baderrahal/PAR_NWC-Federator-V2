@@ -58,7 +58,9 @@ and nothing is fixed until a real run on real files shows it fixed.
   a checkout of origin/main writes the page whenever a merge changed its counts. WAITING,
   RESTART, CLOSED, NEXT WAVE, any other word, no STATE line and no page all let the stop
   through, and so does a note it cannot write, because a gate that cannot tell must never be
-  what traps a session. It is run for Stop only, and an agent of a workflow ends on
+  what traps a session. A session whose branch begins with lane-b or claude/lane-b, read off
+  HEAD of its clone or worktree with builtins, stops freely, Bader's order of 2026-10-07,
+  since lane B never edits the page. A detached HEAD is held like any other. It is run for Stop only, and an agent of a workflow ends on
   SubagentStop, which the gate does not read. Its header says how each is read, what each
   costs and its limits, and tools\loop\prove-hooks.sh holds its cases
 - A finding is a row of steps\tracker.csv, of class register row, by .claude\rules\tracker.md,

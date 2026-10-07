@@ -47,10 +47,17 @@ namespace Federator.Core.Exchange
         /// </summary>
         public const string ProjectMarker = "project:";
 
+        /// <summary>
+        /// How a line of the category list names the folder its models were measured on, FR-064, so
+        /// the health block says which folder the list is of and the name is never typed into code.
+        /// </summary>
+        public const string FolderMarker = "folder:";
+
         private static readonly object Gate = new object();
         private static List<string> known;
         private static bool resourceFound;
         private static string project;
+        private static string folder;
 
         /// <summary>
         /// The project the list was measured on, read off its project line, or null where it
@@ -64,6 +71,45 @@ namespace Federator.Core.Exchange
                 Load();
                 return project;
             }
+        }
+
+        /// <summary>The folder the list was measured on, read off its folder line, or null where it names none.</summary>
+        public static string Folder
+        {
+            get
+            {
+                Load();
+                return folder;
+            }
+        }
+
+        /// <summary>The folder a line names, or null where it is not a folder line or names none.</summary>
+        internal static string FolderIn(string line)
+        {
+            if (line == null || line.IndexOf(FolderMarker, StringComparison.Ordinal) != 0)
+            {
+                return null;
+            }
+
+            string named = line.Substring(FolderMarker.Length).Trim();
+            return named.Length == 0 ? null : named;
+        }
+
+        /// <summary>
+        /// Where the list was measured, in words that follow a count, FR-064: the folder it names, or
+        /// that it names none. Empty while the list is unmeasured, since then there is no count to
+        /// qualify.
+        /// </summary>
+        public static string MeasuredOn(string lead)
+        {
+            if (!Measured)
+            {
+                return string.Empty;
+            }
+
+            return Folder == null
+                ? lead + " the folder the list was measured on, which it does not name"
+                : lead + " the " + Folder + " folder only";
         }
 
         /// <summary>The project a line of a measured list names, or null where it is not a project line.</summary>
@@ -133,7 +179,7 @@ namespace Federator.Core.Exchange
             }
 
             return Measured
-                ? "Revit categories known: " + Count
+                ? "Revit categories known: " + Count + MeasuredOn(", measured on")
                 : "Revit categories known: none yet, so no set was checked against them. "
                     + "The list is measured off a real federation, see the scan notes";
         }
@@ -185,6 +231,12 @@ namespace Federator.Core.Exchange
                                     continue;
                                 }
 
+                                if (line.IndexOf(FolderMarker, StringComparison.Ordinal) == 0)
+                                {
+                                    folder = FolderIn(line);
+                                    continue;
+                                }
+
                                 known.Add(line);
                             }
                         }
@@ -197,6 +249,7 @@ namespace Federator.Core.Exchange
                     known = new List<string>();
                     resourceFound = false;
                     project = null;
+                    folder = null;
                 }
 
                 return known;

@@ -33,9 +33,9 @@ FR-031,clash progress line one test short,F113,1,silent wrong number,merged,95,n
 FR-032,empty result group counted as one clash,F113,1,silent wrong number,merged,95,none,2026-10-04
 FR-033,bydesign unnamed clash counted as moved,F113,1,silent wrong number,merged,95,none,2026-10-04
 FR-034,auto review record in throws on edited comment,F113,1,loud failure,merged,95,none,2026-10-04
-FR-035,workbook check counts only blocks with clashes,F118,2c,silent wrong number,open,none,none,2026-10-04
+FR-035,workbook check counts only blocks with clashes,F118,2c,silent wrong number,merged,147,none,2026-10-07
 FR-036,skipped test row keeps old tolerance after chosen edit,F118,2c,silent wrong number,open,none,none,2026-10-04
-FR-037,priority csv repeated test name last row wins silently,F118,2c,silent wrong number,open,none,none,2026-10-04
+FR-037,priority csv repeated test name last row wins silently,F118,2c,silent wrong number,merged,147,none,2026-10-07
 FR-038,workbook stray grey row after last empty test,F123,5,noise,open,none,none,2026-10-04
 FR-039,thumbnail row height overwritten by clash row height,F123,5,noise,open,none,none,2026-10-04
 FR-040,item ids guid fallback counted missing,F118,2c,silent wrong number,open,none,none,2026-10-04
@@ -44,18 +44,18 @@ FR-042,page check warns wrong order on priority sorted page,F123,5,noise,open,no
 FR-043,reshaped group done but nwf never saved,F119,3b,silent wrong number,open,none,none,2026-10-04
 FR-044,nwf save false return ignored after rebuild,F119,3b,silent wrong number,open,none,none,2026-10-04
 FR-045,nwf save after clash work false return ignored,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-046,result file sizes wrong for the two open logs,F119,3b,silent wrong number,open,none,none,2026-10-04
+FR-046,result file sizes wrong for the two open logs,F119,3b,silent wrong number,merged,148,none,2026-10-07
 FR-047,tsv number column rounds a tolerance,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-048,tsv size zero for nwc not on disk,F119,3b,silent wrong number,open,none,none,2026-10-04
+FR-048,tsv size zero for nwc not on disk,F119,3b,silent wrong number,merged,148,none,2026-10-07
 FR-049,second run in window result covers both runs,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-050,run started but not finished reads as no run marked,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-051,result states zero waiting when no run marked,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-052,notolerance skip missing from skip reasons,F119,3b,silent wrong number,open,none,none,2026-10-04
+FR-050,run started but not finished reads as no run marked,F119,3b,silent wrong number,merged,148,none,2026-10-07
+FR-051,result states zero waiting when no run marked,F119,3b,silent wrong number,merged,148,none,2026-10-07
+FR-052,notolerance skip missing from skip reasons,F119,3b,silent wrong number,merged,148,none,2026-10-07
 FR-053,tolerance set on count counts tests not edited,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-054,log prune in temp fallback deletes other programs logs,F119,3b,broken feature,open,none,none,2026-10-04
-FR-055,tsv files never pruned,F119,3b,broken feature,open,none,none,2026-10-04
-FR-056,live line slower compares one test with whole group,F119,3b,broken feature,open,none,none,2026-10-04
-FR-057,run log write has no try,F119,3b,loud failure,open,none,none,2026-10-04
+FR-054,log prune in temp fallback deletes other programs logs,F119,3b,broken feature,merged,148,none,2026-10-07
+FR-055,tsv files never pruned,F119,3b,broken feature,merged,148,none,2026-10-07
+FR-056,live line slower compares one test with whole group,F119,3b,broken feature,merged,148,none,2026-10-07
+FR-057,run log write has no try,F119,3b,loud failure,in progress,"148 the listener half merged, the disk half open",none,2026-10-07
 FR-058,first clash line says all tests to create,F123,5,noise,open,none,none,2026-10-04
 FR-059,result files written leaves out pictures,F123,5,noise,open,none,none,2026-10-04
 FR-060,result found none counts groups that ran no test,F123,5,noise,open,none,none,2026-10-04
@@ -174,7 +174,7 @@ FR-172,t1 uncalled members 150,F123,5,noise,open,none,none,2026-10-04
 FR-173,t1 catch swallowing 77,F123,5,noise,open,none,none,2026-10-04
 FR-174,one public type per file,F124,5,noise,open,none,none,2026-10-04
 FR-175,no sleep and keep awake,none,none,Bader's request,merged,"99, records only, nothing to merge",none,2026-10-04
-FR-176,coverage of the clash xml,F127,2a,Bader's request,in progress,"none, branch fix-F127",none,2026-10-05
+FR-176,coverage of the clash xml,F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop",none,2026-10-07
 FR-177,generic models counted and a set per model,F128,2b,Bader's request,open,none,none,2026-10-04
 FR-178,start from an existing nwf,F129,3a,Bader's request,open,none,none,2026-10-04
 FR-179,shift range tick in the group list,F130,3b,Bader's request,open,none,none,2026-10-04
@@ -192,7 +192,7 @@ FR-191,work tracker one place for status,F133,beside the waves,Bader's decision,
 FR-192,code health gate lists only shrink,F134,beside the waves,Bader's decision,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 FR-193,analyser settings merged alone,F135,beside the waves,Bader's decision,open,none,none,2026-10-05
 FR-194,viewpoints switched off for test runs,F136,before any test run,Bader's decision,merged,117,none,2026-10-05
-FR-195,no site and no clash groups end partial,F137,before the test of wave 1,Bader's decision,open,none,none,2026-10-05
+FR-195,no site and no clash groups end partial,F137,before the test of wave 1,Bader's decision,in progress,"146 part 1 merged, Q125 B waits for F114 add-in pass",none,2026-10-07
 F1,fix the test name typo,F1,before the waves,fix,merged,merge 0432e82,none,2026-09-07
 F2,fix the hardcoded probe path,F2,before the waves,fix,merged,merge 0432e82,none,2026-09-07
 F3,"fix the two wrong messages, done inside F22",F22,before the waves,fix,merged,merge b041093,none,2026-09-07
@@ -314,8 +314,8 @@ F114,views,F114,2b,fix,in progress,"141 merged for the Core half, the add-in pas
 F115,sets,F115,2a,fix,merged,142,none,2026-10-07
 F116,the clash XML,F116,1,fix,merged,98,none,2026-10-05
 F117,the names,F117,5,fix,open,none,none,2026-10-04
-F118,workbook and report,F118,2c,fix,open,none,none,2026-10-04
-F119,run log and RESULT,F119,3b,fix,open,none,none,2026-10-04
+F118,workbook and report,F118,2c,fix,in progress,"147 FR-035 and FR-037 merged, the rest on the laptop",none,2026-10-07
+F119,run log and RESULT,F119,3b,fix,in progress,"148 nine items merged, the rest on the laptop",none,2026-10-07
 F120,harvest and pictures,F120,3a,fix,open,none,none,2026-10-04
 F121,the rest,F121,4,fix,open,none,none,2026-10-04
 F122,the loop tools,F122,4,fix,open,none,none,2026-10-04
@@ -323,7 +323,7 @@ F123,"docs and words, and the noise of every area",F123,5,fix,open,none,none,202
 F124,"D1, one public type per file",F124,5,fix,open,none,none,2026-10-04
 F125,a window that is not modal is a pane and not a dialog,F125,outside the waves,fix,merged,102,none,2026-10-06
 F126,the window driver unticks a tick box by its AutomationId,F126,outside the waves,fix,merged,112,none,2026-10-05
-F127,coverage of the clash XML,F127,2a,fix,in progress,"none, branch fix-F127",none,2026-10-05
+F127,coverage of the clash XML,F127,2a,fix,in progress,"145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop",none,2026-10-07
 F128,generic models,F128,2b,fix,open,none,none,2026-10-04
 F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
 F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
@@ -333,7 +333,7 @@ F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-06
 F134,the code health gate,F134,beside the waves,fix,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 F135,the analyser settings that touch every project,F135,beside the waves,fix,open,none,none,2026-10-05
 F136,the viewpoints switch,F136,before any test run,fix,merged,117,none,2026-10-05
-F137,no site and no clash groups,F137,before the test of wave 1,fix,open,none,none,2026-10-05
+F137,no site and no clash groups,F137,before the test of wave 1,fix,in progress,"146 part 1 merged, Q125 B waits for F114 add-in pass",none,2026-10-07
 F138,loop starts with Auto-Save off,F138,before any probe or run starts again,fix,proven by a run,127,"probes\q133-import-20261007-113149, Auto-Save off held on its real start",2026-10-07
 Q81,"local main tracked origin/master, its upstream set to origin/main",none,none,Bader's request,merged,"74, records only, nothing to merge",none,2026-09-29
 Q93,a reading of the loop's own scripts blocks a run only for harm or wrong evidence,none,none,Bader's request,merged,83,none,2026-10-04
@@ -344,7 +344,7 @@ Q97-1,the findings of the first C06 run in steps\runs\03\findings.md,none,none,B
 Q97-2,"the first run of C07 and the run set that night, replaced by Q98's no run of C07 now",none,none,Bader's request,dropped,none,none,2026-10-04
 Q98,the full fix round,all,all,Bader's request,in progress,none,none,2026-10-04
 Q112-1,no sleep and keep awake (FR-175),none,none,Bader's request,merged,"99, records only, nothing to merge",none,2026-10-04
-Q112-2,coverage of the clash XML (FR-176),F127,2a,Bader's request,in progress,"none, branch fix-F127",none,2026-10-05
+Q112-2,coverage of the clash XML (FR-176),F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop",none,2026-10-07
 Q112-3,generic models counted and a set per model (FR-177),F128,2b,Bader's request,open,none,none,2026-10-04
 Q112-4,start from an existing NWF (FR-178),F129,3a,Bader's request,open,none,none,2026-10-04
 Q112-5,Shift range tick in the group list (FR-179),F130,3b,Bader's request,open,none,none,2026-10-04
@@ -463,7 +463,7 @@ step 364,"the property probe on one mechanical NWC, run by the lead by Bader's a
 T5-R-WALKRACE,the harness's walk of the loop folder races a lane building under a wt- folder,none,none,register row,open,none,none,2026-10-07
 FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,open,none,none,2026-10-06
 FR-199,blocks stay in measured order with a priority file,F118,2c,Bader's decision,open,none,none,2026-10-06
-FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,open,none,none,2026-10-06
+FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,merged,153,none,2026-10-07
 FR-201,shared site named default reported only,F137,before the test of wave 1,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
 FR-202,sub object ownership measured before two reads change,F121,4,Bader's decision,open,none,none,2026-10-06
 FR-203,open statuses rule stays naming its reader,F123,5,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
@@ -498,3 +498,4 @@ F115-R20,leftovers are neither decided nor reported with the rebuild box off,F11
 F115-R21,a side whose sources read as none counts as zero sides and never as not counted,F115,2a,register row,open,none,none,2026-10-07
 F115-R22,a set created and then lost track of is reported FAILED and may not ask for the save,F115,2a,register row,open,none,none,2026-10-07
 F115-R23,two sets of one name in the picked file are built as one set and counted as one created and one already there,F115,2a,register row,open,none,none,2026-10-07
+F127-R1,read-workbook.ps1 reads every sheet as a test sheet so the Coverage sheet makes every F104 verdict NOT PROVED until it reads a sheet named Coverage into a section of its own,F127,2a,register row,open,none,none,2026-10-07

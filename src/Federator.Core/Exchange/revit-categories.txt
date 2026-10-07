@@ -39,6 +39,7 @@
 # It is NOT the penetration rule's service or solid list. Those are a handful of
 # categories this tool has made a judgement about. This is every category that exists.
 project: 1104
+folder: C02
 Acacia farnesiana
 Air Terminals
 Assembled Stair

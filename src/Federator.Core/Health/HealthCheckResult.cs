@@ -215,7 +215,8 @@ namespace Federator.Core.Health
             }
 
             lines.Add(RevitCategories.Line());
-            lines.Add("Sets asking for a category no model carries: " + CategoriesNobodyHas.Count);
+            lines.Add("Sets asking for a category no model carries: " + CategoriesNobodyHas.Count
+                + RevitCategories.MeasuredOn(", against the list measured on"));
 
             foreach (string line in Examples(CategoryNames()))
             {
