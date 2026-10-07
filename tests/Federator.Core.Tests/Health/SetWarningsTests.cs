@@ -180,7 +180,7 @@ namespace Federator.Core.Tests
             Assert.That(RevitCategories.Measured, Is.True,
                 "the list was measured off the C02 federations, see the scan notes");
             Assert.That(RevitCategories.Count, Is.EqualTo(374));
-            Assert.That(RevitCategories.Line(), Is.EqualTo("Revit categories known: 374"));
+            Assert.That(RevitCategories.Line(), Is.EqualTo("Revit categories known: 374, measured on the C02 folder only"));
 
             Assert.That(SetWarnings.FindCategoriesNobodyHas(
                 Sets(Set("A", null, Condition("equals", Category, "Telephone Equipment"))),
@@ -529,8 +529,9 @@ namespace Federator.Core.Tests
             string all = string.Join("\n", new List<string>(result.Summary()).ToArray());
 
             Assert.That(all, Does.Contain("Sets asking exactly the same question: 1"));
-            Assert.That(all, Does.Contain("Revit categories known: 374"));
-            Assert.That(all, Does.Contain("Sets asking for a category no model carries: 13"));
+            Assert.That(all, Does.Contain("Revit categories known: 374, measured on the C02 folder only"));
+            Assert.That(all, Does.Contain(
+                "Sets asking for a category no model carries: 13, against the list measured on the C02 folder only"));
             Assert.That(all, Does.Contain("BLD-AR-Roofs asks for \"Roofs\""));
             Assert.That(all, Does.Contain("and 8 more, counted and not listed"));
 
@@ -622,6 +623,23 @@ namespace Federator.Core.Tests
             Assert.That(RevitCategories.Measured, Is.True);
             Assert.That(RevitCategories.Line(), Does.Not.Contain("none yet"));
             Assert.That(RevitCategories.Line(), Does.Not.Contain("UNKNOWN"));
+        }
+
+        /// <summary>
+        /// FR-064, Bader's answer to Q56b: the block says which folder the list was measured from. The
+        /// name comes off the folder line of the data file and is never typed into code.
+        /// </summary>
+        [Test]
+        public void TheCategoryListNamesTheFolderItWasMeasuredOnOffItsOwnFile()
+        {
+            Assert.That(RevitCategories.Folder, Is.EqualTo("C02"));
+            Assert.That(RevitCategories.FolderIn("folder: C02"), Is.EqualTo("C02"));
+            Assert.That(RevitCategories.FolderIn("folder:"), Is.Null);
+            Assert.That(RevitCategories.FolderIn("folder:   "), Is.Null);
+            Assert.That(RevitCategories.FolderIn("project: 1104"), Is.Null);
+            Assert.That(RevitCategories.FolderIn("Air Terminals"), Is.Null);
+            Assert.That(RevitCategories.All(), Has.No.Member("folder: C02"), "the folder line is not a category");
+            Assert.That(RevitCategories.Count, Is.EqualTo(374));
         }
     }
 }
