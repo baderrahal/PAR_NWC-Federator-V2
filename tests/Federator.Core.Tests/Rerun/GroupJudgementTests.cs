@@ -715,7 +715,11 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// A group failed on a model naming no site whose clash was also skipped for a model on
-        /// Internal, with a stale NWD, names all three, the model first and the skip last.
+        /// Internal, with a stale NWD, names all three, the model first and the skip last. The rule
+        /// for the reason is read with the rule off, since F137 a no site model fails a group only
+        /// where its clash is not skipped, and the skip is the fact the judgement is given beside it.
+        /// The engine can no longer make that pair for one group, so this is a test of how the
+        /// judgement joins the reasons and nothing more.
         /// </summary>
         [Test]
         public void AGroupFailedOnItsModelsWhoseClashWasSkippedNamesTheStaleNwdAndTheSkip()
@@ -723,12 +727,11 @@ namespace Federator.Core.Tests
             IList<ModelPlacement> models = new List<ModelPlacement>
             {
                 new ModelPlacement("1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc", "AR", "A site", 0.0, 0.0, 0.0),
-                new ModelPlacement("1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc", "EL", "Internal", 0.0, 0.0, 0.0),
                 new ModelPlacement("1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc", "ST", string.Empty, 0.0, 0.0, 0.0)
             };
 
             GroupFacts facts = Clean();
-            facts.AlignmentFailure = AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, true, true);
+            facts.AlignmentFailure = AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, false, true);
             facts.ClashSkippedOffCoordinates = true;
             facts.NwdPublishReportedSuccess = false;
 
