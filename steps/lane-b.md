@@ -20,7 +20,7 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 | 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items merged as pull request 148 with FR-057 half, the rest left for the laptop lane |
 | 6 | F128's Core part, generic models, FR-177 | fix-F128 | not started, see below |
 | 7 | F121 the rest, FR-150 to FR-166 and FR-202, wave 4 | fix-F121 | five items merged as pull request 150, the rest left for the laptop lane |
-| 8 | F123 docs and words and the noise of every area, wave 5 | fix-F123 | merged as 151, 154, 155, 161, 162, 163 and 164, T1-N56 and N57 in review |
+| 8 | F123 docs and words and the noise of every area, wave 5 | fix-F123 | merged as 151, 154, 155, 161, 162, 163, 164 and 165 |
 
 ## The item the lane is on
 
@@ -105,7 +105,7 @@ lane's to set in the tracker.
 | F123 | FR-171 in part, the Core noise entries of the turn 1 read that still held on main. T1-N72 the probe's grey line says one CSV per model. T1-N87 the Rebuilt confirm line names the shape it clears. T1-N69 the health line of a file with no sets says the sets are looked for and not checked. T1-N60 an identical ternary. T1-N71, N59, N53, N70, N73, N79, N67 comments that said the opposite of the code or called a constant a setting. Core tests 2402 run, 2368 passed, 0 failed, 34 skipped, and 3 failing on the old source | 162 | merged, b52e914 |
 | F123 | FR-171 T1-N62, in the run timing block the by group section is labelled outside every group and says every second of the run is inside a group, or that the groups add up to more than the run took, where it said step. The by step section and the group block keep their words. The tests do not build against the old source, since the new label is a new member, so the old source was not run against them. Core tests 2404 run, 2370 passed, 0 failed, 34 skipped | 163 | merged, de2e558 |
 | F123 | FR-171 T1-N89, the edit distance written line for line in the EMPTY SETS judge and in the workset disagreements is one routine, EditDistance, and each reader hands it its own cap. Four tests on the routine, and the two readers' own tests unchanged. The new tests do not build against the old source. Core tests 2408 run, 2374 passed, 0 failed, 34 skipped | 164 | merged, b99c736 |
-| F123 | FR-171 T1-N56 and N57 in RunLog. The numbered line writes its machine readable row through Row, which it had copied line for line, and the seconds, visits and throws of a step in a group are added up in one place, TotalOf, where two loops did it. No behaviour changes, and one test added after the reader found the step sums unpinned at log level, a repeated step with one visit that threw. Core tests 2409 run, 2375 passed, 0 failed, 34 skipped | in review | in review |
+| F123 | FR-171 T1-N56 and N57 in RunLog. The numbered line writes its machine readable row through Row, which it had copied line for line, and the seconds, visits and throws of a step in a group are added up in one place, TotalOf, where two loops did it. No behaviour changes, and one test added after the reader found the step sums unpinned at log level, a repeated step with one visit that threw. Core tests 2409 run, 2375 passed, 0 failed, 34 skipped | 165 | merged, 04e68b8 |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -176,7 +176,7 @@ outside every step, which is true of the group block, and the by group section o
 every group since 163. Lane B never edits .claude.
 
 The pull requests lane B merged on the first part of the night are 142, 145, 146, 147, 148, 150 and 151,
-and on the second 154, 155, 160, 161, 162, 163 and this page's. Each ran its Core tests under mono here
+and on the second 154, 155, 160, 161, 162, 163, 164, 165 and the pull request that carries this page. Each ran its Core tests under mono here
 and on the Windows runner of Actions, each had one reader, and where a reader found a fault that
 changes what the team sees it was fixed before the merge.
 
