@@ -27,13 +27,16 @@ namespace Federator.Core.Report
     /// index path or anything else that names one item in the document, is the add-in's,
     /// and an empty or UNKNOWN key is an item not read.
     ///
-    /// FAIL CLOSED ON WHAT WAS NOT READ. A clash of a mirror with an item not read cannot be
-    /// told from one the kept test holds, and added it could count one clash twice, so it is
-    /// not added, and taken out with its mirror it would be in no block, F132 attempt 10. So
-    /// that mirror is not merged and stays in the report as its own test with every clash it
-    /// found, and the log says it is UNKNOWN whether the kept test found it. A clash of the
-    /// kept test with an item not read could match a clash of a mirror, so the log says how
-    /// many of those said to be found by a mirror only may be the kept test's own.
+    /// FAIL CLOSED ON WHAT WAS NOT READ. A mirror is merged only where every clash on both
+    /// sides, the kept test's and the mirror's, has both items read. A clash of a mirror with
+    /// an item not read cannot be told from one the kept test holds, and added it could count
+    /// one clash twice, so it is not added, and taken out with its mirror it would be in no
+    /// block, F132 attempt 10. So that mirror is not merged and stays in the report as its own
+    /// test with every clash it found, and the log says it is UNKNOWN whether the kept test
+    /// found it. A clash of the kept test with an item not read cannot be matched to a
+    /// mirror's copy of it, which would then be added as found by the mirror only and held
+    /// twice, F132 attempt 11. So nothing is merged into that kept test, each of its mirrors
+    /// stays in the report as its own test, and the log says why.
     ///
     /// WHAT WAS HANDED IS WHAT THE REPORT HOLDS, both ways, F132 attempt 8. Every row the kept
     /// test's clashes are handed with is held by its report, and every row it holds was
@@ -240,9 +243,9 @@ namespace Federator.Core.Report
         /// nothing. Nothing is merged either where a clash of the kept test was handed with a
         /// row the report does not hold under it, since the status the rule gives could then
         /// reach no row, or where a row it holds was handed with another number of clashes
-        /// than it stands for, and a mirror handed another number of clashes than its report
-        /// holds, or a clash with an item not read, keeps its place and merges nothing. Every
-        /// one of those is said by Lines.
+        /// than it stands for, or where a clash of it was handed with an item not read, and a
+        /// mirror handed another number of clashes than its report holds, or a clash with an
+        /// item not read, keeps its place and merges nothing. Every one of those is said by Lines.
         /// </summary>
         public void AddTo(ClashReport report)
         {
@@ -272,7 +275,7 @@ namespace Federator.Core.Report
                 return;
             }
 
-            notMerged = Unmatched(kept);
+            notMerged = Unmatched(kept) ?? KeptNotRead();
 
             if (notMerged != null)
             {
@@ -438,6 +441,25 @@ namespace Federator.Core.Report
                 + ", so which of its clashes a mirror found too is UNKNOWN and nothing is merged";
         }
 
+        /// <summary>
+        /// The words for the kept test's clashes handed with an item not read, F132 attempt 11, or
+        /// null where every one was read. Such a clash cannot be matched to a mirror's, so a
+        /// mirror's copy of it would be added as found by the mirror only and the kept test
+        /// would hold it twice.
+        /// </summary>
+        private string KeptNotRead()
+        {
+            if (keptNotRead == 0)
+            {
+                return null;
+            }
+
+            return keptNotRead + (keptNotRead == 1 ? " clash of " : " clashes of ") + Kept.Name
+                + (keptNotRead == 1 ? " has" : " have") + " an item that was not read, so which clashes of its mirrors it "
+                + "found too is UNKNOWN, nothing is merged into " + Kept.Name + ", and each of its mirrors stays in the "
+                + "report as its own test, where a clash both find is counted twice";
+        }
+
         private static IList<TestReport> Named(ClashReport report, string name)
         {
             List<TestReport> named = new List<TestReport>();
@@ -462,7 +484,8 @@ namespace Federator.Core.Report
         /// Q138, and that it was taken out of the report. A mirror that did not run, was handed
         /// another number of clashes than its report holds, or was handed a clash with an item
         /// not read, is one line saying so, UNKNOWN and never 0. Last, what the report holds under
-        /// the kept test. Before AddTo has run, one line saying what each found is UNKNOWN.
+        /// the kept test. Before AddTo has run, one line saying what each found is UNKNOWN. A kept
+        /// test with a clash of an item not read merges nothing, so it is the one line of why.
         /// </summary>
         public IList<string> Lines()
         {
@@ -554,13 +577,6 @@ namespace Federator.Core.Report
 
                 lines.Add(MirrorRule.Prefix + "   " + mirror
                     + " is taken out of the report, so its own results are not reported a second time");
-            }
-
-            if (keptNotRead > 0)
-            {
-                lines.Add(MirrorRule.Prefix + "   " + keptNotRead + (keptNotRead == 1 ? " clash of " : " clashes of ")
-                    + kept + (keptNotRead == 1 ? " has" : " have") + " an item that was not read, so up to " + keptNotRead
-                    + " of the clashes found by a mirror only may be " + kept + "'s own as well, UNKNOWN");
             }
 
             lines.Add(MirrorRule.Prefix + "   the report holds " + held.ToString(CultureInfo.InvariantCulture)

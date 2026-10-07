@@ -142,8 +142,8 @@ namespace Federator.Core.Clash
         /// with the first test's value then the other's, the other's sides set against the
         /// first's they stand for, swapped where sidesSwapped. The sets are the same question
         /// by the rule that judged the two, so only the flags of each side are compared, never
-        /// the set names. Read by the pair's line and by MirrorRule where the document holds a
-        /// test under the kept test's name, F132 attempt 10.
+        /// the set names. Read by the pair's line and by MirrorRule.OtherSettings for every test
+        /// the document holds that is run as a test of a pair, F132 attempts 10 and 11.
         /// </summary>
         internal static IList<string> SettingsDiffer(PlannedClashTest first, PlannedClashTest other, bool sidesSwapped)
         {

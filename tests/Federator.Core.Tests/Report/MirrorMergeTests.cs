@@ -892,12 +892,8 @@ namespace Federator.Core.Tests
             Found(report, merge, 0, null, "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
             merge.AddTo(report);
 
-            string all = Text(merge.Lines());
-
-            Assert.That(all, Does.Contain(NotReadLine(1)));
-            Assert.That(all, Does.Contain(MirrorRule.Prefix + "   1 clash of " + Kept
-                + " has an item that was not read, so up to 1 of the clashes found by a mirror only may be "
-                + Kept + "'s own as well, UNKNOWN"));
+            Assert.That(Named(report, Mirror), Is.Not.Null, "the mirror keeps its place");
+            Assert.That(merge.Lines(), Is.EqualTo(new[] { KeptNotReadLine(1) }));
         }
 
         [Test]
@@ -965,6 +961,58 @@ namespace Federator.Core.Tests
                     NotReadLine(notRead),
                     MirrorRule.Prefix + "   the report holds 1 under " + Kept
                 }));
+            }
+        }
+
+        /// <summary>The line of a kept test that merges nothing because that many of its clashes have an item not read.</summary>
+        private static string KeptNotReadLine(int notRead)
+        {
+            return MirrorRule.Prefix + "   " + notRead + (notRead == 1 ? " clash of " : " clashes of ") + Kept
+                + (notRead == 1 ? " has" : " have") + " an item that was not read, so which clashes of its mirrors it found "
+                + "too is UNKNOWN, nothing is merged into " + Kept + ", and each of its mirrors stays in the report as its "
+                + "own test, where a clash both find is counted twice";
+        }
+
+        // Both readers' second finding on attempt 10, under Bader's rule Q140. A clash of the
+        // kept test with an item not read cannot be matched, so until attempt 11 a mirror's
+        // clash of the same two items, both read, was added to the kept test as found by the
+        // mirror only, and the kept block held that clash twice. Now nothing is merged into a
+        // kept test holding such a clash, each mirror stays in the report as its own test with
+        // every clash it found, and the line says why.
+        [Test]
+        public void AKeptTestWithAClashOfAnItemNotReadMergesNothing()
+        {
+            foreach (string unread in new[] { null, string.Empty, TestSettings.UnknownLocator })
+            {
+                foreach (int notRead in new[] { 1, 2 })
+                {
+                    MirrorMerge merge = TheMerge();
+                    ClashReport report = TheReport(merge, 1);
+                    TestReport kept = Named(report, Kept);
+
+                    for (int i = 1; i <= notRead; i++)
+                    {
+                        ClashRow row = Row("Clash" + (1 + i), ClashStatus.New, "duct " + (4 + i), "column " + (4 + i));
+
+                        kept.Add(row);
+                        merge.KeptFound(unread, "item " + (4 + i), ClashStatus.New, row);
+                    }
+
+                    Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
+                    Found(report, merge, 0, "item 5", "item 50", Row("Clash2", ClashStatus.New, "column 5", "duct 5"));
+                    merge.AddTo(report);
+
+                    string read = "read as \"" + unread + "\", " + notRead;
+
+                    Assert.That(kept.Rows.Count, Is.EqualTo(1 + notRead), "no clash of the mirror is added to the kept test, " + read);
+                    Assert.That(Named(report, Mirror), Is.Not.Null, "the mirror keeps its place, " + read);
+                    Assert.That(Named(report, Mirror).Rows.Count, Is.EqualTo(2), read);
+                    Assert.That(report.Totals.Total, Is.EqualTo(3 + notRead), "every clash is in its own test's block, " + read);
+                    Assert.That(report.MirrorsMerged, Is.EqualTo(0), read);
+                    Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0), read);
+                    Assert.That(merge.FoundByBoth, Is.Null, read);
+                    Assert.That(merge.Lines(), Is.EqualTo(new[] { KeptNotReadLine(notRead) }), read);
+                }
             }
         }
 

@@ -55,6 +55,13 @@ namespace Federator.Core.Clash
     /// a type this tool does not run, no pair of that kept test is made, each of its mirrors
     /// keeps its own clashes, and a line says why.
     ///
+    /// EVERY TEST OF A PAIR THE DOCUMENT HOLDS, F132 attempts 10 and 11. A test the document
+    /// holds is run as a test of a pair only where it is read whole, asks the XML test's
+    /// question and carries the XML test's settings, OtherSettings, the one rule: under the
+    /// kept test's name and under the mirror's, HeldAs, the mirror's own XML name with the
+    /// ending among them, and made by either rename below. Otherwise no pair is made, or the
+    /// rename is not made and the test is created from the XML, and a line says why.
+    ///
     /// A TEST SAVED BEFORE THE MIRROR RULE, Bader's answer A to Q136. Renames plans each
     /// saved test under the XML's name of a mirror, Y, whose sides ask the kept test's
     /// question by the same rule, to be renamed to its own name with the ending, Y (mirror),
@@ -254,7 +261,7 @@ namespace Federator.Core.Clash
                 List<PlannedClashTest> group = byQuestion[key];
                 PlannedClashTest kept = KeptOf(group, priorities);
                 bool keptCountedTwice;
-                string keptHeld = KeptHeldAs(document, kept, identity, out keptCountedTwice);
+                string keptHeld = HeldAs(document, kept.Name, kept, identity, out keptCountedTwice);
 
                 foreach (PlannedClashTest other in group)
                 {
@@ -271,9 +278,7 @@ namespace Federator.Core.Clash
 
                     if (keptHeld != null)
                     {
-                        moved.Add(Prefix + "   the document holds " + keptHeld + ". A test is run by its name, so "
-                            + other.Name + " is not paired with it as a mirror and keeps its own clashes"
-                            + (keptCountedTwice ? ", and a clash both find may be counted twice" : string.Empty));
+                        moved.Add(NotPairedFor(keptHeld, other.Name, "it", keptCountedTwice));
                         continue;
                     }
 
@@ -282,6 +287,14 @@ namespace Federator.Core.Clash
                     string name = settings.NameFor(
                         other.Name,
                         candidate => names.Contains(candidate) || HeldByAnother(document, candidate, other, kept, identity, passed));
+                    bool mirrorCountedTwice;
+                    string mirrorHeld = HeldAs(document, name, other, identity, out mirrorCountedTwice);
+
+                    if (mirrorHeld != null)
+                    {
+                        moved.Add(NotPairedFor(mirrorHeld, other.Name, kept.Name, mirrorCountedTwice));
+                        continue;
+                    }
 
                     foreach (string held in passed)
                     {
@@ -366,48 +379,75 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// What the document holds under the kept test's own name on an XML run, F132 attempts 9
-        /// and 10, where it may not ask the question the pair was judged on at the settings it was
-        /// judged at, or null where it holds no test of that name or the one it holds asks that
-        /// question, in the kept test's order or swapped, by its sides, with every setting
-        /// TestDrift.Compare reads the XML's. A test is run by its name and a drifted test is
-        /// left as it is, so a mirror's clashes merged into it would sit under another question,
-        /// or be clashes it never found at its own settings. CountedTwice is true where a clash
-        /// both find may then be counted twice, its question the same or UNKNOWN.
+        /// What the document holds under the name a test of a pair runs under on an XML run, the
+        /// kept test's own or the mirror's, F132 attempts 9 to 11, where it may not ask the XML
+        /// test's question at the XML test's settings, or null where it holds no test of that
+        /// name, so the test is created from the XML, or the one it holds asks that question, in
+        /// either order, by its sides, at the XML's settings, OtherSettings. A test is run by its
+        /// name and a drifted test is left as it is, so a mirror's clashes merged into it would
+        /// sit under another question, or be clashes found at other settings. The mirror's name
+        /// is read here once NameFor gave it, since a name with the ending is given back without
+        /// asking whether it is taken. CountedTwice is true where a clash both find may then be
+        /// counted twice, its question the same or UNKNOWN.
         /// </summary>
-        private static string KeptHeldAs(
-            InTheDocument document, PlannedClashTest kept, SetIdentity identity, out bool countedTwice)
+        private static string HeldAs(
+            InTheDocument document, string name, PlannedClashTest xml, SetIdentity identity, out bool countedTwice)
         {
             countedTwice = true;
 
             PlannedClashTest one;
-            string held = OneReadUnder(document, kept.Name, kept.Name, "it asks the XML's question of " + kept.Name, out one);
+            string held = OneReadUnder(document, name, name, "it asks the XML's question of " + xml.Name, out one);
 
             if (one == null)
             {
                 return held;
             }
 
-            bool? asks = identity.Asks(one, kept);
+            bool? asks = identity.Asks(one, xml);
 
             if (asks == true)
             {
-                IList<string> differ = MirrorPair.SettingsDiffer(kept, one, identity.SidesSwapped(one, kept));
+                string other = OtherSettings(one, xml, identity);
 
-                return differ.Count == 0
-                    ? null
-                    : "a test named " + kept.Name + " that asks the XML's question of " + kept.Name + " at other "
-                        + "settings, the XML's first: " + string.Join(", ", new List<string>(differ).ToArray());
+                return other == null ? null : "a test named " + name + " that " + other;
             }
 
             if (asks == null)
             {
-                return "a test named " + kept.Name + ", and whether its sides ask the XML's question of " + kept.Name
+                return "a test named " + name + ", and whether its sides ask the XML's question of " + xml.Name
                     + " is UNKNOWN, a set's rule list not read";
             }
 
             countedTwice = false;
-            return "a test named " + kept.Name + " whose sides ask another question than the XML's " + kept.Name;
+            return "a test named " + name + " whose sides ask another question than the XML's " + xml.Name;
+        }
+
+        /// <summary>
+        /// The one rule of the settings of a test the document holds that is run as a test of a
+        /// pair on an XML run, F132 attempt 11: found under the kept test's name or the mirror's,
+        /// HeldAs, or made by a rename, an old test renamed as the mirror, Q136 A, or an earlier
+        /// mirror renamed back to the name of a test the XML runs. Its sides were read and ask the
+        /// XML test's question. Null where every setting TestDrift.Compare reads is the XML
+        /// test's, its sides set against the XML's sides they stand for, or the words naming
+        /// each setting, the XML's value first. Every caller then makes no pair or no rename, so
+        /// no clash found at other settings is merged into a kept test.
+        /// </summary>
+        private static string OtherSettings(PlannedClashTest saved, PlannedClashTest xml, SetIdentity identity)
+        {
+            IList<string> differ = MirrorPair.SettingsDiffer(xml, saved, identity.SidesSwapped(saved, xml));
+
+            return differ.Count == 0
+                ? null
+                : "asks the XML's question of " + xml.Name + " at other settings, the XML's first: "
+                    + string.Join(", ", new List<string>(differ).ToArray());
+        }
+
+        /// <summary>The line of a pair not made because of what the document holds under the name of one of its tests.</summary>
+        private static string NotPairedFor(string held, string mirror, string with, bool countedTwice)
+        {
+            return Prefix + "   the document holds " + held + ". A test is run by its name, so " + mirror + " is not "
+                + "paired with " + with + " as a mirror and keeps its own clashes"
+                + (countedTwice ? ", and a clash both find may be counted twice" : string.Empty);
         }
 
         /// <summary>
@@ -602,12 +642,14 @@ namespace Federator.Core.Clash
         /// test's, and run as it, its statuses kept, where its sides ask the kept test's
         /// question as a mirror by the rule the pair was read by, AsAMirror. Refused and said
         /// where the document holds a test of the new name, any test FromDocument leaves out
-        /// too, where two saved tests carry the old name, and where its sides do not ask that
-        /// question or were not read. Then the change of roles, F132 attempt 8: for each test
+        /// too, where two saved tests carry the old name, where its sides do not ask that
+        /// question or were not read, and where it carries other settings than the XML's mirror,
+        /// OtherSettings. Then the change of roles, F132 attempt 8: for each test
         /// the XML runs under its own name that the document does not hold, the one saved test
         /// carrying a name NameFor gives it as a mirror, under no name the plan runs, with its
         /// two sets in its order, is planned to be renamed back to it, its statuses kept, and
-        /// two that fit or one whose sides were not read are refused and said. Last, each pair
+        /// two that fit, one whose sides were not read, or one at other settings than the XML
+        /// test's where that test is kept in a pair, OtherSettings, are refused and said. Last, each pair
         /// not made for the kept test's name and each mirror named past a name the document
         /// holds, in the order the pairs were judged. No saved test is planned twice, no
         /// rename lands on a name the document holds, and no two land on one name, since a
@@ -624,11 +666,13 @@ namespace Federator.Core.Clash
             List<MirrorRename> planned = new List<MirrorRename>();
             HashSet<PlannedClashTest> renamed = new HashSet<PlannedClashTest>();
             HashSet<PlannedClashTest> mirrors = new HashSet<PlannedClashTest>();
+            HashSet<PlannedClashTest> kept = new HashSet<PlannedClashTest>();
             List<string> each = new List<string>();
 
             foreach (MirrorPair pair in pairs)
             {
                 mirrors.Add(pair.Mirror);
+                kept.Add(pair.Kept);
 
                 IList<PlannedClashTest> old = document.Named(pair.Mirror.Name);
 
@@ -666,6 +710,15 @@ namespace Federator.Core.Clash
                         ? "whether its sides ask the question of " + pair.Kept.Name + " is UNKNOWN, a side or its set "
                             + "not read"
                         : "its sides do not ask the question of " + pair.Kept.Name + " as a mirror")
+                        + ", so it is left as it is and not run");
+                    continue;
+                }
+
+                string drifted = OtherSettings(old[0], pair.Mirror, identity);
+
+                if (drifted != null)
+                {
+                    each.Add(said + "is not renamed " + pair.MirrorName + ", because it " + drifted
                         + ", so it is left as it is and not run");
                     continue;
                 }
@@ -718,6 +771,22 @@ namespace Federator.Core.Clash
                     {
                         fit.Add(saved);
                     }
+                }
+
+                // A test the XML runs alone merges nothing, so one renamed back at other settings
+                // is a drift the DRIFT block names, and refused it would leave a second test of
+                // its question beside the one created.
+                string backDrifted = fit.Count == 1 && notRead.Count == 0 && kept.Contains(test)
+                    ? OtherSettings(fit[0], test, identity)
+                    : null;
+
+                if (backDrifted != null)
+                {
+                    notGivenBack++;
+                    back.Add(Prefix + "   " + fit[0].Name + " carries a name this tool gives " + test.Name + " as a mirror, "
+                        + "with its two sets in its order, and " + backDrifted + ". It is not renamed " + test.Name + ", "
+                        + test.Name + " is created beside it, and a clash both find may be counted twice");
+                    continue;
                 }
 
                 if (fit.Count == 1 && notRead.Count == 0)
