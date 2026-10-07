@@ -100,6 +100,7 @@ lane's to set in the tracker.
 | F123 | FR-007 two names that differ by an ordinary space are described by the space and its place and not as invisible characters. FR-061 the text log says a collapsed line is kept in the .tsv only where the .tsv opened. FR-064 the category list names the folder it was measured on off its own data file and the HEALTH lines carry it | 151 | merged, dfe0fb0 |
 | F123 | Part 2, six wordings that said more or less than was known. FR-126 the single discipline detail says which tests are created and that none is run. FR-127 the tolerance help line says results and statuses are kept and never that they are reset. FR-129 a failure after good tests is no longer called one of the first tests. FR-130 the refill counts the names it kept, a name and not a row. FR-131 an NWF folder inside the scanned folder is said as that and not as unreadable. FR-132 the rebuild help line names the removal of an unused set. Each has a test that fails on the old words, 8 failing before the change and 0 after. The reader found a framework message could reach the Outputs line through the new catch, which is fixed and tested before the merge | 154 | merged, 46a6f68 |
 | F123 | FR-168 a folders file that could not be used is named with why in the startup block and is never read as a first run, with a test that holds on every machine and one that needs a locked file and runs on Windows only. Core tests 2377 before and 2380 after, 0 failed | 155 | merged, 750cd51 |
+| F121 | The two points the second reading of F121 left: a name typed by hand with a character Windows refuses, a colon, a slash, a control character, is refused by the check before a run and named, and a collision between many groups names the first five and counts the rest, as an unusable name does. The refused characters are the list FileNames holds, never the running platform's. Core tests 2400 run, 2366 passed, 0 failed, 34 skipped, and 3 failing on the old source | in review | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -254,9 +255,7 @@ and 148, and each ran its Core tests under mono here and on the Windows runner o
   and OnRun reads it off the ticked groups only, near line 1764, so the two can give different counts for
   the same table, and a cleared name cell of an unticked group makes the preview say THE RUN CANNOT
   START where the run would start. The preview should read the same Only(TickedGroupKeys()) table
-- A hand typed name with a character Windows refuses, such as a colon or a slash, still passes
-  WhyTheRunCannotStart and reaches the write, and NameCollision.Sentence names every group of a
-  collision where the repeat rule would name five
+- Closed by lane B in the pull request listed above: the hand typed name with a character Windows refuses and the collision sentence naming every group
 
 ## F123 points lane B left, for the laptop lane
 
