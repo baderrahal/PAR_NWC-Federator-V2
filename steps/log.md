@@ -675,7 +675,23 @@ f126-records-harness.py, which made the edits. Also /tmp/added.txt of Git for Wi
 lines read for a semicolon, deleted once read.
 
 
-## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built again after an eighth attempt on Bader's answers B to Q121, D to Q133, A to Q136, A to Q137 and B to Q138 and his rule of 2026-10-06 for its next reading, finished on 2026-10-06, and held on its branch
+## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built again after a ninth attempt on Bader's answers B to Q121, D to Q133, A to Q136, A to Q137 and B to Q138 and his rule of 2026-10-06 for its next reading, attempt 9 on 2026-10-07, and held on its branch
+
+Written by F132's developer as the lead's delegate. Attempt 9, under Bader's rule Q140, on the
+one point of the readings of attempt 8 that puts a clash under the wrong test, the breaker's
+finding 1 in turn5\lanes-a8-break8-F132.json, CHANGES, with the reviewer's reading
+turn5\lanes-a8-review8-F132.json, APPROVE. Core tests 2092 passed, 0 failed, 0 skipped at
+93b45b1 with the tree clean, turn5\f132k-tests-before.txt. 2 of the 3 new tests failed first
+against the code of 93b45b1, the third a guard that passes by design, turn5\f132k-before-fail.txt.
+The code, d992fef, 2095 passed, 0 failed, 0 skipped by its pre-commit,
+turn5\f132k-precommit-1.txt. Main eda357b taken in at 06dba4c, one conflict in steps\01_next.md
+resolved with both sides kept, 2095 passed by its pre-commit, turn5\f132k-precommit-merge.txt,
+and on their own, turn5\f132k-tests-after.txt. `dotnet build ParsonsNwcFederator.sln -c Release
+--no-incremental` built Federator.Core, Federator.Core.Tests and Federator.Addin with 0 errors and
+0 warnings at 06dba4c with the tree clean, turn5\f132k-build-code.txt, whose first lines carry the
+hash and the empty status. check-locals and check-imports exit 0 over src, turn5\f132k-checks.txt.
+This developer started no Navisworks and touched none, and Get-Process Roamer read no process at
+11:24:20, turn5\f132k-roamer.txt. No add-in file changed in attempt 9.
 
 Written by F132's developer as the lead's delegate. Attempt 8, under Bader's rule of 2026-10-06 for
 F132's next reading, turn5\q-old22-words.txt: after the readings of attempt 7,
@@ -814,6 +830,36 @@ end of each, turn5\f132-roamer-after.txt, f132b-roamer-before.txt and f132b-roam
 
 ### What was done
 
+- attempt 9, d992fef, THE KEPT TEST'S OWN NAME IN THE DOCUMENT, the breaker's blocking finding on
+  attempt 8. INPUT: an XML run over an NWF holding a test under the kept test's name X with other
+  sets than the XML gives X, such as A against B where the XML now gives X as A against C and its
+  swap Y as C against A. ROOT: Of judged each pair on the XML's sets and never read what the
+  document holds under the kept test's name, src\Federator.Core\Clash\MirrorRule.cs lines 247 to
+  288 at 93b45b1, while the add-in runs a planned test by finding it by name, ClashRunner.cs line
+  629, and leaves a drifted test as it is, line 993. So the document's X on A against B ran as X and
+  every clash only Y (mirror) found was added to it as found by the mirror only. FIX: KeptHeldAs
+  reads the document's test of the kept test's name, and the pair is made only where that test asks
+  the XML's question, in its order or swapped, by SetIdentity.Asks, the question key the pair was
+  judged on. Where it asks another question, or what it asks is UNKNOWN, a side or a set's rule list
+  not read, two of the name, or a type this tool does not run, no pair of that kept test is made,
+  each of its mirrors keeps its own clashes under its own name, and a MIRROR line among the Renames
+  lines says why, and that a clash both find may be counted twice where it is UNKNOWN. AsAMirror is
+  built on Asks, and OneReadUnder holds the three UNKNOWN cases HeldByAnother and KeptHeldAs share.
+  RenamesIn plans over the pairs, so a pair not made plans no rename, the breaker's point on its
+  first loop. In: ATestTheDocumentHoldsUnderTheKeptTestsNameAskingAnotherQuestionIsNotPaired and
+  ATestUnderTheKeptTestsNameThatMayAskAnotherQuestionIsNotPaired, failing first, and
+  ATestUnderTheKeptTestsNameAskingItsQuestionIsPaired, a guard
+- attempt 9, two older tests, AnOldTestWhoseSidesWereNotReadIsNotRenamed and
+  ATestUnderTheMirrorsNameThatMayNotBeItIsNotRunAsTheMirror, held the kept test in the document
+  with placeholder sides, which now makes no pair. Their document now holds the kept test with its
+  sides read and the other test as the add-in hands it, KeptReadAndHanded, so each still tests the
+  side it names, every assert kept
+- attempt 9, main eda357b taken in at 06dba4c, the conflict in the F132 section of
+  steps\01_next.md resolved with both sides kept, main's bullet of Bader's order before the ATTEMPT
+  8 bullet. The merge changed no file under src or tests
+- attempt 9 records: the rule in .claude\rules\core.md, THE KEPT TEST'S OWN NAME, the ATTEMPT 9
+  bullet of the F132 section of steps\01_next.md, and this entry. steps\loop.md, steps\tracker.csv
+  and steps\02_questions.md not touched
 - attempt 8, every finding of the two readings of attempt 7 and every row under Known bugs read
   under Bader's rule. Five can change a clash count or put a clash under the wrong test, each
   below with the input that does it, and are fixed. Every other is a register row under Known
@@ -1276,6 +1322,49 @@ end of each, turn5\f132-roamer-after.txt, f132b-roamer-before.txt and f132b-roam
 
 ### Known bugs
 
+- attempt 9, CLOSED: the attempt 8 row below on the reviewer's row of attempt 7, which says no
+  clash goes under another test, was false, the breaker's finding 1 on attempt 8, fixed above
+- attempt 9, register, the breaker's finding 2: a clash only a mirror found with an item key not
+  read is in no block once its mirror is merged and taken out, so the Excel is one clash short of
+  the panel for that mirror, said on its line, MirrorMerge.cs lines 324 to 327 with 292 to 299. It
+  can change a count. The breaker's way, leave such a mirror in the report as its own test, loses
+  none and may count a clash twice. P1 read every key, so it may never fire. The lead's call
+- attempt 9, register, the reviewer's finding 2: rows that can change a count stay register rows
+  where each is said, the unread clash above, two saved mirrors of one name both kept, the 59 rule
+  list pairs unpaired on every weekly run, and attempt 8's own refusals. Whether a row said in the
+  log is still a fault under Q140 is Bader's word, for the lead to ask
+- attempt 9, register, the breaker's finding 3: the weekly run with no XML over an NWF holding the
+  59 rule list pairs of the corrected matrix leaves each unpaired, so a clash both find is counted
+  twice, said, while the XML run of the same NWF counts it once. Core cannot close it, since only
+  the add-in can read the document's rule lists. Waits for the add-in half to hand them
+- attempt 9, register, the breaker's finding 4 and the reviewer's finding 3: with the placeholder
+  sides SavedTests hands today a test under a mirror's name is passed over, so each XML run would
+  number a new mirror. Since attempt 9 the placeholders also make no kept test the document holds
+  pair, so an XML run over an NWF an earlier run made pairs nothing, a line per mirror, and an old
+  Y (mirror) beside a Y created anew counts a clash both find twice on the run with no XML. The
+  order in core.md has the add-in half hand real sides in the same change that calls Of, and its
+  proof steps take a second XML run over the same NWF with a count of the tests before and after
+- attempt 9, register, the reviewer's finding 1: nothing in src calls MirrorRule, MirrorMerge,
+  MirrorRenames, IsANameFor, BothFoundStatus, FoundByBoth or NotCompared, and only Of calls
+  KeptHeldAs, Asks and OneReadUnder. The known state until the add-in half, and it blocks the
+  merge to main until then. No pull request
+- attempt 9, register, the reviewer's finding 4: three MirrorMerge lines where nothing is merged
+  into the kept test do not say a clash both find is counted twice, MirrorMerge.cs lines 257 to
+  258, 434 to 438 and 491 to 494. Words
+- attempt 9, register, the reviewer's finding 5: the same two sets in the same order is written
+  inline five times in MirrorRule.cs, a Y (mirror) that duplicates Y and pairs with X is not said to
+  duplicate Y, and the comment at MirrorRuleTests.cs line 923 is stale. Attempt 9 adds no copy.
+  Words and a small second copy
+- attempt 9, register, the reviewer's finding 6: renaming Y (mirror) back to Y on a change of
+  roles goes past Q136 A, which names a rename to the name with the ending. For the lead to put
+  to Bader
+- attempt 9, register, the reviewer's finding 7: this entry is written by the developer as the
+  lead's delegate and sits under its 2026-10-05 heading below newer entries. For the lead
+- attempt 9, register, the reviewer's finding 8 and the breaker's finding 5, the checks that found
+  nothing. No row beyond this one
+- attempt 9, new here: a document test of the kept test's name on a set the picked XML does not
+  hold is UNKNOWN and not another question, since that set's rule list was not read, so it pairs
+  nothing and its line says a clash both find may be counted twice
 - attempt 8, register, the breaker's blocking point and the reviewer's third: a clash a test kept
   over two mirrors does not find and both mirrors find, or one mirror gives twice, keeps the first
   copy's status, the second copy's never weighed by Q138 B nor named, MirrorMerge.cs Merge's

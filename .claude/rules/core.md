@@ -333,7 +333,15 @@ and 6 does not read as broken.
   run a test of the mirror's name as the mirror and merge its clashes into the kept test.
   The test of that name is the mirror only where it is the one test of the name, of a type
   this tool runs, its sides read, and they are the mirror's two sets in its order or ask
-  the kept test's question as a mirror, and every other is passed over and said. The
+  the kept test's question as a mirror, and every other is passed over and said. THE KEPT
+  TEST'S OWN NAME, F132 attempt 9: a drifted test is left as it is and runs under its name,
+  so where the document holds under the kept test's name a test that asks another question
+  than the XML gives the kept test, `Asks` inside `MirrorRule`, or whose question is UNKNOWN,
+  a side or a set's rule list not read, two of the name, or one of a type this tool does not
+  run, no pair of that kept test is made, each of its mirrors keeps its own clashes under its
+  own name, and a MIRROR line says why, and that a clash both find may be counted twice where
+  it is UNKNOWN. A test there asking the XML's question, in its order or swapped, pairs. With
+  the placeholders the add-in hands today, no kept test the document holds pairs. The
   saved tests are handed once, as the tests where no XML is picked and as the document
   where one is. `MirrorSettings.NameFor` is the one place a mirror's name is made. `ClashTestPlan.WithMirrorsNamed` gives the plan those names,
   refusing a rule built over any list but that plan's own buildable tests. Attempts 5 and 6
@@ -387,7 +395,8 @@ and 6 does not read as broken.
   it and every clash of it counted twice. Two that fit, or one whose sides were not read,
   are refused and said, Y then created beside them. The same holds for a test the XML now
   runs alone. A second MIRROR line counts those, then one names each, then one names each
-  mirror passed over a name the document holds. No saved test is renamed twice and no two
+  pair not made for the kept test's name and each mirror passed over a name the document
+  holds. No saved test is renamed twice and no two
   renames land on one name or on a name the document holds. The add-in half, not built, is
   to make each rename, by the test's address, before the tests are found by name, so the
   renamed test is found under the new name and run where it sits. THE
