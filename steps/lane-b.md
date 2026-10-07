@@ -96,7 +96,8 @@ lane's to set in the tracker.
 | F118 | FR-035: the workbook check counts the tests of one row and the full blocks, says how many are of each, reads row 1 and the widths of a workbook with no full block and says no block layout was compared. FR-037: a test the priority file names twice is named in the log with both lines and both letters, the last letter still wins, and the row count is the rows of the file. FR-036, FR-040 and FR-199 need ClashRunner, ClashReportModel or the engine's call of the workbook check, which an open branch changes, and FR-041 needs a probe of the grid first | 147 | merged, a174ca0 |
 | F119 | FR-046 sizes read through a handle that shares the file and a file that exists is never said missing. FR-048 the .tsv row of a file not on disk carries no number. FR-050 a run that started and never finished is counted to now and says so, and RunStarted forgets an earlier run's finish. FR-051 RESULT states no waiting time where no run was marked. FR-052 NoTolerance is a skip reason row. FR-054 the fallback folder is never pruned. FR-055 a .tsv goes with its log. FR-056 the pace of the group before is the mean of its visits. FR-057 a listener that throws is named and removed once, and a log file that cannot be written is said once and the run goes on. FR-043 to FR-045, FR-053 and FR-189 need the engine or ClashRunner, FR-047 needs ClashRunner, FR-049 resets the whole state of a log across runs and is larger than a Core fix | 148 | merged, 4c33402 |
 | F121 | FR-151 and FR-164 a count before the clear that could not be taken reads as unknown and holds the NWF shut. FR-158 the probe counts a category's elements by the rule that asked, trimmed and without case. FR-159 and FR-165 the check before a run names a name that cannot be used, an emptied pattern field or a cleared name cell. FR-154 the scan findings judge a building once by its building code and never call a discipline one | 150 | merged, 3884def |
-| F123 | FR-007 two names that differ by an ordinary space are described by the space and its place and not as invisible characters. FR-061 the text log says a collapsed line is kept in the .tsv only where the .tsv opened. FR-064 the category list names the folder it was measured on off its own data file and the HEALTH lines carry it | in review | in review |
+| F123 | FR-007 two names that differ by an ordinary space are described by the space and its place and not as invisible characters. FR-061 the text log says a collapsed line is kept in the .tsv only where the .tsv opened. FR-064 the category list names the folder it was measured on off its own data file and the HEALTH lines carry it | 151 | merged, dfe0fb0 |
+| F123 | Part 2, six wordings that said more or less than was known. FR-126 the single discipline detail says which tests are created and that none is run. FR-127 the tolerance help line says results and statuses are kept and never that they are reset. FR-129 a failure after good tests is no longer called one of the first tests. FR-130 the refill counts the names it kept, a name and not a row. FR-131 an NWF folder inside the scanned folder is said as that and not as unreadable. FR-132 the rebuild help line names the removal of an unused set. Each has a test that fails on the old words, 8 failing before the change and 0 after | in review | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -257,6 +258,13 @@ and 148, and each ran its Core tests under mono here and on the Windows runner o
 
 ## F123 points lane B left, for the laptop lane
 
+- FR-061 says the .tsv holds a collapsed line where the .tsv opened. A write that fails after it opened is
+  not seen by that sentence, so the line can still say the rows are in a file that stopped taking them. The
+  log would have to tell the text log the moment the second file stops, which is RunLog state the add-in's
+  window reads, and lane B did not widen the fix to it
+- The label of a group row for FR-126 and the comments in ClashRunner and the XAML that still say the old
+  words, if any do, are in the add-in, which lane B does not touch. Core says the new words, the add-in's copies are
+  for the laptop lane to read off Core and drop
 - FR-059 and FR-063 and FR-060 need the engine or ClashRunner to hand Core the picture count, the plan
   source or the tests run. FR-038 and FR-039 are in WorkbookWriter.cs and FR-074 in Views, which open
   branches of the laptop lane change. FR-042 goes with FR-199
