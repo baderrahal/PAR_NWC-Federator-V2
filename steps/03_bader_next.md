@@ -4,7 +4,7 @@
 
 One action per step. Do them in order. One build, one install and one Navisworks session cover every proof: the window checks first, then the C06 rebuild run, then one building twice, then the rest.
 
-F136 comes first of all, steps 400 to 416 right after the install, because since your word of 2026-10-05 every test run has viewpoints switched off and that box is what switches them off. It opens UNTICKED, your answer B to Q131, and STAYS UNTICKED for every run in this file until F114 merges. Every step below that expects viewpoints made says so where it stands and expects instead the one line `VIEWS    the box Make saved viewpoints for the clashes was unticked, so no viewpoint is made` in every group that reaches the viewpoints step. F131 is second, steps 417 to 445, your order of 2026-10-05 in Q132, because the team map it reads at the pick, in every group and for a run with no XML is what F114's views read next, and it costs two short runs of the same fixture with the box still unticked. Then F34, because it is the largest add-in change of the round, the window, the XAML, the engine and the job all changed, and it is proved by opening the window and looking, before any run. If the window does not open or the Clash step is wrong, nothing after it can be read, so it is checked before a single group runs. F33 is checked in the same look, because it is one combo on the same window. F27 is next, because it costs one Scan and no run at all: its block is read off the 1B06PH run further down. Then the C06 run, which proves F24, F29, F30 and F33 in one press, then F28 and F31 together, because both are one building run twice. F32 and F35 need a different file open or a folder made for them, so they come after the ordinary runs.
+F136 comes first of all, steps 400 to 416 right after the install, because since your word of 2026-10-05 every test run has viewpoints switched off and that box is what switches them off. It opens UNTICKED, your answer B to Q131, and STAYS UNTICKED for every run in this file until F114 merges. Every step below that expects viewpoints made says so where it stands and expects instead the one line `VIEWS    the box Make saved viewpoints for the clashes was unticked, so no viewpoint is made` in every group that reaches the viewpoints step. F131 is second, steps 417 to 458, your order of 2026-10-05 in Q132, because the team map it reads at the pick, in every group and for a run with no XML is what F114's views read next, and it costs two short runs of the same fixture and two runs of the open file on the NWF they saved, with the box still unticked. Then F34, because it is the largest add-in change of the round, the window, the XAML, the engine and the job all changed, and it is proved by opening the window and looking, before any run. If the window does not open or the Clash step is wrong, nothing after it can be read, so it is checked before a single group runs. F33 is checked in the same look, because it is one combo on the same window. F27 is next, because it costs one Scan and no run at all: its block is read off the 1B06PH run further down. Then the C06 run, which proves F24, F29, F30 and F33 in one press, then F28 and F31 together, because both are one building run twice. F32 and F35 need a different file open or a folder made for them, so they come after the ordinary runs.
 
 ## THIS FILE NOW COVERS TWO FOLDERS, AND THE OLD ONE NEVER EXISTED
 
@@ -193,6 +193,32 @@ is F127's COVERAGE count.
 443. Open the add-in from the ribbon again
 444. Look for: the `TEAMS KEPT` block now reads `TEAMS    no clash XML was picked, so the teams are read from` the same teams file, `the team map kept from the last run with one`, and the grey line under the empty Clash XML box reads `Teams: no XML picked, 4 read from the kept map`
 445. Send the log file named on the `log file` line of the SESSION block, the one holding both runs
+
+## Proof F131 on the open file, added 2026-10-07
+
+THESE STEPS FOLLOW STEP 445 IN THE SAME NAVISWORKS SESSION. The open file run, the Run the
+open file button on `4. Clash`, reads the team map by the same rule as Run, and steps 417 to
+445 never press it. These steps were read off the add-in at 0e262d3, OnRunOpenDocument in the
+window and RunOpenDocument in the engine. With an XML picked it names the map beside it after
+its `OPEN     clash file` line and keeps that map. With none it names the kept map after its
+`OPEN     no XML picked` line. Its one group is named by the NWF's name without `.nwf`, so its
+TEAMS block is headed `TEAMS` and that name. What that name is was not read here, because it
+is what the run of step 439 saved, so the steps name the folder and not the file. THE
+VIEWPOINTS BOX STAYS UNTICKED, your answer B to Q131.
+
+446. In Navisworks open the newest NWF in `<temp>\round-close\fixture\NWF`, the one the run of step 439 saved
+447. Open the add-in from the ribbon
+448. Go to the `4. Clash` step
+449. Look for: `Make saved viewpoints for the clashes` is UNTICKED. Leave it so
+450. Press Browse beside the Clash XML box and pick `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` in the repo folder
+451. Press Run the open file and wait for it to finish
+452. Look for, in the log pane: `OPEN     clash file` with the full path of that XML, then the same TEAMS lines as steps 426 to 428, then `TEAMS    this map is now the one kept for a run with no clash XML, remembered in` with the full path of `team-map.txt` in the add-in's logs folder, and only then the `MATRIX` lines
+453. Look for, in the group, straight after its `EXPORT CHECK` block, a block headed `TEAMS` and the NWF's name without `.nwf`, holding the three model lines of steps 433 and 434
+454. Clear the Clash XML box
+455. Press Run the open file and wait for it to finish
+456. Look for: `OPEN     no XML picked, so the tests saved in the document run, or nothing runs when it holds none`, then `TEAMS    no clash XML was picked, so the teams are read from` with the full path of the same teams file, then `, the team map kept from the last run with one. It holds 4 teams and 10 codes`, then the four team lines, and no `MATRIX` line
+457. Look for, in the group's TEAMS block: the three model lines, each ending `whether a set of its team with another code cannot reach it is UNKNOWN, because no set was handed in`, and the line `no set was judged against the models of its team, because no set was handed in`
+458. Send the log file named on the `log file` line of the SESSION block, the one holding both open file runs
 
 ## Proof F34, the window, and F33, the units combo
 

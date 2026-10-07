@@ -310,6 +310,20 @@ Programs and Navisworks:
   f131-ad5-roamer-after.txt, with no test folder and no test key left. The race was measured
   by churn-race.ps1 in the session's scratch folder only
 
+THE PULL REQUEST, 2026-10-07, written by the developer as the lead's delegate. Bader's own
+Navisworks ran from 10:28, so no Navisworks, stand-in, harness, probe or install was started.
+Main eda357b was merged in at 28dc607 with no conflict, message in a file,
+turn5\f131-pr-merge-msg.txt and f131-pr-merge.txt, its pre-commit 1987 passed, 0 failed, 0
+skipped, f131-pr-precommit-merge.txt, and check-tracker.ps1 read the merged tree clean,
+f131-pr-check-tracker-merge.txt. The harness result stands as read above: every F131 check
+passed, eight failures are the older ones that fail on main too, and the ninth is the
+harness's and not F131's, so BaderSame after H21 and H15's three checks did not run. The lead
+runs H15 alone on this head once Bader's Navisworks closes, before the merge. Steps 446 to 458
+of steps\03_bader_next.md were added for the open file run, which the add-in half changed in
+c3a30bc and steps 417 to 445 never press, read off the window's OnRunOpenDocument and the
+engine's RunOpenDocument. The rows of the pull request are set once it opens, by the tracker
+rule
+
 ### What was done
 
 - THE BREAKER'S BLOCKING FINDING ON ATTEMPT 2, ROOT CAUSE. tools\loop\run.ps1's `MaskRemembered`
@@ -371,8 +385,9 @@ Programs and Navisworks:
 
 ### What remains
 
-- BaderSame after H21 and H15, which the new fault cut, on the harness's next run once that
-  fault is fixed
+- H15's three checks, which the new fault cut, run by the lead alone on this head once Bader's
+  Navisworks closes, before the merge, and BaderSame after H21 on the harness's next run once
+  that fault is fixed
 - the reviewer approved a1017c0 to c436715, turn5\lanes-review-F131-addin.json. The merge
   5e3cd26 and the records after it are the lead's to read
 - F114 carrying `TeamPair`, `TeamMap.Compare` and `TeamMap.CarriesSizeFolder` in its own files and
@@ -423,7 +438,8 @@ Programs and Navisworks:
 
 ### What comes next
 
-- the lead reads the draft pull request and merges it once Actions is green, then reads the
+- the lead runs H15 alone on this head once Bader's Navisworks closes, then reads the draft
+  pull request and merges it once Actions is green and H15 has passed, then reads the
   first loop window record with F131 for the masked count and the toollog copy for his paths,
   as the reviewer asked
 
@@ -447,6 +463,9 @@ Programs and Navisworks:
   f131-ad5-precommit-1.txt, f131-ad5-push.txt, f131-ad5-pr-body.md and f131-ad5-pr.txt, the
   harness's -Work, which it removed itself, and in the session's scratch folder waitfaults.ps1,
   churn-race.ps1 and its folders race1 to race5, which nothing reads after the commit
+- the pull request pass: turn5\f131-pr-merge-msg.txt, f131-pr-merge.txt,
+  f131-pr-check-tracker-merge.txt, f131-pr-precommit-merge.txt, f131-pr-records.py, and the
+  other f131-pr-*.txt files of the commits, the push, the pull request and the tracker
 - the scratch scripts k2-alone.ps1, k-alone.ps1 and real-log.ps1, a copy of run.ps1 as at
   a1017c0, and the folders k2-before, k2-after and k-after, in the session's scratch folder under
   the user's temp folder, which nothing reads after the commit
