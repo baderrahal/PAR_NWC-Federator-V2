@@ -82,12 +82,24 @@ namespace Federator.Addin.Engine
         private readonly GapTally gaps = new GapTally();
 
         /// <summary>
+        /// Every group's time beside what it held, Q101, added as each group finishes and
+        /// written once after the last, so the target can be set after the proof run.
+        /// </summary>
+        private readonly List<GroupSize> groupSizes = new List<GroupSize>();
+
+        /// <summary>
         /// Which sets found nothing, across the whole run, F82. A set at zero in ONE group
         /// says a discipline was not exported for that building. A set at zero in EVERY
         /// group says the set itself is wrong, and 38 of the client's 61 were in that
         /// state on the first real run with nothing anywhere adding it up.
         /// </summary>
         private readonly SetsAcrossTheRun setsAcrossTheRun = new SetsAcrossTheRun();
+
+        /// <summary>
+        /// The models of the group the EXPORT CHECK last read, for the judge of a set that found
+        /// nothing, FR-011. Null where they were not read for this group.
+        /// </summary>
+        private IList<ModelExport> groupExports;
 
         // What the two new blocks found across the whole run, for the RESULT block. A
         // count and never an action: the tool reports what it noticed and Bader decides.
@@ -463,6 +475,10 @@ namespace Federator.Addin.Engine
                     outcome.Reason,
                     RunPath.Label(outcome.Decision, exchange != null));
 
+                // Q101. The clock stopped above, so this reads the same seconds the GROUP
+                // finished line carries.
+                Sized(job.Building, job.Files, outcome, groupClock.Elapsed.TotalSeconds);
+
                 // A run failing uniformly stops here rather than working through the rest.
                 // One real run spent 8 hours 52 minutes over 24 groups with every test
                 // failing the same way, and stopping the group would have saved none of it.
@@ -489,7 +505,52 @@ namespace Federator.Addin.Engine
             log.Line(gaps.Line());
             WriteTheListForTheModellers();
 
+            // Q101. After the last group, every group's time beside what it held.
+            WriteTimingBesideSize();
+
             return outcomes;
+        }
+
+        /// <summary>
+        /// What one group held beside how long it took, Q101, off what the run already
+        /// read and with no Navisworks call: the files the group was handed, each sized on
+        /// the disk the way every size here is read, after File.Exists passes, the Revit
+        /// elements the EXPORT CHECK counted, the clash total and the viewpoints created.
+        /// </summary>
+        private void Sized(string building, IList<string> files, JobOutcome outcome, double seconds)
+        {
+            List<long> sizes = new List<long>();
+
+            if (files != null)
+            {
+                foreach (string file in files)
+                {
+                    sizes.Add(SizeOnDiskOrMinusOne(file));
+                }
+            }
+
+            groupSizes.Add(new GroupSize(
+                Words.Or(building, "this group"),
+                seconds,
+                sizes.Count,
+                GroupSize.BytesOf(sizes),
+                outcome.ElementCount,
+                outcome.Clash == null ? GroupSize.Unknown : outcome.Clash.TotalClashes,
+                outcome.ViewpointsCreated));
+        }
+
+        /// <summary>
+        /// The block of every group's time beside what it held, Q101, and a row per group
+        /// for the machine readable log, because Block writes none.
+        /// </summary>
+        private void WriteTimingBesideSize()
+        {
+            log.Block(TimingBlock.SizeTitle, TimingBlock.BesideSize(groupSizes));
+
+            foreach (GroupSize size in groupSizes)
+            {
+                log.Row("timing beside size", size.Building, EventRow.Exact(size.Seconds), size.RowText());
+            }
         }
 
         /// <summary>
@@ -537,7 +598,8 @@ namespace Federator.Addin.Engine
             // rule and the RESULT block counts it. It used to end with no GROUP line at
             // all, so the RESULT block that followed said no group had run.
             Stopwatch groupClock = Stopwatch.StartNew();
-            log.GroupStarted(job.Building, FilesInsideTheOpenDocument(job.Building));
+            IList<string> openFiles = FilesInsideTheOpenDocument(job.Building);
+            log.GroupStarted(job.Building, openFiles);
 
             try
             {
@@ -621,11 +683,16 @@ namespace Federator.Addin.Engine
                     outcome.Reason,
                     RunPath.Label(RerunDecision.Open, exchange != null));
 
+                // Q101, the same block as the scanned run, its files the models the open
+                // document holds.
+                Sized(job.Building, openFiles, outcome, groupClock.Elapsed.TotalSeconds);
+
                 // F63. One group, so the run line and the group block say the same thing,
                 // and it is still written, because a run that held nothing back saying so
                 // is a check that ran and silence is not.
                 log.Line(gaps.Line());
                 WriteTheListForTheModellers();
+                WriteTimingBesideSize();
 
                 // The same fields the scanned run's RUN SETTINGS and GROUPS blocks carry,
                 // where they apply, written just before the window writes RESULT.
@@ -1002,7 +1069,7 @@ namespace Federator.Addin.Engine
             // skip the group's clash and only its clash, where a clash test would have run,
             // which is why it is read before the clash step.
             WhereTheModelsSit(document, job, outcome, runsATest);
-            WhatTheModelsCarry(document, job);
+            WhatTheModelsCarry(document, job, outcome);
 
             bool clashPutSomethingIn = ClashStep(document, job, outcome, source, savedTests);
 
@@ -2214,13 +2281,19 @@ namespace Federator.Addin.Engine
         /// the names are what a person holds beside the matrix, and on 2026-09-20 that
         /// comparison was the answer to why 33 sets found nothing, 5q.
         /// </summary>
-        private void WhatTheModelsCarry(Document document, FederationJob job)
+        private void WhatTheModelsCarry(Document document, FederationJob job, JobOutcome outcome)
         {
+            // Null until this group's models are read, so the sets step never reads another
+            // group's, FR-011.
+            groupExports = null;
+
             IList<ModelExport> exports;
 
             try
             {
                 exports = ModelFactsReader.Exports(document, reports.Names, log);
+                groupExports = exports;
+                outcome.ElementCount = GroupSize.ElementsIn(exports);
 
                 // S03-2. The names are compared by letter case with what the picked file's
                 // sets ask, and with no file picked the block says nothing was compared.
@@ -2623,6 +2696,9 @@ namespace Federator.Addin.Engine
             FederationJob job = OpenJob(Words.Or(document.FileName, "none"));
             JobOutcome outcome = new JobOutcome(job);
 
+            // No EXPORT CHECK reads the models on this button, so none of a group read earlier
+            // reaches its judge, FR-011.
+            groupExports = null;
             BuildTheSets(document, job, outcome);
             return outcome.Sets ?? new SetBuildOutcome();
         }
@@ -2696,7 +2772,11 @@ namespace Federator.Addin.Engine
                 log.Line("SETS     " + job.Building + ", " + plan.Buildable.Count + " to build, "
                     + plan.Skipped.Count + " skipped");
 
-                SetBuildOutcome sets = new SetBuilder(Tick, log, Rebuilds()).Build(plan);
+                // FR-011. The judge of a set that found nothing reads the lists inside this
+                // tool as this group's only where the group's models name the project they were
+                // measured on, read off the models the EXPORT CHECK read for this group.
+                SetBuildOutcome sets = new SetBuilder(Tick, log, Rebuilds())
+                    .Build(plan, EmptySetJudge.For(plan, groupExports, reports.Names));
                 outcome.Sets = sets;
                 setsAcrossTheRun.Add(sets);
 
@@ -2706,17 +2786,12 @@ namespace Federator.Addin.Engine
                 // said, in the one line below and in the SETS step's own finish phrase.
 
                 // What decides the second NWF save is whether this build put anything
-                // into the document. A set already there was left alone and put nothing
-                // in, so on a rerun that finds sixty present and creates one, the one
-                // still counts. Comparing created against already there said nothing
-                // was built in exactly that case.
-                log.Line("SETS     " + job.Building + " put into the document: "
-                    + sets.CreatedCount + " created, "
-                    + sets.AlreadyPresentCount + " already there and left alone"
-                    + (sets.Leftovers.Count > 0
-                        ? ", " + sets.ActedOnLeftovers + " of " + sets.Leftovers.Count
-                            + " set(s) the file no longer names brought up to date"
-                        : string.Empty));
+                // into the document, PutAnythingIn below. A set already there and left alone
+                // put nothing in, and one this run rebuilt did, FR-020, so on a rerun that
+                // finds sixty present and creates one, the one still counts. Comparing created
+                // against already there said nothing was built in exactly that case. The line
+                // is Core's and says a rebuilt set apart from one left alone.
+                log.Line("SETS     " + job.Building + " " + sets.PutInLine());
 
                 // Q74. THE PAIR FAILED BETWEEN ITS TWO HALVES, so the unused twin is gone
                 // and the working set did not take its name. The document is worse than it
@@ -2727,7 +2802,9 @@ namespace Federator.Addin.Engine
                     return false;
                 }
 
-                return sets.PutAnythingIn || sets.ActedOnLeftovers > 0;
+                // Every change the sets made, a set created, rebuilt or brought up to date as a
+                // leftover, is in the one answer Core keeps, FR-020.
+                return sets.PutAnythingIn;
             }
             catch (Exception error)
             {
@@ -3537,6 +3614,7 @@ namespace Federator.Addin.Engine
 
             log.Block("VIEWS BUILT " + job.Building, built.Lines());
             outcome.FailedViewpointCount = built.FailedCount;
+            outcome.ViewpointsCreated = built.CreatedCount;
             return built.PutAnythingIn;
         }
 

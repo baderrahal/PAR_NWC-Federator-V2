@@ -49,7 +49,16 @@ namespace Federator.Core.Views
             {
                 if (!IsNumberStart(text, at))
                 {
+                    // FR-066. A digit refused for sitting inside a word takes every digit
+                    // after it with it, or DN150 would be read from its 5 as 50 mm.
+                    bool insideAWord = IsDigit(text[at]);
                     at++;
+
+                    while (insideAWord && at < text.Length && IsNumberPart(text[at]))
+                    {
+                        at++;
+                    }
+
                     continue;
                 }
 

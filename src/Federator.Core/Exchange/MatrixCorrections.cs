@@ -708,7 +708,7 @@ namespace Federator.Core.Exchange
                 foreach (SearchConditionDefinition condition in set.Conditions)
                 {
                     if (IsAWorkset(condition)
-                        && (condition.Flags & NegateCondition) == 0
+                        && !PlannedCondition.NegatedWith(condition.Flags)
                         && condition.Value != null
                         && condition.Value.Data.Length > 0
                         && !values.Contains(condition.Value.Data))
@@ -730,7 +730,7 @@ namespace Federator.Core.Exchange
             {
                 foreach (SearchConditionDefinition condition in set.Conditions)
                 {
-                    if (IsAWorkset(condition) && (condition.Flags & NegateCondition) != 0)
+                    if (IsAWorkset(condition) && PlannedCondition.NegatedWith(condition.Flags))
                     {
                         negated++;
                     }
@@ -755,7 +755,7 @@ namespace Federator.Core.Exchange
         private static bool AsksAWorkset(WrittenCondition condition)
         {
             return string.Equals(condition.Property, EmptySets.WorksetProperty, StringComparison.Ordinal)
-                && (condition.Flags & NegateCondition) == 0;
+                && !PlannedCondition.NegatedWith(condition.Flags);
         }
 
         /// <summary>
@@ -798,7 +798,7 @@ namespace Federator.Core.Exchange
 
                     if (condition.Property != null
                         && string.Equals(condition.Test, SetBuildPlan.EqualsTest, StringComparison.Ordinal)
-                        && (condition.Flags & NegateCondition) == 0
+                        && !PlannedCondition.NegatedWith(condition.Flags)
                         && string.Equals(condition.Property.InternalName, property, StringComparison.Ordinal)
                         && value.IndexOf(holding, StringComparison.Ordinal) >= 0
                         && !string.Equals(value, holding, StringComparison.Ordinal)
@@ -1248,7 +1248,7 @@ namespace Federator.Core.Exchange
                 if (condition.Property != null
                     && condition.Value != null
                     && string.Equals(condition.Test, SetBuildPlan.ContainsTest, StringComparison.Ordinal)
-                    && (condition.Flags & NegateCondition) == 0
+                    && !PlannedCondition.NegatedWith(condition.Flags)
                     && string.Equals(condition.Value.Data, asks, StringComparison.Ordinal))
                 {
                     return condition;
@@ -1282,7 +1282,7 @@ namespace Federator.Core.Exchange
             {
                 if (condition.Property != null
                     && condition.Value != null
-                    && (condition.Flags & NegateCondition) == 0
+                    && !PlannedCondition.NegatedWith(condition.Flags)
                     && string.Equals(condition.Property.InternalName, property, StringComparison.Ordinal)
                     && !categories.Contains(condition.Value.Data))
                 {
@@ -1778,8 +1778,12 @@ namespace Federator.Core.Exchange
             return string.IsNullOrEmpty(why) ? note : why + ". " + note;
         }
 
-        /// <summary>NegateCondition in Navisworks' SearchConditionOptions, which the file's flags attribute is, F78 and 5g.</summary>
-        public const int NegateCondition = 32;
+        /// <summary>
+        /// NegateCondition in Navisworks' SearchConditionOptions, which the file's flags attribute
+        /// is, F78 and 5g. The plan's own constant, as StartGroup is, so the corrections and the
+        /// key a set is compared by read one bit, FR-015.
+        /// </summary>
+        public const int NegateCondition = PlannedCondition.NegateFlag;
 
         /// <summary>How a set's conditions open and close, and one condition, read by SetConditionsText as well.</summary>
         internal const string ConditionsOpen = "<conditions>";

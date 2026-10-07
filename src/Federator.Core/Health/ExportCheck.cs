@@ -184,8 +184,8 @@ namespace Federator.Core.Health
         {
             if (!model.WalkFinished)
             {
-                return "UNKNOWN, the walk over this model's elements stopped part way, so the "
-                    + model.Worksets.Count + " workset name(s) it saw before stopping are not every workset the model carries";
+                return "UNKNOWN, the walk over this model's elements stopped part way, so no workset name"
+                    + " of it is listed, since the names it saw before stopping are not every workset the model carries";
             }
 
             return string.Join(" | ", new List<string>(model.Worksets).ToArray());
@@ -252,6 +252,16 @@ namespace Federator.Core.Health
         public static IList<string> Lines(
             IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets, int namesShown)
         {
+            return Lines(models, sets, namesShown, RevitWorksets.ResourceFound);
+        }
+
+        /// <summary>
+        /// The block, told whether the list of workset pairs a person decided about was read out
+        /// of the DLL, FR-012, so a list not read is said and never read as one holding no pair.
+        /// </summary>
+        internal static IList<string> Lines(
+            IList<ModelExport> models, IEnumerable<SelectionSetDefinition> sets, int namesShown, bool decidedListRead)
+        {
             List<string> lines = new List<string>();
 
             if (models == null || models.Count == 0)
@@ -265,7 +275,6 @@ namespace Federator.Core.Health
             int withoutEveryId = 0;
             int withNoElement = 0;
             int notCounted = 0;
-            List<string> everyWorkset = new List<string>();
 
             for (int i = 0; i < models.Count; i++)
             {
@@ -305,14 +314,13 @@ namespace Federator.Core.Health
                     lines.Add("      re-export with Convert element Ids switched on, or "
                         + Count(model.Elements - model.WithElementId) + " element(s) reach the report with an empty id cell");
                 }
-
-                Gather(everyWorkset, model.Worksets);
             }
 
+            IList<string> everyWorkset = WorksetsOf(models);
             lines.Add(Sentence(models.Count, withoutAnyWorkset, withSomeWorkset, withoutEveryId, withNoElement, notCounted));
             AddWorksets(lines, everyWorkset, namesShown);
             AddCaseDifferences(lines, everyWorkset, sets, namesShown);
-            AddDisagreements(lines, models);
+            AddDisagreements(lines, models, decidedListRead);
             return lines;
         }
 
@@ -378,7 +386,7 @@ namespace Federator.Core.Health
                             ask.Sets.Add(setName);
                         }
 
-                        if ((condition.Flags & MatrixCorrections.NegateCondition) == 0)
+                        if (!PlannedCondition.NegatedWith(condition.Flags))
                         {
                             if (!askedBy.ContainsKey(setName))
                             {
@@ -520,7 +528,7 @@ namespace Federator.Core.Health
         /// no rule can tell them apart, 5t. If this tool absorbed the first kind quietly
         /// nobody would ever fix the models and the next building would repeat it.
         /// </summary>
-        private static void AddDisagreements(IList<string> lines, IList<ModelExport> models)
+        private static void AddDisagreements(IList<string> lines, IList<ModelExport> models, bool decidedListRead)
         {
             Dictionary<string, IList<string>> byWorkset = new Dictionary<string, IList<string>>(StringComparer.Ordinal);
 
@@ -554,16 +562,25 @@ namespace Federator.Core.Health
             {
                 lines.Add("no two workset names in this group are close enough to be one word typed twice."
                     + alreadyDecided);
-                return;
+            }
+            else
+            {
+                lines.Add(found.Count + " pair(s) of workset names are close enough to be one word typed twice."
+                    + " NOTHING IS MERGED: a person reads these and fixes the models, and this tool never"
+                    + " decides which of two spellings is the right one." + alreadyDecided);
+
+                for (int i = 0; i < found.Count; i++)
+                {
+                    lines.Add("   " + found[i].Line());
+                }
             }
 
-            lines.Add(found.Count + " pair(s) of workset names are close enough to be one word typed twice."
-                + " NOTHING IS MERGED: a person reads these and fixes the models, and this tool never"
-                + " decides which of two spellings is the right one." + alreadyDecided);
-
-            for (int i = 0; i < found.Count; i++)
+            // FR-012. A list that could not be read is said, because it reads as one holding no
+            // pair and every pair a person decided about is then named as a typo.
+            if (!decidedListRead)
             {
-                lines.Add("   " + found[i].Line());
+                lines.Add("the list of workset pairs a person decided are not typos could not be read out of"
+                    + " Federator.Core.dll, so whether a pair named here was already decided is UNKNOWN");
             }
         }
 
@@ -656,15 +673,38 @@ namespace Federator.Core.Health
             return string.Join(", ", head) + ", and " + parts[parts.Count - 1];
         }
 
-        private static void Gather(IList<string> into, IList<string> worksets)
+        /// <summary>
+        /// Every workset those models carry, each once, in the order first seen, THE ONE RULE the
+        /// EXPORT CHECK block and the EMPTY SETS judge read, FR-027. A model whose walk stopped
+        /// carries no names at all, ModelExport, so it adds none, and an empty name is not a name.
+        /// The judge gathered its own copy, which dropped an empty name where this block kept it.
+        /// </summary>
+        internal static IList<string> WorksetsOf(IList<ModelExport> models)
         {
-            for (int i = 0; i < worksets.Count; i++)
+            List<string> every = new List<string>();
+
+            if (models == null)
             {
-                if (!into.Contains(worksets[i]))
+                return every;
+            }
+
+            foreach (ModelExport model in models)
+            {
+                if (model == null)
                 {
-                    into.Add(worksets[i]);
+                    continue;
+                }
+
+                foreach (string workset in model.Worksets)
+                {
+                    if (!string.IsNullOrEmpty(workset) && !every.Contains(workset))
+                    {
+                        every.Add(workset);
+                    }
                 }
             }
+
+            return every;
         }
 
         internal static string Named(ModelExport model)

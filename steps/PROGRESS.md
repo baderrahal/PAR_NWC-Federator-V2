@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-07 14:55, last run 04/item2-C02
+STATE OPEN, 2026-10-07 15:55, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -9,20 +9,20 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
 | 2a | 6 | 25 | 0 | 0 | 3 | 0 | 34 |
-| 2b | 11 | 16 | 0 | 0 | 3 | 0 | 30 |
+| 2b | 11 | 16 | 0 | 1 | 5 | 0 | 33 |
 | 2c | 2 | 0 | 0 | 0 | 7 | 0 | 9 |
 | 3a | 8 | 4 | 0 | 0 | 8 | 0 | 20 |
 | 3b | 0 | 0 | 0 | 0 | 20 | 0 | 20 |
 | 4 | 0 | 0 | 0 | 0 | 57 | 0 | 57 |
 | 5 | 4 | 0 | 0 | 0 | 68 | 0 | 72 |
 | outside the waves | 154 | 9 | 0 | 1 | 45 | 5 | 214 |
-| total | 204 | 54 | 0 | 1 | 211 | 5 | 475 |
+| total | 204 | 54 | 0 | 2 | 213 | 5 | 478 |
 <!-- the end of the counts -->
 
 ## Now
 - F139 this page: MERGED as PR 130, ce7fcf5, at 13:34, the keep-awake reading it since 13:38
 - F132 mirrored tests: attempt 12 on fix-F132, a merge only where the run created both tests, A of Q142
-- F114 views: attempt 7 on fix-F114, one rule for a set's team, then its add-in pass
+- F114 views: the Core half merged as PR 141, its add-in pass next on the laptop after F132's
 - Probes: P11 to P14 done, P15 crashed and is run again, then P16 to P19 and step 364's property probe
 - F131 merged as PR 135 and F138 as PR 127, the switch proven by the Q133 probe's real start
 

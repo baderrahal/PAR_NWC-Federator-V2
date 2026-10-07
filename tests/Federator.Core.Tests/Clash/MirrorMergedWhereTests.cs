@@ -72,14 +72,22 @@ namespace Federator.Core.Tests
         private const string Element = "LcRevitData_Element";
         private const string Category = "LcRevitPropertyElementCategory";
 
+        /// <summary>The set of the picked file at that path, asking Category equals that value, the way SetBuildPlan plans it.</summary>
+        private static PlannedSet Planned(string path, string wantedValue)
+        {
+            PlannedCondition wanted = new PlannedCondition(
+                ConditionTest.Equals, 0, Element, "Element", Category, null, "wstring", wantedValue);
+
+            return new PlannedSet(
+                path.Substring(path.LastIndexOf('/') + 1), path, new List<string>(), new List<PlannedCondition> { wanted });
+        }
+
         /// <summary>What the drift check reads off a set asking Category equals that value, as SetDrift compares it.</summary>
         private static SetDrift DriftOf(string path, string askedValue, string wantedValue)
         {
             ReadCondition asked = new ReadCondition(Element, Category, "equals", askedValue);
-            ReadCondition wanted = new ReadCondition(Element, Category, "equals", wantedValue);
 
-            return SetDrift.Compare(
-                path, new List<ReadCondition> { asked }, new List<string> { wanted.Key() }, new List<string> { wanted.Describe() });
+            return SetDrift.Compare(new List<ReadCondition> { asked }, Planned(path, wantedValue));
         }
 
         // A First run over a new NWF, RunPath.Label: both tests are created from the XML and
@@ -169,7 +177,7 @@ namespace Federator.Core.Tests
             Present(read, Columns, "Category equals Structural Columns");
 
             SetBuildOutcome notRead = MirrorRuleTests.Built(Ducts);
-            Present(notRead, Columns, SetDrift.Compare(Columns, null, new List<string>(), new List<string>()).AskedNow());
+            Present(notRead, Columns, SetDrift.Compare(null, Planned(Columns, "Structural Columns"), "the search threw").AskedNow());
 
             SetBuildOutcome neverAsked = MirrorRuleTests.Built(Ducts);
             neverAsked.AddAlreadyPresent(Columns, "BLD-ST-Columns", 1, 5);

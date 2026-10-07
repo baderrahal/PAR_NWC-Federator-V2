@@ -202,9 +202,11 @@ namespace Federator.Core.Health
             };
 
             // F84. A set that cannot match anything is a set whose every clash test can
-            // never find a clash, and none of these three was visible anywhere before.
-            // Every one is INFORMATION: nothing is corrected, nothing is dropped and no
-            // group is judged on it.
+            // never find a clash, and none of these three was visible anywhere before. A set
+            // with an Or group asking none of the categories nobody has can still match, and
+            // its line says how many groups ask one, FR-023. One line and one count per set,
+            // however many such categories it asks. Every one is INFORMATION:
+            // nothing is corrected, nothing is dropped and no group is judged on it.
             lines.Add("Sets asking exactly the same question: " + IdenticalSets.Count);
 
             foreach (string line in Examples(IdenticalNames()))

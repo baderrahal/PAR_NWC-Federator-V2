@@ -17,14 +17,22 @@ namespace Federator.Core.Tests.Sets
         private const string Category = "LcRevitPropertyElementCategory";
         private const string Workset = "lcldrevit_parameter_-1002053";
 
-        private static ReadCondition Asked(string property, string test, string value)
+        private static ReadCondition Asked(string property, string test, string value, int flags = 0)
         {
-            return new ReadCondition(Element, property, test, value);
+            return new ReadCondition(Element, property, test, value, flags);
         }
 
-        private static string Key(string property, string test, string value)
+        /// <summary>One condition of the picked file, the way SetBuildPlan plans it.</summary>
+        private static PlannedCondition Wants(string property, ConditionTest test, string value, int flags = 0)
         {
-            return Element + "|" + property + "|" + test + "|" + value;
+            return new PlannedCondition(test, flags, Element, "Element", property, null, "wstring", value);
+        }
+
+        /// <summary>A set of the picked file at that path, asking those conditions in that order.</summary>
+        private static PlannedSet Planned(string path, params PlannedCondition[] conditions)
+        {
+            string name = path.Substring(path.LastIndexOf('/') + 1);
+            return new PlannedSet(name, path, new List<string>(), new List<PlannedCondition>(conditions));
         }
 
         /// <summary>
@@ -35,10 +43,8 @@ namespace Federator.Core.Tests.Sets
         public void ASetAskingTheOldSpellingHasDrifted()
         {
             SetDrift drift = SetDrift.Compare(
-                "a/path/BLD-ME-Ducts&Duct Fittings",
                 new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
-                new List<string> { Key(Workset, "equals", "ME-Ductwork") },
-                new List<string> { "asks ME-Ductwork" });
+                Planned("a/path/BLD-ME-Ducts&Duct Fittings", Wants(Workset, ConditionTest.Equals, "ME-Ductwork")));
 
             Assert.That(drift.Drifted, Is.True);
             Assert.That(drift.CouldNotRead, Is.False);
@@ -50,10 +56,8 @@ namespace Federator.Core.Tests.Sets
         public void ASetAskingExactlyWhatTheFileAsksHasNotDrifted()
         {
             SetDrift drift = SetDrift.Compare(
-                "a/path/BLD-AR-Floors",
                 new List<ReadCondition> { Asked(Category, "equals", "Floors") },
-                new List<string> { Key(Category, "equals", "Floors") },
-                new List<string> { "asks Floors" });
+                Planned("a/path/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors")));
 
             Assert.That(drift.Drifted, Is.False);
         }
@@ -62,10 +66,11 @@ namespace Federator.Core.Tests.Sets
         public void ASetWithADifferentNumberOfConditionsHasDrifted()
         {
             SetDrift drift = SetDrift.Compare(
-                "a/path/BLD-AR-Floors",
                 new List<ReadCondition> { Asked(Category, "equals", "Floors") },
-                new List<string> { Key(Category, "equals", "Floors"), Key(Workset, "equals", "AR-EXTERIOR") },
-                new List<string> { "asks Floors", "and a workset" });
+                Planned(
+                    "a/path/BLD-AR-Floors",
+                    Wants(Category, ConditionTest.Equals, "Floors"),
+                    Wants(Workset, ConditionTest.Equals, "AR-EXTERIOR")));
 
             Assert.That(drift.Drifted, Is.True);
         }
@@ -79,9 +84,7 @@ namespace Federator.Core.Tests.Sets
         public void ASetWhoseSearchWouldNotReadIsNeverCalledDrifted()
         {
             SetDrift drift = SetDrift.Compare(
-                "a/path/BLD-AR-Floors", null,
-                new List<string> { Key(Category, "equals", "Floors") },
-                new List<string> { "asks Floors" });
+                null, Planned("a/path/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors")));
 
             Assert.That(drift.CouldNotRead, Is.True);
             Assert.That(drift.Drifted, Is.False);
@@ -92,10 +95,10 @@ namespace Federator.Core.Tests.Sets
         public void TheTwoLinesNameThePathTheOldQuestionAndTheNewOne()
         {
             SetDrift drift = SetDrift.Compare(
-                "lcop_selection_set_tree/Mechanical/BLD-ME-Ducts",
                 new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
-                new List<string> { Key(Workset, "equals", "ME-Ductwork") },
-                new List<string> { "LcRevitData_Element/" + Workset + " equals \"ME-Ductwork\"" });
+                Planned(
+                    "lcop_selection_set_tree/Mechanical/BLD-ME-Ducts",
+                    Wants(Workset, ConditionTest.Equals, "ME-Ductwork")));
 
             IList<string> lines = drift.Lines();
 
@@ -104,6 +107,272 @@ namespace Federator.Core.Tests.Sets
             Assert.That(lines[1], Does.Contain("ME-DUCTWORK"));
             Assert.That(lines[2], Does.Contain("file asks"));
             Assert.That(lines[2], Does.Contain("ME-Ductwork"));
+        }
+
+        // ---------- what is part of the question, FR-015 ----------
+
+        /// <summary>
+        /// BLD-ME-Ducts&amp;Duct Fittings as the file asks it, two groups of two, the third
+        /// condition starting the second with flags 64, F78. The same four conditions in one
+        /// group ask an And that no element answers, so a set carrying them so has drifted.
+        /// The key carried no flag and called the two the same question.
+        /// </summary>
+        [Test]
+        public void ASetMissingTheFilesOrGroupHasDrifted()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition>
+                {
+                    Asked(Category, "equals", "Ducts"),
+                    Asked(Workset, "equals", "ME-Ductwork"),
+                    Asked(Category, "equals", "Duct Fittings"),
+                    Asked(Workset, "equals", "ME-Ductwork")
+                },
+                Planned(
+                    "a/Mechanical/BLD-ME-Ducts&Duct Fittings",
+                    Wants(Category, ConditionTest.Equals, "Ducts"),
+                    Wants(Workset, ConditionTest.Equals, "ME-Ductwork"),
+                    Wants(Category, ConditionTest.Equals, "Duct Fittings", PlannedCondition.StartGroupFlag),
+                    Wants(Workset, ConditionTest.Equals, "ME-Ductwork")));
+
+            Assert.That(drift.Drifted, Is.True);
+        }
+
+        /// <summary>
+        /// A condition and its negation, flags 32, ask opposite questions. BLD-EL-Devices asks
+        /// contains Devices and NOT each Devices category a sibling set claims, 5g.
+        /// </summary>
+        [Test]
+        public void ASetDifferingOnlyByANegationHasDrifted()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition>
+                {
+                    Asked(Category, "contains", "Devices"),
+                    Asked(Category, "equals", "Telephone Devices")
+                },
+                Planned(
+                    "a/Electrical/BLD-EL-Devices",
+                    Wants(Category, ConditionTest.Contains, "Devices"),
+                    Wants(Category, ConditionTest.Equals, "Telephone Devices", PlannedCondition.NegateFlag)));
+
+            Assert.That(drift.Drifted, Is.True);
+        }
+
+        /// <summary>
+        /// THE IGNORE BITS ARE NOT PART OF THE QUESTION. A set this tool built reads them on every
+        /// condition, 37 for a negated one, 5g, and 1A02MM's original import reads none, 5w, and
+        /// those sets find the same items. Comparing every bit would rebuild 61 sets over nothing.
+        /// </summary>
+        [Test]
+        public void TheIgnoreBitsASetCarriesAreNotADrift()
+        {
+            const int IgnoreDisplayNames = 5;
+
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition>
+                {
+                    Asked(Category, "contains", "Devices", IgnoreDisplayNames),
+                    Asked(Category, "equals", "Telephone Devices", PlannedCondition.NegateFlag | IgnoreDisplayNames)
+                },
+                Planned(
+                    "a/Electrical/BLD-EL-Devices",
+                    Wants(Category, ConditionTest.Contains, "Devices"),
+                    Wants(Category, ConditionTest.Equals, "Telephone Devices", PlannedCondition.NegateFlag)));
+
+            Assert.That(drift.Drifted, Is.False);
+        }
+
+        /// <summary>
+        /// A comparison other than the two the file writes keeps its own name and is a different
+        /// question. The add-in read every comparison but contains as equals, so a set asking
+        /// NotEqual read as the same set as one asking Equal. Its half of this is in SetBuilder.
+        /// </summary>
+        [Test]
+        public void AComparisonOtherThanEqualsAndContainsIsADifferentQuestion()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition> { Asked(Category, "NotEqual", "Floors") },
+                Planned("a/path/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors")));
+
+            Assert.That(drift.Drifted, Is.True);
+        }
+
+        /// <summary>
+        /// The file's side and the document's side are put in one key by one rule in Core, so a
+        /// condition read back exactly as it was built is the same question. The add-in built the
+        /// file's key a second time, with no flags.
+        /// </summary>
+        [Test]
+        public void AConditionReadBackAsItWasBuiltHasTheSameKey()
+        {
+            PlannedCondition wanted = Wants(Category, ConditionTest.Equals, "Duct Fittings", PlannedCondition.StartGroupFlag);
+            ReadCondition read = Asked(Category, "equals", "Duct Fittings", PlannedCondition.StartGroupFlag | 5);
+
+            Assert.That(read.Key(), Is.EqualTo(wanted.Key()));
+            Assert.That(
+                Asked(Category, "equals", "Duct Fittings").Key(), Is.Not.EqualTo(wanted.Key()),
+                "the same condition without the group bit is another question");
+        }
+
+        /// <summary>
+        /// A VALUE THAT WOULD NOT READ IS NOT AN EMPTY VALUE, FR-017. A condition value of a kind
+        /// the add-in could not turn into text was read as an empty string, so the set was called
+        /// drifted, asking for "", and replaced with the box on. It is a set whose search could
+        /// not be read, never called drifted, the way a search that will not read is not.
+        /// </summary>
+        [Test]
+        public void ASetWithAValueThatWouldNotReadIsNotReadAndNeverDrifted()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition>
+                {
+                    Asked(Category, "equals", "Floors"),
+                    ReadCondition.Unread(Element, Workset, "equals", 0)
+                },
+                Planned(
+                    "a/path/BLD-AR-Floors",
+                    Wants(Category, ConditionTest.Equals, "Floors"),
+                    Wants(Workset, ConditionTest.Equals, "AR-EXTERIOR")));
+
+            Assert.That(drift.CouldNotRead, Is.True);
+            Assert.That(drift.Drifted, Is.False);
+            Assert.That(drift.AskedNow(), Does.StartWith("UNKNOWN"));
+        }
+
+        // ---------- a set that would not read is said in the run, with why ----------
+
+        /// <summary>
+        /// A SET WHOSE SEARCH WOULD NOT READ HAS LINES OF ITS OWN, AND THEY SAY WHY, the reviewer's
+        /// finding on attempt 1. The add-in's two catches, the search and a value, kept neither
+        /// the error's type nor its message, and a run wrote no line for such a set beyond its
+        /// present line, which says left alone. The lines name the set, say what it asks is
+        /// UNKNOWN and carry the error as the add-in caught it.
+        /// </summary>
+        [Test]
+        public void ASetWhoseSearchWouldNotReadWritesItsLinesWithWhy()
+        {
+            SetDrift drift = SetDrift.Compare(
+                null,
+                Planned("a/path/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors")),
+                "InvalidOperationException: the search is gone");
+
+            IList<string> lines = drift.Lines();
+
+            Assert.That(lines.Count, Is.EqualTo(3));
+            Assert.That(lines[0], Is.EqualTo("SET NOT READ a/path/BLD-AR-Floors"));
+            Assert.That(lines[1], Is.EqualTo(
+                "   it asks  : UNKNOWN, its search would not read, because InvalidOperationException: the search is gone"));
+            Assert.That(lines[2], Does.StartWith("   file asks: "));
+            Assert.That(lines[2], Does.Contain("Floors"));
+        }
+
+        /// <summary>A value that would not read carries its own error into the lines, FR-017.</summary>
+        [Test]
+        public void AValueThatWouldNotReadCarriesWhyIntoTheLines()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition>
+                {
+                    Asked(Category, "equals", "Floors"),
+                    ReadCondition.Unread(Element, Workset, "equals", 0, "FormatException: not a string")
+                },
+                Planned(
+                    "a/path/BLD-AR-Floors",
+                    Wants(Category, ConditionTest.Equals, "Floors"),
+                    Wants(Workset, ConditionTest.Equals, "AR-EXTERIOR")));
+
+            Assert.That(drift.Lines()[1], Is.EqualTo(
+                "   it asks  : UNKNOWN, the value of a condition in its search would not read, because FormatException: not a string"));
+        }
+
+        /// <summary>A read that failed with no error handed over says so, and never leaves the why out.</summary>
+        [Test]
+        public void ASetThatWouldNotReadWithNoErrorSaysWhyIsUnknown()
+        {
+            SetDrift drift = SetDrift.Compare(
+                null, Planned("a/path/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors")));
+
+            Assert.That(drift.Lines()[1], Does.EndWith("its search would not read, and why is UNKNOWN"));
+        }
+
+        /// <summary>Core decides which sets have lines: a set asking what the file asks has none.</summary>
+        [Test]
+        public void ASetAskingWhatTheFileAsksHasNoLines()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition> { Asked(Category, "equals", "Floors") },
+                Planned("a/path/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors")));
+
+            Assert.That(drift.Lines(), Is.Empty);
+        }
+
+        // ---------- what the lines say, FR-016 ----------
+
+        /// <summary>
+        /// BLD-ME-Ducts&amp;Duct Fittings, an Or of two groups, read off the document and asked by
+        /// the file. Both lines say the two bracketed groups joined by or, the way F78 made a
+        /// created set's line read. They joined every condition with and, a four way And no
+        /// element can answer, in the SET DRIFT lines and the SETS ACROSS THE RUN line.
+        /// </summary>
+        [Test]
+        public void BothSidesOfAnOrSetReadAsItsGroupsJoinedByOr()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition>
+                {
+                    Asked(Category, "equals", "Ducts"),
+                    Asked(Workset, "equals", "ME-DUCTWORK"),
+                    Asked(Category, "equals", "Duct Fittings", PlannedCondition.StartGroupFlag),
+                    Asked(Workset, "equals", "ME-DUCTWORK")
+                },
+                Planned(
+                    "a/Mechanical/BLD-ME-Ducts&Duct Fittings",
+                    Wants(Category, ConditionTest.Equals, "Ducts"),
+                    Wants(Workset, ConditionTest.Equals, "ME-Ductwork"),
+                    Wants(Category, ConditionTest.Equals, "Duct Fittings", PlannedCondition.StartGroupFlag),
+                    Wants(Workset, ConditionTest.Equals, "ME-Ductwork")));
+
+            Assert.That(
+                drift.AskedNow(),
+                Is.EqualTo("(" + Element + "/" + Category + " equals \"Ducts\" and " + Element + "/" + Workset + " equals \"ME-DUCTWORK\")"
+                    + " or (" + Element + "/" + Category + " equals \"Duct Fittings\" and " + Element + "/" + Workset + " equals \"ME-DUCTWORK\")"));
+            Assert.That(drift.WantedNow(), Does.StartWith("(").And.Contain("\") or (").And.EndWith("\"ME-Ductwork\")"));
+            Assert.That(drift.WantedNow(), Does.Not.Contain("\" and " + Element + "/" + Category + " equals \"Duct Fittings\""));
+        }
+
+        /// <summary>
+        /// A negated condition says not. Since FR-015 a condition and its negation are two
+        /// questions, and the two lines of a set that drifted by a negation read the same.
+        /// </summary>
+        [Test]
+        public void ANegatedConditionReadsAsNotOnBothSides()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition>
+                {
+                    Asked(Category, "contains", "Devices"),
+                    Asked(Category, "equals", "Telephone Devices")
+                },
+                Planned(
+                    "a/Electrical/BLD-EL-Devices",
+                    Wants(Category, ConditionTest.Contains, "Devices"),
+                    Wants(Category, ConditionTest.Equals, "Telephone Devices", PlannedCondition.NegateFlag)));
+
+            Assert.That(drift.WantedNow(), Does.Contain(Category + " not equals \"Telephone Devices\""));
+            Assert.That(drift.AskedNow(), Does.Contain(Category + " equals \"Telephone Devices\""));
+            Assert.That(drift.AskedNow(), Does.Not.Contain(" not "));
+        }
+
+        /// <summary>A comparison the file never writes is said by its own name and never as equals.</summary>
+        [Test]
+        public void AnotherComparisonIsSaidByItsOwnName()
+        {
+            SetDrift drift = SetDrift.Compare(
+                new List<ReadCondition> { Asked(Category, "NotEqual", "Floors") },
+                Planned("a/path/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors")));
+
+            Assert.That(drift.AskedNow(), Is.EqualTo(Element + "/" + Category + " NotEqual \"Floors\""));
         }
 
         // ---------- the tick box ----------
@@ -144,8 +413,8 @@ namespace Federator.Core.Tests.Sets
             SetBuildOutcome outcome = new SetBuildOutcome();
 
             SetDrift one = SetDrift.Compare(
-                "a", new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
-                new List<string> { Key(Workset, "equals", "ME-Ductwork") }, new List<string> { "x" });
+                new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
+                Planned("a", Wants(Workset, ConditionTest.Equals, "ME-Ductwork")));
 
             outcome.AddDrift(one, true);
             outcome.AddDrift(one, false);
@@ -169,8 +438,8 @@ namespace Federator.Core.Tests.Sets
         private static SetDrift OneDrift()
         {
             return SetDrift.Compare(
-                "a/BLD-ME-Ducts", new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
-                new List<string> { Key(Workset, "equals", "ME-Ductwork") }, new List<string> { "x" });
+                new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
+                Planned("a/BLD-ME-Ducts", Wants(Workset, ConditionTest.Equals, "ME-Ductwork")));
         }
 
         /// <summary>
@@ -212,6 +481,49 @@ namespace Federator.Core.Tests.Sets
 
             Assert.That(block, Does.Contain("2 of them DRIFTED and 1 were REBUILT"));
             Assert.That(block, Does.Contain("keep their results and their statuses, measured 5v"));
+        }
+
+        /// <summary>
+        /// A SET WHOSE SEARCH COULD NOT BE READ IS NOT ONE THAT ASKS WHAT THE FILE ASKS, FR-021.
+        /// The block said every set in the document asks what the file asks whenever nothing
+        /// drifted, because the outcome kept no count of the sets it could not read.
+        /// </summary>
+        [Test]
+        public void ThePresentSetsBlockSaysHowManyCouldNotBeReadAndClaimsNoMatch()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent("a/BLD-ME-Ducts", "BLD-ME-Ducts", 1, 0);
+            outcome.AddAlreadyPresent("a/BLD-AR-Floors", "BLD-AR-Floors", 1, 4);
+            outcome.AddDrift(
+                SetDrift.Compare(null, Planned("a/BLD-ME-Ducts", Wants(Workset, ConditionTest.Equals, "ME-Ductwork"))),
+                false);
+            outcome.AddDrift(
+                SetDrift.Compare(
+                    new List<ReadCondition> { Asked(Category, "equals", "Floors") },
+                    Planned("a/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors"))),
+                false);
+
+            string block = SetsBlock(outcome);
+
+            Assert.That(outcome.NotRead.Count, Is.EqualTo(1));
+            Assert.That(outcome.Drifted.Count, Is.EqualTo(0), "a set compared and the same is neither");
+            Assert.That(block, Does.Not.Contain("Every set in the document asks what the file asks"));
+            Assert.That(block, Does.Contain("none of the 1 read drifted"));
+            Assert.That(block, Does.Contain("1 could not be read, so whether it asks what the file asks is UNKNOWN"));
+        }
+
+        /// <summary>And beside a drift, the sets not read are counted too.</summary>
+        [Test]
+        public void ThePresentSetsBlockCountsTheSetsNotReadBesideADrift()
+        {
+            SetBuildOutcome outcome = OutcomeWithOnePresentSet();
+            outcome.AddAlreadyPresent("a/BLD-AR-Floors", "BLD-AR-Floors", 1, 4);
+            outcome.AddDrift(OneDrift(), false);
+            outcome.AddDrift(
+                SetDrift.Compare(null, Planned("a/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors"))),
+                false);
+
+            Assert.That(SetsBlock(outcome), Does.Contain("1 more could not be read, so whether it asks what the file asks is UNKNOWN"));
         }
 
         /// <summary>

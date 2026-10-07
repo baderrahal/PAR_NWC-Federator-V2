@@ -2041,7 +2041,7 @@ namespace Federator.Core.Tests
                     EmptySet why = EmptySets.Why(
                         "a/" + value,
                         new List<ReadCondition> { new ReadCondition(string.Empty, WorksetProperty, SetBuildPlan.EqualsTest, value) },
-                        plan.Worksets);
+                        new EmptySetJudge(plan.Worksets, RevitWorksets.Project, null));
 
                     if (why.Reason != EmptyReason.TheValueIsThereAnyway)
                     {

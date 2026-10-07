@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
+using Federator.Core.Sets;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests
@@ -29,9 +30,9 @@ namespace Federator.Core.Tests
                 : "<viewfolder name=\"" + folder + "\">" + body + "</viewfolder>";
         }
 
-        private static string Condition(string test, string property, string value)
+        private static string Condition(string test, string property, string value, int flags = 0)
         {
-            return "<condition test=\"" + test + "\" flags=\"0\">"
+            return "<condition test=\"" + test + "\" flags=\"" + flags + "\">"
                 + "<category><name internal=\"LcRevitData_Element\">Element</name></category>"
                 + "<property><name internal=\"" + property + "\">Category</name></property>"
                 + "<value><data type=\"wstring\">" + value + "</data></value></condition>";
@@ -87,6 +88,37 @@ namespace Federator.Core.Tests
                     + Condition("equals", Category, "Floors"))
                 + Set("B", null, Condition("equals", Category, "Floors")
                     + Condition("equals", Category, "Walls")))), Is.Empty);
+        }
+
+        /// <summary>
+        /// Two sets whose conditions differ only in a flag that is part of the question ask two
+        /// questions, FR-024: one Ors two groups and the other Ands the same four conditions,
+        /// which nothing answers, and a condition against its negation asks the opposite. The
+        /// signature left every flag out while its comment said the grouping kept them apart.
+        /// </summary>
+        [Test]
+        public void TwoSetsDifferingOnlyByTheGroupOrTheNegationAreNotAPair()
+        {
+            string ducts = Condition("equals", Category, "Ducts") + Condition("equals", "Workset", "ME-Ductwork");
+            string fittings = Condition("equals", "Workset", "ME-Ductwork");
+
+            Assert.That(SetWarnings.FindIdentical(Sets(
+                Set("Or", null, ducts + Condition("equals", Category, "Duct Fittings", PlannedCondition.StartGroupFlag) + fittings)
+                + Set("And", null, ducts + Condition("equals", Category, "Duct Fittings") + fittings))), Is.Empty);
+
+            Assert.That(SetWarnings.FindIdentical(Sets(
+                Set("Asks", null, Condition("contains", Category, "Devices") + Condition("equals", Category, "Data Devices"))
+                + Set("Leaves out", null, Condition("contains", Category, "Devices")
+                    + Condition("equals", Category, "Data Devices", PlannedCondition.NegateFlag)))), Is.Empty);
+        }
+
+        /// <summary>The Ignore bits are not part of the question, so two sets differing only by them are still a pair.</summary>
+        [Test]
+        public void TwoSetsDifferingOnlyByTheIgnoreBitsAreStillAPair()
+        {
+            Assert.That(SetWarnings.FindIdentical(Sets(
+                Set("A", null, Condition("equals", Category, "Walls"))
+                + Set("B", null, Condition("equals", Category, "Walls", 5)))).Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -184,16 +216,147 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// A NEGATED CONDITION IS NOT A CATEGORY THE SET ASKS FOR, FR-023. BLD-EL-Devices asks
+        /// contains Devices and not each Devices category a sibling set claims, flags 32, and was
+        /// reported as asking for Telephone Devices, which it only leaves out. A negation of a
+        /// category no model carries leaves out nothing, 5g, and stops nothing.
+        /// </summary>
+        [Test]
+        public void ANegatedCategoryIsNotReportedAsOneTheSetAsksFor()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set(
+                    "BLD-EL-Devices",
+                    null,
+                    Condition("contains", Category, "Devices")
+                        + Condition("equals", Category, "Telephone Devices", PlannedCondition.NegateFlag))),
+                Category);
+
+            Assert.That(found, Is.Empty);
+        }
+
+        /// <summary>
+        /// A COMPARISON THE FILE NEVER WRITES IS JUDGED BY NEITHER BLOCK, the reviewer's and the
+        /// breaker's finding on attempt 1. The EMPTY SETS judge reads only equals and contains,
+        /// EmptySets.Judgeable, and the HEALTH block read every other test as equals, so a set
+        /// asking a test this tool has not been taught was named as asking a category nobody has
+        /// while the judge said it cannot tell. The two read one rule and never disagree.
+        /// </summary>
+        [Test]
+        public void AComparisonTheFileNeverWritesIsNotReportedAndTheJudgeAgrees()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set("BLD-EL-Phones", null, Condition("wildcard", Category, "Telephone Equipment"))),
+                Category);
+
+            Assert.That(found, Is.Empty);
+            Assert.That(
+                EmptySets.Why(
+                    "a/BLD-EL-Phones",
+                    new List<ReadCondition> { new ReadCondition("LcRevitData_Element", Category, "wildcard", "Telephone Equipment") },
+                    new EmptySetJudge(RevitWorksets.With(null), RevitCategories.Project, null)).Reason,
+                Is.EqualTo(EmptyReason.CannotTell));
+        }
+
+        /// <summary>
+        /// A set of two Or groups where one asks a category no model carries can still match
+        /// through the other, so it is named with the groups that ask it, FR-023, and not as a
+        /// set that can never match anything.
+        /// </summary>
+        [Test]
+        public void ASetAskingAnUnknownCategoryInOneOfItsOrGroupsSaysSo()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set(
+                    "BLD-EL-Phones",
+                    null,
+                    Condition("equals", Category, "Telephone Equipment")
+                        + Condition("equals", Category, "Communication Devices", PlannedCondition.StartGroupFlag))),
+                Category);
+
+            Assert.That(found.Count, Is.EqualTo(1));
+            Assert.That(found[0].GroupsAsking, Is.EqualTo(1));
+            Assert.That(found[0].Groups, Is.EqualTo(2));
+            Assert.That(found[0].ToString(), Is.EqualTo(
+                "BLD-EL-Phones asks for \"Telephone Equipment\" in 1 of its 2 Or groups, so a group without it can still match"));
+        }
+
+        /// <summary>
+        /// A SET WHOSE EVERY OR GROUP ASKS A CATEGORY NO MODEL CARRIES CAN NEVER MATCH, even where
+        /// each group asks a different one, and it is ONE set, the breaker's finding on FR-023. The
+        /// F116 Or shape, a group asking one missing category and a group asking another, was
+        /// named twice, each line saying a group without it can still match, and the block
+        /// counted the one set twice. Neither group can match, so no line may say one can.
+        /// </summary>
+        [Test]
+        public void ASetWhoseEveryOrGroupAsksADifferentMissingCategoryIsOneSetThatCannotMatch()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set(
+                    "BLD-EL-Phones",
+                    null,
+                    Condition("equals", Category, "Telephone Equipment")
+                        + Condition("equals", Category, "Roofs", PlannedCondition.StartGroupFlag))),
+                Category);
+
+            Assert.That(found.Count, Is.EqualTo(1), "one set, counted once");
+            Assert.That(found[0].Categories, Is.EqualTo(new[] { "Telephone Equipment", "Roofs" }));
+            Assert.That(found[0].GroupsAsking, Is.EqualTo(2));
+            Assert.That(found[0].Groups, Is.EqualTo(2));
+            Assert.That(found[0].ToString(), Is.EqualTo("BLD-EL-Phones asks for \"Telephone Equipment\" and \"Roofs\""));
+            Assert.That(found[0].ToString(), Does.Not.Contain("can still match"));
+        }
+
+        /// <summary>
+        /// The claim is made per set: a group can still match only where some group asks none of
+        /// the missing categories, and the groups said are those asking any of them.
+        /// </summary>
+        [Test]
+        public void ASetWithAGroupFreeOfEveryMissingCategorySaysAGroupCanStillMatch()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set(
+                    "BLD-EL-Phones",
+                    null,
+                    Condition("equals", Category, "Telephone Equipment")
+                        + Condition("equals", Category, "Roofs", PlannedCondition.StartGroupFlag)
+                        + Condition("equals", Category, "Communication Devices", PlannedCondition.StartGroupFlag))),
+                Category);
+
+            Assert.That(found.Count, Is.EqualTo(1));
+            Assert.That(found[0].GroupsAsking, Is.EqualTo(2));
+            Assert.That(found[0].Groups, Is.EqualTo(3));
+            Assert.That(found[0].ToString(), Is.EqualTo(
+                "BLD-EL-Phones asks for \"Telephone Equipment\" and \"Roofs\" in 2 of its 3 Or groups, so a group without them can still match"));
+        }
+
+        /// <summary>A set asking it in every group it holds is named as before, with no groups said.</summary>
+        [Test]
+        public void ASetAskingAnUnknownCategoryInEveryGroupIsNamedAsBefore()
+        {
+            IList<CategoryNobodyHas> found = SetWarnings.FindCategoriesNobodyHas(
+                Sets(Set("A", null, Condition("equals", Category, "Telephone Equipment"))),
+                Category);
+
+            Assert.That(found[0].ToString(), Is.EqualTo("A asks for \"Telephone Equipment\""));
+        }
+
+        /// <summary>
         /// A measured list holds what it names and nothing else, Ordinal, so a category
         /// spelt with a different case or an extra space is one the models do not carry.
+        /// Read through EmptySets.Carries, the one rule the HEALTH block and the EMPTY SETS
+        /// judge read since FR-010, where RevitCategories.Holds, which nothing in src called
+        /// any more, was read. Every assert is kept.
         /// </summary>
         [Test]
         public void AMeasuredListHoldsWhatItNamesAndNothingElse()
         {
-            Assert.That(RevitCategories.Holds("Walls"), Is.True);
-            Assert.That(RevitCategories.Holds("walls"), Is.False);
-            Assert.That(RevitCategories.Holds("Walls "), Is.False);
-            Assert.That(RevitCategories.Holds("anything at all"), Is.False);
+            IList<string> measured = RevitCategories.All();
+
+            Assert.That(EmptySets.Carries(measured, "equals", "Walls"), Is.True);
+            Assert.That(EmptySets.Carries(measured, "equals", "walls"), Is.False);
+            Assert.That(EmptySets.Carries(measured, "equals", "Walls "), Is.False);
+            Assert.That(EmptySets.Carries(measured, "equals", "anything at all"), Is.False);
             Assert.That(RevitCategories.All().Count, Is.EqualTo(374));
         }
 
@@ -349,10 +512,14 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// All three checks run on the client's corrected matrix. Since the category list
-        /// was measured off the ten C02 federations, 5i, fourteen of the 61 sets ask for a
+        /// was measured off the ten C02 federations, 5i, thirteen of the 61 sets ask for a
         /// category none of those models carries, Ramps and Roofs among them, which is
         /// information about C02 and not a fault in the file: those buildings have no
         /// item of that category. The block names five and counts the rest.
+        ///
+        /// THIRTEEN AND NOT FOURTEEN SINCE FR-023. The fourteenth was BLD-EL-Devices, named as
+        /// asking for Telephone Devices, which it leaves out with a negated condition, flags 32,
+        /// and does not ask for. The count moved because the rule did.
         /// </summary>
         [Test]
         public void TheHealthBlockCarriesAllThreeCountsAndEveryCheckRan()
@@ -363,9 +530,14 @@ namespace Federator.Core.Tests
 
             Assert.That(all, Does.Contain("Sets asking exactly the same question: 1"));
             Assert.That(all, Does.Contain("Revit categories known: 374"));
-            Assert.That(all, Does.Contain("Sets asking for a category no model carries: 14"));
+            Assert.That(all, Does.Contain("Sets asking for a category no model carries: 13"));
             Assert.That(all, Does.Contain("BLD-AR-Roofs asks for \"Roofs\""));
-            Assert.That(all, Does.Contain("and 9 more, counted and not listed"));
+            Assert.That(all, Does.Contain("and 8 more, counted and not listed"));
+
+            foreach (CategoryNobodyHas one in result.CategoriesNobodyHas)
+            {
+                Assert.That(one.Set.Name, Is.Not.EqualTo("BLD-EL-Devices"), "it asks for no category the models lack");
+            }
             Assert.That(all, Does.Contain("Set names breaking their folder's pattern: 1"));
             Assert.That(all, Does.Contain("BLD-Security Devices"));
         }

@@ -40,9 +40,43 @@ namespace Federator.Core.Exchange
         /// <summary>The resource the list lives in, named once.</summary>
         public const string ResourceName = "Federator.Core.Exchange.revit-categories.txt";
 
+        /// <summary>
+        /// How a line of a measured list names the project its models were measured on,
+        /// FR-011, the project part of their file names. Named once, for this list and the
+        /// workset list.
+        /// </summary>
+        public const string ProjectMarker = "project:";
+
         private static readonly object Gate = new object();
         private static List<string> known;
         private static bool resourceFound;
+        private static string project;
+
+        /// <summary>
+        /// The project the list was measured on, read off its project line, or null where it
+        /// names none, FR-011. A category no model of THIS project carries is only said where
+        /// the group's own models name the same project.
+        /// </summary>
+        public static string Project
+        {
+            get
+            {
+                Load();
+                return project;
+            }
+        }
+
+        /// <summary>The project a line of a measured list names, or null where it is not a project line.</summary>
+        internal static string ProjectIn(string line)
+        {
+            if (line == null || line.IndexOf(ProjectMarker, StringComparison.Ordinal) != 0)
+            {
+                return null;
+            }
+
+            string named = line.Substring(ProjectMarker.Length).Trim();
+            return named.Length == 0 ? null : named;
+        }
 
         /// <summary>
         /// Every category the list names, in the order the file wrote them. Empty until
@@ -67,21 +101,6 @@ namespace Federator.Core.Exchange
         public static bool Measured
         {
             get { return Count > 0; }
-        }
-
-        /// <summary>
-        /// Whether that value is a category this project's models carry. Compared Ordinal
-        /// and never trimmed, the same as every other name read out of the exchange file.
-        /// Always TRUE while the list is unmeasured, so nothing is reported on a guess.
-        /// </summary>
-        public static bool Holds(string category)
-        {
-            if (!Measured || string.IsNullOrEmpty(category))
-            {
-                return true;
-            }
-
-            return Load().Contains(category);
         }
 
         /// <summary>
@@ -160,6 +179,12 @@ namespace Federator.Core.Exchange
                                     continue;
                                 }
 
+                                if (ProjectIn(line) != null)
+                                {
+                                    project = ProjectIn(line);
+                                    continue;
+                                }
+
                                 known.Add(line);
                             }
                         }
@@ -171,6 +196,7 @@ namespace Federator.Core.Exchange
                     // nothing, which is the same answer an unmeasured list gives.
                     known = new List<string>();
                     resourceFound = false;
+                    project = null;
                 }
 
                 return known;

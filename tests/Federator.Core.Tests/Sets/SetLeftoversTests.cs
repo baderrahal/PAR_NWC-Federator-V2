@@ -139,6 +139,68 @@ namespace Federator.Core.Tests.Sets
             Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Refuse));
         }
 
+        /// <summary>
+        /// Two sets differing only by a flag that is part of the question are not twins, FR-015.
+        /// One ORs two groups and the other ANDs the same four conditions, which nothing answers,
+        /// and a condition against its negation asks the opposite. Pairing them would rename a set
+        /// onto a name asking another question. The keys are read the way the add-in reads them.
+        /// </summary>
+        [Test]
+        public void TwoSetsDifferingOnlyByTheGroupOrTheNegationBitAreNotTwins()
+        {
+            const string Element = "LcRevitData_Element";
+            const string Category = "LcRevitPropertyElementCategory";
+
+            foreach (int bit in new[] { PlannedCondition.StartGroupFlag, PlannedCondition.NegateFlag })
+            {
+                string first = new ReadCondition(Element, Category, "equals", "Ducts").Key();
+                string plain = new ReadCondition(Element, Category, "equals", "Duct Fittings").Key();
+                string flagged = new ReadCondition(Element, Category, "equals", "Duct Fittings", bit).Key();
+
+                IList<LeftoverSet> leftovers = SetLeftovers.For(
+                    new List<DocumentSet>
+                    {
+                        Set("BLD-Broken", 60, first, plain),
+                        Set("BLD-Corrected", 0, first, flagged)
+                    },
+                    new List<string> { "BLD-Corrected" });
+
+                Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Refuse), "bit " + bit);
+            }
+        }
+
+        /// <summary>
+        /// A set holding a value that would not read has no keys and pairs with nothing, FR-017.
+        /// Its value read as an empty string, so it could pair with a twin asking for "".
+        /// </summary>
+        [Test]
+        public void ASetWithAValueThatWouldNotReadNeverPairs()
+        {
+            IList<string> unread = ReadCondition.KeysOf(new List<ReadCondition>
+            {
+                new ReadCondition("LcRevitData_Element", "LcRevitPropertyElementCategory", "equals", "Pipe Accessories"),
+                ReadCondition.Unread("LcRevitData_Element", "lcldrevit_parameter_-1002053", "equals", 0)
+            });
+
+            IList<string> twin = ReadCondition.KeysOf(new List<ReadCondition>
+            {
+                new ReadCondition("LcRevitData_Element", "LcRevitPropertyElementCategory", "equals", "Pipe Accessories"),
+                new ReadCondition("LcRevitData_Element", "lcldrevit_parameter_-1002053", "equals", string.Empty)
+            });
+
+            Assert.That(unread, Is.Empty);
+
+            IList<LeftoverSet> leftovers = SetLeftovers.For(
+                new List<DocumentSet>
+                {
+                    new DocumentSet("a/folder/BLD-Broken", "BLD-Broken", unread, 60),
+                    new DocumentSet("a/folder/BLD-Corrected", "BLD-Corrected", twin, 0)
+                },
+                new List<string> { "BLD-Corrected" });
+
+            Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Refuse));
+        }
+
         /// <summary>A set asking nothing at all pairs with nothing, or every unreadable set would pair.</summary>
         [Test]
         public void ASetAskingNothingNeverPairs()
@@ -148,6 +210,55 @@ namespace Federator.Core.Tests.Sets
                 new List<string> { "BLD-Corrected" });
 
             Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Refuse));
+        }
+
+        /// <summary>
+        /// A SIDE COUNT THAT COULD NOT BE TAKEN IS NOT ZERO SIDES, FR-013. When the clash tests
+        /// could not be read, every set read 0 sides and every set the file no longer names was
+        /// removed, orphaning the tests that point at it. Such a set is refused and said.
+        /// </summary>
+        [Test]
+        public void ALeftoverWhoseSidesCouldNotBeCountedIsRefusedAndNeverRemoved()
+        {
+            IList<LeftoverSet> leftovers = SetLeftovers.For(
+                new List<DocumentSet> { Set("BLD-Old-Thing", DocumentSet.SidesNotCounted, Asks) },
+                new List<string> { "BLD-Something-Else" });
+
+            Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Refuse));
+            Assert.That(leftovers[0].SidesUnknown, Is.True);
+            Assert.That(leftovers[0].Line(), Does.Contain("could not all be counted"));
+            Assert.That(leftovers[0].Line(), Does.Contain("NOTHING IS DONE"));
+        }
+
+        /// <summary>
+        /// ONE SET WHOSE SIDES COULD NOT BE COUNTED REFUSES EVERY LEFTOVER OF ITS DOCUMENT,
+        /// FR-013, because the twin a leftover would be renamed into, or the leftover itself, may
+        /// be pointed at by a side that was not counted. A set at 0 counted sides is not removed
+        /// and a working half is not renamed.
+        /// </summary>
+        [Test]
+        public void OneSetWhoseSidesCouldNotBeCountedRefusesEveryLeftover()
+        {
+            IList<LeftoverSet> leftovers = SetLeftovers.For(
+                new List<DocumentSet>
+                {
+                    Set("BLD-Broken", 60, Asks),
+                    Set("BLD-Corrected", DocumentSet.SidesNotCounted, Asks),
+                    Set("BLD-Unused", 0, AsksSomethingElse)
+                },
+                new List<string> { "BLD-Corrected" });
+
+            Assert.That(leftovers.Count, Is.EqualTo(2));
+
+            foreach (LeftoverSet leftover in leftovers)
+            {
+                Assert.That(leftover.Action, Is.EqualTo(LeftoverAction.Refuse), leftover.Name);
+                Assert.That(leftover.SidesUnknown, Is.True, leftover.Name);
+            }
+
+            Assert.That(
+                Joined(SetLeftovers.Lines(leftovers)),
+                Does.Contain("2 are left alone because the clash test sides of this NWF could not all be counted"));
         }
 
         /// <summary>

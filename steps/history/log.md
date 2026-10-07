@@ -2,6 +2,982 @@
 
 Newest entry at the top.
 
+## 2026-10-07 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 8 on the readings of attempt 7, after attempt 7 on the readings of attempt 6, written by the lead's delegate
+
+### Attempt 8, on the readings of attempt 7
+
+Attempt 7's reviewer read CHANGES on one blocking finding, turn5\lanes-1007-review7-F114.json.
+Main 3f2a300 taken in at 5f6070f, F139 as pull request 130, F114's order line now 47.
+
+A SET WITH NO NAME NEVER THROWS, finding 1. ViewTeams.cs line 51 keyed a Dictionary on a set's
+name, and the reader gives a set or a set folder with no name attribute a null name, so the
+constructor threw and no view was planned. 1c2f8be leaves such a set out, since no side can
+name it, and a side with no set name reads UNKNOWN. AN UNKNOWN SIDE SAYS WHY, finding 2: each
+side read as UNKNOWN is named with why, ViewTeams.UnknownWords, saying only what was read.
+
+RECORDS, findings 5 and 6, the F114 section's bullets on FR-074 and on Q118 and Q119 and F114's
+bullet in .claude\rules\core.md. Findings 3 and 4 are rows F114-K30 and F114-K29 of
+steps\tracker.csv, and F114-K31, a TEAMS line for a set with no name, is new.
+
+TESTS. 2 new in TestViewPlanTests, one on a clash XML holding a set and a folder with no name,
+and 2 look for lines changed with the rule. All 4 failed first, turn5\f114-a8-before-fail.txt.
+Core tests 2141 passed before at 5f6070f and 2143 after at 1c2f8be, 0 failed, 0 skipped,
+turn5\f114-a8-core-before.txt and f114-a8-core-after.txt. The solution builds whole at 1c2f8be
+with --no-incremental, 0 warnings and 0 errors, its short hash and an empty git status at its
+top, turn5\f114-a8-build-code.txt. check-locals and check-imports pass, f114-a8-checks.txt.
+
+No Navisworks, stand-in, harness or probe was started. Roamer.exe read none running at 14:16:24,
+turn5\f114-a8-roamer-before.txt, and is read again after, f114-a8-roamer-after.txt.
+
+### Attempt 7, on the readings of attempt 6
+
+Attempt 6 read APPROVE from the reviewer and the breaker, with findings that block nothing,
+turn5\lanes-1007-review6-F114.json and lanes-1007-break6-F114.json. Main was bb16672 at the
+fetch and already in the branch, so nothing was merged, turn5\f114-a7-merge-main.txt.
+
+ONE RULE FOR THE TEAM OF A SET, the reviewer's finding 1. ViewTeams takes the clash XML's sets and
+reads a side's team through TeamMap.TeamOfSet, Bader's answer C to Q117 and A where the set tree
+names no team, so BLD-Security Devices is Electrical in the views as on the TEAMS line. A side is
+named by its set name alone, so two sets of one name whose folders give two teams read UNKNOWN.
+The plan names a side that reads UNKNOWN, and its line says so. ViewTeams.SetHasCode lost its one
+caller and is gone.
+
+THE TEAMS WORDS READ OFF THE RULE, the breaker's finding 1. The TEAMS lines on the order of a pair
+and the size folder are TeamPair.OrderWords and TeamPair.SizeFolderWords, beside the rule. A map
+naming a team by the UnknownTeam word sorts it by its line, and its line no longer says UNKNOWN
+comes last. ONE LOOKUP OF A TEAM'S LINE, the reviewer's finding 4: TeamMap.LineOf is gone and
+FolderNamingATeam reads Teams.Contains.
+
+RECORDS, the readers' writing findings. The run-on sentence after the Q134 bullet of
+.claude\rules\core.md and the line over width are set right, and F114's rule there says a side's
+team. In steps\01_next.md order line 46 and the F114 section's bullets on F131's pair and on the
+defaults A say what the branch holds.
+
+TESTS. 3 new, TheClientsSetWithNoCodeTakesTheTeamItsFolderNamesAsTheTeamsLineSays on the
+corrected XML and ASetsFolderGivesItsTeamOnlyWhereItsNameCarriesNoCodeAndOneTeamIsNamed in
+TestViewPlanTests, and TheTeamsLinesSayWhatThePairRuleDoes in TeamPairTests. The line
+ASetNameWithNoCodeIsNamedInTheLines looks for changed with the rule, and its test still names
+BLD-Security Devices where no set tree is handed in. All 4 failed first against a stub that takes
+the sets and ignores them, turn5\f114-a7-before-fail.txt, after 28 CS1729 against the old
+constructor, f114-a7-before-compile.txt. 11 older call sites hand in no set tree.
+
+Core tests 2138 passed before at 065d826 and 2141 after at 02a71ff, 0 failed, 0 skipped,
+turn5\f114-a7-core-before.txt, f114-a7-core-after.txt and the pre-commit,
+f114-a7-precommit-code.txt. The solution builds whole at 02a71ff, the last code commit, with
+--no-incremental, 0 warnings and 0 errors, git rev-parse --short HEAD and an empty git status at
+its top, turn5\f114-a7-build-code.txt. check-locals and check-imports pass on src,
+turn5\f114-a7-checks.txt.
+
+Programs and Navisworks: dotnet build, dotnet test, git, sh for the two checks and the
+pre-commit, python for the text edits and powershell for the process reads. None starts a
+Navisworks, and no stand-in, harness or probe was run. Get-Process Roamer read none running
+before the work at 13:21:04, turn5\f114-a7-roamer-before.txt, and is read again after it,
+f114-a7-roamer-after.txt.
+
+### Known bugs, attempt 7
+
+- B5 of attempt 3, Q117 C not carried, is closed by this attempt
+- F114-K29, new, for Bader. A team map may name a team by the UnknownTeam word. A side with no
+  code and a side of that team then share one name in a pair folder. Whether the map refuses
+  such a team is his to say
+- F114-K30, new, for the add-in pass. A side is read by its set name alone, the text after the
+  last slash of the test's locator. The locator holds the set's folders as well, and handing
+  them in would tell two sets of one name apart
+- F114-K1 to F114-K28 stand as attempts 2 to 5 wrote them
+
+### Every file written outside the repo, attempt 7
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-a7-roamer-before.txt, f114-a7-merge-main.txt, f114-a7-core-before.txt,
+  f114-a7-before-compile.txt, f114-a7-before-fail.txt, f114-a7-core-after.txt,
+  f114-a7-checks-pre.txt, f114-a7-rules.py, f114-a7-msg-code.txt, f114-a7-precommit-code.txt,
+  f114-a7-build-code.txt, f114-a7-checks.txt, f114-a7-records.py, f114-a7-msg-records.txt,
+  f114-a7-precommit-records.txt, f114-a7-push.txt and f114-a7-roamer-after.txt
+
+### Attempt 6, the team pair carried by Bader's answer B to Q134
+
+Not on readers' findings. Attempt 5's Core half read APPROVE, turn5\f114-a5-result.json. F131
+merged into main as pull request 135, 9c881d1, on 2026-10-07 and took TeamPair, TeamMap.Compare and
+TeamMap.CarriesSizeFolder out with their tests, by Bader's answer B to Q134: "No code waits on main
+for a later step. The three members go with F114, which calls them."
+
+THE ORDER OF THE COMMITS, not the order asked. Main merged first does not compile, 9 errors, all
+CS0246 on TeamPair, turn5\f114-a6-before-compile.txt, and the pre-commit builds and tests every
+commit. So that first merge was aborted, the carry went first at 5210b23 on e77e8a7, and main was
+taken in on top at e809da5, each commit green. Main was 9c881d1 at the first fetch and bb16672 at
+the merge, pull request 136, which changed steps files alone.
+
+THE CARRY, 5210b23. src\Federator.Core\Views\TeamPair.cs is the pair of cdbf638 with
+TeamPair.Compare, the one order of two teams, and TeamPair.TeamCarriesSizeFolder, both internal,
+reading the map through its public members alone: Teams, UnknownTeam and SizeFolderTeams. The
+size-folder teams were a private field no public member showed, so TeamMap.SizeFolderTeams now
+shows them as Teams shows the teams, read by TeamMap.Lines and by TeamPair, and judges nothing.
+Against main that is the one change in F131's TeamMap.cs. TestViewPlan orders through
+TeamPair.Compare. The pair rule moves from F131's section of .claude\rules\core.md to F114's.
+
+TESTS. TeamPairTests.cs of cdbf638 and the two TeamMapTests on Compare and CarriesSizeFolder are in
+tests\Federator.Core.Tests\Views\TeamPairTests.cs, the same assertions through TeamPair. Every
+other assertion on CarriesSizeFolder, four in TeamMapTests and five in ProjectTeamMapTests, reads
+SizeFolderTeams in its place, beside main's assertions on the TEAMS lines. One of the four, the
+kept map's, main had taken out and the merge puts back. All 7 carried tests failed against a stub
+of the shape, 7 of 7, turn5\f114-a6-before-fail.txt.
+
+THE MERGE, e809da5. Every conflict keeps both sides, by turn5\f114-a6-resolve-merge-code.py and
+f114-a6-resolve-merge.py, each said in turn5\f114-a6-msg-merge-main.txt.
+
+Core tests, all with 0 failed and 0 skipped: 2126 passed before at e77e8a7,
+turn5\f114-a6-core-before.txt, 2126 at 5210b23 by its pre-commit, the 7 moved and none lost,
+turn5\f114-a6-precommit-code.txt, and 2138 after at e809da5 with main's tests in, by its pre-commit
+and by hand, turn5\f114-a6-precommit-merge-main.txt and f114-a6-core-after.txt.
+
+The solution builds whole at e809da5, the last code commit, with --no-incremental, 0 warnings and 0
+errors, git rev-parse --short HEAD and an empty git status at its top,
+turn5\f114-a6-build-code.txt. check-locals and check-imports pass on src at e809da5,
+turn5\f114-a6-checks.txt, and in each pre-commit.
+
+KNOWN STATE UNTIL F114'S ADD-IN PASS. TeamPair, TeamPair.Compare and TeamPair.TeamCarriesSizeFolder
+are called in src by ViewTeams and TestViewPlan, F114's Core types, which no running code calls
+until F114's add-in pass wires the views, by the exception for a later pass of the same branch.
+F114's add-in pass calls them. TeamMap.SizeFolderTeams is read by TeamMap.Lines, which runs today.
+
+Programs and Navisworks: dotnet build, dotnet test, git, sh for the two checks and the pre-commit,
+python for the text edits and powershell for one process read. None starts a Navisworks, and no
+stand-in, harness or probe was run. Get-Process Roamer read none running at 12:57:25, after the
+build and the tests, turn5\f114-a6-roamer-after.txt. It was not read before the work.
+
+### Known bugs, attempt 6
+
+Rows F114-K1 to F114-K28 stand as attempts 2 to 5 wrote them. None new.
+
+### Every file written outside the repo, attempt 6
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-a6-core-before.txt, f114-a6-resolve-merge.py, f114-a6-before-compile.txt,
+  f114-a6-before-fail.txt, f114-a6-msg-code.txt, f114-a6-precommit-code.txt,
+  f114-a6-resolve-merge-code.py, f114-a6-msg-merge-main.txt, f114-a6-precommit-merge-main.txt,
+  f114-a6-build-code.txt, f114-a6-core-after.txt, f114-a6-checks.txt, f114-a6-roamer-after.txt,
+  f114-a6-records.py, f114-a6-msg-records.txt, f114-a6-precommit-records.txt and f114-a6-push.txt
+- for a while and then removed: copies of the files read off cdbf638 and main, in Git Bash's temp
+  folder
+
+### Attempt 5, on the readings of attempt 4
+
+The readers' findings are in %LOCALAPPDATA%\NwcFederatorLoop\turn5\f114-a4-result.json under
+reads, the reviewer's in reads[0], APPROVE, and the breaker's in reads[1], CHANGES with one
+blocking finding. Below, R and a number is the reviewer's finding of that index and B and a number
+the breaker's, both of attempt 4. B0 blocked.
+
+THIS IS THE THIRD ATTEMPT ON ONE CLASS, check 3 or 4 counted as holding over a name it could not
+tie to a model: attempt 3 on a read back missing, attempt 4 on a home that matched no model, and
+B0 here on a hidden model read back that matched no model. By the house rule a finding that
+survives three attempts goes to Bader, so this attempt closes the class whole and not for one
+input, as the lead asked. Should a reader find the class open again, what was tried and what each
+run showed is in the attempt 3, 4 and 5 sections of this entry.
+
+MAIN 503eaa4 IS TAKEN IN at 5bfa246, the records of PR 121: Bader's answer D to Q133, Q128 carried
+out whole, and Q134. Only steps\02_questions.md and steps\loop.md changed on main, and neither
+conflicted. Message in turn5\f114-a5-msg-merge-main.txt.
+
+Core tests, all with 0 skipped:
+- 2119 passed, 0 failed before, at 5bfa246 after the merge, by its pre-commit,
+  turn5\f114-a5-precommit-merge-main.txt, and again by hand, turn5\f114-a5-core-before.txt
+- the 6 new check tests against 5bfa246 with no change to src, 6 failed and 55 passed of the 61
+  tests in ViewsTreeCheckTests and WhatAViewShowsTests, turn5\f114-a5-before-fail.txt. The new
+  ShownModels test did not compile, 1 error, the use of `ShownModels.HomesOfManyModels`,
+  turn5\f114-a5-before-compile.txt. With that member a stub naming nothing and nothing else
+  changed, 7 failed and 55 passed of 62, turn5\f114-a5-before-fail-2.txt. Each failed on its own
+  assert: Expected False But was True for the five that held, and for the null painted item the
+  failure line the read back does not show
+- 2126 passed, 0 failed after, at 8626019 by its pre-commit, turn5\f114-a5-precommit-code.txt, and
+  by hand after the build, turn5\f114-a5-core-after.txt. 7 new tests, none deleted, none weakened,
+  2119 and 7 is 2126. The records commit changes no code
+
+The solution builds whole at 8626019, the last code commit, with --no-incremental, Federator.Core,
+Federator.Core.Tests and Federator.Addin each built, 0 warnings and 0 errors, exit 0, with git
+rev-parse --short HEAD and an empty git status at its top, turn5\f114-a5-build-code.txt.
+check-locals and check-imports pass on src at 8626019, turn5\f114-a5-checks.txt, and in the
+pre-commit of 8626019.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, perl for edits of text
+  files in the worktree, and powershell for the process reads. None of them starts a Navisworks.
+  One command of this pass also called python with an empty script, which waited on its input.
+  Its two processes, pids 42524 and 57868, both started at 16:43, were stopped by pid. They
+  touched no file
+- Get-Process Roamer read ONE ROAMER RUNNING at 16:22:33, before any work, pid 52324, started at
+  16:04:25, eighteen minutes before this pass began, turn5\f114-a5-roamer-before.txt. This pass
+  did not start it and did not touch it. Whose it was is UNKNOWN. None was running at 17:27:06,
+  after the code, the build and the tests, turn5\f114-a5-roamer-after.txt. This pass started no
+  Navisworks and touched none
+
+What was done, in 8626019:
+- B0, blocking. Root cause: check 3 read the models a view shows as every model no hidden name
+  matched, ViewsTreeCheck.cs:303 at 5bfa246, and the tree line the same, ViewsTree.cs:289, and a
+  hidden name that matched no model was passed over without a word. So a hidden read back of names
+  the stem rule does not reach, a display name with a dot or one that is not the file's name, read
+  as nothing hidden, every model counted as shown, and where none was of a third team check 3 held.
+  Where one was, it failed on a model the read back may well hide. The fix closes the class.
+  ONE RULE TIES EVERY NAME, `ModelNames`, new: the group's models kept under `ContainerName.Stem`
+  with `ContainerName.StemComparer`, new, the comparer `SameName` now reads for SimilarNames, so
+  the two cannot judge a name two ways. Its `Tie` gives, for a list of names, the models reached,
+  the models not reached, and each name blank, of no model or of more than one, in `NamesTied`,
+  new. The plan, the tree line and check 3 read it for the homes and for the hidden models read
+  back alike. `ModelTeam.IsAmong`, `ShownModels.GroupOf` and `ViewsTreeFacts.ModelsHandedIn` lost
+  their callers and are gone. A NAME NOT TIED IS NEVER COUNTED AS HOLDING: a view with a home or a
+  hidden name that is blank, of no model or of more than one is named in check 3's `NotRead` and
+  is not judged, since a model it would name as shown may be the one that name means. The tree
+  line counts the hidden names it could not tie. Failing first:
+  Check3RanInPartWhereAHiddenModelReadBackIsNoModelOfTheGroup, which also asserts no failure in a
+  group with a third team, and Check3RanInPartWhereAHiddenModelReadBackHasNoName
+- A NAME OF TWO MODELS, the lead's ask and the breaker's B1. A group gathered with subfolders can
+  hold one file name in two folders, and the stem rule tied a home to both and showed both with no
+  word. Such a home, or such a hidden name, is now named and the view is not judged. A home of two
+  models still shows both, `ShownModels.HomesOfManyModels`, new. The rule picks no exact full path
+  over the stem, because a second way to tie a name would be a second rule, register row F114-K26.
+  Failing first: Check3RanInPartWhereAHomeOrAHiddenNameIsTheNameOfTwoModels and
+  AHomeThatIsTheNameOfTwoModelsShowsBothAndIsNamedOnce. The first was written with its two Ducts
+  lines in the wrong order. After the fix it failed on that order alone, the Over 150mm view coming
+  after the pair's own view as the plan orders the views, and its two lines were put in the
+  plan's order. The words of each line were not changed
+- THE PAINTED SIDE. A painted read back holds item paths, `ItemPath`, and no name, so the matching
+  rule has nothing in it to tie. Check 4 ties a painted read back to the view's clashes by the
+  path, and the same class was open there: a clashing item that could not be pointed at is in no
+  paint plan, so check 4 held over a view whose paint of that item is UNKNOWN, and a null item read
+  back was counted as an item painted by mistake. Each now names the view in check 4's `NotRead`
+  and the view is not judged. Failing first:
+  Check4RanInPartWhereAClashingItemCouldNotBePointedAt and
+  Check4NamesAPaintedItemReadBackWithNoPathAsNotRead
+- A MODEL NO NAME CAN REACH, the breaker's B3, second half. A model whose file name has no stem was
+  counted as shown in every read back and judged by its team. It is named once in check 3's
+  `NotRead` and not judged. Failing first: Check3NamesAModelWithNoFileNameOnce
+- A CHOICE TO CHECK. In attempt 4 a view with a home not tied was named and still judged. It is
+  now named and not judged, the same as a hidden name not tied, for the same reason: a third team
+  it allows under Q118 A may be the model that home means
+
+The non-blocking findings of attempt 4 that break a house rule, fixed the same way:
+- R0, CLAUDE.md, the whole set passes off Windows. Three tests handed in backslash folders, which
+  only Windows splits. They write the folders with forward slashes, which both split, and assert
+  the same
+- R1 and R2, comments not true to the code. The NotRead doc and the class header of
+  `ViewsTreeCheck` name every kind of thing not read, `SecondHome` and `FirstHome` say a home may
+  be a path, a file name or a display name tied by `ModelNames`, and the two read back
+  dictionaries say what a name or a null item does
+- R3, a near copy. Check 4 kept its own copy of the read back lookup `HiddenOf` makes. Both kinds
+  are looked up in one place, `ViewsTreeFacts.ReadBackOf`, through `HiddenOf` and `PaintedOf`.
+  `StateOf` reads `view.Key` in place of building the same key again
+- B4, scale, in part. `ModelNames` takes each model's stem once per check, and `Tie` takes the
+  stem of each distinct text once, so a home repeated by 2566 clashes is read once per view, and
+  a name holding a character not legal in a path takes `Stem`'s catch once and not per comparison
+
+The rules: .claude\rules\core.md, the per test views bullet with the one rule `ModelNames` and a
+name not tied, and the VIEWS TREE bullet with A NAME OR AN ITEM NOT TIED IS NEVER COUNTED AS
+HOLDING. The F114 section of steps\01_next.md and its order line 45.
+
+### Known bugs, attempt 5
+
+Rows F114-K1 to F114-K25 stand as attempts 2 to 4 wrote them, each read again against 8626019,
+with the changes said here. None breaks a house rule of CLAUDE.md as read by this developer.
+
+- F114-K13 again, B2 of attempt 4, for Bader, unchanged. Check 3 tests a read back for a third
+  team's model alone, though the plan's hidden models are in hand. A read back that shows a model
+  of the pair's own team no clashing item lives in, hides a home, or hides nothing at all where the
+  plan hides some breaks Q119 B and not check 3. An empty hidden list is read as a view that hides
+  nothing, since the contract says null where not read
+- F114-K17 again, scale of the lines, a little worse. Check 3 now names each hidden name not tied
+  as well, never cut. The cost of the stems is fixed, B4 above
+- F114-K23, changed. Two models whose names differ only in extension or case, or one name in two
+  folders, are no longer matched silently: a name of both is named and the view not judged
+- F114-K24, unchanged, for the add-in pass. A display name with a dot, such as Level 1.5 AR, is cut
+  at the dot by `Stem` and misses, and is now named as no model of this group
+- F114-K26, new, for the lead or Bader. A home or a hidden name written as the full path of one of
+  two models of one file name is not tied, though the path tells them apart. Taking the exact path
+  first would be a second way to tie a name. Which is wanted is theirs to say
+- F114-K27, new, B3 of attempt 4, first half, wording. The tree line names models by code, so a
+  view of a group with two AR models that shows one and hides the other reads shows AR, hides AR
+- F114-K28, new, wording. Where no view's names can be tied, check 3 reads RAN IN PART, 0 broke it,
+  with every view named, and not DID NOT RUN. It is not counted as holding either way
+- K20, K21, K22 and K25 stand. B5 of attempt 3, Q117 C not carried, stands
+
+### Every file written outside the repo, attempt 5
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-a5-roamer-before.txt, f114-a5-msg-merge-main.txt, f114-a5-precommit-merge-main.txt,
+  f114-a5-core-before.txt, f114-a5-before-fail.txt, f114-a5-before-compile.txt,
+  f114-a5-before-fail-2.txt, f114-a5-msg-code.txt, f114-a5-precommit-code.txt,
+  f114-a5-build-code.txt, f114-a5-checks.txt, f114-a5-core-after.txt, f114-a5-roamer-after.txt,
+  f114-a5-msg-records.txt, f114-a5-precommit-records.txt and f114-a5-push.txt
+- for a while and then removed: turn5\ShownModels.stub-backup.cs, the source kept while the stub
+  ran, and the helper files of the text edits
+
+### Attempt 4, on the readings of attempt 3
+
+The readers' findings are in %LOCALAPPDATA%\NwcFederatorLoop\turn5\f114-a3-result.json under
+reads, the reviewer's in reads[0] and the breaker's in reads[1], both CHANGES with one blocking
+finding each. Below, R and a number is the reviewer's finding of that index and B and a number the
+breaker's, both of attempt 3. R0 and B0 blocked.
+
+MAIN b900464 IS TAKEN IN at e0e2201, F136 merged as PR 117 and the records of PR 119 and PR 120.
+Two conflicts, both in steps, both sides kept. Main's order line 43 is F136, merged, so F131's
+line is 44 here and F114's 45, and the F136 section follows the F131 and F114 sections. In this
+file the F114 and F131 entries stay on top and main's two F136 entries follow them. No source file
+conflicted. fix-F131 had not moved since 0c0a7c7, which attempt 3 took in. Message in
+turn5\f114-a4-msg-merge-main.txt.
+
+Core tests, all with 0 skipped:
+- 2113 passed, 0 failed before, at e0e2201 after the merge, by its pre-commit,
+  turn5\f114-a4-precommit-merge-main.txt, and again by hand, turn5\f114-a4-core-before.txt. F136
+  brings 14 to attempt 3's 2099
+- the new tests did not compile against e0e2201, 1 error, the use of the new
+  `PlannedTestView.Homes`, turn5\f114-a4-before-compile.txt
+- with `Homes` a stub giving no homes and nothing else changed, 7 failed and 48 passed of the 55
+  tests in ViewsTreeCheckTests and WhatAViewShowsTests, turn5\f114-a4-before-fail.txt, and again
+  with one test rewritten as said below, 7 failed and 48 passed, turn5\f114-a4-before-fail-2.txt
+- 2119 passed, 0 failed after, at 1c19120 by its pre-commit, turn5\f114-a4-precommit-code.txt,
+  and by hand at 1c19120 after the build, turn5\f114-a4-core-after.txt. 6 new tests, one renamed
+  and rewritten, none deleted, 2113 and 6 is 2119. The records commit changes no code
+
+The solution builds whole at 1c19120, the last code commit, with --no-incremental,
+Federator.Core, Federator.Core.Tests and Federator.Addin each built, 0 warnings and 0 errors, exit
+0, with git rev-parse --short HEAD and an empty git status at its top,
+turn5\f114-a4-build-code.txt. check-locals and check-imports pass on src at 1c19120,
+turn5\f114-a4-checks.txt, before the commit, turn5\f114-a4-checks-precommit.txt, and in the
+pre-commit of 1c19120.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for edits of
+  text files in the worktree, and powershell for the process reads. None of them starts a
+  Navisworks
+- Get-Process Roamer read none running at 15:13:33, before any work,
+  turn5\f114-a4-roamer-before.txt, and none running at 16:03:05 after the code, the build and the
+  tests, turn5\f114-a4-roamer-after.txt. This pass started no Navisworks and touched none
+
+What was done, in 1c19120:
+- R0, blocking, one rule in one place. Under Q119 B what a view shows is its homes, and the homes
+  of a view were gathered in `ViewsTree.ShowsAndHides`, again in `ViewsTreeCheck.Read.ShownFor`
+  and a third time in the test helper `HomesOf`. They are `PlannedTestView.Homes`, each clash's
+  first home then its second in the order the clashes were read, read by the tree line and check 3
+  through `ShownModels.For`, and by the tests. `Read.ShownFor` and `HomesOf` are gone. Failing
+  first: TheHomesOfAViewAreEachClashsFirstThenSecondHome, by compile and then against the stub
+- B0, blocking, UNKNOWN counted as holding. Root cause: `ShownModels.For` matched a home to a model
+  with `List.Contains`, Ordinal on the exact text, and check 3 matched a hidden read back the same
+  way, so a home written as a path or a display name missed every model, every view hid every
+  model, the read back agreed, nothing was a third team, and check 3 only added a note per home,
+  so it held over a tree of blank views. Two changes. A NAME IS MATCHED TO A MODEL BY ONE RULE,
+  `ModelTeam.IsAmong`, for a home and for a hidden model read back, in the tree line, in
+  `ShownModels` and in check 3: `ContainerName.SameName`, the stem of the file name compared
+  without case, which `SimilarNames` now reads for its exact match instead of its own copy. So a
+  path, a bare file name and a display name with no extension all reach the model. And A VIEW
+  WITH A CLASHING ITEM WHOSE MODEL COULD NOT BE READ, OR WHOSE HOME MATCHES NO MODEL OF THE GROUP,
+  IS ONE CHECK 3 DID NOT RUN FOR: each is named in `NotRead`, so check 3 reads RAN IN PART and is
+  not counted as holding. A blank home is now a home not read.
+  Check3SaysAClashingItemWhoseModelIsUnknown asserted that such a view holds, which was the fault,
+  and is now Check3RanInPartForAClashingItemWhoseModelIsUnknown, asserting both lines whole.
+  Failing first: Check3RanInPartForAClashingItemWhoseModelIsUnknown,
+  Check3DoesNotHoldOverBlankViewsWhoseHomesMatchNoModel,
+  HomesAndReadBacksWrittenAsPathsAreMatchedByFileNameInTheTreeAndCheck3,
+  AHomeWrittenAsAPathOrInAnotherCaseIsTheModelOfThatFileName and
+  AModelHandedInByItsPathIsMatchedByItsFileName. That last one was first written as
+  AModelHandedInByItsPathIsKnownByItsFileName, asserting `ModelTeam.FileName` lost its folder, and
+  seen failing, turn5\f114-a4-before-fail.txt. Once the rule chosen was the stem on both sides,
+  which leaves `FileName` as handed in, it was rewritten to assert the match itself and seen
+  failing again, turn5\f114-a4-before-fail-2.txt
+
+The non-blocking findings of attempt 3 that break a house rule, fixed the same way:
+- R1, no member without a caller in src. `ShownModels.Shown` had none. The tree line reads it now
+  where the view was not read back, in place of working the shown models out again
+- B1, a crash on a documented input, which would stop the VIEWS TREE block where a report check
+  never fails a group. `ViewsTreeFacts` says a read back is null where not read, and the tree line
+  took a present key with a null value as read and threw, and a null model threw in the models
+  line. The hidden read back is looked up once, `ViewsTreeFacts.HiddenOf`, which reads a null entry
+  as not read, for the tree line and check 3, and the models are read once,
+  `ViewsTreeFacts.ModelsHandedIn` through `ShownModels.GroupOf`, which leaves a null out as
+  `ShownModels` already did. Failing first:
+  ANullReadBackIsNotReadAndANullModelIsLeftOutAndNeitherStopsTheBlock, a NullReferenceException
+
+The rules: .claude\rules\core.md, the per test views bullet with the homes gathered once and the
+one matching rule, and the VIEWS TREE bullet with the views check 3 did not run for. The F114
+section of steps\01_next.md and its order line 45.
+
+### Known bugs, attempt 4
+
+Rows F114-K1 to F114-K19 below stand as attempts 2 and 3 wrote them, each read again against
+1c19120, with K17 a little worse as said. The new rows are attempt 3's findings not fixed here and
+three this pass found. None breaks a house rule of CLAUDE.md as read by this developer.
+
+- F114-K13 again, B2, for Bader, unchanged. Check 3 tests for a third team's model alone. A read
+  back that shows a model of the pair's own team no clashing item lives in, hides a home, or hides
+  every model breaks Q119 B and not check 3, which now at least does not hold where a home matched
+  no model
+- F114-K17 again, B6, scale, a little worse. Check 3 now names in `NotRead` each view with a home
+  not read and each home of a view that matches no model, never cut, so a group whose homes all
+  miss writes a line per view per home
+- F114-K20, R2 with B4, a loud repeat. A test that had this tool's view in an earlier run and is a
+  mirror now is not run, so the inventory keeps its view as KeepTestNotRead, and check 5, which
+  reads the walk after, fails on it every week with nothing in the tool to clear it. Whether the
+  inventory should remove this tool's view of a mirror is for the lead or Bader
+- F114-K21, R3, a check half that cannot fail as written. The plan key half of check 4 can fire
+  only where the input holds one test and clash name twice, and then both copies are in one view
+  and its line, is in more than one view, is false. The painted half is sound. Whether the plan
+  key half stays is for the lead
+- F114-K22, B3, empty read as holding. A plan with no view, or a check with nothing to read, runs
+  over zero items and holds, so the block can read 7 of 7 hold over a tree in which nothing was
+  written, the views planned 0 line the only trace. An empty models list with views planned is now
+  RAN IN PART for check 3, since every home matches no model
+- F114-K23, found here. Two models of one group whose names differ only in extension or in case
+  match the same home and are both shown. Whether a group can hold two such files is UNKNOWN
+- F114-K24, found here, for the add-in pass. In what form the add-in reads a clashing item's home
+  and a hidden model's name, a path, a file name or a display name, is UNKNOWN until it is written.
+  The rule takes all three where the stem is the file's. A display name that is not the file's name
+  at all misses and is named under check 3 as UNKNOWN
+- F114-K25, found here, a reminder. Main's F136 holds `ViewpointRequest.DefaultMakeViewpoints`
+  false, its comment saying F114's pull request sets it back to true, Bader's answer B to Q131. It
+  is unchanged on this branch, since this pass opens no pull request
+- B5, Q117 C not carried, known state as attempt 3 wrote it: a set name with no code reads as team
+  UNKNOWN, so one UNKNOWN vs X pair folder mixes teams until it is carried
+
+### Every file written outside the repo, attempt 4
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-a4-roamer-before.txt, f114-a4-msg-merge-main.txt, f114-a4-precommit-merge-main.txt,
+  f114-a4-core-before.txt, f114-a4-before-compile.txt, f114-a4-before-fail.txt,
+  f114-a4-before-fail-2.txt, f114-a4-checks-precommit.txt, f114-a4-msg-code.txt,
+  f114-a4-precommit-code.txt, f114-a4-build-code.txt, f114-a4-core-after.txt, f114-a4-checks.txt,
+  f114-a4-roamer-after.txt, f114-a4-msg-records.txt, f114-a4-precommit-records.txt and
+  f114-a4-push.txt
+- the edit scripts and this entry's draft, in the session's scratch folder under the user's temp
+  folder, which nothing reads after the commit
+
+### Attempt 3, on the readings of attempt 2
+
+The readers' findings are in %LOCALAPPDATA%\NwcFederatorLoop\turn5\f114-a2-result.json under
+reads, the reviewer's in reads[0], APPROVE, and the breaker's in reads[1], CHANGES. Below, R and a
+number is the reviewer's finding of that index and B and a number the breaker's, both of attempt
+2. One blocked: B0. Bader answered Q119 on 2026-10-05, in his words "B. A view shows only the
+models its clashing items live in.", turn5\q132-words.txt, and Q118 A and Q120 A stand.
+
+F114 STILL MERGES AFTER F131. main at fdd05c2 is taken in at 7555327, with no conflict, and
+fix-F131's attempt 3 at 0c0a7c7 at de32bc6, two conflicts with both sides kept: order line 43 is
+F131's of attempt 3 and 44 stays F114's, and in this file the F114 entry stays on top, then F131's
+attempt 3 entry and everything below it as fix-F131 holds them, compared line for line with the
+line endings set aside. Each merge has its message in a file. Bader also answered Q117 C and
+Q123 B. Neither is carried into this branch here: this pass was asked for Q119 alone, so the
+views still read a set with no code as UNKNOWN, and the window's team map is F131's.
+
+Core tests, all with 0 skipped:
+- 2090 passed, 0 failed before, at de32bc6 after both merges, by its pre-commit,
+  turn5\f114-a3-precommit-merge-f131.txt, and again by hand, turn5\f114-a3-core-before.txt. 2088
+  at the merge of main, turn5\f114-a3-precommit-merge-main.txt, and F131's attempt 3 brings 2
+- the new tests did not compile against de32bc6, 3 errors, each a use of the new `NotRead`,
+  turn5\f114-a3-before-compile.txt
+- with `NotRead` added and empty and nothing else changed, 22 failed and 26 passed of the 48
+  tests in ViewsTreeCheckTests and WhatAViewShowsTests, turn5\f114-a3-before-fail.txt
+- 2099 passed, 0 failed after, at 4d8ee7f by its pre-commit, turn5\f114-a3-precommit-code.txt,
+  at 6b3701a by its pre-commit, turn5\f114-a3-precommit-comments.txt, and by hand at 6b3701a
+  after the build, turn5\f114-a3-core-after.txt. 9 new tests, none deleted, 2090 and 9 is 2099.
+  Five were renamed and rewritten, named below. The records commit changes no code
+
+The solution builds whole at 6b3701a, the last code commit, with --no-incremental,
+Federator.Core, Federator.Core.Tests and Federator.Addin each built, 0 warnings and 0 errors, with
+git rev-parse --short HEAD and an empty git status at its top, turn5\f114-a3-build-code.txt.
+check-locals and check-imports pass on src at 6b3701a, turn5\f114-a3-checks.txt, and in the
+pre-commits of 4d8ee7f and 6b3701a.
+
+THE MESSAGE OF 4d8ee7f NUMBERS THREE OF THE BREAKER'S FINDINGS ONE TOO HIGH, 4, 5 and 6 where the
+readers' file has 3, 4 and 5, and three test comments did the same. 6b3701a corrects the comments
+and its message says so. The numbers in this entry are the file's.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for edits of
+  text files in the worktree, and powershell for the process reads. None of them starts a
+  Navisworks
+- Get-Process Roamer read none running at 13:31:38, before any work, turn5\f114-a3-roamer-before.txt,
+  and none running at 14:54:22 after the code, the build and the tests, turn5\f114-a3-roamer-after.txt.
+  This pass started no Navisworks and touched none
+
+What was done, in 4d8ee7f, with three test comments corrected in 6b3701a:
+- B0, blocking. With `HiddenReadBack` or `PaintedReadBack` null, or kept under a key the lookup
+  missed, check 3 read what a view shows off `ShownModels.For`, the plan's own rule, and tested it
+  against the same pair, so it could not fail, and both checks were counted as holding. A view
+  whose read back is missing is now one the check did not run for, by attempt 2's rule for the
+  others: it is named in `ViewsTreeCheck.NotRead`, `Holds` is false while any is named, the block
+  reads RAN IN PART where nothing broke the check and names each under it as not read, and the
+  last line counts such checks apart. Where no view of several was read back the one line says
+  so. Check 3 with no view read back did not run at all, since only the plan's list is left. The
+  test that asserted the fault, Check3SaysWhereNothingWasReadBack, is now
+  Check3DidNotRunWhereNothingWasReadBack, and Check3SaysAClashingItemWhoseModelIsUnknown, which set
+  the read back to null and asserted holding, keeps the read back and asserts the check ran.
+  Failing first: Check3DidNotRunWhereNothingWasReadBack,
+  Check3RanInPartWhereOneViewWasNotReadBackAndIsNotCountedAsHolding,
+  Check4RanInPartWhereNoPaintWasReadBack and Check4NamesTheViewWhosePaintWasNotReadBack
+- B0's key with B5. The read backs were looked up by `PlannedTestView.ToString`, the written place,
+  which a test named Over 150mm/Pipes in a pair folder and a test Pipes in that pair's size folder
+  share. The add-in keeps them under `PlannedTestView.Key`, `ViewPlace.Key` of the view, one shape
+  read from one place, and `ViewsTreeFacts`, check 3, check 4 and the block's tree line read it
+  there. Read backs handed in under a key no planned view gives are counted in a note on checks 3
+  and 4. Failing first: ReadBacksKeptUnderTheWrittenPlaceAreNotReadAndAreCounted.
+  TwoViewsOfOneWrittenPlaceKeepTheirReadBacksUnderTwoKeys was written once `Key` existed and was
+  not seen failing.
+  `PlannedTestView.FolderPath` had no caller in src, R3 of the reviewer's known state, and is gone,
+  its two asserts reading `ViewPlace.FolderPath` and the new key
+- Q119 B, Bader's answer. `ShownModels` showed the pair's two teams' models, every home and every
+  model whose code will not read. It now shows the homes alone and hides every other model, a model
+  of the pair's own teams and one whose code will not read among them. Q118 A stands: a home in a
+  third team's model is shown and in `Exceptions`. A home whose code will not read is shown, and
+  check 3 names that view as one it did not run for, since whether the model is a third team is
+  UNKNOWN. `ShownModels.NoCode`, which only the old rule needed and nothing in src read, is gone
+  with its asserts. The judgement of a model against its pair, written in `ShownModels` and again
+  in check 3, is `ShownModels.IsOfThePair`. Failing first: AModelOfThePairsTeamNoItemLivesInIsHidden,
+  AnItemInAModelOfItsOwnTeamIsNoException, AnItemInAThirdTeamsModelShowsThatModelAndNamesIt,
+  AHomeNotReadOrOfNoModelOfTheGroupIsCountedAndNamed,
+  AModelWhoseCodeWillNotReadIsShownOnlyWhereAnItemLivesInIt,
+  TenModelsOfOneBuildingShowOnlyTheTwoItsItemsLiveIn and
+  Check3DidNotRunForAViewShowingAModelWhoseCodeWillNotRead.
+  StructureVsElectricalShowsTheModelsItsItemsLiveInAndHidesTheRest passed at once, both of its
+  homes being of the pair
+
+The non-blocking findings of attempt 2 that break a house rule, fixed the same way:
+- R2 with B1, never report a check that did not run. Checks 1 and 2 ran and held once one planned
+  view of many was found marked by this run. Each planned view not found is named as one they did
+  not run for, and the gate of none found now reads the planned views, not any marked one. Failing
+  first: ChecksOneAndTwoRanInPartWhereAPlannedViewIsNotFoundMarked
+- B4, one rule in one place. The mirror list went to `TestViewPlan.For` and again to
+  `ViewsTreeFacts.Mirrors`, and check 5 read the second. `ViewsTreeFacts.Mirrors` is gone. The plan
+  keeps the list it was handed, `TestViewPlanOutcome.MirrorRule`, and check 5 reads it there, so
+  with no rule handed to the plan check 5 did not run. Failing first: every test that read check 5
+  off the fixture, which no longer hands a second list, among them
+  AWholeGoodTreePassesEverySevenChecks and Check5DidNotRunWithNoMirrorRuleAndIsNotCountedAsHolding
+- B3, a check that says the opposite of the fact. Check 5 read the plan's views, which the plan
+  built from the same list, so that half could not fail. It reads the walk after instead and fails
+  on this tool's view of a mirror, such as one kept from an earlier run as KeepTestNotRead. With a
+  mirror to look for and no tests run or no walk handed in, it names what it ran without.
+  Check5NamesAMirrorThatHasAViewThoughItWasNotRun, whose input the one list makes impossible, is
+  now Check5NamesAMirrorWhoseViewOfAnEarlierRunIsStillInTheTree, failing first.
+  Check5RanInPartWithAMirrorAndNoTestsRunOrNoWalk was written after the fix and not seen failing
+- R1, a line that would stop being true. Check 5's reason said F132 is not in this build, untrue
+  once F132 merges and a run has no XML. It says no mirror rule was handed to the plan, asserted
+  whole in Check5DidNotRunWithNoMirrorRuleAndIsNotCountedAsHolding, failing first
+- R0, records not true. core.md said the mark, the plan, the walk, the block, the inventory and
+  the checks all compare a place by the key. It now says which compare by the key, that the read
+  backs are kept under `PlannedTestView.Key`, and that the mark compares the written place, row
+  F114-K14
+
+The rules: .claude\rules\core.md, the per test views bullet with Q119 B and the one mirror list,
+the mark bullet with the key and the read backs, and the VIEWS TREE bullet with check 5 and the
+checks that ran in part. The F114 section of steps\01_next.md and its order line 44.
+
+### Known bugs, attempt 3
+
+Rows F114-K1 to F114-K14 below stand as attempt 2 wrote them, each read again against 6b3701a.
+K13 now reads under Q119 B, and the new rows are attempt 2's findings not fixed here and two this
+pass found. None breaks a house rule of CLAUDE.md as read by this developer.
+
+- F114-K13 again, for Bader, under Q119 B. Check 3 holds to its words, no third team's model shown.
+  A read back that shows a model of the pair's own team no clashing item lives in, or hides a home,
+  breaks Q119 B and not check 3. Whether check 3 should test the read back against the homes
+  exactly is his to say
+- F114-K15, B2 of attempt 2, F72a's rule before this branch. `SizeRule.LargestMillimetres` reads a
+  Diameter or Width of 0 as 0 mm, and a NaN read first stays the largest, and `VerdictFor` calls
+  both Small, so the clash goes in the pair view and is never SizeUnknown. Whether Revit writes 0
+  for a size left blank is UNKNOWN. The add-in's Penetrations reads the same rule, so a change
+  waits for the add-in pass
+- F114-K16, B6 of attempt 2. No check reads the priority folder or the order of the tree. Check 1
+  reads the pair folder alone, and the tree lines come from the plan, so a test of priority A
+  written under B holds every check
+- F114-K17, B7 of attempt 2, scale. The notes of checks 3 and 7 are never cut, nor now the views a
+  check ran without, so a group of thousands of views kept or not read back writes a line for each
+  in the .log, which TreeLinesInLog and Q108 exist to stop. Where every view of several missed its
+  read back, one line says so
+- F114-K18, found here, wording. A view line of the tree reads shows and hides off the read back
+  where there is one and off the plan where not, and ends read back when the view was read back as
+  a whole, so a view whose hidden models alone were not read back reads as read back. Check 3 names
+  it, the tree line does not
+- F114-K19, found here, for Bader and the add-in pass. Under Q119 B a view none of whose homes
+  could be read shows no model at all. Check 3 notes the homes not read, and what such a view
+  should show is UNKNOWN
+- B8 of attempt 2 is K10, unchanged. B1's link to K1 stands: a folder handed null redlines reads as
+  a person's, so check 2's folder branch looks at none, though each planned view under it not found
+  is now named
+
+### Every file written outside the repo, attempt 3
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-a3-roamer-before.txt, f114-a3-msg-merge-main.txt, f114-a3-precommit-merge-main.txt,
+  f114-a3-msg-merge-f131.txt, f114-a3-precommit-merge-f131.txt, f114-a3-core-before.txt,
+  f114-a3-before-compile.txt, f114-a3-before-fail.txt, f114-a3-msg-code.txt,
+  f114-a3-precommit-code.txt, f114-a3-msg-comments.txt, f114-a3-precommit-comments.txt,
+  f114-a3-build-code.txt, f114-a3-core-after.txt, f114-a3-checks.txt,
+  f114-a3-roamer-after.txt, f114-a3-msg-records.txt, f114-a3-precommit-records.txt and
+  f114-a3-push.txt
+- the edit scripts, in the session's scratch folder under the user's temp folder, which nothing
+  reads after the commit
+
+### Attempt 2, on the readings of attempt 1
+
+The readers' findings are in %LOCALAPPDATA%\NwcFederatorLoop\turn5\f114-core-result.json under
+reads, the reviewer's in reads[0] and the breaker's in reads[1], both CHANGES. Below, R and a
+number is the reviewer's finding of that index and B and a number the breaker's. Four blocked:
+R0, R1, B0 and B1.
+
+F114 STILL MERGES AFTER F131. fix-F131's attempt 2 is taken in at 197aefa as it stood at 9fafddd,
+and main at 83445cb at 07100af, each with its message in a file. F132 is not merged into this
+branch or into main, so THE MIRROR RULE IS HANDED IN AS A PLAIN LIST OF TEST NAMES,
+`TestViewPlan.For`'s mirrors and `ViewsTreeFacts.Mirrors`, the same list, and null where no mirror
+rule ran. Once fix-F132 is merged, the add-in hands in the mirror tests of F132's `MirrorRule`, and
+nothing in Core changes for it.
+
+Core tests, all with 0 skipped:
+- 2067 passed, 0 failed before, at 197aefa after both merges, by its pre-commit,
+  turn5\f114-a2-precommit-merge-f131.txt, and again by hand, turn5\f114-a2-core-before.txt. 2057
+  at the merge of main, turn5\f114-a2-precommit-merge-main.txt, and F131's attempt 2 brings 10
+- the new tests and the changed ones did not compile against 197aefa, 63 errors, every one a
+  member of this pass, turn5\f114-a2-before-compile.txt
+- 16 failed and 78 passed of the view tests against the shape of the fix with the old behaviour:
+  `ViewPlace` and the place read through it, `ToolViewMark` taking the folders, the plan taking
+  the mirrors and ignoring them, `Ran` always true, and `ShownModels` counting no home, each
+  failing for the reason its finding names, turn5\f114-a2-before-fail.txt
+- 2088 passed, 0 failed after, at 31bd24a by its pre-commit, turn5\f114-a2-precommit-code.txt,
+  and by hand after the build, turn5\f114-a2-core-after.txt. 21 new tests, none deleted, 2067
+  and 21 is 2088. The records commit changes no code and no test
+
+The solution builds whole at 31bd24a with --no-incremental, Federator.Core, Federator.Core.Tests
+and Federator.Addin each built, 0 warnings and 0 errors, with git rev-parse --short HEAD and an empty git
+status at its top, turn5\f114-a2-build-code.txt. check-locals and check-imports pass on src,
+turn5\f114-a2-checks.txt, and again in the pre-commit of 31bd24a.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for edits of
+  text files in the worktree, and powershell for the process reads. None of them starts a
+  Navisworks
+- Get-Process Roamer read none running at 12:20:52, before any work, turn5\f114-a2-roamer-before.txt,
+  and none running at 13:16:09 after the code, the build and the tests, turn5\f114-a2-roamer-after.txt. This pass started no Navisworks and touched none
+
+What was done, each finding with the test seen failing first, all in 31bd24a:
+- R0, blocking. The place of a view was written three times, `PlannedTestView.FolderPath`,
+  `ViewNode.FolderPath` and inline in `ViewsTree.StateOf`, and handed to `ToolViewMark` as a
+  joined string. `ViewPlace` writes it once, the folders and the name joined by a slash for a
+  person to read, and `PlannedTestView`, `ViewNode`, `ViewsTree` and `ToolViewMark` read it there.
+  `ToolViewMark.Body` and `Judge` now take the folders, so no caller can hand it a place joined
+  another way. Failing first: ViewPlaceTests did not compile, and with it every test that hands
+  the mark its folders, turn5\f114-a2-before-compile.txt. The copies agreed, so no test of
+  behaviour could fail before the change
+- R1, blocking. `ViewsInventory` and `ViewsTreeCheck` each held a private key of a place. The one
+  key is `ViewPlace.Key`, folders, name and whether it is a folder, and `ViewPlace.ParentKey` for
+  the removal order. It tells a folder from a view of one name and a folder named A/B from two
+  folders, which the slash joined place cannot. Failing first: ViewPlaceTests, by compile
+- B0 with B5, blocking. Check 5 with no mirror rule counted as holding and the last line read 7 of
+  7. A check that could not run now says DID NOT RUN and why, `ViewsTreeCheck.Ran` and
+  `NotRunWhy`, never holds, and the last line counts it apart, as CLAUDE.md says never to report a
+  check that did not run. The same holds for checks 1 and 2 with no walk, no run stamp or not one
+  planned view found marked by this run, B5, check 3 with no models, checks 6 and 7 with no walk
+  or no inventory, and 7 with no codes or test names. Failing first:
+  Check5DidNotRunWithNoMirrorRuleAndIsNotCountedAsHolding, TheChecksOfTheWalkDidNotRunWithNoWalk,
+  ChecksOneAndTwoDidNotRunWithNoRunStamp, ChecksOneAndTwoDidNotRunWhenNoPlannedViewIsFoundMarked,
+  ChecksSixAndSevenDidNotRunWithNoInventory, CheckSevenDidNotRunWithNoCodesOrTestNames and
+  CheckThreeDidNotRunWithNoModels. The old test Check5SaysItProvesNothingWithNoMirrorRuleOrNoMirror
+  asserted a note saying UNKNOWN beside a check counted as holding, the fault itself. Its half with
+  0 mirrors stands as Check5SaysItProvesNothingWithNoMirror, and its half with no mirror rule is
+  the first test above, asserting more than it did
+- B1, blocking. Check 5 read only the tests run, and the plan took no mirror, so a mirror not run
+  this week whose earlier results the add-in read got a view and the check held. `TestViewPlan.For`
+  takes the mirrors: a mirrored test gets no view, its clashes are counted apart in
+  `LeftOutAsMirrors` and it is named in `Mirrored` and in the lines, and with no mirror rule
+  handed in the lines say a mirror gets a view as any test does. Check 5 reads the tests the plan
+  made views for as well as the tests run. Failing first: AMirroredTestGetsNoViewAndIsNamed,
+  APlanHandedNoMirrorRuleSaysSo, Check5NamesAMirrorThatHasAViewThoughItWasNotRun and
+  Check5HoldsWhenThePlanTookTheMirrors
+
+The non-blocking findings that break a house rule of CLAUDE.md, fixed the same way:
+- R5, every check gets a test that breaks it. `AddsUp` could not be false, so its DOES NOT ADD UP
+  line could never be written. Both are gone, and the plan's first line says how the clashes
+  looked at were dealt with, in views, left out by status and of mirrored tests. Its four asserts
+  in TestViewPlanTests now assert the sum itself. No test can fail first for a check that never
+  acts
+- R6, a test gap. ASetNameWithNoCodeIsNamedInTheLines asserts the set half of the plan's lines
+  names BLD-Security Devices under its count. It passed at once, the code being right
+- R7 with B6, a check that does not cover what it names. Check 6 followed two decisions only, so
+  a person's view under two folders of one name could go unseen. It follows every item the
+  inventory kept, and its words say so. Failing first:
+  Check6NamesAPersonsViewUnderTwinFoldersMissingAfter
+- B2, say UNKNOWN rather than fill a gap. `ShownModels` dropped a home not read without a word.
+  It counts them, `HomesNotRead`, names a home of no model of the group, `HomesNotInGroup`, and
+  check 3 says each for its view. Failing first: AHomeNotReadOrOfNoModelOfTheGroupIsCountedAndNamed
+  and Check3SaysAClashingItemWhoseModelIsUnknown
+- B3, a number that reads as the whole. The block's tests that ran with no open clash counted only
+  tests with a clash left out by status. It counts off the tests the clash step ran, UNKNOWN where
+  those were not handed in, and the plan's count says which tests it counts. Failing first:
+  TheBlockCountsTheTestsThatRanWithNoOpenClashOffTheTestsRun and
+  ThePlanSaysWhichTestsWithNoOpenClashItCounts
+- R3 and R4 with the records half of B11, records not true. core.md said the size lines name each
+  size not read, and the block that runs only counts them, so it now says they do once the add-in
+  pass wires them, and that the Over 150mm view holds only the sizes read over the threshold.
+  `SizeSettings` no longer says the first property found wins
+
+The rules: .claude\rules\core.md, the per test views bullet with the mirrors and the homes, the
+mark bullet with the one place, the VIEWS TREE bullet with checks 5 and 6 and the checks that did
+not run, and the size bullet. The F114 section of steps\01_next.md and its order line 44.
+
+### Known bugs, attempt 2
+
+The findings not fixed, as register rows for the lead. None is fixed here because none breaks a
+house rule of CLAUDE.md as read by this developer. B10 is for the lead to rule, a person's comment
+throwing where the inventory reads it.
+
+- F114-K1, R2, a contract for the add-in pass. `ToolViewMark.Judge` keeps a view whose redlines are
+  null, and `ViewsInventory` judges a folder through it with the folder's redlines. A folder
+  carries no redline list in the API as far as read, so an add-in handing null for a folder makes
+  every marked tool folder ChangedByAPerson, never removed. The add-in pass hands 0 for a folder,
+  or Judge says a folder has none, with a test of a folder at null
+- F114-K2, R8, a rule outside Core, before this branch. `Penetrations.Larger` in the add-in reads
+  a readable small service against an unreadable one as Small, never SizeUnknown, so under F114
+  that clash goes in the pair view unnamed. The add-in pass moves it into Core with its ViewClash
+- F114-K3, R11, wording. The team map line leaves out the size folder teams, and a view line reads
+  1 open clashes. For the add-in pass to settle with the block
+- F114-K4, B4. Two tests of one name merge into one view, the pair read off the first clash of the
+  first. Whether Clash Detective can hold two tests of one name is UNKNOWN here
+- F114-K5, B7. On the first run after this change the legacy tree holds folders of the same names
+  the new tree uses. If the add-in writes its folders fresh, each is a twin, so everything under
+  them is KeepPlaceNotUnique and the tree grows each week. The add-in pass reuses an existing folder
+  by its path, and a Core rule and test say so
+- F114-K6, B8. The mark writes the camera to a thousandth and `CameraReadBackTolerance` is 0.001, so
+  rounding alone reaches 0.00087, a smaller tolerance makes every tool view moved, and a camera far
+  from the origin read back in single precision may drift past it. The tolerance is absolute and
+  not tied to the decimals written. P10 and the add-in pass measure it
+- F114-K7, B9. A person's change of hidden items or appearance through Update Viewpoint, with name,
+  place, comment, camera, Guid and redlines unchanged, is not seen, and the view is replaced next
+  week. By design, the sentence of the mark says how to keep a view, and the loss is silent
+- F114-K8, B10, `SizeText`. 300x150 mm reads 150, refusing the 300 with no unit, and 6 1/2 in reads
+  2 in. Both read as a real size and decide which view a clash goes in. The client's strings so
+  far carry a unit on each number
+- F114-K9, B11's contract half. `ViewClash.ServiceSize` null means no service and is also what an
+  add-in that never read the size hands, so a size never read puts every large service in the
+  pair view with nothing said. The add-in pass reads it in every pair carrying the size folder
+- F114-K10, B12. `ToolViewMark.CountedAt` adds a length read off a comment to an index, so
+  stamp=2147483647: wraps, passes the bounds test and Substring throws, and a person's comment
+  stops the inventory for the group. A camera of NaN reads as unchanged. For the lead to rule
+  whether the first breaks a house rule
+- F114-K11, B13. `FramingBox` reads the unit before its one-centre return, so a unit the table does
+  not know throws for a view that needs no box. Loud, by F33's rule
+- F114-K12, B3's second half, a contract for the add-in pass. `ViewsInventory.Plan`'s testsRead must
+  be the tests the clash step ran. Built from the plan's tests, a test whose last open clash was
+  fixed keeps its old views as KeepTestNotRead
+- F114-K13, B2's other direction, for Bader. Check 3 does not fail where the read back hides the
+  model a clashing item lives in. Its words are his, so whether it should is his to say
+- F114-K14, R0's own point. The mark compares the slash joined place, so a view moved from folder
+  A/B holding C to A holding B/C reads as unmoved. The key tells them apart. No folder name in the
+  tree read so far holds a slash
+- R9 and B14, evidence, and R10, process: this pass keeps every pre-commit output whole and saves
+  the build command at the top of its file
+
+### Every file written outside the repo, attempt 2
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-a2-roamer-before.txt, f114-a2-msg-merge-main.txt, f114-a2-precommit-merge-main.txt,
+  f114-a2-msg-merge-f131.txt, f114-a2-precommit-merge-f131.txt, f114-a2-core-before.txt,
+  f114-a2-before-compile.txt, f114-a2-before-fail.txt, f114-a2-checks.txt, f114-a2-msg-code.txt,
+  f114-a2-precommit-code.txt, f114-a2-build-code.txt, f114-a2-core-after.txt,
+  f114-a2-msg-records.txt, f114-a2-precommit-records.txt, f114-a2-roamer-after.txt and
+  f114-a2-push.txt
+- the edit scripts and the text of this entry, in the session's scratch folder under the user's
+  temp folder, which nothing reads after the commit
+
+### Attempt 1
+
+F114 MERGES AFTER F131. It reads F131's TeamPair, TeamMap and CodeOf, merged into this branch at
+52cf57c from origin/fix-F131 as it stood at 89854fa, unmerged and being changed by its own
+attempt 2 now, and edits none of F131's files. When F131's attempt 2 lands, fix-F114 takes it in
+again before its own merge.
+
+Core tests, all with 0 failed and 0 skipped:
+- 1988 passed before at 52cf57c, the merge of fix-F131, by its pre-commit,
+  turn5\f114-precommit-merge-f131.txt
+- 2057 passed after at 4706f0d, by its pre-commit, turn5\f114-precommit-code.txt, and again by hand
+  after the build, turn5\f114-core-after.txt. The records commit adds and changes no test
+- 80 new tests, 11 gone with the members they pinned, 1988 less 11 and more 80 is 2057
+
+The solution builds whole with --no-incremental at 4706f0d, Federator.Core, Federator.Core.Tests and
+Federator.Addin each built, 0 warnings and 0 errors, with git rev-parse --short HEAD and an empty
+git status at its top, turn5\f114-build-code.txt. check-locals and check-imports pass on src,
+turn5\f114-checks.txt. The records commit changes no code.
+Every file named is under %LOCALAPPDATA%\NwcFederatorLoop\turn5 unless it is a path of the repo.
+
+Programs and Navisworks:
+- dotnet build, dotnet test, git, sh for the two checks and the pre-commit, python for edits of
+  text files in the worktree, and powershell for the process reads. None of them starts a
+  Navisworks
+- Get-Process Roamer read process 29372, started 07:26:26 on 2026-10-05, a loop run's, at 09:52:53
+  before anything was written, turn5\f114-roamer-before.txt, and no Roamer at all at 11:54:05
+  after the code, the build and the tests, turn5\f114-roamer-after.txt. That process ended
+  between the two reads. This pass made no call that starts, attaches to or closes a Navisworks,
+  so what ended it is the loop's record to say and UNKNOWN here. The probes of the design's part 3
+  did not run
+
+### The merges, and the three commits of the earlier pass
+
+- 9f81260 takes in origin/main of 2026-10-05. Two conflicts in FederationEngine.cs, both sides
+  kept: the open file run writes the list for the modellers and then the TIMING BESIDE SIZE
+  block, and WhereTheModelsSit takes main's runsATest while WhatTheModelsCarry keeps the outcome
+  Q101 counts its elements into. Built at 0 warnings and 0 errors before the commit. Its
+  pre-commit passed and made the commit, and its output was cut by the developer's own tail and
+  is not kept
+- 52cf57c's first commit was stopped by the session at its 600 s limit while its pre-commit ran
+  check-locals, and made nothing. The second made it, its pre-commit in
+  turn5\f114-precommit-merge-f131.txt, where one line of the stopped run, a local declared twice
+  in one file, is interleaved into the second's, which reads no local declared twice. check-locals
+  run alone after the code reads the same, turn5\f114-checks.txt
+- 52cf57c takes in origin/fix-F131. One conflict, steps\01_next.md, both kept: F126 stays order
+  line 42 as main has it, F131 becomes 43, and both sections stand
+- 3a44f2d, FR-073, the VIEWS seconds split call by call: KEPT. Its parts for a per test view, the
+  inventory, the frame, the mark, the removal and the tree read, go into `ViewsPart` in the add-in
+  pass with the calls they time, so no part is added that nothing times
+- 1d58798, FR-065, each viewpoint written with its own dimming and paint: CHANGED. The rule holds
+  for a per test view, what the view before left taken off first. Its code in ViewpointBuilder is
+  replaced when the builder moves to per test views in the add-in pass
+- f915396, Q101, each group's time beside its NWC sizes and item counts: KEPT as it is, as Q114's
+  lead note keeps it. Its viewpoints column counts views once the builder writes them
+
+### What was done
+
+- 4706f0d, FR-066. `SizeText` takes a whole run of digits after a letter with the word, so DN150 mm
+  is no size and never 50 mm, and DN200 mm never 0 mm. 1 new test, seen failing at 50,
+  turn5\f114-fr066-before-fail.txt
+- 4706f0d, FR-184 and FR-185, points 9 to 15. `TestViewPlan`, `TestViewPlanOutcome`,
+  `PlannedTestView`, `ViewClash` and `ViewTeams`. One view per test of its clashes at the
+  `ViewStatuses` setting, New and Active, in its priority folder, always there, then its team
+  pair through F131's `TeamPair`, then Over 150mm for the clashes whose larger service is over the
+  threshold in a pair carrying the size folder, every other clash in the pair view, no clash in
+  two views, no view for a test with no open clash, in the order a person reads the tree. A size
+  not read in such a pair is named with its test and clash, every one or as many as the size
+  settings say, FR-068, and a set name with no code is named once, FR-074. 19 new tests, 18 seen
+  failing against a stub of the shape, turn5\f114-testviewplan-before-fail.txt, the other that no
+  clashes give no views. One of them runs 50 rounds of 200 generated clashes and holds every open
+  clash in exactly one view and none at another status
+- 4706f0d, FR-185, point 13 with Q118 and Q119 by their defaults A. `ShownModels`, `ModelTeam`,
+  `PaintPlan`, `FramingBox`, `ItemPath` and `Point3`. A view shows the pair's two teams' models,
+  1A04PK's FP, HV, four ME and two ST in Structure vs Mechanical, the model each clashing item
+  lives in, a third team's named as an exception, and every model whose code will not read, and
+  hides the rest. Red is every first item and green every second not already red. The framing box
+  is the open clash centres padded by a margin in millimetres through UnitTable, feet and metres
+  framing the same place, an unknown unit refused, and one clash gets no box. 13 new tests, 11
+  seen failing against stubs, turn5\f114-whataviewshows-before-fail.txt, the other two ones a stub
+  returning nothing passes, the same paint twice and no box for one centre
+- 4706f0d, FR-186, points 16 and 17 with Q120 by its default A. `ToolViewMark`, `MarkJudgement`,
+  `ViewOwner` and `LegacyClashView`. The mark is one comment, the sentence of the setting then a
+  line holding the run's stamp, the place, the name, the camera to a thousandth and the Guid where
+  one is written, each text written as its length and itself, so a name with a trailing space or
+  the mark's own words in it reads back exactly, and found wherever it sits in the body. The stamp
+  reads the same under th-TH, de-DE, ar-SA and fa-IR. Renamed, moved, turned, commented on, drawn
+  on, copied, or with redlines, Guid or camera not readable, a view is a person's. F85's per clash
+  viewpoints are known by their strict shape, the baseline's first one among them. 13 new tests,
+  12 seen failing against stubs, turn5\f114-mark-legacy-before-fail.txt, the other the list of
+  shapes that are a person's, which a stub refusing everything passes
+- 4706f0d, FR-186. `ViewsInventory`, `ViewNode`, `WrittenView`, `InventoryDecision` and
+  `InventoryItem`. Every item of the tree after the new views are written gets one of thirteen
+  decisions by the design's four safety rules, and the removals come deepest first and latest
+  index first. 16 new tests, all 16 seen failing against a stub, turn5\f114-inventory-before-fail.txt
+- 4706f0d, FR-187, point 19. `ViewsTreeCheck`, `ViewsTreeFacts` and `ViewsTree`. The seven checks
+  and the VIEWS TREE block: a whole good tree passes all seven, each check broken once names what
+  broke it, the allowed exception of Q118 A is named and holds, check 3 says when it rests on the
+  plan, check 5 says it proves nothing with 0 mirrors and UNKNOWN with no mirror rule, and the
+  block cut at the setting keeps every check line. 15 new tests, all 15 seen failing against
+  stubs, turn5\f114-viewstree-before-fail.txt
+- 4706f0d, FR-071. `ViewsProgress`, a VIEWS progress line due every `ProgressEverySeconds`, 60, from
+  the step's start or the last line, saying the view reached, the views written and the seconds.
+  3 new tests, all 3 seen failing against a stub, turn5\f114-fr071-before-fail.txt
+- 4706f0d, the settings of the design's 1.11 in `ViewpointSettings`: `ViewStatuses`,
+  `FramingMarginMillimetres`, `MarkSentence`, `MarkTag`, `LegacyClashPrefix`, `TreeLinesInLog`,
+  `FolderGoesWithChildren` and `ProgressEverySeconds`, each a setting with the reason for its
+  default where it is declared, and the chosen ones saying they are chosen
+- 4706f0d, the deletions nothing in src calls, with their tests: `ViewpointSettings.NameSuffix`,
+  `FolderNameFor` and `ViewpointNameFor`, F52's leftovers, `SizeRule.Decide` with `SizeDecision`,
+  F53's first property reading, and `SizeTally` with its 9 tests. Of Decide's tests the two that
+  pinned its own reading, the first property winning and the words of its reason, went with it,
+  and the ones pinning a rule the live reading also holds, the units, an unknown unit, exactly
+  150, a size not read, the threshold and the names as settings, now test that reading,
+  `LargestMillimetres` with `VerdictFor`. Three asserts of PenetrationRuleTests moved the same way,
+  one line of them, Decide's 150 off a 150 by 600 duct, going with Decide
+- the records: this entry, the F114 order line 44 and its section in steps\01_next.md, and in
+  .claude\rules\core.md three new bullets for the per test views, the mark and the inventory, and
+  the VIEWS TREE block, a line saying the five F85 bullets are what runs until the add-in pass, and
+  the size bullets made true after the deletions and FR-066
+
+### Choices the developer made, for the reader to check
+
+- NO TeamPairRule. F131's `TeamPair` already holds the design's 1.6 whole, so writing it again in
+  Views would be a second copy. `ViewTeams` is the one place the views read a team
+- ONE NAME SEPARATOR. The design's `LegacyNameSeparator` would hold the same two spaces as
+  `NameSeparator`, which the per clash plan still reads, so `LegacyClashView` reads
+  `NameSeparator` and the rename waits for the add-in pass that deletes the per clash plan.
+  `UnknownDiscipline` stays the unknown word for the same reason, and it already reads F131's
+  `TeamMapSettings.DefaultUnknownTeam`
+- TWO FOLDERS OF ONE NAME SIDE BY SIDE keep everything under them, `KeepPlaceNotUnique`, because
+  a removal is given as a parent path and an index and such a path finds either folder. The
+  design does not name this case
+- THE TOOL'S EARLIER VIEW OF A TEST waits for every view of that test this run planned, and a per
+  clash viewpoint for the whole new tree, so a test whose view moved to another priority folder
+  keeps its old view until the new one reads back
+- WHAT CANNOT BE PROVED IS A PERSON'S. Redlines, a Guid or a camera that could not be read make
+  a marked view ChangedByAPerson, kept and named, by S1, so a view of the tool is never removed on
+  a read that failed. If the add-in cannot read redlines, every view of the tool stays and piles
+  up, which the add-in pass must measure, P7 having found a Size() on the redline list
+- A FOLDER IS A VIEW'S PLACE AND NO MORE. The mark's place is its folders joined by a slash, and a
+  folder name holding a slash could make two places read alike, a case nothing in the tree has
+  shown
+- THE PLAN TAKES THE PRIORITY OFF THE FIRST CLASH OF A TEST, since every clash of one test
+  carries the test's priority as the add-in copies it today
+- THE P8 TEST IS NOT WRITTEN as a test that only skips. It needs P8's dump of the baseline tree,
+  and until that is committed nothing of the legacy rule removes a viewpoint on a real run
+
+### What remains
+
+- the add-in half, a later pass of this branch once the probes of the design's part 3 have run on
+  Navisworks, only when no loop run holds it: SavedViewpoints, ViewpointBuilder, FederationEngine
+  and Penetrations onto the per test plan, the mark written and read back, the inventory's
+  removals, the VIEWS TREE block and its .tsv rows through RunLog, the new `ViewsPart` parts,
+  FR-067 and FR-072. UNTIL THEN NOTHING IN SRC CALLS THE NEW TYPES OF THIS PASS, by the exception
+  for a later pass of the same branch: `TestViewPlan`, `TestViewPlanOutcome`, `PlannedTestView`,
+  `ViewClash`, `ViewTeams`, `ItemPath`, `Point3`, `ModelTeam`, `ShownModels`, `PaintPlan`,
+  `FramingBox`, `ToolViewMark`, `MarkJudgement`, `ViewOwner`, `LegacyClashView`, `ViewNode`,
+  `WrittenView`, `InventoryDecision`, `InventoryItem`, `ViewsInventory`, `ViewsTreeFacts`,
+  `ViewsTreeCheck`, `ViewsTree` and `ViewsProgress`, and the eight new settings. `ShownModels.NoCode`
+  is read by tests only until the add-in counts it in the VIEWS block
+- in that pass, deleted with their tests once ViewpointBuilder no longer calls them:
+  `ClashViewpointPlan`, `DisciplinePairRule` and the per clash settings, `MaxPerTest`,
+  `DisciplineCodes`, `SubGroupDisciplines`, `HasSubGroup`, `NameSeparator` and
+  `UnknownDiscipline`, with the five F85 bullets of core.md and the three rules of addin.md that
+  FR-186 names
+- the tests that wait for a run or a probe: LegacyClashView over P8's dump reading exactly 2813
+  and none of the 34, the .tsv rows equal to the block, and the baseline's 59 tests giving 12 pair
+  folders, which needs the baseline log read by the test and not copied into it
+- docs\workflow.md for FR-188, and the proof steps in steps\03_bader_next.md with Runs A, B and B2
+
+### Known bugs
+
+- none found in the Core half
+
+### Found and left, for the code health lane
+
+- `SizeRule.LargestProperty` has no caller in src. PenetrationRuleTests alone reads it. It is the
+  penetration rule's as much as the views', the design's deletions do not name it, and this pass
+  left it
+
+### What comes next
+
+- the reviewer and the breaker on 4706f0d and the records commit, then the probes on Navisworks and
+  the add-in half, after F131 merges
+
+The Core half was proved here. The add-in half and every line it writes wait for the local machine.
+
+### Every file written outside the repo, this pass
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-roamer-before.txt, f114-precommit-merge-f131.txt, f114-fr066-before-fail.txt,
+  f114-testviewplan-before-fail.txt, f114-whataviewshows-before-fail.txt,
+  f114-mark-legacy-before-fail.txt, f114-inventory-before-fail.txt, f114-viewstree-before-fail.txt,
+  f114-fr071-before-fail.txt, f114-checks.txt, f114-precommit-code.txt, f114-build-code.txt,
+  f114-core-after.txt, f114-roamer-after.txt, f114-precommit-records.txt and f114-push.txt
+- the commit messages, the section and this entry, in the session's scratch folder under the
+  user's temp folder, which nothing reads after the commit
+
 ## 2026-10-07 The loop, turn 5, D6 done, the probes P13 to P15, and a put back by hand after P15's crash
 
 D6, by Bader's answer under step 352: the live list read 85 branches, 67 with a merged pull request, every commit

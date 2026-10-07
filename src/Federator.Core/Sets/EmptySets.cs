@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Federator.Core.Exchange;
 
 namespace Federator.Core.Sets
 {
@@ -21,12 +20,21 @@ namespace Federator.Core.Sets
     public sealed class EmptySet
     {
         internal EmptySet(string path, EmptyReason reason, string asked, string nearest)
+            : this(path, reason, asked, nearest, null)
+        {
+        }
+
+        internal EmptySet(string path, EmptyReason reason, string asked, string nearest, string whyNotTold)
         {
             Path = path ?? string.Empty;
             Reason = reason;
             Asked = asked ?? string.Empty;
             Nearest = nearest ?? string.Empty;
+            WhyNotTold = whyNotTold ?? string.Empty;
         }
+
+        /// <summary>Why this reader cannot tell, or empty where it does not know why, FR-011.</summary>
+        public string WhyNotTold { get; private set; }
 
         public string Path { get; private set; }
 
@@ -48,10 +56,14 @@ namespace Federator.Core.Sets
             switch (Reason)
             {
                 case EmptyReason.NoModelCarriesTheValue:
-                    return Path + "   asks for \"" + Asked + "\" and NO MODEL IN THIS PROJECT CARRIES IT"
+                    return Path + "   asks for \"" + Asked + "\" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT"
                         + (Nearest.Length == 0
                             ? ", and nothing the models carry is close to it"
-                            : ". The nearest the models carry is \"" + Nearest + "\", which is a suggestion and not a correction");
+                            : string.Equals(Nearest, Asked, StringComparison.OrdinalIgnoreCase)
+                                // FR-027. Letter case alone is the whole of what is wrong, Q68.
+                                ? ". The nearest the models carry is \"" + Nearest + "\", which differs from it by letter case"
+                                    + " alone, and the match is case sensitive. It is a suggestion and not a correction"
+                                : ". The nearest the models carry is \"" + Nearest + "\", which is a suggestion and not a correction");
 
                 case EmptyReason.TheValueIsThereAnyway:
                     // WHAT THIS READER ACTUALLY KNOWS. The measured lists are the whole
@@ -66,7 +78,8 @@ namespace Federator.Core.Sets
                         + " which is ordinary, or something else is wrong, and this reader cannot tell which";
 
                 default:
-                    return Path + "   found nothing and THIS READER CANNOT TELL WHY";
+                    return Path + "   found nothing and THIS READER CANNOT TELL WHY"
+                        + (WhyNotTold.Length == 0 ? string.Empty : ", because " + WhyNotTold);
             }
         }
     }
@@ -85,7 +98,8 @@ namespace Federator.Core.Sets
     /// spelling an also-ask line of it accepts, F131, so a spelling a MATRIX line says was
     /// measured or accepted is never one this calls carried by no model, F116. A set asking for
     /// something none of them holds is asking for something no model measured so far in this
-    /// project has.
+    /// project has. THE LISTS ARE ONE PROJECT'S, each names its project, and `EmptySetJudge`
+    /// reads them as a group's only where the group's models name the same project, FR-011.
     ///
     /// WHILE A LIST IS UNMEASURED THIS SAYS IT CANNOT TELL. A check that compared against
     /// an empty list would report every set in the file as asking for something nobody
@@ -107,42 +121,60 @@ namespace Federator.Core.Sets
         public const string WorksetProperty = "lcldrevit_parameter_-1002053";
 
         /// <summary>
-        /// Why that set found nothing, judged on the FIRST condition this reader knows
-        /// how to judge, against those workset spellings, SetBuildPlan.Worksets. One reason
-        /// per set, because a set asking two things nobody has is still one wrong set and a
-        /// person fixes it once.
+        /// Why that set found nothing, judged on the FIRST condition this reader knows how to
+        /// judge, by what that judge knows, EmptySetJudge. One reason per set, because a set
+        /// asking two things nobody has is still one wrong set and a person fixes it once. A
+        /// value is said to be carried by no model only against a list of this project's
+        /// models, FR-011, and where the judge knows of no such list it says it cannot tell
+        /// and why.
         /// </summary>
-        public static EmptySet Why(string path, IList<ReadCondition> asked, IList<string> worksets)
+        public static EmptySet Why(string path, IList<ReadCondition> asked, EmptySetJudge judge)
         {
-            if (asked == null || asked.Count == 0)
+            if (asked == null || asked.Count == 0 || judge == null)
             {
                 return new EmptySet(path, EmptyReason.CannotTell, null, null);
             }
 
-            bool judgedAny = false;
+            string carried = null;
+            string cannotTell = null;
 
             for (int i = 0; i < asked.Count; i++)
             {
-                IList<string> known = KnownFor(asked[i].PropertyInternalName, worksets);
+                EmptySetJudge.Known known = Judgeable(asked[i].Test, asked[i].Flags) ? judge.KnownFor(asked[i].PropertyInternalName) : null;
 
-                if (known == null || known.Count == 0)
+                if (known == null)
                 {
                     continue;
                 }
 
-                judgedAny = true;
+                if (Carries(known.Carried, asked[i].Test, asked[i].Value))
+                {
+                    carried = carried ?? asked[i].Value;
+                    continue;
+                }
 
-                if (Holds(known, asked[i].Value))
+                if (!known.IsComplete)
+                {
+                    cannotTell = cannotTell ?? known.WhyNot;
+                    continue;
+                }
+
+                if (known.Carried.Count == 0)
                 {
                     continue;
                 }
 
                 return new EmptySet(
-                    path, EmptyReason.NoModelCarriesTheValue, asked[i].Value, NearestIn(known, asked[i].Value));
+                    path, EmptyReason.NoModelCarriesTheValue, asked[i].Value, NearestIn(known.Carried, asked[i].Value));
             }
 
-            return judgedAny
-                ? new EmptySet(path, EmptyReason.TheValueIsThereAnyway, FirstJudgeable(asked, worksets), null)
+            if (cannotTell != null)
+            {
+                return new EmptySet(path, EmptyReason.CannotTell, null, null, cannotTell);
+            }
+
+            return carried != null
+                ? new EmptySet(path, EmptyReason.TheValueIsThereAnyway, carried, null)
                 : new EmptySet(path, EmptyReason.CannotTell, null, null);
         }
 
@@ -172,7 +204,8 @@ namespace Federator.Core.Sets
             int cannot = Of(empty, EmptyReason.CannotTell);
 
             lines.Add(empty.Count + " set(s) found nothing in this group, and this is why:");
-            lines.Add("   " + wrong + " ask for a value NO MODEL IN THIS PROJECT CARRIES, so the condition is wrong");
+            lines.Add("   " + wrong + " ask for a value NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES, so the condition is wrong"
+                + " or the project has not been measured that far");
             lines.Add("   " + there + " ask for a value models in this project DO carry, so either this group"
                 + " holds no model of that kind or something else is wrong");
             lines.Add("   " + cannot + " this reader cannot tell about");
@@ -230,46 +263,36 @@ namespace Federator.Core.Sets
             return count;
         }
 
-        private static string FirstJudgeable(IList<ReadCondition> asked, IList<string> worksets)
+        /// <summary>
+        /// Whether a condition with that test and those flags can be judged at all, FR-010, THE ONE
+        /// RULE this judge and the HEALTH block read, SetWarnings: one asking equals or contains,
+        /// the two the file writes, and NOT NEGATED. A negation asks for everything but its value,
+        /// so a value no model carries leaves out nothing and stops nothing, 5g, FR-023. Another
+        /// comparison is never read as equals. The HEALTH block kept only the negation half and
+        /// read every other test as equals, so the two blocks disagreed about such a set.
+        /// </summary>
+        internal static bool Judgeable(string test, int flags)
         {
-            for (int i = 0; i < asked.Count; i++)
-            {
-                IList<string> known = KnownFor(asked[i].PropertyInternalName, worksets);
-
-                if (known != null && known.Count > 0)
-                {
-                    return asked[i].Value;
-                }
-            }
-
-            return string.Empty;
+            return !PlannedCondition.NegatedWith(flags)
+                && (string.Equals(test, SetBuildPlan.EqualsTest, StringComparison.Ordinal)
+                    || string.Equals(test, SetBuildPlan.ContainsTest, StringComparison.Ordinal));
         }
 
         /// <summary>
-        /// The measured list for that property, the workset spellings handed in for the
-        /// workset, or null where this tool has no list and therefore no opinion. Never a
-        /// guess: a property nobody measured is one this reader says it cannot tell about.
+        /// Whether those measured values carry what a condition asks, THE ONE RULE for a value
+        /// and its test, read by this judge and by the HEALTH block, FR-010. Equals is the whole
+        /// value, Ordinal. Contains is a stem, so Cable Tray is carried by Cable Trays and Cable
+        /// Tray Fittings and is asked for by part of a name. It was read as equals here.
         /// </summary>
-        private static IList<string> KnownFor(string propertyInternalName, IList<string> worksets)
+        internal static bool Carries(IList<string> known, string test, string value)
         {
-            if (string.Equals(propertyInternalName, CategoryProperty, StringComparison.Ordinal))
-            {
-                return RevitCategories.Measured ? RevitCategories.All() : null;
-            }
+            bool contains = string.Equals(test, SetBuildPlan.ContainsTest, StringComparison.OrdinalIgnoreCase);
 
-            if (string.Equals(propertyInternalName, WorksetProperty, StringComparison.Ordinal))
-            {
-                return worksets;
-            }
-
-            return null;
-        }
-
-        private static bool Holds(IList<string> known, string value)
-        {
             for (int i = 0; i < known.Count; i++)
             {
-                if (string.Equals(known[i], value, StringComparison.Ordinal))
+                if (contains
+                    ? known[i].IndexOf(value, StringComparison.Ordinal) >= 0
+                    : string.Equals(known[i], value, StringComparison.Ordinal))
                 {
                     return true;
                 }

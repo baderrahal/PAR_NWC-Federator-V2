@@ -104,8 +104,7 @@ namespace Federator.Core.Naming
                 // name a group would write has no extension on it, so comparing the two
                 // raw would call every exact match a near miss, which is the opposite of
                 // the truth: that file being there is what makes the group a Weekly run.
-                if (string.Equals(
-                        ContainerName.Stem(candidate), wantedStem, StringComparison.OrdinalIgnoreCase))
+                if (ContainerName.SameName(candidate, wantedName))
                 {
                     continue;
                 }
