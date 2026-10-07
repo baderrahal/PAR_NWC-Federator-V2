@@ -9,6 +9,7 @@ param(
   [string]$Nwd = "",
   [string]$Excel = "",
   [string]$Xml = "",
+  [string]$Untick = "",
   [switch]$OpenRun,
   [int]$WindowWaitSeconds = 600
 )
@@ -38,7 +39,8 @@ param(
 # reads every box back, each on its own tab. It presses RunButton only when each box reads
 # exactly what was typed, ExchangeFileBox reading empty for a run with no -Xml, and ToleranceBox
 # reads Use the value in the XML. MarkByDesign, MarkPenetrations and PriorityBox are read,
-# recorded and left as the window opened them. The confirm after Run is a #32770 of the pid
+# recorded and left as the window opened them, bar a tick box -Untick names, F126 below. The
+# confirm after Run is a #32770 of the pid
 # titled exactly Parsons NWC Federator whose text starts This run federates, IsConfirm in
 # nw-guard.ps1, and its texts are recorded. It answers OK only when every text was read whole
 # and none names a rooted path outside %LOCALAPPDATA%\NwcFederatorLoop, and Cancel otherwise,
@@ -61,6 +63,17 @@ param(
 # disabled button is the tool's own refusal, TOOL REFUSED, with the line's text. An enabled one
 # is pressed only when ExchangeFileBox reads empty, ToleranceBox reads Use the value in the
 # XML, and the line names no rooted path outside the loop folder.
+#
+# F126, -Untick. Tick boxes named by their AutomationId, the x:Name WPF exposes, joined by
+# commas, such as SkipClashOffCoordinates, the tick box of F112's rule, so a run can be made with
+# that rule switched off. Once the tool's window is found and before anything is pressed, each is
+# looked for on the four tabs in their order, read through TogglePattern, toggled once only when
+# it reads On, and read back, with one line naming its id, its tab, what it read before and what
+# it reads after. A box on no tab, one that answers no TogglePattern, or one that does not read
+# Off after stops the driver, UNTICK, with a line naming it, and nothing is pressed. Each is read
+# again just before RunButton or, for item 5, before the reads that lead to RunOpenButton, and
+# one that does not read Off then stops it the same way with that button unpressed. Every other
+# tick box is left as the window opened it. TogglePattern only, no click, no key, no pointer.
 #
 # ONCE OK OR RUN THE OPEN FILE IS PRESSED, every way it ends is PRESSED, a fault after it
 # included, with what happened written after the word. run.ps1 posts WM_CLOSE for a driver
@@ -140,7 +153,7 @@ if ($null -eq $notesFull -or -not (UnderRoot $notesFull $loopRoot)) {
 }
 $Notes = $notesFull
 $script:NotesOk = $true
-Note ("driver started, pid " + $PID + ", owner pid " + $OwnerPid + ", start ticks UTC " + $OwnerStartTicks + ", set " + $Set + ", stamp " + $Stamp + $(if ($OpenRun) { ", the open file run" } else { "" }))
+Note ("driver started, pid " + $PID + ", owner pid " + $OwnerPid + ", start ticks UTC " + $OwnerStartTicks + ", set " + $Set + ", stamp " + $Stamp + $(if ($OpenRun) { ", the open file run" } else { "" }) + $(if ($Untick -ne "") { ", -Untick " + (MaskLine $Untick) } else { "" }))
 if ($Set -notmatch '^\d\d$') { Done "REFUSED" ("-Set is " + $Set + ", not two digits") }
 $setRoot = Join-Path $loopRoot ("runs\" + $Set)
 $boxes = [ordered]@{ "SourceFolderBox" = $Source; "NwfFolderBox" = $Nwf; "NwdFolderBox" = $Nwd; "ExcelFolderBox" = $Excel }
@@ -154,6 +167,10 @@ if ($OpenRun) {
   }
   if ($Xml -ne "" -and -not (UnderRoot $Xml $setRoot)) { Done "REFUSED" ("-Xml " + (Mask $Xml) + " is not under %LOCALAPPDATA%\NwcFederatorLoop\runs\" + $Set) }
 }
+# F126. The tick boxes to untick, refused by the one rule in nw-guard.ps1 before any window is read.
+$untickWhy = UntickRefusal $Untick
+if ($untickWhy.Count -gt 0) { Done "REFUSED" (($untickWhy -join ", and ") + ", so no window was read and nothing was pressed") }
+$untickIds = @(UntickIds $Untick)
 
 Add-Type -AssemblyName UIAutomationClient
 Add-Type -AssemblyName UIAutomationTypes
@@ -188,7 +205,10 @@ function Mine($el, $what) {
   if ($el.Current.ProcessId -ne $OwnerPid) { Done "FAULT" ("the element for " + $what + " belongs to process " + $el.Current.ProcessId + ", not " + $OwnerPid) }
   return $el
 }
-function ById($id) { return (Mine ($script:Win.FindFirst($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::AutomationIdProperty, $id)))) $id) }
+# The element of $id in the tool's window as it shows now, or $null, and ById, the same element
+# that must be there and the owner's.
+function Here($id) { return $script:Win.FindFirst($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::AutomationIdProperty, $id))) }
+function ById($id) { return (Mine (Here $id) $id) }
 function ByNameAndType($parent, $name, $type) {
   $c = New-Object System.Windows.Automation.AndCondition(@(
     (New-Object System.Windows.Automation.PropertyCondition($AE::NameProperty, $name)),
@@ -214,6 +234,67 @@ function TypeBox($id, $text) {
 function Toggle($id) {
   $el = ById $id
   try { return [string]$el.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern).Current.ToggleState } catch { return ("UNKNOWN, " + (Err $_.Exception)) }
+}
+# F126. The tabs a box -Untick names is looked for on, in their order, and the tab each was found
+# on, where it is read again before Run.
+$script:Tabs = @("1. Source", "2. Grouping", "3. Outputs", "4. Clash")
+$script:UntickTab = @{}
+# F126. A control on a tab that is not selected has no visual tree, so each tab is selected in
+# turn until one shows $id. Returns the element, the owner's, left showing, or $null when no tab
+# shows it.
+function FindOnTabs($id) {
+  foreach ($t in $script:Tabs) {
+    SelectTab $t
+    $el = Here $id
+    if ($null -ne $el) { $script:UntickTab[$id] = $t; return (Mine $el $id) }
+  }
+  return $null
+}
+# F126. The words after left as the window opened it in a line that reads tick boxes, so a box
+# -Untick names is never said to be left as it opened. Empty with no -Untick, so those lines read
+# as before.
+function BarUntick { if ($untickIds.Count -gt 0) { return (", bar the boxes -Untick names, " + ($untickIds -join ", ")) }; return "" }
+# F126. The element's TogglePattern, or $null when it answers none.
+function ToggleOf($el) {
+  $p = $null
+  if ($el.TryGetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern, [ref]$p)) { return $p }
+  return $null
+}
+# F126. Each box -Untick names, read, toggled once only when it reads On, and read back Off, one
+# line each. Called before anything is pressed, so every stop here leaves nothing pressed.
+function UntickBoxes {
+  foreach ($id in $untickIds) {
+    $el = FindOnTabs $id
+    if ($null -eq $el) { Done "UNTICK" ($id + " is on none of the tabs " + ($script:Tabs -join ", ") + ", so nothing was pressed") }
+    $tab = $script:UntickTab[$id]
+    $tp = ToggleOf $el
+    if ($null -eq $tp) { Done "UNTICK" ($id + " on the tab " + $tab + " answers no TogglePattern, its control type " + $el.Current.ControlType.ProgrammaticName + ", so it was not toggled and nothing was pressed") }
+    $before = [string]$tp.Current.ToggleState
+    $did = "not toggled"
+    if ($before -eq "On") {
+      Gate ("unticking " + $id)
+      try { $tp.Toggle() } catch { Done "UNTICK" ($id + " on the tab " + $tab + " read On and its Toggle threw " + (Err $_.Exception) + ", so nothing was pressed") }
+      Start-Sleep -Milliseconds 400
+      $did = "toggled once"
+    }
+    $after = [string]$tp.Current.ToggleState
+    Note ("untick " + $id + " on the tab " + $tab + ": before " + $before + ", " + $did + ", after " + $after)
+    if ($after -ne "Off") { Done "UNTICK" ($id + " on the tab " + $tab + " read " + $before + " before and reads " + $after + " after, not Off, so nothing was pressed") }
+  }
+}
+# F126. Each box -Untick names, read again on its tab just before $what is pressed, one line each.
+# One that is gone or does not read Off stops the driver with $what unpressed.
+function UntickedStill($what) {
+  foreach ($id in $untickIds) {
+    $tab = $script:UntickTab[$id]
+    SelectTab $tab
+    $el = Here $id
+    if ($null -eq $el) { Done "UNTICK" ($id + " is no longer on the tab " + $tab + " just before " + $what + ", so " + $what + " was not pressed") }
+    $tp = ToggleOf (Mine $el $id)
+    $now = $(if ($null -eq $tp) { "UNKNOWN, it answers no TogglePattern now" } else { [string]$tp.Current.ToggleState })
+    Note ("untick " + $id + " read again on the tab " + $tab + " just before " + $what + ": " + $now)
+    if ($now -ne "Off") { Done "UNTICK" ($id + " on the tab " + $tab + " reads " + $now + " just before " + $what + ", not Off, so " + $what + " was not pressed") }
+  }
 }
 # What a combo box reads, by whichever pattern it answers, or UNKNOWN, never a guess.
 function ComboText($id) {
@@ -330,12 +411,14 @@ try {
   if ($script:Win.Current.ProcessId -ne $OwnerPid) { Done "NO WINDOW" ("the window's automation element belongs to process " + $script:Win.Current.ProcessId) }
   NotePanes
   Start-Sleep -Seconds 2
+  # F126. Before anything is pressed.
+  UntickBoxes
 
   $tolDefault = "Use the value in the XML"
   if (-not $OpenRun) {
     SelectTab "1. Source"
     TypeBox "SourceFolderBox" $Source
-    Note ("IncludeSubfolders reads " + (Toggle "IncludeSubfolders") + ", left as the window opened it")
+    Note ("IncludeSubfolders reads " + (Toggle "IncludeSubfolders") + ", left as the window opened it" + (BarUntick))
     Press (ByNameAndType $script:Win "Scan" ([System.Windows.Automation.ControlType]::Button)) "Scan" ""
     # OnScan moves the window to 2. Grouping as its last step, so that is when the scan is over.
     # A dialog before it is the scan's own refusal, which stops this script.
@@ -375,9 +458,10 @@ try {
       if ($read[$k] -cne $want[$k]) { $wrong.Add($k + " reads " + $(if ($read[$k] -eq "") { "empty" } else { MaskLine $read[$k] }) + " and not " + $(if ($want[$k] -eq "") { "empty" } else { MaskLine $want[$k] })) }
     }
     $tol = ComboText "ToleranceBox"
-    Note ("ToleranceBox reads " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it")
+    Note ("ToleranceBox reads " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it" + (BarUntick))
     if ($wrong.Count -gt 0) { Done "BOX" (($wrong -join ", and ") + ", so nothing was pressed") }
     if ($tol -cne $tolDefault) { Done "TOLERANCE" ("ToleranceBox reads " + $tol + " and not " + $tolDefault + ", so nothing was pressed") }
+    UntickedStill "RunButton"
     NotePanes
     Press (ById "RunButton") "RunButton" ""
     # The confirm: a #32770 of the owner process titled exactly Parsons NWC Federator. No time
@@ -417,7 +501,9 @@ try {
     }
   }
 
-  # Item 5, the open file run.
+  # Item 5, the open file run. F126: the boxes -Untick names are read again first, because the
+  # read selects each box's tab and RunOpenButton is found on 4. Clash after it.
+  UntickedStill "RunOpenButton"
   SelectTab "4. Clash"
   $line = [string](ById "OpenDocumentLine").Current.Name
   $btn = ById "RunOpenButton"
@@ -426,7 +512,7 @@ try {
   if (-not $enabled) { Done "TOOL REFUSED" ("Run the open file reads disabled, and OpenDocumentLine reads: " + (MaskLine $line)) }
   $x = BoxText "ExchangeFileBox"
   $tol = ComboText "ToleranceBox"
-  Note ("ExchangeFileBox reads " + $(if ($x -eq "") { "empty" } else { MaskLine $x }) + ", ToleranceBox " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it")
+  Note ("ExchangeFileBox reads " + $(if ($x -eq "") { "empty" } else { MaskLine $x }) + ", ToleranceBox " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it" + (BarUntick))
   if ($x -ne "") { Done "BOX" ("ExchangeFileBox reads " + (MaskLine $x) + " and not empty, so nothing was pressed") }
   if ($tol -cne $tolDefault) { Done "TOLERANCE" ("ToleranceBox reads " + $tol + " and not " + $tolDefault + ", so nothing was pressed") }
   $outside = PathsOutside $line $loopRoot

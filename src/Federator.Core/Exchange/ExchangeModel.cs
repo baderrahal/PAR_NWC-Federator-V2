@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using Federator.Core.Teams;
 
 namespace Federator.Core.Exchange
 {
@@ -358,10 +359,10 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// The workset spellings this file's sets are judged against when one finds nothing, the
-        /// ones its corrections were chosen from, RevitWorksets.With: the names inside Core and
-        /// those of the list beside the picked file, F116. The names inside Core alone for a
-        /// document read as the file stands.
+        /// The workset spellings this file's sets are judged against when one finds nothing, every
+        /// one its corrections ask, RevitWorksets.With: the names inside Core and the spellings
+        /// the list beside the picked file names, MatrixCorrectionList.Spellings, F116 and F131.
+        /// The names inside Core alone for a document read as the file stands.
         /// </summary>
         internal ReadOnlyCollection<string> Worksets { get; private set; }
 
@@ -388,6 +389,20 @@ namespace Federator.Core.Exchange
         {
             Corrections = new ReadOnlyCollection<string>(new List<string>(lines));
             Worksets = new ReadOnlyCollection<string>(new List<string>(worksets));
+        }
+
+        /// <summary>
+        /// The team map read beside the picked file, F131, Q114 points 1 and 2 and Q115 answered
+        /// A, by ReadPicked wherever it reads the picked file, so the pick, the run, the
+        /// open file run and both hand buttons read one map with one list of corrections. Read on
+        /// its own, so a fault in one cannot leave the other unread. Null for a document read as
+        /// the file stands, which no run builds from.
+        /// </summary>
+        public TeamMap Teams { get; private set; }
+
+        internal void TeamsBeside(TeamMap teams)
+        {
+            Teams = teams;
         }
 
         public bool HasTests

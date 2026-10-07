@@ -41,6 +41,22 @@
 #   is enabled, read with IsWindowEnabled and no message, and WindowKind, which takes that and
 #   its owner's state and calls PANE a WinForms window owned by a visible window that is not
 #   modal
+#
+# WHAT F126 CHANGED OR ADDED, so a window run can switch off a rule of the tool by its tick box,
+# F112's SkipClashOffCoordinates among them:
+# - changed: DriverCodes, which gains UNTICK, the driver's stop on a tick box it was told to
+#   untick and could not
+# - added: UntickIds and UntickRefusal, the one reading of the list of tick boxes that run.ps1's
+#   -Untick and the driver's -Untick take
+#
+# WHAT F138 CHANGED OR ADDED, so a loop start never autosaves into Bader's AutoSave folder,
+# his message of 2026-10-05, Q135 point 2:
+# - changed: SettingsPutBack and the watchdog's constructor deadline block, which each say in
+#   one line when Auto-Save is left off for Bader
+# - added: AutoSaveSwitchKey, AutoSaveSwitchOff, AutoSaveSwitchHeld, SwitchAutoSaveOff and
+#   AutoSaveLeftLine. SwitchAutoSaveOff is called by run.ps1 and the probe after their last read
+#   before the constructor, and since attempt 2 no longer by BackupSettings, which writes
+#   nothing, so no stop before the start leaves the switch written
 # The rules these functions keep are written at the top of the probe and in
 # .claude\rules\loop.md, and are not repeated here.
 #
@@ -621,8 +637,29 @@ function PathsOutside($text, $root) {
 # F106. The driver's exit codes, one table: the driver ends with one of them and run.ps1 reads
 # them for its verdict. PRESSED is Run with OK on the confirm, or Run the open file. TOOL
 # REFUSED is Run the open file read disabled, the tool's own refusal. Every other code means
-# nothing that runs was pressed.
-function DriverCodes { return [ordered]@{ "PRESSED" = 0; "FAULT" = 1; "REFUSED" = 2; "OWNER" = 3; "NO WINDOW" = 4; "STAMP" = 5; "BOX" = 6; "TOLERANCE" = 7; "DIALOG" = 8; "CANCELLED" = 9; "TOOL REFUSED" = 10; "OPEN LINE" = 11; "WINDOW GONE" = 12 } }
+# nothing that runs was pressed. F126: UNTICK is a tick box named by -Untick that is on no tab,
+# answers no TogglePattern, or does not read Off after the untick or again just before Run.
+function DriverCodes { return [ordered]@{ "PRESSED" = 0; "FAULT" = 1; "REFUSED" = 2; "OWNER" = 3; "NO WINDOW" = 4; "STAMP" = 5; "BOX" = 6; "TOLERANCE" = 7; "DIALOG" = 8; "CANCELLED" = 9; "TOOL REFUSED" = 10; "OPEN LINE" = 11; "WINDOW GONE" = 12; "UNTICK" = 13 } }
+# F126. The tick boxes a window run unticks, named by their AutomationId, the x:Name WPF exposes,
+# and joined by commas. UntickIds splits the list, and UntickRefusal says why a list is refused,
+# one line each, or nothing: an id that is not the plain shape of an x:Name, or one named twice.
+# run.ps1 refuses its -Untick with it before anything is written, and the driver its own before
+# any window is read. A caller wraps UntickIds in @(), because in Windows PowerShell 5.1 one id
+# returned comes back bare and none comes back as nothing.
+function UntickIds($untick) {
+  if ([string]$untick -eq "") { return @() }
+  return @(([string]$untick).Split(',') | ForEach-Object { $_.Trim() })
+}
+function UntickRefusal($untick) {
+  $why = New-Object System.Collections.Generic.List[string]
+  $seen = @{}
+  foreach ($u in @(UntickIds $untick)) {
+    if ($u -cnotmatch '^[A-Za-z_][A-Za-z0-9_]*$') { $why.Add("-Untick names " + $(if ($u -eq "") { "an empty id" } else { MaskLine $u }) + ", not the plain shape of an x:Name") }
+    elseif ($seen.ContainsKey($u)) { $why.Add("-Untick names " + $u + " twice") }
+    else { $seen[$u] = $true }
+  }
+  return ,$why
+}
 function DriverCode($name) {
   $c = DriverCodes
   if (-not $c.Contains($name)) { throw ("there is no driver code named " + $name) }
@@ -1124,6 +1161,8 @@ function Watchdog($sync) {
             $dr = DiffRegistry $sync.RegBefore $ra $sync.RegRoot
             foreach ($l in $dr.Lines) { $block.Add("  " + $l) }
             $block.Add("  registry: " + @($dr.Changes | Where-Object { $_.Op -ne "CreateKey" }).Count + " values or keys differ from the backup, nothing written")
+            $al = AutoSaveLeftLine $sync.RegSub $sync.RegRoot $sync.RegBefore
+            if ($null -ne $al) { $block.Add("  " + $al) }
             $sa = SettingsRead $sync.NwAppData
             foreach ($m in $sa.Messages) { $block.Add("  " + $m) }
             $df = DiffFiles $sync.FilesBefore $sync.NotBacked $sa $sync.NwAppData
@@ -1243,6 +1282,67 @@ Say ("  the tool's own logs folder listed: " + $fedBefore.Files.Count + " files"
   $bs.RegRoot = $regRoot; $bs.RegFile = $regFile; $bs.RegBefore = $regBefore; $bs.AppBackup = $appBackup; $bs.FilesBefore = $filesBefore; $bs.AutoBefore = $autoBefore; $bs.NotBacked = $notBacked; $bs.FedBefore = $fedBefore
   $bs.Ok = $true
   return $bs
+}
+
+# F138, Bader's message of 2026-10-05, Q135 point 2: a loop start never autosaves into his
+# AutoSave folder. Navisworks keeps its Auto-Save switch in the value enable of
+# GlobalOptions\general\autosave under the 22.0 key, measured on 2026-10-05 in
+# %LOCALAPPDATA%\NwcFederatorLoop\turn5\q135\measure.md and read again in measure-check.md.
+# Every Auto-Save value there read "0", on that key's evidence a value never set, so the
+# default, on, holds, and each set boolean of that key reads "3 0" or "3 1". So off is written
+# "3 0". That Navisworks reads it as off is UNKNOWN until a start writes no autosave. The value
+# is written through its key as it stands and never through CreateSubKey, so a key that is not
+# there is never made and the start is refused.
+function AutoSaveSwitchKey($regSub) { return ("HKEY_CURRENT_USER\" + $regSub + "\GlobalOptions\general\autosave") }
+function AutoSaveSwitchOff { return [pscustomobject]@{ Kind = [Microsoft.Win32.RegistryValueKind]::String; Data = "3 0" } }
+# The value enable the backup read, or null when it read none.
+function AutoSaveSwitchHeld($regBefore, $regSub) {
+  $vals = $regBefore.Read[(AutoSaveSwitchKey $regSub)]
+  if ($null -eq $vals) { return $null }
+  return $vals["enable"]
+}
+# Writes off, then opens the key again and reads it back. Ok is true only when it reads off.
+# Line is the record's one line: what was written and what the backup holds, or why the start
+# is refused and what that leaves of his, nothing changed, his value changed and to be put back
+# by hand, or UNKNOWN when enable cannot be read again. run.ps1 and the probe call it after their
+# last read before the constructor and never BackupSettings, F138 attempt 2, so no stop before
+# the start but its own refusal comes after the write.
+function SwitchAutoSaveOff($regSub, $regRoot, $regBefore) {
+  $r = [pscustomobject]@{ Ok = $false; Line = "" }
+  $name = AutoSaveSwitchKey $regSub
+  $off = AutoSaveSwitchOff
+  $held = AutoSaveSwitchHeld $regBefore $regSub
+  $where = "enable under " + (ShortKey $name $regRoot)
+  $werr = ""
+  try {
+    $k = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey((HkcuSub $name), $true)
+    if ($null -eq $k) { $werr = "its key is not there, and a key is never made" }
+    else { try { $k.SetValue("enable", $off.Data, $off.Kind) } finally { $k.Close() } }
+  } catch { $werr = "the write threw, " + (Err $_.Exception) }
+  $now = RegValueNow $name "enable"
+  if ($werr -eq "" -and $now.Ok -and (RegSame $now.Value $off)) {
+    $r.Ok = $true
+    $r.Line = "Auto-Save switch written off for this start, Q135: " + $where + " written " + (RegText $off) + " and read back so, the backup holds " + (RegText $held) + ". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave"
+    return $r
+  }
+  $left = ", it reads " + (RegText $now.Value) + ", and the backup holds " + (RegText $held) + ", so his value is changed and must be put back by hand"
+  if (-not $now.Ok) { $left = ", it could not be read again, " + $now.Error.TrimEnd('.') + ", and the backup holds " + (RegText $held) + ", so whether his value is changed is UNKNOWN and it must be read by hand" }
+  elseif (RegSame $now.Value $held) { $left = ", it reads " + (RegText $now.Value) + ", what the backup holds, so nothing of his was changed" }
+  $r.Line = "Auto-Save switch could not be written off, " + $where + $(if ($werr -ne "") { ", " + $werr.TrimEnd('.') } else { " was written and does not read back " + (RegText $off) }) + $left
+  return $r
+}
+# After the put back, or where none was made, the one line saying Auto-Save is left off for
+# Bader: enable reads the off this loop writes and the backup held something else. Null when
+# it does not, and an UNKNOWN line when enable cannot be read again.
+function AutoSaveLeftLine($regSub, $regRoot, $regBefore) {
+  $name = AutoSaveSwitchKey $regSub
+  $off = AutoSaveSwitchOff
+  $held = AutoSaveSwitchHeld $regBefore $regSub
+  if (RegSame $held $off) { return $null }
+  $now = RegValueNow $name "enable"
+  if (-not $now.Ok) { return ("UNKNOWN whether Auto-Save is left off for Bader, enable under " + (ShortKey $name $regRoot) + " could not be read again, " + $now.Error) }
+  if (-not (RegSame $now.Value $off)) { return $null }
+  return ("Auto-Save is LEFT OFF for Bader: enable under " + (ShortKey $name $regRoot) + " reads " + (RegText $off) + " and the backup holds " + (RegText $held) + ". It must be put back by hand")
 }
 
 # The adoption, after the constructor returned or threw. Adopted is true only when all four
@@ -1377,6 +1477,8 @@ function SettingsPutBack($putBack, $why, $work, $regSub, $regBefore, $regRoot, $
       $left = RegVerify $pr.Written $regRoot
       Say ("  registry: " + $pr.Done + " values put back of which " + $pr.ValueDeletes + " were deletes of a value that appeared, " + $pr.KeysMade + " keys made again, " + $pr.KeysRemoved + " keys removed, " + $pr.Failed + " failed, " + $pr.Skipped + " not written, stopped by a Roamer " + $pr.Stopped + ", and read again " + $left + " still differ")
     } else { Say "  registry: nothing written" }
+    $al = AutoSaveLeftLine $regSub $regRoot $regBefore
+    if ($null -ne $al) { Say ("  " + $al) }
     $sAfter = SettingsRead $nwAppData
     foreach ($m in $sAfter.Messages) { Say ("  " + $m) }
     $df = DiffFiles $filesBefore $notBacked $sAfter $nwAppData

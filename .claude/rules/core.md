@@ -185,11 +185,14 @@ and 6 does not read as broken.
   `revit-worksets.txt` inside Core holds the C02 census alone, the 39 names measured before
   F116. Q113 D keeps all four categories of Q103 in this project's list
 - THE CENSUS AND THE LIST ARE PUT TOGETHER IN ONE PLACE, `RevitWorksets.With`, F116 on the
-  readings of the Q113 pass. The corrections take their spellings from it and the EMPTY SETS
-  judge is handed the same ones, through `ExchangeDocument.Worksets` and
-  `SetBuildPlan.Worksets` to `EmptySets.Why`, so a spelling a MATRIX line says was measured is
-  never one that block calls carried by no model. A file read as it stands is judged against
-  the census alone
+  readings of the Q113 pass. The case corrections take their spellings from it with the
+  list's workset lines, and the EMPTY SETS judge is handed it with every spelling the list
+  names, `MatrixCorrectionList.Spellings`: the workset lines, then every spelling an also-ask
+  line accepts beside its value, F131 on the readers' finding of its first attempt. It
+  reaches `EmptySets.Why` through `ExchangeDocument.Worksets` and `SetBuildPlan.Worksets`, so
+  a spelling a MATRIX line says was measured or accepted is never one that block calls
+  carried by no model. The value of an also-ask line is what a set asks, measured or not, and
+  is not among them. A file read as it stands is judged against the census alone
 - A WORKSET VALUE IS CORRECTED ONLY WHERE THE LIST NAMES A SPELLING OF IT, the same but for
   its case, `MatrixCorrectionList.NamesASpellingOf`, F116 on the breaker's finding: a value is
   corrected only from what the list beside the XML says. It is then asked in every spelling
@@ -272,6 +275,129 @@ and 6 does not read as broken.
   part way, `ModelExport.WalkFinished` false, the row's number is empty and its text
   UNKNOWN, `ExportCheck.WorksetCount` and `EveryWorkset`, never the names seen before it
   stopped as if they were all
+
+### The teams of the picked file, F131
+
+- THE TEAM MAP IS ONE PROJECT'S DATA, IN A FILE OF ITS OWN BESIDE THE PICKED XML, Q114
+  points 1 and 2 decided by Bader on 2026-10-04 and Q115 answered A on 2026-10-05. Its name is the
+  XML's without the extension and `TeamMapSettings.Suffix`, default `.teams.txt`, one full
+  path tested with File.Exists and never a search, joined by `ListFile.PathBeside`, the join
+  the list of corrections is found by. It is read by `ListFile`, the one way a list beside
+  the XML is read, so its lines split and its bytes are judged as the list's are.
+  `MatrixCorrections.ReadPicked` reads it on its own and the document carries it in
+  `ExchangeDocument.Teams`, so the pick, the run, the open file run and both hand buttons read
+  one map, and a fault in one list never leaves the other unread. This project's map is
+  exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt beside the corrected XML, held to
+  Bader's map by a test. Nothing in src names a team or a code
+- ONE TEAM A LINE, `team: name | code | code`, in the order a pair is written, point 12, and
+  `size-folder: team | team`, the teams whose pairs carry the size folder, point 11. Any other
+  code is a team of its own named by its code, Bader's rule. Codes compare Ordinal, nothing
+  trimmed
+- A SET NAME WITH NO CODE TAKES THE TEAM ITS FOLDER NAMES, AND UNKNOWN WHERE NONE DOES, Q117
+  answered C, and A where the XML's set tree names no team, by Bader on 2026-10-05.
+  `TeamMap.TeamOfSet`: the code's team where the set name carries one, `CodeOf.Set`, and where
+  it carries none the folder above the set in the clash XML's set tree whose whole name is a
+  team of the map, Ordinal, the folder nearest the set first, so the client's BLD-Security
+  Devices in the folder Electrical is Electrical. Where no folder does, and with no map, it is
+  `TeamMapSettings.UnknownTeam`, UNKNOWN, the one word `ViewpointSettings.DefaultUnknownDiscipline`
+  reads. NAMED IN THE LOG: `TeamMap.SetLines` gives a TEAMS line for each set of the picked XML
+  whose name carries no code of the map, with its team or UNKNOWN, said after the map's own
+  lines, and none where the map maps no team
+- A MAP THAT CANNOT BE READ IS SAID, NEVER HALF READ AND NEVER A THROW. A line it does not
+  know, a code on two teams or twice on one line, a team named twice, a team with no code,
+  an empty name or code, a code holding any space or a character a person cannot see, a team
+  name with a space at either end or such a character anywhere, on a team line or a
+  size-folder line, a size-folder line naming a team no team line names, or bytes that are not
+  UTF-8, make the whole map unread with its line and why. The character is named the way
+  `InvisibleDifference` names it, TAB (U+0009), because a code holding one never equals the
+  code read off a file name and would make a team of its own while the map read as whole, F131
+  on the breaker's finding of its first attempt. Missing, unread or holding no team the map
+  maps nothing: every code is a team of its own and no pair carries the size folder. The TEAMS
+  lines and the window's grey line say which, `TeamMap.Lines` and `WindowLine`, in words held in
+  Core
+- A RUN WITH NO CLASH XML READS THE MAP THE WINDOW KEPT, Q123 answered B by Bader on
+  2026-10-05: the window keeps the last team map used, for runs with no XML, and the log names
+  it. `TeamMapMemory`, kept the way `FolderMemory` keeps the picker folders, is one file,
+  `team-map.txt`, beside the logs, holding ONE FULL PATH, `kept: path`, read by `ListFile`, so
+  the map read is the file a person keeps beside the XML and never a copy of it. A run with an
+  XML keeps its map only where it was read whole with a team, `Remember`, so a pick with no map
+  or a map that cannot be read never takes the teams away from the next run with no XML, and
+  the line says which map stays. `TeamMap.Kept` reads the kept map at its path, said as the
+  kept map on every TEAMS line and on the grey line. None kept, it maps nothing and says so.
+  A memory that cannot be read, a line it does not know, a second map or a path that is not a
+  full one, is said and maps nothing, never a throw, and its TEAMS line and grey line name the
+  memory as what could not be read and never call it the kept map, the reviewer's K26.
+  `TeamMapMemory.ForRun` is the one rule for the map of a run: the picked XML's, carried in
+  `ExchangeDocument.Teams` by `ReadPicked`, or the kept one where no XML is picked, and a
+  document not read by `ReadPicked` is refused. `TeamMapMemory.ForPick` is the same rule for a
+  path in the XML box, the map beside it or the kept one where the box names no file, which the
+  window's grey line reads, so the window holds no rule of its own and a test proves the two
+  give the same map
+- WHERE THE TEAM APPLIES, Q116 answered A by Bader on 2026-10-05. The views read the team, and the log,
+  COVERAGE and the form write it beside the code, `TeamMap.CodeWithTeam`, HV in Mechanical.
+  The grouping, the one-discipline judgement, the alignment and export checks and the
+  workbook keep the code, so HV against PL is still created and lands in Mechanical vs
+  Mechanical
+- A SIDE'S CODE IS READ IN ONE PLACE, `CodeOf.Set`: the first part of the set name, split on
+  the set name separator, that is a known code, `TeamMap.KnownCodes`, the map's codes and
+  those of the group's own models. `DisciplinePairRule.CodeIn` reads through it with the
+  views' seven codes until F114 replaces it. A model's code stays part 5 of its file name
+  through `ContainerName.Parse`, and its team is the map's
+- NO CODE WAITS ON MAIN FOR A LATER STEP, Bader's answer B to Q134 on 2026-10-05. The pair of
+  two teams, its one order and its size folder, Q114 points 10 to 12, are F114's, which calls
+  them, so F131 holds no member for them. F131 reads the map's order and its size-folder line,
+  refuses a map whose size-folder line is wrong, and says both on its TEAMS lines, nothing more
+- A SET THAT CANNOT REACH A MODEL OF ITS OWN TEAM IS A SILENT MISS, FR-181, Q114 point 3,
+  `SilentMisses`: a set of team T and code C and a model of team T with another code, where
+  every group of the set asks, not negated, a workset the model's whole list does not carry
+  or a Source File its file name does not hold. Whether a workset asked finds a carried name
+  is `ExportCheck.WorksetFinds`, the one place the export check reads it too. The file name
+  STANDS IN for the Source File of the model's items, which is not read, and the line of such
+  a miss says so. A model whose worksets were not all read is counted as not judged, never
+  called missed. It is NAMED only where the coverage count of Q112 request 2 shows the model
+  holding items of the set's categories that no set catches, and without that count it is
+  counted on one line that says UNKNOWN. A COUNT NOT TAKEN IS NEVER A ZERO: null or below zero,
+  as `ModelExport.NotCounted` is, it is UNKNOWN, and a sum beside one not taken is a lower
+  bound whose line says at least. A set asking no category by its whole name is counted on a
+  line saying no count can confirm it
+- A SET WITH NO CODE IS JUDGED BY THE TEAM ITS FOLDER NAMES, Q117 answered C, against every
+  model of that team, each having a code other than its none, and its SILENT MISS line says it
+  is in that team by its folder. The SILENT MISS line writes the set's code with its team
+  beside it, as it writes the model's
+- WHAT IS NOT JUDGED IS SAID BESIDE THE ALL CLEAR. A set whose name carries no code the map or
+  a model of the group knows and whose folders name no team, and a model whose code was not
+  read, have a team that is UNKNOWN, so they are judged against nothing, and `SilentMisses.Lines`
+  counts each kind on a line of its own. WHERE NO PAIR IS JUDGED THE LINE SAYS SO AND WHY, NEVER
+  THE ALL CLEAR: no set or no model handed in, a list holding none read the same as no list, or
+  no model of the group of a set's team with another code. F131 on the breaker's finding of its
+  second attempt, an empty list of models printing the all clear over nothing read. A condition
+  whose value is empty asks no name and closes nothing, as every reader of workset values skips
+  one
+- EACH MODEL'S LINE CARRIES ITS TEAM AND HOW MANY SETS CANNOT REACH IT, the group's TEAMS block,
+  `SilentMisses.GroupLines`: one line a model, its code with its team beside it, Q116 answered
+  A, and how many of the sets of its team with another code cannot reach it, could not be
+  judged, or that none of them is kept out of it by a workset or a file name it asks, so a
+  model missed by many sets is one line. That last line never says a set can reach the model,
+  because the judge reads only a workset and a Source File and a set closed by any other test
+  is not judged, the breaker's finding. Where no set was handed in, a run with no XML, each
+  model's line says whether a set cannot reach it is UNKNOWN, K27. A model of the
+  group not handed in, dropped where its worksets could not be read, is counted against the
+  group's model count. No model line where no map maps a team. Until F127's coverage count is
+  handed in, no miss is named and each is counted as UNKNOWN until the coverage counts them
+- THE CORRECTION FOR A SILENT MISS IS DRAFTED AND NEVER APPLIED, one also-ask line of the
+  list of corrections, `also-ask: value | spelling | spelling`, the value and every spelling
+  of the model whose text after its prefix is the value's, compared case blind. The prefix is
+  split by `WorksetDisagreements.BodyOf`, where `PrefixOf` splits it, and never at the set
+  name separator, which is another setting. Bader
+  approves it by copying it into the list. Read there, every group asking one of its
+  spellings is written once for each, through `AskEverySpelling`, the way Q102 asks every
+  spelling, after every other correction. A spelling on two lines unreads the list, because
+  two lines sharing a spelling ask each value where the other is or move the file on every
+  run. A line written twice is kept once, and a list with no also-ask line says on its first
+  MATRIX line what it said before F131. A Source File gets no drafted line. It is THE ONE WAY
+  a value also asks another spelling, the Or row of Q69: `ValueOrRow`, a row nothing in src
+  called, was deleted with its overload of `MatrixCorrections.Apply` on F131's second attempt,
+  and its tests drive an also-ask line
 
 ## Rules the code holds
 
@@ -759,8 +885,10 @@ and 6 does not read as broken.
   the proof: 1A04WE has it and 1A02WE does not, from the same tool, because one export
   carried layer data and the other did not. Those two were measured on Bader's machine and
   are recorded in docs\history, and they are not the exports in samples\client-report,
-  which are 1A02WN and 1A04WN and both carry the column. Never write a column list for that
-  page, write the data and let the stylesheet decide
+  which are 1A02WN and 1A04WN and both carry the column. 1A04WE is not a client file: it is
+  the clash report Bader exported from Navisworks and pasted into an empty Excel workbook,
+  his words of 2026-10-06. Never write a column list for that page, write the data and let
+  the stylesheet decide
 - Our XML feeds that stylesheet, so its shape is not ours to choose either. Measured on
   2026-09-01, it answered every column test but three: description, smarttags and the href
   on a result, which are the Description column, the Item Name and Item Type columns, and
@@ -1023,9 +1151,11 @@ and 6 does not read as broken.
   involving one of `SubGroupDisciplines`, which F53 already asks the same question
   through. The seven codes are a SETTING, `DisciplineCodes`, matched Ordinal and never
   cased, and the code is whichever hyphen separated part of a set name is exactly one of
-  them. A SET NAME CARRYING NO KNOWN CODE IS REPORTED AND NEVER GUESSED: the client's own
+  them, read by `CodeOf.Set` since F131. A SET NAME CARRYING NO KNOWN CODE IS REPORTED AND NEVER GUESSED: the client's own
   file holds BLD-Security Devices, which breaks the pattern its siblings follow, so the
-  folder says UNKNOWN and the count goes in the block
+  folder says UNKNOWN and the count goes in the block. Bader's answer C to Q117 gives such a
+  set the team its folder names, `TeamMap.TeamOfSet`, which the TEAMS lines and the silent
+  miss judge read already and these folders read once F114 puts the team pairs in their place
 - THE SMALL SERVICE RULE IN F85 IS ITS OWN AND IS NOT INHERITED FROM F72a. A service at or
   under the threshold stays out of the tree, decided on the SIZE and never on the status.
   F72a is off by default, and it leaves a service against another service exactly as it
@@ -1046,6 +1176,26 @@ and 6 does not read as broken.
   a leaf named after the clash alone would collide and the already there check and the
   read back would both stop meaning anything. How many viewpoints one test may write is a
   SETTING, off by default, the same shape and the same reason the images cap has
+- WHETHER A GROUP ASKS FOR ITS VIEWPOINTS IS ONE RULE, `ViewpointRequest.WhyNone`, F136,
+  Bader's word of 2026-10-05 that every test run has viewpoints switched off until F114 is
+  merged. Three things stop them, named in this order: the box on the Clash step unticked,
+  the clash skipped because a model is not on the same shared coordinates, and no report
+  built. The box comes first because it is the run's own choice and holds for the whole
+  run, so in every group that reaches the viewpoints step an unticked run says the same
+  line. A group that returns before that step, such as on a bad units name, says nothing
+  about viewpoints. A group that asks for none cannot fail at them, F52's rule for a step
+  not asked for. The box is a SETTING, `ReportOptions.MakeViewpoints`, defaulting to
+  `ViewpointRequest.DefaultMakeViewpoints`, OFF, Bader's answer B to Q131 on 2026-10-05,
+  so nobody makes the old viewpoints until F114 merges. His same answer ticks it once F114
+  merges, so F114's pull request sets the default back to on. Its label, its grey line,
+  the RUN SETTINGS line `ViewpointRequest.SettingsLine` and the one RESULT line
+  `ViewpointRequest.ResultLine` are read off Core and never typed into the window. The
+  label does not say every clash, because a service of 150 mm and under gets no viewpoint,
+  and the grey line says what the box costs, measured on the C02 weekly of 2026-10-05,
+  which sat in VIEWS for 3 h 15 min, Q130. The RESULT line sits under the group counts and
+  is written only where the run had the box unticked, because a group of such a run is
+  DONE without a viewpoint and RESULT read alone would show the same DONE count as a run
+  that made them
 - Pipes, ducts, cable trays and their fittings OVER 150 mm go in the viewpoints and
   smaller ones do not, and the large ones of Mechanical and Electrical sit in a sub group
   of their own. 150 is a setting in millimetres, named once in
@@ -1475,151 +1625,9 @@ is exactly it, found by an audit of every file under src. The run says it itself
   and is left out of both counts, the same way a census minus one is never called a move.
   A set a group never looked at was not at zero there, so the tally counts groups SEEN as
   well as groups at zero
-- EVERY SET THAT FOUND NOTHING IN EVERY GROUP IS NAMED, F127, Bader's request 2 under Q112,
-  so a set spelled wrong or pointing at nothing shows at once. It was TEN NAMED AND THE REST
-  COUNTED, a constant F82 chose for a reason its entry does not say, and set 03's C06 run
-  named 10 of its 14, log lines 8346 to 8357. How many are named is the setting
-  `CoverageSettings.SetsAtZeroNamedInTheRun`, nought for every one by default, and where it
-  caps them the rest are counted and the block SAYS it truncated. One row per set is written
-  on its own, because `Block` writes no row at all and the .tsv has to carry what the block
-  carries
-
-### Coverage of the picked tests, F127
-
-Bader's request 2 under Q112: after each group, every test of the picked XML, or of the
-tests saved in the document where none was picked, against what happened to it, with one
-reason for each test that has no results. The design is
-%LOCALAPPDATA%\NwcFederatorLoop\turn5\f127-design.md. Its Core steps 1 to 3 are built on
-branch fix-F127, with main taken in after F116 merged, and the RESULT lines of the count
-check with them. The COVERAGE block, the Coverage sheet, the rest of RESULT and the add-in
-half come after the probes of its section 5 are read. NOTHING IN THE ADD-IN HANDS IN A
-COVERAGE YET, so a build of the branch writes that no coverage was taken, and the branch is
-not merged before its add-in half.
-
-- THE REASON IS THE RUNNER'S OWN RECORD, READ IN THE ORDER THE CODE APPLIES IT.
-  `Federator.Core.Coverage.CoverageRule.For` takes the plan, the clash step's
-  `ClashRunOutcome`, the discipline codes of the group's files and of every file of the run,
-  and the settings that say which codes a set name carries, and gives one `TestCoverage` per
-  test in the order of the file. A test of the picked file the plan dropped before the
-  model, or one naming a set not in the document, reads the test was not created, beside the
-  words of `ClashTestPlan.Describe`. With no XML picked the plan is read off the tests saved
-  in the document, and a saved test it drops, a type number this tool does not run or no
-  name, was read out of the document, so it reads already there and not run,
-  `CoverageReason.SavedTestNotRun`, with the plan's own words, and never the test was not
-  created. F77's creation plan comes next, so a test it kept out of a group
-  whose clash the coordinates rule skipped keeps its side reason and never reads as a
-  coordinates skip, which would hide every gap of the matrix on both wave buildings. Then
-  the coordinates rule, the one discipline rule, the run time side check and the run
-- THE RUNNER'S RECORD IS READ AND NEVER CHANGED. `ClashRunOutcome` hands out its created and
-  already there names, the tests that ran and the skips as read only views, keeps a copy of
-  the counts the creation plan decided on, `KeepItemsByLocator`, and the two counts the run
-  time check read off each test's own sides, `RecordSides`. A side reason reads the run time
-  counts where the check reached the test, because they decided the skip, and the creation
-  plan's where it did not
-- PRESENCE IS SAID APART FROM THE REASON, `TestPresence`: created this run, already there,
-  not created by F77, or UNKNOWN where the runner never looked. The words for both are
-  `CoverageWords`, and no reason claims a test was created, because a test already in the
-  NWF is skipped for the same reasons as one created a minute ago
-- A SIDE THAT FOUND NOTHING IS JUDGED BY ITS SET'S CODE, read off the set's own name through
-  `DisciplinePairRule.CodeIn` until F131 re-points it to the team map. A code no file of the
-  group carries and a file of the run does reads the discipline is not in the group. A code
-  a file of the group carries reads a side's set found no items in this group. A code no
-  file of the run carries, FF, PL and DR on this project, a name carrying no code,
-  BLD-Security Devices, and a run whose codes were not handed in or a group whose files gave
-  no code, an empty set read as not read, each say the set found no items and that whether
-  its discipline is in the group is UNKNOWN, and never the definite the discipline is not in
-  the group. Where both sides found
-  nothing the stronger is given in that order and both sets are named. On the exchange file
-  with the counts of group 100000 of set 03's C06 run that is 36 tests both find, then 969,
-  561, 255 and 9, held by a test
-- A COUNT OF MINUS ONE IS NEVER A SET THAT FOUND NOTHING. It reads a side was not counted,
-  UNKNOWN, and a side that did find nothing beside it still gives its reason, because a
-  definite reason is given wherever one exists
-- TWO TESTS OF ONE NAME READ UNKNOWN, because the runner keys its record on the name and a
-  guess would hand one test the other's result. That holds for a test sharing its name with
-  one the plan dropped too, since the runner adds the plan's skips to its record first. The
-  dropped test keeps the plan's own reason, which the plan keys on its place in the file. A
-  group with no clash step reads UNKNOWN, but for the tests the plan dropped itself
-- EVERY KIND THE RUNNER RECORDS MAPS TO A REASON, `CoverageRule.ReasonFor`, and a test
-  enumerates `ClashSkipReason`, so F132's Mirror fails it until it is mapped rather than
-  reading UNKNOWN on every test it skips
-- A test that ran reads has clashes or ran and found no clashes off the runner's own count.
-  The design's row for a test that ran with its count UNKNOWN is not built, because the
-  runner records a test as ran only once it has counted it and records it Failed otherwise
-- A CLASH COUNT IN CLASH DETECTIVE THAT DIFFERS FROM THE WORKBOOK ROWS IS A FAILED LINE, his
-  words, and it is F104's checks 1 and 2 restated in Core, not copied, `CountCheck.Judge`:
-  the clash rows under a test's block against the document's results at the top level, a
-  result group counting as one, and the Clashes cell against every clash in the test, the
-  clashes inside each group counted. Both exact. Two differences from compare-document.ps1:
-  its check 2 names an empty result group, which the harvest counts as one clash, and this
-  has no such words, and a test in the workbook only whose every number is nought is counted
-  and not judged there, where here it is a test F77 did not create and agrees. Agree only
-  where both equal, or where a test the run did not hold as in the document is not there and
-  its block reads no row and Clashes nought. Failed for any other difference, for a test the
-  document holds with no block, and for a block with numbers that the document does not
-  hold. NOT COMPARED, NEVER AGREE, where a count on either side is minus one, the workbook's
-  included, so a block that could not be read whole is never a FAILED line, a name is on two
-  tests of one side, a test is in neither, a test the run holds as created or already there
-  was not returned by the read of the document, or the workbook or the document's counts
-  were not read, with the reason. The tests the document holds and the file does not are
-  named and not judged. compare-document.ps1 stays the independent witness, because this
-  reads the document through the add-in as the harvest does, and a check sharing the code it
-  checks cannot catch a fault common to both
-- WHERE THE RUN KNOWS WHY A COUNT DIFFERS, THE LINE SAYS IT, AND ONLY WHAT THE RECORD PROVES.
-  The runner records a test as Failed for a throw anywhere from its creation to its count,
-  its harvest included, and never as ran, so a Failed test is never said to be not run: one
-  created this run that Clash Detective holds results for ran this run and then threw before
-  its rows or count were taken, and any other says whether it ran is UNKNOWN, each with what
-  it threw. A test already in the document and not run this run still holds an earlier
-  run's results, the design's decision 4 at its default A, and only such a test is given
-  that cause. Compact is named where its count of Resolved clashes removed across the group
-  is at least the test's gap, and where it is fewer the line says so
-- THE DOCUMENT'S SIDE IS `DocumentTestCount`, plain numbers the add-in fills from one walk of
-  the tests after the clash step, so they are what the NWF holds after Compact and include
-  the tests a weekly run did not run. A count not taken is minus one and never zero.
-  Statuses are not read, because they are not judged, PQ4 of F104 being unmeasured
-- THE CLIENT'S SHEET IS READ BACK TEST BY TEST, `Federator.Core.Report.WorkbookTests.Read`, by
-  the name in column A, in both shapes: a full block gives the clash rows under it, counted
-  the way WorkbookCheck counts them, a second reader of one layout that is a known bug until
-  F118 makes the BLOCKS line read through this one, and its Clashes cell, and the one row of a test that
-  found nothing, Q73, gives no rows and its Clashes cell. It takes a sheet of a workbook
-  already open, so the file is loaded once. A name on two tests of the sheet, a test row with
-  no name, a Clashes cell that is no whole number and a block with no clash table under it
-  are each a doubt, the last two read as minus one. Names are read exactly and never trimmed
-- THE FAILED LINE STARTS COVERAGE FAILED, `CountCheck.FailedPrefix`, so it is never read as a
-  group's FAILED, names the group and the test, gives all four numbers or says which side
-  holds no test of that name, adds the reason where known, and ends saying the group keeps
-  its own result. THE GROUP KEEPS IT BY CONSTRUCTION: GroupFacts has no coverage member and
-  nothing in the coverage adds an error, which is his answer to the notes under Q112 and the
-  rule that a report check never fails a group
-- RESULT CARRIES EVERY FAILED LINE, his answer, a FAILED line in COVERAGE and RESULT.
-  `CoverageAcrossTheRun` rolls in each group's check, and `RunLog.WriteResultBlock` takes it
-  beside the coordinates tally, handed in by the run and never kept on the log. It writes
-  `COVERAGE checked :` with how many were compared, agreed, FAILED in how many groups, and
-  not compared, a label that is not the FAILED prefix, then every FAILED line in full.
-  Nothing compared reads UNKNOWN and never nought FAILED, because both wave buildings skip
-  their clash under F112 and compare nothing. A group whose coverage could not be taken is
-  counted not checked. Where no group failed and no error was logged but a count differs,
-  RESULT closes on a line saying so and never on Nothing failed, and the group's count,
-  facts and judgement do not move. A run that hands in no coverage writes that none was
-  taken, because a missing line reads as a check that did not run
-- EVERY NUMBER THAT SHAPES THE COVERAGE IS A SETTING, `CoverageSettings`: the sheet's name,
-  Coverage by default and refused where Excel would refuse it, by `SheetNames`' own rule, the
-  examples named per reason, five off `RunLog.KeptOfARepeat`, the categories no set catches
-  named per model in the log, ten by the design's choice and measured by nothing, and the
-  FAILED lines in RESULT and the sets named across the run, nought for every one. A count of
-  lines below one, or a cap below nought, is refused where it is set. The width of each
-  column of the sheet joins them with the sheet, the design's step 6
-- THE PICKED XML IS FINGERPRINTED, `Federator.Core.Diagnostics.FileFingerprint.Sha256`, 64
-  lower case hexadecimal characters, so a run says which bytes it read. Set 03's C06 run
-  carried none, and its XML had to be told from the exchange file by its SET lines asking
-  ME-PIPING where the exchange file asks ME-Piping. A file not there throws naming its path
-  and nothing is caught, because a fingerprint that could not be read is not one. It reads
-  the file again when asked, so a file changed during a run would be described by other
-  bytes than the plan parsed, a known bug for the add-in half to close
-- THE MIRRORED PAIRS OF Q114 POINT 5 ARE F132'S `MirrorRule.Pairs`, built on branch fix-F132
-  before this design was written, though the design's step 3 names them. The COVERAGE block
-  lists them off that one rule once both branches are on main, and F127 builds no second copy
+- TEN ARE NAMED AND THE REST ARE COUNTED, and the block SAYS it truncated. One row per set
+  is written on its own, because `Block` writes no row at all and the .tsv has to carry
+  what the block carries
 
 ### The machine readable log, F64
 

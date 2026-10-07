@@ -122,7 +122,7 @@ namespace Federator.Core.Tests
             using (RunLog log = RunLog.Start(Path.Combine(folder, "logs"), new DateTime(2026, 10, 5, 3, 0, 0)))
             {
                 log.GroupFinished("100000", GroupJudgement.Judge(facts), 1.0, null, null);
-                log.WriteResultBlock(null, coverage);
+                log.WriteResultBlock(null, coverage: coverage);
 
                 string result = ResultOf(log);
 
@@ -151,7 +151,7 @@ namespace Federator.Core.Tests
 
             using (RunLog log = RunLog.Start(Path.Combine(folder, "logs"), new DateTime(2026, 10, 5, 3, 0, 0)))
             {
-                log.WriteResultBlock(null, coverage);
+                log.WriteResultBlock(null, coverage: coverage);
                 string result = ResultOf(log);
 
                 Assert.That(result, Does.Contain(
@@ -174,7 +174,7 @@ namespace Federator.Core.Tests
 
             using (RunLog log = RunLog.Start(Path.Combine(folder, "logs"), new DateTime(2026, 10, 5, 3, 0, 0)))
             {
-                log.WriteResultBlock(null, coverage);
+                log.WriteResultBlock(null, coverage: coverage);
                 string result = ResultOf(log);
 
                 Assert.That(result, Does.Contain(

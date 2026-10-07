@@ -242,7 +242,14 @@ and the name on two blocks were added.
 
 Feeds every case to the three hooks on standard input and prints each answer against the
 one it should give. sh tools/loop/prove-hooks.sh <hooks folder> <repo root>. It clones the
-repo into a temp folder to prove the git wall with main checked out, and removes it.
+repo into a temp folder to prove the git wall with main checked out, and removes it. Since
+F139 the Stop gate's cases read steps/PROGRESS.md in two throwaway projects in the same temp
+folder, one with no git and one cloned from a throwaway origin whose merges are made with
+git's plumbing, which runs no hook, fetched and checked out as the lead does with
+core.autocrlf true, so a checkout that changes the page writes it with CRLF, with a worktree
+of it. Every gate call is given a throwaway LOCALAPPDATA spelt with its drive and
+backslashes, as Claude Code hands it to a hook here, so the loop's real run folders are never
+read.
 
 How a change to a wall is proved with it and copied in is in .claude\rules\loop.md.
 
@@ -333,7 +340,25 @@ modes:
   removed and his it changed put back from autosave-backup, each read back, only when no
   Navisworks the loop did not start ran, otherwise listed and left. The verdict is RAN only
   when the log on disk holds a RESULT block and a SESSION naming the stamp, and for item 1 a
-  GROUPS block reading 0 groups unticked. Items 2 to 5 have run on no Navisworks yet
+  GROUPS block reading 0 groups unticked. Items 2 to 5 have run on no Navisworks yet.
+  -Untick, F126, names tick boxes of the tool's window by their AutomationId, joined by commas,
+  such as SkipClashOffCoordinates, the box of F112's rule, so a building can be run once with that
+  rule switched off. Only Run and Check with -Item 1 to 5 take it, never a documents read, and an
+  id that is not the plain shape of an x:Name or is named twice is refused, UntickRefusal in
+  nw-guard.ps1. It is handed to the driver through DriverArguments, which unticks each box before
+  it presses anything, and the record names the boxes on its RUN RECORD line and in one line of
+  their own, which Check prints under its own heading. SkipClashOffCoordinates is not remembered
+  between runs: the window sets it from AlignmentCheck.DefaultSkipClashOffCoordinates every time
+  it opens, src\Federator.Addin\Ui\FederatorWindow.xaml.cs line 1198 on the branch fix-F112 at
+  e6d6f73, the same line on main since F112 merged as ddb059b. So nothing of the box needs
+  reading before the loop or putting back after. The two states the window does read back at
+  its next open are FolderMemory's folders.txt, picker folders only, and since F131
+  TeamMapMemory's team-map.txt, the team map a run with no XML reads. Every start reads
+  team-map.txt before it, check 13b, a copy in the run folder's teammap read back by sha256,
+  and puts it back after, or takes it out where it was not there, by the AutoSave put back's
+  write and its reasons, and the tool's log goes into the evidence with its TEAMS KEPT block
+  masked as FOLDERS REMEMBERED is, Q87 and Q123, and since F131 attempt 3 with every other line
+  masked that names his logs folder or the kept map, PathsOfHis, wherever it sits
 
 - Documents -Set NN -Item 1 to 5 -Folder <a folder of NMFed\NWC>, F104 part 2, the documents
   read of the window run whose evidence is steps\runs\NN\item<K>-<Folder>, item 5 also taking
@@ -409,12 +434,19 @@ the close, the watchdog's end, the put back, the keep awake release or the verdi
   settings.txt and m5.txt, the run folder of an earlier call moved aside as
   item0-aside-yyyyMMdd-HHmmss and never emptied, logs-backup\since-yyyyMMdd-HHmmss and
   autosave-backup\since-yyyyMMdd-HHmmss for files the backups did not hold,
-  probes\unproved-starts.txt for a start it could not prove, and for Install
-  installs\<stamp>-yyyyMMdd-HHmmss and bundle-backup-yyyyMMdd-HHmmss
+  probes\unproved-starts.txt for a start it could not prove, teammap\team-map.txt in the run
+  folder, F131, the copy of the team map the tool keeps where it is there before the start,
+  and for Install installs\<stamp>-yyyyMMdd-HHmmss and bundle-backup-yyyyMMdd-HHmmss. Outside
+  that folder it writes only by its put backs: his 22.0 registry key and settings files, his
+  AutoSave folder's files, Q86, and since F131 team-map.txt in his logs folder, copied back
+  from that copy or taken out where it was not there before, each only when the put back's
+  reasons are all clear, and read back
 - writes of a window run, F106: runs\NN\item<K>-<Folder> with driver.txt, toollog-name.txt,
-  toollog\ with the tool's log, its FOLDERS REMEMBERED block masked, Q87, and its .tsv,
-  outputs.txt, item 5's open\, and what the tool writes into the copy's NWF, NWD and Clash
-  Report folders. A read-out of every workbook by tools\loop\read-workbook.ps1 goes into the
+  toollog\ with the tool's log, its FOLDERS REMEMBERED block masked, Q87, its TEAMS KEPT
+  block masked, Q123, and every other line naming his logs folder or the kept map masked,
+  F131, and its .tsv, copied as it is, outputs.txt, item 5's open\, and what the tool writes
+  into the copy's NWF, NWD and Clash Report folders. A read-out of every workbook by
+  tools\loop\read-workbook.ps1 goes into the
   evidence, and a file over 20 MB is named with its size and sha256 and not copied, Q90.
   It starts the driver, powershell.exe, and read-workbook.ps1 once per workbook
 - writes of a documents read, F104 part 2: runs\NN\item<K>-<Folder>-document-yyyyMMdd-HHmmss,
@@ -491,6 +523,27 @@ before Run with both states and goes on, and its line for any window it stops on
 kind and both states. The monitor writes a PANE without counting it a DIALOG finding, and a PANE
 never holds back WM_CLOSE.
 
+What F138 changed, which its header lists too, Bader's message of 2026-10-05, Q135 point 2:
+after the last read before the constructor, run.ps1's check 18 and the probe's last read, the
+one SwitchAutoSaveOff writes enable under GlobalOptions\general\autosave of the 22.0 key as
+"3 0", opens the key again and reads it back, and refuses the start with one line when it does
+not read back or the key is not there, which it never makes. That line says whether his value
+reads what the backup holds, reads something else and must be put back by hand, or cannot be
+read and is UNKNOWN. BackupSettings writes nothing, so no stop before the switch leaves it
+written, and the switch's own refusal leaves it written only where its line says his value is
+changed and must be put back by hand, or where the key's close throws after the write. So the switch is written "3 0" for every start of the probe and of run.ps1,
+and the put back returns it. That Navisworks reads "3 0" as off is UNKNOWN until a start
+writes no autosave. SettingsPutBack and the watchdog's constructor deadline block each write
+one LEFT OFF line when enable still reads "3 0" and the backup held something else.
+
+- writes outside the repo: since F138 the one value enable under
+  HKCU\Software\Autodesk\Navisworks Manage\22.0\GlobalOptions\general\autosave, written "3 0"
+  just before every call of the constructor by the probe and by run.ps1, and put back by the
+  settings put back. Where the constructor was called and no put back is made, a put back
+  refused because nothing was adopted or another Navisworks ran, the constructor deadline or a
+  CloseOwn after run.ps1 died, it is left at "3 0" for Bader, the record says so in a LEFT OFF
+  line or, for CloseOwn, in its list of differences, and the lead puts it back by hand
+
 How the record stays bounded since F125's second pass: the monitor writes each window at first
 sight, keyed by its handle, class and caption, and writes it again, an AGAIN line naming its reads
 before and now, only when the rule's kind for it, its own enabled state or its owner's changes. A
@@ -508,13 +561,52 @@ the part 1 modes and M1 to M3, and since fix attempt 1: H12b, copies of build\in
 run against a fake APPDATA, H16, a window whose thread is blocked, and H17, a copy of
 run.ps1 whose constructor line is removed, run against fake LOCALAPPDATA and APPDATA folders
 through checks 13, 14, 15 and 18 and to the removed line, and since fix attempt 2: H18, the
-end of a run, the call deadline, the verdict, the one listing reader and the bounded walk:
+end of a run, the call deadline, the verdict, the one listing reader and the bounded walk,
+since F131 H19, team-map.txt read before every start and put back after it, with RC1 and RC8
+of H17 reading the same in the run flow, its TEAMS KEPT block masked and, K2, every other line
+of the tool's log naming his logs folder or the kept map masked,
+and since F138 H20, the Auto-Save switch written "3 0" on the throwaway key: a backup that
+writes nothing and a switch after it that reads back and is put back, a write that throws, a
+write another writer changes before the read back, a read back that cannot be read, a key that
+is not there, a put back refused, a put back stopped by a stand-in, a switch the backup held
+off already and the constructor deadline in a child, with H0 reading in run.ps1 and the probe
+that the switch comes after every refusal before the constructor and RC5 and RC6 of H17 that a
+stop at check 18 leaves it unwritten, and H21, its own time limits on copies of itself whose cases are replaced
+by one trial each: a child past its limit, a case past its limit, the run past its limit, a
+harness blocked where nothing can be closed, and the wait before a run:
 
     powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\prove-run.ps1 -Work <a new folder under %LOCALAPPDATA%\NwcFederatorLoop>
 
-It refuses while any Roamer runs and refuses a -Work folder that is there already, and
-before and after every case it reads the process list again and stops on a Roamer it did
-not start or a list it cannot read. It loads run.ps1's functions through the parser, so
+NO HARNESS RUN AND NO WAIT FOR ONE RUNS WITHOUT A TIME LIMIT, since F138, Bader's message
+headed CONTINUE THE LOOP AFTER THE LAPTOP WENT OFF, item 6. The harness is started as
+prove-run.ps1 with its limits, never through a wrapper that waits on a pid or a folder. Each
+limit is a setting:
+
+- -RunLimitSeconds, 5400, the whole run from the moment -Work is made
+- -CaseLimitSeconds, 600, each case, with -H6LimitSeconds, 900, and -H17LimitSeconds, 2400,
+  given on the Case lines of H6 and H17
+- each child the limit its call gives, -ChildLimitSeconds, 300, where it gave none, and
+  -RealLimitSeconds, 600, for a run of the real run.ps1. EndChild, the one place a child's output
+  is read, bounds the read of its output by the same limit after it ends
+- -CleanupLimitSeconds, 120
+- -WaitSeconds, 0, and -WaitPollSeconds, 10, the wait before the run
+
+The defaults are margins over what was read, the longest whole run 3240 s, H17 about 1394 s and
+H6 about 355 s, %LOCALAPPDATA%\NwcFederatorLoop\turn5\restart\harness.md, not measurements.
+Past a limit one TIME LIMIT line names the run, the case or the child and the seconds, the
+harness closes only the stand-ins and children it started, through their held handles, goes to
+CLEANUP and exits 3, where 0 is all passed, 1 a failure and 2 a refusal. A deadline runspace
+watches the run's and the case's clocks, and when the harness has not reached the end of its
+cleanup within -CleanupLimitSeconds after a limit, it writes one line naming -Work and the
+throwaway key as maybe left and ends the harness with exit 3.
+
+It refuses while any Roamer or any other proof harness runs, a powershell whose command line
+starts a script named prove-run.ps1 with -File, other than itself and those it was started from.
+With -WaitSeconds above 0 it reads again every -WaitPollSeconds and, once that limit passes,
+refuses in one line naming what still runs, exit 2. It refuses a -Work folder that is there
+already at once, before any wait, so a -Work a cut run left is named and never waited on. Before
+and after every case it reads the process list again and stops on a Roamer it did not start or a
+list it cannot read. It loads run.ps1's functions through the parser, so
 run.ps1's main flow never runs in it, and calls the real run.ps1 only in Check, which reads
 only, in Run and Install calls made to be refused, each made only after it reads a stand-in
 Roamer running and an installed stamp that is not the one passed, so two other checks would
@@ -536,14 +628,21 @@ the tool's window owned by the main window and shown with ShowDialog, with Run t
 confirm, a warning, or a new window that is not modal. They are proved by
 %LOCALAPPDATA%\NwcFederatorLoop\turn5\f125-proof\prove-f125.ps1, outside the repo, whose
 F125b checks of the second pass add the monitor watching the pane from before the tool's window
-and the line holding WM_CLOSE back, on the same modes.
+and the line holding WM_CLOSE back, on the same modes. Since F126 the window role carries the
+tick box SkipClashOffCoordinates on 4. Clash, ticked when it opens as F112's is, writes each tick,
+each untick and what it reads when Run or Run the open file is pressed to its events file, and
+has three modes more: skip-off, the box opening unticked, skip-sticky, the box ticking itself
+again whenever it is unticked, and skip-scan, Scan ticking it again. They are proved by
+%LOCALAPPDATA%\NwcFederatorLoop\turn5\f126-proof\prove-f126.ps1, outside the repo.
 
 - writes outside the repo: -Work, and the throwaway key HKCU\Software\NwcFederatorLoopTest
 - deletes: -Work and that key at the end, and nothing else
 - starts: dotnet build and dotnet build-server shutdown, the stand-ins, child powershell.exe
   processes, among them the copies of build\install.ps1 and of run.ps1 under -Work and one
   that loads a copy of Federator.Core.dll, reg.exe export, git for scratch repositories
-  under -Work, and cmd.exe for one junction under -Work
+  under -Work, and cmd.exe for one junction under -Work, and since F138 in H21 copies of
+  prove-run.ps1 under -Work, each with a child powershell that runs until its harness closes it
+  or ends, and one powershell that sleeps 20 s under a script named prove-run.ps1
 
 Proved on 2026-09-29 with no Navisworks started: 142 checks passed and 0 failed, 28
 stand-ins each closed through its held handle, Bader's folders, bundle and key read the same

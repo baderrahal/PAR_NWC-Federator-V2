@@ -10,7 +10,8 @@ param(
   [string]$For = "",
   [string]$PictureStatuses = "",
   [string]$PictureCap = "",
-  [switch]$PriorityPicked
+  [switch]$PriorityPicked,
+  [string]$Untick = ""
 )
 $ErrorActionPreference = "Stop"
 
@@ -46,7 +47,11 @@ $ErrorActionPreference = "Stop"
 #                              -Xml, a file under runs\NN\NMFed. Item 5 takes -OpenFile, the
 #                              plain name of an .nwf in NMFed\NWF\<Folder> or an .nwd in
 #                              NMFed\NWD\<Folder>, copied into the run folder's open\ and
-#                              opened there
+#                              opened there. F126: -Untick names tick boxes of the tool's window
+#                              by their AutomationId, joined by commas, such as
+#                              SkipClashOffCoordinates, and is handed to the driver, which
+#                              unticks each before it presses anything. Check with -Item 1 to 5
+#                              takes it too and names the boxes. The record names them
 #   CloseOwn -RunFolder <runs\NN\item...>
 #                              closes the loop's own Navisworks after a run.ps1 died, only
 #                              when its mypid.txt, name, path, command line and start ticks all
@@ -227,7 +232,9 @@ function ModeOf($mode) {
 # window run they read, -OpenFile for item 5 alone, which names that run, no -Stamp and no
 # -Xml, and alone take the three switches handed to compare-document.ps1. Their words are
 # judged by compare-document.ps1, the one place that knows them, and only their shape here.
-function ParamRefusal($mode, $set, $item, $stamp, $runFolder, $folder, $xml, $openFile, $extra, $loopRoot, $repo, $for, $pictureStatuses, $pictureCap, [bool]$priorityPicked, $docStamp) {
+# F126: -Untick only for a window run, Run or Check with -Item 1 to 5 and never for a documents
+# read, its ids judged by UntickRefusal in nw-guard.ps1, the one rule the driver keeps too.
+function ParamRefusal($mode, $set, $item, $stamp, $runFolder, $folder, $xml, $openFile, $extra, $loopRoot, $repo, $for, $pictureStatuses, $pictureCap, [bool]$priorityPicked, $docStamp, $untick) {
   $why = New-Object System.Collections.Generic.List[string]
   foreach ($a in @($extra)) { $why.Add("the argument " + $a + " is not a parameter of run.ps1") }
   $m = ModeOf $mode
@@ -282,7 +289,10 @@ function ParamRefusal($mode, $set, $item, $stamp, $runFolder, $folder, $xml, $op
     if ($item -eq "5" -and $openFile -eq "") { $why.Add("-OpenFile is missing, and item 5 needs the plain name of an .nwf in NMFed\NWF\<Folder> or an .nwd in NMFed\NWD\<Folder>") }
     elseif ($item -eq "5" -and $openFile -notmatch '^[^\\/:*?"<>|]+\.(nwf|nwd)$') { $why.Add("-OpenFile is " + $openFile + ", not the plain name of an .nwf or an .nwd file") }
     if ($item -ne "5" -and $openFile -ne "") { $why.Add("-OpenFile is " + $openFile + ", and only item 5 takes it") }
+    if ($docs -and [string]$untick -ne "") { $why.Add("-Untick is " + (MaskLine $untick) + ", and a documents read takes none, it presses nothing in the tool's window") }
+    elseif ([string]$untick -ne "") { foreach ($u in (UntickRefusal $untick)) { $why.Add($u) } }
   } else {
+    if ([string]$untick -ne "") { $why.Add("-Untick is " + (MaskLine $untick) + ", and only a window run, item 1 to 5, takes it") }
     foreach ($pair in @(@("-Folder", $folder), @("-Xml", $xml), @("-OpenFile", $openFile))) {
       if ([string]$pair[1] -ne "") { $why.Add($pair[0] + " is " + $pair[1] + ", and " + $(if ($item -eq "0") { "item 0" } else { "-Mode " + $mode }) + " takes none") }
     }
@@ -614,13 +624,44 @@ function AutoSaveBefore($listFile, $fallback) {
   }
   return $r
 }
+# One file put back as it was before the run, the write PutBackAutoSave and PutBackTeamMap
+# share. F131 moved it out of PutBackAutoSave with its lines unchanged but for the backup's
+# name. $b and $a are what the compare read before the run and at the end, each with its Hash,
+# null where the file was not there, and $src is the backup's copy of $b, null when the backup
+# holds none. The Roamers are listed again and the file is read again just before the write,
+# so a file that no longer reads what the compare read is left, and the write is read back, a
+# removal by the file being gone and a copy by its sha256. Stopped is true when a Roamer runs,
+# and the caller writes nothing after it.
+function PutBackOne($k, $what, $b, $a, $dest, $src, $backupName) {
+  $r = [pscustomobject]@{ Line = ""; Done = $false; Stopped = $false }
+  $rs = @(Get-Process -Name Roamer -ErrorAction SilentlyContinue)
+  if ($rs.Count -gt 0) { $r.Stopped = $true; $r.Line = "a Roamer is running just before the write of " + $k + ", pid " + (($rs | ForEach-Object { [string]$_.Id }) -join ", ") + ". It and every write after it are stopped"; return $r }
+  try {
+    if ($null -eq $b) {
+      if (-not (Test-Path -LiteralPath $dest)) { $r.Line = $k + " " + $what + " is gone already, nothing to remove"; $r.Done = $true; return $r }
+      if ((Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash -ne $a.Hash) { $r.Line = $k + " " + $what + " no longer reads what the compare read, not removed"; return $r }
+      [System.IO.File]::Delete($dest)
+      if (Test-Path -LiteralPath $dest) { $r.Line = $k + " " + $what + " is still there after its removal" } else { $r.Line = $k + " " + $what + ", removed, read back gone"; $r.Done = $true }
+      return $r
+    }
+    if ($null -eq $src) { $r.Line = $k + " " + $what + ", " + $backupName + " holds no copy of it from before the run, left as it is"; return $r }
+    if ($null -ne $a) {
+      if ((Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash -ne $a.Hash) { $r.Line = $k + " " + $what + " no longer reads what the compare read, not written"; return $r }
+    } else {
+      if (Test-Path -LiteralPath $dest) { $r.Line = $k + " " + $what + " is back just before the copy, not written"; return $r }
+      if (-not (Test-Path -LiteralPath (Split-Path $dest -Parent))) { $r.Line = $k + " " + $what + ", its folder went too, not written"; return $r }
+    }
+    Copy-Item -LiteralPath $src -Destination $dest -Force
+    $back = (Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash
+    if ($back -eq $b.Hash) { $r.Line = $k + " " + $what + ", put back from " + $backupName + ", read back, sha256 matches"; $r.Done = $true } else { $r.Line = $k + " " + $what + ", put back but reads back sha256 " + $back.Substring(0, 12) }
+  } catch { $r.Line = $k + " " + $what + " could not be put back, " + (Err $_.Exception) }
+  return $r
+}
 # F106, Q86. His AutoSave folder at the end of a run. When the put back's reasons are all clear,
 # which needs the adopted Navisworks gone and no Navisworks the loop did not start seen from
 # the backup to then, each autosave the run added is removed, and each of his the run changed
-# or removed is copied back from autosave-backup. Each write comes after the Roamers are listed
-# again and the file is read again, so a file that no longer reads what the compare read is
-# left, and each is read back, a removal by the file being gone and a copy by its sha256. When
-# a reason stands, nothing is written and each is listed. $before is keyed AutoSave\<path>, as
+# or removed is copied back from autosave-backup, each through PutBackOne. When a reason
+# stands, nothing is written and each is listed. $before is keyed AutoSave\<path>, as
 # AutoSaveBefore reads it. Left counts every file not as it was before the run.
 function PutBackAutoSave($putBack, $before, $autoDir, $backupRoot) {
   $r = [pscustomobject]@{ Lines = New-Object System.Collections.Generic.List[string]; Done = 0; Left = 0 }
@@ -635,31 +676,95 @@ function PutBackAutoSave($putBack, $before, $autoDir, $backupRoot) {
     if ($null -ne $b -and $null -ne $a -and $a.Hash -eq $b.Hash) { continue }
     $what = $(if ($null -eq $b) { "ADDED by the run" } elseif ($null -eq $a) { "GONE" } else { "CHANGED" })
     if (-not $putBack -or $stopped) { $r.Lines.Add($k + " " + $what + ", left as it is, nothing written"); $r.Left++; continue }
-    $rs = @(Get-Process -Name Roamer -ErrorAction SilentlyContinue)
-    if ($rs.Count -gt 0) { $stopped = $true; $r.Lines.Add("a Roamer is running just before the write of " + $k + ", pid " + (($rs | ForEach-Object { [string]$_.Id }) -join ", ") + ". It and every write after it are stopped"); $r.Left++; continue }
-    $dest = Join-Path $autoDir $k.Substring("AutoSave\".Length)
-    try {
-      if ($null -eq $b) {
-        if (-not (Test-Path -LiteralPath $dest)) { $r.Lines.Add($k + " " + $what + " is gone already, nothing to remove"); $r.Done++; continue }
-        if ((Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash -ne $a.Hash) { $r.Lines.Add($k + " " + $what + " no longer reads what the compare read, not removed"); $r.Left++; continue }
-        [System.IO.File]::Delete($dest)
-        if (Test-Path -LiteralPath $dest) { $r.Lines.Add($k + " " + $what + " is still there after its removal"); $r.Left++ } else { $r.Lines.Add($k + " " + $what + ", removed, read back gone"); $r.Done++ }
-        continue
-      }
-      if ($null -eq $index) { $index = BackupIndex $backupRoot }
-      $src = $index[(Split-Path $k -Leaf).ToLowerInvariant() + "|" + $b.Hash]
-      if ($null -eq $src) { $r.Lines.Add($k + " " + $what + ", autosave-backup holds no copy of it from before the run, left as it is"); $r.Left++; continue }
-      if ($null -ne $a) {
-        if ((Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash -ne $a.Hash) { $r.Lines.Add($k + " " + $what + " no longer reads what the compare read, not written"); $r.Left++; continue }
-      } else {
-        if (Test-Path -LiteralPath $dest) { $r.Lines.Add($k + " " + $what + " is back just before the copy, not written"); $r.Left++; continue }
-        if (-not (Test-Path -LiteralPath (Split-Path $dest -Parent))) { $r.Lines.Add($k + " " + $what + ", its folder went too, not written"); $r.Left++; continue }
-      }
-      Copy-Item -LiteralPath $src -Destination $dest -Force
-      $back = (Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash
-      if ($back -eq $b.Hash) { $r.Lines.Add($k + " " + $what + ", put back from autosave-backup, read back, sha256 matches"); $r.Done++ } else { $r.Lines.Add($k + " " + $what + ", put back but reads back sha256 " + $back.Substring(0, 12)); $r.Left++ }
-    } catch { $r.Lines.Add($k + " " + $what + " could not be put back, " + (Err $_.Exception)); $r.Left++ }
+    $src = $null
+    if ($null -ne $b) {
+      try { if ($null -eq $index) { $index = BackupIndex $backupRoot }; $src = $index[(Split-Path $k -Leaf).ToLowerInvariant() + "|" + $b.Hash] }
+      catch { $r.Lines.Add($k + " " + $what + " could not be put back, " + (Err $_.Exception)); $r.Left++; continue }
+    }
+    $one = PutBackOne $k $what $b $a (Join-Path $autoDir $k.Substring("AutoSave\".Length)) $src "autosave-backup"
+    $r.Lines.Add($one.Line)
+    if ($one.Done) { $r.Done++ } else { $r.Left++ }
+    if ($one.Stopped) { $stopped = $true }
   }
+  return $r
+}
+# F131, Q123 answered B. team-map.txt beside his logs, the one map the tool keeps for a run with
+# no clash XML, the FileName of src\Federator.Core\Teams\TeamMapMemory.cs, which H19 of
+# prove-run.ps1 reads off the source so the two never differ. It is the second choice the tool
+# remembers between runs, after FolderMemory's folders.txt, and a window run that picks an XML
+# rewrites it, so it is read before every start and put back after it, .claude\rules\loop.md.
+function TeamMapName { return "team-map.txt" }
+# The start of the one line of team-map.txt that names the kept map, KeptMarker of
+# TeamMapMemory.cs, which H19 K2 of prove-run.ps1 reads off the source so the two never differ.
+function TeamMapKept { return "kept:" }
+# F131 attempt 3, the breaker's finding on attempt 2. The paths of Bader's a window run's log can
+# name outside its TEAMS KEPT block: his logs folder, which the log names as its own and the
+# TEAMS line of a run that keeps a map names, and the map each team-map.txt handed in keeps, the
+# text after TeamMapKept and one space, which the TEAMS lines of a run with no clash XML name.
+# A file that is not there names nothing. One that cannot be read throws, so the log is never
+# copied with that map's path left in it.
+function PathsOfHis($hisLogs, $teamMaps) {
+  $logs = ([string]$hisLogs).TrimEnd('\')
+  if ($logs -eq "") { throw "his logs folder is not named, so the lines naming it cannot be masked" }
+  $r = New-Object System.Collections.Generic.List[string]
+  $r.Add($logs)
+  $marker = (TeamMapKept) + " "
+  foreach ($f in @($teamMaps)) {
+    if (-not (Test-Path -LiteralPath $f)) { continue }
+    foreach ($l in (ReadShared $f).Split("`n")) {
+      $l = $l.TrimEnd("`r")
+      if (-not $l.StartsWith($marker, [StringComparison]::Ordinal)) { continue }
+      $p = $l.Substring($marker.Length)
+      if ($p -ne "" -and -not ($r -contains $p)) { $r.Add($p) }
+    }
+  }
+  return $r.ToArray()
+}
+# Before the start: the file copied into the run folder's teammap and read back by its sha256,
+# or named as not there, when no copy is made. Not Ok, with Why, stops the run.
+function TeamMapBefore($hisLogs, $runDir) {
+  $r = [pscustomobject]@{ Ok = $false; Why = ""; There = $false; Hash = $null; Line = "" }
+  $name = TeamMapName
+  $file = Join-Path $hisLogs $name
+  if (-not (Test-Path -LiteralPath $file)) { $r.Ok = $true; $r.Line = $name + " is not there before the start, so one the run writes is taken out again after it"; return $r }
+  $copy = Join-Path (Join-Path $runDir "teammap") $name
+  try {
+    $h = (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash
+    New-Item -ItemType Directory -Force -Path (Split-Path $copy -Parent) | Out-Null
+    Copy-Item -LiteralPath $file -Destination $copy
+    $back = (Get-FileHash -LiteralPath $copy -Algorithm SHA256).Hash
+    $len = (Get-Item -LiteralPath $copy).Length
+  } catch { $r.Why = $name + " could not be read or copied into the run folder, " + (Err $_.Exception); return $r }
+  if ($back -ne $h) { $r.Why = $name + " was copied into the run folder but reads back with another sha256"; return $r }
+  $r.Ok = $true; $r.There = $true; $r.Hash = $h
+  $r.Line = $name + " is there, sha256 " + $h + ", " + $len + " bytes, copied into the run folder's teammap and read back with that sha256"
+  return $r
+}
+# After the run: team-map.txt as it was before the start. When the put back's reasons are all
+# clear, a file the run changed or took out is copied back from the run folder's teammap and
+# one it added is taken out, through PutBackOne. When a reason stands nothing is written and
+# the file is named. Left is 1 when the file is not as it was before the start.
+function PutBackTeamMap($putBack, $before, $hisLogs, $copyDir) {
+  $r = [pscustomobject]@{ Lines = New-Object System.Collections.Generic.List[string]; Done = 0; Left = 0 }
+  $k = TeamMapName
+  $dest = Join-Path $hisLogs $k
+  $a = $null
+  try { if (Test-Path -LiteralPath $dest) { $a = [pscustomobject]@{ Hash = (Get-FileHash -LiteralPath $dest -Algorithm SHA256).Hash } } }
+  catch { $r.Lines.Add($k + " could not be read at the end, " + (Err $_.Exception) + ". Nothing is written into it"); $r.Left = 1; return $r }
+  $b = $null
+  if ($before.There) { $b = [pscustomobject]@{ Hash = $before.Hash } }
+  if ($null -eq $b -and $null -eq $a) { $r.Lines.Add($k + " was not there before the start and is not there now"); return $r }
+  if ($null -ne $b -and $null -ne $a -and $a.Hash -eq $b.Hash) { $r.Lines.Add($k + " reads as it did before the start, sha256 " + $b.Hash); return $r }
+  $what = $(if ($null -eq $b) { "ADDED by the run" } elseif ($null -eq $a) { "GONE" } else { "CHANGED" })
+  if (-not $putBack) { $r.Lines.Add($k + " " + $what + ", left as it is, nothing written"); $r.Left = 1; return $r }
+  $src = $null
+  if ($null -ne $b) {
+    try { $src = (BackupIndex $copyDir)[$k.ToLowerInvariant() + "|" + $b.Hash] }
+    catch { $r.Lines.Add($k + " " + $what + " could not be put back, " + (Err $_.Exception)); $r.Left = 1; return $r }
+  }
+  $one = PutBackOne $k $what $b $a $dest $src "the run folder's teammap"
+  $r.Lines.Add($one.Line)
+  if ($one.Done) { $r.Done = 1 } else { $r.Left = 1 }
   return $r
 }
 # F106, Q82. What a window run left in his logs folder, from the rows of logs-before.txt and
@@ -1274,17 +1379,42 @@ function ToolLogVerdict($lines, $stamp, $item) {
 # F106, Q87. The tool's log as it goes into the evidence: the lines of its FOLDERS REMEMBERED
 # block, the folders Bader's own pickers remember, written at every window open by
 # FederatorWindow.xaml.cs through FolderMemory.Lines, each replaced by a line saying it was
-# masked. The block's lines follow its title at once, each a picker's name padded to ten
-# characters and a folder, or the line that says nothing is remembered. A line of another
-# shape ends the block, unless it was written within a second of the block's first line, so a
-# line of the block is never left unmasked because its shape was not foreseen.
-function MaskRemembered($lines) {
+# masked. F131, Q123: the lines of its TEAMS KEPT block too, written at the same open through
+# TeamMap.Lines, which name the map his last run with an XML kept and its full path. A block's
+# lines follow its title at once. A FOLDERS REMEMBERED line is a picker's name padded to ten
+# characters and a folder, or the line that says nothing is remembered, and a TEAMS KEPT line
+# starts TEAMS and four spaces. A line of another shape ends the block, unless it was written
+# within a second of the block's first line, so a line of the block is never left unmasked
+# because its shape was not foreseen. Masked counts the folder lines and MaskedTeams the others.
+# F131 attempt 3, the breaker's finding on attempt 2: every other line naming one of $paths, in
+# any case of its letters, wherever it sits, is masked too, its stamp or its indent kept, and
+# MaskedPaths counts them. The run hands in PathsOfHis, his logs folder and the kept map, which
+# the TEAMS lines of a run and the log's own lines name outside the TEAMS KEPT block.
+function MaskRemembered($lines, $paths) {
+  $names = @()
+  if ($null -ne $paths) { $names = @(@($paths) | ForEach-Object { [string]$_ }) }
+  foreach ($p in $names) { if ($p -eq "") { throw "MaskRemembered was handed an empty path, which every line would name" } }
   $out = New-Object System.Collections.Generic.List[string]
   $n = 0
+  $nt = 0
+  $np = 0
   $i = 0
   while ($i -lt $lines.Count) {
+    $teams = ($lines[$i] -ceq "TEAMS KEPT")
+    if (-not (($teams -or $lines[$i] -ceq "FOLDERS REMEMBERED") -and (LogTitleAt $lines $i))) {
+      $l = [string]$lines[$i]
+      $his = $false
+      foreach ($p in $names) { if ($l.IndexOf($p, [StringComparison]::OrdinalIgnoreCase) -ge 0) { $his = $true; break } }
+      if ($his) {
+        $m = [regex]::Match($l, '^(\d\d:\d\d:\d\d\.\d{3})  \+(\d+\.\d{3})s  ')
+        if ($m.Success) { $out.Add($m.Groups[1].Value + "  +" + $m.Groups[2].Value + "s  <a line naming his logs folder or the kept team map, masked by run.ps1, F131>") }
+        else { $out.Add([regex]::Match($l, '^\s*').Value + "<a line naming his logs folder or the kept team map, masked by run.ps1, F131>") }
+        $np++
+      } else { $out.Add($lines[$i]) }
+      $i++
+      continue
+    }
     $out.Add($lines[$i])
-    if (-not ($lines[$i] -ceq "FOLDERS REMEMBERED" -and (LogTitleAt $lines $i))) { $i++; continue }
     $out.Add($lines[$i + 1])
     $i += 2
     $first = $null
@@ -1294,14 +1424,15 @@ function MaskRemembered($lines) {
       $at = [double]::Parse($m.Groups[2].Value, [Globalization.CultureInfo]::InvariantCulture)
       if ($null -eq $first) { $first = $at }
       $t = $m.Groups[3].Value
-      $shape = ($t.Length -gt 10 -and $t.Substring(0, 10) -match '^[A-Za-z]+ +$' -and $t.Substring(10, 1) -ne " ") -or $t.StartsWith("Nothing remembered yet")
+      if ($teams) { $shape = $t.StartsWith("TEAMS    ") }
+      else { $shape = ($t.Length -gt 10 -and $t.Substring(0, 10) -match '^[A-Za-z]+ +$' -and $t.Substring(10, 1) -ne " ") -or $t.StartsWith("Nothing remembered yet") }
       if (-not $shape -and ($at - $first) -gt 1.0) { break }
-      $out.Add($m.Groups[1].Value + "  +" + $m.Groups[2].Value + "s  <a remembered folder, masked by run.ps1, Q87>")
-      $n++
+      if ($teams) { $out.Add($m.Groups[1].Value + "  +" + $m.Groups[2].Value + "s  <a line of the kept team map, masked by run.ps1, Q123>"); $nt++ }
+      else { $out.Add($m.Groups[1].Value + "  +" + $m.Groups[2].Value + "s  <a remembered folder, masked by run.ps1, Q87>"); $n++ }
       $i++
     }
   }
-  return [pscustomobject]@{ Lines = $out; Masked = $n }
+  return [pscustomobject]@{ Lines = $out; Masked = $n; MaskedTeams = $nt; MaskedPaths = $np }
 }
 # F106. The driver's last line in its notes, which says how it ended.
 function DriverLastLine($notes) {
@@ -1802,9 +1933,31 @@ function PairLine($pair) {
   if ($pair.WorkbookName -ne "") { $wb = "workbooks\" + $pair.WorkbookName } elseif ($null -ne $pair.Xlsx) { $wb = "the read-out of its workbook is not usable, see the refusals" }
   return ($pair.Group + "`t" + $nwf + "`t" + $wb)
 }
+# F106, the driver's command line, moved into this function by F126 with the -Untick it hands on,
+# so the harness builds it the way a run does: the adopted pid and start ticks, the set, the
+# stamp and the notes file, then -OpenRun for item 5 or the four folders, with item 1's XML.
+function DriverArguments($drv, $ownerPid, $ownerTicks, $set, $stamp, $notes, $item, $paths, $untick) {
+  $a = "-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $drv + "`" -OwnerPid " + $ownerPid + " -OwnerStartTicks " + $ownerTicks + " -Set " + $set + " -Stamp " + $stamp + " -Notes `"" + $notes + "`""
+  if ($item -eq "5") { $a += " -OpenRun" }
+  else {
+    $a += " -Source `"" + $paths.Nwc + "`" -Nwf `"" + $paths.Nwf + "`" -Nwd `"" + $paths.Nwd + "`" -Excel `"" + $paths.Report + "`""
+    if ($item -eq "1") { $a += " -Xml `"" + $paths.XmlFile + "`"" }
+  }
+  $ids = @(UntickIds $untick)
+  if ($ids.Count -gt 0) { $a += " -Untick " + ($ids -join ",") }
+  return $a
+}
+# F126. The one line, for the record of a window run and for Check, naming the tick boxes the
+# driver unticks, or saying it unticks none.
+function UntickWords($untick) {
+  $ids = @(UntickIds $untick)
+  if ($ids.Count -eq 0) { return "the driver unticks no tick box, every one is left as the window opens it" }
+  return ("the driver unticks, by AutomationId, before it presses anything: " + ($ids -join ", ") + ". Each is read, toggled only when it reads On, read back Off, and read Off again before Run or Run the open file is pressed, and any other reading stops the driver, UNTICK, with neither pressed. Every other tick box is left as the window opens it")
+}
 # With $docs, Check -For Documents: the same reads, then the refusals a documents read would
-# give in its order, and the pairs it would read.
-function CheckMode($paths, $stamp, $item, $docs, $probe) {
+# give in its order, and the pairs it would read. F126: for a window run the tick boxes the driver
+# would untick.
+function CheckMode($paths, $stamp, $item, $docs, $probe, $untick) {
   Say "==== CHECK, reading only, writing nothing ===="
   Say "---- every Roamer ----"
   [void](RoamerRefusal)
@@ -1850,6 +2003,10 @@ function CheckMode($paths, $stamp, $item, $docs, $probe) {
     if ($r.Count -eq 0) { return 0 }
     return 2
   }
+  if ([string]$item -match '^[1-5]$') {
+    Say "---- the tick boxes the driver would untick ----"
+    Say ("  " + (UntickWords $untick))
+  }
   Say "---- the refusals Run would give, in Run's order ----"
   $wtc = $null; if ([string]$item -match '^[1-5]$') { $wtc = (NewWinTypes).WinType }
   $r = RunRefusals $paths $stamp $false $item $wtc
@@ -1873,7 +2030,7 @@ if ($hostWhy.Count -gt 0) {
 # F104 part 2. A documents read's own folder is named by the moment it was called, so every
 # call has a new one and none is ever emptied or used again.
 $docStamp = $T0.ToString("yyyyMMdd-HHmmss")
-$paramWhy = ParamRefusal $Mode $Set $Item $Stamp $RunFolder $Folder $Xml $OpenFile $args $loopRoot $repo $For $PictureStatuses $PictureCap $PriorityPicked.IsPresent $docStamp
+$paramWhy = ParamRefusal $Mode $Set $Item $Stamp $RunFolder $Folder $Xml $OpenFile $args $loopRoot $repo $For $PictureStatuses $PictureCap $PriorityPicked.IsPresent $docStamp $Untick
 if ($paramWhy.Count -gt 0) {
   foreach ($w in $paramWhy) { Say ("REFUSED: " + $w + ". Nothing was started and nothing was written.") }
   exit 2
@@ -1886,7 +2043,7 @@ $paths = RunPaths $loopRoot $repo $Set $Item $Folder $Xml $OpenFile $(if ($docsM
 $docRead = $null; $probeRead = $null
 if ($docsMode) { $docRead = ReadPairs $paths; $probeRead = ProbeRead $paths.ProbeDll }
 
-if ($Mode -eq "Check") { exit (CheckMode $paths $Stamp $Item $docRead $probeRead) }
+if ($Mode -eq "Check") { exit (CheckMode $paths $Stamp $Item $docRead $probeRead $Untick) }
 
 $mutex = New-Object System.Threading.Mutex($false, "Local\NwcFederatorLoop.run")
 $haveLock = $false
@@ -1974,7 +2131,7 @@ try {
     $app = $null; $myPid = 0; $myTicks = $null; $goneAtUtc = $null
     $disposed = $false; $suppressed = $false; $called = $false; $adopted = $false
     $ka = $null; $bs = $null; $logsBefore = $null; $keysBefore = $null
-    $stopText = ""; $fault = ""; $forced = ""; $spb = $null; $asp = $null; $logsChanged = $false; $putBackFailed = $false; $kaOff = $false
+    $stopText = ""; $fault = ""; $forced = ""; $spb = $null; $asp = $null; $tmb = $null; $tmp = $null; $logsChanged = $false; $putBackFailed = $false; $kaOff = $false
     # F106, the window run, items 1 to 5. A documents read reads what one wrote and is not one.
     $win = (-not $docsMode -and $Item -match '^[1-5]$')
     $dproc = $null; $dTicks = $null; $dErr = $null; $evPlan = New-Object System.Collections.Generic.List[object]
@@ -2014,10 +2171,11 @@ try {
       New-Item -ItemType Directory -Path $paths.RunDir -ErrorAction Stop | Out-Null
       $script:RecordFile = Join-Path $paths.RunDir "record.txt"
       if ($docsMode) { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", compare-document.ps1 sha256 " + (Get-FileHash -LiteralPath (Join-Path $repo "tools\loop\compare-document.ps1") -Algorithm SHA256).Hash + ", -Mode Documents -Set " + $Set + " -Item " + $Item + " -Folder " + $Folder + $(if ($OpenFile -ne "") { " -OpenFile " + $OpenFile } else { "" }) + $(if ($PictureStatuses -ne "") { " -PictureStatuses " + $PictureStatuses } else { "" }) + $(if ($PictureCap -ne "") { " -PictureCap " + $PictureCap } else { "" }) + $(if ($PriorityPicked) { " -PriorityPicked" } else { "" }) + ", the documents read of steps\runs\" + $Set + "\" + $paths.RunName) }
-      elseif ($win) { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", drive-window-run.ps1 sha256 " + (Get-FileHash -LiteralPath (Join-Path $repo "tools\probes\drive-window-run.ps1") -Algorithm SHA256).Hash + ", -Mode Run -Set " + $Set + " -Item " + $Item + " -Folder " + $Folder + $(if ($Xml -ne "") { " -Xml " + (MaskLine $Xml) } else { "" }) + $(if ($OpenFile -ne "") { " -OpenFile " + $OpenFile } else { "" }) + " -Stamp " + $Stamp + ", the window run") }
+      elseif ($win) { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", drive-window-run.ps1 sha256 " + (Get-FileHash -LiteralPath (Join-Path $repo "tools\probes\drive-window-run.ps1") -Algorithm SHA256).Hash + ", -Mode Run -Set " + $Set + " -Item " + $Item + " -Folder " + $Folder + $(if ($Xml -ne "") { " -Xml " + (MaskLine $Xml) } else { "" }) + $(if ($OpenFile -ne "") { " -OpenFile " + $OpenFile } else { "" }) + $(if ($Untick -ne "") { " -Untick " + (@(UntickIds $Untick) -join ",") } else { "" }) + " -Stamp " + $Stamp + ", the window run") }
       else { Say ("RUN RECORD, run.ps1 sha256 " + $runSha + ", nw-guard.ps1 sha256 " + $guardSha + ", -Mode Run -Set " + $Set + " -Item 0 -Stamp " + $Stamp + ", the start with no window") }
       Say ("  the run folder " + (Mask $paths.RunDir) + ", every line from here is also in its record.txt")
       foreach ($al in $asideLines) { Say $al }
+      if ($win) { Say ("  " + (UntickWords $Untick)) }
       if ($docsMode) {
         # The pairs as checks 11 and 19 read them, written into pairs.txt, one line per group,
         # the NWF, a tab and the workbook read-out, a dash when the group wrote none.
@@ -2080,6 +2238,10 @@ try {
         Say ("  " + $lb.Listed + " files listed into logs-before.txt, " + $lb.Copied + " copied into logs-backup and read back")
         $logsBefore = @{}
         foreach ($row in (ListingRows (Join-Path $paths.RunDir "logs-before.txt"))) { $logsBefore[$row.Name.ToLowerInvariant()] = $row.Line }
+        Say "---- check 13b, team-map.txt, the team map the tool keeps between runs, Q123 ----"
+        $tmb = TeamMapBefore $paths.HisLogs $paths.RunDir
+        if (-not $tmb.Ok) { $stopText = "STOP before the start: " + $tmb.Why + ", so it could not be kept to put back after the run. Nothing of his was changed"; Say $stopText; $code = 2; break }
+        Say ("  " + $tmb.Line)
         Say "---- check 14, his AutoSave folder ----"
         $ab = BackupNew $paths.AutoSave $paths.AutoBackup (Join-Path $paths.RunDir "autosave-before.txt") $when
         if (-not $ab.Ok) { $stopText = "STOP before the start: " + $ab.Why + ", so the AutoSave folder could not be copied into autosave-backup and read back with its sha256. Nothing of his was changed"; Say $stopText; $code = 2; break }
@@ -2109,6 +2271,12 @@ try {
           $l18 = LockRefusal $lt18
           if ($null -ne $l18) { $stopText = "STOP before the constructor: " + $l18.Replace(" Nothing was written", "") + " The backups stay in the run folder"; Say $stopText; $code = 2; break }
         }
+        # F138, Q135 point 2. The Auto-Save switch is written here, after the last read, so no stop
+        # before the start but its own refusal comes after it, and that refusal's line says what
+        # it left of his.
+        $ao = SwitchAutoSaveOff $paths.RegSub $bs.RegRoot $bs.RegBefore
+        if (-not $ao.Ok) { $stopText = "STOP before the constructor: " + $ao.Line + ". Nothing was started, and the backups stay in the run folder"; Say $stopText; $code = 2; break }
+        Say ("  " + $ao.Line)
 
         Say "==== THE START ===="
         $called = $true
@@ -2175,12 +2343,7 @@ try {
           # that cannot hold the run open.
           $sync.CallLimit = 0; $sync.CallSinceUtc = [DateTime]::UtcNow; $sync.CallName = "ExecuteAddInPlugin"
           $drv = Join-Path $repo "tools\probes\drive-window-run.ps1"
-          $dargs = "-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $drv + "`" -OwnerPid " + $myPid + " -OwnerStartTicks " + $myTicks + " -Set " + $Set + " -Stamp " + $Stamp + " -Notes `"" + $sync.DriverNotes + "`""
-          if ($Item -eq "5") { $dargs += " -OpenRun" }
-          else {
-            $dargs += " -Source `"" + $paths.Nwc + "`" -Nwf `"" + $paths.Nwf + "`" -Nwd `"" + $paths.Nwd + "`" -Excel `"" + $paths.Report + "`""
-            if ($Item -eq "1") { $dargs += " -Xml `"" + $paths.XmlFile + "`"" }
-          }
+          $dargs = DriverArguments $drv $myPid $myTicks $Set $Stamp $sync.DriverNotes $Item $paths $Untick
           $psi = New-Object System.Diagnostics.ProcessStartInfo
           $psi.FileName = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
           $psi.Arguments = $dargs
@@ -2319,6 +2482,16 @@ try {
                 foreach ($l in $asp.Lines) { Say ("  " + $l) }
                 Say ("  AutoSave: " + $asp.Done + " put back as they were and read back, " + $asp.Left + " not as they were before the run" + $(if ($putBack) { "" } else { ", because nothing is written while a reason above stands" }))
               } catch { $putBackFailed = $true; Say ("  the compare stopped, " + (Err $_.Exception) + ". Nothing more is written, the backup is kept in the run folder") }
+              # F131, Q123. team-map.txt in a try of its own, after the AutoSave put back and before
+              # his logs folder is listed again, so the listing reads it as it was put back.
+              if ($null -ne $tmb) {
+                Say "---- team-map.txt, the team map the tool keeps between runs, Q123 ----"
+                try {
+                  $tmp = PutBackTeamMap ($putBack -eq $true) $tmb $paths.HisLogs (Join-Path $paths.RunDir "teammap")
+                  foreach ($l in $tmp.Lines) { Say ("  " + $l) }
+                  Say ("  team map: " + $tmp.Done + " put back as it was and read back, " + $tmp.Left + " not as it was before the run" + $(if ($putBack -eq $true) { "" } else { ", because nothing is written while a reason above stands" }))
+                } catch { $putBackFailed = $true; Say ("  the team map compare stopped, " + (Err $_.Exception) + ". Nothing is written, its copy is kept in the run folder's teammap") }
+              }
               $script:AlsoFile = $null
             }
           } else { Say "  the constructor was never called, so nothing is closed, written down or put back" }
@@ -2373,16 +2546,18 @@ try {
                 Say ("  the tool's log on disk " + $(if ($logCheck -eq "") { "shows the run RAN: its RESULT block, its SESSION naming " + $Stamp + $(if ($Item -eq "1") { ", and its GROUPS block reading no group unticked" } else { "" }) } else { "does not show the run RAN, " + $logCheck }))
               }
               # The log and its tsv are copied into the run folder, the log with its FOLDERS
-              # REMEMBERED block masked, so what goes into the evidence and what stays when a file
-              # is over 20 MB are both under the loop folder, Q87 and Q90. The two in his logs
-              # folder are left there for the close of the loop, Q82.
-              $mr = MaskRemembered $tl
+              # REMEMBERED and TEAMS KEPT blocks masked and every other line naming his logs
+              # folder or the kept map, the map the copy taken at check 13b keeps and the one
+              # his team-map.txt keeps now, so what goes into the evidence and what stays when a
+              # file is over 20 MB are both under the loop folder, Q87, Q90 and F131. The two in
+              # his logs folder are left there for the close of the loop, Q82.
+              $mr = MaskRemembered $tl (PathsOfHis $paths.HisLogs @((Join-Path (Join-Path $paths.RunDir "teammap") (TeamMapName)), (Join-Path $paths.HisLogs (TeamMapName))))
               $tdir = Join-Path $paths.RunDir "toollog"
               New-Item -ItemType Directory -Force -Path $tdir | Out-Null
               $mlog = Join-Path $tdir (Split-Path $sync.ToolLog -Leaf)
               [System.IO.File]::WriteAllLines($mlog, $mr.Lines.ToArray(), $utf8)
               $evPlan.Add([pscustomobject]@{ Name = (Split-Path $mlog -Leaf); From = $mlog })
-              Say ("  the tool's log, " + $tl.Count + " lines, copied into the run folder's toollog with its FOLDERS REMEMBERED block masked, " + $mr.Masked + " lines, Q87")
+              Say ("  the tool's log, " + $tl.Count + " lines, copied into the run folder's toollog with its FOLDERS REMEMBERED block masked, " + $mr.Masked + " lines, Q87, its TEAMS KEPT block masked, " + $mr.MaskedTeams + " lines, Q123, and every other line naming his logs folder or the kept team map masked, " + $mr.MaskedPaths + " lines, F131")
               $tsv = [System.IO.Path]::ChangeExtension($sync.ToolLog, ".tsv")
               if (Test-Path -LiteralPath $tsv) {
                 $ctsv = Join-Path $tdir (Split-Path $tsv -Leaf)
@@ -2486,6 +2661,7 @@ try {
         $notPutBack = $putBackFailed -or $logsChanged
         if ($null -ne $spb) { if ($spb.NotWritten -gt 0) { $notPutBack = $true } }
         if ($null -ne $asp) { if ($asp.Left -gt 0) { $notPutBack = $true } }
+        if ($null -ne $tmp) { if ($tmp.Left -gt 0) { $notPutBack = $true } }
         $endState = "gone"
         if ($adopted -and $null -ne $sync -and $null -ne $sync.MyProc) { $endState = HeldState $sync.MyProc $myTicks }
         $dName = ""; $dText = ""

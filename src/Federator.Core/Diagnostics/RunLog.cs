@@ -8,6 +8,7 @@ using Federator.Core.Clash;
 using Federator.Core.Coverage;
 using Federator.Core.Health;
 using Federator.Core.Rerun;
+using Federator.Core.Views;
 
 namespace Federator.Core.Diagnostics
 {
@@ -1773,7 +1774,9 @@ namespace Federator.Core.Diagnostics
         /// it rather than guess. It is never kept on the log, which lives as long as the
         /// window, so a second run of a window can never carry the first run's groups. A group
         /// whose clash was skipped is NOT in ClashesFound, because a clash that never ran is
-        /// not a clash count of zero.
+        /// not a clash count of zero. makeViewpoints is whether that run had the viewpoints
+        /// box ticked, F136, from that run's engine, and true where no engine was made, so
+        /// the block names the viewpoints off only for a run that had the box unticked.
         ///
         /// coverage is the count check of the same run, F127, handed in the same way and
         /// never kept. Bader's answer to the lead's notes under Q112: a count that differs is
@@ -1782,7 +1785,8 @@ namespace Federator.Core.Diagnostics
         /// closes on Nothing failed beside one. Null writes one line saying no coverage was
         /// taken, because a missing line reads as a check that did not run.
         /// </summary>
-        public void WriteResultBlock(OffCoordinatesAcrossTheRun thisRun = null, CoverageAcrossTheRun coverage = null)
+        public void WriteResultBlock(
+            OffCoordinatesAcrossTheRun thisRun = null, bool makeViewpoints = true, CoverageAcrossTheRun coverage = null)
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
             // to be scrolled for, and so where the time went is read on the way to it.
@@ -1811,6 +1815,15 @@ namespace Federator.Core.Diagnostics
             Line("groups done    : " + CountOf(GroupOutcome.Done));
             Line("groups partial : " + CountOf(GroupOutcome.Partial));
             Line("groups failed  : " + CountOf(GroupOutcome.Failed));
+
+            // F136. Under the group counts, because a group of an unticked run is DONE
+            // without a viewpoint. No line where the box was ticked.
+            string viewpoints = ViewpointRequest.ResultLine(makeViewpoints);
+
+            if (viewpoints != null)
+            {
+                Line(viewpoints);
+            }
 
             // Which of the two workflows each group took, so a log alone answers how many
             // were a First run and how many a Weekly run. Only where the groups carried a
