@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Health;
 
 namespace Federator.Core.Sets
 {
@@ -375,7 +376,7 @@ namespace Federator.Core.Sets
 
             for (int i = 0; i < known.Count; i++)
             {
-                int distance = Distance(lowered, known[i].ToLowerInvariant());
+                int distance = EditDistance.Between(lowered, known[i].ToLowerInvariant(), Nearest);
 
                 if (distance < bestAt)
                 {
@@ -385,40 +386,6 @@ namespace Federator.Core.Sets
             }
 
             return bestAt <= Nearest ? best : string.Empty;
-        }
-
-        private static int Distance(string a, string b)
-        {
-            if (Math.Abs(a.Length - b.Length) > Nearest)
-            {
-                return int.MaxValue;
-            }
-
-            int[] previous = new int[b.Length + 1];
-            int[] current = new int[b.Length + 1];
-
-            for (int j = 0; j <= b.Length; j++)
-            {
-                previous[j] = j;
-            }
-
-            for (int i = 1; i <= a.Length; i++)
-            {
-                current[0] = i;
-
-                for (int j = 1; j <= b.Length; j++)
-                {
-                    int cost = a[i - 1] == b[j - 1] ? 0 : 1;
-                    int best = Math.Min(current[j - 1] + 1, previous[j] + 1);
-                    current[j] = Math.Min(best, previous[j - 1] + cost);
-                }
-
-                int[] swap = previous;
-                previous = current;
-                current = swap;
-            }
-
-            return previous[b.Length];
         }
     }
 }
