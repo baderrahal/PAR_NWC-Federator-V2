@@ -6732,3 +6732,213 @@ anything either way. Running both cost 1145.449 s of TestsRunTest against 574.53
 originals alone, here, 1.99 times. F132's rule, by swapped sets or by the same rule list, finds no
 pair whose two tests are created on 1A02MM, so the merge by the pair of items has nothing to merge
 here, and every clash only a swap finds comes from a swap no rule pair names.
+
+## 5z-s. HOW OFTEN A MIRROR FINDS MORE ON 1A04PK, AND WHAT RUNNING BOTH COSTS, MEASURED 2026-10-07
+
+Q133, probe Q133-1A04PK. Bader's answer D to Q133 keeps both tests of a mirrored pair, runs both
+and merges their clashes by the pair of items, and asks: "Measure on 1A02MM and 1A04PK how often a
+mirror finds more, and the extra time running both costs, and give both in the next record."
+1A02MM is 5z-r. This section is 1A04PK, measured the same way. The question: on 1A04PK, which of
+the pairs F132's rule finds would both be created and what does each find, and over every test the
+tool would create that finds a clash, how often does its swap find more, fewer or other clashes,
+and what do the two runs cost against the original's alone? A swap that often finds more makes
+answer D worth its seconds. A swap that never finds more makes it time for nothing here.
+
+THE NWF HOLDS NO SETS AND NO TESTS, SO THE XML WAS BROUGHT IN FIRST, THE ADD-IN'S WAY. The NWF of
+set 04, `runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf`, 4,699 bytes, sha256
+7ECA0ECA, read back 0 sets, 0 clash tests and 10 saved viewpoints at the root, line 69 of the
+result. Neither the .NET API nor the COM API carries a clash XML import.
+`tools\probes\ViewpointProbe\reflect-clash-import.ps1` read every public member whose name holds
+Import or Xml in Autodesk.Navisworks.Api.dll, Clash.dll, ComApi.dll and Interop.ComApi.dll, with no
+Navisworks started, and found 6 in the Api DLL, none of them about clash tests, and 0 in the other
+three, `q133-1a04pk-reflect-import-result-20261007.txt`:
+
+    powershell -NoProfile -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\reflect-clash-import.ps1 -Out tools\probes\ViewpointProbe\q133-1a04pk-reflect-import-result-20261007.txt
+
+So the probe brings the XML in with the add-in's own code, compiled into it from src and not
+changed: `tools\probes\ViewpointProbe\Q133Import\Q133ImportProbe.csproj` builds every file of
+Federator.Core and every file of Federator.Addin\Engine but FederationEngine.cs into one assembly,
+Q133ImportProbe.dll, plugin Q133ImportProbe.PARS, so no second Federator.Core is loaded beside the
+installed bundle's. Its mode q133import reads the XML's copy with MatrixCorrections.ReadPicked, the
+call the window makes, with `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt`, sha256
+AFC463BE, copied beside it under the name the tool looks for, builds the sets with SetBuilder.Build
+on SetBuildPlan.From, and chooses and makes the tests with ClashRunner's own PlanTheCreation and
+Create, both private, called by reflection on a real ClashRunner. The tool's run log of the probe
+went into the work folder, never into %LOCALAPPDATA%\ParsonsNwcFederator\logs.
+
+HOW. Two parts, as for 1A02MM.
+
+1. THE RULE'S PAIRS, read off the XMLs with no Navisworks, by `q133-rule-pairs.py` on the picked
+   XML, sha256 792B01FB, and the corrected one in exchange\, sha256 94897667. Its output is byte
+   for byte the 1A02MM one, the XML being the same, `q133-1a04pk-rule-pairs-result-20261007.txt`:
+
+       python tools\probes\ViewpointProbe\q133-rule-pairs.py %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A04PK-rule-pairs.txt %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+
+2. EVERY TEST THE TOOL WOULD CREATE, inside Navisworks. In XML order each test is made with the
+   tool's Create and run with TestsRunTest timed alone, the tool's own call. Each one whose results
+   hold at least one clash not Resolved gets a swap made beside it the way P1 and 5z-r made theirs,
+   sides read back swapped, results cleared, run and timed, and the two compared by the unordered
+   pair of the index paths of Item1 and Item2. No test starts after a cap of 10,800 s. Part 1 is
+   then read off those same runs, so every test ran once
+
+Run from Windows PowerShell 5.1 under the guard of P1, tools\loop\nw-guard.ps1 as merged from main
+at de271bc, F138's Auto-Save switch included:
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-q133-import.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A04PK-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf -Xml %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml -Corrections exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt -PairsFile %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A04PK-rule-pairs.txt -PluginAssembly %LOCALAPPDATA%\NwcFederatorLoop\turn5\q133-1A04PK-build\out\Q133ImportProbe.dll
+
+with the DLL built by `dotnet build Q133ImportProbe.csproj -c Release -o <that out folder>` from
+the source committed here, DLL sha256 5B970457, script sha256 16C7DCEB, lines 26 and 3. One run at
+11:31, kept as `q133-1a04pk-import-result-20261007.txt`, the machine name on line 1 masked as
+`[machine]` and the account folder on line 5 as `%USERPROFILE%`, nothing else changed. Get-Process
+Roamer read 0 before it. Navisworks pid 44956, adopted on all four conditions, line 41. TryOpenFile
+of the copy True after 4.759 s with 10 models, every one read from under the loop folder, lines 57
+to 68. The whole run took 209 s and every step passed, lines 1524 to 1530.
+
+**THE IMPORT: 61 SETS, 39 FINDING ITEMS, AND 741 OF THE 1830 TESTS CREATED.** Lines 72 to 95:
+
+```
+MatrixCorrections.ReadPicked         61 sets, 1830 tests, 23 changes from the list beside it
+SetBuilder.Build                     61 created, 39 finding items, 22 at zero, 0 failed, 2.432 s
+ClashTestPlan.From                   1830 buildable, 0 skipped before the model
+PlanTheCreation                      741 created, 1089 not created as a side finds nothing
+```
+
+Run 04 of the tool on the same NWF created 561 with 34 sets finding items,
+steps\runs\04\item1-C04\run-20261004-211839.log lines 256 and 265, with the installed build
+e4484d15, whose log carries no MATRIX line. The 180 more here follow from the corrections list,
+which made 5 more sets find items. That is the prober's reading of the two counts. Which sets
+they are was not read.
+
+**PART 1, THE RULE'S PAIRS: NONE CREATED ON 1A04PK.** 60 pairs and self tests, all over the
+Telecom Fixtures and Telephone Devices sets, and not one has its tests created, line 1415. They
+cost 0 s and find nothing here, as on 1A02MM.
+
+**PART 2, EVERY TEST THAT FINDS A CLASH: A SWAP FINDS MORE ON 1, FEWER ON 2 AND OTHER CLASHES ON
+14 OF 174.** All 741 tests were measured, none left for the cap, lines 1339 to 1344:
+
+```
+tests the tool would create, all run           741
+finding at least one clash                     174, holding 12971 clashes
+the swap finds the same                        157
+the swap finds more                            1
+the swap finds fewer                           2
+the swap finds other clashes                   14
+UNKNOWN                                        0
+clashes, the swaps                             12976
+only the swap finds                            252
+only the original finds                        247
+TestsRunTest, the 174 originals                13.060 s
+TestsRunTest, their 174 swaps                  12.643 s
+both                                           25.703 s, 1.968 times the originals alone
+TestsRunTest, the 567 that find nothing        34.910 s
+every original                                 47.970 s
+every original and every swap                  60.613 s, 1.264 times every original
+making the 741 originals with Create           10.680 s
+making the 174 swaps                           4.799 s
+```
+
+A TestsRunTest took 0.065 s on average over the 741 originals and at most 0.270 s, and 0.073 s on
+average over the swaps, summed by the prober over the LINE lines.
+
+**MOST OF WHAT ONE SIDE FINDS ALONE IS THE SAME CONTACT ON ANOTHER PART OF THE SAME OBJECT.**
+`q133-sibling-check.py` paired, test by test, each clash only the original finds with one only the
+swap finds, first as siblings, one item the same and the other two children of one parent, then as
+near, the same distance to 1e-6 ft and each item the same or one index apart,
+`q133-1a04pk-siblings-result-20261007.txt`:
+
+    python tools\probes\ViewpointProbe\q133-sibling-check.py %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A04PK-result.txt %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A04PK-siblings.txt
+
+```
+clashes only the original finds   247
+clashes only the swap finds       252
+paired as siblings                234
+paired as near                    10
+left only in the original         3
+left only in the swap             8
+```
+
+The 17 tests where the two differ, with what is left after the pairing:
+
+```
+test                                                       original  swap  verdict  left orig  left swap
+BLD-AR-Walls-vs-BLD-AR-Floors                                   996   996  other            0          0
+BLD-AR-Railings-vs-BLD-AR-Stairs                                 20    20  other            0          0
+BLD-AR-Railings-vs-BLD-AR-Walls                                   5     5  other            0          0
+BLD-ST-Columns-vs-BLD-AR-Floors                                1956  1956  other            0          0
+BLD-ST-Columns-vs-BLD-AR-Walls                                  102   101  fewer            1          0
+BLD-ST-Framing-vs-BLD-AR-Floors                                  73    73  other            0          0
+BLD-ST-Framing-vs-BLD-AR-Walls                                  482   480  fewer            2          0
+BLD-ST-Framing-vs-BLD-ST-Columns                                175   181  more             0          6
+BLD-ST-Floors-vs-BLD-AR-Walls                                   925   925  other            0          0
+BLD-ST-Stair-vs-BLD-AR-Stairs                                    19    19  other            0          0
+BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors                   212   212  other            0          0
+BLD-EL-Electrical Equipment-vs-BLD-AR-Walls                      30    30  other            0          0
+BLD-EL-Electrical Equipment-vs-BLD-AR-Site                     1436  1436  other            0          0
+BLD-EL-Electrical Equipment-vs-BLD-ST-Columns                     6     6  other            0          0
+BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment
+                                                                480   482  other            0          2
+BLD-EL-Lighting Fixtures-vs-BLD-ST-Stair                         11    11  other            0          0
+BLD-EL-Lighting Fixtures-vs-BLD-EL-Electrical Equipment           4     4  other            0          0
+```
+
+1. BLD-ST-Framing-vs-BLD-ST-Columns finds 175 and its swap 181, line 247, the same test P1 and 5z-r
+   saw find more on 1A02MM. The 6 only the swap finds all share the item `8.2.0.0.0.55.0` and sit
+   at -1.010 ft. The same item is the one clash BLD-ST-Columns-vs-BLD-AR-Walls finds only in its
+   original, at -0.560 ft, line 222
+2. The 2 left only in the swap of the Conduits test sit at -0.088 ft and -0.096 ft, just past the
+   tolerance of 0.082 ft, lines 1150 to 1153. Every other clash left over is past -0.5 ft
+3. On every other test the two sides list the same number of clashes and every difference pairs up.
+   Electrical Equipment against Site alone carries 186 sibling pairs
+4. Every swap's sides read back as the original's swapped, and no item failed to read, on all 174
+
+So by the unordered pair of items, which is how answer D merges, the two runs together list 13,223
+clashes on these 174 tests against the originals' 12,971, by the prober's sum of 12,971 and 252.
+Of the 252 added, 244 pair with a clash the original already lists on another part of the same
+object, by index path, and 8 do not. Whether a person reads a sibling pair as one clash or two, and
+whether the Clash Detective panel shows one or both, is UNKNOWN, no name and no panel was read.
+
+**THE SECONDS.** Here a TestsRunTest took 0.065 s on average against about 10 s on 1A02MM in 5z-r.
+This document was fresh, 10 saved viewpoints and no results but the probe's, where 5z-r's held
+2847 viewpoints and 2939 results. That the document's state made 5z-r slow is the prober's reading
+and is UNKNOWN. Both readings agree on the ratio: running a test and its swap costs 1.97 times the
+original alone on 1A04PK and 1.99 on 1A02MM, over the tests that find a clash. Running a swap only
+beside a test that finds a clash cost 1.26 times every original here, 12.643 s more on 47.970 s.
+
+**BADER'S THINGS. NOTHING ADDED, NOTHING GONE.** The NWF and the XML the copies were made from read
+the same sha256 at the start and at the end, lines 1510 and 1512. The guard wrote the Auto-Save
+switch "3 0" and read it back, line 31. 38 registry values were put back, enable among them, and
+read again with 0 still differing, line 1499. InfoCenter.log and LastSession.xml put back reading
+their backups' sha256, lines 1503 and 1504. The guard saw 0 AutoSave files added, changed or gone,
+line 1506, and the tool's own logs folder had nothing added or changed, line 1507. The prober read
+the switch and listed the AutoSave folder by name, size, write time and sha256 with
+`read-autosave-state.ps1`, kept in %LOCALAPPDATA%\NwcFederatorLoop\turn5 as
+`probe-q133-1A04PK-autosave-before.txt`, `-during.txt` and `-after.txt`: enable read String "0"
+before the start, "3 0" at 11:33:47 while the probe ran, and "0" after the put back, and the folder
+held the same 199 files with the same sizes, times and sha256 before and after. So Auto-Save off
+held through this start, and no autosave was written.
+
+THE PROGRAMS. One Navisworks, pid 44956, started by the probe at 11:31:58, quit by Dispose and gone
+7.5 s after, not forced, lines 1421 and 1422. AdskLicensingAgent pid 45188, its child, read UNKNOWN
+at the end, line 1451, and no process held pid 45188 when the prober read it after. No Roamer that
+was not there in step 2 ran at the end, line 1454.
+
+**STILL UNKNOWN.**
+
+- whether a swap of a test that finds nothing finds something on 1A04PK. Those 567 swaps were not
+  made, the brief asking for the tests that find a clash
+- which 5 sets the corrections list made find items, and so which of the 741 a run of the tool
+  today creates against run 04's 561, beyond what PlanTheCreation gave here
+- why a TestsRunTest took about 10 s on 1A02MM in 5z-r and 0.065 s here
+- why a swap finds more or fewer on the three tests above, and what object `8.2.0.0.0.55.0` is
+- whether the Clash Detective panel shows the same counts, and whether a sibling pair is one
+  clash to a reader
+
+**WHAT THIS DECIDES.** For the record Bader asked for, 1A04PK: of the 174 tests that find a clash, a
+swap finds more on 1, fewer on 2 and other clashes on 14, so 17 of 174 differ. Of the 252 clashes
+only a swap finds, 244 are the same contact the original already lists on another part of the same
+object, by index path, and 8 are not, 6 on BLD-ST-Framing-vs-BLD-ST-Columns and 2 on the Conduits
+against Electrical Equipment test. Running both cost 25.703 s of TestsRunTest against 13.060 s for
+those originals alone, 1.97 times, and 60.613 s against 47.970 s over every test the tool would
+create. F132's rule finds no pair whose two tests are created on 1A04PK, as on 1A02MM, so every
+clash a swap adds comes from a swap no rule pair names. A merge by the unordered pair of items, as
+answer D has it, would count the 244 siblings as new clashes.
