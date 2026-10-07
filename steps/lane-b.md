@@ -13,8 +13,8 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 
 | Order | Item | Branch | State |
 |---|---|---|---|
-| 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | pull request 142, second reading |
-| 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | waits |
+| 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | merged as pull request 142, add-in half and the loop's records wait for the laptop lane |
+| 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | Core half in review, the add-in half and the sheet writer wait |
 | 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 made, Q125 B left for the laptop lane |
 | 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 made |
 | 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | waits |
@@ -22,8 +22,8 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 
 ## The item the lane is on
 
-F115, pull request 142, from the branch claude/lane-b-release-plan-zztyvx, the one branch this
-session may push, restarted from main after each merge. fix-F115 and fix-F127 stay on origin and
+F127, from the branch claude/lane-b-release-plan-zztyvx, the one branch this session may push,
+restarted from main after each merge. F115 merged as pull request 142. fix-F115 and fix-F127 stay on origin and
 are not deleted, because their records are theirs.
 
 ## How this session records, which differs from the rule above
@@ -72,7 +72,8 @@ lane's to set in the tracker.
 
 | ID | What changed | PR | Status |
 |---|---|---|---|
-| F115 | fix-F115 carried on: main merged in, source conflicts resolved, main's AlsoAskTests moved to the judge form the branch introduced, and three lines made true after the first reading, the EMPTY SETS wording, the window totals for a rebuilt set and the row of a stopped walk | 142 | second reading |
+| F115 | fix-F115 carried on: main merged in, source conflicts resolved, main's AlsoAskTests moved to the judge form the branch introduced, and three lines made true after the first reading, the EMPTY SETS wording, the window totals for a rebuilt set and the row of a stopped walk | 142 | merged, 6729b9e |
+| F127 | fix-F127 carried on, Core half only: main merged in, WriteResultBlock takes thisRun, makeViewpoints and coverage in that order. The add-in has to build the CoverageAcrossTheRun in the engine and hand it to the window's call of WriteResultBlock, and the Coverage sheet writer is not written | in review | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
