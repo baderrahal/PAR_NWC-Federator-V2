@@ -104,8 +104,8 @@ namespace Federator.Core.Views
                 TeamPair pair = teams.PairOf(first.LeftSet, first.RightSet);
 
                 outcome.Pair(test, pair);
-                NameASetWithNoCode(outcome, teams, first.LeftSet);
-                NameASetWithNoCode(outcome, teams, first.RightSet);
+                NameAnUnknownSide(outcome, teams, first.LeftSet);
+                NameAnUnknownSide(outcome, teams, first.RightSet);
 
                 List<ViewClash> inPair = new List<ViewClash>();
                 List<ViewClash> overSize = new List<ViewClash>();
@@ -157,9 +157,9 @@ namespace Federator.Core.Views
             return outcome;
         }
 
-        private static void NameASetWithNoCode(TestViewPlanOutcome outcome, ViewTeams teams, string setName)
+        private static void NameAnUnknownSide(TestViewPlanOutcome outcome, ViewTeams teams, string setName)
         {
-            if (!teams.SetHasCode(setName))
+            if (string.Equals(teams.TeamOfSet(setName), teams.Map.UnknownTeam, StringComparison.Ordinal))
             {
                 outcome.NameUnknownSet(setName);
             }

@@ -29,7 +29,7 @@ namespace Federator.Core.Tests
             Assert.That(place, Is.EqualTo("A/Structure vs Mechanical/Over 150mm/" + Name));
             Assert.That(ViewPlace.FolderPath(Folders), Is.EqualTo("A/Structure vs Mechanical/Over 150mm"));
 
-            ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), new[] { "ME", "ST" }, Settings);
+            ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), null, new[] { "ME", "ST" }, Settings);
             ViewClash large = new ViewClash(Name, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New,
                 ClashPriority.A, SizeVerdict.Large, null, null, null, null, null);
             PlannedTestView planned = TestViewPlan.For(new[] { large }, teams, null, Settings).Views[0];
@@ -77,7 +77,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TwoViewsOfOneWrittenPlaceKeepTheirReadBacksUnderTwoKeys()
         {
-            ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), new[] { "ME", "ST" }, Settings);
+            ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), null, new[] { "ME", "ST" }, Settings);
             ViewClash large = new ViewClash("Pipes", "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New,
                 ClashPriority.A, SizeVerdict.Large, null, null, null, null, null);
             ViewClash small = new ViewClash("Over 150mm/Pipes", "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", ClashStatus.New,

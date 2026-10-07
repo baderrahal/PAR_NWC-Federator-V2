@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Clash;
+using Federator.Core.Exchange;
 using Federator.Core.Teams;
 using Federator.Core.Views;
 using NUnit.Framework;
@@ -19,11 +20,14 @@ namespace Federator.Core.Tests
     {
         private const string Over150 = "Over 150mm";
 
+        private const string UnknownSetsLine =
+            "a set with no code this group knows and no folder above it in the clash XML's set tree naming a team : ";
+
         private static readonly string[] GroupCodes = { "AR", "EL", "ME", "ST" };
 
         private static ViewTeams Teams()
         {
-            return new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), GroupCodes, new ViewpointSettings());
+            return new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), null, GroupCodes, new ViewpointSettings());
         }
 
         private static ViewClash Clash(
@@ -249,7 +253,7 @@ namespace Federator.Core.Tests
         public void TwoCodesOfOneTeamGoInThatTeamAgainstItself()
         {
             ViewTeams teams = new ViewTeams(
-                TeamMapTests.MapOf(TeamMapTests.BadersMap), new[] { "HV", "PL" }, new ViewpointSettings());
+                TeamMapTests.MapOf(TeamMapTests.BadersMap), null, new[] { "HV", "PL" }, new ViewpointSettings());
 
             TestViewPlanOutcome plan = TestViewPlan.For(
                 new[] { Clash("T", "Clash1", "BLD-HV-Ducts", "BLD-PL-Pipes") }, teams, null, new ViewpointSettings());
@@ -313,7 +317,10 @@ namespace Federator.Core.Tests
             Assert.That(plan.Views[0].Name, Is.EqualTo("BLD-AR-Walls-vs-BLD-ST-Columns "));
         }
 
-        /// <summary>FR-074 and Q117 by its default A: a set name with no code reads as UNKNOWN, named once, never guessed.</summary>
+        /// <summary>
+        /// FR-074 and Q117 answered A where the XML's set tree names no team: a set name with no
+        /// code and no set tree handed in reads as UNKNOWN, named once, never guessed.
+        /// </summary>
         [Test]
         public void ASetNameWithNoCodeIsAnUnknownTeamAndIsNamedOnce()
         {
@@ -338,10 +345,84 @@ namespace Federator.Core.Tests
                 Clash("T", "Clash1", "BLD-EL-Lighting Fixtures", "BLD-Security Devices"),
                 Clash("U", "Clash1", "BLD-Security Devices", "BLD-ST-Floors")).Lines(new SizeSettings());
 
-            int at = lines.IndexOf("a set name with no code this group knows : 1, its side read as a team of UNKNOWN and none guessed at");
+            int at = lines.IndexOf(UnknownSetsLine + "1, its side read as a team of UNKNOWN and none guessed at");
 
             Assert.That(at, Is.GreaterThanOrEqualTo(0), string.Join("\n", new List<string>(lines).ToArray()));
             Assert.That(lines[at + 1], Is.EqualTo("    BLD-Security Devices"));
+        }
+
+        /// <summary>
+        /// F114 attempt 7, the reviewer's finding 1. Q117 answered C by Bader on 2026-10-05: the
+        /// client's one set with no code, BLD-Security Devices, takes the team Electrical its
+        /// folder in the corrected XML names, in the views exactly as on the TEAMS line, one rule
+        /// in one place, TeamMap.TeamOfSet. It is no UNKNOWN side and is not named as one.
+        /// </summary>
+        [Test]
+        public void TheClientsSetWithNoCodeTakesTheTeamItsFolderNamesAsTheTeamsLineSays()
+        {
+            ExchangeDocument corrected = MatrixCorrections.ReadPicked(Samples.CorrectedMatrix());
+            ViewTeams teams = new ViewTeams(corrected.Teams, corrected.Sets, GroupCodes, new ViewpointSettings());
+
+            TestViewPlanOutcome plan = TestViewPlan.For(
+                new[] { Clash("T", "Clash1", "BLD-Security Devices", "BLD-ST-Floors") }, teams, null, new ViewpointSettings());
+
+            Assert.That(
+                corrected.Teams.SetLines(corrected.Sets, '-')[0],
+                Does.Contain("BLD-Security Devices carries no discipline code the map lists, so its team is Electrical"));
+            Assert.That(teams.TeamOfSet("BLD-Security Devices"), Is.EqualTo("Electrical"));
+            Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Structure vs Electrical"));
+            Assert.That(plan.Views[0].Pair.CarriesSizeFolder, Is.True);
+            Assert.That(plan.UnknownSets, Is.Empty);
+            Assert.That(plan.Lines(new SizeSettings()), Has.Member(UnknownSetsLine + "0, its side read as a team of UNKNOWN and none guessed at"));
+        }
+
+        /// <summary>
+        /// Q117 answered C and A, the faults. A code in the set's name is its team whatever folder
+        /// it sits in. Two sets of one name whose folders name two teams read UNKNOWN and are
+        /// named, never one of the two guessed. A folder naming no team of the map reads UNKNOWN.
+        /// </summary>
+        [Test]
+        public void ASetsFolderGivesItsTeamOnlyWhereItsNameCarriesNoCodeAndOneTeamIsNamed()
+        {
+            TeamMap map = TeamMapTests.MapOf(TeamMapTests.BadersMap);
+            ViewTeams teams = new ViewTeams(
+                map,
+                new[]
+                {
+                    Set("BLD-ME-Ducts", "Electrical"),
+                    Set("BLD-Doors", "Architecture"),
+                    Set("BLD-Devices", "Electrical"),
+                    Set("BLD-Devices", "Mechanical"),
+                    Set("BLD-Signs", "Security")
+                },
+                GroupCodes,
+                new ViewpointSettings());
+
+            Assert.That(teams.TeamOfSet("BLD-ME-Ducts"), Is.EqualTo("Mechanical"));
+            Assert.That(teams.TeamOfSet("BLD-Doors"), Is.EqualTo("Architecture"));
+            Assert.That(teams.TeamOfSet("BLD-Devices"), Is.EqualTo("UNKNOWN"));
+            Assert.That(teams.TeamOfSet("BLD-Signs"), Is.EqualTo("UNKNOWN"));
+            Assert.That(teams.TeamOfSet("BLD-Nowhere"), Is.EqualTo("UNKNOWN"));
+
+            TestViewPlanOutcome plan = TestViewPlan.For(
+                new[]
+                {
+                    Clash("T", "Clash1", "BLD-Doors", "BLD-Devices"),
+                    Clash("U", "Clash1", "BLD-Signs", "BLD-ST-Floors")
+                },
+                teams,
+                null,
+                new ViewpointSettings());
+
+            Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Architecture vs UNKNOWN"));
+            Assert.That(plan.Views[1].Pair.Folder, Is.EqualTo("Structure vs UNKNOWN"));
+            Assert.That(plan.UnknownSets, Is.EqualTo(new[] { "BLD-Devices", "BLD-Signs" }));
+        }
+
+        private static SelectionSetDefinition Set(string name, params string[] folders)
+        {
+            return new SelectionSetDefinition(
+                name, folders, "lcop_selection_set_tree/" + string.Join("/", folders) + "/" + name, "all", false, null, null);
         }
 
         // ---------- the mirrors, F132, Bader's point that there are no mirrored tests ----------
@@ -410,7 +491,7 @@ namespace Federator.Core.Tests
         [Test]
         public void WithNoTeamMapThePairsAreCodesAndNoSizeFolderIsMade()
         {
-            ViewTeams teams = new ViewTeams(TeamMap.NoXml(new TeamMapSettings()), GroupCodes, new ViewpointSettings());
+            ViewTeams teams = new ViewTeams(TeamMap.NoXml(new TeamMapSettings()), null, GroupCodes, new ViewpointSettings());
 
             TestViewPlanOutcome plan = TestViewPlan.For(
                 new[] { Clash("T", "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", size: SizeVerdict.Large) },

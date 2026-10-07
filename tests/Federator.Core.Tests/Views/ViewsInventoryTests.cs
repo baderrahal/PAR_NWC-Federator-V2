@@ -39,7 +39,7 @@ namespace Federator.Core.Tests
                     ClashPriority.A, null, null, null, null, null, null));
             }
 
-            ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), Codes, Settings);
+            ViewTeams teams = new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), null, Codes, Settings);
             return TestViewPlan.For(clashes, teams, null, Settings);
         }
 

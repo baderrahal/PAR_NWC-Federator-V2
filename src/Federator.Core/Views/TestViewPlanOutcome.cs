@@ -76,7 +76,7 @@ namespace Federator.Core.Views
             get { return new ReadOnlyCollection<string>(sizeUnknown); }
         }
 
-        /// <summary>Every set name carrying no code this group knows, each once, FR-074.</summary>
+        /// <summary>Every set name whose side reads UNKNOWN, no code this group knows and no folder naming a team, each once, FR-074.</summary>
         public ReadOnlyCollection<string> UnknownSets
         {
             get { return new ReadOnlyCollection<string>(unknownSets); }
@@ -158,7 +158,7 @@ namespace Federator.Core.Views
         /// <summary>
         /// The VIEWS block's plan lines: the counts, the clashes left out by status, the mirrored
         /// tests named or said UNKNOWN, every size that could not be read named, or as many as the
-        /// settings say with the rest counted, and every set name with no code named. Nothing is
+        /// settings say with the rest counted, and every set whose side reads UNKNOWN named. Nothing is
         /// guessed and nothing is silent.
         /// </summary>
         public IList<string> Lines(SizeSettings sizes)
@@ -195,7 +195,7 @@ namespace Federator.Core.Views
                 + ", every one in its pair view and none dropped");
             Named(lines, sizeUnknown, sizes);
 
-            lines.Add("a set name with no code this group knows : " + unknownSets.Count
+            lines.Add("a set with no code this group knows and no folder above it in the clash XML's set tree naming a team : " + unknownSets.Count
                 + ", its side read as a team of UNKNOWN and none guessed at");
             Named(lines, unknownSets, null);
 

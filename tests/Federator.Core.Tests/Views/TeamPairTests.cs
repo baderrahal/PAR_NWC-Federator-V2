@@ -126,5 +126,39 @@ namespace Federator.Core.Tests
             Assert.That(TeamPair.TeamCarriesSizeFolder(TeamMapTests.MapOf("team: Mechanical | ME\n"), "Mechanical"), Is.False);
             Assert.That(TeamPair.TeamCarriesSizeFolder(TeamMap.NoXml(new TeamMapSettings()), "ME"), Is.False);
         }
+
+        /// <summary>
+        /// F114 attempt 7, the breaker's finding 1. The TEAMS lines on the order of a pair and the
+        /// size folder are read off this rule and say what Compare and TeamCarriesSizeFolder do.
+        /// A map naming a team by the UnknownTeam word orders it by its line, so its line does not
+        /// say UNKNOWN comes last.
+        /// </summary>
+        [Test]
+        public void TheTeamsLinesSayWhatThePairRuleDoes()
+        {
+            TeamMap map = TeamMapTests.MapOf(TeamMapTests.BadersMap);
+            IList<string> lines = map.Lines();
+
+            Assert.That(lines, Has.Member("TEAMS    a pair is written in the order Architecture, Structure, Mechanical, Electrical,"
+                + " then any other team by its name, then UNKNOWN"));
+            Assert.That(lines, Has.Member("TEAMS    a pair holding Mechanical or Electrical carries the size folder"));
+
+            foreach (string team in map.Teams)
+            {
+                Assert.That(
+                    TeamPair.TeamCarriesSizeFolder(map, team),
+                    Is.EqualTo(lines[lines.Count - 1].Contains(" " + team + " ")),
+                    team);
+            }
+
+            TeamMap odd = TeamMapTests.MapOf("team: Mechanical | ME\nteam: UNKNOWN | XX\n");
+            List<string> teams = new List<string> { "Zed", "UNKNOWN", "Mechanical" };
+
+            teams.Sort((x, y) => TeamPair.Compare(odd, x, y));
+
+            TeamMapTests.Same(teams, "Mechanical", "UNKNOWN", "Zed");
+            Assert.That(odd.Lines(), Has.Member("TEAMS    a pair is written in the order Mechanical, UNKNOWN, then any other team by its name"));
+            Assert.That(odd.Lines(), Has.Member("TEAMS    no team carries the size folder"));
+        }
     }
 }

@@ -346,10 +346,11 @@ and 6 does not read as broken.
 - NO CODE WAITS ON MAIN FOR A LATER STEP, Bader's answer B to Q134 on 2026-10-05. The pair of
   two teams, its one order and its size folder, Q114 points 10 to 12, are F114's, which calls
   them, so F131 holds no member for them. F131 reads the map's order and its size-folder line,
-  refuses a map whose size-folder line is wrong, and says both on its TEAMS lines, nothing more
-  F114's `TeamPair` reads the map through its public members alone: its teams in line
-  order, `TeamMap.Teams`, and the teams its size-folder line names, `TeamMap.SizeFolderTeams`,
-  which the map shows and judges neither
+  refuses a map whose size-folder line is wrong, and says both on its TEAMS lines in the words
+  of F114's `TeamPair.OrderWords` and `TeamPair.SizeFolderWords`, kept beside the rule they
+  say. `TeamPair` reads the map through its public members alone: its teams in line order,
+  `TeamMap.Teams`, and the teams its size-folder line names, `TeamMap.SizeFolderTeams`, which
+  the map shows and judges neither
 - A SET THAT CANNOT REACH A MODEL OF ITS OWN TEAM IS A SILENT MISS, FR-181, Q114 point 3,
   `SilentMisses`: a set of team T and code C and a model of team T with another code, where
   every group of the set asks, not negated, a workset the model's whole list does not carry
@@ -1157,11 +1158,12 @@ and 6 does not read as broken.
   involving one of `SubGroupDisciplines`, which F53 already asks the same question
   through. The seven codes are a SETTING, `DisciplineCodes`, matched Ordinal and never
   cased, and the code is whichever hyphen separated part of a set name is exactly one of
-  them, read by `CodeOf.Set` since F131. A SET NAME CARRYING NO KNOWN CODE IS REPORTED AND NEVER GUESSED: the client's own
-  file holds BLD-Security Devices, which breaks the pattern its siblings follow, so the
-  folder says UNKNOWN and the count goes in the block. Bader's answer C to Q117 gives such a
-  set the team its folder names, `TeamMap.TeamOfSet`, which the TEAMS lines and the silent
-  miss judge read already and these folders read once F114 puts the team pairs in their place
+  them, read by `CodeOf.Set` since F131. A SET NAME CARRYING NO KNOWN CODE IS REPORTED AND
+  NEVER GUESSED: the client's own file holds BLD-Security Devices, which breaks the pattern
+  its siblings follow, so the folder says UNKNOWN and the count goes in the block. Bader's
+  answer C to Q117 gives such a set the team its folder names, `TeamMap.TeamOfSet`, which
+  the TEAMS lines, the silent miss judge and F114's views through `ViewTeams` read. These
+  folders keep UNKNOWN until F114's add-in pass puts the views by team in their place
 - THE SMALL SERVICE RULE IN F85 IS ITS OWN AND IS NOT INHERITED FROM F72a. A service at or
   under the threshold stays out of the tree, decided on the SIZE and never on the status.
   F72a is off by default, and it leaves a service against another service exactly as it
@@ -1235,19 +1237,26 @@ and 6 does not read as broken.
   DN150 mm is no size, never 50 mm, because `SizeText` takes the whole run of digits after
   a letter with the word
 - ONE VIEW PER CLASH TEST OF ITS OPEN CLASHES, IN FOLDERS BY PRIORITY AND TEAM PAIR, Bader's
-  Q114 points 9 to 19, F114, its Core half, with Q117, Q118, Q120 and Q123 by their answers
-  or defaults A and Q119 by Bader's answer B of 2026-10-05.
+  Q114 points 9 to 19, F114, its Core half, with Bader's answers of 2026-10-05, A to Q118
+  and Q120, B to Q119 and Q123, and C to Q117 with A where the XML's set tree names no team.
   `TestViewPlan` gives each test one view of its clashes at the `ViewStatuses` setting, New
   and Active, in the folder of its priority, A, B, C or No priority, always there, then its
   team pair, `TeamPair` read through `ViewTeams`, the one place the views read a team, and
-  never copied. A PAIR OF TEAMS IS WRITTEN ONE WAY ROUND, `TeamPair.For` with
-  `TeamPair.Compare`: the map's lines first, then any other team by its name, then UNKNOWN,
-  so one pair is one folder. Two codes of one team pair as that team against itself, point
-  10. A pair carries the size folder where the map's size-folder line names one of its
-  teams, `TeamPair.TeamCarriesSizeFolder`, and with no map none does. Built by F131 and
-  carried here by Bader's answer B to Q134, it reads the map through its public members
-  alone, `Teams`, `UnknownTeam` and `SizeFolderTeams`. In a pair carrying the size folder a clash whose larger service is over
-  the threshold goes in the test's view under Over 150mm and every other clash in its view
+  never copied. A SIDE'S TEAM IS `TeamMap.TeamOfSet`, the one rule the TEAMS lines read, with
+  the clash XML's sets handed to `ViewTeams`: the team of the code its set name carries, and
+  where it carries none the team a folder above it names, so BLD-Security Devices is
+  Electrical in both. A side is named by its set name alone, so two sets of one name whose
+  folders give two teams read UNKNOWN, and a side reading UNKNOWN is named in the plan's
+  lines. A PAIR OF TEAMS IS WRITTEN ONE WAY ROUND, `TeamPair.For` with `TeamPair.Compare`:
+  the map's lines first, then any other team by its name, then UNKNOWN, so one pair is one
+  folder. Two codes of one team pair as that team against itself, point 10. A pair carries
+  the size folder where the map's size-folder line names one of its teams,
+  `TeamPair.TeamCarriesSizeFolder`, and with no map none does. The TEAMS lines say both in
+  the words of `TeamPair.OrderWords` and `TeamPair.SizeFolderWords`, kept beside the rule.
+  Built by F131 and carried here by Bader's answer B to Q134, the pair reads the map through
+  its public members alone, `Teams`, `UnknownTeam` and `SizeFolderTeams`. In a pair carrying
+  the size folder a clash whose larger service is over the threshold goes in the test's view
+  under Over 150mm and every other clash in its view
   in the pair folder, so no clash is in two views, and a test with no open clash gets no
   view. NO MIRRORED TEST GETS A VIEW, Bader's point that there are no mirrored tests: the
   plan takes the tests F132's mirror rule names, a plain list of test names until fix-F132

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
+using Federator.Core.Views;
 
 namespace Federator.Core.Teams
 {
@@ -439,7 +440,7 @@ namespace Federator.Core.Teams
 
             for (int i = folders.Count - 1; i >= 0; i--)
             {
-                if (LineOf(folders[i]) >= 0)
+                if (Teams.Contains(folders[i]))
                 {
                     return folders[i];
                 }
@@ -482,19 +483,6 @@ namespace Federator.Core.Teams
             }
 
             return lines;
-        }
-
-        private int LineOf(string team)
-        {
-            for (int i = 0; i < Teams.Count; i++)
-            {
-                if (string.Equals(Teams[i], team, StringComparison.Ordinal))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
         }
 
         /// <summary>
@@ -595,12 +583,8 @@ namespace Federator.Core.Teams
                 lines.Add(Prefix + Teams[i] + " is " + Listed(codesOf[i], " and "));
             }
 
-            lines.Add(Prefix + "a pair is written in the order " + string.Join(", ", new List<string>(Teams).ToArray())
-                + ", then any other team by its name, then " + UnknownTeam);
-
-            lines.Add(Prefix + (SizeFolderTeams.Count == 0
-                ? "no team carries the size folder"
-                : "a pair holding " + Listed(SizeFolderTeams, " or ") + " carries the size folder"));
+            lines.Add(Prefix + TeamPair.OrderWords(this));
+            lines.Add(Prefix + TeamPair.SizeFolderWords(this));
 
             return lines;
         }
@@ -641,7 +625,7 @@ namespace Federator.Core.Teams
         }
 
         /// <summary>Parts read as a list: one alone, two joined by the last word, more with commas before it.</summary>
-        private static string Listed(IList<string> parts, string last)
+        internal static string Listed(IList<string> parts, string last)
         {
             if (parts.Count == 1)
             {

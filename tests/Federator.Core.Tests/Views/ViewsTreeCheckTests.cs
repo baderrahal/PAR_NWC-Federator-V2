@@ -53,7 +53,7 @@ namespace Federator.Core.Tests
 
         private static TestViewPlanOutcome PlanOf(string lightsHome = "EL", ICollection<string> mirrors = null)
         {
-            return TestViewPlan.For(ClashesOf(lightsHome), new ViewTeams(Map(), Codes, Settings), mirrors ?? new string[0], Settings);
+            return TestViewPlan.For(ClashesOf(lightsHome), new ViewTeams(Map(), null, Codes, Settings), mirrors ?? new string[0], Settings);
         }
 
         private static ViewClash[] ClashesOf(string lightsHome)
@@ -70,7 +70,7 @@ namespace Federator.Core.Tests
         /// <summary>The same plan with no mirror rule handed to it.</summary>
         private static TestViewPlanOutcome PlanWithNoMirrorRule()
         {
-            return TestViewPlan.For(ClashesOf("EL"), new ViewTeams(Map(), Codes, Settings), null, Settings);
+            return TestViewPlan.For(ClashesOf("EL"), new ViewTeams(Map(), null, Codes, Settings), null, Settings);
         }
 
         private static string[] MarkOf(IList<string> folders, string name, Point3 camera)
@@ -496,7 +496,7 @@ namespace Federator.Core.Tests
                     new ItemPath(new[] { 0, 4 }), new ItemPath(new[] { 1, 4 }), Camera, null, "1A02MM-XX.nwc")
             };
             ViewsTreeFacts facts = FactsOf(Good());
-            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), new string[0], Settings);
+            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), null, Codes, Settings), new string[0], Settings);
 
             IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
             ViewsTreeCheck check = checks[2];
@@ -577,7 +577,7 @@ namespace Federator.Core.Tests
                     new ItemPath(new[] { 0, 2 }), new ItemPath(new[] { 1, 2 }), Camera, folder + Model("ME").FileName, folder + Model("ST").FileName)
             };
             ViewsTreeFacts facts = FactsOf(Good());
-            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), new string[0], Settings);
+            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), null, Codes, Settings), new string[0], Settings);
             string key = ReadBackKey(facts.Plan.Views[0]);
 
             facts.HiddenReadBack = new Dictionary<string, IList<string>>();
@@ -605,7 +605,7 @@ namespace Federator.Core.Tests
         {
             ViewClash[] clashes = { Clash(Ducts, "Clash2", "BLD-ME-Ducts", "BLD-ST-Columns", ClashPriority.A, SizeVerdict.Small, 2, 2, "ME", "ST") };
             ViewsTreeFacts facts = FactsOf(Good());
-            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), new string[0], Settings);
+            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), null, Codes, Settings), new string[0], Settings);
             facts.Models = new List<ModelTeam> { Model("ME"), Model("ST"), new ModelTeam("1A02MM-ME2.nwc", "ME", Map().TeamOf("ME")) };
             facts.HiddenReadBack = new Dictionary<string, IList<string>> { { ReadBackKey(facts.Plan.Views[0]), new List<string> { "Level 1.5 ME2" } } };
             string place = facts.Plan.Views[0].ToString();
@@ -717,7 +717,7 @@ namespace Federator.Core.Tests
                     new ItemPath(new[] { 0, 4 }), null, Camera, Model("AR").FileName, Model("ST").FileName)
             };
             ViewsTreeFacts facts = FactsOf(Good());
-            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), Codes, Settings), new string[0], Settings);
+            facts.Plan = TestViewPlan.For(clashes, new ViewTeams(Map(), null, Codes, Settings), new string[0], Settings);
             PlannedTestView walls = facts.Plan.Views[0];
             facts.PaintedReadBack = new Dictionary<string, IList<ItemPath>> { { ReadBackKey(walls), new List<ItemPath>(PaintPlan.For(walls.Clashes).Solid) } };
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Federator.Core.Teams;
 
 namespace Federator.Core.Views
@@ -120,6 +121,26 @@ namespace Federator.Core.Views
         internal static bool TeamCarriesSizeFolder(TeamMap map, string team)
         {
             return !string.IsNullOrEmpty(team) && map.SizeFolderTeams.Contains(team);
+        }
+
+        /// <summary>
+        /// Compare's order in the words of the TEAMS line, kept beside it so the log says what the
+        /// views do. A team of the map named by the UnknownTeam word sorts by its line, so then
+        /// the words do not say UNKNOWN comes last.
+        /// </summary>
+        internal static string OrderWords(TeamMap map)
+        {
+            return "a pair is written in the order " + string.Join(", ", new List<string>(map.Teams).ToArray())
+                + ", then any other team by its name"
+                + (map.Teams.Contains(map.UnknownTeam) ? string.Empty : ", then " + map.UnknownTeam);
+        }
+
+        /// <summary>TeamCarriesSizeFolder in the words of the TEAMS line, kept beside it so the log says what the views do.</summary>
+        internal static string SizeFolderWords(TeamMap map)
+        {
+            return map.SizeFolderTeams.Count == 0
+                ? "no team carries the size folder"
+                : "a pair holding " + TeamMap.Listed(map.SizeFolderTeams, " or ") + " carries the size folder";
         }
     }
 }
