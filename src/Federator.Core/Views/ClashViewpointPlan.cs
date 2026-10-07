@@ -305,9 +305,8 @@ namespace Federator.Core.Views
     /// and is kept out by the size branch rather than by the status filter.
     ///
     /// A SIZE THAT COULD NOT BE READ GOES IN THE PAIR FOLDER AND IS COUNTED. It is branched
-    /// on SizeVerdict and never on SizeDecision.Included, which folds Large and SizeUnknown
-    /// together for F53's own reasons and would put every fitting with no size property
-    /// into Over 150mm.
+    /// on SizeVerdict and never on a reading that folds Large and SizeUnknown together,
+    /// which would put every fitting with no size property into Over 150mm.
     ///
     /// WRITTEN BY ViewpointBuilder SINCE THE VIEWPOINTS ROUND, 2026-09-19. Whether a
     /// viewpoint saved while items are hidden records that hiding is MEASURED, scan.md 5j,

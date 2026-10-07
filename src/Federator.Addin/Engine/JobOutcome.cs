@@ -18,6 +18,8 @@ namespace Federator.Addin.Engine
         {
             Job = job;
             FailedFiles = new List<string>();
+            ElementCount = GroupSize.Unknown;
+            ViewpointsCreated = GroupSize.Unknown;
         }
 
         public FederationJob Job { get; private set; }
@@ -100,6 +102,18 @@ namespace Federator.Addin.Engine
         /// ViewpointsRequested is true.
         /// </summary>
         public int FailedViewpointCount { get; set; }
+
+        /// <summary>
+        /// The viewpoints the VIEWS step created, as its VIEWS BUILT block counts them, or
+        /// GroupSize.Unknown where the step did not run. Q101, read beside the group's time.
+        /// </summary>
+        public long ViewpointsCreated { get; set; }
+
+        /// <summary>
+        /// The Revit elements the EXPORT CHECK counted across this group's models, or
+        /// GroupSize.Unknown where it read none or could not count one. Q101.
+        /// </summary>
+        public long ElementCount { get; set; }
 
         /// <summary>
         /// How this group ended. The rule itself lives in Federator.Core.Rerun so it can

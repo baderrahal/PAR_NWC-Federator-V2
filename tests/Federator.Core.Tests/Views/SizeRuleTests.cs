@@ -44,26 +44,27 @@ namespace Federator.Core.Tests
                     .AsCollection);
         }
 
+        /// <summary>
+        /// The verdict a view's size split reads, F85 and F114: the LARGEST size property in
+        /// millimetres, then over the threshold or not. SizeRule.Decide, the first property
+        /// reading, had no caller in src and went with its tests in F114.
+        /// </summary>
+        private static SizeVerdict Verdict(IDictionary<string, double> read, string unit, SizeSettings settings)
+        {
+            return SizeRule.VerdictFor(SizeRule.LargestMillimetres(read, unit, settings), settings);
+        }
+
         [Test]
         public void OverTheThresholdIsIn()
         {
-            SizeDecision decided = SizeRule.Decide(Read("Diameter", 200.0), "Millimeters", Settings());
-
-            Assert.That(decided.Verdict, Is.EqualTo(SizeVerdict.Large));
-            Assert.That(decided.Included, Is.True);
-            Assert.That(decided.MatchedProperty, Is.EqualTo("Diameter"));
-            Assert.That(decided.Millimetres, Is.EqualTo(200.0));
-            Assert.That(decided.Reason, Does.Contain("over 150mm"));
+            Assert.That(SizeRule.LargestMillimetres(Read("Diameter", 200.0), "Millimeters", Settings()), Is.EqualTo(200.0));
+            Assert.That(Verdict(Read("Diameter", 200.0), "Millimeters", Settings()), Is.EqualTo(SizeVerdict.Large));
         }
 
         [Test]
         public void UnderTheThresholdIsOut()
         {
-            SizeDecision decided = SizeRule.Decide(Read("Diameter", 100.0), "Millimeters", Settings());
-
-            Assert.That(decided.Verdict, Is.EqualTo(SizeVerdict.Small));
-            Assert.That(decided.Included, Is.False);
-            Assert.That(decided.Reason, Does.Contain("not over 150mm"));
+            Assert.That(Verdict(Read("Diameter", 100.0), "Millimeters", Settings()), Is.EqualTo(SizeVerdict.Small));
         }
 
         /// <summary>
@@ -73,10 +74,7 @@ namespace Federator.Core.Tests
         [Test]
         public void ExactlyTheThresholdIsOutBecauseOverIsWhatWasAskedFor()
         {
-            SizeDecision decided = SizeRule.Decide(Read("Diameter", 150.0), "Millimeters", Settings());
-
-            Assert.That(decided.Verdict, Is.EqualTo(SizeVerdict.Small));
-            Assert.That(decided.Included, Is.False);
+            Assert.That(Verdict(Read("Diameter", 150.0), "Millimeters", Settings()), Is.EqualTo(SizeVerdict.Small));
         }
 
         /// <summary>
@@ -88,27 +86,17 @@ namespace Federator.Core.Tests
         [Test]
         public void AFeetDocumentIsConvertedBeforeAnythingIsCompared()
         {
-            SizeDecision decided = SizeRule.Decide(Read("Diameter", 0.5), "Feet", Settings());
-
-            Assert.That(decided.Millimetres, Is.EqualTo(152.4).Within(0.001));
-            Assert.That(decided.Verdict, Is.EqualTo(SizeVerdict.Large), "0.5ft is 152.4mm, which is over 150");
-            Assert.That(decided.Reason, Does.Contain("152.4mm"));
+            Assert.That(SizeRule.LargestMillimetres(Read("Diameter", 0.5), "Feet", Settings()), Is.EqualTo(152.4).Within(0.001));
+            Assert.That(Verdict(Read("Diameter", 0.5), "Feet", Settings()), Is.EqualTo(SizeVerdict.Large),
+                "0.5ft is 152.4mm, which is over 150");
         }
 
         [Test]
         public void TheSameSizeInThreeUnitsGivesTheSameAnswer()
         {
-            Assert.That(
-                SizeRule.Decide(Read("Diameter", 200.0), "Millimeters", Settings()).Verdict,
-                Is.EqualTo(SizeVerdict.Large));
-
-            Assert.That(
-                SizeRule.Decide(Read("Diameter", 20.0), "Centimeters", Settings()).Verdict,
-                Is.EqualTo(SizeVerdict.Large));
-
-            Assert.That(
-                SizeRule.Decide(Read("Diameter", 0.2), "Meters", Settings()).Verdict,
-                Is.EqualTo(SizeVerdict.Large));
+            Assert.That(Verdict(Read("Diameter", 200.0), "Millimeters", Settings()), Is.EqualTo(SizeVerdict.Large));
+            Assert.That(Verdict(Read("Diameter", 20.0), "Centimeters", Settings()), Is.EqualTo(SizeVerdict.Large));
+            Assert.That(Verdict(Read("Diameter", 0.2), "Meters", Settings()), Is.EqualTo(SizeVerdict.Large));
         }
 
         /// <summary>
@@ -120,77 +108,42 @@ namespace Federator.Core.Tests
         public void AUnitTheTableDoesNotKnowThrowsRatherThanGuessing()
         {
             Assert.That(
-                () => SizeRule.Decide(Read("Diameter", 200.0), "Furlongs", Settings()),
+                () => SizeRule.LargestMillimetres(Read("Diameter", 200.0), "Furlongs", Settings()),
                 Throws.Exception);
-        }
-
-        [Test]
-        public void ThePropertiesAreTriedInOrderAndTheFirstFoundWins()
-        {
-            Dictionary<string, double> read = new Dictionary<string, double>();
-            read.Add("Width", 100.0);
-            read.Add("Diameter", 200.0);
-
-            SizeDecision decided = SizeRule.Decide(read, "Millimeters", Settings());
-
-            Assert.That(decided.MatchedProperty, Is.EqualTo("Diameter"), "Diameter is first in the list");
-            Assert.That(decided.Verdict, Is.EqualTo(SizeVerdict.Large));
         }
 
         [Test]
         public void APropertyFurtherDownTheListIsUsedWhenTheEarlierOnesAreNotThere()
         {
-            SizeDecision decided = SizeRule.Decide(Read("Overall Size", 300.0), "Millimeters", Settings());
-
-            Assert.That(decided.MatchedProperty, Is.EqualTo("Overall Size"));
-            Assert.That(decided.Verdict, Is.EqualTo(SizeVerdict.Large));
+            Assert.That(SizeRule.LargestMillimetres(Read("Overall Size", 300.0), "Millimeters", Settings()), Is.EqualTo(300.0));
+            Assert.That(Verdict(Read("Overall Size", 300.0), "Millimeters", Settings()), Is.EqualTo(SizeVerdict.Large));
         }
 
-        // ---------- include on unknown, the loud one ----------
+        // ---------- a size not read, the loud one ----------
 
         /// <summary>
-        /// The break. A fitting with no size property must be IN. Dropping it means a run
-        /// quietly leaves real geometry out of the viewpoints and nothing in the output
-        /// says so.
+        /// The break. A fitting with no size property is SizeUnknown, never Small, so it stays in
+        /// its view and is named. Dropping it means a run quietly leaves real geometry out of
+        /// the viewpoints and nothing in the output says so.
         /// </summary>
         [Test]
-        public void AnItemWithNoSizePropertyIsIncludedAndNotDropped()
+        public void AnItemWithNoSizePropertyIsUnknownAndNotSmall()
         {
-            SizeDecision decided = SizeRule.Decide(Read("Material", 1.0), "Millimeters", Settings());
-
-            Assert.That(decided.Verdict, Is.EqualTo(SizeVerdict.SizeUnknown));
-            Assert.That(decided.Included, Is.True, "nothing disappears because nobody could measure it");
-            Assert.That(decided.MatchedProperty, Is.Null);
-            Assert.That(decided.Millimetres, Is.Null);
-            Assert.That(decided.Reason, Does.Contain("is IN"));
+            Assert.That(SizeRule.LargestMillimetres(Read("Material", 1.0), "Millimeters", Settings()), Is.Null);
+            Assert.That(Verdict(Read("Material", 1.0), "Millimeters", Settings()), Is.EqualTo(SizeVerdict.SizeUnknown),
+                "nothing disappears because nobody could measure it");
         }
 
         [Test]
-        public void NoPropertiesAtAllIsIncludedTheSameWay()
+        public void NoPropertiesAtAllIsUnknownTheSameWay()
         {
-            SizeDecision decided = SizeRule.Decide(
-                new Dictionary<string, double>(), "Millimeters", Settings());
-
-            Assert.That(decided.Verdict, Is.EqualTo(SizeVerdict.SizeUnknown));
-            Assert.That(decided.Included, Is.True);
+            Assert.That(Verdict(new Dictionary<string, double>(), "Millimeters", Settings()), Is.EqualTo(SizeVerdict.SizeUnknown));
         }
 
         [Test]
-        public void ANullLookupIsIncludedRatherThanThrowing()
+        public void ANullLookupIsUnknownRatherThanThrowing()
         {
-            SizeDecision decided = SizeRule.Decide(null, "Millimeters", Settings());
-
-            Assert.That(decided.Verdict, Is.EqualTo(SizeVerdict.SizeUnknown));
-            Assert.That(decided.Included, Is.True);
-        }
-
-        [Test]
-        public void TheReasonNamesThePropertiesItLookedForSoAMissingNameIsVisible()
-        {
-            SizeDecision decided = SizeRule.Decide(Read("Material", 1.0), "Millimeters", Settings());
-
-            Assert.That(decided.Reason, Does.Contain("Diameter"));
-            Assert.That(decided.Reason, Does.Contain("Overall Size"));
+            Assert.That(Verdict(null, "Millimeters", Settings()), Is.EqualTo(SizeVerdict.SizeUnknown));
         }
 
         [Test]
@@ -199,9 +152,7 @@ namespace Federator.Core.Tests
             SizeSettings settings = Settings();
             settings.ThresholdMillimetres = 250.0;
 
-            Assert.That(
-                SizeRule.Decide(Read("Diameter", 200.0), "Millimeters", settings).Verdict,
-                Is.EqualTo(SizeVerdict.Small));
+            Assert.That(Verdict(Read("Diameter", 200.0), "Millimeters", settings), Is.EqualTo(SizeVerdict.Small));
         }
 
         [Test]
@@ -210,24 +161,22 @@ namespace Federator.Core.Tests
             SizeSettings settings = Settings();
             settings.PropertyNames = new List<string> { "Bore" };
 
-            SizeDecision decided = SizeRule.Decide(Read("Bore", 200.0), "Millimeters", settings);
-
-            Assert.That(decided.MatchedProperty, Is.EqualTo("Bore"));
-            Assert.That(decided.Verdict, Is.EqualTo(SizeVerdict.Large));
+            Assert.That(SizeRule.LargestMillimetres(Read("Bore", 200.0), "Millimeters", settings), Is.EqualTo(200.0));
+            Assert.That(Verdict(Read("Bore", 200.0), "Millimeters", settings), Is.EqualTo(SizeVerdict.Large));
         }
 
         [Test]
         public void NullSettingsAreRefused()
         {
             Assert.That(
-                () => SizeRule.Decide(Read("Diameter", 1.0), "Millimeters", null),
+                () => SizeRule.LargestMillimetres(Read("Diameter", 1.0), "Millimeters", null),
                 Throws.ArgumentNullException);
         }
 
         /// <summary>
         /// F85. The largest size of a clash side, already in millimetres, judged at the
         /// number, one past it and with no size at all. Exactly the threshold is Small,
-        /// because over means over, which is the same reading Decide gives.
+        /// because over means over.
         /// </summary>
         [Test]
         public void TheVerdictForMillimetresIsSmallAtTheThresholdAndLargeOnePastIt()

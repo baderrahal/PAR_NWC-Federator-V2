@@ -155,6 +155,7 @@ namespace Federator.Core.Tests
                 Assert.That(map.IsRead, Is.False, fault[0]);
                 Assert.That(map.Teams.Count, Is.EqualTo(0), fault[0]);
                 Assert.That(map.TeamOf("AR"), Is.EqualTo("AR"), fault[0]);
+                Assert.That(map.SizeFolderTeams.Count, Is.EqualTo(0), fault[0]);
                 Assert.That(map.Lines().Count, Is.EqualTo(1), fault[0]);
                 Assert.That(map.Lines()[0], Does.EndWith(NothingApplies), fault[0]);
             }
@@ -208,6 +209,7 @@ namespace Federator.Core.Tests
             TeamMap map = MapOf("size-folder: A\nteam: A | AR\n");
 
             Assert.That(map.Unread, Is.Null);
+            Same(map.SizeFolderTeams, "A");
             Assert.That(map.Lines()[map.Lines().Count - 1], Is.EqualTo("TEAMS    a pair holding A carries the size folder"));
         }
 
@@ -262,6 +264,7 @@ namespace Federator.Core.Tests
                 Assert.That(map.IsRead, Is.False);
                 Assert.That(map.ListPath, Is.EqualTo(path));
                 Assert.That(map.TeamOf("HV"), Is.EqualTo("HV"));
+                Assert.That(map.SizeFolderTeams.Count, Is.EqualTo(0));
                 Same(map.Lines(), "TEAMS    no team map is beside this file: " + path + " was looked for and is not there" + NothingApplies);
             }
             finally
@@ -458,6 +461,7 @@ namespace Federator.Core.Tests
                 Assert.That(kept.IsRead, Is.True);
                 Assert.That(kept.ListPath, Is.EqualTo(path));
                 Assert.That(kept.TeamOf("HV"), Is.EqualTo("Mechanical"));
+                Same(kept.SizeFolderTeams, "Mechanical", "Electrical");
                 Same(
                     kept.Lines(),
                     "TEAMS    no clash XML was picked, so the teams are read from " + path + ", the team map kept from the last run with"

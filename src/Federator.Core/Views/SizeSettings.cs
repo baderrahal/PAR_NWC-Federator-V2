@@ -37,7 +37,8 @@ namespace Federator.Core.Views
         public const double DefaultThresholdMillimetres = 150.0;
 
         /// <summary>
-        /// Where a size is looked for, in order, first one found wins.
+        /// Where a size is looked for. Every one an item carries is read and the largest wins,
+        /// SizeRule.LargestMillimetres, so their order does not change a size.
         ///
         /// SIX AND NOT ONE, because which property carries the size differs per kind and
         /// per exporter. A round duct has a Diameter, a rectangular one has Width and
@@ -69,7 +70,7 @@ namespace Federator.Core.Views
         /// </summary>
         public double ThresholdMillimetres { get; set; }
 
-        /// <summary>The property names a size is looked for under, in order.</summary>
+        /// <summary>The property names a size is looked for under, every one read and the largest taken.</summary>
         public IList<string> PropertyNames { get; set; }
 
         /// <summary>
