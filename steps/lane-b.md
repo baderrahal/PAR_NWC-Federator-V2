@@ -14,7 +14,7 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 | Order | Item | Branch | State |
 |---|---|---|---|
 | 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | code merged as pull request 142, its records and two fixes of a third reading as 144 by the worktree session, the add-in half waits for the laptop lane |
-| 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | Core half merged as pull request 145, the add-in half and the sheet writer wait |
+| 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | Core steps 1 to 3 merged as pull request 145, the Coverage sheet, the check's sheet list, the Q127 lines and the records as 153 by the worktree session, the add-in half waits for the laptop lane |
 | 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 merged as pull request 146, Q125 B left for the laptop lane |
 | 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 merged as pull request 147, the rest left for the laptop lane |
 | 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items merged as pull request 148 with FR-057 half, the rest left for the laptop lane |
@@ -30,10 +30,11 @@ F119 as 148. fix-F115 and fix-F127 stay on origin and are not deleted, because t
 
 A second session of the lane, the worktree session in .claude\worktrees\agent-a9ff34180e9235316
 of the checkout on Bader's machine, writes the records the cloud session may not: F115's records
-and two fixes of the breaker's third reading on fix-F115, pull request 144, then the records of
-F127, F137, F118 and F119 each on its own branch, and the Core parts the cloud session left, the
-Coverage sheet writer of FR-200 first. It deletes fix-F115 once 144 merges and fix-F127 once
-F127's records merge.
+and two fixes of the breaker's third reading on fix-F115, pull request 144, merged as 86cc405,
+then F127's Coverage sheet with its records on fix-F127, pull request 153, pushed once GitHub
+stopped refusing every push with an internal server error, from 15:12 to 15:19 on 2026-10-07,
+then the records of F137, F118 and F119 each on its own branch. fix-F115 is deleted. fix-F127 at dccf351 is an
+ancestor of main since PR 145 and is deleted once F127's records merge.
 
 ## How the worktree session records
 

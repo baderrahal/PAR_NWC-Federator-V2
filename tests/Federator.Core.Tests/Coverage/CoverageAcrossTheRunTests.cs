@@ -329,5 +329,60 @@ namespace Federator.Core.Tests
         {
             Assert.Throws<ArgumentNullException>(() => new CoverageAcrossTheRun(null));
         }
+
+        // ---------- the tests of the picked file, Q127 answered A ----------
+
+        private static TestCoverage Clashed(string name)
+        {
+            return new TestCoverage(1, name, string.Empty, string.Empty, 2, 2, TestPresence.CreatedThisRun,
+                true, 3, CoverageReason.HasClashes, string.Empty);
+        }
+
+        private static TestCoverage AlreadyThereNotRun(string name)
+        {
+            return new TestCoverage(1, name, string.Empty, string.Empty, 2, 2, TestPresence.AlreadyThere,
+                false, -1, CoverageReason.CoordinatesRule, string.Empty);
+        }
+
+        /// <summary>
+        /// EACH TEST ONCE ACROSS THE RUN, Bader's answer A to Q127, with the sums over the groups
+        /// beside it. A test created in one group and run in another counts once as in the
+        /// document and once as run, a test with clashes in one group and none in another counts
+        /// once as with clashes, and the sums read every place.
+        /// </summary>
+        [Test]
+        public void EachTestIsCountedOnceAcrossTheRunAndTheSumsReadEveryPlace()
+        {
+            CoverageAcrossTheRun coverage = new CoverageAcrossTheRun(new CoverageSettings());
+            coverage.AddTests("100000", new List<TestCoverage> { AlreadyThereNotRun("T1"), Clashed("T2"), KeptOut("T3") });
+            coverage.AddTests("200000", new List<TestCoverage> { Ran("T1"), Ran("T2"), KeptOut("T3") });
+
+            IList<string> lines = coverage.TestLines();
+
+            Assert.That(lines[0], Is.EqualTo("COVERAGE tests counted            : 3 names, each once across 2 groups"));
+            Assert.That(lines[1], Is.EqualTo("COVERAGE in the document in one group at least : 2, never in the document 1"));
+            Assert.That(lines[2], Is.EqualTo("COVERAGE run in one group at least : 2"));
+            Assert.That(lines[3], Is.EqualTo("COVERAGE with clashes in one group at least : 1"));
+            Assert.That(lines[4], Is.EqualTo("COVERAGE run, never with a clash  : 1"));
+            Assert.That(lines[5], Is.EqualTo("COVERAGE over 2 groups, added up : 6 places, 3 created this run, 1 already there,"
+                + " 2 not created, 3 run, 1 with clashes, 2 without, 1 in the document and not run"));
+        }
+
+        [Test]
+        public void TheTestLinesComeFirstInResultAndNoneWhereNoTestsWereHandedIn()
+        {
+            CoverageAcrossTheRun none = new CoverageAcrossTheRun(new CoverageSettings());
+            none.Add("100000", null);
+
+            Assert.That(none.TestLines(), Is.Empty);
+            Assert.That(none.ResultLines()[0], Does.StartWith("COVERAGE checked"));
+
+            CoverageAcrossTheRun some = new CoverageAcrossTheRun(new CoverageSettings());
+            some.AddTests("100000", new List<TestCoverage> { Ran("T1") });
+            some.Add("100000", null);
+
+            Assert.That(some.ResultLines()[0], Does.StartWith("COVERAGE tests counted"));
+            Assert.That(some.ResultLines()[6], Does.StartWith("COVERAGE checked"));
+        }
     }
 }
