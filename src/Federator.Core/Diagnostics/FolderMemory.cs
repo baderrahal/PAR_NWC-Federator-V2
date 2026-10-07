@@ -115,8 +115,9 @@ namespace Federator.Core.Diagnostics
             }
             catch (Exception error)
             {
-                // A settings file that will not read is not worth a message. The pickers
-                // simply open where they always did.
+                // The pickers open where they always did, and the startup block says the file
+                // could not be used, through DisabledReason, since an empty memory otherwise reads
+                // as a first run.
                 memory.DisabledReason = error.Message;
             }
 
@@ -309,9 +310,18 @@ namespace Federator.Core.Diagnostics
                         : "   [gone, opening at " + Words.Or(opening, "nowhere") + "]"));
             }
 
+            bool couldNotBeUsed = !string.IsNullOrEmpty(DisabledReason);
+
             if (lines.Count == 0)
             {
-                lines.Add("Nothing remembered yet. Every picker opens where it always did.");
+                lines.Add(couldNotBeUsed
+                    ? "Nothing is remembered from it. Every picker opens where it always did."
+                    : "Nothing remembered yet. Every picker opens where it always did.");
+            }
+
+            if (couldNotBeUsed)
+            {
+                lines.Insert(0, "The folders file could not be used: " + DisabledReason);
             }
 
             return lines;
