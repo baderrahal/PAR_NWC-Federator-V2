@@ -321,8 +321,12 @@ harness's and not F131's, so BaderSame after H21 and H15's three checks did not 
 runs H15 alone on this head once Bader's Navisworks closes, before the merge. Steps 446 to 458
 of steps\03_bader_next.md were added for the open file run, which the add-in half changed in
 c3a30bc and steps 417 to 445 never press, read off the window's OnRunOpenDocument and the
-engine's RunOpenDocument. The rows of the pull request are set once it opens, by the tracker
-rule
+engine's RunOpenDocument. The draft pull request is 135, turn5\f131-pr-create.txt. Once it
+opened its rows were set by the tracker rule: F131 and FR-180 merged with 135, FR-181 in
+progress with 135 merged for F131, because its COVERAGE block and its form wait for F127, and
+Q114 and Q132 naming 135 for F131 with their status kept. Q115, Q116 and Q123 stay merged with
+118, the merge that put Bader's answers on main. make-tracker.ps1 made tracker.md and
+check-tracker.ps1 read it clean, turn5\f131-pr-make-tracker.txt and f131-pr-check-tracker.txt
 
 ### What was done
 
@@ -464,8 +468,9 @@ rule
   harness's -Work, which it removed itself, and in the session's scratch folder waitfaults.ps1,
   churn-race.ps1 and its folders race1 to race5, which nothing reads after the commit
 - the pull request pass: turn5\f131-pr-merge-msg.txt, f131-pr-merge.txt,
-  f131-pr-check-tracker-merge.txt, f131-pr-precommit-merge.txt, f131-pr-records.py, and the
-  other f131-pr-*.txt files of the commits, the push, the pull request and the tracker
+  f131-pr-check-tracker-merge.txt, f131-pr-precommit-merge.txt, f131-pr-records.py,
+  f131-pr-rows.py, f131-pr-body.md, f131-pr-build.txt, and the other f131-pr-*.txt files of
+  the commits, the pushes, the pull request and the tracker
 - the scratch scripts k2-alone.ps1, k-alone.ps1 and real-log.ps1, a copy of run.ps1 as at
   a1017c0, and the folders k2-before, k2-after and k-after, in the session's scratch folder under
   the user's temp folder, which nothing reads after the commit
