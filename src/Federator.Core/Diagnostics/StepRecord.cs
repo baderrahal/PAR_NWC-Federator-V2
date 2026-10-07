@@ -57,7 +57,7 @@ namespace Federator.Core.Diagnostics
                 + (visits == 1 ? " visit, " : " visits, ")
                 + seconds.ToString("0.000", CultureInfo.InvariantCulture) + "s in total"
                 + (threw > 0
-                    ? ", " + threw + (threw == 1 ? " of them threw" : " of them threw")
+                    ? ", " + threw + " of them threw"
                     : string.Empty);
         }
 

@@ -100,9 +100,9 @@ namespace Federator.Core.Health
 
         /// <summary>
         /// What separates a discipline prefix from the rest of a workset name on this
-        /// project, `ME-Ductwork` and `EL-Power`. A setting rather than a constant,
-        /// because a project spelling them another way is a project this rule should not
-        /// silently mis-read.
+        /// project, `ME-Ductwork` and `EL-Power`. Named once, here, and a constant
+        /// the engine does not yet pass in, so a project spelling them another way needs a
+        /// build until it is made a setting.
         /// </summary>
         public const char PrefixSeparator = '-';
 

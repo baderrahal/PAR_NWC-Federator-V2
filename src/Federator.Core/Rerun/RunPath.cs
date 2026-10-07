@@ -179,7 +179,7 @@ namespace Federator.Core.Rerun
                     : "."));
             lines.Add(Rebuilt + ": " + counts[Rebuilt]
                 + (counts[Rebuilt] > 0
-                    ? ". The NWF there no longer matches the scan folder, so it is brought up to date: what is gone is taken out and what is new is appended, WITHOUT clearing it, so the sets, the tests, the results and the viewpoints never leave it. A shape that cannot do is cleared and rebuilt instead, with the tests saved inside it kept."
+                    ? ". The NWF there no longer matches the scan folder, so it is brought up to date: what is gone is taken out and what is new is appended, WITHOUT clearing it, so the sets, the tests, the results and the viewpoints never leave it. A shape that cannot be brought up to date this way is cleared and rebuilt instead, with the tests saved inside it kept."
                     : ". An NWF that no longer matches the scan folder is rebuilt from it with its saved tests kept. Only known once each NWF is opened."));
 
             if (counts[Skipped] > 0)

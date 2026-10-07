@@ -127,14 +127,16 @@ namespace Federator.Core.Health
         /// the export rounding a number. Anything above it is an offset somebody put
         /// there. The real ones seen on 2026-09-20 were 312 mm between two models of one
         /// group and 169 metres between two of another, so nothing rests on the exact
-        /// value, and it is a setting so the next person can move it without a build.
+        /// value. The caller can hand in another number, and the add-in hands in this one, so
+        /// moving it today is a build and not a setting.
         /// </summary>
         public const double DefaultToleranceMillimetres = 1.0;
 
         /// <summary>
         /// What Revit calls the site of a model that was NOT exported on a shared
-        /// location. A SETTING, because it is a word read out of somebody else's file and
-        /// nothing in this code decides what another project's Revit calls it.
+        /// location. A word read out of somebody else's file, since nothing in this code
+        /// decides what another project's Revit calls it. The rule reads this one wherever it
+        /// compares a site, so moving it today is a build and not a setting.
         /// </summary>
         public const string DefaultInternalName = "Internal";
 

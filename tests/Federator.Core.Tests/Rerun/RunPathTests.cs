@@ -25,6 +25,19 @@ namespace Federator.Core.Tests
             Assert.That(RunPath.All, Has.Length.EqualTo(7));
         }
 
+        /// <summary>
+        /// T1-N87. The confirm line for a Rebuilt group read A shape that cannot do is cleared, a sentence
+        /// with a word missing. It says which shape, one that cannot be brought up to date this way.
+        /// </summary>
+        [Test]
+        public void TheRebuiltLineSaysWhichShapeIsClearedAndNotASentenceWithAWordMissing()
+        {
+            string said = string.Join("\n", new List<string>(RunPath.ConfirmLines(new[] { RunPath.Rebuilt })).ToArray());
+
+            Assert.That(said, Does.Contain("A shape that cannot be brought up to date this way is cleared and rebuilt instead"));
+            Assert.That(said, Does.Not.Contain("cannot do"));
+        }
+
         // F24. A group whose NWF was rebuilt from the scan reads Rebuilt, with or without
         // an XML, and a comparison that reads Changed is shown as Rebuilt before the run
         // because that is what the person is about to get.
