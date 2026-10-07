@@ -46,6 +46,21 @@ namespace Federator.Core.Tests
             Assert.That(said, Does.Not.Contain("UNKNOWN"));
         }
 
+        /// <summary>
+        /// A path the framework refuses to join throws its own ArgumentException, whose message is
+        /// not the tool's to show. Only the refusal the tool throws on purpose is said as it is.
+        /// </summary>
+        [Test]
+        public void AFrameworkMessageAboutAPathNeverReachesTheLine()
+        {
+            string said = ReportPaths.WhereTheyGo(string.Empty, "C:\\nwf\0folder", Source);
+
+            Assert.That(said, Does.Not.Contain("Illegal"));
+            Assert.That(said, Does.Not.Contain("path"));
+            Assert.That(said, Is.EqualTo(
+                "not worked out yet, the NWF folder on this step cannot be read"));
+        }
+
         // The one the brief asks for by name.
         [Test]
         public void NoCodeIdentifierEverReachesTheLine()

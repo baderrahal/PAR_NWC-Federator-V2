@@ -262,9 +262,12 @@ and 148, and each ran its Core tests under mono here and on the Windows runner o
   not seen by that sentence, so the line can still say the rows are in a file that stopped taking them. The
   log would have to tell the text log the moment the second file stops, which is RunLog state the add-in's
   window reads, and lane B did not widen the fix to it
-- The label of a group row for FR-126 and the comments in ClashRunner and the XAML that still say the old
-  words, if any do, are in the add-in, which lane B does not touch. Core says the new words, the add-in's copies are
-  for the laptop lane to read off Core and drop
+- Three places in the add-in still say what Core no longer does, found by the reader of part 2. GroupRow.cs
+  near line 257 says One discipline, so every test is created and none is run, and its comment near line 155
+  says the same, where Core now says only the tests whose two sides both find something are created.
+  FederationEngine.cs near line 499 says the run was stopped with StopTheRunReason, which is the guard's log
+  wording and ends in what was thrown, where the window should say RepeatedFailureGuard.Stopped. Both are
+  for the laptop lane to read off Core. The engine file is one fix-F114 changes, so lane B left both
 - FR-059 and FR-063 and FR-060 need the engine or ClashRunner to hand Core the picture count, the plan
   source or the tests run. FR-038 and FR-039 are in WorkbookWriter.cs and FR-074 in Views, which open
   branches of the laptop lane change. FR-042 goes with FR-199

@@ -74,7 +74,7 @@ namespace Federator.Core.Clash
         /// <summary>The words beside the drop down.</summary>
         public const string PickerLabel = "Clash tolerance";
 
-        /// <summary>The grey line under it. Twelve words, which is the limit.</summary>
+        /// <summary>The grey line under it. Eleven words, under the limit of twelve.</summary>
         public const string HelpLine =
             "Beats the XML and the document. Results and statuses are kept";
 

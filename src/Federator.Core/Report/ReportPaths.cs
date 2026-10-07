@@ -125,10 +125,12 @@ namespace Federator.Core.Report
                     ? where.Folder + ". " + where.RefusedReason
                     : where.Folder;
             }
-            catch (ArgumentException error)
+            catch (ArgumentException error) when (error.ParamName == "nwfFolder")
             {
                 // The refusal Choose throws on purpose, its first line only, since the rest is the
-                // framework's parameter name and a label carries none.
+                // framework's parameter name and a label carries none. An ArgumentException the
+                // framework throws, from a path holding a quote or a bar, has no such parameter
+                // name and falls to the plain wording below, since its message is not ours to show.
                 string first = error.Message.Split(new[] { '\r', '\n' }, 2)[0];
 
                 return first.Length > 0
