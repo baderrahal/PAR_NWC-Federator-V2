@@ -59,6 +59,29 @@ namespace Federator.Addin.Engine
         public string WorkbookPath { get; set; }
 
         /// <summary>
+        /// The merge the test harvested is the test kept of, F132's add-in half, or null for
+        /// a test of no merge. Every clash of the test is handed to it as it is read, each
+        /// clash under a group on its own with the group's row, MirrorMerge.KeptFound, so
+        /// AddTo can match each one against its mirrors' once the run has set every state.
+        /// </summary>
+        public MirrorMerge MergeAsKept { get; set; }
+
+        /// <summary>The merge the test harvested is a mirror of, with AsMirror its pair, or null.</summary>
+        public MirrorMerge MergeAsMirror { get; set; }
+
+        /// <summary>The pair the test harvested is the mirror of, read with MergeAsMirror.</summary>
+        public MirrorPair AsMirror { get; set; }
+
+        /// <summary>
+        /// Where set, no picture is rendered while the rows are read. Each row is recorded
+        /// here with the index path of its result under the test, and the runner renders
+        /// the pictures after the merge, since the merge changes which rows the report
+        /// holds, their statuses, which the choice of a picture reads, and their numbers.
+        /// Null renders each picture as the row is read, as every test of no merge does.
+        /// </summary>
+        public IList<RowUnderTest> Deferred { get; set; }
+
+        /// <summary>
         /// The property display names to look for, in order, the first that resolves
         /// winning. Settings, because every project and every exporter names them
         /// differently, and a name nobody has seen leaves the cell empty rather than
@@ -99,7 +122,7 @@ namespace Federator.Addin.Engine
 
             try
             {
-                Walk(document, clashTests, grid, test.Children, report, into);
+                Walk(document, clashTests, grid, test.Children, report, into, new List<int>());
             }
             finally
             {
@@ -110,13 +133,18 @@ namespace Federator.Addin.Engine
             }
         }
 
+        /// <summary>
+        /// The rows, in Clash Detective's order. The path is the index of each level under
+        /// the test, kept for a picture rendered after the merge, RowUnderTest.
+        /// </summary>
         private void Walk(
             Document document,
             DocumentClashTests clashTests,
             GridSystem grid,
             SavedItemCollection children,
             ClashReport report,
-            TestReport into)
+            TestReport into,
+            List<int> path)
         {
             if (children == null)
             {
@@ -127,13 +155,17 @@ namespace Federator.Addin.Engine
             {
                 using (SavedItem child = children[i])
                 {
+                    path.Add(i);
+
                     ClashResultGroup group = child as ClashResultGroup;
 
                     if (group != null)
                     {
                         ClashRow groupRow = GroupRow(document, grid, group);
                         into.Add(groupRow);
-                        Picture(clashTests, group, report, into, groupRow);
+                        HandTheClashesUnder(document, grid, group.Children, groupRow, path);
+                        PictureOrDefer(clashTests, group, report, into, groupRow, path);
+                        path.RemoveAt(path.Count - 1);
                         continue;
                     }
 
@@ -143,8 +175,239 @@ namespace Federator.Addin.Engine
                     {
                         ClashRow resultRow = ResultRow(document, grid, result);
                         into.Add(resultRow);
-                        Picture(clashTests, result, report, into, resultRow);
+                        HandOne(resultRow, resultRow);
+                        PictureOrDefer(clashTests, result, report, into, resultRow, path);
                     }
+
+                    path.RemoveAt(path.Count - 1);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Every clash under a group of a test in a merge, however deep, handed on its own,
+        /// F132's add-in half: for the test kept, with the group's row, which stands for every
+        /// clash under it, its two items read for their keys, and for a mirror with a row of
+        /// its own, read whole, since a clash only the mirror found is added to the kept test
+        /// as that row, recorded for its picture. A test of no merge reads nothing here.
+        /// </summary>
+        private void HandTheClashesUnder(
+            Document document, GridSystem grid, SavedItemCollection children, ClashRow groupRow, List<int> path)
+        {
+            if (children == null || (MergeAsKept == null && MergeAsMirror == null))
+            {
+                return;
+            }
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    path.Add(i);
+
+                    ClashResultGroup group = child as ClashResultGroup;
+
+                    if (group != null)
+                    {
+                        HandTheClashesUnder(document, grid, group.Children, groupRow, path);
+                        path.RemoveAt(path.Count - 1);
+                        continue;
+                    }
+
+                    ClashResult result = child as ClashResult;
+
+                    if (result != null)
+                    {
+                        if (MergeAsKept != null)
+                        {
+                            HandKeptUnderAGroup(document, result, groupRow);
+                        }
+                        else
+                        {
+                            ClashRow own = ResultRow(document, grid, result);
+                            HandOne(own, own);
+
+                            if (Deferred != null)
+                            {
+                                Deferred.Add(new RowUnderTest(own, path));
+                            }
+                        }
+                    }
+
+                    path.RemoveAt(path.Count - 1);
+                }
+            }
+        }
+
+        /// <summary>One clash of the kept test under a group, its two items read for their keys alone.</summary>
+        private void HandKeptUnderAGroup(Document document, ClashResult result, ClashRow groupRow)
+        {
+            try
+            {
+                string first;
+                string second;
+
+                using (ModelItem left = result.Item1)
+                using (ModelItem leftWhole = result.CompositeItem1)
+                {
+                    first = KeyOfItem(document, left, leftWhole);
+                }
+
+                using (ModelItem right = result.Item2)
+                using (ModelItem rightWhole = result.CompositeItem2)
+                {
+                    second = KeyOfItem(document, right, rightWhole);
+                }
+
+                MergeAsKept.KeptFound(first, second, (CoreClashStatus)(int)result.Status, groupRow);
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "handing a clash under the group " + Words.Or(groupRow.Name, "UNKNOWN") + " of "
+                        + MergeAsKept.Kept.Name + " to the mirror merge",
+                    error,
+                    "kept going, the clash is handed to no merge, so nothing is merged into that test and its MIRROR "
+                        + "lines say so");
+            }
+        }
+
+        /// <summary>
+        /// One clash of a test in a merge, by the keys of its two items as the row read them,
+        /// ClashItem.MergeKey, with the row the report holds it under: the kept test's own row
+        /// or its group's, or a mirror's own row. Never throws into the harvest, since a clash
+        /// not handed leaves the merge to fail closed on its own rule and say so.
+        /// </summary>
+        private void HandOne(ClashRow read, ClashRow under)
+        {
+            if (MergeAsKept == null && MergeAsMirror == null)
+            {
+                return;
+            }
+
+            try
+            {
+                string first = read.Left.MergeKey();
+                string second = read.Right.MergeKey();
+
+                if (MergeAsKept != null)
+                {
+                    MergeAsKept.KeptFound(first, second, read.Status, under);
+                }
+                else
+                {
+                    MergeAsMirror.MirrorFound(AsMirror, first, second, under);
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "handing the clash " + Words.Or(read.Name, "UNKNOWN") + " to the mirror merge of "
+                        + (MergeAsKept ?? MergeAsMirror).Kept.Name,
+                    error,
+                    "kept going, the clash is handed to no merge, so nothing is merged into that test and its MIRROR "
+                        + "lines say so");
+            }
+        }
+
+        /// <summary>The key of one item of a clash, read the way a row's item is and never a second way.</summary>
+        private string KeyOfItem(Document document, ModelItem item, ModelItem whole)
+        {
+            ClashItem read = new ClashItem();
+            Describe(document, item, whole, read);
+            return read.MergeKey();
+        }
+
+        /// <summary>A picture now, or the row recorded for one after the merge where Deferred is set.</summary>
+        private void PictureOrDefer(
+            DocumentClashTests clashTests,
+            IClashResult result,
+            ClashReport report,
+            TestReport test,
+            ClashRow row,
+            List<int> path)
+        {
+            if (Deferred != null)
+            {
+                Deferred.Add(new RowUnderTest(row, path));
+                return;
+            }
+
+            Picture(clashTests, result, report, test, row);
+        }
+
+        /// <summary>
+        /// Renders the picture of one row recorded by Deferred, F132's add-in half, after the
+        /// merge, by the index path of its result under the test handed in, freshly resolved
+        /// by the runner. A path that no longer leads to a result is said and the cell is
+        /// left empty. Every wrapper walked is disposed.
+        /// </summary>
+        public void PictureLater(
+            DocumentClashTests clashTests, ClashTest test, ClashReport report, TestReport into, RowUnderTest recorded)
+        {
+            if (test == null || recorded == null)
+            {
+                return;
+            }
+
+            SavedItemCollection children = test.Children;
+            SavedItem item = null;
+
+            try
+            {
+                for (int level = 0; level < recorded.Path.Count; level++)
+                {
+                    int index = recorded.Path[level];
+
+                    if (children == null || index < 0 || index >= children.Count)
+                    {
+                        log.Detail("IMAGE    no result is at " + recorded + " under " + into.Name
+                            + " any more, so its picture is not rendered");
+                        return;
+                    }
+
+                    SavedItem next = children[index];
+
+                    if (item != null)
+                    {
+                        item.Dispose();
+                    }
+
+                    item = next;
+
+                    if (level + 1 == recorded.Path.Count)
+                    {
+                        break;
+                    }
+
+                    ClashResultGroup group = item as ClashResultGroup;
+
+                    if (group == null)
+                    {
+                        log.Detail("IMAGE    " + recorded + " under " + into.Name
+                            + " does not lead through a result group any more, so its picture is not rendered");
+                        return;
+                    }
+
+                    children = group.Children;
+                }
+
+                IClashResult result = item as IClashResult;
+
+                if (result == null)
+                {
+                    log.Detail("IMAGE    what is at " + recorded + " under " + into.Name
+                        + " is not a clash result, so its picture is not rendered");
+                    return;
+                }
+
+                Picture(clashTests, result, report, into, recorded.Row);
+            }
+            finally
+            {
+                if (item != null)
+                {
+                    item.Dispose();
                 }
             }
         }
@@ -702,5 +965,47 @@ namespace Federator.Addin.Engine
             }
         }
 
+    }
+
+    /// <summary>
+    /// One row of a test in a merge whose picture waits for the merge, F132's add-in half:
+    /// the row and the index path of its result under its test, each level's index from
+    /// the test's own children down, so the result is found again by address once the
+    /// merge has run and never held across it.
+    /// </summary>
+    public sealed class RowUnderTest
+    {
+        public RowUnderTest(ClashRow row, IList<int> path)
+        {
+            if (row == null)
+            {
+                throw new ArgumentNullException("row");
+            }
+
+            if (path == null || path.Count == 0)
+            {
+                throw new ArgumentException("A row under a test needs the path to its result.", "path");
+            }
+
+            Row = row;
+            Path = new List<int>(path).AsReadOnly();
+        }
+
+        public ClashRow Row { get; private set; }
+
+        /// <summary>The index at each level under the test, the result's own last.</summary>
+        public IList<int> Path { get; private set; }
+
+        public override string ToString()
+        {
+            string[] parts = new string[Path.Count];
+
+            for (int i = 0; i < Path.Count; i++)
+            {
+                parts[i] = Path[i].ToString(CultureInfo.InvariantCulture);
+            }
+
+            return "results[" + string.Join("][", parts) + "]";
+        }
     }
 }

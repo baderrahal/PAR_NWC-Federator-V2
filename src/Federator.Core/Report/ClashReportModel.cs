@@ -108,6 +108,27 @@ namespace Federator.Core.Report
         /// <summary>The Revit element id where there is one, otherwise the instance GUID.</summary>
         public string ElementId { get; set; }
 
+        /// <summary>
+        /// The key that names this item to the mirror merge, F132's add-in half, read off what
+        /// the harvest read: the file the item came from, its id and the name of the geometry
+        /// the clash was found on, since one element can carry several, one per material. The
+        /// members this is built from are the ones measured on the install, docs\history\scan.md,
+        /// so no index path is read. An item with no id, a model carrying no id property and no
+        /// real instance GUID, is not read, UNKNOWN, which MirrorMerge reads as an item not read
+        /// and fails closed on. Two clashes of one test between the same two elements on
+        /// geometry of one name share a key, and the merge then counts the second as a repeat
+        /// and says so, never adding a clash twice.
+        /// </summary>
+        public string MergeKey()
+        {
+            if (string.IsNullOrEmpty(ElementId))
+            {
+                return TestSettings.UnknownLocator;
+            }
+
+            return (SourceFile ?? string.Empty) + "|" + ElementId + "|" + (Name ?? string.Empty);
+        }
+
         public override string ToString()
         {
             return Name;

@@ -630,7 +630,10 @@ and 6 does not read as broken.
   workbook check's BlockCountLine, which hands the count of mirrors merged as 0
 - THE ORDER THE ADD-IN HALF OF F132 KEEPS, read off the reviewer's and the breaker's readings
   of its attempt 6, `%LOCALAPPDATA%\NwcFederatorLoop\turn5\lanes-review-F132.json` and
-  `lanes-break-F132.json`, none of it built or run yet. REAL SIDES BEFORE ANY RENAME AND ANY
+  `lanes-break-F132.json`, built in `ClashRunner.Run` on 2026-10-07 as addin.md's THE MIRRORED
+  TESTS bullet says, with one Core member added for it, `ClashItem.MergeKey`, the key of one
+  item of a clash, and not yet run on Navisworks, the lead's timed runs after the merge being
+  its proof. REAL SIDES BEFORE ANY RENAME AND ANY
   MIRROR CREATED: `MirrorRule.Renames` refuses a rename whose sides were not read, the plan
   then creates a new Y (mirror), and every run after refuses the rename for good, the name being
   taken, so the old Y and its statuses stay behind against Q136 A. So the change that calls

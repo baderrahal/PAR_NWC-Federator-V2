@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
@@ -17,10 +18,28 @@ namespace Federator.Addin.Engine
     ///
     /// A ClashTest is itself a GroupItem holding its results, so it is tested for before
     /// a folder is, or the walk would descend into the results.
+    ///
+    /// THE SIDES, F132's add-in half. A census or a rebuild count reads the tests alone and
+    /// hands the placeholders SavedClashTest.LeftAsSaved and RightAsSaved for the sides,
+    /// Read(Document). The mirror rule pairs saved tests by their sides and never by a
+    /// name, so the clash runner hands a reader of which set a side points at, built over
+    /// the set index it holds, Read(Document, Func), and each side is then the set's path
+    /// as a test locator names it, or UNKNOWN where it was not read, which Core never
+    /// pairs. The reader is called inside the one read of each ClashSelection, so a side
+    /// costs the one wrapper it already cost.
     /// </summary>
     public static class SavedTests
     {
         public static IList<SavedClashTest> Read(Document document)
+        {
+            return Read(document, null);
+        }
+
+        /// <summary>
+        /// Every saved test with each side as the set it points at, read by locatorOf, or
+        /// with the placeholders where locatorOf is null.
+        /// </summary>
+        public static IList<SavedClashTest> Read(Document document, Func<ClashSelection, string> locatorOf)
         {
             List<SavedClashTest> saved = new List<SavedClashTest>();
 
@@ -30,7 +49,7 @@ namespace Federator.Addin.Engine
             }
 
             DocumentClashTests clashTests = document.GetClash().TestsData;
-            Walk(clashTests.Tests, new List<int>(), saved);
+            Walk(clashTests.Tests, new List<int>(), saved, locatorOf);
             return saved;
         }
 
@@ -39,7 +58,11 @@ namespace Federator.Addin.Engine
             return Read(document).Count;
         }
 
-        private static void Walk(SavedItemCollection items, List<int> path, List<SavedClashTest> saved)
+        private static void Walk(
+            SavedItemCollection items,
+            List<int> path,
+            List<SavedClashTest> saved,
+            Func<ClashSelection, string> locatorOf)
         {
             if (items == null)
             {
@@ -69,10 +92,10 @@ namespace Federator.Addin.Engine
                                 test.MergeComposites,
                                 left.SelfIntersect,
                                 (int)left.PrimitiveTypes,
-                                SavedClashTest.LeftAsSaved,
+                                locatorOf == null ? SavedClashTest.LeftAsSaved : locatorOf(left),
                                 right.SelfIntersect,
                                 (int)right.PrimitiveTypes,
-                                SavedClashTest.RightAsSaved,
+                                locatorOf == null ? SavedClashTest.RightAsSaved : locatorOf(right),
                                 path));
                         }
                     }
@@ -82,7 +105,7 @@ namespace Federator.Addin.Engine
 
                         if (folder != null)
                         {
-                            Walk(folder.Children, path, saved);
+                            Walk(folder.Children, path, saved, locatorOf);
                         }
                     }
 

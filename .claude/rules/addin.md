@@ -302,6 +302,47 @@ well as to pass.
   counted. No coverage count is handed in until F127's COVERAGE block is on main, so no
   silent miss is named and each is counted as UNKNOWN until the coverage counts them. The
   two hand presses that federate no group, Undo and Probe, hand the engine no map
+- THE MIRRORED TESTS, F132's add-in half, built on 2026-10-07 under Bader's answer A to Q142.
+  The add-in holds only the calls, and every rule and every word is Core's, core.md, BOTH
+  TESTS OF A MIRRORED PAIR and THE ORDER THE ADD-IN HALF OF F132 KEEPS, which ClashRunner.Run
+  follows in that order. THE SIDES: once the set index is built, every test the document holds
+  is read again with each side as the set it points at, `SavedTests.Read(Document, Func)` with
+  `SavedSideLocator`, which reads a side through the DRIFT block's own `LocatorOf`, the one
+  reading of which set a source is, and hands UNKNOWN for a side holding no source or more
+  than one, pointing at no set this document holds, or that would not read, counted once on a
+  CLASH line. With no XML that plan, the same tests at the same addresses, is the plan run, so
+  the report's side locators and the views' set names read the set's path and never the
+  placeholder. THE RULE, `PairTheMirrors`: `MirrorRule.Of` over the tests to run, with an XML
+  against that document plan and this group's `SetBuildOutcome`, `ClashRunner.SetsBuilt`, which
+  the engine hands from `outcome.Sets` after the sets build and before the clash step, the
+  priority file and the XML's sets, and with no XML over the saved tests alone, then its
+  MIRROR block, its MIRROR RENAMES block and its MIRROR COVERAGE block, the coverage names
+  of F127 written as the Core gives them until the sheet exists, and a rule that threw is a
+  FAILURE line, no test paired, every test under the plan's name. THE RENAMES, `MakeTheRenames`,
+  before any test is found by name or created: each by the saved test's address through
+  `TestsEditDisplayName` on a handle resolved for it, its results counted by status before and
+  read back after on a fresh handle, both said, since no measurement says what the rename
+  keeps, and a test not at its address, not found under the new name after, or whose rename
+  threw is left as it is, said, and the name it was to run under is skipped by name, never
+  created beside it. Then `WithMirrorsNamed`, then the index of tests by name. EVERY CLASH
+  HANDED: `MirrorMerge.Of` over the rule, indexed by the kept test's name and each mirror's run
+  name, and the harvest of a test in a merge hands every clash as the rows are read,
+  `ClashHarvest.MergeAsKept` and `MergeAsMirror`, each clash under a group on its own, for the
+  kept test with the group's row and its items read for their keys alone, for a mirror with a
+  row of its own read whole, `ClashItem.MergeKey`, the one key, read off the file, the id and
+  the geometry name the harvest read, UNKNOWN with no id. A clash that would not hand is a
+  FAILURE line and the merge fails closed by its own rule. AFTER THE RUN AND NEVER BEFORE,
+  `MergeTheMirrors`: `AddTo` per merge, its MIRROR MERGE block, the kept test's ROWS line with
+  `AddedToTheKeptTest`, held back from the harvest for it alone, then the pictures of every
+  test in a merge, `RenderThePicturesWaiting`: no picture of such a test is rendered while its
+  rows are read, `ClashHarvest.Deferred` records each row with the index path of its result,
+  `RowUnderTest`, and after the merge each row the report still holds is rendered under the
+  test the report holds it under, the result resolved again by the test's address and that
+  path, `PictureLater`, so a mirror taken out gets none and a row only a mirror found is
+  pictured under the kept test. The BLOCKS check is handed `ClashReport.MirrorsMerged`. The
+  views run after the clash step and read the merged report. No handle is held across
+  `TestsEditDisplayName`, `TestsRunTest` or any mutator, and every wrapper is disposed. The
+  mirror rule's ending is `ClashRunner.Mirrors`, a `MirrorSettings` at its default
 - SINCE F85 A VIEWPOINT IS PER CLASH, which REVERSES what this rule said before it. It
   said no clash is ever saved as a viewpoint and that a discipline viewpoint is not a
   clash viewpoint. The first real run answered the question the other way: the thing a
