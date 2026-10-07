@@ -592,5 +592,147 @@ namespace Federator.Core.Tests.Health
                 "ALIGNMENT across the run: 2 model(s) sit somewhere their group's reference model does not. Nothing was"
                 + " changed in any model."));
         }
+
+        // ---------- F137, FR-195, Q111 B: a model naming no site is not on the same coordinates ----------
+
+        private const string ArFile = "1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc";
+        private const string StFile = "1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc";
+
+        private static IList<ModelPlacement> TheStNamesNoSite()
+        {
+            return new List<ModelPlacement>
+            {
+                new ModelPlacement(ArFile, "AR", "A site", 0.0, 0.0, 0.0),
+                new ModelPlacement(StFile, "ST", string.Empty, 0.0, 0.0, 0.0)
+            };
+        }
+
+        /// <summary>
+        /// Bader's answer to Q111, B. A model whose revit_ProjectLocation names no site is not on
+        /// the same coordinates, so it is in the group's list, its line says no site is named, and
+        /// the group's clash is skipped where this run would have run one.
+        /// </summary>
+        [Test]
+        public void AModelNamingNoSiteIsNotOnTheSameCoordinatesAndItsLineSaysSo()
+        {
+            OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(
+                TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres);
+
+            Assert.That(off.Any, Is.True);
+            Assert.That(off.Models.Count, Is.EqualTo(1));
+            Assert.That(off.Models[0], Does.StartWith("ST  " + StFile));
+            Assert.That(off.Models[0], Does.Contain("shared site none named"));
+            Assert.That(off.Models[0], Does.Contain("the model names no shared site at all"));
+            Assert.That(off.SkipsTheClash(true, true), Is.True);
+            Assert.That(off.SkipsTheClash(false, true), Is.False, "the setting still switches the rule off");
+            Assert.That(off.SkipsTheClash(true, false), Is.False, "no clash test to skip");
+        }
+
+        /// <summary>The note and the modellers' list carry the same line, so both say no site is named.</summary>
+        [Test]
+        public void TheNoteAndTheListSayNoSiteIsNamed()
+        {
+            OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(
+                TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres);
+
+            Assert.That(Joined(off.Note("1A02MM", null, 0, null)), Does.Contain("the model names no shared site at all"));
+
+            OffCoordinatesAcrossTheRun run = new OffCoordinatesAcrossTheRun(true, Started, 1);
+            run.Add("1A02MM", off, true);
+
+            Assert.That(Joined(run.ForModellers()), Does.Contain("the model names no shared site at all"));
+        }
+
+        /// <summary>
+        /// Where the clash is skipped the group is PARTIAL by that and no longer FAILED by the model's
+        /// missing site, and the ALIGNMENT block says the clash was skipped and names the model.
+        /// </summary>
+        [Test]
+        public void WhereTheClashIsSkippedANoSiteModelDoesNotFailTheGroup()
+        {
+            Assert.That(
+                AlignmentCheck.WhyItFailsTheGroup(TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres, true, true),
+                Is.Null);
+
+            string block = Joined(AlignmentCheck.Lines(TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres, true, true));
+
+            Assert.That(block, Does.Contain("CLASH SKIPPED. 1 model(s) are not on the same shared coordinates"));
+            Assert.That(block, Does.Contain("ST  " + StFile));
+            Assert.That(block, Does.Not.Contain("THIS GROUP IS FAILED"));
+        }
+
+        /// <summary>
+        /// Where no clash is skipped, the rule off or no clash test to run, such a group still fails as
+        /// Q70 had it. Q125 B asks for PARTIAL there, which needs the engine and JobOutcome and waits
+        /// for the loop, so this is what main does until then.
+        /// </summary>
+        [Test]
+        public void WhereNoClashIsSkippedANoSiteModelStillFailsTheGroupUntilQ125IsWired()
+        {
+            Assert.That(
+                AlignmentCheck.WhyItFailsTheGroup(TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres, false, true),
+                Does.Contain("1 model(s) name no shared site at all"));
+            Assert.That(
+                AlignmentCheck.WhyItFailsTheGroup(TheStNamesNoSite(), AlignmentCheck.DefaultFarModelMillimetres, true, false),
+                Does.Contain("1 model(s) name no shared site at all"));
+        }
+
+        /// <summary>A site that could not be read is not a model naming none, so it is not on any list.</summary>
+        [Test]
+        public void ASiteThatCouldNotBeReadIsNotAModelNamingNoSite()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                new ModelPlacement(ArFile, "AR", "A site", 0.0, 0.0, 0.0),
+                new ModelPlacement(StFile, "ST", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0)
+            };
+
+            OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres);
+
+            Assert.That(off.Any, Is.False);
+            Assert.That(off.SkipsTheClash(true, true), Is.False);
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, true, true), Is.Null);
+        }
+
+        /// <summary>
+        /// The reference itself may name no site. It is named as the reference and as naming none,
+        /// and the model beside it on a site is not listed for its distance.
+        /// </summary>
+        [Test]
+        public void AReferenceNamingNoSiteIsNamedAsBoth()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                new ModelPlacement(ArFile, "AR", string.Empty, 0.0, 0.0, 0.0),
+                new ModelPlacement(StFile, "ST", "A site", 0.0, 0.0, 0.0)
+            };
+
+            OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres);
+
+            Assert.That(off.Models.Count, Is.EqualTo(1));
+            Assert.That(off.Models[0], Does.StartWith("AR  " + ArFile));
+            Assert.That(off.Models[0], Does.Contain("the reference model itself"));
+            Assert.That(off.Models[0], Does.Contain("the model names no shared site at all"));
+        }
+
+        /// <summary>One on Internal and one naming no site are both listed, each by its own words.</summary>
+        [Test]
+        public void ABothKindsAreListedByTheirOwnWords()
+        {
+            IList<ModelPlacement> models = new List<ModelPlacement>
+            {
+                new ModelPlacement(ArFile, "AR", "A site", 0.0, 0.0, 0.0),
+                new ModelPlacement(StFile, "ST", string.Empty, 0.0, 0.0, 0.0),
+                new ModelPlacement("1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc", "EL", "Internal", 0.0, 0.0, 0.0)
+            };
+
+            OffCoordinates off = AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres);
+
+            Assert.That(off.Models.Count, Is.EqualTo(2));
+            Assert.That(off.Models[0], Does.Contain("the model names no shared site at all"));
+            Assert.That(off.Models[0], Does.Not.Contain("Revit's own origin"));
+            Assert.That(off.Models[1], Does.Contain("Revit's own origin"));
+            Assert.That(off.Models[1], Does.Not.Contain("names no shared site"));
+        }
     }
 }

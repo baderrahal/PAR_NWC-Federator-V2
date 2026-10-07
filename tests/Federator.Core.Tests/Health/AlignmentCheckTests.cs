@@ -238,7 +238,7 @@ namespace Federator.Core.Tests.Health
                 }
             }
 
-            Assert.That(made, Is.EqualTo(7), "the real group with the rule on and a test to run is the one not failed");
+            Assert.That(made, Is.EqualTo(6), "the two groups with the rule on and a test to run are the ones not failed, F137");
         }
 
         /// <summary>
@@ -304,12 +304,12 @@ namespace Federator.Core.Tests.Health
         }
 
         /// <summary>
-        /// Q70's other half stays as it was. Bader's answer named Internal and the distance,
-        /// and a model naming no site at all is neither, so it still fails its group with
-        /// the rule on or off.
+        /// Bader's answer to Q111, B, built by F137: a model naming no site at all is not on the same
+        /// coordinates, so with the rule on and a test to run it skips the clash and no longer fails
+        /// its group. With the rule off it still fails as Q70 had it.
         /// </summary>
         [Test]
-        public void AModelNamingNoSiteAtAllAlsoFailsTheGroup()
+        public void AModelNamingNoSiteAtAllSkipsTheClashWithTheRuleOnAndStillFailsTheGroupWithItOff()
         {
             IList<ModelPlacement> models = new List<ModelPlacement>
             {
@@ -317,18 +317,18 @@ namespace Federator.Core.Tests.Health
                 At("ST", string.Empty, 0.0, 0.0, 0.0)
             };
 
-            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn, ATestRuns), Does.Contain("1 model(s) name no shared site at all"));
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn, ATestRuns), Is.Null);
             Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOff, ATestRuns), Does.Contain("1 model(s) name no shared site at all"));
-            Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres).Any, Is.False);
+            Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres).Any, Is.True);
         }
 
         /// <summary>
-        /// With the rule on, a group failed on a model naming no site may also have its clash
-        /// skipped. Its reason names that model alone, because the one on Internal skips the
-        /// clash and does not fail the group, and claims no file at all.
+        /// With the rule off, a group failed on a model naming no site is failed on that model
+        /// beside the one on Internal, and claims no file at all. With the rule on neither fails
+        /// it, both skip the clash, F137.
         /// </summary>
         [Test]
-        public void WithTheRuleOnAFailedGroupsReasonNamesOnlyTheModelWithNoSite()
+        public void WithTheRuleOnNeitherModelFailsTheGroupAndBothAreOffTheCoordinates()
         {
             IList<ModelPlacement> models = new List<ModelPlacement>
             {
@@ -337,12 +337,13 @@ namespace Federator.Core.Tests.Health
                 At("ST", string.Empty, 0.0, 0.0, 0.0)
             };
 
-            string why = AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn, ATestRuns);
+            string why = AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOff, ATestRuns);
 
-            Assert.That(why, Is.EqualTo("1 model(s) name no shared site at all: ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
+            Assert.That(why, Does.EndWith("1 model(s) name no shared site at all: ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"));
             Assert.That(why, Does.Not.Contain("NWD"));
             Assert.That(why, Does.Not.Contain("Every output"));
-            Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres).Any, Is.True);
+            Assert.That(AlignmentCheck.WhyItFailsTheGroup(models, AlignmentCheck.DefaultFarModelMillimetres, RuleOn, ATestRuns), Is.Null);
+            Assert.That(AlignmentCheck.NotOnTheSameCoordinates(models, AlignmentCheck.DefaultFarModelMillimetres).Models.Count, Is.EqualTo(2));
         }
 
         /// <summary>
@@ -727,7 +728,7 @@ namespace Federator.Core.Tests.Health
             Assert.That(block, Does.Not.Contain("THIS GROUP IS FAILED"));
         }
 
-        /// <summary>The two answers stay apart: a site read as empty still fails the group, Q70.</summary>
+        /// <summary>The two answers stay apart: a site read as empty is off the coordinates, F137, and fails the group where no clash is skipped, Q70.</summary>
         [Test]
         public void ASiteNotReadAndASiteReadEmptyAreTwoDifferentThings()
         {
@@ -740,8 +741,14 @@ namespace Federator.Core.Tests.Health
             Assert.That(none.NamesASharedCoordinate, Is.False);
 
             Assert.That(
-                AlignmentCheck.WhyItFailsTheGroup(new List<ModelPlacement> { At("AR", "A site", 0.0, 0.0, 0.0), none }, AlignmentCheck.DefaultFarModelMillimetres, RuleOn, ATestRuns),
+                AlignmentCheck.WhyItFailsTheGroup(new List<ModelPlacement> { At("AR", "A site", 0.0, 0.0, 0.0), none }, AlignmentCheck.DefaultFarModelMillimetres, RuleOff, ATestRuns),
                 Does.Contain("1 model(s) name no shared site at all"));
+            Assert.That(
+                AlignmentCheck.NotOnTheSameCoordinates(new List<ModelPlacement> { At("AR", "A site", 0.0, 0.0, 0.0), none }, AlignmentCheck.DefaultFarModelMillimetres).Any,
+                Is.True);
+            Assert.That(
+                AlignmentCheck.NotOnTheSameCoordinates(new List<ModelPlacement> { At("AR", "A site", 0.0, 0.0, 0.0), notRead }, AlignmentCheck.DefaultFarModelMillimetres).Any,
+                Is.False);
         }
 
         [Test]

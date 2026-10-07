@@ -10,8 +10,10 @@ namespace Federator.Core.Health
     /// file, its shared site and its distance from the reference in X, Y and Z.
     ///
     /// A model is not on the same coordinates when it names Internal as its shared site,
-    /// which is Revit's own origin, or when it sits more than the far model setting from the
-    /// reference model, measured as the straight line of its X, Y and Z offsets.
+    /// which is Revit's own origin, when it names no site at all, Bader's answer to Q111,
+    /// or when it sits more than the far model setting from the reference model, measured
+    /// as the straight line of its X, Y and Z offsets. A site whose read threw is none of
+    /// these and is not judged.
     ///
     /// IN A GROUP HOLDING ONE, ONLY THE CLASH IS SKIPPED, and only where this run would have
     /// run a clash test in it, SkipsTheClash. The tests whose sides both find something are

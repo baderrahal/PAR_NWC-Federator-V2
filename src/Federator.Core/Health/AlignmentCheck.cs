@@ -100,7 +100,10 @@ namespace Federator.Core.Health
     /// same shared coordinates, and where the run would have run a clash test in the group
     /// its clash is skipped and nothing else, OffCoordinates. A model on Internal failed its
     /// group until then and still does wherever no clash is skipped, the rule switched off
-    /// or no clash test to run in the group.
+    /// or no clash test to run in the group. Q111 B, built by F137, puts a model naming no
+    /// site at all in the same list, so it skips the clash the same way and fails its group
+    /// only where no clash is skipped. Q125 B, PARTIAL for a group that runs no clash test,
+    /// is not built here, since it needs the engine's outcome.
     /// </summary>
     public static class AlignmentCheck
     {
@@ -382,9 +385,10 @@ namespace Federator.Core.Health
         /// and does not fail it. Wherever no clash is skipped, the rule off, or no clash test
         /// to run in the group, it fails the group as Q70 answered, because his words give
         /// such a group PARTIAL or nothing and never DONE, and a group with nothing to clash
-        /// would otherwise end DONE. A model naming no site at all fails it either way,
-        /// because his answer named Internal and the distance and not that. The four inputs
-        /// are the ones the ALIGNMENT block takes, so the block and the group cannot differ.
+        /// would otherwise end DONE. A model naming no site at all is off the coordinates
+        /// too, Q111 B, so where the clash is skipped it fails nothing, and it fails the group
+        /// wherever no clash is skipped, as it did. The four inputs are the ones the
+        /// ALIGNMENT block takes, so the block and the group cannot differ.
         ///
         /// FAILED DOES NOT STOP THE GROUP. The engine goes on to the NWD, and to the clash
         /// report unless the clash was skipped, because Bader needs the evidence to take to
@@ -433,7 +437,12 @@ namespace Federator.Core.Health
 
                 if (!models[i].NamesASharedCoordinate)
                 {
-                    withNoSite.Add(Named(models[i]));
+                    // Where the clash is skipped the model is off the coordinates and the group
+                    // ends PARTIAL by that, F137, Q111 B, and never FAILED by this.
+                    if (!clashSkipped)
+                    {
+                        withNoSite.Add(Named(models[i]));
+                    }
                 }
                 else if (!clashSkipped && NamesInternal(models[i], internalName))
                 {
@@ -548,8 +557,10 @@ namespace Federator.Core.Health
             {
                 ModelPlacement model = models[i];
 
-                // A site whose read threw is not Internal, FR-002, and SiteRead says so.
+                // A site whose read threw is not Internal, FR-002, and SiteRead says so. Nor does
+                // it name no site: only a site that was read and is empty does, F137, Q111 B.
                 bool onInternal = NamesInternal(model, internalName);
+                bool namesNoSite = NamesNoSite(model);
                 bool measured = reference != null && model != reference && model.Placed;
                 double dx = measured ? model.X - reference.X : 0.0;
                 double dy = measured ? model.Y - reference.Y : 0.0;
@@ -557,7 +568,7 @@ namespace Federator.Core.Health
                 double distance = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
                 bool far = measured && distance > farModelMillimetres;
 
-                if (!onInternal && !far)
+                if (!onInternal && !namesNoSite && !far)
                 {
                     // Not named, and not a pass either where the site or the placement is
                     // UNKNOWN. The reference is placed by the way it is chosen.
@@ -579,6 +590,7 @@ namespace Federator.Core.Health
 
                 off.Add(Named(model) + "   shared site " + SiteSaid(model)
                     + (onInternal ? ", Revit's own origin and not a shared site" : string.Empty)
+                    + (namesNoSite ? ", the model names no shared site at all" : string.Empty)
                     + "   " + where);
             }
 
@@ -593,6 +605,15 @@ namespace Federator.Core.Health
         private static bool NamesInternal(ModelPlacement model, string internalName)
         {
             return model.SiteRead && string.Equals(model.SharedCoordinate, internalName, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Whether a model names no shared site at all, the one test for it. A site whose read
+        /// threw names none either way and is said UNKNOWN, so it is not this.
+        /// </summary>
+        private static bool NamesNoSite(ModelPlacement model)
+        {
+            return model.SiteRead && !model.NamesASharedCoordinate;
         }
 
         private static string NotMeasured(int models)
