@@ -448,12 +448,24 @@ namespace Federator.Core.Health
             }
         }
 
+        /// <summary>
+        /// Whether a workset asked that way finds that carried name as it is spelled, the whole name
+        /// or, for contains, a part of it. The one place this is said, read by this check and by the
+        /// judge of a set that cannot reach a model of its own team, SilentMisses, F131.
+        /// </summary>
+        internal static bool WorksetFinds(string asked, bool contains, string carried)
+        {
+            return contains
+                ? carried.IndexOf(asked, StringComparison.Ordinal) >= 0
+                : string.Equals(carried, asked, StringComparison.Ordinal);
+        }
+
         /// <summary>Whether that set also asks, not negated, for a workset that finds the carried name exactly, F116.</summary>
         private static bool AlsoFinds(Dictionary<string, List<WorksetAsk>> askedBy, string setName, string carried)
         {
             List<WorksetAsk> asked;
 
-            return askedBy.TryGetValue(setName, out asked) && asked.Exists(one => one.Finds(carried));
+            return askedBy.TryGetValue(setName, out asked) && asked.Exists(one => WorksetFinds(one.Value, one.Contains, carried));
         }
 
         /// <summary>The sets that ask, as a list, with the rest counted past namesShown the way the names are.</summary>
@@ -492,25 +504,17 @@ namespace Federator.Core.Health
 
             internal List<string> Sets { get; private set; }
 
-            /// <summary>Whether this ask finds that carried name as it is spelled, the whole name or, for contains, a part of it.</summary>
-            internal bool Finds(string carried)
-            {
-                return Contains
-                    ? carried.IndexOf(Value, StringComparison.Ordinal) >= 0
-                    : string.Equals(carried, Value, StringComparison.Ordinal);
-            }
-
-            /// <summary>Whether this ask misses that carried name by letter case alone, and finds it once case is set aside.</summary>
+            /// <summary>
+            /// Whether this ask misses that carried name by letter case alone, and finds it once case
+            /// is set aside. The miss is WorksetFinds, the one place a find is said.
+            /// </summary>
             internal bool MissesByCaseAlone(string carried)
             {
-                if (Contains)
-                {
-                    return carried.IndexOf(Value, StringComparison.Ordinal) < 0
-                        && carried.IndexOf(Value, StringComparison.OrdinalIgnoreCase) >= 0;
-                }
+                bool findsCaseBlind = Contains
+                    ? carried.IndexOf(Value, StringComparison.OrdinalIgnoreCase) >= 0
+                    : string.Equals(carried, Value, StringComparison.OrdinalIgnoreCase);
 
-                return !string.Equals(carried, Value, StringComparison.Ordinal)
-                    && string.Equals(carried, Value, StringComparison.OrdinalIgnoreCase);
+                return findsCaseBlind && !WorksetFinds(Value, Contains, carried);
             }
         }
 
@@ -703,7 +707,7 @@ namespace Federator.Core.Health
             return every;
         }
 
-        private static string Named(ModelExport model)
+        internal static string Named(ModelExport model)
         {
             string discipline = string.IsNullOrEmpty(model.Discipline) ? "??" : model.Discipline;
             return discipline + "  " + (string.IsNullOrEmpty(model.File) ? "a model with no name" : model.File);

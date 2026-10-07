@@ -8,12 +8,15 @@ Short lines. One action per step. Every command in a code block.
 
 ## Files
 
+- `PROGRESS.md`  the one page a session starts from, at most 60 lines. Read first
+- `START.md`  the start prompt Bader pastes into a new tab
 - `00_analysis.md`  what the code does, what is wrong, what is missing. History
 - `01_next.md`  the fixes, numbered F, in the order they are worked
 - `02_questions.md`  every question for Bader, numbered, with his answer under it
 - `03_bader_next.md`  what Bader does on his machine, numbered, one action per step
 - `04_audit.md`  the audit of 2026-09-12, what it found and which fix carries it
-- `log.md`  one entry per fix, newest at the top
+- `tracker.csv`  the status of every item and finding, read as `tracker.md`
+- `history/`  `loop.md` and `log.md`, the long history, one entry per fix newest at the top. Opened for a line, never read first
 - `logs/`  the run logs Bader sends back. Evidence, never edited
 
 ## How to read it
@@ -21,9 +24,9 @@ Short lines. One action per step. Every command in a code block.
 Newest file wins.
 Files are numbered. A higher number was written later.
 Where two files disagree, trust the higher number.
-`log.md` is always the latest word on where things stand.
+`PROGRESS.md` is always the latest word on where things stand.
 
-Start at `log.md`, then `01_next.md`.
+Start at `PROGRESS.md`, then `01_next.md`.
 Read `03_bader_next.md` when you are at the machine with Navisworks on it.
 Read `00_analysis.md` or `04_audit.md` when a fix needs the background.
 Answer `02_questions.md` in any order.

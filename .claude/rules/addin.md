@@ -258,8 +258,43 @@ well as to pass.
   timed like every other step and it is the one step allowed to move the viewpoint count,
   Federator.Core.Diagnostics.CensusRule. The VIEWS block names five and counts the rest,
   because a group puts hundreds in. A group whose viewpoints failed is not DONE.
-  SavedViewpoints.CanBuild is true since the viewpoints round on 2026-09-19 and it is the
-  one switch
+  THE SWITCH IS THE BOX, F136. Whether a group asks for its viewpoints is Core's
+  `ViewpointRequest.WhyNone`, the box on the Clash step, the clash skipped and no report,
+  and BuildViewpoints calls it in place of the two checks it held before. Unticked, no
+  viewpoint is made, ViewpointsRequested is false so the group cannot fail at them, and
+  one VIEWS line names the box, in every group that reaches the viewpoints step. The box,
+  x:Name MakeViewpoints, is set off `ReportOptions.MakeViewpoints` in the constructor,
+  which runs at every open because the plugin makes the window new each time, the way the
+  shared coordinates box is set, so it opens UNTICKED until F114 merges, Q131. Its state
+  is named in the RUN SETTINGS lines, at the start of the open file run, and in one RESULT
+  line where it was unticked, which the window takes off the run's engine,
+  FederationEngine.MakesViewpoints, so RESULT names the state the groups read. It sits up
+  front on the Clash step and NEVER under an expander, for the reason the tick box section
+  below gives.
+  SavedViewpoints.CanBuild is true since the viewpoints round on 2026-09-19 and nothing
+  in src reads it, read on 2026-10-05
+- THE TEAMS, F131. The add-in holds only the calls, and every rule and every word is Core's,
+  .claude\rules\core.md, The teams of the picked file. WHERE A RUN OR A PICK SAYS WHICH FILE IT
+  READ, the window writes the TEAMS lines of its map, `TeamMap.Lines`, then a line for each set
+  whose name carries no code, `TeamMap.SetLines`, Q117 answered C and A, then, for the scanned
+  run and the open file run, whether that map is now the one kept for a run with no XML,
+  `TeamMapMemory.Remember`, and only then the MATRIX lines, all in one method,
+  SayTheTeamsAndCorrections, so the TEAMS lines come before the MATRIX lines at the pick, the
+  two runs and both hand buttons. A RUN WITH NO XML, the scanned run or the open file run,
+  writes the kept map's TEAMS lines in their place, Q123 answered B. The map a run hands the
+  engine is `TeamMapMemory.ForRun`, the one rule for it. THE KEPT MAP IS NAMED WHEN THE WINDOW
+  OPENS, a TEAMS KEPT block beside FOLDERS REMEMBERED, the memory read once by the field
+  initializer as FolderMemory is. THE GREY LINE under the Clash XML box, x:Name TeamsLine, is
+  `TeamMap.WindowLine` of `TeamMapMemory.ForPick`, the map beside the XML in the box, or the
+  kept map where none is there, set at the open and on every change of the box. EACH GROUP
+  writes a TEAMS block after the EXPORT CHECK block, in WhatTheModelsCarry, the one place both
+  runs pass through, in a try of its own after the export check's, so a fault in it names its
+  own step and never counts the group's finished export check as not read:
+  `SilentMisses.Find` over the picked XML's sets and the models `ModelFactsReader.Exports`
+  read, its `GroupLines` given the document's model count so a model Exports dropped is
+  counted. No coverage count is handed in until F127's COVERAGE block is on main, so no
+  silent miss is named and each is counted as UNKNOWN until the coverage counts them. The
+  two hand presses that federate no group, Undo and Probe, hand the engine no map
 - SINCE F85 A VIEWPOINT IS PER CLASH, which REVERSES what this rule said before it. It
   said no clash is ever saved as a viewpoint and that a discipline viewpoint is not a
   clash viewpoint. The first real run answered the question the other way: the thing a
@@ -432,40 +467,14 @@ well as to pass.
   is not readable off the DLL, so it is not claimed. The words DID NOT FOLLOW are gone from
   the log. The combo on the Outputs step is MODEL units, defaulting to Meters, and its help
   line says the report is always in metres
-- A tick box has to earn being a decision. Fifteen went to eleven, and F72 makes twelve, of
-  which TWO are visible without opening anything. Republishing the NWD, writing the client page and rendering the
+- A tick box has to earn being a decision. How many there are and how many sit up front is
+  counted once, in What a tick box says below. Republishing the NWD, writing the client page and rendering the
   photos are fixed ON, because a weekly run wants all three every time. Client columns only
   is gone outright, dead since the workbook became one sheet with none of ours on it.
   Dating the NWD, the clash XML, the thumbnails and the five image status boxes are
   collapsed under More, rarely changed. The two that destroy data are collapsed on their
   own under Things that destroy data, because they do not belong beside ordinary output
   options. Fewer decisions is the goal, not more words explaining them
-
-### The sets in the document, F115
-
-- `SetBuilder.Read` reads a condition's `Options` as a number and its comparison in the
-  file's words for the two `BuildCondition` builds and by its own name for any other, FR-015,
-  and Core keys both sides. The value is read by its kind through `ClashHarvest.Text`, and one
-  that still throws is marked unread in Core with the error's type and message and never read
-  as an empty string, FR-017. A search that throws hands its error to Core the same way, and a
-  selection with no search says so. `BuildOne` writes the lines `SetDrift.Lines` gives for every
-  present set, and for a rebuilt set whose second read would not read. Neither catch keeps the
-  error to itself
-- The walk counting what the clash tests point at descends into every Clash Detective folder,
-  reads every source of a side and counts each set once per side, FR-014, disposing each item
-  and each side the way SavedTests does. A whole read or one side that throws makes the count
-  UNKNOWN for every set of the document, logged through log.Failure with the first error, and
-  Core refuses every leftover, FR-013
-- The wrapper of a set being rebuilt is released BEFORE `ReplaceWithCopy`, and the rebuilt set
-  is read again through a parent resolved from a fresh root, never through the one held across
-  the mutator, FR-019. One not found again is counted UNKNOWN, FR-018, and so is a read of
-  what a set finds that gives nothing back, `SetResult.NotCounted` in CountOf and Resolve,
-  never zero items
-- The SETS line of what a group's build put in is Core's, `SetBuildOutcome.PutInLine`, which
-  says a rebuilt set apart from one left alone
-- The judge of a set that found nothing is built from the models the EXPORT CHECK read for
-  this group, `FederationEngine.groupExports`, null until they are read and on the Build sets
-  button, FR-011 and FR-027
 
 ## What a tick box says
 
@@ -483,8 +492,15 @@ and they explained the off state as well as the on state, so nothing stood out.
 The numbers in a help line are measured, never estimated. Photos are about 0.08 seconds
 each and 213 took 17 seconds. Pasting them takes the workbook from 0.3 MB to 52 MB.
 
-There were fifteen, then eleven, and F72 makes twelve, of which TWO are visible without
-opening anything. A box only stays if a normal weekly run genuinely has to choose, and
+There were fifteen, then eleven, and F72 made twelve, of which two were visible without
+opening anything. F72b, Q72, Q99 and F136 each added one up front on the Clash step, so
+src\Federator.Addin\Ui\FederatorWindow.xaml holds SIXTEEN, of which SIX sit under no
+expander, by x:Name IncludeSubfolders on the Source step and MarkPenetrations,
+MarkByDesign, RebuildDriftedSets, SkipClashOffCoordinates and MakeViewpoints on the Clash
+step. The
+other ten are eight under More, rarely changed and two under Things that destroy data. Read
+off the XAML on 2026-10-05 by its CheckBox and Expander lines. probe-window-labels.ps1 was
+not run on this count. A box only stays if a normal weekly run genuinely has to choose, and
 Mark penetrations as Reviewed earns it: it writes statuses into the NWF, which is the only
 record of what has been fixed, so a run has to be told to do that rather than told not to. Everything else became a
 fixed behaviour with the sensible answer chosen, or moved under an expander. The two that
@@ -496,3 +512,11 @@ of this, so the limits are proved rather than remembered. It OPENS every expande
 because a collapsed one has no visual tree behind it and the probe found one box and
 reported no problems, and it says how many are visible without opening anything, which is
 the number the window is judged on.
+
+THE VIEWPOINTS BOX NEVER GOES UNDER AN EXPANDER, F136, for the same reason. The loop's test
+runs leave the viewpoints off with run.ps1 -Untick MakeViewpoints, F126, and the driver,
+tools\probes\drive-window-run.ps1 FindOnTabs, finds a box by its name in the visual tree of
+each tab in turn. A collapsed expander has no visual tree behind it, so a box under one is
+found on none of the tabs and the driver stops UNTICK with nothing pressed. Once F114 merges
+the box opens ticked, Q131, and a test run that must leave the viewpoints off can only do it
+through a box the driver can find.

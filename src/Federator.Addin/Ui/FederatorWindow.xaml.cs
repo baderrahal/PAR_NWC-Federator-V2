@@ -19,6 +19,7 @@ using Federator.Core.Probe;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
+using Federator.Core.Teams;
 using Federator.Core.Units;
 using Federator.Core.Views;
 
@@ -49,6 +50,14 @@ namespace Federator.Addin.Ui
 
         /// <summary>Where each picker was last pointed, kept across sessions.</summary>
         private readonly FolderMemory folders = FolderMemory.Load();
+
+        /// <summary>
+        /// The team map a run with no clash XML reads, the one the last run with an XML used,
+        /// kept across sessions the way the folders are, Q123 answered B by Bader on 2026-10-05.
+        /// </summary>
+        private readonly TeamMapMemory keptTeams = TeamMapMemory.Load();
+
+        private readonly TeamMapSettings teamSettings = new TeamMapSettings();
 
         /// <summary>One row per group, filled from the patterns and editable in place.</summary>
         private OutputNameTable nameTable = new OutputNameTable();
@@ -93,6 +102,11 @@ namespace Federator.Addin.Ui
             FillGroupingModes();
 
             log.Block("FOLDERS REMEMBERED", folders.Lines());
+
+            // F131, Q123 answered B. The map a run with no clash XML reads, named when the window
+            // opens as the remembered folders are, and on the grey line under the XML box.
+            log.Block("TEAMS KEPT", keptTeams.ForNoXml(teamSettings).Lines());
+            ShowTeamsLine();
 
             files.CollectionChanged += delegate { Regroup(); };
 
@@ -796,6 +810,24 @@ namespace Federator.Addin.Ui
         {
             RefreshRunPaths();
             ShowOpenDocument();
+            ShowTeamsLine();
+        }
+
+        /// <summary>
+        /// The grey line under the XML box, F131: which team map a run would read, the one
+        /// beside the XML in the box or, with none there, the one kept for a run with no XML,
+        /// chosen by Core's one rule, TeamMapMemory.ForPick. The words are Core's,
+        /// TeamMap.WindowLine, read off the map where a test reads them.
+        /// </summary>
+        private void ShowTeamsLine()
+        {
+            // The box's change fires while InitializeComponent is still building the controls.
+            if (TeamsLine == null || ExchangeFileBox == null)
+            {
+                return;
+            }
+
+            TeamsLine.Text = keptTeams.ForPick(PickedPath(), teamSettings).WindowLine();
         }
 
         /// <summary>The expected label of every group that will run, in list order.</summary>
@@ -1203,6 +1235,21 @@ namespace Federator.Addin.Ui
                 SkipClashOffCoordinatesHelp.Text = AlignmentCheck.HelpLine(new ReportOptions().FarModelMillimetres);
             }
 
+            // F136. The same shape, ticked or not off the setting the run reads, and set
+            // here because the window is made new at every open. The setting is unticked
+            // until F114 merges, Q131, so a box ticked for one run is unticked again the
+            // next time the window opens.
+            if (MakeViewpoints != null)
+            {
+                MakeViewpoints.Content = ViewpointRequest.TickLabel;
+                MakeViewpoints.IsChecked = new ReportOptions().MakeViewpoints;
+            }
+
+            if (MakeViewpointsHelp != null)
+            {
+                MakeViewpointsHelp.Text = ViewpointRequest.HelpLine;
+            }
+
             if (ByDesignHelp != null)
             {
                 ByDesignHelp.Text = "Read only with the box below on. Columns "
@@ -1272,7 +1319,7 @@ namespace Federator.Addin.Ui
             {
                 log.Line(UndoAutoReview.Prefix + " started by hand on the open document, nothing is saved");
 
-                FederationEngine engine = new FederationEngine(SetProgress, log, null, ReportsWanted());
+                FederationEngine engine = new FederationEngine(SetProgress, log, null, null, ReportsWanted());
                 UndoAutoReviewed undo = engine.UndoAutoReviewedByHand();
 
                 string said = undo.Tally == null
@@ -1372,7 +1419,7 @@ namespace Federator.Addin.Ui
                 log.Line("PROBE    started by hand, "
                     + (folder == null ? "on the open document" : "over " + folder));
 
-                FederationEngine engine = new FederationEngine(SetProgress, log, null, ReportsWanted());
+                FederationEngine engine = new FederationEngine(SetProgress, log, null, null, ReportsWanted());
                 IList<string> lines = folder == null
                     ? engine.ProbeTheOpenDocumentByHand()
                     : engine.ProbeTheFolderByHand(folder);
@@ -1524,6 +1571,7 @@ namespace Federator.Addin.Ui
             options.MarkByDesign = MarkByDesign.IsChecked == true;
             options.RebuildDriftedSets = RebuildDriftedSets.IsChecked == true;
             options.SkipClashOffCoordinates = SkipClashOffCoordinates.IsChecked == true;
+            options.MakeViewpoints = MakeViewpoints.IsChecked == true;
             options.ByDesignPath = Trimmed(ByDesignBox.Text);
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
@@ -1811,6 +1859,7 @@ namespace Federator.Addin.Ui
             log.Line("by design        : " + (MarkByDesign.IsChecked == true
                 ? "YES, a clash between two sets the pairs file names becomes Reviewed"
                 : "no, the pairs file is not read"));
+            log.Line(ViewpointRequest.SettingsLine(MakeViewpoints.IsChecked == true));
             log.Line("NWD naming       : "
                 + (DateTheNwd.IsChecked == true
                     ? "dated, so every week is kept"
@@ -1994,11 +2043,15 @@ namespace Federator.Addin.Ui
                 // Read once, before the first group, so a file that will not read stops
                 // the run here rather than part way through the second building.
                 ExchangeDocument exchange = PickedExchange();
+                TeamMap teams = keptTeams.ForRun(exchange, teamSettings);
 
                 if (exchange == null)
                 {
                     log.Line("RUN      nothing picked in the Clash step, so no set will be built "
                         + "and no test created");
+
+                    // F131, Q123 answered B. The kept map, named before any group reads it.
+                    SayLines(teams.Lines());
                 }
                 else
                 {
@@ -2006,7 +2059,7 @@ namespace Federator.Addin.Ui
                     log.Line("RUN      it holds " + exchange.Sets.Count
                         + (exchange.Sets.Count == 1 ? " set and " : " sets and ")
                         + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test" : " tests"));
-                    SayCorrections(exchange);
+                    SayTheTeamsAndCorrections(exchange, true);
                 }
 
                 ReportOptions options = ReportsWanted();
@@ -2022,7 +2075,7 @@ namespace Federator.Addin.Ui
                     + (options.WriteXml ? "written beside each workbook" : "off"));
 
                 engine = new FederationEngine(
-                    SetProgress, log, exchange, options, nwfFolder);
+                    SetProgress, log, exchange, teams, options, nwfFolder);
                 IList<JobOutcome> outcomes = engine.Run(jobs);
 
                 // What each group actually did, in the list. A group that was rebuilt
@@ -2089,21 +2142,24 @@ namespace Federator.Addin.Ui
             {
                 // The result block and the second copy are written whatever happened, so a
                 // run that stopped still leaves a readable log with its summary at the end.
-                WriteTheResultAndCopyTheLog(nwfFolder, engine == null ? null : engine.CoordinatesAcrossTheRun);
+                WriteTheResultAndCopyTheLog(nwfFolder, engine);
                 running = false;
                 RunButton.IsEnabled = true;
             }
         }
 
         /// <summary>
-        /// The RESULT block of one run and the second copy of the log. thisRun is what the
-        /// shared coordinates rule did in that run, from that run's engine, or null.
+        /// The RESULT block of one run and the second copy of the log. engine is that run's
+        /// engine, or null where the run stopped before one was made, and then the block says
+        /// nothing of the shared coordinates rule or the viewpoints box rather than guess.
         /// </summary>
-        private void WriteTheResultAndCopyTheLog(string nwfFolder, OffCoordinatesAcrossTheRun thisRun)
+        private void WriteTheResultAndCopyTheLog(string nwfFolder, FederationEngine engine)
         {
             try
             {
-                log.WriteResultBlock(thisRun);
+                log.WriteResultBlock(
+                    engine == null ? null : engine.CoordinatesAcrossTheRun,
+                    engine == null || engine.MakesViewpoints);
             }
             catch (Exception error)
             {
@@ -2185,7 +2241,7 @@ namespace Federator.Addin.Ui
             log.Line("PICK     " + path + " holds " + held);
 
             // Q104. The health check judges the sets as the run will build them, corrected.
-            SayCorrections(exchange);
+            SayTheTeamsAndCorrections(exchange, false);
 
             HealthCheckResult health = HealthCheck.Run(exchange);
             log.Block("HEALTH " + Path.GetFileName(path), health.Summary());
@@ -2217,20 +2273,42 @@ namespace Federator.Addin.Ui
         /// </summary>
         private ExchangeDocument PickedExchange()
         {
+            string path = PickedPath();
+
+            return path.Length == 0 ? null : MatrixCorrections.ReadPicked(path);
+        }
+
+        /// <summary>The path in the XML box where a file is there, or empty, which a run reads as no XML picked.</summary>
+        private string PickedPath()
+        {
             string path = Trimmed(ExchangeFileBox.Text);
 
-            return path.Length == 0 || !File.Exists(path)
-                ? null
-                : MatrixCorrections.ReadPicked(path);
+            return path.Length > 0 && File.Exists(path) ? path : string.Empty;
         }
 
         /// <summary>
-        /// Every correction MatrixCorrections made to the picked file, one log line each,
-        /// Q104, written wherever a run or a pick says which file it read.
+        /// What the pick read beside the XML, wherever a run or a pick says which file it read:
+        /// the TEAMS lines of its team map with each set whose name carries no code named, F131,
+        /// and for a run whether that map is now the one kept for a run with no XML, Q123
+        /// answered B, then every correction MatrixCorrections made to it, Q104, so the TEAMS
+        /// lines come before the MATRIX lines.
         /// </summary>
-        private void SayCorrections(ExchangeDocument exchange)
+        private void SayTheTeamsAndCorrections(ExchangeDocument exchange, bool aRunUsesTheMap)
         {
-            foreach (string line in exchange.Corrections)
+            SayLines(exchange.Teams.Lines());
+            SayLines(exchange.Teams.SetLines(exchange.Sets, new ViewpointSettings().SetNameSeparator));
+
+            if (aRunUsesTheMap)
+            {
+                log.Line(keptTeams.Remember(exchange.Teams));
+            }
+
+            SayLines(exchange.Corrections);
+        }
+
+        private void SayLines(IEnumerable<string> lines)
+        {
+            foreach (string line in lines)
             {
                 log.Line(line);
             }
@@ -2264,6 +2342,7 @@ namespace Federator.Addin.Ui
             // holding none means nothing runs and the log says so.
             string path = Trimmed(ExchangeFileBox.Text);
             ExchangeDocument exchange = null;
+            TeamMap teams;
 
             running = true;
             RunOpenButton.IsEnabled = false;
@@ -2276,23 +2355,32 @@ namespace Federator.Addin.Ui
                 if (path.Length > 0 && File.Exists(path))
                 {
                     exchange = MatrixCorrections.ReadPicked(path);
+                    teams = keptTeams.ForRun(exchange, teamSettings);
                     log.Line("OPEN     clash file " + path);
-                    SayCorrections(exchange);
+                    SayTheTeamsAndCorrections(exchange, true);
                 }
                 else
                 {
                     log.Line("OPEN     no XML picked, so the tests saved in the document run, "
                         + "or nothing runs when it holds none");
+
+                    // F131, Q123 answered B. The kept map, named before the group reads it.
+                    teams = keptTeams.ForRun(null, teamSettings);
+                    SayLines(teams.Lines());
                 }
 
                 ReportOptions options = ReportsWanted();
+
+                // F136. The open file run has no RUN SETTINGS block, and the box holds for
+                // it too, so its state is said here before the group starts.
+                log.Line(ViewpointRequest.SettingsLine(options.MakeViewpoints));
 
                 // No folder is handed in. The engine reads the report folder off the open
                 // file through OpenDocumentJob.ReportFolder, the same rule ShowOpenDocument
                 // uses for the line above the button. Handing the report folder in as the
                 // NWF folder is what once wrote to Clash Reports\Clash Reports.
                 engine = new FederationEngine(
-                    SetProgress, log, exchange, options);
+                    SetProgress, log, exchange, teams, options);
 
                 // The engine writes the GROUP lines and the OPEN FILE block itself, so
                 // they are there whatever happens inside it.
@@ -2350,8 +2438,7 @@ namespace Federator.Addin.Ui
                 // happened, the same as the scanned run. The copy goes beside the open
                 // file, where the scanned run puts it beside the NWF folder. This used to
                 // be missing, so an open file run ended with no RESULT block and no copy.
-                WriteTheResultAndCopyTheLog(
-                    OpenDocumentJob.FolderOf(open), engine == null ? null : engine.CoordinatesAcrossTheRun);
+                WriteTheResultAndCopyTheLog(OpenDocumentJob.FolderOf(open), engine);
                 running = false;
                 RunOpenButton.IsEnabled = true;
                 ShowOpenDocument();
@@ -2448,9 +2535,10 @@ namespace Federator.Addin.Ui
             {
                 log.Line("SETS     started by hand, reading " + path);
                 ExchangeDocument exchange = MatrixCorrections.ReadPicked(path);
-                SayCorrections(exchange);
+                SayTheTeamsAndCorrections(exchange, false);
 
-                FederationEngine engine = new FederationEngine(SetProgress, log, exchange, ReportsWanted());
+                FederationEngine engine = new FederationEngine(
+                    SetProgress, log, exchange, keptTeams.ForRun(exchange, teamSettings), ReportsWanted());
                 SetBuildOutcome outcome = engine.BuildSetsByHand();
 
                 ShowSetLines(outcome.Lines());
@@ -2499,9 +2587,10 @@ namespace Federator.Addin.Ui
             {
                 log.Line("CLASH    started by hand, reading " + path);
                 ExchangeDocument exchange = MatrixCorrections.ReadPicked(path);
-                SayCorrections(exchange);
+                SayTheTeamsAndCorrections(exchange, false);
 
-                FederationEngine engine = new FederationEngine(SetProgress, log, exchange, ReportsWanted());
+                FederationEngine engine = new FederationEngine(
+                    SetProgress, log, exchange, keptTeams.ForRun(exchange, teamSettings), ReportsWanted());
                 ClashRunOutcome outcome = engine.RunTestsByHand();
 
                 if (outcome == null)
