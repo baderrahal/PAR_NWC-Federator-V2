@@ -19,6 +19,7 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 | 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 merged as pull request 147, the rest left for the laptop lane |
 | 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items merged as pull request 148 with FR-057 half, the rest left for the laptop lane |
 | 6 | F128's Core part, generic models, FR-177 | fix-F128 | not started, see below |
+| 7 | F121 the rest, FR-150 to FR-166 and FR-202, wave 4 | fix-F121 | five items in review, the rest left for the laptop lane |
 
 ## The item the lane is on
 
@@ -93,6 +94,7 @@ lane's to set in the tracker.
 | F137 | Part 1 of FR-195, Q111 B: a model whose site was read and names none is listed by AlignmentCheck as not on the same shared coordinates, so with the rule on and a test to run its group skips the clash and ends PARTIAL, its line says the model names no shared site at all, and it fails its group only where no clash is skipped. The grey line of the tick box and the failed run line say so. Q125 B, PARTIAL for a group that runs no clash test, needs JobOutcome and FederationEngine, which fix-F114's add-in pass changes, so it is left, and the test named StillFailsTheGroupUntilQ125IsWired flips when it lands | 146 | merged, f1557fe |
 | F118 | FR-035: the workbook check counts the tests of one row and the full blocks, says how many are of each, reads row 1 and the widths of a workbook with no full block and says no block layout was compared. FR-037: a test the priority file names twice is named in the log with both lines and both letters, the last letter still wins, and the row count is the rows of the file. FR-036, FR-040 and FR-199 need ClashRunner, ClashReportModel or the engine's call of the workbook check, which an open branch changes, and FR-041 needs a probe of the grid first | 147 | merged, a174ca0 |
 | F119 | FR-046 sizes read through a handle that shares the file and a file that exists is never said missing. FR-048 the .tsv row of a file not on disk carries no number. FR-050 a run that started and never finished is counted to now and says so, and RunStarted forgets an earlier run's finish. FR-051 RESULT states no waiting time where no run was marked. FR-052 NoTolerance is a skip reason row. FR-054 the fallback folder is never pruned. FR-055 a .tsv goes with its log. FR-056 the pace of the group before is the mean of its visits. FR-057 a listener that throws is named and removed once, and a log file that cannot be written is said once and the run goes on. FR-043 to FR-045, FR-053 and FR-189 need the engine or ClashRunner, FR-047 needs ClashRunner, FR-049 resets the whole state of a log across runs and is larger than a Core fix | 148 | merged, 4c33402 |
+| F121 | FR-151 and FR-164 a count before the clear that could not be taken reads as unknown and holds the NWF shut. FR-158 the probe counts a category's elements by the rule that asked, trimmed and without case. FR-159 and FR-165 the check before a run names a name that cannot be used, an emptied pattern field or a cleared name cell. FR-154 the scan findings judge a building once by its building code and never call a discipline one | in review | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -222,4 +224,22 @@ and 148, and each ran its Core tests under mono here and on the Windows runner o
   that the temp fallback is not pruned, or that a file held with no sharing falls back to the directory's
   size. FR-049, a second run in one window carrying the first run's totals, is still open and a new log
   per run in the window would close it
+
+## F121 points lane B left, for the laptop lane
+
+- Add-in or window work that no Core test proves: FR-150 and FR-153 and FR-156 and FR-157 and FR-160 and
+  FR-161 and FR-163, the add-in halves of FR-164 (DocumentCensusReader returning zero for a null
+  collection, which must land after FR-151's fix in this pull request, as the item says) and FR-162
+  (Remember returning the reason, which nothing in the window reads yet), and FR-152, where the fix is an
+  undo that writes its own record in ClashStatusEditor and Judge reading the last one
+- FR-155 asks the reader to skip a test by name or refuse where merge_composites, selfintersect, primtypes
+  or flags is missing or unreadable. Skipping needs a new skip reason through the plan, the coverage and
+  the skip lines, and which of the two Bader wants is not written down, so lane B did not choose. FR-166
+  needs a parse of the Other tolerance text that does not throw, which no running code would call until
+  FederatorWindow does. FR-202 is an IL read first
+- The scan findings still write a SINGLE DISCIPLINE finding for every group under both one discipline
+  modes, FR-154's note, and FR-167 has the same root in SourceMismatchFindings. A group spanning buildings
+  has no building code and is left out of the odd shape and near match findings
+- The window's check before a run now refuses a name that cannot be used, and the preview still prints the
+  sentence for such a row, FederatorWindow near line 621, and SafeName has no caller
 
