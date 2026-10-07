@@ -29,7 +29,9 @@ namespace Federator.Core.Report
     ///
     /// FAIL CLOSED ON WHAT WAS NOT READ. A clash of a mirror with an item not read cannot be
     /// told from one the kept test holds, and added it could count one clash twice, so it is
-    /// not added and the log says it is UNKNOWN whether the kept test found it. A clash of the
+    /// not added, and taken out with its mirror it would be in no block, F132 attempt 10. So
+    /// that mirror is not merged and stays in the report as its own test with every clash it
+    /// found, and the log says it is UNKNOWN whether the kept test found it. A clash of the
     /// kept test with an item not read could match a clash of a mirror, so the log says how
     /// many of those said to be found by a mirror only may be the kept test's own.
     ///
@@ -131,9 +133,10 @@ namespace Federator.Core.Report
         /// <summary>
         /// The clashes of the mirrors the kept test found too, or null, UNKNOWN, where nothing
         /// was merged or a mirror was not merged, because it did not run, is not in the report
-        /// once, or was handed another number of clashes than its report holds, since that
-        /// mirror's clashes were never compared and a 0 for them would read as a count taken.
-        /// Refused before AddTo has run, for the same reason.
+        /// once, was handed another number of clashes than its report holds, or was handed a
+        /// clash with an item not read, since that mirror's clashes were never compared and a 0
+        /// for them would read as a count taken. Refused before AddTo has run, for the same
+        /// reason.
         /// </summary>
         public int? FoundByBoth
         {
@@ -150,15 +153,6 @@ namespace Federator.Core.Report
         public int AddedToTheKeptTest
         {
             get { return Merged(counts => counts.Only.Count); }
-        }
-
-        /// <summary>
-        /// The clashes of the mirrors with an item not read, never added, or null, UNKNOWN,
-        /// where FoundByBoth is. Refused before AddTo has run.
-        /// </summary>
-        public int? NotCompared
-        {
-            get { return Compared(counts => counts.NotRead); }
         }
 
         /// <summary>
@@ -224,7 +218,16 @@ namespace Federator.Core.Report
             MirrorCounts counts = CountsOf(pair);
             StillOpen();
             counts.Found++;
-            handed.Add(new Handed(counts, KeyOf(firstItem, secondItem), row));
+
+            string key = KeyOf(firstItem, secondItem);
+
+            if (key == null)
+            {
+                counts.NotRead++;
+                return;
+            }
+
+            handed.Add(new Handed(counts, key, row));
         }
 
         /// <summary>
@@ -238,7 +241,8 @@ namespace Federator.Core.Report
         /// row the report does not hold under it, since the status the rule gives could then
         /// reach no row, or where a row it holds was handed with another number of clashes
         /// than it stands for, and a mirror handed another number of clashes than its report
-        /// holds keeps its place and merges nothing. Every one of those is said by Lines.
+        /// holds, or a clash with an item not read, keeps its place and merges nothing. Every
+        /// one of those is said by Lines.
         /// </summary>
         public void AddTo(ClashReport report)
         {
@@ -289,7 +293,7 @@ namespace Federator.Core.Report
                 counts.Ran = true;
                 counts.Holds = mirrorReports[0].RawClashes;
 
-                if (counts.Found != counts.Holds)
+                if (counts.Found != counts.Holds || counts.NotRead > 0)
                 {
                     continue;
                 }
@@ -321,11 +325,7 @@ namespace Federator.Core.Report
 
                 KeptClash keptClash;
 
-                if (clash.Key == null)
-                {
-                    counts.NotRead++;
-                }
-                else if (!seen.Add(clash.Key))
+                if (!seen.Add(clash.Key))
                 {
                     counts.Repeats++;
                 }
@@ -456,12 +456,12 @@ namespace Federator.Core.Report
         /// <summary>
         /// The MIRROR lines for the log, once AddTo has run. Where nothing was merged, the one
         /// line saying why. Otherwise for each mirror merged what it and the kept test found,
-        /// then every clash only that mirror found, each named, his words, then once each what
-        /// could not be compared and what it repeated, then how many clashes both found carry
-        /// another status under it and every one of them named with both statuses and the one
-        /// the report shows, his words to Q138, and that it was taken out of the report. A
-        /// mirror that did not run, or was handed another number of clashes than its report
-        /// holds, is one line saying so, UNKNOWN and never 0. Last, what the report holds under
+        /// then every clash only that mirror found, each named, his words, then once what it
+        /// repeated, then how many clashes both found carry another status under it and every
+        /// one of them named with both statuses and the one the report shows, his words to
+        /// Q138, and that it was taken out of the report. A mirror that did not run, was handed
+        /// another number of clashes than its report holds, or was handed a clash with an item
+        /// not read, is one line saying so, UNKNOWN and never 0. Last, what the report holds under
         /// the kept test. Before AddTo has run, one line saying what each found is UNKNOWN.
         /// </summary>
         public IList<string> Lines()
@@ -495,12 +495,24 @@ namespace Federator.Core.Report
                     continue;
                 }
 
-                if (!counts.Merged)
+                if (!counts.Merged && counts.Found != counts.Holds)
                 {
                     lines.Add(MirrorRule.Prefix + "   " + counts.Found + (counts.Found == 1 ? " clash of " : " clashes of ")
                         + mirror + (counts.Found == 1 ? " was" : " were") + " handed to the merge and its report holds "
                         + counts.Holds + ", so which clashes it found is UNKNOWN, nothing of it is merged into " + kept
                         + ", and it stays in the report as its own test, where a clash both find is counted twice");
+                    continue;
+                }
+
+                if (!counts.Merged)
+                {
+                    lines.Add(MirrorRule.Prefix + "   " + counts.NotRead + (counts.NotRead == 1
+                            ? " clash of " + mirror + " has an item that was not read, so whether " + kept + " found it is "
+                                + "UNKNOWN"
+                            : " clashes of " + mirror + " have an item that was not read, so whether " + kept + " found "
+                                + "them is UNKNOWN")
+                        + ", nothing of " + mirror + " is merged into " + kept + ", and " + mirror + " stays in the report "
+                        + "as its own test, where a clash both find is counted twice");
                     continue;
                 }
 
@@ -515,18 +527,6 @@ namespace Federator.Core.Report
                 {
                     lines.Add(MirrorRule.Prefix + "   found by the mirror only, added to " + kept + ": " + Said(row.Name)
                         + " of " + mirror + ", " + Said(row.Left.Name) + " against " + Said(row.Right.Name));
-                }
-
-                if (counts.NotRead > 0)
-                {
-                    lines.Add(MirrorRule.Prefix + "   " + counts.NotRead
-                        + (counts.NotRead == 1
-                            ? " clash of " + mirror + " has an item that was not read, so whether " + kept
-                                + " found it is UNKNOWN and it is not added, and with " + mirror
-                                + " taken out of the report it is in no block of it"
-                            : " clashes of " + mirror + " have an item that was not read, so whether " + kept
-                                + " found them is UNKNOWN and they are not added, and with " + mirror
-                                + " taken out of the report they are in no block of it"));
                 }
 
                 if (counts.Repeats > 0)
@@ -677,7 +677,10 @@ namespace Federator.Core.Report
             /// <summary>The clashes its report holds, read by AddTo where it ran.</summary>
             internal int Holds { get; set; }
 
-            /// <summary>Whether it ran and was handed as many clashes as its report holds, and so was merged.</summary>
+            /// <summary>
+            /// Whether it ran and was handed as many clashes as its report holds, each with both
+            /// items read, and so was merged.
+            /// </summary>
             internal bool Merged { get; set; }
 
             /// <summary>How many tests of the mirror's name the report held.</summary>
@@ -686,7 +689,10 @@ namespace Federator.Core.Report
             internal List<ClashRow> Only { get; private set; }
         }
 
-        /// <summary>One clash a mirror handed, kept until AddTo, since the kept test's clashes may come after it.</summary>
+        /// <summary>
+        /// One clash a mirror handed with both items read, kept until AddTo, since the kept
+        /// test's clashes may come after it.
+        /// </summary>
         private sealed class Handed
         {
             internal Handed(MirrorCounts counts, string key, ClashRow row)

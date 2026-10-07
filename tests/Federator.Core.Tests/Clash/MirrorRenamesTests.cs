@@ -592,6 +592,56 @@ namespace Federator.Core.Tests
             Assert.That(swapped.Pairs[0].MirrorName, Is.EqualTo(NewName));
         }
 
+        /// <summary>The rule of the XML over a document holding only that one test of the kept test's name.</summary>
+        private static MirrorRule OverTheKeptTestSavedAs(SavedClashTest saved)
+        {
+            return TheXmlRuleOver(ClashTestPlan.FromDocument(new List<SavedClashTest> { saved }, "m"));
+        }
+
+        /// <summary>What the document holds under the kept test's name where a setting of it was changed by hand.</summary>
+        private static string ChangedByHand(string differences)
+        {
+            return "a test named " + Kept + " that asks the XML's question of " + Kept + " at other settings, the XML's "
+                + "first: " + differences;
+        }
+
+        // The breaker's first finding on attempt 9. Week two of an XML run, the document's test
+        // of the kept test's name asks the XML's question, but a person changed a setting of it
+        // by hand. A drifted test is left as it is and runs at the document's settings, and the
+        // mirror is created at the XML's, so a clash the mirror finds that it does not would be
+        // added to it though it never found it. Until attempt 10 the two were paired on the
+        // sets alone. Now they are not paired and the line names each setting, the mirror's
+        // side set against the side it stands for where the test is saved swapped.
+        [Test]
+        public void ATestUnderTheKeptTestsNameWithASettingChangedByHandIsNotPaired()
+        {
+            MirrorRule tolerance = OverTheKeptTestSavedAs(
+                new SavedClashTest(Kept, 1, 0.05, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }));
+            MirrorRule type = OverTheKeptTestSavedAs(
+                new SavedClashTest(Kept, 2, 0.025, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }));
+            MirrorRule merge = OverTheKeptTestSavedAs(
+                new SavedClashTest(Kept, 1, 0.025, false, false, 1, Ducts, false, 1, Columns, new[] { 0 }));
+            MirrorRule primitives = OverTheKeptTestSavedAs(
+                new SavedClashTest(Kept, 1, 0.025, true, false, 1, Ducts, false, 3, Columns, new[] { 0 }));
+            MirrorRule selfSwapped = OverTheKeptTestSavedAs(
+                new SavedClashTest(Kept, 1, 0.025, true, true, 1, Columns, false, 1, Ducts, new[] { 0 }));
+
+            Assert.That(tolerance.Pairs, Is.Empty, "no clash the mirror found at 0.025 m goes under a test run at 0.05 m");
+            Assert.That(tolerance.Renames.Lines(), Does.Contain(NotPairedFor(
+                ChangedByHand("the tolerance 0.025 m and 0.05 m"), true)));
+            Assert.That(type.Pairs, Is.Empty);
+            Assert.That(type.Renames.Lines(), Does.Contain(NotPairedFor(
+                ChangedByHand("the test type HardConservative and Clearance"), true)));
+            Assert.That(merge.Pairs, Is.Empty);
+            Assert.That(merge.Renames.Lines(), Does.Contain(NotPairedFor(ChangedByHand("merge composites on and off"), true)));
+            Assert.That(primitives.Pairs, Is.Empty);
+            Assert.That(primitives.Renames.Lines(), Does.Contain(NotPairedFor(
+                ChangedByHand("the right side primitive types 1 and 3"), true)));
+            Assert.That(selfSwapped.Pairs, Is.Empty);
+            Assert.That(selfSwapped.Renames.Lines(), Does.Contain(NotPairedFor(
+                ChangedByHand("the right side self intersect off and on"), true)));
+        }
+
         // ---------- what the rule is handed, F132 attempt 8 ----------
 
         // An XML run names its mirrors against every test the document holds, so a rule over

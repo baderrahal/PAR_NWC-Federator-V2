@@ -214,7 +214,8 @@ namespace Federator.Core.Tests
         }
 
         // An item nobody read cannot be compared. Added, it could be a clash the kept test
-        // holds counted twice, so it is not added, and the log says UNKNOWN.
+        // holds counted twice, so it is not added, and since attempt 10 its mirror is not
+        // merged and keeps the clash in its own block, and the log says UNKNOWN.
         [Test]
         public void AMirrorClashWithAnItemNotReadIsNotAdded()
         {
@@ -226,7 +227,8 @@ namespace Federator.Core.Tests
                 Found(report, merge, 0, unread, "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
                 merge.AddTo(report);
 
-                Assert.That(merge.NotCompared, Is.EqualTo(1), "read as \"" + unread + "\"");
+                Assert.That(Named(report, Mirror), Is.Not.Null, "read as \"" + unread + "\"");
+                Assert.That(Named(report, Mirror).Rows.Count, Is.EqualTo(1), "read as \"" + unread + "\"");
                 Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
                 Assert.That(Named(report, Kept).Rows.Count, Is.EqualTo(1));
             }
@@ -631,7 +633,6 @@ namespace Federator.Core.Tests
             Assert.That(report.Totals.Total, Is.EqualTo(3), "the clash not handed is still in a block");
             Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
             Assert.That(merge.FoundByBoth, Is.Null);
-            Assert.That(merge.NotCompared, Is.Null);
             Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   1 clash of " + Mirror + " was handed to the "
                 + "merge and its report holds 2, so which clashes it found is UNKNOWN, nothing of it is merged into " + Kept
                 + ", and it stays in the report as its own test, where a clash both find is counted twice"));
@@ -692,8 +693,8 @@ namespace Federator.Core.Tests
 
         // ---------- what a merge does not know reads UNKNOWN, the breaker's finding on attempt 6 ----------
 
-        // A mirror that did not run was never compared, so what the mirrors found by both and
-        // with an item not read is UNKNOWN, never a plain 0 added to the sum. What was added to
+        // A mirror that did not run was never compared, so what the mirrors found by both is
+        // UNKNOWN, never a plain 0 added to the sum. What was added to
         // the kept test is a count taken, nothing of the mirror that did not run among it.
         [Test]
         public void AMirrorThatDidNotRunLeavesWhatTheMirrorsFoundUnknown()
@@ -707,7 +708,6 @@ namespace Federator.Core.Tests
             merge.AddTo(report);
 
             Assert.That(merge.FoundByBoth, Is.Null);
-            Assert.That(merge.NotCompared, Is.Null);
             Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
         }
 
@@ -723,7 +723,6 @@ namespace Federator.Core.Tests
             merge.AddTo(report);
 
             Assert.That(merge.FoundByBoth, Is.Null);
-            Assert.That(merge.NotCompared, Is.Null);
             Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
         }
 
@@ -738,7 +737,6 @@ namespace Federator.Core.Tests
             merge.AddTo(report);
 
             Assert.That(merge.FoundByBoth, Is.Null);
-            Assert.That(merge.NotCompared, Is.Null);
         }
 
         // ---------- a test kept over two mirrors, Q121 B ----------
@@ -896,8 +894,7 @@ namespace Federator.Core.Tests
 
             string all = Text(merge.Lines());
 
-            Assert.That(all, Does.Contain(MirrorRule.Prefix + "   1 clash of " + Mirror
-                + " has an item that was not read, so whether " + Kept + " found it is UNKNOWN and it is not added"));
+            Assert.That(all, Does.Contain(NotReadLine(1)));
             Assert.That(all, Does.Contain(MirrorRule.Prefix + "   1 clash of " + Kept
                 + " has an item that was not read, so up to 1 of the clashes found by a mirror only may be "
                 + Kept + "'s own as well, UNKNOWN"));
@@ -919,22 +916,56 @@ namespace Federator.Core.Tests
 
         // ---------- F132 attempt 6 ----------
 
-        // Both readers' finding on attempt 5. A clash of the mirror with an item not read is
-        // not added, and the mirror that held it is taken out of the report, so it is in no
-        // block, and the line says so where it said only that it was not added.
-        [Test]
-        public void AMirrorClashWithAnItemNotReadIsSaidToBeInNoBlock()
+        /// <summary>The line of a mirror not merged because that many of its clashes have an item not read.</summary>
+        private static string NotReadLine(int notRead)
         {
-            MirrorMerge merge = TheMerge();
-            ClashReport report = TheReport(merge, 1);
+            return MirrorRule.Prefix + "   " + notRead + (notRead == 1
+                    ? " clash of " + Mirror + " has an item that was not read, so whether " + Kept + " found it is UNKNOWN"
+                    : " clashes of " + Mirror + " have an item that was not read, so whether " + Kept + " found them is "
+                        + "UNKNOWN")
+                + ", nothing of " + Mirror + " is merged into " + Kept + ", and " + Mirror + " stays in the report as its "
+                + "own test, where a clash both find is counted twice";
+        }
 
-            Found(report, merge, 0, null, "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
-            merge.AddTo(report);
+        // Attempt 8's breaker finding 2, under Bader's rule Q140. Both readers' finding on
+        // attempt 5 said a clash of the mirror with an item not read was in no block, since it
+        // was not added and the mirror that held it was taken out of the report, so the Excel
+        // was one short of the panel. Whether the kept test found it is UNKNOWN, so since
+        // attempt 10 that mirror is not merged and stays in the report as its own test with
+        // every clash it found, each test's block holding what its panel holds, and the line
+        // says why.
+        [Test]
+        public void AMirrorWithAClashOfAnItemNotReadIsNotMergedAndKeepsEveryClash()
+        {
+            foreach (int notRead in new[] { 1, 2 })
+            {
+                MirrorMerge merge = TheMerge();
+                ClashReport report = TheReport(merge, 1);
 
-            Assert.That(Text(merge.Lines()), Does.Contain(MirrorRule.Prefix + "   1 clash of " + Mirror
-                + " has an item that was not read, so whether " + Kept + " found it is UNKNOWN and it is not added, "
-                + "and with " + Mirror + " taken out of the report it is in no block of it"));
-            Assert.That(report.Totals.Total, Is.EqualTo(1), "the clash is in no block, as the line says");
+                Found(report, merge, 0, "item 7", "item 8", Row("Clash1", ClashStatus.New, "column 7", "duct 8"));
+
+                for (int i = 1; i <= notRead; i++)
+                {
+                    Found(report, merge, 0, null, "item " + (20 + i), Row("Clash" + (1 + i), ClashStatus.New, "column", "duct"));
+                }
+
+                merge.AddTo(report);
+
+                Assert.That(Named(report, Mirror), Is.Not.Null, "the mirror keeps its place");
+                Assert.That(Named(report, Mirror).Rows.Count, Is.EqualTo(1 + notRead));
+                Assert.That(Named(report, Mirror).Rows[0].FoundOnlyByMirror, Is.Empty,
+                    "a clash of its own block, never marked as found by the mirror only");
+                Assert.That(Named(report, Kept).Rows.Count, Is.EqualTo(1), "nothing of the mirror is added to the kept test");
+                Assert.That(report.Totals.Total, Is.EqualTo(2 + notRead), "every clash is in its own test's block");
+                Assert.That(report.MirrorsMerged, Is.EqualTo(0));
+                Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
+                Assert.That(merge.FoundByBoth, Is.Null);
+                Assert.That(merge.Lines(), Is.EqualTo(new[]
+                {
+                    NotReadLine(notRead),
+                    MirrorRule.Prefix + "   the report holds 1 under " + Kept
+                }));
+            }
         }
 
         // The breaker's finding on attempt 5. Before AddTo has run what each mirror found is
@@ -949,7 +980,6 @@ namespace Federator.Core.Tests
 
             Assert.Throws<InvalidOperationException>(() => { int? count = merge.FoundByBoth; });
             Assert.Throws<InvalidOperationException>(() => { int count = merge.AddedToTheKeptTest; });
-            Assert.Throws<InvalidOperationException>(() => { int? count = merge.NotCompared; });
             Assert.That(merge.Lines(), Is.EqualTo(new[]
             {
                 MirrorRule.Prefix + "   the clashes of the mirrors of " + Kept + " are not merged into it yet, so what "

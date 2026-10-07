@@ -253,8 +253,8 @@ namespace Federator.Core.Clash
             {
                 List<PlannedClashTest> group = byQuestion[key];
                 PlannedClashTest kept = KeptOf(group, priorities);
-                bool keptUnknown;
-                string keptHeld = KeptHeldAs(document, kept, identity, out keptUnknown);
+                bool keptCountedTwice;
+                string keptHeld = KeptHeldAs(document, kept, identity, out keptCountedTwice);
 
                 foreach (PlannedClashTest other in group)
                 {
@@ -273,7 +273,7 @@ namespace Federator.Core.Clash
                     {
                         moved.Add(Prefix + "   the document holds " + keptHeld + ". A test is run by its name, so "
                             + other.Name + " is not paired with it as a mirror and keeps its own clashes"
-                            + (keptUnknown ? ", and a clash both find may be counted twice" : string.Empty));
+                            + (keptCountedTwice ? ", and a clash both find may be counted twice" : string.Empty));
                         continue;
                     }
 
@@ -366,16 +366,19 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// What the document holds under the kept test's own name on an XML run, F132 attempt 9,
-        /// where it may not ask the question the pair was judged on, or null where it holds no
-        /// test of that name or the one it holds asks that question, in the kept test's order or
-        /// swapped, by its sides. A test is run by its name and a drifted test is left as it is,
-        /// so a mirror's clashes merged into it would sit under another question. Unknown is
-        /// true where whether it asks that question is UNKNOWN.
+        /// What the document holds under the kept test's own name on an XML run, F132 attempts 9
+        /// and 10, where it may not ask the question the pair was judged on at the settings it was
+        /// judged at, or null where it holds no test of that name or the one it holds asks that
+        /// question, in the kept test's order or swapped, by its sides, with every setting
+        /// TestDrift.Compare reads the XML's. A test is run by its name and a drifted test is
+        /// left as it is, so a mirror's clashes merged into it would sit under another question,
+        /// or be clashes it never found at its own settings. CountedTwice is true where a clash
+        /// both find may then be counted twice, its question the same or UNKNOWN.
         /// </summary>
-        private static string KeptHeldAs(InTheDocument document, PlannedClashTest kept, SetIdentity identity, out bool unknown)
+        private static string KeptHeldAs(
+            InTheDocument document, PlannedClashTest kept, SetIdentity identity, out bool countedTwice)
         {
-            unknown = true;
+            countedTwice = true;
 
             PlannedClashTest one;
             string held = OneReadUnder(document, kept.Name, kept.Name, "it asks the XML's question of " + kept.Name, out one);
@@ -389,7 +392,12 @@ namespace Federator.Core.Clash
 
             if (asks == true)
             {
-                return null;
+                IList<string> differ = MirrorPair.SettingsDiffer(kept, one, identity.SidesSwapped(one, kept));
+
+                return differ.Count == 0
+                    ? null
+                    : "a test named " + kept.Name + " that asks the XML's question of " + kept.Name + " at other "
+                        + "settings, the XML's first: " + string.Join(", ", new List<string>(differ).ToArray());
             }
 
             if (asks == null)
@@ -398,7 +406,7 @@ namespace Federator.Core.Clash
                     + " is UNKNOWN, a set's rule list not read";
             }
 
-            unknown = false;
+            countedTwice = false;
             return "a test named " + kept.Name + " whose sides ask another question than the XML's " + kept.Name;
         }
 

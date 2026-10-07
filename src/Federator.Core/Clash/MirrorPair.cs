@@ -133,39 +133,52 @@ namespace Federator.Core.Clash
                 found.Add("priority " + Priorities.Words(keptPriority) + " and " + Priorities.Words(mirrorPriority));
             }
 
-            TestSettings kept = TestSettings.FromFile(Kept);
-            TestSettings mirror = SideForSide(TestSettings.FromFile(Mirror));
+            found.AddRange(SettingsDiffer(Kept, Mirror, sidesSwapped));
+            return found;
+        }
 
-            // The sets are the same question by the rule that made the pair, so only the
-            // flags of each side are compared, never the set names.
-            mirror.LeftLocator = kept.LeftLocator;
-            mirror.RightLocator = kept.RightLocator;
+        /// <summary>
+        /// Every setting TestDrift.Compare reads where two tests of one question differ, each
+        /// with the first test's value then the other's, the other's sides set against the
+        /// first's they stand for, swapped where sidesSwapped. The sets are the same question
+        /// by the rule that judged the two, so only the flags of each side are compared, never
+        /// the set names. Read by the pair's line and by MirrorRule where the document holds a
+        /// test under the kept test's name, F132 attempt 10.
+        /// </summary>
+        internal static IList<string> SettingsDiffer(PlannedClashTest first, PlannedClashTest other, bool sidesSwapped)
+        {
+            TestSettings firstSettings = TestSettings.FromFile(first);
+            TestSettings otherSettings = SideForSide(TestSettings.FromFile(other), sidesSwapped);
+            List<string> found = new List<string>();
 
-            foreach (TestDifference difference in TestDrift.Compare(Kept.Name, kept, mirror))
+            otherSettings.LeftLocator = firstSettings.LeftLocator;
+            otherSettings.RightLocator = firstSettings.RightLocator;
+
+            foreach (TestDifference difference in TestDrift.Compare(first.Name, firstSettings, otherSettings))
             {
-                found.Add(difference.Field + " " + Valued(difference, difference.InFile, Kept) + " and "
-                    + Valued(difference, difference.InDocument, Mirror));
+                found.Add(difference.Field + " " + Valued(difference, difference.InFile, first) + " and "
+                    + Valued(difference, difference.InDocument, other));
             }
 
             return found;
         }
 
-        /// <summary>The mirror's settings with its sides in the kept test's order.</summary>
-        private TestSettings SideForSide(TestSettings mirror)
+        /// <summary>The other test's settings with its sides in the first test's order.</summary>
+        private static TestSettings SideForSide(TestSettings other, bool sidesSwapped)
         {
             if (!sidesSwapped)
             {
-                return mirror;
+                return other;
             }
 
-            bool leftSelf = mirror.LeftSelfIntersect;
-            int leftPrimitives = mirror.LeftPrimitiveTypes;
+            bool leftSelf = other.LeftSelfIntersect;
+            int leftPrimitives = other.LeftPrimitiveTypes;
 
-            mirror.LeftSelfIntersect = mirror.RightSelfIntersect;
-            mirror.LeftPrimitiveTypes = mirror.RightPrimitiveTypes;
-            mirror.RightSelfIntersect = leftSelf;
-            mirror.RightPrimitiveTypes = leftPrimitives;
-            return mirror;
+            other.LeftSelfIntersect = other.RightSelfIntersect;
+            other.LeftPrimitiveTypes = other.RightPrimitiveTypes;
+            other.RightSelfIntersect = leftSelf;
+            other.RightPrimitiveTypes = leftPrimitives;
+            return other;
         }
 
         /// <summary>A tolerance carries its test's units, because Bader reads the two side by side.</summary>
