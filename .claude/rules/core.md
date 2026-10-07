@@ -697,7 +697,8 @@ and 6 does not read as broken.
              skipped because a model is not on the same shared coordinates
     FAILED   something requested threw or produced nothing, a rebuild that appended
              nothing or could not keep its saved tests included, or a model names no
-             shared site, or names Internal in a group whose clash is not skipped, Q70
+             shared site or names Internal in a group whose clash is not skipped, Q70.
+             Where the clash is skipped neither fails it, Q111 B, F137
   The rule lives in Federator.Core.Rerun.GroupJudgement, with no Navisworks types
   in it, so it can be tested. The outcome and the reason for it come out of one
   pass, so the two can never disagree. A failure on where the models sit is kept apart
@@ -707,15 +708,21 @@ and 6 does not read as broken.
   models
 - A GROUP NOT ON THE SAME SHARED COORDINATES SKIPS ITS CLASH AND NOTHING ELSE, Q98 B2
   and Bader's answer to Q99 and Q100 on 2026-10-04. A model is not on the same
-  coordinates when it names Internal as its shared site, or when it sits more than a
+  coordinates when it names Internal as its shared site, when its site was read and names
+  none at all, his answer B to Q111 on 2026-10-05 built by F137, or when it sits more than a
   metre from its group's reference model, as the ALIGNMENT block measures it. That
-  replaces Q70 for a model on Internal ONLY WHERE THE GROUP'S CLASH IS SKIPPED. Wherever
-  no clash is skipped, the rule off or no clash test to run in the group, a model on
-  Internal fails its group as Q70 answered, `AlignmentCheck.WhyItFailsTheGroup` taking the
-  four inputs the block takes, because his words give such a group PARTIAL or nothing and
-  never DONE, and a group with nothing to clash would otherwise end DONE. A model naming no
-  site at all fails it either way, because his answer named Internal and the distance and
-  not that. The reason is made at the ALIGNMENT step, before any file of the group is
+  replaces Q70 for a model on Internal or naming no site ONLY WHERE THE GROUP'S CLASH IS
+  SKIPPED. Wherever no clash is skipped, the rule off or no clash test to run in the group,
+  such a model fails its group as Q70 answered, `AlignmentCheck.WhyItFailsTheGroup` taking
+  the four inputs the block takes, because his words give such a group PARTIAL or nothing
+  and never DONE, and a group with nothing to clash would otherwise end DONE. A site whose
+  read threw is neither, FR-002, and is not judged. `AlignmentCheck.NamesNoSite` is the one
+  test of a model naming none, and its line in the block, the note and the list for the
+  modellers says the model names no shared site at all. His answer B to Q125, PARTIAL with
+  the reason models not on the same shared coordinates for a group that runs no clash test
+  with such a model, is not built yet, because it needs the engine's facts of whether a test
+  would run, and the test WhereNoClashIsSkippedANoSiteModelStillFailsTheGroupUntilQ125IsWired
+  pins what main does until then. The reason is made at the ALIGNMENT step, before any file of the group is
   written, so it names the models and their sites and NOTHING OF A FILE. The steps that
   write say what was written. The ALIGNMENT failed run line, `AlignmentCheck.FailedRunLine`,
   names both causes whichever way the rule is set, and says nothing of which files were

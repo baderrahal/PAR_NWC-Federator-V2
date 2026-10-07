@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 500 rows: open 219, in progress 42, in review 0, merged 206, proven by a run 26, waiting for Bader 2, dropped 5
-- By wave: 1 19, 2a 54, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 70, outside the waves 2, right after F133 merges 6
+- By status, of 503 rows: open 222, in progress 42, in review 0, merged 206, proven by a run 26, waiting for Bader 2, dropped 5
+- By wave: 1 19, 2a 54, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 70, outside the waves 2, right after F133 merges 6
 - In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, step 364 the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 25 FR items
 - Waits for Bader, 2 rows: step 228-233, F114-K29
 
@@ -380,6 +380,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q111 | a model that names no site at all | F137 | question | merged | 118 | none | 2026-10-05 |
 | Q125 | a group that runs no clash test, a model off the coordinates | F137 | question | merged | 118 | none | 2026-10-05 |
 | FR-201 | shared site named default reported only | F137 | Bader's decision | merged | 131, records only, main already does it | none | 2026-10-06 |
+| F137-R1 | ModelFactsReader.SharedCoordinateOn returns an empty site where the Location tab is missing so a read fault reads as a model naming no site and skips the clash | F137 | register row | open | none | none | 2026-10-07 |
+| F137-R2 | the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged | F137 | register row | open | none | none | 2026-10-07 |
+| F137-R3 | the comments of FederationEngine near lines 2154 and 2300 and ModelFactsReader near 154 still say a model naming no site fails its group either way | F137 | register row | open | none | none | 2026-10-07 |
 
 ## before the waves
 

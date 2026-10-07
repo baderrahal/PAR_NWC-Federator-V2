@@ -499,3 +499,6 @@ F115-R21,a side whose sources read as none counts as zero sides and never as not
 F115-R22,a set created and then lost track of is reported FAILED and may not ask for the save,F115,2a,register row,open,none,none,2026-10-07
 F115-R23,two sets of one name in the picked file are built as one set and counted as one created and one already there,F115,2a,register row,open,none,none,2026-10-07
 F127-R1,read-workbook.ps1 reads every sheet as a test sheet so the Coverage sheet makes every F104 verdict NOT PROVED until it reads a sheet named Coverage into a section of its own,F127,2a,register row,open,none,none,2026-10-07
+F137-R1,ModelFactsReader.SharedCoordinateOn returns an empty site where the Location tab is missing so a read fault reads as a model naming no site and skips the clash,F137,before the test of wave 1,register row,open,none,none,2026-10-07
+F137-R2,the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged,F137,before the test of wave 1,register row,open,none,none,2026-10-07
+F137-R3,the comments of FederationEngine near lines 2154 and 2300 and ModelFactsReader near 154 still say a model naming no site fails its group either way,F137,before the test of wave 1,register row,open,none,none,2026-10-07
