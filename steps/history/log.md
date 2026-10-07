@@ -1812,7 +1812,28 @@ f126-records-harness.py, which made the edits. Also /tmp/added.txt of Git for Wi
 lines read for a semicolon, deleted once read.
 
 
-## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built again after an eleventh attempt on Bader's answers B to Q121, D to Q133, A to Q136, A to Q137 and B to Q138 and his rule of 2026-10-06 for its next reading, attempts 9 to 11 on 2026-10-07, and held on its branch
+## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built again after a twelfth attempt on Bader's answers B to Q121, D to Q133, A to Q136, A to Q137 and B to Q138, his rule of 2026-10-06 for its next reading and the lead's Q142 A until he answers, attempts 9 to 12 on 2026-10-07, and held on its branch
+
+Written by F132's developer as the lead's delegate. Attempt 12, under Bader's rule Q140, on the five
+faults of the breaker's reading of attempt 11, turn5\lanes-1007-break11-F132.json, CHANGES, closed
+at their root by one rule, the lead's question Q142 to Bader, its answer A built until he answers,
+turn5\q142-draft.txt: a mirror's clashes are merged only where this run created both tests of the
+pair from the picked XML and no set of either drifted from it, by the set drift check, and in every
+other case each test keeps its own clashes and the log says why. Core tests 2163 passed, 0 failed,
+0 skipped at dd9da7e, turn5\f132n-tests-before.txt. 12 tests failed first against the code of
+dd9da7e with one stub, the new argument of MirrorRule.Of ignored, 10 new and 2 older ones moved to
+the new rule, turn5\f132n-before-fail.txt and f132n-stub.patch. Main 3f2a300 taken in at e20c813,
+one conflict in steps\01_next.md, F139 keeping order line 46 and F132 taking 47,
+turn5\f132n-resolve-merge.py, 2163 passed by its pre-commit, turn5\f132n-precommit-merge.txt. The
+code, 168bcfd, 2174 passed, 0 failed, 0 skipped by its pre-commit, turn5\f132n-precommit-code.txt,
+and on their own, turn5\f132n-tests-after.txt. `dotnet build ParsonsNwcFederator.sln -c Release
+--no-incremental` built Federator.Core, Federator.Core.Tests and Federator.Addin with 0 errors and
+0 warnings at 168bcfd with the tree clean, turn5\f132n-build-code.txt, whose first lines carry the
+hash and the empty status. check-locals and check-imports exit 0 over src at 168bcfd,
+turn5\f132n-checks.txt. The held name rules of attempts 8 to 11 went with their code, and each of
+their tests was kept as a test that its case now keeps its own clashes. Two findings this attempt
+leaves open are rows F132-R1 and F132-R2 of steps\tracker.csv. This developer started no
+Navisworks. No add-in file changed in attempt 12.
 
 Written by F132's developer as the lead's delegate. Attempt 11, under Bader's rule Q140, on the two
 faults both readings of attempt 10 carry, turn5\lanes-1007-review10-F132.json and
