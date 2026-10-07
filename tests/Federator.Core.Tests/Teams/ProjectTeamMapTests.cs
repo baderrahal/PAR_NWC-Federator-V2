@@ -36,6 +36,8 @@ namespace Federator.Core.Tests
                 Assert.That(map.TeamOf(code), Is.EqualTo(his.TeamOf(code)), code);
             }
 
+            TeamMapTests.Same(his.SizeFolderTeams, "Mechanical", "Electrical");
+            TeamMapTests.Same(map.SizeFolderTeams, "Mechanical", "Electrical");
             // Every TEAMS line after the first, which names where each was read: the teams with
             // their codes, the order of a pair and the teams whose pairs carry the size folder.
             System.Collections.Generic.IList<string> read = map.Lines();

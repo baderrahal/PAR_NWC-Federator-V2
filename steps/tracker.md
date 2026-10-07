@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 473 rows: open 209, in progress 54, in review 0, merged 178, proven by a run 26, waiting for Bader 1, dropped 5
-- By wave: 1 19, 2a 31, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 69, outside the waves 2, right after F133 merges 6
+- By status, of 476 rows: open 211, in progress 54, in review 0, merged 178, proven by a run 26, waiting for Bader 2, dropped 5
+- By wave: 1 19, 2a 31, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 69, outside the waves 2, right after F133 merges 6
 - In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, step 364 the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 39 FR items
-- Waits for Bader, 1 row: step 228-233
+- Waits for Bader, 2 rows: step 228-233, F114-K29
 
 ## Wave 1
 
@@ -77,24 +77,24 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| FR-065 | viewpoint dimming carries between viewpoints | F114 | silent wrong number | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-066 | size text reads tail of word digits | F114 | silent wrong number | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-067 | clear rebuild drops viewpoints | F114 | broken feature | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-068 | size tally never constructed | F114 | broken feature | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-069 | views cost per viewpoint | F114 | slow | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-070 | views 45 minute basis and options | F114 | slow | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-071 | views log silent up to 21 minutes | F114 | slow | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-072 | penetrations upwards walk outside try | F114 | loud failure | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-073 | views seconds parts do not add | F114 | noise | in progress | none, branch fix-F114 | none | 2026-10-04 |
+| FR-065 | viewpoint dimming carries between viewpoints | F114 | silent wrong number | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-066 | size text reads tail of word digits | F114 | silent wrong number | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-067 | clear rebuild drops viewpoints | F114 | broken feature | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-068 | size tally never constructed | F114 | broken feature | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-069 | views cost per viewpoint | F114 | slow | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-070 | views 45 minute basis and options | F114 | slow | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-071 | views log silent up to 21 minutes | F114 | slow | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-072 | penetrations upwards walk outside try | F114 | loud failure | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-073 | views seconds parts do not add | F114 | noise | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-177 | generic models counted and a set per model | F128 | Bader's request | open | none | none | 2026-10-04 |
 | FR-180 | team map beside the picked xml | F131 | Bader's decision | merged | 135 | none | 2026-10-07 |
 | FR-181 | mechanical sets miss hv pl fp models | F131 | Bader's decision | in progress | 135 merged for F131, the COVERAGE block and the form wait for F127 | none | 2026-10-07 |
-| FR-184 | views tree by priority and team pair | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-185 | one view per test of its open clashes | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-186 | views made fresh only the tools own | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-187 | views proof on 1a02mm and the views tree block | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| FR-188 | views rules in docs workflow | F114 | Bader's decision | in progress | none, branch fix-F114 | none | 2026-10-04 |
-| F114 | views | F114 | fix | in progress | none, branch fix-F114 at e77e8a7, waits for F131 and F132 | none | 2026-10-06 |
+| FR-184 | views tree by priority and team pair | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-185 | one view per test of its open clashes | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-186 | views made fresh only the tools own | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-187 | views proof on 1a02mm and the views tree block | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| FR-188 | views rules in docs workflow | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| F114 | views | F114 | fix | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | F128 | generic models | F128 | fix | open | none | none | 2026-10-04 |
 | F131 | teams | F131 | fix | merged | 135 | none | 2026-10-07 |
 | Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | open | none | none | 2026-10-04 |
@@ -106,6 +106,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q119 | which models a view shows | F114 | question | merged | 118 | none | 2026-10-05 |
 | Q120 | a view the tool made that a person changed | F114 | question | merged | 118 | none | 2026-10-05 |
 | Q123 | a run with no XML picked and the team map | F131 | question | merged | 118 | none | 2026-10-05 |
+| F114-K29 | a team map may name a team UNKNOWN, so a side with no code and a side of that team share a pair folder | F114 | register row | waiting for Bader | none | none | 2026-10-07 |
+| F114-K30 | a view side is read by its set name alone, so two sets of one name giving two teams read UNKNOWN in the views and two teams on the TEAMS lines | F114 | register row | open | none | none | 2026-10-07 |
+| F114-K31 | a set with no name in the clash XML gets a TEAMS line naming no set, TeamMap.SetLines | F114 | register row | open | none | none | 2026-10-07 |
 
 ## Wave 2b and before any test run
 

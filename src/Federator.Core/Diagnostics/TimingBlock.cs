@@ -55,6 +55,68 @@ namespace Federator.Core.Diagnostics
         /// <summary>The words the run block is titled with.</summary>
         public const string RunTitle = "TIMING, THE WHOLE RUN";
 
+        /// <summary>The words the block of each group's time beside its sizes is titled with, Q101.</summary>
+        public const string SizeTitle = "TIMING BESIDE SIZE";
+
+        /// <summary>
+        /// Each group's time beside what it held, slowest first, then where every number
+        /// comes from, Q101. Bader's answer on 2026-10-04: the 45 minutes is not judged in
+        /// this round, and each group's time goes beside the sizes of its NWC files and its
+        /// item counts so the target can be set after the proof run. So this block judges
+        /// nothing and sets no target, and the line about the 45 minutes stays the last line
+        /// of the run block, as it was.
+        /// </summary>
+        public static IList<string> BesideSize(IList<GroupSize> groups)
+        {
+            List<string> lines = new List<string>();
+            lines.Add("by group, slowest first, with what each group held");
+
+            List<GroupSize> slowest = new List<GroupSize>();
+
+            if (groups != null)
+            {
+                foreach (GroupSize group in groups)
+                {
+                    if (group != null)
+                    {
+                        slowest.Add(group);
+                    }
+                }
+            }
+
+            if (slowest.Count == 0)
+            {
+                lines.Add("no group ran");
+            }
+            else
+            {
+                slowest.Sort(SlowestGroupFirst);
+
+                foreach (GroupSize group in slowest)
+                {
+                    lines.Add(Name(group.Building) + Show(group.Seconds).PadLeft(12) + "  " + group.Words());
+                }
+            }
+
+            lines.Add(string.Empty);
+            lines.Add("where each number comes from");
+            lines.Add("  seconds     the group's own clock, the number on its GROUP finished line");
+            lines.Add("  NWC         the files the group was handed, each sized on the disk when the group finished");
+            lines.Add("  elements    the Revit elements the EXPORT CHECK counted in the group's models");
+            lines.Add("  clashes     every clash of every test the group ran, as its CLASH finished line counts them");
+            lines.Add("  viewpoints  the viewpoints the VIEWS step created, as its VIEWS BUILT block counts them");
+            lines.Add("  UNKNOWN is a number that could not be read, and never a zero");
+
+            return lines;
+        }
+
+        /// <summary>Slowest first, and a tie read in name order so two runs of one folder list it the same way.</summary>
+        private static int SlowestGroupFirst(GroupSize left, GroupSize right)
+        {
+            int bySeconds = right.Seconds.CompareTo(left.Seconds);
+            return bySeconds != 0 ? bySeconds : string.CompareOrdinal(left.Building, right.Building);
+        }
+
         /// <summary>
         /// The row that carries whatever the steps do not account for. It is named the
         /// same in both blocks so one reading answers the same question at either level.
