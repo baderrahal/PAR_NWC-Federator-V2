@@ -458,7 +458,7 @@ F139-R7,"a commit staging tracker.csv or the page is refused where no powershell
 F139-R8,"steps\logs\README.md line 11 names steps/log.md, in a folder never edited, for Bader",none,none,register row,merged,139,none,2026-10-07
 F139-R9,"the Stop gate's merge test reads only a line starting STATE and a space in capitals, while its reader takes other spellings, so a page written another way is refused until respelled, the lead writing the plain form",none,none,register row,open,none,none,2026-10-07
 step 228-233,"the published NWD checked in ACC, by Bader himself at the final run after F114 merges",none,none,register row,waiting for Bader,none,none,2026-10-07
-step 346-352,"the remote branches other than main whose pull requests merged, deleted by the lead by Bader's answer, D6",none,none,register row,in progress,none,none,2026-10-07
+step 346-352,"the remote branches other than main whose pull requests merged, deleted by the lead by Bader's answer, D6",none,none,register row,proven by a run,none,"turn5\d6-deleted.txt, 67 deleted and read back, 17 kept by his rule",2026-10-07
 step 364,"the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept",none,none,register row,in progress,none,none,2026-10-07
 T5-R-WALKRACE,the harness's walk of the loop folder races a lane building under a wt- folder,none,none,register row,open,none,none,2026-10-07
 FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,open,none,none,2026-10-06
@@ -471,3 +471,4 @@ FR-204,manifest line 9 and its one exception,F123,5,Bader's decision,open,none,n
 Q140,F132's next attempt only for a fault that can change a clash count or its test,F132,2a,Bader's request,in progress,"none, branch fix-F132",none,2026-10-06
 Q141,a clash in a result group with two statuses,none,none,question,merged,139,none,2026-10-07
 Q142,when a mirror's clashes may be merged,none,none,question,merged,139,none,2026-10-07
+T5-R-P15CRASH,"probe P15 read a viewpoints copy after Document.Clear, Navisworks crashed and the guard refused the put back, put back by the lead at 14:53 from its backup",none,none,register row,proven by a run,none,"turn5\restart\putback-rebuild-views-20261007-144356-write, 0 still different",2026-10-07
