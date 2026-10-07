@@ -39,9 +39,15 @@ namespace Federator.Core.Diagnostics
         public const string AfterTheRun = "after the run finished";
 
         private RunClock(double session, double started, double finished, bool marked)
+            : this(session, started, finished, marked, true)
+        {
+        }
+
+        private RunClock(double session, double started, double finished, bool marked, bool finishedMarked)
         {
             SessionSeconds = Never(session);
             Marked = marked;
+            Finished = finishedMarked;
             StartedAt = marked ? Never(started) : 0.0;
             FinishedAt = marked ? Never(finished) : SessionSeconds;
         }
@@ -54,6 +60,18 @@ namespace Federator.Core.Diagnostics
         {
             return new RunClock(sessionSeconds, startedAt, finishedAt, true);
         }
+
+        /// <summary>
+        /// A run that started and never finished, a scan that threw after RUN started. It is counted to
+        /// the moment the block is written and says RUN finished was never marked, FR-050.
+        /// </summary>
+        public static RunClock Unfinished(double sessionSeconds, double startedAt)
+        {
+            return new RunClock(sessionSeconds, startedAt, sessionSeconds, true, false);
+        }
+
+        /// <summary>Whether RUN finished was marked. False only for a run counted to now.</summary>
+        public bool Finished { get; private set; }
 
         /// <summary>
         /// No run mark at all. The run is the session and the block says so. This is what
@@ -121,6 +139,12 @@ namespace Federator.Core.Diagnostics
             lines.Add(Row("session", SessionSeconds));
             lines.Add(Row(WaitingForThePerson, WaitingSeconds));
             lines.Add(Row("the run", RunSeconds));
+
+            if (!Finished)
+            {
+                lines.Add("the run started and RUN finished was never marked, so the run is counted to now");
+            }
+
             lines.Add(Row(AfterTheRun, AfterSeconds));
             lines.Add("the run is RUN started to RUN finished, and every share below is "
                 + "worked off it. The other two are not work this tool did");

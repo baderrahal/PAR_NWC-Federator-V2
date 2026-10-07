@@ -265,11 +265,24 @@ namespace Federator.Core.Diagnostics
 
         public static RunLog StartOrDisabled(string preferredFolder, DateTime startedAt, int keepLogs)
         {
+            return StartOrDisabled(preferredFolder, System.IO.Path.GetTempPath(), startedAt, keepLogs);
+        }
+
+        /// <summary>
+        /// The same, with the folder it falls back to named, which is the system temp folder for the
+        /// run and a folder of the test's own in a test, FR-054.
+        /// </summary>
+        public static RunLog StartOrDisabled(string preferredFolder, string fallbackFolder, DateTime startedAt, int keepLogs)
+        {
             List<string> tried = new List<string>();
             List<string> whatThrew = new List<string>();
 
-            foreach (string folder in new[] { preferredFolder, System.IO.Path.GetTempPath() })
+            string[] folders = { preferredFolder, fallbackFolder };
+
+            for (int at = 0; at < folders.Length; at++)
             {
+                string folder = folders[at];
+
                 if (string.IsNullOrEmpty(folder))
                 {
                     continue;
@@ -277,7 +290,9 @@ namespace Federator.Core.Diagnostics
 
                 try
                 {
-                    return Start(folder, startedAt, keepLogs);
+                    // Only the preferred folder is this tool's own. The fallback may be the shared
+                    // temp folder, where a run-*.log can belong to another program, FR-054.
+                    return Start(folder, startedAt, keepLogs, at == 0);
                 }
                 catch (Exception error)
                 {
@@ -314,6 +329,11 @@ namespace Federator.Core.Diagnostics
         /// <paramref name="keepLogs"/> files, the new one included.
         /// </summary>
         public static RunLog Start(string folder, DateTime startedAt, int keepLogs)
+        {
+            return Start(folder, startedAt, keepLogs, true);
+        }
+
+        private static RunLog Start(string folder, DateTime startedAt, int keepLogs, bool ownFolder)
         {
             if (folder == null)
             {
@@ -358,7 +378,15 @@ namespace Federator.Core.Diagnostics
 
             // After the new file is open, so the live file is in the list and can be held
             // back from deletion by name rather than by hoping it sorts newest.
-            log.PruneOldLogs(folder, keepLogs);
+            if (ownFolder)
+            {
+                log.PruneOldLogs(folder, keepLogs);
+            }
+            else
+            {
+                log.Line("RETAIN   nothing was deleted, " + folder + " is not the folder this tool keeps its logs in");
+            }
+
             return log;
         }
 
@@ -410,6 +438,7 @@ namespace Federator.Core.Diagnostics
 
                 int deleted = 0;
                 int refused = 0;
+                int rowFiles = 0;
 
                 for (int i = keepOthers; i < others.Count; i++)
                 {
@@ -423,11 +452,31 @@ namespace Federator.Core.Diagnostics
                         refused++;
                         Line("RETAIN   could not delete " + others[i].Name + ": "
                             + error.GetType().Name + ": " + error.Message);
+                        continue;
+                    }
+
+                    // FR-055. The .tsv beside a deleted log goes with it. One with no log of its own
+                    // is never looked for, so a file that is not this tool's stays.
+                    string beside = RowLog.PathFor(others[i].FullName);
+
+                    try
+                    {
+                        if (File.Exists(beside))
+                        {
+                            File.Delete(beside);
+                            rowFiles++;
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        refused++;
+                        Line("RETAIN   could not delete " + System.IO.Path.GetFileName(beside) + ": "
+                            + error.GetType().Name + ": " + error.Message);
                     }
                 }
 
                 Line("RETAIN   keeping " + keepLogs + " logs, deleted " + deleted
-                    + ", could not delete " + refused);
+                    + ", could not delete " + refused + ", and " + rowFiles + " .tsv beside them");
             }
             catch (Exception error)
             {
@@ -487,6 +536,9 @@ namespace Federator.Core.Diagnostics
             lock (gate)
             {
                 runStartedAt = ElapsedSeconds;
+
+                // FR-050. A second run in the window must not be given the first run's finish.
+                runFinishedAt = -1.0;
             }
 
             Line("RUN      started, " + groups + (groups == 1 ? " group" : " groups"));
@@ -514,7 +566,14 @@ namespace Federator.Core.Diagnostics
             {
                 lock (gate)
                 {
-                    return runStartedAt < 0 || runFinishedAt < 0
+                    // FR-050. A run that started and never finished is counted to now and says so,
+                    // and is not called a run nobody marked.
+                    if (runStartedAt >= 0 && runFinishedAt < 0)
+                    {
+                        return RunClock.Unfinished(ElapsedSeconds, runStartedAt);
+                    }
+
+                    return runStartedAt < 0
                         ? RunClock.NotMarked(ElapsedSeconds)
                         : RunClock.From(ElapsedSeconds, runStartedAt, runFinishedAt);
                 }
@@ -577,9 +636,26 @@ namespace Federator.Core.Diagnostics
 
             Action<string> handler = LineWritten;
 
-            if (handler != null)
+            if (handler == null)
             {
-                handler(line);
+                return;
+            }
+
+            // FR-057. The line is on the disk first. A listener that throws is named in the log and
+            // taken off, so the window can never stop a run through a log line, and the others
+            // keep hearing it.
+            foreach (Action<string> listener in handler.GetInvocationList())
+            {
+                try
+                {
+                    listener(line);
+                }
+                catch (Exception error)
+                {
+                    LineWritten -= listener;
+                    Line("LOG      a listener of this log threw " + error.GetType().Name + ": " + error.Message
+                        + ", so it was removed and the run goes on");
+                }
             }
         }
 
@@ -1349,7 +1425,7 @@ namespace Federator.Core.Diagnostics
                     + "  " + DescribeSize(size),
                 succeeded ? "appended" : "append failed",
                 "APPEND",
-                EventRow.Count(size < 0 ? 0L : size),
+                size < 0 ? string.Empty : EventRow.Count(size),
                 file);
         }
 
@@ -2022,10 +2098,17 @@ namespace Federator.Core.Diagnostics
             RunClock spent = where;
 
             Line("run time       : " + spent.RunSeconds.ToString("0.000", CultureInfo.InvariantCulture)
-                + "s" + (spent.Marked ? string.Empty : ", which is the session, no run was marked"));
-            Line("waiting for the person : "
-                + spent.WaitingSeconds.ToString("0.000", CultureInfo.InvariantCulture)
-                + "s, which is not work this tool did");
+                + "s" + (spent.Marked ? string.Empty : ", which is the session, no run was marked")
+                + (spent.Marked && !spent.Finished ? ", counted to now, RUN finished was never marked" : string.Empty));
+
+            // FR-051. The waiting time is what came before the run, so it is only stated where a run
+            // was marked. With no mark nobody measured it and it is not said as zero.
+            if (spent.Marked)
+            {
+                Line("waiting for the person : "
+                    + spent.WaitingSeconds.ToString("0.000", CultureInfo.InvariantCulture)
+                    + "s, which is not work this tool did");
+            }
             Line("total elapsed  : " + ElapsedSeconds.ToString("0.000", CultureInfo.InvariantCulture) + "s");
 
             // F81. What the two files came to, so a run says whether the trimming worked
@@ -2146,7 +2229,14 @@ namespace Federator.Core.Diagnostics
                     return -1;
                 }
 
-                return new FileInfo(path).Length;
+                // FR-046. Read through a handle that shares the file, because FileInfo.Length of a
+                // file this process still holds open for writing lagged on the disk of the run and
+                // printed the .tsv as 0 bytes against 1,499,250.
+                using (FileStream held = new FileStream(
+                           path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+                {
+                    return held.Length;
+                }
             }
             catch (Exception)
             {
