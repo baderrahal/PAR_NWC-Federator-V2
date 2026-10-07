@@ -696,32 +696,7 @@ namespace Federator.Core.Diagnostics
         public void Numbered(string message, string happening, string name, string number, string text)
         {
             Line(message);
-
-            RowLog writer;
-            string group;
-            string step;
-
-            lock (gate)
-            {
-                writer = rows;
-                group = currentGroup;
-                step = currentStep;
-            }
-
-            if (writer == null)
-            {
-                return;
-            }
-
-            writer.Write(new EventRow(
-                DateTime.Now.ToString(TimeFormat, CultureInfo.InvariantCulture),
-                ElapsedSeconds,
-                group,
-                step,
-                happening,
-                name,
-                number,
-                text));
+            Row(happening, name, number, text);
         }
 
         /// <summary>
@@ -1125,6 +1100,40 @@ namespace Federator.Core.Diagnostics
             }
         }
 
+        /// <summary>One step of the current group added up from its records, T1-N57.</summary>
+        private sealed class StepTotal
+        {
+            internal double Seconds;
+            internal int Visits;
+            internal int Threw;
+        }
+
+        /// <summary>
+        /// The seconds, the visits and the visits that threw of one step in the current group, read off
+        /// the step records. The one place the records are added up, and read under the gate.
+        /// </summary>
+        private StepTotal TotalOf(string name)
+        {
+            StepTotal total = new StepTotal();
+
+            foreach (StepRecord record in stepRecords)
+            {
+                if (string.Equals(record.Group, currentGroup, StringComparison.Ordinal)
+                    && string.Equals(record.Name, name, StringComparison.Ordinal))
+                {
+                    total.Seconds += record.Seconds;
+                    total.Visits++;
+
+                    if (record.Threw)
+                    {
+                        total.Threw++;
+                    }
+                }
+            }
+
+            return total;
+        }
+
         /// <summary>
         /// Every step this group entered more than once, as one record each carrying the
         /// total, so the rows say the same thing the repeated lines do.
@@ -1137,22 +1146,11 @@ namespace Federator.Core.Diagnostics
             {
                 foreach (string name in RunSteps.All)
                 {
-                    double seconds = 0.0;
-                    int visits = 0;
+                    StepTotal total = TotalOf(name);
 
-                    foreach (StepRecord record in stepRecords)
+                    if (total.Visits > 1)
                     {
-                        if (string.Equals(record.Group, currentGroup, StringComparison.Ordinal)
-                            && string.Equals(record.Name, name, StringComparison.Ordinal))
-                        {
-                            seconds += record.Seconds;
-                            visits++;
-                        }
-                    }
-
-                    if (visits > 1)
-                    {
-                        totals.Add(new StepRecord(currentGroup, name, 0, 0.0, seconds, false));
+                        totals.Add(new StepRecord(currentGroup, name, 0, 0.0, total.Seconds, false));
                     }
                 }
             }
@@ -1207,24 +1205,9 @@ namespace Federator.Core.Diagnostics
                         continue;
                     }
 
-                    double seconds = 0.0;
-                    int threw = 0;
+                    StepTotal total = TotalOf(name);
 
-                    foreach (StepRecord record in stepRecords)
-                    {
-                        if (string.Equals(record.Group, currentGroup, StringComparison.Ordinal)
-                            && string.Equals(record.Name, name, StringComparison.Ordinal))
-                        {
-                            seconds += record.Seconds;
-
-                            if (record.Threw)
-                            {
-                                threw++;
-                            }
-                        }
-                    }
-
-                    repeated.Add(StepRecord.RepeatedLine(name, visits, seconds, threw));
+                    repeated.Add(StepRecord.RepeatedLine(name, visits, total.Seconds, total.Threw));
                 }
 
                 visitsInGroup.Clear();
