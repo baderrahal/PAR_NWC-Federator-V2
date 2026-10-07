@@ -16,16 +16,15 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 | 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | merged as pull request 142, add-in half and the loop's records wait for the laptop lane |
 | 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | Core half merged as pull request 145, the add-in half and the sheet writer wait |
 | 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 merged as pull request 146, Q125 B left for the laptop lane |
-| 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 merged as pull request 147, the rest left |
-| 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items in review, the rest left |
-| 6 | F128's Core part, generic models, FR-177 | fix-F128 | waits |
+| 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 merged as pull request 147, the rest left for the laptop lane |
+| 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items merged as pull request 148 with FR-057 half, the rest left for the laptop lane |
+| 6 | F128's Core part, generic models, FR-177 | fix-F128 | not started, see below |
 
 ## The item the lane is on
 
-F119, from the branch claude/lane-b-release-plan-zztyvx, the one branch this session may push,
-restarted from main after each merge. F115 merged as pull request 142, F127 as 145, F137 as 146 and
-F118 as 147. fix-F115 and fix-F127 stay on origin and
-are not deleted, because their records are theirs.
+None. The branch claude/lane-b-release-plan-zztyvx is the one branch this session may push, restarted
+from main after each merge. F115 merged as pull request 142, F127 as 145, F137 as 146, F118 as 147 and
+F119 as 148. fix-F115 and fix-F127 stay on origin and are not deleted, because their records are theirs.
 
 ## How this session records, which differs from the rule above
 
@@ -77,7 +76,7 @@ lane's to set in the tracker.
 | F127 | fix-F127 carried on, Core half only: main merged in, WriteResultBlock takes thisRun, makeViewpoints and coverage in that order, and after the first reading the headline no longer counts a test neither side holds as agreeing, says how many tests Clash Detective holds that the picked file does not name, judges a name on two tests of the file on neither, calls Compact a possible cause and never the cause, and keeps a FAILED line to one line. The add-in has to build the CoverageAcrossTheRun in the engine and hand it to the window's call of WriteResultBlock, call ClashRunOutcome.RecordSides and KeepItemsByLocator in ClashRunner near its two skip sites, and the Coverage sheet writer is not written | 145 | merged, 2348b58 |
 | F137 | Part 1 of FR-195, Q111 B: a model whose site was read and names none is listed by AlignmentCheck as not on the same shared coordinates, so with the rule on and a test to run its group skips the clash and ends PARTIAL, its line says the model names no shared site at all, and it fails its group only where no clash is skipped. The grey line of the tick box and the failed run line say so. Q125 B, PARTIAL for a group that runs no clash test, needs JobOutcome and FederationEngine, which fix-F114's add-in pass changes, so it is left, and the test named StillFailsTheGroupUntilQ125IsWired flips when it lands | 146 | merged, f1557fe |
 | F118 | FR-035: the workbook check counts the tests of one row and the full blocks, says how many are of each, reads row 1 and the widths of a workbook with no full block and says no block layout was compared. FR-037: a test the priority file names twice is named in the log with both lines and both letters, the last letter still wins, and the row count is the rows of the file. FR-036, FR-040 and FR-199 need ClashRunner, ClashReportModel or the engine's call of the workbook check, which an open branch changes, and FR-041 needs a probe of the grid first | 147 | merged, a174ca0 |
-| F119 | FR-046 sizes read through a handle that shares the file and a file that exists is never said missing. FR-048 the .tsv row of a file not on disk carries no number. FR-050 a run that started and never finished is counted to now and says so, and RunStarted forgets an earlier run's finish. FR-051 RESULT states no waiting time where no run was marked. FR-052 NoTolerance is a skip reason row. FR-054 the fallback folder is never pruned. FR-055 a .tsv goes with its log. FR-056 the pace of the group before is the mean of its visits. FR-057 a listener that throws is named and removed once, and a log file that cannot be written is said once and the run goes on. FR-043 to FR-045, FR-053 and FR-189 need the engine or ClashRunner, FR-047 needs ClashRunner, FR-049 resets the whole state of a log across runs and is larger than a Core fix | in review | in review |
+| F119 | FR-046 sizes read through a handle that shares the file and a file that exists is never said missing. FR-048 the .tsv row of a file not on disk carries no number. FR-050 a run that started and never finished is counted to now and says so, and RunStarted forgets an earlier run's finish. FR-051 RESULT states no waiting time where no run was marked. FR-052 NoTolerance is a skip reason row. FR-054 the fallback folder is never pruned. FR-055 a .tsv goes with its log. FR-056 the pace of the group before is the mean of its visits. FR-057 a listener that throws is named and removed once, and a log file that cannot be written is said once and the run goes on. FR-043 to FR-045, FR-053 and FR-189 need the engine or ClashRunner, FR-047 needs ClashRunner, FR-049 resets the whole state of a log across runs and is larger than a Core fix | 148 | merged, 4c33402 |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -117,7 +116,19 @@ and the row that said how many worksets a stopped walk had seen.
 
 ## Where the lane stopped
 
-It has not stopped.
+It stopped on 7 Oct 2026 after F119, the night's list done as far as Core alone can take it. F128 was
+not started, for three reasons. Bader's own item says to measure first which property and value name
+Generic Models on 1A02MM and 1A04PK, and that needs a probe through the guarded start of Navisworks,
+UNKNOWN until read. The counts per model file, the GENERIC block and the sheet all take a read of the
+document that only the add-in makes, so a Core plan of the set folder, one search set per model on the
+category and LcOaNodeSourceFile, would be called by no running code, which breaks the no member without a
+caller rule. And the workbook writer and the engine are files an open branch of the laptop lane changes.
+What can be written in Core once the probe has answered is the set plan and the counts rule, with the
+add-in call in the same pull request.
+
+Every item above that lane B left, and every point its readers raised, is under its own heading below,
+for the laptop lane to take in the order it chooses. The pull requests that merged are 142, 145, 146, 147
+and 148, and each ran its Core tests under mono here and on the Windows runner of Actions.
 
 ## F127 points the readers raised that lane B left, for the laptop lane
 
