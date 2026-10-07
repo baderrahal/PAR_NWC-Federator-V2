@@ -1,6 +1,24 @@
 # log
 
 Newest entry at the top.
+## 2026-10-07 The loop, turn 5, picked up in the morning, Bader's message headed GOOD MORNING, CONTINUE THE LOOP, and the plan
+
+The System log reads the company's shutdown.exe starting the shutdown at 19:30:39 on 2026-10-06 and 19:31:09 on
+2026-10-05, so the day of 2026-10-06, closed at 19:21, closed in time, and today's close starts at 18:40. The PC
+started at 09:29:27. Get-Process Roamer read one at 10:28:40, pid 41872, started by hand at 10:28:15 with
+-licensing AdLM, Bader's own, so the waiting rule holds: no probe, harness, install or put back until it closes.
+Every lane is pushed and clean at the heads the night stop named. The keep-awake runs again as pid 35152.
+
+The plan, in Bader's order, each step by the NIGHT STOP paragraph of steps\loop.md:
+1. F131: read the ninth harness failure, fix it if new, open its pull request, merge once green
+2. F132: attempt 9 on the one point under Q140, then its readers
+3. F139: attempt 2 again, the gate by content, then its reviewer and merge, then Q141 on main
+4. Once his Navisworks closes: his settings against P10's backup, then the probes, Q133 on 1A04PK and P11 to P19
+5. F114 once F131 merges, then F132's add-in half, then main installed and the runs of 1A02MM and 1A04PK
+6. Close the day from 18:40, before the company shutdown at about 19:30
+
+STATE OPEN.
+
 ## 2026-10-06 The loop, turn 5, stopped safely for the night, STATE NIGHT
 
 By Bader's message headed STOP SAFELY FOR THE NIGHT. F139's attempt 2 and the lane that runs alone were stopped

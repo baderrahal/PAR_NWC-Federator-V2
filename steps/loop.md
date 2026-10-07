@@ -1,6 +1,6 @@
 # The loop
 
-STATE NIGHT
+STATE OPEN
 
 STATUS of every FR item, F area, request of Bader's and question waiting for him lives in
 steps\tracker.csv only, made readable as steps\tracker.md by tools\tracker\make-tracker.ps1,
@@ -451,6 +451,14 @@ test already saved in an NWF keeps its own tolerance. Nothing is written into NM
 desktop.
 
 ## Next action
+
+PICKED UP ON 2026-10-07 by Bader's message headed GOOD MORNING, CONTINUE THE LOOP. The company's shutdown.exe
+began the shutdown at 19:30:39 on 2026-10-06, 9 minutes after the day closed at 19:21, and at 19:31:09 the night
+before, so the day closes from 18:40. The PC started at 09:29:27. A Navisworks of Bader's runs, Roamer pid 41872,
+started by hand at 10:28:15 with -licensing AdLM, so by the waiting rule no probe, harness, install or put back
+runs until it closes, read every 10 minutes, and the compare of his settings with P10's backup waits for it too.
+Every lane below is pushed and clean at the head the night stop names. The keep-awake runs again, pid 35152.
+The lanes go on from the NIGHT STOP paragraph below, in its order, code first while his Navisworks runs.
 
 NIGHT STOP OF 2026-10-06, Bader's message headed STOP SAFELY FOR THE NIGHT. Nothing runs. No Navisworks was
 started tonight and Get-Process Roamer read 0 at 18:42 and 19:04, so no settings were put back. The probe pause is
