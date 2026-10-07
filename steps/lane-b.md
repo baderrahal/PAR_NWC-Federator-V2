@@ -13,7 +13,7 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 
 | Order | Item | Branch | State |
 |---|---|---|---|
-| 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | pull request 142, second reading |
+| 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | code merged as PR 142, its records and two fixes of a third reading in PR 144 |
 | 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | waits |
 | 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 made, Q125 B left for the laptop lane |
 | 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 made |
@@ -22,11 +22,22 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 
 ## The item the lane is on
 
-F115, pull request 142, from the branch claude/lane-b-release-plan-zztyvx, the one branch this
-session may push, restarted from main after each merge. fix-F115 and fix-F127 stay on origin and
-are not deleted, because their records are theirs.
+Two sessions of the lane write this page. The cloud session: F115, pull request 142, from the
+branch claude/lane-b-release-plan-zztyvx, the one branch it may push, restarted from main after
+each merge. The worktree session, in .claude\worktrees\agent-a9ff34180e9235316 of the checkout on
+Bader's machine, which may write the records and the tracker: F115's records and two fixes of the
+breaker's third reading, on fix-F115, pull request 144, then F127 on fix-F127 after the cloud
+session's PR 145. fix-F115 is deleted once PR 144 merges, and fix-F127 once its records merge.
 
-## How this session records, which differs from the rule above
+## How the worktree session records
+
+By CLAUDE.md and .claude\rules\steps.md: the rule in .claude\rules\core.md where a rule changed,
+the section and the DONE line in steps\01_next.md, the entry at the top of
+steps\history\log.md, the rows in steps\tracker.csv with the page and the counts made again, and
+this page, all in the item's pull request. Where the cloud session's pull request put an item's
+code on main first, the worktree session's pull request carries what that one left out.
+
+## How the cloud session records, which differs from the rule above
 
 Bader's instruction of 7 Oct 2026 for this session is that it writes its record in this page only.
 So its pull requests do not touch steps\tracker.csv, steps\tracker.md, steps\PROGRESS.md,
@@ -72,7 +83,8 @@ lane's to set in the tracker.
 
 | ID | What changed | PR | Status |
 |---|---|---|---|
-| F115 | fix-F115 carried on: main merged in, source conflicts resolved, main's AlsoAskTests moved to the judge form the branch introduced, and three lines made true after the first reading, the EMPTY SETS wording, the window totals for a rebuilt set and the row of a stopped walk | 142 | second reading |
+| F115 | fix-F115 carried on: main merged in, source conflicts resolved, main's AlsoAskTests moved to the judge form the branch introduced, and three lines made true after the first reading, the EMPTY SETS wording, the window totals for a rebuilt set and the row of a stopped walk | 142 | merged 2026-10-07 at 13:25, 6729b9e |
+| F115 | the records of fix-F115, the rules, the plan section, the log entry and the tracker rows, and two fixes of the breaker's third reading: the EMPTY SETS judge reads a set group by group, and one unused twin serves one leftover. Core tests 2203 before and 2207 after, 0 failed, 0 skipped | 144 | merged with this page |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 

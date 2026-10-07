@@ -364,6 +364,21 @@ and 6 does not read as broken.
   the one list for both blocks, where a model whose walk stopped adds none, and a value among
   them is carried whatever project the lists are of. A nearest value differing by letter case
   alone says so in words
+- A SET IS JUDGED GROUP BY GROUP AND IS WRONG ONLY WHERE EVERY OR GROUP ASKS A VALUE NO MODEL
+  CARRIES, the breaker's finding on F115's third pass, 2026-10-07. `EmptySets.Why` splits the
+  conditions by the plan's own grouping rule and judges each group as the whole set was judged:
+  wrong on a value a complete list does not carry, cannot tell on a value a list that is not this
+  project's does not carry, there where every judged value is carried. The set is wrong only
+  where every group is, it is there where any group is, and it cannot tell otherwise, a group
+  the judge can read nothing of, a Source File alone, among them. The judge read the conditions
+  one by one and called a set wrong on the first value nothing carries, so the shape every
+  also-ask line of F131 writes, (Ducts and a workset nobody has) or (Ducts and a workset the
+  models carry), was told its condition is wrong. A set of one group reads as it did
+- ONE UNUSED TWIN SERVES ONE LEFTOVER, the same reading. `SetLeftovers.For` hands a twin to the
+  first leftover asking its question and refuses the next, because the first removes the twin
+  and takes its name, so the second would then remove the first, a working set with sides, by
+  that name, while both lines said RENAMED
+
 ### The teams of the picked file, F131
 
 - THE TEAM MAP IS ONE PROJECT'S DATA, IN A FILE OF ITS OWN BESIDE THE PICKED XML, Q114

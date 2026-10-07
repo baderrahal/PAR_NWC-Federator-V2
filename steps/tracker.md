@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 489 rows: open 224, in progress 37, in review 0, merged 195, proven by a run 26, waiting for Bader 2, dropped 5
-- By wave: 1 19, 2a 43, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 70, outside the waves 2, right after F133 merges 6
+- By status, of 499 rows: open 234, in progress 37, in review 0, merged 195, proven by a run 26, waiting for Bader 2, dropped 5
+- By wave: 1 19, 2a 53, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 70, outside the waves 2, right after F133 merges 6
 - In progress now: F109 install, F114 views, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, step 364 the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 23 FR items
 - Waits for Bader, 2 rows: step 228-233, F114-K29
 
@@ -78,6 +78,16 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F115-R10 | the judge branch for the workset list inside Core not read has no test | F115 | register row | open | none | none | 2026-10-05 |
 | F115-R11 | the Build sets button judges every set at zero CANNOT TELL | F115 | register row | open | none | none | 2026-10-05 |
 | F115-R12 | whether SearchCondition.Options reads back StartGroup 64 is UNKNOWN until the wave 2a weekly run | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R14 | the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports | F115 | register row | open | none | none | 2026-10-07 |
+| F115-R15 | a damaged NWF is still saved after a leftover rename fails and the Build sets button says nothing of it | F115 | register row | open | none | none | 2026-10-07 |
+| F115-R16 | a set the plan skipped is read as one the file does not name and can be removed with the box on | F115 | register row | open | none | none | 2026-10-07 |
+| F115-R17 | the HEALTH block's category check reads the 374 categories of one project with no project guard | F115 | register row | open | none | none | 2026-10-07 |
+| F115-R18 | the sets lines blame the box where a rebuild failed and name lines the window does not show | F115 | register row | open | none | none | 2026-10-07 |
+| F115-R19 | a rebuilt set is not read against the file after the rebuild so one that did not take is counted rebuilt every run | F115 | register row | open | none | none | 2026-10-07 |
+| F115-R20 | leftovers are neither decided nor reported with the rebuild box off | F115 | register row | open | none | none | 2026-10-07 |
+| F115-R21 | a side whose sources read as none counts as zero sides and never as not counted | F115 | register row | open | none | none | 2026-10-07 |
+| F115-R22 | a set created and then lost track of is reported FAILED and may not ask for the save | F115 | register row | open | none | none | 2026-10-07 |
+| F115-R23 | two sets of one name in the picked file are built as one set and counted as one created and one already there | F115 | register row | open | none | none | 2026-10-07 |
 
 ## Wave 2a and 2b
 

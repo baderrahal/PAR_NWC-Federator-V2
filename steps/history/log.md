@@ -7,6 +7,59 @@ Written by the developer of F115 as the lead's delegate, on the lead's task of t
 named this entry. The task was given in the session and is kept in no file, beside the briefs
 turn5\f115-brief.md and turn5\area-brief-common.md.
 
+### The third pass, 2026-10-07, by lane B in its worktree on this machine, the records and a breaker's third read
+
+Lane B, the lane of Bader's message of 7 Oct 2026 headed FAST TO A TEAM RELEASE, took fix-F115 at
+f4dc480 after its attempt 2. Two sessions of the lane worked it the same afternoon. The cloud
+session, which may push one branch and write its record in steps\lane-b.md alone, merged main into
+the branch's code, made three lines true after a reading, and put the code on main as PR 142,
+6729b9e, at 13:25, its record on that page. This session, in the worktree
+.claude\worktrees\agent-a9ff34180e9235316 of this checkout, took the branch at the same f4dc480,
+merged main 556026b into it at 0e6e427, a merge whose message names 91c460f, main's head when the
+message was written and not the commit merged, then main 6729b9e at 306bc08, so the branch's code
+is main's since then, and carries what PR 142 left out on purpose: the F115 section of
+.claude\rules\core.md and addin.md, the order line 48 and the section of steps\01_next.md, this
+entry at the top of steps\history\log.md, and the tracker rows, in PR 144.
+
+Core tests, all with 0 failed and 0 skipped, run here on Windows with dotnet test:
+- 1987 passed on main 556026b before anything, turn5 holds nothing of this session, the files are
+  in the session's scratch folder under %TEMP%\claude, which nothing reads after the merge
+- 2044 passed on the branch with main 556026b merged in, and 2203 with main 6729b9e merged in,
+  F114's Core half and PR 142 among it, with no difference under src or tests against main
+- 2207 passed after the two fixes below, the four new tests among them, three of which failed
+  first against the merged code, f115-pass3-before-fail.txt in the scratch folder, the fourth a
+  guard that a set wrong in every group is still wrong
+- check-locals and check-imports pass over src. No build of the add-in, because no Navisworks is
+  on the path this session may read, and no Navisworks was started
+
+The breaker read the branch once, as Bader's limit of 7 Oct 2026 allows for the sets area, after
+main was merged in. Its first finding changes a line and a count the team sees and is fixed with
+its test: `EmptySets.Why` judged a set's conditions one by one and called the set wrong on the
+first value nothing carries, so a set of two Or groups, (Ducts and a workset nobody has) or (Ducts
+and a workset the models carry), the shape every also-ask line of F131 writes, read in the EMPTY
+SETS block as asking for a value no model carries and was counted as a wrong condition. It is
+judged group by group, wrong only where every group is. Its fourth finding changes a file the team
+sees with the rebuild box on and is fixed with its test: `SetLeftovers.For` handed one unused twin
+to two leftovers, so the second removed the first, renamed and carrying sides, by the twin's name.
+A twin is taken once. The reviewer's read, by this session, of the whole diff of the branch
+against main found no fault that changes a number, a status, a file or a clash the team sees, the
+merge of main's also-ask spellings with the judge among what it read. The breaker's other findings
+are register rows F115-R14 to F115-R23 in steps\tracker.csv, each an add-in change, a wording or a
+rule older than F115, for the laptop lane: the judge calling a value carried by no model where a
+model's walk stopped or a model was dropped, a damaged NWF still saved, a set the plan skipped
+read as one the file does not name, the HEALTH block's category check with no project guard, the
+sets lines blaming the box where a rebuild failed and naming lines the window does not show, a
+rebuilt set not checked against the file, leftovers neither decided nor reported with the box off,
+a side with no sources counted as zero sides, a set created and lost track of reported FAILED, and
+two sets of one name in the picked file built as one.
+
+The add-in half, SetBuilder.cs and the set methods of FederationEngine.cs, is main's since PR 142
+and was built on 2026-10-05 at 66a1563 by attempt 2. The merges since changed
+FederationEngine.WhatTheModelsCarry, which no build here has compiled, so the laptop lane builds
+the solution before any run. What waits for the local machine is unchanged: the test of wave 2a on
+1A02MM and 1A04PK, and the weekly run with the rebuild box ticked that measures what
+`SearchCondition.Options` reads back for an Or set, F115-R12.
+
 ### Attempt 2, on the reviewer's and the breaker's readings of attempt 1
 
 Written by the developer of F115 as the lead's delegate, on the lead's task for attempt 2, which

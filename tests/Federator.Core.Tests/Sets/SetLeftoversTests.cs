@@ -74,6 +74,33 @@ namespace Federator.Core.Tests.Sets
         }
 
         /// <summary>
+        /// ONE UNUSED TWIN SERVES ONE LEFTOVER, the breaker's finding on F115's third pass. Two
+        /// leftovers with sides asking the twin's question were both renamed into it: the first
+        /// removed the twin and took its name, and the second then removed the FIRST by that name
+        /// and took it, so a working set with sixty sides was removed while both lines said RENAMED.
+        /// The second is refused, because once the twin is taken there is no unused twin left.
+        /// </summary>
+        [Test]
+        public void OneUnusedTwinServesOneLeftoverAndTheSecondIsRefused()
+        {
+            IList<LeftoverSet> leftovers = SetLeftovers.For(
+                new List<DocumentSet>
+                {
+                    Set("BLD-DRPipe Accessories", 60, Asks),
+                    Set("BLD-DR Pipe Accessories", 12, Asks),
+                    Set("BLD-DR-Pipe Accessories", 0, Asks)
+                },
+                new List<string> { "BLD-DR-Pipe Accessories" });
+
+            Assert.That(leftovers.Count, Is.EqualTo(2));
+            Assert.That(leftovers[0].Name, Is.EqualTo("BLD-DRPipe Accessories"));
+            Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.RemoveTheTwinThenRename));
+            Assert.That(leftovers[1].Name, Is.EqualTo("BLD-DR Pipe Accessories"));
+            Assert.That(leftovers[1].Action, Is.EqualTo(LeftoverAction.Refuse));
+            Assert.That(leftovers[1].Line(), Does.Contain("no unused twin"));
+        }
+
+        /// <summary>
         /// REFUSE WHEN ANYTHING POINTING AT IT WOULD STOP RESOLVING. Wider than the brief's
         /// "loses its results", which 5z showed would never have caught this: the results
         /// survive a removal and the SIDE is what stops resolving.

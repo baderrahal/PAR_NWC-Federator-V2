@@ -488,3 +488,13 @@ F115-R13,the F115 log entry was written as the lead's delegate,none,none,registe
 F114-K29,"a team map may name a team UNKNOWN, so a side with no code and a side of that team share a pair folder",F114,2b,register row,waiting for Bader,none,none,2026-10-07
 F114-K30,"a view side is read by its set name alone, so two sets of one name giving two teams read UNKNOWN in the views and two teams on the TEAMS lines",F114,2b,register row,open,none,none,2026-10-07
 F114-K31,"a set with no name in the clash XML gets a TEAMS line naming no set, TeamMap.SetLines",F114,2b,register row,open,none,none,2026-10-07
+F115-R14,the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports,F115,2a,register row,open,none,none,2026-10-07
+F115-R15,a damaged NWF is still saved after a leftover rename fails and the Build sets button says nothing of it,F115,2a,register row,open,none,none,2026-10-07
+F115-R16,a set the plan skipped is read as one the file does not name and can be removed with the box on,F115,2a,register row,open,none,none,2026-10-07
+F115-R17,the HEALTH block's category check reads the 374 categories of one project with no project guard,F115,2a,register row,open,none,none,2026-10-07
+F115-R18,the sets lines blame the box where a rebuild failed and name lines the window does not show,F115,2a,register row,open,none,none,2026-10-07
+F115-R19,a rebuilt set is not read against the file after the rebuild so one that did not take is counted rebuilt every run,F115,2a,register row,open,none,none,2026-10-07
+F115-R20,leftovers are neither decided nor reported with the rebuild box off,F115,2a,register row,open,none,none,2026-10-07
+F115-R21,a side whose sources read as none counts as zero sides and never as not counted,F115,2a,register row,open,none,none,2026-10-07
+F115-R22,a set created and then lost track of is reported FAILED and may not ask for the save,F115,2a,register row,open,none,none,2026-10-07
+F115-R23,two sets of one name in the picked file are built as one set and counted as one created and one already there,F115,2a,register row,open,none,none,2026-10-07

@@ -197,6 +197,12 @@ namespace Federator.Core.Sets
                 }
             }
 
+            // ONE UNUSED TWIN SERVES ONE LEFTOVER, the breaker's finding on F115's third pass.
+            // Two leftovers asking the twin's question were both renamed into it: the first
+            // removed the twin and took its name, and the second then removed the first by that
+            // name, a working set with sides, while both lines said RENAMED.
+            List<DocumentSet> taken = new List<DocumentSet>();
+
             foreach (DocumentSet set in inDocument)
             {
                 if (set == null || named.Contains(set.Name))
@@ -216,7 +222,12 @@ namespace Federator.Core.Sets
                     continue;
                 }
 
-                DocumentSet twin = TwinFor(set, inDocument, named);
+                DocumentSet twin = TwinFor(set, inDocument, named, taken);
+
+                if (twin != null)
+                {
+                    taken.Add(twin);
+                }
 
                 leftovers.Add(twin == null
                     ? new LeftoverSet(set.Path, set.Name, set.Sides, LeftoverAction.Refuse, null, null)
@@ -229,12 +240,14 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// A set the FILE names, asking the IDENTICAL question, that NOTHING points at.
-        /// All three are required. A twin something points at would orphan those sides
-        /// instead, and a twin asking a different question is a different set that happens
-        /// to sit nearby.
+        /// A set the FILE names, asking the IDENTICAL question, that NOTHING points at, and
+        /// that no earlier leftover has taken. All four are required. A twin something points
+        /// at would orphan those sides instead, a twin asking a different question is a
+        /// different set that happens to sit nearby, and a twin already taken is the renamed
+        /// working set of the leftover before.
         /// </summary>
-        private static DocumentSet TwinFor(DocumentSet leftover, IList<DocumentSet> inDocument, HashSet<string> named)
+        private static DocumentSet TwinFor(
+            DocumentSet leftover, IList<DocumentSet> inDocument, HashSet<string> named, IList<DocumentSet> taken)
         {
             foreach (DocumentSet other in inDocument)
             {
@@ -242,6 +255,7 @@ namespace Federator.Core.Sets
                     || ReferenceEquals(other, leftover)
                     || other.Sides > 0
                     || !named.Contains(other.Name)
+                    || Holds(taken, other)
                     || !SameQuestion(leftover.ConditionKeys, other.ConditionKeys))
                 {
                     continue;
@@ -251,6 +265,20 @@ namespace Federator.Core.Sets
             }
 
             return null;
+        }
+
+        /// <summary>Whether that set is among those taken, by reference, because two sets may share a name.</summary>
+        private static bool Holds(IList<DocumentSet> taken, DocumentSet set)
+        {
+            foreach (DocumentSet one in taken)
+            {
+                if (ReferenceEquals(one, set))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

@@ -8,7 +8,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 23 | 8 | 0 | 0 | 13 | 0 | 44 |
+| 2a | 23 | 8 | 0 | 0 | 23 | 0 | 54 |
 | 2b | 11 | 16 | 0 | 1 | 5 | 0 | 33 |
 | 2c | 2 | 0 | 0 | 0 | 7 | 0 | 9 |
 | 3a | 8 | 4 | 0 | 0 | 8 | 0 | 20 |
@@ -16,7 +16,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 4 | 0 | 0 | 0 | 0 | 57 | 0 | 57 |
 | 5 | 4 | 0 | 0 | 0 | 68 | 0 | 72 |
 | outside the waves | 154 | 9 | 0 | 1 | 46 | 5 | 215 |
-| total | 221 | 37 | 0 | 2 | 224 | 5 | 489 |
+| total | 221 | 37 | 0 | 2 | 234 | 5 | 499 |
 <!-- the end of the counts -->
 
 ## Now
@@ -25,6 +25,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - F114 views: the Core half merged as PR 141, its add-in pass next on the laptop after F132's
 - Probes: P11 to P14 done, P15 crashed and is run again, then P16 to P19 and step 364's property probe
 - F131 merged as PR 135 and F138 as PR 127, the switch proven by the Q133 probe's real start
+- Lane B, steps\lane-b.md: F115's code merged as PR 142, its records and two fixes PR 144, then F127, F137, F118, F119, F128
 
 ## Next
 1. The probes P13 to P19, one Navisworks at a time, then FR-196's part 2 in run.ps1 with its harness

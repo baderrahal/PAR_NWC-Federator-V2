@@ -69,6 +69,67 @@ namespace Federator.Core.Tests.Sets
         }
 
         /// <summary>
+        /// A SET IS WRONG ONLY WHERE EVERY OR GROUP OF IT ASKS A VALUE NO MODEL CARRIES, the
+        /// breaker's finding on F115's third pass. The judge read the conditions one by one and
+        /// called the set wrong on the first value nothing carries, so a set of two Or groups,
+        /// (Ducts and a workset nobody has) or (Ducts and a workset the models carry), the shape
+        /// every also-ask line of F131 writes, was told its condition is wrong and to fix the very
+        /// spelling that is harmless, while the set can match through its other group.
+        /// </summary>
+        [Test]
+        public void ASetWithAnOrGroupAskingACarriedValueIsNotCalledWrongForTheOtherGroup()
+        {
+            EmptySet why = Why(
+                "a/BLD-ME-Ducts",
+                new List<ReadCondition>
+                {
+                    Category("Ducts"),
+                    Workset("ME-NOBODY"),
+                    new ReadCondition("LcRevitData_Element", EmptySets.CategoryProperty, "equals", "Ducts", PlannedCondition.StartGroupFlag),
+                    Workset("ME-Ductwork")
+                });
+
+            Assert.That(why.Reason, Is.EqualTo(EmptyReason.TheValueIsThereAnyway), why.Line());
+            Assert.That(why.Line(), Does.Not.Contain("ME-NOBODY"));
+        }
+
+        /// <summary>The same two groups, each asking a workset nothing carries, is one wrong set, named on its first group's value.</summary>
+        [Test]
+        public void ASetWhoseEveryOrGroupAsksAValueNoModelCarriesIsWrong()
+        {
+            EmptySet why = Why(
+                "a/BLD-ME-Ducts",
+                new List<ReadCondition>
+                {
+                    Category("Ducts"),
+                    Workset("ME-NOBODY"),
+                    new ReadCondition("LcRevitData_Element", EmptySets.CategoryProperty, "equals", "Ducts", PlannedCondition.StartGroupFlag),
+                    Workset("ME-NOONE")
+                });
+
+            Assert.That(why.Reason, Is.EqualTo(EmptyReason.NoModelCarriesTheValue), why.Line());
+            Assert.That(why.Asked, Is.EqualTo("ME-NOBODY"));
+        }
+
+        /// <summary>
+        /// A group the judge cannot judge at all, a Source File condition alone, may still match, so
+        /// a set wrong in one group and unjudged in another is one this reader cannot tell about.
+        /// </summary>
+        [Test]
+        public void ASetWrongInOneGroupAndUnjudgedInAnotherIsOneTheReaderCannotTellAbout()
+        {
+            EmptySet why = Why(
+                "a/BLD-AR-Ramps",
+                new List<ReadCondition>
+                {
+                    Workset("ME-NOBODY"),
+                    new ReadCondition(string.Empty, "LcOaNodeSourceFile", "contains", "-AR-", PlannedCondition.StartGroupFlag)
+                });
+
+            Assert.That(why.Reason, Is.EqualTo(EmptyReason.CannotTell), why.Line());
+        }
+
+        /// <summary>
         /// The judge knows the spellings it is handed, the names inside Core and those of the list
         /// beside the picked XML, RevitWorksets.With, the ones the corrections asked, F116 on the
         /// Q113 pass. ME-DUCTWORK is a spelling of this project's list and not of Core, so with the
