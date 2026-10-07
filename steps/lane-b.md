@@ -101,7 +101,8 @@ lane's to set in the tracker.
 | F123 | Part 2, six wordings that said more or less than was known. FR-126 the single discipline detail says which tests are created and that none is run. FR-127 the tolerance help line says results and statuses are kept and never that they are reset. FR-129 a failure after good tests is no longer called one of the first tests. FR-130 the refill counts the names it kept, a name and not a row. FR-131 an NWF folder inside the scanned folder is said as that and not as unreadable. FR-132 the rebuild help line names the removal of an unused set. Each has a test that fails on the old words, 8 failing before the change and 0 after. The reader found a framework message could reach the Outputs line through the new catch, which is fixed and tested before the merge | 154 | merged, 46a6f68 |
 | F123 | FR-168 a folders file that could not be used is named with why in the startup block and is never read as a first run, with a test that holds on every machine and one that needs a locked file and runs on Windows only. Core tests 2377 before and 2380 after, 0 failed | 155 | merged, 750cd51 |
 | F121 | The two points the second reading of F121 left: a name typed by hand with a character Windows refuses, a colon, a slash, a control character, is refused by the check before a run and named, and a collision between many groups names the first five and counts the rest, as an unusable name does. The refused characters are the list FileNames holds, never the running platform's. Core tests 2400 run, 2366 passed, 0 failed, 34 skipped, and 3 failing on the old source | 160 | merged, 27c24b7 |
-| F123 | FR-172 in part: two public members nothing in src or tests calls are deleted, the array of fire suppression words in ProbeVerdict, which was a second copy of a rule NamesFireSuppression holds, and LeftoverSet.TwinPath with its constructor argument. Core tests 2400 run, 2366 passed, 0 failed, 34 skipped, as before | in review | in review |
+| F123 | FR-172 in part: two public members nothing in src or tests calls are deleted, the array of fire suppression words in ProbeVerdict, which was a second copy of a rule NamesFireSuppression holds, and LeftoverSet.TwinPath with its constructor argument. Core tests 2400 run, 2366 passed, 0 failed, 34 skipped, as before | 161 | merged, 304c585 |
+| F123 | FR-171 in part, the Core noise entries of the turn 1 read that still held on main. T1-N72 the probe's grey line says one CSV per model. T1-N87 the Rebuilt confirm line names the shape it clears. T1-N69 the health line of a file with no sets says the sets are looked for and not checked. T1-N60 an identical ternary. T1-N71, N59, N53, N70, N73, N79, N67 comments that said the opposite of the code or called a constant a setting. Core tests 2402 run, 2368 passed, 0 failed, 34 skipped, and 3 failing on the old source | in review | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -260,6 +261,13 @@ and 148, and each ran its Core tests under mono here and on the Windows runner o
 
 ## F123 points lane B left, for the laptop lane
 
+- FR-171 is a backlog and most of its entries are in the add-in, the loop's files, or files an open branch
+  changes. Core entries left: T1-N54 and N56 and N57 and N89, duplicated blocks that want a refactor and no
+  test, T1-N62 the by group remainder labelled outside every step, T1-N63 whose Clock wording is another
+  spelling than the one the entry expected, T1-N46, N48, N66 and N85 members nothing calls, and the files
+  fix-F118 and fix-F132 change. AlignmentCheck.DefaultToleranceMillimetres and DefaultInternalName are
+  constants the add-in passes as they stand, so a person cannot move them without a build, which the
+  every number is a setting rule asks to be a setting. The comments now say so and the settings are not made
 - FR-172 is left in the main. Of its Core entries, the two above were the only ones no file under src, tests or
   tools reads. Those read only by a test, at least 43 of the entries by a word match over src and tests that skips the definition file, which counts a common word such as Count or Path as read, are Bader's Q26 and wait for the
   steps he asked for, breaking each on purpose and checking its test fails. PenetrationSide.ItemName and the
