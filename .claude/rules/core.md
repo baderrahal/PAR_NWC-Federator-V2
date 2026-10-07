@@ -457,24 +457,30 @@ and 6 does not read as broken.
   AN XML RUN THE RULE IS HANDED THE DOCUMENT AND THE SETS BUILD, F132 attempts 8 and 12:
   `MirrorRule.Of` takes `ClashTestPlan.FromDocument` over every test the document holds and
   this run's `Federator.Core.Sets.SetBuildOutcome`, and refuses an XML's tests without either.
-  WHERE A MIRROR'S CLASHES ARE MERGED, F132 attempt 12, the lead's question Q142 to Bader, the
-  build going on with its answer A until he answers: only where this run created both tests
-  of the pair from the picked XML, the document holding no test of any type under the kept
-  test's name, the mirror's XML name or the name the mirror runs under, and no rename landing
-  on one of them, and no set either test names drifted from the XML, read by the set drift
-  check the tool already has, `SetBuildOutcome.NotAsTheFileAsks`. A set this build created
-  passes, and so does a set already there whose question the drift check read and found not
-  drifted, `SetResult.Asked` set and not `SetDrift.SearchNotRead`. A set the drift check found
-  drifted, rebuilt or not, a set already there whose question was not read, a set that failed
-  and a set the build never reached are UNKNOWN and merge nothing. The mirrors of one kept
-  test are judged together, so where one fails none of them merges, since a clash two mirrors
-  find and the kept test does not would be added from one and still held by the other. A run
-  with no XML merges nothing. Every pair not merged still runs both tests, each keeping its
+  WHERE A MIRROR'S CLASHES ARE MERGED, F132 attempts 12 and 13, Bader's answer A to Q142 of
+  2026-10-07: only where this run created both tests of the pair and every set of both from the
+  picked XML, the document holding no test of any type under the kept test's name, the mirror's
+  XML name or the name the mirror runs under, no rename landing on one of them, and every set
+  either test names created by this run's sets build, `SetBuildOutcome.NotCreatedFromTheFile`. A
+  set already in the document is UNKNOWN whatever the set drift check read of it, F132 attempt
+  13, since that check reads each condition's category, property, comparison word and value and
+  not a set's flags, negation, Or group, ignore bits or its search's base selection, and a set
+  the drift check found drifted, rebuilt or not, a set that failed and a set the build never
+  reached are UNKNOWN too, so no merge rests on a set this tool did not make. The mirrors of one
+  kept test are judged together, so where one fails none of them merges, since a clash two
+  mirrors find and the kept test does not would be added from one and still held by the other. A
+  run with no XML merges nothing. Every pair not merged still runs both tests, each keeping its
   own clashes under its own name, and one MIRROR line per kept test, five named and the rest
   counted, says why and that a clash both find may be counted twice. `JudgeTheMerges` inside
-  `MirrorRule` is the one place this is decided, `MirrorPair.Merges` carries it, and
-  `MirrorMerge.Of` takes only those pairs. It replaced the rules of attempts 8 to 11, which
-  judged a test the document held by its name, its sides and its settings and were each
+  `MirrorRule` is the one place this is decided, `MirrorPair.Merges` carries it, starting false
+  and set true by `JudgeTheMerges` alone, `JudgedToMerge`, F132 attempt 13, so a pair no judge
+  reached merges nothing, and `MirrorMerge.Of` takes only those pairs. THE WORDS SAY WHAT IS
+  DONE, F132 attempt 13: a mirror whose run name the document holds, or an old test is renamed
+  to, is said run as it is saved on the pair line and in the coverage words,
+  `MirrorPair.RunNameInTheDocument`, never created, and the count line and the coverage words
+  say a mirror is to be merged once both tests run, never merged, since `MirrorMerge.AddTo` can
+  still merge nothing at run time and says so itself. It replaced the rules of attempts 8 to 11,
+  which judged a test the document held by its name, its sides and its settings and were each
   found missing a case, `%LOCALAPPDATA%\NwcFederatorLoop\turn5\lanes-1007-break11-F132.json`
   the last, so a mirror is no longer numbered past a test the document holds, no pair is
   refused for what the document holds and no rename is refused for its settings. The

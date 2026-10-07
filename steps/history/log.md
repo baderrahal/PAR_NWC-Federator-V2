@@ -1836,7 +1836,34 @@ f126-records-harness.py, which made the edits. Also /tmp/added.txt of Git for Wi
 lines read for a semicolon, deleted once read.
 
 
-## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built again after a twelfth attempt on Bader's answers B to Q121, D to Q133, A to Q136, A to Q137 and B to Q138, his rule of 2026-10-06 for its next reading and the lead's Q142 A until he answers, attempts 9 to 12 on 2026-10-07, and held on its branch
+## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built again after a thirteenth attempt on Bader's answers B to Q121, D to Q133, A to Q136, A to Q137 and B to Q138, his rule of 2026-10-06 for its next reading and his answer A to Q142, attempts 9 to 13 on 2026-10-07, and held on its branch
+
+Written by F132's developer as the lead's delegate. Attempt 13, the second and last Core attempt
+under Bader's limits of 2026-10-07, turn5\q143-words.txt, on the readings of attempt 12,
+turn5\lanes-1007-review12-F132.json and lanes-1007-break12-F132.json, fixing only what changes a
+number the team sees. Main 556026b taken in at 1956938, Bader's answer A to Q142 among it, three
+conflicts in the tracker and the two count blocks, the tracker keeping main's rows and the two
+F132-R rows and the counts made again by the pre-commit, turn5\f132o-resolve-merge.py, 2174 passed
+by its pre-commit, turn5\f132o-precommit-merge.txt. The code, 5c3363d: the drift check a merge read
+reads four strings per condition, the category, the property, contains or equals, and the value, and
+not a set's flags, negation, Or group, ignore bits or its search's base selection, so a present set
+changed only in those passed and the pair merged on UNKNOWN, the breaker's finding 1 and row
+F132-R2. SetBuildOutcome.NotAsTheFileAsks is now NotCreatedFromTheFile, a set already in the
+document giving words whatever the drift check read of it, so a pair merges only where this run
+created both tests and every set of both from the picked XML. MirrorPair.Merges starts false and
+only JudgeTheMerges sets it true, JudgedToMerge. The pair line and the coverage words say run as it
+is saved where the document holds the mirror's run name or an old test is renamed to it,
+RunNameInTheDocument, and the count line and the coverage words say to be merged once both tests
+run, never merged, since MirrorMerge.AddTo can still merge nothing. 8 tests failed first against the
+code of 59b7eae, which the merge left unchanged under src and tests, turn5\f132o-before-fail.txt:
+five new in MirrorMergedWhereTests and the three coverage tests of MirrorRuleTests asserting the
+true words. Core tests 2174 passed, 0 failed, 0 skipped before, turn5\f132o-tests-before.txt, 2178
+after, turn5\f132o-tests-after.txt and by its pre-commit, turn5\f132o-precommit-code.txt. dotnet
+build ParsonsNwcFederator.sln -c Release --no-incremental built Federator.Core, Federator.Core.Tests
+and Federator.Addin with 0 errors and 0 warnings at 5c3363d with the tree clean,
+turn5\f132o-build-code.txt, whose first lines carry the hash and the empty status. check-locals and
+check-imports exit 0 over src, turn5\f132o-checks.txt. The rows F132-R1 and F132-R2 stay as rows.
+This developer started no Navisworks. No add-in file changed in attempt 13.
 
 Written by F132's developer as the lead's delegate. Attempt 12, under Bader's rule Q140, on the five
 faults of the breaker's reading of attempt 11, turn5\lanes-1007-break11-F132.json, CHANGES, closed

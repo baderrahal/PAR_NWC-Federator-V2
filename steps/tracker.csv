@@ -328,7 +328,7 @@ F128,generic models,F128,2b,fix,open,none,none,2026-10-04
 F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
 F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
 F131,teams,F131,2b,fix,merged,135,none,2026-10-07
-F132,mirrored tests,F132,2a,fix,in progress,"none, branch fix-F132 at 93b45b1, attempt 9 on one blocking point next",none,2026-10-06
+F132,mirrored tests,F132,2a,fix,in progress,"none, branch fix-F132 at 5c3363d, attempt 13 read next under the limits of 2026-10-07",none,2026-10-07
 F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-06
 F134,the code health gate,F134,beside the waves,fix,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 F135,the analyser settings that touch every project,F135,beside the waves,fix,open,none,none,2026-10-05

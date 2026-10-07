@@ -56,7 +56,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-183 | mirrored tests in an existing nwf | F132 | Bader's decision | in progress | none, branch fix-F132 | none | 2026-10-05 |
 | F115 | sets | F115 | fix | in progress | none, branch fix-F115 | none | 2026-10-05 |
 | F127 | coverage of the clash XML | F127 | fix | in progress | none, branch fix-F127 | none | 2026-10-05 |
-| F132 | mirrored tests | F132 | fix | in progress | none, branch fix-F132 at 93b45b1, attempt 9 on one blocking point next | none | 2026-10-06 |
+| F132 | mirrored tests | F132 | fix | in progress | none, branch fix-F132 at 5c3363d, attempt 13 read next under the limits of 2026-10-07 | none | 2026-10-07 |
 | Q112-2 | coverage of the clash XML (FR-176) | F127 | Bader's request | in progress | none, branch fix-F127 | none | 2026-10-05 |
 | Q46 | F77 against the single discipline rule | F127 | question | merged | 131 | none | 2026-10-06 |
 | Q121 | telecom fixtures and telephone devices | F132 | question | merged | 118 | none | 2026-10-05 |
