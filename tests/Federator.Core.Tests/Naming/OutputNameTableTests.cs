@@ -321,6 +321,81 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// FR-165's second half. A name typed by hand with a character Windows refuses, a colon or a slash,
+        /// passed the check before a run and reached the write. Each of the refused characters is named,
+        /// and an ordinary name with spaces and dashes still passes.
+        /// </summary>
+        [Test]
+        public void AHandTypedNameWithACharacterWindowsRefusesIsRefusedAndNamed()
+        {
+            foreach (char refused in FileNames.RefusedPrintable)
+            {
+                OutputNameTable table = Table(new OutputNaming());
+                table.Find("1C07BC").SetByHand(OutputKind.Nwd, "Tower " + refused + " east");
+
+                string why = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart();
+
+                Assert.That(why, Is.EqualTo(
+                    "The NWD name of 1C07BC cannot be used, it holds \"" + refused
+                    + "\", which Windows does not allow in a file name. The run does not start."),
+                    "the character " + refused);
+            }
+        }
+
+        [Test]
+        public void AControlCharacterInAHandTypedNameIsNamedByItsCode()
+        {
+            OutputNameTable table = Table(new OutputNaming());
+            table.Find("1C07BC").SetByHand(OutputKind.Workbook, "Tower\teast");
+
+            string why = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart();
+
+            Assert.That(why, Does.Contain("a control character (U+0009)"));
+            Assert.That(why, Does.Not.Contain("\t"));
+        }
+
+        [Test]
+        public void AnOrdinaryHandTypedNameStillStarts()
+        {
+            OutputNameTable table = Table(new OutputNaming());
+            table.Find("1C07BC").SetByHand(OutputKind.Nwf, "Tower East - rev 2 (final)");
+
+            Assert.That(table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart(), Is.Null);
+        }
+
+        /// <summary>
+        /// A collision between many groups named every one of them, where the repeat rule names five. The
+        /// sentence carries the count, the first five and how many more, as an unusable name does.
+        /// </summary>
+        [Test]
+        public void AManyGroupCollisionNamesFiveAndCountsTheRest()
+        {
+            List<string> files = new List<string>();
+
+            foreach (string building in new[] { "1A01AA", "1A02AA", "1A03AA", "1A04AA", "1A05AA", "1A06AA", "1A07AA", "1A08AA" })
+            {
+                files.Add("1104-PAR-" + building + "-ZZZ-AR-MOD-000001.nwc");
+            }
+
+            BuildingGroupingResult result =
+                BuildingGrouping.GroupNames(files.ToArray(), Settings, GroupingMode.PerBuilding);
+            OutputNameTable table = OutputNameTable.From(result.Groups, new OutputNaming(), Settings, Friday);
+
+            foreach (string building in new[] { "1A01AA", "1A02AA", "1A03AA", "1A04AA", "1A05AA", "1A06AA", "1A07AA", "1A08AA" })
+            {
+                table.Find(building).SetByHand(OutputKind.Nwf, "SameName");
+            }
+
+            IList<NameCollision> collisions = table.Collisions();
+
+            Assert.That(collisions.Count, Is.EqualTo(1));
+            Assert.That(collisions[0].Groups.Count, Is.EqualTo(8), "the collision itself still holds every group");
+            Assert.That(collisions[0].Sentence(), Is.EqualTo(
+                "8 groups would be written to the same NWF name, SameName. They are 1A01AA, 1A02AA, 1A03AA,"
+                + " 1A04AA, 1A05AA and 3 more. One would overwrite the other, so the run does not start."));
+        }
+
         /// <summary>A table whose names are all usable still starts, and a collision is still worded as one.</summary>
         [Test]
         public void UsableNamesStillStartAndACollisionIsStillACollision()

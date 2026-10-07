@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Federator.Core.Diagnostics;
 using Federator.Core.Grouping;
 
 namespace Federator.Core.Naming
@@ -25,9 +26,12 @@ namespace Federator.Core.Naming
 
         public string Sentence()
         {
+            int shown = Math.Min(Groups.Count, RunLog.KeptOfARepeat);
+            string named = string.Join(", ", new List<string>(Groups).GetRange(0, shown).ToArray());
+
             return Groups.Count + " groups would be written to the same "
-                + Kind + " name, " + Name + ". They are "
-                + string.Join(", ", new List<string>(Groups).ToArray())
+                + Kind + " name, " + Name + ". They are " + named
+                + (Groups.Count > shown ? " and " + (Groups.Count - shown) + " more" : string.Empty)
                 + ". One would overwrite the other, so the run does not start.";
         }
 
