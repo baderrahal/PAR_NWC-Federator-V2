@@ -7874,3 +7874,174 @@ clash's camera from TestsViewpointForResult, zoomed to the box of the test's ope
 by the margin, keeps the clash camera's direction, up, field and aspect exactly, moves only back along
 its own axis, and holds every open centre in view through the COM record, a save, a reopen and a press.
 ViewFraming's camera arithmetic is not built.
+
+## 5z-y. DO ONE RESET AND ONE PAINT PER COLOUR OVER EVERY CLASHING ITEM OF A TEST RECORD INTO ONE VIEW, MEASURED 2026-10-07
+
+P17 of Q114, the views by team design, part 3. The question: do one ResetTemporaryMaterials over every
+clashing item and one OverrideTemporaryColor per colour over the red and the green items of the
+2568-clash test record into one view where every item reads back with the colour it will show, and
+what are the seconds of each call and the NWF's bytes after a save? By the row of P17: Yes, one call
+per colour per view. No, the calls go in chunks of a size that is a setting, and P17 runs again with
+it. The row depends on no other probe.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-paint.ps1` is P16's `probe-view-framing.ps1` with the new
+mode `vppaint` of `ViewpointProbe.dll`, the method MeasurePaint, its own header, the work folder prefix
+`view-paint` and the save name `p17-painted.nwf`. Nothing else in the script changed, the guard and
+F138's SwitchAutoSaveOff included. tools\loop\nw-guard.ps1 read sha256 E29D2733, line 4. The branch
+was pulled first, up to date at f8ed445. Get-Process Roamer read 0 before each run and 0 after. The
+probe copied the baseline `runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`, 41,317,271
+bytes, sha256 0944C100, into a new work folder, line 22, and the mode, on that copy:
+
+1. reads every test and takes the one with the most open clashes, open being New or Active, the
+   design's ViewStatuses. No test is named in the code
+2. walks its open results and reads each one's Item1 and Item2 index paths. Red is every distinct
+   first item, green every distinct second item not already red, solid all of them, the design's
+   PaintPlan. Each item's home model is the model whose root index path is a prefix of the item's
+3. reads every item's OriginalColor and OriginalTransparency, makes the folder `P17 probe` at the
+   root and saves the copy as `p17-plain.nwf`, so the next save differs from it by the one view
+4. hides the models holding no clashing item by SetHidden on their roots, dims the others' roots by
+   OverrideTemporaryTransparency 0.85, resolves every item once into three ModelItemCollections,
+   then calls ResetTemporaryMaterials ONCE over the solid collection, OverrideTemporaryColor (1,0,0)
+   ONCE over the red and OverrideTemporaryColor (0,1,0) ONCE over the green, each call timed
+5. reads every item's ActiveColor and ActiveTransparency live, and every other geometry item of the
+   shown models' ActiveTransparency
+6. records one view, `P17 painted`, through the COM view with ApplyHideAttribs and ApplyMaterialAttribs
+   true into the folder, on the first open clash's camera zoomed to the open centres padded by 500 mm
+   as in 5z-x, and reads what the view WILL SHOW for each item, 5p: the colour and transparency of the
+   view's own MaterialOverride where it names the item, the item's own where it does not
+7. undoes the overrides and the hiding, saves as `p17-painted.nwf`, calls Document.Clear and
+   TryOpenFile of the saved file, reads the view the same way again, presses it through
+   CurrentSavedViewpoint and reads every item live again
+
+An item is judged right when its colour is within 0.001 of (1,0,0) for red or (0,1,0) for green on
+each channel, and solid when its transparency is within 0.001 of its own OriginalTransparency. Run
+from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-paint.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p17-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf -MarginMm 500
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+0 warnings and 0 errors, script sha256 9C24A188, line 3.
+
+TWO RUNS. Both are committed, the machine name on line 1 masked as `[machine]` and the account folder
+on line 5 as `%USERPROFILE%`, nothing else changed.
+
+- RUN 1 at 16:20, `p17-view-paint-run1-result-20261007.txt`, DLL sha256 29B10692, work folder
+  `probes\view-paint-20261007-162024`, Navisworks pid 42692. Everything ran, but the read off the
+  view threw NullReferenceException before the save and after the reopen, lines 84 and 91, so it
+  ended P17 UNKNOWN, line 99. Its three calls, its live reads and its bytes read as run 2's do
+- RUN 2 at 16:25, `p17-view-paint-result-20261007.txt`, DLL sha256 404B9295, line 24, work folder
+  `probes\view-paint-20261007-162544`, Navisworks pid 43860 adopted on all four conditions, line 38.
+  The only change to the mode: the read off the view reads MaterialOverride.Color as possibly null,
+  and catches a throw per entry and counts it. ExecuteAddInPlugin returned 0 after 34.26 s, line 48.
+  Dispose returned and pid 43860 was gone 7.7 s later, not forced, line 109. The lines below are run 2's
+
+**THE ANSWER: YES. ONE RESET OVER 2423 ITEMS AND ONE PAINT PER COLOUR, 2335 RED AND 88 GREEN, RECORDED
+INTO ONE VIEW WHERE EVERY ITEM READS BACK RED OR GREEN AND SOLID, LIVE, OFF THE VIEW, AND AFTER A SAVE,
+A REOPEN AND A PRESS.** Lines 63 to 103 of the result:
+
+```
+the test BLD-AR-Curtain Mullions-vs-BLD-AR-Windows    results 2568, open 2568, 0 sides read null
+red, distinct first items                              2335
+green, distinct second items not already red             88    (no second item was first in any clash)
+solid, all of them                                     2423    resolved 2423, without geometry 0
+shown and dimmed: model 0, the AR model                hidden: models 1, 2 and 3
+
+SetHidden on 3 model roots                                         0.050 s
+OverrideTemporaryTransparency 0.85 on 1 root                       0.004 s
+ResolveIndexPath of 2423 items into 3 collections                  0.016 s
+ResetTemporaryMaterials, ONE call over 2423 items                  0.005 s
+OverrideTemporaryColor (1,0,0), ONE call over 2335 items           0.003 s
+OverrideTemporaryColor (0,1,0), ONE call over 88 items             0.000 s
+the COM record of the view, a tree of 2847 viewpoints              6.487 s
+
+                                      red right and solid   green right and solid   the rest of model 0 at 0.85
+live, before the record                    2335 of 2335            88 of 88                730 of 730
+off the view, before the save              2335 of 2335            88 of 88
+off the view, after the reopen             2335 of 2335            88 of 88
+live, the view pressed after the reopen    2335 of 2335            88 of 88                730 of 730
+
+p17-plain.nwf, the empty folder and no view      41,317,276 bytes, SaveFile 8.799 s
+p17-painted.nwf, the one painted view            41,329,885 bytes, SaveFile 8.243 s, 12,609 bytes more
+P17 YES
+```
+
+1. THE TEST. 528 tests, and the one of most open clashes is BLD-AR-Curtain Mullions-vs-BLD-AR-Windows,
+   2568 results, all open, line 63, the test the row names. Its 2568 open clashes name 2335 distinct
+   first items and 88 distinct second items, and no second item is first in another clash, line 65.
+   Every item resolves and has geometry, none of them is already red or green, and 88 carry their own
+   transparency above 0, line 67. Every item lives in model 0, the AR model, so the view shows and
+   dims that one and hides the other 3, line 66
+2. THE CALLS. ResetTemporaryMaterials over 2423 items returned in 0.005 s, OverrideTemporaryColor
+   over 2335 in 0.003 s and over 88 in 0.000 s, lines 76 to 78. Resolving the 2423 index paths into
+   the collections took 0.016 s, line 75. 5o measured the reset on 2 items in 0 ms and 5p the paint on
+   1. Here neither cost grew past a few milliseconds at a thousand times the items
+3. LIVE. Every red item read ActiveColor (1,0,0) and every green (0,1,0), each at its own
+   transparency, none at 0.85, and all 730 other geometry items of model 0 read 0.85, lines 80 to 82
+4. THE RECORD. The view took 6.487 s through the COM view into a tree of 2847, line 83, the same
+   order as P16's 6.1 s to 6.7 s, 5z-x, against 0.024 s for the whole sequence before it
+5. WHAT THE VIEW HOLDS. 3153 MaterialOverrides, one per item, walked in 0.033 s: 2335 with colour
+   (1,0,0), 88 with (0,1,0), both with no transparency, and 730 at 0.85 with NO COLOUR, Color reading
+   null. Hidden reads 3, the three model roots, line 84. Every red and green item is named by the view
+   with its colour, so none fell to 5p's case of an item already the colour it is given, lines 85 and 86
+6. THROUGH THE SAVE AND THE REOPEN. After SaveFile, Document.Clear and TryOpenFile the document read
+   the same 4 models, 61 sets, 528 tests and 2939 results, and 2848 viewpoints, the one the probe
+   recorded more, line 92. The view read the same 3153 overrides, 730 with no colour and Hidden 3,
+   line 93, and every red and green item right and solid, lines 94 and 95. Pressed, every item read
+   live right and solid and the other 730 at 0.85, lines 96 to 100
+7. THE BYTES. The same copy saved by the same session with the empty folder is 41,317,276 bytes, and
+   with the one painted view 41,329,885 bytes, 12,609 more, lines 70 and 89. That is one view of
+   3153 overrides and 3 hidden roots, read once
+
+**A NULL COLOUR ON A DIM ENTRY.** A MaterialOverride written by the dim alone reads Color null in this
+API, 730 of 730 here, before the save and after the reopen. Run 1's read off the view threw
+NullReferenceException with Color read as never null, and run 2, whose only change was to allow it and
+count it, read 730 such entries and 0 throws. That is consistent with the null Color being run 1's
+throw, and run 1 printed no stack, so it is not proved. The design's read back walks MaterialOverrides
+"into a lookup for Item and Color", part 2. Such a walk meets these entries on every view that dims.
+The add-in today reads Color only on the entry that names a clashing item, which carries a colour here.
+This is information, and nothing was changed outside tools\probes.
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD, IN BOTH RUNS.** The NWF the copy was made from read
+sha256 0944C100 at the start and the end, lines 22 and 208. The guard wrote the Auto-Save switch
+"3 0" and read it back, line 28. The watchdog saw no other Navisworks, and the put back ran. 38
+registry values were put back, enable among them, line 162, and read again with 0 still differing,
+line 197. SessionCleanCloseCount went 93 to 94, line 159, a clean close. InfoCenter.log and
+LastSession.xml were put back reading their backups' sha256, lines 201 and 202. The guard saw 0
+AutoSave files added, changed or gone, line 204, and the tool's own logs folder had nothing added or
+changed, line 205. Run 1's result reads the same on each of these. The prober read the switch and listed
+the AutoSave folder by name, size, write time and sha256 with `read-autosave-state.ps1`, kept in
+%LOCALAPPDATA%\NwcFederatorLoop\turn5: for run 1 `probe-p17-run1-20261007-autosave-before.txt`,
+`-during.txt` and `-after.txt`, enable String "0" at 16:20:07, "3 0" at 16:22:23 and "0" at 16:23:26,
+and for run 2 `probe-p17-20261007-autosave-before.txt`, `-during.txt` and `-after.txt`, "0" at
+16:25:28, "3 0" at 16:27:35 and "0" at 16:28:31. The folder held the same 199 files with the same
+names, sizes, times and sha256 at all six reads, 0 lines differing between the first and the last.
+
+THE PROGRAMS. Run 1: Navisworks pid 42692, started by the probe at 16:20:33, quit by Dispose and gone
+8.8 s after, not forced. Run 2: Navisworks pid 43860, started by the probe at 16:25:50, quit by Dispose
+and gone 7.7 s after, not forced, line 109. In run 2 AdskLicensingAgent pids 41992 and 37176, children
+of 43860, and AdskLicensingInstHelper pids 52092 and 35056 under GenuineService.exe were seen, lines
+120 to 134. 37176, 52092 and 35056 read exited, and 41992's start time could not be read when it was
+seen, line 149. Get-Process -Id 41992 read no process after the run. No Roamer that was not there in
+step 2 ran at the end of either run, line 152.
+
+**STILL UNKNOWN.**
+
+- the picture on Bader's screen. No hand step was asked by the row, and nothing here looked at the
+  window. The saved copy with the view is
+  `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-paint-20261007-162544\p17-painted.nwf`, 41,329,885
+  bytes, sha256 02F815C814EF66CF698CF963CA53F781849D631EFD515135609EC30AEA8C019B, line 105, the view
+  `P17 painted` in the folder `P17 probe`
+- a test whose items span more than one model, or a third team's model. Every item here lived in the
+  AR model, so one root was dimmed and three hidden
+- an item that is already red or green, 5p's case. None here was
+- an item without geometry, or a clash item that is a composite above its geometry. None here was
+- how the bytes grow with the number of views and with a view that shows more models. One view was
+  read. So whether the NWF shrinks with 59 to 109 such views in place of 2813, part 8 item 16, is
+  still UNKNOWN. A view here cost 12,609 bytes with 3153 overrides
+- why the COM record takes over 6 s in this tree. P18 measures the per view sequence
+- whether run 1's NullReferenceException was the null Color. Run 1 printed no stack
+
+**WHAT THIS DECIDES.** By the row of P17, YES: one call per colour per view. One ResetTemporaryMaterials
+over every clashing item and one OverrideTemporaryColor over the red and one over the green, on 2423
+items, each returned in at most 5 ms, and the view recorded every item with the colour and the
+solidity it was given, through a save, a reopen and a press. No chunk size setting is built.

@@ -213,6 +213,13 @@ namespace ViewpointProbe
                             parameters.Length > 3 ? parameters[3] : null,
                             parameters.Length > 4 ? parameters[4] : null);
                     }
+                    else if (mode == "vppaint")
+                    {
+                        MeasurePaint(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
                     else if (mode == "vpcomment")
                     {
                         MeasureViewComments(
@@ -14987,6 +14994,1044 @@ namespace ViewpointProbe
             catch (Exception error)
             {
                 Say("   [" + name + "] the record THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        // ---------- P17 of Q114, one reset and one paint per colour over every clashing item of a test, recorded into one view ----------
+
+        private const string P17Top = "P17 probe";
+        private const string P17View = "P17 painted";
+        private const double P17Dim = 0.85;
+        private const double P17Tol = 0.001;
+
+        private sealed class P17Item
+        {
+            public int[] Path;
+            public string Key = string.Empty;
+            public bool Red;
+            public bool Found;
+            public bool HasGeometry;
+            public double OR, OG, OB, OT;
+        }
+
+        private sealed class P17Tally
+        {
+            public string Side = string.Empty;
+            public int Items;
+            public int Judged;
+            public int NoGeometry;
+            public int ColourRight;
+            public int Solid;
+            public int Dimmed;
+            public int Named;
+            public int NamedNoTransparency;
+            public int NamedNoColour;
+            public readonly List<string> Wrong = new List<string>();
+
+            public bool AllRight
+            {
+                get { return Judged > 0 && ColourRight == Judged && Solid == Judged; }
+            }
+        }
+
+        /// <summary>
+        /// P17: on the test with the most open clashes, read off the copy and not named in the code, the
+        /// design's per view sequence over every clashing item at once. Open is New or Active. Red is every
+        /// first item, green every second item not already red, solid all of them, PaintPlan of the design.
+        /// The models that hold no clashing item are hidden by SetHidden on their roots, the others dimmed by
+        /// OverrideTemporaryTransparency on their roots at 0.85, then ONE ResetTemporaryMaterials over every
+        /// clashing item, ONE OverrideTemporaryColor over the red collection and ONE over the green, each call
+        /// timed. The view is recorded through the COM view into the folder P17 probe on the first clash's
+        /// camera zoomed to the open centres, 5z-x. Every item is read three ways: live before the record,
+        /// off the view's own MaterialOverrides as what it WILL SHOW (the override's colour where it names
+        /// the item, the item's own where it does not, 5p), and live after the view is pressed off the
+        /// reopened file. The copy is saved once with the empty folder and no view, and once with the view,
+        /// and both sizes are read off the disk.
+        /// </summary>
+        private void MeasurePaint(string nwf, string saveAs, string marginText)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            double marginMm;
+
+            if (!double.TryParse(marginText ?? string.Empty, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out marginMm) || marginMm < 0)
+            {
+                Say("UNKNOWN: the margin [" + Shown(marginText) + "] is not a number of millimetres at or above 0");
+                return;
+            }
+
+            string plainAs = Path.Combine(Path.GetDirectoryName(saveAs), "p17-plain.nwf");
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+            List<int[]> rootPaths = new List<int[]>();
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                using (Model model = document.Models[m])
+                using (ModelItem root = model.RootItem)
+                {
+                    string file = model.FileName ?? string.Empty;
+                    int[] rp = PathOf(document, root);
+                    rootPaths.Add(rp);
+                    Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder " + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase)
+                        + ", its root's index path [" + P17Key(rp) + "], root hidden " + root.IsHidden);
+                }
+            }
+
+            double mmPerUnit = P16MillimetresPer(document.Units);
+            Say("document units " + document.Units + ", millimetres per unit by the probe's own table " + (double.IsNaN(mmPerUnit) ? "UNKNOWN" : Round(mmPerUnit)));
+            double margin = double.IsNaN(mmPerUnit) ? 0 : marginMm / mmPerUnit;
+            Say("the framing margin: " + Round(marginMm) + " mm, chosen and not measured, as in 5z-x, " + margin.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture) + " in document units");
+            Say("the document at the open: " + P13Counts(document) + ", viewpoints " + CountViewpoints(document));
+
+            DocumentClashTests data = document.GetClash().TestsData;
+            List<P16Case> all = new List<P16Case>();
+            P16ListTests(data.Tests, all);
+            P16Case many = null;
+
+            foreach (P16Case c in all)
+            {
+                if (many == null || c.Open > many.Open)
+                {
+                    many = c;
+                }
+            }
+
+            if (many == null || many.Open < 2)
+            {
+                Say("P17 UNKNOWN   the copy holds no test of two or more open clashes");
+                return;
+            }
+
+            Say("tests read " + all.Count + ". The test of the most open clashes: [" + Shown(many.Test) + "], results " + many.Results + ", open " + many.Open + ". Open is New or Active");
+
+            List<int[]> firsts = new List<int[]>();
+            List<int[]> seconds = new List<int[]>();
+            List<double[]> centres = new List<double[]>();
+            ClashResult first = null;
+            int missing = 0;
+
+            try
+            {
+                ClashTest test = P16FindTest(data.Tests, many.Test);
+
+                if (test == null)
+                {
+                    Say("P17 UNKNOWN   the test was not found again by its name");
+                    return;
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                P17Walk(document, test.Children, firsts, seconds, centres, ref first, ref missing);
+                Say("the open results walked in " + Seconds(clock) + ": open " + centres.Count + ", first items read " + firsts.Count + ", second items read " + seconds.Count + ", sides that read null " + missing);
+            }
+            catch (Exception error)
+            {
+                Say("P17 UNKNOWN   the walk of the results THREW " + error.GetType().Name + ": " + error.Message);
+                return;
+            }
+
+            if (first == null || firsts.Count == 0 || seconds.Count == 0)
+            {
+                Say("P17 UNKNOWN   the walk read no open result with its items");
+                return;
+            }
+
+            Dictionary<string, P17Item> plan = new Dictionary<string, P17Item>(StringComparer.Ordinal);
+            List<P17Item> order = new List<P17Item>();
+            int firstAlsoSecond = 0;
+
+            foreach (int[] p in firsts)
+            {
+                string k = P17Key(p);
+
+                if (!plan.ContainsKey(k))
+                {
+                    P17Item it = new P17Item();
+                    it.Path = p;
+                    it.Key = k;
+                    it.Red = true;
+                    plan[k] = it;
+                    order.Add(it);
+                }
+            }
+
+            int redCount = order.Count;
+            HashSet<string> secondKeys = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (int[] p in seconds)
+            {
+                string k = P17Key(p);
+
+                if (!secondKeys.Add(k))
+                {
+                    continue;
+                }
+
+                P17Item have;
+
+                if (plan.TryGetValue(k, out have))
+                {
+                    firstAlsoSecond++;
+                    continue;
+                }
+
+                P17Item it = new P17Item();
+                it.Path = p;
+                it.Key = k;
+                it.Red = false;
+                plan[k] = it;
+                order.Add(it);
+            }
+
+            int greenCount = order.Count - redCount;
+            Say("the paint plan: red, every distinct first item, " + redCount + ". Green, every distinct second item not already red, " + greenCount + ". Solid, all of them, " + order.Count
+                + ". Distinct second items " + secondKeys.Count + ", of which first in some clash and so red " + firstAlsoSecond);
+
+            HashSet<int> shown = new HashSet<int>();
+            int noHome = 0;
+
+            foreach (P17Item it in order)
+            {
+                int home = -1;
+
+                for (int m = 0; m < rootPaths.Count; m++)
+                {
+                    if (P17Prefix(rootPaths[m], it.Path))
+                    {
+                        home = m;
+                        break;
+                    }
+                }
+
+                if (home < 0)
+                {
+                    noHome++;
+                }
+                else
+                {
+                    shown.Add(home);
+                }
+            }
+
+            List<int> shownList = new List<int>(shown);
+            shownList.Sort();
+            Say("the models holding a clashing item, shown and dimmed: " + string.Join(", ", shownList.ConvertAll(i => i.ToString(System.Globalization.CultureInfo.InvariantCulture)).ToArray())
+                + ". The rest hidden, " + (document.Models.Count - shown.Count) + ". Items under no model root " + noHome);
+
+            int noGeometry = 0;
+            int alreadyTarget = 0;
+            int ownTransparent = 0;
+            clock = System.Diagnostics.Stopwatch.StartNew();
+
+            foreach (P17Item it in order)
+            {
+                using (ModelItem mi = document.Models.ResolveIndexPath(it.Path))
+                {
+                    if (mi == null)
+                    {
+                        continue;
+                    }
+
+                    it.Found = true;
+
+                    if (!mi.HasGeometry)
+                    {
+                        noGeometry++;
+                        continue;
+                    }
+
+                    it.HasGeometry = true;
+
+                    using (ModelGeometry g = mi.Geometry)
+                    {
+                        Color oc = g.OriginalColor;
+                        it.OR = oc.R; it.OG = oc.G; it.OB = oc.B;
+                        it.OT = g.OriginalTransparency;
+                    }
+
+                    if (P17Same(it.OR, it.OG, it.OB, it.Red ? 1 : 0, it.Red ? 0 : 1, 0))
+                    {
+                        alreadyTarget++;
+                    }
+
+                    if (it.OT > P17Tol)
+                    {
+                        ownTransparent++;
+                    }
+                }
+            }
+
+            int notFound = 0;
+
+            foreach (P17Item it in order)
+            {
+                if (!it.Found)
+                {
+                    notFound++;
+                }
+            }
+
+            Say("the own colours read in " + Seconds(clock) + ": items resolved " + (order.Count - notFound) + " of " + order.Count + ", without geometry " + noGeometry
+                + ", whose own colour is already the one they are given " + alreadyTarget + ", whose own transparency is above 0 " + ownTransparent);
+
+            Viewpoint camera = null;
+
+            try
+            {
+                using (Viewpoint fromClash = data.TestsViewpointForResult(first))
+                {
+                    camera = fromClash == null ? null : fromClash.CreateCopy();
+                }
+
+                first.Dispose();
+
+                if (camera != null && !double.IsNaN(mmPerUnit))
+                {
+                    double minX = double.MaxValue, minY = double.MaxValue, minZ = double.MaxValue;
+                    double maxX = double.MinValue, maxY = double.MinValue, maxZ = double.MinValue;
+
+                    foreach (double[] p in centres)
+                    {
+                        minX = Math.Min(minX, p[0]); minY = Math.Min(minY, p[1]); minZ = Math.Min(minZ, p[2]);
+                        maxX = Math.Max(maxX, p[0]); maxY = Math.Max(maxY, p[1]); maxZ = Math.Max(maxZ, p[2]);
+                    }
+
+                    using (Point3D low = new Point3D(minX - margin, minY - margin, minZ - margin))
+                    using (Point3D high = new Point3D(maxX + margin, maxY + margin, maxZ + margin))
+                    using (BoundingBox3D box = new BoundingBox3D(low, high))
+                    {
+                        camera.ZoomBox(box);
+                    }
+
+                    Say("the camera: the first open clash's from TestsViewpointForResult, copied and zoomed to the open centres padded by the margin, as 5z-x");
+                }
+            }
+            catch (Exception error)
+            {
+                Say("the clash camera or its zoom THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            if (camera == null)
+            {
+                camera = document.CurrentViewpoint.CreateCopy();
+                Say("the camera: the window's current one, the clash camera could not be read");
+            }
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P17Top;
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                Say("the folder [" + P17Top + "] made at the root by FolderItem and AddCopy");
+            }
+            catch (Exception error)
+            {
+                Say("P17 UNKNOWN   the folder could not be made, " + error.GetType().Name + ": " + error.Message);
+                return;
+            }
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(plainAs);
+            long plainBytes = P17Bytes(plainAs);
+            Say("SaveFile into " + Path.GetFileName(plainAs) + ", the copy with the empty folder and no view, took " + Seconds(clock) + ", " + plainBytes + " bytes read back off the disk");
+
+            Say(string.Empty);
+            Say("THE SEQUENCE, each call once");
+            List<ModelItem> held = new List<ModelItem>();
+            bool resetOk = false;
+            bool redOk = false;
+            bool greenOk = false;
+            bool recorded = false;
+            P17Tally[] live1 = null;
+            P17Tally[] read1 = null;
+            InwOpState10 state = ComApiBridge.State;
+
+            using (ModelItemCollection shownRoots = new ModelItemCollection())
+            using (ModelItemCollection hiddenRoots = new ModelItemCollection())
+            using (ModelItemCollection solid = new ModelItemCollection())
+            using (ModelItemCollection red = new ModelItemCollection())
+            using (ModelItemCollection green = new ModelItemCollection())
+            {
+                for (int m = 0; m < document.Models.Count; m++)
+                {
+                    using (Model model = document.Models[m])
+                    {
+                        ModelItem root = model.RootItem;
+                        held.Add(root);
+
+                        if (shown.Contains(m))
+                        {
+                            shownRoots.Add(root);
+                        }
+                        else
+                        {
+                            hiddenRoots.Add(root);
+                        }
+                    }
+                }
+
+                if (hiddenRoots.Count > 0)
+                {
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.Models.SetHidden(hiddenRoots, true);
+                    Say("   SetHidden on " + hiddenRoots.Count + " model root(s) in " + Seconds(clock));
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                document.Models.OverrideTemporaryTransparency(shownRoots, P17Dim);
+                Say("   OverrideTemporaryTransparency " + Round(P17Dim) + " on " + shownRoots.Count + " shown model root(s) in " + Seconds(clock));
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                foreach (P17Item it in order)
+                {
+                    if (!it.Found)
+                    {
+                        continue;
+                    }
+
+                    ModelItem mi = document.Models.ResolveIndexPath(it.Path);
+
+                    if (mi == null)
+                    {
+                        continue;
+                    }
+
+                    held.Add(mi);
+                    solid.Add(mi);
+
+                    if (it.Red)
+                    {
+                        red.Add(mi);
+                    }
+                    else
+                    {
+                        green.Add(mi);
+                    }
+                }
+
+                Say("   ResolveIndexPath per item into the collections in " + Seconds(clock) + ": solid " + solid.Count + ", red " + red.Count + ", green " + green.Count);
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                try
+                {
+                    document.Models.ResetTemporaryMaterials(solid);
+                    resetOk = true;
+                    Say("   ResetTemporaryMaterials, ONE call over the " + solid.Count + " solid items, RETURNED in " + Seconds(clock));
+                }
+                catch (Exception error)
+                {
+                    Say("   ResetTemporaryMaterials over " + solid.Count + " items THREW after " + Seconds(clock) + ", " + error.GetType().Name + ": " + error.Message);
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                try
+                {
+                    document.Models.OverrideTemporaryColor(red, new Color(1.0, 0.0, 0.0));
+                    redOk = true;
+                    Say("   OverrideTemporaryColor (1,0,0), ONE call over the " + red.Count + " red items, RETURNED in " + Seconds(clock));
+                }
+                catch (Exception error)
+                {
+                    Say("   OverrideTemporaryColor red over " + red.Count + " items THREW after " + Seconds(clock) + ", " + error.GetType().Name + ": " + error.Message);
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                try
+                {
+                    document.Models.OverrideTemporaryColor(green, new Color(0.0, 1.0, 0.0));
+                    greenOk = true;
+                    Say("   OverrideTemporaryColor (0,1,0), ONE call over the " + green.Count + " green items, RETURNED in " + Seconds(clock));
+                }
+                catch (Exception error)
+                {
+                    Say("   OverrideTemporaryColor green over " + green.Count + " items THREW after " + Seconds(clock) + ", " + error.GetType().Name + ": " + error.Message);
+                }
+
+                live1 = P17Live(document, order, plan, rootPaths, shown, "   LIVE before the record");
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                try
+                {
+                    InwOpView view = NewComView(state, P17View, camera);
+                    InwOpFolderView folder = FindComFolderAt(state, P17Top);
+
+                    if (folder == null)
+                    {
+                        Say("   [" + P17View + "] NOT RECORDED, the COM folder [" + P17Top + "] was not found");
+                    }
+                    else
+                    {
+                        folder.SavedViews().Add(view);
+                        recorded = true;
+                        Say("   [" + P17View + "] recorded through the COM view, ApplyHideAttribs and ApplyMaterialAttribs true, into [" + P17Top + "] in " + Seconds(clock)
+                            + ", the tree now " + CountViewpoints(document) + " viewpoints");
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("   the record THREW after " + Seconds(clock) + ", " + error.GetType().Name + ": " + error.Message);
+                }
+
+                if (recorded)
+                {
+                    read1 = P17ReadNamed(document, order, "   READ OFF THE VIEW before the save");
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+                {
+                    document.Models.ResetTemporaryMaterials(roots);
+                }
+
+                document.Models.ResetAllHidden();
+                Say("   undone: ResetTemporaryMaterials on every root and ResetAllHidden in " + Seconds(clock) + ". This is a copy, and each root's hidden state at the open is read above");
+            }
+
+            foreach (ModelItem mi in held)
+            {
+                mi.Dispose();
+            }
+
+            camera.Dispose();
+            Say(string.Empty);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            long paintedBytes = P17Bytes(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + ", the copy with the one painted view, took " + Seconds(clock) + ", " + paintedBytes + " bytes read back off the disk, "
+                + (plainBytes >= 0 && paintedBytes >= 0 ? (paintedBytes - plainBytes).ToString(System.Globalization.CultureInfo.InvariantCulture) : "UNKNOWN") + " bytes more than the save with no view");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            P17Tally[] read2 = null;
+            P17Tally[] live2 = null;
+
+            if (reopened)
+            {
+                Say("the document after the reopen: " + P13Counts(document) + ", viewpoints " + CountViewpoints(document));
+                read2 = P17ReadNamed(document, order, "AFTER THE REOPEN, READ OFF THE VIEW");
+
+                try
+                {
+                    using (GroupItem folder = FindFolderAtRoot(document, P17Top))
+                    using (SavedViewpoint view = FindUnder(folder, P17View))
+                    {
+                        if (view == null)
+                        {
+                            Say("AFTER THE REOPEN the view [" + P17View + "] was not found, so it is not pressed");
+                        }
+                        else
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.CurrentSavedViewpoint = view;
+                            Say("AFTER THE REOPEN the view pressed through CurrentSavedViewpoint in " + Seconds(clock));
+                        }
+                    }
+
+                    live2 = P17Live(document, order, plan, rootPaths, shown, "AFTER THE REOPEN, LIVE after the press");
+                }
+                catch (Exception error)
+                {
+                    Say("AFTER THE REOPEN the press THREW " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+
+            Say(string.Empty);
+            bool callsOk = resetOk && redOk && greenOk;
+            bool done = callsOk && recorded && reopened && live1 != null && read1 != null && read2 != null && live2 != null;
+            bool right = done
+                && live1[0].AllRight && live1[1].AllRight
+                && read1[0].AllRight && read1[1].AllRight
+                && read2[0].AllRight && read2[1].AllRight
+                && live2[0].AllRight && live2[1].AllRight;
+            Say("SUMMARY [" + Shown(many.Test) + "]: open " + centres.Count + ", red " + redCount + ", green " + greenCount + ", without geometry and so not judged " + noGeometry
+                + ". One call each: ResetTemporaryMaterials " + Yes(resetOk) + ", red " + Yes(redOk) + ", green " + Yes(greenOk) + ". Recorded " + Yes(recorded) + ", reopened " + Yes(reopened)
+                + ". Bytes with no view " + plainBytes + ", with the painted view " + paintedBytes);
+
+            if (!done)
+            {
+                Say("P17 UNKNOWN   a step of the measurement did not complete, so the row is not answered");
+            }
+            else if (right)
+            {
+                Say("P17 YES   one ResetTemporaryMaterials and one OverrideTemporaryColor per colour recorded into one view where every red and every green item reads back red or green and solid, live, off the view, after a reopen and pressed");
+            }
+            else
+            {
+                Say("P17 NO   at least one item does not read back with the colour or the solidity it was given, read above");
+            }
+        }
+
+        private void P17Walk(Document document, SavedItemCollection items, List<int[]> firsts, List<int[]> seconds, List<double[]> centres, ref ClashResult first, ref int missing)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                SavedItem item = items[i];
+                ClashResultGroup group = item as ClashResultGroup;
+
+                if (group != null)
+                {
+                    P17Walk(document, group.Children, firsts, seconds, centres, ref first, ref missing);
+                    continue;
+                }
+
+                ClashResult result = item as ClashResult;
+
+                if (result == null || !P16IsOpen(result.Status))
+                {
+                    item.Dispose();
+                    continue;
+                }
+
+                using (ModelItem a = result.Item1)
+                {
+                    if (a == null)
+                    {
+                        missing++;
+                    }
+                    else
+                    {
+                        firsts.Add(PathOf(document, a));
+                    }
+                }
+
+                using (ModelItem b = result.Item2)
+                {
+                    if (b == null)
+                    {
+                        missing++;
+                    }
+                    else
+                    {
+                        seconds.Add(PathOf(document, b));
+                    }
+                }
+
+                using (Point3D c = result.Center)
+                {
+                    centres.Add(new[] { c.X, c.Y, c.Z });
+                }
+
+                if (first == null)
+                {
+                    first = result;
+                }
+                else
+                {
+                    item.Dispose();
+                }
+            }
+        }
+
+        private static string P17Key(int[] path)
+        {
+            StringBuilder b = new StringBuilder();
+
+            for (int i = 0; i < path.Length; i++)
+            {
+                if (i > 0)
+                {
+                    b.Append('.');
+                }
+
+                b.Append(path[i].ToString(System.Globalization.CultureInfo.InvariantCulture));
+            }
+
+            return b.ToString();
+        }
+
+        private static bool P17Prefix(int[] prefix, int[] path)
+        {
+            if (prefix == null || path == null || prefix.Length > path.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < prefix.Length; i++)
+            {
+                if (prefix[i] != path[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool P17Same(double r, double g, double b, double wr, double wg, double wb)
+        {
+            return Math.Abs(r - wr) < P17Tol && Math.Abs(g - wg) < P17Tol && Math.Abs(b - wb) < P17Tol;
+        }
+
+        private static long P17Bytes(string file)
+        {
+            try
+            {
+                return File.Exists(file) ? new FileInfo(file).Length : -1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        private static P17Tally[] P17NewTallies()
+        {
+            P17Tally r = new P17Tally();
+            r.Side = "red";
+            P17Tally g = new P17Tally();
+            g.Side = "green";
+            return new[] { r, g };
+        }
+
+        private static void P17Judge(P17Tally t, P17Item it, double r, double g, double b, double tr, string how)
+        {
+            t.Items++;
+
+            if (!it.HasGeometry)
+            {
+                t.NoGeometry++;
+                return;
+            }
+
+            t.Judged++;
+            bool colour = P17Same(r, g, b, it.Red ? 1 : 0, it.Red ? 0 : 1, 0);
+            bool solid = Math.Abs(tr - it.OT) < P17Tol;
+
+            if (colour)
+            {
+                t.ColourRight++;
+            }
+
+            if (solid)
+            {
+                t.Solid++;
+            }
+
+            if (Math.Abs(tr - P17Dim) < P17Tol)
+            {
+                t.Dimmed++;
+            }
+
+            if ((!colour || !solid) && t.Wrong.Count < 10)
+            {
+                t.Wrong.Add("[" + it.Key + "] " + how + " colour (" + Round(r) + "," + Round(g) + "," + Round(b) + ") transparency " + Round(tr) + ", its own transparency " + Round(it.OT));
+            }
+        }
+
+        private void P17Say(P17Tally[] tallies, string label)
+        {
+            foreach (P17Tally t in tallies)
+            {
+                Say(label + ", " + t.Side + ": items " + t.Items + ", judged " + t.Judged + " (without geometry " + t.NoGeometry + "), the colour right " + t.ColourRight + ", solid (its own transparency) " + t.Solid
+                    + ", at the dim " + Round(P17Dim) + " " + t.Dimmed + (t.Named + t.NamedNoTransparency > 0 ? ", named by an override " + t.Named + ", of those with no transparency " + t.NamedNoTransparency + ", with no colour " + t.NamedNoColour : string.Empty)
+                    + ". ALL RIGHT " + Yes(t.AllRight));
+
+                foreach (string w in t.Wrong)
+                {
+                    Say(label + "      wrong: " + w);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Every item's ActiveColor and ActiveTransparency as the window holds them now, and the rest of the
+        /// shown models' geometry counted dimmed or not, items under a clashing item counted on their own.
+        /// </summary>
+        private P17Tally[] P17Live(Document document, List<P17Item> order, Dictionary<string, P17Item> plan, List<int[]> rootPaths, HashSet<int> shown, string label)
+        {
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            P17Tally[] tallies = P17NewTallies();
+
+            foreach (P17Item it in order)
+            {
+                P17Tally t = it.Red ? tallies[0] : tallies[1];
+
+                if (!it.HasGeometry)
+                {
+                    t.Items++;
+                    t.NoGeometry++;
+                    continue;
+                }
+
+                using (ModelItem mi = document.Models.ResolveIndexPath(it.Path))
+                {
+                    if (mi == null || !mi.HasGeometry)
+                    {
+                        t.Items++;
+                        t.Judged++;
+
+                        if (t.Wrong.Count < 10)
+                        {
+                            t.Wrong.Add("[" + it.Key + "] did not resolve with geometry");
+                        }
+
+                        continue;
+                    }
+
+                    using (ModelGeometry g = mi.Geometry)
+                    {
+                        Color ac = g.ActiveColor;
+                        P17Judge(t, it, ac.R, ac.G, ac.B, g.ActiveTransparency, "live");
+                    }
+                }
+            }
+
+            int rest = 0;
+            int restDimmed = 0;
+            int under = 0;
+            int underDimmed = 0;
+            int hiddenGeometry = 0;
+
+            for (int m = 0; m < rootPaths.Count; m++)
+            {
+                if (!shown.Contains(m))
+                {
+                    continue;
+                }
+
+                using (Model model = document.Models[m])
+                using (ModelItem root = model.RootItem)
+                {
+                    foreach (ModelItem d in root.DescendantsAndSelf)
+                    {
+                        using (d)
+                        {
+                            if (!d.HasGeometry)
+                            {
+                                continue;
+                            }
+
+                            int[] p = PathOf(document, d);
+
+                            if (plan.ContainsKey(P17Key(p)))
+                            {
+                                continue;
+                            }
+
+                            bool isUnder = false;
+
+                            for (int len = p.Length - 1; len > 0 && !isUnder; len--)
+                            {
+                                int[] pre = new int[len];
+                                Array.Copy(p, pre, len);
+                                isUnder = plan.ContainsKey(P17Key(pre));
+                            }
+
+                            if (d.IsHidden)
+                            {
+                                hiddenGeometry++;
+                            }
+
+                            double at;
+
+                            using (ModelGeometry g = d.Geometry)
+                            {
+                                at = g.ActiveTransparency;
+                            }
+
+                            bool dim = Math.Abs(at - P17Dim) < P17Tol;
+
+                            if (isUnder)
+                            {
+                                under++;
+                                underDimmed += dim ? 1 : 0;
+                            }
+                            else
+                            {
+                                rest++;
+                                restDimmed += dim ? 1 : 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+            Say(label + ", read in " + Seconds(clock));
+            P17Say(tallies, label);
+            Say(label + ", the rest of the shown models' geometry: " + rest + " items, at the dim " + restDimmed + ". Geometry under a clashing item " + under + ", at the dim " + underDimmed
+                + ". Geometry reading IsHidden " + hiddenGeometry);
+            return tallies;
+        }
+
+        /// <summary>
+        /// What the recorded view WILL SHOW for every item, 5p: the override's colour and transparency where
+        /// its own MaterialOverrides name the item, the item's own colour and transparency where they do not.
+        /// The overrides are walked once into a lookup.
+        /// </summary>
+        private P17Tally[] P17ReadNamed(Document document, List<P17Item> order, string label)
+        {
+            try
+            {
+                using (GroupItem folder = FindFolderAtRoot(document, P17Top))
+                using (SavedViewpoint view = FindUnder(folder, P17View))
+                {
+                    if (view == null)
+                    {
+                        Say(label + ": the view [" + P17View + "] was not found in [" + P17Top + "]");
+                        return null;
+                    }
+
+                    System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                    Dictionary<string, double[]> named = new Dictionary<string, double[]>(StringComparer.Ordinal);
+                    int total = 0;
+                    int noItem = 0;
+                    int dim = 0;
+                    int noTr = 0;
+                    int redC = 0;
+                    int greenC = 0;
+                    int nullEntry = 0;
+                    int entryThrew = 0;
+                    int noColour = 0;
+                    AppearanceOverrides overrides = view.GetAppearanceOverrides();
+
+                    if (overrides != null && overrides.MaterialOverrides != null)
+                    {
+                        foreach (MaterialOverride mo in overrides.MaterialOverrides)
+                        {
+                            total++;
+
+                            if (mo == null)
+                            {
+                                nullEntry++;
+                                continue;
+                            }
+
+                            try
+                            {
+                                using (ModelItem it = mo.Item)
+                                {
+                                    if (it == null)
+                                    {
+                                        noItem++;
+                                        continue;
+                                    }
+
+                                    Color c = mo.Color;
+                                    double t = mo.Transparency.HasValue ? mo.Transparency.Value : double.NaN;
+                                    double cr = double.NaN, cg = double.NaN, cb = double.NaN;
+
+                                    if (c == null)
+                                    {
+                                        noColour++;
+                                    }
+                                    else
+                                    {
+                                        cr = c.R; cg = c.G; cb = c.B;
+                                    }
+
+                                    if (double.IsNaN(t))
+                                    {
+                                        noTr++;
+                                    }
+                                    else if (Math.Abs(t - P17Dim) < P17Tol)
+                                    {
+                                        dim++;
+                                    }
+
+                                    if (c != null && P17Same(cr, cg, cb, 1, 0, 0))
+                                    {
+                                        redC++;
+                                    }
+                                    else if (c != null && P17Same(cr, cg, cb, 0, 1, 0))
+                                    {
+                                        greenC++;
+                                    }
+
+                                    named[P17Key(PathOf(document, it))] = new[] { cr, cg, cb, t };
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                if (entryThrew == 0)
+                                {
+                                    Say(label + ": override " + total + " THREW " + error.GetType().Name + ": " + error.Message + " at " + (error.StackTrace ?? string.Empty).Replace("\r", " ").Replace("\n", " "));
+                                }
+
+                                entryThrew++;
+                            }
+                        }
+                    }
+
+                    Say(label + ": MaterialOverrides " + total + " walked in " + Seconds(clock) + ", null entries " + nullEntry + ", entries whose read threw " + entryThrew + ", with no item " + noItem + ", with no colour " + noColour
+                        + ", distinct items " + named.Count + ", transparency " + Round(P17Dim) + " " + dim + ", no transparency " + noTr + ", colour (1,0,0) " + redC + ", colour (0,1,0) " + greenC + ". Hidden " + HiddenCount(view));
+                    P17Tally[] tallies = P17NewTallies();
+
+                    foreach (P17Item it in order)
+                    {
+                        P17Tally t = it.Red ? tallies[0] : tallies[1];
+                        double[] v;
+
+                        if (it.HasGeometry && named.TryGetValue(it.Key, out v))
+                        {
+                            t.Named++;
+
+                            if (double.IsNaN(v[3]))
+                            {
+                                t.NamedNoTransparency++;
+                            }
+
+                            if (double.IsNaN(v[0]))
+                            {
+                                t.NamedNoColour++;
+                                P17Judge(t, it, it.OR, it.OG, it.OB, double.IsNaN(v[3]) ? it.OT : v[3], "named by the view with no colour, its own colour");
+                            }
+                            else
+                            {
+                                P17Judge(t, it, v[0], v[1], v[2], double.IsNaN(v[3]) ? it.OT : v[3], "named by the view");
+                            }
+                        }
+                        else
+                        {
+                            P17Judge(t, it, it.OR, it.OG, it.OB, it.OT, "not named, its own");
+                        }
+                    }
+
+                    P17Say(tallies, label);
+                    return tallies;
+                }
+            }
+            catch (Exception error)
+            {
+                Say(label + " THREW " + error.GetType().Name + ": " + error.Message + " at " + (error.StackTrace ?? string.Empty).Replace("\r", " ").Replace("\n", " "));
+                return null;
             }
         }
     }
