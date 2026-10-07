@@ -103,7 +103,8 @@ lane's to set in the tracker.
 | F121 | The two points the second reading of F121 left: a name typed by hand with a character Windows refuses, a colon, a slash, a control character, is refused by the check before a run and named, and a collision between many groups names the first five and counts the rest, as an unusable name does. The refused characters are the list FileNames holds, never the running platform's. Core tests 2400 run, 2366 passed, 0 failed, 34 skipped, and 3 failing on the old source | 160 | merged, 27c24b7 |
 | F123 | FR-172 in part: two public members nothing in src or tests calls are deleted, the array of fire suppression words in ProbeVerdict, which was a second copy of a rule NamesFireSuppression holds, and LeftoverSet.TwinPath with its constructor argument. Core tests 2400 run, 2366 passed, 0 failed, 34 skipped, as before | 161 | merged, 304c585 |
 | F123 | FR-171 in part, the Core noise entries of the turn 1 read that still held on main. T1-N72 the probe's grey line says one CSV per model. T1-N87 the Rebuilt confirm line names the shape it clears. T1-N69 the health line of a file with no sets says the sets are looked for and not checked. T1-N60 an identical ternary. T1-N71, N59, N53, N70, N73, N79, N67 comments that said the opposite of the code or called a constant a setting. Core tests 2402 run, 2368 passed, 0 failed, 34 skipped, and 3 failing on the old source | 162 | merged, b52e914 |
-| F123 | FR-171 T1-N62, in the run timing block the by group section is labelled outside every group and says every second of the run is inside a group, or that the groups add up to more than the run took, where it said step. The by step section and the group block keep their words. The tests do not build against the old source, since the new label is a new member, so the old source was not run against them. Core tests 2404 run, 2370 passed, 0 failed, 34 skipped | in review | in review |
+| F123 | FR-171 T1-N62, in the run timing block the by group section is labelled outside every group and says every second of the run is inside a group, or that the groups add up to more than the run took, where it said step. The by step section and the group block keep their words. The tests do not build against the old source, since the new label is a new member, so the old source was not run against them. Core tests 2404 run, 2370 passed, 0 failed, 34 skipped | 163 | merged, de2e558 |
+| F123 | FR-171 T1-N89, the edit distance written line for line in the EMPTY SETS judge and in the workset disagreements is one routine, EditDistance, and each reader hands it its own cap. Four tests on the routine, and the two readers' own tests unchanged. The new tests do not build against the old source. Core tests 2408 run, 2374 passed, 0 failed, 34 skipped | in review | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -143,19 +144,43 @@ and the row that said how many worksets a stopped walk had seen.
 
 ## Where the lane stopped
 
-It stopped on 7 Oct 2026 after F123, the night's list done as far as Core alone can take it. Waves 4 and 5 were read item by item after Bader's word to carry on, and what was left is the add-in, the loop's own files, or waits on F114 and F132, each recorded under its heading below. F128 was
-not started, for three reasons. Bader's own item says to measure first which property and value name
-Generic Models on 1A02MM and 1A04PK, and that needs a probe through the guarded start of Navisworks,
-UNKNOWN until read. The counts per model file, the GENERIC block and the sheet all take a read of the
-document that only the add-in makes, so a Core plan of the set folder, one search set per model on the
-category and LcOaNodeSourceFile, would be called by no running code, which breaks the no member without a
-caller rule. And the workbook writer and the engine are files an open branch of the laptop lane changes.
-What can be written in Core once the probe has answered is the set plan and the counts rule, with the
-add-in call in the same pull request.
+Lane B stopped on 7 Oct 2026 after Bader's second order of the night, F128, then F121 the rest, then F123,
+by the same limits. It stopped because no item is left that a Core test proves in a file no open loop
+branch changes. Each of the three was read again to the end before saying so.
+
+F128 was not started, and it was looked at twice. Bader's own item says to measure first which property and
+value name Generic Models on 1A02MM and 1A04PK, and that needs a probe through the guarded start of
+Navisworks, UNKNOWN until read. The counts per model file, the GENERIC block and the sheet all take a read
+of the document that only the add-in makes, so a Core plan of the set folder, one search set per model on
+the category and LcOaNodeSourceFile, would be called by no running code, which breaks the no member without
+a caller rule. SetBuildPlan has no per model input, so the one place that could carry it without the add-in
+is not a place the group's models reach, and the call that would hand it the models is in FederationEngine,
+which fix-F132 changes. What can be written in Core once the probe has answered is the set plan and the
+counts rule, with the add-in call in the same pull request.
+
+F121 the rest. What was open is the add-in or the window, FR-150, 152, 153, 156, 157, 160, 161, 163, 162 and
+the add-in halves of 164, or needs a choice Bader has not written down, FR-155, or a parse nothing would
+call, FR-166, or an IL read first, FR-202. The two Core points of the second reading, a hand typed name with
+a character Windows refuses and a collision sentence naming every group, were taken in pull request 160.
+
+F123. The entries that were Core and a test proves are taken: FR-007, FR-061 and FR-064 in 151, FR-126,
+127, 129, 130, 131 and 132 in 154, FR-168 in 155, FR-172 in part in 161, and FR-171 in part in 162, 163 and
+the pull request that carries this page. The rest of F123 is the loop's own files, tools\loop and
+.claude, which lane B never edits, or the add-in, or files fix-F118 and fix-F132 change, and FR-171 and
+FR-172 are backlogs of which the entries left are named under F123 below, each as the entry states it. The
+members read only by a test, at least 43, are Bader's Q26 and wait for the steps he asked for.
+
+One line a rule file holds that is now stale: .claude\rules\core.md near line 1699 says the remainder row
+of the timing block is named outside every step, and the by group section of the run block says outside
+every group since 163. Lane B never edits .claude.
+
+The pull requests lane B merged on the first part of the night are 142, 145, 146, 147, 148, 150 and 151,
+and on the second 154, 155, 160, 161, 162, 163 and this page's. Each ran its Core tests under mono here
+and on the Windows runner of Actions, one reader was run on each, and where a reader found a fault that
+changes what the team sees it was fixed before the merge.
 
 Every item above that lane B left, and every point its readers raised, is under its own heading below,
-for the laptop lane to take in the order it chooses. The pull requests that merged are 142, 145, 146, 147
-and 148, and each ran its Core tests under mono here and on the Windows runner of Actions.
+for the laptop lane to take in the order it chooses.
 
 ## F127 points the readers raised that lane B left, for the laptop lane
 
