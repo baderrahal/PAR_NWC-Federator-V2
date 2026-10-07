@@ -26,8 +26,11 @@ namespace Federator.Core.Report
         /// <summary>A real Distance cell out of the same file.</summary>
         public const string ExampleDistance = "-0.116";
 
+        // The client's label, or the one this tool writes on purpose for an id off the GUID
+        // fallback, FR-040, which the checks called the wrong shape.
         private static readonly Regex ItemIdShape = new Regex(
-            "^" + ClientFormat.DefaultIdLabel + @": \S", RegexOptions.Compiled);
+            "^(" + Regex.Escape(ClientFormat.DefaultIdLabel) + "|" + Regex.Escape(ClientFormat.GuidIdLabel) + @"): \S",
+            RegexOptions.Compiled);
 
         private static readonly Regex ClashPointShape = new Regex(
             @"^x:(-?\d+\.\d+), y:(-?\d+\.\d+), z:(-?\d+\.\d+)$", RegexOptions.Compiled);
@@ -38,7 +41,9 @@ namespace Federator.Core.Report
         /// <summary>
         /// "Element ID: 707077". The label is the one theirs uses and there is something
         /// after the colon. Ours read "Id: 990299", which is the same shape with the wrong
-        /// label, so the label is part of the pattern on purpose.
+        /// label, so the label is part of the pattern on purpose. The one other label is the
+        /// GUID fallback's, which this tool writes on purpose for an item with no id property,
+        /// FR-040, so a first cell of that kind is not called the wrong shape.
         /// </summary>
         public static bool LooksLikeAnItemId(string cell)
         {

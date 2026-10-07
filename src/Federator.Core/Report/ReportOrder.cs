@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Federator.Core.Clash;
 
 namespace Federator.Core.Report
 {
@@ -29,17 +28,16 @@ namespace Federator.Core.Report
         /// the order is decided, so the workbook, the clash XML and the picture numbering
         /// cannot disagree about it.
         ///
-        /// WITH NO PRIORITY FILE this is the MEASURED order and nothing else: most clashes
-        /// first, ties in the order the tests were created. That was read off both of the
-        /// client's exports over all 1830 blocks and the tie rule is explicitly not
+        /// THE MEASURED ORDER AND NOTHING ELSE, with a priority file picked or not: most
+        /// clashes first, ties in the order the tests were created. That was read off both
+        /// of the client's exports over all 1830 blocks and the tie rule is explicitly not
         /// alphabetical, including in one tie group of 1807.
         ///
-        /// WITH A PRIORITY FILE PICKED, F83, it is A, then B, then C, then the tests the
-        /// file says nothing about, and inside each block by test name. THAT IS A DIFFERENT
-        /// ORDER FROM THE ONE THE CLIENT ACCEPTED, and that is why it only ever applies
-        /// when a file is picked: picking one replaces a measured order with a chosen one,
-        /// deliberately, because a person who has said which clashes matter wants to read
-        /// them in that order. That the two disagree is Q49 and is Bader's to settle.
+        /// WITH A PRIORITY FILE PICKED the letters go in the Priority column, F83, and the
+        /// order does not move, FR-199, Bader's answer to Q49 on 2026-10-06: the priority is a
+        /// column to sort on in Excel, and the blocks stay in the order measured off the
+        /// client's exports. F83 sorted them A, then B, then C, then the rest, by name inside
+        /// each, an order the client never accepted, and every output followed it.
         ///
         /// THE PICTURES FOLLOW FOR FREE, because PictureNumbers walks this list and
         /// ImageRenumbering renames off that. Sorting the blocks anywhere else would leave
@@ -53,49 +51,13 @@ namespace Federator.Core.Report
                 throw new ArgumentNullException("report");
             }
 
-            IList<TestReport> measured = report.InReportOrder();
-            PriorityMap map = report.Priorities;
-
-            if (map == null || !map.Picked)
-            {
-                return measured;
-            }
-
-            List<TestReport> sorted = new List<TestReport>(measured);
-            List<int> at = new List<int>();
-
-            for (int i = 0; i < sorted.Count; i++)
-            {
-                at.Add(i);
-            }
-
-            // A stable sort again, for the same reason the measured one is stable: the
-            // index is the position in the measured order, so two tests of one priority
-            // carrying the same name keep the order the measurement gave them.
-            at.Sort(delegate (int left, int right)
-            {
-                int byPriority = Priorities.Order(sorted[left].Priority)
-                    .CompareTo(Priorities.Order(sorted[right].Priority));
-
-                if (byPriority != 0)
-                {
-                    return byPriority;
-                }
-
-                int byName = string.Compare(
-                    sorted[left].Name, sorted[right].Name, StringComparison.Ordinal);
-
-                return byName != 0 ? byName : left.CompareTo(right);
-            });
-
-            List<TestReport> ordered = new List<TestReport>();
-
-            foreach (int i in at)
-            {
-                ordered.Add(sorted[i]);
-            }
-
-            return ordered;
+            // THE MEASURED ORDER WHETHER OR NOT A PRIORITY FILE WAS PICKED, FR-199, Bader's
+            // answer to Q49 on 2026-10-06: the priority is a column to sort on in Excel, and
+            // the blocks stay in the order measured off the client's exports. Picking a file
+            // sorted them A, then B, then C, then the rest, by name inside each, F83, and the
+            // workbook, the clash XML and the picture numbers all followed into an order the
+            // client never accepted.
+            return report.InReportOrder();
         }
 
         /// <summary>

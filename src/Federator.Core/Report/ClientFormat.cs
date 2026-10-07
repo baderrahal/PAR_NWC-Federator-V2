@@ -67,6 +67,16 @@ namespace Federator.Core.Report
         public const string DefaultIdLabel = "Element ID";
 
         /// <summary>
+        /// The label an id off the GUID fallback carries, FR-040: an item with no id property is
+        /// given its instance GUID, which is an id and not a missing one, and the cell says so.
+        /// Named here once, so the harvest, the ITEM IDS block and the shape checks read one word.
+        /// </summary>
+        public const string GuidIdLabel = "Instance GUID";
+
+        /// <summary>The words the ITEM IDS block uses for the source of an id off the GUID fallback.</summary>
+        public const string GuidFallbackSource = "the instance GUID fallback";
+
+        /// <summary>
         /// The clash point as one field. The stylesheet writes the three literal
         /// prefixes and two commas into a single cell, so this is one column and not
         /// three: x:31.643, y:-2.913, z:3.325
