@@ -95,6 +95,12 @@ namespace Federator.Addin.Engine
         /// </summary>
         private readonly SetsAcrossTheRun setsAcrossTheRun = new SetsAcrossTheRun();
 
+        /// <summary>
+        /// The models of the group the EXPORT CHECK last read, for the judge of a set that found
+        /// nothing, FR-011. Null where they were not read for this group.
+        /// </summary>
+        private IList<ModelExport> groupExports;
+
         // What the two new blocks found across the whole run, for the RESULT block. A
         // count and never an action: the tool reports what it noticed and Bader decides.
         private int alignmentDifferences;
@@ -2277,11 +2283,16 @@ namespace Federator.Addin.Engine
         /// </summary>
         private void WhatTheModelsCarry(Document document, FederationJob job, JobOutcome outcome)
         {
+            // Null until this group's models are read, so the sets step never reads another
+            // group's, FR-011.
+            groupExports = null;
+
             IList<ModelExport> exports;
 
             try
             {
                 exports = ModelFactsReader.Exports(document, reports.Names, log);
+                groupExports = exports;
                 outcome.ElementCount = GroupSize.ElementsIn(exports);
 
                 // S03-2. The names are compared by letter case with what the picked file's
@@ -2685,6 +2696,9 @@ namespace Federator.Addin.Engine
             FederationJob job = OpenJob(Words.Or(document.FileName, "none"));
             JobOutcome outcome = new JobOutcome(job);
 
+            // No EXPORT CHECK reads the models on this button, so none of a group read earlier
+            // reaches its judge, FR-011.
+            groupExports = null;
             BuildTheSets(document, job, outcome);
             return outcome.Sets ?? new SetBuildOutcome();
         }
@@ -2758,7 +2772,11 @@ namespace Federator.Addin.Engine
                 log.Line("SETS     " + job.Building + ", " + plan.Buildable.Count + " to build, "
                     + plan.Skipped.Count + " skipped");
 
-                SetBuildOutcome sets = new SetBuilder(Tick, log, Rebuilds()).Build(plan);
+                // FR-011. The judge of a set that found nothing reads the lists inside this
+                // tool as this group's only where the group's models name the project they were
+                // measured on, read off the models the EXPORT CHECK read for this group.
+                SetBuildOutcome sets = new SetBuilder(Tick, log, Rebuilds())
+                    .Build(plan, EmptySetJudge.For(plan, groupExports, reports.Names));
                 outcome.Sets = sets;
                 setsAcrossTheRun.Add(sets);
 
@@ -2768,17 +2786,12 @@ namespace Federator.Addin.Engine
                 // said, in the one line below and in the SETS step's own finish phrase.
 
                 // What decides the second NWF save is whether this build put anything
-                // into the document. A set already there was left alone and put nothing
-                // in, so on a rerun that finds sixty present and creates one, the one
-                // still counts. Comparing created against already there said nothing
-                // was built in exactly that case.
-                log.Line("SETS     " + job.Building + " put into the document: "
-                    + sets.CreatedCount + " created, "
-                    + sets.AlreadyPresentCount + " already there and left alone"
-                    + (sets.Leftovers.Count > 0
-                        ? ", " + sets.ActedOnLeftovers + " of " + sets.Leftovers.Count
-                            + " set(s) the file no longer names brought up to date"
-                        : string.Empty));
+                // into the document, PutAnythingIn below. A set already there and left alone
+                // put nothing in, and one this run rebuilt did, FR-020, so on a rerun that
+                // finds sixty present and creates one, the one still counts. Comparing created
+                // against already there said nothing was built in exactly that case. The line
+                // is Core's and says a rebuilt set apart from one left alone.
+                log.Line("SETS     " + job.Building + " " + sets.PutInLine());
 
                 // Q74. THE PAIR FAILED BETWEEN ITS TWO HALVES, so the unused twin is gone
                 // and the working set did not take its name. The document is worse than it
@@ -2789,7 +2802,9 @@ namespace Federator.Addin.Engine
                     return false;
                 }
 
-                return sets.PutAnythingIn || sets.ActedOnLeftovers > 0;
+                // Every change the sets made, a set created, rebuilt or brought up to date as a
+                // leftover, is in the one answer Core keeps, FR-020.
+                return sets.PutAnythingIn;
             }
             catch (Exception error)
             {

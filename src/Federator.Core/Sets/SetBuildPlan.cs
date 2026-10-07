@@ -77,6 +77,65 @@ namespace Federator.Core.Sets
         public const int StartGroupFlag = 64;
 
         /// <summary>
+        /// The bit that says this condition is negated, NegateCondition in Navisworks'
+        /// SearchConditionOptions. Measured in 5g to go into an NWF and come back out of it.
+        /// </summary>
+        public const int NegateFlag = 32;
+
+        /// <summary>
+        /// The flag bits that are PART OF THE QUESTION a condition asks, FR-015: the negation
+        /// and the start of a group. A condition and its negation ask opposite questions, and
+        /// four conditions in two groups ask an Or where the same four in one group ask an And
+        /// that no element answers. Every other bit is left out, the two Ignore bits above all,
+        /// because a set this tool built carries them, 37 for a negated condition in 5g, and
+        /// 1A02MM's original import carries none, 5w, and those sets find the same items. THE
+        /// ONE RULE for which bits count, read by the drift key, the leftover pairing and the
+        /// HEALTH block, so the three cannot disagree.
+        /// </summary>
+        internal static int QuestionFlagsOf(int flags)
+        {
+            return flags & (StartGroupFlag | NegateFlag);
+        }
+
+        /// <summary>
+        /// Whether a condition carrying those flags is negated, by the bit QuestionFlagsOf counts. THE
+        /// ONE TEST of the negation, read by the plan, the judge, the HEALTH block, the matrix
+        /// corrections and the EXPORT CHECK, which wrote the same bit test inline seven times.
+        /// </summary>
+        internal static bool NegatedWith(int flags)
+        {
+            return (flags & NegateFlag) == NegateFlag;
+        }
+
+        /// <summary>
+        /// The words between a condition's property and its value: the test, with not before it
+        /// where the condition is negated, FR-016. One rule for a condition the file plans and one
+        /// read off the document, so the two lines of a drifted set say the same thing the same way.
+        /// </summary>
+        internal static string TestWordsOf(string test, int flags)
+        {
+            return (NegatedWith(flags) ? " not " : " ") + test + " ";
+        }
+
+        /// <summary>
+        /// The key this condition is compared by against a set in the document, in the one shape
+        /// `ReadCondition.KeyOf` builds, so the file's side and the document's side are put
+        /// together by one rule in Core, FR-015. The add-in built this side a second time, with
+        /// no flags.
+        /// </summary>
+        internal string Key()
+        {
+            return ReadCondition.KeyOf(
+                HasCategory ? CategoryInternalName : string.Empty, PropertyInternalName, TestWord, Flags, Value);
+        }
+
+        /// <summary>The test in the words the file writes, equals or contains.</summary>
+        internal string TestWord
+        {
+            get { return Test == ConditionTest.Contains ? SetBuildPlan.ContainsTest : SetBuildPlan.EqualsTest; }
+        }
+
+        /// <summary>
         /// Whether this condition STARTS a new group, F78. The first group of a set is
         /// implicit and carries no flag, so this is false on the first condition of every
         /// set and true on the first condition of every group after it.
@@ -113,7 +172,7 @@ namespace Federator.Core.Sets
             return (HasCategory ? CategoryInternalName + "/" : string.Empty)
                 + PropertyInternalName
                 + Friendly()
-                + (Test == ConditionTest.Contains ? " contains " : " equals ")
+                + TestWordsOf(TestWord, Flags)
                 + "\"" + Value + "\"";
         }
 
@@ -190,7 +249,17 @@ namespace Federator.Core.Sets
         /// </summary>
         public string Describe()
         {
-            IList<IList<PlannedCondition>> groups = Groups();
+            return Describe(Conditions, condition => condition.StartsAGroup, condition => condition.Describe());
+        }
+
+        /// <summary>
+        /// Any conditions said as their groups, bracketed and joined by or where there is more than
+        /// one, by the plan's own grouping rule, so a set read off the document is said the way a
+        /// planned one is, FR-016. The SET DRIFT lines joined every condition with and.
+        /// </summary>
+        internal static string Describe<T>(IEnumerable<T> conditions, Func<T, bool> startsAGroup, Func<T, string> describe)
+        {
+            IList<IList<T>> groups = GroupsOf(conditions, startsAGroup);
 
             if (groups.Count == 0)
             {
@@ -199,13 +268,13 @@ namespace Federator.Core.Sets
 
             List<string> said = new List<string>();
 
-            foreach (IList<PlannedCondition> group in groups)
+            foreach (IList<T> group in groups)
             {
                 List<string> parts = new List<string>();
 
-                foreach (PlannedCondition condition in group)
+                foreach (T condition in group)
                 {
-                    parts.Add(condition.Describe());
+                    parts.Add(describe(condition));
                 }
 
                 string joined = string.Join(" and ", parts.ToArray());

@@ -41,10 +41,12 @@ namespace Federator.Addin.Engine
         /// read until 5w measured that it works on every set of all ten of his groups.
         /// A search that will not read comes back as NOT READ and is never called
         /// drifted, the way a census count that could not be taken is never called a move.
+        /// Why it would not read goes with it, and SetDrift.Lines says it in the run log.
         /// </summary>
         private static SetDrift DriftOf(PlannedSet planned, SelectionSet existing)
         {
             List<ReadCondition> asked = null;
+            string whyNotRead = null;
 
             try
             {
@@ -61,59 +63,88 @@ namespace Federator.Addin.Engine
                         }
                     }
                 }
+                else
+                {
+                    whyNotRead = "it holds no search, it is a selection of items";
+                }
             }
-            catch (Exception)
+            catch (Exception error)
             {
+                // Carried, not swallowed: the error's type and message go to Core with the set,
+                // and BuildOne writes them in its SET NOT READ lines in the run log.
                 asked = null;
+                whyNotRead = error.GetType().Name + ": " + error.Message;
             }
 
-            List<string> keys = new List<string>();
-            List<string> described = new List<string>();
-
-            foreach (PlannedCondition condition in planned.Conditions)
-            {
-                keys.Add(KeyOf(condition));
-                described.Add(condition.Describe());
-            }
-
-            return SetDrift.Compare(planned.Path, asked, keys, described);
+            // The file's side is keyed in Core off the planned set, FR-015, so the two sides
+            // are put in one shape by one rule.
+            return SetDrift.Compare(asked, planned, whyNotRead);
         }
 
-        /// <summary>One condition off a set in the document, in the plain strings Core compares.</summary>
+        /// <summary>
+        /// One condition off a set in the document, in the plain strings Core compares, with its
+        /// options as a number, because the negation and the start of an Or group are part of
+        /// what it asks, FR-015.
+        /// </summary>
         private static ReadCondition Read(SearchCondition condition)
         {
-            return new ReadCondition(
-                condition.CategoryCombinedName == null ? string.Empty : Words.Or(condition.CategoryCombinedName.Name, string.Empty),
-                condition.PropertyCombinedName == null ? string.Empty : Words.Or(condition.PropertyCombinedName.Name, string.Empty),
-                condition.Comparison == SearchConditionComparison.DisplayStringContains ? "contains" : "equals",
-                ValueOf(condition.Value));
+            string category = condition.CategoryCombinedName == null ? string.Empty : Words.Or(condition.CategoryCombinedName.Name, string.Empty);
+            string property = condition.PropertyCombinedName == null ? string.Empty : Words.Or(condition.PropertyCombinedName.Name, string.Empty);
+            string test = TestOf(condition.Comparison);
+            int flags = (int)condition.Options;
+            string value;
+            string whyNot;
+
+            // FR-017. A value that would not read is UNKNOWN in Core, never an empty value.
+            return ValueOf(condition.Value, out value, out whyNot)
+                ? new ReadCondition(category, property, test, value, flags)
+                : ReadCondition.Unread(category, property, test, flags, whyNot);
         }
 
-        /// <summary>The same key from the FILE's side, so the two are compared on one shape.</summary>
-        private static string KeyOf(PlannedCondition condition)
+        /// <summary>
+        /// The comparison in the words the file writes for the two BuildCondition builds, and by
+        /// its own name for any other, FR-015. Every comparison but contains read as equals, so a
+        /// set asking NotEqual read as the same question as one asking Equal.
+        /// </summary>
+        private static string TestOf(SearchConditionComparison comparison)
         {
-            return (condition.HasCategory ? condition.CategoryInternalName : string.Empty)
-                + "|" + condition.PropertyInternalName
-                + "|" + (condition.Test == ConditionTest.Contains ? "contains" : "equals")
-                + "|" + condition.Value;
+            if (comparison == SearchConditionComparison.DisplayStringContains)
+            {
+                return SetBuildPlan.ContainsTest;
+            }
+
+            return comparison == SearchConditionComparison.Equal ? SetBuildPlan.EqualsTest : comparison.ToString();
         }
 
-        private static string ValueOf(VariantData value)
+        /// <summary>
+        /// A condition's value as text, read BY ITS KIND through ClashHarvest.Text, addin.md, so a
+        /// value that is not a string reads rather than throwing, FR-017. False where it still
+        /// would not read, with why, and the caller marks it unread in Core, which says UNKNOWN.
+        /// It used to read every kind but an identifier as a display string and give an empty
+        /// string for the throw, so the set was called drifted asking for "".
+        /// </summary>
+        private static bool ValueOf(VariantData value, out string text, out string whyNot)
         {
+            text = string.Empty;
+            whyNot = null;
+
             if (value == null)
             {
-                return string.Empty;
+                return true;
             }
 
             try
             {
-                return value.DataType == VariantDataType.IdentifierString
-                    ? value.ToIdentifierString()
-                    : value.ToDisplayString();
+                text = ClashHarvest.Text(value);
+                return true;
             }
-            catch (Exception)
+            catch (Exception error)
             {
-                return string.Empty;
+                // Carried, not swallowed: the error's type and message ride on the unread
+                // condition, and BuildOne writes them in the set's SET NOT READ lines in the run
+                // log, SetDrift.Lines. The set is never called drifted and never rebuilt.
+                whyNot = error.GetType().Name + ": " + error.Message;
+                return false;
             }
         }
 
@@ -123,9 +154,11 @@ namespace Federator.Addin.Engine
         /// the replace keeps the clash test pointing at it, its results, its statuses and
         /// its place in the tree, through a save and a reopen.
         ///
-        /// The parent is resolved FRESH and the index read off the tree at the moment of
-        /// the call, because the walk that found the set released its own wrappers on the
-        /// way out and a folder handed across that boundary is refused by name.
+        /// The parent is the folder BuildOne resolved from a fresh root, with no mutator
+        /// between, and the index is read off the tree at the moment of the call. AFTER the
+        /// ReplaceWithCopy that handle has been held across a mutator, so BuildOne reads the
+        /// set again through a parent resolved fresh, FR-019, the way the create path does
+        /// after its AddCopy. This comment said the parent here was resolved fresh.
         /// </summary>
         private bool Rebuild(Document document, DocumentSelectionSets sets, PlannedSet planned, GroupItem parent)
         {
@@ -217,17 +250,21 @@ namespace Federator.Addin.Engine
 
                     if (set != null)
                     {
-                        List<string> keys = new List<string>();
+                        IList<string> keys = new List<string>();
 
                         try
                         {
                             if (set.HasSearch && set.Search != null)
                             {
+                                List<ReadCondition> read = new List<ReadCondition>();
+
                                 foreach (SearchCondition condition in set.Search.SearchConditions)
                                 {
-                                    ReadCondition read = Read(condition);
-                                    keys.Add(read.Key());
+                                    read.Add(Read(condition));
                                 }
+
+                                // FR-017. None where a value would not read, so it pairs with nothing.
+                                keys = ReadCondition.KeysOf(read);
                             }
                         }
                         catch (Exception)
@@ -235,12 +272,16 @@ namespace Federator.Addin.Engine
                             keys.Clear();
                         }
 
+                        // FR-013. Sides that could not be counted are UNKNOWN for every set and
+                        // never zero, and Core refuses every leftover of this document for it.
                         int pointing;
                         found.Add(new DocumentSet(
                             here,
                             child.DisplayName,
                             keys,
-                            sides.TryGetValue(child.DisplayName, out pointing) ? pointing : 0));
+                            sides == null
+                                ? DocumentSet.SidesNotCounted
+                                : sides.TryGetValue(child.DisplayName, out pointing) ? pointing : 0));
 
                         continue;
                     }
@@ -259,69 +300,128 @@ namespace Federator.Addin.Engine
         /// How many clash test SIDES resolve to each set, by set name. Read once and not
         /// once per set, because walking 1830 tests per set is the O(n squared) shape that
         /// once built 1.7 million native handles in one group.
+        ///
+        /// NULL WHERE THE COUNT COULD NOT BE TAKEN, FR-013, the whole read or one side. A side
+        /// left uncounted makes a set look UNUSED, which is what removes it, so an empty map
+        /// here removed every set the file no longer names with the box on and orphaned the
+        /// tests pointing at it. The comment over the old catch argued the opposite.
         /// </summary>
         private Dictionary<string, int> SidesBySetName(Document document)
         {
             Dictionary<string, int> sides = new Dictionary<string, int>(StringComparer.Ordinal);
+            int notRead = 0;
+            Exception first = null;
 
             try
             {
-                Autodesk.Navisworks.Api.Clash.DocumentClashTests tests = document.GetClash().TestsData;
-
-                for (int t = 0; t < tests.Tests.Count; t++)
-                {
-                    Autodesk.Navisworks.Api.Clash.ClashTest test = tests.Tests[t] as Autodesk.Navisworks.Api.Clash.ClashTest;
-
-                    if (test == null)
-                    {
-                        continue;
-                    }
-
-                    CountSide(document, test.SelectionA, sides);
-                    CountSide(document, test.SelectionB, sides);
-                }
+                CountSidesIn(document, document.GetClash().TestsData.Tests, sides, ref notRead, ref first);
             }
             catch (Exception error)
             {
                 log.Failure(
                     "reading what the clash tests point at",
                     error,
-                    "no set is removed or renamed and the run goes on");
+                    "how many sides point at each set is UNKNOWN, so no set is removed or renamed and the run goes on");
 
-                return new Dictionary<string, int>(StringComparer.Ordinal);
+                return null;
+            }
+
+            if (notRead > 0)
+            {
+                log.Failure(
+                    "reading what " + notRead + " clash test side(s) point at",
+                    first,
+                    "how many sides point at each set is UNKNOWN, so no set is removed or renamed and the run goes on");
+
+                return null;
             }
 
             return sides;
         }
 
+        /// <summary>
+        /// Every test under those items, INTO EVERY CLASH DETECTIVE FOLDER, FR-014, the walk
+        /// SavedTests and UndoAutoReviewed already make. Only the root tests were read, so a set
+        /// pointed at only by tests a person moved into a folder counted 0 sides and was removed.
+        /// Each item read out of the collection and each side is this tool's wrapper and is
+        /// disposed, the way SavedTests disposes them. A side that throws is counted as not read.
+        /// </summary>
+        private static void CountSidesIn(
+            Document document, SavedItemCollection items, Dictionary<string, int> sides, ref int notRead, ref Exception first)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    Autodesk.Navisworks.Api.Clash.ClashTest test = item as Autodesk.Navisworks.Api.Clash.ClashTest;
+
+                    if (test != null)
+                    {
+                        using (Autodesk.Navisworks.Api.Clash.ClashSelection left = test.SelectionA)
+                        using (Autodesk.Navisworks.Api.Clash.ClashSelection right = test.SelectionB)
+                        {
+                            foreach (Autodesk.Navisworks.Api.Clash.ClashSelection side in new[] { left, right })
+                            {
+                                try
+                                {
+                                    CountSide(document, side, sides);
+                                }
+                                catch (Exception error)
+                                {
+                                    notRead++;
+                                    first = first ?? error;
+                                }
+                            }
+                        }
+
+                        continue;
+                    }
+
+                    GroupItem folder = item as GroupItem;
+
+                    if (folder != null)
+                    {
+                        CountSidesIn(document, folder.Children, sides, ref notRead, ref first);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The sets one side points at, EVERY SOURCE OF IT, FR-014, and each set once per side.
+        /// Only the first source was read, so a set named second in a side counted 0 sides from it.
+        /// </summary>
         private static void CountSide(
             Document document, Autodesk.Navisworks.Api.Clash.ClashSelection side, Dictionary<string, int> sides)
         {
-            try
+            SelectionSourceCollection sources = side.Selection.SelectionSources;
+
+            if (sources == null)
             {
-                SelectionSourceCollection sources = side.Selection.SelectionSources;
+                return;
+            }
 
-                if (sources == null || sources.Count == 0)
-                {
-                    return;
-                }
+            HashSet<string> named = new HashSet<string>(StringComparer.Ordinal);
 
-                using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[0]))
+            for (int s = 0; s < sources.Count; s++)
+            {
+                using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[s]))
                 {
-                    if (pointed == null)
+                    if (pointed != null)
                     {
-                        return;
+                        named.Add(pointed.DisplayName ?? string.Empty);
                     }
-
-                    string name = pointed.DisplayName ?? string.Empty;
-                    sides[name] = sides.ContainsKey(name) ? sides[name] + 1 : 1;
                 }
             }
-            catch (Exception)
+
+            foreach (string name in named)
             {
-                // A side this tool cannot read is a side it does not count, which is the
-                // safe direction: an uncounted side makes a set look SAFER to remove, so
-                // it is never counted and the refusal errs towards leaving things alone.
+                sides[name] = sides.ContainsKey(name) ? sides[name] + 1 : 1;
             }
         }
 
@@ -459,7 +559,11 @@ namespace Federator.Addin.Engine
             return -1;
         }
 
-        public SetBuildOutcome Build(SetBuildPlan plan)
+        /// <summary>
+        /// Builds the plan's sets. The judge says why a set that found nothing found nothing,
+        /// by what it knows of the values this group's models carry, FR-011.
+        /// </summary>
+        public SetBuildOutcome Build(SetBuildPlan plan, EmptySetJudge judge)
         {
             if (plan == null)
             {
@@ -494,7 +598,7 @@ namespace Federator.Addin.Engine
             {
                 PlannedSet planned = plan.Buildable[i];
                 progress("Set " + (i + 1) + " of " + plan.Buildable.Count + ": " + planned.Name);
-                BuildOne(document, sets, planned, plan.Worksets, outcome);
+                BuildOne(document, sets, planned, judge, outcome);
             }
 
             // Q74. EVERY SET IN THE NWF THE PICKED FILE NO LONGER NAMES, and what to do
@@ -624,7 +728,7 @@ namespace Federator.Addin.Engine
         }
 
         private void BuildOne(
-            Document document, DocumentSelectionSets sets, PlannedSet planned, IList<string> worksets, SetBuildOutcome outcome)
+            Document document, DocumentSelectionSets sets, PlannedSet planned, EmptySetJudge judge, SetBuildOutcome outcome)
         {
             try
             {
@@ -643,14 +747,19 @@ namespace Federator.Addin.Engine
                         // the document nowhere and nothing said so. Q72.
                         SetDrift drift = DriftOf(planned, existing);
                         bool rebuilt = false;
-                        int found = 0;
+
+                        // UNKNOWN until it is counted, FR-018. A set not found again after a
+                        // rebuild was recorded at 0 items and judged empty on the old question.
+                        int found = SetResult.NotCounted;
+
+                        // Released BEFORE the rebuild, FR-019, so no wrapper of the set it
+                        // replaces is held across the ReplaceWithCopy.
+                        existing.Dispose();
 
                         if (drift.Drifted && rebuilds.RebuildDriftedSets)
                         {
                             rebuilt = Rebuild(document, sets, planned, parent);
                         }
-
-                        existing.Dispose();
 
                         // THE SET IS READ AGAIN AFTER THE REBUILD AND NEVER BEFORE IT.
                         // ReplaceWithCopy puts a new object in the slot, so the wrapper
@@ -659,20 +768,32 @@ namespace Federator.Addin.Engine
                         // 0 items for every set this run rebuilt and said "left alone"
                         // about a set it had just replaced, and 3b then judged the OLD
                         // question and called a set wrong that had just been corrected.
-                        IList<ReadCondition> asking = drift.Asked;
+                        IList<ReadCondition> asking = drift.CouldNotRead ? null : drift.Asked;
                         string askedNow = drift.AskedNow();
+                        SetDrift after = null;
 
-                        using (SelectionSet now = FindSelectionSet(parent, planned.Name))
+                        // AND AFTER A REBUILD THROUGH A PARENT RESOLVED FRESH, FR-019. The one
+                        // from EnsureFolders was held across the ReplaceWithCopy, and a handle
+                        // held across an AddCopy does not show the new child, EnsureFolders'
+                        // own reading, so the count and the judgement could come off the old
+                        // set. What ReplaceWithCopy does to a held parent is UNKNOWN. A folder
+                        // that will not resolve again leaves the count UNKNOWN, FR-018.
+                        using (GroupItem fresh = rebuilt ? ResolveFolders(sets, planned.Folders, planned.Folders.Count) : null)
                         {
-                            if (now != null)
-                            {
-                                found = CountOf(document, now);
+                            GroupItem readFrom = rebuilt ? fresh : parent;
 
-                                if (rebuilt)
+                            using (SelectionSet now = readFrom == null ? null : FindSelectionSet(readFrom, planned.Name))
+                            {
+                                if (now != null)
                                 {
-                                    SetDrift after = DriftOf(planned, now);
-                                    asking = after.Asked;
-                                    askedNow = after.AskedNow();
+                                    found = CountOf(document, now);
+
+                                    if (rebuilt)
+                                    {
+                                        after = DriftOf(planned, now);
+                                        asking = after.CouldNotRead ? null : after.Asked;
+                                        askedNow = after.AskedNow();
+                                    }
                                 }
                             }
                         }
@@ -697,25 +818,40 @@ namespace Federator.Addin.Engine
                         // set that never produces a clash, and nothing told him which of
                         // those sets is wrong and which is a model with no such content.
                         // Judged on what it asks NOW, so a set this run corrected is not
-                        // reported as asking the question it no longer asks, and against the
-                        // workset spellings the corrections were chosen from, F116.
-                        if (found == 0 && !drift.CouldNotRead)
+                        // reported as asking the question it no longer asks, by what the judge
+                        // knows of this group's models, F116 and FR-011. Core decides which sets
+                        // are judged, never one whose count is UNKNOWN, FR-018.
+                        outcome.JudgeIfEmpty(present, asking, judge);
+
+                        // Every present set, so one whose search could not be read is counted
+                        // and the lines never claim it asks what the file asks, FR-021.
+                        outcome.AddDrift(drift, rebuilt);
+
+                        // Core decides which sets have lines and what they say: the old question
+                        // and the new one for a drifted set, and for one whose search or a value
+                        // in it would not read, what would not read and why. None for a set
+                        // asking what the file asks.
+                        foreach (string line in drift.Lines())
                         {
-                            outcome.AddEmpty(EmptySets.Why(planned.Path, asking, worksets));
+                            log.Line("SET      " + line);
                         }
 
                         if (drift.Drifted)
                         {
-                            outcome.AddDrift(drift, rebuilt);
+                            log.Line("SET      " + (!rebuilt
+                                ? "   left alone. Tick \"" + SetRebuildSettings.TickLabel + "\" to rebuild it, Q72"
+                                : found < 0
+                                    ? "   REBUILT from the picked file, and it could not be found again to count, so what it finds is UNKNOWN"
+                                    : "   REBUILT from the picked file, and it now finds " + found + " item(s). The clash tests pointing at it keep their results and their statuses, 5v"));
+                        }
 
-                            foreach (string line in drift.Lines())
+                        // A rebuilt set read again whose search would not read says why as well.
+                        if (after != null && after.CouldNotRead)
+                        {
+                            foreach (string line in after.Lines())
                             {
                                 log.Line("SET      " + line);
                             }
-
-                            log.Line("SET      " + (rebuilt
-                                ? "   REBUILT from the picked file, and it now finds " + found + " item(s). The clash tests pointing at it keep their results and their statuses, 5v"
-                                : "   left alone. Tick \"" + SetRebuildSettings.TickLabel + "\" to rebuild it, Q72"));
                         }
 
                         return;
@@ -754,8 +890,8 @@ namespace Federator.Addin.Engine
                             items = Resolve(document, created, search);
                         }
 
-                        outcome.AddCreated(
-                            planned.Path, planned.Name, planned.ConditionCount, items, planned.Describe());
+                        // Judged where it found nothing, as a set already there is, FR-027.
+                        outcome.AddCreated(planned, items, judge);
                         log.Line("SET      " + outcome.Results[outcome.Results.Count - 1].Line());
                     }
                 }
@@ -982,19 +1118,23 @@ namespace Federator.Addin.Engine
             return FindSelectionSet(parent, name);
         }
 
-        /// <summary>How many items a set that is already in the tree finds as it stands.</summary>
+        /// <summary>
+        /// How many items a set that is already in the tree finds as it stands, or NotCounted where
+        /// the read gave nothing back, which is UNKNOWN and never zero items, FR-018.
+        /// </summary>
         private static int CountOf(Document document, SelectionSet set)
         {
             using (ModelItemCollection found = set.GetSelectedItems(document))
             {
-                return found == null ? 0 : found.Count;
+                return found == null ? SetResult.NotCounted : found.Count;
             }
         }
 
         /// <summary>
         /// How many items the set finds in the model as it stands. Resolved through the set
         /// that is in the tree where possible, because that is the thing that has to work.
-        /// Falls back to the search itself if the set cannot be found again.
+        /// Falls back to the search itself if the set cannot be found again. A read that gives
+        /// nothing back is NotCounted, UNKNOWN and never zero items, FR-018.
         /// </summary>
         private int Resolve(Document document, SelectionSet created, Search search)
         {
@@ -1002,7 +1142,7 @@ namespace Federator.Addin.Engine
             {
                 using (ModelItemCollection found = created.GetSelectedItems(document))
                 {
-                    return found == null ? 0 : found.Count;
+                    return found == null ? SetResult.NotCounted : found.Count;
                 }
             }
 
@@ -1010,7 +1150,7 @@ namespace Federator.Addin.Engine
 
             using (ModelItemCollection direct = search.FindAll(document, false))
             {
-                return direct == null ? 0 : direct.Count;
+                return direct == null ? SetResult.NotCounted : direct.Count;
             }
         }
 

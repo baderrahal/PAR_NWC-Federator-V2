@@ -217,7 +217,7 @@ namespace Federator.Core.Tests
                     EmptySet why = EmptySets.Why(
                         "a/" + value,
                         new List<ReadCondition> { new ReadCondition(string.Empty, EmptySets.WorksetProperty, SetBuildPlan.EqualsTest, value) },
-                        plan.Worksets);
+                        new EmptySetJudge(plan.Worksets, RevitWorksets.Project, null));
 
                     if (why.Reason != EmptyReason.TheValueIsThereAnyway)
                     {
@@ -239,7 +239,7 @@ namespace Federator.Core.Tests
 
                 Assert.That(itsConditions[1].Value, Is.EqualTo("HV-Ductwork"), "the spelling the judge reads first");
 
-                EmptySet judged = EmptySets.Why("a/BLD-ME-Ducts&Duct Fittings", itsConditions, plan.Worksets);
+                EmptySet judged = EmptySets.Why("a/BLD-ME-Ducts&Duct Fittings", itsConditions, new EmptySetJudge(plan.Worksets, RevitWorksets.Project, null));
 
                 Assert.That(judged.Reason, Is.EqualTo(EmptyReason.TheValueIsThereAnyway), judged.Line());
             }

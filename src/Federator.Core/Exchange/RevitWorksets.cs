@@ -43,6 +43,36 @@ namespace Federator.Core.Exchange
         private static readonly object Gate = new object();
         private static List<string> known;
         private static List<string[]> decided;
+        private static bool resourceFound;
+        private static string project;
+
+        /// <summary>
+        /// The project the names were measured on, read off the list's project line, or null
+        /// where it names none or was not read, FR-011.
+        /// </summary>
+        public static string Project
+        {
+            get
+            {
+                Load();
+                return project;
+            }
+        }
+
+        /// <summary>
+        /// Whether the list could be READ out of the DLL at all, FR-012, shaped like
+        /// RevitCategories.ResourceFound. A list missing or not readable read the same as an
+        /// empty one, with no flag and no line, so the export check named the pairs a person
+        /// already decided are not typos with nothing saying why.
+        /// </summary>
+        public static bool ResourceFound
+        {
+            get
+            {
+                Load();
+                return resourceFound;
+            }
+        }
 
         /// <summary>
         /// Every workset spelling measured for a picked clash XML: the names this list holds, then
@@ -116,7 +146,7 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>One decided line, split on the marker and the bar. A line that will not split is skipped.</summary>
-        private static void AddDecided(string line)
+        private static void AddDecided(string line, List<string[]> into)
         {
             string both = line.Substring(DecidedMarker.Length);
             int bar = both.IndexOf('|');
@@ -131,13 +161,15 @@ namespace Federator.Core.Exchange
 
             if (first.Length > 0 && second.Length > 0)
             {
-                decided.Add(new[] { first, second });
+                into.Add(new[] { first, second });
             }
         }
 
         /// <summary>
-        /// Reads the list once. A resource that cannot be read is an EMPTY list and never
-        /// a throw, and an empty list corrects nothing, which is the safe answer.
+        /// Reads the list once, out of the DLL, through Read, which opens it inside its own try. A
+        /// resource that will not open or will not read is an EMPTY list and never a throw, and an
+        /// empty list corrects nothing, which is the safe answer, and ResourceFound says it was
+        /// not read, FR-012. The opening sat outside any try, so a throw from it left every caller.
         /// </summary>
         private static List<string> Load()
         {
@@ -148,50 +180,78 @@ namespace Federator.Core.Exchange
                     return known;
                 }
 
-                known = new List<string>();
-                decided = new List<string[]>();
+                List<string> names;
+                List<string[]> pairs;
 
-                try
+                resourceFound = Read(
+                    () => typeof(RevitWorksets).Assembly.GetManifestResourceStream(ResourceName), out names, out pairs, out project);
+
+                decided = pairs;
+                known = names;
+                return known;
+            }
+        }
+
+        /// <summary>
+        /// The list read from the stream that opens, the names and the decided pairs, and whether
+        /// it was read, FR-012. A null stream is a list not in the DLL, and an opening or a stream
+        /// that throws is a list not read: each answers false with both lists empty, and never
+        /// throws, because a health check is information and information never stops a run. The
+        /// one reader of the list, so the DLL's copy and a test's are read by the same lines.
+        /// </summary>
+        internal static bool Read(Func<Stream> open, out List<string> names, out List<string[]> pairs, out string measuredOn)
+        {
+            names = new List<string>();
+            pairs = new List<string[]>();
+            measuredOn = null;
+
+            try
+            {
+                using (Stream stream = open())
                 {
-                    Assembly assembly = typeof(RevitWorksets).Assembly;
-
-                    using (Stream stream = assembly.GetManifestResourceStream(ResourceName))
+                    if (stream == null)
                     {
-                        if (stream == null)
+                        return false;
+                    }
+
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        string line;
+
+                        while ((line = reader.ReadLine()) != null)
                         {
-                            return known;
-                        }
-
-
-                        using (StreamReader reader = new StreamReader(stream))
-                        {
-                            string line;
-
-                            while ((line = reader.ReadLine()) != null)
+                            if (line.Length == 0 || line[0] == '#')
                             {
-                                if (line.Length == 0 || line[0] == '#')
-                                {
-                                    continue;
-                                }
-
-                                if (line.IndexOf(DecidedMarker, StringComparison.Ordinal) == 0)
-                                {
-                                    AddDecided(line);
-                                    continue;
-                                }
-
-                                known.Add(line);
+                                continue;
                             }
+
+                            if (line.IndexOf(DecidedMarker, StringComparison.Ordinal) == 0)
+                            {
+                                AddDecided(line, pairs);
+                                continue;
+                            }
+
+                            if (RevitCategories.ProjectIn(line) != null)
+                            {
+                                measuredOn = RevitCategories.ProjectIn(line);
+                                continue;
+                            }
+
+                            names.Add(line);
                         }
                     }
                 }
-                catch (Exception)
-                {
-                    known = new List<string>();
-                decided = new List<string[]>();
-                }
 
-                return known;
+                return true;
+            }
+            catch (Exception)
+            {
+                // Not swallowed: the answer is false, ResourceFound carries it, and the EXPORT
+                // CHECK block says the decided pairs are UNKNOWN, FR-012.
+                names = new List<string>();
+                pairs = new List<string[]>();
+                measuredOn = null;
+                return false;
             }
         }
     }

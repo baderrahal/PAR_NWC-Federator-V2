@@ -632,6 +632,21 @@ namespace Federator.Core.Tests.Health
             Assert.That(ExportCheck.WorksetCount(stopped), Is.Empty);
         }
 
+        /// <summary>
+        /// A model that was not counted carries no names, so the row never says how many names it
+        /// saw before stopping: that number was always 0 and read as a count of worksets seen.
+        /// </summary>
+        [Test]
+        public void TheUnknownRowNamesNoCountOfNamesSeen()
+        {
+            ModelExport stopped = new ModelExport(
+                "a.nwc", "ME", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted,
+                new List<string> { "ME-Ductwork", "ME-Piping" });
+
+            Assert.That(ExportCheck.EveryWorkset(stopped), Does.Not.Contain("name(s) it saw"));
+            Assert.That(ExportCheck.EveryWorkset(stopped), Does.Contain("stopped part way"));
+        }
+
         [Test]
         public void WithNoModelAtAllItSaysSoRatherThanWritingAnEmptyBlock()
         {
@@ -681,6 +696,28 @@ namespace Federator.Core.Tests.Health
             Assert.That(block, Does.Contain("EL-Lightining Protection"));
             Assert.That(block, Does.Contain("1 pair(s) of workset names are close enough"));
             Assert.That(block, Does.Not.Contain("\"AR-EXTERIOR\" in"));
+        }
+
+        /// <summary>
+        /// WHERE THE LIST OF DECIDED PAIRS COULD NOT BE READ THE BLOCK SAYS UNKNOWN, FR-012. It
+        /// read as a list with no pair in it, so AR-EXTERIOR against AR-INTERIOR, which a person
+        /// decided are two worksets, was named as a typo with nothing saying why.
+        /// </summary>
+        [Test]
+        public void TheBlockSaysUnknownWhereTheDecidedPairsCouldNotBeRead()
+        {
+            IList<ModelExport> models = new List<ModelExport>
+            {
+                Model("AR", 86, 86, 86, "AR-EXTERIOR", "AR-INTERIOR")
+            };
+
+            string unread = Joined(ExportCheck.Lines(models, NoFile, ExportCheck.NamesShown, false));
+            string read = Joined(ExportCheck.Lines(models, NoFile, ExportCheck.NamesShown, true));
+
+            Assert.That(unread, Does.Contain(
+                "the list of workset pairs a person decided are not typos could not be read out of Federator.Core.dll,"
+                + " so whether a pair named here was already decided is UNKNOWN"));
+            Assert.That(read, Does.Not.Contain("UNKNOWN"));
         }
 
         [Test]
