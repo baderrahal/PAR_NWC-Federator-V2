@@ -262,9 +262,9 @@ and 148, and each ran its Core tests under mono here and on the Windows runner o
 ## F123 points lane B left, for the laptop lane
 
 - FR-171 is a backlog and most of its entries are in the add-in, the loop's files, or files an open branch
-  changes. Core entries left: T1-N54 and N56 and N57 and N89, duplicated blocks that want a refactor and no
-  test, T1-N62 the by group remainder labelled outside every step, T1-N63 whose Clock wording is another
-  spelling than the one the entry expected, T1-N46, N48, N66 and N85 members nothing calls, and the files
+  changes. Core entries lane B did not take, each as the entry states it and not read again on main by lane
+  B: T1-N54, N56, N57 and N89 duplicated blocks that want a refactor and no test, T1-N62 and N63 words of the
+  timing block, T1-N46, N48, N66 and N85 values and members the entry says nothing reads, and the files
   fix-F118 and fix-F132 change. AlignmentCheck.DefaultToleranceMillimetres and DefaultInternalName are
   constants the add-in passes as they stand, so a person cannot move them without a build, which the
   every number is a setting rule asks to be a setting. The comments now say so and the settings are not made
