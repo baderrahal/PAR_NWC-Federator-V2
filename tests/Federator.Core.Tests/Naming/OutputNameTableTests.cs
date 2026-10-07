@@ -240,16 +240,45 @@ namespace Federator.Core.Tests
             string all = table.WhyTheRunCannotStart();
 
             Assert.That(all, Is.Not.Null);
-            Assert.That(all, Does.Contain("The NWF name of 1C07BC cannot be used"));
-            Assert.That(all, Does.Contain("The NWF name of 1C07K1 cannot be used"));
-            Assert.That(all, Does.Contain("The NWF name of 1B06BS cannot be used"));
-            Assert.That(all, Does.Contain("The level is empty, so the name would have a hole in it."));
+            Assert.That(all, Is.EqualTo(
+                "The NWF name of 3 groups cannot be used. The level is empty, so the name would have a hole in it."
+                + " They are 1B06BS, 1C07BC, 1C07K1. The run does not start."));
             Assert.That(all, Does.Not.Contain("would be written to the same"));
 
             string one = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart();
 
             Assert.That(one, Is.Not.Null, "one ticked group passed the check with its name a sentence");
-            Assert.That(one, Does.Contain("The NWF name of 1C07BC cannot be used"));
+            Assert.That(one, Is.EqualTo(
+                "The NWF name of 1C07BC cannot be used. The level is empty, so the name would have a hole in it."
+                + " The run does not start."));
+        }
+
+        /// <summary>
+        /// One emptied box made a paragraph for every group, twenty two of them in a refusal dialog. Each
+        /// cause is one sentence with its count and at most five groups named, the repeat rule.
+        /// </summary>
+        [Test]
+        public void ManyGroupsOnOneCauseAreOneSentenceWithTheFirstFiveNamed()
+        {
+            List<string> files = new List<string>();
+
+            foreach (string building in new[] { "1A01AA", "1A02AA", "1A03AA", "1A04AA", "1A05AA", "1A06AA", "1A07AA", "1A08AA" })
+            {
+                files.Add("1104-PAR-" + building + "-ZZZ-AR-MOD-000001.nwc");
+            }
+
+            OutputNaming naming = new OutputNaming();
+            BuildingGroupingResult result = BuildingGrouping.GroupNames(files.ToArray(), Settings, GroupingMode.PerBuilding);
+            OutputNameTable table = OutputNameTable.From(result.Groups, naming, Settings, Friday);
+
+            naming.Nwf.Level = string.Empty;
+            table.Refill(naming, Settings);
+
+            string all = table.WhyTheRunCannotStart();
+
+            Assert.That(all, Does.StartWith("The NWF name of 8 groups cannot be used."));
+            Assert.That(all, Does.Contain("They are 1A01AA, 1A02AA, 1A03AA, 1A04AA, 1A05AA and 3 more."));
+            Assert.That(all.Split(new[] { "cannot be used" }, StringSplitOptions.None).Length - 1, Is.EqualTo(1));
         }
 
         /// <summary>A name cell cleared by hand, for each of the three outputs, is refused and the refusal names which.</summary>
@@ -266,8 +295,9 @@ namespace Federator.Core.Tests
                     string why = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart();
 
                     Assert.That(why, Is.Not.Null, kind + " cleared to \"" + cleared + "\"");
-                    Assert.That(why, Does.Contain(OutputNaming.Labels()[(int)kind] + " name of 1C07BC cannot be used"));
-                    Assert.That(why, Does.Contain("it is empty"));
+                    Assert.That(why, Is.EqualTo(
+                        "The " + OutputNaming.Labels()[(int)kind] + " name of 1C07BC cannot be used, it is empty."
+                        + " The run does not start."));
                 }
             }
         }
