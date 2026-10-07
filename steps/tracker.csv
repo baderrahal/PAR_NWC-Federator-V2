@@ -210,7 +210,7 @@ F14,"add a root README, closed by F37",F37,before the waves,fix,merged,merge 1f6
 F15,"dispose in SetBuilder and ClashRunner.Resolve, closed by F41",F41,before the waves,fix,merged,merge 80023a6,none,2026-09-12
 F16,make the tests path neutral,F16,before the waves,fix,merged,merge 47e3a9f,none,2026-09-12
 F17,picture numbering by block order,F17,before the waves,fix,merged,merge ff9811b,none,2026-09-07
-F18,"add the 1A04WE sample, when Bader uploads it, Q9",F18,before the waves,fix,waiting for Bader,none,none,2026-09-06
+F18,"add the 1A04WE sample, dropped by Bader on 2026-10-06, Q9",F18,before the waves,fix,dropped,131,none,2026-10-06
 F19,"CI for the add-in, dropped on Q10",F19,before the waves,fix,dropped,none,none,2026-09-06
 F20,run the Core tests on every push to main,F20,before the waves,fix,merged,merge c58f4b1,none,2026-09-07
 F21,"the log answers timing and counts, closed by F60",F60,before the waves,fix,merged,merge 5e69c2b,none,2026-09-19
@@ -310,7 +310,7 @@ F110,"the WORKBOOK CHECK counts only the blocks that found clashes, set 03 findi
 F111,"the RESULT block prints file sizes that are not the files', set 03 finding 5 (FR-046)",F111,before the waves,fix,open,none,none,2026-10-06
 F112,alignment,F112,1,fix,merged,106,none,2026-10-05
 F113,clash counts,F113,1,fix,merged,95,none,2026-10-04
-F114,views,F114,2b,fix,in progress,"none, branch fix-F114",none,2026-10-04
+F114,views,F114,2b,fix,in progress,"none, branch fix-F114 at e77e8a7, waits for F131 and F132",none,2026-10-06
 F115,sets,F115,2a,fix,in progress,"none, branch fix-F115",none,2026-10-05
 F116,the clash XML,F116,1,fix,merged,98,none,2026-10-05
 F117,the names,F117,5,fix,open,none,none,2026-10-04
@@ -327,8 +327,8 @@ F127,coverage of the clash XML,F127,2a,fix,in progress,"none, branch fix-F127",n
 F128,generic models,F128,2b,fix,open,none,none,2026-10-04
 F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
 F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
-F131,teams,F131,2b,fix,in progress,"none, branch fix-F131",none,2026-10-05
-F132,mirrored tests,F132,2a,fix,in progress,"none, branch fix-F132",none,2026-10-05
+F131,teams,F131,2b,fix,in progress,"none, branch fix-F131 at 0e262d3, its harness read, its pull request not yet opened",none,2026-10-06
+F132,mirrored tests,F132,2a,fix,in progress,"none, branch fix-F132 at 93b45b1, attempt 9 on one blocking point next",none,2026-10-06
 F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-06
 F134,the code health gate,F134,beside the waves,fix,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 F135,the analyser settings that touch every project,F135,beside the waves,fix,open,none,none,2026-10-05
@@ -352,27 +352,27 @@ Q114,one view per clash test by team (FR-180 to FR-188),"F131, F132, F114",2a an
 Q129,a clean tracker and a code health gate (FR-191 to FR-193),"F133, F134, F135",beside the waves,Bader's request,in progress,"122 merged for F133, F134 and F135 not merged",none,2026-10-06
 Q130,stop the C02 weekly run and no viewpoints in test runs until F114 merges (FR-194),F136,before any test run,Bader's request,merged,"117 for F136, 116 records the stop",none,2026-10-05
 Q132,"the new viewpoints first, F136 then F131, F132 and F114","F136, F131, F132, F114",first of all since Bader's order of 2026-10-05,Bader's request,in progress,"117 merged for F136, branches fix-F131, fix-F132, fix-F114",none,2026-10-05
-Q25,"five clash item properties reach no output, split into Q35 to Q40",none,none,question,waiting for Bader,none,none,2026-09-12
-Q27,the two choice rule for still outstanding lost every reader,none,none,question,waiting for Bader,none,none,2026-09-12
-Q28,two handle reads left where they are,F123,5,question,waiting for Bader,none,none,2026-09-12
-Q29,three settable properties nothing outside the code sets,none,none,question,waiting for Bader,none,none,2026-09-12
-Q30,the bundle manifest points at the old scan.md path,none,none,question,waiting for Bader,none,none,2026-09-12
-Q31,five names listed wrongly in the F40 entry,none,none,question,waiting for Bader,none,none,2026-09-18
-Q35,"the GAP block, Family reaches no output",none,none,question,waiting for Bader,none,none,2026-09-19
-Q36,"the GAP block, Type Name",none,none,question,waiting for Bader,none,none,2026-09-19
-Q37,"the GAP block, Material",none,none,question,waiting for Bader,none,none,2026-09-19
-Q38,"the GAP block, Source File",none,none,question,waiting for Bader,none,none,2026-09-19
-Q39,"the GAP block, Discipline",none,none,question,waiting for Bader,none,none,2026-09-19
-Q40,"the GAP block, Id From",none,none,question,waiting for Bader,none,none,2026-09-19
-Q45,a count of the clashes this run moved to Reviewed,none,none,question,waiting for Bader,none,none,2026-09-19
-Q46,F77 against the single discipline rule,none,none,question,waiting for Bader,none,none,2026-09-19
-Q47,four service categories not on the service list,none,none,question,waiting for Bader,none,none,2026-09-19
-Q49,a priority file replaces the measured block order,none,none,question,waiting for Bader,none,none,2026-09-19
-Q50,F72c widens the one status guard for the undo,none,none,question,waiting for Bader,none,none,2026-09-19
-Q51,the first size property or the largest,none,none,question,waiting for Bader,none,none,2026-09-19
-Q76,the source file column empty on every row,none,none,question,waiting for Bader,none,none,2026-09-21
-Q77,the clear and rebuild does not copy the viewpoints,F114,2b,question,waiting for Bader,none,none,2026-09-21
-Q78,C04 models naming misspelled shared sites,none,none,question,waiting for Bader,none,none,2026-09-21
+Q25,"five clash item properties reach no output, split into Q35 to Q40",F120,3a,question,merged,131,none,2026-10-06
+Q27,the two choice rule for still outstanding lost every reader,F123,5,question,merged,131,none,2026-10-06
+Q28,two handle reads left where they are,"F123, F121",5 and 4,question,merged,131,none,2026-10-06
+Q29,three settable properties nothing outside the code sets,none,none,question,merged,131,none,2026-10-06
+Q30,the bundle manifest points at the old scan.md path,F123,5,question,merged,131,none,2026-10-06
+Q31,five names listed wrongly in the F40 entry,none,none,question,merged,131,none,2026-10-06
+Q35,"the GAP block, Family reaches no output",F120,3a,question,merged,131,none,2026-10-06
+Q36,"the GAP block, Type Name",F120,3a,question,merged,131,none,2026-10-06
+Q37,"the GAP block, Material",F120,3a,question,merged,131,none,2026-10-06
+Q38,"the GAP block, Source File",F120,3a,question,merged,131,none,2026-10-06
+Q39,"the GAP block, Discipline",F120,3a,question,merged,131,none,2026-10-06
+Q40,"the GAP block, Id From",F120,3a,question,merged,131,none,2026-10-06
+Q45,a count of the clashes this run moved to Reviewed,F118,2c,question,merged,131,none,2026-10-06
+Q46,F77 against the single discipline rule,F127,2a,question,merged,131,none,2026-10-06
+Q47,four service categories not on the service list,none,none,question,merged,131,none,2026-10-06
+Q49,a priority file replaces the measured block order,F118,2c,question,merged,131,none,2026-10-06
+Q50,F72c widens the one status guard for the undo,none,none,question,merged,131,none,2026-10-06
+Q51,the first size property or the largest,none,none,question,merged,131,none,2026-10-06
+Q76,the source file column empty on every row,F120,3a,question,merged,131,none,2026-10-06
+Q77,the clear and rebuild does not copy the viewpoints,F114,2b,question,merged,131,none,2026-10-06
+Q78,C04 models naming misspelled shared sites,F137,before the test of wave 1,question,merged,131,none,2026-10-06
 Q110,a skipped group and its tests,none,none,question,merged,118,none,2026-10-05
 Q111,a model that names no site at all,F137,before the test of wave 1,question,merged,118,none,2026-10-05
 Q115,where the team map lives,F131,2b,question,merged,118,none,2026-10-05
@@ -455,3 +455,11 @@ T5-R-HARNESSARGS,prove-run.ps1's param block has no CmdletBinding so a misspelt 
 T5-R-M5AUTOSAVE,"the switch comes after M5's read, so m5.txt names the loop's own write of the autosave key",none,none,register row,open,none,none,2026-10-06
 T5-R-HELDOFF,"a run that leaves 3 0 makes the next backup read it as his value, put back by hand",none,none,register row,open,none,none,2026-10-06
 F139-R7,"a commit staging tracker.csv or the page is refused where no powershell is on PATH, such as a container",none,none,register row,open,none,none,2026-10-06
+FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,open,none,none,2026-10-06
+FR-199,blocks stay in measured order with a priority file,F118,2c,Bader's decision,open,none,none,2026-10-06
+FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,open,none,none,2026-10-06
+FR-201,shared site named default reported only,F137,before the test of wave 1,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
+FR-202,sub object ownership measured before two reads change,F121,4,Bader's decision,open,none,none,2026-10-06
+FR-203,open statuses rule stays naming its reader,F123,5,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
+FR-204,manifest line 9 and its one exception,F123,5,Bader's decision,open,none,none,2026-10-06
+Q140,F132's next attempt only for a fault that can change a clash count or its test,F132,2a,Bader's request,in progress,"none, branch fix-F132",none,2026-10-06

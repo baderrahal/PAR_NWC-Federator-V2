@@ -1,6 +1,61 @@
 # log
 
 Newest entry at the top.
+## 2026-10-07 The loop, turn 5, picked up in the morning, Bader's message headed GOOD MORNING, CONTINUE THE LOOP, and the plan
+
+The System log reads the company's shutdown.exe starting the shutdown at 19:30:39 on 2026-10-06 and 19:31:09 on
+2026-10-05, so the day of 2026-10-06, closed at 19:21, closed in time, and today's close starts at 18:40. The PC
+started at 09:29:27. Get-Process Roamer read one at 10:28:40, pid 41872, started by hand at 10:28:15 with
+-licensing AdLM, Bader's own, so the waiting rule holds: no probe, harness, install or put back until it closes.
+Every lane is pushed and clean at the heads the night stop named. The keep-awake runs again as pid 35152.
+
+The plan, in Bader's order, each step by the NIGHT STOP paragraph of steps\loop.md:
+1. F131: read the ninth harness failure, fix it if new, open its pull request, merge once green
+2. F132: attempt 9 on the one point under Q140, then its readers
+3. F139: attempt 2 again, the gate by content, then its reviewer and merge, then Q141 on main
+4. Once his Navisworks closes: his settings against P10's backup, then the probes, Q133 on 1A04PK and P11 to P19
+5. F114 once F131 merges, then F132's add-in half, then main installed and the runs of 1A02MM and 1A04PK
+6. Close the day from 18:40, before the company shutdown at about 19:30
+
+STATE OPEN.
+
+## 2026-10-06 The loop, turn 5, stopped safely for the night, STATE NIGHT
+
+By Bader's message headed STOP SAFELY FOR THE NIGHT. F139's attempt 2 and the lane that runs alone were stopped
+at safe points, F131's harness having finished first, and every worktree's work in progress was committed and
+pushed: fix-F139 at 388d8b8, fix-F114-probes at 51dd8c5, fix-F131 at 0e262d3, each read back with ls-remote.
+No Navisworks ran tonight and Roamer read 0. The probe pause is back and the keep-awake is stopped. The exact
+next action of each lane is the NIGHT STOP paragraph under Next action in steps\loop.md.
+
+## 2026-10-06 The loop, turn 5, F138 MERGED as pull request 127, 37f37d4, at 17:08:09
+
+Attempt 2 read by a reviewer, APPROVE with nothing blocking, turn5\lanes-review2-F138.json. The lead's 0f29508
+before the merge set F138 merged with 127 and FR-196 and Q135 in progress until part 2 in run.ps1 after F131,
+made the reviewer's words true and wrote its two findings as register rows T5-R-M5AUTOSAVE and T5-R-HELDOFF,
+turn5\f138d-precommit.txt, Core 1926 passed, 0 failed, 0 skipped, and Actions run 37475846934 a success on it,
+turn5\actions-reads-pr127.txt. The probe pause was lifted at its merge, turn5\probes-pause-lifted.txt, and the
+lane that runs alone began at 17:09, F131's harness on main with the time limits first, then the probes with
+the switch written "3 0". Whether Navisworks reads "3 0" as off is UNKNOWN until that first real start.
+
+## 2026-10-06 The loop, turn 5, Bader's answers to the 22 old items and his F132 rule, recorded
+
+His message headed BADER'S ANSWERS, 6 OCT 2026, THE 22 OLD ITEMS AND F132'S NEXT READING, his words whole at
+turn5\q-old22-words.txt, recorded by pull request 131. Each answer is under its question in
+steps\02_questions.md in his words with a lead's note, Q25, Q27 to Q31, Q35 to Q40, Q45 to Q47, Q49 to Q51 and
+Q76 to Q78. F18 DROPPED, the 1A04WE file being the clash report he exported from Navisworks and pasted into an
+empty Excel workbook and not a client file, its words corrected in .claude\rules\core.md, steps\00_analysis.md,
+where M7 closes, steps\01_next.md and the register of steps\loop.md. His F132 rule is Q140, an order, and a
+bullet of the F132 section of steps\01_next.md, F132's attempt 8 stopped at 16:53:29 and begun again under it
+at 16:53:31. The work of his answers, each measured off main 2eda020 first, is FR-198 to FR-204 of
+steps\fix-round.md, all after the viewpoints: FR-198 the harvests and the GAP block, F120, 3a, FR-199 the
+blocks in the measured order with a priority file, F118, 2c, FR-200 every test not created on the Coverage
+sheet, F127, 2a, FR-201 a site named DEFAULT, F137, which main already does, FR-202 the ownership measured
+first, F121, 4, FR-203 the open statuses rule, F123, which main already does, and FR-204 the manifest's line
+9 in a pull request of its own, F123, 5. Q77 is a line under FR-067. Q29, Q31, Q47, Q50 and Q51 close with no
+work. The rows set by the tracker rule, turn5\records31-check.txt and records31-prove.txt. Nothing under src
+or tests changed, and the Core tests ran in the pre-commit of 3af4c3c, 1926 passed, 0 failed, 0 skipped,
+turn5\records31-precommit-1.txt.
+
 ## 2026-10-06 The loop, turn 5, F139 the one page progress file, Bader's message of 6 Oct 2026, Q139, on fix-F139, written by the developer as the lead's delegate
 
 - BUILT, every point of his message, FR-197, area F139, in %LOCALAPPDATA%\NwcFederatorLoop\wt-f139 off main 2eda020, commits b31cdba the records, 706ff44 the page and its check, 6b82741 the move, afb82c3 the register rows, 1887472 the Stop gate and the closing records after it. What was built is in F139's section of steps\01_next.md. The lead's readings (a) to (f) are under Q139 for Bader to correct
