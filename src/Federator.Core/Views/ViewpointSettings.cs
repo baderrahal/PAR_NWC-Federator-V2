@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Federator.Core.Clash;
+using Federator.Core.Teams;
 
 namespace Federator.Core.Views
 {
@@ -51,9 +52,9 @@ namespace Federator.Core.Views
         /// knows. The client's own file holds one: BLD-Security Devices breaks the pattern
         /// its siblings follow, so it has no code in the place the others carry one. The
         /// clash still gets a viewpoint and the folder SAYS the code is unknown rather
-        /// than guessing at one.
+        /// than guessing at one. The word is the team map's, set once, F131.
         /// </summary>
-        public const string DefaultUnknownDiscipline = "UNKNOWN";
+        public const string DefaultUnknownDiscipline = TeamMapSettings.DefaultUnknownTeam;
 
         /// <summary>The folder layer 1 uses for a test the priority file says nothing about. The words are Priorities.Words, named once, A13.</summary>
         public static readonly string DefaultNoPriorityFolder = Priorities.Words(ClashPriority.None);
@@ -197,29 +198,6 @@ namespace Federator.Core.Views
         /// per clash across 1830 tests is how a run stops fitting in forty five minutes.
         /// </summary>
         public int MaxPerTest { get; set; }
-
-        /// <summary>
-        /// Whether that word is a discipline code this tool knows. Matched Ordinal and
-        /// never trimmed or cased, the same way HasSubGroup matches, because a code is
-        /// read off a name and every other comparison here treats it as it was read.
-        /// </summary>
-        public bool IsADisciplineCode(string code)
-        {
-            if (string.IsNullOrEmpty(code) || DisciplineCodes == null)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < DisciplineCodes.Count; i++)
-            {
-                if (string.Equals(DisciplineCodes[i], code, StringComparison.Ordinal))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         /// <summary>Which disciplines carry a sub group for their large items.</summary>
         public IList<string> SubGroupDisciplines { get; set; }

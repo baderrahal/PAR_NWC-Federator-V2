@@ -15,8 +15,10 @@ $ErrorActionPreference = "Stop"
 # tools\loop\nw-guard.ps1 with NO Navisworks started, the harness of the design's section
 # proof without navisworks, H0 to H15 for the part 1 modes and M1 to M3, since fix attempt
 # 1 H12b, H16 and H17, and since fix attempt 2 H18, each grown by the cases of fix attempt
-# 3, and since F138 H20, Auto-Save switched off before every start, and H21, its own time
-# limits. Run it as
+# 3. F131 added H19, team-map.txt read before every start and put back after it, and its
+# TEAMS KEPT block masked, with RC1 and RC8 of H17 reading the same in the run flow, and its
+# K2 every other line of the tool's log naming his logs folder or the kept map masked. F138
+# added H20, Auto-Save switched off before every start, and H21, its own time limits. Run it as
 #
 #   powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\prove-run.ps1 -Work <folder>
 #
@@ -1477,6 +1479,9 @@ try {
   New-Item -ItemType Directory -Path (Join-Path $fl "ParsonsNwcFederator\logs"), (Join-Path $fa "Autodesk\Navisworks Manage 2025\AutoSave"), (Join-Path $fa "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22") | Out-Null
   foreach ($i in 1..3) { [System.IO.File]::WriteAllText((Join-Path $fl ("ParsonsNwcFederator\logs\run-2026090" + $i + "-100000.log")), "a fake log " + $i, $utf8) }
   [System.IO.File]::WriteAllText((Join-Path $fl "ParsonsNwcFederator\logs\folders.txt"), "fake", $utf8)
+  $tm17 = Join-Path $fl "ParsonsNwcFederator\logs\team-map.txt"
+  [System.IO.File]::WriteAllText($tm17, "X:\a fake kept map.teams.txt", $utf8)
+  $tm17Hash = (Get-FileHash -LiteralPath $tm17 -Algorithm SHA256).Hash
   [System.IO.File]::WriteAllText((Join-Path $fa "Autodesk\Navisworks Manage 2025\a.xml"), "a fake setting", $utf8)
   [System.IO.File]::WriteAllText((Join-Path $fa "Autodesk\Navisworks Manage 2025\AutoSave\x.nwf"), "a fake autosave", $utf8)
   Copy-Item -LiteralPath (Join-Path $bundle "Contents\v22\Federator.Addin.dll") -Destination (Join-Path $fa "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22")
@@ -1501,7 +1506,7 @@ try {
     $res = EndChild $c 600
     $recFile = Join-Path $fl ("NwcFederatorLoop\runs\" + $set + "\item0\record.txt")
     $rec = @(); if (Test-Path -LiteralPath $recFile) { $rec = @([System.IO.File]::ReadAllLines($recFile)) }
-    foreach ($l in @($rec | Where-Object { $_ -match '^(STOP|VERDICT|NOT ADOPTED)|HARNESS COPY|keep awake|check 1[3-8]|logs-after|M5, what|BADER.S SETTINGS|AutoSave compare|Auto-Save' })) { O ("    | " + $l.Replace($h17, "<h17>")) }
+    foreach ($l in @($rec | Where-Object { $_ -match '^(STOP|VERDICT|NOT ADOPTED)|HARNESS COPY|keep awake|check 1[3-8]|logs-after|M5, what|BADER.S SETTINGS|AutoSave compare|Auto-Save|team-map|team map' })) { O ("    | " + $l.Replace($h17, "<h17>")) }
     return [pscustomobject]@{ Exit = $res.Exit; Rec = $rec; Out = $res.Out }
   }
 
@@ -1524,6 +1529,9 @@ try {
   Check "RC1: M5 is read before the settings compare, and the AutoSave compare reads autosave-before.txt back" ((At $rc1.Rec 'M5, what changed outside the loop folder while the start ran') -ge 0 -and (At $rc1.Rec 'M5, what changed outside the loop folder while the start ran') -lt (At $rc1.Rec "BADER'S SETTINGS, compared") -and (Has $rc1.Rec 'the AutoSave compare reads autosave-before.txt back, 1 files')) ""
   Check "RC1: his fake logs folder reads the same after as before" (Has $rc1.Rec 'logs-after.txt equals logs-before.txt, name for name, size, write time, sha256 and attributes: True') ""
   Check "RC1: the evidence is written into the copy's own steps\runs" (Test-Path -LiteralPath (Join-Path $rcRepo "steps\runs\91\item0\record.txt")) ""
+  $tmCopy1 = Join-Path $fl "NwcFederatorLoop\runs\91\item0\teammap\team-map.txt"
+  Check "RC1, F131: team-map.txt is read after check 13 and before check 14, and its copy in the run folder's teammap reads back with its sha256" ((At $rc1.Rec '^---- check 13b, team-map\.txt') -gt (At $rc1.Rec '^---- check 13, his logs folder') -and (At $rc1.Rec '^---- check 13b, team-map\.txt') -lt (At $rc1.Rec '^---- check 14, his AutoSave folder') -and (Has $rc1.Rec ('^  team-map\.txt is there, sha256 ' + $tm17Hash + ', \d+ bytes, copied into the run folder.s teammap and read back with that sha256$')) -and (Test-Path -LiteralPath $tmCopy1) -and $(if (Test-Path -LiteralPath $tmCopy1) { (Get-FileHash -LiteralPath $tmCopy1 -Algorithm SHA256).Hash -eq $tm17Hash } else { $false })) ""
+  Check "RC1, F131: at the end team-map.txt is compared with what was read before the start, after the AutoSave put back and before his logs folder is listed again" ((Has $rc1.Rec ('^  team-map\.txt reads as it did before the start, sha256 ' + $tm17Hash + '$')) -and (At $rc1.Rec '^---- team-map\.txt, the team map the tool keeps between runs') -gt (At $rc1.Rec '^  AutoSave: ') -and (At $rc1.Rec '^---- team-map\.txt, the team map the tool keeps between runs') -lt (At $rc1.Rec '^---- his logs folder, after ----') -and (Has $rc1.Rec '^  team map: 0 put back as it was and read back, 0 not as it was before the run')) ""
   $off17 = '^  Auto-Save switch written off for this start, Q135: enable under 22\.0\\GlobalOptions\\general\\autosave written String "3 0" and read back so, the backup holds String "0"\. Until the put back it reads so for Bader too\. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave$'
   $left17 = '^  Auto-Save is LEFT OFF for Bader: enable under 22\.0\\GlobalOptions\\general\\autosave reads String "3 0" and the backup holds String "0"\. It must be put back by hand$'
   Check "RC1, F138 attempt 2: the switch is written after check 18's last read and before the constructor line, and says so in one line, and with nothing adopted, so nothing put back, the record says Auto-Save is left off and the test key reads 3 0" ((At $rc1.Rec $off17) -gt (At $rc1.Rec 'check 18, the last read before the constructor') -and (At $rc1.Rec $off17) -lt (At $rc1.Rec 'HARNESS COPY') -and (At $rc1.Rec $left17) -gt (At $rc1.Rec "BADER'S SETTINGS, compared") -and (EnableNow $tsub) -eq "String 3 0") ("enable reads " + (EnableNow $tsub))
@@ -1575,6 +1583,14 @@ try {
   StopStandins
   Check "RC5: check 18 stops before the constructor on the Roamer, exit 2, and the keep awake request made at check 17 is let go" ($rc5.Exit -eq 2 -and (Has $rc5.Rec '^STOP before the constructor: Navisworks is running') -and (Has $rc5.Rec 'keep awake OFF returned 0x80000003') -and -not (Has $rc5.Rec 'HARNESS COPY')) ("exit " + $rc5.Exit)
   Check "RC5, F138 attempt 2: the stop at check 18 comes before the switch, so no line of the record names Auto-Save and the test key reads 0, what the fixture made" (-not (Has $rc5.Rec 'Auto-Save') -and (EnableNow $tsub) -eq "String 0") ("enable reads " + (EnableNow $tsub))
+
+  O "  RC8, F131: team-map.txt changed while the copy waits at the hook, as a window run that picked an XML would change it. The start is not adopted, so a reason not to put back stands"
+  $rc8 = RunCopy "98" { [System.IO.File]::WriteAllText($tm17, "X:\the loop's own copy of a map.teams.txt", $utf8); O "    team-map.txt of the fake logs folder changed" }
+  $tm8Hash = (Get-FileHash -LiteralPath $tm17 -Algorithm SHA256).Hash
+  Check "RC8, F131: the change is named, nothing is written, and the file is left as the run left it" ($rc8.Exit -eq 3 -and (Has $rc8.Rec '^  team-map\.txt CHANGED, left as it is, nothing written$') -and (Has $rc8.Rec '^  team map: 0 put back as it was and read back, 1 not as it was before the run, because nothing is written while a reason above stands$') -and $tm8Hash -ne $tm17Hash) ("exit " + $rc8.Exit)
+  Check "RC8, F131: his fake logs folder then reads changed, and the FINDING names team-map.txt" ((Has $rc8.Rec 'logs-after.txt equals logs-before.txt, name for name, size, write time, sha256 and attributes: False') -and (Has $rc8.Rec '^    FINDING [<=>]+ team-map\.txt$')) ""
+  [System.IO.File]::WriteAllText($tm17, "X:\a fake kept map.teams.txt", $utf8)
+  Check "RC8: the harness puts the fake team-map.txt back as RC1 read it" ((Get-FileHash -LiteralPath $tm17 -Algorithm SHA256).Hash -eq $tm17Hash) ""
 
   O "  RC6, a start named in unproved-starts.txt that still runs, written while the copy waits at the hook, with no Roamer running"
   $fakeUnproved = Join-Path $fl "NwcFederatorLoop\probes\unproved-starts.txt"
@@ -1759,6 +1775,173 @@ try {
   Check "item 19: the walk stops at once when the time of the pass is spent, and says so" ($d19.Handles.Count -eq 0 -and $d19.Cut -eq "at 10 ms") ([string]$d19.Handles.Count + " handles, " + $d19.Cut)
   StopStandins
   BaderSame "H18"
+
+  # =====================================================================================
+  O ""
+  Case "==== H19, F131 and Q123 answered B: team-map.txt, the map the tool keeps between runs, read before every start and put back after it, and its TEAMS KEPT block masked ===="
+  $tmDir = Join-Path $Work "h19"
+  $tmLogs = Join-Path $tmDir "logs"
+  New-Item -ItemType Directory -Path $tmLogs | Out-Null
+  $tmFile = Join-Path $tmLogs "team-map.txt"
+  $rt19 = [System.IO.File]::ReadAllText($runPs)
+  $const19 = [regex]::Matches([System.IO.File]::ReadAllText((Join-Path $repo "src\Federator.Core\Teams\TeamMapMemory.cs")), 'public const string FileName = "([^"]+)";')
+  $missing19 = @(@("TeamMapName", "TeamMapBefore", "PutBackTeamMap", "PutBackOne") | Where-Object { $null -eq (Get-Command -Name $_ -CommandType Function -ErrorAction SilentlyContinue) })
+  Check "H19: run.ps1 holds TeamMapName, TeamMapBefore, PutBackTeamMap and PutBackOne" ($missing19.Count -eq 0) ("missing: " + $(if ($missing19.Count -gt 0) { $missing19 -join ", " } else { "none" }))
+  $name19 = $(if ($missing19 -notcontains "TeamMapName") { TeamMapName } else { "none" })
+  Check "H19: the file run.ps1 puts back is TeamMapMemory.FileName, read off src\Federator.Core\Teams\TeamMapMemory.cs" ($const19.Count -eq 1 -and $name19 -ceq $const19[0].Groups[1].Value) ("run.ps1 names " + $name19 + ", the source holds " + $const19.Count + " FileName lines")
+  Check "H19: the run reads team-map.txt before THE START and puts it back after the AutoSave put back and before his logs folder is listed again" ($rt19.IndexOf('$tmb = TeamMapBefore') -gt 0 -and $rt19.IndexOf('$tmb = TeamMapBefore') -lt $rt19.IndexOf('Say "==== THE START ===="') -and $rt19.IndexOf('$tmp = PutBackTeamMap') -gt $rt19.IndexOf('$asp = PutBackAutoSave') -and $rt19.IndexOf('$tmp = PutBackTeamMap') -lt $rt19.IndexOf('Say "---- his logs folder, after ----"')) ""
+  Check "H19: a team map not put back counts as NOT PUT BACK in the verdict" ($rt19.Contains('if ($null -ne $tmp) { if ($tmp.Left -gt 0) { $notPutBack = $true } }')) ""
+  if ($missing19.Count -eq 0) {
+    function Hash19 { if (Test-Path -LiteralPath $tmFile) { return (Get-FileHash -LiteralPath $tmFile -Algorithm SHA256).Hash }; return $null }
+    function Set19($text) { if ($null -eq $text) { if (Test-Path -LiteralPath $tmFile) { [System.IO.File]::Delete($tmFile) } } else { [System.IO.File]::WriteAllText($tmFile, $text, $utf8) } }
+    $script:n19 = 0
+    function Run19 { $script:n19++; $d = Join-Path $tmDir ("run" + $script:n19); New-Item -ItemType Directory -Path $d | Out-Null; return $d }
+    function Said19($p) { foreach ($l in $p.Lines) { O ("    | " + $l) } }
+    Set19 "X:\kept\A.teams.txt"; $hA = Hash19
+    Set19 "X:\the loop's copy\B.teams.txt"; $hB = Hash19
+
+    O "  A, HOLDS: not there before the start and written by the run, then taken out"
+    Set19 $null; $dA = Run19; $bA = TeamMapBefore $tmLogs $dA; Set19 "X:\the loop's copy\B.teams.txt"
+    $pA = PutBackTeamMap $true $bA $tmLogs (Join-Path $dA "teammap"); Said19 $pA
+    Check "H19 A: the before read says it is not there, and the run's file is taken out and read back gone" ($bA.Ok -and -not $bA.There -and $pA.Done -eq 1 -and $pA.Left -eq 0 -and $null -eq (Hash19) -and $pA.Lines[0] -ceq "team-map.txt ADDED by the run, removed, read back gone") $bA.Line
+
+    O "  B, HOLDS: there before the start and changed by the run, then put back from the run folder's copy"
+    Set19 "X:\kept\A.teams.txt"; $dB = Run19; $bB = TeamMapBefore $tmLogs $dB; Set19 "X:\the loop's copy\B.teams.txt"
+    $pB = PutBackTeamMap $true $bB $tmLogs (Join-Path $dB "teammap"); Said19 $pB
+    Check "H19 B: the copy in the run folder's teammap reads back with the file's sha256 before the start" ($bB.Ok -and $bB.There -and $bB.Hash -eq $hA -and (Get-FileHash -LiteralPath (Join-Path $dB "teammap\team-map.txt") -Algorithm SHA256).Hash -eq $hA) $bB.Line
+    Check "H19 B: the changed file is put back and reads back with the sha256 of before the start" ($pB.Done -eq 1 -and $pB.Left -eq 0 -and (Hash19) -eq $hA -and $pB.Lines[0] -ceq "team-map.txt CHANGED, put back from the run folder's teammap, read back, sha256 matches") ""
+
+    O "  C, HOLDS: there before the start and taken out by the run, then copied back"
+    Set19 "X:\kept\A.teams.txt"; $dC = Run19; $bC = TeamMapBefore $tmLogs $dC; Set19 $null
+    $pC = PutBackTeamMap $true $bC $tmLogs (Join-Path $dC "teammap"); Said19 $pC
+    Check "H19 C: the file the run took out is copied back and read back" ($pC.Done -eq 1 -and $pC.Left -eq 0 -and (Hash19) -eq $hA -and $pC.Lines[0] -ceq "team-map.txt GONE, put back from the run folder's teammap, read back, sha256 matches") ""
+
+    O "  D and E, HOLD: the same after as before, and not there before or after, so nothing is written"
+    Set19 "X:\kept\A.teams.txt"; $dD = Run19; $bD = TeamMapBefore $tmLogs $dD; $wD = (Get-Item -LiteralPath $tmFile).LastWriteTimeUtc
+    $pD = PutBackTeamMap $true $bD $tmLogs (Join-Path $dD "teammap"); Said19 $pD
+    Check "H19 D: a file that reads as before is named and not written" ($pD.Done -eq 0 -and $pD.Left -eq 0 -and (Get-Item -LiteralPath $tmFile).LastWriteTimeUtc -eq $wD -and $pD.Lines[0] -ceq ("team-map.txt reads as it did before the start, sha256 " + $hA)) ""
+    Set19 $null; $dE = Run19; $bE = TeamMapBefore $tmLogs $dE
+    $pE = PutBackTeamMap $true $bE $tmLogs (Join-Path $dE "teammap"); Said19 $pE
+    Check "H19 E: not there before or after is named, nothing is written and no copy is made" ($pE.Done -eq 0 -and $pE.Left -eq 0 -and $null -eq (Hash19) -and -not (Test-Path -LiteralPath (Join-Path $dE "teammap")) -and $pE.Lines[0] -ceq "team-map.txt was not there before the start and is not there now") ""
+
+    O "  F, BREAKS: a stand-in Roamer runs just before the write"
+    Set19 "X:\kept\A.teams.txt"; $dF = Run19; $bF = TeamMapBefore $tmLogs $dF; Set19 "X:\the loop's copy\B.teams.txt"
+    $sF = StartStandin "sleep 120" $null $null
+    O ("    started a stand-in Roamer pid " + $sF.Id + ", Roamers now " + @(Get-Process -Name Roamer -ErrorAction SilentlyContinue).Count)
+    try { $pF = PutBackTeamMap $true $bF $tmLogs (Join-Path $dF "teammap") } finally { StopStandins }
+    Said19 $pF
+    Check "H19 F: nothing is written while a Roamer runs, the file is left as the run left it, and it counts as not put back" ($pF.Done -eq 0 -and $pF.Left -eq 1 -and (Hash19) -eq $hB -and $pF.Lines[0] -match ('^a Roamer is running just before the write of team-map\.txt, pid ' + $sF.Id + '\b')) ""
+
+    O "  G, BREAKS: a reason not to put back stands"
+    Set19 "X:\kept\A.teams.txt"; $dG = Run19; $bG = TeamMapBefore $tmLogs $dG; Set19 "X:\the loop's copy\B.teams.txt"
+    $pG = PutBackTeamMap $false $bG $tmLogs (Join-Path $dG "teammap"); Said19 $pG
+    Check "H19 G: nothing is written, the file is named and counts as not put back" ($pG.Done -eq 0 -and $pG.Left -eq 1 -and (Hash19) -eq $hB -and $pG.Lines[0] -ceq "team-map.txt CHANGED, left as it is, nothing written") ""
+
+    O "  H, BREAKS: the copy in the run folder no longer reads as it did before the start"
+    Set19 "X:\kept\A.teams.txt"; $dH = Run19; $bH = TeamMapBefore $tmLogs $dH; Set19 "X:\the loop's copy\B.teams.txt"
+    [System.IO.File]::WriteAllText((Join-Path $dH "teammap\team-map.txt"), "another text", $utf8)
+    $pH = PutBackTeamMap $true $bH $tmLogs (Join-Path $dH "teammap"); Said19 $pH
+    Check "H19 H: a copy that does not read the sha256 of before is never written over his file" ($pH.Done -eq 0 -and $pH.Left -eq 1 -and (Hash19) -eq $hB -and $pH.Lines[0] -ceq "team-map.txt CHANGED, the run folder's teammap holds no copy of it from before the run, left as it is") ""
+
+    O "  I, BREAKS: team-map.txt held open with no sharing before the start"
+    Set19 "X:\kept\A.teams.txt"; $dI = Run19
+    $hI = [System.IO.File]::Open($tmFile, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
+    try { $bI = TeamMapBefore $tmLogs $dI } finally { $hI.Dispose() }
+    O ("    | " + $bI.Why)
+    Check "H19 I: the before read is not Ok and says why, so the run stops before the start" (-not $bI.Ok -and $bI.Why -match '^team-map\.txt could not be read or copied into the run folder, ') ""
+    Check "H19 I: the run stops before the start when the before read is not Ok" ($rt19.Contains('if (-not $tmb.Ok) { $stopText = "STOP before the start: " + $tmb.Why')) ""
+
+    O "  J, BREAKS: team-map.txt held open with no sharing at the end"
+    Set19 "X:\kept\A.teams.txt"; $dJ = Run19; $bJ = TeamMapBefore $tmLogs $dJ; Set19 "X:\the loop's copy\B.teams.txt"
+    $hJ = [System.IO.File]::Open($tmFile, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
+    try { $pJ = PutBackTeamMap $true $bJ $tmLogs (Join-Path $dJ "teammap") } finally { $hJ.Dispose() }
+    Said19 $pJ
+    Check "H19 J: a file that cannot be read at the end is named, never written, and counts as not put back" ($pJ.Done -eq 0 -and $pJ.Left -eq 1 -and (Hash19) -eq $hB -and $pJ.Lines[0] -match '^team-map\.txt could not be read at the end, .*\. Nothing is written into it$') ""
+
+    O "  L, PutBackAutoSave through the write it now shares with the team map: an autosave added, one changed and one gone, put back, and then a Roamer stops every write after it"
+    $auto = Join-Path $tmDir "autosave"; $autoBk = Join-Path $tmDir "autosave-backup"
+    New-Item -ItemType Directory -Path $auto, $autoBk | Out-Null
+    foreach ($n in @("c.nwf", "g.nwf")) { [System.IO.File]::WriteAllText((Join-Path $auto $n), "his " + $n, $utf8) }
+    $bk = BackupNew $auto $autoBk (Join-Path $tmDir "autosave-before.txt") "19"
+    $beforeL = ReadListing (Join-Path $tmDir "autosave-before.txt") "AutoSave\"
+    [System.IO.File]::WriteAllText((Join-Path $auto "c.nwf"), "changed by the run", $utf8)
+    [System.IO.File]::Delete((Join-Path $auto "g.nwf"))
+    [System.IO.File]::WriteAllText((Join-Path $auto "new.nwf"), "added by the run", $utf8)
+    $pL = PutBackAutoSave $true $beforeL $auto $autoBk
+    Said19 $pL
+    $readL = @{}; foreach ($e in (ListFolder $auto).Entries) { $readL[$e.Name] = $e.Hash }
+    Check "H19 L: the added autosave is removed and his changed and gone autosaves are put back from autosave-backup, each read back" ($bk.Ok -and $pL.Done -eq 3 -and $pL.Left -eq 0 -and $readL.Count -eq 2 -and $readL["c.nwf"] -eq $beforeL["AutoSave\c.nwf"].Hash -and $readL["g.nwf"] -eq $beforeL["AutoSave\g.nwf"].Hash -and ($pL.Lines -contains "AutoSave\new.nwf ADDED by the run, removed, read back gone") -and ($pL.Lines -contains "AutoSave\c.nwf CHANGED, put back from autosave-backup, read back, sha256 matches") -and ($pL.Lines -contains "AutoSave\g.nwf GONE, put back from autosave-backup, read back, sha256 matches")) ("done " + $pL.Done + ", left " + $pL.Left)
+    [System.IO.File]::WriteAllText((Join-Path $auto "c.nwf"), "changed by the run", $utf8)
+    [System.IO.File]::Delete((Join-Path $auto "g.nwf"))
+    $sL = StartStandin "sleep 120" $null $null
+    try { $qL = PutBackAutoSave $true $beforeL $auto $autoBk } finally { StopStandins }
+    Said19 $qL
+    Check "H19 L: with a Roamer running the first write stops, and every write after it is left and named" ($qL.Done -eq 0 -and $qL.Left -eq 2 -and $qL.Lines[0] -match ('^a Roamer is running just before the write of AutoSave\\c\.nwf, pid ' + $sL.Id + '\b') -and $qL.Lines[1] -ceq "AutoSave\g.nwf GONE, left as it is, nothing written" -and -not (Test-Path -LiteralPath (Join-Path $auto "g.nwf"))) ""
+  }
+
+  O "  K, the TEAMS KEPT block of the tool's log is masked like FOLDERS REMEMBERED, Q87"
+  $bar19 = "================================================================"
+  $log19 = @(
+    "", $bar19, "FOLDERS REMEMBERED", $bar19,
+    "10:00:00.000  +0000.100s  Source    X:\remembered\NWC",
+    "", $bar19, "TEAMS KEPT", $bar19,
+    "10:00:00.010  +0000.110s  TEAMS    no clash XML was picked, so the teams are read from X:\kept\A.teams.txt, the team map kept from the last run with one. It holds 2 teams and 3 codes",
+    "10:00:00.011  +0000.111s  TEAMS    Mechanical is HV and PL",
+    "10:00:00.012  +0000.112s  TEAMS    a pair is written in the order Mechanical, Electrical, then any other team by its name, then UNKNOWN",
+    "10:00:03.000  +0003.000s  SCAN     started  X:\scanned  top folder only"
+  )
+  $mr19 = MaskRemembered $log19
+  $ml19 = @($mr19.Lines)
+  foreach ($l in $ml19) { if ($l -ne "") { O ("    | " + $l) } }
+  Check "H19 K: no line of the TEAMS KEPT block names the kept map after the mask, and each is said to be masked" ((@($ml19 | Where-Object { $_.Contains("X:\kept") }).Count -eq 0) -and (@($ml19 | Where-Object { $_ -match '^10:00:00\.01[012]  \+0000\.11[012]s  <a line of the kept team map, masked by run\.ps1, Q123>$' }).Count -eq 3)) ""
+  Check "H19 K: the FOLDERS REMEMBERED line is still masked, and the line after both blocks is kept" ((@($ml19 | Where-Object { $_ -match '<a remembered folder, masked by run\.ps1, Q87>$' }).Count -eq 1) -and ($ml19 -contains "10:00:03.000  +0003.000s  SCAN     started  X:\scanned  top folder only") -and $ml19.Count -eq $log19.Count) ([string]$ml19.Count + " lines out of " + $log19.Count)
+  Check "H19 K: the mask counts the lines of each block" ($mr19.Masked -eq 1 -and $mr19.MaskedTeams -eq 3) ("folders " + $mr19.Masked + ", teams " + $mr19.MaskedTeams)
+
+  O "  K2, F131 attempt 3, the breaker's finding on attempt 2: every line of the tool's log naming his logs folder or the kept map is masked, wherever it sits"
+  $k2Dir = Join-Path $tmDir "k2"
+  New-Item -ItemType Directory -Path $k2Dir | Out-Null
+  $k2Copy = Join-Path $k2Dir "team-map.txt"
+  [System.IO.File]::WriteAllText($k2Copy, "# The team map of the last run with a clash XML, read by a run with none. Safe to delete.`r`nkept: X:\kept\A.teams.txt`r`n", $utf8)
+  $k2Logs = "X:\his\logs"
+  $k2Map = "X:\kept\A.teams.txt"
+  $k2Has = $null -ne (Get-Command -Name PathsOfHis -CommandType Function -ErrorAction SilentlyContinue)
+  Check "H19 K2: run.ps1 holds PathsOfHis" $k2Has ""
+  if ($k2Has) {
+    $k2Paths = @(PathsOfHis ($k2Logs + "\") @($k2Copy, (Join-Path $k2Dir "not-there.txt")))
+    Check "H19 K2: PathsOfHis gives his logs folder and the path the copy of team-map.txt names, and nothing for a file that is not there" ($k2Paths.Count -eq 2 -and $k2Paths[0] -ceq $k2Logs -and $k2Paths[1] -ceq $k2Map) ($k2Paths -join " | ")
+    $k2Held = [System.IO.File]::Open($k2Copy, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
+    $k2Why = ""
+    try { try { PathsOfHis $k2Logs @($k2Copy) | Out-Null } catch { $k2Why = [string]$_.Exception.Message } } finally { $k2Held.Dispose() }
+    Check "H19 K2, BREAKS IT: a copy of team-map.txt held so it cannot be read makes PathsOfHis throw, never a list that leaves its path out" ($k2Why -ne "") $k2Why
+  }
+  $kept19 = [regex]::Matches([System.IO.File]::ReadAllText((Join-Path $repo "src\Federator.Core\Teams\TeamMapMemory.cs")), 'const string KeptMarker = "([^"]+)";')
+  $k2Marker = $(if ($null -ne (Get-Command -Name TeamMapKept -CommandType Function -ErrorAction SilentlyContinue)) { TeamMapKept } else { "none" })
+  Check "H19 K2: the line PathsOfHis reads starts with TeamMapMemory.KeptMarker, read off src\Federator.Core\Teams\TeamMapMemory.cs" ($kept19.Count -eq 1 -and $k2Marker -ceq $kept19[0].Groups[1].Value) ("run.ps1 names " + $k2Marker + ", the source holds " + $kept19.Count + " KeptMarker lines")
+  $k2Log = @(
+    "", $bar19, "TEAMS KEPT", $bar19,
+    "10:00:00.010  +0000.110s  TEAMS    no clash XML was picked, so the teams are read from X:\kept\A.teams.txt, the team map kept from the last run with one. It holds 2 teams and 3 codes",
+    "", $bar19, "RUN SETTINGS", $bar19,
+    "10:05:00.000  +0300.000s  TEAMS    no clash XML was picked, so the teams are read from X:\kept\A.teams.txt, the team map kept from the last run with one. It holds 2 teams and 3 codes",
+    "10:05:00.001  +0300.001s  TEAMS    Mechanical is HV and PL",
+    "10:05:00.002  +0300.002s  TEAMS    the map kept for a run with no clash XML stays x:\KEPT\a.teams.txt, because this run's map was not read whole with a team",
+    "10:05:00.003  +0300.003s  TEAMS    this map is now the one kept for a run with no clash XML, remembered in X:\His\Logs\team-map.txt",
+    "                          the log  : X:\his\logs\run-1.log",
+    "10:05:01.000  +0301.000s  SCAN     started  X:\scanned  top folder only"
+  )
+  function Left19($lines) { return @($lines | Where-Object { $_.IndexOf($k2Map, [StringComparison]::OrdinalIgnoreCase) -ge 0 -or $_.IndexOf($k2Logs, [StringComparison]::OrdinalIgnoreCase) -ge 0 }) }
+  $k2Mr = MaskRemembered $k2Log @($k2Logs, $k2Map)
+  $k2Ml = @($k2Mr.Lines)
+  foreach ($l in $k2Ml) { if ($l -ne "") { O ("    | " + $l) } }
+  $k2Left = Left19 $k2Ml
+  Check "H19 K2: no line names his logs folder or the kept map after the mask, in any case of its letters, in the TEAMS KEPT block or after it" ($k2Left.Count -eq 0) ($k2Left -join " | ")
+  Check "H19 K2: each masked run line keeps its stamp and says it was masked, and a line with no stamp keeps its indent" ((@($k2Ml | Where-Object { $_ -match '^10:05:00\.00[023]  \+0300\.00[023]s  <a line naming his logs folder or the kept team map, masked by run\.ps1, F131>$' }).Count -eq 3) -and ($k2Ml -contains "                          <a line naming his logs folder or the kept team map, masked by run.ps1, F131>")) ""
+  Check "H19 K2: a run line naming neither is kept, the TEAMS KEPT block is masked as before, and no line is added or lost" (($k2Ml -contains "10:05:00.001  +0300.001s  TEAMS    Mechanical is HV and PL") -and ($k2Ml -contains "10:05:01.000  +0301.000s  SCAN     started  X:\scanned  top folder only") -and $k2Ml.Count -eq $k2Log.Count -and $k2Mr.MaskedTeams -eq 1) ([string]$k2Ml.Count + " lines out of " + $k2Log.Count)
+  Check "H19 K2: the mask counts the lines naming his paths" ($k2Mr.MaskedPaths -eq 4) ("paths " + $k2Mr.MaskedPaths)
+  $k2Broken = Left19 @((MaskRemembered $k2Log @($k2Map)).Lines)
+  Check "H19 K2, BREAKS IT: handed the kept map and not his logs folder, the read above names the two lines left naming his logs folder" ($k2Broken.Count -eq 2 -and $k2Broken[0].EndsWith("remembered in X:\His\Logs\team-map.txt") -and $k2Broken[1].EndsWith("X:\his\logs\run-1.log")) ($k2Broken -join " | ")
+  Check "H19 K2: the run's tool log goes into the evidence through MaskRemembered with PathsOfHis of his logs folder, the copy of team-map.txt in the run folder and his own team-map.txt, and the record says how many lines it masked" ($rt19.Contains('$mr = MaskRemembered $tl (PathsOfHis $paths.HisLogs @((Join-Path (Join-Path $paths.RunDir "teammap") (TeamMapName)), (Join-Path $paths.HisLogs (TeamMapName))))') -and $rt19.Contains('$mr.MaskedPaths')) ""
+  Check "H19 K2: the mask is made before the masked copy of the tool's log is written, so a team-map.txt that cannot be read leaves no copy" ($rt19.IndexOf('$mr = MaskRemembered $tl (PathsOfHis') -gt 0 -and $rt19.IndexOf('$mr = MaskRemembered $tl (PathsOfHis') -lt $rt19.IndexOf('[System.IO.File]::WriteAllLines($mlog')) ""
+  BaderSame "H19"
 
   # =====================================================================================
   O ""

@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Federator.Core.Teams;
 
 namespace Federator.Core.Views
 {
@@ -60,26 +60,17 @@ namespace Federator.Core.Views
         /// <summary>
         /// The discipline code in that set name, or empty where it carries none this tool
         /// knows. Matched Ordinal and never trimmed or cased, because a code is read off a
-        /// name and every other comparison here treats it exactly as it was read.
+        /// name and every other comparison here treats it exactly as it was read. Read by
+        /// CodeOf.Set, the one place a set name's code is read, with the views' own codes, F131.
         /// </summary>
         public static string CodeIn(string setName, ViewpointSettings settings)
         {
-            if (string.IsNullOrEmpty(setName) || settings == null)
+            if (settings == null)
             {
                 return string.Empty;
             }
 
-            string[] parts = setName.Split(settings.SetNameSeparator);
-
-            for (int i = 0; i < parts.Length; i++)
-            {
-                if (settings.IsADisciplineCode(parts[i]))
-                {
-                    return parts[i];
-                }
-            }
-
-            return string.Empty;
+            return CodeOf.Set(setName, settings.DisciplineCodes, settings.SetNameSeparator);
         }
 
         /// <summary>
