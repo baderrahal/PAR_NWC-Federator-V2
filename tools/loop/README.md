@@ -350,9 +350,15 @@ modes:
   their own, which Check prints under its own heading. SkipClashOffCoordinates is not remembered
   between runs: the window sets it from AlignmentCheck.DefaultSkipClashOffCoordinates every time
   it opens, src\Federator.Addin\Ui\FederatorWindow.xaml.cs line 1198 on the branch fix-F112 at
-  e6d6f73, the same line on main since F112 merged as ddb059b, and the one state the window reads back at its next open is FolderMemory's
-  folders.txt, which keeps picker folders only, so nothing of the box needs reading before the
-  loop or putting back after
+  e6d6f73, the same line on main since F112 merged as ddb059b. So nothing of the box needs
+  reading before the loop or putting back after. The two states the window does read back at
+  its next open are FolderMemory's folders.txt, picker folders only, and since F131
+  TeamMapMemory's team-map.txt, the team map a run with no XML reads. Every start reads
+  team-map.txt before it, check 13b, a copy in the run folder's teammap read back by sha256,
+  and puts it back after, or takes it out where it was not there, by the AutoSave put back's
+  write and its reasons, and the tool's log goes into the evidence with its TEAMS KEPT block
+  masked as FOLDERS REMEMBERED is, Q87 and Q123, and since F131 attempt 3 with every other line
+  masked that names his logs folder or the kept map, PathsOfHis, wherever it sits
 
 - Documents -Set NN -Item 1 to 5 -Folder <a folder of NMFed\NWC>, F104 part 2, the documents
   read of the window run whose evidence is steps\runs\NN\item<K>-<Folder>, item 5 also taking
@@ -428,12 +434,19 @@ the close, the watchdog's end, the put back, the keep awake release or the verdi
   settings.txt and m5.txt, the run folder of an earlier call moved aside as
   item0-aside-yyyyMMdd-HHmmss and never emptied, logs-backup\since-yyyyMMdd-HHmmss and
   autosave-backup\since-yyyyMMdd-HHmmss for files the backups did not hold,
-  probes\unproved-starts.txt for a start it could not prove, and for Install
-  installs\<stamp>-yyyyMMdd-HHmmss and bundle-backup-yyyyMMdd-HHmmss
+  probes\unproved-starts.txt for a start it could not prove, teammap\team-map.txt in the run
+  folder, F131, the copy of the team map the tool keeps where it is there before the start,
+  and for Install installs\<stamp>-yyyyMMdd-HHmmss and bundle-backup-yyyyMMdd-HHmmss. Outside
+  that folder it writes only by its put backs: his 22.0 registry key and settings files, his
+  AutoSave folder's files, Q86, and since F131 team-map.txt in his logs folder, copied back
+  from that copy or taken out where it was not there before, each only when the put back's
+  reasons are all clear, and read back
 - writes of a window run, F106: runs\NN\item<K>-<Folder> with driver.txt, toollog-name.txt,
-  toollog\ with the tool's log, its FOLDERS REMEMBERED block masked, Q87, and its .tsv,
-  outputs.txt, item 5's open\, and what the tool writes into the copy's NWF, NWD and Clash
-  Report folders. A read-out of every workbook by tools\loop\read-workbook.ps1 goes into the
+  toollog\ with the tool's log, its FOLDERS REMEMBERED block masked, Q87, its TEAMS KEPT
+  block masked, Q123, and every other line naming his logs folder or the kept map masked,
+  F131, and its .tsv, copied as it is, outputs.txt, item 5's open\, and what the tool writes
+  into the copy's NWF, NWD and Clash Report folders. A read-out of every workbook by
+  tools\loop\read-workbook.ps1 goes into the
   evidence, and a file over 20 MB is named with its size and sha256 and not copied, Q90.
   It starts the driver, powershell.exe, and read-workbook.ps1 once per workbook
 - writes of a documents read, F104 part 2: runs\NN\item<K>-<Folder>-document-yyyyMMdd-HHmmss,
@@ -549,6 +562,9 @@ run against a fake APPDATA, H16, a window whose thread is blocked, and H17, a co
 run.ps1 whose constructor line is removed, run against fake LOCALAPPDATA and APPDATA folders
 through checks 13, 14, 15 and 18 and to the removed line, and since fix attempt 2: H18, the
 end of a run, the call deadline, the verdict, the one listing reader and the bounded walk,
+since F131 H19, team-map.txt read before every start and put back after it, with RC1 and RC8
+of H17 reading the same in the run flow, its TEAMS KEPT block masked and, K2, every other line
+of the tool's log naming his logs folder or the kept map masked,
 and since F138 H20, the Auto-Save switch written "3 0" on the throwaway key: a backup that
 writes nothing and a switch after it that reads back and is put back, a write that throws, a
 write another writer changes before the read back, a read back that cannot be read, a key that

@@ -179,8 +179,8 @@ FR-177,generic models counted and a set per model,F128,2b,Bader's request,open,n
 FR-178,start from an existing nwf,F129,3a,Bader's request,open,none,none,2026-10-04
 FR-179,shift range tick in the group list,F130,3b,Bader's request,open,none,none,2026-10-04
 FR-189,nwd listed as written when its publish failed,F119,3b,silent wrong number,open,none,none,2026-10-05
-FR-180,team map beside the picked xml,F131,2b,Bader's decision,in progress,"none, branch fix-F131",none,2026-10-05
-FR-181,mechanical sets miss hv pl fp models,F131,2b,Bader's decision,in progress,"none, branch fix-F131",none,2026-10-05
+FR-180,team map beside the picked xml,F131,2b,Bader's decision,merged,135,none,2026-10-07
+FR-181,mechanical sets miss hv pl fp models,F131,2b,Bader's decision,in progress,"135 merged for F131, the COVERAGE block and the form wait for F127",none,2026-10-07
 FR-182,mirrored tests kept once,F132,2a,Bader's decision,in progress,"none, branch fix-F132",none,2026-10-05
 FR-183,mirrored tests in an existing nwf,F132,2a,Bader's decision,in progress,"none, branch fix-F132",none,2026-10-05
 FR-184,views tree by priority and team pair,F114,2b,Bader's decision,in progress,"none, branch fix-F114",none,2026-10-04
@@ -327,14 +327,14 @@ F127,coverage of the clash XML,F127,2a,fix,in progress,"none, branch fix-F127",n
 F128,generic models,F128,2b,fix,open,none,none,2026-10-04
 F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
 F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
-F131,teams,F131,2b,fix,in progress,"none, branch fix-F131 at 0e262d3, its harness read, its pull request not yet opened",none,2026-10-06
+F131,teams,F131,2b,fix,merged,135,none,2026-10-07
 F132,mirrored tests,F132,2a,fix,in progress,"none, branch fix-F132 at 93b45b1, attempt 9 on one blocking point next",none,2026-10-06
 F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-06
 F134,the code health gate,F134,beside the waves,fix,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 F135,the analyser settings that touch every project,F135,beside the waves,fix,open,none,none,2026-10-05
 F136,the viewpoints switch,F136,before any test run,fix,merged,117,none,2026-10-05
 F137,no site and no clash groups,F137,before the test of wave 1,fix,open,none,none,2026-10-05
-F138,loop starts with Auto-Save off,F138,before any probe or run starts again,fix,merged,127,none,2026-10-06
+F138,loop starts with Auto-Save off,F138,before any probe or run starts again,fix,proven by a run,127,"probes\q133-import-20261007-113149, Auto-Save off held on its real start",2026-10-07
 Q81,"local main tracked origin/master, its upstream set to origin/main",none,none,Bader's request,merged,"74, records only, nothing to merge",none,2026-09-29
 Q93,a reading of the loop's own scripts blocks a run only for harm or wrong evidence,none,none,Bader's request,merged,83,none,2026-10-04
 Q94,"code runs every real file itself, full runs of main and the fixes they show",none,none,Bader's request,in progress,none,none,2026-10-06
@@ -348,10 +348,10 @@ Q112-2,coverage of the clash XML (FR-176),F127,2a,Bader's request,in progress,"n
 Q112-3,generic models counted and a set per model (FR-177),F128,2b,Bader's request,open,none,none,2026-10-04
 Q112-4,start from an existing NWF (FR-178),F129,3a,Bader's request,open,none,none,2026-10-04
 Q112-5,Shift range tick in the group list (FR-179),F130,3b,Bader's request,open,none,none,2026-10-04
-Q114,one view per clash test by team (FR-180 to FR-188),"F131, F132, F114",2a and 2b,Bader's request,in progress,"none, branches fix-F131, fix-F132, fix-F114",none,2026-10-05
+Q114,one view per clash test by team (FR-180 to FR-188),"F131, F132, F114",2a and 2b,Bader's request,in progress,"135 merged for F131, branches fix-F132, fix-F114",none,2026-10-07
 Q129,a clean tracker and a code health gate (FR-191 to FR-193),"F133, F134, F135",beside the waves,Bader's request,in progress,"122 merged for F133, F134 and F135 not merged",none,2026-10-06
 Q130,stop the C02 weekly run and no viewpoints in test runs until F114 merges (FR-194),F136,before any test run,Bader's request,merged,"117 for F136, 116 records the stop",none,2026-10-05
-Q132,"the new viewpoints first, F136 then F131, F132 and F114","F136, F131, F132, F114",first of all since Bader's order of 2026-10-05,Bader's request,in progress,"117 merged for F136, branches fix-F131, fix-F132, fix-F114",none,2026-10-05
+Q132,"the new viewpoints first, F136 then F131, F132 and F114","F136, F131, F132, F114",first of all since Bader's order of 2026-10-05,Bader's request,in progress,"117 merged for F136, 135 for F131, branches fix-F132, fix-F114",none,2026-10-07
 Q25,"five clash item properties reach no output, split into Q35 to Q40",F120,3a,question,merged,131,none,2026-10-06
 Q27,the two choice rule for still outstanding lost every reader,F123,5,question,merged,131,none,2026-10-06
 Q28,two handle reads left where they are,"F123, F121",5 and 4,question,merged,131,none,2026-10-06
@@ -459,6 +459,7 @@ F139-R8,"steps\logs\README.md line 11 names steps/log.md, in a folder never edit
 step 228-233,"the published NWD's file properties and its ACC upload never checked, ACC put off by Bader",none,none,register row,waiting for Bader,none,none,2026-10-07
 step 346-352,"the remote branches other than main not deleted, D6, read off the live list first",none,none,register row,waiting for Bader,none,none,2026-10-07
 step 364,the CSV of one mechanical NWC and its PROBE block not sent,none,none,register row,waiting for Bader,none,none,2026-10-07
+T5-R-WALKRACE,the harness's walk of the loop folder races a lane building under a wt- folder,none,none,register row,open,none,none,2026-10-07
 FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,open,none,none,2026-10-06
 FR-199,blocks stay in measured order with a priority file,F118,2c,Bader's decision,open,none,none,2026-10-06
 FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,open,none,none,2026-10-06

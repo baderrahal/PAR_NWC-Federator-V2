@@ -205,6 +205,18 @@ namespace Federator.Core.Health
             return at <= 0 ? name : name.Substring(0, at);
         }
 
+        /// <summary>
+        /// What follows the discipline prefix and its separator, or null where PrefixOf gives
+        /// the whole name or nothing follows the separator. Split here and nowhere else, so the
+        /// draft of a silent miss reads a name's prefix where this check does, F131.
+        /// </summary>
+        public static string BodyOf(string name)
+        {
+            string prefix = PrefixOf(name);
+
+            return prefix.Length == 0 || prefix.Length >= name.Length - 1 ? null : name.Substring(prefix.Length + 1);
+        }
+
         /// <summary>Whether two names carry the same discipline prefix.</summary>
         public static bool SamePrefix(string left, string right)
         {

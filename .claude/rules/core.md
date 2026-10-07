@@ -185,11 +185,14 @@ and 6 does not read as broken.
   `revit-worksets.txt` inside Core holds the C02 census alone, the 39 names measured before
   F116. Q113 D keeps all four categories of Q103 in this project's list
 - THE CENSUS AND THE LIST ARE PUT TOGETHER IN ONE PLACE, `RevitWorksets.With`, F116 on the
-  readings of the Q113 pass. The corrections take their spellings from it and the EMPTY SETS
-  judge is handed the same ones, through `ExchangeDocument.Worksets` and
-  `SetBuildPlan.Worksets` to `EmptySets.Why`, so a spelling a MATRIX line says was measured is
-  never one that block calls carried by no model. A file read as it stands is judged against
-  the census alone
+  readings of the Q113 pass. The case corrections take their spellings from it with the
+  list's workset lines, and the EMPTY SETS judge is handed it with every spelling the list
+  names, `MatrixCorrectionList.Spellings`: the workset lines, then every spelling an also-ask
+  line accepts beside its value, F131 on the readers' finding of its first attempt. It
+  reaches `EmptySets.Why` through `ExchangeDocument.Worksets` and `SetBuildPlan.Worksets`, so
+  a spelling a MATRIX line says was measured or accepted is never one that block calls
+  carried by no model. The value of an also-ask line is what a set asks, measured or not, and
+  is not among them. A file read as it stands is judged against the census alone
 - A WORKSET VALUE IS CORRECTED ONLY WHERE THE LIST NAMES A SPELLING OF IT, the same but for
   its case, `MatrixCorrectionList.NamesASpellingOf`, F116 on the breaker's finding: a value is
   corrected only from what the list beside the XML says. It is then asked in every spelling
@@ -272,6 +275,129 @@ and 6 does not read as broken.
   part way, `ModelExport.WalkFinished` false, the row's number is empty and its text
   UNKNOWN, `ExportCheck.WorksetCount` and `EveryWorkset`, never the names seen before it
   stopped as if they were all
+
+### The teams of the picked file, F131
+
+- THE TEAM MAP IS ONE PROJECT'S DATA, IN A FILE OF ITS OWN BESIDE THE PICKED XML, Q114
+  points 1 and 2 decided by Bader on 2026-10-04 and Q115 answered A on 2026-10-05. Its name is the
+  XML's without the extension and `TeamMapSettings.Suffix`, default `.teams.txt`, one full
+  path tested with File.Exists and never a search, joined by `ListFile.PathBeside`, the join
+  the list of corrections is found by. It is read by `ListFile`, the one way a list beside
+  the XML is read, so its lines split and its bytes are judged as the list's are.
+  `MatrixCorrections.ReadPicked` reads it on its own and the document carries it in
+  `ExchangeDocument.Teams`, so the pick, the run, the open file run and both hand buttons read
+  one map, and a fault in one list never leaves the other unread. This project's map is
+  exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt beside the corrected XML, held to
+  Bader's map by a test. Nothing in src names a team or a code
+- ONE TEAM A LINE, `team: name | code | code`, in the order a pair is written, point 12, and
+  `size-folder: team | team`, the teams whose pairs carry the size folder, point 11. Any other
+  code is a team of its own named by its code, Bader's rule. Codes compare Ordinal, nothing
+  trimmed
+- A SET NAME WITH NO CODE TAKES THE TEAM ITS FOLDER NAMES, AND UNKNOWN WHERE NONE DOES, Q117
+  answered C, and A where the XML's set tree names no team, by Bader on 2026-10-05.
+  `TeamMap.TeamOfSet`: the code's team where the set name carries one, `CodeOf.Set`, and where
+  it carries none the folder above the set in the clash XML's set tree whose whole name is a
+  team of the map, Ordinal, the folder nearest the set first, so the client's BLD-Security
+  Devices in the folder Electrical is Electrical. Where no folder does, and with no map, it is
+  `TeamMapSettings.UnknownTeam`, UNKNOWN, the one word `ViewpointSettings.DefaultUnknownDiscipline`
+  reads. NAMED IN THE LOG: `TeamMap.SetLines` gives a TEAMS line for each set of the picked XML
+  whose name carries no code of the map, with its team or UNKNOWN, said after the map's own
+  lines, and none where the map maps no team
+- A MAP THAT CANNOT BE READ IS SAID, NEVER HALF READ AND NEVER A THROW. A line it does not
+  know, a code on two teams or twice on one line, a team named twice, a team with no code,
+  an empty name or code, a code holding any space or a character a person cannot see, a team
+  name with a space at either end or such a character anywhere, on a team line or a
+  size-folder line, a size-folder line naming a team no team line names, or bytes that are not
+  UTF-8, make the whole map unread with its line and why. The character is named the way
+  `InvisibleDifference` names it, TAB (U+0009), because a code holding one never equals the
+  code read off a file name and would make a team of its own while the map read as whole, F131
+  on the breaker's finding of its first attempt. Missing, unread or holding no team the map
+  maps nothing: every code is a team of its own and no pair carries the size folder. The TEAMS
+  lines and the window's grey line say which, `TeamMap.Lines` and `WindowLine`, in words held in
+  Core
+- A RUN WITH NO CLASH XML READS THE MAP THE WINDOW KEPT, Q123 answered B by Bader on
+  2026-10-05: the window keeps the last team map used, for runs with no XML, and the log names
+  it. `TeamMapMemory`, kept the way `FolderMemory` keeps the picker folders, is one file,
+  `team-map.txt`, beside the logs, holding ONE FULL PATH, `kept: path`, read by `ListFile`, so
+  the map read is the file a person keeps beside the XML and never a copy of it. A run with an
+  XML keeps its map only where it was read whole with a team, `Remember`, so a pick with no map
+  or a map that cannot be read never takes the teams away from the next run with no XML, and
+  the line says which map stays. `TeamMap.Kept` reads the kept map at its path, said as the
+  kept map on every TEAMS line and on the grey line. None kept, it maps nothing and says so.
+  A memory that cannot be read, a line it does not know, a second map or a path that is not a
+  full one, is said and maps nothing, never a throw, and its TEAMS line and grey line name the
+  memory as what could not be read and never call it the kept map, the reviewer's K26.
+  `TeamMapMemory.ForRun` is the one rule for the map of a run: the picked XML's, carried in
+  `ExchangeDocument.Teams` by `ReadPicked`, or the kept one where no XML is picked, and a
+  document not read by `ReadPicked` is refused. `TeamMapMemory.ForPick` is the same rule for a
+  path in the XML box, the map beside it or the kept one where the box names no file, which the
+  window's grey line reads, so the window holds no rule of its own and a test proves the two
+  give the same map
+- WHERE THE TEAM APPLIES, Q116 answered A by Bader on 2026-10-05. The views read the team, and the log,
+  COVERAGE and the form write it beside the code, `TeamMap.CodeWithTeam`, HV in Mechanical.
+  The grouping, the one-discipline judgement, the alignment and export checks and the
+  workbook keep the code, so HV against PL is still created and lands in Mechanical vs
+  Mechanical
+- A SIDE'S CODE IS READ IN ONE PLACE, `CodeOf.Set`: the first part of the set name, split on
+  the set name separator, that is a known code, `TeamMap.KnownCodes`, the map's codes and
+  those of the group's own models. `DisciplinePairRule.CodeIn` reads through it with the
+  views' seven codes until F114 replaces it. A model's code stays part 5 of its file name
+  through `ContainerName.Parse`, and its team is the map's
+- NO CODE WAITS ON MAIN FOR A LATER STEP, Bader's answer B to Q134 on 2026-10-05. The pair of
+  two teams, its one order and its size folder, Q114 points 10 to 12, are F114's, which calls
+  them, so F131 holds no member for them. F131 reads the map's order and its size-folder line,
+  refuses a map whose size-folder line is wrong, and says both on its TEAMS lines, nothing more
+- A SET THAT CANNOT REACH A MODEL OF ITS OWN TEAM IS A SILENT MISS, FR-181, Q114 point 3,
+  `SilentMisses`: a set of team T and code C and a model of team T with another code, where
+  every group of the set asks, not negated, a workset the model's whole list does not carry
+  or a Source File its file name does not hold. Whether a workset asked finds a carried name
+  is `ExportCheck.WorksetFinds`, the one place the export check reads it too. The file name
+  STANDS IN for the Source File of the model's items, which is not read, and the line of such
+  a miss says so. A model whose worksets were not all read is counted as not judged, never
+  called missed. It is NAMED only where the coverage count of Q112 request 2 shows the model
+  holding items of the set's categories that no set catches, and without that count it is
+  counted on one line that says UNKNOWN. A COUNT NOT TAKEN IS NEVER A ZERO: null or below zero,
+  as `ModelExport.NotCounted` is, it is UNKNOWN, and a sum beside one not taken is a lower
+  bound whose line says at least. A set asking no category by its whole name is counted on a
+  line saying no count can confirm it
+- A SET WITH NO CODE IS JUDGED BY THE TEAM ITS FOLDER NAMES, Q117 answered C, against every
+  model of that team, each having a code other than its none, and its SILENT MISS line says it
+  is in that team by its folder. The SILENT MISS line writes the set's code with its team
+  beside it, as it writes the model's
+- WHAT IS NOT JUDGED IS SAID BESIDE THE ALL CLEAR. A set whose name carries no code the map or
+  a model of the group knows and whose folders name no team, and a model whose code was not
+  read, have a team that is UNKNOWN, so they are judged against nothing, and `SilentMisses.Lines`
+  counts each kind on a line of its own. WHERE NO PAIR IS JUDGED THE LINE SAYS SO AND WHY, NEVER
+  THE ALL CLEAR: no set or no model handed in, a list holding none read the same as no list, or
+  no model of the group of a set's team with another code. F131 on the breaker's finding of its
+  second attempt, an empty list of models printing the all clear over nothing read. A condition
+  whose value is empty asks no name and closes nothing, as every reader of workset values skips
+  one
+- EACH MODEL'S LINE CARRIES ITS TEAM AND HOW MANY SETS CANNOT REACH IT, the group's TEAMS block,
+  `SilentMisses.GroupLines`: one line a model, its code with its team beside it, Q116 answered
+  A, and how many of the sets of its team with another code cannot reach it, could not be
+  judged, or that none of them is kept out of it by a workset or a file name it asks, so a
+  model missed by many sets is one line. That last line never says a set can reach the model,
+  because the judge reads only a workset and a Source File and a set closed by any other test
+  is not judged, the breaker's finding. Where no set was handed in, a run with no XML, each
+  model's line says whether a set cannot reach it is UNKNOWN, K27. A model of the
+  group not handed in, dropped where its worksets could not be read, is counted against the
+  group's model count. No model line where no map maps a team. Until F127's coverage count is
+  handed in, no miss is named and each is counted as UNKNOWN until the coverage counts them
+- THE CORRECTION FOR A SILENT MISS IS DRAFTED AND NEVER APPLIED, one also-ask line of the
+  list of corrections, `also-ask: value | spelling | spelling`, the value and every spelling
+  of the model whose text after its prefix is the value's, compared case blind. The prefix is
+  split by `WorksetDisagreements.BodyOf`, where `PrefixOf` splits it, and never at the set
+  name separator, which is another setting. Bader
+  approves it by copying it into the list. Read there, every group asking one of its
+  spellings is written once for each, through `AskEverySpelling`, the way Q102 asks every
+  spelling, after every other correction. A spelling on two lines unreads the list, because
+  two lines sharing a spelling ask each value where the other is or move the file on every
+  run. A line written twice is kept once, and a list with no also-ask line says on its first
+  MATRIX line what it said before F131. A Source File gets no drafted line. It is THE ONE WAY
+  a value also asks another spelling, the Or row of Q69: `ValueOrRow`, a row nothing in src
+  called, was deleted with its overload of `MatrixCorrections.Apply` on F131's second attempt,
+  and its tests drive an also-ask line
 
 ## Rules the code holds
 
@@ -1025,9 +1151,11 @@ and 6 does not read as broken.
   involving one of `SubGroupDisciplines`, which F53 already asks the same question
   through. The seven codes are a SETTING, `DisciplineCodes`, matched Ordinal and never
   cased, and the code is whichever hyphen separated part of a set name is exactly one of
-  them. A SET NAME CARRYING NO KNOWN CODE IS REPORTED AND NEVER GUESSED: the client's own
+  them, read by `CodeOf.Set` since F131. A SET NAME CARRYING NO KNOWN CODE IS REPORTED AND NEVER GUESSED: the client's own
   file holds BLD-Security Devices, which breaks the pattern its siblings follow, so the
-  folder says UNKNOWN and the count goes in the block
+  folder says UNKNOWN and the count goes in the block. Bader's answer C to Q117 gives such a
+  set the team its folder names, `TeamMap.TeamOfSet`, which the TEAMS lines and the silent
+  miss judge read already and these folders read once F114 puts the team pairs in their place
 - THE SMALL SERVICE RULE IN F85 IS ITS OWN AND IS NOT INHERITED FROM F72a. A service at or
   under the threshold stays out of the tree, decided on the SIZE and never on the status.
   F72a is off by default, and it leaves a service against another service exactly as it

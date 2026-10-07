@@ -104,15 +104,16 @@ and nothing is fixed until a real run on real files shows it fixed.
   own folder shape, NWC\<community> into the NWF, NWD and Clash Report folders of the same
   name. The loop named it NMFed because the wall refuses any command naming NM Fed. Every
   output of a run goes under %LOCALAPPDATA%\NwcFederatorLoop, bar two kinds. The evidence
-  run.ps1 copies into steps\runs of the clone it runs from, masking only the remembered
-  folders block of the tool's log, which the lead masks whole with mask-evidence.ps1 before
-  any commit, as the rule below says. And what the tool and its
+  run.ps1 copies into steps\runs of the clone it runs from, masking in the tool's log only
+  the lines naming his logs folder or what his own runs remember, by the logs folder rule
+  below, which the lead masks whole with mask-evidence.ps1 before any commit, as the rule
+  below says. And what the tool and its
   Navisworks write where the loop cannot point them: the tool's own log and tsv in his logs
   folder, autosaves in his AutoSave folder and Navisworks's own settings, each kept by a rule
   below, and whatever else changes outside the loop folder while the start runs, such as the
   files of Autodesk's licensing and analytics, which run.ps1 lists as M5, by any program, and
   leaves as they are. Nothing is ever written into NM Fed
-- Nothing of Bader's is deleted or overwritten, bar four things. The installed add-in,
+- Nothing of Bader's is deleted or overwritten, bar five things. The installed add-in,
   backed up first as the install rule above says, whose files an install replaces or
   removes. His Navisworks settings, put back to what the backup holds under the settings
   rule below, which can remove a value or key the loop's own Navisworks added, and whose
@@ -120,7 +121,9 @@ and nothing is fixed until a real run on real files shows it fixed.
   run logs, which the tool itself prunes when a loop run opens its window, each held in
   logs-backup by sha256 and put back after the loop, Bader's answer Q82. And his AutoSave
   folder, where the loop removes the autosaves its runs added and puts back from the backup
-  any of his a run changed, Q86. Outside %LOCALAPPDATA%\NwcFederatorLoop the loop deletes or
+  any of his a run changed, Q86. And team-map.txt beside his logs, which run.ps1 copies back
+  after every start from the copy it took before it, or takes out where the run added it, by
+  the team map rule below, F131. Outside %LOCALAPPDATA%\NwcFederatorLoop the loop deletes or
   overwrites nothing else of his, bar its own logs and tsv files, which it takes out of his
   logs folder after the loop. Once it went further with a file of his: on 2026-10-01 Bader
   asked it to fix an error OneDrive showed, and the lead chose to delete a testhost.exe of his
@@ -133,15 +136,37 @@ and nothing is fixed until a real run on real files shows it fixed.
   the loop his folder is put back to exactly what the backups hold, the loop's own logs and
   tsv files are taken out, and it is read back by name, size and sha256. A log of his that
   no backup holds is left as it is and named, the loop's own choice. At every window open the
-  tool writes his
-  remembered folders into its log, reading only, which Bader allowed, Q87, and that block is
-  masked in every copy of a loop log that is committed. Any choice the tool remembers
-  between runs is read before the loop and put back after it. F112's tick box
-  SkipClashOffCoordinates, which a run may untick since F126, is not one: the window sets it
-  from AlignmentCheck.DefaultSkipClashOffCoordinates every time it opens,
+  tool writes his remembered folders into its log, reading only, which Bader allowed, Q87,
+  and since F131 its TEAMS KEPT block, which names the team map his last run with an XML kept
+  and that map's full path. run.ps1's MaskRemembered masks both blocks in every copy of a
+  loop log that is committed, and since F131 attempt 3 every other line naming his logs
+  folder or the kept map, wherever it sits, in any case of its letters, its stamp or indent
+  kept. A run's own TEAMS lines name the kept map when no XML is picked and his logs folder
+  when a map is kept, and the log names its own path there. The paths are PathsOfHis: his
+  logs folder, and the map named by the copy of team-map.txt taken at check 13b and by his
+  team-map.txt at the end. A team-map.txt that cannot be read throws, so no copy of the log
+  is written. The .tsv is copied as it is. Those lines go through RunLog.Line, which writes
+  the .log only. H19 K2 of tools\loop\prove-run.ps1 proves the mask, 11 of 11 in the harness
+  of 2026-10-06 at 5e3cd26, after it failed 8 of 9 replayed alone at a1017c0. Any choice the
+  tool remembers between runs is read before the loop and put back after it. F112's tick box
+  SkipClashOffCoordinates, which a run may untick
+  since F126, is not one: the window sets it from
+  AlignmentCheck.DefaultSkipClashOffCoordinates every time it opens,
   src\Federator.Addin\Ui\FederatorWindow.xaml.cs line 1198 on the branch fix-F112 at e6d6f73,
-  the same line on main since F112 merged as ddb059b,
-  and the one state it reads back at its next open is FolderMemory's picker folders
+  the same line on main since F112 merged as ddb059b. The two states the window reads back at
+  its next open are FolderMemory's picker folders, folders.txt, and since F131 the team map
+  TeamMapMemory keeps for a run with no XML, team-map.txt, both beside his logs, Q123
+  answered B. folders.txt goes back with his logs folder after the loop. team-map.txt is
+  rewritten by any window run that picks an XML, and the next run with no XML reads it, so
+  run.ps1 puts it back after every start. Before the start, check 13b, it copies the file
+  into the run folder's teammap and reads the copy back by sha256, or records that it is not
+  there, and it stops before the start when the file cannot be read or copied. After the run,
+  once the put back's reasons are all clear, it copies the file back from that copy, or takes
+  out a file that was not there before, each write after a last Roamer read and read back,
+  through PutBackOne, the same write the AutoSave put back uses. While a reason stands nothing
+  is written and the file is named, and a team map not as it was makes the verdict NOT PUT
+  BACK. The record names each step on its own line. H19 of tools\loop\prove-run.ps1, with RC1
+  and RC8 of its H17, proves it on the stand-in
 - Close what you open. Every Navisworks the loop proves its own, by the rule below, is
   closed, and when the Automation API does not close it, through the handle its adoption
   holds, after its start ticks read equal through that handle. While the handle is open
