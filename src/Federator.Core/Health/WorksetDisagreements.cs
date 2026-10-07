@@ -158,7 +158,7 @@ namespace Federator.Core.Health
                         continue;
                     }
 
-                    if (!caseOnly && Distance(names[i].ToLowerInvariant(), names[j].ToLowerInvariant()) > Nearest)
+                    if (!caseOnly && EditDistance.Between(names[i].ToLowerInvariant(), names[j].ToLowerInvariant(), Nearest) > Nearest)
                     {
                         continue;
                     }
@@ -221,41 +221,6 @@ namespace Federator.Core.Health
         public static bool SamePrefix(string left, string right)
         {
             return string.Equals(PrefixOf(left), PrefixOf(right), StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>How many single letter edits turn one word into the other, given up on past Nearest.</summary>
-        private static int Distance(string a, string b)
-        {
-            if (Math.Abs(a.Length - b.Length) > Nearest)
-            {
-                return int.MaxValue;
-            }
-
-            int[] previous = new int[b.Length + 1];
-            int[] current = new int[b.Length + 1];
-
-            for (int j = 0; j <= b.Length; j++)
-            {
-                previous[j] = j;
-            }
-
-            for (int i = 1; i <= a.Length; i++)
-            {
-                current[0] = i;
-
-                for (int j = 1; j <= b.Length; j++)
-                {
-                    int cost = a[i - 1] == b[j - 1] ? 0 : 1;
-                    int best = Math.Min(current[j - 1] + 1, previous[j] + 1);
-                    current[j] = Math.Min(best, previous[j - 1] + cost);
-                }
-
-                int[] swap = previous;
-                previous = current;
-                current = swap;
-            }
-
-            return previous[b.Length];
         }
     }
 }
