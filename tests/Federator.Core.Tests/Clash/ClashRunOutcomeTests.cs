@@ -280,6 +280,54 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// FR-052. A test skipped for having no tolerance attribute was counted in tests skipped and
+        /// named in no reason row, so the rows added up to less than the total. Every reason there is
+        /// is put through, and the reason rows of the block and the SKIPPED lines each add up to the
+        /// skipped count.
+        /// </summary>
+        [Test]
+        public void EverySkipReasonIsNamedAndTheReasonRowsAddUpToTheSkippedCount()
+        {
+            ClashRunOutcome outcome = new ClashRunOutcome();
+
+            foreach (ClashSkipReason reason in Enum.GetValues(typeof(ClashSkipReason)))
+            {
+                outcome.AddSkipped("test " + reason, reason, "because " + reason);
+            }
+
+            int named = 0;
+
+            foreach (string line in outcome.SkipLines())
+            {
+                if (line.StartsWith("SKIPPED ", StringComparison.Ordinal))
+                {
+                    named += int.Parse(line.Split(' ')[1]);
+                }
+            }
+
+            Assert.That(named, Is.EqualTo(outcome.SkippedCount));
+
+            int rows = 0;
+
+            foreach (string line in outcome.Lines())
+            {
+                string trimmed = line.TrimStart();
+
+                if (line.StartsWith("    ", StringComparison.Ordinal) && trimmed.Length > 0 && char.IsDigit(trimmed[0])
+                    && trimmed.IndexOf("  ", StringComparison.Ordinal) > 0
+                    && !trimmed.Contains(":"))
+                {
+                    rows += int.Parse(trimmed.Substring(0, trimmed.IndexOf(' ')));
+                }
+            }
+
+            Assert.That(rows, Is.EqualTo(outcome.SkippedCount), string.Join("\n", new List<string>(outcome.Lines()).ToArray()));
+            Assert.That(
+                string.Join("\n", new List<string>(outcome.SkipLines()).ToArray()),
+                Does.Contain(ClashTestPlan.Describe(ClashSkipReason.NoTolerance)));
+        }
+
+        /// <summary>
         /// Bader's answer to Q99 and Q100. A group whose models are not on the same shared
         /// coordinates creates its tests and runs none, the path a one discipline group
         /// takes, and its CLASH block counts them under their own reason, never as a side

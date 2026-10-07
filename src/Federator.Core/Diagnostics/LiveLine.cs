@@ -215,8 +215,10 @@ namespace Federator.Core.Diagnostics
 
         /// <summary>
         /// What the same step took on a named group, off the records the log already
-        /// keeps, so the pace comparison reads the same numbers the timing block does.
-        /// Minus one where that group never ran that step.
+        /// keeps, so the pace comparison reads the same numbers the timing block does. It is
+        /// the mean of that group's visits of the step, one visit's figure, because a step opened
+        /// once per test is compared one test at a time, FR-056, and a step opened once per group
+        /// is its one visit. Minus one where that group never ran that step.
         /// </summary>
         public static double OnTheGroupBefore(IList<StepRecord> records, string group, string step)
         {
@@ -226,7 +228,7 @@ namespace Federator.Core.Diagnostics
             }
 
             double seconds = 0.0;
-            bool found = false;
+            int visits = 0;
 
             foreach (StepRecord record in records)
             {
@@ -234,11 +236,11 @@ namespace Federator.Core.Diagnostics
                     && string.Equals(record.Name, step, StringComparison.Ordinal))
                 {
                     seconds += record.Seconds;
-                    found = true;
+                    visits++;
                 }
             }
 
-            return found ? seconds : -1.0;
+            return visits > 0 ? seconds / visits : -1.0;
         }
 
         /// <summary>
