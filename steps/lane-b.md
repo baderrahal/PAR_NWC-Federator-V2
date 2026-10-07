@@ -20,7 +20,7 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 | 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items merged as pull request 148 with FR-057 half, the rest left for the laptop lane |
 | 6 | F128's Core part, generic models, FR-177 | fix-F128 | not started, see below |
 | 7 | F121 the rest, FR-150 to FR-166 and FR-202, wave 4 | fix-F121 | five items merged as pull request 150, the rest left for the laptop lane |
-| 8 | F123 docs and words and the noise of every area, wave 5 | fix-F123 | merged as 151, 154, 155, 161, 162 and 163, T1-N89 in review |
+| 8 | F123 docs and words and the noise of every area, wave 5 | fix-F123 | merged as 151, 154, 155, 161, 162, 163 and 164, T1-N56 and N57 in review |
 
 ## The item the lane is on
 
@@ -104,7 +104,8 @@ lane's to set in the tracker.
 | F123 | FR-172 in part: two public members nothing in src or tests calls are deleted, the array of fire suppression words in ProbeVerdict, which was a second copy of a rule NamesFireSuppression holds, and LeftoverSet.TwinPath with its constructor argument. Core tests 2400 run, 2366 passed, 0 failed, 34 skipped, as before | 161 | merged, 304c585 |
 | F123 | FR-171 in part, the Core noise entries of the turn 1 read that still held on main. T1-N72 the probe's grey line says one CSV per model. T1-N87 the Rebuilt confirm line names the shape it clears. T1-N69 the health line of a file with no sets says the sets are looked for and not checked. T1-N60 an identical ternary. T1-N71, N59, N53, N70, N73, N79, N67 comments that said the opposite of the code or called a constant a setting. Core tests 2402 run, 2368 passed, 0 failed, 34 skipped, and 3 failing on the old source | 162 | merged, b52e914 |
 | F123 | FR-171 T1-N62, in the run timing block the by group section is labelled outside every group and says every second of the run is inside a group, or that the groups add up to more than the run took, where it said step. The by step section and the group block keep their words. The tests do not build against the old source, since the new label is a new member, so the old source was not run against them. Core tests 2404 run, 2370 passed, 0 failed, 34 skipped | 163 | merged, de2e558 |
-| F123 | FR-171 T1-N89, the edit distance written line for line in the EMPTY SETS judge and in the workset disagreements is one routine, EditDistance, and each reader hands it its own cap. Four tests on the routine, and the two readers' own tests unchanged. The new tests do not build against the old source. Core tests 2408 run, 2374 passed, 0 failed, 34 skipped | in review | in review |
+| F123 | FR-171 T1-N89, the edit distance written line for line in the EMPTY SETS judge and in the workset disagreements is one routine, EditDistance, and each reader hands it its own cap. Four tests on the routine, and the two readers' own tests unchanged. The new tests do not build against the old source. Core tests 2408 run, 2374 passed, 0 failed, 34 skipped | 164 | merged, b99c736 |
+| F123 | FR-171 T1-N56 and N57 in RunLog. The numbered line writes its machine readable row through Row, which it had copied line for line, and the seconds, visits and throws of a step in a group are added up in one place, TotalOf, where two loops did it. No behaviour changes, and one test added after the reader found the step sums unpinned at log level, a repeated step with one visit that threw. Core tests 2409 run, 2375 passed, 0 failed, 34 skipped | in review | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -146,8 +147,7 @@ and the row that said how many worksets a stopped walk had seen.
 
 Lane B stopped on 7 Oct 2026 after Bader's second order of the night, F128, then F121 the rest, then F123,
 by the same limits. It took what a Core test proves in a file no open loop branch changes, and what it had
-not taken when this was written is named under F123 below, the Core refactors of T1-N54, N56 and N57
-among it.
+not taken when this was written is named under F123 below.
 
 F128 was not started, and it was looked at twice. Bader's own item says to measure first which property and
 value name Generic Models on 1A02MM and 1A04PK, and that needs a probe through the guarded start of
@@ -290,7 +290,7 @@ for the laptop lane to take in the order it chooses.
 
 - FR-171 is a backlog and most of its entries are in the add-in, the loop's files, or files an open branch
   changes. Core entries lane B did not take, each as the entry states it and not read again on main by lane
-  B: T1-N54, N56 and N57 duplicated blocks that want a refactor and no test, T1-N63 a word of the timing block,
+  B: T1-N54 two duration formatters whose spellings differ, so merging them changes a line the log writes, T1-N63 a word of the timing block,
   T1-N46, N48, N66 and N85 values and members the entry says nothing reads, and the files
   fix-F118 and fix-F132 change. AlignmentCheck.DefaultToleranceMillimetres and DefaultInternalName are
   constants the add-in passes as they stand, so a person cannot move them without a build, which the
