@@ -21,6 +21,7 @@ namespace Federator.Core.Rerun
         {
             Label = label;
             Name = name;
+            Before = -1;
             AfterAppends = -1;
             AfterRestore = -1;
         }
@@ -37,7 +38,10 @@ namespace Federator.Core.Rerun
         // which is why the tests passed, and unreachable from the one caller that fills
         // them in, which is CS0200 and is why the add-in did not build. F69.
 
-        /// <summary>Counted before the clear.</summary>
+        /// <summary>
+        /// Counted before the clear. Minus one until it is read and where it could not be read, which is
+        /// unknown and never nothing to keep, FR-151.
+        /// </summary>
         public int Before { get; set; }
 
         /// <summary>Counted after the clear and the appends. Minus one until it is read.</summary>
@@ -62,7 +66,7 @@ namespace Federator.Core.Rerun
         /// </summary>
         public bool Kept
         {
-            get { return Before <= 0 || AfterRestore >= Before; }
+            get { return Before >= 0 && (Before == 0 || AfterRestore >= Before); }
         }
 
         /// <summary>
@@ -72,7 +76,7 @@ namespace Federator.Core.Rerun
         /// </summary>
         public bool WasCounted
         {
-            get { return AfterAppends >= 0 && AfterRestore >= 0; }
+            get { return Before >= 0 && AfterAppends >= 0 && AfterRestore >= 0; }
         }
 
         /// <summary>
