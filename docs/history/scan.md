@@ -7081,3 +7081,160 @@ copy of it. What tells them apart is the folder path and name the marker line ca
 each sat in another folder while their marks named the source's, which is the design's test "a
 copy in another folder gives ChangedByAPerson". A copy that keeps both the folder and the name
 would pass the fingerprint, and whether the API or a person can make one is UNKNOWN.
+
+## 5z-t. DOES A VIEW WHOSE NAME ENDS IN A SPACE READ BACK ITS NAME UNCHANGED, MEASURED 2026-10-07
+
+P12 of Q114, the views by team design, part 3. Two set names of the clash XML end in a space,
+core.md, so a test name built from them can, and the design names a test's view exactly by its
+test, never trimmed. The question: does a view whose name ends in a space read back its
+DisplayName unchanged, Ordinal? By the row of P12: No, that view is found by its mark alone and
+VIEWS TREE says so. Yes, the name stands as written. The row runs on P9's saved copy and hangs on
+no other probe's answer.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-name-spaces.ps1` is P11's `probe-view-copy.ps1`
+with the mode `vpspace` of `ViewpointProbe.dll` in place of P11's mode, and its own header, work
+folder prefix and save name. Nothing else in the script changed, F138's SwitchAutoSaveOff
+included. The branch was pulled first and was up to date. tools\loop\nw-guard.ps1 read sha256
+E29D2733, the same as in P11's run, line 4. The guard is the loop's, dot-sourced, with the Roamer
+refusal, the settings backup, the Auto-Save switch, the adoption by AdoptStart's four
+conditions, Dispose, the close through the held handle only when needed, and SettingsPutBack.
+Get-Process Roamer read 0 before the run and 0 after it. The probe copied P9's
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf`,
+41,319,461 bytes, sha256 869DD965, into the new folder `probes\view-space-20261007-125742`, and
+the mode, on that copy:
+
+1. makes the folder `P12 probe` at the root and nine folders of plain name under it, V0 to V7
+   and F1, by FolderItem and AddCopy, so every item is found by its position in a folder whose
+   name holds no space at an end, and never by the name being read
+2. writes, by the tool's routes:
+   - V0, the control, `P12 V0 control`, a COM view added into its folder's own SavedViews, the
+     route SavedViewpoints.Record takes with throughTheFolder true
+   - V1, `P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ` with one space at the end, a test name's
+     characters, the same route
+   - V2, `P12 V2 root route one space `, the other route of Record: the COM view added at the
+     root, the last root view named exactly so copied into its folder by AddCopy, the root one
+     removed
+   - V3, `P12 V3 two trailing spaces  `, the folder route
+   - V4, ` P12 V4 leading and trailing `, a space at each end, the folder route
+   - V5a `P12 V5 twin` and V5b `P12 V5 twin ` in the SAME folder, the two names differing only
+     by the end space, the folder route
+   - V6, `P12 V6 dotnet one space `, a .NET new SavedViewpoint(Viewpoint), DisplayName set,
+     AddCopy into its folder
+   - V7, a COM view added as `P12 V7 renamed`, then DocumentSavedViewpoints.EditDisplayName to
+     `P12 V7 renamed `
+   - F1, a FolderItem `P12 F1 folder end space `, the tool's folder route, and in it F1v, the COM
+     view `P12 F1 view one space `, added into that folder's own InwOpFolderView
+3. marks V1, V3 and F1 by AddComment after the add, as P9 found. V1's marker line carries the
+   name in its middle. V3's and F1's end with the name, so their bodies end in a space
+4. reads every item by position right after its add, before the save, and after SaveFile into
+   `p12-space-saved.nwf` in the work folder, Document.Clear and TryOpenFile of that file: its
+   .NET DisplayName with its length and its first and last code points, its COM name off the
+   InwOpView or InwOpFolderView at the same position, whether ResolveNames over the written
+   names, Ordinal, finds that same item by index path, what the names trimmed find, and the
+   mark's Body and Author, Ordinal
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-name-spaces.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p12-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+DLL sha256 F5874016, script sha256 170A3C1A, lines 24 and 3. One run at 12:57, kept as
+`p12-view-name-spaces-result-20261007.txt`, the machine name on line 1 masked as `[machine]` and
+the account folder on line 5 as `%USERPROFILE%`, nothing else changed. Navisworks pid 43540,
+adopted on all four conditions, line 38. TryOpenFile of the copy returned True after 4.571 s with
+4 models, every one read from under the loop folder, lines 54 to 59. ExecuteAddInPlugin returned
+0 after 76.90 s, line 48. Dispose returned and pid 43540 was gone 8.8 s later, not forced, line
+219.
+
+**THE ANSWER: YES. EVERY NAME WITH A SPACE AT AN END READ BACK EXACTLY AS WRITTEN, ON EVERY ROUTE,
+AT EVERY STAGE.** Lines 200 to 213 of the result:
+
+```
+label | written | .NET DisplayName the same, add, save, reopen | COM name the same | the written names find this item | the mark the same, save, reopen
+V0  | [P12 V0 control] length 14                              | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V1  | [P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ] length 42  | YES, YES, YES | YES, YES, YES | YES, YES, YES | YES, YES
+V2  | [P12 V2 root route one space ] length 28                | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V3  | [P12 V3 two trailing spaces  ] length 28                | YES, YES, YES | YES, YES, YES | YES, YES, YES | YES, YES
+V4  | [ P12 V4 leading and trailing ] length 29               | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V5a | [P12 V5 twin] length 11                                 | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V5b | [P12 V5 twin ] length 12                                | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V6  | [P12 V6 dotnet one space ] length 24                    | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V7  | [P12 V7 renamed ] length 15                             | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+F1  | [P12 F1 folder end space ] length 24                    | YES, YES, YES | YES, YES, YES | YES, YES, YES | YES, YES
+F1v | [P12 F1 view one space ] length 22                      | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+P12 over the 9 names with a space at an end: the .NET DisplayName read back unchanged at every stage on 9 and not on 0. The COM name the same on 9 and not on 0. A lookup by the written names found the item on 9 and not on 0. The marks read back the same on 3 of 3
+P12 YES
+```
+
+1. THE NAME HOLDS ON EVERY ROUTE. The COM view into its folder, the COM view at the root copied
+   into its folder, the .NET SavedViewpoint, EditDisplayName and the FolderItem each kept one end
+   space, two end spaces and a space at each end, length and last code point U+0020 included,
+   right after the add, before the save and after the reopen, lines 79 to 127, 135 to 162 and
+   169 to 196. The name read back the same off the COM object before the add too, lines 77 to
+   124, and off the .NET SavedViewpoint and FolderItem before their AddCopy, lines 108 and 118
+2. THE COM SIDE AGREES. The COM name at the same position read the same as written, Ordinal, at
+   every stage, and FindComFolderAt found the space-ended folder by its written name, Ordinal,
+   line 123. So the throughTheFolder route reaches a folder whose name ends in a space
+3. THE ROOT ROUTE FINDS ITS VIEW BY NAME. After the COM add at the root, the last root view named
+   exactly as written was found, at 18 of 19, line 104, so Record's FindLastAtRoot by name does
+   not lose a name that ends in a space
+4. A NAME DIFFERING ONLY BY ITS END SPACE IS ANOTHER NAME. V5a and V5b sat in one folder at
+   17.5.0 and 17.5.1, and the written names found each its own item at every stage, lines 102,
+   152 and 186. The names TRIMMED found V5a for V5b, the wrong item, and found nothing for every
+   other name with a space at an end, lines 84 to 127. So a trim anywhere on the path would find
+   a person's view of the trimmed name, or nothing
+5. THE MARK HOLDS A NAME THAT ENDS THE BODY. V3's and F1's comment bodies ended in the name, so
+   in a space, and read back with the same length, last code point U+0020, Body and Author equal,
+   Ordinal, before the save and after the reopen, lines 145, 159, 179 and 193. V1's, with the name
+   in the middle, the same, lines 139 and 173
+6. THE TREE. 2850 viewpoints, 25 folders and 5 comments at the open, line 60, and 2860, 36 and 8
+   before the save and after the reopen, lines 163 and 197, the 10 views, 11 folders and 3 marks
+   written here. SaveFile took 7.498 s, 41,319,983 bytes read back, line 164. Document.Clear took
+   0.613 s, line 165. TryOpenFile of the saved file took 4.433 s, line 166. The saved copy is
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-space-20261007-125742\p12-space-saved.nwf`,
+   sha256 C8E818F2C07C472B5B64803C26522B6BD9EA6E8B7CAE2B054DBB208D18225BCD, line 215
+7. SEEN AND NOT ASKED. Each InwSavedViewsColl.Add of one COM view took 6.131 to 6.962 s in this
+   tree of about 2850 viewpoints, lines 78 to 125, where the .NET AddCopy took 0.001 s and
+   EditDisplayName 0.002 s, lines 109 and 115. The add was timed with nothing hidden and nothing
+   painted. Why it costs that much is UNKNOWN here, and P18 is the probe that times the whole
+   sequence
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWF the copy was made from read sha256
+869DD965 at the start and at the end, lines 22 and 313. The guard wrote the Auto-Save switch
+"3 0" and read it back, line 28. The watchdog saw no other Navisworks, so the put back ran, line
+262. 38 registry values were put back, enable among them, line 267, and read again with 0 still
+differing, line 302. InfoCenter.log and LastSession.xml were put back reading their backups'
+sha256, lines 306 and 307. The guard saw 0 AutoSave files added, changed or gone, line 309, and
+the tool's own logs folder had nothing added or changed, line 310. The prober read the switch and
+listed the AutoSave folder by name, size, write time and sha256 with `read-autosave-state.ps1`,
+kept in %LOCALAPPDATA%\NwcFederatorLoop\turn5 as `probe-p12-20261007-autosave-before.txt`,
+`-during.txt` and `-after.txt`: enable read String "0" at 12:57:09 before the start, "3 0" at
+12:59:43 while the probe ran, and "0" at 13:01:22 after the put back, and the folder held the same
+199 files with the same sizes, times and sha256 before and after, 0 lines differing.
+
+THE PROGRAMS. One Navisworks, pid 43540, started by the probe at 12:57:49, quit by Dispose and
+gone 8.8 s after, not forced, lines 218, 219 and 251. AdskLicensingAgent pid 32624, its child, and
+AdskLicensingInstHelper pids 40760 and 17968 under GenuineService.exe read exited at the end.
+AdskLicensingAgent pid 30160 and AdskLicensingInstHelper pid 41136 read UNKNOWN whether they
+exited, their start times not readable when seen, lines 252 and 253. No Roamer that was not there
+in step 2 ran at the end, line 257.
+
+**STILL UNKNOWN.**
+
+- a name ending in another white space, a tab, a no-break space U+00A0, or in a full stop. Only
+  U+0020 was written
+- what the Saved Viewpoints window shows for such a name, and whether a person's rename in the
+  window keeps or trims an end space. That is a hand step
+- whether the name holds through a reopen in a new Navisworks. The close was Document.Clear inside
+  the same Navisworks
+- whether it holds in an NWD. PublishFile was not called
+- whether a clash test's own name read off the document keeps its end space. The view names here
+  were written by the probe, not read off a test
+- why one COM add costs about 6 s in this tree, point 7
+
+**WHAT THIS DECIDES.** By the row of P12, YES: a view or folder whose name ends in a space is
+found by its name as written, Ordinal, on both of Record's routes and through COM, so the No
+branch, a view found by its mark alone and named in VIEWS TREE, is not needed for this case. The
+design's test "a test name ending in a space is kept in the view name" holds on the install.
+Point 4 adds one rule: nothing on the path from the test name to the lookup may trim, because the
+trimmed name finds another item or none, and a mark that ends in the name keeps the space too.

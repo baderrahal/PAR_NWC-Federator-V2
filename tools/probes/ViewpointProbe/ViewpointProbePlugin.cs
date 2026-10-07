@@ -182,6 +182,12 @@ namespace ViewpointProbe
                             parameters[2],
                             parameters.Length > 3 ? parameters[3] : null);
                     }
+                    else if (mode == "vpspace")
+                    {
+                        MeasureViewNameSpaces(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
                     else if (mode == "vpcomment")
                     {
                         MeasureViewComments(
@@ -11012,6 +11018,717 @@ namespace ViewpointProbe
             catch (Exception error)
             {
                 Say("ResolveGuid of S3's set Guid " + when + " THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        // ---------- P12 of Q114, does a view whose name ends in a space read back its name unchanged ----------
+
+        private const string P12Top = "P12 probe";
+
+        private sealed class P12Item
+        {
+            public string Label;
+            public string Route;
+            public string Written;
+            public string Body;
+            public bool Control;
+            public readonly List<string> Plain = new List<string>();
+            public readonly List<int> Steps = new List<int>();
+            public readonly List<string> WrittenPath = new List<string>();
+            public readonly Dictionary<string, string> Net = new Dictionary<string, string>(StringComparer.Ordinal);
+            public readonly Dictionary<string, string> Com = new Dictionary<string, string>(StringComparer.Ordinal);
+            public readonly Dictionary<string, bool> ByName = new Dictionary<string, bool>(StringComparer.Ordinal);
+            public readonly Dictionary<string, bool> Mark = new Dictionary<string, bool>(StringComparer.Ordinal);
+        }
+
+        /// <summary>
+        /// P12: a view whose name ends in a space, made by the tool's routes, reads back its
+        /// DisplayName unchanged, Ordinal, right after the add, before a save and after a SaveFile,
+        /// a Document.Clear and a TryOpenFile of the saved file. Each item sits at a known position
+        /// in a folder of plain name, so it is found by position and never by the name being read.
+        /// The COM name of the same item is read too, and whether a lookup by the written names,
+        /// Ordinal, finds that same item. A mark whose body holds the name, in its middle or at its
+        /// end, is read back Ordinal.
+        /// </summary>
+        private void MeasureViewNameSpaces(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            int folders0;
+            int comments0;
+            int views0 = TreeCounts(document, out folders0, out comments0);
+            Say("the tree at the open: viewpoints " + views0 + ", folders " + folders0 + ", comments on any item " + comments0);
+
+            string stamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture);
+            List<P12Item> items = new List<P12Item>();
+            P12Item v0 = P12New(items, "V0", "control, no space, COM view added into its folder's own SavedViews", "V0", 0, "P12 V0 control");
+            v0.Control = true;
+            P12Item v1 = P12New(items, "V1", "COM view added into its folder's own SavedViews, the tool's route, a test name's characters, marked with the name inside the body", "V1", 0, "P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ");
+            P12Item v2 = P12New(items, "V2", "COM view added at the root, AddCopy into its folder, the root one removed, the tool's other route", "V2", 0, "P12 V2 root route one space ");
+            P12Item v3 = P12New(items, "V3", "COM view into its folder, two spaces at the end, marked with the body ending in the name", "V3", 0, "P12 V3 two trailing spaces  ");
+            P12Item v4 = P12New(items, "V4", "COM view into its folder, a space at each end", "V4", 0, " P12 V4 leading and trailing ");
+            P12Item v5a = P12New(items, "V5a", "COM view into its folder, no space, the first of two names that differ by the end space", "V5", 0, "P12 V5 twin");
+            v5a.Control = true;
+            P12Item v5b = P12New(items, "V5b", "COM view into the same folder, the second twin, one space at the end", "V5", 1, "P12 V5 twin ");
+            P12Item v6 = P12New(items, "V6", ".NET new SavedViewpoint(Viewpoint), DisplayName set, AddCopy into its folder", "V6", 0, "P12 V6 dotnet one space ");
+            P12Item v7 = P12New(items, "V7", "COM view into its folder with no space, then DocumentSavedViewpoints.EditDisplayName to a name ending in a space", "V7", 0, "P12 V7 renamed ");
+            P12Item f1 = P12New(items, "F1", "FolderItem, DisplayName set, AddCopy, the tool's folder route, marked with the body ending in the name", "F1", 0, "P12 F1 folder end space ");
+            P12Item f1v = P12New(items, "F1v", "COM view added into the space-ended folder's own SavedViews, found by position", "F1", 0, "P12 F1 view one space ");
+            f1v.Steps.Add(0);
+            f1v.WrittenPath.Clear();
+            f1v.WrittenPath.AddRange(new[] { P12Top, "F1", f1.Written, "P12 F1 view one space " });
+
+            v1.Body = P9Sentence + "\n" + "[nwcfed-mark 1] stamp=" + stamp + " path=" + P12Top + "/V1 name=" + v1.Written + " probe=V1";
+            v3.Body = P9Sentence + "\n" + "[nwcfed-mark 1] stamp=" + stamp + " probe=V3 path=" + P12Top + "/V3 name=" + v3.Written;
+            f1.Body = P9Sentence + "\n" + "[nwcfed-mark 1] stamp=" + stamp + " probe=F1 path=" + P12Top + "/F1 name=" + f1.Written;
+
+            Say(string.Empty);
+            Say("WHAT IS WRITTEN, each name in brackets with its length and its last character:");
+
+            foreach (P12Item it in items)
+            {
+                Say("   " + it.Label + " " + P12Show(it.Written) + " in " + string.Join(" / ", it.Plain.ToArray()) + " at position " + string.Join(".", P12Ints(it.Steps)) + ", " + it.Route);
+            }
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                EnsureFolder(document, P12Top);
+
+                foreach (string name in new[] { "V0", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "F1" })
+                {
+                    using (GroupItem top = (GroupItem)ResolveNames(document, new List<string> { P12Top }))
+                    using (FolderItem folder = new FolderItem())
+                    {
+                        folder.DisplayName = name;
+                        document.SavedViewpoints.AddCopy(top, folder);
+                    }
+                }
+
+                Say("\"" + P12Top + "\" at the root and 9 plain folders under it made by FolderItem and AddCopy in " + Seconds(clock));
+            }
+            catch (Exception error)
+            {
+                Say("the folders THREW " + error.GetType().Name + ": " + error.Message);
+                Say("P12 UNKNOWN   the folders could not be made, so nothing is written");
+                return;
+            }
+
+            InwOpState10 state = ComApiBridge.State;
+            Say(string.Empty);
+            Say("THE WRITES, each item read right after its add:");
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                foreach (P12Item it in new[] { v0, v1, v3, v4, v5a, v5b })
+                {
+                    P12ComIntoFolder(state, it, it.Written, camera);
+                    P12Read(document, state, it, "add");
+                }
+
+                P12RootRoute(document, state, v2, camera);
+                P12Read(document, state, v2, "add");
+
+                try
+                {
+                    using (SavedViewpoint made = new SavedViewpoint(camera))
+                    {
+                        made.DisplayName = v6.Written;
+                        Say("V6 the new SavedViewpoint's DisplayName read back before the add " + P12Show(made.DisplayName));
+
+                        using (GroupItem folder = (GroupItem)ResolveNames(document, v6.Plain))
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddCopy(folder, made);
+                            Say("V6 AddCopy RETURNED after " + Seconds(clock));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("V6 THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P12Read(document, state, v6, "add");
+
+                P12ComIntoFolder(state, v7, "P12 V7 renamed", camera);
+
+                try
+                {
+                    using (SavedItem item = P12Locate(document, v7))
+                    {
+                        Say("V7 before the rename " + (item == null ? "NOT FOUND" : P12Show(item.DisplayName)));
+
+                        if (item != null)
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.EditDisplayName(item, v7.Written);
+                            Say("V7 EditDisplayName(item, " + P12Show(v7.Written) + ") RETURNED after " + Seconds(clock));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("V7 EditDisplayName THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P12Read(document, state, v7, "add");
+
+                try
+                {
+                    using (FolderItem made = new FolderItem())
+                    {
+                        made.DisplayName = f1.Written;
+                        Say("F1 the new FolderItem's DisplayName read back before the add " + P12Show(made.DisplayName));
+
+                        using (GroupItem folder = (GroupItem)ResolveNames(document, f1.Plain))
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddCopy(folder, made);
+                            Say("F1 AddCopy RETURNED after " + Seconds(clock));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("F1 THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P12Read(document, state, f1, "add");
+
+                try
+                {
+                    InwOpFolderView holder = FindComFolderAt(state, P12Top, "F1");
+                    InwOpFolderView byName = FindComFolderAt(state, P12Top, "F1", f1.Written);
+                    InwOpFolderView spaced = null;
+
+                    if (holder != null && holder.SavedViews().Count >= 1)
+                    {
+                        spaced = holder.SavedViews()[1] as InwOpFolderView;
+                    }
+
+                    Say("F1v the COM folder of F1 found by its written name, Ordinal " + Yes(byName != null) + ", by position " + Yes(spaced != null)
+                        + (spaced == null ? string.Empty : ", its COM name " + P12Show(spaced.name)));
+
+                    if (spaced != null)
+                    {
+                        InwOpView view = NewComView(state, f1v.Written, camera);
+                        Say("F1v the COM view's name read back before the add " + P12Show(view.name));
+                        clock = System.Diagnostics.Stopwatch.StartNew();
+                        spaced.SavedViews().Add(view);
+                        Say("F1v InwSavedViewsColl.Add RETURNED after " + Seconds(clock));
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("F1v THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P12Read(document, state, f1v, "add");
+            }
+
+            Say(string.Empty);
+            Say("THE MARKS, by AddComment after the add:");
+
+            foreach (P12Item it in new[] { v1, v3, f1 })
+            {
+                try
+                {
+                    using (SavedItem item = P12Locate(document, it))
+                    {
+                        if (item == null)
+                        {
+                            Say(it.Label + " NOT FOUND by position, so no mark is written");
+                            continue;
+                        }
+
+                        using (Comment comment = document.CreateCommentWithUniqueId(it.Body, CommentStatus.New, P9Author))
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddComment(item, comment);
+                            Say(it.Label + " AddComment RETURNED after " + Seconds(clock) + ", the body written " + P12Show(it.Body));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say(it.Label + " AddComment THREW " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+
+            Say(string.Empty);
+            Say("STAGE before the save, every item:");
+
+            foreach (P12Item it in items)
+            {
+                P12Read(document, state, it, "save");
+            }
+
+            int folders1;
+            int comments1;
+            int views1 = TreeCounts(document, out folders1, out comments1);
+            Say("the tree before the save: viewpoints " + views1 + ", folders " + folders1 + ", comments on any item " + comments1);
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (reopened)
+            {
+                state = ComApiBridge.State;
+                Say(string.Empty);
+                Say("STAGE after a save, a clear and a reopen, every item:");
+
+                foreach (P12Item it in items)
+                {
+                    P12Read(document, state, it, "reopen");
+                }
+
+                int folders2;
+                int comments2;
+                int views2 = TreeCounts(document, out folders2, out comments2);
+                Say("the tree after the reopen: viewpoints " + views2 + ", folders " + folders2 + ", comments on any item " + comments2);
+            }
+            else
+            {
+                Say("UNKNOWN: the saved file would not reopen, so nothing after a reopen is read");
+            }
+
+            Say(string.Empty);
+            Say("EACH ITEM:  label | written | stage add, save, reopen: the .NET DisplayName the same, Ordinal | the COM name the same | a lookup by the written names finds this item | the mark the same");
+            int spacedSame = 0;
+            int spacedNot = 0;
+            int comSame = 0;
+            int comNot = 0;
+            int nameSame = 0;
+            int nameNot = 0;
+            int markSame = 0;
+            int markNot = 0;
+            List<string> notSame = new List<string>();
+
+            foreach (P12Item it in items)
+            {
+                List<string> netCells = new List<string>();
+                List<string> comCells = new List<string>();
+                List<string> byCells = new List<string>();
+                List<string> markCells = new List<string>();
+                bool netAll = true;
+                bool comAll = true;
+                bool byAll = true;
+                bool markAll = true;
+
+                foreach (string stage in new[] { "add", "save", "reopen" })
+                {
+                    string net;
+                    string com;
+                    bool by;
+                    bool mark;
+                    bool netOk = it.Net.TryGetValue(stage, out net) && net != null && string.Equals(net, it.Written, StringComparison.Ordinal);
+                    bool comOk = it.Com.TryGetValue(stage, out com) && com != null && string.Equals(com, it.Written, StringComparison.Ordinal);
+                    bool byOk = it.ByName.TryGetValue(stage, out by) && by;
+                    netCells.Add(Yes(netOk));
+                    comCells.Add(Yes(comOk));
+                    byCells.Add(Yes(byOk));
+                    netAll &= netOk;
+                    comAll &= comOk;
+                    byAll &= byOk;
+
+                    if (it.Body != null)
+                    {
+                        bool markOk = it.Mark.TryGetValue(stage, out mark) && mark;
+
+                        if (stage != "add")
+                        {
+                            markCells.Add(Yes(markOk));
+                            markAll &= markOk;
+                        }
+                    }
+                }
+
+                Say("   " + it.Label + " | " + P12Show(it.Written) + " | " + string.Join(", ", netCells.ToArray()) + " | " + string.Join(", ", comCells.ToArray())
+                    + " | " + string.Join(", ", byCells.ToArray()) + " | " + (it.Body == null ? "no mark" : string.Join(", ", markCells.ToArray())));
+
+                if (!it.Control)
+                {
+                    if (netAll) { spacedSame++; } else { spacedNot++; notSame.Add(it.Label); }
+                    if (comAll) { comSame++; } else { comNot++; }
+                    if (byAll) { nameSame++; } else { nameNot++; }
+                }
+
+                if (it.Body != null)
+                {
+                    if (markAll) { markSame++; } else { markNot++; }
+                }
+            }
+
+            Say("(the mark is read from the save stage on, since it is written after every add)");
+            Say("P12 over the " + (spacedSame + spacedNot) + " names with a space at an end: the .NET DisplayName read back unchanged at every stage on " + spacedSame
+                + " and not on " + spacedNot + (notSame.Count == 0 ? string.Empty : " (" + string.Join(", ", notSame.ToArray()) + ")")
+                + ". The COM name the same on " + comSame + " and not on " + comNot + ". A lookup by the written names found the item on " + nameSame + " and not on " + nameNot
+                + ". The marks read back the same on " + markSame + " of " + (markSame + markNot));
+            Say("P12 " + (spacedNot == 0 && spacedSame > 0 ? "YES" : "NO") + "   a view or folder whose name ends in a space reads back its DisplayName unchanged, Ordinal, after the add, before the save and after a save, a clear and a reopen, by every route tried");
+        }
+
+        private static P12Item P12New(List<P12Item> into, string label, string route, string folder, int position, string written)
+        {
+            P12Item item = new P12Item();
+            item.Label = label;
+            item.Route = route;
+            item.Written = written;
+            item.Plain.Add(P12Top);
+            item.Plain.Add(folder);
+            item.Steps.Add(position);
+            item.WrittenPath.Add(P12Top);
+            item.WrittenPath.Add(folder);
+            item.WrittenPath.Add(written);
+            into.Add(item);
+            return item;
+        }
+
+        private static string[] P12Ints(List<int> values)
+        {
+            List<string> parts = new List<string>();
+
+            foreach (int v in values)
+            {
+                parts.Add(v.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            }
+
+            return parts.ToArray();
+        }
+
+        /// <summary>The text in brackets, its length, and the code point of its first and last characters.</summary>
+        private static string P12Show(string text)
+        {
+            if (text == null)
+            {
+                return "null";
+            }
+
+            if (text.Length == 0)
+            {
+                return "[] length 0";
+            }
+
+            return "[" + Shown(text) + "] length " + text.Length + ", first U+" + ((int)text[0]).ToString("X4") + ", last U+" + ((int)text[text.Length - 1]).ToString("X4");
+        }
+
+        /// <summary>The item at its plain folder path, then by position, never by the name being measured.</summary>
+        private static SavedItem P12Locate(Document document, P12Item it)
+        {
+            SavedItem current = ResolveNames(document, it.Plain);
+
+            foreach (int position in it.Steps)
+            {
+                GroupItem group = current as GroupItem;
+
+                if (group == null)
+                {
+                    if (current != null)
+                    {
+                        current.Dispose();
+                    }
+
+                    return null;
+                }
+
+                SavedItemCollection children = group.Children;
+                SavedItem next = position < children.Count ? children[position] : null;
+                group.Dispose();
+
+                if (next == null)
+                {
+                    return null;
+                }
+
+                current = next;
+            }
+
+            return current;
+        }
+
+        /// <summary>The COM name of the item at its plain folder path, then by position, or null with why.</summary>
+        private static string P12ComName(InwOpState10 state, P12Item it, out string why)
+        {
+            why = string.Empty;
+
+            try
+            {
+                InwOpFolderView folder = FindComFolderAt(state, it.Plain.ToArray());
+
+                if (folder == null)
+                {
+                    why = "the COM folder " + string.Join(" / ", it.Plain.ToArray()) + " NOT FOUND";
+                    return null;
+                }
+
+                object current = folder;
+
+                foreach (int position in it.Steps)
+                {
+                    InwOpFolderView f = current as InwOpFolderView;
+
+                    if (f == null)
+                    {
+                        why = "a step is not a COM folder";
+                        return null;
+                    }
+
+                    InwSavedViewsColl views = f.SavedViews();
+
+                    if (position + 1 > views.Count)
+                    {
+                        why = "position " + position + " of " + views.Count;
+                        return null;
+                    }
+
+                    current = views[position + 1];
+                }
+
+                InwOpView view = current as InwOpView;
+
+                if (view != null)
+                {
+                    return view.name;
+                }
+
+                InwOpFolderView asFolder = current as InwOpFolderView;
+
+                if (asFolder != null)
+                {
+                    return asFolder.name;
+                }
+
+                why = "UNKNOWN COM type";
+                return null;
+            }
+            catch (Exception error)
+            {
+                why = "THREW " + error.GetType().Name + ": " + error.Message;
+                return null;
+            }
+        }
+
+        private void P12ComIntoFolder(InwOpState10 state, P12Item it, string name, Viewpoint camera)
+        {
+            try
+            {
+                InwOpFolderView folder = FindComFolderAt(state, it.Plain.ToArray());
+
+                if (folder == null)
+                {
+                    Say(it.Label + " NOT MADE, the COM folder " + string.Join(" / ", it.Plain.ToArray()) + " not found");
+                    return;
+                }
+
+                InwOpView view = NewComView(state, name, camera);
+                Say(it.Label + " the COM view's name read back before the add " + P12Show(view.name));
+                System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                folder.SavedViews().Add(view);
+                Say(it.Label + " InwSavedViewsColl.Add into " + string.Join(" / ", it.Plain.ToArray()) + " RETURNED after " + Seconds(clock));
+            }
+            catch (Exception error)
+            {
+                Say(it.Label + " THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        /// <summary>The tool's other route: the COM view added at the root, the last root view named exactly so copied into the folder, and the root one removed.</summary>
+        private void P12RootRoute(Document document, InwOpState10 state, P12Item it, Viewpoint camera)
+        {
+            try
+            {
+                InwOpView view = NewComView(state, it.Written, camera);
+                Say(it.Label + " the COM view's name read back before the add " + P12Show(view.name));
+                state.SavedViews().Add(view);
+                int exact = -1;
+                int count;
+                string lastName;
+
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                {
+                    SavedItemCollection children = root.Children;
+                    count = children.Count;
+                    lastName = null;
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        using (SavedItem child = children[i])
+                        {
+                            if (child is SavedViewpoint && string.Equals(child.DisplayName, it.Written, StringComparison.Ordinal))
+                            {
+                                exact = i;
+                            }
+
+                            if (i == count - 1)
+                            {
+                                lastName = child.DisplayName;
+                            }
+                        }
+                    }
+                }
+
+                Say(it.Label + " added at the root: the root holds " + count + ", its last child " + P12Show(lastName)
+                    + ", the last root view named exactly as written " + (exact < 0 ? "NONE, so the tool's lookup by name would not find it, and the last child is used" : "at " + exact));
+                int use = exact >= 0 ? exact : count - 1;
+
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (SavedItem atRoot = root.Children[use])
+                using (GroupItem folder = (GroupItem)ResolveNames(document, it.Plain))
+                {
+                    System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.SavedViewpoints.AddCopy(folder, atRoot);
+                    bool removed = document.SavedViewpoints.Remove(atRoot);
+                    Say(it.Label + " AddCopy into " + string.Join(" / ", it.Plain.ToArray()) + " and Remove of the root one, Remove returned " + removed + ", both in " + Seconds(clock));
+                }
+            }
+            catch (Exception error)
+            {
+                Say(it.Label + " THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        /// <summary>Reads one item at a stage: its .NET DisplayName found by position, its COM name, whether the written names find it, and its mark.</summary>
+        private void P12Read(Document document, InwOpState10 state, P12Item it, string stage)
+        {
+            string net = null;
+            string at = "NOT FOUND";
+            string type = string.Empty;
+            int comments = -1;
+            bool mark = false;
+            List<string> bodies = new List<string>();
+
+            try
+            {
+                using (SavedItem item = P12Locate(document, it))
+                {
+                    if (item != null)
+                    {
+                        net = item.DisplayName ?? string.Empty;
+                        at = P10IndexPath(document, item);
+                        type = item.GetType().Name;
+                        CommentCollection cc = item.Comments;
+                        comments = cc == null ? 0 : cc.Count;
+
+                        for (int c = 0; c < comments; c++)
+                        {
+                            Comment comment = cc[c];
+                            bodies.Add("Author [" + Shown(comment.Author) + "] Body " + P12Show(comment.Body));
+
+                            if (it.Body != null && comments == 1 && string.Equals(comment.Body, it.Body, StringComparison.Ordinal)
+                                && string.Equals(comment.Author, P9Author, StringComparison.Ordinal))
+                            {
+                                mark = true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                at = "the read THREW " + error.GetType().Name + ": " + error.Message;
+            }
+
+            string why;
+            string com = P12ComName(state, it, out why);
+            string byWritten;
+            bool byOk = false;
+
+            try
+            {
+                using (SavedItem found = ResolveNames(document, it.WrittenPath))
+                {
+                    byWritten = found == null ? "NOT FOUND" : P10IndexPath(document, found);
+                    byOk = found != null && string.Equals(byWritten, at, StringComparison.Ordinal);
+                }
+            }
+            catch (Exception error)
+            {
+                byWritten = "THREW " + error.GetType().Name;
+            }
+
+            List<string> trimmed = new List<string>();
+
+            foreach (string n in it.WrittenPath)
+            {
+                trimmed.Add(n.Trim());
+            }
+
+            string byTrimmed = "the same names";
+
+            if (!P11SameList(trimmed, it.WrittenPath))
+            {
+                try
+                {
+                    using (SavedItem found = ResolveNames(document, trimmed))
+                    {
+                        byTrimmed = found == null ? "NOT FOUND" : P10IndexPath(document, found);
+                    }
+                }
+                catch (Exception error)
+                {
+                    byTrimmed = "THREW " + error.GetType().Name;
+                }
+            }
+
+            it.Net[stage] = net;
+            it.Com[stage] = com;
+            it.ByName[stage] = byOk;
+            it.Mark[stage] = mark;
+            Say("   " + it.Label + " at " + stage + ": " + (net == null ? at : "a " + type + " at " + at + ", DisplayName " + P12Show(net)
+                + ", the same as written, Ordinal " + Yes(string.Equals(net, it.Written, StringComparison.Ordinal))
+                + (string.Equals(net, it.Written, StringComparison.Ordinal) ? string.Empty : ", the same once both are trimmed " + Yes(string.Equals(net.Trim(), it.Written.Trim(), StringComparison.Ordinal)))));
+            Say("      COM name " + (com == null ? why : P12Show(com) + ", the same as written, Ordinal " + Yes(string.Equals(com, it.Written, StringComparison.Ordinal)))
+                + ". The written names, Ordinal, find " + byWritten + (byOk ? ", this item" : string.Empty) + ". The names trimmed find " + byTrimmed
+                + (comments < 0 ? string.Empty : ". Comments " + comments));
+
+            foreach (string body in bodies)
+            {
+                Say("      comment: " + body);
+            }
+
+            if (it.Body != null && comments >= 0)
+            {
+                Say("      the mark: exactly one comment, body and author the same as written, Ordinal " + Yes(mark));
             }
         }
     }
