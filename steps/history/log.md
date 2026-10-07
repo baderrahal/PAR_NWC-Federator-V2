@@ -2,6 +2,13 @@
 
 Newest entry at the top.
 
+## 2026-10-07 The loop, turn 5, Q142 for Bader, when a mirror's clashes may be merged
+
+F132's readers found new count faults after every attempt from 7 to 11, five after attempt 11,
+turn5\lanes-1007-break11-F132.json, each from merging a mirror into a test that is not exactly what the XML asks.
+Q142 asks Bader where a merge may be made, the loop recommending A, a merge only where the run created both tests
+from the XML and no set drifted. Attempt 12 builds A until he answers. The probes P11 to P13 answered, P14 runs.
+
 ## 2026-10-07 The loop, turn 5, F139 MERGED as pull request 130, Bader's one page progress file
 
 MERGED as PR 130, ce7fcf5, at 13:34:20, Actions run 37607849232 a success on its last commit, turn5\actions-reads-pr130.txt.
