@@ -280,6 +280,28 @@ well as to pass.
   below gives.
   SavedViewpoints.CanBuild is true since the viewpoints round on 2026-09-19 and nothing
   in src reads it, read on 2026-10-05
+- THE TEAMS, F131. The add-in holds only the calls, and every rule and every word is Core's,
+  .claude\rules\core.md, The teams of the picked file. WHERE A RUN OR A PICK SAYS WHICH FILE IT
+  READ, the window writes the TEAMS lines of its map, `TeamMap.Lines`, then a line for each set
+  whose name carries no code, `TeamMap.SetLines`, Q117 answered C and A, then, for the scanned
+  run and the open file run, whether that map is now the one kept for a run with no XML,
+  `TeamMapMemory.Remember`, and only then the MATRIX lines, all in one method,
+  SayTheTeamsAndCorrections, so the TEAMS lines come before the MATRIX lines at the pick, the
+  two runs and both hand buttons. A RUN WITH NO XML, the scanned run or the open file run,
+  writes the kept map's TEAMS lines in their place, Q123 answered B. The map a run hands the
+  engine is `TeamMapMemory.ForRun`, the one rule for it. THE KEPT MAP IS NAMED WHEN THE WINDOW
+  OPENS, a TEAMS KEPT block beside FOLDERS REMEMBERED, the memory read once by the field
+  initializer as FolderMemory is. THE GREY LINE under the Clash XML box, x:Name TeamsLine, is
+  `TeamMap.WindowLine` of `TeamMapMemory.ForPick`, the map beside the XML in the box, or the
+  kept map where none is there, set at the open and on every change of the box. EACH GROUP
+  writes a TEAMS block after the EXPORT CHECK block, in WhatTheModelsCarry, the one place both
+  runs pass through, in a try of its own after the export check's, so a fault in it names its
+  own step and never counts the group's finished export check as not read:
+  `SilentMisses.Find` over the picked XML's sets and the models `ModelFactsReader.Exports`
+  read, its `GroupLines` given the document's model count so a model Exports dropped is
+  counted. No coverage count is handed in until F127's COVERAGE block is on main, so no
+  silent miss is named and each is counted as UNKNOWN until the coverage counts them. The
+  two hand presses that federate no group, Undo and Probe, hand the engine no map
 - SINCE F85 A VIEWPOINT IS PER CLASH, which REVERSES what this rule said before it. It
   said no clash is ever saved as a viewpoint and that a discipline viewpoint is not a
   clash viewpoint. The first real run answered the question the other way: the thing a

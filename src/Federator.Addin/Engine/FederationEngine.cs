@@ -17,6 +17,7 @@ using Federator.Core.Probe;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
+using Federator.Core.Teams;
 using Federator.Core.Views;
 using Federator.Core.Units;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
@@ -40,6 +41,14 @@ namespace Federator.Addin.Engine
         private readonly LiveLine live;
         private readonly RunLog log;
         private readonly ExchangeDocument exchange;
+
+        /// <summary>
+        /// The team map of this run, F131: the one beside the picked XML, or the one the window
+        /// kept for a run with none, Q123 answered B. Null for a press that federates no group
+        /// and so reads no model's team.
+        /// </summary>
+        private readonly TeamMap teams;
+
         private readonly ReportOptions reports;
         /// <summary>
         /// Where the reports go. Decided in the constructor for a scanned run, from the
@@ -124,15 +133,16 @@ namespace Federator.Addin.Engine
         /// normal case. Null when nothing was picked, and then no set is built and no test
         /// is created. The report folder is worked out once, from the picked folder or
         /// from beside the NWF folder, so every group in the run writes into the same
-        /// place.
+        /// place. The team map is the run's, TeamMapMemory.ForRun.
         /// </summary>
         public FederationEngine(
             Action<string> progress,
             RunLog log,
             ExchangeDocument exchange,
+            TeamMap teams,
             ReportOptions reports,
             string nwfFolder)
-            : this(progress, log, exchange, reports)
+            : this(progress, log, exchange, teams, reports)
         {
             this.reportFolder = string.IsNullOrEmpty(nwfFolder)
                     && string.IsNullOrEmpty(this.reports.ExcelFolder)
@@ -147,12 +157,14 @@ namespace Federator.Addin.Engine
         /// uses for its line, and the hand buttons write no file at all. Handing a folder
         /// in here is what once wrote to Clash Reports\Clash Reports: the window passed the
         /// report folder as the NWF folder and the constructor built Clash Reports beside
-        /// it again.
+        /// it again. The team map is the run's, TeamMapMemory.ForRun, for the open file and the
+        /// two hand buttons, and null for Undo and Probe, which federate no group.
         /// </summary>
         public FederationEngine(
             Action<string> progress,
             RunLog log,
             ExchangeDocument exchange,
+            TeamMap teams,
             ReportOptions reports)
         {
             if (log == null)
@@ -163,6 +175,7 @@ namespace Federator.Addin.Engine
             this.progress = progress ?? delegate { };
             this.log = log;
             this.exchange = exchange;
+            this.teams = teams;
             this.reports = reports ?? new ReportOptions();
             this.guard = new RepeatedFailureGuard(this.reports.StopAfterFailures);
             this.reportFolder = null;
@@ -2264,9 +2277,11 @@ namespace Federator.Addin.Engine
         /// </summary>
         private void WhatTheModelsCarry(Document document, FederationJob job, JobOutcome outcome)
         {
+            IList<ModelExport> exports;
+
             try
             {
-                IList<ModelExport> exports = ModelFactsReader.Exports(document, reports.Names, log);
+                exports = ModelFactsReader.Exports(document, reports.Names, log);
                 outcome.ElementCount = GroupSize.ElementsIn(exports);
 
                 // S03-2. The names are compared by letter case with what the picked file's
@@ -2299,6 +2314,32 @@ namespace Federator.Addin.Engine
 
                 // So the run line never reads clean over a group whose models were not all read.
                 exportsAcrossTheRun.GroupNotRead();
+                return;
+            }
+
+            // F131. Each model's team beside its code, Q116 answered A, and how many sets of its
+            // team with another code cannot reach it, FR-181, counted against the group's models
+            // so one dropped by Exports is said. No coverage count is handed in, because the count
+            // of items no set catches is F127's COVERAGE block, so no miss is named and each is
+            // counted as UNKNOWN until the coverage counts them. In a try of its own, the
+            // reviewer's and the breaker's finding on F131's add-in half, so a fault here names its
+            // own step and never counts a group whose export check finished as not read.
+            try
+            {
+                log.Block(
+                    SilentMisses.BlockTitle + " " + Words.Or(job.Building, "this group"),
+                    teams == null
+                        ? new List<string> { "no team map was handed to this press, so no model's team was read" }
+                        : SilentMisses.Find(
+                            exchange == null ? null : exchange.Sets,
+                            exports,
+                            teams,
+                            new ViewpointSettings().SetNameSeparator,
+                            null).GroupLines(document.Models.Count));
+            }
+            catch (Exception error)
+            {
+                log.Failure("judging which sets of a team can reach its models", error, "the run goes on and this group's TEAMS block is not written");
             }
         }
 

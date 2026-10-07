@@ -41,9 +41,14 @@ namespace Federator.Core.Teams
     /// matches, the spelling is UNKNOWN and nothing is drafted. A Source File has no line in the
     /// list, so nothing is drafted for one.
     ///
+    /// A SET WHOSE NAME CARRIES NO CODE takes the team a folder above it in the clash XML's set
+    /// tree names, TeamMap.TeamOfSet, Q117 answered C by Bader on 2026-10-05, and is judged
+    /// against every model of that team, each having a code other than its none.
+    ///
     /// WHAT IS NOT JUDGED IS COUNTED AND SAID. A set whose name carries no code the map or a model
-    /// of the group knows, and a model whose code was not read, have a team that is UNKNOWN, so
-    /// they are judged against nothing, and the lines count them beside the all clear. Where NO
+    /// of the group knows and whose folders name no team, and a model whose code was not read,
+    /// have a team that is UNKNOWN, Q117's A, so they are judged against nothing, and the lines
+    /// count them beside the all clear. Where NO
     /// PAIR is judged, no set or no model handed in, a list of none being the same as no list, or
     /// no model of a set's team with another code, the lines say nothing was judged and why, and
     /// never the all clear, which would speak of sets and models never read. F131, the breaker's
@@ -53,9 +58,18 @@ namespace Federator.Core.Teams
     /// other reader of workset values in this repo skips one.
     ///
     /// WITH NO TEAM MAP every code is a team of its own, so no set is judged against another code.
+    ///
+    /// EACH MODEL'S LINE of the group's TEAMS block carries its team beside its code, Q116
+    /// answered A, and how many sets of its team with another code cannot reach it or could not
+    /// be judged, so a model missed by many sets is one line and not one a set. A model of the
+    /// group that was not read for its worksets is never handed in, so the block counts it
+    /// against the group's models, the breaker's finding on attempt 1.
     /// </summary>
     public sealed class SilentMisses
     {
+        /// <summary>The title of a group's block, which the add-in puts the building after.</summary>
+        public const string BlockTitle = "TEAMS";
+
         /// <summary>Navisworks' own name of the Source File property of an item, the same in every file it writes, read off the client's matrix.</summary>
         internal const string SourceFileProperty = "LcOaNodeSourceFile";
 
@@ -64,14 +78,42 @@ namespace Federator.Core.Teams
         /// <summary>Why no pair was judged, or null where one was.</summary>
         private readonly string notJudged;
 
-        private SilentMisses(IList<SilentMiss> found, int unjudged, int setsWithNoCode, int modelsWithNoCode, string notJudged, TeamMap map)
+        /// <summary>Whether no set was handed in, a run with no clash XML, so whether any set misses a model is UNKNOWN, K27.</summary>
+        private readonly bool noSet;
+
+        /// <summary>The models handed in, in their order, and for each how many sets of its team with another code were judged against it, missed it and could not be judged.</summary>
+        private readonly IList<ModelExport> models;
+
+        private readonly int[] pairsOf;
+
+        private readonly int[] missedOf;
+
+        private readonly int[] unjudgedOf;
+
+        private SilentMisses(
+            IList<SilentMiss> found,
+            int unjudged,
+            int setsWithNoCode,
+            int modelsWithNoCode,
+            string notJudged,
+            bool noSet,
+            TeamMap map,
+            IList<ModelExport> models,
+            int[] pairsOf,
+            int[] missedOf,
+            int[] unjudgedOf)
         {
             Found = new ReadOnlyCollection<SilentMiss>(found);
             Unjudged = unjudged;
             SetsWithNoCode = setsWithNoCode;
             ModelsWithNoCode = modelsWithNoCode;
             this.notJudged = notJudged;
+            this.noSet = noSet;
             this.map = map;
+            this.models = models ?? new List<ModelExport>();
+            this.pairsOf = pairsOf ?? new int[this.models.Count];
+            this.missedOf = missedOf ?? new int[this.models.Count];
+            this.unjudgedOf = unjudgedOf ?? new int[this.models.Count];
         }
 
         /// <summary>Every candidate, confirmed or not, in the order of the sets and then of the models.</summary>
@@ -80,7 +122,7 @@ namespace Federator.Core.Teams
         /// <summary>How many set and model pairs of one team could not be judged, the model's worksets not all read.</summary>
         public int Unjudged { get; private set; }
 
-        /// <summary>How many sets carry no code in their name that the map or a model of the group knows, so their team is UNKNOWN and they were judged against no model.</summary>
+        /// <summary>How many sets carry no code in their name that the map or a model of the group knows and sit in no folder naming a team, so their team is UNKNOWN and they were judged against no model.</summary>
         public int SetsWithNoCode { get; private set; }
 
         /// <summary>How many models carry no code, their file name not read for one, so their team is UNKNOWN and no set was judged against them.</summary>
@@ -112,18 +154,21 @@ namespace Federator.Core.Teams
             {
                 string none = noSet && noModel ? "no set and no model were handed in" : noSet ? "no set was handed in" : "no model was handed in";
 
-                return new SilentMisses(found, 0, 0, 0, none, map);
+                return new SilentMisses(found, 0, 0, 0, none, noSet, map, models, null, null, null);
             }
 
             if (map.Teams.Count == 0)
             {
-                return new SilentMisses(found, 0, 0, 0, null, map);
+                return new SilentMisses(found, 0, 0, 0, null, false, map, models, null, null, null);
             }
 
             int pairs = 0;
             int unjudged = 0;
             int setsWithNoCode = 0;
             int modelsWithNoCode = 0;
+            int[] pairsOf = new int[models.Count];
+            int[] missedOf = new int[models.Count];
+            int[] unjudgedOf = new int[models.Count];
             List<string> groupCodes = new List<string>();
 
             foreach (ModelExport model in models)
@@ -141,19 +186,21 @@ namespace Federator.Core.Teams
             foreach (SelectionSetDefinition set in setList)
             {
                 string code = CodeOf.Set(set.Name, known, separator);
+                string team = map.TeamOfSet(code, set.Folders);
 
-                if (code.Length == 0)
+                if (string.Equals(team, map.UnknownTeam, StringComparison.Ordinal))
                 {
                     setsWithNoCode++;
                     continue;
                 }
 
-                string team = map.TeamOf(code);
                 IList<IList<SearchConditionDefinition>> groups = PlannedSet.GroupsOf(
                     set.Conditions, condition => PlannedCondition.StartsAGroupWith(condition.Flags));
 
-                foreach (ModelExport model in models)
+                for (int m = 0; m < models.Count; m++)
                 {
+                    ModelExport model = models[m];
+
                     if (string.IsNullOrEmpty(model.Discipline)
                         || string.Equals(model.Discipline, code, StringComparison.Ordinal)
                         || !string.Equals(map.TeamOf(model.Discipline), team, StringComparison.Ordinal))
@@ -162,6 +209,7 @@ namespace Federator.Core.Teams
                     }
 
                     pairs++;
+                    pairsOf[m]++;
                     Reach reach = Judge(groups, model);
 
                     if (reach.Open)
@@ -172,8 +220,11 @@ namespace Federator.Core.Teams
                     if (!reach.Sure)
                     {
                         unjudged++;
+                        unjudgedOf[m]++;
                         continue;
                     }
+
+                    missedOf[m]++;
 
                     bool whole;
                     int? count = Count(model.File, reach.Categories, uncaught, out whole);
@@ -194,8 +245,76 @@ namespace Federator.Core.Teams
             }
 
             string noPair = pairs == 0 ? "no model of the group is of a set's team with a code other than the set's" : null;
+            return new SilentMisses(
+                found, unjudged, setsWithNoCode, modelsWithNoCode, noPair, false, map, models, pairsOf, missedOf, unjudgedOf);
+        }
 
-            return new SilentMisses(found, unjudged, setsWithNoCode, modelsWithNoCode, noPair, map);
+        /// <summary>
+        /// The group's TEAMS block: one line for each model handed in, its code with its team beside
+        /// it and how many sets of its team with another code cannot reach it or could not be
+        /// judged, then how many of the group's models were not handed in, then the judge's lines.
+        /// No model line where no map maps a team, the judge's line saying so.
+        /// </summary>
+        public IList<string> GroupLines(int modelsInGroup)
+        {
+            List<string> lines = new List<string>();
+
+            if (map.Teams.Count > 0)
+            {
+                for (int m = 0; m < models.Count; m++)
+                {
+                    lines.Add("   " + ExportCheck.Named(models[m]) + "   " + map.CodeWithTeam(models[m].Discipline) + ", " + ModelVerdict(m));
+                }
+            }
+
+            int notRead = modelsInGroup - models.Count;
+
+            if (notRead > 0)
+            {
+                lines.Add(notRead.ToString(CultureInfo.InvariantCulture) + " of the " + modelsInGroup.ToString(CultureInfo.InvariantCulture)
+                    + " model(s) of the group could not be read for their worksets, so no set was judged against them."
+                    + " The EXPORT CHECK lines name each");
+            }
+
+            lines.AddRange(Lines());
+            return lines;
+        }
+
+        /// <summary>What the judge came to for the model at that place, in the words of its line.</summary>
+        private string ModelVerdict(int m)
+        {
+            const string OfItsTeam = " set(s) of its team with another code ";
+            const string NotAllRead = " could not be judged, its worksets not all read";
+
+            if (string.IsNullOrEmpty(models[m].Discipline))
+            {
+                return "its code is not read, so no set was judged against it";
+            }
+
+            // A run with no clash XML hands in no set, so nothing is known of the sets that would
+            // have been judged, and the line says UNKNOWN where none judged would read as a result.
+            if (noSet)
+            {
+                return "whether a set of its team with another code cannot reach it is UNKNOWN, because no set was handed in";
+            }
+
+            int pairs = pairsOf[m];
+            string of = " of the " + pairs.ToString(CultureInfo.InvariantCulture) + OfItsTeam;
+
+            if (pairs == 0)
+            {
+                return "no set of its team with another code was judged against it";
+            }
+
+            if (missedOf[m] > 0)
+            {
+                return missedOf[m].ToString(CultureInfo.InvariantCulture) + of + "cannot reach it"
+                    + (unjudgedOf[m] > 0 ? ", " + unjudgedOf[m].ToString(CultureInfo.InvariantCulture) + NotAllRead : string.Empty);
+            }
+
+            return unjudgedOf[m] > 0
+                ? unjudgedOf[m].ToString(CultureInfo.InvariantCulture) + of + NotAllRead.TrimStart()
+                : "none" + of + "is kept out of it by a workset or a file name it asks";
         }
 
         /// <summary>
@@ -241,8 +360,14 @@ namespace Federator.Core.Teams
                     continue;
                 }
 
-                lines.Add("SILENT MISS  " + miss.SetName + " finds nothing in " + miss.Model + ", " + map.CodeWithTeam(miss.ModelCode)
-                    + ", because it asks " + Asks(miss) + ". That model holds " + (miss.UncaughtWhole ? string.Empty : "at least ")
+                // The set's code with its team beside it, as the model's is, Q116 answered A, or
+                // the team its folder gave it, Q117 answered C.
+                string setTeam = miss.SetCode.Length > 0
+                    ? map.CodeWithTeam(miss.SetCode)
+                    : "which carries no code and is in " + miss.Team + " by its folder";
+
+                lines.Add("SILENT MISS  " + miss.SetName + ", " + setTeam + ", finds nothing in " + miss.Model + ", "
+                    + map.CodeWithTeam(miss.ModelCode) + ", because it asks " + Asks(miss) + ". That model holds " + (miss.UncaughtWhole ? string.Empty : "at least ")
                     + miss.Uncaught.Value.ToString(CultureInfo.InvariantCulture) + " item(s) of "
                     + string.Join(" or ", new List<string>(miss.Categories).ToArray()) + " that no set catches"
                     + (miss.UncaughtWhole ? string.Empty : ", because a count of some of them was not taken"));
@@ -302,8 +427,8 @@ namespace Federator.Core.Teams
             if (SetsWithNoCode > 0)
             {
                 lines.Add(SetsWithNoCode.ToString(CultureInfo.InvariantCulture)
-                    + " set(s) carry no discipline code in their name that the map or a model of the group knows, so their team is"
-                    + " UNKNOWN and they were judged against no model");
+                    + " set(s) carry no discipline code in their name that the map or a model of the group knows, and no folder above"
+                    + " them in the clash XML's set tree names a team, so their team is UNKNOWN and they were judged against no model");
             }
 
             if (ModelsWithNoCode > 0)

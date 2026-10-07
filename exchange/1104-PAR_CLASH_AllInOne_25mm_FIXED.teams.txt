@@ -4,7 +4,7 @@
 # in the same folder, beside its list of corrections and never inside it, so a fault in one
 # cannot leave the other unread. The tool reads this file when the XML is picked and names it in
 # the log on its TEAMS lines. Bader's message of 2026-10-04, Q114 points 1, 2, 11 and 12, and
-# Q115 by its default A. F131.
+# Q115 answered A on 2026-10-05. F131.
 #
 # TO USE IT WITH ANOTHER XML of this project, copy it beside that XML and rename it after it.
 #
@@ -18,7 +18,9 @@
 #
 # A discipline code is part 5 of an NWC name, such as HV in 1104-PAR-1A04PK-ZZZ-HV-MOD-000001,
 # and the code a set name carries, such as ME in BLD-ME-Ducts&Duct Fittings. Any code on no line
-# is a team of its own, named by its code. A name with no code is UNKNOWN.
+# is a team of its own, named by its code. A set name with no code takes the team a folder above
+# it in the XML's set tree names, BLD-Security Devices taking Electrical, and UNKNOWN where none
+# does, Q117 answered C and A on 2026-10-05.
 #
 # THE ORDER OF THE TEAM LINES is the order a pair of teams is written in, point 12, so one pair
 # never becomes two folders: Architecture, Structure, Mechanical, Electrical, then any other team

@@ -38,10 +38,14 @@ namespace Federator.Core.Tests
             " set and model pair(s) of one team where the set cannot reach the model are not listed, because whether the"
             + " model holds items of the set's categories that no set catches is UNKNOWN until the coverage counts them";
 
-        /// <summary>The line for the sets whose name carries no code the map or a model of the group knows, the client's BLD-Security Devices among them.</summary>
+        /// <summary>
+        /// The line for the sets whose name carries no code the map or a model of the group knows
+        /// and whose folders name no team, Q117 answered C and A. The client's BLD-Security
+        /// Devices sits in the folder Electrical, so it is Electrical and not among them.
+        /// </summary>
         private const string NoCodeSets =
-            " set(s) carry no discipline code in their name that the map or a model of the group knows, so their team is"
-            + " UNKNOWN and they were judged against no model";
+            " set(s) carry no discipline code in their name that the map or a model of the group knows, and no folder above"
+            + " them in the clash XML's set tree names a team, so their team is UNKNOWN and they were judged against no model";
 
         private const string AllClear =
             "no set asks a workset or a file name that a model of its own team with another code does not carry";
@@ -122,15 +126,14 @@ namespace Federator.Core.Tests
 
             TeamMapTests.Same(
                 misses.Lines(),
-                "SILENT MISS  BLD-ME-Ducts&Duct Fittings finds nothing in " + HvFile + ", HV in Mechanical, because it asks"
+                "SILENT MISS  BLD-ME-Ducts&Duct Fittings, ME in Mechanical, finds nothing in " + HvFile + ", HV in Mechanical, because it asks"
                     + " the workset ME-DUCTWORK or ME-Ductwork, which that model does not carry. That model holds 12 item(s) of"
                     + " Ducts or Duct Fittings that no set catches",
                 "   to approve it, copy this line into the list of corrections beside the XML: also-ask: ME-DUCTWORK | HV-Ductwork",
-                "24" + NotListed,
-                "1" + NoCodeSets);
+                "24" + NotListed);
 
             Assert.That(ducts.UncaughtWhole, Is.True);
-            Assert.That(misses.SetsWithNoCode, Is.EqualTo(1));
+            Assert.That(misses.SetsWithNoCode, Is.EqualTo(0));
             Assert.That(misses.ModelsWithNoCode, Is.EqualTo(0));
 
             MatrixCorrectionList approved = MatrixCorrectionList.Read(new StringReader(ducts.Drafted[0] + "\n"), "a list in a test");
@@ -174,7 +177,7 @@ namespace Federator.Core.Tests
 
             Assert.That(misses.Found.Count, Is.EqualTo(25));
             Assert.That(Found(misses).TrueForAll(one => !one.Uncaught.HasValue && !one.Confirmed), Is.True);
-            TeamMapTests.Same(misses.Lines(), "25" + NotCounted, "1" + NoCodeSets);
+            TeamMapTests.Same(misses.Lines(), "25" + NotCounted);
 
             SilentMiss accessory = Found(misses).Find(one => one.SetName == "BLD-ME-Duct Accessory");
 
@@ -192,7 +195,7 @@ namespace Federator.Core.Tests
                 Uncaught(HvFile, "Ducts", 12));
 
             Assert.That(misses.Found.Count, Is.EqualTo(0));
-            TeamMapTests.Same(misses.Lines(), AllClear, "1" + NoCodeSets);
+            TeamMapTests.Same(misses.Lines(), AllClear);
         }
 
         /// <summary>A model of another team is never named against a set, whatever it holds.</summary>
@@ -233,8 +236,7 @@ namespace Federator.Core.Tests
             Assert.That(misses.Unjudged, Is.EqualTo(25));
             TeamMapTests.Same(
                 misses.Lines(),
-                "25 set and model pair(s) of one team could not be judged, because the model's worksets were not all read",
-                "1" + NoCodeSets);
+                "25 set and model pair(s) of one team could not be judged, because the model's worksets were not all read");
         }
 
         /// <summary>
@@ -268,7 +270,7 @@ namespace Federator.Core.Tests
             TeamMapTests.Same(walls.Drafted);
             TeamMapTests.Same(
                 misses.Lines(),
-                "SILENT MISS  BLD-AR-Walls finds nothing in " + AxFile + ", AX in Architecture, because it asks a Source File"
+                "SILENT MISS  BLD-AR-Walls, AR in Architecture, finds nothing in " + AxFile + ", AX in Architecture, because it asks a Source File"
                     + " holding -AR-, which that model's file name does not hold. That model holds 5 item(s) of Walls that no set catches",
                 StandsIn,
                 "   no line is drafted for a Source File, which the list of corrections has no line for",
@@ -318,10 +320,10 @@ namespace Federator.Core.Tests
             Assert.That(misses.Found.Count, Is.EqualTo(6));
             Assert.That(Found(misses).TrueForAll(one => one.SetName.StartsWith("BLD-FF-", StringComparison.Ordinal)), Is.True);
             Assert.That(Found(misses).TrueForAll(one => one.ModelCode == "ME"), Is.True);
-            TeamMapTests.Same(misses.Lines(), "6" + NotCounted, "1" + NoCodeSets);
+            TeamMapTests.Same(misses.Lines(), "6" + NotCounted);
         }
 
-        /// <summary>Q123 by its default A: with no map every code is a team of its own, so no set is judged against another code.</summary>
+        /// <summary>With no map every code is a team of its own, so no set is judged against another code.</summary>
         [Test]
         public void WithNoMapNoSetIsJudged()
         {
@@ -396,7 +398,7 @@ namespace Federator.Core.Tests
 
             Assert.That(misses.Found.Count, Is.EqualTo(25));
             Assert.That(Found(misses).TrueForAll(one => !one.Uncaught.HasValue && !one.Confirmed), Is.True);
-            TeamMapTests.Same(misses.Lines(), "25" + NotCounted, "1" + NoCodeSets);
+            TeamMapTests.Same(misses.Lines(), "25" + NotCounted);
         }
 
         /// <summary>
@@ -427,10 +429,11 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The readers' findings. A set whose name carries no code the map or a model of the group
-        /// knows, the client's BLD-Security Devices, and a model whose code was not read are judged
-        /// against nothing, and the lines count them, so the all clear is never read as every set
-        /// and every model judged. Nothing handed in is said too.
+        /// The readers' findings. A model whose code was not read is judged against nothing, and
+        /// the lines count it, so the all clear is never read as every model judged. The client's
+        /// BLD-Security Devices, counted here before Bader's answer C to Q117, now takes the team
+        /// Electrical its folder names, ASetWithNoCodeTakesTheTeamItsFolderNamesAndIsJudged. Nothing
+        /// handed in is said too.
         /// </summary>
         [Test]
         public void ASetOrAModelWithNoCodeIsCountedAndSaid()
@@ -448,12 +451,11 @@ namespace Federator.Core.Tests
                 Uncaught(HvFile, "Ducts", 12));
 
             Assert.That(misses.Found.Count, Is.EqualTo(0));
-            Assert.That(misses.SetsWithNoCode, Is.EqualTo(1));
+            Assert.That(misses.SetsWithNoCode, Is.EqualTo(0));
             Assert.That(misses.ModelsWithNoCode, Is.EqualTo(1));
             TeamMapTests.Same(
                 misses.Lines(),
                 AllClear,
-                "1" + NoCodeSets,
                 "1 model(s) carry no discipline code in their file name, so their team is UNKNOWN and no set was judged against them");
 
             TeamMapTests.Same(SilentMisses.Find(null, new[] { Model(MeFile, "ME") }, Map(), Hyphen, null).Lines(), NothingJudged + "no set was handed in");
@@ -475,6 +477,14 @@ namespace Federator.Core.Tests
             ModelExport[] noModel = new ModelExport[0];
 
             TeamMapTests.Same(SilentMisses.Find(noSet, me, Map(), Hyphen, null).Lines(), NothingJudged + "no set was handed in");
+
+            // The breaker's finding on F131's add-in half, K27: a run with no XML hands in no set,
+            // so each model's line says its sets are UNKNOWN, never the line of a model no set of
+            // its team with another code was judged against, which reads as a result.
+            TeamMapTests.Same(
+                SilentMisses.Find(null, me, Map(), Hyphen, null).GroupLines(1),
+                "   ME  " + MeFile + "   ME in Mechanical, whether a set of its team with another code cannot reach it is UNKNOWN, because no set was handed in",
+                NothingJudged + "no set was handed in");
             TeamMapTests.Same(SilentMisses.Find(TheSets(), noModel, Map(), Hyphen, null).Lines(), NothingJudged + "no model was handed in");
             TeamMapTests.Same(SilentMisses.Find(noSet, noModel, Map(), Hyphen, null).Lines(), NothingJudged + "no set and no model were handed in");
             TeamMapTests.Same(SilentMisses.Find(null, null, Map(), Hyphen, null).Lines(), NothingJudged + "no set and no model were handed in");
@@ -489,7 +499,7 @@ namespace Federator.Core.Tests
                 (model, category) => 99);
 
             Assert.That(architecture.Found.Count, Is.EqualTo(0));
-            TeamMapTests.Same(architecture.Lines(), NothingJudged + NoPair, "1" + NoCodeSets);
+            TeamMapTests.Same(architecture.Lines(), NothingJudged + NoPair);
 
             List<SelectionSetDefinition> noCode = new List<SelectionSetDefinition>(TheSets()).FindAll(
                 set => set.Name == "BLD-Security Devices");
@@ -497,8 +507,7 @@ namespace Federator.Core.Tests
             Assert.That(noCode.Count, Is.EqualTo(1));
             TeamMapTests.Same(
                 SilentMisses.Find(noCode, me, Map(), Hyphen, null).Lines(),
-                NothingJudged + NoPair,
-                "1" + NoCodeSets);
+                NothingJudged + NoPair);
         }
 
         /// <summary>
@@ -564,6 +573,175 @@ namespace Federator.Core.Tests
                 misses.Lines(),
                 "1 set and model pair(s) of one team where the set cannot reach the model are not listed, because the set"
                     + " asks no category by its whole name, so no coverage count can confirm them");
+        }
+
+        // ---------- the add-in pass, Bader's answer of 2026-10-05 to Q117 ----------
+
+        private const string Element = "<category><name internal=\"LcRevitData_Element\">Element</name></category>";
+
+        /// <summary>A set of that name asking that category, and that workset where one is given, in those folders, the outermost first.</summary>
+        private static string SetXml(string name, string category, string workset, string sourceFile)
+        {
+            string conditions = "<condition test=\"equals\" flags=\"0\">" + Element
+                + "<property><name internal=\"LcRevitPropertyElementCategory\">Category</name></property>"
+                + "<value><data type=\"wstring\">" + category + "</data></value></condition>";
+
+            if (workset != null)
+            {
+                conditions += "<condition test=\"equals\" flags=\"0\">" + Element
+                    + "<property><name internal=\"lcldrevit_parameter_-1002053\">Workset</name></property>"
+                    + "<value><data type=\"wstring\">" + workset + "</data></value></condition>";
+            }
+
+            if (sourceFile != null)
+            {
+                conditions += "<condition test=\"contains\" flags=\"0\"><category><name internal=\"LcOaNode\">Item</name></category>"
+                    + "<property><name internal=\"LcOaNodeSourceFile\">Source File</name></property>"
+                    + "<value><data type=\"wstring\">" + sourceFile + "</data></value></condition>";
+            }
+
+            return "<selectionset name=\"" + name + "\" guid=\"" + name + "\"><findspec mode=\"all\" disjoint=\"0\"><conditions>"
+                + conditions + "</conditions><locator>/</locator></findspec></selectionset>";
+        }
+
+        private static IList<SelectionSetDefinition> SetsOf(string selectionSets)
+        {
+            return new ExchangeReader().ReadText(
+                "<?xml version='1.0' encoding='UTF-8'?>\n<exchange units=\"ft\"><selectionsets>" + selectionSets
+                    + "</selectionsets></exchange>\n").Sets;
+        }
+
+        /// <summary>
+        /// Q117 answered C, and A where the XML's set tree names no team. A set whose name carries
+        /// no code takes the team its folder names and is judged against every model of that
+        /// team, each having another code than its none. One whose folders name no team is UNKNOWN,
+        /// judged against no model and counted. The client's BLD-Security Devices sits in the
+        /// folder Electrical, so it is Electrical and no longer counted as UNKNOWN.
+        /// </summary>
+        [Test]
+        public void ASetWithNoCodeTakesTheTeamItsFolderNamesAndIsJudged()
+        {
+            IList<SelectionSetDefinition> sets = SetsOf(
+                "<viewfolder name=\"Mechanical\"><viewfolder name=\"Mechanical-HVAC\">"
+                + SetXml("BLD-Ducts", "Ducts", "ME-Ductwork", null)
+                + "</viewfolder></viewfolder>"
+                + "<viewfolder name=\"Security\">" + SetXml("BLD-Cameras", "Security Devices", "EL-Security", null) + "</viewfolder>");
+
+            SilentMisses misses = SilentMisses.Find(
+                sets,
+                new[] { Model(HvFile, "HV", "HV-Ductwork"), Model(MeFile, "ME", "ME-Ductwork"), Model("1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc", "EL", "EL-Power") },
+                Map(),
+                Hyphen,
+                Uncaught(HvFile, "Ducts", 7));
+
+            Assert.That(misses.Found.Count, Is.EqualTo(1));
+
+            SilentMiss ducts = misses.Found[0];
+
+            Assert.That(ducts.SetName, Is.EqualTo("BLD-Ducts"));
+            Assert.That(ducts.SetCode, Is.EqualTo(string.Empty));
+            Assert.That(ducts.Team, Is.EqualTo("Mechanical"));
+            Assert.That(ducts.Model, Is.EqualTo(HvFile));
+            Assert.That(misses.SetsWithNoCode, Is.EqualTo(1));
+            TeamMapTests.Same(
+                misses.Lines(),
+                "SILENT MISS  BLD-Ducts, which carries no code and is in Mechanical by its folder, finds nothing in " + HvFile
+                    + ", HV in Mechanical, because it asks the workset ME-Ductwork,"
+                    + " which that model does not carry. That model holds 7 item(s) of Ducts that no set catches",
+                "   to approve it, copy this line into the list of corrections beside the XML: also-ask: ME-Ductwork | HV-Ductwork",
+                "1" + NoCodeSets);
+
+            SilentMisses client = SilentMisses.Find(
+                TheSets(),
+                new[] { Model("1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc", "EL"), Model("1104-PAR-1A04PK-ZZZ-EV-MOD-000001.nwc", "EV") },
+                Map(),
+                Hyphen,
+                null);
+
+            Assert.That(client.SetsWithNoCode, Is.EqualTo(0));
+            Assert.That(Found(client).Exists(one => one.SetName == "BLD-Security Devices"), Is.False);
+        }
+
+        /// <summary>
+        /// The add-in half's TEAMS block of a group: each model's line with its team beside its
+        /// code, Q116 answered A, and how many sets of its team with another code cannot reach it
+        /// or could not be judged, then a model the group holds that was not read, the breaker's
+        /// finding on attempt 1, then the lines of the judge. With no map no model line is
+        /// written, the judge's line saying why nothing was judged.
+        /// </summary>
+        [Test]
+        public void EachModelLineCarriesItsTeamAndHowManySetsCannotReachIt()
+        {
+            const string ArFile = "1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc";
+            const string ElFile = "1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc";
+            const string NoCodeFile = "1104-PAR-1A04PK-ZZZ-MOD-000001.nwc";
+
+            SilentMisses misses = SilentMisses.Find(
+                TheSets(),
+                new[]
+                {
+                    Model(HvFile, "HV", "HV-Ductwork"),
+                    Model(MeFile, "ME", EveryMechanicalWorkset),
+                    Model(ArFile, "AR", "AR-Walls"),
+                    Model(ElFile, "EL", "EL-Power"),
+                    Model(NoCodeFile, string.Empty, "HV-Ductwork")
+                },
+                Map(),
+                Hyphen,
+                null);
+
+            Assert.That(SilentMisses.BlockTitle, Is.EqualTo("TEAMS"));
+            TeamMapTests.Same(
+                misses.GroupLines(6),
+                "   HV  " + HvFile + "   HV in Mechanical, 25 of the 25 set(s) of its team with another code cannot reach it",
+                "   ME  " + MeFile + "   ME in Mechanical, none of the 16 set(s) of its team with another code is kept out of it by a workset or a file name it asks",
+                "   AR  " + ArFile + "   AR in Architecture, no set of its team with another code was judged against it",
+                "   EL  " + ElFile + "   EL in Electrical, none of the 1 set(s) of its team with another code is kept out of it by a workset or a file name it asks",
+                "   ??  " + NoCodeFile + "   UNKNOWN, its code is not read, so no set was judged against it",
+                "1 of the 6 model(s) of the group could not be read for their worksets, so no set was judged against them."
+                    + " The EXPORT CHECK lines name each",
+                "25" + NotCounted,
+                "1 model(s) carry no discipline code in their file name, so their team is UNKNOWN and no set was judged against them");
+
+            TeamMapTests.Same(misses.GroupLines(5), new List<string>(misses.GroupLines(6)).FindAll(line => !line.StartsWith("1 of the 6", StringComparison.Ordinal)).ToArray());
+
+            IList<SelectionSetDefinition> two = SetsOf(
+                "<viewfolder name=\"Mechanical\">"
+                + SetXml("BLD-ME-Sure", "Ducts", null, "-ME-")
+                + SetXml("BLD-ME-Perhaps", "Ducts", "ME-Ductwork", null)
+                + "</viewfolder>");
+
+            SilentMisses notWhole = SilentMisses.Find(
+                two,
+                new[]
+                {
+                    new ModelExport(HvFile, "HV", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, new[] { "HV-Ductwork" }),
+                    new ModelExport("1104-PAR-1A04PK-ZZZ-PL-MOD-000001.nwc", "PL", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, new string[0])
+                },
+                Map(),
+                Hyphen,
+                null);
+
+            Assert.That(notWhole.GroupLines(2)[0], Is.EqualTo(
+                "   HV  " + HvFile + "   HV in Mechanical, 1 of the 2 set(s) of its team with another code cannot reach it,"
+                    + " 1 could not be judged, its worksets not all read"));
+
+            IList<SelectionSetDefinition> perhapsOnly = SetsOf("<viewfolder name=\"Mechanical\">" + SetXml("BLD-ME-Perhaps", "Ducts", "ME-Ductwork", null) + "</viewfolder>");
+
+            Assert.That(
+                SilentMisses.Find(
+                    perhapsOnly,
+                    new[] { new ModelExport(HvFile, "HV", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, new[] { "HV-Ductwork" }) },
+                    Map(),
+                    Hyphen,
+                    null).GroupLines(1)[0],
+                Is.EqualTo("   HV  " + HvFile + "   HV in Mechanical, 1 of the 1 set(s) of its team with another code could not be judged, its worksets not all read"));
+
+            TeamMapTests.Same(
+                SilentMisses.Find(TheSets(), new[] { Model(HvFile, "HV", "HV-Ductwork"), Model(MeFile, "ME") }, TeamMap.NoXml(new TeamMapSettings()), Hyphen, null).GroupLines(3),
+                "1 of the 3 model(s) of the group could not be read for their worksets, so no set was judged against them."
+                    + " The EXPORT CHECK lines name each",
+                "no set was judged against the models of its team, because no team map maps a code");
         }
     }
 }

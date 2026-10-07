@@ -38,11 +38,24 @@ namespace Federator.Core.Tests
 
             TeamMapTests.Same(his.SizeFolderTeams, "Mechanical", "Electrical");
             TeamMapTests.Same(map.SizeFolderTeams, "Mechanical", "Electrical");
+            // Every TEAMS line after the first, which names where each was read: the teams with
+            // their codes, the order of a pair and the teams whose pairs carry the size folder.
+            System.Collections.Generic.IList<string> read = map.Lines();
+            System.Collections.Generic.IList<string> want = his.Lines();
+
+            Assert.That(read.Count, Is.EqualTo(want.Count));
+
+            for (int i = 1; i < want.Count; i++)
+            {
+                Assert.That(read[i], Is.EqualTo(want[i]), "at " + i);
+            }
+
+            Assert.That(read[read.Count - 1], Is.EqualTo("TEAMS    a pair holding Mechanical or Electrical carries the size folder"));
         }
 
         /// <summary>
         /// Q114 point 2, read when the XML is picked: ReadPicked, the one way the add-in reads the
-        /// picked file, reads the map beside it with the list of corrections. Q115 by its default
+        /// picked file, reads the map beside it with the list of corrections. Q115 answered
         /// A, each its own file, so a map that cannot be read leaves the corrections made, a list
         /// that cannot be read leaves the map read, and an XML with neither has both said missing.
         /// </summary>
@@ -93,6 +106,29 @@ namespace Federator.Core.Tests
             {
                 TempFolder.Remove(folder);
             }
+        }
+
+        /// <summary>
+        /// Q117 answered C by Bader on 2026-10-05, Electrical for this one: the corrected XML read
+        /// with this project's map holds one set whose name carries no code of the map,
+        /// BLD-Security Devices, which takes the team Electrical its folder names, and the pick's
+        /// TEAMS lines name it. Every other set carries a code of the map.
+        /// </summary>
+        [Test]
+        public void TheClientsOneSetWithNoCodeIsNamedAndTakesElectricalFromItsFolder()
+        {
+            ExchangeDocument corrected = MatrixCorrections.ReadPicked(Samples.CorrectedMatrix());
+
+            TeamMapTests.Same(
+                corrected.Teams.SetLines(corrected.Sets, '-'),
+                "TEAMS    BLD-Security Devices carries no discipline code the map lists, so its team is Electrical, which a folder"
+                    + " above it in the clash XML's set tree names, unless a model of its group carries a code its name holds");
+
+            SelectionSetDefinition security = new System.Collections.Generic.List<SelectionSetDefinition>(corrected.Sets).Find(
+                set => set.Name == "BLD-Security Devices");
+
+            TeamMapTests.Same(security.Folders, "Electrical");
+            Assert.That(corrected.Teams.TeamOfSet(string.Empty, security.Folders), Is.EqualTo("Electrical"));
         }
     }
 }

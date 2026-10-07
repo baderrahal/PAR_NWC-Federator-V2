@@ -212,7 +212,7 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// This project's team map, kept beside the corrected matrix and named after it, Q114
-        /// points 1 and 2 and Q115 by its default A, so Bader can copy it with the XML and its
+        /// points 1 and 2 and Q115 answered A, so Bader can copy it with the XML and its
         /// list of corrections. The tool reads it off whichever XML is picked, never out of Core.
         /// </summary>
         public const string TeamMapName = "1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt";

@@ -4,6 +4,9 @@ Written when the round ends.
 
 # Fix round, turn 5
 
+Status lives in steps\tracker.csv, one row per FR item, and reads in steps\tracker.md. This file
+keeps each item's narrative.
+
 The fix list of Bader's full fix round, Q98, written on 2026-10-04 before the first fix, from
 the returns of five readers: the findings of set 03, the confirmed bugs of turn 1 in two halves,
 the register in steps\loop.md, and the readings of the fixes in flight. Their 196 raw items
@@ -117,31 +120,32 @@ holds them. Each area takes the F number shown.
   - F113 clash counts: FR-031, FR-032, FR-033, FR-034
   - F116 the clash XML: FR-008, FR-009, FR-025, FR-026, FR-030. Noise kept here: FR-030, Bader put the XML corrections of Q102 to Q104 in wave 1
 - Wave 2, in three parts since Bader's views by team, Q114, each part at most three areas:
-  - 2a, F127 coverage, Bader's request 2: FR-176. First of 2a until Bader's order of 2026-10-05, Q132, put F132 before it
+  - 2a, F127 coverage, Bader's request 2: FR-176, FR-200. First of 2a until Bader's order of 2026-10-05, Q132, put F132 before it
   - 2a, F132 mirrored tests, Q114: FR-182, FR-183. F127 and F132 both change which tests are created and run, so they merge one after the other, F132 first since Q132
   - 2a, F115 sets: FR-010, FR-011, FR-012, FR-013, FR-014, FR-015, FR-016, FR-017, FR-018, FR-019, FR-020, FR-021, FR-022, FR-023, FR-024, FR-027
   - 2b, F131 teams, Q114: FR-180, FR-181. It merges before F114, which reads the team pairs
   - 2b, F114 views: FR-065, FR-066, FR-067, FR-068, FR-069, FR-070, FR-071, FR-072, FR-073, and Q114's FR-184 to FR-188. Noise kept here: FR-073, committed by F114 before it paused
   - 2b, F128 generic models, Bader's request 3: FR-177
-  - 2c, F118 workbook and report: FR-035, FR-036, FR-037, FR-040, FR-041. F128 and F118 both add to the workbook writer, so F118 comes after F128 has merged
+  - 2c, F118 workbook and report: FR-035, FR-036, FR-037, FR-040, FR-041, FR-199. F128 and F118 both add to the workbook writer, so F118 comes after F128 has merged
 - Wave 3, in two halves the same way:
   - 3a, F129 start from an existing NWF, Bader's request 4: FR-178
-  - 3a, F120 harvest and pictures: FR-075, FR-076, FR-077
+  - 3a, F120 harvest and pictures: FR-075, FR-076, FR-077, FR-198
   - 3a, F109 install: FR-078, FR-079, FR-080
   - 3b, F130 the Shift range in the group list, Bader's request 5: FR-179. In the half after F129 because both change the window's files
   - 3b, F119 run log and RESULT: FR-043, FR-044, FR-045, FR-046, FR-047, FR-048, FR-049, FR-050, FR-051, FR-052, FR-053, FR-054, FR-055, FR-056, FR-057, and FR-189 found by F112's closing pass
 - Wave 4:
-  - F121 the rest: FR-150, FR-151, FR-152, FR-153, FR-154, FR-155, FR-156, FR-157, FR-158, FR-159, FR-160, FR-161, FR-162, FR-163, FR-164, FR-165, FR-166. The find of Q24 on FR-160 and Q109 on FR-161 first
+  - F121 the rest: FR-150, FR-151, FR-152, FR-153, FR-154, FR-155, FR-156, FR-157, FR-158, FR-159, FR-160, FR-161, FR-162, FR-163, FR-164, FR-165, FR-166, FR-202. The find of Q24 on FR-160 and Q109 on FR-161 first
   - F122 the loop tools: FR-082, FR-083, FR-084, FR-085, FR-086, FR-087, FR-088, FR-089, FR-090, FR-091, FR-092, FR-093, FR-094, FR-095, FR-096, FR-097, FR-098, FR-099, FR-100, FR-101, FR-102, FR-103, FR-104
 - Wave 5:
-  - F123 docs and words, and the noise of every area: FR-007, FR-029, FR-038, FR-039, FR-042, FR-058, FR-059, FR-060, FR-061, FR-062, FR-063, FR-064, FR-074, FR-081, FR-105, FR-106, FR-107, FR-108, FR-111, FR-112, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118, FR-119, FR-120, FR-121, FR-122, FR-123, FR-124, FR-126, FR-127, FR-128, FR-129, FR-130, FR-131, FR-132, FR-133, FR-134, FR-135, FR-136, FR-139, FR-140, FR-141, FR-142, FR-143, FR-144, FR-145, FR-146, FR-147, FR-148, FR-167, FR-168, FR-169, FR-170, FR-171, FR-172, FR-173. Closed in part, the part that stays: FR-139, FR-146. The finds of Q108 on FR-136 and Q26 on FR-172 first. Closed already: FR-125, FR-137, FR-138
+  - F123 docs and words, and the noise of every area: FR-007, FR-029, FR-038, FR-039, FR-042, FR-058, FR-059, FR-060, FR-061, FR-062, FR-063, FR-064, FR-074, FR-081, FR-105, FR-106, FR-107, FR-108, FR-111, FR-112, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118, FR-119, FR-120, FR-121, FR-122, FR-123, FR-124, FR-126, FR-127, FR-128, FR-129, FR-130, FR-131, FR-132, FR-133, FR-134, FR-135, FR-136, FR-139, FR-140, FR-141, FR-142, FR-143, FR-144, FR-145, FR-146, FR-147, FR-148, FR-167, FR-168, FR-169, FR-170, FR-171, FR-172, FR-173, FR-203, FR-204. Closed in part, the part that stays: FR-139, FR-146. The finds of Q108 on FR-136 and Q26 on FR-172 first. Closed already: FR-125, FR-137, FR-138
   - F117 the names, by Bader's answer to Q105 to Q107: FR-109, FR-110, FR-149
   - then F124 D1, one public type per file: FR-174, moves only, last
 - Before any test run, Bader's stop of 2026-10-05, Q130: F136 the viewpoints switch, FR-194. Until F114
   merges every test run has viewpoints switched off
 - First of all since Bader's order of 2026-10-05, Q132: F136, then F131, then F132, then F114, each merged
   before the next starts where they share a file, then 1A02MM and 1A04PK with the new views on
-- Before the test of wave 1, Bader's answers to Q111 and Q125: F137 no site and no clash groups, FR-195
+- Before the test of wave 1, Bader's answers to Q111, Q125 and Q78: F137 no site and no clash groups, FR-195, F137 a shared site named DEFAULT, FR-201
+- Before any probe or run starts again, Bader's message of 2026-10-05, Q135: F138 loop starts with Auto-Save off, FR-196
 - Beside the waves, Bader's lane of 2026-10-05, Q129, worked by a fourth worker in its own worktree and
   never on a file a fix lane is changing at the time: F133 the work tracker, FR-191, F134 the code
   health gate, FR-192, and F135 the analyser settings that touch every project, FR-193, merged alone at
@@ -990,7 +994,8 @@ finalizer.
 - Class: noise
 - Proof: No Core test reaches it. Run line: a run with the rebuild box on in set 05 logs no
   ObjectDisposedException and the handle count at the end does not climb.
-- Note: Q28 (needs Bader, unanswered) asks the same for sub objects read off a handle this tool
+- Note: Q28, answered by Bader on 2026-10-06 to measure first and leave both reads until then,
+  FR-202, asks the same for sub objects read off a handle this tool
   made, such as side.Selection and set.Search, because their ownership is not measured. Items
   read out of a document collection (the ClashTest, the SavedItem) are covered by the measured
   rule. Only runs with the rebuild box on reach this code. The same walk is FR-014, so the two
@@ -1996,10 +2001,14 @@ left as it was.
   line: a forced clear and rebuild on a small copy, the log VIEWS tally reading 'saved
   viewpoints' before equal to after restore, and then the line that the NWF was saved over. Set
   05 reshapes and does not take the fallback, so it needs this one extra forced run.
-- Note: Q77 has no answer written under it, but the register class is open fault, and the rule
+- Note: Q77 had no answer written under it when this item was written, but the register class is
+  open fault, and the rule
   that the NWF is the record already answers it. Whether DocumentSavedViewpoints.CreateCopy and
   CopyFrom work for this is measured first, as the row says, UNKNOWN until then. The viewpoint
   count before the clear goes through RebuildTally, whose minus one fault is FR-151.
+- Answered by Bader on 2026-10-06, his words under Q77: yes, the clear and rebuild keeps the
+  viewpoints, as this item plans, so a view a person made survives it, and CreateCopy and CopyFrom
+  are measured first, as this item says
 
 ### FR-068 size-tally-never-constructed
 
@@ -4934,6 +4943,197 @@ outside the counts of the table below.
 - Proof: Core tests of both rules that fail first, and the test of wave 1
 - Class: Bader's decision
 
+## Bader's autosave copies, FR-196
+
+Added by Bader's message of 2026-10-05 headed TOO MANY AUTOSAVE COPIES, in his words under Q135 of
+steps\02_questions.md. A decision, outside the counts of the table below.
+
+### FR-196 loop-runs-write-no-autosave-and-copy-his-folder-once
+
+- Sources: Q135. Area F138, before any probe or run starts again
+- What he decided: for every loop run Auto-Save is switched off, or its folder pointed at the run's own
+  work folder, whichever the measurement shows is safe, inside the settings the run backs up and puts back,
+  so a loop run never writes an autosave into his AutoSave folder. His AutoSave folder is copied once,
+  the one backup kept, and each run compares names, sizes and times before and after, putting back from
+  that backup what changed and saying so in one line
+- Measured on 2026-10-05, turn5\q135\measure.md: the switch is enable under GlobalOptions\general\autosave
+  of the 22.0 key, off the safer choice, written "3 0" by the form of the key's other booleans
+- Part 1, in tools\loop\nw-guard.ps1, switches it off for every start, run and probe. Part 2, in run.ps1
+  after F131 merges, makes the per-run copy a compare against the one backup
+- Proof: the proof harness for the write and its read back, and the first real start writing no file into
+  his AutoSave folder, by name, size and time
+- Class: Bader's decision
+
+## Bader's answers of 2026-10-06, FR-198 to FR-204
+
+Added by Bader's message of 2026-10-06 headed BADER'S ANSWERS, 6 OCT 2026, THE 22 OLD ITEMS AND F132'S
+NEXT READING, in his words under each question in steps\02_questions.md. Decisions, outside the counts of
+the table below. His answers do not change the order of work, so every item here comes after the
+viewpoints, F138, F131, F132 and F114, then main installed and the runs of 1A02MM and 1A04PK, each in the
+wave the lead judged. Each was measured off main 2eda020 before it was written, and where main already
+does what he says the item says so and plans no work. Q29, Q31, Q47, Q50 and Q51 close with no work and
+have no item, Q77 is a line under FR-067, and F18 is dropped in steps\01_next.md.
+
+### FR-198 item-properties-harvest-deleted-and-gap-says-read-and-empty
+
+- Sources: Q25, Q35 to Q40 and Q76. Area F120, wave 3a, after the viewpoints
+- What he decided: Family, Type Name and Material deleted with their harvest. The per item harvest of
+  Source File deleted, the SOURCE FINDINGS block being enough, and the per item harvest of Discipline
+  deleted, the discipline read off part 5 of the NWC name staying as it is. The per item Id From in no
+  output, keeping only what the ITEM IDS block needs to count. The GAP block saying plainly when a
+  property was read on every item and came back empty every time, with its count, and no longer
+  leaving such a property out
+- Measured on 2026-10-06 off main 2eda020: src\Federator.Addin\Engine\ClashHarvest.cs reads Family,
+  Type Name and Material at lines 290 to 292, by the names of lines 41 to 43 held in the settings of
+  lines 67 to 71, the id and the property it came from at lines 308 to 321, and the source file and
+  the discipline of each item at lines 353 to 359. They sit on ClashItem,
+  src\Federator.Core\Report\ClashReportModel.cs lines 55 and 85 to 106. Of the five, GapRule alone
+  reads them, src\Federator.Core\Report\GapRule.cs lines 82 to 87, and Id From is read by the ITEM IDS
+  block too, ClashReportModel.cs lines 746 to 763. GapRule.cs lines 152 to 159 leave out a property no
+  item carried. Set 04's 1A02MM log, steps\runs\04\item1-C02\run-20261004-185652.log lines 499 to 505,
+  holds four GAP lines, Family and Type Name on 5,878 of 5,878 item cells, Material on 3,156 and Id
+  From on 5,878, and leaves out Source File and Discipline, read on every item and empty every time
+- What will be built: the reads, the names settings and the item's properties of Family, Type Name and
+  Material deleted, and the per item reads of the source file and the discipline, which nothing else
+  in src reads. The SOURCE FINDINGS block and the discipline off the NWC name untouched. Id From kept
+  only as the ITEM IDS block counts it. GapRule naming a property read on every item and empty every
+  time, with its count. Which properties the GAP block still reads once the harvests go is read off
+  the code at the start, UNKNOWN until then. ClashReportModel.cs is shared with clash counts and
+  report, the file table below
+- Proof: Core tests that fail first, a GAP line for a property read and empty on every item, and the
+  ITEM IDS counts the same before and after the cut, then the test of wave 3a on 1A02MM and 1A04PK,
+  their GAP and ITEM IDS blocks read against set 04's
+- Class: Bader's decision
+
+### FR-199 blocks-stay-in-measured-order-with-a-priority-file
+
+- Sources: Q45 and Q49. Area F118, wave 2c, after the viewpoints
+- What he decided: Q45, no cell of ours, the Reviewed column of the Navisworks layout being enough and
+  the run total staying in the log. Q49, priority a column to sort on in Excel, and the blocks staying
+  in the order measured off the Navisworks exports, even when a priority file is picked
+- Measured on 2026-10-06 off main 2eda020: Q45 is what main does. The workbook holds no count of ours
+  of what a run moved, the Reviewed column is the client's, src\Federator.Core\Report\ClientFormat.cs
+  line 34, and the run total is the RESULT line of src\Federator.Core\Diagnostics\RunLog.cs lines 1846
+  to 1851, written where the penetration box was on. Q49 is not. With a priority file picked the
+  blocks are sorted A, B, C, then the tests the file does not name, then by test name,
+  src\Federator.Core\Report\ReportOrder.cs lines 57 to 98, the one list the workbook, the clash XML
+  and the picture numbers walk, WorkbookWriter.cs line 138, ClashReportXml.cs line 160 and
+  ReportOrder.cs line 132. The Priority column is there already, on every row of a block and on an
+  empty test's row, src\Federator.Core\Report\WorkbookWriter.cs lines 249 to 256, 299 to 302 and 475
+  to 478, and WorkbookCheck is told which order was asked for,
+  src\Federator.Addin\Engine\FederationEngine.cs line 3031
+- What will be built: nothing for Q45. For Q49 the priority sort of ReportOrder.Tests taken out, so
+  every output walks the measured order with a file picked or not, the Priority column kept. What
+  WorkbookCheck is told at FederationEngine.cs line 3031 is read again in the item, since every
+  workbook is then in the measured order, and so is FR-042, the page check's false order line on a
+  page in priority order, which then has no such page
+- Proof: a Core test that a report with a priority file picked lists its blocks in the measured
+  order, failing first, the tests of the Priority column kept, and the test of wave 2c on 1A02MM with
+  the priority file, its blocks in the order of set 04's
+- Class: Bader's decision
+
+### FR-200 coverage-sheet-names-every-test-not-created
+
+- Sources: Q46. Area F127, wave 2a, after the viewpoints
+- What he decided: F77 kept. A test whose side finds nothing is not created, on every run. When a
+  model grows the run is made with the XML picked, and the Coverage sheet names every test that was
+  not created and why, so nothing is missed without a line saying so
+- Measured on 2026-10-06 off main 2eda020: F77 is on main, src\Federator.Core\Clash\CreationPlan.cs
+  and its call at src\Federator.Addin\Engine\ClashRunner.cs lines 395 to 401, each test not created
+  held in CreationPlan.NotCreated with the side that finds nothing. The Coverage sheet is not on main.
+  F127's Core half on the branch fix-F127 at dccf351, not merged, gives every test of the picked file
+  one reason, src\Federator.Core\Coverage\CoverageReason.cs there, among them NotCreated,
+  SideFoundNothing and DisciplineNotInGroup, and the sheet is its add-in half, not built
+- What will be built: nothing for F77. In F127, a Core test that fails where a test the plan did not
+  create has no row on the sheet or no reason on its row, beside FR-176's tests, and the sheet written
+  from those rows by the add-in half
+- Proof: that test, failing first against rows that leave a test not created out, and the test of
+  wave 2a, the Coverage sheet of 1A02MM read back with a row and a reason for every test not created
+- Class: Bader's decision
+
+### FR-201 shared-site-named-default-reported-only
+
+- Sources: Q78. Area F137, before the test of wave 1
+- What he decided: report only. A shared site named DEFAULT, in any spelling, does not skip the clash
+  by itself. The 1 m check catches a model that is really off, and the log names the site as the
+  model carries it
+- Measured on 2026-10-06 off main 2eda020: main does what he says. A model is on Internal only where
+  its site reads Internal exactly, src\Federator.Core\Health\AlignmentCheck.cs lines 593 to 596 with
+  the name at line 136, so a site named DEFAULT or DEFUALT skips nothing and fails nothing by its
+  name. Where it sits is judged by the 1 m of line 152, read through ReportOptions.FarModelMillimetres.
+  Its line names the site in quotes as the model carries it, lines 669 to 679, and so does the row
+  file, lines 686 to 694. Set 03 shows the name as carried, a run of main before F112:
+  steps\runs\03\item1-C06\run-20261001-140037.log line 2849, 1B06P1's ST model with shared coordinate
+  "DEFUALT", thousands of kilometres off by its dx and dy there, and line 2854 naming DEFUALT among
+  the group's four sites
+- What will be built: nothing. No test names DEFAULT or DEFUALT, and the rule reads no site name but
+  Internal
+- Proof: the test of wave 1 shows it only where a model of the two buildings names such a site,
+  UNKNOWN which
+- Class: Bader's decision
+
+### FR-202 sub-object-ownership-measured-before-two-reads-change
+
+- Sources: Q28. Area F121, wave 4, after the viewpoints
+- What he decided: the ownership of a sub object measured off the installed DLL first, both reads
+  left as they are until then, then what the measurement shows done
+- Measured on 2026-10-06 off main 2eda020: both reads stand. search.Selection is read off a Search
+  this tool owns to call SelectAll and is not disposed, src\Federator.Addin\Engine\SetBuilder.cs
+  lines 144 and 730. ClashRunner.LocatorOf disposes the side's Selection,
+  src\Federator.Addin\Engine\ClashRunner.cs line 1049, and reads each source out of its collection by
+  index inside the loop over the indexed sets, lines 1058 to 1062, none disposed. FR-029 holds the
+  same question for side.Selection and its sources in SetBuilder. What is measured is
+  docs\history\scan.md section 4g, an item read out of a document collection being a borrowed view
+  whose release frees the wrapper alone, read in the IL of GroupItem.GetChild
+- Measure first: the ownership each getter gives, read in the IL of Search.get_Selection and of
+  SelectionSourceCollection's indexer off the installed Autodesk.Navisworks.Api.dll with
+  tools\probes\il-reader.ps1, the way section 4g read GroupItem.GetChild, written into
+  docs\history\scan.md. UNKNOWN until read
+- What will be built: what the measurement shows. Where a release frees the wrapper alone, both reads
+  are released the way every other handle this tool creates is, and FR-029's sub objects with them.
+  Where it would free an object the parent still uses, both stay, a line at each saying why
+- Proof: the IL read itself, and since no Core test reaches either read, review and the test of wave
+  4, its log with no ObjectDisposedException
+- Class: Bader's decision
+
+### FR-203 open-statuses-rule-stays-naming-its-reader
+
+- Sources: Q27. Area F123, wave 5
+- What he decided: the rule kept in .claude\rules\core.md, naming its one reader, the image status
+  filter
+- Measured on 2026-10-06 off main 2eda020: main does what he says. The bullet is at
+  .claude\rules\core.md lines 634 to 648, and its last sentence names the image filter, which reads
+  Navisworks open at src\Federator.Core\Report\ImageOptions.cs line 43. Seen while measuring, the
+  lead's to place: the viewpoint plan of F85 reads the same choice,
+  src\Federator.Core\Views\ClashViewpointPlan.cs line 326, called from
+  src\Federator.Addin\Engine\ViewpointBuilder.cs lines 392 and 400, which core.md line 1036 says in
+  the F85 bullet, so the summary of src\Federator.Core\Clash\OpenClashes.cs lines 11 to 13, calling
+  the image filter the one reader left, has not been true since F85. New plus Active is read by
+  nothing outside OpenClashes.cs
+- What will be built: nothing. Closed by this record, main already doing what he says
+- Proof: none needed, the rule being in place
+- Class: Bader's decision
+
+### FR-204 manifest-line-9-and-its-one-exception
+
+- Sources: Q30. Area F123, wave 5, in a pull request of its own
+- What he decided: the hand written manifest may be edited. Line 9 pointed at docs\history\scan.md.
+  The never edited rule stays for the rest of the bundle folder, and the rule says the manifest is
+  the one exception
+- Measured on 2026-10-06 off main 2eda020: line 9 of
+  bundle\ParsonsNwcFederator.bundle\PackageContents.xml reads see docs\scan.md, the one file outside
+  docs\history and steps naming that path, and the bundle folder holds that one file. CLAUDE.md lines
+  87 to 89 say samples, steps\logs and bundle are never edited, the third changed on its own and never
+  inside a fix, and lines 53 and 54 say it is not edited in a fix. The paths wall refuses a file tool
+  under bundle, .claude\hooks\refuse-protected-paths.sh lines 145 and 146
+- What will be built: in one pull request of its own and inside no fix, as CLAUDE.md asks of bundle,
+  line 9 made to read docs\history\scan.md and the rule of CLAUDE.md made to say the manifest is the
+  one exception. The paths wall refuses a file tool there, so the line is changed by a command and
+  read back, and whether the wall's words change too is the lead's to say, UNKNOWN until then
+- Proof: the line read back after the change, and a search finding docs\scan.md in no file outside
+  docs\history and steps
+- Class: Bader's decision
+
 ## The areas at a glance
 
 | Area | Items | Count | Silent wrong number | Broken feature | Slow | Loud failure | Noise | Needs Bader |
@@ -5046,7 +5246,8 @@ From the findings of set 03:
   only, so no log line could show it. The real fault in it, the VIEWS cost per viewpoint, is
   FR-069, and the SLOWER compare is FR-056.
 - C06-J24, FIND-21, C06-DONE-18: the 22 GAP blocks and log:8218. Information the tool is built to
-  give, the log says 'Nothing here is a fault' (log:495), and Q35 to Q40 wait on the counts.
+  give, the log says 'Nothing here is a fault' (log:495), and Q35 to Q40 waited on the counts
+  until Bader answered them on 2026-10-06, FR-198.
 - C06-J25, FIND-17, C06-DONE-19: 22 CENSUS NOTED lines and no CHANGED. By design, F73, nothing
   moved that should not.
 - C06-J26, FIND-20, C06-DONE-17: one confirm dialog answered OK (driver.txt:21) and 20 Navisworks

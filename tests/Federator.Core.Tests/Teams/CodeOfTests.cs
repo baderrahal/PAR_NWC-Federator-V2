@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// The code and the team of a side and of a model, F131, Q116 by its default A. A side's code
+    /// The code and the team of a side and of a model, F131, Q116 answered A. A side's code
     /// is the first part of its set name that is a known code, the map's codes and those of the
     /// group's own models, and its team is the map's. A model's code is part 5 of its file name,
     /// read by ContainerName.Parse as it always was, and its team is the map's.
@@ -52,7 +52,7 @@ namespace Federator.Core.Tests
             Assert.That(CodeOf.Set("BLD-ST-AR-Walls", known, Hyphen), Is.EqualTo("ST"), "the first of two codes");
         }
 
-        /// <summary>Q117 by its default A: a set name carrying no known code is UNKNOWN, never guessed.</summary>
+        /// <summary>A set name carrying no known code gives no code, never a guess. Its team is then the folder's or UNKNOWN, Q117 answered C and A, TeamMapTests.</summary>
         [Test]
         public void ASetNameWithNoKnownCodeIsUnknown()
         {
@@ -99,12 +99,14 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Every set of the corrected XML read with this project's map: 16 Architecture, 6
-        /// Structure, 25 Mechanical, 13 Electrical and one UNKNOWN, BLD-Security Devices, which is
-        /// the 61, measure-teams.md section 2.
+        /// Every set of the corrected XML read BY ITS CODE ALONE with this project's map: 16
+        /// Architecture, 6 Structure, 25 Mechanical, 13 Electrical and one that carries no code,
+        /// BLD-Security Devices, which is the 61, measure-teams.md section 2. That set is UNKNOWN by
+        /// its code only. Its folder makes it Electrical under Q117 answered C, which
+        /// ProjectTeamMapTests reads through TeamMap.TeamOfSet.
         /// </summary>
         [Test]
-        public void EverySetOfTheCorrectedXmlHasATeamButSecurityDevices()
+        public void EverySetOfTheCorrectedXmlHasATeamByItsCodeButSecurityDevices()
         {
             ExchangeDocument document = MatrixCorrections.ReadPicked(Samples.CorrectedMatrix());
             TeamMap map = document.Teams;
