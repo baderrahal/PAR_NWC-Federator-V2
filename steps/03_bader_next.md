@@ -728,7 +728,7 @@ git config core.hooksPath .githooks
 ```
 
 341. Look for: `git config core.hooksPath` answers `.githooks`
-342. Make a branch, change one word in `steps\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
+342. Make a branch, change one word in `steps\history\log.md`, and commit it from the VS Code terminal rather than from GitHub Desktop, so you see what the hook prints
 343. Look for: the commit pauses and prints FOUR lines in this order, `pre-commit: checking the add-in for a local declared twice`, `pre-commit: checking the add-in for a type with no import`, `pre-commit: running the full test set`, then `pre-commit: tests passed`, and only then commits. That is the test wall, and the two checks in front of it are F58's and F66's. A commit refused by either of those prints `pre-commit: REFUSED. See the line above.` and never reaches the test set at all. Throw the branch away afterwards
 344. Open Claude Code in this folder and ask it to write one word into any file under `samples`
 345. Look for: it comes back refused, with the line `Refused. ... is under samples, steps/logs or bundle, which are never edited.` That is the paths wall, and the branch wall is the same hook file beside it, proved the same way by asking it to commit while main is checked out
@@ -945,7 +945,7 @@ C02 NWF folder, the last two clean, and every number is in the round's entry in
 `steps\log.md`. What is left is the look a person gives it and the two folders nobody but
 Bader may touch.
 
-381. Pull `round-viewpoints` and read the round entry at the top of `steps\log.md`, the list
+381. Pull `round-viewpoints` and read the round entry at the top of `steps\log.md` as that branch holds it, the list
      of every program it started, every file it wrote outside the repo and the two times
      Navisworks had to be stopped rather than closed
 382. Open `C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\NWF6\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`

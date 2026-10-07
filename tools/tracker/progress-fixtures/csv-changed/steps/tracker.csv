@@ -1,0 +1,13 @@
+id,short title,area,wave,class,status,PR,the run that proved it,the date of the last change
+FR-001,first item,F1,1,noise,merged,12,none,2026-10-05
+FR-002,"second item, with a comma",F1,1,noise,proven by a run,13,steps\runs\05\item1,2026-10-05
+F1,the first area,F1,1,fix,merged,12,none,2026-10-05
+FR-003,third item,F2,2a,noise,in progress,"none, branch fix-F2",none,2026-10-05
+Q1,a question,"F2, F3",2a and 2b,question,waiting for Bader,none,none,2026-10-04
+FR-004,fourth item,F3,2b,broken feature,in review,UNKNOWN,none,2026-10-05
+FR-005,fifth item,F3,2b and before any test run,noise,merged,none,none,2026-10-05
+FR-006,sixth item,none,none,UNKNOWN,dropped,none,none,2026-10-05
+F4,the fourth area,F4,before the waves,fix,open,none,none,2026-10-05
+F5,the fifth area,F5,beside the waves,fix,in progress,"14, open",none,2026-10-05
+Q2,a request,none,none,Bader's request,merged,19,none,2026-10-05
+F133-R1,a register row,F133,none,register row,open,none,none,2026-10-06

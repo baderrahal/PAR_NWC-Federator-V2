@@ -1,6 +1,7 @@
 # log
 
 Newest entry at the top.
+
 ## 2026-10-07 The loop, turn 5, F131 MERGED as pull request 135, the Q133 measurement on both buildings, and F138's first real start
 
 HIS SETTINGS at 10:46:57, after his own Navisworks of 10:28:15 closed: his 22.0 key read the July copy again, the
@@ -86,6 +87,13 @@ first, F121, 4, FR-203 the open statuses rule, F123, which main already does, an
 work. The rows set by the tracker rule, turn5\records31-check.txt and records31-prove.txt. Nothing under src
 or tests changed, and the Core tests ran in the pre-commit of 3af4c3c, 1926 passed, 0 failed, 0 skipped,
 turn5\records31-precommit-1.txt.
+
+## 2026-10-06 The loop, turn 5, F139 the one page progress file, Bader's message of 6 Oct 2026, Q139, on fix-F139, written by the developer as the lead's delegate
+
+- BUILT, every point of his message, FR-197, area F139, in %LOCALAPPDATA%\NwcFederatorLoop\wt-f139 off main 2eda020, commits b31cdba the records, 706ff44 the page and its check, 6b82741 the move, afb82c3 the register rows, 1887472 the Stop gate and the closing records after it. What was built is in F139's section of steps\01_next.md. The lead's readings (a) to (f) are under Q139 for Bader to correct
+- PROVED here, every file in %LOCALAPPDATA%\NwcFederatorLoop\turn5. Test first: prove-progress.ps1 read 23 WRONG and 1 right over the scripts before the code, f139-prove-progress-before.txt, and 24 right of 24 after, f139-prove-progress-after-1.txt. tools\loop\prove-hooks.sh read 20 of the Stop gate's cases WRONG over the gate before, every wall case right, 117 right in all, f139-prove-hooks-before.txt, then over the new gate in its own folder 135 right and 2 WRONG, a note that cannot be written ending the shell with exit 1, f139-prove-hooks-after.txt, then every case right once the note is written with printf, f139-prove-hooks-after-2.txt. The gate copied in by f139-copy-gate.sh, read back byte for byte, f139-copy-gate.txt, and timed, f139-gate-timing.txt. prove-tracker.ps1 76 right of 76 after the rules changed, f139-prove-tracker-after-1.txt. check-tracker and check-progress clean at afb82c3, 445 rows, f139-checks-afb82c3.txt. The pre-commit's new step on throwaway clones: a page of 61 lines and a csv with changes not staged refused before any test, and a changed row's counts made and staged, f139-hook-proof.txt, and at afb82c3, where only the csv was staged by hand, f139-precommit-4.txt. Core tests 1926 passed, 0 failed, 0 skipped before at 025b5eb, f139-core-before.txt, and at every commit's pre-commit, f139-precommit-1.txt onward. dotnet build ParsonsNwcFederator.sln -c Release 0 warnings and 0 errors before and after, f139-build-before.txt and f139-build-after.txt. Navisworks was not started or touched and no harness was run
+- MAIN 37f37d4, F138 as PR 127, merged in at b98db6a, its log entry landing here by git's rename detection, two conflicts kept whole by turn5\f139-resolve-1.py, f139-precommit-merge-1.txt. T5-R-HARNESSLIMIT set merged with 127, the four register rows F138's entry wrote as bullets given rows, and the three live pointers turn5\q139\pointers.md found changed: the order line paragraph of steps\01_next.md and steps 342 and 381 of steps\03_bader_next.md
+- WAITS: the reviewer and the breaker, Actions, and the lead's merge, setting the rows of F139, FR-197 and Q139 merged and rewriting the page. The keep-awake script reads steps\loop.md, F139-R1. Its findings are rows F139-R1 to F139-R7 of steps\tracker.csv, by the rule it writes, and not bullets here
 
 ## 2026-10-06 The loop, turn 5, F138 attempt 2, the Auto-Save switch written after the last read before the constructor, and attempt 1, the switch and a time limit on every harness run, written by the developer as the lead's delegate, pushed on its branch, draft pull request 127
 
