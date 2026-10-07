@@ -444,7 +444,7 @@ F133-R23,the question reader ends an item only at the next item,none,none,regist
 F133-R24,rows of class Bader's request are checked for being there only,none,none,register row,open,none,none,2026-10-06
 F133-R25,a pull request opened again under another number leaves rows naming the old one,none,none,register row,open,none,none,2026-10-06
 F133-R26,"the check reads that a merged question row's PR is a number, not which merge",none,none,register row,open,none,none,2026-10-06
-F139-R1,"the keep-awake script reads steps\loop.md for STATE CLOSED, gone once F139 merges, for the lead",none,none,register row,open,none,none,2026-10-06
+F139-R1,"the keep-awake script reads steps\loop.md for STATE CLOSED, gone once F139 merges, for the lead",none,none,register row,proven by a run,"none, outside the repo",turn5\keep-awake.txt 13:38:15 reads steps\PROGRESS.md,2026-10-07
 F139-R2,"make-tracker.ps1 writing new counts moves the page's time, which the Stop gate reads as a rewrite until the next fetch",F139,right after F133 merges,register row,merged,130,none,2026-10-07
 F139-R3,a checkout that writes the page reads to the Stop gate as a rewrite,F139,right after F133 merges,register row,merged,130,none,2026-10-07
 F139-R4,the Stop gate's VERDICT rule is a copy in sh of run.ps1's HasVerdict,none,none,register row,open,none,none,2026-10-06
@@ -469,3 +469,4 @@ FR-202,sub object ownership measured before two reads change,F121,4,Bader's deci
 FR-203,open statuses rule stays naming its reader,F123,5,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
 FR-204,manifest line 9 and its one exception,F123,5,Bader's decision,open,none,none,2026-10-06
 Q140,F132's next attempt only for a fault that can change a clash count or its test,F132,2a,Bader's request,in progress,"none, branch fix-F132",none,2026-10-06
+Q141,a clash in a result group with two statuses,none,none,question,waiting for Bader,none,none,2026-10-07

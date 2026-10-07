@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-07 13:22, last run 04/item2-C02
+STATE OPEN, 2026-10-07 13:42, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,12 +15,12 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 0 | 0 | 0 | 0 | 20 | 0 | 20 |
 | 4 | 0 | 0 | 0 | 0 | 57 | 0 | 57 |
 | 5 | 4 | 0 | 0 | 0 | 68 | 0 | 72 |
-| outside the waves | 148 | 8 | 0 | 4 | 46 | 5 | 211 |
-| total | 198 | 53 | 0 | 4 | 210 | 5 | 470 |
+| outside the waves | 149 | 8 | 0 | 5 | 45 | 5 | 212 |
+| total | 199 | 53 | 0 | 5 | 209 | 5 | 471 |
 <!-- the end of the counts -->
 
 ## Now
-- F139 this page: merged with pull request 130, the Stop gate reading the page by its content
+- F139 this page: MERGED as PR 130, ce7fcf5, at 13:34, the keep-awake reading it since 13:38
 - F132 mirrored tests: attempt 11 on fix-F132, one fail closed rule for every test of a pair, Q140
 - F114 views: attempt 7 on fix-F114, one rule for a set's team, then its add-in pass
 - Probes: Q133 1A04PK, P11 and P12 done, Auto-Save off held on each start, P13 to P19 go on
@@ -32,7 +32,8 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 3. Main installed in place and the runs of 1A02MM and 1A04PK with the new views
 
 ## Waiting for Bader
-- No question. Four rows wait for him: steps 228-233, 346-352 and 364 of steps\03_bader_next.md, and F139-R8, steps\logs\README.md line 11
+- Q141: the status of a clash under a result group, under Q138 B, the build going on with A
+- Four rows: steps 228-233, 346-352 and 364 of steps\03_bader_next.md, and F139-R8, steps\logs\README.md line 11
 
 ## Blockers and known bugs
 - T5-R-WALKRACE: the harness's walk of the loop folder races a lane's build and stops on a HARNESS FAULT
