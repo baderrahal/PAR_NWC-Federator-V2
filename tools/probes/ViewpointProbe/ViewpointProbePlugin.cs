@@ -220,6 +220,13 @@ namespace ViewpointProbe
                             parameters.Length > 3 ? parameters[3] : null,
                             parameters.Length > 4 ? parameters[4] : null);
                     }
+                    else if (mode == "vprate")
+                    {
+                        MeasureViewRate(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
                     else if (mode == "vpcomment")
                     {
                         MeasureViewComments(
@@ -16032,6 +16039,1187 @@ namespace ViewpointProbe
             {
                 Say(label + " THREW " + error.GetType().Name + ": " + error.Message + " at " + (error.StackTrace ?? string.Empty).Replace("\r", " ").Replace("\n", " "));
                 return null;
+            }
+        }
+
+        // ---------- P18 of Q114, the whole per view sequence timed, ten views into the tree of 2847 and ten after the 2813 are removed ----------
+
+        private const string P18TopA = "P18 probe A";
+        private const string P18TopB = "P18 probe B";
+        private const int P18Count = 10;
+        private const double P18Dim = 0.85;
+        private const double P18Tol = 0.001;
+
+        private sealed class P18Plan
+        {
+            public int No;
+            public string Test = string.Empty;
+            public int Results;
+            public int Open;
+            public int Missing;
+            public int NoHome;
+            public int NotResolved;
+            public int RedGeometry;
+            public int GreenGeometry;
+            public double WalkSeconds;
+            public readonly List<int[]> Red = new List<int[]>();
+            public readonly List<int[]> Green = new List<int[]>();
+            public readonly HashSet<string> RedKeys = new HashSet<string>(StringComparer.Ordinal);
+            public readonly HashSet<string> GreenKeys = new HashSet<string>(StringComparer.Ordinal);
+            public readonly List<double[]> Centres = new List<double[]>();
+            public readonly List<int> Shown = new List<int>();
+            public readonly List<int> Hidden = new List<int>();
+            public Viewpoint Camera;
+        }
+
+        private sealed class P18Times
+        {
+            public double Undim, Hide, Dim, Resolve, Paint, Frame, Folder, Make, Find, Add, Mark, ReadBack, Total;
+            public bool HideSkipped;
+            public bool FolderMade;
+            public bool Recorded;
+            public bool Marked;
+            public int TreeBefore;
+            public string Top = string.Empty;
+            public string Sub = string.Empty;
+            public string Name = string.Empty;
+            public string Body = string.Empty;
+            public double[] Pos;
+            public string Note = string.Empty;
+        }
+
+        private sealed class P18Back
+        {
+            public bool Found;
+            public double PositionOff = double.NaN;
+            public int Comments;
+            public bool MarkSame;
+            public int Hidden;
+            public int HiddenNotRoot;
+            public readonly List<string> HiddenFiles = new List<string>();
+            public bool HiddenFilesMatch;
+            public int Overrides;
+            public int NullEntry;
+            public int NoItem;
+            public int NoColour;
+            public int Dimmed;
+            public int RedRight;
+            public int GreenRight;
+            public int WrongColour;
+            public int Leaks;
+            public int EntryThrew;
+            public string Error = string.Empty;
+        }
+
+        private sealed class P18Removal
+        {
+            public int Folders;
+            public int Views;
+            public int LegacyInKeptFolders;
+            public int NotLegacy;
+            public double Seconds;
+            public double JudgeSeconds;
+            public bool NameChecksHeld = true;
+        }
+
+        private static string P18F(double d)
+        {
+            return double.IsNaN(d) ? "UNKNOWN" : d.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private static double P18Sec(System.Diagnostics.Stopwatch clock)
+        {
+            return clock.Elapsed.TotalSeconds;
+        }
+
+        private static string P18Ints(List<int> list)
+        {
+            return "[" + string.Join(",", list.ConvertAll(i => i.ToString(System.Globalization.CultureInfo.InvariantCulture)).ToArray()) + "]";
+        }
+
+        private static bool P18SameInts(List<int> a, List<int> b)
+        {
+            if (a == null || b == null || a.Count != b.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < a.Count; i++)
+            {
+                if (a[i] != b[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool P18SameStrings(List<string> a, List<string> b)
+        {
+            if (a.Count != b.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < a.Count; i++)
+            {
+                if (!string.Equals(a[i], b[i], StringComparison.Ordinal))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool P18AllRight(P18Back back, P18Plan plan)
+        {
+            return back != null && back.Found && back.PositionOff < P18Tol && back.Comments == 1 && back.MarkSame
+                && back.HiddenFilesMatch && back.HiddenNotRoot == 0
+                && back.RedRight == plan.RedGeometry && back.GreenRight == plan.GreenGeometry
+                && back.WrongColour == 0 && back.Leaks == 0 && back.EntryThrew == 0 && back.NullEntry == 0 && back.Error.Length == 0;
+        }
+
+        private static bool P18HiddenRight(P18Back back, P18Plan plan)
+        {
+            return back != null && back.Found && back.HiddenFilesMatch && back.HiddenNotRoot == 0 && back.Hidden == plan.Hidden.Count;
+        }
+
+        private static string P18Body(string stamp, string path, string name, string extra)
+        {
+            return P9Sentence + "\n" + "[nwcfed-mark 1] stamp=" + stamp + " path=" + path + " name=" + name + (extra.Length > 0 ? " " + extra : string.Empty) + " probe=P18";
+        }
+
+        private static ModelItemCollection P18Roots(Document document, List<int> models, List<ModelItem> held)
+        {
+            ModelItemCollection roots = new ModelItemCollection();
+
+            foreach (int m in models)
+            {
+                using (Model model = document.Models[m])
+                {
+                    ModelItem root = model.RootItem;
+                    held.Add(root);
+                    roots.Add(root);
+                }
+            }
+
+            return roots;
+        }
+
+        private bool P18MarkItem(Document document, List<string> path, string body)
+        {
+            using (SavedItem item = ResolveNames(document, path))
+            {
+                if (item == null)
+                {
+                    return false;
+                }
+
+                using (Comment comment = document.CreateCommentWithUniqueId(body, CommentStatus.New, P9Author))
+                {
+                    document.SavedViewpoints.AddComment(item, comment);
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// P18: the seconds of the design's whole per view sequence, part 2 of q114-design: undim the roots
+        /// dimmed before, hide (ResetAllHidden and SetHidden on the model roots, skipped when the shown list
+        /// equals the view before's), dim the shown roots, resolve the items, one reset and one paint per colour,
+        /// frame (a copy of the first open clash's camera zoomed to the open centres padded by the margin, a view
+        /// of one open clash keeping the clash camera), make the view's folder where it is missing and mark it,
+        /// record through the COM view, mark the view by AddComment and read it back: the position, the mark,
+        /// Hidden with each hidden root's Model.FileName (P19) and the MaterialOverrides walked once. Ten views,
+        /// the ten tests of the most open clashes read off the copy and none named in the code, are written into
+        /// the tree as it opens, round A. Then every top level folder whose every viewpoint is a per-clash view of
+        /// F85 by the probe's reading of LegacyClashView is removed by one RemoveAt each, from the end. Then the
+        /// same ten views again, round B. The shown models are the homes of the clashing items, a simplification
+        /// of ShownModels, which needs the team map. The copy is then saved, cleared and reopened and all twenty
+        /// views are read back once more.
+        /// </summary>
+        private void MeasureViewRate(string nwf, string saveAs, string marginText)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            double marginMm;
+
+            if (!double.TryParse(marginText ?? string.Empty, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out marginMm) || marginMm < 0)
+            {
+                Say("UNKNOWN: the margin [" + Shown(marginText) + "] is not a number of millimetres at or above 0");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+            List<int[]> rootPaths = new List<int[]>();
+            List<string> modelFiles = new List<string>();
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                using (Model model = document.Models[m])
+                using (ModelItem root = model.RootItem)
+                {
+                    string file = model.FileName ?? string.Empty;
+                    int[] rp = PathOf(document, root);
+                    rootPaths.Add(rp);
+                    modelFiles.Add(file);
+                    Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder " + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase)
+                        + ", its root's index path [" + P17Key(rp) + "], root hidden " + root.IsHidden);
+                }
+            }
+
+            double mmPerUnit = P16MillimetresPer(document.Units);
+            double margin = double.IsNaN(mmPerUnit) ? double.NaN : marginMm / mmPerUnit;
+            Say("document units " + document.Units + ", the framing margin " + Round(marginMm) + " mm, chosen and not measured, as in 5z-x, "
+                + (double.IsNaN(margin) ? "UNKNOWN, so no view is zoomed" : margin.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture)) + " in document units");
+            int treeOpen = CountViewpoints(document);
+            Say("the document at the open: " + P13Counts(document) + ", viewpoints " + treeOpen);
+
+            DocumentClashTests data = document.GetClash().TestsData;
+            List<P16Case> all = new List<P16Case>();
+            P16ListTests(data.Tests, all);
+            HashSet<string> testNames = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (P16Case c in all)
+            {
+                testNames.Add(c.Test);
+            }
+
+            List<P16Case> withOpen = all.FindAll(c => c.Open > 0);
+            withOpen.Sort((a, b) => a.Open != b.Open ? b.Open.CompareTo(a.Open) : string.CompareOrdinal(a.Test, b.Test));
+            Say("tests read " + all.Count + ", with at least one open clash " + withOpen.Count + ". Open is New or Active. The " + P18Count
+                + " tests of the most open clashes, ties by name Ordinal, are the views of each round");
+
+            if (withOpen.Count == 0)
+            {
+                Say("P18 UNKNOWN   the copy holds no test with an open clash");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("WALK ONE, once per test, before the rounds and not in any view's seconds. Red is every distinct first item, green every distinct second item not already red, the homes are the models whose root index path is a prefix of an item's:");
+            List<P18Plan> plans = new List<P18Plan>();
+
+            for (int i = 0; i < Math.Min(P18Count, withOpen.Count); i++)
+            {
+                P18Plan plan = P18Walk(document, data, withOpen[i], i + 1, rootPaths);
+
+                if (plan == null)
+                {
+                    Say("P18 UNKNOWN   walk one could not read test " + (i + 1));
+                    return;
+                }
+
+                plans.Add(plan);
+            }
+
+            InwOpState10 state = ComApiBridge.State;
+            List<int> prevShown = null;
+            string stamp = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            List<P18Times> timesA = new List<P18Times>();
+            List<P18Back> backA = new List<P18Back>();
+            List<P18Times> timesB = new List<P18Times>();
+            List<P18Back> backB = new List<P18Back>();
+
+            Say(string.Empty);
+            int treeA = CountViewpoints(document);
+            Say("ROUND A, " + plans.Count + " views into the tree as it opened, " + treeA + " viewpoints");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            P18Round(document, state, plans, P18TopA, "A", ref prevShown, margin, stamp, modelFiles, timesA, backA);
+            Say("ROUND A wall time " + Seconds(clock) + ", the tree now " + CountViewpoints(document) + " viewpoints");
+            P18Summary("A", timesA);
+
+            Say(string.Empty);
+            Say("THE REMOVAL of F85's per-clash views, by the probe's reading of LegacyClashView: a viewpoint at depth 1 to 3 under a top level folder named X vs Y, named T, two spaces, Clash and digits, T a test name of the document, with no comment. A top level folder goes by one RemoveAt(root, index), from the end, only when every viewpoint under it reads so");
+            P18Removal removal = P18RemoveLegacy(document, testNames);
+            int treeAfterRemoval = CountViewpoints(document);
+            Say("   the tree after the removal " + treeAfterRemoval + " viewpoints, " + (treeA + timesA.Count - removal.Views) + " expected from the counts");
+            Say("   the document after the removal: " + P13Counts(document));
+
+            Say(string.Empty);
+            int treeB = CountViewpoints(document);
+            Say("ROUND B, the same " + plans.Count + " views into the tree after the removal, " + treeB + " viewpoints");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            P18Round(document, state, plans, P18TopB, "B", ref prevShown, margin, stamp, modelFiles, timesB, backB);
+            Say("ROUND B wall time " + Seconds(clock) + ", the tree now " + CountViewpoints(document) + " viewpoints");
+            P18Summary("B", timesB);
+
+            Say(string.Empty);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+
+            using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+            {
+                document.Models.ResetTemporaryMaterials(roots);
+            }
+
+            document.Models.ResetAllHidden();
+            Say("put back: ResetTemporaryMaterials on every root and ResetAllHidden in " + Seconds(clock));
+
+            foreach (P18Plan plan in plans)
+            {
+                if (plan.Camera != null)
+                {
+                    plan.Camera.Dispose();
+                }
+            }
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + P17Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+            int rightAfter = 0;
+            int hiddenRightAfter = 0;
+            int readAfter = 0;
+
+            if (reopened)
+            {
+                Say("the document after the reopen: " + P13Counts(document) + ", viewpoints " + CountViewpoints(document));
+                List<string> files = new List<string>();
+
+                for (int m = 0; m < document.Models.Count; m++)
+                {
+                    using (Model model = document.Models[m])
+                    {
+                        files.Add(model.FileName ?? string.Empty);
+                    }
+                }
+
+                Say("the models after the reopen in the same order as at the open " + Yes(P18SameStrings(files, modelFiles)));
+                Say("AFTER THE REOPEN, every view of both rounds re-found by its names and read back:");
+
+                for (int r = 0; r < 2; r++)
+                {
+                    List<P18Times> times = r == 0 ? timesA : timesB;
+
+                    for (int i = 0; i < times.Count; i++)
+                    {
+                        P18Times t = times[i];
+                        P18Plan plan = plans[i];
+                        P18Back back;
+                        clock = System.Diagnostics.Stopwatch.StartNew();
+
+                        using (SavedItem item = ResolveNames(document, new List<string> { t.Top, t.Sub, t.Name }))
+                        {
+                            back = P18Read(document, item as SavedViewpoint, plan, t.Body, t.Pos, files);
+                        }
+
+                        readAfter++;
+                        rightAfter += P18AllRight(back, plan) ? 1 : 0;
+                        hiddenRightAfter += P18HiddenRight(back, plan) ? 1 : 0;
+                        Say("   " + (r == 0 ? "A" : "B") + " " + plan.No.ToString("00", System.Globalization.CultureInfo.InvariantCulture) + " read in " + Seconds(clock) + ": " + P18BackText(back, plan));
+                    }
+                }
+            }
+
+            Say(string.Empty);
+            int rightA = 0, rightB = 0, hiddenA = 0, hiddenB = 0, recA = 0, recB = 0;
+
+            for (int i = 0; i < plans.Count; i++)
+            {
+                rightA += i < backA.Count && P18AllRight(backA[i], plans[i]) ? 1 : 0;
+                rightB += i < backB.Count && P18AllRight(backB[i], plans[i]) ? 1 : 0;
+                hiddenA += i < backA.Count && P18HiddenRight(backA[i], plans[i]) ? 1 : 0;
+                hiddenB += i < backB.Count && P18HiddenRight(backB[i], plans[i]) ? 1 : 0;
+                recA += i < timesA.Count && timesA[i].Recorded && timesA[i].Note.Length == 0 ? 1 : 0;
+                recB += i < timesB.Count && timesB[i].Recorded && timesB[i].Note.Length == 0 ? 1 : 0;
+            }
+
+            Say("SUMMARY: views " + plans.Count + " a round. Round A into " + treeA + " viewpoints: recorded with no throw " + recA + ", read back all right " + rightA
+                + ". Removal: " + removal.Folders + " folders, " + removal.Views + " viewpoints, in " + P18F(removal.Seconds) + " s. Round B into " + treeB + ": recorded with no throw " + recB + ", read back all right " + rightB
+                + ". After the reopen: read " + readAfter + ", all right " + rightAfter);
+            bool measured = recA == plans.Count && recB == plans.Count;
+
+            if (measured)
+            {
+                Say("P18 MEASURED   the whole sequence, seconds a view: round A mean " + P18F(P18Mean(timesA, 13)) + ", median " + P18F(P18Median(timesA, 13))
+                    + ", the record alone mean " + P18F(P18Mean(timesA, 10)) + ". Round B mean " + P18F(P18Mean(timesB, 13)) + ", median " + P18F(P18Median(timesB, 13))
+                    + ", the record alone mean " + P18F(P18Mean(timesB, 10)));
+            }
+            else
+            {
+                Say("P18 UNKNOWN   at least one view of a round was not recorded, read above");
+            }
+
+            bool p19Live = hiddenA == plans.Count && hiddenB == plans.Count;
+            bool p19Reopen = reopened && hiddenRightAfter == readAfter && readAfter == timesA.Count + timesB.Count;
+            Say("P19 " + (p19Live && p19Reopen ? "YES" : "NO") + "   every recorded view's Hidden read the hidden model roots, each giving its Model.FileName, equal to the plan's hidden models: live "
+                + (hiddenA + hiddenB) + " of " + (timesA.Count + timesB.Count) + ", after the reopen " + hiddenRightAfter + " of " + readAfter);
+        }
+
+        private P18Plan P18Walk(Document document, DocumentClashTests data, P16Case c, int no, List<int[]> rootPaths)
+        {
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            P18Plan plan = new P18Plan();
+            plan.No = no;
+            plan.Test = c.Test;
+            plan.Results = c.Results;
+            plan.Open = c.Open;
+            List<int[]> firsts = new List<int[]>();
+            List<int[]> seconds = new List<int[]>();
+            ClashResult first = null;
+            int missing = 0;
+
+            try
+            {
+                ClashTest test = P16FindTest(data.Tests, c.Test);
+
+                if (test == null)
+                {
+                    Say("   " + no + " [" + Shown(c.Test) + "] was not found again by its name");
+                    return null;
+                }
+
+                P17Walk(document, test.Children, firsts, seconds, plan.Centres, ref first, ref missing);
+                plan.Missing = missing;
+
+                if (first == null)
+                {
+                    Say("   " + no + " [" + Shown(c.Test) + "] the walk read no open result");
+                    return null;
+                }
+
+                using (Viewpoint fromClash = data.TestsViewpointForResult(first))
+                {
+                    plan.Camera = fromClash == null ? null : fromClash.CreateCopy();
+                }
+
+                first.Dispose();
+            }
+            catch (Exception error)
+            {
+                Say("   " + no + " [" + Shown(c.Test) + "] the walk THREW " + error.GetType().Name + ": " + error.Message);
+                return null;
+            }
+
+            if (plan.Camera == null)
+            {
+                Say("   " + no + " [" + Shown(c.Test) + "] TestsViewpointForResult gave no camera");
+                return null;
+            }
+
+            foreach (int[] p in firsts)
+            {
+                if (plan.RedKeys.Add(P17Key(p)))
+                {
+                    plan.Red.Add(p);
+                }
+            }
+
+            foreach (int[] p in seconds)
+            {
+                string k = P17Key(p);
+
+                if (!plan.RedKeys.Contains(k) && plan.GreenKeys.Add(k))
+                {
+                    plan.Green.Add(p);
+                }
+            }
+
+            HashSet<int> homes = new HashSet<int>();
+            List<int[]> both = new List<int[]>(plan.Red);
+            both.AddRange(plan.Green);
+
+            foreach (int[] p in both)
+            {
+                int home = -1;
+
+                for (int m = 0; m < rootPaths.Count; m++)
+                {
+                    if (P17Prefix(rootPaths[m], p))
+                    {
+                        home = m;
+                        break;
+                    }
+                }
+
+                if (home < 0)
+                {
+                    plan.NoHome++;
+                }
+                else
+                {
+                    homes.Add(home);
+                }
+
+                using (ModelItem mi = document.Models.ResolveIndexPath(p))
+                {
+                    if (mi == null)
+                    {
+                        plan.NotResolved++;
+                    }
+                    else if (mi.HasGeometry)
+                    {
+                        if (plan.RedKeys.Contains(P17Key(p)))
+                        {
+                            plan.RedGeometry++;
+                        }
+                        else
+                        {
+                            plan.GreenGeometry++;
+                        }
+                    }
+                }
+            }
+
+            for (int m = 0; m < rootPaths.Count; m++)
+            {
+                if (homes.Contains(m))
+                {
+                    plan.Shown.Add(m);
+                }
+                else
+                {
+                    plan.Hidden.Add(m);
+                }
+            }
+
+            plan.WalkSeconds = P18Sec(clock);
+            Say("   " + no.ToString("00", System.Globalization.CultureInfo.InvariantCulture) + " [" + Shown(c.Test) + "] results " + c.Results + ", open " + c.Open + ", centres " + plan.Centres.Count
+                + ", sides read null " + missing + ". Red " + plan.Red.Count + " (with geometry " + plan.RedGeometry + "), green " + plan.Green.Count + " (with geometry " + plan.GreenGeometry
+                + "), not resolved " + plan.NotResolved + ", under no model root " + plan.NoHome + ". Shown and dimmed " + P18Ints(plan.Shown) + ", hidden " + P18Ints(plan.Hidden)
+                + ". Walked with its camera in " + P18F(plan.WalkSeconds) + " s");
+            return plan;
+        }
+
+        private void P18Round(Document document, InwOpState10 state, List<P18Plan> plans, string top, string label, ref List<int> prevShown, double margin, string stamp, List<string> modelFiles, List<P18Times> times, List<P18Back> backs)
+        {
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = top;
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                bool marked = P18MarkItem(document, new List<string> { top }, P18Body(stamp, string.Empty, top, "folder"));
+                Say("   the round's folder [" + top + "] made at the root by FolderItem and AddCopy, marked " + Yes(marked) + ", in " + Seconds(clock) + ", once a round and in no view's seconds");
+            }
+            catch (Exception error)
+            {
+                Say("   the round's folder [" + top + "] THREW " + error.GetType().Name + ": " + error.Message + ", so the round is not run");
+                return;
+            }
+
+            Say("   per view: label, tree before, then seconds of undim, hide, dim, resolve, paint, frame, folder, the record in three (make the COM view, find the COM folder, Add), mark, read back, and the whole sequence by its own clock, then the read back");
+
+            foreach (P18Plan plan in plans)
+            {
+                P18Back back;
+                int treeBefore = CountViewpoints(document);
+                P18Times t = P18OneView(document, state, plan, top, ref prevShown, margin, stamp, modelFiles, out back);
+                t.TreeBefore = treeBefore;
+                times.Add(t);
+                backs.Add(back);
+                double parts = t.Undim + t.Hide + t.Dim + t.Resolve + t.Paint + t.Frame + t.Folder + t.Make + t.Find + t.Add + t.Mark + t.ReadBack;
+                Say("   " + label + " " + plan.No.ToString("00", System.Globalization.CultureInfo.InvariantCulture) + " open " + plan.Open + ", red " + plan.Red.Count + ", green " + plan.Green.Count
+                    + ", tree " + treeBefore + ": undim " + P18F(t.Undim) + ", hide " + P18F(t.Hide) + (t.HideSkipped ? " skipped" : string.Empty) + ", dim " + P18F(t.Dim)
+                    + ", resolve " + P18F(t.Resolve) + ", paint " + P18F(t.Paint) + ", frame " + P18F(t.Frame) + ", folder " + P18F(t.Folder) + (t.FolderMade ? " made" : " there")
+                    + ", record " + P18F(t.Make) + " + " + P18F(t.Find) + " + " + P18F(t.Add) + ", mark " + P18F(t.Mark) + (t.Marked ? string.Empty : " NOT MARKED")
+                    + ", read back " + P18F(t.ReadBack) + ", WHOLE " + P18F(t.Total) + ", no part " + P18F(t.Total - parts)
+                    + (t.Note.Length > 0 ? ". THREW " + t.Note : string.Empty));
+                Say("        read back: " + P18BackText(back, plan));
+            }
+        }
+
+        private P18Times P18OneView(Document document, InwOpState10 state, P18Plan plan, string top, ref List<int> prevShown, double margin, string stamp, List<string> modelFiles, out P18Back back)
+        {
+            P18Times t = new P18Times();
+            back = new P18Back();
+            t.Top = top;
+            t.Sub = "view " + plan.No.ToString("00", System.Globalization.CultureInfo.InvariantCulture);
+            t.Name = plan.Test;
+            List<ModelItem> held = new List<ModelItem>();
+            Viewpoint camera = null;
+            System.Diagnostics.Stopwatch total = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Stopwatch clock;
+            string step = "undim";
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                if (prevShown != null && prevShown.Count > 0)
+                {
+                    using (ModelItemCollection before = P18Roots(document, prevShown, held))
+                    {
+                        document.Models.ResetTemporaryMaterials(before);
+                    }
+                }
+
+                t.Undim = P18Sec(clock);
+                step = "hide";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                if (prevShown != null && P18SameInts(prevShown, plan.Shown))
+                {
+                    t.HideSkipped = true;
+                }
+                else
+                {
+                    document.Models.ResetAllHidden();
+
+                    if (plan.Hidden.Count > 0)
+                    {
+                        using (ModelItemCollection hide = P18Roots(document, plan.Hidden, held))
+                        {
+                            document.Models.SetHidden(hide, true);
+                        }
+                    }
+                }
+
+                t.Hide = P18Sec(clock);
+                step = "dim";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                using (ModelItemCollection shown = P18Roots(document, plan.Shown, held))
+                {
+                    document.Models.OverrideTemporaryTransparency(shown, P18Dim);
+                }
+
+                prevShown = plan.Shown;
+                t.Dim = P18Sec(clock);
+
+                using (ModelItemCollection solid = new ModelItemCollection())
+                using (ModelItemCollection red = new ModelItemCollection())
+                using (ModelItemCollection green = new ModelItemCollection())
+                {
+                    step = "resolve";
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+
+                    for (int s = 0; s < 2; s++)
+                    {
+                        foreach (int[] p in s == 0 ? plan.Red : plan.Green)
+                        {
+                            ModelItem mi = document.Models.ResolveIndexPath(p);
+
+                            if (mi == null)
+                            {
+                                continue;
+                            }
+
+                            held.Add(mi);
+                            solid.Add(mi);
+                            (s == 0 ? red : green).Add(mi);
+                        }
+                    }
+
+                    t.Resolve = P18Sec(clock);
+                    step = "paint";
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.Models.ResetTemporaryMaterials(solid);
+
+                    if (red.Count > 0)
+                    {
+                        document.Models.OverrideTemporaryColor(red, new Color(1.0, 0.0, 0.0));
+                    }
+
+                    if (green.Count > 0)
+                    {
+                        document.Models.OverrideTemporaryColor(green, new Color(0.0, 1.0, 0.0));
+                    }
+
+                    t.Paint = P18Sec(clock);
+                }
+
+                step = "frame";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                camera = plan.Camera.CreateCopy();
+
+                if (plan.Centres.Count > 1 && !double.IsNaN(margin))
+                {
+                    double minX = double.MaxValue, minY = double.MaxValue, minZ = double.MaxValue;
+                    double maxX = double.MinValue, maxY = double.MinValue, maxZ = double.MinValue;
+
+                    foreach (double[] p in plan.Centres)
+                    {
+                        minX = Math.Min(minX, p[0]); minY = Math.Min(minY, p[1]); minZ = Math.Min(minZ, p[2]);
+                        maxX = Math.Max(maxX, p[0]); maxY = Math.Max(maxY, p[1]); maxZ = Math.Max(maxZ, p[2]);
+                    }
+
+                    using (Point3D low = new Point3D(minX - margin, minY - margin, minZ - margin))
+                    using (Point3D high = new Point3D(maxX + margin, maxY + margin, maxZ + margin))
+                    using (BoundingBox3D box = new BoundingBox3D(low, high))
+                    {
+                        camera.ZoomBox(box);
+                    }
+                }
+
+                using (Point3D at = camera.Position)
+                {
+                    t.Pos = new[] { at.X, at.Y, at.Z };
+                }
+
+                t.Frame = P18Sec(clock);
+                step = "folder";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                List<string> subPath = new List<string> { top, t.Sub };
+                bool there;
+
+                using (SavedItem s = ResolveNames(document, subPath))
+                {
+                    there = s != null;
+                }
+
+                if (!there)
+                {
+                    using (SavedItem topItem = ResolveNames(document, new List<string> { top }))
+                    {
+                        GroupItem parent = topItem as GroupItem;
+
+                        if (parent == null)
+                        {
+                            throw new InvalidOperationException("the round's folder was not found by its name");
+                        }
+
+                        using (FolderItem f = new FolderItem())
+                        {
+                            f.DisplayName = t.Sub;
+                            document.SavedViewpoints.AddCopy(parent, f);
+                        }
+                    }
+
+                    if (!P18MarkItem(document, subPath, P18Body(stamp, top, t.Sub, "folder")))
+                    {
+                        throw new InvalidOperationException("the view's folder was not found to mark");
+                    }
+
+                    t.FolderMade = true;
+                }
+
+                t.Folder = P18Sec(clock);
+                step = "record, make";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                InwOpView view = NewComView(state, t.Name, camera);
+                t.Make = P18Sec(clock);
+                step = "record, find";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                InwOpFolderView comFolder = FindComFolderAt(state, top, t.Sub);
+                t.Find = P18Sec(clock);
+
+                if (comFolder == null)
+                {
+                    throw new InvalidOperationException("the COM folder was not found");
+                }
+
+                step = "record, Add";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                comFolder.SavedViews().Add(view);
+                t.Add = P18Sec(clock);
+                t.Recorded = true;
+                step = "mark";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                t.Body = P18Body(stamp, top + "/" + t.Sub, t.Name, "camera=" + Round(t.Pos[0]) + "," + Round(t.Pos[1]) + "," + Round(t.Pos[2]));
+                List<string> viewPath = new List<string> { top, t.Sub, t.Name };
+                t.Marked = P18MarkItem(document, viewPath, t.Body);
+                t.Mark = P18Sec(clock);
+                step = "read back";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                using (SavedItem item = ResolveNames(document, viewPath))
+                {
+                    back = P18Read(document, item as SavedViewpoint, plan, t.Body, t.Pos, modelFiles);
+                }
+
+                t.ReadBack = P18Sec(clock);
+            }
+            catch (Exception error)
+            {
+                t.Note = "at " + step + ", " + error.GetType().Name + ": " + error.Message;
+            }
+            finally
+            {
+                foreach (ModelItem mi in held)
+                {
+                    mi.Dispose();
+                }
+
+                if (camera != null)
+                {
+                    camera.Dispose();
+                }
+
+                t.Total = P18Sec(total);
+            }
+
+            return t;
+        }
+
+        private P18Back P18Read(Document document, SavedViewpoint view, P18Plan plan, string body, double[] pos, List<string> modelFiles)
+        {
+            P18Back back = new P18Back();
+
+            if (view == null)
+            {
+                back.Error = "not found by its names";
+                return back;
+            }
+
+            back.Found = true;
+
+            try
+            {
+                using (Viewpoint vp = view.Viewpoint)
+                using (Point3D p = vp.Position)
+                {
+                    if (pos != null)
+                    {
+                        back.PositionOff = Math.Sqrt((p.X - pos[0]) * (p.X - pos[0]) + (p.Y - pos[1]) * (p.Y - pos[1]) + (p.Z - pos[2]) * (p.Z - pos[2]));
+                    }
+                }
+
+                CommentCollection cc = view.Comments;
+                back.Comments = cc == null ? 0 : cc.Count;
+                back.MarkSame = back.Comments == 1 && string.Equals(cc[0].Body, body, StringComparison.Ordinal);
+                VisibilityOverrides vo = view.GetVisibilityOverrides();
+
+                if (vo != null)
+                {
+                    using (ModelItemCollection hidden = vo.Hidden)
+                    {
+                        if (hidden != null)
+                        {
+                            foreach (ModelItem h in hidden)
+                            {
+                                back.Hidden++;
+
+                                if (h != null && h.HasModel)
+                                {
+                                    back.HiddenFiles.Add(h.Model.FileName ?? string.Empty);
+                                }
+                                else
+                                {
+                                    back.HiddenNotRoot++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                List<string> want = plan.Hidden.ConvertAll(m => m < modelFiles.Count ? modelFiles[m] : string.Empty);
+                want.Sort(StringComparer.Ordinal);
+                back.HiddenFiles.Sort(StringComparer.Ordinal);
+                back.HiddenFilesMatch = P18SameStrings(want, back.HiddenFiles);
+                AppearanceOverrides ao = view.GetAppearanceOverrides();
+
+                if (ao != null && ao.MaterialOverrides != null)
+                {
+                    foreach (MaterialOverride mo in ao.MaterialOverrides)
+                    {
+                        back.Overrides++;
+
+                        if (mo == null)
+                        {
+                            back.NullEntry++;
+                            continue;
+                        }
+
+                        try
+                        {
+                            using (ModelItem it = mo.Item)
+                            {
+                                if (it == null)
+                                {
+                                    back.NoItem++;
+                                    continue;
+                                }
+
+                                string key = P17Key(PathOf(document, it));
+
+                                if (mo.Transparency.HasValue && Math.Abs(mo.Transparency.Value - P18Dim) < P18Tol)
+                                {
+                                    back.Dimmed++;
+                                }
+
+                                Color c = mo.Color;
+
+                                if (c == null)
+                                {
+                                    back.NoColour++;
+                                    continue;
+                                }
+
+                                bool isRed = P17Same(c.R, c.G, c.B, 1, 0, 0);
+                                bool isGreen = P17Same(c.R, c.G, c.B, 0, 1, 0);
+
+                                if (plan.RedKeys.Contains(key))
+                                {
+                                    if (isRed) { back.RedRight++; } else { back.WrongColour++; }
+                                }
+                                else if (plan.GreenKeys.Contains(key))
+                                {
+                                    if (isGreen) { back.GreenRight++; } else { back.WrongColour++; }
+                                }
+                                else
+                                {
+                                    back.Leaks++;
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            back.EntryThrew++;
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                back.Error = error.GetType().Name + ": " + error.Message;
+            }
+
+            return back;
+        }
+
+        private static string P18BackText(P18Back back, P18Plan plan)
+        {
+            if (back == null || !back.Found)
+            {
+                return "NOT FOUND" + (back != null && back.Error.Length > 0 ? ", " + back.Error : string.Empty);
+            }
+
+            return "position off " + P18F(back.PositionOff) + ", comments " + back.Comments + ", the mark the same " + Yes(back.MarkSame)
+                + ", Hidden " + back.Hidden + " (not a model root " + back.HiddenNotRoot + ") files [" + string.Join(" | ", back.HiddenFiles.ConvertAll(f => Path.GetFileName(f)).ToArray()) + "] equal to the plan's " + Yes(back.HiddenFilesMatch)
+                + ", MaterialOverrides " + back.Overrides + " (null " + back.NullEntry + ", no item " + back.NoItem + ", no colour " + back.NoColour + ", at the dim " + back.Dimmed + ", threw " + back.EntryThrew
+                + "), red right " + back.RedRight + " of " + plan.RedGeometry + ", green right " + back.GreenRight + " of " + plan.GreenGeometry + ", a wrong colour " + back.WrongColour
+                + ", coloured items not of this view " + back.Leaks + (back.Error.Length > 0 ? ", THREW " + back.Error : string.Empty) + ". ALL RIGHT " + Yes(P18AllRight(back, plan));
+        }
+
+        private P18Removal P18RemoveLegacy(Document document, HashSet<string> testNames)
+        {
+            P18Removal removal = new P18Removal();
+            List<int> indexes = new List<int>();
+            List<string> names = new List<string>();
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            System.Text.RegularExpressions.Regex pair = new System.Text.RegularExpressions.Regex("^[^ ]+ vs [^ ]+$");
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SavedItemCollection children = root.Children;
+
+                for (int i = 0; i < children.Count; i++)
+                {
+                    using (SavedItem child = children[i])
+                    {
+                        GroupItem group = child as GroupItem;
+
+                        if (group == null)
+                        {
+                            continue;
+                        }
+
+                        int views = 0;
+                        int legacy = 0;
+                        bool namedAsPair = pair.IsMatch(child.DisplayName ?? string.Empty);
+                        P18Judge(group, 1, testNames, namedAsPair, ref views, ref legacy);
+
+                        if (views > 0 && views == legacy)
+                        {
+                            indexes.Add(i);
+                            names.Add(child.DisplayName);
+                            removal.Views += views;
+                            Say("   to remove: top level folder " + i + " [" + Shown(child.DisplayName) + "], " + views + " viewpoints, every one legacy");
+                        }
+                        else
+                        {
+                            removal.LegacyInKeptFolders += legacy;
+                            removal.NotLegacy += views - legacy;
+                            Say("   kept: top level folder " + i + " [" + Shown(child.DisplayName) + "], " + views + " viewpoints, legacy " + legacy);
+                        }
+                    }
+                }
+            }
+
+            removal.JudgeSeconds = P18Sec(clock);
+            Say("   judged in " + P18F(removal.JudgeSeconds) + " s: folders to remove " + indexes.Count + " holding " + removal.Views + " viewpoints. Legacy in kept folders " + removal.LegacyInKeptFolders + ", not legacy " + removal.NotLegacy);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+
+            for (int k = indexes.Count - 1; k >= 0; k--)
+            {
+                System.Diagnostics.Stopwatch one = System.Diagnostics.Stopwatch.StartNew();
+
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                {
+                    bool same;
+
+                    using (SavedItem at = root.Children[indexes[k]])
+                    {
+                        same = at != null && string.Equals(at.DisplayName, names[k], StringComparison.Ordinal);
+                    }
+
+                    if (!same)
+                    {
+                        removal.NameChecksHeld = false;
+                        Say("   the folder at " + indexes[k] + " no longer reads [" + Shown(names[k]) + "], so it and the folders before it are not removed");
+                        break;
+                    }
+
+                    document.SavedViewpoints.RemoveAt(root, indexes[k]);
+                }
+
+                removal.Folders++;
+                Say("   RemoveAt(root, " + indexes[k] + ") on [" + Shown(names[k]) + "] in " + Seconds(one));
+            }
+
+            removal.Seconds = P18Sec(clock);
+            Say("   removed " + removal.Folders + " folders in " + P18F(removal.Seconds) + " s, the name re-read just before each call held " + Yes(removal.NameChecksHeld));
+            return removal;
+        }
+
+        private static void P18Judge(GroupItem group, int depth, HashSet<string> testNames, bool namedAsPair, ref int views, ref int legacy)
+        {
+            SavedItemCollection children = group.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    GroupItem inner = child as GroupItem;
+
+                    if (inner != null)
+                    {
+                        P18Judge(inner, depth + 1, testNames, namedAsPair, ref views, ref legacy);
+                        continue;
+                    }
+
+                    views++;
+                    string name = child.DisplayName ?? string.Empty;
+                    int cut = name.LastIndexOf("  Clash", StringComparison.Ordinal);
+                    bool digits = cut > 0 && name.Length > cut + 7;
+
+                    for (int c = cut + 7; digits && c < name.Length; c++)
+                    {
+                        digits = name[c] >= '0' && name[c] <= '9';
+                    }
+
+                    int comments = child.Comments == null ? 0 : child.Comments.Count;
+
+                    if (namedAsPair && depth >= 1 && depth <= 3 && digits && testNames.Contains(name.Substring(0, cut)) && comments == 0 && child is SavedViewpoint)
+                    {
+                        legacy++;
+                    }
+                }
+            }
+        }
+
+        private static double P18Part(P18Times t, int k)
+        {
+            switch (k)
+            {
+                case 0: return t.Undim;
+                case 1: return t.Hide;
+                case 2: return t.Dim;
+                case 3: return t.Resolve;
+                case 4: return t.Paint;
+                case 5: return t.Frame;
+                case 6: return t.Folder;
+                case 7: return t.Make;
+                case 8: return t.Find;
+                case 9: return t.Add;
+                case 10: return t.Make + t.Find + t.Add;
+                case 11: return t.Mark;
+                case 12: return t.ReadBack;
+                case 13: return t.Total;
+                case 14: return t.Total - (t.Undim + t.Hide + t.Dim + t.Resolve + t.Paint + t.Frame + t.Folder + t.Make + t.Find + t.Add + t.Mark + t.ReadBack);
+                default: return double.NaN;
+            }
+        }
+
+        private static double P18Mean(List<P18Times> times, int k)
+        {
+            if (times.Count == 0)
+            {
+                return double.NaN;
+            }
+
+            double sum = 0;
+
+            foreach (P18Times t in times)
+            {
+                sum += P18Part(t, k);
+            }
+
+            return sum / times.Count;
+        }
+
+        private static double P18Median(List<P18Times> times, int k)
+        {
+            if (times.Count == 0)
+            {
+                return double.NaN;
+            }
+
+            List<double> v = new List<double>();
+
+            foreach (P18Times t in times)
+            {
+                v.Add(P18Part(t, k));
+            }
+
+            v.Sort();
+            return v.Count % 2 == 1 ? v[v.Count / 2] : (v[v.Count / 2 - 1] + v[v.Count / 2]) / 2;
+        }
+
+        private void P18Summary(string label, List<P18Times> times)
+        {
+            string[] names =
+            {
+                "undim", "hide", "dim", "resolve", "paint", "frame", "folder", "record, make the COM view", "record, find the COM folder", "record, Add",
+                "the record, the three", "mark", "read back", "THE WHOLE SEQUENCE", "seconds no part holds"
+            };
+
+            Say("ROUND " + label + " SECONDS A VIEW, over " + times.Count + " views:");
+
+            for (int k = 0; k < names.Length; k++)
+            {
+                double least = double.MaxValue;
+                double most = double.MinValue;
+                double sum = 0;
+
+                foreach (P18Times t in times)
+                {
+                    double v = P18Part(t, k);
+                    least = Math.Min(least, v);
+                    most = Math.Max(most, v);
+                    sum += v;
+                }
+
+                Say("   " + label + "  " + names[k].PadRight(30) + " total " + P18F(sum) + "   mean " + P18F(P18Mean(times, k)) + "   median " + P18F(P18Median(times, k))
+                    + "   least " + P18F(times.Count == 0 ? double.NaN : least) + "   most " + P18F(times.Count == 0 ? double.NaN : most));
             }
         }
     }

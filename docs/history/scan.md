@@ -8045,3 +8045,200 @@ step 2 ran at the end of either run, line 152.
 over every clashing item and one OverrideTemporaryColor over the red and one over the green, on 2423
 items, each returned in at most 5 ms, and the view recorded every item with the colour and the
 solidity it was given, through a save, a reopen and a press. No chunk size setting is built.
+
+## 5z-z. HOW MANY SECONDS THE WHOLE PER VIEW SEQUENCE TAKES, IN THE TREE OF 2847 AND AFTER THE 2813 ARE REMOVED, MEASURED 2026-10-07
+
+P18 of Q114, the views by team design, part 3, with P19 riding in it. The question: how many seconds
+does one per-test view take, the whole sequence of hide, dim, paint, frame, record, mark and read back,
+ten views into the copy holding 2847 viewpoints and the same ten into that copy after the 2813 per-clash
+views of F85 are removed? By the row of P18, part 6 of the design is rewritten with this rate before
+any add-in code, and it decides B8's cost. P19: does a recorded view's Hidden collection read back as
+the hidden model roots, each giving its Model.FileName? Yes: check 3 reads the shown models off the NWF.
+No: check 3 reads the plan's list and the block says so. Neither row hangs on another probe's answer.
+P18 uses the routes P9 (the mark by AddComment), P14 (a folder in one RemoveAt), P16 (ZoomBox) and P17
+(one reset and one paint per colour) found, and each of those said YES.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-rate.ps1` is P17's `probe-view-paint.ps1` with the new mode
+`vprate` of `ViewpointProbe.dll`, the method MeasureViewRate, its own header, the work folder prefix
+`view-rate` and the save name `p18-rate.nwf`. Nothing else in the script changed, the guard and F138's
+SwitchAutoSaveOff included. tools\loop\nw-guard.ps1 read sha256 E29D2733, line 4. The branch was pulled
+first, up to date at 64c9872. Get-Process Roamer read 0 before the run and 0 after it. The row names
+P13's copy, which was a fresh copy of the baseline, so the probe copied the same baseline,
+`runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`, 41,317,271 bytes, sha256 0944C100, into the
+new folder `probes\view-rate-20261007-170120`, line 22, and the mode, on that copy:
+
+1. reads every test and takes the 10 of the most open clashes, open being New or Active, the design's
+   ViewStatuses, ties by name Ordinal. No test is named in the code
+2. WALK ONE, once per test and in no view's seconds: the open results' first and second items and
+   centres, the first open clash's camera from TestsViewpointForResult, copied, the paint plan as P17's
+   (red every distinct first item, green every distinct second item not already red), and each item's
+   home model. The homes are shown and dimmed and the other models hidden. That is a simplification of
+   ShownModels, which needs the team map
+3. ROUND A, into the tree as it opened. A folder `P18 probe A` at the root, made and marked once a round.
+   Then per view, each part timed by its own Stopwatch and the whole by another:
+   - undim: ResetTemporaryMaterials on the roots the view before dimmed
+   - hide: ResetAllHidden and SetHidden on the hidden roots, skipped when the shown list equals the
+     view before's
+   - dim: OverrideTemporaryTransparency 0.85 on the shown roots
+   - resolve: ResolveIndexPath per item into three ModelItemCollections
+   - paint: one ResetTemporaryMaterials over every item, one OverrideTemporaryColor red, one green
+   - frame: a copy of the clash camera, and ZoomBox on the box of the open centres padded by 500 mm
+     where there are two or more, as 5z-x
+   - folder: a subfolder `view NN` made by FolderItem and AddCopy under a fresh resolve, and marked
+   - the record in three: make the COM view with ApplyHideAttribs and ApplyMaterialAttribs, find the
+     COM folder, and SavedViews().Add
+   - the mark: AddComment of the design's sentence and a marker line, made by
+     CreateCommentWithUniqueId, on the view re-found by its names
+   - the read back: the position, the comments and the mark's body, Hidden with each hidden item's
+     HasModel and Model.FileName, and the MaterialOverrides walked once into a lookup by item, counting
+     the right red, the right green, a wrong colour, and any coloured item that is not this view's
+4. THE REMOVAL. Every top level folder whose every viewpoint reads as F85's by the probe's own reading
+   of LegacyClashView, design 1.9, goes by one RemoveAt(root, index), from the end, its name re-read just
+   before each call. The reading: a top level folder named X vs Y, a viewpoint at depth 1 to 3 under it,
+   named T, two spaces, Clash and digits, T a test name of the document, and no comment. Redlines were
+   not read
+5. ROUND B, the same 10 views the same way, into `P18 probe B`
+6. ResetTemporaryMaterials on every root and ResetAllHidden, SaveFile into `p18-rate.nwf` in the work
+   folder, Document.Clear, TryOpenFile of the saved file, and all 20 views re-found by their names and
+   read back again
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-rate.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p18-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf -MarginMm 500
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+0 warnings and 0 errors, DLL sha256 E1ACFEF5, script sha256 4CD4C4F2, lines 24 and 3. One run at 17:01,
+kept as `p18-view-rate-result-20261007.txt`, the machine name on line 1 masked as `[machine]` and the
+account folder on line 5 as `%USERPROFILE%`, nothing else changed. Navisworks pid 49396, adopted on all
+four conditions, line 38. TryOpenFile of the copy returned True after 5.599 s with 4 models, every one
+read from under the loop folder, lines 54 to 59. ExecuteAddInPlugin returned 0 after 82.78 s, line 48.
+Dispose returned and pid 49396 was gone 6.4 s later, not forced, line 229.
+
+**THE ANSWER: THE WHOLE SEQUENCE TOOK 6.447 S A VIEW IN THE TREE OF 2847, AND 0.112 S A VIEW AFTER THE
+2813 WERE REMOVED, MEAN OF TEN. 99 PER CENT OF THE FIRST IS THE COM ADD.** Lines 100 to 115 and 176 to
+191 of the result:
+
+```
+seconds a view, mean of 10 (median)    round A, tree 2847 to 2856    round B, tree 44 to 53
+undim                                  0.003                         0.003
+hide                                   0.020 (0.014)                 0.015 (0.013)
+dim                                    0.003                         0.002
+resolve                                0.002                         0.001
+paint                                  0.001                         0.001
+frame                                  0.000                         0.000
+folder, made and marked                0.001                         0.000
+record, make the COM view              0.017 (0.015)                 0.019 (0.003)
+record, find the COM folder            0.000                         0.000
+record, SavedViews().Add               6.385 (6.210)                 0.057 (0.057)
+mark                                   0.000                         0.000
+read back                              0.014 (0.008)                 0.013 (0.010)
+THE WHOLE SEQUENCE                     6.447 (6.261)                 0.112 (0.099)
+  least and most                       5.942 and 7.627               0.062 and 0.236
+seconds no part holds                  0.000                         0.000
+P18 MEASURED
+P19 YES   live 20 of 20, after a save, a clear and a reopen 20 of 20
+```
+
+1. THE TEN TESTS. 528 tests, 59 with an open clash, line 62. The ten run from
+   BLD-AR-Curtain Mullions-vs-BLD-AR-Windows, 2568 open, to BLD-EL-Conduits & Conduit
+   Fittings-vs-BLD-EL-Electrical Equipment, 14 open, lines 65 to 74. Every item resolved with
+   geometry and no side read null. Each view showed one or two of the 4 models. Walk one took 0.003 to
+   0.054 s a test with its camera
+2. THE COST IS THE ADD, AND IT FOLLOWS THE TREE. In round A, SavedViews().Add took 5.907 to 7.458 s a
+   view, 6.385 of the 6.447 s mean, lines 79 to 98 and 110. Making the COM view took 0.017 s and finding
+   its folder under 0.001 s. In round B the Add of the same 10 views took 0.039 to 0.077 s, about 110
+   times less, lines 155 to 174 and 186. Every other part read the same in both rounds to a few
+   milliseconds. The Add did not follow the view's overrides: the view of 71 took 6.736 s in round A
+   and 0.040 s in round B, the view of 4626 took 6.024 s and 0.077 s, lines 83, 93, 159 and 169. Nor
+   the clash count: the 2568 clash view took 7.458 s in round A, the first of the round, and 0.060 s in
+   round B. Round A's record of the 2568 clash view sits with P16's 6.1 to 6.7 s and P17's 6.487 s in
+   the same tree, 5z-x and 5z-y. Why the Add costs so much in a tree of 2847 is UNKNOWN
+3. THE REMOVAL TOOK 1.253 S, AND THE NEXT EDIT 4.856 S. The judge read the 17 top level folders in
+   0.004 s, lines 118 to 135: the 4 the NWCs brought, 34 viewpoints, kept, the 12 from AR vs AR to EL vs
+   UNKNOWN, 2813 viewpoints, every one legacy, and `P18 probe A` with its 10, kept. No legacy viewpoint
+   sat in a kept folder. The 12 RemoveAt calls from the end, each name re-read and held, took 1.253 s
+   in all, AR vs AR 0.209 s against P14's 0.174 s, and DR vs DR, 2 viewpoints, 0.650 s, lines 136 to
+   148. The tree then read 44 viewpoints, the count expected, and the models, sets, tests and results
+   the same, lines 149 and 150. Then the first edit after the removal, making `P18 probe B` at the root
+   by AddCopy and marking it, took 4.856 s, line 153, where the same two calls took 0.015 s in round A,
+   line 77. Which of the two took it, and why, is UNKNOWN. The two were not timed apart. Round B's wall
+   time of 5.984 s, line 175, holds those 4.856 s
+4. EVERY VIEW READ BACK RIGHT, LIVE AND AFTER THE REOPEN. All 20 views read the position off by 0.000,
+   one comment whose body is the mark written, Ordinal, every red and every green item named with its
+   colour, no wrong colour, and no coloured item that is not the view's, lines 80 to 174. After SaveFile,
+   Document.Clear and TryOpenFile of the saved file, the same 20 read the same, lines 200 to 219 and 221
+5. P19 YES. Every view's Hidden read exactly its hidden model roots, 2 or 3 items, each HasModel true
+   and its Model.FileName equal to the plan's hidden model's, Ordinal, none that is not a model root,
+   live 20 of 20 and after the reopen 20 of 20, line 223
+6. THE UNDIM ON THE ROOTS CLEARED THE VIEW BEFORE'S COLOURS, READ OFF THE COUNTS. The paint resets only
+   this view's items, so a colour of the view before would stay unless the undim on the roots clears
+   it. No view read a coloured item that was not its own. The plainest case is A 09 after A 08, both
+   showing models 0 and 2, so the hide was skipped: A 08 painted 9 red and 12 green, and A 09 read 0
+   coloured items of another view, lines 93 to 96. The probe did not check that the two views' items
+   are disjoint, so this is read off the count and not item by item
+7. THE OVERRIDES FOLLOW THE SHOWN MODELS, NOT THE CLASHES. Each view held its red, its green and one dim
+   entry for every other item of its shown models: 3153 for model 0 alone (A 01 2335, 88 and 730, A 04 24,
+   3 and 3126), 1138 for models 1 and 3, 71 for model 3, 4626 for models 0 and 2, and 1067 for model 1.
+   Every dim entry read Color null, as in 5z-y. Part 6 read this off 5o and 5p, and here it is measured
+   on 10 views
+8. THE FILE. SaveFile took 1.878 s and wrote 724,283 bytes with 54 viewpoints, the 34 the NWCs brought
+   and the 20 probe views, line 194, against the 41,317,271 bytes of the copy opened with 2847. The reopen
+   took 2.706 s against 5.599 s for the first open, lines 196 and 54. The saved copy is
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-rate-20261007-170120\p18-rate.nwf`, sha256
+   C6784F82BF120614B9F4E72ECDB1ABBEE51C59140CB759C35F77F7CFF6543B74, line 225
+
+**WHAT THE TWO MEANS GIVE FOR PART 6 AND B8, ARITHMETIC ON THE MEASURED MEANS AND THE DESIGN'S V OF 59 TO
+109, NOT A MEASUREMENT OF A RUN.**
+
+- On an NWF that holds no per-clash views, the sequence is 0.112 s a view: 6.6 s for 59 views, 12.2 s for
+  109. The lowest recording rate of part 6 alone is 0.565 s. Walk one, the inventory, the removals and
+  the fresh walk are outside this sequence and are not this probe's
+- B8 A, the first run on an NWF holding the 2813, writes into the tree of 2847: 6.447 s a view, 380.4 s
+  for 59 views and 702.7 s for 109, then the removal, 1.253 s here and 4.856 s on the next edit
+- B8 B, the old removed first: the same removal, then 0.112 s a view, 6.6 s to 12.2 s
+- So B8 A costs about 6.335 s a view more, once per NWF holding the per-clash views: 373.8 s at V 59 and
+  690.5 s at V 109 on 1A02MM
+- The rate between a tree of 53 and one of 2847 was not measured. A fresh NWF of the design holds the
+  34 the NWCs bring, up to 109 views and their folders, near 150 items
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWF the copy was made from read sha256 0944C100
+at the start and at the end, lines 22 and 323. The guard wrote the Auto-Save switch "3 0" and read it
+back, line 28. The watchdog saw no other Navisworks, and the put back ran, line 272. 38 registry values
+were put back, enable among them, line 277, and read again with 0 still differing, line 312.
+SessionCleanCloseCount went 93 to 94 and no crashCount changed, line 274, a clean close. InfoCenter.log and
+LastSession.xml were put back reading their backups' sha256, lines 316 and 317. The guard saw 0 AutoSave
+files added, changed or gone, line 319, and the tool's own logs folder had nothing added or changed, line
+320. The prober read the switch and listed the AutoSave folder by name, size, write time and sha256 with
+`read-autosave-state.ps1`, kept in %LOCALAPPDATA%\NwcFederatorLoop\turn5 as
+`probe-p18-20261007-autosave-before.txt`, `-during.txt` and `-after.txt`: enable read String "0" at
+17:00:55 before the start, "3 0" at 17:03:17 while the probe ran, and "0" at 17:05:01 after the put back,
+and the folder held the same 199 files with the same names, sizes, times and sha256 before and after, 0
+lines differing.
+
+THE PROGRAMS. One Navisworks, pid 49396, started by the probe at 17:01:28, quit by Dispose and gone 6.4 s
+after, not forced, lines 38, 229 and 262. AdskLicensingAgent pid 47876, a child of 49396, read STILL
+RUNNING at the end of the probe, line 263, and Get-Process -Id 47876 read no process when the prober read
+it after the run. AdskLicensingAgent 51556 and AdskLicensingInstHelper 42536 and 35428 read exited, lines
+264 to 266. No Roamer that was not there in step 2 ran at the end, line 267.
+
+**STILL UNKNOWN.**
+
+- the rate in a tree between 53 and 2847 viewpoints, so on a fresh NWF of the design near 150 items, and
+  in C06's trees, which hold 4800 per-clash views over 16 groups
+- why SavedViews().Add takes about 6 s in a tree of 2847 and about 0.06 s in a tree of 44
+- why the first edit after the removal took 4.856 s, and whether it was the AddCopy or the AddComment
+- views that show the models of ShownModels with the team map. Here the homes alone were shown. Within
+  71 to 4626 overrides the Add did not follow the count, and nothing wider was tried
+- the design's folder tree of priority, pair and size. Each view here sat in its own folder two deep
+- the inventory's comment reads, the fresh walk and VIEWS TREE. They are outside the per view sequence
+  and were not timed
+- what the add-in adds around the calls: the window, the progress lines and the log
+- whether A 08's and A 09's items are disjoint, so whether item 6 holds item by item
+- whether the rate holds with the Saved Viewpoints window open
+- the views on Bader's screen. The row asked no hand step
+
+**WHAT THIS DECIDES.** By the row of P18, part 6 is rewritten with these rates before any add-in code:
+0.112 s a view for the whole sequence in a tree of 44 to 53, and 6.447 s a view in the tree of 2847,
+nearly all of it in the COM view's SavedViews().Add. By B8, writing first and removing after costs about
+6.3 s a view more, once per NWF holding the per-clash views. By the row of P19, YES: check 3 reads the
+shown models off the NWF, from each hidden root's Model.FileName.
