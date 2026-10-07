@@ -93,6 +93,100 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// Two listeners that throw: each is named once and neither is called again, and the log line
+        /// they were handed is not heard twice by the one that follows.
+        /// </summary>
+        [Test]
+        public void TwoListenersThatThrowAreEachNamedOnceAndNeverCalledAgain()
+        {
+            using (RunLog log = Start())
+            {
+                int first = 0;
+                int second = 0;
+                List<string> heard = new List<string>();
+                log.LineWritten += line => { first++; throw new InvalidOperationException("one"); };
+                log.LineWritten += line => { second++; throw new InvalidOperationException("two"); };
+                log.LineWritten += line => heard.Add(line);
+
+                log.Line("a line");
+                log.Line("another line");
+
+                string text = ReadWhileOpen(log.Path);
+
+                Assert.That(first, Is.EqualTo(1));
+                Assert.That(second, Is.EqualTo(1));
+                Assert.That(CountOf(text, "a listener of this log threw InvalidOperationException: one"), Is.EqualTo(1));
+                Assert.That(CountOf(text, "a listener of this log threw InvalidOperationException: two"), Is.EqualTo(1));
+                Assert.That(heard.FindAll(line => line.EndsWith("a line")).Count, Is.EqualTo(1));
+            }
+        }
+
+        private static int CountOf(string text, string part)
+        {
+            int count = 0;
+            int at = text.IndexOf(part, StringComparison.Ordinal);
+
+            while (at >= 0)
+            {
+                count++;
+                at = text.IndexOf(part, at + part.Length, StringComparison.Ordinal);
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// A file that cannot be written, a full disk or a handle gone, stopped the run from a log line.
+        /// The first fault is said once to the window and the run goes on with the lines in memory. The
+        /// stream is closed from outside here, which is the one way a test can make the write throw.
+        /// </summary>
+        [Test]
+        public void ALogFileThatCannotBeWrittenNeverStopsTheRunAndSaysSoOnce()
+        {
+            using (RunLog log = Start())
+            {
+                List<string> heard = new List<string>();
+                log.LineWritten += line => heard.Add(line);
+
+                System.Reflection.FieldInfo field = typeof(RunLog).GetField(
+                    "stream", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                ((IDisposable)field.GetValue(log)).Dispose();
+
+                Assert.DoesNotThrow(() => log.Line("after the file went"));
+                Assert.DoesNotThrow(() => log.Line("and again"));
+
+                Assert.That(heard.FindAll(line => line.Contains("after the file went")).Count, Is.EqualTo(1));
+                Assert.That(heard.FindAll(line => line.Contains("and again")).Count, Is.EqualTo(1));
+                Assert.That(heard.FindAll(line => line.Contains("the log file could not be written")).Count, Is.EqualTo(1));
+                Assert.That(log.ReadAll(), Does.Contain("after the file went"));
+            }
+        }
+
+        // ---------- FR-046, a file that exists is never said to be missing ----------
+
+        /// <summary>
+        /// A file held open with no sharing cannot be opened for a read, and it is still on the disk. The
+        /// size falls back to the directory's own figure and never reads as not on disk.
+        /// </summary>
+        [Test]
+        public void AFileHeldWithNoSharingIsStillOnDiskAndNeverMissing()
+        {
+            string held = Path.Combine(folder, "held.nwc");
+            File.WriteAllText(held, new string('n', 2048));
+
+            using (RunLog log = Start())
+            using (new FileStream(held, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+            {
+                log.AppendFinished(held, true);
+
+                string text = ReadWhileOpen(log.Path);
+
+                Assert.That(text, Does.Not.Contain("NOT ON DISK"));
+                Assert.That(text, Does.Contain("APPEND   ok"));
+            }
+        }
+
         // ---------- FR-048, a size that was never read is not a size of zero ----------
 
         [Test]

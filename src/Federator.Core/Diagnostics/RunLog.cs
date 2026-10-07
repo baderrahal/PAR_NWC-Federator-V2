@@ -68,6 +68,7 @@ namespace Federator.Core.Diagnostics
         // only exceptions reached. Everything about group outcomes now derives from here.
         private readonly List<GroupRecord> groupRecords = new List<GroupRecord>();
         private bool closed;
+        private string fileFault;
 
         // ---------- the steps, F59 ----------
         //
@@ -618,22 +619,47 @@ namespace Federator.Core.Diagnostics
 
         private void WriteRaw(string line)
         {
+            string fileNotice = null;
+
             lock (gate)
             {
                 mirror.Append(line).Append(Environment.NewLine);
 
-                if (!closed && writer != null)
+                if (!closed && writer != null && fileFault == null)
                 {
-                    writer.WriteLine(line);
-                    writer.Flush();
+                    // FR-057. A file that cannot be written, a full disk or a handle gone, never stops
+                    // the run from a log line. The first fault is kept and said once to the window,
+                    // and the lines after it are in memory only.
+                    try
+                    {
+                        writer.WriteLine(line);
+                        writer.Flush();
 
-                    // Flush(true) pushes the operating system buffers to the disk. Without
-                    // it a hard crash loses whatever was still in flight, which is exactly
-                    // the case this log exists for.
-                    stream.Flush(true);
+                        // Flush(true) pushes the operating system buffers to the disk. Without
+                        // it a hard crash loses whatever was still in flight, which is exactly
+                        // the case this log exists for.
+                        stream.Flush(true);
+                    }
+                    catch (Exception error)
+                    {
+                        fileFault = error.GetType().Name + ": " + error.Message;
+                        fileNotice = "LOG      the log file could not be written, " + fileFault
+                            + ", so the run goes on and the lines after this one are in the window only, not on disk";
+                        mirror.Append(fileNotice).Append(Environment.NewLine);
+                    }
                 }
             }
 
+            Tell(line);
+
+            if (fileNotice != null)
+            {
+                Tell(fileNotice);
+            }
+        }
+
+        private void Tell(string line)
+        {
             Action<string> handler = LineWritten;
 
             if (handler == null)
@@ -646,6 +672,15 @@ namespace Federator.Core.Diagnostics
             // keep hearing it.
             foreach (Action<string> listener in handler.GetInvocationList())
             {
+                // One that threw while an earlier line was being told is already off, and is not
+                // called again with the line that interrupted it.
+                Action<string> now = LineWritten;
+
+                if (now == null || Array.IndexOf(now.GetInvocationList(), listener) < 0)
+                {
+                    continue;
+                }
+
                 try
                 {
                     listener(line);
@@ -2188,10 +2223,24 @@ namespace Federator.Core.Diagnostics
         {
             lock (gate)
             {
+                // A file that could not be written holds less than was logged, so what was held in
+                // memory is the log.
+                if (fileFault != null)
+                {
+                    return mirror.ToString();
+                }
+
                 if (!closed && writer != null)
                 {
-                    writer.Flush();
-                    stream.Flush(true);
+                    try
+                    {
+                        writer.Flush();
+                        stream.Flush(true);
+                    }
+                    catch (Exception)
+                    {
+                        return mirror.ToString();
+                    }
                 }
 
                 if (writer == null)
@@ -2240,7 +2289,16 @@ namespace Federator.Core.Diagnostics
             }
             catch (Exception)
             {
-                return -1;
+                // A file held with no sharing cannot be opened for a read and is still on the disk, so
+                // it is never said to be missing. The directory's own figure stands in for it.
+                try
+                {
+                    return File.Exists(path) ? new FileInfo(path).Length : -1;
+                }
+                catch (Exception)
+                {
+                    return -1;
+                }
             }
         }
 
