@@ -1424,10 +1424,11 @@ namespace Federator.Core.Tests
 
             Assert.That(rule.CoverageNames().Count, Is.EqualTo(2));
             Assert.That(Words(rule, DuctsVsColumns), Is.EqualTo(
-                "kept of a mirrored pair, the clashes only its mirror " + ColumnsVsDucts + " (mirror) finds are added to it"));
+                "kept of a mirrored pair, the clashes only its mirror " + ColumnsVsDucts + " (mirror) finds are to be added "
+                    + "to it once both run"));
             Assert.That(Words(rule, ColumnsVsDucts), Is.EqualTo(
                 "a mirror of " + DuctsVsColumns + ", the same two sets swapped, created and run as " + ColumnsVsDucts
-                    + " (mirror), its clashes merged into " + DuctsVsColumns + "'s"));
+                    + " (mirror), its clashes to be merged into " + DuctsVsColumns + "'s once both run"));
         }
 
         [Test]
@@ -1440,7 +1441,7 @@ namespace Federator.Core.Tests
             Assert.That(Words(Rule(plan.Buildable, PriorityMap.NothingPicked()), TelephoneVsWalls), Is.EqualTo(
                 "a mirror of " + TelecomVsWalls + ", its sets carry the same rule lists as " + TelecomVsWalls
                     + "'s, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as " + TelephoneVsWalls
-                    + " (mirror), its clashes merged into " + TelecomVsWalls + "'s"));
+                    + " (mirror), its clashes to be merged into " + TelecomVsWalls + "'s once both run"));
         }
 
         // A test kept over two mirrors is one row of the sheet, and the sheet's rows come in
@@ -1461,7 +1462,8 @@ namespace Federator.Core.Tests
             Assert.That(names[1].Key, Is.EqualTo(WallsVsTelephone));
             Assert.That(names[2].Key, Is.EqualTo(TelecomVsWalls));
             Assert.That(names[2].Value, Is.EqualTo("kept of 2 mirrored pairs, the clashes only its mirrors "
-                + TelephoneVsWalls + " (mirror) and " + WallsVsTelephone + " (mirror) find are added to it"));
+                + TelephoneVsWalls + " (mirror) and " + WallsVsTelephone + " (mirror) find are to be added to it once both "
+                + "run"));
         }
 
         [Test]

@@ -10,7 +10,7 @@ namespace Federator.Core.Clash
     /// whose question its sides ask as a mirror by the same rule. Both are run, his
     /// answer D to Q133, and their clashes are merged by the pair of items into the one kept,
     /// Report.MirrorMerge, so the report, the views and every count hold each clash once, only
-    /// where MirrorRule says it Merges, the lead's Q142 A. A swap can find more than the test
+    /// where MirrorRule says it Merges, Bader's answer A to Q142. A swap can find more than the test
     /// it mirrors: probe P1 measured 27 clashes on the swap of a test that found 25, all 25
     /// among them, docs\history\scan.md 5z-k on the branch fix-F114-probes. Built by
     /// MirrorRule and nothing else.
@@ -21,6 +21,8 @@ namespace Federator.Core.Clash
         private readonly ClashPriority mirrorPriority;
         private readonly string alikeSets;
         private readonly bool sidesSwapped;
+        private bool heldUnderItsRunName;
+        private bool renamedToItsRunName;
 
         internal MirrorPair(
             PlannedClashTest kept,
@@ -50,7 +52,6 @@ namespace Federator.Core.Clash
             this.mirrorPriority = mirrorPriority;
             this.alikeSets = alikeSets ?? string.Empty;
             this.sidesSwapped = sidesSwapped;
-            Merges = true;
         }
 
         /// <summary>The test kept, the higher priority, and where equal the first in the XML.</summary>
@@ -73,18 +74,32 @@ namespace Federator.Core.Clash
         public string MirrorName { get; private set; }
 
         /// <summary>
-        /// Whether the mirror's clashes are merged into the kept test's, Report.MirrorMerge,
-        /// set by MirrorRule alone, the one rule of the lead's Q142 A: only where this run
-        /// created both tests from the picked XML and no set of either drifted from it, and
-        /// for every mirror of one kept test alike. Otherwise each keeps its own clashes under
-        /// its own name.
+        /// Whether the mirror's clashes are merged into the kept test's, Report.MirrorMerge.
+        /// False until MirrorRule.JudgeTheMerges, the one rule of Bader's answer A to Q142, says
+        /// so, F132 attempt 13, so a pair no judge reached merges nothing: only where this run
+        /// created both tests of the pair and every set of both from the picked XML, and for
+        /// every mirror of one kept test alike. Otherwise each keeps its own clashes under its
+        /// own name.
         /// </summary>
         internal bool Merges { get; private set; }
 
-        /// <summary>The pair's two tests keep their own clashes, MirrorRule's merge rule.</summary>
-        internal void KeepApart()
+        /// <summary>The mirror's clashes are merged into the kept test's, said by MirrorRule.JudgeTheMerges alone.</summary>
+        internal void JudgedToMerge()
         {
-            Merges = false;
+            Merges = true;
+        }
+
+        /// <summary>
+        /// How the mirror comes to run under its run name on an XML run, read by
+        /// MirrorRule.JudgeTheMerges off the document, F132 attempt 13: the document already
+        /// holds a test of that name, which is found by it and run as it is saved, or a test
+        /// the document holds is renamed to it, Q136 A. Either way this run did not create it,
+        /// and the pair line and the coverage words say so, never that it was created.
+        /// </summary>
+        internal void RunNameInTheDocument(bool held, bool renamed)
+        {
+            heldUnderItsRunName = held;
+            renamedToItsRunName = renamed;
         }
 
         /// <summary>How the two tests ask the same question, in the words of the log and the coverage sheet.</summary>
@@ -119,13 +134,33 @@ namespace Federator.Core.Clash
         internal string CoverageOfTheMirror()
         {
             return "a mirror of " + Kept.Name + ", " + How() + ", " + RunAs() + (Merges
-                ? ", its clashes merged into " + Kept.Name + "'s"
+                ? ", its clashes to be merged into " + Kept.Name + "'s once both run"
                 : ", its clashes kept under its own name");
         }
 
+        /// <summary>
+        /// What is done with the mirror, said as it is: a saved test runs as it is saved, a
+        /// test the document holds under the run name or is renamed to it runs as it is saved
+        /// under that name, and only otherwise is the mirror created, F132 attempt 13.
+        /// </summary>
         private string RunAs()
         {
-            return Mirror.IsFromDocument ? "run as it is saved" : "created and run as " + MirrorName;
+            if (Mirror.IsFromDocument)
+            {
+                return "run as it is saved";
+            }
+
+            if (heldUnderItsRunName)
+            {
+                return "run as it is saved, the document already holding a test named " + MirrorName;
+            }
+
+            if (renamedToItsRunName)
+            {
+                return "run as it is saved, a test the document holds renamed " + MirrorName;
+            }
+
+            return "created and run as " + MirrorName;
         }
 
         /// <summary>Whether the two carry a different priority or a different setting.</summary>

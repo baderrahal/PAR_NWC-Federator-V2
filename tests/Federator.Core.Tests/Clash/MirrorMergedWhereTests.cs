@@ -7,10 +7,9 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// F132 attempt 12, the lead's question Q142 to Bader, the build going on with its answer A
-    /// until he answers. A mirror's clashes are merged into its kept test only where this run
-    /// created both tests of the pair from the picked XML and no set of either drifted from the
-    /// XML, read by the set drift check the tool already has. A test the NWF already held under
+    /// F132 attempts 12 and 13, Bader's answer A to Q142 of 2026-10-07. A mirror's clashes are
+    /// merged into its kept test only where this run created both tests of the pair and every
+    /// set of both from the picked XML. A test the NWF already held under
     /// either name, an old test renamed under Q136 A, a test renamed back after a change of
     /// roles, and every run with no XML merge nothing: each test keeps its own clashes under its
     /// own name, and the log says why and that a clash both find may be counted twice. Where one
@@ -83,8 +82,8 @@ namespace Federator.Core.Tests
                 path, new List<ReadCondition> { asked }, new List<string> { wanted.Key() }, new List<string> { wanted.Describe() });
         }
 
-        // The weekly XML run over a new NWF, the usual case Bader's D was for: both tests are
-        // created from the XML and both sets are built from it, so the mirror is merged.
+        // A First run over a new NWF, RunPath.Label: both tests are created from the XML and
+        // both sets are built from it, so the mirror is merged.
         [Test]
         public void BothTestsCreatedFromTheXmlOverSetsBuiltFromItAreMerged()
         {
@@ -151,42 +150,129 @@ namespace Federator.Core.Tests
             Assert.That(Merges(alike), Is.EqualTo(0), "drifted and rebuilt is still drifted");
         }
 
-        // A set the drift check read and found asking what the XML asks is merged over. A set
-        // already in the document whose question could not be read, a set the build did not
-        // reach, and a set that failed to build are UNKNOWN, so nothing is merged over them.
+        // The breaker's finding 1 and the reviewer's row F132-R2 on attempt 12. The drift check
+        // reads four strings per condition, the category, the property, contains or equals,
+        // and the value, and not a set's flags, its negation, its Or group, its ignore bits or
+        // its search's base selection, so a present set changed only in those read as not
+        // drifted and the pair merged on UNKNOWN. Now a set already in the document merges
+        // nothing whatever the drift check read of it, read and not drifted, not read, or
+        // never asked, and so do a set that failed to build and a set the build never reached.
+        // A merge rests only on sets this run created.
         [Test]
-        public void ASetWhoseQuestionIsUnknownMergesNothing()
+        public void ASetAlreadyInTheDocumentMergesNothingWhateverTheDriftCheckRead()
         {
+            const string present = " was already in the document and not created by this run, so whether it asks what the "
+                + "picked XML asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags "
+                + "or search";
+
             SetBuildOutcome read = MirrorRuleTests.Built(Ducts);
             Present(read, Columns, "Category equals Structural Columns");
 
             SetBuildOutcome notRead = MirrorRuleTests.Built(Ducts);
             Present(notRead, Columns, SetDrift.Compare(Columns, null, new List<string>(), new List<string>()).AskedNow());
 
+            SetBuildOutcome neverAsked = MirrorRuleTests.Built(Ducts);
+            neverAsked.AddAlreadyPresent(Columns, "BLD-ST-Columns", 1, 5);
+
             SetBuildOutcome failed = MirrorRuleTests.Built(Ducts);
             failed.AddFailed(Columns, "BLD-ST-Columns", 1, "the API threw");
 
-            Assert.That(Merges(Over(MirrorRuleTests.NothingSaved(), read)), Is.EqualTo(1));
-
+            MirrorRule notDrifted = Over(MirrorRuleTests.NothingSaved(), read);
             MirrorRule unread = Over(MirrorRuleTests.NothingSaved(), notRead);
+            MirrorRule unasked = Over(MirrorRuleTests.NothingSaved(), neverAsked);
             MirrorRule missing = Over(MirrorRuleTests.NothingSaved(), MirrorRuleTests.Built(Ducts));
             MirrorRule broken = Over(MirrorRuleTests.NothingSaved(), failed);
 
+            Assert.That(Merges(notDrifted), Is.EqualTo(0), "read and not drifted by value is still not created this run");
+            Assert.That(notDrifted.Lines(), Does.Contain(NotMerged(Kept, SwapMirror, "the set " + Columns + present)));
             Assert.That(Merges(unread), Is.EqualTo(0));
-            Assert.That(unread.Lines(), Does.Contain(NotMerged(Kept, SwapMirror, "the set " + Columns + " was already in "
-                + "the document and what it asks could not be read, so whether it drifted is UNKNOWN")));
+            Assert.That(unread.Lines(), Does.Contain(NotMerged(Kept, SwapMirror, "the set " + Columns + present)));
+            Assert.That(Merges(unasked), Is.EqualTo(0));
+            Assert.That(unasked.Lines(), Does.Contain(NotMerged(Kept, SwapMirror, "the set " + Columns + present)));
             Assert.That(Merges(missing), Is.EqualTo(0));
             Assert.That(missing.Lines(), Does.Contain(NotMerged(Kept, SwapMirror, "the set " + Columns + " was neither "
                 + "built nor found by this run's sets build, so what it asks is UNKNOWN")));
             Assert.That(Merges(broken), Is.EqualTo(0));
             Assert.That(broken.Lines(), Does.Contain(NotMerged(Kept, SwapMirror, "the set " + Columns + " failed to "
                 + "build, so what it asks is UNKNOWN")));
+        }
 
-            // A set already there whose question the build never recorded at all.
-            SetBuildOutcome neverAsked = MirrorRuleTests.Built(Ducts);
-            neverAsked.AddAlreadyPresent(Columns, "BLD-ST-Columns", 1, 5);
+        // The reviewer's fail open default on attempt 12. A pair built and never judged merged.
+        // Now a pair merges only once JudgeTheMerges has said so, and a path that skips the
+        // judge merges nothing.
+        [Test]
+        public void APairMergesOnlyOnceJudged()
+        {
+            IList<PlannedClashTest> tests = TheXmlPlan().Buildable;
+            MirrorPair fresh = new MirrorPair(
+                tests[0], ClashPriority.None, tests[1], ClashPriority.None, MirrorKind.Swapped, null, SwapMirror, true);
 
-            Assert.That(Merges(Over(MirrorRuleTests.NothingSaved(), neverAsked)), Is.EqualTo(0));
+            Assert.That(fresh.Merges, Is.False);
+            Assert.That(Over(MirrorRuleTests.NothingSaved(), MirrorRuleTests.Built(Ducts, Columns)).Pairs[0].Merges, Is.True);
+        }
+
+        // The reviewer's finding 3 on attempt 12. The document holds a test under the name the
+        // mirror runs under, so the mirror is found by that name and run as it is saved, and
+        // the pair line and the coverage words said it was created. Now they say what is done.
+        [Test]
+        public void AMirrorHeldUnderItsRunNameIsSaidRunAsItIsSaved()
+        {
+            MirrorRule rule = Over(Holding(MirrorRuleTests.Saved(SwapMirror, Columns, Ducts, 0)), MirrorRuleTests.Built(Ducts, Columns));
+            string pairLine = PairLine(rule);
+
+            Assert.That(Merges(rule), Is.EqualTo(0));
+            Assert.That(pairLine, Does.Contain(Swap + " is its mirror, the same two sets swapped, run as it is saved, the "
+                + "document already holding a test named " + SwapMirror));
+            Assert.That(pairLine, Does.Not.Contain("created"));
+            Assert.That(rule.CoverageNames()[1].Value, Is.EqualTo("a mirror of " + Kept + ", the same two sets swapped, run as "
+                + "it is saved, the document already holding a test named " + SwapMirror + ", its clashes kept under its own "
+                + "name"));
+        }
+
+        // Q136 A, the same words. An old test renamed to the name the mirror runs under is run
+        // as it is saved under that name, not created.
+        [Test]
+        public void AMirrorAnOldTestIsRenamedToIsSaidRunAsItIsSaved()
+        {
+            MirrorRule rule = Over(Holding(MirrorRuleTests.Saved(Swap, Columns, Ducts, 0)), MirrorRuleTests.Built(Ducts, Columns));
+
+            Assert.That(rule.Renames.Planned.Count, Is.EqualTo(1));
+            Assert.That(PairLine(rule), Does.Contain("the same two sets swapped, run as it is saved, a test the document "
+                + "holds renamed " + SwapMirror));
+            Assert.That(PairLine(rule), Does.Not.Contain("created"));
+        }
+
+        // The reviewer's and the breaker's finding on attempt 12 that the count line and the
+        // coverage sheet say merged at plan time, before MirrorMerge.AddTo has run and can
+        // still merge nothing. Now they say to be merged once both tests run.
+        [Test]
+        public void TheWordsOfAMergeSayItWaitsOnTheRun()
+        {
+            MirrorRule rule = Over(MirrorRuleTests.NothingSaved(), MirrorRuleTests.Built(Ducts, Columns));
+            IList<KeyValuePair<string, string>> names = rule.CoverageNames();
+
+            Assert.That(Merges(rule), Is.EqualTo(1));
+            Assert.That(rule.Lines()[0], Does.Contain("Both tests of each pair are run. 1 mirror is to be merged by the pair "
+                + "of items into the one kept once both tests of the pair run, the higher priority"));
+            Assert.That(rule.Lines()[0], Does.EndWith("since a mirror is merged only where this run created both tests of "
+                + "the pair and every set of both from the picked XML"));
+            Assert.That(names[0].Value, Is.EqualTo("kept of a mirrored pair, the clashes only its mirror " + SwapMirror
+                + " finds are to be added to it once both run"));
+            Assert.That(names[1].Value, Does.EndWith(", its clashes to be merged into " + Kept + "'s once both run"));
+        }
+
+        /// <summary>The MIRROR line naming the pair of the XML holding Ducts against Columns and its swap.</summary>
+        private static string PairLine(MirrorRule rule)
+        {
+            foreach (string line in rule.Lines())
+            {
+                if (line.StartsWith(MirrorRule.Prefix + "   " + Kept + " is kept, ", System.StringComparison.Ordinal))
+                {
+                    return line;
+                }
+            }
+
+            return "no pair line";
         }
 
         // The breaker's finding 3 on attempt 11. A test the NWF already holds under the kept

@@ -135,16 +135,17 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// Why the set at that path may not ask what the picked file asks, read off this
-        /// build and its drift check, or null where this build created it from the file, or
-        /// found it already in the document, read what it asks and found it not drifted, Q72.
-        /// The mirrored tests' one merge rule reads it, F132 attempt 12, the lead's Q142 A, and
-        /// fails closed: a set the drift check found drifted, rebuilt or not, a set already
-        /// there whose question was not read, SetResult.Asked never set or SetDrift's words for
-        /// a search that would not read, a set that failed, and a set this build never reached
-        /// all give words. The path is compared Ordinal and never trimmed, as a test's locator.
+        /// Why a merge may not rest on the set at that path, or null where this build created
+        /// it from the picked file. The mirrored tests' one merge rule reads it, F132 attempt
+        /// 13, Bader's answer A to Q142, and fails closed, so that no merge rests on a set this
+        /// tool did not make: a set the drift check found drifted, rebuilt or not, a set already
+        /// in the document whatever the drift check read of it, since that check reads each
+        /// condition's category, property, comparison word and value and not a set's flags,
+        /// negation, Or group, ignore bits or its search's base selection, a set that failed,
+        /// and a set this build never reached all give words. The path is compared Ordinal and
+        /// never trimmed, as a test's locator.
         /// </summary>
-        internal string NotAsTheFileAsks(string path)
+        internal string NotCreatedFromTheFile(string path)
         {
             foreach (SetDrift drift in drifted)
             {
@@ -168,10 +169,11 @@ namespace Federator.Core.Sets
                     return "failed to build, so what it asks is UNKNOWN";
                 }
 
-                if (result.Present && (string.IsNullOrEmpty(result.Asked)
-                    || string.Equals(result.Asked, SetDrift.SearchNotRead, StringComparison.Ordinal)))
+                if (result.Present)
                 {
-                    return "was already in the document and what it asks could not be read, so whether it drifted is UNKNOWN";
+                    return "was already in the document and not created by this run, so whether it asks what the picked "
+                        + "XML asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags "
+                        + "or search";
                 }
 
                 reached = true;
