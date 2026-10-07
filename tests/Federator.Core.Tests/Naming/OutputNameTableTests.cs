@@ -221,6 +221,71 @@ namespace Federator.Core.Tests
                 "a group nobody ticked was counted as a collision");
         }
 
+        // ---------- a name that cannot be used stops the run, FR-159 and FR-165 ----------
+
+        /// <summary>
+        /// Emptying a pattern box turned the refusal sentence into the file name, and the one check
+        /// before a run looked at collisions only, so it passed for one ticked group and called the
+        /// sentence a collision for several. The check names the empty field instead.
+        /// </summary>
+        [Test]
+        public void AnEmptiedPatternFieldIsNamedAndIsNeverACollision()
+        {
+            OutputNaming naming = new OutputNaming();
+            OutputNameTable table = Table(naming);
+
+            naming.Nwf.Level = string.Empty;
+            table.Refill(naming, Settings);
+
+            string all = table.WhyTheRunCannotStart();
+
+            Assert.That(all, Is.Not.Null);
+            Assert.That(all, Does.Contain("The NWF name of 1C07BC cannot be used"));
+            Assert.That(all, Does.Contain("The NWF name of 1C07K1 cannot be used"));
+            Assert.That(all, Does.Contain("The NWF name of 1B06BS cannot be used"));
+            Assert.That(all, Does.Contain("The level is empty, so the name would have a hole in it."));
+            Assert.That(all, Does.Not.Contain("would be written to the same"));
+
+            string one = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart();
+
+            Assert.That(one, Is.Not.Null, "one ticked group passed the check with its name a sentence");
+            Assert.That(one, Does.Contain("The NWF name of 1C07BC cannot be used"));
+        }
+
+        /// <summary>A name cell cleared by hand, for each of the three outputs, is refused and the refusal names which.</summary>
+        [Test]
+        public void AClearedNameCellIsRefusedForEachOutput()
+        {
+            foreach (OutputKind kind in OutputNameTable.AllKinds())
+            {
+                foreach (string cleared in new[] { string.Empty, "   " })
+                {
+                    OutputNameTable table = Table(new OutputNaming());
+                    table.Find("1C07BC").SetByHand(kind, cleared);
+
+                    string why = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart();
+
+                    Assert.That(why, Is.Not.Null, kind + " cleared to \"" + cleared + "\"");
+                    Assert.That(why, Does.Contain(OutputNaming.Labels()[(int)kind] + " name of 1C07BC cannot be used"));
+                    Assert.That(why, Does.Contain("it is empty"));
+                }
+            }
+        }
+
+        /// <summary>A table whose names are all usable still starts, and a collision is still worded as one.</summary>
+        [Test]
+        public void UsableNamesStillStartAndACollisionIsStillACollision()
+        {
+            OutputNameTable table = Table(new OutputNaming());
+
+            Assert.That(table.WhyTheRunCannotStart(), Is.Null);
+
+            table.Find("1C07K1").SetByHand(OutputKind.Nwf, table.Find("1C07BC").NwfName);
+
+            Assert.That(table.WhyTheRunCannotStart(), Does.Contain("would be written to the same"));
+            Assert.That(table.WhyTheRunCannotStart(), Does.Not.Contain("cannot be used"));
+        }
+
         // ---------- the dated NWD ----------
 
         // The one the brief asks for by name.
