@@ -155,7 +155,7 @@ namespace Federator.Core.Health
 
             if (!fileHoldsSets)
             {
-                return "Its tests will resolve against the sets already in the model.";
+                return "It holds no sets, so any test in it looks for the sets already in the model, which is not checked here.";
             }
 
             if (UnresolvedLocatorCount == 0)

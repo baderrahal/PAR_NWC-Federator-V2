@@ -244,7 +244,7 @@ namespace Federator.Core.Tests
             HealthCheckResult health = HealthCheck.Run(document);
 
             Assert.That(health.Line(document.HasSets),
-                Is.EqualTo("Its tests will resolve against the sets already in the model."));
+                Is.EqualTo("It holds no sets, so any test in it looks for the sets already in the model, which is not checked here."));
         }
 
         [Test]
