@@ -7606,3 +7606,108 @@ other item with its folder, name, kind, Guid and comments, holds through a save 
 touches no model, set, test, result or status. Every Guid under the removed folder resolves to
 nothing after. On AR vs AR the one call took 0.174 s where one view at a time from the end took
 20.064 s and ended in the same tree.
+
+## 5z-w. DO THE VIEWPOINTS AND THEIR MARKS COME BACK THROUGH THE CLEAR AND REBUILD FALLBACK, NOT ANSWERED 2026-10-07
+
+P15 of Q114, the views by team design, part 3. The question: after DocumentSavedViewpoints.CreateCopy,
+Document.Clear, the appends and CopyFrom, does every viewpoint come back with its comments and its
+Guid? By the row of P15: Yes, FR-067's fallback copies the viewpoints and the marks hold. No, the
+fallback keeps refusing to save as today, and a rebuilt group's marks are named as lost.
+
+Written up on 2026-10-07 by the prober of P16 from the two runs' files, as they stand. The prober of
+P15 stopped on the guard's refused put back and wrote no section and committed nothing. Nothing below
+was run again.
+
+HOW. `tools\probes\ViewpointProbe\probe-rebuild-views.ps1`, sha256 E817D8E0, is P14's
+`probe-folder-remove.ps1` with the new mode `vprebuild` of `ViewpointProbe.dll`, the method
+MeasureRebuildViews, its own header, work folder prefix and save names. The guard is the same,
+tools\loop\nw-guard.ps1 sha256 E29D2733, line 4. It works on a fresh copy of run set 03's
+`runs\03\NMFed\NWF\C06\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf`, 173,526 bytes, sha256 EAB49AEF, line 22.
+Part 1 marks the copy the way Q114's design marks the tool's views, saves it as `p15-marked.nwf`,
+clears and reopens it. Part 2 runs FederationEngine's clear and rebuild in its order, and part 3 was to
+save the rebuilt document, clear, reopen it and read every item again. Run as
+
+    powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-rebuild-views.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p15b-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWF\C06\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf
+
+TWO RUNS, BOTH ENDED IN A NAVISWORKS FAILURE.
+
+- RUN 1 at 14:43, work folder `probes\rebuild-views-20261007-144356`. Its plugin output ends at
+  14:46:06.242 with `Document.Clear took 0.099 s, models now 0, viewpoints now 0`. The next step read
+  the viewpoints copy after the clear, and nothing more was written. A WerFault, pid 46072, was seen
+  at 14:46:17, and ExecuteAddInPlugin threw `Error calling method: -2147417851` after 139.28 s,
+  probe-p15-result.txt lines 48 and 78. Its result is kept in turn5 and is not committed
+- RUN 2 at 14:59, work folder `probes\rebuild-views-20261007-145943`. The only change is that the
+  plugin no longer reads the copy after Document.Clear, plugin output line 42. Its result and its
+  plugin output, the machine name and the account folder masked and nothing else changed, are
+  `p15-rebuild-views-result-20261007.txt` and `p15-rebuild-views-plugin-output-20261007.txt`. The
+  plugin output was copied after the run, because the guard's script could not read it while
+  Navisworks held it, result line 53. The lines below are of those two files
+
+The probe as it ran is committed as it stood after run 2: `ViewpointProbePlugin.cs` with the mode
+vprebuild, built at 14:58:47 into `ViewpointProbe.dll` sha256 7FAF0E7D, result line 24, and the script
+above.
+
+**THE ANSWER: NOT ANSWERED. WHETHER THE COMMENTS AND THE GUIDS COME BACK IS UNKNOWN.** What run 2
+measured, plugin output lines 11 to 53:
+
+```
+                                                  views  folders  comments  Guids set   models sets tests results
+the marked copy reopened, before the copy            36       10         4          2        4   61   153      37
+the viewpoints copy, before the clear, 0 rows differ 36       10         4          2
+Document.Clear, 0.112 s                               0                                       0
+after the 4 TryAppendFile calls, each True           17        4         0          0        4    0     0       0
+after the CopyFrom of the sets and of the tests      17                                       4   61   153      37
+after DocumentSavedViewpoints.CopyFrom, 0.005 s      36                                       4   61   153      37
+```
+
+1. PART 1 HELD. The marks were written and read back after a save, a clear and a reopen: a COM view
+   with model 0 hidden and a pair painted, marked by AddComment, its folder marked, a .NET view with
+   its Guid set and two comments, and a plain view. ResolveGuid found 2 of 2, lines 13 to 35
+2. THE COPIES RETURNED. CreateCopy of the tests, the sets and the viewpoints returned in 0.001 s,
+   0.001 s and 0.000 s, and the viewpoints copy read 46 of 46 rows the same as the document before the
+   clear, lines 36 to 40
+3. THE APPENDS BROUGHT 17 VIEWS OF THEIR OWN. After the clear and the 4 appends the document held 17
+   viewpoints in 4 folders, with no comment and no Guid, line 48. Those are the views the NWCs carry
+4. COPYFROM LEFT 36. After DocumentSavedViewpoints.CopyFrom the document read 36 viewpoints, the
+   count before the copy and not 17 plus 36, line 53. That is consistent with CopyFrom replacing what
+   the appends brought. It is read off the count alone and not item by item
+5. THEN NAVISWORKS FAILED. The next step walks the document's own tree after CopyFrom, reading each
+   item's name, Guid, comments, Hidden count and first hidden items and MaterialOverrides count. No line
+   of that walk was written. A WerFault, pid 51252, a child of the probe's Roamer 49280, was seen at
+   15:01:36, result line 79, and ExecuteAddInPlugin threw `Error calling method: -2147417851` after
+   94.74 s, line 48. The save, the clear and the reopen of the rebuilt file never ran
+
+Both runs failed at the same kind of step, the first read of viewpoint items after a Document.Clear
+that were copied out before it: in run 1 the copy itself, in run 2 the document after CopyFrom put the
+copy back. Which read fails is UNKNOWN.
+
+**BADER'S THINGS.** The guard refused the put back in both runs, because a Roamer was seen at one
+watchdog pass with no readable start time, pid 48540 in run 1 and pid 3976 in run 2, result lines 96 and 97,
+and it cannot be shown to be the adopted one. 36 registry values differed and were not written, the
+Auto-Save switch among them, left at "3 0", lines 98 to 137 of run 2's result. The AutoSave folder had
+0 files added, changed or gone, line 141. The NWF the copy was made from read sha256 EAB49AEF at the
+start and the end, lines 22 and 145. Steps\history\log.md on main, commit dc80e2b, records his settings put
+back after the first crash. On 2026-10-07 at 15:22 the prober of P16 read the switch as String "0"
+and the AutoSave folder as the same 199 files, names, sizes, times and sha256, as before run 2, in
+`turn5\probe-p16-20261007-autosave-precheck.txt`. Who put the switch back after run 2 is not in any
+file this section read.
+
+THE PROGRAMS. In run 2 Roamer pid 49280 was started by the probe and adopted on all four conditions,
+line 38, never reached Dispose, and was closed through the held handle by its own pid and read gone,
+line 56. Roamer 3976 was seen once at 15:01:31, line 78, and no Roamer that was not there in step 2 ran at
+the end, line 91.
+
+**STILL UNKNOWN.**
+
+- whether the comments and the Guids are on the views after CopyFrom
+- which property read fails after a Document.Clear: DisplayName, Guid, Comments,
+  GetVisibilityOverrides().Hidden and its items, or the material count
+- whether the rebuilt document saves, and whether the views hold through a reopen
+- whether the engine itself would fail. It does not walk the views after a fallback today, and
+  F114's VIEWS TREE read would
+- what Roamers 48540 and 3976 were. Each was seen once with no readable start time, as Navisworks
+  was failing
+
+**WHAT THIS DECIDES.** Nothing yet. The row of P15 is not answered, so FR-067's fallback is not known
+to keep the marks. A next run would read the count and the names first, then each property in its own
+call, writing a line before each read, to name the read that fails.
