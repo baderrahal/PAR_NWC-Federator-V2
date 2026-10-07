@@ -477,3 +477,4 @@ F132-R2,a set's flags and findspec are not read by the drift check a merge reads
 F114-K29,"a team map may name a team UNKNOWN, so a side with no code and a side of that team share a pair folder",F114,2b,register row,waiting for Bader,none,none,2026-10-07
 F114-K30,"a view side is read by its set name alone, so two sets of one name giving two teams read UNKNOWN in the views and two teams on the TEAMS lines",F114,2b,register row,open,none,none,2026-10-07
 F114-K31,"a set with no name in the clash XML gets a TEAMS line naming no set, TeamMap.SetLines",F114,2b,register row,open,none,none,2026-10-07
+F132-R3,"two clashes of one test between the same two elements on geometry of one name share a merge key, ClashItem.MergeKey, so a clash only a mirror found on such a pair is counted as a repeat and not added, said on the MIRROR MERGE lines",F132,2a,register row,open,none,none,2026-10-07

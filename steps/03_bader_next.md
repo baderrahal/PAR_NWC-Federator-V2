@@ -220,6 +220,38 @@ VIEWPOINTS BOX STAYS UNTICKED, your answer B to Q131.
 457. Look for, in the group's TEAMS block: the three model lines, each ending `whether a set of its team with another code cannot reach it is UNKNOWN, because no set was handed in`, and the line `no set was judged against the models of its team, because no set was handed in`
 458. Send the log file named on the `log file` line of the SESSION block, the one holding both open file runs
 
+## Proof F132 the mirrored tests, added 2026-10-07
+
+THESE STEPS FOLLOW STEP 458 IN THE SAME NAVISWORKS SESSION, your order of 2026-10-05, Q132,
+F136, then F131, then F132, then F114, under your answers B to Q121, D to Q133, A to Q136, A to
+Q137, B to Q138, A to Q141 and A to Q142. They were read off the add-in at 60ab9c0,
+ClashRunner.Run with PairTheMirrors, MakeTheRenames and MergeTheMirrors, and nothing of it has
+run on Navisworks yet. They use the same fixture as steps 410 to 416. The corrected matrix
+holds 59 pairs of tests whose two sets carry the same rule lists and no two tests with the
+same two sets swapped, so the pairs the MIRROR block counts are among those 59, and how many
+of them have both tests created, F77 creating no test whose side finds nothing, is UNKNOWN
+until the run says it. THE VIEWPOINTS BOX STAYS UNTICKED, your answer B to Q131.
+
+459. Delete the NWF the run of step 439 saved in `<temp>\round-close\fixture\NWF`, so the next run is a first run over a new NWF, the one case a pair merges under your answer A to Q142
+460. In the add-in press Browse beside the Clash XML box and pick `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` in the repo folder
+461. Press Run and answer the dialog with OK
+462. Look for, in the group between the `CLASH    the document holds` line and the `CLASH    the document already holds` line: a block headed `MIRROR` and the NWF's name, whose first line reads `MIRROR   N pairs of tests that ask the same question among the M tests whose two sets were read, 0 with the same two sets swapped and N whose sets carry the same rule lists. Both tests of each pair are run. K mirrors are to be merged by the pair of items into the one kept once both tests of the pair run`, with N, M and K as the run reads them
+463. Look for, in the same block: one line per pair reading the kept test `is kept,` then the mirror `is its mirror, its sets carry the same rule lists as` the kept test's, ending `created and run as` the mirror's own name with ` (mirror)` at the end, never the kept test's name
+464. Look for, after it: a block headed `MIRROR COVERAGE` and the NWF's name, one line per test of a pair, a kept test's reading `kept of a mirrored pair, the clashes only its mirror` then the mirror's run name and `finds are to be added to it once both run`, and a mirror's reading `a mirror of` the kept test
+465. Look for: no block headed `MIRROR RENAMES` and no `CLASH` line counting sides that `point at no one set this document holds`, since a new NWF holds no test
+466. Look for, in the `CLASH    created` lines: each mirror created under its own name with ` (mirror)` at the end, and each kept test under its XML name
+467. Look for, after the last test's `CLASH` line and before the `TOLERANCE` line: one block headed `MIRROR MERGE` and a kept test's name for each pair whose both tests ran, saying what the kept test found, what the mirror found, how many both found and how many the mirror only, each clash only the mirror found named with its two items, and that the mirror was taken out of the report, or the one line saying why nothing was merged
+468. Look for, in the same place: the `ROWS` line of each such kept test, which where its mirror found a clash it did not reads `of the rows is a clash only its mirror found, which the panel shows under the mirror`
+469. Look for, under `WORKBOOK CHECK`: a `BLOCKS` line ending `in the workbook, one for every test in the file, 1830 less the K mirrors merged into their kept tests`, K the mirrors the MIRROR MERGE blocks say were taken out, or the line word for word as before F132 where none was
+470. In Clash Detective after the run: every mirror's name ends with ` (mirror)`, each sits in the tests list as any other test, and no test was removed
+471. Open the workbook: a merged mirror has no block of its own, and its kept test's block holds one row ending `, found by the mirror only in` and the mirror's name for each clash only the mirror found, as the MIRROR MERGE block counted them
+472. Press Run again on the same folders, the NWF now there, a Weekly run
+473. Look for, in its `MIRROR` block: the count line now says `0 mirrors are to be merged` and every pair `keep their own clashes`, then one line per kept test reading the kept test `and its mirror` the mirror's run name `keep their own clashes under their own names, not merged, because the document already holds a test named` the kept test, ending `and a clash both find may be counted twice`, five named and the rest counted
+474. Look for: no `MIRROR MERGE` block, every `ROWS` line in the shape before F132, and the `BLOCKS` line word for word as before F132, since no mirror was merged
+475. Clear the Clash XML box and press Run again, a run with no XML
+476. Look for, in its `MIRROR` block: `0 pairs among the` count `tests saved in the document, which pair by their sides and never by a name`, ending `No rule list of a set was read, so only a test with the same two sets swapped pairs`, then one line per saved mirror reading its name `ends with (mirror), and whether its sides ask the question of` a count of `saved tests is UNKNOWN, a side or a set's rule list not read, so which saved test it mirrors is UNKNOWN. It keeps its own clashes, and a clash both find may be counted twice`, five named and the rest counted, and before the block no `CLASH` line counting sides that `point at no one set this document holds` unless a saved side was not read, which that line then counts
+477. Send the log file named on the `log file` line of the SESSION block, the one holding the three runs, and say which of steps 462 to 476 did not read as written
+
 ## Proof F34, the window, and F33, the units combo
 
 24. Close Navisworks if it is open

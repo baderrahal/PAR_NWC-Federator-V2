@@ -2814,6 +2814,31 @@ lines read for a semicolon, deleted once read.
 
 ## 2026-10-05 The loop, turn 5, F132 the mirrored tests of Q114, FR-182 and FR-183, the Core half built again after a thirteenth attempt on Bader's answers B to Q121, D to Q133, A to Q136, A to Q137 and B to Q138, his rule of 2026-10-06 for its next reading and his answer A to Q142, attempts 9 to 13 on 2026-10-07, and held on its branch
 
+Written by F132's developer as the lead's delegate. THE ADD-IN HALF, built on 2026-10-07 under
+Bader's limits of 2026-10-07, turn5\q143-words.txt, the one attempt. Main 6729b9e taken in at
+6ddd3a6, F114 merged as pull request 141 and F115's attempt 2 among it, six conflicts kept both
+sides, turn5\f132p-resolve-merge.py, MirrorMergedWhereTests moved to F115's SetDrift.Compare,
+2394 passed by its pre-commit, turn5\f132p-merge-commit.txt. The code, 60ab9c0: ClashRunner.Run
+keeps core.md's THE ORDER THE ADD-IN HALF OF F132 KEEPS, the rule of it in .claude\rules\addin.md
+under THE MIRRORED TESTS. The saved tests are read with real sides over the set index,
+SavedTests.Read(Document, Func) through the DRIFT block's LocatorOf, UNKNOWN where a side is not
+one set this document holds. PairTheMirrors hands MirrorRule.Of that document plan, this group's
+SetBuildOutcome from the engine's outcome.Sets, the priority file and the XML's sets, and writes
+the MIRROR, MIRROR RENAMES and MIRROR COVERAGE blocks. MakeTheRenames renames by address through
+TestsEditDisplayName before any test is found by name, the results counted before and after and
+said. The harvest of a test in a merge hands every clash, each under a group on its own, by
+ClashItem.MergeKey, the one Core member added, test first, MirrorItemKeyTests, 4 tests that
+failed to build first, turn5\f132p-before-fail.txt. After the run MergeTheMirrors calls AddTo,
+writes the MIRROR MERGE blocks and the kept test's ROWS line with AddedToTheKeptTest, and renders
+the pictures of every test in a merge off the merged report. The BLOCKS check is handed
+MirrorsMerged. Core tests 2394 passed before, 2398 after, 0 failed, 0 skipped,
+turn5\f132p-tests-after.txt. dotnet build ParsonsNwcFederator.sln -c Release --no-incremental
+0 errors and 0 warnings at 60ab9c0 with the tree clean, turn5\f132p-build-code.txt. check-locals
+and check-imports exit 0, turn5\f132p-checks.txt. No Navisworks, stand-in or harness was started.
+The proof is the lead's timed runs after the merge, steps 459 to 477 of steps\03_bader_next.md.
+One row, F132-R3, the key's limit on two clashes between the same two elements on geometry of
+one name. Pushed, no pull request.
+
 Written by F132's developer as the lead's delegate. Attempt 13, the second and last Core attempt
 under Bader's limits of 2026-10-07, turn5\q143-words.txt, on the readings of attempt 12,
 turn5\lanes-1007-review12-F132.json and lanes-1007-break12-F132.json, fixing only what changes a

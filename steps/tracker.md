@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 478 rows: open 213, in progress 54, in review 0, merged 178, proven by a run 26, waiting for Bader 2, dropped 5
-- By wave: 1 19, 2a 33, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 69, outside the waves 2, right after F133 merges 6
+- By status, of 479 rows: open 214, in progress 54, in review 0, merged 178, proven by a run 26, waiting for Bader 2, dropped 5
+- By wave: 1 19, 2a 34, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 69, outside the waves 2, right after F133 merges 6
 - In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, step 364 the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 39 FR items
 - Waits for Bader, 2 rows: step 228-233, F114-K29
 
@@ -68,6 +68,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q140 | F132's next attempt only for a fault that can change a clash count or its test | F132 | Bader's request | in progress | none, branch fix-F132 | none | 2026-10-06 |
 | F132-R1 | under Q142 A only a first run over a new NWF merges, a weekly run never does | F132 | register row | open | none | none | 2026-10-07 |
 | F132-R2 | a set's flags and findspec are not read by the drift check a merge reads | F132 | register row | open | none | none | 2026-10-07 |
+| F132-R3 | two clashes of one test between the same two elements on geometry of one name share a merge key, ClashItem.MergeKey, so a clash only a mirror found on such a pair is counted as a repeat and not added, said on the MIRROR MERGE lines | F132 | register row | open | none | none | 2026-10-07 |
 
 ## Wave 2a and 2b
 
