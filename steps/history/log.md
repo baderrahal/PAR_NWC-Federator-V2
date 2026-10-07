@@ -2,6 +2,30 @@
 
 Newest entry at the top.
 
+## 2026-10-07 The loop, turn 5, D6 done, the probes P13 to P15, and a put back by hand after P15's crash
+
+D6, by Bader's answer under step 352: the live list read 85 branches, 67 with a merged pull request, every commit
+on main and no open pull request were deleted and read back, none refused, turn5\d6-plan.txt and d6-deleted.txt.
+17 stay: the lanes fix-F109, F114, F114-probes, F115, F127 and F132 with commits not on main, fix-F65 to fix-F72
+and master whose commits are on main but which have no merged pull request, round-close-penetrations whose
+commits are not on main, and round-scale, listed for Bader.
+P13 YES, one RemoveAt removes one view two folders deep in 0.002 s. P14 YES, one RemoveAt removes a folder of
+2617 views in 0.174 s, about 115 times faster than one view at a time. P15 NOT ANSWERED: its plugin read the
+viewpoints copy after Document.Clear, which the engine never does, and Navisworks crashed, so the guard refused
+the put back. The lead put his settings back by hand at 14:53 from P15's backup, 36 values with Auto-Save enable
+among them and InfoCenter.log, 0 still different, turn5\restart\putback-rebuild-views-20261007-144356-write-*.txt,
+his AutoSave folder unchanged at 199 files. P15 runs again without that read, then P16 to P19 and step 364.
+
+## 2026-10-07 The loop, turn 5, Bader's answers to Q141, Q142 and his six rows, and the shutdown time read again
+
+His answers are under Q141 and Q142, A each, as built, and under steps 233, 352 and 364 of steps\03_bader_next.md.
+Line 11 of steps\logs\README.md names steps\history\log.md, the one edit he allowed there. THE SHUTDOWN TIME, read
+again with its zone: the machine is Arab Standard Time, UTC+3. The shutdown events read 19:31:09 local, 16:31:09 UTC,
+on 2026-10-05, and 19:30:39 local, 16:30:39 UTC, on 2026-10-06, and the OS's own event writes its system time as
+16:32:14Z and 16:31:32Z. The last commit of 2026-10-05 is 19:08:46 +0300 and the cut agents wrote last from 19:29:45
+to 19:31:41 local, turn5\restart\trees.md. So the shutdown comes at about 19:30 Riyadh time, not 22:31, and the day
+still closes from 18:40. A task shown running on his phone at 22:24 was one the laptop had stopped at 19:31.
+
 ## 2026-10-07 The loop, turn 5, Q142 for Bader, when a mirror's clashes may be merged
 
 F132's readers found new count faults after every attempt from 7 to 11, five after attempt 11,

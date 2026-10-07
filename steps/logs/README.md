@@ -8,4 +8,4 @@ Bader drops run logs here after a local run.
 4. Name it with the date and the group, like `2026-09-08-1C07BC.log`
 5. Commit and push
 
-Newest first. The worker reads them and writes findings to `steps/log.md`.
+Newest first. The worker reads them and writes findings to `steps/history/log.md`.
