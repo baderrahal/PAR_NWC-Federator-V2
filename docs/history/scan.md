@@ -6942,3 +6942,142 @@ those originals alone, 1.97 times, and 60.613 s against 47.970 s over every test
 create. F132's rule finds no pair whose two tests are created on 1A04PK, as on 1A02MM, so every
 clash a swap adds comes from a swap no rule pair names. A merge by the unordered pair of items, as
 answer D has it, would count the 244 siblings as new clashes.
+
+## 5z-q. DOES A COPY OF A MARKED VIEW GET A NEW GUID, AND DOES ITS COMMENT TRAVEL, MEASURED 2026-10-07
+
+P11 of Q114, the views by team design, part 3. The letter 5z-q was left to P11 by 5z-r, so this
+section stands after 5z-s. P9 made the mark a comment written by AddComment, 5z-o. P10 found the
+tool's routes give no Guid, 5z-p. The question: does AddCopy of a view the tool marked give an
+item with a new Guid, and does the comment travel with it? By the row of P11: the comment travels
+and the Guid is new, so the copy fails the fingerprint and is a person's. The Guid is kept, so the
+Guid stays out of the mark.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-copy.ps1` is P10's `probe-view-guids.ps1` with the
+mode `vpcopy` of `ViewpointProbe.dll`, both written on 2026-10-05 and committed unrun at 51dd8c5.
+Before this run main was merged at 647ce5d, and the one change made to the script was F138's
+SwitchAutoSaveOff after the last Roamer read and before the constructor, as
+`probe-q133-import.ps1` has it. tools\loop\nw-guard.ps1 read the same on main and on the branch.
+The guard is the loop's, dot-sourced, with the Roamer refusal, the settings backup, the Auto-Save
+switch, the adoption by AdoptStart's four conditions, Dispose, the close through the held handle
+only when needed, and SettingsPutBack. Get-Process Roamer read 0 before the run and 0 after it.
+The probe copied P9's
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf`,
+41,319,461 bytes, sha256 869DD965, into the new folder `probes\view-copy-20261007-122418`, and the
+mode, on that copy:
+
+1. opens it and reads three sources. S1 is P9's COM view `P9 probe / P9 sub / P9 view addcomment
+   after add`, the tool's view route, marked by AddComment. S2 is F85's view `AR vs ME / Over 150mm /
+   BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash1`, which P9 marked. S3 is made here, a copy
+   of S1 by SavedItem.CreateCopy, renamed `P11 source guid set`, its Guid set to Guid.NewGuid()
+   before AddCopy into `P11 probe / P11 sources`
+2. makes the folder `P11 probe` at the root and one folder under it for S3 and for each copy, by
+   FolderItem and AddCopy, and copies each source into its own folder: C1 AddCopy of S1 itself,
+   C2 AddCopy of S1.CreateCopy(), C3 AddCopy of S1.CreateUniqueCopy(), C4 AddCopy of S2 itself,
+   C5 AddCopy of S3 itself, C6 AddCopy of S3.CreateCopy(), C7 AddCopy of S3.CreateUniqueCopy()
+3. reads every source and copy, its type, name, Guid, index path, Hidden and MaterialOverrides
+   counts and every comment's Body, Author, Status, Id and CreationDate, right after the add,
+   before the save, and after SaveFile into `p11-copy-saved.nwf` in the work folder,
+   Document.Clear and TryOpenFile of that file, and counts every Guid of the whole tree at each
+   stage. A copy's comments count as travelled only when Body, Author and Status equal the
+   source's, Ordinal, at every stage
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-copy.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p11-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+DLL sha256 C1F6FBC3, script sha256 909F0C8E, lines 24 and 3. One run at 12:24, kept as
+`p11-view-copy-result-20261007.txt`, the machine name on line 1 masked as `[machine]` and the
+account folder on line 5 as `%USERPROFILE%`, nothing else changed. Navisworks pid 27660, adopted on
+all four conditions, line 38. TryOpenFile of the copy returned True after 4.706 s with 4 models,
+every one read from under the loop folder, lines 54 to 59. ExecuteAddInPlugin returned 0 after
+18.59 s, line 48. Dispose returned and pid 27660 was gone 10.1 s later, not forced, line 190.
+
+**THE ANSWER: THE COMMENT TRAVELS WHOLE ON EVERY COPY MADE. THE GUID IS NEVER KEPT ON A SECOND
+ITEM, BUT ON THE TOOL'S VIEW THERE IS NO GUID TO KEEP OR RENEW.** Lines 155 to 184 of the result,
+each Guid cut to its first 8 characters and the three stages of a copy joined into one row, since
+each copy read the same at add, save and reopen:
+
+```
+copy | route | the copy's Guid | the source's | the Guid is | comments the same | Ids and dates the same | Hidden and MaterialOverrides the same | name the same
+C1 | AddCopy(folder, S1 itself)               | 00000000 | 00000000 | empty, as the source's | YES (1 and 1) | YES | YES (1, 2) | YES
+C2 | AddCopy(folder, S1.CreateCopy())         | 00000000 | 00000000 | empty, as the source's | YES (1 and 1) | YES | YES (1, 2) | YES
+C3 | AddCopy(folder, S1.CreateUniqueCopy())   | 00000000 | 00000000 | empty, as the source's | YES (1 and 1) | YES | YES (1, 2) | YES
+C4 | AddCopy(folder, S2 itself)               | 00000000 | 00000000 | empty, as the source's | YES (1 and 1) | YES | YES (2, 4697) | YES
+C5 | AddCopy(folder, S3 itself)               | THREW ArgumentException: Argument 'item' contains a duplicate GUID
+C6 | AddCopy(folder, S3.CreateCopy())         | THREW ArgumentException: Argument 'item' contains a duplicate GUID
+C7 | AddCopy(folder, S3.CreateUniqueCopy())   | 718aaa97 | e689357b | NEW | YES (1 and 1) | YES | YES (1, 2) | YES
+P11 on the tool's marked view, C1, AddCopy of S1 itself: the comment travels YES, the Guid empty, as the source's
+P11 over all 7 copies: the comment travelled on 5 and not on 2. The Guid: 4 empty, as the source's, 2 UNKNOWN, 1 NEW
+```
+
+1. THE COMMENT TRAVELS. Every copy that was made, C1 to C4 and C7, carried exactly one comment,
+   its Body, Author and Status equal to its source's, the marker line naming the SOURCE's folder
+   path and name included, right after the add, before the save and after the reopen, lines 81
+   to 104, 114 to 125 and 139 to 150. The two not counted, C5 and C6, are the two the API refused
+   to make, below, so no comment was lost on any copy that exists
+2. THE COPY KEEPS THE NAME. Every copy read the same DisplayName as its source, Ordinal, at every
+   stage. Each sat in a folder of its own, so only the folder path differs from the source's
+3. THE COMMENT'S ID AND DATE TRAVEL TOO. Each copy's comment read the same Id and CreationDate as
+   its source's, Id 3 on S1, S3, C1, C2, C3 and C7, and Id 5 on S2 and C4, lines 65, 67, 77, 82 to
+   104. So after a copy one comment Id is carried by more than one item. The tree went from 2875
+   items, 2850 viewpoints, 25 folders and 5 comments to 2890 items, 2856 viewpoints, 34 folders and
+   11 comments, and read the same after the reopen, lines 60, 61, 107, 132 and 152
+4. AN EMPTY GUID STAYS EMPTY ON EVERY ROUTE. S1 and S2 read the empty Guid, as P10 found. AddCopy
+   of the item itself, CreateCopy and CreateUniqueCopy each gave a copy with the empty Guid, before
+   the add, lines 83 and 87, and after it at every stage. CreateUniqueCopy makes no Guid where the
+   source has none
+5. A GUID IS NEVER CARRIED BY TWO ITEMS. S3, its Guid set before AddCopy, held it through the
+   save and the reopen and ResolveGuid returned it, lines 76, 112, 126, 137 and 151. AddCopy of S3
+   itself and of S3.CreateCopy(), which read back S3's Guid before the add, line 97, each THREW
+   `ArgumentException: Argument 'item' contains a duplicate GUID`, lines 94 and 98, and nothing was
+   added, their folders holding 0, lines 96 and 100. S3.CreateUniqueCopy() gave a new Guid,
+   718aaa97, before the add, line 101, kept through the save and the reopen. No Guid that is not
+   empty was carried by more than one item at any stage, lines 107 and 132
+6. THE HIDDEN AND MATERIALOVERRIDES COUNTS TRAVEL. Every copy read its source's counts, 1 and 2 off
+   S1, 2 and 4697 off S2. The camera was not read
+7. THE CALLS ARE CHEAP. Each AddCopy returned in 0.001 to 0.002 s, lines 75 to 102. SaveFile took
+   8.382 s, 41,319,917 bytes read back, line 127. Document.Clear took 0.529 s, line 128.
+   TryOpenFile of the saved file took 4.556 s, line 129. The saved copy is
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-copy-20261007-122418\p11-copy-saved.nwf`, sha256
+   B2E5F0B9E06806C82F42A931B83FEE6F6B142DD3602B7FB0FD2C7397AF2E5FEF, line 186
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWF the copy was made from read sha256
+869DD965 at the start and at the end, lines 22 and 283. The guard wrote the Auto-Save switch
+"3 0" and read it back, line 28. The watchdog saw no other Navisworks, so the put back ran, line
+232. 38 registry values were put back, enable among them, line 237, and read again with 0 still
+differing, line 272. InfoCenter.log and LastSession.xml were put back reading their backups'
+sha256, lines 276 and 277. The guard saw 0 AutoSave files added, changed or gone, line 279, and
+the tool's own logs folder had nothing added or changed, line 280. The prober read the switch and
+listed the AutoSave folder by name, size, write time and sha256 with `read-autosave-state.ps1`,
+kept in %LOCALAPPDATA%\NwcFederatorLoop\turn5 as `probe-p11-20261007-autosave-before.txt`,
+`-during.txt` and `-after.txt`: enable read String "0" at 12:23:59 before the start, "3 0" at
+12:24:59 while the probe ran, and "0" at 12:27:19 after the put back, and the folder held the same
+199 files with the same sizes, times and sha256 before and after, 0 lines differing.
+
+THE PROGRAMS. One Navisworks, pid 27660, started by the probe at 12:24:27, quit by Dispose and
+gone 10.1 s after, not forced, lines 189 and 190. AdskLicensingAgent pid 34008, its child, and two
+AdskLicensingInstHelper processes under GenuineService.exe, pids 42868 and 39708, all read exited
+at the end, lines 223 to 226. No Roamer that was not there in step 2 ran at the end, line 227.
+
+**STILL UNKNOWN.**
+
+- a copy into the SAME folder as its source. Every copy here went into a folder of its own. What
+  name AddCopy gives it there, and whether its mark then reads as the tool's, was not measured
+- a copy a person makes in the Saved Viewpoints window. That is P21, Bader's hand step
+- whether the camera travels. Only the Hidden and MaterialOverrides counts were read
+- what a comment Id carried by several items does in the Comments window or to a later
+  AddComment. Not read
+- whether a copy of a marked folder carries its comment. No folder was copied
+- whether any of this holds through a reopen in a new Navisworks. The close was Document.Clear
+  inside the same Navisworks
+
+**WHAT THIS DECIDES.** By the row of P11, the comment travels, and the Guid is neither kept nor
+new on the tool's own view route, because a COM view has no Guid and its copy has none either.
+Where a Guid exists the API never lets a second item carry it: AddCopy refuses it and
+CreateUniqueCopy renews it. So, with P10's NO, the Guid stays out of the mark. Because the mark
+travels whole, comment Id and date included, the comment alone cannot tell the tool's view from a
+copy of it. What tells them apart is the folder path and name the marker line carries: C1 to C4
+each sat in another folder while their marks named the source's, which is the design's test "a
+copy in another folder gives ChangedByAPerson". A copy that keeps both the folder and the name
+would pass the fingerprint, and whether the API or a person can make one is UNKNOWN.

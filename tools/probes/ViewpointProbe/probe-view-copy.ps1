@@ -30,6 +30,9 @@ $ErrorActionPreference = "Stop"
 #   - Bader's settings backed up by BackupSettings before anything starts, and put back at
 #     the end by SettingsPutBack only when PutBackReasons finds no other Navisworks ran, each
 #     registry write read again after it. An AutoSave file added is listed, never deleted
+#   - Auto-Save written off by SwitchAutoSaveOff after the last Roamer read and before the
+#     constructor, F138, added on 2026-10-07 after main was merged, and put back with his
+#     other settings
 #   - the one Navisworks adopted by AdoptStart's four conditions, quit by Dispose, and closed
 #     through the handle the adoption holds only when it is still the same process after
 #     Dispose, a step failed or the adopted deadline passed. Nothing is closed before adoption
@@ -169,6 +172,9 @@ $app = $null; $myPid = 0; $myStart = $null; $myTicks = $null; $goneAtUtc = $null
 $disposed = $false; $suppressed = $false; $ctorSeconds = $null
 Say "==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ===="
 if (RoamerRefusal) { StopEarly "STOP before the constructor, so nothing is started and nothing of Bader's is written, the backup stays in the work folder: a Navisworks is running" }
+$ao = SwitchAutoSaveOff $regSub $regRoot $regBefore
+if (-not $ao.Ok) { StopEarly ("STOP before the constructor, so nothing is started, the backup stays in the work folder: " + $ao.Line) }
+Say ("  " + $ao.Line)
 Say ""
 try {
   Say "==== STEP 3. Start one Navisworks through the API and adopt it ===="
