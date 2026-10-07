@@ -2,7 +2,32 @@
 
 Newest entry at the top.
 
-## 2026-10-07 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 7 on the readings of attempt 6, after attempt 6 carrying the team pair by Bader's answer B to Q134, written by the lead's delegate
+## 2026-10-07 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 8 on the readings of attempt 7, after attempt 7 on the readings of attempt 6, written by the lead's delegate
+
+### Attempt 8, on the readings of attempt 7
+
+Attempt 7's reviewer read CHANGES on one blocking finding, turn5\lanes-1007-review7-F114.json.
+Main 3f2a300 taken in at 5f6070f, F139 as pull request 130, F114's order line now 47.
+
+A SET WITH NO NAME NEVER THROWS, finding 1. ViewTeams.cs line 51 keyed a Dictionary on a set's
+name, and the reader gives a set or a set folder with no name attribute a null name, so the
+constructor threw and no view was planned. 1c2f8be leaves such a set out, since no side can
+name it, and a side with no set name reads UNKNOWN. AN UNKNOWN SIDE SAYS WHY, finding 2: each
+side read as UNKNOWN is named with why, ViewTeams.UnknownWords, saying only what was read.
+
+RECORDS, findings 5 and 6, the F114 section's bullets on FR-074 and on Q118 and Q119 and F114's
+bullet in .claude\rules\core.md. Findings 3 and 4 are rows F114-K30 and F114-K29 of
+steps\tracker.csv, and F114-K31, a TEAMS line for a set with no name, is new.
+
+TESTS. 2 new in TestViewPlanTests, one on a clash XML holding a set and a folder with no name,
+and 2 look for lines changed with the rule. All 4 failed first, turn5\f114-a8-before-fail.txt.
+Core tests 2141 passed before at 5f6070f and 2143 after at 1c2f8be, 0 failed, 0 skipped,
+turn5\f114-a8-core-before.txt and f114-a8-core-after.txt. The solution builds whole at 1c2f8be
+with --no-incremental, 0 warnings and 0 errors, its short hash and an empty git status at its
+top, turn5\f114-a8-build-code.txt. check-locals and check-imports pass, f114-a8-checks.txt.
+
+No Navisworks, stand-in, harness or probe was started. Roamer.exe read none running at 14:16:24,
+turn5\f114-a8-roamer-before.txt, and is read again after, f114-a8-roamer-after.txt.
 
 ### Attempt 7, on the readings of attempt 6
 

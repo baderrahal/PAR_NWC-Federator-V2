@@ -471,3 +471,6 @@ FR-204,manifest line 9 and its one exception,F123,5,Bader's decision,open,none,n
 Q140,F132's next attempt only for a fault that can change a clash count or its test,F132,2a,Bader's request,in progress,"none, branch fix-F132",none,2026-10-06
 Q141,a clash in a result group with two statuses,none,none,question,waiting for Bader,none,none,2026-10-07
 Q142,when a mirror's clashes may be merged,none,none,question,waiting for Bader,none,none,2026-10-07
+F114-K29,"a team map may name a team UNKNOWN, so a side with no code and a side of that team share a pair folder",F114,2b,register row,waiting for Bader,none,none,2026-10-07
+F114-K30,"a view side is read by its set name alone, so two sets of one name giving two teams read UNKNOWN in the views and two teams on the TEAMS lines",F114,2b,register row,open,none,none,2026-10-07
+F114-K31,"a set with no name in the clash XML gets a TEAMS line naming no set, TeamMap.SetLines",F114,2b,register row,open,none,none,2026-10-07

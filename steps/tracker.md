@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 472 rows: open 209, in progress 53, in review 0, merged 175, proven by a run 24, waiting for Bader 6, dropped 5
-- By wave: 1 19, 2a 31, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 68, outside the waves 2, right after F133 merges 6
+- By status, of 475 rows: open 211, in progress 53, in review 0, merged 175, proven by a run 24, waiting for Bader 7, dropped 5
+- By wave: 1 19, 2a 31, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 68, outside the waves 2, right after F133 merges 6
 - In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 39 FR items
-- Waits for Bader, 6 rows: F139-R8, step 228-233, step 346-352, step 364, Q141, Q142
+- Waits for Bader, 7 rows: F139-R8, step 228-233, step 346-352, step 364, Q141, Q142, F114-K29
 
 ## Wave 1
 
@@ -106,6 +106,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q119 | which models a view shows | F114 | question | merged | 118 | none | 2026-10-05 |
 | Q120 | a view the tool made that a person changed | F114 | question | merged | 118 | none | 2026-10-05 |
 | Q123 | a run with no XML picked and the team map | F131 | question | merged | 118 | none | 2026-10-05 |
+| F114-K29 | a team map may name a team UNKNOWN, so a side with no code and a side of that team share a pair folder | F114 | register row | waiting for Bader | none | none | 2026-10-07 |
+| F114-K30 | a view side is read by its set name alone, so two sets of one name giving two teams read UNKNOWN in the views and two teams on the TEAMS lines | F114 | register row | open | none | none | 2026-10-07 |
+| F114-K31 | a set with no name in the clash XML gets a TEAMS line naming no set, TeamMap.SetLines | F114 | register row | open | none | none | 2026-10-07 |
 
 ## Wave 2b and before any test run
 
