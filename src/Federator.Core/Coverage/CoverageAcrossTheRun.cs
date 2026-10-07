@@ -50,6 +50,15 @@ namespace Federator.Core.Coverage
 
         public int Agree { get; private set; }
 
+        /// <summary>The tests neither side holds, a test F77 did not create. Not a count that was checked.</summary>
+        public int HeldByNeither { get; private set; }
+
+        /// <summary>
+        /// The tests Clash Detective holds that the picked file does not name, across the groups. Never
+        /// compared, since the workbook carries a block for the file's tests only, and said so.
+        /// </summary>
+        public int NotInTheXml { get; private set; }
+
         public int Failed { get; private set; }
 
         public int NotCompared { get; private set; }
@@ -69,6 +78,8 @@ namespace Federator.Core.Coverage
             }
 
             Agree += check.CountOf(CountVerdict.Agree);
+            HeldByNeither += check.CountOf(CountVerdict.HeldByNeither);
+            NotInTheXml += check.NotInTheXml.Count;
             NotCompared += check.CountOf(CountVerdict.NotCompared);
 
             IList<string> lines = check.FailedLines(group);
@@ -99,16 +110,22 @@ namespace Federator.Core.Coverage
                 return lines;
             }
 
+            string neither = HeldByNeither > 0
+                ? ", " + HeldByNeither + " held by neither side, tests no count was set beside"
+                : string.Empty;
+
             if (compared == 0)
             {
                 lines.Add(CheckedLabel + "UNKNOWN, 0 compared in " + Count(Groups, "group", "groups") + ", "
-                    + NotCompared + " not compared" + notChecked + ", so no count was checked");
+                    + NotCompared + " not compared" + neither + notChecked + ", so no count was checked");
+                AddNotInTheXml(lines);
                 return lines;
             }
 
             lines.Add(CheckedLabel + compared + " compared, " + Agree + " agree, " + Failed + " FAILED in "
                 + GroupsWithAFailedLine + " of " + Count(Groups, "group", "groups") + ", " + NotCompared
-                + " not compared" + notChecked + ", every group keeps its own result");
+                + " not compared" + neither + notChecked + ", every group keeps its own result");
+            AddNotInTheXml(lines);
 
             int shown = 0;
 
@@ -131,6 +148,16 @@ namespace Federator.Core.Coverage
             }
 
             return lines;
+        }
+
+        private void AddNotInTheXml(IList<string> lines)
+        {
+            if (NotInTheXml > 0)
+            {
+                lines.Add("COVERAGE not named    : " + Count(NotInTheXml, "test", "tests")
+                    + " in Clash Detective that the picked file does not name, not compared, because the workbook"
+                    + " carries a block for the file's tests only");
+            }
         }
 
         /// <summary>

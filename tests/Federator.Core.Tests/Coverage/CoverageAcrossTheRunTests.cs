@@ -42,6 +42,13 @@ namespace Federator.Core.Tests
                 true, 0, CoverageReason.RanAndFoundNone, string.Empty);
         }
 
+        /// <summary>A test F77 kept out: not in the document and never run.</summary>
+        private static TestCoverage KeptOut(string name)
+        {
+            return new TestCoverage(1, name, string.Empty, string.Empty, 0, 2, TestPresence.NotInDocument,
+                false, -1, CoverageReason.SideFoundNothing, string.Empty);
+        }
+
         /// <summary>A real workbook holding each named test with that many plain rows.</summary>
         private WorkbookTests Workbook(string group, params object[] nameThenRows)
         {
@@ -180,6 +187,66 @@ namespace Federator.Core.Tests
                 Assert.That(result, Does.Contain(
                     "COVERAGE checked : UNKNOWN, 0 compared in 1 group, 2 not compared, so no count was checked"));
                 Assert.That(result, Does.Not.Contain("0 FAILED"));
+            }
+        }
+
+        /// <summary>
+        /// The tests neither side holds are counted apart from the ones that agree, and the tests Clash
+        /// Detective holds that the picked file does not name are said, so the headline is never a
+        /// clean bill over a test nobody set beside the panel.
+        /// </summary>
+        [Test]
+        public void TestsNeitherSideHoldsAndTestsTheFileDoesNotNameAreSaidApartFromAgree()
+        {
+            CoverageAcrossTheRun coverage = new CoverageAcrossTheRun(new CoverageSettings());
+            coverage.Add("100000", CountCheck.Judge(
+                new List<TestCoverage> { Ran("T"), KeptOut("U"), KeptOut("V"), KeptOut("W") },
+                new List<DocumentTestCount>
+                {
+                    new DocumentTestCount("T", "Tests", 2, 2),
+                    new DocumentTestCount("Old", "Tests", 5, 5),
+                    new DocumentTestCount("Older", "Tests", 1, 1)
+                },
+                Workbook("100000", "T", 2, "U", 0, "V", 0, "W", 0),
+                null,
+                -1));
+
+            Assert.That(coverage.Agree, Is.EqualTo(1));
+            Assert.That(coverage.HeldByNeither, Is.EqualTo(3));
+            Assert.That(coverage.NotInTheXml, Is.EqualTo(2));
+
+            using (RunLog log = RunLog.Start(Path.Combine(folder, "logs"), new DateTime(2026, 10, 5, 3, 0, 0)))
+            {
+                log.WriteResultBlock(null, coverage: coverage);
+                string result = ResultOf(log);
+
+                Assert.That(result, Does.Contain(
+                    "COVERAGE checked : 1 compared, 1 agree, 0 FAILED in 0 of 1 group, 0 not compared, "
+                        + "3 held by neither side, tests no count was set beside"));
+                Assert.That(result, Does.Contain(
+                    "COVERAGE not named    : 2 tests in Clash Detective that the picked file does not name, not compared"));
+            }
+        }
+
+        /// <summary>Only tests neither side holds is no count that was checked, and reads UNKNOWN with them said.</summary>
+        [Test]
+        public void OnlyTestsNeitherSideHoldsReadsUnknownAndSaysHowManyWereHeldByNeither()
+        {
+            CoverageAcrossTheRun coverage = new CoverageAcrossTheRun(new CoverageSettings());
+            coverage.Add("100000", CountCheck.Judge(
+                new List<TestCoverage> { KeptOut("U"), KeptOut("V") },
+                new List<DocumentTestCount>(),
+                Workbook("100000", "U", 0, "V", 0),
+                null,
+                -1));
+
+            using (RunLog log = RunLog.Start(Path.Combine(folder, "logs"), new DateTime(2026, 10, 5, 3, 0, 0)))
+            {
+                log.WriteResultBlock(null, coverage: coverage);
+
+                Assert.That(ResultOf(log), Does.Contain(
+                    "COVERAGE checked : UNKNOWN, 0 compared in 1 group, 0 not compared, 2 held by neither side, "
+                        + "tests no count was set beside, so no count was checked"));
             }
         }
 

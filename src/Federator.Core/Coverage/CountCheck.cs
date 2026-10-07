@@ -23,9 +23,9 @@ namespace Federator.Core.Coverage
     /// this check reads the document through the add-in, which the harvest reads through too,
     /// and a check sharing the code it checks cannot catch a fault common to both.
     ///
-    /// AGREE only when both numbers equal on both sides, or when a test the run did not hold
-    /// as in the document is not there and its block reads no row and Clashes nought, which
-    /// is a test F77 did not create. FAILED for every other difference, a test the document
+    /// AGREE only when both numbers equal on both sides. A test the run did not hold as in the
+    /// document that is not there, whose block reads no row and Clashes nought, is a test F77 did
+    /// not create and is HELD BY NEITHER side, counted apart from Agree. FAILED for every other difference, a test the document
     /// holds with no block, and a block with numbers for a test the document does not hold.
     /// Where the run knows why, the line says it, and only what the record proves: a test
     /// already in the NWF and not run this run still holds an earlier run's results,
@@ -82,11 +82,24 @@ namespace Federator.Core.Coverage
 
             CountCheck check = new CountCheck();
             HashSet<string> inTheXml = new HashSet<string>(StringComparer.Ordinal);
+            Dictionary<string, int> timesNamed = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            foreach (TestCoverage test in tests)
+            {
+                int seen;
+                timesNamed[test.Name] = timesNamed.TryGetValue(test.Name, out seen) ? seen + 1 : 1;
+            }
 
             foreach (TestCoverage test in tests)
             {
                 inTheXml.Add(test.Name);
-                check.tests.Add(One(test, document, workbook, noWorkbookBecause, compacted));
+
+                // A name on two tests of the picked file is judged on neither, since both would be set
+                // beside the one test of the document and the one block of the workbook, and the totals
+                // would count a test that does not exist.
+                check.tests.Add(timesNamed[test.Name] > 1
+                    ? NotCompared(test.Name, "the name is on " + timesNamed[test.Name] + " tests of the picked file")
+                    : One(test, document, workbook, noWorkbookBecause, compacted));
             }
 
             if (document != null)
@@ -125,9 +138,12 @@ namespace Federator.Core.Coverage
                 ? "the workbook " + Count(test.WorkbookRows, "row", "rows") + " and Clashes " + test.WorkbookClashes
                 : "the workbook holds no block for it";
 
+            // One line, whatever the exception message of a thrown test held.
+            string why = test.Why.Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ");
+
             return FailedPrefix + "  " + Words.Or(group, "UNKNOWN") + "  " + test.Name + "  "
                 + inDocument + ", " + inWorkbook
-                + (test.Why.Length > 0 ? ", " + test.Why : string.Empty)
+                + (why.Length > 0 ? ", " + why : string.Empty)
                 + ". The group keeps its own result";
         }
 
@@ -243,7 +259,7 @@ namespace Federator.Core.Coverage
                     ? new CountedTest(test.Name, CountVerdict.NotCompared, false, -1, -1, true, rows, clashes,
                         "the run holds it as " + CoverageWords.For(test.Presence)
                             + " and the read of Clash Detective did not return it")
-                    : new CountedTest(test.Name, CountVerdict.Agree, false, -1, -1, true, rows, clashes, string.Empty);
+                    : new CountedTest(test.Name, CountVerdict.HeldByNeither, false, -1, -1, true, rows, clashes, string.Empty);
             }
 
             if (w == null)
@@ -288,11 +304,15 @@ namespace Federator.Core.Coverage
             {
                 int gap = w.Clashes - d.Leaves;
 
+                // Compact's count is the group's and the test's own Resolved count is not handed in, so
+                // Compact is named as something that could account for the gap and never as its cause.
                 return "Compact removed " + Count(compacted, "Resolved clash", "Resolved clashes")
-                    + " across the group after the workbook's rows were read, "
+                    + " somewhere in the group after the workbook's rows were read, "
                     + (gap <= compacted
-                        ? "as many as or more than this test's gap of " + gap
-                        : "fewer than this test's gap of " + gap + ", so Compact is not the whole of it");
+                        ? "which could account for this test's gap of " + gap
+                        : "fewer than this test's gap of " + gap + ", so Compact is not the whole of it")
+                    + ", and which test they were in is not recorded"
+                    ;
             }
 
             return string.Empty;

@@ -73,7 +73,7 @@ lane's to set in the tracker.
 | ID | What changed | PR | Status |
 |---|---|---|---|
 | F115 | fix-F115 carried on: main merged in, source conflicts resolved, main's AlsoAskTests moved to the judge form the branch introduced, and three lines made true after the first reading, the EMPTY SETS wording, the window totals for a rebuilt set and the row of a stopped walk | 142 | merged, 6729b9e |
-| F127 | fix-F127 carried on, Core half only: main merged in, WriteResultBlock takes thisRun, makeViewpoints and coverage in that order. The add-in has to build the CoverageAcrossTheRun in the engine and hand it to the window's call of WriteResultBlock, and the Coverage sheet writer is not written | in review | in review |
+| F127 | fix-F127 carried on, Core half only: main merged in, WriteResultBlock takes thisRun, makeViewpoints and coverage in that order, and after the first reading the headline no longer counts a test neither side holds as agreeing, says how many tests Clash Detective holds that the picked file does not name, judges a name on two tests of the file on neither, calls Compact a possible cause and never the cause, and keeps a FAILED line to one line. The add-in has to build the CoverageAcrossTheRun in the engine and hand it to the window's call of WriteResultBlock, call ClashRunOutcome.RecordSides and KeepItemsByLocator in ClashRunner near its two skip sites, and the Coverage sheet writer is not written | 145 | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -114,3 +114,24 @@ and the row that said how many worksets a stopped walk had seen.
 ## Where the lane stopped
 
 It has not stopped.
+
+## F127 points the readers raised that lane B left, for the laptop lane
+
+- Not in Core yet: FR-176's RESULT count of the tests of the XML created, run, with clashes and without,
+  with Q127's each test once across the run, and the categories no set catches per model, since
+  CoverageSettings.CategoriesNamedPerModel is read by no rule
+- A test the plan dropped that an earlier run left in the NWF reads not created with a FAILED line that
+  names no cause, since CoverageRule never reads AlreadyPresentNames for it. Mirrors after fix-F132
+  merges may bypass ReasonFor the same way
+- The workbook handed in carries no proof of which run wrote it, so a write that threw leaves last week's
+  file at the same path to be read as this week's, and the fingerprint names the XML bytes and not the
+  corrections list or the teams file that changed its sets. The add-in has to hand a stamp in
+- A set with no code in its name reads UNKNOWN where the team map of F131 gives the team of its folder,
+  Q117 C, and RESULT lists every FAILED line by default, Bader's choice, which can be some 25 MB where one
+  fault repeats over 46 groups
+- SetsAcrossTheRun counts a path twice where one group holds two sets of one name, and says found nothing
+  in every group over the groups it looked at only. WorkbookTests.Read takes the first sheet and would
+  read the Coverage sheet if that were inserted first
+- Words: Q126's default A where Q126 was answered B, a design file named in comments that is not in the
+  repo, two copies of the row count loop and of Count, and a double blank line in RESULT
+

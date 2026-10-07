@@ -23,8 +23,11 @@ namespace Federator.Core.Tests
             outcome.AddCreated("A");
             outcome.AddAlreadyPresent("C");
 
-            Assert.That(outcome.CreatedNames, Is.EqualTo(new[] { "B", "A" }));
-            Assert.That(outcome.AlreadyPresentNames, Is.EqualTo(new[] { "C" }));
+            Assert.That(outcome.CreatedNames.Count, Is.EqualTo(2));
+            Assert.That(outcome.CreatedNames[0], Is.EqualTo("B"));
+            Assert.That(outcome.CreatedNames[1], Is.EqualTo("A"));
+            Assert.That(outcome.AlreadyPresentNames.Count, Is.EqualTo(1));
+            Assert.That(outcome.AlreadyPresentNames[0], Is.EqualTo("C"));
         }
 
         [Test]

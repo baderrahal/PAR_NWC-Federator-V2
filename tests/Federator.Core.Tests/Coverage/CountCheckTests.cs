@@ -136,13 +136,55 @@ namespace Federator.Core.Tests
             Assert.That(Judged(check, "T").Verdict, Is.EqualTo(CountVerdict.Agree));
         }
 
-        /// <summary>F77's tests not created: not in the document, and one row reading nought.</summary>
+        /// <summary>
+        /// F77's tests not created: not in the document, and one row reading nought. Neither side
+        /// holds the test, so nothing was set beside Clash Detective and it is not counted as agreeing,
+        /// the breaker's reading of lane B's first attempt, since 1794 of 1830 such tests under a
+        /// headline of all agree read as a verification that never happened.
+        /// </summary>
         [Test]
-        public void ATestNotInTheDocumentThatTheWorkbookReadsAsNoneAgrees()
+        public void ATestNeitherSideHoldsIsHeldByNeitherAndNeverAgrees()
         {
             CountCheck check = Judge(Tests(KeptOut("T")), Document(), Workbook("T", 0, 0));
 
-            Assert.That(Judged(check, "T").Verdict, Is.EqualTo(CountVerdict.Agree));
+            Assert.That(Judged(check, "T").Verdict, Is.EqualTo(CountVerdict.HeldByNeither));
+            Assert.That(check.CountOf(CountVerdict.Agree), Is.EqualTo(0));
+            Assert.That(check.CountOf(CountVerdict.HeldByNeither), Is.EqualTo(1));
+            Assert.That(check.FailedLines("100000"), Is.Empty);
+        }
+
+        /// <summary>
+        /// A name on two tests of the picked file was judged twice against the one test of the
+        /// document and the one block of the workbook, so the totals counted a test that does not exist.
+        /// Both rows are not compared, as a name on two tests of either other side already is.
+        /// </summary>
+        [Test]
+        public void ANameOnTwoTestsOfThePickedFileIsNotComparedTwice()
+        {
+            CountCheck check = Judge(Tests(Ran("T"), Ran("T")), Document(InDocument("T", 2, 2)), Workbook("T", 2, 0));
+
+            Assert.That(check.Tests.Count, Is.EqualTo(2));
+            Assert.That(check.CountOf(CountVerdict.Agree), Is.EqualTo(0));
+            Assert.That(check.CountOf(CountVerdict.NotCompared), Is.EqualTo(2));
+            Assert.That(check.Tests[0].Why, Does.Contain("the name is on 2 tests of the picked file"));
+            Assert.That(check.FailedLines("100000"), Is.Empty);
+        }
+
+        /// <summary>The line of a test that threw is one line, whatever the message held.</summary>
+        [Test]
+        public void AFailedLineIsOneLineWhateverTheExceptionMessageHeld()
+        {
+            CountCheck check = Judge(
+                Tests(Threw("T", TestPresence.CreatedThisRun, "ArgumentException: bad value\r\nParameter name: x")),
+                Document(InDocument("T", 3, 3)),
+                Workbook("T", 1, 0));
+
+            IList<string> lines = check.FailedLines("100000");
+
+            Assert.That(lines.Count, Is.EqualTo(1));
+            Assert.That(lines[0], Does.Not.Contain("\n"));
+            Assert.That(lines[0], Does.Not.Contain("\r"));
+            Assert.That(lines[0], Does.Contain("bad value Parameter name: x"));
         }
 
         /// <summary>
@@ -243,6 +285,9 @@ namespace Federator.Core.Tests
 
             Assert.That(test.Verdict, Is.EqualTo(CountVerdict.Failed));
             Assert.That(test.Why, Does.Contain("Compact"));
+            Assert.That(test.Why, Does.Contain("which could account for this test's gap of 2"));
+            Assert.That(test.Why, Does.Contain("which test they were in is not recorded"));
+            Assert.That(test.Why, Does.Not.Contain("as many as or more than"));
         }
 
         /// <summary>
@@ -462,7 +507,8 @@ namespace Federator.Core.Tests
                 Workbook("T", 0, 0));
 
             Assert.That(check.Tests.Count, Is.EqualTo(1));
-            Assert.That(check.NotInTheXml, Is.EqualTo(new[] { "Old" }));
+            Assert.That(check.NotInTheXml.Count, Is.EqualTo(1));
+            Assert.That(check.NotInTheXml[0], Is.EqualTo("Old"));
         }
 
         // ---------- the FAILED line ----------
