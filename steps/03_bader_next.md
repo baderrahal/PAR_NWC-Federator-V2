@@ -875,7 +875,7 @@ C02 NWF folder, the last two clean, and every number is in the round's entry in
 `steps\log.md`. What is left is the look a person gives it and the two folders nobody but
 Bader may touch.
 
-381. Pull `round-viewpoints` and read the round entry at the top of `steps\history\log.md`, the list
+381. Pull `round-viewpoints` and read the round entry at the top of `steps\log.md` as that branch holds it, the list
      of every program it started, every file it wrote outside the repo and the two times
      Navisworks had to be stopped rather than closed
 382. Open `C:\Users\bader\AppData\Local\Temp\claude\round-viewpoints\NWF6\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`

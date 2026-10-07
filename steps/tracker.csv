@@ -396,9 +396,9 @@ FR-196,loop runs write no autosave and copy his folder once,F138,before any prob
 Q135,too many autosave copies,F138,before any probe or run starts again,Bader's request,in progress,"127 merged for part 1, part 2 in run.ps1 after F131",none,2026-10-06
 Q137,a saved mirror whose kept test the document does not say,none,none,question,merged,128,none,2026-10-06
 Q138,"a clash both tests find, with two statuses",none,none,question,merged,128,none,2026-10-06
-F139,the one page progress file,F139,right after F133 merges,fix,in review,UNKNOWN,none,2026-10-06
-FR-197,one page progress file that keeps itself current,F139,right after F133 merges,Bader's decision,in review,UNKNOWN,none,2026-10-06
-Q139,a one page progress file that keeps itself current (FR-197),F139,right after F133 merges,Bader's request,in review,UNKNOWN,none,2026-10-06
+F139,the one page progress file,F139,right after F133 merges,fix,in review,130,none,2026-10-07
+FR-197,one page progress file that keeps itself current,F139,right after F133 merges,Bader's decision,in review,130,none,2026-10-07
+Q139,a one page progress file that keeps itself current (FR-197),F139,right after F133 merges,Bader's request,in review,130,none,2026-10-07
 T3-B,"the build stamp reads +edits for any untracked file, done by run.ps1's tree refusal",F103,before the waves,register row,merged,78,none,2026-10-01
 F105-R4,probe comments say nothing is dropped where a read handed to no IlFail is in no count,none,none,register row,open,none,none,2026-10-04
 F104-R1,a documents read ends READ when nothing was read,none,none,register row,open,none,none,2026-10-04
@@ -445,16 +445,20 @@ F133-R24,rows of class Bader's request are checked for being there only,none,non
 F133-R25,a pull request opened again under another number leaves rows naming the old one,none,none,register row,open,none,none,2026-10-06
 F133-R26,"the check reads that a merged question row's PR is a number, not which merge",none,none,register row,open,none,none,2026-10-06
 F139-R1,"the keep-awake script reads steps\loop.md for STATE CLOSED, gone once F139 merges, for the lead",none,none,register row,open,none,none,2026-10-06
-F139-R2,"make-tracker.ps1 writing new counts moves the page's time, which the Stop gate reads as a rewrite until the next fetch",none,none,register row,open,none,none,2026-10-06
-F139-R3,a checkout that writes the page reads to the Stop gate as a rewrite,none,none,register row,open,none,none,2026-10-06
+F139-R2,"make-tracker.ps1 writing new counts moves the page's time, which the Stop gate reads as a rewrite until the next fetch",F139,right after F133 merges,register row,in review,130,none,2026-10-07
+F139-R3,a checkout that writes the page reads to the Stop gate as a rewrite,F139,right after F133 merges,register row,in review,130,none,2026-10-07
 F139-R4,the Stop gate's VERDICT rule is a copy in sh of run.ps1's HasVerdict,none,none,register row,open,none,none,2026-10-06
-F139-R5,"the needs Bader rows of steps 228-233, 346-352 and 364 have no tracker row and no question, the lead's call",none,none,register row,open,none,none,2026-10-06
+F139-R5,"the needs Bader rows of steps 228-233, 346-352 and 364 have no tracker row and no question, the lead's call",F139,right after F133 merges,register row,in review,130,none,2026-10-07
 F139-R6,"tools\loop\prove-hooks.sh, which holds the Stop gate's cases, is not run by Actions",none,none,register row,open,none,none,2026-10-06
 T5-R-HARNESSWAITS,"waits of the harness with no limit of their own, the H0 read covering none of them",none,none,register row,open,none,none,2026-10-06
 T5-R-HARNESSARGS,prove-run.ps1's param block has no CmdletBinding so a misspelt limit is dropped in silence,none,none,register row,open,none,none,2026-10-06
 T5-R-M5AUTOSAVE,"the switch comes after M5's read, so m5.txt names the loop's own write of the autosave key",none,none,register row,open,none,none,2026-10-06
 T5-R-HELDOFF,"a run that leaves 3 0 makes the next backup read it as his value, put back by hand",none,none,register row,open,none,none,2026-10-06
-F139-R7,"a commit staging tracker.csv or the page is refused where no powershell is on PATH, such as a container",none,none,register row,open,none,none,2026-10-06
+F139-R7,"a commit staging tracker.csv or the page is refused where no powershell is on PATH, such as a container, a stated limit the lead accepted",none,none,register row,dropped,none,none,2026-10-07
+F139-R8,"steps\logs\README.md line 11 names steps/log.md, in a folder never edited, for Bader",none,none,register row,waiting for Bader,none,none,2026-10-07
+step 228-233,"the published NWD's file properties and its ACC upload never checked, ACC put off by Bader",none,none,register row,waiting for Bader,none,none,2026-10-07
+step 346-352,"the remote branches other than main not deleted, D6, read off the live list first",none,none,register row,waiting for Bader,none,none,2026-10-07
+step 364,the CSV of one mechanical NWC and its PROBE block not sent,none,none,register row,waiting for Bader,none,none,2026-10-07
 FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,open,none,none,2026-10-06
 FR-199,blocks stay in measured order with a priority file,F118,2c,Bader's decision,open,none,none,2026-10-06
 FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,open,none,none,2026-10-06
