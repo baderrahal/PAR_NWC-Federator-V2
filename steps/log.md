@@ -1,7 +1,73 @@
 # log
 
 Newest entry at the top.
-## 2026-10-05 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 5 on the readers' findings of attempt 4, after attempt 3 on Bader's answer B to Q119, written by the lead's delegate
+## 2026-10-07 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 6 carrying the team pair by Bader's answer B to Q134, after attempt 5 on the readers' findings of attempt 4, written by the lead's delegate
+
+### Attempt 6, the team pair carried by Bader's answer B to Q134
+
+Not on readers' findings. Attempt 5's Core half read APPROVE, turn5\f114-a5-result.json. F131
+merged into main as pull request 135, 9c881d1, on 2026-10-07 and took TeamPair, TeamMap.Compare and
+TeamMap.CarriesSizeFolder out with their tests, by Bader's answer B to Q134: "No code waits on main
+for a later step. The three members go with F114, which calls them."
+
+THE ORDER OF THE COMMITS, not the order asked. Main merged first does not compile, 9 errors, all
+CS0246 on TeamPair, turn5\f114-a6-before-compile.txt, and the pre-commit builds and tests every
+commit. So that first merge was aborted, the carry went first at 5210b23 on e77e8a7, and main was
+taken in on top at e809da5, each commit green. Main was 9c881d1 at the first fetch and bb16672 at
+the merge, pull request 136, which changed steps files alone.
+
+THE CARRY, 5210b23. src\Federator.Core\Views\TeamPair.cs is the pair of cdbf638 with
+TeamPair.Compare, the one order of two teams, and TeamPair.TeamCarriesSizeFolder, both internal,
+reading the map through its public members alone: Teams, UnknownTeam and SizeFolderTeams. The
+size-folder teams were a private field no public member showed, so TeamMap.SizeFolderTeams now
+shows them as Teams shows the teams, read by TeamMap.Lines and by TeamPair, and judges nothing.
+Against main that is the one change in F131's TeamMap.cs. TestViewPlan orders through
+TeamPair.Compare. The pair rule moves from F131's section of .claude\rules\core.md to F114's.
+
+TESTS. TeamPairTests.cs of cdbf638 and the two TeamMapTests on Compare and CarriesSizeFolder are in
+tests\Federator.Core.Tests\Views\TeamPairTests.cs, the same assertions through TeamPair. Every
+other assertion on CarriesSizeFolder, four in TeamMapTests and five in ProjectTeamMapTests, reads
+SizeFolderTeams in its place, beside main's assertions on the TEAMS lines. One of the four, the
+kept map's, main had taken out and the merge puts back. All 7 carried tests failed against a stub
+of the shape, 7 of 7, turn5\f114-a6-before-fail.txt.
+
+THE MERGE, e809da5. Every conflict keeps both sides, by turn5\f114-a6-resolve-merge-code.py and
+f114-a6-resolve-merge.py, each said in turn5\f114-a6-msg-merge-main.txt.
+
+Core tests, all with 0 failed and 0 skipped: 2126 passed before at e77e8a7,
+turn5\f114-a6-core-before.txt, 2126 at 5210b23 by its pre-commit, the 7 moved and none lost,
+turn5\f114-a6-precommit-code.txt, and 2138 after at e809da5 with main's tests in, by its pre-commit
+and by hand, turn5\f114-a6-precommit-merge-main.txt and f114-a6-core-after.txt.
+
+The solution builds whole at e809da5, the last code commit, with --no-incremental, 0 warnings and 0
+errors, git rev-parse --short HEAD and an empty git status at its top,
+turn5\f114-a6-build-code.txt. check-locals and check-imports pass on src at e809da5,
+turn5\f114-a6-checks.txt, and in each pre-commit.
+
+KNOWN STATE UNTIL F114'S ADD-IN PASS. TeamPair, TeamPair.Compare and TeamPair.TeamCarriesSizeFolder
+are called in src by ViewTeams and TestViewPlan, F114's Core types, which no running code calls
+until F114's add-in pass wires the views, by the exception for a later pass of the same branch.
+F114's add-in pass calls them. TeamMap.SizeFolderTeams is read by TeamMap.Lines, which runs today.
+
+Programs and Navisworks: dotnet build, dotnet test, git, sh for the two checks and the pre-commit,
+python for the text edits and powershell for one process read. None starts a Navisworks, and no
+stand-in, harness or probe was run. Get-Process Roamer read none running at 12:57:25, after the
+build and the tests, turn5\f114-a6-roamer-after.txt. It was not read before the work.
+
+### Known bugs, attempt 6
+
+Rows F114-K1 to F114-K28 stand as attempts 2 to 5 wrote them. None new.
+
+### Every file written outside the repo, attempt 6
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-a6-core-before.txt, f114-a6-resolve-merge.py, f114-a6-before-compile.txt,
+  f114-a6-before-fail.txt, f114-a6-msg-code.txt, f114-a6-precommit-code.txt,
+  f114-a6-resolve-merge-code.py, f114-a6-msg-merge-main.txt, f114-a6-precommit-merge-main.txt,
+  f114-a6-build-code.txt, f114-a6-core-after.txt, f114-a6-checks.txt, f114-a6-roamer-after.txt,
+  f114-a6-records.py, f114-a6-msg-records.txt, f114-a6-precommit-records.txt and f114-a6-push.txt
+- for a while and then removed: copies of the files read off cdbf638 and main, in Git Bash's temp
+  folder
 
 ### Attempt 5, on the readings of attempt 4
 
