@@ -7416,3 +7416,193 @@ The later siblings of the removed item each move one index lower, so an index re
 removal names another item after it, as 5z found on sets. That is why the design removes from the
 end within each parent and re-finds each target just before. A Guid set before AddCopy survives
 removals around it and a save, and ResolveGuid follows the item to its new index path.
+
+## 5z-v. DOES REMOVEAT TAKE A WHOLE FOLDER OF VIEWPOINTS IN ONE CALL, MEASURED 2026-10-07
+
+P14 of Q114, the views by team design, part 3. P13, 5z-u, found that RemoveAt(parent, index), the
+parent resolved fresh, takes one viewpoint and nothing else. F114 has 2813 per-clash views of F85's
+to remove from the baseline, 2617 of them in the one top level folder `AR vs AR`, 5z-n. The
+question: does RemoveAt(parent, index) on a FOLDER remove it with every view under it in one call,
+and how many seconds does that take for the AR vs AR folder of 2617? By the row of P14: Yes, a
+folder whose every item is the tool's goes in one call. No, one view at a time from the end, timed.
+The row works on P13's copy. P13 said YES, so the row runs.
+
+HOW. `tools\probes\ViewpointProbe\probe-folder-remove.ps1` is P13's `probe-view-remove.ps1` with the
+new mode `vpfolder` of `ViewpointProbe.dll` in place of `vpremove`, its own header, work folder
+prefix and save names. Nothing else in the script changed, F138's SwitchAutoSaveOff and the guard
+included. The branch was pulled first and was up to date at ccd661e. tools\loop\nw-guard.ps1 read
+sha256 E29D2733, the same as in P11 to P13, line 4. Get-Process Roamer read 0 before the run and 0
+after it. The probe copied P13's saved file,
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\view-remove-20261007-133308\p13-remove-saved.nwf`,
+41,287,793 bytes, sha256 24E44790, 2846 viewpoints, into the new folder
+`probes\folder-remove-20261007-140536`, and the mode, on that copy:
+
+1. PART A. Reads the whole saved viewpoint tree from RootItem, one row per item: index path,
+   folder names, name, kind, Guid and comment count, as P13 did. Counts models, sets, tests,
+   results and statuses a person set
+2. picks the top level folder holding the most viewpoints under it. No folder is named in the
+   code. It counts the rows under it off the tree
+3. reads RootItem fresh, re-finds the folder in it by its name, Ordinal, and calls
+   `DocumentSavedViewpoints.RemoveAt(root, index)`, timed by a Stopwatch around the call alone
+4. reads the tree again and compares it row by row, in tree order, with the tree at the open less
+   the folder and every row under it, where only the later siblings and the rows under them move
+   one lower at that level. Looks the folder up by its name
+5. saves into `p14-folder-saved.nwf` in the work folder, calls Document.Clear and TryOpenFile of the
+   saved file, reads the tree and the counts once more and compares with the tree after the
+   removal, exactly
+6. PART B, because every Guid of the baseline reads empty: in the reopened document adds `P14 probe`
+   at the root and in it `P14 keep` of 3 views, `P14 gone` of 12 views with `P14 gone inner` of 3
+   views after them, and `P14 after` of 2 views, 25 items, each with a Guid set before its AddCopy.
+   Removes `P14 gone` by one RemoveAt(parent, index), the parent resolved fresh by its name, timed.
+   Compares the tree, reads every Guid through ResolveGuid, the kept ones counted when they give
+   the item of their name at its index path and the removed ones when they give null, saves into
+   `p14-folder-saved-sentinels.nwf`, clears, reopens and reads again
+7. PART C, the other branch of the row, timed on the same folder: Document.Clear, TryOpenFile of the
+   untouched copy, the tree compared with the first open, then the folder's views removed one at a
+   time from the end, each round resolving the folder fresh by its name, reading the last child's
+   kind and calling RemoveAt(parent, last), capped at 600 s. Then the emptied folder by its own
+   RemoveAt, and the tree compared with part A's after its one call. Part C saves nothing
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-folder-remove.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p14-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\probes\view-remove-20261007-133308\p13-remove-saved.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+0 warnings and 0 errors, DLL sha256 8385AA5B, script sha256 9B3F4884, lines 24 and 3. One run at
+14:05, kept as `p14-folder-remove-result-20261007.txt`, the machine name on line 1 masked as
+`[machine]` and the account folder on line 5 as `%USERPROFILE%`, nothing else changed. Navisworks
+pid 37348, adopted on all four conditions, line 38. TryOpenFile of the copy returned True after
+5.034 s with 4 models, every one read from under the loop folder, lines 54 to 59. ExecuteAddInPlugin
+returned 0 after 41.79 s, line 48. Dispose returned and pid 37348 was gone 7.4 s later, not forced,
+line 127.
+
+**THE ANSWER: YES. ONE CALL TOOK THE AR VS AR FOLDER AND ALL 2617 VIEWPOINTS IN IT IN 0.174 S, AND
+NOTHING ELSE, AND IT HELD THROUGH A SAVE AND A REOPEN.** Lines 61 to 82 of the result:
+
+```
+                                     at the open   after RemoveAt   after save, clear, reopen
+items in the viewpoint tree                 2868              250                         250
+viewpoints                                  2846              229                         229
+folders                                       22               21                          21
+Guids not empty                                0                0                           0
+models, sets, tests, results,     4, 61, 528, 2939, 0    the same                    the same
+statuses a person set
+rows that differ from the expected tree                          0                           0
+the folder found by its name                 yes          nothing                     nothing
+P14 YES
+```
+
+1. THE TARGET. `AR vs AR`, the top level folder at index path 4, 2617 direct children, all
+   viewpoints, no folder under it, and 229 viewpoints elsewhere in the tree, line 64. The root read
+   fresh held 16 children and the name was found on 1 of them, a folder, at the same index the tree
+   read at the open, lines 65 and 67. The root read again after the call held 15, line 66
+2. ONE CALL, 0.174 S. RemoveAt(root, 4) returned after 0.174 s in the tree of 2846 viewpoints and
+   took 2618 items, the folder and its 2617 viewpoints, lines 65 and 81
+3. NOTHING ELSE MOVED BUT THE LATER SIBLINGS. After the call the tree read 250 rows, and row by row
+   in tree order every one had the same folder names, name, kind, Guid and comment count as the
+   tree at the open less the folder and its rows, 0 differing, line 71. The 11 later top level
+   folders and the rows under them, 212 rows, each read one lower at the top level, and no other index path changed,
+   lines 70 and 71
+4. IT HELD THROUGH A SAVE AND A REOPEN. After SaveFile, Document.Clear and TryOpenFile of the saved
+   file the tree read the same 250 rows, index paths included, 0 differing, line 78. The folder's
+   name found nothing after the call and after the reopen, lines 72 and 79
+5. NOTHING ELSE IN THE DOCUMENT CHANGED COUNT. 4 models, 61 sets, 528 tests, 2939 results and 0
+   statuses a person set at the open, after the call and after the reopen, lines 62, 69 and 77
+6. TWO DEEP, WITH A FOLDER INSIDE AND GUIDS SET, THE SAME. Part B, lines 84 to 102:
+
+```
+                                             items   viewpoints   Guids set   rows that differ   ResolveGuid
+after the adds of 5 folders and 20 views       275          249          25                  -   25 of 25 at their index path
+after one RemoveAt on P14 gone                 258          234           8                  0   8 of 8 kept found, 17 of 17 removed null
+after a save, a clear and a reopen             258          234           8                  0   8 of 8 kept found, 17 of 17 removed null
+P14 TWO DEEP WITH GUIDS SET YES
+```
+
+   `P14 gone` sat at index path 15.1 with 13 direct children and 15 viewpoints under it. One
+   RemoveAt took it, the 12 views, `P14 gone inner` and its 3 views, 17 items, in 0.002 s, line 88.
+   Only `P14 after` and its 2 views moved, one lower, line 92. `P14 keep` and its views kept their
+   index paths and Guids, lines 91, 93 and 99
+7. ONE AT A TIME FROM THE END COST 115 TIMES AS LONG. Part C, lines 104 to 120. The untouched copy
+   reopened read the same 2868 rows as the first open, 0 differing, line 108. The 2617 views of
+   AR vs AR went by 2617 calls of RemoveAt(parent, last), none threw, every item removed was a
+   viewpoint, line 109:
+
+```
+RemoveAt alone, 2617 calls        total 20.012 s   mean 0.007647 s   median 0.007474 s   least 0.001369 s   most 0.018294 s
+each round, the folder resolved
+fresh, the last child's kind
+read and RemoveAt                 total 20.063 s   mean 0.007667 s   wall time of the series 20.064 s
+the first 10 calls                mean 0.008074 s
+the last 10 calls                 mean 0.006359 s
+the emptied folder's own RemoveAt          0.007 s
+```
+
+   lines 110 to 115. After the series the tree read the open less the 2617 views with the folder
+   kept, 0 differing, line 114. After the emptied folder's own RemoveAt the tree read exactly part
+   A's after its one call, 0 differing, line 118. So the two routes end in the same tree, and one
+   call on the folder took 0.174 s against 20.064 s for the series, about 115 times faster. The
+   mean call in the series, 0.0076 s, is about 4 times P13's single call of 0.002 s in a tree of
+   2847. Why is UNKNOWN
+8. THE FILES. SaveFile after part A took 2.806 s and wrote 7,336,192 bytes, 33,951,601 fewer than
+   the 41,287,793 bytes of the copy opened, about 12,973 bytes for each of the 2617 viewpoints
+   removed, line 73. The reopen took 2.895 s against 5.034 s for the first open, lines 54 and 75.
+   The saved copies are
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\folder-remove-20261007-140536\p14-folder-saved.nwf`,
+   sha256 5617FD2F1C96EE3C6CB89FA271F86B74F2EC6B59135BE0E956C0A932B5ED52B4, line 122, holding 229
+   viewpoints and no AR vs AR, and `p14-folder-saved-sentinels.nwf` beside it, sha256
+   C028187432B13FCF3DFC84D9E9A15D195D3ED89BAEB5318AC65EDBA2C6D2C9A9, line 123, which also holds
+   part B's `P14 probe` with `P14 keep` and `P14 after`
+
+**THE CLOSE WAS RECORDED AS A CRASH.** Dispose returned after 0.89 s and pid 37348 was gone 7.4 s
+later, not forced, lines 126 and 127. But the put back read Navisworks' own counter
+`22.0\CER\22.5.1433.58 crashCount` gone from 40 to 41, line 170, with no change to
+SessionCleanCloseCount. In P11, P12 and P13 the same counters read SessionCleanCloseCount 93 to 94
+and no crashCount change. After the run the prober listed, read only, `%TEMP%\NavisWorksErrorReport.dmp`,
+3,018,030 bytes, sha256 475AE3C9, written 14:08:00, which is between Dispose and the process
+going, and created 2026-09-17 13:03:52. So that file was there before this run and Navisworks wrote
+over it as it closed. What it held before is UNKNOWN. The guard put crashCount back to 40 with the
+other values. Why this close crashed is UNKNOWN. One difference from P13 is seen and not tested:
+P14 left the document with part C's removals unsaved when Dispose was called, and P13 left it as
+just reopened.
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWF the copy was made from read sha256
+24E44790 at the start and at the end, lines 22 and 217. The guard wrote the Auto-Save switch "3 0"
+and read it back, line 28. The watchdog saw no other Navisworks, and the put back ran, line 168. 36
+registry values were put back, enable among them, line 173, and read again with 0 still differing,
+line 206. InfoCenter.log and LastSession.xml were put back reading their backups' sha256, lines 210
+and 211. The guard saw 0 AutoSave files added, changed or gone, line 213, and the tool's own logs
+folder had nothing added or changed, line 214. The prober read the switch and listed the AutoSave
+folder by name, size, write time and sha256 with `read-autosave-state.ps1`, kept in
+%LOCALAPPDATA%\NwcFederatorLoop\turn5 as `probe-p14-20261007-autosave-before.txt`, `-during.txt` and
+`-after.txt`: enable read String "0" at 14:05:12 before the start, "3 0" at 14:06:07 while the
+probe ran, and "0" at 14:08:38 after the put back, and the folder held the same 199 files with the
+same sizes, times and sha256 before and after, 0 lines differing.
+
+THE PROGRAMS. One Navisworks, pid 37348, started by the probe at 14:05:44, quit by Dispose and gone
+7.4 s after, not forced, lines 127 and 159. AdskLicensingAgent pid 37836, a child of pid 37348, read
+STILL RUNNING at the end of the probe, line 161, and Get-Process -Id 37836 found nothing when the
+prober read it after the run. AdskLicensingInstHelper pids 44616 and 14392 under GenuineService.exe
+read exited, lines 160 and 162. No Roamer that was not there in step 2 ran at the end, line 163.
+
+**STILL UNKNOWN.**
+
+- why this close was recorded as a crash and wrote NavisWorksErrorReport.dmp, and whether a folder
+  removal, part C's 2617 calls or a document left with unsaved removals causes it. Each was done
+  once in this run and none alone
+- why one call in part C's series took about 4 times P13's single call
+- a folder whose views the tool recorded through COM, with hidden state and colours. Part A's are
+  F85's per-clash views and part B's are .NET SavedViewpoints
+- a folder that holds a person's view among the tool's. The row decides one call only where every
+  item is the tool's, and no mixed folder was tried
+- whether RemoveAt goes on the undo stack, and whether the Saved Viewpoints window shows the change
+  at once. Neither was read
+- a reopen in a new Navisworks. The close was Document.Clear inside the same Navisworks
+- whether the 12,973 bytes per viewpoint holds for views the tool records
+
+**WHAT THIS DECIDES.** By the row of P14, YES: a folder whose every item is the tool's goes in one
+call. RemoveAt(parent, index) on a folder, with the parent read fresh and the folder re-found by its
+name just before, takes the folder and everything under it, folders inside included, leaves every
+other item with its folder, name, kind, Guid and comments, holds through a save and a reopen, and
+touches no model, set, test, result or status. Every Guid under the removed folder resolves to
+nothing after. On AR vs AR the one call took 0.174 s where one view at a time from the end took
+20.064 s and ended in the same tree.

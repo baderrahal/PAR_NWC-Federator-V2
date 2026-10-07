@@ -194,6 +194,12 @@ namespace ViewpointProbe
                             parameters[2],
                             parameters.Length > 3 ? parameters[3] : null);
                     }
+                    else if (mode == "vpfolder")
+                    {
+                        MeasureFolderRemove(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
                     else if (mode == "vpcomment")
                     {
                         MeasureViewComments(
@@ -12506,6 +12512,664 @@ namespace ViewpointProbe
             }
 
             return "models " + document.Models.Count + ", sets " + sets + ", tests " + tests + ", results " + results + ", statuses a person set " + statuses;
+        }
+
+        // ---------- P14 of Q114, does RemoveAt(parent, index) on a folder take it and every view under it in one call ----------
+
+        private const string P14Top = "P14 probe";
+        private const string P14Keep = "P14 keep";
+        private const string P14Gone = "P14 gone";
+        private const string P14Inner = "P14 gone inner";
+        private const string P14After = "P14 after";
+        private const double P14SeriesCapSeconds = 600;
+
+        /// <summary>
+        /// P14: RemoveAt(parent, index) on a FOLDER, the parent resolved fresh and the folder re-found
+        /// in it by its name just before. Part A takes the top level folder of the copy that holds the
+        /// most viewpoints and removes it in one call, timed. The whole tree is read before, after the
+        /// call and after a SaveFile, a Document.Clear and a TryOpenFile of the saved file. After the
+        /// call the tree must be the tree at the open less the folder and every row under it, with only
+        /// the later siblings one lower, and after the reopen exactly the tree after the call. Part B
+        /// does the same two folders deep on a folder of views and a folder in it whose Guids the probe
+        /// set, beside a folder kept before it and one after it, and reads every Guid back through
+        /// ResolveGuid: the kept ones at their index path, the removed ones null. Part C reopens the
+        /// untouched copy and takes the same folder's views one at a time from the end, each call timed,
+        /// then the empty folder, and compares the tree with part A's.
+        /// </summary>
+        private void MeasureFolderRemove(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            Say(string.Empty);
+            Say("PART A. THE TOP LEVEL FOLDER HOLDING THE MOST VIEWPOINTS, REMOVED WITH EVERYTHING UNDER IT BY ONE RemoveAt(root, index)");
+            string counts0 = P13Counts(document);
+            Say("the document at the open: " + counts0);
+            P13Tree t0 = P13Snap(document, "at the open");
+
+            string folderName;
+            int folderAt;
+
+            if (!P14PickLargest(document, out folderName, out folderAt))
+            {
+                Say("P14 UNKNOWN   the root holds no folder with a viewpoint under it, so nothing was removed");
+                return;
+            }
+
+            string folderIndex = folderAt.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            int underRows = 0;
+            int underViews = 0;
+            int underFolders = 0;
+            int directChildren = 0;
+
+            foreach (P13Row row in t0.Rows)
+            {
+                if (row.Index.StartsWith(folderIndex + ".", StringComparison.Ordinal))
+                {
+                    underRows++;
+
+                    if (row.Kind == "SavedViewpoint")
+                    {
+                        underViews++;
+                    }
+                    else if (row.Kind == "FolderItem" || row.Kind == "GroupItem")
+                    {
+                        underFolders++;
+                    }
+
+                    if (row.Index.IndexOf('.', folderIndex.Length + 1) < 0)
+                    {
+                        directChildren++;
+                    }
+                }
+            }
+
+            Say("the target: [" + Shown(folderName) + "] at index path " + folderIndex + ", direct children " + directChildren + ", rows under it " + underRows
+                + ", of them viewpoints " + underViews + " and folders " + underFolders + ". Viewpoints elsewhere in the tree " + (t0.Views - underViews));
+
+            string removedA;
+            double secondsA;
+            bool returnedA = P14RemoveFolder(document, new List<string>(), folderName, "A", out removedA, out secondsA);
+
+            if (!returnedA)
+            {
+                Say("P14 NO   RemoveAt did not return on the folder, so nothing more is read");
+                return;
+            }
+
+            Say("the index path removed " + removedA + ", the same as the one read off the tree at the open " + Yes(string.Equals(removedA, folderIndex, StringComparison.Ordinal)));
+            P13Tree t1 = P13Snap(document, "after the removal");
+            string counts1 = P13Counts(document);
+            Say("the document after the removal: " + counts1);
+            int shifted1;
+            List<P13Row> expected1 = P13Apply(t0.Rows, removedA, out shifted1);
+            Say("expected after the removal: the tree at the open less the folder and its " + underRows + " rows, " + expected1.Count + " rows, " + shifted1 + " of them later siblings or under one, whose index at that level falls by one");
+            int mismatch1 = P13Compare(expected1, t1.Rows, "after the removal against the open less the folder");
+            bool gone1 = P13Gone(document, new List<string>(), folderName, "after the removal");
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk, the copy opened was " + Bytes(nwf));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P14 UNKNOWN   the saved file would not reopen, so nothing after a reopen is read");
+                return;
+            }
+
+            P13Tree t2 = P13Snap(document, "after the save, the clear and the reopen");
+            string counts2 = P13Counts(document);
+            Say("the document after the reopen: " + counts2);
+            int mismatch2 = P13Compare(t1.Rows, t2.Rows, "after the reopen against after the removal");
+            bool gone2 = P13Gone(document, new List<string>(), folderName, "after the reopen");
+
+            bool viewsFell = t0.Views - t1.Views == underViews && t2.Views == t1.Views;
+            bool rowsFell = t0.Rows.Count - t1.Rows.Count == underRows + 1 && t2.Rows.Count == t1.Rows.Count;
+            bool countsSame = string.Equals(counts0, counts1, StringComparison.Ordinal) && string.Equals(counts1, counts2, StringComparison.Ordinal);
+            Say(string.Empty);
+            Say("PART A SUMMARY: viewpoints " + t0.Views + ", " + t1.Views + ", " + t2.Views + " at the open, after the removal, after the reopen. Items " + t0.Rows.Count + ", " + t1.Rows.Count + ", " + t2.Rows.Count
+                + ". Fell by exactly the folder's " + underViews + " viewpoints and " + (underRows + 1) + " items and stayed " + Yes(viewsFell && rowsFell)
+                + ". Every other item the same folder names, name, kind, Guid and comment count, in the same order, after the removal " + Yes(mismatch1 == 0) + " and after the reopen " + Yes(mismatch2 == 0)
+                + ". The folder found by its name after the removal " + Yes(!gone1) + " and after the reopen " + Yes(!gone2)
+                + ". Models, sets, tests, results and statuses the same at every stage " + Yes(countsSame)
+                + ". RemoveAt took " + secondsA.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s for a folder of " + underViews + " viewpoints in a tree of " + t0.Views);
+            bool yesA = viewsFell && rowsFell && mismatch1 == 0 && mismatch2 == 0 && gone1 && gone2 && countsSame;
+            Say("P14 " + (yesA ? "YES" : "NO") + "   RemoveAt(root, index), the root read fresh and the folder found again by its name, removed the folder with every view under it in one call, and every other item kept its path, name and Guid through a save and a reopen");
+
+            Say(string.Empty);
+            Say("PART B. A FOLDER OF VIEWS AND A FOLDER IN IT, WHOSE GUIDS THE PROBE SET, TWO FOLDERS DEEP IN THE REOPENED DOCUMENT, REMOVED BY ONE RemoveAt(parent, index)");
+            Dictionary<string, Guid> sentinels = new Dictionary<string, Guid>(StringComparer.Ordinal);
+            HashSet<string> removedNames = new HashSet<string>(StringComparer.Ordinal);
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P14Top;
+                    folder.Guid = Guid.NewGuid();
+                    sentinels[P14Top] = folder.Guid;
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                P14AddFolder(document, new List<string> { P14Top }, P14Keep, sentinels);
+                P14AddFolder(document, new List<string> { P14Top }, P14Gone, sentinels);
+                P14AddFolder(document, new List<string> { P14Top, P14Gone }, P14Inner, sentinels);
+                P14AddFolder(document, new List<string> { P14Top }, P14After, sentinels);
+
+                using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+                {
+                    P14AddViews(document, camera, new List<string> { P14Top, P14Keep }, "P14 keep view ", 3, sentinels);
+                    P14AddViews(document, camera, new List<string> { P14Top, P14Gone }, "P14 gone view ", 12, sentinels);
+                    P14AddViews(document, camera, new List<string> { P14Top, P14Gone, P14Inner }, "P14 inner view ", 3, sentinels);
+                    P14AddViews(document, camera, new List<string> { P14Top, P14After }, "P14 after view ", 2, sentinels);
+                }
+            }
+            catch (Exception error)
+            {
+                Say("PART B the adds THREW " + error.GetType().Name + ": " + error.Message + ", so part B stops here");
+                P14SeriesPart(document, nwf, folderName, t0, expected1);
+                return;
+            }
+
+            foreach (string name in sentinels.Keys)
+            {
+                if (name == P14Gone || name == P14Inner || name.StartsWith("P14 gone view ", StringComparison.Ordinal) || name.StartsWith("P14 inner view ", StringComparison.Ordinal))
+                {
+                    removedNames.Add(name);
+                }
+            }
+
+            Say("added [" + P14Top + "] at the root, in it [" + P14Keep + "] of 3 views, [" + P14Gone + "] of 12 views and [" + P14Inner + "] of 3 views after them, and [" + P14After + "] of 2 views, "
+                + sentinels.Count + " items in all, each Guid set before its AddCopy. To be removed with [" + P14Gone + "]: " + removedNames.Count);
+            P13Tree b0 = P13Snap(document, "after the adds");
+            int keptB0;
+            int nullB0;
+            P14Resolve(document, sentinels, new HashSet<string>(StringComparer.Ordinal), b0, "after the adds", out keptB0, out nullB0);
+
+            string removedB;
+            double secondsB;
+            bool returnedB = P14RemoveFolder(document, new List<string> { P14Top }, P14Gone, "B", out removedB, out secondsB);
+            int mismatchB1 = -1;
+            int mismatchB2 = -1;
+            int keptB1 = 0;
+            int nullB1 = 0;
+            int keptB2 = 0;
+            int nullB2 = 0;
+            int keep = sentinels.Count - removedNames.Count;
+
+            if (returnedB)
+            {
+                int shiftedB;
+                List<P13Row> expectedB = P13Apply(b0.Rows, removedB, out shiftedB);
+                P13Tree b1 = P13Snap(document, "after the folder removal");
+                mismatchB1 = P13Compare(expectedB, b1.Rows, "after the folder removal against the adds less the folder");
+                Say("rows under a later sibling or a later sibling, whose index at that level falls by one: " + shiftedB);
+                P14Resolve(document, sentinels, removedNames, b1, "after the folder removal", out keptB1, out nullB1);
+                string saveB = Path.Combine(Path.GetDirectoryName(saveAs), Path.GetFileNameWithoutExtension(saveAs) + "-sentinels.nwf");
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                document.SaveFile(saveB);
+                Say("SaveFile into " + Path.GetFileName(saveB) + " took " + Seconds(clock) + ", " + Bytes(saveB) + " bytes read back off the disk");
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                document.Clear();
+                Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                bool reopenedB = document.TryOpenFile(saveB);
+                Say("TryOpenFile of the saved file returned " + reopenedB + " after " + Seconds(clock));
+
+                if (reopenedB)
+                {
+                    P13Tree b2 = P13Snap(document, "after the second save, clear and reopen");
+                    mismatchB2 = P13Compare(b1.Rows, b2.Rows, "after the second reopen against after the folder removal");
+                    P14Resolve(document, sentinels, removedNames, b2, "after the second reopen", out keptB2, out nullB2);
+                }
+                else
+                {
+                    Say("PART B UNKNOWN   the second saved file would not reopen");
+                }
+            }
+
+            Say(string.Empty);
+            Say("PART B SUMMARY: RemoveAt on [" + P14Gone + "] returned " + Yes(returnedB) + (returnedB ? " after " + secondsB.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s" : string.Empty)
+                + ". Every other item the same, in the same order, after the removal " + Yes(mismatchB1 == 0) + " and after the reopen " + Yes(mismatchB2 == 0)
+                + ". ResolveGuid gave the item at its index path for " + keptB0 + " of " + sentinels.Count + " after the adds, for " + keptB1 + " of " + keep + " kept after the removal and " + keptB2 + " of " + keep + " after the reopen"
+                + ". The " + removedNames.Count + " removed Guids resolved to null " + nullB1 + " after the removal and " + nullB2 + " after the reopen");
+            bool yesB = returnedB && mismatchB1 == 0 && mismatchB2 == 0 && keptB0 == sentinels.Count && keptB1 == keep && keptB2 == keep && nullB1 == removedNames.Count && nullB2 == removedNames.Count;
+            Say("P14 TWO DEEP WITH GUIDS SET " + (yesB ? "YES" : "NO") + "   one call took the folder, the folder in it and every view under both, the kept items kept their Guids where they are, and every removed Guid resolved to nothing, through a save and a reopen");
+
+            P14SeriesPart(document, nwf, folderName, t0, expected1);
+        }
+
+        /// <summary>Part C: the untouched copy reopened, the same folder's views removed one at a time from the end, each call timed, then the empty folder, the tree compared with part A's.</summary>
+        private void P14SeriesPart(Document document, string nwf, string folderName, P13Tree t0, List<P13Row> expectedA)
+        {
+            Say(string.Empty);
+            Say("PART C. THE UNTOUCHED COPY REOPENED, THE SAME FOLDER'S VIEWS REMOVED ONE AT A TIME FROM THE END, EACH TIMED, CAPPED AT " + P14SeriesCapSeconds.ToString("0", System.Globalization.CultureInfo.InvariantCulture) + " s");
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile of the untouched copy " + Path.GetFileName(nwf) + " returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("PART C UNKNOWN   the copy would not reopen");
+                return;
+            }
+
+            P13Tree c0 = P13Snap(document, "at the second open");
+            int mismatchC0 = P13Compare(t0.Rows, c0.Rows, "at the second open against the first open");
+            List<string> names = new List<string> { folderName };
+            List<double> calls = new List<double>();
+            List<double> rounds = new List<double>();
+            int notViews = 0;
+            int threw = 0;
+            string stopped = "the folder is empty";
+            System.Diagnostics.Stopwatch all = System.Diagnostics.Stopwatch.StartNew();
+
+            while (true)
+            {
+                if (all.Elapsed.TotalSeconds > P14SeriesCapSeconds)
+                {
+                    stopped = "the cap of " + P14SeriesCapSeconds.ToString("0", System.Globalization.CultureInfo.InvariantCulture) + " s was reached";
+                    break;
+                }
+
+                System.Diagnostics.Stopwatch round = System.Diagnostics.Stopwatch.StartNew();
+                SavedItem resolved = ResolveNames(document, names);
+                GroupItem parent = resolved as GroupItem;
+
+                if (parent == null)
+                {
+                    if (resolved != null)
+                    {
+                        resolved.Dispose();
+                    }
+
+                    stopped = "the folder was NOT FOUND by its name";
+                    break;
+                }
+
+                using (parent)
+                {
+                    int count = parent.Children.Count;
+
+                    if (count == 0)
+                    {
+                        break;
+                    }
+
+                    using (SavedItem last = parent.Children[count - 1])
+                    {
+                        if (!(last is SavedViewpoint))
+                        {
+                            notViews++;
+                        }
+                    }
+
+                    System.Diagnostics.Stopwatch call = System.Diagnostics.Stopwatch.StartNew();
+
+                    try
+                    {
+                        document.SavedViewpoints.RemoveAt(parent, count - 1);
+                    }
+                    catch (Exception error)
+                    {
+                        threw++;
+                        stopped = "RemoveAt THREW " + error.GetType().Name + ": " + error.Message;
+                        break;
+                    }
+
+                    calls.Add(call.Elapsed.TotalSeconds);
+                }
+
+                rounds.Add(round.Elapsed.TotalSeconds);
+            }
+
+            double wall = all.Elapsed.TotalSeconds;
+            Say("   the series stopped because " + stopped + ". Calls " + calls.Count + ", items at the end that were not a viewpoint " + notViews + ", throws " + threw);
+            Say("   RemoveAt alone: " + P14Stats(calls));
+            Say("   each round, the folder resolved fresh by its name, the last child's kind read and RemoveAt: " + P14Stats(rounds) + ". Wall time of the series " + wall.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s");
+
+            if (calls.Count >= 20)
+            {
+                Say("   RemoveAt, the first 10 calls: " + P14Stats(calls.GetRange(0, 10)) + ". The last 10: " + P14Stats(calls.GetRange(calls.Count - 10, 10)));
+            }
+
+            P13Tree c1 = P13Snap(document, "after the series");
+            string folderIndex = null;
+
+            foreach (P13Row row in c0.Rows)
+            {
+                if (row.Folder.Length == 0 && string.Equals(row.Name, folderName, StringComparison.Ordinal))
+                {
+                    folderIndex = row.Index;
+                    break;
+                }
+            }
+
+            List<P13Row> expectedC = new List<P13Row>();
+
+            foreach (P13Row row in c0.Rows)
+            {
+                if (folderIndex == null || !row.Index.StartsWith(folderIndex + ".", StringComparison.Ordinal))
+                {
+                    expectedC.Add(row.Copy());
+                }
+            }
+
+            int mismatchC1 = P13Compare(expectedC, c1.Rows, "after the series against the second open less every row under the folder, the folder kept");
+            string removedC;
+            double secondsC;
+            bool returnedC = P14RemoveFolder(document, new List<string>(), folderName, "C, the emptied folder", out removedC, out secondsC);
+            int mismatchC2 = -1;
+
+            if (returnedC)
+            {
+                P13Tree c2 = P13Snap(document, "after the emptied folder is removed");
+                mismatchC2 = P13Compare(expectedA, c2.Rows, "after the emptied folder is removed against part A after its one call");
+            }
+
+            Say(string.Empty);
+            Say("PART C SUMMARY: the second open read the same as the first " + Yes(mismatchC0 == 0) + ". " + calls.Count + " calls of RemoveAt(parent, last) in " + wall.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)
+                + " s, the folder emptied " + Yes(stopped == "the folder is empty") + ", every other item the same after the series " + Yes(mismatchC1 == 0)
+                + ", and after the emptied folder's own RemoveAt, " + (returnedC ? secondsC.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s" : "which did not return") + ", the tree the same as part A's after its one call " + Yes(mismatchC2 == 0));
+        }
+
+        private static string P14Stats(List<double> values)
+        {
+            if (values.Count == 0)
+            {
+                return "none";
+            }
+
+            List<double> sorted = new List<double>(values);
+            sorted.Sort();
+            double total = 0;
+
+            foreach (double d in values)
+            {
+                total += d;
+            }
+
+            System.Globalization.CultureInfo inv = System.Globalization.CultureInfo.InvariantCulture;
+            return values.Count + " values, total " + total.ToString("0.000", inv) + " s, mean " + (total / values.Count).ToString("0.000000", inv) + " s, median "
+                + sorted[sorted.Count / 2].ToString("0.000000", inv) + " s, least " + sorted[0].ToString("0.000000", inv) + " s, most " + sorted[sorted.Count - 1].ToString("0.000000", inv) + " s";
+        }
+
+        /// <summary>The top level folder holding the most viewpoints under it, the first of them in tree order on a tie.</summary>
+        private static bool P14PickLargest(Document document, out string name, out int index)
+        {
+            name = null;
+            index = -1;
+            int most = 0;
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SavedItemCollection tops = root.Children;
+
+                for (int i = 0; i < tops.Count; i++)
+                {
+                    using (SavedItem top = tops[i])
+                    {
+                        GroupItem group = top as GroupItem;
+
+                        if (group == null)
+                        {
+                            continue;
+                        }
+
+                        int views = ViewpointsUnder(group);
+
+                        if (views > most)
+                        {
+                            most = views;
+                            name = top.DisplayName;
+                            index = i;
+                        }
+                    }
+                }
+            }
+
+            return name != null;
+        }
+
+        /// <summary>The parent read fresh, the root when no names are given, the folder re-found in it by its name, then RemoveAt(parent, index), timed.</summary>
+        private bool P14RemoveFolder(Document document, List<string> parentNames, string name, string label, out string removed, out double seconds)
+        {
+            removed = null;
+            seconds = -1;
+            GroupItem parent;
+
+            if (parentNames.Count == 0)
+            {
+                parent = document.SavedViewpoints.RootItem;
+            }
+            else
+            {
+                SavedItem resolved = ResolveNames(document, parentNames);
+                parent = resolved as GroupItem;
+
+                if (parent == null)
+                {
+                    if (resolved != null)
+                    {
+                        resolved.Dispose();
+                    }
+
+                    Say("   " + label + ": the parent [" + Shown(string.Join(" / ", parentNames.ToArray())) + "] is NOT FOUND as a folder by its names");
+                    return false;
+                }
+            }
+
+            using (parent)
+            {
+                string parentAt = parentNames.Count == 0 ? string.Empty : P10IndexPath(document, parent);
+                SavedItemCollection children = parent.Children;
+                int before = children.Count;
+                int at = -1;
+                int same = 0;
+                int anyKind = 0;
+                int childrenOfTarget = -1;
+                int viewsOfTarget = -1;
+
+                for (int i = 0; i < children.Count; i++)
+                {
+                    using (SavedItem child = children[i])
+                    {
+                        if (!string.Equals(child.DisplayName, name, StringComparison.Ordinal))
+                        {
+                            continue;
+                        }
+
+                        anyKind++;
+                        GroupItem group = child as GroupItem;
+
+                        if (group != null)
+                        {
+                            same++;
+
+                            if (at < 0)
+                            {
+                                at = i;
+                                childrenOfTarget = group.Children.Count;
+                                viewsOfTarget = ViewpointsUnder(group);
+                            }
+                        }
+                    }
+                }
+
+                if (at < 0)
+                {
+                    Say("   " + label + ": no folder named [" + Shown(name) + "] in the parent at " + (parentAt.Length == 0 ? "the root" : parentAt));
+                    return false;
+                }
+
+                string atText = at.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                removed = parentAt.Length == 0 ? atText : parentAt + "." + atText;
+                System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+                try
+                {
+                    document.SavedViewpoints.RemoveAt(parent, at);
+                }
+                catch (Exception error)
+                {
+                    Say("   " + label + ": RemoveAt(parent, " + at + ") THREW after " + Seconds(clock) + ", " + error.GetType().Name + ": " + error.Message);
+                    return false;
+                }
+
+                seconds = clock.Elapsed.TotalSeconds;
+                Say("   " + label + ": RemoveAt(parent at " + (parentAt.Length == 0 ? "the root" : parentAt) + ", " + at + ") on the folder [" + Shown(name) + "] of " + childrenOfTarget + " direct children and "
+                    + viewsOfTarget + " viewpoints under it RETURNED after " + Seconds(clock) + ". The parent held " + before + " children, the name was found on " + anyKind + " of them and on " + same + " folders");
+            }
+
+            if (parentNames.Count == 0)
+            {
+                using (GroupItem again = document.SavedViewpoints.RootItem)
+                {
+                    Say("   " + label + ": the root read again holds " + again.Children.Count + " children");
+                }
+            }
+            else
+            {
+                using (SavedItem again = ResolveNames(document, parentNames))
+                {
+                    GroupItem group = again as GroupItem;
+                    Say("   " + label + ": the parent resolved again holds " + (group == null ? "UNKNOWN, not found" : group.Children.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)) + " children");
+                }
+            }
+
+            return true;
+        }
+
+        private static void P14AddFolder(Document document, List<string> parentNames, string name, Dictionary<string, Guid> sentinels)
+        {
+            using (GroupItem parent = (GroupItem)ResolveNames(document, parentNames))
+            using (FolderItem folder = new FolderItem())
+            {
+                folder.DisplayName = name;
+                folder.Guid = Guid.NewGuid();
+                sentinels[name] = folder.Guid;
+                document.SavedViewpoints.AddCopy(parent, folder);
+            }
+        }
+
+        private static void P14AddViews(Document document, Viewpoint camera, List<string> parentNames, string prefix, int count, Dictionary<string, Guid> sentinels)
+        {
+            for (int k = 0; k < count; k++)
+            {
+                using (GroupItem parent = (GroupItem)ResolveNames(document, parentNames))
+                using (SavedViewpoint view = new SavedViewpoint(camera))
+                {
+                    view.DisplayName = prefix + k.ToString("00", System.Globalization.CultureInfo.InvariantCulture);
+                    view.Guid = Guid.NewGuid();
+                    sentinels[view.DisplayName] = view.Guid;
+                    document.SavedViewpoints.AddCopy(parent, view);
+                }
+            }
+        }
+
+        /// <summary>For each Guid the probe set: a kept one counts when ResolveGuid gives the item of that name at the index path the tree gives it, a removed one when ResolveGuid gives null.</summary>
+        private void P14Resolve(Document document, Dictionary<string, Guid> sentinels, HashSet<string> removed, P13Tree tree, string when, out int keptFound, out int removedNull)
+        {
+            keptFound = 0;
+            removedNull = 0;
+            Dictionary<string, string> indexByName = new Dictionary<string, string>(StringComparer.Ordinal);
+
+            foreach (P13Row row in tree.Rows)
+            {
+                if (sentinels.ContainsKey(row.Name) && string.Equals(row.Guid, sentinels[row.Name].ToString(), StringComparison.Ordinal))
+                {
+                    indexByName[row.Name] = row.Index;
+                }
+            }
+
+            List<string> other = new List<string>();
+
+            foreach (KeyValuePair<string, Guid> pair in sentinels)
+            {
+                bool gone = removed.Contains(pair.Key);
+                string at;
+                bool inTree = indexByName.TryGetValue(pair.Key, out at);
+
+                try
+                {
+                    using (SavedItem item = document.SavedViewpoints.ResolveGuid(pair.Value))
+                    {
+                        if (item == null)
+                        {
+                            if (gone && !inTree)
+                            {
+                                removedNull++;
+                            }
+                            else
+                            {
+                                other.Add(pair.Key + " null" + (inTree ? " BUT IN THE TREE at " + at : ", not in the tree"));
+                            }
+
+                            continue;
+                        }
+
+                        string itemAt = P10IndexPath(document, item);
+
+                        if (!gone && inTree && string.Equals(item.DisplayName, pair.Key, StringComparison.Ordinal) && string.Equals(itemAt, at, StringComparison.Ordinal))
+                        {
+                            keptFound++;
+                        }
+                        else
+                        {
+                            other.Add(pair.Key + (gone ? " REMOVED BUT" : string.Empty) + " gave [" + Shown(item.DisplayName) + "] at " + itemAt + (inTree ? ", the tree has it at " + at : ", not in the tree"));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    other.Add(pair.Key + " THREW " + error.GetType().Name);
+                }
+            }
+
+            Say("   ResolveGuid " + when + ": kept items found at their index path " + keptFound + " of " + (sentinels.Count - removed.Count) + ", removed items resolving to null " + removedNull + " of " + removed.Count
+                + ". The others: " + (other.Count == 0 ? "none" : string.Join("; ", other.ToArray())));
         }
     }
 }
