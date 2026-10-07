@@ -130,12 +130,24 @@ namespace Federator.Core.Tests
                 + "of " + Kept + " as a mirror, so it is left as it is and not run")));
         }
 
+        /// <summary>
+        /// A document holding the kept test with its sides read and the other test as the
+        /// add-in hands it today, its sides placeholders. Since attempt 9 a kept test whose
+        /// sides were not read makes no pair, so only the other test's sides are not read here.
+        /// </summary>
+        private static ClashTestPlan KeptReadAndHanded(string handed)
+        {
+            return ClashTestPlan.FromDocument(
+                new List<SavedClashTest> { MirrorRuleTests.Saved(Kept, Ducts, Columns, 0), MirrorRuleTests.AsHanded(handed, 1) },
+                "m");
+        }
+
         // The add-in today hands a saved test's sides as placeholders, so whether the old test
         // is the mirror is UNKNOWN, and it is not renamed.
         [Test]
         public void AnOldTestWhoseSidesWereNotReadIsNotRenamed()
         {
-            MirrorRenames renames = TheXmlRuleOver(MirrorRuleTests.SavedPlan(Kept, Swap)).Renames;
+            MirrorRenames renames = TheXmlRuleOver(KeptReadAndHanded(Swap)).Renames;
 
             Assert.That(renames.Planned, Is.Empty);
             Assert.That(renames.Lines()[1], Is.EqualTo(Said("is not renamed, because whether its sides ask the question "
@@ -442,7 +454,7 @@ namespace Federator.Core.Tests
         [Test]
         public void ATestUnderTheMirrorsNameThatMayNotBeItIsNotRunAsTheMirror()
         {
-            MirrorRule notRead = TheXmlRuleOver(MirrorRuleTests.SavedPlan(Kept, NewName));
+            MirrorRule notRead = TheXmlRuleOver(KeptReadAndHanded(NewName));
             MirrorRule twoOfIt = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(
                 Kept, Ducts, Columns, NewName, Columns, Ducts, NewName, Columns, Ducts));
 
@@ -506,6 +518,78 @@ namespace Federator.Core.Tests
             Assert.That(rule.Renames.Lines(), Does.Contain(MirrorRule.Prefix + "   the document holds a test named "
                 + NewName + " of a type this tool does not run, so the mirror " + Swap + " of " + Kept + " is created and "
                 + "run as " + Swap + " 2 (mirror)"));
+        }
+
+        // ---------- the kept test's own name in the document, F132 attempt 9 ----------
+
+        /// <summary>The line of a pair not made because of what the document holds under the kept test's name.</summary>
+        private static string NotPairedFor(string held, bool unknown)
+        {
+            return MirrorRule.Prefix + "   the document holds " + held + ". A test is run by its name, so " + Swap
+                + " is not paired with it as a mirror and keeps its own clashes"
+                + (unknown ? ", and a clash both find may be counted twice" : string.Empty);
+        }
+
+        // The breaker's point on attempt 8. Week one the XML ran Ducts against Walls under the
+        // kept test's name and the NWF saved it. The XML now runs that name on Ducts against
+        // Columns, and its swap beside it. A test is run by its name and a drifted test is left
+        // as it is, so the document's test asking Ducts against Walls runs. Until attempt 9 the
+        // two were paired on the XML's sets and every clash only the swap found was added to a
+        // test of another question. Now they are not paired and the line says why.
+        [Test]
+        public void ATestTheDocumentHoldsUnderTheKeptTestsNameAskingAnotherQuestionIsNotPaired()
+        {
+            ClashTestPlan xml = TheXmlPlan();
+            MirrorRule rule = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(Kept, Ducts, Walls));
+
+            Assert.That(rule.Pairs, Is.Empty, "no clash of the swap goes under a test asking Ducts against Walls");
+            Assert.That(NamesOf(xml.WithMirrorsNamed(rule)), Is.EqualTo(new[] { Kept, Swap }));
+            Assert.That(rule.Renames.Planned, Is.Empty);
+            Assert.That(rule.Renames.Lines(), Does.Contain(NotPairedFor(
+                "a test named " + Kept + " whose sides ask another question than the XML's " + Kept, false)));
+        }
+
+        // Where what the test of the kept test's name asks is UNKNOWN, its sides not read, two
+        // tests of the name, a type this tool does not run, or a set whose rule list was not
+        // read, the two are not paired either, and the line says a clash may be counted twice.
+        [Test]
+        public void ATestUnderTheKeptTestsNameThatMayAskAnotherQuestionIsNotPaired()
+        {
+            string elsewhere = "lcop_selection_set_tree/Mechanical/BLD-ME-Ducts Elsewhere";
+            MirrorRule notRead = TheXmlRuleOver(MirrorRuleTests.SavedPlan(Kept));
+            MirrorRule twoOfIt = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(
+                Kept, Ducts, Columns, Kept, Ducts, Columns));
+            MirrorRule otherType = TheXmlRuleOver(ClashTestPlan.FromDocument(
+                new List<SavedClashTest> { new SavedClashTest(Kept, 99, 0.025, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }) },
+                "m"));
+            MirrorRule noRules = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(Kept, elsewhere, Columns));
+
+            Assert.That(notRead.Pairs, Is.Empty);
+            Assert.That(notRead.Renames.Lines(), Does.Contain(NotPairedFor("a test named " + Kept + " whose sides were "
+                + "not read, and whether it asks the XML's question of " + Kept + " is UNKNOWN", true)));
+            Assert.That(twoOfIt.Pairs, Is.Empty);
+            Assert.That(twoOfIt.Renames.Lines(), Does.Contain(NotPairedFor("2 tests named " + Kept + ", and which one "
+                + "would run as " + Kept + " is UNKNOWN", true)));
+            Assert.That(otherType.Pairs, Is.Empty);
+            Assert.That(otherType.Renames.Lines(), Does.Contain(NotPairedFor("a test named " + Kept + " of a type this "
+                + "tool does not run", true)));
+            Assert.That(noRules.Pairs, Is.Empty);
+            Assert.That(noRules.Renames.Lines(), Does.Contain(NotPairedFor("a test named " + Kept + ", and whether its "
+                + "sides ask the XML's question of " + Kept + " is UNKNOWN, a set's rule list not read", true)));
+        }
+
+        // The test of the kept test's name asks the XML's question, in its order or swapped, so
+        // what runs under that name asks what the pair was judged on, and the two are paired.
+        [Test]
+        public void ATestUnderTheKeptTestsNameAskingItsQuestionIsPaired()
+        {
+            MirrorRule inOrder = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(Kept, Ducts, Columns));
+            MirrorRule swapped = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(Kept, Columns, Ducts));
+
+            Assert.That(inOrder.Pairs.Count, Is.EqualTo(1));
+            Assert.That(inOrder.Pairs[0].MirrorName, Is.EqualTo(NewName));
+            Assert.That(swapped.Pairs.Count, Is.EqualTo(1));
+            Assert.That(swapped.Pairs[0].MirrorName, Is.EqualTo(NewName));
         }
 
         // ---------- what the rule is handed, F132 attempt 8 ----------

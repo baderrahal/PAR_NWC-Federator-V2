@@ -48,7 +48,12 @@ namespace Federator.Core.Clash
     /// test, a test that is not this mirror by its sides, or whose sides were not read, or
     /// one of two of that name, or of a type this tool does not run, since the plan finds a
     /// test by its name and would run it as the mirror and merge its clashes into the kept
-    /// test. The name then takes the next number, and a line says why.
+    /// test. The name then takes the next number, and a line says why. The same holds for the
+    /// kept test's own name, F132 attempt 9: a test is run by its name and a drifted test is
+    /// left as it is, so where the document holds a test of that name that may ask another
+    /// question than the XML gives the kept test, by its sides, or two of the name, or one of
+    /// a type this tool does not run, no pair of that kept test is made, each of its mirrors
+    /// keeps its own clashes, and a line says why.
     ///
     /// A TEST SAVED BEFORE THE MIRROR RULE, Bader's answer A to Q136. Renames plans each
     /// saved test under the XML's name of a mirror, Y, whose sides ask the kept test's
@@ -248,6 +253,8 @@ namespace Federator.Core.Clash
             {
                 List<PlannedClashTest> group = byQuestion[key];
                 PlannedClashTest kept = KeptOf(group, priorities);
+                bool keptUnknown;
+                string keptHeld = KeptHeldAs(document, kept, identity, out keptUnknown);
 
                 foreach (PlannedClashTest other in group)
                 {
@@ -259,6 +266,14 @@ namespace Federator.Core.Clash
                     if (Same(other.Left, kept.Left) && Same(other.Right, kept.Right))
                     {
                         duplicates.Add(new KeyValuePair<PlannedClashTest, PlannedClashTest>(kept, other));
+                        continue;
+                    }
+
+                    if (keptHeld != null)
+                    {
+                        moved.Add(Prefix + "   the document holds " + keptHeld + ". A test is run by its name, so "
+                            + other.Name + " is not paired with it as a mirror and keeps its own clashes"
+                            + (keptUnknown ? ", and a clash both find may be counted twice" : string.Empty));
                         continue;
                     }
 
@@ -304,7 +319,8 @@ namespace Federator.Core.Clash
         /// The renames an XML run makes in the document before the tests are found by name,
         /// and the MIRROR lines of the document's names: each test saved before the mirror rule
         /// under the XML's name of a mirror, Q136 A, each mirror an earlier run made of a test
-        /// the XML now runs under its own name, renamed back to it, and each mirror named past a
+        /// the XML now runs under its own name, renamed back to it, each pair not made because of
+        /// what the document holds under the kept test's name, and each mirror named past a
         /// name the document holds for another test. With no XML picked nothing is planned and
         /// nothing said, since there is no XML name to rename for.
         /// </summary>
@@ -325,30 +341,18 @@ namespace Federator.Core.Clash
             SetIdentity identity,
             List<string> passed)
         {
-            int all = document == null ? 0 : document.CountOf(name);
+            PlannedClashTest one;
+            string held = OneReadUnder(document, name, "the mirror", "it is that mirror", out one);
 
-            if (all == 0)
+            if (one == null)
             {
-                return false;
+                if (held == null)
+                {
+                    return false;
+                }
             }
-
-            IList<PlannedClashTest> named = document.Named(name);
-            string held;
-
-            if (named.Count == 0)
-            {
-                held = (all == 1 ? "a test named " : all + " tests named ") + name + " of a type this tool does not run";
-            }
-            else if (all > 1)
-            {
-                held = all + " tests named " + name + ", and which one would run as the mirror is UNKNOWN";
-            }
-            else if (!BothSidesRead(named[0]))
-            {
-                held = "a test named " + name + " whose sides were not read, and whether it is that mirror is UNKNOWN";
-            }
-            else if ((Same(named[0].Left, mirror.Left) && Same(named[0].Right, mirror.Right))
-                || identity.AsAMirror(named[0], kept) == true)
+            else if ((Same(one.Left, mirror.Left) && Same(one.Right, mirror.Right))
+                || identity.AsAMirror(one, kept) == true)
             {
                 return false;
             }
@@ -359,6 +363,82 @@ namespace Federator.Core.Clash
 
             passed.Add(held);
             return true;
+        }
+
+        /// <summary>
+        /// What the document holds under the kept test's own name on an XML run, F132 attempt 9,
+        /// where it may not ask the question the pair was judged on, or null where it holds no
+        /// test of that name or the one it holds asks that question, in the kept test's order or
+        /// swapped, by its sides. A test is run by its name and a drifted test is left as it is,
+        /// so a mirror's clashes merged into it would sit under another question. Unknown is
+        /// true where whether it asks that question is UNKNOWN.
+        /// </summary>
+        private static string KeptHeldAs(InTheDocument document, PlannedClashTest kept, SetIdentity identity, out bool unknown)
+        {
+            unknown = true;
+
+            PlannedClashTest one;
+            string held = OneReadUnder(document, kept.Name, kept.Name, "it asks the XML's question of " + kept.Name, out one);
+
+            if (one == null)
+            {
+                return held;
+            }
+
+            bool? asks = identity.Asks(one, kept);
+
+            if (asks == true)
+            {
+                return null;
+            }
+
+            if (asks == null)
+            {
+                return "a test named " + kept.Name + ", and whether its sides ask the XML's question of " + kept.Name
+                    + " is UNKNOWN, a set's rule list not read";
+            }
+
+            unknown = false;
+            return "a test named " + kept.Name + " whose sides ask another question than the XML's " + kept.Name;
+        }
+
+        /// <summary>
+        /// The one test the document holds under that name with both sides read, in one, and
+        /// null. Otherwise one is null, and the words are null where the document holds no test
+        /// of that name, or say why which test runs under it, and what it asks, is UNKNOWN: a
+        /// type this tool does not run, two or more of the name, or a side not read.
+        /// </summary>
+        private static string OneReadUnder(
+            InTheDocument document, string name, string runsAs, string whether, out PlannedClashTest one)
+        {
+            one = null;
+
+            int all = document == null ? 0 : document.CountOf(name);
+
+            if (all == 0)
+            {
+                return null;
+            }
+
+            IList<PlannedClashTest> named = document.Named(name);
+
+            if (named.Count == 0)
+            {
+                return (all == 1 ? "a test named " : all + " tests named ") + name + " of a type this tool does not run";
+            }
+
+            if (all > 1)
+            {
+                return all + " tests named " + name + ", and which one would run as " + runsAs + " is UNKNOWN";
+            }
+
+            if (!BothSidesRead(named[0]))
+            {
+                return "a test named " + name + " whose sides were not read, and whether " + whether + " is UNKNOWN";
+            }
+
+            one = named[0];
+            return null;
         }
 
         /// <summary>
@@ -519,8 +599,9 @@ namespace Federator.Core.Clash
         /// the XML runs under its own name that the document does not hold, the one saved test
         /// carrying a name NameFor gives it as a mirror, under no name the plan runs, with its
         /// two sets in its order, is planned to be renamed back to it, its statuses kept, and
-        /// two that fit or one whose sides were not read are refused and said. Last, each
-        /// mirror named past a name the document holds. No saved test is planned twice, no
+        /// two that fit or one whose sides were not read are refused and said. Last, each pair
+        /// not made for the kept test's name and each mirror named past a name the document
+        /// holds, in the order the pairs were judged. No saved test is planned twice, no
         /// rename lands on a name the document holds, and no two land on one name, since a
         /// name given back is an XML test's own and a mirror's name is never one.
         /// </summary>
@@ -1146,14 +1227,27 @@ namespace Federator.Core.Clash
             /// </summary>
             internal bool? AsAMirror(PlannedClashTest test, PlannedClashTest kept)
             {
+                if (BothSidesRead(test) && BothSidesRead(kept)
+                    && Same(test.Left, kept.Left) && Same(test.Right, kept.Right))
+                {
+                    return false;
+                }
+
+                return Asks(test, kept);
+            }
+
+            /// <summary>
+            /// Whether a test asks the kept test's question, in its order, swapped or by sets of
+            /// one rule list, F132 attempt 9: true where both tests' sides were read and their
+            /// question keys are the same, false where they ask other questions with the rule
+            /// list of each of their sets read, and null, UNKNOWN, where a side was not read or a
+            /// set's rule list was not.
+            /// </summary>
+            internal bool? Asks(PlannedClashTest test, PlannedClashTest kept)
+            {
                 if (!BothSidesRead(test) || !BothSidesRead(kept))
                 {
                     return null;
-                }
-
-                if (Same(test.Left, kept.Left) && Same(test.Right, kept.Right))
-                {
-                    return false;
                 }
 
                 string key = QuestionKey(test);
