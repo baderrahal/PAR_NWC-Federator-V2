@@ -11,6 +11,7 @@
 # "..."} on standard output, and the reason goes back to Claude. The page warns that a Stop hook
 # that always blocks never lets Claude finish, so every refusal here is one the session ends
 # itself by rewriting steps/PROGRESS.md, and the send back blocks at most once per change of it.
+# An agent of a workflow ends on SubagentStop and not Stop, and this gate is run for Stop only.
 #
 # ONLY OPEN BLOCKS. WAITING, RESTART, CLOSED, NEXT WAVE, any other word, no page and a page with
 # no STATE line all let the stop through, because a gate that cannot read the state must never be
@@ -20,22 +21,33 @@
 # WAVE reads NEXT, and STATE 2026-10-06 OPEN reads no state. A control character at a line's end
 # is dropped, since steps files check out CRLF on this machine.
 #
-# While OPEN, three tests, each cost measured in turn5\q139\hooks.md section 2:
-# 1. A MERGE. The page not newer than .git/logs/refs/remotes/origin/main, the reflog every fetch
-#    that moves main writes, means a merge was fetched after the page was last written. A rewrite
-#    merged in a records pull request is always older than its own merge, so then one git call
-#    asks whether the merge at main's head changed the page's STATE line, git diff -G'^STATE '
-#    from its first parent, about 1.3 s, on this path only. A change there is the lead's rewrite
-#    and the stop goes on. No change refuses the stop, every stop until the page is rewritten. The
-#    STATE line is the test and not the whole page, since a pull request that changes
-#    steps/tracker.csv changes the page's counts too. In a worktree .git is a file naming its own
-#    folder under the main clone's .git, whose commondir file names that .git, each read with
-#    read. No reflog, a git that cannot answer and a head with no parent let the stop through.
-# 2. A RUN. A record.txt of %LOCALAPPDATA%\NwcFederatorLoop\runs\<set>\<run> newer than the page
-#    and holding a line that starts VERDICT, which is how run.ps1's HasVerdict tells a run that
-#    finished, refuses the stop, every stop until the page is rewritten. A run still going, its
-#    record.txt holding no VERDICT line yet, does not count, since it moves with every line. Only
-#    a record newer than the page is read.
+# While OPEN, three tests. Both the merge and the run are read off what the page SAYS, never off
+# its file time, since a checkout of origin/main writes the page whenever a merge changed its
+# counts, and the maker writes it whenever tracker.csv changed, and neither is the lead's rewrite.
+# 1. A MERGE. The lead's rewrite always changes the STATE line, whose date and time are on it, and
+#    a merge carrying the rewrite changes the STATE line main holds. So the page counts as
+#    rewritten since the last merge when its STATE line differs from the STATE line of
+#    steps/PROGRESS.md at the first parent of origin/main's head, which is main before that merge.
+#    One git call answers it, git diff -G'^STATE ' of origin/main^1 against the page as it is
+#    in the working copy, with core.autocrlf true reading a CRLF copy the same as its LF blob,
+#    about 1.3 s, turn5\q139\hooks.md section 2. Exit 0, no change there, refuses every stop until
+#    the page is rewritten. --no-optional-locks keeps git from writing the index of the clone. In
+#    a worktree .git is a file naming its own folder under the main clone's .git, whose commondir
+#    file names that .git, each read with read, and the reflog of origin/main must be there before
+#    git is started. No reflog, a git that cannot answer and a head with no parent let the stop
+#    through.
+# 2. A RUN. The STATE line names the run the page was last rewritten after, as last run 05/item1
+#    or last run 05\item1, the set and the run under %LOCALAPPDATA%\NwcFederatorLoop\runs, a dot
+#    after it read as the end of a sentence. A record.txt of a run there holding a line that
+#    starts VERDICT, which is how run.ps1's HasVerdict tells a run that finished, and newer than
+#    the named run's record.txt, refuses every stop until the page names the newest such run. A
+#    page naming no run, or a run with no record.txt, has every finished run newer than it. A run
+#    still going, its record.txt holding no VERDICT line yet, does not count, since it moves with
+#    every line. The records newer than the named one are taken newest first by file time and
+#    read until one holds a VERDICT line, so none older than the newest finished run is read.
+#    LOCALAPPDATA reaches the gate with its drive and backslashes, C:\Users\<name>\AppData\Local,
+#    and the glob reads that spelling, proved by tools\loop\prove-hooks.sh and on the real runs
+#    folder, turn5\f139b-gate-real.txt.
 # 3. A CHANGE. A note per session, .claude/hooks/.loop-gate-<session id>, which git ignores,
 #    written when the gate sends the session back. A note newer than the page lets the stop
 #    through, so a session is sent back once per change of the page, as the gate did for
@@ -43,16 +55,17 @@
 #    blocking a stop it could never let go of.
 #
 # BUILTINS ONLY, as CLAUDE.md asks, since starting a program costs about two seconds here: read,
-# case, test, : and printf. The one program is the git of test 1, on its path only. Before F139
-# the gate started 12 programs on a block and took 10 to 14 s, turn5\q139\hooks.md section 1.
+# case, test, : and printf. The one program is the git of test 1, on every OPEN stop in a clone
+# that holds the reflog of origin/main. Before F139 the gate started 12 programs on a block and
+# took 10 to 14 s, turn5\q139\hooks.md section 1.
 #
-# Its limits, said out loud. A merge this clone has not fetched is not seen. A checkout that
-# writes the page, such as a fix branch checked out in the main clone, reads as a rewrite, and so
-# does make-tracker.ps1 writing new counts into the page when the pre-commit runs it, until the
-# next merge is fetched. A page saved as UTF-16 or with a byte order mark before its STATE line
-# reads no state there, and a STATE line below line ten is not read, both on the side that lets
-# the stop through. Two writes of the page and the note in the same instant of the file system
-# read as no change.
+# Its limits, said out loud. A merge this clone has not fetched is not seen. A working copy whose
+# page holds another STATE line than main held before its last merge reads as rewritten, such as
+# a fix branch checked out in the main clone. A run that finishes again in the folder the page
+# already names is not seen, since its record is the named one. A page saved as UTF-16 or with a
+# byte order mark before its STATE line reads no state there, and a STATE line below line ten is
+# not read, both on the side that lets the stop through. Two writes of the page and the note in
+# the same instant of the file system read as no change.
 
 input=
 while IFS= read -r line || [ -n "$line" ]; do
@@ -78,6 +91,7 @@ block() {
 }
 
 state=
+named=
 n=0
 while [ "$n" -lt 10 ] && { IFS= read -r line || [ -n "$line" ]; }; do
     n=$((n + 1))
@@ -100,6 +114,24 @@ while [ "$n" -lt 10 ] && { IFS= read -r line || [ -n "$line" ]; }; do
     word=${word%%[![:alpha:]]*}
     [ -n "$word" ] || continue
     state=$word
+    case $line in
+        *"last run "*)
+            named=${line#*last run }
+            while :; do
+                case $named in
+                    *'\'*) named=${named%%'\'*}/${named#*'\'} ;;
+                    *) break ;;
+                esac
+            done
+            named=${named%%[!A-Za-z0-9._/-]*}
+            while :; do
+                case $named in
+                    *.) named=${named%.} ;;
+                    *) break ;;
+                esac
+            done
+            ;;
+    esac
     break
 done < "$page"
 
@@ -108,7 +140,7 @@ case $state in
     *) exit 0 ;;
 esac
 
-# 1. A merge fetched after the page was last written, whose head did not change the STATE line.
+# 1. A merge fetched since the page's STATE line was last changed.
 dot="$root/.git"
 common=
 if [ -d "$dot" ]; then
@@ -138,32 +170,61 @@ elif [ -f "$dot" ]; then
             ;;
     esac
 fi
-reflog="$common/logs/refs/remotes/origin/main"
-if [ -n "$common" ] && [ -f "$reflog" ] && ! [ "$page" -nt "$reflog" ]; then
-    git -C "$root" diff --quiet -G'^STATE ' 'origin/main^1' origin/main -- steps/PROGRESS.md >/dev/null 2>&1
+if [ -n "$common" ] && [ -f "$common/logs/refs/remotes/origin/main" ]; then
+    git --no-optional-locks -C "$root" diff --quiet -G'^STATE ' 'origin/main^1' -- steps/PROGRESS.md >/dev/null 2>&1
     if [ "$?" = 0 ]; then
-        block "steps/PROGRESS.md is older than the last merge fetched from origin/main, and that merge did not change its STATE line. Rewrite the page, never append, then carry on or stop."
+        block "The STATE line of steps/PROGRESS.md is the one main held before its last merge fetched from origin/main, so the page was not rewritten since that merge. Rewrite the page, never append, then carry on or stop."
     fi
 fi
 
-# 2. A run that finished after the page was last written.
+# 2. A run that finished after the run the page names.
 runs=${LOCALAPPDATA:+$LOCALAPPDATA/NwcFederatorLoop/runs}
 if [ -n "$runs" ]; then
-    for rec in "$runs"/*/*/record.txt; do
-        [ -f "$rec" ] && [ "$rec" -nt "$page" ] || continue
+    since=
+    [ -n "$named" ] && [ -f "$runs/$named/record.txt" ] && since="$runs/$named/record.txt"
+    # Newest first: the newest record not read yet is found by file time alone, then read, until
+    # one holds a VERDICT line, so a record older than the newest finished one is never read.
+    newest=
+    read_already='
+'
+    while :; do
+        top=
+        for rec in "$runs"/*/*/record.txt; do
+            [ -f "$rec" ] || continue
+            case $read_already in
+                *"
+$rec
+"*) continue ;;
+            esac
+            if [ -n "$since" ]; then
+                [ "$rec" -nt "$since" ] || continue
+            fi
+            if [ -n "$top" ]; then
+                [ "$rec" -nt "$top" ] || continue
+            fi
+            top=$rec
+        done
+        [ -n "$top" ] || break
         while IFS= read -r l || [ -n "$l" ]; do
             case $l in
                 VERDICT*)
-                    where=${rec#"$runs"/}
-                    where=${where%/record.txt}
-                    case $where in
-                        *[!A-Za-z0-9._/-]*) where="a run folder" ;;
-                    esac
-                    block "A run finished after steps/PROGRESS.md was last written, $where under the loop's runs folder. Rewrite the page, never append, then carry on or stop."
+                    newest=$top
+                    break
                     ;;
             esac
-        done < "$rec"
+        done < "$top"
+        [ -n "$newest" ] && break
+        read_already="$read_already$top
+"
     done
+    if [ -n "$newest" ]; then
+        where=${newest#"$runs"/}
+        where=${where%/record.txt}
+        case $where in
+            *[!A-Za-z0-9._/-]*) where="a run folder" ;;
+        esac
+        block "A run finished that steps/PROGRESS.md does not name, $where under the loop's runs folder. Rewrite the page, never append, its STATE line ending last run $where, then carry on or stop."
+    fi
 fi
 
 # 3. Once per session per change of the page.

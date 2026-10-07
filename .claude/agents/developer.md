@@ -26,7 +26,8 @@ In this order, and nothing rides along:
    and after. sh tools/checks/check-locals.sh src and sh tools/checks/check-imports.sh src
 7. The rule in .claude\rules where the rule changed, and its section in steps\01_next.md.
    Draft the steps\history\log.md entry in the shape it already uses and HAND IT TO THE
-   LEAD, who alone writes steps\history\log.md, steps\history\loop.md and steps\PROGRESS.md.
+   LEAD, who alone writes steps\history\log.md, steps\history\loop.md and the lines of
+   steps\PROGRESS.md outside its counts, which the pre-commit writes when tracker.csv is staged.
    A finding you leave open is a row of steps\tracker.csv, by .claude\rules\tracker.md
 8. Commit with the message in a file, git commit -F, and push the branch. Hand the lead
    the branch and the build and test output. The lead calls the reviewer and the breaker

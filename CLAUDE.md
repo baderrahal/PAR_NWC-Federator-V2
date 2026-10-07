@@ -170,12 +170,13 @@ any file write or command naming NM Fed or ACCDocs. It reads words and is not a 
 The branch wall reads each git call on its own and refuses a commit on main and any push
 landing on main. Both exit 2 with one line saying why. While steps\PROGRESS.md reads
 STATE OPEN the Stop gate refuses a stop until the page is rewritten since the last merge
-and the last run, and sends a session back once per change of it. All three need a
+and the last run, read off what the page says, its STATE line against main's before the
+last merge and the run it names, and sends a session back once per change of it. All three need a
 POSIX sh, and Claude Code on Windows finds Git for Windows' sh without help, measured on
 2026-09-27. Starting a program costs about two seconds here, so the walls read the call
 with shell builtins and start a program only for a call naming a protected folder, or git
-and a word such as commit, and the gate starts one git only when a merge was fetched
-after the page was last written.
+and a word such as commit, and the gate starts one git on a stop while the page reads
+OPEN.
 
 They also need LF. sh reads a carriage return as part of the word, so a CRLF copy dies
 on its first case line and exits 2, which is the code that refuses, so the walls jam

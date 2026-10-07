@@ -261,10 +261,19 @@ rewrite() {
     git --git-dir="$og" fetch -q "$repo2" "refs/heads/$2:refs/heads/$2"
     printf '%s\n' "$rc"
 }
+crlf() {
+    # $1 the page, $2 the case. A checked case: every line of the page ends in CRLF, as a checkout
+    # writes it with core.autocrlf true. Git for Windows' grep drops a carriage return before it
+    # matches unless given -U, measured on 2026-10-07, so both counts read with -U.
+    all=$(grep -U -c '' "$1")
+    with=$(grep -U -c "$cr" "$1")
+    if [ "$with" -gt 0 ] && [ "$with" = "$all" ]; then v=ok; else v=WRONG; fi
+    printf '%-5s %s of %s lines end in CRLF  %s\n' "$v" "$with" "$all" "$2" | tee -a "$out"
+}
 looks() {
     # How the page in the working copy reads: its carriage returns, and whether its file time is
     # newer than the reflog of origin/main, which is what the gate before attempt 2 read.
-    n_cr=$(grep -c "$cr" "$repo2/steps/PROGRESS.md")
+    n_cr=$(grep -U -c "$cr" "$repo2/steps/PROGRESS.md")
     if [ "$repo2/steps/PROGRESS.md" -nt "$repo2/.git/logs/refs/remotes/origin/main" ]; then nt=newer; else nt="not newer"; fi
     echo "    the page: $n_cr lines ending in CRLF, its file time $nt than the last fetch of main, its STATE line: $(head -n 1 "$repo2/steps/PROGRESS.md" | tr -d '\r')"
 }
@@ -313,6 +322,7 @@ fx=$(commit "$(tree_of "$P1C" "code 1, a fix that changed a row")" "$(git --git-
 sleep 1; land "$(merge_on_github "$fx")"
 echo "a fix merge that changed the counts, fetched, then origin/main checked out, which writes the page"
 looks
+crlf "$repo2/steps/PROGRESS.md" "the page as the checkout of the fix merge wrote it"
 echo "$S" | gate block "a fix merge that changed the counts, the page written by the checkout after the fetch, refused" "$repo2" "$ML"
 echo "$S" | gate block "the same, every stop refused until the lead rewrites" "$repo2" "$ML"
 r2=$(rewrite "$P2" records-2)
@@ -379,7 +389,8 @@ wt="$scratch/wt"
 git -C "$repo2" worktree add -q --detach "$wt" origin/main
 mkdir -p "$wt/.claude/hooks"
 echo "the worktree's .git reads: $(cat "$wt/.git")"
-echo "    its page as checked out: $(grep -c "$cr" "$wt/steps/PROGRESS.md") lines ending in CRLF, its STATE line: $(head -n 1 "$wt/steps/PROGRESS.md" | tr -d '\r')"
+echo "    its page as checked out, its STATE line: $(head -n 1 "$wt/steps/PROGRESS.md" | tr -d '\r')"
+crlf "$wt/steps/PROGRESS.md" "the worktree's page as checked out"
 W='{"session_id":"W","hook_event_name":"Stop"}'
 echo "$W" | gate block "a worktree session, its page as checked out holding the STATE line main held before its head, read through its .git file, refused" "$wt" "$ML"
 sleep 1; printf 'STATE OPEN, 2026-10-06 18:00, last run 05/item1\n<!-- counts -->\n| 1 | 4 |\n<!-- end -->\n' > "$wt/steps/PROGRESS.md"

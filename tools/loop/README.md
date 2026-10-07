@@ -245,8 +245,11 @@ one it should give. sh tools/loop/prove-hooks.sh <hooks folder> <repo root>. It 
 repo into a temp folder to prove the git wall with main checked out, and removes it. Since
 F139 the Stop gate's cases read steps/PROGRESS.md in two throwaway projects in the same temp
 folder, one with no git and one cloned from a throwaway origin whose merges are made with
-git's plumbing, which runs no hook, with a worktree of it, and every gate call is given a
-throwaway LOCALAPPDATA, so the loop's real run folders are never read.
+git's plumbing, which runs no hook, fetched and checked out as the lead does with
+core.autocrlf true, so a checkout that changes the page writes it with CRLF, with a worktree
+of it. Every gate call is given a throwaway LOCALAPPDATA spelt with its drive and
+backslashes, as Claude Code hands it to a hook here, so the loop's real run folders are never
+read.
 
 How a change to a wall is proved with it and copied in is in .claude\rules\loop.md.
 

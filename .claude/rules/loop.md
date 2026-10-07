@@ -22,7 +22,9 @@ and nothing is fixed until a real run on real files shows it fixed.
 - steps\PROGRESS.md holds the loop state, at most 60 lines, and every session reads it FIRST
   after CLAUDE.md and .claude\rules, Bader's message of 2026-10-06, Q139. Its first line is
   STATE, then one of OPEN, WAITING, RESTART, CLOSED or NEXT WAVE, a comma, and the date and
-  time of its last update, such as STATE OPEN, 2026-10-06 16:00. Then, in his order, the counts
+  time of its last update, then while OPEN a comma, last run and the set and run of the newest
+  run.ps1 run that finished, as its folder under %LOCALAPPDATA%\NwcFederatorLoop\runs reads,
+  such as STATE OPEN, 2026-10-07 11:40, last run 04/item2-C02. Then, in his order, the counts
   by wave, now, what each lane is doing, one line each, next, the next three steps in order,
   waiting for Bader, each question with its number or none, at most five lines of blockers
   and known bugs that matter now, and where the long history is. A new session carries on
@@ -40,20 +42,25 @@ and nothing is fixed until a real run on real files shows it fixed.
   entry per fix in log.md, newest at the top. The turn number, the main commit, the next
   action and the register were in loop.md until then, and are in PROGRESS.md and the tracker
   since
-- The lead alone writes steps\PROGRESS.md, steps\history\loop.md and steps\history\log.md
+- The lead alone writes steps\history\loop.md, steps\history\log.md and every line of
+  steps\PROGRESS.md outside its counts. The counts are written by make-tracker.ps1, which the
+  pre-commit runs in any commit staging steps\tracker.csv, a developer's among them
 - steps\runs\NN is one run set, 00 the baseline. Each run of the set has its own folder
   holding the text log, the tsv, a listing of every output file with its size, and a
   read-out of every workbook. A file over 20 MB is never committed, zipped or not. It stays
   in its run folder under %LOCALAPPDATA%\NwcFederatorLoop and the turn names it with its
   size and sha256, Bader's answer Q90 A
 - .claude\hooks\loop-gate.sh is the Stop hook. ONLY OPEN BLOCKS. While steps\PROGRESS.md
-  reads OPEN it refuses every stop while the page is older than the last merge fetched from
-  origin/main and that merge did not change its STATE line, or older than the record.txt of a
-  run.ps1 run that finished, and it sends a session back once per session per change of the
-  page. WAITING, RESTART, CLOSED, NEXT WAVE, any other word, no STATE line and no page all let
-  the stop through, and so does a note it cannot write, because a gate that cannot tell must
-  never be what traps a session. Its header says how each is read, what each costs and its
-  limits, and tools\loop\prove-hooks.sh holds its cases
+  reads OPEN it refuses every stop while the page's STATE line is the one main held before the
+  last merge fetched from origin/main, or while a run.ps1 run finished that is newer than the
+  run its STATE line names after last run, and it sends a session back once per session per
+  change of the page. Both are read off what the page says and never off its file time, since
+  a checkout of origin/main writes the page whenever a merge changed its counts. WAITING,
+  RESTART, CLOSED, NEXT WAVE, any other word, no STATE line and no page all let the stop
+  through, and so does a note it cannot write, because a gate that cannot tell must never be
+  what traps a session. It is run for Stop only, and an agent of a workflow ends on
+  SubagentStop, which the gate does not read. Its header says how each is read, what each
+  costs and its limits, and tools\loop\prove-hooks.sh holds its cases
 - A finding is a row of steps\tracker.csv, of class register row, by .claude\rules\tracker.md,
   never a bullet of a log entry or a row of a table in steps\history. A finding that becomes
   a fix also gets its section and its DONE line in steps\01_next.md in the pull request that

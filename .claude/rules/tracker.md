@@ -24,8 +24,12 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   of a log entry or a row of a table in steps\history. The register table of
   steps\history\loop.md and the bullets of steps\history\log.md are the record of the rows
   written before F139: every one that read open with no row of its own and no FR item naming it
-  got its row in F139, and the closed ones stay there as the record. The check reads a
-  register row by the rules for every row only, F133-R21
+  got its row in F139, and so did every one that read needs Bader with no question of its own,
+  steps 228-233, 346-352 and 364 of steps\03_bader_next.md, as a row of status waiting for
+  Bader, since what comes next is his to do. The other rows that read needs Bader are
+  questions he has answered since and F18, which he dropped on 2026-10-06, and they stay there
+  with the closed ones as the record. The check reads a register row by the rules for every
+  row only, F133-R21
 - The columns are Bader's words, in his order: id, short title, area, wave, class, status, PR,
   the run that proved it, and the date of the last change. The date is the day the row's
   status, PR or run last changed
@@ -132,7 +136,10 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   and are made by make-tracker.ps1 from the csv, never typed. The 60, the two marker lines, the
   map of Bader's five words to the seven statuses and the rule of which wave a row counts under
   live in tracker-rules.ps1 alone, $ProgressMaxLines, $ProgressStartMarker, $ProgressEndMarker,
-  $ProgressColumns and Get-ProgressWave
+  $ProgressColumns, which the sentence above the counts is read off too, and
+  $ProductWavePattern, read through Get-ProductWave alone by the order of the waves, the
+  headings of tracker.md and Get-ProgressWave. prove-progress.ps1 changes each in a fresh
+  powershell and proves every reader follows
 - Done is merged and proven by a run together, and dropped stands beside his five words, so
   every row is counted once and each line adds up, the lead's reading (a) of Q139. The waves
   are one line for each product wave, a wave that starts with a digit, a value such as 2a and
@@ -148,7 +155,10 @@ rule, since steps.md loads for every file under steps, the DONE lines and the cs
   header lists, the one list of them, a page over 60 lines and counts that are not what the
   maker makes from the csv among them, and exits 2 when the csv or the page is not there.
   prove-progress.ps1 runs it over every fixture under tools\tracker\progress-fixtures, and a
-  new kind of fault gets its fixture and its line in that header in the same pull request
+  new kind of fault gets its fixture and its line in that header in the same pull request.
+  The pre-commit refuses too when git cannot say whether either file is staged, and where
+  powershell is not on PATH, such as a container with no Windows, it refuses every commit
+  staging either file, a limit the lead accepted, F139-R7
 - Two pull requests that each change the csv each carry the counts of their own csv, so the
   second to merge meets the first in the page as in tracker.md, and runs the maker again,
   F133-R10

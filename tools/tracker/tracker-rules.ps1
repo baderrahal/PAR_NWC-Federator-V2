@@ -49,6 +49,10 @@ $ProgressColumns = [ordered]@{
 }
 # The line of the counts for every wave value that does not start with a product wave.
 $ProgressOutside = "outside the waves"
+# A product wave is a wave value that starts with this pattern, and the part it matches is the
+# product wave the value names, so 2a and 2a and 2b both name 2a. Every reader of a product wave
+# reads it through Get-ProductWave, the one place this rule is written.
+$ProductWavePattern = '^\d+[a-z]*'
 
 # A text file as UTF-8, past a byte order mark, with CRLF read as LF. Bytes that are not UTF-8,
 # a file saved as UTF-16 or in a Windows code page among them, give a fault naming the first
@@ -612,10 +616,17 @@ function Test-TrackerQuestions($Rows, [string] $QuestionsPath, $Places) {
     return @{ Faults = $faults; Count = $count; Waiting = $waiting; Requests = $requests }
 }
 
-# A wave that starts with a digit sorts before one that does not, each group in ordinal order.
+# The product wave a wave value names, by $ProductWavePattern, or an empty string when it names none.
+function Get-ProductWave([string] $Wave) {
+    $m = [regex]::Match($Wave, $ProductWavePattern)
+    if ($m.Success) { return $m.Value }
+    return ""
+}
+
+# A wave value naming a product wave sorts before one that does not, each group in ordinal order.
 function Get-OrderedWaves([string[]] $Waves) {
-    $numbered = [string[]]@($Waves | Where-Object { $_ -match '^\d' })
-    $named = [string[]]@($Waves | Where-Object { $_ -notmatch '^\d' })
+    $numbered = [string[]]@($Waves | Where-Object { (Get-ProductWave $_) -ne "" })
+    $named = [string[]]@($Waves | Where-Object { (Get-ProductWave $_) -eq "" })
     [Array]::Sort($numbered, [StringComparer]::Ordinal)
     [Array]::Sort($named, [StringComparer]::Ordinal)
     return @($numbered) + @($named)
@@ -668,7 +679,7 @@ function Format-TrackerMarkdown($Rows) {
 
     foreach ($wave in $waves) {
         $out.Add("")
-        if ($wave -match '^\d') { $out.Add("## Wave $wave") } else { $out.Add("## $wave") }
+        if ((Get-ProductWave $wave) -ne "") { $out.Add("## Wave $wave") } else { $out.Add("## $wave") }
         $out.Add("")
         $out.Add("| " + ((@($TrackerColumns | Where-Object { $_ -cne "wave" })) -join " | ") + " |")
         $out.Add("|" + ("---|" * ($TrackerColumns.Length - 1)))
@@ -681,13 +692,12 @@ function Format-TrackerMarkdown($Rows) {
     return ($out -join "`n") + "`n"
 }
 
-# The wave a row of the csv is counted under in the counts of PROGRESS.md. A product wave is a
-# wave that starts with a digit, as Get-OrderedWaves sorts them, so a value that starts with one,
-# such as 2a or 2a and 2b, counts under the first wave it names, and any other value, such as none
-# or before the waves, under outside the waves, the lead's reading (b) under Q139.
+# The wave a row of the csv is counted under in the counts of PROGRESS.md: the product wave its
+# value names, so 2a and 2a and 2b both count under 2a, and for any other value, such as none or
+# before the waves, outside the waves, the lead's reading (b) under Q139.
 function Get-ProgressWave([string] $Wave) {
-    $m = [regex]::Match($Wave, '^\d+[a-z]*')
-    if ($m.Success) { return $m.Value }
+    $product = Get-ProductWave $Wave
+    if ($product -ne "") { return $product }
     return $ProgressOutside
 }
 
@@ -707,7 +717,14 @@ function Format-ProgressCounts($Rows) {
     $out = New-Object System.Collections.Generic.List[string]
     $out.Add("## Counts")
     $out.Add("")
-    $out.Add("Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done is merged or proven by a run, and dropped stands beside the five so each line adds up.")
+    # The sentence is read off $ProgressColumns: the first column and its statuses, then the last
+    # column, which stands beside the others, and how many they are.
+    $first = $columns[0]
+    $beside = $columns[$columns.Length - 1]
+    $others = $columns.Length - 1
+    $numbers = @("no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine")
+    $many = if ($others -lt $numbers.Length) { $numbers[$others] } else { "$others" }
+    $out.Add("Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. " + $first.Substring(0, 1).ToUpper() + $first.Substring(1) + " is " + ($ProgressColumns[$first] -join " or ") + ", and $beside stands beside the $many so each line adds up.")
     $out.Add("")
     $out.Add("| wave | " + ($columns -join " | ") + " | rows |")
     $out.Add("|" + ("---|" * ($columns.Length + 2)))

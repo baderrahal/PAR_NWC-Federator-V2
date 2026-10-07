@@ -32,9 +32,10 @@ paths:
   not appended, when the proofs change
 - steps\PROGRESS.md is the one page a session starts from, at most 60 lines, and
   steps\START.md the start prompt of under 20 lines Bader pastes into a new tab, his
-  message of 6 Oct 2026, Q139. The lead alone writes the page and rewrites its lines,
-  never appends, by .claude\rules\loop.md, and its counts are made by
-  tools\tracker\make-tracker.ps1, never typed, by .claude\rules\tracker.md
+  message of 6 Oct 2026, Q139. The lead alone writes the page's lines outside its counts
+  and rewrites them, never appends, by .claude\rules\loop.md, and its counts are made by
+  tools\tracker\make-tracker.ps1, never typed, which the pre-commit runs in any commit
+  staging steps\tracker.csv, by .claude\rules\tracker.md
 - steps\history holds loop.md and log.md, the long history, moved there whole by F139
   and never read at the start of a session, only for a line a session needs.
   steps\history\log.md holds one entry per fix, newest at the top, in the shape of the

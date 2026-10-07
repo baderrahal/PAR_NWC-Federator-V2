@@ -94,9 +94,9 @@ fi
 # its 60 lines and its counts. It comes before the evidence check, which then reads what the maker
 # wrote. The maker reads the files in the working copy, so either of the two with changes that are
 # not staged would put counts into the commit its csv does not hold, and the hook refuses that
-# instead. Its cost, measured in turn5\q139\hooks.md section 3: one git call on every commit,
-# about 1.6 s, and on a commit staging either file two more git calls and two powershell.exe,
-# about 8 s more.
+# instead. Its cost, measured on 2026-10-07 with other work running, three samples each,
+# turn5\f139b-hook-proof.txt: the one git call on every commit 1.1 to 1.8 s, and the whole step
+# on a commit staging tracker.csv, three git calls and two powershell.exe, 13.5 to 14.8 s.
 echo "pre-commit: making the counts again if steps/tracker.csv or steps/PROGRESS.md is staged"
 
 staged_status=0

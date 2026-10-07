@@ -9,4 +9,5 @@ Bader pastes the lines below into a new Claude Code tab opened on this repo.
     step of Next. If it reads OPEN, carry on from the first step of Next that nothing blocks.
     If it reads WAITING or CLOSED, say in one line what the page says it waits for, and stop.
     Rewrite PROGRESS.md, never append, after every merge, every run, every answer from Bader
-    and before any stop. A finding is a row of steps\tracker.csv.
+    and before any stop, its STATE line ending last run and the newest run that finished.
+    A finding is a row of steps\tracker.csv.

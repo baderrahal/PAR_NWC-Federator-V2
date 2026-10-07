@@ -18,6 +18,12 @@
     page whose csv changed so the check then reads it clean with every line outside the counts as
     it was. The folder is removed when the proof ends, a failed step included.
 
+    Then two probes, each its own powershell.exe that dot-sources tracker-rules.ps1, changes one
+    rule and prints what every reader of it makes, so a reader that keeps a copy of the rule of
+    its own reads WRONG: the pattern of a product wave, read by the order of the waves, the
+    headings of tracker.md and the wave a row counts under on the page, and the columns of the
+    counts, read by the sentence above them.
+
     Each run of the check and the maker is its own powershell.exe, so the exit code is the one
     Actions sees. Exits 0 when every case is right and 1 otherwise. Windows PowerShell 5.1.
 
@@ -207,6 +213,37 @@ try {
         ($said + $after.Said) | ForEach-Object { Write-Output "         $_" }
         $wrong++
     }
+
+    # The rule of a product wave, read from $ProductWavePattern alone. Changed to one that names W1
+    # a product wave and 2a not one, the order, the headings and the wave counted under follow it.
+    $rules = "'" + (Join-Path $PSScriptRoot "tracker-rules.ps1").Replace("'", "''") + "'"
+    $row = 'function Row([string] $Wave) { $r = @{}; foreach ($c in $TrackerColumns) { $r[$c] = "x" }; $r["wave"] = $Wave; $r["status"] = "open"; return $r }'
+    $probe = Join-Path $work "probe-wave.ps1"
+    [IO.File]::WriteAllText($probe, (@(
+        '$ErrorActionPreference = "Stop"',
+        ". $rules",
+        '$ProductWavePattern = ''^W\d+''',
+        $row,
+        '(Get-OrderedWaves @("none", "W2", "2a", "W1")) -join ","',
+        'Get-ProgressWave "W2 and W3"',
+        'Get-ProgressWave "2a"',
+        '((Format-TrackerMarkdown @((Row "W1"), (Row "2a"))).Split("`n") | Where-Object { $_.StartsWith("## ") }) -join ","'
+    ) -join "`r`n"))
+    $said = @(& powershell -NoProfile -ExecutionPolicy Bypass -File $probe)
+    Judge "the rule of a product wave changed in one place, read by every reader" @{ Said = $said; Code = $LASTEXITCODE } 0 @("W1,W2,2a,none", "W2", "outside the waves", "## Wave W1,## 2a")
+
+    # The sentence above the counts, read off $ProgressColumns. Changed to three columns, it names
+    # the first column's statuses, the last column and how many stand beside it.
+    $probe = Join-Path $work "probe-columns.ps1"
+    [IO.File]::WriteAllText($probe, (@(
+        '$ErrorActionPreference = "Stop"',
+        ". $rules",
+        '$ProgressColumns = [ordered]@{ "finished" = @("merged", "proven by a run"); "not yet" = @("open", "in progress", "in review", "waiting for Bader"); "dropped" = @("dropped") }',
+        $row,
+        '(Format-ProgressCounts @((Row "1")))[2]'
+    ) -join "`r`n"))
+    $said = @(& powershell -NoProfile -ExecutionPolicy Bypass -File $probe)
+    Judge "the sentence above the counts read off the columns" @{ Said = $said; Code = $LASTEXITCODE } 0 @("Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Finished is merged or proven by a run, and dropped stands beside the two so each line adds up.")
 } finally {
     if (Test-Path -LiteralPath $work) { Remove-Item -LiteralPath $work -Recurse -Force }
 }
