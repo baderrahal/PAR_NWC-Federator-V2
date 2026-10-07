@@ -13,6 +13,7 @@ namespace Federator.Core.Views
         private readonly Dictionary<string, TeamPair> pairOfTest = new Dictionary<string, TeamPair>(StringComparer.Ordinal);
         private readonly List<string> sizeUnknown = new List<string>();
         private readonly List<string> unknownSets = new List<string>();
+        private readonly List<string> unknownWords = new List<string>();
         private readonly List<string> mirrored = new List<string>();
         private readonly List<string> mirrorRule = new List<string>();
 
@@ -76,7 +77,7 @@ namespace Federator.Core.Views
             get { return new ReadOnlyCollection<string>(sizeUnknown); }
         }
 
-        /// <summary>Every set name whose side reads UNKNOWN, no code this group knows and no folder naming a team, each once, FR-074.</summary>
+        /// <summary>Every set name whose side reads UNKNOWN, each once, FR-074, the empty name for a side with no set name. Lines says why.</summary>
         public ReadOnlyCollection<string> UnknownSets
         {
             get { return new ReadOnlyCollection<string>(unknownSets); }
@@ -147,19 +148,20 @@ namespace Federator.Core.Views
             sizeUnknown.Add(testName + " / " + clashName);
         }
 
-        internal void NameUnknownSet(string setName)
+        internal void NameUnknownSet(string setName, string words)
         {
             if (!unknownSets.Contains(setName))
             {
                 unknownSets.Add(setName);
+                unknownWords.Add(words);
             }
         }
 
         /// <summary>
         /// The VIEWS block's plan lines: the counts, the clashes left out by status, the mirrored
         /// tests named or said UNKNOWN, every size that could not be read named, or as many as the
-        /// settings say with the rest counted, and every set whose side reads UNKNOWN named. Nothing is
-        /// guessed and nothing is silent.
+        /// settings say with the rest counted, and every set whose side reads UNKNOWN named with
+        /// why. Nothing is guessed and nothing is silent.
         /// </summary>
         public IList<string> Lines(SizeSettings sizes)
         {
@@ -195,9 +197,9 @@ namespace Federator.Core.Views
                 + ", every one in its pair view and none dropped");
             Named(lines, sizeUnknown, sizes);
 
-            lines.Add("a set with no code this group knows and no folder above it in the clash XML's set tree naming a team : " + unknownSets.Count
-                + ", its side read as a team of UNKNOWN and none guessed at");
-            Named(lines, unknownSets, null);
+            lines.Add("a side read as a team of UNKNOWN, by its set name : " + unknownSets.Count
+                + ", each named with why and none guessed at");
+            Named(lines, unknownWords, null);
 
             return lines;
         }

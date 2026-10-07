@@ -21,7 +21,11 @@ namespace Federator.Core.Tests
         private const string Over150 = "Over 150mm";
 
         private const string UnknownSetsLine =
-            "a set with no code this group knows and no folder above it in the clash XML's set tree naming a team : ";
+            "a side read as a team of UNKNOWN, by its set name : ";
+
+        private const string UnknownSetsTail = ", each named with why and none guessed at";
+
+        private const string NoCode = ", no code this group knows, and ";
 
         private static readonly string[] GroupCodes = { "AR", "EL", "ME", "ST" };
 
@@ -345,10 +349,98 @@ namespace Federator.Core.Tests
                 Clash("T", "Clash1", "BLD-EL-Lighting Fixtures", "BLD-Security Devices"),
                 Clash("U", "Clash1", "BLD-Security Devices", "BLD-ST-Floors")).Lines(new SizeSettings());
 
-            int at = lines.IndexOf(UnknownSetsLine + "1, its side read as a team of UNKNOWN and none guessed at");
+            int at = lines.IndexOf(UnknownSetsLine + "1" + UnknownSetsTail);
 
             Assert.That(at, Is.GreaterThanOrEqualTo(0), string.Join("\n", new List<string>(lines).ToArray()));
-            Assert.That(lines[at + 1], Is.EqualTo("    BLD-Security Devices"));
+            Assert.That(
+                lines[at + 1],
+                Is.EqualTo("    BLD-Security Devices" + NoCode
+                    + "no set tree was read, so whether a folder above it names a team is UNKNOWN"));
+        }
+
+        /// <summary>
+        /// F114 attempt 8, the reviewer's finding 2 of attempt 7. The line under a side read as
+        /// UNKNOWN says why, and says only what was read: a side with no set name, a set name not in
+        /// the set tree read, a set whose folders name no team, two sets of one name giving two
+        /// teams, and a code the map puts in a team named UNKNOWN, each named as it is.
+        /// </summary>
+        [Test]
+        public void EachSideReadAsUnknownIsNamedWithWhy()
+        {
+            TeamMap map = TeamMapTests.MapOf(TeamMapTests.BadersMap + "team: UNKNOWN | XX\n");
+            ViewTeams teams = new ViewTeams(
+                map,
+                new[]
+                {
+                    Set("BLD-Devices", "Electrical"),
+                    Set("BLD-Devices", "Mechanical"),
+                    Set("BLD-Signs", "Security")
+                },
+                GroupCodes,
+                new ViewpointSettings());
+
+            IList<string> lines = TestViewPlan.For(
+                new[]
+                {
+                    Clash("T", "Clash1", "BLD-Devices", "BLD-ST-Floors"),
+                    Clash("U", "Clash1", "BLD-Signs", "BLD-ST-Floors"),
+                    Clash("V", "Clash1", "BLD-Nowhere", "BLD-ST-Floors"),
+                    Clash("W", "Clash1", null, "BLD-ST-Floors"),
+                    Clash("X", "Clash1", "BLD-XX-Things", "BLD-ST-Floors")
+                },
+                teams,
+                null,
+                new ViewpointSettings()).Lines(new SizeSettings());
+
+            int at = lines.IndexOf(UnknownSetsLine + "5" + UnknownSetsTail);
+
+            Assert.That(at, Is.GreaterThanOrEqualTo(0), string.Join("\n", new List<string>(lines).ToArray()));
+            Assert.That(
+                new List<string>(lines).GetRange(at + 1, 5),
+                Is.EqualTo(new[]
+                {
+                    "    BLD-Devices" + NoCode + "its 2 sets of that name in the clash XML's set tree give the teams Electrical, Mechanical",
+                    "    BLD-Signs" + NoCode + "no folder above it in the clash XML's set tree names a team",
+                    "    BLD-Nowhere" + NoCode + "no set of that name is in the clash XML's set tree",
+                    "    a side with no set name, so no code and no folder above it could be read",
+                    "    BLD-XX-Things, its code XX reads as the team UNKNOWN"
+                }));
+        }
+
+        /// <summary>
+        /// F114 attempt 8, the reviewer's finding 1 of attempt 7. The reader gives a set or a set
+        /// folder with no name attribute a null name, and the views' teams are built from every set
+        /// it read. A set with no name never throws: no side can name it, and a side with no set
+        /// name reads UNKNOWN, as ExportCheck and CodeOf already treat a set with no name. The set
+        /// under a folder with no name still takes the team the folder above that names.
+        /// </summary>
+        [Test]
+        public void ASetOrAFolderWithNoNameInTheClashXmlReadsUnknownAndNeverThrows()
+        {
+            ExchangeDocument document = new ExchangeReader().ReadText(
+                "<exchange units=\"ft\"><selectionsets>"
+                + "<viewfolder name=\"Electrical\">"
+                + "<selectionset guid=\"g1\"/>"
+                + "<selectionsetgroup guid=\"g2\"><selectionset name=\"BLD-Devices\" guid=\"g3\"/></selectionsetgroup>"
+                + "</viewfolder>"
+                + "</selectionsets></exchange>");
+
+            Assert.That(document.Sets.Count, Is.EqualTo(3));
+            Assert.That(document.Sets[0].Name, Is.Null, "the reader gives a set with no name attribute a null name");
+            Assert.That(document.Sets[1].Name, Is.Null, "the reader gives a set folder with no name attribute a null name");
+
+            ViewTeams teams = new ViewTeams(
+                TeamMapTests.MapOf(TeamMapTests.BadersMap), document.Sets, GroupCodes, new ViewpointSettings());
+
+            Assert.That(teams.TeamOfSet(null), Is.EqualTo("UNKNOWN"));
+            Assert.That(teams.TeamOfSet(string.Empty), Is.EqualTo("UNKNOWN"));
+            Assert.That(teams.TeamOfSet("BLD-Devices"), Is.EqualTo("Electrical"));
+
+            TestViewPlanOutcome plan = TestViewPlan.For(
+                new[] { Clash("T", "Clash1", null, "BLD-ST-Floors") }, teams, null, new ViewpointSettings());
+
+            Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Structure vs UNKNOWN"));
+            Assert.That(plan.UnknownSets, Is.EqualTo(new[] { string.Empty }));
         }
 
         /// <summary>
@@ -373,7 +465,7 @@ namespace Federator.Core.Tests
             Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Structure vs Electrical"));
             Assert.That(plan.Views[0].Pair.CarriesSizeFolder, Is.True);
             Assert.That(plan.UnknownSets, Is.Empty);
-            Assert.That(plan.Lines(new SizeSettings()), Has.Member(UnknownSetsLine + "0, its side read as a team of UNKNOWN and none guessed at"));
+            Assert.That(plan.Lines(new SizeSettings()), Has.Member(UnknownSetsLine + "0" + UnknownSetsTail));
         }
 
         /// <summary>

@@ -1242,49 +1242,55 @@ and 6 does not read as broken.
   `TestViewPlan` gives each test one view of its clashes at the `ViewStatuses` setting, New
   and Active, in the folder of its priority, A, B, C or No priority, always there, then its
   team pair, `TeamPair` read through `ViewTeams`, the one place the views read a team, and
-  never copied. A SIDE'S TEAM IS `TeamMap.TeamOfSet`, the one rule the TEAMS lines read, with
-  the clash XML's sets handed to `ViewTeams`: the team of the code its set name carries, and
-  where it carries none the team a folder above it names, so BLD-Security Devices is
-  Electrical in both. A side is named by its set name alone, so two sets of one name whose
-  folders give two teams read UNKNOWN, and a side reading UNKNOWN is named in the plan's
-  lines. A PAIR OF TEAMS IS WRITTEN ONE WAY ROUND, `TeamPair.For` with `TeamPair.Compare`:
-  the map's lines first, then any other team by its name, then UNKNOWN, so one pair is one
-  folder. Two codes of one team pair as that team against itself, point 10. A pair carries
-  the size folder where the map's size-folder line names one of its teams,
-  `TeamPair.TeamCarriesSizeFolder`, and with no map none does. The TEAMS lines say both in
-  the words of `TeamPair.OrderWords` and `TeamPair.SizeFolderWords`, kept beside the rule.
-  Built by F131 and carried here by Bader's answer B to Q134, the pair reads the map through
-  its public members alone, `Teams`, `UnknownTeam` and `SizeFolderTeams`. In a pair carrying
-  the size folder a clash whose larger service is over the threshold goes in the test's view
-  under Over 150mm and every other clash in its view
-  in the pair folder, so no clash is in two views, and a test with no open clash gets no
-  view. NO MIRRORED TEST GETS A VIEW, Bader's point that there are no mirrored tests: the
-  plan takes the tests F132's mirror rule names, a plain list of test names until fix-F132
-  is merged, because a mirror not run this week can still hold an earlier run's results in
-  the document. A mirror's clashes are left out and counted and the test named, and with no
-  mirror rule handed in the plan's lines say so. The plan keeps the mirror list it was handed,
-  `MirrorRule`, the one copy of it the VIEWS TREE reads. The views come in the order a person
-  reads them, priority, pair in the map's order, the pair's views, its size folder, test name
-  Ordinal. A VIEW SHOWS ONLY THE MODELS ITS CLASHING ITEMS LIVE IN, Bader's answer B to Q119
-  on 2026-10-05: `ShownModels` shows the model each clashing item lives in and hides every
-  other, a model of the pair's own teams and a model whose code will not read among them. A
-  home in a third team's model is shown and named as an exception, Q118 A, and a home whose
-  model's code will not read is shown with its team UNKNOWN. A home that could not be read
-  is counted and one naming no model of the group is named, since whether that model is
-  shown is UNKNOWN. A VIEW'S HOMES ARE GATHERED ONCE, `PlannedTestView.Homes`, each clash's
-  first home then its second, read by the tree line and check 3 through `ShownModels`, F114
-  attempt 4. A NAME IS TIED TO A MODEL BY ONE RULE, `ModelNames`, for a home and for a
-  hidden model read back alike, in the plan, the tree line and check 3: `ContainerName.Stem`
-  under `ContainerName.StemComparer`, without case, the stem and the comparer `SameName`
-  reads for SimilarNames and the NWF folder, so a path, a bare file name and a display name
-  with no extension all reach the model, F114 attempt 4 on the breaker's finding that a home
-  written as a path missed every model. A NAME THAT REACHES NO MODEL, OR MORE THAN ONE, IS
-  NOT TIED and is named, F114 attempt 5: more than one is one file name in two folders,
-  which a group gathered with subfolders can hold, and a home of two models shows both. A
-  model whose file name has no stem can be reached by no name and is named. `PaintPlan` paints
-  every first item red and every second green unless already red. `FramingBox` frames the
-  open clash centres padded by `FramingMarginMillimetres`, chosen and not measured, through
-  UnitTable, and gives a view of one clash no box so it keeps Clash Detective's own camera
+  never copied. A SIDE'S TEAM IS `TeamMap.TeamOfSet`, the one rule the TEAMS lines read,
+  with the clash XML's sets handed to `ViewTeams`: the team of the code its set name
+  carries, and where it carries none the team a folder above it names, so BLD-Security
+  Devices is Electrical in both. A side is named by its set name alone, so two sets of one
+  name whose folders give two teams read UNKNOWN. A SET WITH NO NAME NEVER THROWS, F114
+  attempt 8: the reader gives a set or a set folder with no name attribute a null name, no
+  side can name it, so `ViewTeams` leaves it out, and a side with no set name reads UNKNOWN,
+  as `ExportCheck` and `CodeOf` treat a set with no name. A side reading UNKNOWN is named in
+  the plan's lines with why, `ViewTeams.UnknownWords`, saying only what was read: no set
+  name, no set tree read, no set of that name in it, no folder naming a team, sets of one
+  name giving two teams, or a code whose team reads UNKNOWN. A PAIR OF TEAMS IS WRITTEN ONE
+  WAY ROUND, `TeamPair.For` with `TeamPair.Compare`: the map's lines first, then any other
+  team by its name, then UNKNOWN, so one pair is one folder. Two codes of one team pair as
+  that team against itself, point 10. A pair carries the size folder where the map's
+  size-folder line names one of its teams, `TeamPair.TeamCarriesSizeFolder`, and with no map
+  none does. The TEAMS lines say both in the words of `TeamPair.OrderWords` and
+  `TeamPair.SizeFolderWords`, kept beside the rule. Built by F131 and carried here by
+  Bader's answer B to Q134, the pair reads the map through its public members alone,
+  `Teams`, `UnknownTeam` and `SizeFolderTeams`. In a pair carrying the size folder a clash
+  whose larger service is over the threshold goes in the test's view under Over 150mm and
+  every other clash in its view in the pair folder, so no clash is in two views, and a test
+  with no open clash gets no view. NO MIRRORED TEST GETS A VIEW, Bader's point that there
+  are no mirrored tests: the plan takes the tests F132's mirror rule names, a plain list of
+  test names until fix-F132 is merged, because a mirror not run this week can still hold an
+  earlier run's results in the document. A mirror's clashes are left out and counted and the
+  test named, and with no mirror rule handed in the plan's lines say so. The plan keeps the
+  mirror list it was handed, `MirrorRule`, the one copy of it the VIEWS TREE reads. The
+  views come in the order a person reads them, priority, pair in the map's order, the pair's
+  views, its size folder, test name Ordinal. A VIEW SHOWS ONLY THE MODELS ITS CLASHING ITEMS
+  LIVE IN, Bader's answer B to Q119 on 2026-10-05: `ShownModels` shows the model each
+  clashing item lives in and hides every other, a model of the pair's own teams and a model
+  whose code will not read among them. A home in a third team's model is shown and named as
+  an exception, Q118 A, and a home whose model's code will not read is shown with its team
+  UNKNOWN. A home that could not be read is counted and one naming no model of the group is
+  named, since whether that model is shown is UNKNOWN. A VIEW'S HOMES ARE GATHERED ONCE,
+  `PlannedTestView.Homes`, each clash's first home then its second, read by the tree line
+  and check 3 through `ShownModels`, F114 attempt 4. A NAME IS TIED TO A MODEL BY ONE RULE,
+  `ModelNames`, for a home and for a hidden model read back alike, in the plan, the tree
+  line and check 3: `ContainerName.Stem` under `ContainerName.StemComparer`, without case,
+  the stem and the comparer `SameName` reads for SimilarNames and the NWF folder, so a path,
+  a bare file name and a display name with no extension all reach the model, F114 attempt 4
+  on the breaker's finding that a home written as a path missed every model. A NAME THAT
+  REACHES NO MODEL, OR MORE THAN ONE, IS NOT TIED and is named, F114 attempt 5: more than
+  one is one file name in two folders, which a group gathered with subfolders can hold, and
+  a home of two models shows both. A model whose file name has no stem can be reached by no
+  name and is named. `PaintPlan` paints every first item red and every second green unless
+  already red. `FramingBox` frames the open clash centres padded by
+  `FramingMarginMillimetres`, chosen and not measured, through UnitTable, and gives a view
+  of one clash no box so it keeps Clash Detective's own camera
 - ONLY WHAT THIS TOOL MADE IS EVER REMOVED, Q114 point 16, F114, by the design's four safety
   rules. THE PLACE OF A VIEW IS WRITTEN ONCE, `ViewPlace`: its folders and name joined by a
   slash for a person to read, and a key telling a folder from a view and a folder named A/B

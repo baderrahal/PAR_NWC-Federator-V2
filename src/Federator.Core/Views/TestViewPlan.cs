@@ -159,9 +159,11 @@ namespace Federator.Core.Views
 
         private static void NameAnUnknownSide(TestViewPlanOutcome outcome, ViewTeams teams, string setName)
         {
-            if (string.Equals(teams.TeamOfSet(setName), teams.Map.UnknownTeam, StringComparison.Ordinal))
+            string words = teams.UnknownWords(setName);
+
+            if (words != null)
             {
-                outcome.NameUnknownSet(setName);
+                outcome.NameUnknownSet(setName, words);
             }
         }
 
