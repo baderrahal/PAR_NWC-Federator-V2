@@ -235,3 +235,19 @@ jobs:
       - name: The tracker check names every fault it was written for
         shell: powershell
         run: powershell -NoProfile -ExecutionPolicy Bypass -File tools\tracker\prove-tracker.ps1
+
+      # F139, Bader's message of 6 Oct 2026, Q139. steps\PROGRESS.md, the one page a session
+      # starts from, is at most 60 lines and its counts are what tools\tracker\make-tracker.ps1
+      # makes from steps\tracker.csv. This refuses each fault the header of
+      # tools\tracker\check-progress.ps1 lists, the one list of them, each naming its line.
+      - name: The progress page is at most 60 lines and its counts are what the tracker makes
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File tools\tracker\check-progress.ps1
+
+      # A check that only ever runs against a clean page proves nothing. Each fixture under
+      # tools\tracker\progress-fixtures is the good page with one thing broken, and the check has
+      # to name exactly its line, and the maker has to refuse a page whose markers are wrong and
+      # write nothing.
+      - name: The progress check names every fault it was written for
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File tools\tracker\prove-progress.ps1
