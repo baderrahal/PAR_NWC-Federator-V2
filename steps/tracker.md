@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 473 rows: open 209, in progress 54, in review 0, merged 178, proven by a run 26, waiting for Bader 1, dropped 5
-- By wave: 1 19, 2a 31, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 69, outside the waves 2, right after F133 merges 6
-- In progress now: F109 install, F114 views, F115 sets, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, step 364 the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 39 FR items
+- By status, of 486 rows: open 222, in progress 37, in review 0, merged 195, proven by a run 26, waiting for Bader 1, dropped 5
+- By wave: 1 19, 2a 43, 2a and 2b 1, 2b 29, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 6, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 70, outside the waves 2, right after F133 merges 6
+- In progress now: F109 install, F114 views, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, step 364 the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 23 FR items
 - Waits for Bader, 1 row: step 228-233
 
 ## Wave 1
@@ -35,26 +35,26 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| FR-010 | empty sets contains judged as equals | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-011 | empty sets names and lists typed in core | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-012 | revit worksets list unread looks empty | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-013 | set sides read failure returns empty so sets removed | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-014 | set leftover walk skips test folders and second source | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-015 | set drift key ignores negation group and comparison | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-016 | set drift lines describe or set as and chain | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-017 | set value unreadable kind read as empty string | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-018 | rebuilt set not found again counted as zero items | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-019 | set parent handle held across replacewithcopy | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-020 | rebuilt sets do not ask for nwf save | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-021 | set lines claim every set matches when unread | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-022 | sets summary counts created sets only | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-023 | set warnings negated category reported as asked | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-024 | identical sets signature ignores flags | F115 | silent wrong number | in progress | none, branch fix-F115 | none | 2026-10-05 |
-| FR-027 | empty sets block never written on a first run | F115 | broken feature | in progress | none, branch fix-F115 | none | 2026-10-05 |
+| FR-010 | empty sets contains judged as equals | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-011 | empty sets names and lists typed in core | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-012 | revit worksets list unread looks empty | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-013 | set sides read failure returns empty so sets removed | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-014 | set leftover walk skips test folders and second source | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-015 | set drift key ignores negation group and comparison | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-016 | set drift lines describe or set as and chain | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-017 | set value unreadable kind read as empty string | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-018 | rebuilt set not found again counted as zero items | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-019 | set parent handle held across replacewithcopy | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-020 | rebuilt sets do not ask for nwf save | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-021 | set lines claim every set matches when unread | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-022 | sets summary counts created sets only | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-023 | set warnings negated category reported as asked | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-024 | identical sets signature ignores flags | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
+| FR-027 | empty sets block never written on a first run | F115 | broken feature | merged | 142 | none | 2026-10-07 |
 | FR-176 | coverage of the clash xml | F127 | Bader's request | in progress | none, branch fix-F127 | none | 2026-10-05 |
 | FR-182 | mirrored tests kept once | F132 | Bader's decision | in progress | none, branch fix-F132 | none | 2026-10-05 |
 | FR-183 | mirrored tests in an existing nwf | F132 | Bader's decision | in progress | none, branch fix-F132 | none | 2026-10-05 |
-| F115 | sets | F115 | fix | in progress | none, branch fix-F115 | none | 2026-10-05 |
+| F115 | sets | F115 | fix | merged | 142 | none | 2026-10-07 |
 | F127 | coverage of the clash XML | F127 | fix | in progress | none, branch fix-F127 | none | 2026-10-05 |
 | F132 | mirrored tests | F132 | fix | in progress | none, branch fix-F132 at 93b45b1, attempt 9 on one blocking point next | none | 2026-10-06 |
 | Q112-2 | coverage of the clash XML (FR-176) | F127 | Bader's request | in progress | none, branch fix-F127 | none | 2026-10-05 |
@@ -66,6 +66,18 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q133 | a mirrored test can find more than the one it mirrors | F132 | question | merged | 121 | none | 2026-10-05 |
 | FR-200 | coverage sheet names every test not created | F127 | Bader's decision | open | none | none | 2026-10-06 |
 | Q140 | F132's next attempt only for a fault that can change a clash count or its test | F132 | Bader's request | in progress | none, branch fix-F132 | none | 2026-10-06 |
+| F115-R1 | side.Selection and every SelectionSource of the side walk are never disposed | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R2 | a rebuild is recorded only after the re-read so a throw after ReplaceWithCopy reports FAILED and asks for no save | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R3 | two sets of one name in one folder have their drift read off one and the other replaced | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R4 | a picked XML of sets alone or the Build sets button writes no EMPTY SETS block and no tsv row | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R5 | the category list of ten federations is handed to the judge as complete | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R6 | a present set at zero whose search would not read is in the at zero count but not judged and no line says so | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R7 | the sets summary carries no drifted or rebuilt or could not read count | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R8 | a clash side whose source is a folder of sets credits the folder and not the sets in it | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R9 | the judge reads the model names through ContainerName.Parse outside any guard so bad naming settings fail the group | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R10 | the judge branch for the workset list inside Core not read has no test | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R11 | the Build sets button judges every set at zero CANNOT TELL | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R12 | whether SearchCondition.Options reads back StartGroup 64 is UNKNOWN until the wave 2a weekly run | F115 | register row | open | none | none | 2026-10-05 |
 
 ## Wave 2a and 2b
 
@@ -566,6 +578,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q141 | a clash in a result group with two statuses | none | question | merged | 139 | none | 2026-10-07 |
 | Q142 | when a mirror's clashes may be merged | none | question | merged | 139 | none | 2026-10-07 |
 | T5-R-P15CRASH | probe P15 read a viewpoints copy after Document.Clear, Navisworks crashed and the guard refused the put back, put back by the lead at 14:53 from its backup | none | register row | proven by a run | none | turn5\restart\putback-rebuild-views-20261007-144356-write, 0 still different | 2026-10-07 |
+| F115-R13 | the F115 log entry was written as the lead's delegate | none | register row | open | none | none | 2026-10-05 |
 
 ## outside the waves
 
