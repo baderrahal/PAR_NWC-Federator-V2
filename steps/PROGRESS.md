@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-07 17:51, last run 04/item2-C02
+STATE NIGHT, 2026-10-07 18:45, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -8,29 +8,29 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 23 | 8 | 0 | 0 | 23 | 0 | 54 |
+| 2a | 23 | 7 | 1 | 0 | 25 | 0 | 56 |
 | 2b | 11 | 16 | 0 | 1 | 5 | 0 | 33 |
 | 2c | 4 | 1 | 0 | 0 | 4 | 0 | 9 |
 | 3a | 8 | 4 | 0 | 0 | 8 | 0 | 20 |
 | 3b | 8 | 2 | 0 | 0 | 10 | 0 | 20 |
-| 4 | 0 | 0 | 0 | 0 | 57 | 0 | 57 |
-| 5 | 4 | 0 | 0 | 0 | 68 | 0 | 72 |
-| outside the waves | 154 | 11 | 0 | 1 | 44 | 5 | 215 |
-| total | 231 | 42 | 0 | 2 | 219 | 5 | 499 |
+| 4 | 6 | 1 | 0 | 0 | 50 | 0 | 57 |
+| 5 | 13 | 1 | 0 | 0 | 58 | 0 | 72 |
+| outside the waves | 156 | 10 | 0 | 1 | 44 | 5 | 216 |
+| total | 248 | 42 | 1 | 2 | 204 | 5 | 502 |
 <!-- the end of the counts -->
 
 ## Now
-- F139 this page: MERGED as PR 130, ce7fcf5, at 13:34, the keep-awake reading it since 13:38
-- F132 mirrored tests: the Core half read clean at attempt 13, A of Q142, its add-in half in work on fix-F132
-- F114 views: the Core half merged as PR 141, its add-in pass next on the laptop after F132's
-- Probes: P11 to P14 done, P15 to P19 returned and are read next, step 364's property probe running
-- F131 merged as PR 135 and F138 as PR 127, the switch proven by the Q133 probe's real start
-- Lane B, steps\lane-b.md: F115 merged as PR 142 and 144, F127's Core half 145, F137 part 1 146, F118's FR-035 and FR-037 147, F119's nine 148
+- SAFE TO SHUT DOWN at 18:45. Closed by Bader's STOP SAFELY procedure, the keep-awake stopped, no Navisworks of the loop runs
+- Q143, 2026-10-07: 9 product fixes merged today, 141, 142, 145, 146, 147, 148, 150, 151 and 154, with 144 and 152 the records and the fold, F132's add-in half, attempt 1 of two, pushed as fd936b1 and read CHANGES by the breaker on two faults the team would see, the views and a no XML by design pass, attempt 2 in the morning
+- Expected release from the pace: 2026-10-13. Left for the release are about ten add-in items on the laptop lane,
+  F132's add-in half, F114's add-in pass, F109, F129, F130, F120 and the add-in halves of F115, F127, F118 and F119,
+  at two or three a day over 8, 9, 12 and 13 Oct, then C06 and C07 in full and his three tests of done
+- Lane B, steps\lane-b.md: goes on alone tonight with F128's Core part and F121's rest
 
 ## Next
-1. F132's add-in half read and merged, then F114's add-in pass, in Bader's order of Q143
-2. Main installed in place and the timed runs of 1A02MM and 1A04PK with the new views
-3. The close from 18:40: STATE NIGHT, the one records PR of the day with Q143's limits, SAFE TO SHUT DOWN
+1. Morning: System log, Roamer, settings against the last backup, STATE OPEN, then F132's add-in half attempt 2 on F132-R4 and R5
+2. F114's add-in pass, then install main and the timed runs of 1A02MM and 1A04PK with the new views
+3. Fold lane B's night merges into the tracker, then F109, F129, F130, F120 in Q143's order
 
 ## Waiting for Bader
 - No question. Steps 228 to 233, the published NWD in ACC, his at the final run after F114 merges
