@@ -455,11 +455,11 @@ T5-R-HARNESSARGS,prove-run.ps1's param block has no CmdletBinding so a misspelt 
 T5-R-M5AUTOSAVE,"the switch comes after M5's read, so m5.txt names the loop's own write of the autosave key",none,none,register row,open,none,none,2026-10-06
 T5-R-HELDOFF,"a run that leaves 3 0 makes the next backup read it as his value, put back by hand",none,none,register row,open,none,none,2026-10-06
 F139-R7,"a commit staging tracker.csv or the page is refused where no powershell is on PATH, such as a container, a stated limit the lead accepted",none,none,register row,dropped,none,none,2026-10-07
-F139-R8,"steps\logs\README.md line 11 names steps/log.md, in a folder never edited, for Bader",none,none,register row,waiting for Bader,none,none,2026-10-07
+F139-R8,"steps\logs\README.md line 11 names steps/log.md, in a folder never edited, for Bader",none,none,register row,merged,139,none,2026-10-07
 F139-R9,"the Stop gate's merge test reads only a line starting STATE and a space in capitals, while its reader takes other spellings, so a page written another way is refused until respelled, the lead writing the plain form",none,none,register row,open,none,none,2026-10-07
-step 228-233,"the published NWD's file properties and its ACC upload never checked, ACC put off by Bader",none,none,register row,waiting for Bader,none,none,2026-10-07
-step 346-352,"the remote branches other than main not deleted, D6, read off the live list first",none,none,register row,waiting for Bader,none,none,2026-10-07
-step 364,the CSV of one mechanical NWC and its PROBE block not sent,none,none,register row,waiting for Bader,none,none,2026-10-07
+step 228-233,"the published NWD checked in ACC, by Bader himself at the final run after F114 merges",none,none,register row,waiting for Bader,none,none,2026-10-07
+step 346-352,"the remote branches other than main whose pull requests merged, deleted by the lead by Bader's answer, D6",none,none,register row,in progress,none,none,2026-10-07
+step 364,"the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept",none,none,register row,in progress,none,none,2026-10-07
 T5-R-WALKRACE,the harness's walk of the loop folder races a lane building under a wt- folder,none,none,register row,open,none,none,2026-10-07
 FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,open,none,none,2026-10-06
 FR-199,blocks stay in measured order with a priority file,F118,2c,Bader's decision,open,none,none,2026-10-06
@@ -469,5 +469,5 @@ FR-202,sub object ownership measured before two reads change,F121,4,Bader's deci
 FR-203,open statuses rule stays naming its reader,F123,5,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
 FR-204,manifest line 9 and its one exception,F123,5,Bader's decision,open,none,none,2026-10-06
 Q140,F132's next attempt only for a fault that can change a clash count or its test,F132,2a,Bader's request,in progress,"none, branch fix-F132",none,2026-10-06
-Q141,a clash in a result group with two statuses,none,none,question,waiting for Bader,none,none,2026-10-07
-Q142,when a mirror's clashes may be merged,none,none,question,waiting for Bader,none,none,2026-10-07
+Q141,a clash in a result group with two statuses,none,none,question,merged,139,none,2026-10-07
+Q142,when a mirror's clashes may be merged,none,none,question,merged,139,none,2026-10-07
