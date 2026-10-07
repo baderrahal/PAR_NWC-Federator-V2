@@ -11,7 +11,7 @@ namespace Federator.Core.Views
     /// clash took 94.5 percent of the 2 h 12 min baseline on 1A02MM.
     ///
     /// THE TREE, points 9 to 12: the priority folder, A, B, C or No priority, always there, then
-    /// the team pair folder in the team map's one order, F131's TeamPair, then the view named
+    /// the team pair folder in the team map's one order, TeamPair, then the view named
     /// exactly by its test. Over 150mm sits inside a pair folder whose pair carries it, never
     /// shared and never at the priority level.
     ///
@@ -175,14 +175,14 @@ namespace Federator.Core.Views
                 return byPriority;
             }
 
-            int byFirst = map.Compare(a.Pair.First, b.Pair.First);
+            int byFirst = TeamPair.Compare(map, a.Pair.First, b.Pair.First);
 
             if (byFirst != 0)
             {
                 return byFirst;
             }
 
-            int bySecond = map.Compare(a.Pair.Second, b.Pair.Second);
+            int bySecond = TeamPair.Compare(map, a.Pair.Second, b.Pair.Second);
 
             if (bySecond != 0)
             {

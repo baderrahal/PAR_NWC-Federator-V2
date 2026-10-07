@@ -38,7 +38,7 @@ namespace Federator.Core.Teams
     /// the log, COVERAGE and the form. The grouping, the one-discipline judgement, the alignment
     /// and export checks and the workbook keep the code.
     /// </summary>
-    public sealed class TeamMap : IComparer<string>
+    public sealed class TeamMap
     {
         /// <summary>A line naming one team and its codes.</summary>
         internal const string TeamMarker = "team:";
@@ -47,8 +47,6 @@ namespace Federator.Core.Teams
         internal const string SizeFolderMarker = "size-folder:";
 
         private readonly Dictionary<string, string> teamOf;
-
-        private readonly List<string> sizeFolder;
 
         private readonly List<List<string>> codesOf;
 
@@ -69,7 +67,7 @@ namespace Federator.Core.Teams
             UnknownTeam = string.IsNullOrEmpty(unknownTeam) ? TeamMapSettings.DefaultUnknownTeam : unknownTeam;
             Teams = new ReadOnlyCollection<string>(new List<string>(teams));
             codesOf = new List<List<string>>(codes);
-            sizeFolder = new List<string>(sizeFolderTeams);
+            SizeFolderTeams = new ReadOnlyCollection<string>(new List<string>(sizeFolderTeams));
             teamOf = new Dictionary<string, string>(StringComparer.Ordinal);
 
             List<string> every = new List<string>();
@@ -106,6 +104,13 @@ namespace Federator.Core.Teams
 
         /// <summary>Every code the map gives a team, in the order of the lines.</summary>
         public ReadOnlyCollection<string> Codes { get; private set; }
+
+        /// <summary>
+        /// The teams the map's size-folder line names, in the order named, point 11, and none
+        /// where the map maps nothing. Which pair carries the size folder is the views' rule,
+        /// TeamPair of F114, Bader's answer B to Q134.
+        /// </summary>
+        public ReadOnlyCollection<string> SizeFolderTeams { get; private set; }
 
         /// <summary>Whether the map is there and was read whole.</summary>
         public bool IsRead
@@ -368,66 +373,6 @@ namespace Federator.Core.Teams
         }
 
         /// <summary>
-        /// Point 12, the one order of two teams: the map's lines first, in their order, then any
-        /// other team by its name, Ordinal, then the UnknownTeam setting last. So a pair is
-        /// always written the same way round and one pair never becomes two folders.
-        /// </summary>
-        public int Compare(string x, string y)
-        {
-            string first = string.IsNullOrEmpty(x) ? UnknownTeam : x;
-            string second = string.IsNullOrEmpty(y) ? UnknownTeam : y;
-
-            if (string.Equals(first, second, StringComparison.Ordinal))
-            {
-                return 0;
-            }
-
-            int firstLine = LineOf(first);
-            int secondLine = LineOf(second);
-
-            if (firstLine >= 0 || secondLine >= 0)
-            {
-                if (firstLine < 0)
-                {
-                    return 1;
-                }
-
-                return secondLine < 0 ? -1 : firstLine.CompareTo(secondLine);
-            }
-
-            if (string.Equals(first, UnknownTeam, StringComparison.Ordinal))
-            {
-                return 1;
-            }
-
-            if (string.Equals(second, UnknownTeam, StringComparison.Ordinal))
-            {
-                return -1;
-            }
-
-            return Math.Sign(string.CompareOrdinal(first, second));
-        }
-
-        private int LineOf(string team)
-        {
-            for (int i = 0; i < Teams.Count; i++)
-            {
-                if (string.Equals(Teams[i], team, StringComparison.Ordinal))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
-        /// <summary>Point 11. Whether a pair holding that team carries the size folder, only where the map's size-folder line names it.</summary>
-        public bool CarriesSizeFolder(string team)
-        {
-            return !string.IsNullOrEmpty(team) && sizeFolder.Contains(team);
-        }
-
-        /// <summary>
         /// The codes a set name is read against: the map's, in the order of its lines, then the
         /// group's own models' codes, each once. So a code that is a team of its own is still
         /// found in a set name when a model of the group carries it.
@@ -519,9 +464,9 @@ namespace Federator.Core.Teams
             lines.Add(Prefix + "a pair is written in the order " + string.Join(", ", new List<string>(Teams).ToArray())
                 + ", then any other team by its name, then " + UnknownTeam);
 
-            lines.Add(Prefix + (sizeFolder.Count == 0
+            lines.Add(Prefix + (SizeFolderTeams.Count == 0
                 ? "no team carries the size folder"
-                : "a pair holding " + Listed(sizeFolder, " or ") + " carries the size folder"));
+                : "a pair holding " + Listed(SizeFolderTeams, " or ") + " carries the size folder"));
 
             return lines;
         }

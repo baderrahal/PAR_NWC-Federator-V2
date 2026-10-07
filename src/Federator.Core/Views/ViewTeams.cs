@@ -8,7 +8,7 @@ namespace Federator.Core.Views
     /// How the views read a team, F114, Q114 points 10 to 12, with Q116 by its default A: the
     /// team map applies to the views. A side's team is the map's team of the code its set name
     /// carries, CodeOf.Set, and a model's team the map's team of the code its file name
-    /// carries. The pair and its one order are F131's TeamPair, read here and never copied.
+    /// carries. The pair and its one order are TeamPair's, read here and never copied.
     ///
     /// THE KNOWN CODES are the map's and the group's own models' codes, TeamMap.KnownCodes, so a
     /// code that is a team of its own is still read off a set name.

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Federator.Core.Clash;
-using Federator.Core.Teams;
 
 namespace Federator.Core.Views
 {

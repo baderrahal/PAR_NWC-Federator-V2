@@ -316,10 +316,9 @@ and 6 does not read as broken.
   those of the group's own models. `DisciplinePairRule.CodeIn` reads through it with the
   views' seven codes until F114 replaces it. A model's code stays part 5 of its file name
   through `ContainerName.Parse`, and its team is the map's
-- A PAIR OF TEAMS IS WRITTEN ONE WAY ROUND, `TeamPair.For` with `TeamMap.Compare`: the map's
-  lines first, then any other team by its name, then UNKNOWN, so one pair is one folder. Two
-  codes of one team pair as that team against itself, point 10. A pair carries the size
-  folder where the map names one of its teams, and with no map none does
+- THE PAIR OF TWO TEAMS, ITS ORDER AND ITS SIZE FOLDER ARE F114'S, Bader's answer B to Q134,
+  so F131 holds no member for them. The map gives its teams in line order, `TeamMap.Teams`,
+  and the teams its size-folder line names, `TeamMap.SizeFolderTeams`, and judges neither
 - A SET THAT CANNOT REACH A MODEL OF ITS OWN TEAM IS A SILENT MISS, FR-181, Q114 point 3,
   `SilentMisses`: a set of team T and code C and a model of team T with another code, where
   every group of the set asks, not negated, a workset the model's whole list does not carry
@@ -1190,8 +1189,14 @@ and 6 does not read as broken.
   or defaults A and Q119 by Bader's answer B of 2026-10-05.
   `TestViewPlan` gives each test one view of its clashes at the `ViewStatuses` setting, New
   and Active, in the folder of its priority, A, B, C or No priority, always there, then its
-  team pair, F131's `TeamPair` read through `ViewTeams`, the one place the views read a team,
-  and never copied. In a pair carrying the size folder a clash whose larger service is over
+  team pair, `TeamPair` read through `ViewTeams`, the one place the views read a team, and
+  never copied. A PAIR OF TEAMS IS WRITTEN ONE WAY ROUND, `TeamPair.For` with
+  `TeamPair.Compare`: the map's lines first, then any other team by its name, then UNKNOWN,
+  so one pair is one folder. Two codes of one team pair as that team against itself, point
+  10. A pair carries the size folder where the map's size-folder line names one of its
+  teams, `TeamPair.TeamCarriesSizeFolder`, and with no map none does. Built by F131 and
+  carried here by Bader's answer B to Q134, it reads the map through its public members
+  alone, `Teams`, `UnknownTeam` and `SizeFolderTeams`. In a pair carrying the size folder a clash whose larger service is over
   the threshold goes in the test's view under Over 150mm and every other clash in its view
   in the pair folder, so no clash is in two views, and a test with no open clash gets no
   view. NO MIRRORED TEST GETS A VIEW, Bader's point that there are no mirrored tests: the

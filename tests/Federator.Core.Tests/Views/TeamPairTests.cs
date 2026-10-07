@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Federator.Core.Teams;
 using Federator.Core.Views;
 using NUnit.Framework;
@@ -5,8 +6,9 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// The pair of two teams and its one order, F131, Q114 points 10, 11 and 12 and Q114's B12 by
-    /// its default A: the map's line order, so one pair is always written the same way round
+    /// The pair of two teams, its one order and its size folder, Q114 points 10, 11 and 12 and
+    /// Q114's B12 by its default A, built by F131 and carried into F114 with its tests by Bader's
+    /// answer B to Q134: the map's line order, so one pair is always written the same way round
     /// and never becomes two folders. Two codes of one team pair as that team against itself.
     /// The size folder sits in a pair holding a team the map names for it.
     /// </summary>
@@ -62,7 +64,7 @@ namespace Federator.Core.Tests
             Assert.That(PairOfCodes("LS", string.Empty).CarriesSizeFolder, Is.False);
         }
 
-        /// <summary>Q123 by its default A: with no map every code is a team of its own, the pair is of codes by name, and none carries the size folder.</summary>
+        /// <summary>With no map every code is a team of its own, the pair is of codes by name, and none carries the size folder.</summary>
         [Test]
         public void WithNoMapAPairIsOfCodesAndCarriesNoSizeFolder()
         {
@@ -81,6 +83,48 @@ namespace Federator.Core.Tests
 
             Assert.That(TeamPair.For("Mechanical", "Structure", map, " / ").Folder, Is.EqualTo("Structure / Mechanical"));
             Assert.That(() => TeamPair.For("Mechanical", "Structure", null, Vs), Throws.ArgumentNullException);
+        }
+
+        /// <summary>
+        /// Point 12. A pair is always written the same way round, the teams in the order of the
+        /// map's lines, then any other team by its name, then UNKNOWN last. With no map every
+        /// code is a team of its own, by its name, and UNKNOWN still last.
+        /// </summary>
+        [Test]
+        public void TeamsAreOrderedByTheMapLinesThenOtherTeamsByNameThenUnknownLast()
+        {
+            TeamMap map = TeamMapTests.MapOf(TeamMapTests.BadersMap);
+            List<string> teams = new List<string> { "UNKNOWN", "LS", "Electrical", "CV", "Mechanical", "Structure", "Architecture" };
+
+            teams.Sort((x, y) => TeamPair.Compare(map, x, y));
+
+            TeamMapTests.Same(teams, "Architecture", "Structure", "Mechanical", "Electrical", "CV", "LS", "UNKNOWN");
+            Assert.That(TeamPair.Compare(map, "Mechanical", "Mechanical"), Is.EqualTo(0));
+
+            TeamMap none = TeamMap.NoXml(new TeamMapSettings());
+            List<string> codes = new List<string> { "UNKNOWN", "XX", "ST", "EL", "AR" };
+
+            codes.Sort((x, y) => TeamPair.Compare(none, x, y));
+
+            TeamMapTests.Same(codes, "AR", "EL", "ST", "XX", "UNKNOWN");
+        }
+
+        /// <summary>Point 11. Only a team the size-folder line names carries the size folder, and no team does with no map.</summary>
+        [Test]
+        public void OnlyTheTeamsTheMapNamesCarryTheSizeFolder()
+        {
+            TeamMap map = TeamMapTests.MapOf(TeamMapTests.BadersMap);
+
+            Assert.That(TeamPair.TeamCarriesSizeFolder(map, "Mechanical"), Is.True);
+            Assert.That(TeamPair.TeamCarriesSizeFolder(map, "Electrical"), Is.True);
+
+            foreach (string team in new[] { "Architecture", "Structure", "LS", "UNKNOWN", "mechanical" })
+            {
+                Assert.That(TeamPair.TeamCarriesSizeFolder(map, team), Is.False, team);
+            }
+
+            Assert.That(TeamPair.TeamCarriesSizeFolder(TeamMapTests.MapOf("team: Mechanical | ME\n"), "Mechanical"), Is.False);
+            Assert.That(TeamPair.TeamCarriesSizeFolder(TeamMap.NoXml(new TeamMapSettings()), "ME"), Is.False);
         }
     }
 }

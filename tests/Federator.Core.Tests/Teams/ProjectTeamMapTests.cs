@@ -36,15 +36,8 @@ namespace Federator.Core.Tests
                 Assert.That(map.TeamOf(code), Is.EqualTo(his.TeamOf(code)), code);
             }
 
-            foreach (string team in his.Teams)
-            {
-                Assert.That(map.CarriesSizeFolder(team), Is.EqualTo(his.CarriesSizeFolder(team)), team);
-            }
-
-            Assert.That(map.CarriesSizeFolder("Mechanical"), Is.True);
-            Assert.That(map.CarriesSizeFolder("Electrical"), Is.True);
-            Assert.That(map.CarriesSizeFolder("Architecture"), Is.False);
-            Assert.That(map.CarriesSizeFolder("Structure"), Is.False);
+            TeamMapTests.Same(his.SizeFolderTeams, "Mechanical", "Electrical");
+            TeamMapTests.Same(map.SizeFolderTeams, "Mechanical", "Electrical");
         }
 
         /// <summary>
