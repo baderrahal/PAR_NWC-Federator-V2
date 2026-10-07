@@ -1,7 +1,72 @@
 # log
 
 Newest entry at the top.
-## 2026-10-07 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 6 carrying the team pair by Bader's answer B to Q134, after attempt 5 on the readers' findings of attempt 4, written by the lead's delegate
+## 2026-10-07 The loop, turn 5, F114 the views, FR-184 to FR-187 with FR-066, FR-068, FR-071 and FR-074, CORE HALF DONE and built, wave 2b, attempt 7 on the readings of attempt 6, after attempt 6 carrying the team pair by Bader's answer B to Q134, written by the lead's delegate
+
+### Attempt 7, on the readings of attempt 6
+
+Attempt 6 read APPROVE from the reviewer and the breaker, with findings that block nothing,
+turn5\lanes-1007-review6-F114.json and lanes-1007-break6-F114.json. Main was bb16672 at the
+fetch and already in the branch, so nothing was merged, turn5\f114-a7-merge-main.txt.
+
+ONE RULE FOR THE TEAM OF A SET, the reviewer's finding 1. ViewTeams takes the clash XML's sets and
+reads a side's team through TeamMap.TeamOfSet, Bader's answer C to Q117 and A where the set tree
+names no team, so BLD-Security Devices is Electrical in the views as on the TEAMS line. A side is
+named by its set name alone, so two sets of one name whose folders give two teams read UNKNOWN.
+The plan names a side that reads UNKNOWN, and its line says so. ViewTeams.SetHasCode lost its one
+caller and is gone.
+
+THE TEAMS WORDS READ OFF THE RULE, the breaker's finding 1. The TEAMS lines on the order of a pair
+and the size folder are TeamPair.OrderWords and TeamPair.SizeFolderWords, beside the rule. A map
+naming a team by the UnknownTeam word sorts it by its line, and its line no longer says UNKNOWN
+comes last. ONE LOOKUP OF A TEAM'S LINE, the reviewer's finding 4: TeamMap.LineOf is gone and
+FolderNamingATeam reads Teams.Contains.
+
+RECORDS, the readers' writing findings. The run-on sentence after the Q134 bullet of
+.claude\rules\core.md and the line over width are set right, and F114's rule there says a side's
+team. In steps\01_next.md order line 46 and the F114 section's bullets on F131's pair and on the
+defaults A say what the branch holds.
+
+TESTS. 3 new, TheClientsSetWithNoCodeTakesTheTeamItsFolderNamesAsTheTeamsLineSays on the
+corrected XML and ASetsFolderGivesItsTeamOnlyWhereItsNameCarriesNoCodeAndOneTeamIsNamed in
+TestViewPlanTests, and TheTeamsLinesSayWhatThePairRuleDoes in TeamPairTests. The line
+ASetNameWithNoCodeIsNamedInTheLines looks for changed with the rule, and its test still names
+BLD-Security Devices where no set tree is handed in. All 4 failed first against a stub that takes
+the sets and ignores them, turn5\f114-a7-before-fail.txt, after 28 CS1729 against the old
+constructor, f114-a7-before-compile.txt. 11 older call sites hand in no set tree.
+
+Core tests 2138 passed before at 065d826 and 2141 after at 02a71ff, 0 failed, 0 skipped,
+turn5\f114-a7-core-before.txt, f114-a7-core-after.txt and the pre-commit,
+f114-a7-precommit-code.txt. The solution builds whole at 02a71ff, the last code commit, with
+--no-incremental, 0 warnings and 0 errors, git rev-parse --short HEAD and an empty git status at
+its top, turn5\f114-a7-build-code.txt. check-locals and check-imports pass on src,
+turn5\f114-a7-checks.txt.
+
+Programs and Navisworks: dotnet build, dotnet test, git, sh for the two checks and the
+pre-commit, python for the text edits and powershell for the process reads. None starts a
+Navisworks, and no stand-in, harness or probe was run. Get-Process Roamer read none running
+before the work at 13:21:04, turn5\f114-a7-roamer-before.txt, and is read again after it,
+f114-a7-roamer-after.txt.
+
+### Known bugs, attempt 7
+
+- B5 of attempt 3, Q117 C not carried, is closed by this attempt
+- F114-K29, new, for Bader. A team map may name a team by the UnknownTeam word. A side with no
+  code and a side of that team then share one name in a pair folder. Whether the map refuses
+  such a team is his to say
+- F114-K30, new, for the add-in pass. A side is read by its set name alone, the text after the
+  last slash of the test's locator. The locator holds the set's folders as well, and handing
+  them in would tell two sets of one name apart
+- F114-K1 to F114-K28 stand as attempts 2 to 5 wrote them
+
+### Every file written outside the repo, attempt 7
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn5\f114-a7-roamer-before.txt, f114-a7-merge-main.txt, f114-a7-core-before.txt,
+  f114-a7-before-compile.txt, f114-a7-before-fail.txt, f114-a7-core-after.txt,
+  f114-a7-checks-pre.txt, f114-a7-rules.py, f114-a7-msg-code.txt, f114-a7-precommit-code.txt,
+  f114-a7-build-code.txt, f114-a7-checks.txt, f114-a7-records.py, f114-a7-msg-records.txt,
+  f114-a7-precommit-records.txt, f114-a7-push.txt and f114-a7-roamer-after.txt
 
 ### Attempt 6, the team pair carried by Bader's answer B to Q134
 
