@@ -20,7 +20,7 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 | 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items merged as pull request 148 with FR-057 half, the rest left for the laptop lane |
 | 6 | F128's Core part, generic models, FR-177 | fix-F128 | not started, see below |
 | 7 | F121 the rest, FR-150 to FR-166 and FR-202, wave 4 | fix-F121 | five items merged as pull request 150, the rest left for the laptop lane |
-| 8 | F123 docs and words and the noise of every area, wave 5 | fix-F123 | three items in review |
+| 8 | F123 docs and words and the noise of every area, wave 5 | fix-F123 | merged as 151, 154, 155, 161, 162 and 163, T1-N89 in review |
 
 ## The item the lane is on
 
@@ -145,8 +145,9 @@ and the row that said how many worksets a stopped walk had seen.
 ## Where the lane stopped
 
 Lane B stopped on 7 Oct 2026 after Bader's second order of the night, F128, then F121 the rest, then F123,
-by the same limits. It stopped because no item is left that a Core test proves in a file no open loop
-branch changes. Each of the three was read again to the end before saying so.
+by the same limits. It took what a Core test proves in a file no open loop branch changes, and what it had
+not taken when this was written is named under F123 below, the Core refactors of T1-N54, N56 and N57
+among it.
 
 F128 was not started, and it was looked at twice. Bader's own item says to measure first which property and
 value name Generic Models on 1A02MM and 1A04PK, and that needs a probe through the guarded start of
@@ -170,13 +171,13 @@ the pull request that carries this page. The rest of F123 is the loop's own file
 FR-172 are backlogs of which the entries left are named under F123 below, each as the entry states it. The
 members read only by a test, at least 43, are Bader's Q26 and wait for the steps he asked for.
 
-One line a rule file holds that is now stale: .claude\rules\core.md near line 1699 says the remainder row
-of the timing block is named outside every step, and the by group section of the run block says outside
+One rule file line to read again: the timing block bullets of .claude\rules\core.md call the remainder row
+outside every step, which is true of the group block, and the by group section of the run block says outside
 every group since 163. Lane B never edits .claude.
 
 The pull requests lane B merged on the first part of the night are 142, 145, 146, 147, 148, 150 and 151,
 and on the second 154, 155, 160, 161, 162, 163 and this page's. Each ran its Core tests under mono here
-and on the Windows runner of Actions, one reader was run on each, and where a reader found a fault that
+and on the Windows runner of Actions, each had one reader, and where a reader found a fault that
 changes what the team sees it was fixed before the merge.
 
 Every item above that lane B left, and every point its readers raised, is under its own heading below,
@@ -289,8 +290,8 @@ for the laptop lane to take in the order it chooses.
 
 - FR-171 is a backlog and most of its entries are in the add-in, the loop's files, or files an open branch
   changes. Core entries lane B did not take, each as the entry states it and not read again on main by lane
-  B: T1-N54, N56, N57 and N89 duplicated blocks that want a refactor and no test, T1-N62 and N63 words of the
-  timing block, T1-N46, N48, N66 and N85 values and members the entry says nothing reads, and the files
+  B: T1-N54, N56 and N57 duplicated blocks that want a refactor and no test, T1-N63 a word of the timing block,
+  T1-N46, N48, N66 and N85 values and members the entry says nothing reads, and the files
   fix-F118 and fix-F132 change. AlignmentCheck.DefaultToleranceMillimetres and DefaultInternalName are
   constants the add-in passes as they stand, so a person cannot move them without a build, which the
   every number is a setting rule asks to be a setting. The comments now say so and the settings are not made
