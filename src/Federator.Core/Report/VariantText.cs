@@ -59,7 +59,7 @@ namespace Federator.Core.Report
 
         /// <summary>
         /// Whether a read-out is no value at all: empty or spaces, or one of the words
-        /// None, Disposed, Unknown and <null>, which is what ToString gives for a value it
+        /// None, Disposed, Unknown and the text of a null, which is what ToString gives for a value it
         /// cannot represent. Each comes back as the word itself, so none is a value.
         /// </summary>
         public static bool IsNothing(string value)

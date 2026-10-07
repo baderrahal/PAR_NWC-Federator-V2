@@ -82,7 +82,7 @@ namespace Federator.Core.Tests
             IList<string> lines = RunPath.ConfirmLines(new[] { RunPath.WeeklyRun });
             string all = string.Join("\n", new List<string>(lines).ToArray());
 
-            Assert.That(all, Does.Contain("Rebuilt: 0. An NWF that no longer matches the scan folder is rebuilt from it with its saved tests kept. Only known once each NWF is opened."));
+            Assert.That(all, Does.Contain("Rebuilt: 0. An NWF that no longer matches the scan folder is brought up to date without clearing it, and a shape that cannot be is cleared and rebuilt with its saved tests kept. Only known once each NWF is opened."));
         }
 
         [Test]

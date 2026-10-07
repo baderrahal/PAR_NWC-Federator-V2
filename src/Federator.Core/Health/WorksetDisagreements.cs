@@ -78,7 +78,7 @@ namespace Federator.Core.Health
     ///
     /// IT NAMES AND IT NEVER MERGES. `EL-Lightining Protection` against `EL-Lightning
     /// Protection` is a typo, and `AR-EXTERIOR` against `AR-INTERIOR` is two real
-    /// worksets, and they are two and one letter apart respectively, 5t. NO RULE CAN TELL
+    /// worksets, and they are one and two letters apart respectively, 5t. NO RULE CAN TELL
     /// THEM APART, so this tool reports both kinds and lets a person decide which is
     /// which. That is the whole point of Q69's second half: if the tool absorbs a typo
     /// silently nobody ever fixes it and the next building repeats it.

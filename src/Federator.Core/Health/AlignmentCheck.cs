@@ -113,8 +113,9 @@ namespace Federator.Core.Health
         /// <summary>
         /// The discipline whose model everything else is compared against. Architecture,
         /// because it is the one discipline every building in this project carries and
-        /// the one a coordinator opens first. A SETTING and not a constant: a group with
-        /// no model of this discipline uses its first model instead and SAYS which.
+        /// the one a coordinator opens first. A constant the rule reads as it
+        /// stands, so moving it is a build: a group with no model of this discipline uses its
+        /// first model that could be placed instead and SAYS which.
         /// </summary>
         public const string DefaultReferenceDiscipline = "AR";
 

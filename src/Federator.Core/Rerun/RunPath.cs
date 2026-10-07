@@ -18,8 +18,9 @@ namespace Federator.Core.Rerun
     /// is optional and only adds or updates tests.
     ///
     /// Rebuilt. The NWF is there and points at a different file list than the scan. It
-    /// is cleared and rebuilt from the scan folder, the tests saved inside it are kept,
-    /// and from there it is a Weekly run: units, the clash step, the reports, the NWD.
+    /// is brought up to date from the scan folder without clearing it, and a shape that
+    /// cannot be is cleared and rebuilt with the tests saved inside it kept. From there it is
+    /// a Weekly run: units, the clash step, the reports, the NWD.
     ///
     /// The label is read off the Decide result and whether an XML is picked, and nothing
     /// else. This changes what the person is told, never what the engine does.
@@ -141,8 +142,9 @@ namespace Federator.Core.Rerun
 
         /// <summary>
         /// The first lines of the confirm dialog, one count per label. The clearing
-        /// sentence is only said where it is true, which is the First run groups and the
-        /// Rebuilt groups. Rebuilt is only known once each NWF is opened, and where the
+        /// sentence is only said where it is true, which is the First run groups. The
+        /// Rebuilt line says the NWF is brought up to date without clearing it and that a shape
+        /// that cannot be is cleared. Rebuilt is only known once each NWF is opened, and where the
         /// window could not open them first the line says so rather than pretending to a
         /// number.
         ///
@@ -180,7 +182,7 @@ namespace Federator.Core.Rerun
             lines.Add(Rebuilt + ": " + counts[Rebuilt]
                 + (counts[Rebuilt] > 0
                     ? ". The NWF there no longer matches the scan folder, so it is brought up to date: what is gone is taken out and what is new is appended, WITHOUT clearing it, so the sets, the tests, the results and the viewpoints never leave it. A shape that cannot be brought up to date this way is cleared and rebuilt instead, with the tests saved inside it kept."
-                    : ". An NWF that no longer matches the scan folder is rebuilt from it with its saved tests kept. Only known once each NWF is opened."));
+                    : ". An NWF that no longer matches the scan folder is brought up to date without clearing it, and a shape that cannot be is cleared and rebuilt with its saved tests kept. Only known once each NWF is opened."));
 
             if (counts[Skipped] > 0)
             {
