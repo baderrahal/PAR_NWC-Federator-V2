@@ -303,32 +303,19 @@ namespace Federator.Core.Tests
         }
 
         // The run the reviewer named on attempt 4: no XML, an NWF holding X and its mirror under
-        // its own name with the ending, the sides of each read. Paired by the sides, merged by
-        // the pair of items, so each clash is counted once.
+        // its own name with the ending, the sides of each read. Paired by the sides, and since
+        // attempt 12, the lead's Q142 A, never merged, since no XML says the two carry its
+        // settings, so each keeps its own clashes under its own name, the breaker's finding 1 on
+        // attempt 11.
         [Test]
-        public void ANoXmlRunOverXAndXMirrorCountsEachClashOnce()
+        public void ANoXmlRunOverXAndXMirrorMergesNothing()
         {
             ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
                 Kept, MirrorRuleTests.Ducts, MirrorRuleTests.Columns, Mirror, MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
-            IList<MirrorMerge> merges = MirrorMerge.Of(
-                MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null));
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null, null);
 
-            Assert.That(merges.Count, Is.EqualTo(1), "the pair is found by the sides of the test with the ending");
-
-            MirrorMerge merge = merges[0];
-            ClashReport report = TheReport(merge, 2);
-            TestReport mirror = Named(report, Mirror);
-
-            mirror.Add(Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
-            mirror.Add(Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
-            merge.MirrorFound(merge.Pairs[0], "item 101", "item 1", mirror.Rows[0]);
-            merge.MirrorFound(merge.Pairs[0], "item 7", "item 8", mirror.Rows[1]);
-            merge.AddTo(report);
-
-            Assert.That(report.Tests.Count, Is.EqualTo(1));
-            Assert.That(report.Totals.Total, Is.EqualTo(3));
-            Assert.That(merge.FoundByBoth, Is.EqualTo(1));
-            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
+            Assert.That(rule.Pairs.Count, Is.EqualTo(1), "the pair is found by the sides of the test with the ending");
+            Assert.That(MirrorMerge.Of(rule), Is.Empty, "and none of its clashes is merged");
         }
 
         // The reviewer's fifth finding. A kept test that found nothing holds clashes once its
@@ -694,8 +681,9 @@ namespace Federator.Core.Tests
         // ---------- what a merge does not know reads UNKNOWN, the breaker's finding on attempt 6 ----------
 
         // A mirror that did not run was never compared, so what the mirrors found by both is
-        // UNKNOWN, never a plain 0 added to the sum. What was added to
-        // the kept test is a count taken, nothing of the mirror that did not run among it.
+        // UNKNOWN, never a plain 0 added to the sum. What was added to the kept test is a count
+        // taken, and since attempt 12 it is 0, since where one mirror of a kept test is not
+        // merged none is, the lead's Q142 A.
         [Test]
         public void AMirrorThatDidNotRunLeavesWhatTheMirrorsFoundUnknown()
         {
@@ -708,7 +696,8 @@ namespace Federator.Core.Tests
             merge.AddTo(report);
 
             Assert.That(merge.FoundByBoth, Is.Null);
-            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
+            Assert.That(Named(report, FirstMirror + " (mirror)").Rows.Count, Is.EqualTo(2), "it keeps its own clashes");
         }
 
         // The same where the kept test did not run and nothing was merged.
@@ -780,6 +769,42 @@ namespace Federator.Core.Tests
                 + SecondMirror + " (mirror): " + KeptOfTwo + " found 0, the mirror 1, 0 by both and 0 by the mirror only, "
                 + "added to " + KeptOfTwo + ", and 1 found by an earlier mirror of " + KeptOfTwo + " as well, added once"));
             Assert.That(report.Tests.Count, Is.EqualTo(1), "both mirrors are taken out of the report");
+        }
+
+        // The breaker's finding 5 on attempt 11, under Q140 and the lead's Q142 A. The first
+        // mirror is not merged, its report holding a clash not handed, and until attempt 12 the
+        // second was, so a clash both mirrors found and the kept test did not was added to the
+        // kept test from the second and stayed in the first mirror's own block, held twice. Now
+        // where one mirror of a kept test is not merged none is, each mirror keeps every clash
+        // it found in its own block, and the lines say why.
+        [Test]
+        public void WhereOneMirrorIsNotMergedNoMirrorOfThatKeptTestIs()
+        {
+            MirrorMerge merge = TheMergeOfTwoMirrors();
+            ClashReport report = TheReport(merge, 0);
+            string first = FirstMirror + " (mirror)";
+
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash1", ClashStatus.New, "phone 7", "wall 8"));
+            Named(report, first).Add(Row("Clash2", ClashStatus.New, "phone 9", "wall 9"));
+            Found(report, merge, 1, "item 8", "item 7", Row("Clash1", ClashStatus.New, "wall 8", "phone 7"));
+            merge.AddTo(report);
+
+            Assert.That(Named(report, KeptOfTwo).Rows.Count, Is.EqualTo(0), "nothing of either mirror is added");
+            Assert.That(report.Tests.Count, Is.EqualTo(3), "both mirrors keep their place");
+            Assert.That(report.MirrorsMerged, Is.EqualTo(0));
+            Assert.That(Named(report, SecondMirror + " (mirror)").Rows.Count, Is.EqualTo(1));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
+            Assert.That(merge.FoundByBoth, Is.Null);
+            Assert.That(merge.Lines(), Is.EqualTo(new[]
+            {
+                MirrorRule.Prefix + "   1 clash of " + first + " was handed to the merge and its report holds 2, so which "
+                    + "clashes it found is UNKNOWN, nothing of it is merged into " + KeptOfTwo + ", and it stays in the "
+                    + "report as its own test, where a clash both find is counted twice",
+                MirrorRule.Prefix + "   so no mirror of " + KeptOfTwo + " is merged into it: each of its 2 mirrors stays in "
+                    + "the report as its own test, since a clash one of them finds and " + KeptOfTwo + " does not would "
+                    + "otherwise be added from another and held in two blocks, and a clash both find is counted twice",
+                MirrorRule.Prefix + "   the report holds 0 under " + KeptOfTwo
+            }));
         }
 
         // Q138 B over a test kept with two mirrors: each mirror's copy is weighed against the

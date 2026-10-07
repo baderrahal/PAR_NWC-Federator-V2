@@ -16,10 +16,18 @@ namespace Federator.Core.Report
     /// probe P1 measured 27 on a swap where the test found 25, all 25 among them,
     /// docs\history\scan.md 5z-k on the branch fix-F114-probes.
     ///
+    /// ONLY THE PAIRS THE RULE MERGES, F132 attempt 12, the lead's Q142 A: Of takes the pairs
+    /// MirrorRule says are merged, where this run created both tests from the picked XML and
+    /// no set of either drifted from it. Every other pair keeps its own clashes and has no
+    /// merge here.
+    ///
     /// ONE MERGE PER TEST KEPT. Since Q121 B a test can be kept over more than one mirror,
     /// and a clash two of its mirrors find and it does not would be added twice by two
     /// merges, so all the mirrors of one kept test go through one merge, in the rule's order,
-    /// and such a clash is added once, under the first mirror that found it.
+    /// and such a clash is added once, under the first mirror that found it. ALL OR NONE:
+    /// where one mirror of the kept test cannot be merged, none is, F132 attempt 12, since a
+    /// clash it and another mirror find and the kept test does not would be added from the
+    /// other and still held in its own block, the breaker's finding 5 on attempt 11.
     ///
     /// ONE CLASH IS ONE UNORDERED PAIR OF ITEMS. The swap holds each pair the other way
     /// round, P1's point 2, so the two items are keyed the same whichever comes first, on
@@ -92,7 +100,11 @@ namespace Federator.Core.Report
             }
         }
 
-        /// <summary>One merge for each test kept, in the order the rule found its first pair.</summary>
+        /// <summary>
+        /// One merge for each test kept whose mirrors the rule merges, MirrorPair.Merges, in the
+        /// order the rule found its first pair. A test kept whose mirrors keep their own clashes
+        /// has none.
+        /// </summary>
         public static IList<MirrorMerge> Of(MirrorRule rule)
         {
             if (rule == null)
@@ -105,6 +117,11 @@ namespace Federator.Core.Report
 
             foreach (MirrorPair pair in rule.Pairs)
             {
+                if (!pair.Merges)
+                {
+                    continue;
+                }
+
                 List<MirrorPair> pairs;
 
                 if (!byKept.TryGetValue(pair.Kept, out pairs))
@@ -245,7 +262,9 @@ namespace Federator.Core.Report
         /// reach no row, or where a row it holds was handed with another number of clashes
         /// than it stands for, or where a clash of it was handed with an item not read, and a
         /// mirror handed another number of clashes than its report holds, or a clash with an
-        /// item not read, keeps its place and merges nothing. Every one of those is said by Lines.
+        /// item not read, keeps its place and merges nothing. Where one mirror merges nothing,
+        /// no mirror of the kept test is merged, F132 attempt 12. Every one of those is said by
+        /// Lines.
         /// </summary>
         public void AddTo(ClashReport report)
         {
@@ -282,6 +301,8 @@ namespace Federator.Core.Report
                 return;
             }
 
+            List<TestReport> taken = new List<TestReport>();
+
             foreach (MirrorCounts counts in mirrors)
             {
                 IList<TestReport> mirrorReports = Named(report, counts.Pair.MirrorName);
@@ -295,15 +316,20 @@ namespace Federator.Core.Report
 
                 counts.Ran = true;
                 counts.Holds = mirrorReports[0].RawClashes;
+                taken.Add(mirrorReports[0]);
+            }
 
-                if (counts.Found != counts.Holds || counts.NotRead > 0)
-                {
-                    continue;
-                }
+            if (mirrors.Exists(counts => !counts.Ran || counts.Found != counts.Holds || counts.NotRead > 0))
+            {
+                held = kept.RawClashes;
+                return;
+            }
 
-                counts.Merged = true;
-                Merge(counts, kept);
-                report.TakeOut(mirrorReports[0]);
+            for (int i = 0; i < mirrors.Count; i++)
+            {
+                mirrors[i].Merged = true;
+                Merge(mirrors[i], kept);
+                report.TakeOut(taken[i]);
             }
 
             if (kept.State == TestState.Passed && Sum(counts => counts.Only.Count) > 0)
@@ -483,9 +509,11 @@ namespace Federator.Core.Report
         /// one of them named with both statuses and the one the report shows, his words to
         /// Q138, and that it was taken out of the report. A mirror that did not run, was handed
         /// another number of clashes than its report holds, or was handed a clash with an item
-        /// not read, is one line saying so, UNKNOWN and never 0. Last, what the report holds under
-        /// the kept test. Before AddTo has run, one line saying what each found is UNKNOWN. A kept
-        /// test with a clash of an item not read merges nothing, so it is the one line of why.
+        /// not read, is one line saying so, UNKNOWN and never 0, and where the kept test has more
+        /// than one mirror one line then says none of them is merged, F132 attempt 12. Last, what
+        /// the report holds under the kept test. Before AddTo has run, one line saying what each
+        /// found is UNKNOWN. A kept test with a clash of an item not read merges nothing, so it is
+        /// the one line of why.
         /// </summary>
         public IList<string> Lines()
         {
@@ -527,7 +555,7 @@ namespace Federator.Core.Report
                     continue;
                 }
 
-                if (!counts.Merged)
+                if (!counts.Merged && counts.NotRead > 0)
                 {
                     lines.Add(MirrorRule.Prefix + "   " + counts.NotRead + (counts.NotRead == 1
                             ? " clash of " + mirror + " has an item that was not read, so whether " + kept + " found it is "
@@ -536,6 +564,13 @@ namespace Federator.Core.Report
                                 + "them is UNKNOWN")
                         + ", nothing of " + mirror + " is merged into " + kept + ", and " + mirror + " stays in the report "
                         + "as its own test, where a clash both find is counted twice");
+                    continue;
+                }
+
+                // Read whole and not merged only because another mirror of the kept test is not,
+                // which the line after the loop says.
+                if (!counts.Merged)
+                {
                     continue;
                 }
 
@@ -577,6 +612,14 @@ namespace Federator.Core.Report
 
                 lines.Add(MirrorRule.Prefix + "   " + mirror
                     + " is taken out of the report, so its own results are not reported a second time");
+            }
+
+            if (mirrors.Count > 1 && mirrors.Exists(counts => !counts.Merged))
+            {
+                lines.Add(MirrorRule.Prefix + "   so no mirror of " + kept + " is merged into it: each of its " + mirrors.Count
+                    + " mirrors stays in the report as its own test, since a clash one of them finds and " + kept
+                    + " does not would otherwise be added from another and held in two blocks, and a clash both find "
+                    + "is counted twice");
             }
 
             lines.Add(MirrorRule.Prefix + "   the report holds " + held.ToString(CultureInfo.InvariantCulture)

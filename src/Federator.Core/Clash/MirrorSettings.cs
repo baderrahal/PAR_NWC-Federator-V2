@@ -58,11 +58,12 @@ namespace Federator.Core.Clash
         /// The name a mirror carries in Clash Detective: its own name, one space and the
         /// ending. A name that already ends with the space and the ending is given back as it
         /// is, so a mirror never carries the ending twice. Where the name with the ending is
-        /// taken, by another test of the XML, by an earlier mirror of the same own name, or by
-        /// a test the document holds that is not this mirror, the next number from 2 goes
-        /// before the ending, Y 2 (mirror), so every mirror's name ends with the ending and no
-        /// two tests share one name. Taken says whether a name is taken, Ordinal, as every
-        /// test name is compared.
+        /// taken, by another test of the XML or by an earlier mirror of the same own name, the
+        /// next number from 2 goes before the ending, Y 2 (mirror), so every mirror's name ends
+        /// with the ending and no two tests of the plan share one name. A test the document
+        /// already holds under the name is found by it and run as the mirror, keeping its own
+        /// clashes, MirrorRule, F132 attempt 12. Taken says whether a name is taken, Ordinal,
+        /// as every test name is compared.
         /// </summary>
         internal string NameFor(string mirrorName, Func<string, bool> taken)
         {

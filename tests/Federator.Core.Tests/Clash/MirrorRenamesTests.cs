@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Clash;
+using Federator.Core.Report;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests
@@ -10,12 +11,12 @@ namespace Federator.Core.Tests
     /// a kept test under the XML's own name of it, Y. With the XML picked, each such saved
     /// test whose sides ask the kept test's question as a mirror is planned to be renamed to
     /// its own name with (mirror) at the end, Y (mirror), never the kept test's, its
-    /// statuses kept, and run as the mirror, its clashes merged as Q133 D says. A rename is
-    /// refused and named where the new name is taken. Since attempt 8 the rule is handed the
-    /// tests the document holds, so a mirror is never named onto a name the document holds
-    /// for another test, and the mirror an earlier run made of a test the XML now runs under
-    /// its own name is renamed back to that name. The set and test names in here are sample
-    /// data.
+    /// statuses kept, and run as the mirror. A rename is refused and named where the new name
+    /// is taken. Since attempt 8 the rule is handed the tests the document holds, and the
+    /// mirror an earlier run made of a test the XML now runs under its own name is renamed back
+    /// to that name. Since attempt 12, the lead's Q142 A, a test the document holds under
+    /// either name of a pair, or renamed either way, keeps its own clashes and no pair it is in
+    /// is merged. The set and test names in here are sample data.
     /// </summary>
     [TestFixture]
     public class MirrorRenamesTests
@@ -71,8 +72,8 @@ namespace Federator.Core.Tests
             {
                 MirrorRule.Prefix + "   1 of the 2 tests saved in the document is renamed as the mirror it was saved for "
                     + "before the mirror rule, and 0 under the XML's name of a mirror are not",
-                Said("is renamed " + NewName + ", its statuses kept, and run as that mirror, its clashes merged into "
-                    + Kept + "'s"),
+                Said("is renamed " + NewName + ", its statuses kept, and run as that mirror, keeping its own clashes, "
+                    + "since this run did not create it"),
                 BackCount(0, 2, 0)
             }));
         }
@@ -199,6 +200,7 @@ namespace Federator.Core.Tests
                 PriorityMap.NothingPicked(),
                 null,
                 new MirrorSettings(),
+                null,
                 null);
 
             Assert.That(after.Pairs.Count, Is.EqualTo(1));
@@ -238,7 +240,7 @@ namespace Federator.Core.Tests
         public void ARuleWithNoXmlRenamesNothing()
         {
             ClashTestPlan saved = MirrorRuleTests.SavedWithSides(Kept, Ducts, Columns, NewName, Columns, Ducts);
-            MirrorRule rule = MirrorRule.Of(saved.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null);
+            MirrorRule rule = MirrorRule.Of(saved.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null, null);
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));
             Assert.That(rule.Renames.Planned, Is.Empty);
@@ -352,6 +354,7 @@ namespace Federator.Core.Tests
                 PriorityMap.NothingPicked(),
                 null,
                 new MirrorSettings(),
+                null,
                 null);
 
             Assert.That(weekly.Pairs.Count, Is.EqualTo(1));
@@ -427,51 +430,61 @@ namespace Federator.Core.Tests
             Assert.That(second.Renames.Lines(), Does.Contain(BackCount(0, 2, 0)));
         }
 
-        // ---------- the names the document holds, F132 attempt 8 ----------
+        // ---------- the names the document holds, F132 attempts 8 to 11, kept apart since attempt 12 ----------
+
+        /// <summary>The line of a test kept whose mirror keeps its own clashes, and why, F132 attempt 12.</summary>
+        private static string NotMerged(string kept, string mirror, string because)
+        {
+            return MirrorRule.Prefix + "   " + kept + " and its mirror " + mirror + " keep their own clashes under their "
+                + "own names, not merged, because " + because + ", and a clash both find may be counted twice";
+        }
+
+        private static string Holds(string name)
+        {
+            return "the document already holds a test named " + name;
+        }
 
         // The reviewer's point on attempt 7. The document holds a test under the name the
         // mirror would take whose sides ask another question, a person's or one left behind.
         // Until attempt 8 the plan found it by that name and ran it as the mirror, so its
-        // clashes were added to the kept test as found by the mirror only. Now that name is
-        // taken, the mirror is created and run under the next number, and the line says why.
+        // clashes were added to the kept test as found by the mirror only. Attempts 8 to 11
+        // numbered the mirror past it. Since attempt 12 the test of that name runs under it and
+        // keeps its own clashes, nothing of it is merged, and the line says why.
         [Test]
-        public void ATestTheDocumentHoldsUnderTheMirrorsNameAskingAnotherQuestionIsNotRunAsTheMirror()
+        public void ATestTheDocumentHoldsUnderTheMirrorsNameAskingAnotherQuestionKeepsItsOwnClashes()
         {
             ClashTestPlan xml = TheXmlPlan();
             MirrorRule rule = MirrorRuleTests.RuleOver(
                 xml.Buildable, PriorityMap.NothingPicked(),
                 MirrorRuleTests.SavedWithSides(Kept, Ducts, Columns, NewName, Ducts, Walls));
 
-            Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(Swap + " 2 (mirror)"));
-            Assert.That(NamesOf(xml.WithMirrorsNamed(rule)), Does.Not.Contain(NewName));
-            Assert.That(rule.Renames.Lines(), Does.Contain(MirrorRule.Prefix + "   the document holds a test named "
-                + NewName + " whose sides ask another question than " + Kept + "'s, so the mirror " + Swap + " of " + Kept
-                + " is created and run as " + Swap + " 2 (mirror)"));
+            Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(NewName));
+            Assert.That(MirrorMerge.Of(rule), Is.Empty, "no clash of Ducts against Walls goes under " + Kept);
+            Assert.That(rule.Lines(), Does.Contain(NotMerged(Kept, NewName, Holds(Kept) + " and " + Holds(NewName))));
         }
 
         // Where whether the test under the name is the mirror is UNKNOWN, its sides not read or
-        // two tests of the name, it is not run as the mirror either.
+        // two tests of the name, nothing of it is merged either.
         [Test]
-        public void ATestUnderTheMirrorsNameThatMayNotBeItIsNotRunAsTheMirror()
+        public void ATestUnderTheMirrorsNameThatMayNotBeItKeepsItsOwnClashes()
         {
             MirrorRule notRead = TheXmlRuleOver(KeptReadAndHanded(NewName));
             MirrorRule twoOfIt = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(
                 Kept, Ducts, Columns, NewName, Columns, Ducts, NewName, Columns, Ducts));
 
-            Assert.That(notRead.Pairs[0].MirrorName, Is.EqualTo(Swap + " 2 (mirror)"));
-            Assert.That(notRead.Renames.Lines(), Does.Contain(MirrorRule.Prefix + "   the document holds a test named "
-                + NewName + " whose sides were not read, and whether it is that mirror is UNKNOWN, so the mirror " + Swap
-                + " of " + Kept + " is created and run as " + Swap + " 2 (mirror)"));
-            Assert.That(twoOfIt.Pairs[0].MirrorName, Is.EqualTo(Swap + " 2 (mirror)"));
-            Assert.That(twoOfIt.Renames.Lines(), Does.Contain(MirrorRule.Prefix + "   the document holds 2 tests named "
-                + NewName + ", and which one would run as the mirror is UNKNOWN, so the mirror " + Swap + " of " + Kept
-                + " is created and run as " + Swap + " 2 (mirror)"));
+            foreach (MirrorRule rule in new[] { notRead, twoOfIt })
+            {
+                Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(NewName));
+                Assert.That(MirrorMerge.Of(rule), Is.Empty);
+                Assert.That(rule.Lines(), Does.Contain(NotMerged(Kept, NewName, Holds(Kept) + " and " + Holds(NewName))));
+            }
         }
 
         // The mirror an earlier run made is the very test the XML would create, its sides the
         // mirror's own, so a rerun gives it the same name and finds it, and makes no second one.
         // A saved test whose sides ask the kept test's question by sets of one rule list is that
-        // mirror as well.
+        // mirror as well. Since attempt 12 the rerun did not create either test, so each keeps
+        // its own clashes.
         [Test]
         public void ARerunFindsTheMirrorTheRunBeforeMadeUnderTheSameName()
         {
@@ -479,8 +492,10 @@ namespace Federator.Core.Tests
             MirrorRule first = MirrorRuleTests.Rule(xml.Buildable, PriorityMap.NothingPicked());
             MirrorRule again = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(MirrorRuleTests.AsSaved(xml.WithMirrorsNamed(first))));
 
+            Assert.That(MirrorMerge.Of(first).Count, Is.EqualTo(1), "the first run created both");
             Assert.That(again.Pairs[0].MirrorName, Is.EqualTo(NewName));
             Assert.That(again.Renames.Planned, Is.Empty);
+            Assert.That(MirrorMerge.Of(again), Is.Empty, "the rerun created neither");
 
             MirrorRule byRuleList = MirrorRuleTests.RuleOver(
                 MirrorRuleTests.Plan(
@@ -497,8 +512,8 @@ namespace Federator.Core.Tests
         // The breaker's point on attempt 7. The document holds the new name under a test of a
         // type this tool does not run, which ClashTestPlan.FromDocument leaves out of the tests
         // it plans. Until attempt 8 the old test was renamed onto that name, so two tests
-        // shared it. Every name the document holds is read now, so the mirror takes the next
-        // number and the old test is renamed to it.
+        // shared it. Every name the document holds is read, so the rename is refused, and since
+        // attempt 12 nothing of the pair is merged.
         [Test]
         public void ARenameNeverLandsOnANameATestOfAnotherTypeHolds()
         {
@@ -513,47 +528,40 @@ namespace Federator.Core.Tests
             MirrorRule rule = TheXmlRuleOver(document);
 
             Assert.That(document.Buildable.Count, Is.EqualTo(2), "the plan off the document leaves the other type out");
-            Assert.That(rule.Renames.Planned.Count, Is.EqualTo(1));
-            Assert.That(rule.Renames.Planned[0].NewName, Is.EqualTo(Swap + " 2 (mirror)"));
-            Assert.That(rule.Renames.Lines(), Does.Contain(MirrorRule.Prefix + "   the document holds a test named "
-                + NewName + " of a type this tool does not run, so the mirror " + Swap + " of " + Kept + " is created and "
-                + "run as " + Swap + " 2 (mirror)"));
+            Assert.That(rule.Renames.Planned, Is.Empty);
+            Assert.That(rule.Renames.Lines()[1], Is.EqualTo(Said("is not renamed " + NewName + ", because the document "
+                + "already holds a test of that name, so it is left as it is and not run")));
+            Assert.That(MirrorMerge.Of(rule), Is.Empty);
+            Assert.That(rule.Lines(), Does.Contain(NotMerged(
+                Kept, NewName, Holds(Kept) + ", " + Holds(Swap) + " and " + Holds(NewName))));
         }
 
-        // ---------- the kept test's own name in the document, F132 attempt 9 ----------
-
-        /// <summary>The line of a pair not made because of what the document holds under the kept test's name.</summary>
-        private static string NotPairedFor(string held, bool unknown)
-        {
-            return MirrorRule.Prefix + "   the document holds " + held + ". A test is run by its name, so " + Swap
-                + " is not paired with it as a mirror and keeps its own clashes"
-                + (unknown ? ", and a clash both find may be counted twice" : string.Empty);
-        }
+        // ---------- the kept test's own name in the document, F132 attempt 9, kept apart since attempt 12 ----------
 
         // The breaker's point on attempt 8. Week one the XML ran Ducts against Walls under the
         // kept test's name and the NWF saved it. The XML now runs that name on Ducts against
         // Columns, and its swap beside it. A test is run by its name and a drifted test is left
         // as it is, so the document's test asking Ducts against Walls runs. Until attempt 9 the
         // two were paired on the XML's sets and every clash only the swap found was added to a
-        // test of another question. Now they are not paired and the line says why.
+        // test of another question. Since attempt 12 both run and each keeps its own clashes.
         [Test]
-        public void ATestTheDocumentHoldsUnderTheKeptTestsNameAskingAnotherQuestionIsNotPaired()
+        public void ATestTheDocumentHoldsUnderTheKeptTestsNameAskingAnotherQuestionKeepsItsOwnClashes()
         {
             ClashTestPlan xml = TheXmlPlan();
-            MirrorRule rule = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(Kept, Ducts, Walls));
+            MirrorRule rule = MirrorRuleTests.RuleOver(
+                xml.Buildable, PriorityMap.NothingPicked(), MirrorRuleTests.SavedWithSides(Kept, Ducts, Walls));
 
-            Assert.That(rule.Pairs, Is.Empty, "no clash of the swap goes under a test asking Ducts against Walls");
-            Assert.That(NamesOf(xml.WithMirrorsNamed(rule)), Is.EqualTo(new[] { Kept, Swap }));
+            Assert.That(MirrorMerge.Of(rule), Is.Empty, "no clash of the swap goes under a test asking Ducts against Walls");
+            Assert.That(NamesOf(xml.WithMirrorsNamed(rule)), Is.EqualTo(new[] { Kept, NewName }));
             Assert.That(rule.Renames.Planned, Is.Empty);
-            Assert.That(rule.Renames.Lines(), Does.Contain(NotPairedFor(
-                "a test named " + Kept + " whose sides ask another question than the XML's " + Kept, false)));
+            Assert.That(rule.Lines(), Does.Contain(NotMerged(Kept, NewName, Holds(Kept))));
         }
 
         // Where what the test of the kept test's name asks is UNKNOWN, its sides not read, two
         // tests of the name, a type this tool does not run, or a set whose rule list was not
-        // read, the two are not paired either, and the line says a clash may be counted twice.
+        // read, nothing is merged either.
         [Test]
-        public void ATestUnderTheKeptTestsNameThatMayAskAnotherQuestionIsNotPaired()
+        public void ATestUnderTheKeptTestsNameThatMayAskAnotherQuestionKeepsItsOwnClashes()
         {
             string elsewhere = "lcop_selection_set_tree/Mechanical/BLD-ME-Ducts Elsewhere";
             MirrorRule notRead = TheXmlRuleOver(MirrorRuleTests.SavedPlan(Kept));
@@ -564,32 +572,28 @@ namespace Federator.Core.Tests
                 "m"));
             MirrorRule noRules = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(Kept, elsewhere, Columns));
 
-            Assert.That(notRead.Pairs, Is.Empty);
-            Assert.That(notRead.Renames.Lines(), Does.Contain(NotPairedFor("a test named " + Kept + " whose sides were "
-                + "not read, and whether it asks the XML's question of " + Kept + " is UNKNOWN", true)));
-            Assert.That(twoOfIt.Pairs, Is.Empty);
-            Assert.That(twoOfIt.Renames.Lines(), Does.Contain(NotPairedFor("2 tests named " + Kept + ", and which one "
-                + "would run as " + Kept + " is UNKNOWN", true)));
-            Assert.That(otherType.Pairs, Is.Empty);
-            Assert.That(otherType.Renames.Lines(), Does.Contain(NotPairedFor("a test named " + Kept + " of a type this "
-                + "tool does not run", true)));
-            Assert.That(noRules.Pairs, Is.Empty);
-            Assert.That(noRules.Renames.Lines(), Does.Contain(NotPairedFor("a test named " + Kept + ", and whether its "
-                + "sides ask the XML's question of " + Kept + " is UNKNOWN, a set's rule list not read", true)));
+            foreach (MirrorRule rule in new[] { notRead, twoOfIt, otherType, noRules })
+            {
+                Assert.That(MirrorMerge.Of(rule), Is.Empty);
+                Assert.That(rule.Lines(), Does.Contain(NotMerged(Kept, NewName, Holds(Kept))));
+            }
         }
 
-        // The test of the kept test's name asks the XML's question, in its order or swapped, so
-        // what runs under that name asks what the pair was judged on, and the two are paired.
+        // The test of the kept test's name asks the XML's question, in its order or swapped, at
+        // the XML's settings. Both run, and since attempt 12 a test this run did not create is
+        // never merged, the breaker's finding 3 on attempt 11, a setting no reader compares.
         [Test]
-        public void ATestUnderTheKeptTestsNameAskingItsQuestionIsPaired()
+        public void ATestUnderTheKeptTestsNameAskingItsQuestionKeepsItsOwnClashes()
         {
             MirrorRule inOrder = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(Kept, Ducts, Columns));
             MirrorRule swapped = TheXmlRuleOver(MirrorRuleTests.SavedWithSides(Kept, Columns, Ducts));
 
-            Assert.That(inOrder.Pairs.Count, Is.EqualTo(1));
-            Assert.That(inOrder.Pairs[0].MirrorName, Is.EqualTo(NewName));
-            Assert.That(swapped.Pairs.Count, Is.EqualTo(1));
-            Assert.That(swapped.Pairs[0].MirrorName, Is.EqualTo(NewName));
+            foreach (MirrorRule rule in new[] { inOrder, swapped })
+            {
+                Assert.That(rule.Pairs.Count, Is.EqualTo(1));
+                Assert.That(rule.Pairs[0].MirrorName, Is.EqualTo(NewName));
+                Assert.That(MirrorMerge.Of(rule), Is.Empty);
+            }
         }
 
         /// <summary>The rule of the XML over a document holding only that one test of the kept test's name.</summary>
@@ -598,62 +602,32 @@ namespace Federator.Core.Tests
             return TheXmlRuleOver(ClashTestPlan.FromDocument(new List<SavedClashTest> { saved }, "m"));
         }
 
-        /// <summary>What the document holds under the kept test's name where a setting of it was changed by hand.</summary>
-        private static string ChangedByHand(string differences)
-        {
-            return "a test named " + Kept + " that asks the XML's question of " + Kept + " at other settings, the XML's "
-                + "first: " + differences;
-        }
-
         // The breaker's first finding on attempt 9. Week two of an XML run, the document's test
         // of the kept test's name asks the XML's question, but a person changed a setting of it
         // by hand. A drifted test is left as it is and runs at the document's settings, and the
         // mirror is created at the XML's, so a clash the mirror finds that it does not would be
-        // added to it though it never found it. Until attempt 10 the two were paired on the
-        // sets alone. Now they are not paired and the line names each setting, the mirror's
-        // side set against the side it stands for where the test is saved swapped.
+        // added to it though it never found it. Since attempt 12 nothing is merged into a test
+        // this run did not create, whatever its settings, and the DRIFT block names them.
         [Test]
-        public void ATestUnderTheKeptTestsNameWithASettingChangedByHandIsNotPaired()
+        public void ATestUnderTheKeptTestsNameWithASettingChangedByHandKeepsItsOwnClashes()
         {
-            MirrorRule tolerance = OverTheKeptTestSavedAs(
-                new SavedClashTest(Kept, 1, 0.05, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }));
-            MirrorRule type = OverTheKeptTestSavedAs(
-                new SavedClashTest(Kept, 2, 0.025, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }));
-            MirrorRule merge = OverTheKeptTestSavedAs(
-                new SavedClashTest(Kept, 1, 0.025, false, false, 1, Ducts, false, 1, Columns, new[] { 0 }));
-            MirrorRule primitives = OverTheKeptTestSavedAs(
-                new SavedClashTest(Kept, 1, 0.025, true, false, 1, Ducts, false, 3, Columns, new[] { 0 }));
-            MirrorRule selfSwapped = OverTheKeptTestSavedAs(
-                new SavedClashTest(Kept, 1, 0.025, true, true, 1, Columns, false, 1, Ducts, new[] { 0 }));
+            foreach (SavedClashTest saved in new[]
+            {
+                new SavedClashTest(Kept, 1, 0.05, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }),
+                new SavedClashTest(Kept, 2, 0.025, true, false, 1, Ducts, false, 1, Columns, new[] { 0 }),
+                new SavedClashTest(Kept, 1, 0.025, false, false, 1, Ducts, false, 1, Columns, new[] { 0 }),
+                new SavedClashTest(Kept, 1, 0.025, true, false, 1, Ducts, false, 3, Columns, new[] { 0 }),
+                new SavedClashTest(Kept, 1, 0.025, true, true, 1, Columns, false, 1, Ducts, new[] { 0 })
+            })
+            {
+                MirrorRule rule = OverTheKeptTestSavedAs(saved);
 
-            Assert.That(tolerance.Pairs, Is.Empty, "no clash the mirror found at 0.025 m goes under a test run at 0.05 m");
-            Assert.That(tolerance.Renames.Lines(), Does.Contain(NotPairedFor(
-                ChangedByHand("the tolerance 0.025 m and 0.05 m"), true)));
-            Assert.That(type.Pairs, Is.Empty);
-            Assert.That(type.Renames.Lines(), Does.Contain(NotPairedFor(
-                ChangedByHand("the test type HardConservative and Clearance"), true)));
-            Assert.That(merge.Pairs, Is.Empty);
-            Assert.That(merge.Renames.Lines(), Does.Contain(NotPairedFor(ChangedByHand("merge composites on and off"), true)));
-            Assert.That(primitives.Pairs, Is.Empty);
-            Assert.That(primitives.Renames.Lines(), Does.Contain(NotPairedFor(
-                ChangedByHand("the right side primitive types 1 and 3"), true)));
-            Assert.That(selfSwapped.Pairs, Is.Empty);
-            Assert.That(selfSwapped.Renames.Lines(), Does.Contain(NotPairedFor(
-                ChangedByHand("the right side self intersect off and on"), true)));
+                Assert.That(MirrorMerge.Of(rule), Is.Empty, "no clash the mirror found goes under a test run at other settings");
+                Assert.That(rule.Lines(), Does.Contain(NotMerged(Kept, NewName, Holds(Kept))));
+            }
         }
 
-        // ---------- every test of a pair the document holds, F132 attempt 11 ----------
-
-        private const string Tolerance = "the tolerance 0.025 m and 0.05 m";
-        private const string LeftSelf = "the left side self intersect off and on";
-
-        /// <summary>The line of a pair not made because of what the document holds under the mirror's name.</summary>
-        private static string MirrorNotPairedFor(string held, string mirror, bool unknown)
-        {
-            return MirrorRule.Prefix + "   the document holds " + held + ". A test is run by its name, so " + mirror
-                + " is not paired with " + Kept + " as a mirror and keeps its own clashes"
-                + (unknown ? ", and a clash both find may be counted twice" : string.Empty);
-        }
+        // ---------- every test of a pair the document holds, F132 attempt 11, kept apart since attempt 12 ----------
 
         /// <summary>
         /// The rule of an XML keeping Telecom Fixtures against Walls, its mirror Telephone Devices
@@ -673,13 +647,11 @@ namespace Federator.Core.Tests
         // the mirror week one made, under its own name with the ending and with its sets, but a
         // person changed a setting of it by hand. A drifted test is left as it is, so it runs
         // at the document's settings, and until attempt 11 it was paired on its sets alone and
-        // every clash it found that the kept test did not was added to the kept test. Now the
-        // two are not paired and the line names each setting, the document's side set against
-        // the XML's side it stands for where it is saved the other way round.
+        // every clash it found that the kept test did not was added to the kept test. Since
+        // attempt 12 it runs as the mirror and keeps its own clashes.
         [Test]
-        public void ATestUnderTheMirrorsNameWithASettingChangedByHandIsNotPaired()
+        public void ATestUnderTheMirrorsNameWithASettingChangedByHandKeepsItsOwnClashes()
         {
-            ClashTestPlan xml = TheXmlPlan();
             MirrorRule tolerance = TheXmlRuleOver(ClashTestPlan.FromDocument(
                 new List<SavedClashTest>
                 {
@@ -691,29 +663,19 @@ namespace Federator.Core.Tests
             MirrorRule selfSwapped = ByRuleListOver(
                 new SavedClashTest(telephoneMirror, 1, 0.025, true, false, 1, Walls, true, 1, MirrorRuleTests.Telecom, new[] { 0 }));
 
-            Assert.That(tolerance.Pairs, Is.Empty, "no clash the mirror found at 0.05 m goes under a test run at 0.025 m");
-            Assert.That(NamesOf(xml.WithMirrorsNamed(tolerance)), Is.EqualTo(new[] { Kept, Swap }));
-            Assert.That(tolerance.Renames.Planned.Count, Is.EqualTo(1),
-                "not paired, the XML runs " + Swap + " alone, so the earlier mirror is renamed back to it");
-            Assert.That(tolerance.Renames.Planned[0].Saved.Name, Is.EqualTo(NewName));
-            Assert.That(tolerance.Renames.Planned[0].NewName, Is.EqualTo(Swap));
-            Assert.That(tolerance.Renames.Lines(), Does.Contain(MirrorNotPairedFor(
-                "a test named " + NewName + " that asks the XML's question of " + Swap + " at other settings, the XML's first: "
-                    + Tolerance, Swap, true)));
-            Assert.That(selfSwapped.Pairs, Is.Empty);
-            Assert.That(selfSwapped.Renames.Lines(), Does.Contain(MirrorRule.Prefix + "   the document holds a test named "
-                + telephoneMirror + " that asks the XML's question of " + MirrorRuleTests.TelephoneVsWalls + " at other "
-                + "settings, the XML's first: " + LeftSelf + ". A test is run by its name, so "
-                + MirrorRuleTests.TelephoneVsWalls + " is not paired with " + MirrorRuleTests.TelecomVsWalls + " as a mirror "
-                + "and keeps its own clashes, and a clash both find may be counted twice"));
+            Assert.That(MirrorMerge.Of(tolerance), Is.Empty, "no clash the mirror found at 0.05 m goes under a test run at 0.025 m");
+            Assert.That(tolerance.Lines(), Does.Contain(NotMerged(Kept, NewName, Holds(Kept) + " and " + Holds(NewName))));
+            Assert.That(MirrorMerge.Of(selfSwapped), Is.Empty);
+            Assert.That(selfSwapped.Lines(), Does.Contain(NotMerged(
+                MirrorRuleTests.TelecomVsWalls, telephoneMirror, Holds(telephoneMirror))));
         }
 
         // The same input where the XML's own name of the mirror already ends with the ending.
         // NameFor gives that name back without asking whether it is taken, so until attempt 11
-        // whatever the document held under it ran as the mirror, its sides and its settings
-        // never read. Now it is judged by the same rule as every other test of a pair.
+        // whatever the document held under it ran as the mirror and was merged, its sides and its
+        // settings never read. Since attempt 12 it keeps its own clashes, whatever it asks.
         [Test]
-        public void ATestUnderAMirrorsOwnXmlNameWithTheEndingIsJudgedByTheSameRule()
+        public void ATestUnderAMirrorsOwnXmlNameWithTheEndingKeepsItsOwnClashes()
         {
             ClashTestPlan xml = MirrorRuleTests.Plan(
                 MirrorRuleTests.Test(Kept, Ducts, Columns),
@@ -723,30 +685,25 @@ namespace Federator.Core.Tests
                 PriorityMap.NothingPicked(),
                 ClashTestPlan.FromDocument(new List<SavedClashTest> { MirrorRuleTests.Saved(Kept, Ducts, Columns, 0), saved }, "m"));
 
-            MirrorRule tolerance = over(new SavedClashTest(NewName, 1, 0.05, true, false, 1, Columns, false, 1, Ducts, new[] { 1 }));
-            MirrorRule another = over(MirrorRuleTests.Saved(NewName, Ducts, Walls, 1));
-            MirrorRule notRead = over(MirrorRuleTests.AsHanded(NewName, 1));
-
-            Assert.That(tolerance.Pairs, Is.Empty);
-            Assert.That(tolerance.Renames.Lines(), Does.Contain(MirrorNotPairedFor(
-                "a test named " + NewName + " that asks the XML's question of " + NewName + " at other settings, the XML's "
-                    + "first: " + Tolerance, NewName, true)));
-            Assert.That(another.Pairs, Is.Empty, "no clash of Ducts against Walls goes under " + Kept);
-            Assert.That(another.Renames.Lines(), Does.Contain(MirrorNotPairedFor(
-                "a test named " + NewName + " whose sides ask another question than the XML's " + NewName, NewName, false)));
-            Assert.That(notRead.Pairs, Is.Empty);
-            Assert.That(notRead.Renames.Lines(), Does.Contain(MirrorNotPairedFor(
-                "a test named " + NewName + " whose sides were not read, and whether it asks the XML's question of "
-                    + NewName + " is UNKNOWN", NewName, true)));
+            foreach (MirrorRule rule in new[]
+            {
+                over(new SavedClashTest(NewName, 1, 0.05, true, false, 1, Columns, false, 1, Ducts, new[] { 1 })),
+                over(MirrorRuleTests.Saved(NewName, Ducts, Walls, 1)),
+                over(MirrorRuleTests.AsHanded(NewName, 1))
+            })
+            {
+                Assert.That(MirrorMerge.Of(rule), Is.Empty);
+                Assert.That(rule.Lines(), Does.Contain(NotMerged(Kept, NewName, Holds(Kept) + " and " + Holds(NewName))));
+            }
         }
 
         // Both readers' first finding on attempt 10, Q136 A. An old test under the XML's name of
         // the mirror asks the kept test's question as a mirror, but a setting of it was changed
-        // by hand. Until attempt 11 it was renamed on its sides alone and run as the mirror at
-        // its own settings. Now it is not renamed, the mirror is created at the XML's settings,
-        // and the line names each setting, side for side.
+        // by hand. Attempt 11 refused the rename and created the mirror at the XML's settings.
+        // Since attempt 12 it is renamed as the mirror, its statuses kept, and keeps its own
+        // clashes at its own settings, which the DRIFT block names.
         [Test]
-        public void AnOldTestWithASettingChangedByHandIsNotRenamedAsTheMirror()
+        public void AnOldTestWithASettingChangedByHandIsRenamedAndKeepsItsOwnClashes()
         {
             MirrorRule tolerance = TheXmlRuleOver(ClashTestPlan.FromDocument(
                 new List<SavedClashTest>
@@ -758,27 +715,24 @@ namespace Federator.Core.Tests
             MirrorRule selfSwapped = ByRuleListOver(new SavedClashTest(
                 MirrorRuleTests.TelephoneVsWalls, 1, 0.025, true, false, 1, Walls, true, 1, MirrorRuleTests.Telecom, new[] { 0 }));
 
-            Assert.That(tolerance.Pairs.Count, Is.EqualTo(1));
-            Assert.That(tolerance.Pairs[0].MirrorName, Is.EqualTo(NewName), "created at the XML's settings");
-            Assert.That(tolerance.Renames.Planned, Is.Empty);
-            Assert.That(tolerance.Renames.Lines()[1], Is.EqualTo(Said("is not renamed " + NewName + ", because it asks "
-                + "the XML's question of " + Swap + " at other settings, the XML's first: " + Tolerance + ", so it is left "
-                + "as it is and not run")));
-            Assert.That(selfSwapped.Renames.Planned, Is.Empty);
-            Assert.That(selfSwapped.Renames.Lines()[1], Is.EqualTo(MirrorRule.Prefix + "   " + MirrorRuleTests.TelephoneVsWalls
-                + ", saved before the mirror rule under the XML's name of the mirror of " + MirrorRuleTests.TelecomVsWalls
-                + ", is not renamed " + MirrorRuleTests.TelephoneVsWalls + " (mirror), because it asks the XML's question of "
-                + MirrorRuleTests.TelephoneVsWalls + " at other settings, the XML's first: " + LeftSelf + ", so it is left "
-                + "as it is and not run"));
+            Assert.That(tolerance.Renames.Planned.Count, Is.EqualTo(1));
+            Assert.That(tolerance.Renames.Planned[0].NewName, Is.EqualTo(NewName));
+            Assert.That(MirrorMerge.Of(tolerance), Is.Empty);
+            Assert.That(tolerance.Lines(), Does.Contain(NotMerged(
+                Kept, NewName, Holds(Kept) + ", " + Holds(Swap) + " and a test the document holds is renamed " + NewName)));
+            Assert.That(selfSwapped.Renames.Planned.Count, Is.EqualTo(1));
+            Assert.That(selfSwapped.Renames.Planned[0].NewName, Is.EqualTo(MirrorRuleTests.TelephoneVsWalls + " (mirror)"));
+            Assert.That(MirrorMerge.Of(selfSwapped), Is.Empty);
         }
 
         // Both readers' first finding on attempt 10, a change of roles. The mirror an earlier run
         // made of the test now kept carries its two sets in its order, but a setting of it was
-        // changed by hand. Until attempt 11 it was renamed back to the kept test's name on its
-        // sides alone, and the mirrors' clashes were merged into a test run at its own settings.
-        // Now it is not renamed, the kept test is created beside it, and the line says why.
+        // changed by hand. Until attempt 11 it was renamed back on its sides alone and the
+        // mirrors' clashes were merged into a test run at its own settings, and attempt 11
+        // refused it. Since attempt 12 it is renamed back, its statuses kept, and nothing is
+        // merged into it.
         [Test]
-        public void AnEarlierMirrorWithASettingChangedByHandIsNotRenamedBack()
+        public void AnEarlierMirrorWithASettingChangedByHandIsRenamedBackAndKeepsItsOwnClashes()
         {
             ClashTestPlan saved = ClashTestPlan.FromDocument(
                 new List<SavedClashTest>
@@ -790,18 +744,18 @@ namespace Federator.Core.Tests
             MirrorRule second = MirrorRuleTests.RuleOver(TheXmlPlan().Buildable, MirrorRuleTests.Priorities(Swap, "A"), saved);
 
             Assert.That(second.Pairs[0].Kept.Name, Is.EqualTo(Swap), "the priority file changed the roles");
-            Assert.That(second.Renames.Planned.Count, Is.EqualTo(1), "only the old kept test, renamed as the mirror");
-            Assert.That(second.Renames.Planned[0].Saved.Name, Is.EqualTo(Kept));
-            Assert.That(second.Renames.Lines(), Does.Contain(BackCount(0, 2, 1)));
-            Assert.That(second.Renames.Lines(), Does.Contain(MirrorRule.Prefix + "   " + NewName + " carries a name this "
-                + "tool gives " + Swap + " as a mirror, with its two sets in its order, and asks the XML's question of " + Swap
-                + " at other settings, the XML's first: " + Tolerance + ". It is not renamed " + Swap + ", " + Swap + " is "
-                + "created beside it, and a clash both find may be counted twice"));
+            Assert.That(second.Renames.Planned.Count, Is.EqualTo(2));
+            Assert.That(second.Renames.Planned[1].Saved.Name, Is.EqualTo(NewName));
+            Assert.That(second.Renames.Planned[1].NewName, Is.EqualTo(Swap));
+            Assert.That(second.Renames.Lines(), Does.Contain(BackCount(1, 2, 0)));
+            Assert.That(MirrorMerge.Of(second), Is.Empty);
+            Assert.That(second.Lines(), Does.Contain(NotMerged(Swap, Kept + " (mirror)", "a test the document holds is "
+                + "renamed " + Swap + ", " + Holds(Kept) + " and a test the document holds is renamed " + Kept + " (mirror)")));
         }
 
-        // The settings rule is for the tests of a pair. A test the XML runs alone merges no
-        // clash, so the earlier mirror is renamed back to it at its own settings, a drift the
-        // DRIFT block names, and no second test of its question is created beside it.
+        // A test the XML runs alone merges no clash, so the earlier mirror is renamed back to it
+        // at its own settings, a drift the DRIFT block names, and no second test of its question
+        // is created beside it.
         [Test]
         public void ATestTheXmlRunsAloneTakesBackItsEarlierMirrorAtOtherSettings()
         {
@@ -829,7 +783,7 @@ namespace Federator.Core.Tests
         public void AnXmlRuleWithNoDocumentIsRefused()
         {
             Assert.Throws<ArgumentNullException>(() => MirrorRule.Of(
-                TheXmlPlan().Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null));
+                TheXmlPlan().Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null, null));
         }
 
         // The document is the plan read off the document, never a plan of an XML.
@@ -837,7 +791,7 @@ namespace Federator.Core.Tests
         public void ADocumentThatIsAnXmlsPlanIsRefused()
         {
             Assert.Throws<ArgumentException>(() => MirrorRule.Of(
-                TheXmlPlan().Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), TheXmlPlan()));
+                TheXmlPlan().Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), TheXmlPlan(), null));
         }
 
         // The saved tests are handed once: as the tests where no XML was picked, as the
@@ -848,7 +802,7 @@ namespace Federator.Core.Tests
             ClashTestPlan saved = MirrorRuleTests.SavedWithSides(Kept, Ducts, Columns, NewName, Columns, Ducts);
 
             Assert.Throws<ArgumentException>(() => MirrorRule.Of(
-                saved.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), saved));
+                saved.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), saved, null));
         }
     }
 }

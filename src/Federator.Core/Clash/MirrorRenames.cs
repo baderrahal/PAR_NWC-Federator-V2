@@ -7,12 +7,12 @@ namespace Federator.Core.Clash
     /// One saved test an XML run renames before the tests are found by name, F132, its
     /// statuses kept, where it sits. A test saved before the mirror rule, Bader's answer A to
     /// Q136, renamed as the mirror it was saved for, to its own name with (mirror) at the end,
-    /// the name this tool gives that mirror and never the kept test's, its clashes merged into
-    /// the kept test's as his answer D to Q133 says. Or, since attempt 8, the mirror an earlier
-    /// run made of a test the XML now runs under its own name, after a change of roles,
-    /// renamed back to that name, so no second test of its question runs beside it. Built by
-    /// MirrorRule.Renames and nothing else. The add-in half is to make the rename, not built
-    /// yet.
+    /// the name this tool gives that mirror and never the kept test's. Or, since attempt 8, the
+    /// mirror an earlier run made of a test the XML now runs under its own name, after a change
+    /// of roles, renamed back to that name, so no second test of its question runs beside it.
+    /// A test renamed either way was not created by this run, so it keeps its own clashes and
+    /// no pair it is in is merged, F132 attempt 12. Built by MirrorRule.Renames and nothing
+    /// else. The add-in half is to make the rename, not built yet.
     /// </summary>
     public sealed class MirrorRename
     {
@@ -33,8 +33,8 @@ namespace Federator.Core.Clash
         public string NewName { get; private set; }
 
         /// <summary>
-        /// The test kept whose report its clashes are merged into, for a mirror, and its own new
-        /// name, for a test renamed back to the test the XML runs under its own name.
+        /// The test kept whose mirror it is, for a mirror, and its own new name, for a test
+        /// renamed back to the test the XML runs under its own name.
         /// </summary>
         public string KeptName { get; private set; }
     }
@@ -43,7 +43,7 @@ namespace Federator.Core.Clash
     /// The renames MirrorRule.Renames planned and its MIRROR lines: one counting the renames
     /// of Q136 A, then one naming each rename and each one refused, with why, then one
     /// counting the mirrors renamed back after a change of roles, then each of those and each
-    /// refused, then each mirror named past a name the document holds.
+    /// refused.
     /// </summary>
     public sealed class MirrorRenames
     {

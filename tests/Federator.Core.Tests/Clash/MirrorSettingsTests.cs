@@ -175,7 +175,7 @@ namespace Federator.Core.Tests
                 MirrorRuleTests.ColumnsVsDucts + " (mirror)", MirrorRuleTests.Columns, MirrorRuleTests.Ducts,
                 "a swap a person made", MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
 
-            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null);
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null, null);
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));
             Assert.That(rule.Pairs[0].Kept.Name, Is.EqualTo(MirrorRuleTests.DuctsVsColumns));
@@ -269,7 +269,7 @@ namespace Federator.Core.Tests
             ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
                 MirrorRuleTests.DuctsVsColumns, MirrorRuleTests.Ducts, MirrorRuleTests.Columns,
                 MirrorRuleTests.ColumnsVsDucts + " (mirror)", MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
-            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null);
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null, null);
             ClashTestPlan named = plan.WithMirrorsNamed(rule);
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));

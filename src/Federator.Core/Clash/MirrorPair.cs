@@ -9,10 +9,11 @@ namespace Federator.Core.Clash
     /// XML, a saved test whose name ends with the ending and the one saved test without it
     /// whose question its sides ask as a mirror by the same rule. Both are run, his
     /// answer D to Q133, and their clashes are merged by the pair of items into the one kept,
-    /// Report.MirrorMerge, so the report, the views and every count hold each clash once. A
-    /// swap can find more than the test it mirrors: probe P1 measured 27 clashes on the swap
-    /// of a test that found 25, all 25 among them, docs\history\scan.md 5z-k on the branch
-    /// fix-F114-probes. Built by MirrorRule and nothing else.
+    /// Report.MirrorMerge, so the report, the views and every count hold each clash once, only
+    /// where MirrorRule says it Merges, the lead's Q142 A. A swap can find more than the test
+    /// it mirrors: probe P1 measured 27 clashes on the swap of a test that found 25, all 25
+    /// among them, docs\history\scan.md 5z-k on the branch fix-F114-probes. Built by
+    /// MirrorRule and nothing else.
     /// </summary>
     public sealed class MirrorPair
     {
@@ -49,6 +50,7 @@ namespace Federator.Core.Clash
             this.mirrorPriority = mirrorPriority;
             this.alikeSets = alikeSets ?? string.Empty;
             this.sidesSwapped = sidesSwapped;
+            Merges = true;
         }
 
         /// <summary>The test kept, the higher priority, and where equal the first in the XML.</summary>
@@ -62,12 +64,28 @@ namespace Federator.Core.Clash
         /// <summary>
         /// The name the mirror is created and run under: its own name with the ending, never
         /// the kept test's, MirrorSettings.NameFor, numbered before the ending where that name
-        /// is taken, in the XML or in the document by a test that is not this mirror. A test
-        /// read off the document with no XML keeps its saved name. A test saved before the
-        /// mirror rule under the XML's name of a mirror is renamed to this name, Q136 A,
-        /// MirrorRule.Renames.
+        /// is taken by another test of the XML or an earlier mirror. A test the document holds
+        /// under it is found by it and run as the mirror, keeping its own clashes, F132 attempt
+        /// 12. A test read off the document with no XML keeps its saved name. A test saved
+        /// before the mirror rule under the XML's name of a mirror is renamed to this name,
+        /// Q136 A, MirrorRule.Renames.
         /// </summary>
         public string MirrorName { get; private set; }
+
+        /// <summary>
+        /// Whether the mirror's clashes are merged into the kept test's, Report.MirrorMerge,
+        /// set by MirrorRule alone, the one rule of the lead's Q142 A: only where this run
+        /// created both tests from the picked XML and no set of either drifted from it, and
+        /// for every mirror of one kept test alike. Otherwise each keeps its own clashes under
+        /// its own name.
+        /// </summary>
+        internal bool Merges { get; private set; }
+
+        /// <summary>The pair's two tests keep their own clashes, MirrorRule's merge rule.</summary>
+        internal void KeepApart()
+        {
+            Merges = false;
+        }
 
         /// <summary>How the two tests ask the same question, in the words of the log and the coverage sheet.</summary>
         internal string How()
@@ -100,8 +118,9 @@ namespace Federator.Core.Clash
         /// <summary>The words the coverage sheet gives the mirror, for F127.</summary>
         internal string CoverageOfTheMirror()
         {
-            return "a mirror of " + Kept.Name + ", " + How() + ", " + RunAs() + ", its clashes merged into "
-                + Kept.Name + "'s";
+            return "a mirror of " + Kept.Name + ", " + How() + ", " + RunAs() + (Merges
+                ? ", its clashes merged into " + Kept.Name + "'s"
+                : ", its clashes kept under its own name");
         }
 
         private string RunAs()
@@ -142,10 +161,9 @@ namespace Federator.Core.Clash
         /// with the first test's value then the other's, the other's sides set against the
         /// first's they stand for, swapped where sidesSwapped. The sets are the same question
         /// by the rule that judged the two, so only the flags of each side are compared, never
-        /// the set names. Read by the pair's line and by MirrorRule.OtherSettings for every test
-        /// the document holds that is run as a test of a pair, F132 attempts 10 and 11.
+        /// the set names.
         /// </summary>
-        internal static IList<string> SettingsDiffer(PlannedClashTest first, PlannedClashTest other, bool sidesSwapped)
+        private static IList<string> SettingsDiffer(PlannedClashTest first, PlannedClashTest other, bool sidesSwapped)
         {
             TestSettings firstSettings = TestSettings.FromFile(first);
             TestSettings otherSettings = SideForSide(TestSettings.FromFile(other), sidesSwapped);

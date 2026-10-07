@@ -134,6 +134,52 @@ namespace Federator.Core.Sets
             get { return new ReadOnlyCollection<SetDrift>(drifted); }
         }
 
+        /// <summary>
+        /// Why the set at that path may not ask what the picked file asks, read off this
+        /// build and its drift check, or null where this build created it from the file, or
+        /// found it already in the document, read what it asks and found it not drifted, Q72.
+        /// The mirrored tests' one merge rule reads it, F132 attempt 12, the lead's Q142 A, and
+        /// fails closed: a set the drift check found drifted, rebuilt or not, a set already
+        /// there whose question was not read, SetResult.Asked never set or SetDrift's words for
+        /// a search that would not read, a set that failed, and a set this build never reached
+        /// all give words. The path is compared Ordinal and never trimmed, as a test's locator.
+        /// </summary>
+        internal string NotAsTheFileAsks(string path)
+        {
+            foreach (SetDrift drift in drifted)
+            {
+                if (string.Equals(drift.Path, path, StringComparison.Ordinal))
+                {
+                    return "was found by the SET DRIFT check asking another question than the picked XML";
+                }
+            }
+
+            bool reached = false;
+
+            foreach (SetResult result in results)
+            {
+                if (!string.Equals(result.Path, path, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (!result.Created && !result.Present)
+                {
+                    return "failed to build, so what it asks is UNKNOWN";
+                }
+
+                if (result.Present && (string.IsNullOrEmpty(result.Asked)
+                    || string.Equals(result.Asked, SetDrift.SearchNotRead, StringComparison.Ordinal)))
+                {
+                    return "was already in the document and what it asks could not be read, so whether it drifted is UNKNOWN";
+                }
+
+                reached = true;
+            }
+
+            return reached ? null : "was neither built nor found by this run's sets build, so what it asks is UNKNOWN";
+        }
+
         /// <summary>How many of them this run rebuilt. Zero where the box is off, which is the default.</summary>
         public int RebuiltCount
         {

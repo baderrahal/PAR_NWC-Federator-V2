@@ -53,10 +53,14 @@ namespace Federator.Core.Tests
         /// </summary>
         private static ClashReport Merged()
         {
-            ClashTestPlan plan = MirrorRuleTests.SavedWithSides(
-                Kept, MirrorRuleTests.Ducts, MirrorRuleTests.Columns, Mirror, MirrorRuleTests.Columns, MirrorRuleTests.Ducts);
-            MirrorMerge merge = MirrorMerge.Of(
-                MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), null))[0];
+            // An XML run over a new NWF, both tests created from the XML, the one case a mirror
+            // is merged since F132 attempt 12.
+            ClashTestPlan plan = MirrorRuleTests.Plan(
+                MirrorRuleTests.Test(Kept, MirrorRuleTests.Ducts, MirrorRuleTests.Columns),
+                MirrorRuleTests.Test(MirrorRuleTests.ColumnsVsDucts, MirrorRuleTests.Columns, MirrorRuleTests.Ducts));
+            MirrorMerge merge = MirrorMerge.Of(MirrorRuleTests.Rule(plan.Buildable, PriorityMap.NothingPicked()))[0];
+
+            Assert.That(merge.Pairs[0].MirrorName, Is.EqualTo(Mirror));
 
             ClashReport report = new ClashReport("1A02MM", "a report");
             TestReport kept = report.AddTest(Kept);

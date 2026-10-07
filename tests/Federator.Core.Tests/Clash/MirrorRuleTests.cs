@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Federator.Core.Clash;
 using Federator.Core.Exchange;
+using Federator.Core.Sets;
 using NUnit.Framework;
 
 namespace Federator.Core.Tests
@@ -107,7 +108,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>The sets these tests name, each with a rule list of its own but the two that share one.</summary>
-        private static IList<SelectionSetDefinition> TheUsualSets()
+        internal static IList<SelectionSetDefinition> TheUsualSets()
         {
             return TheSets(
                 Ducts, "Ducts",
@@ -127,10 +128,46 @@ namespace Federator.Core.Tests
             return RuleOver(tests, priorities, NothingSaved());
         }
 
-        /// <summary>The rule over tests of an XML that holds the usual sets, run over a document holding those saved tests.</summary>
+        /// <summary>
+        /// The rule over tests of an XML that holds the usual sets, run over a document holding
+        /// those saved tests, every set built by this run from the XML.
+        /// </summary>
         internal static MirrorRule RuleOver(IEnumerable<PlannedClashTest> tests, PriorityMap priorities, ClashTestPlan saved)
         {
-            return MirrorRule.Of(tests, priorities, TheUsualSets(), new MirrorSettings(), saved);
+            return RuleBuilt(tests, priorities, saved, BuiltFrom(TheUsualSets()));
+        }
+
+        /// <summary>The same rule over that sets build, F132 attempt 12.</summary>
+        internal static MirrorRule RuleBuilt(
+            IEnumerable<PlannedClashTest> tests, PriorityMap priorities, ClashTestPlan saved, SetBuildOutcome built)
+        {
+            return MirrorRule.Of(tests, priorities, TheUsualSets(), new MirrorSettings(), saved, built);
+        }
+
+        /// <summary>A sets build that created every one of those sets from the picked XML.</summary>
+        internal static SetBuildOutcome BuiltFrom(IEnumerable<SelectionSetDefinition> sets)
+        {
+            List<string> paths = new List<string>();
+
+            foreach (SelectionSetDefinition set in sets)
+            {
+                paths.Add(set.Path);
+            }
+
+            return Built(paths.ToArray());
+        }
+
+        /// <summary>A sets build that created the sets at those paths from the picked XML, and nothing else.</summary>
+        internal static SetBuildOutcome Built(params string[] paths)
+        {
+            SetBuildOutcome built = new SetBuildOutcome();
+
+            foreach (string path in paths)
+            {
+                built.AddCreated(path, path.Substring(path.LastIndexOf('/') + 1), 1, 5, null);
+            }
+
+            return built;
         }
 
         /// <summary>The plan of a document that holds no clash test, as an XML run over a new NWF reads it.</summary>
@@ -142,13 +179,13 @@ namespace Federator.Core.Tests
         /// <summary>The rule over tests saved in the document, with no XML and so no rule list read.</summary>
         private static MirrorRule SavedRule(IEnumerable<PlannedClashTest> tests)
         {
-            return MirrorRule.Of(tests, PriorityMap.NothingPicked(), null, new MirrorSettings(), null);
+            return MirrorRule.Of(tests, PriorityMap.NothingPicked(), null, new MirrorSettings(), null, null);
         }
 
         /// <summary>The rule over tests saved in the document, with the usual sets handed as the document's.</summary>
         private static MirrorRule SavedRuleWithTheSets(IEnumerable<PlannedClashTest> tests)
         {
-            return MirrorRule.Of(tests, PriorityMap.NothingPicked(), TheUsualSets(), new MirrorSettings(), null);
+            return MirrorRule.Of(tests, PriorityMap.NothingPicked(), TheUsualSets(), new MirrorSettings(), null, null);
         }
 
         /// <summary>
@@ -394,7 +431,7 @@ namespace Federator.Core.Tests
 
             MirrorRule rule = MirrorRule.Of(
                 plan.Buildable, PriorityMap.NothingPicked(), TheSets(Telecom, null, Telephone, null, Walls, "Walls"),
-                new MirrorSettings(), NothingSaved());
+                new MirrorSettings(), NothingSaved(), Built(Telecom, Telephone, Walls));
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(0));
         }
@@ -415,7 +452,8 @@ namespace Federator.Core.Tests
                 PriorityMap.NothingPicked(),
                 SetsOf(first, second, SetXml(Walls, Condition("Walls", 0))),
                 new MirrorSettings(),
-                NothingSaved()).Pairs.Count;
+                NothingSaved(),
+                Built(Telecom, Telephone, Walls)).Pairs.Count;
         }
 
         [Test]
@@ -482,7 +520,7 @@ namespace Federator.Core.Tests
                 Test(TelecomVsWalls, Telecom, Walls),
                 Test(TelephoneVsWalls, Telephone, Walls));
 
-            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), NothingSaved());
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), NothingSaved(), Built(Ducts, Columns));
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(0));
             Assert.That(rule.Lines(), Does.Contain(MirrorRule.Prefix
@@ -683,15 +721,19 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// A matrix written both ways round, so every test of the first half has its swap in
-        /// the second half, the swap carrying a priority of its own where one is given.
+        /// the second half, the swap carrying a priority of its own where one is given. Every set
+        /// is built by the run from the XML, so every pair is merged.
         /// </summary>
         private static MirrorRule BothWaysRound(int sets, params string[] nameThenLetter)
         {
             List<string> first = new List<string>();
             List<string> second = new List<string>();
+            List<string> built = new List<string>();
 
             for (int i = 0; i < sets; i++)
             {
+                built.Add(Root + "/S" + i);
+
                 for (int j = i + 1; j < sets; j++)
                 {
                     string a = Root + "/S" + i;
@@ -703,7 +745,7 @@ namespace Federator.Core.Tests
             }
 
             first.AddRange(second);
-            return Rule(Plan(first.ToArray()).Buildable, Priorities(nameThenLetter));
+            return RuleBuilt(Plan(first.ToArray()).Buildable, Priorities(nameThenLetter), NothingSaved(), Built(built.ToArray()));
         }
 
         private static int LinesNamingAPair(MirrorRule rule)
@@ -960,6 +1002,7 @@ namespace Federator.Core.Tests
                 Priorities(ColumnsVsDucts + " (mirror)", "A", DuctsVsColumns, "C"),
                 null,
                 new MirrorSettings(),
+                null,
                 null);
 
             Assert.That(rule.Pairs.Count, Is.EqualTo(1));
@@ -1426,9 +1469,13 @@ namespace Federator.Core.Tests
         {
             ClashTestPlan plan = SavedWithSides(DuctsVsColumns, Ducts, Columns, ColumnsVsDucts + " (mirror)", Columns, Ducts);
 
+            // A run with no XML merges nothing since F132 attempt 12, the lead's Q142 A, so the
+            // sheet says each keeps its own clashes.
             Assert.That(Words(SavedRule(plan.Buildable), ColumnsVsDucts + " (mirror)"), Is.EqualTo(
                 "a mirror of " + DuctsVsColumns + ", named a mirror by the ending, the same two sets swapped, run "
-                    + "as it is saved, its clashes merged into " + DuctsVsColumns + "'s"));
+                    + "as it is saved, its clashes kept under its own name"));
+            Assert.That(Words(SavedRule(plan.Buildable), DuctsVsColumns), Is.EqualTo(
+                "kept of a mirrored pair, its mirror " + ColumnsVsDucts + " (mirror) keeping its own clashes"));
         }
 
         [Test]
@@ -1495,7 +1542,7 @@ namespace Federator.Core.Tests
             ExchangeDocument matrix = Read(Samples.Matrix());
             ClashTestPlan plan = ClashTestPlan.From(matrix, "m");
             PriorityMap priorities = TheSamplePriorities();
-            MirrorRule rule = MirrorRule.Of(plan.Buildable, priorities, matrix.Sets, new MirrorSettings(), NothingSaved());
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, priorities, matrix.Sets, new MirrorSettings(), NothingSaved(), BuiltFrom(matrix.Sets));
 
             Assert.That(plan.Buildable.Count, Is.EqualTo(1830));
             Assert.That(OfKind(rule, MirrorKind.Swapped), Is.EqualTo(0));
@@ -1513,7 +1560,7 @@ namespace Federator.Core.Tests
             ExchangeDocument matrix = Read(Samples.CorrectedMatrix());
             ClashTestPlan plan = ClashTestPlan.From(matrix, "m");
             PriorityMap priorities = TheSamplePriorities();
-            MirrorRule rule = MirrorRule.Of(plan.Buildable, priorities, matrix.Sets, new MirrorSettings(), NothingSaved());
+            MirrorRule rule = MirrorRule.Of(plan.Buildable, priorities, matrix.Sets, new MirrorSettings(), NothingSaved(), BuiltFrom(matrix.Sets));
             ClashTestPlan named = plan.WithMirrorsNamed(rule);
             int ending = 0;
 
@@ -1570,7 +1617,7 @@ namespace Federator.Core.Tests
             List<PlannedClashTest> tests = new List<PlannedClashTest>(plan.Buildable);
             tests.Add(swapped);
 
-            MirrorRule rule = MirrorRule.Of(tests, TheSamplePriorities(), matrix.Sets, new MirrorSettings(), NothingSaved());
+            MirrorRule rule = MirrorRule.Of(tests, TheSamplePriorities(), matrix.Sets, new MirrorSettings(), NothingSaved(), BuiltFrom(matrix.Sets));
             MirrorPair theSwap = null;
 
             foreach (MirrorPair pair in rule.Pairs)

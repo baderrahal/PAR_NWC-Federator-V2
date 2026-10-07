@@ -125,12 +125,18 @@ namespace Federator.Core.Sets
             return drift;
         }
 
+        /// <summary>
+        /// The words a set whose search would not read is said to ask, here once, so the
+        /// sets build can tell a present set whose question was read, SetBuildOutcome.
+        /// </summary>
+        internal const string SearchNotRead = "UNKNOWN, its search would not read";
+
         /// <summary>What the set asks now, as one sentence.</summary>
         public string AskedNow()
         {
             if (CouldNotRead)
             {
-                return "UNKNOWN, its search would not read";
+                return SearchNotRead;
             }
 
             if (Asked.Count == 0)
