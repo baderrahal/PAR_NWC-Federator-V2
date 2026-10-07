@@ -14,16 +14,16 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 | Order | Item | Branch | State |
 |---|---|---|---|
 | 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | merged as pull request 142, add-in half and the loop's records wait for the laptop lane |
-| 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | Core half in review, the add-in half and the sheet writer wait |
-| 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 made, Q125 B left for the laptop lane |
+| 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | Core half merged as pull request 145, the add-in half and the sheet writer wait |
+| 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 in review, Q125 B left for the laptop lane |
 | 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 made |
 | 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | waits |
 | 6 | F128's Core part, generic models, FR-177 | fix-F128 | waits |
 
 ## The item the lane is on
 
-F127, from the branch claude/lane-b-release-plan-zztyvx, the one branch this session may push,
-restarted from main after each merge. F115 merged as pull request 142. fix-F115 and fix-F127 stay on origin and
+F137, from the branch claude/lane-b-release-plan-zztyvx, the one branch this session may push,
+restarted from main after each merge. F115 merged as pull request 142 and F127 as 145. fix-F115 and fix-F127 stay on origin and
 are not deleted, because their records are theirs.
 
 ## How this session records, which differs from the rule above
@@ -73,7 +73,8 @@ lane's to set in the tracker.
 | ID | What changed | PR | Status |
 |---|---|---|---|
 | F115 | fix-F115 carried on: main merged in, source conflicts resolved, main's AlsoAskTests moved to the judge form the branch introduced, and three lines made true after the first reading, the EMPTY SETS wording, the window totals for a rebuilt set and the row of a stopped walk | 142 | merged, 6729b9e |
-| F127 | fix-F127 carried on, Core half only: main merged in, WriteResultBlock takes thisRun, makeViewpoints and coverage in that order, and after the first reading the headline no longer counts a test neither side holds as agreeing, says how many tests Clash Detective holds that the picked file does not name, judges a name on two tests of the file on neither, calls Compact a possible cause and never the cause, and keeps a FAILED line to one line. The add-in has to build the CoverageAcrossTheRun in the engine and hand it to the window's call of WriteResultBlock, call ClashRunOutcome.RecordSides and KeepItemsByLocator in ClashRunner near its two skip sites, and the Coverage sheet writer is not written | 145 | in review |
+| F127 | fix-F127 carried on, Core half only: main merged in, WriteResultBlock takes thisRun, makeViewpoints and coverage in that order, and after the first reading the headline no longer counts a test neither side holds as agreeing, says how many tests Clash Detective holds that the picked file does not name, judges a name on two tests of the file on neither, calls Compact a possible cause and never the cause, and keeps a FAILED line to one line. The add-in has to build the CoverageAcrossTheRun in the engine and hand it to the window's call of WriteResultBlock, call ClashRunOutcome.RecordSides and KeepItemsByLocator in ClashRunner near its two skip sites, and the Coverage sheet writer is not written | 145 | merged, 2348b58 |
+| F137 | Part 1 of FR-195, Q111 B: a model whose site was read and names none is listed by AlignmentCheck as not on the same shared coordinates, so with the rule on and a test to run its group skips the clash and ends PARTIAL, its line says the model names no shared site at all, and it fails its group only where no clash is skipped. The grey line of the tick box and the failed run line say so. Q125 B, PARTIAL for a group that runs no clash test, needs JobOutcome and FederationEngine, which fix-F114's add-in pass changes, so it is left, and the test named StillFailsTheGroupUntilQ125IsWired flips when it lands | in review | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -141,4 +142,20 @@ It has not stopped.
   The class summary of CountCheck still calls a test neither side holds AGREE in one sentence
 - Words: Q126's default A where Q126 was answered B, a design file named in comments that is not in the
   repo, two copies of the row count loop and of Count, and a double blank line in RESULT
+
+## F137 points the readers raised that lane B left, for the laptop lane
+
+- ModelFactsReader.SharedCoordinateOn returns an empty site where the Location tab is missing or the
+  property collection is null, not only where a model names none. Since Q111 B a read fault reads as a
+  model naming no site and skips its group's clash where it used to fail the group and still clash it. A
+  null tab should read as site not read, and whether any of the 27 machines names the tab differently is
+  UNKNOWN
+- The reference model can itself name no site, as it could already name Internal, and every model is
+  then measured from it and listed far. ModelsRead counts placements and not the document's models, so a
+  model whose read threw is never judged and does not keep an earlier note
+- .claude\rules\core.md still says a model naming no site fails its group either way, in three
+  places, and the comments of FederationEngine near line 2154 and 2300 and ModelFactsReader near line 154
+  say the same. Lane B may not edit the rule file
+- Q125 B: the tests of the group judgement that join a failure and a skip for one group describe a state
+  the engine can no longer make
 
