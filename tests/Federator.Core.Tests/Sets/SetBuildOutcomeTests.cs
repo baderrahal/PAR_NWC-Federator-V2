@@ -335,6 +335,36 @@ namespace Federator.Core.Tests
             Assert.That(outcome.PutAnythingIn, Is.True);
         }
 
+        /// <summary>
+        /// The window's totals say a rebuilt set was rebuilt, as the run log's line does, and never
+        /// that every set already there was left alone, FR-020.
+        /// </summary>
+        [Test]
+        public void TheTotalsSayARebuiltSetWasRebuiltAndNotLeftAlone()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Ducts", "Ducts", 1, 12);
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Pipes", "Pipes", 1, 7);
+            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), true);
+
+            string lines = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
+
+            Assert.That(lines, Does.Contain("already there     : 2, 1 of them rebuilt from the picked file and 1 left alone, not copied again"));
+            Assert.That(lines, Does.Not.Contain("2, left alone"));
+        }
+
+        /// <summary>With nothing rebuilt the totals keep their words.</summary>
+        [Test]
+        public void TheTotalsKeepTheirWordsWhereNothingWasRebuilt()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Ducts", "Ducts", 1, 12);
+
+            Assert.That(
+                string.Join("\n", new List<string>(outcome.Lines()).ToArray()),
+                Does.Contain("already there     : 1, left alone, not copied again"));
+        }
+
         /// <summary>A drift left alone, the box off, changed nothing.</summary>
         [Test]
         public void ADriftLeftAlonePutNothingIn()
