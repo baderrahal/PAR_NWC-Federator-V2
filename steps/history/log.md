@@ -2,6 +2,15 @@
 
 Newest entry at the top.
 
+## 2026-10-07 The loop, turn 5, F139 MERGED as pull request 130, Bader's one page progress file
+
+MERGED as PR 130, ce7fcf5, at 13:34:20, Actions run 37607849232 a success on its last commit, turn5\actions-reads-pr130.txt.
+Attempt 2's reviewer APPROVE with nothing blocking, turn5\lanes-1007-review2-F139.json. The lead's commit before the
+merge set the rows merged with 130, wrote F139-R9, rewrote the page and made two words true. steps\loop.md and
+steps\log.md now live in steps\history, a session starts from steps\PROGRESS.md, and the Stop gate reads the page by
+its content. The keep-awake now reads steps\PROGRESS.md and stops on the word CLOSED after STATE, restarted as pid
+39840 at 13:38:15, closing F139-R1. Q141, the status of a clash under a result group, is written for Bader.
+
 ## 2026-10-07 The loop, turn 5, F131 MERGED as pull request 135, the Q133 measurement on both buildings, and F138's first real start
 
 HIS SETTINGS at 10:46:57, after his own Navisworks of 10:28:15 closed: his 22.0 key read the July copy again, the
