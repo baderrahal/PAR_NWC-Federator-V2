@@ -259,6 +259,11 @@ and 148, and each ran its Core tests under mono here and on the Windows runner o
 
 ## F123 points lane B left, for the laptop lane
 
+- FR-168 changed two lines of the FOLDERS REMEMBERED block. tools\loop\run.ps1 near line 1428 still matches
+  the old first run line by string, StartsWith Nothing remembered yet, and the new lines do not match it. The
+  loop's fallback masks any line within a second of the block's first, so nothing leaks today, and the string
+  is the loop's to update. The block is written once at window open, so a folders file that fails to save
+  later still never reaches the log, which is FR-162
 - FR-061 says the .tsv holds a collapsed line where the .tsv opened. A write that fails after it opened is
   not seen by that sentence, so the line can still say the rows are in a file that stopped taking them. The
   log would have to tell the text log the moment the second file stops, which is RunLog state the add-in's
