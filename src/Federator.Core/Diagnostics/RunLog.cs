@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using Federator.Core.Clash;
+using Federator.Core.Coverage;
 using Federator.Core.Health;
 using Federator.Core.Rerun;
 using Federator.Core.Views;
@@ -639,7 +640,8 @@ namespace Federator.Core.Diagnostics
         /// what five examples and a count look like should not have to learn a second
         /// shape. THE ONE NUMBER, A14: the skips, the drift, the priorities, the probe, the
         /// health findings and the sizes all read this and name this many. SetsAcrossTheRun
-        /// names ten and its own comment says why it differs.
+        /// names every set that found nothing unless a setting caps it, F127, and its own
+        /// comment says why it differs.
         /// </summary>
         public const int KeptOfARepeat = 5;
 
@@ -1775,8 +1777,16 @@ namespace Federator.Core.Diagnostics
         /// not a clash count of zero. makeViewpoints is whether that run had the viewpoints
         /// box ticked, F136, from that run's engine, and true where no engine was made, so
         /// the block names the viewpoints off only for a run that had the box unticked.
+        ///
+        /// coverage is the count check of the same run, F127, handed in the same way and
+        /// never kept. Bader's answer to the lead's notes under Q112: a count that differs is
+        /// a FAILED line in COVERAGE and RESULT, and the group keeps its own result. So every
+        /// FAILED line is written here in full, no group's count moves, and the block never
+        /// closes on Nothing failed beside one. Null writes one line saying no coverage was
+        /// taken, because a missing line reads as a check that did not run.
         /// </summary>
-        public void WriteResultBlock(OffCoordinatesAcrossTheRun thisRun = null, bool makeViewpoints = true)
+        public void WriteResultBlock(
+            OffCoordinatesAcrossTheRun thisRun = null, bool makeViewpoints = true, CoverageAcrossTheRun coverage = null)
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
             // to be scrolled for, and so where the time went is read on the way to it.
@@ -1880,6 +1890,22 @@ namespace Federator.Core.Diagnostics
                 }
             }
 
+            // F127. Beside the clash total, because it says whether the workbook carries
+            // what Clash Detective holds.
+            Blank();
+
+            if (coverage == null)
+            {
+                Line(CoverageAcrossTheRun.NoneTaken());
+            }
+            else
+            {
+                foreach (string line in coverage.ResultLines())
+                {
+                    Line(line);
+                }
+            }
+
             Blank();
 
             // F83. Clashes by priority across the run, only where a file was picked, for
@@ -1928,9 +1954,13 @@ namespace Federator.Core.Diagnostics
             int total = failedGroups.Count + errors.Count;
             Blank();
 
+            // F127. A COVERAGE FAILED line leaves every group its result, so it is not in
+            // the errors, and the block still never says Nothing failed beside one.
+            string coverageFailed = coverage == null ? null : coverage.InsteadOfNothingFailed();
+
             if (total == 0)
             {
-                Line("Nothing failed.");
+                Line(coverageFailed ?? "Nothing failed.");
             }
             else
             {
