@@ -716,5 +716,46 @@ namespace Federator.Core.Tests.Health
                 Federator.Core.Exchange.RevitWorksets.DecidedDifferent("EL-Lightning Protection", "EL-Lightining Protection"),
                 Is.False, "nobody has decided about the typos, and they are named every run until the models are fixed");
         }
+
+        // ---------- F131 attempt 2, one place for each workset rule the teams read ----------
+
+        /// <summary>
+        /// What follows a workset name's discipline prefix and its separator, read by the rule
+        /// PrefixOf reads, so the judge of a silent miss splits a name where the disagreements do,
+        /// the reviewer's finding on F131 attempt 1. A name PrefixOf gives whole, one with no
+        /// separator or nothing before it, has no body, and nor has one with nothing after it.
+        /// </summary>
+        [Test]
+        public void TheBodyOfAWorksetNameIsWhatFollowsItsPrefixAndTheSeparator()
+        {
+            Assert.That(WorksetDisagreements.BodyOf("ME-Ductwork"), Is.EqualTo("Ductwork"));
+            Assert.That(WorksetDisagreements.BodyOf("EL-Fire-alarm"), Is.EqualTo("Fire-alarm"), "split at the first separator");
+            Assert.That(
+                WorksetDisagreements.PrefixOf("EL-Fire-alarm") + WorksetDisagreements.PrefixSeparator + WorksetDisagreements.BodyOf("EL-Fire-alarm"),
+                Is.EqualTo("EL-Fire-alarm"));
+            Assert.That(WorksetDisagreements.BodyOf("Ductwork"), Is.Null, "no separator, so PrefixOf gives the whole name");
+            Assert.That(WorksetDisagreements.BodyOf("-Ductwork"), Is.Null, "nothing before the separator, so PrefixOf gives the whole name");
+            Assert.That(WorksetDisagreements.BodyOf("ME-"), Is.Null, "nothing after the separator");
+            Assert.That(WorksetDisagreements.BodyOf(string.Empty), Is.Null);
+            Assert.That(WorksetDisagreements.BodyOf(null), Is.Null);
+        }
+
+        /// <summary>
+        /// Whether a workset asked finds a name a model carries, as it is spelled: the whole name
+        /// for equals and a part of it for contains, letter case and all. One place says it, read
+        /// by the export check and by the judge of a silent miss, the reviewer's finding on F131
+        /// attempt 1.
+        /// </summary>
+        [Test]
+        public void AWorksetAskFindsACarriedNameAsItIsSpelled()
+        {
+            Assert.That(ExportCheck.WorksetFinds("ME-Ductwork", false, "ME-Ductwork"), Is.True);
+            Assert.That(ExportCheck.WorksetFinds("ME-DUCTWORK", false, "ME-Ductwork"), Is.False, "letter case");
+            Assert.That(ExportCheck.WorksetFinds("ME-Duct", false, "ME-Ductwork"), Is.False, "equals asks the whole name");
+            Assert.That(ExportCheck.WorksetFinds("Duct", true, "ME-Ductwork"), Is.True);
+            Assert.That(ExportCheck.WorksetFinds("ME-Ductwork", true, "ME-Ductwork"), Is.True, "the whole name is a part of itself");
+            Assert.That(ExportCheck.WorksetFinds("duct", true, "ME-Ductwork"), Is.False, "letter case");
+            Assert.That(ExportCheck.WorksetFinds("Pipe", true, "ME-Ductwork"), Is.False);
+        }
     }
 }

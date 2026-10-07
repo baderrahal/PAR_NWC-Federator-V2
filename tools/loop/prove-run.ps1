@@ -1,17 +1,44 @@
-param([string]$Work = "")
+param(
+  [string]$Work = "",
+  [int]$RunLimitSeconds = 5400,
+  [int]$CaseLimitSeconds = 600,
+  [int]$H6LimitSeconds = 900,
+  [int]$H17LimitSeconds = 2400,
+  [int]$ChildLimitSeconds = 300,
+  [int]$RealLimitSeconds = 600,
+  [int]$CleanupLimitSeconds = 120,
+  [int]$WaitSeconds = 0,
+  [int]$WaitPollSeconds = 10)
 $ErrorActionPreference = "Stop"
 
 # tools\loop\prove-run.ps1, F103 part 1. The proof of tools\loop\run.ps1 and
 # tools\loop\nw-guard.ps1 with NO Navisworks started, the harness of the design's section
 # proof without navisworks, H0 to H15 for the part 1 modes and M1 to M3, since fix attempt
 # 1 H12b, H16 and H17, and since fix attempt 2 H18, each grown by the cases of fix attempt
-# 3. Run it as
+# 3. F131 added H19, team-map.txt read before every start and put back after it, and its
+# TEAMS KEPT block masked, with RC1 and RC8 of H17 reading the same in the run flow, and its
+# K2 every other line of the tool's log naming his logs folder or the kept map masked. F138
+# added H20, Auto-Save switched off before every start, and H21, its own time limits. Run it as
 #
 #   powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\loop\prove-run.ps1 -Work <folder>
 #
 # -Work is a folder under %LOCALAPPDATA%\NwcFederatorLoop, by default its test folder, and
 # everything the harness writes goes there, bar the throwaway registry key
 # HKCU\Software\NwcFederatorLoopTest. Both are removed at the end.
+#
+# THE TIME LIMITS, F138, Bader's message of 2026-10-06, item 6. No run of the harness and no
+# wait for one runs without a limit. The run has -RunLimitSeconds, each case -CaseLimitSeconds
+# unless its Case line gives more, H6 -H6LimitSeconds and H17 -H17LimitSeconds, each child the
+# limit its call gives, -ChildLimitSeconds where it gave none and -RealLimitSeconds for a run of
+# the real run.ps1, and the cleanup -CleanupLimitSeconds. Past one, a TIME LIMIT line names the
+# run, the case or the child and the seconds, the harness closes only its own stand-ins and
+# children through their held handles, goes to CLEANUP and exits 3. A harness that does not
+# reach the end of its cleanup in the cleanup's limit ends itself with exit 3 and names -Work and
+# the throwaway key as maybe left. With -WaitSeconds above 0 it waits up to that long, reading
+# every -WaitPollSeconds, for a Roamer or another harness to end, and refuses after it. A -Work
+# that is there already is refused at once and never waited on. The margins of the defaults
+# are a choice, not a measurement: the longest whole run read 3240 s, H17 about 1394 s and H6
+# about 355 s, %LOCALAPPDATA%\NwcFederatorLoop\turn5\restart\harness.md.
 #
 # WHY IT CANNOT START NAVISWORKS. It never calls the Automation constructor. It loads the
 # function definitions of run.ps1 through the parser, so run.ps1's main flow never runs in
@@ -43,6 +70,7 @@ if (-not $Work.StartsWith($loopRoot + "\", [StringComparison]::OrdinalIgnoreCase
 $repo = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $runPs = Join-Path $PSScriptRoot "run.ps1"
 $guardFile = Join-Path $PSScriptRoot "nw-guard.ps1"
+$harnessFile = Join-Path $PSScriptRoot "prove-run.ps1"
 $ps = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
 $ps32 = Join-Path $env:SystemRoot "SysWOW64\WindowsPowerShell\v1.0\powershell.exe"
 $nw = "C:\Program Files\Autodesk\Navisworks Manage 2025"
@@ -52,18 +80,55 @@ $script:Pass = 0
 $script:Fail = 0
 $script:Fails = New-Object System.Collections.Generic.List[string]
 function O($t) { [Console]::Out.WriteLine($t) }
+# F138, the time limits. Hit is set once, by the deadline runspace when the run or a case passes
+# its limit, or by EndChild when a child does, and the check points of the main thread, Case,
+# BaderSame, Check and EndChild, then throw into CLEANUP. Held and Children are what the harness
+# started, the stand-ins and the children, and the only processes a time limit closes.
+$Limits = [hashtable]::Synchronized(@{
+  Lock = New-Object System.Object
+  Wake = New-Object System.Threading.AutoResetEvent($false)
+  Held = New-Object System.Collections.Generic.List[object]
+  Children = New-Object System.Collections.Generic.List[object]
+  RunStart = $null; RunLimit = $RunLimitSeconds
+  Case = "the start of the run"; CaseStart = $null; CaseLimit = $CaseLimitSeconds
+  Hit = ""; HitShort = ""; HitAt = $null
+  CleanupAt = $null; CleanupLimit = $CleanupLimitSeconds
+  Done = $false; Work = $Work; Text = ""
+  Stops = "The harness stops here, closes only its own stand-ins and its own children through their held handles, and goes to CLEANUP" })
+function TimeCheck { if ($Limits.Hit -ne "" -and $null -eq $Limits.CleanupAt) { throw ("TIME LIMIT: " + $Limits.HitShort) } }
+function LimitHit($what, $short) {
+  $first = $false
+  [System.Threading.Monitor]::Enter($Limits.Lock)
+  try { if ($Limits.Hit -eq "") { $Limits.Hit = $what; $Limits.HitShort = $short; $Limits.HitAt = [DateTime]::UtcNow; $first = $true } } finally { [System.Threading.Monitor]::Exit($Limits.Lock) }
+  if ($first) { O ("TIME LIMIT: " + $what + ". " + $Limits.Stops); [void]$Limits.Wake.Set() }
+  TimeCheck
+}
+# Closes, through the Process objects the harness holds, each of these that still runs, and
+# writes one line for a close that throws. The main thread and the deadline runspace both close
+# this way, and nothing else is ever closed. The list is walked as it is given, because @() of a
+# generic List handed in as a parameter throws "Argument types do not match" in Windows
+# PowerShell 5.1, measured on 2026-10-06.
+function CloseHeld($list) {
+  foreach ($p in $list) {
+    try { if (-not $p.HasExited) { $p.Kill(); [void]$p.WaitForExit(10000) } }
+    catch { [Console]::Out.WriteLine("  the close of pid " + $p.Id + " through its held handle threw, " + $_.Exception.Message) }
+  }
+}
 function Check($name, [bool]$ok, $detail) {
+  TimeCheck
   if ($ok) { $script:Pass++; O ("  PASS  " + $name + $(if ($detail) { "  | " + $detail } else { "" })) }
   else { $script:Fail++; $script:Fails.Add($name); O ("  FAIL  " + $name + $(if ($detail) { "  | " + $detail } else { "" })) }
+}
+function WorkRefusal {
+  if (-not (Test-Path -LiteralPath $Work)) { return $null }
+  return ("REFUSED: -Work " + $Work + " is there already, perhaps left by a run that was cut. The harness never writes into a folder it did not make and never waits for one to go. Nothing was done.")
 }
 
 O ("prove-run.ps1, F103 part 1, " + $T0.ToString("yyyy-MM-dd HH:mm:ss") + ", pid " + $PID)
 O ("  run.ps1 sha256 " + (Get-FileHash -LiteralPath $runPs -Algorithm SHA256).Hash + ", nw-guard.ps1 sha256 " + (Get-FileHash -LiteralPath $guardFile -Algorithm SHA256).Hash + ", this harness sha256 " + (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash)
-$roamers = @(Get-Process -Name Roamer -ErrorAction SilentlyContinue)
-O ("  Get-Process Roamer at the start: " + $roamers.Count)
-if ($roamers.Count -gt 0) { O "REFUSED: a Roamer is running, and the harness never runs beside any Navisworks. Nothing was done."; exit 2 }
-if (Test-Path -LiteralPath $Work) { O ("REFUSED: " + $Work + " is there already, and the harness never writes into a folder it did not make. Nothing was done."); exit 2 }
-New-Item -ItemType Directory -Path $Work | Out-Null
+O ("  time limits: the run " + $RunLimitSeconds + " s, each case " + $CaseLimitSeconds + " s unless its line says more, H6 " + $H6LimitSeconds + " s, H17 " + $H17LimitSeconds + " s, each child " + $ChildLimitSeconds + " s unless its call says more, a run of the real run.ps1 " + $RealLimitSeconds + " s, the cleanup " + $CleanupLimitSeconds + " s, the wait before the run " + $WaitSeconds + " s read every " + $WaitPollSeconds + " s")
+$workWhy = WorkRefusal
+if ($null -ne $workWhy) { O $workWhy; exit 2 }
 
 # The functions under test: the guard file, and run.ps1's top level functions read through
 # the parser, never its main flow.
@@ -98,15 +163,12 @@ function BaderState {
   foreach ($f in @(Get-ChildItem -LiteralPath $autoSave -Recurse -Force -ErrorAction SilentlyContinue | Sort-Object FullName)) { $s.Add("autosave " + $f.FullName.Substring($autoSave.Length) + " " + $(if ($f.PSIsContainer) { "folder" } else { [string]$f.Length }) + " " + $f.LastWriteTimeUtc.Ticks + " " + $f.Attributes) }
   foreach ($f in @(Get-ChildItem -LiteralPath $bundle -Recurse -File -Force | Sort-Object FullName)) { $s.Add("bundle " + $f.FullName.Substring($bundle.Length) + " " + (Get-FileHash -LiteralPath $f.FullName -Algorithm SHA256).Hash) }
   $reg = Join-Path $Work "bader-22.0.reg"
-  $rx = RunChild "reg.exe" ("export `"HKCU\Software\Autodesk\Navisworks Manage\22.0`" `"" + $reg + "`" /y") $null
+  $rx = RunBounded "reg.exe" ("export `"HKCU\Software\Autodesk\Navisworks Manage\22.0`" `"" + $reg + "`" /y") $null $ChildLimitSeconds
   $s.Add("reg export exit " + $rx.Exit + " sha256 " + $(if (Test-Path -LiteralPath $reg) { (Get-FileHash -LiteralPath $reg -Algorithm SHA256).Hash } else { "none" }))
   if (Test-Path -LiteralPath $reg) { [System.IO.File]::Delete($reg) }
   foreach ($f in @(Get-ChildItem -LiteralPath $loopRoot -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '\\NwcFederatorLoop\\(turn\d+|wt-[^\\]+)(\\|$)' -and -not ($_.FullName -eq $Work -or $_.FullName.StartsWith($Work + "\", [StringComparison]::OrdinalIgnoreCase)) } | Sort-Object FullName)) { $s.Add("loop " + $f.FullName.Substring($loopRoot.Length) + " " + $(if ($f.PSIsContainer) { "folder" } else { [string]$f.Length }) + " " + $f.LastWriteTimeUtc.Ticks) }
   return ($s -join "`n")
 }
-O "  reading Bader's state at the start"
-$baderAtStart = BaderState
-O ("    " + $baderAtStart.Split("`n").Count + " lines: his logs, his AutoSave, the installed bundle, the 22.0 export and the loop folder outside the turn folders")
 # The harness never runs beside a Navisworks it did not start. It refuses at its start, and
 # before and after every case it reads again for a Roamer that is not one of its own running
 # stand-ins, and stops there if it finds one or cannot read the process list, closing only
@@ -124,12 +186,23 @@ function ForeignRoamer {
   }
   return $null
 }
-function Case($title) {
+# A case, and its own clock. Its limit is -CaseLimitSeconds unless its line gives more, and the
+# deadline runspace reads the case's name, start and limit under the lock.
+function Case($title, $limit) {
+  TimeCheck
   $foreign = ForeignRoamer
   if ($null -ne $foreign) { throw ("STOPPED before " + $title + ": a Navisworks the harness did not start is running, or the process list cannot be read, " + $foreign + ". The harness never runs beside one, so it stops here, never touches it, and closes only its own stand-ins") }
   O $title
+  if ($null -eq $limit) { $limit = $CaseLimitSeconds }
+  $name = $title
+  if ($title -match '^==== ([^,]+?),') { $name = $Matches[1] }
+  [System.Threading.Monitor]::Enter($Limits.Lock)
+  try { $Limits.Case = $name; $Limits.CaseStart = [DateTime]::UtcNow; $Limits.CaseLimit = $limit } finally { [System.Threading.Monitor]::Exit($Limits.Lock) }
+  [void]$Limits.Wake.Set()
+  O ("  the limit of this case " + $limit + " s, " + ($Limits.RunLimit - ([DateTime]::UtcNow - $Limits.RunStart).TotalSeconds).ToString("0") + " s of the run left")
 }
 function BaderSame($case) {
+  TimeCheck
   $foreign = ForeignRoamer
   if ($null -ne $foreign) { throw ("STOPPED after " + $case + ": a Navisworks the harness did not start is running, " + $foreign + ". The harness never runs beside one, so it stops here, never touches it, and closes only its own stand-ins") }
   $now = BaderState
@@ -143,7 +216,7 @@ function BaderSame($case) {
 # =======================================================================================
 # The stand-ins, every one held through its Process handle.
 $standinBin = Join-Path $Work "standin-bin"
-$script:Held = New-Object System.Collections.Generic.List[object]
+$script:Held = $Limits.Held
 function StartStandin($arguments, $role, $exe) {
   if ($null -eq $exe) { $exe = Join-Path $standinBin "Roamer.exe" }
   $psi = New-Object System.Diagnostics.ProcessStartInfo
@@ -154,15 +227,46 @@ function StartStandin($arguments, $role, $exe) {
   if ($null -ne $role) { $psi.EnvironmentVariables["NWCLOOP_STANDIN"] = $role }
   $p = [System.Diagnostics.Process]::Start($psi)
   [void]$p.Handle
-  $script:Held.Add($p)
+  [System.Threading.Monitor]::Enter($Limits.Lock)
+  try { $script:Held.Add($p) } finally { [System.Threading.Monitor]::Exit($Limits.Lock) }
   Start-Sleep -Milliseconds 400
   return $p
 }
-function StopStandins {
-  foreach ($p in $script:Held) { if (-not $p.HasExited) { $p.Kill(); [void]$p.WaitForExit(10000) } }
-}
+function StopStandins { CloseHeld $script:Held }
 function Alive($p, $ticks) { return (-not $p.HasExited -and (UtcTicks $p.StartTime) -eq $ticks) }
-# A child started with some environment variables pointed at the harness's own folders, read
+# F138. The Auto-Save key under a test 22.0 key, made with enable "0", the value his 22.0 key
+# held when it was measured on 2026-10-05, and what enable reads now, its kind and its data, or
+# null when it reads none. Every write is under the throwaway key, never under his.
+function AutoSaveFixture($sub) { $k = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey($sub + "\GlobalOptions\general\autosave"); $k.SetValue("enable", "0"); $k.Close() }
+function EnableNow($sub) {
+  $v = RegValueNow ("HKEY_CURRENT_USER\" + $sub + "\GlobalOptions\general\autosave") "enable"
+  if (-not $v.Ok -or $null -eq $v.Value) { return $null }
+  return ([string]$v.Value.Kind + " " + [string]$v.Value.Data)
+}
+# A deny of the rights named, SetValue or QueryValues, for this user on one test key, so a write
+# to it or a read of it fails as one Windows refuses, and its removal, so the cleanup can delete
+# the key. ClearRegDeny says whether it found a deny rule to remove.
+function DenyReg($sub, $rights) {
+  $k = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($sub, [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, [System.Security.AccessControl.RegistryRights]"ReadPermissions, ChangePermissions")
+  try {
+    $acl = $k.GetAccessControl()
+    $acl.AddAccessRule((New-Object System.Security.AccessControl.RegistryAccessRule([System.Security.Principal.WindowsIdentity]::GetCurrent().User, [System.Security.AccessControl.RegistryRights]$rights, [System.Security.AccessControl.AccessControlType]::Deny)))
+    $k.SetAccessControl($acl)
+  } finally { $k.Close() }
+}
+function ClearRegDeny($sub) {
+  $k = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($sub, [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, [System.Security.AccessControl.RegistryRights]"ReadPermissions, ChangePermissions")
+  if ($null -eq $k) { return $false }
+  try {
+    $acl = $k.GetAccessControl()
+    $n = 0
+    foreach ($rule in @($acl.GetAccessRules($true, $false, [System.Security.Principal.SecurityIdentifier]) | Where-Object { $_.AccessControlType -eq "Deny" })) { [void]$acl.RemoveAccessRule($rule); $n++ }
+    if ($n -gt 0) { $k.SetAccessControl($acl) }
+    return ($n -gt 0)
+  } finally { $k.Close() }
+}
+# A child of the harness, held through its Process object, so a time limit can close it, with
+# some environment variables pointed at the harness's own folders where the call gives them, read
 # to its end by EndChild.
 function StartChildEnv($file, $arguments, $workDir, $envs) {
   $psi = New-Object System.Diagnostics.ProcessStartInfo
@@ -172,20 +276,37 @@ function StartChildEnv($file, $arguments, $workDir, $envs) {
   $psi.CreateNoWindow = $true
   $psi.RedirectStandardOutput = $true
   $psi.RedirectStandardError = $true
-  $psi.WorkingDirectory = $workDir
+  if ($null -ne $workDir) { $psi.WorkingDirectory = $workDir }
   foreach ($k in $envs.Keys) { $psi.EnvironmentVariables[$k] = $envs[$k] }
   $p = [System.Diagnostics.Process]::Start($psi)
-  return [pscustomobject]@{ P = $p; O = $p.StandardOutput.ReadToEndAsync(); E = $p.StandardError.ReadToEndAsync() }
+  [void]$p.Handle
+  [System.Threading.Monitor]::Enter($Limits.Lock)
+  try { $Limits.Children.Add($p) } finally { [System.Threading.Monitor]::Exit($Limits.Lock) }
+  return [pscustomobject]@{ P = $p; O = $p.StandardOutput.ReadToEndAsync(); E = $p.StandardError.ReadToEndAsync(); Name = (Split-Path $file -Leaf) + " " + $arguments }
 }
+# The one place a child's output is read. Its limit bounds its exit and then the read of its
+# output, so a process it started that holds its output cannot hold the harness. Past either,
+# the harness stops at a TIME LIMIT, the child closed through its own handle.
 function EndChild($c, $seconds) {
-  if (-not $c.P.WaitForExit($seconds * 1000)) { $c.P.Kill(); [void]$c.P.WaitForExit(10000); return [pscustomobject]@{ Exit = -1; Out = "the child did not end in " + $seconds + " s and was closed through its own handle"; Err = ""; Pid = $c.P.Id } }
-  $c.P.WaitForExit()
+  if (-not $c.P.WaitForExit($seconds * 1000)) {
+    CloseHeld @($c.P)
+    LimitHit ("the child " + $c.Name + ", pid " + $c.P.Id + ", did not end in " + $seconds + " s, its limit, in " + $Limits.Case + " at " + [DateTime]::Now.ToString("HH:mm:ss") + ", and was closed through its own handle") ("the child " + $c.Name + ", pid " + $c.P.Id + ", after " + $seconds + " s in " + $Limits.Case)
+  }
+  TimeCheck
+  if (-not [System.Threading.Tasks.Task]::WaitAll([System.Threading.Tasks.Task[]]@($c.O, $c.E), [int]($seconds * 1000))) {
+    LimitHit ("the output of the child " + $c.Name + ", pid " + $c.P.Id + ", was not read whole " + $seconds + " s after it ended, in " + $Limits.Case + " at " + [DateTime]::Now.ToString("HH:mm:ss") + ", so a process it started may still hold it, which the harness did not start and leaves alone") ("the output of the child " + $c.Name + ", pid " + $c.P.Id + ", after " + $seconds + " s in " + $Limits.Case)
+  }
   return [pscustomobject]@{ Exit = $c.P.ExitCode; Out = $c.O.Result; Err = $c.E.Result; Pid = $c.P.Id }
 }
+# A child with no environment of its own, run to its end within its limit.
+function RunBounded($file, $arguments, $workDir, $seconds) { return (EndChild (StartChildEnv $file $arguments $workDir @{}) $seconds) }
 function RunReal($arguments) {
-  return (RunChild $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $runPs + "`" " + $arguments) $repo)
+  return (RunBounded $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $runPs + "`" " + $arguments) $repo $RealLimitSeconds)
 }
 function Refused($r) { return @($r.Out.Split("`n") | Where-Object { $_.StartsWith("REFUSED:") } | ForEach-Object { $_.Trim() }) }
+# Whether a line of a record matches, and where the first one is, read by H17 and H21.
+function Has($rec, $pattern) { return (@($rec | Where-Object { $_ -match $pattern }).Count -gt 0) }
+function At($rec, $pattern) { for ($i = 0; $i -lt $rec.Count; $i++) { if ($rec[$i] -match $pattern) { return $i } }; return -1 }
 # The refused calls use set 99. The runs folder itself may hold the lead's real runs, which
 # BaderSame reads as part of the loop folder after every case.
 function NoWrites($label) {
@@ -202,14 +323,105 @@ function GuardsInPlace($p) {
   return ("a stand-in Roamer pid " + $p.Id + " runs, and the installed add-in reads " + $pv + ", not 00000000")
 }
 
+# =======================================================================================
+# The deadline runspace, started once -Work is made, on the pattern of the guard's watchdog. At
+# the run's limit or the case's it writes the TIME LIMIT line and closes, through their held
+# handles, the stand-ins and children the harness started, so a main thread waiting on one returns
+# and throws into CLEANUP. When the harness has not reached its cleanup within the cleanup's
+# limit after a time limit, or its cleanup has not ended within it, it ends the harness itself
+# with exit 3 and names what may be left. It waits only on its next deadline or a wake.
+function Deadline($Limits) {
+  while (-not $Limits.Done) {
+    $now = [DateTime]::UtcNow
+    $line = ""; $end = ""; $items = @()
+    [System.Threading.Monitor]::Enter($Limits.Lock)
+    try {
+      $next = $Limits.RunStart.AddSeconds($Limits.RunLimit)
+      if ($Limits.Hit -eq "" -and $null -eq $Limits.CleanupAt) {
+        $caseEnd = $Limits.CaseStart.AddSeconds($Limits.CaseLimit)
+        $at = [DateTime]::Now.ToString("HH:mm:ss")
+        if ($now -ge $next) { $Limits.Hit = "the run reached " + $Limits.RunLimit + " s, its limit, in " + $Limits.Case + " at " + $at; $Limits.HitShort = "the run after " + $Limits.RunLimit + " s, in " + $Limits.Case }
+        elseif ($now -ge $caseEnd) { $Limits.Hit = $Limits.Case + " ran " + $Limits.CaseLimit + " s, its limit, at " + $at; $Limits.HitShort = $Limits.Case + " after " + $Limits.CaseLimit + " s" }
+        elseif ($caseEnd -lt $next) { $next = $caseEnd }
+        if ($Limits.Hit -ne "") { $Limits.HitAt = $now; $line = "TIME LIMIT: " + $Limits.Hit + ". " + $Limits.Stops; $items = @($Limits.Held.ToArray()) + @($Limits.Children.ToArray()) }
+      }
+      if ($Limits.Hit -ne "" -or $null -ne $Limits.CleanupAt) {
+        $what = "the harness did not reach its cleanup " + $Limits.CleanupLimit + " s after its time limit"
+        $from = $Limits.HitAt
+        if ($null -ne $Limits.CleanupAt) { $what = "the cleanup did not end in " + $Limits.CleanupLimit + " s"; $from = $Limits.CleanupAt }
+        $next = $from.AddSeconds($Limits.CleanupLimit)
+        if ($now -ge $next) { $end = "TIME LIMIT: " + $what + ", so the harness ends itself with exit 3. -Work " + $Limits.Work + " and HKCU\Software\NwcFederatorLoopTest may be left, and are named here"; $items = @($Limits.Held.ToArray()) + @($Limits.Children.ToArray()) }
+      }
+    } finally { [System.Threading.Monitor]::Exit($Limits.Lock) }
+    if ($line -ne "") { [Console]::Out.WriteLine($line) }
+    if ($items.Count -gt 0) { CloseHeld $items }
+    if ($end -ne "") { [Console]::Out.WriteLine($end); [Console]::Out.Flush(); [Environment]::Exit(3) }
+    $ms = [Math]::Ceiling(($next - [DateTime]::UtcNow).TotalMilliseconds)
+    if ($ms -lt 1) { $ms = 1 }
+    if ($ms -gt [int]::MaxValue) { $ms = [int]::MaxValue }
+    [void]$Limits.Wake.WaitOne([int]$ms)
+  }
+}
+
+# What runs now that the harness never runs beside: every Roamer, and every powershell other than
+# this one and the ones it was started from whose command line starts a script named
+# prove-run.ps1 with -File. Error is why the process list could not be read.
+function Running {
+  $r = [pscustomobject]@{ Roamers = @(); Harnesses = @(); Text = ""; Error = "" }
+  $all = $null
+  try { $all = @(Get-CimInstance -ClassName Win32_Process -Property ProcessId, ParentProcessId, Name, CommandLine) } catch { $r.Error = "the process list could not be read, " + (Err $_.Exception); return $r }
+  $parent = @{}
+  foreach ($p in $all) { $parent[[int]$p.ProcessId] = [int]$p.ParentProcessId }
+  $mine = New-Object 'System.Collections.Generic.HashSet[int]'
+  $id = [int]$PID
+  while ($id -ne 0 -and $mine.Add($id) -and $parent.ContainsKey($id)) { $id = $parent[$id] }
+  $r.Roamers = @($all | Where-Object { $_.Name -eq "Roamer.exe" } | ForEach-Object { [int]$_.ProcessId })
+  $r.Harnesses = @($all | Where-Object { $_.Name -match '^(powershell|pwsh)\.exe$' -and -not $mine.Contains([int]$_.ProcessId) -and [string]$_.CommandLine -match '-File\s+"?[^"]*\bprove-run\.ps1' } | ForEach-Object { [int]$_.ProcessId })
+  $parts = @()
+  if ($r.Roamers.Count -gt 0) { $parts += ("Roamer pid " + ($r.Roamers -join ", ")) }
+  if ($r.Harnesses.Count -gt 0) { $parts += ("harness pid " + ($r.Harnesses -join ", ")) }
+  $r.Text = $parts -join " and "
+  return $r
+}
+# The wait before the run, -WaitSeconds. At 0 it refuses at once, as the harness always did. Above
+# 0 it reads again every -WaitPollSeconds until nothing runs or its limit passes, and then refuses.
+# It never waits on -Work, which was read before the functions were loaded, and is read again here.
+$run = Running
+O ("  Roamer processes at the start: " + $run.Roamers.Count + ", other proof harnesses running: " + $run.Harnesses.Count)
+if ($run.Error -ne "") { O ("REFUSED: " + $run.Error + ", so whether a Navisworks or another harness runs is UNKNOWN. Nothing was done."); exit 2 }
+if ($run.Text -ne "" -and $WaitSeconds -le 0) { O ("REFUSED: running now, " + $run.Text + ". The harness never runs beside a Navisworks or another harness, and with -WaitSeconds 0 it waits for none. Nothing was done."); exit 2 }
+if ($run.Text -ne "") {
+  O ("  waiting up to " + $WaitSeconds + " s, reading every " + $WaitPollSeconds + " s, for " + $run.Text + " to end")
+  $waited = [Diagnostics.Stopwatch]::StartNew()
+  while ($run.Text -ne "" -and $run.Error -eq "" -and $waited.Elapsed.TotalSeconds -lt $WaitSeconds) {
+    Start-Sleep -Milliseconds ([int][Math]::Max(0, [Math]::Min($WaitPollSeconds * 1000, ($WaitSeconds - $waited.Elapsed.TotalSeconds) * 1000)))
+    $run = Running
+  }
+  if ($run.Error -ne "") { O ("REFUSED: " + $run.Error + ", while it waited, so whether a Navisworks or another harness runs is UNKNOWN. Nothing was done."); exit 2 }
+  if ($run.Text -ne "") { O ("REFUSED: waited " + $WaitSeconds + " s for " + $run.Text + ", its limit, and they still run. Nothing was done."); exit 2 }
+  O ("  waited " + $waited.Elapsed.TotalSeconds.ToString("0") + " s, and no Roamer and no other proof harness runs now")
+}
+$workWhy = WorkRefusal
+if ($null -ne $workWhy) { O $workWhy; exit 2 }
+New-Item -ItemType Directory -Path $Work | Out-Null
+$Limits.RunStart = [DateTime]::UtcNow
+$Limits.CaseStart = $Limits.RunStart
+$Limits.Text = "function CloseHeld {" + ${function:CloseHeld} + "}`r`nfunction Deadline {" + ${function:Deadline} + "}"
+$deadlinePs = [PowerShell]::Create()
+[void]$deadlinePs.AddScript('param($Limits) . ([scriptblock]::Create($Limits.Text)); Deadline $Limits').AddArgument($Limits)
+$deadlineHandle = $deadlinePs.BeginInvoke()
+
 try {
+  O "  reading Bader's state at the start"
+  $baderAtStart = BaderState
+  O ("    " + $baderAtStart.Split("`n").Count + " lines: his logs, his AutoSave, the installed bundle, the 22.0 export and the loop folder outside the turn folders")
   # =====================================================================================
   O ""
-  O "==== THE STAND-IN, built from tools\loop\StandIn ===="
-  $b = RunChild "dotnet" ("build `"" + (Join-Path $PSScriptRoot "StandIn\StandIn.csproj") + "`" -c Release -o `"" + $standinBin + "`" --nologo -v minimal") $repo
+  Case "==== THE STAND-IN, built from tools\loop\StandIn ===="
+  $b = RunBounded "dotnet" ("build `"" + (Join-Path $PSScriptRoot "StandIn\StandIn.csproj") + "`" -c Release -o `"" + $standinBin + "`" --nologo -v minimal") $repo $ChildLimitSeconds
   O ("  dotnet build exit " + $b.Exit + ", pid " + $b.Pid)
   foreach ($l in @($b.Out.Split("`n") | Where-Object { $_ -match 'Warning|Error|->' })) { O ("    " + $l.Trim()) }
-  $bs = RunChild "dotnet" "build-server shutdown" $repo
+  $bs = RunBounded "dotnet" "build-server shutdown" $repo $ChildLimitSeconds
   O ("  dotnet build-server shutdown exit " + $bs.Exit)
   Check "the stand-in builds" ($b.Exit -eq 0 -and (Test-Path -LiteralPath (Join-Path $standinBin "Roamer.exe"))) ""
   Copy-Item -LiteralPath (Join-Path $standinBin "Roamer.exe") -Destination (Join-Path $standinBin "Decoy.exe")
@@ -283,28 +495,114 @@ try {
   $iM5 = $rt.IndexOf('NewerFiles $roots $sync.CallStartUtc'); $iPut = $rt.IndexOf('$spb = SettingsPutBack')
   Check "run.ps1 reads M5 before the put back, so the put back's own writes are never listed as the start's" ($iM5 -gt 0 -and $iPut -gt 0 -and $iM5 -lt $iPut) ("M5 at " + $iM5 + ", the put back at " + $iPut)
   Check "the monitor reads watch.txt through ReadShared and never through ReadAllLines" ($rt.Contains('ReadShared $sync.WatchFile') -and -not $rt.Contains('ReadAllLines($sync.WatchFile)')) ""
+  # F138, Bader's message of 2026-10-06, item 6: no wait of the harness runs without a limit. So
+  # prove-run.ps1 holds no WaitForExit with no argument, no .Result outside EndChild, the one place
+  # a child's output is read with a limit, no loop whose condition is always true, and no call of
+  # run.ps1's RunChild, whose wait has no limit.
+  function WaitFaults($f) {
+    $faults = New-Object System.Collections.Generic.List[string]
+    $t5 = $null; $e5 = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($f, [ref]$t5, [ref]$e5)
+    if ($e5.Count -gt 0) { $faults.Add("it does not parse"); return ,$faults }
+    foreach ($m in @($ast.FindAll({ param($a) $a -is [System.Management.Automation.Language.MemberExpressionAst] }, $true))) {
+      $name = [string]$m.Member.Value
+      $fn = $m.Parent; while ($null -ne $fn -and $fn -isnot [System.Management.Automation.Language.FunctionDefinitionAst]) { $fn = $fn.Parent }
+      $in = $(if ($null -ne $fn) { $fn.Name } else { "the main flow" })
+      if ($m -is [System.Management.Automation.Language.InvokeMemberExpressionAst] -and $name -eq "WaitForExit" -and ($null -eq $m.Arguments -or $m.Arguments.Count -eq 0)) { $faults.Add("a WaitForExit with no limit in " + $in + ", line " + $m.Extent.StartLineNumber) }
+      if ($m -isnot [System.Management.Automation.Language.InvokeMemberExpressionAst] -and $name -eq "Result" -and $in -ne "EndChild") { $faults.Add("a .Result outside EndChild, in " + $in + ", line " + $m.Extent.StartLineNumber) }
+    }
+    foreach ($w in @($ast.FindAll({ param($a) $a -is [System.Management.Automation.Language.LoopStatementAst] -and $a -isnot [System.Management.Automation.Language.ForEachStatementAst] }, $true))) {
+      $ct = $(if ($null -eq $w.Condition) { "" } else { $w.Condition.Extent.Text.Trim() })
+      $always = (($w -is [System.Management.Automation.Language.WhileStatementAst] -or $w -is [System.Management.Automation.Language.DoWhileStatementAst]) -and $ct -eq '$true') -or ($w -is [System.Management.Automation.Language.DoUntilStatementAst] -and $ct -eq '$false') -or ($w -is [System.Management.Automation.Language.ForStatementAst] -and $ct -eq "")
+      if ($always) { $faults.Add("a loop whose condition is always true, line " + $w.Extent.StartLineNumber) }
+    }
+    foreach ($c in @($ast.FindAll({ param($a) $a -is [System.Management.Automation.Language.CommandAst] }, $true))) {
+      if ($c.GetCommandName() -eq "RunChild") { $faults.Add("a call of run.ps1's RunChild, line " + $c.Extent.StartLineNumber) }
+    }
+    return ,$faults
+  }
+  $wf0 = WaitFaults $harnessFile
+  Check "F138: prove-run.ps1 holds no WaitForExit with no argument, no .Result outside EndChild, no loop whose condition is always true and no call of run.ps1's RunChild" ($wf0.Count -eq 0) (($wf0) -join " | ")
+  $badWaits = [ordered]@{
+    "a WaitForExit with no limit" = 'function Bad($p) { $p.WaitForExit() }'
+    "a .Result outside EndChild" = 'function Bad($t) { return $t.Result }'
+    "a loop whose condition is always true" = 'function Bad { while ($true) { Start-Sleep -Seconds 1 } }'
+    "a call of run.ps1's RunChild" = 'function Bad { RunChild "git" "status" $null }'
+  }
+  $n = 0
+  foreach ($k in $badWaits.Keys) {
+    $n++
+    $copy = Join-Path $h0 ("harness-bad-" + $n + ".ps1")
+    [System.IO.File]::WriteAllText($copy, [System.IO.File]::ReadAllText($harnessFile) + "`r`n" + $badWaits[$k] + "`r`n", $utf8)
+    $f = WaitFaults $copy
+    $more = @($f | Where-Object { $_.StartsWith($k) }).Count - @($wf0 | Where-Object { $_.StartsWith($k) }).Count
+    Check ("F138: the static read names a copy of prove-run.ps1 with one bad line added, " + $k + ", one more than prove-run.ps1 itself holds") ($more -eq 1) (@($f | Where-Object { $_.StartsWith($k) }) -join " | ")
+  }
+  # F138 attempt 2, Q135 point 2: the Auto-Save switch is written after the last read before the
+  # constructor, so no stop before the start leaves it written. run.ps1 and the probe each call
+  # SwitchAutoSaveOff once, after the last call of each refusal named here that comes before the
+  # constructor, with no STOP line between it and the constructor but its own.
+  $probeFile = Join-Path $repo "tools\probes\probe-automation-start.ps1"
+  function SwitchOrderFaults($f, $refusals) {
+    $faults = New-Object System.Collections.Generic.List[string]
+    $leaf = Split-Path $f -Leaf
+    $t6 = $null; $e6 = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($f, [ref]$t6, [ref]$e6)
+    if ($e6.Count -gt 0) { $faults.Add($leaf + " does not parse"); return ,$faults }
+    $ctor = @($ast.FindAll({ param($a) $a -is [System.Management.Automation.Language.InvokeMemberExpressionAst] -and [string]$a.Member.Value -eq "CreateInstance" }, $true))
+    $calls = @($ast.FindAll({ param($a) $a -is [System.Management.Automation.Language.CommandAst] }, $true))
+    $sw = @($calls | Where-Object { $_.GetCommandName() -eq "SwitchAutoSaveOff" })
+    if ($ctor.Count -ne 1) { $faults.Add($leaf + " calls the constructor " + $ctor.Count + " times, not once"); return ,$faults }
+    if ($sw.Count -ne 1) { $faults.Add($leaf + " calls SwitchAutoSaveOff " + $sw.Count + " times, not once"); return ,$faults }
+    $iC = $ctor[0].Extent.StartOffset
+    $iS = $sw[0].Extent.StartOffset
+    if ($iS -gt $iC) { $faults.Add($leaf + " calls SwitchAutoSaveOff after the constructor"); return ,$faults }
+    foreach ($r in $refusals) {
+      $last = $null
+      foreach ($c in @($calls | Where-Object { $_.GetCommandName() -eq $r -and $_.Extent.StartOffset -lt $iC })) { if ($null -eq $last -or $c.Extent.StartOffset -gt $last.Extent.StartOffset) { $last = $c } }
+      if ($null -eq $last) { $faults.Add($leaf + " calls " + $r + " nowhere before the constructor") }
+      elseif ($last.Extent.StartOffset -gt $iS) { $faults.Add($leaf + " calls " + $r + " after the switch, line " + $last.Extent.StartLineNumber) }
+    }
+    $stops = @($ast.FindAll({ param($a) ($a -is [System.Management.Automation.Language.StringConstantExpressionAst] -or $a -is [System.Management.Automation.Language.ExpandableStringExpressionAst]) -and [string]$a.Value -match 'STOP before' }, $true) | Where-Object { $_.Extent.StartOffset -gt $iS -and $_.Extent.StartOffset -lt $iC })
+    if ($stops.Count -ne 1) { $faults.Add($leaf + " holds " + $stops.Count + " STOP lines between the switch and the constructor, not its own one") }
+    return ,$faults
+  }
+  $runRefusals = @("BackupSettings", "KeepAwake", "UnprovedRefusal", "RoamerRefusal", "LockRefusal")
+  $probeRefusals = @("BackupSettings", "UnprovedRefusal", "RoamerRefusal")
+  # The faults are read into variables first, because @() of a call that returns a list holds the
+  # list as one item, measured on 2026-10-06.
+  $soRun = SwitchOrderFaults $runPs $runRefusals
+  $soProbe = SwitchOrderFaults $probeFile $probeRefusals
+  $so = @($soRun) + @($soProbe)
+  Check "F138 attempt 2: run.ps1 and the probe each write the Auto-Save switch once, after the last call of every refusal before the constructor, with no STOP line between it and the constructor but its own" ($so.Count -eq 0) (($so) -join " | ")
+  $badOrder = @(
+    @($runPs, 'Say "==== THE START ===="', 'if (RoamerRefusal) { $code = 2; break }', $runRefusals, "calls RoamerRefusal after the switch", "a Roamer read after the switch"),
+    @($runPs, 'Say "---- check 17, keep awake ----"', '$ao2 = SwitchAutoSaveOff $paths.RegSub $bs.RegRoot $bs.RegBefore', $runRefusals, "calls SwitchAutoSaveOff 2 times", "a second switch at check 17"),
+    @($probeFile, 'Say "==== STEP 3. Start one Navisworks through the API ===="', 'if (RoamerRefusal) { StopEarly "STOP before the constructor: a Navisworks is running" }', $probeRefusals, "calls RoamerRefusal after the switch", "a Roamer read after the switch"))
+  $n = 0
+  foreach ($bo in $badOrder) {
+    $n++
+    $src = [System.IO.File]::ReadAllText($bo[0])
+    $at = ([regex]::Matches($src, [regex]::Escape($bo[1]))).Count
+    if ($at -ne 1) { throw ("the anchor of a bad copy for the switch order is found " + $at + " times: " + $bo[1]) }
+    $copy = Join-Path $h0 ((Split-Path $bo[0] -Leaf).Replace(".ps1", "") + "-order-" + $n + ".ps1")
+    [System.IO.File]::WriteAllText($copy, $src.Replace($bo[1], $bo[2] + "`r`n        " + $bo[1]), $utf8)
+    $f = SwitchOrderFaults $copy $bo[3]
+    Check ("F138 attempt 2: the switch order read names a copy of " + (Split-Path $bo[0] -Leaf) + " with " + $bo[5]) (@($f | Where-Object { $_.Contains($bo[4]) }).Count -ge 1) (($f) -join " | ")
+  }
 
   # =====================================================================================
   O ""
   Case "==== H1, THE MOVE: the probe -ReflectionOnly before and after, which starts nothing ===="
   $h1 = Join-Path $Work "h1"
   New-Item -ItemType Directory -Path (Join-Path $h1 "before\tools\probes"), (Join-Path $h1 "local"), (Join-Path $h1 "appdata") | Out-Null
-  $g = RunChild "git" "show 0eb4ede:tools/probes/probe-automation-start.ps1" $repo
+  $g = RunBounded "git" "show 0eb4ede:tools/probes/probe-automation-start.ps1" $repo $ChildLimitSeconds
   $beforeProbe = Join-Path $h1 "before\tools\probes\probe-automation-start.ps1"
   [System.IO.File]::WriteAllText($beforeProbe, $g.Out, $utf8)
   function Reflect($probe, $out) {
-    $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $psi.FileName = $ps
-    $psi.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"" + $probe + "`" -ReflectionOnly -Out `"" + $out + "`""
-    $psi.UseShellExecute = $false; $psi.CreateNoWindow = $true; $psi.RedirectStandardOutput = $true; $psi.RedirectStandardError = $true
-    $psi.EnvironmentVariables["LOCALAPPDATA"] = (Join-Path $h1 "local")
-    $psi.EnvironmentVariables["APPDATA"] = (Join-Path $h1 "appdata")
-    $psi.EnvironmentVariables["COMPUTERNAME"] = "the-machine-masked"
-    $p = [System.Diagnostics.Process]::Start($psi)
-    $o = $p.StandardOutput.ReadToEndAsync(); $e = $p.StandardError.ReadToEndAsync()
-    $p.WaitForExit()
-    $null = $o.Result + $e.Result
-    return $p.ExitCode
+    $envs = @{ LOCALAPPDATA = (Join-Path $h1 "local"); APPDATA = (Join-Path $h1 "appdata"); COMPUTERNAME = "the-machine-masked" }
+    $r = EndChild (StartChildEnv $ps ("-NoProfile -ExecutionPolicy Bypass -File `"" + $probe + "`" -ReflectionOnly -Out `"" + $out + "`"") $null $envs) $ChildLimitSeconds
+    return $r.Exit
   }
   $x1 = Reflect $beforeProbe (Join-Path $h1 "reflect-before.txt")
   $x2 = Reflect (Join-Path $repo "tools\probes\probe-automation-start.ps1") (Join-Path $h1 "reflect-after.txt")
@@ -319,8 +617,8 @@ try {
   # The move read line by line, apart from the generator that made it: every line of
   # nw-guard.ps1 at the move commit is a line of the probe at 0eb4ede, a comment, or one of the
   # wrapper and changed lines printed here. The move proof in steps\notes maps each line.
-  $probeLines = @((RunChild "git" "show 0eb4ede:tools/probes/probe-automation-start.ps1" $repo).Out.Replace("`r`n", "`n").Split("`n"))
-  $guardAtMove = @((RunChild "git" "show 377cb1a:tools/loop/nw-guard.ps1" $repo).Out.Replace("`r`n", "`n").Split("`n"))
+  $probeLines = @((RunBounded "git" "show 0eb4ede:tools/probes/probe-automation-start.ps1" $repo $ChildLimitSeconds).Out.Replace("`r`n", "`n").Split("`n"))
+  $guardAtMove = @((RunBounded "git" "show 377cb1a:tools/loop/nw-guard.ps1" $repo $ChildLimitSeconds).Out.Replace("`r`n", "`n").Split("`n"))
   $probeSet = New-Object 'System.Collections.Generic.HashSet[string]'
   foreach ($x in $probeLines) { [void]$probeSet.Add($x) }
   $notProbe = New-Object System.Collections.Generic.List[string]
@@ -358,7 +656,7 @@ try {
     $args2 = $c[1]
     if ($args2.StartsWith("RUN ")) { $args2 = "-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $runPs + "`" " + $args2.Substring(4) }
     [void](GuardsInPlace $s2)
-    $r = RunChild $c[0] $args2 $repo
+    $r = RunBounded $c[0] $args2 $repo $RealLimitSeconds
     $ref = @(Refused $r)
     Check ("refusal " + $k + ": exit 2 and a REFUSED line") ($r.Exit -eq 2 -and $ref.Count -ge 1) ("exit " + $r.Exit + ", " + $(if ($ref.Count -gt 0) { $ref[0] } else { "no REFUSED line, " + $r.Out.Trim() + " " + $r.Err.Trim() }))
   }
@@ -366,14 +664,14 @@ try {
   $wrap = Join-Path $h2 "wrap.ps1"
   [System.IO.File]::WriteAllText($wrap, ". `"" + $runPs + "`" -Mode Run -Set 99 -Item 0 -Stamp 00000000`r`nexit `$LASTEXITCODE`r`n", $utf8)
   [void](GuardsInPlace $s2)
-  $r = RunChild $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $wrap + "`"") $repo
+  $r = RunBounded $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $wrap + "`"") $repo $RealLimitSeconds
   $ref = @(Refused $r)
   Check "refusal 1, a powershell that dot-sources run.ps1: exit 2 and a REFUSED line" ($r.Exit -eq 2 -and $ref.Count -ge 1) ("exit " + $r.Exit + ", " + $(if ($ref.Count -gt 0) { $ref[0] } else { $r.Out.Trim() }))
   # 2, a path through a junction made under -Work
   $target = Join-Path $h2 "target"
   New-Item -ItemType Directory -Path (Join-Path $target "runs\99\item0") | Out-Null
   $junction = Join-Path $h2 "junction"
-  $jr = RunChild "cmd.exe" ("/c mklink /J `"" + $junction + "`" `"" + $target + "`"") $h2
+  $jr = RunBounded "cmd.exe" ("/c mklink /J `"" + $junction + "`" `"" + $target + "`"") $h2 $ChildLimitSeconds
   O ("  mklink /J exit " + $jr.Exit + ", the junction is a reparse point: " + (((Get-Item -LiteralPath $junction -Force).Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0))
   $pr = PathRefusal (Join-Path $junction "runs\99\item0") $loopRoot
   Check "PathRefusal names a path that passes a junction" ($null -ne $pr -and $pr -match 'junction') ([string]$pr)
@@ -568,7 +866,7 @@ try {
 
   # =====================================================================================
   O ""
-  Case "==== H6, THE HANG RULE ===="
+  Case "==== H6, THE HANG RULE ====" $H6LimitSeconds
   $tNow = [DateTime]::UtcNow
   $table = @(
     @("both flat 25 s, limit 20", $tNow.AddSeconds(-25), $tNow.AddSeconds(-25), $true),
@@ -820,6 +1118,7 @@ try {
     $CU.DeleteSubKeyTree($tkey, $false)
     $k = $CU.CreateSubKey($tsub); $k.SetValue("A", "a1"); $k.SetValue("B", 1, [Microsoft.Win32.RegistryValueKind]::DWord); $k.Close()
     $k = $CU.CreateSubKey($tsub + "\K1"); $k.SetValue("V", "k1"); $k.Close()
+    AutoSaveFixture $tsub
     [System.IO.File]::WriteAllText((Join-Path $tapp "a.xml"), "a before", $utf8)
     [System.IO.File]::WriteAllText((Join-Path $tapp "b.xml"), "b before", $utf8)
     [System.IO.File]::WriteAllText((Join-Path $tapp "AutoSave\x.nwf"), "autosave", $utf8)
@@ -886,7 +1185,7 @@ try {
   $m3Text = '$ErrorActionPreference = "Stop"' + "`r`n" + '. "' + $guardFile + '"' + "`r`n" + '. ([scriptblock]::Create([System.IO.File]::ReadAllText("' + (Join-Path $h11 "run-functions.ps1") + '")))' + "`r`n" + '$wt = NewWinTypes' + "`r`n" + '$on = KeepAwake $wt.WinType $true' + "`r`n" + 'Start-Sleep -Seconds 2' + "`r`n" + '$off = KeepAwake $wt.WinType $false' + "`r`n" + '[Console]::Out.WriteLine("ON " + (Hex $on.Return) + " thread " + $on.Thread + " OFF " + (Hex $off.Return) + " thread " + $off.Thread)' + "`r`n"
   [System.IO.File]::WriteAllText((Join-Path $h11 "run-functions.ps1"), $runText, $utf8)
   [System.IO.File]::WriteAllText($m3, $m3Text, $utf8)
-  $r = RunChild $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $m3 + "`"") $h11
+  $r = RunBounded $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $m3 + "`"") $h11 $ChildLimitSeconds
   $mm = [regex]::Match($r.Out, 'ON (0x[0-9A-F]+) thread (\d+) OFF (0x[0-9A-F]+) thread (\d+)')
   O ("    | " + $r.Out.Trim() + " " + $r.Err.Trim())
   Check "M3: the request returns a value that is not 0" ($mm.Success -and $mm.Groups[1].Value -ne "0x00000000") $mm.Groups[1].Value
@@ -896,7 +1195,7 @@ try {
 
   # =====================================================================================
   O ""
-  O "==== THE M5 AND M6 READERS, on the throwaway key and a folder under -Work ===="
+  Case "==== THE M5 AND M6 READERS, on the throwaway key and a folder under -Work ===="
   $m56 = Join-Path $Work "m56"
   New-Item -ItemType Directory -Path $m56 | Out-Null
   $k = $CU.CreateSubKey($tsub); $k.SetValue("A", "a1"); $k.Close()
@@ -938,11 +1237,11 @@ try {
   StopStandins
   $scratch = Join-Path $h12 "scratch"
   New-Item -ItemType Directory -Path $scratch | Out-Null
-  [void](RunChild "git" "init -q" $scratch)
+  [void](RunBounded "git" "init -q" $scratch $ChildLimitSeconds)
   [System.IO.File]::WriteAllText((Join-Path $scratch "a.txt"), "a", $utf8)
-  [void](RunChild "git" "add a.txt" $scratch)
-  [void](RunChild "git" "-c user.name=harness -c user.email=harness@example.invalid -c commit.gpgsign=false commit -q -m scratch" $scratch)
-  $head = (RunChild "git" "rev-parse --short=8 HEAD" $scratch).Out.Trim()
+  [void](RunBounded "git" "add a.txt" $scratch $ChildLimitSeconds)
+  [void](RunBounded "git" "-c user.name=harness -c user.email=harness@example.invalid -c commit.gpgsign=false commit -q -m scratch" $scratch $ChildLimitSeconds)
+  $head = (RunBounded "git" "rev-parse --short=8 HEAD" $scratch $ChildLimitSeconds).Out.Trim()
   $clean = TreeRefusal $scratch $head
   Check "the clean-tree check lets a clean scratch repository at its HEAD through" ($clean.Count -eq 0) (($clean) -join " | ")
   $wrong = TreeRefusal $scratch "00000000"
@@ -955,7 +1254,7 @@ try {
     $copy = Join-Path $h12 ("m2-" + ($pair[0] -replace '\s', '-') + ".dll")
     Copy-Item -LiteralPath $pair[1] -Destination $copy
     $pv = [string][System.Diagnostics.FileVersionInfo]::GetVersionInfo($copy).ProductVersion
-    $iv = (RunChild $ps ("-NoProfile -Command `"foreach (`$c in [System.Reflection.Assembly]::ReflectionOnlyLoadFrom('" + $copy + "').GetCustomAttributesData()) { if (`$c.AttributeType.Name -eq 'AssemblyInformationalVersionAttribute') { [Console]::Out.Write([string]`$c.ConstructorArguments[0].Value) } }`"") $h12).Out.Trim()
+    $iv = (RunBounded $ps ("-NoProfile -Command `"foreach (`$c in [System.Reflection.Assembly]::ReflectionOnlyLoadFrom('" + $copy + "').GetCustomAttributesData()) { if (`$c.AttributeType.Name -eq 'AssemblyInformationalVersionAttribute') { [Console]::Out.Write([string]`$c.ConstructorArguments[0].Value) } }`"") $h12 $ChildLimitSeconds).Out.Trim()
     Check ("M2 on " + $pair[0] + ": FileVersionInfo.ProductVersion equals AssemblyInformationalVersion") ($pv -ne "" -and $pv -eq $iv) ("ProductVersion `"" + $pv + "`", informational `"" + $iv + "`"")
   }
   $iv1 = InstallVerdict "abcdef12" $false
@@ -974,7 +1273,7 @@ try {
   Copy-Item -LiteralPath (Join-Path $repo "bundle\ParsonsNwcFederator.bundle\PackageContents.xml") -Destination (Join-Path $ir "bundle\ParsonsNwcFederator.bundle")
   foreach ($f in @(Get-ChildItem -LiteralPath $buildOut -File -Filter "*.dll")) { Copy-Item -LiteralPath $f.FullName -Destination (Join-Path $ir "src\Federator.Addin\bin\Release\net48") }
   $newInstall = [System.IO.File]::ReadAllText((Join-Path $repo "build\install.ps1"))
-  $oldInstall = (RunChild "git" "show 0eb4ede:build/install.ps1" $repo).Out
+  $oldInstall = (RunBounded "git" "show 0eb4ede:build/install.ps1" $repo $ChildLimitSeconds).Out
   $targetLine = '$target     = Join-Path $env:APPDATA "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle"'
   Check "both copies of install.ps1 install into `$env:APPDATA, which the harness points at its own folder" ($newInstall.Contains($targetLine) -and $oldInstall.Contains($targetLine)) ""
   $echo = EndChild (StartChildEnv $ps "-NoProfile -Command [Console]::Out.Write(`$env:APPDATA)" $h12 @{ APPDATA = $fakeApp }) 60
@@ -1017,7 +1316,7 @@ try {
     $roam = @(Get-Process -Name Roamer -ErrorAction SilentlyContinue).Count
     if ($echo.Out.Trim() -ne $fakeApp) { throw "the APPDATA of a child is not the harness's folder, so no install.ps1 copy runs" }
     try { $res = EndChild (StartChildEnv $ps ("-NoProfile -ExecutionPolicy Bypass -File `"" + (Join-Path $ir "build\install.ps1") + "`" -SkipBuild") $ir @{ APPDATA = $fakeApp }) 180 }
-    finally { if ($null -ne $loader) { [void](EndChild $loader 1) } }
+    finally { if ($null -ne $loader) { CloseHeld @($loader.P) } }
     $marker = Test-Path -LiteralPath (Join-Path $bundleNow "marker.txt")
     $addin = Test-Path -LiteralPath (Join-Path $bundleNow "Contents\v22\Federator.Addin.dll")
     $pkg = Test-Path -LiteralPath (Join-Path $bundleNow "PackageContents.xml")
@@ -1075,6 +1374,7 @@ try {
   $tapp13 = Join-Path $h13 "appdata"
   New-Item -ItemType Directory -Path (Join-Path $rf "settings"), $tapp13 | Out-Null
   $k = $CU.CreateSubKey($tsub); $k.SetValue("A", "a1"); $k.Close()
+  AutoSaveFixture $tsub
   [System.IO.File]::WriteAllText((Join-Path $tapp13 "a.xml"), "a", $utf8)
   $bs13 = BackupSettings (Join-Path $rf "settings") $tsub $tapp13 (Join-Path $h13 "fedlogs")
   [pscustomobject]@{ RegSub = $tsub; RegRoot = $bs13.RegRoot; RegBefore = $bs13.RegBefore; NwAppData = $tapp13; FilesBefore = $bs13.FilesBefore; NotBacked = $bs13.NotBacked; AutoBefore = $bs13.AutoBefore } | Export-Clixml -LiteralPath (Join-Path $rf "settings\before.clixml")
@@ -1141,7 +1441,7 @@ try {
     '[Console]::Out.WriteLine("THE MAIN THREAD WOKE, the deadline did not end this process")',
     'exit 0')
   [System.IO.File]::WriteAllText($child, ($ct -join "`r`n") + "`r`n", $utf8)
-  $r = RunChild $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $child + "`"") $h14
+  $r = RunBounded $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $child + "`"") $h14 $ChildLimitSeconds
   $o14 = @(Get-Content -LiteralPath $out14)
   foreach ($l in @($o14 | Where-Object { $_ -match 'DEADLINE|Roamer pid|written|TerminateProcess' })) { O ("    | " + $l) }
   Check "the deadline ends the child with exit code 3 through TerminateProcess" ($r.Exit -eq 3 -and $r.Out -notmatch 'THE MAIN THREAD WOKE') ("exit " + $r.Exit)
@@ -1154,7 +1454,7 @@ try {
 
   # =====================================================================================
   O ""
-  Case "==== H17, THE RUN FLOW of a copy of run.ps1 whose constructor line is removed, with LOCALAPPDATA and APPDATA pointed at the harness's folders: checks 13, 14, 15 and 18 stop, and a run that reaches the removed line ===="
+  Case "==== H17, THE RUN FLOW of a copy of run.ps1 whose constructor line is removed, with LOCALAPPDATA and APPDATA pointed at the harness's folders: checks 13, 14, 15 and 18 stop, and a run that reaches the removed line ====" $H17LimitSeconds
   $h17 = Join-Path $Work "h17"
   $rcRepo = Join-Path $h17 "copy"
   $fl = Join-Path $h17 "local"
@@ -1179,11 +1479,15 @@ try {
   New-Item -ItemType Directory -Path (Join-Path $fl "ParsonsNwcFederator\logs"), (Join-Path $fa "Autodesk\Navisworks Manage 2025\AutoSave"), (Join-Path $fa "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22") | Out-Null
   foreach ($i in 1..3) { [System.IO.File]::WriteAllText((Join-Path $fl ("ParsonsNwcFederator\logs\run-2026090" + $i + "-100000.log")), "a fake log " + $i, $utf8) }
   [System.IO.File]::WriteAllText((Join-Path $fl "ParsonsNwcFederator\logs\folders.txt"), "fake", $utf8)
+  $tm17 = Join-Path $fl "ParsonsNwcFederator\logs\team-map.txt"
+  [System.IO.File]::WriteAllText($tm17, "X:\a fake kept map.teams.txt", $utf8)
+  $tm17Hash = (Get-FileHash -LiteralPath $tm17 -Algorithm SHA256).Hash
   [System.IO.File]::WriteAllText((Join-Path $fa "Autodesk\Navisworks Manage 2025\a.xml"), "a fake setting", $utf8)
   [System.IO.File]::WriteAllText((Join-Path $fa "Autodesk\Navisworks Manage 2025\AutoSave\x.nwf"), "a fake autosave", $utf8)
   Copy-Item -LiteralPath (Join-Path $bundle "Contents\v22\Federator.Addin.dll") -Destination (Join-Path $fa "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22")
   $stamp17 = @([string][System.Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $fa "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle\Contents\v22\Federator.Addin.dll")).ProductVersion -split '\s+')[1]
   $k = $CU.CreateSubKey($tsub); $k.SetValue("A", "a1"); $k.Close()
+  AutoSaveFixture $tsub
   $env17 = @{ LOCALAPPDATA = $fl; APPDATA = $fa }
   $echo17 = EndChild (StartChildEnv $ps "-NoProfile -Command [Console]::Out.Write(`$env:LOCALAPPDATA + '|' + `$env:APPDATA)" $h17 $env17) 60
   if ($echo17.Out.Trim() -ne ($fl + "|" + $fa)) { throw "a child does not read the harness's LOCALAPPDATA and APPDATA, so no copy of run.ps1 runs" }
@@ -1202,11 +1506,9 @@ try {
     $res = EndChild $c 600
     $recFile = Join-Path $fl ("NwcFederatorLoop\runs\" + $set + "\item0\record.txt")
     $rec = @(); if (Test-Path -LiteralPath $recFile) { $rec = @([System.IO.File]::ReadAllLines($recFile)) }
-    foreach ($l in @($rec | Where-Object { $_ -match '^(STOP|VERDICT|NOT ADOPTED)|HARNESS COPY|keep awake|check 1[3-8]|logs-after|M5, what|BADER.S SETTINGS|AutoSave compare' })) { O ("    | " + $l.Replace($h17, "<h17>")) }
+    foreach ($l in @($rec | Where-Object { $_ -match '^(STOP|VERDICT|NOT ADOPTED)|HARNESS COPY|keep awake|check 1[3-8]|logs-after|M5, what|BADER.S SETTINGS|AutoSave compare|Auto-Save|team-map|team map' })) { O ("    | " + $l.Replace($h17, "<h17>")) }
     return [pscustomobject]@{ Exit = $res.Exit; Rec = $rec; Out = $res.Out }
   }
-  function Has($rec, $pattern) { return (@($rec | Where-Object { $_ -match $pattern }).Count -gt 0) }
-  function At($rec, $pattern) { for ($i = 0; $i -lt $rec.Count; $i++) { if ($rec[$i] -match $pattern) { return $i } }; return -1 }
 
   O "  RC0, fix list 2 item 16: Check mode with the fake installed add-in's DLL held open with no sharing, and an installed.txt a loop install wrote"
   $inst0 = Join-Path $fl "NwcFederatorLoop\installs\20260930-000000"
@@ -1227,6 +1529,12 @@ try {
   Check "RC1: M5 is read before the settings compare, and the AutoSave compare reads autosave-before.txt back" ((At $rc1.Rec 'M5, what changed outside the loop folder while the start ran') -ge 0 -and (At $rc1.Rec 'M5, what changed outside the loop folder while the start ran') -lt (At $rc1.Rec "BADER'S SETTINGS, compared") -and (Has $rc1.Rec 'the AutoSave compare reads autosave-before.txt back, 1 files')) ""
   Check "RC1: his fake logs folder reads the same after as before" (Has $rc1.Rec 'logs-after.txt equals logs-before.txt, name for name, size, write time, sha256 and attributes: True') ""
   Check "RC1: the evidence is written into the copy's own steps\runs" (Test-Path -LiteralPath (Join-Path $rcRepo "steps\runs\91\item0\record.txt")) ""
+  $tmCopy1 = Join-Path $fl "NwcFederatorLoop\runs\91\item0\teammap\team-map.txt"
+  Check "RC1, F131: team-map.txt is read after check 13 and before check 14, and its copy in the run folder's teammap reads back with its sha256" ((At $rc1.Rec '^---- check 13b, team-map\.txt') -gt (At $rc1.Rec '^---- check 13, his logs folder') -and (At $rc1.Rec '^---- check 13b, team-map\.txt') -lt (At $rc1.Rec '^---- check 14, his AutoSave folder') -and (Has $rc1.Rec ('^  team-map\.txt is there, sha256 ' + $tm17Hash + ', \d+ bytes, copied into the run folder.s teammap and read back with that sha256$')) -and (Test-Path -LiteralPath $tmCopy1) -and $(if (Test-Path -LiteralPath $tmCopy1) { (Get-FileHash -LiteralPath $tmCopy1 -Algorithm SHA256).Hash -eq $tm17Hash } else { $false })) ""
+  Check "RC1, F131: at the end team-map.txt is compared with what was read before the start, after the AutoSave put back and before his logs folder is listed again" ((Has $rc1.Rec ('^  team-map\.txt reads as it did before the start, sha256 ' + $tm17Hash + '$')) -and (At $rc1.Rec '^---- team-map\.txt, the team map the tool keeps between runs') -gt (At $rc1.Rec '^  AutoSave: ') -and (At $rc1.Rec '^---- team-map\.txt, the team map the tool keeps between runs') -lt (At $rc1.Rec '^---- his logs folder, after ----') -and (Has $rc1.Rec '^  team map: 0 put back as it was and read back, 0 not as it was before the run')) ""
+  $off17 = '^  Auto-Save switch written off for this start, Q135: enable under 22\.0\\GlobalOptions\\general\\autosave written String "3 0" and read back so, the backup holds String "0"\. Until the put back it reads so for Bader too\. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave$'
+  $left17 = '^  Auto-Save is LEFT OFF for Bader: enable under 22\.0\\GlobalOptions\\general\\autosave reads String "3 0" and the backup holds String "0"\. It must be put back by hand$'
+  Check "RC1, F138 attempt 2: the switch is written after check 18's last read and before the constructor line, and says so in one line, and with nothing adopted, so nothing put back, the record says Auto-Save is left off and the test key reads 3 0" ((At $rc1.Rec $off17) -gt (At $rc1.Rec 'check 18, the last read before the constructor') -and (At $rc1.Rec $off17) -lt (At $rc1.Rec 'HARNESS COPY') -and (At $rc1.Rec $left17) -gt (At $rc1.Rec "BADER'S SETTINGS, compared") -and (EnableNow $tsub) -eq "String 3 0") ("enable reads " + (EnableNow $tsub))
 
   O "  RC2, a file of his fake logs folder held open with no sharing: check 13 must stop"
   $held2 = [System.IO.File]::Open((Join-Path $fl "ParsonsNwcFederator\logs\run-20260901-100000.log"), [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
@@ -1270,12 +1578,23 @@ try {
   Check "RC4: STOP before the start at check 15, the settings backup is not whole, exit 2, no keep awake request" ($rc4.Exit -eq 2 -and (Has $rc4.Rec '^STOP before the start: the settings backup is not whole') -and -not (Has $rc4.Rec 'check 17') -and -not (Has $rc4.Rec 'HARNESS COPY')) ("exit " + $rc4.Exit)
 
   O "  RC5, a stand-in Roamer started after the backups, while the copy waits at the hook before check 18"
+  AutoSaveFixture $tsub
   $rc5 = RunCopy "95" { [void](StartStandin "sleep 120" $null $null); O ("    started a stand-in Roamer, Roamers now " + @(Get-Process -Name Roamer -ErrorAction SilentlyContinue).Count) }
   StopStandins
   Check "RC5: check 18 stops before the constructor on the Roamer, exit 2, and the keep awake request made at check 17 is let go" ($rc5.Exit -eq 2 -and (Has $rc5.Rec '^STOP before the constructor: Navisworks is running') -and (Has $rc5.Rec 'keep awake OFF returned 0x80000003') -and -not (Has $rc5.Rec 'HARNESS COPY')) ("exit " + $rc5.Exit)
+  Check "RC5, F138 attempt 2: the stop at check 18 comes before the switch, so no line of the record names Auto-Save and the test key reads 0, what the fixture made" (-not (Has $rc5.Rec 'Auto-Save') -and (EnableNow $tsub) -eq "String 0") ("enable reads " + (EnableNow $tsub))
+
+  O "  RC8, F131: team-map.txt changed while the copy waits at the hook, as a window run that picked an XML would change it. The start is not adopted, so a reason not to put back stands"
+  $rc8 = RunCopy "98" { [System.IO.File]::WriteAllText($tm17, "X:\the loop's own copy of a map.teams.txt", $utf8); O "    team-map.txt of the fake logs folder changed" }
+  $tm8Hash = (Get-FileHash -LiteralPath $tm17 -Algorithm SHA256).Hash
+  Check "RC8, F131: the change is named, nothing is written, and the file is left as the run left it" ($rc8.Exit -eq 3 -and (Has $rc8.Rec '^  team-map\.txt CHANGED, left as it is, nothing written$') -and (Has $rc8.Rec '^  team map: 0 put back as it was and read back, 1 not as it was before the run, because nothing is written while a reason above stands$') -and $tm8Hash -ne $tm17Hash) ("exit " + $rc8.Exit)
+  Check "RC8, F131: his fake logs folder then reads changed, and the FINDING names team-map.txt" ((Has $rc8.Rec 'logs-after.txt equals logs-before.txt, name for name, size, write time, sha256 and attributes: False') -and (Has $rc8.Rec '^    FINDING [<=>]+ team-map\.txt$')) ""
+  [System.IO.File]::WriteAllText($tm17, "X:\a fake kept map.teams.txt", $utf8)
+  Check "RC8: the harness puts the fake team-map.txt back as RC1 read it" ((Get-FileHash -LiteralPath $tm17 -Algorithm SHA256).Hash -eq $tm17Hash) ""
 
   O "  RC6, a start named in unproved-starts.txt that still runs, written while the copy waits at the hook, with no Roamer running"
   $fakeUnproved = Join-Path $fl "NwcFederatorLoop\probes\unproved-starts.txt"
+  AutoSaveFixture $tsub
   $rc6 = RunCopy "96" {
     $dec6 = StartStandin "sleep 120" $null (Join-Path $standinBin "Decoy.exe")
     New-Item -ItemType Directory -Force -Path (Split-Path $fakeUnproved -Parent) | Out-Null
@@ -1284,6 +1603,7 @@ try {
   }
   StopStandins
   Check "RC6: check 18 stops before the constructor on the unproved start, exit 2, with no Roamer running" ($rc6.Exit -eq 2 -and (Has $rc6.Rec '^STOP before the constructor: a start this probe could not prove is still running') -and -not (Has $rc6.Rec 'HARNESS COPY')) ("exit " + $rc6.Exit)
+  Check "RC6, F138 attempt 2: the stop on the unproved start comes before the switch, so no line of the record names Auto-Save and the test key reads 0, what the fixture made" (-not (Has $rc6.Rec 'Auto-Save') -and (EnableNow $tsub) -eq "String 0") ("enable reads " + (EnableNow $tsub))
   $CU.DeleteSubKeyTree($tkey, $false)
   O "  RC7, fix list 3 items 2 and 12: -Mode Install of the copy in a clean scratch git repository, whose build\install.ps1 is a stub that prints one REFUSED line naming a folder under APPDATA and exits 2"
   StopStandins
@@ -1292,11 +1612,11 @@ try {
   Copy-Item -LiteralPath $runCopy -Destination (Join-Path $ir7 "tools\loop\run.ps1")
   Copy-Item -LiteralPath $guardFile -Destination (Join-Path $ir7 "tools\loop\nw-guard.ps1")
   [System.IO.File]::WriteAllText((Join-Path $ir7 "build\install.ps1"), ('Write-Host ("REFUSED: " + (Join-Path $env:APPDATA "Autodesk\ApplicationPlugins") + " is a junction or a link, so the add-in is not installed through it. Nothing was installed. HARNESS STUB")' + "`r`n" + 'exit 2' + "`r`n"), $utf8)
-  [void](RunChild "git" "init -q" $ir7)
-  [void](RunChild "git" "-c core.autocrlf=false add -A" $ir7)
-  [void](RunChild "git" "-c user.name=harness -c user.email=harness@example.invalid -c commit.gpgsign=false -c core.autocrlf=false commit -q -m scratch" $ir7)
-  $head7 = (RunChild "git" "rev-parse --short=8 HEAD" $ir7).Out.Trim()
-  $st7 = (RunChild "git" "-c core.autocrlf=false status --porcelain" $ir7).Out.Trim()
+  [void](RunBounded "git" "init -q" $ir7 $ChildLimitSeconds)
+  [void](RunBounded "git" "-c core.autocrlf=false add -A" $ir7 $ChildLimitSeconds)
+  [void](RunBounded "git" "-c user.name=harness -c user.email=harness@example.invalid -c commit.gpgsign=false -c core.autocrlf=false commit -q -m scratch" $ir7 $ChildLimitSeconds)
+  $head7 = (RunBounded "git" "rev-parse --short=8 HEAD" $ir7 $ChildLimitSeconds).Out.Trim()
+  $st7 = (RunBounded "git" "-c core.autocrlf=false status --porcelain" $ir7 $ChildLimitSeconds).Out.Trim()
   O ("    the scratch repository's HEAD " + $head7 + ", git status prints " + $(if ($st7 -eq "") { "nothing" } else { $st7 }))
   $r7 = EndChild (StartChildEnv $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + (Join-Path $ir7 "tools\loop\run.ps1") + "`" -Mode Install -Stamp " + $head7) $ir7 $env17) 600
   $irec7 = @(Get-ChildItem -LiteralPath (Join-Path $fl "NwcFederatorLoop\installs") -Recurse -File -Filter "record.txt" -ErrorAction SilentlyContinue | Where-Object { $_.Directory.Name.StartsWith($head7 + "-") })
@@ -1458,6 +1778,444 @@ try {
 
   # =====================================================================================
   O ""
+  Case "==== H19, F131 and Q123 answered B: team-map.txt, the map the tool keeps between runs, read before every start and put back after it, and its TEAMS KEPT block masked ===="
+  $tmDir = Join-Path $Work "h19"
+  $tmLogs = Join-Path $tmDir "logs"
+  New-Item -ItemType Directory -Path $tmLogs | Out-Null
+  $tmFile = Join-Path $tmLogs "team-map.txt"
+  $rt19 = [System.IO.File]::ReadAllText($runPs)
+  $const19 = [regex]::Matches([System.IO.File]::ReadAllText((Join-Path $repo "src\Federator.Core\Teams\TeamMapMemory.cs")), 'public const string FileName = "([^"]+)";')
+  $missing19 = @(@("TeamMapName", "TeamMapBefore", "PutBackTeamMap", "PutBackOne") | Where-Object { $null -eq (Get-Command -Name $_ -CommandType Function -ErrorAction SilentlyContinue) })
+  Check "H19: run.ps1 holds TeamMapName, TeamMapBefore, PutBackTeamMap and PutBackOne" ($missing19.Count -eq 0) ("missing: " + $(if ($missing19.Count -gt 0) { $missing19 -join ", " } else { "none" }))
+  $name19 = $(if ($missing19 -notcontains "TeamMapName") { TeamMapName } else { "none" })
+  Check "H19: the file run.ps1 puts back is TeamMapMemory.FileName, read off src\Federator.Core\Teams\TeamMapMemory.cs" ($const19.Count -eq 1 -and $name19 -ceq $const19[0].Groups[1].Value) ("run.ps1 names " + $name19 + ", the source holds " + $const19.Count + " FileName lines")
+  Check "H19: the run reads team-map.txt before THE START and puts it back after the AutoSave put back and before his logs folder is listed again" ($rt19.IndexOf('$tmb = TeamMapBefore') -gt 0 -and $rt19.IndexOf('$tmb = TeamMapBefore') -lt $rt19.IndexOf('Say "==== THE START ===="') -and $rt19.IndexOf('$tmp = PutBackTeamMap') -gt $rt19.IndexOf('$asp = PutBackAutoSave') -and $rt19.IndexOf('$tmp = PutBackTeamMap') -lt $rt19.IndexOf('Say "---- his logs folder, after ----"')) ""
+  Check "H19: a team map not put back counts as NOT PUT BACK in the verdict" ($rt19.Contains('if ($null -ne $tmp) { if ($tmp.Left -gt 0) { $notPutBack = $true } }')) ""
+  if ($missing19.Count -eq 0) {
+    function Hash19 { if (Test-Path -LiteralPath $tmFile) { return (Get-FileHash -LiteralPath $tmFile -Algorithm SHA256).Hash }; return $null }
+    function Set19($text) { if ($null -eq $text) { if (Test-Path -LiteralPath $tmFile) { [System.IO.File]::Delete($tmFile) } } else { [System.IO.File]::WriteAllText($tmFile, $text, $utf8) } }
+    $script:n19 = 0
+    function Run19 { $script:n19++; $d = Join-Path $tmDir ("run" + $script:n19); New-Item -ItemType Directory -Path $d | Out-Null; return $d }
+    function Said19($p) { foreach ($l in $p.Lines) { O ("    | " + $l) } }
+    Set19 "X:\kept\A.teams.txt"; $hA = Hash19
+    Set19 "X:\the loop's copy\B.teams.txt"; $hB = Hash19
+
+    O "  A, HOLDS: not there before the start and written by the run, then taken out"
+    Set19 $null; $dA = Run19; $bA = TeamMapBefore $tmLogs $dA; Set19 "X:\the loop's copy\B.teams.txt"
+    $pA = PutBackTeamMap $true $bA $tmLogs (Join-Path $dA "teammap"); Said19 $pA
+    Check "H19 A: the before read says it is not there, and the run's file is taken out and read back gone" ($bA.Ok -and -not $bA.There -and $pA.Done -eq 1 -and $pA.Left -eq 0 -and $null -eq (Hash19) -and $pA.Lines[0] -ceq "team-map.txt ADDED by the run, removed, read back gone") $bA.Line
+
+    O "  B, HOLDS: there before the start and changed by the run, then put back from the run folder's copy"
+    Set19 "X:\kept\A.teams.txt"; $dB = Run19; $bB = TeamMapBefore $tmLogs $dB; Set19 "X:\the loop's copy\B.teams.txt"
+    $pB = PutBackTeamMap $true $bB $tmLogs (Join-Path $dB "teammap"); Said19 $pB
+    Check "H19 B: the copy in the run folder's teammap reads back with the file's sha256 before the start" ($bB.Ok -and $bB.There -and $bB.Hash -eq $hA -and (Get-FileHash -LiteralPath (Join-Path $dB "teammap\team-map.txt") -Algorithm SHA256).Hash -eq $hA) $bB.Line
+    Check "H19 B: the changed file is put back and reads back with the sha256 of before the start" ($pB.Done -eq 1 -and $pB.Left -eq 0 -and (Hash19) -eq $hA -and $pB.Lines[0] -ceq "team-map.txt CHANGED, put back from the run folder's teammap, read back, sha256 matches") ""
+
+    O "  C, HOLDS: there before the start and taken out by the run, then copied back"
+    Set19 "X:\kept\A.teams.txt"; $dC = Run19; $bC = TeamMapBefore $tmLogs $dC; Set19 $null
+    $pC = PutBackTeamMap $true $bC $tmLogs (Join-Path $dC "teammap"); Said19 $pC
+    Check "H19 C: the file the run took out is copied back and read back" ($pC.Done -eq 1 -and $pC.Left -eq 0 -and (Hash19) -eq $hA -and $pC.Lines[0] -ceq "team-map.txt GONE, put back from the run folder's teammap, read back, sha256 matches") ""
+
+    O "  D and E, HOLD: the same after as before, and not there before or after, so nothing is written"
+    Set19 "X:\kept\A.teams.txt"; $dD = Run19; $bD = TeamMapBefore $tmLogs $dD; $wD = (Get-Item -LiteralPath $tmFile).LastWriteTimeUtc
+    $pD = PutBackTeamMap $true $bD $tmLogs (Join-Path $dD "teammap"); Said19 $pD
+    Check "H19 D: a file that reads as before is named and not written" ($pD.Done -eq 0 -and $pD.Left -eq 0 -and (Get-Item -LiteralPath $tmFile).LastWriteTimeUtc -eq $wD -and $pD.Lines[0] -ceq ("team-map.txt reads as it did before the start, sha256 " + $hA)) ""
+    Set19 $null; $dE = Run19; $bE = TeamMapBefore $tmLogs $dE
+    $pE = PutBackTeamMap $true $bE $tmLogs (Join-Path $dE "teammap"); Said19 $pE
+    Check "H19 E: not there before or after is named, nothing is written and no copy is made" ($pE.Done -eq 0 -and $pE.Left -eq 0 -and $null -eq (Hash19) -and -not (Test-Path -LiteralPath (Join-Path $dE "teammap")) -and $pE.Lines[0] -ceq "team-map.txt was not there before the start and is not there now") ""
+
+    O "  F, BREAKS: a stand-in Roamer runs just before the write"
+    Set19 "X:\kept\A.teams.txt"; $dF = Run19; $bF = TeamMapBefore $tmLogs $dF; Set19 "X:\the loop's copy\B.teams.txt"
+    $sF = StartStandin "sleep 120" $null $null
+    O ("    started a stand-in Roamer pid " + $sF.Id + ", Roamers now " + @(Get-Process -Name Roamer -ErrorAction SilentlyContinue).Count)
+    try { $pF = PutBackTeamMap $true $bF $tmLogs (Join-Path $dF "teammap") } finally { StopStandins }
+    Said19 $pF
+    Check "H19 F: nothing is written while a Roamer runs, the file is left as the run left it, and it counts as not put back" ($pF.Done -eq 0 -and $pF.Left -eq 1 -and (Hash19) -eq $hB -and $pF.Lines[0] -match ('^a Roamer is running just before the write of team-map\.txt, pid ' + $sF.Id + '\b')) ""
+
+    O "  G, BREAKS: a reason not to put back stands"
+    Set19 "X:\kept\A.teams.txt"; $dG = Run19; $bG = TeamMapBefore $tmLogs $dG; Set19 "X:\the loop's copy\B.teams.txt"
+    $pG = PutBackTeamMap $false $bG $tmLogs (Join-Path $dG "teammap"); Said19 $pG
+    Check "H19 G: nothing is written, the file is named and counts as not put back" ($pG.Done -eq 0 -and $pG.Left -eq 1 -and (Hash19) -eq $hB -and $pG.Lines[0] -ceq "team-map.txt CHANGED, left as it is, nothing written") ""
+
+    O "  H, BREAKS: the copy in the run folder no longer reads as it did before the start"
+    Set19 "X:\kept\A.teams.txt"; $dH = Run19; $bH = TeamMapBefore $tmLogs $dH; Set19 "X:\the loop's copy\B.teams.txt"
+    [System.IO.File]::WriteAllText((Join-Path $dH "teammap\team-map.txt"), "another text", $utf8)
+    $pH = PutBackTeamMap $true $bH $tmLogs (Join-Path $dH "teammap"); Said19 $pH
+    Check "H19 H: a copy that does not read the sha256 of before is never written over his file" ($pH.Done -eq 0 -and $pH.Left -eq 1 -and (Hash19) -eq $hB -and $pH.Lines[0] -ceq "team-map.txt CHANGED, the run folder's teammap holds no copy of it from before the run, left as it is") ""
+
+    O "  I, BREAKS: team-map.txt held open with no sharing before the start"
+    Set19 "X:\kept\A.teams.txt"; $dI = Run19
+    $hI = [System.IO.File]::Open($tmFile, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
+    try { $bI = TeamMapBefore $tmLogs $dI } finally { $hI.Dispose() }
+    O ("    | " + $bI.Why)
+    Check "H19 I: the before read is not Ok and says why, so the run stops before the start" (-not $bI.Ok -and $bI.Why -match '^team-map\.txt could not be read or copied into the run folder, ') ""
+    Check "H19 I: the run stops before the start when the before read is not Ok" ($rt19.Contains('if (-not $tmb.Ok) { $stopText = "STOP before the start: " + $tmb.Why')) ""
+
+    O "  J, BREAKS: team-map.txt held open with no sharing at the end"
+    Set19 "X:\kept\A.teams.txt"; $dJ = Run19; $bJ = TeamMapBefore $tmLogs $dJ; Set19 "X:\the loop's copy\B.teams.txt"
+    $hJ = [System.IO.File]::Open($tmFile, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
+    try { $pJ = PutBackTeamMap $true $bJ $tmLogs (Join-Path $dJ "teammap") } finally { $hJ.Dispose() }
+    Said19 $pJ
+    Check "H19 J: a file that cannot be read at the end is named, never written, and counts as not put back" ($pJ.Done -eq 0 -and $pJ.Left -eq 1 -and (Hash19) -eq $hB -and $pJ.Lines[0] -match '^team-map\.txt could not be read at the end, .*\. Nothing is written into it$') ""
+
+    O "  L, PutBackAutoSave through the write it now shares with the team map: an autosave added, one changed and one gone, put back, and then a Roamer stops every write after it"
+    $auto = Join-Path $tmDir "autosave"; $autoBk = Join-Path $tmDir "autosave-backup"
+    New-Item -ItemType Directory -Path $auto, $autoBk | Out-Null
+    foreach ($n in @("c.nwf", "g.nwf")) { [System.IO.File]::WriteAllText((Join-Path $auto $n), "his " + $n, $utf8) }
+    $bk = BackupNew $auto $autoBk (Join-Path $tmDir "autosave-before.txt") "19"
+    $beforeL = ReadListing (Join-Path $tmDir "autosave-before.txt") "AutoSave\"
+    [System.IO.File]::WriteAllText((Join-Path $auto "c.nwf"), "changed by the run", $utf8)
+    [System.IO.File]::Delete((Join-Path $auto "g.nwf"))
+    [System.IO.File]::WriteAllText((Join-Path $auto "new.nwf"), "added by the run", $utf8)
+    $pL = PutBackAutoSave $true $beforeL $auto $autoBk
+    Said19 $pL
+    $readL = @{}; foreach ($e in (ListFolder $auto).Entries) { $readL[$e.Name] = $e.Hash }
+    Check "H19 L: the added autosave is removed and his changed and gone autosaves are put back from autosave-backup, each read back" ($bk.Ok -and $pL.Done -eq 3 -and $pL.Left -eq 0 -and $readL.Count -eq 2 -and $readL["c.nwf"] -eq $beforeL["AutoSave\c.nwf"].Hash -and $readL["g.nwf"] -eq $beforeL["AutoSave\g.nwf"].Hash -and ($pL.Lines -contains "AutoSave\new.nwf ADDED by the run, removed, read back gone") -and ($pL.Lines -contains "AutoSave\c.nwf CHANGED, put back from autosave-backup, read back, sha256 matches") -and ($pL.Lines -contains "AutoSave\g.nwf GONE, put back from autosave-backup, read back, sha256 matches")) ("done " + $pL.Done + ", left " + $pL.Left)
+    [System.IO.File]::WriteAllText((Join-Path $auto "c.nwf"), "changed by the run", $utf8)
+    [System.IO.File]::Delete((Join-Path $auto "g.nwf"))
+    $sL = StartStandin "sleep 120" $null $null
+    try { $qL = PutBackAutoSave $true $beforeL $auto $autoBk } finally { StopStandins }
+    Said19 $qL
+    Check "H19 L: with a Roamer running the first write stops, and every write after it is left and named" ($qL.Done -eq 0 -and $qL.Left -eq 2 -and $qL.Lines[0] -match ('^a Roamer is running just before the write of AutoSave\\c\.nwf, pid ' + $sL.Id + '\b') -and $qL.Lines[1] -ceq "AutoSave\g.nwf GONE, left as it is, nothing written" -and -not (Test-Path -LiteralPath (Join-Path $auto "g.nwf"))) ""
+  }
+
+  O "  K, the TEAMS KEPT block of the tool's log is masked like FOLDERS REMEMBERED, Q87"
+  $bar19 = "================================================================"
+  $log19 = @(
+    "", $bar19, "FOLDERS REMEMBERED", $bar19,
+    "10:00:00.000  +0000.100s  Source    X:\remembered\NWC",
+    "", $bar19, "TEAMS KEPT", $bar19,
+    "10:00:00.010  +0000.110s  TEAMS    no clash XML was picked, so the teams are read from X:\kept\A.teams.txt, the team map kept from the last run with one. It holds 2 teams and 3 codes",
+    "10:00:00.011  +0000.111s  TEAMS    Mechanical is HV and PL",
+    "10:00:00.012  +0000.112s  TEAMS    a pair is written in the order Mechanical, Electrical, then any other team by its name, then UNKNOWN",
+    "10:00:03.000  +0003.000s  SCAN     started  X:\scanned  top folder only"
+  )
+  $mr19 = MaskRemembered $log19
+  $ml19 = @($mr19.Lines)
+  foreach ($l in $ml19) { if ($l -ne "") { O ("    | " + $l) } }
+  Check "H19 K: no line of the TEAMS KEPT block names the kept map after the mask, and each is said to be masked" ((@($ml19 | Where-Object { $_.Contains("X:\kept") }).Count -eq 0) -and (@($ml19 | Where-Object { $_ -match '^10:00:00\.01[012]  \+0000\.11[012]s  <a line of the kept team map, masked by run\.ps1, Q123>$' }).Count -eq 3)) ""
+  Check "H19 K: the FOLDERS REMEMBERED line is still masked, and the line after both blocks is kept" ((@($ml19 | Where-Object { $_ -match '<a remembered folder, masked by run\.ps1, Q87>$' }).Count -eq 1) -and ($ml19 -contains "10:00:03.000  +0003.000s  SCAN     started  X:\scanned  top folder only") -and $ml19.Count -eq $log19.Count) ([string]$ml19.Count + " lines out of " + $log19.Count)
+  Check "H19 K: the mask counts the lines of each block" ($mr19.Masked -eq 1 -and $mr19.MaskedTeams -eq 3) ("folders " + $mr19.Masked + ", teams " + $mr19.MaskedTeams)
+
+  O "  K2, F131 attempt 3, the breaker's finding on attempt 2: every line of the tool's log naming his logs folder or the kept map is masked, wherever it sits"
+  $k2Dir = Join-Path $tmDir "k2"
+  New-Item -ItemType Directory -Path $k2Dir | Out-Null
+  $k2Copy = Join-Path $k2Dir "team-map.txt"
+  [System.IO.File]::WriteAllText($k2Copy, "# The team map of the last run with a clash XML, read by a run with none. Safe to delete.`r`nkept: X:\kept\A.teams.txt`r`n", $utf8)
+  $k2Logs = "X:\his\logs"
+  $k2Map = "X:\kept\A.teams.txt"
+  $k2Has = $null -ne (Get-Command -Name PathsOfHis -CommandType Function -ErrorAction SilentlyContinue)
+  Check "H19 K2: run.ps1 holds PathsOfHis" $k2Has ""
+  if ($k2Has) {
+    $k2Paths = @(PathsOfHis ($k2Logs + "\") @($k2Copy, (Join-Path $k2Dir "not-there.txt")))
+    Check "H19 K2: PathsOfHis gives his logs folder and the path the copy of team-map.txt names, and nothing for a file that is not there" ($k2Paths.Count -eq 2 -and $k2Paths[0] -ceq $k2Logs -and $k2Paths[1] -ceq $k2Map) ($k2Paths -join " | ")
+    $k2Held = [System.IO.File]::Open($k2Copy, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::None)
+    $k2Why = ""
+    try { try { PathsOfHis $k2Logs @($k2Copy) | Out-Null } catch { $k2Why = [string]$_.Exception.Message } } finally { $k2Held.Dispose() }
+    Check "H19 K2, BREAKS IT: a copy of team-map.txt held so it cannot be read makes PathsOfHis throw, never a list that leaves its path out" ($k2Why -ne "") $k2Why
+  }
+  $kept19 = [regex]::Matches([System.IO.File]::ReadAllText((Join-Path $repo "src\Federator.Core\Teams\TeamMapMemory.cs")), 'const string KeptMarker = "([^"]+)";')
+  $k2Marker = $(if ($null -ne (Get-Command -Name TeamMapKept -CommandType Function -ErrorAction SilentlyContinue)) { TeamMapKept } else { "none" })
+  Check "H19 K2: the line PathsOfHis reads starts with TeamMapMemory.KeptMarker, read off src\Federator.Core\Teams\TeamMapMemory.cs" ($kept19.Count -eq 1 -and $k2Marker -ceq $kept19[0].Groups[1].Value) ("run.ps1 names " + $k2Marker + ", the source holds " + $kept19.Count + " KeptMarker lines")
+  $k2Log = @(
+    "", $bar19, "TEAMS KEPT", $bar19,
+    "10:00:00.010  +0000.110s  TEAMS    no clash XML was picked, so the teams are read from X:\kept\A.teams.txt, the team map kept from the last run with one. It holds 2 teams and 3 codes",
+    "", $bar19, "RUN SETTINGS", $bar19,
+    "10:05:00.000  +0300.000s  TEAMS    no clash XML was picked, so the teams are read from X:\kept\A.teams.txt, the team map kept from the last run with one. It holds 2 teams and 3 codes",
+    "10:05:00.001  +0300.001s  TEAMS    Mechanical is HV and PL",
+    "10:05:00.002  +0300.002s  TEAMS    the map kept for a run with no clash XML stays x:\KEPT\a.teams.txt, because this run's map was not read whole with a team",
+    "10:05:00.003  +0300.003s  TEAMS    this map is now the one kept for a run with no clash XML, remembered in X:\His\Logs\team-map.txt",
+    "                          the log  : X:\his\logs\run-1.log",
+    "10:05:01.000  +0301.000s  SCAN     started  X:\scanned  top folder only"
+  )
+  function Left19($lines) { return @($lines | Where-Object { $_.IndexOf($k2Map, [StringComparison]::OrdinalIgnoreCase) -ge 0 -or $_.IndexOf($k2Logs, [StringComparison]::OrdinalIgnoreCase) -ge 0 }) }
+  $k2Mr = MaskRemembered $k2Log @($k2Logs, $k2Map)
+  $k2Ml = @($k2Mr.Lines)
+  foreach ($l in $k2Ml) { if ($l -ne "") { O ("    | " + $l) } }
+  $k2Left = Left19 $k2Ml
+  Check "H19 K2: no line names his logs folder or the kept map after the mask, in any case of its letters, in the TEAMS KEPT block or after it" ($k2Left.Count -eq 0) ($k2Left -join " | ")
+  Check "H19 K2: each masked run line keeps its stamp and says it was masked, and a line with no stamp keeps its indent" ((@($k2Ml | Where-Object { $_ -match '^10:05:00\.00[023]  \+0300\.00[023]s  <a line naming his logs folder or the kept team map, masked by run\.ps1, F131>$' }).Count -eq 3) -and ($k2Ml -contains "                          <a line naming his logs folder or the kept team map, masked by run.ps1, F131>")) ""
+  Check "H19 K2: a run line naming neither is kept, the TEAMS KEPT block is masked as before, and no line is added or lost" (($k2Ml -contains "10:05:00.001  +0300.001s  TEAMS    Mechanical is HV and PL") -and ($k2Ml -contains "10:05:01.000  +0301.000s  SCAN     started  X:\scanned  top folder only") -and $k2Ml.Count -eq $k2Log.Count -and $k2Mr.MaskedTeams -eq 1) ([string]$k2Ml.Count + " lines out of " + $k2Log.Count)
+  Check "H19 K2: the mask counts the lines naming his paths" ($k2Mr.MaskedPaths -eq 4) ("paths " + $k2Mr.MaskedPaths)
+  $k2Broken = Left19 @((MaskRemembered $k2Log @($k2Map)).Lines)
+  Check "H19 K2, BREAKS IT: handed the kept map and not his logs folder, the read above names the two lines left naming his logs folder" ($k2Broken.Count -eq 2 -and $k2Broken[0].EndsWith("remembered in X:\His\Logs\team-map.txt") -and $k2Broken[1].EndsWith("X:\his\logs\run-1.log")) ($k2Broken -join " | ")
+  Check "H19 K2: the run's tool log goes into the evidence through MaskRemembered with PathsOfHis of his logs folder, the copy of team-map.txt in the run folder and his own team-map.txt, and the record says how many lines it masked" ($rt19.Contains('$mr = MaskRemembered $tl (PathsOfHis $paths.HisLogs @((Join-Path (Join-Path $paths.RunDir "teammap") (TeamMapName)), (Join-Path $paths.HisLogs (TeamMapName))))') -and $rt19.Contains('$mr.MaskedPaths')) ""
+  Check "H19 K2: the mask is made before the masked copy of the tool's log is written, so a team-map.txt that cannot be read leaves no copy" ($rt19.IndexOf('$mr = MaskRemembered $tl (PathsOfHis') -gt 0 -and $rt19.IndexOf('$mr = MaskRemembered $tl (PathsOfHis') -lt $rt19.IndexOf('[System.IO.File]::WriteAllLines($mlog')) ""
+  BaderSame "H19"
+
+  # =====================================================================================
+  O ""
+  Case "==== H20, F138: THE AUTO-SAVE SWITCH WRITTEN OFF FOR EVERY START, against HKCU\Software\NwcFederatorLoopTest\22.0 and a test folder ===="
+  $g38 = Join-Path $Work "h20"
+  $gapp = Join-Path $g38 "appdata\Autodesk\Navisworks Manage 2025"
+  New-Item -ItemType Directory -Path $gapp, (Join-Path $gapp "AutoSave"), (Join-Path $g38 "fedlogs") | Out-Null
+  [System.IO.File]::WriteAllText((Join-Path $gapp "a.xml"), "a", $utf8)
+  $asSub = $tsub + "\GlobalOptions\general\autosave"
+  $off38 = '^Auto-Save switch written off for this start, Q135: enable under 22\.0\\GlobalOptions\\general\\autosave written String "3 0" and read back so, the backup holds String "0"\. Until the put back it reads so for Bader too\. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave$'
+  $left38 = '  Auto-Save is LEFT OFF for Bader: enable under 22.0\GlobalOptions\general\autosave reads String "3 0" and the backup holds String "0". It must be put back by hand'
+  function Fresh38 { $CU.DeleteSubKeyTree($tkey, $false); $k = $CU.CreateSubKey($tsub); $k.SetValue("A", "a1"); $k.Close(); AutoSaveFixture $tsub }
+  function Lines38($label) { $f = Join-Path $g38 ($label + ".txt"); if (Test-Path -LiteralPath $f) { return @([System.IO.File]::ReadAllLines($f)) }; return @() }
+  function Backup38($label) {
+    $wkx = Join-Path $g38 $label; New-Item -ItemType Directory -Path $wkx | Out-Null
+    $script:AlsoFile = Join-Path $g38 ($label + ".txt")
+    try { $b = BackupSettings $wkx $tsub $gapp (Join-Path $g38 "fedlogs") } finally { $script:AlsoFile = $null }
+    return $b
+  }
+  # F138 attempt 2. The switch as run.ps1 and the probe call it, after the backup and its last read.
+  function Switch38($b) { return (SwitchAutoSaveOff $tsub $b.RegRoot $b.RegBefore) }
+  function PutBack38($label, $putBack, $why, $b) {
+    $script:AlsoFile = Join-Path $g38 ($label + "-putback.txt")
+    try { $r = SettingsPutBack $putBack $why (Join-Path $g38 $label) $tsub $b.RegBefore $b.RegRoot $gapp $b.FilesBefore $b.NotBacked $b.AutoBefore $b.AppBackup } finally { $script:AlsoFile = $null }
+    return $r
+  }
+  function Show38($lines) { foreach ($l in @($lines | Where-Object { $_ -match 'Auto-Save|enable' })) { O ("    | " + $l) } }
+
+  O "  A, the backup writes nothing, the switch after it reads back, and the put back returns it"
+  Fresh38
+  $bA = Backup38 "a"
+  Show38 (Lines38 "a")
+  Check "A, F138 attempt 2: BackupSettings is whole and writes nothing, enable still reads 0 after it, and no line of it names Auto-Save" ($bA.Ok -and (EnableNow $tsub) -eq "String 0" -and @(Lines38 "a" | Where-Object { $_ -match 'Auto-Save' }).Count -eq 0) ("enable reads " + (EnableNow $tsub) + ", " + $bA.Why)
+  $aoA = Switch38 $bA
+  O ("    | " + $aoA.Line)
+  Check "A: the switch writes enable 3 0 and reads it back, and its one line says so and what the backup holds" ($aoA.Ok -and (EnableNow $tsub) -eq "String 3 0" -and $aoA.Line -match $off38) ("enable reads " + (EnableNow $tsub))
+  Check "A: the backup was read before the write, so it holds enable 0" ([string](AutoSaveSwitchHeld $bA.RegBefore $tsub).Data -eq "0") ""
+  $spA = PutBack38 "a" $true @() $bA
+  Show38 (Lines38 "a-putback")
+  Check "A: the put back returns enable to 0, the test key reads exactly as the backup, the one difference is written, and no line says Auto-Save is left off" ((EnableNow $tsub) -eq "String 0" -and (TreeSame (RegRead $tsub).Read $bA.RegBefore.Read) -and $spA.Differ -eq 1 -and $spA.NotWritten -eq 0 -and @(Lines38 "a-putback" | Where-Object { $_ -match 'LEFT OFF' }).Count -eq 0) ("enable reads " + (EnableNow $tsub) + ", differ " + $spA.Differ + ", not written " + $spA.NotWritten)
+
+  O "  B, the write throws: SetValue denied to this user on the Auto-Save key"
+  Fresh38
+  $bB = Backup38 "b"
+  DenyReg $asSub "SetValue"
+  $cleared = $false
+  try { $aoB = Switch38 $bB } finally { $cleared = ClearRegDeny $asSub }
+  O ("    | " + $aoB.Line)
+  Check "B: the switch refuses the start with one line naming the throw, what enable reads and that nothing of his was changed, and enable still reads 0" ($bB.Ok -and -not $aoB.Ok -and $aoB.Line -match '^Auto-Save switch could not be written off, enable under 22\.0\\GlobalOptions\\general\\autosave, the write threw, .+, it reads String "0", what the backup holds, so nothing of his was changed$' -and $aoB.Line -notmatch "[\r\n]" -and (EnableNow $tsub) -eq "String 0") ("enable reads " + (EnableNow $tsub))
+  Check "B: the refusal is never said as written off for this start, and the deny rule was removed after" ($aoB.Line -notmatch 'written off for this start' -and $cleared) ""
+
+  # F138 attempt 2. In B2 and B3 the write is real and so is the read back. Only the moment
+  # between them is reached, through RegValueNow, the one read back SwitchAutoSaveOff makes,
+  # shadowed in a child scope by one that first does what another program could do there and then
+  # reads through the real one. A function of a child scope is the one a function called from it
+  # finds, measured on 2026-10-06.
+  $realRead = ${function:RegValueNow}
+  O "  B2, the write works and does not read back: another writer sets enable to 1 1 between the write and the read back"
+  Fresh38
+  $bB2 = Backup38 "b2"
+  $aoB2 = & {
+    function RegValueNow($keyName, $valueName) { $k = $CU.OpenSubKey($asSub, $true); try { $k.SetValue("enable", "1 1") } finally { $k.Close() }; return (& $realRead $keyName $valueName) }
+    Switch38 $bB2
+  }
+  O ("    | " + $aoB2.Line)
+  Check "B2, F138 attempt 2: the switch refuses the start with one line saying enable was written and does not read back, what it reads, what the backup holds, and that his value is changed and must be put back by hand" ($bB2.Ok -and -not $aoB2.Ok -and $aoB2.Line -match '^Auto-Save switch could not be written off, enable under 22\.0\\GlobalOptions\\general\\autosave was written and does not read back String "3 0", it reads String "1 1", and the backup holds String "0", so his value is changed and must be put back by hand$' -and $aoB2.Line -notmatch "[\r\n]" -and (EnableNow $tsub) -eq "String 1 1") ("enable reads " + (EnableNow $tsub))
+
+  O "  B3, the write works and the read back cannot be read: the read of the key denied to this user between the write and the read back"
+  Fresh38
+  $bB3 = Backup38 "b3"
+  $cleared3 = $false
+  try {
+    $aoB3 = & {
+      function RegValueNow($keyName, $valueName) { DenyReg $asSub "QueryValues"; return (& $realRead $keyName $valueName) }
+      Switch38 $bB3
+    }
+  } finally { $cleared3 = ClearRegDeny $asSub }
+  O ("    | " + $aoB3.Line)
+  Check "B3, F138 attempt 2: the switch refuses the start with one line saying enable could not be read again and that whether his value is changed is UNKNOWN, and the deny rule was removed after" ($bB3.Ok -and -not $aoB3.Ok -and $aoB3.Line -match '^Auto-Save switch could not be written off, enable under 22\.0\\GlobalOptions\\general\\autosave was written and does not read back String "3 0", it could not be read again, .+[^.], and the backup holds String "0", so whether his value is changed is UNKNOWN and it must be read by hand$' -and $aoB3.Line -notmatch "[\r\n]" -and $cleared3 -and (EnableNow $tsub) -eq "String 3 0") ("enable reads " + (EnableNow $tsub))
+
+  O "  C, the Auto-Save key is not there"
+  Fresh38
+  $CU.DeleteSubKeyTree($tsub + "\GlobalOptions", $false)
+  $bC = Backup38 "c"
+  $aoC = Switch38 $bC
+  O ("    | " + $aoC.Line)
+  Check "C: the backup is whole, the switch refuses the start in one line saying nothing of his was changed, and the key is never made" ($bC.Ok -and -not $aoC.Ok -and $aoC.Line -match '^Auto-Save switch could not be written off, enable under 22\.0\\GlobalOptions\\general\\autosave, its key is not there, and a key is never made, it reads absent, what the backup holds, so nothing of his was changed$' -and $null -eq $CU.OpenSubKey($tsub + "\GlobalOptions")) ""
+
+  O "  D, the put back refused for a reason PutBackReasons gives, such as another Navisworks that ran"
+  Fresh38
+  $bD = Backup38 "d"
+  $aoD = Switch38 $bD
+  $spD = PutBack38 "d" $false @("Roamer 4242 started 12:00:00.000 was new at a watchdog pass and is not the adopted one") $bD
+  Show38 (Lines38 "d-putback")
+  Check "D: nothing is written, enable stays 3 0, and one line says Auto-Save is left off for Bader and must be put back by hand" ($bD.Ok -and $aoD.Ok -and (EnableNow $tsub) -eq "String 3 0" -and @(Lines38 "d-putback" | Where-Object { $_ -ceq $left38 }).Count -eq 1 -and $spD.NotWritten -eq $spD.Differ -and $spD.Differ -eq 1) ("enable reads " + (EnableNow $tsub) + ", differ " + $spD.Differ + ", not written " + $spD.NotWritten)
+
+  O "  E, the put back stopped by a stand-in Roamer started just before its first write"
+  Fresh38
+  $bE = Backup38 "e"
+  $aoE = Switch38 $bE
+  [void](StartStandin "sleep 120" $null $null)
+  $spE = PutBack38 "e" $true @() $bE
+  StopStandins
+  Show38 (Lines38 "e-putback")
+  Check "E: the write of enable is stopped with every write after it, enable stays 3 0, and the record says Auto-Save is left off" ($bE.Ok -and $aoE.Ok -and (EnableNow $tsub) -eq "String 3 0" -and @(Lines38 "e-putback" | Where-Object { $_ -ceq $left38 }).Count -eq 1 -and $spE.NotWritten -eq $spE.Differ) ("enable reads " + (EnableNow $tsub) + ", differ " + $spE.Differ + ", not written " + $spE.NotWritten)
+
+  O "  F, enable read 3 0 at the backup already, his own setting"
+  Fresh38
+  $k = $CU.OpenSubKey($asSub, $true); $k.SetValue("enable", "3 0"); $k.Close()
+  $bF = Backup38 "f"
+  $aoF = Switch38 $bF
+  $spF = PutBack38 "f" $false @("the harness's reason") $bF
+  Check "F: the switch reads back, nothing differs from the backup, and no line says Auto-Save is left off, because it is as he had it" ($bF.Ok -and $aoF.Ok -and (EnableNow $tsub) -eq "String 3 0" -and $spF.Differ -eq 0 -and @(Lines38 "f-putback" | Where-Object { $_ -match 'LEFT OFF' }).Count -eq 0) ("differ " + $spF.Differ)
+
+  O "  G, the watchdog's constructor deadline in a child powershell, whose switch after the settings backup wrote Auto-Save off"
+  Fresh38
+  $out38 = Join-Path $g38 "g-out.txt"; $unp38 = Join-Path $g38 "g-unproved.txt"; $wf38 = Join-Path $g38 "g-watch.txt"; $wk38 = Join-Path $g38 "g"
+  New-Item -ItemType Directory -Path $wk38 | Out-Null
+  $child38 = Join-Path $g38 "deadline.ps1"
+  $ct38 = @(
+    '$ErrorActionPreference = "Stop"',
+    ('. "' + $guardFile + '"'),
+    'function Say($t) { [Console]::Out.WriteLine($t) }',
+    ('$loopRoot = "' + $loopRoot + '"; $nw = "' + $nw + '"'),
+    ('$guardText = [System.IO.File]::ReadAllText("' + $guardFile + '")'),
+    '$wt = NewWinTypes',
+    ('[System.IO.File]::WriteAllText("' + $out38 + '", ""); [System.IO.File]::WriteAllText("' + $wf38 + '", "")'),
+    '$all = @(Get-Process | ForEach-Object { $_.Id })',
+    ('$sync = WatchSync $all @{} ([DateTime]::Now) $loopRoot $nw 60 300 "' + $out38 + '" "' + $unp38 + '" "' + $wf38 + '" $guardText $wt.WinType $wt.ProcType'),
+    ('$bs = BackupSettings "' + $wk38 + '" "' + $tsub + '" "' + $gapp + '" "' + (Join-Path $g38 "fedlogs") + '"'),
+    'if (-not $bs.Ok) { [Console]::Out.WriteLine("THE BACKUP REFUSED, " + $bs.Why); exit 5 }',
+    ('$ao = SwitchAutoSaveOff "' + $tsub + '" $bs.RegRoot $bs.RegBefore'),
+    'if (-not $ao.Ok) { [Console]::Out.WriteLine("THE SWITCH REFUSED, " + $ao.Line); exit 5 }',
+    ('$sync.RegSub = "' + $tsub + '"; $sync.RegRoot = $bs.RegRoot; $sync.RegBefore = $bs.RegBefore; $sync.FilesBefore = $bs.FilesBefore; $sync.NotBacked = $bs.NotBacked; $sync.AutoBefore = $bs.AutoBefore; $sync.NwAppData = "' + $gapp + '"; $sync.SettingsReady = $true'),
+    '$sync.CallStartUtc = [DateTime]::UtcNow.AddSeconds(-61)',
+    '$w = [PowerShell]::Create(); [void]$w.AddScript((WatchdogScript)).AddArgument($sync); $h = $w.BeginInvoke()',
+    'Start-Sleep -Seconds 60',
+    '[Console]::Out.WriteLine("THE MAIN THREAD WOKE, the deadline did not end this process")',
+    'exit 0')
+  [System.IO.File]::WriteAllText($child38, ($ct38 -join "`r`n") + "`r`n", $utf8)
+  $r38 = RunBounded $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $child38 + "`"") $g38 $ChildLimitSeconds
+  $o38 = @(Get-Content -LiteralPath $out38)
+  foreach ($l in @($o38 | Where-Object { $_ -match 'DEADLINE|Auto-Save|enable' })) { O ("    | " + $l) }
+  Check "G: the deadline ends the child with exit 3, its block lists enable among the differences, says Auto-Save is left off in one line, and enable stays 3 0" ($r38.Exit -eq 3 -and @($o38 | Where-Object { $_ -match 'CONSTRUCTOR DEADLINE of 60 s passed' }).Count -ge 1 -and @($o38 | Where-Object { $_ -ceq $left38 }).Count -eq 1 -and @($o38 | Where-Object { $_ -match 'autosave  enable  old String "0"  new String "3 0"' }).Count -eq 1 -and (EnableNow $tsub) -eq "String 3 0") ("exit " + $r38.Exit + ", enable reads " + (EnableNow $tsub))
+  $CU.DeleteSubKeyTree($tkey, $false)
+  Check "H20: the test key is deleted" ($null -eq $CU.OpenSubKey($tkey)) ""
+  BaderSame "H20"
+
+  # =====================================================================================
+  O ""
+  Case "==== H21, F138: THE TIME LIMITS, copies of this harness whose cases are replaced by one trial each, against children of their own that never end while their harness runs ===="
+  $h21 = Join-Path $Work "h21"
+  New-Item -ItemType Directory -Path $h21 | Out-Null
+  StopStandins
+  # Each copy is prove-run.ps1 as it stands, with run.ps1 and nw-guard.ps1 beside it, and only the
+  # body of its one top level try replaced by a trial, so the limits, the wait, the catch and the
+  # cleanup under test are the harness's own. Every copy is bounded here by the 120 s of its
+  # EndChild call, so H21 cannot hang on a copy whose limits do not hold.
+  $selfText = [System.IO.File]::ReadAllText($harnessFile)
+  $t21 = $null; $e21 = $null
+  $selfAst = [System.Management.Automation.Language.Parser]::ParseInput($selfText, [ref]$t21, [ref]$e21)
+  $mainTry = @($selfAst.EndBlock.Statements | Where-Object { $_ -is [System.Management.Automation.Language.TryStatementAst] })
+  if ($e21.Count -gt 0 -or $mainTry.Count -ne 1) { throw ("prove-run.ps1 does not parse, or holds " + $mainTry.Count + " try statements at its top level, so no copy of it is made") }
+  $bodyStart = $mainTry[0].Body.Extent.StartOffset
+  $bodyEnd = $mainTry[0].Body.Extent.EndOffset
+  # The child of its own that never ends while the harness that started it runs. It writes its pid
+  # and start ticks first, and a file saying it ended by itself only if it saw its harness gone, so
+  # a child the harness closed through its held handle writes none.
+  $never = Join-Path $h21 "never.ps1"
+  $neverLines = @(
+    'param([int]$HarnessPid, [string]$PidFile, [string]$EndFile)',
+    '$me = [System.Diagnostics.Process]::GetCurrentProcess()',
+    '[System.IO.File]::WriteAllText($PidFile, [string]$me.Id + " " + $me.StartTime.ToUniversalTime().Ticks)',
+    '$harness = [System.Diagnostics.Process]::GetProcessById($HarnessPid)',
+    'while (-not $harness.HasExited) { Start-Sleep -Milliseconds 500 }',
+    '[System.IO.File]::WriteAllText($EndFile, "it ended by itself, because the harness that started it was gone")')
+  [System.IO.File]::WriteAllText($never, ($neverLines -join "`r`n") + "`r`n", $utf8)
+  $neverStart = '  $c = StartChildEnv $ps ("-NoProfile -ExecutionPolicy Bypass -File `"{NEVER}`" " + $PID + " `"{H21}\{T}-pid.txt`" `"{H21}\{T}-end.txt`"") "{H21}" @{}'
+  function TrialCopy($name, $bodyLines) {
+    $loop21 = Join-Path $h21 ($name + "\tools\loop")
+    New-Item -ItemType Directory -Path $loop21 | Out-Null
+    Copy-Item -LiteralPath $runPs, $guardFile -Destination $loop21
+    $body = ($bodyLines -join "`r`n").Replace("{NEVER}", $never).Replace("{H21}", $h21).Replace("{T}", $name)
+    $copy = Join-Path $loop21 "prove-run.ps1"
+    [System.IO.File]::WriteAllText($copy, $selfText.Substring(0, $bodyStart) + "{`r`n" + $body + "`r`n}" + $selfText.Substring($bodyEnd), $utf8)
+    return $copy
+  }
+  function Trial($name, $copy, $arguments) {
+    $tw = Join-Path $h21 ("work-" + $name)
+    O ("  " + $name + ": the copy run with -Work <h21>\work-" + $name + $(if ($arguments -ne "") { " " + $arguments } else { "" }))
+    $sw21 = [Diagnostics.Stopwatch]::StartNew()
+    $r = EndChild (StartChildEnv $ps ("-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $copy + "`" -Work `"" + $tw + "`" " + $arguments) $h21 @{}) 120
+    $secs = $sw21.Elapsed.TotalSeconds
+    $lines = @($r.Out.Replace("`r`n", "`n").Split("`n"))
+    foreach ($l in @($lines | Where-Object { $_ -match '^(TIME LIMIT|REFUSED|HARNESS FAULT|==== |  (PASS|FAIL|failed:|waiting|waited|the limit of this case|stand-ins started|children started)|finished|the child did not end)' })) { O ("    | " + $l.TrimEnd().Replace($h21, "<h21>")) }
+    $e = $r.Err.Trim(); if ($e -ne "") { O ("    | stderr: " + @($e.Split("`n"))[0].Trim().Replace($h21, "<h21>")) }
+    $there = Test-Path -LiteralPath $tw
+    O ("    exit " + $r.Exit + " after " + $secs.ToString("0.0") + " s, its -Work there now: " + $there)
+    return [pscustomobject]@{ Exit = $r.Exit; Lines = $lines; Seconds = $secs; WorkThere = $there; Work = $tw }
+  }
+  # What became of the child that never ends: closed, still running, or ended by itself once its
+  # harness was gone, read by its pid and start ticks and given 5 s to be gone.
+  function NeverState($name) {
+    $pf = Join-Path $h21 ($name + "-pid.txt")
+    if (-not (Test-Path -LiteralPath $pf)) { return "it never started" }
+    $parts = ([System.IO.File]::ReadAllText($pf)).Trim().Split(" ")
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+    $alive = $true
+    while ($alive -and $sw.Elapsed.TotalSeconds -lt 5) {
+      $alive = (@(Get-Process -Id ([int]$parts[0]) -ErrorAction SilentlyContinue | Where-Object { (UtcTicks $_.StartTime) -eq [long]$parts[1] }).Count -gt 0)
+      if ($alive) { Start-Sleep -Milliseconds 200 }
+    }
+    if ($alive) { return ("it still runs, pid " + $parts[0]) }
+    if (Test-Path -LiteralPath (Join-Path $h21 ($name + "-end.txt"))) { return "it ended by itself once its harness was gone, so nothing closed it" }
+    return "closed"
+  }
+  $stops = 'The harness stops here, closes only its own stand-ins and its own children through their held handles, and goes to CLEANUP$'
+
+  O "  T1, a child that never ends, past the limit of 3 s its EndChild call gives"
+  $c1 = TrialCopy "t1" @('  Case "==== T1, a child that never ends, past its own limit ===="', $neverStart, '  $r = EndChild $c 3', '  Check "T1: the child that never ends has ended, which it cannot" $false ("exit " + $r.Exit + ", " + $r.Out)')
+  $r1 = Trial "t1" $c1 ""
+  Check "H21 T1: a child past its own limit stops the harness with one TIME LIMIT line naming the child, its pid, its limit and the case, and exit 3" ($r1.Exit -eq 3 -and @($r1.Lines | Where-Object { $_ -match ('^TIME LIMIT: the child powershell\.exe .*never\.ps1.*, pid \d+, did not end in 3 s, its limit, in T1 at \d\d:\d\d:\d\d, and was closed through its own handle\. ' + $stops) }).Count -eq 1) ("exit " + $r1.Exit)
+  Check "H21 T1: the harness goes to CLEANUP, its RESULT names the time limit, and its -Work is removed" ((Has $r1.Lines '^==== CLEANUP ====') -and (Has $r1.Lines '^  failed: the harness stopped at a time limit, the child .*never\.ps1.*, pid \d+, after 3 s in T1\s*$') -and -not $r1.WorkThere) ("its -Work there " + $r1.WorkThere)
+  Check "H21 T1: the child that never ends was closed through the harness's held handle" ((NeverState "t1") -eq "closed") (NeverState "t1")
+
+  O "  T2, a case past the limit of 4 s on its Case line, while it waits on a child that never ends whose EndChild call gives 600 s"
+  $c2 = TrialCopy "t2" @('  Case "==== T2, a case past its own limit while it waits on a child that never ends ====" 4', $neverStart, '  $r = EndChild $c 600', '  Check "T2: the wait on the child that never ends returned with the case still in its limit" $false ("exit " + $r.Exit + ", " + $r.Out)')
+  $r2 = Trial "t2" $c2 ""
+  Check "H21 T2: a case past its limit stops the harness with one TIME LIMIT line naming the case and the seconds, and exit 3" ($r2.Exit -eq 3 -and @($r2.Lines | Where-Object { $_ -match ('^TIME LIMIT: T2 ran 4 s, its limit, at \d\d:\d\d:\d\d\. ' + $stops) }).Count -eq 1) ("exit " + $r2.Exit)
+  Check "H21 T2: the harness goes to CLEANUP, its RESULT names the time limit, and its -Work is removed" ((Has $r2.Lines '^==== CLEANUP ====') -and (Has $r2.Lines '^  failed: the harness stopped at a time limit, T2 after 4 s\s*$') -and -not $r2.WorkThere) ("its -Work there " + $r2.WorkThere)
+  Check "H21 T2: the child that never ends was closed through the harness's held handle" ((NeverState "t2") -eq "closed") (NeverState "t2")
+
+  O "  T3, the run past -RunLimitSeconds 6, while a case of the default limit waits on a child that never ends"
+  $c3 = TrialCopy "t3" @('  Case "==== T3, the run past its own limit while a case waits on a child that never ends ===="', $neverStart, '  $r = EndChild $c 600', '  Check "T3: the wait on the child that never ends returned with the run still in its limit" $false ("exit " + $r.Exit + ", " + $r.Out)')
+  $r3 = Trial "t3" $c3 "-RunLimitSeconds 6"
+  Check "H21 T3: the run past its limit stops the harness with one TIME LIMIT line naming the run, the seconds and the case, and exit 3" ($r3.Exit -eq 3 -and @($r3.Lines | Where-Object { $_ -match ('^TIME LIMIT: the run reached 6 s, its limit, in T3 at \d\d:\d\d:\d\d\. ' + $stops) }).Count -eq 1) ("exit " + $r3.Exit)
+  Check "H21 T3: the harness goes to CLEANUP, its RESULT names the time limit, its -Work is removed, and the child that never ends was closed" ((Has $r3.Lines '^==== CLEANUP ====') -and (Has $r3.Lines '^  failed: the harness stopped at a time limit, the run after 6 s, in T3\s*$') -and -not $r3.WorkThere -and (NeverState "t3") -eq "closed") ("its -Work there " + $r3.WorkThere + ", the child " + (NeverState "t3"))
+
+  O "  T4, a case past the limit of 3 s on its Case line while the harness sleeps 600 s, where nothing can be closed, with -CleanupLimitSeconds 3"
+  $c4 = TrialCopy "t4" @('  Case "==== T4, a case past its own limit while the harness sleeps where nothing can be closed ====" 3', '  Start-Sleep -Seconds 600', '  Check "T4: the sleep of 600 s ended, which the limits should have cut" $false ""')
+  $r4 = Trial "t4" $c4 "-CleanupLimitSeconds 3"
+  Check "H21 T4: the case's TIME LIMIT line, then, with no cleanup reached in its limit, one line that the harness ends itself naming -Work and the test key as left, exit 3, long before the sleep would end" ($r4.Exit -eq 3 -and (Has $r4.Lines ('^TIME LIMIT: T4 ran 3 s, its limit, at \d\d:\d\d:\d\d\. ' + $stops)) -and (Has $r4.Lines ('^TIME LIMIT: the harness did not reach its cleanup 3 s after its time limit, so the harness ends itself with exit 3\. -Work ' + [regex]::Escape($r4.Work) + ' and HKCU\\Software\\NwcFederatorLoopTest may be left, and are named here\s*$')) -and $r4.Seconds -lt 60) ("exit " + $r4.Exit + " after " + $r4.Seconds.ToString("0") + " s")
+  if ($r4.WorkThere) { Remove-Item -LiteralPath $r4.Work -Recurse -Force; O "    the -Work T4 named as left removed here" }
+
+  $cw = TrialCopy "w" @('  Case "==== W, the run that goes on after its wait ===="', '  Check "W: the run goes on once no Roamer and no other harness runs" $true ""')
+  O "  W0, a stand-in Roamer runs and -WaitSeconds is left at its default"
+  $sw0 = StartStandin "sleep 300" $null $null
+  $w0 = Trial "w0" $cw ""
+  Check "H21 W0: with -WaitSeconds at 0 the harness refuses at once, as before, with one REFUSED line naming the Roamer, exit 2, and makes no -Work" ($w0.Exit -eq 2 -and @($w0.Lines | Where-Object { $_ -match '^REFUSED: .*Roamer' }).Count -eq 1 -and -not (Has $w0.Lines '^  waiting') -and -not $w0.WorkThere) ("exit " + $w0.Exit)
+  O "  W1, the same Roamer, and -WaitSeconds 4 read every 1 s"
+  $w1 = Trial "w1" $cw "-WaitSeconds 4 -WaitPollSeconds 1"
+  Check "H21 W1: the harness waits up to 4 s, its limit, then refuses in one line naming the Roamer that still runs, exit 2, and makes no -Work" ($w1.Exit -eq 2 -and (Has $w1.Lines ('^REFUSED: waited 4 s for Roamer pid ' + $sw0.Id + ', its limit, and they still run\. Nothing was done\.\s*$')) -and $w1.Seconds -ge 4 -and -not $w1.WorkThere) ("exit " + $w1.Exit + " after " + $w1.Seconds.ToString("0.0") + " s")
+  O "  W2, the same Roamer, a -Work left by a cut run, and -WaitSeconds 60"
+  New-Item -ItemType Directory -Path (Join-Path $h21 "work-w2") | Out-Null
+  $w2 = Trial "w2" $cw "-WaitSeconds 60 -WaitPollSeconds 1"
+  Check "H21 W2: a -Work there already is refused at once in one REFUSED line naming it, exit 2, never waited on and left as it was" ($w2.Exit -eq 2 -and (Has $w2.Lines ('^REFUSED: -Work ' + [regex]::Escape($w2.Work) + ' is there already')) -and -not (Has $w2.Lines '^  waiting') -and $w2.Seconds -lt 60 -and $w2.WorkThere) ("exit " + $w2.Exit + " after " + $w2.Seconds.ToString("0.0") + " s")
+  StopStandins
+  O "  W3, another harness running, a powershell started with -File on a script named prove-run.ps1 that sleeps 20 s, and -WaitSeconds 3"
+  $other = Join-Path $h21 "other"
+  New-Item -ItemType Directory -Path $other | Out-Null
+  [System.IO.File]::WriteAllText((Join-Path $other "prove-run.ps1"), "Start-Sleep -Seconds 20`r`n", $utf8)
+  $oc = StartChildEnv $ps ("-NoProfile -ExecutionPolicy Bypass -File `"" + (Join-Path $other "prove-run.ps1") + "`"") $h21 @{}
+  $w3 = Trial "w3" $cw "-WaitSeconds 3 -WaitPollSeconds 1"
+  [void](EndChild $oc 60)
+  Check "H21 W3: the harness waits up to 3 s for the other harness, then refuses in one line naming its pid, exit 2, and makes no -Work" ($w3.Exit -eq 2 -and (Has $w3.Lines ('^REFUSED: waited 3 s for harness pid ' + $oc.P.Id + ', its limit, and they still run\. Nothing was done\.\s*$')) -and -not $w3.WorkThere) ("exit " + $w3.Exit + ", the other harness pid " + $oc.P.Id)
+  O "  W4, a stand-in Roamer that ends by itself after 5 s, and -WaitSeconds 60 read every 1 s"
+  [void](StartStandin "sleep 5" $null $null)
+  $w4 = Trial "w4" $cw "-WaitSeconds 60 -WaitPollSeconds 1"
+  Check "H21 W4: the harness waits until the Roamer has ended, says how long in one line, then runs, exit 0, and removes its -Work" ($w4.Exit -eq 0 -and (Has $w4.Lines '^  waiting up to 60 s') -and (Has $w4.Lines '^  waited \d+ s, and no Roamer and no other proof harness runs now\s*$') -and (Has $w4.Lines '^==== RESULT: 1 passed, 0 failed ====') -and -not $w4.WorkThere) ("exit " + $w4.Exit)
+  StopStandins
+  BaderSame "H21"
+
+  # =====================================================================================
+  O ""
   Case "==== H15, CHECK MODE writes nothing ===="
   $r = RunReal "-Mode Check -Set 99 -Item 0 -Stamp be0b9b37"
   foreach ($l in @($r.Out.Split("`n") | Where-Object { $_ -match 'reads|matches|files,|there:|would refuse|none, for' } | Select-Object -First 20)) { O ("    | " + $l.TrimEnd()) }
@@ -1466,33 +2224,62 @@ try {
   BaderSame "H15"
 } catch {
   $script:Fail++
-  $script:Fails.Add("the harness stopped on a fault")
-  O ("HARNESS FAULT: " + (Err $_.Exception) + " at line " + $_.InvocationInfo.ScriptLineNumber)
-} finally {
-  O ""
-  O "==== CLEANUP ===="
-  StopStandins
-  $gone = @($script:Held | Where-Object { -not $_.HasExited }).Count
-  O ("  stand-ins started " + $script:Held.Count + ", every one closed through its held handle, still running: " + $gone)
-  [Microsoft.Win32.Registry]::CurrentUser.DeleteSubKeyTree("Software\NwcFederatorLoopTest", $false)
-  O ("  HKCU\Software\NwcFederatorLoopTest there now: " + ($null -ne [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey("Software\NwcFederatorLoopTest")))
-  $j = Join-Path $Work "h2\junction"
-  if (Test-Path -LiteralPath $j) { [System.IO.Directory]::Delete($j, $false) }
-  $lockedLeft = Join-Path $Work "h17\appdata\Autodesk\Navisworks Manage 2025\locked"
-  if (Test-Path -LiteralPath $lockedLeft) {
-    $acl = Get-Acl -LiteralPath $lockedLeft
-    foreach ($rule in @($acl.Access | Where-Object { $_.AccessControlType -eq "Deny" -and -not $_.IsInherited })) { [void]$acl.RemoveAccessRule($rule) }
-    Set-Acl -LiteralPath $lockedLeft -AclObject $acl
-    O "  the deny rule left on the H17 barrier folder removed"
+  if ($Limits.Hit -ne "") {
+    $script:Fails.Add("the harness stopped at a time limit, " + $Limits.HitShort)
+    O ("  the throw that stopped the case: " + (Err $_.Exception) + " at line " + $_.InvocationInfo.ScriptLineNumber)
+  } else {
+    $script:Fails.Add("the harness stopped on a fault")
+    O ("HARNESS FAULT: " + (Err $_.Exception) + " at line " + $_.InvocationInfo.ScriptLineNumber)
   }
-  Start-Sleep -Seconds 1
-  try { Remove-Item -LiteralPath $Work -Recurse -Force } catch { $script:Fail++; $script:Fails.Add("the cleanup could not remove the work folder"); O ("  the work folder could NOT be removed whole, " + (Err $_.Exception)) }
-  O ("  " + $Work + " removed, there now: " + (Test-Path -LiteralPath $Work))
-  O ("  Get-Process Roamer at the end: " + @(Get-Process -Name Roamer -ErrorAction SilentlyContinue).Count)
-  O ""
-  O ("==== RESULT: " + $script:Pass + " passed, " + $script:Fail + " failed ====")
-  foreach ($f in $script:Fails) { O ("  failed: " + $f) }
-  O ("finished " + [DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss") + ", " + ([DateTime]::Now - $T0).TotalSeconds.ToString("0") + " s")
+} finally {
+  # The deadline runspace is let go in the inner finally, so a cleanup that throws still ends
+  # this process, which that runspace's thread would otherwise keep up to the run's limit.
+  try {
+    [System.Threading.Monitor]::Enter($Limits.Lock)
+    try { $Limits.CleanupAt = [DateTime]::UtcNow } finally { [System.Threading.Monitor]::Exit($Limits.Lock) }
+    [void]$Limits.Wake.Set()
+    O ""
+    O "==== CLEANUP ===="
+    StopStandins
+    $gone = @($script:Held | Where-Object { -not $_.HasExited }).Count
+    O ("  stand-ins started " + $script:Held.Count + ", every one closed through its held handle, still running: " + $gone)
+    CloseHeld $Limits.Children
+    $left = @($Limits.Children | Where-Object { -not $_.HasExited }).Count
+    O ("  children started " + $Limits.Children.Count + ", every one ended or closed through its held handle, still running: " + $left)
+    if (ClearRegDeny "Software\NwcFederatorLoopTest\22.0\GlobalOptions\general\autosave") { O "  the deny rule left on the H20 Auto-Save key removed" }
+    [Microsoft.Win32.Registry]::CurrentUser.DeleteSubKeyTree("Software\NwcFederatorLoopTest", $false)
+    O ("  HKCU\Software\NwcFederatorLoopTest there now: " + ($null -ne [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey("Software\NwcFederatorLoopTest")))
+    $j = Join-Path $Work "h2\junction"
+    if (Test-Path -LiteralPath $j) { [System.IO.Directory]::Delete($j, $false) }
+    $lockedLeft = Join-Path $Work "h17\appdata\Autodesk\Navisworks Manage 2025\locked"
+    if (Test-Path -LiteralPath $lockedLeft) {
+      $acl = Get-Acl -LiteralPath $lockedLeft
+      foreach ($rule in @($acl.Access | Where-Object { $_.AccessControlType -eq "Deny" -and -not $_.IsInherited })) { [void]$acl.RemoveAccessRule($rule) }
+      Set-Acl -LiteralPath $lockedLeft -AclObject $acl
+      O "  the deny rule left on the H17 barrier folder removed"
+    }
+    Start-Sleep -Seconds 1
+    try { Remove-Item -LiteralPath $Work -Recurse -Force } catch { $script:Fail++; $script:Fails.Add("the cleanup could not remove the work folder"); O ("  the work folder could NOT be removed whole, " + (Err $_.Exception)) }
+    O ("  " + $Work + " removed, there now: " + (Test-Path -LiteralPath $Work))
+    O ("  Get-Process Roamer at the end: " + @(Get-Process -Name Roamer -ErrorAction SilentlyContinue).Count)
+    if ($deadlineHandle.IsCompleted) {
+      $script:Fail++
+      $script:Fails.Add("the deadline runspace ended before the run did, so from then on the run had no time limit")
+      foreach ($e in @($deadlinePs.Streams.Error)) { O ("  the deadline runspace: " + $e.ToString()) }
+    }
+    O ""
+    O ("==== RESULT: " + $script:Pass + " passed, " + $script:Fail + " failed ====")
+    foreach ($f in $script:Fails) { O ("  failed: " + $f) }
+    O ("finished " + [DateTime]::Now.ToString("yyyy-MM-dd HH:mm:ss") + ", " + ([DateTime]::Now - $T0).TotalSeconds.ToString("0") + " s")
+  } finally {
+    $Limits.Done = $true
+    [void]$Limits.Wake.Set()
+    if ($deadlineHandle.AsyncWaitHandle.WaitOne($CleanupLimitSeconds * 1000)) {
+      try { [void]$deadlinePs.EndInvoke($deadlineHandle) } catch { O ("  the deadline runspace ended with " + (Err $_.Exception)) }
+      $deadlinePs.Dispose()
+    } else { O ("  the deadline runspace did not end in " + $CleanupLimitSeconds + " s after the run, and ends with this process") }
+  }
 }
+if ($Limits.Hit -ne "") { exit 3 }
 if ($script:Fail -gt 0) { exit 1 }
 exit 0

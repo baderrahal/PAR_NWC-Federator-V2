@@ -1,0 +1,287 @@
+07:28:12.883  +0000.000s  Log opened at C:\Users\p003653k\AppData\Local\ParsonsNwcFederator\logs\run-20261005-072812.log
+07:28:12.889  +0000.007s  ROWS     the machine readable log is C:\Users\p003653k\AppData\Local\ParsonsNwcFederator\logs\run-20261005-072812.tsv
+07:28:12.895  +0000.013s  RETAIN   keeping 30 logs, deleted 1, could not delete 0
+
+================================================================
+SESSION
+================================================================
+07:28:12.906  +0000.023s  started        : 2026-10-05 07:28:12
+07:28:12.906  +0000.023s  plugin version : 1.0.0.0 e4484d15 built 2026-10-01 12:19:09
+07:28:12.906  +0000.023s  navisworks     : Autodesk Navisworks Manage 2025  runtime 22.5  build 0  api 22.0 (stable)  language en-US  runtime string Navisworks Manage
+07:28:12.907  +0000.024s  open document  : none, the document is clear
+07:28:12.907  +0000.024s  log file       : C:\Users\p003653k\AppData\Local\ParsonsNwcFederator\logs\run-20261005-072812.log
+07:28:13.000  +0000.118s  LOGO     the report will carry C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg
+
+================================================================
+FOLDERS REMEMBERED
+================================================================
+07:28:13.043  +0000.161s  <a remembered folder, masked by run.ps1, Q87>
+07:28:13.044  +0000.161s  <a remembered folder, masked by run.ps1, Q87>
+07:28:13.044  +0000.161s  <a remembered folder, masked by run.ps1, Q87>
+07:28:13.044  +0000.162s  <a remembered folder, masked by run.ps1, Q87>
+07:28:13.044  +0000.162s  <a remembered folder, masked by run.ps1, Q87>
+07:28:18.408  +0005.526s  SCAN     started  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02  including subfolders
+07:28:18.414  +0005.532s  SCAN     finished 4 found, 4 readable, 0 that cannot be read
+07:28:31.305  +0018.421s  LOADING  the NWF reported 4 models after 0.715s, steady over 3 reads 0.250s apart, over 3 readings in all
+07:28:31.306  +0018.423s  LOADING  the scene loaded event fired 4 times, first at 0.3s and last at 0.4s after the open began, and the open returned at 4.5s
+07:28:31.311  +0018.428s  PREVIEW  1A02MM  Weekly run
+07:28:31.312  +0018.429s  PREVIEW  opened 1 NWF before the confirm dialog in 5.2s
+
+================================================================
+RUN SETTINGS
+================================================================
+07:28:31.824  +0018.941s  source folder     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02
+07:28:31.825  +0018.942s  include subfolders: yes
+07:28:31.826  +0018.943s  NWF folder        : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWF\C02
+07:28:31.827  +0018.943s  NWD folder        : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWD\C02
+07:28:31.827  +0018.944s  files found       : 4
+07:28:31.828  +0018.945s  files ticked      : 4
+07:28:31.829  +0018.946s  groups built      : 1
+07:28:31.829  +0018.947s  grouping         : One file per building
+07:28:31.830  +0018.947s  apply file to old: no, differences are reported and nothing is changed
+07:28:31.831  +0018.948s  compact resolved : no
+07:28:31.831  +0018.949s  penetrations     : no, every clash keeps the status it has
+07:28:31.832  +0018.949s  clash tolerance  : Use the value in the XML, read per test out of the XML
+07:28:31.833  +0018.950s  priority file    : none, so no Priority column and the measured block order
+07:28:31.834  +0018.951s  by design        : no, the pairs file is not read
+07:28:31.834  +0018.952s  NWD naming       : overwrites, so only the latest week exists
+07:28:31.835  +0018.952s  republish NWD    : yes, fixed
+07:28:31.835  +0018.953s  model units      : Meters, which is what the models are set to
+07:28:31.837  +0018.954s  report units     : Meters (m), always, converted before anything is written
+
+================================================================
+GROUPS
+================================================================
+07:28:31.841  +0018.958s  run       1A02MM      4 files  1104-PAR-1A02MM-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]  Weekly run
+07:28:31.842  +0018.959s  0 groups unticked in the Run column, nothing else drops a group
+
+================================================================
+FINDINGS
+================================================================
+07:28:31.847  +0018.965s  Disciplines in this run: AR, EL, ME, ST
+07:28:31.848  +0018.965s  Nothing odd. Every building code shares its shape with another, no two codes differ by a single character that is easy to misread, and every group holds every discipline in the run.
+07:28:31.854  +0018.971s  RUN      started, 1 group
+07:28:31.856  +0018.972s  RUN      nothing picked in the Clash step, so no set will be built and no test created
+07:28:31.857  +0018.974s  RUN      workbooks go in C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\Clash Report\C02
+07:28:31.858  +0018.975s  RUN      the clash XML is off
+07:28:31.925  +0019.042s  GROUP    started  1A02MM  4 files
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc
+07:28:31.931  +0019.048s  CLEAR    the document, at the top of 1A02MM, before Decide
+07:28:32.228  +0019.346s  CENSUS CLEAR  the document was emptied and every count read zero
+07:28:32.232  +0019.350s  STEP     DECIDE        started
+07:28:32.242  +0019.359s  CENSUS   before DECIDE  models 0  sets 0  tests 0  results 0  views 0
+07:28:32.310  +0019.427s  OPEN     reading the file list out of C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+07:28:36.243  +0023.360s  LOADING  the NWF reported 4 models after 0.609s, steady over 3 reads 0.250s apart, over 3 readings in all
+07:28:36.244  +0023.361s  LOADING  the scene loaded event fired 4 times, first at 0.2s and last at 0.4s after the open began, and the open returned at 3.3s
+07:28:36.246  +0023.363s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc]
+07:28:36.247  +0023.364s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-EL-MOD-000001.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc]
+07:28:36.247  +0023.364s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc]
+07:28:36.248  +0023.365s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc]
+07:28:36.253  +0023.371s  CENSUS   after  DECIDE  models 4  sets 61  tests 528  results 2939  views 2847
+07:28:36.275  +0023.392s  STEP     DECIDE        finished 4.018s  Weekly run
+07:28:36.277  +0023.394s  OPENED   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+07:28:36.278  +0023.395s           the file list matches the scan, 4 files, so it was not cleared and nothing was re-appended
+07:28:36.279  +0023.396s  NWF      reused   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf  41,317,271 bytes
+07:28:36.281  +0023.398s  STEP     UNITS         started
+07:28:36.284  +0023.401s  CENSUS   before UNITS  models 4  sets 61  tests 528  results 2939  views 2847
+07:28:36.306  +0023.423s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+07:28:36.588  +0023.705s  UNITS    4 models set, 0 that would not, document shows Feet (ft). Every report number is converted to Meters (m) before it is written, so the report is metric whatever this says.
+07:28:36.591  +0023.708s  CENSUS   after  UNITS  models 4  sets 61  tests 528  results 2939  views 2847
+07:28:36.593  +0023.710s  STEP     UNITS         finished 0.308s  the document was asked for Meters
+
+================================================================
+ALIGNMENT 1A02MM
+================================================================
+07:28:36.609  +0023.726s  AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc is the reference
+07:28:36.610  +0023.726s     AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   reference, shared coordinate "SWLS-02-SharedCoordinate"
+07:28:36.610  +0023.727s     EL  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc   DIFFERENT  dx 657760982.02 mm  dy 2746024594.38 mm  dz 680828.83 mm, shared coordinate "LTB2"
+07:28:36.611  +0023.728s        ask the EL originator to re-export on the project shared coordinates
+07:28:36.612  +0023.729s     ME  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc   DIFFERENT  dx -1.88 mm  dy -2.5 mm  dz 5 mm, shared coordinate "PW3_Shared_Location"
+07:28:36.613  +0023.729s        ask the ME originator to re-export on the project shared coordinates
+07:28:36.613  +0023.730s     ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc   DIFFERENT  dx 657761695.63 mm  dy 2746022821.77 mm  dz 680811.33 mm, shared coordinate "Internal"
+07:28:36.614  +0023.731s        ask the ST originator to re-export on the project shared coordinates
+07:28:36.615  +0023.732s  3 of 4 model(s) sit somewhere the reference does not. Nothing is changed and the run goes on.
+07:28:36.615  +0023.732s  this group names 4 different shared coordinates: Internal, LTB2, PW3_Shared_Location, SWLS-02-SharedCoordinate
+07:28:36.616  +0023.733s  1 model(s) name their site "Internal", which is what Revit calls a model that was not exported on a shared site at all
+07:28:36.617  +0023.734s  THIS GROUP IS FAILED. 1 model(s) were exported on Revit's internal origin and not on a shared site, which puts them in a different coordinate system from the rest of the group: ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc. Every output of this group was still written, so the evidence is there to send.
+
+================================================================
+EXPORT CHECK 1A02MM
+================================================================
+07:28:36.833  +0023.950s     AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc   elements 3107   worksets 1   element id 100%
+07:28:36.834  +0023.951s     EL  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc   elements 722   worksets 10   element id 100%
+07:28:36.834  +0023.951s     ME  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc   elements 1141   worksets 7   element id 100%
+07:28:36.835  +0023.952s     ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc   elements 72   worksets 3   element id 100%
+07:28:36.836  +0023.953s  all 4 model(s) carry a workset on every element and an element id on every element
+07:28:36.836  +0023.953s  worksets seen: AR-EXTERIOR, EV-IT, EV-Access Control, EL-Lightining Protection, EL-Fire Alarm, EL-Lightning Protection, EL-Containment, EL-Power, EL-Lighting, EV-Cctv System, and 11 more, counted and not listed
+07:28:36.837  +0023.954s     check these against the workset each set in the matrix asks for. The match is CASE SENSITIVE, so ME-Ductwork does not match ME-DUCTWORK and that set finds nothing
+07:28:36.838  +0023.955s  1 pair(s) of workset names are close enough to be one word typed twice. NOTHING IS MERGED: a person reads these and fixes the models, and this tool never decides which of two spellings is the right one. 1 more pair(s) are close enough too and are NOT listed, because a person has already decided they are two different worksets.
+07:28:36.839  +0023.956s     "EL-Lightining Protection" in 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc   against   "EL-Lightning Protection" in 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc   ONE OR TWO LETTERS APART, so this may be a typo
+07:28:36.845  +0023.962s  CLASH    source   tests saved in the document, 528 of them, no XML picked
+07:28:36.852  +0023.970s  CLASH    1A02MM, 528 saved in the document, 528 to run, 0 skipped before the model
+07:28:36.857  +0023.974s  OUTPUTS  workbook on, XML off, HTML on, images on
+07:28:36.859  +0023.977s  CLASH    Images on, 1024 by 1024 pixels, New, Active, Reviewed only, no cap per test, linked rather than pasted in.
+07:28:36.863  +0023.980s  CLASH    ran against C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf  (4 models loaded)
+07:28:36.864  +0023.981s  CLASH    the document measures in ft, every tolerance was converted into it
+07:28:36.867  +0023.984s  CLASH    the document holds 61 sets, and the 528 saved tests keep the sides they were saved with
+07:28:36.871  +0023.988s  CLASH    the document already holds 528 clash tests, they keep their results and are not recreated
+07:28:37.006  +0024.123s  STEP     TESTS RUN     started
+07:28:37.010  +0024.127s  CENSUS   before TESTS RUN  models 4  sets 61  tests 528  results 2939  views 2847
+07:28:42.663  +0029.780s  CENSUS   after  TESTS RUN  models 4  sets 61  tests 528  results 2939  views 2847
+07:28:42.667  +0029.784s  STEP     TESTS RUN     finished 5.651s  BLD-AR-Walls-vs-BLD-AR-Floors
+07:28:42.670  +0029.787s  STEP     HARVEST       started
+07:28:42.674  +0029.790s  CENSUS   before HARVEST  models 4  sets 61  tests 528  results 2939  views 2847
+07:28:42.755  +0029.872s  CENSUS   after  HARVEST  models 4  sets 61  tests 528  results 2939  views 2847
+07:28:42.757  +0029.874s  STEP     HARVEST       finished 0.084s  BLD-AR-Walls-vs-BLD-AR-Floors
+07:28:42.760  +0029.876s  ROWS     BLD-AR-Walls-vs-BLD-AR-Floors  0 rows for the workbook, 0 clashes in the document, they agree
+07:28:42.761  +0029.878s  CLASH    passed  BLD-AR-Walls-vs-BLD-AR-Floors  items 119 v 3  none  5.7s
+07:28:42.775  +0029.892s  STEP     TESTS RUN     entered again. Every further visit in this group is counted, not written out
+07:28:48.827  +0035.943s  STEP     HARVEST       entered again. Every further visit in this group is counted, not written out
+07:28:48.945  +0036.062s  ROWS     BLD-AR-Windows-vs-BLD-AR-Floors  0 rows for the workbook, 0 clashes in the document, they agree
+07:28:48.947  +0036.063s  CLASH    passed  BLD-AR-Windows-vs-BLD-AR-Floors  items 94 v 3  none  6.1s
+07:28:54.764  +0041.882s  ROWS     BLD-AR-Windows-vs-BLD-AR-Walls  0 rows for the workbook, 0 clashes in the document, they agree
+07:28:54.766  +0041.883s  CLASH    passed  BLD-AR-Windows-vs-BLD-AR-Walls  items 94 v 119  none  5.7s
+07:29:00.753  +0047.870s  ROWS     BLD-AR-Curtain Mullions-vs-BLD-AR-Floors  0 rows for the workbook, 0 clashes in the document, they agree
+07:29:00.754  +0047.871s  CLASH    passed  BLD-AR-Curtain Mullions-vs-BLD-AR-Floors  items 2878 v 3  none  5.8s
+07:29:07.131  +0054.248s  STEP       IMAGES        started
+07:29:07.138  +0054.254s  CENSUS   before IMAGES  models 4  sets 61  tests 528  results 2939  views 2847
+07:29:07.225  +0054.342s  CENSUS   after  IMAGES  models 4  sets 61  tests 528  results 2939  views 2847
+07:29:07.227  +0054.345s  STEP       IMAGES        finished 0.092s  BLD-AR-Curtain Mullions-vs-BLD-AR-Walls
+07:29:07.236  +0054.353s  STEP     IMAGES        entered again. Every further visit in this group is counted, not written out
+07:29:10.023  +0057.140s  ROWS     BLD-AR-Curtain Mullions-vs-BLD-AR-Walls  24 rows for the workbook, 24 clashes in the document, they agree
+07:29:10.025  +0057.142s  CLASH    clashes BLD-AR-Curtain Mullions-vs-BLD-AR-Walls  items 2878 v 119  Active 24  6.2s
+07:32:01.629  +0228.745s           every further line of this kind is counted and not written out. The machine readable log carries every one of them
+07:32:01.631  +0228.747s  CLASH    clashes BLD-AR-Curtain Mullions-vs-BLD-AR-Windows  items 2878 v 94  Active 2568  5.6s
+07:32:07.825  +0234.941s  CLASH    clashes BLD-AR-Doors-vs-BLD-AR-Floors  items 10 v 3  Active 1  5.9s
+07:32:15.290  +0242.404s  CLASH    clashes BLD-AR-Doors-vs-BLD-AR-Walls  items 10 v 119  Active 17  5.9s
+07:32:21.917  +0249.032s  CLASH    passed  BLD-AR-Doors-vs-BLD-AR-Windows  items 10 v 94  none  6.5s
+07:32:28.304  +0255.418s  CLASH    clashes BLD-AR-Doors-vs-BLD-AR-Curtain Mullions  items 10 v 2878  Active 7  5.8s
+07:32:35.147  +0262.262s           every further line of this kind is counted and not written out. The machine readable log carries every one of them
+07:33:56.709  +0343.824s  CLASH    25 of 528 tests, 24 run, 0 skipped, 2617 clashes so far
+07:35:17.467  +0424.581s           every further line of this kind is counted and not written out. The machine readable log carries every one of them
+07:36:36.144  +0503.256s  CLASH    50 of 528 tests, 49 run, 0 skipped, 2642 clashes so far
+07:39:02.719  +0649.829s  CLASH    75 of 528 tests, 74 run, 0 skipped, 2656 clashes so far
+07:41:27.732  +0794.840s  CLASH    100 of 528 tests, 99 run, 0 skipped, 2669 clashes so far
+07:43:53.036  +0940.142s  CLASH    125 of 528 tests, 124 run, 0 skipped, 2690 clashes so far
+07:46:14.415  +1081.521s  CLASH    150 of 528 tests, 149 run, 0 skipped, 2696 clashes so far
+07:48:38.857  +1225.961s  CLASH    175 of 528 tests, 174 run, 0 skipped, 2720 clashes so far
+07:51:02.672  +1369.775s  CLASH    200 of 528 tests, 199 run, 0 skipped, 2725 clashes so far
+07:53:22.114  +1509.215s  CLASH    225 of 528 tests, 224 run, 0 skipped, 2741 clashes so far
+07:55:43.611  +1650.712s  CLASH    250 of 528 tests, 249 run, 0 skipped, 2763 clashes so far
+07:58:02.556  +1789.655s  CLASH    275 of 528 tests, 274 run, 0 skipped, 2782 clashes so far
+08:00:19.735  +1926.832s  CLASH    300 of 528 tests, 299 run, 0 skipped, 2791 clashes so far
+08:02:40.087  +2067.183s  CLASH    325 of 528 tests, 324 run, 0 skipped, 2792 clashes so far
+08:05:06.881  +2213.976s  CLASH    350 of 528 tests, 349 run, 0 skipped, 2863 clashes so far
+08:07:24.199  +2351.292s  CLASH    375 of 528 tests, 374 run, 0 skipped, 2910 clashes so far
+08:09:41.698  +2488.790s  CLASH    400 of 528 tests, 399 run, 0 skipped, 2910 clashes so far
+08:11:57.466  +2624.556s  CLASH    425 of 528 tests, 424 run, 0 skipped, 2919 clashes so far
+08:14:12.246  +2759.335s  CLASH    450 of 528 tests, 449 run, 0 skipped, 2923 clashes so far
+08:16:36.908  +2903.994s  CLASH    475 of 528 tests, 474 run, 0 skipped, 2930 clashes so far
+08:18:54.503  +3041.588s  CLASH    500 of 528 tests, 499 run, 0 skipped, 2930 clashes so far
+08:21:15.491  +3182.575s  CLASH    525 of 528 tests, 524 run, 0 skipped, 2939 clashes so far
+08:21:31.617  +3198.701s  CLASH    528 of 528 tests, 527 run, 0 skipped, 2939 clashes so far
+08:21:37.069  +3204.153s  TOLERANCE read per test out of the XML, which is what this tool does unless a tolerance is chosen on the Clash step. 528 tests, 0 created fresh and 528 left as the document has them
+
+================================================================
+CLASH 1A02MM
+================================================================
+08:21:37.086  +3204.169s  clashes BLD-AR-Curtain Mullions-vs-BLD-AR-Walls  items 2878 v 119  Active 24  6.2s
+08:21:37.087  +3204.170s  clashes BLD-AR-Curtain Mullions-vs-BLD-AR-Windows  items 2878 v 94  Active 2568  5.6s
+08:21:37.088  +3204.171s  clashes BLD-AR-Doors-vs-BLD-AR-Floors  items 10 v 3  Active 1  5.9s
+08:21:37.089  +3204.172s  clashes BLD-AR-Doors-vs-BLD-AR-Walls  items 10 v 119  Active 17  5.9s
+08:21:37.090  +3204.173s  clashes BLD-AR-Doors-vs-BLD-AR-Curtain Mullions  items 10 v 2878  Active 7  5.8s
+08:21:37.090  +3204.174s  clashes BLD-ST-Framing-vs-BLD-ST-Columns  items 27 v 8  Active 25  6.3s
+08:21:37.091  +3204.174s  clashes BLD-ST-Floors-vs-BLD-ST-Columns  items 4 v 8  Active 6  5.6s
+08:21:37.092  +3204.175s  clashes BLD-ST-Floors-vs-BLD-ST-Framing  items 4 v 27  Active 2  5.7s
+08:21:37.093  +3204.176s  clashes BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  items 59 v 119  Active 6  5.5s
+08:21:37.094  +3204.177s  clashes BLD-ME-Duct Accessory-vs-BLD-AR-Walls  items 16 v 119  Active 4  5.9s
+08:21:37.096  +3204.179s  clashes BLD-ME-Duct Accessory-vs-BLD-ME-Ducts&Duct Fittings  items 16 v 59  Active 6  5.6s
+08:21:37.097  +3204.180s  clashes BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls  items 17 v 119  Active 3  5.5s
+08:21:37.098  +3204.181s  clashes BLD-ME-Air Terminals-vs-BLD-AR-Walls  items 12 v 119  Active 4  5.7s
+08:21:37.099  +3204.182s  clashes BLD-ME-Air Terminals-vs-BLD-AR-Doors  items 12 v 10  Active 1  5.8s
+08:21:37.100  +3204.183s  clashes BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls  items 88 v 119  Active 16  5.4s
+08:21:37.101  +3204.184s  clashes BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Mechanical Equipment  items 88 v 17  Active 6  5.5s
+08:21:37.102  +3204.185s  clashes BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls  items 144 v 119  Active 17  5.3s
+08:21:37.103  +3204.186s  clashes BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings  items 144 v 59  Active 1  5.3s
+08:21:37.104  +3204.187s  clashes BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment  items 144 v 17  Active 6  5.6s
+08:21:37.105  +3204.188s  clashes BLD-PL-Pipe Accessories-vs-BLD-PL-Pipes & Pipe Fittings  items 13 v 144  Active 5  5.5s
+08:21:37.106  +3204.189s  clashes BLD-PL-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings  items 2 v 144  Active 2  5.6s
+08:21:37.107  +3204.190s  clashes BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors  items 107 v 3  Active 1  5.5s
+08:21:37.109  +3204.192s  clashes BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls  items 107 v 119  Active 11  5.3s
+08:21:37.110  +3204.193s  clashes BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Windows  items 107 v 94  Active 2  5.6s
+08:21:37.110  +3204.193s  clashes BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment  items 107 v 17  Active 6  5.5s
+08:21:37.111  +3204.194s  clashes BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Pipes&Pipe Fittings  items 107 v 88  Active 3  5.2s
+08:21:37.112  +3204.195s  clashes BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings  items 107 v 144  Active 7  5.5s
+08:21:37.113  +3204.196s  clashes BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors  items 4 v 3  Active 2  5.7s
+08:21:37.115  +3204.198s  clashes BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls  items 4 v 119  Active 4  5.7s
+08:21:37.116  +3204.199s  clashes BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipes & Pipe Fittings  items 4 v 107  Active 2  5.7s
+08:21:37.119  +3204.202s  clashes BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Columns  items 171 v 8  Active 4  5.2s
+08:21:37.120  +3204.203s  clashes BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing  items 171 v 27  Active 5  6.1s
+08:21:37.121  +3204.204s  clashes BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls  items 171 v 16  Active 4  5.1s
+08:21:37.121  +3204.205s  clashes BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors  items 171 v 4  Active 4  4.9s
+08:21:37.122  +3204.206s  clashes BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation  items 59 v 6  Active 2  5.3s
+08:21:37.123  +3204.207s  clashes BLD-EL-Electrical Equipment-vs-BLD-ST-Columns  items 59 v 8  Active 3  5.0s
+08:21:37.124  +3204.207s  clashes BLD-EL-Electrical Equipment-vs-BLD-ST-Framing  items 59 v 27  Active 1  5.6s
+08:21:37.125  +3204.208s  clashes BLD-EL-Electrical Equipment-vs-BLD-ST-Floors  items 59 v 4  Active 3  5.4s
+08:21:37.126  +3204.210s  clashes BLD-EL-Electrical Equipment-vs-BLD-EL-Cable Tray&Cable Tray Fittings  items 59 v 171  Active 1  5.5s
+08:21:37.127  +3204.210s  clashes BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns  items 222 v 8  Active 6  5.5s
+08:21:37.128  +3204.211s  clashes BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing  items 222 v 27  Active 40  6.0s
+08:21:37.129  +3204.213s  clashes BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls  items 222 v 16  Active 6  5.3s
+08:21:37.130  +3204.214s  clashes BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors  items 222 v 4  Active 17  5.2s
+08:21:37.131  +3204.215s  clashes BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Cable Tray&Cable Tray Fittings  items 222 v 171  Active 2  5.4s
+08:21:37.132  +3204.216s  clashes BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment  items 222 v 59  Active 14  5.2s
+08:21:37.133  +3204.217s  clashes BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Fixtures  items 222 v 76  Active 3  5.5s
+08:21:37.134  +3204.218s  clashes BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns  items 69 v 8  Active 1  5.8s
+08:21:37.135  +3204.219s  clashes BLD-EL-Lighting Fixtures-vs-BLD-ST-Framing  items 69 v 27  Active 3  5.4s
+08:21:37.136  +3204.220s  clashes BLD-EL-Lighting Fixtures-vs-BLD-ST-Walls  items 69 v 16  Active 3  5.0s
+08:21:37.138  +3204.222s  clashes BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors  items 69 v 4  Active 23  5.6s
+08:21:37.140  +3204.223s  clashes BLD-EL-Lighting Devices-vs-BLD-EL-Electrical Equipment  items 12 v 59  Active 1  5.5s
+08:21:37.140  +3204.224s  clashes BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors  items 33 v 4  Active 8  5.8s
+08:21:37.141  +3204.225s  clashes BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Fixtures  items 33 v 69  Active 1  5.7s
+08:21:37.142  +3204.226s  clashes BLD-Security Devices-vs-BLD-ST-Framing  items 53 v 27  Active 3  5.6s
+08:21:37.142  +3204.227s  clashes BLD-Security Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings  items 53 v 171  Active 1  5.5s
+08:21:37.144  +3204.227s  clashes BLD-Security Devices-vs-BLD-EL-Electrical Equipment  items 53 v 59  Active 1  5.9s
+08:21:37.144  +3204.228s  clashes BLD-Security Devices-vs-BLD-EL-Lighting Devices  items 53 v 12  Active 5  5.4s
+08:21:37.146  +3204.229s  clashes BLD-EL-Data Devices-vs-BLD-ST-Framing  items 25 v 27  Active 2  6.3s
+08:21:37.147  +3204.230s  clashes BLD-EL-Data Devices-vs-BLD-ST-Floors  items 25 v 4  Active 7  5.7s
+08:21:37.148  +3204.231s  PASSED 469 tests, ran and found nothing
+08:21:37.149  +3204.232s          passed  BLD-AR-Walls-vs-BLD-AR-Floors  items 119 v 3  none  5.7s
+08:21:37.150  +3204.233s          passed  BLD-AR-Windows-vs-BLD-AR-Floors  items 94 v 3  none  6.1s
+08:21:37.151  +3204.234s          passed  BLD-AR-Windows-vs-BLD-AR-Walls  items 94 v 119  none  5.7s
+08:21:37.152  +3204.235s          passed  BLD-AR-Curtain Mullions-vs-BLD-AR-Floors  items 2878 v 3  none  5.8s
+08:21:37.153  +3204.236s          passed  BLD-AR-Doors-vs-BLD-AR-Windows  items 10 v 94  none  6.5s
+08:21:37.154  +3204.237s          and 464 more that ran and found nothing, counted and not listed
+08:21:37.156  +3204.239s  
+08:21:37.157  +3204.240s  ran against       : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf  (4 models loaded)
+08:21:37.158  +3204.241s  tests in the file : 528
+08:21:37.158  +3204.242s  tests created     : 0
+08:21:37.159  +3204.242s  already there     : 528, left alone with their results
+08:21:37.160  +3204.243s  tests skipped     : 0, not run and not passed
+08:21:37.162  +3204.245s  tests run         : 528
+08:21:37.163  +3204.246s      passed        : 469, ran and found nothing
+08:21:37.164  +3204.247s      with clashes  : 59
+08:21:37.165  +3204.248s  clashes found     : 2939
+08:21:37.166  +3204.249s      New       : 0
+08:21:37.167  +3204.250s      Active    : 2939
+08:21:37.168  +3204.251s      Reviewed  : 0
+08:21:37.169  +3204.252s      Approved  : 0
+08:21:37.170  +3204.253s      Resolved  : 0
+08:21:37.170  +3204.253s  clash step took   : 3180.2 seconds
+
+================================================================
+ITEM IDS 1A02MM
+================================================================
+08:21:37.180  +3204.263s  Id supplied 5878 item ids of 5878, written as "Element ID"
+08:22:25.230  +3252.314s  IMAGES   numbered in report order: 2935 renamed, 4 already right, 0 missing
+08:22:25.234  +3252.317s  IMAGES   2939 written, 637.66 MB, 183.0 seconds in total.
+08:22:25.235  +3252.318s           0.062 seconds each on average, quickest 0.028, slowest 0.234.
+08:22:25.237  +3252.320s           222 KB each on average.
+08:22:25.239  +3252.322s  CLASH    1A02MM finished. 0 created, 528 already there, 528 run, 469 passed, 0 skipped, 2939 clashes in 3180.2s.
+08:22:25.242  +3252.325s  STEP     VIEWS         started
+08:22:25.247  +3252.330s  CENSUS   before VIEWS  models 4  sets 61  tests 528  results 2939  views 2847
+08:23:01.049  +3288.131s  VIEWS    the model each clash item lives in was read for 2939 of 2939 clash(es) in scope
+08:23:01.050  +3288.133s  VIEWS    both clashing items were pointed at for 2939 of 2939 clash(es) in scope
+08:23:01.183  +3288.265s  VIEWS    UNKNOWN vs UNKNOWN: its pair has a code this tool does not know, so its viewpoints hide nothing

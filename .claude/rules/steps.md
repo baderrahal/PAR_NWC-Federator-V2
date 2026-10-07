@@ -11,6 +11,18 @@ paths:
   order at the top. A fix that is done gets one DONE line with the date and what was
   proved, under its own section and never under the section after it. A fix absorbed
   by another gets one line saying which fix closed it and when
+- Every pull request that changes an item's status, a DONE line among them, updates the
+  item's row in steps\tracker.csv in the same pull request, Bader's rule of 5 Oct 2026,
+  Q129: the status, the PR, the run that proved it and the date of the last change, then
+  runs tools\tracker\make-tracker.ps1 and commits both files. A branch writes the rows it
+  finishes as in review with PR UNKNOWN, since the number is not known before the pull
+  request opens. The lead sets them to merged with the pull request's number on the branch,
+  and runs make-tracker.ps1, before it merges, so a row reaches main as merged with its
+  number. A pull request that adds an FR item to steps\fix-round.md adds its row, and one
+  that writes a new question or Bader's answer under one in steps\02_questions.md adds or
+  sets the question's row, in the same way, and one that writes a request of his there, an
+  item whose text starts From Bader, adds its row. Status lives in the tracker, and
+  .claude\rules\tracker.md says how a row is written
 - steps\02_questions.md holds every question put to Bader, numbered once and never
   renumbered, with his answer under it and the fix that carried it out. A new question
   goes after the last one
@@ -18,10 +30,18 @@ paths:
   action per step, in the order that proves the most with one build, one install and
   one Navisworks session. It names which proof comes first and why. It is rewritten,
   not appended, when the proofs change
-- steps\log.md holds one entry per fix, newest at the top, in the shape of the F26
-  entry: What was done, What remains, Known bugs, What comes next. Every entry says
+- steps\PROGRESS.md is the one page a session starts from, at most 60 lines, and
+  steps\START.md the start prompt of under 20 lines Bader pastes into a new tab, his
+  message of 6 Oct 2026, Q139. The lead alone writes the page's lines outside its counts
+  and rewrites them, never appends, by .claude\rules\loop.md, and its counts are made by
+  tools\tracker\make-tracker.ps1, never typed, which the pre-commit runs in any commit
+  staging steps\tracker.csv, by .claude\rules\tracker.md
+- steps\history holds loop.md and log.md, the long history, moved there whole by F139
+  and never read at the start of a session, only for a line a session needs.
+  steps\history\log.md holds one entry per fix, newest at the top, in the shape of the
+  F26 entry: What was done, What remains, Known bugs, What comes next. Every entry says
   what was proved here, with the Core test counts before and after, and what waits
-  for the local machine
+  for the local machine. A finding goes in steps\tracker.csv and not in an entry
 - steps\logs holds run logs Bader sent back. They are evidence and are never edited,
   and a hook refuses the edit
 - Plain words, no em dash, no semicolon in prose, no emoji, no code identifier where a

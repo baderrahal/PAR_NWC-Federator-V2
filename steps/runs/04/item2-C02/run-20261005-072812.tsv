@@ -1,0 +1,1131 @@
+﻿time	seconds	group	step	event	name	number	text
+07:28:32.240	19.357	1A02MM	DECIDE	step started	DECIDE	0	
+07:28:32.243	19.360	1A02MM	DECIDE	census before	models	0	
+07:28:32.243	19.361	1A02MM	DECIDE	census before	sets	0	
+07:28:32.243	19.361	1A02MM	DECIDE	census before	tests	0	
+07:28:32.244	19.361	1A02MM	DECIDE	census before	results	0	
+07:28:32.244	19.361	1A02MM	DECIDE	census before	views	0	
+07:28:36.271	23.388	1A02MM		census after	models	4	
+07:28:36.271	23.389	1A02MM		census after	sets	61	
+07:28:36.272	23.389	1A02MM		census after	tests	528	
+07:28:36.272	23.389	1A02MM		census after	results	2939	
+07:28:36.272	23.389	1A02MM		census after	views	2847	
+07:28:36.276	23.393	1A02MM		step finished	DECIDE	4.018	Weekly run
+07:28:36.282	23.399	1A02MM	UNITS	step started	UNITS	0	
+07:28:36.285	23.402	1A02MM	UNITS	census before	models	4	
+07:28:36.285	23.402	1A02MM	UNITS	census before	sets	61	
+07:28:36.285	23.402	1A02MM	UNITS	census before	tests	528	
+07:28:36.285	23.403	1A02MM	UNITS	census before	results	2939	
+07:28:36.285	23.403	1A02MM	UNITS	census before	views	2847	
+07:28:36.592	23.709	1A02MM		census after	models	4	
+07:28:36.592	23.709	1A02MM		census after	sets	61	
+07:28:36.593	23.709	1A02MM		census after	tests	528	
+07:28:36.593	23.710	1A02MM		census after	results	2939	
+07:28:36.593	23.710	1A02MM		census after	views	2847	
+07:28:36.594	23.711	1A02MM		step finished	UNITS	0.308	the document was asked for Meters
+07:28:36.618	23.735	1A02MM		model placement	1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc	-155	SWLS-02-SharedCoordinate
+07:28:36.618	23.735	1A02MM		model placement	1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc	680673.83	LTB2
+07:28:36.618	23.735	1A02MM		model placement	1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc	-150	PW3_Shared_Location
+07:28:36.618	23.735	1A02MM		model placement	1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc	680656.33	Internal
+07:28:36.840	23.957	1A02MM		model export	1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc	3107	1 workset(s), element id 100%
+07:28:36.841	23.957	1A02MM		model export	1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc	722	10 workset(s), element id 100%
+07:28:36.841	23.958	1A02MM		model export	1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc	1141	7 workset(s), element id 100%
+07:28:36.841	23.958	1A02MM		model export	1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc	72	3 workset(s), element id 100%
+07:28:37.007	24.124	1A02MM	TESTS RUN	step started	TESTS RUN	0	
+07:28:37.011	24.128	1A02MM	TESTS RUN	census before	models	4	
+07:28:37.011	24.128	1A02MM	TESTS RUN	census before	sets	61	
+07:28:37.012	24.128	1A02MM	TESTS RUN	census before	tests	528	
+07:28:37.012	24.129	1A02MM	TESTS RUN	census before	results	2939	
+07:28:37.012	24.129	1A02MM	TESTS RUN	census before	views	2847	
+07:28:42.665	29.782	1A02MM		census after	models	4	
+07:28:42.666	29.783	1A02MM		census after	sets	61	
+07:28:42.666	29.783	1A02MM		census after	tests	528	
+07:28:42.666	29.783	1A02MM		census after	results	2939	
+07:28:42.667	29.783	1A02MM		census after	views	2847	
+07:28:42.668	29.785	1A02MM		step finished	TESTS RUN	5.651	BLD-AR-Walls-vs-BLD-AR-Floors
+07:28:42.671	29.788	1A02MM	HARVEST	step started	HARVEST	0	
+07:28:42.677	29.794	1A02MM	HARVEST	census before	models	4	
+07:28:42.678	29.795	1A02MM	HARVEST	census before	sets	61	
+07:28:42.678	29.795	1A02MM	HARVEST	census before	tests	528	
+07:28:42.678	29.795	1A02MM	HARVEST	census before	results	2939	
+07:28:42.679	29.796	1A02MM	HARVEST	census before	views	2847	
+07:28:42.756	29.873	1A02MM		census after	models	4	
+07:28:42.756	29.873	1A02MM		census after	sets	61	
+07:28:42.757	29.873	1A02MM		census after	tests	528	
+07:28:42.757	29.873	1A02MM		census after	results	2939	
+07:28:42.757	29.874	1A02MM		census after	views	2847	
+07:28:42.758	29.875	1A02MM		step finished	HARVEST	0.084	BLD-AR-Walls-vs-BLD-AR-Floors
+07:28:42.759	29.876	1A02MM		rows for the workbook	BLD-AR-Walls-vs-BLD-AR-Floors	0	0 in the document
+07:28:42.760	29.878	1A02MM		test passed	BLD-AR-Walls-vs-BLD-AR-Floors	0	ran and found nothing
+07:28:48.944	36.061	1A02MM		rows for the workbook	BLD-AR-Windows-vs-BLD-AR-Floors	0	0 in the document
+07:28:48.946	36.063	1A02MM		test passed	BLD-AR-Windows-vs-BLD-AR-Floors	0	ran and found nothing
+07:28:54.764	41.881	1A02MM		rows for the workbook	BLD-AR-Windows-vs-BLD-AR-Walls	0	0 in the document
+07:28:54.766	41.883	1A02MM		test passed	BLD-AR-Windows-vs-BLD-AR-Walls	0	ran and found nothing
+07:29:00.752	47.869	1A02MM		rows for the workbook	BLD-AR-Curtain Mullions-vs-BLD-AR-Floors	0	0 in the document
+07:29:00.753	47.871	1A02MM		test passed	BLD-AR-Curtain Mullions-vs-BLD-AR-Floors	0	ran and found nothing
+07:29:07.133	54.250	1A02MM	IMAGES	step started	IMAGES	0	
+07:29:07.139	54.256	1A02MM	IMAGES	census before	models	4	
+07:29:07.139	54.256	1A02MM	IMAGES	census before	sets	61	
+07:29:07.140	54.256	1A02MM	IMAGES	census before	tests	528	
+07:29:07.140	54.257	1A02MM	IMAGES	census before	results	2939	
+07:29:07.140	54.257	1A02MM	IMAGES	census before	views	2847	
+07:29:07.226	54.343	1A02MM	HARVEST	census after	models	4	
+07:29:07.227	54.344	1A02MM	HARVEST	census after	sets	61	
+07:29:07.227	54.344	1A02MM	HARVEST	census after	tests	528	
+07:29:07.227	54.344	1A02MM	HARVEST	census after	results	2939	
+07:29:07.227	54.344	1A02MM	HARVEST	census after	views	2847	
+07:29:07.229	54.346	1A02MM	HARVEST	step finished	IMAGES	0.092	BLD-AR-Curtain Mullions-vs-BLD-AR-Walls
+07:29:10.023	57.140	1A02MM		rows for the workbook	BLD-AR-Curtain Mullions-vs-BLD-AR-Walls	24	24 in the document
+07:29:10.025	57.142	1A02MM		test found clashes	BLD-AR-Curtain Mullions-vs-BLD-AR-Walls	24	ran and found clashes
+07:32:01.629	228.745	1A02MM		rows for the workbook	BLD-AR-Curtain Mullions-vs-BLD-AR-Windows	2568	2568 in the document
+07:32:01.631	228.746	1A02MM		test found clashes	BLD-AR-Curtain Mullions-vs-BLD-AR-Windows	2568	ran and found clashes
+07:32:07.825	234.940	1A02MM		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Floors	1	1 in the document
+07:32:07.825	234.941	1A02MM		test found clashes	BLD-AR-Doors-vs-BLD-AR-Floors	1	ran and found clashes
+07:32:15.288	242.404	1A02MM		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Walls	17	17 in the document
+07:32:15.289	242.404	1A02MM		test found clashes	BLD-AR-Doors-vs-BLD-AR-Walls	17	ran and found clashes
+07:32:21.916	249.031	1A02MM		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Windows	0	0 in the document
+07:32:21.917	249.032	1A02MM		test passed	BLD-AR-Doors-vs-BLD-AR-Windows	0	ran and found nothing
+07:32:28.303	255.418	1A02MM		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Curtain Mullions	7	7 in the document
+07:32:28.303	255.418	1A02MM		test found clashes	BLD-AR-Doors-vs-BLD-AR-Curtain Mullions	7	ran and found clashes
+07:32:35.146	262.261	1A02MM		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Floors	0	0 in the document
+07:32:35.147	262.261	1A02MM		test passed	BLD-AR-Railings-vs-BLD-AR-Floors	0	ran and found nothing
+07:32:41.268	268.383	1A02MM		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Walls	0	0 in the document
+07:32:41.269	268.384	1A02MM		test passed	BLD-AR-Railings-vs-BLD-AR-Walls	0	ran and found nothing
+07:32:47.443	274.558	1A02MM		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Windows	0	0 in the document
+07:32:47.444	274.559	1A02MM		test passed	BLD-AR-Railings-vs-BLD-AR-Windows	0	ran and found nothing
+07:32:53.232	280.347	1A02MM		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:32:53.233	280.348	1A02MM		test passed	BLD-AR-Railings-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:32:59.536	286.651	1A02MM		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Doors	0	0 in the document
+07:32:59.537	286.652	1A02MM		test passed	BLD-AR-Railings-vs-BLD-AR-Doors	0	ran and found nothing
+07:33:06.277	293.393	1A02MM		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Floors	0	0 in the document
+07:33:06.279	293.393	1A02MM		test passed	BLD-ST-Foundation-vs-BLD-AR-Floors	0	ran and found nothing
+07:33:12.503	299.618	1A02MM		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Walls	0	0 in the document
+07:33:12.504	299.618	1A02MM		test passed	BLD-ST-Foundation-vs-BLD-AR-Walls	0	ran and found nothing
+07:33:19.334	306.449	1A02MM		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Windows	0	0 in the document
+07:33:19.335	306.450	1A02MM		test passed	BLD-ST-Foundation-vs-BLD-AR-Windows	0	ran and found nothing
+07:33:25.443	312.558	1A02MM		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:33:25.444	312.559	1A02MM		test passed	BLD-ST-Foundation-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:33:31.754	318.869	1A02MM		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Doors	0	0 in the document
+07:33:31.755	318.869	1A02MM		test passed	BLD-ST-Foundation-vs-BLD-AR-Doors	0	ran and found nothing
+07:33:38.234	325.349	1A02MM		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Railings	0	0 in the document
+07:33:38.235	325.349	1A02MM		test passed	BLD-ST-Foundation-vs-BLD-AR-Railings	0	ran and found nothing
+07:33:44.973	332.088	1A02MM		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Floors	0	0 in the document
+07:33:44.973	332.088	1A02MM		test passed	BLD-ST-Columns-vs-BLD-AR-Floors	0	ran and found nothing
+07:33:50.753	337.868	1A02MM		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Walls	0	0 in the document
+07:33:50.754	337.868	1A02MM		test passed	BLD-ST-Columns-vs-BLD-AR-Walls	0	ran and found nothing
+07:33:56.696	343.810	1A02MM		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Windows	0	0 in the document
+07:33:56.696	343.810	1A02MM		test passed	BLD-ST-Columns-vs-BLD-AR-Windows	0	ran and found nothing
+07:34:02.488	349.603	1A02MM		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:34:02.488	349.603	1A02MM		test passed	BLD-ST-Columns-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:34:08.646	355.760	1A02MM		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Doors	0	0 in the document
+07:34:08.649	355.764	1A02MM		test passed	BLD-ST-Columns-vs-BLD-AR-Doors	0	ran and found nothing
+07:34:15.478	362.593	1A02MM		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Railings	0	0 in the document
+07:34:15.479	362.593	1A02MM		test passed	BLD-ST-Columns-vs-BLD-AR-Railings	0	ran and found nothing
+07:34:22.242	369.356	1A02MM		rows for the workbook	BLD-ST-Columns-vs-BLD-ST-Foundation	0	0 in the document
+07:34:22.243	369.356	1A02MM		test passed	BLD-ST-Columns-vs-BLD-ST-Foundation	0	ran and found nothing
+07:34:28.906	376.021	1A02MM		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Floors	0	0 in the document
+07:34:28.907	376.021	1A02MM		test passed	BLD-ST-Framing-vs-BLD-AR-Floors	0	ran and found nothing
+07:34:35.023	382.137	1A02MM		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Walls	0	0 in the document
+07:34:35.024	382.138	1A02MM		test passed	BLD-ST-Framing-vs-BLD-AR-Walls	0	ran and found nothing
+07:34:41.732	388.845	1A02MM		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Windows	0	0 in the document
+07:34:41.732	388.846	1A02MM		test passed	BLD-ST-Framing-vs-BLD-AR-Windows	0	ran and found nothing
+07:34:48.085	395.200	1A02MM		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:34:48.086	395.200	1A02MM		test passed	BLD-ST-Framing-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:34:54.754	401.868	1A02MM		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Doors	0	0 in the document
+07:34:54.755	401.868	1A02MM		test passed	BLD-ST-Framing-vs-BLD-AR-Doors	0	ran and found nothing
+07:35:01.472	408.586	1A02MM		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Railings	0	0 in the document
+07:35:01.473	408.587	1A02MM		test passed	BLD-ST-Framing-vs-BLD-AR-Railings	0	ran and found nothing
+07:35:07.724	414.838	1A02MM		rows for the workbook	BLD-ST-Framing-vs-BLD-ST-Foundation	0	0 in the document
+07:35:07.725	414.839	1A02MM		test passed	BLD-ST-Framing-vs-BLD-ST-Foundation	0	ran and found nothing
+07:35:17.467	424.581	1A02MM		rows for the workbook	BLD-ST-Framing-vs-BLD-ST-Columns	25	25 in the document
+07:35:17.467	424.581	1A02MM		test found clashes	BLD-ST-Framing-vs-BLD-ST-Columns	25	ran and found clashes
+07:35:23.583	430.697	1A02MM		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Floors	0	0 in the document
+07:35:23.583	430.697	1A02MM		test passed	BLD-ST-Walls-vs-BLD-AR-Floors	0	ran and found nothing
+07:35:29.194	436.308	1A02MM		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Walls	0	0 in the document
+07:35:29.195	436.309	1A02MM		test passed	BLD-ST-Walls-vs-BLD-AR-Walls	0	ran and found nothing
+07:35:35.696	442.810	1A02MM		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Windows	0	0 in the document
+07:35:35.697	442.811	1A02MM		test passed	BLD-ST-Walls-vs-BLD-AR-Windows	0	ran and found nothing
+07:35:41.758	448.872	1A02MM		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:35:41.759	448.873	1A02MM		test passed	BLD-ST-Walls-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:35:47.575	454.688	1A02MM		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Doors	0	0 in the document
+07:35:47.575	454.689	1A02MM		test passed	BLD-ST-Walls-vs-BLD-AR-Doors	0	ran and found nothing
+07:35:53.240	460.353	1A02MM		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Railings	0	0 in the document
+07:35:53.241	460.353	1A02MM		test passed	BLD-ST-Walls-vs-BLD-AR-Railings	0	ran and found nothing
+07:35:59.447	466.560	1A02MM		rows for the workbook	BLD-ST-Walls-vs-BLD-ST-Foundation	0	0 in the document
+07:35:59.448	466.561	1A02MM		test passed	BLD-ST-Walls-vs-BLD-ST-Foundation	0	ran and found nothing
+07:36:05.644	472.758	1A02MM		rows for the workbook	BLD-ST-Walls-vs-BLD-ST-Columns	0	0 in the document
+07:36:05.645	472.758	1A02MM		test passed	BLD-ST-Walls-vs-BLD-ST-Columns	0	ran and found nothing
+07:36:12.136	479.249	1A02MM		rows for the workbook	BLD-ST-Walls-vs-BLD-ST-Framing	0	0 in the document
+07:36:12.137	479.250	1A02MM		test passed	BLD-ST-Walls-vs-BLD-ST-Framing	0	ran and found nothing
+07:36:17.938	485.051	1A02MM		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Floors	0	0 in the document
+07:36:17.939	485.051	1A02MM		test passed	BLD-ST-Floors-vs-BLD-AR-Floors	0	ran and found nothing
+07:36:24.147	491.260	1A02MM		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Walls	0	0 in the document
+07:36:24.148	491.260	1A02MM		test passed	BLD-ST-Floors-vs-BLD-AR-Walls	0	ran and found nothing
+07:36:30.466	497.579	1A02MM		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Windows	0	0 in the document
+07:36:30.467	497.579	1A02MM		test passed	BLD-ST-Floors-vs-BLD-AR-Windows	0	ran and found nothing
+07:36:36.118	503.230	1A02MM		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:36:36.118	503.230	1A02MM		test passed	BLD-ST-Floors-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:36:42.037	509.149	1A02MM		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Doors	0	0 in the document
+07:36:42.037	509.149	1A02MM		test passed	BLD-ST-Floors-vs-BLD-AR-Doors	0	ran and found nothing
+07:36:47.956	515.068	1A02MM		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Railings	0	0 in the document
+07:36:47.956	515.069	1A02MM		test passed	BLD-ST-Floors-vs-BLD-AR-Railings	0	ran and found nothing
+07:36:54.100	521.212	1A02MM		rows for the workbook	BLD-ST-Floors-vs-BLD-ST-Foundation	0	0 in the document
+07:36:54.100	521.212	1A02MM		test passed	BLD-ST-Floors-vs-BLD-ST-Foundation	0	ran and found nothing
+07:37:00.989	528.101	1A02MM		rows for the workbook	BLD-ST-Floors-vs-BLD-ST-Columns	6	6 in the document
+07:37:00.989	528.101	1A02MM		test found clashes	BLD-ST-Floors-vs-BLD-ST-Columns	6	ran and found clashes
+07:37:07.050	534.161	1A02MM		rows for the workbook	BLD-ST-Floors-vs-BLD-ST-Framing	2	2 in the document
+07:37:07.050	534.162	1A02MM		test found clashes	BLD-ST-Floors-vs-BLD-ST-Framing	2	ran and found clashes
+07:37:12.696	539.807	1A02MM		rows for the workbook	BLD-ST-Floors-vs-BLD-ST-Walls	0	0 in the document
+07:37:12.696	539.808	1A02MM		test passed	BLD-ST-Floors-vs-BLD-ST-Walls	0	ran and found nothing
+07:37:18.983	546.095	1A02MM		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Floors	0	0 in the document
+07:37:18.983	546.095	1A02MM		test passed	BLD-ST-Stair-vs-BLD-AR-Floors	0	ran and found nothing
+07:37:24.504	551.615	1A02MM		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Walls	0	0 in the document
+07:37:24.505	551.616	1A02MM		test passed	BLD-ST-Stair-vs-BLD-AR-Walls	0	ran and found nothing
+07:37:30.356	557.467	1A02MM		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Windows	0	0 in the document
+07:37:30.356	557.467	1A02MM		test passed	BLD-ST-Stair-vs-BLD-AR-Windows	0	ran and found nothing
+07:37:36.606	563.718	1A02MM		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:37:36.606	563.718	1A02MM		test passed	BLD-ST-Stair-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:37:42.409	569.520	1A02MM		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Doors	0	0 in the document
+07:37:42.409	569.521	1A02MM		test passed	BLD-ST-Stair-vs-BLD-AR-Doors	0	ran and found nothing
+07:37:48.758	575.870	1A02MM		rows for the workbook	BLD-ST-Stair-vs-BLD-AR-Railings	0	0 in the document
+07:37:48.759	575.870	1A02MM		test passed	BLD-ST-Stair-vs-BLD-AR-Railings	0	ran and found nothing
+07:37:54.251	581.362	1A02MM		rows for the workbook	BLD-ST-Stair-vs-BLD-ST-Foundation	0	0 in the document
+07:37:54.251	581.363	1A02MM		test passed	BLD-ST-Stair-vs-BLD-ST-Foundation	0	ran and found nothing
+07:37:59.887	586.998	1A02MM		rows for the workbook	BLD-ST-Stair-vs-BLD-ST-Columns	0	0 in the document
+07:37:59.888	586.998	1A02MM		test passed	BLD-ST-Stair-vs-BLD-ST-Columns	0	ran and found nothing
+07:38:05.986	593.097	1A02MM		rows for the workbook	BLD-ST-Stair-vs-BLD-ST-Framing	0	0 in the document
+07:38:05.987	593.098	1A02MM		test passed	BLD-ST-Stair-vs-BLD-ST-Framing	0	ran and found nothing
+07:38:11.150	598.261	1A02MM		rows for the workbook	BLD-ST-Stair-vs-BLD-ST-Walls	0	0 in the document
+07:38:11.151	598.262	1A02MM		test passed	BLD-ST-Stair-vs-BLD-ST-Walls	0	ran and found nothing
+07:38:16.808	603.919	1A02MM		rows for the workbook	BLD-ST-Stair-vs-BLD-ST-Floors	0	0 in the document
+07:38:16.808	603.919	1A02MM		test passed	BLD-ST-Stair-vs-BLD-ST-Floors	0	ran and found nothing
+07:38:22.296	609.407	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	0	0 in the document
+07:38:22.297	609.408	1A02MM		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Floors	0	ran and found nothing
+07:38:28.209	615.319	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	6	6 in the document
+07:38:28.209	615.319	1A02MM		test found clashes	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls	6	ran and found clashes
+07:38:34.009	621.120	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Windows	0	0 in the document
+07:38:34.009	621.120	1A02MM		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Windows	0	ran and found nothing
+07:38:39.880	626.991	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:38:39.881	626.991	1A02MM		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:38:45.888	632.999	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Doors	0	0 in the document
+07:38:45.889	632.999	1A02MM		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Doors	0	ran and found nothing
+07:38:51.463	638.574	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Railings	0	0 in the document
+07:38:51.464	638.574	1A02MM		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Railings	0	ran and found nothing
+07:38:57.175	644.285	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation	0	0 in the document
+07:38:57.175	644.285	1A02MM		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Foundation	0	ran and found nothing
+07:39:02.704	649.814	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns	0	0 in the document
+07:39:02.705	649.815	1A02MM		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Columns	0	ran and found nothing
+07:39:08.293	655.403	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	0	0 in the document
+07:39:08.293	655.403	1A02MM		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Framing	0	ran and found nothing
+07:39:14.104	661.214	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls	0	0 in the document
+07:39:14.104	661.214	1A02MM		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Walls	0	ran and found nothing
+07:39:19.574	666.684	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	0	0 in the document
+07:39:19.575	666.685	1A02MM		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Floors	0	ran and found nothing
+07:39:25.193	672.303	1A02MM		rows for the workbook	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Stair	0	0 in the document
+07:39:25.193	672.303	1A02MM		test passed	BLD-ME-Ducts&Duct Fittings-vs-BLD-ST-Stair	0	ran and found nothing
+07:39:31.046	678.156	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Floors	0	0 in the document
+07:39:31.047	678.156	1A02MM		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Floors	0	ran and found nothing
+07:39:37.251	684.361	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Walls	4	4 in the document
+07:39:37.251	684.361	1A02MM		test found clashes	BLD-ME-Duct Accessory-vs-BLD-AR-Walls	4	ran and found clashes
+07:39:42.626	689.736	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Windows	0	0 in the document
+07:39:42.627	689.736	1A02MM		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Windows	0	ran and found nothing
+07:39:47.963	695.072	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:39:47.963	695.072	1A02MM		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:39:53.509	700.618	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Doors	0	0 in the document
+07:39:53.509	700.619	1A02MM		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Doors	0	ran and found nothing
+07:39:59.658	706.768	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-AR-Railings	0	0 in the document
+07:39:59.659	706.768	1A02MM		test passed	BLD-ME-Duct Accessory-vs-BLD-AR-Railings	0	ran and found nothing
+07:40:05.259	712.368	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Foundation	0	0 in the document
+07:40:05.259	712.368	1A02MM		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Foundation	0	ran and found nothing
+07:40:10.497	717.606	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Columns	0	0 in the document
+07:40:10.498	717.606	1A02MM		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Columns	0	ran and found nothing
+07:40:17.237	724.346	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Framing	0	0 in the document
+07:40:17.237	724.346	1A02MM		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Framing	0	ran and found nothing
+07:40:23.199	730.308	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Walls	0	0 in the document
+07:40:23.200	730.309	1A02MM		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Walls	0	ran and found nothing
+07:40:30.075	737.185	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Floors	0	0 in the document
+07:40:30.076	737.185	1A02MM		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Floors	0	ran and found nothing
+07:40:36.230	743.339	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ST-Stair	0	0 in the document
+07:40:36.230	743.340	1A02MM		test passed	BLD-ME-Duct Accessory-vs-BLD-ST-Stair	0	ran and found nothing
+07:40:42.324	749.433	1A02MM		rows for the workbook	BLD-ME-Duct Accessory-vs-BLD-ME-Ducts&Duct Fittings	6	6 in the document
+07:40:42.324	749.433	1A02MM		test found clashes	BLD-ME-Duct Accessory-vs-BLD-ME-Ducts&Duct Fittings	6	ran and found clashes
+07:40:47.993	755.102	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Floors	0	0 in the document
+07:40:47.994	755.103	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Floors	0	ran and found nothing
+07:40:53.830	760.939	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	3	3 in the document
+07:40:53.831	760.939	1A02MM		test found clashes	BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls	3	ran and found clashes
+07:40:59.244	766.353	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Windows	0	0 in the document
+07:40:59.244	766.353	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Windows	0	ran and found nothing
+07:41:04.701	771.810	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:41:04.701	771.810	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:41:10.246	777.355	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Doors	0	0 in the document
+07:41:10.246	777.355	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Doors	0	ran and found nothing
+07:41:16.416	783.525	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-AR-Railings	0	0 in the document
+07:41:16.416	783.525	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-AR-Railings	0	ran and found nothing
+07:41:21.933	789.041	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation	0	0 in the document
+07:41:21.933	789.041	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Foundation	0	ran and found nothing
+07:41:27.716	794.825	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Columns	0	0 in the document
+07:41:27.716	794.825	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Columns	0	ran and found nothing
+07:41:33.471	800.580	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing	0	0 in the document
+07:41:33.472	800.581	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Framing	0	ran and found nothing
+07:41:39.476	806.585	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Walls	0	0 in the document
+07:41:39.476	806.585	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Walls	0	ran and found nothing
+07:41:45.044	812.153	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors	0	0 in the document
+07:41:45.046	812.154	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Floors	0	ran and found nothing
+07:41:50.763	817.872	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ST-Stair	0	0 in the document
+07:41:50.764	817.872	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ST-Stair	0	ran and found nothing
+07:41:56.618	823.726	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+07:41:56.619	823.726	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+07:42:02.426	829.534	1A02MM		rows for the workbook	BLD-ME-Mechanical Equipment-vs-BLD-ME-Duct Accessory	0	0 in the document
+07:42:02.426	829.534	1A02MM		test passed	BLD-ME-Mechanical Equipment-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+07:42:08.656	835.764	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Floors	0	0 in the document
+07:42:08.656	835.764	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-AR-Floors	0	ran and found nothing
+07:42:14.779	841.887	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Walls	4	4 in the document
+07:42:14.779	841.887	1A02MM		test found clashes	BLD-ME-Air Terminals-vs-BLD-AR-Walls	4	ran and found clashes
+07:42:20.388	847.496	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Windows	0	0 in the document
+07:42:20.389	847.496	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-AR-Windows	0	ran and found nothing
+07:42:26.491	853.599	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:42:26.492	853.599	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:42:32.592	859.700	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Doors	1	1 in the document
+07:42:32.593	859.700	1A02MM		test found clashes	BLD-ME-Air Terminals-vs-BLD-AR-Doors	1	ran and found clashes
+07:42:38.209	865.317	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-AR-Railings	0	0 in the document
+07:42:38.209	865.317	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-AR-Railings	0	ran and found nothing
+07:42:43.659	870.766	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Foundation	0	0 in the document
+07:42:43.659	870.766	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-ST-Foundation	0	ran and found nothing
+07:42:49.320	876.427	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Columns	0	0 in the document
+07:42:49.321	876.428	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-ST-Columns	0	ran and found nothing
+07:42:55.183	882.290	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Framing	0	0 in the document
+07:42:55.184	882.291	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-ST-Framing	0	ran and found nothing
+07:43:00.850	887.958	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Walls	0	0 in the document
+07:43:00.851	887.958	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-ST-Walls	0	ran and found nothing
+07:43:06.649	893.756	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Floors	0	0 in the document
+07:43:06.649	893.757	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-ST-Floors	0	ran and found nothing
+07:43:12.234	899.342	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ST-Stair	0	0 in the document
+07:43:12.235	899.342	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-ST-Stair	0	ran and found nothing
+07:43:17.809	904.916	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+07:43:17.810	904.917	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+07:43:23.904	911.011	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ME-Duct Accessory	0	0 in the document
+07:43:23.904	911.012	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+07:43:29.595	916.703	1A02MM		rows for the workbook	BLD-ME-Air Terminals-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+07:43:29.596	916.703	1A02MM		test passed	BLD-ME-Air Terminals-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+07:43:35.094	922.201	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Floors	0	0 in the document
+07:43:35.094	922.201	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Floors	0	ran and found nothing
+07:43:41.975	929.082	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	16	16 in the document
+07:43:41.976	929.082	1A02MM		test found clashes	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls	16	ran and found clashes
+07:43:47.360	934.467	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Windows	0	0 in the document
+07:43:47.360	934.467	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Windows	0	ran and found nothing
+07:43:53.012	940.119	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:43:53.012	940.120	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:43:58.579	945.686	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Doors	0	0 in the document
+07:43:58.580	945.687	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Doors	0	ran and found nothing
+07:44:04.601	951.708	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Railings	0	0 in the document
+07:44:04.602	951.709	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Railings	0	ran and found nothing
+07:44:10.199	957.306	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Foundation	0	0 in the document
+07:44:10.199	957.306	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Foundation	0	ran and found nothing
+07:44:15.606	962.712	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Columns	0	0 in the document
+07:44:15.606	962.713	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Columns	0	ran and found nothing
+07:44:20.982	968.088	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	0	0 in the document
+07:44:20.982	968.088	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Framing	0	ran and found nothing
+07:44:26.604	973.711	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	0	0 in the document
+07:44:26.605	973.711	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Walls	0	ran and found nothing
+07:44:32.262	979.369	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	0	0 in the document
+07:44:32.263	979.369	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Floors	0	ran and found nothing
+07:44:37.777	984.883	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Stair	0	0 in the document
+07:44:37.777	984.884	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ST-Stair	0	ran and found nothing
+07:44:43.434	990.541	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+07:44:43.435	990.541	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+07:44:49.610	996.717	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Duct Accessory	0	0 in the document
+07:44:49.611	996.718	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+07:44:55.522	1002.628	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Mechanical Equipment	6	6 in the document
+07:44:55.523	1002.629	1A02MM		test found clashes	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Mechanical Equipment	6	ran and found clashes
+07:45:00.905	1008.011	1A02MM		rows for the workbook	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Air Terminals	0	0 in the document
+07:45:00.906	1008.012	1A02MM		test passed	BLD-ME-Pipes&Pipe Fittings-vs-BLD-ME-Air Terminals	0	ran and found nothing
+07:45:06.696	1013.801	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-AR-Floors	0	0 in the document
+07:45:06.696	1013.802	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-AR-Floors	0	ran and found nothing
+07:45:11.998	1019.104	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-AR-Walls	0	0 in the document
+07:45:11.998	1019.105	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-AR-Walls	0	ran and found nothing
+07:45:17.269	1024.375	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-AR-Windows	0	0 in the document
+07:45:17.269	1024.375	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-AR-Windows	0	ran and found nothing
+07:45:22.899	1030.005	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:45:22.899	1030.005	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:45:28.356	1035.462	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-AR-Doors	0	0 in the document
+07:45:28.356	1035.462	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-AR-Doors	0	ran and found nothing
+07:45:34.481	1041.587	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-AR-Railings	0	0 in the document
+07:45:34.481	1041.587	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-AR-Railings	0	ran and found nothing
+07:45:40.264	1047.370	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-ST-Foundation	0	0 in the document
+07:45:40.265	1047.370	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-ST-Foundation	0	ran and found nothing
+07:45:45.980	1053.086	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-ST-Columns	0	0 in the document
+07:45:45.981	1053.086	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-ST-Columns	0	ran and found nothing
+07:45:51.856	1058.962	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-ST-Framing	0	0 in the document
+07:45:51.857	1058.963	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-ST-Framing	0	ran and found nothing
+07:45:57.328	1064.433	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-ST-Walls	0	0 in the document
+07:45:57.328	1064.434	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-ST-Walls	0	ran and found nothing
+07:46:03.128	1070.233	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-ST-Floors	0	0 in the document
+07:46:03.128	1070.234	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-ST-Floors	0	ran and found nothing
+07:46:08.716	1075.821	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-ST-Stair	0	0 in the document
+07:46:08.716	1075.822	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-ST-Stair	0	ran and found nothing
+07:46:14.400	1081.506	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+07:46:14.400	1081.506	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+07:46:20.572	1087.678	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-ME-Duct Accessory	0	0 in the document
+07:46:20.573	1087.679	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+07:46:25.941	1093.046	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+07:46:25.941	1093.046	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+07:46:32.002	1099.108	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-ME-Air Terminals	0	0 in the document
+07:46:32.003	1099.108	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-ME-Air Terminals	0	ran and found nothing
+07:46:38.267	1105.373	1A02MM		rows for the workbook	BLD-PL-Mechanical Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+07:46:38.268	1105.374	1A02MM		test passed	BLD-PL-Mechanical Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+07:46:44.296	1111.402	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Floors	0	0 in the document
+07:46:44.296	1111.402	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Floors	0	ran and found nothing
+07:46:51.136	1118.242	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	17	17 in the document
+07:46:51.137	1118.242	1A02MM		test found clashes	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls	17	ran and found clashes
+07:46:56.779	1123.884	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Windows	0	0 in the document
+07:46:56.780	1123.885	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Windows	0	ran and found nothing
+07:47:02.717	1129.823	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:47:02.718	1129.823	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:47:08.873	1135.978	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Doors	0	0 in the document
+07:47:08.873	1135.979	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Doors	0	ran and found nothing
+07:47:14.451	1141.556	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Railings	0	0 in the document
+07:47:14.451	1141.556	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Railings	0	ran and found nothing
+07:47:20.171	1147.275	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	0	0 in the document
+07:47:20.171	1147.276	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	0	ran and found nothing
+07:47:25.586	1152.690	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Columns	0	0 in the document
+07:47:25.586	1152.691	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Columns	0	ran and found nothing
+07:47:31.483	1158.588	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing	0	0 in the document
+07:47:31.484	1158.588	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Framing	0	ran and found nothing
+07:47:36.918	1164.023	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls	0	0 in the document
+07:47:36.918	1164.024	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Walls	0	ran and found nothing
+07:47:42.516	1169.621	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors	0	0 in the document
+07:47:42.517	1169.621	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Floors	0	ran and found nothing
+07:47:48.015	1175.120	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Stair	0	0 in the document
+07:47:48.016	1175.120	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ST-Stair	0	ran and found nothing
+07:47:53.544	1180.648	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	1	1 in the document
+07:47:53.544	1180.649	1A02MM		test found clashes	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	1	ran and found clashes
+07:47:59.557	1186.662	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Duct Accessory	0	0 in the document
+07:47:59.558	1186.662	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+07:48:05.650	1192.754	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	6	6 in the document
+07:48:05.650	1192.755	1A02MM		test found clashes	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	6	ran and found clashes
+07:48:11.281	1198.385	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals	0	0 in the document
+07:48:11.282	1198.386	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals	0	ran and found nothing
+07:48:16.766	1203.870	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+07:48:16.766	1203.870	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+07:48:22.485	1209.589	1A02MM		rows for the workbook	BLD-PL-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+07:48:22.486	1209.590	1A02MM		test passed	BLD-PL-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+07:48:28.112	1215.216	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-AR-Floors	0	0 in the document
+07:48:28.112	1215.217	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-AR-Floors	0	ran and found nothing
+07:48:33.156	1220.260	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-AR-Walls	0	0 in the document
+07:48:33.157	1220.261	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-AR-Walls	0	ran and found nothing
+07:48:38.825	1225.930	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-AR-Windows	0	0 in the document
+07:48:38.826	1225.930	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-AR-Windows	0	ran and found nothing
+07:48:44.245	1231.349	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:48:44.245	1231.350	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:48:49.779	1236.882	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-AR-Doors	0	0 in the document
+07:48:49.779	1236.883	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-AR-Doors	0	ran and found nothing
+07:48:55.427	1242.532	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-AR-Railings	0	0 in the document
+07:48:55.428	1242.532	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-AR-Railings	0	ran and found nothing
+07:49:01.269	1248.373	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-ST-Foundation	0	0 in the document
+07:49:01.269	1248.373	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-ST-Foundation	0	ran and found nothing
+07:49:07.633	1254.737	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-ST-Columns	0	0 in the document
+07:49:07.633	1254.737	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-ST-Columns	0	ran and found nothing
+07:49:13.584	1260.688	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-ST-Framing	0	0 in the document
+07:49:13.584	1260.688	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-ST-Framing	0	ran and found nothing
+07:49:19.626	1266.730	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-ST-Walls	0	0 in the document
+07:49:19.626	1266.730	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-ST-Walls	0	ran and found nothing
+07:49:25.515	1272.618	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-ST-Floors	0	0 in the document
+07:49:25.515	1272.619	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-ST-Floors	0	ran and found nothing
+07:49:31.155	1278.259	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-ST-Stair	0	0 in the document
+07:49:31.155	1278.259	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-ST-Stair	0	ran and found nothing
+07:49:36.620	1283.724	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+07:49:36.621	1283.724	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+07:49:42.469	1289.573	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-ME-Duct Accessory	0	0 in the document
+07:49:42.470	1289.573	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+07:49:48.220	1295.324	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+07:49:48.220	1295.324	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+07:49:54.087	1301.191	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-ME-Air Terminals	0	0 in the document
+07:49:54.087	1301.191	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-ME-Air Terminals	0	ran and found nothing
+07:49:59.954	1307.058	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+07:49:59.955	1307.058	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+07:50:05.973	1313.077	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+07:50:05.973	1313.077	1A02MM		test passed	BLD-PL-Pipe Accessories-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+07:50:11.865	1318.969	1A02MM		rows for the workbook	BLD-PL-Pipe Accessories-vs-BLD-PL-Pipes & Pipe Fittings	5	5 in the document
+07:50:11.866	1318.969	1A02MM		test found clashes	BLD-PL-Pipe Accessories-vs-BLD-PL-Pipes & Pipe Fittings	5	ran and found clashes
+07:50:17.531	1324.635	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Floors	0	0 in the document
+07:50:17.531	1324.635	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Floors	0	ran and found nothing
+07:50:23.314	1330.417	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Walls	0	0 in the document
+07:50:23.314	1330.417	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Walls	0	ran and found nothing
+07:50:29.007	1336.110	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Windows	0	0 in the document
+07:50:29.007	1336.111	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Windows	0	ran and found nothing
+07:50:34.962	1342.064	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:50:34.962	1342.065	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:50:41.305	1348.408	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Doors	0	0 in the document
+07:50:41.306	1348.409	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Doors	0	ran and found nothing
+07:50:47.032	1354.135	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Railings	0	0 in the document
+07:50:47.033	1354.136	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-AR-Railings	0	ran and found nothing
+07:50:52.301	1359.405	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Foundation	0	0 in the document
+07:50:52.302	1359.405	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Foundation	0	ran and found nothing
+07:50:57.471	1364.574	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Columns	0	0 in the document
+07:50:57.471	1364.574	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Columns	0	ran and found nothing
+07:51:02.656	1369.759	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Framing	0	0 in the document
+07:51:02.657	1369.759	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Framing	0	ran and found nothing
+07:51:07.852	1374.955	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Walls	0	0 in the document
+07:51:07.853	1374.955	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Walls	0	ran and found nothing
+07:51:13.087	1380.190	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Floors	0	0 in the document
+07:51:13.087	1380.190	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Floors	0	ran and found nothing
+07:51:18.480	1385.583	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Stair	0	0 in the document
+07:51:18.481	1385.584	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-ST-Stair	0	ran and found nothing
+07:51:24.082	1391.185	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+07:51:24.083	1391.186	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+07:51:29.342	1396.446	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0	0 in the document
+07:51:29.343	1396.446	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+07:51:34.949	1402.053	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+07:51:34.949	1402.053	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+07:51:40.315	1407.418	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0	0 in the document
+07:51:40.316	1407.418	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0	ran and found nothing
+07:51:45.782	1412.884	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+07:51:45.782	1412.885	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+07:51:51.579	1418.681	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+07:51:51.579	1418.682	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+07:51:57.424	1424.527	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	2	2 in the document
+07:51:57.425	1424.527	1A02MM		test found clashes	BLD-PL-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	2	ran and found clashes
+07:52:03.552	1430.654	1A02MM		rows for the workbook	BLD-PL-Plumbing Fixtures-vs-BLD-PL-Pipe Accessories	0	0 in the document
+07:52:03.552	1430.654	1A02MM		test passed	BLD-PL-Plumbing Fixtures-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+07:52:09.256	1436.358	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	1	1 in the document
+07:52:09.256	1436.358	1A02MM		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors	1	ran and found clashes
+07:52:15.300	1442.402	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	11	11 in the document
+07:52:15.300	1442.403	1A02MM		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls	11	ran and found clashes
+07:52:21.222	1448.324	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Windows	2	2 in the document
+07:52:21.222	1448.325	1A02MM		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Windows	2	ran and found clashes
+07:52:27.269	1454.371	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:52:27.269	1454.372	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:52:32.877	1459.980	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Doors	0	0 in the document
+07:52:32.878	1459.980	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Doors	0	ran and found nothing
+07:52:38.253	1465.355	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Railings	0	0 in the document
+07:52:38.253	1465.355	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Railings	0	ran and found nothing
+07:52:43.989	1471.091	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	0	0 in the document
+07:52:43.989	1471.091	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Foundation	0	ran and found nothing
+07:52:49.361	1476.464	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	0	0 in the document
+07:52:49.362	1476.464	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Columns	0	ran and found nothing
+07:52:54.754	1481.855	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	0	0 in the document
+07:52:54.754	1481.856	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Framing	0	ran and found nothing
+07:53:00.555	1487.658	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	0	0 in the document
+07:53:00.557	1487.658	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Walls	0	ran and found nothing
+07:53:05.955	1493.057	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	0	0 in the document
+07:53:05.956	1493.057	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Floors	0	ran and found nothing
+07:53:11.285	1498.386	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Stair	0	0 in the document
+07:53:11.285	1498.386	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ST-Stair	0	ran and found nothing
+07:53:16.682	1503.784	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+07:53:16.682	1503.784	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+07:53:22.097	1509.199	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Duct Accessory	0	0 in the document
+07:53:22.097	1509.199	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+07:53:28.035	1515.136	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	6	6 in the document
+07:53:28.036	1515.137	1A02MM		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Mechanical Equipment	6	ran and found clashes
+07:53:33.789	1520.890	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals	0	0 in the document
+07:53:33.789	1520.891	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Air Terminals	0	ran and found nothing
+07:53:39.410	1526.511	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Pipes&Pipe Fittings	3	3 in the document
+07:53:39.410	1526.511	1A02MM		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-ME-Pipes&Pipe Fittings	3	ran and found clashes
+07:53:44.800	1531.901	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+07:53:44.800	1531.902	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+07:53:50.912	1538.014	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	7	7 in the document
+07:53:50.913	1538.014	1A02MM		test found clashes	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings	7	ran and found clashes
+07:53:57.037	1544.138	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipe Accessories	0	0 in the document
+07:53:57.038	1544.138	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+07:54:03.263	1550.364	1A02MM		rows for the workbook	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+07:54:03.263	1550.364	1A02MM		test passed	BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+07:54:09.240	1556.341	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	2	2 in the document
+07:54:09.240	1556.342	1A02MM		test found clashes	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors	2	ran and found clashes
+07:54:15.290	1562.390	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	4	4 in the document
+07:54:15.290	1562.391	1A02MM		test found clashes	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls	4	ran and found clashes
+07:54:21.300	1568.401	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Windows	0	0 in the document
+07:54:21.301	1568.402	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Windows	0	ran and found nothing
+07:54:26.957	1574.057	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:54:26.957	1574.058	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:54:32.486	1579.587	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Doors	0	0 in the document
+07:54:32.487	1579.587	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Doors	0	ran and found nothing
+07:54:37.894	1584.994	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Railings	0	0 in the document
+07:54:37.894	1584.994	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-AR-Railings	0	ran and found nothing
+07:54:43.760	1590.860	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	0	0 in the document
+07:54:43.760	1590.860	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Foundation	0	ran and found nothing
+07:54:49.377	1596.478	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Columns	0	0 in the document
+07:54:49.378	1596.478	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Columns	0	ran and found nothing
+07:54:55.049	1602.150	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Framing	0	0 in the document
+07:54:55.050	1602.150	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Framing	0	ran and found nothing
+07:55:00.923	1608.023	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Walls	0	0 in the document
+07:55:00.923	1608.023	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Walls	0	ran and found nothing
+07:55:07.011	1614.112	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Floors	0	0 in the document
+07:55:07.012	1614.112	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Floors	0	ran and found nothing
+07:55:12.716	1619.816	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Stair	0	0 in the document
+07:55:12.716	1619.816	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ST-Stair	0	ran and found nothing
+07:55:18.174	1625.274	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+07:55:18.175	1625.275	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+07:55:23.161	1630.261	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0	0 in the document
+07:55:23.162	1630.262	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+07:55:28.167	1635.267	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+07:55:28.168	1635.268	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+07:55:33.616	1640.715	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0	0 in the document
+07:55:33.616	1640.716	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Air Terminals	0	ran and found nothing
+07:55:38.618	1645.718	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+07:55:38.618	1645.718	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+07:55:43.597	1650.697	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+07:55:43.597	1650.697	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+07:55:48.973	1656.072	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	0	0 in the document
+07:55:48.973	1656.073	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	0	ran and found nothing
+07:55:54.678	1661.777	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipe Accessories	0	0 in the document
+07:55:54.678	1661.778	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+07:56:00.553	1667.653	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+07:56:00.554	1667.654	1A02MM		test passed	BLD-DR-Plumbing Fixtures-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+07:56:06.489	1673.588	1A02MM		rows for the workbook	BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	2	2 in the document
+07:56:06.489	1673.589	1A02MM		test found clashes	BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	2	ran and found clashes
+07:56:11.943	1679.042	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Floors	0	0 in the document
+07:56:11.943	1679.043	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Floors	0	ran and found nothing
+07:56:17.589	1684.688	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls	0	0 in the document
+07:56:17.590	1684.689	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Walls	0	ran and found nothing
+07:56:23.279	1690.378	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Windows	0	0 in the document
+07:56:23.279	1690.378	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Windows	0	ran and found nothing
+07:56:28.519	1695.618	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:56:28.520	1695.619	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:56:33.928	1701.027	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Doors	0	0 in the document
+07:56:33.928	1701.028	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Doors	0	ran and found nothing
+07:56:39.850	1706.949	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Railings	0	0 in the document
+07:56:39.850	1706.949	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-AR-Railings	0	ran and found nothing
+07:56:45.622	1712.721	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Foundation	0	0 in the document
+07:56:45.622	1712.721	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Foundation	0	ran and found nothing
+07:56:51.547	1718.647	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Columns	4	4 in the document
+07:56:51.548	1718.647	1A02MM		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Columns	4	ran and found clashes
+07:56:58.391	1725.489	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing	5	5 in the document
+07:56:58.391	1725.490	1A02MM		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing	5	ran and found clashes
+07:57:03.947	1731.047	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls	4	4 in the document
+07:57:03.948	1731.047	1A02MM		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls	4	ran and found clashes
+07:57:09.481	1736.579	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors	4	4 in the document
+07:57:09.481	1736.580	1A02MM		test found clashes	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors	4	ran and found clashes
+07:57:14.460	1741.559	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Stair	0	0 in the document
+07:57:14.461	1741.560	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Stair	0	ran and found nothing
+07:57:19.835	1746.933	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+07:57:19.836	1746.934	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+07:57:24.786	1751.884	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Duct Accessory	0	0 in the document
+07:57:24.787	1751.885	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+07:57:29.691	1756.790	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+07:57:29.691	1756.790	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+07:57:34.671	1761.770	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Air Terminals	0	0 in the document
+07:57:34.672	1761.770	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Air Terminals	0	ran and found nothing
+07:57:40.121	1767.220	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+07:57:40.121	1767.220	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+07:57:46.003	1773.102	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+07:57:46.004	1773.103	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+07:57:51.520	1778.618	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Pipes & Pipe Fittings	0	0 in the document
+07:57:51.520	1778.618	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Pipes & Pipe Fittings	0	ran and found nothing
+07:57:57.144	1784.243	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Pipe Accessories	0	0 in the document
+07:57:57.145	1784.243	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+07:58:02.536	1789.635	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+07:58:02.537	1789.635	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+07:58:08.038	1795.136	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Pipes & Pipe Fittings	0	0 in the document
+07:58:08.038	1795.136	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Pipes & Pipe Fittings	0	ran and found nothing
+07:58:13.442	1800.541	1A02MM		rows for the workbook	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+07:58:13.443	1800.541	1A02MM		test passed	BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+07:58:19.353	1806.451	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Floors	0	0 in the document
+07:58:19.354	1806.451	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-AR-Floors	0	ran and found nothing
+07:58:24.695	1811.793	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	0	0 in the document
+07:58:24.695	1811.794	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-AR-Walls	0	ran and found nothing
+07:58:30.069	1817.166	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Windows	0	0 in the document
+07:58:30.069	1817.167	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-AR-Windows	0	ran and found nothing
+07:58:35.263	1822.361	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Curtain Mullions	0	0 in the document
+07:58:35.264	1822.362	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+07:58:40.837	1827.935	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Doors	0	0 in the document
+07:58:40.838	1827.935	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-AR-Doors	0	ran and found nothing
+07:58:46.169	1833.267	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-AR-Railings	0	0 in the document
+07:58:46.170	1833.267	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-AR-Railings	0	ran and found nothing
+07:58:51.601	1838.699	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	2	2 in the document
+07:58:51.601	1838.699	1A02MM		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation	2	ran and found clashes
+07:58:56.802	1843.901	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Columns	3	3 in the document
+07:58:56.802	1843.901	1A02MM		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-ST-Columns	3	ran and found clashes
+07:59:02.528	1849.625	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Framing	1	1 in the document
+07:59:02.528	1849.626	1A02MM		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-ST-Framing	1	ran and found clashes
+07:59:07.755	1854.853	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	0	0 in the document
+07:59:07.755	1854.853	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-ST-Walls	0	ran and found nothing
+07:59:13.449	1860.546	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	3	3 in the document
+07:59:13.449	1860.546	1A02MM		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-ST-Floors	3	ran and found clashes
+07:59:18.915	1866.013	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ST-Stair	0	0 in the document
+07:59:18.916	1866.014	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-ST-Stair	0	ran and found nothing
+07:59:24.279	1871.377	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+07:59:24.280	1871.377	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+07:59:29.765	1876.863	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Duct Accessory	0	0 in the document
+07:59:29.765	1876.863	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+07:59:35.148	1882.245	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+07:59:35.148	1882.246	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+07:59:40.570	1887.667	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Air Terminals	0	0 in the document
+07:59:40.571	1887.668	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Air Terminals	0	ran and found nothing
+07:59:46.621	1893.718	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+07:59:46.621	1893.718	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+07:59:52.509	1899.607	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+07:59:52.510	1899.607	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+07:59:58.012	1905.109	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-PL-Pipes & Pipe Fittings	0	0 in the document
+07:59:58.012	1905.110	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-PL-Pipes & Pipe Fittings	0	ran and found nothing
+08:00:03.751	1910.849	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-PL-Pipe Accessories	0	0 in the document
+08:00:03.752	1910.849	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+08:00:08.924	1916.021	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+08:00:08.924	1916.021	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+08:00:14.554	1921.651	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-DR-Pipes & Pipe Fittings	0	0 in the document
+08:00:14.554	1921.651	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-DR-Pipes & Pipe Fittings	0	ran and found nothing
+08:00:19.719	1926.816	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+08:00:19.720	1926.817	1A02MM		test passed	BLD-EL-Electrical Equipment-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+08:00:25.311	1932.407	1A02MM		rows for the workbook	BLD-EL-Electrical Equipment-vs-BLD-EL-Cable Tray&Cable Tray Fittings	1	1 in the document
+08:00:25.311	1932.408	1A02MM		test found clashes	BLD-EL-Electrical Equipment-vs-BLD-EL-Cable Tray&Cable Tray Fittings	1	ran and found clashes
+08:00:31.333	1938.430	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Floors	0	0 in the document
+08:00:31.334	1938.430	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Floors	0	ran and found nothing
+08:00:37.087	1944.183	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	0	0 in the document
+08:00:37.087	1944.184	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Walls	0	ran and found nothing
+08:00:42.383	1949.480	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Windows	0	0 in the document
+08:00:42.383	1949.480	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Windows	0	ran and found nothing
+08:00:47.994	1955.091	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Curtain Mullions	0	0 in the document
+08:00:47.995	1955.092	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+08:00:53.528	1960.625	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Doors	0	0 in the document
+08:00:53.528	1960.625	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Doors	0	ran and found nothing
+08:00:58.630	1965.727	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-AR-Railings	0	0 in the document
+08:00:58.631	1965.727	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-AR-Railings	0	ran and found nothing
+08:01:04.180	1971.277	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Foundation	0	0 in the document
+08:01:04.181	1971.278	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ST-Foundation	0	ran and found nothing
+08:01:09.616	1976.712	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns	0	0 in the document
+08:01:09.616	1976.712	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ST-Columns	0	ran and found nothing
+08:01:15.811	1982.907	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Framing	0	0 in the document
+08:01:15.812	1982.908	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ST-Framing	0	ran and found nothing
+08:01:21.338	1988.435	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Walls	0	0 in the document
+08:01:21.339	1988.435	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ST-Walls	0	ran and found nothing
+08:01:27.007	1994.104	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Floors	0	0 in the document
+08:01:27.008	1994.105	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ST-Floors	0	ran and found nothing
+08:01:32.584	1999.680	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ST-Stair	0	0 in the document
+08:01:32.584	1999.681	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ST-Stair	0	ran and found nothing
+08:01:37.855	2004.951	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+08:01:37.855	2004.951	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+08:01:42.961	2010.057	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Duct Accessory	0	0 in the document
+08:01:42.961	2010.057	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+08:01:48.271	2015.367	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+08:01:48.272	2015.368	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+08:01:54.351	2021.446	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Air Terminals	0	0 in the document
+08:01:54.351	2021.447	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Air Terminals	0	ran and found nothing
+08:02:00.412	2027.508	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+08:02:00.413	2027.509	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+08:02:06.808	2033.904	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+08:02:06.808	2033.904	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+08:02:12.588	2039.684	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	0	0 in the document
+08:02:12.589	2039.685	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	0	ran and found nothing
+08:02:18.354	2045.451	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-PL-Pipe Accessories	0	0 in the document
+08:02:18.356	2045.452	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+08:02:23.633	2050.730	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+08:02:23.634	2050.730	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+08:02:29.305	2056.401	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	0	0 in the document
+08:02:29.306	2056.402	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	0	ran and found nothing
+08:02:34.822	2061.918	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+08:02:34.822	2061.919	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+08:02:40.072	2067.167	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	0 in the document
+08:02:40.072	2067.167	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	ran and found nothing
+08:02:45.469	2072.566	1A02MM		rows for the workbook	BLD-EL-Electrical Fixtures-vs-BLD-EL-Electrical Equipment	0	0 in the document
+08:02:45.471	2072.567	1A02MM		test passed	BLD-EL-Electrical Fixtures-vs-BLD-EL-Electrical Equipment	0	ran and found nothing
+08:02:50.734	2077.829	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	0	0 in the document
+08:02:50.734	2077.830	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Floors	0	ran and found nothing
+08:02:56.307	2083.403	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	0	0 in the document
+08:02:56.308	2083.404	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Walls	0	ran and found nothing
+08:03:02.493	2089.589	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Windows	0	0 in the document
+08:03:02.494	2089.589	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Windows	0	ran and found nothing
+08:03:08.158	2095.253	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Curtain Mullions	0	0 in the document
+08:03:08.159	2095.254	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+08:03:14.355	2101.451	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Doors	0	0 in the document
+08:03:14.356	2101.451	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Doors	0	ran and found nothing
+08:03:19.624	2106.720	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Railings	0	0 in the document
+08:03:19.625	2106.721	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-AR-Railings	0	ran and found nothing
+08:03:25.093	2112.188	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	0	0 in the document
+08:03:25.094	2112.189	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Foundation	0	ran and found nothing
+08:03:30.994	2118.090	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	6	6 in the document
+08:03:30.994	2118.090	1A02MM		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns	6	ran and found clashes
+08:03:39.796	2126.891	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	40	40 in the document
+08:03:39.796	2126.891	1A02MM		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing	40	ran and found clashes
+08:03:45.709	2132.804	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	6	6 in the document
+08:03:45.709	2132.804	1A02MM		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls	6	ran and found clashes
+08:03:52.107	2139.202	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	17	17 in the document
+08:03:52.108	2139.203	1A02MM		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors	17	ran and found clashes
+08:03:57.524	2144.619	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Stair	0	0 in the document
+08:03:57.524	2144.620	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Stair	0	ran and found nothing
+08:04:03.507	2150.603	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+08:04:03.509	2150.604	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+08:04:09.243	2156.338	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Duct Accessory	0	0 in the document
+08:04:09.244	2156.338	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+08:04:14.648	2161.744	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+08:04:14.649	2161.744	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+08:04:20.714	2167.808	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Air Terminals	0	0 in the document
+08:04:20.715	2167.809	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Air Terminals	0	ran and found nothing
+08:04:27.198	2174.293	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+08:04:27.199	2174.294	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+08:04:33.135	2180.229	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+08:04:33.135	2180.230	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+08:04:39.070	2186.165	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Pipes & Pipe Fittings	0	0 in the document
+08:04:39.071	2186.166	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Pipes & Pipe Fittings	0	ran and found nothing
+08:04:44.374	2191.469	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Pipe Accessories	0	0 in the document
+08:04:44.374	2191.469	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+08:04:50.054	2197.149	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+08:04:50.055	2197.149	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+08:04:55.941	2203.035	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings	0	0 in the document
+08:04:55.941	2203.035	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Pipes & Pipe Fittings	0	ran and found nothing
+08:05:01.239	2208.334	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+08:05:01.240	2208.334	1A02MM		test passed	BLD-EL-Conduits & Conduit Fittings-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+08:05:06.861	2213.955	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Cable Tray&Cable Tray Fittings	2	2 in the document
+08:05:06.862	2213.956	1A02MM		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Cable Tray&Cable Tray Fittings	2	ran and found clashes
+08:05:12.903	2219.997	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment	14	14 in the document
+08:05:12.903	2219.998	1A02MM		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment	14	ran and found clashes
+08:05:18.585	2225.679	1A02MM		rows for the workbook	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Fixtures	3	3 in the document
+08:05:18.585	2225.679	1A02MM		test found clashes	BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Fixtures	3	ran and found clashes
+08:05:23.749	2230.843	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-AR-Floors	0	0 in the document
+08:05:23.749	2230.844	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-AR-Floors	0	ran and found nothing
+08:05:28.989	2236.084	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls	0	0 in the document
+08:05:28.990	2236.085	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-AR-Walls	0	ran and found nothing
+08:05:34.267	2241.361	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-AR-Windows	0	0 in the document
+08:05:34.268	2241.362	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-AR-Windows	0	ran and found nothing
+08:05:39.556	2246.649	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-AR-Curtain Mullions	0	0 in the document
+08:05:39.556	2246.650	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+08:05:44.792	2251.886	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-AR-Doors	0	0 in the document
+08:05:44.792	2251.886	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-AR-Doors	0	ran and found nothing
+08:05:50.040	2257.134	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-AR-Railings	0	0 in the document
+08:05:50.041	2257.134	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-AR-Railings	0	ran and found nothing
+08:05:55.525	2262.619	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-ST-Foundation	0	0 in the document
+08:05:55.526	2262.620	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-ST-Foundation	0	ran and found nothing
+08:06:01.493	2268.587	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns	1	1 in the document
+08:06:01.494	2268.588	1A02MM		test found clashes	BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns	1	ran and found clashes
+08:06:07.153	2274.246	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-ST-Framing	3	3 in the document
+08:06:07.153	2274.247	1A02MM		test found clashes	BLD-EL-Lighting Fixtures-vs-BLD-ST-Framing	3	ran and found clashes
+08:06:12.365	2279.459	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-ST-Walls	3	3 in the document
+08:06:12.365	2279.459	1A02MM		test found clashes	BLD-EL-Lighting Fixtures-vs-BLD-ST-Walls	3	ran and found clashes
+08:06:19.938	2287.032	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	23	23 in the document
+08:06:19.939	2287.033	1A02MM		test found clashes	BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors	23	ran and found clashes
+08:06:25.183	2292.277	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-ST-Stair	0	0 in the document
+08:06:25.183	2292.277	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-ST-Stair	0	ran and found nothing
+08:06:30.369	2297.462	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+08:06:30.369	2297.463	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+08:06:35.686	2302.779	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-ME-Duct Accessory	0	0 in the document
+08:06:35.687	2302.780	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+08:06:41.215	2308.310	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+08:06:41.217	2308.311	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+08:06:46.324	2313.418	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-ME-Air Terminals	0	0 in the document
+08:06:46.324	2313.418	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-ME-Air Terminals	0	ran and found nothing
+08:06:51.758	2318.852	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+08:06:51.759	2318.852	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+08:06:57.237	2324.331	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+08:06:57.238	2324.331	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+08:07:02.807	2329.901	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	0	0 in the document
+08:07:02.808	2329.901	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-PL-Pipes & Pipe Fittings	0	ran and found nothing
+08:07:07.939	2335.033	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-PL-Pipe Accessories	0	0 in the document
+08:07:07.940	2335.033	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+08:07:13.070	2340.164	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+08:07:13.071	2340.164	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+08:07:18.674	2345.767	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	0	0 in the document
+08:07:18.675	2345.768	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-DR-Pipes & Pipe Fittings	0	ran and found nothing
+08:07:24.183	2351.276	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+08:07:24.184	2351.276	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+08:07:29.309	2356.403	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	0 in the document
+08:07:29.311	2356.403	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	ran and found nothing
+08:07:34.457	2361.550	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-EL-Electrical Equipment	0	0 in the document
+08:07:34.457	2361.550	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-EL-Electrical Equipment	0	ran and found nothing
+08:07:39.571	2366.664	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-EL-Electrical Fixtures	0	0 in the document
+08:07:39.572	2366.665	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-EL-Electrical Fixtures	0	ran and found nothing
+08:07:44.841	2371.933	1A02MM		rows for the workbook	BLD-EL-Lighting Fixtures-vs-BLD-EL-Conduits & Conduit Fittings	0	0 in the document
+08:07:44.841	2371.934	1A02MM		test passed	BLD-EL-Lighting Fixtures-vs-BLD-EL-Conduits & Conduit Fittings	0	ran and found nothing
+08:07:50.756	2377.849	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-AR-Floors	0	0 in the document
+08:07:50.757	2377.850	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-AR-Floors	0	ran and found nothing
+08:07:56.489	2383.582	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-AR-Walls	0	0 in the document
+08:07:56.490	2383.583	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-AR-Walls	0	ran and found nothing
+08:08:01.844	2388.937	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-AR-Windows	0	0 in the document
+08:08:01.844	2388.937	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-AR-Windows	0	ran and found nothing
+08:08:07.561	2394.654	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-AR-Curtain Mullions	0	0 in the document
+08:08:07.561	2394.654	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+08:08:12.588	2399.681	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-AR-Doors	0	0 in the document
+08:08:12.588	2399.681	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-AR-Doors	0	ran and found nothing
+08:08:17.826	2404.919	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-AR-Railings	0	0 in the document
+08:08:17.826	2404.919	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-AR-Railings	0	ran and found nothing
+08:08:23.326	2410.419	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-ST-Foundation	0	0 in the document
+08:08:23.326	2410.419	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-ST-Foundation	0	ran and found nothing
+08:08:28.776	2415.868	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-ST-Columns	0	0 in the document
+08:08:28.776	2415.869	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-ST-Columns	0	ran and found nothing
+08:08:34.589	2421.682	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-ST-Framing	0	0 in the document
+08:08:34.589	2421.683	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-ST-Framing	0	ran and found nothing
+08:08:39.836	2426.929	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-ST-Walls	0	0 in the document
+08:08:39.837	2426.929	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-ST-Walls	0	ran and found nothing
+08:08:45.654	2432.747	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-ST-Floors	0	0 in the document
+08:08:45.654	2432.747	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-ST-Floors	0	ran and found nothing
+08:08:50.760	2437.852	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-ST-Stair	0	0 in the document
+08:08:50.760	2437.853	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-ST-Stair	0	ran and found nothing
+08:08:56.916	2444.008	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+08:08:56.916	2444.009	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+08:09:02.950	2450.042	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-ME-Duct Accessory	0	0 in the document
+08:09:02.950	2450.042	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+08:09:09.226	2456.319	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+08:09:09.227	2456.319	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+08:09:15.082	2462.174	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-ME-Air Terminals	0	0 in the document
+08:09:15.082	2462.175	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-ME-Air Terminals	0	ran and found nothing
+08:09:20.713	2467.806	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+08:09:20.713	2467.806	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+08:09:25.807	2472.900	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+08:09:25.808	2472.901	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+08:09:30.986	2478.078	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-PL-Pipes & Pipe Fittings	0	0 in the document
+08:09:30.987	2478.078	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-PL-Pipes & Pipe Fittings	0	ran and found nothing
+08:09:36.533	2483.625	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-PL-Pipe Accessories	0	0 in the document
+08:09:36.534	2483.625	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+08:09:41.669	2488.761	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+08:09:41.669	2488.761	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+08:09:46.823	2493.915	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-DR-Pipes & Pipe Fittings	0	0 in the document
+08:09:46.824	2493.915	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-DR-Pipes & Pipe Fittings	0	ran and found nothing
+08:09:52.657	2499.748	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+08:09:52.657	2499.748	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+08:09:58.160	2505.251	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	0 in the document
+08:09:58.160	2505.252	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	ran and found nothing
+08:10:03.751	2510.843	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-EL-Electrical Equipment	1	1 in the document
+08:10:03.751	2510.843	1A02MM		test found clashes	BLD-EL-Lighting Devices-vs-BLD-EL-Electrical Equipment	1	ran and found clashes
+08:10:09.473	2516.565	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-EL-Electrical Fixtures	0	0 in the document
+08:10:09.473	2516.565	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-EL-Electrical Fixtures	0	ran and found nothing
+08:10:14.596	2521.687	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-EL-Conduits & Conduit Fittings	0	0 in the document
+08:10:14.596	2521.688	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-EL-Conduits & Conduit Fittings	0	ran and found nothing
+08:10:19.761	2526.852	1A02MM		rows for the workbook	BLD-EL-Lighting Devices-vs-BLD-EL-Lighting Fixtures	0	0 in the document
+08:10:19.761	2526.852	1A02MM		test passed	BLD-EL-Lighting Devices-vs-BLD-EL-Lighting Fixtures	0	ran and found nothing
+08:10:25.185	2532.276	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Floors	0	0 in the document
+08:10:25.185	2532.276	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Floors	0	ran and found nothing
+08:10:30.872	2537.964	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	0	0 in the document
+08:10:30.872	2537.964	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Walls	0	ran and found nothing
+08:10:36.297	2543.389	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Windows	0	0 in the document
+08:10:36.298	2543.389	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Windows	0	ran and found nothing
+08:10:41.608	2548.699	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Curtain Mullions	0	0 in the document
+08:10:41.608	2548.699	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+08:10:46.964	2554.055	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Doors	0	0 in the document
+08:10:46.964	2554.056	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Doors	0	ran and found nothing
+08:10:51.953	2559.043	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Railings	0	0 in the document
+08:10:51.953	2559.044	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-AR-Railings	0	ran and found nothing
+08:10:56.970	2564.061	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Foundation	0	0 in the document
+08:10:56.971	2564.062	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Foundation	0	ran and found nothing
+08:11:02.489	2569.580	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Columns	0	0 in the document
+08:11:02.489	2569.580	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Columns	0	ran and found nothing
+08:11:07.627	2574.717	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing	0	0 in the document
+08:11:07.627	2574.718	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Framing	0	ran and found nothing
+08:11:13.076	2580.166	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls	0	0 in the document
+08:11:13.077	2580.167	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Walls	0	ran and found nothing
+08:11:19.272	2586.363	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors	8	8 in the document
+08:11:19.274	2586.364	1A02MM		test found clashes	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors	8	ran and found clashes
+08:11:25.080	2592.170	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Stair	0	0 in the document
+08:11:25.081	2592.171	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-ST-Stair	0	ran and found nothing
+08:11:30.429	2597.519	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+08:11:30.430	2597.519	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+08:11:35.754	2602.844	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Duct Accessory	0	0 in the document
+08:11:35.755	2602.845	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+08:11:41.687	2608.777	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+08:11:41.687	2608.777	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+08:11:46.949	2614.039	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Air Terminals	0	0 in the document
+08:11:46.949	2614.039	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Air Terminals	0	ran and found nothing
+08:11:52.218	2619.308	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+08:11:52.219	2619.309	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+08:11:57.433	2624.523	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+08:11:57.433	2624.524	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+08:12:02.560	2629.650	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Pipes & Pipe Fittings	0	0 in the document
+08:12:02.561	2629.651	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Pipes & Pipe Fittings	0	ran and found nothing
+08:12:07.945	2635.035	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Pipe Accessories	0	0 in the document
+08:12:07.946	2635.035	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+08:12:14.061	2641.150	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+08:12:14.061	2641.150	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+08:12:19.139	2646.229	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-DR-Pipes & Pipe Fittings	0	0 in the document
+08:12:19.140	2646.229	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-DR-Pipes & Pipe Fittings	0	ran and found nothing
+08:12:24.554	2651.643	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+08:12:24.554	2651.644	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+08:12:29.546	2656.634	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	0 in the document
+08:12:29.546	2656.635	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	ran and found nothing
+08:12:34.646	2661.735	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Electrical Equipment	0	0 in the document
+08:12:34.647	2661.736	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Electrical Equipment	0	ran and found nothing
+08:12:39.807	2666.896	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Electrical Fixtures	0	0 in the document
+08:12:39.807	2666.896	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Electrical Fixtures	0	ran and found nothing
+08:12:45.123	2672.211	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Conduits & Conduit Fittings	0	0 in the document
+08:12:45.123	2672.212	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Conduits & Conduit Fittings	0	ran and found nothing
+08:12:50.892	2677.981	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Fixtures	1	1 in the document
+08:12:50.893	2677.982	1A02MM		test found clashes	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Fixtures	1	ran and found clashes
+08:12:55.959	2683.048	1A02MM		rows for the workbook	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Devices	0	0 in the document
+08:12:55.960	2683.048	1A02MM		test passed	BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Devices	0	ran and found nothing
+08:13:01.139	2688.228	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-AR-Floors	0	0 in the document
+08:13:01.140	2688.229	1A02MM		test passed	BLD-Security Devices-vs-BLD-AR-Floors	0	ran and found nothing
+08:13:06.749	2693.837	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-AR-Walls	0	0 in the document
+08:13:06.749	2693.838	1A02MM		test passed	BLD-Security Devices-vs-BLD-AR-Walls	0	ran and found nothing
+08:13:11.961	2699.050	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-AR-Windows	0	0 in the document
+08:13:11.962	2699.051	1A02MM		test passed	BLD-Security Devices-vs-BLD-AR-Windows	0	ran and found nothing
+08:13:17.624	2704.712	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-AR-Curtain Mullions	0	0 in the document
+08:13:17.624	2704.713	1A02MM		test passed	BLD-Security Devices-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+08:13:22.728	2709.817	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-AR-Doors	0	0 in the document
+08:13:22.728	2709.817	1A02MM		test passed	BLD-Security Devices-vs-BLD-AR-Doors	0	ran and found nothing
+08:13:27.937	2715.025	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-AR-Railings	0	0 in the document
+08:13:27.938	2715.026	1A02MM		test passed	BLD-Security Devices-vs-BLD-AR-Railings	0	ran and found nothing
+08:13:33.064	2720.152	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-ST-Foundation	0	0 in the document
+08:13:33.064	2720.152	1A02MM		test passed	BLD-Security Devices-vs-BLD-ST-Foundation	0	ran and found nothing
+08:13:39.058	2726.146	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-ST-Columns	0	0 in the document
+08:13:39.058	2726.147	1A02MM		test passed	BLD-Security Devices-vs-BLD-ST-Columns	0	ran and found nothing
+08:13:44.781	2731.870	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-ST-Framing	3	3 in the document
+08:13:44.781	2731.870	1A02MM		test found clashes	BLD-Security Devices-vs-BLD-ST-Framing	3	ran and found clashes
+08:13:50.363	2737.450	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-ST-Walls	0	0 in the document
+08:13:50.363	2737.451	1A02MM		test passed	BLD-Security Devices-vs-BLD-ST-Walls	0	ran and found nothing
+08:13:55.724	2742.812	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-ST-Floors	0	0 in the document
+08:13:55.724	2742.813	1A02MM		test passed	BLD-Security Devices-vs-BLD-ST-Floors	0	ran and found nothing
+08:14:01.655	2748.743	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-ST-Stair	0	0 in the document
+08:14:01.655	2748.743	1A02MM		test passed	BLD-Security Devices-vs-BLD-ST-Stair	0	ran and found nothing
+08:14:07.017	2754.104	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+08:14:07.017	2754.105	1A02MM		test passed	BLD-Security Devices-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+08:14:12.222	2759.309	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-ME-Duct Accessory	0	0 in the document
+08:14:12.222	2759.310	1A02MM		test passed	BLD-Security Devices-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+08:14:17.701	2764.789	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+08:14:17.702	2764.789	1A02MM		test passed	BLD-Security Devices-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+08:14:24.324	2771.411	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-ME-Air Terminals	0	0 in the document
+08:14:24.324	2771.412	1A02MM		test passed	BLD-Security Devices-vs-BLD-ME-Air Terminals	0	ran and found nothing
+08:14:29.876	2776.964	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+08:14:29.876	2776.964	1A02MM		test passed	BLD-Security Devices-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+08:14:35.947	2783.035	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+08:14:35.948	2783.035	1A02MM		test passed	BLD-Security Devices-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+08:14:41.300	2788.387	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-PL-Pipes & Pipe Fittings	0	0 in the document
+08:14:41.300	2788.388	1A02MM		test passed	BLD-Security Devices-vs-BLD-PL-Pipes & Pipe Fittings	0	ran and found nothing
+08:14:46.830	2793.918	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-PL-Pipe Accessories	0	0 in the document
+08:14:46.831	2793.918	1A02MM		test passed	BLD-Security Devices-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+08:14:52.286	2799.373	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+08:14:52.286	2799.374	1A02MM		test passed	BLD-Security Devices-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+08:14:59.021	2806.109	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-DR-Pipes & Pipe Fittings	0	0 in the document
+08:14:59.021	2806.109	1A02MM		test passed	BLD-Security Devices-vs-BLD-DR-Pipes & Pipe Fittings	0	ran and found nothing
+08:15:04.906	2811.994	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+08:15:04.907	2811.994	1A02MM		test passed	BLD-Security Devices-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+08:15:10.528	2817.614	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	1	1 in the document
+08:15:10.528	2817.615	1A02MM		test found clashes	BLD-Security Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	1	ran and found clashes
+08:15:16.534	2823.621	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-EL-Electrical Equipment	1	1 in the document
+08:15:16.534	2823.621	1A02MM		test found clashes	BLD-Security Devices-vs-BLD-EL-Electrical Equipment	1	ran and found clashes
+08:15:22.375	2829.462	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-EL-Electrical Fixtures	0	0 in the document
+08:15:22.375	2829.463	1A02MM		test passed	BLD-Security Devices-vs-BLD-EL-Electrical Fixtures	0	ran and found nothing
+08:15:28.237	2835.324	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-EL-Conduits & Conduit Fittings	0	0 in the document
+08:15:28.237	2835.324	1A02MM		test passed	BLD-Security Devices-vs-BLD-EL-Conduits & Conduit Fittings	0	ran and found nothing
+08:15:33.925	2841.013	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-EL-Lighting Fixtures	0	0 in the document
+08:15:33.925	2841.013	1A02MM		test passed	BLD-Security Devices-vs-BLD-EL-Lighting Fixtures	0	ran and found nothing
+08:15:39.578	2846.665	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-EL-Lighting Devices	5	5 in the document
+08:15:39.578	2846.665	1A02MM		test found clashes	BLD-Security Devices-vs-BLD-EL-Lighting Devices	5	ran and found clashes
+08:15:44.928	2852.014	1A02MM		rows for the workbook	BLD-Security Devices-vs-BLD-EL-Fire Alarm Devices	0	0 in the document
+08:15:44.928	2852.015	1A02MM		test passed	BLD-Security Devices-vs-BLD-EL-Fire Alarm Devices	0	ran and found nothing
+08:15:50.410	2857.496	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-AR-Floors	0	0 in the document
+08:15:50.410	2857.497	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-AR-Floors	0	ran and found nothing
+08:15:56.272	2863.358	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-AR-Walls	0	0 in the document
+08:15:56.273	2863.359	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-AR-Walls	0	ran and found nothing
+08:16:01.521	2868.608	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-AR-Windows	0	0 in the document
+08:16:01.522	2868.608	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-AR-Windows	0	ran and found nothing
+08:16:07.246	2874.332	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-AR-Curtain Mullions	0	0 in the document
+08:16:07.247	2874.333	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+08:16:13.432	2880.518	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-AR-Doors	0	0 in the document
+08:16:13.432	2880.518	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-AR-Doors	0	ran and found nothing
+08:16:19.470	2886.556	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-AR-Railings	0	0 in the document
+08:16:19.470	2886.557	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-AR-Railings	0	ran and found nothing
+08:16:25.060	2892.146	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-ST-Foundation	0	0 in the document
+08:16:25.060	2892.146	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-ST-Foundation	0	ran and found nothing
+08:16:31.002	2898.088	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-ST-Columns	0	0 in the document
+08:16:31.002	2898.088	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-ST-Columns	0	ran and found nothing
+08:16:36.900	2903.987	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-ST-Framing	0	0 in the document
+08:16:36.901	2903.987	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-ST-Framing	0	ran and found nothing
+08:16:42.225	2909.311	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-ST-Walls	0	0 in the document
+08:16:42.225	2909.311	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-ST-Walls	0	ran and found nothing
+08:16:48.314	2915.400	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-ST-Floors	0	0 in the document
+08:16:48.314	2915.400	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-ST-Floors	0	ran and found nothing
+08:16:54.076	2921.162	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-ST-Stair	0	0 in the document
+08:16:54.077	2921.163	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-ST-Stair	0	ran and found nothing
+08:16:59.698	2926.784	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+08:16:59.698	2926.784	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+08:17:05.564	2932.650	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-ME-Duct Accessory	0	0 in the document
+08:17:05.565	2932.650	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+08:17:11.379	2938.465	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+08:17:11.379	2938.466	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+08:17:16.549	2943.634	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-ME-Air Terminals	0	0 in the document
+08:17:16.549	2943.635	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-ME-Air Terminals	0	ran and found nothing
+08:17:21.680	2948.766	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+08:17:21.680	2948.766	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+08:17:26.791	2953.877	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+08:17:26.792	2953.877	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+08:17:32.146	2959.231	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-PL-Pipes & Pipe Fittings	0	0 in the document
+08:17:32.146	2959.232	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-PL-Pipes & Pipe Fittings	0	ran and found nothing
+08:17:37.546	2964.632	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-PL-Pipe Accessories	0	0 in the document
+08:17:37.547	2964.633	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+08:17:42.708	2969.794	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+08:17:42.709	2969.794	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+08:17:48.369	2975.455	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-DR-Pipes & Pipe Fittings	0	0 in the document
+08:17:48.370	2975.456	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-DR-Pipes & Pipe Fittings	0	ran and found nothing
+08:17:54.117	2981.202	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+08:17:54.117	2981.202	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+08:18:00.183	2987.269	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	0 in the document
+08:18:00.183	2987.269	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	ran and found nothing
+08:18:05.616	2992.701	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-EL-Electrical Equipment	0	0 in the document
+08:18:05.616	2992.701	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-EL-Electrical Equipment	0	ran and found nothing
+08:18:10.947	2998.033	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-EL-Electrical Fixtures	0	0 in the document
+08:18:10.947	2998.033	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-EL-Electrical Fixtures	0	ran and found nothing
+08:18:16.129	3003.214	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-EL-Conduits & Conduit Fittings	0	0 in the document
+08:18:16.129	3003.215	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-EL-Conduits & Conduit Fittings	0	ran and found nothing
+08:18:21.554	3008.639	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-EL-Lighting Fixtures	0	0 in the document
+08:18:21.554	3008.640	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-EL-Lighting Fixtures	0	ran and found nothing
+08:18:26.766	3013.851	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-EL-Lighting Devices	0	0 in the document
+08:18:26.766	3013.852	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-EL-Lighting Devices	0	ran and found nothing
+08:18:32.006	3019.091	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-EL-Fire Alarm Devices	0	0 in the document
+08:18:32.006	3019.091	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-EL-Fire Alarm Devices	0	ran and found nothing
+08:18:37.714	3024.798	1A02MM		rows for the workbook	BLD-EL-Communication Devices-vs-BLD-Security Devices	0	0 in the document
+08:18:37.714	3024.799	1A02MM		test passed	BLD-EL-Communication Devices-vs-BLD-Security Devices	0	ran and found nothing
+08:18:43.346	3030.431	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-AR-Floors	0	0 in the document
+08:18:43.347	3030.432	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-AR-Floors	0	ran and found nothing
+08:18:49.088	3036.173	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-AR-Walls	0	0 in the document
+08:18:49.088	3036.173	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-AR-Walls	0	ran and found nothing
+08:18:54.489	3041.574	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-AR-Windows	0	0 in the document
+08:18:54.489	3041.574	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-AR-Windows	0	ran and found nothing
+08:19:00.814	3047.899	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-AR-Curtain Mullions	0	0 in the document
+08:19:00.815	3047.900	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-AR-Curtain Mullions	0	ran and found nothing
+08:19:06.296	3053.380	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-AR-Doors	0	0 in the document
+08:19:06.296	3053.381	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-AR-Doors	0	ran and found nothing
+08:19:12.144	3059.229	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-AR-Railings	0	0 in the document
+08:19:12.144	3059.229	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-AR-Railings	0	ran and found nothing
+08:19:17.423	3064.507	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-ST-Foundation	0	0 in the document
+08:19:17.424	3064.508	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-ST-Foundation	0	ran and found nothing
+08:19:22.866	3069.950	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-ST-Columns	0	0 in the document
+08:19:22.866	3069.951	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-ST-Columns	0	ran and found nothing
+08:19:29.295	3076.380	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-ST-Framing	2	2 in the document
+08:19:29.296	3076.381	1A02MM		test found clashes	BLD-EL-Data Devices-vs-BLD-ST-Framing	2	ran and found clashes
+08:19:35.618	3082.703	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-ST-Walls	0	0 in the document
+08:19:35.618	3082.703	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-ST-Walls	0	ran and found nothing
+08:19:41.738	3088.822	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-ST-Floors	7	7 in the document
+08:19:41.738	3088.823	1A02MM		test found clashes	BLD-EL-Data Devices-vs-BLD-ST-Floors	7	ran and found clashes
+08:19:47.583	3094.668	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-ST-Stair	0	0 in the document
+08:19:47.583	3094.668	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-ST-Stair	0	ran and found nothing
+08:19:53.316	3100.400	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-ME-Ducts&Duct Fittings	0	0 in the document
+08:19:53.316	3100.401	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-ME-Ducts&Duct Fittings	0	ran and found nothing
+08:19:59.117	3106.202	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-ME-Duct Accessory	0	0 in the document
+08:19:59.118	3106.202	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-ME-Duct Accessory	0	ran and found nothing
+08:20:05.222	3112.307	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-ME-Mechanical Equipment	0	0 in the document
+08:20:05.223	3112.307	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-ME-Mechanical Equipment	0	ran and found nothing
+08:20:10.738	3117.823	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-ME-Air Terminals	0	0 in the document
+08:20:10.739	3117.823	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-ME-Air Terminals	0	ran and found nothing
+08:20:16.112	3123.196	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-ME-Pipes&Pipe Fittings	0	0 in the document
+08:20:16.113	3123.196	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-ME-Pipes&Pipe Fittings	0	ran and found nothing
+08:20:21.770	3128.854	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-PL-Mechanical Equipment	0	0 in the document
+08:20:21.771	3128.855	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-PL-Mechanical Equipment	0	ran and found nothing
+08:20:27.257	3134.341	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-PL-Pipes & Pipe Fittings	0	0 in the document
+08:20:27.257	3134.341	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-PL-Pipes & Pipe Fittings	0	ran and found nothing
+08:20:32.316	3139.401	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-PL-Pipe Accessories	0	0 in the document
+08:20:32.317	3139.401	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-PL-Pipe Accessories	0	ran and found nothing
+08:20:38.038	3145.123	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-PL-Plumbing Fixtures	0	0 in the document
+08:20:38.040	3145.124	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-PL-Plumbing Fixtures	0	ran and found nothing
+08:20:43.040	3150.124	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-DR-Pipes & Pipe Fittings	0	0 in the document
+08:20:43.040	3150.124	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-DR-Pipes & Pipe Fittings	0	ran and found nothing
+08:20:48.020	3155.104	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-DR-Plumbing Fixtures	0	0 in the document
+08:20:48.020	3155.105	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-DR-Plumbing Fixtures	0	ran and found nothing
+08:20:53.195	3160.278	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	0 in the document
+08:20:53.195	3160.278	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings	0	ran and found nothing
+08:20:58.549	3165.633	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-EL-Electrical Equipment	0	0 in the document
+08:20:58.549	3165.633	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-EL-Electrical Equipment	0	ran and found nothing
+08:21:03.936	3171.019	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-EL-Electrical Fixtures	0	0 in the document
+08:21:03.936	3171.020	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-EL-Electrical Fixtures	0	ran and found nothing
+08:21:09.717	3176.800	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-EL-Conduits & Conduit Fittings	0	0 in the document
+08:21:09.717	3176.801	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-EL-Conduits & Conduit Fittings	0	ran and found nothing
+08:21:15.475	3182.559	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-EL-Lighting Fixtures	0	0 in the document
+08:21:15.475	3182.559	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-EL-Lighting Fixtures	0	ran and found nothing
+08:21:20.881	3187.965	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-EL-Lighting Devices	0	0 in the document
+08:21:20.881	3187.965	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-EL-Lighting Devices	0	ran and found nothing
+08:21:26.325	3193.408	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-EL-Fire Alarm Devices	0	0 in the document
+08:21:26.325	3193.408	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-EL-Fire Alarm Devices	0	ran and found nothing
+08:21:31.601	3198.684	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-Security Devices	0	0 in the document
+08:21:31.601	3198.685	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-Security Devices	0	ran and found nothing
+08:21:37.068	3204.151	1A02MM		rows for the workbook	BLD-EL-Data Devices-vs-BLD-EL-Communication Devices	0	0 in the document
+08:21:37.068	3204.151	1A02MM		test passed	BLD-EL-Data Devices-vs-BLD-EL-Communication Devices	0	ran and found nothing
+08:22:25.243	3252.326	1A02MM	VIEWS	step started	VIEWS	0	
+08:22:25.248	3252.331	1A02MM	VIEWS	census before	models	4	
+08:22:25.248	3252.331	1A02MM	VIEWS	census before	sets	61	
+08:22:25.249	3252.332	1A02MM	VIEWS	census before	tests	528	
+08:22:25.249	3252.332	1A02MM	VIEWS	census before	results	2939	
+08:22:25.249	3252.332	1A02MM	VIEWS	census before	views	2847	
