@@ -356,6 +356,32 @@ namespace Federator.Core.Tests
             Assert.That(ProbeVerdict.FireSuppressionRows(tally.Rows()), Is.Empty);
         }
 
+        /// <summary>
+        /// FR-158. The probe walks a category it asked for by trimming and ignoring case, but counted
+        /// its elements under the raw spelling, so an element reading Pipe Fittings with a space or in
+        /// lower case was walked and written to the CSV while the verdict listed Pipe Fittings among
+        /// the categories with no elements at all. The count is read by the rule that asked.
+        /// </summary>
+        [Test]
+        public void ACategorySpelledWithASpaceOrInAnotherCaseIsNotListedAsHavingNoElements()
+        {
+            ProbeTally tally = new ProbeTally();
+            tally.AddElement("Pipe Fittings ");
+            tally.AddElement("pipe fittings");
+            tally.AddElement("Pipes");
+
+            Assert.That(tally.ElementsIn("Pipe Fittings"), Is.EqualTo(2));
+            Assert.That(tally.ElementsIn("Pipes"), Is.EqualTo(1));
+            Assert.That(tally.ElementsIn("Ducts"), Is.EqualTo(0));
+            Assert.That(tally.ElementsIn(string.Empty), Is.EqualTo(0));
+
+            string all = string.Join("\n", new List<string>(ProbeVerdict.Lines(
+                "a.nwc", "a.csv", tally, new List<string> { "Pipe Fittings", "Sprinklers" })).ToArray());
+
+            Assert.That(all, Does.Contain("categories with no elements at all : 1, Sprinklers"));
+            Assert.That(all, Does.Not.Contain("Pipe Fittings,"));
+        }
+
         [Test]
         public void TheVerdictNamesTheCategoriesThatFoundNothing()
         {
