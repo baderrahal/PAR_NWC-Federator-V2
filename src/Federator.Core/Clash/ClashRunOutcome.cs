@@ -20,6 +20,8 @@ namespace Federator.Core.Clash
         private readonly List<SkippedClashTest> skipped = new List<SkippedClashTest>();
         private readonly List<string> created = new List<string>();
         private readonly List<string> alreadyPresent = new List<string>();
+        private readonly Dictionary<string, int> itemsByLocator = new Dictionary<string, int>(StringComparer.Ordinal);
+        private readonly Dictionary<string, int[]> sidesRead = new Dictionary<string, int[]>(StringComparer.Ordinal);
 
         /// <summary>How many clashtest elements the picked file held.</summary>
         public int TestsInFile { get; set; }
@@ -164,6 +166,106 @@ namespace Federator.Core.Clash
             ClashTestResult result = new ClashTestResult(name, leftItems, rightItems, tally, seconds);
             ran.Add(result);
             return result;
+        }
+
+        /// <summary>
+        /// The names of the tests this run created, in the order it created them, F127.
+        /// The coverage of Bader's request 2 reads the runner's own record test by test, and
+        /// the record kept these names private and handed out counts alone. The view is read
+        /// only, so a reader can never add a test the runner never created.
+        /// </summary>
+        public ReadOnlyCollection<string> CreatedNames
+        {
+            get { return created.AsReadOnly(); }
+        }
+
+        /// <summary>The names of the tests already in the document and left as they were, F127.</summary>
+        public ReadOnlyCollection<string> AlreadyPresentNames
+        {
+            get { return alreadyPresent.AsReadOnly(); }
+        }
+
+        /// <summary>The tests that ran, each with the clashes the runner counted, F127.</summary>
+        public ReadOnlyCollection<ClashTestResult> Ran
+        {
+            get { return ran.AsReadOnly(); }
+        }
+
+        /// <summary>The tests not created or not run, each with its kind and the runner's words, F127.</summary>
+        public ReadOnlyCollection<SkippedClashTest> Skipped
+        {
+            get { return skipped.AsReadOnly(); }
+        }
+
+        /// <summary>
+        /// How many items each locator found when the creation plan was made, F127, the very
+        /// counts F77's CreationPlan decided on, so the reason a test was not created is read
+        /// off what decided it and never off a second count. Empty where no creation plan was
+        /// made, which is every run of the saved tests with no XML, and a locator missing from
+        /// it is one nobody counted and never one that found nothing.
+        /// </summary>
+        public IDictionary<string, int> ItemsByLocator
+        {
+            get { return new ReadOnlyDictionary<string, int>(itemsByLocator); }
+        }
+
+        /// <summary>
+        /// Keeps a copy of the counts the creation plan was handed, F127. A copy, so the
+        /// record cannot move when the caller's dictionary does. Locators are kept exactly
+        /// and never trimmed, because two set names in the reference file end in a space.
+        /// </summary>
+        public void KeepItemsByLocator(IDictionary<string, int> counts)
+        {
+            itemsByLocator.Clear();
+
+            if (counts == null)
+            {
+                return;
+            }
+
+            foreach (KeyValuePair<string, int> count in counts)
+            {
+                if (count.Key != null)
+                {
+                    itemsByLocator[count.Key] = count.Value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The two side counts the run time check read off one test's own sides, F127, the
+        /// numbers that decided whether it ran. For the saved tests with no XML these are the
+        /// only counts the run has. Minus one is a side that could not be counted, kept as it
+        /// is, because a count nobody took is not a count of zero.
+        /// </summary>
+        public void RecordSides(string name, int leftItems, int rightItems)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            sidesRead[name] = new[] { leftItems, rightItems };
+        }
+
+        /// <summary>
+        /// The side counts the run time check read for that test, or false and minus one on
+        /// both sides where they were never read.
+        /// </summary>
+        public bool TrySidesRead(string name, out int leftItems, out int rightItems)
+        {
+            int[] sides;
+
+            if (name == null || !sidesRead.TryGetValue(name, out sides))
+            {
+                leftItems = -1;
+                rightItems = -1;
+                return false;
+            }
+
+            leftItems = sides[0];
+            rightItems = sides[1];
+            return true;
         }
 
         public int CreatedCount
@@ -486,6 +588,7 @@ namespace Federator.Core.Clash
                     ClashSkipReason.UnknownTestType,
                     ClashSkipReason.NoLocator,
                     ClashSkipReason.UnknownUnits,
+                    ClashSkipReason.NoTolerance,
                     ClashSkipReason.NoName,
                     ClashSkipReason.Failed
                 })

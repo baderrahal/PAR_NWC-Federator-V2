@@ -142,7 +142,8 @@ namespace Federator.Core.Rerun
     ///            alone, or its clash was skipped because a model is not on the same shared
     ///            coordinates, Bader's answer to Q99 and Q100
     ///   FAILED   something requested threw or produced nothing, or a model names no
-    ///            shared site, or names Internal in a group whose clash is not skipped, Q70
+    ///            shared site or names Internal in a group whose clash is not skipped, Q70.
+    ///            Where the clash is skipped neither fails it, Q111 B
     ///
     /// A step deliberately switched off is not a failure. Judging a group by whether an
     /// NWD existed, when republishing was switched off, reported all 22 groups of a clean
