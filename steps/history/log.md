@@ -2,6 +2,98 @@
 
 Newest entry at the top.
 
+## 2026-10-08 F128 generic models, the add-in part, built on fix-F128 after the one probe, on Bader's order of 8 Oct and lane B's Core part
+
+Bader's request 3 under Q112, FR-177 of steps\fix-round.md, taken first by his order of 8 Oct 2026, Q145 item 2,
+under Q143's limits. Lane B's Core part merged as pull request 171 on the morning of 2026-10-08, its record in
+steps\lane-b.md under the heading F128 the Core part is on main, which names every care the add-in must take, read
+off SetBuilder and SetLeftovers. The one measurement allowed, docs\history\scan.md 5z-zb at 44f9b45 on fix-F128, by
+tools\probes\GenericProbe through the guarded start, Roamer pid 32416, on the loop's copies of 1A02MM's four NWCs and
+1A04PK's ten: the value Generic Models sits on the Element tab under LcRevitPropertyElementCategory exactly as the
+client's file asks and GenericModelsSettings holds, 572 items in five of 1A04PK's ten models and none in 1A02MM's
+19,028, and the Source File of an item is the bare name of the Revit file with its .rvt, the file name of
+Model.SourceFileName, which for four of 1A04PK's ten models is not the NWC's, so the plan's default text found 531
+of 572 and the Revit name all 572. Each search over the whole document under 0.03 s.
+
+Built by the developer in the worktree wt-f128 on branch fix-F128, main f37230b merged in first at 5c8cad5, the code
+at 43e3c5f and the rules and steps at the commit after it. Core, each with a test: GenericModelInput.From reads the
+text each set looks for off Model.FileName and Model.SourceFileName, the bare name after the last separator with its
+extension, a model with no source name looked for by its stem. GenericModelsPlan.SetNames, the names the picked
+file's leftover walk is handed as wanted. GenericModelsSettings.WorkbookSuffix and WorkbookNameFor, the workbook of
+its own named after the group's workbook with a space and the suffix, refused where Windows refuses it in a file
+name. GenericWorkbook.Write, the one sheet in a workbook of its own. GenericModelsAcrossTheRun and the generic
+models line of RESULT through RunLog.WriteResultBlock, which writes that no count was handed in where none was.
+SetBuildOutcome.JudgeIfEmpty with no judge judges nothing. RunSteps.GenericWorkbook, GENERIC XLSX, the sixteenth
+step. ReportOptions.GenericModels, the settings read off Core and never typed in the window. The add-in:
+FederationEngine.BuildTheSets plans the Generic Models sets off every model of the document, each wrapper disposed,
+builds the picked file's sets with the plan's names handed to the leftover walk, then builds the Generic Models sets
+through SetBuilder.Build with no judge and no leftover walk, inside the one SETS step so its seconds show both, with
+no XML for them alone, then the GENERIC MODELS block and one row a model. SetBuilder.Build takes whether to walk the
+leftovers and the names of the other plan it keeps. WriteTheGenericWorkbook, the GENERIC XLSX step after the group's
+workbook, whether or not the clash ran, read back by size. JobOutcome carries the outcome, the report and the
+workbook size, and the window hands the engine's tally to RESULT.
+
+Decided by the developer, the lead's to confirm: the workbook is one of its own beside the group's workbook, named
+with the suffix Generic Models, because FR-200 makes the Coverage sheet the second and last sheet of the group's
+workbook, so nothing in WorkbookCheck changes and where it goes is Bader's question, the lead's to record, recorded as Q146 with the lead's choice B applied meanwhile. The text
+carries its .rvt, the more exact of the two the probe found all 572 with. A plan or a build that throws adds the
+group's error, as the picked file's sets do. The Build sets button builds the Generic Models sets too. A fourth
+value, the workbook suffix, joins the three of the Core part.
+
+Build before any change, --no-incremental from an empty git status, 0 warnings and 0 errors, turn6\f128a-build-before.txt,
+and after the code commit the same, f128a-build-after.txt. Core tests 2727 passed, 0 failed, 0 skipped before,
+2744 passed, 0 failed, 0 skipped after, f128a-tests-before.txt and f128a-tests-after.txt. The null judge test
+failed against the source before, f128a-tests-failing-before.txt, and the tests of the new members do not build
+against it. check-locals and check-imports clean over src. The pre-commit ran the full set on each commit.
+
+What waits for the local machine: steps 491 to 505 of steps\03_bader_next.md, 1A04PK with the five counts the probe
+read, 1A02MM at nought on every set with both nought lines, the weekly rerun that finds the ten sets present and
+removes none with the rebuild box unticked and ticked, the run with no XML, and the SETS and GENERIC XLSX seconds
+of Q145 item 5. UNKNOWN until a run: whether DisplayStringContains compares without case, what Source File holds for
+an NWC published from a Revit file on disk rather than Autodesk Docs, and whether 1A02MM's nought holds for a later
+week's files. No pull request was opened, by the brief.
+
+ATTEMPT 2 on 2026-10-08 on branch fix-F128 at 5bf6d9d, the second and last under Q143 item 1, on the breaker's four
+blocking findings and the reviewer's one, turn6\f128a-break.json and f128a-review.json, main not merged in. The weekly
+rerun, both readers: GenericModelsReport.From compared the prose a present set asks, SetDrift.AskedNow without display
+names, with the plan's PlannedSet.Describe with them, so every present set read as asking another question and every
+model was UNKNOWN after the first run, and the Core test masked it by writing the plan's words as Asked. Now
+SetResult.AskedConditions carries the conditions read off the set, set by SetBuilder beside Asked, and the report
+compares by SetDrift.Compare, the one drift rule on the keys. The report and sheet tests build their present sets as
+the add-in records them, and against the old compare 11 of the 18 report tests failed, turn6\f128b-tests-failing-before.txt.
+The walk, the breaker's 2 with the reviewer's edge: a plan that is null or empty handed the picked file's leftover walk
+no Generic Models name, so with the rebuild box on last week's sets were removed and the NWF saved. Now
+GenericModelsPlan.WhyNoLeftoverWalk refuses the walk where the plan was not made or holds no model, the engine writes
+that line where the box is on and SetBuilder.Build is told not to walk. A set of a model that has left the group is
+stale and the walk removes it with the box on, said in addin.md and in step 503. The stem, the breaker's 3 with the
+reviewer's point: a model whose source name was not read fell to the NWC stem in silence while the SETS line said every
+set looks for the Revit file name. GenericModelInput.From marks SourceNameNotRead, the plan notes each such model,
+LookingForTheStem, and the SETS line reads LooksFor. The damaged document, the breaker's 4: where the file's build
+declared the document damaged the Generic Models sets are not built, one line says so, the group is counted as not
+counted and the step asks no save. The lead's decision on the reviewer's rule point: a throw in the plan, the build or
+the workbook write never fails the group, the three catches log what happens next, the plan's and the build's write the
+GENERIC MODELS block with a FAILED line off GenericModelsReport.FailedLines, and RESULT counts the group as not counted.
+GenericModelsAcrossTheRun pluralises through Words.Counted. Core tests 2744 passed, 0 failed, 0 skipped before, 2749
+passed, 0 failed, 0 skipped after, f128b-tests-after.txt. The build --no-incremental from an empty git status after
+the code commit, 0 warnings and 0 errors, f128b-build-after.txt. check-locals and check-imports clean over src. The
+proof steps are 491 to 506, step 505 new, no group ending FAILED or PARTIAL on account of these sets.
+
+On the second reading of attempt 2, the reviewer APPROVE and the breaker one blocking fault attempt 2 made,
+turn6\f128b-break.json, fixed on the same attempt: a Generic Models workbook write that threw with last week's file
+still at the path read that file's size back and listed it as written, so now the catch sets a flag, nothing is
+listed as written, the size stays unread, GenericWorkbookOnDisk stays false and one XLSX line says whether a file of
+that name is at the path, by File.Exists, and that whether it is an earlier run's file untouched or one this run cut
+short is UNKNOWN, since a save that threw after opening the path leaves the old file cut short, the breaker's third
+reading, and the SETS line of a damaged document says
+only what this step does, no Generic Models set put in and no save asked, the clash step after it being a hole older
+than F128 and a row for F121. The group's own workbook write reports the same case the same old way, WriteTheWorkbook,
+and is older than F128, so it was left alone.
+
+Main 1f962d5 merged into fix-F128 after, F120 as pull request 183 and lane B's 178 to 181 among it, both sides kept:
+seventeen steps with RENUMBER between IMAGES and VIEWS and GENERIC XLSX after WORKBOOK, F120's order line 53 and F128's
+54, F120's proof steps 482 to 490 and F128's 491 to 506, and the engine holding F120's images, guard and RENUMBER
+changes beside F128's sets step.
+
 ## 2026-10-08 The loop, turn 6, F120 the harvest and pictures area of the fix round, FR-075, FR-076 and FR-077, Core done and the add-in built
 
 Bader's order of 8 Oct 2026, Q145 item 3, wave 3a of the fix round, items FR-075, FR-076 and

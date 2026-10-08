@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 515 rows: open 190, in progress 46, in review 0, merged 243, proven by a run 27, waiting for Bader 3, dropped 6
-- By wave: 1 19, 2a 60, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 11, 3a 21, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 73, outside the waves 2, right after F133 merges 6
-- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F128 generic models, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q112-3 generic models counted and a set per model (FR-177), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, and 25 FR items
-- Waits for Bader, 3 rows: step 228-233, F114-K29, Q144
+- By status, of 518 rows: open 192, in progress 43, in review 0, merged 246, proven by a run 27, waiting for Bader 4, dropped 6
+- By wave: 1 19, 2a 61, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 12, 3a 21, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 74, outside the waves 2, right after F133 merges 6
+- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, and 24 FR items
+- Waits for Bader, 4 rows: step 228-233, F114-K29, Q144, Q146
 
 ## Wave 1
 
@@ -95,6 +95,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F132-R2 | a set's flags and findspec are not read by the drift check a merge reads | F132 | register row | open | none | none | 2026-10-07 |
 | F132-R3 | two clashes of one test between the same two elements on geometry of one name share a merge key, ClashItem.MergeKey, so a clash only a mirror found on such a pair is counted as a repeat and not added, said on the MIRROR MERGE lines | F132 | register row | open | none | none | 2026-10-07 |
 | F132-R6 | a saved test a person grouped gets one viewpoint per result group since the views read the report's rows, as the workbook and the pictures do, where attempt 1 gave each clash under a group its own, the lead's ruling of by design on the breaker's blocking point of attempt 2, turn6\f132q-break-addin.json, for Bader | F132 | register row | open | none | none | 2026-10-08 |
+| F115-R24 | a document the leftover walk declared damaged is still taken through the clash step and saved where a test is created or a view is built, the sets only return being the one guard, the breaker's reading of F128's attempt 2, older than F128 | F115 | register row | open | none | none | 2026-10-08 |
 
 ## Wave 2a and 2b
 
@@ -115,7 +116,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-071 | views log silent up to 21 minutes | F114 | slow | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-072 | penetrations upwards walk outside try | F114 | loud failure | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-073 | views seconds parts do not add | F114 | noise | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
-| FR-177 | generic models counted and a set per model | F128 | Bader's request | in progress | 171 the Core part merged by lane B, the add-in part on the laptop | none | 2026-10-08 |
+| FR-177 | generic models counted and a set per model | F128 | Bader's request | merged | 171 and UNKNOWN | none | 2026-10-08 |
 | FR-180 | team map beside the picked xml | F131 | Bader's decision | merged | 135 | none | 2026-10-07 |
 | FR-181 | mechanical sets miss hv pl fp models | F131 | Bader's decision | in progress | 135 merged for F131, the COVERAGE block and the form wait for F127 | none | 2026-10-07 |
 | FR-184 | views tree by priority and team pair | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
@@ -124,9 +125,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-187 | views proof on 1a02mm and the views tree block | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-188 | views rules in docs workflow | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | F114 | views | F114 | fix | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
-| F128 | generic models | F128 | fix | in progress | 171 the Core part merged by lane B, the plan, the counts, the block and the sheet, the add-in part and the measurement on the laptop | none | 2026-10-08 |
+| F128 | generic models | F128 | fix | merged | 171 the Core part by lane B and UNKNOWN the probe and the add-in part | none | 2026-10-08 |
 | F131 | teams | F131 | fix | merged | 135 | none | 2026-10-07 |
-| Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | in progress | 171 the Core part merged by lane B, the add-in part on the laptop | none | 2026-10-08 |
+| Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | merged | 171 and UNKNOWN | none | 2026-10-08 |
 | Q77 | the clear and rebuild does not copy the viewpoints | F114 | question | merged | 131 | none | 2026-10-06 |
 | Q115 | where the team map lives | F131 | question | merged | 118 | none | 2026-10-05 |
 | Q116 | where the team map applies | F131 | question | merged | 118 | none | 2026-10-05 |
@@ -160,6 +161,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-199 | blocks stay in measured order with a priority file | F118 | Bader's decision | merged | 159 | none | 2026-10-07 |
 | F118-R1 | the order check of the workbook reads the full blocks only so a one row test placed before a full block is not named | F118 | register row | merged | 176 | none | 2026-10-08 |
 | F118-R2 | with a priority file picked the check does not run the Priority heading check on a sheet with no full block | F118 | register row | dropped | 176, lane B read it as no fault, a sheet of one row tests has no heading row | none | 2026-10-08 |
+| F118-R3 | the group's own workbook is listed as written with last week's size where its save threw and an earlier run's file is at the path, the developer's reading on F128's attempt 2, older than F128, the same fault FR-189 names for the NWD | F118 | register row | open | none | none | 2026-10-08 |
 
 ## Wave 3a
 
@@ -608,6 +610,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q143 | fast to a team release, the seven limits, the two lanes and the hourly lines | none | Bader's request | merged | 157 | none | 2026-10-07 |
 | Q144 | a run with no XML and the by design pass on the saved tests | none | question | waiting for Bader | none | none | 2026-10-08 |
 | Q145 | the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release | none | Bader's request | in progress | none | none | 2026-10-08 |
+| Q146 | where the Generic Models sheet goes | none | question | waiting for Bader | none | none | 2026-10-08 |
 
 ## outside the waves
 
