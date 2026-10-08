@@ -85,7 +85,7 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// Every member of Autodesk.Navisworks.Api.Units resolves through the table, FR-170. The enum has eleven members,
-        /// measured, docs\history\scan.md near line 520, and a unit the table does not know throws out of the penetration
+        /// measured, docs\history\scan.md lines 525 to 528, and a unit the table does not know throws out of the penetration
         /// size reader into a catch. This holds the table to that list, so a dropped row fails here and not in a run. It
         /// passes today, since the table carries all eleven.
         /// </summary>

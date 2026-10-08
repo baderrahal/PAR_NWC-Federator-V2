@@ -36,6 +36,10 @@ namespace Federator.Core.Rerun
     /// WHO CALLS IT. The reshape of a CHANGED group, and the set rename and removal pair
     /// of Q74, which has the same shape: a remove and a rename that are two calls and one
     /// change, with a window between them where neither set carries the corrected name.
+    ///
+    /// PART 2 IS KEPT BY THE RESHAPE AND NOT YET BY THE SET PAIR. The engine goes on to the clash tests after a
+    /// failed pair and saves if they put anything in, which the page of lane B records, so the sentence below that
+    /// says it was not saved can be untrue for that caller.
     /// </summary>
     public static class DamagedDocument
     {
@@ -52,9 +56,10 @@ namespace Federator.Core.Rerun
 
         /// <summary>
         /// What to say when the work stopped AFTER something in the document was changed.
-        /// NOTHING IS SAVED FROM HERE, which is what makes the second half of the sentence
-        /// true rather than a hope. It says unchanged by this run and never that the file
-        /// is good, because this tool knows it did not write and knows nothing else.
+        /// NOTHING IS SAVED FROM HERE is the rule, and what makes the second half of the sentence
+        /// true rather than a hope, so a caller that saves anyway makes it untrue. It says unchanged by
+        /// this run and never that the file is good, because this tool knows it did not write and knows
+        /// nothing else.
         /// </summary>
         public static string TheDocumentIsDamaged(string what)
         {
