@@ -83,6 +83,10 @@ namespace Federator.Addin.Engine
         // handle held across the group.
         private readonly Dictionary<string, RowAddress> addressOf = new Dictionary<string, RowAddress>(StringComparer.Ordinal);
 
+        // Which tests walk one read whole, Core's rule, the breaker's B1: only such a test gets
+        // a view and loses its old views, and every other is counted failed with why.
+        private TestsRead testsRead;
+
         public ViewpointBuilder(
             Action<string> progress,
             RunLog log,
@@ -152,6 +156,7 @@ namespace Federator.Addin.Engine
             dimmedAnything = false;
             dimmedNow = false;
             addressOf.Clear();
+            testsRead = new TestsRead();
             Plan = null;
             TreeLog = null;
             TreeRows = null;
@@ -172,6 +177,11 @@ namespace Federator.Addin.Engine
                     Plan = TestViewPlan.For(clashes, teams, mirrors, views);
                 }
 
+                foreach (KeyValuePair<string, string> notWhole in testsRead.NotWhole())
+                {
+                    outcome.AddFailed(notWhole.Key, "UNKNOWN", notWhole.Value);
+                }
+
                 if (Plan.Views.Count > 0)
                 {
                     WriteTheViews(document, clashTests, groupModels, outcome, written, hiddenReadBack, paintedReadBack);
@@ -182,7 +192,7 @@ namespace Federator.Addin.Engine
                     TreeWalk after = SavedViewpoints.ReadTree(document, emptyBefore);
                     SayWalk("after this run's views were written", after);
                     inventory = ViewsInventory.Plan(
-                        after.Nodes, Plan, testsRan, written, stamp, clashStepSound,
+                        after.Nodes, Plan, testsRead.WholeNames, written, stamp, clashStepSound,
                         teams.Map.KnownCodes(CodesOf(groupModels)), testNames, views);
                 }
 
@@ -260,6 +270,7 @@ namespace Federator.Addin.Engine
                 if (addresses == null || !addresses.TryGetValue(clash.Row, out where))
                 {
                     noAddress++;
+                    testsRead.RowWithNoAddress(clash.TestName);
                     continue;
                 }
 
@@ -278,7 +289,7 @@ namespace Federator.Addin.Engine
 
             if (noAddress > 0)
             {
-                log.Line("VIEWS    " + noAddress + " row(s) of the report have no recorded place in the document, so they get no view");
+                log.Line("VIEWS    " + noAddress + " row(s) of the report have no recorded place in the document, so their tests are not read for the views");
             }
 
             Counts counts = new Counts();
@@ -287,7 +298,9 @@ namespace Federator.Addin.Engine
             {
                 RowAddress first = firstOf[key];
                 List<ReportClash> under = byTest[key];
+                List<KeyValuePair<ViewClash, RowAddress>> ofTest = new List<KeyValuePair<ViewClash, RowAddress>>();
                 string nowNamed;
+                testsRead.Met(first.TestName);
 
                 try
                 {
@@ -295,9 +308,10 @@ namespace Federator.Addin.Engine
                     {
                         if (test == null)
                         {
+                            testsRead.NotAtAddress(first.TestName);
                             log.Line("VIEWS    " + first.TestName + " is not at " + first.Address + " any more"
                                 + (nowNamed == null ? string.Empty : ", which holds \"" + nowNamed + "\"")
-                                + ", so its " + under.Count + (under.Count == 1 ? " row gets" : " rows get") + " no view");
+                                + ", so it is not read for the views and its " + under.Count + (under.Count == 1 ? " row gets" : " rows get") + " no view");
                             continue;
                         }
 
@@ -315,6 +329,7 @@ namespace Federator.Addin.Engine
                             if (item == null)
                             {
                                 counts.NotFound++;
+                                testsRead.RowNotFound(first.TestName);
 
                                 if (counts.FirstNotFound == null)
                                 {
@@ -333,18 +348,31 @@ namespace Federator.Addin.Engine
                             {
                                 ViewClash read = CollectOne(
                                     document, clash, item as ClashResult, inScope, carriesSize, unitEnumName, counts);
-                                clashes.Add(read);
-                                addressOf[read.Key] = addresses[clash.Row];
+                                ofTest.Add(new KeyValuePair<ViewClash, RowAddress>(read, addresses[clash.Row]));
+                                testsRead.RowRead(first.TestName);
                             }
                         }
                     }
                 }
                 catch (Exception error)
                 {
+                    testsRead.Threw(first.TestName);
                     log.Failure(
                         "reading the clashes of " + first.TestName + " for the views",
                         error,
-                        "kept going, the clashes read before it threw are planned and the rest are not");
+                        "kept going, that test is not read for the views, gets no view and keeps its views of earlier runs, and the next test is still read");
+                }
+
+                // A TEST READ IN PART GETS NO VIEW, the breaker's B1: a view of the rows that
+                // read would be a short view replacing a whole one. Its rows are left out of the
+                // plan, it is counted failed with why, and the inventory keeps its old views.
+                if (testsRead.IsWhole(first.TestName))
+                {
+                    foreach (KeyValuePair<ViewClash, RowAddress> row in ofTest)
+                    {
+                        clashes.Add(row.Key);
+                        addressOf[row.Key.Key] = row.Value;
+                    }
                 }
             }
 
@@ -1199,7 +1227,7 @@ namespace Federator.Addin.Engine
                 if (NotFound > 0)
                 {
                     log.Line("VIEWS    " + NotFound + " row(s) of the report no longer lead to their result in the document, "
-                        + "so they get no view, the first: " + FirstNotFound);
+                        + "so their tests are not read for the views, the first: " + FirstNotFound);
                 }
 
                 if (GroupRows > 0)
