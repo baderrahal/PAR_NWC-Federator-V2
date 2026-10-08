@@ -19,7 +19,7 @@ namespace Federator.Core.Coverage
     /// read as the other: its check 2 names an empty result group, which the harvest counts
     /// as one clash, and this check has no such words, and a test in the workbook only whose
     /// every number is nought is counted there and not judged, where here it is a test F77
-    /// did not create and AGREES. compare-document.ps1 stays the independent witness, because
+    /// did not create and is HELD BY NEITHER side. compare-document.ps1 stays the independent witness, because
     /// this check reads the document through the add-in, which the harvest reads through too,
     /// and a check sharing the code it checks cannot catch a fault common to both.
     ///
@@ -28,13 +28,15 @@ namespace Federator.Core.Coverage
     /// not create and is HELD BY NEITHER side, counted apart from Agree. FAILED for every other difference, a test the document
     /// holds with no block, and a block with numbers for a test the document does not hold.
     /// Where the run knows why, the line says it, and only what the record proves: a test
+    /// the plan left out that the document holds all the same was there before this run, a test
     /// already in the NWF and not run this run still holds an earlier run's results,
-    /// decision 4 of the design at its default A, a test created this run that Clash
+    /// decision 4 of the design, the lead's reading at its default A, a test created this run that Clash
     /// Detective holds results for ran and then threw before its rows or count were taken,
     /// and Compact removed Resolved clashes after the rows were read where its count is at
     /// least the gap. NOT COMPARED, never Agree, where a count on either side is minus one, a
     /// name is on two tests of one side, a test is in neither, a side was not read, or a test
-    /// the run holds as in the document was not returned by the read of it, with the reason.
+    /// the run holds as in the document, or never recorded either way, was not returned by the
+    /// read of it, with the reason.
     ///
     /// THE GROUP KEEPS ITS OWN RESULT BY CONSTRUCTION. Nothing here touches GroupFacts or
     /// adds an error, and a report check never fails a group.
@@ -255,11 +257,22 @@ namespace Federator.Core.Coverage
                 // A test the runner created or found already there that the read did not
                 // return has gone from the document, a walk that stopped early or a name
                 // Navisworks changed, and a block of nought matches nothing.
-                return test.Presence == TestPresence.CreatedThisRun || test.Presence == TestPresence.AlreadyThere
-                    ? new CountedTest(test.Name, CountVerdict.NotCompared, false, -1, -1, true, rows, clashes,
+                if (test.Presence == TestPresence.CreatedThisRun || test.Presence == TestPresence.AlreadyThere)
+                {
+                    return new CountedTest(test.Name, CountVerdict.NotCompared, false, -1, -1, true, rows, clashes,
                         "the run holds it as " + CoverageWords.For(test.Presence)
-                            + " and the read of Clash Detective did not return it")
-                    : new CountedTest(test.Name, CountVerdict.HeldByNeither, false, -1, -1, true, rows, clashes, string.Empty);
+                            + " and the read of Clash Detective did not return it");
+                }
+
+                // Held by neither side is for a test the runner recorded as kept out of the document.
+                // One it never looked at, presence UNKNOWN, may be in the document and not returned.
+                if (test.Presence == TestPresence.Unknown)
+                {
+                    return new CountedTest(test.Name, CountVerdict.NotCompared, false, -1, -1, true, rows, clashes,
+                        "whether the run put it in the document is UNKNOWN, and the read of Clash Detective did not return it");
+                }
+
+                return new CountedTest(test.Name, CountVerdict.HeldByNeither, false, -1, -1, true, rows, clashes, string.Empty);
             }
 
             if (w == null)
@@ -292,6 +305,15 @@ namespace Federator.Core.Coverage
                     ? "it was created this run and Clash Detective holds results for it, so it ran this run, "
                         + "and then the clash step threw before its rows or its count were taken: " + test.Detail
                     : "the clash step threw on it, so whether it ran this run is UNKNOWN: " + test.Detail;
+            }
+
+            // The runner records the tests it keeps, so one the plan left out is neither created nor found
+            // already there. If the document holds a test of its name all the same, nothing in this run put
+            // it there and it was there before, with the results of the run that did.
+            if (test.Presence == TestPresence.NotInDocument && (d.TopLevel > 0 || d.Leaves > 0))
+            {
+                return "the run did not create it, so the test Clash Detective holds under that name was in the "
+                    + "document before this run and its results are an earlier run's";
             }
 
             if (!test.Ran && test.Presence == TestPresence.AlreadyThere && d.Leaves > w.Clashes)

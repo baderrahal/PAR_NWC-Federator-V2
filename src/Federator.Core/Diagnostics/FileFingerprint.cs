@@ -8,7 +8,7 @@ namespace Federator.Core.Diagnostics
 {
     /// <summary>
     /// The SHA-256 of a file's bytes, F127, read once per run for the picked XML and named
-    /// in the COVERAGE block and on the sheet, turn5\f127-design.md section 1.7. Set 03's C06
+    /// in the COVERAGE block and on the sheet, the F127 design section 1.7, a file of the loop outside the repo, turn5\f127-design.md. Set 03's C06
     /// run carries no hash of the XML it picked, so which bytes it read had to be worked out
     /// from its SET lines, which ask ME-PIPING where the exchange file asks ME-Piping. A
     /// fingerprint says it outright.

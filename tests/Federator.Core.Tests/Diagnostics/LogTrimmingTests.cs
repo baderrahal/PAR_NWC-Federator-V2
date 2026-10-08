@@ -516,6 +516,83 @@ namespace Federator.Core.Tests
             Assert.That(rows[1].Phrase(), Is.EqualTo("found nothing in 0 of 1 group"));
         }
 
+        /// <summary>
+        /// Two sets of one path in one group are one set in that group. The count read two groups
+        /// where there was one, so a run of one group could say a set found nothing in 2 of 2 groups.
+        /// A set found nothing in a group only where every set of that path there found nothing, so
+        /// the finding is never made over a set that did find something.
+        /// </summary>
+        [Test]
+        public void TwoSetsOfOnePathInOneGroupAreOneGroupAndNothingIsFoundOnlyWhenBothFoundNothing()
+        {
+            SetsAcrossTheRun run = new SetsAcrossTheRun();
+            SetBuildOutcome both = new SetBuildOutcome();
+            both.AddAlreadyPresent("tree/a", "a", 1, 0);
+            both.AddAlreadyPresent("tree/a", "a", 1, 0);
+            run.Add(both);
+
+            Assert.That(run.All().Count, Is.EqualTo(1));
+            Assert.That(run.All()[0].GroupsSeen, Is.EqualTo(1));
+            Assert.That(run.All()[0].GroupsAtZero, Is.EqualTo(1));
+            Assert.That(run.Rows()[0].Phrase(), Is.EqualTo("found nothing in 1 of 1 group"));
+
+            SetBuildOutcome oneFound = new SetBuildOutcome();
+            oneFound.AddAlreadyPresent("tree/a", "a", 1, 0);
+            oneFound.AddAlreadyPresent("tree/a", "a", 1, 7);
+            run.Add(oneFound);
+
+            Assert.That(run.All()[0].GroupsSeen, Is.EqualTo(2));
+            Assert.That(run.All()[0].GroupsAtZero, Is.EqualTo(1));
+            Assert.That(run.FoundNothingAnywhere(), Is.Empty);
+        }
+
+        /// <summary>
+        /// A set whose count was not taken in some groups was looked at in fewer groups than the run held,
+        /// so found nothing in every group it was looked at in is not found nothing in every group of the
+        /// run. The line says over how many, and the header says how many sets that is.
+        /// </summary>
+        [Test]
+        public void ASetLookedAtInFewerGroupsThanTheRunHeldSaysSoOnItsLine()
+        {
+            SetsAcrossTheRun run = new SetsAcrossTheRun();
+
+            for (int group = 0; group < 5; group++)
+            {
+                SetBuildOutcome outcome = new SetBuildOutcome();
+                outcome.AddAlreadyPresent("tree/partial", "partial", 1, group < 3 ? 0 : -1);
+                outcome.AddAlreadyPresent("tree/whole", "whole", 1, 0);
+                run.Add(outcome);
+            }
+
+            string all = string.Join("\n", new List<string>(run.Lines()).ToArray());
+
+            Assert.That(all, Does.Contain("found nothing in every group : 2, 1 of them looked at in fewer groups than the run held"));
+            Assert.That(all, Does.Contain("tree/partial  asked UNKNOWN, and its search would not read, which is a fault in the set and not in this block, looked at in 3 of 5 groups only"));
+
+            string whole = new List<string>(run.Lines()).Find(line => line.Contains("tree/whole"));
+
+            Assert.That(whole, Does.Not.Contain("looked at in"));
+        }
+
+        /// <summary>
+        /// A run where no set was counted found no set at all, and Every set found something somewhere
+        /// was said over nothing, which reads as a verification that never happened.
+        /// </summary>
+        [Test]
+        public void ARunWithNoCountedSetDoesNotSayEverySetFoundSomething()
+        {
+            SetsAcrossTheRun none = new SetsAcrossTheRun();
+            SetBuildOutcome unknown = new SetBuildOutcome();
+            unknown.AddAlreadyPresent("tree/a", "a", 1, -1);
+            none.Add(unknown);
+            none.Add(null);
+
+            string all = string.Join("\n", new List<string>(none.Lines()).ToArray());
+
+            Assert.That(all, Does.Not.Contain("Every set found something somewhere."));
+            Assert.That(all, Does.Contain("No set was counted, so nothing is said of what the sets found."));
+        }
+
         [Test]
         public void NothingToAddIsNotAThrow()
         {

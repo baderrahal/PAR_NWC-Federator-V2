@@ -279,6 +279,79 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// The tests the picked file does not name are counted by name across the run, as Q127 A counts
+        /// every other test. One old test sitting in the NWFs of 46 groups read as 46 tests, which says
+        /// the document holds 46 tests the file does not name. The break: a second, different old test
+        /// in one group only makes two names over three places.
+        /// </summary>
+        [Test]
+        public void ATestTheFileDoesNotNameIsCountedOnceAcrossTheRunWhateverTheGroups()
+        {
+            CoverageAcrossTheRun coverage = new CoverageAcrossTheRun(new CoverageSettings());
+
+            for (int group = 1; group <= 46; group++)
+            {
+                coverage.Add("group" + group, CountCheck.Judge(
+                    new List<TestCoverage> { Ran("T") },
+                    new List<DocumentTestCount>
+                    {
+                        new DocumentTestCount("T", "Tests", 0, 0),
+                        new DocumentTestCount("Old", "Tests", 5, 5)
+                    },
+                    Workbook("group" + group, "T", 0),
+                    null,
+                    -1));
+            }
+
+            Assert.That(coverage.NotInTheXml, Is.EqualTo(1));
+
+            List<string> lines = new List<string>(coverage.ResultLines());
+            string named = lines.Find(line => line.StartsWith("COVERAGE not named", StringComparison.Ordinal));
+
+            Assert.That(named, Does.Contain("1 test in Clash Detective that the picked file does not name"));
+            Assert.That(named, Does.Contain("each name once here, 46 places over the groups"));
+
+            coverage.Add("last", CountCheck.Judge(
+                new List<TestCoverage> { Ran("T") },
+                new List<DocumentTestCount>
+                {
+                    new DocumentTestCount("T", "Tests", 0, 0),
+                    new DocumentTestCount("Older", "Tests", 1, 1)
+                },
+                Workbook("last", "T", 0),
+                null,
+                -1));
+
+            Assert.That(coverage.NotInTheXml, Is.EqualTo(2));
+        }
+
+        /// <summary>
+        /// The headline printed how many tests agreed and how many failed and never how many it had
+        /// judged, so its buckets could not be added up by eye, and a group whose check could not be made
+        /// has its tests in none of them, which it now says.
+        /// </summary>
+        [Test]
+        public void TheHeadlineSaysHowManyTestsItJudgedAndThatAGroupNotCheckedIsInNoneOfThem()
+        {
+            CoverageAcrossTheRun coverage = new CoverageAcrossTheRun(new CoverageSettings());
+            coverage.Add("100000", CountCheck.Judge(
+                new List<TestCoverage> { Ran("T"), KeptOut("U"), KeptOut("V"), KeptOut("W") },
+                new List<DocumentTestCount> { new DocumentTestCount("T", "Tests", 2, 2) },
+                Workbook("100000", "T", 2, "U", 0, "V", 0, "W", 0),
+                null,
+                -1));
+            coverage.Add("200000", null);
+
+            string headline = new List<string>(coverage.ResultLines())
+                .Find(line => line.StartsWith("COVERAGE checked", StringComparison.Ordinal));
+
+            Assert.That(headline, Does.Contain("1 compared, 1 agree, 0 FAILED in 0 of 2 groups, 0 not compared"));
+            Assert.That(headline, Does.Contain("3 held by neither side"));
+            Assert.That(headline, Does.Contain("4 tests judged in all"));
+            Assert.That(headline, Does.Contain("1 group not checked, its tests in none of these counts"));
+        }
+
+        /// <summary>
         /// Every FAILED line by default, his words. The setting caps them, and where it does
         /// the rest are counted and the block says it truncated.
         /// </summary>

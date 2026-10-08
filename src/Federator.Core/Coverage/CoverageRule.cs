@@ -7,7 +7,7 @@ namespace Federator.Core.Coverage
 {
     /// <summary>
     /// Every test of the picked file against what happened to it, one reason each, F127,
-    /// Bader's request 2 under Q112, turn5\f127-design.md section 1.2.
+    /// Bader's request 2 under Q112, the F127 design section 1.2, a file of the loop outside the repo, turn5\f127-design.md.
     ///
     /// THE REASON IS THE RUNNER'S OWN RECORD, ClashRunOutcome, read in the order the code
     /// applies it. The plan drops a test it cannot build before any model is looked at. A

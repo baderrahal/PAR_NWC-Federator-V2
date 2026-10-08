@@ -149,6 +149,12 @@ namespace Federator.Core.Sets
 
             Groups++;
 
+            // A path is one set in a group however many sets of that name the group holds, so the
+            // group is counted once for it, and at zero only where every set of that path found
+            // nothing there. Two sets of one name read as two groups, 2 of 2 in a run of one.
+            List<string> inThisGroup = new List<string>();
+            Dictionary<string, bool> allAtZero = new Dictionary<string, bool>(StringComparer.Ordinal);
+
             foreach (SetResult result in outcome.Results)
             {
                 if (result == null || result.ItemCount < 0)
@@ -167,16 +173,30 @@ namespace Federator.Core.Sets
                     order.Add(result.Path);
                 }
 
-                set.GroupsSeen = set.GroupsSeen + 1;
+                bool zeroSoFar;
 
-                if (result.ItemCount == 0)
+                if (!allAtZero.TryGetValue(result.Path, out zeroSoFar))
                 {
-                    set.GroupsAtZero = set.GroupsAtZero + 1;
+                    inThisGroup.Add(result.Path);
+                    zeroSoFar = true;
                 }
+
+                allAtZero[result.Path] = zeroSoFar && result.ItemCount == 0;
 
                 if (!string.IsNullOrEmpty(result.Asked))
                 {
                     set.Asked = result.Asked;
+                }
+            }
+
+            foreach (string path in inThisGroup)
+            {
+                SetAcrossTheRun set = byPath[path];
+                set.GroupsSeen = set.GroupsSeen + 1;
+
+                if (allAtZero[path])
+                {
+                    set.GroupsAtZero = set.GroupsAtZero + 1;
                 }
             }
         }
@@ -193,9 +213,24 @@ namespace Federator.Core.Sets
             List<string> lines = new List<string>();
             IList<SetAcrossTheRun> nowhere = FoundNothingAnywhere();
 
+            // A set whose count was not taken in some groups found nothing in every group it was
+            // looked at in, which is fewer than the groups of the run, and each such line says so.
+            int partial = 0;
+
+            foreach (SetAcrossTheRun set in nowhere)
+            {
+                if (set.GroupsSeen < Groups)
+                {
+                    partial++;
+                }
+            }
+
             lines.Add("groups in this run : " + Groups);
             lines.Add("sets looked at     : " + byPath.Count);
-            lines.Add("found nothing in every group : " + nowhere.Count);
+            lines.Add("found nothing in every group : " + nowhere.Count
+                + (partial > 0
+                    ? ", " + partial + " of them looked at in fewer groups than the run held, said on their lines"
+                    : string.Empty));
 
             int shown = 0;
 
@@ -216,7 +251,10 @@ namespace Federator.Core.Sets
                     // differ the SET DRIFT lines beside the group say both, Q72.
                     + (string.IsNullOrEmpty(set.Asked)
                         ? "asked UNKNOWN, and its search would not read, which is a fault in the set and not in this block"
-                        : "asks " + set.Asked));
+                        : "asks " + set.Asked)
+                    + (set.GroupsSeen < Groups
+                        ? ", looked at in " + set.GroupsSeen + " of " + Groups + " groups only"
+                        : string.Empty));
                 shown++;
             }
 
@@ -226,7 +264,12 @@ namespace Federator.Core.Sets
                     + " more that found nothing in every group, counted and not listed");
             }
 
-            if (nowhere.Count == 0)
+            if (byPath.Count == 0)
+            {
+                // Said over nothing it would read as a check that ran and found every set well.
+                lines.Add("No set was counted, so nothing is said of what the sets found.");
+            }
+            else if (nowhere.Count == 0)
             {
                 lines.Add("Every set found something somewhere.");
             }
