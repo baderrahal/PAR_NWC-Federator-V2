@@ -385,6 +385,18 @@ namespace Federator.Core.Tests.Sets
             Assert.That(new ReportOptions().RebuildDriftedSets, Is.False);
         }
 
+        /// <summary>
+        /// FR-132. Ticking the box also removes a set the file no longer names that nothing points at,
+        /// and the grey line said only sets whose question changed are touched. It names the removal.
+        /// </summary>
+        [Test]
+        public void TheHelpLineNamesTheRemovalOfAnUnusedSet()
+        {
+            Assert.That(SetRebuildSettings.HelpLine, Does.Contain("removes"));
+            Assert.That(SetRebuildSettings.HelpLine, Does.Contain("Results and statuses kept"));
+            Assert.That(SetRebuildSettings.HelpLine.Split(' ').Length, Is.LessThanOrEqualTo(12));
+        }
+
         [Test]
         public void TheLabelIsAtMostEightWordsAndTheHelpLineAtMostTwelve()
         {

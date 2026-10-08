@@ -155,7 +155,7 @@ namespace Federator.Core.Health
 
             if (!fileHoldsSets)
             {
-                return "Its tests will resolve against the sets already in the model.";
+                return "It holds no sets, so any test in it looks for the sets already in the model, which is not checked here.";
             }
 
             if (UnresolvedLocatorCount == 0)
@@ -215,7 +215,8 @@ namespace Federator.Core.Health
             }
 
             lines.Add(RevitCategories.Line());
-            lines.Add("Sets asking for a category no model carries: " + CategoriesNobodyHas.Count);
+            lines.Add("Sets asking for a category no model carries: " + CategoriesNobodyHas.Count
+                + RevitCategories.MeasuredOn(", against the list measured on"));
 
             foreach (string line in Examples(CategoryNames()))
             {

@@ -9,7 +9,7 @@ namespace Federator.Core.Diagnostics
     /// A RECORD AND NOT THE STEP ITSELF. The step holds a clock and closes itself, and
     /// keeping thousands of them alive would keep thousands of closures alive with them.
     /// TESTS RUN is entered once per test and a real group has 1830 of those, so what is
-    /// kept is four numbers and two strings.
+    /// kept is three numbers, one flag and two strings.
     /// </summary>
     public sealed class StepRecord
     {
@@ -57,7 +57,7 @@ namespace Federator.Core.Diagnostics
                 + (visits == 1 ? " visit, " : " visits, ")
                 + seconds.ToString("0.000", CultureInfo.InvariantCulture) + "s in total"
                 + (threw > 0
-                    ? ", " + threw + (threw == 1 ? " of them threw" : " of them threw")
+                    ? ", " + threw + " of them threw"
                     : string.Empty);
         }
 

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using ClosedXML.Excel;
 using Federator.Core.Clash;
+using Federator.Core.Coverage;
 
 namespace Federator.Core.Report
 {
@@ -106,6 +107,18 @@ namespace Federator.Core.Report
         /// </summary>
         public string Write(ClashReport report, string path)
         {
+            return Write(report, path, null, null);
+        }
+
+        /// <summary>
+        /// The same workbook with the Coverage sheet after the client's sheet, F127 and FR-200,
+        /// both in the one save, so the client's sheet never goes through a second round trip.
+        /// A null coverage writes the client's sheet alone, and a coverage whose sheet
+        /// CoverageSheet.WhyRefused refuses is left out, which the caller reads off that rule
+        /// and logs, since this writes a file and never a line.
+        /// </summary>
+        public string Write(ClashReport report, string path, CoverageSheetData coverage, CoverageSettings settings)
+        {
             if (report == null)
             {
                 throw new ArgumentNullException("report");
@@ -126,6 +139,12 @@ namespace Federator.Core.Report
             using (XLWorkbook workbook = new XLWorkbook())
             {
                 IXLWorksheet sheet = workbook.Worksheets.Add(SheetNames.ForReport(report.OutputName));
+                string coverageSheet = (settings ?? new CoverageSettings()).SheetName;
+
+                if (coverage != null && CoverageSheet.WhyRefused(report, coverageSheet) == null)
+                {
+                    CoverageSheet.Write(workbook, coverage, coverageSheet);
+                }
 
                 int row = WriteTitle(sheet, report);
                 bool priority = HasPriority(report);

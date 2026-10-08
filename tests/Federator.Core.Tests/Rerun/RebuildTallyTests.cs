@@ -94,6 +94,43 @@ namespace Federator.Core.Tests
             Assert.That(thing.LostReason(), Does.Contain("UNKNOWN"));
         }
 
+        /// <summary>
+        /// FR-151 and FR-164. A count that could not be taken before the clear is minus one, and was
+        /// read as nothing to keep, so the group logged that the NWF held none and the NWF was saved
+        /// over without knowing whether anything came back. It is unknown, not kept, and holds the NWF shut.
+        /// </summary>
+        [Test]
+        public void ACountThatCouldNotBeTakenBeforeTheClearIsUnknownAndNeverNothingToKeep()
+        {
+            RebuildTally tally = new RebuildTally();
+            RebuiltThing thing = tally.Count("VIEWS", "saved viewpoints");
+
+            thing.Before = -1;
+            thing.AfterAppends = 0;
+            thing.AfterRestore = 0;
+
+            Assert.That(thing.WasCounted, Is.False);
+            Assert.That(thing.Kept, Is.False);
+            Assert.That(thing.Line(), Does.Contain("NOT COUNTED"));
+            Assert.That(thing.Line(), Does.Not.Contain("none, the NWF held none before the clear"));
+            Assert.That(thing.LostReason(), Does.Contain("UNKNOWN"));
+            Assert.That(tally.EverythingKept, Is.False);
+        }
+
+        /// <summary>A thing whose count before the clear was never handed in reads as not counted, never as none.</summary>
+        [Test]
+        public void ACountNeverHandedInBeforeTheClearIsNotCounted()
+        {
+            RebuildTally tally = new RebuildTally();
+            RebuiltThing thing = tally.Count("SETS", "selection sets");
+
+            thing.AfterAppends = 0;
+            thing.AfterRestore = 0;
+
+            Assert.That(thing.WasCounted, Is.False);
+            Assert.That(tally.EverythingKept, Is.False);
+        }
+
         [Test]
         public void MoreBackThanWentInIsStillKept()
         {

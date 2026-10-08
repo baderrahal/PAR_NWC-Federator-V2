@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using ClosedXML.Excel;
+using Federator.Core.Coverage;
 
 namespace Federator.Core.Report
 {
@@ -76,13 +77,23 @@ namespace Federator.Core.Report
 
         public string SheetName { get; private set; }
 
-        /// <summary>Test blocks found on the sheet.</summary>
+        /// <summary>
+        /// Every test the sheet carries, the full blocks and the tests of one row together, FR-035.
+        /// A test with no clash is one row since Q73 and is a block of its own for the count, so
+        /// this is the number to set beside the tests in the file.
+        /// </summary>
         public int Blocks { get; private set; }
+
+        /// <summary>The tests that hold clashes, each a full block with a heading row.</summary>
+        public int FullBlocks { get; private set; }
+
+        /// <summary>The tests that found nothing, each one row under no heading, Q73.</summary>
+        public int OneRowTests { get; private set; }
 
         /// <summary>Clash rows across every block.</summary>
         public int Rows { get; private set; }
 
-        /// <summary>The clash count of each block, in the order they appear.</summary>
+        /// <summary>The clash count of each full block, in the order they appear. A test of one row has no entry, so the order check reads full blocks only.</summary>
         public IList<int> BlockCounts { get; private set; }
 
         /// <summary>Everything wrong, each a plain sentence, worst first.</summary>
@@ -174,28 +185,62 @@ namespace Federator.Core.Report
 
             SheetName = sheets[0].Name;
 
-            // Theirs is one sheet holding every test. Ours had fifty.
-            if (Sheets != 1)
+            // Theirs is one sheet holding every test, and ours had fifty. Since F127 the one
+            // sheet of ours is the Coverage sheet, second and last, by Bader's request 2 under
+            // Q112, so the client's sheet first, then at most that one, and anything else is
+            // named. Only sheet 1 is compared with the client's layout.
+            string coverage = CoverageSettings.DefaultSheetName;
+
+            if (string.Equals(sheets[0].Name, coverage, StringComparison.OrdinalIgnoreCase))
+            {
+                problems.Add("The Coverage sheet comes first and the client's sheet must, because Excel opens"
+                    + " on the first sheet and the client's report is the one they open.");
+            }
+
+            if (Sheets >= 2)
+            {
+                string second = sheets[1].Name;
+
+                if (string.Equals(second, coverage, StringComparison.Ordinal))
+                {
+                    HasCoverageSheet = true;
+                }
+                else if (string.Equals(second, coverage, StringComparison.OrdinalIgnoreCase))
+                {
+                    problems.Add("The second sheet is named " + second + " and the tool's own sheet is named "
+                        + coverage + ", which differs by letter case alone.");
+                }
+                else
+                {
+                    problems.Add("The workbook has a second sheet named " + second
+                        + ", which is neither the client's sheet nor the tool's own " + coverage + " sheet.");
+                }
+            }
+
+            if (Sheets > 2)
             {
                 List<string> names = new List<string>();
 
-                for (int i = 0; i < sheets.Count && i < 4; i++)
+                for (int i = 2; i < sheets.Count && i < 5; i++)
                 {
                     names.Add(sheets[i].Name);
                 }
 
-                problems.Add("The workbook has " + Sheets
-                    + " sheets and the client's report has one. Ours starts "
-                    + string.Join(", ", names.ToArray())
-                    + " and theirs is a single sheet holding every test one after another.");
+                problems.Add("The workbook has " + Sheets + " sheets and the tool writes at most two, the client's"
+                    + " and " + coverage + ". The rest start " + string.Join(", ", names.ToArray()) + ".");
             }
 
             ReadSheet(sheets[0]);
         }
 
+        /// <summary>Whether the tool's own Coverage sheet is there, second and named exactly, F127.</summary>
+        public bool HasCoverageSheet { get; private set; }
+
         private void ReadSheet(IXLWorksheet sheet)
         {
             List<int> counts = new List<int>();
+            List<int[]> spans = new List<int[]>();
+            int full = 0;
             int lastRow = sheet.LastRowUsed() == null ? 0 : sheet.LastRowUsed().RowNumber();
 
             for (int row = 1; row <= lastRow; row++)
@@ -206,10 +251,10 @@ namespace Federator.Core.Report
                     continue;
                 }
 
-                Blocks++;
+                full++;
                 CheckColumnOrder(sheet, row);
 
-                if (Blocks == 1)
+                if (full == 1)
                 {
                     CheckPriorityColumn(sheet, row);
                 }
@@ -217,7 +262,7 @@ namespace Federator.Core.Report
                 // Only the first block is walked cell by cell. Every block is painted by
                 // the same code, so a fault in one is a fault in all of them, and 1830
                 // blocks times nineteen columns is a check nobody reads.
-                if (Blocks == 1)
+                if (full == 1)
                 {
                     for (int at = row - 4; at <= row; at++)
                     {
@@ -243,17 +288,49 @@ namespace Federator.Core.Report
                     rows++;
                     Rows++;
 
-                    if (Blocks == 1 && rows == 1)
+                    if (full == 1 && rows == 1)
                     {
                         CheckCells(sheet, at, ClientLayout.RowKind.Clash);
                     }
 
-                    CheckShape(sheet, at, rows == 1 && Blocks == 1);
+                    CheckShape(sheet, at, rows == 1 && full == 1);
                 }
 
+                spans.Add(new[] { row - 4, row + rows });
                 counts.Add(rows);
             }
 
+            // FR-035. A test that found nothing is one row with no heading, so the loop above never
+            // saw it. It is a row below the title, outside every full block, holding a name or its
+            // tolerance, and the one place a test with no name still shows is the tolerance.
+            int oneRow = 0;
+
+            for (int row = 4; row <= lastRow; row++)
+            {
+                if (InAnySpan(spans, row))
+                {
+                    continue;
+                }
+
+                if (sheet.Cell(row, 1).GetString().Length > 0
+                    || sheet.Cell(row, WorkbookWriter.ColumnTestHeader).GetString().Length > 0)
+                {
+                    oneRow++;
+                }
+            }
+
+            // A sheet of one row tests has no heading row, so the block layout cannot be compared,
+            // and the check says so. Row 1 and the column widths hold without a block, so those two
+            // are still read.
+            if (full == 0 && oneRow > 0)
+            {
+                CheckWidths(sheet);
+                CheckTitle(sheet);
+            }
+
+            FullBlocks = full;
+            OneRowTests = oneRow;
+            Blocks = full + oneRow;
             BlockCounts = counts;
             CheckOrder(counts);
 
@@ -262,6 +339,19 @@ namespace Federator.Core.Report
                 problems.Add("The sheet has no clash table at all, so nothing on it could "
                     + "be compared with the client's report.");
             }
+        }
+
+        private static bool InAnySpan(IList<int[]> spans, int row)
+        {
+            for (int i = 0; i < spans.Count; i++)
+            {
+                if (row >= spans[i][0] && row <= spans[i][1])
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         // ---------- which columns, in what order ----------
@@ -678,7 +768,8 @@ namespace Federator.Core.Report
 
             lines.Add("CHECK    " + Sheets + (Sheets == 1 ? " sheet, " : " sheets, ")
                 + Quote(SheetName) + ", " + Blocks + " test "
-                + (Blocks == 1 ? "block" : "blocks") + ", " + Rows + " clash "
+                + (Blocks == 1 ? "block" : "blocks") + " (" + FullBlocks + " with clashes and "
+                + OneRowTests + " of one row), " + Rows + " clash "
                 + (Rows == 1 ? "row" : "rows") + ".");
 
             if (BlockCounts.Count > 0)
@@ -699,7 +790,12 @@ namespace Federator.Core.Report
                 lines.Add("         " + problem);
             }
 
-            if (problems.Count == 0)
+            if (problems.Count == 0 && FullBlocks == 0 && Blocks > 0)
+            {
+                lines.Add("         Row 1 and the column widths match the client's report. No test holds a clash, so no "
+                    + "heading, cell, fill or border of a block was compared.");
+            }
+            else if (problems.Count == 0)
             {
                 lines.Add("         Every column, value shape, fill, border, row height "
                     + "and column width matches the client's report, and the blocks are "
@@ -724,6 +820,12 @@ namespace Federator.Core.Report
             if (problems.Count > 0)
             {
                 return "Workbook: " + FirstDivergence;
+            }
+
+            if (FullBlocks == 0 && Blocks > 0)
+            {
+                return "Workbook: one sheet, " + Blocks + " tests, " + Rows
+                    + " rows, no test holds a clash, so the layout of a block was not compared.";
             }
 
             return "Workbook: one sheet, " + Blocks + " tests, " + Rows

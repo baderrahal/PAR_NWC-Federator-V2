@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Clash;
 
 namespace Federator.Core.Probe
 {
@@ -81,13 +82,27 @@ namespace Federator.Core.Probe
                 : 1;
         }
 
+        /// <summary>
+        /// How many elements of that category were walked, by the rule that asked for it, trimmed and
+        /// without case, PenetrationSettings.Names, FR-158. A category is counted under the spelling
+        /// the model carried, so every spelling the rule accepts is added.
+        /// </summary>
         public int ElementsIn(string category)
         {
-            string said = Said(category);
-            return elementsPerCategory.ContainsKey(said) ? elementsPerCategory[said] : 0;
+            int total = 0;
+
+            foreach (KeyValuePair<string, int> spelling in elementsPerCategory)
+            {
+                if (PenetrationSettings.Names(new List<string> { spelling.Key }, category))
+                {
+                    total += spelling.Value;
+                }
+            }
+
+            return total;
         }
 
-        /// <summary>Every category that was walked and found something, in the order read.</summary>
+        /// <summary>Every category that was walked and found something, in Ordinal order.</summary>
         public IList<string> CategoriesFound()
         {
             List<string> found = new List<string>(elementsPerCategory.Keys);

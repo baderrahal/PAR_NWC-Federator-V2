@@ -8,24 +8,24 @@ FR-006,failed by site name while placement agrees,F112,1,loud failure,merged,106
 FR-007,invisible difference fallback for visible space,F123,5,noise,open,none,none,2026-10-04
 FR-008,matrix workset spelling differs between c06 buildings,F116,1,silent wrong number,merged,98,none,2026-10-05
 FR-009,matrix ar sets match items of other disciplines,F116,1,silent wrong number,merged,98,none,2026-10-05
-FR-010,empty sets contains judged as equals,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-011,empty sets names and lists typed in core,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-012,revit worksets list unread looks empty,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-013,set sides read failure returns empty so sets removed,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-014,set leftover walk skips test folders and second source,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-015,set drift key ignores negation group and comparison,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-016,set drift lines describe or set as and chain,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-017,set value unreadable kind read as empty string,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-018,rebuilt set not found again counted as zero items,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-019,set parent handle held across replacewithcopy,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-020,rebuilt sets do not ask for nwf save,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-021,set lines claim every set matches when unread,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-022,sets summary counts created sets only,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-023,set warnings negated category reported as asked,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
-FR-024,identical sets signature ignores flags,F115,2a,silent wrong number,in progress,"none, branch fix-F115",none,2026-10-05
+FR-010,empty sets contains judged as equals,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-011,empty sets names and lists typed in core,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-012,revit worksets list unread looks empty,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-013,set sides read failure returns empty so sets removed,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-014,set leftover walk skips test folders and second source,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-015,set drift key ignores negation group and comparison,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-016,set drift lines describe or set as and chain,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-017,set value unreadable kind read as empty string,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-018,rebuilt set not found again counted as zero items,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-019,set parent handle held across replacewithcopy,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-020,rebuilt sets do not ask for nwf save,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-021,set lines claim every set matches when unread,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-022,sets summary counts created sets only,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-023,set warnings negated category reported as asked,F115,2a,silent wrong number,merged,142,none,2026-10-07
+FR-024,identical sets signature ignores flags,F115,2a,silent wrong number,merged,142,none,2026-10-07
 FR-025,matrix or row splits set without category condition,F116,1,silent wrong number,merged,98,none,2026-10-05
 FR-026,matrix category rewrite renames the set itself,F116,1,silent wrong number,merged,98,none,2026-10-05
-FR-027,empty sets block never written on a first run,F115,2a,broken feature,in progress,"none, branch fix-F115",none,2026-10-05
+FR-027,empty sets block never written on a first run,F115,2a,broken feature,merged,142,none,2026-10-07
 FR-028,workset case warning printed in every group,F112,1,noise,merged,106,none,2026-10-05
 FR-029,set builder handles never disposed,F123,5,noise,open,none,none,2026-10-04
 FR-030,matrix corrections has no caller,F116,1,noise,merged,98,none,2026-10-05
@@ -33,9 +33,9 @@ FR-031,clash progress line one test short,F113,1,silent wrong number,merged,95,n
 FR-032,empty result group counted as one clash,F113,1,silent wrong number,merged,95,none,2026-10-04
 FR-033,bydesign unnamed clash counted as moved,F113,1,silent wrong number,merged,95,none,2026-10-04
 FR-034,auto review record in throws on edited comment,F113,1,loud failure,merged,95,none,2026-10-04
-FR-035,workbook check counts only blocks with clashes,F118,2c,silent wrong number,open,none,none,2026-10-04
+FR-035,workbook check counts only blocks with clashes,F118,2c,silent wrong number,merged,147,none,2026-10-07
 FR-036,skipped test row keeps old tolerance after chosen edit,F118,2c,silent wrong number,open,none,none,2026-10-04
-FR-037,priority csv repeated test name last row wins silently,F118,2c,silent wrong number,open,none,none,2026-10-04
+FR-037,priority csv repeated test name last row wins silently,F118,2c,silent wrong number,merged,147,none,2026-10-07
 FR-038,workbook stray grey row after last empty test,F123,5,noise,open,none,none,2026-10-04
 FR-039,thumbnail row height overwritten by clash row height,F123,5,noise,open,none,none,2026-10-04
 FR-040,item ids guid fallback counted missing,F118,2c,silent wrong number,open,none,none,2026-10-04
@@ -44,18 +44,18 @@ FR-042,page check warns wrong order on priority sorted page,F123,5,noise,open,no
 FR-043,reshaped group done but nwf never saved,F119,3b,silent wrong number,open,none,none,2026-10-04
 FR-044,nwf save false return ignored after rebuild,F119,3b,silent wrong number,open,none,none,2026-10-04
 FR-045,nwf save after clash work false return ignored,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-046,result file sizes wrong for the two open logs,F119,3b,silent wrong number,open,none,none,2026-10-04
+FR-046,result file sizes wrong for the two open logs,F119,3b,silent wrong number,merged,148,none,2026-10-07
 FR-047,tsv number column rounds a tolerance,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-048,tsv size zero for nwc not on disk,F119,3b,silent wrong number,open,none,none,2026-10-04
+FR-048,tsv size zero for nwc not on disk,F119,3b,silent wrong number,merged,148,none,2026-10-07
 FR-049,second run in window result covers both runs,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-050,run started but not finished reads as no run marked,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-051,result states zero waiting when no run marked,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-052,notolerance skip missing from skip reasons,F119,3b,silent wrong number,open,none,none,2026-10-04
+FR-050,run started but not finished reads as no run marked,F119,3b,silent wrong number,merged,148,none,2026-10-07
+FR-051,result states zero waiting when no run marked,F119,3b,silent wrong number,merged,148,none,2026-10-07
+FR-052,notolerance skip missing from skip reasons,F119,3b,silent wrong number,merged,148,none,2026-10-07
 FR-053,tolerance set on count counts tests not edited,F119,3b,silent wrong number,open,none,none,2026-10-04
-FR-054,log prune in temp fallback deletes other programs logs,F119,3b,broken feature,open,none,none,2026-10-04
-FR-055,tsv files never pruned,F119,3b,broken feature,open,none,none,2026-10-04
-FR-056,live line slower compares one test with whole group,F119,3b,broken feature,open,none,none,2026-10-04
-FR-057,run log write has no try,F119,3b,loud failure,open,none,none,2026-10-04
+FR-054,log prune in temp fallback deletes other programs logs,F119,3b,broken feature,merged,148,none,2026-10-07
+FR-055,tsv files never pruned,F119,3b,broken feature,merged,148,none,2026-10-07
+FR-056,live line slower compares one test with whole group,F119,3b,broken feature,merged,148,none,2026-10-07
+FR-057,run log write has no try,F119,3b,loud failure,in progress,"148 the listener half merged, the disk half open",none,2026-10-07
 FR-058,first clash line says all tests to create,F123,5,noise,open,none,none,2026-10-04
 FR-059,result files written leaves out pictures,F123,5,noise,open,none,none,2026-10-04
 FR-060,result found none counts groups that ran no test,F123,5,noise,open,none,none,2026-10-04
@@ -174,7 +174,7 @@ FR-172,t1 uncalled members 150,F123,5,noise,open,none,none,2026-10-04
 FR-173,t1 catch swallowing 77,F123,5,noise,open,none,none,2026-10-04
 FR-174,one public type per file,F124,5,noise,open,none,none,2026-10-04
 FR-175,no sleep and keep awake,none,none,Bader's request,merged,"99, records only, nothing to merge",none,2026-10-04
-FR-176,coverage of the clash xml,F127,2a,Bader's request,in progress,"none, branch fix-F127",none,2026-10-05
+FR-176,coverage of the clash xml,F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop",none,2026-10-07
 FR-177,generic models counted and a set per model,F128,2b,Bader's request,open,none,none,2026-10-04
 FR-178,start from an existing nwf,F129,3a,Bader's request,open,none,none,2026-10-04
 FR-179,shift range tick in the group list,F130,3b,Bader's request,open,none,none,2026-10-04
@@ -192,7 +192,7 @@ FR-191,work tracker one place for status,F133,beside the waves,Bader's decision,
 FR-192,code health gate lists only shrink,F134,beside the waves,Bader's decision,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 FR-193,analyser settings merged alone,F135,beside the waves,Bader's decision,open,none,none,2026-10-05
 FR-194,viewpoints switched off for test runs,F136,before any test run,Bader's decision,merged,117,none,2026-10-05
-FR-195,no site and no clash groups end partial,F137,before the test of wave 1,Bader's decision,open,none,none,2026-10-05
+FR-195,no site and no clash groups end partial,F137,before the test of wave 1,Bader's decision,in progress,"146 part 1 merged, Q125 B waits for F114 add-in pass",none,2026-10-07
 F1,fix the test name typo,F1,before the waves,fix,merged,merge 0432e82,none,2026-09-07
 F2,fix the hardcoded probe path,F2,before the waves,fix,merged,merge 0432e82,none,2026-09-07
 F3,"fix the two wrong messages, done inside F22",F22,before the waves,fix,merged,merge b041093,none,2026-09-07
@@ -311,11 +311,11 @@ F111,"the RESULT block prints file sizes that are not the files', set 03 finding
 F112,alignment,F112,1,fix,merged,106,none,2026-10-05
 F113,clash counts,F113,1,fix,merged,95,none,2026-10-04
 F114,views,F114,2b,fix,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
-F115,sets,F115,2a,fix,in progress,"none, branch fix-F115",none,2026-10-05
+F115,sets,F115,2a,fix,merged,142,none,2026-10-07
 F116,the clash XML,F116,1,fix,merged,98,none,2026-10-05
 F117,the names,F117,5,fix,open,none,none,2026-10-04
-F118,workbook and report,F118,2c,fix,open,none,none,2026-10-04
-F119,run log and RESULT,F119,3b,fix,open,none,none,2026-10-04
+F118,workbook and report,F118,2c,fix,in progress,"147 FR-035 and FR-037 merged, the rest on the laptop",none,2026-10-07
+F119,run log and RESULT,F119,3b,fix,in progress,"148 nine items merged, the rest on the laptop",none,2026-10-07
 F120,harvest and pictures,F120,3a,fix,open,none,none,2026-10-04
 F121,the rest,F121,4,fix,open,none,none,2026-10-04
 F122,the loop tools,F122,4,fix,open,none,none,2026-10-04
@@ -323,7 +323,7 @@ F123,"docs and words, and the noise of every area",F123,5,fix,open,none,none,202
 F124,"D1, one public type per file",F124,5,fix,open,none,none,2026-10-04
 F125,a window that is not modal is a pane and not a dialog,F125,outside the waves,fix,merged,102,none,2026-10-06
 F126,the window driver unticks a tick box by its AutomationId,F126,outside the waves,fix,merged,112,none,2026-10-05
-F127,coverage of the clash XML,F127,2a,fix,in progress,"none, branch fix-F127",none,2026-10-05
+F127,coverage of the clash XML,F127,2a,fix,in progress,"145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop",none,2026-10-07
 F128,generic models,F128,2b,fix,open,none,none,2026-10-04
 F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
 F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
@@ -333,7 +333,7 @@ F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-06
 F134,the code health gate,F134,beside the waves,fix,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 F135,the analyser settings that touch every project,F135,beside the waves,fix,open,none,none,2026-10-05
 F136,the viewpoints switch,F136,before any test run,fix,merged,117,none,2026-10-05
-F137,no site and no clash groups,F137,before the test of wave 1,fix,open,none,none,2026-10-05
+F137,no site and no clash groups,F137,before the test of wave 1,fix,in progress,"146 part 1 merged, Q125 B waits for F114 add-in pass",none,2026-10-07
 F138,loop starts with Auto-Save off,F138,before any probe or run starts again,fix,proven by a run,127,"probes\q133-import-20261007-113149, Auto-Save off held on its real start",2026-10-07
 Q81,"local main tracked origin/master, its upstream set to origin/main",none,none,Bader's request,merged,"74, records only, nothing to merge",none,2026-09-29
 Q93,a reading of the loop's own scripts blocks a run only for harm or wrong evidence,none,none,Bader's request,merged,83,none,2026-10-04
@@ -344,7 +344,7 @@ Q97-1,the findings of the first C06 run in steps\runs\03\findings.md,none,none,B
 Q97-2,"the first run of C07 and the run set that night, replaced by Q98's no run of C07 now",none,none,Bader's request,dropped,none,none,2026-10-04
 Q98,the full fix round,all,all,Bader's request,in progress,none,none,2026-10-04
 Q112-1,no sleep and keep awake (FR-175),none,none,Bader's request,merged,"99, records only, nothing to merge",none,2026-10-04
-Q112-2,coverage of the clash XML (FR-176),F127,2a,Bader's request,in progress,"none, branch fix-F127",none,2026-10-05
+Q112-2,coverage of the clash XML (FR-176),F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop",none,2026-10-07
 Q112-3,generic models counted and a set per model (FR-177),F128,2b,Bader's request,open,none,none,2026-10-04
 Q112-4,start from an existing NWF (FR-178),F129,3a,Bader's request,open,none,none,2026-10-04
 Q112-5,Shift range tick in the group list (FR-179),F130,3b,Bader's request,open,none,none,2026-10-04
@@ -463,7 +463,7 @@ step 364,"the property probe on one mechanical NWC, run by the lead by Bader's a
 T5-R-WALKRACE,the harness's walk of the loop folder races a lane building under a wt- folder,none,none,register row,open,none,none,2026-10-07
 FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,open,none,none,2026-10-06
 FR-199,blocks stay in measured order with a priority file,F118,2c,Bader's decision,open,none,none,2026-10-06
-FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,open,none,none,2026-10-06
+FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,merged,153,none,2026-10-07
 FR-201,shared site named default reported only,F137,before the test of wave 1,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
 FR-202,sub object ownership measured before two reads change,F121,4,Bader's decision,open,none,none,2026-10-06
 FR-203,open statuses rule stays naming its reader,F123,5,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
@@ -472,9 +472,36 @@ Q140,F132's next attempt only for a fault that can change a clash count or its t
 Q141,a clash in a result group with two statuses,none,none,question,merged,139,none,2026-10-07
 Q142,when a mirror's clashes may be merged,none,none,question,merged,139,none,2026-10-07
 T5-R-P15CRASH,"probe P15 read a viewpoints copy after Document.Clear, Navisworks crashed and the guard refused the put back, put back by the lead at 14:53 from its backup",none,none,register row,proven by a run,none,"turn5\restart\putback-rebuild-views-20261007-144356-write, 0 still different",2026-10-07
-F132-R1,"under Q142 A only a first run over a new NWF merges, a weekly run never does",F132,2a,register row,open,none,none,2026-10-07
-F132-R2,a set's flags and findspec are not read by the drift check a merge reads,F132,2a,register row,open,none,none,2026-10-07
+F115-R1,side.Selection and every SelectionSource of the side walk are never disposed,F115,2a,register row,open,none,none,2026-10-05
+F115-R2,a rebuild is recorded only after the re-read so a throw after ReplaceWithCopy reports FAILED and asks for no save,F115,2a,register row,open,none,none,2026-10-05
+F115-R3,two sets of one name in one folder have their drift read off one and the other replaced,F115,2a,register row,open,none,none,2026-10-05
+F115-R4,a picked XML of sets alone or the Build sets button writes no EMPTY SETS block and no tsv row,F115,2a,register row,open,none,none,2026-10-05
+F115-R5,the category list of ten federations is handed to the judge as complete,F115,2a,register row,open,none,none,2026-10-05
+F115-R6,a present set at zero whose search would not read is in the at zero count but not judged and no line says so,F115,2a,register row,open,none,none,2026-10-05
+F115-R7,the sets summary carries no drifted or rebuilt or could not read count,F115,2a,register row,open,none,none,2026-10-05
+F115-R8,a clash side whose source is a folder of sets credits the folder and not the sets in it,F115,2a,register row,open,none,none,2026-10-05
+F115-R9,the judge reads the model names through ContainerName.Parse outside any guard so bad naming settings fail the group,F115,2a,register row,open,none,none,2026-10-05
+F115-R10,the judge branch for the workset list inside Core not read has no test,F115,2a,register row,open,none,none,2026-10-05
+F115-R11,the Build sets button judges every set at zero CANNOT TELL,F115,2a,register row,open,none,none,2026-10-05
+F115-R12,whether SearchCondition.Options reads back StartGroup 64 is UNKNOWN until the wave 2a weekly run,F115,2a,register row,open,none,none,2026-10-05
+F115-R13,the F115 log entry was written as the lead's delegate,none,none,register row,open,none,none,2026-10-05
 F114-K29,"a team map may name a team UNKNOWN, so a side with no code and a side of that team share a pair folder",F114,2b,register row,waiting for Bader,none,none,2026-10-07
 F114-K30,"a view side is read by its set name alone, so two sets of one name giving two teams read UNKNOWN in the views and two teams on the TEAMS lines",F114,2b,register row,open,none,none,2026-10-07
 F114-K31,"a set with no name in the clash XML gets a TEAMS line naming no set, TeamMap.SetLines",F114,2b,register row,open,none,none,2026-10-07
+F115-R14,the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports,F115,2a,register row,open,none,none,2026-10-07
+F115-R15,a damaged NWF is still saved after a leftover rename fails and the Build sets button says nothing of it,F115,2a,register row,open,none,none,2026-10-07
+F115-R16,a set the plan skipped is read as one the file does not name and can be removed with the box on,F115,2a,register row,open,none,none,2026-10-07
+F115-R17,the HEALTH block's category check reads the 374 categories of one project with no project guard,F115,2a,register row,open,none,none,2026-10-07
+F115-R18,the sets lines blame the box where a rebuild failed and name lines the window does not show,F115,2a,register row,open,none,none,2026-10-07
+F115-R19,a rebuilt set is not read against the file after the rebuild so one that did not take is counted rebuilt every run,F115,2a,register row,open,none,none,2026-10-07
+F115-R20,leftovers are neither decided nor reported with the rebuild box off,F115,2a,register row,open,none,none,2026-10-07
+F115-R21,a side whose sources read as none counts as zero sides and never as not counted,F115,2a,register row,open,none,none,2026-10-07
+F115-R22,a set created and then lost track of is reported FAILED and may not ask for the save,F115,2a,register row,open,none,none,2026-10-07
+F115-R23,two sets of one name in the picked file are built as one set and counted as one created and one already there,F115,2a,register row,open,none,none,2026-10-07
+F127-R1,read-workbook.ps1 reads every sheet as a test sheet so the Coverage sheet makes every F104 verdict NOT PROVED until it reads a sheet named Coverage into a section of its own,F127,2a,register row,open,none,none,2026-10-07
+F137-R1,ModelFactsReader.SharedCoordinateOn returns an empty site where the Location tab is missing so a read fault reads as a model naming no site and skips the clash,F137,before the test of wave 1,register row,open,none,none,2026-10-07
+F137-R2,the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged,F137,before the test of wave 1,register row,open,none,none,2026-10-07
+F137-R3,the comments of FederationEngine near lines 2154 and 2300 and ModelFactsReader near 154 still say a model naming no site fails its group either way,F137,before the test of wave 1,register row,open,none,none,2026-10-07
+F132-R1,"under Q142 A only a first run over a new NWF merges, a weekly run never does",F132,2a,register row,open,none,none,2026-10-07
+F132-R2,a set's flags and findspec are not read by the drift check a merge reads,F132,2a,register row,open,none,none,2026-10-07
 F132-R3,"two clashes of one test between the same two elements on geometry of one name share a merge key, ClashItem.MergeKey, so a clash only a mirror found on such a pair is counted as a repeat and not added, said on the MIRROR MERGE lines",F132,2a,register row,open,none,none,2026-10-07

@@ -279,19 +279,29 @@ namespace Federator.Core.Tests
             return new StepRecord(group, name, 0, 0.0, seconds, false);
         }
 
+        /// <summary>
+        /// FR-056. The SLOWER check set one visit of a step against twice the group before's whole
+        /// step, so for a step opened once per test one test had to outlast the group before's every
+        /// test together to trigger it. What the group before took is one visit's figure, the mean of
+        /// its visits of that step, and a step opened once per group is its one visit.
+        /// </summary>
         [Test]
-        public void WhatTheSameStepTookOnAGroupIsAddedAcrossEveryVisit()
+        public void WhatTheSameStepTookOnAGroupIsTheMeanOfItsVisits()
         {
             IList<StepRecord> records = new List<StepRecord>
             {
                 Step("1B06PH", RunSteps.TestsRun, 10.0),
                 Step("1B06PH", RunSteps.TestsRun, 15.0),
+                Step("1B06PH", RunSteps.TestsRun, 5.0),
                 Step("1B06PH", RunSteps.Nwd, 60.0)
             };
 
             Assert.That(
                 LiveLine.OnTheGroupBefore(records, "1B06PH", RunSteps.TestsRun),
-                Is.EqualTo(25.0).Within(0.0001));
+                Is.EqualTo(10.0).Within(0.0001));
+            Assert.That(
+                LiveLine.OnTheGroupBefore(records, "1B06PH", RunSteps.Nwd),
+                Is.EqualTo(60.0).Within(0.0001));
         }
 
         [Test]

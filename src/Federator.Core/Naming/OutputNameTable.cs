@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Federator.Core.Diagnostics;
 using Federator.Core.Grouping;
 
 namespace Federator.Core.Naming
@@ -175,15 +176,11 @@ namespace Federator.Core.Naming
 
             foreach (OutputNameRow row in rows)
             {
-                if (row.WasEdited)
-                {
-                    kept++;
-                }
-
                 foreach (OutputKind kind in AllKinds())
                 {
                     if (row.IsByHand(kind))
                     {
+                        kept++;
                         continue;
                     }
 
@@ -203,11 +200,15 @@ namespace Federator.Core.Naming
         {
             if (kept == 0)
             {
-                return rowCount + (rowCount == 1 ? " name refilled." : " rows refilled.");
+                return rowCount + (rowCount == 1 ? " row" : " rows") + " refilled, every name of each.";
             }
 
-            return (rowCount - kept) + " of " + rowCount + " rows refilled. "
-                + kept + (kept == 1 ? " row was" : " rows were")
+            // Counted in names, FR-130. A row with one name typed over has its other names refilled,
+            // so a count of rows said a whole row was left alone.
+            int names = rowCount * AllKinds().Length;
+
+            return (names - kept) + " of " + names + " names refilled. "
+                + kept + (kept == 1 ? " name was" : " names were")
                 + " typed over by hand and left alone.";
         }
 
@@ -233,6 +234,9 @@ namespace Federator.Core.Naming
             return kind == OutputKind.Nwd ? naming.NwdDate(Today) : null;
         }
 
+        /// <summary>What a name that could not be built starts with, so one rule tells it from a name.</summary>
+        public const string CannotBeNamed = "CANNOT BE NAMED: ";
+
         public static string Build(
             NamePattern pattern, BuildingGroup group, ContainerNameSettings settings, DateTime? on)
         {
@@ -242,7 +246,7 @@ namespace Federator.Core.Naming
             }
             catch (InvalidOperationException error)
             {
-                return "CANNOT BE NAMED: " + error.Message;
+                return CannotBeNamed + error.Message;
             }
         }
 
@@ -309,21 +313,116 @@ namespace Federator.Core.Naming
         /// </summary>
         public string WhyTheRunCannotStart()
         {
-            IList<NameCollision> collisions = Collisions();
+            List<string> lines = new List<string>(Unusable());
 
-            if (collisions.Count == 0)
+            foreach (NameCollision collision in Collisions())
+            {
+                // Rows that cannot be named share the sentence, and rows with the cell cleared share the
+                // empty name, so neither is told as a collision, they are told as unusable above.
+                if (WhyUnusable(collision.Name) != null)
+                {
+                    continue;
+                }
+
+                lines.Add(collision.Sentence());
+            }
+
+            return lines.Count == 0
+                ? null
+                : string.Join(Environment.NewLine + Environment.NewLine, lines.ToArray());
+        }
+
+        /// <summary>
+        /// The names that cannot be used for a file, one sentence each, FR-159 and FR-165: a name the
+        /// pattern could not build, such as one with an emptied field, and a name cell cleared to
+        /// nothing. Neither is a collision, and the check before a run looked at collisions only, so
+        /// the refusal sentence went on as the file name and a cleared cell threw out of the click.
+        /// </summary>
+        public IList<string> Unusable()
+        {
+            List<string> found = new List<string>();
+            IList<string> labels = OutputNaming.Labels();
+            OutputKind[] kinds = AllKinds();
+
+            // One sentence per output and cause, with the count and the first few groups, so one emptied
+            // box is one paragraph and not one for every group of the run.
+            for (int i = 0; i < kinds.Length; i++)
+            {
+                List<string> causes = new List<string>();
+                Dictionary<string, List<string>> groupsByCause = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+
+                foreach (OutputNameRow row in rows)
+                {
+                    string cause = WhyUnusable(row.Get(kinds[i]));
+
+                    if (cause == null)
+                    {
+                        continue;
+                    }
+
+                    List<string> groups;
+
+                    if (!groupsByCause.TryGetValue(cause, out groups))
+                    {
+                        groups = new List<string>();
+                        groupsByCause.Add(cause, groups);
+                        causes.Add(cause);
+                    }
+
+                    groups.Add(row.Group);
+                }
+
+                foreach (string cause in causes)
+                {
+                    List<string> groups = groupsByCause[cause];
+                    int shown = Math.Min(groups.Count, RunLog.KeptOfARepeat);
+                    string named = string.Join(", ", groups.GetRange(0, shown).ToArray());
+
+                    found.Add(groups.Count == 1
+                        ? "The " + labels[i] + " name of " + groups[0] + " cannot be used" + cause
+                            + " The run does not start."
+                        : "The " + labels[i] + " name of " + groups.Count + " groups cannot be used" + cause
+                            + " They are " + named
+                            + (groups.Count > shown ? " and " + (groups.Count - shown) + " more." : ".")
+                            + " The run does not start.");
+                }
+            }
+
+            return found;
+        }
+
+        /// <summary>
+        /// Why a name cannot be used, as the words that follow cannot be used, or null where it can. The
+        /// one rule for an empty name and for a name the pattern could not build.
+        /// </summary>
+        private static string WhyUnusable(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return ", it is empty.";
+            }
+
+            if (name.StartsWith(CannotBeNamed, StringComparison.Ordinal))
+            {
+                return ". " + name.Substring(CannotBeNamed.Length);
+            }
+
+            // A name typed over by hand can hold what Windows refuses in a file name, which the pattern
+            // would have refused itself. FileNames names the characters, not the running platform.
+            int at = name.IndexOfAny(FileNames.Refused);
+
+            if (at < 0)
             {
                 return null;
             }
 
-            List<string> lines = new List<string>();
+            char found = name[at];
 
-            foreach (NameCollision collision in collisions)
-            {
-                lines.Add(collision.Sentence());
-            }
-
-            return string.Join(Environment.NewLine + Environment.NewLine, lines.ToArray());
+            return ", it holds "
+                + (found < ' '
+                    ? "a control character (U+" + ((int)found).ToString("X4", System.Globalization.CultureInfo.InvariantCulture) + ")"
+                    : "\"" + found + "\"")
+                + ", which Windows does not allow in a file name.";
         }
 
         /// <summary>Only the rows that will actually run, for the collision check.</summary>

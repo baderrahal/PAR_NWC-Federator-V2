@@ -23,19 +23,18 @@ namespace Federator.Core.Sets
     /// <summary>One leftover set and what is to be done about it.</summary>
     public sealed class LeftoverSet
     {
-        internal LeftoverSet(string path, string name, int sides, LeftoverAction action, string twinPath, string twinName)
-            : this(path, name, sides, action, twinPath, twinName, false)
+        internal LeftoverSet(string path, string name, int sides, LeftoverAction action, string twinName)
+            : this(path, name, sides, action, twinName, false)
         {
         }
 
         internal LeftoverSet(
-            string path, string name, int sides, LeftoverAction action, string twinPath, string twinName, bool sidesUnknown)
+            string path, string name, int sides, LeftoverAction action, string twinName, bool sidesUnknown)
         {
             Path = path ?? string.Empty;
             Name = name ?? string.Empty;
             Sides = sides;
             Action = action;
-            TwinPath = twinPath ?? string.Empty;
             TwinName = twinName ?? string.Empty;
             SidesUnknown = sidesUnknown;
         }
@@ -55,9 +54,7 @@ namespace Federator.Core.Sets
 
         public LeftoverAction Action { get; private set; }
 
-        /// <summary>The unused set that gets removed first, or empty.</summary>
-        public string TwinPath { get; private set; }
-
+        /// <summary>The name of the unused set that gets removed first, or empty.</summary>
         public string TwinName { get; private set; }
 
         /// <summary>What the log says about it, naming what points at it every time.</summary>
@@ -197,6 +194,12 @@ namespace Federator.Core.Sets
                 }
             }
 
+            // ONE UNUSED TWIN SERVES ONE LEFTOVER, the breaker's finding on F115's third pass.
+            // Two leftovers asking the twin's question were both renamed into it: the first
+            // removed the twin and took its name, and the second then removed the first by that
+            // name, a working set with sides, while both lines said RENAMED.
+            List<DocumentSet> taken = new List<DocumentSet>();
+
             foreach (DocumentSet set in inDocument)
             {
                 if (set == null || named.Contains(set.Name))
@@ -206,35 +209,42 @@ namespace Federator.Core.Sets
 
                 if (!everyCounted)
                 {
-                    leftovers.Add(new LeftoverSet(set.Path, set.Name, set.Sides, LeftoverAction.Refuse, null, null, true));
+                    leftovers.Add(new LeftoverSet(set.Path, set.Name, set.Sides, LeftoverAction.Refuse, null, true));
                     continue;
                 }
 
                 if (set.Sides <= 0)
                 {
-                    leftovers.Add(new LeftoverSet(set.Path, set.Name, 0, LeftoverAction.Remove, null, null));
+                    leftovers.Add(new LeftoverSet(set.Path, set.Name, 0, LeftoverAction.Remove, null));
                     continue;
                 }
 
-                DocumentSet twin = TwinFor(set, inDocument, named);
+                DocumentSet twin = TwinFor(set, inDocument, named, taken);
+
+                if (twin != null)
+                {
+                    taken.Add(twin);
+                }
 
                 leftovers.Add(twin == null
-                    ? new LeftoverSet(set.Path, set.Name, set.Sides, LeftoverAction.Refuse, null, null)
+                    ? new LeftoverSet(set.Path, set.Name, set.Sides, LeftoverAction.Refuse, null)
                     : new LeftoverSet(
                         set.Path, set.Name, set.Sides,
-                        LeftoverAction.RemoveTheTwinThenRename, twin.Path, twin.Name));
+                        LeftoverAction.RemoveTheTwinThenRename, twin.Name));
             }
 
             return leftovers;
         }
 
         /// <summary>
-        /// A set the FILE names, asking the IDENTICAL question, that NOTHING points at.
-        /// All three are required. A twin something points at would orphan those sides
-        /// instead, and a twin asking a different question is a different set that happens
-        /// to sit nearby.
+        /// A set the FILE names, asking the IDENTICAL question, that NOTHING points at, and
+        /// that no earlier leftover has taken. All four are required. A twin something points
+        /// at would orphan those sides instead, a twin asking a different question is a
+        /// different set that happens to sit nearby, and a twin already taken is the renamed
+        /// working set of the leftover before.
         /// </summary>
-        private static DocumentSet TwinFor(DocumentSet leftover, IList<DocumentSet> inDocument, HashSet<string> named)
+        private static DocumentSet TwinFor(
+            DocumentSet leftover, IList<DocumentSet> inDocument, HashSet<string> named, IList<DocumentSet> taken)
         {
             foreach (DocumentSet other in inDocument)
             {
@@ -242,6 +252,7 @@ namespace Federator.Core.Sets
                     || ReferenceEquals(other, leftover)
                     || other.Sides > 0
                     || !named.Contains(other.Name)
+                    || Holds(taken, other)
                     || !SameQuestion(leftover.ConditionKeys, other.ConditionKeys))
                 {
                     continue;
@@ -251,6 +262,20 @@ namespace Federator.Core.Sets
             }
 
             return null;
+        }
+
+        /// <summary>Whether that set is among those taken, by reference, because two sets may share a name.</summary>
+        private static bool Holds(IList<DocumentSet> taken, DocumentSet set)
+        {
+            foreach (DocumentSet one in taken)
+            {
+                if (ReferenceEquals(one, set))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

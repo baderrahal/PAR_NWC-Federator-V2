@@ -66,6 +66,11 @@
 # byte order mark before its STATE line reads no state there, and a STATE line below line ten is
 # not read, both on the side that lets the stop through. Two writes of the page and the note in
 # the same instant of the file system read as no change.
+#
+# A session whose branch begins with lane-b or claude/lane-b stops freely, Bader's order of
+# 2026-10-07, because lane B never edits the page. The branch is the ref named in HEAD of the
+# clone or of the worktree, read with builtins. A detached HEAD names no branch and is held
+# like any other.
 
 input=
 while IFS= read -r line || [ -n "$line" ]; do
@@ -143,8 +148,10 @@ esac
 # 1. A merge fetched since the page's STATE line was last changed.
 dot="$root/.git"
 common=
+headfile=
 if [ -d "$dot" ]; then
     common=$dot
+    headfile="$dot/HEAD"
 elif [ -f "$dot" ]; then
     first=
     IFS= read -r first < "$dot"
@@ -157,6 +164,7 @@ elif [ -f "$dot" ]; then
                 *) gitdir="$root/$gitdir" ;;
             esac
             common=$gitdir
+            headfile="$gitdir/HEAD"
             if [ -f "$gitdir/commondir" ]; then
                 back=
                 IFS= read -r back < "$gitdir/commondir"
@@ -170,6 +178,15 @@ elif [ -f "$dot" ]; then
             ;;
     esac
 fi
+if [ -n "$headfile" ] && [ -f "$headfile" ]; then
+    head=
+    IFS= read -r head < "$headfile"
+    head=${head%[[:cntrl:]]}
+    case $head in
+        "ref: refs/heads/lane-b"*|"ref: refs/heads/claude/lane-b"*) exit 0 ;;
+    esac
+fi
+
 if [ -n "$common" ] && [ -f "$common/logs/refs/remotes/origin/main" ]; then
     git --no-optional-locks -C "$root" diff --quiet -G'^STATE ' 'origin/main^1' -- steps/PROGRESS.md >/dev/null 2>&1
     if [ "$?" = 0 ]; then

@@ -98,7 +98,8 @@ namespace Federator.Core.Tests
             guard.RecordFailure(TypeAndMessage);
             guard.RecordFailure(TypeAndMessage);
 
-            Assert.That(guard.ReasonInPlainWords, Does.Contain("first 3 tests"));
+            Assert.That(guard.ReasonInPlainWords, Does.Contain("3 tests in a row"));
+            Assert.That(guard.ReasonInPlainWords, Does.Not.Contain("first"));
             Assert.That(guard.ReasonInPlainWords, Does.Not.Contain("Exception"));
             Assert.That(guard.ReasonInPlainWords, Does.Not.Contain("Access to the path"));
             Assert.That(guard.ReasonInPlainWords, Does.Contain("The log says"));

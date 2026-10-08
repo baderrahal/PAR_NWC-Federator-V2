@@ -195,6 +195,50 @@ namespace Federator.Core.Tests
             Assert.That(map.Of("T"), Is.EqualTo(ClashPriority.None));
         }
 
+        /// <summary>
+        /// FR-037. One test on two lines with two letters was read with the last letter and nothing
+        /// said, and the row count was the number of distinct names. The last letter still wins, which
+        /// is what main does, and the repeat is named with both lines and both letters, so a person
+        /// decides. The count is the rows the file holds.
+        /// </summary>
+        [Test]
+        public void ATestNamedTwiceIsNamedAndTheRowCountIsTheRowsOfTheFile()
+        {
+            PriorityMap map = PriorityMap.Read(
+                "test_name,left_set,right_set,priority\nT,L,R,A\nU,L,R,B\nT,L,R,C\n", "a.csv");
+
+            Assert.That(map.RowCount, Is.EqualTo(3));
+            Assert.That(map.Of("T"), Is.EqualTo(ClashPriority.C), "the last row still wins, as main reads it");
+            Assert.That(map.Problems.Count, Is.EqualTo(1));
+            Assert.That(map.Problems[0], Is.EqualTo(
+                "line 4 names \"T\" again, line 2 gave it A and this line gives it C, so C is the one used"));
+        }
+
+        /// <summary>A third line for the same test names the line before it, and the count still adds up.</summary>
+        [Test]
+        public void ATestNamedThreeTimesNamesEachRepeatAgainstTheOneBeforeIt()
+        {
+            PriorityMap map = PriorityMap.Read(
+                "test_name,left_set,right_set,priority\nT,L,R,A\nT,L,R,B\nT,L,R,B\n", "a.csv");
+
+            Assert.That(map.RowCount, Is.EqualTo(3));
+            Assert.That(map.Problems.Count, Is.EqualTo(2));
+            Assert.That(map.Problems[0], Does.StartWith("line 3 names \"T\" again, line 2 gave it A"));
+            Assert.That(map.Problems[1], Does.StartWith("line 4 names \"T\" again, line 3 gave it B and this line gives it B"));
+        }
+
+        /// <summary>A row left out for its letter is not a first naming, so a later row for that test is no repeat.</summary>
+        [Test]
+        public void ARowLeftOutForItsLetterIsNotARepeat()
+        {
+            PriorityMap map = PriorityMap.Read(
+                "test_name,left_set,right_set,priority\nT,L,R,D\nT,L,R,A\n", "a.csv");
+
+            Assert.That(map.RowCount, Is.EqualTo(1));
+            Assert.That(map.Problems.Count, Is.EqualTo(1));
+            Assert.That(map.Problems[0], Does.Contain("not A, B or C"));
+        }
+
         [Test]
         public void AnEmptyFileIsAProblemAndNotAThrow()
         {

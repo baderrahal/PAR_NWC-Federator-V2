@@ -232,25 +232,99 @@ namespace Federator.Core.Findings
 
         // ---------- job 1, odd shapes ----------
 
-        private static void AddOddShapes(IList<BuildingGroup> groups, IList<ScanFinding> findings)
+        /// <summary>
+        /// One building as the findings read it, FR-154: its code, which is the group's own building
+        /// code and never the group's key, and every group that holds a file of it. With one group
+        /// per building that is the one group. With one per building and discipline it is all of a
+        /// building's groups, so a code is judged once. A group spanning buildings or one discipline
+        /// per federation has no building code and holds no entry.
+        /// </summary>
+        private sealed class BuildingEntry
         {
-            Dictionary<string, List<BuildingGroup>> byShape =
-                new Dictionary<string, List<BuildingGroup>>(StringComparer.Ordinal);
-            List<string> shapeOrder = new List<string>();
+            internal BuildingEntry(string code)
+            {
+                Code = code;
+                Groups = new List<BuildingGroup>();
+            }
+
+            internal string Code { get; private set; }
+
+            internal List<BuildingGroup> Groups { get; private set; }
+
+            internal int FileCount
+            {
+                get
+                {
+                    int count = 0;
+
+                    foreach (BuildingGroup group in Groups)
+                    {
+                        count += group.FileCount;
+                    }
+
+                    return count;
+                }
+            }
+
+            internal List<string> FileStems()
+            {
+                List<string> stems = new List<string>();
+
+                foreach (BuildingGroup group in Groups)
+                {
+                    stems.AddRange(FileNames(group));
+                }
+
+                return stems;
+            }
+        }
+
+        private static List<BuildingEntry> BuildingsOf(IEnumerable<BuildingGroup> groups)
+        {
+            List<BuildingEntry> entries = new List<BuildingEntry>();
+            Dictionary<string, BuildingEntry> byCode = new Dictionary<string, BuildingEntry>(StringComparer.Ordinal);
 
             foreach (BuildingGroup group in groups)
             {
-                string shape = Shape(group.Building);
-                List<BuildingGroup> bucket;
+                if (string.IsNullOrEmpty(group.BuildingCode))
+                {
+                    continue;
+                }
+
+                BuildingEntry entry;
+
+                if (!byCode.TryGetValue(group.BuildingCode, out entry))
+                {
+                    entry = new BuildingEntry(group.BuildingCode);
+                    byCode.Add(group.BuildingCode, entry);
+                    entries.Add(entry);
+                }
+
+                entry.Groups.Add(group);
+            }
+
+            return entries;
+        }
+
+        private static void AddOddShapes(IList<BuildingGroup> groups, IList<ScanFinding> findings)
+        {
+            Dictionary<string, List<BuildingEntry>> byShape =
+                new Dictionary<string, List<BuildingEntry>>(StringComparer.Ordinal);
+            List<string> shapeOrder = new List<string>();
+
+            foreach (BuildingEntry building in BuildingsOf(groups))
+            {
+                string shape = Shape(building.Code);
+                List<BuildingEntry> bucket;
 
                 if (!byShape.TryGetValue(shape, out bucket))
                 {
-                    bucket = new List<BuildingGroup>();
+                    bucket = new List<BuildingEntry>();
                     byShape.Add(shape, bucket);
                     shapeOrder.Add(shape);
                 }
 
-                bucket.Add(group);
+                bucket.Add(building);
             }
 
             // Only call a code odd when some other shape is actually shared. With every
@@ -274,14 +348,14 @@ namespace Federator.Core.Findings
 
             foreach (string shape in shapeOrder)
             {
-                List<BuildingGroup> holders = byShape[shape];
+                List<BuildingEntry> holders = byShape[shape];
 
                 if (holders.Count != 1)
                 {
                     continue;
                 }
 
-                BuildingGroup odd = holders[0];
+                BuildingEntry odd = holders[0];
 
                 // An example of what the others look like, rather than the shape string.
                 // Nobody reads 9A99AA. Everybody reads 1B06PK.
@@ -299,15 +373,15 @@ namespace Federator.Core.Findings
                 findings.Add(new ScanFinding(
                     FindingKind.OddShape,
                     OddShapeLabel,
-                    "The building code " + odd.Building
+                    "The building code " + odd.Code
                         + " is written differently from every other code in this run.",
                     "The other " + others + (others == 1 ? " code looks" : " codes look")
-                        + " like " + example + ", and " + odd.Building + " does not follow that. "
+                        + " like " + example + ", and " + odd.Code + " does not follow that. "
                         + "That is often a typing error in the file name, and it is sometimes a "
                         + "real building named another way. Nothing is changed and the group still "
                         + "runs.",
-                    new List<string> { odd.Building },
-                    FileNames(odd)));
+                    new List<string> { odd.Code },
+                    odd.FileStems()));
             }
         }
 
@@ -315,14 +389,16 @@ namespace Federator.Core.Findings
 
         private static void AddNearMatches(IList<BuildingGroup> groups, IList<ScanFinding> findings)
         {
-            for (int i = 0; i < groups.Count; i++)
-            {
-                for (int j = i + 1; j < groups.Count; j++)
-                {
-                    BuildingGroup left = groups[i];
-                    BuildingGroup right = groups[j];
+            List<BuildingEntry> buildings = BuildingsOf(groups);
 
-                    string confusion = DescribeConfusion(left.Building, right.Building);
+            for (int i = 0; i < buildings.Count; i++)
+            {
+                for (int j = i + 1; j < buildings.Count; j++)
+                {
+                    BuildingEntry left = buildings[i];
+                    BuildingEntry right = buildings[j];
+
+                    string confusion = DescribeConfusion(left.Code, right.Code);
 
                     if (confusion == null)
                     {
@@ -332,16 +408,16 @@ namespace Federator.Core.Findings
                     findings.Add(new ScanFinding(
                         FindingKind.NearMatch,
                         NearMatchLabel,
-                        left.Building + " and " + right.Building
+                        left.Code + " and " + right.Code
                             + " look almost the same and could be one building typed two ways.",
                         "They differ only at " + confusion
                             + ", which are easy to mistake for one another when a code is read off "
-                            + "a drawing or retyped. " + left.Building + " holds " + left.FileCount
-                            + FilesWord(left.FileCount) + " and " + right.Building + " holds "
+                            + "a drawing or retyped. " + left.Code + " holds " + left.FileCount
+                            + FilesWord(left.FileCount) + " and " + right.Code + " holds "
                             + right.FileCount + FilesWord(right.FileCount)
                             + ". They are being kept as two separate federations. If they are meant "
                             + "to be one building, one of the NWC file names needs correcting.",
-                        new List<string> { left.Building, right.Building },
+                        new List<string> { left.Code, right.Code },
                         null));
                 }
             }
@@ -363,9 +439,9 @@ namespace Federator.Core.Findings
                             + " files, so there is nothing for them to clash against.",
                         "This run also has "
                             + string.Join(", ", Without(disciplinesInRun, group.Disciplines[0]).ToArray())
-                            + " files in other buildings. The federation is still built and every "
-                            + "clash test is still created, and none of them is run, because one "
-                            + "discipline cannot clash with itself. "
+                            + " files in other buildings. The federation is still built, the "
+                            + "clash tests whose two sides both find something are still created, and "
+                            + "none of them is run, because one discipline cannot clash with itself. "
                             + "Either the other disciplines have not been exported yet, or this "
                             + "building really is " + group.Disciplines[0] + " only.",
                         new List<string> { group.Building },
@@ -401,7 +477,7 @@ namespace Federator.Core.Findings
         /// the others look like instead of printing a pattern nobody reads.
         /// </summary>
         private static string MostSharedExample(
-            Dictionary<string, List<BuildingGroup>> byShape, IList<string> shapeOrder, string exclude)
+            Dictionary<string, List<BuildingEntry>> byShape, IList<string> shapeOrder, string exclude)
         {
             string best = null;
             int most = 0;
@@ -416,7 +492,7 @@ namespace Federator.Core.Findings
                 if (byShape[shape].Count > most)
                 {
                     most = byShape[shape].Count;
-                    best = byShape[shape][0].Building;
+                    best = byShape[shape][0].Code;
                 }
             }
 

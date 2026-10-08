@@ -37,11 +37,14 @@ namespace Federator.Core.Clash
         public const int ExamplesShown = RunLog.KeptOfARepeat;
 
         private readonly Dictionary<string, ClashPriority> byTestName;
+        private readonly Dictionary<string, int> lineOfTestName;
         private readonly List<string> problems;
+        private int rows;
 
         private PriorityMap()
         {
             byTestName = new Dictionary<string, ClashPriority>(StringComparer.Ordinal);
+            lineOfTestName = new Dictionary<string, int>(StringComparer.Ordinal);
             problems = new List<string>();
         }
 
@@ -57,10 +60,13 @@ namespace Federator.Core.Clash
         /// <summary>The path it was read from, or empty.</summary>
         public string Path { get; private set; }
 
-        /// <summary>How many rows the file holds.</summary>
+        /// <summary>
+        /// How many rows the file holds that this tool could use, a test named twice counted twice,
+        /// FR-037. Not how many distinct tests, which the lookups hold.
+        /// </summary>
         public int RowCount
         {
-            get { return byTestName.Count; }
+            get { return rows; }
         }
 
         /// <summary>Rows the file holds that this tool could not use, with the reason.</summary>
@@ -133,7 +139,21 @@ namespace Federator.Core.Clash
                     continue;
                 }
 
+                // FR-037. The last row for a test still wins, as it did, and a repeat is named so
+                // that nobody reads a letter the file gave twice as if it gave it once. The tool
+                // reports what it noticed and a person decides which letter is right.
+                ClashPriority earlier;
+
+                if (map.byTestName.TryGetValue(name, out earlier))
+                {
+                    map.problems.Add("line " + (i + 1) + " names \"" + name + "\" again, line "
+                        + map.lineOfTestName[name] + " gave it " + earlier + " and this line gives it "
+                        + priority + ", so " + priority + " is the one used");
+                }
+
                 map.byTestName[name] = priority;
+                map.lineOfTestName[name] = i + 1;
+                map.rows++;
             }
 
             return map;

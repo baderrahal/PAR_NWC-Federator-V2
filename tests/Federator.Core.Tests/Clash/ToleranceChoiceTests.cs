@@ -212,6 +212,18 @@ namespace Federator.Core.Tests
             Assert.That(ToleranceChoice.Words((ToleranceOrigin)99), Is.EqualTo("UNKNOWN"));
         }
 
+        /// <summary>
+        /// FR-127. The grey line said changing a saved test resets results, which scan.md 5y measured
+        /// false and the confirm screen contradicts. It says what is true and keeps to twelve words.
+        /// </summary>
+        [Test]
+        public void TheHelpLineNeverSaysResultsAreResetAndSaysTheyAreKept()
+        {
+            Assert.That(ToleranceChoice.HelpLine, Does.Not.Contain("reset"));
+            Assert.That(ToleranceChoice.HelpLine, Does.Contain("Results and statuses are kept"));
+            Assert.That(ToleranceChoice.HelpLine.Split(' ').Length, Is.LessThanOrEqualTo(12));
+        }
+
         [Test]
         public void TheHelpLineIsTwelveWordsAndCarriesNoCodeIdentifier()
         {

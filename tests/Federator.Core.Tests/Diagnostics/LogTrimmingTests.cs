@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Federator.Core.Clash;
+using Federator.Core.Coverage;
 using Federator.Core.Diagnostics;
 using Federator.Core.Sets;
 using NUnit.Framework;
@@ -416,8 +417,14 @@ namespace Federator.Core.Tests
             Assert.That(run.Groups, Is.EqualTo(1));
         }
 
+        /// <summary>
+        /// F127, Bader's request 2: every set that found no items in any group of the run is
+        /// listed, so a set spelled wrong or pointing at nothing shows at once. The block named
+        /// ten and counted the rest, a number that shaped the run held as a constant, and now
+        /// names every one unless CoverageSettings.SetsAtZeroNamedInTheRun caps it.
+        /// </summary>
         [Test]
-        public void TheBlockNamesTenAndCountsTheRest()
+        public void TheBlockNamesEverySetThatFoundNothingByDefault()
         {
             SetsAcrossTheRun run = new SetsAcrossTheRun();
             SetBuildOutcome outcome = new SetBuildOutcome();
@@ -434,8 +441,45 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Contain("groups in this run : 1"));
             Assert.That(all, Does.Contain("sets looked at     : 38"));
             Assert.That(all, Does.Contain("found nothing in every group : 38"));
-            Assert.That(all, Does.Contain("and 28 more that found nothing in every group, "
-                + "counted and not listed"));
+            Assert.That(all, Does.Contain("tree/set 00"));
+            Assert.That(all, Does.Contain("tree/set 37"));
+            Assert.That(all, Does.Not.Contain("more that found nothing in every group"));
+        }
+
+        /// <summary>
+        /// Set 03's C06 run, 22 groups: 14 sets found nothing in every group and the block
+        /// named 10 of them, log lines 8346 to 8357, the other 4 only in the .tsv. All 14 are
+        /// named now. Sample counts only, the names are made up.
+        /// </summary>
+        [Test]
+        public void TheFourteenSetsC06FoundNothingWithAreAllNamed()
+        {
+            SetsAcrossTheRun run = new SetsAcrossTheRun();
+
+            for (int group = 0; group < 22; group++)
+            {
+                SetBuildOutcome outcome = new SetBuildOutcome();
+
+                for (int i = 0; i < 14; i++)
+                {
+                    outcome.AddAlreadyPresent("tree/zero " + i.ToString("00"), "zero", 1, 0);
+                }
+
+                outcome.AddAlreadyPresent("tree/found", "found", 1, group == 0 ? 3 : 0);
+                run.Add(outcome);
+            }
+
+            string all = string.Join("\n", new List<string>(run.Lines()).ToArray());
+
+            Assert.That(all, Does.Contain("found nothing in every group : 14"));
+
+            for (int i = 0; i < 14; i++)
+            {
+                Assert.That(all, Does.Contain("tree/zero " + i.ToString("00")));
+            }
+
+            Assert.That(all, Does.Not.Contain("tree/found"));
+            Assert.That(all, Does.Not.Contain("and 4 more"));
         }
 
         [Test]
@@ -530,14 +574,21 @@ namespace Federator.Core.Tests
             }
         }
 
-        /// <summary>A19. The sets block AT ten names all ten and says nothing about more.</summary>
+        /// <summary>
+        /// A19, with the cap now a setting, F127. A cap of ten names all ten at ten and says
+        /// nothing about more, and one past it is counted, and the block SAYS it truncated.
+        /// </summary>
         [Test]
-        public void ExactlyTenSetsAtZeroAreAllNamedAndOnePastItIsCounted()
+        public void ExactlyTheCapOfSetsAtZeroAreAllNamedAndOnePastItIsCounted()
         {
-            SetsAcrossTheRun at = new SetsAcrossTheRun();
+            const int Cap = 10;
+            CoverageSettings capped = new CoverageSettings();
+            capped.SetsAtZeroNamedInTheRun = Cap;
+
+            SetsAcrossTheRun at = new SetsAcrossTheRun(capped);
             SetBuildOutcome ten = new SetBuildOutcome();
 
-            for (int i = 0; i < SetsAcrossTheRun.ExamplesShown; i++)
+            for (int i = 0; i < Cap; i++)
             {
                 ten.AddAlreadyPresent("tree/set " + i.ToString("00"), "set", 1, 0);
             }
@@ -545,13 +596,13 @@ namespace Federator.Core.Tests
             at.Add(ten);
             string all = string.Join("\n", new List<string>(at.Lines()).ToArray());
 
-            Assert.That(all, Does.Contain("tree/set " + (SetsAcrossTheRun.ExamplesShown - 1).ToString("00")));
+            Assert.That(all, Does.Contain("tree/set " + (Cap - 1).ToString("00")));
             Assert.That(all, Does.Not.Contain("more that found nothing in every group"));
 
-            SetsAcrossTheRun past = new SetsAcrossTheRun();
+            SetsAcrossTheRun past = new SetsAcrossTheRun(capped);
             SetBuildOutcome eleven = new SetBuildOutcome();
 
-            for (int i = 0; i <= SetsAcrossTheRun.ExamplesShown; i++)
+            for (int i = 0; i <= Cap; i++)
             {
                 eleven.AddAlreadyPresent("tree/set " + i.ToString("00"), "set", 1, 0);
             }
@@ -559,8 +610,14 @@ namespace Federator.Core.Tests
             past.Add(eleven);
             all = string.Join("\n", new List<string>(past.Lines()).ToArray());
 
-            Assert.That(all, Does.Not.Contain("tree/set " + SetsAcrossTheRun.ExamplesShown.ToString("00")));
+            Assert.That(all, Does.Not.Contain("tree/set " + Cap.ToString("00")));
             Assert.That(all, Does.Contain("and 1 more that found nothing in every group, counted and not listed"));
+        }
+
+        [Test]
+        public void NoSettingsForTheSetsAcrossTheRunAreRefused()
+        {
+            Assert.Throws<ArgumentNullException>(() => new SetsAcrossTheRun(null));
         }
 
         /// <summary>A19. Exactly five in one bucket are all named and six is the first that counts.</summary>

@@ -125,15 +125,34 @@ namespace Federator.Core.Tests
             OutputNameTable table = Table(naming);
 
             Assert.That(OutputNameTable.DescribeRefill(table.Count, table.Refill(naming, Settings)),
-                Does.Contain("3 rows refilled."));
+                Does.Contain("3 rows refilled, every name of each."));
 
             table.Find("1C07BC").SetByHand(OutputKind.Nwf, "A");
             table.Find("1C07K1").SetByHand(OutputKind.Nwd, "B");
 
             string said = OutputNameTable.DescribeRefill(table.Count, table.Refill(naming, Settings));
 
-            Assert.That(said, Does.Contain("1 of 3 rows refilled"));
-            Assert.That(said, Does.Contain("2 rows were typed over by hand and left alone"));
+            Assert.That(said, Is.EqualTo("7 of 9 names refilled. 2 names were typed over by hand and left alone."));
+        }
+
+        /// <summary>
+        /// FR-130. A row with only its NWF name typed over has two of its three names refilled, and the
+        /// message counted rows, so it said a whole row was left alone. It counts names, and one row
+        /// with nothing kept is not said to be one name refilled.
+        /// </summary>
+        [Test]
+        public void TheRefillCountsNamesAndNeverCallsThreeNamesOne()
+        {
+            OutputNaming naming = new OutputNaming();
+            OutputNameTable table = Table(naming);
+
+            table.Find("1C07BC").SetByHand(OutputKind.Nwf, "A");
+
+            Assert.That(OutputNameTable.DescribeRefill(table.Count, table.Refill(naming, Settings)),
+                Is.EqualTo("8 of 9 names refilled. 1 name was typed over by hand and left alone."));
+            Assert.That(OutputNameTable.DescribeRefill(1, 0), Is.EqualTo("1 row refilled, every name of each."));
+            Assert.That(OutputNameTable.DescribeRefill(1, 0), Does.Not.Contain("1 name refilled"));
+            Assert.That(OutputNameTable.DescribeRefill(1, 1), Is.EqualTo("2 of 3 names refilled. 1 name was typed over by hand and left alone."));
         }
 
         // Setting a name back to what the pattern gives still counts as by hand, because
@@ -219,6 +238,176 @@ namespace Federator.Core.Tests
                 table.Only(new[] { "1C07BC", "1B06BS" }).WhyTheRunCannotStart(),
                 Is.Null,
                 "a group nobody ticked was counted as a collision");
+        }
+
+        // ---------- a name that cannot be used stops the run, FR-159 and FR-165 ----------
+
+        /// <summary>
+        /// Emptying a pattern box turned the refusal sentence into the file name, and the one check
+        /// before a run looked at collisions only, so it passed for one ticked group and called the
+        /// sentence a collision for several. The check names the empty field instead.
+        /// </summary>
+        [Test]
+        public void AnEmptiedPatternFieldIsNamedAndIsNeverACollision()
+        {
+            OutputNaming naming = new OutputNaming();
+            OutputNameTable table = Table(naming);
+
+            naming.Nwf.Level = string.Empty;
+            table.Refill(naming, Settings);
+
+            string all = table.WhyTheRunCannotStart();
+
+            Assert.That(all, Is.Not.Null);
+            Assert.That(all, Is.EqualTo(
+                "The NWF name of 3 groups cannot be used. The level is empty, so the name would have a hole in it."
+                + " They are 1B06BS, 1C07BC, 1C07K1. The run does not start."));
+            Assert.That(all, Does.Not.Contain("would be written to the same"));
+
+            string one = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart();
+
+            Assert.That(one, Is.Not.Null, "one ticked group passed the check with its name a sentence");
+            Assert.That(one, Is.EqualTo(
+                "The NWF name of 1C07BC cannot be used. The level is empty, so the name would have a hole in it."
+                + " The run does not start."));
+        }
+
+        /// <summary>
+        /// One emptied box made a paragraph for every group, twenty two of them in a refusal dialog. Each
+        /// cause is one sentence with its count and at most five groups named, the repeat rule.
+        /// </summary>
+        [Test]
+        public void ManyGroupsOnOneCauseAreOneSentenceWithTheFirstFiveNamed()
+        {
+            List<string> files = new List<string>();
+
+            foreach (string building in new[] { "1A01AA", "1A02AA", "1A03AA", "1A04AA", "1A05AA", "1A06AA", "1A07AA", "1A08AA" })
+            {
+                files.Add("1104-PAR-" + building + "-ZZZ-AR-MOD-000001.nwc");
+            }
+
+            OutputNaming naming = new OutputNaming();
+            BuildingGroupingResult result = BuildingGrouping.GroupNames(files.ToArray(), Settings, GroupingMode.PerBuilding);
+            OutputNameTable table = OutputNameTable.From(result.Groups, naming, Settings, Friday);
+
+            naming.Nwf.Level = string.Empty;
+            table.Refill(naming, Settings);
+
+            string all = table.WhyTheRunCannotStart();
+
+            Assert.That(all, Does.StartWith("The NWF name of 8 groups cannot be used."));
+            Assert.That(all, Does.Contain("They are 1A01AA, 1A02AA, 1A03AA, 1A04AA, 1A05AA and 3 more."));
+            Assert.That(all.Split(new[] { "cannot be used" }, StringSplitOptions.None).Length - 1, Is.EqualTo(1));
+        }
+
+        /// <summary>A name cell cleared by hand, for each of the three outputs, is refused and the refusal names which.</summary>
+        [Test]
+        public void AClearedNameCellIsRefusedForEachOutput()
+        {
+            foreach (OutputKind kind in OutputNameTable.AllKinds())
+            {
+                foreach (string cleared in new[] { string.Empty, "   " })
+                {
+                    OutputNameTable table = Table(new OutputNaming());
+                    table.Find("1C07BC").SetByHand(kind, cleared);
+
+                    string why = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart();
+
+                    Assert.That(why, Is.Not.Null, kind + " cleared to \"" + cleared + "\"");
+                    Assert.That(why, Is.EqualTo(
+                        "The " + OutputNaming.Labels()[(int)kind] + " name of 1C07BC cannot be used, it is empty."
+                        + " The run does not start."));
+                }
+            }
+        }
+
+        /// <summary>
+        /// FR-165's second half. A name typed by hand with a character Windows refuses, a colon or a slash,
+        /// passed the check before a run and reached the write. Each of the refused characters is named,
+        /// and an ordinary name with spaces and dashes still passes.
+        /// </summary>
+        [Test]
+        public void AHandTypedNameWithACharacterWindowsRefusesIsRefusedAndNamed()
+        {
+            foreach (char refused in FileNames.RefusedPrintable)
+            {
+                OutputNameTable table = Table(new OutputNaming());
+                table.Find("1C07BC").SetByHand(OutputKind.Nwd, "Tower " + refused + " east");
+
+                string why = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart();
+
+                Assert.That(why, Is.EqualTo(
+                    "The NWD name of 1C07BC cannot be used, it holds \"" + refused
+                    + "\", which Windows does not allow in a file name. The run does not start."),
+                    "the character " + refused);
+            }
+        }
+
+        [Test]
+        public void AControlCharacterInAHandTypedNameIsNamedByItsCode()
+        {
+            OutputNameTable table = Table(new OutputNaming());
+            table.Find("1C07BC").SetByHand(OutputKind.Workbook, "Tower\teast");
+
+            string why = table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart();
+
+            Assert.That(why, Does.Contain("a control character (U+0009)"));
+            Assert.That(why, Does.Not.Contain("\t"));
+        }
+
+        [Test]
+        public void AnOrdinaryHandTypedNameStillStarts()
+        {
+            OutputNameTable table = Table(new OutputNaming());
+            table.Find("1C07BC").SetByHand(OutputKind.Nwf, "Tower East - rev 2 (final)");
+
+            Assert.That(table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart(), Is.Null);
+        }
+
+        /// <summary>
+        /// A collision between many groups named every one of them, where the repeat rule names five. The
+        /// sentence carries the count, the first five and how many more, as an unusable name does.
+        /// </summary>
+        [Test]
+        public void AManyGroupCollisionNamesFiveAndCountsTheRest()
+        {
+            List<string> files = new List<string>();
+
+            foreach (string building in new[] { "1A01AA", "1A02AA", "1A03AA", "1A04AA", "1A05AA", "1A06AA", "1A07AA", "1A08AA" })
+            {
+                files.Add("1104-PAR-" + building + "-ZZZ-AR-MOD-000001.nwc");
+            }
+
+            BuildingGroupingResult result =
+                BuildingGrouping.GroupNames(files.ToArray(), Settings, GroupingMode.PerBuilding);
+            OutputNameTable table = OutputNameTable.From(result.Groups, new OutputNaming(), Settings, Friday);
+
+            foreach (string building in new[] { "1A01AA", "1A02AA", "1A03AA", "1A04AA", "1A05AA", "1A06AA", "1A07AA", "1A08AA" })
+            {
+                table.Find(building).SetByHand(OutputKind.Nwf, "SameName");
+            }
+
+            IList<NameCollision> collisions = table.Collisions();
+
+            Assert.That(collisions.Count, Is.EqualTo(1));
+            Assert.That(collisions[0].Groups.Count, Is.EqualTo(8), "the collision itself still holds every group");
+            Assert.That(collisions[0].Sentence(), Is.EqualTo(
+                "8 groups would be written to the same NWF name, SameName. They are 1A01AA, 1A02AA, 1A03AA,"
+                + " 1A04AA, 1A05AA and 3 more. One would overwrite the other, so the run does not start."));
+        }
+
+        /// <summary>A table whose names are all usable still starts, and a collision is still worded as one.</summary>
+        [Test]
+        public void UsableNamesStillStartAndACollisionIsStillACollision()
+        {
+            OutputNameTable table = Table(new OutputNaming());
+
+            Assert.That(table.WhyTheRunCannotStart(), Is.Null);
+
+            table.Find("1C07K1").SetByHand(OutputKind.Nwf, table.Find("1C07BC").NwfName);
+
+            Assert.That(table.WhyTheRunCannotStart(), Does.Contain("would be written to the same"));
+            Assert.That(table.WhyTheRunCannotStart(), Does.Not.Contain("cannot be used"));
         }
 
         // ---------- the dated NWD ----------

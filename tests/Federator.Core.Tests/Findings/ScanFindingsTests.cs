@@ -155,6 +155,70 @@ namespace Federator.Core.Tests
             Assert.That(grouped.Find("100000"), Is.Not.Null);
         }
 
+        // ---------- the other modes of grouping, FR-154 ----------
+
+        private static ScanFindings FindingsIn(GroupingMode mode, params string[] fileNames)
+        {
+            return ScanFindings.From(BuildingGrouping.GroupNames(fileNames, new ContainerNameSettings(), mode));
+        }
+
+        /// <summary>
+        /// The findings read the group key as the building code. With one group per building and
+        /// discipline the key is 1C7BC-AR and not 1C7BC, so a mistyped code that four groups share was
+        /// never alone in its shape and was not flagged. It is one building, flagged once by its code.
+        /// </summary>
+        [Test]
+        public void APerBuildingAndDisciplineRunFlagsAMistypedBuildingCodeOnceByItsCode()
+        {
+            ScanFindings findings = FindingsIn(
+                GroupingMode.PerBuildingAndDiscipline,
+                Files(
+                    FullGroup("1B06PK"), FullGroup("1B06BS"), FullGroup("1B06WL"), FullGroup("1C07BC"),
+                    FullGroup("1C07K1"), FullGroup("1B06PH"), FullGroup("1B06M1"), FullGroup("1B06M2"),
+                    FullGroup("1B06P1"), FullGroup("1B06P2"), FullGroup("1C7BC")));
+
+            IList<ScanFinding> odd = findings.OfKind(FindingKind.OddShape);
+
+            Assert.That(odd.Count, Is.EqualTo(1));
+            Assert.That(odd[0].Buildings.Count, Is.EqualTo(1));
+            Assert.That(odd[0].Buildings[0], Is.EqualTo("1C7BC"));
+            Assert.That(odd[0].Headline, Is.EqualTo("The building code 1C7BC is written differently from every other code in this run."));
+            Assert.That(odd[0].Files.Count, Is.EqualTo(4), "the four files of the one building");
+        }
+
+        /// <summary>A confusable pair of buildings is one finding with every file of each, and not one per discipline.</summary>
+        [Test]
+        public void AConfusablePairIsOneNearMatchInAPerBuildingAndDisciplineRun()
+        {
+            ScanFindings findings = FindingsIn(
+                GroupingMode.PerBuildingAndDiscipline, Files(FullGroup("1B06K1"), FullGroup("1B06KI")));
+
+            IList<ScanFinding> near = findings.OfKind(FindingKind.NearMatch);
+
+            Assert.That(near.Count, Is.EqualTo(1));
+            Assert.That(near[0].Buildings.Count, Is.EqualTo(2));
+            Assert.That(near[0].Buildings, Is.EquivalentTo(new[] { "1B06K1", "1B06KI" }));
+            Assert.That(near[0].Detail, Does.Contain("1B06K1 holds 4 files and 1B06KI holds 4 files"));
+        }
+
+        /// <summary>With one federation per discipline there is no building code to be odd, so a discipline is never called one.</summary>
+        [Test]
+        public void APerDisciplineRunNeverCallsADisciplineABuildingCode()
+        {
+            ScanFindings findings = FindingsIn(
+                GroupingMode.PerDiscipline,
+                Files(FullGroup("1B06PK"), FullGroup("1B06BS"), new[] { Nwc("1B06PK", "A1") }));
+
+            Assert.That(findings.OfKind(FindingKind.OddShape).Count, Is.EqualTo(0));
+            Assert.That(findings.OfKind(FindingKind.NearMatch).Count, Is.EqualTo(0));
+
+            foreach (ScanFinding finding in findings.All)
+            {
+                Assert.That(finding.Headline, Does.Not.Contain("building code"));
+                Assert.That(finding.Detail, Does.Not.Contain("building code"));
+            }
+        }
+
         // ---------- job 2, near match ----------
 
         // The one real typing error in the 22 group run, a digit one against a capital i.
@@ -307,6 +371,25 @@ namespace Federator.Core.Tests
             Assert.That(single[0].Buildings, Is.EqualTo(new[] { "1B06BS" }));
             Assert.That(single[0].Headline, Does.Contain("only EL"));
             Assert.That(single[0].Headline, Does.Contain("nothing for them to clash against"));
+        }
+
+        /// <summary>
+        /// FR-126. The detail said every clash test is still created in a one discipline group, and the
+        /// CLASH block of the same group said 36 of 1830 were. Since F77 only the tests whose two sides
+        /// both find something are created, and it says that.
+        /// </summary>
+        [Test]
+        public void TheSingleDisciplineDetailNeverSaysEveryTestIsCreated()
+        {
+            ScanFindings findings = FindingsFor(Files(
+                FullGroup("1B06PK"),
+                new[] { Nwc("1B06BS", "EL") }));
+
+            string detail = findings.OfKind(FindingKind.SingleDiscipline)[0].Detail;
+
+            Assert.That(detail, Does.Not.Contain("every clash test is still created"));
+            Assert.That(detail, Does.Contain("the clash tests whose two sides both find something are still created"));
+            Assert.That(detail, Does.Contain("none of them is run"));
         }
 
         [Test]
