@@ -14,10 +14,10 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 | Order | Item | Branch | State |
 |---|---|---|---|
 | 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | code merged as pull request 142, its records and two fixes of a third reading as 144 by the worktree session, the add-in half waits for the laptop lane |
-| 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | Core steps 1 to 3 merged as pull request 145, the Coverage sheet, the check's sheet list, the Q127 lines and the records as 153 by the worktree session, the add-in half waits for the laptop lane |
+| 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | Core steps 1 to 3 merged as pull request 145, the Coverage sheet, the check's sheet list, the Q127 lines and the records as 153 by the worktree session, the Core points of its readers as 167, the add-in half waits for the laptop lane |
 | 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 merged as pull request 146, its records by the worktree session on fix-F137, Q125 B left for the laptop lane with the add-in half |
 | 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 merged as pull request 147, FR-199 and FR-040 with the records as 159 by the worktree session, FR-036 and FR-041 left for the laptop lane |
-| 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items merged as pull request 148 with FR-057 half, the rest left for the laptop lane |
+| 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items merged as pull request 148 with FR-057 half, two more points as 168 and FR-057's disk half as 169, the rest left for the laptop lane |
 | 6 | F128's Core part, generic models, FR-177 | fix-F128 | not started, see below |
 | 7 | F121 the rest, FR-150 to FR-166 and FR-202, wave 4 | fix-F121 | five items merged as pull request 150, the rest left for the laptop lane |
 | 8 | F123 docs and words and the noise of every area, wave 5 | fix-F123 | merged as 151, 154, 155, 161, 162, 163, 164 and 165 |
@@ -25,13 +25,15 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 ## The item the lane is on
 
 The second night, 8 Oct 2026, by Bader's message GOOD MORNING, BADER: the Core points the readers of F127,
-F119, F115, F137, F121 and F123 left, in that order after F128. F127's Core points merged as pull request 167 and F119's first two as 168. Now on FR-057's disk half of
-F119, branch claude/lane-b-release-plan-zztyvx, which changes src\Federator.Core\Diagnostics\RunLog.cs and
-its tests under Diagnostics. Neither fix-F118 nor fix-F132 changes it.
+F119, F115, F137, F121 and F123 left, in that order after F128. F127's Core points merged as pull request 167, F119's first two as 168 and FR-057's disk half of F119 as 169.
+Now on F115's words and polish, branch claude/lane-b-release-plan-zztyvx, which changes comments in
+src\Federator.Core\Sets\SetResult.cs and EmptySets.cs and nine assertions under tests\Federator.Core.Tests.
+fix-F132 does not change them, read with git diff on origin/main against the branch on 8 Oct 2026, and the
+files it does change are listed under The files each open branch changes.
 
 The branch claude/lane-b-release-plan-zztyvx is the one branch this session may push, restarted
 from main after each merge. F115 merged as pull request 142, F127 as 145, F137 as 146, F118 as 147 and
-F119 as 148. fix-F115 and fix-F127 stay on origin and are not deleted, because their records are theirs.
+F119 as 148.
 
 A second session of the lane, the worktree session in .claude\worktrees\agent-a9ff34180e9235316
 of the checkout on Bader's machine, writes the records the cloud session may not: F115's records
@@ -60,33 +62,22 @@ log entry, which stay on origin/fix-F115 and origin/fix-F127 for the F115 and F1
 
 ## The files each open branch changes
 
-Every branch of this lane also changes steps\lane-b.md, steps\tracker.csv, steps\tracker.md,
+Read with git diff --name-only on origin/main against each branch on 8 Oct 2026, the files under src and
+tests only. Every branch of this lane also changes steps\lane-b.md, steps\tracker.csv, steps\tracker.md,
 steps\PROGRESS.md, steps\01_next.md, steps\history\log.md and the rule in .claude\rules\core.md
 where a rule changed. The laptop lane merges those files by taking main in, as every branch does.
 
-- fix-F115, at f4dc480 before this lane took it: src\Federator.Core\Sets\EmptySetJudge.cs,
-  EmptySets.cs, SetBuildOutcome.cs, SetBuildPlan.cs, SetDrift.cs, SetLeftovers.cs, SetResult.cs,
-  src\Federator.Core\Health\ExportCheck.cs, HealthCheck.cs, HealthCheckResult.cs, SetWarnings.cs,
-  src\Federator.Core\Exchange\MatrixCorrections.cs, RevitCategories.cs, RevitWorksets.cs,
-  revit-categories.txt, revit-worksets.txt, src\Federator.Addin\Engine\SetBuilder.cs and
-  FederationEngine.cs, the add-in half built before this lane and not touched by it, and the
-  tests under Sets, Health and Exchange
-- fix-F127, at dccf351 before this lane took it: src\Federator.Core\Coverage\*,
-  src\Federator.Core\Clash\ClashRunOutcome.cs, src\Federator.Core\Diagnostics\FileFingerprint.cs
-  and RunLog.cs, src\Federator.Core\Health\ExportCheck.cs, src\Federator.Core\Report\WorkbookTest.cs
-  and WorkbookTests.cs, src\Federator.Core\Sets\SetsAcrossTheRun.cs, and the tests under
-  Coverage, Clash, Diagnostics and Report. The Coverage sheet writer goes in
-  src\Federator.Core\Report
-- fix-F137, not yet made: src\Federator.Core\Health\AlignmentCheck.cs,
-  src\Federator.Core\Health\OffCoordinates.cs, src\Federator.Core\Rerun\GroupJudgement.cs and
-  their tests under Health and Rerun
-- fix-F118, not yet made: src\Federator.Core\Report\WorkbookCheck.cs, WorkbookWriter.cs,
-  ReportOrder.cs, ClashReportModel.cs, src\Federator.Core\Clash\ToleranceChoice.cs,
-  PriorityMap.cs and their tests under Report and Clash
-- fix-F119, not yet made: src\Federator.Core\Diagnostics\RunLog.cs, RowLog.cs, EventRow.cs,
-  RunClock.cs, LiveLine.cs, src\Federator.Core\Clash\ClashRunOutcome.cs, ToleranceChoice.cs,
-  src\Federator.Core\Rerun\GroupJudgement.cs and their tests under Diagnostics, Clash and Rerun
-- fix-F128, not yet made: a new folder src\Federator.Core\Generic and its tests
+- fix-F118 merged as pull request 159 on 8 Oct 2026 and is no longer open, so ReportOrder, ClashReportModel,
+  WorkbookCheck, ClientFormat and ClientShapes are free to lane B again
+- fix-F132, the mirrored tests, add-in half in work: src\Federator.Addin\Engine\ClashHarvest.cs,
+  ClashRunner.cs, FederationEngine.cs, SavedTests.cs, src\Federator.Core\Clash\BothFoundStatus.cs,
+  ClashTestPlan.cs, CreationPlan.cs, MirrorKind.cs, MirrorPair.cs, MirrorRenames.cs, MirrorRule.cs,
+  MirrorSettings.cs, PlannedClashTest.cs, ReportedCount.cs, SavedClashTest.cs, TestDrift.cs,
+  src\Federator.Core\Exchange\ExchangeModel.cs, src\Federator.Core\Health\SetWarnings.cs,
+  src\Federator.Core\Report\ClashReportModel.cs, ClashReportXml.cs, MirrorMerge.cs, WorkbookWriter.cs,
+  src\Federator.Core\Sets\SetBuildOutcome.cs and the tests under Clash and Report named for them
+- fix-F114, fix-F114-probes, fix-T5-close-1007 and fix-F109: no file under src or tests
+- fix-F115, fix-F127, fix-F137 and fix-F119 are merged and their branches gone, and fix-F128 was never made
 
 ## What merged
 
@@ -113,7 +104,8 @@ lane's to set in the tracker.
 | F123 | FR-171 T1-N56 and N57 in RunLog. The numbered line writes its machine readable row through Row, which it had copied line for line, and the seconds, visits and throws of a step in a group are added up in one place, TotalOf, where two loops did it. No behaviour changes, and one test added after the reader found the step sums unpinned at log level, a repeated step with one visit that threw. Core tests 2409 run, 2375 passed, 0 failed, 34 skipped | 165 | merged, 04e68b8 |
 | F127 | The Core points the readers of 145 and 153 left. SetsAcrossTheRun counts a path once in a group, finds something there where any set of the path did, is at zero only where every set of the path was counted and found nothing, and leaves a path out of a group where one set of it was not counted and none found items. A set's line and its .tsv row say how many of the groups it was looked at in when that is fewer, the header says how many sets that is, a set never counted in any group is counted on a line of its own, and the all clear says every set that was counted, or that no set was counted. CountCheck reads a test the run left no record of, or never reached, with an empty block that the document does not return as not compared, where one the run knows it did not create stays held by neither side, and gives the FAILED line of a test the plan dropped before the model, that an earlier run left in the document, its cause. CoverageAcrossTheRun counts the tests the file does not name once by name across the run, as Q127 A counts every other test, and the headline says how many test places its groups hold and that a group not checked is in none of the counts. Words: the CountCheck summary, the Q126 test comment, one number tied to set 03's log line 297, and the design file said to be outside the repo. 10 new tests, all failing on main's source. Core tests here 2408 run, 2375 passed, 0 failed, 33 skipped before, 2418 run, 2385 passed, 0 failed, 33 skipped after. A reviewer and a breaker read it and their findings are fixed, two of lane B's own first lines among them: a cause that said a test the runner's walk had not found was in the document before the run, and a not compared rule that took in the tests the plan drops. The add-in half of F127 is unchanged | 167 | merged, 639804a |
 | F119 | The two Core points the readers of 148 left that a test proves. The RETAIN line counted a .tsv it could not delete in the number of logs it could not delete, so two refused .tsv read as two logs that stayed. It now counts them apart, on the one seam that writes the sentence, RunLog.RetainLine, and adds nothing about a refused .tsv unless one was refused, so the part the loop's harness matches is unchanged, and the wiring is held by a Windows only test that holds a .tsv open. A run counted to now, one that started and never finished, printed an after the run finished row of 0.0 seconds in its timing block, which reads as a measurement. It now says the time after the run is not measured and prints no row, and a run that finished keeps its row. 3 new tests, the first not building against main's source because RetainLine is new, the second failing on it, and the third, which holds PruneOldLogs's wiring with a .tsv held open, running on Windows only and so unrun here. FR-057's disk half is not in this pull request. Core tests 2418 run, 2385 passed, 0 failed, 33 skipped before, 2421 run, 2387 passed, 0 failed, 34 skipped after, the one more skipped being the Windows only test | 168 | merged, a3681a3 |
-| F119 | FR-057's disk half, second attempt. A write to the log file that threw, a full disk or a handle gone, came out of Line and stopped the run, and the failure lines that would have reported it hit the same write. Now the write is in a try in WriteRaw. The line is kept in memory and told to the window, one LOG line says the file stopped taking lines with what threw, IsWritingToDisk reads false and the label says the lines since then are in the window only without a framework message, and the run goes on. ReadAll gives the lines held in memory, TryCopyTo writes a copy from memory and says so, the RESULT size of the .log says the file is short, and Dispose closes the writer and the stream each on its own so a flush that fails leaves no handle open. A first line that cannot be written counts as a failed open, so StartOrDisabled tries the next folder as it did when the write threw out of Line, with the cause in the message and the empty file taken away, which no test shows, since a disk will not fail on the first line on demand. A copy of a log that was only closed now works, where main refused it. 5 new tests, made with a closed stream through the one private field and, for Dispose, a stream whose flush throws, all failing on main's source. Core tests 2421 run, 2387 passed, 0 failed, 34 skipped before, 2426 run, 2392 passed, 0 failed, 34 skipped after. One reviewer read it twice over and its findings are in | 169 | in review |
+| F119 | FR-057's disk half, second attempt. A write to the log file that threw, a full disk or a handle gone, came out of Line and stopped the run, and the failure lines that would have reported it hit the same write. Now the write is in a try in WriteRaw. The line is kept in memory and told to the window, one LOG line says the file stopped taking lines with what threw, IsWritingToDisk reads false and the label says the lines since then are in the window only without a framework message, and the run goes on. ReadAll gives the lines held in memory, TryCopyTo writes a copy from memory and says so, the RESULT size of the .log says the file is short, and Dispose closes the writer and the stream each on its own so a flush that fails leaves no handle open. A first line that cannot be written counts as a failed open, so StartOrDisabled tries the next folder as it did when the write threw out of Line, with the cause in the message and the empty file taken away, which no test shows, since a disk will not fail on the first line on demand. A copy of a log that was only closed now works, where main refused it. 5 new tests, made with a closed stream through the one private field and, for Dispose, a stream whose flush throws, all failing on main's source. Core tests 2421 run, 2387 passed, 0 failed, 34 skipped before, 2426 run, 2392 passed, 0 failed, 34 skipped after. One reviewer read it twice over and its findings are in | 169 | merged, 91fd78d |
+| F115 | Words and polish the readers of 142 and 144 left, no behaviour changed. The Asked property of SetResult carried two summary elements in a row and now one. The comment in EmptySets that called the measured lists the whole project, 374 categories and 39 worksets, says the judge adds the worksets this group's models carry and the spellings of the list beside the picked file. Nine assertions that set a ReadOnlyCollection against an array or a list, in EmptySetsTests, SetBuildPlanTests, InfraSetsFileTests and MatrixCorrectionsTests, copy it into a list first, as the same files already do, so that the lists are compared element by element as the rules of the tests ask, and compare as strictly as before. No new test, since no behaviour moves and the sets tests hold it. Core tests 2426 run, 2392 passed, 0 failed, 34 skipped, as before | 170 | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -141,15 +133,26 @@ and the row that said how many worksets a stopped walk had seen.
   model carries a category. A model dropped in ModelFactsReader.Exports has no model worksets row
 - Core, left as designed by the loop: a present set whose search could not be read is never judged
   empty, so the SETS count at zero is higher than the EMPTY SETS header and the SETS block says
-  how many could not be read. The judge reads only the first value of a set and ignores Or groups,
-  where HEALTH reads them. The HEALTH count of categories no model carries has no project guard.
-  SETS ACROSS THE RUN says every set found something over a run with no group. A failed list read
-  is cached for the life of the window. The not-a-typo pairs are one project's
-- Words and polish: three comments say 374 categories and 39 worksets where the judge adds more,
-  two summary elements in a row in SetResult, the test of Is.EqualTo on collections in five tests,
-  a second ContainsTest in SetWarnings, the walk not disposing five sub objects which FR-029 holds
+  how many could not be read. The HEALTH count of categories no model carries has no project guard.
+  A failed list read is cached for the life of the window. The not-a-typo pairs are one project's.
+  SETS ACROSS THE RUN no longer says every set found something over a run in which no set was
+  counted, pull request 167
+- Words and polish still open: a second ContainsTest in SetWarnings, which fix-F132 changes, and the walk
+  not disposing five sub objects, which FR-029 holds
+- Looked at again on 8 Oct 2026, each read off the code. Left: R9, ProjectOf calling ContainerName.Parse
+  outside a guard, because the window holds one readonly settings object, parses every path with it at
+  the scan outside any catch and hands the same object to the run, so the throw comes at the scan first.
+  R5, the category verdict read against what a group's models carry, because ModelExport has no category
+  member. R18 and R21, because they need the add-in to hand over the box and the sides. R17 is a
+  HEALTH line with no project guard, narrowed by the folder it names since pull request 151, and a guard
+  would need a project the pick does not know. Taken in a pull request of their own, not in 170: R10, a
+  seam for the branch of the judge that says the workset list inside Core was not read, and the half of
+  R14 that is Core, a group holding a model whose walk stopped, which the judge never reads though it is
+  handed it. The other half of R14, a model dropped from the exports, is the add-in's catch in
+  ModelFactsReader
 - Members with no caller that F115 did not add: RevitWorksets.DecidedCount, PlannedSet.GroupCount
-  and Groups, and the long forms of AddCreated and EmptySets.Lines used by tests only
+  and Groups, and the shorter forms of AddCreated and EmptySets.Lines, the one of four arguments
+  and the one of three, which only tests call, where the longer forms are called in src
 
 ## Where the lane stopped
 

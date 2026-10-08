@@ -317,7 +317,7 @@ namespace Federator.Core.Tests.Sets
 
             EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
 
-            Assert.That(group.GroupWorksets, Is.EqualTo(new[] { "ME-DUCTWORK", "ME-EQUIPMENT" }));
+            Assert.That(new List<string>(group.GroupWorksets), Is.EqualTo(new[] { "ME-DUCTWORK", "ME-EQUIPMENT" }));
             Assert.That(
                 EmptySets.Why("a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") }, group).Reason,
                 Is.EqualTo(EmptyReason.TheValueIsThereAnyway));
@@ -361,8 +361,8 @@ namespace Federator.Core.Tests.Sets
 
             EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
 
-            Assert.That(group.GroupWorksets, Is.EqualTo(ExportCheck.WorksetsOf(models)));
-            Assert.That(group.GroupWorksets, Is.EqualTo(new[] { "ME-Ductwork", "ME-Piping", "AR-EXTERIOR" }));
+            Assert.That(new List<string>(group.GroupWorksets), Is.EqualTo(ExportCheck.WorksetsOf(models)));
+            Assert.That(new List<string>(group.GroupWorksets), Is.EqualTo(new[] { "ME-Ductwork", "ME-Piping", "AR-EXTERIOR" }));
         }
 
         /// <summary>

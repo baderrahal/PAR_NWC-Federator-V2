@@ -61,7 +61,7 @@ namespace Federator.Core.Tests
             SetBuildPlan plan = SetBuildPlan.From(document);
 
             Assert.That(plan.Buildable.Count, Is.EqualTo(1));
-            Assert.That(plan.Buildable[0].Folders, Is.EqualTo(new[] { "Mechanical", "Mechanical-HVAC" }));
+            Assert.That(new List<string>(plan.Buildable[0].Folders), Is.EqualTo(new[] { "Mechanical", "Mechanical-HVAC" }));
             Assert.That(plan.Buildable[0].Name, Is.EqualTo("Air Terminals"),
                 "the folder names leaked into the set name");
             Assert.That(plan.DeepestFolderDepth(), Is.EqualTo(2));
@@ -194,7 +194,7 @@ namespace Federator.Core.Tests
             Assert.That(plan.Skipped[0].Name, Is.EqualTo("Bad"));
             Assert.That(plan.Skipped[0].Reason, Does.Contain("wildcard"),
                 "the reason does not name the offending test value");
-            Assert.That(plan.UnknownTestValues, Is.EqualTo(new[] { "wildcard" }));
+            Assert.That(new List<string>(plan.UnknownTestValues), Is.EqualTo(new[] { "wildcard" }));
         }
 
         [Test]
@@ -226,7 +226,7 @@ namespace Federator.Core.Tests
             SetBuildPlan plan = SetBuildPlan.From(document);
 
             Assert.That(plan.Skipped.Count, Is.EqualTo(3));
-            Assert.That(plan.UnknownTestValues, Is.EqualTo(new[] { "wildcard", "between" }));
+            Assert.That(new List<string>(plan.UnknownTestValues), Is.EqualTo(new[] { "wildcard", "between" }));
         }
 
         // ---------- flags ----------
@@ -264,7 +264,7 @@ namespace Federator.Core.Tests
             PlannedSet first = plan.Buildable[0];
 
             Assert.That(first.Name, Is.EqualTo("BLD-AR-Floors"), "this is the set that failed");
-            Assert.That(first.Folders, Is.EqualTo(new[] { "Architecture" }));
+            Assert.That(new List<string>(first.Folders), Is.EqualTo(new[] { "Architecture" }));
             Assert.That(first.ConditionCount, Is.EqualTo(2));
             Assert.That(plan.Skipped, Has.None.Property("Name").EqualTo("BLD-AR-Floors"));
         }
