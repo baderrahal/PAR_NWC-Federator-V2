@@ -602,6 +602,44 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// The one row of a test that found nothing paints its own row and no more. It borrowed the painter of the
+        /// two row header, so the row under it came out grey and boxed, and after the last block of the sheet,
+        /// which in the default order is a test that found nothing on almost every workbook, nothing repainted it,
+        /// FR-038. The break: the row below the last block carries no fill and no border, and the row itself
+        /// keeps both.
+        /// </summary>
+        [Test]
+        public void TheRowUnderTheLastEmptyTestCarriesNoFillAndNoBorder()
+        {
+            ClashReport report = Report();
+            AddTest(report, "found three", 3);
+            AddTest(report, "found nothing", 0);
+
+            using (XLWorkbook workbook = new XLWorkbook(Write(report)))
+            {
+                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
+                IList<int> blocks = BlockRows(sheet);
+                int row = blocks[blocks.Count - 1];
+
+                Assert.That(sheet.Cell(row, 1).GetString(), Is.EqualTo("found nothing"), "the last block is the empty one");
+
+                for (int column = 1; column <= WorkbookWriter.LastTestHeaderColumn; column++)
+                {
+                    IXLStyle own = sheet.Cell(row, column).Style;
+                    IXLStyle below = sheet.Cell(row + 1, column).Style;
+
+                    Assert.That(own.Fill.PatternType, Is.Not.EqualTo(XLFillPatternValues.None), "the row itself is grey, column " + column);
+                    Assert.That(own.Border.TopBorder, Is.EqualTo(XLBorderStyleValues.Thick), "and ruled thick on top, column " + column);
+                    Assert.That(below.Fill.PatternType, Is.EqualTo(XLFillPatternValues.None), "no fill under it, column " + column);
+                    Assert.That(below.Border.TopBorder, Is.EqualTo(XLBorderStyleValues.None), "no border under it, column " + column);
+                    Assert.That(below.Border.BottomBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
+                    Assert.That(below.Border.LeftBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
+                    Assert.That(below.Border.RightBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
+                }
+            }
+        }
+
+        /// <summary>
         /// The nine values of a test are written by one routine for both shapes, so a test that found nothing and a
         /// test that found something read the same nine facts off the same model, T1-N84.
         /// </summary>

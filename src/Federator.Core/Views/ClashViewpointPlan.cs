@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Federator.Core.Clash;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Views
 {
@@ -212,6 +213,28 @@ namespace Federator.Core.Views
         /// <summary>How many carried a set name with no code this tool knows.</summary>
         public int UnknownDisciplineCount { get; internal set; }
 
+        private readonly List<string> setsWithNoCode = new List<string>();
+        private readonly Dictionary<string, int> clashesOfSetsWithNoCode =
+            new Dictionary<string, int>(StringComparer.Ordinal);
+
+        /// <summary>
+        /// Notes the set a clash sat in whose name carries no code this tool knows, FR-074. The count of clashes
+        /// said how many and never which sets, so a person could not tell whether the one set was the client's
+        /// odd name or a mistake.
+        /// </summary>
+        internal void SetWithNoCode(string setName)
+        {
+            string name = string.IsNullOrEmpty(setName) ? "(no set name)" : setName;
+
+            if (!clashesOfSetsWithNoCode.ContainsKey(name))
+            {
+                setsWithNoCode.Add(name);
+                clashesOfSetsWithNoCode[name] = 0;
+            }
+
+            clashesOfSetsWithNoCode[name] = clashesOfSetsWithNoCode[name] + 1;
+        }
+
         /// <summary>How many a per test cap kept out.</summary>
         public int OverTheCapCount { get; internal set; }
 
@@ -268,6 +291,22 @@ namespace Federator.Core.Views
                 + ", every one of them is in its pair folder and none was dropped");
             lines.Add("a set name with no code this tool knows : " + UnknownDisciplineCount
                 + ", every one of them is in a folder saying UNKNOWN and none was guessed at");
+
+            if (setsWithNoCode.Count > 0)
+            {
+                List<string> named = new List<string>();
+
+                for (int i = 0; i < setsWithNoCode.Count && i < RunLog.KeptOfARepeat; i++)
+                {
+                    string name = setsWithNoCode[i];
+                    named.Add(name + " (" + Words.Counted(clashesOfSetsWithNoCode[name], "clash", "clashes") + ")");
+                }
+
+                lines.Add("    the sets with no code : " + string.Join(", ", named.ToArray())
+                    + (setsWithNoCode.Count > RunLog.KeptOfARepeat
+                        ? ", and " + (setsWithNoCode.Count - RunLog.KeptOfARepeat) + " more"
+                        : string.Empty));
+            }
 
             if (!PriorityPicked)
             {
@@ -398,6 +437,16 @@ namespace Federator.Core.Views
                 if (!pair.BothKnown)
                 {
                     outcome.UnknownDisciplineCount = outcome.UnknownDisciplineCount + 1;
+
+                    if (DisciplinePairRule.CodeIn(clash.LeftSet, settings).Length == 0)
+                    {
+                        outcome.SetWithNoCode(clash.LeftSet);
+                    }
+
+                    if (DisciplinePairRule.CodeIn(clash.RightSet, settings).Length == 0)
+                    {
+                        outcome.SetWithNoCode(clash.RightSet);
+                    }
                 }
 
                 string sizeFolder = null;

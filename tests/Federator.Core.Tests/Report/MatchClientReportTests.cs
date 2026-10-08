@@ -298,6 +298,44 @@ namespace Federator.Core.Tests
             Assert.That(Pictures(Write(report, pasted)), Is.EqualTo(1));
         }
 
+        /// <summary>
+        /// The row a pasted thumbnail sits in takes the thumbnail's height. The clash row height was set after the
+        /// picture was pasted and took it away, so a 95 pixel picture overhung the next row, FR-039. The break:
+        /// the same row without a picture keeps the client's measured height.
+        /// </summary>
+        [Test]
+        public void ARowHoldingAPastedThumbnailKeepsTheThumbnailsHeight()
+        {
+            ClashReport report = Report();
+            TestReport test = OneTest(report, -0.05);
+
+            string images = ImageNaming.FolderFor(Path.Combine(folder, report.OutputName + ".xlsx"));
+            Directory.CreateDirectory(images);
+            string jpg = Path.Combine(images, ImageNaming.FileNameFor(0, 1));
+            File.WriteAllBytes(jpg, Jpeg());
+
+            test.Rows[0].ImageFile = ImageNaming.FileNameFor(0, 1);
+            test.Rows[0].ImageLink = "x_files/cd000001.jpg";
+            test.Rows[0].ImagePath = jpg;
+
+            ReportOptions pasted = new ReportOptions();
+            pasted.Images.EmbedThumbnail = true;
+
+            using (XLWorkbook workbook = new XLWorkbook(Write(report, pasted)))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+
+                Assert.That(sheet.Row(HeaderRow(sheet) + 1).Height, Is.EqualTo(WorkbookWriter.ThumbnailPoints).Within(0.001));
+            }
+
+            using (XLWorkbook workbook = new XLWorkbook(Write(report, new ReportOptions())))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+
+                Assert.That(sheet.Row(HeaderRow(sheet) + 1).Height, Is.EqualTo(WorkbookWriter.ClashRowHeight).Within(0.001));
+            }
+        }
+
         // ---------- helpers ----------
 
         private static ClashReport Report()

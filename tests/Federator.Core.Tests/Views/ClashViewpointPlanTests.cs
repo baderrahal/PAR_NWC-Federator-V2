@@ -530,6 +530,53 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Planned.Count, Is.EqualTo(1), "it still gets a viewpoint");
         }
 
+        /// <summary>
+        /// The block counted the clashes with a set name carrying no code and never said which sets, so 7 viewpoints in
+        /// a folder called UNKNOWN could not be traced to the one odd name in the client's matrix, FR-074. It names
+        /// the sets, each with the clashes it was in, as many as a repeated line keeps and the rest counted. A set
+        /// whose name carries a code is never named.
+        /// </summary>
+        [Test]
+        public void TheBlockNamesTheSetsWithNoCodeAndCountsTheClashesOfEach()
+        {
+            string lines = string.Join("\n", new List<string>(Plan(false,
+                Simple("BLD-Security Devices", "BLD-ST-Walls"),
+                Simple("BLD-Security Devices", "BLD-AR-Walls"),
+                Simple("BLD-Odd Thing", "BLD-Other Thing")).Lines()).ToArray());
+
+            Assert.That(lines, Does.Contain("a set name with no code this tool knows : 3"));
+            Assert.That(
+                lines,
+                Does.Contain("the sets with no code : BLD-Security Devices (2 clashes), BLD-Odd Thing (1 clash), BLD-Other Thing (1 clash)"));
+            Assert.That(lines, Does.Not.Contain("BLD-ST-Walls ("));
+            Assert.That(lines, Does.Not.Contain("BLD-AR-Walls ("));
+        }
+
+        [Test]
+        public void TheBlockNamesAsManySetsAsARepeatedLineKeepsAndCountsTheRest()
+        {
+            List<ClashToPlan> clashes = new List<ClashToPlan>();
+
+            for (int i = 1; i <= 7; i++)
+            {
+                clashes.Add(Simple("BLD-Odd Thing " + i, "BLD-ST-Walls"));
+            }
+
+            string lines = string.Join("\n", new List<string>(Plan(false, clashes.ToArray()).Lines()).ToArray());
+
+            Assert.That(lines, Does.Contain("BLD-Odd Thing 5 (1 clash), and 2 more"));
+            Assert.That(lines, Does.Not.Contain("BLD-Odd Thing 6 ("));
+        }
+
+        [Test]
+        public void ABlockWithEveryCodeKnownNamesNoSet()
+        {
+            string lines = string.Join("\n", new List<string>(Plan(false,
+                Simple("BLD-AR-Walls", "BLD-ST-Columns")).Lines()).ToArray());
+
+            Assert.That(lines, Does.Not.Contain("the sets with no code"));
+        }
+
         [Test]
         public void NothingToPlanIsNotAThrow()
         {
