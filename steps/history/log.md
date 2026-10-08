@@ -3601,6 +3601,39 @@ The proof is the lead's timed runs after the merge, steps 459 to 477 of steps\03
 One row, F132-R3, the key's limit on two clashes between the same two elements on geometry of
 one name. Pushed, no pull request.
 
+Written by F132's developer as the lead's delegate. THE ADD-IN HALF, ATTEMPT 2 on 2026-10-08, the
+second and last under Bader's limits of 2026-10-07, Q143, on the breaker's two blocking findings
+of attempt 1, turn5\f132p-break-addin.json, by the brief turn6\f132-attempt2-brief.md. Main 074b63d
+taken in at 4d549c0, pull requests 153, 155, 158 and 160 to 166 among it, four conflicts in the
+records files, steps\01_next.md keeping main's 48 to 50 with F132 as 51, the tracker the union of
+the rows, the two count pages made again by the pre-commit, turn6\f132q-resolve-merge.py, 2603
+passed by its pre-commit, turn6\f132q-merge-commit.txt, and the merged tree built with 0 errors and
+0 warnings before any change, turn6\f132q-build-merge.txt. The code, 8031c4c. R4, the views read
+the document and not the merged report: Federator.Core.Views.ReportClashes.Of hands the rows the
+merged report holds under the test it holds them under, at the row's status, named by
+ClashRow.WrittenName, one rule for the per clash views and for F114's one view per test, test
+first, ReportClashesTests, seven tests. The add-in records where every row came from as it is
+read, ClashHarvest.Recorded with PicturesWait in place of Deferred, ClashRunner.RowAddresses handed
+through JobOutcome.RowAddresses, and ViewpointBuilder.Collect resolves each row's result by it,
+the test by TestAddress.ResolveIn, Resolve's body moved there so the runner and the views share
+it, the result by ResultPath.ResultAt, PictureLater's walk moved there, which reads the name back
+and refuses a result the compact after the merge moved from under the path. FindTest and
+CollectResults are gone, so nothing in the views finds a test by name. A group row is one view
+framed on the group, as the workbook holds it, with no size and no dimming, said on a VIEWS line,
+where before each clash under a group was a view of its own. R5, the by design pass on a run with
+no XML: it stays, the lead's Q144, and ByDesignTally.SidesReadOffTheSavedTests puts the first line
+of the BY DESIGN block, the sides read off the NWF and the pairs reached, ByDesignPairs.ConfirmLine
+is on the confirm screen with the box on, four tests in ByDesignRuleTests. The penetration pass
+reads no locator, Penetrations.WantedFor reads each clash's two items, so it reached the saved
+tests before F132 as it does now and nothing changes for it. Core tests 2603 passed before, 2614
+after, 0 failed, 0 skipped, the eleven new tests failing to build first with CS1061, CS0117,
+CS0246 and CS0103, turn6\f132q-before-fail.txt, the after run turn6\f132q-tests-after.txt.
+dotnet build ParsonsNwcFederator.sln -c Release --no-incremental 0 errors and 0 warnings at
+8031c4c from an empty git status, turn6\f132q-build-code.txt. check-locals and check-imports exit
+0, turn6\f132q-checks.txt. The rule bullets in addin.md and core.md, Bader's steps 459 to 481, the
+run with the by design box on and the views step under Q131 added. No Navisworks, probe or harness
+was started. Pushed, no pull request.
+
 Written by F132's developer as the lead's delegate. Attempt 13, the second and last Core attempt
 under Bader's limits of 2026-10-07, turn5\q143-words.txt, on the readings of attempt 12,
 turn5\lanes-1007-review12-F132.json and lanes-1007-break12-F132.json, fixing only what changes a
