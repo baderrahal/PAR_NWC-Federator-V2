@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
 using Federator.Core.Naming;
@@ -25,13 +26,27 @@ namespace Federator.Core.Sets
         private const string ModelsNotRead = "this group's models were not read, so which project they are of is UNKNOWN";
 
         private readonly string whyNoProject;
+        private readonly bool workListRead;
 
-        internal EmptySetJudge(IList<string> worksets, string runProject, IList<string> groupWorksets, string whyNoProject = null)
+        /// <summary>
+        /// workListRead is whether the list of workset names inside Core was read, which For takes off
+        /// RevitWorksets.ResourceFound. It is a seam so the branch that says it was not is proved by a test,
+        /// where the DLL's answer cannot be changed, F115 R10.
+        /// </summary>
+        internal EmptySetJudge(
+            IList<string> worksets,
+            string runProject,
+            IList<string> groupWorksets,
+            string whyNoProject = null,
+            IList<string> modelsNotWalked = null,
+            bool workListRead = true)
         {
             Worksets = new ReadOnlyCollection<string>(new List<string>(worksets ?? new List<string>()));
             RunProject = runProject;
             GroupWorksets = new ReadOnlyCollection<string>(new List<string>(groupWorksets ?? new List<string>()));
+            ModelsNotWalked = new ReadOnlyCollection<string>(new List<string>(modelsNotWalked ?? new List<string>()));
             this.whyNoProject = whyNoProject;
+            this.workListRead = workListRead;
         }
 
         /// <summary>
@@ -41,6 +56,15 @@ namespace Federator.Core.Sets
         /// own to call a value carried by no model.
         /// </summary>
         public ReadOnlyCollection<string> GroupWorksets { get; private set; }
+
+        /// <summary>
+        /// The models of this group whose counts were not all taken, so ModelExport hands back no worksets
+        /// for them, F115 R14. The group's list above leaves them out, and the lists inside Core say nothing
+        /// of what they carry, so a workset no other model carries may be carried by one of these and the
+        /// judge cannot call a condition on it wrong. Each is named by its file name without the folder
+        /// and the extension.
+        /// </summary>
+        internal ReadOnlyCollection<string> ModelsNotWalked { get; private set; }
 
         /// <summary>
         /// The workset spellings the picked file's corrections were chosen from,
@@ -74,7 +98,36 @@ namespace Federator.Core.Sets
                 plan.Worksets,
                 ProjectOf(models, names),
                 ExportCheck.WorksetsOf(models),
-                models == null || models.Count == 0 ? ModelsNotRead : null);
+                models == null || models.Count == 0 ? ModelsNotRead : null,
+                NotWalked(models),
+                RevitWorksets.ResourceFound);
+        }
+
+        /// <summary>
+        /// The models whose counts were not all taken. ModelExport empties the worksets of such a model, which
+        /// is what ExportCheck.WorksetsOf then reads, so the group's list and this one read the same test.
+        /// </summary>
+        private static IList<string> NotWalked(IList<ModelExport> models)
+        {
+            List<string> unread = new List<string>();
+
+            if (models == null)
+            {
+                return unread;
+            }
+
+            foreach (ModelExport model in models)
+            {
+                if (model == null || model.Counted)
+                {
+                    continue;
+                }
+
+                string stem = string.IsNullOrEmpty(model.File) ? string.Empty : ContainerName.Stem(model.File);
+                unread.Add(stem.Length == 0 ? "a model with no name" : stem);
+            }
+
+            return unread;
         }
 
         /// <summary>
@@ -134,7 +187,7 @@ namespace Federator.Core.Sets
             {
                 // FR-012. A list not read is said, never read as one holding no name. What this
                 // group's models carry is carried whatever the lists say, FR-027.
-                if (!RevitWorksets.ResourceFound)
+                if (!workListRead)
                 {
                     return Known.Unknown("the workset list inside Federator.Core.dll could not be read", GroupWorksets);
                 }
@@ -156,10 +209,41 @@ namespace Federator.Core.Sets
                     }
                 }
 
+                if (ModelsNotWalked.Count > 0)
+                {
+                    return Known.Unknown(WhyWorksetsNotAllRead(), carried);
+                }
+
                 return Known.Complete(carried);
             }
 
             return null;
+        }
+
+        /// <summary>Why a workset nobody here carries is not one no model carries, where some model's worksets were not read.</summary>
+        private string WhyWorksetsNotAllRead()
+        {
+            List<string> named = new List<string>();
+
+            for (int i = 0; i < ModelsNotWalked.Count && i < RunLog.KeptOfARepeat; i++)
+            {
+                named.Add(ModelsNotWalked[i]);
+            }
+
+            int more = ModelsNotWalked.Count - named.Count;
+            string models = named.Count == 1
+                ? named[0]
+                : string.Join(", ", named.GetRange(0, named.Count - 1).ToArray()) + (more > 0 ? ", " : " and ") + named[named.Count - 1];
+
+            if (more > 0)
+            {
+                models += " and " + more + " more";
+            }
+
+            return ModelsNotWalked.Count == 1
+                ? "the worksets of 1 model of this group were not read (" + models + "), so which worksets it carries is UNKNOWN"
+                : "the worksets of " + ModelsNotWalked.Count + " models of this group were not read (" + models
+                    + "), so which worksets they carry is UNKNOWN";
         }
 
         /// <summary>Why a list measured on that project says nothing about this group's models, or null where it does.</summary>
