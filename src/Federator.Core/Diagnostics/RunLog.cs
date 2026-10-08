@@ -123,9 +123,7 @@ namespace Federator.Core.Diagnostics
             Path = path;
             StartedAt = startedAt;
             DisabledReason = disabledReason;
-            ClashesFound = new ClashesAcrossTheRun();
-            PenetrationsAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "penetrations   ");
-            ByDesignAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "by design      ");
+            StartTheTallies();
             this.stream = stream;
 
             if (stream != null)
@@ -557,6 +555,15 @@ namespace Federator.Core.Diagnostics
 
         private double runStartedAt = -1.0;
         private double runFinishedAt = -1.0;
+        private double earlierRunsSeconds;
+        private int runsStarted;
+
+        private void StartTheTallies()
+        {
+            ClashesFound = new ClashesAcrossTheRun();
+            PenetrationsAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "penetrations   ");
+            ByDesignAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "by design      ");
+        }
 
         /// <summary>
         /// Marks where the run started, F80, and writes the line that says so. The mark is
@@ -569,15 +576,74 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public void RunStarted(int groups)
         {
+            int number;
+            bool earlierNeverFinished = false;
+
             lock (gate)
             {
+                // FR-049. What the run before this one took is kept apart from waiting for the person, only
+                // where its end was marked. A run that died before RUN finished has no measured end, and counted
+                // to now it would swallow whatever the person spent fixing what stopped it.
+                if (runStartedAt >= 0)
+                {
+                    if (runFinishedAt >= 0)
+                    {
+                        earlierRunsSeconds += Math.Max(0.0, runFinishedAt - runStartedAt);
+                    }
+                    else
+                    {
+                        earlierNeverFinished = true;
+                    }
+                }
+
                 runStartedAt = ElapsedSeconds;
 
                 // FR-050. A second run in the window must not be given the first run's finish.
                 runFinishedAt = -1.0;
+                runsStarted++;
+                number = runsStarted;
+
+                // A run starts with a whole census, as a window opened for it would, and narrows again only if
+                // counting costs it too much. What the run before it measured is not this run's to inherit.
+                censusNarrowed = false;
             }
 
             Line("RUN      started, " + groups + (groups == 1 ? " group" : " groups"));
+
+            if (number > 1)
+            {
+                Line("RUN      this is run " + number + " in this window. Its RESULT counts what was recorded since the RESULT above"
+                    + (earlierNeverFinished
+                        ? ", and the run before it never marked RUN finished, so its time is counted as waiting for the person and not as an earlier run"
+                        : string.Empty));
+            }
+        }
+
+        /// <summary>
+        /// A RESULT closes the account, FR-049. The log lives as long as the window, so a second RESULT of
+        /// it found every list the first one had read and counted both runs. Everything a RESULT and the timing
+        /// block read is emptied once a RESULT has been written, under the gate, so the next one counts what was
+        /// recorded since, a hand button's records and a failure of the preview before the next Run included, and
+        /// the open file run, which marks no run, gets its own account as a Run does. The census state is not
+        /// here, since a RESULT does not read it, and neither is the open step list, which a group end closes.
+        /// </summary>
+        private void CloseTheAccount()
+        {
+            lock (gate)
+            {
+                written.Clear();
+                failures.Clear();
+                repeats.Clear();
+                groupRecords.Clear();
+                stepRecords.Clear();
+                collapsedLines.Clear();
+                StartTheTallies();
+                PenetrationsWanted = false;
+                PenetrationsMoved = 0;
+                ByDesignWanted = false;
+                ByDesignMoved = 0;
+                PriorityAcrossTheRun = null;
+            }
         }
 
         /// <summary>Marks where the run finished, F80, and writes the line that says so.</summary>
@@ -606,12 +672,12 @@ namespace Federator.Core.Diagnostics
                     // and is not called a run nobody marked.
                     if (runStartedAt >= 0 && runFinishedAt < 0)
                     {
-                        return RunClock.Unfinished(ElapsedSeconds, runStartedAt);
+                        return RunClock.Unfinished(ElapsedSeconds, runStartedAt, earlierRunsSeconds);
                     }
 
                     return runStartedAt < 0
                         ? RunClock.NotMarked(ElapsedSeconds)
-                        : RunClock.From(ElapsedSeconds, runStartedAt, runFinishedAt);
+                        : RunClock.From(ElapsedSeconds, runStartedAt, runFinishedAt, earlierRunsSeconds);
                 }
             }
         }
@@ -1952,7 +2018,8 @@ namespace Federator.Core.Diagnostics
         public int ByDesignMoved { get; set; }
 
         /// <summary>
-        /// The RESULT block. thisRun is what the shared coordinates rule did in the run this
+        /// The RESULT block, which closes the account: what it was written from is emptied after it, FR-049, so
+        /// the next RESULT of the window counts what was recorded since this one. thisRun is what the shared coordinates rule did in the run this
         /// block closes, Bader's answer to Q99 and Q100, handed in by the window from that
         /// run's engine, or null where no run made one, and then the block says nothing about
         /// it rather than guess. It is never kept on the log, which lives as long as the
@@ -1971,6 +2038,20 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public void WriteResultBlock(
             OffCoordinatesAcrossTheRun thisRun = null, bool makeViewpoints = true, CoverageAcrossTheRun coverage = null)
+        {
+            try
+            {
+                WriteTheResult(thisRun, makeViewpoints, coverage);
+            }
+            finally
+            {
+                // Whatever the block reached, what it was written from is not carried into the next one, FR-049.
+                CloseTheAccount();
+            }
+        }
+
+        private void WriteTheResult(
+            OffCoordinatesAcrossTheRun thisRun, bool makeViewpoints, CoverageAcrossTheRun coverage)
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
             // to be scrolled for, and so where the time went is read on the way to it.
@@ -2220,6 +2301,15 @@ namespace Federator.Core.Diagnostics
                 Line("waiting for the person : "
                     + spent.WaitingSeconds.ToString("0.000", CultureInfo.InvariantCulture)
                     + "s, which is not work this tool did");
+
+                // FR-049. The fourth stretch, so run time, waiting, the earlier runs and the tail still add up to
+                // the total below.
+                if (spent.EarlierRunsSeconds > 0.0)
+                {
+                    Line("earlier runs   : "
+                        + spent.EarlierRunsSeconds.ToString("0.000", CultureInfo.InvariantCulture)
+                        + "s, the runs before this one in this window, each counted in its own RESULT");
+                }
             }
             Line("total elapsed  : " + ElapsedSeconds.ToString("0.000", CultureInfo.InvariantCulture) + "s");
 
