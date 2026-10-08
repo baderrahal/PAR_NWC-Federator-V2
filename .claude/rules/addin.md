@@ -246,9 +246,19 @@ well as to pass.
   plain ints and never handles, the clash centre off `ClashResult.Center`, the model each
   item lives in by the topmost ancestor's `Model.FileName`, 5n, and the size of the larger
   service through `Penetrations.ServiceSizeOf` ONLY where the test's pair carries the size
-  folder, row F114-K9, so `ViewTeams` is built before the walk. The camera is read after the
+  folder, row F114-K9, so `ViewTeams` is built before the walk. ONLY A TEST READ WHOLE GETS A
+  VIEW, attempt 2 on the breaker's B1: `Federator.Core.Views.TestsRead` keeps per test whether
+  it was found at its address, every row led to its result and nothing threw in its walk, a
+  row with no recorded place making its test not whole too. A test not read whole hands the
+  plan none of its rows, is counted FAILED on the VIEWS BUILT block with why, so the group is
+  not DONE on it, and keeps its views of earlier runs, since the inventory is handed
+  `TestsRead.WholeNames` as the tests read and never the tests the clash step ran, which
+  stay the tree facts' `TestsRun`. The camera is read after the
   plan for each view's camera clash alone, `TestsViewpointForResult` on a copy, where F85
-  read one per clash. PER VIEW, each stretch timed into its `ViewsPart`, FR-073: the hiding
+  read one per clash. A VIEW OF NOTHING IS NO VIEW, B2: a view none of whose clashing items'
+  models could be read or named a model of the group is counted FAILED with
+  `ShownModels.WhyNoView` before anything is hidden or dimmed for it. PER VIEW, each stretch
+  timed into its `ViewsPart`, FR-073: the hiding
   by `ShowOnlyModels` over the indexes of `ShownModels.Shown`, skipped where the view before
   showed the same models, P18, the undim of what the view before left, FR-065, one
   `DimAllBut` over the shown roots with ONE reset over the collection of every clashing item,
@@ -262,24 +272,36 @@ well as to pass.
   `Document.CreateCommentWithUniqueId` and the `MarkAuthor` setting, P9, on the view found as
   the child of its folder with its name and no mark, Ordinal, P12. WHERE A PERSON'S UNMARKED
   VIEW OF THAT NAME ALREADY SITS IN THAT FOLDER, read by `CountUnmarked` before the record,
-  none is written there, the view is counted as failed with that reason and the person's is
-  left as it is, P22 unrun and no new probe. THE READ BACK IS COUNTS AND NEVER FLAGS, 5o,
+  none is written there, the view is counted as failed with that reason, naming the folder
+  and saying the unmarked view is a person's or one an earlier run could not mark, and that
+  one is left as it is, P22 unrun and no new probe. A VIEW RECORDED THAT COULD NOT BE MARKED
+  IS REMOVED AT ONCE, B3: `Mark` runs AddComment inside a try of its own and says what threw,
+  and where it returns minus one `SavedViewpoints.RemoveUnmarked` takes out the one unmarked
+  view of that name in its folder by `RemoveAt` with the parent resolved fresh, exactly one
+  or it is said, and the view is counted FAILED naming whether it was removed, so no
+  unmarked view of the tool's is left to block that test every later week. THE READ BACK IS
+  COUNTS AND NEVER FLAGS, 5o,
   `SavedViewpoints.ReadBack` at the index the mark returned: the camera within
   `CameraReadBackTolerance`, the hidden roots as their `Model.FileName`, P19, the material
   overrides walked ONCE into a lookup by item path, the colour each clashing item will show,
   the override's or its own, 5p, and the comments and redlines for `ToolViewMark.Judge`,
   which must read the view as this run's. A view that fails any is FAILED with the reason, a
   `WrittenView` not read back, and the inventory removes it at once. THE INVENTORY is
-  `ViewsInventory.Plan` over the fresh walk after, with the tests the clash step ran,
-  `ClashRunOutcome.Ran`, row F114-K12, the test names of the document and the XML, the map's
+  `ViewsInventory.Plan` over the fresh walk after, with the tests read whole, B1, so a test
+  the clash step ran and walk one could not read keeps its views, row F114-K12, the test
+  names of the document and the XML, the map's
   known codes and the folders that held nothing before off the walk before,
   `ViewNode.EmptyFolderKeys` and `HeldNothing`, its lines a VIEWS INVENTORY block. EACH
   REMOVAL, `SavedViewpoints.RemoveOne`, resolves the parent fresh, re-finds the item by its
   name, its kind and whether it carries a mark just before, at its index or once among its
   siblings, and calls `RemoveAt(parent, index)`, P13, a folder with everything under it in
   the one call, P14, and the folder's count after is read and said where it did not fall by
-  one. A walk's comments, redlines or camera that would not read are counted and said, and
-  the item handed with that part unread, which the judge keeps as a person's. Items
+  one. Each removal's result is a `RemovalOutcome`, made, refused or thrown with why, one
+  list handed to the tree facts as `Removals`, B5. A walk's comments, redlines or camera that
+  would not read are counted and said, and the item handed with that part unread, which the
+  judge keeps as a person's: an unread comment list is `ViewNode.CommentsNotRead`, null and
+  never an empty list, B4, and the walk line says such items are kept as a person's because
+  their comments could not be read. Items
   enumerated off a collection are not disposed one by one, P18's measured shape, since
   F85's fifth run threw on that. THE VIEWS TREE BLOCK is `ViewsTree.Lines` over
   `ViewsTreeCheck.Of` on the last walk, cut for the .log at `TreeLinesInLog` and whole in

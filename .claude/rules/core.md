@@ -1706,14 +1706,25 @@ and 6 does not read as broken.
   sentence a person reads and a fingerprint of its place, name and camera, with a Guid
   field the add-in writes empty, P10 having read none on any item the tool's routes make,
   5z-p, each text written with its length so any name reads back exactly, and its author
-  the `MarkAuthor` setting, P9. It is the
+  the `MarkAuthor` setting, P9. THE CAMERA IS JUDGED AS THE MARK STORES IT, attempt 2 of the
+  add-in pass on the breaker's B6: the read camera goes through the same three decimal
+  rounding the mark was written with before the distance to the marked camera is taken
+  against `CameraReadBackTolerance`, so rounding alone never reads a view as moved however
+  far from the origin it sits, tested at 500000 units. Whether the NWF keeps a camera at
+  single precision is UNKNOWN until the timed runs. It is the
   tool's only while that one comment is there and everything reads as written, and
   renamed, moved, turned, commented on, drawn on, copied or not provable it is a person's
   and kept and named, Q120 A. `LegacyClashView` knows F85's unmarked per clash viewpoints by
-  their strict shape. `ViewsInventory` decides every item after the new views are written:
+  their strict shape. AN ITEM WHOSE COMMENTS COULD NOT BE READ IS KEPT, B4: its
+  `ViewNode.Comments` are null, `ViewNode.CommentsNotRead`, never an empty list, since an
+  unread comment may be a person's, so the inventory keeps such a leaf as not the tool's and
+  such a folder as a folder, each saying why, and LegacyClashView never reads it.
+  `ViewsInventory` decides every item after the new views are written:
   the tool's earlier view goes only once every view of its test this run planned is
   written, marked and read back, a per clash viewpoint only once the whole new tree is, a
   view this run could not mark or read back goes at once, a test not read keeps its views,
+  and a test not read is one `TestsRead` did not read whole, B1, never one the clash step
+  did not run,
   nothing goes when the clash step was not sound, nothing goes under two folders of one
   name side by side, and a folder goes only when it is the tool's and this run empties it.
   Removals go deepest first and latest index first, 5z, and `FolderGoesWithChildren`, true
@@ -1732,7 +1743,12 @@ and 6 does not read as broken.
   against the walk after, since under Bader's answer D to Q133 both tests of a pair run and
   a mirror among the tests run is the ordinary case, row F114-K20, every view and folder the
   inventory kept
-  still there, and no per clash viewpoint left without a reason. A failed check is a FAILED
+  still there, and no per clash viewpoint left without a reason. ITS after LINE COUNTS WHAT THE
+  REMOVALS REPORTED, B5: `ViewsTreeFacts.Removals`, one `RemovalOutcome` per removal the
+  inventory asked for, gives the removed at once, earlier views, per clash viewpoints and
+  folders, each refusal or throw counted and named as not removed, and with none handed in the
+  line says what was removed is UNKNOWN, never the inventory's decisions read as done. A
+  failed check is a FAILED
   line naming what broke it and the group keeps its own result. A CHECK THAT COULD NOT RUN IS
   NEVER COUNTED AS HOLDING: check 5 with no mirror rule handed to the plan, checks 1 and 2
   with no walk, no run stamp or not one planned view found marked by this run, check 3 with
