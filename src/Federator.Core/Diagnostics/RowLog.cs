@@ -261,6 +261,7 @@ namespace Federator.Core.Diagnostics
             }
             catch (Exception)
             {
+                // Nothing is told: a failed close has no row to go in and the text log is the record.
             }
         }
     }

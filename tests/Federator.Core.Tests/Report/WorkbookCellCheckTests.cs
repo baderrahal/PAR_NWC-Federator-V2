@@ -159,6 +159,28 @@ namespace Federator.Core.Tests
             Names(check, "not filled");
         }
 
+        // FR-173. A fill kept as a theme colour has no RGB, so reading it throws, and the check called such a
+        // cell not filled, which is a banding fault that is not there. It says the colour could not be read.
+        [Test]
+        public void AFillWhoseColourCannotBeReadIsSaidSoAndNotCalledUnfilled()
+        {
+            string path = Good();
+            int heading = 0;
+
+            WorkbookCheck check = After(path, sheet =>
+            {
+                heading = HeadingRow(sheet);
+                sheet.Cell(heading, 1).Style.Fill.SetBackgroundColor(XLColor.FromTheme(XLThemeColor.Accent1));
+            });
+
+            string all = string.Join(" | ", Text(check));
+            string cell = "Cell A" + heading + ",";
+
+            Assert.That(all, Does.Contain(cell + " on the column heading row, has a fill whose colour could not be read"));
+            Assert.That(all, Does.Not.Contain(cell + " on the column heading row, is not filled"));
+            Assert.That(check.Passed, Is.False, "a cell that was not compared is not a pass");
+        }
+
         [Test]
         public void ItCatchesAClashRowWithNoItemColours()
         {

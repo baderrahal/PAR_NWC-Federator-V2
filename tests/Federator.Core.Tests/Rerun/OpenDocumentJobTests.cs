@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Federator.Core.Diagnostics;
+using Federator.Core.Naming;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using NUnit.Framework;
@@ -307,6 +308,81 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// FR-173. The path methods of .NET Framework throw on a bar, a quote or a control character, which
+        /// the test after this one measures on the Windows runner, and the window fills a label from this
+        /// answer, so the character is named before any of them is called. The folder rule is not read for
+        /// such a path, so the answer is the same on a machine where a backslash is an ordinary character.
+        /// The paths are typed, against the rule that a path is built, because Path.Combine is one of the
+        /// methods that would throw on the very character each path is there to hold.
+        /// </summary>
+        [Test]
+        public void ACharacterNoPathMayHoldIsNamedBeforeThePathIsSplit()
+        {
+            string[] opens =
+            {
+                @"D:\Fed|erations\X.nwf",
+                @"D:\Fed""erations\X.nwf",
+                @"D:\Fed<erations\X.nwf",
+                @"D:\Fed>erations\X.nwf",
+                "D:\\Fed\terations\\X.nwf",
+            };
+            string[] named = { "\"|\"", "\"\"\"", "\"<\"", "\">\"", "U+0009" };
+
+            for (int i = 0; i < opens.Length; i++)
+            {
+                Assert.That(OpenDocumentJob.CanRun(opens[i], Readable), Is.False, opens[i]);
+
+                string why = OpenDocumentJob.WhyNot(opens[i], Readable);
+
+                Assert.That(why, Does.Contain("does not allow in a path"), opens[i]);
+                Assert.That(why, Does.Contain(named[i]), opens[i]);
+                Assert.That(why, Does.Not.Contain("no folder"), opens[i]);
+                Assert.That(OpenDocumentJob.Describe(opens[i], string.Empty), Is.EqualTo(OpenDocumentJob.WhyNot(opens[i])), opens[i]);
+            }
+        }
+
+        /// <summary>
+        /// The premise of the check above, which mono cannot show and nothing in this repo had run: that the
+        /// method WhyNot used to call first throws on such a character. It is a rule of the framework and not
+        /// of this tool, so it skips off Windows and is answered by the Windows runner, where the tests are the
+        /// net48 build. A red result here means the premise was wrong and the comments that give it must change.
+        /// </summary>
+        [Test]
+        public void TheMethodWhyNotCalledFirstThrowsOnACharacterNoPathMayHold()
+        {
+            TestPaths.OnWindowsOnly("the path methods of .NET Framework throwing on a character no path may hold");
+
+            string[] opens = { @"D:\Fed|erations\X.nwf", @"D:\Fed""erations\X.nwf", "D:\\Fed\terations\\X.nwf" };
+
+            foreach (string open in opens)
+            {
+                Assert.Throws<ArgumentException>(delegate { Path.GetFileNameWithoutExtension(open); }, open);
+            }
+        }
+
+        [Test]
+        public void AnAddressHoldingACharacterNoPathMayHoldIsStillAnAddress()
+        {
+            string open = "https://docs.example.com/a|b/X.nwf";
+
+            string why = OpenDocumentJob.WhyNot(open, Readable);
+
+            Assert.That(why, Does.Contain("an address"));
+            Assert.That(why, Does.Not.Contain("does not allow in a path"));
+        }
+
+        [Test]
+        public void ACharacterWindowsRefusesInANameButNotInAPathDoesNotStopAPath()
+        {
+            // A colon is a drive, a star and a question mark are refused in a name and not in a path the
+            // methods split, so none of them may be named here as a character no path may hold.
+            Assert.That(FileNames.IndexOfRefusedInAPath(@"D:\a\X.nwf"), Is.EqualTo(-1));
+            Assert.That(FileNames.IndexOfRefusedInAPath(@"D:\a*b\X?.nwf"), Is.EqualTo(-1));
+            Assert.That(FileNames.IndexOfRefusedInAPath(null), Is.EqualTo(-1));
+            Assert.That(FileNames.IndexOfRefusedInAPath("a|b"), Is.EqualTo(1));
+        }
+
         [Test]
         public void AUncPathIsAFolderLikeAnyOther()
         {
@@ -399,6 +475,7 @@ namespace Federator.Core.Tests
                 OpenDocumentJob.WhyNot(InFederations("X.nwd"), Readable),
                 OpenDocumentJob.WhyNot(InFederations("X"), Readable),
                 OpenDocumentJob.WhyNot("acc://hub/X.nwf", Readable),
+                OpenDocumentJob.WhyNot(@"D:\a|b\X.nwf", Readable),
                 OpenDocumentJob.WhyNot(OpenHere, Unreadable),
             };
 
