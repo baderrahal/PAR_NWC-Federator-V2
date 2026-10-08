@@ -262,7 +262,7 @@ namespace Federator.Core.Report
         /// of 0.000, so it looked right and anyone sorting, filtering or copying got the
         /// long value. Theirs stores the rounded number itself and carries no format.
         ///
-        /// A value too small for three decimals keeps its own precision, the same
+        /// A value too small for three decimals is cut to three significant figures, the same
         /// exception <see cref="Fixed"/> makes, so a real value is never rounded to zero.
         /// </summary>
         public static double Rounded(double value)

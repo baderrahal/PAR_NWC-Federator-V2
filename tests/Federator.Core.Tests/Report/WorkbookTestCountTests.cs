@@ -141,53 +141,100 @@ namespace Federator.Core.Tests
             Assert.That(check.Summary(), Does.Not.Contain("matching the client's layout"));
         }
 
-        /// <summary>
-        /// T1-N82. The blocks are sorted by the clashes a test holds and a group row stands for many, so a block of one
-        /// group row holding ten clashes comes before a block of three single rows and is in the right order. The check
-        /// counted rows and said the tests were in the wrong order. The break: the same two blocks the other way round
-        /// are still named, because the Clashes cell says three before ten.
-        /// </summary>
-        [Test]
-        public void AGroupRowStandingForManyClashesIsNotOutOfOrderBesideThreeSingleRows()
+        /// <summary>A workbook of a group row standing for ten clashes before three single rows, as the writer sorts it.</summary>
+        private string GroupRowBeforeThreeSingleRows()
         {
             ClashReport report = new ClashReport("1C07BC", OutputName);
             report.DocumentUnits = "m";
             AddTest(report, "BLD-A-vs-BLD-B", 1);
             AddTest(report, "BLD-A-vs-BLD-C", 3);
+            report.Tests[0].Rows[0].IsGroup = true;
             report.Tests[0].Rows[0].RawClashes = 10;
 
             string path = Path.Combine(folder, OutputName + ".xlsx");
             new WorkbookWriter().Write(report, path);
-            WorkbookCheck check = WorkbookCheck.Of(path);
-
             Assert.That(report.Tests[0].RawClashes, Is.EqualTo(10));
-            Assert.That(check.BlockCounts, Is.EqualTo(new[] { 1, 3 }), "one row, then three rows");
-            Assert.That(check.Passed, Is.True, string.Join(" | ", check.Lines()));
-            Assert.That(string.Join("\n", check.Lines()), Does.Not.Contain("wrong order"));
+            return path;
+        }
 
+        /// <summary>Sets the Clashes cell of the first full block to a value, as a hand edit or a damaged file would.</summary>
+        private static void SetTheFirstClashesCell(string path, object value)
+        {
             using (XLWorkbook workbook = new XLWorkbook(path))
             {
                 IXLWorksheet sheet = workbook.Worksheet(1);
-                int heading = 0;
 
                 for (int row = 1; row <= sheet.LastRowUsed().RowNumber(); row++)
                 {
                     if (sheet.Cell(row, WorkbookWriter.ColumnClashName).GetString() == "Clash Name")
                     {
-                        heading = row;
+                        IXLCell cell = sheet.Cell(row - 3, WorkbookWriter.ColumnTestHeader + 1);
+
+                        if (value is string)
+                        {
+                            cell.Value = (string)value;
+                        }
+                        else
+                        {
+                            cell.Value = (int)value;
+                        }
+
                         break;
                     }
                 }
 
-                sheet.Cell(heading - 3, WorkbookWriter.ColumnTestHeader + 1).Value = 2;
                 workbook.SaveAs(path);
             }
-
-            Assert.That(string.Join("\n", WorkbookCheck.Of(path).Lines()), Does.Contain("The tests are in the wrong order. Block 1 holds 2 clashes and block 2 holds"));
         }
 
         /// <summary>
-        /// T1-N80. Only the first block is read cell by cell and only its first clash row for the shape of its values,
+        /// T1-N82. The blocks are sorted by the clashes a test holds and a group row stands for many, so a block of one
+        /// group row holding ten clashes comes before a block of three single rows and is in the right order. The check
+        /// counted rows and said the tests were in the wrong order. The break: the Clashes cell of the first block
+        /// overwritten with 2 reads 2 before 3, and the order is named.
+        /// </summary>
+        [Test]
+        public void AGroupRowStandingForManyClashesIsNotOutOfOrderBesideThreeSingleRows()
+        {
+            string path = GroupRowBeforeThreeSingleRows();
+            WorkbookCheck check = WorkbookCheck.Of(path);
+
+            Assert.That(check.BlockCounts, Is.EqualTo(new[] { 1, 3 }), "one row, then three rows");
+            Assert.That(check.Passed, Is.True, string.Join(" | ", check.Lines()));
+            Assert.That(string.Join("\n", check.Lines()), Does.Not.Contain("wrong order"));
+            Assert.That(string.Join("\n", check.Lines()), Does.Contain("the first blocks hold 1, 3 clash rows."));
+
+            SetTheFirstClashesCell(path, 2);
+
+            Assert.That(string.Join("\n", WorkbookCheck.Of(path).Lines()), Does.Contain("The tests are in the wrong order. Block 1 holds 2 clashes and block 2 holds 3."));
+        }
+
+        /// <summary>
+        /// A block whose Clashes cell is nought is a real count and is ordered by it, and a cell that is no whole number
+        /// sends the check back to the rows under each block and says so, so a damaged cell is never read as a count.
+        /// </summary>
+        [Test]
+        public void ANoughtCellIsACountAndACellThatIsNoNumberFallsBackToRowsAndSaysSo()
+        {
+            string zero = GroupRowBeforeThreeSingleRows();
+            SetTheFirstClashesCell(zero, 0);
+
+            string told = string.Join("\n", WorkbookCheck.Of(zero).Lines());
+
+            Assert.That(told, Does.Contain("The tests are in the wrong order. Block 1 holds 0 clashes and block 2 holds 3."));
+            Assert.That(told, Does.Not.Contain("because a Clashes cell is no whole number"));
+
+            string damaged = GroupRowBeforeThreeSingleRows();
+            SetTheFirstClashesCell(damaged, "ten");
+
+            string rows = string.Join("\n", WorkbookCheck.Of(damaged).Lines());
+
+            Assert.That(rows, Does.Contain("The tests are in the wrong order. Block 1 holds 1 clashes and block 2 holds 3."));
+            Assert.That(rows, Does.Contain("The counts are the rows under each block, because a Clashes cell is no whole number."));
+        }
+
+        /// <summary>
+        /// T1-N80. Only the first block is read cell by cell and only five values of its first clash row for their shape,
         /// so the pass line says that and not that every column of every row matched.
         /// </summary>
         [Test]
@@ -197,8 +244,8 @@ namespace Federator.Core.Tests
             string lines = string.Join("\n", check.Lines());
 
             Assert.That(check.Passed, Is.True, lines);
-            Assert.That(lines, Does.Contain("The headings of every block match the client's report, and so do every cell, fill, border and row height of the first block"));
-            Assert.That(lines, Does.Contain("The other blocks and clash rows were not read cell by cell."));
+            Assert.That(lines, Does.Contain("The column headings of every block with clashes match the client's report, and so do the fill, border and row height of every cell of the first block, five values of its first clash row"));
+            Assert.That(lines, Does.Contain("The values of the other blocks and clash rows, and the place of a test with no clash, were not read."));
             Assert.That(lines, Does.Not.Contain("Every column, value shape, fill, border, row height"));
         }
 

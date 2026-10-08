@@ -93,7 +93,7 @@ namespace Federator.Core.Report
         /// <summary>Clash rows across every block.</summary>
         public int Rows { get; private set; }
 
-        /// <summary>The clash count of each full block, in the order they appear. A test of one row has no entry, so the order check reads full blocks only.</summary>
+        /// <summary>The clash rows under each full block, in the order they appear, which a group row makes fewer than the clashes it stands for. A test of one row has no entry, so the order check reads full blocks only.</summary>
         public IList<int> BlockCounts { get; private set; }
 
         /// <summary>Everything wrong, each a plain sentence, worst first.</summary>
@@ -299,7 +299,7 @@ namespace Federator.Core.Report
 
                 spans.Add(new[] { row - 4, row + rows });
                 counts.Add(rows);
-                clashes.Add(ClashesCell(sheet, row - 3));
+                clashes.Add(WorkbookTests.ClashesOfBlock(sheet, row - 4));
             }
 
             // FR-035. A test that found nothing is one row with no heading, so the loop above never
@@ -727,7 +727,7 @@ namespace Federator.Core.Report
             // fewer than the clashes it holds. A block of one group row holding ten, correctly before a block
             // of three single rows, was told it was in the wrong order, T1-N82. Where a cell is no whole
             // number the rows are all there is to compare.
-            bool byCell = clashes.Count == rows.Count && !clashes.Contains(-1);
+            bool byCell = !clashes.Contains(-1);
             IList<int> counts = byCell ? clashes : rows;
 
             for (int i = 1; i < counts.Count; i++)
@@ -740,27 +740,10 @@ namespace Federator.Core.Report
                 Say("The tests are in the wrong order. Block " + i + " holds " + counts[i - 1]
                     + " clashes and block " + (i + 1) + " holds " + counts[i]
                     + ". The client's report puts the most clashes first, so a reader is "
-                    + "not scrolling past empty tests.");
+                    + "not scrolling past empty tests."
+                    + (byCell ? string.Empty : " The counts are the rows under each block, because a Clashes cell is no whole number."));
                 return;
             }
-        }
-
-        /// <summary>The Clashes cell of a full block, whole, or minus one where it is not.</summary>
-        private static int ClashesCell(IXLWorksheet sheet, int row)
-        {
-            IXLCell cell = sheet.Cell(row, WorkbookWriter.ColumnTestHeader + 1);
-
-            if (cell.DataType == XLDataType.Number)
-            {
-                double value = cell.GetDouble();
-
-                if (value >= 0 && value <= int.MaxValue && Math.Floor(value) == value)
-                {
-                    return (int)value;
-                }
-            }
-
-            return -1;
         }
 
         private void Say(string problem)
@@ -808,7 +791,7 @@ namespace Federator.Core.Report
                 }
 
                 lines.Add("         the first blocks hold " + string.Join(", ", first.ToArray())
-                    + (BlockCounts.Count > 8 ? " and so on." : "."));
+                    + (BlockCounts.Count > 8 ? " and so on" : string.Empty) + " clash rows.");
             }
 
             foreach (string problem in problems)
@@ -823,12 +806,13 @@ namespace Federator.Core.Report
             }
             else if (problems.Count == 0)
             {
-                // Only the first block is walked cell by cell and only its first clash row is read for the
-                // shape of its values, so the line says that, T1-N80, and not that every column of every row matched.
-                lines.Add("         The headings of every block match the client's report, and so do every cell, fill, "
-                    + "border and row height of the first block, the shape of the values in its first clash row and the "
-                    + "column widths. The blocks are in their order. The other blocks and clash rows were not read "
-                    + "cell by cell.");
+                // Only the first block is walked cell by cell, for its fill, border and row height, and only five
+                // values of its first clash row are read for their shape, so the line says that, T1-N80, and not that
+                // every column of every row matched.
+                lines.Add("         The column headings of every block with clashes match the client's report, and so do the "
+                    + "fill, border and row height of every cell of the first block, five values of its first clash row, "
+                    + "the column widths and the title row. The blocks with clashes are in their order. The values of the "
+                    + "other blocks and clash rows, and the place of a test with no clash, were not read.");
                 lines.Add("         Not compared: the font, the sheet name, freeze panes, "
                     + "print setup, merged ranges, and whether a value is true. See "
                     + "docs\\history\\scan.md 4q.");
