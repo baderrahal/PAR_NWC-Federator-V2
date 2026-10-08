@@ -746,9 +746,8 @@ namespace Federator.Addin.Engine
                     bool ready = !openItHere || InStepReturning(
                         RunSteps.Decide,
                         () => OpenThePickedNwf(document, job, outcome),
-                        () => outcome.HasErrors || outcome.Decision == RerunDecision.Refused
-                            ? "not opened"
-                            : RunPath.Label(RerunDecision.Open, exchange != null));
+                        () => NwfPick.DecidePhrase(
+                            outcome.Decision == RerunDecision.Refused, outcome.HasErrors, exchange != null));
 
                     if (ready)
                     {
@@ -800,13 +799,15 @@ namespace Federator.Addin.Engine
                 groupClock.Stop();
 
                 // The open file is always a Weekly run. There is no First run on this
-                // path, because the NWF already exists and is the document.
+                // path, because the NWF already exists and is the document. A picked NWF
+                // this run opened is labelled off how its open went, F129 attempt 2, so one
+                // that read empty is Stopped and RESULT counts it under NWF read empty.
                 log.GroupFinished(
                     job.Building,
                     outcome.Result,
                     groupClock.Elapsed.TotalSeconds,
                     outcome.Reason,
-                    RunPath.Label(RerunDecision.Open, exchange != null));
+                    RunPath.ForAnOpenFile(openItHere, outcome.Decision, exchange != null));
 
                 // Q101, the same block as the scanned run, its files the models the open
                 // document holds.

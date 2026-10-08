@@ -148,8 +148,11 @@ namespace Federator.Core.Rerun
             get { return nwfs.AsReadOnly(); }
         }
 
-        /// <summary>Each folder that would not read, with what the disk said, for the log.</summary>
-        public IList<string> Problems
+        /// <summary>
+        /// Each folder that would not read, with what the disk said, for the log. Read through
+        /// SettingsLines, which RUN SETTINGS writes when the run starts.
+        /// </summary>
+        internal IList<string> Problems
         {
             get { return problems.AsReadOnly(); }
         }
@@ -303,7 +306,7 @@ namespace Federator.Core.Rerun
             if (problems.Count > 0)
             {
                 found += " " + Words.Counted(problems.Count, "folder", "folders") + " would not read. "
-                    + RunLog.TheLogSaysWhy();
+                    + NwfPick.NamedOncePressed;
             }
 
             return found + " Each writes its NWD and report beside it.";
@@ -342,6 +345,30 @@ namespace Federator.Core.Rerun
             "SOURCE   findings skipped, the picked NWFs have no scanned source folder to compare against";
 
         private const string PickFirst = "Pick one NWF or a folder of NWFs first.";
+
+        /// <summary>
+        /// What the window line says of the folders that would not read. Nothing is logged at the
+        /// pick, so the line says when they are named: RUN SETTINGS names each once the run starts.
+        /// </summary>
+        public const string NamedOncePressed = "The log names each in RUN SETTINGS once Run NWFs is pressed.";
+
+        /// <summary>The same for the picked folder not reading, whose reason the log carries once Run NWFs is pressed.</summary>
+        internal const string WhyOncePressed = "The log says why once Run NWFs is pressed.";
+
+        /// <summary>
+        /// The phrase of the DECIDE step around a picked NWF's open, F129 attempt 2: opened and
+        /// read empty, not opened, or the label of the run it goes on to, so the step says what
+        /// the open did and never reads Weekly run over an open that stopped the group.
+        /// </summary>
+        public static string DecidePhrase(bool readEmpty, bool failed, bool xmlPicked)
+        {
+            if (readEmpty)
+            {
+                return "opened and read empty";
+            }
+
+            return failed ? "not opened" : RunPath.Label(RerunDecision.Open, xmlPicked);
+        }
 
         /// <summary>True for a file whose extension is .nwf, read case blind, and for no other.</summary>
         public static bool IsNwf(string path)
@@ -402,7 +429,7 @@ namespace Federator.Core.Rerun
                 {
                     plan.Refuse(
                         "The folder " + path + " would not read, so no NWF in it can run. " + whyNot,
-                        "The folder " + path + " would not read, so no NWF in it can run. " + RunLog.TheLogSaysWhy());
+                        "The folder " + path + " would not read, so no NWF in it can run. " + WhyOncePressed);
                     return plan;
                 }
 

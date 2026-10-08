@@ -303,6 +303,50 @@ namespace Federator.Core.Tests
             Assert.That(plan.CanStart, Is.False);
             Assert.That(plan.WhyNoRun, Does.Contain(folder));
             Assert.That(plan.WhyNoRun, Does.Contain("is denied"));
+
+            // F129 attempt 2. The window line carries nothing the disk said, and nothing is logged
+            // at the pick, so it says the log carries why once Run NWFs is pressed.
+            Assert.That(plan.Describe(), Does.Not.Contain("is denied"));
+            Assert.That(plan.Describe(), Does.Contain("once Run NWFs is pressed"));
+            Assert.That(plan.Describe(), Does.Not.Contain(RunLog.TheLogSaysWhy()));
+        }
+
+        /// <summary>
+        /// F129 attempt 2, the reviewer's point: the window line after a pick pointed at a log that
+        /// holds nothing until Run NWFs is pressed. It says RUN SETTINGS names each folder then.
+        /// </summary>
+        [Test]
+        public void TheWindowLineSaysTheFoldersThatWouldNotReadAreNamedOnceTheRunStarts()
+        {
+            FakeDisk disk = new FakeDisk();
+            string folder = TestPaths.At("Feds");
+            disk.File("Feds", "a.nwf");
+            disk.File("Feds", "Locked", "b.nwf");
+            string locked = TestPaths.At("Feds", "Locked");
+            disk.WillNotRead(locked);
+
+            NwfPickPlan plan = NwfPick.From(folder, true, string.Empty, disk.Disk());
+            string line = plan.Describe();
+
+            Assert.That(line, Does.Contain("1 folder would not read. " + NwfPick.NamedOncePressed));
+            Assert.That(line, Does.Not.Contain(RunLog.TheLogSaysWhy()));
+            Assert.That(line, Does.Not.Contain("is denied"));
+            Assert.That(plan.SettingsLines(), Has.Some.Contains(locked).And.Contains("is denied"),
+                "RUN SETTINGS is where the line says they are named");
+        }
+
+        /// <summary>
+        /// F129 attempt 2, the reviewer's blocking finding: the DECIDE step around a picked NWF's
+        /// open said not opened for one that opened and read empty. It says what the open did.
+        /// </summary>
+        [Test]
+        public void TheDecidePhraseSaysWhatTheOpenDid()
+        {
+            Assert.That(NwfPick.DecidePhrase(true, false, false), Is.EqualTo("opened and read empty"));
+            Assert.That(NwfPick.DecidePhrase(true, true, true), Is.EqualTo("opened and read empty"));
+            Assert.That(NwfPick.DecidePhrase(false, true, false), Is.EqualTo("not opened"));
+            Assert.That(NwfPick.DecidePhrase(false, false, false), Is.EqualTo(RunPath.WeeklyRun));
+            Assert.That(NwfPick.DecidePhrase(false, false, true), Is.EqualTo(RunPath.WeeklyRunPlusXml));
         }
 
         /// <summary>

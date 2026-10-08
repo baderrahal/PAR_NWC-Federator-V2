@@ -77,6 +77,20 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
+        /// The label of a group the open file run's route ran, F129. The document already open is
+        /// always a Weekly run, since there is no First run on that path. A picked NWF this run
+        /// opened is labelled off how its open went, the way the scanned run labels a group off
+        /// its Decide: one that opened and read empty is Stopped, F74, so RESULT counts it under
+        /// NWF read empty, and one that would not open or was refused before the open carries the
+        /// decision a group starts with, Build, the label the scanned run gives a group whose
+        /// Decide threw and the default GroupJudgement judges it by.
+        /// </summary>
+        public static string ForAnOpenFile(bool openedByThisRun, RerunDecision decision, bool xmlPicked)
+        {
+            return Label(openedByThisRun ? decision : RerunDecision.Open, xmlPicked);
+        }
+
+        /// <summary>
         /// The label for a group whose NWF has been opened and compared but not yet run.
         /// A comparison that reads Changed is going to be rebuilt, so it is shown as
         /// Rebuilt, which is what the person is about to get. The other decisions read

@@ -457,7 +457,9 @@ well as to pass.
   OpenAndWaitForTheModels, the one reader of an NWF, with no clear before it, since the open
   replaces the document as it does for the preview and the probe. One that will not open, or
   opens and reports no models for the whole wait, stops its group FAILED with Core's reason and
-  nothing is run on it, F74. The run stops after a group as the scanned run stops, through the
+  nothing is run on it, F74, and its GROUP finished line is labelled off that by
+  RunPath.ForAnOpenFile, Stopped for one that read empty, never Weekly run, the DECIDE phrase
+  NwfPick.DecidePhrase. The run stops after a group as the scanned run stops, through the
   one StopsTheRunAfter, and the gaps line, the list for the modellers, the timing beside size
   and each file's block are written once after the last file, WriteTheEndOfAnOpenFileRun. The
   window, OnRunPickedNwfs, reads the run settings first, refuses a tolerance that is not one, a

@@ -1556,7 +1556,15 @@ and 6 does not read as broken.
   OPEN FILE block's shape, OpenDocumentJob.SummaryLines with the decision a picked NWF opened
   by this run, and the GROUP started line, which says the files are read once the NWF opens
   where no list is handed in, RunLog.GroupFilesReadAtTheOpen. The picker remembers its own
-  folder, PickerKind.PickedNwf, its file and its folder buttons on the one kind
+  folder, PickerKind.PickedNwf, its file and its folder buttons on the one kind. THE LABEL
+  OF A GROUP OF THIS ROUTE is RunPath.ForAnOpenFile, F129 attempt 2: the document already open
+  is a Weekly run as before, and a picked NWF this run opened is labelled off its decision, so
+  one that opened and read empty is Stopped, as the scanned run labels the same F74 refusal,
+  and RESULT counts it under NWF read empty, and one that would not open or was refused before
+  the open carries Build, the label the scanned run gives a group whose Decide threw. The
+  DECIDE step's phrase is NwfPick.DecidePhrase, opened and read empty, not opened, or the
+  label of the run. Nothing is logged at the pick, so the window line says the folders that
+  would not read are named in RUN SETTINGS once Run NWFs is pressed, NwfPick.NamedOncePressed
 - Distance is the ROUNDED number and carries no number format, because that is what theirs
   holds. Ours stored -0.328083992004395 behind a format of 0.000, so the cell read -0.328
   and anyone sorting, filtering or copying the column got the long value. Rounding the

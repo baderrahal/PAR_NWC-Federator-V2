@@ -158,7 +158,7 @@ warnings and 0 errors, its short hash and an empty git status at the top, f114b-
 check-locals and check-imports pass on src, f114b-checks.txt. The pre-commit outputs are
 f114b-precommit-1.txt and f114b-precommit-2.txt.
 
-### Attempt 2, on the breaker's six blocking faults, turn6114b-break.json, the reviewer APPROVE
+### Attempt 2, on the breaker's six blocking faults, turn6\f114b-break.json, the reviewer APPROVE
 
 Each fix committed and pushed on its own in the breaker's order, under the day's close at 18:40.
 B1, 960177b: `Federator.Core.Views.TestsRead`, three tests, a test not read whole for the views, not
@@ -377,7 +377,7 @@ seventeen steps with RENUMBER between IMAGES and VIEWS and GENERIC XLSX after WO
 changes beside F128's sets step.
 
 Merged as pull request 186 on 2026-10-08 by the lead, 2788 Core tests on the merged tree, 0 failed, 0 skipped, the
-breaker's re-read of the fix in turn6128c-break-reread.json, the body claim-checked, and rows F118-R3 and F115-R24 for the
+breaker's re-read of the fix in turn6\f128c-break-reread.json, the body claim-checked, and rows F118-R3 and F115-R24 for the
 two older faults the readings found beside this change.
 
 ## 2026-10-08 The loop, turn 6, F120 the harvest and pictures area of the fix round, FR-075, FR-076 and FR-077, Core done and the add-in built
