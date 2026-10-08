@@ -243,7 +243,7 @@ namespace Federator.Core.Health
                     ? string.Empty
                     : ", because this group carries no " + referenceDiscipline + " model"));
 
-            string offItself = ReferenceOffItself(reference, internalName);
+            string offItself = ReferenceOffItself(models, reference, internalName);
 
             if (offItself != null)
             {
@@ -612,10 +612,28 @@ namespace Federator.Core.Health
         /// F137. Every distance in the block is measured from the reference, so one that names Revit's own
         /// origin or no shared site at all makes a model that sits where the project puts it read far from
         /// it. The block says so and changes nothing: which model is the reference stays the first of the
-        /// reference discipline that could be placed, and which model is off is Bader's to decide.
+        /// reference discipline that could be placed, or the first that could be placed at all, and which
+        /// model is off is Bader's to decide. It is said only where some other model was placed, because a
+        /// line about the distances below is false where no distance is below.
         /// </summary>
-        private static string ReferenceOffItself(ModelPlacement reference, string internalName)
+        private static string ReferenceOffItself(IList<ModelPlacement> models, ModelPlacement reference, string internalName)
         {
+            bool anotherPlaced = false;
+
+            for (int i = 0; i < models.Count; i++)
+            {
+                if (models[i] != reference && models[i].Placed)
+                {
+                    anotherPlaced = true;
+                    break;
+                }
+            }
+
+            if (!anotherPlaced)
+            {
+                return null;
+            }
+
             string how = NamesInternal(reference, internalName)
                 ? "names \"" + internalName + "\" as its shared site, Revit's own origin"
                 : NamesNoSite(reference) ? "names no shared site at all" : null;

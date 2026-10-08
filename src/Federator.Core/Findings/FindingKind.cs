@@ -21,7 +21,10 @@ namespace Federator.Core.Findings
         /// </summary>
         NearMatch,
 
-        /// <summary>A group holding one discipline, so it has nothing to clash against.</summary>
+        /// <summary>
+        /// A group holding one discipline, so it has nothing to clash against. For the groups gathered by
+        /// discipline it is one finding for all of them.
+        /// </summary>
         SingleDiscipline,
 
         /// <summary>A group missing disciplines that other groups in this run have.</summary>

@@ -238,6 +238,7 @@ namespace Federator.Core.Tests
                 Assert.That(single[0].Headline, Does.StartWith((mode == GroupingMode.PerDiscipline ? "4" : "8")
                     + " groups each hold a single discipline, because the files are gathered by discipline"));
                 Assert.That(single[0].Detail, Does.Contain("none of them is run, because one discipline cannot clash with itself"));
+                Assert.That(single[0].Detail, Does.Contain("are still created where a clash file with tests is picked"));
                 Assert.That(single[0].Detail, Does.Contain("\"One file per building\" or \"One file for everything\""));
                 Assert.That(single[0].Detail, Does.Not.Contain("not been exported"));
                 Assert.That(findings.OfKind(FindingKind.MissingDisciplines).Count, Is.EqualTo(0), mode.ToString());
@@ -246,6 +247,8 @@ namespace Federator.Core.Tests
             ScanFindings one = FindingsIn(GroupingMode.PerDiscipline, new[] { Nwc("1B06PK", "AR") });
 
             Assert.That(one.OfKind(FindingKind.SingleDiscipline)[0].Headline, Does.StartWith("The one group holds a single discipline,"));
+            Assert.That(one.OfKind(FindingKind.SingleDiscipline)[0].Detail, Does.StartWith("The federation is still built"));
+            Assert.That(one.OfKind(FindingKind.SingleDiscipline)[0].Detail, Does.Contain("none is run, because one discipline"));
         }
 
         [Test]

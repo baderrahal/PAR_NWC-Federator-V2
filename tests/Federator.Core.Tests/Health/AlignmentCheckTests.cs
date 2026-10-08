@@ -87,6 +87,32 @@ namespace Federator.Core.Tests.Health
             Assert.That(unread, Does.Not.Contain("the reference model itself"), "a read that threw is not a fact about the model");
         }
 
+        /// <summary>
+        /// The line speaks of the distances below, so it is said only where some other model was placed and a
+        /// distance is below. A group of one model, or of one placed model beside models that were not read, has none.
+        /// </summary>
+        [Test]
+        public void TheReferenceLineIsNotSaidWhereNoDistanceIsBelow()
+        {
+            string alone = Joined(AlignmentCheck.Lines(
+                new List<ModelPlacement> { At("AR", "Internal", 0.0, 0.0, 0.0) },
+                AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
+
+            Assert.That(alone, Does.Contain("is the reference"));
+            Assert.That(alone, Does.Not.Contain("so every distance below"));
+
+            string unplaced = Joined(AlignmentCheck.Lines(
+                new List<ModelPlacement>
+                {
+                    At("AR", string.Empty, 0.0, 0.0, 0.0),
+                    At("ME", "PW3_Shared_Location", ModelPlacement.NotRead, ModelPlacement.NotRead, ModelPlacement.NotRead)
+                },
+                AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
+
+            Assert.That(unplaced, Does.Not.Contain("so every distance below"));
+            Assert.That(unplaced, Does.Contain("NOT READ, its placement could not be read"));
+        }
+
         [Test]
         public void AModelAtADifferentHeightIsNamedWithTheDifferenceInXYAndZSeparately()
         {

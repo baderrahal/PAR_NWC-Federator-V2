@@ -509,9 +509,10 @@ namespace Federator.Core.Findings
                 gathered.Count == 1
                     ? "The one group holds a single discipline, because the files are gathered by discipline, so there is nothing in it to clash against."
                     : gathered.Count + " groups each hold a single discipline, because the files are gathered by discipline, so there is nothing in any of them to clash against.",
-                "The federation of each is still built, the clash tests whose two sides both find something are still created, and "
-                    + "none of them is run, because one discipline cannot clash with itself. That is what gathering by discipline does, "
-                    + "and it does not mean models are missing. To clash the disciplines against each other, choose \""
+                (gathered.Count == 1 ? "The federation is" : "The federation of each is") + " still built, the clash tests whose two sides both find something"
+                    + " are still created where a clash file with tests is picked, and "
+                    + (gathered.Count == 1 ? "none is run" : "none of them is run") + ", because one discipline cannot clash with itself. "
+                    + "That is what gathering by discipline does, and it does not mean models are missing. To clash the disciplines against each other, choose \""
                     + GroupingModes.Describe(GroupingMode.PerBuilding) + "\" or \""
                     + GroupingModes.Describe(GroupingMode.Everything) + "\" in the Grouping step.",
                 keys,

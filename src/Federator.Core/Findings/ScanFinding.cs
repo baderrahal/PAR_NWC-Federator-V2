@@ -53,15 +53,17 @@ namespace Federator.Core.Findings
         }
 
         /// <summary>
-        /// The building codes this concerns. One for an odd shape, a single discipline and
-        /// missing disciplines, two for a near match and a source mismatch, and one per
-        /// group for a shared source.
+        /// The building codes this concerns. One for an odd shape, a single discipline of one
+        /// building and missing disciplines, two for a near match and a source mismatch, and
+        /// one per group for a shared source. The one finding for every group gathered by
+        /// discipline holds those groups' keys, which name a discipline and not a building.
         /// </summary>
         public ReadOnlyCollection<string> Buildings { get; private set; }
 
         /// <summary>
         /// File names, so the offending files are named. Carried for an odd shape, a single
-        /// discipline and a source mismatch, and empty for the other three.
+        /// discipline of one building and a source mismatch, and empty for the other three and
+        /// for the one finding of the groups gathered by discipline.
         /// </summary>
         public ReadOnlyCollection<string> Files { get; private set; }
 
