@@ -6,62 +6,62 @@ using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Report;
 using Federator.Core.Views;
-using CoreClashStatus = Federator.Core.Clash.ClashStatus;
 
 namespace Federator.Addin.Engine
 {
     /// <summary>
-    /// Puts one saved viewpoint per clash into the NWF, three folders deep, F85. The plan
-    /// is Federator.Core.Views.ClashViewpointPlan and nothing about it is decided here.
+    /// Puts one saved view per clash test of its open clashes into the NWF, in folders by
+    /// priority and team pair, F114, Bader's Q114 points 9 to 19. The plan is
+    /// Federator.Core.Views.TestViewPlan, the inventory of what goes after is
+    /// ViewsInventory, the checks are ViewsTreeCheck, and nothing about any of them is
+    /// decided here. This file holds the calls into Navisworks and the order they run in.
     ///
-    /// TWO WALKS OVER THE RESULTS AND NOT ONE. The first reads every clash the report
-    /// names into a ClashToPlan, the status, the two set names, the priority and the
-    /// service size, keeps a COPY of the camera Clash Detective frames it with, and notes
-    /// which models the two clashing items live in. The plan then runs over all of them
-    /// at once, because a cap per test and the counts in the block are about the whole
-    /// group. The second writes what the plan kept. Nothing borrowed from the document is
-    /// held across either.
+    /// THE ORDER, the design's S2, so a run that stops part way leaves the old picture or a
+    /// checked new one and never neither: a fresh walk of the tree, walk one over the rows
+    /// of the merged report, the plan, then per view the hide, the dim, the paint, the
+    /// frame, the folders, the record, the mark and the read back, then a fresh walk and
+    /// the inventory over it, the removals it gave, the document put back, and a last
+    /// fresh walk for the VIEWS TREE block and its seven checks.
     ///
-    /// WHAT A VIEWPOINT SHOWS. The two disciplines of the pair, every model of each, plus
-    /// the model each clashing item lives in, and every other model hidden, framed on the
-    /// clash the way the picture of it is framed, TestsViewpointForResult. That is what a
-    /// person pressing AR vs ST expects to see, the two things that clashed in their own
-    /// context, and the hiding is what 5j measured a captured viewpoint to keep. The
-    /// models the items live in are kept as well as the pair's because a set code and a
-    /// file code are not the same list: a DR set, drainage, lives in the ME model, and a
-    /// viewpoint that hid ME for DR vs ST would hide the pipe the person is looking for,
-    /// which is what the third and fourth runs did before 5n measured where the model
-    /// sits. A pair with a code this tool does not know hides nothing, a model whose name
-    /// will not parse is never hidden, and a pair no model carries hides nothing and says so.
+    /// WALK ONE KEEPS F132's SHAPE, attempt 2 of its add-in half: the rows come off the
+    /// merged report, ReportClashes.Of, under the test the report holds them under and at
+    /// the row's status, and each row's result is resolved by the address the harvest
+    /// recorded for it, the test once per address through TestAddress.ResolveIn and the
+    /// result through ResultPath.ResultAt, never by name off the document. What each row
+    /// becomes is a ViewClash: the two items' index paths, plain ints and not handles, the
+    /// clash centre, the model each item lives in by its file name, and the size of the
+    /// larger service ONLY for a clash whose test's pair carries the size folder, row
+    /// F114-K9, so the teams are read before the walk. The camera is read after the plan,
+    /// for each view's camera clash alone, TestsViewpointForResult on a copy, where F85
+    /// read one per clash.
     ///
-    /// AND EVERYTHING BUT THE TWO CLASHING ITEMS IS DIMMED, the dimming round. F85 shipped
-    /// without it, and Bader pressed two of its viewpoints and saw a grey wall: the camera
-    /// Clash Detective computes sits inside a beam, and a solid beam fills the screen.
-    /// Clash Detective only looks right because its own view makes everything but the two
-    /// items transparent. So walk one keeps the INDEX PATH of each clashing item, plain
-    /// ints rather than a handle held across the group, and walk two overrides temporary
-    /// transparency on the model roots, which reaches every leaf, and resets it on those
-    /// two, which brings back exactly those two. Two calls and not one per item: 2,606
-    /// items dimmed one at a time, 430 times, is 1.1 million calls in one group.
-    /// docs\history\scan.md 5o measured all of it, including that the record survives a
-    /// save and a reopen and that the permanent override would have risked his own.
+    /// WHAT A VIEW SHOWS, Bader's answer B to Q119: only the models its clashing items
+    /// live in, ShownModels, every other hidden, the shown ones dimmed and every clashing
+    /// item solid, the first items painted red and the second green by PaintPlan, one
+    /// reset and one paint per colour over a collection, P17, and the camera zoomed to the
+    /// box over the clash centres, FramingBox and ZoomBox, P16, or Clash Detective's own
+    /// camera for a view of one clash.
     ///
-    /// EVERYTHING IS PUT BACK, MEASURED. Before the first viewpoint changes anything the
-    /// hidden state the document holds is read off a runtime capture that never goes
-    /// into the tree. When the group's writing ends, whichever way it ends, the dimming
-    /// is taken off the models this tool dimmed, everything is shown, and exactly the
-    /// items that were hidden are hidden again and read back as hidden, each in its own
-    /// try so one failing cannot skip the other. scan.md 5k measured the hidden half and
-    /// measured that ResetAllHiddenToModelState, which this once called, LOSES a hide the
-    /// document held, and 5o measured the same trap in the permanent material override,
-    /// whose only undo would clear an appearance override of his that nothing can read
-    /// back first. A group that hid and dimmed nothing touches none of it.
+    /// ONLY WHAT THIS TOOL MADE IS EVER REMOVED, point 16. Every view and every folder the
+    /// tool makes carries the mark, ToolViewMark, written by AddComment after the add, P9.
+    /// The view just made is found as the child of its folder with its name and no mark,
+    /// P12, so where a person's unmarked view of that name already sits in that folder no
+    /// view is written there, P22 unrun, and the person's is left as it is. The inventory
+    /// is taken off a fresh walk after this run's views are written, marked and read back,
+    /// and each removal re-finds its item by name, kind and mark just before RemoveAt with
+    /// the parent resolved fresh, P13, a folder with everything under it in one call, P14.
     ///
-    /// AND NOTHING HERE IS A FLAG. Both flags this API offers, ContainsVisibilityOverrides
-    /// and ContainsAppearanceOverrides, read TRUE on a viewpoint that recorded neither,
-    /// 5o, so F85's check that a viewpoint carries visibility overrides could not fail.
-    /// The read back is four counts: it is there, its camera is within the tolerance, it
-    /// hides as many items as it meant to, and it dims as many as it meant to.
+    /// EVERYTHING IS PUT BACK, MEASURED. Before the first view changes anything the hidden
+    /// state the document holds is read off a runtime capture that never goes into the
+    /// tree, 5k, and when the group's writing ends, whichever way it ends, the dimming is
+    /// taken off, everything is shown and exactly the items that were hidden are hidden
+    /// again and read back as hidden. The window's view is never touched, 5m.
+    ///
+    /// NOTHING HERE IS A FLAG. Both flags this API offers, ContainsVisibilityOverrides and
+    /// ContainsAppearanceOverrides, read TRUE on a viewpoint that recorded neither, 5o. A
+    /// view counts as read back when it is there, its camera sits within the tolerance, it
+    /// hides as many items as it meant to, it dims as many as it meant to, every clashing
+    /// item will show the colour it was painted, and its mark reads back as this run's.
     /// </summary>
     public sealed class ViewpointBuilder
     {
@@ -73,56 +73,15 @@ namespace Federator.Addin.Engine
         private readonly HashSet<string> saidOnce = new HashSet<string>(StringComparer.Ordinal);
 
         private HiddenSnapshot snapshot;
-        private int cameraRead;
-        private int dimmed;
-        private int notDimmed;
-        private int painted;
         private bool dimmedAnything;
-        private bool paintedAnything;
-
-        // FR-065. Whether this tool's dimming and paint are on the document right now,
-        // which the next viewpoint takes off before it is written, and what the written
-        // viewpoints read back of it, so a run can see that each carries its own.
         private bool dimmedNow;
-        private int fewestOverrides;
-        private int mostOverrides;
-        private int undimmedCarrying;
-        private Exception firstHomeError;
-
-        // Where the VIEWS step's seconds go, per call, because the dimming took one
-        // group from 7.5 seconds to 476 and the shape of the cost was not what it
-        // looked like: the group with the MOST items was one of the fastest. A step
-        // that got slower says which call did it rather than leaving it to be guessed.
-        // FR-073: every call the work is made of is its own part, recording split into
-        // the folders, the view, the COM folder and the add, and what falls between the
-        // parts is said. The rule is Federator.Core.Views.ViewsSeconds, on the log's clock.
         private ViewsSeconds seconds;
+        private string stamp;
 
-        /// <summary>
-        /// Where one clash is: the models its two items live in, and the index path of
-        /// each item. The PATH and not the item, because walk one names every clash in
-        /// the group and walk two resolves them one at a time, and 1,950 native handles
-        /// held across a group is the shape that once built 1.7 million of them.
-        /// </summary>
-        private sealed class ClashPlace
-        {
-            public ClashPlace()
-            {
-                Models = new HashSet<int>();
-            }
-
-            public HashSet<int> Models { get; private set; }
-
-            public int[] FirstPath { get; set; }
-
-            public int[] SecondPath { get; set; }
-
-            /// <summary>Whether both items can be pointed at, which is what dimming all but two needs.</summary>
-            public bool BothPlaced
-            {
-                get { return FirstPath != null && SecondPath != null; }
-            }
-        }
+        // Where one clash's result sits in the document, kept by the clash's key so the
+        // camera of a view's camera clash is resolved again after the plan, and never a
+        // handle held across the group.
+        private readonly Dictionary<string, RowAddress> addressOf = new Dictionary<string, RowAddress>(StringComparer.Ordinal);
 
         public ViewpointBuilder(
             Action<string> progress,
@@ -143,129 +102,115 @@ namespace Federator.Addin.Engine
             this.views = views ?? new ViewpointSettings();
         }
 
-        /// <summary>The plan for the group, kept so the engine can write its block.</summary>
-        public ClashViewpointPlanOutcome Plan { get; private set; }
+        /// <summary>The plan for the group, kept so the engine can write its VIEWS block.</summary>
+        public TestViewPlanOutcome Plan { get; private set; }
+
+        /// <summary>The VIEWS TREE block as the .log takes it, cut at the TreeLinesInLog setting, or null where the tree was not read.</summary>
+        public IList<string> TreeLog { get; private set; }
+
+        /// <summary>The VIEWS TREE block whole, one row each for the .tsv, or null where the tree was not read.</summary>
+        public IList<string> TreeRows { get; private set; }
+
+        /// <summary>How many items of earlier runs the inventory's removals took out, each a change to the document.</summary>
+        public int RemovedCount { get; private set; }
 
         /// <summary>
-        /// The whole of one group: read, plan, write. Never throws past a viewpoint: one
-        /// that throws is recorded as failed and the rest are still tried.
+        /// The whole of one group: walk, plan, write, inventory, remove, read the tree.
+        /// Never throws past a view: one that throws is recorded as failed and the rest are
+        /// still tried. The tests ran, the test names, the mirrors and whether the clash step
+        /// was sound are the inventory's facts, Core's contracts of rows F114-K12 and K20.
         /// </summary>
         public ViewpointBuildOutcome BuildForGroup(
             Document document,
+            string group,
             ClashReport report,
             IDictionary<ClashRow, RowAddress> addresses,
-            bool priorityPicked,
-            IDictionary<int, string> modelDisciplines)
+            ViewTeams teams,
+            IList<ModelTeam> models,
+            ICollection<string> testsRan,
+            ICollection<string> testNames,
+            ICollection<string> mirrors,
+            bool clashStepSound)
         {
             ViewpointBuildOutcome outcome = new ViewpointBuildOutcome();
 
-            if (document == null || report == null)
+            if (document == null || report == null || teams == null)
             {
                 return outcome;
             }
 
             seconds = new ViewsSeconds(() => log.ElapsedSeconds);
+            stamp = ToolViewMark.StampOf(DateTime.UtcNow);
             DocumentClashTests clashTests = document.GetClash().TestsData;
-            List<ClashToPlan> clashes = new List<ClashToPlan>();
-            Dictionary<string, Viewpoint> cameras = new Dictionary<string, Viewpoint>(StringComparer.Ordinal);
-            Dictionary<string, ClashPlace> places = new Dictionary<string, ClashPlace>(StringComparer.Ordinal);
-            IDictionary<int, string> disciplines = modelDisciplines ?? new Dictionary<int, string>();
+            IList<ModelTeam> groupModels = models ?? new List<ModelTeam>();
+            List<WrittenView> written = new List<WrittenView>();
+            Dictionary<string, IList<string>> hiddenReadBack = new Dictionary<string, IList<string>>(StringComparer.Ordinal);
+            Dictionary<string, IList<ItemPath>> paintedReadBack = new Dictionary<string, IList<ItemPath>>(StringComparer.Ordinal);
+            ICollection<string> emptyBefore = null;
+            ViewsInventory inventory = null;
             snapshot = null;
-            cameraRead = 0;
-            dimmed = 0;
-            notDimmed = 0;
-            painted = 0;
             dimmedAnything = false;
-            paintedAnything = false;
             dimmedNow = false;
-            fewestOverrides = -1;
-            mostOverrides = 0;
-            undimmedCarrying = 0;
-            firstHomeError = null;
+            addressOf.Clear();
+            Plan = null;
+            TreeLog = null;
+            TreeRows = null;
+            RemovedCount = 0;
 
             try
             {
+                using (seconds.In(ViewsPart.TakingTheInventory))
+                {
+                    TreeWalk before = SavedViewpoints.ReadTree(document, null);
+                    SayWalk("before anything was written", before);
+                    emptyBefore = ViewNode.EmptyFolderKeys(before.Nodes);
+                }
+
                 using (seconds.In(ViewsPart.ReadingTheClashes))
                 {
-                    Collect(document, clashTests, report, addresses, clashes, cameras, places, ModelIndexByFile(document));
-                    Plan = ClashViewpointPlan.For(clashes, views, priorityPicked);
+                    List<ViewClash> clashes = Collect(document, clashTests, report, addresses, teams);
+                    Plan = TestViewPlan.For(clashes, teams, mirrors, views);
                 }
 
-                if (Plan.Planned.Count == 0)
+                if (Plan.Views.Count > 0)
                 {
-                    return outcome;
+                    WriteTheViews(document, clashTests, groupModels, outcome, written, hiddenReadBack, paintedReadBack);
                 }
 
-                foreach (PlannedClashViewpoint planned in Plan.Planned)
+                using (seconds.In(ViewsPart.TakingTheInventory))
                 {
-                    try
-                    {
-                        using (seconds.In(ViewsPart.SayingHowFar))
-                        {
-                            progress("Viewpoint " + planned.Path);
-                        }
-
-                        WriteOne(document, planned, cameras, places, disciplines, outcome);
-                    }
-                    catch (Exception error)
-                    {
-                        // The type as well as the text, because a member of this API
-                        // behaving differently from the way 5d, 5j and 5k measured it is
-                        // the most likely failure, and the type name is what says which.
-                        outcome.AddFailed(planned.Path, planned.Pair.Folder, error.GetType().Name + ": " + error.Message);
-                        log.Failure(
-                            "putting the viewpoint " + planned.Path + " into the NWF",
-                            error,
-                            "kept going, the other viewpoints are still tried and the block carries the total");
-                    }
+                    TreeWalk after = SavedViewpoints.ReadTree(document, emptyBefore);
+                    SayWalk("after this run's views were written", after);
+                    inventory = ViewsInventory.Plan(
+                        after.Nodes, Plan, testsRan, written, stamp, clashStepSound,
+                        teams.Map.KnownCodes(CodesOf(groupModels)), testNames, views);
                 }
 
-                if (cameraRead > 0)
+                log.Block("VIEWS INVENTORY " + group, inventory.Lines());
+
+                using (seconds.In(ViewsPart.Removing))
                 {
-                    log.Line("VIEWS    read back on " + cameraRead + " created viewpoint(s): each sits within "
-                        + views.CameraReadBackTolerance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                        + " units of its clash camera, and the items each one hides and dims were counted off it and not trusted");
-
-                    if (views.DimsAnything)
-                    {
-                        // FR-065. The material overrides each one read back, the fewest
-                        // and the most, so a run shows that a viewpoint carries the
-                        // dimming of its own shown models and not what an earlier one
-                        // left on models it hides, and that one written undimmed carries
-                        // none of an earlier one's dimming or paint.
-                        log.Line("VIEWS    dimmed to "
-                            + views.DimTransparency.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
-                            + " with the two clashing items left solid: " + dimmed + " viewpoint(s)"
-                            + (dimmed > 0 ? ", each carrying from " + fewestOverrides + " to " + mostOverrides + " material overrides" : string.Empty)
-                            + (notDimmed > 0
-                                ? ", and " + notDimmed + " written undimmed because their two items could not both be pointed at, "
-                                    + undimmedCarrying + " of them carrying a material override"
-                                : string.Empty));
-                    }
-
-                    if (paintedAnything)
-                    {
-                        log.Line("VIEWS    the two clashing items painted " + views.FirstItemColour
-                            + " and " + views.SecondItemColour + ", read back on what each viewpoint will show: "
-                            + painted + " viewpoint(s)");
-                    }
+                    Remove(document, inventory);
                 }
             }
             finally
             {
-                foreach (Viewpoint camera in cameras.Values)
-                {
-                    camera.Dispose();
-                }
-
                 using (seconds.In(ViewsPart.PuttingBack))
                 {
                     PutBack(document);
                 }
 
-                // Last, so the whole runs from the first clash read to the document put
-                // back, and written whichever way the work ended, because time spent
-                // failing is time the run spent.
+                if (Plan != null)
+                {
+                    using (seconds.In(ViewsPart.ReadingTheTree))
+                    {
+                        ReadTheTree(document, group, teams, groupModels, inventory, written, emptyBefore,
+                            hiddenReadBack, paintedReadBack, testsRan, testNames);
+                    }
+                }
+
+                // Last, so the whole runs from the first walk to the tree read, and written
+                // whichever way the work ended, because time spent failing is time the run spent.
                 seconds.Ended();
                 log.Line(seconds.Line());
             }
@@ -273,31 +218,29 @@ namespace Federator.Addin.Engine
             return outcome;
         }
 
+        // ---------- walk one ----------
+
         /// <summary>
-        /// Every clash the merged report holds a row for, read into what the plan needs,
-        /// with a copy of its camera and the models its items live in kept by the name the
-        /// plan will give it. F132 attempt 2, the breaker's finding R4: the rows come off
-        /// the report and not off the document, Federator.Core.Views.ReportClashes, so a
-        /// row only a mirror found is viewed under the kept test, a mirror taken out of the
-        /// report gets no view, and the status is the row's, which the merge restated by
-        /// Q138 B. Each row's result is resolved in the document by the address the harvest
-        /// recorded for it, the test once for all its rows and never held across another
-        /// test's read, and read back by name, ResultPath, since the compact after the
-        /// merge can move a result from under a recorded path. A test name the report
-        /// carries twice is read once, because both would resolve to the same document test
-        /// and every clash of it would be handed to the plan twice.
+        /// Every clash the merged report holds a row for, read into what the plan needs.
+        /// F132 attempt 2, the breaker's finding R4: the rows come off the report and not
+        /// off the document, Federator.Core.Views.ReportClashes, so a row only a mirror found
+        /// is viewed under the kept test, a mirror taken out of the report gets no view, and
+        /// the status is the row's, which the merge restated by Q138 B. Each row's result is
+        /// resolved in the document by the address the harvest recorded for it, the test
+        /// once for all its rows and never held across another test's read, and read back
+        /// by name, ResultPath, since the compact after the merge can move a result from
+        /// under a recorded path. A test name the report carries twice is read once.
         /// </summary>
-        private void Collect(
+        private List<ViewClash> Collect(
             Document document,
             DocumentClashTests clashTests,
             ClashReport report,
             IDictionary<ClashRow, RowAddress> addresses,
-            List<ClashToPlan> clashes,
-            Dictionary<string, Viewpoint> cameras,
-            Dictionary<string, ClashPlace> places,
-            IDictionary<string, int> indexByFile)
+            ViewTeams teams)
         {
+            List<ViewClash> clashes = new List<ViewClash>();
             string unitEnumName = Penetrations.UnitEnumName(document);
+            IList<ClashStatus> inScope = OpenClashes.StatusesFor(views.ViewStatuses);
             ReportClashesOutcome rows = ReportClashes.Of(report);
 
             foreach (string name in rows.NamedTwice)
@@ -335,14 +278,10 @@ namespace Federator.Addin.Engine
 
             if (noAddress > 0)
             {
-                log.Line("VIEWS    " + noAddress + " row(s) of the report have no recorded place in the document, so they get no viewpoint");
+                log.Line("VIEWS    " + noAddress + " row(s) of the report have no recorded place in the document, so they get no view");
             }
 
-            int homesUnread = 0;
-            int notFound = 0;
-            int groupRows = 0;
-            int movedRows = 0;
-            string firstNotFound = null;
+            Counts counts = new Counts();
 
             foreach (string key in order)
             {
@@ -358,9 +297,13 @@ namespace Federator.Addin.Engine
                         {
                             log.Line("VIEWS    " + first.TestName + " is not at " + first.Address + " any more"
                                 + (nowNamed == null ? string.Empty : ", which holds \"" + nowNamed + "\"")
-                                + ", so its " + under.Count + (under.Count == 1 ? " row gets" : " rows get") + " no viewpoint");
+                                + ", so its " + under.Count + (under.Count == 1 ? " row gets" : " rows get") + " no view");
                             continue;
                         }
+
+                        // The size is read only in a pair that carries the size folder, row
+                        // F114-K9, and the pair is the test's, read off its first row's sets.
+                        bool carriesSize = teams.PairOf(under[0].LeftSet, under[0].RightSet).CarriesSizeFolder;
 
                         foreach (ReportClash clash in under)
                         {
@@ -371,11 +314,11 @@ namespace Federator.Addin.Engine
 
                             if (item == null)
                             {
-                                notFound++;
+                                counts.NotFound++;
 
-                                if (firstNotFound == null)
+                                if (counts.FirstNotFound == null)
                                 {
-                                    firstNotFound = whyNot;
+                                    counts.FirstNotFound = whyNot;
                                 }
 
                                 continue;
@@ -383,14 +326,15 @@ namespace Federator.Addin.Engine
 
                             if (moved)
                             {
-                                movedRows++;
+                                counts.Moved++;
                             }
 
                             using (item)
                             {
-                                homesUnread += CollectOne(
-                                    document, clashTests, clash, (IClashResult)item, item as ClashResult,
-                                    unitEnumName, clashes, cameras, places, indexByFile, ref groupRows);
+                                ViewClash read = CollectOne(
+                                    document, clash, item as ClashResult, inScope, carriesSize, unitEnumName, counts);
+                                clashes.Add(read);
+                                addressOf[read.Key] = addresses[clash.Row];
                             }
                         }
                     }
@@ -398,188 +342,131 @@ namespace Federator.Addin.Engine
                 catch (Exception error)
                 {
                     log.Failure(
-                        "reading the clashes of " + first.TestName + " for the viewpoints",
+                        "reading the clashes of " + first.TestName + " for the views",
                         error,
                         "kept going, the clashes read before it threw are planned and the rest are not");
                 }
             }
 
-            if (movedRows > 0)
-            {
-                log.Line("VIEWS    " + movedRows + " row(s) were found at another index than the harvest recorded, by name "
-                    + "among the siblings, the compact after the merge having removed the Resolved results before them");
-            }
-
-            if (notFound > 0)
-            {
-                log.Line("VIEWS    " + notFound + " row(s) of the report no longer lead to their result in the document, "
-                    + "so they get no viewpoint, the first: " + firstNotFound);
-            }
-
-            if (groupRows > 0)
-            {
-                log.Line("VIEWS    " + groupRows + " row(s) in scope are a result group, one viewpoint each as the workbook "
-                    + "holds them, framed on the group, with no size read and not dimmed, because a group has no two items");
-            }
-
-            if (homesUnread > 0)
-            {
-                log.Line("VIEWS    " + homesUnread + " clash(es) whose items' models could not be read, so their viewpoints keep the pair's models only");
-
-                if (firstHomeError != null)
-                {
-                    log.Failure(
-                        "reading the model a clash item lives in, the first of " + homesUnread,
-                        firstHomeError,
-                        "kept going, those viewpoints keep the pair's models only");
-                }
-            }
-
-            int withHome = 0;
-            int withBothItems = 0;
-
-            foreach (ClashPlace place in places.Values)
-            {
-                if (place.Models.Count > 0)
-                {
-                    withHome++;
-                }
-
-                if (place.BothPlaced)
-                {
-                    withBothItems++;
-                }
-            }
-
-            log.Line("VIEWS    the model each clash item lives in was read for " + withHome + " of " + places.Count
-                + " clash(es) in scope" + (withHome == places.Count ? string.Empty : ", and the rest keep the pair's models only"));
-
-            if (views.DimsAnything)
-            {
-                log.Line("VIEWS    both clashing items were pointed at for " + withBothItems + " of " + places.Count
-                    + " clash(es) in scope" + (withBothItems == places.Count ? string.Empty : ", and the rest are not dimmed, because dimming all but two needs both"));
-            }
+            counts.Say(log, clashes.Count);
+            return clashes;
         }
 
         /// <summary>
-        /// One row of the report into the plan at its row status, and where it is in scope
-        /// its camera and the place of its two items. The leaf is the result where the row
-        /// is one clash, and null where the row is a result group, which the panel frames
-        /// as one and which has no two items to read a size or a place off. Returns how
-        /// many homes could not be read, nought or one.
+        /// One row of the report into the plan's clash at its row status, and where it is in
+        /// scope its two items' paths, its centre, the models its items live in and, in a
+        /// pair carrying the size folder, the size of its larger service. The leaf is the
+        /// result where the row is one clash, and null where the row is a result group,
+        /// which the panel frames as one and which has no two items to read.
         /// </summary>
-        private int CollectOne(
+        private ViewClash CollectOne(
             Document document,
-            DocumentClashTests clashTests,
             ReportClash clash,
-            IClashResult result,
             ClashResult leaf,
+            IList<ClashStatus> inScope,
+            bool carriesSize,
             string unitEnumName,
-            List<ClashToPlan> clashes,
-            Dictionary<string, Viewpoint> cameras,
-            Dictionary<string, ClashPlace> places,
-            IDictionary<string, int> indexByFile,
-            ref int groupRows)
+            Counts counts)
         {
-            bool inScope = ClashViewpointPlan.InScope(clash.Status);
-
-            // The size is read only where the plan will ask about it, which is a clash it
-            // would otherwise keep. A closed clash is left out on its status before the
-            // size is looked at, so its items are not read.
-            SizeVerdict? serviceSize = inScope && leaf != null
-                ? Penetrations.ServiceSizeOf(leaf, penetrations, sizes, unitEnumName)
-                : null;
-
-            ClashToPlan planned = clash.ToPlan(serviceSize);
-            clashes.Add(planned);
-
-            if (!inScope)
+            if (!inScope.Contains(clash.Status))
             {
-                return 0;
+                return clash.ToView(null, null, null, null, null, null);
             }
 
             if (leaf == null)
             {
-                groupRows++;
+                counts.GroupRows++;
+                return clash.ToView(null, null, null, null, null, null);
             }
 
-            string key = ClashViewpointPlan.NameFor(planned, views);
+            SizeVerdict? serviceSize = null;
 
-            if (cameras.ContainsKey(key))
+            if (carriesSize)
             {
-                return 0;
-            }
+                bool parentThrew;
+                serviceSize = Penetrations.ServiceSizeOf(leaf, penetrations, sizes, unitEnumName, out parentThrew);
+                counts.SizeRead++;
 
-            using (Viewpoint framed = clashTests.TestsViewpointForResult(result))
-            {
-                if (framed != null)
+                if (parentThrew)
                 {
-                    cameras.Add(key, framed.CreateCopy());
+                    counts.SideWalkThrew++;
                 }
             }
 
-            ClashPlace place = new ClashPlace();
-            int homesUnread = 0;
+            ItemPath firstItem = null;
+            ItemPath secondItem = null;
+            string firstHome = null;
+            string secondHome = null;
+            Point3 centre = null;
 
-            if (leaf != null)
+            try
             {
-                try
-                {
-                    place.FirstPath = ReadPlace(document, leaf.Item1, indexByFile, place.Models);
-                    place.SecondPath = ReadPlace(document, leaf.Item2, indexByFile, place.Models);
-                }
-                catch (Exception error)
-                {
-                    // Counted, and the FIRST one is written in full once per group,
-                    // because the fifth run counted 975 of these and could not say
-                    // what threw. The viewpoint still keeps the pair's models, it
-                    // just cannot also keep a model the code did not name, and a
-                    // clash whose items will not read is not lost.
-                    homesUnread++;
+                firstItem = ReadPlace(document, leaf.Item1, out firstHome);
+                secondItem = ReadPlace(document, leaf.Item2, out secondHome);
+            }
+            catch (Exception error)
+            {
+                // Counted, and the FIRST one is written in full once per group, because the
+                // fifth run of F85 counted 975 of these and could not say what threw. The clash
+                // still goes in its view, with what was read before it threw.
+                counts.HomesUnread++;
 
-                    if (firstHomeError == null)
+                if (counts.FirstHomeError == null)
+                {
+                    counts.FirstHomeError = error;
+                }
+            }
+
+            try
+            {
+                using (Point3D at = leaf.Center)
+                {
+                    if (at != null)
                     {
-                        firstHomeError = error;
+                        centre = new Point3(at.X, at.Y, at.Z);
                     }
                 }
             }
+            catch (Exception error)
+            {
+                counts.CentresUnread++;
 
-            places[key] = place;
-            return homesUnread;
+                if (counts.FirstCentreError == null)
+                {
+                    counts.FirstCentreError = error;
+                }
+            }
+
+            if (centre == null)
+            {
+                counts.NoCentre++;
+            }
+
+            return clash.ToView(serviceSize, firstItem, secondItem, centre, firstHome, secondHome);
         }
 
         /// <summary>
-        /// The model one clashing item lives in, by its index in the document, matched on
-        /// the model's file name because that is a string and not a wrapper. MEASURED on
-        /// 2026-09-20, docs\history\scan.md 5n: on a clash leaf HasModel reads false and
-        /// Model reads null, and the one item that carries the model is the TOPMOST of
-        /// AncestorsAndSelf, six to nine levels up. Three runs before that measurement
-        /// read Model off the leaf and found no home for any clash. Item1 is a fresh
-        /// wrapper on every read, and so is every ancestor enumerated, so each is released
-        /// here.
+        /// Where one clashing item is, its index path as plain ints, and the model it lives
+        /// in by that model's file name. MEASURED on 2026-09-20, docs\history\scan.md 5n: on
+        /// a clash leaf HasModel reads false and Model reads null, and the one item that
+        /// carries the model is the TOPMOST of its ancestors, six to nine levels up. Item1 is
+        /// a fresh wrapper on every read, and so is every parent, so each is released here.
         /// </summary>
-        private static int[] ReadPlace(
-            Document document, ModelItem item, IDictionary<string, int> indexByFile, HashSet<int> into)
+        private static ItemPath ReadPlace(Document document, ModelItem item, out string home)
         {
+            home = null;
+
             if (item == null)
             {
                 return null;
             }
 
-            // Parent by Parent, each a fresh wrapper, all released at the end, which is
-            // the shape Penetrations.Upwards has read sizes with on every run. Enumerating
-            // AncestorsAndSelf and disposing each item as it went threw on every clash of
-            // the fifth run, and disposing nothing is not an option under 4g.
             List<ModelItem> chain = new List<ModelItem>();
             chain.Add(item);
 
             try
             {
-                // The path of the LEAF, which is the item that clashed and the one the
-                // dimming brings back to solid, taken as plain ints here so walk two can
-                // find it again without this handle, 5o.
                 int[] path = SavedViewpoints.PathOf(document, item);
-
                 ModelItem walker = item;
 
                 while (chain.Count < HomeWalkBound)
@@ -597,22 +484,15 @@ namespace Federator.Addin.Engine
 
                 ModelItem top = chain[chain.Count - 1];
 
-                if (!top.HasModel)
+                if (top.HasModel)
                 {
-                    return path;
-                }
-
-                using (Model model = top.Model)
-                {
-                    int index;
-
-                    if (model != null && indexByFile.TryGetValue(Words.Or(model.FileName, string.Empty), out index))
+                    using (Model model = top.Model)
                     {
-                        into.Add(index);
+                        home = model == null ? null : model.FileName;
                     }
                 }
 
-                return path;
+                return path == null ? null : new ItemPath(path);
             }
             finally
             {
@@ -630,161 +510,141 @@ namespace Federator.Addin.Engine
         /// </summary>
         private const int HomeWalkBound = 64;
 
-        private static IDictionary<string, int> ModelIndexByFile(Document document)
-        {
-            Dictionary<string, int> index = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        // ---------- the views ----------
 
-            if (document.Models == null)
+        private void WriteTheViews(
+            Document document,
+            DocumentClashTests clashTests,
+            IList<ModelTeam> models,
+            ViewpointBuildOutcome outcome,
+            List<WrittenView> written,
+            Dictionary<string, IList<string>> hiddenReadBack,
+            Dictionary<string, IList<ItemPath>> paintedReadBack)
+        {
+            string unitEnumName = Penetrations.UnitEnumName(document);
+            Dictionary<ModelTeam, int> indexOf = new Dictionary<ModelTeam, int>();
+
+            // The models come in the document's order, the engine reading them off
+            // Document.Models in turn, so a model's place in the list is its index.
+            for (int i = 0; i < models.Count; i++)
             {
-                return index;
+                indexOf[models[i]] = i;
             }
 
-            for (int i = 0; i < document.Models.Count; i++)
-            {
-                using (Model model = document.Models[i])
-                {
-                    string file = Words.Or(model.FileName, string.Empty);
+            ViewsProgress said = new ViewsProgress(views.ProgressEverySeconds, log.ElapsedSeconds);
+            HashSet<int> shownBefore = null;
+            int done = 0;
+            int foldersMarked = 0;
+            int foldersNotMarked = 0;
+            int hidesSkipped = 0;
 
-                    if (file.Length > 0 && !index.ContainsKey(file))
+            foreach (PlannedTestView view in Plan.Views)
+            {
+                done++;
+
+                using (seconds.In(ViewsPart.SayingHowFar))
+                {
+                    progress("View " + view);
+
+                    if (said.Due(log.ElapsedSeconds))
                     {
-                        index.Add(file, i);
+                        log.Line(said.Line(done, Plan.Views.Count, written.Count, log.ElapsedSeconds));
                     }
+                }
+
+                try
+                {
+                    WriteOne(document, clashTests, view, models, indexOf, unitEnumName, outcome, written,
+                        hiddenReadBack, paintedReadBack, ref shownBefore, ref foldersMarked, ref foldersNotMarked, ref hidesSkipped);
+                }
+                catch (Exception error)
+                {
+                    // The type as well as the text, because a member of this API behaving
+                    // differently from the way it was measured is the most likely failure, and
+                    // the type name is what says which.
+                    outcome.AddFailed(view.ToString(), view.Pair.Folder, error.GetType().Name + ": " + error.Message);
+                    log.Failure(
+                        "putting the view " + view + " into the NWF",
+                        error,
+                        "kept going, the other views are still tried and the block carries the total");
                 }
             }
 
-            return index;
+            log.Line("VIEWS    " + written.Count + " of " + Plan.Views.Count + " planned view(s) written, "
+                + foldersMarked + " folder(s) made and marked"
+                + (foldersNotMarked > 0 ? ", " + foldersNotMarked + " made and NOT marked, said above" : string.Empty)
+                + (hidesSkipped > 0 ? ", the hiding skipped for " + hidesSkipped + " view(s) showing the same models as the one before" : string.Empty));
         }
 
         private void WriteOne(
             Document document,
-            PlannedClashViewpoint planned,
-            Dictionary<string, Viewpoint> cameras,
-            Dictionary<string, ClashPlace> places,
-            IDictionary<int, string> disciplines,
-            ViewpointBuildOutcome outcome)
+            DocumentClashTests clashTests,
+            PlannedTestView view,
+            IList<ModelTeam> models,
+            Dictionary<ModelTeam, int> indexOf,
+            string unitEnumName,
+            ViewpointBuildOutcome outcome,
+            List<WrittenView> written,
+            Dictionary<string, IList<string>> hiddenReadBack,
+            Dictionary<string, IList<ItemPath>> paintedReadBack,
+            ref HashSet<int> shownBefore,
+            ref int foldersMarked,
+            ref int foldersNotMarked,
+            ref int hidesSkipped)
         {
-            // Already there is left exactly as it is. F28's rule, carried to viewpoints: a
-            // second copy at one path leaves the tree holding both and whichever came first
-            // is what anything resolving that path finds.
-            bool alreadyThere;
-
-            using (seconds.In(ViewsPart.LookingWhetherThere))
-            {
-                alreadyThere = SavedViewpoints.Exists(document, planned.Folders, planned.Name);
-            }
-
-            if (alreadyThere)
-            {
-                outcome.AddAlreadyPresent(planned.Path, planned.Pair.Folder, 0);
-                return;
-            }
-
-            Viewpoint camera;
-
-            if (!cameras.TryGetValue(planned.Name, out camera))
-            {
-                outcome.AddFailed(planned.Path, planned.Pair.Folder, "Clash Detective gave no camera for this clash");
-                return;
-            }
-
+            ShownModels shown = ShownModels.For(view.Pair, models, view.Homes);
             HashSet<int> keep = new HashSet<int>();
-            HashSet<string> hidden = new HashSet<string>(StringComparer.Ordinal);
-            string hidesNothingBecause = null;
+            List<string> shows = new List<string>();
 
-            ClashPlace place;
-            places.TryGetValue(planned.Name, out place);
-            HashSet<int> home = place == null ? null : place.Models;
-
-            if (planned.Pair.BothKnown)
+            foreach (ModelTeam model in shown.Shown)
             {
-                bool firstHasModel = false;
-                bool secondHasModel = false;
+                int index;
 
-                foreach (KeyValuePair<int, string> model in disciplines)
+                if (indexOf.TryGetValue(model, out index))
                 {
-                    bool first = string.Equals(model.Value, planned.Pair.First, StringComparison.Ordinal);
-                    bool second = string.Equals(model.Value, planned.Pair.Second, StringComparison.Ordinal);
-                    firstHasModel |= first;
-                    secondHasModel |= second;
-
-                    if (first || second || model.Value.Length == 0 || (home != null && home.Contains(model.Key)))
-                    {
-                        keep.Add(model.Key);
-                    }
-                    else
-                    {
-                        hidden.Add(model.Value);
-                    }
-                }
-
-                if (!firstHasModel)
-                {
-                    SayOnce("VIEWS    no model in this group carries " + planned.Pair.First
-                        + ", so a viewpoint of its pair keeps the model each clash item lives in");
-                }
-
-                if (!secondHasModel && !string.Equals(planned.Pair.First, planned.Pair.Second, StringComparison.Ordinal))
-                {
-                    SayOnce("VIEWS    no model in this group carries " + planned.Pair.Second
-                        + ", so a viewpoint of its pair keeps the model each clash item lives in");
-                }
-
-                if (keep.Count == 0)
-                {
-                    bool sameCode = string.Equals(planned.Pair.First, planned.Pair.Second, StringComparison.Ordinal);
-                    hidesNothingBecause = "no model in this group carries "
-                        + (sameCode ? planned.Pair.First : planned.Pair.First + " or " + planned.Pair.Second)
-                        + " and the models its clash items live in could not be read";
+                    keep.Add(index);
+                    shows.Add(model.Code.Length == 0 ? model.FileName : model.Code);
                 }
             }
-            else
+
+            string showsWords = shows.Count == 0 ? "no model" : string.Join(" ", shows.ToArray());
+
+            foreach (ModelTeam exception in shown.Exceptions)
             {
-                // A code this tool does not know. Nothing is hidden, because hiding on a
-                // guess would hide the thing the person is looking for, and the plan has
-                // already counted it under UNKNOWN.
-                hidesNothingBecause = "its pair has a code this tool does not know";
+                SayOnce("VIEWS    " + view + " shows " + exception.FileName + " of " + exception.Team
+                    + ", a third team's model one of its clashing items lives in, Q118 A");
             }
 
-            if (hidesNothingBecause != null)
+            // A person's unmarked view of this name in this folder cannot be told from the
+            // one about to be made, P12 and P22 unrun, so none is made and the person's stays.
+            if (SavedViewpoints.CountUnmarked(document, view.Folders, view.Name, false, views) > 0)
             {
-                SayOnce("VIEWS    " + planned.Pair.Folder + ": " + hidesNothingBecause + ", so its viewpoints hide nothing");
-                hidden.Clear();
+                outcome.AddFailed(view.ToString(), showsWords,
+                    "a view of its name with no mark of this tool already sits in its folder, so none was written there and that one is left as it is");
+                return;
             }
 
+            // THE HIDING, skipped where the view before showed the same models, P18, since
+            // the document already holds that state.
             using (seconds.In(ViewsPart.ShowingAndHiding))
             {
                 Touch(document);
 
-                if (hidesNothingBecause == null)
+                if (shownBefore != null && shownBefore.SetEquals(keep))
                 {
-                    SavedViewpoints.ShowOnlyModels(document, keep);
+                    hidesSkipped++;
                 }
                 else
                 {
-                    document.Models.ResetAllHidden();
+                    SavedViewpoints.ShowOnlyModels(document, keep);
+                    shownBefore = new HashSet<int>(keep);
                 }
             }
 
-            // THE DIMMING, the whole of this round. Everything goes transparent and the
-            // two items the clash is between come back solid, so the viewpoint opens the
-            // way Clash Detective looks at a clash. F85 shipped without it and Bader
-            // pressed two viewpoints and saw a grey wall, because the camera Clash
-            // Detective computes sits inside a beam and a solid beam fills the screen.
-            // A clash whose two items cannot both be pointed at is left undimmed rather
-            // than dimmed whole, because everything transparent and nothing solid is
-            // worse than what F85 shipped, and it is counted and said.
-            int solid = 0;
-            bool dimmedThisOne = false;
-            bool paintedThisOne = false;
-
-            // WHAT THE VIEWPOINT BEFORE LEFT IS TAKEN OFF FIRST, FR-065. The dimming and
-            // the paint are temporary materials on the document, so without this a
-            // viewpoint whose two items could not both be pointed at was recorded with the
-            // last one's dimming and red and green and counted as undimmed, and a model
-            // dimmed for an earlier pair stayed dimmed while hidden for a later one, which
-            // costs a material override per item in every viewpoint after it, the shape
-            // that once put 33 MB into a 120 KB NWF. Undim is scoped to the model roots
-            // and measured at under a millisecond, 5o.
+            // WHAT THE VIEW BEFORE LEFT IS TAKEN OFF FIRST, FR-065. The dimming and the paint
+            // are temporary materials on the document, so without this a view carries the
+            // last one's colours and a model dimmed for an earlier view stays dimmed while
+            // hidden for this one, a material override per item in every view after it.
             if (dimmedNow)
             {
                 using (seconds.In(ViewsPart.Dimming))
@@ -794,159 +654,443 @@ namespace Federator.Addin.Engine
                 }
             }
 
-            if (views.DimsAnything && place != null && place.BothPlaced)
+            PaintPlan paint = PaintPlan.For(view.Clashes);
+            int solidCount = 0;
+            int redCount = 0;
+            int greenCount = 0;
+            int notResolved = 0;
+            bool dimmedThisOne = false;
+
+            if (views.DimsAnything && paint.Solid.Count > 0)
             {
                 using (seconds.In(ViewsPart.Dimming))
                 {
-                    using (ModelItem firstItem = SavedViewpoints.ItemAt(document, place.FirstPath))
-                    using (ModelItem secondItem = SavedViewpoints.ItemAt(document, place.SecondPath))
-                    {
-                        if (firstItem != null && secondItem != null)
-                        {
-                            // Before the call, so a dim that throws part way is still
-                            // taken off before the next viewpoint is written.
-                            dimmedNow = true;
-                            solid = SavedViewpoints.DimAllBut(
-                                document, views.DimTransparency, hidesNothingBecause == null ? keep : null, firstItem, secondItem);
-                            dimmedThisOne = solid == 2;
-                            dimmedAnything = true;
+                    int lost;
 
-                            // THE PAINT GOES ON AFTER THE DIMMING, Q58. The transparency
-                            // override on the roots reaches every leaf, so painting first
-                            // would put the colour on and dim it off again in the same call.
-                            if (dimmedThisOne && views.ColoursAnything)
-                            {
-                                paintedThisOne = SavedViewpoints.PaintTwo(
-                                    document,
-                                    firstItem,
-                                    views.FirstItemColour,
-                                    secondItem,
-                                    views.SecondItemColour) == 2;
-                                paintedAnything = true;
-                            }
-                        }
+                    using (ModelItemCollection solid = SavedViewpoints.Resolve(document, paint.Solid, out lost))
+                    {
+                        notResolved += lost;
+
+                        // Before the call, so a dim that throws part way is still taken off
+                        // before the next view is written.
+                        dimmedNow = true;
+                        dimmedAnything = true;
+                        solidCount = SavedViewpoints.DimAllBut(document, views.DimTransparency, keep, solid);
+                        dimmedThisOne = solidCount > 0;
                     }
 
-                    if (!dimmedThisOne)
+                    // THE PAINT GOES ON AFTER THE DIMMING, Q58, one call per colour, P17.
+                    if (dimmedThisOne && views.ColoursAnything)
                     {
-                        // Dimmed on a path that resolved nothing, so it is taken straight off
-                        // again and the viewpoint is written the way F85 wrote one.
-                        SavedViewpoints.Undim(document);
-                        dimmedNow = false;
-                        solid = 0;
-                        paintedThisOne = false;
+                        using (ModelItemCollection red = SavedViewpoints.Resolve(document, paint.Red, out lost))
+                        {
+                            notResolved += lost;
+                            redCount = SavedViewpoints.PaintMany(document, red, views.FirstItemColour);
+                        }
+
+                        using (ModelItemCollection green = SavedViewpoints.Resolve(document, paint.Green, out lost))
+                        {
+                            notResolved += lost;
+                            greenCount = SavedViewpoints.PaintMany(document, green, views.SecondItemColour);
+                        }
                     }
                 }
             }
 
-            // Recording, which was one watch around three calls and is now one part per
-            // call, FR-073: the folders here, and the view, its COM folder and the add
-            // inside Record, so the next run says which of them takes the time.
-            using (seconds.In(ViewsPart.MakingTheFolders))
+            if (notResolved > 0)
             {
-                SavedViewpoints.EnsureFolders(document, planned.Folders);
+                SayOnce("VIEWS    " + view + ": " + notResolved + " clashing item path(s) resolved no item, so they are not solid or painted");
             }
 
-            SavedViewpoints.Record(document, planned.Folders, planned.Name, camera, views.RecordsThroughTheFolder, seconds);
-
-            // Read back rather than trusted, all three of it. The first run's tree looked
-            // complete and every viewpoint opened on sky, because the route it used
-            // recorded no camera, 5l, and nothing read the camera back. A viewpoint whose
-            // recorded camera is not the clash camera, or which carries no overrides
-            // while it was meant to hide something, is not a viewpoint of that clash and
-            // is counted as failed with the reason a person can check.
-            ViewpointReadBack read;
-
-            using (seconds.In(ViewsPart.ReadingBack))
+            if (paint.NotPointedAt > 0)
             {
-                read = paintedThisOne
-                    ? SavedViewpoints.ReadBack(
-                        document,
-                        planned.Folders,
-                        planned.Name,
-                        camera,
-                        place.FirstPath,
-                        views.FirstItemColour,
-                        place.SecondPath,
-                        views.SecondItemColour)
-                    : SavedViewpoints.ReadBack(document, planned.Folders, planned.Name, camera);
+                SayOnce("VIEWS    " + view + ": " + paint.NotPointedAt + " clash(es) with an item that could not be pointed at, so not painted");
             }
 
+            // THE CAMERA, Clash Detective's own for the camera clash, framed on the box over
+            // every clash centre where there are two or more, P16.
+            Viewpoint camera = null;
+
+            try
+            {
+                string noCamera;
+                camera = CameraOf(clashTests, view.CameraClash, out noCamera);
+
+                if (camera == null)
+                {
+                    outcome.AddFailed(view.ToString(), showsWords, "Clash Detective gave no camera for its first clash, " + noCamera);
+                    return;
+                }
+
+                using (seconds.In(ViewsPart.Framing))
+                {
+                    List<Point3> centres = new List<Point3>();
+
+                    foreach (ViewClash clash in view.Clashes)
+                    {
+                        if (clash.Centre != null)
+                        {
+                            centres.Add(clash.Centre);
+                        }
+                    }
+
+                    FramingBox box = FramingBox.For(centres, views.FramingMarginMillimetres, unitEnumName);
+
+                    if (box != null)
+                    {
+                        Viewpoint framed = SavedViewpoints.Framed(camera, box);
+                        camera.Dispose();
+                        camera = framed;
+                    }
+                }
+
+                Point3 cameraPoint;
+
+                using (Point3D position = camera.Position)
+                {
+                    cameraPoint = new Point3(position.X, position.Y, position.Z);
+                }
+
+                // THE FOLDERS, reused where there and made where not, each one made marked
+                // as the tool's, row F114-K5.
+                using (seconds.In(ViewsPart.MakingTheFolders))
+                {
+                    IList<int> made = SavedViewpoints.EnsureFolders(document, view.Folders);
+
+                    using (seconds.In(ViewsPart.Marking))
+                    {
+                        foreach (int depth in made)
+                        {
+                            List<string> above = new List<string>(view.Folders).GetRange(0, depth);
+                            string whyNotMarked;
+                            int at = SavedViewpoints.Mark(
+                                document, above, view.Folders[depth], true,
+                                ToolViewMark.Body(stamp, above, view.Folders[depth], null, null, views),
+                                views.MarkAuthor, views, out whyNotMarked);
+
+                            if (at >= 0)
+                            {
+                                foldersMarked++;
+                            }
+                            else
+                            {
+                                foldersNotMarked++;
+                                log.Line("VIEWS    the folder " + ViewPlace.Of(above, view.Folders[depth])
+                                    + " was made and not marked, " + whyNotMarked + ", so a later run keeps it");
+                            }
+                        }
+                    }
+                }
+
+                SavedViewpoints.Record(document, view.Folders, view.Name, camera, views.RecordsThroughTheFolder, seconds);
+
+                int index;
+                string whyNot;
+
+                using (seconds.In(ViewsPart.Marking))
+                {
+                    index = SavedViewpoints.Mark(
+                        document, view.Folders, view.Name, false,
+                        ToolViewMark.Body(stamp, view.Folders, view.Name, cameraPoint, null, views),
+                        views.MarkAuthor, views, out whyNot);
+                }
+
+                if (index < 0)
+                {
+                    // Not marked, so not provably this tool's and the inventory cannot know it
+                    // by its place: the view, if it is there, is named and left, and the group
+                    // is not DONE on it.
+                    written.Add(new WrittenView(view.Folders, view.Name, -1, false, false));
+                    outcome.AddFailed(view.ToString(), showsWords, "it was added and could not be marked, " + whyNot);
+                    return;
+                }
+
+                ViewReadBack read;
+
+                using (seconds.In(ViewsPart.ReadingBack))
+                {
+                    read = SavedViewpoints.ReadBack(
+                        document, view.Folders, index, view.Name, camera, paint,
+                        dimmedThisOne && views.ColoursAnything ? views.FirstItemColour : null,
+                        dimmedThisOne && views.ColoursAnything ? views.SecondItemColour : null);
+                }
+
+                string notReadBack = WhyNotReadBack(read, view, cameraPoint, shown.Hidden.Count, dimmedThisOne, redCount + greenCount);
+
+                if (read.Found)
+                {
+                    hiddenReadBack[view.Key] = read.HiddenFiles;
+                    paintedReadBack[view.Key] = read.Painted;
+                }
+
+                written.Add(new WrittenView(view.Folders, view.Name, index, true, notReadBack == null));
+
+                if (notReadBack != null)
+                {
+                    outcome.AddFailed(view.ToString(), showsWords, notReadBack);
+                    return;
+                }
+
+                outcome.AddCreated(view.ToString(), showsWords, shown.Hidden.Count);
+            }
+            finally
+            {
+                if (camera != null)
+                {
+                    camera.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Why the view is not counted as read back, or null where every count is what was
+        /// asked: there under its name, the camera within the tolerance, hiding something
+        /// where it meant to, dimming something where it meant to, every painted item
+        /// showing its colour, and the mark reading back as this run's.
+        /// </summary>
+        private string WhyNotReadBack(ViewReadBack read, PlannedTestView view, Point3 cameraPoint, int hidden, bool dimmed, int painted)
+        {
             if (!read.Found)
             {
-                outcome.AddFailed(planned.Path, planned.Pair.Folder, "it was added and a fresh read does not show it");
-                return;
+                return "it was added and a fresh read does not show it at its index under its name";
+            }
+
+            if (read.Camera == null)
+            {
+                return "it was added and its camera would not read back";
             }
 
             if (read.CameraDistance > views.CameraReadBackTolerance)
             {
-                outcome.AddFailed(
-                    planned.Path,
-                    planned.Pair.Folder,
-                    "it was added with a camera " + read.CameraDistance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
-                    + " units from the clash camera, so it would not open on the clash");
-                return;
+                return "it was added with a camera " + read.CameraDistance.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                    + " units from the camera asked for, so it would not open on its clashes";
             }
 
-            // THE COUNT AND NOT THE FLAG, 5o. ContainsVisibilityOverrides reads true on a
-            // viewpoint that hides nothing, so the check F85 shipped could not fail. The
-            // number of items the viewpoint hides can.
-            if (hidden.Count > 0 && read.HiddenCount == 0)
+            if (hidden > 0 && read.HiddenCount == 0)
             {
-                outcome.AddFailed(planned.Path, planned.Pair.Folder, "it was added without its hidden state, so it would show every discipline");
-                return;
+                return "it was added without its hidden state, so it would show every model";
             }
 
-            if (dimmedThisOne && read.MaterialOverrideCount == 0)
+            if (read.HiddenNotRoots > 0)
             {
-                outcome.AddFailed(planned.Path, planned.Pair.Folder, "it was added without its dimming, so the clash would be behind whatever is in front of it");
-                return;
+                return "it hides " + read.HiddenNotRoots + " item(s) that are no model root, which this tool never hides";
             }
 
-            // THE FOURTH COUNT, Q58. What the viewpoint will SHOW for each of the two,
-            // which is the override's colour where it names the item and the item's own
-            // colour where it does not, 5p. A viewpoint that would open with the two
-            // items in the wrong colours is not the viewpoint that was asked for.
-            if (read.ColoursAsked && read.ColoursRight < 2)
+            if (dimmed && read.MaterialOverrideCount == 0)
             {
-                outcome.AddFailed(
-                    planned.Path,
-                    planned.Pair.Folder,
-                    "it was added and only " + read.ColoursRight.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                    + " of the two clashing items would open in the colour it was given");
-                return;
+                return "it was added without its dimming, so the clashes would be behind whatever is in front of them";
             }
 
-            cameraRead++;
-
-            if (dimmedThisOne)
+            if (painted > 0 && (read.ColoursWrong > 0 || read.ColoursNotRead > 0 || read.ColoursRight < read.ColoursAsked))
             {
-                dimmed++;
-                fewestOverrides = fewestOverrides < 0 ? read.MaterialOverrideCount : Math.Min(fewestOverrides, read.MaterialOverrideCount);
-                mostOverrides = Math.Max(mostOverrides, read.MaterialOverrideCount);
+                return "only " + read.ColoursRight + " of its " + read.ColoursAsked + " painted items would open in the colour given, "
+                    + read.ColoursWrong + " in another and " + read.ColoursNotRead + " not read";
             }
-            else
+
+            MarkJudgement judged = ToolViewMark.Judge(view.Folders, view.Name, read.Camera, read.Comments, read.Redlines, null, views);
+
+            if (judged.Owner != ViewOwner.Ours || !string.Equals(judged.Mark.Stamp, stamp, StringComparison.Ordinal))
             {
-                notDimmed++;
-
-                if (read.MaterialOverrideCount > 0)
-                {
-                    undimmedCarrying++;
-                }
+                return "its mark does not read back as this run's, " + judged.Why;
             }
 
-            if (read.ColoursAsked && read.ColoursRight == 2)
-            {
-                painted++;
-            }
-
-            outcome.AddCreated(planned.Path, planned.Pair.Folder, hidden.Count);
+            return null;
         }
 
         /// <summary>
-        /// Reads what will have to be put back, once, before the first viewpoint changes
-        /// the document: the hidden state, off a capture that never goes into the tree.
-        /// The view is never touched, because the camera goes into the viewpoint directly
+        /// A COPY of the camera Clash Detective frames the view's camera clash with, resolved
+        /// again by the address the harvest recorded, after the plan and for this one clash,
+        /// or null with why. The test and the result are released before this returns.
+        /// </summary>
+        private Viewpoint CameraOf(DocumentClashTests clashTests, ViewClash clash, out string whyNot)
+        {
+            whyNot = null;
+            RowAddress where;
+
+            if (!addressOf.TryGetValue(clash.Key, out where))
+            {
+                whyNot = "no address was recorded for it";
+                return null;
+            }
+
+            string nowNamed;
+
+            using (ClashTest test = where.Address.ResolveIn(clashTests, where.TestName, out nowNamed))
+            {
+                if (test == null)
+                {
+                    whyNot = where.TestName + " is not at " + where.Address + " any more";
+                    return null;
+                }
+
+                bool moved;
+                string notFound;
+                SavedItem item = ResultPath.ResultAt(test, where.Row, where.TestName, out notFound, out moved);
+
+                if (item == null)
+                {
+                    whyNot = notFound;
+                    return null;
+                }
+
+                using (item)
+                using (Viewpoint framed = clashTests.TestsViewpointForResult((IClashResult)item))
+                {
+                    if (framed == null)
+                    {
+                        whyNot = "TestsViewpointForResult returned nothing";
+                        return null;
+                    }
+
+                    return framed.CreateCopy();
+                }
+            }
+        }
+
+        // ---------- the removals ----------
+
+        /// <summary>
+        /// The inventory's removals in its order, deepest first and the latest index first,
+        /// each one re-found just before its RemoveAt, P13, a folder whole, P14, in its own
+        /// try so one that throws costs no other.
+        /// </summary>
+        private void Remove(Document document, ViewsInventory inventory)
+        {
+            int notRemoved = 0;
+            int foundElsewhere = 0;
+            int countsOff = 0;
+
+            foreach (InventoryItem item in inventory.Removals)
+            {
+                try
+                {
+                    RemovalReadBack answer = SavedViewpoints.RemoveOne(document, item.Node, views);
+
+                    if (!answer.Removed)
+                    {
+                        notRemoved++;
+                        log.Line("VIEWS    " + item.Node + " was not removed, " + answer.WhyNot + ", so it stays");
+                        continue;
+                    }
+
+                    RemovedCount++;
+
+                    if (answer.FoundElsewhere)
+                    {
+                        foundElsewhere++;
+                    }
+
+                    if (answer.CountAfter != answer.CountBefore - 1)
+                    {
+                        countsOff++;
+                        log.Line("VIEWS    " + item.Node + " was removed and its folder went from " + answer.CountBefore
+                            + " to " + (answer.CountAfter < 0 ? "UNKNOWN, the folder was not found again" : answer.CountAfter.ToString())
+                            + " children, not one fewer");
+                    }
+                }
+                catch (Exception error)
+                {
+                    notRemoved++;
+                    log.Failure(
+                        "removing " + item.Node + ", " + item.Why,
+                        error,
+                        "kept going, it stays in the tree and the next removal is still tried");
+                }
+            }
+
+            log.Line("VIEWS    " + RemovedCount + " of " + inventory.Removals.Count + " removal(s) made"
+                + (foundElsewhere > 0 ? ", " + foundElsewhere + " found at another index than the walk read" : string.Empty)
+                + (notRemoved > 0 ? ", " + notRemoved + " not made, each said above" : string.Empty)
+                + (countsOff > 0 ? ", " + countsOff + " whose folder count did not fall by one, said above" : string.Empty));
+        }
+
+        // ---------- the tree after ----------
+
+        /// <summary>
+        /// The last fresh walk, S3, and the VIEWS TREE block with its seven checks over it,
+        /// kept for the engine to write. A walk that throws is said and the block is not
+        /// written, because a block read off nothing would be a check that did not run.
+        /// </summary>
+        private void ReadTheTree(
+            Document document,
+            string group,
+            ViewTeams teams,
+            IList<ModelTeam> models,
+            ViewsInventory inventory,
+            IList<WrittenView> written,
+            ICollection<string> emptyBefore,
+            IDictionary<string, IList<string>> hiddenReadBack,
+            IDictionary<string, IList<ItemPath>> paintedReadBack,
+            ICollection<string> testsRan,
+            ICollection<string> testNames)
+        {
+            try
+            {
+                TreeWalk after = SavedViewpoints.ReadTree(document, emptyBefore);
+                SayWalk("after the removals, for the VIEWS TREE block", after);
+
+                ViewsTreeFacts facts = new ViewsTreeFacts
+                {
+                    Group = group,
+                    Map = teams.Map,
+                    Models = models,
+                    Plan = Plan,
+                    Inventory = inventory,
+                    Written = written,
+                    After = after.Nodes,
+                    RunStamp = stamp,
+                    HiddenReadBack = hiddenReadBack,
+                    PaintedReadBack = paintedReadBack,
+                    TestsRun = testsRan,
+                    KnownCodes = teams.Map.KnownCodes(CodesOf(models)),
+                    TestNames = testNames,
+                    Settings = views
+                };
+
+                IList<ViewsTreeCheck> checks = ViewsTreeCheck.Of(facts);
+                TreeLog = ViewsTree.Lines(facts, checks, views.TreeLinesInLog);
+                TreeRows = ViewsTree.Lines(facts, checks, 0);
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading the saved viewpoints tree for the VIEWS TREE block",
+                    error,
+                    "kept going, no VIEWS TREE block is written for this group and its seven checks did not run");
+            }
+        }
+
+        private static List<string> CodesOf(IList<ModelTeam> models)
+        {
+            List<string> codes = new List<string>();
+
+            foreach (ModelTeam model in models)
+            {
+                if (model.Code.Length > 0 && !codes.Contains(model.Code))
+                {
+                    codes.Add(model.Code);
+                }
+            }
+
+            return codes;
+        }
+
+        private void SayWalk(string when, TreeWalk walk)
+        {
+            log.Line("VIEWS    the tree read " + when + ": " + walk.Viewpoints + " viewpoint(s) and "
+                + (walk.Nodes.Count - walk.Viewpoints) + " folder(s)"
+                + (walk.CommentsNotRead > 0 ? ", " + walk.CommentsNotRead + " whose comments would not read, kept as a person's" : string.Empty)
+                + (walk.RedlinesNotRead > 0 ? ", " + walk.RedlinesNotRead + " whose redlines would not read, kept as a person's" : string.Empty)
+                + (walk.CamerasNotRead > 0 ? ", " + walk.CamerasNotRead + " whose camera would not read, kept as a person's" : string.Empty)
+                + (walk.NeitherKind > 0 ? ", " + walk.NeitherKind + " neither a folder nor a saved viewpoint, kept" : string.Empty));
+        }
+
+        // ---------- the document put back ----------
+
+        /// <summary>
+        /// Reads what will have to be put back, once, before the first view changes the
+        /// document: the hidden state, off a capture that never goes into the tree. The
+        /// window's view is never touched, because the camera goes into the view directly
         /// and not through the window, 5m, so there is nothing of it to put back.
         /// </summary>
         private void Touch(Document document)
@@ -958,8 +1102,8 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The hidden state put back in its own try, released whether or not the restore
-        /// worked, and read back and said.
+        /// The dimming taken off and the hidden state put back, each in its own try,
+        /// released whether or not the restore worked, and read back and said.
         /// </summary>
         private void PutBack(Document document)
         {
@@ -968,12 +1112,13 @@ namespace Federator.Addin.Engine
                 try
                 {
                     SavedViewpoints.Undim(document);
-                    log.Line("VIEWS    the dimming was taken off the models this tool dimmed, so the document is back to its own appearance");
+                    dimmedNow = false;
+                    log.Line("VIEWS    the dimming and the paint were taken off the models this tool dimmed, so the document is back to its own appearance");
                 }
                 catch (Exception error)
                 {
                     log.Failure(
-                        "taking the dimming off after the viewpoints",
+                        "taking the dimming off after the views",
                         error,
                         "kept going, the models this tool dimmed are left transparent in this session and nothing of that is saved");
                 }
@@ -992,18 +1137,18 @@ namespace Federator.Addin.Engine
 
                     if (count == 0)
                     {
-                        log.Line("VIEWS    hidden state put back: nothing was hidden before the viewpoints and nothing is hidden now");
+                        log.Line("VIEWS    hidden state put back: nothing was hidden before the views and nothing is hidden now");
                     }
                     else
                     {
-                        log.Line("VIEWS    hidden state put back: " + count + " item(s) were hidden before the viewpoints and "
+                        log.Line("VIEWS    hidden state put back: " + count + " item(s) were hidden before the views and "
                             + (readsHidden ? "read as hidden again" : "DO NOT read as hidden again, said and not hidden"));
                     }
                 }
                 catch (Exception error)
                 {
                     log.Failure(
-                        "putting the hidden state back after the viewpoints",
+                        "putting the hidden state back after the views",
                         error,
                         "kept going, the NWF saved next carries whatever is hidden now");
                 }
@@ -1020,6 +1165,75 @@ namespace Federator.Addin.Engine
             if (saidOnce.Add(line))
             {
                 log.Line(line);
+            }
+        }
+
+        /// <summary>What walk one counted, said once per group after it.</summary>
+        private sealed class Counts
+        {
+            public int NotFound;
+            public string FirstNotFound;
+            public int Moved;
+            public int GroupRows;
+            public int SizeRead;
+            public int SideWalkThrew;
+            public int HomesUnread;
+            public Exception FirstHomeError;
+            public int CentresUnread;
+            public Exception FirstCentreError;
+            public int NoCentre;
+
+            public void Say(RunLog log, int clashes)
+            {
+                log.Line("VIEWS    " + clashes + " row(s) of the report read for the views, the size read for " + SizeRead
+                    + " in a pair carrying the size folder" + (SideWalkThrew > 0
+                        ? ", " + SideWalkThrew + " side(s) whose parent walk threw and read as the item alone, FR-072"
+                        : string.Empty));
+
+                if (Moved > 0)
+                {
+                    log.Line("VIEWS    " + Moved + " row(s) were found at another index than the harvest recorded, by name "
+                        + "among the siblings, the compact after the merge having removed the Resolved results before them");
+                }
+
+                if (NotFound > 0)
+                {
+                    log.Line("VIEWS    " + NotFound + " row(s) of the report no longer lead to their result in the document, "
+                        + "so they get no view, the first: " + FirstNotFound);
+                }
+
+                if (GroupRows > 0)
+                {
+                    log.Line("VIEWS    " + GroupRows + " row(s) in scope are a result group, in their test's view framed on the "
+                        + "group as the workbook holds them, with no items to paint and no size read, because a group has no two items");
+                }
+
+                if (HomesUnread > 0)
+                {
+                    log.Line("VIEWS    " + HomesUnread + " clash(es) whose items' models could not be read, so their views show "
+                        + "the models of their other clashes alone and check 3 names them");
+
+                    if (FirstHomeError != null)
+                    {
+                        log.Failure(
+                            "reading the model a clash item lives in, the first of " + HomesUnread,
+                            FirstHomeError,
+                            "kept going, those clashes are in their views and their homes are UNKNOWN");
+                    }
+                }
+
+                if (CentresUnread > 0 && FirstCentreError != null)
+                {
+                    log.Failure(
+                        "reading a clash centre, the first of " + CentresUnread,
+                        FirstCentreError,
+                        "kept going, the view is framed on the centres that read");
+                }
+
+                if (NoCentre > 0)
+                {
+                    log.Line("VIEWS    " + NoCentre + " clash(es) in scope with no centre, so their views are framed on the rest");
+                }
             }
         }
     }

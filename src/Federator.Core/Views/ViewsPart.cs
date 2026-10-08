@@ -14,9 +14,6 @@ namespace Federator.Core.Views
         /// <summary>The live line in the window, and the progress line in the log.</summary>
         SayingHowFar = 1,
 
-        /// <summary>Whether a viewpoint of that name is already at its path.</summary>
-        LookingWhetherThere = 2,
-
         /// <summary>The hidden state read once, then the models the viewpoint hides hidden and the rest shown.</summary>
         ShowingAndHiding = 3,
 

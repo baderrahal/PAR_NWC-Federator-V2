@@ -208,6 +208,12 @@ namespace Federator.Addin.Engine
         /// </summary>
         public IDictionary<ClashRow, RowAddress> RowAddresses { get; set; }
 
+        /// <summary>
+        /// The run names of the mirrors the clash step paired, for the views, F114, or null
+        /// where no mirror rule ran, which the VIEWS block says.
+        /// </summary>
+        public IList<string> MirrorNames { get; set; }
+
         /// <summary>Size read back off the disk, or minus one when the workbook is not there.</summary>
         public long WorkbookSize { get; set; }
 

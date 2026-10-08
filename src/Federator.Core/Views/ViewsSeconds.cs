@@ -98,8 +98,6 @@ namespace Federator.Core.Views
                     return "reading the clashes and planning";
                 case ViewsPart.SayingHowFar:
                     return "saying how far it has got";
-                case ViewsPart.LookingWhetherThere:
-                    return "looking whether each was already there";
                 case ViewsPart.ShowingAndHiding:
                     return "showing and hiding the models";
                 case ViewsPart.Dimming:

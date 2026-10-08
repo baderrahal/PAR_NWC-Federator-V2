@@ -157,10 +157,10 @@ namespace Federator.Core.Tests
         public void APartEnteredThatCostNothingIsStillNamed()
         {
             ViewsSeconds seconds = new ViewsSeconds(Clock);
-            Spend(seconds, ViewsPart.LookingWhetherThere, 0.0);
+            Spend(seconds, ViewsPart.Framing, 0.0);
             seconds.Ended();
 
-            Assert.That(seconds.Line(), Does.Contain("0.000s looking whether each was already there"));
+            Assert.That(seconds.Line(), Does.Contain("0.000s framing the camera on the clashes"));
         }
 
         [Test]

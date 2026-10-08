@@ -304,7 +304,60 @@ namespace Federator.Core.Tests
             Assert.That(ViewNode.EmptyFolderKeys(new List<ViewNode>()), Is.Empty);
         }
 
+        /// <summary>
+        /// The walk after asks whether a folder at a place held nothing before, through the one
+        /// reading of a folder's key, so the add-in never writes the key a second way.
+        /// </summary>
+        [Test]
+        public void AFolderOfTheWalkAfterIsKnownEmptyBeforeThroughTheKeysOfTheWalkBefore()
+        {
+            List<ViewNode> before = new List<ViewNode>
+            {
+                Folder(new string[0], "A", 0),
+                Folder(new[] { "A" }, Pair, 0),
+                View(new[] { "A", Pair }, T, 0),
+                Folder(new[] { "A" }, "Empty one", 1)
+            };
+
+            ICollection<string> empty = ViewNode.EmptyFolderKeys(before);
+
+            Assert.That(ViewNode.HeldNothing(empty, new[] { "A" }, "Empty one"), Is.True);
+            Assert.That(ViewNode.HeldNothing(empty, new[] { "A" }, Pair), Is.False, "it held a view");
+            Assert.That(ViewNode.HeldNothing(empty, new string[0], "Empty one"), Is.False, "another place of that name");
+            Assert.That(ViewNode.HeldNothing(empty, new string[0], "B"), Is.False, "a folder the walk before did not hold");
+            Assert.That(ViewNode.HeldNothing(null, new[] { "A" }, "Empty one"), Is.False);
+        }
+
         // ---------- folders ----------
+
+        /// <summary>
+        /// Row F114-K5. On the first run after F114 the tree holds F85's unmarked folders, A among
+        /// them, and the add-in's EnsureFolders reuses a folder at its path rather than making a
+        /// second one beside it. So A is one folder, not a twin: the per clash viewpoints under its
+        /// code pair folder go with that folder, this run's view under the team pair folder is
+        /// kept, and A itself is kept as a folder this tool did not make.
+        /// </summary>
+        [Test]
+        public void APriorityFolderOfTheOldTreeReusedByThisRunIsNoTwinAndLosesOnlyThePerClashViewpoints()
+        {
+            ViewNode a = Folder(new string[0], "A", 0);
+            ViewNode codePair = Folder(new[] { "A" }, "ME vs ST", 0);
+            ViewNode legacy = View(new[] { "A", "ME vs ST" }, T + "  Clash1", 0);
+            ViewNode teamPair = OurFolder(Run, new[] { "A" }, Pair, 1);
+            ViewNode mine = Ours(Run, Here, T, 0);
+            List<ViewNode> tree = new List<ViewNode> { a, codePair, legacy, teamPair, mine };
+
+            ViewsInventory inventory = Inventory(tree, PlanOf(T), new List<WrittenView> { new WrittenView(Here, T, 0, true, true) });
+
+            Assert.That(DecisionOf(inventory, legacy), Is.EqualTo(InventoryDecision.RemoveLegacy));
+            Assert.That(DecisionOf(inventory, codePair), Is.EqualTo(InventoryDecision.RemoveFolder));
+            Assert.That(DecisionOf(inventory, mine), Is.EqualTo(InventoryDecision.KeepWrittenThisRun));
+            Assert.That(DecisionOf(inventory, teamPair), Is.EqualTo(InventoryDecision.KeepFolder));
+            Assert.That(DecisionOf(inventory, a), Is.EqualTo(InventoryDecision.KeepFolder));
+            Assert.That(inventory.Items, Has.None.Matches<InventoryItem>(item => item.Decision == InventoryDecision.KeepPlaceNotUnique));
+            Assert.That(inventory.Removals.Count, Is.EqualTo(1), "the code pair folder with its one viewpoint in one call");
+            Assert.That(inventory.Removals[0].Node, Is.SameAs(codePair));
+        }
 
         [Test]
         public void APersonsViewInsideAToolFolderKeepsItselfAndItsFolder()

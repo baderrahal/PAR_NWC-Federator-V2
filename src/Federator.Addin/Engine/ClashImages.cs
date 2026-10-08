@@ -34,9 +34,9 @@ namespace Federator.Addin.Engine
     /// with System.Drawing, Image.Save, which is why jpg is reachable at all.
     ///
     /// NOTHING HERE TOUCHES SavedViewpoints, and that half is still true. The other half
-    /// of this sentence said no clash is ever saved as a viewpoint, and F85 reverses it: a
-    /// clash gets a viewpoint as well as a picture, planned by ClashViewpointPlan and, since
-    /// the viewpoints round on 2026-09-19, written by ViewpointBuilder. Neither is this file.
+    /// of this sentence said no clash is ever saved as a viewpoint, and F85 reversed it, then
+    /// F114 made it one view per clash test of its open clashes beside a picture per clash,
+    /// planned by TestViewPlan and written by ViewpointBuilder. Neither is this file.
     ///
     /// The number a picture is written under here is the RUN order, because the report
     /// order is only known once every test has run. ImageRenumbering in Federator.Core

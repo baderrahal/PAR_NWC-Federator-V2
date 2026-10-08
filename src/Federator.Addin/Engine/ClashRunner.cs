@@ -219,6 +219,13 @@ namespace Federator.Addin.Engine
             get { return rowAddresses; }
         }
 
+        /// <summary>
+        /// The name each mirror the rule paired runs under, MirrorPair.MirrorName, for the
+        /// views, which give no mirrored test a view, F114, or null where no mirror rule
+        /// ran this group, which the plan's lines say.
+        /// </summary>
+        public IList<string> MirrorNames { get; private set; }
+
         /// <summary>How the discipline is read off a source file name. A setting.</summary>
         public ContainerNameSettings NameSettings { get; set; }
 
@@ -369,6 +376,7 @@ namespace Federator.Addin.Engine
             mergeOfKept.Clear();
             mergeOfMirror.Clear();
             pairOfMirror.Clear();
+            MirrorNames = null;
             renameFailed.Clear();
             picturesWaiting.Clear();
             rowAddresses.Clear();
@@ -467,6 +475,7 @@ namespace Federator.Addin.Engine
                 // is said and the tests run under the plan's names, each keeping its own
                 // clashes.
                 MirrorRule mirrored = PairTheMirrors(resolved, inTheDocument, outcome);
+                MirrorNames = MirrorNamesOf(mirrored);
                 DocumentClashTests clashTests = document.GetClash().TestsData;
 
                 if (mirrored != null)
@@ -2109,6 +2118,27 @@ namespace Federator.Addin.Engine
                         + "clashes, so a clash two tests find may be counted twice");
                 return null;
             }
+        }
+
+        /// <summary>The run name of every mirror the rule paired, or null where the rule did not run.</summary>
+        private static IList<string> MirrorNamesOf(MirrorRule mirrored)
+        {
+            if (mirrored == null)
+            {
+                return null;
+            }
+
+            List<string> names = new List<string>();
+
+            foreach (MirrorPair pair in mirrored.Pairs)
+            {
+                if (!string.IsNullOrEmpty(pair.MirrorName))
+                {
+                    names.Add(pair.MirrorName);
+                }
+            }
+
+            return names;
         }
 
         /// <summary>

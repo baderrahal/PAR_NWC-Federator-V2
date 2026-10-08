@@ -92,6 +92,16 @@ namespace Federator.Core.Views
             return empty;
         }
 
+        /// <summary>
+        /// Whether a folder at that place is among the folders EmptyFolderKeys read off the walk
+        /// before, the one reading of a folder's key, so the add-in hands the walk after the
+        /// answer without writing the key a second way. Null keys answer no.
+        /// </summary>
+        public static bool HeldNothing(ICollection<string> emptyFolderKeys, IList<string> folders, string name)
+        {
+            return emptyFolderKeys != null && emptyFolderKeys.Contains(ViewPlace.Key(folders, name, true));
+        }
+
         /// <summary>The folders joined by a slash, ViewPlace's written place.</summary>
         public string FolderPath
         {
