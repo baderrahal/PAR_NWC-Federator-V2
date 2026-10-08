@@ -176,8 +176,8 @@ FR-174,one public type per file,F124,5,noise,open,none,none,2026-10-04
 FR-175,no sleep and keep awake,none,none,Bader's request,merged,"99, records only, nothing to merge",none,2026-10-04
 FR-176,coverage of the clash xml,F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop",none,2026-10-08
 FR-177,generic models counted and a set per model,F128,2b,Bader's request,merged,"171 and 186",none,2026-10-08
-FR-178,start from an existing nwf,F129,3a,Bader's request,open,none,none,2026-10-04
-FR-179,shift range tick in the group list,F130,3b,Bader's request,open,none,none,2026-10-04
+FR-178,start from an existing nwf,F129,3a,Bader's request,in review,"none, branch fix-F129 at 9056504",none,2026-10-08
+FR-179,shift range tick in the group list,F130,3b,Bader's request,in review,"none, branch fix-F130 at 83da565",none,2026-10-08
 FR-189,nwd listed as written when its publish failed,F119,3b,silent wrong number,open,none,none,2026-10-05
 FR-180,team map beside the picked xml,F131,2b,Bader's decision,merged,135,none,2026-10-07
 FR-181,mechanical sets miss hv pl fp models,F131,2b,Bader's decision,in progress,"135 merged for F131, the COVERAGE block and the form wait for F127",none,2026-10-07
@@ -305,7 +305,7 @@ F105,four reads off the install with no Navisworks started,F105,before the waves
 F106,"the window run, items 1 to 5 through the real window",F106,before the waves,fix,merged,88,none,2026-10-06
 F107,the name of the machine of 2026-09-19 masked on main,F107,before the waves,fix,merged,92,none,2026-10-04
 F108,a fresh copy of the real files for each run set,F108,before the waves,fix,merged,84,none,2026-10-04
-F109,install,F109,3a,fix,in progress,"none, branch fix-F109 at a0c3829",none,2026-10-04
+F109,install,F109,3a,fix,in progress,"none, branch fix-F109b, 9b489ff pushed with install.ps1 built and its 85 proof checks passed, its plan section, proof steps and reading next",none,2026-10-08
 F110,"the WORKBOOK CHECK counts only the blocks that found clashes, set 03 finding 4 (FR-035)",F110,before the waves,fix,open,none,none,2026-10-06
 F111,"the RESULT block prints file sizes that are not the files', set 03 finding 5 (FR-046)",F111,before the waves,fix,open,none,none,2026-10-06
 F112,alignment,F112,1,fix,merged,106,none,2026-10-05
@@ -325,8 +325,8 @@ F125,a window that is not modal is a pane and not a dialog,F125,outside the wave
 F126,the window driver unticks a tick box by its AutomationId,F126,outside the waves,fix,merged,112,none,2026-10-05
 F127,coverage of the clash XML,F127,2a,fix,in progress,"145 the Core steps 1 to 3, 153 the Coverage sheet, 167 the readers' Core points and 176 the counted words merged, the add-in half on the laptop",none,2026-10-08
 F128,generic models,F128,2b,fix,merged,"171 the Core part by lane B and 186 the probe and the add-in part",none,2026-10-08
-F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
-F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
+F129,start from an existing NWF,F129,3a,fix,in review,"none, branch fix-F129 at 9056504, attempt 2 built on its reviewer's one fault, its second reading next",none,2026-10-08
+F130,the Shift range in the group list,F130,3b,fix,in review,"none, branch fix-F130 at 83da565 read APPROVE, merged after F129 with its steps renumbered",none,2026-10-08
 F131,teams,F131,2b,fix,merged,135,none,2026-10-07
 F132,mirrored tests,F132,2a,fix,merged,177,none,2026-10-08
 F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-06
@@ -346,8 +346,8 @@ Q98,the full fix round,all,all,Bader's request,in progress,none,none,2026-10-04
 Q112-1,no sleep and keep awake (FR-175),none,none,Bader's request,merged,"99, records only, nothing to merge",none,2026-10-04
 Q112-2,coverage of the clash XML (FR-176),F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop",none,2026-10-08
 Q112-3,generic models counted and a set per model (FR-177),F128,2b,Bader's request,merged,"171 and 186",none,2026-10-08
-Q112-4,start from an existing NWF (FR-178),F129,3a,Bader's request,open,none,none,2026-10-04
-Q112-5,Shift range tick in the group list (FR-179),F130,3b,Bader's request,open,none,none,2026-10-04
+Q112-4,start from an existing NWF (FR-178),F129,3a,Bader's request,in review,"none, branch fix-F129 at 9056504",none,2026-10-08
+Q112-5,Shift range tick in the group list (FR-179),F130,3b,Bader's request,in review,"none, branch fix-F130 at 83da565",none,2026-10-08
 Q114,one view per clash test by team (FR-180 to FR-188),"F131, F132, F114",2a and 2b,Bader's request,merged,"135 for F131, 177 for F132, 189 for F114",none,2026-10-08
 Q129,a clean tracker and a code health gate (FR-191 to FR-193),"F133, F134, F135",beside the waves,Bader's request,in progress,"122 merged for F133, F134 and F135 not merged",none,2026-10-06
 Q130,stop the C02 weekly run and no viewpoints in test runs until F114 merges (FR-194),F136,before any test run,Bader's request,merged,"117 for F136, 116 records the stop",none,2026-10-05
@@ -526,3 +526,7 @@ F114-K36,"a test whose open clashes are all result groups gets no view and keeps
 F114-K37,"whether the NWF keeps a saved camera at single precision is UNKNOWN, so a camera far from the origin may read every tool view as a person's after a reopen, read on the timed runs",F114,2b,register row,open,none,none,2026-10-08
 F114-K38,"a test whose harvest threw after only closed rows reads whole, so its old view is removed while its open clashes were never harvested, the reviewer's D1, UNKNOWN how often",F114,2b,register row,open,none,none,2026-10-08
 Q148,a fault found at the second reading,none,none,question,waiting for Bader,none,none,2026-10-08
+F129-R1,"the picked NWFs walk follows a junction looping back until Windows refuses the path, so the same NWFs can be read under longer paths, a person's mklink needed, the scan sharing the exposure, the reviewer's point on attempt 1",F129,3a,register row,open,none,none,2026-10-08
+T6-R-TESTTEMP,"RowLogTests.ALogThatFellBackTakesItsRowFileWithIt writes a log into the shared temp folder on every run, so it fails once about 100 have built up and when two worktrees test at once, seen on the F130 and F109 commits, the files moved aside to turn6 f109b-temp-runlogs",none,none,register row,open,none,none,2026-10-08
+F109-R1,"how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, for Bader",F109,3a,register row,waiting for Bader,none,none,2026-10-08
+F109-R2,"run.ps1 reads the new exit 3 of install.ps1 as STOP where it read INSTALLED with a FINDING, and prove-run.ps1 trial 6c cannot run as written, the loop scripts frozen by Q143 item 5",F122,4,register row,open,none,none,2026-10-08

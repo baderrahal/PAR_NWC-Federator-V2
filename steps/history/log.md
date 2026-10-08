@@ -2,6 +2,27 @@
 
 Newest entry at the top.
 
+## 2026-10-08 The loop, turn 5, the evening of 8 Oct under Q147, and the stop for the night
+
+Bader kept the laptop on, Q147. Merged after the close of the afternoon: 188, the attribution of commits and pull
+requests off in .claude\settings.json with item 5's steps in steps\notes, and 189, F114 the views, the add-in pass,
+its second reading's faults fixed and re-read once, Q148 putting that reading of Q143 item 1 to Bader. Every commit,
+body and merge commit since 188 was read back with no AI or co-author line.
+
+Left on branches, each pushed and its worktree clean, for the morning:
+- F129 start from an NWF, fix-F129 at 9056504, attempt 2 on its reviewer's one fault, the label of a picked NWF that
+  read empty, 2809 Core tests, build 0 and 0. Its second reading, then its merge. It carries the fix of three control
+  characters main holds in steps\01_next.md and this log. Row F129-R1 for the reviewer's junction point
+- F130 Shift ticking, fix-F130 at 83da565, read APPROVE by its one reviewer, merged after F129 with its proof steps
+  renumbered after F129's 542 to 567
+- F109 the install, fix-F109b, 9b489ff pushed with install.ps1 built and its 85 proof checks passed, its plan section, proof steps and reading next. Built in build\install.ps1 and INSTALL.md alone, the old fix-F109 being mostly the
+  loop's own scripts Q143 freezes
+- Rows T6-R-TESTTEMP, a test that fails as its logs build up in the temp folder, F109-R1, how the team gets a built bundle, for Bader, and F109-R2, the frozen loop scripts reading the new exit codes wrongly. The three control characters main held in steps- Row T6-R-TESTTEMP, a test that two worktrees testing at once can fail1_next.md and this log are put back to backslashes here
+
+Stopped at 22:47 by Bader's word, stop when it is safe. No Navisworks of the loop ran in the evening, Roamer none. The
+keep-awake pid 74832 and the 30 minute push schedule are stopped. The morning starts with the System log, Roamer, his
+settings against the backup of 12:59, STATE OPEN, then F129's second reading.
+
 ## 2026-10-08 The loop, turn 6, F114 the views, the add-in pass, FR-184 to FR-188 with FR-065, FR-067, FR-068, FR-071, FR-072 and FR-073, built on the probes, attempt 1 of two, written by the developer as the lead's delegate
 
 Bader's order of 8 Oct 2026, Q145 item 4, after F132, F128 and F120, under Q143's limits: two
@@ -158,7 +179,7 @@ warnings and 0 errors, its short hash and an empty git status at the top, f114b-
 check-locals and check-imports pass on src, f114b-checks.txt. The pre-commit outputs are
 f114b-precommit-1.txt and f114b-precommit-2.txt.
 
-### Attempt 2, on the breaker's six blocking faults, turn6114b-break.json, the reviewer APPROVE
+### Attempt 2, on the breaker's six blocking faults, turn6\f114b-break.json, the reviewer APPROVE
 
 Each fix committed and pushed on its own in the breaker's order, under the day's close at 18:40.
 B1, 960177b: `Federator.Core.Views.TestsRead`, three tests, a test not read whole for the views, not
@@ -377,7 +398,7 @@ seventeen steps with RENUMBER between IMAGES and VIEWS and GENERIC XLSX after WO
 changes beside F128's sets step.
 
 Merged as pull request 186 on 2026-10-08 by the lead, 2788 Core tests on the merged tree, 0 failed, 0 skipped, the
-breaker's re-read of the fix in turn6128c-break-reread.json, the body claim-checked, and rows F118-R3 and F115-R24 for the
+breaker's re-read of the fix in turn6\f128c-break-reread.json, the body claim-checked, and rows F118-R3 and F115-R24 for the
 two older faults the readings found beside this change.
 
 ## 2026-10-08 The loop, turn 6, F120 the harvest and pictures area of the fix round, FR-075, FR-076 and FR-077, Core done and the add-in built
