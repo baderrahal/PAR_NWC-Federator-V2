@@ -372,9 +372,10 @@ plus one first run of the whole folder.
 5. Open document. One NWF from run 1 opened and the tool run on it. Then an NWD opened the
    same way, and the run refuses with its reason
 
-Until F114, the new viewpoints, is merged, every test run has viewpoints switched off, Bader's word of
-2026-10-05, Q130. The lead's rule that carries it out: the tick box of F136 is unticked through
-run.ps1's -Untick in every test run, and no test run is made before that box is installed.
+Until F114, the new viewpoints, was merged, every test run had viewpoints switched off, Bader's word of
+2026-10-05, Q130. F114 merged on 2026-10-08 as pull request UNKNOWN, so the box opens ticked, Q131, and the
+runs of Bader's item 5 of Q145 go with it ticked. A test run that must leave the viewpoints off unticks
+the box of F136 through run.ps1's -Untick MakeViewpoints.
 
 A run is hung only when its log has not grown for five minutes AND its Navisworks used
 under 20 s of processor time in those five minutes, Bader's answer Q83, where an idle one
