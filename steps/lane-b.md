@@ -16,7 +16,7 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 | 1 | F115 the sets area, FR-010 to FR-024 and FR-027, carried on from f4dc480 | fix-F115 | code merged as pull request 142, its records and two fixes of a third reading as 144 by the worktree session, the add-in half waits for the laptop lane |
 | 2 | F127 the coverage sheet of Bader's request 2, FR-176 and FR-200, carried on from dccf351 | fix-F127 | Core steps 1 to 3 merged as pull request 145, the Coverage sheet, the check's sheet list, the Q127 lines and the records as 153 by the worktree session, the Core points of its readers as 167, the add-in half waits for the laptop lane |
 | 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 merged as pull request 146, its records by the worktree session on fix-F137, Q125 B left for the laptop lane with the add-in half |
-| 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 merged as pull request 147, the rest left for the laptop lane |
+| 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 merged as pull request 147, FR-199 and FR-040 with the records as 159 by the worktree session, FR-036 and FR-041 left for the laptop lane |
 | 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items merged as pull request 148 with FR-057 half, two more points as 168 and FR-057's disk half as 169, the rest left for the laptop lane |
 | 6 | F128's Core part, generic models, FR-177 | fix-F128 | not started, see below |
 | 7 | F121 the rest, FR-150 to FR-166 and FR-202, wave 4 | fix-F121 | five items merged as pull request 150, the rest left for the laptop lane |
@@ -28,8 +28,8 @@ The second night, 8 Oct 2026, by Bader's message GOOD MORNING, BADER: the Core p
 F119, F115, F137, F121 and F123 left, in that order after F128. F127's Core points merged as pull request 167, F119's first two as 168 and FR-057's disk half of F119 as 169.
 Now on F115's words and polish, branch claude/lane-b-release-plan-zztyvx, which changes comments in
 src\Federator.Core\Sets\SetResult.cs and EmptySets.cs and nine assertions under tests\Federator.Core.Tests.
-Neither fix-F118 nor fix-F132 changes them, read with git diff on origin/main against each branch on 8 Oct
-2026, and the files each does change are listed under The files each open branch changes.
+fix-F132 does not change them, read with git diff on origin/main against the branch on 8 Oct 2026, and the
+files it does change are listed under The files each open branch changes.
 
 The branch claude/lane-b-release-plan-zztyvx is the one branch this session may push, restarted
 from main after each merge. F115 merged as pull request 142, F127 as 145, F137 as 146, F118 as 147 and
@@ -67,9 +67,8 @@ tests only. Every branch of this lane also changes steps\lane-b.md, steps\tracke
 steps\PROGRESS.md, steps\01_next.md, steps\history\log.md and the rule in .claude\rules\core.md
 where a rule changed. The laptop lane merges those files by taking main in, as every branch does.
 
-- fix-F118, pull request 159 in review by the laptop lane: src\Federator.Core\Report\ClashReportModel.cs,
-  ClientFormat.cs, ClientShapes.cs, ReportOrder.cs, WorkbookCheck.cs and the tests ClashReportTests.cs,
-  PriorityColumnTests.cs and PriorityMapTests.cs under Report
+- fix-F118 merged as pull request 159 on 8 Oct 2026 and is no longer open, so ReportOrder, ClashReportModel,
+  WorkbookCheck, ClientFormat and ClientShapes are free to lane B again
 - fix-F132, the mirrored tests, add-in half in work: src\Federator.Addin\Engine\ClashHarvest.cs,
   ClashRunner.cs, FederationEngine.cs, SavedTests.cs, src\Federator.Core\Clash\BothFoundStatus.cs,
   ClashTestPlan.cs, CreationPlan.cs, MirrorKind.cs, MirrorPair.cs, MirrorRenames.cs, MirrorRule.cs,
