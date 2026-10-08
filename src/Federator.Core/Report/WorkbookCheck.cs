@@ -239,6 +239,7 @@ namespace Federator.Core.Report
         private void ReadSheet(IXLWorksheet sheet)
         {
             List<int> counts = new List<int>();
+            List<int> clashes = new List<int>();
             List<int[]> spans = new List<int[]>();
             int full = 0;
             int lastRow = sheet.LastRowUsed() == null ? 0 : sheet.LastRowUsed().RowNumber();
@@ -298,6 +299,7 @@ namespace Federator.Core.Report
 
                 spans.Add(new[] { row - 4, row + rows });
                 counts.Add(rows);
+                clashes.Add(ClashesCell(sheet, row - 3));
             }
 
             // FR-035. A test that found nothing is one row with no heading, so the loop above never
@@ -332,7 +334,7 @@ namespace Federator.Core.Report
             OneRowTests = oneRow;
             Blocks = full + oneRow;
             BlockCounts = counts;
-            CheckOrder(counts);
+            CheckOrder(counts, clashes);
 
             if (Blocks == 0)
             {
@@ -718,8 +720,16 @@ namespace Federator.Core.Report
         /// checked on every run. It was skipped for a workbook with a file picked, which left
         /// every such run with no order check at all.
         /// </summary>
-        private void CheckOrder(IList<int> counts)
+        private void CheckOrder(IList<int> rows, IList<int> clashes)
         {
+            // The writer sorts by the clashes a test holds, ClashReport.RawClashes, which the Clashes cell
+            // of its block carries, and a group row stands for many of them, so the rows under a block can be
+            // fewer than the clashes it holds. A block of one group row holding ten, correctly before a block
+            // of three single rows, was told it was in the wrong order, T1-N82. Where a cell is no whole
+            // number the rows are all there is to compare.
+            bool byCell = clashes.Count == rows.Count && !clashes.Contains(-1);
+            IList<int> counts = byCell ? clashes : rows;
+
             for (int i = 1; i < counts.Count; i++)
             {
                 if (counts[i] <= counts[i - 1])
@@ -733,6 +743,24 @@ namespace Federator.Core.Report
                     + "not scrolling past empty tests.");
                 return;
             }
+        }
+
+        /// <summary>The Clashes cell of a full block, whole, or minus one where it is not.</summary>
+        private static int ClashesCell(IXLWorksheet sheet, int row)
+        {
+            IXLCell cell = sheet.Cell(row, WorkbookWriter.ColumnTestHeader + 1);
+
+            if (cell.DataType == XLDataType.Number)
+            {
+                double value = cell.GetDouble();
+
+                if (value >= 0 && value <= int.MaxValue && Math.Floor(value) == value)
+                {
+                    return (int)value;
+                }
+            }
+
+            return -1;
         }
 
         private void Say(string problem)
@@ -795,9 +823,12 @@ namespace Federator.Core.Report
             }
             else if (problems.Count == 0)
             {
-                lines.Add("         Every column, value shape, fill, border, row height "
-                    + "and column width matches the client's report, and the blocks are "
-                    + "in their order.");
+                // Only the first block is walked cell by cell and only its first clash row is read for the
+                // shape of its values, so the line says that, T1-N80, and not that every column of every row matched.
+                lines.Add("         The headings of every block match the client's report, and so do every cell, fill, "
+                    + "border and row height of the first block, the shape of the values in its first clash row and the "
+                    + "column widths. The blocks are in their order. The other blocks and clash rows were not read "
+                    + "cell by cell.");
                 lines.Add("         Not compared: the font, the sheet name, freeze panes, "
                     + "print setup, merged ranges, and whether a value is true. See "
                     + "docs\\history\\scan.md 4q.");

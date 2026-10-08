@@ -141,6 +141,67 @@ namespace Federator.Core.Tests
             Assert.That(check.Summary(), Does.Not.Contain("matching the client's layout"));
         }
 
+        /// <summary>
+        /// T1-N82. The blocks are sorted by the clashes a test holds and a group row stands for many, so a block of one
+        /// group row holding ten clashes comes before a block of three single rows and is in the right order. The check
+        /// counted rows and said the tests were in the wrong order. The break: the same two blocks the other way round
+        /// are still named, because the Clashes cell says three before ten.
+        /// </summary>
+        [Test]
+        public void AGroupRowStandingForManyClashesIsNotOutOfOrderBesideThreeSingleRows()
+        {
+            ClashReport report = new ClashReport("1C07BC", OutputName);
+            report.DocumentUnits = "m";
+            AddTest(report, "BLD-A-vs-BLD-B", 1);
+            AddTest(report, "BLD-A-vs-BLD-C", 3);
+            report.Tests[0].Rows[0].RawClashes = 10;
+
+            string path = Path.Combine(folder, OutputName + ".xlsx");
+            new WorkbookWriter().Write(report, path);
+            WorkbookCheck check = WorkbookCheck.Of(path);
+
+            Assert.That(report.Tests[0].RawClashes, Is.EqualTo(10));
+            Assert.That(check.BlockCounts, Is.EqualTo(new[] { 1, 3 }), "one row, then three rows");
+            Assert.That(check.Passed, Is.True, string.Join(" | ", check.Lines()));
+            Assert.That(string.Join("\n", check.Lines()), Does.Not.Contain("wrong order"));
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+                int heading = 0;
+
+                for (int row = 1; row <= sheet.LastRowUsed().RowNumber(); row++)
+                {
+                    if (sheet.Cell(row, WorkbookWriter.ColumnClashName).GetString() == "Clash Name")
+                    {
+                        heading = row;
+                        break;
+                    }
+                }
+
+                sheet.Cell(heading - 3, WorkbookWriter.ColumnTestHeader + 1).Value = 2;
+                workbook.SaveAs(path);
+            }
+
+            Assert.That(string.Join("\n", WorkbookCheck.Of(path).Lines()), Does.Contain("The tests are in the wrong order. Block 1 holds 2 clashes and block 2 holds"));
+        }
+
+        /// <summary>
+        /// T1-N80. Only the first block is read cell by cell and only its first clash row for the shape of its values,
+        /// so the pass line says that and not that every column of every row matched.
+        /// </summary>
+        [Test]
+        public void ThePassLineSaysWhatWasReadAndNotThatEverythingMatched()
+        {
+            WorkbookCheck check = WorkbookCheck.Of(TwoWithClashesAndThreeWithNone());
+            string lines = string.Join("\n", check.Lines());
+
+            Assert.That(check.Passed, Is.True, lines);
+            Assert.That(lines, Does.Contain("The headings of every block match the client's report, and so do every cell, fill, border and row height of the first block"));
+            Assert.That(lines, Does.Contain("The other blocks and clash rows were not read cell by cell."));
+            Assert.That(lines, Does.Not.Contain("Every column, value shape, fill, border, row height"));
+        }
+
         /// <summary>The sheet wide things a one row workbook can still be wrong in are still read.</summary>
         [Test]
         public void AWorkbookOfOneRowTestsStillNamesAWrongTitleAndAWrongWidth()

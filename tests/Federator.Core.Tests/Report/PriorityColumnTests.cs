@@ -193,7 +193,11 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Contain("The tests are in the wrong order"));
         }
 
-        /// <summary>Copies the last clash row of the last block eight times, so that block holds more clashes than the one before it.</summary>
+        /// <summary>
+        /// Copies the last clash row of the last block eight times and raises its Clashes cell by eight, so that block
+        /// holds more clashes than the one before it. The order is read off the Clashes cell, which is the count the
+        /// writer sorted by, T1-N82.
+        /// </summary>
         private static void PutTheLastBlockOutOfOrder(string path)
         {
             using (XLWorkbook workbook = new XLWorkbook(path))
@@ -205,6 +209,16 @@ namespace Federator.Core.Tests
                 {
                     last--;
                 }
+
+                int heading = last;
+
+                while (heading > 1 && sheet.Cell(heading, WorkbookWriter.ColumnClashName).GetString() != "Clash Name")
+                {
+                    heading--;
+                }
+
+                IXLCell held = sheet.Cell(heading - 3, WorkbookWriter.ColumnTestHeader + 1);
+                held.Value = held.GetDouble() + 8;
 
                 sheet.Row(last).InsertRowsBelow(8);
 

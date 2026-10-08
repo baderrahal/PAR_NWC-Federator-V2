@@ -1877,10 +1877,6 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>
-        /// The last section, so the summary is at the bottom and does not have to be
-        /// scrolled for.
-        /// </summary>
-        /// <summary>
         /// Whether this run asked for penetrations to be marked. F72. False by default, so
         /// a log from a run that never turned the box on carries no line about it at all.
         /// </summary>
