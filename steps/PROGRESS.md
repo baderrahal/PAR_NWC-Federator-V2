@@ -10,19 +10,19 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
 | 2a | 24 | 7 | 1 | 0 | 25 | 0 | 57 |
 | 2b | 11 | 16 | 0 | 1 | 5 | 0 | 33 |
-| 2c | 4 | 1 | 0 | 0 | 4 | 0 | 9 |
+| 2c | 6 | 1 | 0 | 0 | 4 | 0 | 11 |
 | 3a | 8 | 4 | 0 | 0 | 8 | 0 | 20 |
 | 3b | 8 | 2 | 0 | 0 | 10 | 0 | 20 |
 | 4 | 6 | 1 | 0 | 0 | 50 | 0 | 57 |
 | 5 | 14 | 3 | 0 | 0 | 55 | 0 | 72 |
 | outside the waves | 156 | 10 | 0 | 1 | 47 | 5 | 219 |
-| total | 250 | 44 | 1 | 2 | 204 | 5 | 506 |
+| total | 252 | 44 | 1 | 2 | 204 | 5 | 508 |
 <!-- the end of the counts -->
 
 ## Now
 - 8 Oct: the shutdown came at 19:30:51 on 7 Oct, Arab Standard Time, 46 min after the close at 18:45. A Roamer the loop did not start ran 08:36 to 08:43. His 22.0 key against the backup of 17:34 differs in two CER uptime counters only, Navisworks's own, nothing put back. Keep-awake pid 38340
-- PR 157, the close of 7 Oct, finished with main taken in and lane B's night folded. PR 159, F118's FR-199 and FR-040, green and read APPROVE by its one reviewer, finished next
-- Lane B, steps\lane-b.md: stopped after F123, its 153, 155, 158 and 160 to 166 folded here, F128 not started, the rest of F121 and F123 on the laptop
+- PR 157, the close of 7 Oct, finished with main taken in and lane B's night folded. PR 159, F118's FR-199 and FR-040 with its records, read APPROVE by its one reviewer, merged, FR-036 and FR-041 on the laptop
+- Lane B, steps\lane-b.md: on again this morning under Bader's message to it, F127's Core points merged as 167 and F119's as 168, both folded here, now on F119 then F115, F137, F121 and F123
 - F132 mirrored tests: the add-in half attempt 2 of two on F132-R4 and F132-R5 in work on fix-F132, one reviewer and one breaker next
 - Expected release from the pace: 2026-10-13, Q143 item 14, about ten add-in items on the laptop lane at two or three a day over 8, 9, 12 and 13 Oct
 

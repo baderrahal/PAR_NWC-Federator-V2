@@ -384,8 +384,14 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// FR-199, Bader's answer to Q49 on 2026-10-06: the priority is a column to sort on in
+        /// Excel, and the blocks stay in the measured order with a file picked. F83 sorted them A,
+        /// then B, then C, then the rest, by name inside each, and the three tests that pinned that
+        /// order are these two, rewritten to the rule, the letters still on the tests.
+        /// </summary>
         [Test]
-        public void WithAFilePickedTheOrderIsAThenBThenCThenByName()
+        public void WithAFilePickedTheOrderIsStillTheMeasuredOne()
         {
             ClashReport report = AReport("z", "a", "m", "b");
             report.Priorities = PriorityMap.Read(
@@ -396,36 +402,23 @@ namespace Federator.Core.Tests
                 test.Priority = report.Priorities.Of(test.Name);
             }
 
+            IList<TestReport> measured = report.InReportOrder();
             IList<TestReport> ordered = ReportOrder.Tests(report);
 
-            Assert.That(ordered[0].Name, Is.EqualTo("m"), "A first");
-            Assert.That(ordered[1].Name, Is.EqualTo("a"), "then B");
-            Assert.That(ordered[2].Name, Is.EqualTo("z"), "then C");
-            Assert.That(ordered[3].Name, Is.EqualTo("b"), "then the test the file says nothing about");
-        }
+            Assert.That(ordered.Count, Is.EqualTo(measured.Count));
 
-        [Test]
-        public void TwoTestsOfOnePriorityAreOrderedByTestName()
-        {
-            ClashReport report = AReport("zebra", "apple", "mango");
-            report.Priorities = PriorityMap.Read(
-                "test_name,left_set,right_set,priority\nzebra,L,R,A\napple,L,R,A\nmango,L,R,A\n",
-                "a.csv");
-
-            foreach (TestReport test in report.Tests)
+            for (int i = 0; i < ordered.Count; i++)
             {
-                test.Priority = report.Priorities.Of(test.Name);
+                Assert.That(ordered[i].Name, Is.EqualTo(measured[i].Name), "position " + i + ", the file moves no block");
             }
 
-            IList<TestReport> ordered = ReportOrder.Tests(report);
-
-            Assert.That(ordered[0].Name, Is.EqualTo("apple"));
-            Assert.That(ordered[1].Name, Is.EqualTo("mango"));
-            Assert.That(ordered[2].Name, Is.EqualTo("zebra"));
+            Assert.That(ordered[0].Name, Is.Not.EqualTo("m"), "A is a letter on the test and not the first block");
+            Assert.That(report.Tests[2].Priority, Is.EqualTo(ClashPriority.A), "the letter stays on m");
         }
 
+        /// <summary>The picture numbering walks the same list the workbook walks, so the first block written is always cd00, in the measured order.</summary>
         [Test]
-        public void ThePicturesFollowTheOrderTheBlocksAreWrittenIn()
+        public void ThePicturesFollowTheMeasuredOrderWithAFilePicked()
         {
             ClashReport report = AReport("zebra", "apple");
             report.Priorities = PriorityMap.Read(
@@ -436,11 +429,7 @@ namespace Federator.Core.Tests
                 test.Priority = report.Priorities.Of(test.Name);
             }
 
-            // The picture numbering walks the same list the workbook walks, so the first
-            // block written is always cd00.
-            IList<TestReport> ordered = ReportOrder.Tests(report);
-
-            Assert.That(ordered[0].Name, Is.EqualTo("apple"));
+            Assert.That(ReportOrder.Tests(report)[0].Name, Is.EqualTo(report.InReportOrder()[0].Name));
         }
 
         /// <summary>A picker that remembers nothing is a picker that opens somewhere else.</summary>

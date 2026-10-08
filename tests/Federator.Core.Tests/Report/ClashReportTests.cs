@@ -153,13 +153,60 @@ namespace Federator.Core.Tests
             Assert.That(Report().IdSourceLines().Count, Is.EqualTo(0));
         }
 
+        // ---------- FR-040, an id off the GUID fallback is an id ----------
+
+        /// <summary>
+        /// FR-040. An item whose id came from the GUID fallback has a filled Item ID cell and no
+        /// id property behind it, and the ITEM IDS block counted it as a missing id, named no id
+        /// property as its source and said it was written as Element ID while the cell says
+        /// Instance GUID. It is not missing, its source is the instance GUID, and the line says
+        /// the label the cell carries. An item with no id at all is still missing.
+        /// </summary>
+        [Test]
+        public void AnIdOffTheGuidFallbackIsNotMissingAndIsNamedAsTheGuid()
+        {
+            ClashReport report = Report();
+            report.RunAt = new DateTime(2026, 9, 19, 14, 0, 0);
+            TestReport test = Ran(report, "T", Root + "/a", Root + "/b");
+
+            ClashRow row = Row(ClashStatus.New, -0.1, 1);
+            row.Left = new ClashItem();
+            row.Left.ElementId = "8d1c2b1e-2f61-4c3a-9d3a-5f7b2a1c0e11";
+            row.Left.IdLabel = ClientFormat.GuidIdLabel;
+            row.Right = new ClashItem();
+            row.Right.ElementId = "707077";
+            row.Right.IdFrom = "Element ID";
+            row.Found = report.RunAt;
+            test.Add(row);
+
+            Assert.That(report.MissingIdLines(), Is.Empty, "a filled cell is not a missing id");
+
+            string lines = string.Join("\n", new List<string>(report.IdSourceLines()).ToArray());
+
+            Assert.That(lines, Does.Contain(ClientFormat.GuidFallbackSource + " supplied 1 item id of 2, written as \"" + ClientFormat.GuidIdLabel + "\""));
+            Assert.That(lines, Does.Contain("Element ID supplied 1 item id of 2, written as \"Element ID\""));
+            Assert.That(lines, Does.Not.Contain(ClashReport.NoIdProperty));
+        }
+
+        /// <summary>The cell the fallback writes is a shape the checks accept, and a wrong label is still not.</summary>
+        [Test]
+        public void TheGuidFallbackCellIsAnItemIdShapeAndAWrongLabelIsNot()
+        {
+            Assert.That(ClientShapes.LooksLikeAnItemId(ClientFormat.ItemId(ClientFormat.GuidIdLabel, "8d1c2b1e-2f61-4c3a-9d3a-5f7b2a1c0e11")), Is.True);
+            Assert.That(ClientShapes.LooksLikeAnItemId("Element ID: 707077"), Is.True);
+            Assert.That(ClientShapes.LooksLikeAnItemId("Id: 990299"), Is.False);
+        }
+
+        /// <summary>An item whose id a property supplied carries the id in its cell too, as the harvest fills it, and one with no property has an empty cell.</summary>
         private static ClashRow WithIds(ClashStatus status, string leftFrom, string rightFrom)
         {
             ClashRow row = Row(status, -0.1, 1);
             row.Left = new ClashItem();
             row.Right = new ClashItem();
             row.Left.IdFrom = leftFrom;
+            row.Left.ElementId = string.IsNullOrEmpty(leftFrom) ? string.Empty : "707077";
             row.Right.IdFrom = rightFrom;
+            row.Right.ElementId = string.IsNullOrEmpty(rightFrom) ? string.Empty : "707078";
             return row;
         }
 
