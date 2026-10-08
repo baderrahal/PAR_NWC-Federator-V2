@@ -172,6 +172,20 @@ namespace Federator.Core.Report
         /// <summary>The cell as a whole number, or minus one and a doubt.</summary>
         private int Whole(IXLCell cell, int row)
         {
+            int whole = WholeOrMinusOne(cell);
+
+            if (whole < 0)
+            {
+                doubts.Add("the Clashes cell at row " + row.ToString(CultureInfo.InvariantCulture) + " reads \""
+                    + cell.GetString() + "\", which is no whole number, so it is read as UNKNOWN");
+            }
+
+            return whole;
+        }
+
+        /// <summary>The cell as a whole number from nought up, or minus one where it is not one. The one rule for it.</summary>
+        internal static int WholeOrMinusOne(IXLCell cell)
+        {
             if (cell.DataType == XLDataType.Number)
             {
                 double value = cell.GetDouble();
@@ -182,9 +196,17 @@ namespace Federator.Core.Report
                 }
             }
 
-            doubts.Add("the Clashes cell at row " + row.ToString(CultureInfo.InvariantCulture) + " reads \""
-                + cell.GetString() + "\", which is no whole number, so it is read as UNKNOWN");
             return -1;
+        }
+
+        /// <summary>
+        /// The Clashes cell of the full block that starts at that row, the count the writer sorted the blocks by,
+        /// as a whole number or minus one. A block starts on the row of its name, with its values under it, so the
+        /// cell is one row down. The one place that layout is read, for the test count and the order check.
+        /// </summary>
+        internal static int ClashesOfBlock(IXLWorksheet sheet, int start)
+        {
+            return start < 1 ? -1 : WholeOrMinusOne(sheet.Cell(start + 1, WorkbookWriter.ColumnTestHeader + 1));
         }
 
         private void DoubtNamesOnTwoTests()

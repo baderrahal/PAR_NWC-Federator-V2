@@ -262,7 +262,7 @@ namespace Federator.Core.Report
         /// of 0.000, so it looked right and anyone sorting, filtering or copying got the
         /// long value. Theirs stores the rounded number itself and carries no format.
         ///
-        /// A value too small for three decimals keeps its own precision, the same
+        /// A value too small for three decimals is cut to three significant figures, the same
         /// exception <see cref="Fixed"/> makes, so a real value is never rounded to zero.
         /// </summary>
         public static double Rounded(double value)
@@ -279,12 +279,11 @@ namespace Federator.Core.Report
                 return three;
             }
 
-            // Would have gone to zero, so it keeps the three significant figures the text
-            // form would have shown.
-            int magnitude = (int)Math.Floor(Math.Log10(Math.Abs(value)));
-            int decimals = SmallValueFigures - 1 - magnitude;
-
-            return decimals > 15 ? value : Math.Round(value, decimals, MidpointRounding.AwayFromZero);
+            // Would have gone to zero, so it keeps the three significant figures the text form shows, as
+            // the number that text reads as. Math.Round takes no more than fifteen decimals, so a value
+            // below about 1e-13 used to come back whole, a Distance cell holding 3.7312345e-14 beside
+            // their 0.0000000000000373.
+            return double.Parse(Significant(value), CultureInfo.InvariantCulture);
         }
 
         /// <summary>How many significant figures a value too small for three decimals gets.</summary>

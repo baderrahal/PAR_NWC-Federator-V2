@@ -6,7 +6,8 @@ namespace Federator.Core.Diagnostics
 {
     /// <summary>
     /// One step's share of one group, or of the whole run. Built by TimingBlock and read
-    /// by nothing else, so the sorting and the arithmetic sit in one place.
+    /// by RunLog, which writes one row for each, so the sorting and the arithmetic sit in
+    /// one place.
     /// </summary>
     public sealed class TimedThing
     {

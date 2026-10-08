@@ -19,7 +19,7 @@ namespace Federator.Core.Views
 
         public string Path { get; private set; }
 
-        /// <summary>The discipline code it shows.</summary>
+        /// <summary>What it shows, the pair folder of its clash such as AR vs ST.</summary>
         public string Shows { get; private set; }
 
         /// <summary>How many disciplines it hides. Zero is a real answer in a single discipline group.</summary>
@@ -158,12 +158,7 @@ namespace Federator.Core.Views
         }
 
         /// <summary>
-        /// One line per viewpoint, then the totals, counted off the same list the lines
-        /// came from so the two cannot disagree. This is the VIEWS block and it is shaped
-        /// on the SETS block on purpose.
-        /// </summary>
-        /// <summary>
-        /// The block. Every FAILED viewpoint is named, because each says something
+        /// The VIEWS block, shaped on the SETS block on purpose. Every FAILED viewpoint is named, because each says something
         /// different. The created and the already there ones are named five deep and then
         /// counted, RunLog.KeptOfARepeat, because F85 puts hundreds into one group and a
         /// block that names all of them buries everything worth reading, which is the
