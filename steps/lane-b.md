@@ -24,7 +24,14 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 
 ## The item the lane is on
 
-None. The branch claude/lane-b-release-plan-zztyvx is the one branch this session may push, restarted
+The second night, 8 Oct 2026, by Bader's message GOOD MORNING, BADER: the Core points the readers of F127,
+F119, F115, F137, F121 and F123 left, in that order after F128. Now on F127's Core points, branch
+claude/lane-b-release-plan-zztyvx, which changes src\Federator.Core\Sets\SetsAcrossTheRun.cs,
+src\Federator.Core\Coverage\CountCheck.cs, CoverageAcrossTheRun.cs, CountVerdict.cs, CoverageRule.cs,
+CoverageSettings.cs, src\Federator.Core\Diagnostics\FileFingerprint.cs and their tests. Neither fix-F118
+nor fix-F132 changes any of them.
+
+The branch claude/lane-b-release-plan-zztyvx is the one branch this session may push, restarted
 from main after each merge. F115 merged as pull request 142, F127 as 145, F137 as 146, F118 as 147 and
 F119 as 148. fix-F115 and fix-F127 stay on origin and are not deleted, because their records are theirs.
 
@@ -106,6 +113,7 @@ lane's to set in the tracker.
 | F123 | FR-171 T1-N62, in the run timing block the by group section is labelled outside every group and says every second of the run is inside a group, or that the groups add up to more than the run took, where it said step. The by step section and the group block keep their words. The tests do not build against the old source, since the new label is a new member, so the old source was not run against them. Core tests 2404 run, 2370 passed, 0 failed, 34 skipped | 163 | merged, de2e558 |
 | F123 | FR-171 T1-N89, the edit distance written line for line in the EMPTY SETS judge and in the workset disagreements is one routine, EditDistance, and each reader hands it its own cap. Four tests on the routine, and the two readers' own tests unchanged. The new tests do not build against the old source. Core tests 2408 run, 2374 passed, 0 failed, 34 skipped | 164 | merged, b99c736 |
 | F123 | FR-171 T1-N56 and N57 in RunLog. The numbered line writes its machine readable row through Row, which it had copied line for line, and the seconds, visits and throws of a step in a group are added up in one place, TotalOf, where two loops did it. No behaviour changes, and one test added after the reader found the step sums unpinned at log level, a repeated step with one visit that threw. Core tests 2409 run, 2375 passed, 0 failed, 34 skipped | 165 | merged, 04e68b8 |
+| F127 | The Core points the readers of 145 and 153 left. SetsAcrossTheRun counts a path once in a group, finds something there where any set of the path did, is at zero only where every set of the path was counted and found nothing, and leaves a path out of a group where one set of it was not counted and none found items. A set's line and its .tsv row say how many of the groups it was looked at in when that is fewer, the header says how many sets that is, a set never counted in any group is counted on a line of its own, and the all clear says every set that was counted, or that no set was counted. CountCheck reads a test the run left no record of, or never reached, with an empty block that the document does not return as not compared, where one the run knows it did not create stays held by neither side, and gives the FAILED line of a test the plan dropped before the model, that an earlier run left in the document, its cause. CoverageAcrossTheRun counts the tests the file does not name once by name across the run, as Q127 A counts every other test, and the headline says how many test places its groups hold and that a group not checked is in none of the counts. Words: the CountCheck summary, the Q126 test comment, one number tied to set 03's log line 297, and the design file said to be outside the repo. 10 new tests, all failing on main's source. Core tests here 2408 run, 2375 passed, 0 failed, 33 skipped before, 2418 run, 2385 passed, 0 failed, 33 skipped after. A reviewer and a breaker read it and their findings are fixed, two of lane B's own first lines among them: a cause that said a test the runner's walk had not found was in the document before the run, and a not compared rule that took in the tests the plan drops. The add-in half of F127 is unchanged | 167 | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -185,30 +193,43 @@ for the laptop lane to take in the order it chooses.
 
 ## F127 points the readers raised that lane B left, for the laptop lane
 
-- Not in Core yet: FR-176's RESULT count of the tests of the XML created, run, with clashes and without,
-  with Q127's each test once across the run, and the categories no set catches per model, since
-  CoverageSettings.CategoriesNamedPerModel is read by no rule
-- A test the plan dropped that an earlier run left in the NWF reads not created with a FAILED line that
-  names no cause, since CoverageRule never reads AlreadyPresentNames for it. Mirrors after fix-F132
-  merges may bypass ReasonFor the same way
+- Not in Core yet: the categories no set catches per model, since CoverageSettings.CategoriesNamedPerModel is
+  read by no rule and ModelExport carries no count per category. FR-176's RESULT count of the tests, once
+  across the run, is in TestLines since pull request 153
+- A test whose reason is built by a mirror after fix-F132 merges may bypass ReasonFor. A test the plan
+  dropped before the model, that an earlier run left in the NWF, now gets its cause from CountCheck and not
+  from CoverageRule, which never looks for it in the document
 - The workbook handed in carries no proof of which run wrote it, so a write that threw leaves last week's
   file at the same path to be read as this week's, and the fingerprint names the XML bytes and not the
   corrections list or the teams file that changed its sets. The add-in has to hand a stamp in
 - A set with no code in its name reads UNKNOWN where the team map of F131 gives the team of its folder,
   Q117 C, and RESULT lists every FAILED line by default, Bader's choice, which can be some 25 MB where one
   fault repeats over 46 groups
-- SetsAcrossTheRun counts a path twice where one group holds two sets of one name, and says found nothing
-  in every group over the groups it looked at only. WorkbookTests.Read takes the first sheet and would
-  read the Coverage sheet if that were inserted first
-- Found at the second reading, left open: a test whose presence is Unknown with an empty block lands under
-  held by neither side and should be not compared, because CountCheck sends only CreatedThisRun and
-  AlreadyThere there and the runner never looked at the others. The not named line counts names once per
-  group, so one old test in 46 groups reads 46 tests. The headline never prints the number of tests, so
-  its buckets cannot be added up by eye, and a group whose check is null has its tests in no bucket. Two
-  numbers in comments, 1794 of 1830, were not measured by lane B and should be read off a run or dropped.
-  The class summary of CountCheck still calls a test neither side holds AGREE in one sentence
-- Words: Q126's default A where Q126 was answered B, a design file named in comments that is not in the
-  repo, two copies of the row count loop and of Count, and a double blank line in RESULT
+- WorkbookTests.Read takes the first sheet and would read the Coverage sheet if that were inserted first,
+  and the Coverage sheet is second and last by FR-200, so it is a guard and not a fault today
+- Left after the second reading and this one: a group whose check is null still has its tests in no bucket,
+  and the headline says so without counting them. Nothing in src\Federator.Addin builds a
+  CoverageAcrossTheRun yet, which is the add-in half of F127
+- Words, not taken: two copies of the row count loop and of Count in the Coverage folder, and a double
+  blank line in RESULT that lane B did not reproduce
+
+## What the F127 Core points ask of the laptop lane, found by their readers
+
+- Step 174 of steps\03_bader_next.md says a run with no XML reads zeros and Every set found something
+  somewhere, which is right. With no XML the sets step never calls SetsAcrossTheRun.Add, so the block now
+  reads No set was counted, so nothing is said of what the sets found. Lane B does not edit that file.
+  Step 174 has to say the new sentence or Bader reports a failure that is not one
+- .claude\rules\core.md lines that wait for the pull request that merges this one, which lane B may not
+  write: a test the run left no record of, or never reached, is not compared and one the run knows it did
+  not create is held by neither side. A test the plan dropped before the model, that Clash Detective holds
+  with results, names an earlier run as the cause, and the same is not said of a test F77 kept out, since
+  the runner walks the document first and finds none of that name. The tests the file does not name are
+  counted once by name across the run. The headline counts test places, a test once for each group it is
+  in. A set is counted once per group, is not at zero where one set of its path was not counted, and the
+  F82 section says a set never counted is named on its own line
+- The reader's note that the denominator of SetsAcrossTheRun is the groups added and not the groups of the
+  run holds: Add is called only for a group with work and a built outcome. The block says groups counted
+  here and does not claim more
 
 ## F137 points the readers raised that lane B left, for the laptop lane
 

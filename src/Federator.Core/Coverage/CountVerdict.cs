@@ -13,7 +13,8 @@ namespace Federator.Core.Coverage
         /// Neither side holds the test: Clash Detective has none of that name and the workbook's block
         /// reads no row and Clashes nought, a test F77 did not create. Counted apart from Agree,
         /// because nothing was set beside Clash Detective, and a headline that said all agree over
-        /// 1794 of 1830 such tests would read as a verification that never happened.
+        /// such tests would read as a verification that never happened. Set 03's log line 297 for
+        /// one group: 1830 in the file, 36 created, 1794 not created, a side finds nothing.
         /// </summary>
         HeldByNeither,
 

@@ -36,6 +36,8 @@ namespace Federator.Core.Coverage
         private readonly HashSet<string> inTheDocumentOnce = new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<string> ranOnce = new HashSet<string>(StringComparer.Ordinal);
         private readonly HashSet<string> withClashesOnce = new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<string> notNamed = new HashSet<string>(StringComparer.Ordinal);
+        private int notNamedPlaces;
         private int groupsWithTests;
         private int places;
         private int created;
@@ -71,10 +73,14 @@ namespace Federator.Core.Coverage
         public int HeldByNeither { get; private set; }
 
         /// <summary>
-        /// The tests Clash Detective holds that the picked file does not name, across the groups. Never
+        /// The tests Clash Detective holds that the picked file does not name, each name once across the
+        /// groups as Q127 A counts every other test, so one old test in the NWFs of 46 groups is one. Never
         /// compared, since the workbook carries a block for the file's tests only, and said so.
         /// </summary>
-        public int NotInTheXml { get; private set; }
+        public int NotInTheXml
+        {
+            get { return notNamed.Count; }
+        }
 
         public int Failed { get; private set; }
 
@@ -96,7 +102,8 @@ namespace Federator.Core.Coverage
 
             Agree += check.CountOf(CountVerdict.Agree);
             HeldByNeither += check.CountOf(CountVerdict.HeldByNeither);
-            NotInTheXml += check.NotInTheXml.Count;
+            notNamedPlaces += check.NotInTheXml.Count;
+            notNamed.UnionWith(check.NotInTheXml);
             NotCompared += check.CountOf(CountVerdict.NotCompared);
 
             IList<string> lines = check.FailedLines(group);
@@ -212,7 +219,8 @@ namespace Federator.Core.Coverage
             List<string> lines = new List<string>(TestLines());
             int compared = Agree + Failed;
             string notChecked = GroupsNotChecked > 0
-                ? ", " + Count(GroupsNotChecked, "group", "groups") + " not checked"
+                ? ", " + Count(GroupsNotChecked, "group", "groups") + " not checked, "
+                    + (GroupsNotChecked == 1 ? "its tests" : "their tests") + " in none of these counts"
                 : string.Empty;
 
             if (Groups == 0)
@@ -235,7 +243,9 @@ namespace Federator.Core.Coverage
 
             lines.Add(CheckedLabel + compared + " compared, " + Agree + " agree, " + Failed + " FAILED in "
                 + GroupsWithAFailedLine + " of " + Count(Groups, "group", "groups") + ", " + NotCompared
-                + " not compared" + neither + notChecked + ", every group keeps its own result");
+                + " not compared" + neither + notChecked + ", every group keeps its own result, "
+                + Count(compared + NotCompared + HeldByNeither, "test place", "test places")
+                + " in the groups checked, a test once for each group it is in");
             AddNotInTheXml(lines);
 
             int shown = 0;
@@ -266,7 +276,11 @@ namespace Federator.Core.Coverage
             if (NotInTheXml > 0)
             {
                 lines.Add("COVERAGE not named    : " + Count(NotInTheXml, "test", "tests")
-                    + " in Clash Detective that the picked file does not name, not compared, because the workbook"
+                    + " in Clash Detective that the picked file does not name"
+                    + (notNamedPlaces != NotInTheXml
+                        ? " (each name once here, " + notNamedPlaces + " places over the groups)"
+                        : string.Empty)
+                    + ", not compared, because the workbook"
                     + " carries a block for the file's tests only");
             }
         }
