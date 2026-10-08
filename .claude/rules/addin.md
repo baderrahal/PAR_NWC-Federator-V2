@@ -574,7 +574,10 @@ well as to pass.
   step, so the step's seconds show both. The GENERIC MODELS block and one row a model follow
   the build. The workbook of its own is the GENERIC XLSX step after the group's workbook,
   written whether or not the clash ran, skipped with its own line where no count was taken,
-  there is no report folder or no workbook is wanted this run, and read back by size as every
+  there is no report folder or no workbook is wanted this run, and where the write throws
+  nothing is listed as written, the size stays unread and one line says whether a file of that
+  name from an earlier run is at the path as it was, because a file this tool did not write is
+  never listed as written, and otherwise read back by size as every
   file is. The settings are `ReportOptions.GenericModels`, read off Core and never typed in the
   window. A plan, a build or a workbook write that throws NEVER FAILS THE GROUP, the lead's
   decision on attempt 2: it logs the failure with what happens next, writes the GENERIC MODELS

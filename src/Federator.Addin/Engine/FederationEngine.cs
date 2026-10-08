@@ -2762,14 +2762,16 @@ namespace Federator.Addin.Engine
                     bool changed = fromTheFile && BuildTheSetsFromTheFile(document, job, outcome, generic);
 
                     // Q74. THE PAIR FAILED BETWEEN ITS TWO HALVES and the file's build declared
-                    // the document damaged, so it asked no save. Nothing more goes into that
-                    // document and nothing may be saved from it, so the Generic Models sets are
-                    // not built and the step asks no save, the breaker's finding on attempt 1.
+                    // the document damaged, so it asked no save. This step puts nothing more into
+                    // that document and asks no save, the breaker's finding on attempt 1. What the
+                    // steps after it do with the damage is theirs and is not said here, since the
+                    // clash step and the views do not read it, a hole older than F128 and a row
+                    // for F121.
                     if (outcome.Sets != null && !string.IsNullOrEmpty(outcome.Sets.TheDocumentIsDamaged))
                     {
                         genericAcrossTheRun.AddNotCounted(job.Building);
                         log.Line("SETS     " + job.Building
-                            + " Generic Models, not built, because the picked file's sets left the document damaged, so nothing more is put in and the NWF is not saved");
+                            + " Generic Models, not built, because the picked file's sets left the document damaged, so this step puts no Generic Models set in and asks no save");
                         return false;
                     }
 
@@ -3731,6 +3733,7 @@ namespace Federator.Addin.Engine
                 {
                     Say("Writing the Generic Models workbook for " + job.Building);
                     log.WriteAttempted("XLSX", path);
+                    bool threw = false;
 
                     try
                     {
@@ -3738,13 +3741,26 @@ namespace Federator.Addin.Engine
                     }
                     catch (Exception error)
                     {
-                        // Never the group's error, the lead's decision on attempt 2. The disk is
-                        // read next, so a write that threw with last week's file still there is
-                        // said as written with that file's size, the breaker's dropped point.
+                        // Never the group's error, the lead's decision on attempt 2. A FILE THIS
+                        // TOOL DID NOT WRITE IS NEVER LISTED AS WRITTEN: the save goes straight
+                        // onto the final path, so a throw with last week's file still there must
+                        // not read that file's size back as this run's, the breaker's finding on
+                        // the second reading of attempt 2.
+                        threw = true;
                         log.Failure(
                             "writing the Generic Models workbook for " + job.Building,
                             error,
-                            "kept going, the disk is checked next to see whether anything landed, and the group keeps its own result");
+                            "kept going, nothing is listed as written, the path is looked at for a file of an earlier run, and the group keeps its own result");
+                    }
+
+                    if (threw)
+                    {
+                        outcome.GenericWorkbookSize = -1;
+                        outcome.GenericWorkbookOnDisk = false;
+                        log.Line("XLSX     not written  " + path + (File.Exists(path)
+                            ? "  a file of that name from an earlier run is at the path as it was, and it is not this run's"
+                            : "  and no file is at the path"));
+                        return;
                     }
 
                     outcome.GenericWorkbookSize = log.WriteFinished("XLSX", path);
@@ -3752,7 +3768,7 @@ namespace Federator.Addin.Engine
                 },
                 () => outcome.GenericWorkbookOnDisk
                     ? "wrote " + outcome.GenericWorkbookSize + " bytes"
-                    : "nothing on disk");
+                    : "nothing written");
         }
 
         /// <summary>The clash XML itself, split out for the same reason.</summary>
