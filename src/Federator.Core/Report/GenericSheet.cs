@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using ClosedXML.Excel;
 using Federator.Core.Generic;
 
@@ -11,8 +12,8 @@ namespace Federator.Core.Report
     /// an open workbook and the caller saves, the way the Coverage sheet is, so this class decides what is
     /// on the sheet and nothing about which workbook it goes into or where it stands among the sheets.
     ///
-    /// WHERE IT GOES IS NOT DECIDED HERE. Bader's decision under Q46 makes the Coverage sheet the second and
-    /// last sheet of the group's workbook, FR-200, and the check of the workbook allows nothing else after
+    /// WHERE IT GOES IS NOT DECIDED HERE. FR-200, Bader's request 2 under Q112, makes the Coverage sheet the
+    /// second and last sheet of the group's workbook, and the check of the workbook allows nothing else after
     /// the client's sheet. A third sheet breaks one of those two, and a workbook of its own for the group,
     /// as Q126 B gives the Coverage sheet when the clash is skipped, breaks neither. The laptop lane puts
     /// the question to him with the add-in half.
@@ -37,19 +38,30 @@ namespace Federator.Core.Report
         /// </summary>
         public static string WhyRefused(string reportSheetName, string coverageSheetName, string sheetName)
         {
-            if (string.Equals(reportSheetName, sheetName, StringComparison.OrdinalIgnoreCase))
+            // The name Write gives the sheet, after the floor every sheet name goes through, which takes
+            // a space or an apostrophe off its ends. Compared raw, a name with a trailing space passed here
+            // and then met the sheet it matches in the workbook.
+            string wouldBe = SheetNames.Sanitise(sheetName, GenericModelsSettings.DefaultSheetName);
+
+            if (SameSheet(reportSheetName, wouldBe))
             {
                 return "no Generic Models sheet was written, because the report's own sheet is named " + reportSheetName
-                    + " and this sheet would be named " + sheetName + ", which Excel reads as one name";
+                    + " and this sheet would be named " + wouldBe + ", which Excel reads as one name";
             }
 
-            if (string.Equals(coverageSheetName, sheetName, StringComparison.OrdinalIgnoreCase))
+            if (SameSheet(coverageSheetName, wouldBe))
             {
                 return "no Generic Models sheet was written, because the Coverage sheet is named " + coverageSheetName
-                    + " and this sheet would be named " + sheetName + ", which Excel reads as one name";
+                    + " and this sheet would be named " + wouldBe + ", which Excel reads as one name";
             }
 
             return null;
+        }
+
+        private static bool SameSheet(string existing, string wouldBe)
+        {
+            return existing != null
+                && string.Equals(SheetNames.Sanitise(existing, existing), wouldBe, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -126,7 +138,7 @@ namespace Federator.Core.Report
             {
                 // The model is text on purpose, so a name that looks like a number or a date stays as the
                 // file carries it. The count is a number so it sorts, and UNKNOWN stays the word.
-                sheet.Cell(row, 1).SetValue((string)cells[0]);
+                sheet.Cell(row, 1).SetValue(Verbatim((string)cells[0]));
 
                 if (cells[1] is int)
                 {
@@ -143,6 +155,18 @@ namespace Federator.Core.Report
 
             row++;
 
+            if (report.WithNone > 0)
+            {
+                sheet.Cell(row, 1).SetValue("note: " + GenericModelsReport.NoughtMeans);
+                row++;
+            }
+
+            if (report.Models > 0 && report.WithNone == report.Models)
+            {
+                sheet.Cell(row, 1).SetValue("note: " + GenericModelsReport.EveryModelAtNought);
+                row++;
+            }
+
             foreach (string note in report.Notes)
             {
                 sheet.Cell(row, 1).SetValue("note: " + note);
@@ -155,6 +179,16 @@ namespace Federator.Core.Report
             {
                 sheet.Column(column).Width = Widths[column - 1];
             }
+        }
+
+        /// <summary>
+        /// ClosedXML takes one apostrophe off the front of a text it is given, as Excel does when a person types
+        /// one, so a model file named 'x would be written as x. A second one in front keeps the name as the file
+        /// carries it.
+        /// </summary>
+        private static string Verbatim(string text)
+        {
+            return text.Length > 0 && text[0] == '\'' ? "'" + text : text;
         }
 
         /// <summary>The line under the title: how many models of each kind, and the items counted.</summary>
@@ -170,9 +204,25 @@ namespace Federator.Core.Report
                 return "No model of this group was planned, so nothing was counted";
             }
 
+            string items = report.Items.ToString("#,##0", CultureInfo.InvariantCulture);
+            string total;
+
+            if (report.NotCounted == report.Models)
+            {
+                total = GenericModelsReport.Unknown + " items, no model was counted";
+            }
+            else if (report.SetsOverlap)
+            {
+                total = items + " items added over the sets, which is not a count of items, because the texts of some sets meet";
+            }
+            else
+            {
+                total = (report.NotCounted > 0 ? "At least " : string.Empty) + items + " items in all";
+            }
+
             return report.Models + (report.Models == 1 ? " model" : " models") + ": " + report.WithItems
-                + " hold some, " + report.WithNone + " hold none and are left out, " + report.NotCounted
-                + " not counted. " + (report.NotCounted > 0 ? "At least " : string.Empty) + report.Items + " items in all";
+                + " found some, " + report.WithNone + " found none and are left out, " + report.NotCounted
+                + " not counted. " + total;
         }
     }
 }

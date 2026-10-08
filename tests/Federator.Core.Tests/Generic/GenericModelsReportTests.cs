@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Federator.Core.Generic;
 using Federator.Core.Sets;
 using NUnit.Framework;
@@ -30,6 +31,19 @@ namespace Federator.Core.Tests
             return plan.Sets[model].Set.Path;
         }
 
+        /// <summary>
+        /// A set already in the document, as the builder records it: counted, and carrying the question the
+        /// document's own set asks, which is what the plan asks unless the test says otherwise.
+        /// </summary>
+        private static SetResult Present(SetBuildOutcome outcome, GenericModelsPlan plan, int model, int items)
+        {
+            GenericModelSet set = plan.Sets[model];
+            SetResult result = outcome.AddAlreadyPresent(set.Set.Path, set.ModelName, set.Set.ConditionCount, items);
+
+            result.Asked = set.Set.Describe();
+            return result;
+        }
+
         private static string Text(GenericModelsReport report)
         {
             return string.Join("\n", new List<string>(report.Lines()).ToArray());
@@ -55,9 +69,9 @@ namespace Federator.Core.Tests
         {
             GenericModelsPlan plan = Plan("a.nwc", "b.nwc", "c.nwc");
             SetBuildOutcome outcome = new SetBuildOutcome();
-            outcome.AddAlreadyPresent(Path(plan, 0), "a", 2, 12);
+            Present(outcome, plan, 0, 12);
             outcome.AddCreated(Path(plan, 1), "b", 2, 0);
-            outcome.AddAlreadyPresent(Path(plan, 2), "c", 2, 3);
+            Present(outcome, plan, 2, 3);
 
             GenericModelsReport report = GenericModelsReport.From(plan, outcome.Results);
 
@@ -78,7 +92,7 @@ namespace Federator.Core.Tests
             GenericModelsPlan plan = Plan("a.nwc");
             SetBuildOutcome outcome = new SetBuildOutcome();
             outcome.AddAlreadyPresent("lcop_selection_set_tree/Architecture/BLD-AR-Walls", "BLD-AR-Walls", 2, 400);
-            outcome.AddAlreadyPresent(Path(plan, 0), "a", 2, 5);
+            Present(outcome, plan, 0, 5);
 
             GenericModelsReport report = GenericModelsReport.From(plan, outcome.Results);
 
@@ -97,10 +111,10 @@ namespace Federator.Core.Tests
             GenericModelsPlan plan = Plan("failed.nwc", "missing.nwc", "minus.nwc", "twice.nwc", "good.nwc");
             SetBuildOutcome outcome = new SetBuildOutcome();
             outcome.AddFailed(Path(plan, 0), "failed", 2, "ArgumentException: bad value");
-            outcome.AddAlreadyPresent(Path(plan, 2), "minus", 2, SetResult.NotCounted);
-            outcome.AddAlreadyPresent(Path(plan, 3), "twice", 2, 4);
-            outcome.AddAlreadyPresent(Path(plan, 3), "twice", 2, 9);
-            outcome.AddAlreadyPresent(Path(plan, 4), "good", 2, 7);
+            Present(outcome, plan, 2, SetResult.NotCounted);
+            Present(outcome, plan, 3, 4);
+            Present(outcome, plan, 3, 9);
+            Present(outcome, plan, 4, 7);
 
             GenericModelsReport report = GenericModelsReport.From(plan, outcome.Results);
 
@@ -124,6 +138,145 @@ namespace Federator.Core.Tests
             Assert.That(report.NotCounted, Is.EqualTo(2));
             Assert.That(report.WithNone, Is.EqualTo(0));
             Assert.That(report.Items, Is.EqualTo(0));
+
+            string text = Text(report);
+
+            Assert.That(text, Does.Contain("items   : UNKNOWN, no model was counted"), "a total over no count is not at least nought");
+            Assert.That(text, Does.Not.Contain("at least"));
+            Assert.That(text, Does.Not.Contain("nought  :"), "nothing was counted at nought");
+        }
+
+        /// <summary>A null result and a result with no path are ignored and count for no model.</summary>
+        [Test]
+        public void ANullResultAndAResultWithNoPathCountForNoModel()
+        {
+            GenericModelsPlan plan = Plan("a.nwc");
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            Present(outcome, plan, 0, 6);
+
+            List<SetResult> results = new List<SetResult>(outcome.Results);
+            results.Insert(0, null);
+            results.Insert(0, new SetResult(null, "pathless", 2, 99, null, null));
+
+            GenericModelsReport report = GenericModelsReport.From(plan, results);
+
+            Assert.That(report.Items, Is.EqualTo(6));
+            Assert.That(report.NotCounted, Is.EqualTo(0));
+        }
+
+        // ---------- a set already there that asks something else ----------
+
+        /// <summary>
+        /// A set already in the NWF keeps the question it was built with unless the rebuild box is ticked, so a plan
+        /// changed after the measurement meets sets that ask the old one. Their count answers another question and
+        /// is not the plan's, so it is not counted, with the question it asks. The break: the same set asking what
+        /// the plan asks is counted.
+        /// </summary>
+        [Test]
+        public void APresentSetThatAsksAnotherQuestionIsNotCounted()
+        {
+            GenericModelsPlan plan = Plan("a.nwc", "b.nwc");
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            Present(outcome, plan, 0, 8);
+            SetResult old = Present(outcome, plan, 1, 0);
+            old.Asked = "LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals \"Furniture\" and LcOaNodeSourceFile (Source File) contains \"b\"";
+
+            GenericModelsReport report = GenericModelsReport.From(plan, outcome.Results);
+
+            Assert.That(Of(report, "a").Counted, Is.True);
+            Assert.That(Of(report, "b").Counted, Is.False, "a zero for another question is not a zero for this one");
+            Assert.That(report.WithNone, Is.EqualTo(0));
+            Assert.That(report.NotCounted, Is.EqualTo(1));
+            Assert.That(Of(report, "b").WhyNotCounted, Does.Contain("asks something other than the plan asks"));
+            Assert.That(Of(report, "b").WhyNotCounted, Does.Contain("equals \"Furniture\""));
+            Assert.That(Of(report, "b").WhyNotCounted, Does.Contain("equals \"Generic Models\""));
+        }
+
+        [Test]
+        public void APresentSetWhoseQuestionWasNotReadIsNotCountedAndACreatedSetIsCounted()
+        {
+            GenericModelsPlan plan = Plan("a.nwc", "b.nwc", "c.nwc");
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent(Path(plan, 0), "a", 2, 4);
+            SetResult unread = outcome.AddAlreadyPresent(Path(plan, 1), "b", 2, 4);
+            unread.Asked = string.Empty;
+            outcome.AddCreated(Path(plan, 2), "c", 2, 5);
+
+            GenericModelsReport report = GenericModelsReport.From(plan, outcome.Results);
+
+            Assert.That(Of(report, "a").Counted, Is.False);
+            Assert.That(Of(report, "a").WhyNotCounted, Does.Contain("the question it asks was not read"));
+            Assert.That(Of(report, "b").Counted, Is.False);
+            Assert.That(Of(report, "c").Items, Is.EqualTo(5), "a set this run created asks what the plan asked");
+        }
+
+        // ---------- what a nought means ----------
+
+        /// <summary>
+        /// A model left out as nought is also one whose items carry another text, and the output cannot tell the
+        /// two apart, so the block says what a nought means, and says more where every model is at nought. The
+        /// break: with no model at nought neither line is there.
+        /// </summary>
+        [Test]
+        public void ANoughtSaysWhatItCanMeanAndEveryModelAtNoughtSaysMore()
+        {
+            GenericModelsPlan plan = Plan("a.nwc", "b.nwc");
+            SetBuildOutcome some = new SetBuildOutcome();
+            Present(some, plan, 0, 3);
+            Present(some, plan, 1, 0);
+            string text = Text(GenericModelsReport.From(plan, some.Results));
+
+            Assert.That(text, Does.Contain("nought  : " + GenericModelsReport.NoughtMeans));
+            Assert.That(text, Does.Not.Contain(GenericModelsReport.EveryModelAtNought));
+
+            SetBuildOutcome none = new SetBuildOutcome();
+            Present(none, plan, 0, 0);
+            Present(none, plan, 1, 0);
+            string all = Text(GenericModelsReport.From(plan, none.Results));
+
+            Assert.That(all, Does.Contain("nought  : " + GenericModelsReport.EveryModelAtNought));
+
+            SetBuildOutcome full = new SetBuildOutcome();
+            Present(full, plan, 0, 3);
+            Present(full, plan, 1, 2);
+
+            Assert.That(Text(GenericModelsReport.From(plan, full.Results)), Does.Not.Contain("nought  :"));
+        }
+
+        // ---------- the total over sets whose texts meet ----------
+
+        /// <summary>
+        /// Where one set's text also finds another set's items the total adds an item twice, so it is not a count of
+        /// items and not a lower bound. The break: with texts that do not meet it is the plain total.
+        /// </summary>
+        [Test]
+        public void ATotalOverSetsWhoseTextsMeetIsNotACountOfItems()
+        {
+            GenericModelsPlan plan = Plan("A-ME.nwc", "A-ME2.nwc");
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            Present(outcome, plan, 0, 14);
+            Present(outcome, plan, 1, 4);
+
+            GenericModelsReport report = GenericModelsReport.From(plan, outcome.Results);
+            string text = Text(report);
+
+            Assert.That(report.SetsOverlap, Is.True);
+            Assert.That(text, Does.Contain("items   : 18 added over the sets, which is not a count of items, because the texts of some sets meet"));
+            Assert.That(text, Does.Not.Contain("in all"));
+
+            SetBuildOutcome partial = new SetBuildOutcome();
+            Present(partial, plan, 0, 14);
+
+            Assert.That(Text(GenericModelsReport.From(plan, partial.Results)), Does.Contain("and the models not counted are not in it"));
+            Assert.That(Text(GenericModelsReport.From(plan, partial.Results)), Does.Not.Contain("at least"), "an overlapped sum is not a lower bound either");
+
+            GenericModelsPlan apart = Plan("a.nwc", "b.nwc");
+            SetBuildOutcome plain = new SetBuildOutcome();
+            Present(plain, apart, 0, 2);
+            Present(plain, apart, 1, 3);
+
+            Assert.That(GenericModelsReport.From(apart, plain.Results).SetsOverlap, Is.False);
+            Assert.That(Text(GenericModelsReport.From(apart, plain.Results)), Does.Contain("items   : 5 in all"));
         }
 
         [Test]
@@ -139,14 +292,14 @@ namespace Federator.Core.Tests
         {
             GenericModelsPlan plan = Plan("a.nwc", "b.nwc", "c.nwc");
             SetBuildOutcome outcome = new SetBuildOutcome();
-            outcome.AddAlreadyPresent(Path(plan, 0), "a", 2, 1234);
-            outcome.AddAlreadyPresent(Path(plan, 1), "b", 2, 0);
-            outcome.AddAlreadyPresent(Path(plan, 2), "c", 2, 3);
+            Present(outcome, plan, 0, 1234);
+            Present(outcome, plan, 1, 0);
+            Present(outcome, plan, 2, 3);
 
             string text = Text(GenericModelsReport.From(plan, outcome.Results));
 
             Assert.That(text, Does.Contain("asked   : Category equals \"Generic Models\", found in each model by its Source File"));
-            Assert.That(text, Does.Contain("models  : 3 models in this group, 2 hold some, 1 hold none and are left out, 0 were not counted"));
+            Assert.That(text, Does.Contain("models  : 3 models in this group, 2 found some, 1 found none and are left out, 0 were not counted"));
             Assert.That(text, Does.Contain("items   : 1,237 in all"));
             Assert.That(text, Does.Contain("    a  1,234"));
             Assert.That(text, Does.Contain("    c  3"));
@@ -163,7 +316,7 @@ namespace Federator.Core.Tests
         {
             GenericModelsPlan plan = Plan("a.nwc", "b.nwc");
             SetBuildOutcome outcome = new SetBuildOutcome();
-            outcome.AddAlreadyPresent(Path(plan, 0), "a", 2, 10);
+            Present(outcome, plan, 0, 10);
 
             string text = Text(GenericModelsReport.From(plan, outcome.Results));
 
@@ -172,8 +325,8 @@ namespace Federator.Core.Tests
             Assert.That(text, Does.Contain("    b  UNKNOWN, its set was not built, or no result of it was handed in"));
 
             SetBuildOutcome whole = new SetBuildOutcome();
-            whole.AddAlreadyPresent(Path(plan, 0), "a", 2, 10);
-            whole.AddAlreadyPresent(Path(plan, 1), "b", 2, 0);
+            Present(whole, plan, 0, 10);
+            Present(whole, plan, 1, 0);
 
             Assert.That(Text(GenericModelsReport.From(plan, whole.Results)), Does.Not.Contain("at least"));
         }
@@ -184,7 +337,7 @@ namespace Federator.Core.Tests
             GenericModelsPlan plan = Plan("A-ME.nwc", "A-ME2.nwc");
             string text = Text(GenericModelsReport.From(plan, new List<SetResult>()));
 
-            Assert.That(text, Does.Contain("note    : the text A-ME that finds the model A-ME is also in the text A-ME2"));
+            Assert.That(text, Does.Contain("note    : the text A-ME that finds the model A-ME is also in the text of the model A-ME2"));
         }
 
         [Test]
@@ -196,10 +349,32 @@ namespace Federator.Core.Tests
             Assert.That(text, Does.Not.Contain("items   :"));
         }
 
+        /// <summary>The block's title is typed once under src, so nothing else can spell it another way.</summary>
         [Test]
-        public void TheBlockHasOneTitleAndNothingElseSpellsIt()
+        public void TheBlockTitleIsTypedOnceUnderSrc()
         {
-            Assert.That(GenericModelsReport.BlockTitle, Is.EqualTo("GENERIC MODELS"));
+            int found = 0;
+
+            foreach (string file in Directory.GetFiles(System.IO.Path.Combine(Samples.Repo(), "src"), "*.cs", SearchOption.AllDirectories))
+            {
+                if (file.IndexOf(System.IO.Path.DirectorySeparatorChar + "obj" + System.IO.Path.DirectorySeparatorChar, StringComparison.Ordinal) >= 0
+                    || file.IndexOf(System.IO.Path.DirectorySeparatorChar + "bin" + System.IO.Path.DirectorySeparatorChar, StringComparison.Ordinal) >= 0)
+                {
+                    continue;
+                }
+
+                string text = File.ReadAllText(file);
+
+                for (int at = text.IndexOf("\"" + GenericModelsReport.BlockTitle + "\"", StringComparison.Ordinal);
+                    at >= 0;
+                    at = text.IndexOf("\"" + GenericModelsReport.BlockTitle + "\"", at + 1, StringComparison.Ordinal))
+                {
+                    found++;
+                }
+            }
+
+            Assert.That(GenericModelsReport.BlockTitle, Is.Not.Empty);
+            Assert.That(found, Is.EqualTo(1));
         }
     }
 }

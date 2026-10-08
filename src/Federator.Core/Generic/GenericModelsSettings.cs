@@ -10,16 +10,17 @@ namespace Federator.Core.Generic
     /// setting and never a constant. A value that cannot work is refused where it is set.
     ///
     /// THE CATEGORY VALUE IS THE TOOL'S OWN READING AND NOT YET MEASURED ON 1A02MM AND 1A04PK. The
-    /// tool reads a category from the Category property of the Element tab and its list of 374
-    /// values holds Generic Models, the probe of 2026-09-20 counting 62 items of that category over
-    /// all ten C02 NWFs, docs\history\scan.md 5i. Whether the items of the two wave buildings carry it
-    /// there is UNKNOWN until the probe of the laptop lane reads them, and a value that differs is
-    /// changed here and nowhere else.
+    /// tool's list of 374 category values holds Generic Models, and the probe of 2026-09-20 counted
+    /// 62 items of that category over all ten C02 NWFs, docs\history\scan.md 5i. That probe read the
+    /// first property displayed as Category, Revit Category or Element Category on the item, so it is
+    /// not shown to be the property the client's file asks, LcRevitPropertyElementCategory of the
+    /// Element tab. Whether the items of the two wave buildings carry the value there is UNKNOWN until
+    /// the probe of the laptop lane reads them, and a value that differs is changed here and nowhere else.
     ///
     /// The two property names are not typed here: the category property is EmptySets.CategoryProperty
     /// and the Source File property is the one SilentMisses reads, each typed once under src. What this
-    /// class types once is the Element tab's own name and the words Navisworks shows for the
-    /// three, the way the client's matrix writes them.
+    /// class types is the Element tab's own name, which the add-in's ModelFactsReader also types, and
+    /// the words Navisworks shows for the three, the way the client's matrix writes them.
     /// </summary>
     public sealed class GenericModelsSettings
     {
@@ -32,8 +33,11 @@ namespace Federator.Core.Generic
         /// <summary>The name of the sheet in the group's workbook, the folder's own words.</summary>
         public const string DefaultSheetName = "Generic Models";
 
-        /// <summary>The Element tab, the category every Revit property of an item sits under, as the client's matrix writes it.</summary>
-        internal const string ElementCategoryInternalName = "LcRevitData_Element";
+        /// <summary>
+        /// The Element tab, the category every Revit property of an item sits under, as the client's matrix writes it.
+        /// Public so the add-in can read it where ModelFactsReader types the same word as ElementTab.
+        /// </summary>
+        public const string ElementCategoryInternalName = "LcRevitData_Element";
 
         internal const string ElementCategoryDisplayName = "Element";
 
@@ -59,7 +63,7 @@ namespace Federator.Core.Generic
 
         /// <summary>
         /// What the Category property of an item reads when it is a Generic Models item. Compared exactly
-        /// and never trimmed, the way every other value of a set is. Not blank.
+        /// and never trimmed, the way every other value of a set is. Not blank, and a value of spaces alone is blank.
         /// </summary>
         public string CategoryValue
         {
@@ -70,7 +74,7 @@ namespace Federator.Core.Generic
 
             set
             {
-                if (string.IsNullOrEmpty(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException("The category that names a Generic Models item cannot be blank.", "value");
                 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Federator.Core.Exchange;
 using Federator.Core.Naming;
 using Federator.Core.Sets;
@@ -24,6 +25,11 @@ namespace Federator.Core.Generic
 
         public GenericModelInput(string modelFile, string matchText)
         {
+            if (!string.IsNullOrEmpty(matchText) && string.IsNullOrWhiteSpace(matchText))
+            {
+                throw new ArgumentException("The text to find in a Source File cannot be only spaces.", "matchText");
+            }
+
             ModelFile = modelFile;
             MatchText = matchText;
         }
@@ -73,11 +79,11 @@ namespace Federator.Core.Generic
     /// answers to that file and not to whoever typed it.
     ///
     /// THE PLAN SAYS WHAT IT NOTICED AND NEVER ACTS ON IT. Two models of one name are one set, and the
-    /// plan says so. A model with no file name has no set, and the plan says so. A text that one model's
-    /// condition looks for and another model's file name also holds finds the other model's items too,
-    /// and the plan names both, because the count of the first is then the sum of the two, and two
-    /// models given the same text count the same items twice. Nothing is changed and nothing is left
-    /// out, Bader decides.
+    /// plan says so, and where the two were handed different texts it says the second is not looked for.
+    /// A model with no file name has no set, and the plan says so. A text that one model's condition looks
+    /// for and another model's text also holds finds the other model's items too, and the plan names both,
+    /// because the count of the first is then the sum of the two, and models given the same text count the
+    /// same items twice. Nothing is changed and nothing is left out, Bader decides.
     /// </summary>
     public sealed class GenericModelsPlan
     {
@@ -103,6 +109,12 @@ namespace Federator.Core.Generic
 
         /// <summary>What the plan noticed, a line each, the group's models never changed by it.</summary>
         public ReadOnlyCollection<string> Notes { get; private set; }
+
+        /// <summary>
+        /// True where the text of one set also finds the items another set finds, so the total over the sets is
+        /// not a count of items. The notes name which.
+        /// </summary>
+        public bool TextsMeet { get; private set; }
 
         /// <summary>What every set asks of the category, in the words a log carries.</summary>
         public string Asked
@@ -130,7 +142,7 @@ namespace Federator.Core.Generic
         /// <summary>The full path of the set of a model name, in the shape the picked file's sets are named.</summary>
         internal string PathOf(string modelName)
         {
-            return ExchangeReader.SelectionSetTreeRoot + "/" + Folder + "/" + modelName;
+            return new ExchangeReader().BuildPath(new List<string> { Folder }, modelName);
         }
 
         /// <summary>
@@ -151,9 +163,8 @@ namespace Federator.Core.Generic
                 return plan;
             }
 
-            Dictionary<string, string> named = new Dictionary<string, string>(ContainerName.StemComparer);
-            HashSet<string> shared = new HashSet<string>(ContainerName.StemComparer);
-            List<string> sharedNames = new List<string>();
+            Dictionary<string, SharedName> named = new Dictionary<string, SharedName>(ContainerName.StemComparer);
+            List<SharedName> sharedNames = new List<SharedName>();
             int nameless = 0;
 
             foreach (GenericModelInput model in models)
@@ -166,22 +177,29 @@ namespace Federator.Core.Generic
                     continue;
                 }
 
-                string firstSpelling;
+                string match = string.IsNullOrEmpty(model.MatchText) ? name : model.MatchText;
+                SharedName first;
 
-                if (named.TryGetValue(name, out firstSpelling))
+                if (named.TryGetValue(name, out first))
                 {
                     // Said by the spelling the set carries, the first, and once however many models share it.
-                    if (shared.Add(name))
+                    if (first.Models == 1)
                     {
-                        sharedNames.Add(firstSpelling);
+                        sharedNames.Add(first);
+                    }
+
+                    first.Models++;
+
+                    if (!string.Equals(first.Text, match, StringComparison.OrdinalIgnoreCase)
+                        && !first.OtherTexts.Contains(match, StringComparer.OrdinalIgnoreCase))
+                    {
+                        first.OtherTexts.Add(match);
                     }
 
                     continue;
                 }
 
-                named.Add(name, name);
-
-                string match = string.IsNullOrEmpty(model.MatchText) ? name : model.MatchText;
+                named.Add(name, new SharedName(name, match));
                 plan.sets.Add(new GenericModelSet(model.ModelFile, name, match, plan.SetOf(name, match, settings)));
             }
 
@@ -191,9 +209,23 @@ namespace Federator.Core.Generic
                     + " no file name, so " + (nameless == 1 ? "it has" : "they have") + " no Generic Models set");
             }
 
-            foreach (string name in sharedNames)
+            foreach (SharedName shared in sharedNames)
             {
-                plan.notes.Add("two models of the group are named " + name + ", so one set serves both and counts both");
+                if (shared.OtherTexts.Count > 0)
+                {
+                    plan.notes.Add(shared.Models + " models of the group are named " + shared.Name + " and were handed the texts "
+                        + shared.Text + " and " + string.Join(" and ", shared.OtherTexts)
+                        + ", so one set serves them and looks for " + shared.Text + " only, and the items that carry the others are not counted");
+                }
+                else if (shared.Models == 2)
+                {
+                    plan.notes.Add("two models of the group are named " + shared.Name + ", so one set serves both and counts both");
+                }
+                else
+                {
+                    plan.notes.Add(shared.Models + " models of the group are named " + shared.Name
+                        + ", so one set serves all of them and counts all of them");
+                }
             }
 
             plan.NoteTextsThatMeet();
@@ -228,42 +260,94 @@ namespace Federator.Core.Generic
         }
 
         /// <summary>
-        /// A set whose text another model's text holds, or two sets of one text, find items of more than
-        /// one model, which is said and not changed.
+        /// A set whose text another set's text holds, or two sets of one text, find items of more than one model,
+        /// which is said and not changed. One note for each text that is shared and one for each text that another
+        /// holds, however many models are in it, so n models of one text make one line and not n squared.
         /// </summary>
         private void NoteTextsThatMeet()
         {
+            HashSet<int> grouped = new HashSet<int>();
+
             for (int i = 0; i < sets.Count; i++)
             {
+                if (grouped.Contains(i))
+                {
+                    continue;
+                }
+
+                List<string> sameText = new List<string> { sets[i].ModelName };
+
+                for (int j = i + 1; j < sets.Count; j++)
+                {
+                    if (string.Equals(sets[i].MatchText, sets[j].MatchText, StringComparison.OrdinalIgnoreCase))
+                    {
+                        sameText.Add(sets[j].ModelName);
+                        grouped.Add(j);
+                    }
+                }
+
+                if (sameText.Count > 1)
+                {
+                    notes.Add("the models " + Joined(sameText) + " are " + (sameText.Count == 2 ? "both" : "all")
+                        + " found by the text " + sets[i].MatchText + ", so each of their sets can count the items of "
+                        + (sameText.Count == 2 ? "both" : "all of them"));
+                    TextsMeet = true;
+                }
+            }
+
+            for (int i = 0; i < sets.Count; i++)
+            {
+                List<string> holders = new List<string>();
+
                 for (int j = 0; j < sets.Count; j++)
                 {
-                    if (i == j)
-                    {
-                        continue;
-                    }
-
                     string inner = sets[i].MatchText;
                     string outer = sets[j].MatchText;
 
-                    if (string.Equals(inner, outer, StringComparison.OrdinalIgnoreCase))
+                    if (i != j
+                        && !string.Equals(inner, outer, StringComparison.OrdinalIgnoreCase)
+                        && outer.IndexOf(inner, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
-                        if (i < j)
-                        {
-                            notes.Add("the models " + sets[i].ModelName + " and " + sets[j].ModelName
-                                + " are both found by the text " + inner + ", so each of their sets counts the items of both");
-                        }
-
-                        continue;
-                    }
-
-                    if (outer.IndexOf(inner, StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        notes.Add("the text " + inner + " that finds the model " + sets[i].ModelName
-                            + " is also in the text " + outer + " of the model " + sets[j].ModelName
-                            + ", so the set of the first counts the items of both");
+                        holders.Add(sets[j].ModelName);
                     }
                 }
+
+                if (holders.Count > 0)
+                {
+                    notes.Add("the text " + sets[i].MatchText + " that finds the model " + sets[i].ModelName
+                        + " is also in the text of the " + (holders.Count == 1 ? "model " : "models ") + Joined(holders)
+                        + ", so the set of " + sets[i].ModelName + " can count the items of "
+                        + (holders.Count == 1 ? "that model" : "those models") + " too");
+                    TextsMeet = true;
+                }
             }
+        }
+
+        private static string Joined(IList<string> names)
+        {
+            return names.Count == 1
+                ? names[0]
+                : string.Join(", ", names.Take(names.Count - 1)) + " and " + names[names.Count - 1];
+        }
+
+        /// <summary>A model name more than one model of the group carries, and the texts those models were handed.</summary>
+        private sealed class SharedName
+        {
+            public SharedName(string name, string text)
+            {
+                Name = name;
+                Text = text;
+                Models = 1;
+                OtherTexts = new List<string>();
+            }
+
+            public string Name { get; private set; }
+
+            public string Text { get; private set; }
+
+            public int Models { get; set; }
+
+            public List<string> OtherTexts { get; private set; }
         }
     }
 }

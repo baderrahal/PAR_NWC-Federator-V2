@@ -108,7 +108,7 @@ lane's to set in the tracker.
 | F119 | The two Core points the readers of 148 left that a test proves. The RETAIN line counted a .tsv it could not delete in the number of logs it could not delete, so two refused .tsv read as two logs that stayed. It now counts them apart, on the one seam that writes the sentence, RunLog.RetainLine, and adds nothing about a refused .tsv unless one was refused, so the part the loop's harness matches is unchanged, and the wiring is held by a Windows only test that holds a .tsv open. A run counted to now, one that started and never finished, printed an after the run finished row of 0.0 seconds in its timing block, which reads as a measurement. It now says the time after the run is not measured and prints no row, and a run that finished keeps its row. 3 new tests, the first not building against main's source because RetainLine is new, the second failing on it, and the third, which holds PruneOldLogs's wiring with a .tsv held open, running on Windows only and so unrun here. FR-057's disk half is not in this pull request. Core tests 2418 run, 2385 passed, 0 failed, 33 skipped before, 2421 run, 2387 passed, 0 failed, 34 skipped after, the one more skipped being the Windows only test | 168 | merged, a3681a3 |
 | F119 | FR-057's disk half, second attempt. A write to the log file that threw, a full disk or a handle gone, came out of Line and stopped the run, and the failure lines that would have reported it hit the same write. Now the write is in a try in WriteRaw. The line is kept in memory and told to the window, one LOG line says the file stopped taking lines with what threw, IsWritingToDisk reads false and the label says the lines since then are in the window only without a framework message, and the run goes on. ReadAll gives the lines held in memory, TryCopyTo writes a copy from memory and says so, the RESULT size of the .log says the file is short, and Dispose closes the writer and the stream each on its own so a flush that fails leaves no handle open. A first line that cannot be written counts as a failed open, so StartOrDisabled tries the next folder as it did when the write threw out of Line, with the cause in the message and the empty file taken away, which no test shows, since a disk will not fail on the first line on demand. A copy of a log that was only closed now works, where main refused it. 5 new tests, made with a closed stream through the one private field and, for Dispose, a stream whose flush throws, all failing on main's source. Core tests 2421 run, 2387 passed, 0 failed, 34 skipped before, 2426 run, 2392 passed, 0 failed, 34 skipped after. One reviewer read it twice over and its findings are in | 169 | merged, 91fd78d |
 | F115 | Words and polish the readers of 142 and 144 left, no behaviour changed. The Asked property of SetResult carried two summary elements in a row and now one. The comment in EmptySets that called the measured lists the whole project, 374 categories and 39 worksets, says the judge adds the worksets this group's models carry and the spellings of the list beside the picked file. Nine assertions that set a ReadOnlyCollection against an array or a list, in EmptySetsTests, SetBuildPlanTests, InfraSetsFileTests and MatrixCorrectionsTests, copy it into a list first, as the same files already do, so that the lists are compared element by element as the rules of the tests ask, and compare as strictly as before. No new test, since no behaviour moves and the sets tests hold it. Core tests 2426 run, 2392 passed, 0 failed, 34 skipped, as before | 170 | merged, 16d1e55 |
-| F128 | The Core part of FR-177, generic models, taken first by Bader's order of 8 Oct 2026 over the blocked judgement of the night before. GenericModelsSettings holds the value of the Category property, the folder and the sheet name as settings with their defaults, each refused where it is set if it cannot work. GenericModelsPlan.For gives one planned set for each model of a group, named after the model's file, in the folder Generic Models, with the two conditions the client's own file writes, the category equals the value and the Source File contains the model's text, in one group so they are ANDed, and notes what it noticed, a model with no name, two models of one name and a text that finds another model's items, and changes none of it. ToBuildPlan hands the sets to the plan the set builder already takes, through the new SetBuildPlan.Of, so nothing reads a second shape. GenericModelsReport reads the sets' results, one count for each model, a model whose count nobody took being UNKNOWN with why and never nought, the total being at least that where any was not counted, and writes the GENERIC MODELS block's lines. GenericSheet.Rows and Write are the one shape of the sheet, models with items first, then the ones not counted, none for a model at nought. The conditions are held against the client's corrected matrix by a test, so the plan answers to that file. 35 new tests in three files, none of which builds against main's source, since every class they read is new. Core tests 2427 run, 2393 passed, 0 failed, 34 skipped before, 2462 run, 2428 passed, 0 failed, 34 skipped after. UNKNOWN until the laptop lane measures it: the value of the Category property that Generic Models items carry in 1A02MM and 1A04PK, and whether their Source File holds the NWC's name or the Revit file's. No member is called from src yet, the add-in half being the laptop lane's, and Bader's order of 8 Oct keeps them past Q26 | 171 | in review |
+| F128 | The Core part of FR-177, generic models, taken first by Bader's order of 8 Oct 2026 over the blocked judgement of the night before. GenericModelsSettings holds the value of the Category property, the folder and the sheet name as settings with their defaults, each refused where it is set if it cannot work. GenericModelsPlan.For gives one planned set for each model of a group, named after the model's file, in the folder Generic Models, with the two conditions the client's own file writes, the category equals the value and the Source File contains the model's text, in one group so they are ANDed, and notes what it noticed, a model with no name, two models of one name and a text that finds another model's items, and changes none of it. ToBuildPlan hands the sets to the plan the set builder already takes, through the new SetBuildPlan.Of, so nothing reads a second shape. GenericModelsReport reads the sets' results, one count for each model, a model whose count nobody took being UNKNOWN with why and never nought, the total being at least that where any was not counted and being no count of items where the texts of some sets meet, a set already in the document that asks another question than the plan's being not counted, and writes the GENERIC MODELS block's lines with a line on what a nought can mean. GenericSheet.Rows and Write are the one shape of the sheet, models with items first, then the ones not counted, none for a model at nought. The conditions are held against the client's matrix by a test, so the plan answers to that file. 35 new tests in three files, none of which builds against main's source, since every class they read is new, and a reader and a breaker read it, whose findings are fixed with 14 more tests, five of which fail when the code behind them is taken out. Core tests 2427 run, 2393 passed, 0 failed, 34 skipped before, 2476 run, 2442 passed, 0 failed, 34 skipped after. UNKNOWN until the laptop lane measures it: the value of the Category property that Generic Models items carry in 1A02MM and 1A04PK, and whether their Source File holds the NWC's name or the Revit file's. No member is called from src yet, the add-in half being the laptop lane's, and Bader's order of 8 Oct keeps them past Q26 | 171 | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -221,8 +221,10 @@ What the laptop lane measures first, with tools\probes and the guarded start of 
 
 1. The value the Category property of an item reads for a Generic Models item in 1A02MM and 1A04PK.
    The tool's own list holds Generic Models and the probe of 2026-09-20 counted 62 such items over the
-   ten C02 NWFs, which says nothing of these two buildings. If it differs, GenericModelsSettings.CategoryValue
-   is the one place to change, and nothing else is.
+   ten C02 NWFs, reading the first property displayed as Category, Revit Category or Element Category on
+   the item, which says nothing of these two buildings and does not show it was the property the client's
+   file asks. If it differs, GenericModelsSettings.CategoryValue is the one place to change, and nothing
+   else is.
 2. Whether the Source File of an item holds the NWC's stem or the name of the Revit file it came from.
    The first is what the plan looks for, and a model whose items hold the second is found by handing the
    plan that text as the MatchText of its GenericModelInput, which the add-in reads off the model.
@@ -231,28 +233,52 @@ What the laptop lane measures first, with tools\probes and the guarded start of 
 
 What the add-in must be careful of, found by reading SetBuilder and SetLeftovers and not by running them:
 
-- The leftover walk. HandleLeftovers names the sets of the picked file and hands the document's sets to
-  SetLeftovers.For, which treats every set the file does not name as a leftover, and with the rebuild
-  box ticked it removes or renames one. The next run finds the Generic Models sets in the NWF the previous
-  run saved, so they would be removed as leftovers if they are built into the same document through the
-  same call. They have to be built after the leftover walk, or their names handed to it as wanted. Which of the
-  two the builder allows is for the laptop lane to read.
+- The leftover walk, in both directions. HandleLeftovers names the sets of the plan it is given and hands the
+  document's sets to SetLeftovers.For, which treats every set that plan does not name as a leftover, and with
+  the rebuild box ticked it removes or renames one. So the picked file's call finds the Generic Models sets,
+  which the previous run saved in the NWF, and removes them, and a call that builds the Generic Models plan
+  finds every set of the picked file that no created test points at and removes those, an empty Generic Models
+  plan with nothing named removing every set with no sides. The second is the worse, since it takes sets of
+  the client's matrix. The Generic Models sets have to be built through a call that does not walk the leftovers,
+  or the walk has to be handed the names of both plans as wanted. Which of the two the builder allows is for
+  the laptop lane to read, and it is read from SetBuilder.Build, lines 610 to 613 and 633 to 647 on 8 Oct 2026.
 - A SetBuildOutcome of their own. The EMPTY SETS judge and SETS ACROSS THE RUN read the outcome of the picked
-  file's sets, and a Generic Models set at nought is a model that holds no Generic Models, which is the
-  ordinary answer and not a finding. Putting them in that outcome would name them as sets nobody should have left empty.
+  file's sets, and a Generic Models set at nought is a model that found no item of the category with its
+  text, which is also what a wrong category value or a wrong text gives, so it is not a finding about the
+  set. Putting them in that outcome would name them as sets nobody should have left empty.
+- The question of a set already there. A set in the NWF keeps the question it was built with unless the
+  rebuild box is ticked, so after the category value or the text is changed it asks the old one.
+  GenericModelsReport.From reads SetResult.Asked of a present set and counts it as not counted, with both
+  questions, where it differs from the plan's, and where it is empty. SetBuilder sets it to what the
+  document's set asks, SetBuilder.cs line 814, and the add-in must keep doing that for these sets.
+- The model's text. A model's text is found by contains, and whether Navisworks compares it without case,
+  and whether the Source File of an item is a bare name or a full path, are UNKNOWN. A path that holds a
+  folder named like a model's stem would count every item under it. The block says what a nought can mean
+  and the plan names the texts that meet, and neither can see a text that meets a path.
+- The file name that two models share. Two models of one stem are one set, which the plan says, and the
+  second model's text is not looked for when it differs, which the plan says too. Whether Navisworks keeps
+  two sets whose names differ by case alone is UNKNOWN, and the plan treats the names as one without case
+  while SetBuilder finds a set by its name exactly, so a model whose file changes its case between runs
+  would be a second set.
+- The cost. Each model is a search of the whole document, and FindSelectionSet walks a folder once for
+  each set. With one file for everything the folder holds a set for every model of the run. Nothing here
+  was timed, so the seconds are UNKNOWN until the sets step is timed on a real group.
+- The category name. LcRevitData_Element is public in GenericModelsSettings since the readers found
+  ModelFactsReader typing it a second time as ElementTab, and the add-in can read it from there.
 - The NWF save. Creating a set asks for the save, FR-020, so the sets step must say that a Generic Models set
   created counts, or the NWF is saved without them and the next run creates them again.
 - No clash test. Nothing here makes a test, and the block says so. The count is of items, which are the
   elements the set finds and not the Revit elements, and the block says items.
-- The sheet. Bader's decision under Q46 makes the Coverage sheet the second and last sheet and the
-  workbook check allows nothing after it, FR-200. A third sheet breaks that, and a workbook of its own for
+- The sheet. FR-200, his request 2 under Q112, makes the Coverage sheet the second and last sheet and the
+  workbook check allows nothing after it. A third sheet breaks that, and a workbook of its own for
   the group, as Q126 B gives the Coverage sheet where the clash is skipped, breaks nothing. It is for Bader
   to choose and GenericSheet.Write takes the workbook it is handed, so either way is the same call.
   WorkbookWriter is a file fix-F132 changes and WorkbookCheck allows two sheets, so both are the laptop lane's.
 - The rule lines. .claude\rules\core.md has no line for this part, and lane B never edits that folder.
   The lines to write are that the sheet is named by GenericModelsSettings, that a count nobody took is
-  UNKNOWN and never nought, that the total says at least over one, and that a model at nought is left out
-  of the list and counted in the line above it.
+  UNKNOWN and never nought, that the total says at least over one and says it is not a count of items where
+  the texts of some sets meet, and that a model at nought is left out of the list, counted in the line above
+  it and followed by a line saying what a nought can mean.
 
 The members have no caller in src until the add-in half, which the no member without a caller rule would
 delete, and Bader's order of 8 Oct 2026 keeps them. They go with Q26's list until the add-in half calls them.

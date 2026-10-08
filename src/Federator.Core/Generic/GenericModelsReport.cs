@@ -63,6 +63,7 @@ namespace Federator.Core.Generic
         {
             Asked = plan.Asked;
             Notes = plan.Notes;
+            SetsOverlap = plan.TextsMeet;
             Counts = new ReadOnlyCollection<GenericModelCount>(counts);
         }
 
@@ -71,6 +72,25 @@ namespace Federator.Core.Generic
 
         /// <summary>What the plan noticed, a line each.</summary>
         public ReadOnlyCollection<string> Notes { get; private set; }
+
+        /// <summary>
+        /// True where the text of one set also finds the items another set finds, so an item can be in two
+        /// counts and the total over the sets is not a count of items.
+        /// </summary>
+        public bool SetsOverlap { get; private set; }
+
+        /// <summary>
+        /// What a count of nought means, said under the models line wherever one model was counted at nought, because
+        /// a model left out of the list is also one whose items carry another text than the one looked for, and the
+        /// output cannot tell the two apart.
+        /// </summary>
+        public const string NoughtMeans =
+            "a model counted at nought holds no item of the category whose Source File contains the text its set looks for, "
+            + "which is its file name without the extension unless another text was handed in";
+
+        /// <summary>Said beside NoughtMeans where every model was counted at nought, because that is also the count a wrong question gives.</summary>
+        public const string EveryModelAtNought =
+            "every model was counted at nought, which is also the count a category value or a Source File text that no item carries gives";
 
         /// <summary>Every model of the group, in the plan's order, counted or not.</summary>
         public ReadOnlyCollection<GenericModelCount> Counts { get; private set; }
@@ -89,7 +109,10 @@ namespace Federator.Core.Generic
         /// <summary>The models whose count nobody took.</summary>
         public int NotCounted { get; private set; }
 
-        /// <summary>The items of the models that were counted. A lower bound where any model was not.</summary>
+        /// <summary>
+        /// The items of the models that were counted, added over the sets. A lower bound where any model was not,
+        /// and not a count of items where SetsOverlap, because an item two sets find is in both counts.
+        /// </summary>
         public long Items { get; private set; }
 
         /// <summary>
@@ -151,6 +174,17 @@ namespace Federator.Core.Generic
                 {
                     count = new GenericModelCount(model.ModelName, GenericModelCount.NotCountedItems, "the count of its set was not taken");
                 }
+                else if (found[0].Present && string.IsNullOrEmpty(found[0].Asked))
+                {
+                    count = new GenericModelCount(model.ModelName, GenericModelCount.NotCountedItems,
+                        "its set was already in the document and the question it asks was not read, so its count may answer another question");
+                }
+                else if (found[0].Present && !string.Equals(found[0].Asked, model.Set.Describe(), StringComparison.Ordinal))
+                {
+                    count = new GenericModelCount(model.ModelName, GenericModelCount.NotCountedItems,
+                        "its set was already in the document and asks something other than the plan asks (it asks: "
+                        + found[0].Asked + ". the plan asks: " + model.Set.Describe() + "), so its count answers another question");
+                }
                 else
                 {
                     count = new GenericModelCount(model.ModelName, found[0].ItemCount, null);
@@ -183,7 +217,7 @@ namespace Federator.Core.Generic
 
         /// <summary>
         /// The GENERIC block: what was asked, how many models of each kind, the items in all, each model
-        /// that holds some with its count, each model not counted with why, the plan's notes, and that no
+        /// that found some with its count, each model not counted with why, the plan's notes, and that no
         /// clash test is made for these sets. A model counted at nought is in the line above and not in the list.
         /// </summary>
         public IList<string> Lines()
@@ -198,12 +232,20 @@ namespace Federator.Core.Generic
             }
             else
             {
-                lines.Add("models  : " + Counted(counts.Count, "model", "models") + " in this group, "
-                    + WithItems + " hold some, " + WithNone + " hold none and are left out, "
+                lines.Add("models  : " + counts.Count + (counts.Count == 1 ? " model" : " models") + " in this group, "
+                    + WithItems + " found some, " + WithNone + " found none and are left out, "
                     + NotCounted + (NotCounted == 1 ? " was" : " were") + " not counted");
-                lines.Add("items   : " + (NotCounted > 0 ? "at least " : string.Empty)
-                    + Items.ToString("#,##0", CultureInfo.InvariantCulture) + " in all"
-                    + (NotCounted > 0 ? ", which is the models counted and not the ones that were not" : string.Empty));
+                lines.Add("items   : " + ItemsPhrase());
+
+                if (WithNone > 0)
+                {
+                    lines.Add("nought  : " + NoughtMeans);
+                }
+
+                if (WithNone == counts.Count)
+                {
+                    lines.Add("nought  : " + EveryModelAtNought);
+                }
             }
 
             foreach (GenericModelCount count in counts)
@@ -231,9 +273,27 @@ namespace Federator.Core.Generic
             return lines;
         }
 
-        private static string Counted(int count, string one, string many)
+        /// <summary>
+        /// The total said as what it is. Where the texts of some sets meet it is not a count of items and not a
+        /// lower bound, because an item two sets find is in both counts.
+        /// </summary>
+        private string ItemsPhrase()
         {
-            return count + " " + (count == 1 ? one : many);
+            string total = Items.ToString("#,##0", CultureInfo.InvariantCulture);
+
+            if (NotCounted == counts.Count)
+            {
+                return Unknown + ", no model was counted";
+            }
+
+            if (SetsOverlap)
+            {
+                return total + " added over the sets, which is not a count of items, because the texts of some sets meet and an item"
+                    + " both find is in both counts" + (NotCounted > 0 ? ", and the models not counted are not in it" : string.Empty);
+            }
+
+            return (NotCounted > 0 ? "at least " : string.Empty) + total + " in all"
+                + (NotCounted > 0 ? ", which is the models counted and not the ones that were not" : string.Empty);
         }
     }
 }

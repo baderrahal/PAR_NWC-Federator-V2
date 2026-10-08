@@ -47,7 +47,7 @@ namespace Federator.Core.Tests
 
             for (int i = 0; i < counts.Length; i++)
             {
-                outcome.AddAlreadyPresent(plan.Sets[i].Set.Path, "model" + i, 2, counts[i]);
+                outcome.AddAlreadyPresent(plan.Sets[i].Set.Path, "model" + i, 2, counts[i]).Asked = plan.Sets[i].Set.Describe();
             }
 
             return GenericModelsReport.From(plan, outcome.Results);
@@ -83,7 +83,7 @@ namespace Federator.Core.Tests
                 Assert.That(sheet.Cell(1, 1).GetString(), Is.EqualTo(GenericSheet.Title));
                 Assert.That(sheet.Cell(2, 1).GetString(), Is.EqualTo("Group: 100000"));
                 Assert.That(sheet.Cell(2, 2).GetString(), Does.StartWith("Category equals \"Generic Models\""));
-                Assert.That(sheet.Cell(3, 1).GetString(), Does.Contain("3 models: 2 hold some, 1 hold none and are left out, 0 not counted. 15 items in all"));
+                Assert.That(sheet.Cell(3, 1).GetString(), Does.Contain("3 models: 2 found some, 1 found none and are left out, 0 not counted. 15 items in all"));
             }
         }
 
@@ -115,7 +115,7 @@ namespace Federator.Core.Tests
             GenericModelsPlan plan = GenericModelsPlan.For(
                 new[] { new GenericModelInput("a.nwc"), new GenericModelInput("b.nwc") }, new GenericModelsSettings());
             SetBuildOutcome outcome = new SetBuildOutcome();
-            outcome.AddAlreadyPresent(plan.Sets[0].Set.Path, "a", 2, 7);
+            outcome.AddAlreadyPresent(plan.Sets[0].Set.Path, "a", 2, 7).Asked = plan.Sets[0].Set.Describe();
             GenericModelsReport report = GenericModelsReport.From(plan, outcome.Results);
 
             using (XLWorkbook workbook = Written(report, "Generic Models"))
@@ -146,8 +146,93 @@ namespace Federator.Core.Tests
                     column.Add(sheet.Cell(row, 1).GetString());
                 }
 
-                Assert.That(column, Has.Some.StartWith("note: the text A-ME that finds the model A-ME is also in the text A-ME2"));
+                Assert.That(column, Has.Some.StartWith("note: the text A-ME that finds the model A-ME is also in the text of the model A-ME2"));
                 Assert.That(column[column.Count - 1], Is.EqualTo("No clash test is made for these sets"));
+            }
+        }
+
+        private static List<string> FirstColumn(IXLWorksheet sheet)
+        {
+            List<string> column = new List<string>();
+
+            for (int row = 1; row <= sheet.LastRowUsed().RowNumber(); row++)
+            {
+                column.Add(sheet.Cell(row, 1).GetString());
+            }
+
+            return column;
+        }
+
+        /// <summary>
+        /// A nought is also what a text that no item carries gives, so the sheet says what it can mean, and says more
+        /// where every model is at nought. The break: with every model holding items neither note is there.
+        /// </summary>
+        [Test]
+        public void ANoughtIsSaidToMeanWhatItCanMeanAndNothingIsSaidWhereNoModelIsAtNought()
+        {
+            using (XLWorkbook workbook = Written(Report(0, 0), "Generic Models"))
+            {
+                List<string> column = FirstColumn(workbook.Worksheet(2));
+
+                Assert.That(column, Has.Some.EqualTo("note: " + GenericModelsReport.NoughtMeans));
+                Assert.That(column, Has.Some.EqualTo("note: " + GenericModelsReport.EveryModelAtNought));
+                Assert.That(workbook.Worksheet(2).Cell(3, 1).GetString(), Does.Contain("2 found none and are left out"));
+            }
+
+            using (XLWorkbook workbook = Written(Report(4, 5), "Generic Models"))
+            {
+                Assert.That(FirstColumn(workbook.Worksheet(2)), Has.None.Contain("counted at nought"));
+            }
+        }
+
+        [Test]
+        public void ATotalOverNoCountIsUnknownAndOneOverSetsThatMeetIsNotACountOfItems()
+        {
+            GenericModelsPlan plan = GenericModelsPlan.For(
+                new[] { new GenericModelInput("a.nwc"), new GenericModelInput("b.nwc") }, new GenericModelsSettings());
+
+            Assert.That(GenericSheet.Summary(GenericModelsReport.From(plan, null)), Does.EndWith("2 not counted. UNKNOWN items, no model was counted"));
+
+            GenericModelsPlan meet = GenericModelsPlan.For(
+                new[] { new GenericModelInput("A-ME.nwc"), new GenericModelInput("A-ME2.nwc") }, new GenericModelsSettings());
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddAlreadyPresent(meet.Sets[0].Set.Path, "A-ME", 2, 1400).Asked = meet.Sets[0].Set.Describe();
+            outcome.AddAlreadyPresent(meet.Sets[1].Set.Path, "A-ME2", 2, 400).Asked = meet.Sets[1].Set.Describe();
+
+            string summary = GenericSheet.Summary(GenericModelsReport.From(meet, outcome.Results));
+
+            Assert.That(summary, Does.EndWith("1,800 items added over the sets, which is not a count of items, because the texts of some sets meet"));
+            Assert.That(summary, Does.Not.Contain("in all"));
+        }
+
+        /// <summary>A model name is text on the sheet exactly as the file carries it, whatever its first character.</summary>
+        [Test]
+        public void AModelNameIsWrittenAsTheFileCarriesItWhateverItStartsWith()
+        {
+            string[] names = { "'quoted", "=sum", "+plus", "007", "1-2" };
+            List<GenericModelInput> models = new List<GenericModelInput>();
+
+            foreach (string name in names)
+            {
+                models.Add(new GenericModelInput(name + ".nwc"));
+            }
+
+            GenericModelsPlan plan = GenericModelsPlan.For(models, new GenericModelsSettings());
+            SetBuildOutcome outcome = new SetBuildOutcome();
+
+            for (int i = 0; i < names.Length; i++)
+            {
+                outcome.AddAlreadyPresent(plan.Sets[i].Set.Path, names[i], 2, i + 1).Asked = plan.Sets[i].Set.Describe();
+            }
+
+            using (XLWorkbook workbook = Written(GenericModelsReport.From(plan, outcome.Results), "Generic Models"))
+            {
+                List<string> column = FirstColumn(workbook.Worksheet(2));
+
+                foreach (string name in names)
+                {
+                    Assert.That(column, Has.Some.EqualTo(name), name);
+                }
             }
         }
 
@@ -184,6 +269,18 @@ namespace Federator.Core.Tests
                 Does.Contain("the report's own sheet is named generic models"));
             Assert.That(GenericSheet.WhyRefused(ReportSheet, "GENERIC MODELS", "Generic Models"),
                 Does.Contain("the Coverage sheet is named GENERIC MODELS"));
+        }
+
+        /// <summary>
+        /// A name with a space at its end is written without it, so it meets the sheet it matches, and is refused
+        /// here and not met by the workbook as a duplicate. The break: the same name beside other sheets is not.
+        /// </summary>
+        [Test]
+        public void AnEdgeSpaceDoesNotHideTwoSheetsOfOneName()
+        {
+            Assert.That(GenericSheet.WhyRefused(ReportSheet, "Coverage", "Coverage "), Does.Contain("the Coverage sheet is named Coverage"));
+            Assert.That(GenericSheet.WhyRefused(ReportSheet, "Coverage", " Generic"), Is.Null);
+            Assert.That(GenericSheet.WhyRefused("Generic ", "Coverage", "Generic"), Does.Contain("the report's own sheet is named Generic "));
         }
 
         [Test]
