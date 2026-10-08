@@ -244,7 +244,8 @@ namespace Federator.Core.Coverage
             lines.Add(CheckedLabel + compared + " compared, " + Agree + " agree, " + Failed + " FAILED in "
                 + GroupsWithAFailedLine + " of " + Count(Groups, "group", "groups") + ", " + NotCompared
                 + " not compared" + neither + notChecked + ", every group keeps its own result, "
-                + Count(compared + NotCompared + HeldByNeither, "test", "tests") + " judged in all");
+                + Count(compared + NotCompared + HeldByNeither, "test place", "test places")
+                + " in the groups checked, a test once for each group it is in");
             AddNotInTheXml(lines);
 
             int shown = 0;

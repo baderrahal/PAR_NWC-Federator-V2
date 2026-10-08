@@ -81,6 +81,11 @@ namespace Federator.Core.Sets
         private readonly Dictionary<string, SetAcrossTheRun> byPath =
             new Dictionary<string, SetAcrossTheRun>(StringComparer.Ordinal);
 
+        // Paths whose count was not taken in some group. One that is never counted in any group is in
+        // byPath nowhere, and the block says how many there are, so a set that failed in every group
+        // is not left out of a sentence that says every set found something.
+        private readonly HashSet<string> notCountedSomewhere = new HashSet<string>(StringComparer.Ordinal);
+
         /// <summary>
         /// How many are named before the count takes over, nought for every one. It was a
         /// constant TEN that F82 chose for a reason its log entry does not say, and set 03's
@@ -149,56 +154,98 @@ namespace Federator.Core.Sets
 
             Groups++;
 
-            // A path is one set in a group however many sets of that name the group holds, so the
-            // group is counted once for it, and at zero only where every set of that path found
-            // nothing there. Two sets of one name read as two groups, 2 of 2 in a run of one.
+            // A path is one set in a group however many sets of that name the group holds, so the group
+            // is counted once for it. It found something where any set of that path did. It is at zero
+            // only where every set of that path was counted and found nothing, and where the rest found
+            // nothing and one was not counted the group is left out for that path, since the one not
+            // counted may have found something. Two sets of one name read as two groups before, 2 of 2
+            // in a run of one.
             List<string> inThisGroup = new List<string>();
-            Dictionary<string, bool> allAtZero = new Dictionary<string, bool>(StringComparer.Ordinal);
+            Dictionary<string, PathInAGroup> here = new Dictionary<string, PathInAGroup>(StringComparer.Ordinal);
 
             foreach (SetResult result in outcome.Results)
             {
-                if (result == null || result.ItemCount < 0)
+                if (result == null || result.Path == null)
                 {
-                    // Minus one is UNKNOWN and never zero. A set that failed to resolve
-                    // says nothing about what it would have found.
                     continue;
                 }
 
-                SetAcrossTheRun set;
+                PathInAGroup state;
 
-                if (!byPath.TryGetValue(result.Path, out set))
+                if (!here.TryGetValue(result.Path, out state))
                 {
-                    set = new SetAcrossTheRun(result.Path, result.Name);
-                    byPath.Add(result.Path, set);
-                    order.Add(result.Path);
-                }
-
-                bool zeroSoFar;
-
-                if (!allAtZero.TryGetValue(result.Path, out zeroSoFar))
-                {
+                    state = new PathInAGroup(result.Name);
+                    here.Add(result.Path, state);
                     inThisGroup.Add(result.Path);
-                    zeroSoFar = true;
                 }
 
-                allAtZero[result.Path] = zeroSoFar && result.ItemCount == 0;
+                if (result.ItemCount < 0)
+                {
+                    // Minus one is UNKNOWN and never zero. A set that failed to resolve
+                    // says nothing about what it would have found.
+                    state.NotCounted = true;
+                    continue;
+                }
+
+                if (result.ItemCount > 0)
+                {
+                    state.FoundItems = true;
+                }
 
                 if (!string.IsNullOrEmpty(result.Asked))
                 {
-                    set.Asked = result.Asked;
+                    state.Asked = result.Asked;
                 }
             }
 
             foreach (string path in inThisGroup)
             {
-                SetAcrossTheRun set = byPath[path];
+                PathInAGroup state = here[path];
+
+                if (state.NotCounted && !state.FoundItems)
+                {
+                    notCountedSomewhere.Add(path);
+                    continue;
+                }
+
+                SetAcrossTheRun set;
+
+                if (!byPath.TryGetValue(path, out set))
+                {
+                    set = new SetAcrossTheRun(path, state.Name);
+                    byPath.Add(path, set);
+                    order.Add(path);
+                }
+
                 set.GroupsSeen = set.GroupsSeen + 1;
 
-                if (allAtZero[path])
+                if (!state.FoundItems)
                 {
                     set.GroupsAtZero = set.GroupsAtZero + 1;
                 }
+
+                if (!string.IsNullOrEmpty(state.Asked))
+                {
+                    set.Asked = state.Asked;
+                }
             }
+        }
+
+        /// <summary>One set path as one group read it, before the group is counted.</summary>
+        private sealed class PathInAGroup
+        {
+            internal PathInAGroup(string name)
+            {
+                Name = name;
+            }
+
+            internal string Name { get; private set; }
+
+            internal bool FoundItems { get; set; }
+
+            internal bool NotCounted { get; set; }
+
+            internal string Asked { get; set; }
         }
 
         /// <summary>
@@ -214,7 +261,7 @@ namespace Federator.Core.Sets
             IList<SetAcrossTheRun> nowhere = FoundNothingAnywhere();
 
             // A set whose count was not taken in some groups found nothing in every group it was
-            // looked at in, which is fewer than the groups of the run, and each such line says so.
+            // looked at in, which is fewer than the groups counted here, and its line says so.
             int partial = 0;
 
             foreach (SetAcrossTheRun set in nowhere)
@@ -225,11 +272,27 @@ namespace Federator.Core.Sets
                 }
             }
 
+            int neverCounted = 0;
+
+            foreach (string path in notCountedSomewhere)
+            {
+                if (!byPath.ContainsKey(path))
+                {
+                    neverCounted++;
+                }
+            }
+
             lines.Add("groups in this run : " + Groups);
             lines.Add("sets looked at     : " + byPath.Count);
+
+            if (neverCounted > 0)
+            {
+                lines.Add("sets never counted in any group : " + neverCounted + ", in none of the numbers here");
+            }
+
             lines.Add("found nothing in every group : " + nowhere.Count
                 + (partial > 0
-                    ? ", " + partial + " of them looked at in fewer groups than the run held, said on their lines"
+                    ? ", " + partial + " of them looked at in fewer than the " + Groups + " groups above"
                     : string.Empty));
 
             int shown = 0;
@@ -271,7 +334,9 @@ namespace Federator.Core.Sets
             }
             else if (nowhere.Count == 0)
             {
-                lines.Add("Every set found something somewhere.");
+                lines.Add(neverCounted > 0
+                    ? "Every set that was counted found something somewhere."
+                    : "Every set found something somewhere.");
             }
 
             return lines;
@@ -287,7 +352,7 @@ namespace Federator.Core.Sets
 
             foreach (SetAcrossTheRun set in All())
             {
-                rows.Add(new SetRunRow(set.Path, set.GroupsAtZero, set.GroupsSeen));
+                rows.Add(new SetRunRow(set.Path, set.GroupsAtZero, set.GroupsSeen, Groups));
             }
 
             return rows;
@@ -297,11 +362,15 @@ namespace Federator.Core.Sets
     /// <summary>One row of the run tally, for the machine readable log.</summary>
     public sealed class SetRunRow
     {
-        internal SetRunRow(string path, int groupsAtZero, int groupsSeen)
+        // The groups the block counted, so a set looked at in fewer says so in its row as in the block.
+        private readonly int groupsInTheRun;
+
+        internal SetRunRow(string path, int groupsAtZero, int groupsSeen, int groupsInTheRun)
         {
             Path = path;
             GroupsAtZero = groupsAtZero;
             GroupsSeen = groupsSeen;
+            this.groupsInTheRun = groupsInTheRun;
         }
 
         public string Path { get; private set; }
@@ -314,7 +383,10 @@ namespace Federator.Core.Sets
         public string Phrase()
         {
             return "found nothing in " + GroupsAtZero + " of " + GroupsSeen
-                + (GroupsSeen == 1 ? " group" : " groups");
+                + (GroupsSeen == 1 ? " group" : " groups")
+                + (GroupsSeen < groupsInTheRun
+                    ? ", looked at in " + GroupsSeen + " of " + groupsInTheRun + " groups only"
+                    : string.Empty);
         }
     }
 }

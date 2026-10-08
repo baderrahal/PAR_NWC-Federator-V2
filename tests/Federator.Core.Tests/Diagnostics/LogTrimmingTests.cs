@@ -547,9 +547,9 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// A set whose count was not taken in some groups was looked at in fewer groups than the run held,
-        /// so found nothing in every group it was looked at in is not found nothing in every group of the
-        /// run. The line says over how many, and the header says how many sets that is.
+        /// A set whose count was not taken in some groups was looked at in fewer groups than the block counts,
+        /// so found nothing in every group it was looked at in is not found nothing in every group. The line
+        /// says over how many, the header says how many sets that is, and so does the row of the .tsv.
         /// </summary>
         [Test]
         public void ASetLookedAtInFewerGroupsThanTheRunHeldSaysSoOnItsLine()
@@ -566,12 +566,90 @@ namespace Federator.Core.Tests
 
             string all = string.Join("\n", new List<string>(run.Lines()).ToArray());
 
-            Assert.That(all, Does.Contain("found nothing in every group : 2, 1 of them looked at in fewer groups than the run held"));
+            Assert.That(all, Does.Contain("found nothing in every group : 2, 1 of them looked at in fewer than the 5 groups above"));
             Assert.That(all, Does.Contain("tree/partial  asked UNKNOWN, and its search would not read, which is a fault in the set and not in this block, looked at in 3 of 5 groups only"));
 
             string whole = new List<string>(run.Lines()).Find(line => line.Contains("tree/whole"));
 
             Assert.That(whole, Does.Not.Contain("looked at in"));
+
+            IList<SetRunRow> rows = run.Rows();
+
+            Assert.That(rows[0].Phrase(), Is.EqualTo("found nothing in 3 of 3 groups, looked at in 3 of 5 groups only"));
+            Assert.That(rows[1].Phrase(), Is.EqualTo("found nothing in 5 of 5 groups"));
+        }
+
+        /// <summary>
+        /// A set whose count could not be taken in any group is in none of the numbers, so the sentence that
+        /// every set found something was said over a file that held one more. The block says how many were
+        /// never counted and says every set that was counted. The break: a run with none uncounted keeps
+        /// the plain sentence.
+        /// </summary>
+        [Test]
+        public void ASetNeverCountedInAnyGroupIsSaidAndTheAllClearIsNotMadeOverIt()
+        {
+            SetsAcrossTheRun run = new SetsAcrossTheRun();
+
+            for (int group = 0; group < 3; group++)
+            {
+                SetBuildOutcome outcome = new SetBuildOutcome();
+                outcome.AddAlreadyPresent("tree/dead", "dead", 1, -1);
+                outcome.AddAlreadyPresent("tree/ok", "ok", 1, 9);
+                run.Add(outcome);
+            }
+
+            string all = string.Join("\n", new List<string>(run.Lines()).ToArray());
+
+            Assert.That(all, Does.Contain("sets looked at     : 1"));
+            Assert.That(all, Does.Contain("sets never counted in any group : 1, in none of the numbers here"));
+            Assert.That(all, Does.Contain("Every set that was counted found something somewhere."));
+            Assert.That(all, Does.Not.Contain("Every set found something somewhere."));
+
+            SetsAcrossTheRun clean = new SetsAcrossTheRun();
+            SetBuildOutcome counted = new SetBuildOutcome();
+            counted.AddAlreadyPresent("tree/ok", "ok", 1, 9);
+            clean.Add(counted);
+
+            string plain = string.Join("\n", new List<string>(clean.Lines()).ToArray());
+
+            Assert.That(plain, Does.Contain("Every set found something somewhere."));
+            Assert.That(plain, Does.Not.Contain("never counted"));
+        }
+
+        /// <summary>
+        /// Two sets of one path in a group where one was counted at nothing and the other could not be
+        /// counted: the one not counted may have found something, so the group is not at zero for that path
+        /// and the path is not named as finding nothing. The breaks: one counted at nothing beside one that
+        /// found items is not at zero, and two counted at nothing are.
+        /// </summary>
+        [Test]
+        public void AnUncountedSetBesideACountedZeroOfTheSamePathIsNeverCalledZero()
+        {
+            SetsAcrossTheRun run = new SetsAcrossTheRun();
+            SetBuildOutcome unknown = new SetBuildOutcome();
+            unknown.AddAlreadyPresent("tree/a", "a", 1, -1);
+            unknown.AddAlreadyPresent("tree/a", "a", 1, 0);
+            run.Add(unknown);
+
+            Assert.That(run.All(), Is.Empty, "a path that could not be counted is in no number");
+            Assert.That(run.FoundNothingAnywhere(), Is.Empty);
+
+            SetBuildOutcome found = new SetBuildOutcome();
+            found.AddAlreadyPresent("tree/b", "b", 1, -1);
+            found.AddAlreadyPresent("tree/b", "b", 1, 7);
+            run.Add(found);
+
+            Assert.That(run.All().Count, Is.EqualTo(1));
+            Assert.That(run.All()[0].GroupsSeen, Is.EqualTo(1));
+            Assert.That(run.All()[0].GroupsAtZero, Is.EqualTo(0));
+
+            SetBuildOutcome zeros = new SetBuildOutcome();
+            zeros.AddAlreadyPresent("tree/c", "c", 1, 0);
+            zeros.AddAlreadyPresent("tree/c", "c", 1, 0);
+            run.Add(zeros);
+
+            Assert.That(run.FoundNothingAnywhere().Count, Is.EqualTo(1));
+            Assert.That(run.FoundNothingAnywhere()[0].Path, Is.EqualTo("tree/c"));
         }
 
         /// <summary>

@@ -282,12 +282,13 @@ namespace Federator.Core.Tests
         /// The tests the picked file does not name are counted by name across the run, as Q127 A counts
         /// every other test. One old test sitting in the NWFs of 46 groups read as 46 tests, which says
         /// the document holds 46 tests the file does not name. The break: a second, different old test
-        /// in one group only makes two names over three places.
+        /// in one group only makes two names over 47 places.
         /// </summary>
         [Test]
         public void ATestTheFileDoesNotNameIsCountedOnceAcrossTheRunWhateverTheGroups()
         {
             CoverageAcrossTheRun coverage = new CoverageAcrossTheRun(new CoverageSettings());
+            WorkbookTests workbook = Workbook("100000", "T", 0);
 
             for (int group = 1; group <= 46; group++)
             {
@@ -298,7 +299,7 @@ namespace Federator.Core.Tests
                         new DocumentTestCount("T", "Tests", 0, 0),
                         new DocumentTestCount("Old", "Tests", 5, 5)
                     },
-                    Workbook("group" + group, "T", 0),
+                    workbook,
                     null,
                     -1));
             }
@@ -318,20 +319,27 @@ namespace Federator.Core.Tests
                     new DocumentTestCount("T", "Tests", 0, 0),
                     new DocumentTestCount("Older", "Tests", 1, 1)
                 },
-                Workbook("last", "T", 0),
+                workbook,
                 null,
                 -1));
 
             Assert.That(coverage.NotInTheXml, Is.EqualTo(2));
+
+            named = new List<string>(coverage.ResultLines())
+                .Find(line => line.StartsWith("COVERAGE not named", StringComparison.Ordinal));
+
+            Assert.That(named, Does.Contain("2 tests in Clash Detective that the picked file does not name"));
+            Assert.That(named, Does.Contain("each name once here, 47 places over the groups"));
         }
 
         /// <summary>
-        /// The headline printed how many tests agreed and how many failed and never how many it had
-        /// judged, so its buckets could not be added up by eye, and a group whose check could not be made
-        /// has its tests in none of them, which it now says.
+        /// The headline printed how many tests agreed and how many failed and never how many test places its
+        /// buckets held, so they could not be added up by eye, and a group whose check could not be made has
+        /// its tests in none of them, which it now says. A test is counted once for each group it is in, so
+        /// the total is test places and not tests, and it counts the tests nothing compared as well.
         /// </summary>
         [Test]
-        public void TheHeadlineSaysHowManyTestsItJudgedAndThatAGroupNotCheckedIsInNoneOfThem()
+        public void TheHeadlineSaysHowManyTestPlacesItHoldsAndThatAGroupNotCheckedIsInNoneOfThem()
         {
             CoverageAcrossTheRun coverage = new CoverageAcrossTheRun(new CoverageSettings());
             coverage.Add("100000", CountCheck.Judge(
@@ -347,8 +355,29 @@ namespace Federator.Core.Tests
 
             Assert.That(headline, Does.Contain("1 compared, 1 agree, 0 FAILED in 0 of 2 groups, 0 not compared"));
             Assert.That(headline, Does.Contain("3 held by neither side"));
-            Assert.That(headline, Does.Contain("4 tests judged in all"));
+            Assert.That(headline, Does.Contain("4 test places in the groups checked, a test once for each group it is in"));
             Assert.That(headline, Does.Contain("1 group not checked, its tests in none of these counts"));
+        }
+
+        /// <summary>
+        /// The run that compared nothing says UNKNOWN, and a group whose check could not be made is said
+        /// there too, in the plural for two, since the line reads as a verification of every test otherwise.
+        /// </summary>
+        [Test]
+        public void ANothingComparedRunWithGroupsNotCheckedSaysTheirTestsAreInNoneOfTheCounts()
+        {
+            CoverageAcrossTheRun coverage = new CoverageAcrossTheRun(new CoverageSettings());
+            coverage.Add("1A02MM", CountCheck.Judge(new List<TestCoverage> { Ran("T"), Ran("U") },
+                new List<DocumentTestCount>(), null, "the clash was skipped by the coordinates rule", -1));
+            coverage.Add("1A04PK", null);
+            coverage.Add("1B06BS", null);
+
+            string headline = new List<string>(coverage.ResultLines())
+                .Find(line => line.StartsWith("COVERAGE checked", StringComparison.Ordinal));
+
+            Assert.That(headline, Does.Contain("UNKNOWN, 0 compared in 3 groups, 2 not compared"));
+            Assert.That(headline, Does.Contain("2 groups not checked, their tests in none of these counts"));
+            Assert.That(headline, Does.EndWith("so no count was checked"));
         }
 
         /// <summary>
