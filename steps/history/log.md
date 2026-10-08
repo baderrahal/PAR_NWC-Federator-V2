@@ -62,7 +62,7 @@ brief names the three. Navisworks was not started, no probe and no harness was r
   with the add-in built with 0 warnings and 0 errors, f120-build-after.txt, check-locals and
   check-imports clean over src, f120-check-locals.txt and f120-check-imports.txt. The rules in
   .claude\rules\core.md, the pictures bullets and the steps list, and .claude\rules\addin.md, one
-  bullet for the pictures. No pull request opened, on the brief
+  bullet for the pictures. Pull request 183 by the lead, with main 0eaf32e merged in, 2765 passed, 0 failed, 0 skipped on the merged tree
 - WHAT WAITS for the local machine: steps 482 to 490 of steps\03_bader_next.md, the IMAGES
   seconds line and the RENUMBER row on the timed runs of Q145 item 5 with the same written
   counts and the pictures still 1024 by 1024 JPEG, and the guard across groups, which needs a
