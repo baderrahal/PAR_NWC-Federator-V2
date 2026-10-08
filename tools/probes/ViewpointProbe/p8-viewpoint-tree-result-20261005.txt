@@ -1,0 +1,322 @@
+MACHINE   [machine]   2026-10-05 14:24:46
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 54384
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-viewpoint-tree.ps1", sha256 173AA90A31F0D39C5EA9515F0E5143E486E70ABB4D3D0CF666706FEC788FF4A5
+GUARD     tools\loop\nw-guard.ps1, sha256 EFB1B698DBDF67ADAF34D3FDC9CAC78893BF7C88F74034D096746D131FB71CEA
+PROCESS   powershell.exe pid 54384, started to run -File C:\Users\p003653k\AppData\Local\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-viewpoint-tree.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 549
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\viewpoint-tree-20261005-142446" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\viewpoint-tree-20261005-142446\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123320 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 202 AutoSave files listed and not copied
+  the tool's own logs folder listed: 38 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf", 41317271 bytes, sha256 0944C1001095FA95F5AE8887F79450C51EDE836D47F9A38DE3982BB525FB4F37
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\viewpoint-tree-20261005-142446\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf", sha256 matches
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\bin\Release\net48\ViewpointProbe.dll", 153088 bytes, written 2026-10-05 14:22:43, sha256 A5ECAE4EB32471BAB50553B0F9E3C9E0A2FB68276680E5AFA870D1D7896D1D07, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  14:24:53.716  t+7.3s  calling new NavisworksApplication()
+  14:26:13.636  t+87.2s  the constructor RETURNED after 79.91 s
+  Roamer processes new since step 2: 1
+    pid 13668, started 14:24:53.809, parent 1392 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 13668, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 13668, started 2026-10-05 14:24:53.809, start ticks UTC 639267962938098429
+  14:26:24.597  t+98.2s  Visible set True, read back True
+  visible top level windows of 13668: 2, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard"
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  14:26:25.217  t+98.8s  AddPluginAssembly RETURNED after 0.085 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode vptree on the copy, read only ====
+  14:26:25.225  t+98.8s  calling ExecuteAddInPlugin(ViewpointProbe.PARS, vptree, the plugin's output file, the copy, the dump in the work folder)
+  14:26:31.781  t+105.4s  ExecuteAddInPlugin RETURNED 0 after 6.55 s
+  visible top level windows of 13668: 2, hidden: 80, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Sets" "Standard" "Static" "-" "Sets"
+---- the plugin's output, every line ----
+  | 14:26:25.287  probe started, mode vptree, 2 file(s)
+  | 14:26:25.299  opening 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+  | 14:26:31.663  TryOpenFile returned True after 6.362 s
+  | 14:26:31.663  models 4, document units Feet
+  | 14:26:31.665     model 0  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc  under the loop folder True
+  | 14:26:31.665     model 1  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc  under the loop folder True
+  | 14:26:31.666     model 2  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  under the loop folder True
+  | 14:26:31.666     model 3  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc  under the loop folder True
+  | 14:26:31.667  tests in the document 528, distinct names 528
+  | 14:26:31.669  the root: a FolderItem with 16 children
+  | 14:26:31.706  the walk took 0.038 s, items 2869
+  | 14:26:31.736  the dump written, 2870 lines with its header, 376451 bytes read back off the disk
+  | 14:26:31.736  
+  | 14:26:31.737  items 2869, folders 22, viewpoints 2847, other kinds 0
+  | 14:26:31.737  items whose read threw 0
+  | 14:26:31.737  comment counts that threw 0, redline reads that threw 0
+  | 14:26:31.738  items carrying at least one comment 0, comments in all 0
+  | 14:26:31.738  viewpoints carrying at least one redline 0
+  | 14:26:31.738  Guids read 2869, empty 2869, distinct 1, Guid reads that threw 0
+  | 14:26:31.739  names with a leading or trailing space 0
+  | 14:26:31.743     viewpoints at depth 1: 2780
+  | 14:26:31.743     viewpoints at depth 2: 67
+  | 14:26:31.744  
+  | 14:26:31.744  EVERY FOLDER, its index path, depth, children, viewpoints under it and comments:
+  | 14:26:31.744     0  depth 0  children 11  viewpoints under it 11  comments 0  00000000-0000-0000-0000-000000000000  [PAR-AR-VEW-3D View]
+  | 14:26:31.744     1  depth 0  children 8  viewpoints under it 8  comments 0  00000000-0000-0000-0000-000000000000  [3D View]
+  | 14:26:31.744     2  depth 0  children 9  viewpoints under it 9  comments 0  00000000-0000-0000-0000-000000000000  [MEC-MEC-3D VIEW-PAR]
+  | 14:26:31.744     3  depth 0  children 6  viewpoints under it 6  comments 0  00000000-0000-0000-0000-000000000000  [PAR-ST-3D View]
+  | 14:26:31.744     4  depth 0  children 2617  viewpoints under it 2617  comments 0  00000000-0000-0000-0000-000000000000  [AR vs AR]
+  | 14:26:31.744     5  depth 0  children 33  viewpoints under it 33  comments 0  00000000-0000-0000-0000-000000000000  [ST vs ST]
+  | 14:26:31.745     6.0  depth 1  children 8  viewpoints under it 8  comments 0  00000000-0000-0000-0000-000000000000  [AR vs ME/Over 150mm]
+  | 14:26:31.745     6  depth 0  children 9  viewpoints under it 16  comments 0  00000000-0000-0000-0000-000000000000  [AR vs ME]
+  | 14:26:31.745     7.0  depth 1  children 6  viewpoints under it 6  comments 0  00000000-0000-0000-0000-000000000000  [ME vs ME/Over 150mm]
+  | 14:26:31.745     7  depth 0  children 1  viewpoints under it 6  comments 0  00000000-0000-0000-0000-000000000000  [ME vs ME]
+  | 14:26:31.745     8.0  depth 1  children 1  viewpoints under it 1  comments 0  00000000-0000-0000-0000-000000000000  [ME vs PL/Over 150mm]
+  | 14:26:31.745     8  depth 0  children 1  viewpoints under it 1  comments 0  00000000-0000-0000-0000-000000000000  [ME vs PL]
+  | 14:26:31.745     9  depth 0  children 17  viewpoints under it 17  comments 0  00000000-0000-0000-0000-000000000000  [AR vs DR]
+  | 14:26:31.745     10  depth 0  children 2  viewpoints under it 2  comments 0  00000000-0000-0000-0000-000000000000  [DR vs PL]
+  | 14:26:31.745     11  depth 0  children 2  viewpoints under it 2  comments 0  00000000-0000-0000-0000-000000000000  [DR vs DR]
+  | 14:26:31.745     12.0  depth 1  children 42  viewpoints under it 42  comments 0  00000000-0000-0000-0000-000000000000  [EL vs ST/Over 150mm]
+  | 14:26:31.745     12  depth 0  children 57  viewpoints under it 98  comments 0  00000000-0000-0000-0000-000000000000  [EL vs ST]
+  | 14:26:31.746     13.0  depth 1  children 9  viewpoints under it 9  comments 0  00000000-0000-0000-0000-000000000000  [EL vs EL/Over 150mm]
+  | 14:26:31.746     13  depth 0  children 3  viewpoints under it 11  comments 0  00000000-0000-0000-0000-000000000000  [EL vs EL]
+  | 14:26:31.746     14  depth 0  children 3  viewpoints under it 3  comments 0  00000000-0000-0000-0000-000000000000  [ST vs UNKNOWN]
+  | 14:26:31.746     15.0  depth 1  children 1  viewpoints under it 1  comments 0  00000000-0000-0000-0000-000000000000  [EL vs UNKNOWN/Over 150mm]
+  | 14:26:31.747     15  depth 0  children 7  viewpoints under it 7  comments 0  00000000-0000-0000-0000-000000000000  [EL vs UNKNOWN]
+  | 14:26:31.747  
+  | 14:26:31.747  LEGACY BY THE RULE OF 1.9: 2813, NOT LEGACY: 56 of which viewpoints 34 and folders 22
+  | 14:26:31.755     not legacy, 1 no sorted code pair folder where one belongs: 34
+  | 14:26:31.756     not legacy, 2 not a viewpoint: 22
+  | 14:26:31.756  legacy viewpoints by folder path:
+  | 14:26:31.757      2617  AR vs AR
+  | 14:26:31.758        17  AR vs DR
+  | 14:26:31.758         8  AR vs ME
+  | 14:26:31.758         8  AR vs ME/Over 150mm
+  | 14:26:31.758         2  DR vs DR
+  | 14:26:31.758         2  DR vs PL
+  | 14:26:31.759         2  EL vs EL
+  | 14:26:31.759         9  EL vs EL/Over 150mm
+  | 14:26:31.759        56  EL vs ST
+  | 14:26:31.759        42  EL vs ST/Over 150mm
+  | 14:26:31.759         6  EL vs UNKNOWN
+  | 14:26:31.760         1  EL vs UNKNOWN/Over 150mm
+  | 14:26:31.760         6  ME vs ME/Over 150mm
+  | 14:26:31.760         1  ME vs PL/Over 150mm
+  | 14:26:31.760        33  ST vs ST
+  | 14:26:31.760         3  ST vs UNKNOWN
+  | 14:26:31.761  
+  | 14:26:31.761  EVERY VIEWPOINT THAT IS NOT LEGACY, its index path, depth, comments, redlines, Guid, why, folder path and [name]:
+  | 14:26:31.761     0.0  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-AR-VEW-3D View  [Navisworks export]
+  | 14:26:31.761     0.1  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-AR-VEW-3D View  [{3D - Ammarmarwanho.Homsi.Contractor}]
+  | 14:26:31.761     0.2  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-AR-VEW-3D View  [{3D - Omar.Almahamee.Contractor}]
+  | 14:26:31.761     0.3  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-AR-VEW-3D View  [{3D - anas.alqahtany}]
+  | 14:26:31.762     0.4  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-AR-VEW-3D View  [{3D - p007186G}]
+  | 14:26:31.762     0.5  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-AR-VEW-3D View  [{3D - ali.aljobarah}]
+  | 14:26:31.762     0.6  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-AR-VEW-3D View  [{3D - Sarah.Albokhari}]
+  | 14:26:31.762     0.7  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-AR-VEW-3D View  [{3D - alaa.alsasi}]
+  | 14:26:31.763     0.8  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-AR-VEW-3D View  [{3D - Mohammed.AlsabbanEB8XR}]
+  | 14:26:31.763     0.9  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-AR-VEW-3D View  [{3D - hazim.alghamdi6DVG4}]
+  | 14:26:31.763     0.10  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-AR-VEW-3D View  [{3D - Ayah.Afeef}]
+  | 14:26:31.763     1.0  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  3D View  [ISOMETERIC VIEW]
+  | 14:26:31.763     1.1  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  3D View  [Export_Navisworks]
+  | 14:26:31.764     1.2  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  3D View  [{3D - ahmed.elbehidy}]
+  | 14:26:31.764     1.3  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  3D View  [{3D - Omar.Alkhatib.contractor}]
+  | 14:26:31.764     1.4  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  3D View  [{3D - khallad.Ibrahim}]
+  | 14:26:31.765     1.5  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  3D View  [{3D - Mohammedtaher.Ali}]
+  | 14:26:31.765     1.6  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  3D View  [ELEC ROOM ISOMETERIC VIEW]
+  | 14:26:31.765     1.7  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  3D View  [GENERATOR ROOM ISOMETERIC VIEW]
+  | 14:26:31.765     2.0  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  MEC-MEC-3D VIEW-PAR  [NAVISWORK]
+  | 14:26:31.765     2.1  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  MEC-MEC-3D VIEW-PAR  [{3D - ramy.zidanRVAC6}]
+  | 14:26:31.765     2.2  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  MEC-MEC-3D VIEW-PAR  [{3D - ramy.zidanRVAC6} Copy 1]
+  | 14:26:31.765     2.3  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  MEC-MEC-3D VIEW-PAR  [{3D - Moamen.Abdo}]
+  | 14:26:31.765     2.4  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  MEC-MEC-3D VIEW-PAR  [Analytical Spaces]
+  | 14:26:31.765     2.5  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  MEC-MEC-3D VIEW-PAR  [System-Zones]
+  | 14:26:31.765     2.6  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  MEC-MEC-3D VIEW-PAR  [{3D - ahmed.Khattab5275X}]
+  | 14:26:31.765     2.7  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  MEC-MEC-3D VIEW-PAR  [AHU Isometric]
+  | 14:26:31.765     2.8  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  MEC-MEC-3D VIEW-PAR  [{3D - Moamen.Abdo} Copy 1]
+  | 14:26:31.765     3.0  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-ST-3D View  [ISOMETRIC VIEW]
+  | 14:26:31.767     3.1  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-ST-3D View  [Navis]
+  | 14:26:31.767     3.2  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-ST-3D View  [{3D - Amer.AlzahraniJ4GAB}]
+  | 14:26:31.767     3.3  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-ST-3D View  [{3D - favas.palat}]
+  | 14:26:31.767     3.4  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-ST-3D View  [{3D - mohdshoeb.Saifi}]
+  | 14:26:31.767     3.5  depth 1  comments 0  redlines 0  00000000-0000-0000-0000-000000000000  1 no sorted code pair folder where one belongs  PAR-ST-3D View  [{3D - Asif.SadiqJJ9CL}]
+  | 14:26:31.767  
+  | 14:26:31.767  legacy viewpoints by test, all of them and those under Over 150mm, for 51 tests:
+  | 14:26:31.769        24  over     0  [BLD-AR-Curtain Mullions-vs-BLD-AR-Walls]
+  | 14:26:31.769      2568  over     0  [BLD-AR-Curtain Mullions-vs-BLD-AR-Windows]
+  | 14:26:31.769         7  over     0  [BLD-AR-Doors-vs-BLD-AR-Curtain Mullions]
+  | 14:26:31.769         1  over     0  [BLD-AR-Doors-vs-BLD-AR-Floors]
+  | 14:26:31.769        17  over     0  [BLD-AR-Doors-vs-BLD-AR-Walls]
+  | 14:26:31.769         1  over     0  [BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors]
+  | 14:26:31.769         8  over     0  [BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Walls]
+  | 14:26:31.769         2  over     0  [BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Windows]
+  | 14:26:31.769         2  over     0  [BLD-DR-Pipes & Pipe Fittings-vs-BLD-PL-Pipes & Pipe Fittings]
+  | 14:26:31.769         2  over     0  [BLD-DR-Plumbing Fixtures-vs-BLD-AR-Floors]
+  | 14:26:31.770         4  over     0  [BLD-DR-Plumbing Fixtures-vs-BLD-AR-Walls]
+  | 14:26:31.770         2  over     0  [BLD-DR-Plumbing Fixtures-vs-BLD-DR-Pipes & Pipe Fittings]
+  | 14:26:31.770         4  over     4  [BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Columns]
+  | 14:26:31.770         4  over     4  [BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Floors]
+  | 14:26:31.770         5  over     5  [BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Framing]
+  | 14:26:31.770         4  over     4  [BLD-EL-Cable Tray&Cable Tray Fittings-vs-BLD-ST-Walls]
+  | 14:26:31.770         2  over     2  [BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Cable Tray&Cable Tray Fittings]
+  | 14:26:31.771         3  over     3  [BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment]
+  | 14:26:31.771         3  over     3  [BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Fixtures]
+  | 14:26:31.771         2  over     2  [BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Columns]
+  | 14:26:31.771         6  over     6  [BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors]
+  | 14:26:31.771        16  over    16  [BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing]
+  | 14:26:31.771         1  over     1  [BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls]
+  | 14:26:31.772         7  over     0  [BLD-EL-Data Devices-vs-BLD-ST-Floors]
+  | 14:26:31.772         2  over     0  [BLD-EL-Data Devices-vs-BLD-ST-Framing]
+  | 14:26:31.772         1  over     1  [BLD-EL-Electrical Equipment-vs-BLD-EL-Cable Tray&Cable Tray Fittings]
+  | 14:26:31.772         3  over     0  [BLD-EL-Electrical Equipment-vs-BLD-ST-Columns]
+  | 14:26:31.772         3  over     0  [BLD-EL-Electrical Equipment-vs-BLD-ST-Floors]
+  | 14:26:31.773         2  over     0  [BLD-EL-Electrical Equipment-vs-BLD-ST-Foundation]
+  | 14:26:31.773         1  over     0  [BLD-EL-Electrical Equipment-vs-BLD-ST-Framing]
+  | 14:26:31.773         1  over     0  [BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Fixtures]
+  | 14:26:31.773         8  over     0  [BLD-EL-Fire Alarm Devices-vs-BLD-ST-Floors]
+  | 14:26:31.773         1  over     0  [BLD-EL-Lighting Devices-vs-BLD-EL-Electrical Equipment]
+  | 14:26:31.774         1  over     0  [BLD-EL-Lighting Fixtures-vs-BLD-ST-Columns]
+  | 14:26:31.774        23  over     0  [BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors]
+  | 14:26:31.774         3  over     0  [BLD-EL-Lighting Fixtures-vs-BLD-ST-Framing]
+  | 14:26:31.774         3  over     0  [BLD-EL-Lighting Fixtures-vs-BLD-ST-Walls]
+  | 14:26:31.774         1  over     0  [BLD-ME-Air Terminals-vs-BLD-AR-Doors]
+  | 14:26:31.775         4  over     0  [BLD-ME-Air Terminals-vs-BLD-AR-Walls]
+  | 14:26:31.775         2  over     2  [BLD-ME-Duct Accessory-vs-BLD-AR-Walls]
+  | 14:26:31.775         6  over     6  [BLD-ME-Duct Accessory-vs-BLD-ME-Ducts&Duct Fittings]
+  | 14:26:31.775         6  over     6  [BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls]
+  | 14:26:31.776         3  over     0  [BLD-ME-Mechanical Equipment-vs-BLD-AR-Walls]
+  | 14:26:31.776         1  over     1  [BLD-PL-Pipes & Pipe Fittings-vs-BLD-ME-Ducts&Duct Fittings]
+  | 14:26:31.776         6  over     0  [BLD-ST-Floors-vs-BLD-ST-Columns]
+  | 14:26:31.776         2  over     0  [BLD-ST-Floors-vs-BLD-ST-Framing]
+  | 14:26:31.776        25  over     0  [BLD-ST-Framing-vs-BLD-ST-Columns]
+  | 14:26:31.777         1  over     1  [BLD-Security Devices-vs-BLD-EL-Cable Tray&Cable Tray Fittings]
+  | 14:26:31.777         1  over     0  [BLD-Security Devices-vs-BLD-EL-Electrical Equipment]
+  | 14:26:31.777         5  over     0  [BLD-Security Devices-vs-BLD-EL-Lighting Devices]
+  | 14:26:31.777         3  over     0  [BLD-Security Devices-vs-BLD-ST-Framing]
+  | 14:26:31.777  legacy viewpoints under Over 150mm 67, in 17 tests
+  | 14:26:31.778  distinct folders holding a legacy viewpoint 16, distinct pairs of test and folder path 51
+  | 14:26:31.778  
+  | 14:26:31.778  P8 YES   viewpoints 2847 against 2847, legacy 2813 against 2813, viewpoints not legacy 34 against 34, items whose read threw 0
+  | 14:26:31.779  probe finished
+  the dump 376451 bytes, sha256 6B9D1DCEECFE93993BFBAE4247D4A15630E1CB7591FEE807269235C88FFF3A07, copied to "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\p8-viewpoint-tree-dump-20261005.tsv", its copy matches
+
+==== STEP 6. Quit through the API ====
+  14:26:33.946  t+107.5s  Dispose RETURNED after 1.45 s
+  14:26:40.082  t+113.7s  pid 13668 state gone, 6.1 s after Dispose returned, not forced
+
+==== FINALLY ====
+  14:26:40.094  t+113.7s  pid 13668 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 135, longest pass 14382 ms, longest gap between the starts of two passes 14882 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  14:24:47.725  t+1.3s  watchdog started
+  14:24:54.007  t+7.6s  Roamer pid 13668 seen with no readable start time, looked at again at the next pass
+  14:25:02.847  t+16.4s  new process Roamer pid 13668, parent 1392 svchost.exe, started 14:24:53.809, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  14:25:02.949  t+16.5s  Roamer 13668 visible top level windows: none
+  14:25:31.902  t+45.5s  new process AdskLicensingInstHelper pid 49624, parent 27400 GenuineService.exe, started 14:25:24.933, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  14:25:38.635  t+52.2s  new process AdskLicensingAgent pid 22100, parent 13668 Roamer.exe, started 14:25:30.106, command line holds the word embedding or automation: no
+  14:25:46.835  t+60.4s  new process AdskLicensingAgent pid 54428, parent 13668 Roamer.exe, started 14:25:30.651, command line holds the word embedding or automation: no
+  14:25:55.319  t+68.9s  Roamer 13668 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  14:26:12.026  t+85.6s  Roamer 13668 visible top level windows: none
+  14:26:20.993  t+94.6s  Roamer 13668 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "" text: and 10 visible children not read, because the 2 s one pass may spend reading children was spent
+  14:26:21.570  t+95.1s  Roamer 13668 visible top level windows: none
+  14:26:22.757  t+96.3s  Roamer 13668 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective"
+  14:26:24.605  t+98.2s  Roamer 13668 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard"
+  14:26:25.892  t+99.5s  Roamer 13668 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:26:28.025  t+101.6s  Roamer 13668 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;82f3de33-f982-45e3-bb3c-d76af9a091a8]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:26:29.282  t+102.9s  Roamer 13668 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;82f3de33-f982-45e3-bb3c-d76af9a091a8]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "-" "Sets" "-" "Sets" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:26:31.355  t+104.9s  Roamer 13668 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [HwndWrapper[Roamer.exe;ProgressDialog;82f3de33-f982-45e3-bb3c-d76af9a091a8]] "Working..." text: 
+  14:26:32.005  t+105.6s  Roamer 13668 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Sets" "Standard" "Static" "-" "Sets"
+  14:26:33.715  t+107.3s  Roamer 13668 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-"
+  14:26:34.276  t+107.8s  Roamer 13668 visible top level windows: none
+  14:26:39.983  t+113.6s  Roamer 13668 has exited
+  14:26:40.502  t+114.1s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 13668, parent 1392 svchost.exe: exited
+  AdskLicensingInstHelper pid 49624, parent 27400 GenuineService.exe: exited
+  AdskLicensingAgent pid 22100, parent 13668 Roamer.exe: STILL RUNNING
+  AdskLicensingAgent pid 54428, parent 13668 Roamer.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40809772447973  new QWord 40810820979544
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 94  new DWord 95
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 154  new DWord 155
+  22.0\CER\22.5.1433.58  uptime  old QWord 2412445468750  new QWord 2413415312500
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,144,77,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "lcodpody"  new String "lcodpnwf"
+  22.0\Recent File List\1  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"  new String "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134355877224561124  new QWord 134356731893587007
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\viewpoint-tree-20261005-142446\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134355688021584428  new QWord 134355688029411525
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc, sha1 E0ADB5881390>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc, sha1 947D2594C4F9>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134355851862024337  new QWord 134355877224561124
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\3  LastOpened  old QWord 134355688077859683  new QWord 134355851862024337
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134355688069609653  new QWord 134355688077859683
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134355688061539629  new QWord 134355688069609653
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134355688053453579  new QWord 134355688061539629
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134355688045001624  new QWord 134355688053453579
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134355688037141969  new QWord 134355688045001624
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134355688029411525  new QWord 134355688037141969
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc, sha1 947D2594C4F9>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>
+  registry: 36 values or keys differ from the backup
+  registry: 36 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 67617 bytes, sha256 5AC073CD8DAF, written 2026-10-05 14:01:58  new 68868 bytes, sha256 5E4FDB7F2FB8, written 2026-10-05 14:26:33
+  file CHANGED LastSession.xml  old 39513 bytes, sha256 B94B4FFCF6AA, written 2026-10-05 14:01:58  new 39512 bytes, sha256 020F080E17DF, written 2026-10-05 14:26:33
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 0944C1001095FA95F5AE8887F79450C51EDE836D47F9A38DE3982BB525FB4F37, the same as before the start
+---- the work folder at the end, sorted by name ----
+  1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf  41317271 bytes
+  hkcu-navisworks-manage-22.0-before.reg  123320 bytes
+  mypid.txt  36 bytes
+  plugin-output.txt  16600 bytes
+  ViewpointProbe.dll  153088 bytes
+  viewpoint-tree-dump.tsv  376451 bytes
+  watch.txt  4286 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-05 14:26:50, 124 s in all

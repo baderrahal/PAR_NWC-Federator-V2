@@ -13,11 +13,13 @@ namespace Federator.Core.Views
     ///
     /// ONE COMMENT, TWO PARTS. A sentence a person reads in the Comments window, saying how to
     /// keep a view, then a line no person would type: the MarkTag setting, the run's stamp, the
-    /// folders the view was written in, its name, its camera to a thousandth and its Guid where
-    /// probes P10 and P11 show a Guid survives a save and a copy gets a new one. Each text is
-    /// written as its length, a colon and the text, so any name, a trailing space or the mark's
-    /// own words in it included, reads back exactly. The mark is found wherever it sits in the
-    /// body, because whether a comment keeps its line break is UNKNOWN until probe P9.
+    /// folders the view was written in, its name, its camera to a thousandth and a Guid field
+    /// the add-in writes EMPTY: probe P10 read no Guid on any item the tool's routes make, before
+    /// or after a save, docs\history\scan.md 5z-p, so the judge compares a Guid only where a mark
+    /// carries one. Each text is written as its length, a colon and the text, so any name, a
+    /// trailing space or the mark's own words in it included, reads back exactly. The mark is
+    /// found wherever it sits in the body, because whether a comment keeps its line break was
+    /// UNKNOWN until probe P9.
     ///
     /// THE JUDGE, S1 of the design. Ours only with exactly one comment, which is the mark, the
     /// folders and the name equal, Ordinal, the camera within CameraReadBackTolerance, the Guid
@@ -143,6 +145,36 @@ namespace Federator.Core.Views
             return new ToolViewMark(stamp, path, name, camera, guid.Length == 0 ? null : guid);
         }
 
+        /// <summary>
+        /// Whether any of those comments carries the mark's tag, read or not. The add-in finds
+        /// the view it just recorded as the child of its folder with its name and no mark, P12,
+        /// and where a person's unmarked view of that name already sits there it marks nothing,
+        /// P22 unrun, so a comment carrying the tag counts as a mark even where it does not read:
+        /// that view is not the one just recorded either way.
+        /// </summary>
+        public static bool CarriesAMark(IList<string> comments, ViewpointSettings settings)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
+            if (comments == null || string.IsNullOrEmpty(settings.MarkTag))
+            {
+                return false;
+            }
+
+            foreach (string body in comments)
+            {
+                if (body != null && body.IndexOf(settings.MarkTag, StringComparison.Ordinal) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>Whose a view or folder is, from the folders it sits in now, outermost first, and what it carries.</summary>
         public static MarkJudgement Judge(
             IList<string> folders,
@@ -224,7 +256,11 @@ namespace Federator.Core.Views
                 return "its camera could not be read, so it is not proved unchanged";
             }
 
-            if (mark.Camera != null && mark.Camera.DistanceTo(camera) > settings.CameraReadBackTolerance)
+            // BOTH ROUNDED TO THE THREE DECIMALS THE MARK STORES, the breaker's B6 of F114's
+            // add-in pass: the mark's camera was written through Number, so the read camera
+            // goes through Number too before the distance is taken, and rounding alone can
+            // never read as moved, however far from the origin the camera sits.
+            if (mark.Camera != null && mark.Camera.DistanceTo(Rounded(camera)) > settings.CameraReadBackTolerance)
             {
                 return "its camera was moved";
             }
@@ -261,6 +297,15 @@ namespace Federator.Core.Views
         private static string Number(double value)
         {
             return value.ToString(CameraFormat, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>The point as the mark would store it, each part through Number and read back.</summary>
+        private static Point3 Rounded(Point3 point)
+        {
+            return new Point3(
+                double.Parse(Number(point.X), CultureInfo.InvariantCulture),
+                double.Parse(Number(point.Y), CultureInfo.InvariantCulture),
+                double.Parse(Number(point.Z), CultureInfo.InvariantCulture));
         }
 
         private static bool Field(string body, ref int at, string field)

@@ -32,6 +32,12 @@ namespace Federator.Core.Views
         /// <summary>What this run wrote.</summary>
         public IList<WrittenView> Written { get; set; }
 
+        /// <summary>
+        /// What each removal the inventory asked for came to, as RemoveOne reported it, the
+        /// breaker's B5, or null where none was handed in, which the after line says.
+        /// </summary>
+        public IList<RemovalOutcome> Removals { get; set; }
+
         /// <summary>A fresh walk of the tree after the removals, S3.</summary>
         public IList<ViewNode> After { get; set; }
 

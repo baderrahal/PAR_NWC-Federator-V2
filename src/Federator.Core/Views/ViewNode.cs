@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -41,8 +42,22 @@ namespace Federator.Core.Views
         /// <summary>Its index among its parent's children, which a removal is given by, 5z.</summary>
         public int IndexInParent { get; private set; }
 
-        /// <summary>Every comment body it carries.</summary>
+        /// <summary>Every comment body it carries, or null where the list would not read, CommentsNotRead.</summary>
         public ReadOnlyCollection<string> Comments { get; private set; }
+
+        /// <summary>
+        /// An item whose comment list would not read, the breaker's B4 of F114's add-in pass:
+        /// its Comments are null and never an empty list, so the mark's judge, LegacyClashView
+        /// and the inventory keep it as a person's, since what cannot be read cannot be proved
+        /// the tool's.
+        /// </summary>
+        public static ViewNode CommentsNotRead(
+            IList<string> folders, string name, bool isFolder, int indexInParent, int? redlines, Point3 camera, string guid, bool emptyBeforeTheRun)
+        {
+            ViewNode node = new ViewNode(folders, name, isFolder, indexInParent, null, redlines, camera, guid, emptyBeforeTheRun);
+            node.Comments = null;
+            return node;
+        }
 
         /// <summary>How many redlines it carries, or null where they could not be read.</summary>
         public int? Redlines { get; private set; }
@@ -55,6 +70,51 @@ namespace Federator.Core.Views
 
         /// <summary>For a folder, whether it held nothing before this run wrote anything.</summary>
         public bool EmptyBeforeTheRun { get; private set; }
+
+        /// <summary>
+        /// The keys of the folders that hold nothing in that walk, ViewPlace.Key, which the add-in
+        /// reads off its walk before anything is written and hands to the walk it takes after, so
+        /// a folder already empty before the run is known again and never removed. A folder holding
+        /// a folder is not empty. Null or no walk gives none.
+        /// </summary>
+        public static ICollection<string> EmptyFolderKeys(IList<ViewNode> walk)
+        {
+            HashSet<string> empty = new HashSet<string>(StringComparer.Ordinal);
+            HashSet<string> parents = new HashSet<string>(StringComparer.Ordinal);
+
+            if (walk == null)
+            {
+                return empty;
+            }
+
+            foreach (ViewNode node in walk)
+            {
+                if (node == null)
+                {
+                    continue;
+                }
+
+                parents.Add(ViewPlace.ParentKey(node.Folders));
+
+                if (node.IsFolder)
+                {
+                    empty.Add(ViewPlace.Key(node.Folders, node.Name, true));
+                }
+            }
+
+            empty.ExceptWith(parents);
+            return empty;
+        }
+
+        /// <summary>
+        /// Whether a folder at that place is among the folders EmptyFolderKeys read off the walk
+        /// before, the one reading of a folder's key, so the add-in hands the walk after the
+        /// answer without writing the key a second way. Null keys answer no.
+        /// </summary>
+        public static bool HeldNothing(ICollection<string> emptyFolderKeys, IList<string> folders, string name)
+        {
+            return emptyFolderKeys != null && emptyFolderKeys.Contains(ViewPlace.Key(folders, name, true));
+        }
 
         /// <summary>The folders joined by a slash, ViewPlace's written place.</summary>
         public string FolderPath

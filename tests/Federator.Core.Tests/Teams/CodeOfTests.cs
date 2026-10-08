@@ -137,21 +137,20 @@ namespace Federator.Core.Tests
             Assert.That(perTeam.Count, Is.EqualTo(5));
         }
 
-        /// <summary>One rule in one place: the views' pair rule reads a set name's code through CodeOf.Set, with its own codes.</summary>
+        /// <summary>
+        /// The coverage reads a set name's code against the seven codes of the views settings,
+        /// F114's add-in pass having taken the pair rule out, so a code the seven do not hold
+        /// reads as none there while the team map's codes read it for the views.
+        /// </summary>
         [Test]
-        public void TheViewsPairRuleReadsTheCodeTheSameWay()
+        public void TheSevenCodesOfTheViewsSettingsReadNoCodeTheMapAlonePutsIn()
         {
             ViewpointSettings settings = new ViewpointSettings();
 
-            foreach (string name in new[] { "BLD-ME-Ducts&Duct Fittings", "BLD-Security Devices", "BLD-ST-AR-Walls", "BLD-ST -Stair", "BLD-HV-Ducts" })
-            {
-                Assert.That(
-                    DisciplinePairRule.CodeIn(name, settings),
-                    Is.EqualTo(CodeOf.Set(name, settings.DisciplineCodes, settings.SetNameSeparator)),
-                    name);
-            }
-
-            Assert.That(DisciplinePairRule.CodeIn("BLD-HV-Ducts", settings), Is.EqualTo(string.Empty), "HV is none of the seven codes the views know");
+            Assert.That(CodeOf.Set("BLD-ME-Ducts&Duct Fittings", settings.DisciplineCodes, settings.SetNameSeparator), Is.EqualTo("ME"));
+            Assert.That(CodeOf.Set("BLD-Security Devices", settings.DisciplineCodes, settings.SetNameSeparator), Is.Empty);
+            Assert.That(CodeOf.Set("BLD-HV-Ducts", settings.DisciplineCodes, settings.SetNameSeparator), Is.Empty, "HV is none of the seven codes");
+            Assert.That(CodeOf.Set("BLD-HV-Ducts", new[] { "AR", "HV" }, settings.SetNameSeparator), Is.EqualTo("HV"), "the map's codes read it");
         }
     }
 }

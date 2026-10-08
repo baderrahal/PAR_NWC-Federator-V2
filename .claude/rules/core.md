@@ -444,8 +444,8 @@ and 6 does not read as broken.
   Mechanical
 - A SIDE'S CODE IS READ IN ONE PLACE, `CodeOf.Set`: the first part of the set name, split on
   the set name separator, that is a known code, `TeamMap.KnownCodes`, the map's codes and
-  those of the group's own models. `DisciplinePairRule.CodeIn` reads through it with the
-  views' seven codes until F114 replaces it. A model's code stays part 5 of its file name
+  those of the group's own models. The coverage reads through it with the views' seven
+  codes, and F114's views through `ViewTeams` with the map's. A model's code stays part 5 of its file name
   through `ContainerName.Parse`, and its team is the map's
 - NO CODE WAITS ON MAIN FOR A LATER STEP, Bader's answer B to Q134 on 2026-10-05. The pair of
   two teams, its one order and its size folder, Q114 points 10 to 12, are F114's, which calls
@@ -1597,46 +1597,23 @@ and 6 does not read as broken.
 - Every check gets a test that BREAKS one thing and asserts the check names it. A test that
   only asserts the good file passes would have passed against all eight of the differences
   above. Fourteen of them live in WorkbookCellCheckTests
-- WHAT RUNS UNTIL THE ADD-IN PASS OF F114: the per clash viewpoints of F85 in the five bullets
-  below. Q114 replaced them with one view per clash test, the block after them, whose Core
-  half is built and whose add-in half waits for the probes of the design's part 3
-- THE SAVED VIEWPOINTS ARE THREE FOLDERS DEEP AND ONE PER CLASH, F85, planned by
-  `Federator.Core.Views.ClashViewpointPlan` with `DisciplinePairRule` for layer 2. ONE PER
-  CLASH AND NOT PER TEST, because the thing a person presses has to be the thing they are
-  looking at. Layer 1 is the priority off the client's matrix, A, B, C or No priority, and
-  it is DROPPED ENTIRELY when no priority file was picked, which the block says in so many
-  words. Layer 2 is the two disciplines SORTED, so AR vs ST and ST vs AR are one folder,
-  or half the clashes of a pair go in one folder and half in another. Layer 3 is the size
-  folder, named by `ViewpointSettings.SubGroupFolderName` off the threshold so it can
-  never read Over 150mm beside a rule using 250, and it appears ONLY under a pair
-  involving one of `SubGroupDisciplines`, which F53 already asks the same question
-  through. The seven codes are a SETTING, `DisciplineCodes`, matched Ordinal and never
-  cased, and the code is whichever hyphen separated part of a set name is exactly one of
-  them, read by `CodeOf.Set` since F131. A SET NAME CARRYING NO KNOWN CODE IS REPORTED AND
-  NEVER GUESSED: the client's own file holds BLD-Security Devices, which breaks the pattern
-  its siblings follow, so the folder says UNKNOWN and the count goes in the block. Bader's
-  answer C to Q117 gives such a set the team its folder names, `TeamMap.TeamOfSet`, which
-  the TEAMS lines, the silent miss judge and F114's views through `ViewTeams` read. These
-  folders keep UNKNOWN until F114's add-in pass puts the views by team in their place
-- THE SMALL SERVICE RULE IN F85 IS ITS OWN AND IS NOT INHERITED FROM F72a. A service at or
-  under the threshold stays out of the tree, decided on the SIZE and never on the status.
-  F72a is off by default, and it leaves a service against another service exactly as it
-  was, Q44, so a tree that read the status would fill with every small pipe through every
-  wall on a run with that box off. And Reviewed is one of the three statuses the tree
-  carries, so a service F72a DID move is still in scope and is kept out by the size branch
-  rather than by the status filter. The three statuses are read off
-  `OpenClashes.StatusesFor(NavisworksOpen)` and never typed, because the image filter
-  reads the same place
-- F85 BRANCHES ON `SizeVerdict` AND NEVER ON A READING THAT FOLDS Large and SizeUnknown
-  together, which would put every fitting with no size property into Over 150mm. A size that could not be read goes in the PAIR folder and is
-  COUNTED, and none is dropped. A clash side is read the way F72a reads one, the LARGEST
-  size property the item carries, or the same 600 by 150 duct could be set Reviewed by
-  F72a as a large service and filed here as a small one. Q51
-- A VIEWPOINT'S NAME CARRIES THE TEST AS WELL AS THE CLASH, F85. A clash name is unique
-  only within its test and this tree puts clashes from many tests into one pair folder, so
-  a leaf named after the clash alone would collide and the already there check and the
-  read back would both stop meaning anything. How many viewpoints one test may write is a
-  SETTING, off by default, the same shape and the same reason the images cap has
+- F85'S PER CLASH VIEWPOINTS ARE WHAT F114 REPLACES, and `LegacyClashView` knows them by
+  the strict shape F85's own plan wrote, so the inventory removes them once the new tree is
+  written and read back and never a person's view: the folders an optional priority word,
+  then a pair of two codes or the unknown word joined by `PairSeparator`, the first not after
+  the second Ordinal, then an optional size folder, `SubGroupFolderName`, one to three deep,
+  the name a test's name, `NameSeparator`, `LegacyClashPrefix` and digits, the test one the
+  document or the picked XML holds, and no comment and no redline. Those words are settings
+  read for that alone since F114's add-in pass, which deleted `ClashViewpointPlan`,
+  `DisciplinePairRule` and the per clash settings `MaxPerTest`, `SubGroupDisciplines` and
+  `HasSubGroup`, and `DisciplineCodes`, the seven codes, is read by the coverage alone. What
+  F85 decided and F114 keeps: a service at or under the threshold is never in the size
+  folder, decided on the SIZE and never on the status, since F72a is off by default and
+  leaves a service against a service alone, Q44, and a size that could not be read is in
+  the pair view and named, never under Over 150mm, `TestViewPlan` branching on `SizeVerdict`
+  and never on a reading that folds Large and SizeUnknown together, because a fitting
+  usually carries no size property and dropping it would leave real geometry out with
+  nothing said
 - WHETHER A GROUP ASKS FOR ITS VIEWPOINTS IS ONE RULE, `ViewpointRequest.WhyNone`, F136,
   Bader's word of 2026-10-05 that every test run has viewpoints switched off until F114 is
   merged. Three things stop them, named in this order: the box on the Clash step unticked,
@@ -1646,9 +1623,9 @@ and 6 does not read as broken.
   line. A group that returns before that step, such as on a bad units name, says nothing
   about viewpoints. A group that asks for none cannot fail at them, F52's rule for a step
   not asked for. The box is a SETTING, `ReportOptions.MakeViewpoints`, defaulting to
-  `ViewpointRequest.DefaultMakeViewpoints`, OFF, Bader's answer B to Q131 on 2026-10-05,
-  so nobody makes the old viewpoints until F114 merges. His same answer ticks it once F114
-  merges, so F114's pull request sets the default back to on. Its label, its grey line,
+  `ViewpointRequest.DefaultMakeViewpoints`, ON since F114's add-in pass, Bader's answer B
+  to Q131 on 2026-10-05: unticked until F114 merged, so nobody made the old viewpoints,
+  and ticked once it merges. Its label, its grey line,
   the RUN SETTINGS line `ViewpointRequest.SettingsLine` and the one RESULT line
   `ViewpointRequest.ResultLine` are read off Core and never typed into the window. The
   label does not say every clash, because a service of 150 mm and under gets no viewpoint,
@@ -1677,9 +1654,8 @@ and 6 does not read as broken.
   test's view in the pair folder and never under Over 150mm, so the Over 150mm view holds
   only the services whose size was read over the threshold. Every one of them in a pair
   carrying the size folder is named with its test and clash in the VIEWS block,
-  `TestViewPlanOutcome.Lines`, under a line saying how many and that none was dropped, once
-  the add-in pass of F114 wires it. Until then the block that runs is F85's, which counts
-  them and names none, `ClashViewpointPlan`, FR-068. That is a
+  `TestViewPlanOutcome.Lines`, under a line saying how many and that none was dropped,
+  FR-068, since F114's add-in pass. That is a
   deliberate departure from the rule about logging a count and five examples, which is
   about many lines saying ONE thing: these lines each name a different item that may be
   wrongly in or out, and reading five tells you nothing about the sixth. Naming every one
@@ -1718,9 +1694,9 @@ and 6 does not read as broken.
   whose larger service is over the threshold goes in the test's view under Over 150mm and
   every other clash in its view in the pair folder, so no clash is in two views, and a test
   with no open clash gets no view. NO MIRRORED TEST GETS A VIEW, Bader's point that there
-  are no mirrored tests: the plan takes the tests F132's mirror rule names, a plain list of
-  test names until fix-F132 is merged, because a mirror not run this week can still hold an
-  earlier run's results in the document. A mirror's clashes are left out and counted and the
+  are no mirrored tests: the plan takes the run names of the mirrors F132's rule paired,
+  `MirrorPair.MirrorName` off `MirrorRule.Pairs`, handed by the engine since F114's add-in
+  pass, null and said where no rule ran. A mirror's clashes are left out and counted and the
   test named, and with no mirror rule handed in the plan's lines say so. The plan keeps the
   mirror list it was handed, `MirrorRule`, the one copy of it the VIEWS TREE reads. The
   views come in the order a person reads them, priority, pair in the map's order, the pair's
@@ -1754,26 +1730,55 @@ and 6 does not read as broken.
   written place, so a view moved from folder A/B holding C to folder A holding B/C reads as
   unmoved, row F114-K14. A second way of writing it would make every tool view read as a
   person's. `ToolViewMark` writes one comment on every view and folder the tool makes, a
-  sentence a person reads and a fingerprint of its place, name, camera and, once P10 holds,
-  its Guid, each text written with its length so any name reads back exactly. It is the
+  sentence a person reads and a fingerprint of its place, name and camera, with a Guid
+  field the add-in writes empty, P10 having read none on any item the tool's routes make,
+  5z-p, each text written with its length so any name reads back exactly, and its author
+  the `MarkAuthor` setting, P9. THE CAMERA IS JUDGED AS THE MARK STORES IT, attempt 2 of the
+  add-in pass on the breaker's B6: the read camera goes through the same three decimal
+  rounding the mark was written with before the distance to the marked camera is taken
+  against `CameraReadBackTolerance`, so rounding alone never reads a view as moved however
+  far from the origin it sits, tested at 500000 units. Whether the NWF keeps a camera at
+  single precision is UNKNOWN until the timed runs. It is the
   tool's only while that one comment is there and everything reads as written, and
   renamed, moved, turned, commented on, drawn on, copied or not provable it is a person's
   and kept and named, Q120 A. `LegacyClashView` knows F85's unmarked per clash viewpoints by
-  their strict shape. `ViewsInventory` decides every item after the new views are written:
+  their strict shape. AN ITEM WHOSE COMMENTS COULD NOT BE READ IS KEPT, B4: its
+  `ViewNode.Comments` are null, `ViewNode.CommentsNotRead`, never an empty list, since an
+  unread comment may be a person's, so the inventory keeps such a leaf as not the tool's and
+  such a folder as a folder, each saying why, and LegacyClashView never reads it.
+  `ViewsInventory` decides every item after the new views are written:
   the tool's earlier view goes only once every view of its test this run planned is
   written, marked and read back, a per clash viewpoint only once the whole new tree is, a
   view this run could not mark or read back goes at once, a test not read keeps its views,
+  and a test not read is one `TestsRead` did not read whole, B1, never one the clash step
+  did not run: keyed by the report's test name, its in scope rows alone needing reading, a
+  test the clash step ran with no row whole with no row, and a test whose open rows are all
+  result groups in neither list, kept and never failed, F114's second reading,
   nothing goes when the clash step was not sound, nothing goes under two folders of one
   name side by side, and a folder goes only when it is the tool's and this run empties it.
-  Removals go deepest first and latest index first, 5z, and `FolderGoesWithChildren`, false
-  until P14, says whether a folder takes its views in one call
+  Removals go deepest first and latest index first, 5z, and `FolderGoesWithChildren`, true
+  since P14 measured a folder going with its 2617 viewpoints in one call, 5z-v, says
+  whether a folder takes its views in one call. The add-in finds the view it just recorded
+  as the child of its folder with its name and no mark, `ToolViewMark.CarriesAMark`, P12,
+  and knows a folder that held nothing before the run off the walk before,
+  `ViewNode.EmptyFolderKeys` and `HeldNothing`, F114's add-in pass, so a folder empty
+  before the run is never removed and a priority folder of the old tree the run reuses is
+  no twin, row F114-K5
 - THE VIEWS TREE BLOCK AND ITS SEVEN CHECKS, Q114 point 19, F114. `ViewsTreeCheck.Of` reads
   a fresh walk after the removals where the document can say and the plan where it cannot,
   and says which: no pair folder holds another pair's test, no Over 150mm outside its own
   pair, no view shows a third team's model beyond the named exceptions, no clash in two
-  views, no mirrored test run or given a view of this tool's, read off the plan's one mirror
-  list against the tests run and the walk after, every view and folder the inventory kept
-  still there, and no per clash viewpoint left without a reason. A failed check is a FAILED
+  views, no mirrored test given a view of this tool's, read off the plan's one mirror list
+  against the walk after, since under Bader's answer D to Q133 both tests of a pair run and
+  a mirror among the tests run is the ordinary case, row F114-K20, every view and folder the
+  inventory kept
+  still there, and no per clash viewpoint left without a reason. ITS after LINE COUNTS WHAT THE
+  REMOVALS REPORTED, B5: `ViewsTreeFacts.Removals`, one `RemovalOutcome` per removal the
+  inventory asked for, gives the removed at once, earlier views, per clash viewpoints and
+  folders, each refusal or throw counted and named as not removed, and so is a RemoveAt whose
+  folder did not fall by exactly one, `RemovalOutcome.Counted`, and with none handed in the
+  line says what was removed is UNKNOWN, never the inventory's decisions read as done. A
+  failed check is a FAILED
   line naming what broke it and the group keeps its own result. A CHECK THAT COULD NOT RUN IS
   NEVER COUNTED AS HOLDING: check 5 with no mirror rule handed to the plan, checks 1 and 2
   with no walk, no run stamp or not one planned view found marked by this run, check 3 with
@@ -1786,7 +1791,7 @@ and 6 does not read as broken.
   team is UNKNOWN for check 3, a view with a clashing item whose model could not be read or
   whose home matches no model of the group for check 3, F114 attempt 4, since a view whose
   homes all miss hides every model and would otherwise hold over a blank view, and the tests
-  run or the walk after for check 5 where there are mirrors. A NAME OR AN ITEM NOT TIED IS
+  walk after for check 5 where there are mirrors. A NAME OR AN ITEM NOT TIED IS
   NEVER COUNTED AS HOLDING, F114 attempt 5, closing the class whole: every name check 3
   reads, homes and hidden models read back alike, goes through `ModelNames`, and a name that
   is blank, reaches no model or reaches more than one makes that view one check 3 did not

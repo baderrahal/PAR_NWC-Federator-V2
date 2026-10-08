@@ -5,28 +5,24 @@ using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Views
 {
-    /// <summary>One viewpoint, as it turned out.</summary>
+    /// <summary>One view, as it turned out.</summary>
     public sealed class ViewResult
     {
-        internal ViewResult(string path, string shows, int hidden, bool present, string error)
+        internal ViewResult(string path, string shows, int hidden, string error)
         {
             Path = path;
             Shows = shows;
             Hidden = hidden;
-            Present = present;
             Error = error;
         }
 
         public string Path { get; private set; }
 
-        /// <summary>What it shows, the pair folder of its clash such as AR vs ST.</summary>
+        /// <summary>The models it shows, by their codes.</summary>
         public string Shows { get; private set; }
 
-        /// <summary>How many disciplines it hides. Zero is a real answer in a single discipline group.</summary>
+        /// <summary>How many models it hides. Zero is a real answer where every model holds a clashing item.</summary>
         public int Hidden { get; private set; }
-
-        /// <summary>Already at that path and left exactly as it was. Never in the created count.</summary>
-        public bool Present { get; private set; }
 
         /// <summary>Why it failed, or null where it did not.</summary>
         public string Error { get; private set; }
@@ -36,7 +32,7 @@ namespace Federator.Core.Views
             get { return Error != null; }
         }
 
-        /// <summary>The one line the VIEWS block carries for this viewpoint.</summary>
+        /// <summary>The one line the VIEWS BUILT block carries for this view.</summary>
         public string Line()
         {
             if (Failed)
@@ -44,25 +40,19 @@ namespace Federator.Core.Views
                 return "VIEW     " + Path + "  FAILED, " + Error;
             }
 
-            if (Present)
-            {
-                return "VIEW     " + Path + "  already there, left alone, not made again";
-            }
-
             return "VIEW     " + Path + "  created, shows " + Shows
-                + ", hides " + Hidden + (Hidden == 1 ? " discipline" : " disciplines");
+                + ", hides " + Hidden + (Hidden == 1 ? " model" : " models");
         }
     }
 
     /// <summary>
-    /// The running total for the viewpoints of one group. The counts always agree with the
+    /// The running total for the views of one group. The counts always agree with the
     /// lines, because both come from the same list, which is how SetBuildOutcome does it
     /// and for the same reason: a count kept beside a list drifts from it.
     ///
-    /// A viewpoint already at its path is left exactly as it is and counted as already
-    /// there, never as created. That is the rule F28 set for sets and it is here for the
-    /// same reason: a second copy at one path leaves the tree holding both, and whichever
-    /// came first is the one anything resolving that path will find.
+    /// Since F114's add-in pass the views are made fresh every run and the inventory
+    /// removes the tool's earlier ones after, so there is no already there case here: a
+    /// view is created or it failed with its reason.
     /// </summary>
     public sealed class ViewpointBuildOutcome
     {
@@ -73,30 +63,23 @@ namespace Federator.Core.Views
             get { return new ReadOnlyCollection<ViewResult>(results); }
         }
 
-        /// <summary>Made by this run.</summary>
+        /// <summary>Made by this run, marked and read back.</summary>
         public ViewResult AddCreated(string path, string shows, int hidden)
         {
-            ViewResult result = new ViewResult(path, shows, hidden, false, null);
-            results.Add(result);
-            return result;
-        }
-
-        /// <summary>Already at that path from an earlier run, and left exactly as it was.</summary>
-        public ViewResult AddAlreadyPresent(string path, string shows, int hidden)
-        {
-            ViewResult result = new ViewResult(path, shows, hidden, true, null);
+            ViewResult result = new ViewResult(path, shows, hidden, null);
             results.Add(result);
             return result;
         }
 
         /// <summary>
-        /// Threw or produced nothing. A reason is required, because a failure with no
-        /// reason is what makes a RESULT block say something failed and name nothing.
+        /// Threw, produced nothing, or did not read back. A reason is required, because a
+        /// failure with no reason is what makes a RESULT block say something failed and
+        /// name nothing.
         /// </summary>
         public ViewResult AddFailed(string path, string shows, string error)
         {
             ViewResult result = new ViewResult(
-                path, shows, 0, false,
+                path, shows, 0,
                 string.IsNullOrEmpty(error) ? "UNKNOWN, it failed and no reason was given" : error);
 
             results.Add(result);
@@ -105,17 +88,12 @@ namespace Federator.Core.Views
 
         public int CreatedCount
         {
-            get { return CountWhere(false, false); }
-        }
-
-        public int AlreadyPresentCount
-        {
-            get { return CountWhere(true, false); }
+            get { return CountWhere(false); }
         }
 
         public int FailedCount
         {
-            get { return CountWhere(false, true); }
+            get { return CountWhere(true); }
         }
 
         /// <summary>Whether anything at all was put in, which is what asks for another NWF save.</summary>
@@ -124,13 +102,13 @@ namespace Federator.Core.Views
             get { return CreatedCount > 0; }
         }
 
-        private int CountWhere(bool present, bool failed)
+        private int CountWhere(bool failed)
         {
             int count = 0;
 
             for (int i = 0; i < results.Count; i++)
             {
-                if (results[i].Failed == failed && (failed || results[i].Present == present))
+                if (results[i].Failed == failed)
                 {
                     count++;
                 }
@@ -140,30 +118,27 @@ namespace Federator.Core.Views
         }
 
         /// <summary>
-        /// One line for the window and the log, in the same words however the viewpoints
-        /// were built. Nothing planned is a real answer and says so rather than reading as
-        /// a step that silently did nothing.
+        /// One line for the window and the log, in the same words however the views were
+        /// built. Nothing planned is a real answer and says so rather than reading as a
+        /// step that silently did nothing.
         /// </summary>
         public string Summary()
         {
             if (results.Count == 0)
             {
-                return "No viewpoint was planned for this group.";
+                return "No view was planned for this group.";
             }
 
-            return CreatedCount + " created, "
-                + AlreadyPresentCount + " already there"
+            return CreatedCount + " created"
                 + (FailedCount > 0 ? ", " + FailedCount + " failed" : string.Empty)
                 + ".";
         }
 
         /// <summary>
-        /// The VIEWS block, shaped on the SETS block on purpose. Every FAILED viewpoint is named, because each says something
-        /// different. The created and the already there ones are named five deep and then
-        /// counted, RunLog.KeptOfARepeat, because F85 puts hundreds into one group and a
-        /// block that names all of them buries everything worth reading, which is the
-        /// fault every other list in this log already guards against. The totals under it
-        /// are counted off the same list the lines came from.
+        /// The block. Every FAILED view is named, because each says something different.
+        /// The created ones are named five deep and then counted, RunLog.KeptOfARepeat,
+        /// the fault every other list in this log already guards against. The totals
+        /// under it are counted off the same list the lines came from.
         /// </summary>
         public IList<string> Lines()
         {
@@ -191,24 +166,18 @@ namespace Federator.Core.Views
 
             if (notShown > 0)
             {
-                lines.Add("VIEW     and " + notShown + " more created or already there, counted and not listed");
+                lines.Add("VIEW     and " + notShown + " more created, counted and not listed");
             }
 
             lines.Add(string.Empty);
             lines.Add("views created     : " + CreatedCount);
-
-            if (AlreadyPresentCount > 0)
-            {
-                lines.Add("already there     : " + AlreadyPresentCount + ", left alone, not made again");
-            }
 
             if (FailedCount > 0)
             {
                 lines.Add("views that failed : " + FailedCount);
             }
 
-            lines.Add("put into the document: " + CreatedCount + " created, "
-                + AlreadyPresentCount + " already there and left alone");
+            lines.Add("put into the document: " + CreatedCount + " created");
             return lines;
         }
     }

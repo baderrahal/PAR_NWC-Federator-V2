@@ -1,0 +1,225 @@
+MACHINE   [machine]   2026-10-07 16:25:44
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 46740
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-view-paint.ps1", sha256 9C24A188A898DDE9F080AE867692F433F1F89C34A0B19CC719576EDEB286B924
+GUARD     tools\loop\nw-guard.ps1, sha256 E29D2733A227E6665551BD52866E7C2B40F5A5B09114ECB2AA2FFE233EA23C1A
+PROCESS   powershell.exe pid 46740, started to run -File %USERPROFILE%\AppData\Local\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-view-paint.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 500
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-paint-20261007-162544" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-paint-20261007-162544\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123148 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 199 AutoSave files listed and not copied
+  the tool's own logs folder listed: 38 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf", 41317271 bytes, sha256 0944C1001095FA95F5AE8887F79450C51EDE836D47F9A38DE3982BB525FB4F37
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-paint-20261007-162544\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf", sha256 matches
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\bin\Release\net48\ViewpointProbe.dll", 331264 bytes, written 2026-10-07 16:25:13, sha256 404B92956E3F4584FD532EECCCA85C3E58E5366E8FC3902133B52846A220EBF8, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  16:25:50.076  t+5.8s  calling new NavisworksApplication()
+  16:27:09.963  t+85.7s  the constructor RETURNED after 79.88 s
+  Roamer processes new since step 2: 1
+    pid 43860, started 16:25:50.104, parent 1164 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 43860, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 43860, started 2026-10-07 16:25:50.104, start ticks UTC 639269763501045602
+  16:27:20.810  t+96.5s  Visible set True, read back True
+  visible top level windows of 43860: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  16:27:21.310  t+97.0s  AddPluginAssembly RETURNED after 0.054 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode vppaint on the copy, which it edits and saves as a new file ====
+  16:27:21.318  t+97.0s  calling ExecuteAddInPlugin(ViewpointProbe.PARS, vppaint, the plugin's output file, the copy, the save path in the work folder, the margin 500 mm)
+  16:27:55.576  t+131.3s  ExecuteAddInPlugin RETURNED 0 after 34.26 s
+  visible top level windows of 43860: 1, hidden: 86, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p17-painted.nwf - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | 16:27:21.334  probe started, mode vppaint, 3 file(s)
+  | 16:27:21.399  opening 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+  | 16:27:26.546  TryOpenFile returned True after 5.147 s
+  | 16:27:26.547  models 4
+  | 16:27:26.550     model 0  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc  under the loop folder True, its root's index path [0], root hidden False
+  | 16:27:26.552     model 1  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc  under the loop folder True, its root's index path [1], root hidden False
+  | 16:27:26.552     model 2  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  under the loop folder True, its root's index path [2], root hidden False
+  | 16:27:26.552     model 3  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc  under the loop folder True, its root's index path [3], root hidden False
+  | 16:27:26.552  document units Feet, millimetres per unit by the probe's own table 304.8
+  | 16:27:26.553  the framing margin: 500 mm, chosen and not measured, as in 5z-x, 1.64042 in document units
+  | 16:27:26.561  the document at the open: models 4, sets 61, tests 528, results 2939, statuses a person set 0, viewpoints 2847
+  | 16:27:26.564  tests read 528. The test of the most open clashes: [BLD-AR-Curtain Mullions-vs-BLD-AR-Windows], results 2568, open 2568. Open is New or Active
+  | 16:27:26.580  the open results walked in 0.014 s: open 2568, first items read 2568, second items read 2568, sides that read null 0
+  | 16:27:26.603  the paint plan: red, every distinct first item, 2335. Green, every distinct second item not already red, 88. Solid, all of them, 2423. Distinct second items 88, of which first in some clash and so red 0
+  | 16:27:26.605  the models holding a clashing item, shown and dimmed: 0. The rest hidden, 3. Items under no model root 0
+  | 16:27:26.618  the own colours read in 0.013 s: items resolved 2423 of 2423, without geometry 0, whose own colour is already the one they are given 0, whose own transparency is above 0 88
+  | 16:27:26.625  the camera: the first open clash's from TestsViewpointForResult, copied and zoomed to the open centres padded by the margin, as 5z-x
+  | 16:27:26.631  the folder [P17 probe] made at the root by FolderItem and AddCopy
+  | 16:27:35.431  SaveFile into p17-plain.nwf, the copy with the empty folder and no view, took 8.799 s, 41317276 bytes read back off the disk
+  | 16:27:35.432  
+  | 16:27:35.432  THE SEQUENCE, each call once
+  | 16:27:35.482     SetHidden on 3 model root(s) in 0.050 s
+  | 16:27:35.486     OverrideTemporaryTransparency 0.85 on 1 shown model root(s) in 0.004 s
+  | 16:27:35.502     ResolveIndexPath per item into the collections in 0.016 s: solid 2423, red 2335, green 88
+  | 16:27:35.507     ResetTemporaryMaterials, ONE call over the 2423 solid items, RETURNED in 0.005 s
+  | 16:27:35.511     OverrideTemporaryColor (1,0,0), ONE call over the 2335 red items, RETURNED in 0.003 s
+  | 16:27:35.511     OverrideTemporaryColor (0,1,0), ONE call over the 88 green items, RETURNED in 0.000 s
+  | 16:27:35.544     LIVE before the record, read in 0.030 s
+  | 16:27:35.545     LIVE before the record, red: items 2335, judged 2335 (without geometry 0), the colour right 2335, solid (its own transparency) 2335, at the dim 0.85 0. ALL RIGHT YES
+  | 16:27:35.545     LIVE before the record, green: items 88, judged 88 (without geometry 0), the colour right 88, solid (its own transparency) 88, at the dim 0.85 0. ALL RIGHT YES
+  | 16:27:35.545     LIVE before the record, the rest of the shown models' geometry: 730 items, at the dim 730. Geometry under a clashing item 0, at the dim 0. Geometry reading IsHidden 0
+  | 16:27:42.033     [P17 painted] recorded through the COM view, ApplyHideAttribs and ApplyMaterialAttribs true, into [P17 probe] in 6.487 s, the tree now 2848 viewpoints
+  | 16:27:42.072     READ OFF THE VIEW before the save: MaterialOverrides 3153 walked in 0.033 s, null entries 0, entries whose read threw 0, with no item 0, with no colour 730, distinct items 3153, transparency 0.85 730, no transparency 2423, colour (1,0,0) 2335, colour (0,1,0) 88. Hidden 3
+  | 16:27:42.072     READ OFF THE VIEW before the save, red: items 2335, judged 2335 (without geometry 0), the colour right 2335, solid (its own transparency) 2335, at the dim 0.85 0, named by an override 2335, of those with no transparency 2335, with no colour 0. ALL RIGHT YES
+  | 16:27:42.073     READ OFF THE VIEW before the save, green: items 88, judged 88 (without geometry 0), the colour right 88, solid (its own transparency) 88, at the dim 0.85 0, named by an override 88, of those with no transparency 88, with no colour 0. ALL RIGHT YES
+  | 16:27:42.081     undone: ResetTemporaryMaterials on every root and ResetAllHidden in 0.008 s. This is a copy, and each root's hidden state at the open is read above
+  | 16:27:42.081  
+  | 16:27:50.324  SaveFile into p17-painted.nwf, the copy with the one painted view, took 8.243 s, 41329885 bytes read back off the disk, 12609 bytes more than the save with no view
+  | 16:27:51.036  Document.Clear took 0.712 s, models now 0
+  | 16:27:55.477  TryOpenFile of the saved file returned True after 4.440 s
+  | 16:27:55.480  the document after the reopen: models 4, sets 61, tests 528, results 2939, statuses a person set 0, viewpoints 2848
+  | 16:27:55.509  AFTER THE REOPEN, READ OFF THE VIEW: MaterialOverrides 3153 walked in 0.029 s, null entries 0, entries whose read threw 0, with no item 0, with no colour 730, distinct items 3153, transparency 0.85 730, no transparency 2423, colour (1,0,0) 2335, colour (0,1,0) 88. Hidden 3
+  | 16:27:55.509  AFTER THE REOPEN, READ OFF THE VIEW, red: items 2335, judged 2335 (without geometry 0), the colour right 2335, solid (its own transparency) 2335, at the dim 0.85 0, named by an override 2335, of those with no transparency 2335, with no colour 0. ALL RIGHT YES
+  | 16:27:55.510  AFTER THE REOPEN, READ OFF THE VIEW, green: items 88, judged 88 (without geometry 0), the colour right 88, solid (its own transparency) 88, at the dim 0.85 0, named by an override 88, of those with no transparency 88, with no colour 0. ALL RIGHT YES
+  | 16:27:55.549  AFTER THE REOPEN the view pressed through CurrentSavedViewpoint in 0.040 s
+  | 16:27:55.573  AFTER THE REOPEN, LIVE after the press, read in 0.024 s
+  | 16:27:55.573  AFTER THE REOPEN, LIVE after the press, red: items 2335, judged 2335 (without geometry 0), the colour right 2335, solid (its own transparency) 2335, at the dim 0.85 0. ALL RIGHT YES
+  | 16:27:55.573  AFTER THE REOPEN, LIVE after the press, green: items 88, judged 88 (without geometry 0), the colour right 88, solid (its own transparency) 88, at the dim 0.85 0. ALL RIGHT YES
+  | 16:27:55.573  AFTER THE REOPEN, LIVE after the press, the rest of the shown models' geometry: 730 items, at the dim 730. Geometry under a clashing item 0, at the dim 0. Geometry reading IsHidden 0
+  | 16:27:55.573  
+  | 16:27:55.573  SUMMARY [BLD-AR-Curtain Mullions-vs-BLD-AR-Windows]: open 2568, red 2335, green 88, without geometry and so not judged 0. One call each: ResetTemporaryMaterials YES, red YES, green YES. Recorded YES, reopened YES. Bytes with no view 41317276, with the painted view 41329885
+  | 16:27:55.575  P17 YES   one ResetTemporaryMaterials and one OverrideTemporaryColor per colour recorded into one view where every red and every green item reads back red or green and solid, live, off the view, after a reopen and pressed
+  | 16:27:55.575  probe finished
+  the saved copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-paint-20261007-162544\p17-painted.nwf", 41329885 bytes, sha256 02F815C814EF66CF698CF963CA53F781849D631EFD515135609EC30AEA8C019B
+
+==== STEP 6. Quit through the API ====
+  16:27:57.215  t+132.9s  Dispose RETURNED after 1.02 s
+  16:28:04.923  t+140.6s  pid 43860 state gone, 7.7 s after Dispose returned, not forced
+
+==== FINALLY ====
+  16:28:04.933  t+140.6s  pid 43860 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 181, longest pass 11036 ms, longest gap between the starts of two passes 11546 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  16:25:45.833  t+1.5s  watchdog started
+  16:25:50.531  t+6.2s  Roamer pid 43860 seen with no readable start time, looked at again at the next pass
+  16:26:02.006  t+17.7s  new process Roamer pid 43860, parent 1164 svchost.exe, started 16:25:50.104, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  16:26:02.074  t+17.8s  Roamer 43860 visible top level windows: none
+  16:26:24.650  t+40.4s  new process AdskLicensingInstHelper pid 52092, parent 26096 GenuineService.exe, started 16:26:18.580, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  16:26:40.072  t+55.8s  new process AdskLicensingAgent pid 41992, parent 43860 Roamer.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: no
+  16:26:47.063  t+62.8s  new process AdskLicensingAgent pid 37176, parent 43860 Roamer.exe, started 16:26:31.763, command line holds the word embedding or automation: no
+  16:26:58.576  t+74.3s  Roamer 43860 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  16:27:06.279  t+82.0s  Roamer 43860 visible top level windows: none
+  16:27:17.478  t+93.2s  Roamer 43860 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  16:27:19.116  t+94.8s  Roamer 43860 visible top level windows: none
+  16:27:20.257  t+96.0s  Roamer 43860 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  16:27:23.090  t+98.8s  Roamer 43860 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;ec326708-62cd-405c-9825-e3950cb25ff4]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  16:27:24.795  t+100.5s  Roamer 43860 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;ec326708-62cd-405c-9825-e3950cb25ff4]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  16:27:26.554  t+102.3s  Roamer 43860 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;ec326708-62cd-405c-9825-e3950cb25ff4]] "" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  16:27:27.114  t+102.8s  Roamer 43860 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  16:27:27.718  t+103.4s  Roamer 43860 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;6baedf8c-11e8-47ee-8439-7d540772e4f2]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  16:27:34.029  t+109.7s  Roamer 43860 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;6baedf8c-11e8-47ee-8439-7d540772e4f2]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p17-plain.nwf - Autodesk Navisworks Manage 2025"
+  16:27:41.535  t+117.2s  new process AdskLicensingInstHelper pid 35056, parent 26096 GenuineService.exe, started 16:27:34.138, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  16:27:41.568  t+117.3s  Roamer 43860 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p17-plain.nwf - Autodesk Navisworks Manage 2025"
+  16:27:43.290  t+119.0s  Roamer 43860 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;2bf3842f-c1c8-4eaf-b272-ba22eeb32469]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p17-plain.nwf - Autodesk Navisworks Manage 2025"
+  16:27:48.901  t+124.6s  Roamer 43860 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;2bf3842f-c1c8-4eaf-b272-ba22eeb32469]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p17-painted.nwf - Autodesk Navisworks Manage 2025"
+  16:27:50.602  t+126.3s  Roamer 43860 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p17-painted.nwf - Autodesk Navisworks Manage 2025"
+  16:27:51.149  t+126.9s  Roamer 43860 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  16:27:52.270  t+128.0s  Roamer 43860 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;e442cdb9-df06-4a34-a5dc-74b090a1768f]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  16:27:53.964  t+129.7s  Roamer 43860 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;e442cdb9-df06-4a34-a5dc-74b090a1768f]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p17-painted.nwf - Autodesk Navisworks Manage 2025"
+  16:27:55.622  t+131.3s  Roamer 43860 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p17-painted.nwf - Autodesk Navisworks Manage 2025"
+  16:27:56.736  t+132.4s  Roamer 43860 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  16:27:57.284  t+133.0s  Roamer 43860 visible top level windows: none
+  16:28:04.964  t+140.7s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 43860, parent 1164 svchost.exe: exited
+  AdskLicensingInstHelper pid 52092, parent 26096 GenuineService.exe: exited
+  AdskLicensingAgent pid 41992, parent 43860 Roamer.exe: UNKNOWN whether it exited, its start time could not be read when it was seen
+  AdskLicensingAgent pid 37176, parent 43860 Roamer.exe: exited
+  AdskLicensingInstHelper pid 35056, parent 26096 GenuineService.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40631684692700  new QWord 40633016457098
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 93  new DWord 94
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 152  new DWord 153
+  22.0\CER\22.5.1433.58  uptime  old QWord 2353627343750  new QWord 2354968437500
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\GlobalOptions\tools\clash\teststab\testdetails  height  old String "1 353.6000000000000227374"  new String "1 354.0000000000000000000"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,-1920,-55,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "LcOpNwcPlugin"  new String "lcodpnwf"
+  22.0\Recent File List\1  DisplayName  old String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"  new String "p17-painted.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134290938074132508  new QWord 134358532738814371
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-paint-20261007-162544\p17-painted.nwf"
+  22.0\Recent File List\10  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134290938039044021  new QWord 134290938049614120
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc, sha1 B1CCD34DBC72>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>
+  22.0\Recent File List\2  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"  new String "p17-plain.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134290938070616743  new QWord 134358532535743688
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-paint-20261007-162544\p17-plain.nwf"
+  22.0\Recent File List\3  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"  new String "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  LastOpened  old QWord 134290938066994697  new QWord 134358532445861047
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-paint-20261007-162544\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\4  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"  new String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134290938062820552  new QWord 134290938074132508
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>  new String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>
+  22.0\Recent File List\5  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"  new String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134290938058967255  new QWord 134290938070616743
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>
+  22.0\Recent File List\6  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134290938054115696  new QWord 134290938066994697
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>
+  22.0\Recent File List\7  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134290938049614120  new QWord 134290938062820552
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>
+  22.0\Recent File List\8  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134290938046297945  new QWord 134290938058967255
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>
+  22.0\Recent File List\9  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134290938042577701  new QWord 134290938054115696
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>
+  registry: 38 values or keys differ from the backup
+  registry: 38 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 68875 bytes, sha256 5771E12A2A08, written 2026-10-07 16:23:07  new 70126 bytes, sha256 9C2FFE417B53, written 2026-10-07 16:27:57
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 CFB225D1EB92, written 2026-10-07 16:23:07  new 40079 bytes, sha256 8962B892509A, written 2026-10-07 16:27:56
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 0944C1001095FA95F5AE8887F79450C51EDE836D47F9A38DE3982BB525FB4F37, the same as before the start
+---- the work folder at the end, sorted by name ----
+  1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf  41317271 bytes
+  hkcu-navisworks-manage-22.0-before.reg  123148 bytes
+  mypid.txt  36 bytes
+  p17-painted.nwf  41329885 bytes
+  p17-plain.nwf  41317276 bytes
+  plugin-output.txt  7253 bytes
+  ViewpointProbe.dll  331264 bytes
+  watch.txt  5345 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-07 16:28:10, 146 s in all

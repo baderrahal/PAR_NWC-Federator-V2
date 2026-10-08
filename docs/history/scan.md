@@ -5660,6 +5660,2731 @@ rule signatures alone. It changes the pairing only for a file whose sets differ 
 is the case the breaker named: a set and its negation, an Or group against an And, or a search
 that ignores case, each of which the rule signature alone paired.
 
+## 5z-h. CAN A BOUNDINGBOX3D BE BUILT FROM TWO POINT3D, MEASURED 2026-10-05
+
+P5 of Q114, the views by team design, part 3. F114 frames one view per test on the box of
+that test's open clash centres, FramingBox's two corners, and hands the box to
+Viewpoint.ZoomBox. Nothing had read whether Autodesk.Navisworks.Api.BoundingBox3D can be
+made from two Point3D. A yes means FramingBox's corners build the box. A no means only the
+camera arithmetic route is probed in P16.
+
+Read off the metadata of the installed DLL by its one full path, with
+`ReflectionOnlyLoadFrom`, so no line of it ran and no Navisworks was started. Get-Process
+Roamer read 0 processes before the read and 0 after, printed by the probe itself. Run from
+Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-boundingbox-ctor.ps1
+
+The whole output is `tools\probes\ViewpointProbe\p5-boundingbox-result-20261005.txt`, the
+machine's name masked, exit 0. Autodesk.Navisworks.Api 22.0.0.0, file 22.5.1433.58. The
+result lines:
+
+```
+  P5 YES   public .ctor(Autodesk.Navisworks.Api.Point3D minPoint, Autodesk.Navisworks.Api.Point3D maxPoint)
+  first parameter minPoint, second maxPoint
+  implementation Managed, 289 bytes of IL
+```
+
+**THE ANSWER IS YES.** BoundingBox3D is a public class based on NativeHandle with three
+constructors: the public one from two Point3D named minPoint and maxPoint, a public one with
+no parameters, and a protected one for the native handle. It also has a public static Empty.
+Point3D has a public constructor from three doubles x, y and z. The same read prints
+`public System.Void ZoomBox(Autodesk.Navisworks.Api.BoundingBox3D box)` on Viewpoint, the
+one member of that name.
+
+STILL UNKNOWN, because it needs Navisworks running and this read ran none of it:
+
+- what the box holds once built, and whether the constructor accepts, swaps or refuses a
+  minPoint that is not below maxPoint on every axis. FramingBox should hand the corners in
+  min then max order until a run says otherwise
+- which units the box is read in
+- what ZoomBox does with the box, P16
+
+**WHAT THIS DECIDES.** FramingBox's two corners build the box with
+`new BoundingBox3D(new Point3D(x, y, z), new Point3D(x, y, z))`, so P16 probes ZoomBox with
+a box built this way.
+
+## 5z-i. CAN A COMMENT BE PUT ON THE COM VIEW BEFORE IT IS ADDED, MEASURED 2026-10-05
+
+P6 of Q114, the views by team design, part 3. F114 marks every view the tool writes with a
+comment, and writes each view through the COM API's InwOpView before
+InwOpFolderView.SavedViews().Add puts it in its folder, 5m. 5z-f printed that InwOpView has
+a Comments() method, viewpoint-calls-result line 244, and nothing had read what that
+collection lets a caller do or what object goes in it. A yes means P9 tries the comment on
+the COM view before the add first, which costs no extra call per view. A no means the mark
+is DocumentSavedViewpoints.AddComment after the add.
+
+Read off the metadata of the installed DLL by its one full path, with
+`ReflectionOnlyLoadFrom`, so no line of it ran and no Navisworks was started. Get-Process
+Roamer read 0 processes before the read and 0 after, printed by the probe itself. Run from
+Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-com-view-comments.ps1
+
+The whole output is `tools\probes\ViewpointProbe\p6-com-view-comments-result-20261005.txt`,
+the machine's name masked, exit 0. Autodesk.Navisworks.Interop.ComApi 22.0.0.0, file
+22.5.1433.58. The result lines:
+
+```
+  members of InwOpView and the interfaces it inherits that name or return a comment type:
+    InwOpView.public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+    InwOpSavedView.public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+  members of InwCommentsColl that add, insert, replace or set:
+    public System.Void Replace(System.Int32 ndx, System.Object p_newVal)   dispid 1610743816
+    public System.Void Insert(System.Int32 ndx, System.Object p_newVal)   dispid 1610743817
+    public System.Void Add(System.Object p_newVal)   dispid 1610743818
+    property System.Object Item[System.Object vIndex] { get; set }   dispid 0
+  nwEObjectType values that make a comment through ObjectFactory:
+    eObjectType_nwOpComment = 8
+  P6 YES   InwOpView hands out its comments collection, the collection has a member that adds, and ObjectFactory has a comment type to add
+```
+
+**THE ANSWER IS YES, ON THE METADATA.** InwOpView, inheriting InwOpSavedView, has
+`InwCommentsColl Comments()` and no comment property with a setter. InwCommentsColl has
+Add(Object), Insert(Int32, Object), Replace(Int32, Object), Remove(Int32), RemoveLast(),
+Clear(), Last(), Count, an Item indexer with get and set, and a `ReadOnly { get }`. The
+object to add is made by `InwOpState10.ObjectFactory(nwEObjectType.eObjectType_nwOpComment)`,
+value 8, the same factory 5m makes the view with at value 11. The comment interfaces are
+InwOpComment with Body, User and Date, each with get and set, InwOpComment2 adding
+CommentID, and InwOpComment3 adding status of nwECommentStatus, NEW 0, ACTIVE 1, APPROVED 2
+and RESOLVED 3. InwOpFolderView has the same Comments() method, so a folder can carry one
+the same way.
+
+STILL UNKNOWN, because it needs Navisworks running and this read ran none of it:
+
+- which of InwOpComment, 2 or 3 the factory's object implements at run time
+- what ReadOnly reads on the collection of a view that is not yet in a folder, and whether
+  Add on it is refused
+- whether a comment added before InwSavedViewsColl.Add is kept by the add, and whether it
+  reads back off SavedItem.Comments with the same body and author after a save, a clear and
+  a reopen, P9
+- whether the User set here is what SavedItem.Comments reads as Author, P9
+
+**WHAT THIS DECIDES.** P9 tries the COM route first: a comment made by ObjectFactory at
+eObjectType_nwOpComment, its Body and User set, added to the COM view's Comments() before
+the view is added to its folder. If P9 finds it is not kept or not read back, the mark is
+AddComment after the add.
+
+## 5z-j. DOES THE TYPE OF SAVEDVIEWPOINT.REDLINES EXPOSE A COUNT, MEASURED 2026-10-05
+
+P7 of Q114, the views by team design, part 3. F114's judge of a view the tool wrote asks
+whether a person has drawn on it, and the one place a saved viewpoint holds its redlines is
+SavedViewpoint.Redlines, whose type 5z-f printed as LcOpRedlineList, viewpoints-result line
+55. Nothing had read whether that type can say how many redlines it holds. A yes means P20
+reads it on a tool view and again after Bader draws a redline on it. A no means redlines are
+UNKNOWN in the mark's judge, and the log says so.
+
+Read off the metadata of the installed DLL by its one full path, with
+`ReflectionOnlyLoadFrom`, so no line of it ran and no Navisworks was started. The type was
+read off the Redlines property itself, not looked up by name. Get-Process Roamer read 0
+processes before the read and 0 after, printed by the probe itself. Run from Windows
+PowerShell 5.1 as
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-redline-list-count.ps1
+
+The whole output is `tools\probes\ViewpointProbe\p7-redline-list-count-result-20261005.txt`,
+the machine's name masked, exit 0. Autodesk.Navisworks.Api 22.0.0.0, file 22.5.1433.58. The
+result lines:
+
+```
+  public type of Redlines: Autodesk.Navisworks.Api.Interop.LcOpRedlineList
+  public members of it, inherited ones included, that read a count:
+    public System.Int32 Size()   declared on LcOpRedlineListBase
+  how each counting member and ItemAt are implemented, read off the method body:
+    LcOpRedlineListBase.Size   implementation Managed, 45 bytes of IL
+    LcOpRedlineListBase.ItemAt   implementation Managed, 58 bytes of IL
+  collection interfaces it implements:
+    none
+  P7 YES   the type of SavedViewpoint.Redlines has a public member that reads a count
+```
+
+**THE ANSWER IS YES, ON THE METADATA, AND THE COUNT IS A METHOD NAMED Size.** The type is
+`Autodesk.Navisworks.Api.Interop.LcOpRedlineList`, defined in Autodesk.Navisworks.Api itself,
+a public class based on LcOpRedlineListBase and then NativeHandle, implementing IDisposable
+alone, result lines 13 to 16. It has no Count property and implements no ICollection, IList
+or IEnumerable, so it cannot be counted with Count or walked with foreach. The count is the
+public method `Int32 Size()` declared on LcOpRedlineListBase, line 48, and each redline is
+read with `LcOpRedline ItemAt(Int32 n)`, line 49. LcOpRedlineList adds `Add(LcOpRedline)`,
+`Clear()` and an `IsReadOnly { get }`, lines 22 to 25. On SavedViewpoint, `Redlines` has a
+getter and no setter, line 7, and `EditRedlines()` returns the same type, line 9. The
+assembly also has the public redline element types LcOpRedline, LcOpRedlineArrow,
+LcOpRedlineCloud, LcOpRedlineEllipse, LcOpRedlineLine, LcOpRedlineText and
+LcOpRedlinePointList, lines 85 to 97.
+
+STILL UNKNOWN, because it needs Navisworks running and this read ran none of it:
+
+- what Size() reads on a view the tool wrote, and whether it rises by one when Bader draws a
+  redline on it, P20
+- whether Size() counts a redline element or a group of them, so whether one drawn cloud
+  with text reads 1 or 2
+- whether reading Redlines on a viewpoint of a document read off an NWF throws, and whether
+  the list must be disposed after the read
+
+**WHAT THIS DECIDES.** P20 runs, since a count exists. It reads
+`savedViewpoint.Redlines.Size()` on a tool view and again after Bader draws one redline on
+it, and only after P20 may the mark's judge read redlines. Until then the judge says
+redlines are UNKNOWN.
+
+## 5z-k. DOES A TEST WITH ITS SIDES SWAPPED FIND THE SAME CLASHES, MEASURED 2026-10-05
+
+P1 of Q114, the views by team design, part 3, and the first of its probes that runs inside
+Navisworks. F132's mirror rule keeps one of two tests that ask the same pair of sets the
+other way round, on the belief that a swap finds the same clashes. Nothing had measured it.
+The question: does the swap of BLD-ST-Framing-vs-BLD-ST-Columns, created and run beside it,
+find the same 25 clashes over the same unordered pairs of item index paths? A yes means the
+rule stands as written. A no means both counts go in the MIRROR line and Bader sees it before
+F132's add-in commit.
+
+HOW. `tools\probes\ViewpointProbe\probe-mirror-swap.ps1` starts one Navisworks through the
+automation API under the loop's guard, tools\loop\nw-guard.ps1 dot-sourced: the refusal while
+any Roamer runs, read before anything and again before the constructor, the settings backup,
+the adoption by AdoptStart's four conditions, Dispose, the one close through the held handle
+when needed, and the put back by SettingsPutBack. Get-Process Roamer read 0 before each run.
+It copies the C02 NWF of run set 04, `runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`,
+41,317,271 bytes, sha256 0944C100, into a new folder under
+`%LOCALAPPDATA%\NwcFederatorLoop\probes`, loads `ViewpointProbe.dll` with AddPluginAssembly and
+runs its new mode `mirror` with one ExecuteAddInPlugin. The mode opens the copy, finds the test
+by name, adds a test whose side A is the original's side B and whose side B is the original's
+side A by ClashSelection.CopyFrom, clears its results, runs it with TestsRunTest, runs the
+original again, and compares the results that are not Resolved as unordered pairs of the index
+paths of Item1 and Item2, read with DocumentModels.CreateIndexPath. Run from Windows PowerShell
+5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-mirror-swap.ps1 -Out tools\probes\ViewpointProbe\p1-mirror-swap-result-20261005.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf -TestName BLD-ST-Framing-vs-BLD-ST-Columns
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+
+TWO RUNS, BOTH KEPT, the machine name on line 1 of each masked by hand as `[machine]` and nothing
+else changed.
+
+- RUN 1 at 12:53, `p1-mirror-swap-run1-result-20261005.txt`, Navisworks pid 39216. The swap was
+  made with the original's CreateCopy, and TestsAddCopy threw `ArgumentException: Contains an item
+  whose GUID is already present in the group`, lines 95 and 96. So a copy made by CreateCopy keeps
+  the original's Guid and cannot be added beside it. Nothing of P1 was measured. ExecuteAddInPlugin
+  returned 1, line 48, Dispose returned and pid 39216 was gone 6.9 s later, not forced, lines 104
+  and 105
+- RUN 2 at 12:56, `p1-mirror-swap-result-20261005.txt`, Navisworks pid 54784, adopted on all four
+  conditions, line 37. The swap is a new ClashTest built the way ClashRunner.Create builds one, with
+  the original's type, tolerance, merge composites and simulation type. The original carries no
+  ignore rules, line 66, so a new test misses none. ExecuteAddInPlugin returned 0 after 26.12 s,
+  line 48. Dispose returned and pid 54784 was gone 8.0 s later, not forced, lines 175 and 176
+
+The two sides, plugin lines in run 2's result, lines 66 to 68 and 97 to 99:
+
+```
+original  type HardConservative, tolerance 0.0820209974 ft, merge composites True, ignore rules 0
+          side A  "BLD-ST-Framing"  27 items selected
+          side B  "BLD-ST-Columns"   8 items selected
+swap      the same settings, side A "BLD-ST-Columns" 8 items, side B "BLD-ST-Framing" 27 items
+```
+
+**THE ANSWER IS NO.** Lines 69, 104, 133 and 159 to 169 of run 2's result:
+
+```
+the original as the NWF holds it      25 results, New 25
+the swap after its run                27 results, New 27
+the original run again beside it      25 results, Active 25
+the swap against the original         in both 25, in the swap only 2, in the original only 0
+the original run again against itself in both 25, the same 25 pairs, largest distance change 3.7E-09
+only in the swap   3.1.0.0.0.0.0 | 3.4.1.0.0.3.0   distance -1.3940146831272822
+only in the swap   3.1.0.0.0.3.0 | 3.3.1.0.0.4.0   distance -1.3940188019622104
+```
+
+1. The swap finds every one of the original's 25 pairs and 2 more, so it is not a mirror of the
+   original on this test. The original run again finds exactly the 25 it held, so the 2 come from
+   the swap and not from a run that differs from the one before
+2. On every one of the 25 pairs in both, Item1 is the item of side A, so the swap holds each
+   pair the other way round, line 160
+3. The distance of the same pair differs between the two, by up to 1.5331472298816213 ft, line 160.
+   The swap's 27 distances are lines 105 to 131, the original's 25 lines 70 to 94. Run again, the
+   original's distances moved by at most 3.7E-09 ft, line 168
+4. Each of the 2 extra pairs has a distance of about -1.394 ft, far past the tolerance of 0.082 ft,
+   so neither sits on the tolerance's edge
+5. TryOpenFile of the copy took 4.667 s, TestsRunTest 6.161 s on the swap and 6.454 s on the
+   original, and SaveFile of the copy with the swap 8.729 s, 41,319,419 bytes read back, lines 55,
+   102, 132 and 171
+
+**BADER'S THINGS.** The NWF the copy was made from read sha256 0944C100 at the start and at the end
+of both runs. Run 1 put back 36 registry values and run 2 39, each read again with 0 still
+differing, and each put back InfoCenter.log and LastSession.xml reading their backup's sha256. The
+tool's own logs folder had nothing added or changed. Run 1 added no AutoSave file. Run 2's
+Navisworks added two to his AutoSave folder, `1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave1.nwf` and
+`.Autosave2.nwf`, lines 264 and 265, which the probe compares and does not write. After the probe,
+by the rule of run.ps1's PutBackAutoSave, Q86, with no Roamer running and each reading the sha256
+the compare read, the prober removed both and read each back gone, and the folder lists 199 files
+again, the count the backup listed. That removal is in no result file.
+
+**P1'S COPY FOR P2.** `%LOCALAPPDATA%\NwcFederatorLoop\probes\mirror-swap-20261005-125658\p1-copy-with-swap.nwf`
+holds the 528 tests of the baseline and the swap last at the root, index 528, named
+`BLD-ST-Framing-vs-BLD-ST-Columns P1 swap`, with its 27 New results. The original's 25 results
+there read Active, not New, because it was run again.
+
+**STILL UNKNOWN.**
+
+- why the swap finds 2 more. Whether Hard Conservative is not symmetric by design, or what in
+  these four items makes the difference, is not read here
+- whether any other test swaps the same way. One test of one type in one NWF was measured
+- whether the Clash Detective panel shows 27 for the swap. The panel was not read
+- whether the swap's results read the same after a save and a reopen. The copy was saved and not
+  reopened
+- whether a test made by the XML import and swapped behaves as this new ClashTest did. The original
+  came from the import, the swap from new ClashTest
+- which way round a person's mirror test in a real NWF was written, and so which of the two the
+  rule would remove
+
+**WHAT THIS DECIDES.** By the row of P1, both counts go in the MIRROR line, and Bader sees before
+F132's add-in commit that on BLD-ST-Framing-vs-BLD-ST-Columns the swap found 27 where the original
+found 25, every one of the 25 among them. A test and its swap cannot be taken to find the same
+clashes, so removing either one can lose clashes.
+
+## 5z-l. DOES TESTSREMOVEAT TAKE ONE TEST AND NOTHING ELSE, MEASURED 2026-10-05
+
+P2 of Q114, the views by team design, part 3. F132's MirrorRemover would remove a mirror test
+with DocumentClashTests.TestsRemoveAt(GroupItem parent, int index). The member was printed off
+the install and what it does was UNKNOWN. The question: does TestsRemoveAt(parent, index), with
+the parent resolved fresh, remove exactly P1's swapped test with its results, while the models,
+sets, other tests, results, statuses and viewpoints count the same after a save, a close and a
+reopen, and how many seconds does the call take? A yes means MirrorRemover is built. A no means
+no test is ever removed, and a mirror is left not run and named in the form.
+
+HOW. `tools\probes\ViewpointProbe\probe-test-remove.ps1` is P1's `probe-mirror-swap.ps1` with the
+new mode `testremove` of `ViewpointProbe.dll` in place of `mirror`, and `-Nwf` allowed under
+`probes` as well as `runs`, because the file P2 works on is P1's saved copy. The guard is the
+loop's, tools\loop\nw-guard.ps1 dot-sourced, with the Roamer refusal, the settings backup, the
+adoption by AdoptStart's four conditions, Dispose, the close through the held handle only when
+needed, and SettingsPutBack. Get-Process Roamer read 0 before the run and 0 after it. The probe
+copied P1's `%LOCALAPPDATA%\NwcFederatorLoop\probes\mirror-swap-20261005-125658\p1-copy-with-swap.nwf`,
+41,319,419 bytes, sha256 34831A9E, into the new folder `probes\test-remove-20261005-133231`, and
+the mode, on that copy:
+
+1. prints TestsRemoveAt and TestsRemove by reflection
+2. opens the copy, finds the test by name over the whole test tree, and reads its census line
+3. takes a snapshot of the document: every model by index and file name, every item of the set
+   tree and of the viewpoint tree by path, name and folder or type, in order, and every test by
+   path, name, type, tolerance, test status, result count, results by status, and a sha256 of
+   every result's name and status in order
+4. reads the parent fresh as `TestsData.Value.TestsRoot`, walked down the test's address when it
+   sits in a folder, reads the child at the index and checks its name, then times
+   `TestsRemoveAt(parent, index)` alone
+5. takes the snapshot again and compares it line by line with the first less the removed test's
+   line, and the result total with the first less the removed test's results
+6. SaveFile into a new file in the work folder, Document.Clear, TryOpenFile of the saved file,
+   and the same snapshot and compare, against the first and against step 5
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-test-remove.ps1 -Out tools\probes\ViewpointProbe\p2-test-remove-result-20261005.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\probes\mirror-swap-20261005-125658\p1-copy-with-swap.nwf -TestName "BLD-ST-Framing-vs-BLD-ST-Columns P1 swap"
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+One run at 13:32, `p2-test-remove-result-20261005.txt`, the machine name on line 1 masked by hand
+as `[machine]` and nothing else changed. Navisworks pid 38964, adopted on all four conditions,
+line 37. ExecuteAddInPlugin returned 0 after 25.41 s, line 48. Dispose returned and pid 38964 was
+gone 10.4 s later, not forced, line 98.
+
+The member, line 55: `Void TestsRemoveAt(GroupItem parent, Int32 index)`.
+
+**THE ANSWER IS YES.** Lines 61 to 93 of the result:
+
+```
+the test removed      "BLD-ST-Framing-vs-BLD-ST-Columns P1 swap" at the root, index 528,
+                      results 27, New 27
+the parent            "TestRoot", a ClashTestFolder, 529 children, the child at 528 read
+                      by name, resolve and check 0.001 s
+TestsRemoveAt(parent, 528)                0.022 s
+                      models  sets  tests  results  not New  viewpoints
+before the call          4     61    529     2966       25        2847
+after the call           4     61    528     2939       25        2847
+after save and reopen    4     61    528     2939       25        2847
+tests by that name    after the call 0, after the reopen 0
+lines that differ     0 for models, sets, viewpoints and tests, after the call, after the
+                      reopen, and the reopen against the call
+```
+
+1. The call took the one test and its 27 results, 2966 less 27 being 2939, and nothing else
+   moved. Every one of the other 528 tests reads the same name, type, tolerance, status, result
+   count, results by status and the same sha256 over its results' names and statuses in order
+2. 25 results read not New before the call, after it and after the reopen, each in the same test
+   with the same status by the sha256 of point 1. That they are the original's 25 Active from
+   P1's run again is what 5z-k says. This run did not print the not New results by test
+3. The set tree, 69 items of which 61 sets, and the viewpoint tree, 2869 items of which 2847
+   viewpoints, read the same item by item in order
+4. SaveFile took 10.613 s, 41,317,293 bytes read back, line 78. Document.Clear took 0.801 s and
+   left 0 models and 0 tests, line 79. TryOpenFile of the saved file took 6.388 s, line 80
+
+**BADER'S THINGS.** The NWF the copy was made from read sha256 34831A9E at the start and at the
+end, lines 22 and 192. 40 registry values were put back, each read again with 0 still differing,
+lines 180 and 181. InfoCenter.log and LastSession.xml were put back reading their backup's
+sha256, lines 185 to 187. No AutoSave file was added, changed or gone, line 188, and the folder
+listed 202 files before the run, line 18, and 202 when the prober read it after. The tool's own
+logs folder had nothing added or changed, line 189. One AdskLicensingAgent, pid 45468, child of
+pid 38964, read STILL RUNNING at the end, line 133. Read again by the prober after the run, no
+process held pid 45468 and no AdskLicensingAgent ran.
+
+**STILL UNKNOWN.**
+
+- a removal from the middle. The swap was the last test at the root, so whether the tests after a
+  removed one keep their results and statuses when they shift is not measured
+- a removal inside a folder of tests. The parent here was the root
+- whether removing a test takes the saved viewpoints made for its results. The swap had none in
+  the tree, so the 2847 viewpoints say nothing about that case
+- whether a test made by the XML import is removed the same way. The swap was a new ClashTest
+- the close was Document.Clear inside the same Navisworks. A reopen in a new Navisworks was not
+  read
+- the Clash Detective panel was not read, and neither the Guids nor the comments of the other
+  tests' results were compared
+- the seconds in a tree of another size. One call in a tree of 529 tests was timed
+
+**WHAT THIS DECIDES.** By the row of P2, MirrorRemover is built on TestsRemoveAt(parent, index)
+with the parent read fresh and the index checked by name just before. The census out and back of
+the design is still what stops a save on any difference, since a removal from the middle or from
+a folder was not measured here.
+
+## 5z-m. WHAT WORKSETS DO 1A04PK'S HV AND FP MODELS CARRY, MEASURED 2026-10-05
+
+P4 of Q114, the views by team design, part 3. SilentMiss in F131 needs, for each model of a
+group, its whole list of workset names, and the design said every 1A04PK line reads UNKNOWN
+until the HV model's list and the FP model's list are read. The question: what are the workset
+names of 1A04PK's HV model and of its FP model, each list whole? The answer is SilentMiss's first
+real input and decides the spellings of the drafted also-ask lines.
+
+HOW. The row names the census mode of 5t on a copy of 1A04PK's NWF, or F116's model worksets rows
+of a 1A04PK run since F116 merged. No .log or .tsv under `%LOCALAPPDATA%\NwcFederatorLoop\runs` or
+under steps\runs carries a model worksets row, the 1A04PK run of run set 04, run-20261004-211839,
+included. So the probe was run. The census
+mode's walk swallows a throw part way and says nothing of it, so a list it gives cannot be said to
+be whole. The new mode `worksets` of `ViewpointProbe.dll` reads the same tab and property the
+add-in's ModelFactsReader reads, the `Workset` property on the `LcRevitData_Element` tab. That is
+the category and property every workset condition of the clash XML in samples asks,
+`LcRevitData_Element` and `lcldrevit_parameter_-1002053`. Per model, the mode:
+
+1. says whether the model was read from under the loop folder
+2. walks every item under the model's root, counting the items, the items with geometry, the items
+   with the Element tab and those with a Workset value on it, and every item whose read threw.
+   Each item's read sits in its own try, and the walk's own throw is said
+3. reads each value with no catch inside, by its data type, so a failed read is counted and not
+   hidden
+4. lists every other tab carrying a property whose display or internal name holds "workset"
+5. prints each workset name in brackets with its length, the number of Element tabs carrying it,
+   and any leading or trailing space or character outside printable ASCII
+
+It calls the list WHOLE only when the walk finished, no item's read threw, and the model was read
+from under the loop folder.
+
+`tools\probes\ViewpointProbe\probe-model-worksets.ps1` is P2's `probe-test-remove.ps1` with this
+mode in place of `testremove`, `-Codes` in place of `-TestName`, `-Nwf` allowed under `runs` only,
+and nothing saved. The guard is the loop's, tools\loop\nw-guard.ps1 dot-sourced, with the Roamer
+refusal, the settings backup, the adoption by AdoptStart's four conditions, Dispose, the close
+through the held handle only when needed, and SettingsPutBack. Before the run the prober inflated
+the NWF's body and read its ten model paths. All ten were absolute paths under
+`%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C04`, so opening a copy reads nothing outside
+the loop folder. Get-Process Roamer read 0 before the run and 0 after it. The probe copied
+`%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf`,
+4,699 bytes, sha256 7ECA0ECA, into the new folder `probes\model-worksets-20261005-135921`, and
+opened the copy.
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-model-worksets.ps1 -Out tools\probes\ViewpointProbe\p4-model-worksets-result-20261005.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf -Codes HV,FP
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+One run at 13:59, `p4-model-worksets-result-20261005.txt`, the machine name on line 1 masked by
+hand as `[machine]` and nothing else changed. Navisworks pid 32088, adopted on all four conditions,
+line 37. TryOpenFile of the copy returned True after 7.192 s with 10 models, every one read from
+under the loop folder, lines 56 to 68. ExecuteAddInPlugin returned 0 after 34.94 s, line 48.
+Dispose returned and pid 32088 was gone 6.6 s later, not forced, line 291.
+
+**THE ANSWER.** Lines 70 to 286 of the result:
+
+```
+1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc     LIST WHOLE: YES
+  items 7884, with geometry 2992, with the Element tab 2409, with a Workset value 2409,
+  items whose read threw 0, walk 3.652 s
+  [ME-Ductwork]        on 2218 Element tabs
+  [ME-PIPING]          on  179
+  [PL-Drainage]        on   12
+  3 names, each plain ASCII with no leading or trailing space
+
+1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc     LIST WHOLE: YES
+  items 41130, with geometry 21422, with the Element tab 12127, with a Workset value 12127,
+  items whose read threw 0, walk 23.962 s
+  [FF-Fire Fighting]   on 12127 Element tabs
+  1 name, plain ASCII with no leading or trailing space
+
+the Workset property, in both models   display [Workset], internal
+                                       [lcldrevit_parameter_-1002053], DisplayString
+```
+
+1. The HV model carries THREE workset names, `ME-Ductwork`, `ME-PIPING` and `PL-Drainage`, and no
+   name starting HV-. The list is whole: every one of its 2409 Element tabs carries a Workset
+   value, and no read threw
+2. The FP model carries ONE workset name, `FF-Fire Fighting`, on every one of its 12127 Element
+   tabs, and no name starting FP-. The list is whole on the same terms
+3. The workset values the clash XML in samples asks, counted by the prober on 2026-10-05 in both
+   `1104-PAR_CLASH_AllInOne_25mm.xml` and `1104-PAR_CLASH_AllInOne (2) (1).xml`, are the seven 5t
+   names: `PL-Drainage` 6, `PL-Domestic Water` 6, `ME-PIPING` 5, `ME-DUCTWORK` 5, `FP-PIPING` 5,
+   `FF-FIRE FIGHTING` 2, `ME-EQUIPMENT` 1. Compared as strings with the two lists:
+   - `ME-PIPING` and `PL-Drainage` are carried by the HV model exactly as asked
+   - `ME-DUCTWORK` is carried by the HV model as `ME-Ductwork`, the same letters in another case
+   - `FF-FIRE FIGHTING` is carried by the FP model as `FF-Fire Fighting`, the same letters in
+     another case
+   - `FP-PIPING` is carried by neither model in any case. Under the design's 1.3, the text after
+     the first hyphen, `PIPING`, matches the HV model's `ME-PIPING` case blind, and matches no
+     name of the FP model
+4. Other tabs carry a property named Workset too. In the FP model 5744 Level tabs, 11859 System
+   Type tabs, 12127 Phase Created tabs and 1123 Symbol tabs carry one, with many Family and Type
+   tabs among others. The HV model has the same kinds of tab. Their values are names such as `Shared Levels and Grids-ZZ`, `Piping System Types`, `Phase Settings` and
+   `Family  : ...`. Three are names of the kind a team uses:
+   - `FF-Fire Fighting` on one FamilyInstance tab of the FP model, line 91
+   - `ME-Ductwork` on 12 FamilyInstance tabs of the HV model, line 210
+   - `ME-Links-ZZ` on 2 RevitLinkInstance tabs of the HV model, line 213
+
+   None of these is on the Element tab, so a workset condition of the clash XML does not read them
+
+**BADER'S THINGS.** The NWF the copy was made from read sha256 7ECA0ECA at the start and at the
+end, lines 22 and 379. 35 registry values were put back, each read again with 0 still differing,
+line 368. InfoCenter.log and LastSession.xml were put back reading their backup's sha256, lines
+372 to 374. No AutoSave file was added, changed or gone, line 375. The prober also listed the
+AutoSave folder with each file's sha256 before the run and again after it: 202 files both times,
+0 differing. The tool's own logs folder had nothing added or changed, line 376. Two
+AdskLicensingAgent processes, pids 50232 and 52552, children of pid 32088, read exited, lines 321
+and 322. Two others, pids 9444 and 41324, read STILL RUNNING, lines 323 and 324. They are children
+of a Revit.exe, pid 37712, that the probe did not start, and the probe touched neither of them.
+
+**STILL UNKNOWN.**
+
+- whether a Navisworks search of `LcRevitData_Element` Workset `equals` matches across case. This
+  run read the names and ran no search, so whether `ME-DUCTWORK` finds `ME-Ductwork` without a
+  correction was not measured here
+- whether the HV model holds items of the category a set filters on, which is F127's per-model
+  count. Nothing here counted categories
+- the worksets of 1A04PK's AR, EL, ME and ST models. Only HV and FP were walked
+- whether these lists hold for any NWC of 1A04PK other than the run set 04 copy of 2026-10-04.
+  The NWCs are files exported from Revit, and a new export can carry other worksets
+- whether a model of another group with the code HV or FP carries the same names
+
+**WHAT THIS DECIDES.** By the row of P4, these two lists are SilentMiss's first real input for
+1A04PK, each list whole. The HV model carries ME- and PL- names and the FP model carries one FF-
+name, so the also-ask spellings for these two models are drafted from the names above. Which
+lines are drafted is the rule's work in F131, and is not decided here.
+
+## 5z-n. WHICH SAVED VIEWPOINTS OF THE BASELINE NWF ARE F85'S, MEASURED 2026-10-05
+
+P8 of Q114, the views by team design, part 3, read only. F114 removes the per-clash views F85
+wrote, and those carry no mark, so LegacyClashView of the design's 1.9 tells them by their folders
+and their name alone. The question: does the saved viewpoint tree of the baseline's 1A02MM NWF hold
+2847 viewpoints, 2813 under code pair folders with leaves named test, two spaces, Clash and digits,
+and 34 elsewhere? The dump gives every item's folder path, name, folder or viewpoint, comment count
+and Guid. By the row of P8, exactly 2813 legacy and none of the 34 lets LegacyClashView's test run
+over the committed dump. Any other count stops the legacy removal until the rule is fixed. It also
+counts the leaves under Over 150mm per test.
+
+HOW. `tools\probes\ViewpointProbe\probe-viewpoint-tree.ps1` is P4's `probe-model-worksets.ps1` with
+the new mode `vptree` of `ViewpointProbe.dll` in place of `worksets` and `-Dump` in place of
+`-Codes`. The guard is the loop's, tools\loop\nw-guard.ps1 dot-sourced, with the Roamer refusal,
+the settings backup, the adoption by AdoptStart's four conditions, Dispose, the close through the
+held handle only when needed, and SettingsPutBack. Get-Process Roamer read 0 before the run and 0
+after it. The probe copied the C02 NWF of run set 04,
+`%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`,
+41,317,271 bytes, sha256 0944C100, into the new folder `probes\viewpoint-tree-20261005-142446`, and
+the mode, on that copy:
+
+1. opens the copy and says for each model whether it was read from under the loop folder
+2. reads the name of every ClashTest in the test tree, root and folders
+3. walks the whole saved viewpoint tree from `SavedViewpoints.RootItem`, each item in its own try,
+   and writes one dump row per item: index path, depth, folder or viewpoint, child count,
+   `Comments.Count`, `SavedViewpoint.Redlines.Size()` on a viewpoint, `SavedItem.Guid`, the legacy
+   verdict, the first condition failed, folder path and name. A tab, a line break, any other
+   control character and a backslash are written as \uXXXX, so one row stays one row
+4. judges every item by the five conditions of 1.9 as written there, with F85's defaults read off
+   src\Federator.Core\Views: the priority words A, B, C and No priority as an optional first
+   folder, then a pair folder of two of AR, ST, ME, FF, PL, DR, EL and UNKNOWN with " vs " between
+   and the first not after the second Ordinal, then an optional Over 150mm, at depth 1 to 3. The
+   item a viewpoint. The name a test name, two spaces, Clash and digits only. The test name one of
+   the document's own. No comment and no redline
+5. saves nothing. The script copies the dump out of the work folder and reads its sha256 back
+
+This is the probe's own reading of 1.9's text. LegacyClashView is not written yet, so its test
+has not run over the dump. Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-viewpoint-tree.ps1 -Out tools\probes\ViewpointProbe\p8-viewpoint-tree-result-20261005.txt -Dump tools\probes\ViewpointProbe\p8-viewpoint-tree-dump-20261005.tsv -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+One run at 14:24, `p8-viewpoint-tree-result-20261005.txt`, the machine name on line 1 masked by hand
+as `[machine]` and nothing else changed. The dump is `p8-viewpoint-tree-dump-20261005.tsv`, 2869
+rows and a header, 376,451 bytes, sha256 6B9D1DCE, line 214. Navisworks pid 13668, adopted on all
+four conditions, line 37. TryOpenFile of the copy returned True after 6.362 s with 4 models, every
+one read from under the loop folder, lines 55 to 60. ExecuteAddInPlugin returned 0 after 6.55 s,
+line 48. Dispose returned and pid 13668 was gone 6.1 s later, not forced, line 218.
+
+**THE ANSWER IS YES.** Lines 61 to 212 of the result:
+
+```
+tests in the document 528, distinct names 528
+the root              a FolderItem with 16 children
+items 2869            folders 22, viewpoints 2847, other kinds 0, reads that threw 0
+viewpoints by depth   2780 at depth 1, 67 at depth 2
+comments              0 on every item, 0 counts that threw
+redlines              0 on every viewpoint, 0 reads that threw
+Guids                 2869 read, every one 00000000-0000-0000-0000-000000000000
+LEGACY BY THE RULE OF 1.9: 2813, NOT LEGACY: 56 of which viewpoints 34 and folders 22
+   not legacy, 1 no sorted code pair folder where one belongs: 34
+   not legacy, 2 not a viewpoint: 22
+P8 YES   viewpoints 2847 against 2847, legacy 2813 against 2813, viewpoints not legacy 34 against 34
+```
+
+1. The tree holds 2847 viewpoints. 2813 are legacy by the rule, equal to the 2813 the baseline
+   created, log line 438 of `runs\04\NMFed\NWF\C02\run-20261004-185652.log`, read by the prober.
+   The prober also recounted the dump on its own after the run: 2813 viewpoint rows whose name
+   reads test, two spaces, Clash and digits, all of them legacy, 34 viewpoints and 22 folders not
+2. The 34 that are not legacy sit in four folders at the root the NWCs brought, lines 122 to 155:
+   `PAR-AR-VEW-3D View` 11, `3D View` 8, `MEC-MEC-3D VIEW-PAR` 9 and `PAR-ST-3D View` 6. Each fails
+   condition 1, a folder that is not a sorted code pair. None of them is legacy
+3. The 22 folders are the 4 above, 12 pair folders at the root and 6 Over 150mm folders, one
+   below each of 6 pairs, lines 77 to 98. The 2813 sit in 16 of them, lines 104 to 119, since
+   ME vs ME and ME vs PL hold only their Over 150mm folder:
+   AR vs AR 2617, EL vs ST 56 and 42 Over 150mm, ST vs ST 33, AR vs DR 17, EL vs EL 2 and 9 Over
+   150mm, AR vs ME 8 and 8 Over 150mm, EL vs UNKNOWN 6 and 1 Over 150mm, ME vs ME 0 and 6 Over
+   150mm, ST vs UNKNOWN 3, DR vs DR 2, DR vs PL 2, ME vs PL 0 and 1 Over 150mm. No priority folder,
+   since the baseline picked no priority file, log line 426
+4. Over 150mm holds 67 legacy viewpoints of 17 tests, lines 158 to 209. Each of those 17 tests has
+   all its legacy viewpoints there and none in its pair folder, so each test's views sit in one
+   folder: 51 tests hold legacy viewpoints, and there are 51 distinct pairs of test and folder,
+   line 210. BLD-AR-Curtain Mullions-vs-BLD-AR-Windows alone holds 2568 of them, line 159
+5. Every name of the tree is free of a leading or trailing space, line 72
+6. EVERY GUID READ IS THE EMPTY GUID. `SavedItem.Guid` returned 00000000-0000-0000-0000-000000000000
+   on all 2869 items, folders and viewpoints alike, of a document read off this NWF, line 71. The
+   read threw on none. This is the read through the .NET SavedItem only. Nothing here asked
+   ResolveGuid or the COM view for an id
+7. The walk of 2869 items took 0.038 s, line 63
+
+**BADER'S THINGS.** The NWF the copy was made from read sha256 0944C100 at the start and at the
+end, lines 22 and 306. 36 registry values were put back, each read again with 0 still differing,
+line 295. InfoCenter.log and LastSession.xml were put back reading their backup's sha256, lines 299
+to 301. No AutoSave file was added, changed or gone, line 302. The prober also listed the AutoSave
+folder with each file's sha256 before the run and again after it: 202 files both times, 0
+differing. The tool's own logs folder had nothing added or changed, line 303. One
+AdskLicensingAgent, pid 22100, child of pid 13668, read STILL RUNNING at the end, line 250. Read
+again by the prober after the run, no process held pid 22100. The two AdskLicensingAgent processes
+still running, pids 9444 and 41324, are the Revit children 5z-m names, and the probe touched
+neither.
+
+**STILL UNKNOWN.**
+
+- whether LegacyClashView, once written, gives the same 2813. This is the probe's reading of 1.9's
+  text, and the test over the dump runs only when the class exists
+- condition 4 read the document's test names only. The test names of the picked XML were not read
+- whether a viewpoint's Guid is empty in a document where the views were just made and not yet saved,
+  and whether a Guid set by the tool survives a save. P10 asks that. Here every Guid read empty
+  after the open, so a Guid read this way cannot tell two items of this tree apart
+- whether a priority folder tree, from a run with a priority file, reads the same. The baseline had
+  none, so condition 1's first folder was never met
+- whether redlines of zero here mean no redline was drawn or that Size() reads 0 on a document read
+  off an NWF. P20 asks that
+- the Clash Detective panel and the Saved Viewpoints window were not read
+
+**WHAT THIS DECIDES.** By the row of P8, the count is the one the row asks: 2847 viewpoints, 2813
+legacy and none of the 34 the NWCs brought. The dump is committed for LegacyClashView's test to run
+over, and that test has to read exactly 2813 legacy and 34 not, or the legacy removal stops until
+the rule is fixed. The 67 leaves under Over 150mm in 17 tests are part 6's lower bound. The empty
+Guid on every item is new, and goes to P10 and P11 before the Guid is put in the mark.
+
+## 5z-o. DOES A COMMENT ON A SAVED VIEW AND ON A FOLDER SURVIVE A SAVE AND A REOPEN, MEASURED 2026-10-05
+
+P9 of Q114, the views by team design, part 3. F114 marks every view and folder it makes with a
+comment, so a later run knows its own. Nothing had read whether a comment written on a saved
+viewpoint, rather than on a clash result, is kept. The question: does a comment written by
+DocumentSavedViewpoints.AddComment, or put on the COM view before the add where P6 said yes, on a
+viewpoint two folders deep and on a folder, read back with the same body and author off
+SavedItem.Comments after a save, a clear and a reopen, do the view's Hidden count and
+MaterialOverrides count read the same before and after the edit, and how many seconds does the
+write take? Yes: the mark is the comment. The counts change: the mark is written before the read
+back. No: B7 is put to Bader.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-comments.ps1` is P8's `probe-viewpoint-tree.ps1` with
+the new mode `vpcomment` of `ViewpointProbe.dll` in place of `vptree` and no `-Dump`. The guard is
+the loop's, tools\loop\nw-guard.ps1 dot-sourced, with the Roamer refusal, the settings backup, the
+adoption by AdoptStart's four conditions, Dispose, the close through the held handle only when
+needed, and SettingsPutBack. Get-Process Roamer read 0 before the run and 0 after it. The probe
+copied the C02 NWF of run set 04,
+`%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`,
+41,317,271 bytes, sha256 0944C100, into the new folder `probes\view-comments-20261005-144832`, and
+the mode, on that copy:
+
+1. opens it, hides model 0's root and paints the first clash pair with geometry red and green, so
+   the new views record a hidden state and colours
+2. makes the folders `P9 probe` and `P9 probe / P9 sub` the way the tool does, a .NET FolderItem by
+   AddCopy, the parent read fresh
+3. writes through the COM view, ApplyHideAttribs and ApplyMaterialAttribs true, into `P9 sub`, so
+   two folders deep: V1 with a comment made by `ObjectFactory(eObjectType_nwOpComment)`, its Body
+   set and then its User set, added to the view's `Comments()` before `InwSavedViewsColl.Add`. V2
+   and V3 with no comment
+4. writes a COM folder view `P9 com folder` into `P9 probe` with a comment in its `Comments()`
+   before the add, F2
+5. writes `AddComment(item, comment)`, the comment made by
+   `Document.CreateCommentWithUniqueId(body, CommentStatus.New, "Parsons NWC Federator")`, on V2
+   after its add, on the folder `P9 probe / P9 sub`, F1, and on the existing F85 viewpoint
+   `AR vs ME / Over 150mm / BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash1`, L1, the first one
+   two folders deep. Each item is re-found by its names from a fresh RootItem, and a viewpoint's
+   Hidden and MaterialOverrides counts are read just before and just after the call. V3 is the
+   control for V1
+6. every body is the design's sentence, a line feed, and a marker line naming the stamp, the
+   folder path, the name and the target. Each is read back off SavedItem.Comments and compared
+   Ordinal, body and author, before any save, and again after SaveFile into
+   `p9-copy-with-comments.nwf` in the work folder, Document.Clear and TryOpenFile of that file
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-comments.ps1 -Out tools\probes\ViewpointProbe\p9-view-comments-result-20261005.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+One run at 14:48, `p9-view-comments-result-20261005.txt`, the machine name on line 1 masked by hand
+as `[machine]` and nothing else changed. Navisworks pid 596, adopted on all four conditions, line
+37. ExecuteAddInPlugin returned 0 after 67.87 s, line 48. Dispose returned and pid 596 was gone
+6.9 s later, not forced, line 161.
+
+**THE ANSWER IS YES, BY ADDCOMMENT. THE COM ROUTE BEFORE THE ADD DOES NOT KEEP THE BODY AND
+AUTHOR.** Lines 145 to 152 and 155 of the result, with the time cut from the start of each:
+
+```
+EACH TARGET:  label | route | written | write seconds | read back the same before the save | after the reopen | Hidden before edit, after edit, before save, after reopen | MaterialOverrides the same four
+   V1 | the COM view's Comments() before the add | True | 0.001 s | False | False | -2, -2, 1, 1 | -2, -2, 2, 2
+   V2 | AddComment after the add | True | 0.003 s | True | True | 1, 1, 1, 1 | 2, 2, 2, 2
+   V3 | no comment, the control | True | UNKNOWN | True | True | -2, -2, 1, 1 | -2, -2, 2, 2
+   F1 | AddComment on a folder one below the root folder | True | 0.000 s | True | True | a folder
+   F2 | the COM folder view's Comments() before the add | True | 0.000 s | False | False | a folder
+   L1 | AddComment on an existing viewpoint two folders deep | True | 0.000 s | True | True | 2, 2, 2, 2 | 4697, 4697, 4697, 4697
+(-2 is not read, -1 is a read that threw)
+P9 YES   a comment on a view two folders deep and on a folder read back with the same body and author after a save, a clear and a reopen, by at least one route each, with the counts held
+```
+
+1. AddComment kept the comment on all three items it was given: the new view two folders deep,
+   the existing F85 view two folders deep and the folder. Each read back exactly one comment, its
+   Body and Author equal to what was written, Ordinal, the line feed inside the body included, and
+   Status New. That held before the save, lines 90 to 110, and after the save, the clear and the
+   reopen, lines 122 to 142
+2. AddComment left the counts alone. V2 read Hidden 1 and MaterialOverrides 2 before the call,
+   after it, before the save and after the reopen. L1 read Hidden 2 and MaterialOverrides 4697 at
+   all four
+3. The write is cheap. AddComment returned after 0.003 s on V2 and under 0.001 s on F1 and L1,
+   lines 76, 79 and 81. Making the comment and adding it to the COM view's collection took
+   0.001 s on V1
+4. THE COM ROUTE. The COM comment collection of a new view and of a new folder view read Count 0
+   and ReadOnly False, lines 66 and 73. The factory's object is InwOpComment, InwOpComment2 and
+   InwOpComment3, line 67. The comment was kept through the add, the save and the reopen, one
+   comment each on V1 and F2. But it read back Body `Parsons NWC Federator`, the string given to
+   User, and Author `p003653K`, a value no line of the probe wrote, which reads as this machine's
+   login name, lines 86 to 87, 102 to 103, 118 to 119 and 134 to 135. The COM read of V1's
+   comment after the add said the same, User `p003653K` and Body `Parsons NWC Federator`, line 70.
+   The body the probe set never read back on either. V1 read the same Hidden and
+   MaterialOverrides counts as the plain V3, 1 and 2
+5. The tree went from 2847 viewpoints, 22 folders and 0 comments to 2850, 25 and 5, and read the
+   same after the reopen, lines 61, 111 and 143. The five comments read Id 1 to 5 in the order they
+   were made, the two COM ones included, and kept their Ids through the reopen
+6. SaveFile took 12.823 s, 41,319,461 bytes read back, line 112. Document.Clear took 0.985 s,
+   line 113. TryOpenFile of the saved file took 8.084 s, line 114. The saved copy is
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf`,
+   sha256 869DD965B03E5A82B6E3AE3DF7E70B4F2462B752B698DFA1F178AD6FCF9A0921, line 157, the copy
+   P10, P11 and P12 work on
+
+A READ THIS PROBE DID NOT ASK FOR. Each COM add into a folder took about 9 s here: V1's
+`InwSavedViewsColl.Add` 9.490 s, line 68, F2's 8.993 s, line 74, and V2 and V3 about 9.1 s and
+9.2 s each, read off the timestamps of lines 69 to 72, those two with the view's making included.
+5p measured 7.9 ms a view for twenty, and quoted the dimming round's 558 ms a view for 430 on
+1A02MM. Why these took about 9 s each, in a document of 2847 viewpoints with model 0's root
+hidden, is UNKNOWN. It bears on P18's rate and on part 6.
+
+**BADER'S THINGS.** The NWF the copy was made from read sha256 0944C100 at the start and at the
+end, lines 22 and 267. 40 registry values were put back, each read again with 0 still differing,
+lines 255 and 256. InfoCenter.log and LastSession.xml were put back reading their backup's sha256,
+lines 260 and 261. No AutoSave file was added, changed or gone, line 263. The prober also listed
+the AutoSave folder with each file's sha256 before the run and again after it: 202 files both
+times, 0 differing. The tool's own logs folder had nothing added or changed, line 264. Two
+AdskLicensingAgent processes were children of pid 596, lines 172 and 173. Pid 39832 read exited,
+line 207. Pid 40800's start time could not be read, so the probe said UNKNOWN whether it exited,
+line 206. Read again by the prober after the run, no process held pid 40800. The two
+AdskLicensingAgent processes still running, pids 9444 and 41324, are the ones 5z-n names, and the
+probe touched neither.
+
+**STILL UNKNOWN.**
+
+- why the COM route reads back the User string as the body and the login name as the author. One
+  order was tried, Body set and then User. Whether another order, or InwOpComment3's own members,
+  keep the body was not measured
+- whether a comment survives a reopen in a new Navisworks. The close was Document.Clear inside the
+  same Navisworks
+- whether AddComment on a folder at the root, or on a folder holding thousands of views, behaves
+  the same. F1 was one folder below a root folder, holding three views
+- the Comments window and the Saved Viewpoints window were not read, so what a person sees there
+  is not measured
+- the seconds of AddComment over many views. Three calls were timed, each one at most 0.003 s
+- what P10 asks of the Guid. This probe did not read it
+- why each COM add took about 9 s here
+
+**WHAT THIS DECIDES.** By the row of P9, the mark is the comment, written by
+DocumentSavedViewpoints.AddComment after the add with a comment from
+Document.CreateCommentWithUniqueId. The COM route before the add, which P6 made the first try, is
+not used, because the body written never read back. The counts held, so the mark need not be
+written before the read back. B7 is not put to Bader.
+
+## 5z-p. DOES A SAVED VIEWPOINT'S GUID HOLD THROUGH A COMMENT, A SAVE AND A REOPEN, MEASURED 2026-10-05
+
+P10 of Q114, the views by team design, part 3. P8 read the empty Guid on every item of the
+baseline's tree, 5z-n, and asked whether a Guid is empty before a save and whether one set by the
+tool survives a save. The question: does a viewpoint's SavedItem.Guid read the same after the
+comment edit and after a save and a reopen, is it unique in the tree, and does
+DocumentSavedViewpoints.ResolveGuid return the item? Yes: the Guid goes in the mark and removal
+re-finds by it. No: the Guid stays out, and removal re-finds by path, name and mark.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-guids.ps1` is P9's `probe-view-comments.ps1` with the
+new mode `vpguid` of `ViewpointProbe.dll` in place of `vpcomment`, and `-Nwf` taken from under
+`%LOCALAPPDATA%\NwcFederatorLoop\probes` in place of `runs`, because the row works on P9's saved
+copy. The guard is the loop's, tools\loop\nw-guard.ps1 dot-sourced, with the Roamer refusal, the
+settings backup, the adoption by AdoptStart's four conditions, Dispose, the close through the held
+handle only when needed, and SettingsPutBack. Get-Process Roamer read 0 before the run and 0 after
+it. The probe copied P9's
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf`,
+41,319,461 bytes, sha256 869DD965, into the new folder `probes\view-guids-20261005-152023`, and the
+mode, on that copy:
+
+1. opens it, walks the whole saved viewpoint tree and counts every item's Guid, the empty ones and
+   the ones more than one item carries, and reads the Guid, the index path by CreateIndexPath and
+   ResolveGuid of the Guid on six items P9 left: E1 and E2 the COM views `P9 view addcomment after
+   add` and `P9 view plain` two folders deep, E3 the .NET folder `P9 probe / P9 sub`, E4 the COM
+   folder `P9 probe / P9 com folder`, E5 the .NET folder `P9 probe` at the root, E6 F85's view
+   `AR vs ME / Over 150mm / BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash1`. Then
+   ResolveGuid of the empty Guid
+2. makes five new items, each read back right after its add, re-found by its names from a fresh
+   RootItem: N1 the folder `P10 probe` at the root by FolderItem and AddCopy, the Guid untouched,
+   the tool's folder route. N2 a FolderItem whose Guid the probe set to Guid.NewGuid() before
+   AddCopy. N3 a COM view by InwSavedViewsColl.Add into `P10 probe`, ApplyHideAttribs and
+   ApplyMaterialAttribs true, the tool's view route of 5m. N4 a .NET `new SavedViewpoint(Viewpoint)`
+   by AddCopy, the Guid untouched. N5 the same with its Guid set to Guid.NewGuid() before AddCopy
+3. writes one comment on each of the eleven by DocumentSavedViewpoints.AddComment, the comment
+   from Document.CreateCommentWithUniqueId as P9 made it, and reads each Guid again
+4. walks the tree again and reads every item with ResolveGuid, saves into `p10-copy-saved.nwf` in
+   the work folder, calls Document.Clear and TryOpenFile of the saved file, and walks and reads
+   every item with ResolveGuid once more. ResolveGuid counts as giving the item only when what it
+   returns has the same name, Ordinal, and the same index path, and the Guid is not empty
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-guids.ps1 -Out tools\probes\ViewpointProbe\p10-view-guids-result-20261005.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`.
+One run at 15:20, `p10-view-guids-result-20261005.txt`, the machine name on line 1 masked by hand
+as `[machine]` and nothing else changed. Navisworks pid 37232, adopted on all four conditions,
+line 37. TryOpenFile of the copy returned True after 9.866 s with 4 models, every one read from
+under the loop folder, lines 55 to 60. ExecuteAddInPlugin returned 0 after 51.11 s, line 48.
+Dispose returned and pid 37232 was gone 7.2 s later, not forced, line 164.
+
+**THE ANSWER IS NO ON THE TOOL'S ROUTES. A GUID HOLDS ONLY WHERE THE TOOL SETS IT BEFORE AN
+ADDCOPY.** Lines 146 to 158 of the result, each Guid cut to its first 8 characters, each route shortened and\nthe six rows of E1 to E6 joined into one, since they read alike:
+
+```
+EACH TARGET:  label | the Guid at each stage | the same at every stage | not empty | unique before the save, after the reopen | ResolveGuid gave the item before the save, after the reopen | the set Guid kept | all
+   E1 to E6, P9's items and F85's view | open, edit, save, reopen all 00000000 | YES | NO | NO, NO | NO, NO | not set | NO
+   N1 .NET folder by AddCopy, the tool's folder route | add, edit, save, reopen all 00000000 | YES | NO | NO, NO | NO, NO | not set | NO
+   N2 .NET folder, its Guid set before AddCopy | add, edit, save, reopen all b672e45a | YES | YES | YES, YES | YES, YES | YES | YES
+   N3 COM view by InwSavedViewsColl.Add, the tool's view route | add, edit, save, reopen all 00000000 | YES | NO | NO, NO | NO, NO | not set | NO
+   N4 .NET SavedViewpoint by AddCopy, the Guid untouched | add, edit, save, reopen all 00000000 | YES | NO | NO, NO | NO, NO | not set | NO
+   N5 .NET SavedViewpoint, its Guid set before AddCopy | add, edit, save, reopen all 8e38aecf | YES | YES | YES, YES | YES, YES | YES | YES
+P10 by route: the tool's view route, a COM view, NO. The tool's folder route, a .NET folder by AddCopy, NO. Any item of any route YES
+P10 NO
+```
+
+1. THE TREE. At the open: 2875 items, 2875 empty Guids, 0 reads threw, line 63. That is P9's 2850
+   viewpoints and 25 folders. Before the save: 2880 items, 2878 empty, 2 distinct Guids that are
+   not empty and none carried by two items, line 115. After the reopen the same, line 132. The
+   two that are not empty are N2's and N5's
+2. AN ITEM NOBODY GAVE A GUID HAS NONE, BEFORE A SAVE TOO. N1, N3 and N4 read the empty Guid right
+   after their add, before any save, lines 75, 81 and 84. A new FolderItem and a new
+   SavedViewpoint read the empty Guid before their AddCopy too, lines 73, 82 and 85. So the empty
+   Guid P8 read is not a loss in the NWF. No item is given one by AddCopy, by the COM add, by
+   AddComment, by SaveFile or by the reopen
+3. A GUID SET BEFORE ADDCOPY HOLDS. N2 and N5 read back the Guid the probe set, off the item
+   before the add, lines 76 and 86, and off the document item after the add, lines 78 and 88,
+   after AddComment, lines 106 and 112, before the save, lines 123 and 126, and after the save, the
+   clear and the reopen, lines 140 and 143. Each was carried by exactly 1 item of the tree, and
+   ResolveGuid returned that item, same name and same index path, 17.0 and 17.3, before the save
+   and after the reopen, each call under 0.001 s
+4. RESOLVEGUID OF THE EMPTY GUID RETURNS NULL, line 70, and returned null for every item whose Guid
+   is empty, at every stage, lines 64 to 69, 116 to 122, 124, 125, 133 to 139, 141 and 142. It never threw
+5. THE COMMENT EDIT MOVES NO GUID. On all eleven items the Guid read just before AddComment and
+   just after it are equal, lines 91 to 112. Each AddComment took at most 0.008 s
+6. A READ THE ROW DID NOT ASK. `CreateReference(item).SavedItemId` reads the item's folder names
+   and its own name joined by line feeds, such as `P9 probe\u000AP9 sub\u000AP9 view plain`, on
+   every item at every stage, lines 64 to 143. It is a path of names, not an id
+7. A READ THE ROW DID NOT ASK. N3's InwSavedViewsColl.Add into a folder holding one folder took
+   12.744 s, line 80, in a document of 2875 items. P9's took about 9 s each. Why is UNKNOWN
+
+THE REFLECTION. Read in this session off
+`C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Api.dll`: SavedItem has a
+public `Guid` with a getter and a setter, and `CreateCopy()` and `CreateUniqueCopy()`.
+DocumentSavedViewpoints has `ResolveGuid(Guid)`, `CreateReference(SavedItem)`,
+`ResolveReference(SavedItemReference)`, `CreateIndexPath(SavedItem)`, `ResolveIndexPath`,
+`EditDisplayName` and `EditComments`, and no member that sets the Guid of an item already in the
+document. That is the member list, not a run.
+
+SaveFile took 16.653 s, 41,319,767 bytes read back, line 127. Document.Clear took 1.412 s, line
+128. TryOpenFile of the saved file took 10.149 s, line 129. The saved copy is
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\view-guids-20261005-152023\p10-copy-saved.nwf`, sha256
+3CC51A5A3B4F8F027090FCF3EA1313D0D74C67747EB679D94D0FF9826D3DA75E, line 160.
+
+**BADER'S THINGS. HIS SETTINGS WERE NOT PUT BACK.** The NWF the copy was made from read sha256
+869DD965 at the start and at the end, lines 22 and 265. No AutoSave file was added, changed or
+gone, line 261. The prober also listed the AutoSave folder with each file's sha256 before the run
+and again after it: 202 files both times, 0 differing. The tool's own logs folder had nothing
+added or changed, line 262. But the guard's PutBackReasons gave one reason, line 213: `Roamer 37232
+was seen at a watchdog pass with no readable start time, and cannot be shown to be the adopted
+one`. So by the guard's rule nothing was put back and nothing was written, lines 212 to 260, and
+the backup is kept in `probes\view-guids-20261005-152023`, the registry export
+`hkcu-navisworks-manage-22.0-before.reg` and the folder `appdata-before`. 40 registry values differ
+from the backup, lines 215 to 255: the four AutoRecover values, four CER counters, MainWindow
+Placement, PluginOptions DefaultPlugin and the 30 values of the ten Recent File List entries.
+InfoCenter.log and LastSession.xml differ, lines 257 and 258. The watchdog's record holds one
+Roamer only, pid 37232: seen with no readable start time on a pass whose line was written at
+15:20:33.643, line 172, and at the next pass as new, started 15:20:33.620 with -Embedding, line
+173, the process adopted. The guard skips such a sighting only when the time of the pass that saw
+it is at or after the adopted start. Read off the guard's code, that time is taken at the start of
+the pass, before its process list, so a pass that began before 15:20:33.620 and listed the process
+after would fail the check. That this is what happened is the prober's reading of the code, and it
+is UNKNOWN from the record, which writes the line's time and not the pass's. Two AdskLicensingAgent
+processes were children of pid 37232, lines 176 and 177. Pid 52792 read exited, line 205. Pid
+53748's start time could not be read, so the probe said UNKNOWN whether it exited, line 204. Read
+again by the prober after the run, no process held pid 53748. The two AdskLicensingAgent processes
+still running, pids 9444 and 41324, are the ones 5z-n names, and the probe touched neither.
+
+**STILL UNKNOWN.**
+
+- whether the tool's COM view can carry a Guid at all. N3 read empty, nothing on the COM view was
+  tried to set one, and the DLL has no member that sets the Guid of an item already in the document.
+  Whether a COM view copied by the .NET API, given a Guid and put back by ReplaceWithCopy, keeps
+  its camera, its hidden state and its colours was not measured
+- whether a Guid set before AddCopy survives a reopen in a new Navisworks. The close was
+  Document.Clear inside the same Navisworks
+- whether a copy of an item with a Guid, by AddCopy of SavedItem.CreateCopy, carries the same
+  Guid. P11 asks that, and it bears on uniqueness, because two items with one Guid are then
+  possible
+- what ResolveGuid returns when two items carry one Guid. No such tree was read
+- the Saved Viewpoints window was not read
+- why Bader's settings could not be put back beyond the reading of the code above, and whether
+  they are put back. That is the lead's, from the backup kept in the work folder
+- why each COM add into a folder takes 9 to 13 s here
+
+**WHAT THIS DECIDES.** By the row of P10, NO: on the tool's own routes, a COM view and a .NET
+folder by AddCopy, the Guid reads empty at every stage and ResolveGuid returns null, so the Guid
+stays out of the mark and removal re-finds by path, name and mark. The new fact for the design is
+that a Guid the tool sets on a .NET item before AddCopy holds through the comment, the save and
+the reopen, stays unique and resolves. It could carry a folder's identity, since folders are
+written by AddCopy. It cannot carry a view's while views are written through COM.
+
+## 5z-r. HOW OFTEN A MIRROR FINDS MORE ON 1A02MM, AND WHAT RUNNING BOTH COSTS, MEASURED 2026-10-05
+
+Q133, probe Q133-1A02MM. Bader's answer D to Q133 keeps both tests of a mirrored pair, runs both
+and merges their clashes by the pair of items, and asks: "Measure on 1A02MM and 1A04PK how often a
+mirror finds more, and the extra time running both costs, and give both in the next record." This
+section is 1A02MM. The question: on 1A02MM, how many of the pairs F132's rule finds would both be
+created and what does each find, and over every test that finds a clash, how often does its swap
+find more, fewer or other clashes and what do the two runs cost against the original's alone? A
+swap that often finds more makes answer D worth its seconds. A swap that never finds more makes it
+time for nothing on this building. The letter 5z-q is left to P11, whose unrun probe in this
+worktree already names it.
+
+HOW. Three parts.
+
+1. THE RULE'S PAIRS, read off the XMLs with no Navisworks. `tools\probes\ViewpointProbe\q133-rule-pairs.py`
+   reads each set's locator and its findspec, its rule list, with every text trimmed, and pairs two
+   tests whose sides are the same two sets swapped, or the same two sets in one order, or, by
+   Bader's answer B to Q121, the same two rule lists over other sets. It also names a test with one
+   set or one rule list on both sides. It read the picked XML,
+   `%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`, sha256
+   792B01FB, and the corrected one the rule writes, `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`,
+   sha256 94897667, whose list `.corrections.txt` sits beside it:
+
+       python tools\probes\ViewpointProbe\q133-rule-pairs.py %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A02MM-rule-pairs.txt %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+
+   Its output is kept as `q133-1a02mm-rule-pairs-result-20261005.txt`.
+2. EVERY TEST THAT FINDS A CLASH, inside Navisworks. `tools\probes\ViewpointProbe\probe-mirror-count.ps1`
+   is P1's `probe-mirror-swap.ps1` with the new mode `mirrorcount` of `ViewpointProbe.dll` and the
+   pairs file in place of a test name, under the same guard, tools\loop\nw-guard.ps1 dot-sourced:
+   the Roamer refusal before anything and again before the constructor, the settings backup, the
+   adoption by AdoptStart's four conditions, Dispose, the close through the held handle only when
+   needed, and SettingsPutBack. Get-Process Roamer read 0 before the run. It copied the C02 NWF of
+   run set 04, `runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`, 41,317,271 bytes,
+   sha256 0944C100, which holds the 528 tests of set 04 with their results, into the new folder
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\mirror-count-20261005-160417`. The mode opens the copy,
+   reads every test's stored results, and runs part 1's pairs whose two tests are both in the NWF.
+   Then, for every test whose stored results hold at least one clash that is not Resolved, it adds
+   a new ClashTest with the sides swapped the way P1 made its swap, the original's type, tolerance,
+   merge composites and simulation type, side A CopyFrom the original's side B and side B from its
+   side A, with each side's self intersect and primitive types, appended at the root and checked
+   by name, and reads its two sides' set names back to check they are the original's swapped. It
+   clears the swap's results, runs the original with TestsRunTest, then the swap, each call timed
+   alone with a Stopwatch, and compares the clashes not Resolved of the two by the unordered pair of
+   the index paths of Item1 and Item2, as P1 did. A test's verdict is same, swap finds more (pairs
+   only in the swap and none only in the original), swap finds fewer, or other clashes (pairs only
+   in each)
+3. EVERY OTHER TEST, the same, beyond the brief, since a swap of a test that finds nothing could
+   find something
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-mirror-count.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A02MM-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf -PairsFile %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A02MM-rule-pairs.txt -PluginAssembly %LOCALAPPDATA%\NwcFederatorLoop\turn5\q133-1A02MM-build\out\ViewpointProbe.dll
+
+with the probe built by `dotnet build ViewpointProbe.csproj -c Release -o out` in a copy of the
+project at `%LOCALAPPDATA%\NwcFederatorLoop\turn5\q133-1A02MM-build`, because this worktree's
+ViewpointProbePlugin.cs held P11's uncommitted lines. The source committed here is that copy's,
+line for line, and the DLL's sha256 is 5D3481EF, line 24. One run at 16:04, kept as
+`q133-1a02mm-mirror-count-result-20261005.txt`, the machine name on line 1 masked by hand as
+`[machine]` and nothing else changed. Navisworks pid 52324, adopted on all four conditions, lines
+36 and 38. TryOpenFile of the copy returned True after 7.651 s with 4 models, every one read from under
+the loop folder, lines 55 to 60.
+
+THE RUN WAS STOPPED BY THE GUARD AT ITS DEADLINE. Every TestsRunTest took about 9 to 11 s, so part
+3 could not finish inside the adopted deadline of 3600 s. At 17:05:53 the watchdog closed pid 52324
+through the held handle, lines 336 and 1087, ExecuteAddInPlugin threw, line 49, and step 6, Dispose,
+was not reached. Parts 1 and 2 had finished and written their totals. Part 3 had run 123 of its 469
+tests, lines 209 to 331, and wrote no total. The copy with the swaps was not saved.
+
+**PART 1, THE RULE'S PAIRS: NONE CREATED ON 1A02MM.** Lines 1 to 8 of the pairs file, and lines 64
+to 134 of the result:
+
+```
+                                        picked XML 792B01FB   corrected XML 94897667
+tests, sets                             1830, 61              1830, 61
+pairs by swapped or repeated sets       0                     0
+pairs by the same rule lists            59                    59
+tests with one rule list on both sides  1                     1
+sets sharing one rule list              BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices, both
+on 1A02MM                               every one of the 119 tests named is in the NWF 0 times,
+                                        so not one pair has both tests created and none was run
+```
+
+So F132's rule, with Bader's answer B to Q121, finds 59 pairs and one self test in this XML, all
+of them over the Telecom and Telephone sets, and on 1A02MM none of them is created. They cost 0 s
+and find nothing here. That matches turn5\measure-mirrors.md, read only on 2026-10-04.
+
+**PART 2, EVERY TEST THAT FINDS A CLASH: A SWAP FINDS MORE ON 4 OF 59 AND OTHER CLASHES ON 1.**
+Lines 204 to 206 of the result:
+
+```
+tests whose stored results hold a clash   59, holding 2939 clashes
+the swap finds the same                   54
+the swap finds more                       4
+the swap finds fewer                      0
+the swap finds other clashes              1
+UNKNOWN                                   0
+clashes, the originals run again          2939, every test the same pairs as stored
+clashes, the swaps                        2945
+only the swap finds                       7
+only the original finds                   1
+TestsRunTest, the 59 originals            574.530 s
+TestsRunTest, the 59 swaps                570.918 s
+both                                      1145.449 s, 1.994 times the originals alone
+making the 59 swaps                       1.049 s
+```
+
+The five tests where the two differ, lines 142 to 197:
+
+```
+test                                                    original  swap  only swap  only original
+BLD-ST-Framing-vs-BLD-ST-Columns                              25    27          2              0
+BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing          40    41          1              0
+BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Walls             6     8          2              0
+BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors           17    18          1              0
+BLD-EL-Fire Alarm Devices-vs-BLD-EL-Lighting Fixtures          1     1          1              1
+```
+
+1. BLD-ST-Framing-vs-BLD-ST-Columns finds 25 and its swap 27, the same two extra pairs at the same
+   distances P1 read in 5z-k, lines 143 and 144. So P1's finding repeats in a second run
+2. Every clash only a swap finds has a distance between -0.287 ft and -1.804 ft, lines 143, 144,
+   180, 182 to 185 and 197, past the tolerance of 0.082 ft, so none sits on the tolerance's edge
+3. THE OTHER CLASHES CASE. The original finds `1.2.7.3.0.0.0.0.2 | 1.2.9.0.0.2.0.0.0` at -1.247 ft
+   and the swap `1.2.7.3.0.0.0.0.1 | 1.2.9.0.0.2.0.0.0` at -0.287 ft, lines 196 and 197. The second
+   item is the same and the first items are two children of one parent, by their index paths. Which
+   objects those are, and whether a person would read the two as one clash, is UNKNOWN, no name was
+   read
+4. On all 59 the original run again found exactly its stored pairs, run against stored differ 0, every
+   item read, and the swap's sides read back as the original's swapped
+5. Every test of the XML carries the same settings, turn5\measure-mirrors.md, so the swaps here differ
+   from their originals in nothing but the order of the sides
+
+**PART 3, 123 OF THE 469 TESTS THAT FIND NOTHING: EVERY SWAP FOUND NOTHING TOO.** Summed by the
+prober over lines 209 to 331, since the deadline stopped the run before the mode wrote a total:
+123 tests, original 0 and swap 0 clashes on every one, verdict same on every one, TestsRunTest
+1211.341 s on the originals and 1212.978 s on the swaps. The other 346 tests were not reached and
+are UNKNOWN.
+
+**THE SECONDS, AND WHY THEY DO NOT CARRY OVER.** Over all 182 tests run, parts 2 and 3, the originals
+took 1785.872 s and both 3569.769 s. A TestsRunTest here took 9.738 s on average over part 2's
+originals and 9.848 s over part 3's, whether the test found 2568 clashes or none. In the tool's own
+run of set 04 on the same building the TESTS RUN step took 118.480 s over 528 visits,
+steps\runs\04\item1-C02\run-20261004-185652.log line 508, about 0.22 s a test. So a run in this probe
+cost about 40 times what it cost in the tool's run. The document here held the 2847 saved
+viewpoints and 2939 results run 04 left in it, where the tool's run built them as it went, and four
+AutoSave files, below, were written while the last tests ran. Which of these, if any, makes the
+difference is UNKNOWN. What carries over is the ratio, both runs costing 1.99 times the original
+alone. What the extra is in the tool's run, about the TESTS RUN step's 118 s again if the ratio
+holds there, is UNKNOWN until a run of the tool with answer D measures it.
+
+**BADER'S THINGS. ONE OF HIS AUTOSAVE FILES IS GONE.** The NWF the copy was made from read sha256
+0944C100 at the start and at the end, line 1163. 35 registry values were put back, each read again
+with 0 still differing, line 1149. InfoCenter.log was put back reading its backup's sha256, line
+1152. The tool's own logs folder had nothing added or changed, line 1160. The AutoSave folder was
+listed by the prober by name, size and sha256 before the run, 199 files, and after it, 202, in
+`turn5\probe-q133-1A02MM-autosave-before.txt` and `-after.txt`, and by the guard, lines 1154 to 1159:
+
+- ADDED, by the probe's Navisworks, and LISTED, NOT DELETED, for the lead to remove:
+  `1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave363.nwf` 41,464,359 bytes sha256 30564B2B,
+  `.Autosave364.nwf` 41,464,363 bytes sha256 E7FAEEFA, `.Autosave365.nwf` 41,464,394 bytes sha256
+  73471527, and `.Autosave366.nwf` 12,464,128 bytes sha256 834F7810, written 17:05:30 to 17:05:53,
+  the last cut short when the guard closed pid 52324
+- GONE: `1104-PAR-1A02MM-ZZZ-BM-MOD-000001.Autosave0.nwf`, 65,627 bytes, written 2026-09-20 15:13:20,
+  sha256 8120CE8E6FEE08123648E9B689CE0652D7B3BD0DE415BC7689F7DA49001654B3. The guard lists the
+  AutoSave folder and does not copy it, so no backup of it exists, and the prober found it in no
+  Recycle Bin. It went while the probe's Navisworks ran, and the only Navisworks running then was
+  pid 52324. That this Navisworks removed it, as autosaves of the same name were added, is the
+  prober's reading, and what removed it is UNKNOWN from the record. It cannot be put back from
+  anything this probe kept
+
+THE PROGRAMS. One Navisworks, pid 52324, started by the probe at 16:04:25 and closed by the guard
+through the held handle at the deadline, and gone, lines 335 and 336. AdskLicensingAgent pid 34240,
+its child, read UNKNOWN at the end, line 1093, and no process held pid 34240 when the prober read it
+after. No Roamer that was not there in step 2 ran at the end, line 1107. At 17:10 the prober read one
+process named Roamer.exe, pid 31672, started 17:10:20 from
+`%LOCALAPPDATA%\NwcFederatorLoop\test-f131-before\standin-bin\Roamer.exe` with the arguments
+`sleep 300`, another session's stand-in and not Navisworks. The probe did not start it and touched
+nothing of it.
+
+**STILL UNKNOWN.**
+
+- 1A04PK. This section is 1A02MM only
+- the 346 tests of part 3 not reached
+- why a TestsRunTest took about 10 s here against about 0.22 s in the tool's run, and so the extra
+  seconds answer D costs in the tool's run
+- why a swap finds more on these five. Whether Hard Conservative is not symmetric by design, or what
+  in these items makes the difference, is not read here. Four of the five have a ST set on the
+  original's side B, and the fifth is EL against EL
+- whether the Clash Detective panel shows the same counts. The panel was not read
+- whether the other clashes case is one clash seen on two children of one object
+- what removed Bader's Autosave0.nwf of 1A02MM, and whether any copy of it exists anywhere
+
+**WHAT THIS DECIDES.** For the record Bader asked for, 1A02MM: of the 59 tests that find a clash, a
+swap finds more on 4 and other clashes on 1, so 5 of 59 find something the original does not, 7
+clashes in all against the originals' 2939, and none of the 123 tests of part 3 reached found
+anything either way. Running both cost 1145.449 s of TestsRunTest against 574.530 s for the
+originals alone, here, 1.99 times. F132's rule, by swapped sets or by the same rule list, finds no
+pair whose two tests are created on 1A02MM, so the merge by the pair of items has nothing to merge
+here, and every clash only a swap finds comes from a swap no rule pair names.
+
+## 5z-s. HOW OFTEN A MIRROR FINDS MORE ON 1A04PK, AND WHAT RUNNING BOTH COSTS, MEASURED 2026-10-07
+
+Q133, probe Q133-1A04PK. Bader's answer D to Q133 keeps both tests of a mirrored pair, runs both
+and merges their clashes by the pair of items, and asks: "Measure on 1A02MM and 1A04PK how often a
+mirror finds more, and the extra time running both costs, and give both in the next record."
+1A02MM is 5z-r. This section is 1A04PK, measured the same way. The question: on 1A04PK, which of
+the pairs F132's rule finds would both be created and what does each find, and over every test the
+tool would create that finds a clash, how often does its swap find more, fewer or other clashes,
+and what do the two runs cost against the original's alone? A swap that often finds more makes
+answer D worth its seconds. A swap that never finds more makes it time for nothing here.
+
+THE NWF HOLDS NO SETS AND NO TESTS, SO THE XML WAS BROUGHT IN FIRST, THE ADD-IN'S WAY. The NWF of
+set 04, `runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf`, 4,699 bytes, sha256
+7ECA0ECA, read back 0 sets, 0 clash tests and 10 saved viewpoints at the root, line 69 of the
+result. Neither the .NET API nor the COM API carries a clash XML import.
+`tools\probes\ViewpointProbe\reflect-clash-import.ps1` read every public member whose name holds
+Import or Xml in Autodesk.Navisworks.Api.dll, Clash.dll, ComApi.dll and Interop.ComApi.dll, with no
+Navisworks started, and found 6 in the Api DLL, none of them about clash tests, and 0 in the other
+three, `q133-1a04pk-reflect-import-result-20261007.txt`:
+
+    powershell -NoProfile -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\reflect-clash-import.ps1 -Out tools\probes\ViewpointProbe\q133-1a04pk-reflect-import-result-20261007.txt
+
+So the probe brings the XML in with the add-in's own code, compiled into it from src and not
+changed: `tools\probes\ViewpointProbe\Q133Import\Q133ImportProbe.csproj` builds every file of
+Federator.Core and every file of Federator.Addin\Engine but FederationEngine.cs into one assembly,
+Q133ImportProbe.dll, plugin Q133ImportProbe.PARS, so no second Federator.Core is loaded beside the
+installed bundle's. Its mode q133import reads the XML's copy with MatrixCorrections.ReadPicked, the
+call the window makes, with `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt`, sha256
+AFC463BE, copied beside it under the name the tool looks for, builds the sets with SetBuilder.Build
+on SetBuildPlan.From, and chooses and makes the tests with ClashRunner's own PlanTheCreation and
+Create, both private, called by reflection on a real ClashRunner. The tool's run log of the probe
+went into the work folder, never into %LOCALAPPDATA%\ParsonsNwcFederator\logs.
+
+HOW. Two parts, as for 1A02MM.
+
+1. THE RULE'S PAIRS, read off the XMLs with no Navisworks, by `q133-rule-pairs.py` on the picked
+   XML, sha256 792B01FB, and the corrected one in exchange\, sha256 94897667. Its output is byte
+   for byte the 1A02MM one, the XML being the same, `q133-1a04pk-rule-pairs-result-20261007.txt`:
+
+       python tools\probes\ViewpointProbe\q133-rule-pairs.py %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A04PK-rule-pairs.txt %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+
+2. EVERY TEST THE TOOL WOULD CREATE, inside Navisworks. In XML order each test is made with the
+   tool's Create and run with TestsRunTest timed alone, the tool's own call. Each one whose results
+   hold at least one clash not Resolved gets a swap made beside it the way P1 and 5z-r made theirs,
+   sides read back swapped, results cleared, run and timed, and the two compared by the unordered
+   pair of the index paths of Item1 and Item2. No test starts after a cap of 10,800 s. Part 1 is
+   then read off those same runs, so every test ran once
+
+Run from Windows PowerShell 5.1 under the guard of P1, tools\loop\nw-guard.ps1 as merged from main
+at de271bc, F138's Auto-Save switch included:
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-q133-import.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A04PK-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf -Xml %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml -Corrections exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt -PairsFile %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A04PK-rule-pairs.txt -PluginAssembly %LOCALAPPDATA%\NwcFederatorLoop\turn5\q133-1A04PK-build\out\Q133ImportProbe.dll
+
+with the DLL built by `dotnet build Q133ImportProbe.csproj -c Release -o <that out folder>` from
+the source committed here, DLL sha256 5B970457, script sha256 16C7DCEB, lines 26 and 3. One run at
+11:31, kept as `q133-1a04pk-import-result-20261007.txt`, the machine name on line 1 masked as
+`[machine]` and the account folder on line 5 as `%USERPROFILE%`, nothing else changed. Get-Process
+Roamer read 0 before it. Navisworks pid 44956, adopted on all four conditions, line 41. TryOpenFile
+of the copy True after 4.759 s with 10 models, every one read from under the loop folder, lines 57
+to 68. The whole run took 209 s and every step passed, lines 1524 to 1530.
+
+**THE IMPORT: 61 SETS, 39 FINDING ITEMS, AND 741 OF THE 1830 TESTS CREATED.** Lines 72 to 95:
+
+```
+MatrixCorrections.ReadPicked         61 sets, 1830 tests, 23 changes from the list beside it
+SetBuilder.Build                     61 created, 39 finding items, 22 at zero, 0 failed, 2.432 s
+ClashTestPlan.From                   1830 buildable, 0 skipped before the model
+PlanTheCreation                      741 created, 1089 not created as a side finds nothing
+```
+
+Run 04 of the tool on the same NWF created 561 with 34 sets finding items,
+steps\runs\04\item1-C04\run-20261004-211839.log lines 256 and 265, with the installed build
+e4484d15, whose log carries no MATRIX line. The 180 more here follow from the corrections list,
+which made 5 more sets find items. That is the prober's reading of the two counts. Which sets
+they are was not read.
+
+**PART 1, THE RULE'S PAIRS: NONE CREATED ON 1A04PK.** 60 pairs and self tests, all over the
+Telecom Fixtures and Telephone Devices sets, and not one has its tests created, line 1415. They
+cost 0 s and find nothing here, as on 1A02MM.
+
+**PART 2, EVERY TEST THAT FINDS A CLASH: A SWAP FINDS MORE ON 1, FEWER ON 2 AND OTHER CLASHES ON
+14 OF 174.** All 741 tests were measured, none left for the cap, lines 1339 to 1344:
+
+```
+tests the tool would create, all run           741
+finding at least one clash                     174, holding 12971 clashes
+the swap finds the same                        157
+the swap finds more                            1
+the swap finds fewer                           2
+the swap finds other clashes                   14
+UNKNOWN                                        0
+clashes, the swaps                             12976
+only the swap finds                            252
+only the original finds                        247
+TestsRunTest, the 174 originals                13.060 s
+TestsRunTest, their 174 swaps                  12.643 s
+both                                           25.703 s, 1.968 times the originals alone
+TestsRunTest, the 567 that find nothing        34.910 s
+every original                                 47.970 s
+every original and every swap                  60.613 s, 1.264 times every original
+making the 741 originals with Create           10.680 s
+making the 174 swaps                           4.799 s
+```
+
+A TestsRunTest took 0.065 s on average over the 741 originals and at most 0.270 s, and 0.073 s on
+average over the swaps, summed by the prober over the LINE lines.
+
+**MOST OF WHAT ONE SIDE FINDS ALONE IS THE SAME CONTACT ON ANOTHER PART OF THE SAME OBJECT.**
+`q133-sibling-check.py` paired, test by test, each clash only the original finds with one only the
+swap finds, first as siblings, one item the same and the other two children of one parent, then as
+near, the same distance to 1e-6 ft and each item the same or one index apart,
+`q133-1a04pk-siblings-result-20261007.txt`:
+
+    python tools\probes\ViewpointProbe\q133-sibling-check.py %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A04PK-result.txt %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-q133-1A04PK-siblings.txt
+
+```
+clashes only the original finds   247
+clashes only the swap finds       252
+paired as siblings                234
+paired as near                    10
+left only in the original         3
+left only in the swap             8
+```
+
+The 17 tests where the two differ, with what is left after the pairing:
+
+```
+test                                                       original  swap  verdict  left orig  left swap
+BLD-AR-Walls-vs-BLD-AR-Floors                                   996   996  other            0          0
+BLD-AR-Railings-vs-BLD-AR-Stairs                                 20    20  other            0          0
+BLD-AR-Railings-vs-BLD-AR-Walls                                   5     5  other            0          0
+BLD-ST-Columns-vs-BLD-AR-Floors                                1956  1956  other            0          0
+BLD-ST-Columns-vs-BLD-AR-Walls                                  102   101  fewer            1          0
+BLD-ST-Framing-vs-BLD-AR-Floors                                  73    73  other            0          0
+BLD-ST-Framing-vs-BLD-AR-Walls                                  482   480  fewer            2          0
+BLD-ST-Framing-vs-BLD-ST-Columns                                175   181  more             0          6
+BLD-ST-Floors-vs-BLD-AR-Walls                                   925   925  other            0          0
+BLD-ST-Stair-vs-BLD-AR-Stairs                                    19    19  other            0          0
+BLD-DR-Pipes & Pipe Fittings-vs-BLD-AR-Floors                   212   212  other            0          0
+BLD-EL-Electrical Equipment-vs-BLD-AR-Walls                      30    30  other            0          0
+BLD-EL-Electrical Equipment-vs-BLD-AR-Site                     1436  1436  other            0          0
+BLD-EL-Electrical Equipment-vs-BLD-ST-Columns                     6     6  other            0          0
+BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment
+                                                                480   482  other            0          2
+BLD-EL-Lighting Fixtures-vs-BLD-ST-Stair                         11    11  other            0          0
+BLD-EL-Lighting Fixtures-vs-BLD-EL-Electrical Equipment           4     4  other            0          0
+```
+
+1. BLD-ST-Framing-vs-BLD-ST-Columns finds 175 and its swap 181, line 247, the same test P1 and 5z-r
+   saw find more on 1A02MM. The 6 only the swap finds all share the item `8.2.0.0.0.55.0` and sit
+   at -1.010 ft. The same item is the one clash BLD-ST-Columns-vs-BLD-AR-Walls finds only in its
+   original, at -0.560 ft, line 222
+2. The 2 left only in the swap of the Conduits test sit at -0.088 ft and -0.096 ft, just past the
+   tolerance of 0.082 ft, lines 1150 to 1153. Every other clash left over is past -0.5 ft
+3. On every other test the two sides list the same number of clashes and every difference pairs up.
+   Electrical Equipment against Site alone carries 186 sibling pairs
+4. Every swap's sides read back as the original's swapped, and no item failed to read, on all 174
+
+So by the unordered pair of items, which is how answer D merges, the two runs together list 13,223
+clashes on these 174 tests against the originals' 12,971, by the prober's sum of 12,971 and 252.
+Of the 252 added, 244 pair with a clash the original already lists on another part of the same
+object, by index path, and 8 do not. Whether a person reads a sibling pair as one clash or two, and
+whether the Clash Detective panel shows one or both, is UNKNOWN, no name and no panel was read.
+
+**THE SECONDS.** Here a TestsRunTest took 0.065 s on average against about 10 s on 1A02MM in 5z-r.
+This document was fresh, 10 saved viewpoints and no results but the probe's, where 5z-r's held
+2847 viewpoints and 2939 results. That the document's state made 5z-r slow is the prober's reading
+and is UNKNOWN. Both readings agree on the ratio: running a test and its swap costs 1.97 times the
+original alone on 1A04PK and 1.99 on 1A02MM, over the tests that find a clash. Running a swap only
+beside a test that finds a clash cost 1.26 times every original here, 12.643 s more on 47.970 s.
+
+**BADER'S THINGS. NOTHING ADDED, NOTHING GONE.** The NWF and the XML the copies were made from read
+the same sha256 at the start and at the end, lines 1510 and 1512. The guard wrote the Auto-Save
+switch "3 0" and read it back, line 31. 38 registry values were put back, enable among them, and
+read again with 0 still differing, line 1499. InfoCenter.log and LastSession.xml put back reading
+their backups' sha256, lines 1503 and 1504. The guard saw 0 AutoSave files added, changed or gone,
+line 1506, and the tool's own logs folder had nothing added or changed, line 1507. The prober read
+the switch and listed the AutoSave folder by name, size, write time and sha256 with
+`read-autosave-state.ps1`, kept in %LOCALAPPDATA%\NwcFederatorLoop\turn5 as
+`probe-q133-1A04PK-autosave-before.txt`, `-during.txt` and `-after.txt`: enable read String "0"
+before the start, "3 0" at 11:33:47 while the probe ran, and "0" after the put back, and the folder
+held the same 199 files with the same sizes, times and sha256 before and after. So Auto-Save off
+held through this start, and no autosave was written.
+
+THE PROGRAMS. One Navisworks, pid 44956, started by the probe at 11:31:58, quit by Dispose and gone
+7.5 s after, not forced, lines 1421 and 1422. AdskLicensingAgent pid 45188, its child, read UNKNOWN
+at the end, line 1451, and no process held pid 45188 when the prober read it after. No Roamer that
+was not there in step 2 ran at the end, line 1454.
+
+**STILL UNKNOWN.**
+
+- whether a swap of a test that finds nothing finds something on 1A04PK. Those 567 swaps were not
+  made, the brief asking for the tests that find a clash
+- which 5 sets the corrections list made find items, and so which of the 741 a run of the tool
+  today creates against run 04's 561, beyond what PlanTheCreation gave here
+- why a TestsRunTest took about 10 s on 1A02MM in 5z-r and 0.065 s here
+- why a swap finds more or fewer on the three tests above, and what object `8.2.0.0.0.55.0` is
+- whether the Clash Detective panel shows the same counts, and whether a sibling pair is one
+  clash to a reader
+
+**WHAT THIS DECIDES.** For the record Bader asked for, 1A04PK: of the 174 tests that find a clash, a
+swap finds more on 1, fewer on 2 and other clashes on 14, so 17 of 174 differ. Of the 252 clashes
+only a swap finds, 244 are the same contact the original already lists on another part of the same
+object, by index path, and 8 are not, 6 on BLD-ST-Framing-vs-BLD-ST-Columns and 2 on the Conduits
+against Electrical Equipment test. Running both cost 25.703 s of TestsRunTest against 13.060 s for
+those originals alone, 1.97 times, and 60.613 s against 47.970 s over every test the tool would
+create. F132's rule finds no pair whose two tests are created on 1A04PK, as on 1A02MM, so every
+clash a swap adds comes from a swap no rule pair names. A merge by the unordered pair of items, as
+answer D has it, would count the 244 siblings as new clashes.
+
+## 5z-q. DOES A COPY OF A MARKED VIEW GET A NEW GUID, AND DOES ITS COMMENT TRAVEL, MEASURED 2026-10-07
+
+P11 of Q114, the views by team design, part 3. The letter 5z-q was left to P11 by 5z-r, so this
+section stands after 5z-s. P9 made the mark a comment written by AddComment, 5z-o. P10 found the
+tool's routes give no Guid, 5z-p. The question: does AddCopy of a view the tool marked give an
+item with a new Guid, and does the comment travel with it? By the row of P11: the comment travels
+and the Guid is new, so the copy fails the fingerprint and is a person's. The Guid is kept, so the
+Guid stays out of the mark.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-copy.ps1` is P10's `probe-view-guids.ps1` with the
+mode `vpcopy` of `ViewpointProbe.dll`, both written on 2026-10-05 and committed unrun at 51dd8c5.
+Before this run main was merged at 647ce5d, and the one change made to the script was F138's
+SwitchAutoSaveOff after the last Roamer read and before the constructor, as
+`probe-q133-import.ps1` has it. tools\loop\nw-guard.ps1 read the same on main and on the branch.
+The guard is the loop's, dot-sourced, with the Roamer refusal, the settings backup, the Auto-Save
+switch, the adoption by AdoptStart's four conditions, Dispose, the close through the held handle
+only when needed, and SettingsPutBack. Get-Process Roamer read 0 before the run and 0 after it.
+The probe copied P9's
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf`,
+41,319,461 bytes, sha256 869DD965, into the new folder `probes\view-copy-20261007-122418`, and the
+mode, on that copy:
+
+1. opens it and reads three sources. S1 is P9's COM view `P9 probe / P9 sub / P9 view addcomment
+   after add`, the tool's view route, marked by AddComment. S2 is F85's view `AR vs ME / Over 150mm /
+   BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash1`, which P9 marked. S3 is made here, a copy
+   of S1 by SavedItem.CreateCopy, renamed `P11 source guid set`, its Guid set to Guid.NewGuid()
+   before AddCopy into `P11 probe / P11 sources`
+2. makes the folder `P11 probe` at the root and one folder under it for S3 and for each copy, by
+   FolderItem and AddCopy, and copies each source into its own folder: C1 AddCopy of S1 itself,
+   C2 AddCopy of S1.CreateCopy(), C3 AddCopy of S1.CreateUniqueCopy(), C4 AddCopy of S2 itself,
+   C5 AddCopy of S3 itself, C6 AddCopy of S3.CreateCopy(), C7 AddCopy of S3.CreateUniqueCopy()
+3. reads every source and copy, its type, name, Guid, index path, Hidden and MaterialOverrides
+   counts and every comment's Body, Author, Status, Id and CreationDate, right after the add,
+   before the save, and after SaveFile into `p11-copy-saved.nwf` in the work folder,
+   Document.Clear and TryOpenFile of that file, and counts every Guid of the whole tree at each
+   stage. A copy's comments count as travelled only when Body, Author and Status equal the
+   source's, Ordinal, at every stage
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-copy.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p11-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+DLL sha256 C1F6FBC3, script sha256 909F0C8E, lines 24 and 3. One run at 12:24, kept as
+`p11-view-copy-result-20261007.txt`, the machine name on line 1 masked as `[machine]` and the
+account folder on line 5 as `%USERPROFILE%`, nothing else changed. Navisworks pid 27660, adopted on
+all four conditions, line 38. TryOpenFile of the copy returned True after 4.706 s with 4 models,
+every one read from under the loop folder, lines 54 to 59. ExecuteAddInPlugin returned 0 after
+18.59 s, line 48. Dispose returned and pid 27660 was gone 10.1 s later, not forced, line 190.
+
+**THE ANSWER: THE COMMENT TRAVELS WHOLE ON EVERY COPY MADE. THE GUID IS NEVER KEPT ON A SECOND
+ITEM, BUT ON THE TOOL'S VIEW THERE IS NO GUID TO KEEP OR RENEW.** Lines 155 to 184 of the result,
+each Guid cut to its first 8 characters and the three stages of a copy joined into one row, since
+each copy read the same at add, save and reopen:
+
+```
+copy | route | the copy's Guid | the source's | the Guid is | comments the same | Ids and dates the same | Hidden and MaterialOverrides the same | name the same
+C1 | AddCopy(folder, S1 itself)               | 00000000 | 00000000 | empty, as the source's | YES (1 and 1) | YES | YES (1, 2) | YES
+C2 | AddCopy(folder, S1.CreateCopy())         | 00000000 | 00000000 | empty, as the source's | YES (1 and 1) | YES | YES (1, 2) | YES
+C3 | AddCopy(folder, S1.CreateUniqueCopy())   | 00000000 | 00000000 | empty, as the source's | YES (1 and 1) | YES | YES (1, 2) | YES
+C4 | AddCopy(folder, S2 itself)               | 00000000 | 00000000 | empty, as the source's | YES (1 and 1) | YES | YES (2, 4697) | YES
+C5 | AddCopy(folder, S3 itself)               | THREW ArgumentException: Argument 'item' contains a duplicate GUID
+C6 | AddCopy(folder, S3.CreateCopy())         | THREW ArgumentException: Argument 'item' contains a duplicate GUID
+C7 | AddCopy(folder, S3.CreateUniqueCopy())   | 718aaa97 | e689357b | NEW | YES (1 and 1) | YES | YES (1, 2) | YES
+P11 on the tool's marked view, C1, AddCopy of S1 itself: the comment travels YES, the Guid empty, as the source's
+P11 over all 7 copies: the comment travelled on 5 and not on 2. The Guid: 4 empty, as the source's, 2 UNKNOWN, 1 NEW
+```
+
+1. THE COMMENT TRAVELS. Every copy that was made, C1 to C4 and C7, carried exactly one comment,
+   its Body, Author and Status equal to its source's, the marker line naming the SOURCE's folder
+   path and name included, right after the add, before the save and after the reopen, lines 81
+   to 104, 114 to 125 and 139 to 150. The two not counted, C5 and C6, are the two the API refused
+   to make, below, so no comment was lost on any copy that exists
+2. THE COPY KEEPS THE NAME. Every copy read the same DisplayName as its source, Ordinal, at every
+   stage. Each sat in a folder of its own, so only the folder path differs from the source's
+3. THE COMMENT'S ID AND DATE TRAVEL TOO. Each copy's comment read the same Id and CreationDate as
+   its source's, Id 3 on S1, S3, C1, C2, C3 and C7, and Id 5 on S2 and C4, lines 65, 67, 77, 82 to
+   104. So after a copy one comment Id is carried by more than one item. The tree went from 2875
+   items, 2850 viewpoints, 25 folders and 5 comments to 2890 items, 2856 viewpoints, 34 folders and
+   11 comments, and read the same after the reopen, lines 60, 61, 107, 132 and 152
+4. AN EMPTY GUID STAYS EMPTY ON EVERY ROUTE. S1 and S2 read the empty Guid, as P10 found. AddCopy
+   of the item itself, CreateCopy and CreateUniqueCopy each gave a copy with the empty Guid, before
+   the add, lines 83 and 87, and after it at every stage. CreateUniqueCopy makes no Guid where the
+   source has none
+5. A GUID IS NEVER CARRIED BY TWO ITEMS. S3, its Guid set before AddCopy, held it through the
+   save and the reopen and ResolveGuid returned it, lines 76, 112, 126, 137 and 151. AddCopy of S3
+   itself and of S3.CreateCopy(), which read back S3's Guid before the add, line 97, each THREW
+   `ArgumentException: Argument 'item' contains a duplicate GUID`, lines 94 and 98, and nothing was
+   added, their folders holding 0, lines 96 and 100. S3.CreateUniqueCopy() gave a new Guid,
+   718aaa97, before the add, line 101, kept through the save and the reopen. No Guid that is not
+   empty was carried by more than one item at any stage, lines 107 and 132
+6. THE HIDDEN AND MATERIALOVERRIDES COUNTS TRAVEL. Every copy read its source's counts, 1 and 2 off
+   S1, 2 and 4697 off S2. The camera was not read
+7. THE CALLS ARE CHEAP. Each AddCopy returned in 0.001 to 0.002 s, lines 75 to 102. SaveFile took
+   8.382 s, 41,319,917 bytes read back, line 127. Document.Clear took 0.529 s, line 128.
+   TryOpenFile of the saved file took 4.556 s, line 129. The saved copy is
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-copy-20261007-122418\p11-copy-saved.nwf`, sha256
+   B2E5F0B9E06806C82F42A931B83FEE6F6B142DD3602B7FB0FD2C7397AF2E5FEF, line 186
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWF the copy was made from read sha256
+869DD965 at the start and at the end, lines 22 and 283. The guard wrote the Auto-Save switch
+"3 0" and read it back, line 28. The watchdog saw no other Navisworks, so the put back ran, line
+232. 38 registry values were put back, enable among them, line 237, and read again with 0 still
+differing, line 272. InfoCenter.log and LastSession.xml were put back reading their backups'
+sha256, lines 276 and 277. The guard saw 0 AutoSave files added, changed or gone, line 279, and
+the tool's own logs folder had nothing added or changed, line 280. The prober read the switch and
+listed the AutoSave folder by name, size, write time and sha256 with `read-autosave-state.ps1`,
+kept in %LOCALAPPDATA%\NwcFederatorLoop\turn5 as `probe-p11-20261007-autosave-before.txt`,
+`-during.txt` and `-after.txt`: enable read String "0" at 12:23:59 before the start, "3 0" at
+12:24:59 while the probe ran, and "0" at 12:27:19 after the put back, and the folder held the same
+199 files with the same sizes, times and sha256 before and after, 0 lines differing.
+
+THE PROGRAMS. One Navisworks, pid 27660, started by the probe at 12:24:27, quit by Dispose and
+gone 10.1 s after, not forced, lines 189 and 190. AdskLicensingAgent pid 34008, its child, and two
+AdskLicensingInstHelper processes under GenuineService.exe, pids 42868 and 39708, all read exited
+at the end, lines 223 to 226. No Roamer that was not there in step 2 ran at the end, line 227.
+
+**STILL UNKNOWN.**
+
+- a copy into the SAME folder as its source. Every copy here went into a folder of its own. What
+  name AddCopy gives it there, and whether its mark then reads as the tool's, was not measured
+- a copy a person makes in the Saved Viewpoints window. That is P21, Bader's hand step
+- whether the camera travels. Only the Hidden and MaterialOverrides counts were read
+- what a comment Id carried by several items does in the Comments window or to a later
+  AddComment. Not read
+- whether a copy of a marked folder carries its comment. No folder was copied
+- whether any of this holds through a reopen in a new Navisworks. The close was Document.Clear
+  inside the same Navisworks
+
+**WHAT THIS DECIDES.** By the row of P11, the comment travels, and the Guid is neither kept nor
+new on the tool's own view route, because a COM view has no Guid and its copy has none either.
+Where a Guid exists the API never lets a second item carry it: AddCopy refuses it and
+CreateUniqueCopy renews it. So, with P10's NO, the Guid stays out of the mark. Because the mark
+travels whole, comment Id and date included, the comment alone cannot tell the tool's view from a
+copy of it. What tells them apart is the folder path and name the marker line carries: C1 to C4
+each sat in another folder while their marks named the source's, which is the design's test "a
+copy in another folder gives ChangedByAPerson". A copy that keeps both the folder and the name
+would pass the fingerprint, and whether the API or a person can make one is UNKNOWN.
+
+## 5z-t. DOES A VIEW WHOSE NAME ENDS IN A SPACE READ BACK ITS NAME UNCHANGED, MEASURED 2026-10-07
+
+P12 of Q114, the views by team design, part 3. Two set names of the clash XML end in a space,
+core.md, so a test name built from them can, and the design names a test's view exactly by its
+test, never trimmed. The question: does a view whose name ends in a space read back its
+DisplayName unchanged, Ordinal? By the row of P12: No, that view is found by its mark alone and
+VIEWS TREE says so. Yes, the name stands as written. The row runs on P9's saved copy and hangs on
+no other probe's answer.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-name-spaces.ps1` is P11's `probe-view-copy.ps1`
+with the mode `vpspace` of `ViewpointProbe.dll` in place of P11's mode, and its own header, work
+folder prefix and save name. Nothing else in the script changed, F138's SwitchAutoSaveOff
+included. The branch was pulled first and was up to date. tools\loop\nw-guard.ps1 read sha256
+E29D2733, the same as in P11's run, line 4. The guard is the loop's, dot-sourced, with the Roamer
+refusal, the settings backup, the Auto-Save switch, the adoption by AdoptStart's four
+conditions, Dispose, the close through the held handle only when needed, and SettingsPutBack.
+Get-Process Roamer read 0 before the run and 0 after it. The probe copied P9's
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf`,
+41,319,461 bytes, sha256 869DD965, into the new folder `probes\view-space-20261007-125742`, and
+the mode, on that copy:
+
+1. makes the folder `P12 probe` at the root and nine folders of plain name under it, V0 to V7
+   and F1, by FolderItem and AddCopy, so every item is found by its position in a folder whose
+   name holds no space at an end, and never by the name being read
+2. writes, by the tool's routes:
+   - V0, the control, `P12 V0 control`, a COM view added into its folder's own SavedViews, the
+     route SavedViewpoints.Record takes with throughTheFolder true
+   - V1, `P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ` with one space at the end, a test name's
+     characters, the same route
+   - V2, `P12 V2 root route one space `, the other route of Record: the COM view added at the
+     root, the last root view named exactly so copied into its folder by AddCopy, the root one
+     removed
+   - V3, `P12 V3 two trailing spaces  `, the folder route
+   - V4, ` P12 V4 leading and trailing `, a space at each end, the folder route
+   - V5a `P12 V5 twin` and V5b `P12 V5 twin ` in the SAME folder, the two names differing only
+     by the end space, the folder route
+   - V6, `P12 V6 dotnet one space `, a .NET new SavedViewpoint(Viewpoint), DisplayName set,
+     AddCopy into its folder
+   - V7, a COM view added as `P12 V7 renamed`, then DocumentSavedViewpoints.EditDisplayName to
+     `P12 V7 renamed `
+   - F1, a FolderItem `P12 F1 folder end space `, the tool's folder route, and in it F1v, the COM
+     view `P12 F1 view one space `, added into that folder's own InwOpFolderView
+3. marks V1, V3 and F1 by AddComment after the add, as P9 found. V1's marker line carries the
+   name in its middle. V3's and F1's end with the name, so their bodies end in a space
+4. reads every item by position right after its add, before the save, and after SaveFile into
+   `p12-space-saved.nwf` in the work folder, Document.Clear and TryOpenFile of that file: its
+   .NET DisplayName with its length and its first and last code points, its COM name off the
+   InwOpView or InwOpFolderView at the same position, whether ResolveNames over the written
+   names, Ordinal, finds that same item by index path, what the names trimmed find, and the
+   mark's Body and Author, Ordinal
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-name-spaces.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p12-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+DLL sha256 F5874016, script sha256 170A3C1A, lines 24 and 3. One run at 12:57, kept as
+`p12-view-name-spaces-result-20261007.txt`, the machine name on line 1 masked as `[machine]` and
+the account folder on line 5 as `%USERPROFILE%`, nothing else changed. Navisworks pid 43540,
+adopted on all four conditions, line 38. TryOpenFile of the copy returned True after 4.571 s with
+4 models, every one read from under the loop folder, lines 54 to 59. ExecuteAddInPlugin returned
+0 after 76.90 s, line 48. Dispose returned and pid 43540 was gone 8.8 s later, not forced, line
+219.
+
+**THE ANSWER: YES. EVERY NAME WITH A SPACE AT AN END READ BACK EXACTLY AS WRITTEN, ON EVERY ROUTE,
+AT EVERY STAGE.** Lines 200 to 213 of the result:
+
+```
+label | written | .NET DisplayName the same, add, save, reopen | COM name the same | the written names find this item | the mark the same, save, reopen
+V0  | [P12 V0 control] length 14                              | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V1  | [P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ] length 42  | YES, YES, YES | YES, YES, YES | YES, YES, YES | YES, YES
+V2  | [P12 V2 root route one space ] length 28                | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V3  | [P12 V3 two trailing spaces  ] length 28                | YES, YES, YES | YES, YES, YES | YES, YES, YES | YES, YES
+V4  | [ P12 V4 leading and trailing ] length 29               | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V5a | [P12 V5 twin] length 11                                 | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V5b | [P12 V5 twin ] length 12                                | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V6  | [P12 V6 dotnet one space ] length 24                    | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+V7  | [P12 V7 renamed ] length 15                             | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+F1  | [P12 F1 folder end space ] length 24                    | YES, YES, YES | YES, YES, YES | YES, YES, YES | YES, YES
+F1v | [P12 F1 view one space ] length 22                      | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+P12 over the 9 names with a space at an end: the .NET DisplayName read back unchanged at every stage on 9 and not on 0. The COM name the same on 9 and not on 0. A lookup by the written names found the item on 9 and not on 0. The marks read back the same on 3 of 3
+P12 YES
+```
+
+1. THE NAME HOLDS ON EVERY ROUTE. The COM view into its folder, the COM view at the root copied
+   into its folder, the .NET SavedViewpoint, EditDisplayName and the FolderItem each kept one end
+   space, two end spaces and a space at each end, length and last code point U+0020 included,
+   right after the add, before the save and after the reopen, lines 79 to 127, 135 to 162 and
+   169 to 196. The name read back the same off the COM object before the add too, lines 77 to
+   124, and off the .NET SavedViewpoint and FolderItem before their AddCopy, lines 108 and 118
+2. THE COM SIDE AGREES. The COM name at the same position read the same as written, Ordinal, at
+   every stage, and FindComFolderAt found the space-ended folder by its written name, Ordinal,
+   line 123. So the throughTheFolder route reaches a folder whose name ends in a space
+3. THE ROOT ROUTE FINDS ITS VIEW BY NAME. After the COM add at the root, the last root view named
+   exactly as written was found, at 18 of 19, line 104, so Record's FindLastAtRoot by name does
+   not lose a name that ends in a space
+4. A NAME DIFFERING ONLY BY ITS END SPACE IS ANOTHER NAME. V5a and V5b sat in one folder at
+   17.5.0 and 17.5.1, and the written names found each its own item at every stage, lines 102,
+   152 and 186. The names TRIMMED found V5a for V5b, the wrong item, and found nothing for every
+   other name with a space at an end, lines 84 to 127. So a trim anywhere on the path would find
+   a person's view of the trimmed name, or nothing
+5. THE MARK HOLDS A NAME THAT ENDS THE BODY. V3's and F1's comment bodies ended in the name, so
+   in a space, and read back with the same length, last code point U+0020, Body and Author equal,
+   Ordinal, before the save and after the reopen, lines 145, 159, 179 and 193. V1's, with the name
+   in the middle, the same, lines 139 and 173
+6. THE TREE. 2850 viewpoints, 25 folders and 5 comments at the open, line 60, and 2860, 36 and 8
+   before the save and after the reopen, lines 163 and 197, the 10 views, 11 folders and 3 marks
+   written here. SaveFile took 7.498 s, 41,319,983 bytes read back, line 164. Document.Clear took
+   0.613 s, line 165. TryOpenFile of the saved file took 4.433 s, line 166. The saved copy is
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-space-20261007-125742\p12-space-saved.nwf`,
+   sha256 C8E818F2C07C472B5B64803C26522B6BD9EA6E8B7CAE2B054DBB208D18225BCD, line 215
+7. SEEN AND NOT ASKED. Each InwSavedViewsColl.Add of one COM view took 6.131 to 6.962 s in this
+   tree of about 2850 viewpoints, lines 78 to 125, where the .NET AddCopy took 0.001 s and
+   EditDisplayName 0.002 s, lines 109 and 115. The add was timed with nothing hidden and nothing
+   painted. Why it costs that much is UNKNOWN here, and P18 is the probe that times the whole
+   sequence
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWF the copy was made from read sha256
+869DD965 at the start and at the end, lines 22 and 313. The guard wrote the Auto-Save switch
+"3 0" and read it back, line 28. The watchdog saw no other Navisworks, so the put back ran, line
+262. 38 registry values were put back, enable among them, line 267, and read again with 0 still
+differing, line 302. InfoCenter.log and LastSession.xml were put back reading their backups'
+sha256, lines 306 and 307. The guard saw 0 AutoSave files added, changed or gone, line 309, and
+the tool's own logs folder had nothing added or changed, line 310. The prober read the switch and
+listed the AutoSave folder by name, size, write time and sha256 with `read-autosave-state.ps1`,
+kept in %LOCALAPPDATA%\NwcFederatorLoop\turn5 as `probe-p12-20261007-autosave-before.txt`,
+`-during.txt` and `-after.txt`: enable read String "0" at 12:57:09 before the start, "3 0" at
+12:59:43 while the probe ran, and "0" at 13:01:22 after the put back, and the folder held the same
+199 files with the same sizes, times and sha256 before and after, 0 lines differing.
+
+THE PROGRAMS. One Navisworks, pid 43540, started by the probe at 12:57:49, quit by Dispose and
+gone 8.8 s after, not forced, lines 218, 219 and 251. AdskLicensingAgent pid 32624, its child, and
+AdskLicensingInstHelper pids 40760 and 17968 under GenuineService.exe read exited at the end.
+AdskLicensingAgent pid 30160 and AdskLicensingInstHelper pid 41136 read UNKNOWN whether they
+exited, their start times not readable when seen, lines 252 and 253. No Roamer that was not there
+in step 2 ran at the end, line 257.
+
+**STILL UNKNOWN.**
+
+- a name ending in another white space, a tab, a no-break space U+00A0, or in a full stop. Only
+  U+0020 was written
+- what the Saved Viewpoints window shows for such a name, and whether a person's rename in the
+  window keeps or trims an end space. That is a hand step
+- whether the name holds through a reopen in a new Navisworks. The close was Document.Clear inside
+  the same Navisworks
+- whether it holds in an NWD. PublishFile was not called
+- whether a clash test's own name read off the document keeps its end space. The view names here
+  were written by the probe, not read off a test
+- why one COM add costs about 6 s in this tree, point 7
+
+**WHAT THIS DECIDES.** By the row of P12, YES: a view or folder whose name ends in a space is
+found by its name as written, Ordinal, on both of Record's routes and through COM, so the No
+branch, a view found by its mark alone and named in VIEWS TREE, is not needed for this case. The
+design's test "a test name ending in a space is kept in the view name" holds on the install.
+Point 4 adds one rule: nothing on the path from the test name to the lookup may trim, because the
+trimmed name finds another item or none, and a mark that ends in the name keeps the space too.
+
+## 5z-u. DOES REMOVEAT TAKE ONE VIEWPOINT TWO FOLDERS DEEP AND NOTHING ELSE, MEASURED 2026-10-07
+
+P13 of Q114, the views by team design, part 3. F114 removes the views it made before, and the
+2813 per-clash views F85 wrote, one RemoveAt(GroupItem, int) at a time from the end of each
+parent, the parent resolved fresh and each target re-found by name just before. 5z measured
+that call on sets only. The question: does RemoveAt(parent, index), the parent resolved fresh,
+remove one viewpoint two folders deep, the count falling by exactly one and every other item
+keeping its path, name and Guid through a save and a reopen, and how many seconds does one call
+take in a tree of 2847? By the row of P13: Yes, removal is built, from the end within each
+parent. No, nothing is removed, and stale views are only named. The row works on a fresh copy of
+the baseline NWF and hangs on no other probe's answer.
+
+THE MEMBERS, read off `C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Api.dll`
+by reflection in this session, all declared on DocumentSavedViewpoints itself:
+
+```
+Void    RemoveAt(GroupItem parent, Int32 index)
+Void    RemoveAt(Int32 index)
+Boolean Remove(GroupItem parent, SavedItem item)
+Boolean Remove(SavedItem item)
+Void    Move(GroupItem oldParent, Int32 oldIndex, GroupItem newParent, Int32 newIndex)
+Void    Move(Int32 oldIndex, Int32 newIndex)
+Void    Clear()
+```
+
+HOW. `tools\probes\ViewpointProbe\probe-view-remove.ps1` is P12's `probe-view-name-spaces.ps1` with
+the new mode `vpremove` of `ViewpointProbe.dll` in place of `vpspace`, its own header, work folder
+prefix and save name, a line for the second saved copy, and `-Nwf` taken from under `runs` or
+`probes` of the loop folder, since the baseline lies under `runs`. Nothing else in the script
+changed, F138's SwitchAutoSaveOff included. The branch was pulled first and was up to date.
+tools\loop\nw-guard.ps1 read sha256 E29D2733, the same as in P11's and P12's runs, line 4. The
+guard is the loop's, dot-sourced, with the Roamer refusal, the settings backup, the Auto-Save
+switch, the adoption by AdoptStart's four conditions, Dispose, the close through the held handle
+only when needed, and SettingsPutBack. Get-Process Roamer read 0 before the run and 0 after it.
+The probe copied the baseline's C02 NWF of run set 04,
+`%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`,
+41,317,271 bytes, sha256 0944C100, the file P8 read, into the new folder
+`probes\view-remove-20261007-133308`, and the mode, on that copy:
+
+1. PART A. Reads the whole saved viewpoint tree from RootItem, one row per item: index path,
+   folder names, name, kind, Guid and comment count. Counts models, sets, tests, results and
+   statuses a person set
+2. picks the first folder two deep, in tree order, with at least 3 children and a viewpoint at
+   its middle child, and takes that middle viewpoint
+3. resolves the parent fresh from RootItem by its two folder names, re-finds the target in it by
+   its name, Ordinal, and calls `DocumentSavedViewpoints.RemoveAt(parent, index)`, timed by a
+   Stopwatch around the call alone
+4. reads the tree again and compares it row by row, in tree order, with the tree at the open
+   less that one row, where only the later siblings' last index falls by one. Looks the target
+   up by its names
+5. saves into `p13-remove-saved.nwf` in the work folder, calls Document.Clear and TryOpenFile of
+   the saved file, reads the tree and the counts once more and compares with the tree after the
+   removal, exactly
+6. PART B, because every Guid of the baseline reads empty, 5z-n: in the reopened document adds
+   the folder `P13 probe` at the root, `P13 sub` in it and 12 .NET SavedViewpoints `P13 view 00`
+   to `P13 view 11` in that, each folder and view with a Guid set before its AddCopy, the route
+   P10 found keeps a Guid. Removes `P13 view 05` from the middle and then 5 from the end, the
+   same way as in step 3, each timed. Compares the tree after each, reads every Guid set through
+   ResolveGuid, saves into `p13-remove-saved-sentinels.nwf`, clears, reopens and reads again
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-remove.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p13-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+DLL sha256 05F25FD8, script sha256 FDC46E47, lines 24 and 3. One run at 13:33, kept as
+`p13-view-remove-result-20261007.txt`, the machine name on line 1 masked as `[machine]` and the
+account folder on line 5 as `%USERPROFILE%`, nothing else changed. Navisworks pid 35736, adopted on
+all four conditions, line 38. TryOpenFile of the copy returned True after 4.993 s with 4 models,
+every one read from under the loop folder, lines 54 to 59. ExecuteAddInPlugin returned 0 after
+34.45 s, line 48. Dispose returned and pid 35736 was gone 8.8 s later, not forced, line 122.
+
+**THE ANSWER: YES. ONE CALL TOOK THE ONE VIEWPOINT AND NOTHING ELSE, AND IT HELD THROUGH A SAVE AND
+A REOPEN.** Lines 62 to 82 of the result:
+
+```
+                                     at the open   after RemoveAt   after save, clear, reopen
+items in the viewpoint tree                 2869             2868                        2868
+viewpoints                                  2847             2846                        2846
+folders                                       22               22                          22
+Guids not empty                                0                0                           0
+models, sets, tests, results,     4, 61, 528, 2939, 0    the same                    the same
+statuses a person set
+rows that differ from the expected tree                          0                           0
+the target found by its names                yes          nothing                     nothing
+P13 YES
+```
+
+1. THE TARGET. `AR vs ME / Over 150mm / BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash5`, a
+   SavedViewpoint at index path 6.0.4, child 4 of 8 in its folder, Guid empty, no comment, line
+   64. The parent resolved fresh by its names was at 6.0, the name was found on 1 of its 8
+   children, at index 4, the same index path the tree read at the open, lines 65 and 67. The
+   parent resolved again after the call held 7, line 66
+2. NOTHING ELSE MOVED BUT THE LATER SIBLINGS. After the call the tree read 2868 rows, and row by
+   row in tree order every one had the same folder names, name, kind, Guid and comment count as
+   the tree at the open less the target, 0 differing, line 71. The 3 later siblings, children 5 to
+   7, each read one index lower, and no other index path changed, lines 70 and 71
+3. IT HELD THROUGH A SAVE AND A REOPEN. After SaveFile, Document.Clear and TryOpenFile of the saved
+   file the tree read the same 2868 rows, index paths included, 0 differing, line 78. The
+   target's names found nothing after the call and after the reopen, lines 72 and 79
+4. NOTHING ELSE IN THE DOCUMENT CHANGED COUNT. 4 models, 61 sets, 528 tests, 2939 results and 0
+   statuses a person set at the open, after the call and after the reopen, lines 62, 69 and 77
+5. THE SECONDS. RemoveAt took 0.002 s in the tree of 2847 viewpoints, line 65. In part B each of
+   6 calls in a tree of 2852 to 2858 read 0.000 s, so under half a millisecond, line 114. Each walk of the
+   whole tree took 0.002 to 0.006 s, lines 63 to 109
+6. THE GUID HALF OF THE QUESTION, ON THE BASELINE, SAYS LITTLE. Every Guid of the baseline reads
+   empty, line 63, as 5z-n found. So part A shows no item gained or lost a Guid, and cannot tell
+   two items apart by Guid. PART B is where a Guid was there to keep, lines 84 to 115:
+
+```
+                                             items   viewpoints   Guids set   rows that differ   ResolveGuid gave the item at its index path
+after the adds of 2 folders and 12 views      2882         2858          14                  -   14 of 14
+after RemoveAt of P13 view 05, the middle     2881         2857          13                  0   -
+after 5 RemoveAt from the end                 2876         2852           8                  0   8 of 8 kept
+after a save, a clear and a reopen            2876         2852           8                  0   8 of 8 kept
+P13 WITH GUIDS SET YES
+```
+
+   The middle removal moved the 6 later siblings one lower and nothing else, lines 91 and 92.
+   Removing from the end moved nothing, line 104. The 6 removed Guids each resolved to null after
+   the series and after the reopen, lines 105 and 111. Each kept Guid resolved to the item of
+   its name at its index path at every stage, lines 87, 105 and 111
+7. THE FILES. SaveFile took 8.890 s and wrote 41,287,793 bytes, 29,478 fewer than the copy it
+   opened, line 73. Why it is smaller is UNKNOWN, since the probe did not save an unchanged copy
+   to compare. Document.Clear took 0.572 s and the reopen 5.036 s, lines 74 and 75. The saved
+   copies are
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-remove-20261007-133308\p13-remove-saved.nwf`, sha256
+   24E447903F1E8074D1145C39285C516B930C2341E3407D18ACE334EC441860C1, line 117, holding 2846
+   viewpoints and no P13 item, and `p13-remove-saved-sentinels.nwf` beside it, sha256
+   069DA5B5C23F6EF540DAFE47E1E31076DBA9F84EDA929EDC01C38C0C5BD8C29B, line 118, which holds part
+   B's folders and 6 views as well
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWF the copy was made from read sha256
+0944C100 at the start and at the end, lines 22 and 220. The guard wrote the Auto-Save switch
+"3 0" and read it back, line 28. The watchdog saw Roamer 35736 once with no readable start time and
+read it at the next pass, lines 130 and 131, saw no other Navisworks, and the put back ran, line
+169. 38 registry values were put back, enable among them, line 174, and read again with 0 still
+differing, line 209. InfoCenter.log and LastSession.xml were put back reading their backups'
+sha256, lines 213 and 214. The guard saw 0 AutoSave files added, changed or gone, line 216, and the
+tool's own logs folder had nothing added or changed, line 217. The prober read the switch and
+listed the AutoSave folder by name, size, write time and sha256 with `read-autosave-state.ps1`,
+kept in %LOCALAPPDATA%\NwcFederatorLoop\turn5 as `probe-p13-20261007-autosave-before.txt`,
+`-during.txt` and `-after.txt`: enable read String "0" at 13:32:44 before the start, "3 0" at
+13:35:43 while the probe ran, and "0" at 13:38:09 after the put back, and the folder held the same
+199 files with the same sizes, times and sha256 before and after, 0 lines differing.
+
+THE PROGRAMS. One Navisworks, pid 35736, started by the probe at 13:33:16, quit by Dispose and
+gone 8.8 s after, not forced, lines 121, 122 and 161. AdskLicensingInstHelper pid 23512 under
+GenuineService.exe read exited at the end. AdskLicensingInstHelper pid 38728 read UNKNOWN whether it
+exited, its start time not readable when seen, line 163. No Roamer that was not there in step 2 ran
+at the end, line 164.
+
+**STILL UNKNOWN.**
+
+- what 2813 calls cost in a row. One call in the tree of 2847 and six in a tree of 2852 to 2858 were
+  timed, and nothing here says the rate holds across thousands of calls or with the Saved
+  Viewpoints window open
+- a view the tool records through COM, with its hidden state and colours, removed by RemoveAt.
+  Part A's view is one of the baseline's per-clash views and part B's are .NET SavedViewpoints
+- the one-argument Remove(SavedItem) and Remove(GroupItem, SavedItem) on a nested viewpoint. 5z
+  found the first fails quietly on a nested set, and neither was called here
+- a whole folder in one call, which is P14, on `p13-remove-saved.nwf`
+- whether RemoveAt goes on the undo stack, and whether the Saved Viewpoints window shows the
+  change at once. Neither was read
+- why the saved file is 29,478 bytes smaller than the copy it opened
+- a reopen in a new Navisworks. The close was Document.Clear inside the same Navisworks
+- whether a removed view's name, reused by a later view in the same folder, finds anything of the
+  removed one. Not tried
+
+**WHAT THIS DECIDES.** By the row of P13, YES: removal is built. RemoveAt(parent, index), with the
+parent resolved fresh from RootItem by its names and the target re-found by its name just before,
+takes exactly the one viewpoint, leaves every other item with its folder, name, kind, Guid and
+comments, holds through a save and a reopen, and touches no model, set, test, result or status.
+The later siblings of the removed item each move one index lower, so an index read before a
+removal names another item after it, as 5z found on sets. That is why the design removes from the
+end within each parent and re-finds each target just before. A Guid set before AddCopy survives
+removals around it and a save, and ResolveGuid follows the item to its new index path.
+
+## 5z-v. DOES REMOVEAT TAKE A WHOLE FOLDER OF VIEWPOINTS IN ONE CALL, MEASURED 2026-10-07
+
+P14 of Q114, the views by team design, part 3. P13, 5z-u, found that RemoveAt(parent, index), the
+parent resolved fresh, takes one viewpoint and nothing else. F114 has 2813 per-clash views of F85's
+to remove from the baseline, 2617 of them in the one top level folder `AR vs AR`, 5z-n. The
+question: does RemoveAt(parent, index) on a FOLDER remove it with every view under it in one call,
+and how many seconds does that take for the AR vs AR folder of 2617? By the row of P14: Yes, a
+folder whose every item is the tool's goes in one call. No, one view at a time from the end, timed.
+The row works on P13's copy. P13 said YES, so the row runs.
+
+HOW. `tools\probes\ViewpointProbe\probe-folder-remove.ps1` is P13's `probe-view-remove.ps1` with the
+new mode `vpfolder` of `ViewpointProbe.dll` in place of `vpremove`, its own header, work folder
+prefix and save names. Nothing else in the script changed, F138's SwitchAutoSaveOff and the guard
+included. The branch was pulled first and was up to date at ccd661e. tools\loop\nw-guard.ps1 read
+sha256 E29D2733, the same as in P11 to P13, line 4. Get-Process Roamer read 0 before the run and 0
+after it. The probe copied P13's saved file,
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\view-remove-20261007-133308\p13-remove-saved.nwf`,
+41,287,793 bytes, sha256 24E44790, 2846 viewpoints, into the new folder
+`probes\folder-remove-20261007-140536`, and the mode, on that copy:
+
+1. PART A. Reads the whole saved viewpoint tree from RootItem, one row per item: index path,
+   folder names, name, kind, Guid and comment count, as P13 did. Counts models, sets, tests,
+   results and statuses a person set
+2. picks the top level folder holding the most viewpoints under it. No folder is named in the
+   code. It counts the rows under it off the tree
+3. reads RootItem fresh, re-finds the folder in it by its name, Ordinal, and calls
+   `DocumentSavedViewpoints.RemoveAt(root, index)`, timed by a Stopwatch around the call alone
+4. reads the tree again and compares it row by row, in tree order, with the tree at the open less
+   the folder and every row under it, where only the later siblings and the rows under them move
+   one lower at that level. Looks the folder up by its name
+5. saves into `p14-folder-saved.nwf` in the work folder, calls Document.Clear and TryOpenFile of the
+   saved file, reads the tree and the counts once more and compares with the tree after the
+   removal, exactly
+6. PART B, because every Guid of the baseline reads empty: in the reopened document adds `P14 probe`
+   at the root and in it `P14 keep` of 3 views, `P14 gone` of 12 views with `P14 gone inner` of 3
+   views after them, and `P14 after` of 2 views, 25 items, each with a Guid set before its AddCopy.
+   Removes `P14 gone` by one RemoveAt(parent, index), the parent resolved fresh by its name, timed.
+   Compares the tree, reads every Guid through ResolveGuid, the kept ones counted when they give
+   the item of their name at its index path and the removed ones when they give null, saves into
+   `p14-folder-saved-sentinels.nwf`, clears, reopens and reads again
+7. PART C, the other branch of the row, timed on the same folder: Document.Clear, TryOpenFile of the
+   untouched copy, the tree compared with the first open, then the folder's views removed one at a
+   time from the end, each round resolving the folder fresh by its name, reading the last child's
+   kind and calling RemoveAt(parent, last), capped at 600 s. Then the emptied folder by its own
+   RemoveAt, and the tree compared with part A's after its one call. Part C saves nothing
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-folder-remove.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p14-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\probes\view-remove-20261007-133308\p13-remove-saved.nwf
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+0 warnings and 0 errors, DLL sha256 8385AA5B, script sha256 9B3F4884, lines 24 and 3. One run at
+14:05, kept as `p14-folder-remove-result-20261007.txt`, the machine name on line 1 masked as
+`[machine]` and the account folder on line 5 as `%USERPROFILE%`, nothing else changed. Navisworks
+pid 37348, adopted on all four conditions, line 38. TryOpenFile of the copy returned True after
+5.034 s with 4 models, every one read from under the loop folder, lines 54 to 59. ExecuteAddInPlugin
+returned 0 after 41.79 s, line 48. Dispose returned and pid 37348 was gone 7.4 s later, not forced,
+line 127.
+
+**THE ANSWER: YES. ONE CALL TOOK THE AR VS AR FOLDER AND ALL 2617 VIEWPOINTS IN IT IN 0.174 S, AND
+NOTHING ELSE, AND IT HELD THROUGH A SAVE AND A REOPEN.** Lines 61 to 82 of the result:
+
+```
+                                     at the open   after RemoveAt   after save, clear, reopen
+items in the viewpoint tree                 2868              250                         250
+viewpoints                                  2846              229                         229
+folders                                       22               21                          21
+Guids not empty                                0                0                           0
+models, sets, tests, results,     4, 61, 528, 2939, 0    the same                    the same
+statuses a person set
+rows that differ from the expected tree                          0                           0
+the folder found by its name                 yes          nothing                     nothing
+P14 YES
+```
+
+1. THE TARGET. `AR vs AR`, the top level folder at index path 4, 2617 direct children, all
+   viewpoints, no folder under it, and 229 viewpoints elsewhere in the tree, line 64. The root read
+   fresh held 16 children and the name was found on 1 of them, a folder, at the same index the tree
+   read at the open, lines 65 and 67. The root read again after the call held 15, line 66
+2. ONE CALL, 0.174 S. RemoveAt(root, 4) returned after 0.174 s in the tree of 2846 viewpoints and
+   took 2618 items, the folder and its 2617 viewpoints, lines 65 and 81
+3. NOTHING ELSE MOVED BUT THE LATER SIBLINGS. After the call the tree read 250 rows, and row by row
+   in tree order every one had the same folder names, name, kind, Guid and comment count as the
+   tree at the open less the folder and its rows, 0 differing, line 71. The 11 later top level
+   folders and the rows under them, 212 rows, each read one lower at the top level, and no other index path changed,
+   lines 70 and 71
+4. IT HELD THROUGH A SAVE AND A REOPEN. After SaveFile, Document.Clear and TryOpenFile of the saved
+   file the tree read the same 250 rows, index paths included, 0 differing, line 78. The folder's
+   name found nothing after the call and after the reopen, lines 72 and 79
+5. NOTHING ELSE IN THE DOCUMENT CHANGED COUNT. 4 models, 61 sets, 528 tests, 2939 results and 0
+   statuses a person set at the open, after the call and after the reopen, lines 62, 69 and 77
+6. TWO DEEP, WITH A FOLDER INSIDE AND GUIDS SET, THE SAME. Part B, lines 84 to 102:
+
+```
+                                             items   viewpoints   Guids set   rows that differ   ResolveGuid
+after the adds of 5 folders and 20 views       275          249          25                  -   25 of 25 at their index path
+after one RemoveAt on P14 gone                 258          234           8                  0   8 of 8 kept found, 17 of 17 removed null
+after a save, a clear and a reopen             258          234           8                  0   8 of 8 kept found, 17 of 17 removed null
+P14 TWO DEEP WITH GUIDS SET YES
+```
+
+   `P14 gone` sat at index path 15.1 with 13 direct children and 15 viewpoints under it. One
+   RemoveAt took it, the 12 views, `P14 gone inner` and its 3 views, 17 items, in 0.002 s, line 88.
+   Only `P14 after` and its 2 views moved, one lower, line 92. `P14 keep` and its views kept their
+   index paths and Guids, lines 91, 93 and 99
+7. ONE AT A TIME FROM THE END COST 115 TIMES AS LONG. Part C, lines 104 to 120. The untouched copy
+   reopened read the same 2868 rows as the first open, 0 differing, line 108. The 2617 views of
+   AR vs AR went by 2617 calls of RemoveAt(parent, last), none threw, every item removed was a
+   viewpoint, line 109:
+
+```
+RemoveAt alone, 2617 calls        total 20.012 s   mean 0.007647 s   median 0.007474 s   least 0.001369 s   most 0.018294 s
+each round, the folder resolved
+fresh, the last child's kind
+read and RemoveAt                 total 20.063 s   mean 0.007667 s   wall time of the series 20.064 s
+the first 10 calls                mean 0.008074 s
+the last 10 calls                 mean 0.006359 s
+the emptied folder's own RemoveAt          0.007 s
+```
+
+   lines 110 to 115. After the series the tree read the open less the 2617 views with the folder
+   kept, 0 differing, line 114. After the emptied folder's own RemoveAt the tree read exactly part
+   A's after its one call, 0 differing, line 118. So the two routes end in the same tree, and one
+   call on the folder took 0.174 s against 20.064 s for the series, about 115 times faster. The
+   mean call in the series, 0.0076 s, is about 4 times P13's single call of 0.002 s in a tree of
+   2847. Why is UNKNOWN
+8. THE FILES. SaveFile after part A took 2.806 s and wrote 7,336,192 bytes, 33,951,601 fewer than
+   the 41,287,793 bytes of the copy opened, about 12,973 bytes for each of the 2617 viewpoints
+   removed, line 73. The reopen took 2.895 s against 5.034 s for the first open, lines 54 and 75.
+   The saved copies are
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\folder-remove-20261007-140536\p14-folder-saved.nwf`,
+   sha256 5617FD2F1C96EE3C6CB89FA271F86B74F2EC6B59135BE0E956C0A932B5ED52B4, line 122, holding 229
+   viewpoints and no AR vs AR, and `p14-folder-saved-sentinels.nwf` beside it, sha256
+   C028187432B13FCF3DFC84D9E9A15D195D3ED89BAEB5318AC65EDBA2C6D2C9A9, line 123, which also holds
+   part B's `P14 probe` with `P14 keep` and `P14 after`
+
+**THE CLOSE WAS RECORDED AS A CRASH.** Dispose returned after 0.89 s and pid 37348 was gone 7.4 s
+later, not forced, lines 126 and 127. But the put back read Navisworks' own counter
+`22.0\CER\22.5.1433.58 crashCount` gone from 40 to 41, line 170, with no change to
+SessionCleanCloseCount. In P11, P12 and P13 the same counters read SessionCleanCloseCount 93 to 94
+and no crashCount change. After the run the prober listed, read only, `%TEMP%\NavisWorksErrorReport.dmp`,
+3,018,030 bytes, sha256 475AE3C9, written 14:08:00, which is between Dispose and the process
+going, and created 2026-09-17 13:03:52. So that file was there before this run and Navisworks wrote
+over it as it closed. What it held before is UNKNOWN. The guard put crashCount back to 40 with the
+other values. Why this close crashed is UNKNOWN. One difference from P13 is seen and not tested:
+P14 left the document with part C's removals unsaved when Dispose was called, and P13 left it as
+just reopened.
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWF the copy was made from read sha256
+24E44790 at the start and at the end, lines 22 and 217. The guard wrote the Auto-Save switch "3 0"
+and read it back, line 28. The watchdog saw no other Navisworks, and the put back ran, line 168. 36
+registry values were put back, enable among them, line 173, and read again with 0 still differing,
+line 206. InfoCenter.log and LastSession.xml were put back reading their backups' sha256, lines 210
+and 211. The guard saw 0 AutoSave files added, changed or gone, line 213, and the tool's own logs
+folder had nothing added or changed, line 214. The prober read the switch and listed the AutoSave
+folder by name, size, write time and sha256 with `read-autosave-state.ps1`, kept in
+%LOCALAPPDATA%\NwcFederatorLoop\turn5 as `probe-p14-20261007-autosave-before.txt`, `-during.txt` and
+`-after.txt`: enable read String "0" at 14:05:12 before the start, "3 0" at 14:06:07 while the
+probe ran, and "0" at 14:08:38 after the put back, and the folder held the same 199 files with the
+same sizes, times and sha256 before and after, 0 lines differing.
+
+THE PROGRAMS. One Navisworks, pid 37348, started by the probe at 14:05:44, quit by Dispose and gone
+7.4 s after, not forced, lines 127 and 159. AdskLicensingAgent pid 37836, a child of pid 37348, read
+STILL RUNNING at the end of the probe, line 161, and Get-Process -Id 37836 found nothing when the
+prober read it after the run. AdskLicensingInstHelper pids 44616 and 14392 under GenuineService.exe
+read exited, lines 160 and 162. No Roamer that was not there in step 2 ran at the end, line 163.
+
+**STILL UNKNOWN.**
+
+- why this close was recorded as a crash and wrote NavisWorksErrorReport.dmp, and whether a folder
+  removal, part C's 2617 calls or a document left with unsaved removals causes it. Each was done
+  once in this run and none alone
+- why one call in part C's series took about 4 times P13's single call
+- a folder whose views the tool recorded through COM, with hidden state and colours. Part A's are
+  F85's per-clash views and part B's are .NET SavedViewpoints
+- a folder that holds a person's view among the tool's. The row decides one call only where every
+  item is the tool's, and no mixed folder was tried
+- whether RemoveAt goes on the undo stack, and whether the Saved Viewpoints window shows the change
+  at once. Neither was read
+- a reopen in a new Navisworks. The close was Document.Clear inside the same Navisworks
+- whether the 12,973 bytes per viewpoint holds for views the tool records
+
+**WHAT THIS DECIDES.** By the row of P14, YES: a folder whose every item is the tool's goes in one
+call. RemoveAt(parent, index) on a folder, with the parent read fresh and the folder re-found by its
+name just before, takes the folder and everything under it, folders inside included, leaves every
+other item with its folder, name, kind, Guid and comments, holds through a save and a reopen, and
+touches no model, set, test, result or status. Every Guid under the removed folder resolves to
+nothing after. On AR vs AR the one call took 0.174 s where one view at a time from the end took
+20.064 s and ended in the same tree.
+
+## 5z-w. DO THE VIEWPOINTS AND THEIR MARKS COME BACK THROUGH THE CLEAR AND REBUILD FALLBACK, NOT ANSWERED 2026-10-07
+
+P15 of Q114, the views by team design, part 3. The question: after DocumentSavedViewpoints.CreateCopy,
+Document.Clear, the appends and CopyFrom, does every viewpoint come back with its comments and its
+Guid? By the row of P15: Yes, FR-067's fallback copies the viewpoints and the marks hold. No, the
+fallback keeps refusing to save as today, and a rebuilt group's marks are named as lost.
+
+Written up on 2026-10-07 by the prober of P16 from the two runs' files, as they stand. The prober of
+P15 stopped on the guard's refused put back and wrote no section and committed nothing. Nothing below
+was run again.
+
+HOW. `tools\probes\ViewpointProbe\probe-rebuild-views.ps1`, sha256 E817D8E0, is P14's
+`probe-folder-remove.ps1` with the new mode `vprebuild` of `ViewpointProbe.dll`, the method
+MeasureRebuildViews, its own header, work folder prefix and save names. The guard is the same,
+tools\loop\nw-guard.ps1 sha256 E29D2733, line 4. It works on a fresh copy of run set 03's
+`runs\03\NMFed\NWF\C06\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf`, 173,526 bytes, sha256 EAB49AEF, line 22.
+Part 1 marks the copy the way Q114's design marks the tool's views, saves it as `p15-marked.nwf`,
+clears and reopens it. Part 2 runs FederationEngine's clear and rebuild in its order, and part 3 was to
+save the rebuilt document, clear, reopen it and read every item again. Run as
+
+    powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-rebuild-views.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p15b-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\03\NMFed\NWF\C06\1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf
+
+TWO RUNS, BOTH ENDED IN A NAVISWORKS FAILURE.
+
+- RUN 1 at 14:43, work folder `probes\rebuild-views-20261007-144356`. Its plugin output ends at
+  14:46:06.242 with `Document.Clear took 0.099 s, models now 0, viewpoints now 0`. The next step read
+  the viewpoints copy after the clear, and nothing more was written. A WerFault, pid 46072, was seen
+  at 14:46:17, and ExecuteAddInPlugin threw `Error calling method: -2147417851` after 139.28 s,
+  probe-p15-result.txt lines 48 and 78. Its result is kept in turn5 and is not committed
+- RUN 2 at 14:59, work folder `probes\rebuild-views-20261007-145943`. The only change is that the
+  plugin no longer reads the copy after Document.Clear, plugin output line 42. Its result and its
+  plugin output, the machine name and the account folder masked and nothing else changed, are
+  `p15-rebuild-views-result-20261007.txt` and `p15-rebuild-views-plugin-output-20261007.txt`. The
+  plugin output was copied after the run, because the guard's script could not read it while
+  Navisworks held it, result line 53. The lines below are of those two files
+
+The probe as it ran is committed as it stood after run 2: `ViewpointProbePlugin.cs` with the mode
+vprebuild, built at 14:58:47 into `ViewpointProbe.dll` sha256 7FAF0E7D, result line 24, and the script
+above.
+
+**THE ANSWER: NOT ANSWERED. WHETHER THE COMMENTS AND THE GUIDS COME BACK IS UNKNOWN.** What run 2
+measured, plugin output lines 11 to 53:
+
+```
+                                                  views  folders  comments  Guids set   models sets tests results
+the marked copy reopened, before the copy            36       10         4          2        4   61   153      37
+the viewpoints copy, before the clear, 0 rows differ 36       10         4          2
+Document.Clear, 0.112 s                               0                                       0
+after the 4 TryAppendFile calls, each True           17        4         0          0        4    0     0       0
+after the CopyFrom of the sets and of the tests      17                                       4   61   153      37
+after DocumentSavedViewpoints.CopyFrom, 0.005 s      36                                       4   61   153      37
+```
+
+1. PART 1 HELD. The marks were written and read back after a save, a clear and a reopen: a COM view
+   with model 0 hidden and a pair painted, marked by AddComment, its folder marked, a .NET view with
+   its Guid set and two comments, and a plain view. ResolveGuid found 2 of 2, lines 13 to 35
+2. THE COPIES RETURNED. CreateCopy of the tests, the sets and the viewpoints returned in 0.001 s,
+   0.001 s and 0.000 s, and the viewpoints copy read 46 of 46 rows the same as the document before the
+   clear, lines 36 to 40
+3. THE APPENDS BROUGHT 17 VIEWS OF THEIR OWN. After the clear and the 4 appends the document held 17
+   viewpoints in 4 folders, with no comment and no Guid, line 48. Those are the views the NWCs carry
+4. COPYFROM LEFT 36. After DocumentSavedViewpoints.CopyFrom the document read 36 viewpoints, the
+   count before the copy and not 17 plus 36, line 53. That is consistent with CopyFrom replacing what
+   the appends brought. It is read off the count alone and not item by item
+5. THEN NAVISWORKS FAILED. The next step walks the document's own tree after CopyFrom, reading each
+   item's name, Guid, comments, Hidden count and first hidden items and MaterialOverrides count. No line
+   of that walk was written. A WerFault, pid 51252, a child of the probe's Roamer 49280, was seen at
+   15:01:36, result line 79, and ExecuteAddInPlugin threw `Error calling method: -2147417851` after
+   94.74 s, line 48. The save, the clear and the reopen of the rebuilt file never ran
+
+Both runs failed at the same kind of step, the first read of viewpoint items after a Document.Clear
+that were copied out before it: in run 1 the copy itself, in run 2 the document after CopyFrom put the
+copy back. Which read fails is UNKNOWN.
+
+**BADER'S THINGS.** The guard refused the put back in both runs, because a Roamer was seen at one
+watchdog pass with no readable start time, pid 48540 in run 1 and pid 3976 in run 2, result lines 96 and 97,
+and it cannot be shown to be the adopted one. 36 registry values differed and were not written, the
+Auto-Save switch among them, left at "3 0", lines 98 to 137 of run 2's result. The AutoSave folder had
+0 files added, changed or gone, line 141. The NWF the copy was made from read sha256 EAB49AEF at the
+start and the end, lines 22 and 145. Steps\history\log.md on main, commit dc80e2b, records his settings put
+back after the first crash. On 2026-10-07 at 15:22 the prober of P16 read the switch as String "0"
+and the AutoSave folder as the same 199 files, names, sizes, times and sha256, as before run 2, in
+`turn5\probe-p16-20261007-autosave-precheck.txt`. Who put the switch back after run 2 is not in any
+file this section read.
+
+THE PROGRAMS. In run 2 Roamer pid 49280 was started by the probe and adopted on all four conditions,
+line 38, never reached Dispose, and was closed through the held handle by its own pid and read gone,
+line 56. Roamer 3976 was seen once at 15:01:31, line 78, and no Roamer that was not there in step 2 ran at
+the end, line 91.
+
+**STILL UNKNOWN.**
+
+- whether the comments and the Guids are on the views after CopyFrom
+- which property read fails after a Document.Clear: DisplayName, Guid, Comments,
+  GetVisibilityOverrides().Hidden and its items, or the material count
+- whether the rebuilt document saves, and whether the views hold through a reopen
+- whether the engine itself would fail. It does not walk the views after a fallback today, and
+  F114's VIEWS TREE read would
+- what Roamers 48540 and 3976 were. Each was seen once with no readable start time, as Navisworks
+  was failing
+
+**WHAT THIS DECIDES.** Nothing yet. The row of P15 is not answered, so FR-067's fallback is not known
+to keep the marks. A next run would read the count and the names first, then each property in its own
+call, writing a line before each read, to name the read that fails.
+
+## 5z-x. DOES ZOOMBOX ON THE FIRST CLASH'S CAMERA FRAME EVERY OPEN CLASH OF A TEST, MEASURED 2026-10-07
+
+P16 of Q114, the views by team design, part 3. The question: does Viewpoint.ZoomBox on a copy of the
+first open clash's camera, with the box of the test's open clash centres padded by the margin, keep
+the view direction and put every centre inside the recorded view after a reopen, each centre
+projected with the window's HeightField, 5m? By the row of P16: Yes, FramingBox and ZoomBox. The
+direction changes but every centre is in: used, and the change said. No: ViewFraming's arithmetic is
+built and probed the same way. Neither: the view keeps its first clash's camera, VIEWS TREE says it is
+not framed on all its clashes, and Bader is told point 13 is at risk. The row depends on P5, which
+said YES, 5z-h, so it runs.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-framing.ps1` is P14's `probe-folder-remove.ps1` with the
+new mode `vpframe` of `ViewpointProbe.dll`, the method MeasureFraming, a parameter `-MarginMm` handed
+on to the mode, and the plugin's output read with the file shared, because P15's script could not read
+it while a failing Navisworks held it, 5z-w. Nothing else in the script changed, F138's
+SwitchAutoSaveOff and the guard included. The branch was pulled first, up to date at 5f6d0f0, and P15's
+leftovers were committed as 5871d64 before this probe was written. tools\loop\nw-guard.ps1 read sha256
+E29D2733, line 4. Get-Process Roamer read 0 before the run and 0 after it. The probe copied the
+baseline `runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`, 41,317,271 bytes, sha256
+0944C100, into the new folder `probes\view-framing-20261007-155007`, line 22, and the mode, on that
+copy:
+
+1. reads every test and counts its results and its open results, open being New or Active, the
+   design's ViewStatuses. It takes the test with the most open clashes and the test with the fewest
+   open clashes above one. No test is named in the code
+2. for each, walks the results in tree order, reads every open result's Center, and takes the first
+   open result's camera from `DocumentClashTests.TestsViewpointForResult`, copied by CreateCopy
+3. builds the box over the open centres, each side padded by the margin turned into document units, by
+   `new BoundingBox3D(Point3D, Point3D)`, and calls `ZoomBox(box)` on a copy of that camera
+4. reads both cameras: position, rotation, the direction and up turned from (0, 0, -1) and (0, 1, 0)
+   by the rotation, HeightField, AspectRatio, projection, focal distance and the extents at it.
+   Counts the centres inside each, a centre being inside when it is in front of the camera and the
+   tangent of its angle off the axis is within half the field up and down and aspect times that
+   across, and prints the largest reach, 1 being the edge
+5. records the zoomed camera and the first clash's own camera through the COM view, the tool's route,
+   5m, into a folder `P16 probe` at the root, and reads each back
+6. saves into `p16-framed.nwf` in the work folder, calls Document.Clear and TryOpenFile of the saved
+   file, reads every open centre again, then reads each view as recorded, presses it through
+   CurrentSavedViewpoint, reads the window's camera off Document.CurrentViewpoint, and counts the
+   centres inside with the window's position, direction, field and aspect
+
+The margin is 500 mm, chosen for this probe and not measured, the design's FramingMarginMillimetres
+having no value yet. Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-framing.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p16-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf -MarginMm 500
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+0 warnings and 0 errors, DLL sha256 051157AC, script sha256 00CF5B4A, lines 24 and 3. One run at
+15:50, kept as `p16-view-framing-result-20261007.txt`, the machine name on line 1 masked as
+`[machine]` and the account folder on line 5 as `%USERPROFILE%`, nothing else changed. Navisworks pid
+40876, adopted on all four conditions, line 38. TryOpenFile of the copy returned True after 4.293 s
+with 4 models, every one read from under the loop folder, lines 54 to 59. ExecuteAddInPlugin returned
+0 after 43.16 s, line 48. Dispose returned and pid 40876 was gone 8.5 s later, not forced, line 158.
+
+**THE ANSWER: YES. ZOOMBOX KEPT THE VIEW DIRECTION EXACTLY AND PUT ALL 2568 OPEN CENTRES OF BLD-AR-CURTAIN
+MULLIONS-VS-BLD-AR-WINDOWS INSIDE THE VIEW, AND IT HELD THROUGH A SAVE, A REOPEN AND A PRESS IN THE
+WINDOW.** Lines 63 to 152 of the result:
+
+```
+                                         open    in view on the     in view, zoomed,   in view, zoomed view    largest reach,
+                                      centres    first clash's       before the save    pressed in the window   1 is the edge
+                                                 camera                                 after the reopen
+many  BLD-AR-Curtain Mullions-          2568     114, 1514 behind        2568                 2568                  0.933344
+      vs-BLD-AR-Windows
+few   BLD-ST-Floors-vs-BLD-ST-Framing      2     2                       2                    2                     0.450532
+
+direction moved by ZoomBox, both tests                     0.0000 deg, up 0.0000 deg
+direction, first clash's camera to the window after the reopen, both tests    0.0000 deg
+P16 YES
+```
+
+1. THE TESTS. 528 tests, 469 with no open clash, 11 with one and 48 with two or more, line 63. The
+   test of most open clashes is BLD-AR-Curtain Mullions-vs-BLD-AR-Windows, 2568 results, all 2568
+   open, line 64, the test the row names. The test of fewest above one is BLD-ST-Floors-vs-BLD-ST-
+   Framing, 2 results, both open, line 65
+2. THE CONVENTION IS MEASURED. On both first clash cameras the first clash's own centre lies 0.0000 deg
+   off the axis turned from (0, 0, -1), by the rotation read as an axis and an angle and as a
+   quaternion with A, B and C its vector part and D its scalar, the two agreeing to 0.0000 deg, lines
+   72 and 88. So a camera looks along its rotation of (0, 0, -1), and TestsViewpointForResult points it
+   straight at the clash. Every count below rests on that. Both cameras read field 0.785398, the
+   field the extents at the focal distance imply, and AspectRatio 2.635569, equal to the extents'
+   horizontal over vertical, lines 71 and 87. So HeightField is the full vertical angle in radians
+3. THE FIRST CLASH'S CAMERA ALONE FRAMES 114 OF 2568. The fallback of the row, the view keeping its
+   first clash's camera, shows 114 of the many test's open centres, with 1514 behind the camera, line
+   73, and the same 114 when pressed after the reopen, line 124. On the few test it shows both, line 89
+4. ZOOMBOX MOVES THE CAMERA BACK ALONG ITS OWN AXIS AND CHANGES NOTHING ELSE READ. On the many test the
+   box was 101.932 by 101.824 by 91.547 units, line 74. ZoomBox returned in 0.001 s, line 75, and moved
+   the position 229.139 units, with the direction, the up, the field and the aspect the same to 0.0000
+   deg and to six places, lines 76 and 77. It left the focal distance at 3.729, the first clash's,
+   line 76. On the few test it moved the position 105.049 units and nothing else, lines 92 and 93
+5. EVERY CENTRE IN. The zoomed camera holds 2568 of 2568, the largest reach 0.933344 up and down and
+   0.350665 across, line 78, and 2 of 2 on the few test, reach 0.450532, line 94
+6. IT HELD THROUGH THE RECORD, A SAVE, A REOPEN AND A PRESS. Each view read back off its folder with
+   the position moved 0 and the direction 0.0000 deg, lines 80, 82, 96 and 98. After SaveFile, 7.941 s,
+   line 101, Document.Clear and TryOpenFile of the saved file, the open centres read the same 2568 and
+   2 in the same order, a largest difference of 0, lines 107 and 132. Pressed, the window's camera read
+   the recorded position, direction, field and aspect exactly, and held 2568 of 2568 and 2 of 2, lines
+   110 to 113 and 135 to 138. The five centres nearest the edge on the many test all lie at X 130.756,
+   reach 0.885 to 0.933, lines 114 to 118
+7. THE WINDOW'S FIELD WAS THE RECORDED ONE IN THIS RUN. 5m read the window's field 0.953 after pressing
+   a view given 0.785. Here the window read 0.785398 and the aspect 2.635569 on every press, the values
+   the clash camera came with, lines 112, 123, 137 and 145. Whether a window of another shape or size
+   shows the same is UNKNOWN. Off the numbers above, and only if Navisworks holds the vertical field
+   when the window's shape changes, which is UNKNOWN, the many test's view stays whole across in any
+   window of aspect at or above 0.924, 0.350665 times 2.635569, and up and down it has 7 per cent to
+   spare
+8. WHAT THE RECORD COST. Each of the 4 views took 6.143 s to 6.737 s to record through the COM view
+   into its folder in a tree of 2847 viewpoints, lines 79, 81, 95 and 97, where ZoomBox took 0.001 s.
+   That is read once per view and is not P18's measurement of the per view sequence
+9. THE DOCUMENT. 4 models, 61 sets, 528 tests, 2939 results and 0 statuses a person set at the open
+   and after the reopen, viewpoints 2847 then 2851, the 4 the probe recorded, lines 62, 100 and 104.
+   The document is in feet, line 60. The saved copy is
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-framing-20261007-155007\p16-framed.nwf`, 41,317,755
+   bytes, sha256 9DC99432238D1CBFD6183E39D0B16258C386DEB9E999E47BEC06D2B1A1E5FD6E, line 154. It holds
+   the folder `P16 probe` with `P16 many framed`, `P16 many first clash camera`, `P16 few framed` and
+   `P16 few first clash camera`
+
+**BADER'S HAND STEP IS NOT DONE.** The row has Bader press both views by hand as one step. Nothing here
+shows what the picture on his screen looks like. The four views above are the ones to press, in the
+saved copy named in item 9, never in NM Fed.
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWF the copy was made from read sha256
+0944C100 at the start and at the end, lines 22 and 252. The guard wrote the Auto-Save switch "3 0" and
+read it back, line 28. The watchdog saw no other Navisworks, and the put back ran, line 201. 38
+registry values were put back, enable among them, line 206, and read again with 0 still differing,
+line 241. SessionCleanCloseCount went 93 to 94 and no crashCount changed, line 203, so this close was
+not recorded as a crash. InfoCenter.log and LastSession.xml were put back reading their backups'
+sha256, lines 245 and 246. The guard saw 0 AutoSave files added, changed or gone, line 248, and the
+tool's own logs folder had nothing added or changed, line 249. The prober read the switch and listed
+the AutoSave folder by name, size, write time and sha256 with `read-autosave-state.ps1`, kept in
+%LOCALAPPDATA%\NwcFederatorLoop\turn5 as `probe-p16-20261007-autosave-before.txt`, `-during.txt` and
+`-after.txt`: enable read String "0" at 15:49:44 before the start, "3 0" at 15:50:49 while the probe
+ran, and "0" at 15:53:21 after the put back, and the folder held the same 199 files with the same
+sizes, times and sha256 before and after, 0 lines differing.
+
+THE PROGRAMS. One Navisworks, pid 40876, started by the probe at 15:50:14, quit by Dispose and gone 8.5
+s after, not forced, lines 158 and 161. AdskLicensingAgent pid 51192, a child of pid 40876, and
+AdskLicensingInstHelper pids 41036 and 5088 under GenuineService.exe all read exited, lines 193 to
+195. No Roamer that was not there in step 2 ran at the end, line 196.
+
+**STILL UNKNOWN.**
+
+- what the views look like on Bader's screen. His hand step has not run
+- whether a window of another shape or size changes the field or the aspect a pressed view shows,
+  and so whether a centre near the edge, reach 0.933, leaves the picture. This run's window read the
+  recorded values. 5m's did not
+- whether a centre inside the view is also in front of the near clipping plane, and whether the clash
+  is drawn and not hidden behind other geometry. Only the centre was projected, not the items
+- why ZoomBox leaves the focal distance at the first clash's value, and what that does to orbiting
+  in the pressed view
+- why one COM record took 6.1 s to 6.7 s here. P18 measures the per view sequence
+- a test whose open clashes are spread so wide that the view from the first clash's direction sees
+  them edge on. Two tests were tried, both from the same direction, (-0.577, 0.577, -0.577)
+- a margin other than 500 mm
+- that Center and the camera are in the document's units, feet here. The margin was turned into feet on
+  that assumption, and it was not read
+
+**WHAT THIS DECIDES.** By the row of P16, YES: FramingBox and ZoomBox. A copy of the first open
+clash's camera from TestsViewpointForResult, zoomed to the box of the test's open clash centres padded
+by the margin, keeps the clash camera's direction, up, field and aspect exactly, moves only back along
+its own axis, and holds every open centre in view through the COM record, a save, a reopen and a press.
+ViewFraming's camera arithmetic is not built.
+
+## 5z-y. DO ONE RESET AND ONE PAINT PER COLOUR OVER EVERY CLASHING ITEM OF A TEST RECORD INTO ONE VIEW, MEASURED 2026-10-07
+
+P17 of Q114, the views by team design, part 3. The question: do one ResetTemporaryMaterials over every
+clashing item and one OverrideTemporaryColor per colour over the red and the green items of the
+2568-clash test record into one view where every item reads back with the colour it will show, and
+what are the seconds of each call and the NWF's bytes after a save? By the row of P17: Yes, one call
+per colour per view. No, the calls go in chunks of a size that is a setting, and P17 runs again with
+it. The row depends on no other probe.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-paint.ps1` is P16's `probe-view-framing.ps1` with the new
+mode `vppaint` of `ViewpointProbe.dll`, the method MeasurePaint, its own header, the work folder prefix
+`view-paint` and the save name `p17-painted.nwf`. Nothing else in the script changed, the guard and
+F138's SwitchAutoSaveOff included. tools\loop\nw-guard.ps1 read sha256 E29D2733, line 4. The branch
+was pulled first, up to date at f8ed445. Get-Process Roamer read 0 before each run and 0 after. The
+probe copied the baseline `runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`, 41,317,271
+bytes, sha256 0944C100, into a new work folder, line 22, and the mode, on that copy:
+
+1. reads every test and takes the one with the most open clashes, open being New or Active, the
+   design's ViewStatuses. No test is named in the code
+2. walks its open results and reads each one's Item1 and Item2 index paths. Red is every distinct
+   first item, green every distinct second item not already red, solid all of them, the design's
+   PaintPlan. Each item's home model is the model whose root index path is a prefix of the item's
+3. reads every item's OriginalColor and OriginalTransparency, makes the folder `P17 probe` at the
+   root and saves the copy as `p17-plain.nwf`, so the next save differs from it by the one view
+4. hides the models holding no clashing item by SetHidden on their roots, dims the others' roots by
+   OverrideTemporaryTransparency 0.85, resolves every item once into three ModelItemCollections,
+   then calls ResetTemporaryMaterials ONCE over the solid collection, OverrideTemporaryColor (1,0,0)
+   ONCE over the red and OverrideTemporaryColor (0,1,0) ONCE over the green, each call timed
+5. reads every item's ActiveColor and ActiveTransparency live, and every other geometry item of the
+   shown models' ActiveTransparency
+6. records one view, `P17 painted`, through the COM view with ApplyHideAttribs and ApplyMaterialAttribs
+   true into the folder, on the first open clash's camera zoomed to the open centres padded by 500 mm
+   as in 5z-x, and reads what the view WILL SHOW for each item, 5p: the colour and transparency of the
+   view's own MaterialOverride where it names the item, the item's own where it does not
+7. undoes the overrides and the hiding, saves as `p17-painted.nwf`, calls Document.Clear and
+   TryOpenFile of the saved file, reads the view the same way again, presses it through
+   CurrentSavedViewpoint and reads every item live again
+
+An item is judged right when its colour is within 0.001 of (1,0,0) for red or (0,1,0) for green on
+each channel, and solid when its transparency is within 0.001 of its own OriginalTransparency. Run
+from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-paint.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p17-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf -MarginMm 500
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+0 warnings and 0 errors, script sha256 9C24A188, line 3.
+
+TWO RUNS. Both are committed, the machine name on line 1 masked as `[machine]` and the account folder
+on line 5 as `%USERPROFILE%`, nothing else changed.
+
+- RUN 1 at 16:20, `p17-view-paint-run1-result-20261007.txt`, DLL sha256 29B10692, work folder
+  `probes\view-paint-20261007-162024`, Navisworks pid 42692. Everything ran, but the read off the
+  view threw NullReferenceException before the save and after the reopen, lines 84 and 91, so it
+  ended P17 UNKNOWN, line 99. Its three calls, its live reads and its bytes read as run 2's do
+- RUN 2 at 16:25, `p17-view-paint-result-20261007.txt`, DLL sha256 404B9295, line 24, work folder
+  `probes\view-paint-20261007-162544`, Navisworks pid 43860 adopted on all four conditions, line 38.
+  The only change to the mode: the read off the view reads MaterialOverride.Color as possibly null,
+  and catches a throw per entry and counts it. ExecuteAddInPlugin returned 0 after 34.26 s, line 48.
+  Dispose returned and pid 43860 was gone 7.7 s later, not forced, line 109. The lines below are run 2's
+
+**THE ANSWER: YES. ONE RESET OVER 2423 ITEMS AND ONE PAINT PER COLOUR, 2335 RED AND 88 GREEN, RECORDED
+INTO ONE VIEW WHERE EVERY ITEM READS BACK RED OR GREEN AND SOLID, LIVE, OFF THE VIEW, AND AFTER A SAVE,
+A REOPEN AND A PRESS.** Lines 63 to 103 of the result:
+
+```
+the test BLD-AR-Curtain Mullions-vs-BLD-AR-Windows    results 2568, open 2568, 0 sides read null
+red, distinct first items                              2335
+green, distinct second items not already red             88    (no second item was first in any clash)
+solid, all of them                                     2423    resolved 2423, without geometry 0
+shown and dimmed: model 0, the AR model                hidden: models 1, 2 and 3
+
+SetHidden on 3 model roots                                         0.050 s
+OverrideTemporaryTransparency 0.85 on 1 root                       0.004 s
+ResolveIndexPath of 2423 items into 3 collections                  0.016 s
+ResetTemporaryMaterials, ONE call over 2423 items                  0.005 s
+OverrideTemporaryColor (1,0,0), ONE call over 2335 items           0.003 s
+OverrideTemporaryColor (0,1,0), ONE call over 88 items             0.000 s
+the COM record of the view, a tree of 2847 viewpoints              6.487 s
+
+                                      red right and solid   green right and solid   the rest of model 0 at 0.85
+live, before the record                    2335 of 2335            88 of 88                730 of 730
+off the view, before the save              2335 of 2335            88 of 88
+off the view, after the reopen             2335 of 2335            88 of 88
+live, the view pressed after the reopen    2335 of 2335            88 of 88                730 of 730
+
+p17-plain.nwf, the empty folder and no view      41,317,276 bytes, SaveFile 8.799 s
+p17-painted.nwf, the one painted view            41,329,885 bytes, SaveFile 8.243 s, 12,609 bytes more
+P17 YES
+```
+
+1. THE TEST. 528 tests, and the one of most open clashes is BLD-AR-Curtain Mullions-vs-BLD-AR-Windows,
+   2568 results, all open, line 63, the test the row names. Its 2568 open clashes name 2335 distinct
+   first items and 88 distinct second items, and no second item is first in another clash, line 65.
+   Every item resolves and has geometry, none of them is already red or green, and 88 carry their own
+   transparency above 0, line 67. Every item lives in model 0, the AR model, so the view shows and
+   dims that one and hides the other 3, line 66
+2. THE CALLS. ResetTemporaryMaterials over 2423 items returned in 0.005 s, OverrideTemporaryColor
+   over 2335 in 0.003 s and over 88 in 0.000 s, lines 76 to 78. Resolving the 2423 index paths into
+   the collections took 0.016 s, line 75. 5o measured the reset on 2 items in 0 ms and 5p the paint on
+   1. Here neither cost grew past a few milliseconds at a thousand times the items
+3. LIVE. Every red item read ActiveColor (1,0,0) and every green (0,1,0), each at its own
+   transparency, none at 0.85, and all 730 other geometry items of model 0 read 0.85, lines 80 to 82
+4. THE RECORD. The view took 6.487 s through the COM view into a tree of 2847, line 83, the same
+   order as P16's 6.1 s to 6.7 s, 5z-x, against 0.024 s for the whole sequence before it
+5. WHAT THE VIEW HOLDS. 3153 MaterialOverrides, one per item, walked in 0.033 s: 2335 with colour
+   (1,0,0), 88 with (0,1,0), both with no transparency, and 730 at 0.85 with NO COLOUR, Color reading
+   null. Hidden reads 3, the three model roots, line 84. Every red and green item is named by the view
+   with its colour, so none fell to 5p's case of an item already the colour it is given, lines 85 and 86
+6. THROUGH THE SAVE AND THE REOPEN. After SaveFile, Document.Clear and TryOpenFile the document read
+   the same 4 models, 61 sets, 528 tests and 2939 results, and 2848 viewpoints, the one the probe
+   recorded more, line 92. The view read the same 3153 overrides, 730 with no colour and Hidden 3,
+   line 93, and every red and green item right and solid, lines 94 and 95. Pressed, every item read
+   live right and solid and the other 730 at 0.85, lines 96 to 100
+7. THE BYTES. The same copy saved by the same session with the empty folder is 41,317,276 bytes, and
+   with the one painted view 41,329,885 bytes, 12,609 more, lines 70 and 89. That is one view of
+   3153 overrides and 3 hidden roots, read once
+
+**A NULL COLOUR ON A DIM ENTRY.** A MaterialOverride written by the dim alone reads Color null in this
+API, 730 of 730 here, before the save and after the reopen. Run 1's read off the view threw
+NullReferenceException with Color read as never null, and run 2, whose only change was to allow it and
+count it, read 730 such entries and 0 throws. That is consistent with the null Color being run 1's
+throw, and run 1 printed no stack, so it is not proved. The design's read back walks MaterialOverrides
+"into a lookup for Item and Color", part 2. Such a walk meets these entries on every view that dims.
+The add-in today reads Color only on the entry that names a clashing item, which carries a colour here.
+This is information, and nothing was changed outside tools\probes.
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD, IN BOTH RUNS.** The NWF the copy was made from read
+sha256 0944C100 at the start and the end, lines 22 and 208. The guard wrote the Auto-Save switch
+"3 0" and read it back, line 28. The watchdog saw no other Navisworks, and the put back ran. 38
+registry values were put back, enable among them, line 162, and read again with 0 still differing,
+line 197. SessionCleanCloseCount went 93 to 94, line 159, a clean close. InfoCenter.log and
+LastSession.xml were put back reading their backups' sha256, lines 201 and 202. The guard saw 0
+AutoSave files added, changed or gone, line 204, and the tool's own logs folder had nothing added or
+changed, line 205. Run 1's result reads the same on each of these. The prober read the switch and listed
+the AutoSave folder by name, size, write time and sha256 with `read-autosave-state.ps1`, kept in
+%LOCALAPPDATA%\NwcFederatorLoop\turn5: for run 1 `probe-p17-run1-20261007-autosave-before.txt`,
+`-during.txt` and `-after.txt`, enable String "0" at 16:20:07, "3 0" at 16:22:23 and "0" at 16:23:26,
+and for run 2 `probe-p17-20261007-autosave-before.txt`, `-during.txt` and `-after.txt`, "0" at
+16:25:28, "3 0" at 16:27:35 and "0" at 16:28:31. The folder held the same 199 files with the same
+names, sizes, times and sha256 at all six reads, 0 lines differing between the first and the last.
+
+THE PROGRAMS. Run 1: Navisworks pid 42692, started by the probe at 16:20:33, quit by Dispose and gone
+8.8 s after, not forced. Run 2: Navisworks pid 43860, started by the probe at 16:25:50, quit by Dispose
+and gone 7.7 s after, not forced, line 109. In run 2 AdskLicensingAgent pids 41992 and 37176, children
+of 43860, and AdskLicensingInstHelper pids 52092 and 35056 under GenuineService.exe were seen, lines
+120 to 134. 37176, 52092 and 35056 read exited, and 41992's start time could not be read when it was
+seen, line 149. Get-Process -Id 41992 read no process after the run. No Roamer that was not there in
+step 2 ran at the end of either run, line 152.
+
+**STILL UNKNOWN.**
+
+- the picture on Bader's screen. No hand step was asked by the row, and nothing here looked at the
+  window. The saved copy with the view is
+  `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-paint-20261007-162544\p17-painted.nwf`, 41,329,885
+  bytes, sha256 02F815C814EF66CF698CF963CA53F781849D631EFD515135609EC30AEA8C019B, line 105, the view
+  `P17 painted` in the folder `P17 probe`
+- a test whose items span more than one model, or a third team's model. Every item here lived in the
+  AR model, so one root was dimmed and three hidden
+- an item that is already red or green, 5p's case. None here was
+- an item without geometry, or a clash item that is a composite above its geometry. None here was
+- how the bytes grow with the number of views and with a view that shows more models. One view was
+  read. So whether the NWF shrinks with 59 to 109 such views in place of 2813, part 8 item 16, is
+  still UNKNOWN. A view here cost 12,609 bytes with 3153 overrides
+- why the COM record takes over 6 s in this tree. P18 measures the per view sequence
+- whether run 1's NullReferenceException was the null Color. Run 1 printed no stack
+
+**WHAT THIS DECIDES.** By the row of P17, YES: one call per colour per view. One ResetTemporaryMaterials
+over every clashing item and one OverrideTemporaryColor over the red and one over the green, on 2423
+items, each returned in at most 5 ms, and the view recorded every item with the colour and the
+solidity it was given, through a save, a reopen and a press. No chunk size setting is built.
+
+## 5z-z. HOW MANY SECONDS THE WHOLE PER VIEW SEQUENCE TAKES, IN THE TREE OF 2847 AND AFTER THE 2813 ARE REMOVED, MEASURED 2026-10-07
+
+P18 of Q114, the views by team design, part 3, with P19 riding in it. The question: how many seconds
+does one per-test view take, the whole sequence of hide, dim, paint, frame, record, mark and read back,
+ten views into the copy holding 2847 viewpoints and the same ten into that copy after the 2813 per-clash
+views of F85 are removed? By the row of P18, part 6 of the design is rewritten with this rate before
+any add-in code, and it decides B8's cost. P19: does a recorded view's Hidden collection read back as
+the hidden model roots, each giving its Model.FileName? Yes: check 3 reads the shown models off the NWF.
+No: check 3 reads the plan's list and the block says so. Neither row hangs on another probe's answer.
+P18 uses the routes P9 (the mark by AddComment), P14 (a folder in one RemoveAt), P16 (ZoomBox) and P17
+(one reset and one paint per colour) found, and each of those said YES.
+
+HOW. `tools\probes\ViewpointProbe\probe-view-rate.ps1` is P17's `probe-view-paint.ps1` with the new mode
+`vprate` of `ViewpointProbe.dll`, the method MeasureViewRate, its own header, the work folder prefix
+`view-rate` and the save name `p18-rate.nwf`. Nothing else in the script changed, the guard and F138's
+SwitchAutoSaveOff included. tools\loop\nw-guard.ps1 read sha256 E29D2733, line 4. The branch was pulled
+first, up to date at 64c9872. Get-Process Roamer read 0 before the run and 0 after it. The row names
+P13's copy, which was a fresh copy of the baseline, so the probe copied the same baseline,
+`runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf`, 41,317,271 bytes, sha256 0944C100, into the
+new folder `probes\view-rate-20261007-170120`, line 22, and the mode, on that copy:
+
+1. reads every test and takes the 10 of the most open clashes, open being New or Active, the design's
+   ViewStatuses, ties by name Ordinal. No test is named in the code
+2. WALK ONE, once per test and in no view's seconds: the open results' first and second items and
+   centres, the first open clash's camera from TestsViewpointForResult, copied, the paint plan as P17's
+   (red every distinct first item, green every distinct second item not already red), and each item's
+   home model. The homes are shown and dimmed and the other models hidden. That is a simplification of
+   ShownModels, which needs the team map
+3. ROUND A, into the tree as it opened. A folder `P18 probe A` at the root, made and marked once a round.
+   Then per view, each part timed by its own Stopwatch and the whole by another:
+   - undim: ResetTemporaryMaterials on the roots the view before dimmed
+   - hide: ResetAllHidden and SetHidden on the hidden roots, skipped when the shown list equals the
+     view before's
+   - dim: OverrideTemporaryTransparency 0.85 on the shown roots
+   - resolve: ResolveIndexPath per item into three ModelItemCollections
+   - paint: one ResetTemporaryMaterials over every item, one OverrideTemporaryColor red, one green
+   - frame: a copy of the clash camera, and ZoomBox on the box of the open centres padded by 500 mm
+     where there are two or more, as 5z-x
+   - folder: a subfolder `view NN` made by FolderItem and AddCopy under a fresh resolve, and marked
+   - the record in three: make the COM view with ApplyHideAttribs and ApplyMaterialAttribs, find the
+     COM folder, and SavedViews().Add
+   - the mark: AddComment of the design's sentence and a marker line, made by
+     CreateCommentWithUniqueId, on the view re-found by its names
+   - the read back: the position, the comments and the mark's body, Hidden with each hidden item's
+     HasModel and Model.FileName, and the MaterialOverrides walked once into a lookup by item, counting
+     the right red, the right green, a wrong colour, and any coloured item that is not this view's
+4. THE REMOVAL. Every top level folder whose every viewpoint reads as F85's by the probe's own reading
+   of LegacyClashView, design 1.9, goes by one RemoveAt(root, index), from the end, its name re-read just
+   before each call. The reading: a top level folder named X vs Y, a viewpoint at depth 1 to 3 under it,
+   named T, two spaces, Clash and digits, T a test name of the document, and no comment. Redlines were
+   not read
+5. ROUND B, the same 10 views the same way, into `P18 probe B`
+6. ResetTemporaryMaterials on every root and ResetAllHidden, SaveFile into `p18-rate.nwf` in the work
+   folder, Document.Clear, TryOpenFile of the saved file, and all 20 views re-found by their names and
+   read back again
+
+Run from Windows PowerShell 5.1 as
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-view-rate.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-p18-result.txt -Nwf %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf -MarginMm 500
+
+with the probe built by `dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release`,
+0 warnings and 0 errors, DLL sha256 E1ACFEF5, script sha256 4CD4C4F2, lines 24 and 3. One run at 17:01,
+kept as `p18-view-rate-result-20261007.txt`, the machine name on line 1 masked as `[machine]` and the
+account folder on line 5 as `%USERPROFILE%`, nothing else changed. Navisworks pid 49396, adopted on all
+four conditions, line 38. TryOpenFile of the copy returned True after 5.599 s with 4 models, every one
+read from under the loop folder, lines 54 to 59. ExecuteAddInPlugin returned 0 after 82.78 s, line 48.
+Dispose returned and pid 49396 was gone 6.4 s later, not forced, line 229.
+
+**THE ANSWER: THE WHOLE SEQUENCE TOOK 6.447 S A VIEW IN THE TREE OF 2847, AND 0.112 S A VIEW AFTER THE
+2813 WERE REMOVED, MEAN OF TEN. 99 PER CENT OF THE FIRST IS THE COM ADD.** Lines 100 to 115 and 176 to
+191 of the result:
+
+```
+seconds a view, mean of 10 (median)    round A, tree 2847 to 2856    round B, tree 44 to 53
+undim                                  0.003                         0.003
+hide                                   0.020 (0.014)                 0.015 (0.013)
+dim                                    0.003                         0.002
+resolve                                0.002                         0.001
+paint                                  0.001                         0.001
+frame                                  0.000                         0.000
+folder, made and marked                0.001                         0.000
+record, make the COM view              0.017 (0.015)                 0.019 (0.003)
+record, find the COM folder            0.000                         0.000
+record, SavedViews().Add               6.385 (6.210)                 0.057 (0.057)
+mark                                   0.000                         0.000
+read back                              0.014 (0.008)                 0.013 (0.010)
+THE WHOLE SEQUENCE                     6.447 (6.261)                 0.112 (0.099)
+  least and most                       5.942 and 7.627               0.062 and 0.236
+seconds no part holds                  0.000                         0.000
+P18 MEASURED
+P19 YES   live 20 of 20, after a save, a clear and a reopen 20 of 20
+```
+
+1. THE TEN TESTS. 528 tests, 59 with an open clash, line 62. The ten run from
+   BLD-AR-Curtain Mullions-vs-BLD-AR-Windows, 2568 open, to BLD-EL-Conduits & Conduit
+   Fittings-vs-BLD-EL-Electrical Equipment, 14 open, lines 65 to 74. Every item resolved with
+   geometry and no side read null. Each view showed one or two of the 4 models. Walk one took 0.003 to
+   0.054 s a test with its camera
+2. THE COST IS THE ADD, AND IT FOLLOWS THE TREE. In round A, SavedViews().Add took 5.907 to 7.458 s a
+   view, 6.385 of the 6.447 s mean, lines 79 to 98 and 110. Making the COM view took 0.017 s and finding
+   its folder under 0.001 s. In round B the Add of the same 10 views took 0.039 to 0.077 s, about 110
+   times less, lines 155 to 174 and 186. Every other part read the same in both rounds to a few
+   milliseconds. The Add did not follow the view's overrides: the view of 71 took 6.736 s in round A
+   and 0.040 s in round B, the view of 4626 took 6.024 s and 0.077 s, lines 83, 93, 159 and 169. Nor
+   the clash count: the 2568 clash view took 7.458 s in round A, the first of the round, and 0.060 s in
+   round B. Round A's record of the 2568 clash view sits with P16's 6.1 to 6.7 s and P17's 6.487 s in
+   the same tree, 5z-x and 5z-y. Why the Add costs so much in a tree of 2847 is UNKNOWN
+3. THE REMOVAL TOOK 1.253 S, AND THE NEXT EDIT 4.856 S. The judge read the 17 top level folders in
+   0.004 s, lines 118 to 135: the 4 the NWCs brought, 34 viewpoints, kept, the 12 from AR vs AR to EL vs
+   UNKNOWN, 2813 viewpoints, every one legacy, and `P18 probe A` with its 10, kept. No legacy viewpoint
+   sat in a kept folder. The 12 RemoveAt calls from the end, each name re-read and held, took 1.253 s
+   in all, AR vs AR 0.209 s against P14's 0.174 s, and DR vs DR, 2 viewpoints, 0.650 s, lines 136 to
+   148. The tree then read 44 viewpoints, the count expected, and the models, sets, tests and results
+   the same, lines 149 and 150. Then the first edit after the removal, making `P18 probe B` at the root
+   by AddCopy and marking it, took 4.856 s, line 153, where the same two calls took 0.015 s in round A,
+   line 77. Which of the two took it, and why, is UNKNOWN. The two were not timed apart. Round B's wall
+   time of 5.984 s, line 175, holds those 4.856 s
+4. EVERY VIEW READ BACK RIGHT, LIVE AND AFTER THE REOPEN. All 20 views read the position off by 0.000,
+   one comment whose body is the mark written, Ordinal, every red and every green item named with its
+   colour, no wrong colour, and no coloured item that is not the view's, lines 80 to 174. After SaveFile,
+   Document.Clear and TryOpenFile of the saved file, the same 20 read the same, lines 200 to 219 and 221
+5. P19 YES. Every view's Hidden read exactly its hidden model roots, 2 or 3 items, each HasModel true
+   and its Model.FileName equal to the plan's hidden model's, Ordinal, none that is not a model root,
+   live 20 of 20 and after the reopen 20 of 20, line 223
+6. THE UNDIM ON THE ROOTS CLEARED THE VIEW BEFORE'S COLOURS, READ OFF THE COUNTS. The paint resets only
+   this view's items, so a colour of the view before would stay unless the undim on the roots clears
+   it. No view read a coloured item that was not its own. The plainest case is A 09 after A 08, both
+   showing models 0 and 2, so the hide was skipped: A 08 painted 9 red and 12 green, and A 09 read 0
+   coloured items of another view, lines 93 to 96. The probe did not check that the two views' items
+   are disjoint, so this is read off the count and not item by item
+7. THE OVERRIDES FOLLOW THE SHOWN MODELS, NOT THE CLASHES. Each view held its red, its green and one dim
+   entry for every other item of its shown models: 3153 for model 0 alone (A 01 2335, 88 and 730, A 04 24,
+   3 and 3126), 1138 for models 1 and 3, 71 for model 3, 4626 for models 0 and 2, and 1067 for model 1.
+   Every dim entry read Color null, as in 5z-y. Part 6 read this off 5o and 5p, and here it is measured
+   on 10 views
+8. THE FILE. SaveFile took 1.878 s and wrote 724,283 bytes with 54 viewpoints, the 34 the NWCs brought
+   and the 20 probe views, line 194, against the 41,317,271 bytes of the copy opened with 2847. The reopen
+   took 2.706 s against 5.599 s for the first open, lines 196 and 54. The saved copy is
+   `%LOCALAPPDATA%\NwcFederatorLoop\probes\view-rate-20261007-170120\p18-rate.nwf`, sha256
+   C6784F82BF120614B9F4E72ECDB1ABBEE51C59140CB759C35F77F7CFF6543B74, line 225
+
+**WHAT THE TWO MEANS GIVE FOR PART 6 AND B8, ARITHMETIC ON THE MEASURED MEANS AND THE DESIGN'S V OF 59 TO
+109, NOT A MEASUREMENT OF A RUN.**
+
+- On an NWF that holds no per-clash views, the sequence is 0.112 s a view: 6.6 s for 59 views, 12.2 s for
+  109. The lowest recording rate of part 6 alone is 0.565 s. Walk one, the inventory, the removals and
+  the fresh walk are outside this sequence and are not this probe's
+- B8 A, the first run on an NWF holding the 2813, writes into the tree of 2847: 6.447 s a view, 380.4 s
+  for 59 views and 702.7 s for 109, then the removal, 1.253 s here and 4.856 s on the next edit
+- B8 B, the old removed first: the same removal, then 0.112 s a view, 6.6 s to 12.2 s
+- So B8 A costs about 6.335 s a view more, once per NWF holding the per-clash views: 373.8 s at V 59 and
+  690.5 s at V 109 on 1A02MM
+- The rate between a tree of 53 and one of 2847 was not measured. A fresh NWF of the design holds the
+  34 the NWCs bring, up to 109 views and their folders, near 150 items
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWF the copy was made from read sha256 0944C100
+at the start and at the end, lines 22 and 323. The guard wrote the Auto-Save switch "3 0" and read it
+back, line 28. The watchdog saw no other Navisworks, and the put back ran, line 272. 38 registry values
+were put back, enable among them, line 277, and read again with 0 still differing, line 312.
+SessionCleanCloseCount went 93 to 94 and no crashCount changed, line 274, a clean close. InfoCenter.log and
+LastSession.xml were put back reading their backups' sha256, lines 316 and 317. The guard saw 0 AutoSave
+files added, changed or gone, line 319, and the tool's own logs folder had nothing added or changed, line
+320. The prober read the switch and listed the AutoSave folder by name, size, write time and sha256 with
+`read-autosave-state.ps1`, kept in %LOCALAPPDATA%\NwcFederatorLoop\turn5 as
+`probe-p18-20261007-autosave-before.txt`, `-during.txt` and `-after.txt`: enable read String "0" at
+17:00:55 before the start, "3 0" at 17:03:17 while the probe ran, and "0" at 17:05:01 after the put back,
+and the folder held the same 199 files with the same names, sizes, times and sha256 before and after, 0
+lines differing.
+
+THE PROGRAMS. One Navisworks, pid 49396, started by the probe at 17:01:28, quit by Dispose and gone 6.4 s
+after, not forced, lines 38, 229 and 262. AdskLicensingAgent pid 47876, a child of 49396, read STILL
+RUNNING at the end of the probe, line 263, and Get-Process -Id 47876 read no process when the prober read
+it after the run. AdskLicensingAgent 51556 and AdskLicensingInstHelper 42536 and 35428 read exited, lines
+264 to 266. No Roamer that was not there in step 2 ran at the end, line 267.
+
+**STILL UNKNOWN.**
+
+- the rate in a tree between 53 and 2847 viewpoints, so on a fresh NWF of the design near 150 items, and
+  in C06's trees, which hold 4800 per-clash views over 16 groups
+- why SavedViews().Add takes about 6 s in a tree of 2847 and about 0.06 s in a tree of 44
+- why the first edit after the removal took 4.856 s, and whether it was the AddCopy or the AddComment
+- views that show the models of ShownModels with the team map. Here the homes alone were shown. Within
+  71 to 4626 overrides the Add did not follow the count, and nothing wider was tried
+- the design's folder tree of priority, pair and size. Each view here sat in its own folder two deep
+- the inventory's comment reads, the fresh walk and VIEWS TREE. They are outside the per view sequence
+  and were not timed
+- what the add-in adds around the calls: the window, the progress lines and the log
+- whether A 08's and A 09's items are disjoint, so whether item 6 holds item by item
+- whether the rate holds with the Saved Viewpoints window open
+- the views on Bader's screen. The row asked no hand step
+
+**WHAT THIS DECIDES.** By the row of P18, part 6 is rewritten with these rates before any add-in code:
+0.112 s a view for the whole sequence in a tree of 44 to 53, and 6.447 s a view in the tree of 2847,
+nearly all of it in the COM view's SavedViews().Add. By B8, writing first and removing after costs about
+6.3 s a view more, once per NWF holding the per-clash views. By the row of P19, YES: check 3 reads the
+shown models off the NWF, from each hidden root's Model.FileName.
+
+## 5z-za. WHAT THE PROPERTY PROBE OF F86 WRITES FOR ONE MECHANICAL NWC, MEASURED 2026-10-07
+
+Step 364 of steps\03_bader_next.md, on Bader's answer of 2026-10-07 under it: run the property probe
+on one mechanical NWC by the guards and keep its CSV and its PROBE block as the evidence. The question:
+what CSV and what PROBE block does the add-in's property probe, F86, steps 358 to 363, write for one
+mechanical NWC? The pair is what the mechanical sets get rewritten from, and that rewrite is a later
+round. No code changes on this answer. It is the evidence the later round reads.
+
+HOW. `tools\probes\ViewpointProbe\probe-property-run.ps1` is P18's `probe-view-rate.ps1` with the
+plugin `PropertyProbeRun` of `tools\probes\ViewpointProbe\PropertyProbeRun` in place of ViewpointProbe,
+-Nwc in place of -Nwf, the NWC extension checked, and the work folder prefix `property-run`. Nothing else
+changed, the guard and F138's SwitchAutoSaveOff included. tools\loop\nw-guard.ps1 read sha256 E29D2733,
+line 4. The plugin compiles the branch's src in as Q133Import does, every file of Federator.Core and every
+file of Federator.Addin\Engine but FederationEngine.cs, and changes nothing of src. It opens the copy with
+TryOpenFile, polls Models.Count for up to 60 s, and hands each model to the add-in's own PropertyProbe with
+`new ProbeSettings()`, the same class and the same settings both routes of the button construct,
+FederationEngine.cs lines 2514 and 2542, with a RunLog started in the work folder. Two things differ from
+the button: the open is TryOpenFile and a poll rather than OpenAndWaitForTheModels, and the folder route's
+header line, PROBE, the folder and its file count, is not written, because that line is
+FederationEngine's and not the probe's. The plugin refuses any model whose CSV would land outside the
+folder of the copy. It was built at 17:31 with 0 warnings and 0 errors, `PropertyProbeRun.dll` sha256
+87410301, line 24. The branch was pulled first, up to date at e6b66bd. Get-Process Roamer read 0 before
+the run and 0 after it. The NWC is run set 04's copy
+`runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc`, 2,006,253 bytes, sha256 F0544034, the
+mechanical NWC of the C02 building the earlier probes read, copied into the new folder
+`probes\property-run-20261007-173442` and read back with the same sha256, lines 22 and 23.
+
+    powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\ViewpointProbe\probe-property-run.ps1 -Out %LOCALAPPDATA%\NwcFederatorLoop\turn5\probe-step364-result.txt -Nwc %LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+
+The result is `tools\probes\ViewpointProbe\step364-property-run-result-20261007.txt`, with the machine
+name on line 1 and the account folder on line 5 masked and nothing else changed.
+
+**ANSWER. THE PROBE RAN ONCE AND WROTE ONE CSV AND ONE PROBE BLOCK.**
+
+- TryOpenFile returned true after 2.390 s and the copy held 1 model, lines 57 and 58. Its
+  SourceFileName is the model's RVT on Autodesk Docs, line 59
+- The walk took 3581 items in 1.9 s, line 64, and ProbeModel 2.008 s in all, line 62
+- The PROBE block, lines 65 to 94, every line as the probe wrote it:
+  - categories asked for 17, found 10
+  - 7 with no element at all: Pipe Insulation, Flex Pipes, Flex Ducts, Cable Trays, Cable Tray
+    Fittings, Conduits, Conduit Fittings
+  - properties 2724, distinct values 10715, rows written 8823
+  - 18 properties capped at 100, every one on Pipes or Pipe Fittings and every one an id, a GUID or a
+    measure: Id, IfcGUID, Element ID Value, UniqueId, IntegerValue and GUID on both, and Area, Length,
+    Lower End Bottom Elevation, Lower End Invert Elevation, Upper End Top Elevation and LevelOffset on
+    Pipes
+  - FS or Fire Suppression appears in 1 row: Mechanical Equipment, tab Element, property `zz FS`, value
+    1, on 6 elements
+  - the closing line says nothing in the model was changed, saved or published
+- The CSV, `1104-PAR-1A02MM-ZZZ-ME-MOD-000001-properties.csv`, 548,664 bytes, sha256 2939B679, line 98.
+  Read by Python's csv reader it holds 8824 records, the header and the 8823 rows the block counts. It
+  holds 8830 lines because 3 values carry a line break. The header is category, property tab, property
+  name, distinct value, how many elements, as step 361 says
+- The elements per category, read off each category's Category tab Name row of the CSV: Air Terminals
+  12, Duct Accessories 16, Duct Fittings 43, Ducts 50, Mechanical Equipment 35, Pipe Accessories 18,
+  Pipe Fittings 222, Pipes 251, Plumbing Fixtures 7, Sprinklers 14
+- A capped property ends in one extra row, as step 362 says. For Pipes, Element, Id it reads "MORE VALUES
+  NOT LISTED, 151 more distinct values here, the cap is 100", with 151 in the count column
+
+**THE EVIDENCE, KEPT OUTSIDE THE REPO.** In %LOCALAPPDATA%\NwcFederatorLoop\turn5, each copied from the
+work folder and read back with its source's sha256: `step364-csv.txt`, the CSV byte for byte, sha256
+2939B679, `step364-probe-block.txt`, the probe's own 31 lines, sha256 117AE8AA, and
+`step364-runlog.txt`, the RunLog holding the same block with its CSV attempt and written lines, sha256
+1D8D09CF. The CSV is not committed. The work folder stays as it is.
+
+**BADER'S THINGS. PUT BACK, AND AUTO-SAVE OFF HELD.** The NWC the copy was made from read sha256
+F0544034 at the start and at the end, lines 22 and 187. The guard wrote the Auto-Save switch "3 0" and
+read it back, line 28. The watchdog saw no other Navisworks, and the put back ran, line 138. 36 registry
+values were put back, enable among them, line 143, and read again with 0 still differing, line 176.
+SessionCleanCloseCount went 93 to 94, line 140, and no crashCount was among the values that differed, a
+clean close. InfoCenter.log and LastSession.xml were put back reading their backups' sha256, lines 180 and
+181. The guard saw 0 AutoSave files added, changed or gone, line 183, and the tool's own logs folder had
+nothing added or changed, line 184. The prober read the switch and listed the AutoSave folder by name,
+size, write time and sha256 with `read-autosave-state.ps1`, kept in %LOCALAPPDATA%\NwcFederatorLoop\turn5
+as `probe-step364-20261007-autosave-before.txt`, `-during.txt` and `-after.txt`: enable read String "0"
+at 17:34:27 before the start, "3 0" at 17:34:52 while the probe ran, and "0" at 17:36:55 after the put
+back, and the folder held the same 199 files with the same names, sizes, times and sha256 before and
+after, 0 lines differing.
+
+THE PROGRAMS. One Navisworks, pid 38240, started by the probe at 17:34:49, adopted, line 38, quit by
+Dispose and gone 7.2 s after, not forced, line 102. AdskLicensingAgent 45024 and 5816, children of 38240,
+and AdskLicensingInstHelper 46048 read exited at the end, lines 130 to 132. No Roamer that was not there
+in step 2 ran at the end, line 133.
+
+**STILL UNKNOWN.**
+
+- whether the other 29 NWCs named ME in run set 04, C02 to C07, carry the same categories, properties
+  and values. One was read
+- which property, if any, tells fire suppression pipework from domestic pipework. The block's search
+  found `zz FS` on 6 Mechanical Equipment elements and nothing on Pipes, and what `zz FS` means in the
+  model is UNKNOWN
+- whether the block written through the window reads line for line the same. The window was not used
+- which 3 values carry a line break. Not read
+- what the mechanical sets become. That is the later round's
+
+**WHAT THIS DECIDES.** Nothing in the code. It is the pair step 364 asked for, the CSV and the PROBE block
+of one mechanical NWC, kept for the round that rewrites the mechanical sets.
+
 ## 5z-zb. WHICH PROPERTY AND VALUE NAME GENERIC MODELS IN 1A02MM AND 1A04PK, MEASURED 2026-10-08
 
 F128, FR-177, Bader's order of 8 Oct 2026, Q145 item 2. The one measurement before the add-in

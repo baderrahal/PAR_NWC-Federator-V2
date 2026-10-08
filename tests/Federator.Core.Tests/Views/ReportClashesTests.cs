@@ -132,7 +132,7 @@ namespace Federator.Core.Tests
             Assert.That(read.Clashes[0].ClashName, Is.EqualTo("Clash1"));
             Assert.That(read.Clashes[0].Status, Is.EqualTo(ClashStatus.Active));
             Assert.That(read.Clashes[0].Row.Status, Is.EqualTo(ClashStatus.Active));
-            Assert.That(ClashViewpointPlan.InScope(read.Clashes[0].Status), Is.True);
+            Assert.That(OpenClashes.StatusesFor(new ViewpointSettings().ViewStatuses), Does.Contain(read.Clashes[0].Status));
         }
 
         /// <summary>
@@ -153,20 +153,42 @@ namespace Federator.Core.Tests
             Assert.That(read.Clashes[1].ClashName, Is.Not.EqualTo(only.ClashName));
         }
 
+        /// <summary>
+        /// F114's add-in pass. The row becomes the view plan's clash: the test the report holds
+        /// it under, the two set names, the row's status and the test's priority off the report,
+        /// and what the add-in read off the resolved result handed in, nulls where it read none.
+        /// </summary>
         [Test]
-        public void ToPlanCarriesTheTestTheTwoSetNamesTheRowStatusThePriorityAndTheSizeHandedIn()
+        public void ToViewCarriesTheTestTheTwoSetNamesTheRowStatusThePriorityAndWhatTheAddInRead()
         {
             ReportClash first = ReportClashes.Of(MergedReport()).Clashes[0];
-            ClashToPlan planned = first.ToPlan(SizeVerdict.Large);
+            ItemPath left = new ItemPath(new[] { 0, 3, 7 });
+            ItemPath right = new ItemPath(new[] { 1, 2 });
+            Point3 centre = new Point3(1.5, 2.5, 3.5);
+            ViewClash clash = first.ToView(SizeVerdict.Large, left, right, centre, "ME.nwc", "ST.nwc");
 
-            Assert.That(planned.TestName, Is.EqualTo(Kept));
-            Assert.That(planned.ClashName, Is.EqualTo("Clash1"));
-            Assert.That(planned.LeftSet, Is.EqualTo("BLD-ME-Ducts"));
-            Assert.That(planned.RightSet, Is.EqualTo("BLD-ST-Columns"));
-            Assert.That(planned.Status, Is.EqualTo(ClashStatus.Active));
-            Assert.That(planned.Priority, Is.EqualTo(ClashPriority.A));
-            Assert.That(planned.ServiceSize, Is.EqualTo(SizeVerdict.Large));
-            Assert.That(first.ToPlan(null).ServiceSize, Is.Null);
+            Assert.That(clash.TestName, Is.EqualTo(Kept));
+            Assert.That(clash.ClashName, Is.EqualTo("Clash1"));
+            Assert.That(first.LeftSet, Is.EqualTo("BLD-ME-Ducts"), "read off the row before the walk, for the pair");
+            Assert.That(first.RightSet, Is.EqualTo("BLD-ST-Columns"));
+            Assert.That(clash.LeftSet, Is.EqualTo("BLD-ME-Ducts"));
+            Assert.That(clash.RightSet, Is.EqualTo("BLD-ST-Columns"));
+            Assert.That(clash.Status, Is.EqualTo(ClashStatus.Active));
+            Assert.That(clash.Priority, Is.EqualTo(ClashPriority.A));
+            Assert.That(clash.ServiceSize, Is.EqualTo(SizeVerdict.Large));
+            Assert.That(clash.FirstItem, Is.EqualTo(left));
+            Assert.That(clash.SecondItem, Is.EqualTo(right));
+            Assert.That(clash.Centre, Is.SameAs(centre));
+            Assert.That(clash.FirstHome, Is.EqualTo("ME.nwc"));
+            Assert.That(clash.SecondHome, Is.EqualTo("ST.nwc"));
+            Assert.That(clash.Key, Is.EqualTo(Kept + "\nClash1"));
+
+            ViewClash unread = first.ToView(null, null, null, null, null, null);
+
+            Assert.That(unread.ServiceSize, Is.Null);
+            Assert.That(unread.FirstItem, Is.Null);
+            Assert.That(unread.Centre, Is.Null);
+            Assert.That(unread.FirstHome, Is.Empty);
         }
 
         [Test]

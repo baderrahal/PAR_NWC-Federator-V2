@@ -3325,6 +3325,10 @@ namespace Federator.Addin.Engine
                 // which read the merged report's rows and resolve each by this.
                 outcome.RowAddresses = runner.RowAddresses;
 
+                // F114. The mirrors' run names, so no mirrored test gets a view, or null where
+                // no mirror rule ran, which the VIEWS block says.
+                outcome.MirrorNames = runner.MirrorNames;
+
                 // The skipped group's own CLASH block and summary say the clash was skipped
                 // rather than print nought for what never ran.
                 if (runner.ClashSkippedOffCoordinates)
@@ -4002,12 +4006,16 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// One saved viewpoint per clash, three folders deep, F85, made after the clash
-        /// step and before the NWF is saved again so they are inside the file the NWD is
-        /// published from. The plan is Federator.Core.Views.ClashViewpointPlan, the
-        /// writing is ViewpointBuilder, and the step is timed like every other one.
-        /// Returns whether anything went into the document, which is what asks for the
-        /// second NWF save.
+        /// One saved view per clash test of its open clashes, in folders by priority and team
+        /// pair, F114, made after the clash step and before the NWF is saved again so they
+        /// are inside the file the NWD is published from. The plan is
+        /// Federator.Core.Views.TestViewPlan, the writing is ViewpointBuilder, and the step
+        /// is timed like every other one. The engine hands the builder what Core's rules
+        /// read: the run's team map, the picked XML's sets, the group's models with their
+        /// codes and teams, the tests the clash step ran, the test names of the document and
+        /// of the XML, the mirrors' names and whether the clash step was sound. Returns
+        /// whether anything changed in the document, a view written or an earlier one
+        /// removed, which is what asks for the second NWF save.
         ///
         /// Whether the group asks for them at all is Core's rule, ViewpointRequest, F136:
         /// the box on the Clash step, the clash skipped, and no report.
@@ -4031,6 +4039,40 @@ namespace Federator.Addin.Engine
             ViewpointSettings views = new ViewpointSettings();
             views.Sizes = reports.Sizes;
 
+            TeamMap map = teams;
+
+            if (map == null)
+            {
+                // A press that federates a group always carries the run's map, TeamMapMemory.ForRun.
+                // Said rather than assumed, and the views then read every code as a team of its own.
+                map = TeamMap.NoXml(new TeamMapSettings());
+                log.Line("VIEWS    no team map was handed to this press, so every code is a team of its own and no pair carries the size folder");
+            }
+
+            IList<ModelTeam> models = ModelTeams(document, map);
+            List<string> codes = new List<string>();
+
+            foreach (ModelTeam model in models)
+            {
+                if (model.Code.Length > 0 && !codes.Contains(model.Code))
+                {
+                    codes.Add(model.Code);
+                }
+            }
+
+            ViewTeams viewTeams = new ViewTeams(map, exchange == null ? null : exchange.Sets, codes, views);
+            ICollection<string> testsRan = outcome.Clash == null ? null : TestsRan(outcome.Clash);
+            ICollection<string> testNames = TestNamesKnown(document);
+
+            // S4 of the design: nothing of earlier runs goes when the clash step threw or its
+            // report is missing. The step sets the outcome's clash record only once it ran.
+            bool clashStepSound = outcome.Clash != null && outcome.Report != null && outcome.RowAddresses != null;
+
+            if (outcome.MirrorNames == null)
+            {
+                log.Line("VIEWS    no mirror rule ran for this group, so which tests are mirrors is UNKNOWN to the views and check 5 says so");
+            }
+
             ViewpointBuilder builder = new ViewpointBuilder(Tick, log, reports.Penetrations, reports.Sizes, views);
             ViewpointBuildOutcome built = null;
 
@@ -4039,72 +4081,142 @@ namespace Federator.Addin.Engine
                 InStep(
                     RunSteps.Views,
                     () => built = builder.BuildForGroup(
-                        document, outcome.Report, outcome.RowAddresses, ThePriorities().Picked, ModelDisciplines(document)),
+                        document, job.Building, outcome.Report, outcome.RowAddresses, viewTeams, models,
+                        testsRan, testNames, outcome.MirrorNames, clashStepSound),
                     () => built == null ? "nothing" : built.Summary());
             }
             catch (Exception error)
             {
                 // Caught here like SETS and CLASH catch theirs, so a throw out of the
-                // viewpoints cannot skip the second NWF save, the workbook, the NWD and
-                // the confirm that sit after this step in FinishTheGroup. The builder
-                // catches per viewpoint and per test, so what reaches here threw before
-                // anything was written, which is why the answer is that nothing went in.
-                outcome.AddError("putting the viewpoints in threw " + error.GetType().Name + ": " + error.Message);
+                // views cannot skip the second NWF save, the workbook, the NWD and the
+                // confirm that sit after this step in FinishTheGroup. The builder catches
+                // per view and per test, so what reaches here threw before or after the
+                // writing, and the block says what was written before it.
+                outcome.AddError("putting the views in threw " + error.GetType().Name + ": " + error.Message);
                 log.Failure(
-                    "putting the viewpoints into the NWF for " + job.Building,
+                    "putting the views into the NWF for " + job.Building,
                     error,
-                    "kept going, the NWF is saved with whatever the clash step put in and the workbook, the NWD and the confirm still run");
+                    "kept going, the NWF is saved with whatever the clash step and the views put in, and the workbook, the NWD and the confirm still run");
                 built = null;
             }
 
             if (builder.Plan != null)
             {
-                log.Block("VIEWS " + job.Building, builder.Plan.Lines());
+                log.Block("VIEWS " + job.Building, builder.Plan.Lines(reports.Sizes));
+            }
+
+            if (built != null)
+            {
+                log.Block("VIEWS BUILT " + job.Building, built.Lines());
+                outcome.FailedViewpointCount = built.FailedCount;
+                outcome.ViewpointsCreated = built.CreatedCount;
+            }
+
+            // The VIEWS TREE block and its seven checks, cut for the .log at the TreeLinesInLog
+            // setting and whole in the .tsv, one row a line. A FAILED check is a FAILED line
+            // there and the group keeps its own result, CLAUDE.md's rule for a report check.
+            if (builder.TreeLog != null)
+            {
+                log.Block(ViewsTree.Title + " " + job.Building, builder.TreeLog);
+                int row = 0;
+
+                foreach (string line in builder.TreeRows ?? new List<string>())
+                {
+                    row++;
+                    log.Row("views tree", job.Building, row.ToString(System.Globalization.CultureInfo.InvariantCulture), line);
+                }
             }
 
             if (built == null)
             {
-                return false;
+                return builder.RemovedCount > 0;
             }
 
-            log.Block("VIEWS BUILT " + job.Building, built.Lines());
-            outcome.FailedViewpointCount = built.FailedCount;
-            outcome.ViewpointsCreated = built.CreatedCount;
-            return built.PutAnythingIn;
+            return built.PutAnythingIn || builder.RemovedCount > 0;
         }
 
         /// <summary>
-        /// Which discipline each model in the document is, by its index, read off the
-        /// model's own file name with the naming settings the scan uses, so a viewpoint
-        /// that shows AR and ST hides exactly the models that are neither. A name that
-        /// will not parse gives an empty discipline, and the builder never hides a model
-        /// it cannot name, because hiding on a guess hides the thing the person is looking
-        /// for, so that model stays in every viewpoint and the log says so once.
+        /// The group's models as the views see them, in the document's order, each with the
+        /// discipline code part 5 of its file name carries, read with the naming settings the
+        /// scan uses, and the team map's team of that code. A name that will not parse gives
+        /// an empty code and the team UNKNOWN, said once, and such a model is shown only where
+        /// a clashing item lives in it, Q119 B, since hiding on a guess hides the thing the
+        /// person is looking for. Each model wrapper is released once its name is read.
         /// </summary>
-        private IDictionary<int, string> ModelDisciplines(Document document)
+        private IList<ModelTeam> ModelTeams(Document document, TeamMap map)
         {
-            Dictionary<int, string> disciplines = new Dictionary<int, string>();
+            List<ModelTeam> models = new List<ModelTeam>();
 
             if (document == null || document.Models == null)
             {
-                return disciplines;
+                return models;
             }
 
             for (int i = 0; i < document.Models.Count; i++)
             {
-                string file = Path.GetFileNameWithoutExtension(Words.Or(document.Models[i].FileName, string.Empty));
-                ParsedContainerName parsed = ContainerName.Parse(file, reports.Names);
-                string discipline = parsed.IsReadable ? Words.Or(parsed.Discipline, string.Empty) : string.Empty;
-
-                if (discipline.Length == 0)
+                using (Model model = document.Models[i])
                 {
-                    log.Line("VIEWS    the model " + Words.Or(file, "with no name") + " carries no discipline this tool can read, so no viewpoint hides it");
-                }
+                    string file = Words.Or(model.FileName, string.Empty);
+                    ParsedContainerName parsed = ContainerName.Parse(Path.GetFileNameWithoutExtension(file), reports.Names);
+                    string code = parsed.IsReadable ? Words.Or(parsed.Discipline, string.Empty) : string.Empty;
 
-                disciplines[i] = discipline;
+                    if (code.Length == 0)
+                    {
+                        log.Line("VIEWS    the model " + Words.Or(file, "with no name")
+                            + " carries no discipline this tool can read, so its team is UNKNOWN and a view shows it only where a clashing item lives in it");
+                    }
+
+                    models.Add(new ModelTeam(file, code, map.TeamOf(code)));
+                }
             }
 
-            return disciplines;
+            return models;
+        }
+
+        /// <summary>The names of the tests the clash step ran, off its own record, for the inventory, row F114-K12.</summary>
+        private static ICollection<string> TestsRan(ClashRunOutcome clash)
+        {
+            List<string> names = new List<string>();
+
+            foreach (ClashTestResult result in clash.Ran)
+            {
+                if (!string.IsNullOrEmpty(result.Name) && !names.Contains(result.Name))
+                {
+                    names.Add(result.Name);
+                }
+            }
+
+            return names;
+        }
+
+        /// <summary>
+        /// Every test name the document holds, SavedTests.Read, and every one the picked XML
+        /// holds, each once, which LegacyClashView reads a per clash viewpoint's name against.
+        /// </summary>
+        private ICollection<string> TestNamesKnown(Document document)
+        {
+            List<string> names = new List<string>();
+
+            foreach (SavedClashTest saved in SavedTests.Read(document))
+            {
+                if (!string.IsNullOrEmpty(saved.Name) && !names.Contains(saved.Name))
+                {
+                    names.Add(saved.Name);
+                }
+            }
+
+            if (exchange != null)
+            {
+                foreach (ClashTestDefinition test in exchange.Tests)
+                {
+                    if (!string.IsNullOrEmpty(test.Name) && !names.Contains(test.Name))
+                    {
+                        names.Add(test.Name);
+                    }
+                }
+            }
+
+            return names;
         }
 
         /// <summary>
