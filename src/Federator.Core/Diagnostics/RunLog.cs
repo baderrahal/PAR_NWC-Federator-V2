@@ -352,6 +352,7 @@ namespace Federator.Core.Diagnostics
 
             string path = null;
             FileStream stream = null;
+            IOException lastRefusal = null;
 
             for (int attempt = 0; attempt < 100 && stream == null; attempt++)
             {
@@ -364,16 +365,21 @@ namespace Federator.Core.Diagnostics
                     stream = new FileStream(
                         path, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite, 1024, false);
                 }
-                catch (IOException)
+                catch (IOException error)
                 {
-                    // Two runs inside the same second. Try the next suffix.
+                    // Two runs inside the same second. Try the next suffix. What it said is kept, because
+                    // a name that is free and a file that cannot be made both come here, FR-173.
                     stream = null;
+                    lastRefusal = error;
                 }
             }
 
             if (stream == null)
             {
-                throw new IOException("Could not open a log file in " + folder + ".");
+                throw new IOException(
+                    "Could not open a log file in " + folder + ", the last name tried was " + path
+                        + " and it said: " + lastRefusal.Message.TrimEnd('.', ' ', '\r', '\n') + ".",
+                    lastRefusal);
             }
 
             RunLog log = new RunLog(path, startedAt, stream, null);
