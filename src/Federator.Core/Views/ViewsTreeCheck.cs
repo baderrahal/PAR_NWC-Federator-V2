@@ -803,7 +803,7 @@ namespace Federator.Core.Views
             internal bool IsLegacy(ViewNode node)
             {
                 return LegacyClashView.TestOf(
-                    node.Folders, node.Name, node.IsFolder, node.Comments.Count, node.Redlines,
+                    node.Folders, node.Name, node.IsFolder, node.Comments == null ? -1 : node.Comments.Count, node.Redlines,
                     Facts.KnownCodes ?? new string[0], Facts.TestNames ?? new string[0], Settings) != null;
             }
         }

@@ -328,6 +328,35 @@ namespace Federator.Core.Tests
             Assert.That(ViewNode.HeldNothing(null, new[] { "A" }, "Empty one"), Is.False);
         }
 
+        /// <summary>
+        /// The breaker's B4 of F114's add-in pass. A comment list that would not read is not an
+        /// empty list: a leaf shaped as a per clash viewpoint whose comments could not be read may
+        /// carry a person's comment, so it is kept, and so is a folder, each saying why.
+        /// </summary>
+        [Test]
+        public void AnItemWhoseCommentsCouldNotBeReadIsKeptAsAPersonsAndNeverRemovedAsLegacy()
+        {
+            List<ViewNode> tree = TreeWithTheNewView();
+            ViewNode legacyShape = ViewNode.CommentsNotRead(new[] { "ME vs ST" }, T + "  Clash4", false, 0, 0, Camera, null, false);
+            ViewNode folder = ViewNode.CommentsNotRead(new string[0], "ME vs ST", true, 1, 0, null, null, false);
+            tree.Add(folder);
+            tree.Add(legacyShape);
+
+            ViewsInventory inventory = Inventory(tree, PlanOf(T), WrittenOk());
+
+            Assert.That(legacyShape.Comments, Is.Null);
+            Assert.That(DecisionOf(inventory, legacyShape), Is.EqualTo(InventoryDecision.KeepNotOurs));
+            Assert.That(DecisionOf(inventory, folder), Is.EqualTo(InventoryDecision.KeepFolder));
+            Assert.That(inventory.Removals, Has.None.Matches<InventoryItem>(item => ReferenceEquals(item.Node, legacyShape) || ReferenceEquals(item.Node, folder)));
+            Assert.That(Joined(inventory.Lines()), Does.Not.Contain("ME vs ST/" + T + "  Clash4 : "));
+            Assert.That(new ViewNode(new string[0], "x", false, 0, null, 0, Camera, null, false).Comments, Is.Empty, "null to the constructor is no comment, not unread");
+        }
+
+        private static string Joined(IList<string> lines)
+        {
+            return string.Join("\n", new List<string>(lines).ToArray());
+        }
+
         // ---------- folders ----------
 
         /// <summary>

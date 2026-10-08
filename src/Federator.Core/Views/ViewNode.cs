@@ -42,8 +42,22 @@ namespace Federator.Core.Views
         /// <summary>Its index among its parent's children, which a removal is given by, 5z.</summary>
         public int IndexInParent { get; private set; }
 
-        /// <summary>Every comment body it carries.</summary>
+        /// <summary>Every comment body it carries, or null where the list would not read, CommentsNotRead.</summary>
         public ReadOnlyCollection<string> Comments { get; private set; }
+
+        /// <summary>
+        /// An item whose comment list would not read, the breaker's B4 of F114's add-in pass:
+        /// its Comments are null and never an empty list, so the mark's judge, LegacyClashView
+        /// and the inventory keep it as a person's, since what cannot be read cannot be proved
+        /// the tool's.
+        /// </summary>
+        public static ViewNode CommentsNotRead(
+            IList<string> folders, string name, bool isFolder, int indexInParent, int? redlines, Point3 camera, string guid, bool emptyBeforeTheRun)
+        {
+            ViewNode node = new ViewNode(folders, name, isFolder, indexInParent, null, redlines, camera, guid, emptyBeforeTheRun);
+            node.Comments = null;
+            return node;
+        }
 
         /// <summary>How many redlines it carries, or null where they could not be read.</summary>
         public int? Redlines { get; private set; }

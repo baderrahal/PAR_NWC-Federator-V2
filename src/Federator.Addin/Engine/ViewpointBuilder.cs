@@ -1125,7 +1125,7 @@ namespace Federator.Addin.Engine
         {
             log.Line("VIEWS    the tree read " + when + ": " + walk.Viewpoints + " viewpoint(s) and "
                 + (walk.Nodes.Count - walk.Viewpoints) + " folder(s)"
-                + (walk.CommentsNotRead > 0 ? ", " + walk.CommentsNotRead + " whose comments would not read, kept as a person's" : string.Empty)
+                + (walk.CommentsNotRead > 0 ? ", " + walk.CommentsNotRead + " kept as a person's because its comments could not be read" : string.Empty)
                 + (walk.RedlinesNotRead > 0 ? ", " + walk.RedlinesNotRead + " whose redlines would not read, kept as a person's" : string.Empty)
                 + (walk.CamerasNotRead > 0 ? ", " + walk.CamerasNotRead + " whose camera would not read, kept as a person's" : string.Empty)
                 + (walk.NeitherKind > 0 ? ", " + walk.NeitherKind + " neither a folder nor a saved viewpoint, kept" : string.Empty));

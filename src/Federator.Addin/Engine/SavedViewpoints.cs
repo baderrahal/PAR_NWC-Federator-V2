@@ -160,10 +160,13 @@ namespace Federator.Addin.Engine
 
                     GroupItem group = child as GroupItem;
 
+                    bool heldNothing = ViewNode.HeldNothing(emptyBefore, folders, name);
+
                     if (group != null)
                     {
-                        walk.Nodes.Add(new ViewNode(
-                            folders, name, true, i, comments, 0, null, null, ViewNode.HeldNothing(emptyBefore, folders, name)));
+                        walk.Nodes.Add(comments == null
+                            ? ViewNode.CommentsNotRead(folders, name, true, i, 0, null, null, heldNothing)
+                            : new ViewNode(folders, name, true, i, comments, 0, null, null, heldNothing));
 
                         List<string> under = new List<string>(folders);
                         under.Add(name);
@@ -195,7 +198,9 @@ namespace Federator.Addin.Engine
                         walk.NeitherKind++;
                     }
 
-                    walk.Nodes.Add(new ViewNode(folders, name, false, i, comments, redlines, camera, null, false));
+                    walk.Nodes.Add(comments == null
+                        ? ViewNode.CommentsNotRead(folders, name, false, i, redlines, camera, null, false)
+                        : new ViewNode(folders, name, false, i, comments, redlines, camera, null, false));
                 }
             }
         }

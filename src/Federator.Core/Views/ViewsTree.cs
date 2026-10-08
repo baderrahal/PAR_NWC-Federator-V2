@@ -213,6 +213,12 @@ namespace Federator.Core.Views
                     continue;
                 }
 
+                if (node.Comments == null)
+                {
+                    notOurs++;
+                    continue;
+                }
+
                 ViewOwner owner = ToolViewMark.Judge(
                     node.Folders, node.Name, node.Camera, node.Comments, node.Redlines, node.Guid, settings).Owner;
 
