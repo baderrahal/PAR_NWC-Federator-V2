@@ -123,9 +123,7 @@ namespace Federator.Core.Diagnostics
             Path = path;
             StartedAt = startedAt;
             DisabledReason = disabledReason;
-            ClashesFound = new ClashesAcrossTheRun();
-            PenetrationsAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "penetrations   ");
-            ByDesignAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "by design      ");
+            StartTheTallies();
             this.stream = stream;
 
             if (stream != null)
@@ -557,6 +555,15 @@ namespace Federator.Core.Diagnostics
 
         private double runStartedAt = -1.0;
         private double runFinishedAt = -1.0;
+        private double earlierRunsSeconds;
+        private int runsStarted;
+
+        private void StartTheTallies()
+        {
+            ClashesFound = new ClashesAcrossTheRun();
+            PenetrationsAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "penetrations   ");
+            ByDesignAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "by design      ");
+        }
 
         /// <summary>
         /// Marks where the run started, F80, and writes the line that says so. The mark is
@@ -569,15 +576,57 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public void RunStarted(int groups)
         {
+            int number;
+
             lock (gate)
             {
+                // FR-049. The log lives as long as the window, so a second press of Run found every list the
+                // first run filled and the second RESULT counted both. What a RESULT counts is what the run it
+                // closes recorded, so the second run begins from nothing. The first run in a window does not
+                // clear, since what a hand button recorded before it is the window's and was always in its RESULT.
+                if (runStartedAt >= 0)
+                {
+                    earlierRunsSeconds += Math.Max(0.0, (runFinishedAt >= 0 ? runFinishedAt : ElapsedSeconds) - runStartedAt);
+                    ForgetTheRunBefore();
+                }
+
                 runStartedAt = ElapsedSeconds;
 
                 // FR-050. A second run in the window must not be given the first run's finish.
                 runFinishedAt = -1.0;
+                runsStarted++;
+                number = runsStarted;
             }
 
             Line("RUN      started, " + groups + (groups == 1 ? " group" : " groups"));
+
+            if (number > 1)
+            {
+                Line("RUN      this is run " + number + " in this window. Its RESULT counts this run alone, "
+                    + "the groups, files, errors and clashes of the runs before it are in the blocks above");
+            }
+        }
+
+        /// <summary>
+        /// Everything a RESULT and the timing block read, emptied, under the gate, FR-049. The census state is
+        /// not here, since it is not counted in a RESULT, and neither is the open step list, which a group end
+        /// closes.
+        /// </summary>
+        private void ForgetTheRunBefore()
+        {
+            written.Clear();
+            failures.Clear();
+            repeats.Clear();
+            groupRecords.Clear();
+            stepRecords.Clear();
+            visitsInGroup.Clear();
+            collapsedLines.Clear();
+            StartTheTallies();
+            PenetrationsWanted = false;
+            PenetrationsMoved = 0;
+            ByDesignWanted = false;
+            ByDesignMoved = 0;
+            PriorityAcrossTheRun = null;
         }
 
         /// <summary>Marks where the run finished, F80, and writes the line that says so.</summary>
@@ -606,12 +655,12 @@ namespace Federator.Core.Diagnostics
                     // and is not called a run nobody marked.
                     if (runStartedAt >= 0 && runFinishedAt < 0)
                     {
-                        return RunClock.Unfinished(ElapsedSeconds, runStartedAt);
+                        return RunClock.Unfinished(ElapsedSeconds, runStartedAt, earlierRunsSeconds);
                     }
 
                     return runStartedAt < 0
                         ? RunClock.NotMarked(ElapsedSeconds)
-                        : RunClock.From(ElapsedSeconds, runStartedAt, runFinishedAt);
+                        : RunClock.From(ElapsedSeconds, runStartedAt, runFinishedAt, earlierRunsSeconds);
                 }
             }
         }

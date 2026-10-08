@@ -26,6 +26,10 @@ namespace Federator.Core.Diagnostics
     /// step. A run that never finished, counted to now, has no third stretch, because it
     /// ends where the block is written, and the block says so and prints no row for it.
     ///
+    /// A WINDOW THAT RAN BEFORE HAS A FOURTH, FR-049. The runs before this one were work and
+    /// not a person reading, so they are a row of their own and waiting for the person is what
+    /// is left, where it once held the whole first run.
+    ///
     /// WITH NO RUN MARK AT ALL the run IS the session and the block SAYS it fell back. The
     /// open file run and the two hand buttons on the Clash step never write a run mark,
     /// because they are not a run over groups, and a block that divided by zero or
@@ -39,14 +43,19 @@ namespace Federator.Core.Diagnostics
         /// <summary>What the tail row is called.</summary>
         public const string AfterTheRun = "after the run finished";
 
-        private RunClock(double session, double started, double finished, bool marked)
-            : this(session, started, finished, marked, true)
+        /// <summary>What the row of the runs before this one in the window is called, FR-049.</summary>
+        public const string EarlierRuns = "earlier runs in this window";
+
+        private RunClock(double session, double started, double finished, bool marked, double earlier)
+            : this(session, started, finished, marked, true, earlier)
         {
         }
 
-        private RunClock(double session, double started, double finished, bool marked, bool finishedMarked)
+        private RunClock(
+            double session, double started, double finished, bool marked, bool finishedMarked, double earlier)
         {
             SessionSeconds = Never(session);
+            EarlierRunsSeconds = marked ? Never(earlier) : 0.0;
             Marked = marked;
             Finished = finishedMarked;
             StartedAt = marked ? Never(started) : 0.0;
@@ -55,11 +64,13 @@ namespace Federator.Core.Diagnostics
 
         /// <summary>
         /// A run that was marked: the seconds on the session clock when Run was pressed
-        /// and when the last group finished.
+        /// and when the last group finished. earlierRunsSeconds is what runs before this one in the same
+        /// window took, FR-049, so the time before this run is not all called waiting for the person.
         /// </summary>
-        public static RunClock From(double sessionSeconds, double startedAt, double finishedAt)
+        public static RunClock From(
+            double sessionSeconds, double startedAt, double finishedAt, double earlierRunsSeconds = 0.0)
         {
-            return new RunClock(sessionSeconds, startedAt, finishedAt, true);
+            return new RunClock(sessionSeconds, startedAt, finishedAt, true, earlierRunsSeconds);
         }
 
         /// <summary>
@@ -67,9 +78,9 @@ namespace Federator.Core.Diagnostics
         /// the moment the block is written and says RUN finished was never marked, FR-050. It has no
         /// stretch after the run, so its block prints no row for one and says it was not measured.
         /// </summary>
-        public static RunClock Unfinished(double sessionSeconds, double startedAt)
+        public static RunClock Unfinished(double sessionSeconds, double startedAt, double earlierRunsSeconds = 0.0)
         {
-            return new RunClock(sessionSeconds, startedAt, sessionSeconds, true, false);
+            return new RunClock(sessionSeconds, startedAt, sessionSeconds, true, false, earlierRunsSeconds);
         }
 
         /// <summary>Whether RUN finished was marked. False only for a run counted to now.</summary>
@@ -81,7 +92,7 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public static RunClock NotMarked(double sessionSeconds)
         {
-            return new RunClock(sessionSeconds, 0.0, sessionSeconds, false);
+            return new RunClock(sessionSeconds, 0.0, sessionSeconds, false, 0.0);
         }
 
         /// <summary>Whether a run was marked at all.</summary>
@@ -106,10 +117,16 @@ namespace Federator.Core.Diagnostics
             get { return Never(FinishedAt - StartedAt); }
         }
 
-        /// <summary>Between the window opening and Run being pressed.</summary>
+        /// <summary>
+        /// What the runs before this one in the same window took, each RUN started to RUN finished, FR-049. A
+        /// window that ran twice would otherwise call the whole first run waiting for the person.
+        /// </summary>
+        public double EarlierRunsSeconds { get; private set; }
+
+        /// <summary>Between the window opening and Run being pressed, less the earlier runs, which were work.</summary>
         public double WaitingSeconds
         {
-            get { return Never(StartedAt); }
+            get { return Never(StartedAt - EarlierRunsSeconds); }
         }
 
         /// <summary>
@@ -142,6 +159,12 @@ namespace Federator.Core.Diagnostics
 
             lines.Add(Row("session", SessionSeconds));
             lines.Add(Row(WaitingForThePerson, WaitingSeconds));
+
+            if (EarlierRunsSeconds > 0.0)
+            {
+                lines.Add(Row(EarlierRuns, EarlierRunsSeconds));
+            }
+
             lines.Add(Row("the run", RunSeconds));
 
             if (!Finished)
@@ -156,11 +179,15 @@ namespace Federator.Core.Diagnostics
                 lines.Add(Row(AfterTheRun, AfterSeconds));
             }
 
+            string notThisOne = EarlierRunsSeconds > 0.0
+                ? ", and the earlier runs were work but are not this run, they have their own RESULT above"
+                : string.Empty;
+
             lines.Add(Finished
                 ? "the run is RUN started to RUN finished, and every share below is "
-                    + "worked off it. The other two are not work this tool did"
+                    + "worked off it. The other two are not work this tool did" + notThisOne
                 : "the run is RUN started to now, and every share below is "
-                    + "worked off it. Waiting for the person is not work this tool did");
+                    + "worked off it. Waiting for the person is not work this tool did" + notThisOne);
 
             return lines;
         }
