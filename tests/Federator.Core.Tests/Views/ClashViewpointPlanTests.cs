@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Clash;
+using Federator.Core.Diagnostics;
 using Federator.Core.Views;
 using NUnit.Framework;
 
@@ -528,6 +529,102 @@ namespace Federator.Core.Tests
 
             Assert.That(outcome.UnknownDisciplineCount, Is.EqualTo(1));
             Assert.That(outcome.Planned.Count, Is.EqualTo(1), "it still gets a viewpoint");
+        }
+
+        /// <summary>
+        /// The block counted the clashes with a set name carrying no code and never said which sets, so 7 viewpoints in
+        /// a folder called UNKNOWN could not be traced to the one odd name in the client's matrix, FR-074. It names
+        /// the sets, each with the clashes it was in, as many as a repeated line keeps and the rest counted. A set
+        /// whose name carries a code is never named.
+        /// </summary>
+        [Test]
+        public void TheBlockNamesTheSetsWithNoCodeAndCountsTheClashesOfEach()
+        {
+            string lines = LinesOf(
+                Simple("BLD-Security Devices", "BLD-ST-Walls"),
+                Simple("BLD-Security Devices", "BLD-AR-Walls"),
+                Simple("BLD-Odd Thing", "BLD-Other Thing"));
+
+            Assert.That(lines, Does.Contain("a set name with no code this tool knows : 3"));
+            Assert.That(
+                lines,
+                Does.Contain(" : BLD-Security Devices (2 clashes), BLD-Odd Thing (1 clash), BLD-Other Thing (1 clash)"));
+            Assert.That(lines, Does.Contain("a clash counted under each of its sets with none"));
+            Assert.That(lines, Does.Not.Contain("BLD-ST-Walls ("));
+            Assert.That(lines, Does.Not.Contain("BLD-AR-Walls ("));
+        }
+
+        [Test]
+        public void ABlockCountsAClashBetweenTwoSetsOfOneNameOnceUnderThatName()
+        {
+            string lines = LinesOf(Simple("BLD-Security Devices", "BLD-Security Devices"));
+
+            Assert.That(lines, Does.Contain("a set name with no code this tool knows : 1"));
+            Assert.That(lines, Does.Contain(" : BLD-Security Devices (1 clash)"));
+        }
+
+        [Test]
+        public void ASetWithNoNameIsNamedAsSuchAndNotLeftBlank()
+        {
+            string lines = LinesOf(Simple(string.Empty, "BLD-ST-Walls"));
+
+            Assert.That(lines, Does.Contain(" : (no set name) (1 clash)"));
+        }
+
+        /// <summary>Set names are compared Ordinal and never trimmed or cased, so two spellings are two sets.</summary>
+        [Test]
+        public void TwoSpellingsOfASetNameAreTwoSets()
+        {
+            string lines = LinesOf(
+                Simple("BLD-Odd", "BLD-ST-Walls"),
+                Simple("BLD-Odd ", "BLD-ST-Walls"),
+                Simple("bld-odd", "BLD-ST-Walls"));
+
+            Assert.That(lines, Does.Contain(" : BLD-Odd (1 clash), BLD-Odd  (1 clash), bld-odd (1 clash)"));
+        }
+
+        /// <summary>
+        /// The names stop at the number a repeated line keeps, and the sets past it are counted and not listed.
+        /// </summary>
+        [Test]
+        public void TheBlockNamesAsManySetsAsARepeatedLineKeepsAndCountsTheRest()
+        {
+            int kept = RunLog.KeptOfARepeat;
+
+            string exactly = LinesOf(Odd(kept));
+            string one = LinesOf(Odd(kept + 1));
+            string two = LinesOf(Odd(kept + 2));
+
+            Assert.That(exactly, Does.Contain("BLD-Odd Thing " + kept + " (1 clash)"));
+            Assert.That(exactly, Does.Not.Contain("more set"), "exactly as many as are kept leaves none to count");
+            Assert.That(one, Does.Contain("BLD-Odd Thing " + kept + " (1 clash), and 1 more set, counted and not listed"));
+            Assert.That(one, Does.Not.Contain("BLD-Odd Thing " + (kept + 1) + " ("));
+            Assert.That(two, Does.Contain(", and 2 more sets, counted and not listed"));
+        }
+
+        [Test]
+        public void ABlockWithEveryCodeKnownNamesNoSet()
+        {
+            string lines = LinesOf(Simple("BLD-AR-Walls", "BLD-ST-Columns"));
+
+            Assert.That(lines, Does.Not.Contain("the sets with no code"));
+        }
+
+        private static string LinesOf(params ClashToPlan[] clashes)
+        {
+            return string.Join("\n", new List<string>(Plan(false, clashes).Lines()).ToArray());
+        }
+
+        private static ClashToPlan[] Odd(int sets)
+        {
+            List<ClashToPlan> clashes = new List<ClashToPlan>();
+
+            for (int i = 1; i <= sets; i++)
+            {
+                clashes.Add(Simple("BLD-Odd Thing " + i, "BLD-ST-Walls"));
+            }
+
+            return clashes.ToArray();
         }
 
         [Test]

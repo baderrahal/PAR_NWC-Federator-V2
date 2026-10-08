@@ -298,6 +298,91 @@ namespace Federator.Core.Tests
             Assert.That(Pictures(Write(report, pasted)), Is.EqualTo(1));
         }
 
+        /// <summary>
+        /// The row a pasted thumbnail sits in takes the thumbnail's height. The clash row height was set after the
+        /// picture was pasted and took it away, so a 95 pixel picture overhung the next row, FR-039. The break:
+        /// the same row without a picture keeps the client's measured height.
+        /// </summary>
+        [Test]
+        public void ARowHoldingAPastedThumbnailKeepsTheThumbnailsHeight()
+        {
+            ClashReport report = Report();
+            TestReport test = OneTest(report, -0.05);
+
+            string images = ImageNaming.FolderFor(Path.Combine(folder, report.OutputName + ".xlsx"));
+            Directory.CreateDirectory(images);
+            string jpg = Path.Combine(images, ImageNaming.FileNameFor(0, 1));
+            File.WriteAllBytes(jpg, Jpeg());
+
+            test.Rows[0].ImageFile = ImageNaming.FileNameFor(0, 1);
+            test.Rows[0].ImageLink = "x_files/cd000001.jpg";
+            test.Rows[0].ImagePath = jpg;
+
+            ReportOptions pasted = new ReportOptions();
+            pasted.Images.EmbedThumbnail = true;
+
+            using (XLWorkbook workbook = new XLWorkbook(Write(report, pasted)))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+
+                Assert.That(
+                    sheet.Row(HeaderRow(sheet) + 1).Height,
+                    Is.EqualTo(WorkbookWriter.ThumbnailPoints).Within(0.001));
+            }
+
+            using (XLWorkbook workbook = new XLWorkbook(Write(report, new ReportOptions())))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+
+                Assert.That(sheet.Row(HeaderRow(sheet) + 1).Height, Is.EqualTo(WorkbookWriter.ClashRowHeight).Within(0.001));
+            }
+        }
+
+        /// <summary>
+        /// The workbook check expects the thumbnail's height on a clash row that holds a picture, where it expected
+        /// the client's 60 and would have said the row was wrong on every run with the box ticked once the writer
+        /// kept the thumbnail's height, FR-039. A row at that height holding no picture is still named.
+        /// </summary>
+        [Test]
+        public void TheWorkbookCheckAcceptsTheThumbnailsHeightOnlyOnARowHoldingOne()
+        {
+            ClashReport report = Report();
+            TestReport test = OneTest(report, -0.05);
+
+            string images = ImageNaming.FolderFor(Path.Combine(folder, report.OutputName + ".xlsx"));
+            Directory.CreateDirectory(images);
+            string jpg = Path.Combine(images, ImageNaming.FileNameFor(0, 1));
+            File.WriteAllBytes(jpg, Jpeg());
+
+            test.Rows[0].ImageFile = ImageNaming.FileNameFor(0, 1);
+            test.Rows[0].ImageLink = "x_files/cd000001.jpg";
+            test.Rows[0].ImagePath = jpg;
+
+            ReportOptions pasted = new ReportOptions();
+            pasted.Images.EmbedThumbnail = true;
+
+            string path = Write(report, pasted);
+
+            Assert.That(
+                string.Join("\n", WorkbookCheck.Of(path).Lines()),
+                Does.Not.Contain("is 72 high"),
+                "the picture is in the row and the row is the picture's height");
+
+            string plain = Write(report, new ReportOptions());
+
+            using (XLWorkbook workbook = new XLWorkbook(plain))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+                sheet.Row(HeaderRow(sheet) + 1).Height = WorkbookWriter.ThumbnailPoints;
+                workbook.SaveAs(plain);
+            }
+
+            Assert.That(
+                string.Join("\n", WorkbookCheck.Of(plain).Lines()),
+                Does.Contain("is 72 high and the client's report has it at 60"),
+                "the same height with no picture in the row is still a fault");
+        }
+
         // ---------- helpers ----------
 
         private static ClashReport Report()
