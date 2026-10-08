@@ -280,6 +280,22 @@ well as to pass.
   below gives.
   SavedViewpoints.CanBuild is true since the viewpoints round on 2026-09-19 and nothing
   in src reads it, read on 2026-10-05
+- THE PICTURES, F120. ClashImages holds the one Navisworks call, TestsImageForResult, and
+  the save, and every rule and every word around them is Core's. The fifty failures guard
+  is handed in, FR-076, built once in the engine beside the tests' guard and read in Write
+  before a render, so the writer renders nothing once it has fired, and ClashRunner reads
+  it after each test and after the pictures that waited for a merge and stops the run
+  with ImageFailure's words, the log line IMAGES RUN STOPPED and the label the plain words,
+  the way it stops on the tests' guard. The engine says nothing of its own about it: the
+  stop reaches it as the clash outcome's, the one way a stop reaches it. A render that left
+  no file is reported as ImageFailure.BecauseNoFileArrived, the path beside the reason and
+  never in it. The render and the save are timed apart into ImagesSeconds on the log's
+  clock, FR-077, the visit is the one watch the tally reads, and the step's line is written
+  beside the tally once per group. The JPEG encoder is found once per group and the bitmap
+  is disposed as soon as the save returns, with no copy of it on the way to the disk. The
+  rename into report order runs inside the RENUMBER step, its lines the outcome's, FR-075,
+  and the one catch left in the engine covers the planning before any move, where nothing
+  on the disk has changed, and says so
 - THE TEAMS, F131. The add-in holds only the calls, and every rule and every word is Core's,
   .claude\rules\core.md, The teams of the picked file. WHERE A RUN OR A PICK SAYS WHICH FILE IT
   READ, the window writes the TEAMS lines of its map, `TeamMap.Lines`, then a line for each set

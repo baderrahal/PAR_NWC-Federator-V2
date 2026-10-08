@@ -2,6 +2,72 @@
 
 Newest entry at the top.
 
+## 2026-10-08 The loop, turn 6, F120 the harvest and pictures area of the fix round, FR-075, FR-076 and FR-077, Core done and the add-in built
+
+Bader's order of 8 Oct 2026, Q145 item 3, wave 3a of the fix round, items FR-075, FR-076 and
+FR-077 of steps\fix-round.md, under Q143's limits, two attempts, one reviewer, no new probe and
+no fix to tools\loop. Branch fix-F120 off origin/main b3aa0db in the worktree
+%LOCALAPPDATA%\NwcFederatorLoop\wt-f120, every file named below under turn6 with the prefix
+f120-. FR-198 sits on the same index line of fix-round.md and is not in this pass, since the
+brief names the three. Navisworks was not started, no probe and no harness was run.
+
+- BEFORE, on b3aa0db from an empty git status: the solution built with 0 warnings and 0 errors,
+  f120-build-before.txt, and the Core tests 2707 passed, 0 failed, 0 skipped, f120-tests-before.txt
+- FR-075, the rename's undo. `ImageRenumbering.Apply` let a move that threw escape, leaving every
+  picture not yet moved under its holding name with its row pointing at the old name, and the
+  engine's catch said the pictures not yet renamed keep their run order numbers, which was not
+  the state on disk. A move that throws is caught at the move, in either pass, the pictures at a
+  final name go back to their holding name and every holding name back to the run order name it
+  came from, each read off the disk, the rows are pointed only once every move has gone through,
+  and the outcome names the move that threw, how many had been moved before it, how many were
+  under a holding name, and every picture that could not be put back with where it is. The
+  engine's lines are the outcome's, and its one catch left covers the planning before any move.
+  The rename runs inside RENUMBER, the sixteenth step, between IMAGES and VIEWS. Tests
+  `AMoveThatThrowsInPassTwoPutsEveryPictureBackAndNamesWhatStopped` and
+  `AMoveThatThrowsInPassOnePutsEveryPictureBack` in ReportOrderTests, a folder sitting at one
+  target path and at one holding path, both failing before with the IOException escaping Apply,
+  f120-fr075-before-fail.txt, and 18 of 18 passing after, f120-fr075-after.txt
+- FR-076, one guard for the run. The engine builds `imageGuard` beside the tests' guard, null when
+  the images' stop after count is zero, and hands it to each group's `ClashImages`, whose `Write`
+  reads it before a render and renders nothing once it has fired. `ClashRunner.StopIfTheImagesFailed`
+  reads it after each test and after the pictures that waited for a merge, and stops the run the
+  way the tests' guard does, `IMAGES   RUN STOPPED` in the log and the plain words on the label.
+  The engine's own post-group read is gone, the stop reaching it as clash.StopTheRun. The words
+  are Core's, `Federator.Core.Report.ImageFailure`: `NoFileArrived` is one key with the path
+  beside it on the line, where the path inside the reason made fifty failures fifty reasons.
+  `RepeatedFailureGuard.FirstReason` is the streak's reason. Tests ImageFailureTests, six, and
+  two in RepeatedFailureGuardTests, among them the brief's, two failures differing only by path
+  count as one reason. They did not build before, f120-fr076-fr077-before-nobuild.txt
+- FR-077, the split and the one change. `Federator.Core.Report.ImagesSeconds` holds rendering,
+  saving the JPEG and reading the file back apart, on the log's clock, the whole being the
+  visits to the step added, and its line is written once per group beside the IMAGES tally. The
+  visit is the one watch the tally reads, so the Stopwatch beside it is gone. The mechanics are
+  `Federator.Core.Diagnostics.SecondsByPart`, one copy shared with `ViewsSeconds`, whose line and
+  tests are unchanged. The JPEG encoder is found once per group and `Image.Save(path, encoder,
+  null)` is the call `Image.Save(path, ImageFormat.Jpeg)` makes after looking the encoder up on
+  every save, so every picture is the same bytes for bytes, and what the lookup cost is UNKNOWN
+  until the timed runs read the split. Tests ImagesSecondsTests, eleven, and RunStepsTests and
+  CensusRuleTests for the sixteenth step, the order test failing before on the position of
+  CONFIRM, f120-tests-core-mid.txt
+- DECIDED HERE. The put back covers the pictures already at a final name as well as those under
+  a holding name, since leaving the moved ones at their final names with the rows pointing at the
+  old names would leave rows pointing at other rows' pictures. A machine with no JPEG encoder
+  throws at the save and the guard stops the run with that reason, where the format overload
+  wrote a PNG under the jpg name. The tally's seconds per picture now include the read back,
+  which the IMAGES step always included
+- FOUND AND NOT CHANGED. A render that throws with a path inside the exception's message is still
+  one reason per path for the guard, the same shape as FR-076 for a throw. A put back that fails
+  has no Core test, nothing a test can place makes a move back from a holding name fail
+- AFTER: the Core tests 2728 passed, 0 failed, 0 skipped, f120-tests-after.txt, the solution
+  with the add-in built with 0 warnings and 0 errors, f120-build-after.txt, check-locals and
+  check-imports clean over src, f120-check-locals.txt and f120-check-imports.txt. The rules in
+  .claude\rules\core.md, the pictures bullets and the steps list, and .claude\rules\addin.md, one
+  bullet for the pictures. No pull request opened, on the brief
+- WHAT WAITS for the local machine: steps 482 to 490 of steps\03_bader_next.md, the IMAGES
+  seconds line and the RENUMBER row on the timed runs of Q145 item 5 with the same written
+  counts and the pictures still 1024 by 1024 JPEG, and the guard across groups, which needs a
+  render forced to fail, UNKNOWN whether the lead adds one
+
 ## 2026-10-08 The loop, turn 5, the plan of the day: the close of 7 Oct finished, lane B's night folded, F132's add-in half attempt 2, F114's add-in pass, main installed and the timed runs
 
 Picked up by Bader's message headed GOOD MORNING, CONTINUE THE LOOP, BADER, 8 OCT 2026. The System log, read in
