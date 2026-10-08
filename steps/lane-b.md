@@ -492,10 +492,15 @@ delete, and Bader's order of 8 Oct 2026 keeps them. They go with Q26's list unti
   317, a log line that must not throw, RunLog 2042, a copy made from the lines held in memory when the file
   cannot be read, which are the same lines, FolderMemory 202 and 231, a picker that opens where it always did,
   and BundleAssemblies 93, 149 and 236, a name that is not ours, an assembly with no location and a note that
-  must not stop a load.
-  A fallback that is deliberate and commented: ContainerName 135, InstallFiles 157, RunLog 448 and 2064, a path
-  that cannot be expanded is compared as it came and a size that cannot be read after the directory's own
-  figure is NOT ON DISK, and ReportPaths 225. RunLog 448 had no comment at its catch and has one now.
+  must not stop a load. In RowLog 180, RunLog 2042 and FolderMemory 202 the reason was away from the catch, at the call
+  or in the method's summary, and this pull request puts a line at the catch.
+  A fallback that is deliberate: ContainerName 135, InstallFiles 157, RunLog 448 and 2064, a path that cannot be
+  expanded is compared as it came and a size that cannot be read after the directory's own figure is NOT ON
+  DISK, ReportPaths 225, NwfComparison 245, NwfRebuildPlan 168 and 181, and PageCheck 484. The last four were
+  first sorted as a wrong reason on a path Navisworks does not hand the tool, a premise nothing observed backed
+  and one that was wrong for OpenDocumentJob. Read again, each answers for a path the framework will not take
+  apart with the path whole, or with not on disk, which is an answer and not a lost cause. NwfComparison had its
+  reason at the catch, and RunLog 448 and 2064, NwfRebuildPlan 168 and 181 and PageCheck 484 have one now.
   Fixed in this pull request, each with a Core test that fails on main's source except where it says so:
   RunLog 336, Start took every IOException for a name taken, see the table row. OpenDocumentJob 145 and 233,
   which the first sort called a wrong reason on a path Navisworks does not hand the tool: the catches are for
@@ -512,8 +517,6 @@ delete, and Bader's order of 8 Oct 2026 keeps them. They go with Q26's list unti
   a file found in the bundle that would not load now says so with what it threw, still handing back nothing.
   WorkbookCheck 455, a cell fill ClosedXML keeps as a theme colour throws when read and was called not filled,
   which names a banding fault that is not there, and now says the colour could not be read.
-  A wrong reason or lost detail on a path Navisworks does not hand the tool, not worth code: NwfComparison 245,
-  NwfRebuildPlan 168 and 181, PageCheck 484. Not read again by the reader of this change.
   Needs the engine or the window: FolderMemory 283, FR-162, where Remember drops the reason, and WorkbookWriter
   596, a thumbnail that would not embed, whose count the engine would have to print, the IMAGES block being
   printed before the workbook is written.
