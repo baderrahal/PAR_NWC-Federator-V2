@@ -552,6 +552,26 @@ well as to pass.
   collapsed under More, rarely changed. The two that destroy data are collapsed on their
   own under Things that destroy data, because they do not belong beside ordinary output
   options. Fewer decisions is the goal, not more words explaining them
+- THE GENERIC MODELS SETS ARE BUILT IN THE SETS STEP OF EVERY GROUP, F128, with an XML picked
+  or without one, since they come from the models and not from the file. `PlanTheGenericSets`
+  reads Model.FileName and Model.SourceFileName off each model of the document, each wrapper
+  disposed, and hands both to `GenericModelInput.From`, then `BuildTheGenericSets` builds
+  `plan.ToBuildPlan()` through `SetBuilder.Build` with NO JUDGE and NO LEFTOVER WALK, because a
+  walk handed that plan would remove every set of the picked file that no test points at, while
+  the picked file's build is handed `GenericModelsPlan.SetNames` as wanted so its walk keeps
+  them. Their outcome is `JobOutcome.GenericSets`, never the picked file's, so the EMPTY SETS
+  judge and SETS ACROSS THE RUN do not read them, a set created asks for the NWF save as any
+  set does, FR-020, and a present set keeps the question it was built with unless the rebuild
+  box is ticked, its Asked set to what the document's set asks as every present set's is. The
+  plan is made before the file's build and its sets are built after, all inside the one SETS
+  step, so the step's seconds show both. The GENERIC MODELS block and one row a model follow
+  the build. The workbook of its own is the GENERIC XLSX step after the group's workbook,
+  written whether or not the clash ran, skipped with its own line where no count was taken,
+  there is no report folder or no workbook is wanted this run, and read back by size as every
+  file is. The settings are `ReportOptions.GenericModels`, read off Core and never typed in the
+  window. A plan or a build that throws adds the group's error, logs what happens next and
+  counts the group as not counted in RESULT, which the window hands the engine's
+  `GenericModelsAcrossTheRun`
 
 ## What a tick box says
 
