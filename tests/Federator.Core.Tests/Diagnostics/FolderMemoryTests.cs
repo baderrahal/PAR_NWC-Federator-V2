@@ -212,6 +212,53 @@ namespace Federator.Core.Tests
             Assert.That(memory.DisabledReason, Is.Not.Null.And.Not.Empty);
         }
 
+        /// <summary>
+        /// FR-168. A folders file that would not open left the memory empty and the startup block said
+        /// Nothing remembered yet, which reads as a first run. It names the file as not used, with why.
+        /// </summary>
+        [Test]
+        public void AFileThatCouldNotBeUsedIsNamedAndNeverReadAsAFirstRun()
+        {
+            string here = Path.Combine(root, "not-a-folder.txt");
+            File.WriteAllText(here, "a file, not a folder");
+            FolderMemory memory = FolderMemory.Load(Path.Combine(here, "folders.txt"));
+            memory.Save();
+
+            string said = string.Join("\n", new System.Collections.Generic.List<string>(memory.Lines()).ToArray());
+
+            Assert.That(memory.DisabledReason, Is.Not.Null.And.Not.Empty);
+            Assert.That(said, Does.Contain("could not be used"));
+            Assert.That(said, Does.Contain(memory.DisabledReason));
+            Assert.That(said, Does.Not.Contain("Nothing remembered yet"));
+        }
+
+        [Test]
+        public void AFileHeldOpenIsSaidAsNotReadAndNotAsAFirstRun()
+        {
+            TestPaths.OnWindowsOnly("a file held open refusing to be read");
+
+            File.WriteAllText(file, "Source=" + TestPaths.At("in", "nwc"));
+
+            using (new FileStream(file, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+            {
+                FolderMemory memory = FolderMemory.Load(file);
+                string said = string.Join(
+                    "\n", new System.Collections.Generic.List<string>(memory.Lines()).ToArray());
+
+                Assert.That(said, Does.Contain("could not be used"));
+                Assert.That(said, Does.Not.Contain("Nothing remembered yet"));
+            }
+        }
+
+        [Test]
+        public void AMemoryThatWorkedKeepsSayingNothingRememberedYetAndNeverAReason()
+        {
+            FolderMemory memory = FolderMemory.Load(file);
+            string said = string.Join("\n", new System.Collections.Generic.List<string>(memory.Lines()).ToArray());
+
+            Assert.That(said, Does.Not.Contain("could not be used"));
+        }
+
         [Test]
         public void AFileFullOfRubbishIsReadAsNothingRatherThanThrowing()
         {

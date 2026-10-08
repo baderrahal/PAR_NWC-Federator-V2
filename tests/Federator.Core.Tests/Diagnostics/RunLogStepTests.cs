@@ -113,6 +113,51 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// T1-N57. The seconds, the visits and the throws of a repeated step are added up in one place,
+        /// and the group's text line and its machine readable row both read them. One visit that threw
+        /// among three is named as one of three, and the step total row carries the step once.
+        /// </summary>
+        [Test]
+        public void ARepeatedStepSaysHowManyThrewAndWritesItsTotalRowOnce()
+        {
+            using (RunLog log = Start())
+            {
+                log.GroupStarted("1B06PH", new List<string>());
+
+                for (int i = 0; i < 3; i++)
+                {
+                    using (RunStep step = log.Step(RunSteps.TestsRun))
+                    {
+                        if (i == 1)
+                        {
+                            step.Failed();
+                        }
+                    }
+                }
+
+                log.GroupFinished("1B06PH", GroupOutcome.Done, 1.0, null, "Weekly run");
+
+                string text = ReadWhileOpen(log);
+
+                Assert.That(text, Does.Contain("TESTS RUN     3 visits, "));
+                Assert.That(text, Does.Contain("s in total, 1 of them threw"));
+
+                Assert.That(log.RowLogPath, Is.Not.Null, "no machine readable log was opened");
+
+                string rows;
+
+                using (FileStream stream = new FileStream(
+                           log.RowLogPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    rows = reader.ReadToEnd();
+                }
+
+                Assert.That(Occurrences(rows, "step total"), Is.EqualTo(1));
+            }
+        }
+
+        /// <summary>
         /// The break. A step nobody closed is named at the end of its group with the
         /// seconds it had been open. Silence here would let the timing block understate
         /// the run, which is the one thing it must not do.

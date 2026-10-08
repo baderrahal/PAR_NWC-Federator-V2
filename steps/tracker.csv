@@ -163,18 +163,18 @@ FR-161,date format has no control,F121,4,broken feature,open,none,none,2026-10-0
 FR-162,folder memory save failure never reported,F121,4,broken feature,open,none,none,2026-10-04
 FR-163,title bar close mid run,F121,4,broken feature,open,none,none,2026-10-04
 FR-164,census sets overload returns zero not minus one,F121,4,loud failure,merged,150,none,2026-10-07
-FR-165,cleared name cell throws out of run click,F121,4,loud failure,merged,150,none,2026-10-07
+FR-165,cleared name cell throws out of run click,F121,4,loud failure,merged,"150, and 160 the second half, a hand typed name Windows refuses",none,2026-10-07
 FR-166,tolerance other blank stops hand buttons,F121,4,loud failure,open,none,none,2026-10-04
 FR-167,shared source uses group key not building code,F123,5,noise,open,none,none,2026-10-04
-FR-168,folders memory read failure logged as first run,F123,5,noise,open,none,none,2026-10-04
+FR-168,folders memory read failure logged as first run,F123,5,noise,merged,155,none,2026-10-07
 FR-169,document guard unreadable name called unsaved,F123,5,noise,open,none,none,2026-10-04
 FR-170,penetration size catch swallows unit throw,F123,5,noise,open,none,none,2026-10-04
-FR-171,t1 noise findings 93,F123,5,noise,open,none,none,2026-10-04
-FR-172,t1 uncalled members 150,F123,5,noise,open,none,none,2026-10-04
+FR-171,t1 noise findings 93,F123,5,noise,in progress,"162, 163, 164 and 165 in part, the rest on the laptop",none,2026-10-07
+FR-172,t1 uncalled members 150,F123,5,noise,in progress,"161 two members deleted, the rest on the laptop",none,2026-10-07
 FR-173,t1 catch swallowing 77,F123,5,noise,open,none,none,2026-10-04
 FR-174,one public type per file,F124,5,noise,open,none,none,2026-10-04
 FR-175,no sleep and keep awake,none,none,Bader's request,merged,"99, records only, nothing to merge",none,2026-10-04
-FR-176,coverage of the clash xml,F127,2a,Bader's request,in progress,"145 Core half merged, the add-in half on the laptop",none,2026-10-07
+FR-176,coverage of the clash xml,F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop",none,2026-10-07
 FR-177,generic models counted and a set per model,F128,2b,Bader's request,open,none,none,2026-10-04
 FR-178,start from an existing nwf,F129,3a,Bader's request,open,none,none,2026-10-04
 FR-179,shift range tick in the group list,F130,3b,Bader's request,open,none,none,2026-10-04
@@ -317,13 +317,13 @@ F117,the names,F117,5,fix,open,none,none,2026-10-04
 F118,workbook and report,F118,2c,fix,in progress,"147 FR-035 and FR-037 merged, the rest on the laptop",none,2026-10-07
 F119,run log and RESULT,F119,3b,fix,in progress,"148 nine items merged, the rest on the laptop",none,2026-10-07
 F120,harvest and pictures,F120,3a,fix,open,none,none,2026-10-04
-F121,the rest,F121,4,fix,in progress,"150 six items merged, the rest on the laptop",none,2026-10-07
+F121,the rest,F121,4,fix,in progress,"150 six items and 160 merged, the rest on the laptop",none,2026-10-07
 F122,the loop tools,F122,4,fix,open,none,none,2026-10-04
-F123,"docs and words, and the noise of every area",F123,5,fix,in progress,"151 and 154 nine items merged, the rest on the laptop",none,2026-10-07
+F123,"docs and words, and the noise of every area",F123,5,fix,in progress,"151, 154, 155, 161, 162, 163, 164 and 165 merged in part, the rest on the laptop",none,2026-10-07
 F124,"D1, one public type per file",F124,5,fix,open,none,none,2026-10-04
 F125,a window that is not modal is a pane and not a dialog,F125,outside the waves,fix,merged,102,none,2026-10-06
 F126,the window driver unticks a tick box by its AutomationId,F126,outside the waves,fix,merged,112,none,2026-10-05
-F127,coverage of the clash XML,F127,2a,fix,in progress,"145 Core half merged, the add-in half on the laptop",none,2026-10-07
+F127,coverage of the clash XML,F127,2a,fix,in progress,"145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop",none,2026-10-07
 F128,generic models,F128,2b,fix,open,none,none,2026-10-04
 F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
 F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
@@ -344,7 +344,7 @@ Q97-1,the findings of the first C06 run in steps\runs\03\findings.md,none,none,B
 Q97-2,"the first run of C07 and the run set that night, replaced by Q98's no run of C07 now",none,none,Bader's request,dropped,none,none,2026-10-04
 Q98,the full fix round,all,all,Bader's request,in progress,none,none,2026-10-04
 Q112-1,no sleep and keep awake (FR-175),none,none,Bader's request,merged,"99, records only, nothing to merge",none,2026-10-04
-Q112-2,coverage of the clash XML (FR-176),F127,2a,Bader's request,in progress,"145 Core half merged, the add-in half on the laptop",none,2026-10-07
+Q112-2,coverage of the clash XML (FR-176),F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop",none,2026-10-07
 Q112-3,generic models counted and a set per model (FR-177),F128,2b,Bader's request,open,none,none,2026-10-04
 Q112-4,start from an existing NWF (FR-178),F129,3a,Bader's request,open,none,none,2026-10-04
 Q112-5,Shift range tick in the group list (FR-179),F130,3b,Bader's request,open,none,none,2026-10-04
@@ -463,7 +463,7 @@ step 364,"the property probe on one mechanical NWC, run by the lead by Bader's a
 T5-R-WALKRACE,the harness's walk of the loop folder races a lane building under a wt- folder,none,none,register row,open,none,none,2026-10-07
 FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,open,none,none,2026-10-06
 FR-199,blocks stay in measured order with a priority file,F118,2c,Bader's decision,open,none,none,2026-10-06
-FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,open,none,none,2026-10-06
+FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,merged,153,none,2026-10-07
 FR-201,shared site named default reported only,F137,before the test of wave 1,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
 FR-202,sub object ownership measured before two reads change,F121,4,Bader's decision,open,none,none,2026-10-06
 FR-203,open statuses rule stays naming its reader,F123,5,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
@@ -498,6 +498,10 @@ F115-R20,leftovers are neither decided nor reported with the rebuild box off,F11
 F115-R21,a side whose sources read as none counts as zero sides and never as not counted,F115,2a,register row,open,none,none,2026-10-07
 F115-R22,a set created and then lost track of is reported FAILED and may not ask for the save,F115,2a,register row,open,none,none,2026-10-07
 F115-R23,two sets of one name in the picked file are built as one set and counted as one created and one already there,F115,2a,register row,open,none,none,2026-10-07
-Q143,"fast to a team release, the seven limits, the two lanes and the hourly lines",none,none,Bader's request,merged,"the records PR of the close, 2026-10-07",none,2026-10-07
+Q143,"fast to a team release, the seven limits, the two lanes and the hourly lines",none,none,Bader's request,merged,157,none,2026-10-07
 F132-R4,"the views read the document and not the merged report, so a clash only the mirror found gets no viewpoint and a status restated on the kept row is not the one the views read",F132,2a,silent wrong number,open,"none, the breaker of the add-in half attempt 1, turn5\f132p-break-addin.json",none,2026-10-07
 F132-R5,"a run with no XML now hands the by design pass real set names, so with the box ticked it writes Reviewed into saved tests and saves the NWF",F132,2a,silent wrong number,open,"none, the breaker of the add-in half attempt 1, turn5\f132p-break-addin.json",none,2026-10-07
+F127-R1,read-workbook.ps1 reads every sheet as a test sheet so the Coverage sheet makes every F104 verdict NOT PROVED until it reads a sheet named Coverage into a section of its own,F127,2a,register row,open,none,none,2026-10-07
+F137-R1,ModelFactsReader.SharedCoordinateOn returns an empty site where the Location tab is missing so a read fault reads as a model naming no site and skips the clash,F137,before the test of wave 1,register row,open,none,none,2026-10-07
+F137-R2,the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged,F137,before the test of wave 1,register row,open,none,none,2026-10-07
+F137-R3,the comments of FederationEngine near lines 2154 and 2300 and ModelFactsReader near 154 still say a model naming no site fails its group either way,F137,before the test of wave 1,register row,open,none,none,2026-10-07

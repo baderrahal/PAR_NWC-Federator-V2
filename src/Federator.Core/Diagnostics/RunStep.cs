@@ -126,8 +126,8 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>
-        /// Closes the step and reports how long it has been open WITHOUT closing it,
-        /// which is what the group end needs for a step nobody closed.
+        /// Reports how long the step has been open WITHOUT closing it, which is what the
+        /// group end needs for a step nobody closed.
         /// </summary>
         public double SecondsSoFar()
         {

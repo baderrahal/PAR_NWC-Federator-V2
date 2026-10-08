@@ -42,9 +42,9 @@ namespace Federator.Core.Probe
         /// <summary>The words on the button.</summary>
         public const string ButtonLabel = "Probe model properties";
 
-        /// <summary>The grey line under it. Twelve words, which is the limit.</summary>
+        /// <summary>The grey line under it. Eleven words, under the limit of twelve.</summary>
         public const string HelpLine =
-            "Reads a folder of NWC, or the open file. Writes one CSV";
+            "Reads NWC files or the open file, one CSV per model";
 
         /// <summary>
         /// The seventeen, worked out from the two lists in PenetrationSettings rather than

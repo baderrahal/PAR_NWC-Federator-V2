@@ -2,6 +2,40 @@
 
 Newest entry at the top.
 
+## 2026-10-08 The loop, turn 5, the plan of the day: the close of 7 Oct finished, lane B's night folded, F132's add-in half attempt 2, F114's add-in pass, main installed and the timed runs
+
+Picked up by Bader's message headed GOOD MORNING, CONTINUE THE LOOP, BADER, 8 OCT 2026. The System log, read in
+Arab Standard Time, UTC+3: shutdown.exe on behalf of SYSTEM began the shutdown at 19:30:51 on 2026-10-07, 46
+minutes after the day closed at 18:45 with STATE NIGHT, and the PC started at
+08:20:27, which the lead reads as the day closed in time. Get-Process Roamer read one at 08:36:19, pid 38612 with no window title, and none at 08:43:37, a
+Roamer the loop did not start, who started it UNKNOWN, so nothing was closed and nothing waited. His 22.0 key, exported to
+turn6\hkcu-22.0-morning-20261008-084556.reg, against the last backup, probes\property-run-20261007-173442\
+hkcu-navisworks-manage-22.0-before.reg of 17:34 on 2026-10-07: 1243 values each side, two differ, the CER
+calUptime and uptime counters, which Navisworks writes itself, so nothing was put back, and the compare found no difference on the Auto-Save
+enable value. The keep-awake runs again, pid 38340, started 08:46:28 through
+turn5\check-keep-awake.ps1, watching claude.exe pid 14096, its check scheduled in this session at 13 and 43 past each hour, job fec9b717, session only.
+
+The shutdown cut two pull requests. PR 157, the close of 7 Oct, stood CONFLICTING against main, which lane B
+moved by 153, 155, 158 and 160 to 166 after the close branched, so main is merged in here with both sides of
+the four conflicts kept, and the lane's night is folded into the tracker in the same pull request: FR-165's
+second half as 160, FR-168 as 155, FR-172 in part as 161, FR-171 in part as 162 to 165, and the F121 and F123
+rows. PR 159, F118's FR-199 and FR-040 by the lane's worktree session, read MERGEABLE and CLEAN with its one
+check passed this morning, and its one reviewer, the lead's reviewer agent, read APPROVE with four points that
+change nothing the team sees, turn6\f118-pr159-review.json, so it is finished next. STATE OPEN is set here, so the Stop gate holds the session again.
+
+The order on the laptop, Bader's items 8 and 9 of the message and Q143's limits: F132's add-in half attempt 2
+of two on F132-R4 and F132-R5 in wt-f132, one reviewer and one breaker, merged if no fault the team sees
+remains. Then F114's add-in pass. Then main installed in place and the timed runs of 1A02MM and 1A04PK with
+the new views on, against 2 h 12 min for 1A02MM and the hung run of 1A04PK. Then F109, F129, F130 and F120.
+Every hour three lines in the tab, job 42b56482 at 55 past, and the close from 18:40 with STATE NIGHT and the one
+records pull request of the day. Programs started this morning: reg.exe for the export, powershell for the
+keep-awake check and the tracker scripts, python for the resolve, git, gh and dotnet in the pre-commit. Files
+written outside the repo, all under turn6 unless named: the export above, f118-pr159-diff.txt, f118-pr159-review.json,
+f132-attempt2-brief.md, resolve-close.py, fix-plan-entry.py, close-1007-merge-msg.txt, close-1007-pr-body.md,
+close-1007-commit.txt, the keep-awake lines under turn5, and the f132q- files of F132's developer in its worktree
+wt-f132. The merged tree's Core tests in the pre-commit: 2408 passed, 0 failed, 0 skipped, and this pull request
+changes no code, so there is no count before it.
+
 ## 2026-10-07 The loop, turn 5, the close of the day: Q143's two lanes, 9 product fixes merged
 
 Bader's order of 15:38, FAST TO A TEAM RELEASE, Q143, two attempts per change, one reviewer, one records PR a day.
@@ -13,6 +47,325 @@ The probes P16 to P19 answered on fix-F114-probes, scan.md 5z-x to 5z-z, P15 NOT
 364's property probe ran on one ME NWC of run set 04, 8823 rows, 17 categories asked and 10 found, scan.md 5z-za.
 The day closed at 18:45 by the STOP SAFELY procedure, STATE NIGHT, the keep-awake stopped, before the company
 shutdown at about 19:30. The count of the day and the release date from the pace are on steps\PROGRESS.md.
+## 2026-10-07 The loop, turn 5, F137 no site and no clash groups end PARTIAL, FR-195, part 1 built by lane B's cloud session as PR 146, its records by the worktree session
+
+Bader's answers of 2026-10-05, Q111 B and Q125 B, FR-195 of steps\fix-round.md, before the test of
+wave 1. Lane B, the lane of his message of 7 Oct 2026 headed FAST TO A TEAM RELEASE, took the
+item on 2026-10-07. Its cloud session, which may push one branch and write its record in
+steps\lane-b.md alone, built part 1, Q111 B, with its tests and put it on main as PR 146, f1557fe,
+at 13:56, after a reviewer's and a breaker's reading, its record and the points it left on that
+page. This session, in the worktree .claude\worktrees\agent-a9ff34180e9235316 of this checkout,
+carries the records PR 146 left out on purpose: the rule in .claude\rules\core.md, the order
+line and the section of steps\01_next.md, this entry, and the lane page. It changes no code.
+
+What part 1 built, read off the diff of f1557fe against its first parent, 6 files, 223 lines
+in and 47 out, src\Federator.Core\Health\AlignmentCheck.cs, OffCoordinates.cs,
+src\Federator.Core\Rerun\GroupJudgement.cs and the tests under Health and Rerun:
+- A MODEL WHOSE SITE WAS READ AND NAMES NONE IS NOT ON THE SAME SHARED COORDINATES, Q111 B.
+  `AlignmentCheck.NotOnTheSameCoordinates` lists it beside a model on Internal and a far one,
+  its line saying the model names no shared site at all, `NamesNoSite`, the one test for it,
+  which a site whose read threw never passes, so a read fault is still not judged, FR-002. With
+  the rule on and a clash test to run its group skips the clash and ends PARTIAL by that, and
+  `WhyItFailsTheGroup` fails it no longer. Wherever no clash is skipped, the rule off or no
+  clash test to run, it fails the group as Q70 had it, which is what main does until Q125 B
+- the grey line of the tick box reads No site, Internal or over 1 m. NWF and NWD still made,
+  and the ALIGNMENT failed run line says, in a group whose clash was not skipped, a model
+  names no shared site or was exported on the internal origin
+- the note beside the NWD, the list for the modellers and the ALIGNMENT block carry the same
+  words for such a model, and a reference that itself names no site is named as both
+- seven new tests under OffCoordinatesTests, each breaking one thing, and the tests of
+  AlignmentCheck and GroupJudgement that pinned Q70's either way moved to the rule, with the
+  group judgement test that joins a failure and a skip for one group kept as a test of how the
+  reasons join, a pair the engine can no longer make for one group
+- Core tests under mono in the cloud session, read off its pull request: 2286 passed before
+  and 2301 after, 0 failed, 33 skipped, the Navisworks and Windows file system ones. On this
+  machine the whole set reads 2385 passed, 0 failed, 0 skipped on main dfe0fb0 with PR 146 in it
+
+NOT BUILT, Q125 B, PARTIAL for a group that runs no clash test with a model off the shared
+coordinates, more than 1 m away, on Internal or naming no site, with the reason models not on
+the same shared coordinates though no clash was skipped. The cloud session left it because the
+facts that say whether the group would have run a clash test are the engine's, JobOutcome and
+FederationEngine, which fix-F114's add-in pass changes, and a Core rule nothing calls would
+break the no member without a caller rule. The test
+WhereNoClashIsSkippedANoSiteModelStillFailsTheGroupUntilQ125IsWired pins what main does until
+then and flips when it lands. This session read `GroupJudgement` and `AlignmentCheck` and
+agrees: `WhyItFailsTheGroup` already takes the four inputs the block takes, so Q125 B is one
+more branch of it, PARTIAL with its reason where the rule is on, a model is off and no test
+would run, and the engine then reads that reason into the group's outcome as it reads the
+failure today, which is the add-in half.
+
+The points the cloud session's readers raised and it left, on its page, each for the laptop
+lane: `ModelFactsReader.SharedCoordinateOn` returns an empty site where the Location tab is
+missing or the property collection is null, so since Q111 B a read fault reads as a model
+naming no site and skips the clash where it used to fail the group and clash it, F137-R1; the
+reference model can itself name no site and every model is then measured from it, and
+`ModelsRead` counts placements and not the document's models, so a model whose read threw is
+never judged, F137-R2; and the comments of FederationEngine near lines 2154 and 2300 and
+ModelFactsReader near 154 still say a model naming no site fails its group either way, F137-R3.
+The rule file said so in two places, the FAILED line of the group judgement and the bullet of
+Q98 B2, and both now read as Q111 B has it.
+
+No Navisworks was started and nothing of the add-in was built. What waits for the local
+machine: Q125 B with the add-in half, the read of a missing Location tab as site not read,
+F137-R1, and the test of wave 1 on 1A02MM, whose ST model names no site, which with the rule on
+now ends PARTIAL with its clash skipped where set 04 failed it.
+
+## 2026-10-05 The loop, turn 5, F127 the coverage of Bader's request 2, FR-176, the Core steps 1 to 3 built and held on its branch, with attempt 2 on the readings of 0867a65
+
+### The Coverage sheet and the records, 2026-10-07, by lane B's worktree session
+
+Lane B, the lane of Bader's message of 7 Oct 2026 headed FAST TO A TEAM RELEASE, took fix-F127
+at dccf351. Its cloud session, which may push one branch and write its record in steps\lane-b.md
+alone, merged main into the Core steps 1 to 3, made six lines true after a reading and put them
+on main as PR 145, 2348b58, at 13:27, with the readers' points it left on that page. This
+session, in the worktree .claude\worktrees\agent-a9ff34180e9235316 of this checkout, carries
+what PR 145 left out, in the pull request named in steps\01_next.md: the design's step 6 and
+the half of step 7 that is Core, and the records.
+
+What was built, each with its tests, Core tests 2353 passed on main 86cc405 before and 2369
+after, 0 failed and 0 skipped, run here on Windows with dotnet test, and check-locals and
+check-imports clean over src. The tests were written beside the code in one pass and did not
+run against the code before, because the members did not exist, so the proof of each is the
+set passing and the test that breaks one thing, named below:
+- THE COVERAGE SHEET, FR-200, Bader's decision under Q46. `CoverageSheetData` holds what one
+  group's sheet shows, all of it read by the run, and `Federator.Core.Report.CoverageSheet`
+  writes it into the workbook in the one save with the client's sheet, second and last, named
+  by `CoverageSettings.SheetName`. One row per test of the picked file in the file's order, a
+  test F77 did not create included, with its position, name, priority, both sets and their
+  items, presence, whether it ran, the count check's four numbers and verdict, reason and
+  detail, `CoverageSheet.TestRows`, the one shape for the writer and any check. UNKNOWN for a
+  number nobody took, never an empty cell. The head names the picked file, its sha256 and its
+  list of corrections, the models and the counts read off the rows, `CoverageSheet.Counts`.
+  The SETS section is the sets step's results, the items no set catches and the mirrored pairs
+  say UNKNOWN until their rules are on main, and the tests Clash Detective holds that the file
+  does not name are listed off the count check. `WorkbookWriter.Write` takes the coverage and
+  the settings, and `CoverageSheet.WhyRefused` says why a report whose own sheet is named like
+  the Coverage sheet gets none. The test that breaks one thing: the FR-200 test reads the row
+  of a test not created back off the disk, a workbook with no coverage has no such row, and
+  the client's sheet reads cell for cell the same with the Coverage sheet and without
+- THE SHEETS THE WORKBOOK CHECK ALLOWS. The client's sheet first and the Coverage sheet second,
+  `WorkbookCheck.HasCoverageSheet`, and a problem line naming a second sheet of another name,
+  one named Coverage in another letter case, the Coverage sheet first and a third sheet, each
+  broken once in a test. The one sheet workbook still passes
+- RESULT'S COUNT OF THE TESTS ONCE ACROSS THE RUN, Bader's answer A to Q127, FR-176, which the
+  cloud session's page named as not in Core. `CoverageAcrossTheRun.AddTests` and `TestLines`:
+  the names once across the groups, in the document in one group at least and never, run in
+  one at least, with clashes in one at least, run and never with a clash, then the sums over
+  every group. The lines come first in `ResultLines` and none is written where no group's
+  tests were handed in
+- the rules of the coverage, the section Coverage of the picked tests, F127 in
+  .claude\rules\core.md, brought from dccf351 and made true to what is on main, with the
+  sheet, the check and the Q127 lines, and the F82 bullet it replaced
+
+Not built, and why. The COVERAGE block of the log, the design's step 5, writes through RunLog
+in the engine and is the add-in half's with the wiring, as are the .tsv rows and the workbook of
+the Coverage sheet alone for a group whose clash is skipped, Q126 answered B. The categories no
+set catches, the design's section 1.4, read the items off the models, which the add-in walks,
+and are UNKNOWN on the sheet until then. tools\loop\read-workbook.ps1 reads every sheet as a
+test sheet, so the add-in half's pull request must change it or every F104 verdict reads NOT
+PROVED once the sheet is written, and the loop's scripts are frozen since 7 Oct 2026, F127-R1.
+
+NOTHING IN THE ADD-IN CALLS THE NEW MEMBERS, the same state as the rest of the coverage since
+PR 145, which the cloud session's page names as a breach of the no member without a caller
+rule until the add-in half wires the engine. The reviewer's read of this pass's diff by this
+session found no fault that changes a number, a status, a file or a clash the team sees today,
+since nothing calls the code until that half. No breaker's read, by Bader's limit of 7 Oct 2026,
+which gives one to the sets area alone. The add-in half waits for the local machine: the engine
+building `CoverageSheetData` after the clash step and handing it to `WorkbookWriter.Write`,
+`CoverageAcrossTheRun.AddTests` beside `Add` for every group, the window handing the tally to
+`WriteResultBlock`, and a run on 1A02MM and 1A04PK with the sheet read back.
+
+
+Written by F127's developer as the lead's delegate. Core tests 1865 passed, 0 failed, 0 skipped
+before the first change, at 0c64018, 1904 passed after step 1, at 809e179, 1935 after step 2,
+at 5454357, and 1958 passed, 0 failed, 0 skipped after step 3, at 8601a6e, run by hand and by
+the pre-commit at each commit, the files f127-core-before.txt, f127-step1-after.txt to
+f127-step3-after.txt and f127-precommit-step1.txt to f127-precommit-step3.txt under
+%LOCALAPPDATA%\NwcFederatorLoop\turn5. The solution built with 0 errors and 0 warnings before
+the first change, f127-build-before.txt, and after the last, on the tree 8601a6e commits,
+f127-build-after.txt, and check-locals and check-imports exit 0 over src. Attempt 2: 1958
+passed, 0 failed, 0 skipped at 0867a65 before it, turn5\f127b-core-before.txt, 2005 passed
+after main 3ee01ab was taken in at be229e5, by its pre-commit, turn5\f127b-precommit-merge.txt,
+and 2023 passed, 0 failed, 0 skipped after the fixes at b1fb474, run by hand and by its
+pre-commit, turn5\f127b-precommit-code.txt. The solution built with 0 errors and 0 warnings at
+b1fb474 on a clean tree, turn5\f127b-build-code.txt, so no new warning, and check-locals and
+check-imports exit 0 over src. This developer started no Navisworks. Get-Process Roamer read the
+loop's baseline, pid 32136 started at 21:17:06 on 2026-10-04, before any change of attempt 1,
+turn5\f127-roamer-before.txt, after the commit of step 2, turn5\f127-roamer-mid.txt, and after
+its last command, turn5\f127-roamer-after.txt. Before attempt 2, at 06:35:13, it read pid 32136
+and a second, pid 46148, with no start time it would give and a working set of 61440 bytes,
+turn5\f127b-roamer-before.txt, the Roamer Q128 names, what it is UNKNOWN there too, and after
+attempt 2's last command, turn5\f127b-roamer-after.txt.
+
+### What was done
+
+- step 1, 809e179, the design's section 1.2. ClashRunOutcome hands out its created and already
+  there names, the tests that ran and the skips as read only views, keeps a copy of the counts
+  the creation plan decided on and the two side counts the run time check read per test.
+  CoverageRule.For gives every test of the picked file one TestCoverage, its presence and one
+  reason read off the runner's record in the order the code applies it, so a test F77 kept out
+  of a group the coordinates rule skipped keeps its side reason. An empty side is judged by its
+  set's code against the group's codes and the run's, a count of minus one is never a set that
+  found nothing, two tests of one name read UNKNOWN, and every ClashSkipReason maps to a reason,
+  held by a test that enumerates it. On the exchange file with group 100000's counts of set
+  03's C06 run it gives the design's split, 36 run, 969, 561, 255 and 9. 39 tests
+- step 2, 5454357, the design's section 1.3. DocumentTestCount for the add-in to fill.
+  WorkbookTests.Read reads the client's sheet test by test in both shapes, the full block and
+  the one row of Q73, with its doubts. CountCheck.Judge restates F104's checks 1 and 2, not
+  copies them, Agree, Failed or Not compared, never Agree on a minus one or a doubted name, the
+  reason in the line where the run knows it. The FAILED line starts COVERAGE FAILED, gives all
+  four numbers and says the group keeps its own result. Its test of RESULT wrote the line into
+  the log itself and pinned Nothing failed beside it, which proved nothing about RESULT, and
+  attempt 2 replaced it. 31 tests
+- step 3, 8601a6e, the design's sections 1.1, 1.5 and 1.7. CoverageSettings, each number that
+  shapes the coverage a setting refused where it cannot work. SETS ACROSS THE RUN names every
+  set that found nothing in every group by default, where it named a constant ten and C06 named
+  10 of its 14, and the two LogTrimmingTests that pinned the ten are rewritten to the rule in
+  the same commit, the cap of ten held as a setting, turn5\f127-step3-rewritten-tests.diff.txt.
+  FileFingerprint.Sha256 for the picked XML. 23 tests, 25 with the two rewritten
+- each step test first. Against the code before no step's tests built,
+  turn5\f127-step1-nobuild-before-fail.txt, f127-step1-nobuild-views-before-fail.txt,
+  f127-step2-nobuild-before-fail.txt and f127-step3-nobuild-before-fail.txt. Against a stub of
+  the new members 37 of step 1's 39 tests failed, 30 of step 2's 31 and 23 of step 3's 25,
+  turn5\f127-step1-stub-before-fail.txt to f127-step3-stub-before-fail.txt with the stubs in
+  f127-step1-stub.diff.txt to f127-step3-stub.diff.txt. The ones passing against a stub assert
+  what an empty or unchanged stub also gives
+- main 3ee01ab taken in at be229e5 before any change of attempt 2, F116 merged on main at
+  7793b9e and the turn 5 records, both sides kept: in steps\01_next.md F116 keeps the order line
+  41 main gives it and F127 moves to 42, with F116's section before F127's, in steps\log.md this
+  entry stays on top with main's entries whole under it, and core.md merged with no conflict.
+  Main moved again while attempt 2 was worked, and c101f6c, the C04 baseline's record and
+  Q128, was taken in at a794d3d after the records commit with no conflict, its pre-commit 2023
+  passed, turn5\f127b-precommit-merge2.txt
+- ATTEMPT 2, b1fb474, on the reviewer's reading of 0867a65, turn5\f127a-read-review.txt, CHANGES
+  with three blocking findings, and the breaker's, turn5\f127a-read-break.txt, CHANGES with one.
+  One code commit, every new test seen failing first
+- REVIEW 1, RESULT CARRIES THE FAILED LINE, Bader's answer under Q112: a count that differs is
+  a FAILED line in COVERAGE and RESULT, and the group keeps its own result. CoverageAcrossTheRun
+  rolls in each group's CountCheck, and RunLog.WriteResultBlock takes it beside the coordinates
+  tally, handed in by the run and never kept on the log. RESULT writes COVERAGE checked with how
+  many were compared, agreed, FAILED in how many groups and not compared, then every FAILED line
+  in full, FailedLinesInResult capping them only where set. Nothing compared reads UNKNOWN and
+  never nought FAILED, the breaker's note on the wave buildings, which skip their clash. A group
+  whose coverage could not be taken is counted not checked. Where no group failed and no error
+  was logged but a count differs, RESULT closes on a line saying so and never on Nothing failed,
+  the contradiction RunLog's one list of outcomes was written to stop. A run that hands in no
+  coverage writes that none was taken. CountCheck.CountOf gives the totals. The test that wrote
+  the line itself is replaced by ACountThatDiffersIsAFailedLineInResultAndTheGroupKeepsItsOwnResult,
+  which reads the RESULT block RunLog wrote off the tally and keeps the assertions on groups
+  failed 0, HasErrors and the judgement. 9 tests, turn5\f127b-result-before-fail.txt
+- REVIEW 2, THE NOT READ WHOLE CHECK BROKEN BY A TEST. Two tests hand CountCheck a WorkbookTests
+  read off a real xlsx, one with a Clashes cell reading two in words, one with the Clash Name
+  heading cleared, against a document holding 2 and 2. Both read NOT COMPARED, its block could
+  not be read whole, and give no FAILED line. With the branch deleted both read Failed,
+  turn5\f127b-notwhole-before-fail.txt, and the branch was put back as it was
+- REVIEW 3, THE SAVED TESTS THE PLAN DROPS. With no XML picked, a saved test whose type number
+  this tool does not run, or with no name, was read out of the document. It reads already there
+  and not run, CoverageReason.SavedTestNotRun, with the plan's own words, with a clash step and
+  without, and never the test was not created. turn5\f127b-savedtests-before-fail.txt
+- BREAK 1, THE FAILED LINE'S CAUSE. The runner records a test as Failed for a throw anywhere
+  from its creation to its count, the harvest included, and never as ran, so a Failed test is
+  never said to be not run. One created this run that Clash Detective holds results for ran this
+  run and then threw before its rows or count were taken, and the line says so with what it
+  threw. Any other Failed test says whether it ran is UNKNOWN. The weekly cause, an earlier
+  run's results, goes to a test already in the document and not run, and to no other. The
+  Failed reason's words say creating it, running it or reading its results threw. 3 tests,
+  turn5\f127b-failedcause-before-fail.txt
+- THE SMALL POINTS IN F127'S OWN LINES. Compact is named as the cause only where its count for
+  the group is at least the test's gap, and where it is fewer the line says so, the breaker. A
+  test the run holds as created or already there that the read of Clash Detective did not return
+  is NOT COMPARED, never Agree, the breaker, both in turn5\f127b-failedcause-before-fail.txt. The
+  test of F77's case, ATestNotInTheDocumentThatTheWorkbookReadsAsNoneAgrees, handed in a test
+  already there, and now hands in the presence its own summary names, not created, its Agree
+  unchanged. A test sharing its name with one the plan dropped reads UNKNOWN, both readings,
+  turn5\f127b-samename-before-fail.txt. An empty set of the group's codes is codes not read and
+  never the discipline is not in the group, the breaker, turn5\f127b-emptycodes-before-fail.txt.
+  CountCheck says restated, not copied, and names its two differences from compare-document.ps1,
+  the reviewer: there check 2 names an empty result group, and a test in the workbook only whose
+  every number is nought is counted and not judged, where here it agrees. And the item F127 found
+  outside it, now F116 has merged: ExportCheck.NamesShown's comment no longer says ten is the
+  number SetsAcrossTheRun names
+- 19 new tests and 1 replaced. Against the code before they did not build, 19 errors on the
+  missing members, turn5\f127b-nobuild-before-fail.txt. Against stubs of CoverageAcrossTheRun,
+  CountCheck.CountOf, the coverage parameter of WriteResultBlock and
+  CoverageReason.SavedTestNotRun, each leaving its rule out, 17 of the 19 failed,
+  turn5\f127b-stub-before-fail.txt. The two passing were the not read whole tests, whose code
+  was there, and they fail with it deleted
+- the rule in .claude\rules\core.md, the F127 section, and the order line 42 and the F127 section
+  of steps\01_next.md, in the records commit with this entry. Nothing in the add-in
+
+### What remains
+
+- step 4 after probes P2 to P5 are read, F116 being on this branch now, steps 5 to 7, the
+  COVERAGE block with each group's FAILED lines, the Coverage sheet, the rest of RESULT, the
+  workbook check's sheet list and the loop's two scripts, then the add-in half after probes P1
+  to P7, read twice and proved by a run. The window hands RESULT no coverage yet, so a build of
+  the branch writes COVERAGE checked : UNKNOWN, no coverage was taken in this run. Nothing in
+  the add-in calls the new members yet, so the branch stays unmerged until the add-in half. The
+  members waiting for a caller are named in the F127 section of steps\01_next.md
+- the mirrored pairs the design's step 3 names are F132's MirrorRule.Pairs, built on fix-F132
+  at f5db538 before the design's commit 63c52eb. F127 builds no second copy and the block
+  reads F132's once both are on main
+- the width of each column of the Coverage sheet, with the sheet in step 6
+
+### Known bugs
+
+- the readings' points that are not in F127's own lines or not small, each with its files.
+  WorkbookTests counts a block's rows by WorkbookCheck's rule and finds its headings at the
+  block's row plus 4 as WorkbookWriter does, a second reader of one layout,
+  src\Federator.Core\Report\WorkbookTests.cs ReadBlock against WorkbookCheck.cs lines 204 and
+  234 to 252 and WorkbookWriter.cs line 236, until F118 makes the BLOCKS line read through
+  WorkbookTests. SETS ACROSS THE RUN with nothing tallied, groups that build no set or whose
+  every count is minus one, reads sets looked at 0 and Every set found something somewhere,
+  which is UNKNOWN and not success, and a named set's line gives no seen in N of M groups,
+  src\Federator.Core\Sets\SetsAcrossTheRun.cs Lines and Add, older than F127.
+  FileFingerprint.Sha256 reads the path again whenever asked, so a file replaced or still being
+  written during a run would be named by other bytes than the plan parsed, and a sharing
+  violation throws other than FileNotFoundException,
+  src\Federator.Core\Diagnostics\FileFingerprint.cs with ExchangeReader.cs and
+  FederatorWindow.xaml.cs, for the add-in half to hash before and after the parse. With no
+  active document ClashRunner records one Failed skip named every test, which matches no test
+  of the plan, so every row reads UNKNOWN and the recorded reason is lost,
+  src\Federator.Addin\Engine\ClashRunner.cs lines 314 to 320 with CoverageRule.cs, for the
+  add-in half
+- the first value of CountVerdict, CoverageReason and TestPresence is a success, Agree,
+  HasClashes and CreatedThisRun, so a path that left one unset would read as success. Every
+  constructor is internal and every path sets it, and a first value Unknown would be a member
+  nothing assigns, so none is added, src\Federator.Core\Coverage\CountVerdict.cs,
+  CoverageReason.cs and TestPresence.cs
+- CoverageRule and CountCheck find each test by scanning lists, about a billion Ordinal compares
+  over 46 groups by the breaker's count, the seconds UNKNOWN until the add-in half's timer
+  reads them, src\Federator.Core\Coverage\CoverageRule.cs, CountCheck.cs and
+  WorkbookTests.Named
+- the run's codes. On a one building run, or with all in one grouping, they equal the group's,
+  so the discipline is not in the group is never reached and every missing code reads UNKNOWN.
+  The add-in half is to hand in the codes of every NWC the scan found, ticked or not, and the
+  words then say of the scanned folder, CoverageRule.For and FederationEngine.cs when wired
+- ClashTestPlan.Describe for Failed says creating or running it threw, the words of the log's
+  skip lines, while the runner records Failed for a throw in the harvest or the count too,
+  src\Federator.Core\Clash\ClashTestPlan.cs Describe with ClashRunner.cs lines 846 to 851 and
+  its catch, older than F127. CoverageWords says it right since attempt 2.
+  ExportCheck.NamesShown is a constant ten, a number that shapes the log, where CLAUDE.md asks
+  for a setting, src\Federator.Core\Health\ExportCheck.cs, not F127's, its comment made true
+  here
+- F127 and F132 both wait for their add-in halves, F132's record says F127 merges first, and
+  both change ClashRunOutcome.cs. F132's branch holds an order line 41, which F116 holds on
+  main, so it takes the next free number. F132's ClashSkipReason.Mirror fails F127's
+  EverySkipReasonTheRunnerRecordsMapsToACoverageReason when the two meet, by design, until
+  CoverageRule.ReasonFor maps it. The order is the lead's
+- the split test reads the exchange file with C06's SET counts for group 100000, while C06
+  itself picked other bytes, its SET lines asking ME-PIPING where the exchange file asks
+  ME-Piping. The test names, locators and set codes are the same in both, so the split is the
+  design's, and whether a run of the exchange file gives it is UNKNOWN until wave 2a
+- the codes CoverageRule judges a side by come from the group's files and the run's. What the
+  open file run hands in is UNKNOWN until the add-in half, and with none handed in every coded
+  empty side reads that the codes are not known
+
+### What comes next
+
+- the lead's reviewer and breaker on fix-F127 at attempt 2, the probes on Navisworks once none
+  of the loop runs, and step 4
+
 
 ## 2026-10-05 The loop, turn 5, F115 the sets area of the fix round, DONE in Core and built, wave 2a, FR-010 to FR-024 and FR-027, attempt 2 on the reviewer's and the breaker's readings
 

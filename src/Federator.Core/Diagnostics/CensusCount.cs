@@ -7,9 +7,8 @@ namespace Federator.Core.Diagnostics
     /// destroy without saying so. The models are what the federation IS. The sets are
     /// what every clash test's sides point at. The tests and the results are the only
     /// record of what has been fixed, and there is no second copy of them anywhere. The
-    /// viewpoints are F52's, and they are counted even while nothing creates one, because
-    /// a count that only starts once the feature works would never see the run that broke
-    /// it on the way there.
+    /// viewpoints are F52's and the VIEWS step creates them, so they are counted around
+    /// that step as the others are around theirs.
     /// </summary>
     public enum CensusCount
     {

@@ -102,7 +102,7 @@ namespace Federator.Core.Probe
             return total;
         }
 
-        /// <summary>Every category that was walked and found something, in the order read.</summary>
+        /// <summary>Every category that was walked and found something, in Ordinal order.</summary>
         public IList<string> CategoriesFound()
         {
             List<string> found = new List<string>(elementsPerCategory.Keys);

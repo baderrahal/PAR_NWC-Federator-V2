@@ -402,9 +402,27 @@ namespace Federator.Core.Naming
                 return ", it is empty.";
             }
 
-            return name.StartsWith(CannotBeNamed, StringComparison.Ordinal)
-                ? ". " + name.Substring(CannotBeNamed.Length)
-                : null;
+            if (name.StartsWith(CannotBeNamed, StringComparison.Ordinal))
+            {
+                return ". " + name.Substring(CannotBeNamed.Length);
+            }
+
+            // A name typed over by hand can hold what Windows refuses in a file name, which the pattern
+            // would have refused itself. FileNames names the characters, not the running platform.
+            int at = name.IndexOfAny(FileNames.Refused);
+
+            if (at < 0)
+            {
+                return null;
+            }
+
+            char found = name[at];
+
+            return ", it holds "
+                + (found < ' '
+                    ? "a control character (U+" + ((int)found).ToString("X4", System.Globalization.CultureInfo.InvariantCulture) + ")"
+                    : "\"" + found + "\"")
+                + ", which Windows does not allow in a file name.";
         }
 
         /// <summary>Only the rows that will actually run, for the collision check.</summary>

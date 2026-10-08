@@ -78,7 +78,7 @@ namespace Federator.Core.Health
     ///
     /// IT NAMES AND IT NEVER MERGES. `EL-Lightining Protection` against `EL-Lightning
     /// Protection` is a typo, and `AR-EXTERIOR` against `AR-INTERIOR` is two real
-    /// worksets, and they are two and one letter apart respectively, 5t. NO RULE CAN TELL
+    /// worksets, and they are one and two letters apart respectively, 5t. NO RULE CAN TELL
     /// THEM APART, so this tool reports both kinds and lets a person decide which is
     /// which. That is the whole point of Q69's second half: if the tool absorbs a typo
     /// silently nobody ever fixes it and the next building repeats it.
@@ -100,9 +100,9 @@ namespace Federator.Core.Health
 
         /// <summary>
         /// What separates a discipline prefix from the rest of a workset name on this
-        /// project, `ME-Ductwork` and `EL-Power`. A setting rather than a constant,
-        /// because a project spelling them another way is a project this rule should not
-        /// silently mis-read.
+        /// project, `ME-Ductwork` and `EL-Power`. Named once, here, and a constant
+        /// the engine does not yet pass in, so a project spelling them another way needs a
+        /// build until it is made a setting.
         /// </summary>
         public const char PrefixSeparator = '-';
 
@@ -158,7 +158,7 @@ namespace Federator.Core.Health
                         continue;
                     }
 
-                    if (!caseOnly && Distance(names[i].ToLowerInvariant(), names[j].ToLowerInvariant()) > Nearest)
+                    if (!caseOnly && EditDistance.Between(names[i].ToLowerInvariant(), names[j].ToLowerInvariant(), Nearest) > Nearest)
                     {
                         continue;
                     }
@@ -221,41 +221,6 @@ namespace Federator.Core.Health
         public static bool SamePrefix(string left, string right)
         {
             return string.Equals(PrefixOf(left), PrefixOf(right), StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>How many single letter edits turn one word into the other, given up on past Nearest.</summary>
-        private static int Distance(string a, string b)
-        {
-            if (Math.Abs(a.Length - b.Length) > Nearest)
-            {
-                return int.MaxValue;
-            }
-
-            int[] previous = new int[b.Length + 1];
-            int[] current = new int[b.Length + 1];
-
-            for (int j = 0; j <= b.Length; j++)
-            {
-                previous[j] = j;
-            }
-
-            for (int i = 1; i <= a.Length; i++)
-            {
-                current[0] = i;
-
-                for (int j = 1; j <= b.Length; j++)
-                {
-                    int cost = a[i - 1] == b[j - 1] ? 0 : 1;
-                    int best = Math.Min(current[j - 1] + 1, previous[j] + 1);
-                    current[j] = Math.Min(best, previous[j - 1] + cost);
-                }
-
-                int[] swap = previous;
-                previous = current;
-                current = swap;
-            }
-
-            return previous[b.Length];
         }
     }
 }

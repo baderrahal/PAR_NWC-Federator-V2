@@ -1,4 +1,4 @@
-STATE NIGHT, 2026-10-07 18:45, last run 04/item2-C02
+STATE OPEN, 2026-10-08 08:55, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -8,29 +8,28 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 23 | 7 | 1 | 0 | 25 | 0 | 56 |
+| 2a | 24 | 7 | 1 | 0 | 25 | 0 | 57 |
 | 2b | 11 | 16 | 0 | 1 | 5 | 0 | 33 |
 | 2c | 4 | 1 | 0 | 0 | 4 | 0 | 9 |
 | 3a | 8 | 4 | 0 | 0 | 8 | 0 | 20 |
 | 3b | 8 | 2 | 0 | 0 | 10 | 0 | 20 |
 | 4 | 6 | 1 | 0 | 0 | 50 | 0 | 57 |
-| 5 | 13 | 1 | 0 | 0 | 58 | 0 | 72 |
-| outside the waves | 156 | 10 | 0 | 1 | 44 | 5 | 216 |
-| total | 248 | 42 | 1 | 2 | 204 | 5 | 502 |
+| 5 | 14 | 3 | 0 | 0 | 55 | 0 | 72 |
+| outside the waves | 156 | 10 | 0 | 1 | 47 | 5 | 219 |
+| total | 250 | 44 | 1 | 2 | 204 | 5 | 506 |
 <!-- the end of the counts -->
 
 ## Now
-- SAFE TO SHUT DOWN at 18:45. Closed by Bader's STOP SAFELY procedure, the keep-awake stopped, no Navisworks of the loop runs
-- Q143, 2026-10-07: 9 product fixes merged today, 141, 142, 145, 146, 147, 148, 150, 151 and 154, with 144 and 152 the records and the fold, F132's add-in half, attempt 1 of two, pushed as fd936b1 and read CHANGES by the breaker on two faults the team would see, the views and a no XML by design pass, attempt 2 in the morning
-- Expected release from the pace: 2026-10-13. Left for the release are about ten add-in items on the laptop lane,
-  F132's add-in half, F114's add-in pass, F109, F129, F130, F120 and the add-in halves of F115, F127, F118 and F119,
-  at two or three a day over 8, 9, 12 and 13 Oct, then C06 and C07 in full and his three tests of done
-- Lane B, steps\lane-b.md: goes on alone tonight with F128's Core part and F121's rest
+- 8 Oct: the shutdown came at 19:30:51 on 7 Oct, Arab Standard Time, 46 min after the close at 18:45. A Roamer the loop did not start ran 08:36 to 08:43. His 22.0 key against the backup of 17:34 differs in two CER uptime counters only, Navisworks's own, nothing put back. Keep-awake pid 38340
+- PR 157, the close of 7 Oct, finished with main taken in and lane B's night folded. PR 159, F118's FR-199 and FR-040, green and read APPROVE by its one reviewer, finished next
+- Lane B, steps\lane-b.md: stopped after F123, its 153, 155, 158 and 160 to 166 folded here, F128 not started, the rest of F121 and F123 on the laptop
+- F132 mirrored tests: the add-in half attempt 2 of two on F132-R4 and F132-R5 in work on fix-F132, one reviewer and one breaker next
+- Expected release from the pace: 2026-10-13, Q143 item 14, about ten add-in items on the laptop lane at two or three a day over 8, 9, 12 and 13 Oct
 
 ## Next
-1. Morning: System log, Roamer, settings against the last backup, STATE OPEN, then F132's add-in half attempt 2 on F132-R4 and R5
-2. F114's add-in pass, then install main and the timed runs of 1A02MM and 1A04PK with the new views
-3. Fold lane B's night merges into the tracker, then F109, F129, F130, F120 in Q143's order
+1. F132's add-in half attempt 2 read and merged if no fault the team sees remains, then F114's add-in pass
+2. Main installed in place and the timed runs of 1A02MM and 1A04PK with the new views on, against 2 h 12 min for 1A02MM and the hung run of 1A04PK
+3. F109, F129, F130, F120 in Q143's order, three lines in the tab every hour, the close from 18:40 with STATE NIGHT and the one records PR
 
 ## Waiting for Bader
 - No question. Steps 228 to 233, the published NWD in ACC, his at the final run after F114 merges
@@ -47,4 +46,4 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - steps\history\log.md: one entry per fix, newest at the top
 - Status of every item and finding: steps\tracker.csv, read as steps\tracker.md
 - Questions and answers: steps\02_questions.md. The plan: steps\01_next.md and steps\fix-round.md
-- Evidence outside the repo: %LOCALAPPDATA%\NwcFederatorLoop\turn5
+- Evidence outside the repo: %LOCALAPPDATA%\NwcFederatorLoop\turn5 and turn6

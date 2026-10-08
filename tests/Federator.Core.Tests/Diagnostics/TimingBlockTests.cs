@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Federator.Core.Diagnostics;
 using NUnit.Framework;
 
@@ -334,8 +335,41 @@ namespace Federator.Core.Tests
 
             // The scan and the preview happen outside every group, so the difference is a
             // row of its own rather than a number nobody accounts for.
-            string outside = Find(lines, TimingBlock.OutsideEveryStep);
+            string outside = Find(lines, TimingBlock.OutsideEveryGroup);
             Assert.That(outside, Does.Contain("360.000s"));
+        }
+
+        /// <summary>
+        /// T1-N62. In the by group section the remainder is the run less the GROUPS, and it was labelled
+        /// outside every step, with a sentence saying every second of the run was inside a step. It says
+        /// group, and the by step section keeps its own words.
+        /// </summary>
+        [Test]
+        public void TheByGroupSectionSaysGroupWhereWhatIsAddedUpIsGroups()
+        {
+            IList<GroupRecord> groups = new List<GroupRecord> { Group("1B06PH", 100.0) };
+            IList<string> lines = TimingBlock.ForRun(groups, new List<StepRecord>(), 100.0);
+
+            int byStep = IndexOfLineStarting(lines, "by step across every group");
+            Assert.That(byStep, Is.GreaterThan(0));
+
+            for (int i = 0; i < byStep; i++)
+            {
+                Assert.That(lines[i], Does.Not.Contain("outside every step"), lines[i]);
+                Assert.That(lines[i], Does.Not.Contain("inside a step"), lines[i]);
+            }
+
+            Assert.That(lines.Take(byStep), Has.Some.Contains("every second of the run is inside a group"));
+        }
+
+        [Test]
+        public void GroupsAddingToMoreThanTheRunAreNamedAsGroups()
+        {
+            IList<GroupRecord> groups = new List<GroupRecord> { Group("1B06PH", 100.0), Group("1B06BC", 100.0) };
+            IList<string> lines = TimingBlock.ForRun(groups, new List<StepRecord>(), 150.0);
+
+            Assert.That(lines, Has.Some.Contains("the groups add up to MORE than the run took"));
+            Assert.That(lines, Has.Some.Contains("A group ran outside the stretch that was being timed"));
         }
 
         /// <summary>
