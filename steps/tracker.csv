@@ -38,7 +38,7 @@ FR-036,skipped test row keeps old tolerance after chosen edit,F118,2c,silent wro
 FR-037,priority csv repeated test name last row wins silently,F118,2c,silent wrong number,merged,147,none,2026-10-07
 FR-038,workbook stray grey row after last empty test,F123,5,noise,open,none,none,2026-10-04
 FR-039,thumbnail row height overwritten by clash row height,F123,5,noise,open,none,none,2026-10-04
-FR-040,item ids guid fallback counted missing,F118,2c,silent wrong number,open,none,none,2026-10-04
+FR-040,item ids guid fallback counted missing,F118,2c,silent wrong number,merged,159,none,2026-10-07
 FR-041,grid location empty on 345 rows,F118,2c,broken feature,open,none,none,2026-10-04
 FR-042,page check warns wrong order on priority sorted page,F123,5,noise,open,none,none,2026-10-04
 FR-043,reshaped group done but nwf never saved,F119,3b,silent wrong number,open,none,none,2026-10-04
@@ -314,7 +314,7 @@ F114,views,F114,2b,fix,in progress,"141 merged for the Core half, the add-in pas
 F115,sets,F115,2a,fix,merged,142,none,2026-10-07
 F116,the clash XML,F116,1,fix,merged,98,none,2026-10-05
 F117,the names,F117,5,fix,open,none,none,2026-10-04
-F118,workbook and report,F118,2c,fix,in progress,"147 FR-035 and FR-037 merged, the rest on the laptop",none,2026-10-07
+F118,workbook and report,F118,2c,fix,in progress,"147 FR-035 and FR-037 and 159 FR-199 and FR-040 merged, FR-036 and FR-041 on the laptop",none,2026-10-07
 F119,run log and RESULT,F119,3b,fix,in progress,"148 nine items merged, the rest on the laptop",none,2026-10-07
 F120,harvest and pictures,F120,3a,fix,open,none,none,2026-10-04
 F121,the rest,F121,4,fix,open,none,none,2026-10-04
@@ -462,7 +462,7 @@ step 346-352,"the remote branches other than main whose pull requests merged, de
 step 364,"the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept",none,none,register row,in progress,none,none,2026-10-07
 T5-R-WALKRACE,the harness's walk of the loop folder races a lane building under a wt- folder,none,none,register row,open,none,none,2026-10-07
 FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,open,none,none,2026-10-06
-FR-199,blocks stay in measured order with a priority file,F118,2c,Bader's decision,open,none,none,2026-10-06
+FR-199,blocks stay in measured order with a priority file,F118,2c,Bader's decision,merged,159,none,2026-10-07
 FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,merged,153,none,2026-10-07
 FR-201,shared site named default reported only,F137,before the test of wave 1,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
 FR-202,sub object ownership measured before two reads change,F121,4,Bader's decision,open,none,none,2026-10-06
@@ -502,3 +502,5 @@ F127-R1,read-workbook.ps1 reads every sheet as a test sheet so the Coverage shee
 F137-R1,ModelFactsReader.SharedCoordinateOn returns an empty site where the Location tab is missing so a read fault reads as a model naming no site and skips the clash,F137,before the test of wave 1,register row,open,none,none,2026-10-07
 F137-R2,the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged,F137,before the test of wave 1,register row,open,none,none,2026-10-07
 F137-R3,the comments of FederationEngine near lines 2154 and 2300 and ModelFactsReader near 154 still say a model naming no site fails its group either way,F137,before the test of wave 1,register row,open,none,none,2026-10-07
+F118-R1,the order check of the workbook reads the full blocks only so a one row test placed before a full block is not named,F118,2c,register row,open,none,none,2026-10-07
+F118-R2,with a priority file picked the check does not run the Priority heading check on a sheet with no full block,F118,2c,register row,open,none,none,2026-10-07

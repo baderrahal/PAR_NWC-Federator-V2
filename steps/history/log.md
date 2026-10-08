@@ -1,6 +1,78 @@
 # log
 
 Newest entry at the top.
+## 2026-10-07 The loop, turn 5, F118 the workbook and report, FR-035 and FR-037 built by lane B's cloud session as PR 147, FR-199 and FR-040 with the records by the worktree session
+
+Wave 2c of Bader's full fix round, Q98, the workbook and report area, items FR-035, FR-036,
+FR-037, FR-040, FR-041 and FR-199 of steps\fix-round.md. Lane B, the lane of his message of
+7 Oct 2026 headed FAST TO A TEAM RELEASE, took the item on 2026-10-07. Its cloud session, which
+may push one branch and write its record in steps\lane-b.md alone, built FR-035 and FR-037 with
+their tests and put them on main as PR 147, a174ca0, at 14:04, after a reviewer's and a
+breaker's reading, its record and the points it left on that page. This session, in the
+worktree .claude\worktrees\agent-a9ff34180e9235316 of this checkout, built FR-199 and FR-040 in
+Core and carries the records PR 147 left out on purpose, in the pull request named in
+steps\01_next.md.
+
+What PR 147 built, read off the diff of a174ca0 against its first parent, 4 files, 389 lines in
+and 11 out, src\Federator.Core\Clash\PriorityMap.cs, src\Federator.Core\Report\WorkbookCheck.cs
+and the tests PriorityMapTests.cs and WorkbookTestCountTests.cs, new:
+- FR-035. The WORKBOOK CHECK counted a block only where it found the Clash Name heading, so a
+  test of one row that found nothing, Q73, was never counted, every group of set 03's C06 run
+  read 5 blocks against 1830 and said in capitals the workbook was short, and a missing one row
+  test could not be named. `WorkbookCheck.Blocks` is every test, `FullBlocks` and `OneRowTests`
+  apart, the CHECK line says how many of each, and a workbook of one row tests alone has its
+  row 1 and widths read and says no block layout was compared
+- FR-037. A test the priority file named twice was read with the last letter and nothing said,
+  and `PriorityMap.RowCount` was the distinct names. The last letter still wins, the repeat is
+  named with both lines and both letters so a person decides, and the count is the rows of the
+  file, a row left out for its letter not a first naming
+- Core tests under mono in the cloud session, read off its pull request: 2301 passed before and
+  2322 after, 0 failed, 33 skipped
+
+What this session built, Core tests 2395 passed on main baf4a8c before and 2396 after, 0 failed
+and 0 skipped, run here on Windows with dotnet test, check-locals and check-imports clean over
+src. The four new tests did not build against the code before, which had no such member,
+f118-before-fail.txt in the session's scratch folder, and the five tests that pinned the old
+rules failed against the new code and are rewritten to the rules, every number kept:
+- FR-199, Bader's answer to Q49. `ReportOrder.Tests` gives the measured order whether or not a
+  priority file was picked, most clashes first with ties in creation order, and the priority
+  stays a column, F83, so the workbook, the clash XML and the picture numbers, which all walk
+  that one list, keep the order the client accepted. The sort A, then B, then C, then the rest,
+  by name inside each, is gone with its tests, replaced by
+  WithAFilePickedTheOrderIsStillTheMeasuredOne, ThePicturesFollowTheMeasuredOrderWithAFilePicked
+  and PickingAFileLeavesTheBlocksInTheMeasuredOrder. `WorkbookCheck.CheckOrder` runs whether or
+  not a file was picked, where it was switched off for a priority sorted workbook and left
+  every run that picked a file with no order check, AWorkbookWithAPriorityFileIsCheckedForTheMeasuredOrderToo
+  putting the last block out of order on the disk and reading the problem back. The engine
+  still tells the check a file was picked, which since FR-199 means the Priority column checks
+  alone, so no line of its changes and the add-in needs no change for it
+- FR-040. An item whose id came from the GUID fallback has a filled Item ID cell and no id
+  property behind it, and the ITEM IDS block counted it as missing, named no id property as its
+  source and said it was written as Element ID while the cell said Instance GUID, and the
+  workbook and page checks called a first cell of that kind the wrong shape. A missing id is an
+  empty cell, `ClashReportModel.Missing`, the source of such an id is
+  `ClientFormat.GuidFallbackSource` with the label the cell carries,
+  `ClientFormat.GuidIdLabel`, named once in Core, and `ClientShapes.LooksLikeAnItemId` accepts
+  the two labels this tool writes and no other. AnIdOffTheGuidFallbackIsNotMissingAndIsNamedAsTheGuid
+  and TheGuidFallbackCellIsAnItemIdShapeAndAWrongLabelIsNot. The harvest still types the
+  label as a literal, ClashHarvest.cs line 334, which the add-in half points at the constant
+- the rules in .claude\rules\core.md: the F83 bullets read as FR-199 has it, a bullet each for
+  FR-040 and FR-037, and the workbook check bullet says every test is counted, FR-035
+
+NOT BUILT, for the add-in half. FR-036, a skipped test's row keeping the old tolerance after a
+chosen edit, is in ClashRunner, where the row copies the plan before the skips return. FR-041,
+the grid location empty on 345 rows, needs a probe printing ClosestIntersection for the empty
+rows first, by its item. The points the cloud session's readers raised and it left are the
+register rows F118-R1 and F118-R2: the order check reads the full blocks only, so a one row
+test placed before a full block is not named, and with a file picked the check does not run the
+Priority heading check on a sheet with no full block.
+
+The reviewer's read of this pass's diff by this session found no fault that changes a number,
+a status, a file or a clash the team sees. No breaker's read, by Bader's limit of 7 Oct 2026,
+which gives one to the sets area alone. No Navisworks was started and nothing of the add-in was
+built. What waits for the local machine: the test of wave 2c on 1A02MM with the priority file,
+its blocks in the order of set 04's, FR-036 and FR-041, and the harvest's label.
+
 ## 2026-10-07 The loop, turn 5, F137 no site and no clash groups end PARTIAL, FR-195, part 1 built by lane B's cloud session as PR 146, its records by the worktree session
 
 Bader's answers of 2026-10-05, Q111 B and Q125 B, FR-195 of steps\fix-round.md, before the test of

@@ -10,13 +10,13 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
 | 2a | 24 | 8 | 0 | 0 | 23 | 0 | 55 |
 | 2b | 11 | 16 | 0 | 1 | 5 | 0 | 33 |
-| 2c | 4 | 1 | 0 | 0 | 4 | 0 | 9 |
+| 2c | 6 | 1 | 0 | 0 | 4 | 0 | 11 |
 | 3a | 8 | 4 | 0 | 0 | 8 | 0 | 20 |
 | 3b | 8 | 2 | 0 | 0 | 10 | 0 | 20 |
 | 4 | 0 | 0 | 0 | 0 | 57 | 0 | 57 |
 | 5 | 4 | 0 | 0 | 0 | 68 | 0 | 72 |
 | outside the waves | 154 | 11 | 0 | 1 | 47 | 5 | 218 |
-| total | 232 | 42 | 0 | 2 | 222 | 5 | 503 |
+| total | 234 | 42 | 0 | 2 | 222 | 5 | 505 |
 <!-- the end of the counts -->
 
 ## Now
@@ -25,7 +25,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - F114 views: the Core half merged as PR 141, its add-in pass next on the laptop after F132's
 - Probes: P11 to P14 done, P15 to P19 returned and are read next, step 364's property probe running
 - F131 merged as PR 135 and F138 as PR 127, the switch proven by the Q133 probe's real start
-- Lane B, steps\lane-b.md: F115 merged as PR 142 and 144, F127's Core 145 and its sheet 153, F137 part 1 146 with its records, F118's FR-035 and FR-037 147, F119's nine 148
+- Lane B, steps\lane-b.md: F115 merged as PR 142 and 144, F127's Core 145 and its sheet 153, F137 part 1 146 with its records, F118's FR-035 and FR-037 147 and FR-199 and FR-040 159, F119's nine 148
 
 ## Next
 1. F132's add-in half read and merged, then F114's add-in pass, in Bader's order of Q143
