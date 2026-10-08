@@ -51,18 +51,6 @@ namespace Federator.Core.Tests
         /// was renamed has to stay visible somewhere. These lines are that somewhere, one
         /// per property and never one per item.
         /// </summary>
-        /// <summary>
-        /// The root a report starts with is the exchange reader's, read and not typed again, T1-N64. The two are equal
-        /// today, so this holds the pairing and did not fail before: a second literal can only be caught by being
-        /// compared, and the compare is what is kept.
-        /// </summary>
-        [Test]
-        public void AReportStartsWithTheRootTheExchangeReaderUses()
-        {
-            Assert.That(new ClashReport("1C07BC", "out").SetTreeRoot, Is.EqualTo(ExchangeReader.SelectionSetTreeRoot));
-            Assert.That(new ExchangeReader().SetTreeRoot, Is.EqualTo(ExchangeReader.SelectionSetTreeRoot));
-        }
-
         [Test]
         public void TheIdSourcesAreCountedPerPropertyAndNotPerItem()
         {
@@ -83,6 +71,18 @@ namespace Federator.Core.Tests
                 Does.Contain("Id supplied 2 item ids of 6"));
             Assert.That(string.Join("\n", new List<string>(lines).ToArray()),
                 Does.Contain("no id property supplied 1 item id of 6"));
+        }
+
+        /// <summary>
+        /// The root a report starts with is the exchange reader's, read and not typed again, T1-N64. The two are equal
+        /// today, so this holds the pairing and did not fail before: a second literal can only be caught by being
+        /// compared, and the compare is what is kept.
+        /// </summary>
+        [Test]
+        public void AReportStartsWithTheRootTheExchangeReaderUses()
+        {
+            Assert.That(new ClashReport("1C07BC", "out").SetTreeRoot, Is.EqualTo(ExchangeReader.SelectionSetTreeRoot));
+            Assert.That(new ExchangeReader().SetTreeRoot, Is.EqualTo(ExchangeReader.SelectionSetTreeRoot));
         }
 
         // ---------- F79, which missing ids are this run's ----------

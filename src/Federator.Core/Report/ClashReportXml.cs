@@ -29,15 +29,11 @@ namespace Federator.Core.Report
     /// every name below was read off those files rather than invented. See docs/history/scan.md
     /// section 4h for the whole shape.
     ///
-    /// WHAT IS FILLED AND WHAT IS LEFT OUT. Filled: exchange, batchtest, clashtests,
-    /// clashtest, summary, clashresults, clashgroup, clashresult, resultstatus,
-    /// clashpoint, pos3f, gridlocation, clashobjects, clashobject, layer,
-    /// objectattribute, description, smarttags, smarttag, the name and value under the
-    /// last two, and logo. Left out, because this tool holds nothing to put in them:
-    /// approveddate, approvedby, assignedto, clashtasklink and everything under it,
-    /// linkage, linkedanimation, clipplaneset, view and camera. Left out on purpose
-    /// although the date found is held: createddate and date, because the stylesheet
-    /// writes a Date Found column for any it finds and the client's report has none.
+    /// WHAT IS FILLED AND WHAT IS LEFT OUT is the two arrays below, Filled and LeftOut, which a test
+    /// holds against a written file, so they are not written out a second time here. Left out
+    /// because this tool holds nothing to put in them, except createddate, date and time, which are left
+    /// out on purpose although the date found is held: the stylesheet writes a Date Found column for any
+    /// it finds and the client's report has none.
     ///
     /// WHAT THIS IS FOR NOW. It is no longer only a file beside the workbook. It is what
     /// the HTML Tabular report is rendered from, by Autodesk's own stylesheet, so every
@@ -99,13 +95,13 @@ namespace Federator.Core.Report
 
         /// <summary>
         /// Elements of that shape this tool leaves out, because it holds nothing to put in
-        /// them, or, createddate and date, because the client's report has no column for them.
+        /// them, or, createddate, date and time, because the client's report has no column for them.
         /// Left out rather than written empty.
         /// </summary>
         internal static readonly string[] LeftOut =
         {
-            "createddate", "date", "approveddate", "approvedby", "assignedto", "parentgroup", "comments",
-            "pathlink", "clashtasklink", "starttime", "endtime", "taskname", "tasklink",
+            "createddate", "date", "time", "approveddate", "approvedby", "assignedto", "parentgroup", "comments",
+            "pathlink", "node", "clashtasklink", "starttime", "endtime", "taskname", "tasklink",
             "taskuid", "animatorscene", "animatoranim", "linkage", "linkedanimation",
             "clipplaneset", "view", "camera"
         };

@@ -336,8 +336,9 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The nine values of a test, written from the column the header table starts at: the tolerance, the raw
-        /// clashes, the five status counts, the type and the status. A test that found something writes them under
+        /// The nine cells of a test's values, written from the column the header table starts at: the tolerance, the
+        /// raw clashes, the five status counts, the type and the status, which are the five facts the comment on
+        /// the single row names. A test that found something writes them under
         /// its heading row and one that found nothing writes them on its single row, so they are written here and
         /// the two shapes cannot disagree about a test.
         /// </summary>

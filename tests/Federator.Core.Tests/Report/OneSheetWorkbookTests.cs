@@ -631,16 +631,32 @@ namespace Federator.Core.Tests
             int column = WorkbookWriter.ColumnTestHeader;
 
             Assert.That(sheet.Cell(row, column++).GetString(), Is.EqualTo(test.ClientTolerance()), test.Name + " tolerance");
-            Assert.That(sheet.Cell(row, column++).GetString(), Is.EqualTo(test.RawClashes.ToString(System.Globalization.CultureInfo.InvariantCulture)), test.Name + " raw clashes");
+            Assert.That(
+                sheet.Cell(row, column++).GetString(),
+                Is.EqualTo(Whole(test.RawClashes)),
+                test.Name + " raw clashes");
 
             foreach (ClashStatus status in ClashTally.AllStatuses)
             {
-                Assert.That(sheet.Cell(row, column++).GetString(),
-                    Is.EqualTo(test.Tally.Of(status).ToString(System.Globalization.CultureInfo.InvariantCulture)), test.Name + " " + status);
+                Assert.That(
+                    sheet.Cell(row, column++).GetString(),
+                    Is.EqualTo(Whole(test.Tally.Of(status))),
+                    test.Name + " " + status);
             }
 
-            Assert.That(sheet.Cell(row, column++).GetString(), Is.EqualTo(ClientFormat.TestTypeWording(test.TestTypeName)), test.Name + " type");
-            Assert.That(sheet.Cell(row, column).GetString(), Is.EqualTo(ClientFormat.StatusWording(test.StatusWord)), test.Name + " status");
+            Assert.That(
+                sheet.Cell(row, column++).GetString(),
+                Is.EqualTo(ClientFormat.TestTypeWording(test.TestTypeName)),
+                test.Name + " type");
+            Assert.That(
+                sheet.Cell(row, column).GetString(),
+                Is.EqualTo(ClientFormat.StatusWording(test.StatusWord)),
+                test.Name + " status");
+        }
+
+        private static string Whole(int number)
+        {
+            return number.ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
 
         /// <summary>

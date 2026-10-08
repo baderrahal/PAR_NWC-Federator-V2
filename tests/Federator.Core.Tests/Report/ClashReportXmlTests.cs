@@ -305,8 +305,8 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The two lists answer to the file. Filled said createddate and date, which nothing wrote, and the list is
-        /// what the log prints as what was filled.
+        /// The two lists answer to the file. Filled said createddate and date, which nothing wrote, and nothing
+        /// checked it, because the lists are read only by Explain.
         /// </summary>
         [Test]
         public void TheListsOfWhatIsFilledAndLeftOutAreWhatTheFileHolds()
@@ -329,8 +329,6 @@ namespace Federator.Core.Tests
                     written.Add(element.Name.LocalName);
                 }
             }
-
-            written.Add(document.Root.Name.LocalName);
 
             List<string> unlisted = new List<string>();
             List<string> noneWritten = new List<string>();

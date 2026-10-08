@@ -49,10 +49,23 @@ namespace Federator.Core.Tests
             Assert.That(items, Is.EqualTo(0));
         }
 
+        /// <summary>Set names are compared Ordinal and never trimmed, since two in the reference file end in a space.</summary>
+        [Test]
+        public void ALocatorIsMatchedExactlyAndNeverTrimmed()
+        {
+            Dictionary<string, int> counts = new Dictionary<string, int> { { Locator + " ", 3 } };
+            int items;
+
+            Assert.That(PlannedClashSide.Counted(counts, Side(Locator + " "), out items), Is.True);
+            Assert.That(items, Is.EqualTo(3));
+            Assert.That(PlannedClashSide.Counted(counts, Side(Locator), out items), Is.False, "the name without its trailing space");
+            Assert.That(PlannedClashSide.Counted(counts, Side(Locator.ToLowerInvariant()), out items), Is.False, "another case");
+        }
+
         [Test]
         public void NoCountsNoSideOrNoLocatorIsNotCounted()
         {
-            Dictionary<string, int> counts = new Dictionary<string, int> { { Locator, 14 } };
+            Dictionary<string, int> counts = new Dictionary<string, int> { { Locator, 14 }, { string.Empty, 9 } };
             int items;
 
             Assert.That(PlannedClashSide.Counted(null, Side(Locator), out items), Is.False, "no counts at all");
