@@ -42,7 +42,8 @@ namespace Federator.Core.Diagnostics
         private bool closed;
 
         // FR-061's side. What the first write that threw said, kept so the text log can say once that this file
-        // stopped taking rows, and so no sentence of it claims the rows after that are in the file.
+        // stopped taking rows, and so the sentences RunLog writes about what this file holds stop saying it holds
+        // the rows after that.
         private string fault;
         private bool faultTold;
 
@@ -142,15 +143,41 @@ namespace Federator.Core.Diagnostics
                 FileStream stream = new FileStream(
                     path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 1024, false);
 
-                RowLog rows = new RowLog(path, stream, null);
-                rows.WriteLine(EventRow.Header());
-                return rows;
+                return Opened(path, stream);
             }
             catch (Exception error)
             {
-                return new RowLog(
-                    null, null, error.GetType().Name + ": " + error.Message);
+                return new RowLog(null, null, Cause(error));
             }
+        }
+
+        /// <summary>
+        /// The file once it is open. A header that could not be written is a file that could not be used, as it is
+        /// for the text log, so it is given up with what threw as the reason and the line that names the file says
+        /// there is none, where it would say the file is there and then say it holds nothing.
+        /// </summary>
+        internal static RowLog Opened(string path, FileStream stream)
+        {
+            RowLog rows = new RowLog(path, stream, null);
+            rows.WriteLine(EventRow.Header());
+
+            if (rows.fault == null)
+            {
+                return rows;
+            }
+
+            string cause = rows.fault;
+            rows.Dispose();
+            return new RowLog(null, null, cause);
+        }
+
+        /// <summary>
+        /// The type and what it said, without the full stop or line break it ended on, because the sentences that
+        /// carry it add their own, as the text log's FileStopped does.
+        /// </summary>
+        private static string Cause(Exception error)
+        {
+            return error.GetType().Name + ": " + (error.Message ?? string.Empty).TrimEnd('.', ' ', '\r', '\n');
         }
 
         /// <summary>The one line the text log carries about this file.</summary>
@@ -197,7 +224,7 @@ namespace Federator.Core.Diagnostics
                     // disk that filled up must not stop a run here. It is kept and told once instead of
                     // swallowed, because the text log goes on saying every collapsed line is in this file,
                     // and nothing after this row is.
-                    fault = error.GetType().Name + ": " + error.Message;
+                    fault = Cause(error);
                 }
             }
         }
@@ -213,19 +240,27 @@ namespace Federator.Core.Diagnostics
 
                 closed = true;
 
-                try
+                if (writer == null)
                 {
-                    if (writer != null)
-                    {
-                        writer.Flush();
-                        stream.Flush(true);
-                        writer.Dispose();
-                    }
+                    return;
                 }
-                catch (Exception)
-                {
-                    // Closing a log is never worth throwing over.
-                }
+
+                // Each step on its own, as RunLog.Dispose does, so a flush that fails after a full disk still
+                // reaches the dispose that closes the handle. Closing a log is never worth throwing over.
+                Quietly(delegate { writer.Flush(); });
+                Quietly(delegate { stream.Flush(true); });
+                Quietly(delegate { writer.Dispose(); });
+            }
+        }
+
+        private static void Quietly(Action step)
+        {
+            try
+            {
+                step();
+            }
+            catch (Exception)
+            {
             }
         }
     }

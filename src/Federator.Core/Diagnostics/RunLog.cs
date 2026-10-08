@@ -835,8 +835,8 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>
-        /// Whether the .tsv opened, so no sentence says a collapsed line is kept there when there is
-        /// no file to keep it, FR-061.
+        /// Whether the .tsv opened and has taken every row so far, so no sentence says a collapsed line is kept
+        /// there when there is no file to keep it, or when it stopped, FR-061.
         /// </summary>
         private bool RowsAreOpen()
         {
@@ -887,7 +887,7 @@ namespace Federator.Core.Diagnostics
                         + (rowsOpen
                             ? "Every one is in the machine readable log"
                             : rowsStopped
-                                ? "Those after the machine readable log stopped taking rows are kept nowhere"
+                                ? "Those counted before the machine readable log stopped taking rows are in it and any after that are kept nowhere"
                                 : "None is kept, no machine readable log is open"));
                 }
             }
@@ -929,14 +929,14 @@ namespace Federator.Core.Diagnostics
                 text));
 
             // FR-061's side. A write that threw is said once, with what it threw, as the text log's own file stopping
-            // is said, and the sentences about the .tsv stop claiming it holds the rows after that. The row itself
-            // still never stops the run.
+            // is said, and the sentences below that say what the .tsv holds stop saying it holds the rows after that.
+            // The row itself still never stops the run.
             string stopped = writer.TakeTheFaultToTell();
 
             if (stopped != null)
             {
                 Line("ROWS     the machine readable log stopped taking rows, " + stopped
-                    + ". It holds the rows written before this one and none after it, and the text log is unaffected");
+                    + ". It holds the rows written before this one and none after it, the one that failed may be cut short, and the text log is unaffected");
             }
         }
 
