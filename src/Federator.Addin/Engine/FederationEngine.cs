@@ -2878,6 +2878,15 @@ namespace Federator.Addin.Engine
                 // F76. The tolerance chosen on the Clash step, or the file per test.
                 runner.Tolerance = reports.Tolerance;
 
+                // F132. What the mirror rule reads: the priority file the run picked, the
+                // picked XML's sets, and THIS GROUP'S sets build from this run, read after it
+                // was built and before any merge, Bader's answer A to Q142. With no XML the
+                // sets are null and the build is null, an outcome holding nothing, so no
+                // pair merges and the MIRROR lines say so.
+                runner.Priorities = ThePriorities();
+                runner.ExchangeSets = exchange == null ? null : exchange.Sets;
+                runner.SetsBuilt = outcome.Sets;
+
                 // F72. Built only when the box is on, so a run that did not ask for it
                 // hands the runner a null and the runner resolves nothing and walks
                 // nothing. The tally is per GROUP, because the block is per group, and the
@@ -2965,6 +2974,10 @@ namespace Federator.Addin.Engine
                 }
 
                 ClashRunOutcome clash = runner.Run(plan);
+
+                // F132 attempt 2. Where every row of the report came from, for the views,
+                // which read the merged report's rows and resolve each by this.
+                outcome.RowAddresses = runner.RowAddresses;
 
                 // The skipped group's own CLASH block and summary say the clash was skipped
                 // rather than print nought for what never ran.
@@ -3144,7 +3157,7 @@ namespace Federator.Addin.Engine
         /// This is the check that would have caught Source File and Discipline coming out
         /// empty on every row, without anyone opening the file to find out.
         /// </summary>
-        private void CheckTheWorkbook(FederationJob job, string path, int testsInTheFile)
+        private void CheckTheWorkbook(FederationJob job, string path, int testsInTheFile, int mirrorsMerged)
         {
             WorkbookCheck check = WorkbookCheck.Of(path, ThePriorities().Picked);
 
@@ -3153,9 +3166,11 @@ namespace Federator.Addin.Engine
             // F77. The workbook carries a block for every test in the file whether or not
             // the test was created, and a count that differs is said in capitals. Only
             // where the tests came from a file, because that is what the count is of.
+            // F132. Less the mirrors merged into their kept tests, ClashReport.MirrorsMerged,
+            // each counted inside its kept test's block, which the line says.
             if (check.Ran && testsInTheFile >= 0)
             {
-                log.Line(CreationPlan.BlockCountLine(check.Blocks, testsInTheFile));
+                log.Line(CreationPlan.BlockCountLine(check.Blocks, testsInTheFile, mirrorsMerged));
             }
 
             Say(job.Building + ". " + check.Summary());
@@ -3488,7 +3503,11 @@ namespace Federator.Addin.Engine
             outcome.WorkbookSize = log.WriteFinished("XLSX", path);
             outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
 
-            CheckTheWorkbook(job, path, outcome.Clash == null || exchange == null ? -1 : outcome.Clash.TestsInFile);
+            CheckTheWorkbook(
+                job,
+                path,
+                outcome.Clash == null || exchange == null ? -1 : outcome.Clash.TestsInFile,
+                report == null ? 0 : report.MirrorsMerged);
         }
 
         /// <summary>The clash XML itself, split out for the same reason.</summary>
@@ -3584,7 +3603,8 @@ namespace Federator.Addin.Engine
             {
                 InStep(
                     RunSteps.Views,
-                    () => built = builder.BuildForGroup(document, outcome.Report, ThePriorities().Picked, ModelDisciplines(document)),
+                    () => built = builder.BuildForGroup(
+                        document, outcome.Report, outcome.RowAddresses, ThePriorities().Picked, ModelDisciplines(document)),
                     () => built == null ? "nothing" : built.Summary());
             }
             catch (Exception error)

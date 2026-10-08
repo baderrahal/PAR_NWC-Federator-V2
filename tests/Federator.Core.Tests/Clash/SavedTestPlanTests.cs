@@ -16,7 +16,8 @@ namespace Federator.Core.Tests
         private static SavedClashTest Saved(string name, params int[] address)
         {
             return new SavedClashTest(
-                name, 1, 0.075, true, false, 1, "side A as saved", false, 1, "side B as saved", address);
+                name, 1, 0.075, true, false, 1, SavedClashTest.LeftAsSaved,
+                false, 1, SavedClashTest.RightAsSaved, address);
         }
 
         [Test]

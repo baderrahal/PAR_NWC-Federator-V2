@@ -80,5 +80,59 @@ namespace Federator.Core.Tests
             Assert.That(ReportedCount.Line(null, 1, 1), Does.Contain("UNKNOWN test"));
             Assert.That(ReportedCount.Line(string.Empty, 1, 1), Does.Contain("UNKNOWN test"));
         }
+
+        // ---------- a kept test holding its mirror's extra clashes, F132 attempt 5 item 3 ----------
+
+        // Bader's answer D to Q133 adds the clashes only the mirror found to the kept test, and
+        // the panel shows them under the mirror. So the kept test's rows are the panel's own
+        // count plus the mirror's extra, which this tool explains, never MORE ROWS THAN CLASHES.
+        [Test]
+        public void AKeptTestHoldingItsMirrorsExtraClashesIsExplained()
+        {
+            string line = ReportedCount.Line("BLD-ME v BLD-ST", 27, 25, 2);
+
+            Assert.That(line, Does.Contain("27 rows for the workbook"));
+            Assert.That(line, Does.Contain("25 clashes in the document"));
+            Assert.That(line, Does.Contain("2 of the rows are clashes only its mirror found, which the panel shows "
+                + "under the mirror"));
+            Assert.That(line, Does.EndWith("they agree"));
+            Assert.That(line, Does.Not.Contain("MORE ROWS"));
+        }
+
+        [Test]
+        public void OneExtraClashReadsInTheSingular()
+        {
+            Assert.That(ReportedCount.Line("one test", 2, 1, 1), Does.Contain(
+                "1 of the rows is a clash only its mirror found, which the panel shows under the mirror"));
+        }
+
+        // The mirror's extra explains its own rows and no more. A row past them is still the
+        // finding nothing in this tool explains.
+        [Test]
+        public void ARowPastTheMirrorsExtraIsStillCalledOut()
+        {
+            string line = ReportedCount.Line("BLD-ME v BLD-ST", 28, 25, 2);
+
+            Assert.That(line, Does.Contain("THERE ARE MORE ROWS THAN CLASHES, by 1"));
+        }
+
+        // Result groups and the mirror's extra together: the rows of the test's own are fewer
+        // than its clashes, and the line says the grouping, as without a mirror.
+        [Test]
+        public void TheGroupingIsStillSaidBesideTheMirrorsExtra()
+        {
+            string line = ReportedCount.Line("BLD-ME v BLD-ST", 9, 19, 2);
+
+            Assert.That(line, Does.Contain("result groups"));
+            Assert.That(line, Does.Not.Contain("MORE ROWS"));
+        }
+
+        // No extra is the line as it always was, word for word.
+        [Test]
+        public void NoExtraIsTheLineAsItWas()
+        {
+            Assert.That(ReportedCount.Line("a test", 12, 12, 0), Is.EqualTo(ReportedCount.Line("a test", 12, 12)));
+            Assert.That(ReportedCount.Line("a test", 20, 19, 0), Is.EqualTo(ReportedCount.Line("a test", 20, 19)));
+        }
     }
 }

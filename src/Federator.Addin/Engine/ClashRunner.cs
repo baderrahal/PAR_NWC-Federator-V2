@@ -9,6 +9,7 @@ using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Naming;
 using Federator.Core.Report;
+using Federator.Core.Sets;
 using Federator.Core.Units;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 using CoreClashStatus = Federator.Core.Clash.ClashStatus;
@@ -119,7 +120,60 @@ namespace Federator.Addin.Engine
             this.statuses = new ClashStatusEditor(log);
             Tolerance = ToleranceChoice.FromTheFile();
             SetTreeRoot = ExchangeReader.SelectionSetTreeRoot;
+            Priorities = PriorityMap.NothingPicked();
+            Mirrors = new MirrorSettings();
         }
+
+        /// <summary>
+        /// The priority file the run picked, F132, read by the mirror rule to choose the
+        /// test kept of a pair. NothingPicked where none was, which is the default.
+        /// </summary>
+        public PriorityMap Priorities { get; set; }
+
+        /// <summary>
+        /// The picked XML's sets, ExchangeDocument.Sets, whose whole questions pair two tests
+        /// of two sets alike, F132, or null with no XML, when only the same two sets swapped
+        /// pair, which the MIRROR lines say.
+        /// </summary>
+        public IEnumerable<SelectionSetDefinition> ExchangeSets { get; set; }
+
+        /// <summary>
+        /// This group's sets build, F132 attempts 12 and 13, Bader's answer A to Q142, read by
+        /// the mirror rule before any merge: a pair merges only where every set of both its
+        /// tests was created by it from the picked XML. Null, the default, is an outcome holding
+        /// nothing, so with no sets build no pair merges and the MIRROR lines say why.
+        /// </summary>
+        public SetBuildOutcome SetsBuilt { get; set; }
+
+        /// <summary>The ending a mirror's name carries, a setting, MirrorSettings' default (mirror).</summary>
+        public MirrorSettings Mirrors { get; set; }
+
+        /// <summary>One merge per test kept whose mirrors the rule merges, MirrorMerge.Of, none where pairing threw.</summary>
+        private IList<MirrorMerge> merges = new List<MirrorMerge>();
+
+        /// <summary>The merge each test kept is the kept test of, by its name.</summary>
+        private readonly Dictionary<string, MirrorMerge> mergeOfKept = new Dictionary<string, MirrorMerge>(StringComparer.Ordinal);
+
+        /// <summary>The merge each merged mirror is a mirror of, by the name it runs under.</summary>
+        private readonly Dictionary<string, MirrorMerge> mergeOfMirror = new Dictionary<string, MirrorMerge>(StringComparer.Ordinal);
+
+        /// <summary>The pair of each merged mirror, by the name it runs under.</summary>
+        private readonly Dictionary<string, MirrorPair> pairOfMirror = new Dictionary<string, MirrorPair>(StringComparer.Ordinal);
+
+        /// <summary>The names the plan runs under whose rename in the document failed, so no test of the name is created beside the old one.</summary>
+        private readonly HashSet<string> renameFailed = new HashSet<string>(StringComparer.Ordinal);
+
+        /// <summary>The rows of every test in a merge whose pictures wait for the merge, in Clash Detective's order.</summary>
+        private readonly List<RowAddress> picturesWaiting = new List<RowAddress>();
+
+        /// <summary>Where every row of the report came from in the document, by the row, for the views after the merge.</summary>
+        private readonly Dictionary<ClashRow, RowAddress> rowAddresses = new Dictionary<ClashRow, RowAddress>();
+
+        /// <summary>What the document holds under each kept test of a merge, by its place in the file, for its ROWS line after the merge.</summary>
+        private readonly Dictionary<int, int> clashesInDocument = new Dictionary<int, int>();
+
+        /// <summary>How many sides of the saved tests were not read as one set this document holds, said once.</summary>
+        private int savedSidesNotRead;
 
         /// <summary>The prefix every set path is built with. A setting, not a constant.</summary>
         public string SetTreeRoot { get; set; }
@@ -153,6 +207,17 @@ namespace Federator.Addin.Engine
         /// results are only readable while the document is open.
         /// </summary>
         public ClashReport Report { get; set; }
+
+        /// <summary>
+        /// Where each row of the report came from in the document, F132 attempt 2: the test
+        /// it was read from, its address and the index path of its result, so the views
+        /// read the rows the merged report holds and resolve each one by this, under the
+        /// test the report holds it under, instead of walking the document by name.
+        /// </summary>
+        public IDictionary<ClashRow, RowAddress> RowAddresses
+        {
+            get { return rowAddresses; }
+        }
 
         /// <summary>How the discipline is read off a source file name. A setting.</summary>
         public ContainerNameSettings NameSettings { get; set; }
@@ -300,6 +365,15 @@ namespace Federator.Addin.Engine
             toleranceOnCreated = 0;
             toleranceOnExisting = 0;
             documentUnits = null;
+            merges = new List<MirrorMerge>();
+            mergeOfKept.Clear();
+            mergeOfMirror.Clear();
+            pairOfMirror.Clear();
+            renameFailed.Clear();
+            picturesWaiting.Clear();
+            rowAddresses.Clear();
+            clashesInDocument.Clear();
+            savedSidesNotRead = 0;
 
             Stopwatch stepClock = Stopwatch.StartNew();
 
@@ -331,17 +405,33 @@ namespace Federator.Addin.Engine
                 byPath = IndexSets(sets);
                 ClashTestPlan resolved;
 
+                // F132. Every test the document holds, each side as the set it points at,
+                // read over the index just built, so the mirror rule pairs saved tests by
+                // their sides and judges an XML's pairs against what the document holds.
+                ClashTestPlan inTheDocument = ClashTestPlan.FromDocument(
+                    ReadTheSavedTestsWithSides(document), documentUnits);
+
                 if (plan.Source == ClashPlanSource.Document)
                 {
                     // The tests came out of this document, so their sides are already
                     // inside them. Nothing is resolved against the sets and nothing is
                     // created, so the guard for a document whose sets resolve nothing does
                     // not apply here. A side that finds nothing is still caught per test,
-                    // below, the same as a test from a file.
+                    // below, the same as a test from a file. The plan run is the one just
+                    // read with its sides, the same tests at the same addresses.
                     log.Line("CLASH    the document holds " + byPath.Count
                         + (byPath.Count == 1 ? " set" : " sets") + ", and the "
-                        + plan.Buildable.Count + " saved tests keep the sides they were saved with");
-                    resolved = plan;
+                        + inTheDocument.Buildable.Count + " saved tests keep the sides they were saved with");
+                    resolved = inTheDocument;
+
+                    // F132 attempt 2, the breaker's finding R5. The sides just read are the
+                    // sets the saved tests point at, so the by design pass reaches the
+                    // saved tests, where before F132 the placeholders matched no pair. The
+                    // pass stays, Q144, and its block says where the sides came from.
+                    if (byDesign != null && ByDesignTally != null)
+                    {
+                        ByDesignTally.SidesReadOffTheSavedTests(inTheDocument.Buildable.Count, byDesign.Pairs.Count);
+                    }
                 }
                 else
                 {
@@ -370,6 +460,25 @@ namespace Federator.Addin.Engine
                     }
                 }
 
+                // F132. The mirrored pairs among the tests to run, judged against the
+                // document and this group's sets build, their lines, then the renames of
+                // Q136 A made in the document by address before any test is found by name
+                // or created, and the plan given each mirror's run name. Pairing that threw
+                // is said and the tests run under the plan's names, each keeping its own
+                // clashes.
+                MirrorRule mirrored = PairTheMirrors(resolved, inTheDocument, outcome);
+                DocumentClashTests clashTests = document.GetClash().TestsData;
+
+                if (mirrored != null)
+                {
+                    if (resolved.Source != ClashPlanSource.Document)
+                    {
+                        MakeTheRenames(clashTests, mirrored);
+                    }
+
+                    resolved = resolved.WithMirrorsNamed(mirrored);
+                }
+
                 foreach (SkippedClashTest test in resolved.Skipped)
                 {
                     outcome.AddSkipped(test);
@@ -380,8 +489,8 @@ namespace Federator.Addin.Engine
                 // test that never runs still has to reach the Summary carrying why.
                 reports = BuildReports(resolved);
 
-                DocumentClashTests clashTests = document.GetClash().TestsData;
                 Dictionary<string, TestAddress> present = IndexTests(clashTests);
+                IndexTheMerges(mirrored);
 
                 // Always logged, even at zero. Whether tests survive from one group into
                 // the next document is the question a slowdown turns on, and this is the
@@ -400,6 +509,12 @@ namespace Federator.Addin.Engine
                 IList<PlannedClashTest> toRun = PlanTheCreation(document, byPath, present, resolved, outcome);
 
                 RunEach(document, sets, clashTests, byPath, present, toRun, outcome);
+
+                // F132. After the run has set every test's state and never before: each
+                // merge into its kept test, its MIRROR lines, the kept test's ROWS line and
+                // the pictures of every test in a merge, whose rows, statuses and numbers
+                // the merge changes.
+                MergeTheMirrors(clashTests);
 
                 // F76. One line per group, whichever way the choice reads.
                 WriteTheToleranceLine();
@@ -616,6 +731,26 @@ namespace Federator.Addin.Engine
             try
             {
                 TestAddress address;
+
+                // F132, Q136 A. The saved test this one was to run as could not be renamed,
+                // so it is left as it is and no test of this name is created beside it, which
+                // would run its question twice and count a clash both find twice.
+                if (renameFailed.Contains(planned.Name))
+                {
+                    string notRenamed = "the saved test it runs as could not be renamed to this name, so that test is "
+                        + "left as it is and no test of this name is created beside it";
+                    TestReport notRun = ReportFor(planned);
+
+                    if (notRun != null)
+                    {
+                        notRun.State = TestState.Skipped;
+                        notRun.SkippedReason = notRenamed;
+                    }
+
+                    LogSkip(outcome.AddSkipped(planned.Name, ClashSkipReason.Failed, notRenamed));
+                    guard.RecordNotAttempted();
+                    return;
+                }
 
                 if (planned.IsFromDocument)
                 {
@@ -876,6 +1011,28 @@ namespace Federator.Addin.Engine
                         harvest.Images = Images;
                         harvest.WorkbookPath = WorkbookPath;
 
+                        // F132. A test in a merge hands every clash to it as the rows are
+                        // read, and its pictures wait for the merge, which changes which
+                        // rows the report holds, their statuses and their numbers.
+                        MirrorMerge asKept;
+                        MirrorMerge asMirror;
+                        MirrorPair pair;
+
+                        mergeOfKept.TryGetValue(planned.Name, out asKept);
+                        mergeOfMirror.TryGetValue(planned.Name, out asMirror);
+                        pairOfMirror.TryGetValue(planned.Name, out pair);
+                        harvest.MergeAsKept = asKept;
+                        harvest.MergeAsMirror = asMirror;
+                        harvest.AsMirror = pair;
+
+                        bool inAMerge = asKept != null || asMirror != null;
+
+                        // Every row is recorded with where its result sits, attempt 2, so
+                        // the views resolve each row of the merged report by it, and the
+                        // pictures of a test in a merge wait for the merge.
+                        harvest.Recorded = new List<RowUnderTest>();
+                        harvest.PicturesWait = inAMerge;
+
                         using (RunStep harvesting = log.Step(RunSteps.Harvest))
                         {
                             StepStarted(RunSteps.Harvest);
@@ -891,6 +1048,17 @@ namespace Federator.Addin.Engine
                             }
                         }
 
+                        foreach (RowUnderTest row in harvest.Recorded)
+                        {
+                            RowAddress where = new RowAddress(address, planned.Name, row);
+                            rowAddresses[row.Row] = where;
+
+                            if (inAMerge)
+                            {
+                                picturesWaiting.Add(where);
+                            }
+                        }
+
                         // F21. What the workbook got beside what the document holds, per
                         // test, so criterion 3 can be checked off the log instead of by
                         // opening Excel and Navisworks side by side for every one of
@@ -902,15 +1070,16 @@ namespace Federator.Addin.Engine
                         // and only the .log is trimmed. The key is what the line SAYS and
                         // never the sentence, because the sentence carries the test name
                         // and the names are exactly what varies.
-                        log.NumberedRepeat(
-                            "ROWS " + (summary.Rows.Count == tally.Total
-                                ? "the two numbers agree"
-                                : "the two numbers differ"),
-                            ReportedCount.Line(planned.Name, summary.Rows.Count, tally.Total),
-                            "rows for the workbook",
-                            planned.Name,
-                            EventRow.Count(summary.Rows.Count),
-                            EventRow.Count(tally.Total) + " in the document");
+                        // F132. The kept test of a merge writes its line after the merge,
+                        // with the clashes only its mirrors found, MergeTheMirrors.
+                        if (asKept != null)
+                        {
+                            clashesInDocument[planned.FileIndex] = tally.Total;
+                        }
+                        else
+                        {
+                            WriteTheRowsLine(planned.Name, summary.Rows.Count, tally.Total, 0);
+                        }
 
                         summary.State = summary.HasRows
                             ? TestState.FoundClashes
@@ -1373,70 +1542,13 @@ namespace Federator.Addin.Engine
         /// </summary>
         private ClashTest Resolve(DocumentClashTests clashTests, TestAddress address, string name)
         {
-            SavedItemCollection children = clashTests.Tests;
-            SavedItem item = null;
-            GroupItem walked = null;
+            string nowNamed;
+            ClashTest test = address.ResolveIn(clashTests, name, out nowNamed);
 
-            for (int level = 0; level < address.Depth; level++)
+            if (nowNamed != null)
             {
-                int index = address.IndexAt(level);
-
-                if (children == null || index < 0 || index >= children.Count)
-                {
-                    if (walked != null)
-                    {
-                        walked.Dispose();
-                    }
-
-                    return null;
-                }
-
-                item = children[index];
-
-                // The level walked past is released only once the child below it has been
-                // read, which is the order ResolveFolders in SetBuilder uses.
-                if (walked != null)
-                {
-                    walked.Dispose();
-                    walked = null;
-                }
-
-                if (level + 1 == address.Depth)
-                {
-                    break;
-                }
-
-                GroupItem group = item as GroupItem;
-
-                if (group == null)
-                {
-                    item.Dispose();
-                    return null;
-                }
-
-                children = group.Children;
-                walked = group;
-                item = null;
-            }
-
-            ClashTest test = item as ClashTest;
-
-            if (test == null)
-            {
-                if (item != null)
-                {
-                    item.Dispose();
-                }
-
-                return null;
-            }
-
-            if (!string.Equals(test.DisplayName, name, StringComparison.Ordinal))
-            {
-                log.Line("CLASH    the test at " + address + " is now \"" + test.DisplayName
+                log.Line("CLASH    the test at " + address + " is now \"" + nowNamed
                     + "\" and not \"" + name + "\", so it was left alone");
-                test.Dispose();
-                return null;
             }
 
             return test;
@@ -1824,6 +1936,409 @@ namespace Federator.Addin.Engine
             {
                 log.Line("CLASH    further skips for \"" + ClashTestPlan.Describe(test.Kind)
                     + "\" are counted, not listed. The block at the end carries the total.");
+            }
+        }
+
+        /// <summary>
+        /// The ROWS line of one test, F21, its wording Core's, ReportedCount.Line, with the
+        /// clashes only its mirrors found where it is the kept test of a merge, F132.
+        /// </summary>
+        private void WriteTheRowsLine(string name, int rows, int inDocument, int foundOnlyByAMirror)
+        {
+            log.NumberedRepeat(
+                "ROWS " + (rows - foundOnlyByAMirror == inDocument
+                    ? "the two numbers agree"
+                    : "the two numbers differ"),
+                ReportedCount.Line(name, rows, inDocument, foundOnlyByAMirror),
+                "rows for the workbook",
+                name,
+                EventRow.Count(rows),
+                EventRow.Count(inDocument) + " in the document");
+        }
+
+        // ---------- the mirrored tests, F132 ----------
+
+        /// <summary>
+        /// Every test the document holds with each side as the set it points at, read over
+        /// the set index, SavedTests.Read with SavedSideLocator, and one line where any side
+        /// was not read, since the mirror rule pairs by sides and never pairs one not read.
+        /// </summary>
+        private IList<SavedClashTest> ReadTheSavedTestsWithSides(Document document)
+        {
+            savedSidesNotRead = 0;
+
+            IList<SavedClashTest> saved = SavedTests.Read(document, SavedSideLocator);
+
+            if (savedSidesNotRead > 0)
+            {
+                log.Line("CLASH    " + savedSidesNotRead + (savedSidesNotRead == 1 ? " side" : " sides")
+                    + " of the " + saved.Count + " saved " + (saved.Count == 1 ? "test" : "tests")
+                    + " point at no one set this document holds, or would not read, so each is UNKNOWN to the mirror "
+                    + "rule and no pair rests on it");
+            }
+
+            return saved;
+        }
+
+        /// <summary>
+        /// Which one set a saved side points at, as a test locator names it, or UNKNOWN. A
+        /// side holding no source or more than one, which asks another question than any
+        /// test of the XML, a side pointing at no set this document holds, and one that would
+        /// not read are all UNKNOWN, counted once, and Core pairs no test on them. The one
+        /// reading of which set a source is, LocatorOf, is the DRIFT block's own.
+        /// </summary>
+        private string SavedSideLocator(ClashSelection side)
+        {
+            if (SourceCount(side) != 1)
+            {
+                savedSidesNotRead++;
+                return TestSettings.UnknownLocator;
+            }
+
+            string locator = LocatorOf(side);
+
+            if (string.IsNullOrEmpty(locator) || !TestDrift.WasRead(locator))
+            {
+                savedSidesNotRead++;
+                return TestSettings.UnknownLocator;
+            }
+
+            return locator;
+        }
+
+        /// <summary>How many sources a side holds, or -1 where reading them threw, which is said.</summary>
+        private int SourceCount(ClashSelection side)
+        {
+            try
+            {
+                using (Selection selection = side.Selection)
+                {
+                    SelectionSourceCollection sources = selection.SelectionSources;
+                    return sources == null ? 0 : sources.Count;
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading how many sources a saved clash side holds",
+                    error,
+                    "kept going, that side is UNKNOWN to the mirror rule and no pair rests on it");
+                return -1;
+            }
+        }
+
+        /// <summary>
+        /// The mirror rule over the tests to run, Federator.Core.Clash.MirrorRule.Of: with
+        /// an XML, over its tests against every test the document holds and this group's sets
+        /// build, with the priority file and the XML's sets, and with none, over the saved
+        /// tests by their sides. Its MIRROR lines, its renames and the names the coverage
+        /// sheet gives, F127, go in the log as the Core gives them. Null where the rule threw,
+        /// which is said, so every test then runs under the plan's name keeping its own clashes.
+        /// </summary>
+        private MirrorRule PairTheMirrors(ClashTestPlan resolved, ClashTestPlan inTheDocument, ClashRunOutcome outcome)
+        {
+            string where = Words.Or(outcome.OpenDocument, "this document");
+
+            try
+            {
+                MirrorRule rule = resolved.Source == ClashPlanSource.Document
+                    ? MirrorRule.Of(resolved.Buildable, Priorities, null, Mirrors, null, null)
+                    : MirrorRule.Of(
+                        resolved.Buildable, Priorities, ExchangeSets, Mirrors, inTheDocument, SetsBuilt ?? new SetBuildOutcome());
+
+                log.Block("MIRROR " + where, rule.Lines());
+
+                IList<string> renames = rule.Renames.Lines();
+
+                if (renames.Count > 0)
+                {
+                    log.Block("MIRROR RENAMES " + where, renames);
+                }
+
+                IList<KeyValuePair<string, string>> coverage = rule.CoverageNames();
+
+                if (coverage.Count > 0)
+                {
+                    List<string> lines = new List<string>();
+
+                    foreach (KeyValuePair<string, string> name in coverage)
+                    {
+                        lines.Add(MirrorRule.Prefix + "   " + name.Key + "  " + name.Value);
+                    }
+
+                    log.Block("MIRROR COVERAGE " + where, lines);
+                }
+
+                return rule;
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "pairing the mirrored tests of " + where,
+                    error,
+                    "kept going, no test is paired, every test runs under the name the plan gives it and keeps its own "
+                        + "clashes, so a clash two tests find may be counted twice");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Every rename the rule planned, Q136 A and the change of roles, made in the document
+        /// by the test's address through TestsEditDisplayName before any test is found by
+        /// name, F132. The results and their statuses are counted before and read back after,
+        /// since nothing has measured what the rename keeps, and both counts are said. A test
+        /// not at its address, not found under the new name after, or whose rename threw is
+        /// said and left as it is, and the name it was to run under is not created beside it.
+        /// </summary>
+        private void MakeTheRenames(DocumentClashTests clashTests, MirrorRule mirrored)
+        {
+            foreach (MirrorRename rename in mirrored.Renames.Planned)
+            {
+                string oldName = rename.Saved.Name;
+                string newName = rename.NewName;
+                TestAddress address = TestAddress.At(rename.Saved.Address);
+
+                try
+                {
+                    ClashTally before = new ClashTally();
+                    int groups = 0;
+
+                    using (ClashTest old = Resolve(clashTests, address, oldName))
+                    {
+                        if (old == null)
+                        {
+                            log.Line(MirrorRule.Prefix + "   " + oldName + " is not at " + address + " any more, so it is "
+                                + "not renamed " + newName + " and no test of that name is created beside it");
+                            renameFailed.Add(newName);
+                            continue;
+                        }
+
+                        CountInto(old.Children, before, ref groups);
+                        clashTests.TestsEditDisplayName(old, newName);
+                    }
+
+                    ClashTally after = new ClashTally();
+                    groups = 0;
+
+                    using (ClashTest renamed = Resolve(clashTests, address, newName))
+                    {
+                        if (renamed == null)
+                        {
+                            log.Line(MirrorRule.Prefix + "   after the rename no test named " + newName + " is at " + address
+                                + ", so whether " + oldName + " was renamed is UNKNOWN and no test of that name is created "
+                                + "beside it");
+                            renameFailed.Add(newName);
+                            continue;
+                        }
+
+                        CountInto(renamed.Children, after, ref groups);
+                    }
+
+                    changedTheDocument = true;
+                    log.Line(MirrorRule.Prefix + "   renamed " + oldName + " to " + newName + " at " + address + ", "
+                        + (SameCounts(before, after)
+                            ? "its " + after.Total + (after.Total == 1 ? " result" : " results")
+                                + " and the statuses read back the same, " + after.Describe()
+                            : "its results read " + before.Total + " with " + before.Describe() + " before and "
+                                + after.Total + " with " + after.Describe() + " after, which is not the same"));
+                }
+                catch (Exception error)
+                {
+                    renameFailed.Add(newName);
+                    log.Failure(
+                        "renaming " + oldName + " to " + newName + " at " + address,
+                        error,
+                        "kept going, the saved test is left as it is and no test of that name is created beside it");
+                }
+            }
+        }
+
+        private static bool SameCounts(ClashTally before, ClashTally after)
+        {
+            if (before.Total != after.Total)
+            {
+                return false;
+            }
+
+            foreach (CoreClashStatus status in ClashTally.AllStatuses)
+            {
+                if (before.Of(status) != after.Of(status))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// One merge per test kept whose mirrors the rule merges, MirrorMerge.Of, indexed by
+        /// the kept test's name and by the name each mirror runs under, so the harvest of
+        /// each hands its clashes to the right merge.
+        /// </summary>
+        private void IndexTheMerges(MirrorRule mirrored)
+        {
+            if (mirrored == null)
+            {
+                return;
+            }
+
+            merges = MirrorMerge.Of(mirrored);
+
+            foreach (MirrorMerge merge in merges)
+            {
+                mergeOfKept[merge.Kept.Name] = merge;
+
+                foreach (MirrorPair pair in merge.Pairs)
+                {
+                    mergeOfMirror[pair.MirrorName] = merge;
+                    pairOfMirror[pair.MirrorName] = pair;
+                }
+            }
+        }
+
+        /// <summary>
+        /// After the run has set every test's state, F132: each merge into its kept test,
+        /// MirrorMerge.AddTo, which merges nothing where its own rule says so, then its
+        /// MIRROR lines, the kept test's ROWS line with the clashes only its mirrors found,
+        /// and the pictures of every test in a merge, rendered off the rows the report now
+        /// holds. With no report there is nothing to merge into, which is said.
+        /// </summary>
+        private void MergeTheMirrors(DocumentClashTests clashTests)
+        {
+            if (merges.Count == 0)
+            {
+                return;
+            }
+
+            if (Report == null)
+            {
+                log.Line(MirrorRule.Prefix + "   no report is built for this run, so nothing is merged and each test keeps "
+                    + "its own clashes under its own name, where a clash both find may be counted twice");
+                return;
+            }
+
+            foreach (MirrorMerge merge in merges)
+            {
+                try
+                {
+                    merge.AddTo(Report);
+                }
+                catch (Exception error)
+                {
+                    log.Failure(
+                        "merging the mirrors of " + merge.Kept.Name,
+                        error,
+                        "kept going, nothing is merged into it and each of its mirrors stays in the report as its own test");
+                }
+
+                log.Block("MIRROR MERGE " + merge.Kept.Name, merge.Lines());
+
+                TestReport summary = ReportFor(merge.Kept);
+                int inDocument;
+
+                if (summary == null || !clashesInDocument.TryGetValue(merge.Kept.FileIndex, out inDocument))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    WriteTheRowsLine(merge.Kept.Name, summary.Rows.Count, inDocument, merge.AddedToTheKeptTest);
+                }
+                catch (InvalidOperationException error)
+                {
+                    log.Failure(
+                        "writing the ROWS line of " + merge.Kept.Name,
+                        error,
+                        "kept going, the rows it holds are " + summary.Rows.Count + " and the document holds "
+                            + inDocument);
+                }
+            }
+
+            RenderThePicturesWaiting(clashTests);
+        }
+
+        /// <summary>
+        /// The pictures of every test in a merge, after the merge: each row recorded while
+        /// its test was read, where the report still holds it, under the test the report
+        /// holds it under now, by the index path of its result under the test it was read
+        /// from, resolved again by address. A row of a mirror taken out of the report gets
+        /// none, and a row only a mirror found is pictured under the kept test.
+        /// </summary>
+        private void RenderThePicturesWaiting(DocumentClashTests clashTests)
+        {
+            if (picturesWaiting.Count == 0 || Images == null)
+            {
+                return;
+            }
+
+            Dictionary<ClashRow, TestReport> holder = new Dictionary<ClashRow, TestReport>();
+
+            foreach (TestReport test in Report.Tests)
+            {
+                foreach (ClashRow row in test.Rows)
+                {
+                    holder[row] = test;
+                }
+            }
+
+            ClashHarvest harvest = new ClashHarvest(log, NameSettings);
+            harvest.Images = Images;
+            harvest.WorkbookPath = WorkbookPath;
+
+            List<string> order = new List<string>();
+            Dictionary<string, List<RowAddress>> byTest = new Dictionary<string, List<RowAddress>>(StringComparer.Ordinal);
+
+            foreach (RowAddress waiting in picturesWaiting)
+            {
+                string key = waiting.TestKey;
+                List<RowAddress> rows;
+
+                if (!byTest.TryGetValue(key, out rows))
+                {
+                    rows = new List<RowAddress>();
+                    byTest.Add(key, rows);
+                    order.Add(key);
+                }
+
+                rows.Add(waiting);
+            }
+
+            foreach (string key in order)
+            {
+                List<RowAddress> rows = byTest[key];
+                RowAddress first = rows[0];
+
+                try
+                {
+                    using (ClashTest test = Resolve(clashTests, first.Address, first.TestName))
+                    {
+                        if (test == null)
+                        {
+                            log.Line("IMAGE    " + first.TestName + " is not at " + first.Address + " any more, so the "
+                                + "pictures of its " + rows.Count + (rows.Count == 1 ? " row" : " rows") + " are not rendered");
+                            continue;
+                        }
+
+                        foreach (RowAddress waiting in rows)
+                        {
+                            TestReport into;
+
+                            if (holder.TryGetValue(waiting.Row.Row, out into))
+                            {
+                                harvest.PictureLater(clashTests, test, Report, into, waiting.Row);
+                            }
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    log.Failure(
+                        "rendering the pictures of " + first.TestName + " after the mirror merge",
+                        error,
+                        "kept going, the rows of that test not yet pictured keep an empty Image cell");
+                }
             }
         }
 

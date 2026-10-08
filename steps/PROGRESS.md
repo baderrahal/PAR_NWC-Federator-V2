@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-08 08:55, last run 04/item2-C02
+STATE OPEN, 2026-10-08 10:29, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -8,31 +8,31 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 24 | 7 | 1 | 0 | 25 | 0 | 57 |
-| 2b | 11 | 16 | 0 | 1 | 5 | 0 | 33 |
+| 2a | 31 | 5 | 0 | 0 | 25 | 0 | 61 |
+| 2b | 11 | 19 | 0 | 1 | 2 | 0 | 33 |
 | 2c | 6 | 1 | 0 | 0 | 4 | 0 | 11 |
 | 3a | 8 | 4 | 0 | 0 | 8 | 0 | 20 |
-| 3b | 8 | 2 | 0 | 0 | 10 | 0 | 20 |
+| 3b | 9 | 1 | 0 | 0 | 10 | 0 | 20 |
 | 4 | 6 | 1 | 0 | 0 | 50 | 0 | 57 |
 | 5 | 14 | 3 | 0 | 0 | 55 | 0 | 72 |
-| outside the waves | 156 | 10 | 0 | 1 | 47 | 5 | 219 |
-| total | 252 | 44 | 1 | 2 | 204 | 5 | 508 |
+| outside the waves | 156 | 11 | 0 | 2 | 47 | 5 | 221 |
+| total | 260 | 45 | 0 | 3 | 201 | 5 | 514 |
 <!-- the end of the counts -->
 
 ## Now
 - 8 Oct: the shutdown came at 19:30:51 on 7 Oct, Arab Standard Time, 46 min after the close at 18:45. A Roamer the loop did not start ran 08:36 to 08:43. His 22.0 key against the backup of 17:34 differs in two CER uptime counters only, Navisworks's own, nothing put back. Keep-awake pid 38340
-- PR 157, the close of 7 Oct, finished with main taken in and lane B's night folded. PR 159, F118's FR-199 and FR-040 with its records, read APPROVE by its one reviewer, merged, FR-036 and FR-041 on the laptop
-- Lane B, steps\lane-b.md: on again this morning under Bader's message to it, F127's Core points merged as 167 and F119's as 168, both folded here, now on F119 then F115, F137, F121 and F123
-- F132 mirrored tests: the add-in half attempt 2 of two on F132-R4 and F132-R5 in work on fix-F132, one reviewer and one breaker next
+- The two the shutdown cut are merged: 157, the close of 7 Oct with main taken in, as 83deae0, and 159, F118's FR-199 and FR-040 with its records, as 1dd68a0, FR-036 and FR-041 on the laptop
+- Lane B, steps\lane-b.md: on this morning under Bader's messages to it, 167 to 174 merged, F128's Core part as 171 among them, folded here, 176 open on small Core points
+- F132 mirrored tests: merged as PR 177, the add-in half in two attempts under Q143, Q144 put to Bader on the no XML by design pass, its proof the timed runs
 - Expected release from the pace: 2026-10-13, Q143 item 14, about ten add-in items on the laptop lane at two or three a day over 8, 9, 12 and 13 Oct
 
 ## Next
-1. F132's add-in half attempt 2 read and merged if no fault the team sees remains, then F114's add-in pass
-2. Main installed in place and the timed runs of 1A02MM and 1A04PK with the new views on, against 2 h 12 min for 1A02MM and the hung run of 1A04PK
-3. F109, F129, F130, F120 in Q143's order, three lines in the tab every hour, the close from 18:40 with STATE NIGHT and the one records PR
+1. F128 generic models by Q145: the one probe of which property names them on 1A02MM and 1A04PK, lane B's Core part, then the add-in part
+2. F120 the pictures that fail and their speed, then F114's add-in pass with the viewpoints box back on at its merge, Q131
+3. Main installed and the timed runs of 1A02MM and 1A04PK proving everything merged, then F129, F130, F109, the close from 18:40 with STATE NIGHT
 
 ## Waiting for Bader
-- No question. Steps 228 to 233, the published NWD in ACC, his at the final run after F114 merges
+- Q144, a run with no XML and the by design pass on the saved tests, the lead's choice B applied meanwhile. Steps 228 to 233, the published NWD in ACC, his at the final run after F114 merges
 
 ## Blockers and known bugs
 - T5-R-WALKRACE: the harness's walk of the loop folder races a lane's build and stops on a HARNESS FAULT

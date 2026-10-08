@@ -108,6 +108,27 @@ namespace Federator.Core.Report
         /// <summary>The Revit element id where there is one, otherwise the instance GUID.</summary>
         public string ElementId { get; set; }
 
+        /// <summary>
+        /// The key that names this item to the mirror merge, F132's add-in half, read off what
+        /// the harvest read: the file the item came from, its id and the name of the geometry
+        /// the clash was found on, since one element can carry several, one per material. The
+        /// members this is built from are the ones measured on the install, docs\history\scan.md,
+        /// so no index path is read. An item with no id, a model carrying no id property and no
+        /// real instance GUID, is not read, UNKNOWN, which MirrorMerge reads as an item not read
+        /// and fails closed on. Two clashes of one test between the same two elements on
+        /// geometry of one name share a key, and the merge then counts the second as a repeat
+        /// and says so, never adding a clash twice.
+        /// </summary>
+        public string MergeKey()
+        {
+            if (string.IsNullOrEmpty(ElementId))
+            {
+                return TestSettings.UnknownLocator;
+            }
+
+            return (SourceFile ?? string.Empty) + "|" + ElementId + "|" + (Name ?? string.Empty);
+        }
+
         public override string ToString()
         {
             return Name;
@@ -132,9 +153,31 @@ namespace Federator.Core.Report
             ImageFile = string.Empty;
             ImageLink = string.Empty;
             ImagePath = string.Empty;
+            FoundOnlyByMirror = string.Empty;
         }
 
         public string Name { get; set; }
+
+        /// <summary>
+        /// The name of the mirror test that alone found this clash, F132, Bader's answer D to
+        /// Q133, so the workbook and the view name it as found by the mirror only. Empty for a
+        /// clash the test itself found. Set by MirrorMerge and nothing else.
+        /// </summary>
+        public string FoundOnlyByMirror { get; internal set; }
+
+        /// <summary>
+        /// The name the workbook and the clash XML write this row under, the one place both
+        /// read it, F132 attempt 5. A clash the test itself found is written under its own
+        /// name. A clash only a mirror found is written as found by the mirror only, with the
+        /// mirror's name, where Clash Detective shows it, because its own name, Clash1 or any
+        /// other, can be a name the kept test's own rows already carry.
+        /// </summary>
+        public string WrittenName()
+        {
+            return string.IsNullOrEmpty(FoundOnlyByMirror)
+                ? Name
+                : Name + ", found by the mirror only in " + FoundOnlyByMirror;
+        }
 
         /// <summary>
         /// The client's Description column, which is the clash's own description and
@@ -416,6 +459,26 @@ namespace Federator.Core.Report
 
             rows.Add(row);
             tally.Add(row.Status, row.RawClashes);
+        }
+
+        /// <summary>
+        /// Sets the status of the row of one clash this test holds and moves its count by
+        /// status with it, F132, Bader's answer B to Q138, so the cells by status read what
+        /// the rows show. A group stands for every clash under it and is never restated for
+        /// one of them. Called by MirrorMerge and nothing else.
+        /// </summary>
+        internal void Restate(ClashRow row, ClashStatus status)
+        {
+            if (row == null || row.IsGroup || !rows.Contains(row))
+            {
+                throw new ArgumentException(
+                    "Only the row of one clash this test holds is restated, so its counts by status stay its rows' own.",
+                    "row");
+            }
+
+            tally.Add(row.Status, -row.RawClashes);
+            tally.Add(status, row.RawClashes);
+            row.Status = status;
         }
 
         /// <summary>Counts by status, over the raw clashes rather than over the rows.</summary>
@@ -789,6 +852,32 @@ namespace Federator.Core.Report
             tests.Add(test);
             return test;
         }
+
+        /// <summary>
+        /// Takes a mirror's test out of the report once its clashes are merged into the test
+        /// kept, F132, Bader's answer D to Q133, so its own results are not reported a second
+        /// time by any writer or count, and counts it in MirrorsMerged. Called by MirrorMerge
+        /// and nothing else.
+        /// </summary>
+        internal void TakeOut(TestReport test)
+        {
+            if (!tests.Remove(test))
+            {
+                throw new ArgumentException("The test " + (test == null ? "UNKNOWN" : test.Name)
+                    + " is not in this report, so it cannot be taken out of it.", "test");
+            }
+
+            MirrorsMerged++;
+        }
+
+        /// <summary>
+        /// How many tests of the file this report holds no block for because each is a mirror
+        /// merged into its kept test, F132, counted by TakeOut, the one place a test leaves the
+        /// report. The workbook check reads this number, CreationPlan.BlockCountLine, so the
+        /// block it expects for every test in the file counts each merged mirror inside its
+        /// kept test's block, the same rule the report followed.
+        /// </summary>
+        public int MirrorsMerged { get; private set; }
 
         public int CountOf(TestState state)
         {

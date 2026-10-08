@@ -15,6 +15,24 @@ namespace Federator.Core.Clash
     /// </summary>
     public sealed class SavedClashTest
     {
+        /// <summary>
+        /// What the add-in hands as a saved test's left side, because it reads the test off
+        /// the document and not which set that side points at. A placeholder and never a
+        /// set, the same for every saved test. Here and not in the add-in because the rule
+        /// that reads it is in Core, and a marker written in two places is a rule in two places.
+        /// </summary>
+        public const string LeftAsSaved = "side A as saved";
+
+        /// <summary>The placeholder for the right side, read the same way.</summary>
+        public const string RightAsSaved = "side B as saved";
+
+        /// <summary>Whether a locator is one of the two placeholders, Ordinal, and so names no set.</summary>
+        internal static bool IsPlaceholder(string locator)
+        {
+            return string.Equals(locator, LeftAsSaved, StringComparison.Ordinal)
+                || string.Equals(locator, RightAsSaved, StringComparison.Ordinal);
+        }
+
         public SavedClashTest(
             string name,
             int testTypeNumber,

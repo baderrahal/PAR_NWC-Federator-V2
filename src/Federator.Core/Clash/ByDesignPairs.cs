@@ -87,6 +87,26 @@ namespace Federator.Core.Clash
         public const string HelpLine =
             "Column on foundation, door in wall, valve in pipe. From a file";
 
+        /// <summary>
+        /// The one line the confirm screen carries for this box, or null where it is off,
+        /// the rule the rebuild line beside it keeps: a sentence that appears on every run
+        /// saying nothing will happen teaches people to skip the screen. F132 attempt 2, the
+        /// breaker's finding R5: the pass reaches the tests saved in the NWF as well as the
+        /// tests created from the picked file, so the screen says so before the NWF changes.
+        /// </summary>
+        public static string ConfirmLine(bool wanted)
+        {
+            if (!wanted)
+            {
+                return null;
+            }
+
+            return "Clashes between two sets the by design pairs file names are moved to Reviewed in the NWF, "
+                + "in the tests created from the picked file and in the tests already saved in the NWF, whose "
+                + "sides are read off the tests themselves on a run with no clash XML. A clash already Reviewed, "
+                + "Approved or Resolved is left as it is, and the BY DESIGN block of each group says what moved.";
+        }
+
         private readonly Dictionary<string, ByDesignPair> byKey;
         private readonly List<ByDesignPair> pairs;
         private readonly List<string> problems;
