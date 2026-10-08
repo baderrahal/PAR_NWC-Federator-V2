@@ -19,9 +19,9 @@ day at 13:00 through the guarded start, scan.md 5z-zb, then two attempts on fix-
 faults the breaker found and one the reviewer found, merged as 186, e4831c9, at 16:31. F114's add-in pass started at 15:12 on
 fix-F114 from the worktree a connection error cut at 10:35, attempt 1 at 8d6a8c7 read APPROVE by its reviewer and CHANGES by its breaker on six faults, attempt 2 at 37ac1ba pushed at 18:32 with all six taken and 2768 Core tests, its rule bullets, proof steps and second reading for the morning.
 
-Lane B, under Bader's two messages to it, merged 167 to 181 between 06:03 and 10:55, F128's Core part as
-171 among them, every one folded into the tracker in 157, 159, 177, 183 and F128's pull request, and 182
-open on where it stopped.
+Lane B, under Bader's two messages to it, merged 167 to 185 between 06:03 and 16:07, F128's Core part as
+171 among them, folded into the tracker in 157, 159, 177, 183, 186 and this pull request, and stopped at
+185, its last.
 
 Not done today: the install of main and the timed runs of 1A02MM and 1A04PK, which Bader's item 5 puts
 after F114 with the viewpoints box on, so they go first tomorrow once F114 merges, on the copy of set 05
