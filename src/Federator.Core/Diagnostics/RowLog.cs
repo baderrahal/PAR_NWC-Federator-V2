@@ -41,6 +41,12 @@ namespace Federator.Core.Diagnostics
         private readonly StreamWriter writer;
         private bool closed;
 
+        // FR-061's side. What the first write that threw said, kept so the text log can say once that this file
+        // stopped taking rows, and so the sentences RunLog writes about what this file holds stop saying it holds
+        // the rows after that.
+        private string fault;
+        private bool faultTold;
+
         private RowLog(string path, FileStream stream, string whyNot)
         {
             Path = path;
@@ -59,9 +65,46 @@ namespace Federator.Core.Diagnostics
         /// <summary>Why there is none, in plain words, or null when there is one.</summary>
         public string WhyNot { get; private set; }
 
+        /// <summary>True while the file is open and has taken every row it was given. False when none opened and after a write threw.</summary>
         public bool IsWritingToDisk
         {
-            get { return writer != null; }
+            get
+            {
+                lock (gate)
+                {
+                    return writer != null && fault == null;
+                }
+            }
+        }
+
+        /// <summary>True when the file opened and a write to it then threw, so it holds the rows before that and none after.</summary>
+        public bool Stopped
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return fault != null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// What the first failed write threw, type and message, the first time it is asked after the fault and null
+        /// ever after or where there was none. The text log says it once, as it says its own file stopping, FR-057.
+        /// </summary>
+        internal string TakeTheFaultToTell()
+        {
+            lock (gate)
+            {
+                if (fault == null || faultTold)
+                {
+                    return null;
+                }
+
+                faultTold = true;
+                return fault;
+            }
         }
 
         /// <summary>
@@ -100,15 +143,41 @@ namespace Federator.Core.Diagnostics
                 FileStream stream = new FileStream(
                     path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 1024, false);
 
-                RowLog rows = new RowLog(path, stream, null);
-                rows.WriteLine(EventRow.Header());
-                return rows;
+                return Opened(path, stream);
             }
             catch (Exception error)
             {
-                return new RowLog(
-                    null, null, error.GetType().Name + ": " + error.Message);
+                return new RowLog(null, null, Cause(error));
             }
+        }
+
+        /// <summary>
+        /// The file once it is open. A header that could not be written is a file that could not be used, as it is
+        /// for the text log, so it is given up with what threw as the reason and the line that names the file says
+        /// there is none, where it would say the file is there and then say it holds nothing.
+        /// </summary>
+        internal static RowLog Opened(string path, FileStream stream)
+        {
+            RowLog rows = new RowLog(path, stream, null);
+            rows.WriteLine(EventRow.Header());
+
+            if (rows.fault == null)
+            {
+                return rows;
+            }
+
+            string cause = rows.fault;
+            rows.Dispose();
+            return new RowLog(null, null, cause);
+        }
+
+        /// <summary>
+        /// The type and what it said, without the full stop or line break it ended on, because the sentences that
+        /// carry it add their own, as the text log's FileStopped does.
+        /// </summary>
+        private static string Cause(Exception error)
+        {
+            return error.GetType().Name + ": " + (error.Message ?? string.Empty).TrimEnd('.', ' ', '\r', '\n');
         }
 
         /// <summary>The one line the text log carries about this file.</summary>
@@ -135,7 +204,7 @@ namespace Federator.Core.Diagnostics
         {
             lock (gate)
             {
-                if (closed || writer == null)
+                if (closed || writer == null || fault != null)
                 {
                     return;
                 }
@@ -149,10 +218,13 @@ namespace Federator.Core.Diagnostics
                     // Navisworks call leaves both files whole up to that moment.
                     stream.Flush(true);
                 }
-                catch (Exception)
+                catch (Exception error)
                 {
-                    // Swallowed on purpose. This file is a convenience and the text log
-                    // is the record. A disk that filled up must not stop a run here.
+                    // Never thrown on. This file is a convenience and the text log is the record, so a
+                    // disk that filled up must not stop a run here. It is kept and told once instead of
+                    // swallowed, because the text log goes on saying every collapsed line is in this file,
+                    // and nothing after this row is.
+                    fault = Cause(error);
                 }
             }
         }
@@ -168,19 +240,27 @@ namespace Federator.Core.Diagnostics
 
                 closed = true;
 
-                try
+                if (writer == null)
                 {
-                    if (writer != null)
-                    {
-                        writer.Flush();
-                        stream.Flush(true);
-                        writer.Dispose();
-                    }
+                    return;
                 }
-                catch (Exception)
-                {
-                    // Closing a log is never worth throwing over.
-                }
+
+                // Each step on its own, as RunLog.Dispose does, so a flush that fails after a full disk still
+                // reaches the dispose that closes the handle. Closing a log is never worth throwing over.
+                Quietly(delegate { writer.Flush(); });
+                Quietly(delegate { stream.Flush(true); });
+                Quietly(delegate { writer.Dispose(); });
+            }
+        }
+
+        private static void Quietly(Action step)
+        {
+            try
+            {
+                step();
+            }
+            catch (Exception)
+            {
             }
         }
     }
