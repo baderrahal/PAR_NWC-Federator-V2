@@ -25,12 +25,11 @@ namespace Federator.Core.Sets
             Present = present;
         }
 
-        /// <summary>What the set asked the model for. Shown on a ZERO line so it explains itself.</summary>
         /// <summary>
-        /// What the set asks. For a CREATED set it is what the file asked, and since the
-        /// drift round a PRESENT set carries what the set itself asks, read off it, 5w.
-        /// Settable for that second case, because a present set is recorded before its
-        /// question has been read.
+        /// What the set asks, shown on a ZERO line so it explains itself. For a CREATED set it
+        /// is what the file asked, and since the drift round a PRESENT set carries what the set
+        /// itself asks, read off it, 5w. Settable for that second case, because a present set is
+        /// recorded before its question has been read.
         /// </summary>
         public string Asked { get; set; }
 

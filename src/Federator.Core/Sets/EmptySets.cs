@@ -68,7 +68,9 @@ namespace Federator.Core.Sets
 
                 case EmptyReason.TheValueIsThereAnyway:
                     // WHAT THIS READER ACTUALLY KNOWS. The measured lists are the whole
-                    // PROJECT, 374 categories and 39 worksets across all ten groups, so
+                    // PROJECT, 374 categories and 39 worksets across all ten groups. The
+                    // judge adds the worksets this group's own models carry and the spellings
+                    // of the list beside the picked file, and no category of this group, so
                     // "the models carry it" means some model somewhere does, NOT that a
                     // model of this group does. A group holding two disciplines out of
                     // seven lands most of the client's 61 sets here, and on 1000BS that
