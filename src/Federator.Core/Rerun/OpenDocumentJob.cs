@@ -60,9 +60,10 @@ namespace Federator.Core.Rerun
         ///     deciding where a person's federation lives
         ///   it was opened from a folder and not from an address, because acc:// and
         ///     https:// name nothing on a disk
-        ///   its path holds no character a path may not, because the documentation says the
-        ///     path methods of .NET Framework throw on one and the window fills a label from
-        ///     this answer, so it is looked for before any of them splits the path, FR-173
+        ///   its path holds no character a path may not, because the path methods of .NET
+        ///     Framework throw on one, measured on the Windows runner for a bar, a quote and a
+        ///     tab, and the window fills a label from this answer, so it is looked for before
+        ///     any of them splits the path, FR-173
         ///   it has a name, the same words as the first
         ///   it is an NWF, because the NWF is where the clash tests and their results
         ///     live, and an NWD or an NWC opened directly holds neither
@@ -110,8 +111,8 @@ namespace Federator.Core.Rerun
             }
 
             // Before any call that splits the path: an address can hold a character a path may not, the
-            // documentation says the path methods of .NET Framework throw on one, and the window fills a
-            // label from this answer, FR-173.
+            // path methods of .NET Framework throw on one, and the window fills a label from this answer,
+            // FR-173.
             if (openPath.IndexOf("://", StringComparison.Ordinal) >= 0)
             {
                 return "This document was opened from " + openPath + ", which is an address "

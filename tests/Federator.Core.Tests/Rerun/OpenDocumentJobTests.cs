@@ -309,10 +309,10 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// FR-173. The documentation says the path methods of .NET Framework throw on a bar, a quote, an angle
-        /// bracket or a control character, and the window fills a label from this answer, so the character is
-        /// named before any of them is called. That they throw was not run here. The folder rule is not read
-        /// for such a path, so the answer is the same on a machine where a backslash is an ordinary character.
+        /// FR-173. The path methods of .NET Framework throw on a bar, a quote or a control character, which
+        /// the test after this one measures on the Windows runner, and the window fills a label from this
+        /// answer, so the character is named before any of them is called. The folder rule is not read for
+        /// such a path, so the answer is the same on a machine where a backslash is an ordinary character.
         /// The paths are typed, against the rule that a path is built, because Path.Combine is one of the
         /// methods that would throw on the very character each path is there to hold.
         /// </summary>

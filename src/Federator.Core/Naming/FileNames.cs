@@ -21,8 +21,8 @@ namespace Federator.Core.Naming
         /// <summary>
         /// The four printable ones Path.GetInvalidPathChars lists, which the documentation of the path
         /// methods of .NET Framework says they throw ArgumentException on, with every control character.
-        /// Not run here. The colon is a drive and an address, and the star and the question mark are not
-        /// among the characters that list holds.
+        /// A test on the Windows runner measured it for a bar, a quote and a tab. The colon is a drive and
+        /// an address, and the star and the question mark are not among the characters that list holds.
         /// </summary>
         public const string RefusedPrintableInAPath = "\"<>|";
 
