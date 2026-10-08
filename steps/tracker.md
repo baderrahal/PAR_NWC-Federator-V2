@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 518 rows: open 191, in progress 44, in review 0, merged 246, proven by a run 27, waiting for Bader 4, dropped 6
-- By wave: 1 19, 2a 61, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 12, 3a 21, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 74, outside the waves 2, right after F133 merges 6
-- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, and 25 FR items
+- By status, of 519 rows: open 191, in progress 45, in review 0, merged 246, proven by a run 27, waiting for Bader 4, dropped 6
+- By wave: 1 19, 2a 61, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 12, 3a 21, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 75, outside the waves 2, right after F133 merges 6
+- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, and 25 FR items
 - Waits for Bader, 4 rows: step 228-233, F114-K29, Q144, Q146
 
 ## Wave 1
@@ -611,6 +611,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q144 | a run with no XML and the by design pass on the saved tests | none | question | waiting for Bader | none | none | 2026-10-08 |
 | Q145 | the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release | none | Bader's request | in progress | none | none | 2026-10-08 |
 | Q146 | where the Generic Models sheet goes | none | question | waiting for Bader | none | none | 2026-10-08 |
+| Q147 | two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109 | none | Bader's request | in progress | none | none | 2026-10-08 |
 
 ## outside the waves
 
