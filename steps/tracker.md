@@ -116,7 +116,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-071 | views log silent up to 21 minutes | F114 | slow | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-072 | penetrations upwards walk outside try | F114 | loud failure | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-073 | views seconds parts do not add | F114 | noise | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
-| FR-177 | generic models counted and a set per model | F128 | Bader's request | merged | 171 and UNKNOWN | none | 2026-10-08 |
+| FR-177 | generic models counted and a set per model | F128 | Bader's request | merged | 171 and 186 | none | 2026-10-08 |
 | FR-180 | team map beside the picked xml | F131 | Bader's decision | merged | 135 | none | 2026-10-07 |
 | FR-181 | mechanical sets miss hv pl fp models | F131 | Bader's decision | in progress | 135 merged for F131, the COVERAGE block and the form wait for F127 | none | 2026-10-07 |
 | FR-184 | views tree by priority and team pair | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
@@ -125,9 +125,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-187 | views proof on 1a02mm and the views tree block | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-188 | views rules in docs workflow | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | F114 | views | F114 | fix | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
-| F128 | generic models | F128 | fix | merged | 171 the Core part by lane B and UNKNOWN the probe and the add-in part | none | 2026-10-08 |
+| F128 | generic models | F128 | fix | merged | 171 the Core part by lane B and 186 the probe and the add-in part | none | 2026-10-08 |
 | F131 | teams | F131 | fix | merged | 135 | none | 2026-10-07 |
-| Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | merged | 171 and UNKNOWN | none | 2026-10-08 |
+| Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | merged | 171 and 186 | none | 2026-10-08 |
 | Q77 | the clear and rebuild does not copy the viewpoints | F114 | question | merged | 131 | none | 2026-10-06 |
 | Q115 | where the team map lives | F131 | question | merged | 118 | none | 2026-10-05 |
 | Q116 | where the team map applies | F131 | question | merged | 118 | none | 2026-10-05 |
