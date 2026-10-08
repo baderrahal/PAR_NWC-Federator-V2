@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
 using Federator.Core.Naming;
@@ -418,9 +419,13 @@ namespace Federator.Core.Tests.Sets
                 "a workset the models that were read carry is still carried");
         }
 
-        /// <summary>The models are named three at most and the rest counted, and one with no file name is said so.</summary>
+        /// <summary>
+        /// The models are named as many as a repeated line keeps, RunLog.KeptOfARepeat, and the rest counted, the
+        /// one shape every other line of the log that names a few and counts the rest has. One with no name is
+        /// listed as such, though a nameless model also makes the project unreadable, which the line says first.
+        /// </summary>
         [Test]
-        public void TheModelsWhoseWorksetsWereNotReadAreNamedThreeAtMostAndTheRestCounted()
+        public void TheModelsWhoseWorksetsWereNotReadAreNamedAsManyAsARepeatKeepsAndTheRestCounted()
         {
             List<ModelExport> models = new List<ModelExport> { Walked("ME", "ME-DUCTWORK") };
             models.Add(Stopped("ST"));
@@ -431,21 +436,49 @@ namespace Federator.Core.Tests.Sets
                 "the worksets of 2 models of this group were not read (1104-PAR-1B06BC-ZZZ-ST-MOD-000001 and 1104-PAR-1B06BC-ZZZ-EL-MOD-000001),"
                     + " so which worksets they carry is UNKNOWN"));
 
-            models.Add(Stopped("PL"));
-            models.Add(Stopped("FF"));
-            models.Add(Stopped("DR"));
-            EmptySetJudge five = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+            string[] more = { "PL", "FF", "DR", "AR", "XX" };
 
-            Assert.That(EmptySets.Why("a/b", AsksWorkset("ST-NO-SUCH-WORKSET"), five).WhyNotTold, Is.EqualTo(
-                "the worksets of 5 models of this group were not read (1104-PAR-1B06BC-ZZZ-ST-MOD-000001, 1104-PAR-1B06BC-ZZZ-EL-MOD-000001,"
-                    + " 1104-PAR-1B06BC-ZZZ-PL-MOD-000001 and 2 more), so which worksets they carry is UNKNOWN"));
+            foreach (string discipline in more)
+            {
+                models.Add(Stopped(discipline));
+            }
+
+            EmptySetJudge seven = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+
+            Assert.That(RunLog.KeptOfARepeat, Is.EqualTo(5), "the number the sentence below is written for");
+            Assert.That(EmptySets.Why("a/b", AsksWorkset("ST-NO-SUCH-WORKSET"), seven).WhyNotTold, Is.EqualTo(
+                "the worksets of 7 models of this group were not read (1104-PAR-1B06BC-ZZZ-ST-MOD-000001, 1104-PAR-1B06BC-ZZZ-EL-MOD-000001,"
+                    + " 1104-PAR-1B06BC-ZZZ-PL-MOD-000001, 1104-PAR-1B06BC-ZZZ-FF-MOD-000001, 1104-PAR-1B06BC-ZZZ-DR-MOD-000001 and 2 more),"
+                    + " so which worksets they carry is UNKNOWN"));
 
             EmptySetJudge nameless = EmptySetJudge.For(
                 Plan(),
                 new List<ModelExport> { new ModelExport(null, "ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, null) },
                 new ContainerNameSettings());
 
-            Assert.That(new List<string>(nameless.ModelsNotWalked), Is.EqualTo(new[] { "a model with no file name" }));
+            Assert.That(new List<string>(nameless.ModelsNotWalked), Is.EqualTo(new[] { "a model with no name" }));
+        }
+
+        /// <summary>
+        /// A MODEL READ IN FULL THAT CARRIES NO WORKSET IS NOT A MODEL WHOSE WORKSETS WERE NOT READ. A site model
+        /// with no element, or elements and no workset on any, has an empty list that is the real answer, and the
+        /// judge still calls a condition on a workset nothing carries wrong. The break above: a model whose counts
+        /// were not taken is not read.
+        /// </summary>
+        [Test]
+        public void AModelCountedWithNoElementOrNoWorksetIsReadAndNotCountedAsUnread()
+        {
+            List<ModelExport> models = new List<ModelExport>
+            {
+                Walked("ME", "ME-DUCTWORK"),
+                new ModelExport("1104-PAR-1B06BC-ZZZ-AR-MOD-000001.nwc", "AR", 0, 0, 0, new List<string>()),
+                new ModelExport("1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc", "ST", 12, 0, 12, new List<string>())
+            };
+
+            EmptySetJudge judge = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+
+            Assert.That(judge.ModelsNotWalked, Is.Empty);
+            Assert.That(EmptySets.Why("a/BLD-ST-Beams", AsksWorkset("ST-NO-SUCH-WORKSET"), judge).Reason, Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
 using Federator.Core.Naming;
@@ -23,9 +24,6 @@ namespace Federator.Core.Sets
     {
         /// <summary>Why the project is not known where no model of the group was read at all.</summary>
         private const string ModelsNotRead = "this group's models were not read, so which project they are of is UNKNOWN";
-
-        /// <summary>How many models are named where the worksets not read are said, the rest are counted.</summary>
-        private const int ModelsNamed = 3;
 
         private readonly string whyNoProject;
         private readonly bool workListRead;
@@ -60,12 +58,13 @@ namespace Federator.Core.Sets
         public ReadOnlyCollection<string> GroupWorksets { get; private set; }
 
         /// <summary>
-        /// The models of this group whose walk of the elements did not finish, so ModelExport hands back no
-        /// worksets for them, F115 R14. The group's list above leaves them out, and the lists inside Core
-        /// say nothing of what they carry, so a workset no other model carries may be carried by one of
-        /// these and the judge cannot call a condition on it wrong. Each is named by its file name.
+        /// The models of this group whose counts were not all taken, so ModelExport hands back no worksets
+        /// for them, F115 R14. The group's list above leaves them out, and the lists inside Core say nothing
+        /// of what they carry, so a workset no other model carries may be carried by one of these and the
+        /// judge cannot call a condition on it wrong. Each is named by its file name without the folder
+        /// and the extension.
         /// </summary>
-        public ReadOnlyCollection<string> ModelsNotWalked { get; private set; }
+        internal ReadOnlyCollection<string> ModelsNotWalked { get; private set; }
 
         /// <summary>
         /// The workset spellings the picked file's corrections were chosen from,
@@ -105,8 +104,8 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// The models whose counts were not all taken, which is the rule that leaves a model's worksets
-        /// out of ExportCheck.WorksetsOf, so the two read one test.
+        /// The models whose counts were not all taken. ModelExport empties the worksets of such a model, which
+        /// is what ExportCheck.WorksetsOf then reads, so the group's list and this one read the same test.
         /// </summary>
         private static IList<string> NotWalked(IList<ModelExport> models)
         {
@@ -125,7 +124,7 @@ namespace Federator.Core.Sets
                 }
 
                 string stem = string.IsNullOrEmpty(model.File) ? string.Empty : ContainerName.Stem(model.File);
-                unread.Add(stem.Length == 0 ? "a model with no file name" : stem);
+                unread.Add(stem.Length == 0 ? "a model with no name" : stem);
             }
 
             return unread;
@@ -226,7 +225,7 @@ namespace Federator.Core.Sets
         {
             List<string> named = new List<string>();
 
-            for (int i = 0; i < ModelsNotWalked.Count && i < ModelsNamed; i++)
+            for (int i = 0; i < ModelsNotWalked.Count && i < RunLog.KeptOfARepeat; i++)
             {
                 named.Add(ModelsNotWalked[i]);
             }
