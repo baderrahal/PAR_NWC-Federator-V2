@@ -46,6 +46,241 @@ namespace Federator.Core.Tests
         // ---------- FR-057, a log line never stops the run ----------
 
         /// <summary>
+        /// A write that fails is made by closing the stream the log holds. The failure comes out of the same
+        /// line, an ObjectDisposedException where a full disk gives an IOException, and the catch takes both.
+        /// It reaches a private field because no running code needs a member to do this, and it returns the
+        /// message the closed stream throws, so a test can hand in the thing a label must not carry.
+        /// </summary>
+        private static string TheDiskFails(RunLog log)
+        {
+            System.Reflection.FieldInfo field = typeof(RunLog).GetField(
+                "stream", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+            Assert.That(field, Is.Not.Null, "RunLog no longer holds a field named stream, so this fault cannot be made");
+
+            FileStream stream = (FileStream)field.GetValue(log);
+            stream.Dispose();
+
+            try
+            {
+                stream.WriteByte(0);
+            }
+            catch (Exception error)
+            {
+                return error.Message;
+            }
+
+            Assert.Fail("a closed stream took a write");
+            return null;
+        }
+
+        /// <summary>
+        /// FR-057's disk half. A write to the file that threw came out of Line, up through the run, and
+        /// the failure lines that would have reported it hit the same write. The line is kept in memory
+        /// and told to the window, the file is said to have stopped once, the log says it is no longer
+        /// writing to disk, and the run goes on. The break: lines before the fault are still in the file
+        /// and none after it are, and the memory holds both. The label carries what happened and never
+        /// what the stream threw, which is handed in and looked for.
+        /// </summary>
+        [Test]
+        public void AWriteThatFailsStopsTheFileAndNeverTheRun()
+        {
+            using (RunLog log = Start())
+            {
+                List<string> heard = new List<string>();
+                log.LineWritten += heard.Add;
+
+                log.Line("before the fault");
+                string whatTheStreamThrows = TheDiskFails(log);
+
+                Assert.DoesNotThrow(() => log.Line("after the fault"));
+                Assert.DoesNotThrow(() => log.Line("and again after it"));
+
+                Assert.That(log.IsWritingToDisk, Is.False);
+                Assert.That(log.WhereTheLogIs(), Does.StartWith("WARNING the log is not being written to disk."));
+                Assert.That(log.WhereTheLogIs(), Does.Not.Contain(whatTheStreamThrows), "a label never carries a framework message");
+                Assert.That(log.WhereTheLogIs(), Does.Not.Contain("ObjectDisposedException"));
+                Assert.That(log.DisabledReason, Is.Not.Null.And.Not.Empty);
+
+                string told = string.Join("\n", heard.ToArray());
+
+                Assert.That(told, Does.Contain("after the fault"));
+                Assert.That(told, Does.Contain("and again after it"));
+                Assert.That(CountOf(told, "the log file stopped taking lines"), Is.EqualTo(1), "said once, not for every line");
+                Assert.That(told, Does.Contain("ObjectDisposedException: " + whatTheStreamThrows.TrimEnd('.')),
+                    "the log line carries what threw, where a person looks for it");
+
+                string whole = log.ReadAll();
+
+                Assert.That(whole, Does.Contain("before the fault"));
+                Assert.That(whole, Does.Contain("after the fault"));
+                Assert.That(whole, Does.Contain("and again after it"));
+
+                string onDisk = ReadWhileOpen(log.Path);
+
+                Assert.That(onDisk, Does.Contain("before the fault"));
+                Assert.That(onDisk, Does.Not.Contain("and again after it"));
+            }
+        }
+
+        /// <summary>
+        /// A copy of a log whose file stopped is the lines held in memory, which are all of them, and says
+        /// so. Reading the short file would hand out a log that ends part way and calls itself the log. The
+        /// RESULT size of the file says it is short and does not print it as the size of a whole log.
+        /// </summary>
+        [Test]
+        public void ACopyAndASizeAfterAFailedWriteAreNeverTheShortFileCalledWhole()
+        {
+            string copies = Path.Combine(folder, "copies");
+
+            using (RunLog log = Start())
+            {
+                log.Line("before the fault");
+                TheDiskFails(log);
+                log.Line("after the fault");
+
+                string copied;
+
+                Assert.That(log.TryCopyTo(copies, out copied), Is.True);
+
+                string copy = File.ReadAllText(copied);
+
+                Assert.That(copy, Does.Contain("before the fault"));
+                Assert.That(copy, Does.Contain("after the fault"));
+
+                string said = log.ReadAll();
+
+                Assert.That(said, Does.Contain("from the lines held in memory, because the log file stopped taking lines"));
+
+                log.WriteResultBlock();
+
+                Assert.That(log.ReadAll(), Does.Contain("the file stopped taking lines part way, so it is short"));
+            }
+        }
+
+        /// <summary>
+        /// The flush a read or a copy makes is a write too, and the first the disk refuses may be that one.
+        /// ReadAll and TryCopyTo called with no line between the fault and them find it themselves, say
+        /// so once, and give the whole log from memory. The break: nothing came out of either call.
+        /// </summary>
+        [Test]
+        public void AFlushThatFailsInAReadOrACopyIsTheFaultAndNeverAThrow()
+        {
+            string copies = Path.Combine(folder, "copies");
+
+            using (RunLog log = Start())
+            {
+                List<string> heard = new List<string>();
+                log.LineWritten += heard.Add;
+
+                log.Line("before the fault");
+                TheDiskFails(log);
+
+                string whole = null;
+
+                Assert.DoesNotThrow(() => whole = log.ReadAll());
+                Assert.That(whole, Does.Contain("before the fault"));
+                Assert.That(whole, Does.Contain("the log file stopped taking lines"));
+                Assert.That(log.IsWritingToDisk, Is.False);
+                Assert.That(CountOf(string.Join("\n", heard.ToArray()), "the log file stopped taking lines"), Is.EqualTo(1));
+            }
+
+            using (RunLog log = RunLog.Start(Path.Combine(folder, "second"), new DateTime(2026, 10, 7, 9, 0, 0)))
+            {
+                log.Line("before the fault");
+                TheDiskFails(log);
+
+                string copied = null;
+                bool done = false;
+
+                Assert.DoesNotThrow(() => done = log.TryCopyTo(copies, out copied));
+                Assert.That(done, Is.True);
+                Assert.That(File.ReadAllText(copied), Does.Contain("before the fault"));
+                Assert.That(log.IsWritingToDisk, Is.False);
+            }
+        }
+
+        /// <summary>
+        /// A copy of a log that was only closed is not a fault. TryCopyTo flushed a writer that Dispose had
+        /// closed, which threw, so a closed log could not be copied, and with a file that stops it would have
+        /// been taken for the file stopping.
+        /// </summary>
+        [Test]
+        public void ACopyOfAClosedLogIsNotAFileThatStopped()
+        {
+            RunLog log = Start();
+            log.Line("a line");
+            log.Dispose();
+
+            string copied;
+            bool done = log.TryCopyTo(Path.Combine(folder, "copies"), out copied);
+
+            Assert.That(done, Is.True);
+            Assert.That(File.ReadAllText(copied), Does.Contain("a line"));
+            Assert.That(log.ReadAll(), Does.Not.Contain("stopped taking lines"));
+        }
+
+        /// <summary>
+        /// A stream whose flush fails and which records that it was closed, for the one thing a closed
+        /// stream cannot show: Dispose reaching a handle that is still open.
+        /// </summary>
+        private sealed class StreamThatCannotFlush : FileStream
+        {
+            internal StreamThatCannotFlush(string path)
+                : base(path, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite, 1024, false)
+            {
+            }
+
+            internal bool WasClosed { get; private set; }
+
+            public override void Flush()
+            {
+                throw new IOException("the disk is full");
+            }
+
+            public override void Flush(bool flushToDisk)
+            {
+                throw new IOException("the disk is full");
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                WasClosed = true;
+                base.Dispose(disposing);
+            }
+        }
+
+        /// <summary>
+        /// Closing a log whose file stopped must still close the handle. Dispose flushed first and left
+        /// the writer and the stream open when the flush threw. Built through the log's private
+        /// constructor with a stream that refuses to flush, because a stream already closed cannot show
+        /// a handle left open.
+        /// </summary>
+        [Test]
+        public void ADisposeAfterAFailedFlushStillClosesTheHandle()
+        {
+            string path = Path.Combine(folder, "run-flush.log");
+            StreamThatCannotFlush refusing = new StreamThatCannotFlush(path);
+
+            System.Reflection.ConstructorInfo constructor = typeof(RunLog).GetConstructor(
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic,
+                null,
+                new[] { typeof(string), typeof(DateTime), typeof(FileStream), typeof(string) },
+                null);
+
+            Assert.That(constructor, Is.Not.Null, "RunLog's constructor no longer takes a path, a time, a stream and a reason");
+
+            RunLog log = (RunLog)constructor.Invoke(new object[] { path, new DateTime(2026, 10, 7, 9, 0, 0), refusing, null });
+
+            Assert.DoesNotThrow(() => log.Line("a line the disk refuses"));
+            Assert.That(log.IsWritingToDisk, Is.False);
+            Assert.That(refusing.WasClosed, Is.False, "the stream is still open until the log is closed");
+
+            Assert.DoesNotThrow(() => log.Dispose());
+            Assert.That(refusing.WasClosed, Is.True, "Dispose left the handle open after a flush that failed");
+        }
+
+        /// <summary>
         /// The window's listener threw and the exception came out of Line, up through the run. The line is
         /// on the disk first, the listener is named and taken off so it is not called again, and the run
         /// goes on.
