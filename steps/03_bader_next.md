@@ -1171,3 +1171,20 @@ Both folders are yours to delete once you are satisfied. Nothing else of yours w
      scale, the weekly path, a CHANGED group, alignment across many models, the two non
      buildings, the single discipline groups, and anything needing the real matrix
      against real content
+
+## Proof F120 the harvest and pictures, added 2026-10-08
+
+Core is proved by its tests. These steps read what the add-in half changed off one run with
+pictures on, the fixture of steps 410 to 416 or 1A02MM of the timed runs, and nothing here
+needs the viewpoints box. The guard across groups cannot be read off a run where no picture
+fails, step 489 says what it needs.
+
+482. Build and install main once F120 has merged, steps 7 to 12
+483. Run one group with pictures on, the fixture of steps 410 to 416, and open its log
+484. Look for, in the group straight after its `IMAGES` tally lines, the `written`, `seconds each on average` and `KB each on average` lines: one line reading `IMAGES   the step's seconds went:` then `rendering`, `saving the JPEG` and `reading the file back`, each with its seconds in the form `0.000s`, then `in none of these`, then `of` the whole `over` N `visits to the step`, with N the clashes the harvest asked a picture for, which is the written count plus the failed count plus the `passed over` counts
+485. Look for, in the same group's `TIMING` block: a row `RENUMBER` with its seconds, between `IMAGES` and `VIEWS`, and the `IMAGES` row's seconds the same as the whole on the line of step 484 to within a thousandth
+486. Look for, in the `IMAGES` tally lines: the `written` count the same as the last run of the same group before F120, and the `KB each on average` the same
+487. Open the pictures folder beside the workbook: the same count of `.jpg` files as `written`, no file ending `.moving`, and one picture opened reads 1024 by 1024 in its properties
+488. Look for, in the `.tsv` log: where a picture failed, a line `IMAGE    failed for` the clash `. the render finished but no file arrived at` the path, the words before `at` the same on every such line, and where none failed no such line
+489. Only with a render forced to fail across groups of under fifty clashes, UNKNOWN whether the lead adds one: look for `IMAGES   RUN STOPPED  the last 50 clash images all failed for the same reason, so the rest of the run was not attempted. Switch images off to run without them. the render finished but no file arrived`, inside the group the fiftieth fell in and not at its end, the label reading `The run was stopped. 50 clash images in a row all failed the same way, so the rest was not attempted. The log says what the failure was.`, and `RUN      STOPPED after` the count of groups in RESULT
+490. On the timed runs of Q145 item 5 on 1A02MM and 1A04PK: the `IMAGES` line of step 484 per group, the `TIMING, THE WHOLE RUN` block's `IMAGES` seconds against set 03's 643.150 s with the same written count across the run, and send the log named on the `log file` line of the SESSION block

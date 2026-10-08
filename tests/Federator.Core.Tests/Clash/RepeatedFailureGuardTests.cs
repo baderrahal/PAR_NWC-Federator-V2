@@ -205,6 +205,52 @@ namespace Federator.Core.Tests
             Assert.That(guard.Reason, Is.Not.Null.And.Not.Empty);
         }
 
+        /// <summary>
+        /// FR-076. A render that finished with no file carried the path in its reason, so
+        /// fifty of them were fifty reasons and the guard never fired. The reason is one key
+        /// and the path is said beside it, so two failures differing only by path count as
+        /// one reason.
+        /// </summary>
+        [Test]
+        public void TwoFailuresDifferingOnlyByPathCountAsOneReason()
+        {
+            RepeatedFailureGuard guard = new RepeatedFailureGuard(2);
+            Federator.Core.Report.ImageFailure first =
+                Federator.Core.Report.ImageFailure.BecauseNoFileArrived(@"C:\Clash Reports\cd000001.jpg");
+            Federator.Core.Report.ImageFailure second =
+                Federator.Core.Report.ImageFailure.BecauseNoFileArrived(@"C:\Clash Reports\cd000002.jpg");
+
+            guard.RecordFailure(first.Reason);
+            guard.RecordFailure(second.Reason);
+
+            Assert.That(guard.Consecutive, Is.EqualTo(2));
+            Assert.That(guard.ShouldStopTheRun, Is.True);
+            Assert.That(first.Line(), Is.Not.EqualTo(second.Line()), "the lines beside the reason carry the paths");
+        }
+
+        /// <summary>
+        /// The reason the streak carries, for a stop line worded for what failed. Null
+        /// while nothing is failing, and gone again on the first success.
+        /// </summary>
+        [Test]
+        public void TheFirstReasonIsTheStreaksAndGoesOnASuccess()
+        {
+            RepeatedFailureGuard guard = new RepeatedFailureGuard();
+
+            Assert.That(guard.FirstReason, Is.Null);
+
+            guard.RecordFailure(Disposed);
+            guard.RecordFailure(Disposed);
+            Assert.That(guard.FirstReason, Is.EqualTo(Disposed));
+
+            guard.RecordFailure("something else entirely");
+            Assert.That(guard.FirstReason, Is.EqualTo("something else entirely"),
+                "a different reason starts the count again, and the streak's reason with it");
+
+            guard.RecordSuccess();
+            Assert.That(guard.FirstReason, Is.Null);
+        }
+
         // ---------- it stops the run, not the group ----------
 
         // The whole point. One guard is carried across every group, so 24 groups failing

@@ -65,6 +65,14 @@ namespace Federator.Addin.Engine
         /// </summary>
         private readonly RepeatedFailureGuard guard;
 
+        /// <summary>
+        /// The pictures' guard, one for the whole run for the same reason, FR-076. It was
+        /// built new inside each group's ClashImages, so a run where every picture failed
+        /// never stopped unless one group alone reached fifty in a row. Null when the
+        /// images' stop after count is zero, which switches it off.
+        /// </summary>
+        private readonly RepeatedFailureGuard imageGuard;
+
         /// <summary>Why the run was abandoned, or null while it is still going.</summary>
         private string stopTheRun;
 
@@ -184,6 +192,9 @@ namespace Federator.Addin.Engine
             this.teams = teams;
             this.reports = reports ?? new ReportOptions();
             this.guard = new RepeatedFailureGuard(this.reports.StopAfterFailures);
+            this.imageGuard = this.reports.Images.StopAfterFailures > 0
+                ? new RepeatedFailureGuard(this.reports.Images.StopAfterFailures)
+                : null;
             this.reportFolder = null;
             this.live = new LiveLine(() => log.ElapsedSeconds);
             this.live.PaceReader = OnTheGroupBefore;
@@ -2960,7 +2971,7 @@ namespace Federator.Addin.Engine
                     if (outputs.WriteImages && reportFolder != null)
                     {
                         runner.WorkbookPath = ReportPaths.Workbook(reportFolder, job.WorkbookName);
-                        runner.Images = new ClashImages(log, reports.Images);
+                        runner.Images = new ClashImages(log, reports.Images, imageGuard);
                         log.Line("CLASH    " + reports.Images.Describe());
                     }
                     else
@@ -3078,26 +3089,30 @@ namespace Federator.Addin.Engine
                     // The pictures were rendered under run order numbers while the tests
                     // ran, because the report order is only known when the last test has
                     // run. Renamed once here, before any report is written, so every
-                    // picture carries the number of its row. A rename that throws is a
+                    // picture carries the number of its row. A rename that fails is a
                     // warning on the report and never fails the group, since the NWF, the
-                    // pictures and the workbook are all still written.
-                    RenumberThePictures(job, outcome, runner.WorkbookPath);
+                    // pictures and the workbook are all still written. A step of its own,
+                    // FR-077, because it ran inside no step and its seconds came off no
+                    // total, 20.6 s of one group of set 03.
+                    InStep(
+                        RunSteps.Renumber,
+                        () => RenumberThePictures(job, outcome, runner.WorkbookPath),
+                        () => "the pictures of " + job.Building);
                 }
 
                 if (outcome.Report != null && runner.Images != null)
                 {
                     // Measured, never estimated. Every number anyone has given for what a
-                    // clash image costs has been a guess until this line.
+                    // clash image costs has been a guess until this line. The second line
+                    // is where the step's seconds went, the render apart from the save,
+                    // FR-077. The pictures' guard stopping the run is the runner's to say,
+                    // the same way the tests' guard is, and reaches here as clash.StopTheRun.
                     foreach (string line in outcome.Report.Images.Lines())
                     {
                         log.Line(line);
                     }
 
-                    if (runner.Images.ShouldStopTheRun && stopTheRun == null)
-                    {
-                        stopTheRun = runner.Images.StopReason;
-                        outcome.AddError(runner.Images.StopReason);
-                    }
+                    log.Line(runner.Images.Seconds.Line());
                 }
                 log.Line("CLASH    " + job.Building + " finished. " + clash.Summary());
 
@@ -3129,6 +3144,11 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// Renames the pictures into report order. The rule and the two pass move live in
         /// Federator.Core.Report.ImageRenumbering so they can be tested without Navisworks.
+        /// A move that throws is caught there, FR-075, every picture is put back under its
+        /// run order name, and the outcome's lines say what was moved, what was put back
+        /// and what could not be, so the lines here are the outcome's and never a sentence
+        /// of this file's about the state of the disk. The one throw that can still reach
+        /// here is from the planning before any move, so nothing on the disk has changed.
         /// </summary>
         private void RenumberThePictures(FederationJob job, JobOutcome outcome, string workbookPath)
         {
@@ -3144,9 +3164,9 @@ namespace Federator.Addin.Engine
             catch (Exception error)
             {
                 log.Failure(
-                    "renumbering the pictures for " + job.Building,
+                    "planning the renaming of the pictures for " + job.Building,
                     error,
-                    "kept going, the pictures that were not yet renamed keep their run order numbers");
+                    "kept going, no picture was moved, so every row points at the picture it was rendered under");
             }
         }
 

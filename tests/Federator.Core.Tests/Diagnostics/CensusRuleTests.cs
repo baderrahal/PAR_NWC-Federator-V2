@@ -83,7 +83,7 @@ namespace Federator.Core.Tests
             {
                 RunSteps.NwfSave, RunSteps.Workbook, RunSteps.Html, RunSteps.Xml,
                 RunSteps.Nwd, RunSteps.Confirm, RunSteps.Harvest, RunSteps.Images,
-                RunSteps.Units
+                RunSteps.Renumber, RunSteps.Units
             };
 
             foreach (string step in writeAFile)

@@ -415,6 +415,90 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Missing, Is.EqualTo(0));
         }
 
+        // ---------- a move that throws, FR-075 ----------
+
+        /// <summary>
+        /// Every row points at a file that is on disk and holds that row's own picture, and
+        /// no holding name is left. The state a fault has to leave the folder in, whichever
+        /// pass it struck.
+        /// </summary>
+        private void AssertEveryRowPointsAtItsOwnPicture(ClashReport report)
+        {
+            foreach (string file in Directory.GetFiles(ImageNaming.FolderFor(workbook)))
+            {
+                Assert.That(file, Does.EndWith(".jpg"), "a holding name was left on disk");
+            }
+
+            foreach (TestReport test in report.Tests)
+            {
+                foreach (ClashRow row in test.Rows)
+                {
+                    Assert.That(File.Exists(row.ImagePath), Is.True,
+                        row.Name + " points at " + row.ImagePath + " and no file is there");
+                    Assert.That(File.ReadAllText(row.ImagePath), Is.EqualTo(row.Name),
+                        "the picture under " + row.ImageFile + " is another row's picture");
+                    Assert.That(Path.GetFileName(row.ImagePath), Is.EqualTo(row.ImageFile));
+                }
+            }
+        }
+
+        /// <summary>
+        /// FR-075. A move that threw part way through pass two left every picture not yet
+        /// moved under its holding name with its row pointing at the old name, and the
+        /// engine said the pictures not yet renamed keep their run order numbers, which was
+        /// not the state on disk. A folder sitting at one target path makes that move throw.
+        /// Walls 2 should become cd000002.jpg, a name no picture held in run order, so the
+        /// folder sits there and the first move of pass two, Walls 1, has gone through.
+        /// </summary>
+        [Test]
+        public void AMoveThatThrowsInPassTwoPutsEveryPictureBackAndNamesWhatStopped()
+        {
+            ClashReport report = MixedOrder();
+            RenderInRunOrder(report, null);
+            Directory.CreateDirectory(ImageNaming.PathFor(workbook, 0, 2));
+
+            ImageRenumberingOutcome outcome = ImageRenumbering.Apply(report, workbook);
+
+            AssertEveryRowPointsAtItsOwnPicture(report);
+            Assert.That(outcome.Renamed, Is.EqualTo(0),
+                "nothing stays renamed after a fault, every picture is back under its run order name");
+            Assert.That(outcome.NotPutBack, Is.EqualTo(0));
+            Assert.That(outcome.Problems.Count, Is.EqualTo(1));
+            Assert.That(outcome.Problems[0], Does.StartWith("the renaming stopped at Walls 2, cd010002.jpg to cd000002.jpg, which threw IOException"));
+            Assert.That(outcome.Problems[0], Does.Contain(
+                "1 picture had been moved before it and 5 were under a holding name, "
+                + "and all 6 were put back under their run order names, each read back off the disk"));
+            Assert.That(outcome.Lines()[0], Is.EqualTo(
+                "IMAGES   numbered in report order: 0 renamed, 0 already right, 0 missing"));
+            Assert.That(outcome.Lines()[1], Does.StartWith("IMAGES   the renaming stopped at Walls 2"));
+        }
+
+        /// <summary>
+        /// The same fault in pass one. A folder sitting where a holding name goes makes the
+        /// move to it throw, the pictures already under a holding name are put back, and no
+        /// picture was moved to a final name.
+        /// </summary>
+        [Test]
+        public void AMoveThatThrowsInPassOnePutsEveryPictureBack()
+        {
+            ClashReport report = MixedOrder();
+            RenderInRunOrder(report, null);
+
+            // Floors 1 is the last move planned, so the five before it are under a holding name.
+            Directory.CreateDirectory(ImageNaming.PathFor(workbook, 0, 1) + ".moving");
+
+            ImageRenumberingOutcome outcome = ImageRenumbering.Apply(report, workbook);
+
+            AssertEveryRowPointsAtItsOwnPicture(report);
+            Assert.That(outcome.Renamed, Is.EqualTo(0));
+            Assert.That(outcome.NotPutBack, Is.EqualTo(0));
+            Assert.That(outcome.Problems[0], Does.StartWith(
+                "the renaming stopped at Floors 1, cd000001.jpg to cd020001.jpg, which threw IOException"));
+            Assert.That(outcome.Problems[0], Does.Contain(
+                "no picture had been moved before it and 5 were under a holding name, "
+                + "and all 5 were put back under their run order names, each read back off the disk"));
+        }
+
         // ---------- what points at the renamed file ----------
 
         // The workbook link is read off the written file, because the object model has
