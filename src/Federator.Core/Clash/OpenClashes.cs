@@ -9,14 +9,15 @@ namespace Federator.Core.Clash
     /// section 4h, so neither of these is read off it. Both are stated rules, and the log
     /// says which one was used, so nobody reads an API meaning into a number that has none.
     /// Since the Summary and Matrix sheets went and the window stopped offering the choice,
-    /// the one reader left is the image status filter asking for what Navisworks counts as
-    /// open.
+    /// the readers left are the image status filter and the viewpoint plan asking for what
+    /// Navisworks counts as open, and the default of the statuses a view shows, which
+    /// TestViewPlan reads.
     /// </summary>
     public enum OpenClashCount
     {
         /// <summary>
-        /// New plus Active. What this tool counted before there was a choice, and what a view shows by default,
-        /// ViewpointSettings.DefaultViewStatuses.
+        /// New plus Active. What this tool counted before there was a choice, and the default of the statuses
+        /// a view shows, ViewpointSettings.DefaultViewStatuses.
         /// </summary>
         NewAndActive,
 

@@ -74,9 +74,9 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// Whether the file on disk may be written, by the rule above. Only the tests read it: the engine picks
-        /// between the two sentences where it stands and stops the save by returning before the save, so this
-        /// is the rule written down and not a gate any caller passes through.
+        /// Whether the file on disk may be written, by the rule above. Only the tests read it, and no caller in the
+        /// engine or the set builder passes through it, so it is the rule written down and not a gate. Whether a
+        /// path saves after a failure is the engine's own, and the set pair of Q74 still saves after one.
         /// </summary>
         public static bool TheFileMayBeSaved(bool anythingWasChanged, bool everythingWorked)
         {

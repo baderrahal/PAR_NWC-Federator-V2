@@ -83,6 +83,29 @@ namespace Federator.Core.Tests
             Assert.That(error.Message, Does.Contain("Feet"));
         }
 
+        /// <summary>
+        /// Every member of Autodesk.Navisworks.Api.Units resolves through the table, FR-170. The enum has eleven members,
+        /// measured, docs\history\scan.md near line 520, and a unit the table does not know throws out of the penetration
+        /// size reader into a catch. This holds the table to that list, so a dropped row fails here and not in a run. It
+        /// passes today, since the table carries all eleven.
+        /// </summary>
+        [Test]
+        public void EveryNavisworksUnitNameIsInTheTable()
+        {
+            string[] measured =
+            {
+                "Meters", "Centimeters", "Millimeters", "Feet", "Inches", "Yards",
+                "Kilometers", "Miles", "Micrometers", "Mils", "Microinches"
+            };
+
+            Assert.That(measured.Length, Is.EqualTo(11));
+
+            foreach (string name in measured)
+            {
+                Assert.That(UnitTable.ByEnumName(name).EnumName, Is.EqualTo(name), name);
+            }
+        }
+
         // 0.2460629921 ft is the 75 mm .claude\rules\core.md records off the reference file.
         [Test]
         public void TheFeetRowAgreesWithTheReferenceFile()
