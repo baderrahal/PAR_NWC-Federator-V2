@@ -16,6 +16,7 @@ work folder, before any mask.
 | f101-design.md | the design of the no-click entry, Phase 1 item 5, with the prober's questions PQ1 to PQ8 | 15497 | eba1edce1f1473cb | masked, one machine name replaced by [the machine of 2026-09-19] |
 | f103-design.md | the design of tools\loop\run.ps1, two designers and a judge, turn 3, which F103 part 1 builds from | 75698 | 9242dc91093ece35 | as written |
 | f103-move-proof.txt | every line of tools\loop\nw-guard.ps1 at 377cb1a mapped to its line of the probe at 0eb4ede, or named wrapper, comment, blank or changed with both texts, made by replaying the move's generator and checked against the committed file, fix list 1 item 1 | 119303 | a988e552c34bb0f3 | as written |
+| item5-runs-brief.md | the steps of Bader's item 5 of Q145, main installed in place and the timed runs of 1A02MM and 1A04PK on set 05 with the viewpoints box ticked, once F114 merges, written in turn6 on 2026-10-08 and copied the same day by his message of that evening | 3854 | a4bb9f6e96ceeeba | as written, the mask finding nothing |
 
 Line numbers in the F100 notes are of the probe at the commit each note names, not of the
 probe as it stands.
