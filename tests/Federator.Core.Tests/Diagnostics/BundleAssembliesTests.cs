@@ -132,6 +132,48 @@ namespace Federator.Core.Tests
             Assert.That(BundleAssemblies.FileFor("bad|name, Version=1.0.0.0", folder), Is.Null);
         }
 
+        // FR-173. A file that is in the bundle and is not an assembly was found by name and then failed to
+        // load, and the runtime's own report names the request, not that the bundle held a file for it.
+        // Resolve is private and hooked onto the whole domain by Install, so it is called by reflection
+        // with the folder and the note set the way Install sets them, and both are put back.
+        [Test]
+        public void AFileFoundInTheBundleThatWillNotLoadIsSaidWithWhatItThrew()
+        {
+            string path = Path.Combine(folder, "Garbage.Bundle.Thing.dll");
+            File.WriteAllText(path, "not an assembly");
+
+            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Static;
+            FieldInfo folderField = typeof(BundleAssemblies).GetField("bundleFolder", flags);
+            FieldInfo noteField = typeof(BundleAssemblies).GetField("report", flags);
+            MethodInfo resolve = typeof(BundleAssemblies).GetMethod("Resolve", flags);
+            object folderBefore = folderField.GetValue(null);
+            object noteBefore = noteField.GetValue(null);
+            List<string> said = new List<string>();
+
+            try
+            {
+                folderField.SetValue(null, folder);
+                noteField.SetValue(null, (Action<string>)said.Add);
+
+                object answer = resolve.Invoke(
+                    null, new object[] { null, new ResolveEventArgs("Garbage.Bundle.Thing, Version=1.0.0.0") });
+
+                Assert.That(answer, Is.Null, "an assembly that would not load was handed back");
+            }
+            finally
+            {
+                folderField.SetValue(null, folderBefore);
+                noteField.SetValue(null, noteBefore);
+            }
+
+            Assert.That(said, Has.Count.EqualTo(1));
+            Assert.That(said[0], Does.StartWith("BUNDLE   "));
+            Assert.That(said[0], Does.Contain(path));
+            Assert.That(said[0], Does.Contain("could not be loaded"));
+            Assert.That(said[0], Does.Contain("Exception"), "what it threw is named");
+            Assert.That(said[0], Does.Not.Contain("resolved from"), "a load that failed was said to have worked");
+        }
+
         [Test]
         public void TheFolderIsTheOneThisAssemblyIsIn()
         {

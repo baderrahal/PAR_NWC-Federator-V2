@@ -512,6 +512,33 @@ namespace Federator.Core.Tests
             }
         }
 
+        // A format DateTime.ToString throws on gives no date at all, so there is no result to fall back from.
+        // The number in its place named this week's NWD as last week's and wrote over it, FR-173, so the name
+        // says it cannot be built, as an emptied field does, and the run does not start.
+        [Test]
+        public void AFormatTheDateCannotBeWrittenWithIsToldAndNeverReplacedByTheNumber()
+        {
+            foreach (string bad in new[] { "yyyy'", "%" })
+            {
+                OutputNaming naming = new OutputNaming();
+                naming.DateTheNwd = true;
+                naming.Nwd.DateFormat = bad;
+
+                OutputNameRow row = Table(naming).Find("1C07BC");
+
+                Assert.That(row.NwdName, Does.StartWith(OutputNameTable.CannotBeNamed), bad);
+                Assert.That(row.NwdName, Does.Contain(bad), bad);
+                Assert.That(row.NwdName, Does.Not.EndWith("-000001"), bad);
+                Assert.That(row.NwfName, Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"), bad);
+
+                string why = Table(naming).WhyTheRunCannotStart();
+
+                Assert.That(why, Is.Not.Null, bad);
+                Assert.That(why, Does.Contain("not one a date can be written with"), bad);
+                Assert.That(why, Does.Not.Contain("Exception"), bad);
+            }
+        }
+
         // ---------- refusals ----------
 
         [Test]

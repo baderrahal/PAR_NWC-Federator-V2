@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Federator.Core.Diagnostics;
+using Federator.Core.Naming;
 using Federator.Core.Report;
 
 namespace Federator.Core.Rerun
@@ -63,7 +64,9 @@ namespace Federator.Core.Rerun
         ///     live, and an NWD or an NWC opened directly holds neither
         ///   it has a folder in front of its name, because that is where the outputs go
         ///   that folder can be read from here
-        /// D2, decided on 2026-09-12. An NWD opened directly used to be allowed, and the
+        /// No path at all is refused as unsaved first. The address and a character no path may hold
+        /// are looked for before the path is split, because splitting one can throw, and the name
+        /// of what is left is judged after them. D2, decided on 2026-09-12. An NWD opened directly used to be allowed, and the
         /// NWD this tool publishes would have been written over the file that was open.
         /// </summary>
         public static bool CanRun(string openPath)
@@ -80,6 +83,9 @@ namespace Federator.Core.Rerun
             return WhyNot(openPath, folderReadable).Length == 0;
         }
 
+        private const string NotSaved = "This document has not been saved anywhere, so there is nowhere to put "
+            + "the NWD and the report beside it. Save it first.";
+
         /// <summary>Why it cannot, in the words a person would say. Empty where it can.</summary>
         public static string WhyNot(string openPath)
         {
@@ -94,18 +100,32 @@ namespace Federator.Core.Rerun
                 throw new ArgumentNullException("folderReadable");
             }
 
-            if (string.IsNullOrEmpty(openPath)
-                || string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(openPath)))
+            if (string.IsNullOrEmpty(openPath))
             {
-                return "This document has not been saved anywhere, so there is nowhere to put "
-                    + "the NWD and the report beside it. Save it first.";
+                return NotSaved;
             }
 
+            // Before any call that splits the path: an address can hold a character a path may not, and
+            // the path methods of .NET Framework throw on one, into the window code that fills a label, FR-173.
             if (openPath.IndexOf("://", StringComparison.Ordinal) >= 0)
             {
                 return "This document was opened from " + openPath + ", which is an address "
                     + "and not a folder on a disk, so there is nowhere to put the NWD and the "
                     + "report beside it. Open it from a folder this machine can read.";
+            }
+
+            int refused = FileNames.IndexOfRefusedInAPath(openPath);
+
+            if (refused >= 0)
+            {
+                return "This document's path, " + openPath + ", holds " + FileNames.Name(openPath[refused])
+                    + ", which Windows does not allow in a path, so there is nowhere to put the NWD "
+                    + "and the report beside it. Open it from a folder this machine can read.";
+            }
+
+            if (string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(openPath)))
+            {
+                return NotSaved;
             }
 
             string extension = ExtensionOf(openPath);

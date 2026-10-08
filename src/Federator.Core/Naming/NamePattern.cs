@@ -145,7 +145,10 @@ namespace Federator.Core.Naming
             }
             catch (FormatException)
             {
-                return Number;
+                // Nothing came back to fall back from, and the format is a person's setting whose mistakes are
+                // meant to show. A number in its place would name this week's NWD as last week's and write over
+                // it. The table puts the sentence in the name, as it does for an emptied field, FR-173.
+                throw new InvalidOperationException("The date format " + format + " is not one a date can be written with.");
             }
 
             // DateTime.ToString does NOT throw on a format string nobody can read. It

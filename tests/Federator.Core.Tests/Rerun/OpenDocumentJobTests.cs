@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Federator.Core.Diagnostics;
+using Federator.Core.Naming;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using NUnit.Framework;
@@ -307,6 +308,60 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// FR-173. The path methods of .NET Framework throw on a bar, a quote, an angle bracket or a control
+        /// character before they split anything, and the window fills a label from this answer, so the
+        /// character is named before any of them is called. The folder rule is not read for such a path, so the
+        /// answer is the same on a machine where a backslash is an ordinary character.
+        /// </summary>
+        [Test]
+        public void ACharacterNoPathMayHoldIsNamedBeforeThePathIsSplit()
+        {
+            string[] opens =
+            {
+                @"D:\Fed|erations\X.nwf",
+                @"D:\Fed""erations\X.nwf",
+                @"D:\Fed<erations\X.nwf",
+                @"D:\Fed>erations\X.nwf",
+                "D:\\Fed\terations\\X.nwf",
+            };
+            string[] named = { "\"|\"", "\"\"\"", "\"<\"", "\">\"", "U+0009" };
+
+            for (int i = 0; i < opens.Length; i++)
+            {
+                Assert.That(OpenDocumentJob.CanRun(opens[i], Readable), Is.False, opens[i]);
+
+                string why = OpenDocumentJob.WhyNot(opens[i], Readable);
+
+                Assert.That(why, Does.Contain("does not allow in a path"), opens[i]);
+                Assert.That(why, Does.Contain(named[i]), opens[i]);
+                Assert.That(why, Does.Not.Contain("no folder"), opens[i]);
+                Assert.That(OpenDocumentJob.Describe(opens[i], string.Empty), Is.EqualTo(OpenDocumentJob.WhyNot(opens[i])), opens[i]);
+            }
+        }
+
+        [Test]
+        public void AnAddressHoldingACharacterNoPathMayHoldIsStillAnAddress()
+        {
+            string open = "https://docs.example.com/a|b/X.nwf";
+
+            string why = OpenDocumentJob.WhyNot(open, Readable);
+
+            Assert.That(why, Does.Contain("an address"));
+            Assert.That(why, Does.Not.Contain("does not allow in a path"));
+        }
+
+        [Test]
+        public void ACharacterWindowsRefusesInANameButNotInAPathDoesNotStopAPath()
+        {
+            // A colon is a drive, a star and a question mark are refused in a name and not in a path the
+            // methods split, so none of them may be named here as a character no path may hold.
+            Assert.That(FileNames.IndexOfRefusedInAPath(@"D:\a\X.nwf"), Is.EqualTo(-1));
+            Assert.That(FileNames.IndexOfRefusedInAPath(@"D:\a*b\X?.nwf"), Is.EqualTo(-1));
+            Assert.That(FileNames.IndexOfRefusedInAPath(null), Is.EqualTo(-1));
+            Assert.That(FileNames.IndexOfRefusedInAPath("a|b"), Is.EqualTo(1));
+        }
+
         [Test]
         public void AUncPathIsAFolderLikeAnyOther()
         {
@@ -399,6 +454,7 @@ namespace Federator.Core.Tests
                 OpenDocumentJob.WhyNot(InFederations("X.nwd"), Readable),
                 OpenDocumentJob.WhyNot(InFederations("X"), Readable),
                 OpenDocumentJob.WhyNot("acc://hub/X.nwf", Readable),
+                OpenDocumentJob.WhyNot(@"D:\a|b\X.nwf", Readable),
                 OpenDocumentJob.WhyNot(OpenHere, Unreadable),
             };
 

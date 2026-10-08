@@ -368,7 +368,7 @@ namespace Federator.Core.Diagnostics
                 catch (IOException error)
                 {
                     // Two runs inside the same second. Try the next suffix. What it said is kept, because
-                    // a name that is free and a file that cannot be made both come here, FR-173.
+                    // a name that is taken and a file that cannot be made both come here, FR-173.
                     stream = null;
                     lastRefusal = error;
                 }
@@ -539,6 +539,7 @@ namespace Federator.Core.Diagnostics
             }
             catch (Exception)
             {
+                // Only used to tell the live file from the others, and the path as given is as good a key.
                 return path ?? string.Empty;
             }
         }
