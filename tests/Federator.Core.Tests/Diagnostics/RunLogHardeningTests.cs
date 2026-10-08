@@ -361,6 +361,35 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// Retention feeds a refused .tsv to its own count. The summary counted it among the logs that
+        /// would not go, so one held .tsv beside a log that did go read as a log that stayed. A .tsv held
+        /// open refuses its delete on Windows, which is a rule of the file system, so this one skips
+        /// elsewhere and RetainLine's own test holds the sentence everywhere. The break: the log whose
+        /// .tsv was held is gone, and counts as deleted.
+        /// </summary>
+        [Test]
+        public void AHeldTsvIsCountedAsATsvAndNeverAsALogThatStayed()
+        {
+            TestPaths.OnWindowsOnly("a file held open refusing to be deleted");
+
+            MakeOldLogs(folder, 35, true);
+            string oldestLog = Path.Combine(folder, "run-20260101-000000.log");
+            string oldestRows = Path.Combine(folder, "run-20260101-000000.tsv");
+
+            using (FileStream hold = new FileStream(oldestRows, FileMode.Open, FileAccess.Read, FileShare.None))
+            using (RunLog log = RunLog.Start(folder, new DateTime(2026, 10, 7, 9, 0, 0), 30))
+            {
+                string text = ReadWhileOpen(log.Path);
+
+                Assert.That(File.Exists(oldestLog), Is.False, "the log whose .tsv was held still goes");
+                Assert.That(File.Exists(oldestRows), Is.True, "a held .tsv was somehow deleted");
+                Assert.That(text, Does.Contain(
+                    "RETAIN   keeping 30 logs, deleted 6, could not delete 0, and 5 .tsv beside them, 1 .tsv could not be deleted"));
+                Assert.That(text, Does.Contain("RETAIN   could not delete run-20260101-000000.tsv"));
+            }
+        }
+
+        /// <summary>
         /// When the logs folder cannot be opened the log falls back to a folder that is not this
         /// tool's, the system temp folder, where a run-*.log may belong to another program. Nothing in
         /// it is pruned, and the log says why.

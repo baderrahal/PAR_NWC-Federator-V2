@@ -231,7 +231,8 @@ namespace Federator.Core.Tests
         /// delete 2 beside deleted 6 and the .tsv beside them, as if two logs had stayed. Built through the
         /// one seam that writes the sentence, because a delete refused on one file system is not on another.
         /// The breaks: a refused log is counted as a log whatever the .tsv did, and a run with no refused
-        /// .tsv says nothing of any.
+        /// .tsv adds nothing about a refused .tsv to the sentence it always wrote. The wiring from
+        /// PruneOldLogs to this seam is held by AHeldTsvIsCountedAsATsvAndNeverAsALogThatStayed.
         /// </summary>
         [Test]
         public void ARefusedTsvIsCountedApartFromARefusedLog()
