@@ -15,7 +15,9 @@ namespace Federator.Core.Diagnostics
     /// <summary>
     /// The diagnostic log. Every line is written and flushed to the disk as it happens,
     /// so a hard crash inside a Navisworks call still leaves everything up to that moment
-    /// on disk. Nothing is held back until the end.
+    /// on disk. Nothing is held back until the end. If a write to the file throws, the file
+    /// stops, FR-057: every line goes on into memory and to the window, the log says so once,
+    /// and the run is not stopped over it.
     /// </summary>
     public sealed class RunLog : IDisposable
     {
@@ -74,6 +76,9 @@ namespace Federator.Core.Diagnostics
         // of the file says it is short. A log with no file behind it from the start is not this.
         private bool diskFault;
 
+        // What threw, kept for the open that is given up on and the folder tried next, FR-057.
+        private string faultCause;
+
         // ---------- the steps, F59 ----------
         //
         // Three lists and not one. openSteps is the stack, so a step knows how deep it
@@ -131,7 +136,7 @@ namespace Federator.Core.Diagnostics
             clock = Stopwatch.StartNew();
         }
 
-        /// <summary>False when no file could be opened anywhere. Lines still reach the window.</summary>
+        /// <summary>False when no file could be opened anywhere, or the file stopped taking lines part way. Lines still reach the window.</summary>
         public bool IsWritingToDisk
         {
             get { return writer != null && !diskFault; }
@@ -381,8 +386,13 @@ namespace Federator.Core.Diagnostics
             // left with a file that took nothing would tell the window it was on the disk.
             if (log.diskFault)
             {
+                string cause = log.faultCause;
                 log.Dispose();
-                throw new IOException("The first line could not be written to " + path + ".");
+
+                // The file this open made holds nothing worth keeping, and left in the folder it would
+                // count towards the logs kept.
+                Quietly(delegate { File.Delete(path); });
+                throw new IOException("The first line could not be written to " + path + ": " + cause + ".");
             }
 
             // Beside the text log and opened straight after it, so a run that dies at
@@ -612,7 +622,8 @@ namespace Federator.Core.Diagnostics
         // ---------- the primitive ----------
 
         /// <summary>
-        /// One line, stamped and flushed all the way to the disk before returning.
+        /// One line, stamped and flushed all the way to the disk before returning, or, once the file
+        /// has stopped taking lines, kept in memory and told to the window.
         /// </summary>
         public void Line(string message)
         {
@@ -686,10 +697,11 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         private string FileStopped(Exception error)
         {
-            diskFault = true;
             DisabledReason = "The log file stopped taking lines part way. The lines since then are in this window only.";
+            diskFault = true;
+            faultCause = error.GetType().Name + ": " + error.Message.TrimEnd('.', ' ');
 
-            string said = "LOG      the log file stopped taking lines, " + error.GetType().Name + ": " + error.Message
+            string said = "LOG      the log file stopped taking lines, " + faultCause
                 + ". The file holds the lines written before this one and the one that failed may be cut short."
                 + " The lines after it are held in memory and shown in the window, and the run goes on";
 
@@ -706,7 +718,7 @@ namespace Federator.Core.Diagnostics
                 return;
             }
 
-            // FR-057. The line is on the disk first. A listener that throws is named in the log and
+            // FR-057. The line is on the disk first, or in memory once the file has stopped. A listener that throws is named in the log and
             // taken off, so the window can never stop a run through a log line, and the others
             // keep hearing it.
             foreach (Action<string> listener in handler.GetInvocationList())
@@ -2204,7 +2216,8 @@ namespace Federator.Core.Diagnostics
         /// <summary>
         /// Copies the log next to the NWF folder. Returns false and writes the reason into
         /// the fixed log rather than throwing, because logging must never be the thing
-        /// that stops a run.
+        /// that stops a run. Once the file has stopped taking lines the copy is written from the
+        /// lines held in memory, which are every line there was, and says so.
         /// </summary>
         public bool TryCopyTo(string folder, out string copiedPath)
         {
@@ -2232,7 +2245,8 @@ namespace Federator.Core.Diagnostics
 
                 lock (gate)
                 {
-                    if (!diskFault)
+                    // A closed log has nothing left to flush and its file is whole, so it is not a fault.
+                    if (!diskFault && !closed)
                     {
                         try
                         {
@@ -2294,7 +2308,8 @@ namespace Federator.Core.Diagnostics
         /// <summary>
         /// The whole log as text, for the clipboard. Read back off the disk when there is
         /// a file, so what gets pasted is what was really written. Falls back to what was
-        /// held in memory if the file cannot be read for any reason.
+        /// held in memory if the file cannot be read for any reason, and is what is held in
+        /// memory once the file has stopped taking lines, since the file is short then.
         /// </summary>
         public string ReadAll()
         {
