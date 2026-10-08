@@ -995,10 +995,6 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Check 5 broken through its one half since Q133 D, a view this tool made of a mirror in
-        /// the walk after. A mirror among the tests run broke it before and is the ordinary case now.
-        /// </summary>
-        /// <summary>
         /// The breaker's B5 of F114's add-in pass. The after line counts what the removals
         /// reported, never the inventory's decisions, and a removal refused is counted and named
         /// as not removed. With no removal results handed in the line says so.
@@ -1025,6 +1021,10 @@ namespace Federator.Core.Tests
             Assert.That(Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0)), Does.Contain("what was removed is UNKNOWN, no removal results were handed to this block"));
         }
 
+        /// <summary>
+        /// Check 5 broken through its one half since Q133 D, a view this tool made of a mirror in
+        /// the walk after. A mirror among the tests run broke it before and is the ordinary case now.
+        /// </summary>
         [Test]
         public void AFailedCheckIsAFailedLineNamingWhatBrokeIt()
         {

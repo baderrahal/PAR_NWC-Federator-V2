@@ -248,8 +248,18 @@ well as to pass.
   service through `Penetrations.ServiceSizeOf` ONLY where the test's pair carries the size
   folder, row F114-K9, so `ViewTeams` is built before the walk. ONLY A TEST READ WHOLE GETS A
   VIEW, attempt 2 on the breaker's B1: `Federator.Core.Views.TestsRead` keeps per test whether
-  it was found at its address, every row led to its result and nothing threw in its walk, a
-  row with no recorded place making its test not whole too. A test not read whole hands the
+  it was found at its address, every IN SCOPE row led to its result and nothing threw in its
+  walk, an in scope row with no recorded place making its test not whole too. Every call is
+  keyed by the REPORT's test name of the row, the kept test for a clash only a mirror found,
+  and a resolve that fails or throws marks every report test among the rows it serves, each
+  test judged once every resolve is done, the second reading's N1, so a kept test is whole
+  only where its own rows and its mirror's were read. A row outside the views' statuses is
+  handed to the plan unread, its status checked before `ResultAt`, so a Resolved row Compact
+  removed never makes its test not read, C1. A test the clash step ran with no row on the
+  report is read whole with no row, `TestsRead.Ran`, N2, and its old view goes as no longer
+  needed. A test whose open rows are ALL result groups gets no view, keeps its old views and
+  is named on one VIEWS line, never counted failed, `TestsRead.OnlyGroups`, F3, the lead's
+  decision that a person's grouping must not cost the group DONE. A test not read whole hands the
   plan none of its rows, is counted FAILED on the VIEWS BUILT block with why, so the group is
   not DONE on it, and keeps its views of earlier runs, since the inventory is handed
   `TestsRead.WholeNames` as the tests read and never the tests the clash step ran, which
@@ -297,7 +307,10 @@ well as to pass.
   siblings, and calls `RemoveAt(parent, index)`, P13, a folder with everything under it in
   the one call, P14, and the folder's count after is read and said where it did not fall by
   one. Each removal's result is a `RemovalOutcome`, made, refused or thrown with why, one
-  list handed to the tree facts as `Removals`, B5. A walk's comments, redlines or camera that
+  list handed to the tree facts as `Removals`, B5, and a RemoveAt that returned is removed
+  only where its folder fell by exactly one, `RemovalOutcome.Counted`, anything else recorded
+  as not removed with what happened, F4, the same rule `CountWords` gives the FAILED words of a
+  view that could not be marked. A walk's comments, redlines or camera that
   would not read are counted and said, and the item handed with that part unread, which the
   judge keeps as a person's: an unread comment list is `ViewNode.CommentsNotRead`, null and
   never an empty list, B4, and the walk line says such items are kept as a person's because

@@ -1724,7 +1724,9 @@ and 6 does not read as broken.
   written, marked and read back, a per clash viewpoint only once the whole new tree is, a
   view this run could not mark or read back goes at once, a test not read keeps its views,
   and a test not read is one `TestsRead` did not read whole, B1, never one the clash step
-  did not run,
+  did not run: keyed by the report's test name, its in scope rows alone needing reading, a
+  test the clash step ran with no row whole with no row, and a test whose open rows are all
+  result groups in neither list, kept and never failed, F114's second reading,
   nothing goes when the clash step was not sound, nothing goes under two folders of one
   name side by side, and a folder goes only when it is the tool's and this run empties it.
   Removals go deepest first and latest index first, 5z, and `FolderGoesWithChildren`, true
@@ -1746,7 +1748,8 @@ and 6 does not read as broken.
   still there, and no per clash viewpoint left without a reason. ITS after LINE COUNTS WHAT THE
   REMOVALS REPORTED, B5: `ViewsTreeFacts.Removals`, one `RemovalOutcome` per removal the
   inventory asked for, gives the removed at once, earlier views, per clash viewpoints and
-  folders, each refusal or throw counted and named as not removed, and with none handed in the
+  folders, each refusal or throw counted and named as not removed, and so is a RemoveAt whose
+  folder did not fall by exactly one, `RemovalOutcome.Counted`, and with none handed in the
   line says what was removed is UNKNOWN, never the inventory's decisions read as done. A
   failed check is a FAILED
   line naming what broke it and the group keeps its own result. A CHECK THAT COULD NOT RUN IS
