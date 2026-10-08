@@ -229,22 +229,55 @@ namespace Federator.Core.Report
                 moves.Add(new Move(number, from, to));
             }
 
-            // Pass one, every changing picture to a holding name, so no final name is
-            // written while another picture still holds it.
-            foreach (Move move in moves)
-            {
-                File.Move(move.From, move.From + Holding);
-            }
+            List<Move> held = new List<Move>();
+            List<Move> done = new List<Move>();
 
-            // Pass two, holding name to final name.
+            // Pass one, every changing picture to a holding name, so no final name is
+            // written while another picture still holds it. A move that throws is caught
+            // at the move, FR-075, and everything the passes did so far is undone.
             foreach (Move move in moves)
             {
-                if (File.Exists(move.To))
+                try
                 {
-                    File.Delete(move.To);
+                    File.Move(move.From, move.From + Holding);
+                }
+                catch (Exception error)
+                {
+                    PutBack(move, error, done, held, outcome);
+                    return outcome;
                 }
 
-                File.Move(move.From + Holding, move.To);
+                held.Add(move);
+            }
+
+            // Pass two, holding name to final name. A file already at a final name is not
+            // one of this report's, since every changing picture is under a holding name
+            // and no two rows share a number, so it is a picture an earlier run left.
+            foreach (Move move in moves)
+            {
+                try
+                {
+                    if (File.Exists(move.To))
+                    {
+                        File.Delete(move.To);
+                    }
+
+                    File.Move(move.From + Holding, move.To);
+                }
+                catch (Exception error)
+                {
+                    PutBack(move, error, done, held, outcome);
+                    return outcome;
+                }
+
+                held.Remove(move);
+                done.Add(move);
+            }
+
+            // The rows follow only once every picture is at its final name, so a fault
+            // above leaves every row pointing at the name its picture is still under.
+            foreach (Move move in done)
+            {
                 Point(move.Number, workbookPath);
                 outcome.Renamed++;
             }
@@ -264,6 +297,90 @@ namespace Federator.Core.Report
             number.Row.ImageFile = number.FileName;
             number.Row.ImageLink = ImageNaming.LinkFor(workbookPath, number.TestIndex, number.ClashIndex);
             number.Row.ImagePath = ImageNaming.PathFor(workbookPath, number.TestIndex, number.ClashIndex);
+        }
+
+        /// <summary>
+        /// Undoes what the two passes did before a move threw, so the folder is as it was
+        /// before them, every picture under its run order name, which is the name its row
+        /// still points at. FR-075: a throw part way used to leave the pictures not yet
+        /// moved under their holding names with their rows pointing at the old names, and
+        /// the log said the pictures not yet renamed keep their run order numbers, which
+        /// was not the state on disk.
+        ///
+        /// The pictures at a final name go back to their holding name first, which is free
+        /// because the pass vacated it, and then every holding name goes back to the name
+        /// it came from, which is free because pass one vacated it and every final name is
+        /// vacated again. One move straight from a final name to a run order name could
+        /// write one picture over another, the swap the holding name exists for. Each put
+        /// back is read off the disk, and one that fails is named with where its picture
+        /// is, so a row pointing at a file that is not there is said and never silent.
+        /// </summary>
+        private static void PutBack(
+            Move stoppedAt, Exception error, List<Move> done, List<Move> held, ImageRenumberingOutcome outcome)
+        {
+            int underHolding = held.Count;
+
+            foreach (Move move in done)
+            {
+                try
+                {
+                    File.Move(move.To, move.From + Holding);
+                    held.Add(move);
+                }
+                catch (Exception back)
+                {
+                    outcome.NotPutBack++;
+                    outcome.Add(move.Number.Row.Name + " is at " + move.To + " and not at " + move.From
+                        + ", where its row points, because moving it back threw " + Words(back));
+                }
+            }
+
+            foreach (Move move in held)
+            {
+                string holding = move.From + Holding;
+
+                try
+                {
+                    File.Move(holding, move.From);
+                }
+                catch (Exception back)
+                {
+                    outcome.NotPutBack++;
+                    outcome.Add(move.Number.Row.Name + " is at " + holding + " and not at " + move.From
+                        + ", where its row points, because moving it back threw " + Words(back));
+                    continue;
+                }
+
+                // Read back off the disk, never taken from the move returning.
+                if (File.Exists(move.From) && !File.Exists(holding))
+                {
+                    continue;
+                }
+
+                outcome.NotPutBack++;
+                outcome.Add(move.Number.Row.Name + " was moved back to " + move.From
+                    + " and reading the disk after it finds "
+                    + (File.Exists(move.From) ? "the holding name still there" : "no file there"));
+            }
+
+            int touched = done.Count + underHolding;
+            string count = done.Count == 0
+                ? "no picture had been moved before it"
+                : done.Count + (done.Count == 1 ? " picture" : " pictures") + " had been moved before it";
+            string result = outcome.NotPutBack == 0
+                ? "all " + touched + " were put back under their run order names, each read back off the disk"
+                : outcome.NotPutBack + " of the " + touched
+                    + " could not be put back and are named below, so their rows point at a file that is not where they say";
+
+            outcome.AddFirst("the renaming stopped at " + stoppedAt.Number.Row.Name + ", "
+                + Path.GetFileName(stoppedAt.From) + " to " + Path.GetFileName(stoppedAt.To)
+                + ", which threw " + Words(error) + ". " + count + " and " + underHolding
+                + (underHolding == 1 ? " was" : " were") + " under a holding name, and " + result);
+        }
+
+        private static string Words(Exception error)
+        {
+            return error.GetType().Name + ": " + error.Message;
         }
 
         private sealed class Move
@@ -296,6 +413,13 @@ namespace Federator.Core.Report
         /// <summary>Rows that carry a picture name and whose file was not on disk.</summary>
         public int Missing { get; internal set; }
 
+        /// <summary>
+        /// Pictures that could not be put back after a move threw, FR-075. Each is named in
+        /// the problems, and the first problem line carries how many had been moved and how
+        /// many were under a holding name.
+        /// </summary>
+        public int NotPutBack { get; internal set; }
+
         internal IList<string> Problems
         {
             get { return problems; }
@@ -304,6 +428,12 @@ namespace Federator.Core.Report
         internal void Add(string problem)
         {
             problems.Add(problem);
+        }
+
+        /// <summary>The fault that stopped the renaming goes before the put backs it caused.</summary>
+        internal void AddFirst(string problem)
+        {
+            problems.Insert(0, problem);
         }
 
         public IList<string> Lines()

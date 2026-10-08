@@ -153,6 +153,7 @@ namespace Federator.Addin.Engine
         public ViewpointBuildOutcome BuildForGroup(
             Document document,
             ClashReport report,
+            IDictionary<ClashRow, RowAddress> addresses,
             bool priorityPicked,
             IDictionary<int, string> modelDisciplines)
         {
@@ -186,7 +187,7 @@ namespace Federator.Addin.Engine
             {
                 using (seconds.In(ViewsPart.ReadingTheClashes))
                 {
-                    Collect(document, clashTests, report, clashes, cameras, places, ModelIndexByFile(document));
+                    Collect(document, clashTests, report, addresses, clashes, cameras, places, ModelIndexByFile(document));
                     Plan = ClashViewpointPlan.For(clashes, views, priorityPicked);
                 }
 
@@ -273,63 +274,152 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Every clash of every test the report holds rows for, read into what the plan
-        /// needs, with a copy of its camera and the models its items live in kept by the
-        /// name the plan will give it. A test name the report carries twice is read once,
-        /// because both rows would resolve to the same document test and every clash of
-        /// it would be handed to the plan twice.
+        /// Every clash the merged report holds a row for, read into what the plan needs,
+        /// with a copy of its camera and the models its items live in kept by the name the
+        /// plan will give it. F132 attempt 2, the breaker's finding R4: the rows come off
+        /// the report and not off the document, Federator.Core.Views.ReportClashes, so a
+        /// row only a mirror found is viewed under the kept test, a mirror taken out of the
+        /// report gets no view, and the status is the row's, which the merge restated by
+        /// Q138 B. Each row's result is resolved in the document by the address the harvest
+        /// recorded for it, the test once for all its rows and never held across another
+        /// test's read, and read back by name, ResultPath, since the compact after the
+        /// merge can move a result from under a recorded path. A test name the report
+        /// carries twice is read once, because both would resolve to the same document test
+        /// and every clash of it would be handed to the plan twice.
         /// </summary>
         private void Collect(
             Document document,
             DocumentClashTests clashTests,
             ClashReport report,
+            IDictionary<ClashRow, RowAddress> addresses,
             List<ClashToPlan> clashes,
             Dictionary<string, Viewpoint> cameras,
             Dictionary<string, ClashPlace> places,
             IDictionary<string, int> indexByFile)
         {
             string unitEnumName = Penetrations.UnitEnumName(document);
-            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
-            int homesUnread = 0;
+            ReportClashesOutcome rows = ReportClashes.Of(report);
 
-            foreach (TestReport test in report.Tests)
+            foreach (string name in rows.NamedTwice)
             {
-                if (!test.HasRows)
+                log.Line("VIEWS    " + name + " is on the report twice, so its clashes are read once and planned once");
+            }
+
+            List<string> order = new List<string>();
+            Dictionary<string, List<ReportClash>> byTest = new Dictionary<string, List<ReportClash>>(StringComparer.Ordinal);
+            Dictionary<string, RowAddress> firstOf = new Dictionary<string, RowAddress>(StringComparer.Ordinal);
+            int noAddress = 0;
+
+            foreach (ReportClash clash in rows.Clashes)
+            {
+                RowAddress where;
+
+                if (addresses == null || !addresses.TryGetValue(clash.Row, out where))
                 {
+                    noAddress++;
                     continue;
                 }
 
-                if (!seen.Add(test.Name))
+                List<ReportClash> under;
+
+                if (!byTest.TryGetValue(where.TestKey, out under))
                 {
-                    log.Line("VIEWS    " + test.Name + " is on the report twice, so its clashes are read once and planned once");
-                    continue;
+                    under = new List<ReportClash>();
+                    byTest.Add(where.TestKey, under);
+                    firstOf.Add(where.TestKey, where);
+                    order.Add(where.TestKey);
                 }
 
-                string leftSet = ByDesignRule.SetNameIn(test.LeftLocator);
-                string rightSet = ByDesignRule.SetNameIn(test.RightLocator);
+                under.Add(clash);
+            }
 
-                using (ClashTest found = FindTest(clashTests.Tests, test.Name))
+            if (noAddress > 0)
+            {
+                log.Line("VIEWS    " + noAddress + " row(s) of the report have no recorded place in the document, so they get no viewpoint");
+            }
+
+            int homesUnread = 0;
+            int notFound = 0;
+            int groupRows = 0;
+            int movedRows = 0;
+            string firstNotFound = null;
+
+            foreach (string key in order)
+            {
+                RowAddress first = firstOf[key];
+                List<ReportClash> under = byTest[key];
+                string nowNamed;
+
+                try
                 {
-                    if (found == null)
+                    using (ClashTest test = first.Address.ResolveIn(clashTests, first.TestName, out nowNamed))
                     {
-                        log.Line("VIEWS    " + test.Name + " is on the report and not in the document, so its clashes get no viewpoint");
-                        continue;
-                    }
+                        if (test == null)
+                        {
+                            log.Line("VIEWS    " + first.TestName + " is not at " + first.Address + " any more"
+                                + (nowNamed == null ? string.Empty : ", which holds \"" + nowNamed + "\"")
+                                + ", so its " + under.Count + (under.Count == 1 ? " row gets" : " rows get") + " no viewpoint");
+                            continue;
+                        }
 
-                    try
-                    {
-                        homesUnread += CollectResults(
-                            document,
-                            found.Children, clashTests, test, leftSet, rightSet, unitEnumName, clashes, cameras, places, indexByFile);
-                    }
-                    catch (Exception error)
-                    {
-                        log.Failure(
-                            "reading the clashes of " + test.Name + " for the viewpoints",
-                            error,
-                            "kept going, the clashes read before it threw are planned and the rest are not");
+                        foreach (ReportClash clash in under)
+                        {
+                            string whyNot;
+                            bool moved;
+                            SavedItem item = ResultPath.ResultAt(
+                                test, addresses[clash.Row].Row, first.TestName, out whyNot, out moved);
+
+                            if (item == null)
+                            {
+                                notFound++;
+
+                                if (firstNotFound == null)
+                                {
+                                    firstNotFound = whyNot;
+                                }
+
+                                continue;
+                            }
+
+                            if (moved)
+                            {
+                                movedRows++;
+                            }
+
+                            using (item)
+                            {
+                                homesUnread += CollectOne(
+                                    document, clashTests, clash, (IClashResult)item, item as ClashResult,
+                                    unitEnumName, clashes, cameras, places, indexByFile, ref groupRows);
+                            }
+                        }
                     }
                 }
+                catch (Exception error)
+                {
+                    log.Failure(
+                        "reading the clashes of " + first.TestName + " for the viewpoints",
+                        error,
+                        "kept going, the clashes read before it threw are planned and the rest are not");
+                }
+            }
+
+            if (movedRows > 0)
+            {
+                log.Line("VIEWS    " + movedRows + " row(s) were found at another index than the harvest recorded, by name "
+                    + "among the siblings, the compact after the merge having removed the Resolved results before them");
+            }
+
+            if (notFound > 0)
+            {
+                log.Line("VIEWS    " + notFound + " row(s) of the report no longer lead to their result in the document, "
+                    + "so they get no viewpoint, the first: " + firstNotFound);
+            }
+
+            if (groupRows > 0)
+            {
+                log.Line("VIEWS    " + groupRows + " row(s) in scope are a result group, one viewpoint each as the workbook "
+                    + "holds them, framed on the group, with no size read and not dimmed, because a group has no two items");
             }
 
             if (homesUnread > 0)
@@ -371,106 +461,90 @@ namespace Federator.Addin.Engine
             }
         }
 
-        private int CollectResults(
+        /// <summary>
+        /// One row of the report into the plan at its row status, and where it is in scope
+        /// its camera and the place of its two items. The leaf is the result where the row
+        /// is one clash, and null where the row is a result group, which the panel frames
+        /// as one and which has no two items to read a size or a place off. Returns how
+        /// many homes could not be read, nought or one.
+        /// </summary>
+        private int CollectOne(
             Document document,
-            SavedItemCollection items,
             DocumentClashTests clashTests,
-            TestReport test,
-            string leftSet,
-            string rightSet,
+            ReportClash clash,
+            IClashResult result,
+            ClashResult leaf,
             string unitEnumName,
             List<ClashToPlan> clashes,
             Dictionary<string, Viewpoint> cameras,
             Dictionary<string, ClashPlace> places,
-            IDictionary<string, int> indexByFile)
+            IDictionary<string, int> indexByFile,
+            ref int groupRows)
         {
-            if (items == null)
+            bool inScope = ClashViewpointPlan.InScope(clash.Status);
+
+            // The size is read only where the plan will ask about it, which is a clash it
+            // would otherwise keep. A closed clash is left out on its status before the
+            // size is looked at, so its items are not read.
+            SizeVerdict? serviceSize = inScope && leaf != null
+                ? Penetrations.ServiceSizeOf(leaf, penetrations, sizes, unitEnumName)
+                : null;
+
+            ClashToPlan planned = clash.ToPlan(serviceSize);
+            clashes.Add(planned);
+
+            if (!inScope)
             {
                 return 0;
             }
 
-            int homesUnread = 0;
-
-            for (int i = 0; i < items.Count; i++)
+            if (leaf == null)
             {
-                using (SavedItem item = items[i])
+                groupRows++;
+            }
+
+            string key = ClashViewpointPlan.NameFor(planned, views);
+
+            if (cameras.ContainsKey(key))
+            {
+                return 0;
+            }
+
+            using (Viewpoint framed = clashTests.TestsViewpointForResult(result))
+            {
+                if (framed != null)
                 {
-                    ClashResultGroup group = item as ClashResultGroup;
-
-                    if (group != null)
-                    {
-                        homesUnread += CollectResults(
-                            document,
-                            group.Children, clashTests, test, leftSet, rightSet, unitEnumName, clashes, cameras, places, indexByFile);
-                        continue;
-                    }
-
-                    ClashResult result = item as ClashResult;
-
-                    if (result == null || string.IsNullOrEmpty(result.DisplayName))
-                    {
-                        continue;
-                    }
-
-                    CoreClashStatus status = (CoreClashStatus)(int)result.Status;
-
-                    // The size is read only where the plan will ask about it, which is a
-                    // clash it would otherwise keep. A closed clash is left out on its
-                    // status before the size is looked at, so its items are not read.
-                    SizeVerdict? serviceSize = ClashViewpointPlan.InScope(status)
-                        ? Penetrations.ServiceSizeOf(result, penetrations, sizes, unitEnumName)
-                        : null;
-
-                    ClashToPlan clash = new ClashToPlan(
-                        test.Name, result.DisplayName, leftSet, rightSet, status, test.Priority, serviceSize);
-                    clashes.Add(clash);
-
-                    if (!ClashViewpointPlan.InScope(status))
-                    {
-                        continue;
-                    }
-
-                    string key = ClashViewpointPlan.NameFor(clash, views);
-
-                    if (cameras.ContainsKey(key))
-                    {
-                        continue;
-                    }
-
-                    using (Viewpoint framed = clashTests.TestsViewpointForResult(result))
-                    {
-                        if (framed != null)
-                        {
-                            cameras.Add(key, framed.CreateCopy());
-                        }
-                    }
-
-                    ClashPlace place = new ClashPlace();
-
-                    try
-                    {
-                        place.FirstPath = ReadPlace(document, result.Item1, indexByFile, place.Models);
-                        place.SecondPath = ReadPlace(document, result.Item2, indexByFile, place.Models);
-                    }
-                    catch (Exception error)
-                    {
-                        // Counted, and the FIRST one is written in full once per group,
-                        // because the fifth run counted 975 of these and could not say
-                        // what threw. The viewpoint still keeps the pair's models, it
-                        // just cannot also keep a model the code did not name, and a
-                        // clash whose items will not read is not lost.
-                        homesUnread++;
-
-                        if (firstHomeError == null)
-                        {
-                            firstHomeError = error;
-                        }
-                    }
-
-                    places[key] = place;
+                    cameras.Add(key, framed.CreateCopy());
                 }
             }
 
+            ClashPlace place = new ClashPlace();
+            int homesUnread = 0;
+
+            if (leaf != null)
+            {
+                try
+                {
+                    place.FirstPath = ReadPlace(document, leaf.Item1, indexByFile, place.Models);
+                    place.SecondPath = ReadPlace(document, leaf.Item2, indexByFile, place.Models);
+                }
+                catch (Exception error)
+                {
+                    // Counted, and the FIRST one is written in full once per group,
+                    // because the fifth run counted 975 of these and could not say
+                    // what threw. The viewpoint still keeps the pair's models, it
+                    // just cannot also keep a model the code did not name, and a
+                    // clash whose items will not read is not lost.
+                    homesUnread++;
+
+                    if (firstHomeError == null)
+                    {
+                        firstHomeError = error;
+                    }
+                }
+            }
+
+            places[key] = place;
             return homesUnread;
         }
 
@@ -947,54 +1021,6 @@ namespace Federator.Addin.Engine
             {
                 log.Line(line);
             }
-        }
-
-        /// <summary>
-        /// The test of that name, wherever it sits, descending folders. The caller disposes
-        /// what comes back, and every other wrapper is released on the way.
-        /// </summary>
-        private static ClashTest FindTest(SavedItemCollection items, string name)
-        {
-            if (items == null)
-            {
-                return null;
-            }
-
-            for (int i = 0; i < items.Count; i++)
-            {
-                SavedItem item = items[i];
-                ClashTest test = item as ClashTest;
-
-                if (test != null)
-                {
-                    if (string.Equals(test.DisplayName, name, StringComparison.Ordinal))
-                    {
-                        return test;
-                    }
-
-                    test.Dispose();
-                    continue;
-                }
-
-                GroupItem folder = item as GroupItem;
-
-                if (folder != null)
-                {
-                    ClashTest below = FindTest(folder.Children, name);
-                    folder.Dispose();
-
-                    if (below != null)
-                    {
-                        return below;
-                    }
-
-                    continue;
-                }
-
-                item.Dispose();
-            }
-
-            return null;
         }
     }
 }

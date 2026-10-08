@@ -65,6 +65,14 @@ namespace Federator.Addin.Engine
         /// </summary>
         private readonly RepeatedFailureGuard guard;
 
+        /// <summary>
+        /// The pictures' guard, one for the whole run for the same reason, FR-076. It was
+        /// built new inside each group's ClashImages, so a run where every picture failed
+        /// never stopped unless one group alone reached fifty in a row. Null when the
+        /// images' stop after count is zero, which switches it off.
+        /// </summary>
+        private readonly RepeatedFailureGuard imageGuard;
+
         /// <summary>Why the run was abandoned, or null while it is still going.</summary>
         private string stopTheRun;
 
@@ -184,6 +192,9 @@ namespace Federator.Addin.Engine
             this.teams = teams;
             this.reports = reports ?? new ReportOptions();
             this.guard = new RepeatedFailureGuard(this.reports.StopAfterFailures);
+            this.imageGuard = this.reports.Images.StopAfterFailures > 0
+                ? new RepeatedFailureGuard(this.reports.Images.StopAfterFailures)
+                : null;
             this.reportFolder = null;
             this.live = new LiveLine(() => log.ElapsedSeconds);
             this.live.PaceReader = OnTheGroupBefore;
@@ -2878,6 +2889,15 @@ namespace Federator.Addin.Engine
                 // F76. The tolerance chosen on the Clash step, or the file per test.
                 runner.Tolerance = reports.Tolerance;
 
+                // F132. What the mirror rule reads: the priority file the run picked, the
+                // picked XML's sets, and THIS GROUP'S sets build from this run, read after it
+                // was built and before any merge, Bader's answer A to Q142. With no XML the
+                // sets are null and the build is null, an outcome holding nothing, so no
+                // pair merges and the MIRROR lines say so.
+                runner.Priorities = ThePriorities();
+                runner.ExchangeSets = exchange == null ? null : exchange.Sets;
+                runner.SetsBuilt = outcome.Sets;
+
                 // F72. Built only when the box is on, so a run that did not ask for it
                 // hands the runner a null and the runner resolves nothing and walks
                 // nothing. The tally is per GROUP, because the block is per group, and the
@@ -2951,7 +2971,7 @@ namespace Federator.Addin.Engine
                     if (outputs.WriteImages && reportFolder != null)
                     {
                         runner.WorkbookPath = ReportPaths.Workbook(reportFolder, job.WorkbookName);
-                        runner.Images = new ClashImages(log, reports.Images);
+                        runner.Images = new ClashImages(log, reports.Images, imageGuard);
                         log.Line("CLASH    " + reports.Images.Describe());
                     }
                     else
@@ -2965,6 +2985,10 @@ namespace Federator.Addin.Engine
                 }
 
                 ClashRunOutcome clash = runner.Run(plan);
+
+                // F132 attempt 2. Where every row of the report came from, for the views,
+                // which read the merged report's rows and resolve each by this.
+                outcome.RowAddresses = runner.RowAddresses;
 
                 // The skipped group's own CLASH block and summary say the clash was skipped
                 // rather than print nought for what never ran.
@@ -3065,26 +3089,30 @@ namespace Federator.Addin.Engine
                     // The pictures were rendered under run order numbers while the tests
                     // ran, because the report order is only known when the last test has
                     // run. Renamed once here, before any report is written, so every
-                    // picture carries the number of its row. A rename that throws is a
+                    // picture carries the number of its row. A rename that fails is a
                     // warning on the report and never fails the group, since the NWF, the
-                    // pictures and the workbook are all still written.
-                    RenumberThePictures(job, outcome, runner.WorkbookPath);
+                    // pictures and the workbook are all still written. A step of its own,
+                    // FR-077, because it ran inside no step and its seconds came off no
+                    // total, 20.6 s of one group of set 03.
+                    InStep(
+                        RunSteps.Renumber,
+                        () => RenumberThePictures(job, outcome, runner.WorkbookPath),
+                        () => "the pictures of " + job.Building);
                 }
 
                 if (outcome.Report != null && runner.Images != null)
                 {
                     // Measured, never estimated. Every number anyone has given for what a
-                    // clash image costs has been a guess until this line.
+                    // clash image costs has been a guess until this line. The second line
+                    // is where the step's seconds went, the render apart from the save,
+                    // FR-077. The pictures' guard stopping the run is the runner's to say,
+                    // the same way the tests' guard is, and reaches here as clash.StopTheRun.
                     foreach (string line in outcome.Report.Images.Lines())
                     {
                         log.Line(line);
                     }
 
-                    if (runner.Images.ShouldStopTheRun && stopTheRun == null)
-                    {
-                        stopTheRun = runner.Images.StopReason;
-                        outcome.AddError(runner.Images.StopReason);
-                    }
+                    log.Line(runner.Images.Seconds.Line());
                 }
                 log.Line("CLASH    " + job.Building + " finished. " + clash.Summary());
 
@@ -3116,6 +3144,11 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// Renames the pictures into report order. The rule and the two pass move live in
         /// Federator.Core.Report.ImageRenumbering so they can be tested without Navisworks.
+        /// A move that throws is caught there, FR-075, every picture is put back under its
+        /// run order name, and the outcome's lines say what was moved, what was put back
+        /// and what could not be, so the lines here are the outcome's and never a sentence
+        /// of this file's about the state of the disk. The one throw that can still reach
+        /// here is from the planning before any move, so nothing on the disk has changed.
         /// </summary>
         private void RenumberThePictures(FederationJob job, JobOutcome outcome, string workbookPath)
         {
@@ -3131,9 +3164,9 @@ namespace Federator.Addin.Engine
             catch (Exception error)
             {
                 log.Failure(
-                    "renumbering the pictures for " + job.Building,
+                    "planning the renaming of the pictures for " + job.Building,
                     error,
-                    "kept going, the pictures that were not yet renamed keep their run order numbers");
+                    "kept going, no picture was moved, so every row points at the picture it was rendered under");
             }
         }
 
@@ -3144,7 +3177,7 @@ namespace Federator.Addin.Engine
         /// This is the check that would have caught Source File and Discipline coming out
         /// empty on every row, without anyone opening the file to find out.
         /// </summary>
-        private void CheckTheWorkbook(FederationJob job, string path, int testsInTheFile)
+        private void CheckTheWorkbook(FederationJob job, string path, int testsInTheFile, int mirrorsMerged)
         {
             WorkbookCheck check = WorkbookCheck.Of(path, ThePriorities().Picked);
 
@@ -3153,9 +3186,11 @@ namespace Federator.Addin.Engine
             // F77. The workbook carries a block for every test in the file whether or not
             // the test was created, and a count that differs is said in capitals. Only
             // where the tests came from a file, because that is what the count is of.
+            // F132. Less the mirrors merged into their kept tests, ClashReport.MirrorsMerged,
+            // each counted inside its kept test's block, which the line says.
             if (check.Ran && testsInTheFile >= 0)
             {
-                log.Line(CreationPlan.BlockCountLine(check.Blocks, testsInTheFile));
+                log.Line(CreationPlan.BlockCountLine(check.Blocks, testsInTheFile, mirrorsMerged));
             }
 
             Say(job.Building + ". " + check.Summary());
@@ -3488,7 +3523,11 @@ namespace Federator.Addin.Engine
             outcome.WorkbookSize = log.WriteFinished("XLSX", path);
             outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
 
-            CheckTheWorkbook(job, path, outcome.Clash == null || exchange == null ? -1 : outcome.Clash.TestsInFile);
+            CheckTheWorkbook(
+                job,
+                path,
+                outcome.Clash == null || exchange == null ? -1 : outcome.Clash.TestsInFile,
+                report == null ? 0 : report.MirrorsMerged);
         }
 
         /// <summary>The clash XML itself, split out for the same reason.</summary>
@@ -3584,7 +3623,8 @@ namespace Federator.Addin.Engine
             {
                 InStep(
                     RunSteps.Views,
-                    () => built = builder.BuildForGroup(document, outcome.Report, ThePriorities().Picked, ModelDisciplines(document)),
+                    () => built = builder.BuildForGroup(
+                        document, outcome.Report, outcome.RowAddresses, ThePriorities().Picked, ModelDisciplines(document)),
                     () => built == null ? "nothing" : built.Summary());
             }
             catch (Exception error)

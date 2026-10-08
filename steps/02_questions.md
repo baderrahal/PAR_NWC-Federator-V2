@@ -717,3 +717,22 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
     Everything else stays as it is.
 
     Answer: Bader, 2026-10-07, as written above. The lead's notes. The two lanes ran from 15:46, the cloud lane writing steps\lane-b.md and merging 142, 144, 145, 146, 147, 148, 150, 151 and 154, and the laptop lane F132's add-in half, the probes P15 to P19 and step 364, and the fold of the lane's items as 152. The hourly lines were written in the tab at 16:33, 17:25 and 18:25. The count of the day and the release date from the pace are on steps\PROGRESS.md at the close.
+
+144. From the loop, turn 5, 2026-10-08, F132's add-in half, attempt 2 of two under Q143, on the breaker's row F132-R5 of attempt 1, turn5\f132p-break-addin.json. A RUN WITH NO XML NOW REACHES THE SAVED TESTS WITH THEIR REAL SET NAMES. Until attempt 1 the plan of a run with no XML carried placeholders for each saved test's two sides, side A as saved and side B as saved, so the by design pass of F72b, which matches a pair of the CSV on the two set names of a test, matched nothing on a run with no XML and moved no clash, in silence. Since attempt 1 every saved test is read with its sides, so with the by design box ticked the pass matches the saved tests too, writes Reviewed into those at New or Active that a pair names, and the NWF is saved again. The breaker called it a status change written into the NWF by a pass that did nothing on this path the week before. The lead's choice for attempt 2, applied until you say otherwise: the pass stays, because the box is a person's instruction, F72b's rule is a match on the two set names of the test, and a saved test whose sides are real sets is a test the list names, and it is never silent: on a run with no XML each group's BY DESIGN block says its sides were read off the tests saved in the NWF and how many pairs that reached, and the confirm screen's by design line says the pass acts on the tests saved in the NWF as well as those from the file. The other reading, A: a run with no XML moves nothing, as before attempt 1, and says so. B is the lead's choice above. Which do you want?
+
+    Answer:
+
+145. From Bader, 2026-10-08, his message headed BADER, 8 OCT 2026: THE NEW ORDER ON THE LAPTOP, not a question put to him but his order, which sets the order of the work still to do. In his words:
+
+    BADER, 8 OCT 2026: THE NEW ORDER ON THE LAPTOP
+    Bader sets the order of the work still to do:
+    1. Finish F132's add-in half attempt 2, which is already in review, and merge it if no fault the team sees remains. Do not start anything new before it.
+    2. F128, Generic Models: the count per model in the log and in a workbook sheet, and one search set per model in a Generic Models folder in the NWF. Lane B does its Core part first. The laptop does the add-in part.
+    3. F120, the clash pictures: the pictures that fail, and their speed, with the output kept the same.
+    4. Then F114's add-in pass, the new views.
+    5. Then install main and run 1A02MM and 1A04PK with the viewpoints on, timed against the baseline, proving in those runs F114, F132, F128, F120 and everything merged but not yet proven: the coordinates rule, the Coverage sheet, the XML corrections, the workbook, the run log and the sets.
+    6. Then F129, start from an NWF, F130, Shift ticking, and F109, the install for the team.
+    7. Then the release: C06 and C07 in full, and Bader's ACC check.
+    Test runs before F114 merges keep the viewpoints box unticked. Everything else stays as it is, the limits of Q143 included.
+
+    Answer: Bader, 2026-10-08, as written above. The lead's notes: this order replaces item 11 of Q143 from F114 on. F114's add-in pass had its first phase started on fix-F114 at about 10:20, before this order, on files none of F128, F120 or F132 change, and that phase is pushed and parked until item 4. F128's one measurement, which property and value name Generic Models on 1A02MM and 1A04PK, is the one probe Q143 item 4 allows, since the set and the count cannot be written without it.

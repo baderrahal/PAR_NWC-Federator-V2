@@ -36,6 +36,10 @@ namespace Federator.Core.Rerun
     /// WHO CALLS IT. The reshape of a CHANGED group, and the set rename and removal pair
     /// of Q74, which has the same shape: a remove and a rename that are two calls and one
     /// change, with a window between them where neither set carries the corrected name.
+    ///
+    /// PART 2 IS KEPT BY THE RESHAPE AND NOT YET BY THE SET PAIR. The engine goes on to the clash tests after a
+    /// failed pair and saves if they put anything in, which the page of lane B records, so the sentence below that
+    /// says it was not saved can be untrue for that caller.
     /// </summary>
     public static class DamagedDocument
     {
@@ -52,9 +56,10 @@ namespace Federator.Core.Rerun
 
         /// <summary>
         /// What to say when the work stopped AFTER something in the document was changed.
-        /// NOTHING IS SAVED FROM HERE, which is what makes the second half of the sentence
-        /// true rather than a hope. It says unchanged by this run and never that the file
-        /// is good, because this tool knows it did not write and knows nothing else.
+        /// NOTHING IS SAVED FROM HERE is the rule, and what makes the second half of the sentence
+        /// true rather than a hope, so a caller that saves anyway makes it untrue. It says unchanged by
+        /// this run and never that the file is good, because this tool knows it did not write and knows
+        /// nothing else.
         /// </summary>
         public static string TheDocumentIsDamaged(string what)
         {
@@ -74,8 +79,9 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// Whether the file on disk may be written. The one gate both callers pass through,
-        /// so a save can never happen on a path that failed after a change.
+        /// Whether the file on disk may be written, by the rule above. Only the tests read it, and no caller in the
+        /// engine or the set builder passes through it, so it is the rule written down and not a gate. Whether a
+        /// path saves after a failure is the engine's own, and the set pair of Q74 still saves after one.
         /// </summary>
         public static bool TheFileMayBeSaved(bool anythingWasChanged, bool everythingWorked)
         {
@@ -83,9 +89,8 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// The sentence for either case, chosen by the one fact that decides it. Callers
-        /// use this rather than picking, so the message and the save decision can never
-        /// disagree.
+        /// The sentence for either case, chosen by the one fact that decides it. Only the tests read it, the
+        /// callers in the engine and the set builder pick TheDocumentIsDamaged or NothingWasTouched themselves.
         /// </summary>
         public static string Line(string what, bool anythingWasChanged)
         {

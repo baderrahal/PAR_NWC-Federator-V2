@@ -133,12 +133,12 @@ namespace Federator.Core.Coverage
             }
 
             string inDocument = test.InDocument
-                ? "Clash Detective holds " + Count(test.DocumentTopLevel, "result", "results")
-                    + " at the top level and " + Count(test.DocumentLeaves, "clash", "clashes")
+                ? "Clash Detective holds " + Words.Counted(test.DocumentTopLevel, "result", "results")
+                    + " at the top level and " + Words.Counted(test.DocumentLeaves, "clash", "clashes")
                 : "Clash Detective holds no test of that name";
 
             string inWorkbook = test.InWorkbook
-                ? "the workbook " + Count(test.WorkbookRows, "row", "rows") + " and Clashes " + test.WorkbookClashes
+                ? "the workbook " + Words.Counted(test.WorkbookRows, "row", "rows") + " and Clashes " + test.WorkbookClashes
                 : "the workbook holds no block for it";
 
             // One line, whatever the exception message of a thrown test held.
@@ -331,7 +331,7 @@ namespace Federator.Core.Coverage
 
                 // Compact's count is the group's and the test's own Resolved count is not handed in, so
                 // Compact is named as something that could account for the gap and never as its cause.
-                return "Compact removed " + Count(compacted, "Resolved clash", "Resolved clashes")
+                return "Compact removed " + Words.Counted(compacted, "Resolved clash", "Resolved clashes")
                     + " somewhere in the group after the workbook's rows were read, "
                     + (gap <= compacted
                         ? "which could account for this test's gap of " + gap
@@ -352,11 +352,6 @@ namespace Federator.Core.Coverage
         private static CountedTest NotCompared(string name, string why)
         {
             return new CountedTest(name, CountVerdict.NotCompared, false, -1, -1, false, -1, -1, why);
-        }
-
-        private static string Count(int count, string one, string many)
-        {
-            return count + " " + (count == 1 ? one : many);
         }
     }
 }

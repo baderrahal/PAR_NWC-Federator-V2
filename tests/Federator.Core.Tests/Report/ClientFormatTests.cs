@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using Federator.Core.Report;
 using NUnit.Framework;
 
@@ -107,6 +108,28 @@ namespace Federator.Core.Tests
         {
             Assert.That(ClientFormat.ClashPoint(31.6431119, -2.9134444, 3.3249),
                 Is.EqualTo("x:31.643, y:-2.913, z:3.325"));
+        }
+
+        /// <summary>
+        /// A value too small for three decimals is stored as the number its text reads as, FR-171 T1-N76. Math.Round takes
+        /// no more than fifteen decimals, so below about 1e-13 the cell held the raw double, 3.7312345e-14 beside their
+        /// 0.0000000000000373, and the comment above it promised three significant figures. The break: an ordinary
+        /// distance is still rounded to three decimals.
+        /// </summary>
+        [Test]
+        public void ARoundedValueTooSmallForThreeDecimalsIsTheNumberTheTextReadsAs()
+        {
+            foreach (double value in new[] { 3.7312345e-14, 2.4349e-14, -4.861e-14, 6.8412e-08, -0.0004321, 1e-30 })
+            {
+                double rounded = ClientFormat.Rounded(value);
+
+                Assert.That(rounded, Is.EqualTo(double.Parse(ClientFormat.Fixed(value), CultureInfo.InvariantCulture)), value.ToString("R", CultureInfo.InvariantCulture));
+            }
+
+            Assert.That(ClientFormat.Rounded(3.7312345e-14), Is.EqualTo(3.73e-14));
+            Assert.That(ClientFormat.Rounded(-0.0004321), Is.EqualTo(-0.000432));
+            Assert.That(ClientFormat.Rounded(33.170986), Is.EqualTo(33.171).Within(1e-12));
+            Assert.That(ClientFormat.Rounded(0.0), Is.EqualTo(0.0));
         }
 
         // ---------- Item ID carries its own label ----------

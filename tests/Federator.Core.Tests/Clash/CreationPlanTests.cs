@@ -170,6 +170,47 @@ namespace Federator.Core.Tests
                 Is.EqualTo("CLASH 1830 in the file, 211 created, 1619 not created, a side finds nothing"));
         }
 
+        // ---------- the mirrors merged, F132 attempt 6 item 2 ----------
+
+        // The breaker's blocking finding on attempt 5. On the picked matrix 59 mirrors are
+        // merged into their kept tests, so 1771 blocks are one for every test in the file, and
+        // the line says why it is fewer than 1830 and never calls it a fault.
+        [Test]
+        public void AMirrorMergedIntoItsKeptTestIsNotABlockMissing()
+        {
+            string line = CreationPlan.BlockCountLine(1771, 1830, 59);
+
+            Assert.That(line, Is.EqualTo(
+                "BLOCKS   1771 in the workbook, one for every test in the file, 1830 less the 59 mirrors merged "
+                    + "into their kept tests"));
+            Assert.That(line, Does.Not.Contain("MUST"));
+        }
+
+        // A block missing beside the mirrors merged is still a fault and still said in capitals.
+        [Test]
+        public void ABlockMissingBesideTheMirrorsMergedIsStillSaid()
+        {
+            string line = CreationPlan.BlockCountLine(1770, 1830, 59);
+
+            Assert.That(line, Does.StartWith(
+                "BLOCKS   1770 in the workbook against 1771, the 1830 tests in the file less the 59 mirrors merged "
+                    + "into their kept tests. THE WORKBOOK MUST CARRY A BLOCK FOR EVERY TEST IN THE FILE"));
+            Assert.That(line, Does.EndWith("and a mirror merged into its kept test is in that test's block"));
+        }
+
+        // With no mirror merged the line is word for word the line before F132.
+        [Test]
+        public void WithNoMirrorMergedTheBlockLineIsTheOneBefore()
+        {
+            Assert.That(CreationPlan.BlockCountLine(1830, 1830, 0), Is.EqualTo(
+                "BLOCKS   1830 in the workbook, one for every test in the file"));
+            Assert.That(CreationPlan.BlockCountLine(211, 1830, 0), Is.EqualTo(
+                "BLOCKS   211 in the workbook against 1830 tests in the file. THE WORKBOOK MUST CARRY A BLOCK FOR "
+                    + "EVERY TEST IN THE FILE, whether or not the test was created, because the client's report is the "
+                    + "whole matrix"));
+            Assert.Throws<ArgumentOutOfRangeException>(() => CreationPlan.BlockCountLine(1830, 1830, -1));
+        }
+
         // ---------- what does NOT change ----------
 
         /// <summary>

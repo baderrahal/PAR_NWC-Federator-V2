@@ -1999,6 +1999,16 @@ namespace Federator.Addin.Ui
                 message += Environment.NewLine + Environment.NewLine + rebuildLine;
             }
 
+            // F132 attempt 2, the breaker's finding R5, and the same rule again: said only
+            // when the box is ON. The pass reaches the tests saved in the NWF as well as
+            // those from the picked file, and the NWF is saved with the statuses it moves.
+            string byDesignLine = ByDesignPairs.ConfirmLine(MarkByDesign.IsChecked == true);
+
+            if (byDesignLine != null)
+            {
+                message += Environment.NewLine + Environment.NewLine + byDesignLine;
+            }
+
             if (discarded != null)
             {
                 message += Environment.NewLine + Environment.NewLine

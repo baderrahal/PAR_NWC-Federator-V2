@@ -78,11 +78,12 @@ namespace Federator.Core.Tests
                         "the NWD was requested and is not on disk", null);
                 }
 
+                Assert.That(log.CountOf(GroupOutcome.Failed), Is.EqualTo(22));
+                Assert.That(log.FailedGroups.Count, Is.EqualTo(22));
+
                 log.WriteResultBlock();
                 string text = ReadWhileOpen(log);
 
-                Assert.That(log.CountOf(GroupOutcome.Failed), Is.EqualTo(22));
-                Assert.That(log.FailedGroups.Count, Is.EqualTo(22));
                 Assert.That(text, Does.Contain("groups failed  : 22"));
                 Assert.That(text, Does.Contain("errors         : 22"));
                 Assert.That(text, Does.Not.Contain("Nothing failed."));

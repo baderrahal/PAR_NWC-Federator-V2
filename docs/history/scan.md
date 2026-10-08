@@ -5616,6 +5616,50 @@ through Navisworks' own factor, so the harvest's UnitTable and the check never s
 number, and `tools\loop\compare-document.ps1` marks the tolerances and distances NOT
 COMPARED when the probe could not read the factor and the document is not in metres.
 
+## 5z-mirrors. THE MIRRORED PAIRS OF THE TWO MATRICES, MEASURED 2026-10-04 AND 2026-10-05
+
+F132. Read only, no Navisworks started. The first half was measured by the loop on 2026-10-04
+off the picked XML and the priority file. The second half was read off the repo's two
+matrices on 2026-10-05 for attempt 5, by counting the attributes in the files.
+
+**SWAPS.** The picked XML, `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`, holds 1830 tests
+over 61 sets, every unordered pair of the 61 sets exactly once, 61 times 60 over 2. So it holds
+no test whose two sides are another's two sets swapped, no test with one set on both sides,
+and no two tests with the same two sets in the same order. Read by locator, by set name and by
+test name, all three give zero.
+
+**ONE PAIR OF SETS OF ONE QUESTION.** BLD-EL-Telecom Fixtures and BLD-EL-Telephone Devices each
+hold one condition, Element Category equals Telephone Devices, flags 0, findspec mode all,
+disjoint 0, start /. So 59 pairs of tests ask one question under two names, each other set X
+once against each of the two, 57 with the shared set on the same side and 2 on the other side,
+and 1 test, BLD-EL-Telephone Devices-vs-BLD-EL-Telecom Fixtures, has two sides of one question.
+53 of the 59 pairs are C with C and 6 are A with A in `samples\clash-priority-map.csv`, and no
+pair differs in priority, type, tolerance, merge composites or side flags. On 1A02MM of
+2026-10-04 both sets found 0 items, so none of the 119 tests ran and whether a pair finds the
+same clashes is UNKNOWN. The client's own matrix, `samples\1104-PAR_CLASH_AllInOne_25mm.xml`,
+holds the Telecom pair and a second, Electrical Fixtures with Devices, which F87 corrected, so
+it holds 117 such pairs.
+
+The loop's own record of the first half kept the picked XML's sha256 as 792b01fb. The repo's
+file read 94897667 on 2026-10-05 in a Windows checkout, so whether the two are the same bytes
+is UNKNOWN. The counts do not rest on it. Two tests of `MirrorRuleTests` read the repo's files
+on every run and find 59 and 117:
+`TheCorrectedMatrixHolds59PairsByRuleListAndEveryTestStillRuns` and
+`TheClientsMatrixHoldsNoSwapAnd117PairsByRuleList`.
+
+**WHAT EVERY SET OF BOTH MATRICES WRITES FOR ITS SEARCH**, read 2026-10-05:
+
+| Matrix | Sets | findspec | start | Condition flags |
+|---|---|---|---|---|
+| `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` | 61 | mode all, disjoint 0, all 61 | / on all 61 | 0 on 118, 32 on 6, 64 on 22 |
+| `samples\1104-PAR_CLASH_AllInOne_25mm.xml` | 61 | mode all, disjoint 0, all 61 | / on all 61 | 0 on 97, 64 on 5 |
+
+No condition of either file carries an ignore bit, so comparing every flag bit and the
+findspec, `SelectionSetDefinition.WholeQuestion`, pairs the same 59 and 117 as comparing the
+rule signatures alone. It changes the pairing only for a file whose sets differ in those, which
+is the case the breaker named: a set and its negation, an Or group against an And, or a search
+that ignores case, each of which the rule signature alone paired.
+
 ## 5z-h. CAN A BOUNDINGBOX3D BE BUILT FROM TWO POINT3D, MEASURED 2026-10-05
 
 P5 of Q114, the views by team design, part 3. F114 frames one view per test on the box of

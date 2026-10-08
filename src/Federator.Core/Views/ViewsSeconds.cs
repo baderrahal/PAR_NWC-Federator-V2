@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Globalization;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Views
 {
@@ -16,40 +15,23 @@ namespace Federator.Core.Views
     /// because reading the clashes, showing and hiding the models and the live line ran
     /// outside every watch. So every call the viewpoint work is made of is a part of its own.
     ///
-    /// WHAT NO PART HOLDS IS SAID AND NEVER SPREAD. The seconds between the parts are named
-    /// on the line as what none of them holds, the timing block's own rule: spreading them
-    /// over the parts would be inventing numbers, and leaving them off would leave a reader
-    /// adding up four numbers and wondering where the rest went. Parts adding to more than
-    /// the whole, which only a stretch left open across the end can do, are said in words
-    /// as a fault in this timing and never printed as a negative number of seconds.
-    ///
-    /// ONE CLOCK, HANDED IN. The add-in hands it the run log's monotonic clock, the one every
-    /// step reads, so the parts and the step come off the same clock and nothing here keeps
-    /// a Stopwatch of its own. A test drives it, so no test waits on a real second.
-    ///
-    /// A PART THE WORK NEVER ENTERED IS LEFT OFF THE LINE. The route the run takes by
-    /// default never adds at the root and moves, and a part listed at nothing would read as
-    /// a call that was made and cost nothing. A part entered and taking no measurable time
-    /// is named, because it was made.
+    /// THE WHOLE IS THE STEP, from the first clash read to the document put back, on the
+    /// clock handed in. The stretches, the rest no part holds and the words are
+    /// SecondsByPart, shared with the IMAGES line since FR-077, and the parts and their
+    /// words are this file's.
     /// </summary>
     public sealed class ViewsSeconds
     {
-        private readonly Func<double> clock;
+        private readonly SecondsByPart<ViewsPart> parts;
         private readonly double startedAt;
-        private readonly Dictionary<ViewsPart, double> seconds = new Dictionary<ViewsPart, double>();
         private bool ended;
         private double endedAt;
 
         /// <summary>Starts the whole on the clock handed in, which is read for every stretch after it.</summary>
         public ViewsSeconds(Func<double> clock)
         {
-            if (clock == null)
-            {
-                throw new ArgumentNullException("clock");
-            }
-
-            this.clock = clock;
-            startedAt = clock();
+            parts = new SecondsByPart<ViewsPart>(clock);
+            startedAt = parts.Now;
         }
 
         /// <summary>
@@ -59,7 +41,7 @@ namespace Federator.Core.Views
         /// </summary>
         public IDisposable In(ViewsPart part)
         {
-            return new Stretch(this, part, clock());
+            return parts.In(part);
         }
 
         /// <summary>Marks the end of the whole. The first call wins, so the whole is read once.</summary>
@@ -71,7 +53,7 @@ namespace Federator.Core.Views
             }
 
             ended = true;
-            endedAt = clock();
+            endedAt = parts.Now;
         }
 
         /// <summary>The whole, from the start to the end, or to now where it has not ended. Never less than nothing.</summary>
@@ -79,7 +61,7 @@ namespace Federator.Core.Views
         {
             get
             {
-                double until = ended ? endedAt : clock();
+                double until = ended ? endedAt : parts.Now;
                 return until > startedAt ? until - startedAt : 0.0;
             }
         }
@@ -87,24 +69,13 @@ namespace Federator.Core.Views
         /// <summary>What no part holds. Below zero only where the parts hold more than the whole, which Line says in words.</summary>
         internal double InNoPart
         {
-            get
-            {
-                double parts = 0.0;
-
-                foreach (double one in seconds.Values)
-                {
-                    parts += one;
-                }
-
-                return Total - parts;
-            }
+            get { return Total - parts.InParts; }
         }
 
         /// <summary>The seconds one part holds, every stretch of it added.</summary>
         internal double Of(ViewsPart part)
         {
-            double held;
-            return seconds.TryGetValue(part, out held) ? held : 0.0;
+            return parts.Of(part);
         }
 
         /// <summary>
@@ -113,39 +84,9 @@ namespace Federator.Core.Views
         /// </summary>
         public string Line()
         {
-            List<string> parts = new List<string>();
-
-            foreach (ViewsPart part in Enum.GetValues(typeof(ViewsPart)))
-            {
-                double held;
-
-                if (seconds.TryGetValue(part, out held))
-                {
-                    parts.Add(Show(held) + " " + Describe(part));
-                }
-            }
-
-            double rest = InNoPart;
-            string body;
-
-            if (parts.Count == 0)
-            {
-                body = Show(rest) + " in no part, because no part was entered";
-            }
-            else if (rest <= -HalfOfTheLastPlace)
-            {
-                body = string.Join(", ", parts.ToArray())
-                    + ", and the parts add to " + Show(-rest)
-                    + " more than the whole, which is a fault in this timing and not in the run";
-            }
-            else
-            {
-                body = string.Join(", ", parts.ToArray())
-                    + ", and " + Show(rest < 0.0 ? 0.0 : rest) + " in none of these";
-            }
-
-            return "VIEWS    the step's seconds went: " + body
-                + ", of " + Show(Total) + " from the first clash read to the document put back";
+            return "VIEWS    the step's seconds went: " + parts.Body(Total, Describe)
+                + ", of " + SecondsByPart<ViewsPart>.Show(Total)
+                + " from the first clash read to the document put back";
         }
 
         /// <summary>The words for one part, so the line and nothing else spells them.</summary>
@@ -189,54 +130,6 @@ namespace Federator.Core.Views
                     return "reading the tree for the VIEWS TREE block";
                 default:
                     return "UNKNOWN";
-            }
-        }
-
-        /// <summary>
-        /// Half a thousandth of a second, the last place the line shows. Rounding in a sum of
-        /// a thousand stretches can leave the rest a hair below zero, and that is not the
-        /// parts holding more than the whole, so anything smaller than the line can show is
-        /// read as nothing. A guard on rounding and not a number that shapes a run.
-        /// </summary>
-        private const double HalfOfTheLastPlace = 0.0005;
-
-        private void Add(ViewsPart part, double from, double to)
-        {
-            double spent = to > from ? to - from : 0.0;
-            double held;
-            seconds.TryGetValue(part, out held);
-            seconds[part] = held + spent;
-        }
-
-        private static string Show(double value)
-        {
-            return value.ToString("0.000", CultureInfo.InvariantCulture) + "s";
-        }
-
-        /// <summary>One stretch of one part. Ending it twice counts it once.</summary>
-        private sealed class Stretch : IDisposable
-        {
-            private readonly ViewsSeconds owner;
-            private readonly ViewsPart part;
-            private readonly double from;
-            private bool done;
-
-            internal Stretch(ViewsSeconds owner, ViewsPart part, double from)
-            {
-                this.owner = owner;
-                this.part = part;
-                this.from = from;
-            }
-
-            public void Dispose()
-            {
-                if (done)
-                {
-                    return;
-                }
-
-                done = true;
-                owner.Add(part, from, owner.clock());
             }
         }
     }

@@ -156,6 +156,20 @@ namespace Federator.Core.Health
         /// </summary>
         public static IList<IdenticalSets> FindIdentical(IEnumerable<SelectionSetDefinition> sets)
         {
+            return FindIdentical(sets, SignatureOf);
+        }
+
+        /// <summary>
+        /// Sets grouped by the signature handed, in the order each first came, a group only
+        /// where it holds two or more and a set with no condition never grouped. The HEALTH
+        /// block groups by SignatureOf. The mirrored tests group by the whole question a set
+        /// asks, SelectionSetDefinition.WholeQuestion, F132, because a pair of tests merged on
+        /// a comparison that leaves a flag out would add the clashes of one question to
+        /// another. One grouping, two signatures, so the two cannot drift in how they group.
+        /// </summary>
+        internal static IList<IdenticalSets> FindIdentical(
+            IEnumerable<SelectionSetDefinition> sets, Func<SelectionSetDefinition, string> signatureOf)
+        {
             List<string> order = new List<string>();
             Dictionary<string, List<SelectionSetDefinition>> bySignature =
                 new Dictionary<string, List<SelectionSetDefinition>>(StringComparer.Ordinal);
@@ -172,7 +186,7 @@ namespace Federator.Core.Health
                         continue;
                     }
 
-                    string signature = SignatureOf(set);
+                    string signature = signatureOf(set);
                     List<SelectionSetDefinition> bucket;
 
                     if (!bySignature.TryGetValue(signature, out bucket))
@@ -329,9 +343,6 @@ namespace Federator.Core.Health
         {
             return PlannedSet.GroupsOf(set.Conditions, condition => PlannedCondition.StartsAGroupWith(condition.Flags));
         }
-
-        /// <summary>The test attribute a condition carries when its value is a stem.</summary>
-        public const string ContainsTest = "contains";
 
         /// <summary>
         /// Whether the measured categories carry what the condition asks, by the one rule the

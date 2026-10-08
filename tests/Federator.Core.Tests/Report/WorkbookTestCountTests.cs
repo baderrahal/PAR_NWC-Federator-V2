@@ -141,6 +141,176 @@ namespace Federator.Core.Tests
             Assert.That(check.Summary(), Does.Not.Contain("matching the client's layout"));
         }
 
+        /// <summary>A workbook of a group row standing for ten clashes before three single rows, as the writer sorts it.</summary>
+        private string GroupRowBeforeThreeSingleRows()
+        {
+            ClashReport report = new ClashReport("1C07BC", OutputName);
+            report.DocumentUnits = "m";
+            AddTest(report, "BLD-A-vs-BLD-B", 1);
+            AddTest(report, "BLD-A-vs-BLD-C", 3);
+            report.Tests[0].Rows[0].IsGroup = true;
+            report.Tests[0].Rows[0].RawClashes = 10;
+
+            string path = Path.Combine(folder, OutputName + ".xlsx");
+            new WorkbookWriter().Write(report, path);
+            Assert.That(report.Tests[0].RawClashes, Is.EqualTo(10));
+            return path;
+        }
+
+        /// <summary>Sets the Clashes cell of the first full block to a value, as a hand edit or a damaged file would.</summary>
+        private static void SetTheFirstClashesCell(string path, object value)
+        {
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+
+                for (int row = 1; row <= sheet.LastRowUsed().RowNumber(); row++)
+                {
+                    if (sheet.Cell(row, WorkbookWriter.ColumnClashName).GetString() == "Clash Name")
+                    {
+                        IXLCell cell = sheet.Cell(row - 3, WorkbookWriter.ColumnTestHeader + 1);
+
+                        if (value is string)
+                        {
+                            cell.Value = (string)value;
+                        }
+                        else
+                        {
+                            cell.Value = (int)value;
+                        }
+
+                        break;
+                    }
+                }
+
+                workbook.SaveAs(path);
+            }
+        }
+
+        /// <summary>
+        /// T1-N82. The blocks are sorted by the clashes a test holds and a group row stands for many, so a block of one
+        /// group row holding ten clashes comes before a block of three single rows and is in the right order. The check
+        /// counted rows and said the tests were in the wrong order. The break: the Clashes cell of the first block
+        /// overwritten with 2 reads 2 before 3, and the order is named.
+        /// </summary>
+        [Test]
+        public void AGroupRowStandingForManyClashesIsNotOutOfOrderBesideThreeSingleRows()
+        {
+            string path = GroupRowBeforeThreeSingleRows();
+            WorkbookCheck check = WorkbookCheck.Of(path);
+
+            Assert.That(check.BlockCounts, Is.EqualTo(new[] { 1, 3 }), "one row, then three rows");
+            Assert.That(check.Passed, Is.True, string.Join(" | ", check.Lines()));
+            Assert.That(string.Join("\n", check.Lines()), Does.Not.Contain("wrong order"));
+            Assert.That(string.Join("\n", check.Lines()), Does.Contain("the first blocks hold 1, 3 clash rows."));
+
+            SetTheFirstClashesCell(path, 2);
+
+            Assert.That(string.Join("\n", WorkbookCheck.Of(path).Lines()), Does.Contain("The tests are in the wrong order. Block 1 holds 2 clashes and block 2 holds 3."));
+        }
+
+        /// <summary>
+        /// A block whose Clashes cell is nought is a real count and is ordered by it, and a cell that is no whole number
+        /// sends the check back to the rows under each block and says so, so a damaged cell is never read as a count.
+        /// </summary>
+        [Test]
+        public void ANoughtCellIsACountAndACellThatIsNoNumberFallsBackToRowsAndSaysSo()
+        {
+            string zero = GroupRowBeforeThreeSingleRows();
+            SetTheFirstClashesCell(zero, 0);
+
+            string told = string.Join("\n", WorkbookCheck.Of(zero).Lines());
+
+            Assert.That(told, Does.Contain("The tests are in the wrong order. Block 1 holds 0 clashes and block 2 holds 3."));
+            Assert.That(told, Does.Not.Contain("because a Clashes cell is no whole number"));
+
+            string damaged = GroupRowBeforeThreeSingleRows();
+            SetTheFirstClashesCell(damaged, "ten");
+
+            string rows = string.Join("\n", WorkbookCheck.Of(damaged).Lines());
+
+            Assert.That(rows, Does.Contain("The tests are in the wrong order. Block 1 holds 1 clashes and block 2 holds 3."));
+            Assert.That(rows, Does.Contain("The counts are the rows under each block, because a Clashes cell is no whole number."));
+        }
+
+        /// <summary>
+        /// T1-N80. Only the first block is read cell by cell and only five values of its first clash row for their shape,
+        /// so the pass line says that and not that every column of every row matched.
+        /// </summary>
+        [Test]
+        public void ThePassLineSaysWhatWasReadAndNotThatEverythingMatched()
+        {
+            WorkbookCheck check = WorkbookCheck.Of(TwoWithClashesAndThreeWithNone());
+            string lines = string.Join("\n", check.Lines());
+
+            Assert.That(check.Passed, Is.True, lines);
+            Assert.That(lines, Does.Contain("The column headings of every block with clashes match the client's report, and so do the fill, border and row height of every cell of the first block, five values of its first clash row"));
+            Assert.That(lines, Does.Contain("The blocks with clashes are in their order, and no test with no clash stands before one with clashes. The values of the other blocks and clash rows were not read."));
+            Assert.That(lines, Does.Not.Contain("Every column, value shape, fill, border, row height"));
+        }
+
+        /// <summary>
+        /// The order check read the full blocks alone, so a test with no clash placed before a test with clashes was
+        /// never named. A copy of the one row test is put in front of the first block, and the check names it once.
+        /// The break: the workbook the writer made, with every one row test last, says nothing of the kind.
+        /// </summary>
+        [Test]
+        public void AOneRowTestBeforeATestWithClashesIsNamedAsOutOfOrder()
+        {
+            string path = TwoWithClashesAndThreeWithNone();
+
+            Assert.That(string.Join("\n", WorkbookCheck.Of(path).Lines()), Does.Not.Contain("stands before the test with clashes"));
+
+            int lastRow;
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+                lastRow = sheet.LastRowUsed().RowNumber();
+                string name = sheet.Cell(lastRow, 1).GetString();
+                string tolerance = sheet.Cell(lastRow, WorkbookWriter.ColumnTestHeader).GetString();
+
+                Assert.That(name, Is.Not.Empty, "the last row is the one row of a test that found nothing");
+
+                sheet.Row(4).InsertRowsAbove(1);
+                sheet.Cell(4, 1).Value = name;
+                sheet.Cell(4, WorkbookWriter.ColumnTestHeader).Value = tolerance;
+                workbook.SaveAs(path);
+            }
+
+            WorkbookCheck told = WorkbookCheck.Of(path);
+            string lines = string.Join("\n", told.Lines());
+
+            Assert.That(told.Passed, Is.False);
+            Assert.That(lines, Does.Contain("The tests are in the wrong order. The test with no clash at row 4 stands before the test with clashes at row 5."));
+            Assert.That(lines.Split(new[] { "stands before the test with clashes" }, StringSplitOptions.None).Length, Is.EqualTo(2), "said once for two blocks it stands before");
+        }
+
+        /// <summary>
+        /// A block whose Clashes cell is nought holds as many clashes as a test of one row, and ties keep the order they were
+        /// created in, so the writer may put such a block after a one row test, a result group with nothing under it. The
+        /// check lets it stand, as the order check lets a tie.
+        /// </summary>
+        [Test]
+        public void ABlockHoldingNoClashMayFollowAOneRowTest()
+        {
+            ClashReport report = new ClashReport("1C07BC", OutputName);
+            report.DocumentUnits = "m";
+            AddTest(report, "BLD-A-vs-BLD-B", 0);
+            AddTest(report, "BLD-A-vs-BLD-C", 1);
+            report.Tests[1].Rows[0].IsGroup = true;
+            report.Tests[1].Rows[0].RawClashes = 0;
+
+            string path = Path.Combine(folder, OutputName + ".xlsx");
+            new WorkbookWriter().Write(report, path);
+            WorkbookCheck check = WorkbookCheck.Of(path);
+
+            Assert.That(check.FullBlocks, Is.EqualTo(1));
+            Assert.That(check.OneRowTests, Is.EqualTo(1));
+            Assert.That(string.Join("\n", check.Lines()), Does.Not.Contain("stands before the test with clashes"));
+            Assert.That(check.Passed, Is.True, string.Join(" | ", check.Lines()));
+        }
+
         /// <summary>The sheet wide things a one row workbook can still be wrong in are still read.</summary>
         [Test]
         public void AWorkbookOfOneRowTestsStillNamesAWrongTitleAndAWrongWidth()
@@ -173,8 +343,10 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// With a priority file picked the order is A, B, C, so a test of one row can stand before and
-        /// between full blocks. Each is counted once and no clash row is counted as a test.
+        /// Tests of one row and full blocks together, with a priority file picked. Since FR-199 the blocks keep the
+        /// measured order, most clashes first, so the tests of one row come last and the check, which names a one row
+        /// test before a block with clashes, says nothing of the workbook the writer made. Each is counted once and
+        /// no clash row is counted as a test.
         /// </summary>
         [Test]
         public void OneRowTestsBeforeAndBetweenFullBlocksAreCountedOnce()
@@ -203,6 +375,11 @@ namespace Federator.Core.Tests
             Assert.That(check.FullBlocks, Is.EqualTo(2));
             Assert.That(check.OneRowTests, Is.EqualTo(3));
             Assert.That(check.Rows, Is.EqualTo(5));
+
+            WorkbookCheck picked = WorkbookCheck.Of(path, true);
+
+            Assert.That(string.Join("\n", picked.Lines()), Does.Not.Contain("wrong order"));
+            Assert.That(string.Join("\n", check.Lines()), Does.Not.Contain("wrong order"));
         }
 
         [Test]

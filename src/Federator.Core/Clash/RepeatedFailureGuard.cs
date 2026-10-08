@@ -75,6 +75,16 @@ namespace Federator.Core.Clash
             get { return ShouldStopTheRun ? Stopped(consecutive) : null; }
         }
 
+        /// <summary>
+        /// The reason the streak carries, null while nothing is failing. For a stop line
+        /// worded for what failed, the images' since FR-076, which reads the count and this
+        /// and spells the rest itself.
+        /// </summary>
+        public string FirstReason
+        {
+            get { return consecutive > 0 ? firstReason : null; }
+        }
+
         /// <summary>What the window says when the guard stops a run.</summary>
         public static string Stopped(int consecutive)
         {

@@ -166,6 +166,54 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
+        /// Why a merge may not rest on the set at that path, or null where this build created
+        /// it from the picked file. The mirrored tests' one merge rule reads it, F132 attempt
+        /// 13, Bader's answer A to Q142, and fails closed, so that no merge rests on a set this
+        /// tool did not make: a set the drift check found drifted, rebuilt or not, a set already
+        /// in the document whatever the drift check read of it, since that check reads each
+        /// condition's category, property, comparison word and value and not a set's flags,
+        /// negation, Or group, ignore bits or its search's base selection, a set that failed,
+        /// and a set this build never reached all give words. The path is compared Ordinal and
+        /// never trimmed, as a test's locator.
+        /// </summary>
+        internal string NotCreatedFromTheFile(string path)
+        {
+            foreach (SetDrift drift in drifted)
+            {
+                if (string.Equals(drift.Path, path, StringComparison.Ordinal))
+                {
+                    return "was found by the SET DRIFT check asking another question than the picked XML";
+                }
+            }
+
+            bool reached = false;
+
+            foreach (SetResult result in results)
+            {
+                if (!string.Equals(result.Path, path, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (!result.Created && !result.Present)
+                {
+                    return "failed to build, so what it asks is UNKNOWN";
+                }
+
+                if (result.Present)
+                {
+                    return "was already in the document and not created by this run, so whether it asks what the picked "
+                        + "XML asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags "
+                        + "or search";
+                }
+
+                reached = true;
+            }
+
+            return reached ? null : "was neither built nor found by this run's sets build, so what it asks is UNKNOWN";
+        }
+
+        /// <summary>
         /// Present sets whose search, or a value in it, could not be read, so whether they ask
         /// what the file asks is UNKNOWN, FR-021. Never counted as asking it.
         /// </summary>

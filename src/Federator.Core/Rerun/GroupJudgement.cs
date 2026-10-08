@@ -20,7 +20,7 @@ namespace Federator.Core.Rerun
             NwdPath = "the NWD path";
         }
 
-        /// <summary>Which of the four rerun cases this group turned out to be.</summary>
+        /// <summary>Which of the five rerun cases this group turned out to be.</summary>
         public RerunDecision Decision { get; set; }
 
         /// <summary>
