@@ -37,6 +37,14 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- Q133Import is its own project, Q133 on 1A04PK, and is not compiled into this one. -->
+  <ItemGroup>
+    <Compile Remove="Q133Import\**" />
+    <None Remove="Q133Import\**" />
+    <Compile Remove="PropertyProbeRun\**" />
+    <None Remove="PropertyProbeRun\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="Autodesk.Navisworks.Api">
       <HintPath>$(NavisworksApiDll)</HintPath>

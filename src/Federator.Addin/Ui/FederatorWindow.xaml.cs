@@ -1289,9 +1289,9 @@ namespace Federator.Addin.Ui
             }
 
             // F136. The same shape, ticked or not off the setting the run reads, and set
-            // here because the window is made new at every open. The setting is unticked
-            // until F114 merges, Q131, so a box ticked for one run is unticked again the
-            // next time the window opens.
+            // here because the window is made new at every open. The setting is ticked
+            // since F114's add-in pass, Q131, so a box unticked for one run is ticked again
+            // the next time the window opens, and the loop unticks it through -Untick.
             if (MakeViewpoints != null)
             {
                 MakeViewpoints.Content = ViewpointRequest.TickLabel;

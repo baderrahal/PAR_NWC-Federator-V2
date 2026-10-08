@@ -199,6 +199,11 @@ namespace Federator.Core.Views
 
         private static InventoryItem Leaf(ViewNode node, Facts facts, HashSet<ViewNode> legacy)
         {
+            if (node.Comments == null)
+            {
+                return new InventoryItem(node, InventoryDecision.KeepNotOurs, "its comments could not be read, so it is kept as a person's");
+            }
+
             WrittenView mine = facts.WrittenAt(node);
 
             if (mine != null)
@@ -281,6 +286,11 @@ namespace Federator.Core.Views
             HashSet<ViewNode> toolFolders,
             ViewpointSettings settings)
         {
+            if (folder.Comments == null)
+            {
+                return new InventoryItem(folder, InventoryDecision.KeepFolder, "its comments could not be read, so it is kept as a person's");
+            }
+
             MarkJudgement judged = ToolViewMark.Judge(
                 folder.Folders, folder.Name, null, folder.Comments, folder.Redlines, folder.Guid, settings);
 

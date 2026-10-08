@@ -1,0 +1,339 @@
+MACHINE   [machine]   2026-10-07 17:01:20
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 41064
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-view-rate.ps1", sha256 4CD4C4F2907EC84B502AA3E12C6B31B6F7F7554E19389780B3EDAEDD4C2FAD62
+GUARD     tools\loop\nw-guard.ps1, sha256 E29D2733A227E6665551BD52866E7C2B40F5A5B09114ECB2AA2FFE233EA23C1A
+PROCESS   powershell.exe pid 41064, started to run -File %USERPROFILE%\AppData\Local\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-view-rate.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 516
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-rate-20261007-170120" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-rate-20261007-170120\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123148 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 199 AutoSave files listed and not copied
+  the tool's own logs folder listed: 38 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf", 41317271 bytes, sha256 0944C1001095FA95F5AE8887F79450C51EDE836D47F9A38DE3982BB525FB4F37
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-rate-20261007-170120\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf", sha256 matches
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\bin\Release\net48\ViewpointProbe.dll", 358400 bytes, written 2026-10-07 16:59:24, sha256 E1ACFEF58B09402687494335DF02F601EFEA7CE0DD8635A17AF55B588706E931, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  17:01:28.758  t+8.0s  calling new NavisworksApplication()
+  17:02:46.866  t+86.1s  the constructor RETURNED after 78.10 s
+  Roamer processes new since step 2: 1
+    pid 49396, started 17:01:28.823, parent 1164 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 49396, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 49396, started 2026-10-07 17:01:28.823, start ticks UTC 639269784888234326
+  17:02:57.915  t+97.1s  Visible set True, read back True
+  visible top level windows of 49396: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  17:02:58.413  t+97.6s  AddPluginAssembly RETURNED after 0.066 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode vprate on the copy, which it edits and saves as a new file ====
+  17:02:58.421  t+97.6s  calling ExecuteAddInPlugin(ViewpointProbe.PARS, vprate, the plugin's output file, the copy, the save path in the work folder, the margin 500 mm)
+  17:04:21.198  t+180.4s  ExecuteAddInPlugin RETURNED 0 after 82.78 s
+  visible top level windows of 49396: 1, hidden: 86, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p18-rate.nwf - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | 17:02:58.440  probe started, mode vprate, 3 file(s)
+  | 17:02:58.500  opening 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+  | 17:03:04.099  TryOpenFile returned True after 5.599 s
+  | 17:03:04.099  models 4
+  | 17:03:04.104     model 0  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc  under the loop folder True, its root's index path [0], root hidden False
+  | 17:03:04.107     model 1  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc  under the loop folder True, its root's index path [1], root hidden False
+  | 17:03:04.107     model 2  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  under the loop folder True, its root's index path [2], root hidden False
+  | 17:03:04.107     model 3  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc  under the loop folder True, its root's index path [3], root hidden False
+  | 17:03:04.108  document units Feet, the framing margin 500 mm, chosen and not measured, as in 5z-x, 1.64042 in document units
+  | 17:03:04.119  the document at the open: models 4, sets 61, tests 528, results 2939, statuses a person set 0, viewpoints 2847
+  | 17:03:04.124  tests read 528, with at least one open clash 59. Open is New or Active. The 10 tests of the most open clashes, ties by name Ordinal, are the views of each round
+  | 17:03:04.124  
+  | 17:03:04.124  WALK ONE, once per test, before the rounds and not in any view's seconds. Red is every distinct first item, green every distinct second item not already red, the homes are the models whose root index path is a prefix of an item's:
+  | 17:03:04.184     01 [BLD-AR-Curtain Mullions-vs-BLD-AR-Windows] results 2568, open 2568, centres 2568, sides read null 0. Red 2335 (with geometry 2335), green 88 (with geometry 88), not resolved 0, under no model root 0. Shown and dimmed [0], hidden [1,2,3]. Walked with its camera in 0.054 s
+  | 17:03:04.188     02 [BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Framing] results 40, open 40, centres 40, sides read null 0. Red 35 (with geometry 35), green 9 (with geometry 9), not resolved 0, under no model root 0. Shown and dimmed [1,3], hidden [0,2]. Walked with its camera in 0.004 s
+  | 17:03:04.191     03 [BLD-ST-Framing-vs-BLD-ST-Columns] results 25, open 25, centres 25, sides read null 0. Red 17 (with geometry 17), green 6 (with geometry 6), not resolved 0, under no model root 0. Shown and dimmed [3], hidden [0,1,2]. Walked with its camera in 0.003 s
+  | 17:03:04.195     04 [BLD-AR-Curtain Mullions-vs-BLD-AR-Walls] results 24, open 24, centres 24, sides read null 0. Red 24 (with geometry 24), green 3 (with geometry 3), not resolved 0, under no model root 0. Shown and dimmed [0], hidden [1,2,3]. Walked with its camera in 0.003 s
+  | 17:03:04.200     05 [BLD-EL-Lighting Fixtures-vs-BLD-ST-Floors] results 23, open 23, centres 23, sides read null 0. Red 23 (with geometry 23), green 2 (with geometry 2), not resolved 0, under no model root 0. Shown and dimmed [1,3], hidden [0,2]. Walked with its camera in 0.005 s
+  | 17:03:04.203     06 [BLD-AR-Doors-vs-BLD-AR-Walls] results 17, open 17, centres 17, sides read null 0. Red 9 (with geometry 9), green 13 (with geometry 13), not resolved 0, under no model root 0. Shown and dimmed [0], hidden [1,2,3]. Walked with its camera in 0.003 s
+  | 17:03:04.207     07 [BLD-EL-Conduits & Conduit Fittings-vs-BLD-ST-Floors] results 17, open 17, centres 17, sides read null 0. Red 16 (with geometry 16), green 3 (with geometry 3), not resolved 0, under no model root 0. Shown and dimmed [1,3], hidden [0,2]. Walked with its camera in 0.003 s
+  | 17:03:04.219     08 [BLD-PL-Pipes & Pipe Fittings-vs-BLD-AR-Walls] results 17, open 17, centres 17, sides read null 0. Red 9 (with geometry 9), green 12 (with geometry 12), not resolved 0, under no model root 0. Shown and dimmed [0,2], hidden [1,3]. Walked with its camera in 0.012 s
+  | 17:03:04.222     09 [BLD-ME-Pipes&Pipe Fittings-vs-BLD-AR-Walls] results 16, open 16, centres 16, sides read null 0. Red 9 (with geometry 9), green 9 (with geometry 9), not resolved 0, under no model root 0. Shown and dimmed [0,2], hidden [1,3]. Walked with its camera in 0.003 s
+  | 17:03:04.226     10 [BLD-EL-Conduits & Conduit Fittings-vs-BLD-EL-Electrical Equipment] results 14, open 14, centres 14, sides read null 0. Red 14 (with geometry 14), green 13 (with geometry 13), not resolved 0, under no model root 0. Shown and dimmed [1], hidden [0,2,3]. Walked with its camera in 0.004 s
+  | 17:03:04.228  
+  | 17:03:04.229  ROUND A, 10 views into the tree as it opened, 2847 viewpoints
+  | 17:03:04.247     the round's folder [P18 probe A] made at the root by FolderItem and AddCopy, marked YES, in 0.015 s, once a round and in no view's seconds
+  | 17:03:04.247     per view: label, tree before, then seconds of undim, hide, dim, resolve, paint, frame, folder, the record in three (make the COM view, find the COM folder, Add), mark, read back, and the whole sequence by its own clock, then the read back
+  | 17:03:11.884     A 01 open 2568, red 2335, green 88, tree 2847: undim 0.000, hide 0.078, dim 0.006, resolve 0.019, paint 0.010, frame 0.004, folder 0.002 made, record 0.006 + 0.002 + 7.458, mark 0.000, read back 0.040, WHOLE 7.627, no part 0.000
+  | 17:03:11.886          read back: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 730, at the dim 730, threw 0), red right 2335 of 2335, green right 88 of 88, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:03:18.692     A 02 open 40, red 35, green 9, tree 2848: undim 0.003, hide 0.018, dim 0.002, resolve 0.000, paint 0.000, frame 0.000, folder 0.003 made, record 0.001 + 0.000 + 6.775, mark 0.000, read back 0.003, WHOLE 6.805, no part 0.000
+  | 17:03:18.693          read back: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1094, at the dim 1094, threw 0), red right 35 of 35, green right 9 of 9, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:03:25.499     A 03 open 25, red 17, green 6, tree 2849: undim 0.003, hide 0.027, dim 0.000, resolve 0.000, paint 0.000, frame 0.000, folder 0.001 made, record 0.038 + 0.000 + 6.736, mark 0.000, read back 0.000, WHOLE 6.806, no part 0.000
+  | 17:03:25.499          read back: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 71 (null 0, no item 0, no colour 48, at the dim 48, threw 0), red right 17 of 17, green right 6 of 6, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:03:31.633     A 04 open 24, red 24, green 3, tree 2850: undim 0.000, hide 0.010, dim 0.003, resolve 0.000, paint 0.000, frame 0.000, folder 0.001 made, record 0.001 + 0.000 + 6.104, mark 0.000, read back 0.014, WHOLE 6.133, no part 0.000
+  | 17:03:31.633          read back: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 3126, at the dim 3126, threw 0), red right 24 of 24, green right 3 of 3, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:03:37.775     A 05 open 23, red 23, green 2, tree 2851: undim 0.002, hide 0.016, dim 0.001, resolve 0.000, paint 0.000, frame 0.000, folder 0.001 made, record 0.029 + 0.000 + 6.085, mark 0.000, read back 0.003, WHOLE 6.139, no part 0.000
+  | 17:03:37.775          read back: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1113, at the dim 1113, threw 0), red right 23 of 23, green right 2 of 2, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:03:43.718     A 06 open 17, red 9, green 13, tree 2852: undim 0.003, hide 0.014, dim 0.003, resolve 0.000, paint 0.000, frame 0.000, folder 0.001 made, record 0.001 + 0.000 + 5.907, mark 0.000, read back 0.013, WHOLE 5.942, no part 0.000
+  | 17:03:43.718          read back: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 3131, at the dim 3131, threw 0), red right 9 of 9, green right 13 of 13, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:03:50.065     A 07 open 17, red 16, green 3, tree 2853: undim 0.002, hide 0.012, dim 0.001, resolve 0.000, paint 0.000, frame 0.000, folder 0.001 made, record 0.032 + 0.000 + 6.288, mark 0.000, read back 0.003, WHOLE 6.341, no part 0.000
+  | 17:03:50.065          read back: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1119, at the dim 1119, threw 0), red right 16 of 16, green right 3 of 3, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:03:56.140     A 08 open 17, red 9, green 12, tree 2854: undim 0.001, hide 0.014, dim 0.004, resolve 0.000, paint 0.000, frame 0.000, folder 0.001 made, record 0.001 + 0.000 + 6.024, mark 0.000, read back 0.026, WHOLE 6.073, no part 0.000
+  | 17:03:56.140          read back: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 4626 (null 0, no item 0, no colour 4605, at the dim 4605, threw 0), red right 9 of 9, green right 12 of 12, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:02.565     A 09 open 16, red 9, green 9, tree 2855: undim 0.007, hide 0.000 skipped, dim 0.004, resolve 0.000, paint 0.000, frame 0.000, folder 0.001 made, record 0.039 + 0.000 + 6.341, mark 0.000, read back 0.029, WHOLE 6.423, no part 0.000
+  | 17:04:02.565          read back: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 4626 (null 0, no item 0, no colour 4608, at the dim 4608, threw 0), red right 9 of 9, green right 9 of 9, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:08.746     A 10 open 14, red 14, green 13, tree 2856: undim 0.004, hide 0.013, dim 0.001, resolve 0.000, paint 0.000, frame 0.000, folder 0.001 made, record 0.025 + 0.000 + 6.133, mark 0.000, read back 0.003, WHOLE 6.181, no part 0.000
+  | 17:04:08.746          read back: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1067 (null 0, no item 0, no colour 1040, at the dim 1040, threw 0), red right 14 of 14, green right 13 of 13, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:08.747  ROUND A wall time 64.517 s, the tree now 2857 viewpoints
+  | 17:04:08.749  ROUND A SECONDS A VIEW, over 10 views:
+  | 17:04:08.750     A  undim                          total 0.026   mean 0.003   median 0.003   least 0.000   most 0.007
+  | 17:04:08.750     A  hide                           total 0.202   mean 0.020   median 0.014   least 0.000   most 0.078
+  | 17:04:08.750     A  dim                            total 0.027   mean 0.003   median 0.002   least 0.000   most 0.006
+  | 17:04:08.750     A  resolve                        total 0.020   mean 0.002   median 0.000   least 0.000   most 0.019
+  | 17:04:08.750     A  paint                          total 0.012   mean 0.001   median 0.000   least 0.000   most 0.010
+  | 17:04:08.750     A  frame                          total 0.004   mean 0.000   median 0.000   least 0.000   most 0.004
+  | 17:04:08.751     A  folder                         total 0.015   mean 0.001   median 0.001   least 0.001   most 0.003
+  | 17:04:08.751     A  record, make the COM view      total 0.172   mean 0.017   median 0.015   least 0.001   most 0.039
+  | 17:04:08.751     A  record, find the COM folder    total 0.003   mean 0.000   median 0.000   least 0.000   most 0.002
+  | 17:04:08.751     A  record, Add                    total 63.852   mean 6.385   median 6.210   least 5.907   most 7.458
+  | 17:04:08.751     A  the record, the three          total 64.027   mean 6.403   median 6.239   least 5.907   most 7.466
+  | 17:04:08.751     A  mark                           total 0.003   mean 0.000   median 0.000   least 0.000   most 0.000
+  | 17:04:08.751     A  read back                      total 0.135   mean 0.014   median 0.008   least 0.000   most 0.040
+  | 17:04:08.751     A  THE WHOLE SEQUENCE             total 64.470   mean 6.447   median 6.261   least 5.942   most 7.627
+  | 17:04:08.751     A  seconds no part holds          total 0.000   mean 0.000   median 0.000   least 0.000   most 0.000
+  | 17:04:08.751  
+  | 17:04:08.752  THE REMOVAL of F85's per-clash views, by the probe's reading of LegacyClashView: a viewpoint at depth 1 to 3 under a top level folder named X vs Y, named T, two spaces, Clash and digits, T a test name of the document, with no comment. A top level folder goes by one RemoveAt(root, index), from the end, only when every viewpoint under it reads so
+  | 17:04:08.755     kept: top level folder 0 [PAR-AR-VEW-3D View], 11 viewpoints, legacy 0
+  | 17:04:08.755     kept: top level folder 1 [3D View], 8 viewpoints, legacy 0
+  | 17:04:08.755     kept: top level folder 2 [MEC-MEC-3D VIEW-PAR], 9 viewpoints, legacy 0
+  | 17:04:08.755     kept: top level folder 3 [PAR-ST-3D View], 6 viewpoints, legacy 0
+  | 17:04:08.757     to remove: top level folder 4 [AR vs AR], 2617 viewpoints, every one legacy
+  | 17:04:08.757     to remove: top level folder 5 [ST vs ST], 33 viewpoints, every one legacy
+  | 17:04:08.757     to remove: top level folder 6 [AR vs ME], 16 viewpoints, every one legacy
+  | 17:04:08.757     to remove: top level folder 7 [ME vs ME], 6 viewpoints, every one legacy
+  | 17:04:08.757     to remove: top level folder 8 [ME vs PL], 1 viewpoints, every one legacy
+  | 17:04:08.757     to remove: top level folder 9 [AR vs DR], 17 viewpoints, every one legacy
+  | 17:04:08.757     to remove: top level folder 10 [DR vs PL], 2 viewpoints, every one legacy
+  | 17:04:08.757     to remove: top level folder 11 [DR vs DR], 2 viewpoints, every one legacy
+  | 17:04:08.758     to remove: top level folder 12 [EL vs ST], 98 viewpoints, every one legacy
+  | 17:04:08.758     to remove: top level folder 13 [EL vs EL], 11 viewpoints, every one legacy
+  | 17:04:08.758     to remove: top level folder 14 [ST vs UNKNOWN], 3 viewpoints, every one legacy
+  | 17:04:08.758     to remove: top level folder 15 [EL vs UNKNOWN], 7 viewpoints, every one legacy
+  | 17:04:08.758     kept: top level folder 16 [P18 probe A], 10 viewpoints, legacy 0
+  | 17:04:08.758     judged in 0.004 s: folders to remove 12 holding 2813 viewpoints. Legacy in kept folders 0, not legacy 44
+  | 17:04:08.760     RemoveAt(root, 15) on [EL vs UNKNOWN] in 0.002 s
+  | 17:04:08.814     RemoveAt(root, 14) on [ST vs UNKNOWN] in 0.054 s
+  | 17:04:08.839     RemoveAt(root, 13) on [EL vs EL] in 0.025 s
+  | 17:04:08.917     RemoveAt(root, 12) on [EL vs ST] in 0.077 s
+  | 17:04:09.568     RemoveAt(root, 11) on [DR vs DR] in 0.650 s
+  | 17:04:09.584     RemoveAt(root, 10) on [DR vs PL] in 0.017 s
+  | 17:04:09.602     RemoveAt(root, 9) on [AR vs DR] in 0.017 s
+  | 17:04:09.684     RemoveAt(root, 8) on [ME vs PL] in 0.082 s
+  | 17:04:09.695     RemoveAt(root, 7) on [ME vs ME] in 0.011 s
+  | 17:04:09.727     RemoveAt(root, 6) on [AR vs ME] in 0.032 s
+  | 17:04:09.802     RemoveAt(root, 5) on [ST vs ST] in 0.074 s
+  | 17:04:10.011     RemoveAt(root, 4) on [AR vs AR] in 0.209 s
+  | 17:04:10.011     removed 12 folders in 1.253 s, the name re-read just before each call held YES
+  | 17:04:10.011     the tree after the removal 44 viewpoints, 44 expected from the counts
+  | 17:04:10.013     the document after the removal: models 4, sets 61, tests 528, results 2939, statuses a person set 0
+  | 17:04:10.013  
+  | 17:04:10.013  ROUND B, the same 10 views into the tree after the removal, 44 viewpoints
+  | 17:04:14.870     the round's folder [P18 probe B] made at the root by FolderItem and AddCopy, marked YES, in 4.856 s, once a round and in no view's seconds
+  | 17:04:14.871     per view: label, tree before, then seconds of undim, hide, dim, resolve, paint, frame, folder, the record in three (make the COM view, find the COM folder, Add), mark, read back, and the whole sequence by its own clock, then the read back
+  | 17:04:15.014     B 01 open 2568, red 2335, green 88, tree 44: undim 0.001, hide 0.030, dim 0.003, resolve 0.014, paint 0.006, frame 0.000, folder 0.000 made, record 0.001 + 0.000 + 0.060, mark 0.000, read back 0.028, WHOLE 0.143, no part 0.000
+  | 17:04:15.014          read back: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 730, at the dim 730, threw 0), red right 2335 of 2335, green right 88 of 88, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:15.102     B 02 open 40, red 35, green 9, tree 45: undim 0.002, hide 0.010, dim 0.001, resolve 0.000, paint 0.000, frame 0.000, folder 0.000 made, record 0.030 + 0.000 + 0.039, mark 0.000, read back 0.004, WHOLE 0.087, no part 0.000
+  | 17:04:15.102          read back: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1094, at the dim 1094, threw 0), red right 35 of 35, green right 9 of 9, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:15.164     B 03 open 25, red 17, green 6, tree 46: undim 0.005, hide 0.015, dim 0.000, resolve 0.000, paint 0.000, frame 0.000, folder 0.000 made, record 0.000 + 0.000 + 0.040, mark 0.000, read back 0.000, WHOLE 0.062, no part 0.000
+  | 17:04:15.164          read back: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 71 (null 0, no item 0, no colour 48, at the dim 48, threw 0), red right 17 of 17, green right 6 of 6, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:15.258     B 04 open 24, red 24, green 3, tree 47: undim 0.001, hide 0.014, dim 0.003, resolve 0.000, paint 0.000, frame 0.000, folder 0.000 made, record 0.001 + 0.000 + 0.058, mark 0.000, read back 0.018, WHOLE 0.095, no part 0.000
+  | 17:04:15.258          read back: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 3126, at the dim 3126, threw 0), red right 24 of 24, green right 3 of 3, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:15.362     B 05 open 23, red 23, green 2, tree 48: undim 0.006, hide 0.031, dim 0.001, resolve 0.000, paint 0.000, frame 0.000, folder 0.000 made, record 0.006 + 0.000 + 0.055, mark 0.000, read back 0.003, WHOLE 0.103, no part 0.000
+  | 17:04:15.362          read back: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1113, at the dim 1113, threw 0), red right 23 of 23, green right 2 of 2, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:15.448     B 06 open 17, red 9, green 13, tree 49: undim 0.002, hide 0.010, dim 0.002, resolve 0.000, paint 0.000, frame 0.000, folder 0.000 made, record 0.001 + 0.000 + 0.053, mark 0.000, read back 0.016, WHOLE 0.086, no part 0.000
+  | 17:04:15.448          read back: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 3131, at the dim 3131, threw 0), red right 9 of 9, green right 13 of 13, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:15.534     B 07 open 17, red 16, green 3, tree 50: undim 0.003, hide 0.017, dim 0.002, resolve 0.000, paint 0.000, frame 0.000, folder 0.000 made, record 0.005 + 0.000 + 0.054, mark 0.000, read back 0.003, WHOLE 0.085, no part 0.000
+  | 17:04:15.534          read back: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1119, at the dim 1119, threw 0), red right 16 of 16, green right 3 of 3, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:15.657     B 08 open 17, red 9, green 12, tree 51: undim 0.002, hide 0.012, dim 0.004, resolve 0.000, paint 0.000, frame 0.000, folder 0.000 made, record 0.001 + 0.000 + 0.077, mark 0.000, read back 0.027, WHOLE 0.122, no part 0.000
+  | 17:04:15.657          read back: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 4626 (null 0, no item 0, no colour 4605, at the dim 4605, threw 0), red right 9 of 9, green right 12 of 12, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:15.892     B 09 open 16, red 9, green 9, tree 52: undim 0.004, hide 0.000 skipped, dim 0.004, resolve 0.000, paint 0.000, frame 0.000, folder 0.000 made, record 0.131 + 0.000 + 0.070, mark 0.000, read back 0.027, WHOLE 0.236, no part 0.000
+  | 17:04:15.893          read back: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 4626 (null 0, no item 0, no colour 4608, at the dim 4608, threw 0), red right 9 of 9, green right 9 of 9, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:15.997     B 10 open 14, red 14, green 13, tree 53: undim 0.005, hide 0.011, dim 0.001, resolve 0.000, paint 0.000, frame 0.000, folder 0.000 made, record 0.017 + 0.000 + 0.066, mark 0.000, read back 0.003, WHOLE 0.104, no part 0.000
+  | 17:04:15.997          read back: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1067 (null 0, no item 0, no colour 1040, at the dim 1040, threw 0), red right 14 of 14, green right 13 of 13, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:15.998  ROUND B wall time 5.984 s, the tree now 54 viewpoints
+  | 17:04:15.998  ROUND B SECONDS A VIEW, over 10 views:
+  | 17:04:15.998     B  undim                          total 0.032   mean 0.003   median 0.003   least 0.001   most 0.006
+  | 17:04:15.998     B  hide                           total 0.149   mean 0.015   median 0.013   least 0.000   most 0.031
+  | 17:04:15.998     B  dim                            total 0.021   mean 0.002   median 0.002   least 0.000   most 0.004
+  | 17:04:15.998     B  resolve                        total 0.014   mean 0.001   median 0.000   least 0.000   most 0.014
+  | 17:04:15.999     B  paint                          total 0.007   mean 0.001   median 0.000   least 0.000   most 0.006
+  | 17:04:15.999     B  frame                          total 0.000   mean 0.000   median 0.000   least 0.000   most 0.000
+  | 17:04:15.999     B  folder                         total 0.004   mean 0.000   median 0.000   least 0.000   most 0.000
+  | 17:04:15.999     B  record, make the COM view      total 0.192   mean 0.019   median 0.003   least 0.000   most 0.131
+  | 17:04:15.999     B  record, find the COM folder    total 0.000   mean 0.000   median 0.000   least 0.000   most 0.000
+  | 17:04:15.999     B  record, Add                    total 0.572   mean 0.057   median 0.057   least 0.039   most 0.077
+  | 17:04:15.999     B  the record, the three          total 0.764   mean 0.076   median 0.061   least 0.041   most 0.201
+  | 17:04:15.999     B  mark                           total 0.002   mean 0.000   median 0.000   least 0.000   most 0.000
+  | 17:04:15.999     B  read back                      total 0.128   mean 0.013   median 0.010   least 0.000   most 0.028
+  | 17:04:16.000     B  THE WHOLE SEQUENCE             total 1.122   mean 0.112   median 0.099   least 0.062   most 0.236
+  | 17:04:16.000     B  seconds no part holds          total 0.000   mean 0.000   median 0.000   least 0.000   most 0.000
+  | 17:04:16.000  
+  | 17:04:16.011  put back: ResetTemporaryMaterials on every root and ResetAllHidden in 0.011 s
+  | 17:04:17.890  SaveFile into p18-rate.nwf took 1.878 s, 724283 bytes read back off the disk
+  | 17:04:18.223  Document.Clear took 0.333 s, models now 0
+  | 17:04:20.929  TryOpenFile of the saved file returned True after 2.706 s
+  | 17:04:20.931  the document after the reopen: models 4, sets 61, tests 528, results 2939, statuses a person set 0, viewpoints 54
+  | 17:04:20.932  the models after the reopen in the same order as at the open YES
+  | 17:04:20.932  AFTER THE REOPEN, every view of both rounds re-found by its names and read back:
+  | 17:04:20.955     A 01 read in 0.024 s: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 730, at the dim 730, threw 0), red right 2335 of 2335, green right 88 of 88, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:20.958     A 02 read in 0.003 s: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1094, at the dim 1094, threw 0), red right 35 of 35, green right 9 of 9, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:20.958     A 03 read in 0.000 s: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 71 (null 0, no item 0, no colour 48, at the dim 48, threw 0), red right 17 of 17, green right 6 of 6, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:20.988     A 04 read in 0.030 s: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 3126, at the dim 3126, threw 0), red right 24 of 24, green right 3 of 3, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:20.992     A 05 read in 0.003 s: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1113, at the dim 1113, threw 0), red right 23 of 23, green right 2 of 2, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.012     A 06 read in 0.018 s: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 3131, at the dim 3131, threw 0), red right 9 of 9, green right 13 of 13, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.016     A 07 read in 0.003 s: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1119, at the dim 1119, threw 0), red right 16 of 16, green right 3 of 3, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.046     A 08 read in 0.029 s: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 4626 (null 0, no item 0, no colour 4605, at the dim 4605, threw 0), red right 9 of 9, green right 12 of 12, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.075     A 09 read in 0.030 s: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 4626 (null 0, no item 0, no colour 4608, at the dim 4608, threw 0), red right 9 of 9, green right 9 of 9, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.078     A 10 read in 0.003 s: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1067 (null 0, no item 0, no colour 1040, at the dim 1040, threw 0), red right 14 of 14, green right 13 of 13, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.094     B 01 read in 0.015 s: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 730, at the dim 730, threw 0), red right 2335 of 2335, green right 88 of 88, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.100     B 02 read in 0.006 s: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1094, at the dim 1094, threw 0), red right 35 of 35, green right 9 of 9, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.100     B 03 read in 0.000 s: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 71 (null 0, no item 0, no colour 48, at the dim 48, threw 0), red right 17 of 17, green right 6 of 6, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.113     B 04 read in 0.013 s: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 3126, at the dim 3126, threw 0), red right 24 of 24, green right 3 of 3, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.119     B 05 read in 0.006 s: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1113, at the dim 1113, threw 0), red right 23 of 23, green right 2 of 2, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.133     B 06 read in 0.014 s: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 3153 (null 0, no item 0, no colour 3131, at the dim 3131, threw 0), red right 9 of 9, green right 13 of 13, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.136     B 07 read in 0.003 s: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1138 (null 0, no item 0, no colour 1119, at the dim 1119, threw 0), red right 16 of 16, green right 3 of 3, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.163     B 08 read in 0.027 s: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 4626 (null 0, no item 0, no colour 4605, at the dim 4605, threw 0), red right 9 of 9, green right 12 of 12, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.192     B 09 read in 0.029 s: position off 0.000, comments 1, the mark the same YES, Hidden 2 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 4626 (null 0, no item 0, no colour 4608, at the dim 4608, threw 0), red right 9 of 9, green right 9 of 9, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.196     B 10 read in 0.003 s: position off 0.000, comments 1, the mark the same YES, Hidden 3 (not a model root 0) files [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc | 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc] equal to the plan's YES, MaterialOverrides 1067 (null 0, no item 0, no colour 1040, at the dim 1040, threw 0), red right 14 of 14, green right 13 of 13, a wrong colour 0, coloured items not of this view 0. ALL RIGHT YES
+  | 17:04:21.196  
+  | 17:04:21.196  SUMMARY: views 10 a round. Round A into 2847 viewpoints: recorded with no throw 10, read back all right 10. Removal: 12 folders, 2813 viewpoints, in 1.253 s. Round B into 44: recorded with no throw 10, read back all right 10. After the reopen: read 20, all right 20
+  | 17:04:21.196  P18 MEASURED   the whole sequence, seconds a view: round A mean 6.447, median 6.261, the record alone mean 6.403. Round B mean 0.112, median 0.099, the record alone mean 0.076
+  | 17:04:21.196  P19 YES   every recorded view's Hidden read the hidden model roots, each giving its Model.FileName, equal to the plan's hidden models: live 20 of 20, after the reopen 20 of 20
+  | 17:04:21.196  probe finished
+  the saved copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-rate-20261007-170120\p18-rate.nwf", 724283 bytes, sha256 C6784F82BF120614B9F4E72ECDB1ABBEE51C59140CB759C35F77F7CFF6543B74
+
+==== STEP 6. Quit through the API ====
+  17:04:22.619  t+181.8s  Dispose RETURNED after 0.73 s
+  17:04:29.004  t+188.2s  pid 49396 state gone, 6.4 s after Dispose returned, not forced
+
+==== FINALLY ====
+  17:04:29.010  t+188.2s  pid 49396 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 266, longest pass 11756 ms, longest gap between the starts of two passes 12259 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  17:01:22.211  t+1.4s  watchdog started
+  17:01:29.097  t+8.3s  Roamer pid 49396 seen with no readable start time, looked at again at the next pass
+  17:01:37.459  t+16.7s  new process Roamer pid 49396, parent 1164 svchost.exe, started 17:01:28.823, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  17:01:37.549  t+16.8s  Roamer 49396 visible top level windows: none
+  17:02:18.742  t+58.0s  new process AdskLicensingAgent pid 47876, parent 49396 Roamer.exe, started 17:02:06.543, command line holds the word embedding or automation: no
+  17:02:25.726  t+64.9s  new process AdskLicensingAgent pid 51556, parent 49396 Roamer.exe, started 17:02:07.360, command line holds the word embedding or automation: no
+  17:02:40.976  t+80.2s  new process AdskLicensingInstHelper pid 42536, parent 26096 GenuineService.exe, started 17:02:34.321, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  17:02:41.031  t+80.3s  Roamer 49396 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  17:02:44.319  t+83.5s  Roamer 49396 visible top level windows: none
+  17:02:54.252  t+93.5s  Roamer 49396 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  17:02:55.896  t+95.1s  Roamer 49396 visible top level windows: none
+  17:02:57.016  t+96.2s  Roamer 49396 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  17:02:59.929  t+99.2s  Roamer 49396 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;90477a3d-9df0-4fe7-8936-d50d4bcf7c5b]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  17:03:02.234  t+101.5s  Roamer 49396 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;90477a3d-9df0-4fe7-8936-d50d4bcf7c5b]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  17:03:04.526  t+103.7s  Roamer 49396 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  17:03:25.238  t+124.5s  new process AdskLicensingInstHelper pid 35428, parent 26096 GenuineService.exe, started 17:03:18.718, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  17:04:16.489  t+175.7s  Roamer 49396 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p18-rate.nwf - Autodesk Navisworks Manage 2025"
+  17:04:17.634  t+176.9s  Roamer 49396 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;66f79d75-974c-4d54-8b81-1fda491974de]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p18-rate.nwf - Autodesk Navisworks Manage 2025"
+  17:04:18.195  t+177.4s  Roamer 49396 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p18-rate.nwf - Autodesk Navisworks Manage 2025"
+  17:04:18.783  t+178.0s  Roamer 49396 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  17:04:19.351  t+178.6s  Roamer 49396 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;2e716c8f-0443-47b8-b258-f67f120ddcec]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p18-rate.nwf - Autodesk Navisworks Manage 2025"
+  17:04:21.029  t+180.3s  Roamer 49396 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p18-rate.nwf - Autodesk Navisworks Manage 2025"
+  17:04:22.232  t+181.5s  Roamer 49396 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  17:04:22.790  t+182.0s  Roamer 49396 visible top level windows: none
+  17:04:29.308  t+188.5s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 49396, parent 1164 svchost.exe: exited
+  AdskLicensingAgent pid 47876, parent 49396 Roamer.exe: STILL RUNNING
+  AdskLicensingAgent pid 51556, parent 49396 Roamer.exe: exited
+  AdskLicensingInstHelper pid 42536, parent 26096 GenuineService.exe: exited
+  AdskLicensingInstHelper pid 35428, parent 26096 GenuineService.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40631684692700  new QWord 40633470178374
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 93  new DWord 94
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 152  new DWord 153
+  22.0\CER\22.5.1433.58  uptime  old QWord 2353627343750  new QWord 2355379375000
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\GlobalOptions\tools\clash\teststab\testdetails  height  old String "1 353.6000000000000227374"  new String "1 354.0000000000000000000"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,144,77,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "LcOpNwcPlugin"  new String "lcodpnwf"
+  22.0\Recent File List\1  DisplayName  old String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"  new String "p18-rate.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134290938074132508  new QWord 134358554592694783
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-rate-20261007-170120\p18-rate.nwf"
+  22.0\Recent File List\10  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134290938039044021  new QWord 134290938046297945
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc, sha1 B1CCD34DBC72>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>
+  22.0\Recent File List\2  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134290938070616743  new QWord 134358553820242087
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-rate-20261007-170120\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"  new String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"
+  22.0\Recent File List\3  LastOpened  old QWord 134290938066994697  new QWord 134290938074132508
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>  new String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>
+  22.0\Recent File List\4  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"  new String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134290938062820552  new QWord 134290938070616743
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>
+  22.0\Recent File List\5  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134290938058967255  new QWord 134290938066994697
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>
+  22.0\Recent File List\6  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134290938054115696  new QWord 134290938062820552
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>
+  22.0\Recent File List\7  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134290938049614120  new QWord 134290938058967255
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>
+  22.0\Recent File List\8  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134290938046297945  new QWord 134290938054115696
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>
+  22.0\Recent File List\9  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134290938042577701  new QWord 134290938049614120
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>
+  registry: 38 values or keys differ from the backup
+  registry: 38 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 68875 bytes, sha256 5771E12A2A08, written 2026-10-07 16:28:10  new 70126 bytes, sha256 6F1B8DD4E443, written 2026-10-07 17:04:22
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 CFB225D1EB92, written 2026-10-07 16:28:10  new 40079 bytes, sha256 8962B892509A, written 2026-10-07 17:04:22
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 0944C1001095FA95F5AE8887F79450C51EDE836D47F9A38DE3982BB525FB4F37, the same as before the start
+---- the work folder at the end, sorted by name ----
+  1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf  41317271 bytes
+  hkcu-navisworks-manage-22.0-before.reg  123148 bytes
+  mypid.txt  36 bytes
+  p18-rate.nwf  724283 bytes
+  plugin-output.txt  36257 bytes
+  ViewpointProbe.dll  358400 bytes
+  watch.txt  3972 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-07 17:04:35, 195 s in all

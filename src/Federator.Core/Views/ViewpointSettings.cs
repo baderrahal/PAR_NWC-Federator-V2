@@ -9,26 +9,19 @@ namespace Federator.Core.Views
     /// <summary>
     /// Every number and word the saved views are shaped by, the rule for every number that
     /// shapes a run. Since Q114 a view is one per clash test of its open clashes, in a folder
-    /// by priority and team pair, F114. The per clash words below them, the seven codes, the
-    /// name separator and the cap per test, serve the per clash plan until the add-in pass of
-    /// F114 moves the builder onto the per test plan, and the name separator then reads only
-    /// the per clash views of earlier runs.
+    /// by priority and team pair, F114. The per clash words below them, the name separator and
+    /// the unknown word, serve LegacyClashView, which knows the per clash views of earlier runs
+    /// by their shape, and the seven codes serve the coverage's reading of a set name's code.
     /// </summary>
     public sealed class ViewpointSettings
     {
         /// <summary>
-        /// The disciplines whose large items get a sub group of their own. The ISO 19650
-        /// codes for Mechanical and Electrical, which is where pipes, ducts and cable trays
-        /// live. It is a SETTING and not a constant, because another project may code its
-        /// disciplines differently and nothing in this code decides that for them.
-        /// </summary>
-        public static readonly string[] DefaultSubGroupDisciplines = { "ME", "EL" };
-
-        /// <summary>
-        /// The discipline codes a set name can carry, F85. The seven this project uses:
-        /// Architecture, Structure, Mechanical, Fire fighting, Plumbing, Drainage and
+        /// The discipline codes a set name can carry, F85, read by the coverage through
+        /// Teams.CodeOf.Set where no team map's codes are handed in. The seven this project
+        /// uses: Architecture, Structure, Mechanical, Fire fighting, Plumbing, Drainage and
         /// Electrical. A SETTING and not a constant, because another project codes its
-        /// disciplines differently and nothing in this code decides that for them.
+        /// disciplines differently and nothing in this code decides that for them. The views
+        /// themselves read the team map's codes and the group's own, F131 and F114.
         /// </summary>
         public static readonly string[] DefaultDisciplineCodes =
             { "AR", "ST", "ME", "FF", "PL", "DR", "EL" };
@@ -43,18 +36,20 @@ namespace Federator.Core.Views
         public const string DefaultPairSeparator = " vs ";
 
         /// <summary>
-        /// The pair folder for a clash where a side's set name carries no code this tool
-        /// knows. The client's own file holds one: BLD-Security Devices breaks the pattern
-        /// its siblings follow, so it has no code in the place the others carry one. The
-        /// clash still gets a viewpoint and the folder SAYS the code is unknown rather
-        /// than guessing at one. The word is the team map's, set once, F131.
+        /// The word a pair folder of F85's per clash viewpoints carried for a side whose set
+        /// name carried no code, read by LegacyClashView to know those viewpoints again, F114.
+        /// The word is the team map's, set once, F131, and the views of F114 write it through
+        /// TeamPair for a side whose team reads UNKNOWN.
         /// </summary>
         public const string DefaultUnknownDiscipline = TeamMapSettings.DefaultUnknownTeam;
 
         /// <summary>The folder layer 1 uses for a test the priority file says nothing about. The words are Priorities.Words, named once, A13.</summary>
         public static readonly string DefaultNoPriorityFolder = Priorities.Words(ClashPriority.None);
 
-        /// <summary>What goes between the test name and the clash name in a viewpoint name.</summary>
+        /// <summary>
+        /// What went between the test name and the clash name in a per clash viewpoint F85
+        /// wrote, read only to know those viewpoints again, F114, with LegacyClashPrefix.
+        /// </summary>
         public const string DefaultNameSeparator = "  ";
 
         /// <summary>
@@ -144,11 +139,21 @@ namespace Federator.Core.Views
         public const int DefaultTreeLinesInLog = 300;
 
         /// <summary>
-        /// Whether a folder the tool removes takes every view under it in the one call. UNKNOWN
-        /// until probe P14 measures it, so false, one view at a time from the end, is the
-        /// default that cannot remove more than was judged.
+        /// Whether a folder the tool removes takes every view under it in the one call. TRUE,
+        /// MEASURED by probe P14 on 2026-10-07, docs\history\scan.md 5z-v: RemoveAt(parent, index)
+        /// on the AR vs AR folder took it and all 2617 viewpoints in it in 0.174 s, where one view
+        /// at a time took 20.012 s, and every other item kept its place through a save and a
+        /// reopen. False asks for one view at a time from the end, without a build.
         /// </summary>
-        public const bool DefaultFolderGoesWithChildren = false;
+        public const bool DefaultFolderGoesWithChildren = true;
+
+        /// <summary>
+        /// Who the mark's comment says wrote it, the author Document.CreateCommentWithUniqueId
+        /// takes, P9. The tool and never a person, so a person reading the Comments window sees
+        /// who put it there. The judge reads the body alone, so the author is a word a project
+        /// may change and nothing turns on it.
+        /// </summary>
+        public const string DefaultMarkAuthor = "Parsons NWC Federator";
 
         /// <summary>
         /// How often, in seconds, the VIEWS step writes a progress line to the log, FR-071. Set
@@ -163,11 +168,11 @@ namespace Federator.Core.Views
             FramingMarginMillimetres = DefaultFramingMarginMillimetres;
             MarkSentence = DefaultMarkSentence;
             MarkTag = DefaultMarkTag;
+            MarkAuthor = DefaultMarkAuthor;
             LegacyClashPrefix = DefaultLegacyClashPrefix;
             TreeLinesInLog = DefaultTreeLinesInLog;
             FolderGoesWithChildren = DefaultFolderGoesWithChildren;
             ProgressEverySeconds = DefaultProgressEverySeconds;
-            SubGroupDisciplines = new List<string>(DefaultSubGroupDisciplines);
             Sizes = new SizeSettings();
             DisciplineCodes = new List<string>(DefaultDisciplineCodes);
             SetNameSeparator = DefaultSetNameSeparator;
@@ -175,7 +180,6 @@ namespace Federator.Core.Views
             UnknownDiscipline = DefaultUnknownDiscipline;
             NoPriorityFolder = DefaultNoPriorityFolder;
             NameSeparator = DefaultNameSeparator;
-            MaxPerTest = 0;
             CameraReadBackTolerance = DefaultCameraReadBackTolerance;
             DimTransparency = DefaultDimTransparency;
             ColoursTheTwoItems = DefaultColoursTheTwoItems;
@@ -195,6 +199,9 @@ namespace Federator.Core.Views
 
         /// <summary>The start of the mark's fingerprint line.</summary>
         public string MarkTag { get; set; }
+
+        /// <summary>Who the mark's comment names as its author, the tool.</summary>
+        public string MarkAuthor { get; set; }
 
         /// <summary>What sat between the test name and the clash number in an F85 viewpoint.</summary>
         public string LegacyClashPrefix { get; set; }
@@ -255,7 +262,7 @@ namespace Federator.Core.Views
             get { return DimTransparency > 0.0 && DimTransparency < 1.0; }
         }
 
-        /// <summary>The discipline codes a set name can carry, F85.</summary>
+        /// <summary>The discipline codes a set name can carry, F85, read by the coverage.</summary>
         public IList<string> DisciplineCodes { get; set; }
 
         /// <summary>What separates the parts of a set name.</summary>
@@ -264,50 +271,17 @@ namespace Federator.Core.Views
         /// <summary>What goes between the two codes of a pair folder.</summary>
         public string PairSeparator { get; set; }
 
-        /// <summary>What a code this tool does not know reads as in a folder name.</summary>
+        /// <summary>What a side with no known code read as in an F85 pair folder, read to know those viewpoints again.</summary>
         public string UnknownDiscipline { get; set; }
 
         /// <summary>The layer 1 folder for a test the priority file says nothing about.</summary>
         public string NoPriorityFolder { get; set; }
 
-        /// <summary>What goes between the test name and the clash name.</summary>
+        /// <summary>What went between the test name and the clash name in an F85 viewpoint.</summary>
         public string NameSeparator { get; set; }
 
-        /// <summary>
-        /// How many viewpoints one test may write, or zero for no cap. Off by default and
-        /// a SETTING, the same shape and the same reason the images cap has: one artefact
-        /// per clash across 1830 tests is how a run stops fitting in forty five minutes.
-        /// </summary>
-        public int MaxPerTest { get; set; }
-
-        /// <summary>Which disciplines carry a sub group for their large items.</summary>
-        public IList<string> SubGroupDisciplines { get; set; }
-
-        /// <summary>The threshold and the property names the sub group is built on.</summary>
+        /// <summary>The threshold and the property names the size folder is built on.</summary>
         public SizeSettings Sizes { get; set; }
-
-        /// <summary>
-        /// Whether this discipline gets a sub group. Matched Ordinal and never trimmed or
-        /// cased, because a discipline code is read off a file name and every other
-        /// comparison in this tool treats it exactly as it was read.
-        /// </summary>
-        public bool HasSubGroup(string discipline)
-        {
-            if (string.IsNullOrEmpty(discipline) || SubGroupDisciplines == null)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < SubGroupDisciplines.Count; i++)
-            {
-                if (string.Equals(SubGroupDisciplines[i], discipline, StringComparison.Ordinal))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         /// <summary>
         /// What the large items sub folder is called. Built from the threshold, so the

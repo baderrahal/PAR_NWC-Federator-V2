@@ -1,0 +1,208 @@
+MACHINE   [machine]   2026-10-05 13:32:31
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 50796
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-test-remove.ps1", sha256 8FCE6BF98EE3D43217AC8537EFA54BE91B2D1B49291C38C8E45115D454629A4B
+GUARD     tools\loop\nw-guard.ps1, sha256 EFB1B698DBDF67ADAF34D3FDC9CAC78893BF7C88F74034D096746D131FB71CEA
+PROCESS   powershell.exe pid 50796, started to run -File C:\Users\p003653k\AppData\Local\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-test-remove.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 514
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\test-remove-20261005-133231" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\test-remove-20261005-133231\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123320 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 202 AutoSave files listed and not copied
+  the tool's own logs folder listed: 38 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF "%LOCALAPPDATA%\NwcFederatorLoop\probes\mirror-swap-20261005-125658\p1-copy-with-swap.nwf", 41319419 bytes, sha256 34831A9E687D7C02A7B2F823BAEB47A22B4F66E44E60C60736855C01E4F17F98
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\test-remove-20261005-133231\p1-copy-with-swap.nwf", sha256 matches
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\bin\Release\net48\ViewpointProbe.dll", 136192 bytes, written 2026-10-05 13:30:50, sha256 F04297EF994294BCB74C2E77E148388E66EFD02A1DC59A4BD7347CD25FC1FB5E, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  13:32:38.534  t+6.9s  calling new NavisworksApplication()
+  13:34:06.552  t+94.9s  the constructor RETURNED after 88.01 s
+  Roamer processes new since step 2: 1
+    pid 38964, started 13:32:38.619, parent 1392 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 38964, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 38964, started 2026-10-05 13:32:38.619, start ticks UTC 639267931586190279
+  13:34:28.648  t+117.0s  Visible set True, read back True
+  visible top level windows of 38964: 2, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard"
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  13:34:29.367  t+117.7s  AddPluginAssembly RETURNED after 0.073 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode testremove on the copy ====
+  13:34:29.375  t+117.7s  calling ExecuteAddInPlugin(ViewpointProbe.PARS, testremove, the plugin's output file, the copy, "BLD-ST-Framing-vs-BLD-ST-Columns P1 swap", the save path)
+  13:34:54.784  t+143.1s  ExecuteAddInPlugin RETURNED 0 after 25.41 s
+  visible top level windows of 38964: 2, hidden: 86, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p2-after-remove.nwf - Autodesk Navisworks Manage 2025"
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Sets" "Standard" "Static" "-" "Sets"
+---- the plugin's output, every line ----
+  | 13:34:29.457  probe started, mode testremove, 3 file(s)
+  | 13:34:29.467  TestsRemoveAt and TestsRemove on this install, read by reflection:
+  | 13:34:29.467     Void TestsRemoveAt(GroupItem parent, Int32 index)
+  | 13:34:29.467     Void TestsRemoveAt(Int32 index)
+  | 13:34:29.467     Void TestsRemove(GroupItem parent, SavedItem item)
+  | 13:34:29.468     Void TestsRemove(ClashTest test)
+  | 13:34:29.468  opening p1-copy-with-swap.nwf
+  | 13:34:36.781  TryOpenFile returned True after 7.312 s
+  | 13:34:36.783  tests named "BLD-ST-Framing-vs-BLD-ST-Columns P1 swap": 1
+  | 13:34:36.783  its address 528
+  | 13:34:36.786  THE TEST TO BE REMOVED: "BLD-ST-Framing-vs-BLD-ST-Columns P1 swap"
+  | 13:34:36.786     type HardConservative, tolerance 0.0820209974, merge composites True, status Complete, last run set, ignore rules 0, simulation None
+  | 13:34:36.819     side A: sets "BLD-ST-Columns", explicit items False, items selected 8, self intersect False, primitive types Triangles
+  | 13:34:36.844     side B: sets "BLD-ST-Framing", explicit items False, items selected 27, self intersect False, primitive types Triangles
+  | 13:34:36.853     its census line: BLD-ST-Framing-vs-BLD-ST-Columns P1 swap   type HardConservative, tolerance 0.0820209974, status Complete, results 27, New 27, names and statuses sha256 ABC197D1A53B
+  | 13:34:36.894  BEFORE the remove: models 4, set tree items 69 of which sets 61, test tree items 529 of which tests 529, results 2966, results not New 25, viewpoint tree items 2869 of which viewpoints 2847
+  | 13:34:36.896  the parent resolved fresh: "TestRoot", a ClashTestFolder, 529 children, the child at 528 reads "BLD-ST-Framing-vs-BLD-ST-Columns P1 swap", resolve and check took 0.001 s
+  | 13:34:36.917  TestsRemoveAt(parent, 528) RETURNED after 0.022 s
+  | 13:34:36.919  tests named "BLD-ST-Framing-vs-BLD-ST-Columns P1 swap" after the call: 0
+  | 13:34:36.941  AFTER the remove, before any save: models 4, set tree items 69 of which sets 61, test tree items 528 of which tests 528, results 2939, results not New 25, viewpoint tree items 2869 of which viewpoints 2847
+  | 13:34:36.945     after the remove: models 4 against 4 wanted, lines that differ 0
+  | 13:34:36.945     after the remove: sets 69 against 69 wanted, lines that differ 0
+  | 13:34:36.946     after the remove: viewpoints 2869 against 2869 wanted, lines that differ 0
+  | 13:34:36.946     after the remove: tests 528 against 528 wanted, the removed test's line found in the earlier list True, lines that differ 0
+  | 13:34:36.947     after the remove: results 2939 against 2939 wanted, the same
+  | 13:34:47.560  SaveFile into p2-after-remove.nwf took 10.613 s, 41317293 bytes read back off the disk
+  | 13:34:48.360  Document.Clear took 0.801 s, models now 0, tests now 0
+  | 13:34:54.748  TryOpenFile of the saved file returned True after 6.388 s
+  | 13:34:54.749  tests named "BLD-ST-Framing-vs-BLD-ST-Columns P1 swap" after the reopen: 0
+  | 13:34:54.779  AFTER a save, a clear and a reopen: models 4, set tree items 69 of which sets 61, test tree items 528 of which tests 528, results 2939, results not New 25, viewpoint tree items 2869 of which viewpoints 2847
+  | 13:34:54.780     after the reopen: models 4 against 4 wanted, lines that differ 0
+  | 13:34:54.780     after the reopen: sets 69 against 69 wanted, lines that differ 0
+  | 13:34:54.780     after the reopen: viewpoints 2869 against 2869 wanted, lines that differ 0
+  | 13:34:54.780     after the reopen: tests 528 against 528 wanted, the removed test's line found in the earlier list True, lines that differ 0
+  | 13:34:54.780     after the reopen: results 2939 against 2939 wanted, the same
+  | 13:34:54.780     the reopen against the state after the remove: models 4 against 4 wanted, lines that differ 0
+  | 13:34:54.781     the reopen against the state after the remove: sets 69 against 69 wanted, lines that differ 0
+  | 13:34:54.781     the reopen against the state after the remove: viewpoints 2869 against 2869 wanted, lines that differ 0
+  | 13:34:54.781     the reopen against the state after the remove: tests 528 against 528 wanted, lines that differ 0
+  | 13:34:54.781     the reopen against the state after the remove: results 2939 against 2939 wanted, the same
+  | 13:34:54.781  P2 YES   TestsRemoveAt(parent, index) took the one test with its 27 results in 0.022 s, and every model, set, other test, result, status and viewpoint read the same after the call and after a save, a clear and a reopen
+  | 13:34:54.781  probe finished
+
+==== STEP 6. Quit through the API ====
+  13:34:56.134  t+144.5s  Dispose RETURNED after 0.98 s
+  13:35:06.541  t+154.9s  pid 38964 state gone, 10.4 s after Dispose returned, not forced
+
+==== FINALLY ====
+  13:35:06.551  t+154.9s  pid 38964 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 208, longest pass 8930 ms, longest gap between the starts of two passes 9439 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  13:32:32.832  t+1.2s  watchdog started
+  13:32:47.103  t+15.5s  new process Roamer pid 38964, parent 1392 svchost.exe, started 13:32:38.619, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  13:32:47.182  t+15.5s  Roamer 38964 visible top level windows: none
+  13:33:35.327  t+63.7s  new process AdskLicensingAgent pid 51508, parent 38964 Roamer.exe, started 13:33:29.324, command line holds the word embedding or automation: no
+  13:33:44.801  t+73.2s  new process AdskLicensingAgent pid 45468, parent 38964 Roamer.exe, started 13:33:29.916, command line holds the word embedding or automation: no
+  13:33:55.392  t+83.8s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  13:34:03.441  t+91.8s  Roamer 38964 visible top level windows: none
+  13:34:24.665  t+113.0s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "" text: and 10 visible children not read, because the 2 s one pass may spend reading children was spent
+  13:34:25.260  t+113.6s  Roamer 38964 visible top level windows: none
+  13:34:26.517  t+114.9s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective"
+  13:34:28.659  t+117.0s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard"
+  13:34:29.268  t+117.6s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  13:34:31.373  t+119.7s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  13:34:33.479  t+121.8s  Roamer 38964 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;c2910199-14d0-4788-b94a-2088c5df7a09]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  13:34:35.650  t+124.0s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" and 6 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p1-copy-with-swap.nwf - Autodesk Navisworks Manage 2025" | [HwndWrapper[Roamer.exe;ProgressDialog;c2910199-14d0-4788-b94a-2088c5df7a09]] "Working..." text: 
+  13:34:37.751  t+126.1s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p1-copy-with-swap.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent
+  13:34:39.336  t+127.7s  Roamer 38964 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;aebdd2ad-ec10-4e1c-b159-8afbcf0c4f37]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p1-copy-with-swap.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: 
+  13:34:45.645  t+134.0s  Roamer 38964 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;aebdd2ad-ec10-4e1c-b159-8afbcf0c4f37]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p2-after-remove.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: 
+  13:34:48.404  t+136.8s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p2-after-remove.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard"
+  13:34:50.489  t+138.8s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  13:34:52.517  t+140.9s  Roamer 38964 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;aef79f5c-fd8e-4f57-8606-4a7949f7cbf1]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "-" "Sets" "-" "Sets" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  13:34:54.576  t+142.9s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p2-after-remove.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [HwndWrapper[Roamer.exe;ProgressDialog;aef79f5c-fd8e-4f57-8606-4a7949f7cbf1]] "Working..." text: 
+  13:34:55.643  t+144.0s  Roamer 38964 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p2-after-remove.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard"
+  13:34:56.198  t+144.6s  Roamer 38964 visible top level windows: none
+  13:35:06.654  t+155.0s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 38964, parent 1392 svchost.exe: exited
+  AdskLicensingAgent pid 51508, parent 38964 Roamer.exe: exited
+  AdskLicensingAgent pid 45468, parent 38964 Roamer.exe: STILL RUNNING
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\AutoRecover  FileWas  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>  new String ""
+  22.0\AutoRecover  ID  old DWord 47204  new DWord 0
+  22.0\AutoRecover  LastSaved  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave115.nwf, sha1 799DBE31D042>  new String ""
+  22.0\AutoRecover  Time  old QWord 1791115744  new QWord 0
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40809772447973  new QWord 40811234407694
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 94  new DWord 95
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 154  new DWord 155
+  22.0\CER\22.5.1433.58  uptime  old QWord 2412445468750  new QWord 2413819531250
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,144,77,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "lcodpody"  new String "lcodpnwf"
+  22.0\Recent File List\1  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"  new String "p2-after-remove.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134355877224561124  new QWord 134356700925878033
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\test-remove-20261005-133231\p2-after-remove.nwf"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134355688021584428  new QWord 134355688037141969
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc, sha1 E0ADB5881390>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"  new String "p1-copy-with-swap.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134355851862024337  new QWord 134356700741647687
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\test-remove-20261005-133231\p1-copy-with-swap.nwf"
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  LastOpened  old QWord 134355688077859683  new QWord 134355877224561124
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\4  LastOpened  old QWord 134355688069609653  new QWord 134355851862024337
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134355688061539629  new QWord 134355688077859683
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134355688053453579  new QWord 134355688069609653
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134355688045001624  new QWord 134355688061539629
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134355688037141969  new QWord 134355688053453579
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134355688029411525  new QWord 134355688045001624
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc, sha1 947D2594C4F9>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>
+  registry: 40 values or keys differ from the backup
+  registry: 40 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 67617 bytes, sha256 5AC073CD8DAF, written 2026-10-05 13:05:05  new 68868 bytes, sha256 44E6BB9A0DDD, written 2026-10-05 13:34:55
+  file CHANGED LastSession.xml  old 39513 bytes, sha256 B94B4FFCF6AA, written 2026-10-05 12:59:12  new 39512 bytes, sha256 020F080E17DF, written 2026-10-05 13:34:55
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 34831A9E687D7C02A7B2F823BAEB47A22B4F66E44E60C60736855C01E4F17F98, the same as before the start
+---- the work folder at the end, sorted by name ----
+  hkcu-navisworks-manage-22.0-before.reg  123320 bytes
+  mypid.txt  36 bytes
+  p1-copy-with-swap.nwf  41319419 bytes
+  p2-after-remove.nwf  41317293 bytes
+  plugin-output.txt  4404 bytes
+  ViewpointProbe.dll  136192 bytes
+  watch.txt  6038 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-05 13:35:15, 163 s in all

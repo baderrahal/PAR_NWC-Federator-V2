@@ -10,7 +10,7 @@ namespace Federator.Core.Tests
     /// <summary>
     /// F114, Q114 point 19, the test that proves the tree: no team pair folder holds a test of
     /// another pair, no Over 150mm folder sits outside its own pair, no view shows a model of a
-    /// third team, no clash is in two views and no mirrored test is run, with two checks more,
+    /// third team, no clash is in two views and no mirrored test has a view of this tool's, with two checks more,
     /// that every view not this tool's before is there after and that no per clash viewpoint of
     /// an earlier run is left without a reason. A whole good tree passes, and each check broken
     /// once names what broke it. The VIEWS TREE block lists the tree and the seven lines. A
@@ -324,15 +324,25 @@ namespace Federator.Core.Tests
             Assert.That(Joined(check.Failures), Does.Contain(Walls));
         }
 
+        /// <summary>
+        /// Bader's answer D to Q133: both tests of a mirrored pair are created and run, so a mirror
+        /// among the tests the clash step ran is the ordinary case and never a failure. Check 5
+        /// keeps its second half alone, no mirrored test has a view of this tool's, F114's add-in
+        /// pass. Its first half, no mirrored test run, failed every week on a run that did what
+        /// Bader asked, row F114-K20.
+        /// </summary>
         [Test]
-        public void Check5NamesAMirrorThatWasRun()
+        public void Check5HoldsWhenAMirrorWasRunBecauseBothTestsOfAPairRun()
         {
             ViewsTreeFacts facts = FactsOf(Good("EL", new[] { Walls }));
 
             ViewsTreeCheck check = Check(facts, 5);
 
-            Assert.That(check.Holds, Is.False);
-            Assert.That(Joined(check.Failures), Does.Contain(Walls));
+            Assert.That(facts.TestsRun, Does.Contain(Walls), "the mirror is among the tests run");
+            Assert.That(check.Ran, Is.True);
+            Assert.That(check.Holds, Is.True, Joined(check.Failures));
+            Assert.That(Joined(check.Failures), Does.Not.Contain("was run"));
+            Assert.That(check.Basis, Does.Not.Contain("tests the clash step ran"));
         }
 
         /// <summary>A mirror rule that ran and found no mirror ran the check, and says it proves nothing here.</summary>
@@ -363,8 +373,8 @@ namespace Federator.Core.Tests
 
             Assert.That(check.Ran, Is.False);
             Assert.That(check.Holds, Is.False);
-            Assert.That(check.NotRunWhy, Is.EqualTo("no mirror rule was handed to the plan, so whether a mirrored test ran or has a view is UNKNOWN"));
-            Assert.That(block, Does.Contain("\nCHECK 5  no mirrored test is run or has a view  DID NOT RUN, no mirror rule"));
+            Assert.That(check.NotRunWhy, Is.EqualTo("no mirror rule was handed to the plan, so whether a mirrored test has a view of this tool's is UNKNOWN"));
+            Assert.That(block, Does.Contain("\nCHECK 5  no mirrored test has a view of this tool's  DID NOT RUN, no mirror rule"));
             Assert.That(block, Does.Contain("\n6 of 7 hold, 1 did not run"));
             Assert.That(block, Does.Not.Contain("7 of 7 hold"));
             Assert.That(block, Does.Not.Contain("FAILED"));
@@ -404,7 +414,7 @@ namespace Federator.Core.Tests
 
             Assert.That(check.Ran, Is.True);
             Assert.That(check.Holds, Is.True, Joined(check.Failures));
-            Assert.That(check.Basis, Is.EqualTo("1 mirrors against the 2 tests the clash step ran and the 4 views of the walk after"));
+            Assert.That(check.Basis, Is.EqualTo("1 mirrors against the 4 views of the walk after"));
         }
 
         /// <summary>The breaker's finding 5. The checks that read the walk after did not run with no walk.</summary>
@@ -918,9 +928,12 @@ namespace Federator.Core.Tests
             }
         }
 
-        /// <summary>With a mirror to look for, check 5 run without the tests run or the walk after is a check that did not run for them.</summary>
+        /// <summary>
+        /// With a mirror to look for, check 5 run without the walk after is a check that did not
+        /// run for it. The tests run are not its concern since Q133 D, so their absence is not named.
+        /// </summary>
         [Test]
-        public void Check5RanInPartWithAMirrorAndNoTestsRunOrNoWalk()
+        public void Check5RanInPartWithAMirrorAndNoWalk()
         {
             ViewsTreeFacts facts = FactsOf(Good("EL", new[] { Walls }));
             facts.TestsRun = null;
@@ -932,7 +945,6 @@ namespace Federator.Core.Tests
             Assert.That(check.Holds, Is.False);
             Assert.That(check.NotRead, Is.EqualTo(new[]
             {
-                "the tests the clash step ran, which were not handed in",
                 "the walk of the tree after, which was not handed in"
             }));
         }
@@ -982,10 +994,46 @@ namespace Federator.Core.Tests
             Assert.That(block, Does.Not.Contain("FAILED"));
         }
 
+        /// <summary>
+        /// The breaker's B5 of F114's add-in pass. The after line counts what the removals
+        /// reported, never the inventory's decisions, and a removal refused is counted and named
+        /// as not removed. With no removal results handed in the line says so.
+        /// </summary>
+        [Test]
+        public void TheAfterLineCountsTheRemovalsReportedAndNamesEachNotRemoved()
+        {
+            ViewsTreeFacts facts = FactsOf(Good());
+            ViewNode legacy = new ViewNode(new[] { "ME vs ST" }, Ducts + "  Clash9", false, 0, null, 0, Camera, null, false);
+            ViewNode refused = new ViewNode(new[] { "A", "Structure vs Mechanical" }, Ducts, false, 0, null, 0, Camera, null, false);
+            facts.Removals = new List<RemovalOutcome>
+            {
+                new RemovalOutcome(legacy, InventoryDecision.RemoveLegacy, true, null),
+                new RemovalOutcome(refused, InventoryDecision.RemoveReplaced, false, "it is not at index 0 of its folder any more and 0 of the folder's 2 children match its name, kind and mark")
+            };
+
+            string block = Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0));
+
+            Assert.That(block, Does.Contain("removed 0 at once, 0 this tool's earlier views, 1 per clash viewpoints and 0 folders, as the removals reported, 1 not removed: "
+                + "A/Structure vs Mechanical/" + Ducts + ", it is not at index 0 of its folder any more"));
+
+            facts.Removals = null;
+
+            Assert.That(Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0)), Does.Contain("what was removed is UNKNOWN, no removal results were handed to this block"));
+        }
+
+        /// <summary>
+        /// Check 5 broken through its one half since Q133 D, a view this tool made of a mirror in
+        /// the walk after. A mirror among the tests run broke it before and is the ordinary case now.
+        /// </summary>
         [Test]
         public void AFailedCheckIsAFailedLineNamingWhatBrokeIt()
         {
-            ViewsTreeFacts facts = FactsOf(Good("EL", new[] { Walls }));
+            Tree tree = Good("EL", new[] { Walls });
+            string[] folders = { "B", "Architecture vs Structure" };
+            string earlier = ToolViewMark.StampOf(new DateTime(2026, 9, 28, 10, 0, 0, DateTimeKind.Utc));
+            tree.After.Add(new ViewNode(folders, Walls, false, 0,
+                new[] { ToolViewMark.Body(earlier, folders, Walls, Camera, null, Settings) }, 0, Camera, null, false));
+            ViewsTreeFacts facts = FactsOf(tree);
             string block = Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0));
 
             Assert.That(block, Does.Contain("FAILED CHECK 5"));

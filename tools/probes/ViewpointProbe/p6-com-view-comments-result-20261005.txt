@@ -1,0 +1,190 @@
+ROAMER    Get-Process Roamer before the read: 0 processes
+ASSEMBLY  Autodesk.Navisworks.Interop.ComApi 22.0.0.0   file 22.5.1433.58, 313624 bytes, loaded reflection only: True
+FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Interop.ComApi.dll
+MACHINE   [machine]   2026-10-05 12:14
+
+==== Autodesk.Navisworks.Api.Interop.ComApi.InwOpView
+  public interface, inherits InwOpSavedView, InwBase, attributes ComImportAttribute, GuidAttribute, TypeLibTypeAttribute
+  properties declared on it:
+    property System.Boolean nwReadOnly { get }   dispid 1610743808
+    property System.Boolean nwInvalidated { get }   dispid 1610743809
+    property System.Int32 nwHandle { get }   dispid 1610743810
+    property System.Int32 nwID { get }   dispid 1610743811
+    property System.Int32 nwProcess { get }   dispid 1610743813
+    property System.Int32 nwThread { get }   dispid 1610743814
+    property System.Int32 nwLock { get; set }   dispid 1610743817
+    property System.Boolean nwOwn { get; set }   dispid 1610743819
+    property System.String ObjectName { get }   dispid 1610743821
+    property System.String name { get; set }   dispid 1610809344
+    property Autodesk.Navisworks.Api.Interop.ComApi.nwESavedViewType Type { get }   dispid 1610809346
+    property Autodesk.Navisworks.Api.Interop.ComApi.InwOpAnonView anonview { get; set }   dispid 1610874880
+    property System.Boolean ApplyHideAttribs { get; set }   dispid 1610874882
+    property System.Boolean ApplyMaterialAttribs { get; set }   dispid 1610874884
+  methods declared on it, accessors left out:
+    public System.Object Xtension(System.Object vIn)   dispid 1610743812
+    public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)   dispid 991
+    public System.Void nwInvalidate()   dispid 992
+    public System.Object Copy()   dispid 1610743822
+    public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+
+==== Autodesk.Navisworks.Api.Interop.ComApi.InwOpSavedView
+  public interface, inherits InwBase, attributes ComImportAttribute, TypeLibTypeAttribute, GuidAttribute
+  properties declared on it:
+    property System.Boolean nwReadOnly { get }   dispid 1610743808
+    property System.Boolean nwInvalidated { get }   dispid 1610743809
+    property System.Int32 nwHandle { get }   dispid 1610743810
+    property System.Int32 nwID { get }   dispid 1610743811
+    property System.Int32 nwProcess { get }   dispid 1610743813
+    property System.Int32 nwThread { get }   dispid 1610743814
+    property System.Int32 nwLock { get; set }   dispid 1610743817
+    property System.Boolean nwOwn { get; set }   dispid 1610743819
+    property System.String ObjectName { get }   dispid 1610743821
+    property System.String name { get; set }   dispid 1610809344
+    property Autodesk.Navisworks.Api.Interop.ComApi.nwESavedViewType Type { get }   dispid 1610809346
+  methods declared on it, accessors left out:
+    public System.Object Xtension(System.Object vIn)   dispid 1610743812
+    public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)   dispid 991
+    public System.Void nwInvalidate()   dispid 992
+    public System.Object Copy()   dispid 1610743822
+    public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+
+==== Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl
+  public interface, inherits InwCollBase, IEnumerable, attributes ComImportAttribute, DefaultMemberAttribute, TypeLibTypeAttribute, GuidAttribute
+  properties declared on it:
+    property System.Boolean ReadOnly { get }   dispid 1610743808
+    property System.Int32 Count { get }   dispid 1610743809
+    property System.Object Item[System.Object vIndex] { get; set }   dispid 0
+  methods declared on it, accessors left out:
+    public System.Collections.IEnumerator GetEnumerator()   dispid -4
+    public System.Void Clear()   dispid 1610743813
+    public System.Void Remove(System.Int32 ndx)   dispid 1610743814
+    public System.Void RemoveLast()   dispid 1610743815
+    public System.Void Replace(System.Int32 ndx, System.Object p_newVal)   dispid 1610743816
+    public System.Void Insert(System.Int32 ndx, System.Object p_newVal)   dispid 1610743817
+    public System.Void Add(System.Object p_newVal)   dispid 1610743818
+    public System.Object Last()   dispid 1610743819
+
+==== every type in the assembly whose name holds Comment
+  Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl
+  Autodesk.Navisworks.Api.Interop.ComApi.InwOpComment
+  Autodesk.Navisworks.Api.Interop.ComApi.InwOpComment2
+  Autodesk.Navisworks.Api.Interop.ComApi.InwOpComment3
+  Autodesk.Navisworks.Api.Interop.ComApi.nwECommentStatus
+
+==== Autodesk.Navisworks.Api.Interop.ComApi.InwOpComment
+  public interface, inherits InwBase, attributes ComImportAttribute, GuidAttribute, TypeLibTypeAttribute
+  properties declared on it:
+    property System.Boolean nwReadOnly { get }   dispid 1610743808
+    property System.Boolean nwInvalidated { get }   dispid 1610743809
+    property System.Int32 nwHandle { get }   dispid 1610743810
+    property System.Int32 nwID { get }   dispid 1610743811
+    property System.Int32 nwProcess { get }   dispid 1610743813
+    property System.Int32 nwThread { get }   dispid 1610743814
+    property System.Int32 nwLock { get; set }   dispid 1610743817
+    property System.Boolean nwOwn { get; set }   dispid 1610743819
+    property System.String ObjectName { get }   dispid 1610743821
+    property System.String Body { get; set }   dispid 1610809344
+    property System.String User { get; set }   dispid 1610809346
+    property System.Object Date { get; set }   dispid 1610809348
+  methods declared on it, accessors left out:
+    public System.Object Xtension(System.Object vIn)   dispid 1610743812
+    public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)   dispid 991
+    public System.Void nwInvalidate()   dispid 992
+    public System.Object Copy()   dispid 1610743822
+
+==== Autodesk.Navisworks.Api.Interop.ComApi.InwOpComment2
+  public interface, inherits InwOpComment, InwBase, attributes ComImportAttribute, TypeLibTypeAttribute, GuidAttribute
+  properties declared on it:
+    property System.Boolean nwReadOnly { get }   dispid 1610743808
+    property System.Boolean nwInvalidated { get }   dispid 1610743809
+    property System.Int32 nwHandle { get }   dispid 1610743810
+    property System.Int32 nwID { get }   dispid 1610743811
+    property System.Int32 nwProcess { get }   dispid 1610743813
+    property System.Int32 nwThread { get }   dispid 1610743814
+    property System.Int32 nwLock { get; set }   dispid 1610743817
+    property System.Boolean nwOwn { get; set }   dispid 1610743819
+    property System.String ObjectName { get }   dispid 1610743821
+    property System.String Body { get; set }   dispid 1610809344
+    property System.String User { get; set }   dispid 1610809346
+    property System.Object Date { get; set }   dispid 1610809348
+    property System.Int32 CommentID { get; set }   dispid 1610874880
+  methods declared on it, accessors left out:
+    public System.Object Xtension(System.Object vIn)   dispid 1610743812
+    public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)   dispid 991
+    public System.Void nwInvalidate()   dispid 992
+    public System.Object Copy()   dispid 1610743822
+
+==== Autodesk.Navisworks.Api.Interop.ComApi.InwOpComment3
+  public interface, inherits InwOpComment2, InwOpComment, InwBase, attributes ComImportAttribute, TypeLibTypeAttribute, GuidAttribute
+  properties declared on it:
+    property System.Boolean nwReadOnly { get }   dispid 1610743808
+    property System.Boolean nwInvalidated { get }   dispid 1610743809
+    property System.Int32 nwHandle { get }   dispid 1610743810
+    property System.Int32 nwID { get }   dispid 1610743811
+    property System.Int32 nwProcess { get }   dispid 1610743813
+    property System.Int32 nwThread { get }   dispid 1610743814
+    property System.Int32 nwLock { get; set }   dispid 1610743817
+    property System.Boolean nwOwn { get; set }   dispid 1610743819
+    property System.String ObjectName { get }   dispid 1610743821
+    property System.String Body { get; set }   dispid 1610809344
+    property System.String User { get; set }   dispid 1610809346
+    property System.Object Date { get; set }   dispid 1610809348
+    property System.Int32 CommentID { get; set }   dispid 1610874880
+    property Autodesk.Navisworks.Api.Interop.ComApi.nwECommentStatus status { get; set }   dispid 1610940416
+  methods declared on it, accessors left out:
+    public System.Object Xtension(System.Object vIn)   dispid 1610743812
+    public System.Void nwInit(System.Int32 nw_ptr, System.Int32 nw_lock)   dispid 991
+    public System.Void nwInvalidate()   dispid 992
+    public System.Object Copy()   dispid 1610743822
+
+==== Autodesk.Navisworks.Api.Interop.ComApi.nwECommentStatus
+  public enum, inherits IComparable, IFormattable, IConvertible, attributes 
+  properties declared on it:
+  methods declared on it, accessors left out:
+    eCommentStatus_NEW = 0
+    eCommentStatus_ACTIVE = 1
+    eCommentStatus_APPROVED = 2
+    eCommentStatus_RESOLVED = 3
+
+==== nwEObjectType, every value whose name holds Comment, View or Saved
+  eObjectType_nwNvViewPoint = 4
+  eObjectType_nwOpAnimView = 6
+  eObjectType_nwOpAnonView = 7
+  eObjectType_nwOpComment = 8
+  eObjectType_nwOpCutView = 9
+  eObjectType_nwOpFolderView = 10
+  eObjectType_nwOpView = 11
+
+==== InwOpState10, every member whose name or types hold Comment, and ObjectFactory
+  public System.Object ObjectFactory(Autodesk.Navisworks.Api.Interop.ComApi.nwEObjectType eType, optional System.Object ovReserved1, optional System.Object ovReserved2)   dispid 1610809359
+
+==== every member of every type whose name, return or parameter types hold Comment, Comment types left out
+  InwOaPublishAttribute   property System.String Comments { get; set }   dispid 1610940430
+  InwOclTestResult   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809362
+  InwOclTestResult2   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809362
+  InwOpAnimView   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+  InwOpCutView   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+  InwOpFolderView   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+  InwOpGroupView   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+  InwOpSavedView   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+  InwOpSelectionSet   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809352
+  InwOpSelectionSet2   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809352
+  InwOpView   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+  InwOpView2   public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+  InwOpView2   public System.Int32 FindTagIDFromCommentID(System.Int32 comment_id)   dispid 1610940416
+
+==== the answer
+  members of InwOpView and the interfaces it inherits that name or return a comment type:
+    InwOpView.public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+    InwOpSavedView.public Autodesk.Navisworks.Api.Interop.ComApi.InwCommentsColl Comments()   dispid 1610809347
+  members of InwCommentsColl that add, insert, replace or set:
+    public System.Void Replace(System.Int32 ndx, System.Object p_newVal)   dispid 1610743816
+    public System.Void Insert(System.Int32 ndx, System.Object p_newVal)   dispid 1610743817
+    public System.Void Add(System.Object p_newVal)   dispid 1610743818
+    property System.Object Item[System.Object vIndex] { get; set }   dispid 0
+  nwEObjectType values that make a comment through ObjectFactory:
+    eObjectType_nwOpComment = 8
+  P6 YES   InwOpView hands out its comments collection, the collection has a member that adds, and ObjectFactory has a comment type to add
+  whether a comment added to a view that is not yet in a folder is kept by InwSavedViewsColl.Add and reads back off SavedItem.Comments: UNKNOWN here, nothing is invoked, P9
+
+ROAMER    Get-Process Roamer after the read: 0 processes

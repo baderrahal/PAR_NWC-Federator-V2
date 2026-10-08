@@ -157,10 +157,10 @@ namespace Federator.Core.Tests
         public void APartEnteredThatCostNothingIsStillNamed()
         {
             ViewsSeconds seconds = new ViewsSeconds(Clock);
-            Spend(seconds, ViewsPart.LookingWhetherThere, 0.0);
+            Spend(seconds, ViewsPart.Framing, 0.0);
             seconds.Ended();
 
-            Assert.That(seconds.Line(), Does.Contain("0.000s looking whether each was already there"));
+            Assert.That(seconds.Line(), Does.Contain("0.000s framing the camera on the clashes"));
         }
 
         [Test]
@@ -268,6 +268,51 @@ namespace Federator.Core.Tests
             Assert.That(seconds.Line(), Is.EqualTo(
                 "VIEWS    the step's seconds went: 0.500s in no part, because no part was entered, "
                 + "of 0.500s from the first clash read to the document put back"));
+        }
+
+        /// <summary>
+        /// The parts of a per test view the add-in pass of F114 times, each a call of its own:
+        /// the frame, the mark, the inventory, the removal and the tree read, in the order a
+        /// view meets them, so the line reads as the step ran.
+        /// </summary>
+        [Test]
+        public void TheAddInPassPartsAreNamedInTheOrderAViewMeetsThem()
+        {
+            ViewsSeconds seconds = new ViewsSeconds(Clock);
+            Spend(seconds, ViewsPart.ReadingTheTree, 1.0);
+            Spend(seconds, ViewsPart.PuttingBack, 1.0);
+            Spend(seconds, ViewsPart.Removing, 1.0);
+            Spend(seconds, ViewsPart.TakingTheInventory, 1.0);
+            Spend(seconds, ViewsPart.ReadingBack, 1.0);
+            Spend(seconds, ViewsPart.Marking, 1.0);
+            Spend(seconds, ViewsPart.AddingTheView, 1.0);
+            Spend(seconds, ViewsPart.MakingTheFolders, 1.0);
+            Spend(seconds, ViewsPart.Framing, 1.0);
+            Spend(seconds, ViewsPart.Dimming, 1.0);
+            seconds.Ended();
+
+            string line = seconds.Line();
+            ViewsPart[] order =
+            {
+                ViewsPart.Dimming, ViewsPart.Framing, ViewsPart.MakingTheFolders, ViewsPart.AddingTheView,
+                ViewsPart.Marking, ViewsPart.ReadingBack, ViewsPart.TakingTheInventory, ViewsPart.Removing,
+                ViewsPart.PuttingBack, ViewsPart.ReadingTheTree
+            };
+
+            for (int i = 1; i < order.Length; i++)
+            {
+                int before = line.IndexOf(ViewsSeconds.Describe(order[i - 1]), StringComparison.Ordinal);
+                int after = line.IndexOf(ViewsSeconds.Describe(order[i]), StringComparison.Ordinal);
+
+                Assert.That(before, Is.GreaterThanOrEqualTo(0), order[i - 1].ToString());
+                Assert.That(after, Is.GreaterThan(before), order[i] + " comes after " + order[i - 1]);
+            }
+
+            Assert.That(ViewsSeconds.Describe(ViewsPart.Framing), Is.EqualTo("framing the camera on the clashes"));
+            Assert.That(ViewsSeconds.Describe(ViewsPart.Marking), Is.EqualTo("marking the view and its folders"));
+            Assert.That(ViewsSeconds.Describe(ViewsPart.TakingTheInventory), Is.EqualTo("taking the inventory of the tree"));
+            Assert.That(ViewsSeconds.Describe(ViewsPart.Removing), Is.EqualTo("removing the views of earlier runs"));
+            Assert.That(ViewsSeconds.Describe(ViewsPart.ReadingTheTree), Is.EqualTo("reading the tree for the VIEWS TREE block"));
         }
 
         [Test]

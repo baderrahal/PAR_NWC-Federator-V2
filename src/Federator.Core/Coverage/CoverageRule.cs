@@ -20,8 +20,9 @@ namespace Federator.Core.Coverage
     /// would read as a coordinates skip.
     ///
     /// A SIDE THAT FOUND NOTHING IS JUDGED BY ITS SET'S CODE, read through the one reader,
-    /// DisciplinePairRule.CodeIn, off the set's own name, until F131 re-points it to the team
-    /// map. The code against the codes of the group's files and of every file of the run says
+    /// Teams.CodeOf.Set, off the set's own name against the codes the views settings list,
+    /// since F114's add-in pass took the pair rule out. The code against the codes of the
+    /// group's files and of every file of the run says
     /// whether the discipline is not in the group, whether the group carries it and the set
     /// still found nothing, or whether no file of the run carries it, FF, PL and DR on this
     /// project, so it is UNKNOWN until the team map. Where both sides found nothing the
@@ -447,7 +448,7 @@ namespace Federator.Core.Coverage
             /// <summary>The code in the set's own name, the end of its locator, or empty where it carries none.</summary>
             internal string CodeOf(string locator)
             {
-                return DisciplinePairRule.CodeIn(ByDesignRule.SetNameIn(locator), settings);
+                return Teams.CodeOf.Set(ByDesignRule.SetNameIn(locator), settings.DisciplineCodes, settings.SetNameSeparator);
             }
 
             internal string GroupWords()

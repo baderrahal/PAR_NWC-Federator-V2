@@ -64,20 +64,42 @@ namespace Federator.Core.Views
             get { return row.Status; }
         }
 
-        /// <summary>
-        /// What the per clash plan is handed for this row, with the size the add-in read off
-        /// the resolved result, or null where none was read.
-        /// </summary>
-        public ClashToPlan ToPlan(SizeVerdict? serviceSize)
+        /// <summary>The set name of the test's left side, the text after the last slash of its locator, read once here.</summary>
+        public string LeftSet
         {
-            return new ClashToPlan(
+            get { return ByDesignRule.SetNameIn(test.LeftLocator); }
+        }
+
+        /// <summary>The set name of the test's right side.</summary>
+        public string RightSet
+        {
+            get { return ByDesignRule.SetNameIn(test.RightLocator); }
+        }
+
+        /// <summary>
+        /// What the per test view plan is handed for this row, F114: the test the report holds
+        /// it under, the clash's name as the workbook writes it, the two set names off the test's
+        /// locators, the row's status and the test's priority, with what the add-in read off the
+        /// resolved result, the size verdict of the larger service where the test's pair carries
+        /// the size folder, the two items' paths, the clash centre and the model each item lives
+        /// in, each null or empty where it was not or could not be read.
+        /// </summary>
+        public ViewClash ToView(
+            SizeVerdict? serviceSize, ItemPath firstItem, ItemPath secondItem, Point3 centre, string firstHome, string secondHome)
+        {
+            return new ViewClash(
                 test.Name,
                 ClashName,
-                ByDesignRule.SetNameIn(test.LeftLocator),
-                ByDesignRule.SetNameIn(test.RightLocator),
+                LeftSet,
+                RightSet,
                 row.Status,
                 test.Priority,
-                serviceSize);
+                serviceSize,
+                firstItem,
+                secondItem,
+                centre,
+                firstHome,
+                secondHome);
         }
     }
 
@@ -118,9 +140,9 @@ namespace Federator.Core.Views
 
     /// <summary>
     /// THE CLASHES OF A TEST ARE THE MERGED REPORT'S ROWS FOR IT, WITH THEIR ROW STATUSES.
-    /// One rule in one place for the per clash views, ClashViewpointPlan, and for the one
-    /// view per test F114's add-in pass will build over the same rows. Rows come in the
-    /// report's order, so two runs of one model give the same tree.
+    /// One rule in one place for the one view per test of F114, TestViewPlan, built over
+    /// these rows since its add-in pass. Rows come in the report's order, so two runs of
+    /// one model give the same tree.
     /// </summary>
     public static class ReportClashes
     {

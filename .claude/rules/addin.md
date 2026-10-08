@@ -230,72 +230,125 @@ well as to pass.
   nothing has touched, and a failure part way through is a fault that stops both. A file is
   removed by its NAME and from the END, because 5x removed the LAST model of four and
   whether removing a middle one shifts the indexes after it is UNKNOWN. Q34
-- ONE SAVED VIEWPOINT PER CLASH goes into the NWF, three folders deep, F85, made after the
-  clash run and before the NWF is saved again so the viewpoints are inside the file the NWD
-  is published from. The plan is Federator.Core.Views.ClashViewpointPlan and nothing about
-  it is decided in the add-in. ViewpointBuilder reads every clash the report holds rows for
-  in one walk, the status, the two set names off the test's locators, the priority off the
-  report, the service size through the same reader the penetration rule uses and the model
-  each clashing item lives in, keeps a COPY of the camera Clash Detective frames the clash
-  with, TestsViewpointForResult, runs the plan over all of them at once, and writes what
-  the plan kept in a second walk. A viewpoint shows the two disciplines of its pair, every
-  model of each, plus the model each clashing item lives in, and hides every other model.
-  It is written through the COM API's saved view with ApplyHideAttribs on, which is the ONE
-  route measured to record both the camera and the hidden state, docs\history\scan.md 5m,
-  after the two .NET routes each recorded half: new SavedViewpoint(Viewpoint) the camera
-  alone, 5j, and CaptureRuntimeOverrides the hidden state and no camera at all, 5l, which
-  is why the first viewpoints run opened every viewpoint on sky. Every written viewpoint is
-  read back three ways before it is counted, that it is there, that its camera sits within
-  ViewpointSettings.CameraReadBackTolerance of the clash camera, and that it carries
-  visibility overrides where it hides a discipline, and one that fails any of the three is
-  FAILED with the reason. The hidden state the document held is read once off a capture
-  that never enters the tree, 5k, and put back when the group's writing ends, whichever
-  way it ends, and read back as hidden. The window's view is never touched. Each viewpoint
-  is written with its own dimming and paint and no other, FR-065: what the viewpoint before
-  left is taken off first, because both are temporary materials on the document, so one
-  whose two items could not both be pointed at carries none and a model hidden for this
-  pair carries no dimming from an earlier one, and the VIEWS lines say the fewest and the
-  most material overrides the dimmed viewpoints read back. Every folder
-  is made outermost first and re-resolved from a fresh RootItem after every AddCopy, which
-  is the shape SetBuilder measured for the sets. A viewpoint already at its path is left
-  exactly as it is and counted as already there, never made again, because a second copy
-  at one path leaves the tree holding both, which is F28's rule for sets. The VIEWS step is
-  timed like every other step and it is the one step allowed to move the viewpoint count,
-  Federator.Core.Diagnostics.CensusRule. Inside it every call the builder and Record make
-  is timed into its own part of Federator.Core.Views.ViewsSeconds, FR-073, so the folders,
-  the view, its COM folder and the add each carry their own seconds. The VIEWS block names five and counts the rest,
-  because a group puts hundreds in. A group whose viewpoints failed is not DONE.
-  THE SWITCH IS THE BOX, F136. Whether a group asks for its viewpoints is Core's
+- ONE VIEW PER CLASH TEST OF ITS OPEN CLASHES goes into the NWF, in folders by priority and
+  team pair, F114's add-in pass, built on 2026-10-08 on the probes P5 to P19 of
+  docs\history\scan.md 5z-h to 5z-z, made after the clash step and before the NWF is saved
+  again so the views are inside the file the NWD is published from. The add-in holds only
+  the calls, and every rule and every word is Core's, core.md ONE VIEW PER CLASH TEST, ONLY
+  WHAT THIS TOOL MADE and THE VIEWS TREE BLOCK. THE ORDER IS THE DESIGN'S S2, so a run that
+  stops part way leaves the old picture or a checked new one and never neither: a fresh walk
+  of the tree, `SavedViewpoints.ReadTree`, walk one, the plan, the views, a fresh walk and the
+  inventory over it, the removals, the document put back, a last fresh walk for the block.
+  WALK ONE KEEPS F132'S SHAPE, THE MIRRORED TESTS below: the rows off the merged report
+  through `ReportClashes.Of`, each resolved by its `RowAddress` through
+  `TestAddress.ResolveIn` and `ResultPath.ResultAt`, never by name off the document, and what
+  each row becomes is `ReportClash.ToView`, a `ViewClash` with the two items' index paths,
+  plain ints and never handles, the clash centre off `ClashResult.Center`, the model each
+  item lives in by the topmost ancestor's `Model.FileName`, 5n, and the size of the larger
+  service through `Penetrations.ServiceSizeOf` ONLY where the test's pair carries the size
+  folder, row F114-K9, so `ViewTeams` is built before the walk. ONLY A TEST READ WHOLE GETS A
+  VIEW, attempt 2 on the breaker's B1: `Federator.Core.Views.TestsRead` keeps per test whether
+  it was found at its address, every IN SCOPE row led to its result and nothing threw in its
+  walk, an in scope row with no recorded place making its test not whole too. Every call is
+  keyed by the REPORT's test name of the row, the kept test for a clash only a mirror found,
+  and a resolve that fails or throws marks every report test among the rows it serves, each
+  test judged once every resolve is done, the second reading's N1, so a kept test is whole
+  only where its own rows and its mirror's were read. A row outside the views' statuses is
+  handed to the plan unread, its status checked before `ResultAt`, so a Resolved row Compact
+  removed never makes its test not read, C1. A test the clash step ran with no row on the
+  report is read whole with no row, `TestsRead.Ran`, N2, and its old view goes as no longer
+  needed. A test whose open rows are ALL result groups gets no view, keeps its old views and
+  is named on one VIEWS line, never counted failed, `TestsRead.OnlyGroups`, F3, the lead's
+  decision that a person's grouping must not cost the group DONE. A test not read whole hands the
+  plan none of its rows, is counted FAILED on the VIEWS BUILT block with why, so the group is
+  not DONE on it, and keeps its views of earlier runs, since the inventory is handed
+  `TestsRead.WholeNames` as the tests read and never the tests the clash step ran, which
+  stay the tree facts' `TestsRun`. The camera is read after the
+  plan for each view's camera clash alone, `TestsViewpointForResult` on a copy, where F85
+  read one per clash. A VIEW OF NOTHING IS NO VIEW, B2: a view none of whose clashing items'
+  models could be read or named a model of the group is counted FAILED with
+  `ShownModels.WhyNoView` before anything is hidden or dimmed for it. PER VIEW, each stretch
+  timed into its `ViewsPart`, FR-073: the hiding
+  by `ShowOnlyModels` over the indexes of `ShownModels.Shown`, skipped where the view before
+  showed the same models, P18, the undim of what the view before left, FR-065, one
+  `DimAllBut` over the shown roots with ONE reset over the collection of every clashing item,
+  one `OverrideTemporaryColor` per colour over the red and the green collections of
+  `PaintPlan`, P17, `FramingBox` over the clash centres and `ZoomBox` on a copy of the camera
+  clash's camera, P16, a view of one clash keeping Clash Detective's own, `EnsureFolders`
+  REUSING a folder at its path and returning the depths it made so each folder the tool
+  makes is marked and no other, row F114-K5, the record through the COM view with
+  ApplyHideAttribs and ApplyMaterialAttribs, 5m, and the mark by
+  `DocumentSavedViewpoints.AddComment` after the add with a comment from
+  `Document.CreateCommentWithUniqueId` and the `MarkAuthor` setting, P9, on the view found as
+  the child of its folder with its name and no mark, Ordinal, P12. WHERE A PERSON'S UNMARKED
+  VIEW OF THAT NAME ALREADY SITS IN THAT FOLDER, read by `CountUnmarked` before the record,
+  none is written there, the view is counted as failed with that reason, naming the folder
+  and saying the unmarked view is a person's or one an earlier run could not mark, and that
+  one is left as it is, P22 unrun and no new probe. A VIEW RECORDED THAT COULD NOT BE MARKED
+  IS REMOVED AT ONCE, B3: `Mark` runs AddComment inside a try of its own and says what threw,
+  and where it returns minus one `SavedViewpoints.RemoveUnmarked` takes out the one unmarked
+  view of that name in its folder by `RemoveAt` with the parent resolved fresh, exactly one
+  or it is said, and the view is counted FAILED naming whether it was removed, so no
+  unmarked view of the tool's is left to block that test every later week. THE READ BACK IS
+  COUNTS AND NEVER FLAGS, 5o,
+  `SavedViewpoints.ReadBack` at the index the mark returned: the camera within
+  `CameraReadBackTolerance`, the hidden roots as their `Model.FileName`, P19, the material
+  overrides walked ONCE into a lookup by item path, the colour each clashing item will show,
+  the override's or its own, 5p, and the comments and redlines for `ToolViewMark.Judge`,
+  which must read the view as this run's. A view that fails any is FAILED with the reason, a
+  `WrittenView` not read back, and the inventory removes it at once. THE INVENTORY is
+  `ViewsInventory.Plan` over the fresh walk after, with the tests read whole, B1, so a test
+  the clash step ran and walk one could not read keeps its views, row F114-K12, the test
+  names of the document and the XML, the map's
+  known codes and the folders that held nothing before off the walk before,
+  `ViewNode.EmptyFolderKeys` and `HeldNothing`, its lines a VIEWS INVENTORY block. EACH
+  REMOVAL, `SavedViewpoints.RemoveOne`, resolves the parent fresh, re-finds the item by its
+  name, its kind and whether it carries a mark just before, at its index or once among its
+  siblings, and calls `RemoveAt(parent, index)`, P13, a folder with everything under it in
+  the one call, P14, and the folder's count after is read and said where it did not fall by
+  one. Each removal's result is a `RemovalOutcome`, made, refused or thrown with why, one
+  list handed to the tree facts as `Removals`, B5, and a RemoveAt that returned is removed
+  only where its folder fell by exactly one, `RemovalOutcome.Counted`, anything else recorded
+  as not removed with what happened, F4, the same rule `CountWords` gives the FAILED words of a
+  view that could not be marked. A walk's comments, redlines or camera that
+  would not read are counted and said, and the item handed with that part unread, which the
+  judge keeps as a person's: an unread comment list is `ViewNode.CommentsNotRead`, null and
+  never an empty list, B4, and the walk line says such items are kept as a person's because
+  their comments could not be read. Items
+  enumerated off a collection are not disposed one by one, P18's measured shape, since
+  F85's fifth run threw on that. THE VIEWS TREE BLOCK is `ViewsTree.Lines` over
+  `ViewsTreeCheck.Of` on the last walk, cut for the .log at `TreeLinesInLog` and whole in
+  the .tsv, one `RunLog.Row` a line. A FAILED check is a FAILED line and the group keeps its
+  own result. The hidden state the document held is read once off a capture that never
+  enters the tree, 5k, and put back when the group's writing ends, whichever way it ends,
+  the dimming and the paint taken off the roots, and read back as hidden. The window's view
+  is never touched. The VIEWS step is the one step allowed to move the viewpoint count,
+  `CensusRule`, and the design's census stop is NOT built, the VIEWS TREE checks and
+  `CensusRule` cover it. `Penetrations.ReadSide` walks up inside its try and a parent that
+  would not read is said through an out every caller counts, FR-072.
+  `FederationEngine.BuildViewpoints` hands the builder the run's map, or `TeamMap.NoXml`
+  said on a VIEWS line where none, the picked XML's sets, the group's models as `ModelTeam`
+  in the document's order, which is the index a view hides by, the tests the clash step
+  ran, the test names of the document and of the XML, the mirrors' run names off
+  `MirrorRule.Pairs` through `ClashRunner.MirrorNames` and `JobOutcome.MirrorNames`, null
+  where no rule ran and said, and whether the clash step was sound, and asks for the second
+  NWF save where a view was written or an item removed. A group whose views failed is not
+  DONE. THE SWITCH IS THE BOX, F136. Whether a group asks for its views is Core's
   `ViewpointRequest.WhyNone`, the box on the Clash step, the clash skipped and no report,
   and BuildViewpoints calls it in place of the two checks it held before. Unticked, no
-  viewpoint is made, ViewpointsRequested is false so the group cannot fail at them, and
-  one VIEWS line names the box, in every group that reaches the viewpoints step. The box,
-  x:Name MakeViewpoints, is set off `ReportOptions.MakeViewpoints` in the constructor,
-  which runs at every open because the plugin makes the window new each time, the way the
-  shared coordinates box is set, so it opens UNTICKED until F114 merges, Q131. Its state
-  is named in the RUN SETTINGS lines, at the start of the open file run, and in one RESULT
-  line where it was unticked, which the window takes off the run's engine,
-  FederationEngine.MakesViewpoints, so RESULT names the state the groups read. It sits up
-  front on the Clash step and NEVER under an expander, for the reason the tick box section
-  below gives.
+  view is made, ViewpointsRequested is false so the group cannot fail at them, and one VIEWS
+  line names the box, in every group that reaches the viewpoints step. The box, x:Name
+  MakeViewpoints, is set off `ReportOptions.MakeViewpoints` in the constructor, which runs
+  at every open because the plugin makes the window new each time, the way the shared
+  coordinates box is set, so it opens TICKED since F114's add-in pass, Bader's answer B to
+  Q131, unticked until F114 merged and ticked once it does. Its state is named in the RUN
+  SETTINGS lines, at the start of the open file run, and in one RESULT line where it was
+  unticked, which the window takes off the run's engine, FederationEngine.MakesViewpoints,
+  so RESULT names the state the groups read. It sits up front on the Clash step and NEVER
+  under an expander, for the reason the tick box section below gives. The loop unticks it
+  through run.ps1 -Untick MakeViewpoints for a run that is to make no view.
   SavedViewpoints.CanBuild is true since the viewpoints round on 2026-09-19 and nothing
   in src reads it, read on 2026-10-05
-- THE PICTURES, F120. ClashImages holds the one Navisworks call, TestsImageForResult, and
-  the save, and every rule and every word around them is Core's. The fifty failures guard
-  is handed in, FR-076, built once in the engine beside the tests' guard and read in Write
-  before a render, so the writer renders nothing once it has fired, and ClashRunner reads
-  it after each test and after the pictures that waited for a merge and stops the run
-  with ImageFailure's words, the log line IMAGES RUN STOPPED and the label the plain words,
-  the way it stops on the tests' guard. The engine says nothing of its own about it: the
-  stop reaches it as the clash outcome's, the one way a stop reaches it. A render that left
-  no file is reported as ImageFailure.BecauseNoFileArrived, the path beside the reason and
-  never in it. The render and the save are timed apart into ImagesSeconds on the log's
-  clock, FR-077, the visit is the one watch the tally reads, and the step's line is written
-  beside the tally once per group. The JPEG encoder is found once per group and the bitmap
-  is disposed as soon as the save returns, with no copy of it on the way to the disk. The
-  rename into report order runs inside the RENUMBER step, its lines the outcome's, FR-075,
-  and the one catch left in the engine covers the planning before any move, where nothing
-  on the disk has changed, and says so
 - THE TEAMS, F131. The add-in holds only the calls, and every rule and every word is Core's,
   .claude\rules\core.md, The teams of the picked file. WHERE A RUN OR A PICK SAYS WHICH FILE IT
   READ, the window writes the TEAMS lines of its map, `TeamMap.Lines`, then a line for each set
@@ -388,14 +441,14 @@ well as to pass.
   nothing changes for it. The status guard, `StatusesThisToolMayMoveFrom`, is kept. No handle
   is held across `TestsEditDisplayName`, `TestsRunTest` or any mutator, and every wrapper is
   disposed. The mirror rule's ending is `ClashRunner.Mirrors`, a `MirrorSettings` at its default
-- SINCE F85 A VIEWPOINT IS PER CLASH, which REVERSES what this rule said before it. It
-  said no clash is ever saved as a viewpoint and that a discipline viewpoint is not a
-  clash viewpoint. The first real run answered the question the other way: the thing a
-  person presses has to be the thing they are looking at, and a viewpoint showing a whole
-  discipline does not take anybody to a clash. The plan is
-  `Federator.Core.Views.ClashViewpointPlan`, three folders deep, written by ViewpointBuilder
-  since the viewpoints round on 2026-09-19. Do not read the old sentence out of an older
-  log or an older comment and undo this
+- SINCE F114 A VIEW IS PER CLASH TEST, which replaces F85's viewpoint per clash, which had
+  reversed what this rule said before it, that no clash is ever saved as a viewpoint.
+  Bader's Q114: the thing a person presses is a test's open clashes framed together in the
+  A, B, C folders of their team pair, and Clash Detective is where one clash is looked at
+  close up, docs\workflow.md. The plan is `Federator.Core.Views.TestViewPlan`, written by
+  ViewpointBuilder since 2026-10-08, and F85's unmarked per clash viewpoints are known by
+  `LegacyClashView` and removed once the new tree is written and read back. Do not read an
+  older sentence out of an older log or an older comment and undo this
 - A CLASH carries one of five, New, Active, Reviewed, Approved or Resolved. A TEST carries
   one of four, New, Old, Partial or Complete. They are different sets on different things
   and they share only the word New, which is how they get confused. OLD IS A TEST WORD AND
@@ -616,7 +669,7 @@ well as to pass.
   The anchor is the window's and `Regroup` drops it, since every row is made again there. A
   plain click is meant to flip the box on the one click, where the stock column, read off its
   IL and never clicked, took a click to select the row before one that flipped it. Whether
-  the template's box flips on the first click in Navisworks is UNKNOWN until step 511 of
+  the template's box flips on the first click in Navisworks is UNKNOWN until step 546 of
   steps\03_bader_next.md. The grey line under the list, x:Name RunRangeHelp, is set
   off `ShiftRange.HelpLine` in the constructor. The box has no x:Name and no label, so it is
   not one of the sixteen tick boxes counted below. The window driver cannot carry Shift

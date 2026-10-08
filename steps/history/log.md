@@ -2,6 +2,241 @@
 
 Newest entry at the top.
 
+## 2026-10-08 The loop, turn 6, F114 the views, the add-in pass, FR-184 to FR-188 with FR-065, FR-067, FR-068, FR-071, FR-072 and FR-073, built on the probes, attempt 1 of two, written by the developer as the lead's delegate
+
+Bader's order of 8 Oct 2026, Q145 item 4, after F132, F128 and F120, under Q143's limits: two
+attempts per change, one reviewer and one breaker per attempt, no new probe, no change to
+tools\loop or the probes' scripts. The brief is turn6\f114-addin-brief.md with its addendum, the
+design turn5\q114-design.md, and the probes P5 to P19 of docs\history\scan.md 5z-h to 5z-z. Branch
+fix-F114 in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, every file named below under
+turn6 with the prefix f114b-. The first developer of this pass was cut at about 10:35 with the
+Core half part done, its files under turn6 with the prefix f114a-. Navisworks was not started, no
+probe and no harness was run, Roamer.exe was not read, since the brief asks for no start and the
+pass read nothing off a running Navisworks.
+
+- THE CUT DEVELOPER'S EDITS, read one by one against the brief. KEPT: the Q131 flip,
+  `ViewpointRequest.DefaultMakeViewpoints` true with its test, seen failing first in
+  f114a-before-fail.txt. Check 5 of `ViewsTreeCheck` keeping its second half alone, no mirrored
+  test has a view of this tool's, under Bader's answer D to Q133, row F114-K20, with its three tests,
+  and the FAILED line test rewritten to break check 5 through a tool view of a mirror in the walk
+  after. `ViewpointSettings.DefaultFolderGoesWithChildren` true, P14, 5z-v, with its test.
+  `ViewsPart` gaining Framing, Marking, TakingTheInventory, Removing and ReadingTheTree with their
+  words and the test of their order. `ViewpointSettings.MarkAuthor`, the author
+  `CreateCommentWithUniqueId` takes, P9. `ToolViewMark.CarriesAMark`, the find of the view just
+  recorded by its name and no mark, P12. `ViewNode.EmptyFolderKeys`, the folders that held
+  nothing off the walk before. `CoverageRule` re-pointed to `Teams.CodeOf.Set`, its compile error
+  CS0119 fixed, since the nested method CodeOf hid the type. THROWN AWAY: `SizeRule.VerdictForTwo`
+  and its three tests, row F114-K2, since the lead's decision fixes K2 here only as a one line change
+  with a test and that is a new twenty line rule. The row stays open. Committed as eec81fb, Core
+  tests 2427 passed at the cut developer's start, f114a-core-before.txt, and 2432 after,
+  f114b-core-settled.txt, 0 failed, 0 skipped
+- MAIN 1f962d5 MERGED IN at 9e83c60, pull requests 170 to 183, F132's add-in half as 177 and F120
+  as 183 among them. The one conflict was docs\history\scan.md, both sides having appended a section
+  at its end: main's 5z-mirrors keeps its place after 5z-g and the probe sections 5z-h to 5z-za
+  follow it. The merged tree built whole with --no-incremental, 0 warnings and 0 errors,
+  f114b-build-merged.txt, and Core read 2771 passed, f114b-tests-merged.txt
+- MAIN e4831c9 MERGED IN AGAIN at 8d6a8c7 at the end, pull requests 184 to 186, F128's add-in part
+  as 186 among them. RunSteps merged on its own with every step both sides hold in the order
+  IMAGES, RENUMBER, VIEWS, WORKBOOK, GENERIC XLSX, HTML, XML, NWD, CONFIRM, read off main. The one
+  conflict was scan.md again, main's 5z-zb placed after 5z-za. F128's proof steps hold 491 to 506,
+  so F114's are renumbered 507 to 535 with their cross references. The merged tree builds whole
+  with --no-incremental, 0 warnings and 0 errors, f114b-build-merged-2.txt, and Core reads 2761
+  passed, 0 failed, 0 skipped, f114b-tests-merged-2.txt
+- WALK ONE KEEPS F132'S SHAPE. `ViewpointBuilder.Collect` reads the merged report's rows through
+  `ReportClashes.Of`, each resolved by its `RowAddress` through `TestAddress.ResolveIn` and
+  `ResultPath.ResultAt`, never by name off the document, and each row becomes
+  `ReportClash.ToView`, a `ViewClash` with the two items' index paths, the clash centre off
+  `ClashResult.Center`, the model each item lives in by the topmost ancestor's `Model.FileName`,
+  5n, handed as the name, and the size of the larger service through `Penetrations.ServiceSizeOf`
+  only where the test's pair carries the size folder, row F114-K9, `ViewTeams` built before the
+  walk off `ReportClash.LeftSet` and `RightSet`. The camera is read after the plan for each
+  view's camera clash alone, `TestsViewpointForResult` on a copy, 59 to 109 calls where F85 made
+  2939. The status filter is the plan's, `OpenClashes.StatusesFor(settings.ViewStatuses)`, and a
+  row out of scope is handed with nothing read
+- WHAT A VIEW SHOWS, per view and each stretch timed into its `ViewsPart`, FR-073: the hiding by
+  `ShowOnlyModels` over the indexes of `ShownModels.Shown`, the models in the document's order so a
+  model's place in the engine's list is its index, skipped where the view before showed the same
+  models, P18. The undim of what the view before left, FR-065. One `DimAllBut` over the shown roots
+  with one reset over the collection of every clashing item, then one `OverrideTemporaryColor` per
+  colour over the red and the green of `PaintPlan`, P17, `PaintTwo` gone. `FramingBox` over the
+  clash centres and `SavedViewpoints.Framed`, ZoomBox on a copy, P16, a view of one clash keeping
+  Clash Detective's own camera. `EnsureFolders` reusing a folder at its path and returning the
+  depths it made, so each folder the tool makes is marked and no other, row F114-K5. The record
+  through the COM view as before, 5m. The mark by `DocumentSavedViewpoints.AddComment` after the
+  add with a comment from `CreateCommentWithUniqueId` and the author setting, P9, on the one
+  child of the folder with that name and no mark, `SavedViewpoints.Mark`, P12, returning the index
+  the read back and the inventory know the view by
+- A PERSON'S UNMARKED VIEW OF THAT NAME IN THAT FOLDER, P22 unrun and no new probe:
+  `SavedViewpoints.CountUnmarked` reads it before the record, and where one sits there none is
+  written, the view is counted as failed with that reason on a VIEWS BUILT line, and the person's
+  is left as it is. DECIDED HERE: the check runs before the record and not after, so no unmarked
+  view of the tool's is left in the tree that no later run could know as its own. The group is not
+  DONE on it, since a view asked for was not made
+- THE READ BACK IS COUNTS AND NEVER FLAGS, 5o, `SavedViewpoints.ReadBack` at the index the mark
+  returned: there under its name, the camera within `CameraReadBackTolerance`, the hidden roots
+  as their `Model.FileName`, P19, with any hidden item that is no model root failing the view, the
+  material overrides walked once into a lookup by item path, P18, every painted item's shown
+  colour, the override's or its own, 5p, so an item already its colour counts as painted for check
+  4, and the comments and redlines for `ToolViewMark.Judge`, which must read the view as this run's.
+  A view failing any is FAILED with the reason and a `WrittenView` not read back, which the
+  inventory removes at once. The hidden collection's items are enumerated and not disposed one by
+  one, P18's measured shape, since F85's fifth run threw on disposing enumerated items
+- THE INVENTORY AND THE REMOVALS. `SavedViewpoints.ReadTree` walks the tree fresh into `ViewNode`s,
+  comments off `SavedItem.Comments`, redlines off `SavedViewpoint.Redlines.Size()` and 0 for a
+  folder, row F114-K1, the camera off the viewpoint's position, the Guid null, P10, and whether a
+  folder held nothing before the run off `ViewNode.HeldNothing` over `EmptyFolderKeys` of the walk
+  before, the new Core member of that pair. A comment list, a redline count or a camera that would
+  not read is counted on the walk, said on a VIEWS line, and the item handed with that part unread,
+  which the judge keeps as a person's. `ViewsInventory.Plan` takes the tests the clash step ran,
+  `ClashRunOutcome.Ran`, row F114-K12, the test names of the document through `SavedTests.Read` and
+  of the XML, the map's known codes and whether the clash step was sound, and its lines are a
+  VIEWS INVENTORY block. Each removal, `SavedViewpoints.RemoveOne`, resolves the parent fresh,
+  re-finds the item by its name, its kind and whether it carries a mark just before, at its index
+  or once among its siblings, and calls `RemoveAt(parent, index)`, P13, a folder whole, P14, and
+  the folder's count after is read and said where it did not fall by one. A removal that throws
+  is a FAILURE line and the next is still tried. `SavedViewpoints.Exists` and the already there
+  path are gone, the views being made fresh
+- THE VIEWS TREE BLOCK. A last fresh walk after the removals fills `ViewsTreeFacts`,
+  `ViewsTreeCheck.Of` runs the seven, and the engine writes `ViewsTree.Lines` cut at
+  `TreeLinesInLog` as a block and whole as one `RunLog.Row` a line, happening `views tree`, so the
+  .tsv holds every row. The VIEWS block reads `plan.Lines(reports.Sizes)` and VIEWS BUILT keeps
+  `ViewpointBuildOutcome`, now without the already there case. The document is put back in the
+  finally as before, then `seconds.Ended()` and the VIEWS seconds line. `ViewsProgress` writes a
+  line at least every `ProgressEverySeconds`, FR-071
+- THE ENGINE. `FederationEngine.BuildViewpoints` hands the builder the run's map, or
+  `TeamMap.NoXml` said on a VIEWS line where none, the picked XML's sets, the group's models as
+  `ModelTeam` through `ModelTeams`, `ModelDisciplines` gone, the tests the clash step ran, the test
+  names, the mirrors' run names off `MirrorRule.Pairs` and `MirrorPair.MirrorName` through
+  `ClashRunner.MirrorNames` and `JobOutcome.MirrorNames`, null and said where no rule ran, and
+  whether the clash step was sound, and asks for the second NWF save where a view was written or
+  an item removed
+- FR-072. `Penetrations.ReadSide` walks up inside its try, `Upwards` catching a parent that would
+  not read and handing back false with the chain gathered so far for the finally to release, and
+  every caller counts it: the penetration pass says it once per test on a PENETRATION line, and
+  the views count it on their VIEWS line
+- DELETED, with their tests where they had them: `ClashViewpointPlan.cs`, `DisciplinePairRule.cs`
+  and `ClashViewpointPlanTests.cs`, 41 tests, `ReportClash.ToPlan`, `ViewpointBuildOutcome.
+  AddAlreadyPresent` and `AlreadyPresentCount`, `ViewsPart.LookingWhetherThere`, and the per clash
+  settings `MaxPerTest`, `SubGroupDisciplines` and `HasSubGroup`. `DisciplineCodes` stays for the
+  coverage, `NameSeparator`, `UnknownDiscipline` and `LegacyClashPrefix` for `LegacyClashView`.
+  Comments naming the per clash plan reworded in ClashImages, CodeOf, ReportClashes and
+  ViewpointSettings
+- DECIDED HERE. The census stop of the design is not built, the VIEWS TREE checks and
+  `CensusRule` cover it, the lead's decision. The first weekly run over an NWF holding F85's per
+  clash views pays about 6.3 s a view once, P18, the new tree written first and the removals after,
+  S2 as designed. A view not marked is recorded with index minus one so the inventory never
+  matches it, and the group is not DONE on it. The hidden state snapshot is taken at the first
+  view's hiding, as before
+- NOT DONE HERE. The proof on the local machine, steps 507 to 541 of steps\03_bader_next.md, Runs
+  A, B and B2 on 1A02MM and the 1A04PK first run. P15 is not answered, so the clear and rebuild
+  fallback claims no mark survives it, FR-067. P20, P21 and P22 are hand steps and unrun. F137's
+  Q125 B is not folded in. The cost of `ClashResult.Center` per clash and the view count on 1A02MM
+  are UNKNOWN until the timed runs
+- RECORDS. .claude\rules\addin.md's ONE SAVED VIEWPOINT PER CLASH and SINCE F85 A VIEWPOINT IS PER
+  CLASH bullets replaced by ONE VIEW PER CLASH TEST and SINCE F114 A VIEW IS PER CLASH TEST, THE
+  SWITCH IS THE BOX saying the box opens ticked. .claude\rules\core.md's WHAT RUNS UNTIL THE
+  ADD-IN PASS bullet and the four F85 bullets after it replaced by one on what `LegacyClashView`
+  knows, the F136, size, mirror, mark, P14 and check 5 words set to what runs. docs\workflow.md's
+  viewpoint per discipline section replaced by the saved viewpoints section with where a clash
+  goes by example, FR-188. steps\01_next.md's order line 47 and F114 section. steps\03_bader_next.md's
+  header, the F136 proof reading the ticked state with one untick proof through run.ps1 -Untick
+  MakeViewpoints at step 416, every step that waited for F114 rewritten to the new tree, step 247
+  no longer naming SizeTally, and the Proof F114 section, steps 507 to 541. The run set paragraph
+  of steps\history\loop.md that says unticked until F114 merges is the lead's to change, and so are
+  steps\PROGRESS.md, steps\tracker.csv and steps\02_questions.md
+
+TESTS. 3 new in Core beside the cut developer's 5: `ToViewCarriesTheTestTheTwoSetNamesTheRowStatus
+ThePriorityAndWhatTheAddInRead` in ReportClashesTests and `AFolderOfTheWalkAfterIsKnownEmptyBefore
+ThroughTheKeysOfTheWalkBefore` in ViewsInventoryTests, both failing to compile without their members,
+CS1061 and CS0117, f114b-before-compile.txt, and `APriorityFolderOfTheOldTreeReusedByThisRunIsNoTwin
+AndLosesOnlyThePerClashViewpoints`, which pins the inventory's rule for row F114-K5 and passed first,
+since the rule stood. The ViewpointBuildOutcome tests are rewritten without the already there case,
+the CodeOf test of the pair rule reworded onto the seven codes. Core tests 2771 passed at 9e83c60
+and 2731 at 85d479e, 0 failed, 0 skipped, f114b-tests-merged.txt and f114b-tests-code.txt, the 41
+per clash plan tests gone and 3 new. The solution builds whole at 85d479e with --no-incremental, 0
+warnings and 0 errors, its short hash and an empty git status at the top, f114b-build-code.txt.
+check-locals and check-imports pass on src, f114b-checks.txt. The pre-commit outputs are
+f114b-precommit-1.txt and f114b-precommit-2.txt.
+
+### Attempt 2, on the breaker's six blocking faults, turn6114b-break.json, the reviewer APPROVE
+
+Each fix committed and pushed on its own in the breaker's order, under the day's close at 18:40.
+B1, 960177b: `Federator.Core.Views.TestsRead`, three tests, a test not read whole for the views, not
+at its address, a row not leading anywhere, a throw in its walk or a row with no recorded place,
+gets no view, keeps its old views and is counted FAILED with why, the inventory handed
+TestsRead.WholeNames and never the tests the clash step ran. B2 and B3, ad33d6f:
+`ShownModels.WhyNoView` with its test, a view of nothing is no view and counted FAILED before any
+hide or dim, and a view recorded that could not be marked, Mark returning minus one or AddComment
+throwing inside its own try, is removed at once by `SavedViewpoints.RemoveUnmarked`, exactly one
+unmarked view of its name or it is said, the CountUnmarked refusal naming the folder. B4, 62f39a7:
+`ViewNode.CommentsNotRead` carries null for unread comments, the inventory keeps such a leaf and
+folder saying why, the before line counts it as not this tool's, the walk line says kept as a
+person's because its comments could not be read, one test. B5, 9eaa3fc:
+`Federator.Core.Views.RemovalOutcome`, the tree block's removed counts read off what RemoveOne
+reported, a refusal or a throw counted and named as not removed, one test. B6, 37ac1ba: the mark's
+camera judged against the read camera rounded through the same three decimal Number, one test at
+500000 units, and whether the NWF keeps the camera at single precision stays UNKNOWN until the
+timed runs. Core tests 2761 passed before and 2768 after, 0 failed, 0 skipped, f114c-tests-code.txt,
+each pre-commit output f114c-precommit-b1.txt to b6, the solution built whole with --no-incremental
+at 37ac1ba, f114c-build-code.txt. RECORDS of attempt 2, finished the same evening on Bader's word
+Q147 that the laptop stays on: .claude\rules\addin.md's ONE VIEW PER CLASH TEST bullet says B1 to B5,
+core.md's ONLY WHAT THIS TOOL MADE bullet says B1, B4 and B6 and THE VIEWS TREE BLOCK bullet B5,
+and steps\03_bader_next.md gains steps 535 to 540, one read per fault, the send step now 541, so
+the F114 proof is steps 507 to 541. Core tests 2768 passed, 0 failed, 0 skipped, unchanged by the
+records commit.
+
+### Attempt 2, the second reading, turn6\f114c-review.json CHANGES and f114c-break.json CHANGES
+
+Fixed on the same attempt, 80afad7, the lead's list. N1, both readers: TestsRead keyed by the
+report's test name of each row, never the name its test ran under, a resolve not at its address or
+a walk that threw marking every report test among the rows it serves, each test judged once every
+resolve is done. C1, the reviewer: TestsRead takes the views' statuses and a row outside them is
+handed to the plan unread, its status checked before ResultAt, so with Compact ticked a test holding
+Resolved rows reads whole. N2, both readers: TestsRead.Ran meets every test the clash step ran, so
+one with no row is whole with no row and its old view goes. F3, the lead's decision: a test whose
+open rows are all result groups, TestsRead.OnlyGroups, gets no view, keeps its old views, is named
+on one VIEWS line and is never counted failed. F4, the breaker: RemovalOutcome.Counted and
+CountWords, a RemoveAt that returned is removed only where its folder fell by exactly one, in the
+inventory's removals and in the FAILED words of a view that could not be marked. R7: the B5 test of
+ViewsTreeCheckTests.cs moved before the old test's summary, each test carrying its own. Not taken,
+by the lead's list: R1 and F6, the single precision risk UNKNOWN until a save and reopen on the
+timed runs, R2, R5 and F5, R6. Tests: TestsReadTests rewritten for the new shape with four new tests
+and RemovalOutcomeTests two, all failing to compile first, 32 errors, f114d-before-compile.txt.
+Core tests 2768 passed before and 2774 after, 0 failed, 0 skipped, f114d-tests-code.txt, the solution
+built with --no-incremental, 0 warnings and 0 errors, f114d-build-code.txt. The rule bullets of
+addin.md and core.md and proof steps 524, 535 and 539 say what changed.
+
+### Known bugs, the add-in pass
+
+- F114-K2 stays open. `Penetrations.Larger` reads a readable small service against an unreadable
+  one as Small, so under F114 that clash goes in the pair view unnamed. Not a one line change
+- F114-K32, new, for the lead. Where a person's unmarked view of a test's name sits in the view's
+  folder, the view is not written and the group is not DONE on it. Whether a person's choice should
+  cost the group DONE is for the lead or Bader. The RESULT block names the view and why
+- F114-K33, new, for the timed runs. The read back's walk of the material overrides reads one
+  `CreateIndexPath` per override, 3153 for a view showing one model of 1A02MM, P18. P18 read the
+  whole read back at 0.014 s a view, so the cost is measured there and not here
+- F114-K34, new, for the lead. `ClashRunner.MirrorNames` hands the plan every mirror's run name,
+  merged or not. A mirror the rule paired and did not merge keeps its own rows under its run name
+  on the report and gets no view, which is Bader's point that there are no mirrored tests, and its
+  clashes are then in no view at all. The VIEWS block counts them
+- F114-K35, new, wording. A model whose code will not read is shown only where a clashing item
+  lives in it, Q119 B, and the VIEWS line says so once per model. The old line said no viewpoint
+  hides it
+- F114-K1, K5, K9, K12 and K20 close with this pass. K13, K17, K19, K26 and K29 stand as attempts
+  2 to 7 wrote them
+
+### Every file written outside the repo, the add-in pass
+
+- the worktree, %LOCALAPPDATA%\NwcFederatorLoop\wt-f114, on branch fix-F114
+- turn6\f114b-core-settled.txt, f114b-msg-1.txt, f114b-precommit-1.txt, f114b-merge-main-msg.txt,
+  f114b-build-merged.txt, f114b-tests-merged.txt, f114b-tests-code.txt, f114b-checks.txt,
+  f114b-before-compile.txt, f114b-msg-2.txt, f114b-precommit-2.txt, f114b-build-code.txt,
+  f114b-msg-3.txt, f114b-precommit-3.txt, f114b-merge-main-2-msg.txt, f114b-build-merged-2.txt,
+  f114b-tests-merged-2.txt, f114b-precommit-merge-2.txt and f114b-log-entry.md, this draft
+
+Merged as pull request 189 on 2026-10-08 by the lead after two attempts and the second reading's faults fixed on the same attempt and re-read once by the reader who found each, Q148 putting that reading of Q143 item 1 to Bader. The readers' files are turn6\f114b-review.json, f114b-break.json, f114c-review.json and f114c-break.json, and the re-reads turn6\f114d-reread-review.json and f114d-reread-break.json.
+
 ## 2026-10-08 The loop, turn 5, the close of the day: Bader's new order, F132, F120 and F128 merged, F114's pass in work
 
 Picked up at 08:24 after the company shutdown of 19:30:51 on 7 Oct, read in Arab Standard Time, 46 minutes

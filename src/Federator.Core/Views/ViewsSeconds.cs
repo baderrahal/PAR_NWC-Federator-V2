@@ -98,12 +98,12 @@ namespace Federator.Core.Views
                     return "reading the clashes and planning";
                 case ViewsPart.SayingHowFar:
                     return "saying how far it has got";
-                case ViewsPart.LookingWhetherThere:
-                    return "looking whether each was already there";
                 case ViewsPart.ShowingAndHiding:
                     return "showing and hiding the models";
                 case ViewsPart.Dimming:
                     return "dimming";
+                case ViewsPart.Framing:
+                    return "framing the camera on the clashes";
                 case ViewsPart.MakingTheFolders:
                     return "finding or making the folders";
                 case ViewsPart.MakingTheView:
@@ -114,10 +114,18 @@ namespace Federator.Core.Views
                     return "adding the view";
                 case ViewsPart.MovingIntoTheFolder:
                     return "copying it from the root into its folder and removing the root one";
+                case ViewsPart.Marking:
+                    return "marking the view and its folders";
                 case ViewsPart.ReadingBack:
                     return "reading back";
+                case ViewsPart.TakingTheInventory:
+                    return "taking the inventory of the tree";
+                case ViewsPart.Removing:
+                    return "removing the views of earlier runs";
                 case ViewsPart.PuttingBack:
                     return "putting the document back";
+                case ViewsPart.ReadingTheTree:
+                    return "reading the tree for the VIEWS TREE block";
                 default:
                     return "UNKNOWN";
             }

@@ -67,6 +67,26 @@ namespace Federator.Core.Views
             get { return new ReadOnlyCollection<string>(homesOfManyModels); }
         }
 
+        /// <summary>
+        /// Why a view showing these models is not written, or null where it is: a view none of
+        /// whose clashing items' models could be read or named a model of the group shows no
+        /// model, and a view of nothing is no view, the breaker's B2 of F114's add-in pass. It
+        /// is counted failed with these words, nothing hidden and nothing dimmed for it.
+        /// </summary>
+        public string WhyNoView
+        {
+            get
+            {
+                if (shown.Count > 0)
+                {
+                    return null;
+                }
+
+                return "it would show no model, " + HomesNotRead + " of its clashing items' models could not be read and "
+                    + homesNotInGroup.Count + " named no model of the group, so no view was written for it";
+            }
+        }
+
         /// <summary>What a view of that pair shows, given the group's models and the models its clashing items live in.</summary>
         public static ShownModels For(TeamPair pair, IEnumerable<ModelTeam> models, IEnumerable<string> homes)
         {

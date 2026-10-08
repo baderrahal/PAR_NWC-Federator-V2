@@ -1,0 +1,268 @@
+MACHINE   [machine]   2026-10-07 15:50:07
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 51624
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-view-framing.ps1", sha256 00CF5B4A965747B80A25EA1FC304E553275D820C288E62FBD835658CEE2CBFCB
+GUARD     tools\loop\nw-guard.ps1, sha256 E29D2733A227E6665551BD52866E7C2B40F5A5B09114ECB2AA2FFE233EA23C1A
+PROCESS   powershell.exe pid 51624, started to run -File %USERPROFILE%\AppData\Local\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-view-framing.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 497
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-framing-20261007-155007" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-framing-20261007-155007\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123148 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 199 AutoSave files listed and not copied
+  the tool's own logs folder listed: 38 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf", 41317271 bytes, sha256 0944C1001095FA95F5AE8887F79450C51EDE836D47F9A38DE3982BB525FB4F37
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-framing-20261007-155007\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf", sha256 matches
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\bin\Release\net48\ViewpointProbe.dll", 309760 bytes, written 2026-10-07 15:47:49, sha256 051157AC9DDA7A518084FB62873CBADF5693A390D552069A3A55A7347E0D905F, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  15:50:14.823  t+7.1s  calling new NavisworksApplication()
+  15:51:40.793  t+93.1s  the constructor RETURNED after 85.96 s
+  Roamer processes new since step 2: 1
+    pid 40876, started 15:50:14.892, parent 1164 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 40876, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 40876, started 2026-10-07 15:50:14.892, start ticks UTC 639269742148925862
+  15:51:53.657  t+105.9s  Visible set True, read back True
+  visible top level windows of 40876: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  15:51:54.095  t+106.4s  AddPluginAssembly RETURNED after 0.054 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode vpframe on the copy, which it edits and saves as a new file ====
+  15:51:54.102  t+106.4s  calling ExecuteAddInPlugin(ViewpointProbe.PARS, vpframe, the plugin's output file, the copy, the save path in the work folder, the margin 500 mm)
+  15:52:37.262  t+149.5s  ExecuteAddInPlugin RETURNED 0 after 43.16 s
+  visible top level windows of 40876: 1, hidden: 86, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p16-framed.nwf - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | 15:51:54.115  probe started, mode vpframe, 3 file(s)
+  | 15:51:54.170  opening 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+  | 15:51:58.462  TryOpenFile returned True after 4.293 s
+  | 15:51:58.462  models 4
+  | 15:51:58.464     model 0  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc  under the loop folder True
+  | 15:51:58.464     model 1  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc  under the loop folder True
+  | 15:51:58.465     model 2  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  under the loop folder True
+  | 15:51:58.465     model 3  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc  under the loop folder True
+  | 15:51:58.465  document units Feet, millimetres per unit by the probe's own table 304.8, UnitConversion.ScaleFactor(Millimeters, Feet) 0.003
+  | 15:51:58.465  the margin: 500 mm, chosen for this probe and not measured, 1.64042 in document units, added on every side of the box
+  | 15:51:58.474  the document at the open: models 4, sets 61, tests 528, results 2939, statuses a person set 0, viewpoints 2847
+  | 15:51:58.477  tests read 528, with no open clash 469, with one 11, with two or more 48. Open is New or Active
+  | 15:51:58.477  the test of many: [BLD-AR-Curtain Mullions-vs-BLD-AR-Windows], results 2568, open 2568
+  | 15:51:58.478  the test of few: [BLD-ST-Floors-vs-BLD-ST-Framing], results 2, open 2
+  | 15:51:58.483  the folder [P16 probe] made at the root by FolderItem and AddCopy
+  | 15:51:58.484  
+  | 15:51:58.484  THE TEST OF MANY, [BLD-AR-Curtain Mullions-vs-BLD-AR-Windows]
+  | 15:51:58.489     open centres read 2568, the first open clash [Clash1] status New centre (32.105, -64.264, 29.581)
+  | 15:51:58.493     TestsViewpointForResult and CreateCopy took 0.004 s, a camera
+  | 15:51:58.500     the first clash's camera: position (34.258, -66.417, 31.733), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 3.729, extents at the focal distance H 8.141 V 3.089, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:51:58.501     the first clash's centre against the first clash's camera: 3.729 units away, off the axis turned from (0, 0, -1) by axis and angle 0.0000 deg, by the quaternion 0.0000 deg, the two directions apart 0.0000 deg
+  | 15:51:58.504     the first clash's camera, its own field and aspect (field 0.785398, aspect 2.635569, perspective): inside 114 of 2568, behind the camera 1514, the largest reach behind where 1 is the edge, across 3958.125767, up and down 9064.510792
+  | 15:51:58.506     the box of the open centres padded by the margin: min (30.464, -67.412, 8.618) max (132.396, 34.413, 100.165) size (101.932, 101.824, 91.547), empty False
+  | 15:51:58.506     ZoomBox on the copy RETURNED after 0.001 s
+  | 15:51:58.507     the zoomed camera: position (203.765, -138.823, 167.856), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 3.729, extents at the focal distance H 8.141 V 3.089, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:51:58.507     the view direction moved by 0.0000 deg, the up by 0.0000 deg, the position by 229.139 units, the field 0.785 to 0.785, the aspect 2.636 to 2.636
+  | 15:51:58.507     the zoomed camera, its own field and aspect (field 0.785398, aspect 2.635569, perspective): inside 2568 of 2568, behind the camera 0, the largest reach 0.933344 where 1 is the edge, across 0.350665, up and down 0.933344
+  | 15:52:04.706     [P16 many framed] recorded through the COM view into [P16 probe] in 6.198 s
+  | 15:52:04.707        read back: position moved 0 units, direction 0.0000 deg, HeightField 0.785398, AspectRatio 2.635569, projection Perspective
+  | 15:52:11.156     [P16 many first clash camera] recorded through the COM view into [P16 probe] in 6.448 s
+  | 15:52:11.156        read back: position moved 0 units, direction 0.0000 deg, HeightField 0.785398, AspectRatio 2.635569, projection Perspective
+  | 15:52:11.157  
+  | 15:52:11.157  THE TEST OF FEW, [BLD-ST-Floors-vs-BLD-ST-Framing]
+  | 15:52:11.157     open centres read 2, the first open clash [Clash1] status New centre (2158042.88, 9009295.678, 2273.785)
+  | 15:52:11.160     TestsViewpointForResult and CreateCopy took 0.003 s, a camera
+  | 15:52:11.160     the first clash's camera: position (2158142.891, 9009195.667, 2373.796), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 173.224, extents at the focal distance H 378.213 V 143.503, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:52:11.160     the first clash's centre against the first clash's camera: 173.224 units away, off the axis turned from (0, 0, -1) by axis and angle 0.0000 deg, by the quaternion 0.0000 deg, the two directions apart 0.0000 deg
+  | 15:52:11.160     the first clash's camera, its own field and aspect (field 0.785398, aspect 2.635569, perspective): inside 2 of 2, behind the camera 0, the largest reach 0.383968 where 1 is the edge, across 0.383968, up and down 0.064772
+  | 15:52:11.160     the box of the open centres padded by the margin: min (2158041.24, 9009294.037, 2272.145) max (2158091.972, 9009356.603, 2275.426) size (50.733, 62.566, 3.281), empty False
+  | 15:52:11.160     ZoomBox on the copy RETURNED after 0.000 s
+  | 15:52:11.160     the zoomed camera: position (2158113.436, 9009277.216, 2314.489), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 173.224, extents at the focal distance H 378.213 V 143.503, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:52:11.161     the view direction moved by 0.0000 deg, the up by 0.0000 deg, the position by 105.049 units, the field 0.785 to 0.785, the aspect 2.636 to 2.636
+  | 15:52:11.161     the zoomed camera, its own field and aspect (field 0.785398, aspect 2.635569, perspective): inside 2 of 2, behind the camera 0, the largest reach 0.450532 where 1 is the edge, across 0.450532, up and down 0.234477
+  | 15:52:17.898     [P16 few framed] recorded through the COM view into [P16 probe] in 6.737 s
+  | 15:52:17.898        read back: position moved 0 units, direction 0.0000 deg, HeightField 0.785398, AspectRatio 2.635569, projection Perspective
+  | 15:52:24.040     [P16 few first clash camera] recorded through the COM view into [P16 probe] in 6.143 s
+  | 15:52:24.040        read back: position moved 0 units, direction 0.0000 deg, HeightField 0.785398, AspectRatio 2.635569, projection Perspective
+  | 15:52:24.040  
+  | 15:52:24.043  the document before the save: models 4, sets 61, tests 528, results 2939, statuses a person set 0, viewpoints 2851
+  | 15:52:31.984  SaveFile into p16-framed.nwf took 7.941 s, 41317755 bytes read back off the disk
+  | 15:52:32.611  Document.Clear took 0.626 s, models now 0
+  | 15:52:37.157  TryOpenFile of the saved file returned True after 4.546 s
+  | 15:52:37.160  the document after the reopen: models 4, sets 61, tests 528, results 2939, statuses a person set 0, viewpoints 2851
+  | 15:52:37.161  
+  | 15:52:37.161  AFTER THE REOPEN, THE TEST OF MANY, [BLD-AR-Curtain Mullions-vs-BLD-AR-Windows]
+  | 15:52:37.163     open centres read again 2568, the same as before the save, in order YES, the largest difference 0E+0
+  | 15:52:37.163     [P16 many framed] as recorded: position (203.765, -138.823, 167.856), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 3.729, extents at the focal distance H 8.141 V 3.089, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:52:37.164        against the camera recorded from: position moved 0 units, direction 0.0000 deg
+  | 15:52:37.164        the recorded camera, its own field and aspect (field 0.785398, aspect 2.635569, perspective): inside 2568 of 2568, behind the camera 0, the largest reach 0.933344 where 1 is the edge, across 0.350665, up and down 0.933344
+  | 15:52:37.231        pressed in 0.066 s, the window's camera: position (203.765, -138.823, 167.856), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 3.729, extents at the focal distance H 8.141 V 3.089, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:52:37.231        the window against the recorded: position moved 0 units, direction 0.0000 deg, field 0.785 to 0.785, aspect 2.636 to 2.636
+  | 15:52:37.231        the window's camera, the window's field and aspect (field 0.785398, aspect 2.635569, perspective): inside 2568 of 2568, behind the camera 0, the largest reach 0.933344 where 1 is the edge, across 0.350665, up and down 0.933344
+  | 15:52:37.235           reach 0.933344 open centre 1913 (130.756, -64.264, 10.797)
+  | 15:52:37.236           reach 0.911131 open centre 1923 (130.756, -61.165, 10.258)
+  | 15:52:37.236           reach 0.910916 open centre 1930 (130.756, -61.655, 10.797)
+  | 15:52:37.236           reach 0.887314 open centre 1904 (130.756, -58.336, 10.258)
+  | 15:52:37.236           reach 0.885072 open centre 1934 (130.756, -58.066, 10.258)
+  | 15:52:37.236        the recorded position and direction with the window's field and aspect (field 0.785398, aspect 2.635569, perspective): inside 2568 of 2568, behind the camera 0, the largest reach 0.933344 where 1 is the edge, across 0.350665, up and down 0.933344
+  | 15:52:37.236     [P16 many first clash camera] as recorded: position (34.258, -66.417, 31.733), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 3.729, extents at the focal distance H 8.141 V 3.089, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:52:37.237        against the camera recorded from: position moved 0 units, direction 0.0000 deg
+  | 15:52:37.241        pressed in 0.005 s, the window's camera: position (34.258, -66.417, 31.733), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 3.729, extents at the focal distance H 8.141 V 3.089, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:52:37.242        the window against the recorded: position moved 0 units, direction 0.0000 deg, field 0.785 to 0.785, aspect 2.636 to 2.636
+  | 15:52:37.242        the window's camera, the window's field and aspect (field 0.785398, aspect 2.635569, perspective): inside 114 of 2568, behind the camera 1514, the largest reach behind where 1 is the edge, across 3958.125767, up and down 9064.510792
+  | 15:52:37.242           reach behind open centre 1283 (70.549, 32.772, 98.524)
+  | 15:52:37.242           reach behind open centre 2371 (130.756, 3.424, 20.433)
+  | 15:52:37.242           reach behind open centre 2372 (130.756, 6.743, 39.168)
+  | 15:52:37.243           reach behind open centre 2373 (130.756, 6.743, 87.351)
+  | 15:52:37.243           reach behind open centre 2374 (130.756, 6.743, 96.988)
+  | 15:52:37.243  
+  | 15:52:37.243  AFTER THE REOPEN, THE TEST OF FEW, [BLD-ST-Floors-vs-BLD-ST-Framing]
+  | 15:52:37.243     open centres read again 2, the same as before the save, in order YES, the largest difference 0E+0
+  | 15:52:37.243     [P16 few framed] as recorded: position (2158113.436, 9009277.216, 2314.489), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 173.224, extents at the focal distance H 378.213 V 143.503, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:52:37.244        against the camera recorded from: position moved 0 units, direction 0.0000 deg
+  | 15:52:37.244        the recorded camera, its own field and aspect (field 0.785398, aspect 2.635569, perspective): inside 2 of 2, behind the camera 0, the largest reach 0.450532 where 1 is the edge, across 0.450532, up and down 0.234477
+  | 15:52:37.247        pressed in 0.003 s, the window's camera: position (2158113.436, 9009277.216, 2314.489), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 173.224, extents at the focal distance H 378.213 V 143.503, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:52:37.247        the window against the recorded: position moved 0 units, direction 0.0000 deg, field 0.785 to 0.785, aspect 2.636 to 2.636
+  | 15:52:37.254        the window's camera, the window's field and aspect (field 0.785398, aspect 2.635569, perspective): inside 2 of 2, behind the camera 0, the largest reach 0.450532 where 1 is the edge, across 0.450532, up and down 0.234477
+  | 15:52:37.254           reach 0.450532 open centre 0 (2158042.88, 9009295.678, 2273.785)
+  | 15:52:37.254           reach 0.433069 open centre 1 (2158090.332, 9009354.963, 2273.785)
+  | 15:52:37.255        the recorded position and direction with the window's field and aspect (field 0.785398, aspect 2.635569, perspective): inside 2 of 2, behind the camera 0, the largest reach 0.450532 where 1 is the edge, across 0.450532, up and down 0.234477
+  | 15:52:37.255     [P16 few first clash camera] as recorded: position (2158142.891, 9009195.667, 2373.796), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 173.224, extents at the focal distance H 378.213 V 143.503, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:52:37.255        against the camera recorded from: position moved 0 units, direction 0.0000 deg
+  | 15:52:37.260        pressed in 0.004 s, the window's camera: position (2158142.891, 9009195.667, 2373.796), rotation A B C D (0.424708, 0.17592, 0.339851, 0.820473), direction by axis and angle (-0.57735, 0.57735, -0.57735) and by the quaternion (-0.57735, 0.57735, -0.57735), up (-0.408248, 0.408248, 0.816497), projection Perspective, HeightField 0.785398, AspectRatio 2.635569, focal 173.224, extents at the focal distance H 378.213 V 143.503, the full vertical angle the extents imply 0.785, H over V 2.636
+  | 15:52:37.260        the window against the recorded: position moved 0 units, direction 0.0000 deg, field 0.785 to 0.785, aspect 2.636 to 2.636
+  | 15:52:37.260        the window's camera, the window's field and aspect (field 0.785398, aspect 2.635569, perspective): inside 2 of 2, behind the camera 0, the largest reach 0.383968 where 1 is the edge, across 0.383968, up and down 0.064772
+  | 15:52:37.260           reach 0.383968 open centre 1 (2158090.332, 9009354.963, 2273.785)
+  | 15:52:37.260           reach 0 open centre 0 (2158042.88, 9009295.678, 2273.785)
+  | 15:52:37.260  
+  | 15:52:37.260  SUMMARY many [BLD-AR-Curtain Mullions-vs-BLD-AR-Windows]: open 2568. In view: on the first clash's camera 114, on the zoomed camera 2568, on the recorded view after the reopen 2568, pressed in the window 2568, the first clash's view pressed in the window 114. ZoomBox returned YES. Direction moved by ZoomBox 0.0000 deg, from the first clash's camera to the window after the reopen 0.0000 deg
+  | 15:52:37.261  SUMMARY few [BLD-ST-Floors-vs-BLD-ST-Framing]: open 2. In view: on the first clash's camera 2, on the zoomed camera 2, on the recorded view after the reopen 2, pressed in the window 2, the first clash's view pressed in the window 2. ZoomBox returned YES. Direction moved by ZoomBox 0.0000 deg, from the first clash's camera to the window after the reopen 0.0000 deg
+  | 15:52:37.261  P16 YES   ZoomBox kept the view direction and every open centre of both tests sits inside the recorded view pressed in the window after a reopen
+  | 15:52:37.261  probe finished
+  the saved copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-framing-20261007-155007\p16-framed.nwf", 41317755 bytes, sha256 9DC99432238D1CBFD6183E39D0B16258C386DEB9E999E47BEC06D2B1A1E5FD6E
+
+==== STEP 6. Quit through the API ====
+  15:52:39.234  t+151.5s  Dispose RETURNED after 1.26 s
+  15:52:47.772  t+160.0s  pid 40876 state gone, 8.5 s after Dispose returned, not forced
+
+==== FINALLY ====
+  15:52:47.781  t+160.1s  pid 40876 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 217, longest pass 12092 ms, longest gap between the starts of two passes 12596 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  15:50:09.479  t+1.8s  watchdog started
+  15:50:15.278  t+7.6s  Roamer pid 40876 seen with no readable start time, looked at again at the next pass
+  15:50:27.769  t+20.0s  new process Roamer pid 40876, parent 1164 svchost.exe, started 15:50:14.892, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  15:50:27.877  t+20.2s  Roamer 40876 visible top level windows: none
+  15:50:45.215  t+37.5s  new process AdskLicensingInstHelper pid 41036, parent 26096 GenuineService.exe, started 15:50:34.075, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  15:51:11.050  t+63.3s  new process AdskLicensingAgent pid 51192, parent 40876 Roamer.exe, started 15:51:03.253, command line holds the word embedding or automation: no
+  15:51:28.179  t+80.5s  new process AdskLicensingInstHelper pid 5088, parent 26096 GenuineService.exe, started 15:51:18.867, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  15:51:30.937  t+83.2s  Roamer 40876 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  15:51:38.087  t+90.4s  Roamer 40876 visible top level windows: none
+  15:51:50.603  t+102.9s  Roamer 40876 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  15:51:51.702  t+104.0s  Roamer 40876 visible top level windows: none
+  15:51:53.368  t+105.6s  Roamer 40876 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  15:51:55.676  t+108.0s  Roamer 40876 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;12e173a6-969a-4520-8b37-a88703d32882]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  15:51:57.349  t+109.6s  Roamer 40876 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;12e173a6-969a-4520-8b37-a88703d32882]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  15:51:58.477  t+110.8s  Roamer 40876 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  15:52:25.436  t+137.7s  Roamer 40876 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;52e4214c-1699-4154-920d-a1b0cd570351]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  15:52:30.549  t+142.8s  Roamer 40876 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;52e4214c-1699-4154-920d-a1b0cd570351]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p16-framed.nwf - Autodesk Navisworks Manage 2025"
+  15:52:32.209  t+144.5s  Roamer 40876 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p16-framed.nwf - Autodesk Navisworks Manage 2025"
+  15:52:32.769  t+145.0s  Roamer 40876 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  15:52:33.909  t+146.2s  Roamer 40876 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;e614bbe1-2c24-42e7-862a-1fdff9a7255c]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  15:52:35.619  t+147.9s  Roamer 40876 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;e614bbe1-2c24-42e7-862a-1fdff9a7255c]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p16-framed.nwf - Autodesk Navisworks Manage 2025"
+  15:52:37.301  t+149.6s  Roamer 40876 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p16-framed.nwf - Autodesk Navisworks Manage 2025"
+  15:52:38.953  t+151.2s  Roamer 40876 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  15:52:39.509  t+151.8s  Roamer 40876 visible top level windows: none
+  15:52:47.773  t+160.0s  Roamer 40876 has exited
+  15:52:48.283  t+160.6s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 40876, parent 1164 svchost.exe: exited
+  AdskLicensingInstHelper pid 41036, parent 26096 GenuineService.exe: exited
+  AdskLicensingAgent pid 51192, parent 40876 Roamer.exe: exited
+  AdskLicensingInstHelper pid 5088, parent 26096 GenuineService.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40631684692700  new QWord 40633195936838
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 93  new DWord 94
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 152  new DWord 153
+  22.0\CER\22.5.1433.58  uptime  old QWord 2353627343750  new QWord 2355122031250
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\GlobalOptions\tools\clash\teststab\testdetails  height  old String "1 353.6000000000000227374"  new String "1 354.0000000000000000000"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,-1920,-55,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "LcOpNwcPlugin"  new String "lcodpnwf"
+  22.0\Recent File List\1  DisplayName  old String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"  new String "p16-framed.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134290938074132508  new QWord 134358511556193348
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-framing-20261007-155007\p16-framed.nwf"
+  22.0\Recent File List\10  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134290938039044021  new QWord 134290938046297945
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc, sha1 B1CCD34DBC72>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>
+  22.0\Recent File List\2  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134290938070616743  new QWord 134358511170137196
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-framing-20261007-155007\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"  new String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"
+  22.0\Recent File List\3  LastOpened  old QWord 134290938066994697  new QWord 134290938074132508
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>  new String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>
+  22.0\Recent File List\4  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"  new String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134290938062820552  new QWord 134290938070616743
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>
+  22.0\Recent File List\5  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134290938058967255  new QWord 134290938066994697
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>
+  22.0\Recent File List\6  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134290938054115696  new QWord 134290938062820552
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>
+  22.0\Recent File List\7  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134290938049614120  new QWord 134290938058967255
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>
+  22.0\Recent File List\8  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134290938046297945  new QWord 134290938054115696
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>
+  22.0\Recent File List\9  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134290938042577701  new QWord 134290938049614120
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>
+  registry: 38 values or keys differ from the backup
+  registry: 38 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 68875 bytes, sha256 5771E12A2A08, written 2026-10-07 15:15:27  new 70126 bytes, sha256 5E60DBDE602B, written 2026-10-07 15:52:38
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 CFB225D1EB92, written 2026-10-07 14:08:08  new 40079 bytes, sha256 8962B892509A, written 2026-10-07 15:52:38
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 0944C1001095FA95F5AE8887F79450C51EDE836D47F9A38DE3982BB525FB4F37, the same as before the start
+---- the work folder at the end, sorted by name ----
+  1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf  41317271 bytes
+  hkcu-navisworks-manage-22.0-before.reg  123148 bytes
+  mypid.txt  36 bytes
+  p16-framed.nwf  41317755 bytes
+  plugin-output.txt  17137 bytes
+  ViewpointProbe.dll  309760 bytes
+  watch.txt  4244 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-07 15:52:55, 168 s in all

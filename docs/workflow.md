@@ -98,7 +98,7 @@ The NWF carries five things:
     the sets           the selection sets every clash test side points at
     the tests          the clash tests themselves
     the results        every clash, with the status a person set on it
-    the viewpoints     one folder per discipline, since F52
+    the viewpoints     one view per clash test of its open clashes, since F114, beside a person's own
 
 A Weekly run touches none of that. It opens the NWF, lets Navisworks reload the newer
 NWCs, runs the tests where they sit and saves. Nothing is cleared and nothing is at risk.
@@ -118,35 +118,60 @@ Whether a model can be removed from an open document without a clear at all, whi
 make all of this unnecessary, is UNKNOWN. It has never been read off the installed DLL.
 `tools\probes\probe-model-remove.ps1` answers it and Q34 is what happens when it does.
 
-## A viewpoint per discipline
+## The saved viewpoints, one view per clash test
 
-Every federation this tool writes carries one folder per discipline, named with the
-discipline code the scan reads off part 5 of the NWC name, with one saved viewpoint inside
-it showing that discipline and hiding the others. They are made after the clash run and
-before the NWF is saved again, so a viewpoint this run made is inside the file the NWD is
-published from.
+Since F114 every federation this tool writes carries one saved view per clash test of its
+open clashes, the New and Active ones, in the Saved Viewpoints panel, in folders by the
+test's priority and the two teams of its sides. That is the picture each team reads of its
+own clashes. Clash Detective is where one clash is looked at close up, and the pictures in
+the report are how one clash is shown there.
 
-A group of one discipline still gets its folder and its viewpoint. It hides nothing,
-because there is nothing else in the group to hide, and that is not the same as having no
-viewpoint. Every NWF this tool writes then has the same shape in it, and a group that
-quietly had none would read as one where the step failed.
+The tree, outermost first:
 
-A viewpoint already at its path is left exactly as it is and counted as already there. A
-second copy at one path would leave the tree holding both, and whichever came first is
-what anything resolving that path finds. That is the rule already in force for sets.
+    A, B, C or No priority           the priority the clash matrix gives the test
+      Architecture vs Mechanical     the two teams of the test's sides, in the team map's one order
+        BLD-ME-Ducts-vs-BLD-AR-Walls   the test, named exactly as Clash Detective names it
+        Over 150mm                   only in a pair carrying it, Mechanical or Electrical here
+          BLD-ME-Ducts-vs-BLD-AR-Walls the same test's clashes whose larger service is over 150 mm
 
-The log carries a VIEWS block in the shape the SETS block uses, one line per viewpoint
-then the totals, and the counts reach the RESULT block and the judgement, so a group whose
-viewpoints failed is not reported as DONE.
+Where a clash goes, by example:
 
-This is not the same as saving a clash as a viewpoint, which this tool does not do and has
-never done. A discipline viewpoint shows a discipline. A clash viewpoint would show one
-clash, and the pictures in the report are how a clash is shown.
+- a duct of 600 by 150 against a wall, test BLD-ME-Ducts-vs-BLD-AR-Walls, priority A: in
+  `A / Architecture vs Mechanical / Over 150mm / BLD-ME-Ducts-vs-BLD-AR-Walls`, because the
+  larger side of the duct is 600 and the pair carries the size folder
+- a pipe of 100 mm against the same wall, same test: in
+  `A / Architecture vs Mechanical / BLD-ME-Ducts-vs-BLD-AR-Walls`, the view in the pair
+  folder, with every clash of the test that is not over 150 mm
+- a fitting whose size could not be read: in the pair folder's view too, never under Over
+  150mm, and named in the log's VIEWS block
+- a column against a beam, test BLD-ST-Columns-vs-BLD-ST-Framing, priority B: in
+  `B / Structure vs Structure / BLD-ST-Columns-vs-BLD-ST-Framing`, a team against itself
+  being one pair, and no Over 150mm, because neither team carries it
+- a test the priority file says nothing about: under `No priority`
+- a clash Reviewed, Approved or Resolved: in no view, and counted in the VIEWS block
+- a mirrored test, the same two sets the other way round: no view of its own, its clashes
+  are in the kept test's view
 
-**Not working yet, and the log says so.** How a saved viewpoint folder is made was never
-read off the installed DLL. Until `tools\probes\probe-viewpoints.ps1` has been run, the run
-plans the viewpoints, writes what it would have made into the log, and attempts nothing. A
-step this tool cannot do is not a step that failed, so the group is not marked down for it.
+Every view shows only the models its clashing items live in and hides the rest, dims the
+shown models and leaves every clashing item solid, the first item of each clash red and
+the second green, and is framed on all its clashes at once, or on Clash Detective's own
+camera for a view of one clash.
+
+Every view and folder the tool makes carries one comment: a sentence saying it is the
+tool's and replaced on the next run, and a line no person would type. The next run makes
+the views fresh and removes its own earlier ones. A view a person renamed, moved, turned,
+commented on or drew on is kept from then on and named in the log, and so is anything the
+tool did not make, wherever it sits. The per clash viewpoints earlier runs made before
+F114 are removed on the first run after it, once the new tree is written and read back.
+
+The log carries a VIEWS block with the plan, a VIEWS BUILT block with one line per view
+and the totals, a VIEWS INVENTORY block saying what was kept and why and what went, and a
+VIEWS TREE block with the tree as the document holds it after the run and seven checks on
+it. A failed check is a FAILED line, and the group keeps its own result. A group whose
+views failed to write or read back is not reported as DONE.
+
+The box `Make saved viewpoints for the clashes` on the Clash step opens ticked. Unticked,
+no view is made and the log says so in every group.
 
 ## The 150 mm rule and the sub groups
 
