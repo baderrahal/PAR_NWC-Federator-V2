@@ -47,8 +47,8 @@ namespace Federator.Core.Clash
                 int left;
                 int right;
 
-                if (!Counted(itemsByLocator, test.Left, out left)
-                    || !Counted(itemsByLocator, test.Right, out right))
+                if (!PlannedClashSide.Counted(itemsByLocator, test.Left, out left)
+                    || !PlannedClashSide.Counted(itemsByLocator, test.Right, out right))
                 {
                     tally.CouldNotTell++;
                     continue;
@@ -63,19 +63,6 @@ namespace Federator.Core.Clash
             }
 
             return tally;
-        }
-
-        private static bool Counted(
-            IDictionary<string, int> itemsByLocator, PlannedClashSide side, out int count)
-        {
-            count = 0;
-
-            if (itemsByLocator == null || side == null || string.IsNullOrEmpty(side.Locator))
-            {
-                return false;
-            }
-
-            return itemsByLocator.TryGetValue(side.Locator, out count);
         }
     }
 

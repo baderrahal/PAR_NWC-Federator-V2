@@ -602,6 +602,105 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// The one row of a test that found nothing paints its own row and no more. It borrowed the painter of the
+        /// two row header, so the row under it came out grey and boxed, and after the last block of the sheet,
+        /// which in the default order is a test that found nothing on almost every workbook, nothing repainted it,
+        /// FR-038. The break: the row below the last block carries no fill and no border, and the row itself
+        /// keeps both.
+        /// </summary>
+        [Test]
+        public void TheRowUnderTheLastEmptyTestCarriesNoFillAndNoBorder()
+        {
+            ClashReport report = Report();
+            AddTest(report, "found three", 3);
+            AddTest(report, "found nothing", 0);
+
+            using (XLWorkbook workbook = new XLWorkbook(Write(report)))
+            {
+                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
+                IList<int> blocks = BlockRows(sheet);
+                int row = blocks[blocks.Count - 1];
+
+                Assert.That(sheet.Cell(row, 1).GetString(), Is.EqualTo("found nothing"), "the last block is the empty one");
+
+                for (int column = 1; column <= WorkbookWriter.LastTestHeaderColumn; column++)
+                {
+                    IXLStyle own = sheet.Cell(row, column).Style;
+                    IXLStyle below = sheet.Cell(row + 1, column).Style;
+
+                    string at = ", column " + column;
+
+                    Assert.That(own.Fill.PatternType, Is.Not.EqualTo(XLFillPatternValues.None), "the row itself is grey" + at);
+                    Assert.That(own.Border.TopBorder, Is.EqualTo(XLBorderStyleValues.Thick), "and ruled thick on top" + at);
+                    Assert.That(own.Border.BottomBorder, Is.EqualTo(XLBorderStyleValues.Thick), "and closed below, name included" + at);
+                    Assert.That(below.Fill.PatternType, Is.EqualTo(XLFillPatternValues.None), "no fill under it" + at);
+                    Assert.That(below.Border.TopBorder, Is.EqualTo(XLBorderStyleValues.None), "no border under it" + at);
+                    Assert.That(below.Border.BottomBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
+                    Assert.That(below.Border.LeftBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
+                    Assert.That(below.Border.RightBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
+                }
+            }
+        }
+
+        /// <summary>
+        /// The nine values of a test are written by one routine for both shapes, so a test that found nothing and a
+        /// test that found something read the same nine facts off the same model, T1-N84.
+        /// </summary>
+        [Test]
+        public void BothShapesOfATestWriteTheNineValuesTheModelHolds()
+        {
+            ClashReport report = Report();
+            TestReport none = AddTest(report, "found nothing", 0);
+            TestReport some = AddTest(report, "found three", 3);
+
+            some.Tolerance = 0.125;
+            some.StatusWord = "Failed";
+
+            using (XLWorkbook workbook = new XLWorkbook(Write(report)))
+            {
+                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
+                IList<int> blocks = BlockRows(sheet);
+
+                Assert.That(blocks.Count, Is.EqualTo(2));
+                ValuesAre(sheet, blocks[0] + 1, some);
+                ValuesAre(sheet, blocks[1], none);
+            }
+        }
+
+        private static void ValuesAre(IXLWorksheet sheet, int row, TestReport test)
+        {
+            int column = WorkbookWriter.ColumnTestHeader;
+
+            Assert.That(sheet.Cell(row, column++).GetString(), Is.EqualTo(test.ClientTolerance()), test.Name + " tolerance");
+            Assert.That(
+                sheet.Cell(row, column++).GetString(),
+                Is.EqualTo(Whole(test.RawClashes)),
+                test.Name + " raw clashes");
+
+            foreach (ClashStatus status in ClashTally.AllStatuses)
+            {
+                Assert.That(
+                    sheet.Cell(row, column++).GetString(),
+                    Is.EqualTo(Whole(test.Tally.Of(status))),
+                    test.Name + " " + status);
+            }
+
+            Assert.That(
+                sheet.Cell(row, column++).GetString(),
+                Is.EqualTo(ClientFormat.TestTypeWording(test.TestTypeName)),
+                test.Name + " type");
+            Assert.That(
+                sheet.Cell(row, column).GetString(),
+                Is.EqualTo(ClientFormat.StatusWording(test.StatusWord)),
+                test.Name + " status");
+        }
+
+        private static string Whole(int number)
+        {
+            return number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
         /// A TEST THAT FOUND SOMETHING IS UNTOUCHED. Its block is the client's measured
         /// eight-plus-clashes shape and this change must not move a single row of it.
         /// </summary>

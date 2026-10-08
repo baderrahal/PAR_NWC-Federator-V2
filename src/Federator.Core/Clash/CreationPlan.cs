@@ -96,8 +96,8 @@ namespace Federator.Core.Clash
                 int left;
                 int right;
 
-                if (!Counted(itemsByLocator, test.Left, out left)
-                    || !Counted(itemsByLocator, test.Right, out right))
+                if (!PlannedClashSide.Counted(itemsByLocator, test.Left, out left)
+                    || !PlannedClashSide.Counted(itemsByLocator, test.Right, out right))
                 {
                     // Nobody counted one of the sides, so nothing is known about it. The
                     // test is created and the run-time check answers.
@@ -178,19 +178,6 @@ namespace Federator.Core.Clash
                 + ". THE WORKBOOK MUST CARRY A BLOCK FOR EVERY TEST IN THE FILE, whether or not the test was "
                 + "created, because the client's report is the whole matrix"
                 + (mirrorsMerged == 0 ? string.Empty : ", and a mirror merged into its kept test is in that test's block");
-        }
-
-        private static bool Counted(
-            IDictionary<string, int> itemsByLocator, PlannedClashSide side, out int items)
-        {
-            items = 0;
-
-            if (itemsByLocator == null || side == null || string.IsNullOrEmpty(side.Locator))
-            {
-                return false;
-            }
-
-            return itemsByLocator.TryGetValue(side.Locator, out items);
         }
     }
 }

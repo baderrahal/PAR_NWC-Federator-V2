@@ -352,14 +352,10 @@ namespace Federator.Core.Coverage
             }
 
             IDictionary<string, int> counts = outcome.ItemsByLocator;
-            left = CountOf(counts, test.Left == null ? null : test.Left.Locator);
-            right = CountOf(counts, test.Right == null ? null : test.Right.Locator);
-        }
-
-        private static int CountOf(IDictionary<string, int> counts, string locator)
-        {
             int items;
-            return locator != null && counts.TryGetValue(locator, out items) ? items : -1;
+
+            left = PlannedClashSide.Counted(counts, test.Left, out items) ? items : -1;
+            right = PlannedClashSide.Counted(counts, test.Right, out items) ? items : -1;
         }
 
         /// <summary>

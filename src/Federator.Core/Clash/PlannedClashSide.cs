@@ -28,6 +28,22 @@ namespace Federator.Core.Clash
         /// <summary>The set path this side names, for example lcop_selection_set_tree/A/B/Name.</summary>
         public string Locator { get; private set; }
 
+        /// <summary>
+        /// Whether the set this side names was counted, and how many items it held. A side with no locator, or a
+        /// locator nobody counted, is not counted, and the number is then nought, which is not a count of nothing.
+        /// </summary>
+        internal static bool Counted(IDictionary<string, int> itemsByLocator, PlannedClashSide side, out int items)
+        {
+            items = 0;
+
+            if (itemsByLocator == null || side == null || string.IsNullOrEmpty(side.Locator))
+            {
+                return false;
+            }
+
+            return itemsByLocator.TryGetValue(side.Locator, out items);
+        }
+
         public override string ToString()
         {
             return Locator;

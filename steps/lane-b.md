@@ -25,13 +25,12 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 ## The item the lane is on
 
 The second night, 8 Oct 2026, by Bader's message GOOD MORNING, BADER: the Core points the readers of F127,
-F119, F115, F137, F121 and F123 left, in that order after F128. F127's Core points merged as pull request 167, F119's first two as 168, FR-057's disk half of F119 as 169, F115's words as 170, F128's Core part, taken first by his second message of the morning, as 171, F115's R10 and R14 as 172, F137's and F121's as 173 and F123's FR-171 entries as 174.
-A claim check of the first account of where the lane stopped found Core points still open, so the lane went on with them:
-the one row test before a block in WorkbookCheck, the copies of Count, and then FR-061's side of the .tsv and FR-049.
-Branch claude/lane-b-release-plan-zztyvx, which for the first changes src\Federator.Core\Report\WorkbookCheck.cs,
-Diagnostics\Words.cs and TimingBlock.cs, Coverage\CountCheck.cs and CoverageAcrossTheRun.cs, Teams\TeamMap.cs,
-Exchange\MatrixCorrectionList.cs and Health\OffCoordinatesAcrossTheRun.cs, with the tests of two. fix-F132 does not change them, read with git diff on
-origin/main against every open branch on 8 Oct 2026.
+F119, F115, F137, F121 and F123 left, in that order after F128. F127's Core points merged as pull request 167, F119's first two as 168, FR-057's disk half of F119 as 169, F115's words as 170, F128's Core part, taken first by his second message of the morning, as 171, F115's R10 and R14 as 172, F137's and F121's as 173, F123's FR-171 entries as 174 and the small points a claim check found still open, the one row test order, Words.Counted and one comment, as 176.
+FR-061's side, a failed write to the .tsv, merged as 178, FR-049, a second run in a window carrying the
+first run's totals, as 179, and the FR-171 entries that fix-F132's merge as 177 freed as 180. Now on FR-038, FR-039
+and FR-074, which the same merge freed. Branch claude/lane-b-release-plan-zztyvx, which for them changes
+src\Federator.Core\Report and Views files and the tests beside them, listed in the row of pull request 181.
+No open branch changes a file under src or tests, read with git diff origin/main...origin/branch against every branch that is open on 8 Oct 2026.
 
 The branch claude/lane-b-release-plan-zztyvx is the one branch this session may push, restarted
 from main after each merge. F115 merged as pull request 142, F127 as 145, F137 as 146, F118 as 147 and
@@ -71,13 +70,9 @@ where a rule changed. The laptop lane merges those files by taking main in, as e
 
 - fix-F118 merged as pull request 159 on 8 Oct 2026 and is no longer open, so ReportOrder, ClashReportModel,
   WorkbookCheck, ClientFormat and ClientShapes are free to lane B again
-- fix-F132, the mirrored tests, add-in half in work: src\Federator.Addin\Engine\ClashHarvest.cs,
-  ClashRunner.cs, FederationEngine.cs, SavedTests.cs, src\Federator.Core\Clash\BothFoundStatus.cs,
-  ClashTestPlan.cs, CreationPlan.cs, MirrorKind.cs, MirrorPair.cs, MirrorRenames.cs, MirrorRule.cs,
-  MirrorSettings.cs, PlannedClashTest.cs, ReportedCount.cs, SavedClashTest.cs, TestDrift.cs,
-  src\Federator.Core\Exchange\ExchangeModel.cs, src\Federator.Core\Health\SetWarnings.cs,
-  src\Federator.Core\Report\ClashReportModel.cs, ClashReportXml.cs, MirrorMerge.cs, WorkbookWriter.cs,
-  src\Federator.Core\Sets\SetBuildOutcome.cs and the tests under Clash and Report named for them
+- fix-F132, the mirrored tests, merged as pull request 177 on 8 Oct 2026 and is no longer open, so the files it
+  changed, in Clash, Exchange, Health, Report and Sets and the add-in's ClashHarvest, ClashRunner, FederationEngine
+  and SavedTests, are free to lane B again
 - fix-F114, fix-F114-probes, fix-T5-close-1007 and fix-F109: no file under src or tests
 - fix-F115, fix-F127, fix-F137 and fix-F119 are merged and their branches gone, and fix-F128 was never made as a branch of its own, its Core part going through the lane branch as pull request 171
 
@@ -113,8 +108,12 @@ lane's to set in the tracker.
 | F137 | A reader's point on 146: the ALIGNMENT block measures every model from a reference, the first model of the reference discipline that could be placed, and that model can itself name Revit's own origin or no shared site, when every model that sits where the project puts it reads far from it. The block now says so on a line under the reference line and changes nothing else. The reference is chosen as it was, the models off the coordinates are the same ones, and the clash skip and the group's result do not move. The line is said only where another model was placed, since it speaks of the distances below, and a reference whose site could not be read is not said to be off. The reference is the first model of the reference discipline that could be placed, or the first that could be placed at all. 3 new tests, each failing when the code behind it is taken out, counted with the next row | 173 | merged, a125258 |
 | F121 | FR-154's note, the SINGLE DISCIPLINE finding for every group gathered by discipline. A group carries its discipline code only when it was gathered by discipline, so each said a building held only one kind of file and that its other disciplines might not be exported, which gathering by discipline makes no statement about. They are one finding now, with the groups it covers, saying each group holds one discipline, that the federation of each is still built and the clash tests whose sides both find something are still created and none is run, and which Grouping choices clash the disciplines. A group gathered by building keeps a finding of its own, and the clash tests are said to be created where a clash file with tests is picked, since the scan runs before one is. FR-167 has the same root in SourceMismatchFindings and is not changed. 2 new tests, the first failing when the code is taken out. A reader read both changes and its findings are fixed. Core tests for this row and the one above 2480 run, 2446 passed, 0 failed, 34 skipped before, 2485 run, 2451 passed, 0 failed, 34 skipped after | 173 | merged, a125258 |
 | F123 | FR-171 in part, the entries of the turn 1 read that fix-F118's merge freed and that were read again on main on 8 Oct 2026. T1-N76: ClientFormat.Rounded kept a value below about 1e-13 whole, since Math.Round takes no more than fifteen decimals, so a Distance cell held 3.7312345e-14 beside their 0.0000000000000373. It is now the number the three significant figure text reads as. T1-N82: the workbook check ordered the blocks by the rows under them and said the tests were in the wrong order for a block of one group row holding ten clashes before a block of three single rows, though the writer sorts by the clashes a test holds. It reads the Clashes cell of each block, the rows only where a cell is no whole number. The helper of PriorityColumnTests that puts a block out of order raises that cell with the rows. T1-N80: the pass line of the workbook check said every column, fill and border matched, though only the first block is read cell by cell and only its first clash row for the shape of its values, so it says what was read. Comments: T1-N61 TimedThing is read by RunLog and not by nothing else, T1-N58 a stranded summary on PenetrationsWanted, T1-N86 four rerun cases where the enum holds five, T1-N91 what Shows holds and T1-N92 two stacked summaries on the VIEWS block. Read again and already true or closed on main: T1-N45, N74, N88, N90, N93 and N52, whose claim that a second Install logs the new folder is false since the return comes before the line, and N78 and N81, closed by FR-199 and FR-035. The pass line names what is read, the column headings of every block with clashes, the fill, border and row height of every cell of the first block, five values of its first clash row, the widths and the title row. The Clashes cell is read in one place, WorkbookTests.ClashesOfBlock, for the test count and the order check, and a cell that is no whole number sends the order check back to the rows and says so. 4 new tests that fail on main's source or on the code taken out, and the order test of the priority fixture changed to raise the Clashes cell with the rows it copies. A reader read it and its findings are fixed. Core tests 2485 run, 2451 passed, 0 failed, 34 skipped before, 2489 run, 2455 passed, 0 failed, 34 skipped after | 174 | merged, 25d1f68 |
-| F118 | The order check of WorkbookCheck read the full blocks alone, so a test with no clash placed before a test with clashes was never named as out of order, the reader's point on 147. It now says so once, with the row of the first such test and the row of the first block it stands before. The other point of that reader, the Priority heading check not run on a sheet with no full block, is not a fault, since a sheet of one row tests has no heading row for it to read. 2 new tests, the first failing when the check is taken out and the second holding that a block with no clash may follow a one row test as a tie, and the pass line of the check now says that no test with no clash stands before one with clashes, where it said the place of such a test was not read. Counted with the next row | 176 | in review |
-| F127 | Words, not taken, from the readers of 145 and 153: the helper that writes a number and its noun, written out in CountCheck, CoverageAcrossTheRun, TeamMap, MatrixCorrectionList and OffCoordinatesAcrossTheRun, four of them printing the number in the running culture, which differs only in the sign of a negative one, is Words.Counted, with two tests, one handing it a culture that signs a negative with a tilde. The helpers that pick a noun and print no number are not the same function and are left. The row count loop the reader named was not taken. T1-N63 of F123 goes with it, the summaries of TimingBlock.Clock said h:mm:ss and carried a stale second one, and now say what it writes. Core tests, counted with the row above, 2489 run, 2455 passed, 0 failed, 34 skipped before, 2493 run, 2459 passed, 0 failed, 34 skipped after | 176 | in review |
+| F118 | The order check of WorkbookCheck read the full blocks alone, so a test with no clash placed before a test with clashes was never named as out of order, the reader's point on 147. It now says so once, with the row of the first such test and the row of the first block it stands before. The other point of that reader, the Priority heading check not run on a sheet with no full block, is not a fault, since a sheet of one row tests has no heading row for it to read. 2 new tests, the first failing when the check is taken out and the second holding that a block with no clash may follow a one row test as a tie, and the pass line of the check now says that no test with no clash stands before one with clashes, where it said the place of such a test was not read. Counted with the next row | 176 | merged, 6aa7635 |
+| F127 | Words, not taken, from the readers of 145 and 153: the helper that writes a number and its noun, written out in CountCheck, CoverageAcrossTheRun, TeamMap, MatrixCorrectionList and OffCoordinatesAcrossTheRun, four of them printing the number in the running culture, which differs only in the sign of a negative one, is Words.Counted, with two tests, one handing it a culture that signs a negative with a tilde. The helpers that pick a noun and print no number are not the same function and are left. The row count loop the reader named was not taken. T1-N63 of F123 goes with it, the summaries of TimingBlock.Clock said h:mm:ss and carried a stale second one, and now say what it writes. Core tests, counted with the row above, 2489 run, 2455 passed, 0 failed, 34 skipped before, 2493 run, 2459 passed, 0 failed, 34 skipped after | 176 | merged, 6aa7635 |
+| F123 | FR-061's side, what the FR-057 fix in 169 left open, FR-061 itself being merged as 151. RowLog swallowed a write to the .tsv that threw with no line and no flag, so the text log went on saying the .tsv carries every collapsed line, on a full disk. The row file now keeps the first fault, with the full stop its message ended on taken off, and stops writing. RunLog says once, with what threw, that the .tsv stopped taking rows, holds the rows before that one, may have cut the one that failed short, and that the text log is unaffected. The three sentences about the .tsv and the line of its size say that the ones counted before are in it and any after are kept nowhere and the file is short, where they said it carried every one. A sentence already written, the one the sixth repeat of a line gets, keeps what it said when it was true and the RESULT block corrects it. A header that cannot be written is a file given up on, as the first line of the text log is, so the line that names the file says there is none and why, where it would have said UNKNOWN beside a file that exists, and RowLog.Dispose runs its three steps each on its own, so a flush that fails leaves no handle open. The text log is unaffected and the run goes on. 5 new tests, each failing when the code behind it is taken out, the guard that stops it writing, the trim, the give up and the per step dispose each tried in turn. Core tests on main with pull request 177 in it 2707 run, 2673 passed, 0 failed, 34 skipped before, 2712 run, 2678 passed, 0 failed, 34 skipped after. A reader read it and its findings are fixed. Not proved here: a flush that fails in the middle of a run, with a real disk, and the half row it can leave. Left for the laptop lane, not Core: .claude\rules\core.md near line 2129 still says a write to the .tsv that throws is swallowed, and two sentences built outside RunLog still say the .tsv holds what it may not, ViewsTree near line 54, the .tsv holds every one, and PenetrationTally near line 159, each is a row in the machine readable log, neither knowing whether it opened | 178 | merged, bfd9b35 |
+| F119 | FR-049, a second run in one window carrying the first run's totals. A RESULT now closes the account. After it is written, in a finally, RunLog empties what the RESULT and the timing block read, the files written, the failures and their repeat map, the group and step records, the collapsed line counts, the clash, penetration and by design totals with their wanted flags and moved counts, and the priority tally, so the next RESULT counts what was recorded since the one before. The first design cleared at RunStarted, and the reader and the breaker showed that it lost a failure of the preview in the same press and a hand button's between presses from every RESULT but the first, and left the open file run, which marks no run, holding the other run's groups, clashes and files. RunStarted now keeps only the clock and a line saying this is run N. The runs before this one are RunClock's EarlierRunsSeconds, each RUN started to RUN finished, shown as a row of their own, earlier runs, and capped at the time before this run, so waiting for the person is what is left where it held the whole first run. A run whose end was never marked adds nothing, its time stays waiting, and the line says so. The footer of the RESULT names the fourth stretch. A run starts with a whole census, where it inherited the narrowing of the one before. 15 new tests in RunLogSecondRunTests. The whole file does not build on main's source, since the clock members are new, 9 of them fail on the first design, and thirteen pieces were taken out one at a time, each failing a test. Two existing tests, one in ResultBlockInvariantTests and one in RepeatedFailureLogTests, read the lists after the RESULT and now read them before it, with every assertion as it was. Core tests on main with pull request 178 in it 2712 run, 2678 passed, 0 failed, 34 skipped before, 2727 run, 2693 passed, 0 failed, 34 skipped after. Not proved here: the finally, a block that throws part way, which the tests cannot make, and a whole window run. Left for the laptop lane, not Core: the open file run's RESULT after a Run still prints that Run's marks, so its run time is the Run's. A hand button's clash, penetration and by design tallies land in the next RESULT, a run's or not. The .tsv has no run boundary row, so a sum over it counts every run of the window. PreviewRunPaths runs before the running flag is set, so a hand button might be clicked through it. .claude\rules\core.md near line 2115 says RunClock holds three stretches, addin.md says a tally of what one run did is the engine's and never kept on the log, and neither names the account a RESULT closes | 179 | merged, f37230b |
+| F123 | FR-171 in part, the Core entries of the files fix-F132 freed by its merge as 177, read again on main on 8 Oct 2026, and one polish point of the sets. T1-N75: ClashReportXml.Filled and its class comment listed createddate and date as filled, which nothing writes, on purpose, since the stylesheet writes a Date Found column for any it finds and the client's report has none. They are in LeftOut with time, which the shape gives beside them, and node, name and value, which the objectattribute and smarttag elements carry, are in Filled where they were missing. The class comment points at the two arrays and does not write them out a second time. A test reads a written XML and holds the lists against it three ways, every element written is listed as filled, none written is left out, and every one listed as filled is written, and it fails on main's source naming createddate and date and name and value. T1-N47: the helper that says whether a side's set was counted, written line for line in CreationPlan and EmptySideCost and in another shape in CoverageRule.CountOf, is PlannedClashSide.Counted, matched Ordinal and never trimmed, with five tests. T1-N64's second place: ClashReportModel reads ExchangeReader.SelectionSetTreeRoot, held by a pairing test that did not fail before since the two were equal. T1-N84: the nine cells of a test's values, written by the same seven lines in WriteEmptyTestRow and WriteTestHeader, are WriteTestValues, held by a test reading both shapes back off a written workbook. T1-N83: ClientStyle names the Priority column among what is not copied. The second ContainsTest in SetWarnings is deleted and ExportCheck reads the plan's. 8 new tests, the Counted, nine values and lists ones each failing when the code behind them is taken out, which was tried, and two mutants of Counted the reader named, a locator tested for null and a trimmed or case blind match, each failing a test. Core tests on main with pull request 179 in it 2727 run, 2693 passed, 0 failed, 34 skipped before, 2735 run, 2701 passed, 0 failed, 34 skipped after. A reader read it and its findings are fixed. Read after 177 and closed: a test whose reason is built by a mirror bypassing ReasonFor, which no mirror code does. Left: T1-N64's first place in ClashRunner and a third literal of the root in SetBuilder.cs near line 223, which are the add-in's, and T1-N77, which is Bader's | 180 | merged, 8f3af33 |
+| F123 | FR-038, FR-039 and FR-074, three noise items of the report and the views that WorkbookWriter and the views plan held for the laptop lane while fix-F132 was open, read again on main after 177. FR-038: the one row of a test that found nothing borrowed the painter of the two row test header, so the row under it came out grey and boxed, and after the last block of a sheet, which in the default order is an empty test on almost every workbook, nothing repainted it. ClientStyle.TestHeader takes the number of rows, one for the one row form, and paints no more, and that form closes its own box, a thick bottom on every column, name included, where the stray row used to. FR-039: with the thumbnail box ticked the 72 point row of a pasted picture was replaced by the clash row height of 60 as soon as the row was written, so the picture overhung the next row. The height is set before the row is written and the picture's wins, ThumbnailPoints is internal so the tests read it, and the workbook check expects it on a clash row holding a picture, where it would have named every such run's row as 72 high against the client's 60. The same height on a row with no picture is still named. FR-074: the VIEWS block counted the clashes whose pair had a set name with no known code and never said which set. It names the sets, each with the clashes it was in, a clash counted under each of its sets with no code and a clash between two sets of one name counted once, in the order they were met, as many as a repeated line keeps, RunLog.KeptOfARepeat, and counts the rest. A set whose name carries a code is never named, nothing is guessed, and the folder still says UNKNOWN. DisciplinePair says which side was unknown, where the plan decided it a second time. The item says up to ten and the one number is five. 9 new tests, each failing when the code behind it is taken out, which was tried for the empty row, the thumbnail's height, the workbook check, the bottom edge, the self pair, the cap and the known code rule, and the naming ones failing on main's source. Core tests on main with pull request 180 in it 2735 run, 2701 passed, 0 failed, 34 skipped before, 2744 run, 2710 passed, 0 failed, 34 skipped after. A reader read it and its findings are fixed. Read on main and closed: FR-042, the page check warning of a wrong order on a page written in priority order, since FR-199 keeps the blocks in the measured order with a priority file picked, so no page is in priority order, and its tracker row is the loop's to set. Left for the laptop lane: the add-in writes its own sentence for each pair that hides nothing, ViewpointBuilder near line 745, and it does not name the set. The VIEWS line is reached only with the viewpoints box ticked, so the proof step has to tick it. TestViewPlanOutcome names its unknown sets by team on a line each, so the two VIEWS blocks differ in layout and cap. The F85 bullet of .claude\rules\core.md says only that the count goes in the block. FR-036 and FR-041, FR-059, FR-060 and FR-063 need the engine, ClashRunner or a probe | 181 | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -147,8 +146,8 @@ and the row that said how many worksets a stopped walk had seen.
   A failed list read is cached for the life of the window. The not-a-typo pairs are one project's.
   SETS ACROSS THE RUN no longer says every set found something over a run in which no set was
   counted, pull request 167
-- Words and polish still open: a second ContainsTest in SetWarnings, which fix-F132 changes, and the walk
-  not disposing five sub objects, which FR-029 holds
+- Words and polish still open: the walk not disposing five sub objects, which FR-029 holds. The second
+  ContainsTest in SetWarnings is the plan's since pull request 180
 - Looked at again on 8 Oct 2026, each read off the code. Left: R9, ProjectOf calling ContainerName.Parse
   outside a guard, because the window holds one readonly settings object, parses every path with it at
   the scan outside any catch and hands the same object to the run, so the throw comes at the scan first.
@@ -190,7 +189,7 @@ of the document that only the add-in makes, so a Core plan of the set folder, on
 the category and LcOaNodeSourceFile, would be called by no running code, which breaks the no member without
 a caller rule. SetBuildPlan has no per model input, so the one place that could carry it without the add-in
 is not a place the group's models reach, and the call that would hand it the models is in FederationEngine,
-which fix-F132 changes. What can be written in Core once the probe has answered is the set plan and the
+which is the add-in's. What can be written in Core once the probe has answered is the set plan and the
 counts rule, with the add-in call in the same pull request.
 
 F121 the rest. What was open is the add-in or the window, FR-150, 152, 153, 156, 157, 160, 161, 163, 162 and
@@ -201,7 +200,7 @@ a character Windows refuses and a collision sentence naming every group, were ta
 F123. The entries that were Core and a test proves are taken: FR-007, FR-061 and FR-064 in 151, FR-126,
 127, 129, 130, 131 and 132 in 154, FR-168 in 155, FR-172 in part in 161, and FR-171 in part in 162, 163 and
 the pull request that carries this page. The rest of F123 is the loop's own files, tools\loop and
-.claude, which lane B never edits, or the add-in, or files fix-F118 and fix-F132 change, and FR-171 and
+.claude, which lane B never edits, or the add-in, and FR-171 and
 FR-172 are backlogs of which the entries left are named under F123 below, each as the entry states it. The
 members read only by a test, at least 43, are Bader's Q26 and wait for the steps he asked for.
 
@@ -290,7 +289,7 @@ What the add-in must be careful of, found by reading SetBuilder and SetLeftovers
   workbook check allows nothing after it. A third sheet breaks that, and a workbook of its own for
   the group, as Q126 B gives the Coverage sheet where the clash is skipped, breaks nothing. It is for Bader
   to choose and GenericSheet.Write takes the workbook it is handed, so either way is the same call.
-  WorkbookWriter is a file fix-F132 changes and WorkbookCheck allows two sheets, so both are the laptop lane's.
+  WorkbookCheck allows two sheets, so the workbook is the laptop lane's.
 - The rule lines. .claude\rules\core.md has no line for this part, and lane B never edits that folder.
   The lines to write are that the sheet is named by GenericModelsSettings, that a count nobody took is
   UNKNOWN and never nought, that the total says at least over one and says it is not a count of items where
@@ -305,7 +304,8 @@ delete, and Bader's order of 8 Oct 2026 keeps them. They go with Q26's list unti
 - Not in Core yet: the categories no set catches per model, since CoverageSettings.CategoriesNamedPerModel is
   read by no rule and ModelExport carries no count per category. FR-176's RESULT count of the tests, once
   across the run, is in TestLines since pull request 153
-- A test whose reason is built by a mirror after fix-F132 merges may bypass ReasonFor. A test the plan
+- A test whose reason is built by a mirror may bypass ReasonFor: read on 8 Oct 2026 after 177 and it does not,
+  since no mirror code builds a reason and every one comes from ClashTestPlan and CoverageRule.ReasonFor. A test the plan
   dropped before the model, that an earlier run left in the NWF, now gets its cause from CountCheck and not
   from CoverageRule, which never looks for it in the document
 - The workbook handed in carries no proof of which run wrote it, so a write that threw leaves last week's
@@ -383,16 +383,17 @@ delete, and Bader's order of 8 Oct 2026 keeps them. They go with Q26's list unti
   by the code falling to the next folder. In the window, which lane B does not touch, FederatorWindow near
   line 126 sets the progress line to WhereTheLogIs once when it opens, so after a fault in mid run it still
   says Log and the path, and the open log folder button goes to the default logs folder and not to the
-  folder the log fell back to. RowLog near line 152 still swallows a failed write to the .tsv with no line
-  and no flag, so the text log goes on saying the .tsv carries every collapsed line on a full disk, which is
-  FR-061's side. The closing steps of Dispose swallow their failure with a reason in a comment and no line,
+  folder the log fell back to. A failed write to the .tsv is said once and the
+  sentences about it follow, since pull request 178, and a header it cannot write gives the file up. The closing steps of Dispose swallow their failure with a reason in a comment and no line,
   as the old Dispose did
 - .claude\rules\core.md lines about retention and the size rule do not say the .tsv goes with its log,
   that the temp fallback is not pruned, or that a file held with no sharing falls back to the directory's
   size, that the RETAIN line counts a refused .tsv apart from a refused log, or that the timing block of a
   run counted to now prints no after the run finished row, or that a write to the log file that throws
-  stops the file, keeps every line in memory and in the window and copies the log from memory. FR-049, a second run in one window carrying
-  the first run's totals, is still open and a new log per run in the window would close it
+  stops the file, keeps every line in memory and in the window and copies the log from memory. It also still
+  says, near line 2129, that a write to the .tsv that throws is swallowed, which is false since 178: the
+  first one is kept, told once and the file stops taking rows. FR-049, a second run in one window carrying
+  the first run's totals, is closed since pull request 179 by a RESULT closing its account, and what that leaves for the window is on its row
 
 ## F121 points lane B left, for the laptop lane
 
@@ -428,14 +429,15 @@ delete, and Bader's order of 8 Oct 2026 keeps them. They go with Q26's list unti
 
 ## F123 points lane B left, for the laptop lane
 
-- FR-171 is a backlog and most of its entries are in the add-in, the loop's files, or files an open branch
-  changes. Core entries lane B did not take, each as the entry states it and not read again on main by lane
-  B: T1-N54 two duration formatters whose spellings differ, so merging them changes a line the log writes,
-  T1-N46, N48, N66 and N85 values and members the entry says nothing reads, and the files
-  fix-F132 changes. The files fix-F118 changed were read again on 8 Oct 2026 and the entries in them are
-  taken or closed in pull request 174, except T1-N77, whether ClashItem.Category is a gap the
-  report keeps back, which is Bader's to say, and T1-N75 and the second place of T1-N64, the set tree root
-  typed as a literal in ClashReportModel, which are in files fix-F132 changes. AlignmentCheck.DefaultToleranceMillimetres and DefaultInternalName are
+- FR-171 is a backlog and most of its entries are in the add-in or the loop's files. Core entries lane B did
+  not take, each as the entry states it and not read again on main by lane B: T1-N54 two duration formatters
+  whose spellings differ, so merging them changes a line the log writes, and T1-N46, N48, N66 and N85 values
+  and members the entry says nothing reads. The files fix-F118 changed were read again on 8 Oct 2026 and the
+  entries in them are taken or closed in pull request 174, and those of the files fix-F132 changed on the
+  same day: T1-N47, N75, N83, N84 and the second place of T1-N64, the set tree root typed as a literal in
+  ClashReportModel, in 180. Left there: T1-N77, whether ClashItem.Category is a gap the report keeps back,
+  which is Bader's to say, and the first place of T1-N64, in ClashRunner. T1-N78 and N81 were closed by FR-199 and
+  FR-035, as 174 says. AlignmentCheck.DefaultToleranceMillimetres and DefaultInternalName are
   constants the add-in passes as they stand, so a person cannot move them without a build, which the
   every number is a setting rule asks to be a setting. The comments now say so and the settings are not made
 - FR-172 is left in the main. Of its Core entries, the two above were the only ones no file under src, tests or
@@ -449,9 +451,9 @@ delete, and Bader's order of 8 Oct 2026 keeps them. They go with Q26's list unti
   is the loop's to update. The block is written once at window open, so a folders file that fails to save
   later still never reaches the log, which is FR-162
 - FR-061 says the .tsv holds a collapsed line where the .tsv opened. A write that fails after it opened is
-  not seen by that sentence, so the line can still say the rows are in a file that stopped taking them. The
-  log would have to tell the text log the moment the second file stops, which is RunLog state the add-in's
-  window reads, and lane B did not widen the fix to it
+  said once and the sentences follow it since pull request 178. A sentence already written, the one the
+  sixth repeat of a line gets, keeps what it said when it was written, and the RESULT block and the size line
+  of the .tsv correct it
 - Three places in the add-in still say what Core no longer does, found by the reader of part 2. GroupRow.cs
   near line 257 says One discipline, so every test is created and none is run, and its comment near line 155
   says the same, where Core now says only the tests whose two sides both find something are created.
@@ -459,8 +461,8 @@ delete, and Bader's order of 8 Oct 2026 keeps them. They go with Q26's list unti
   wording and ends in what was thrown, where the window should say RepeatedFailureGuard.Stopped. Both are
   for the laptop lane to read off Core. The engine file is one fix-F114 changes, so lane B left both
 - FR-059 and FR-063 and FR-060 need the engine or ClashRunner to hand Core the picture count, the plan
-  source or the tests run. FR-038 and FR-039 are in WorkbookWriter.cs and FR-074 in Views, which open
-  branches of the laptop lane change. FR-042 goes with FR-199
+  source or the tests run. FR-038 and FR-039 and FR-074 are taken in pull request 181 since fix-F132 merged,
+  and FR-042 was closed by FR-199, read on main
 - The category line names the folder from a folder line lane B added to revit-categories.txt, C02, read
   off that file's own header, and the same list is not a list of the other folders
 
