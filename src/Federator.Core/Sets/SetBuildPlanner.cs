@@ -114,6 +114,32 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
+        /// A plan of sets that are already planned, F128: the Generic Models sets are made in Core from the
+        /// models of a group and not read from a file, so they are handed to the builder as the plan it already
+        /// takes, and it builds them as it builds the picked file's. None is skipped, since a set that cannot be
+        /// planned is never made. A null set is left out.
+        /// </summary>
+        public static SetBuildPlan Of(IEnumerable<PlannedSet> planned)
+        {
+            if (planned == null)
+            {
+                throw new ArgumentNullException("planned");
+            }
+
+            List<PlannedSet> buildable = new List<PlannedSet>();
+
+            foreach (PlannedSet set in planned)
+            {
+                if (set != null)
+                {
+                    buildable.Add(set);
+                }
+            }
+
+            return new SetBuildPlan(buildable, new List<SkippedSet>(), new List<string>());
+        }
+
+        /// <summary>
         /// A file holding no sets is accepted and gives an empty plan. A project that
         /// keeps its sets in the model and supplies only tests is a normal case, not an
         /// error.
