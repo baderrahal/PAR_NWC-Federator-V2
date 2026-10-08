@@ -423,6 +423,39 @@ namespace Federator.Core.Tests
             }
         }
 
+        // ---------- FR-173, the log name that could not be made ----------
+
+        /// <summary>
+        /// A name that is taken and a file that cannot be made were the same answer to the loop, and a hundred
+        /// refusals ended in a message that named the folder and nothing else, so the line that says what each
+        /// folder threw said only that. The last refusal is kept and carried, with the name it was for. The break:
+        /// a hundred names already taken, which is the refusal this machine can make on demand.
+        /// </summary>
+        [Test]
+        public void AHundredRefusedNamesEndInAMessageThatCarriesTheLastRefusal()
+        {
+            DateTime at = new DateTime(2026, 10, 8, 9, 0, 0);
+            System.Reflection.MethodInfo name = typeof(RunLog).GetMethod(
+                "FileName", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+
+            Assert.That(name, Is.Not.Null, "RunLog no longer holds a method named FileName, so this refusal cannot be made");
+
+            string last = null;
+
+            for (int attempt = 0; attempt < 100; attempt++)
+            {
+                last = Path.Combine(folder, (string)name.Invoke(null, new object[] { at, attempt }));
+                File.WriteAllText(last, "taken");
+            }
+
+            IOException error = Assert.Throws<IOException>(() => RunLog.Start(folder, at));
+
+            Assert.That(error.InnerException, Is.Not.Null, "the last refusal travels with it");
+            Assert.That(error.Message, Does.Contain(last), "and the name it was for");
+            Assert.That(error.Message, Does.Contain(error.InnerException.Message.TrimEnd('.', ' ')));
+            Assert.That(error.Message, Does.Not.Contain(".."));
+        }
+
         // ---------- FR-050 and FR-051, the clock of a run that did not finish ----------
 
         /// <summary>

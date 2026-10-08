@@ -246,7 +246,7 @@ namespace Federator.Core.Exchange
             }
             catch (Exception)
             {
-                // Not swallowed: the answer is false, ResourceFound carries it, and the EXPORT
+                // What it threw is not kept. The answer is false, ResourceFound carries it, and the EXPORT
                 // CHECK block says the decided pairs are UNKNOWN, FR-012.
                 names = new List<string>();
                 pairs = new List<string[]>();

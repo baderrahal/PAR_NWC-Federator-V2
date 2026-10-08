@@ -202,6 +202,7 @@ namespace Federator.Core.Diagnostics
                 }
                 catch (Exception)
                 {
+                    // A path the framework will not split names no folder, and the picker opens where it always did.
                     return string.Empty;
                 }
             }

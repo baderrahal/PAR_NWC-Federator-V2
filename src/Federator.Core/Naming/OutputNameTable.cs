@@ -416,13 +416,7 @@ namespace Federator.Core.Naming
                 return null;
             }
 
-            char found = name[at];
-
-            return ", it holds "
-                + (found < ' '
-                    ? "a control character (U+" + ((int)found).ToString("X4", System.Globalization.CultureInfo.InvariantCulture) + ")"
-                    : "\"" + found + "\"")
-                + ", which Windows does not allow in a file name.";
+            return ", it holds " + FileNames.Name(name[at]) + ", which Windows does not allow in a file name.";
         }
 
         /// <summary>Only the rows that will actually run, for the collision check.</summary>

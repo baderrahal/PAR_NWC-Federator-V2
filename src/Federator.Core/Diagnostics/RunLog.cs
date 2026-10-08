@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using Federator.Core.Clash;
 using Federator.Core.Coverage;
+using Federator.Core.Generic;
 using Federator.Core.Health;
 using Federator.Core.Rerun;
 using Federator.Core.Views;
@@ -352,6 +353,7 @@ namespace Federator.Core.Diagnostics
 
             string path = null;
             FileStream stream = null;
+            IOException lastRefusal = null;
 
             for (int attempt = 0; attempt < 100 && stream == null; attempt++)
             {
@@ -364,16 +366,21 @@ namespace Federator.Core.Diagnostics
                     stream = new FileStream(
                         path, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite, 1024, false);
                 }
-                catch (IOException)
+                catch (IOException error)
                 {
-                    // Two runs inside the same second. Try the next suffix.
+                    // Two runs inside the same second. Try the next suffix. What it said is kept, because
+                    // a name that is taken and a file that cannot be made both come here, FR-173.
                     stream = null;
+                    lastRefusal = error;
                 }
             }
 
             if (stream == null)
             {
-                throw new IOException("Could not open a log file in " + folder + ".");
+                throw new IOException(
+                    "Could not open a log file in " + folder + ", the last name tried was " + path
+                        + " and it said: " + lastRefusal.Message.TrimEnd('.', ' ', '\r', '\n') + ".",
+                    lastRefusal);
             }
 
             RunLog log = new RunLog(path, startedAt, stream, null);
@@ -533,6 +540,7 @@ namespace Federator.Core.Diagnostics
             }
             catch (Exception)
             {
+                // Only used to tell the live file from the others, and the path as given is as good a key.
                 return path ?? string.Empty;
             }
         }
@@ -2035,13 +2043,20 @@ namespace Federator.Core.Diagnostics
         /// FAILED line is written here in full, no group's count moves, and the block never
         /// closes on Nothing failed beside one. Null writes one line saying no coverage was
         /// taken, because a missing line reads as a check that did not run.
+        ///
+        /// generic is the Generic Models count of the same run, F128, handed in the same way and
+        /// never kept, one line across the run. Null writes one line saying no count was handed
+        /// in, for the same reason.
         /// </summary>
         public void WriteResultBlock(
-            OffCoordinatesAcrossTheRun thisRun = null, bool makeViewpoints = true, CoverageAcrossTheRun coverage = null)
+            OffCoordinatesAcrossTheRun thisRun = null,
+            bool makeViewpoints = true,
+            CoverageAcrossTheRun coverage = null,
+            GenericModelsAcrossTheRun generic = null)
         {
             try
             {
-                WriteTheResult(thisRun, makeViewpoints, coverage);
+                WriteTheResult(thisRun, makeViewpoints, coverage, generic);
             }
             finally
             {
@@ -2051,7 +2066,7 @@ namespace Federator.Core.Diagnostics
         }
 
         private void WriteTheResult(
-            OffCoordinatesAcrossTheRun thisRun, bool makeViewpoints, CoverageAcrossTheRun coverage)
+            OffCoordinatesAcrossTheRun thisRun, bool makeViewpoints, CoverageAcrossTheRun coverage, GenericModelsAcrossTheRun generic)
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
             // to be scrolled for, and so where the time went is read on the way to it.
@@ -2170,6 +2185,11 @@ namespace Federator.Core.Diagnostics
                     Line(line);
                 }
             }
+
+            // F128. Under the coverage, because it is the same kind of thing, a count the
+            // run took that no clash report carries. Always one line, so a run that counted
+            // nothing says so rather than leaving the line out.
+            Line(generic == null ? GenericModelsAcrossTheRun.NoneTaken() : generic.ResultLine());
 
             Blank();
 
@@ -2474,6 +2494,7 @@ namespace Federator.Core.Diagnostics
             }
             catch (Exception)
             {
+                // The file cannot be read here, and the lines held in memory are the same lines.
                 lock (gate)
                 {
                     return mirror.ToString();
@@ -2511,6 +2532,7 @@ namespace Federator.Core.Diagnostics
                 }
                 catch (Exception)
                 {
+                    // Neither figure could be read, and a size is only ever logged after it was read back.
                     return -1;
                 }
             }

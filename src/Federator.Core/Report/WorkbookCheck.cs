@@ -473,6 +473,14 @@ namespace Federator.Core.Report
                 return;
             }
 
+            if (string.Equals(got, ColourNotRead, StringComparison.Ordinal))
+            {
+                Say("Cell " + Where(row, column) + ", on the " + Words(kind) + " row, has a fill whose colour "
+                    + "could not be read here, so its banding was not compared with the client's report, "
+                    + "which paints it " + Paint(wanted) + ".");
+                return;
+            }
+
             Say("Cell " + Where(row, column) + ", on the " + Words(kind) + " row, is "
                 + Paint(got) + " and the client's report paints it " + Paint(wanted)
                 + ". That banding is the first thing a reader sees, so a report without "
@@ -572,9 +580,13 @@ namespace Federator.Core.Report
             }
             catch (Exception)
             {
-                return string.Empty;
+                // A fill ClosedXML keeps as a theme colour has no RGB to give and throws. It is not a cell with
+                // no fill, which the line above answers, so it is told apart and said, FR-173.
+                return ColourNotRead;
             }
         }
+
+        private const string ColourNotRead = "UNKNOWN";
 
         private static string Paint(string colour)
         {

@@ -185,7 +185,21 @@ namespace Federator.Core.Diagnostics
                     return null;
                 }
 
-                Assembly loaded = Assembly.LoadFrom(path);
+                Assembly loaded;
+
+                try
+                {
+                    loaded = Assembly.LoadFrom(path);
+                }
+                catch (Exception error)
+                {
+                    // The file was found, so the runtime's report of the request would not say why it still
+                    // failed. It is still handed back as nothing, FR-173.
+                    Remember(wanted + " was found at " + path + " and could not be loaded, "
+                        + error.GetType().Name + ": " + (error.Message ?? string.Empty).TrimEnd('.', ' ', '\r', '\n'));
+                    return null;
+                }
+
                 Remember(wanted + " resolved from " + path);
                 return loaded;
             }

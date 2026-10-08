@@ -561,9 +561,14 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// Builds the plan's sets. The judge says why a set that found nothing found nothing,
-        /// by what it knows of the values this group's models carry, FR-011.
+        /// by what it knows of the values this group's models carry, FR-011, and no judge judges
+        /// nothing, F128. walkLeftovers is whether the sets of the document this plan does not
+        /// name are read and acted on, which only the picked file's build does, because a walk
+        /// handed the Generic Models plan would remove every set of the file that no test points
+        /// at. alsoWanted names the sets of the other plan that walk keeps, the Generic Models
+        /// sets the last run saved in the NWF, F128, or null where there are none.
         /// </summary>
-        public SetBuildOutcome Build(SetBuildPlan plan, EmptySetJudge judge)
+        public SetBuildOutcome Build(SetBuildPlan plan, EmptySetJudge judge, bool walkLeftovers, IList<string> alsoWanted)
         {
             if (plan == null)
             {
@@ -607,9 +612,9 @@ namespace Federator.Addin.Engine
             //
             // THE BOX HAS TO BE ON. It is off by default, it changes the NWF, and the NWF
             // is the only record of what has been fixed.
-            if (rebuilds.RebuildDriftedSets)
+            if (walkLeftovers && rebuilds.RebuildDriftedSets)
             {
-                HandleLeftovers(document, sets, plan, outcome);
+                HandleLeftovers(document, sets, plan, alsoWanted, outcome);
             }
 
             return outcome;
@@ -628,13 +633,20 @@ namespace Federator.Addin.Engine
         /// the NWF worse than it started and nothing may be saved from it.
         /// </summary>
         private void HandleLeftovers(
-            Document document, DocumentSelectionSets sets, SetBuildPlan plan, SetBuildOutcome outcome)
+            Document document, DocumentSelectionSets sets, SetBuildPlan plan, IList<string> alsoWanted, SetBuildOutcome outcome)
         {
             List<string> named = new List<string>();
 
             foreach (PlannedSet planned in plan.Buildable)
             {
                 named.Add(planned.Name);
+            }
+
+            // The sets of the other plan are wanted too, F128, so a Generic Models set the
+            // last run saved is not read as a set the file no longer names and removed.
+            if (alsoWanted != null)
+            {
+                named.AddRange(alsoWanted);
             }
 
             IList<DocumentSet> inDocument = ReadEverySetInTheDocument(document);
@@ -812,6 +824,7 @@ namespace Federator.Addin.Engine
                         // "asked UNKNOWN, because it was already in the NWF and this
                         // run never read its question". 5w reads it.
                         present.Asked = askedNow;
+                        present.AskedConditions = asking;
 
                         // 3b. A set that found NOTHING says which of three things is wrong,
                         // because his own report shows 1,677 of 1,830 tests touching a

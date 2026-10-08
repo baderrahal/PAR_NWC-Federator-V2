@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Naming;
 using Federator.Core.Sets;
@@ -11,13 +12,52 @@ namespace Federator.Core.Generic
     /// <summary>
     /// One model of a group, as the Generic Models plan is handed it, F128. The file name names the
     /// model and its set. The text to find in the Source File of an item is the file's stem unless
-    /// the caller hands another, because which text of the model the Source File property of an
-    /// item carries, the NWC's name or the name of the Revit file it was published from, is UNKNOWN
-    /// until the probe of the laptop lane reads it. A different text is the caller's to hand in
-    /// after that, and nothing here guesses it.
+    /// the caller hands another.
+    ///
+    /// THE TEXT IS THE FILE NAME OF THE MODEL'S SOURCE FILE NAME, MEASURED ON 2026-10-08, docs\history\scan.md
+    /// 5z-zb. The Source File property of an item holds the bare name of the Revit file the NWC was published
+    /// from, with its .rvt and no folder, and that is exactly the file name of Model.SourceFileName, which reads
+    /// Autodesk Docs://KSA_New Murabba/ and that name. FOR FOUR OF THE TEN MODELS OF 1A04PK THE REVIT NAME IS NOT
+    /// THE NWC'S, so the NWC's stem found 531 of 572 items and missed 41, and the Revit file's name found all
+    /// 572. From reads that name off the two names the add-in hands it, and a model with no source name is
+    /// looked for by its stem, which the plan says.
     /// </summary>
     public sealed class GenericModelInput
     {
+        /// <summary>
+        /// The input for a model as the document holds it: its file, Model.FileName, and the text to find,
+        /// which is the file name of Model.SourceFileName, after its last slash or backslash and with its
+        /// extension, because that is the text every Generic Models item's Source File was measured to hold.
+        /// A source name that is empty or ends in a separator gives no text, so the plan uses the stem.
+        /// </summary>
+        public static GenericModelInput From(string modelFile, string sourceFileName)
+        {
+            string text = FileNameOf(sourceFileName);
+            GenericModelInput model = new GenericModelInput(modelFile, text);
+            model.SourceNameNotRead = text == null;
+            return model;
+        }
+
+        /// <summary>
+        /// True where From was handed no source name to read a text off, so the plan looks for the
+        /// stem of the NWC's name and says so. False for a caller that hands no text on purpose.
+        /// </summary>
+        public bool SourceNameNotRead { get; private set; }
+
+        private static string FileNameOf(string sourceFileName)
+        {
+            if (string.IsNullOrWhiteSpace(sourceFileName))
+            {
+                return null;
+            }
+
+            // Not Path.GetFileName, which refuses a character Windows refuses in a path and would throw on a
+            // source name this tool only reads, and which off Windows does not read a backslash as a separator.
+            int cut = Math.Max(sourceFileName.LastIndexOf('/'), sourceFileName.LastIndexOf('\\'));
+            string name = cut < 0 ? sourceFileName : sourceFileName.Substring(cut + 1);
+            return string.IsNullOrWhiteSpace(name) ? null : name;
+        }
+
         public GenericModelInput(string modelFile)
             : this(modelFile, null)
         {
@@ -89,6 +129,7 @@ namespace Federator.Core.Generic
     {
         private readonly List<GenericModelSet> sets = new List<GenericModelSet>();
         private readonly List<string> notes = new List<string>();
+        private readonly List<string> stemFallbacks = new List<string>();
 
         private GenericModelsPlan(GenericModelsSettings settings)
         {
@@ -96,6 +137,7 @@ namespace Federator.Core.Generic
             CategoryValue = settings.CategoryValue;
             Sets = new ReadOnlyCollection<GenericModelSet>(sets);
             Notes = new ReadOnlyCollection<string>(notes);
+            LookingForTheStem = new ReadOnlyCollection<string>(stemFallbacks);
         }
 
         /// <summary>The folder under the root of the saved sets tree that holds the sets.</summary>
@@ -107,8 +149,82 @@ namespace Federator.Core.Generic
         /// <summary>One set for each model of the group, in the order the models were handed in.</summary>
         public ReadOnlyCollection<GenericModelSet> Sets { get; private set; }
 
+        /// <summary>
+        /// The name of every set of the plan, for the leftover walk of the picked file's build, which removes
+        /// or renames every set of the document that no plan it is handed names. A Generic Models set the last
+        /// run saved in the NWF is wanted, so the walk is handed these beside the file's own.
+        /// </summary>
+        public IList<string> SetNames
+        {
+            get
+            {
+                List<string> names = new List<string>();
+
+                foreach (GenericModelSet set in sets)
+                {
+                    names.Add(set.ModelName);
+                }
+
+                return names;
+            }
+        }
+
         /// <summary>What the plan noticed, a line each, the group's models never changed by it.</summary>
         public ReadOnlyCollection<string> Notes { get; private set; }
+
+        /// <summary>
+        /// The models whose set looks for the stem of their file name because their source name was not
+        /// read, GenericModelInput.SourceNameNotRead, and not a model handed no text on purpose. Said, never silent, since
+        /// a model published from another Revit name is then counted at nought, the readers' finding on
+        /// attempt 1.
+        /// </summary>
+        public ReadOnlyCollection<string> LookingForTheStem { get; private set; }
+
+        /// <summary>
+        /// What the Source File condition of the sets looks for, for the one SETS line: the model's Revit
+        /// file name, or the stem of the NWC's name for the sets of models whose source name was not read.
+        /// </summary>
+        public string LooksFor
+        {
+            get
+            {
+                if (stemFallbacks.Count == 0)
+                {
+                    return "its Source File contains the model's Revit file name";
+                }
+
+                if (stemFallbacks.Count == sets.Count)
+                {
+                    return "its Source File contains the stem of the NWC's name, because no model's source name was read";
+                }
+
+                return "its Source File contains the model's Revit file name, except " + Words.Counted(stemFallbacks.Count, "set", "sets")
+                    + " of " + sets.Count + " that look for the stem of the NWC's name because no source name was read";
+            }
+        }
+
+        /// <summary>
+        /// Why the picked file's leftover walk must not run this group, or null where it may, F128
+        /// attempt 2: the walk removes or renames every set of the document that neither plan names,
+        /// so a plan that was not made, because a model's read threw, or that holds no set, because the
+        /// document read no models, would hand it no Generic Models name and last week's sets of every
+        /// model would be removed. A set of a model that has left the group is stale and the walk may
+        /// remove it, which is right.
+        /// </summary>
+        public static string WhyNoLeftoverWalk(GenericModelsPlan plan)
+        {
+            if (plan == null)
+            {
+                return "the Generic Models plan was not made, so the sets the file no longer names are not walked and no set of either plan is removed";
+            }
+
+            if (plan.sets.Count == 0)
+            {
+                return "the Generic Models plan holds no model, so the sets the file no longer names are not walked and no set of either plan is removed";
+            }
+
+            return null;
+        }
 
         /// <summary>
         /// True where the text of one set also finds the items another set finds, so the total over the sets is
@@ -201,6 +317,19 @@ namespace Federator.Core.Generic
 
                 named.Add(name, new SharedName(name, match));
                 plan.sets.Add(new GenericModelSet(model.ModelFile, name, match, plan.SetOf(name, match, settings)));
+
+                if (model.SourceNameNotRead)
+                {
+                    plan.stemFallbacks.Add(name);
+                }
+            }
+
+            if (plan.stemFallbacks.Count > 0)
+            {
+                plan.notes.Add("the source name of " + Words.Counted(plan.stemFallbacks.Count, "model", "models") + " was not read, so "
+                    + (plan.stemFallbacks.Count == 1 ? "its set looks" : "their sets look")
+                    + " for the stem of the NWC's name and not a Revit file name, which counts nought for a model published under another name: "
+                    + string.Join(", ", plan.stemFallbacks.ToArray()));
             }
 
             if (nameless > 0)

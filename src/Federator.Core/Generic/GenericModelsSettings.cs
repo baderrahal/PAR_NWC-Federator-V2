@@ -1,4 +1,5 @@
 using System;
+using Federator.Core.Naming;
 using Federator.Core.Report;
 using Federator.Core.Sets;
 using Federator.Core.Teams;
@@ -9,13 +10,12 @@ namespace Federator.Core.Generic
     /// What names the Generic Models of a model, F128 and FR-177, Bader's request 3 under Q112, a
     /// setting and never a constant. A value that cannot work is refused where it is set.
     ///
-    /// THE CATEGORY VALUE IS THE TOOL'S OWN READING AND NOT YET MEASURED ON 1A02MM AND 1A04PK. The
-    /// tool's list of 374 category values holds Generic Models, and the probe of 2026-09-20 counted
-    /// 62 items of that category over all ten C02 NWFs, docs\history\scan.md 5i. That probe read the
-    /// first property displayed as Category, Revit Category or Element Category on the item, so it is
-    /// not shown to be the property the client's file asks, LcRevitPropertyElementCategory of the
-    /// Element tab. Whether the items of the two wave buildings carry the value there is UNKNOWN until
-    /// the probe of the laptop lane reads them, and a value that differs is changed here and nowhere else.
+    /// THE CATEGORY VALUE AND THE TAB WERE MEASURED ON 1A02MM AND 1A04PK ON 2026-10-08, docs\history\scan.md
+    /// 5z-zb. On 1A04PK the value Generic Models sits on the Element tab, LcRevitData_Element, under
+    /// LcRevitPropertyElementCategory, exactly 14 characters, no trim or case variant, on 572 items in five
+    /// of ten models, which is the tab and the property the client's file asks, so the default stands. On
+    /// 1A02MM no item of 19,028 carries the value on any tab, so every set there is at nought and the block's
+    /// nought line is the true reading. A value that differs on a later project is changed here and nowhere else.
     ///
     /// The two property names are not typed here: the category property is EmptySets.CategoryProperty
     /// and the Source File property is the one SilentMisses reads, each typed once under src. What this
@@ -30,8 +30,16 @@ namespace Federator.Core.Generic
         /// <summary>The folder of the saved sets tree the sets go in, Bader's own words, request 3 under Q112.</summary>
         public const string DefaultFolderName = "Generic Models";
 
-        /// <summary>The name of the sheet in the group's workbook, the folder's own words.</summary>
+        /// <summary>The name of the sheet in the Generic Models workbook, the folder's own words.</summary>
         public const string DefaultSheetName = "Generic Models";
+
+        /// <summary>
+        /// What is put after the group's workbook name to name the Generic Models workbook, the folder's own
+        /// words, so the two workbooks of a group sit together in the Clash Reports folder. A workbook of its
+        /// own because FR-200 makes the Coverage sheet the second and last sheet of the group's workbook and
+        /// the workbook check allows nothing after it, the lead's choice until Bader answers.
+        /// </summary>
+        public const string DefaultWorkbookSuffix = "Generic Models";
 
         /// <summary>
         /// The Element tab, the category every Revit property of an item sits under, as the client's matrix writes it.
@@ -53,12 +61,14 @@ namespace Federator.Core.Generic
         private string categoryValue;
         private string folderName;
         private string sheetName;
+        private string workbookSuffix;
 
         public GenericModelsSettings()
         {
             categoryValue = DefaultCategoryValue;
             folderName = DefaultFolderName;
             sheetName = DefaultSheetName;
+            workbookSuffix = DefaultWorkbookSuffix;
         }
 
         /// <summary>
@@ -127,6 +137,46 @@ namespace Federator.Core.Generic
 
                 sheetName = value;
             }
+        }
+
+        /// <summary>
+        /// What follows the group's workbook name, with one space between, to name the Generic Models workbook.
+        /// Refused where Windows refuses it in a file name, by FileNames' own rule, so a suffix nobody can write
+        /// never loses the workbook.
+        /// </summary>
+        public string WorkbookSuffix
+        {
+            get
+            {
+                return workbookSuffix;
+            }
+
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value) || !FileNames.CanBeAName(value))
+                {
+                    throw new ArgumentException(
+                        "The Generic Models workbook needs a suffix Windows accepts in a file name: not blank and none of "
+                            + FileNames.RefusedPrintable + ".",
+                        "value");
+                }
+
+                workbookSuffix = value;
+            }
+        }
+
+        /// <summary>
+        /// The name of the group's Generic Models workbook, without its extension: the group's workbook name,
+        /// one space and the suffix, so the two sit together in the Clash Reports folder under one name.
+        /// </summary>
+        public string WorkbookNameFor(string groupWorkbookName)
+        {
+            if (string.IsNullOrEmpty(groupWorkbookName))
+            {
+                throw new ArgumentException("The Generic Models workbook is named after the group's workbook, which needs a name.", "groupWorkbookName");
+            }
+
+            return groupWorkbookName + " " + workbookSuffix;
         }
 
         /// <summary>The Category property's internal name, typed once under src in EmptySets.</summary>

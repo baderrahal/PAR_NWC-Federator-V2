@@ -11,6 +11,7 @@ using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Findings;
+using Federator.Core.Generic;
 using Federator.Core.Health;
 using Federator.Core.Naming;
 using Federator.Core.Probe;
@@ -139,6 +140,17 @@ namespace Federator.Addin.Engine
         public SetsAcrossTheRun SetsAcrossTheRun
         {
             get { return setsAcrossTheRun; }
+        }
+
+        /// <summary>
+        /// The Generic Models counts across this run, F128, added as each group's sets step takes
+        /// them, for the one line of RESULT the window hands it.
+        /// </summary>
+        private readonly GenericModelsAcrossTheRun genericAcrossTheRun = new GenericModelsAcrossTheRun();
+
+        public GenericModelsAcrossTheRun GenericModelsAcrossTheRun
+        {
+            get { return genericAcrossTheRun; }
         }
 
         /// <summary>
@@ -1100,6 +1112,10 @@ namespace Federator.Addin.Engine
             // agree with each other rather than the workbook describing a state the
             // NWD does not carry.
             WriteWorkbook(job, outcome);
+
+            // F128. Beside the group's workbook, and whether or not the clash step ran,
+            // because the count comes from the sets step and not from the clash.
+            WriteTheGenericWorkbook(job, outcome);
 
             InStep(
                 RunSteps.Nwd,
@@ -2573,14 +2589,16 @@ namespace Federator.Addin.Engine
             // was read once by FinishTheGroup, before the ALIGNMENT block.
             log.Line("CLASH    source   " + ClashWork.DescribeSource(source, exchange, savedTests));
 
+            // The picked file's sets come from the XML and from nowhere else, so with no
+            // XML the sets of the document are left exactly as they are. The Generic Models
+            // sets come from the models, F128, so the SETS step runs for every group and
+            // builds them with an XML or without one.
+            bool changed = BuildTheSets(document, job, outcome, source == ClashSource.TestsFromXml);
+
             if (source == ClashSource.Nothing)
             {
-                return false;
+                return changed;
             }
-
-            // Sets come from the XML and from nowhere else. With no XML the sets in the
-            // document are left exactly as they are.
-            bool changed = source == ClashSource.TestsFromXml && BuildTheSets(document, job, outcome);
 
             // Deliberately not short circuited. A file holding tests only is a normal
             // case, so the tests are created whether or not any set was built here.
@@ -2710,7 +2728,7 @@ namespace Federator.Addin.Engine
             // No EXPORT CHECK reads the models on this button, so none of a group read earlier
             // reaches its judge, FR-011.
             groupExports = null;
-            BuildTheSets(document, job, outcome);
+            BuildTheSets(document, job, outcome, true);
             return outcome.Sets ?? new SetBuildOutcome();
         }
 
@@ -2740,17 +2758,170 @@ namespace Federator.Addin.Engine
             return outcome.Clash;
         }
 
-        private bool BuildTheSets(Document document, FederationJob job, JobOutcome outcome)
+        private bool BuildTheSets(Document document, FederationJob job, JobOutcome outcome, bool fromTheFile)
         {
             // Inside the method, because the run and the Sets into open model button both
             // call it and the SETS lines have to read the same whichever way they were built.
+            // The Generic Models plan is made first, because the picked file's leftover walk
+            // is handed its names as wanted, and its sets are built after the file's, F128,
+            // all inside the one step so its seconds show the cost of both.
             return InStepReturning(
                 RunSteps.Sets,
-                () => BuildTheSetsFromTheFile(document, job, outcome),
-                () => outcome.Sets == null ? "UNKNOWN, no set outcome was recorded" : outcome.Sets.Summary());
+                () =>
+                {
+                    GenericModelsPlan generic = PlanTheGenericSets(document, job);
+                    bool changed = fromTheFile && BuildTheSetsFromTheFile(document, job, outcome, generic);
+
+                    // Q74. THE PAIR FAILED BETWEEN ITS TWO HALVES and the file's build declared
+                    // the document damaged, so it asked no save. This step puts nothing more into
+                    // that document and asks no save, the breaker's finding on attempt 1. What the
+                    // steps after it do with the damage is theirs and is not said here, since the
+                    // clash step and the views do not read it, a hole older than F128 and a row
+                    // for F121.
+                    if (outcome.Sets != null && !string.IsNullOrEmpty(outcome.Sets.TheDocumentIsDamaged))
+                    {
+                        genericAcrossTheRun.AddNotCounted(job.Building);
+                        log.Line("SETS     " + job.Building
+                            + " Generic Models, not built, because the picked file's sets left the document damaged, so this step puts no Generic Models set in and asks no save");
+                        return false;
+                    }
+
+                    return BuildTheGenericSets(document, job, outcome, generic) || changed;
+                },
+                () => SetsPhrase(outcome, fromTheFile));
         }
 
-        private bool BuildTheSetsFromTheFile(Document document, FederationJob job, JobOutcome outcome)
+        /// <summary>The SETS step's finish phrase, the picked file's sets and the Generic Models sets each said as what they were.</summary>
+        private static string SetsPhrase(JobOutcome outcome, bool fromTheFile)
+        {
+            string file = !fromTheFile
+                ? "no XML picked, so no set of a file"
+                : outcome.Sets == null ? "UNKNOWN, no set outcome was recorded" : outcome.Sets.Summary();
+            string generic = outcome.GenericSets == null
+                ? "UNKNOWN, no Generic Models outcome was recorded"
+                : outcome.GenericSets.Summary();
+
+            return file + ". Generic Models: " + generic;
+        }
+
+        /// <summary>
+        /// The Generic Models plan of this group, F128 and FR-177, one set for each model the
+        /// document holds, read off the models and never off the scan, so the open file run and
+        /// the scanned run plan alike. The text each set looks for is the file name of
+        /// Model.SourceFileName, measured on 2026-10-08, docs\history\scan.md 5z-zb: the Source File
+        /// of an item is the bare name of the Revit file the NWC was published from, and for four of
+        /// 1A04PK's ten models that is not the NWC's name, so the NWC's stem would count three of
+        /// them at nought where they hold 3, 6 and 32. Null where the models would not read, said
+        /// in the log and in a FAILED block, and then no set is built, the group is counted as not
+        /// counted and keeps its own result, the lead's decision on attempt 2, as a report check
+        /// never fails a group.
+        /// </summary>
+        private GenericModelsPlan PlanTheGenericSets(Document document, FederationJob job)
+        {
+            try
+            {
+                List<GenericModelInput> models = new List<GenericModelInput>();
+
+                if (document != null && document.Models != null)
+                {
+                    for (int i = 0; i < document.Models.Count; i++)
+                    {
+                        using (Model model = document.Models[i])
+                        {
+                            models.Add(GenericModelInput.From(model.FileName, model.SourceFileName));
+                        }
+                    }
+                }
+
+                GenericModelsPlan plan = GenericModelsPlan.For(models, reports.GenericModels);
+
+                log.Line("SETS     " + job.Building + " Generic Models, " + plan.Sets.Count
+                    + (plan.Sets.Count == 1 ? " set" : " sets") + " planned in the folder " + plan.Folder
+                    + ", one search set a model asking " + plan.Asked + " and " + plan.LooksFor + ", no clash test");
+
+                foreach (string note in plan.Notes)
+                {
+                    log.Line("SETS     Generic Models note, " + note);
+                }
+
+                return plan;
+            }
+            catch (Exception error)
+            {
+                // Never the group's error. The count is UNKNOWN, the block says so, and the group
+                // keeps its own result, as F127's coverage does.
+                log.Failure(
+                    "planning the Generic Models sets for " + job.Building,
+                    error,
+                    "kept going, no Generic Models set is built for this group, its count is UNKNOWN and the group keeps its own result");
+                log.Block(
+                    GenericModelsReport.BlockTitle + " " + job.Building,
+                    GenericModelsReport.FailedLines("planning the Generic Models sets", error.GetType().Name + ": " + error.Message));
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// The Generic Models sets built into the document and counted, F128 and FR-177, Bader's
+        /// request 3 under Q112. Their own SetBuildOutcome, never the picked file's, so the EMPTY
+        /// SETS judge and SETS ACROSS THE RUN do not read them, and no judge, because a set of theirs
+        /// at nought is a model with no such item, which is also what a wrong value gives, and the
+        /// block says what a nought can mean. No leftover walk, because a walk handed this plan would
+        /// remove every set of the picked file that no test points at. A set created asks for the NWF
+        /// save, FR-020, as any set does. The count is the items each set found, the block says
+        /// items, and a count nobody took is UNKNOWN and never nought.
+        /// </summary>
+        private bool BuildTheGenericSets(Document document, FederationJob job, JobOutcome outcome, GenericModelsPlan plan)
+        {
+            if (plan == null)
+            {
+                genericAcrossTheRun.AddNotCounted(job.Building);
+                log.Line("SETS     " + job.Building + " Generic Models, no plan was made, so no set is built and the count is UNKNOWN");
+                return false;
+            }
+
+            try
+            {
+                SetBuildOutcome sets = new SetBuilder(Tick, log, Rebuilds()).Build(plan.ToBuildPlan(), null, false, null);
+                outcome.GenericSets = sets;
+
+                GenericModelsReport report = GenericModelsReport.From(plan, sets.Results);
+                outcome.GenericModels = report;
+                genericAcrossTheRun.Add(report);
+
+                log.Line("SETS     " + job.Building + " Generic Models " + sets.PutInLine());
+                log.Block(GenericModelsReport.BlockTitle + " " + job.Building, report.Lines());
+
+                // F64. The counts as numbers, one row a model, so the row file carries what
+                // the block carries. A count nobody took is the word UNKNOWN with why.
+                foreach (GenericModelCount count in report.Counts)
+                {
+                    log.Row(
+                        "generic models",
+                        count.ModelName,
+                        count.Counted ? EventRow.Count(count.Items) : GenericModelsReport.Unknown,
+                        count.Counted ? "items in " + job.Building : count.WhyNotCounted);
+                }
+
+                return sets.PutAnythingIn;
+            }
+            catch (Exception error)
+            {
+                // Never the group's error, the lead's decision on attempt 2: a FAILED line in the
+                // block, the count UNKNOWN, and the group keeps its own result.
+                genericAcrossTheRun.AddNotCounted(job.Building);
+                log.Failure(
+                    "building the Generic Models sets for " + job.Building,
+                    error,
+                    "kept going, the count of this group is UNKNOWN, the tests do not read these sets and the group keeps its own result");
+                log.Block(
+                    GenericModelsReport.BlockTitle + " " + job.Building,
+                    GenericModelsReport.FailedLines("building the Generic Models sets", error.GetType().Name + ": " + error.Message));
+                return false;
+            }
+        }
+
+        private bool BuildTheSetsFromTheFile(Document document, FederationJob job, JobOutcome outcome, GenericModelsPlan generic)
         {
             try
             {
@@ -2785,9 +2956,22 @@ namespace Federator.Addin.Engine
 
                 // FR-011. The judge of a set that found nothing reads the lists inside this
                 // tool as this group's only where the group's models name the project they were
-                // measured on, read off the models the EXPORT CHECK read for this group.
+                // measured on, read off the models the EXPORT CHECK read for this group. The
+                // leftover walk is handed the Generic Models set names as wanted, F128, so a set
+                // of theirs the last run saved is not removed as a set the file no longer names,
+                // and it is not walked at all where that plan was not made or holds no model,
+                // because it would then remove last week's set of every model, the readers'
+                // finding on attempt 1. A set of a model that has left the group is stale and
+                // the walk removes it with the box on, which is right.
+                string whyNoWalk = GenericModelsPlan.WhyNoLeftoverWalk(generic);
+
+                if (whyNoWalk != null && reports.RebuildDriftedSets)
+                {
+                    log.Line("SETS     " + job.Building + " " + whyNoWalk);
+                }
+
                 SetBuildOutcome sets = new SetBuilder(Tick, log, Rebuilds())
-                    .Build(plan, EmptySetJudge.For(plan, groupExports, reports.Names));
+                    .Build(plan, EmptySetJudge.For(plan, groupExports, reports.Names), whyNoWalk == null, whyNoWalk == null ? generic.SetNames : null);
                 outcome.Sets = sets;
                 setsAcrossTheRun.Add(sets);
 
@@ -3532,6 +3716,86 @@ namespace Federator.Addin.Engine
                 path,
                 outcome.Clash == null || exchange == null ? -1 : outcome.Clash.TestsInFile,
                 report == null ? 0 : report.MirrorsMerged);
+        }
+
+        /// <summary>
+        /// The Generic Models workbook of the group, F128, a workbook of its own beside the group's
+        /// workbook in the Clash Reports folder, the lead's choice until Bader answers, because
+        /// FR-200 makes the Coverage sheet the second and last sheet of the group's workbook and
+        /// the workbook check allows nothing after it. Written whether or not the clash step ran,
+        /// since the count does not depend on it, and only where a count was taken and a workbook
+        /// is wanted this run. Listed in the files written and read back by size as every file is.
+        /// </summary>
+        private void WriteTheGenericWorkbook(FederationJob job, JobOutcome outcome)
+        {
+            GenericModelsReport report = outcome.GenericModels;
+            GenericModelsSettings settings = reports.GenericModels;
+
+            if (report == null)
+            {
+                log.WriteSkipped("XLSX", "no Generic Models count was taken for " + job.Building + ", so no Generic Models workbook");
+                return;
+            }
+
+            if (reportFolder == null)
+            {
+                log.WriteSkipped("XLSX", "no report folder, so no Generic Models workbook");
+                return;
+            }
+
+            if (!OutputPlan.From(reports).WriteWorkbook)
+            {
+                log.WriteSkipped("XLSX", OutputPlan.NotWanted + ", so no Generic Models workbook");
+                return;
+            }
+
+            string path = ReportPaths.Workbook(reportFolder, settings.WorkbookNameFor(job.WorkbookName));
+
+            InStep(
+                RunSteps.GenericWorkbook,
+                () =>
+                {
+                    Say("Writing the Generic Models workbook for " + job.Building);
+                    log.WriteAttempted("XLSX", path);
+                    bool threw = false;
+
+                    try
+                    {
+                        GenericWorkbook.Write(path, report, job.Building, settings.SheetName);
+                    }
+                    catch (Exception error)
+                    {
+                        // Never the group's error, the lead's decision on attempt 2. A FILE THIS
+                        // TOOL DID NOT WRITE IS NEVER LISTED AS WRITTEN: the save goes straight
+                        // onto the final path, so a throw with last week's file still there must
+                        // not read that file's size back as this run's, the breaker's finding on
+                        // the second reading of attempt 2.
+                        threw = true;
+                        log.Failure(
+                            "writing the Generic Models workbook for " + job.Building,
+                            error,
+                            "kept going, nothing is listed as written, the path is looked at for a file of an earlier run, and the group keeps its own result");
+                    }
+
+                    if (threw)
+                    {
+                        outcome.GenericWorkbookSize = -1;
+                        outcome.GenericWorkbookOnDisk = false;
+                        // A file at the path is not called an earlier run's untouched, because a save
+                        // that threw after opening the path, a full disk or a fault while writing the
+                        // package, leaves the old file cut short and File.Exists still reads true.
+                        log.Line("XLSX     not written  " + path + (File.Exists(path)
+                            ? "  a file of that name is at the path, and whether it is an earlier run's file untouched or one this run cut short is UNKNOWN, so open it knowing that"
+                            : "  and no file is at the path"));
+                        return;
+                    }
+
+                    outcome.GenericWorkbookSize = log.WriteFinished("XLSX", path);
+                    outcome.GenericWorkbookOnDisk = outcome.GenericWorkbookSize >= 0;
+                },
+                () => outcome.GenericWorkbookOnDisk
+                    ? "wrote " + outcome.GenericWorkbookSize + " bytes"
+                    : "nothing written");
         }
 
         /// <summary>The clash XML itself, split out for the same reason.</summary>

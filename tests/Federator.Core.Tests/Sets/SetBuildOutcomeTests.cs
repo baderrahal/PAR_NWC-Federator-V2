@@ -508,6 +508,23 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Empty[0].Path, Is.EqualTo("a/One"));
         }
 
+        /// <summary>
+        /// NO JUDGE, NO JUDGEMENT, F128. The Generic Models sets are built with no judge, so a set of
+        /// theirs at nought is in no EMPTY list, present or created, and its count still reads nought.
+        /// </summary>
+        [Test]
+        public void ASetAtZeroBuiltWithNoJudgeIsNotJudged()
+        {
+            SetBuildOutcome outcome = new SetBuildOutcome();
+
+            outcome.JudgeIfEmpty(outcome.AddAlreadyPresent("a/One", "One", 1, 0), AsksTheOldSpelling, null);
+            SetResult created = outcome.AddCreated(PlannedAsking("Two", "Generic Models"), 0, null);
+
+            Assert.That(outcome.Empty, Is.Empty, "a set built with no judge is judged by nobody");
+            Assert.That(created.IsZero, Is.True, "its count is still nought");
+            Assert.That(outcome.ZeroCount, Is.EqualTo(1));
+        }
+
         // ---------- a created set judged, FR-027 ----------
 
         private static PlannedSet PlannedAsking(string name, string category)
