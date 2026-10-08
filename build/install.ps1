@@ -114,13 +114,16 @@ function LinksAt($dir) {
 
 # Removes the folder $dir and everything in it, and returns null once it is gone, or the words
 # of why it is not. A junction or a link at it or under it refuses the removal before anything
-# is removed, because Remove-Item -Recurse removes what a junction points at, measured on
-# 2026-10-08 in turn6\f109b-proof. A removal that stops part way leaves part of the folder.
+# is removed, because what a removal through one reaches is not proved. Measured on 2026-10-08,
+# turn6\f109b-proof cases C and J, Windows PowerShell 5.1 on one machine removed a junction
+# inside a folder and left what it points at. Whether a symbolic link, another build of Windows
+# or another way of removing does the same is UNKNOWN. A removal that stops part way leaves
+# part of the folder.
 function RemoveTree($dir) {
     $links = @(LinksAt $dir)
     if ($links.Count -gt 0) { return ("it holds a junction or a link, " + ($links -join ", ") + ", and nothing is removed through one, so nothing of it was removed") }
     try { Remove-Item -LiteralPath $dir -Recurse -Force -ErrorAction Stop }
-    catch { return ((Why $_.Exception) + ", so it is still there, whole or in part") }
+    catch { return (Why $_.Exception) }
     return $null
 }
 
@@ -164,17 +167,16 @@ function NavisworksRefusal {
 }
 
 # The new add-in at $target taken out of the place Navisworks loads from: removed, or moved
-# aside to .failed- and the time when it will not go. Returns where it went, in words.
+# aside to .failed- and the time when it will not go, each failure printed on its own line.
+# Returns where it is, null once removed.
 function TakeNewOut {
-    if (-not (Test-Path -LiteralPath $target)) { return ("was not at " + $target) }
+    if (-not (Test-Path -LiteralPath $target)) { return $null }
     $notGone = RemoveTree $target
-    if ($null -eq $notGone) { return "was removed" }
+    if ($null -eq $notGone) { return $null }
+    Write-Host ("The new add-in could not be removed, " + $notGone)
     $failedAt = $target + ".failed-" + (Now)
-    try {
-        Rename-Item -LiteralPath $target -NewName (Split-Path $failedAt -Leaf) -ErrorAction Stop
-        return ("could not be removed, " + $notGone + ", and was moved out of the place Navisworks loads from to " + $failedAt)
-    }
-    catch { return ("could not be removed, " + $notGone + ", nor moved aside, " + (Why $_.Exception) + ", so it is still at " + $target + ", where Navisworks loads it. Delete it with Navisworks closed before Navisworks starts") }
+    try { Rename-Item -LiteralPath $target -NewName (Split-Path $failedAt -Leaf) -ErrorAction Stop; return $failedAt }
+    catch { Write-Host ("The new add-in could not be moved aside either, " + (Why $_.Exception)); return $target }
 }
 
 # After a failure once the copy of the new add-in began: the new one is taken out, and the one
@@ -183,14 +185,17 @@ function TakeNewOut {
 function Undo {
     if (-not $newIn) { return "Nothing was installed" }
     if ($checked) { return ("The new add-in passed every check and is at " + $target) }
-    $new = TakeNewOut
-    if ($null -eq $aside) { return ("No add-in was installed before, and the new one " + $new) }
-    $old = "is still at " + $aside + ", because its place was not free"
+    $newAt = TakeNewOut
+    $new = "was removed"
+    if ($newAt -eq $target) { $new = "is at " + $target + ". It is where Navisworks loads it, whole or in part, so delete it with Navisworks closed before Navisworks starts" }
+    elseif ($null -ne $newAt) { $new = "is at " + $newAt + ", out of the place Navisworks loads from" }
+    if ($null -eq $aside) { return ("No add-in was installed before, and the new one that failed " + $new) }
+    $oldAt = $aside
     if (-not (Test-Path -LiteralPath $target)) {
-        try { Rename-Item -LiteralPath $aside -NewName (Split-Path $target -Leaf) -ErrorAction Stop; $old = "is back at " + $target }
-        catch { $old = "is at " + $aside + " and could not be put back, " + (Why $_.Exception) }
+        try { Rename-Item -LiteralPath $aside -NewName (Split-Path $target -Leaf) -ErrorAction Stop; $oldAt = $target }
+        catch { Write-Host ("The add-in installed before could not be put back, " + (Why $_.Exception)) }
     }
-    return ("The add-in installed before " + $old + ", and the new one " + $new)
+    return ("The add-in installed before is at " + $oldAt + ", and the new one that failed " + $new)
 }
 
 # Whatever throws ends here, as one FAILED line saying why and where each thing is.
@@ -253,9 +258,10 @@ if ($left.Count -gt 0) {
     if ($left.Count -gt 0) {
         $unknown = "Whether Navisworks loads a folder whose name does not end in .bundle is UNKNOWN. Nothing was installed."
         if ($putBack) { Refuse ("the add-in installed before was put back, as the PUT BACK line says, and " + $left.Count + " more folder(s) left by earlier runs of this script sit beside it, each named above. Close Navisworks, delete each folder named above, and run this again. " + $unknown) }
-        if ($loadWhole) { Refuse ($left.Count + " folder(s) left by earlier runs of this script sit beside the add-in, each named above, and the add-in at " + $target + " holds every file it needs, so none of them is put back. Close Navisworks, delete each folder named above, and run this again. " + $unknown) }
-        if ($whole.Count -gt 1) { Refuse ($left.Count + " folder(s) left by earlier runs of this script sit beside the add-in, each named above, " + $target + " " + $was + ", and " + $whole.Count + " of them hold a whole add-in, so which one goes back is for a person to say. Close Navisworks, delete each folder named above but the one to keep, and run this again, which puts that one back. " + $unknown) }
-        Refuse ($left.Count + " folder(s) left by earlier runs of this script sit beside the add-in, each named above, " + $target + " " + $was + ", and none of them holds a whole add-in to put back. Close Navisworks, delete each folder named above, and run this again, which installs the add-in afresh. " + $unknown)
+        $sitting = "" + $left.Count + " folder(s) left by earlier runs of this script sit beside the add-in, each named above, "
+        if ($loadWhole) { Refuse ($sitting + "and the add-in at " + $target + " holds every file it needs, so none of them is put back. Close Navisworks, delete each folder named above, and run this again. " + $unknown) }
+        if ($whole.Count -gt 1) { Refuse ($sitting + $target + " " + $was + ", and " + $whole.Count + " of them hold a whole add-in, so which one goes back is for a person to say. Close Navisworks, delete each folder named above but the one to keep, and run this again, which puts that one back. " + $unknown) }
+        Refuse ($sitting + $target + " " + $was + ", and none of them holds a whole add-in to put back. Close Navisworks, delete each folder named above, and run this again, which installs the add-in afresh. " + $unknown)
     }
 }
 
@@ -338,7 +344,9 @@ try {
 
 # Every check from here reads the installed bundle, never the staging copy, because the
 # installed one is what Navisworks loads and what the removal below rests on.
+# A check that fails throws, and its words carry what failed.
 $installed = Join-Path $target "Contents\v22"
+try {
 $nested = Join-Path $target (Split-Path -Leaf $target)
 if (Test-Path $nested) {
     throw "The bundle ended up inside itself at '$nested', which Navisworks does not read"
@@ -429,6 +437,7 @@ if ($missing.Count -gt 0) {
     foreach ($line in $missing) { Write-Host $line }
     throw ("The new add-in is incomplete. {0} assembly reference(s) cannot be satisfied. Add the file(s) to the carried list in this script" -f $missing.Count)
 }
+} catch { throw ("The new add-in failed its check, " + (Why $_.Exception)) }
 
 Write-Host ("  every reference is satisfied, {0} assemblies checked. Navisworks supplies its own." -f $inBundle.Count)
 $checked = $true
@@ -445,7 +454,7 @@ if ($mismatched.Count -gt 0) {
 # be, the install ends on the LEFT line, never on the installed one.
 if ($null -ne $aside) {
     $notGone = RemoveTree $aside
-    if ($null -ne $notGone) { Finish $LeftExit ($LeftStart + "the new add-in is installed at " + $target + " and passed every check, and the add-in installed before is at " + $aside + " and could not be removed, " + $notGone + ". Whether Navisworks loads a folder whose name does not end in .bundle is UNKNOWN. Close Navisworks and delete that folder. Until it is gone this script refuses to run and names it.") }
+    if ($null -ne $notGone) { Finish $LeftExit ($LeftStart + "the new add-in is installed at " + $target + " and passed every check, and the add-in installed before is at " + $aside + ", whole or in part, and could not be removed, " + $notGone + ". Whether Navisworks loads a folder whose name does not end in .bundle is UNKNOWN. Close Navisworks and delete that folder. Until it is gone this script refuses to run and names it.") }
 }
 
 $after = @(Leftovers)
