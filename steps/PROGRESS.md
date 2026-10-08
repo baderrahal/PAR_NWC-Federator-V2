@@ -23,7 +23,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - 8 Oct: the shutdown came at 19:30:51 on 7 Oct, Arab Standard Time, 46 min after the close at 18:45. A Roamer the loop did not start ran 08:36 to 08:43. His 22.0 key against the backup of 17:34 differs in two CER uptime counters only, Navisworks's own, nothing put back. Keep-awake pid 38340
 - Merged today on the laptop: 157 the close of 7 Oct, 159 F118's FR-199 and FR-040, and 177 F132's add-in half in two attempts under Q143, as b3aa0db, Q144 put to Bader on the no XML by design pass
 - Lane B, steps\lane-b.md: 167 to 181 merged today, F128's Core part as 171 among them, all folded here, 182 open on where it stopped
-- F120 the pictures: merged as PR UNKNOWN, the rename's undo, one image guard for the run, the IMAGES seconds split. F128 generic models: the probe at 13:02, scan.md 5z-zb, the add-in part's attempt 1 read by one reviewer and one breaker, four faults the team would see, attempt 2 in work on fix-F128, Q146 put to Bader on where its sheet goes
+- F120 the pictures: merged as PR 183, the rename's undo, one image guard for the run, the IMAGES seconds split. F128 generic models: the probe at 13:02, scan.md 5z-zb, the add-in part's attempt 1 read by one reviewer and one breaker, four faults the team would see, attempt 2 in work on fix-F128, Q146 put to Bader on where its sheet goes
 - Expected release from the pace: 2026-10-13, Q143 item 14, about ten add-in items on the laptop lane at two or three a day over 8, 9, 12 and 13 Oct
 
 ## Next

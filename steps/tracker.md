@@ -165,15 +165,15 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| FR-075 | picture rename two pass has no undo | F120 | silent wrong number | merged | UNKNOWN | none | 2026-10-08 |
-| FR-076 | image guard per group not per run | F120 | broken feature | merged | UNKNOWN | none | 2026-10-08 |
-| FR-077 | pictures cost 643 seconds | F120 | slow | merged | UNKNOWN, the IMAGES seconds split and the encoder looked up once, the seconds saved UNKNOWN until the timed runs | none | 2026-10-08 |
+| FR-075 | picture rename two pass has no undo | F120 | silent wrong number | merged | 183 | none | 2026-10-08 |
+| FR-076 | image guard per group not per run | F120 | broken feature | merged | 183 | none | 2026-10-08 |
+| FR-077 | pictures cost 643 seconds | F120 | slow | merged | 183, the IMAGES seconds split and the encoder looked up once, the seconds saved UNKNOWN until the timed runs | none | 2026-10-08 |
 | FR-078 | install recursive delete without junction check and partial first install | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
 | FR-079 | install killed between move and removal | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
 | FR-080 | install leftovers exit codes and success line | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
 | FR-178 | start from an existing nwf | F129 | Bader's request | open | none | none | 2026-10-04 |
 | F109 | install | F109 | fix | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
-| F120 | harvest and pictures | F120 | fix | merged | UNKNOWN, FR-198 open | none | 2026-10-08 |
+| F120 | harvest and pictures | F120 | fix | merged | 183, FR-198 open | none | 2026-10-08 |
 | F129 | start from an existing NWF | F129 | fix | open | none | none | 2026-10-04 |
 | Q112-4 | start from an existing NWF (FR-178) | F129 | Bader's request | open | none | none | 2026-10-04 |
 | Q25 | five clash item properties reach no output, split into Q35 to Q40 | F120 | question | merged | 131 | none | 2026-10-06 |

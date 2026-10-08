@@ -73,9 +73,9 @@ FR-071,views log silent up to 21 minutes,F114,2b,slow,in progress,"141 merged fo
 FR-072,penetrations upwards walk outside try,F114,2b,loud failure,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
 FR-073,views seconds parts do not add,F114,2b,noise,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
 FR-074,views unknown set not named,F123,5,noise,merged,181,none,2026-10-08
-FR-075,picture rename two pass has no undo,F120,3a,silent wrong number,merged,UNKNOWN,none,2026-10-08
-FR-076,image guard per group not per run,F120,3a,broken feature,merged,UNKNOWN,none,2026-10-08
-FR-077,pictures cost 643 seconds,F120,3a,slow,merged,"UNKNOWN, the IMAGES seconds split and the encoder looked up once, the seconds saved UNKNOWN until the timed runs",none,2026-10-08
+FR-075,picture rename two pass has no undo,F120,3a,silent wrong number,merged,183,none,2026-10-08
+FR-076,image guard per group not per run,F120,3a,broken feature,merged,183,none,2026-10-08
+FR-077,pictures cost 643 seconds,F120,3a,slow,merged,"183, the IMAGES seconds split and the encoder looked up once, the seconds saved UNKNOWN until the timed runs",none,2026-10-08
 FR-078,install recursive delete without junction check and partial first install,F109,3a,broken feature,in progress,"none, branch fix-F109 at a0c3829",none,2026-10-04
 FR-079,install killed between move and removal,F109,3a,broken feature,in progress,"none, branch fix-F109 at a0c3829",none,2026-10-04
 FR-080,install leftovers exit codes and success line,F109,3a,broken feature,in progress,"none, branch fix-F109 at a0c3829",none,2026-10-04
@@ -316,7 +316,7 @@ F116,the clash XML,F116,1,fix,merged,98,none,2026-10-05
 F117,the names,F117,5,fix,open,none,none,2026-10-04
 F118,workbook and report,F118,2c,fix,in progress,"147 FR-035 and FR-037 and 159 FR-199 and FR-040 merged, FR-036 and FR-041 on the laptop",none,2026-10-07
 F119,run log and RESULT,F119,3b,fix,in progress,"148 nine items, 168, 169 and 179 merged, the rest on the laptop",none,2026-10-08
-F120,harvest and pictures,F120,3a,fix,merged,"UNKNOWN, FR-198 open",none,2026-10-08
+F120,harvest and pictures,F120,3a,fix,merged,"183, FR-198 open",none,2026-10-08
 F121,the rest,F121,4,fix,in progress,"150 six items, 160 and 173 the SINGLE DISCIPLINE finding merged, the rest on the laptop",none,2026-10-08
 F122,the loop tools,F122,4,fix,open,none,none,2026-10-04
 F123,"docs and words, and the noise of every area",F123,5,fix,in progress,"151, 154, 155, 161 to 165, 174, 176, 178, 180 and 181 merged in part, the rest on the laptop",none,2026-10-08
