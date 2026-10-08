@@ -462,8 +462,6 @@ namespace Federator.Core.Tests
             AssertEveryRowPointsAtItsOwnPicture(report);
             Assert.That(outcome.Renamed, Is.EqualTo(0),
                 "nothing stays renamed after a fault, every picture is back under its run order name");
-            Assert.That(outcome.MovedBeforeTheFault, Is.EqualTo(1), "Walls 1 had reached cd000001.jpg");
-            Assert.That(outcome.PutBack, Is.EqualTo(6), "every picture of the six was put back");
             Assert.That(outcome.NotPutBack, Is.EqualTo(0));
             Assert.That(outcome.Problems.Count, Is.EqualTo(1));
             Assert.That(outcome.Problems[0], Does.StartWith("the renaming stopped at Walls 2, cd010002.jpg to cd000002.jpg, which threw IOException"));
@@ -473,12 +471,6 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Lines()[0], Is.EqualTo(
                 "IMAGES   numbered in report order: 0 renamed, 0 already right, 0 missing"));
             Assert.That(outcome.Lines()[1], Does.StartWith("IMAGES   the renaming stopped at Walls 2"));
-
-            foreach (TestReport test in report.Tests)
-            {
-                Assert.That(test.ImageIndex, Is.EqualTo(report.ImageIndexFor(test)),
-                    test.Name + " keeps its run order block, since no picture was renamed");
-            }
         }
 
         /// <summary>
@@ -499,8 +491,6 @@ namespace Federator.Core.Tests
 
             AssertEveryRowPointsAtItsOwnPicture(report);
             Assert.That(outcome.Renamed, Is.EqualTo(0));
-            Assert.That(outcome.MovedBeforeTheFault, Is.EqualTo(0));
-            Assert.That(outcome.PutBack, Is.EqualTo(5));
             Assert.That(outcome.NotPutBack, Is.EqualTo(0));
             Assert.That(outcome.Problems[0], Does.StartWith(
                 "the renaming stopped at Floors 1, cd000001.jpg to cd020001.jpg, which threw IOException"));

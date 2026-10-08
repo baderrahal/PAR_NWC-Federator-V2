@@ -319,7 +319,6 @@ namespace Federator.Core.Report
             Move stoppedAt, Exception error, List<Move> done, List<Move> held, ImageRenumberingOutcome outcome)
         {
             int underHolding = held.Count;
-            outcome.MovedBeforeTheFault = done.Count;
 
             foreach (Move move in done)
             {
@@ -352,9 +351,9 @@ namespace Federator.Core.Report
                     continue;
                 }
 
+                // Read back off the disk, never taken from the move returning.
                 if (File.Exists(move.From) && !File.Exists(holding))
                 {
-                    outcome.PutBack++;
                     continue;
                 }
 
@@ -414,13 +413,11 @@ namespace Federator.Core.Report
         /// <summary>Rows that carry a picture name and whose file was not on disk.</summary>
         public int Missing { get; internal set; }
 
-        /// <summary>Pictures that had reached their final name when a move threw, FR-075.</summary>
-        public int MovedBeforeTheFault { get; internal set; }
-
-        /// <summary>Pictures put back under the name they came from after a move threw, each read back off the disk.</summary>
-        public int PutBack { get; internal set; }
-
-        /// <summary>Pictures that could not be put back. Each is named in the problems.</summary>
+        /// <summary>
+        /// Pictures that could not be put back after a move threw, FR-075. Each is named in
+        /// the problems, and the first problem line carries how many had been moved and how
+        /// many were under a holding name.
+        /// </summary>
         public int NotPutBack { get; internal set; }
 
         internal IList<string> Problems
