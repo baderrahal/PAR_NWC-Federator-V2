@@ -579,7 +579,27 @@ well as to pass.
   if any reference is satisfied by neither the bundle, the framework, nor the
   Navisworks folder. A missing file is caught at install rather than ninety seconds
   into a run. The version mismatches are printed too, labelled as expected, so nobody
-  reads them as faults
+  reads them as faults. Since F109 that walk, the file list and the stamp read the
+  INSTALLED bundle, never the staging copy, each assembly read from its bytes so the
+  script holds no file of it open, and the installed Federator.Addin.dll must read the
+  stamp the build wrote
+- install.ps1 ends one of four ways, each an exit code and a last line written once at
+  the top of the script and copied word for word into INSTALL.md: 0 and the line telling
+  a person to start Navisworks, 1 FAILED, 2 REFUSED, 3 LEFT, installed and checked with
+  the add-in installed before still beside it. The installed line is printed only when
+  nothing is left beside the add-in, so it always means a whole install. Every other end
+  names each folder left beside the add-in on its own line first, F109, FR-080
+- install.ps1 removes no folder through a junction or a link. Every recursive removal
+  goes through RemoveTree, which reads every folder under it for one first, by the link
+  type PowerShell reads off a reparse point, because every file OneDrive syncs carries
+  the reparse point attribute with no link type. A link in the staging folder or in the
+  installed bundle refuses before anything changes. A copy that fails on a first install
+  takes the new folder out of the load path, removed or moved to .failed-, F109, FR-078
+- install.ps1 reads the .replaced- and .failed- folders beside the bundle at its start,
+  by one pattern each on the plugin folder and never a search below it. An empty or part
+  filled load path with one whole add-in beside it gets that one put back, PUT BACK, and
+  any other leftover refuses with each named, because which one a person keeps is theirs
+  to say, F109, FR-079
 - The NWF is looked at ONCE MORE after the NWD is published, because the NWD is published
   last and the NWF is the only record of what has been fixed. The line says intact and the
   size, or CHANGED with both sizes, or GONE. Nothing was checking this, so a run that did

@@ -99,8 +99,11 @@ and nothing is fixed until a real run on real files shows it fixed.
   installed bundle aside by one rename, which fails whole while a file in it is held, copies
   the new one in and checks it, and removes the one moved aside only once every check has
   passed. On a failure after the move the new one is taken out and the old one put back,
-  and where each is is printed. A folder it cannot remove is named in the verdict of
-  run.ps1 -Mode Install
+  and where each is is printed. Since F109 a folder it cannot remove ends the install on
+  its LEFT line with exit 3, which run.ps1 -Mode Install, unchanged while Q143 freezes the
+  loop's scripts, reads as STOP with exit 1 and names install.txt. A folder left beside the
+  bundle by an earlier run makes install.ps1 refuse, exit 2, with each named, unless it is
+  the one whole add-in beside an empty or part filled load path, which it puts back
 - Every run works on a copy under %LOCALAPPDATA%\NwcFederatorLoop. Since F108 each run set
   has a fresh one at runs\NN\NMFed, made by tools\loop\prepare-copy.ps1 -Set NN in Bader's
   own folder shape, NWC\<community> into the NWF, NWD and Clash Report folders of the same
@@ -242,10 +245,13 @@ and nothing is fixed until a real run on real files shows it fixed.
   of them. The installed stamp is read back and must name that commit. build\install.ps1
   refuses with one REFUSED line and exit 2, for every one who installs, while any Roamer
   runs, read immediately before it moves the installed bundle aside, when a folder from
-  %APPDATA% down to the bundle is a junction or a link, and when the move aside fails
-  because a file in the bundle is held. run.ps1 -Mode Install passes that refusal on as
-  exit 2. A Roamer running right after a loop install, and a bundle left beside the new one,
-  are each a finding that changes its verdict. That move aside is refused on this machine,
+  %APPDATA% down to the bundle is a junction or a link, when the move aside fails
+  because a file in the bundle is held, and since F109 when a junction or a link is inside
+  the staging folder or the installed bundle and when a folder an earlier run left beside the
+  bundle is not the one whole add-in it puts back. run.ps1 -Mode Install passes that refusal
+  on as exit 2. A Roamer running right after a loop install is a finding that changes its
+  verdict. A bundle left beside the new one now ends install.ps1 on LEFT, exit 3, before
+  run.ps1 reads its leftovers, so its verdict is STOP and not a FINDING. That move aside is refused on this machine,
   F109, so Bader asked on 2026-10-01, Q96, and again on 2026-10-04, Q98, for main to be
   installed in place, apart from F109: built from a clean checkout of main, with no Roamer
   running, copied over the installed files, any installed file the new bundle lacks removed
