@@ -99,6 +99,7 @@ namespace Federator.Addin.Ui
             ShowProbeWording();
             FillUnits();
             ShowOpenDocument();
+            ShowPickedNwfWording();
             FillGroupingModes();
 
             log.Block("FOLDERS REMEMBERED", folders.Lines());
@@ -216,6 +217,185 @@ namespace Federator.Addin.Ui
 
             Regroup();
             Steps.SelectedIndex = 1;
+        }
+
+        // ---------- Step 1, the existing NWFs, F129 ----------
+
+        /// <summary>The label and the grey line of the third choice, Core's words, NwfPick.</summary>
+        private void ShowPickedNwfWording()
+        {
+            PickedNwfLabel.Content = NwfPick.Label;
+            PickedNwfHelp.Text = NwfPick.HelpLine;
+        }
+
+        /// <summary>One NWF, remembered by its folder as every picker is.</summary>
+        private void OnBrowsePickedNwfFile(object sender, RoutedEventArgs e)
+        {
+            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                dialog.Title = "Pick the NWF to run where it sits";
+                dialog.Filter = "Navisworks NWF (*.nwf)|*.nwf";
+                dialog.CheckFileExists = true;
+
+                string folder = StartFor(PickerKind.PickedNwf, PickedNwfBox.Text);
+
+                if (folder.Length > 0 && Directory.Exists(folder))
+                {
+                    dialog.InitialDirectory = folder;
+                }
+
+                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                PickedNwfChosen(dialog.FileName);
+            }
+        }
+
+        /// <summary>A folder of NWFs, on the same memory as the file, so one opens where the other was.</summary>
+        private void OnBrowsePickedNwfFolder(object sender, RoutedEventArgs e)
+        {
+            string picked = PickFolder(
+                "Pick the folder of NWFs to run where they sit", StartFor(PickerKind.PickedNwf, PickedNwfBox.Text));
+
+            if (picked != null)
+            {
+                PickedNwfChosen(picked);
+            }
+        }
+
+        /// <summary>
+        /// Remembers the pick, puts it in the box and says what it gives on the Source step's
+        /// line. The disk is read here and again when Run NWFs is pressed, never on each key.
+        /// </summary>
+        private void PickedNwfChosen(string picked)
+        {
+            folders.Remember(PickerKind.PickedNwf, picked);
+            PickedNwfBox.Text = picked;
+
+            NwfPickPlan plan = PlanThePickedNwfs(Trimmed(ExcelFolderBox.Text));
+
+            if (plan != null)
+            {
+                SourceSummary.Text = plan.Describe();
+            }
+        }
+
+        /// <summary>
+        /// What the box gives, by Core's rule, NwfPick.From, with the subfolders box of the
+        /// Source step. Null where the reading threw, which is logged and said.
+        /// </summary>
+        private NwfPickPlan PlanThePickedNwfs(string excelFolder)
+        {
+            try
+            {
+                return NwfPick.From(Trimmed(PickedNwfBox.Text), IncludeSubfolders.IsChecked == true, excelFolder);
+            }
+            catch (Exception error)
+            {
+                log.Failure("reading the picked NWFs", error, "nothing was run");
+                SourceSummary.Text = "The picked NWFs could not be read. " + RunLog.TheLogSaysWhy();
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Runs every NWF the pick gives, F129, Bader's request 4 under Q112, each opened where it
+        /// sits and run by the open file run's route, FederationEngine.RunPickedNwfs. A pick the
+        /// rule refuses, two NWFs writing one file among them, is refused here before anything is
+        /// opened. The run settings, the clash file, the lines across the run, RESULT and the
+        /// second copy of the log are the open file run's, with what the choice changes in Core's
+        /// words, NwfPickPlan.SettingsLines and ResultLine.
+        /// </summary>
+        private void OnRunPickedNwfs(object sender, RoutedEventArgs e)
+        {
+            if (running)
+            {
+                return;
+            }
+
+            // F76. A tolerance that is not one is refused here, in Core's words, as the scanned
+            // run refuses it, before anything is opened.
+            ReportOptions options;
+
+            try
+            {
+                options = ReportsWanted();
+            }
+            catch (ArgumentOutOfRangeException error)
+            {
+                log.Failure("reading the run settings", error, "the run of picked NWFs did not start");
+                Warn(error.Message);
+                return;
+            }
+
+            NwfPickPlan plan = PlanThePickedNwfs(options.ExcelFolder);
+
+            if (plan == null)
+            {
+                return;
+            }
+
+            SourceSummary.Text = plan.Describe();
+
+            if (!plan.CanStart)
+            {
+                log.Line("RUN      refused before starting. " + plan.WhyNoRun);
+                Warn("The run cannot start." + Environment.NewLine + Environment.NewLine + plan.WhyNoRun);
+                return;
+            }
+
+            if (!ConfirmTheOpenDocumentGoes())
+            {
+                Log("Run cancelled before anything was opened.");
+                return;
+            }
+
+            running = true;
+            RunPickedNwfsButton.IsEnabled = false;
+
+            // Outside the try, for the same reason as the scanned run.
+            FederationEngine engine = null;
+
+            try
+            {
+                // F80. The mark and the line together, so the run time in the timing block is
+                // RUN started to RUN finished, as the scanned run marks it.
+                log.RunStarted(plan.Nwfs.Count);
+
+                log.Block("RUN SETTINGS", plan.SettingsLines());
+                SayTheRunsChoices(options.Tolerance);
+
+                TeamMap teams;
+                ExchangeDocument exchange = ReadTheXmlForAnOpenFileRun(out teams);
+
+                engine = new FederationEngine(SetProgress, log, exchange, teams, options);
+                engine.RunPickedNwfs(plan.Paths());
+
+                SayWhatAnOpenFileRunAddedUp(engine);
+
+                // F82. Each picked NWF is a group, so the sets across the groups are added up
+                // as the scanned run adds them.
+                log.Block(SetsAcrossTheRun.BlockTitle, engine.SetsAcrossTheRun.Lines());
+
+                log.RunFinished();
+                SetProgress(RunFinishedLine());
+            }
+            catch (Exception error)
+            {
+                log.Failure("the run of picked NWFs", error, "stopped, everything already written is kept");
+                SetProgress("The run of picked NWFs stopped on an error.");
+                Warn("The run stopped." + Environment.NewLine + Environment.NewLine + error.Message);
+            }
+            finally
+            {
+                log.Line(NwfPick.SourceFindingsSkipped);
+                WriteTheResultAndCopyTheLog(plan.LogFolder, engine, plan.ResultLine());
+                running = false;
+                RunPickedNwfsButton.IsEnabled = true;
+                ShowOpenDocument();
+            }
         }
 
         /// <summary>
@@ -1837,6 +2017,20 @@ namespace Federator.Addin.Ui
                 groups.Count);
 
             log.Line("grouping         : " + GroupingModes.Describe(ChosenGrouping()));
+            SayTheRunsChoices(tolerance);
+            log.Block(RunLog.GroupsSectionTitle, GroupListLines());
+            log.Block(RunLog.FindingsSectionTitle, findings.Lines());
+
+            RunJobs(jobs, nwfFolder);
+        }
+
+        /// <summary>
+        /// The choices on the Outputs and Clash steps that every run of groups reads, under
+        /// RUN SETTINGS, for the scanned run and, since F129, the picked NWFs, one method so the
+        /// two say them alike.
+        /// </summary>
+        private void SayTheRunsChoices(ToleranceChoice tolerance)
+        {
             log.Line("apply file to old: "
                 + (ApplyFileSettings.IsChecked == true
                     ? "YES, which changes WHICH CLASHES every test it changes will find next time it runs. It resets nothing by itself, measured 5y"
@@ -1868,10 +2062,6 @@ namespace Federator.Addin.Ui
             log.Line("model units      : " + ChosenUnits() + ", which is what the models are set to");
             log.Line("report units     : " + Federator.Core.Report.ReportUnits.Name
                 + ", always, converted before anything is written");
-            log.Block(RunLog.GroupsSectionTitle, GroupListLines());
-            log.Block(RunLog.FindingsSectionTitle, findings.Lines());
-
-            RunJobs(jobs, nwfFolder);
         }
 
         /// <summary>
@@ -2138,9 +2328,7 @@ namespace Federator.Addin.Ui
                     engine.ToleranceFromTool, engine.ToleranceUnknown));
 
                 log.RunFinished();
-                SetProgress("Run finished. " + log.CountOf(GroupOutcome.Done) + " done, "
-                    + log.CountOf(GroupOutcome.Partial) + " partial, "
-                    + log.CountOf(GroupOutcome.Failed) + " failed.");
+                SetProgress(RunFinishedLine());
             }
             catch (Exception error)
             {
@@ -2158,19 +2346,30 @@ namespace Federator.Addin.Ui
             }
         }
 
+        /// <summary>The progress line once a run of groups ends, for the scanned run and the picked NWFs.</summary>
+        private string RunFinishedLine()
+        {
+            return "Run finished. " + log.CountOf(GroupOutcome.Done) + " done, "
+                + log.CountOf(GroupOutcome.Partial) + " partial, "
+                + log.CountOf(GroupOutcome.Failed) + " failed.";
+        }
+
         /// <summary>
         /// The RESULT block of one run and the second copy of the log. engine is that run's
         /// engine, or null where the run stopped before one was made, and then the block says
         /// nothing of the shared coordinates rule or the viewpoints box rather than guess.
+        /// pickedNwfs is NwfPickPlan.ResultLine for a run of picked NWFs, F129, and null for
+        /// every other run.
         /// </summary>
-        private void WriteTheResultAndCopyTheLog(string nwfFolder, FederationEngine engine)
+        private void WriteTheResultAndCopyTheLog(string nwfFolder, FederationEngine engine, string pickedNwfs = null)
         {
             try
             {
                 log.WriteResultBlock(
                     engine == null ? null : engine.CoordinatesAcrossTheRun,
                     engine == null || engine.MakesViewpoints,
-                    generic: engine == null ? null : engine.GenericModelsAcrossTheRun);
+                    generic: engine == null ? null : engine.GenericModelsAcrossTheRun,
+                    pickedNwfs: pickedNwfs);
             }
             catch (Exception error)
             {
@@ -2348,13 +2547,6 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            // The clash file is OPTIONAL here. Without one, the tests saved in the document
-            // are run where they sit, which is the ordinary weekly case, and a document
-            // holding none means nothing runs and the log says so.
-            string path = Trimmed(ExchangeFileBox.Text);
-            ExchangeDocument exchange = null;
-            TeamMap teams;
-
             running = true;
             RunOpenButton.IsEnabled = false;
 
@@ -2363,22 +2555,8 @@ namespace Federator.Addin.Ui
 
             try
             {
-                if (path.Length > 0 && File.Exists(path))
-                {
-                    exchange = MatrixCorrections.ReadPicked(path);
-                    teams = keptTeams.ForRun(exchange, teamSettings);
-                    log.Line("OPEN     clash file " + path);
-                    SayTheTeamsAndCorrections(exchange, true);
-                }
-                else
-                {
-                    log.Line("OPEN     no XML picked, so the tests saved in the document run, "
-                        + "or nothing runs when it holds none");
-
-                    // F131, Q123 answered B. The kept map, named before the group reads it.
-                    teams = keptTeams.ForRun(null, teamSettings);
-                    SayLines(teams.Lines());
-                }
+                TeamMap teams;
+                ExchangeDocument exchange = ReadTheXmlForAnOpenFileRun(out teams);
 
                 ReportOptions options = ReportsWanted();
 
@@ -2396,29 +2574,7 @@ namespace Federator.Addin.Ui
                 // The engine writes the GROUP lines and the OPEN FILE block itself, so
                 // they are there whatever happens inside it.
                 JobOutcome outcome = engine.RunOpenDocument();
-
-                // PART 4 and PART 5 across the run, one line each. The blocks themselves
-                // are per group, because a model sits in a group and a workset belongs
-                // to one. Nothing stops the run for either, Q65, and since Bader's answer to
-                // Q99 and Q100 the ALIGNMENT line says whether the clash was skipped.
-                foreach (string line in engine.ModelCheckRunLines())
-                {
-                    log.Line(line);
-                }
-
-                // F72b. Rule B across the run, and the pairs that matched nothing, named once.
-                foreach (string line in engine.ByDesignRunLines())
-                {
-                    log.Line(line);
-                }
-
-                // F76. Where every report row's tolerance was read, counted across the
-                // run. Every row should read off the document, and the line says so when
-                // one did not.
-                log.Line(ToleranceChoice.BlocksLine(engine.ReportBlocks, engine.ReportRan));
-                log.Line(ToleranceChoice.ReadFromLine(
-                    engine.ToleranceFromDocument, engine.ToleranceFromFile,
-                    engine.ToleranceFromTool, engine.ToleranceUnknown));
+                SayWhatAnOpenFileRunAddedUp(engine);
 
                 SetsSummary.Text = FederationEngine.Describe(outcome);
                 SetProgress(SetsSummary.Text);
@@ -2454,6 +2610,65 @@ namespace Federator.Addin.Ui
                 RunOpenButton.IsEnabled = true;
                 ShowOpenDocument();
             }
+        }
+
+        /// <summary>
+        /// The clash file of an open file run and of a run of picked NWFs, F129, read once
+        /// before the first group. It is OPTIONAL. Without one, the tests saved in each
+        /// document are run where they sit, which is the ordinary weekly case, and a document
+        /// holding none means nothing runs and the log says so. The team map is the run's,
+        /// named before any group reads it.
+        /// </summary>
+        private ExchangeDocument ReadTheXmlForAnOpenFileRun(out TeamMap teams)
+        {
+            string path = Trimmed(ExchangeFileBox.Text);
+
+            if (path.Length > 0 && File.Exists(path))
+            {
+                ExchangeDocument exchange = MatrixCorrections.ReadPicked(path);
+                teams = keptTeams.ForRun(exchange, teamSettings);
+                log.Line("OPEN     clash file " + path);
+                SayTheTeamsAndCorrections(exchange, true);
+                return exchange;
+            }
+
+            log.Line("OPEN     no XML picked, so the tests saved in the document run, "
+                + "or nothing runs when it holds none");
+
+            // F131, Q123 answered B. The kept map, named before the group reads it.
+            teams = keptTeams.ForRun(null, teamSettings);
+            SayLines(teams.Lines());
+            return null;
+        }
+
+        /// <summary>
+        /// The lines an open file run and a run of picked NWFs write across the run once the
+        /// engine is done, F129, one method so the two routes say the same.
+        /// </summary>
+        private void SayWhatAnOpenFileRunAddedUp(FederationEngine engine)
+        {
+            // PART 4 and PART 5 across the run, one line each. The blocks themselves
+            // are per group, because a model sits in a group and a workset belongs
+            // to one. Nothing stops the run for either, Q65, and since Bader's answer to
+            // Q99 and Q100 the ALIGNMENT line says whether the clash was skipped.
+            foreach (string line in engine.ModelCheckRunLines())
+            {
+                log.Line(line);
+            }
+
+            // F72b. Rule B across the run, and the pairs that matched nothing, named once.
+            foreach (string line in engine.ByDesignRunLines())
+            {
+                log.Line(line);
+            }
+
+            // F76. Where every report row's tolerance was read, counted across the
+            // run. Every row should read off the document, and the line says so when
+            // one did not.
+            log.Line(ToleranceChoice.BlocksLine(engine.ReportBlocks, engine.ReportRan));
+            log.Line(ToleranceChoice.ReadFromLine(
+                engine.ToleranceFromDocument, engine.ToleranceFromFile,
+                engine.ToleranceFromTool, engine.ToleranceUnknown));
         }
 
         /// <summary>
@@ -2493,6 +2708,11 @@ namespace Federator.Addin.Ui
             if (RunOpenButton != null)
             {
                 RunOpenButton.IsEnabled = !running && OpenDocumentJob.CanRun(open);
+            }
+
+            if (RunPickedNwfsButton != null)
+            {
+                RunPickedNwfsButton.IsEnabled = !running;
             }
         }
 

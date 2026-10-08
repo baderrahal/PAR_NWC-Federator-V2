@@ -388,6 +388,34 @@ well as to pass.
   nothing changes for it. The status guard, `StatusesThisToolMayMoveFrom`, is kept. No handle
   is held across `TestsEditDisplayName`, `TestsRunTest` or any mutator, and every wrapper is
   disposed. The mirror rule's ending is `ClashRunner.Mirrors`, a `MirrorSettings` at its default
+- THE PICKED NWFS RUN THE OPEN FILE RUN'S ROUTE, F129, Bader's request 4 under Q112, and
+  every rule and every word is Core's, core.md, THE PICKED NWFS. Read off the code on
+  2026-10-08 before anything was built: the scanned run reaches an NWF only through Decide,
+  which compares its file list against a scan, and the open file run already runs an NWF where
+  it sits with no scan and no Decide, through FinishTheGroup, the tail both share. So
+  FederationEngine.RunOpenDocument and RunPickedNwfs both run each file through ONE method,
+  RunAnOpenFile, and nothing of that route is copied: the check by OpenDocumentJob.CanRun
+  before any open, the report folder, the OPEN lines, the census, Decision Open, nothing
+  appended and nothing cleared, the tests of the XML where one is picked and otherwise the
+  tests saved inside, the workbook, the NWD, the NWF looked at once more, the GROUP lines and
+  the PICKED NWF or OPEN FILE block. For a picked NWF the one difference is the open,
+  OpenThePickedNwf, timed as DECIDE as the weekly run's open is, through
+  OpenAndWaitForTheModels, the one reader of an NWF, with no clear before it, since the open
+  replaces the document as it does for the preview and the probe. One that will not open, or
+  opens and reports no models for the whole wait, stops its group FAILED with Core's reason and
+  nothing is run on it, F74. The run stops after a group as the scanned run stops, through the
+  one StopsTheRunAfter, and the gaps line, the list for the modellers, the timing beside size
+  and each file's block are written once after the last file, WriteTheEndOfAnOpenFileRun. The
+  window, OnRunPickedNwfs, reads the run settings first, refuses a tolerance that is not one, a
+  pick Core refuses and two NWFs writing one file before anything is opened, asks before the
+  open document goes, marks RUN started and finished, writes RUN SETTINGS with Core's lines and
+  the scanned run's own choices through the one SayTheRunsChoices, reads the clash file through
+  the open file run's ReadTheXmlForAnOpenFileRun, writes the lines across the run through the
+  one SayWhatAnOpenFileRunAddedUp and SETS ACROSS THE RUN, and RESULT with Core's line, the
+  second copy of the log going to the folder picked or the picked file's folder. The box and
+  its three buttons sit in their own row on the Source step under the NWC folder, the label and
+  grey line set off Core in the constructor. What a run of it reads on Navisworks is UNKNOWN
+  until the proof steps of steps\03_bader_next.md run
 - SINCE F85 A VIEWPOINT IS PER CLASH, which REVERSES what this rule said before it. It
   said no clash is ever saved as a viewpoint and that a discipline viewpoint is not a
   clash viewpoint. The first real run answered the question the other way: the thing a

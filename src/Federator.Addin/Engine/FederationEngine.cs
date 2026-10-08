@@ -502,24 +502,8 @@ namespace Federator.Addin.Engine
                 // finished line carries.
                 Sized(job.Building, job.Files, outcome, groupClock.Elapsed.TotalSeconds);
 
-                // A run failing uniformly stops here rather than working through the rest.
-                // One real run spent 8 hours 52 minutes over 24 groups with every test
-                // failing the same way, and stopping the group would have saved none of it.
-                if (stopTheRun != null)
+                if (StopsTheRunAfter(i + 1, jobs.Count))
                 {
-                    int notAttempted = jobs.Count - (i + 1);
-
-                    log.Line("RUN      STOPPED after " + (i + 1)
-                        + (i == 0 ? " group. " : " groups. ") + stopTheRun);
-
-                    if (notAttempted > 0)
-                    {
-                        log.Line("RUN      " + notAttempted
-                            + (notAttempted == 1 ? " group was" : " groups were")
-                            + " not attempted. Everything already written is kept.");
-                    }
-
-                    Say("The run was stopped. " + stopTheRun);
                     break;
                 }
             }
@@ -532,6 +516,35 @@ namespace Federator.Addin.Engine
             WriteTimingBesideSize();
 
             return outcomes;
+        }
+
+        /// <summary>
+        /// A run failing uniformly stops after the group that tripped the guard rather than
+        /// working through the rest. One real run spent 8 hours 52 minutes over 24 groups with
+        /// every test failing the same way, and stopping the group would have saved none of it.
+        /// One method for the scanned run and the picked NWFs, F129, so the two stop alike.
+        /// </summary>
+        private bool StopsTheRunAfter(int done, int total)
+        {
+            if (stopTheRun == null)
+            {
+                return false;
+            }
+
+            int notAttempted = total - done;
+
+            log.Line("RUN      STOPPED after " + done
+                + (done == 1 ? " group. " : " groups. ") + stopTheRun);
+
+            if (notAttempted > 0)
+            {
+                log.Line("RUN      " + notAttempted
+                    + (notAttempted == 1 ? " group was" : " groups were")
+                    + " not attempted. Everything already written is kept.");
+            }
+
+            Say("The run was stopped. " + stopTheRun);
+            return true;
         }
 
         /// <summary>
@@ -601,17 +614,82 @@ namespace Federator.Addin.Engine
             Document document = NavisworksApplication.ActiveDocument;
             string open = document == null ? string.Empty : Words.Or(document.FileName, "none");
 
-            FederationJob job = OpenJob(open);
-
             // Bader's answer to Q99 and Q100. This run's own tally, one group, as Run makes
             // one for a scan.
             CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
                 reports.SkipClashOffCoordinates, DateTime.Now, 1);
 
-            // One group of one. The open file run has no scan and no grouping, and the
-            // live line says so rather than reading as the first of an unknown number.
+            List<IList<string>> summaries = new List<IList<string>>();
+
+            try
+            {
+                // One group of one. The open file run has no scan and no grouping, and the
+                // live line says so rather than reading as the first of an unknown number.
+                return RunAnOpenFile(open, 1, 1, false, summaries);
+            }
+            finally
+            {
+                WriteTheEndOfAnOpenFileRun(OpenDocumentJob.SummaryTitle, summaries);
+            }
+        }
+
+        /// <summary>
+        /// The picked NWFs of the Source step, F129, Bader's request 4 under Q112, one after
+        /// another, each opened where it sits and then run by the open file run's route,
+        /// RunAnOpenFile, so every rule of that route applies to each: the checks before
+        /// anything, the names off the file, nothing appended and nothing cleared, the tests of
+        /// the XML where one is picked and otherwise the tests saved inside, the workbook, the
+        /// NWD, and the NWF looked at once more. Each is one group in RESULT. Which NWFs the
+        /// pick gives and whether two would write one file is Federator.Core.Rerun.NwfPick,
+        /// decided before this is called.
+        /// </summary>
+        public IList<JobOutcome> RunPickedNwfs(IList<string> nwfs)
+        {
+            if (nwfs == null)
+            {
+                throw new ArgumentNullException("nwfs");
+            }
+
+            // One tally for this run, its count the picked NWFs, as Run makes one for a scan.
+            CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
+                reports.SkipClashOffCoordinates, DateTime.Now, nwfs.Count);
+
+            List<JobOutcome> outcomes = new List<JobOutcome>();
+            List<IList<string>> summaries = new List<IList<string>>();
+
+            try
+            {
+                for (int i = 0; i < nwfs.Count; i++)
+                {
+                    outcomes.Add(RunAnOpenFile(nwfs[i], i + 1, nwfs.Count, true, summaries));
+
+                    if (StopsTheRunAfter(i + 1, nwfs.Count))
+                    {
+                        break;
+                    }
+                }
+            }
+            finally
+            {
+                WriteTheEndOfAnOpenFileRun(NwfPick.SummaryTitle, summaries);
+            }
+
+            return outcomes;
+        }
+
+        /// <summary>
+        /// One file run where it sits, the open file run's route described above
+        /// RunOpenDocument, for the document already open and, since F129, for each picked
+        /// NWF, which openItHere opens first. The block of the file is added to summaries,
+        /// written once the run ends.
+        /// </summary>
+        private JobOutcome RunAnOpenFile(
+            string open, int at, int of, bool openItHere, List<IList<string>> summaries)
+        {
+            FederationJob job = OpenJob(open);
+
             currentBuilding = job.Building;
-            live.Groups(1, 1, job.Building);
+            live.Groups(at, of, job.Building);
             JobOutcome outcome = new JobOutcome(job);
             outcome.NwfSize = -1;
             outcome.NwdSize = -1;
@@ -619,13 +697,17 @@ namespace Federator.Addin.Engine
             // The open file is one group, and it starts and finishes the way a scanned
             // group does, so GroupJudgement gives it DONE, PARTIAL or FAILED by the same
             // rule and the RESULT block counts it. It used to end with no GROUP line at
-            // all, so the RESULT block that followed said no group had run.
+            // all, so the RESULT block that followed said no group had run. A picked NWF's
+            // models are known only once it opens, so its group starts with no list and the
+            // line says so.
             Stopwatch groupClock = Stopwatch.StartNew();
-            IList<string> openFiles = FilesInsideTheOpenDocument(job.Building);
+            IList<string> openFiles = openItHere ? null : FilesInsideTheOpenDocument(job.Building);
             log.GroupStarted(job.Building, openFiles);
 
             try
             {
+                Document document = NavisworksApplication.ActiveDocument;
+
                 if (document == null)
                 {
                     outcome.AddError("There is no document open, so there is nothing to run.");
@@ -633,6 +715,8 @@ namespace Federator.Addin.Engine
                     return outcome;
                 }
 
+                // Before any open, so a picked NWD, an address or an unsaved document is
+                // refused in the same words the open file run uses and never opened.
                 if (!OpenDocumentJob.CanRun(open))
                 {
                     outcome.AddError(OpenDocumentJob.WhyNot(open));
@@ -646,7 +730,7 @@ namespace Federator.Addin.Engine
                 ReportFolderChoice where = OpenDocumentJob.ReportFolder(open, reports.ExcelFolder);
                 reportFolder = where.Folder;
 
-                log.Line("OPEN     running the document that is already open, no scan");
+                log.Line(openItHere ? NwfPick.RunningLine : "OPEN     running the document that is already open, no scan");
                 log.Line("OPEN     file     " + open);
                 log.Line("OPEN     NWD      " + job.NwdPath);
                 log.Line("OPEN     report   " + reportFolder
@@ -656,19 +740,36 @@ namespace Federator.Addin.Engine
 
                 try
                 {
-                    // F75. Nothing is emptied on this path, so the census line says what
-                    // the document held and puts no reason on the group.
-                    StartOfGroupCensus(document, outcome, false);
+                    // F129. The open is timed as DECIDE, the step the weekly run's open of an
+                    // NWF is timed in, so the timing block reads the two alike.
+                    bool ready = !openItHere || InStepReturning(
+                        RunSteps.Decide,
+                        () => OpenThePickedNwf(document, job, outcome),
+                        () => outcome.HasErrors || outcome.Decision == RerunDecision.Refused
+                            ? "not opened"
+                            : RunPath.Label(RerunDecision.Open, exchange != null));
 
-                    // Nothing is appended and nothing is cleared. The models in it are
-                    // what somebody put there, and the clash history lives in the same
-                    // file.
-                    outcome.Decision = RerunDecision.Open;
-                    outcome.AppendedCount = document.Models.Count;
-                    outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
-                    outcome.NwfOnDisk = outcome.NwfSize >= 0;
+                    if (ready)
+                    {
+                        if (openItHere)
+                        {
+                            openFiles = FilesInsideTheOpenDocument(job.Building);
+                        }
 
-                    FinishTheGroup(document, job, outcome);
+                        // F75. Nothing is emptied on this path, so the census line says what
+                        // the document held and puts no reason on the group.
+                        StartOfGroupCensus(document, outcome, false);
+
+                        // Nothing is appended and nothing is cleared. The models in it are
+                        // what somebody put there, and the clash history lives in the same
+                        // file.
+                        outcome.Decision = RerunDecision.Open;
+                        outcome.AppendedCount = document.Models.Count;
+                        outcome.NwfSize = SizeOnDiskOrMinusOne(job.NwfPath);
+                        outcome.NwfOnDisk = outcome.NwfSize >= 0;
+
+                        FinishTheGroup(document, job, outcome);
+                    }
                 }
                 catch (Exception error)
                 {
@@ -710,23 +811,72 @@ namespace Federator.Addin.Engine
                 // document holds.
                 Sized(job.Building, openFiles, outcome, groupClock.Elapsed.TotalSeconds);
 
-                // F63. One group, so the run line and the group block say the same thing,
-                // and it is still written, because a run that held nothing back saying so
-                // is a check that ran and silence is not.
-                log.Line(gaps.Line());
-                WriteTheListForTheModellers();
-                WriteTimingBesideSize();
-
                 // The same fields the scanned run's RUN SETTINGS and GROUPS blocks carry,
-                // where they apply, written just before the window writes RESULT.
-                log.Block(OpenDocumentJob.SummaryTitle, OpenDocumentJob.SummaryLines(
+                // where they apply, written once the run ends, just before the window
+                // writes RESULT.
+                summaries.Add(OpenDocumentJob.SummaryLines(
                     open,
                     exchange == null ? null : exchange.SourcePath,
                     job.NwdPath,
                     reportFolder,
                     outcome.Clash == null ? null : outcome.Clash.Summary(),
                     outcome.Result,
-                    outcome.Reason));
+                    outcome.Reason,
+                    openItHere));
+            }
+        }
+
+        /// <summary>
+        /// Opens one picked NWF where it sits and waits for its models, F129, through
+        /// OpenAndWaitForTheModels, the one reader of an NWF the weekly run's Decide and the
+        /// preview use, F74. The open replaces the document, so nothing is cleared before it,
+        /// as the preview and the probe open one NWF after another. One that will not open, or
+        /// that opens and reports no models for the whole wait, stops its group with the reason
+        /// and nothing is run on it, because every test would pass against an empty document.
+        /// </summary>
+        private bool OpenThePickedNwf(Document document, FederationJob job, JobOutcome outcome)
+        {
+            Say("Opening " + job.Building);
+            log.Line("OPEN     opening the picked NWF " + job.NwfPath);
+
+            ModelLoadWait wait;
+
+            if (!OpenAndWaitForTheModels(document, job.NwfPath, log, out wait))
+            {
+                outcome.AddError(NwfPick.WouldNotOpen(job.NwfPath));
+                log.Line("OPEN     " + NwfPick.WouldNotOpen(job.NwfPath));
+                return false;
+            }
+
+            if (wait.GaveUp && wait.LastCount == 0)
+            {
+                // F74's refusal on this route. FAILED with the reason, by GroupJudgement.
+                outcome.Decision = RerunDecision.Refused;
+                outcome.NwfReadEmptyReason = NwfPick.ReadEmpty(job.NwfPath, wait.Seconds);
+                log.Line("OPEN     " + outcome.NwfReadEmptyReason);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// What an open file run writes once its last file is done, whatever happened: the
+        /// gaps line, the list for the modellers, the timing beside size and the block of each
+        /// file, in the order the open file run has always written them, before the window
+        /// writes RESULT.
+        /// </summary>
+        private void WriteTheEndOfAnOpenFileRun(string title, IList<IList<string>> summaries)
+        {
+            // F63. One line for the run, still written for a single file, because a run that
+            // held nothing back saying so is a check that ran and silence is not.
+            log.Line(gaps.Line());
+            WriteTheListForTheModellers();
+            WriteTimingBesideSize();
+
+            foreach (IList<string> summary in summaries)
+            {
+                log.Block(title, summary);
             }
         }
 

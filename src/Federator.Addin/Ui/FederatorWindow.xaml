@@ -98,6 +98,30 @@
                                   IsChecked="True" VerticalAlignment="Center" Margin="12,0,0,0" />
                         <Button Grid.Column="4" Content="Scan" Click="OnScan" FontWeight="Bold" />
                     </Grid>
+                    <!-- F129. The third choice beside the NWC folder: one NWF or a folder of
+                         them, each run where it sits the way the open file run runs it. The
+                         label and the grey line are Core's, NwfPick, set in the constructor. -->
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Column="0" x:Name="PickedNwfLabel" />
+                        <TextBox Grid.Column="1" x:Name="PickedNwfBox" VerticalAlignment="Center" />
+                        <Button Grid.Column="2" Content="File" Click="OnBrowsePickedNwfFile" />
+                        <Button Grid.Column="3" Content="Folder" Click="OnBrowsePickedNwfFolder" />
+                        <Button Grid.Column="4" x:Name="RunPickedNwfsButton" Content="Run NWFs"
+                                Click="OnRunPickedNwfs" FontWeight="Bold" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" x:Name="PickedNwfHelp"
+                                   Style="{StaticResource FindingLine}" Margin="0,2,0,0" />
+                    </Grid>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="SourceSummary" Margin="0,6,0,0" />
 
                     <!-- The scan and its checks in one place. None of this blocks a run. -->

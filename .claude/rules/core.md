@@ -1530,6 +1530,33 @@ and 6 does not read as broken.
   name, and that folder can be read from here. The NWD path is never the open path, read
   case blind, as a second lock on the same door. The rule lives in
   Federator.Core.Rerun.OpenDocumentJob so it can be tested without Navisworks
+- THE PICKED NWFS, F129, Bader's request 4 under Q112, FR-178. A third choice on the Source
+  step, beside the NWC folder, picks one NWF or a folder of NWFs, and each runs the way the
+  open file run runs it, so every rule above applies to each. What the pick gives is
+  Federator.Core.Rerun.NwfPick.From and nothing about it is decided in the add-in. A folder
+  is read with no pattern and no wildcard, its files listed whole and an NWF judged by its
+  extension alone, .nwf read case blind, NwfPick.IsNwf, so an NWD, an NWC, a .nwf.bak and a
+  .nwfx are never taken. Its subfolders are read only where the Include subfolders box of the
+  Source step asks, a subfolder that will not read is named with what the disk said and the
+  rest still run, and the picked folder not reading stops the run. The NWFs run in name order,
+  read case blind. EACH IS JUDGED BY OpenDocumentJob.WhyNot BEFORE IT IS OPENED, the guard
+  against an NWD, an address, a refused character and an unsaved document, in its words, and
+  its outputs are named through OpenDocumentJob, the NWD beside it with the extension swapped
+  and the report in Clash Reports beside it or in the Excel folder picked, never copied here.
+  A refused NWF in a folder is named in RUN SETTINGS with its reason, never opened, and handed
+  to the engine, which refuses it by the same check and counts it a FAILED group in RESULT. A
+  picked file that is refused, a folder with none that can run, a pick that is not there and
+  nothing picked each stop the run before anything is opened, and so do TWO NWFS WRITING ONE
+  FILE, an NWD or a workbook on one path read case blind, named in one sentence each with
+  both NWFs and the path, because the second would write over the first, which is the scanned
+  run's refusal of a shared name. The words are Core's: the label and the grey line by the
+  tick box rule, the RUN SETTINGS lines, NwfPickPlan.SettingsLines, the RESULT line under the
+  group counts, NwfPickPlan.ResultLine through RunLog.WriteResultBlock, the window line,
+  NwfPickPlan.Describe, which never carries what the disk said, the PICKED NWF block in the
+  OPEN FILE block's shape, OpenDocumentJob.SummaryLines with the decision a picked NWF opened
+  by this run, and the GROUP started line, which says the files are read once the NWF opens
+  where no list is handed in, RunLog.GroupFilesReadAtTheOpen. The picker remembers its own
+  folder, PickerKind.PickedNwf, its file and its folder buttons on the one kind
 - Distance is the ROUNDED number and carries no number format, because that is what theirs
   holds. Ours stored -0.328083992004395 behind a format of 0.000, so the cell read -0.328
   and anyone sorting, filtering or copying the column got the long value. Rounding the
