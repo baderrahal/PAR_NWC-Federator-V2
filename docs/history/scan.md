@@ -5659,3 +5659,118 @@ findspec, `SelectionSetDefinition.WholeQuestion`, pairs the same 59 and 117 as c
 rule signatures alone. It changes the pairing only for a file whose sets differ in those, which
 is the case the breaker named: a set and its negation, an Or group against an And, or a search
 that ignores case, each of which the rule signature alone paired.
+
+## 5z-zb. WHICH PROPERTY AND VALUE NAME GENERIC MODELS IN 1A02MM AND 1A04PK, MEASURED 2026-10-08
+
+F128, FR-177, Bader's order of 8 Oct 2026, Q145 item 2. The one measurement before the add-in
+half, allowed by Q143 item 4. Lane B's Core part, pull request 171, said it could not know three
+things until a probe read them off the two buildings: on which tab and under which property name
+the value Generic Models sits and whether that is the Element tab's Category the client's file asks,
+what the Source File property of such an item holds, and how many such items each model holds.
+
+**HOW.** `tools\probes\GenericProbe\probe-generic.ps1`, the step 364 probe of 2026-10-07 with
+-NwcFolders in place of -Nwc, through the guarded start of `tools\loop\nw-guard.ps1`, unchanged,
+sha256 E29D2733. One Navisworks, pid 32416, adopted by the four conditions, the Auto-Save switch
+written "3 0" after the last Roamer read and put back after, quit by Dispose and gone 7.7 s later,
+not forced, Bader's settings put back with 0 still differing. The plugin `GenericProbe.dll`,
+`tools\probes\GenericProbe\GenericProbePlugin.cs`, built with 0 warnings and 0 errors, run once per
+building inside that one start: Document.Clear, TryAppendFile of each NWC copy from
+`runs\04\NMFed\NWC\C02` and `C04`, then three readings. The walk, Model.RootItem.DescendantsAndSelf
+of every model and every tab and property of every item, read by kind. The Element tab's Category on
+its own, LcRevitData_Element with LcRevitPropertyElementCategory. And the two searches
+GenericModelsPlan writes, built as SetBuilder.BuildCondition builds them, the category equal and the
+Source File contains a text, run through Search.FindAll over the whole document. Nothing saved,
+nothing published, every original NWC read back with the same sha256 after. The result is
+`tools\probes\GenericProbe\generic-probe-result-20261008.txt`, 1376 lines, the machine name masked,
+174 s in all. The command, from the worktree:
+
+    powershell -NoProfile -STA -ExecutionPolicy Bypass -File tools\probes\GenericProbe\probe-generic.ps1 -Out tools\probes\GenericProbe\generic-probe-result-20261008.txt -NwcFolders "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C02|%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWC\C04"
+
+**1A02MM, C02, four NWCs, 19,028 items walked, result lines 62 to 194.**
+
+1. NO ITEM OF 1A02MM CARRIES THE VALUE ON ANY TAB OR ANY PROPERTY. The Element tab's Category reads
+   Generic Models on 0 items in each of the four models, AR 12,309 items, EL 2,946, ME 3,581, ST 192,
+   and no property of any tab reads it exactly, after a trim, without case, or holds it, lines 124 to
+   191. The search with the category alone finds 0 over the whole document, line 86. So on which tab
+   the value would sit in 1A02MM is UNKNOWN, there being no item to read it off.
+2. The Source File property sits on the Item tab, internal LcOaNode, under LcOaNodeSourceFile,
+   displayed Source File, a DisplayString, and holds the bare name of the Revit file the NWC was
+   published from, with its .rvt and no folder, such as 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.rvt, 37
+   characters, lines 138, 154, 170 and 186. Every item but one of each model carries it, 12,308 of
+   12,309 in AR, 2,945 of 2,946 in EL, 3,580 of 3,581 in ME, 191 of 192 in ST, and one distinct text
+   per model. Model.SourceFileName reads Autodesk Docs://KSA_New Murabba/ and that same name, lines
+   79 to 82, so the Source File of the items is the file name of Model.SourceFileName. In all four the
+   Revit file's stem equals the NWC's stem.
+3. The count per model is 0, 0, 0 and 0, by the walk and by every search. Every Generic Models set of
+   1A02MM will be at nought, and the block's line on what a nought can mean is the true reading here.
+
+**1A04PK, C04, ten NWCs, 120,612 items walked, result lines 196 to 1252.**
+
+1. THE VALUE SITS ON THE ELEMENT TAB UNDER CATEGORY, EXACTLY AS THE CLIENT'S FILE ASKS. Tab internal
+   name LcRevitData_Element, displayed Element, property internal name LcRevitPropertyElementCategory,
+   displayed Category, kind DisplayString, value Generic Models, 14 characters, equal Ordinal with no
+   trim and no case variant on any item, lines 1065, 1108, 1155, 1197 and 1225. 572 items read it, in
+   five of the ten models, and every one is an element whose parent does not read it, composite,
+   without geometry. The search with that tab and property, Equal, the plan's first condition, finds
+   572 over the whole document, line 232, and by the topmost ancestor's Model.FileName the same five
+   models with the same counts, lines 233 to 237. The value sits on other tabs too, and the search
+   names the tab so it counts none of them: the Type tab, lcldrevit_tab_type, carries a property
+   whose internal name is also LcRevitPropertyElementCategory, 21 in ST-000001, the FamilyInstance
+   tab, LcRevitData_Parameter, carries one, the Item tab's Type, LcOaSceneBaseClassUserName, reads
+   Generic Models on the geometry children, 990 in ST-000001 against 528 elements, and the Category
+   tab's Name reads it, lines 1192 to 1203. So a condition on the Element tab counts elements, and a
+   condition with no tab on a property of that internal name would count more, UNKNOWN how many.
+2. The Source File property is the same tab, property and kind as in 1A02MM, the bare Revit file name
+   with .rvt, 37 characters, no folder, one distinct text per model over all its items, and every one
+   of the 572 Generic Models items carries one, lines 1120 to 1125 for ME-MOD-000001 and 1206 to 1211
+   for ST-MOD-000001, the other three models the like. FOR FOUR OF THE TEN
+   MODELS THE REVIT FILE'S NAME IS NOT THE NWC'S, lines 221 to 225:
+   1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc from 1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt,
+   1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc from 1104-PAR-1A04IP-ZZZ-ME-MOD-000005.rvt,
+   1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc from 1104-PAR-1A04IH-ZZZ-ME-MOD-000002.rvt and
+   1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc from 1104-PAR-1A04IP-ZZZ-ME-MOD-000003.rvt. Model.SourceFileName
+   reads Autodesk Docs://KSA_New Murabba/ and the Revit name for every model, and its file name is
+   exactly the Source File text on the items.
+3. The count per model, by the walk, by the topmost ancestor's Model.FileName and by the search with the
+   category alone, all three equal:
+
+   | Model | Items walked | Generic Models | Search, category AND Source File contains the NWC stem | contains the file name of Model.SourceFileName |
+   |---|---|---|---|---|
+   | 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc | 20,058 | 0 | 0 | 0 |
+   | 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc | 27,533 | 0 | 0 | 0 |
+   | 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc | 41,130 | 3 | 0 | 3 |
+   | 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc | 7,884 | 0 | 0 | 0 |
+   | 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc | 288 | 6 | 0 | 6 |
+   | 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc | 812 | 0 | 0 | 0 |
+   | 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc | 3,341 | 32 | 0 | 32 |
+   | 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc | 15,380 | 0 | 0 | 0 |
+   | 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc | 4,134 | 528 | 528 | 528 |
+   | 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc | 52 | 3 | 3 | 3 |
+
+   Lines 239 to 305 for the searches. The plan's default text, the NWC's stem, finds 531 of the 572 and
+   misses the 41 of the three models published under another name. The file name of
+   Model.SourceFileName, or its stem, finds all 572. The NWC's name with .nwc finds 0 everywhere, since
+   no Source File holds .nwc.
+
+**THE TWO LINES THE CORE PART ASKED FOR.** Two items of one model carrying different Source File texts:
+none, one distinct text per model in all fourteen models, read over every item and not only the hits. A
+Generic Models item with no Source File at all: none, 0 of 572. One item of each model carries no Source
+File property, which one was not written down, UNKNOWN, and it is none of the 572.
+
+**WHAT THIS DECIDES.** GenericModelsSettings.DefaultCategoryValue, Generic Models, and the Element tab
+with LcRevitPropertyElementCategory are right as the Core part holds them. The MatchText of a
+GenericModelInput must be the file name of Model.SourceFileName, with or without its .rvt, and never the
+NWC's stem alone, because three models of 1A04PK would count 0 where they hold 3, 6 and 32. A text that is
+the Revit stem holds the NWC stem for ten of the fourteen models and not for four, so the plan's note on a
+text that finds another model's items is wanted. The count a set finds is the count of elements, since the
+condition names the Element tab.
+
+**COST.** The walk of every tab and property of every item: 2.9 s for 12,309 items, 52.4 s for the whole
+of 1A04PK's 120,612 inside one ExecuteAddInPlugin, the ten appends included. Each search over the whole
+document took under 0.03 s, lines 238 to 304.
+
+**UNKNOWN.** Whether DisplayStringContains compares without case, every text searched being in the file's
+own case. What Source File holds for an NWC published from a Revit file on a disk rather than Autodesk
+Docs, all fourteen being from Autodesk Docs. How many items a Source File condition with no tab matches
+on a model whose items carry the property on a second tab, there being one tab here. Whether 1A02MM's
+nought holds for the files of a later week.

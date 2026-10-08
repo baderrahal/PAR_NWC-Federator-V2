@@ -33,6 +33,14 @@ namespace Federator.Core.Sets
         /// </summary>
         public string Asked { get; set; }
 
+        /// <summary>
+        /// The conditions a PRESENT set asks, read off it, so a rule that compares the set with
+        /// a plan compares keys through SetDrift.Compare and never the prose above, F128: the
+        /// prose of a set read off the document carries no display names and a plan's does, so
+        /// the two never match. Null where the question was not read, or for a created set.
+        /// </summary>
+        public IList<ReadCondition> AskedConditions { get; set; }
+
         public string Path { get; private set; }
 
         public string Name { get; private set; }

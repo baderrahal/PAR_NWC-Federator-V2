@@ -48,6 +48,7 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public const string Renumber = "RENUMBER";
         public const string Workbook = "WORKBOOK";
+        public const string GenericWorkbook = "GENERIC XLSX";
         public const string Html = "HTML";
         public const string Xml = "XML";
         public const string Nwd = "NWD";
@@ -67,6 +68,7 @@ namespace Federator.Core.Diagnostics
             Renumber,
             Views,
             Workbook,
+            GenericWorkbook,
             Html,
             Xml,
             Nwd,

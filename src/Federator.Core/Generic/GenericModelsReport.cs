@@ -174,16 +174,29 @@ namespace Federator.Core.Generic
                 {
                     count = new GenericModelCount(model.ModelName, GenericModelCount.NotCountedItems, "the count of its set was not taken");
                 }
-                else if (found[0].Present && string.IsNullOrEmpty(found[0].Asked))
+                else if (found[0].Present)
                 {
-                    count = new GenericModelCount(model.ModelName, GenericModelCount.NotCountedItems,
-                        "its set was already in the document and the question it asks was not read, so its count may answer another question");
-                }
-                else if (found[0].Present && !string.Equals(found[0].Asked, model.Set.Describe(), StringComparison.Ordinal))
-                {
-                    count = new GenericModelCount(model.ModelName, GenericModelCount.NotCountedItems,
-                        "its set was already in the document and asks something other than the plan asks (it asks: "
-                        + found[0].Asked + ". the plan asks: " + model.Set.Describe() + "), so its count answers another question");
+                    // BY THE ONE DRIFT RULE, SetDrift.Compare on the keys, and never the two prose strings:
+                    // the question read off a set carries no display names and the plan's carries them,
+                    // so comparing the words called every present set on a weekly rerun a set asking
+                    // another question, the readers' finding on attempt 1.
+                    SetDrift drift = SetDrift.Compare(found[0].AskedConditions, model.Set);
+
+                    if (drift.CouldNotRead)
+                    {
+                        count = new GenericModelCount(model.ModelName, GenericModelCount.NotCountedItems,
+                            "its set was already in the document and the question it asks was not read, so its count may answer another question");
+                    }
+                    else if (drift.Drifted)
+                    {
+                        count = new GenericModelCount(model.ModelName, GenericModelCount.NotCountedItems,
+                            "its set was already in the document and asks something other than the plan asks (it asks: "
+                            + drift.AskedNow() + ". the plan asks: " + drift.WantedNow() + "), so its count answers another question");
+                    }
+                    else
+                    {
+                        count = new GenericModelCount(model.ModelName, found[0].ItemCount, null);
+                    }
                 }
                 else
                 {
@@ -269,8 +282,28 @@ namespace Federator.Core.Generic
                 lines.Add("note    : " + note);
             }
 
-            lines.Add("no clash test is made for these sets");
+            lines.Add(NoClashTest);
             return lines;
+        }
+
+        /// <summary>The last line of every block, so a reader sees these sets are counted and never clashed.</summary>
+        public const string NoClashTest = "no clash test is made for these sets";
+
+        /// <summary>
+        /// The block of a group whose plan, build or count threw, F128 attempt 2, the lead's decision: a
+        /// FAILED line in the block, the count UNKNOWN, and the group keeps its own result, as a report
+        /// check never fails a group. The line says what threw and what happens next.
+        /// </summary>
+        public static IList<string> FailedLines(string what, string error)
+        {
+            return new List<string>
+            {
+                "FAILED  " + (string.IsNullOrEmpty(what) ? "the Generic Models count" : what) + " threw "
+                    + (string.IsNullOrEmpty(error) ? Unknown : error)
+                    + ", so no model of this group is counted, its count is " + Unknown
+                    + " and the group keeps its own result",
+                NoClashTest
+            };
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using Federator.Core.Clash;
 using Federator.Core.Coverage;
+using Federator.Core.Generic;
 using Federator.Core.Health;
 using Federator.Core.Rerun;
 using Federator.Core.Views;
@@ -2042,13 +2043,20 @@ namespace Federator.Core.Diagnostics
         /// FAILED line is written here in full, no group's count moves, and the block never
         /// closes on Nothing failed beside one. Null writes one line saying no coverage was
         /// taken, because a missing line reads as a check that did not run.
+        ///
+        /// generic is the Generic Models count of the same run, F128, handed in the same way and
+        /// never kept, one line across the run. Null writes one line saying no count was handed
+        /// in, for the same reason.
         /// </summary>
         public void WriteResultBlock(
-            OffCoordinatesAcrossTheRun thisRun = null, bool makeViewpoints = true, CoverageAcrossTheRun coverage = null)
+            OffCoordinatesAcrossTheRun thisRun = null,
+            bool makeViewpoints = true,
+            CoverageAcrossTheRun coverage = null,
+            GenericModelsAcrossTheRun generic = null)
         {
             try
             {
-                WriteTheResult(thisRun, makeViewpoints, coverage);
+                WriteTheResult(thisRun, makeViewpoints, coverage, generic);
             }
             finally
             {
@@ -2058,7 +2066,7 @@ namespace Federator.Core.Diagnostics
         }
 
         private void WriteTheResult(
-            OffCoordinatesAcrossTheRun thisRun, bool makeViewpoints, CoverageAcrossTheRun coverage)
+            OffCoordinatesAcrossTheRun thisRun, bool makeViewpoints, CoverageAcrossTheRun coverage, GenericModelsAcrossTheRun generic)
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
             // to be scrolled for, and so where the time went is read on the way to it.
@@ -2177,6 +2185,11 @@ namespace Federator.Core.Diagnostics
                     Line(line);
                 }
             }
+
+            // F128. Under the coverage, because it is the same kind of thing, a count the
+            // run took that no clash report carries. Always one line, so a run that counted
+            // nothing says so rather than leaving the line out.
+            Line(generic == null ? GenericModelsAcrossTheRun.NoneTaken() : generic.ResultLine());
 
             Blank();
 

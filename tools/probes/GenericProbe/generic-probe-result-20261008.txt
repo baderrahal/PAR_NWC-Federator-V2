@@ -1,0 +1,1376 @@
+MACHINE   [machine]   2026-10-08 12:59:44
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 35652
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-f128\tools\probes\GenericProbe\probe-generic.ps1", sha256 17E289199AC192771868568217355B499464D6C44D0196422341766CD4EACD1C
+GUARD     tools\loop\nw-guard.ps1, sha256 E29D2733A227E6665551BD52866E7C2B40F5A5B09114ECB2AA2FFE233EA23C1A
+VALUE     [Generic Models], 14 characters
+PROCESS   powershell.exe pid 35652, started to run -File C:\Users\p003653k\AppData\Local\NwcFederatorLoop\wt-f128\tools\probes\GenericProbe\probe-generic.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 471
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123148 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 199 AutoSave files listed and not copied
+  the tool's own logs folder listed: 38 files
+
+==== THE COPIES, made before anything starts, one folder per building ====
+  C02  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc, 1361597 bytes, sha256 FCA49DD78E37DA7403CD606D444D4EC6E717A9B34ACFCEEFA9EB3FDC7145B80F, its copy matches
+  C02  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, 2074714 bytes, sha256 38B64BD922825092E4943C795138040AE3A00433CB63DC062FD5B24C8372466C, its copy matches
+  C02  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, 2006253 bytes, sha256 F0544034ED410215B556FAC3B0FACA7D1A67975651530D95642FFC74B53F4511, its copy matches
+  C02  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, 51608 bytes, sha256 EF5E3443F676C7B43C8702F01457BC44702DDE2019DF4E57691F886F3495ABA7, its copy matches
+  C02: 4 NWCs copied into "%LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C02"
+  C04  1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc, 20475803 bytes, sha256 97C98DA53691D1BA6413C2B22D6B76C575DB50B8356BF066CADFE8EF3D28A036, its copy matches
+  C04  1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc, 107281275 bytes, sha256 53DC4CFD039038965158B2701495469D5B85FB789C710C0BFC5CB00B3C7BA2CE, its copy matches
+  C04  1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc, 24705684 bytes, sha256 F00E712B1AA76858BDDF3502467C57CE7722D1ABC9E50F3F304462D8DBAD0DD7, its copy matches
+  C04  1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc, 2177136 bytes, sha256 AD5105FB8174EB1325BB1663A098B3983D33867E508C6B0179E629F43F5704B7, its copy matches
+  C04  1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, 489050 bytes, sha256 C38CFD2CF527D2A4FDBB8538D2E23F75522792968BB8148F65C6BB3D67F6F72E, its copy matches
+  C04  1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, 2993520 bytes, sha256 30A4F059CBCBCCD6F9BABA68A8155E23AB60AD65B466994CE25A0ACBB3975C25, its copy matches
+  C04  1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, 5617535 bytes, sha256 4ADD80829D2B3DD26D4C53D3886C1D324664E65F6959B823C39052737301752C, its copy matches
+  C04  1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, 13793539 bytes, sha256 2B949C9EF1316CFD2916F1FFB1170CE8A65BC70844F5AF746702A9121D667F24, its copy matches
+  C04  1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, 1152845 bytes, sha256 F907AE89A20B5A82FD520C6913D5FB1F3C14488B7712DAFF2C62A0C2C37347C2, its copy matches
+  C04  1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, 136241 bytes, sha256 85164008B741CFFA0E94180E3014AC5A9C7871B67F65EDBAF5812C88358C999F, its copy matches
+  C04: 10 NWCs copied into "%LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04"
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-f128\tools\probes\GenericProbe\bin\Release\net48\GenericProbe.dll", 29184 bytes, written 2026-10-08 12:59:10, sha256 466822ED578BE408E03173F2320711B35300426331339F6C0A774C96633A9930, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  12:59:50.840  t+6.8s  calling new NavisworksApplication()
+  13:01:06.699  t+82.6s  the constructor RETURNED after 75.85 s
+  Roamer processes new since step 2: 1
+    pid 32416, started 12:59:50.907, parent 1324 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 32416, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 32416, started 2026-10-08 12:59:50.907, start ticks UTC 639270503909078694
+  13:01:21.482  t+97.4s  Visible set True, read back True
+  visible top level windows of 32416: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  13:01:21.896  t+97.8s  AddPluginAssembly RETURNED after 0.078 s
+
+==== STEP 5. ExecuteAddInPlugin once per building, the mode generic on the copies, which it appends and does not save ====
+---- C02 ----
+  13:01:21.908  t+97.8s  calling ExecuteAddInPlugin(GenericProbe.PARS, generic, the plugin's output file, the folder of copies C02, the value, C02)
+  13:01:29.372  t+105.3s  ExecuteAddInPlugin RETURNED 0 after 7.46 s
+  visible top level windows of 32416: 1, hidden: 76, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+---- the plugin's output for C02, every line ----
+  | 13:01:21.928  probe started, mode generic, building C02
+  | 13:01:21.931  the value asked: [Generic Models], 14 characters, compared Ordinal
+  | 13:01:21.932  the folder of copies %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C02
+  | 13:01:21.933  NWC copies in it: 4
+  | 13:01:21.933  models before the clear 0, IsClear True
+  | 13:01:21.983  models after the clear 0, IsClear True
+  | 13:01:23.922  TryAppendFile 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc returned True after 1.939 s, models now 1
+  | 13:01:24.029  TryAppendFile 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc returned True after 0.106 s, models now 2
+  | 13:01:24.145  TryAppendFile 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc returned True after 0.117 s, models now 3
+  | 13:01:24.221  TryAppendFile 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc returned True after 0.075 s, models now 4
+  | 13:01:24.221  appended 4 of 4, models after the appends 4, waited 0.000 s
+  | 13:01:24.223  model 0 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C02\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc, stem 1104-PAR-1A02MM-ZZZ-AR-MOD-000001, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-AR-MOD-000001.rvt, its file name 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.rvt, its stem 1104-PAR-1A02MM-ZZZ-AR-MOD-000001
+  | 13:01:24.223  model 1 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C02\1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, stem 1104-PAR-1A02MM-ZZZ-EL-MOD-000001, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-EL-MOD-000001.rvt, its file name 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.rvt, its stem 1104-PAR-1A02MM-ZZZ-EL-MOD-000001
+  | 13:01:24.223  model 2 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C02\1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, stem 1104-PAR-1A02MM-ZZZ-ME-MOD-000001, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-ME-MOD-000001.rvt, its file name 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.rvt, its stem 1104-PAR-1A02MM-ZZZ-ME-MOD-000001
+  | 13:01:24.223  model 3 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C02\1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, stem 1104-PAR-1A02MM-ZZZ-ST-MOD-000001, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A02MM-ZZZ-ST-MOD-000001.rvt, its file name 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.rvt, its stem 1104-PAR-1A02MM-ZZZ-ST-MOD-000001
+  | 13:01:24.223  
+  | 13:01:24.223  ==== THE SEARCHES, the plan's own conditions, built as SetBuilder.BuildCondition builds them ====
+  | 13:01:24.237      search category alone, whole document took 0.008 s
+  | 13:01:24.237    SEARCH category alone finds 0 items over the whole document
+  | 13:01:24.244      search 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc with Source File contains the NWC stem took 0.003 s
+  | 13:01:24.244    SEARCH 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-AR-MOD-000001], the NWC's stem: 0
+  | 13:01:24.246      search 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc with Source File contains the NWC name took 0.002 s
+  | 13:01:24.247    SEARCH 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc], the NWC's name: 0
+  | 13:01:24.249      search 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc with Source File contains the model's SourceFileName's file name took 0.002 s
+  | 13:01:24.249    SEARCH 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-AR-MOD-000001.rvt], the file name of Model.SourceFileName: 0
+  | 13:01:24.251      search 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc with Source File contains the NWC stem took 0.002 s
+  | 13:01:24.252    SEARCH 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-EL-MOD-000001], the NWC's stem: 0
+  | 13:01:24.254      search 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc with Source File contains the NWC name took 0.003 s
+  | 13:01:24.254    SEARCH 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc], the NWC's name: 0
+  | 13:01:24.257      search 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc with Source File contains the model's SourceFileName's file name took 0.003 s
+  | 13:01:24.257    SEARCH 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-EL-MOD-000001.rvt], the file name of Model.SourceFileName: 0
+  | 13:01:24.261      search 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc with Source File contains the NWC stem took 0.003 s
+  | 13:01:24.261    SEARCH 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-ME-MOD-000001], the NWC's stem: 0
+  | 13:01:24.263      search 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc with Source File contains the NWC name took 0.003 s
+  | 13:01:24.263    SEARCH 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc], the NWC's name: 0
+  | 13:01:24.266      search 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc with Source File contains the model's SourceFileName's file name took 0.003 s
+  | 13:01:24.266    SEARCH 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-ME-MOD-000001.rvt], the file name of Model.SourceFileName: 0
+  | 13:01:24.269      search 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc with Source File contains the NWC stem took 0.003 s
+  | 13:01:24.269    SEARCH 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-ST-MOD-000001], the NWC's stem: 0
+  | 13:01:24.272      search 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc with Source File contains the NWC name took 0.003 s
+  | 13:01:24.272    SEARCH 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc], the NWC's name: 0
+  | 13:01:24.275      search 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc with Source File contains the model's SourceFileName's file name took 0.002 s
+  | 13:01:24.275    SEARCH 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A02MM-ZZZ-ST-MOD-000001.rvt], the file name of Model.SourceFileName: 0
+  | 13:01:24.275  
+  | 13:01:24.275  ==== THE WALK, every tab and every property of every item of every model ====
+  | 13:01:24.276  ---- walking 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc ----
+  | 13:01:26.602    10000 items so far, 2.3 s
+  | 13:01:27.179    walked 12309 items in 2.9 s, items that threw 0
+  | 13:01:27.179  ---- walking 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc ----
+  | 13:01:27.777    walked 2946 items in 0.6 s, items that threw 0
+  | 13:01:27.777  ---- walking 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc ----
+  | 13:01:29.255    walked 3581 items in 1.5 s, items that threw 0
+  | 13:01:29.255  ---- walking 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc ----
+  | 13:01:29.360    walked 192 items in 0.1 s, items that threw 0
+  | 13:01:29.360  
+  | 13:01:29.360  ==== THE COUNTS, by the model whose root was walked, then by the topmost ancestor's Model.FileName ====
+  | 13:01:29.362  MODEL 0  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc
+  | 13:01:29.362    items walked 12309, with an Element tab 3107, with a Source File property 12308, that threw 0
+  | 13:01:29.362    Element tab Category reads the value exactly: 0 items, of which elements, whose parent does not read it, 0, composite 0, with geometry 0, whose topmost model is another file 0
+  | 13:01:29.363    the kinds that value was read as: none
+  | 13:01:29.363    Element tab Category equal only after a trim or without case: 0
+  | 13:01:29.363    items reading the value on some other property and not on the Element tab's Category: 0
+  | 13:01:29.363    every tab and property the value was read on, over all items, with how:
+  | 13:01:29.363        none
+  | 13:01:29.364    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 0, its stem where it differs not run
+  | 13:01:29.364    of the 0 exact items: with no Source File property at all 0, with more than one 0
+  | 13:01:29.364    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:01:29.364        none
+  | 13:01:29.364    what each of those texts holds: none
+  | 13:01:29.364    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:01:29.364        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.rvt  x12308
+  | 13:01:29.364    distinct Source File texts over all items: 1
+  | 13:01:29.365  MODEL 1  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc
+  | 13:01:29.365    items walked 2946, with an Element tab 722, with a Source File property 2945, that threw 0
+  | 13:01:29.365    Element tab Category reads the value exactly: 0 items, of which elements, whose parent does not read it, 0, composite 0, with geometry 0, whose topmost model is another file 0
+  | 13:01:29.365    the kinds that value was read as: none
+  | 13:01:29.365    Element tab Category equal only after a trim or without case: 0
+  | 13:01:29.365    items reading the value on some other property and not on the Element tab's Category: 0
+  | 13:01:29.365    every tab and property the value was read on, over all items, with how:
+  | 13:01:29.365        none
+  | 13:01:29.365    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 0, its stem where it differs not run
+  | 13:01:29.365    of the 0 exact items: with no Source File property at all 0, with more than one 0
+  | 13:01:29.366    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:01:29.366        none
+  | 13:01:29.366    what each of those texts holds: none
+  | 13:01:29.366    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:01:29.366        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.rvt  x2945
+  | 13:01:29.366    distinct Source File texts over all items: 1
+  | 13:01:29.366  MODEL 2  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc
+  | 13:01:29.366    items walked 3581, with an Element tab 1141, with a Source File property 3580, that threw 0
+  | 13:01:29.367    Element tab Category reads the value exactly: 0 items, of which elements, whose parent does not read it, 0, composite 0, with geometry 0, whose topmost model is another file 0
+  | 13:01:29.367    the kinds that value was read as: none
+  | 13:01:29.367    Element tab Category equal only after a trim or without case: 0
+  | 13:01:29.367    items reading the value on some other property and not on the Element tab's Category: 0
+  | 13:01:29.367    every tab and property the value was read on, over all items, with how:
+  | 13:01:29.367        none
+  | 13:01:29.367    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 0, its stem where it differs not run
+  | 13:01:29.367    of the 0 exact items: with no Source File property at all 0, with more than one 0
+  | 13:01:29.367    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:01:29.368        none
+  | 13:01:29.368    what each of those texts holds: none
+  | 13:01:29.368    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:01:29.368        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.rvt  x3580
+  | 13:01:29.368    distinct Source File texts over all items: 1
+  | 13:01:29.368  MODEL 3  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc
+  | 13:01:29.368    items walked 192, with an Element tab 72, with a Source File property 191, that threw 0
+  | 13:01:29.368    Element tab Category reads the value exactly: 0 items, of which elements, whose parent does not read it, 0, composite 0, with geometry 0, whose topmost model is another file 0
+  | 13:01:29.368    the kinds that value was read as: none
+  | 13:01:29.369    Element tab Category equal only after a trim or without case: 0
+  | 13:01:29.369    items reading the value on some other property and not on the Element tab's Category: 0
+  | 13:01:29.369    every tab and property the value was read on, over all items, with how:
+  | 13:01:29.369        none
+  | 13:01:29.369    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 0, its stem where it differs not run
+  | 13:01:29.369    of the 0 exact items: with no Source File property at all 0, with more than one 0
+  | 13:01:29.369    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:01:29.369        none
+  | 13:01:29.370    what each of those texts holds: none
+  | 13:01:29.370    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:01:29.370        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.rvt  x191
+  | 13:01:29.370    distinct Source File texts over all items: 1
+  | 13:01:29.370  
+  | 13:01:29.370  ---- by the topmost ancestor's Model.FileName, every item whose Element tab Category reads the value exactly ----
+  | 13:01:29.370    none
+  | 13:01:29.370  
+  | 13:01:29.370  nothing in any model was changed, nothing was saved and nothing was published
+  | 13:01:29.370  probe finished, code 0
+  the plugin's output "%LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\plugin-output-C02.txt", 13248 bytes, sha256 77F91C882420D45661F2161788C6F31C54D1B3F9C1421A574AAA3D1B9BEA7CB6
+
+---- C04 ----
+  13:01:29.779  t+105.7s  calling ExecuteAddInPlugin(GenericProbe.PARS, generic, the plugin's output file, the folder of copies C04, the value, C04)
+  13:02:22.166  t+158.1s  ExecuteAddInPlugin RETURNED 0 after 52.39 s
+  visible top level windows of 32416: 1, hidden: 76, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+---- the plugin's output for C04, every line ----
+  | 13:01:29.785  probe started, mode generic, building C04
+  | 13:01:29.789  the value asked: [Generic Models], 14 characters, compared Ordinal
+  | 13:01:29.789  the folder of copies %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04
+  | 13:01:29.791  NWC copies in it: 10
+  | 13:01:29.791  models before the clear 4, IsClear False
+  | 13:01:29.875  models after the clear 0, IsClear True
+  | 13:01:31.862  TryAppendFile 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc returned True after 1.987 s, models now 1
+  | 13:01:32.835  TryAppendFile 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc returned True after 0.973 s, models now 2
+  | 13:01:33.400  TryAppendFile 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc returned True after 0.565 s, models now 3
+  | 13:01:33.639  TryAppendFile 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc returned True after 0.238 s, models now 4
+  | 13:01:33.809  TryAppendFile 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc returned True after 0.171 s, models now 5
+  | 13:01:34.015  TryAppendFile 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc returned True after 0.205 s, models now 6
+  | 13:01:34.244  TryAppendFile 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc returned True after 0.230 s, models now 7
+  | 13:01:34.650  TryAppendFile 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc returned True after 0.405 s, models now 8
+  | 13:01:34.862  TryAppendFile 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc returned True after 0.212 s, models now 9
+  | 13:01:35.054  TryAppendFile 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc returned True after 0.192 s, models now 10
+  | 13:01:35.054  appended 10 of 10, models after the appends 10, waited 0.000 s
+  | 13:01:35.054  model 0 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc, stem 1104-PAR-1A04PK-ZZZ-AR-MOD-000001, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-AR-MOD-000001.rvt, its file name 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.rvt, its stem 1104-PAR-1A04PK-ZZZ-AR-MOD-000001
+  | 13:01:35.054  model 1 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04\1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc, stem 1104-PAR-1A04PK-ZZZ-EL-MOD-000001, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-EL-MOD-000001.rvt, its file name 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.rvt, its stem 1104-PAR-1A04PK-ZZZ-EL-MOD-000001
+  | 13:01:35.055  model 2 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04\1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc, stem 1104-PAR-1A04PK-ZZZ-FP-MOD-000001, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt, its file name 1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt, its stem 1104-PAR-1A04PK-ZZZ-FP-MOD-000004
+  | 13:01:35.055  model 3 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04\1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc, stem 1104-PAR-1A04PK-ZZZ-HV-MOD-000001, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-HV-MOD-000001.rvt, its file name 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.rvt, its stem 1104-PAR-1A04PK-ZZZ-HV-MOD-000001
+  | 13:01:35.055  model 4 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, stem 1104-PAR-1A04PK-ZZZ-ME-MOD-000001, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A04IP-ZZZ-ME-MOD-000005.rvt, its file name 1104-PAR-1A04IP-ZZZ-ME-MOD-000005.rvt, its stem 1104-PAR-1A04IP-ZZZ-ME-MOD-000005
+  | 13:01:35.055  model 5 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, stem 1104-PAR-1A04PK-ZZZ-ME-MOD-000002, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A04IH-ZZZ-ME-MOD-000002.rvt, its file name 1104-PAR-1A04IH-ZZZ-ME-MOD-000002.rvt, its stem 1104-PAR-1A04IH-ZZZ-ME-MOD-000002
+  | 13:01:35.055  model 6 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, stem 1104-PAR-1A04PK-ZZZ-ME-MOD-000003, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A04IP-ZZZ-ME-MOD-000003.rvt, its file name 1104-PAR-1A04IP-ZZZ-ME-MOD-000003.rvt, its stem 1104-PAR-1A04IP-ZZZ-ME-MOD-000003
+  | 13:01:35.055  model 7 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, stem 1104-PAR-1A04PK-ZZZ-ME-MOD-000004, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-ME-MOD-000004.rvt, its file name 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.rvt, its stem 1104-PAR-1A04PK-ZZZ-ME-MOD-000004
+  | 13:01:35.055  model 8 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, stem 1104-PAR-1A04PK-ZZZ-ST-MOD-000001, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-ST-MOD-000001.rvt, its file name 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.rvt, its stem 1104-PAR-1A04PK-ZZZ-ST-MOD-000001
+  | 13:01:35.055  model 9 FileName %LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, stem 1104-PAR-1A04PK-ZZZ-ST-MOD-000002, SourceFileName Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-ST-MOD-000002.rvt, its file name 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.rvt, its stem 1104-PAR-1A04PK-ZZZ-ST-MOD-000002
+  | 13:01:35.056  
+  | 13:01:35.056  ==== THE SEARCHES, the plan's own conditions, built as SetBuilder.BuildCondition builds them ====
+  | 13:01:35.101      search category alone, whole document took 0.045 s
+  | 13:01:35.101    SEARCH category alone finds 572 items over the whole document
+  | 13:01:35.161      found by the search, by the topmost ancestor's Model.FileName: 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc  3
+  | 13:01:35.162      found by the search, by the topmost ancestor's Model.FileName: 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc  6
+  | 13:01:35.162      found by the search, by the topmost ancestor's Model.FileName: 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc  32
+  | 13:01:35.162      found by the search, by the topmost ancestor's Model.FileName: 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc  528
+  | 13:01:35.162      found by the search, by the topmost ancestor's Model.FileName: 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc  3
+  | 13:01:35.185      search 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc with Source File contains the NWC stem took 0.022 s
+  | 13:01:35.185    SEARCH 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-AR-MOD-000001], the NWC's stem: 0
+  | 13:01:35.207      search 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc with Source File contains the NWC name took 0.022 s
+  | 13:01:35.207    SEARCH 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc], the NWC's name: 0
+  | 13:01:35.229      search 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc with Source File contains the model's SourceFileName's file name took 0.022 s
+  | 13:01:35.229    SEARCH 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-AR-MOD-000001.rvt], the file name of Model.SourceFileName: 0
+  | 13:01:35.253      search 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc with Source File contains the NWC stem took 0.023 s
+  | 13:01:35.253    SEARCH 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-EL-MOD-000001], the NWC's stem: 0
+  | 13:01:35.275      search 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc with Source File contains the NWC name took 0.022 s
+  | 13:01:35.275    SEARCH 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc], the NWC's name: 0
+  | 13:01:35.297      search 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc with Source File contains the model's SourceFileName's file name took 0.022 s
+  | 13:01:35.297    SEARCH 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-EL-MOD-000001.rvt], the file name of Model.SourceFileName: 0
+  | 13:01:35.320      search 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc with Source File contains the NWC stem took 0.023 s
+  | 13:01:35.321    SEARCH 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-FP-MOD-000001], the NWC's stem: 0
+  | 13:01:35.344      search 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc with Source File contains the NWC name took 0.023 s
+  | 13:01:35.344    SEARCH 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc], the NWC's name: 0
+  | 13:01:35.366      search 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc with Source File contains the model's SourceFileName's file name took 0.023 s
+  | 13:01:35.366    SEARCH 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt], the file name of Model.SourceFileName: 3
+  | 13:01:35.389      search 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc with Source File contains the model's SourceFileName's stem took 0.023 s
+  | 13:01:35.389    SEARCH 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-FP-MOD-000004], the stem of Model.SourceFileName: 3
+  | 13:01:35.412      search 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc with Source File contains the NWC stem took 0.023 s
+  | 13:01:35.413    SEARCH 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-HV-MOD-000001], the NWC's stem: 0
+  | 13:01:35.436      search 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc with Source File contains the NWC name took 0.023 s
+  | 13:01:35.436    SEARCH 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc], the NWC's name: 0
+  | 13:01:35.459      search 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc with Source File contains the model's SourceFileName's file name took 0.023 s
+  | 13:01:35.459    SEARCH 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-HV-MOD-000001.rvt], the file name of Model.SourceFileName: 0
+  | 13:01:35.482      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc with Source File contains the NWC stem took 0.022 s
+  | 13:01:35.482    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ME-MOD-000001], the NWC's stem: 0
+  | 13:01:35.504      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc with Source File contains the NWC name took 0.022 s
+  | 13:01:35.504    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc], the NWC's name: 0
+  | 13:01:35.526      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc with Source File contains the model's SourceFileName's file name took 0.022 s
+  | 13:01:35.527    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04IP-ZZZ-ME-MOD-000005.rvt], the file name of Model.SourceFileName: 6
+  | 13:01:35.549      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc with Source File contains the model's SourceFileName's stem took 0.022 s
+  | 13:01:35.549    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04IP-ZZZ-ME-MOD-000005], the stem of Model.SourceFileName: 6
+  | 13:01:35.571      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc with Source File contains the NWC stem took 0.022 s
+  | 13:01:35.572    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ME-MOD-000002], the NWC's stem: 0
+  | 13:01:35.593      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc with Source File contains the NWC name took 0.022 s
+  | 13:01:35.594    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc], the NWC's name: 0
+  | 13:01:35.617      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc with Source File contains the model's SourceFileName's file name took 0.023 s
+  | 13:01:35.617    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc: category AND Source File contains [1104-PAR-1A04IH-ZZZ-ME-MOD-000002.rvt], the file name of Model.SourceFileName: 0
+  | 13:01:35.640      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc with Source File contains the model's SourceFileName's stem took 0.022 s
+  | 13:01:35.640    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc: category AND Source File contains [1104-PAR-1A04IH-ZZZ-ME-MOD-000002], the stem of Model.SourceFileName: 0
+  | 13:01:35.662      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc with Source File contains the NWC stem took 0.022 s
+  | 13:01:35.663    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ME-MOD-000003], the NWC's stem: 0
+  | 13:01:35.685      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc with Source File contains the NWC name took 0.022 s
+  | 13:01:35.685    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc], the NWC's name: 0
+  | 13:01:35.710      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc with Source File contains the model's SourceFileName's file name took 0.024 s
+  | 13:01:35.710    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc: category AND Source File contains [1104-PAR-1A04IP-ZZZ-ME-MOD-000003.rvt], the file name of Model.SourceFileName: 32
+  | 13:01:35.732      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc with Source File contains the model's SourceFileName's stem took 0.022 s
+  | 13:01:35.733    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc: category AND Source File contains [1104-PAR-1A04IP-ZZZ-ME-MOD-000003], the stem of Model.SourceFileName: 32
+  | 13:01:35.754      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc with Source File contains the NWC stem took 0.022 s
+  | 13:01:35.755    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ME-MOD-000004], the NWC's stem: 0
+  | 13:01:35.777      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc with Source File contains the NWC name took 0.022 s
+  | 13:01:35.777    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc], the NWC's name: 0
+  | 13:01:35.800      search 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc with Source File contains the model's SourceFileName's file name took 0.022 s
+  | 13:01:35.800    SEARCH 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ME-MOD-000004.rvt], the file name of Model.SourceFileName: 0
+  | 13:01:35.823      search 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc with Source File contains the NWC stem took 0.022 s
+  | 13:01:35.823    SEARCH 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ST-MOD-000001], the NWC's stem: 528
+  | 13:01:35.846      search 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc with Source File contains the NWC name took 0.023 s
+  | 13:01:35.846    SEARCH 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc], the NWC's name: 0
+  | 13:01:35.869      search 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc with Source File contains the model's SourceFileName's file name took 0.023 s
+  | 13:01:35.870    SEARCH 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ST-MOD-000001.rvt], the file name of Model.SourceFileName: 528
+  | 13:01:35.892      search 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc with Source File contains the NWC stem took 0.023 s
+  | 13:01:35.893    SEARCH 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ST-MOD-000002], the NWC's stem: 3
+  | 13:01:35.916      search 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc with Source File contains the NWC name took 0.023 s
+  | 13:01:35.916    SEARCH 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc], the NWC's name: 0
+  | 13:01:35.937      search 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc with Source File contains the model's SourceFileName's file name took 0.022 s
+  | 13:01:35.938    SEARCH 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc: category AND Source File contains [1104-PAR-1A04PK-ZZZ-ST-MOD-000002.rvt], the file name of Model.SourceFileName: 3
+  | 13:01:35.938  
+  | 13:01:35.938  ==== THE WALK, every tab and every property of every item of every model ====
+  | 13:01:35.938  ---- walking 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc ----
+  | 13:01:38.724    10000 items so far, 2.8 s
+  | 13:01:44.880    20000 items so far, 8.9 s
+  | 13:01:44.917    walked 20058 items in 9.0 s, items that threw 0
+  | 13:01:44.917  ---- walking 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc ----
+  | 13:01:47.241    10000 items so far, 2.3 s
+  | 13:01:50.188    20000 items so far, 5.3 s
+  | 13:01:52.104    walked 27533 items in 7.2 s, items that threw 0
+  | 13:01:52.105  ---- walking 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc ----
+  | 13:01:53.004    item [Generic Models] class Category reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:01:53.004        LcOaNode | Item > LcOaSceneBaseUserName | Name (DisplayString) EQUALS exactly [Generic Models]
+  | 13:01:53.005    item [PAR-ME-GEN-PSN_STEPS_LADDER] class Family reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:01:53.005        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters [Family  : Generic Models : PAR-ME-GEN-PSN_STEPS_LADDER]
+  | 13:01:53.005    item [Ladder] class Type reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:01:53.005        lcldrevit_tab_type | Type > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly [Generic Models]
+  | 13:01:53.005        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters [Family  : Generic Models : PAR-ME-GEN-PSN_STEPS_LADDER]
+  | 13:01:53.007    ITEM 1 of 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc whose Element tab Category reads the value exactly: [PAR-ME-GEN-PSN_STEPS_LADDER] class Generic Models: PAR-ME-GEN-PSN_STEPS_LADDER: Ladder, IsComposite True, HasGeometry False, parent reads it too False, topmost ancestor's model 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc
+  | 13:01:53.007        [LcOaNode | Item] [LcOaSceneBaseUserName | Name] DisplayString = PAR-ME-GEN-PSN_STEPS_LADDER
+  | 13:01:53.007        [LcOaNode | Item] [LcOaSceneBaseClassUserName | Type] DisplayString = Generic Models: PAR-ME-GEN-PSN_STEPS_LADDER: Ladder
+  | 13:01:53.007        [LcOaNode | Item] [LcOaSceneBaseClassName | Internal Type] DisplayString = LcRevitComposite
+  | 13:01:53.007        [LcOaNode | Item] [LcOaNodeGuid | GUID] DisplayString = 7aad8b36-15ab-416b-903a-b1557ac1c301
+  | 13:01:53.008        [LcOaNode | Item] [LcOaNodeIcon | Icon] NamedConstant = Composite Object
+  | 13:01:53.008        [LcOaNode | Item] [LcOaNodeHidden | Hidden] Boolean = False
+  | 13:01:53.008        [LcOaNode | Item] [LcOaNodeRequired | Required] Boolean = False
+  | 13:01:53.008        [LcOaNode | Item] [LcOaNodeMaterial | Material] DisplayString = (empty)
+  | 13:01:53.008        [LcOaNode | Item] [LcOaNodeSourceFile | Source File] DisplayString = 1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt
+  | 13:01:53.008        [LcOaNode | Item] [LcOaNodeLayer | Layer] DisplayString = <No level>
+  | 13:01:53.008        [LcRevitData_Element | Element] [LcRevitPropertyElementName | Name] DisplayString = Ladder
+  | 13:01:53.008        [LcRevitData_Element | Element] [LcRevitPropertyElementType | Type] DisplayString = Ladder
+  | 13:01:53.008        [LcRevitData_Element | Element] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ME-GEN-PSN_STEPS_LADDER
+  | 13:01:53.008        [LcRevitData_Element | Element] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:01:53.008        [LcRevitData_Element | Element] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:01:53.009        [LcRevitData_Element | Element] [LcRevitPropertyElementId | Id] Int32 = 6827668
+  | 13:01:53.009        [LcRevitData_Element | Element] [lcldrevit_parameter_Cage Height_PG_DIMENSIONS | Cage Height] DoubleLength = 19.473703668554716
+  | 13:01:53.009        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = 0
+  | 13:01:53.009        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:01:53.009        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001363 | Host] DisplayString = <not associated>
+  | 13:01:53.009        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 1whOis5Qj1Qv0wiLLwmSC1
+  | 13:01:53.009        [LcRevitData_Element | Element] [lcldrevit_parameter_Ladder Height_PG_DIMENSIONS | Ladder Height] DoubleLength = 21.114123616061278
+  | 13:01:53.009        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Bracket | n-Bracket] Int32 = 3
+  | 13:01:53.009        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Hoop | n-Hoop] Int32 = 4
+  | 13:01:53.010        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Rung | n-Rung] Int32 = 21
+  | 13:01:53.010        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:01:53.010        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 0.5300825563400241
+  | 13:01:53.010        [LcRevitData_Element | Element] [lcldrevit_parameter_-1002053 | Workset] DisplayString = FF-Fire Fighting
+  | 13:01:53.010        [LcRevitData_Custom | Custom] [lcldrevit_parameter_COBie_PG_DATA | COBie] Boolean = False
+  | 13:01:53.010        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementName | Name] DisplayString = New Construction
+  | 13:01:53.010        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategory | Category] DisplayString = Phases
+  | 13:01:53.010        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000112
+  | 13:01:53.010        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementId | Id] Int32 = 0
+  | 13:01:53.010        [LcRevitData_Parameter | Phase Created] [lcldrevit_parameter_-1002053 | Workset] DisplayString = Phase Settings
+  | 13:01:53.010        [revit_element_properties | Element Properties] [HasSpatialElementFromToCalculationPoints | HasSpatialElementFromToCalculationPoints] Boolean = False
+  | 13:01:53.011        [revit_element_properties | Element Properties] [HasSpatialElementCalculationPoint | HasSpatialElementCalculationPoint] Boolean = False
+  | 13:01:53.011        [revit_element_properties | Element Properties] [CanFlipWorkPlane | CanFlipWorkPlane] Boolean = True
+  | 13:01:53.011        [revit_element_properties | Element Properties] [IsSlantedColumn | IsSlantedColumn] Boolean = False
+  | 13:01:53.011        [revit_element_properties | Element Properties] [CanSplit | CanSplit] Boolean = False
+  | 13:01:53.011        [revit_element_properties | Element Properties] [CanRotate | CanRotate] Boolean = False
+  | 13:01:53.011        [revit_element_properties | Element Properties] [CanFlipFacing | CanFlipFacing] Boolean = False
+  | 13:01:53.011        [revit_element_properties | Element Properties] [CanFlipHand | CanFlipHand] Boolean = False
+  | 13:01:53.011        [revit_element_properties | Element Properties] [Mirrored | Mirrored] Boolean = True
+  | 13:01:53.011        [revit_element_properties | Element Properties] [Invisible | Invisible] Boolean = False
+  | 13:01:53.011        [revit_element_properties | Element Properties] [FacingFlipped | FacingFlipped] Boolean = True
+  | 13:01:53.011        [revit_element_properties | Element Properties] [HandFlipped | HandFlipped] Boolean = False
+  | 13:01:53.011        [revit_element_properties | Element Properties] [StructuralType | StructuralType] NamedConstant = revit_DB::Structure::StructuralType:0
+  | 13:01:53.012        [revit_element_properties | Element Properties] [StructuralUsage | StructuralUsage] DisplayString = Other
+  | 13:01:53.012        [revit_element_properties | Element Properties] [StructuralMaterialType | StructuralMaterialType] DisplayString = Other
+  | 13:01:53.012        [revit_element_properties | Element Properties] [ViewSpecific | ViewSpecific] Boolean = False
+  | 13:01:53.012        [revit_element_properties | Element Properties] [UniqueId | UniqueId] DisplayString = 7aad8b36-15ab-416b-903a-b1557aa9ed95-00682e94
+  | 13:01:53.012        [revit_element_properties | Element Properties] [IsTransient | IsTransient] Boolean = False
+  | 13:01:53.012        [revit_element_properties | Element Properties] [IsModifiable | IsModifiable] Boolean = True
+  | 13:01:53.012        [revit_element_properties | Element Properties] [Name | Name] DisplayString = Ladder
+  | 13:01:53.012        [FacingOrientation | FacingOrientation] [Z | Z] Double = 1
+  | 13:01:53.013        [FacingOrientation | FacingOrientation] [Y | Y] Double = 0
+  | 13:01:53.013        [FacingOrientation | FacingOrientation] [X | X] Double = 0
+  | 13:01:53.013        [HandOrientation | HandOrientation] [Z | Z] Double = 0
+  | 13:01:53.013        [HandOrientation | HandOrientation] [Y | Y] Double = 1
+  | 13:01:53.013        [HandOrientation | HandOrientation] [X | X] Double = -4.987540756256196E-15
+  | 13:01:53.013        [Location | Location] [Rotation | Rotation] Double = 2.0943951023931984
+  | 13:01:53.013        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.013        [Symbol | Symbol] [IsActive | IsActive] Boolean = True
+  | 13:01:53.013        [Symbol | Symbol] [StructuralMaterialType | StructuralMaterialType] DisplayString = Undefined
+  | 13:01:53.013        [Symbol | Symbol] [FamilyName | FamilyName] DisplayString = PAR-ME-GEN-PSN_STEPS_LADDER
+  | 13:01:53.013        [Symbol | Symbol] [CanBeDeleted | CanBeDeleted] Boolean = True
+  | 13:01:53.014        [Symbol | Symbol] [CanBeRenamed | CanBeRenamed] Boolean = True
+  | 13:01:53.014        [Symbol | Symbol] [CanBeCopied | CanBeCopied] Boolean = True
+  | 13:01:53.014        [Symbol | Symbol] [ViewSpecific | ViewSpecific] Boolean = False
+  | 13:01:53.014        [Symbol | Symbol] [UniqueId | UniqueId] DisplayString = 7aad8b36-15ab-416b-903a-b1557aa9ed95-00667d37
+  | 13:01:53.014        [Symbol | Symbol] [IsTransient | IsTransient] Boolean = False
+  | 13:01:53.014        [Symbol | Symbol] [IsModifiable | IsModifiable] Boolean = True
+  | 13:01:53.014        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.014        [CreatedPhaseId | CreatedPhaseId] [IntegerValue | IntegerValue] Int32 = 0
+  | 13:01:53.014        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.014        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.014        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.015        [Id | Id] [IntegerValue | IntegerValue] Int32 = 6827668
+  | 13:01:53.015        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.015        [WorksetId | WorksetId] [IntegerValue | IntegerValue] Int32 = 1693
+  | 13:01:53.015        [Document | Document] [MassDisplayTemporaryOverride | MassDisplayTemporaryOverride] DisplayString = ShowMassByViewSettings
+  | 13:01:53.015        [Document | Document] [IsModelInCloud | IsModelInCloud] Boolean = True
+  | 13:01:53.015        [Document | Document] [IsDetached | IsDetached] Boolean = False
+  | 13:01:53.015        [Document | Document] [IsWorkshared | IsWorkshared] Boolean = True
+  | 13:01:53.015        [Document | Document] [IsLinked | IsLinked] Boolean = False
+  | 13:01:53.015        [Document | Document] [IsReadOnlyFile | IsReadOnlyFile] Boolean = False
+  | 13:01:53.015        [Document | Document] [IsModified | IsModified] Boolean = True
+  | 13:01:53.015        [Document | Document] [IsModifiable | IsModifiable] Boolean = False
+  | 13:01:53.016        [Document | Document] [Title | Title] DisplayString = 1104-PAR-1A04PK-ZZZ-FP-MOD-000004
+  | 13:01:53.016        [Document | Document] [PathName | PathName] DisplayString = Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt
+  | 13:01:53.016        [Document | Document] [IsFamilyDocument | IsFamilyDocument] Boolean = False
+  | 13:01:53.016        [Document | Document] [ReactionsAreUpToDate | ReactionsAreUpToDate] Boolean = True
+  | 13:01:53.016        [Document | Document] [DisplayUnitSystem | DisplayUnitSystem] NamedConstant = METRIC
+  | 13:01:53.016        [Category | Category] [IsVisibleInUI | IsVisibleInUI] Boolean = True
+  | 13:01:53.016        [Category | Category] [BuiltInCategory | BuiltInCategory] DisplayString = OST_GenericModel
+  | 13:01:53.016        [Category | Category] [CategoryType | CategoryType] DisplayString = Model
+  | 13:01:53.016        [Category | Category] [IsTagCategory | IsTagCategory] Boolean = False
+  | 13:01:53.017        [Category | Category] [HasMaterialQuantities | HasMaterialQuantities] Boolean = True
+  | 13:01:53.017        [Category | Category] [AllowsBoundParameters | AllowsBoundParameters] Boolean = True
+  | 13:01:53.017        [Category | Category] [CanAddSubcategory | CanAddSubcategory] Boolean = True
+  | 13:01:53.017        [Category | Category] [IsCuttable | IsCuttable] Boolean = True
+  | 13:01:53.017        [Category | Category] [Name | Name] DisplayString = Generic Models
+  | 13:01:53.017        [Category | Category] [IsValid | IsValid] Boolean = True
+  | 13:01:53.017        [LcRevitId | Element ID] [LcOaNat64AttributeValue | Value] DisplayString = 6827668
+  | 13:01:53.018    ITEM 2 of 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc whose Element tab Category reads the value exactly: [PAR-ME-GEN-PSN_STEPS_LADDER] class Generic Models: PAR-ME-GEN-PSN_STEPS_LADDER: Ladder, IsComposite True, HasGeometry False, parent reads it too False, topmost ancestor's model 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc
+  | 13:01:53.018        [LcOaNode | Item] [LcOaSceneBaseUserName | Name] DisplayString = PAR-ME-GEN-PSN_STEPS_LADDER
+  | 13:01:53.019        [LcOaNode | Item] [LcOaSceneBaseClassUserName | Type] DisplayString = Generic Models: PAR-ME-GEN-PSN_STEPS_LADDER: Ladder
+  | 13:01:53.019        [LcOaNode | Item] [LcOaSceneBaseClassName | Internal Type] DisplayString = LcRevitComposite
+  | 13:01:53.019        [LcOaNode | Item] [LcOaNodeGuid | GUID] DisplayString = 3e144c33-9014-4ec6-adf5-d4eb20b2db88
+  | 13:01:53.019        [LcOaNode | Item] [LcOaNodeIcon | Icon] NamedConstant = Composite Object
+  | 13:01:53.019        [LcOaNode | Item] [LcOaNodeHidden | Hidden] Boolean = False
+  | 13:01:53.019        [LcOaNode | Item] [LcOaNodeRequired | Required] Boolean = False
+  | 13:01:53.019        [LcOaNode | Item] [LcOaNodeMaterial | Material] DisplayString = (empty)
+  | 13:01:53.019        [LcOaNode | Item] [LcOaNodeSourceFile | Source File] DisplayString = 1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt
+  | 13:01:53.019        [LcOaNode | Item] [LcOaNodeLayer | Layer] DisplayString = <No level>
+  | 13:01:53.019        [LcRevitData_Element | Element] [LcRevitPropertyElementName | Name] DisplayString = Ladder
+  | 13:01:53.019        [LcRevitData_Element | Element] [LcRevitPropertyElementType | Type] DisplayString = Ladder
+  | 13:01:53.020        [LcRevitData_Element | Element] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ME-GEN-PSN_STEPS_LADDER
+  | 13:01:53.020        [LcRevitData_Element | Element] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:01:53.020        [LcRevitData_Element | Element] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:01:53.020        [LcRevitData_Element | Element] [LcRevitPropertyElementId | Id] Int32 = 6868382
+  | 13:01:53.020        [LcRevitData_Element | Element] [lcldrevit_parameter_Cage Height_PG_DIMENSIONS | Cage Height] DoubleLength = 19.473703668554716
+  | 13:01:53.020        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = 0
+  | 13:01:53.020        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:01:53.020        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001363 | Host] DisplayString = <not associated>
+  | 13:01:53.020        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 0_54mpa1HEngtrrEiWijk8
+  | 13:01:53.020        [LcRevitData_Element | Element] [lcldrevit_parameter_Ladder Height_PG_DIMENSIONS | Ladder Height] DoubleLength = 21.114123616061278
+  | 13:01:53.020        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Bracket | n-Bracket] Int32 = 3
+  | 13:01:53.021        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Hoop | n-Hoop] Int32 = 4
+  | 13:01:53.021        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Rung | n-Rung] Int32 = 21
+  | 13:01:53.021        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:01:53.021        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 0.53008255634002421
+  | 13:01:53.021        [LcRevitData_Element | Element] [lcldrevit_parameter_-1002053 | Workset] DisplayString = FF-Fire Fighting
+  | 13:01:53.021        [LcRevitData_Custom | Custom] [lcldrevit_parameter_COBie_PG_DATA | COBie] Boolean = False
+  | 13:01:53.021        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementName | Name] DisplayString = New Construction
+  | 13:01:53.021        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategory | Category] DisplayString = Phases
+  | 13:01:53.021        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000112
+  | 13:01:53.021        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementId | Id] Int32 = 0
+  | 13:01:53.022        [LcRevitData_Parameter | Phase Created] [lcldrevit_parameter_-1002053 | Workset] DisplayString = Phase Settings
+  | 13:01:53.022        [revit_element_properties | Element Properties] [HasSpatialElementFromToCalculationPoints | HasSpatialElementFromToCalculationPoints] Boolean = False
+  | 13:01:53.022        [revit_element_properties | Element Properties] [HasSpatialElementCalculationPoint | HasSpatialElementCalculationPoint] Boolean = False
+  | 13:01:53.022        [revit_element_properties | Element Properties] [CanFlipWorkPlane | CanFlipWorkPlane] Boolean = True
+  | 13:01:53.022        [revit_element_properties | Element Properties] [IsSlantedColumn | IsSlantedColumn] Boolean = False
+  | 13:01:53.022        [revit_element_properties | Element Properties] [CanSplit | CanSplit] Boolean = False
+  | 13:01:53.022        [revit_element_properties | Element Properties] [CanRotate | CanRotate] Boolean = False
+  | 13:01:53.022        [revit_element_properties | Element Properties] [CanFlipFacing | CanFlipFacing] Boolean = False
+  | 13:01:53.022        [revit_element_properties | Element Properties] [CanFlipHand | CanFlipHand] Boolean = False
+  | 13:01:53.022        [revit_element_properties | Element Properties] [Mirrored | Mirrored] Boolean = False
+  | 13:01:53.022        [revit_element_properties | Element Properties] [Invisible | Invisible] Boolean = False
+  | 13:01:53.023        [revit_element_properties | Element Properties] [FacingFlipped | FacingFlipped] Boolean = False
+  | 13:01:53.023        [revit_element_properties | Element Properties] [HandFlipped | HandFlipped] Boolean = False
+  | 13:01:53.023        [revit_element_properties | Element Properties] [StructuralType | StructuralType] NamedConstant = revit_DB::Structure::StructuralType:0
+  | 13:01:53.023        [revit_element_properties | Element Properties] [StructuralUsage | StructuralUsage] DisplayString = Other
+  | 13:01:53.023        [revit_element_properties | Element Properties] [StructuralMaterialType | StructuralMaterialType] DisplayString = Other
+  | 13:01:53.023        [revit_element_properties | Element Properties] [ViewSpecific | ViewSpecific] Boolean = False
+  | 13:01:53.023        [revit_element_properties | Element Properties] [UniqueId | UniqueId] DisplayString = 3e144c33-9014-4ec6-adf5-d4eb20da1616-0068cd9e
+  | 13:01:53.023        [revit_element_properties | Element Properties] [IsTransient | IsTransient] Boolean = False
+  | 13:01:53.023        [revit_element_properties | Element Properties] [IsModifiable | IsModifiable] Boolean = True
+  | 13:01:53.023        [revit_element_properties | Element Properties] [Name | Name] DisplayString = Ladder
+  | 13:01:53.023        [FacingOrientation | FacingOrientation] [Z | Z] Double = 1
+  | 13:01:53.024        [FacingOrientation | FacingOrientation] [Y | Y] Double = 0
+  | 13:01:53.024        [FacingOrientation | FacingOrientation] [X | X] Double = 0
+  | 13:01:53.024        [HandOrientation | HandOrientation] [Z | Z] Double = 0
+  | 13:01:53.024        [HandOrientation | HandOrientation] [Y | Y] Double = 1
+  | 13:01:53.024        [HandOrientation | HandOrientation] [X | X] Double = 1.7075359874005715E-14
+  | 13:01:53.024        [Location | Location] [Rotation | Rotation] Double = 2.0943951023931855
+  | 13:01:53.024        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.024        [Symbol | Symbol] [IsActive | IsActive] Boolean = True
+  | 13:01:53.024        [Symbol | Symbol] [StructuralMaterialType | StructuralMaterialType] DisplayString = Undefined
+  | 13:01:53.024        [Symbol | Symbol] [FamilyName | FamilyName] DisplayString = PAR-ME-GEN-PSN_STEPS_LADDER
+  | 13:01:53.025        [Symbol | Symbol] [CanBeDeleted | CanBeDeleted] Boolean = True
+  | 13:01:53.025        [Symbol | Symbol] [CanBeRenamed | CanBeRenamed] Boolean = True
+  | 13:01:53.025        [Symbol | Symbol] [CanBeCopied | CanBeCopied] Boolean = True
+  | 13:01:53.025        [Symbol | Symbol] [ViewSpecific | ViewSpecific] Boolean = False
+  | 13:01:53.025        [Symbol | Symbol] [UniqueId | UniqueId] DisplayString = 7aad8b36-15ab-416b-903a-b1557aa9ed95-00667d37
+  | 13:01:53.025        [Symbol | Symbol] [IsTransient | IsTransient] Boolean = False
+  | 13:01:53.025        [Symbol | Symbol] [IsModifiable | IsModifiable] Boolean = True
+  | 13:01:53.025        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.025        [CreatedPhaseId | CreatedPhaseId] [IntegerValue | IntegerValue] Int32 = 0
+  | 13:01:53.025        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.025        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.026        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.026        [Id | Id] [IntegerValue | IntegerValue] Int32 = 6868382
+  | 13:01:53.026        [StructuralMaterialId | StructuralMaterialId] [IntegerValue | IntegerValue] Int32 = -1
+  | 13:01:53.026        [WorksetId | WorksetId] [IntegerValue | IntegerValue] Int32 = 1693
+  | 13:01:53.026        [Document | Document] [MassDisplayTemporaryOverride | MassDisplayTemporaryOverride] DisplayString = ShowMassByViewSettings
+  | 13:01:53.026        [Document | Document] [IsModelInCloud | IsModelInCloud] Boolean = True
+  | 13:01:53.026        [Document | Document] [IsDetached | IsDetached] Boolean = False
+  | 13:01:53.026        [Document | Document] [IsWorkshared | IsWorkshared] Boolean = True
+  | 13:01:53.026        [Document | Document] [IsLinked | IsLinked] Boolean = False
+  | 13:01:53.026        [Document | Document] [IsReadOnlyFile | IsReadOnlyFile] Boolean = False
+  | 13:01:53.026        [Document | Document] [IsModified | IsModified] Boolean = True
+  | 13:01:53.026        [Document | Document] [IsModifiable | IsModifiable] Boolean = False
+  | 13:01:53.027        [Document | Document] [Title | Title] DisplayString = 1104-PAR-1A04PK-ZZZ-FP-MOD-000004
+  | 13:01:53.027        [Document | Document] [PathName | PathName] DisplayString = Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt
+  | 13:01:53.027        [Document | Document] [IsFamilyDocument | IsFamilyDocument] Boolean = False
+  | 13:01:53.027        [Document | Document] [ReactionsAreUpToDate | ReactionsAreUpToDate] Boolean = True
+  | 13:01:53.027        [Document | Document] [DisplayUnitSystem | DisplayUnitSystem] NamedConstant = METRIC
+  | 13:01:53.027        [Category | Category] [IsVisibleInUI | IsVisibleInUI] Boolean = True
+  | 13:01:53.027        [Category | Category] [BuiltInCategory | BuiltInCategory] DisplayString = OST_GenericModel
+  | 13:01:53.027        [Category | Category] [CategoryType | CategoryType] DisplayString = Model
+  | 13:01:53.027        [Category | Category] [IsTagCategory | IsTagCategory] Boolean = False
+  | 13:01:53.027        [Category | Category] [HasMaterialQuantities | HasMaterialQuantities] Boolean = True
+  | 13:01:53.027        [Category | Category] [AllowsBoundParameters | AllowsBoundParameters] Boolean = True
+  | 13:01:53.028        [Category | Category] [CanAddSubcategory | CanAddSubcategory] Boolean = True
+  | 13:01:53.028        [Category | Category] [IsCuttable | IsCuttable] Boolean = True
+  | 13:01:53.028        [Category | Category] [Name | Name] DisplayString = Generic Models
+  | 13:01:53.028        [Category | Category] [IsValid | IsValid] Boolean = True
+  | 13:01:53.028        [LcRevitId | Element ID] [LcOaNat64AttributeValue | Value] DisplayString = 6868382
+  | 13:01:55.421    10000 items so far, 3.3 s
+  | 13:01:59.681    20000 items so far, 7.6 s
+  | 13:02:04.539    30000 items so far, 12.4 s
+  | 13:02:09.669    40000 items so far, 17.6 s
+  | 13:02:10.171    walked 41130 items in 18.1 s, items that threw 0
+  | 13:02:10.171  ---- walking 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc ----
+  | 13:02:13.469    walked 7884 items in 3.3 s, items that threw 0
+  | 13:02:13.470  ---- walking 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc ----
+  | 13:02:13.472    item [Generic Models] class Category reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:13.473        LcOaNode | Item > LcOaSceneBaseUserName | Name (DisplayString) EQUALS exactly [Generic Models]
+  | 13:02:13.473    item [PAR-ME-GEN-REMOVABLE CONCRETE COVER] class Family reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:13.473        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 62 characters [Family  : Generic Models : PAR-ME-GEN-REMOVABLE CONCRETE COVER]
+  | 13:02:13.473    item [COVER] class Type reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:13.473        lcldrevit_tab_type | Type > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly [Generic Models]
+  | 13:02:13.473        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 62 characters [Family  : Generic Models : PAR-ME-GEN-REMOVABLE CONCRETE COVER]
+  | 13:02:13.474    ITEM 1 of 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc whose Element tab Category reads the value exactly: [PAR-ME-GEN-REMOVABLE CONCRETE COVER] class Generic Models: PAR-ME-GEN-REMOVABLE CONCRETE COVER: COVER, IsComposite True, HasGeometry False, parent reads it too False, topmost ancestor's model 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc
+  | 13:02:13.474        [LcOaNode | Item] [LcOaSceneBaseUserName | Name] DisplayString = PAR-ME-GEN-REMOVABLE CONCRETE COVER
+  | 13:02:13.474        [LcOaNode | Item] [LcOaSceneBaseClassUserName | Type] DisplayString = Generic Models: PAR-ME-GEN-REMOVABLE CONCRETE COVER: COVER
+  | 13:02:13.474        [LcOaNode | Item] [LcOaSceneBaseClassName | Internal Type] DisplayString = LcRevitComposite
+  | 13:02:13.474        [LcOaNode | Item] [LcOaNodeGuid | GUID] DisplayString = 01fa9ccb-6c14-4069-aad0-79dc73e3af1d
+  | 13:02:13.474        [LcOaNode | Item] [LcOaNodeIcon | Icon] NamedConstant = Composite Object
+  | 13:02:13.474        [LcOaNode | Item] [LcOaNodeHidden | Hidden] Boolean = False
+  | 13:02:13.474        [LcOaNode | Item] [LcOaNodeRequired | Required] Boolean = False
+  | 13:02:13.475        [LcOaNode | Item] [LcOaNodeMaterial | Material] DisplayString = (empty)
+  | 13:02:13.475        [LcOaNode | Item] [LcOaNodeSourceFile | Source File] DisplayString = 1104-PAR-1A04IP-ZZZ-ME-MOD-000005.rvt
+  | 13:02:13.475        [LcOaNode | Item] [LcOaNodeLayer | Layer] DisplayString = <No level>
+  | 13:02:13.475        [LcRevitData_Element | Element] [LcRevitPropertyElementName | Name] DisplayString = COVER
+  | 13:02:13.475        [LcRevitData_Element | Element] [LcRevitPropertyElementType | Type] DisplayString = COVER
+  | 13:02:13.475        [LcRevitData_Element | Element] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ME-GEN-REMOVABLE CONCRETE COVER
+  | 13:02:13.475        [LcRevitData_Element | Element] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:02:13.475        [LcRevitData_Element | Element] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:02:13.475        [LcRevitData_Element | Element] [LcRevitPropertyElementId | Id] Int32 = 6527574
+  | 13:02:13.475        [LcRevitData_Element | Element] [lcldrevit_parameter_-1010106 | Comments] DisplayString = CLEAR OPENING (1.7m x 1.7m)
+  | 13:02:13.476        [LcRevitData_Element | Element] [lcldrevit_parameter_COVER_LENGTH_PG_DIMENSIONS | COVER_LENGTH] DoubleLength = 5.6011797899919147
+  | 13:02:13.476        [LcRevitData_Element | Element] [lcldrevit_parameter_COVER_WIDTH_PG_DIMENSIONS | COVER_WIDTH] DoubleLength = 5.9045216701258081
+  | 13:02:13.476        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = 0
+  | 13:02:13.476        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:13.476        [LcRevitData_Element | Element] [lcldrevit_parameter_host | Host] NamedConstant = FamilyInstance "VC 100MM", #6527573
+  | 13:02:13.476        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 01_fpBR1H0QQhGUTnpuwyT
+  | 13:02:13.476        [LcRevitData_Element | Element] [lcldrevit_parameter_L_PG_DIMENSIONS | L] DoubleLength = 5.6011797899919147
+  | 13:02:13.477        [LcRevitData_Element | Element] [lcldrevit_parameter_N | N] Int32 = 7
+  | 13:02:13.477        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:02:13.477        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 26.510519787594482
+  | 13:02:13.477        [LcRevitData_Element | Element] [lcldrevit_parameter_-1002053 | Workset] DisplayString = ME-Piping
+  | 13:02:13.477        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementName | Name] DisplayString = VC 100MM
+  | 13:02:13.477        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementType | Type] DisplayString = VC 100MM
+  | 13:02:13.477        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ME-GEN-MECH Chambe
+  | 13:02:13.477        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:02:13.477        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:02:13.477        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementId | Id] Int32 = 6527573
+  | 13:02:13.478        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = -0.93979205111209674
+  | 13:02:13.478        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:13.478        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_Height_PG_DIMENSIONS | Height] DoubleLength = 9.4922945630611277
+  | 13:02:13.478        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1001363 | Host] DisplayString = Level : zzz
+  | 13:02:13.478        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_I.C_ Depth_PG_DIMENSIONS | I.C_ Depth] DoubleLength = 9.4922945630611277
+  | 13:02:13.478        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 01_fpBR1H0QQhGUTnpuwyU
+  | 13:02:13.478        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_Lenght_PG_DIMENSIONS | Lenght] DoubleLength = 13.12703398617964
+  | 13:02:13.478        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1001352 | Level] NamedConstant = Level "zzz", #5103280
+  | 13:02:13.478        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1001370 | Moves With Nearby Elements] Boolean = False
+  | 13:02:13.478        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1001364 | Offset from Host] DoubleLength = -0.93979205111209674
+  | 13:02:13.479        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:02:13.479        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_TOP FLOOR | TOP FLOOR] Boolean = True
+  | 13:02:13.479        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 770.08961159019145
+  | 13:02:13.479        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_Width_PG_DIMENSIONS | Width] DoubleLength = 5.9055118110236489
+  | 13:02:13.479        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1002053 | Workset] DisplayString = ME-Piping
+  | 13:02:13.479        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementName | Name] DisplayString = New Construction
+  | 13:02:13.479        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategory | Category] DisplayString = Phases
+  | 13:02:13.479        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000112
+  | 13:02:13.480        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementId | Id] Int32 = 0
+  | 13:02:13.480        [LcRevitData_Parameter | Phase Created] [lcldrevit_parameter_-1002053 | Workset] DisplayString = Phase Settings
+  | 13:02:13.480        [LcRevitId | Element ID] [LcOaNat64AttributeValue | Value] DisplayString = 6527574
+  | 13:02:13.482    ITEM 2 of 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc whose Element tab Category reads the value exactly: [PAR-ME-GEN-CIRICLE COVER] class Generic Models: PAR-ME-GEN-CIRICLE COVER: 2 X 1.45, IsComposite True, HasGeometry False, parent reads it too False, topmost ancestor's model 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc
+  | 13:02:13.482        [LcOaNode | Item] [LcOaSceneBaseUserName | Name] DisplayString = PAR-ME-GEN-CIRICLE COVER
+  | 13:02:13.483        [LcOaNode | Item] [LcOaSceneBaseClassUserName | Type] DisplayString = Generic Models: PAR-ME-GEN-CIRICLE COVER: 2 X 1.45
+  | 13:02:13.483        [LcOaNode | Item] [LcOaSceneBaseClassName | Internal Type] DisplayString = LcRevitComposite
+  | 13:02:13.483        [LcOaNode | Item] [LcOaNodeGuid | GUID] DisplayString = 01fa9ccb-6c14-4069-aad0-79dc73e3af13
+  | 13:02:13.483        [LcOaNode | Item] [LcOaNodeIcon | Icon] NamedConstant = Composite Object
+  | 13:02:13.483        [LcOaNode | Item] [LcOaNodeHidden | Hidden] Boolean = False
+  | 13:02:13.483        [LcOaNode | Item] [LcOaNodeRequired | Required] Boolean = False
+  | 13:02:13.483        [LcOaNode | Item] [LcOaNodeMaterial | Material] DisplayString = (empty)
+  | 13:02:13.483        [LcOaNode | Item] [LcOaNodeSourceFile | Source File] DisplayString = 1104-PAR-1A04IP-ZZZ-ME-MOD-000005.rvt
+  | 13:02:13.483        [LcOaNode | Item] [LcOaNodeLayer | Layer] DisplayString = <No level>
+  | 13:02:13.483        [LcRevitData_Element | Element] [LcRevitPropertyElementName | Name] DisplayString = 2 X 1.45
+  | 13:02:13.483        [LcRevitData_Element | Element] [LcRevitPropertyElementType | Type] DisplayString = 2 X 1.45
+  | 13:02:13.483        [LcRevitData_Element | Element] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ME-GEN-CIRICLE COVER
+  | 13:02:13.483        [LcRevitData_Element | Element] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:02:13.483        [LcRevitData_Element | Element] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:02:13.483        [LcRevitData_Element | Element] [LcRevitPropertyElementId | Id] Int32 = 6527576
+  | 13:02:13.484        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = 0
+  | 13:02:13.484        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:13.484        [LcRevitData_Element | Element] [lcldrevit_parameter_host | Host] NamedConstant = FamilyInstance "VC 100MM", #6527573
+  | 13:02:13.484        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 01_fpBR1H0QQhGUTnpuwyJ
+  | 13:02:13.484        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:02:13.484        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 6.2440665746147905
+  | 13:02:13.484        [LcRevitData_Element | Element] [lcldrevit_parameter_-1002053 | Workset] DisplayString = ME-Piping
+  | 13:02:13.484        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementName | Name] DisplayString = VC 100MM
+  | 13:02:13.484        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementType | Type] DisplayString = VC 100MM
+  | 13:02:13.484        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ME-GEN-MECH Chambe
+  | 13:02:13.485        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:02:13.485        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:02:13.485        [LcRevitData_Parameter | FamilyInstance] [LcRevitPropertyElementId | Id] Int32 = 6527573
+  | 13:02:13.485        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = -0.93979205111209674
+  | 13:02:13.485        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:13.485        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_Height_PG_DIMENSIONS | Height] DoubleLength = 9.4922945630611277
+  | 13:02:13.485        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1001363 | Host] DisplayString = Level : zzz
+  | 13:02:13.485        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_I.C_ Depth_PG_DIMENSIONS | I.C_ Depth] DoubleLength = 9.4922945630611277
+  | 13:02:13.486        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 01_fpBR1H0QQhGUTnpuwyU
+  | 13:02:13.486        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_Lenght_PG_DIMENSIONS | Lenght] DoubleLength = 13.12703398617964
+  | 13:02:13.486        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1001352 | Level] NamedConstant = Level "zzz", #5103280
+  | 13:02:13.486        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1001370 | Moves With Nearby Elements] Boolean = False
+  | 13:02:13.486        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1001364 | Offset from Host] DoubleLength = -0.93979205111209674
+  | 13:02:13.486        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:02:13.486        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_TOP FLOOR | TOP FLOOR] Boolean = True
+  | 13:02:13.486        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 770.08961159019145
+  | 13:02:13.486        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_Width_PG_DIMENSIONS | Width] DoubleLength = 5.9055118110236489
+  | 13:02:13.486        [LcRevitData_Parameter | FamilyInstance] [lcldrevit_parameter_-1002053 | Workset] DisplayString = ME-Piping
+  | 13:02:13.487        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementName | Name] DisplayString = New Construction
+  | 13:02:13.487        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategory | Category] DisplayString = Phases
+  | 13:02:13.487        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000112
+  | 13:02:13.487        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementId | Id] Int32 = 0
+  | 13:02:13.487        [LcRevitData_Parameter | Phase Created] [lcldrevit_parameter_-1002053 | Workset] DisplayString = Phase Settings
+  | 13:02:13.487        [LcRevitId | Element ID] [LcOaNat64AttributeValue | Value] DisplayString = 6527576
+  | 13:02:13.549    walked 288 items in 0.1 s, items that threw 0
+  | 13:02:13.550  ---- walking 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc ----
+  | 13:02:13.814    walked 812 items in 0.3 s, items that threw 0
+  | 13:02:13.814  ---- walking 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc ----
+  | 13:02:13.844    item [Generic Models] class Category reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:13.844        LcOaNode | Item > LcOaSceneBaseUserName | Name (DisplayString) EQUALS exactly [Generic Models]
+  | 13:02:13.845    item [PAR-ME-GEN-PSN_STEPS_LADDER] class Family reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:13.845        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters [Family  : Generic Models : PAR-ME-GEN-PSN_STEPS_LADDER]
+  | 13:02:13.845    item [Ladder] class Type reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:13.845        lcldrevit_tab_type | Type > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly [Generic Models]
+  | 13:02:13.845        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters [Family  : Generic Models : PAR-ME-GEN-PSN_STEPS_LADDER]
+  | 13:02:13.846    ITEM 1 of 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc whose Element tab Category reads the value exactly: [PAR-ME-GEN-PSN_STEPS_LADDER] class Generic Models: PAR-ME-GEN-PSN_STEPS_LADDER: Ladder, IsComposite True, HasGeometry False, parent reads it too False, topmost ancestor's model 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc
+  | 13:02:13.846        [LcOaNode | Item] [LcOaSceneBaseUserName | Name] DisplayString = PAR-ME-GEN-PSN_STEPS_LADDER
+  | 13:02:13.846        [LcOaNode | Item] [LcOaSceneBaseClassUserName | Type] DisplayString = Generic Models: PAR-ME-GEN-PSN_STEPS_LADDER: Ladder
+  | 13:02:13.846        [LcOaNode | Item] [LcOaSceneBaseClassName | Internal Type] DisplayString = LcRevitComposite
+  | 13:02:13.846        [LcOaNode | Item] [LcOaNodeGuid | GUID] DisplayString = e03d12bc-9ba6-4cf3-b17c-543ad7d3ebc3
+  | 13:02:13.846        [LcOaNode | Item] [LcOaNodeIcon | Icon] NamedConstant = Composite Object
+  | 13:02:13.846        [LcOaNode | Item] [LcOaNodeHidden | Hidden] Boolean = False
+  | 13:02:13.846        [LcOaNode | Item] [LcOaNodeRequired | Required] Boolean = False
+  | 13:02:13.846        [LcOaNode | Item] [LcOaNodeMaterial | Material] DisplayString = (empty)
+  | 13:02:13.847        [LcOaNode | Item] [LcOaNodeSourceFile | Source File] DisplayString = 1104-PAR-1A04IP-ZZZ-ME-MOD-000003.rvt
+  | 13:02:13.847        [LcOaNode | Item] [LcOaNodeLayer | Layer] DisplayString = <No level>
+  | 13:02:13.847        [LcRevitData_Element | Element] [LcRevitPropertyElementName | Name] DisplayString = Ladder
+  | 13:02:13.847        [LcRevitData_Element | Element] [LcRevitPropertyElementType | Type] DisplayString = Ladder
+  | 13:02:13.847        [LcRevitData_Element | Element] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ME-GEN-PSN_STEPS_LADDER
+  | 13:02:13.847        [LcRevitData_Element | Element] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:02:13.847        [LcRevitData_Element | Element] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:02:13.847        [LcRevitData_Element | Element] [LcRevitPropertyElementId | Id] Int32 = 6482871
+  | 13:02:13.847        [LcRevitData_Element | Element] [lcldrevit_parameter_Cage Height_PG_DIMENSIONS | Cage Height] DoubleLength = 7.4128148593807275
+  | 13:02:13.847        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = 0
+  | 13:02:13.848        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:13.848        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001363 | Host] DisplayString = <not associated>
+  | 13:02:13.848        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 3WFHAycwPCyx5yL3hNq_l3
+  | 13:02:13.848        [LcRevitData_Element | Element] [lcldrevit_parameter_Ladder Height_PG_DIMENSIONS | Ladder Height] DoubleLength = 9.05323480688729
+  | 13:02:13.848        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Bracket | n-Bracket] Int32 = 3
+  | 13:02:13.848        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Hoop | n-Hoop] Int32 = 4
+  | 13:02:13.848        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Rung | n-Rung] Int32 = 9
+  | 13:02:13.848        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:02:13.848        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 0.24094661651819282
+  | 13:02:13.848        [LcRevitData_Element | Element] [lcldrevit_parameter_-1002053 | Workset] DisplayString = XX-ST-Duplication
+  | 13:02:13.849        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementName | Name] DisplayString = New Construction
+  | 13:02:13.849        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategory | Category] DisplayString = Phases
+  | 13:02:13.849        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000112
+  | 13:02:13.849        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementId | Id] Int32 = 0
+  | 13:02:13.849        [LcRevitData_Parameter | Phase Created] [lcldrevit_parameter_-1002053 | Workset] DisplayString = Phase Settings
+  | 13:02:13.849        [LcRevitId | Element ID] [LcOaNat64AttributeValue | Value] DisplayString = 6482871
+  | 13:02:13.850    ITEM 2 of 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc whose Element tab Category reads the value exactly: [PAR-ME-GEN-PSN_STEPS_LADDER] class Generic Models: PAR-ME-GEN-PSN_STEPS_LADDER: Ladder, IsComposite True, HasGeometry False, parent reads it too False, topmost ancestor's model 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc
+  | 13:02:13.851        [LcOaNode | Item] [LcOaSceneBaseUserName | Name] DisplayString = PAR-ME-GEN-PSN_STEPS_LADDER
+  | 13:02:13.851        [LcOaNode | Item] [LcOaSceneBaseClassUserName | Type] DisplayString = Generic Models: PAR-ME-GEN-PSN_STEPS_LADDER: Ladder
+  | 13:02:13.851        [LcOaNode | Item] [LcOaSceneBaseClassName | Internal Type] DisplayString = LcRevitComposite
+  | 13:02:13.851        [LcOaNode | Item] [LcOaNodeGuid | GUID] DisplayString = 0f83bd3f-7f2b-4531-8fa2-726916cb48e8
+  | 13:02:13.851        [LcOaNode | Item] [LcOaNodeIcon | Icon] NamedConstant = Composite Object
+  | 13:02:13.851        [LcOaNode | Item] [LcOaNodeHidden | Hidden] Boolean = False
+  | 13:02:13.851        [LcOaNode | Item] [LcOaNodeRequired | Required] Boolean = False
+  | 13:02:13.851        [LcOaNode | Item] [LcOaNodeMaterial | Material] DisplayString = (empty)
+  | 13:02:13.851        [LcOaNode | Item] [LcOaNodeSourceFile | Source File] DisplayString = 1104-PAR-1A04IP-ZZZ-ME-MOD-000003.rvt
+  | 13:02:13.851        [LcOaNode | Item] [LcOaNodeLayer | Layer] DisplayString = <No level>
+  | 13:02:13.852        [LcRevitData_Element | Element] [LcRevitPropertyElementName | Name] DisplayString = Ladder
+  | 13:02:13.852        [LcRevitData_Element | Element] [LcRevitPropertyElementType | Type] DisplayString = Ladder
+  | 13:02:13.852        [LcRevitData_Element | Element] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ME-GEN-PSN_STEPS_LADDER
+  | 13:02:13.852        [LcRevitData_Element | Element] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:02:13.852        [LcRevitData_Element | Element] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:02:13.852        [LcRevitData_Element | Element] [LcRevitPropertyElementId | Id] Int32 = 6489631
+  | 13:02:13.852        [LcRevitData_Element | Element] [lcldrevit_parameter_Cage Height_PG_DIMENSIONS | Cage Height] DoubleLength = 4.8538578325709976
+  | 13:02:13.852        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = 0
+  | 13:02:13.852        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:13.853        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001363 | Host] DisplayString = <not associated>
+  | 13:02:13.853        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 0FWxq$Voj5CO_YScaMoqZe
+  | 13:02:13.853        [LcRevitData_Element | Element] [lcldrevit_parameter_Ladder Height_PG_DIMENSIONS | Ladder Height] DoubleLength = 6.4942777800775593
+  | 13:02:13.853        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Bracket | n-Bracket] Int32 = 3
+  | 13:02:13.853        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Hoop | n-Hoop] Int32 = 4
+  | 13:02:13.853        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Rung | n-Rung] Int32 = 6
+  | 13:02:13.853        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:02:13.853        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 0.16866263156273495
+  | 13:02:13.854        [LcRevitData_Element | Element] [lcldrevit_parameter_-1002053 | Workset] DisplayString = XX-ST-Duplication
+  | 13:02:13.854        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementName | Name] DisplayString = New Construction
+  | 13:02:13.854        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategory | Category] DisplayString = Phases
+  | 13:02:13.854        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000112
+  | 13:02:13.854        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementId | Id] Int32 = 0
+  | 13:02:13.854        [LcRevitData_Parameter | Phase Created] [lcldrevit_parameter_-1002053 | Workset] DisplayString = Phase Settings
+  | 13:02:13.854        [LcRevitId | Element ID] [LcOaNat64AttributeValue | Value] DisplayString = 6489631
+  | 13:02:14.525    walked 3341 items in 0.7 s, items that threw 0
+  | 13:02:14.525  ---- walking 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc ----
+  | 13:02:18.139    10000 items so far, 3.6 s
+  | 13:02:20.697    walked 15380 items in 6.2 s, items that threw 0
+  | 13:02:20.697  ---- walking 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc ----
+  | 13:02:20.698    item [Generic Models] class Category reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:20.698        LcOaNode | Item > LcOaSceneBaseUserName | Name (DisplayString) EQUALS exactly [Generic Models]
+  | 13:02:20.698    item [PAR-ST-GEN-REC OPENING -PAR] class Family reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:20.698        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters [Family  : Generic Models : PAR-ST-GEN-REC OPENING -PAR]
+  | 13:02:20.698    item [STR-GEN-20000X2000-PAR] class Type reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:20.698        lcldrevit_tab_type | Type > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly [Generic Models]
+  | 13:02:20.699        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters [Family  : Generic Models : PAR-ST-GEN-REC OPENING -PAR]
+  | 13:02:20.699    ITEM 1 of 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc whose Element tab Category reads the value exactly: [PAR-ST-GEN-REC OPENING -PAR] class Generic Models: PAR-ST-GEN-REC OPENING -PAR: STR-GEN-20000X2000-PAR, IsComposite True, HasGeometry False, parent reads it too False, topmost ancestor's model 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc
+  | 13:02:20.699        [LcOaNode | Item] [LcOaSceneBaseUserName | Name] DisplayString = PAR-ST-GEN-REC OPENING -PAR
+  | 13:02:20.699        [LcOaNode | Item] [LcOaSceneBaseClassUserName | Type] DisplayString = Generic Models: PAR-ST-GEN-REC OPENING -PAR: STR-GEN-20000X2000-PAR
+  | 13:02:20.699        [LcOaNode | Item] [LcOaSceneBaseClassName | Internal Type] DisplayString = LcRevitComposite
+  | 13:02:20.699        [LcOaNode | Item] [LcOaNodeGuid | GUID] DisplayString = 3e34a04c-cfe0-47a2-907c-7580b1345b39
+  | 13:02:20.699        [LcOaNode | Item] [LcOaNodeIcon | Icon] NamedConstant = Composite Object
+  | 13:02:20.699        [LcOaNode | Item] [LcOaNodeHidden | Hidden] Boolean = False
+  | 13:02:20.700        [LcOaNode | Item] [LcOaNodeRequired | Required] Boolean = False
+  | 13:02:20.700        [LcOaNode | Item] [LcOaNodeMaterial | Material] DisplayString = (empty)
+  | 13:02:20.700        [LcOaNode | Item] [LcOaNodeSourceFile | Source File] DisplayString = 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.rvt
+  | 13:02:20.700        [LcOaNode | Item] [LcOaNodeLayer | Layer] DisplayString = <No level>
+  | 13:02:20.700        [LcRevitData_Element | Element] [LcRevitPropertyElementName | Name] DisplayString = STR-GEN-20000X2000-PAR
+  | 13:02:20.700        [LcRevitData_Element | Element] [LcRevitPropertyElementType | Type] DisplayString = STR-GEN-20000X2000-PAR
+  | 13:02:20.700        [LcRevitData_Element | Element] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ST-GEN-REC OPENING -PAR
+  | 13:02:20.700        [LcRevitData_Element | Element] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:02:20.701        [LcRevitData_Element | Element] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:02:20.701        [LcRevitData_Element | Element] [LcRevitPropertyElementId | Id] Int32 = 3527140
+  | 13:02:20.701        [LcRevitData_Element | Element] [lcldrevit_parameter_COVER_HIGHT_PG_DIMENSIONS | COVER_HIGHT] DoubleLength = 1.3123359580052494
+  | 13:02:20.701        [LcRevitData_Element | Element] [lcldrevit_parameter_COVER_LENGTH_PG_DIMENSIONS | COVER_LENGTH] DoubleLength = 4.9212598425196852
+  | 13:02:20.701        [LcRevitData_Element | Element] [lcldrevit_parameter_COVER_WIDTH_PG_DIMENSIONS | COVER_WIDTH] DoubleLength = 4.9212598425196852
+  | 13:02:20.701        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = 0
+  | 13:02:20.701        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:20.701        [LcRevitData_Element | Element] [lcldrevit_parameter_HAND_OFFSET_PG_DIMENSIONS | HAND_OFFSET] DoubleLength = 2.1325459317585302
+  | 13:02:20.702        [LcRevitData_Element | Element] [lcldrevit_parameter_host | Host] NamedConstant = Floor "PAR-ST-FLR-CONCRETE 350mm -PAR", #3390453
+  | 13:02:20.702        [LcRevitData_Element | Element] [lcldrevit_parameter_HOST_DEPTH_PG_DIMENSIONS | HOST_DEPTH] DoubleLength = 1.3123359580052494
+  | 13:02:20.702        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 0_DA1Cp_17ef1yTO2nD5iv
+  | 13:02:20.702        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:02:20.702        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 27.035990868126
+  | 13:02:20.702        [LcRevitData_Element | Element] [lcldrevit_parameter_-1002053 | Workset] DisplayString = ST-SUP
+  | 13:02:20.702        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementName | Name] DisplayString = PAR-ST-FLR-CONCRETE 350mm -PAR
+  | 13:02:20.702        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementType | Type] DisplayString = PAR-ST-FLR-CONCRETE 350mm -PAR
+  | 13:02:20.702        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementFamily | Family] DisplayString = Floor
+  | 13:02:20.702        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementCategory | Category] DisplayString = Floors
+  | 13:02:20.702        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000032
+  | 13:02:20.703        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementId | Id] Int32 = 3390453
+  | 13:02:20.703        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1012805 | Area] DoubleArea = 54879.929073641775
+  | 13:02:20.703        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001561 | Elevation at Bottom] DoubleLength = -2.1325459317585356
+  | 13:02:20.703        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001598 | Elevation at Top] DoubleLength = -0.98425196850394259
+  | 13:02:20.703        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1180308 | Excavation Volume on Toposolid] DoubleVolume = 8.90922826435417
+  | 13:02:20.703        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:20.703        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013449 | Has Association] Boolean = False
+  | 13:02:20.703        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001951 | Height Offset From Level] DoubleLength = 0
+  | 13:02:20.703        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 0kh2KafzP73R6AvPdhf8t6
+  | 13:02:20.703        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001952 | Level] NamedConstant = Level "LGF", #1434301
+  | 13:02:20.704        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001953 | Perimeter] DoubleLength = 1126.8483470777664
+  | 13:02:20.704        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:02:20.704        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013439 | Rebar Cover - Bottom Face] NamedConstant = RebarCoverType "Interior (slabs) - 25 mm", #2847370
+  | 13:02:20.704        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013437 | Rebar Cover - Other Faces] NamedConstant = RebarCoverType "Interior (framing, columns)", #199741
+  | 13:02:20.704        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013438 | Rebar Cover - Top Face] NamedConstant = RebarCoverType "Interior (slabs) - 25 mm", #2847370
+  | 13:02:20.704        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001713 | Related to Mass] Boolean = False
+  | 13:02:20.704        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001007 | Room Bounding] Boolean = True
+  | 13:02:20.705        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001954 | Structural] Boolean = True
+  | 13:02:20.705        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001900 | Thickness] DoubleLength = 1.1482939632545932
+  | 13:02:20.705        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 63018.291259103054
+  | 13:02:20.705        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1002053 | Workset] DisplayString = ST-SUP
+  | 13:02:20.705        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementName | Name] DisplayString = New Construction
+  | 13:02:20.705        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategory | Category] DisplayString = Phases
+  | 13:02:20.705        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000112
+  | 13:02:20.705        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementId | Id] Int32 = 0
+  | 13:02:20.705        [LcRevitData_Parameter | Phase Created] [lcldrevit_parameter_-1002053 | Workset] DisplayString = Phase Settings
+  | 13:02:20.705        [LcRevitId | Element ID] [LcOaNat64AttributeValue | Value] DisplayString = 3527140
+  | 13:02:20.707    ITEM 2 of 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc whose Element tab Category reads the value exactly: [PAR-ST-GEN-REC OPENING -PAR] class Generic Models: PAR-ST-GEN-REC OPENING -PAR: STR-GEN-20000X2000-PAR, IsComposite True, HasGeometry False, parent reads it too False, topmost ancestor's model 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc
+  | 13:02:20.707        [LcOaNode | Item] [LcOaSceneBaseUserName | Name] DisplayString = PAR-ST-GEN-REC OPENING -PAR
+  | 13:02:20.707        [LcOaNode | Item] [LcOaSceneBaseClassUserName | Type] DisplayString = Generic Models: PAR-ST-GEN-REC OPENING -PAR: STR-GEN-20000X2000-PAR
+  | 13:02:20.707        [LcOaNode | Item] [LcOaSceneBaseClassName | Internal Type] DisplayString = LcRevitComposite
+  | 13:02:20.708        [LcOaNode | Item] [LcOaNodeGuid | GUID] DisplayString = 0fc44b67-e5ce-4541-8801-73d47bdf4237
+  | 13:02:20.708        [LcOaNode | Item] [LcOaNodeIcon | Icon] NamedConstant = Composite Object
+  | 13:02:20.708        [LcOaNode | Item] [LcOaNodeHidden | Hidden] Boolean = False
+  | 13:02:20.708        [LcOaNode | Item] [LcOaNodeRequired | Required] Boolean = False
+  | 13:02:20.708        [LcOaNode | Item] [LcOaNodeMaterial | Material] DisplayString = (empty)
+  | 13:02:20.708        [LcOaNode | Item] [LcOaNodeSourceFile | Source File] DisplayString = 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.rvt
+  | 13:02:20.708        [LcOaNode | Item] [LcOaNodeLayer | Layer] DisplayString = <No level>
+  | 13:02:20.708        [LcRevitData_Element | Element] [LcRevitPropertyElementName | Name] DisplayString = STR-GEN-20000X2000-PAR
+  | 13:02:20.708        [LcRevitData_Element | Element] [LcRevitPropertyElementType | Type] DisplayString = STR-GEN-20000X2000-PAR
+  | 13:02:20.708        [LcRevitData_Element | Element] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ST-GEN-REC OPENING -PAR
+  | 13:02:20.709        [LcRevitData_Element | Element] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:02:20.709        [LcRevitData_Element | Element] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:02:20.709        [LcRevitData_Element | Element] [LcRevitPropertyElementId | Id] Int32 = 3577303
+  | 13:02:20.709        [LcRevitData_Element | Element] [lcldrevit_parameter_COVER_HIGHT_PG_DIMENSIONS | COVER_HIGHT] DoubleLength = 1.3123359580052494
+  | 13:02:20.709        [LcRevitData_Element | Element] [lcldrevit_parameter_COVER_LENGTH_PG_DIMENSIONS | COVER_LENGTH] DoubleLength = 4.9212598425196852
+  | 13:02:20.709        [LcRevitData_Element | Element] [lcldrevit_parameter_COVER_WIDTH_PG_DIMENSIONS | COVER_WIDTH] DoubleLength = 2.2965879265091864
+  | 13:02:20.709        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = 0
+  | 13:02:20.709        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:20.710        [LcRevitData_Element | Element] [lcldrevit_parameter_HAND_OFFSET_PG_DIMENSIONS | HAND_OFFSET] DoubleLength = 2.1325459317585302
+  | 13:02:20.710        [LcRevitData_Element | Element] [lcldrevit_parameter_host | Host] NamedConstant = Floor "PAR-ST-FLR-CONCRETE 350mm -PAR", #3390453
+  | 13:02:20.710        [LcRevitData_Element | Element] [lcldrevit_parameter_HOST_DEPTH_PG_DIMENSIONS | HOST_DEPTH] DoubleLength = 1.3123359580052494
+  | 13:02:20.710        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 0Fn4jdvSv5GOW1SzHxtq8t
+  | 13:02:20.710        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:02:20.710        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 20.132679817409525
+  | 13:02:20.710        [LcRevitData_Element | Element] [lcldrevit_parameter_-1002053 | Workset] DisplayString = ST-SUB
+  | 13:02:20.710        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementName | Name] DisplayString = PAR-ST-FLR-CONCRETE 350mm -PAR
+  | 13:02:20.710        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementType | Type] DisplayString = PAR-ST-FLR-CONCRETE 350mm -PAR
+  | 13:02:20.710        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementFamily | Family] DisplayString = Floor
+  | 13:02:20.711        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementCategory | Category] DisplayString = Floors
+  | 13:02:20.711        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000032
+  | 13:02:20.711        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementId | Id] Int32 = 3390453
+  | 13:02:20.711        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1012805 | Area] DoubleArea = 54879.929073641775
+  | 13:02:20.711        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001561 | Elevation at Bottom] DoubleLength = -2.1325459317585356
+  | 13:02:20.711        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001598 | Elevation at Top] DoubleLength = -0.98425196850394259
+  | 13:02:20.711        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1180308 | Excavation Volume on Toposolid] DoubleVolume = 8.90922826435417
+  | 13:02:20.711        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:20.711        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013449 | Has Association] Boolean = False
+  | 13:02:20.711        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001951 | Height Offset From Level] DoubleLength = 0
+  | 13:02:20.711        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 0kh2KafzP73R6AvPdhf8t6
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001952 | Level] NamedConstant = Level "LGF", #1434301
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001953 | Perimeter] DoubleLength = 1126.8483470777664
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "New Construction", #0
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013439 | Rebar Cover - Bottom Face] NamedConstant = RebarCoverType "Interior (slabs) - 25 mm", #2847370
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013437 | Rebar Cover - Other Faces] NamedConstant = RebarCoverType "Interior (framing, columns)", #199741
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013438 | Rebar Cover - Top Face] NamedConstant = RebarCoverType "Interior (slabs) - 25 mm", #2847370
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001713 | Related to Mass] Boolean = False
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001007 | Room Bounding] Boolean = True
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001954 | Structural] Boolean = True
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001900 | Thickness] DoubleLength = 1.1482939632545932
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 63018.291259103054
+  | 13:02:20.712        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1002053 | Workset] DisplayString = ST-SUP
+  | 13:02:20.712        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementName | Name] DisplayString = New Construction
+  | 13:02:20.712        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategory | Category] DisplayString = Phases
+  | 13:02:20.713        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000112
+  | 13:02:20.713        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementId | Id] Int32 = 0
+  | 13:02:20.713        [LcRevitData_Parameter | Phase Created] [lcldrevit_parameter_-1002053 | Workset] DisplayString = Phase Settings
+  | 13:02:20.713        [LcRevitId | Element ID] [LcOaNat64AttributeValue | Value] DisplayString = 3577303
+  | 13:02:22.102    walked 4134 items in 1.4 s, items that threw 0
+  | 13:02:22.102  ---- walking 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc ----
+  | 13:02:22.103    item [Generic Models] class Category reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:22.103        LcOaNode | Item > LcOaSceneBaseUserName | Name (DisplayString) EQUALS exactly [Generic Models]
+  | 13:02:22.103    item [PAR-ST-OPENING COVER-PAR] class Family reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:22.104        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 51 characters [Family  : Generic Models : PAR-ST-OPENING COVER-PAR]
+  | 13:02:22.104    item [650 X 1200] class Type reads the value on another property and not on the Element tab's Category, which reads absent
+  | 13:02:22.104        lcldrevit_tab_type | Type > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly [Generic Models]
+  | 13:02:22.104        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 51 characters [Family  : Generic Models : PAR-ST-OPENING COVER-PAR]
+  | 13:02:22.105    ITEM 1 of 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc whose Element tab Category reads the value exactly: [PAR-ST-OPENING COVER-PAR] class Generic Models: PAR-ST-OPENING COVER-PAR: 650 X 1200, IsComposite True, HasGeometry False, parent reads it too False, topmost ancestor's model 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc
+  | 13:02:22.105        [LcOaNode | Item] [LcOaSceneBaseUserName | Name] DisplayString = PAR-ST-OPENING COVER-PAR
+  | 13:02:22.105        [LcOaNode | Item] [LcOaSceneBaseClassUserName | Type] DisplayString = Generic Models: PAR-ST-OPENING COVER-PAR: 650 X 1200
+  | 13:02:22.105        [LcOaNode | Item] [LcOaSceneBaseClassName | Internal Type] DisplayString = LcRevitComposite
+  | 13:02:22.105        [LcOaNode | Item] [LcOaNodeGuid | GUID] DisplayString = cd6496ae-11a4-4039-9772-add2111825cf
+  | 13:02:22.105        [LcOaNode | Item] [LcOaNodeIcon | Icon] NamedConstant = Composite Object
+  | 13:02:22.105        [LcOaNode | Item] [LcOaNodeHidden | Hidden] Boolean = False
+  | 13:02:22.106        [LcOaNode | Item] [LcOaNodeRequired | Required] Boolean = False
+  | 13:02:22.106        [LcOaNode | Item] [LcOaNodeMaterial | Material] DisplayString = (empty)
+  | 13:02:22.106        [LcOaNode | Item] [LcOaNodeSourceFile | Source File] DisplayString = 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.rvt
+  | 13:02:22.106        [LcOaNode | Item] [LcOaNodeLayer | Layer] DisplayString = <No level>
+  | 13:02:22.106        [LcRevitData_Element | Element] [LcRevitPropertyElementName | Name] DisplayString = 650 X 1200
+  | 13:02:22.106        [LcRevitData_Element | Element] [LcRevitPropertyElementType | Type] DisplayString = 650 X 1200
+  | 13:02:22.106        [LcRevitData_Element | Element] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ST-OPENING COVER-PAR
+  | 13:02:22.106        [LcRevitData_Element | Element] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:02:22.107        [LcRevitData_Element | Element] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:02:22.107        [LcRevitData_Element | Element] [LcRevitPropertyElementId | Id] Int32 = 2934350
+  | 13:02:22.107        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = 0
+  | 13:02:22.107        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:22.107        [LcRevitData_Element | Element] [lcldrevit_parameter_host | Host] NamedConstant = Floor "PAR-ST-STR-FLR-250MM-PAR", #2693329
+  | 13:02:22.107        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 3DP9Qk4QH0EPTohT8H62NF
+  | 13:02:22.107        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "Existing", #4914
+  | 13:02:22.107        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 0.66582293385655111
+  | 13:02:22.107        [LcRevitData_Element | Element] [lcldrevit_parameter_-1002053 | Workset] DisplayString = STR-SUB STRUCTURE
+  | 13:02:22.108        [LcRevitData_Custom | Custom] [lcldrevit_parameter_COBie_PG_DATA | COBie] Boolean = False
+  | 13:02:22.108        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementName | Name] DisplayString = PAR-ST-STR-FLR-250MM-PAR
+  | 13:02:22.108        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementType | Type] DisplayString = PAR-ST-STR-FLR-250MM-PAR
+  | 13:02:22.108        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementFamily | Family] DisplayString = Floor
+  | 13:02:22.108        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementCategory | Category] DisplayString = Floors
+  | 13:02:22.108        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000032
+  | 13:02:22.108        [LcRevitData_Parameter | Floor] [LcRevitPropertyElementId | Id] Int32 = 2693329
+  | 13:02:22.108        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1012805 | Area] DoubleArea = 126.75972881641303
+  | 13:02:22.108        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001561 | Elevation at Bottom] DoubleLength = -0.42651489221941219
+  | 13:02:22.108        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001598 | Elevation at Top] DoubleLength = 0.55773707628452485
+  | 13:02:22.109        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:22.109        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013449 | Has Association] Boolean = False
+  | 13:02:22.109        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001951 | Height Offset From Level] DoubleLength = -0.49212598425196852
+  | 13:02:22.109        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 06_Xq0WJ1Bfu19$NmmEeHF
+  | 13:02:22.109        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001952 | Level] NamedConstant = Level "LGF", #2554709
+  | 13:02:22.109        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001953 | Perimeter] DoubleLength = 48.556430446194227
+  | 13:02:22.110        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "Existing", #4914
+  | 13:02:22.110        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013439 | Rebar Cover - Bottom Face] NamedConstant = RebarCoverType "Interior (slabs, walls, joists) - #3 to #11", #199747
+  | 13:02:22.110        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013437 | Rebar Cover - Other Faces] NamedConstant = RebarCoverType "Interior (slabs, walls, joists) - #3 to #11", #199747
+  | 13:02:22.110        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1013438 | Rebar Cover - Top Face] NamedConstant = RebarCoverType "Interior (slabs, walls, joists) - #3 to #11", #199747
+  | 13:02:22.110        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001713 | Related to Mass] Boolean = False
+  | 13:02:22.110        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001007 | Room Bounding] Boolean = True
+  | 13:02:22.110        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001954 | Structural] Boolean = True
+  | 13:02:22.110        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1001900 | Thickness] DoubleLength = 0.984251968503937
+  | 13:02:22.110        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 124.50568439076486
+  | 13:02:22.111        [LcRevitData_Parameter | Floor] [lcldrevit_parameter_-1002053 | Workset] DisplayString = ST-SUB
+  | 13:02:22.111        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementName | Name] DisplayString = Existing
+  | 13:02:22.111        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategory | Category] DisplayString = Phases
+  | 13:02:22.111        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000112
+  | 13:02:22.111        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementId | Id] Int32 = 4914
+  | 13:02:22.111        [LcRevitData_Parameter | Phase Created] [lcldrevit_parameter_-1002053 | Workset] DisplayString = Phase Settings
+  | 13:02:22.111        [LcRevitId | Element ID] [LcOaNat64AttributeValue | Value] DisplayString = 2934350
+  | 13:02:22.118    ITEM 2 of 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc whose Element tab Category reads the value exactly: [PAR-ST-LADDER-PAR] class Generic Models: PAR-ST-LADDER-PAR: Ladder, IsComposite True, HasGeometry False, parent reads it too False, topmost ancestor's model 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc
+  | 13:02:22.118        [LcOaNode | Item] [LcOaSceneBaseUserName | Name] DisplayString = PAR-ST-LADDER-PAR
+  | 13:02:22.118        [LcOaNode | Item] [LcOaSceneBaseClassUserName | Type] DisplayString = Generic Models: PAR-ST-LADDER-PAR: Ladder
+  | 13:02:22.118        [LcOaNode | Item] [LcOaSceneBaseClassName | Internal Type] DisplayString = LcRevitComposite
+  | 13:02:22.118        [LcOaNode | Item] [LcOaNodeGuid | GUID] DisplayString = a518024b-481f-4f23-81c9-db79e589a3e5
+  | 13:02:22.118        [LcOaNode | Item] [LcOaNodeIcon | Icon] NamedConstant = Composite Object
+  | 13:02:22.118        [LcOaNode | Item] [LcOaNodeHidden | Hidden] Boolean = False
+  | 13:02:22.118        [LcOaNode | Item] [LcOaNodeRequired | Required] Boolean = False
+  | 13:02:22.118        [LcOaNode | Item] [LcOaNodeMaterial | Material] DisplayString = (empty)
+  | 13:02:22.119        [LcOaNode | Item] [LcOaNodeSourceFile | Source File] DisplayString = 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.rvt
+  | 13:02:22.119        [LcOaNode | Item] [LcOaNodeLayer | Layer] DisplayString = FL1
+  | 13:02:22.119        [LcRevitData_Element | Element] [LcRevitPropertyElementName | Name] DisplayString = Ladder
+  | 13:02:22.119        [LcRevitData_Element | Element] [LcRevitPropertyElementType | Type] DisplayString = Ladder
+  | 13:02:22.119        [LcRevitData_Element | Element] [LcRevitPropertyElementFamily | Family] DisplayString = PAR-ST-LADDER-PAR
+  | 13:02:22.119        [LcRevitData_Element | Element] [LcRevitPropertyElementCategory | Category] DisplayString = Generic Models
+  | 13:02:22.119        [LcRevitData_Element | Element] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000151
+  | 13:02:22.120        [LcRevitData_Element | Element] [LcRevitPropertyElementId | Id] Int32 = 2698298
+  | 13:02:22.120        [LcRevitData_Element | Element] [lcldrevit_parameter_Cage Height_PG_DIMENSIONS | Cage Height] DoubleLength = 5.9055118110236222
+  | 13:02:22.120        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001360 | Elevation from Level] DoubleLength = 1.0547118733938987E-13
+  | 13:02:22.120        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:22.120        [LcRevitData_Element | Element] [lcldrevit_parameter_host | Host] NamedConstant = Wall "PAR-ST-STR-WAL-400MM-PAR", #2692153
+  | 13:02:22.121        [LcRevitData_Element | Element] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 2b609BI1zF8u79stdbYQFb
+  | 13:02:22.121        [LcRevitData_Element | Element] [lcldrevit_parameter_Ladder Height_PG_DIMENSIONS | Ladder Height] DoubleLength = 7.5459317585301839
+  | 13:02:22.121        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Bracket | n-Bracket] Int32 = 3
+  | 13:02:22.121        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Hoop | n-Hoop] Int32 = 4
+  | 13:02:22.121        [LcRevitData_Element | Element] [lcldrevit_parameter_n-Rung | n-Rung] Int32 = 8
+  | 13:02:22.121        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "Existing", #4914
+  | 13:02:22.121        [LcRevitData_Element | Element] [lcldrevit_parameter_-1001365 | Schedule Level] NamedConstant = Level "FL1", #2555811
+  | 13:02:22.121        [LcRevitData_Element | Element] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 0.21685195486637354
+  | 13:02:22.121        [LcRevitData_Element | Element] [lcldrevit_parameter_-1002053 | Workset] DisplayString = STR-SUB STRUCTURE
+  | 13:02:22.121        [LcRevitData_Custom | Custom] [lcldrevit_parameter_COBie_PG_DATA | COBie] Boolean = False
+  | 13:02:22.122        [LcRevitData_Parameter | Wall] [LcRevitPropertyElementName | Name] DisplayString = PAR-ST-STR-WAL-400MM-PAR
+  | 13:02:22.122        [LcRevitData_Parameter | Wall] [LcRevitPropertyElementType | Type] DisplayString = PAR-ST-STR-WAL-400MM-PAR
+  | 13:02:22.122        [LcRevitData_Parameter | Wall] [LcRevitPropertyElementFamily | Family] DisplayString = Basic Wall
+  | 13:02:22.122        [LcRevitData_Parameter | Wall] [LcRevitPropertyElementCategory | Category] DisplayString = Walls
+  | 13:02:22.122        [LcRevitData_Parameter | Wall] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000011
+  | 13:02:22.122        [LcRevitData_Parameter | Wall] [LcRevitPropertyElementId | Id] Int32 = 2692153
+  | 13:02:22.122        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1012805 | Area] DoubleArea = 116.250232500465
+  | 13:02:22.122        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001107 | Base Constraint] NamedConstant = Level "FL1", #2555811
+  | 13:02:22.122        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1012829 | Base Extension Distance] DoubleLength = 0
+  | 13:02:22.122        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001118 | Base is Attached] Boolean = True
+  | 13:02:22.123        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001108 | Base Offset] DoubleLength = 0
+  | 13:02:22.123        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1019100 | Cross-Section] DisplayString = Vertical
+  | 13:02:22.123        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:22.123        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1013449 | Has Association] Boolean = False
+  | 13:02:22.123        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 0p2ndy$7XD9wbTWEvgWoY_
+  | 13:02:22.123        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1004005 | Length] DoubleLength = 14.435695538057743
+  | 13:02:22.123        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001122 | Location Line] DisplayString = Finish Face: Interior
+  | 13:02:22.123        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1012100 | Phase Created] NamedConstant = Phase "Existing", #4914
+  | 13:02:22.124        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1013435 | Rebar Cover - Exterior Face] NamedConstant = RebarCoverType "Interior (framing, columns)", #199741
+  | 13:02:22.124        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1013436 | Rebar Cover - Interior Face] NamedConstant = RebarCoverType "Interior (framing, columns)", #199741
+  | 13:02:22.124        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1013437 | Rebar Cover - Other Faces] NamedConstant = RebarCoverType "Interior (framing, columns)", #199741
+  | 13:02:22.124        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001713 | Related to Mass] Boolean = False
+  | 13:02:22.124        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001007 | Room Bounding] Boolean = True
+  | 13:02:22.124        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001596 | Structural] Boolean = True
+  | 13:02:22.124        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001119 | Structural Usage] DisplayString = Bearing
+  | 13:02:22.124        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001103 | Top Constraint] NamedConstant = Level "LGF", #2554709
+  | 13:02:22.124        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1012828 | Top Extension Distance] DoubleLength = 0
+  | 13:02:22.125        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001117 | Top is Attached] Boolean = True
+  | 13:02:22.125        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001109 | Top Offset] DoubleLength = 0
+  | 13:02:22.125        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1001105 | Unconnected Height] DoubleLength = 9.2519685039368333
+  | 13:02:22.125        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1012806 | Volume] DoubleVolume = 152.55936023683074
+  | 13:02:22.125        [LcRevitData_Parameter | Wall] [lcldrevit_parameter_-1002053 | Workset] DisplayString = ST-SUB
+  | 13:02:22.125        [LcRevitData_Parameter | Schedule Level] [LcRevitPropertyElementName | Name] DisplayString = FL1
+  | 13:02:22.125        [LcRevitData_Parameter | Schedule Level] [LcRevitPropertyElementType | Type] DisplayString = Story Level
+  | 13:02:22.125        [LcRevitData_Parameter | Schedule Level] [LcRevitPropertyElementFamily | Family] DisplayString = Level
+  | 13:02:22.125        [LcRevitData_Parameter | Schedule Level] [LcRevitPropertyElementCategory | Category] DisplayString = Levels
+  | 13:02:22.125        [LcRevitData_Parameter | Schedule Level] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000240
+  | 13:02:22.125        [LcRevitData_Parameter | Schedule Level] [LcRevitPropertyElementId | Id] Int32 = 2555811
+  | 13:02:22.126        [LcRevitData_Parameter | Schedule Level] [lcldrevit_parameter_-1007111 | Building Story] Boolean = True
+  | 13:02:22.126        [LcRevitData_Parameter | Schedule Level] [lcldrevit_parameter_-1006939 | Computation Height] DoubleLength = 0
+  | 13:02:22.126        [LcRevitData_Parameter | Schedule Level] [lcldrevit_parameter_-1007102 | Elevation] DoubleLength = -8.20210544340034
+  | 13:02:22.126        [LcRevitData_Parameter | Schedule Level] [lcldrevit_parameter_-1019012 | Export to IFC] DisplayString = By Type
+  | 13:02:22.126        [LcRevitData_Parameter | Schedule Level] [lcldrevit_parameter_-1019000 | IfcGUID] DisplayString = 2q5Qlvvlj84fLTCf6WOkCj
+  | 13:02:22.126        [LcRevitData_Parameter | Schedule Level] [lcldrevit_parameter_-1007112 | Structural] Boolean = False
+  | 13:02:22.126        [LcRevitData_Parameter | Schedule Level] [lcldrevit_parameter_-1002053 | Workset] DisplayString = STR-LEVELS AND GRIDS
+  | 13:02:22.126        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementName | Name] DisplayString = Existing
+  | 13:02:22.126        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategory | Category] DisplayString = Phases
+  | 13:02:22.127        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementCategoryId | Category Id] Int32 = -2000112
+  | 13:02:22.127        [LcRevitData_Parameter | Phase Created] [LcRevitPropertyElementId | Id] Int32 = 4914
+  | 13:02:22.127        [LcRevitData_Parameter | Phase Created] [lcldrevit_parameter_-1002053 | Workset] DisplayString = Phase Settings
+  | 13:02:22.127        [LcRevitId | Element ID] [LcOaNat64AttributeValue | Value] DisplayString = 2698298
+  | 13:02:22.135    walked 52 items in 0.0 s, items that threw 0
+  | 13:02:22.136  
+  | 13:02:22.136  ==== THE COUNTS, by the model whose root was walked, then by the topmost ancestor's Model.FileName ====
+  | 13:02:22.136  MODEL 0  1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc
+  | 13:02:22.136    items walked 20058, with an Element tab 6053, with a Source File property 20057, that threw 0
+  | 13:02:22.136    Element tab Category reads the value exactly: 0 items, of which elements, whose parent does not read it, 0, composite 0, with geometry 0, whose topmost model is another file 0
+  | 13:02:22.136    the kinds that value was read as: none
+  | 13:02:22.136    Element tab Category equal only after a trim or without case: 0
+  | 13:02:22.136    items reading the value on some other property and not on the Element tab's Category: 0
+  | 13:02:22.136    every tab and property the value was read on, over all items, with how:
+  | 13:02:22.137        none
+  | 13:02:22.137    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 0, its stem where it differs not run
+  | 13:02:22.137    of the 0 exact items: with no Source File property at all 0, with more than one 0
+  | 13:02:22.137    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:02:22.137        none
+  | 13:02:22.137    what each of those texts holds: none
+  | 13:02:22.137    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:02:22.137        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.rvt  x20057
+  | 13:02:22.138    distinct Source File texts over all items: 1
+  | 13:02:22.138  MODEL 1  1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc
+  | 13:02:22.138    items walked 27533, with an Element tab 6515, with a Source File property 27532, that threw 0
+  | 13:02:22.138    Element tab Category reads the value exactly: 0 items, of which elements, whose parent does not read it, 0, composite 0, with geometry 0, whose topmost model is another file 0
+  | 13:02:22.138    the kinds that value was read as: none
+  | 13:02:22.138    Element tab Category equal only after a trim or without case: 0
+  | 13:02:22.138    items reading the value on some other property and not on the Element tab's Category: 0
+  | 13:02:22.138    every tab and property the value was read on, over all items, with how:
+  | 13:02:22.138        none
+  | 13:02:22.139    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 0, its stem where it differs not run
+  | 13:02:22.139    of the 0 exact items: with no Source File property at all 0, with more than one 0
+  | 13:02:22.139    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:02:22.139        none
+  | 13:02:22.139    what each of those texts holds: none
+  | 13:02:22.139    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:02:22.139        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.rvt  x27532
+  | 13:02:22.139    distinct Source File texts over all items: 1
+  | 13:02:22.139  MODEL 2  1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc
+  | 13:02:22.140    items walked 41130, with an Element tab 12127, with a Source File property 41129, that threw 0
+  | 13:02:22.140    Element tab Category reads the value exactly: 3 items, of which elements, whose parent does not read it, 3, composite 3, with geometry 0, whose topmost model is another file 0
+  | 13:02:22.140    the kinds that value was read as: DisplayString  x3
+  | 13:02:22.140    Element tab Category equal only after a trim or without case: 0
+  | 13:02:22.140    items reading the value on some other property and not on the Element tab's Category: 12
+  | 13:02:22.140    every tab and property the value was read on, over all items, with how:
+  | 13:02:22.140        LcOaNode | Item > LcOaSceneBaseUserName | Name (DisplayString) EQUALS exactly  x2
+  | 13:02:22.141        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters  x1
+  | 13:02:22.141        lcldrevit_tab_type | Type > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly  x2
+  | 13:02:22.141        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters  x1
+  | 13:02:22.141        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 51 characters  x2
+  | 13:02:22.141        LcRevitData_Element | Element > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly  x3
+  | 13:02:22.141        Category | Category > Name | Name (DisplayString) EQUALS exactly  x3
+  | 13:02:22.141        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) EQUALS exactly  x6
+  | 13:02:22.141        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 57 characters  x1
+  | 13:02:22.142        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 57 characters  x1
+  | 13:02:22.142        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 67 characters  x1
+  | 13:02:22.142    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 3, its stem where it differs 3
+  | 13:02:22.142    of the 3 exact items: with no Source File property at all 0, with more than one 0
+  | 13:02:22.142    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:02:22.142        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt  x3
+  | 13:02:22.143          shape: 37 characters, backslashes 0, slashes 0, starts with a drive letter False, holds :// False, extension [.rvt], last segment [1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt]
+  | 13:02:22.143    what each of those texts holds: the file name of Model.SourceFileName  x3
+  | 13:02:22.143    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:02:22.143        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt  x41129
+  | 13:02:22.144    distinct Source File texts over all items: 1
+  | 13:02:22.144  MODEL 3  1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc
+  | 13:02:22.144    items walked 7884, with an Element tab 2409, with a Source File property 7883, that threw 0
+  | 13:02:22.144    Element tab Category reads the value exactly: 0 items, of which elements, whose parent does not read it, 0, composite 0, with geometry 0, whose topmost model is another file 0
+  | 13:02:22.144    the kinds that value was read as: none
+  | 13:02:22.144    Element tab Category equal only after a trim or without case: 0
+  | 13:02:22.144    items reading the value on some other property and not on the Element tab's Category: 0
+  | 13:02:22.144    every tab and property the value was read on, over all items, with how:
+  | 13:02:22.144        none
+  | 13:02:22.145    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 0, its stem where it differs not run
+  | 13:02:22.145    of the 0 exact items: with no Source File property at all 0, with more than one 0
+  | 13:02:22.145    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:02:22.145        none
+  | 13:02:22.145    what each of those texts holds: none
+  | 13:02:22.145    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:02:22.145        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.rvt  x7883
+  | 13:02:22.145    distinct Source File texts over all items: 1
+  | 13:02:22.145  MODEL 4  1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc
+  | 13:02:22.146    items walked 288, with an Element tab 87, with a Source File property 287, that threw 0
+  | 13:02:22.146    Element tab Category reads the value exactly: 6 items, of which elements, whose parent does not read it, 6, composite 6, with geometry 0, whose topmost model is another file 0
+  | 13:02:22.146    the kinds that value was read as: DisplayString  x6
+  | 13:02:22.146    Element tab Category equal only after a trim or without case: 0
+  | 13:02:22.146    items reading the value on some other property and not on the Element tab's Category: 20
+  | 13:02:22.146    every tab and property the value was read on, over all items, with how:
+  | 13:02:22.146        LcOaNode | Item > LcOaSceneBaseUserName | Name (DisplayString) EQUALS exactly  x2
+  | 13:02:22.147        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 62 characters  x1
+  | 13:02:22.147        lcldrevit_tab_type | Type > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly  x4
+  | 13:02:22.147        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 62 characters  x1
+  | 13:02:22.147        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 58 characters  x1
+  | 13:02:22.147        LcRevitData_Element | Element > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly  x6
+  | 13:02:22.147        LcRevitData_Parameter | FamilyInstance > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly  x2
+  | 13:02:22.147        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) EQUALS exactly  x10
+  | 13:02:22.148        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 51 characters  x2
+  | 13:02:22.148        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 51 characters  x2
+  | 13:02:22.148        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 50 characters  x1
+  | 13:02:22.148        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 49 characters  x1
+  | 13:02:22.148        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 49 characters  x1
+  | 13:02:22.148        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 48 characters  x1
+  | 13:02:22.148        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 61 characters  x3
+  | 13:02:22.148    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 6, its stem where it differs 6
+  | 13:02:22.148    of the 6 exact items: with no Source File property at all 0, with more than one 0
+  | 13:02:22.149    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:02:22.149        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04IP-ZZZ-ME-MOD-000005.rvt  x6
+  | 13:02:22.149          shape: 37 characters, backslashes 0, slashes 0, starts with a drive letter False, holds :// False, extension [.rvt], last segment [1104-PAR-1A04IP-ZZZ-ME-MOD-000005.rvt]
+  | 13:02:22.149    what each of those texts holds: the file name of Model.SourceFileName  x6
+  | 13:02:22.149    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:02:22.149        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04IP-ZZZ-ME-MOD-000005.rvt  x287
+  | 13:02:22.149    distinct Source File texts over all items: 1
+  | 13:02:22.149  MODEL 5  1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc
+  | 13:02:22.149    items walked 812, with an Element tab 277, with a Source File property 811, that threw 0
+  | 13:02:22.150    Element tab Category reads the value exactly: 0 items, of which elements, whose parent does not read it, 0, composite 0, with geometry 0, whose topmost model is another file 0
+  | 13:02:22.150    the kinds that value was read as: none
+  | 13:02:22.150    Element tab Category equal only after a trim or without case: 0
+  | 13:02:22.150    items reading the value on some other property and not on the Element tab's Category: 0
+  | 13:02:22.150    every tab and property the value was read on, over all items, with how:
+  | 13:02:22.150        none
+  | 13:02:22.150    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 0, its stem where it differs 0
+  | 13:02:22.150    of the 0 exact items: with no Source File property at all 0, with more than one 0
+  | 13:02:22.151    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:02:22.151        none
+  | 13:02:22.151    what each of those texts holds: none
+  | 13:02:22.151    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:02:22.151        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04IH-ZZZ-ME-MOD-000002.rvt  x811
+  | 13:02:22.151    distinct Source File texts over all items: 1
+  | 13:02:22.151  MODEL 6  1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc
+  | 13:02:22.151    items walked 3341, with an Element tab 898, with a Source File property 3340, that threw 0
+  | 13:02:22.151    Element tab Category reads the value exactly: 32 items, of which elements, whose parent does not read it, 32, composite 32, with geometry 0, whose topmost model is another file 0
+  | 13:02:22.151    the kinds that value was read as: DisplayString  x32
+  | 13:02:22.152    Element tab Category equal only after a trim or without case: 0
+  | 13:02:22.152    items reading the value on some other property and not on the Element tab's Category: 75
+  | 13:02:22.152    every tab and property the value was read on, over all items, with how:
+  | 13:02:22.152        LcOaNode | Item > LcOaSceneBaseUserName | Name (DisplayString) EQUALS exactly  x3
+  | 13:02:22.152        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters  x2
+  | 13:02:22.152        lcldrevit_tab_type | Type > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly  x4
+  | 13:02:22.152        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters  x2
+  | 13:02:22.152        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 51 characters  x9
+  | 13:02:22.152        LcRevitData_Element | Element > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly  x32
+  | 13:02:22.152        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) EQUALS exactly  x64
+  | 13:02:22.153        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 42 characters  x2
+  | 13:02:22.153        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 42 characters  x2
+  | 13:02:22.153        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 52 characters  x23
+  | 13:02:22.153    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 32, its stem where it differs 32
+  | 13:02:22.153    of the 32 exact items: with no Source File property at all 0, with more than one 0
+  | 13:02:22.153    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:02:22.153        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04IP-ZZZ-ME-MOD-000003.rvt  x32
+  | 13:02:22.153          shape: 37 characters, backslashes 0, slashes 0, starts with a drive letter False, holds :// False, extension [.rvt], last segment [1104-PAR-1A04IP-ZZZ-ME-MOD-000003.rvt]
+  | 13:02:22.153    what each of those texts holds: the file name of Model.SourceFileName  x32
+  | 13:02:22.154    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:02:22.154        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04IP-ZZZ-ME-MOD-000003.rvt  x3340
+  | 13:02:22.154    distinct Source File texts over all items: 1
+  | 13:02:22.154  MODEL 7  1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc
+  | 13:02:22.154    items walked 15380, with an Element tab 5372, with a Source File property 15379, that threw 0
+  | 13:02:22.154    Element tab Category reads the value exactly: 0 items, of which elements, whose parent does not read it, 0, composite 0, with geometry 0, whose topmost model is another file 0
+  | 13:02:22.154    the kinds that value was read as: none
+  | 13:02:22.155    Element tab Category equal only after a trim or without case: 0
+  | 13:02:22.155    items reading the value on some other property and not on the Element tab's Category: 0
+  | 13:02:22.155    every tab and property the value was read on, over all items, with how:
+  | 13:02:22.155        none
+  | 13:02:22.155    searches: category AND Source File contains the NWC stem 0, the NWC name 0, the file name of Model.SourceFileName 0, its stem where it differs not run
+  | 13:02:22.155    of the 0 exact items: with no Source File property at all 0, with more than one 0
+  | 13:02:22.155    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:02:22.155        none
+  | 13:02:22.155    what each of those texts holds: none
+  | 13:02:22.156    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:02:22.156        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.rvt  x15379
+  | 13:02:22.156    distinct Source File texts over all items: 1
+  | 13:02:22.156  MODEL 8  1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc
+  | 13:02:22.156    items walked 4134, with an Element tab 1381, with a Source File property 4133, that threw 0
+  | 13:02:22.156    Element tab Category reads the value exactly: 528 items, of which elements, whose parent does not read it, 528, composite 528, with geometry 0, whose topmost model is another file 0
+  | 13:02:22.156    the kinds that value was read as: DisplayString  x528
+  | 13:02:22.156    Element tab Category equal only after a trim or without case: 0
+  | 13:02:22.156    items reading the value on some other property and not on the Element tab's Category: 1033
+  | 13:02:22.157    every tab and property the value was read on, over all items, with how:
+  | 13:02:22.157        LcOaNode | Item > LcOaSceneBaseUserName | Name (DisplayString) EQUALS exactly  x11
+  | 13:02:22.157        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters  x2
+  | 13:02:22.157        lcldrevit_tab_type | Type > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly  x21
+  | 13:02:22.157        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 54 characters  x3
+  | 13:02:22.157        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 67 characters  x12
+  | 13:02:22.157        LcRevitData_Element | Element > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly  x528
+  | 13:02:22.157        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 66 characters  x2
+  | 13:02:22.157        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 38 characters  x9
+  | 13:02:22.157        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 38 characters  x18
+  | 13:02:22.158        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 40 characters  x199
+  | 13:02:22.158        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) EQUALS exactly  x990
+  | 13:02:22.158        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 42 characters  x315
+  | 13:02:22.158    searches: category AND Source File contains the NWC stem 528, the NWC name 0, the file name of Model.SourceFileName 528, its stem where it differs not run
+  | 13:02:22.158    of the 528 exact items: with no Source File property at all 0, with more than one 0
+  | 13:02:22.158    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:02:22.158        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.rvt  x528
+  | 13:02:22.159          shape: 37 characters, backslashes 0, slashes 0, starts with a drive letter False, holds :// False, extension [.rvt], last segment [1104-PAR-1A04PK-ZZZ-ST-MOD-000001.rvt]
+  | 13:02:22.159    what each of those texts holds: the NWC stem, the file name of Model.SourceFileName  x528
+  | 13:02:22.159    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:02:22.159        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.rvt  x4133
+  | 13:02:22.159    distinct Source File texts over all items: 1
+  | 13:02:22.159  MODEL 9  1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc
+  | 13:02:22.159    items walked 52, with an Element tab 11, with a Source File property 51, that threw 0
+  | 13:02:22.159    Element tab Category reads the value exactly: 3 items, of which elements, whose parent does not read it, 3, composite 3, with geometry 0, whose topmost model is another file 0
+  | 13:02:22.159    the kinds that value was read as: DisplayString  x3
+  | 13:02:22.160    Element tab Category equal only after a trim or without case: 0
+  | 13:02:22.160    items reading the value on some other property and not on the Element tab's Category: 13
+  | 13:02:22.160    every tab and property the value was read on, over all items, with how:
+  | 13:02:22.160        LcOaNode | Item > LcOaSceneBaseUserName | Name (DisplayString) EQUALS exactly  x3
+  | 13:02:22.160        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 51 characters  x1
+  | 13:02:22.160        lcldrevit_tab_type | Type > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly  x3
+  | 13:02:22.160        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 51 characters  x1
+  | 13:02:22.160        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 52 characters  x1
+  | 13:02:22.161        LcRevitData_Element | Element > LcRevitPropertyElementCategory | Category (DisplayString) EQUALS exactly  x3
+  | 13:02:22.161        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) EQUALS exactly  x4
+  | 13:02:22.161        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 44 characters  x1
+  | 13:02:22.161        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 44 characters  x1
+  | 13:02:22.161        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 41 characters  x1
+  | 13:02:22.161        lcldrevit_tab_family | Family > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 55 characters  x1
+  | 13:02:22.161        lcldrevit_tab_type | Type > lcldrevit_parameter_-1002053 | Workset (DisplayString) holds the value, 55 characters  x1
+  | 13:02:22.161        LcOaNode | Item > LcOaSceneBaseClassUserName | Type (DisplayString) holds the value, 50 characters  x1
+  | 13:02:22.161    searches: category AND Source File contains the NWC stem 3, the NWC name 0, the file name of Model.SourceFileName 3, its stem where it differs not run
+  | 13:02:22.162    of the 3 exact items: with no Source File property at all 0, with more than one 0
+  | 13:02:22.162    the Source File texts of the exact items, tab | display > property | display (kind) = value, with counts:
+  | 13:02:22.162        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.rvt  x3
+  | 13:02:22.162          shape: 37 characters, backslashes 0, slashes 0, starts with a drive letter False, holds :// False, extension [.rvt], last segment [1104-PAR-1A04PK-ZZZ-ST-MOD-000002.rvt]
+  | 13:02:22.162    what each of those texts holds: the NWC stem, the file name of Model.SourceFileName  x3
+  | 13:02:22.162    the Source File texts over ALL items of the model, with counts, capped at 25 distinct:
+  | 13:02:22.163        LcOaNode | Item > LcOaNodeSourceFile | Source File (DisplayString) = 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.rvt  x51
+  | 13:02:22.163    distinct Source File texts over all items: 1
+  | 13:02:22.163  
+  | 13:02:22.163  ---- by the topmost ancestor's Model.FileName, every item whose Element tab Category reads the value exactly ----
+  | 13:02:22.163    1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc  items 3  of which elements, whose parent does not read it, 3
+  | 13:02:22.163    1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc  items 6  of which elements, whose parent does not read it, 6
+  | 13:02:22.163    1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc  items 32  of which elements, whose parent does not read it, 32
+  | 13:02:22.163    1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc  items 528  of which elements, whose parent does not read it, 528
+  | 13:02:22.164    1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc  items 3  of which elements, whose parent does not read it, 3
+  | 13:02:22.164  
+  | 13:02:22.164  nothing in any model was changed, nothing was saved and nothing was published
+  | 13:02:22.164  probe finished, code 0
+  the plugin's output "%LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\plugin-output-C04.txt", 128182 bytes, sha256 BE715BF3E0939957241BAF7207B91B5D5E3112EAEDAD8C18DFCB243D65438202
+
+
+==== STEP 6. Quit through the API ====
+  13:02:24.870  t+160.8s  Dispose RETURNED after 0.71 s
+  13:02:32.552  t+168.5s  pid 32416 state gone, 7.7 s after Dispose returned, not forced
+
+==== FINALLY ====
+  13:02:32.557  t+168.5s  pid 32416 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 182, longest pass 13065 ms, longest gap between the starts of two passes 13566 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  12:59:45.464  t+1.4s  watchdog started
+  12:59:59.919  t+15.9s  new process AdskLicensingInstHelper pid 132144, parent 16724 GenuineService.exe, started 12:59:49.728, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  13:00:11.303  t+27.2s  new process Roamer pid 32416, parent 1324 svchost.exe, started 12:59:50.907, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  13:00:11.385  t+27.3s  Roamer 32416 visible top level windows: none
+  13:00:41.315  t+57.2s  new process AdskLicensingAgent pid 59676, parent 32416 Roamer.exe, started 13:00:31.344, command line holds the word embedding or automation: no
+  13:00:54.897  t+70.8s  new process AdskLicensingAgent pid 66884, parent 32416 Roamer.exe, started 13:00:32.289, command line holds the word embedding or automation: no
+  13:00:58.648  t+74.6s  Roamer 32416 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  13:01:03.982  t+79.9s  Roamer 32416 visible top level windows: none
+  13:01:18.142  t+94.1s  new process AdskLicensingInstHelper pid 104000, parent 16724 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  13:01:20.176  t+96.1s  Roamer 32416 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "" text: 
+  13:01:20.715  t+96.7s  Roamer 32416 visible top level windows: none
+  13:01:21.262  t+97.2s  Roamer 32416 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  13:01:22.366  t+98.3s  Roamer 32416 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+  13:01:23.525  t+99.5s  Roamer 32416 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;ac6afcf8-90dd-4af4-a92b-b75a01d2654b]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+  13:01:24.071  t+100.0s  Roamer 32416 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  13:01:30.699  t+106.6s  Roamer 32416 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+  13:01:31.247  t+107.2s  Roamer 32416 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;750b383a-d9e1-406b-b08b-b21499cae97c]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+  13:01:32.348  t+108.3s  Roamer 32416 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  13:02:10.610  t+146.5s  new process AdskLicensingInstHelper pid 81508, parent 16724 GenuineService.exe, started 13:01:58.105, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  13:02:24.983  t+160.9s  Roamer 32416 visible top level windows: none
+  13:02:32.948  t+168.9s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  AdskLicensingInstHelper pid 132144, parent 16724 GenuineService.exe: exited
+  Roamer pid 32416, parent 1324 svchost.exe: exited
+  AdskLicensingAgent pid 59676, parent 32416 Roamer.exe: exited
+  AdskLicensingAgent pid 66884, parent 32416 Roamer.exe: STILL RUNNING
+  AdskLicensingInstHelper pid 104000, parent 16724 GenuineService.exe: UNKNOWN whether it exited, its start time could not be read when it was seen
+  AdskLicensingInstHelper pid 81508, parent 16724 GenuineService.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40631569555323  new QWord 40633168826629
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 93  new DWord 94
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 152  new DWord 153
+  22.0\CER\22.5.1433.58  uptime  old QWord 2353556093750  new QWord 2355081875000
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,144,85,1632,969"
+  22.0\Recent File List\1  DisplayName  old String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\1  LastOpened  old QWord 134290938074132508  new QWord 134359272903241463
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C04\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\10  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134290938039044021  new QWord 134290938046297945
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc, sha1 B1CCD34DBC72>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>
+  22.0\Recent File List\2  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\2  LastOpened  old QWord 134290938070616743  new QWord 134359272823486276
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\generic-20261008-125944\C02\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\3  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"  new String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"
+  22.0\Recent File List\3  LastOpened  old QWord 134290938066994697  new QWord 134290938074132508
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>  new String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>
+  22.0\Recent File List\4  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"  new String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134290938062820552  new QWord 134290938070616743
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>
+  22.0\Recent File List\5  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134290938058967255  new QWord 134290938066994697
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>
+  22.0\Recent File List\6  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134290938054115696  new QWord 134290938062820552
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>
+  22.0\Recent File List\7  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134290938049614120  new QWord 134290938058967255
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>
+  22.0\Recent File List\8  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134290938046297945  new QWord 134290938054115696
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>
+  22.0\Recent File List\9  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134290938042577701  new QWord 134290938049614120
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>
+  registry: 36 values or keys differ from the backup
+  registry: 36 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 70126 bytes, sha256 F5663A66052C, written 2026-10-08 08:38:32  new 71377 bytes, sha256 43DF61D9D73F, written 2026-10-08 13:02:24
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 CFB225D1EB92, written 2026-10-08 08:38:31  new 40079 bytes, sha256 66633D097B78, written 2026-10-08 13:02:24
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWCs the copies were made from, at the end ----
+  C02  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc  sha256 FCA49DD78E37DA7403CD606D444D4EC6E717A9B34ACFCEEFA9EB3FDC7145B80F, the same as before the start
+  C02  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc  sha256 38B64BD922825092E4943C795138040AE3A00433CB63DC062FD5B24C8372466C, the same as before the start
+  C02  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  sha256 F0544034ED410215B556FAC3B0FACA7D1A67975651530D95642FFC74B53F4511, the same as before the start
+  C02  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc  sha256 EF5E3443F676C7B43C8702F01457BC44702DDE2019DF4E57691F886F3495ABA7, the same as before the start
+  C04  1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc  sha256 97C98DA53691D1BA6413C2B22D6B76C575DB50B8356BF066CADFE8EF3D28A036, the same as before the start
+  C04  1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc  sha256 53DC4CFD039038965158B2701495469D5B85FB789C710C0BFC5CB00B3C7BA2CE, the same as before the start
+  C04  1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc  sha256 F00E712B1AA76858BDDF3502467C57CE7722D1ABC9E50F3F304462D8DBAD0DD7, the same as before the start
+  C04  1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc  sha256 AD5105FB8174EB1325BB1663A098B3983D33867E508C6B0179E629F43F5704B7, the same as before the start
+  C04  1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc  sha256 C38CFD2CF527D2A4FDBB8538D2E23F75522792968BB8148F65C6BB3D67F6F72E, the same as before the start
+  C04  1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc  sha256 30A4F059CBCBCCD6F9BABA68A8155E23AB60AD65B466994CE25A0ACBB3975C25, the same as before the start
+  C04  1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc  sha256 4ADD80829D2B3DD26D4C53D3886C1D324664E65F6959B823C39052737301752C, the same as before the start
+  C04  1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc  sha256 2B949C9EF1316CFD2916F1FFB1170CE8A65BC70844F5AF746702A9121D667F24, the same as before the start
+  C04  1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc  sha256 F907AE89A20B5A82FD520C6913D5FB1F3C14488B7712DAFF2C62A0C2C37347C2, the same as before the start
+  C04  1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc  sha256 85164008B741CFFA0E94180E3014AC5A9C7871B67F65EDBAF5812C88358C999F, the same as before the start
+---- the work folder at the end, sorted by name ----
+  GenericProbe.dll  29184 bytes
+  hkcu-navisworks-manage-22.0-before.reg  123148 bytes
+  mypid.txt  36 bytes
+  plugin-output-C02.txt  13248 bytes
+  plugin-output-C04.txt  128182 bytes
+  watch.txt  3281 bytes
+  C02\  4 files
+  C04\  10 files
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, C02 returned 0, C04 returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-08 13:02:38, 174 s in all
