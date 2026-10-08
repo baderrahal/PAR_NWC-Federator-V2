@@ -74,8 +74,9 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// Whether the file on disk may be written. The one gate both callers pass through,
-        /// so a save can never happen on a path that failed after a change.
+        /// Whether the file on disk may be written, by the rule above. Only the tests read it: the engine picks
+        /// between the two sentences where it stands and stops the save by returning before the save, so this
+        /// is the rule written down and not a gate any caller passes through.
         /// </summary>
         public static bool TheFileMayBeSaved(bool anythingWasChanged, bool everythingWorked)
         {
@@ -83,9 +84,8 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// The sentence for either case, chosen by the one fact that decides it. Callers
-        /// use this rather than picking, so the message and the save decision can never
-        /// disagree.
+        /// The sentence for either case, chosen by the one fact that decides it. Only the tests read it, the
+        /// callers in the engine and the set builder pick TheDocumentIsDamaged or NothingWasTouched themselves.
         /// </summary>
         public static string Line(string what, bool anythingWasChanged)
         {

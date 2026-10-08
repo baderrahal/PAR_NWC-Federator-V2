@@ -14,13 +14,16 @@ namespace Federator.Core.Clash
     /// </summary>
     public enum OpenClashCount
     {
-        /// <summary>New plus Active. What this tool counted before there was a choice.</summary>
+        /// <summary>
+        /// New plus Active. What this tool counted before there was a choice, and what a view shows by default,
+        /// ViewpointSettings.DefaultViewStatuses.
+        /// </summary>
         NewAndActive,
 
         /// <summary>
         /// New plus Active plus Reviewed, which is what Navisworks itself treats as open,
-        /// with Approved and Resolved as closed. The default, because it is the product's
-        /// own definition rather than one this tool invented.
+        /// with Approved and Resolved as closed. What the pictures and the viewpoints of a clash ask for, because
+        /// it is the product's own definition rather than one this tool invented.
         /// </summary>
         NavisworksOpen
     }
