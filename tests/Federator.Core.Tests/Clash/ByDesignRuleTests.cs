@@ -554,6 +554,79 @@ namespace Federator.Core.Tests
             Assert.That(new ReportOptions().ByDesignPath, Is.EqualTo(string.Empty));
         }
 
+        // ---------- a run with no XML, F132 attempt 2, the breaker's finding R5 ----------
+
+        /// <summary>
+        /// Since F132 a run with no XML reads each saved test's sides as the sets it points
+        /// at, so this pass reaches the tests saved in the NWF, where before it matched no
+        /// pair there. The pass stays, Q144, and it is never silent: the block says the sides
+        /// were read off the saved tests and how many pairs in the file that reached.
+        /// </summary>
+        [Test]
+        public void TheBlockSaysWhenTheSidesWereReadOffTheTestsSavedInTheNwf()
+        {
+            ByDesignTally tally = new ByDesignTally();
+            ByDesignPairs pairs = From("left_set,right_set,reason\nA,B,a sits on b\nC,D,c hangs off d\n");
+
+            tally.SidesReadOffTheSavedTests(1830, pairs.Count);
+            tally.Add("T", "clash 1", ByDesignVerdict.Reviewed, pairs.For("A", "B"));
+            tally.Add("T", "clash 2", ByDesignVerdict.SomebodyDecided, pairs.For("A", "B"));
+            tally.Add("U", "clash 3", ByDesignVerdict.NotAPair, null);
+
+            IList<string> lines = tally.Lines();
+
+            Assert.That(tally.SavedTestsRead, Is.EqualTo(1830));
+            Assert.That(lines[0], Is.EqualTo("sides read off the NWF : the 1830 tests saved in the document, no clash XML "
+                + "picked, so this pass acts on the saved tests, and they reached 1 of the 2 pairs in the file"));
+            Assert.That(lines[1], Does.StartWith("REVIEWED clash 1  in T"));
+        }
+
+        [Test]
+        public void TheBlockOfARunWithAnXmlSaysNothingOfTheSavedTests()
+        {
+            ByDesignTally tally = new ByDesignTally();
+
+            tally.Add("T", "clash 1", ByDesignVerdict.NotAPair, null);
+
+            string all = string.Join("\n", new List<string>(tally.Lines()).ToArray());
+
+            Assert.That(tally.SavedTestsRead, Is.Null);
+            Assert.That(all, Does.Not.Contain("saved in the document"));
+            Assert.That(all, Does.StartWith("\nclashes looked at : 1"));
+        }
+
+        [Test]
+        public void TheSavedTestsLineCountsOnePairOnceHoweverManyClashesReachedIt()
+        {
+            ByDesignTally tally = new ByDesignTally();
+            ByDesignPairs pairs = From("left_set,right_set,reason\nA,B,a sits on b\n");
+
+            tally.SidesReadOffTheSavedTests(3, pairs.Count);
+            tally.Add("T", "clash 1", ByDesignVerdict.Reviewed, pairs.For("A", "B"));
+            tally.Add("T", "clash 2", ByDesignVerdict.Reviewed, pairs.For("A", "B"));
+
+            Assert.That(tally.Lines()[0], Does.EndWith("they reached 1 of the 1 pair in the file"));
+        }
+
+        /// <summary>
+        /// The confirm screen's line, the same rule as the rebuild line beside it: null with
+        /// the box off, because a sentence that appears on every run teaches people to skip
+        /// the screen, and with it on it says the pass reaches the tests saved in the NWF too.
+        /// </summary>
+        [Test]
+        public void TheConfirmScreenLineIsNullWithTheBoxOffAndNamesTheSavedTestsWithItOn()
+        {
+            Assert.That(ByDesignPairs.ConfirmLine(false), Is.Null);
+
+            string line = ByDesignPairs.ConfirmLine(true);
+
+            Assert.That(line, Does.Contain("Reviewed"));
+            Assert.That(line, Does.Contain("the tests created from the picked file"));
+            Assert.That(line, Does.Contain("the tests already saved in the NWF"));
+            Assert.That(line, Does.Contain("no clash XML"));
+            Assert.That(line, Does.Not.Contain(";"));
+        }
+
         private static HashSet<string> SetNamesIn(string path)
         {
             HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);

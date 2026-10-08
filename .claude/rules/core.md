@@ -769,7 +769,26 @@ and 6 does not read as broken.
   `DocumentClashTests.TestsEditDisplayName` and nothing has run it on a test holding results and
   statuses, so the add-in counts the test's results and statuses before and after the rename, as
   F50's rebuild counts what the NWF carries, and the Renames lines saying statuses kept, the
-  renaming back of attempt 8 among them, are a plan until then
+  renaming back of attempt 8 among them, are a plan until then. ATTEMPT 2 OF THE ADD-IN HALF,
+  2026-10-08, on the breaker's blocking findings R4 and R5 of attempt 1. THE CLASHES OF A TEST
+  ARE THE MERGED REPORT'S ROWS FOR IT, WITH THEIR ROW STATUSES, `Federator.Core.Views.ReportClashes.Of`,
+  one rule in one place for the per clash views, which the add-in resolves and writes, and for
+  the one view per test F114's add-in pass will build over the same rows: every row of every
+  test the report holds rows for, in the report's order, under the test the report holds it
+  under, at the row's status, named as the workbook writes it, `ClashRow.WrittenName`, so a
+  clash only a mirror found is viewed under the kept test and says which mirror, and a test
+  name the report carries twice is read once and named, `ReportClashesOutcome.NamedTwice`. The
+  camera, the two items and the size are the document's, which the add-in reads off the result
+  it resolves by the address the harvest recorded for the row. Test first, ReportClashesTests,
+  seven tests. THE BY DESIGN PASS SAYS WHERE ITS SIDES CAME FROM: on a run with no XML the
+  add-in calls `ByDesignTally.SidesReadOffTheSavedTests` with the saved test count and the pairs
+  in the file, and the block's first line reads `sides read off the NWF : the N tests saved in
+  the document, no clash XML picked, so this pass acts on the saved tests, and they reached K of
+  the P pairs in the file`, a pair counted once however many clashes reached it, and nothing of
+  it on a run with an XML. `ByDesignPairs.ConfirmLine` is the confirm screen's line with the box
+  on and null with it off, the rule `SetRebuildSettings.ConfirmLine` keeps, saying the pass
+  acts on the tests created from the picked file and on the tests already saved in the NWF.
+  Four tests in ByDesignRuleTests
 - The Revit container inside an NWC is often a different building from the NWC.
   Where the building code parsed from the NWC name differs from the code in the
   Revit source name, report SOURCE MISMATCH naming both, and where one Revit

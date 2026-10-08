@@ -57,6 +57,27 @@ namespace Federator.Core.Clash
         private readonly Dictionary<ByDesignVerdict, int> counts =
             new Dictionary<ByDesignVerdict, int>();
         private readonly HashSet<string> pairsSeen = new HashSet<string>(StringComparer.Ordinal);
+        private int? savedTestsRead;
+        private int pairsInTheFile;
+
+        /// <summary>
+        /// How many tests saved in the NWF this group read its sides off, on a run with no
+        /// clash XML, or null on a run whose tests came from the picked file. F132 attempt 2,
+        /// the breaker's finding R5: since F132 reads a saved test's sides as the sets it
+        /// points at, this pass reaches the saved tests, where before it matched no pair
+        /// there. The pass stays, Q144, and the block says so rather than moving in silence.
+        /// </summary>
+        public int? SavedTestsRead
+        {
+            get { return savedTestsRead; }
+        }
+
+        /// <summary>Records that this group's sides were read off that many saved tests, against that many pairs in the file.</summary>
+        public void SidesReadOffTheSavedTests(int savedTests, int pairsInFile)
+        {
+            savedTestsRead = savedTests;
+            pairsInTheFile = pairsInFile;
+        }
 
         /// <summary>The six in the order the block lists them.</summary>
         public static ByDesignVerdict[] InOrder()
@@ -160,6 +181,17 @@ namespace Federator.Core.Clash
         public IList<string> Lines()
         {
             List<string> lines = new List<string>();
+
+            if (savedTestsRead.HasValue)
+            {
+                // First, before any REVIEWED line, so a reader sees where the sides came
+                // from before reading what moved. A pair is counted once however many
+                // clashes reached it.
+                lines.Add("sides read off the NWF : the " + savedTestsRead.Value
+                    + " tests saved in the document, no clash XML picked, so this pass acts on the saved tests, "
+                    + "and they reached " + pairsSeen.Count + " of the " + pairsInTheFile
+                    + (pairsInTheFile == 1 ? " pair" : " pairs") + " in the file");
+            }
 
             for (int i = 0; i < moved.Count; i++)
             {

@@ -73,13 +73,20 @@ namespace Federator.Addin.Engine
         public MirrorPair AsMirror { get; set; }
 
         /// <summary>
-        /// Where set, no picture is rendered while the rows are read. Each row is recorded
-        /// here with the index path of its result under the test, and the runner renders
-        /// the pictures after the merge, since the merge changes which rows the report
-        /// holds, their statuses, which the choice of a picture reads, and their numbers.
-        /// Null renders each picture as the row is read, as every test of no merge does.
+        /// Where set, every row is recorded here with the index path of its result under
+        /// the test, RowUnderTest, as it is read. The runner keeps the address of each row
+        /// by it, so the views resolve each row of the merged report in the document, F132
+        /// attempt 2, and the pictures of a test in a merge are rendered after the merge.
         /// </summary>
-        public IList<RowUnderTest> Deferred { get; set; }
+        public IList<RowUnderTest> Recorded { get; set; }
+
+        /// <summary>
+        /// Where true, no picture is rendered while the rows are read. The runner renders
+        /// them after the merge from Recorded, since the merge changes which rows the report
+        /// holds, their statuses, which the choice of a picture reads, and their numbers.
+        /// False renders each picture as the row is read, as every test of no merge does.
+        /// </summary>
+        public bool PicturesWait { get; set; }
 
         /// <summary>
         /// The property display names to look for, in order, the first that resolves
@@ -227,9 +234,9 @@ namespace Federator.Addin.Engine
                             ClashRow own = ResultRow(document, grid, result);
                             HandOne(own, own);
 
-                            if (Deferred != null)
+                            if (Recorded != null)
                             {
-                                Deferred.Add(new RowUnderTest(own, path));
+                                Recorded.Add(new RowUnderTest(own, path));
                             }
                         }
                     }
@@ -318,7 +325,7 @@ namespace Federator.Addin.Engine
             return read.MergeKey();
         }
 
-        /// <summary>A picture now, or the row recorded for one after the merge where Deferred is set.</summary>
+        /// <summary>The row recorded with its path where Recorded is set, then a picture now unless the pictures wait for the merge.</summary>
         private void PictureOrDefer(
             DocumentClashTests clashTests,
             IClashResult result,
@@ -327,9 +334,13 @@ namespace Federator.Addin.Engine
             ClashRow row,
             List<int> path)
         {
-            if (Deferred != null)
+            if (Recorded != null)
             {
-                Deferred.Add(new RowUnderTest(row, path));
+                Recorded.Add(new RowUnderTest(row, path));
+            }
+
+            if (PicturesWait)
+            {
                 return;
             }
 
@@ -337,10 +348,10 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Renders the picture of one row recorded by Deferred, F132's add-in half, after the
-        /// merge, by the index path of its result under the test handed in, freshly resolved
-        /// by the runner. A path that no longer leads to a result is said and the cell is
-        /// left empty. Every wrapper walked is disposed.
+        /// Renders the picture of one row recorded while its test was read, F132's add-in
+        /// half, after the merge, by the index path of its result under the test handed in,
+        /// freshly resolved by the runner, ResultPath. A path that no longer leads to the
+        /// row's result is said and the cell is left empty. Every wrapper walked is disposed.
         /// </summary>
         public void PictureLater(
             DocumentClashTests clashTests, ClashTest test, ClashReport report, TestReport into, RowUnderTest recorded)
@@ -350,65 +361,22 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            SavedItemCollection children = test.Children;
-            SavedItem item = null;
+            string whyNot;
+            SavedItem item = ResultPath.ResultAt(test, recorded, into.Name, out whyNot);
+
+            if (item == null)
+            {
+                log.Detail("IMAGE    " + whyNot + ", so its picture is not rendered");
+                return;
+            }
 
             try
             {
-                for (int level = 0; level < recorded.Path.Count; level++)
-                {
-                    int index = recorded.Path[level];
-
-                    if (children == null || index < 0 || index >= children.Count)
-                    {
-                        log.Detail("IMAGE    no result is at " + recorded + " under " + into.Name
-                            + " any more, so its picture is not rendered");
-                        return;
-                    }
-
-                    SavedItem next = children[index];
-
-                    if (item != null)
-                    {
-                        item.Dispose();
-                    }
-
-                    item = next;
-
-                    if (level + 1 == recorded.Path.Count)
-                    {
-                        break;
-                    }
-
-                    ClashResultGroup group = item as ClashResultGroup;
-
-                    if (group == null)
-                    {
-                        log.Detail("IMAGE    " + recorded + " under " + into.Name
-                            + " does not lead through a result group any more, so its picture is not rendered");
-                        return;
-                    }
-
-                    children = group.Children;
-                }
-
-                IClashResult result = item as IClashResult;
-
-                if (result == null)
-                {
-                    log.Detail("IMAGE    what is at " + recorded + " under " + into.Name
-                        + " is not a clash result, so its picture is not rendered");
-                    return;
-                }
-
-                Picture(clashTests, result, report, into, recorded.Row);
+                Picture(clashTests, (IClashResult)item, report, into, recorded.Row);
             }
             finally
             {
-                if (item != null)
-                {
-                    item.Dispose();
-                }
+                item.Dispose();
             }
         }
 

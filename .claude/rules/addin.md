@@ -335,14 +335,38 @@ well as to pass.
   `MergeTheMirrors`: `AddTo` per merge, its MIRROR MERGE block, the kept test's ROWS line with
   `AddedToTheKeptTest`, held back from the harvest for it alone, then the pictures of every
   test in a merge, `RenderThePicturesWaiting`: no picture of such a test is rendered while its
-  rows are read, `ClashHarvest.Deferred` records each row with the index path of its result,
-  `RowUnderTest`, and after the merge each row the report still holds is rendered under the
-  test the report holds it under, the result resolved again by the test's address and that
-  path, `PictureLater`, so a mirror taken out gets none and a row only a mirror found is
-  pictured under the kept test. The BLOCKS check is handed `ClashReport.MirrorsMerged`. The
-  views run after the clash step and read the merged report. No handle is held across
-  `TestsEditDisplayName`, `TestsRunTest` or any mutator, and every wrapper is disposed. The
-  mirror rule's ending is `ClashRunner.Mirrors`, a `MirrorSettings` at its default
+  rows are read, `ClashHarvest.PicturesWait`, `ClashHarvest.Recorded` records every row of
+  every test with the index path of its result, `RowUnderTest`, and after the merge each row
+  the report still holds is rendered under the test the report holds it under, the result
+  resolved again by the test's address and that path, `PictureLater`, so a mirror taken out
+  gets none and a row only a mirror found is pictured under the kept test. The BLOCKS check is
+  handed `ClashReport.MirrorsMerged`. THE VIEWS READ THE MERGED REPORT AND NEVER THE DOCUMENT
+  BY NAME, attempt 2 of 2026-10-08 on the breaker's finding R4: `ViewpointBuilder.Collect`
+  takes `Federator.Core.Views.ReportClashes.Of(report)`, the rows the merged report holds under
+  the test it holds them under, each at its row's status, which the merge restated by Q138 B,
+  and resolves each row's result by the `RowAddress` the runner recorded for it as the row was
+  read, `ClashRunner.RowAddresses`, handed to the views through `JobOutcome.RowAddresses`: the
+  test once per address by `TestAddress.ResolveIn`, the one resolver the runner's `Resolve`
+  uses, and the result by `ResultPath.ResultAt`, the one walk `PictureLater` uses, which reads
+  the display name back and refuses a result not named as the row, since `TestsCompactAllTests`
+  after the merge can move a result from under a recorded path. So a mirror taken out of the
+  report gets no view, a clash only a mirror found is viewed under the kept test and named as
+  the workbook names it, and a row whose result is not found again, or with no address, is
+  counted on a VIEWS line and gets none. A group row is one view framed on the group, as the
+  workbook holds it, with no size read and not dimmed, since a group has no two items. THE BY
+  DESIGN PASS ON A RUN WITH NO XML, attempt 2 on the breaker's finding R5, the lead's Q144:
+  the saved tests' sides being the sets they point at since F132, `ByDesign.WantedFor` reaches
+  the tests saved in the NWF, where before F132 the placeholders matched no pair. The pass
+  stays, since the box is a person's instruction and F72b matches on the two set names of the
+  test, and it is never silent: where the plan is the document's, `ClashRunner.Run` calls
+  `ByDesignTally.SidesReadOffTheSavedTests` with the saved test count and the pairs in the file,
+  so the BY DESIGN block's first line says the sides were read off the NWF and how many pairs
+  that reached, and `FederatorWindow.ConfirmClear` carries `ByDesignPairs.ConfirmLine` with the
+  box on, beside the rebuild line. The penetration pass reads no locator, `Penetrations.WantedFor`
+  reads each clash's two items, so it reached the saved tests before F132 as it does now and
+  nothing changes for it. The status guard, `StatusesThisToolMayMoveFrom`, is kept. No handle
+  is held across `TestsEditDisplayName`, `TestsRunTest` or any mutator, and every wrapper is
+  disposed. The mirror rule's ending is `ClashRunner.Mirrors`, a `MirrorSettings` at its default
 - SINCE F85 A VIEWPOINT IS PER CLASH, which REVERSES what this rule said before it. It
   said no clash is ever saved as a viewpoint and that a discipline viewpoint is not a
   clash viewpoint. The first real run answered the question the other way: the thing a

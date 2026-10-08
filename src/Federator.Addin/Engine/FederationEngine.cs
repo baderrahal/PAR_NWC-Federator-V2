@@ -2975,6 +2975,10 @@ namespace Federator.Addin.Engine
 
                 ClashRunOutcome clash = runner.Run(plan);
 
+                // F132 attempt 2. Where every row of the report came from, for the views,
+                // which read the merged report's rows and resolve each by this.
+                outcome.RowAddresses = runner.RowAddresses;
+
                 // The skipped group's own CLASH block and summary say the clash was skipped
                 // rather than print nought for what never ran.
                 if (runner.ClashSkippedOffCoordinates)
@@ -3599,7 +3603,8 @@ namespace Federator.Addin.Engine
             {
                 InStep(
                     RunSteps.Views,
-                    () => built = builder.BuildForGroup(document, outcome.Report, ThePriorities().Picked, ModelDisciplines(document)),
+                    () => built = builder.BuildForGroup(
+                        document, outcome.Report, outcome.RowAddresses, ThePriorities().Picked, ModelDisciplines(document)),
                     () => built == null ? "nothing" : built.Summary());
             }
             catch (Exception error)

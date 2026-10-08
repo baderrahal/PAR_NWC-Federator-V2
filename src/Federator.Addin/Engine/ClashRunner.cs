@@ -164,7 +164,10 @@ namespace Federator.Addin.Engine
         private readonly HashSet<string> renameFailed = new HashSet<string>(StringComparer.Ordinal);
 
         /// <summary>The rows of every test in a merge whose pictures wait for the merge, in Clash Detective's order.</summary>
-        private readonly List<PictureWaiting> picturesWaiting = new List<PictureWaiting>();
+        private readonly List<RowAddress> picturesWaiting = new List<RowAddress>();
+
+        /// <summary>Where every row of the report came from in the document, by the row, for the views after the merge.</summary>
+        private readonly Dictionary<ClashRow, RowAddress> rowAddresses = new Dictionary<ClashRow, RowAddress>();
 
         /// <summary>What the document holds under each kept test of a merge, by its place in the file, for its ROWS line after the merge.</summary>
         private readonly Dictionary<int, int> clashesInDocument = new Dictionary<int, int>();
@@ -204,6 +207,17 @@ namespace Federator.Addin.Engine
         /// results are only readable while the document is open.
         /// </summary>
         public ClashReport Report { get; set; }
+
+        /// <summary>
+        /// Where each row of the report came from in the document, F132 attempt 2: the test
+        /// it was read from, its address and the index path of its result, so the views
+        /// read the rows the merged report holds and resolve each one by this, under the
+        /// test the report holds it under, instead of walking the document by name.
+        /// </summary>
+        public IDictionary<ClashRow, RowAddress> RowAddresses
+        {
+            get { return rowAddresses; }
+        }
 
         /// <summary>How the discipline is read off a source file name. A setting.</summary>
         public ContainerNameSettings NameSettings { get; set; }
@@ -357,6 +371,7 @@ namespace Federator.Addin.Engine
             pairOfMirror.Clear();
             renameFailed.Clear();
             picturesWaiting.Clear();
+            rowAddresses.Clear();
             clashesInDocument.Clear();
             savedSidesNotRead = 0;
 
@@ -408,6 +423,15 @@ namespace Federator.Addin.Engine
                         + (byPath.Count == 1 ? " set" : " sets") + ", and the "
                         + inTheDocument.Buildable.Count + " saved tests keep the sides they were saved with");
                     resolved = inTheDocument;
+
+                    // F132 attempt 2, the breaker's finding R5. The sides just read are the
+                    // sets the saved tests point at, so the by design pass reaches the
+                    // saved tests, where before F132 the placeholders matched no pair. The
+                    // pass stays, Q144, and its block says where the sides came from.
+                    if (byDesign != null && ByDesignTally != null)
+                    {
+                        ByDesignTally.SidesReadOffTheSavedTests(inTheDocument.Buildable.Count, byDesign.Pairs.Count);
+                    }
                 }
                 else
                 {
@@ -1003,10 +1027,11 @@ namespace Federator.Addin.Engine
 
                         bool inAMerge = asKept != null || asMirror != null;
 
-                        if (inAMerge)
-                        {
-                            harvest.Deferred = new List<RowUnderTest>();
-                        }
+                        // Every row is recorded with where its result sits, attempt 2, so
+                        // the views resolve each row of the merged report by it, and the
+                        // pictures of a test in a merge wait for the merge.
+                        harvest.Recorded = new List<RowUnderTest>();
+                        harvest.PicturesWait = inAMerge;
 
                         using (RunStep harvesting = log.Step(RunSteps.Harvest))
                         {
@@ -1023,11 +1048,14 @@ namespace Federator.Addin.Engine
                             }
                         }
 
-                        if (inAMerge)
+                        foreach (RowUnderTest row in harvest.Recorded)
                         {
-                            foreach (RowUnderTest row in harvest.Deferred)
+                            RowAddress where = new RowAddress(address, planned.Name, row);
+                            rowAddresses[row.Row] = where;
+
+                            if (inAMerge)
                             {
-                                picturesWaiting.Add(new PictureWaiting(address, planned.Name, row));
+                                picturesWaiting.Add(where);
                             }
                         }
 
@@ -1514,70 +1542,13 @@ namespace Federator.Addin.Engine
         /// </summary>
         private ClashTest Resolve(DocumentClashTests clashTests, TestAddress address, string name)
         {
-            SavedItemCollection children = clashTests.Tests;
-            SavedItem item = null;
-            GroupItem walked = null;
+            string nowNamed;
+            ClashTest test = address.ResolveIn(clashTests, name, out nowNamed);
 
-            for (int level = 0; level < address.Depth; level++)
+            if (nowNamed != null)
             {
-                int index = address.IndexAt(level);
-
-                if (children == null || index < 0 || index >= children.Count)
-                {
-                    if (walked != null)
-                    {
-                        walked.Dispose();
-                    }
-
-                    return null;
-                }
-
-                item = children[index];
-
-                // The level walked past is released only once the child below it has been
-                // read, which is the order ResolveFolders in SetBuilder uses.
-                if (walked != null)
-                {
-                    walked.Dispose();
-                    walked = null;
-                }
-
-                if (level + 1 == address.Depth)
-                {
-                    break;
-                }
-
-                GroupItem group = item as GroupItem;
-
-                if (group == null)
-                {
-                    item.Dispose();
-                    return null;
-                }
-
-                children = group.Children;
-                walked = group;
-                item = null;
-            }
-
-            ClashTest test = item as ClashTest;
-
-            if (test == null)
-            {
-                if (item != null)
-                {
-                    item.Dispose();
-                }
-
-                return null;
-            }
-
-            if (!string.Equals(test.DisplayName, name, StringComparison.Ordinal))
-            {
-                log.Line("CLASH    the test at " + address + " is now \"" + test.DisplayName
+                log.Line("CLASH    the test at " + address + " is now \"" + nowNamed
                     + "\" and not \"" + name + "\", so it was left alone");
-                test.Dispose();
-                return null;
             }
 
             return test;
@@ -2317,16 +2288,16 @@ namespace Federator.Addin.Engine
             harvest.WorkbookPath = WorkbookPath;
 
             List<string> order = new List<string>();
-            Dictionary<string, List<PictureWaiting>> byTest = new Dictionary<string, List<PictureWaiting>>(StringComparer.Ordinal);
+            Dictionary<string, List<RowAddress>> byTest = new Dictionary<string, List<RowAddress>>(StringComparer.Ordinal);
 
-            foreach (PictureWaiting waiting in picturesWaiting)
+            foreach (RowAddress waiting in picturesWaiting)
             {
-                string key = waiting.Address + " " + waiting.TestName;
-                List<PictureWaiting> rows;
+                string key = waiting.TestKey;
+                List<RowAddress> rows;
 
                 if (!byTest.TryGetValue(key, out rows))
                 {
-                    rows = new List<PictureWaiting>();
+                    rows = new List<RowAddress>();
                     byTest.Add(key, rows);
                     order.Add(key);
                 }
@@ -2336,8 +2307,8 @@ namespace Federator.Addin.Engine
 
             foreach (string key in order)
             {
-                List<PictureWaiting> rows = byTest[key];
-                PictureWaiting first = rows[0];
+                List<RowAddress> rows = byTest[key];
+                RowAddress first = rows[0];
 
                 try
                 {
@@ -2350,7 +2321,7 @@ namespace Federator.Addin.Engine
                             continue;
                         }
 
-                        foreach (PictureWaiting waiting in rows)
+                        foreach (RowAddress waiting in rows)
                         {
                             TestReport into;
 
@@ -2369,23 +2340,6 @@ namespace Federator.Addin.Engine
                         "kept going, the rows of that test not yet pictured keep an empty Image cell");
                 }
             }
-        }
-
-        /// <summary>A row whose picture waits for the merge, with the test it was read from and where that test sits.</summary>
-        private sealed class PictureWaiting
-        {
-            internal PictureWaiting(TestAddress address, string testName, RowUnderTest row)
-            {
-                Address = address;
-                TestName = testName;
-                Row = row;
-            }
-
-            internal TestAddress Address { get; private set; }
-
-            internal string TestName { get; private set; }
-
-            internal RowUnderTest Row { get; private set; }
         }
 
         // ---------- reading the two trees ----------
