@@ -411,6 +411,16 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// T1-N72. The grey line said the probe writes one CSV, and it writes one per model.
+        /// </summary>
+        [Test]
+        public void TheHelpLineSaysOneCsvPerModelAndNotOneCsv()
+        {
+            Assert.That(ProbeSettings.HelpLine, Does.Contain("one CSV per model"));
+            Assert.That(ProbeSettings.HelpLine.Split(' ').Length, Is.LessThanOrEqualTo(12));
+        }
+
+        /// <summary>
         /// F86. The probe asks for a category the way the penetration rule reads one,
         /// trimmed and case blind, so the two agree, and a category neither list holds is
         /// not asked for.

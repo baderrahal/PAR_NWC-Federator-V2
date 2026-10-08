@@ -123,6 +123,12 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public const string OutsideEveryStep = "outside every step";
 
+        /// <summary>
+        /// The remainder of the run in the by group section, where what is added up is the groups
+        /// and what is left is the scan, the preview and the work between them, T1-N62.
+        /// </summary>
+        public const string OutsideEveryGroup = "outside every group";
+
         /// <summary>The forty five minutes, in seconds, as the default.</summary>
         public const double DefaultUnattendedSeconds = 45.0 * 60.0;
 
@@ -215,7 +221,7 @@ namespace Federator.Core.Diagnostics
 
             lines.Add(string.Empty);
             lines.Add(Total("group total", groupSeconds));
-            lines.Add(Unaccounted("this group", groupSeconds, counted));
+            lines.Add(Unaccounted("this group", groupSeconds, counted, "step", OutsideEveryStep));
 
             // Last, because these seconds are already inside a row above and a reader who
             // stops at the total has lost nothing.
@@ -260,11 +266,11 @@ namespace Federator.Core.Diagnostics
                 }
             }
 
-            lines.Add(Row(new TimedThing(OutsideEveryStep, runSeconds - inGroups, 1, false), runSeconds));
+            lines.Add(Row(new TimedThing(OutsideEveryGroup, runSeconds - inGroups, 1, false), runSeconds));
 
             lines.Add(string.Empty);
             lines.Add(Total("run total", runSeconds));
-            lines.Add(Unaccounted("the run", runSeconds, inGroups));
+            lines.Add(Unaccounted("the run", runSeconds, inGroups, "group", OutsideEveryGroup));
 
             // The same numbers read the other way. Which BUILDING cost the run is one
             // question and which STEP cost it is a different one, and a run of twenty two
@@ -466,22 +472,22 @@ namespace Federator.Core.Diagnostics
         /// block that spread it over the steps it does know about would be inventing
         /// numbers, which is the one thing a timing block must not do.
         /// </summary>
-        private static string Unaccounted(string what, double total, double counted)
+        private static string Unaccounted(string what, double total, double counted, string kind, string outside)
         {
             double left = total - counted;
 
             if (left < 0.0005 && left > -0.0005)
             {
-                return "every second of " + what + " is inside a step";
+                return "every second of " + what + " is inside a " + kind;
             }
 
             if (left < 0)
             {
-                return "the steps add up to MORE than " + what + " took, by " + Show(-left)
-                    + ". A step ran outside the stretch that was being timed";
+                return "the " + kind + "s add up to MORE than " + what + " took, by " + Show(-left)
+                    + ". A " + kind + " ran outside the stretch that was being timed";
             }
 
-            return OutsideEveryStep + " is the work between them and the work nothing times yet";
+            return outside + " is the work between them and the work nothing times yet";
         }
 
         /// <summary>
@@ -494,7 +500,7 @@ namespace Federator.Core.Diagnostics
         {
             int widest = RunSteps.NameWidth;
 
-            foreach (string label in new[] { OutsideEveryStep, "group total", "run total" })
+            foreach (string label in new[] { OutsideEveryStep, OutsideEveryGroup, "group total", "run total" })
             {
                 if (label.Length > widest)
                 {

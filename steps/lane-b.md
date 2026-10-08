@@ -20,11 +20,16 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 | 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items merged as pull request 148 with FR-057 half, the rest left for the laptop lane |
 | 6 | F128's Core part, generic models, FR-177 | fix-F128 | not started, see below |
 | 7 | F121 the rest, FR-150 to FR-166 and FR-202, wave 4 | fix-F121 | five items merged as pull request 150, the rest left for the laptop lane |
-| 8 | F123 docs and words and the noise of every area, wave 5 | fix-F123 | three items in review |
+| 8 | F123 docs and words and the noise of every area, wave 5 | fix-F123 | merged as 151, 154, 155, 161, 162, 163, 164 and 165 |
 
 ## The item the lane is on
 
-None. The branch claude/lane-b-release-plan-zztyvx is the one branch this session may push, restarted
+The second night, 8 Oct 2026, by Bader's message GOOD MORNING, BADER: the Core points the readers of F127,
+F119, F115, F137, F121 and F123 left, in that order after F128. F127's Core points merged as pull request 167. Now on F119's Core points, branch
+claude/lane-b-release-plan-zztyvx, which changes src\Federator.Core\Diagnostics\RunLog.cs and RunClock.cs
+and their tests under Diagnostics. Neither fix-F118 nor fix-F132 changes any of them.
+
+The branch claude/lane-b-release-plan-zztyvx is the one branch this session may push, restarted
 from main after each merge. F115 merged as pull request 142, F127 as 145, F137 as 146, F118 as 147 and
 F119 as 148. fix-F115 and fix-F127 stay on origin and are not deleted, because their records are theirs.
 
@@ -100,6 +105,14 @@ lane's to set in the tracker.
 | F123 | FR-007 two names that differ by an ordinary space are described by the space and its place and not as invisible characters. FR-061 the text log says a collapsed line is kept in the .tsv only where the .tsv opened. FR-064 the category list names the folder it was measured on off its own data file and the HEALTH lines carry it | 151 | merged, dfe0fb0 |
 | F123 | Part 2, six wordings that said more or less than was known. FR-126 the single discipline detail says which tests are created and that none is run. FR-127 the tolerance help line says results and statuses are kept and never that they are reset. FR-129 a failure after good tests is no longer called one of the first tests. FR-130 the refill counts the names it kept, a name and not a row. FR-131 an NWF folder inside the scanned folder is said as that and not as unreadable. FR-132 the rebuild help line names the removal of an unused set. Each has a test that fails on the old words, 8 failing before the change and 0 after. The reader found a framework message could reach the Outputs line through the new catch, which is fixed and tested before the merge | 154 | merged, 46a6f68 |
 | F123 | FR-168 a folders file that could not be used is named with why in the startup block and is never read as a first run, with a test that holds on every machine and one that needs a locked file and runs on Windows only. Core tests 2377 before and 2380 after, 0 failed | 155 | merged, 750cd51 |
+| F121 | The two points the second reading of F121 left: a name typed by hand with a character Windows refuses, a colon, a slash, a control character, is refused by the check before a run and named, and a collision between many groups names the first five and counts the rest, as an unusable name does. The refused characters are the list FileNames holds, never the running platform's. Core tests 2400 run, 2366 passed, 0 failed, 34 skipped, and 3 failing on the old source | 160 | merged, 27c24b7 |
+| F123 | FR-172 in part: two public members nothing in src or tests calls are deleted, the array of fire suppression words in ProbeVerdict, which was a second copy of a rule NamesFireSuppression holds, and LeftoverSet.TwinPath with its constructor argument. Core tests 2400 run, 2366 passed, 0 failed, 34 skipped, as before | 161 | merged, 304c585 |
+| F123 | FR-171 in part, the Core noise entries of the turn 1 read that still held on main. T1-N72 the probe's grey line says one CSV per model. T1-N87 the Rebuilt confirm line names the shape it clears. T1-N69 the health line of a file with no sets says the sets are looked for and not checked. T1-N60 an identical ternary. T1-N71, N59, N53, N70, N73, N79, N67 comments that said the opposite of the code or called a constant a setting. Core tests 2402 run, 2368 passed, 0 failed, 34 skipped, and 3 failing on the old source | 162 | merged, b52e914 |
+| F123 | FR-171 T1-N62, in the run timing block the by group section is labelled outside every group and says every second of the run is inside a group, or that the groups add up to more than the run took, where it said step. The by step section and the group block keep their words. The tests do not build against the old source, since the new label is a new member, so the old source was not run against them. Core tests 2404 run, 2370 passed, 0 failed, 34 skipped | 163 | merged, de2e558 |
+| F123 | FR-171 T1-N89, the edit distance written line for line in the EMPTY SETS judge and in the workset disagreements is one routine, EditDistance, and each reader hands it its own cap. Four tests on the routine, and the two readers' own tests unchanged. The new tests do not build against the old source. Core tests 2408 run, 2374 passed, 0 failed, 34 skipped | 164 | merged, b99c736 |
+| F123 | FR-171 T1-N56 and N57 in RunLog. The numbered line writes its machine readable row through Row, which it had copied line for line, and the seconds, visits and throws of a step in a group are added up in one place, TotalOf, where two loops did it. No behaviour changes, and one test added after the reader found the step sums unpinned at log level, a repeated step with one visit that threw. Core tests 2409 run, 2375 passed, 0 failed, 34 skipped | 165 | merged, 04e68b8 |
+| F127 | The Core points the readers of 145 and 153 left. SetsAcrossTheRun counts a path once in a group, finds something there where any set of the path did, is at zero only where every set of the path was counted and found nothing, and leaves a path out of a group where one set of it was not counted and none found items. A set's line and its .tsv row say how many of the groups it was looked at in when that is fewer, the header says how many sets that is, a set never counted in any group is counted on a line of its own, and the all clear says every set that was counted, or that no set was counted. CountCheck reads a test the run left no record of, or never reached, with an empty block that the document does not return as not compared, where one the run knows it did not create stays held by neither side, and gives the FAILED line of a test the plan dropped before the model, that an earlier run left in the document, its cause. CoverageAcrossTheRun counts the tests the file does not name once by name across the run, as Q127 A counts every other test, and the headline says how many test places its groups hold and that a group not checked is in none of the counts. Words: the CountCheck summary, the Q126 test comment, one number tied to set 03's log line 297, and the design file said to be outside the repo. 10 new tests, all failing on main's source. Core tests here 2408 run, 2375 passed, 0 failed, 33 skipped before, 2418 run, 2385 passed, 0 failed, 33 skipped after. A reviewer and a breaker read it and their findings are fixed, two of lane B's own first lines among them: a cause that said a test the runner's walk had not found was in the document before the run, and a not compared rule that took in the tests the plan drops. The add-in half of F127 is unchanged | 167 | merged, 639804a |
+| F119 | The two Core points the readers of 148 left that a test proves. The RETAIN line counted a .tsv it could not delete in the number of logs it could not delete, so two refused .tsv read as two logs that stayed. It now counts them apart, on the one seam that writes the sentence, RunLog.RetainLine, and adds nothing about a refused .tsv unless one was refused, so the part the loop's harness matches is unchanged, and the wiring is held by a Windows only test that holds a .tsv open. A run counted to now, one that started and never finished, printed an after the run finished row of 0.0 seconds in its timing block, which reads as a measurement. It now says the time after the run is not measured and prints no row, and a run that finished keeps its row. 3 new tests, the first not building against main's source because RetainLine is new, the second failing on it, and the third, which holds PruneOldLogs's wiring with a .tsv held open, running on Windows only and so unrun here. FR-057's disk half is not in this pull request. Core tests 2418 run, 2385 passed, 0 failed, 33 skipped before, 2421 run, 2387 passed, 0 failed, 34 skipped after, the one more skipped being the Windows only test | 168 | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -139,46 +152,83 @@ and the row that said how many worksets a stopped walk had seen.
 
 ## Where the lane stopped
 
-It stopped on 7 Oct 2026 after F123, the night's list done as far as Core alone can take it. Waves 4 and 5 were read item by item after Bader's word to carry on, and what was left is the add-in, the loop's own files, or waits on F114 and F132, each recorded under its heading below. F128 was
-not started, for three reasons. Bader's own item says to measure first which property and value name
-Generic Models on 1A02MM and 1A04PK, and that needs a probe through the guarded start of Navisworks,
-UNKNOWN until read. The counts per model file, the GENERIC block and the sheet all take a read of the
-document that only the add-in makes, so a Core plan of the set folder, one search set per model on the
-category and LcOaNodeSourceFile, would be called by no running code, which breaks the no member without a
-caller rule. And the workbook writer and the engine are files an open branch of the laptop lane changes.
-What can be written in Core once the probe has answered is the set plan and the counts rule, with the
-add-in call in the same pull request.
+Lane B stopped on 7 Oct 2026 after Bader's second order of the night, F128, then F121 the rest, then F123,
+by the same limits. It took what a Core test proves in a file no open loop branch changes, and what it had
+not taken when this was written is named under F123 below.
+
+F128 was not started, and it was looked at twice. Bader's own item says to measure first which property and
+value name Generic Models on 1A02MM and 1A04PK, and that needs a probe through the guarded start of
+Navisworks, UNKNOWN until read. The counts per model file, the GENERIC block and the sheet all take a read
+of the document that only the add-in makes, so a Core plan of the set folder, one search set per model on
+the category and LcOaNodeSourceFile, would be called by no running code, which breaks the no member without
+a caller rule. SetBuildPlan has no per model input, so the one place that could carry it without the add-in
+is not a place the group's models reach, and the call that would hand it the models is in FederationEngine,
+which fix-F132 changes. What can be written in Core once the probe has answered is the set plan and the
+counts rule, with the add-in call in the same pull request.
+
+F121 the rest. What was open is the add-in or the window, FR-150, 152, 153, 156, 157, 160, 161, 163, 162 and
+the add-in halves of 164, or needs a choice Bader has not written down, FR-155, or a parse nothing would
+call, FR-166, or an IL read first, FR-202. The two Core points of the second reading, a hand typed name with
+a character Windows refuses and a collision sentence naming every group, were taken in pull request 160.
+
+F123. The entries that were Core and a test proves are taken: FR-007, FR-061 and FR-064 in 151, FR-126,
+127, 129, 130, 131 and 132 in 154, FR-168 in 155, FR-172 in part in 161, and FR-171 in part in 162, 163 and
+the pull request that carries this page. The rest of F123 is the loop's own files, tools\loop and
+.claude, which lane B never edits, or the add-in, or files fix-F118 and fix-F132 change, and FR-171 and
+FR-172 are backlogs of which the entries left are named under F123 below, each as the entry states it. The
+members read only by a test, at least 43, are Bader's Q26 and wait for the steps he asked for.
+
+One rule file line to read again: the timing block bullets of .claude\rules\core.md call the remainder row
+outside every step, which is true of the group block, and the by group section of the run block says outside
+every group since 163. Lane B never edits .claude.
+
+The pull requests lane B merged on the first part of the night are 142, 145, 146, 147, 148, 150 and 151,
+and on the second 154, 155, 160, 161, 162, 163, 164, 165 and the pull request that carries this page. Each ran its Core tests under mono here
+and on the Windows runner of Actions, each had one reader, and where a reader found a fault that
+changes what the team sees it was fixed before the merge.
 
 Every item above that lane B left, and every point its readers raised, is under its own heading below,
-for the laptop lane to take in the order it chooses. The pull requests that merged are 142, 145, 146, 147
-and 148, and each ran its Core tests under mono here and on the Windows runner of Actions.
+for the laptop lane to take in the order it chooses.
 
 ## F127 points the readers raised that lane B left, for the laptop lane
 
-- Not in Core yet: FR-176's RESULT count of the tests of the XML created, run, with clashes and without,
-  with Q127's each test once across the run, and the categories no set catches per model, since
-  CoverageSettings.CategoriesNamedPerModel is read by no rule
-- A test the plan dropped that an earlier run left in the NWF reads not created with a FAILED line that
-  names no cause, since CoverageRule never reads AlreadyPresentNames for it. Mirrors after fix-F132
-  merges may bypass ReasonFor the same way
+- Not in Core yet: the categories no set catches per model, since CoverageSettings.CategoriesNamedPerModel is
+  read by no rule and ModelExport carries no count per category. FR-176's RESULT count of the tests, once
+  across the run, is in TestLines since pull request 153
+- A test whose reason is built by a mirror after fix-F132 merges may bypass ReasonFor. A test the plan
+  dropped before the model, that an earlier run left in the NWF, now gets its cause from CountCheck and not
+  from CoverageRule, which never looks for it in the document
 - The workbook handed in carries no proof of which run wrote it, so a write that threw leaves last week's
   file at the same path to be read as this week's, and the fingerprint names the XML bytes and not the
   corrections list or the teams file that changed its sets. The add-in has to hand a stamp in
 - A set with no code in its name reads UNKNOWN where the team map of F131 gives the team of its folder,
   Q117 C, and RESULT lists every FAILED line by default, Bader's choice, which can be some 25 MB where one
   fault repeats over 46 groups
-- SetsAcrossTheRun counts a path twice where one group holds two sets of one name, and says found nothing
-  in every group over the groups it looked at only. WorkbookTests.Read takes the first sheet and would
-  read the Coverage sheet if that were inserted first
-- Found at the second reading, left open: a test whose presence is Unknown with an empty block lands under
-  held by neither side and should be not compared, because CountCheck sends only CreatedThisRun and
-  AlreadyThere there and the runner never looked at the others. The not named line counts names once per
-  group, so one old test in 46 groups reads 46 tests. The headline never prints the number of tests, so
-  its buckets cannot be added up by eye, and a group whose check is null has its tests in no bucket. Two
-  numbers in comments, 1794 of 1830, were not measured by lane B and should be read off a run or dropped.
-  The class summary of CountCheck still calls a test neither side holds AGREE in one sentence
-- Words: Q126's default A where Q126 was answered B, a design file named in comments that is not in the
-  repo, two copies of the row count loop and of Count, and a double blank line in RESULT
+- WorkbookTests.Read takes the first sheet and would read the Coverage sheet if that were inserted first,
+  and the Coverage sheet is second and last by FR-200, so it is a guard and not a fault today
+- Left after the second reading and this one: a group whose check is null still has its tests in no bucket,
+  and the headline says so without counting them. Nothing in src\Federator.Addin builds a
+  CoverageAcrossTheRun yet, which is the add-in half of F127
+- Words, not taken: two copies of the row count loop and of Count in the Coverage folder, and a double
+  blank line in RESULT that lane B did not reproduce
+
+## What the F127 Core points ask of the laptop lane, found by their readers
+
+- Step 174 of steps\03_bader_next.md says a run with no XML reads zeros and Every set found something
+  somewhere, which is right. With no XML the sets step never calls SetsAcrossTheRun.Add, so the block now
+  reads No set was counted, so nothing is said of what the sets found. Lane B does not edit that file.
+  Step 174 has to say the new sentence or Bader reports a failure that is not one
+- .claude\rules\core.md lines that wait for the pull request that merges this one, which lane B may not
+  write: a test the run left no record of, or never reached, is not compared and one the run knows it did
+  not create is held by neither side. A test the plan dropped before the model, that Clash Detective holds
+  with results, names an earlier run as the cause, and the same is not said of a test F77 kept out, since
+  the runner walks the document first and finds none of that name. The tests the file does not name are
+  counted once by name across the run. The headline counts test places, a test once for each group it is
+  in. A set is counted once per group, is not at zero where one set of its path was not counted, and the
+  F82 section says a set never counted is named on its own line
+- The reader's note that the denominator of SetsAcrossTheRun is the groups added and not the groups of the
+  run holds: Add is called only for a group with work and a built outcome. The block says groups counted
+  here and does not claim more
 
 ## F137 points the readers raised that lane B left, for the laptop lane
 
@@ -223,12 +273,11 @@ and 148, and each ran its Core tests under mono here and on the Windows runner o
   handle open. A fix has to make a fault at open count as a failed open, make IsWritingToDisk false, and
   mark every size and copy after a fault. Also the figure SizeOnDisk now falls back to for a file held
   with no sharing is the directory's and can lag, and is not marked
-- The RETAIN line counts a .tsv that could not be deleted in the same number as a log that could not,
-  and an unfinished run's timing block still prints an after the run finished row of 0.0 seconds
 - .claude\rules\core.md lines about retention and the size rule do not say the .tsv goes with its log,
   that the temp fallback is not pruned, or that a file held with no sharing falls back to the directory's
-  size. FR-049, a second run in one window carrying the first run's totals, is still open and a new log
-  per run in the window would close it
+  size, that the RETAIN line counts a refused .tsv apart from a refused log, or that the timing block of a
+  run counted to now prints no after the run finished row. FR-049, a second run in one window carrying
+  the first run's totals, is still open and a new log per run in the window would close it
 
 ## F121 points lane B left, for the laptop lane
 
@@ -254,12 +303,22 @@ and 148, and each ran its Core tests under mono here and on the Windows runner o
   and OnRun reads it off the ticked groups only, near line 1764, so the two can give different counts for
   the same table, and a cleared name cell of an unticked group makes the preview say THE RUN CANNOT
   START where the run would start. The preview should read the same Only(TickedGroupKeys()) table
-- A hand typed name with a character Windows refuses, such as a colon or a slash, still passes
-  WhyTheRunCannotStart and reaches the write, and NameCollision.Sentence names every group of a
-  collision where the repeat rule would name five
+- Closed by lane B in the pull request listed above: the hand typed name with a character Windows refuses and the collision sentence naming every group
 
 ## F123 points lane B left, for the laptop lane
 
+- FR-171 is a backlog and most of its entries are in the add-in, the loop's files, or files an open branch
+  changes. Core entries lane B did not take, each as the entry states it and not read again on main by lane
+  B: T1-N54 two duration formatters whose spellings differ, so merging them changes a line the log writes, T1-N63 a word of the timing block,
+  T1-N46, N48, N66 and N85 values and members the entry says nothing reads, and the files
+  fix-F118 and fix-F132 change. AlignmentCheck.DefaultToleranceMillimetres and DefaultInternalName are
+  constants the add-in passes as they stand, so a person cannot move them without a build, which the
+  every number is a setting rule asks to be a setting. The comments now say so and the settings are not made
+- FR-172 is left in the main. Of its Core entries, the two above were the only ones no file under src, tests or
+  tools reads. Those read only by a test, at least 43 of the entries by a word match over src and tests that skips the definition file, which counts a common word such as Count or Path as read, are Bader's Q26 and wait for the
+  steps he asked for, breaking each on purpose and checking its test fails. PenetrationSide.ItemName and the
+  other add-in entries are read by no code, but PenetrationSide takes the name as an argument the add-in
+  passes in Penetrations.cs, so deleting it needs the add-in changed in the same pull request
 - FR-168 changed two lines of the FOLDERS REMEMBERED block. tools\loop\run.ps1 near line 1428 still matches
   the old first run line by string, StartsWith Nothing remembered yet, and the new lines do not match it. The
   loop's fallback masks any line within a second of the block's first, so nothing leaks today, and the string

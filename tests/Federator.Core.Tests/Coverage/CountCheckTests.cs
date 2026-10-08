@@ -139,8 +139,9 @@ namespace Federator.Core.Tests
         /// <summary>
         /// F77's tests not created: not in the document, and one row reading nought. Neither side
         /// holds the test, so nothing was set beside Clash Detective and it is not counted as agreeing,
-        /// the breaker's reading of lane B's first attempt, since 1794 of 1830 such tests under a
-        /// headline of all agree read as a verification that never happened.
+        /// the breaker's reading of lane B's first attempt, since such tests under a headline of
+        /// all agree read as a verification that never happened. Set 03's log line 297 says, for
+        /// one group, 1830 in the file, 36 created, 1794 not created, a side finds nothing.
         /// </summary>
         [Test]
         public void ATestNeitherSideHoldsIsHeldByNeitherAndNeverAgrees()
@@ -151,6 +152,83 @@ namespace Federator.Core.Tests
             Assert.That(check.CountOf(CountVerdict.Agree), Is.EqualTo(0));
             Assert.That(check.CountOf(CountVerdict.HeldByNeither), Is.EqualTo(1));
             Assert.That(check.FailedLines("100000"), Is.Empty);
+        }
+
+        /// <summary>
+        /// A test the run left no record of, or never reached, may be in the document and not returned
+        /// by the read of it, so held by neither side says more than the run knows and it is NOT COMPARED.
+        /// The breaks: a test F77 kept out and a test the plan dropped before the model, which the run
+        /// knows it did not create, stay held by neither side, and the plan's own row reads as a producer
+        /// builds it.
+        /// </summary>
+        [Test]
+        public void ATestTheRunLeftNoRecordOfWithAnEmptyBlockIsNotComparedAndNeverHeldByNeither()
+        {
+            TestCoverage noRecord = new TestCoverage(1, "T", string.Empty, string.Empty, -1, -1,
+                TestPresence.Unknown, false, -1, CoverageReason.Unknown, string.Empty);
+            TestCoverage notReached = new TestCoverage(2, "V", string.Empty, string.Empty, -1, -1,
+                TestPresence.Unknown, false, -1, CoverageReason.NotReached, string.Empty);
+            var plan = CoverageRuleTests.Plan(
+                CoverageRuleTests.Test("W", CoverageRuleTests.ArWalls, CoverageRuleTests.ArFloors, "bogus", true));
+            TestCoverage dropped = CoverageRuleTests.Coverage(plan, CoverageRuleTests.RunAsTheRunnerDoes(plan, CoverageRuleTests.Counts()))[0];
+
+            Assert.That(dropped.Presence, Is.EqualTo(TestPresence.Unknown), "the plan's row as a producer builds it");
+            Assert.That(dropped.Reason, Is.EqualTo(CoverageReason.NotCreated));
+
+            CountCheck check = Judge(Tests(noRecord, notReached, dropped, KeptOut("U")), Document(),
+                Workbook("T", 0, 0, "V", 0, 0, "W", 0, 0, "U", 0, 0));
+
+            Assert.That(Judged(check, "T").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "T").Why, Does.Contain("left no record of whether it is in the document"));
+            Assert.That(Judged(check, "T").Why, Does.Contain("did not return it"));
+            Assert.That(Judged(check, "V").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "W").Verdict, Is.EqualTo(CountVerdict.HeldByNeither));
+            Assert.That(Judged(check, "U").Verdict, Is.EqualTo(CountVerdict.HeldByNeither));
+            Assert.That(check.CountOf(CountVerdict.HeldByNeither), Is.EqualTo(2));
+            Assert.That(check.CountOf(CountVerdict.NotCompared), Is.EqualTo(2));
+        }
+
+        /// <summary>
+        /// A test the plan dropped before the model is never looked for in the document, so its presence is
+        /// UNKNOWN and its reason is that it was not created. A test of its name that Clash Detective holds
+        /// with results is then an earlier run's, and the FAILED line used to name no cause. Built through
+        /// CoverageRule.For as the runner's record reads. The breaks: a test F77 kept out is a test the
+        /// runner's walk of the document did not find, so a document that holds it all the same is the record
+        /// and the document disagreeing, and no cause is said, and a test created this run that differs
+        /// carries none either.
+        /// </summary>
+        [Test]
+        public void ATestThePlanDroppedThatAnEarlierRunLeftInTheDocumentNamesThatAsTheCause()
+        {
+            var plan = CoverageRuleTests.Plan(
+                CoverageRuleTests.Test("T", CoverageRuleTests.ArWalls, CoverageRuleTests.ArFloors, "bogus", true),
+                CoverageRuleTests.Test("U", CoverageRuleTests.ArWalls, CoverageRuleTests.ArFloors));
+            IList<TestCoverage> rows = CoverageRuleTests.Coverage(plan, CoverageRuleTests.RunAsTheRunnerDoes(plan,
+                CoverageRuleTests.Counts(CoverageRuleTests.ArWalls, 2, CoverageRuleTests.ArFloors, 2)));
+
+            Assert.That(rows[0].Name, Is.EqualTo("T"));
+            Assert.That(rows[0].Presence, Is.EqualTo(TestPresence.Unknown));
+            Assert.That(rows[0].Reason, Is.EqualTo(CoverageReason.NotCreated));
+
+            CountCheck check = Judge(
+                Tests(rows[0], rows[1], KeptOut("K")),
+                Document(InDocument("T", 4, 6), InDocument("U", 2, 2), InDocument("K", 3, 3)),
+                Workbook("T", 0, 0, "U", 1, 2, "K", 0, 0));
+
+            Assert.That(Judged(check, "T").Verdict, Is.EqualTo(CountVerdict.Failed));
+
+            string dropped = CountCheck.FailedLine("100000", Judged(check, "T"));
+
+            Assert.That(dropped, Does.Contain("Clash Detective holds 4 results at the top level and 6 clashes"));
+            Assert.That(dropped, Does.Contain("the run did not create it"));
+            Assert.That(dropped, Does.Contain("was in the document before this run"));
+            Assert.That(dropped, Does.Contain("earlier run's"));
+
+            Assert.That(Judged(check, "U").Verdict, Is.EqualTo(CountVerdict.Failed));
+            Assert.That(CountCheck.FailedLine("100000", Judged(check, "U")), Does.Not.Contain("before this run"));
+
+            Assert.That(Judged(check, "K").Verdict, Is.EqualTo(CountVerdict.Failed));
+            Assert.That(CountCheck.FailedLine("100000", Judged(check, "K")), Does.Not.Contain("before this run"));
         }
 
         /// <summary>
@@ -479,8 +557,9 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// A group with no workbook, a coordinates skip, outputs off or a refused unit, is
-        /// not compared and says why, Q126's default A.
+        /// A group with no test sheet to read is not compared and says why: a coordinates skip,
+        /// whose workbook holds the Coverage sheet alone by Bader's answer B to Q126, outputs off or
+        /// a refused unit.
         /// </summary>
         [Test]
         public void NoWorkbookIsNotComparedAndTheReasonIsKept()

@@ -28,7 +28,7 @@ namespace Federator.Core.Naming
             get { return (char[])refused.Clone(); }
         }
 
-        /// <summary>True when this name carries a character Windows will not take.</summary>
+        /// <summary>True when this name is not empty and carries no character Windows will not take.</summary>
         public static bool CanBeAName(string name)
         {
             return !string.IsNullOrEmpty(name) && name.IndexOfAny(refused) < 0;

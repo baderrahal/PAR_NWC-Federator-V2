@@ -5,7 +5,7 @@ using Federator.Core.Report;
 namespace Federator.Core.Coverage
 {
     /// <summary>
-    /// Every number that shapes the coverage, F127, turn5\f127-design.md section 1.1, a
+    /// Every number that shapes the coverage, F127, section 1.1 of the F127 design, which the loop keeps outside the repo as turn5\f127-design.md, a
     /// setting and never a constant. A value that cannot work is refused where it is set,
     /// never at the end of a run. Nought on a count of lines means every one, the way the
     /// image cap and the viewpoint cap read nought.

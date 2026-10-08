@@ -211,6 +211,36 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// A run counted to now has no stretch after it that anyone measured, because it ends where the block
+        /// is written. The block printed an after the run finished row of 0.0 seconds, a number that reads as
+        /// a measurement. It names the stretch as not measured and prints no row. The break: a run that
+        /// finished keeps its row.
+        /// </summary>
+        [Test]
+        public void ARunCountedToNowPrintsNoAfterTheRunRowAndSaysTheStretchWasNotMeasured()
+        {
+            string unfinished = string.Join("\n", new List<string>(RunClock.Unfinished(100.0, 40.0).Lines()).ToArray());
+
+            Assert.That(unfinished, Does.Not.Contain(RunClock.AfterTheRun + " "));
+            Assert.That(unfinished, Does.Contain("the run started and RUN finished was never marked"));
+            Assert.That(unfinished, Does.Contain("the time after the run is not measured"));
+            Assert.That(unfinished, Does.Contain(RunClock.WaitingForThePerson));
+
+            string finished = string.Join("\n", new List<string>(RunClock.From(100.0, 40.0, 90.0).Lines()).ToArray());
+
+            Assert.That(finished, Does.Contain(RunClock.AfterTheRun));
+            Assert.That(finished, Does.Not.Contain("not measured"));
+
+            using (RunLog log = Start())
+            {
+                log.RunStarted(2);
+                log.WriteResultBlock();
+
+                Assert.That(ReadWhileOpen(log.Path), Does.Not.Contain(RunClock.AfterTheRun + " "));
+            }
+        }
+
         /// <summary>A second run in the window that did not finish is not given the first run's finish.</summary>
         [Test]
         public void ASecondRunThatDidNotFinishIsNotGivenTheFirstRunsFinish()
@@ -327,6 +357,35 @@ namespace Federator.Core.Tests
                 Assert.That(Directory.GetFiles(folder, "run-*.tsv").Length, Is.EqualTo(31), "30 beside their logs and the stray one");
                 Assert.That(File.Exists(stray), Is.True);
                 Assert.That(File.Exists(log.RowLogPath), Is.True, "the live .tsv is kept");
+            }
+        }
+
+        /// <summary>
+        /// Retention feeds a refused .tsv to its own count. The summary counted it among the logs that
+        /// would not go, so one held .tsv beside a log that did go read as a log that stayed. A .tsv held
+        /// open refuses its delete on Windows, which is a rule of the file system, so this one skips
+        /// elsewhere and RetainLine's own test holds the sentence everywhere. The break: the log whose
+        /// .tsv was held is gone, and counts as deleted.
+        /// </summary>
+        [Test]
+        public void AHeldTsvIsCountedAsATsvAndNeverAsALogThatStayed()
+        {
+            TestPaths.OnWindowsOnly("a file held open refusing to be deleted");
+
+            MakeOldLogs(folder, 35, true);
+            string oldestLog = Path.Combine(folder, "run-20260101-000000.log");
+            string oldestRows = Path.Combine(folder, "run-20260101-000000.tsv");
+
+            using (FileStream hold = new FileStream(oldestRows, FileMode.Open, FileAccess.Read, FileShare.None))
+            using (RunLog log = RunLog.Start(folder, new DateTime(2026, 10, 7, 9, 0, 0), 30))
+            {
+                string text = ReadWhileOpen(log.Path);
+
+                Assert.That(File.Exists(oldestLog), Is.False, "the log whose .tsv was held still goes");
+                Assert.That(File.Exists(oldestRows), Is.True, "a held .tsv was somehow deleted");
+                Assert.That(text, Does.Contain(
+                    "RETAIN   keeping 30 logs, deleted 6, could not delete 0, and 5 .tsv beside them, 1 .tsv could not be deleted"));
+                Assert.That(text, Does.Contain("RETAIN   could not delete run-20260101-000000.tsv"));
             }
         }
 
