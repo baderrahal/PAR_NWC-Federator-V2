@@ -3617,8 +3617,15 @@ read, ClashHarvest.Recorded with PicturesWait in place of Deferred, ClashRunner.
 through JobOutcome.RowAddresses, and ViewpointBuilder.Collect resolves each row's result by it,
 the test by TestAddress.ResolveIn, Resolve's body moved there so the runner and the views share
 it, the result by ResultPath.ResultAt, PictureLater's walk moved there, which reads the name back
-and refuses a result the compact after the merge moved from under the path. FindTest and
-CollectResults are gone, so nothing in the views finds a test by name. A group row is one view
+and refuses a result the compact after the merge moved from under the path. The reviewer of
+attempt 2 found that refusal silent in the common case, every live result after a Resolved
+sibling moving one index left with the Compact box on and losing its view, so the last level is
+now Federator.Core.Views.ResultSiblings.Pick, test first, ResultSiblingsTests, eight tests failing
+to build first with CS0246, turn6\f132q2-before-fail.txt: the result at the recorded index where
+it carries the row's name, else the one sibling carrying it, refused with the count where none or
+more than one does, the rows so moved counted on a VIEWS line, 2622 passed after,
+turn6\f132q2-tests-after.txt, build 0 errors and 0 warnings, turn6\f132q2-build-code.txt. FindTest
+and CollectResults are gone, so nothing in the views finds a test by name. A group row is one view
 framed on the group, as the workbook holds it, with no size and no dimming, said on a VIEWS line,
 where before each clash under a group was a view of its own. R5, the by design pass on a run with
 no XML: it stays, the lead's Q144, and ByDesignTally.SidesReadOffTheSavedTests puts the first line

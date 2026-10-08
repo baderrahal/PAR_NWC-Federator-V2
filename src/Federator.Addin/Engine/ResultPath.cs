@@ -1,6 +1,6 @@
-using System;
 using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
+using Federator.Core.Views;
 
 namespace Federator.Addin.Engine
 {
@@ -20,12 +20,19 @@ namespace Federator.Addin.Engine
     {
         /// <summary>
         /// The item at the recorded path under the test, always an IClashResult, which the
-        /// caller disposes, or null with whyNot saying what was found instead. Every wrapper
-        /// walked past is disposed here.
+        /// caller disposes, or null with whyNot saying what was found instead. The last
+        /// level is decided by Federator.Core.Views.ResultSiblings: the result at the
+        /// recorded index where it carries the row's name, else the one sibling carrying
+        /// that name, since TestsCompactAllTests after the merge removes every Resolved
+        /// result and moves the live ones after it one index left, and movedFromRecorded
+        /// says so. Every wrapper walked past, and every sibling read for its name, is
+        /// disposed here.
         /// </summary>
-        public static SavedItem ResultAt(ClashTest test, RowUnderTest recorded, string under, out string whyNot)
+        public static SavedItem ResultAt(
+            ClashTest test, RowUnderTest recorded, string under, out string whyNot, out bool movedFromRecorded)
         {
             whyNot = null;
+            movedFromRecorded = false;
 
             if (test == null || recorded == null)
             {
@@ -34,35 +41,31 @@ namespace Federator.Addin.Engine
             }
 
             SavedItemCollection children = test.Children;
-            SavedItem item = null;
+            SavedItem walked = null;
 
             try
             {
-                for (int level = 0; level < recorded.Path.Count; level++)
+                int last = recorded.Path.Count - 1;
+
+                for (int level = 0; level < last; level++)
                 {
                     int index = recorded.Path[level];
 
                     if (children == null || index < 0 || index >= children.Count)
                     {
-                        whyNot = "no result is at " + recorded + " under " + under + " any more";
+                        whyNot = "no result group is at " + recorded + " under " + under + " any more";
                         return null;
                     }
 
                     SavedItem next = children[index];
 
-                    if (item != null)
+                    if (walked != null)
                     {
-                        item.Dispose();
+                        walked.Dispose();
                     }
 
-                    item = next;
-
-                    if (level + 1 == recorded.Path.Count)
-                    {
-                        break;
-                    }
-
-                    ClashResultGroup group = item as ClashResultGroup;
+                    walked = next;
+                    ClashResultGroup group = walked as ClashResultGroup;
 
                     if (group == null)
                     {
@@ -73,31 +76,49 @@ namespace Federator.Addin.Engine
                     children = group.Children;
                 }
 
+                SavedItemCollection siblings = children;
+                int count = siblings == null ? 0 : siblings.Count;
+                SiblingPick pick = ResultSiblings.Pick(
+                    recorded.Row.Name, recorded.Path[last], count, i => NameOf(siblings, i));
+
+                if (!pick.Found)
+                {
+                    whyNot = pick.Carrying == 0
+                        ? "no result named \"" + recorded.Row.Name + "\" is among the " + count + " at the level of "
+                            + recorded + " under " + under + " any more"
+                        : pick.Carrying + " results at the level of " + recorded + " under " + under + " are named \""
+                            + recorded.Row.Name + "\", so which is the row's is UNKNOWN";
+                    return null;
+                }
+
+                SavedItem item = siblings[pick.Index];
+
                 if (!(item is IClashResult))
                 {
-                    whyNot = "what is at " + recorded + " under " + under + " is not a clash result";
+                    item.Dispose();
+                    whyNot = "what is named \"" + recorded.Row.Name + "\" at the level of " + recorded + " under " + under
+                        + " is not a clash result";
                     return null;
                 }
 
-                string found = item.DisplayName ?? string.Empty;
-
-                if (!string.Equals(found, recorded.Row.Name, StringComparison.Ordinal))
-                {
-                    whyNot = "what is at " + recorded + " under " + under + " is named \"" + found + "\" and not \""
-                        + recorded.Row.Name + "\"";
-                    return null;
-                }
-
-                SavedItem result = item;
-                item = null;
-                return result;
+                movedFromRecorded = !pick.AtRecorded;
+                return item;
             }
             finally
             {
-                if (item != null)
+                if (walked != null)
                 {
-                    item.Dispose();
+                    walked.Dispose();
                 }
+            }
+        }
+
+        /// <summary>One sibling's display name, its wrapper released as soon as it is read.</summary>
+        private static string NameOf(SavedItemCollection siblings, int index)
+        {
+            using (SavedItem sibling = siblings[index])
+            {
+                return sibling.DisplayName ?? string.Empty;
             }
         }
     }

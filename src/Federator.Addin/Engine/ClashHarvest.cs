@@ -362,12 +362,21 @@ namespace Federator.Addin.Engine
             }
 
             string whyNot;
-            SavedItem item = ResultPath.ResultAt(test, recorded, into.Name, out whyNot);
+            bool moved;
+            SavedItem item = ResultPath.ResultAt(test, recorded, into.Name, out whyNot, out moved);
 
             if (item == null)
             {
                 log.Detail("IMAGE    " + whyNot + ", so its picture is not rendered");
                 return;
+            }
+
+            if (moved)
+            {
+                // The pictures run before the compact, so a row found elsewhere than
+                // recorded here is a result that moved for another reason, said.
+                log.Detail("IMAGE    " + recorded.Row.Name + " under " + into.Name + " was found at another index than "
+                    + recorded + ", by its name among the siblings");
             }
 
             try

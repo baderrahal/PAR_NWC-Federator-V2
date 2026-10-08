@@ -349,7 +349,12 @@ well as to pass.
   test once per address by `TestAddress.ResolveIn`, the one resolver the runner's `Resolve`
   uses, and the result by `ResultPath.ResultAt`, the one walk `PictureLater` uses, which reads
   the display name back and refuses a result not named as the row, since `TestsCompactAllTests`
-  after the merge can move a result from under a recorded path. So a mirror taken out of the
+  after the merge can move a result from under a recorded path. Since the reviewer's reading of
+  attempt 2 the last level is `Federator.Core.Views.ResultSiblings.Pick`: the compact removes
+  every Resolved result before the views run and moves every live result after one an index
+  left, so a row not named at its recorded index is taken from the one sibling carrying its
+  name, refused with the count where none or more than one does, and the rows so moved are
+  counted on a VIEWS line. So a mirror taken out of the
   report gets no view, a clash only a mirror found is viewed under the kept test and named as
   the workbook names it, and a row whose result is not found again, or with no address, is
   counted on a VIEWS line and gets none. A group row is one view framed on the group, as the

@@ -341,6 +341,7 @@ namespace Federator.Addin.Engine
             int homesUnread = 0;
             int notFound = 0;
             int groupRows = 0;
+            int movedRows = 0;
             string firstNotFound = null;
 
             foreach (string key in order)
@@ -364,7 +365,9 @@ namespace Federator.Addin.Engine
                         foreach (ReportClash clash in under)
                         {
                             string whyNot;
-                            SavedItem item = ResultPath.ResultAt(test, addresses[clash.Row].Row, first.TestName, out whyNot);
+                            bool moved;
+                            SavedItem item = ResultPath.ResultAt(
+                                test, addresses[clash.Row].Row, first.TestName, out whyNot, out moved);
 
                             if (item == null)
                             {
@@ -376,6 +379,11 @@ namespace Federator.Addin.Engine
                                 }
 
                                 continue;
+                            }
+
+                            if (moved)
+                            {
+                                movedRows++;
                             }
 
                             using (item)
@@ -394,6 +402,12 @@ namespace Federator.Addin.Engine
                         error,
                         "kept going, the clashes read before it threw are planned and the rest are not");
                 }
+            }
+
+            if (movedRows > 0)
+            {
+                log.Line("VIEWS    " + movedRows + " row(s) were found at another index than the harvest recorded, by name "
+                    + "among the siblings, the compact after the merge having removed the Resolved results before them");
             }
 
             if (notFound > 0)
