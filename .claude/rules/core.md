@@ -1929,6 +1929,18 @@ and 6 does not read as broken.
 - Findings show in the Grouping step before Run is pressed, and go in the log in
   a FINDINGS block after the group list. Nothing odd is one line, not an empty
   panel
+- A SHIFT CLICK ON A RUN BOX TICKS OR UNTICKS A RANGE, F130, Bader's request 5 under Q112,
+  FR-179. `Federator.Core.Grouping.ShiftRange.Of` is handed the rows in the order the grid
+  shows them, the anchor, which is the row clicked last, with the state that click left it
+  in, the row clicked now with the state its own box flipped to, and whether Shift was held.
+  With Shift it hands back every row from the anchor to the row clicked, both ends included,
+  in the shown order, each to take the ANCHOR'S state, so a sorted or filtered grid ranges
+  over what the person sees. Anything else is a plain click and hands back the row clicked
+  alone with its own state: no Shift, no anchor, an anchor the grid no longer shows, the
+  anchor itself, or a row the grid does not show. Rows are matched by reference, because the
+  groups made again are new rows under the same buildings. The rule knows nothing of a
+  blocked row, which the row itself refuses. The grey line under the group list is
+  `ShiftRange.HelpLine`, at most twelve words by the tick box rule
 
 ## The diagnostic log
 

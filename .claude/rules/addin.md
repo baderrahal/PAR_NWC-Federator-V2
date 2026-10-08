@@ -604,6 +604,24 @@ well as to pass.
   group keeps its own result. The SETS line says which text the sets look for off
   `GenericModelsPlan.LooksFor`, the stem of the NWC's name for a model whose source name was
   not read, which the plan also notes by name
+- THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
+  core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
+  stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and
+  Shift only widened the row selection, turn5\measure-shift.md. Its CheckBox is bound TwoWay
+  to Include and raises Click into `OnRunBoxClicked`, which reads Keyboard.Modifiers at that
+  click, hands `ShiftRange.Of` the rows of `GroupsGrid.Items`, the shown order, sets every row
+  it hands back through Include, keeps the row clicked and its state as the anchor and calls
+  `RefreshOutputsSummary` once. The column is read only so the grid begins no edit that would
+  swap the box out under the click, and its SortMemberPath is Include so it sorts as before.
+  The anchor is the window's and `Regroup` drops it, since every row is made again there. A
+  plain click is meant to flip the box on the one click, where the stock column, read off its
+  IL and never clicked, took a click to select the row before one that flipped it. Whether
+  the template's box flips on the first click in Navisworks is UNKNOWN until step 511 of
+  steps\03_bader_next.md. The grey line under the list, x:Name RunRangeHelp, is set
+  off `ShiftRange.HelpLine` in the constructor. The box has no x:Name and no label, so it is
+  not one of the sixteen tick boxes counted below. The window driver cannot carry Shift
+  without real input, turn5\measure-shift-driver-result.md, so its proof is numbered steps in
+  steps\03_bader_next.md
 
 ## What a tick box says
 

@@ -287,6 +287,57 @@ without its extension.
 505. Look for, on every run above: no group ends FAILED or PARTIAL on account of these sets, since a throw in their plan, build or workbook write is a `FAILED` line in the `GENERIC MODELS` block and the count `UNKNOWN`, never the group's error, and where none threw no such line is in any block
 506. Send the log file named on the `log file` line of the SESSION block, say which of steps 492 to 505 did not read as written, and read off the `TIMING` block of 1A04PK the seconds of `SETS` and of `GENERIC XLSX`, which are Q145 item 5's and UNKNOWN until this run
 
+## Proof of F130, the Shift range in the group list
+
+THESE STEPS RUN NO GROUP UNTIL STEP 543 and can follow step 506 in the same Navisworks session,
+your request 5 under Q112. They were read off the add-in on fix-F130 and nothing of it has run on
+Navisworks yet. The window driver cannot make a Shift click without real input, measured on
+2026-10-05, `turn5\measure-shift-driver-result.md` under the loop's folder, so these are yours by
+hand, with the mouse and the Shift key. They use the C02 folder of ten groups named at the top of
+this file, whose groups the list shows in building order: 1000BS, 1A0215, 1A02BS, 1A02MM, 1A02MS,
+1A02WE, 1A02WL, 1A02WM, 1A02WN and 1A02WO. A scan, a grouping change or a Use box makes the groups
+again and ticks every one, so change nothing on the Source step unless a step says so.
+
+507. Go to the Source step, pick the C02 folder of ten groups and press Scan
+508. Go to the Grouping step
+509. Look for: ten rows in the building order above, every Run box ticked, the first column headed `Run` and as narrow as before, and under the list the grey line `Shift click a Run box to tick or untick the rows between`
+510. Click the Run box of 1A0215 once, holding no key
+511. Look for: 1A0215 unticked on that one click and the other nine ticked. If the click only highlighted the row and the box stayed ticked, say so, since the flip on one click is UNKNOWN until here
+512. Hold Shift and click the Run box of 1A02MS
+513. Look for: 1A0215, 1A02BS, 1A02MM and 1A02MS unticked, both ends included, and 1000BS and the five from 1A02WE to 1A02WO ticked
+514. Click the Run box of 1A02MM once, holding no key
+515. Look for: 1A02MM ticked again and 1A0215, 1A02BS and 1A02MS still unticked
+516. Hold Shift and click the Run box of 1000BS
+517. Look for: 1000BS, 1A0215, 1A02BS and 1A02MM ticked, 1A02MS alone unticked, and the five after it ticked
+518. Go to the Outputs step
+519. Look for: the line at the foot of the Outputs step begins `9 groups ticked to run.`
+520. Go to the Source step and press Scan again, which makes the groups again
+521. Go to the Grouping step
+522. Look for: all ten ticked again
+523. Hold Shift and click the Run box of 1A02WE
+524. Look for: 1A02WE alone unticked, because the groups were made again and no box was clicked since, so that Shift click was a plain click
+525. Click the Run box of 1A02WO once, holding no key
+526. Click the header `Run` of the first column once
+527. Look for: 1A02WE and 1A02WO as the two top rows, both unticked, and the eight ticked rows under them. If the two sit at the bottom, click the header once more
+528. Click the Run box of the fourth row from the top once, holding no key
+529. Hold Shift and click the Run box of the top row
+530. Look for: exactly the four rows shown at the top unticked, 1A02WE, 1A02WO and the third and fourth rows whichever buildings they are, and the six rows under them ticked. If a row moved when a box was clicked, say so
+531. Go to the Source step and press Scan again
+532. Go to the Grouping step
+533. Click the header `Building` once
+534. Look for: ten rows in building order, every one ticked
+535. Click the Run box of 1000BS once, holding no key
+536. Hold Shift and click the Run box of 1A02WO
+537. Look for: all ten unticked
+538. Go to the Outputs step
+539. Look for: the line at the foot of the Outputs step begins `0 groups ticked to run.`
+540. Go to the Grouping step
+541. Click the Run box of 1A02MM once, holding no key
+542. Look for: 1A02MM alone ticked
+543. Press Run with the folders and the Clash step as the proofs above left them, and let the one group finish
+544. Look for, in the log after the `RUN SETTINGS` lines: the `GROUPS` block with `run` beside 1A02MM, `unticked` beside the other nine, and the line `9 groups unticked in the Run column, nothing else drops a group`
+545. Send the log file named on the `log file` line of the SESSION block and say which of steps 509 to 544 did not read as written
+
 ## Proof F34, the window, and F33, the units combo
 
 24. Close Navisworks if it is open
