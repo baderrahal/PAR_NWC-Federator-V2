@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 518 rows: open 192, in progress 43, in review 0, merged 246, proven by a run 27, waiting for Bader 4, dropped 6
+- By status, of 518 rows: open 191, in progress 44, in review 0, merged 246, proven by a run 27, waiting for Bader 4, dropped 6
 - By wave: 1 19, 2a 61, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 12, 3a 21, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 74, outside the waves 2, right after F133 merges 6
-- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, and 24 FR items
+- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, and 25 FR items
 - Waits for Bader, 4 rows: step 228-233, F114-K29, Q144, Q146
 
 ## Wave 1
@@ -124,7 +124,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-186 | views made fresh only the tools own | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-187 | views proof on 1a02mm and the views tree block | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-188 | views rules in docs workflow | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
-| F114 | views | F114 | fix | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
+| F114 | views | F114 | fix | in progress | 141 the Core half merged, the add-in pass on fix-F114, attempt 1 at 8d6a8c7 read APPROVE by its reviewer and CHANGES by its breaker on six faults, attempt 2 at 37ac1ba pushed at 18:32 with all six taken and 2768 Core tests, its rule bullets, proof steps and second reading for the morning | none | 2026-10-08 |
 | F128 | generic models | F128 | fix | merged | 171 the Core part by lane B and 186 the probe and the add-in part | none | 2026-10-08 |
 | F131 | teams | F131 | fix | merged | 135 | none | 2026-10-07 |
 | Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | merged | 171 and 186 | none | 2026-10-08 |
@@ -342,10 +342,10 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-170 | penetration size catch swallows unit throw | F123 | noise | open | none | none | 2026-10-04 |
 | FR-171 | t1 noise findings 93 | F123 | noise | in progress | 162, 163, 164, 165, 174, 176 and 180 in part, the rest on the laptop | none | 2026-10-08 |
 | FR-172 | t1 uncalled members 150 | F123 | noise | in progress | 161 two members deleted, the rest on the laptop | none | 2026-10-07 |
-| FR-173 | t1 catch swallowing 77 | F123 | noise | open | none | none | 2026-10-04 |
+| FR-173 | t1 catch swallowing 77 | F123 | noise | in progress | 184 the 34 catches in Core sorted and five mended by lane B, the rest on the laptop | none | 2026-10-08 |
 | FR-174 | one public type per file | F124 | noise | open | none | none | 2026-10-04 |
 | F117 | the names | F117 | fix | open | none | none | 2026-10-04 |
-| F123 | docs and words, and the noise of every area | F123 | fix | in progress | 151, 154, 155, 161 to 165, 174, 176, 178, 180 and 181 merged in part, the rest on the laptop | none | 2026-10-08 |
+| F123 | docs and words, and the noise of every area | F123 | fix | in progress | 151, 154, 155, 161 to 165, 174, 176, 178, 180, 181, 182 and 184 merged in part, lane B stopped at 185, the rest on the laptop | none | 2026-10-08 |
 | F124 | D1, one public type per file | F124 | fix | open | none | none | 2026-10-04 |
 | Q27 | the two choice rule for still outstanding lost every reader | F123 | question | merged | 131 | none | 2026-10-06 |
 | Q30 | the bundle manifest points at the old scan.md path | F123 | question | merged | 131 | none | 2026-10-06 |

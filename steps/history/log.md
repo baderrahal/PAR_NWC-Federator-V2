@@ -2,6 +2,53 @@
 
 Newest entry at the top.
 
+## 2026-10-08 The loop, turn 5, the close of the day: Bader's new order, F132, F120 and F128 merged, F114's pass in work
+
+Picked up at 08:24 after the company shutdown of 19:30:51 on 7 Oct, read in Arab Standard Time, 46 minutes
+after the close at 18:45, the plan of the day the entry below this one. Bader's order of 15:38 on 7 Oct,
+Q143, held all day, and his second of this morning, Q145, THE NEW ORDER ON THE LAPTOP, reset the sequence
+to F132, F128, F120, F114, the timed runs, F129, F130, F109 and the release.
+
+Merged on the laptop: 157, the close of 7 Oct with main taken in, as 83deae0. 159, F118's FR-199 and
+FR-040 by lane B's worktree session, finished with its one reviewer, as 1dd68a0. 177, F132's add-in half
+in two attempts under Q143, the second on the breaker's two faults of the first and the reviewer's one of
+the second, the Compact box shifting results under their recorded paths, as b3aa0db, with Q144 to Bader on
+the no XML by design pass and row F132-R6 on a grouped test's one view. 183, F120 the pictures, FR-075,
+FR-076 and FR-077 in one attempt, as 1f962d5, with row F120-R1. F128's add-in part, the one probe of the
+day at 13:00 through the guarded start, scan.md 5z-zb, then two attempts on fix-F128, the second on four
+faults the breaker found and one the reviewer found, merged as 186, e4831c9, at 16:31. F114's add-in pass started at 15:12 on
+fix-F114 from the worktree a connection error cut at 10:35, attempt 1 at 8d6a8c7 read APPROVE by its reviewer and CHANGES by its breaker on six faults, attempt 2 at 37ac1ba pushed at 18:32 with all six taken and 2768 Core tests, its rule bullets, proof steps and second reading for the morning.
+
+Lane B, under Bader's two messages to it, merged 167 to 185 between 06:03 and 16:07, F128's Core part as
+171 among them, folded into the tracker in 157, 159, 177, 183, 186 and this pull request, and stopped at
+185, its last.
+
+Not done today: the install of main and the timed runs of 1A02MM and 1A04PK, which Bader's item 5 puts
+after F114 with the viewpoints box on, so they go first tomorrow once F114 merges, on the copy of set 05
+made at 13:26, 156 files read back whole. F129, F130 and F109 after them.
+
+Programs started: the F128 probe's Navisworks, Roamer pid 32416 from 12:59:50 to 13:02:24 through the
+guard, adopted and quit, its put back whole, 36 registry values and two files. No other Navisworks of the
+loop. Get-Process Roamer read one not the loop's at 08:36 and none after. The keep-awake pid 38340 from
+08:46:28. dotnet build and test, git, gh, python, powershell for the tracker scripts, the mask and the
+keep-awake check, and prepare-copy.ps1 -Set 05. Files written outside the repo: everything under
+%LOCALAPPDATA%\NwcFederatorLoop\turn6, the probe's work folder probes\generic-20261008-125944, 177 MB, the
+copy runs\05, 385.5 MB, and the worktrees wt-f128 and wt-f114. Nothing of Bader's deleted or overwritten
+beyond the guard's put back.
+
+Limits of Q143: no limit broken. Two attempts and no more on F132 and F128, one on F120, one reviewer
+each and a breaker on the three areas that have one, one probe, F128's, that a fix could not be written
+without, no change to the loop's scripts, this the one records pull request. Twice the harness's
+attribution trailer reached a commit message, caught by a reader each time, the rewrite of three pushed
+messages refused by the harness, and every brief since says no such line.
+
+The hourly lines of Q143 item 13, as written in the tab: 09:50, 159 and lane B's 167 to 169 merged, F132's attempt 2
+in work, no limit broken, the attribution lines caught before 157's merge. 12:12, 159 and 167 to 169, F132's attempt
+2 approved after the Compact fix and its pull request opening, F114's phase 1 cut by a connection error. 12:46, 177
+merged, F128's probe running, F120 in work. 13:52, F120 approved and held for F128, F128's add-in part in work. 15:05,
+183 merging, F128's attempt 2 under its second reading. 15:52, 183 merged, F128's second reading in, one new fault
+fixed. 16:40, 186 merged, nothing in review, F114's pass in work. No limit of Q143 broken on any of them.
+
 ## 2026-10-08 F128 generic models, the add-in part, built on fix-F128 after the one probe, on Bader's order of 8 Oct and lane B's Core part
 
 Bader's request 3 under Q112, FR-177 of steps\fix-round.md, taken first by his order of 8 Oct 2026, Q145 item 2,
