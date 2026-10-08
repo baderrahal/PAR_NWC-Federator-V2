@@ -169,13 +169,13 @@ FR-167,shared source uses group key not building code,F123,5,noise,open,none,non
 FR-168,folders memory read failure logged as first run,F123,5,noise,merged,155,none,2026-10-07
 FR-169,document guard unreadable name called unsaved,F123,5,noise,open,none,none,2026-10-04
 FR-170,penetration size catch swallows unit throw,F123,5,noise,open,none,none,2026-10-04
-FR-171,t1 noise findings 93,F123,5,noise,in progress,"162, 163, 164 and 165 in part, the rest on the laptop",none,2026-10-07
+FR-171,t1 noise findings 93,F123,5,noise,in progress,"162, 163, 164, 165 and 174 in part, the rest on the laptop",none,2026-10-08
 FR-172,t1 uncalled members 150,F123,5,noise,in progress,"161 two members deleted, the rest on the laptop",none,2026-10-07
 FR-173,t1 catch swallowing 77,F123,5,noise,open,none,none,2026-10-04
 FR-174,one public type per file,F124,5,noise,open,none,none,2026-10-04
 FR-175,no sleep and keep awake,none,none,Bader's request,merged,"99, records only, nothing to merge",none,2026-10-04
 FR-176,coverage of the clash xml,F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop",none,2026-10-08
-FR-177,generic models counted and a set per model,F128,2b,Bader's request,open,none,none,2026-10-04
+FR-177,generic models counted and a set per model,F128,2b,Bader's request,in progress,"171 the Core part merged by lane B, the add-in part on the laptop",none,2026-10-08
 FR-178,start from an existing nwf,F129,3a,Bader's request,open,none,none,2026-10-04
 FR-179,shift range tick in the group list,F130,3b,Bader's request,open,none,none,2026-10-04
 FR-189,nwd listed as written when its publish failed,F119,3b,silent wrong number,open,none,none,2026-10-05
@@ -324,7 +324,7 @@ F124,"D1, one public type per file",F124,5,fix,open,none,none,2026-10-04
 F125,a window that is not modal is a pane and not a dialog,F125,outside the waves,fix,merged,102,none,2026-10-06
 F126,the window driver unticks a tick box by its AutomationId,F126,outside the waves,fix,merged,112,none,2026-10-05
 F127,coverage of the clash XML,F127,2a,fix,in progress,"145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop",none,2026-10-08
-F128,generic models,F128,2b,fix,open,none,none,2026-10-04
+F128,generic models,F128,2b,fix,in progress,"171 the Core part merged by lane B, the plan, the counts, the block and the sheet, the add-in part and the measurement on the laptop",none,2026-10-08
 F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
 F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
 F131,teams,F131,2b,fix,merged,135,none,2026-10-07
@@ -345,7 +345,7 @@ Q97-2,"the first run of C07 and the run set that night, replaced by Q98's no run
 Q98,the full fix round,all,all,Bader's request,in progress,none,none,2026-10-04
 Q112-1,no sleep and keep awake (FR-175),none,none,Bader's request,merged,"99, records only, nothing to merge",none,2026-10-04
 Q112-2,coverage of the clash XML (FR-176),F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop",none,2026-10-08
-Q112-3,generic models counted and a set per model (FR-177),F128,2b,Bader's request,open,none,none,2026-10-04
+Q112-3,generic models counted and a set per model (FR-177),F128,2b,Bader's request,in progress,"171 the Core part merged by lane B, the add-in part on the laptop",none,2026-10-08
 Q112-4,start from an existing NWF (FR-178),F129,3a,Bader's request,open,none,none,2026-10-04
 Q112-5,Shift range tick in the group list (FR-179),F130,3b,Bader's request,open,none,none,2026-10-04
 Q114,one view per clash test by team (FR-180 to FR-188),"F131, F132, F114",2a and 2b,Bader's request,in progress,"135 merged for F131, 177 for F132, branch fix-F114",none,2026-10-08
@@ -481,14 +481,14 @@ F115-R6,a present set at zero whose search would not read is in the at zero coun
 F115-R7,the sets summary carries no drifted or rebuilt or could not read count,F115,2a,register row,open,none,none,2026-10-05
 F115-R8,a clash side whose source is a folder of sets credits the folder and not the sets in it,F115,2a,register row,open,none,none,2026-10-05
 F115-R9,the judge reads the model names through ContainerName.Parse outside any guard so bad naming settings fail the group,F115,2a,register row,open,none,none,2026-10-05
-F115-R10,the judge branch for the workset list inside Core not read has no test,F115,2a,register row,open,none,none,2026-10-05
+F115-R10,the judge branch for the workset list inside Core not read has no test,F115,2a,register row,merged,172,none,2026-10-08
 F115-R11,the Build sets button judges every set at zero CANNOT TELL,F115,2a,register row,open,none,none,2026-10-05
 F115-R12,whether SearchCondition.Options reads back StartGroup 64 is UNKNOWN until the wave 2a weekly run,F115,2a,register row,open,none,none,2026-10-05
 F115-R13,the F115 log entry was written as the lead's delegate,none,none,register row,open,none,none,2026-10-05
 F114-K29,"a team map may name a team UNKNOWN, so a side with no code and a side of that team share a pair folder",F114,2b,register row,waiting for Bader,none,none,2026-10-07
 F114-K30,"a view side is read by its set name alone, so two sets of one name giving two teams read UNKNOWN in the views and two teams on the TEAMS lines",F114,2b,register row,open,none,none,2026-10-07
 F114-K31,"a set with no name in the clash XML gets a TEAMS line naming no set, TeamMap.SetLines",F114,2b,register row,open,none,none,2026-10-07
-F115-R14,the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports,F115,2a,register row,open,none,none,2026-10-07
+F115-R14,the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports,F115,2a,register row,in progress,"172 the Core half merged by lane B, the add-in half on the laptop",none,2026-10-08
 F115-R15,a damaged NWF is still saved after a leftover rename fails and the Build sets button says nothing of it,F115,2a,register row,open,none,none,2026-10-07
 F115-R16,a set the plan skipped is read as one the file does not name and can be removed with the box on,F115,2a,register row,open,none,none,2026-10-07
 F115-R17,the HEALTH block's category check reads the 374 categories of one project with no project guard,F115,2a,register row,open,none,none,2026-10-07

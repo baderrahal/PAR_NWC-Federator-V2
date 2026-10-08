@@ -8,21 +8,21 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 30 | 4 | 0 | 0 | 27 | 0 | 61 |
-| 2b | 11 | 16 | 0 | 1 | 5 | 0 | 33 |
+| 2a | 31 | 5 | 0 | 0 | 25 | 0 | 61 |
+| 2b | 11 | 19 | 0 | 1 | 2 | 0 | 33 |
 | 2c | 6 | 1 | 0 | 0 | 4 | 0 | 11 |
 | 3a | 8 | 4 | 0 | 0 | 8 | 0 | 20 |
 | 3b | 9 | 1 | 0 | 0 | 10 | 0 | 20 |
 | 4 | 6 | 1 | 0 | 0 | 50 | 0 | 57 |
 | 5 | 14 | 3 | 0 | 0 | 55 | 0 | 72 |
 | outside the waves | 156 | 11 | 0 | 2 | 47 | 5 | 221 |
-| total | 259 | 41 | 0 | 3 | 206 | 5 | 514 |
+| total | 260 | 45 | 0 | 3 | 201 | 5 | 514 |
 <!-- the end of the counts -->
 
 ## Now
 - 8 Oct: the shutdown came at 19:30:51 on 7 Oct, Arab Standard Time, 46 min after the close at 18:45. A Roamer the loop did not start ran 08:36 to 08:43. His 22.0 key against the backup of 17:34 differs in two CER uptime counters only, Navisworks's own, nothing put back. Keep-awake pid 38340
 - The two the shutdown cut are merged: 157, the close of 7 Oct with main taken in, as 83deae0, and 159, F118's FR-199 and FR-040 with its records, as 1dd68a0, FR-036 and FR-041 on the laptop
-- Lane B, steps\lane-b.md: on again this morning under Bader's message to it, 167, 168 and 169 merged, F127's and F119's Core points, 169 folded here, 170 open on F115 words, then F137, F121 and F123
+- Lane B, steps\lane-b.md: on this morning under Bader's messages to it, 167 to 174 merged, F128's Core part as 171 among them, folded here, 176 open on small Core points
 - F132 mirrored tests: merged as PR 177, the add-in half in two attempts under Q143, Q144 put to Bader on the no XML by design pass, its proof the timed runs
 - Expected release from the pace: 2026-10-13, Q143 item 14, about ten add-in items on the laptop lane at two or three a day over 8, 9, 12 and 13 Oct
 

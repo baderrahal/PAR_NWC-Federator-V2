@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 514 rows: open 206, in progress 41, in review 0, merged 232, proven by a run 27, waiting for Bader 3, dropped 5
+- By status, of 514 rows: open 201, in progress 45, in review 0, merged 233, proven by a run 27, waiting for Bader 3, dropped 5
 - By wave: 1 19, 2a 60, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 11, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 73, outside the waves 2, right after F133 merges 6
-- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, and 24 FR items
+- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F128 generic models, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q112-3 generic models counted and a set per model (FR-177), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, and 25 FR items
 - Waits for Bader, 3 rows: step 228-233, F114-K29, Q144
 
 ## Wave 1
@@ -75,10 +75,10 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F115-R7 | the sets summary carries no drifted or rebuilt or could not read count | F115 | register row | open | none | none | 2026-10-05 |
 | F115-R8 | a clash side whose source is a folder of sets credits the folder and not the sets in it | F115 | register row | open | none | none | 2026-10-05 |
 | F115-R9 | the judge reads the model names through ContainerName.Parse outside any guard so bad naming settings fail the group | F115 | register row | open | none | none | 2026-10-05 |
-| F115-R10 | the judge branch for the workset list inside Core not read has no test | F115 | register row | open | none | none | 2026-10-05 |
+| F115-R10 | the judge branch for the workset list inside Core not read has no test | F115 | register row | merged | 172 | none | 2026-10-08 |
 | F115-R11 | the Build sets button judges every set at zero CANNOT TELL | F115 | register row | open | none | none | 2026-10-05 |
 | F115-R12 | whether SearchCondition.Options reads back StartGroup 64 is UNKNOWN until the wave 2a weekly run | F115 | register row | open | none | none | 2026-10-05 |
-| F115-R14 | the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports | F115 | register row | open | none | none | 2026-10-07 |
+| F115-R14 | the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports | F115 | register row | in progress | 172 the Core half merged by lane B, the add-in half on the laptop | none | 2026-10-08 |
 | F115-R15 | a damaged NWF is still saved after a leftover rename fails and the Build sets button says nothing of it | F115 | register row | open | none | none | 2026-10-07 |
 | F115-R16 | a set the plan skipped is read as one the file does not name and can be removed with the box on | F115 | register row | open | none | none | 2026-10-07 |
 | F115-R17 | the HEALTH block's category check reads the 374 categories of one project with no project guard | F115 | register row | open | none | none | 2026-10-07 |
@@ -115,7 +115,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-071 | views log silent up to 21 minutes | F114 | slow | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-072 | penetrations upwards walk outside try | F114 | loud failure | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-073 | views seconds parts do not add | F114 | noise | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
-| FR-177 | generic models counted and a set per model | F128 | Bader's request | open | none | none | 2026-10-04 |
+| FR-177 | generic models counted and a set per model | F128 | Bader's request | in progress | 171 the Core part merged by lane B, the add-in part on the laptop | none | 2026-10-08 |
 | FR-180 | team map beside the picked xml | F131 | Bader's decision | merged | 135 | none | 2026-10-07 |
 | FR-181 | mechanical sets miss hv pl fp models | F131 | Bader's decision | in progress | 135 merged for F131, the COVERAGE block and the form wait for F127 | none | 2026-10-07 |
 | FR-184 | views tree by priority and team pair | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
@@ -124,9 +124,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-187 | views proof on 1a02mm and the views tree block | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | FR-188 | views rules in docs workflow | F114 | Bader's decision | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
 | F114 | views | F114 | fix | in progress | 141 merged for the Core half, the add-in pass next on fix-F114 | none | 2026-10-07 |
-| F128 | generic models | F128 | fix | open | none | none | 2026-10-04 |
+| F128 | generic models | F128 | fix | in progress | 171 the Core part merged by lane B, the plan, the counts, the block and the sheet, the add-in part and the measurement on the laptop | none | 2026-10-08 |
 | F131 | teams | F131 | fix | merged | 135 | none | 2026-10-07 |
-| Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | open | none | none | 2026-10-04 |
+| Q112-3 | generic models counted and a set per model (FR-177) | F128 | Bader's request | in progress | 171 the Core part merged by lane B, the add-in part on the laptop | none | 2026-10-08 |
 | Q77 | the clear and rebuild does not copy the viewpoints | F114 | question | merged | 131 | none | 2026-10-06 |
 | Q115 | where the team map lives | F131 | question | merged | 118 | none | 2026-10-05 |
 | Q116 | where the team map applies | F131 | question | merged | 118 | none | 2026-10-05 |
@@ -337,7 +337,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-168 | folders memory read failure logged as first run | F123 | noise | merged | 155 | none | 2026-10-07 |
 | FR-169 | document guard unreadable name called unsaved | F123 | noise | open | none | none | 2026-10-04 |
 | FR-170 | penetration size catch swallows unit throw | F123 | noise | open | none | none | 2026-10-04 |
-| FR-171 | t1 noise findings 93 | F123 | noise | in progress | 162, 163, 164 and 165 in part, the rest on the laptop | none | 2026-10-07 |
+| FR-171 | t1 noise findings 93 | F123 | noise | in progress | 162, 163, 164, 165 and 174 in part, the rest on the laptop | none | 2026-10-08 |
 | FR-172 | t1 uncalled members 150 | F123 | noise | in progress | 161 two members deleted, the rest on the laptop | none | 2026-10-07 |
 | FR-173 | t1 catch swallowing 77 | F123 | noise | open | none | none | 2026-10-04 |
 | FR-174 | one public type per file | F124 | noise | open | none | none | 2026-10-04 |
