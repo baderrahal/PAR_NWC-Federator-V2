@@ -828,19 +828,30 @@ namespace Federator.Core.Diagnostics
                 Line("         every further line of this kind is counted and not written out. "
                     + (RowsAreOpen()
                         ? "The machine readable log carries every one of them"
-                        : "No machine readable log is open, so none of them is kept"));
+                        : RowsStopped()
+                            ? "The machine readable log stopped taking rows, so the ones after that are kept nowhere"
+                            : "No machine readable log is open, so none of them is kept"));
             }
         }
 
         /// <summary>
-        /// Whether the .tsv opened, so no sentence says a collapsed line is kept there when there is
-        /// no file to keep it, FR-061.
+        /// Whether the .tsv opened and has taken every row so far, so no sentence says a collapsed line is kept
+        /// there when there is no file to keep it, or when it stopped, FR-061.
         /// </summary>
         private bool RowsAreOpen()
         {
             lock (gate)
             {
                 return rows != null && rows.IsWritingToDisk;
+            }
+        }
+
+        /// <summary>Whether the .tsv opened and then stopped taking rows, so it holds the rows before that and no sentence says it holds the rest.</summary>
+        private bool RowsStopped()
+        {
+            lock (gate)
+            {
+                return rows != null && rows.Stopped;
             }
         }
 
@@ -854,6 +865,7 @@ namespace Federator.Core.Diagnostics
             List<string> lines = new List<string>();
             List<string> keys;
             bool rowsOpen = RowsAreOpen();
+            bool rowsStopped = RowsStopped();
 
             lock (gate)
             {
@@ -874,7 +886,9 @@ namespace Federator.Core.Diagnostics
                         + " counted. "
                         + (rowsOpen
                             ? "Every one is in the machine readable log"
-                            : "None is kept, no machine readable log is open"));
+                            : rowsStopped
+                                ? "Those counted before the machine readable log stopped taking rows are in it and any after that are kept nowhere"
+                                : "None is kept, no machine readable log is open"));
                 }
             }
 
@@ -913,6 +927,17 @@ namespace Federator.Core.Diagnostics
                 name,
                 number,
                 text));
+
+            // FR-061's side. A write that threw is said once, with what it threw, as the text log's own file stopping
+            // is said, and the sentences below that say what the .tsv holds stop saying it holds the rows after that.
+            // The row itself still never stops the run.
+            string stopped = writer.TakeTheFaultToTell();
+
+            if (stopped != null)
+            {
+                Line("ROWS     the machine readable log stopped taking rows, " + stopped
+                    + ". It holds the rows written before this one and none after it, the one that failed may be cut short, and the text log is unaffected");
+            }
         }
 
         // ---------- the census ----------
@@ -2167,7 +2192,9 @@ namespace Federator.Core.Diagnostics
                 Blank();
                 Line(RowsAreOpen()
                     ? "lines collapsed in this file, all of them kept in the .tsv beside it:"
-                    : "lines collapsed in this file, and no .tsv is open, so none of them is kept:");
+                    : RowsStopped()
+                        ? "lines collapsed in this file, and the .tsv stopped taking rows part way, so those after that are kept nowhere:"
+                        : "lines collapsed in this file, and no .tsv is open, so none of them is kept:");
 
                 foreach (string line in collapsed)
                 {
@@ -2204,7 +2231,9 @@ namespace Federator.Core.Diagnostics
                 + ", read before this block finished writing"
                 + (diskFault ? ", and the file stopped taking lines part way, so it is short" : string.Empty));
             Line("the .tsv       : " + DescribeSize(SizeOnDisk(RowLogPath))
-                + ", which keeps every line the .log collapsed");
+                + (RowsStopped()
+                    ? ", and it stopped taking rows part way, so it is short"
+                    : ", which keeps every line the .log collapsed"));
         }
 
         // ---------- the copy next to the outputs ----------
