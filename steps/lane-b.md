@@ -18,18 +18,20 @@ merge: the item the lane is on, its branch, the files it changes, and what merge
 | 3 | F137 no site and no clash groups end PARTIAL, FR-195, Q111 B and Q125 B | fix-F137 | part 1 merged as pull request 146, its records by the worktree session on fix-F137, Q125 B left for the laptop lane with the add-in half |
 | 4 | F118 the workbook and report, FR-035, FR-036, FR-037, FR-040, FR-041 and FR-199 | fix-F118 | FR-035 and FR-037 merged as pull request 147, FR-199 and FR-040 with the records as 159 by the worktree session, FR-036 and FR-041 left for the laptop lane |
 | 5 | F119 the run log and RESULT, FR-043 to FR-057 and FR-189 | fix-F119 | nine items merged as pull request 148 with FR-057 half, two more points as 168 and FR-057's disk half as 169, the rest left for the laptop lane |
-| 6 | F128's Core part, generic models, FR-177 | fix-F128 | not started, see below |
+| 6 | F128's Core part, generic models, FR-177 | fix-F128 | Core part merged as pull request PRNUMBER on Bader's order of 8 Oct, the add-in half and the measurement of the property wait for the laptop lane, see F128 below |
 | 7 | F121 the rest, FR-150 to FR-166 and FR-202, wave 4 | fix-F121 | five items merged as pull request 150, the rest left for the laptop lane |
 | 8 | F123 docs and words and the noise of every area, wave 5 | fix-F123 | merged as 151, 154, 155, 161, 162, 163, 164 and 165 |
 
 ## The item the lane is on
 
 The second night, 8 Oct 2026, by Bader's message GOOD MORNING, BADER: the Core points the readers of F127,
-F119, F115, F137, F121 and F123 left, in that order after F128. F127's Core points merged as pull request 167, F119's first two as 168 and FR-057's disk half of F119 as 169.
-Now on F115's words and polish, branch claude/lane-b-release-plan-zztyvx, which changes comments in
-src\Federator.Core\Sets\SetResult.cs and EmptySets.cs and nine assertions under tests\Federator.Core.Tests.
-fix-F132 does not change them, read with git diff on origin/main against the branch on 8 Oct 2026, and the
-files it does change are listed under The files each open branch changes.
+F119, F115, F137, F121 and F123 left, in that order after F128. F127's Core points merged as pull request 167, F119's first two as 168, FR-057's disk half of F119 as 169 and F115's words as 170.
+By his second message of the morning, F128's Core part was taken first and before the rest of that list.
+Now on F128, branch claude/lane-b-release-plan-zztyvx, which adds src\Federator.Core\Generic with three
+files, src\Federator.Core\Report\GenericSheet.cs, one member in src\Federator.Core\Sets\SetBuildPlanner.cs
+and the tests under tests\Federator.Core.Tests\Generic and Report. fix-F132 does not change any of them,
+read with git diff on origin/main against every open branch on 8 Oct 2026, and the files it does change are
+listed under The files each open branch changes.
 
 The branch claude/lane-b-release-plan-zztyvx is the one branch this session may push, restarted
 from main after each merge. F115 merged as pull request 142, F127 as 145, F137 as 146, F118 as 147 and
@@ -77,7 +79,7 @@ where a rule changed. The laptop lane merges those files by taking main in, as e
   src\Federator.Core\Report\ClashReportModel.cs, ClashReportXml.cs, MirrorMerge.cs, WorkbookWriter.cs,
   src\Federator.Core\Sets\SetBuildOutcome.cs and the tests under Clash and Report named for them
 - fix-F114, fix-F114-probes, fix-T5-close-1007 and fix-F109: no file under src or tests
-- fix-F115, fix-F127, fix-F137 and fix-F119 are merged and their branches gone, and fix-F128 was never made
+- fix-F115, fix-F127, fix-F137 and fix-F119 are merged and their branches gone, and fix-F128 was never made as a branch of its own, its Core part going through the lane branch as pull request PRNUMBER
 
 ## What merged
 
@@ -105,7 +107,8 @@ lane's to set in the tracker.
 | F127 | The Core points the readers of 145 and 153 left. SetsAcrossTheRun counts a path once in a group, finds something there where any set of the path did, is at zero only where every set of the path was counted and found nothing, and leaves a path out of a group where one set of it was not counted and none found items. A set's line and its .tsv row say how many of the groups it was looked at in when that is fewer, the header says how many sets that is, a set never counted in any group is counted on a line of its own, and the all clear says every set that was counted, or that no set was counted. CountCheck reads a test the run left no record of, or never reached, with an empty block that the document does not return as not compared, where one the run knows it did not create stays held by neither side, and gives the FAILED line of a test the plan dropped before the model, that an earlier run left in the document, its cause. CoverageAcrossTheRun counts the tests the file does not name once by name across the run, as Q127 A counts every other test, and the headline says how many test places its groups hold and that a group not checked is in none of the counts. Words: the CountCheck summary, the Q126 test comment, one number tied to set 03's log line 297, and the design file said to be outside the repo. 10 new tests, all failing on main's source. Core tests here 2408 run, 2375 passed, 0 failed, 33 skipped before, 2418 run, 2385 passed, 0 failed, 33 skipped after. A reviewer and a breaker read it and their findings are fixed, two of lane B's own first lines among them: a cause that said a test the runner's walk had not found was in the document before the run, and a not compared rule that took in the tests the plan drops. The add-in half of F127 is unchanged | 167 | merged, 639804a |
 | F119 | The two Core points the readers of 148 left that a test proves. The RETAIN line counted a .tsv it could not delete in the number of logs it could not delete, so two refused .tsv read as two logs that stayed. It now counts them apart, on the one seam that writes the sentence, RunLog.RetainLine, and adds nothing about a refused .tsv unless one was refused, so the part the loop's harness matches is unchanged, and the wiring is held by a Windows only test that holds a .tsv open. A run counted to now, one that started and never finished, printed an after the run finished row of 0.0 seconds in its timing block, which reads as a measurement. It now says the time after the run is not measured and prints no row, and a run that finished keeps its row. 3 new tests, the first not building against main's source because RetainLine is new, the second failing on it, and the third, which holds PruneOldLogs's wiring with a .tsv held open, running on Windows only and so unrun here. FR-057's disk half is not in this pull request. Core tests 2418 run, 2385 passed, 0 failed, 33 skipped before, 2421 run, 2387 passed, 0 failed, 34 skipped after, the one more skipped being the Windows only test | 168 | merged, a3681a3 |
 | F119 | FR-057's disk half, second attempt. A write to the log file that threw, a full disk or a handle gone, came out of Line and stopped the run, and the failure lines that would have reported it hit the same write. Now the write is in a try in WriteRaw. The line is kept in memory and told to the window, one LOG line says the file stopped taking lines with what threw, IsWritingToDisk reads false and the label says the lines since then are in the window only without a framework message, and the run goes on. ReadAll gives the lines held in memory, TryCopyTo writes a copy from memory and says so, the RESULT size of the .log says the file is short, and Dispose closes the writer and the stream each on its own so a flush that fails leaves no handle open. A first line that cannot be written counts as a failed open, so StartOrDisabled tries the next folder as it did when the write threw out of Line, with the cause in the message and the empty file taken away, which no test shows, since a disk will not fail on the first line on demand. A copy of a log that was only closed now works, where main refused it. 5 new tests, made with a closed stream through the one private field and, for Dispose, a stream whose flush throws, all failing on main's source. Core tests 2421 run, 2387 passed, 0 failed, 34 skipped before, 2426 run, 2392 passed, 0 failed, 34 skipped after. One reviewer read it twice over and its findings are in | 169 | merged, 91fd78d |
-| F115 | Words and polish the readers of 142 and 144 left, no behaviour changed. The Asked property of SetResult carried two summary elements in a row and now one. The comment in EmptySets that called the measured lists the whole project, 374 categories and 39 worksets, says the judge adds the worksets this group's models carry and the spellings of the list beside the picked file. Nine assertions that set a ReadOnlyCollection against an array or a list, in EmptySetsTests, SetBuildPlanTests, InfraSetsFileTests and MatrixCorrectionsTests, copy it into a list first, as the same files already do, so that the lists are compared element by element as the rules of the tests ask, and compare as strictly as before. No new test, since no behaviour moves and the sets tests hold it. Core tests 2426 run, 2392 passed, 0 failed, 34 skipped, as before | 170 | in review |
+| F115 | Words and polish the readers of 142 and 144 left, no behaviour changed. The Asked property of SetResult carried two summary elements in a row and now one. The comment in EmptySets that called the measured lists the whole project, 374 categories and 39 worksets, says the judge adds the worksets this group's models carry and the spellings of the list beside the picked file. Nine assertions that set a ReadOnlyCollection against an array or a list, in EmptySetsTests, SetBuildPlanTests, InfraSetsFileTests and MatrixCorrectionsTests, copy it into a list first, as the same files already do, so that the lists are compared element by element as the rules of the tests ask, and compare as strictly as before. No new test, since no behaviour moves and the sets tests hold it. Core tests 2426 run, 2392 passed, 0 failed, 34 skipped, as before | 170 | merged, 16d1e55 |
+| F128 | The Core part of FR-177, generic models, taken first by Bader's order of 8 Oct 2026 over the blocked judgement of the night before. GenericModelsSettings holds the value of the Category property, the folder and the sheet name as settings with their defaults, each refused where it is set if it cannot work. GenericModelsPlan.For gives one planned set for each model of a group, named after the model's file, in the folder Generic Models, with the two conditions the client's own file writes, the category equals the value and the Source File contains the model's text, in one group so they are ANDed, and notes what it noticed, a model with no name, two models of one name and a text that finds another model's items, and changes none of it. ToBuildPlan hands the sets to the plan the set builder already takes, through the new SetBuildPlan.Of, so nothing reads a second shape. GenericModelsReport reads the sets' results, one count for each model, a model whose count nobody took being UNKNOWN with why and never nought, the total being at least that where any was not counted, and writes the GENERIC MODELS block's lines. GenericSheet.Rows and Write are the one shape of the sheet, models with items first, then the ones not counted, none for a model at nought. The conditions are held against the client's corrected matrix by a test, so the plan answers to that file. 35 new tests in three files, none of which builds against main's source, since every class they read is new. Core tests 2427 run, 2393 passed, 0 failed, 34 skipped before, 2462 run, 2428 passed, 0 failed, 34 skipped after. UNKNOWN until the laptop lane measures it: the value of the Category property that Generic Models items carry in 1A02MM and 1A04PK, and whether their Source File holds the NWC's name or the Revit file's. No member is called from src yet, the add-in half being the laptop lane's, and Bader's order of 8 Oct keeps them past Q26 | PRNUMBER | in review |
 
 ## Points the readers raised on F115 that lane B dropped, for the loop
 
@@ -160,7 +163,10 @@ Lane B stopped on 7 Oct 2026 after Bader's second order of the night, F128, then
 by the same limits. It took what a Core test proves in a file no open loop branch changes, and what it had
 not taken when this was written is named under F123 below.
 
-F128 was not started, and it was looked at twice. Bader's own item says to measure first which property and
+F128 was not started on the night of 7 Oct, and it was looked at twice. Bader's order of 8 Oct took it
+first anyway, and its Core part is pull request PRNUMBER, with what the laptop lane does with it and measures
+first under F128 below. What follows in this paragraph is what stopped it the night before, and it still
+holds for the add-in half. Bader's own item says to measure first which property and
 value name Generic Models on 1A02MM and 1A04PK, and that needs a probe through the guarded start of
 Navisworks, UNKNOWN until read. The counts per model file, the GENERIC block and the sheet all take a read
 of the document that only the add-in makes, so a Core plan of the set folder, one search set per model on
@@ -193,6 +199,63 @@ changes what the team sees it was fixed before the merge.
 
 Every item above that lane B left, and every point its readers raised, is under its own heading below,
 for the laptop lane to take in the order it chooses.
+
+## F128 the Core part is on main, what the laptop lane does with it and measures first
+
+Bader's order of 8 Oct 2026 took F128 first, over the judgement of the night before that it was blocked
+for want of a measured property. The Core part does not wait for the measurement, because it carries the
+unmeasured parts as settings and as one argument, and says UNKNOWN where it cannot know. What is on main:
+
+- GenericModelsSettings, the value of the Category property, default Generic Models, the folder, default
+  Generic Models, and the sheet, default Generic Models, each changed in one place
+- GenericModelsPlan.For(models, settings), one GenericModelInput for each model of the group, the file name
+  or path as the document holds it, and a MatchText that is null until the probe says which text the Source
+  File of an item holds, the stem of the file name being used until then
+- plan.ToBuildPlan(), which SetBuilder.Build takes as it takes the picked file's plan
+- GenericModelsReport.From(plan, results), then Lines() for the block and BlockTitle, GENERIC MODELS, for
+  the heading the add-in puts the building after
+- GenericSheet.Rows(report) for the one shape of the sheet, Write for the sheet itself, which is internal
+  and is reached from WorkbookWriter the way CoverageSheet is
+
+What the laptop lane measures first, with tools\probes and the guarded start of Navisworks, UNKNOWN until read:
+
+1. The value the Category property of an item reads for a Generic Models item in 1A02MM and 1A04PK.
+   The tool's own list holds Generic Models and the probe of 2026-09-20 counted 62 such items over the
+   ten C02 NWFs, which says nothing of these two buildings. If it differs, GenericModelsSettings.CategoryValue
+   is the one place to change, and nothing else is.
+2. Whether the Source File of an item holds the NWC's stem or the name of the Revit file it came from.
+   The first is what the plan looks for, and a model whose items hold the second is found by handing the
+   plan that text as the MatchText of its GenericModelInput, which the add-in reads off the model.
+3. Whether the Category property is on the Element tab for the items of these two models, as the
+   client's file asks it. The conditions copy that file's, LcRevitData_Element, and a test holds them to it.
+
+What the add-in must be careful of, found by reading SetBuilder and SetLeftovers and not by running them:
+
+- The leftover walk. HandleLeftovers names the sets of the picked file and hands the document's sets to
+  SetLeftovers.For, which treats every set the file does not name as a leftover, and with the rebuild
+  box ticked it removes or renames one. The next run finds the Generic Models sets in the NWF the previous
+  run saved, so they would be removed as leftovers if they are built into the same document through the
+  same call. They have to be built after the leftover walk, or their names handed to it as wanted. Which of the
+  two the builder allows is for the laptop lane to read.
+- A SetBuildOutcome of their own. The EMPTY SETS judge and SETS ACROSS THE RUN read the outcome of the picked
+  file's sets, and a Generic Models set at nought is a model that holds no Generic Models, which is the
+  ordinary answer and not a finding. Putting them in that outcome would name them as sets nobody should have left empty.
+- The NWF save. Creating a set asks for the save, FR-020, so the sets step must say that a Generic Models set
+  created counts, or the NWF is saved without them and the next run creates them again.
+- No clash test. Nothing here makes a test, and the block says so. The count is of items, which are the
+  elements the set finds and not the Revit elements, and the block says items.
+- The sheet. Bader's decision under Q46 makes the Coverage sheet the second and last sheet and the
+  workbook check allows nothing after it, FR-200. A third sheet breaks that, and a workbook of its own for
+  the group, as Q126 B gives the Coverage sheet where the clash is skipped, breaks nothing. It is for Bader
+  to choose and GenericSheet.Write takes the workbook it is handed, so either way is the same call.
+  WorkbookWriter is a file fix-F132 changes and WorkbookCheck allows two sheets, so both are the laptop lane's.
+- The rule lines. .claude\rules\core.md has no line for this part, and lane B never edits that folder.
+  The lines to write are that the sheet is named by GenericModelsSettings, that a count nobody took is
+  UNKNOWN and never nought, that the total says at least over one, and that a model at nought is left out
+  of the list and counted in the line above it.
+
+The members have no caller in src until the add-in half, which the no member without a caller rule would
+delete, and Bader's order of 8 Oct 2026 keeps them. They go with Q26's list until the add-in half calls them.
 
 ## F127 points the readers raised that lane B left, for the laptop lane
 
