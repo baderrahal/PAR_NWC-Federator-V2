@@ -186,11 +186,13 @@ namespace Federator.Core.Tests
             using (RunLog log = Start())
             {
                 log.Failure("saving the NWF", Thrown("locked"), "kept going");
+
+                Assert.That(log.Failures[0].Times, Is.EqualTo(1));
+
                 log.WriteResultBlock();
 
                 string text = ReadWhileOpen(log);
 
-                Assert.That(log.Failures[0].Times, Is.EqualTo(1));
                 Assert.That(text, Does.Not.Contain("THIS HAPPENED"));
             }
         }

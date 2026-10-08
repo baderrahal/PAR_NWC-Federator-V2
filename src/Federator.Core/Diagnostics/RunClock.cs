@@ -44,7 +44,7 @@ namespace Federator.Core.Diagnostics
         public const string AfterTheRun = "after the run finished";
 
         /// <summary>What the row of the runs before this one in the window is called, FR-049.</summary>
-        public const string EarlierRuns = "earlier runs in this window";
+        public const string EarlierRuns = "earlier runs";
 
         private RunClock(double session, double started, double finished, bool marked, double earlier)
             : this(session, started, finished, marked, true, earlier)
@@ -55,7 +55,7 @@ namespace Federator.Core.Diagnostics
             double session, double started, double finished, bool marked, bool finishedMarked, double earlier)
         {
             SessionSeconds = Never(session);
-            EarlierRunsSeconds = marked ? Never(earlier) : 0.0;
+            EarlierRunsSeconds = marked ? Math.Min(Never(earlier), Never(started)) : 0.0;
             Marked = marked;
             Finished = finishedMarked;
             StartedAt = marked ? Never(started) : 0.0;
