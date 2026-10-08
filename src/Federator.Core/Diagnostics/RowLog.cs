@@ -41,6 +41,11 @@ namespace Federator.Core.Diagnostics
         private readonly StreamWriter writer;
         private bool closed;
 
+        // FR-061's side. What the first write that threw said, kept so the text log can say once that this file
+        // stopped taking rows, and so no sentence of it claims the rows after that are in the file.
+        private string fault;
+        private bool faultTold;
+
         private RowLog(string path, FileStream stream, string whyNot)
         {
             Path = path;
@@ -59,9 +64,46 @@ namespace Federator.Core.Diagnostics
         /// <summary>Why there is none, in plain words, or null when there is one.</summary>
         public string WhyNot { get; private set; }
 
+        /// <summary>True while the file is open and has taken every row it was given. False when none opened and after a write threw.</summary>
         public bool IsWritingToDisk
         {
-            get { return writer != null; }
+            get
+            {
+                lock (gate)
+                {
+                    return writer != null && fault == null;
+                }
+            }
+        }
+
+        /// <summary>True when the file opened and a write to it then threw, so it holds the rows before that and none after.</summary>
+        public bool Stopped
+        {
+            get
+            {
+                lock (gate)
+                {
+                    return fault != null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// What the first failed write threw, type and message, the first time it is asked after the fault and null
+        /// ever after or where there was none. The text log says it once, as it says its own file stopping, FR-057.
+        /// </summary>
+        internal string TakeTheFaultToTell()
+        {
+            lock (gate)
+            {
+                if (fault == null || faultTold)
+                {
+                    return null;
+                }
+
+                faultTold = true;
+                return fault;
+            }
         }
 
         /// <summary>
@@ -135,7 +177,7 @@ namespace Federator.Core.Diagnostics
         {
             lock (gate)
             {
-                if (closed || writer == null)
+                if (closed || writer == null || fault != null)
                 {
                     return;
                 }
@@ -149,10 +191,13 @@ namespace Federator.Core.Diagnostics
                     // Navisworks call leaves both files whole up to that moment.
                     stream.Flush(true);
                 }
-                catch (Exception)
+                catch (Exception error)
                 {
-                    // Swallowed on purpose. This file is a convenience and the text log
-                    // is the record. A disk that filled up must not stop a run here.
+                    // Never thrown on. This file is a convenience and the text log is the record, so a
+                    // disk that filled up must not stop a run here. It is kept and told once instead of
+                    // swallowed, because the text log goes on saying every collapsed line is in this file,
+                    // and nothing after this row is.
+                    fault = error.GetType().Name + ": " + error.Message;
                 }
             }
         }
