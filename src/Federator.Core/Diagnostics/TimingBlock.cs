@@ -532,11 +532,10 @@ namespace Federator.Core.Diagnostics
             return seconds.ToString("0.000", CultureInfo.InvariantCulture) + "s";
         }
 
-        /// <summary>Hours, minutes and seconds, for the sentence about the forty five.</summary>
         /// <summary>
-        /// Seconds as a clock, h:mm:ss. Public since F80, because RunClock says where the
-        /// session went in the same shape and two spellings of one duration in one block
-        /// is how a reader stops trusting either.
+        /// Seconds in words, 1 hour 2 minutes 3 seconds, to the whole second, for the sentence about the
+        /// forty five. Public since F80, because RunClock says where the session went in the same shape
+        /// and two spellings of one duration in one block is how a reader stops trusting either.
         /// </summary>
         public static string Clock(double seconds)
         {

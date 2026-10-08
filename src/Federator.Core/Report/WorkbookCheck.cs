@@ -306,6 +306,7 @@ namespace Federator.Core.Report
             // saw it. It is a row below the title, outside every full block, holding a name or its
             // tolerance, and the one place a test with no name still shows is the tolerance.
             int oneRow = 0;
+            int firstOneRow = 0;
 
             for (int row = 4; row <= lastRow; row++)
             {
@@ -318,8 +319,15 @@ namespace Federator.Core.Report
                     || sheet.Cell(row, WorkbookWriter.ColumnTestHeader).GetString().Length > 0)
                 {
                     oneRow++;
+
+                    if (firstOneRow == 0)
+                    {
+                        firstOneRow = row;
+                    }
                 }
             }
+
+            CheckOneRowTestsComeLast(spans, clashes, firstOneRow);
 
             // A sheet of one row tests has no heading row, so the block layout cannot be compared,
             // and the check says so. Row 1 and the column widths hold without a block, so those two
@@ -715,6 +723,43 @@ namespace Federator.Core.Report
         // ---------- in what order ----------
 
         /// <summary>
+        /// A test that found nothing holds no clash and goes after every test that holds some. The order check reads
+        /// the full blocks alone, so a one row test placed before a block with clashes was never named, F118's reader.
+        /// Said once, with the first such test and the first block it stands before.
+        /// </summary>
+        private void CheckOneRowTestsComeLast(IList<int[]> spans, IList<int> clashes, int firstOneRow)
+        {
+            if (firstOneRow == 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i < spans.Count; i++)
+            {
+                int[] span = spans[i];
+
+                // A block whose Clashes cell is nought holds none, which a test of one row also holds, and ties
+                // keep the order they were created in, as the order check lets them. Such a block is written by
+                // the writer for a result group with nothing under it, so it may follow a one row test.
+                if (clashes[i] == 0)
+                {
+                    continue;
+                }
+
+                // A block starts four rows above its headings, the start the span carries, so its first row is
+                // the span's first.
+                if (span[0] > firstOneRow)
+                {
+                    Say("The tests are in the wrong order. The test with no clash at row " + firstOneRow
+                        + " stands before the test with clashes at row " + span[0]
+                        + ". The client's report puts the most clashes first, so a reader is "
+                        + "not scrolling past empty tests.");
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
         /// Most clashes first, whether or not a priority file was picked, FR-199, Bader's answer to
         /// Q49: the blocks keep the measured order and the priority is a column, so the order is
         /// checked on every run. It was skipped for a workbook with a file picked, which left
@@ -811,8 +856,8 @@ namespace Federator.Core.Report
                 // every column of every row matched.
                 lines.Add("         The column headings of every block with clashes match the client's report, and so do the "
                     + "fill, border and row height of every cell of the first block, five values of its first clash row, "
-                    + "the column widths and the title row. The blocks with clashes are in their order. The values of the "
-                    + "other blocks and clash rows, and the place of a test with no clash, were not read.");
+                    + "the column widths and the title row. The blocks with clashes are in their order, and no test with no "
+                    + "clash stands before one with clashes. The values of the other blocks and clash rows were not read.");
                 lines.Add("         Not compared: the font, the sheet name, freeze panes, "
                     + "print setup, merged ranges, and whether a value is true. See "
                     + "docs\\history\\scan.md 4q.");

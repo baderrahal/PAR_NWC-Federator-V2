@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Health
 {
@@ -64,7 +65,7 @@ namespace Federator.Core.Health
 
             if (skipsTheClash)
             {
-                lines.Add("clash skipped  : " + Counted(skipped) + ", models not on the same shared coordinates"
+                lines.Add("clash skipped  : " + Words.Counted(skipped, "group", "groups") + ", models not on the same shared coordinates"
                     + (skipped == 0
                         ? string.Empty
                         : ". In each " + OffCoordinates.TestsCreatedNoneRun.Substring(0, 1).ToLowerInvariant()
@@ -77,11 +78,11 @@ namespace Federator.Core.Health
                 lines.Add("clash skipped  : none, the rule that skips it was off for this run"
                     + (clashed == 0
                         ? string.Empty
-                        : ", so " + Counted(clashed) + (clashed == 1 ? " was" : " were")
+                        : ", so " + Words.Counted(clashed, "group", "groups") + (clashed == 1 ? " was" : " were")
                             + " clashed with a model not on the same shared coordinates"));
             }
 
-            lines.Add("coordinates    : " + Judged() + " of " + Counted(groupsInTheRun) + " judged" + NotJudgedResult());
+            lines.Add("coordinates    : " + Judged() + " of " + Words.Counted(groupsInTheRun, "group", "groups") + " judged" + NotJudgedResult());
 
             foreach (Entry entry in entries)
             {
@@ -107,7 +108,7 @@ namespace Federator.Core.Health
             List<string> lines = new List<string>();
             lines.Add("Models not on the same shared coordinates, from the run started "
                 + runStarted.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture));
-            lines.Add("The rule judged " + Judged() + " of " + Counted(groupsInTheRun) + " of this run." + NotJudgedList());
+            lines.Add("The rule judged " + Judged() + " of " + Words.Counted(groupsInTheRun, "group", "groups") + " of this run." + NotJudgedList());
 
             if (Count(e => e.Off != null && e.Off.Any) == 0)
             {
@@ -165,7 +166,7 @@ namespace Federator.Core.Health
             return line + ". Nothing was changed in any model"
                 + (skipped == 0
                     ? "."
-                    : ", and the clash of " + Counted(skipped) + " was skipped, models not on the same shared"
+                    : ", and the clash of " + Words.Counted(skipped, "group", "groups") + " was skipped, models not on the same shared"
                         + " coordinates, which RESULT lists.");
         }
 
@@ -250,11 +251,6 @@ namespace Federator.Core.Health
         private int Count(Predicate<Entry> which)
         {
             return entries.FindAll(which).Count;
-        }
-
-        private static string Counted(int count)
-        {
-            return count + (count == 1 ? " group" : " groups");
         }
 
         /// <summary>One group as the rule left it.</summary>

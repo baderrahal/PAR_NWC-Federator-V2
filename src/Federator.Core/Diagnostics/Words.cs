@@ -1,8 +1,10 @@
+using System.Globalization;
+
 namespace Federator.Core.Diagnostics
 {
     /// <summary>
-    /// The one place a missing value is given a word. Twelve files each carried a private
-    /// Or doing exactly this, F36, and one copy is enough.
+    /// The one place a missing value is given a word, and a count its noun. Twelve files each
+    /// carried a private Or doing exactly this, F36, and one copy is enough.
     /// </summary>
     public static class Words
     {
@@ -10,6 +12,16 @@ namespace Federator.Core.Diagnostics
         public static string Or(string value, string fallback)
         {
             return string.IsNullOrEmpty(value) ? fallback : value;
+        }
+
+        /// <summary>
+        /// The number and its noun, 1 test and 2 tests, the one rule for it. Five files each wrote it
+        /// out, and four of them printed the number in the running culture, which differs only in the
+        /// sign of a negative one.
+        /// </summary>
+        public static string Counted(int count, string one, string many)
+        {
+            return count.ToString(CultureInfo.InvariantCulture) + " " + (count == 1 ? one : many);
         }
     }
 }

@@ -26,5 +26,40 @@ namespace Federator.Core.Tests
             // trimmed into nothing here.
             Assert.That(Words.Or(" ", "UNKNOWN"), Is.EqualTo(" "));
         }
+
+        /// <summary>One rule for a number and its noun, which four files each wrote out. Nought and a thousand take the plural.</summary>
+        [Test]
+        public void ANumberTakesItsNounInTheSingularOnlyAtOne()
+        {
+            Assert.That(Words.Counted(1, "test", "tests"), Is.EqualTo("1 test"));
+            Assert.That(Words.Counted(0, "test", "tests"), Is.EqualTo("0 tests"));
+            Assert.That(Words.Counted(2, "test", "tests"), Is.EqualTo("2 tests"));
+            Assert.That(Words.Counted(1000, "test", "tests"), Is.EqualTo("1000 tests"));
+            Assert.That(Words.Counted(-1, "test", "tests"), Is.EqualTo("-1 tests"));
+        }
+
+        /// <summary>
+        /// The number is written the same under any culture, which four copies of the rule did not do. A culture that
+        /// signs a negative number with a tilde is handed in, and the invariant minus is still what comes out.
+        /// </summary>
+        [Test]
+        public void TheNumberIsWrittenTheSameUnderAnyCulture()
+        {
+            System.Globalization.CultureInfo before = System.Threading.Thread.CurrentThread.CurrentCulture;
+            System.Globalization.CultureInfo odd = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+            odd.NumberFormat.NegativeSign = "~";
+
+            try
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = odd;
+
+                Assert.That((-1).ToString(), Is.EqualTo("~1"), "the culture is odd enough to show a difference");
+                Assert.That(Words.Counted(-1, "test", "tests"), Is.EqualTo("-1 tests"));
+            }
+            finally
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = before;
+            }
+        }
     }
 }
