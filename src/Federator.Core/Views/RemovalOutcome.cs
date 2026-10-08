@@ -18,6 +18,31 @@ namespace Federator.Core.Views
             WhyNot = whyNot;
         }
 
+        /// <summary>
+        /// The one rule for whether a RemoveAt that returned removed its item, the second
+        /// reading's F4: its folder's children fell by exactly one. Anything else, the same
+        /// count, more than one fewer, or the folder not found again, is not removed, with what
+        /// happened, and is never counted as removed.
+        /// </summary>
+        public static RemovalOutcome Counted(ViewNode node, InventoryDecision decision, int countBefore, int countAfter)
+        {
+            string why = CountWords(countBefore, countAfter);
+            return new RemovalOutcome(node, decision, why == null, why);
+        }
+
+        /// <summary>Null where the folder fell by exactly one child, else what happened, in the words the FAILED lines carry.</summary>
+        public static string CountWords(int countBefore, int countAfter)
+        {
+            if (countAfter < 0)
+            {
+                return "RemoveAt returned and its folder was not found again, so whether it fell by one is UNKNOWN";
+            }
+
+            return countAfter == countBefore - 1
+                ? null
+                : "RemoveAt returned and its folder went from " + countBefore + " to " + countAfter + " children, not one fewer";
+        }
+
         /// <summary>The item the inventory asked to remove.</summary>
         public ViewNode Node { get; private set; }
 

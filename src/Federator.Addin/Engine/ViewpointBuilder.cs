@@ -159,7 +159,7 @@ namespace Federator.Addin.Engine
             dimmedAnything = false;
             dimmedNow = false;
             addressOf.Clear();
-            testsRead = new TestsRead();
+            testsRead = new TestsRead(OpenClashes.StatusesFor(views.ViewStatuses));
             Plan = null;
             TreeLog = null;
             TreeRows = null;
@@ -178,12 +178,23 @@ namespace Federator.Addin.Engine
                 using (seconds.In(ViewsPart.ReadingTheClashes))
                 {
                     List<ViewClash> clashes = Collect(document, clashTests, report, addresses, teams);
+
+                    // N2. A test the clash step ran with no row on the report is read whole with
+                    // no row, so the inventory removes its old view as no longer needed.
+                    testsRead.Ran(testsRan);
                     Plan = TestViewPlan.For(clashes, teams, mirrors, views);
                 }
 
                 foreach (KeyValuePair<string, string> notWhole in testsRead.NotWhole())
                 {
                     outcome.AddFailed(notWhole.Key, "UNKNOWN", notWhole.Value);
+                }
+
+                // F3, the lead's decision: a person's grouping must not cost the group DONE.
+                foreach (string grouped in testsRead.OnlyGroups)
+                {
+                    log.Line("VIEWS    " + grouped + " gets no view: its open clashes are all result groups, which carry no items to show, "
+                        + "so its views of earlier runs are kept and it is not counted as failed");
                 }
 
                 if (Plan.Views.Count > 0)
@@ -265,16 +276,31 @@ namespace Federator.Addin.Engine
             List<string> order = new List<string>();
             Dictionary<string, List<ReportClash>> byTest = new Dictionary<string, List<ReportClash>>(StringComparer.Ordinal);
             Dictionary<string, RowAddress> firstOf = new Dictionary<string, RowAddress>(StringComparer.Ordinal);
+
+            // Every row read or left out, with the REPORT's test it sits under, N1, judged once
+            // every resolve is done, since a kept test's rows can sit under its mirror's address.
+            List<CollectedRow> collected = new List<CollectedRow>();
             int noAddress = 0;
 
             foreach (ReportClash clash in rows.Clashes)
             {
+                testsRead.Met(clash.TestName);
+
+                // C1. A row outside the views' statuses needs nothing read: it goes to the plan,
+                // which counts it as left out, and nothing about its result can make its test
+                // not read, so a Resolved row Compact removed stays harmless.
+                if (!testsRead.NeedsReading(clash.Status))
+                {
+                    collected.Add(new CollectedRow(clash.ToView(null, null, null, null, null, null), null, clash.TestName));
+                    continue;
+                }
+
                 RowAddress where;
 
                 if (addresses == null || !addresses.TryGetValue(clash.Row, out where))
                 {
                     noAddress++;
-                    testsRead.RowWithNoAddress(clash.TestName);
+                    testsRead.RowWithNoAddress(clash.TestName, clash.Status);
                     continue;
                 }
 
@@ -293,7 +319,7 @@ namespace Federator.Addin.Engine
 
             if (noAddress > 0)
             {
-                log.Line("VIEWS    " + noAddress + " row(s) of the report have no recorded place in the document, so their tests are not read for the views");
+                log.Line("VIEWS    " + noAddress + " open row(s) of the report have no recorded place in the document, so their tests are not read for the views");
             }
 
             Counts counts = new Counts();
@@ -302,9 +328,17 @@ namespace Federator.Addin.Engine
             {
                 RowAddress first = firstOf[key];
                 List<ReportClash> under = byTest[key];
-                List<KeyValuePair<ViewClash, RowAddress>> ofTest = new List<KeyValuePair<ViewClash, RowAddress>>();
+                List<string> reportTests = new List<string>();
+
+                foreach (ReportClash clash in under)
+                {
+                    if (!reportTests.Contains(clash.TestName))
+                    {
+                        reportTests.Add(clash.TestName);
+                    }
+                }
+
                 string nowNamed;
-                testsRead.Met(first.TestName);
 
                 try
                 {
@@ -312,10 +346,12 @@ namespace Federator.Addin.Engine
                     {
                         if (test == null)
                         {
-                            testsRead.NotAtAddress(first.TestName);
+                            // N1. Every report test among the rows this resolve serves is not read.
+                            testsRead.NotAtAddress(reportTests);
                             log.Line("VIEWS    " + first.TestName + " is not at " + first.Address + " any more"
                                 + (nowNamed == null ? string.Empty : ", which holds \"" + nowNamed + "\"")
-                                + ", so it is not read for the views and its " + under.Count + (under.Count == 1 ? " row gets" : " rows get") + " no view");
+                                + ", so " + string.Join(", ", reportTests.ToArray()) + " are not read for the views and its "
+                                + under.Count + (under.Count == 1 ? " row gets" : " rows get") + " no view");
                             continue;
                         }
 
@@ -333,7 +369,7 @@ namespace Federator.Addin.Engine
                             if (item == null)
                             {
                                 counts.NotFound++;
-                                testsRead.RowNotFound(first.TestName);
+                                testsRead.RowNotFound(clash.TestName, clash.Status);
 
                                 if (counts.FirstNotFound == null)
                                 {
@@ -350,38 +386,65 @@ namespace Federator.Addin.Engine
 
                             using (item)
                             {
+                                ClashResult leaf = item as ClashResult;
                                 ViewClash read = CollectOne(
-                                    document, clash, item as ClashResult, inScope, carriesSize, unitEnumName, counts);
-                                ofTest.Add(new KeyValuePair<ViewClash, RowAddress>(read, addresses[clash.Row]));
-                                testsRead.RowRead(first.TestName);
+                                    document, clash, leaf, inScope, carriesSize, unitEnumName, counts);
+                                collected.Add(new CollectedRow(read, addresses[clash.Row], clash.TestName));
+                                testsRead.RowRead(clash.TestName, leaf == null);
                             }
                         }
                     }
                 }
                 catch (Exception error)
                 {
-                    testsRead.Threw(first.TestName);
+                    testsRead.Threw(reportTests);
                     log.Failure(
                         "reading the clashes of " + first.TestName + " for the views",
                         error,
-                        "kept going, that test is not read for the views, gets no view and keeps its views of earlier runs, and the next test is still read");
+                        "kept going, " + string.Join(", ", reportTests.ToArray())
+                            + " are not read for the views, get no view and keep their views of earlier runs, and the next test is still read");
+                }
+            }
+
+            // A TEST READ IN PART GETS NO VIEW, the breaker's B1, judged by the report's test
+            // once every resolve is done, N1: a view of the rows that read would be a short view
+            // replacing a whole one. Its rows are left out of the plan, it is counted failed with
+            // why, and the inventory keeps its old views. A test whose open rows are all result
+            // groups is left out the same way and named, F3, never failed.
+            foreach (CollectedRow row in collected)
+            {
+                if (!testsRead.IsWhole(row.ReportTest))
+                {
+                    continue;
                 }
 
-                // A TEST READ IN PART GETS NO VIEW, the breaker's B1: a view of the rows that
-                // read would be a short view replacing a whole one. Its rows are left out of the
-                // plan, it is counted failed with why, and the inventory keeps its old views.
-                if (testsRead.IsWhole(first.TestName))
+                clashes.Add(row.Clash);
+
+                if (row.Address != null)
                 {
-                    foreach (KeyValuePair<ViewClash, RowAddress> row in ofTest)
-                    {
-                        clashes.Add(row.Key);
-                        addressOf[row.Key.Key] = row.Value;
-                    }
+                    addressOf[row.Clash.Key] = row.Address;
                 }
             }
 
             counts.Say(log, clashes.Count);
             return clashes;
+        }
+
+        /// <summary>One row of walk one, read or left out of scope, with the report's test it sits under.</summary>
+        private sealed class CollectedRow
+        {
+            public CollectedRow(ViewClash clash, RowAddress address, string reportTest)
+            {
+                Clash = clash;
+                Address = address;
+                ReportTest = reportTest;
+            }
+
+            public ViewClash Clash { get; private set; }
+
+            public RowAddress Address { get; private set; }
+
+            public string ReportTest { get; private set; }
         }
 
         /// <summary>
@@ -849,9 +912,16 @@ namespace Federator.Addin.Engine
                         taken = SavedViewpoints.RemoveUnmarked(document, view.Folders, view.Name, views);
                     }
 
+                    // F4. The same count rule as the inventory's removals: removed only where its
+                    // folder fell by exactly one, and the FAILED words say what happened.
+                    string countWords = taken.Removed ? RemovalOutcome.CountWords(taken.CountBefore, taken.CountAfter) : null;
                     written.Add(new WrittenView(view.Folders, view.Name, -1, false, false));
                     outcome.AddFailed(view.ToString(), showsWords, "it was added and could not be marked, " + whyNot
-                        + (taken.Removed ? ", so it was removed at once" : ", and it was not removed, " + taken.WhyNot + ", so it stays unmarked and is named"));
+                        + (!taken.Removed
+                            ? ", and it was not removed, " + taken.WhyNot + ", so it stays unmarked and is named"
+                            : countWords == null
+                                ? ", so it was removed at once"
+                                : ", and its removal is not proved, " + countWords + ", so whether an unmarked view of it stays is UNKNOWN"));
                     return;
                 }
 
@@ -1025,20 +1095,23 @@ namespace Federator.Addin.Engine
                         continue;
                     }
 
+                    // The document changed whichever way the count reads, so the NWF is saved again.
                     RemovedCount++;
-                    removals.Add(new RemovalOutcome(item.Node, item.Decision, true, null));
 
                     if (answer.FoundElsewhere)
                     {
                         foundElsewhere++;
                     }
 
-                    if (answer.CountAfter != answer.CountBefore - 1)
+                    // F4. Removed only where the folder fell by exactly one, Core's one rule, and
+                    // otherwise recorded as not removed with what happened.
+                    RemovalOutcome judged = RemovalOutcome.Counted(item.Node, item.Decision, answer.CountBefore, answer.CountAfter);
+                    removals.Add(judged);
+
+                    if (!judged.Removed)
                     {
                         countsOff++;
-                        log.Line("VIEWS    " + item.Node + " was removed and its folder went from " + answer.CountBefore
-                            + " to " + (answer.CountAfter < 0 ? "UNKNOWN, the folder was not found again" : answer.CountAfter.ToString())
-                            + " children, not one fewer");
+                        log.Line("VIEWS    " + item.Node + " is counted as not removed, " + judged.WhyNot);
                     }
                 }
                 catch (Exception error)
@@ -1052,10 +1125,10 @@ namespace Federator.Addin.Engine
                 }
             }
 
-            log.Line("VIEWS    " + RemovedCount + " of " + inventory.Removals.Count + " removal(s) made"
+            log.Line("VIEWS    " + RemovedCount + " of " + inventory.Removals.Count + " RemoveAt call(s) made"
                 + (foundElsewhere > 0 ? ", " + foundElsewhere + " found at another index than the walk read" : string.Empty)
                 + (notRemoved > 0 ? ", " + notRemoved + " not made, each said above" : string.Empty)
-                + (countsOff > 0 ? ", " + countsOff + " whose folder count did not fall by one, said above" : string.Empty));
+                + (countsOff > 0 ? ", " + countsOff + " whose folder count did not fall by one and counted as not removed, said above" : string.Empty));
         }
 
         // ---------- the tree after ----------
