@@ -65,6 +65,13 @@ namespace Federator.Addin.Ui
         private bool suspendRegroup;
         private bool suspendNaming;
 
+        /// <summary>
+        /// The Run box clicked last and the state it was left in, the start of the next Shift
+        /// click's range, F130. Per window, and dropped when the groups are made again.
+        /// </summary>
+        private GroupRow runAnchor;
+        private bool runAnchorState;
+
         public FederatorWindow(RunLog log)
         {
             if (log == null)
@@ -97,6 +104,7 @@ namespace Federator.Addin.Ui
             ShowByDesignWording();
             ShowUndoWording();
             ShowProbeWording();
+            RunRangeHelp.Text = ShiftRange.HelpLine;
             FillUnits();
             ShowOpenDocument();
             FillGroupingModes();
@@ -258,6 +266,50 @@ namespace Federator.Addin.Ui
 
         // ---------- Step 2, grouping ----------
 
+        /// <summary>
+        /// A click on a Run box, F130, Bader's request 5. The box has already flipped its own
+        /// row through the binding. Shift held at the click gives every row from the anchor to
+        /// this one the anchor's state, in the order the grid shows them, by ShiftRange. Each
+        /// row is set through Include, so the blocked row's refusal and every reader of the
+        /// ticks see it, and the summary of ticked groups is refreshed once.
+        /// </summary>
+        private void OnRunBoxClicked(object sender, RoutedEventArgs e)
+        {
+            CheckBox box = sender as CheckBox;
+            GroupRow clicked = box == null ? null : box.DataContext as GroupRow;
+
+            if (clicked == null)
+            {
+                return;
+            }
+
+            bool shift = (System.Windows.Input.Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Shift)
+                == System.Windows.Input.ModifierKeys.Shift;
+
+            List<GroupRow> shown = new List<GroupRow>();
+
+            foreach (object item in GroupsGrid.Items)
+            {
+                GroupRow row = item as GroupRow;
+
+                if (row != null)
+                {
+                    shown.Add(row);
+                }
+            }
+
+            RowsToSet<GroupRow> set = ShiftRange.Of(shown, runAnchor, runAnchorState, clicked, clicked.Include, shift);
+
+            foreach (GroupRow taken in set.Rows)
+            {
+                taken.Include = set.State;
+            }
+
+            runAnchor = clicked;
+            runAnchorState = set.State;
+            RefreshOutputsSummary();
+        }
+
         private void Regroup()
         {
             if (suspendRegroup)
@@ -266,6 +318,7 @@ namespace Federator.Addin.Ui
             }
 
             groups.Clear();
+            runAnchor = null;
 
             List<ParsedContainerName> ticked = new List<ParsedContainerName>();
             Dictionary<string, List<string>> pathsByStem = new Dictionary<string, List<string>>(StringComparer.Ordinal);
