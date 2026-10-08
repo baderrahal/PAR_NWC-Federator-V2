@@ -439,6 +439,7 @@ namespace Federator.Core.Diagnostics
                 int deleted = 0;
                 int refused = 0;
                 int rowFiles = 0;
+                int rowRefused = 0;
 
                 for (int i = keepOthers; i < others.Count; i++)
                 {
@@ -469,20 +470,31 @@ namespace Federator.Core.Diagnostics
                     }
                     catch (Exception error)
                     {
-                        refused++;
+                        rowRefused++;
                         Line("RETAIN   could not delete " + System.IO.Path.GetFileName(beside) + ": "
                             + error.GetType().Name + ": " + error.Message);
                     }
                 }
 
-                Line("RETAIN   keeping " + keepLogs + " logs, deleted " + deleted
-                    + ", could not delete " + refused + ", and " + rowFiles + " .tsv beside them");
+                Line(RetainLine(keepLogs, deleted, refused, rowFiles, rowRefused));
             }
             catch (Exception error)
             {
                 // Retention is housekeeping. It never stops a run.
                 Line("RETAIN   skipped, " + error.GetType().Name + ": " + error.Message);
             }
+        }
+
+        /// <summary>
+        /// The summary line of the retention, FR-055. A .tsv that would not go is counted on its own and
+        /// never among the logs that would not, since it was added to their count and read as a log that
+        /// stayed. The first part is the sentence the loop's harness matches and does not change.
+        /// </summary>
+        internal static string RetainLine(int keepLogs, int deleted, int logsRefused, int rowFilesDeleted, int rowFilesRefused)
+        {
+            return "RETAIN   keeping " + keepLogs + " logs, deleted " + deleted
+                + ", could not delete " + logsRefused + ", and " + rowFilesDeleted + " .tsv beside them"
+                + (rowFilesRefused > 0 ? ", " + rowFilesRefused + " .tsv could not be deleted" : string.Empty);
         }
 
         private static int NewestFirst(FileInfo left, FileInfo right)

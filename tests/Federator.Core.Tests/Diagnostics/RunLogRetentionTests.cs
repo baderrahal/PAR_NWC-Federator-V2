@@ -225,6 +225,27 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// FR-055's .tsv goes with its log, and one that would not go is counted on its own. The summary
+        /// added it to the refusals of the logs, so a run that refused two .tsv and no log read could not
+        /// delete 2 beside deleted 6 and the .tsv beside them, as if two logs had stayed. Built through the
+        /// one seam that writes the sentence, because a delete refused on one file system is not on another.
+        /// The breaks: a refused log is counted as a log whatever the .tsv did, and a run with no refused
+        /// .tsv says nothing of any.
+        /// </summary>
+        [Test]
+        public void ARefusedTsvIsCountedApartFromARefusedLog()
+        {
+            string line = RunLog.RetainLine(30, 6, 0, 4, 2);
+
+            Assert.That(line, Does.StartWith("RETAIN   keeping 30 logs, deleted 6, could not delete 0, and 4 .tsv beside them"));
+            Assert.That(line, Does.EndWith(", 2 .tsv could not be deleted"));
+
+            string logRefused = RunLog.RetainLine(30, 5, 1, 5, 0);
+
+            Assert.That(logRefused, Is.EqualTo("RETAIN   keeping 30 logs, deleted 5, could not delete 1, and 5 .tsv beside them"));
+        }
+
         [Test]
         public void FilesThatAreNotLogsAreLeftAlone()
         {

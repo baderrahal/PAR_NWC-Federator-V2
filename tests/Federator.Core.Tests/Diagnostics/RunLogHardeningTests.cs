@@ -211,6 +211,36 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// A run counted to now has no stretch after it that anyone measured, because it ends where the block
+        /// is written. The block printed an after the run finished row of 0.0 seconds, a number that reads as
+        /// a measurement. It names the stretch as not measured and prints no row. The break: a run that
+        /// finished keeps its row.
+        /// </summary>
+        [Test]
+        public void ARunCountedToNowPrintsNoAfterTheRunRowAndSaysTheStretchWasNotMeasured()
+        {
+            string unfinished = string.Join("\n", new List<string>(RunClock.Unfinished(100.0, 40.0).Lines()).ToArray());
+
+            Assert.That(unfinished, Does.Not.Contain(RunClock.AfterTheRun + " "));
+            Assert.That(unfinished, Does.Contain("the run started and RUN finished was never marked"));
+            Assert.That(unfinished, Does.Contain("the time after the run is not measured"));
+            Assert.That(unfinished, Does.Contain(RunClock.WaitingForThePerson));
+
+            string finished = string.Join("\n", new List<string>(RunClock.From(100.0, 40.0, 90.0).Lines()).ToArray());
+
+            Assert.That(finished, Does.Contain(RunClock.AfterTheRun));
+            Assert.That(finished, Does.Not.Contain("not measured"));
+
+            using (RunLog log = Start())
+            {
+                log.RunStarted(2);
+                log.WriteResultBlock();
+
+                Assert.That(ReadWhileOpen(log.Path), Does.Not.Contain(RunClock.AfterTheRun + " "));
+            }
+        }
+
         /// <summary>A second run in the window that did not finish is not given the first run's finish.</summary>
         [Test]
         public void ASecondRunThatDidNotFinishIsNotGivenTheFirstRunsFinish()

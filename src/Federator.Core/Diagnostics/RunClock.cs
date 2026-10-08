@@ -142,10 +142,16 @@ namespace Federator.Core.Diagnostics
 
             if (!Finished)
             {
-                lines.Add("the run started and RUN finished was never marked, so the run is counted to now");
+                // A run counted to now ends where the block is written, so no stretch after it was
+                // measured, and a row of nought seconds would read as one.
+                lines.Add("the run started and RUN finished was never marked, so the run is counted to now "
+                    + "and the time after the run is not measured");
+            }
+            else
+            {
+                lines.Add(Row(AfterTheRun, AfterSeconds));
             }
 
-            lines.Add(Row(AfterTheRun, AfterSeconds));
             lines.Add("the run is RUN started to RUN finished, and every share below is "
                 + "worked off it. The other two are not work this tool did");
 
