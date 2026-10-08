@@ -628,10 +628,13 @@ namespace Federator.Core.Tests
                     IXLStyle own = sheet.Cell(row, column).Style;
                     IXLStyle below = sheet.Cell(row + 1, column).Style;
 
-                    Assert.That(own.Fill.PatternType, Is.Not.EqualTo(XLFillPatternValues.None), "the row itself is grey, column " + column);
-                    Assert.That(own.Border.TopBorder, Is.EqualTo(XLBorderStyleValues.Thick), "and ruled thick on top, column " + column);
-                    Assert.That(below.Fill.PatternType, Is.EqualTo(XLFillPatternValues.None), "no fill under it, column " + column);
-                    Assert.That(below.Border.TopBorder, Is.EqualTo(XLBorderStyleValues.None), "no border under it, column " + column);
+                    string at = ", column " + column;
+
+                    Assert.That(own.Fill.PatternType, Is.Not.EqualTo(XLFillPatternValues.None), "the row itself is grey" + at);
+                    Assert.That(own.Border.TopBorder, Is.EqualTo(XLBorderStyleValues.Thick), "and ruled thick on top" + at);
+                    Assert.That(own.Border.BottomBorder, Is.EqualTo(XLBorderStyleValues.Thick), "and closed below, name included" + at);
+                    Assert.That(below.Fill.PatternType, Is.EqualTo(XLFillPatternValues.None), "no fill under it" + at);
+                    Assert.That(below.Border.TopBorder, Is.EqualTo(XLBorderStyleValues.None), "no border under it" + at);
                     Assert.That(below.Border.BottomBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
                     Assert.That(below.Border.LeftBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);
                     Assert.That(below.Border.RightBorder, Is.EqualTo(XLBorderStyleValues.None), "column " + column);

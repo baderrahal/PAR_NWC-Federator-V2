@@ -160,9 +160,12 @@ namespace Federator.Core.Report
                     if (row == top)
                     {
                         style.Border.TopBorder = XLBorderStyleValues.Thick;
-                        style.Border.BottomBorder = inTheName
-                            ? XLBorderStyleValues.None
-                            : XLBorderStyleValues.Medium;
+
+                        // The one row form is also the last row, so it closes the box itself, name included.
+                        // The stray second row used to, and after the last block of a sheet nothing else does.
+                        style.Border.BottomBorder = rows == 1
+                            ? XLBorderStyleValues.Thick
+                            : (inTheName ? XLBorderStyleValues.None : XLBorderStyleValues.Medium);
                     }
                     else
                     {

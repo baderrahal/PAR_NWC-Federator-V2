@@ -220,11 +220,11 @@ namespace Federator.Core.Views
         /// <summary>
         /// Notes the set a clash sat in whose name carries no code this tool knows, FR-074. The count of clashes
         /// said how many and never which sets, so a person could not tell whether the one set was the client's
-        /// odd name or a mistake.
+        /// odd name or a mistake. The sets are kept in the order they were first met, not by the clashes they hold.
         /// </summary>
         internal void SetWithNoCode(string setName)
         {
-            string name = string.IsNullOrEmpty(setName) ? "(no set name)" : setName;
+            string name = Words.Or(setName, "(no set name)");
 
             if (!clashesOfSetsWithNoCode.ContainsKey(name))
             {
@@ -299,12 +299,16 @@ namespace Federator.Core.Views
                 for (int i = 0; i < setsWithNoCode.Count && i < RunLog.KeptOfARepeat; i++)
                 {
                     string name = setsWithNoCode[i];
-                    named.Add(name + " (" + Words.Counted(clashesOfSetsWithNoCode[name], "clash", "clashes") + ")");
+                    named.Add(name + " ("
+                        + Words.Counted(clashesOfSetsWithNoCode[name], "clash", "clashes") + ")");
                 }
 
-                lines.Add("    the sets with no code : " + string.Join(", ", named.ToArray())
+                lines.Add("    the sets with no code, a clash counted under each of its sets with none : "
+                    + string.Join(", ", named.ToArray())
                     + (setsWithNoCode.Count > RunLog.KeptOfARepeat
-                        ? ", and " + (setsWithNoCode.Count - RunLog.KeptOfARepeat) + " more"
+                        ? ", and "
+                            + Words.Counted(setsWithNoCode.Count - RunLog.KeptOfARepeat, "more set", "more sets")
+                            + ", counted and not listed"
                         : string.Empty));
             }
 
@@ -438,12 +442,16 @@ namespace Federator.Core.Views
                 {
                     outcome.UnknownDisciplineCount = outcome.UnknownDisciplineCount + 1;
 
-                    if (DisciplinePairRule.CodeIn(clash.LeftSet, settings).Length == 0)
+                    if (!pair.LeftKnown)
                     {
                         outcome.SetWithNoCode(clash.LeftSet);
                     }
 
-                    if (DisciplinePairRule.CodeIn(clash.RightSet, settings).Length == 0)
+                    // A clash between two sets of one name is in that set once, not twice.
+                    bool theSameSet = !pair.LeftKnown
+                        && string.Equals(clash.LeftSet, clash.RightSet, StringComparison.Ordinal);
+
+                    if (!pair.RightKnown && !theSameSet)
                     {
                         outcome.SetWithNoCode(clash.RightSet);
                     }
