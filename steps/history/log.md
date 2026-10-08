@@ -94,6 +94,10 @@ seventeen steps with RENUMBER between IMAGES and VIEWS and GENERIC XLSX after WO
 54, F120's proof steps 482 to 490 and F128's 491 to 506, and the engine holding F120's images, guard and RENUMBER
 changes beside F128's sets step.
 
+Merged as pull request 186 on 2026-10-08 by the lead, 2788 Core tests on the merged tree, 0 failed, 0 skipped, the
+breaker's re-read of the fix in turn6128c-break-reread.json, the body claim-checked, and rows F118-R3 and F115-R24 for the
+two older faults the readings found beside this change.
+
 ## 2026-10-08 The loop, turn 6, F120 the harvest and pictures area of the fix round, FR-075, FR-076 and FR-077, Core done and the add-in built
 
 Bader's order of 8 Oct 2026, Q145 item 3, wave 3a of the fix round, items FR-075, FR-076 and
