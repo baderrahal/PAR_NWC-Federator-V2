@@ -219,6 +219,46 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// Gathered by discipline, every group holds one discipline by construction, so a finding for each said its
+        /// building held only one kind of file and its other disciplines might not be exported. That is one finding
+        /// for all of them, saying no clash is run, and no group is called missing a discipline. The break: one file
+        /// per building still has a finding for each building that holds one discipline.
+        /// </summary>
+        [Test]
+        public void GroupsGatheredByDisciplineAreOneSingleDisciplineFindingAndNeverAMissingOne()
+        {
+            foreach (GroupingMode mode in new[] { GroupingMode.PerBuildingAndDiscipline, GroupingMode.PerDiscipline })
+            {
+                ScanFindings findings = FindingsIn(mode, Files(FullGroup("1B06PK"), FullGroup("1B06BS")));
+                IList<ScanFinding> single = findings.OfKind(FindingKind.SingleDiscipline);
+
+                Assert.That(single.Count, Is.EqualTo(1), mode.ToString());
+                Assert.That(single[0].Buildings.Count, Is.EqualTo(mode == GroupingMode.PerDiscipline ? 4 : 8), mode.ToString());
+                Assert.That(single[0].Headline, Does.StartWith((mode == GroupingMode.PerDiscipline ? "4" : "8")
+                    + " groups each hold a single discipline, because the files are gathered by discipline"));
+                Assert.That(single[0].Detail, Does.Contain("none of them is run, because one discipline cannot clash with itself"));
+                Assert.That(single[0].Detail, Does.Contain("\"One file per building\" or \"One file for everything\""));
+                Assert.That(single[0].Detail, Does.Not.Contain("not been exported"));
+                Assert.That(findings.OfKind(FindingKind.MissingDisciplines).Count, Is.EqualTo(0), mode.ToString());
+            }
+
+            ScanFindings one = FindingsIn(GroupingMode.PerDiscipline, new[] { Nwc("1B06PK", "AR") });
+
+            Assert.That(one.OfKind(FindingKind.SingleDiscipline)[0].Headline, Does.StartWith("The one group holds a single discipline,"));
+        }
+
+        [Test]
+        public void OneFilePerBuildingStillHasASingleDisciplineFindingForEachBuildingHoldingOne()
+        {
+            ScanFindings findings = FindingsIn(
+                GroupingMode.PerBuilding, Files(FullGroup("1B06PK"), new[] { Nwc("1B06BS", "AR") }, new[] { Nwc("1C07BC", "ST") }));
+            IList<ScanFinding> single = findings.OfKind(FindingKind.SingleDiscipline);
+
+            Assert.That(single.Count, Is.EqualTo(2));
+            Assert.That(single[0].Headline, Does.Contain("holds only"));
+        }
+
         // ---------- job 2, near match ----------
 
         // The one real typing error in the 22 group run, a digit one against a capital i.

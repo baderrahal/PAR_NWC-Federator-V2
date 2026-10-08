@@ -243,6 +243,13 @@ namespace Federator.Core.Health
                     ? string.Empty
                     : ", because this group carries no " + referenceDiscipline + " model"));
 
+            string offItself = ReferenceOffItself(reference, internalName);
+
+            if (offItself != null)
+            {
+                lines.Add(offItself);
+            }
+
             int different = 0;
             int notPlaced = 0;
             int onInternal = 0;
@@ -598,6 +605,25 @@ namespace Federator.Core.Health
             }
 
             return new OffCoordinates(reference == null ? null : Named(reference), off, notJudged, models.Count);
+        }
+
+        /// <summary>
+        /// A line saying the reference model is itself off the project's coordinates, or null where it is not,
+        /// F137. Every distance in the block is measured from the reference, so one that names Revit's own
+        /// origin or no shared site at all makes a model that sits where the project puts it read far from
+        /// it. The block says so and changes nothing: which model is the reference stays the first of the
+        /// reference discipline that could be placed, and which model is off is Bader's to decide.
+        /// </summary>
+        private static string ReferenceOffItself(ModelPlacement reference, string internalName)
+        {
+            string how = NamesInternal(reference, internalName)
+                ? "names \"" + internalName + "\" as its shared site, Revit's own origin"
+                : NamesNoSite(reference) ? "names no shared site at all" : null;
+
+            return how == null
+                ? null
+                : "the reference model itself " + how + ", so every distance below is measured from a model that may be the one off the"
+                    + " project's coordinates, and a model listed far from it may be the one in place";
         }
 
         /// <summary>

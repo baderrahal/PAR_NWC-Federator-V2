@@ -49,6 +49,44 @@ namespace Federator.Core.Tests.Health
             Assert.That(block, Does.Contain("reference, shared coordinate \"SWLS-02-SharedCoordinate\""));
         }
 
+        /// <summary>
+        /// A reference that is itself off the project's coordinates is said, F137, because every distance in the
+        /// block is measured from it and a model in place reads far from it. Nothing else moves: the reference is
+        /// still the same model and the models off the coordinates are the same ones.
+        /// </summary>
+        [Test]
+        public void AReferenceThatNamesNoSiteOrInternalIsSaidToBeOffItself()
+        {
+            string noSite = Joined(AlignmentCheck.Lines(
+                new List<ModelPlacement> { At("AR", string.Empty, 0.0, 0.0, 0.0), At("ME", "PW3_Shared_Location", 0.0, 5000.0, 0.0) },
+                AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
+
+            Assert.That(noSite, Does.Contain("AR  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc is the reference"));
+            Assert.That(noSite, Does.Contain("the reference model itself names no shared site at all, so every distance below is measured from a model"
+                + " that may be the one off the project's coordinates, and a model listed far from it may be the one in place"));
+
+            string internalOrigin = Joined(AlignmentCheck.Lines(
+                new List<ModelPlacement> { At("AR", "Internal", 0.0, 0.0, 0.0), At("ME", "PW3_Shared_Location", 0.0, 5000.0, 0.0) },
+                AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
+
+            Assert.That(internalOrigin, Does.Contain("the reference model itself names \"Internal\" as its shared site, Revit's own origin, so every distance below"));
+        }
+
+        /// <summary>The break of the test above: a reference on a real site, or whose site could not be read, is not said to be off.</summary>
+        [Test]
+        public void AReferenceOnARealSiteOrWhoseSiteWasNotReadIsNotSaidToBeOffItself()
+        {
+            string real = Joined(AlignmentCheck.Lines(TheRealGroup(), AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
+
+            Assert.That(real, Does.Not.Contain("the reference model itself"));
+
+            string unread = Joined(AlignmentCheck.Lines(
+                new List<ModelPlacement> { At("AR", ModelPlacement.SiteNotRead, 0.0, 0.0, 0.0), At("ME", "PW3_Shared_Location", 0.0, 5000.0, 0.0) },
+                AlignmentCheck.DefaultFarModelMillimetres, AlignmentCheck.DefaultSkipClashOffCoordinates, true));
+
+            Assert.That(unread, Does.Not.Contain("the reference model itself"), "a read that threw is not a fact about the model");
+        }
+
         [Test]
         public void AModelAtADifferentHeightIsNamedWithTheDifferenceInXYAndZSeparately()
         {
