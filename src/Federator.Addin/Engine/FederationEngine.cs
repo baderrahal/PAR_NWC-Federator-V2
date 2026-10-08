@@ -3757,8 +3757,11 @@ namespace Federator.Addin.Engine
                     {
                         outcome.GenericWorkbookSize = -1;
                         outcome.GenericWorkbookOnDisk = false;
+                        // A file at the path is not called an earlier run's untouched, because a save
+                        // that threw after opening the path, a full disk or a fault while writing the
+                        // package, leaves the old file cut short and File.Exists still reads true.
                         log.Line("XLSX     not written  " + path + (File.Exists(path)
-                            ? "  a file of that name from an earlier run is at the path as it was, and it is not this run's"
+                            ? "  a file of that name is at the path, and whether it is an earlier run's file untouched or one this run cut short is UNKNOWN, so open it knowing that"
                             : "  and no file is at the path"));
                         return;
                     }

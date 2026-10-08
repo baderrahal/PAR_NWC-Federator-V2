@@ -576,8 +576,10 @@ well as to pass.
   written whether or not the clash ran, skipped with its own line where no count was taken,
   there is no report folder or no workbook is wanted this run, and where the write throws
   nothing is listed as written, the size stays unread and one line says whether a file of that
-  name from an earlier run is at the path as it was, because a file this tool did not write is
-  never listed as written, and otherwise read back by size as every
+  name is at the path, and that whether it is an earlier run's file untouched or one this run
+  cut short is UNKNOWN, since a save that threw after opening the path leaves the old file cut
+  short and File.Exists still reads true, because a file this tool did not write is never
+  listed as written, and otherwise read back by size as every
   file is. The settings are `ReportOptions.GenericModels`, read off Core and never typed in the
   window. A plan, a build or a workbook write that throws NEVER FAILS THE GROUP, the lead's
   decision on attempt 2: it logs the failure with what happens next, writes the GENERIC MODELS
