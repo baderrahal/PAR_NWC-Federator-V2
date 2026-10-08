@@ -67,6 +67,32 @@ namespace Federator.Core.Tests
             Assert.That(new ViewpointSettings().MarkAuthor, Is.EqualTo(ViewpointSettings.DefaultMarkAuthor));
         }
 
+        /// <summary>
+        /// The breaker's B6 of F114's add-in pass. The mark stores the camera to three decimals
+        /// and the tolerance is 0.001, so a camera far from the origin whose thousandths round
+        /// read as moved by rounding alone. Both sides are rounded the same way before the
+        /// distance is taken, so an unmoved camera at 500000 units is the tool's, and one moved
+        /// by a hundredth is a person's. Whether the NWF keeps the camera at single precision is
+        /// UNKNOWN until the timed runs.
+        /// </summary>
+        [Test]
+        public void ACameraFarFromTheOriginIsNotReadAsMovedByRoundingAlone()
+        {
+            Point3 far = new Point3(500000.1234, 500000.5678, 500000.9999);
+            string[] comments = { BodyOf(Path, Name, far) };
+
+            MarkJudgement same = ToolViewMark.Judge(Path, Name, far, comments, 0, null, Settings);
+            Assert.That(same.Owner, Is.EqualTo(ViewOwner.Ours), same.Why);
+
+            Point3 nudged = new Point3(500000.1236, 500000.5676, 500000.9999);
+            Assert.That(ToolViewMark.Judge(Path, Name, nudged, comments, 0, null, Settings).Owner, Is.EqualTo(ViewOwner.Ours), "within the thousandth the mark stores");
+
+            Point3 moved = new Point3(500000.1334, 500000.5678, 500000.9999);
+            MarkJudgement changed = ToolViewMark.Judge(Path, Name, moved, comments, 0, null, Settings);
+            Assert.That(changed.Owner, Is.EqualTo(ViewOwner.ChangedByAPerson));
+            Assert.That(changed.Why, Is.EqualTo("its camera was moved"));
+        }
+
         [Test]
         public void AMarkWrittenThenReadGivesTheSameFingerprint()
         {

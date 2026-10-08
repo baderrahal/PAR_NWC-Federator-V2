@@ -256,7 +256,11 @@ namespace Federator.Core.Views
                 return "its camera could not be read, so it is not proved unchanged";
             }
 
-            if (mark.Camera != null && mark.Camera.DistanceTo(camera) > settings.CameraReadBackTolerance)
+            // BOTH ROUNDED TO THE THREE DECIMALS THE MARK STORES, the breaker's B6 of F114's
+            // add-in pass: the mark's camera was written through Number, so the read camera
+            // goes through Number too before the distance is taken, and rounding alone can
+            // never read as moved, however far from the origin the camera sits.
+            if (mark.Camera != null && mark.Camera.DistanceTo(Rounded(camera)) > settings.CameraReadBackTolerance)
             {
                 return "its camera was moved";
             }
@@ -293,6 +297,15 @@ namespace Federator.Core.Views
         private static string Number(double value)
         {
             return value.ToString(CameraFormat, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>The point as the mark would store it, each part through Number and read back.</summary>
+        private static Point3 Rounded(Point3 point)
+        {
+            return new Point3(
+                double.Parse(Number(point.X), CultureInfo.InvariantCulture),
+                double.Parse(Number(point.Y), CultureInfo.InvariantCulture),
+                double.Parse(Number(point.Z), CultureInfo.InvariantCulture));
         }
 
         private static bool Field(string body, ref int at, string field)
