@@ -372,7 +372,7 @@ namespace Federator.Core.Health
                             continue;
                         }
 
-                        bool contains = string.Equals(condition.Test, SetWarnings.ContainsTest, StringComparison.OrdinalIgnoreCase);
+                        bool contains = string.Equals(condition.Test, SetBuildPlan.ContainsTest, StringComparison.OrdinalIgnoreCase);
                         WorksetAsk ask = asks.Find(a => a.Contains == contains && string.Equals(a.Value, value, StringComparison.Ordinal));
 
                         if (ask == null)
