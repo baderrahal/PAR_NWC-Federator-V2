@@ -31,11 +31,13 @@ namespace Federator.Core.Report
     ///
     /// WHAT IS FILLED AND WHAT IS LEFT OUT. Filled: exchange, batchtest, clashtests,
     /// clashtest, summary, clashresults, clashgroup, clashresult, resultstatus,
-    /// clashpoint, pos3f, gridlocation, createddate, date, clashobjects, clashobject,
-    /// layer, objectattribute, description, smarttags, smarttag and logo. Left out,
-    /// because this tool holds nothing to put in them:
+    /// clashpoint, pos3f, gridlocation, clashobjects, clashobject, layer,
+    /// objectattribute, description, smarttags, smarttag, the name and value under the
+    /// last two, and logo. Left out, because this tool holds nothing to put in them:
     /// approveddate, approvedby, assignedto, clashtasklink and everything under it,
-    /// linkage, linkedanimation, clipplaneset, view and camera.
+    /// linkage, linkedanimation, clipplaneset, view and camera. Left out on purpose
+    /// although the date found is held: createddate and date, because the stylesheet
+    /// writes a Date Found column for any it finds and the client's report has none.
     ///
     /// WHAT THIS IS FOR NOW. It is no longer only a file beside the workbook. It is what
     /// the HTML Tabular report is rendered from, by Autodesk's own stylesheet, so every
@@ -91,17 +93,18 @@ namespace Federator.Core.Report
         {
             "exchange", "batchtest", "clashtests", "clashtest", "summary", "clashresults",
             "clashgroup", "clashresult", "resultstatus", "clashpoint", "pos3f",
-            "gridlocation", "createddate", "date", "clashobjects", "clashobject", "layer",
-            "objectattribute", "description", "smarttags", "smarttag", "logo"
+            "gridlocation", "clashobjects", "clashobject", "layer",
+            "objectattribute", "description", "smarttags", "smarttag", "name", "value", "logo"
         };
 
         /// <summary>
         /// Elements of that shape this tool leaves out, because it holds nothing to put in
-        /// them. Left out rather than written empty.
+        /// them, or, createddate and date, because the client's report has no column for them.
+        /// Left out rather than written empty.
         /// </summary>
         internal static readonly string[] LeftOut =
         {
-            "approveddate", "approvedby", "assignedto", "parentgroup", "comments",
+            "createddate", "date", "approveddate", "approvedby", "assignedto", "parentgroup", "comments",
             "pathlink", "clashtasklink", "starttime", "endtime", "taskname", "tasklink",
             "taskuid", "animatorscene", "animatoranim", "linkage", "linkedanimation",
             "clipplaneset", "view", "camera"

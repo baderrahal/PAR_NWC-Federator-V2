@@ -304,6 +304,67 @@ namespace Federator.Core.Tests
             Assert.That(ClashReportXml.LeftOut, Does.Contain("clashtasklink"));
         }
 
+        /// <summary>
+        /// The two lists answer to the file. Filled said createddate and date, which nothing wrote, and the list is
+        /// what the log prints as what was filled.
+        /// </summary>
+        [Test]
+        public void TheListsOfWhatIsFilledAndLeftOutAreWhatTheFileHolds()
+        {
+            ClashReport report = Report();
+            TestReport test = WithRows(report);
+
+            test.Rows[0].Description = "a description the client's report has";
+
+            ClashReportXml writer = new ClashReportXml();
+            writer.LogoHref = "logo.png";
+
+            XDocument document = writer.Build(report);
+            List<string> written = new List<string>();
+
+            foreach (XElement element in document.Descendants())
+            {
+                if (!written.Contains(element.Name.LocalName))
+                {
+                    written.Add(element.Name.LocalName);
+                }
+            }
+
+            written.Add(document.Root.Name.LocalName);
+
+            List<string> unlisted = new List<string>();
+            List<string> noneWritten = new List<string>();
+            List<string> leftOutButWritten = new List<string>();
+
+            foreach (string name in written)
+            {
+                if (Array.IndexOf(ClashReportXml.Filled, name) < 0)
+                {
+                    unlisted.Add(name);
+                }
+
+                if (Array.IndexOf(ClashReportXml.LeftOut, name) >= 0)
+                {
+                    leftOutButWritten.Add(name);
+                }
+            }
+
+            foreach (string name in ClashReportXml.Filled)
+            {
+                if (!written.Contains(name))
+                {
+                    noneWritten.Add(name);
+                }
+            }
+
+            Assert.That(
+                unlisted.Count + noneWritten.Count + leftOutButWritten.Count,
+                Is.EqualTo(0),
+                "written and not listed: " + string.Join(", ", unlisted.ToArray())
+                    + " | listed and not written: " + string.Join(", ", noneWritten.ToArray())
+                    + " | written and left out: " + string.Join(", ", leftOutButWritten.ToArray()));
+        }
+
         // Nothing here may read the workbook and nothing there may read this. The XML is
         // built from the model alone.
         [Test]

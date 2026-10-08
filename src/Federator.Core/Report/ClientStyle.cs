@@ -29,6 +29,8 @@ namespace Federator.Core.Report
     ///                    writes one whatever we do
     ///   hyperlinks       theirs has none at all. Ours links the picture, which is a rule
     ///                    of its own and is worth more than the match
+    ///   the Priority     ours and not theirs, in T one past the last column of theirs, written
+    ///   column           only where a priority file was picked, WorkbookWriter.ColumnPriority
     /// </summary>
     public static class ClientStyle
     {
