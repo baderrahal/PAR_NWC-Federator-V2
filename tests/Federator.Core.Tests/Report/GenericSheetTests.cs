@@ -47,10 +47,20 @@ namespace Federator.Core.Tests
 
             for (int i = 0; i < counts.Length; i++)
             {
-                outcome.AddAlreadyPresent(plan.Sets[i].Set.Path, "model" + i, 2, counts[i]).Asked = plan.Sets[i].Set.Describe();
+                Present(outcome, plan.Sets[i], counts[i]);
             }
 
             return GenericModelsReport.From(plan, outcome.Results);
+        }
+
+        /// <summary>A set already in the document as the builder records it, the conditions read off it beside the words.</summary>
+        private static void Present(SetBuildOutcome outcome, GenericModelSet set, int items)
+        {
+            IList<ReadCondition> asks = ReadCondition.Of(set.Set);
+            SetResult result = outcome.AddAlreadyPresent(set.Set.Path, set.ModelName, set.Set.ConditionCount, items);
+
+            result.Asked = SetDrift.Compare(asks, set.Set).AskedNow();
+            result.AskedConditions = asks;
         }
 
         /// <summary>A workbook the client's sheet and this one were written into, saved and opened again off the disk.</summary>
@@ -115,7 +125,7 @@ namespace Federator.Core.Tests
             GenericModelsPlan plan = GenericModelsPlan.For(
                 new[] { new GenericModelInput("a.nwc"), new GenericModelInput("b.nwc") }, new GenericModelsSettings());
             SetBuildOutcome outcome = new SetBuildOutcome();
-            outcome.AddAlreadyPresent(plan.Sets[0].Set.Path, "a", 2, 7).Asked = plan.Sets[0].Set.Describe();
+            Present(outcome, plan.Sets[0], 7);
             GenericModelsReport report = GenericModelsReport.From(plan, outcome.Results);
 
             using (XLWorkbook workbook = Written(report, "Generic Models"))
@@ -196,8 +206,8 @@ namespace Federator.Core.Tests
             GenericModelsPlan meet = GenericModelsPlan.For(
                 new[] { new GenericModelInput("A-ME.nwc"), new GenericModelInput("A-ME2.nwc") }, new GenericModelsSettings());
             SetBuildOutcome outcome = new SetBuildOutcome();
-            outcome.AddAlreadyPresent(meet.Sets[0].Set.Path, "A-ME", 2, 1400).Asked = meet.Sets[0].Set.Describe();
-            outcome.AddAlreadyPresent(meet.Sets[1].Set.Path, "A-ME2", 2, 400).Asked = meet.Sets[1].Set.Describe();
+            Present(outcome, meet.Sets[0], 1400);
+            Present(outcome, meet.Sets[1], 400);
 
             string summary = GenericSheet.Summary(GenericModelsReport.From(meet, outcome.Results));
 
@@ -222,7 +232,7 @@ namespace Federator.Core.Tests
 
             for (int i = 0; i < names.Length; i++)
             {
-                outcome.AddAlreadyPresent(plan.Sets[i].Set.Path, names[i], 2, i + 1).Asked = plan.Sets[i].Set.Describe();
+                Present(outcome, plan.Sets[i], i + 1);
             }
 
             using (XLWorkbook workbook = Written(GenericModelsReport.From(plan, outcome.Results), "Generic Models"))

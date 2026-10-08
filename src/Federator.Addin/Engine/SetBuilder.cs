@@ -824,6 +824,7 @@ namespace Federator.Addin.Engine
                         // "asked UNKNOWN, because it was already in the NWF and this
                         // run never read its question". 5w reads it.
                         present.Asked = askedNow;
+                        present.AskedConditions = asking;
 
                         // 3b. A set that found NOTHING says which of three things is wrong,
                         // because his own report shows 1,677 of 1,830 tests touching a

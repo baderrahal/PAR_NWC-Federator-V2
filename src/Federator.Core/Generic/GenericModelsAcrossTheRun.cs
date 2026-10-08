@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Generic
 {
@@ -124,7 +125,7 @@ namespace Federator.Core.Generic
 
         private static string Count(int number, string one)
         {
-            return number + " " + one + (number == 1 ? string.Empty : "s");
+            return Words.Counted(number, one, one + "s");
         }
     }
 }

@@ -428,9 +428,13 @@ namespace Federator.Core.Tests
             Assert.That(GenericModelInput.From("a.nwc", "x/y\\c.rvt").MatchText, Is.EqualTo("c.rvt"));
         }
 
-        /// <summary>A model with no source name, or one that ends in a separator, is looked for by its stem, which the plan already does for a null text.</summary>
+        /// <summary>
+        /// A model with no source name, or one that ends in a separator, is looked for by its stem, AND THE PLAN
+        /// SAYS SO, the readers' finding on attempt 1: in silence a model published under another Revit name
+        /// counts nought, and the SETS line said every set looks for the Revit file name.
+        /// </summary>
         [Test]
-        public void AModelWithNoSourceNameIsLookedForByItsStem()
+        public void AModelWithNoSourceNameIsLookedForByItsStemAndThePlanSaysWhich()
         {
             Assert.That(GenericModelInput.From("a.nwc", null).MatchText, Is.Null);
             Assert.That(GenericModelInput.From("a.nwc", string.Empty).MatchText, Is.Null);
@@ -438,9 +442,49 @@ namespace Federator.Core.Tests
             Assert.That(GenericModelInput.From("a.nwc", "Autodesk Docs://KSA_New Murabba/").MatchText, Is.Null);
 
             GenericModelsPlan plan = GenericModelsPlan.For(
-                new[] { GenericModelInput.From("a.nwc", "Autodesk Docs://KSA_New Murabba/") }, new GenericModelsSettings());
+                new[]
+                {
+                    GenericModelInput.From("a.nwc", "Autodesk Docs://KSA_New Murabba/"),
+                    GenericModelInput.From("b.nwc", "Autodesk Docs://KSA_New Murabba/b2.rvt"),
+                    GenericModelInput.From("c.nwc", null)
+                },
+                new GenericModelsSettings());
 
             Assert.That(plan.Sets[0].MatchText, Is.EqualTo("a"));
+            Assert.That(plan.LookingForTheStem, Is.EqualTo(new[] { "a", "c" }));
+            Assert.That(plan.Notes, Has.Some.EqualTo("the source name of 2 models was not read, so their sets look for the stem of the NWC's name and not a Revit file name, "
+                + "which counts nought for a model published under another name: a, c"));
+            Assert.That(GenericModelInput.From("a.nwc", null).SourceNameNotRead, Is.True);
+            Assert.That(GenericModelInput.From("a.nwc", "x/a.rvt").SourceNameNotRead, Is.False);
+            Assert.That(plan.LooksFor, Is.EqualTo("its Source File contains the model's Revit file name, except 2 sets of 3 that look for the stem of the NWC's name because no source name was read"));
+        }
+
+        [Test]
+        public void TheSetsLineSaysWhatEverySetLooksFor()
+        {
+            Assert.That(GenericModelsPlan.For(new[] { GenericModelInput.From("a.nwc", "x/a.rvt") }, new GenericModelsSettings()).LooksFor,
+                Is.EqualTo("its Source File contains the model's Revit file name"));
+            Assert.That(GenericModelsPlan.For(new[] { GenericModelInput.From("a.nwc", null) }, new GenericModelsSettings()).LooksFor,
+                Is.EqualTo("its Source File contains the stem of the NWC's name, because no model's source name was read"));
+            Assert.That(GenericModelsPlan.For(new[] { GenericModelInput.From("a.nwc", "x/a.rvt") }, new GenericModelsSettings()).LookingForTheStem, Is.Empty);
+            Assert.That(Plan("a.nwc").Notes, Is.Empty, "a caller that hands no text on purpose asks for the stem, and that is no fallback");
+            Assert.That(Plan("a.nwc").LooksFor, Is.EqualTo("its Source File contains the model's Revit file name"));
+        }
+
+        /// <summary>
+        /// THE LEFTOVER WALK RUNS ONLY WHERE THE PLAN WAS MADE AND HOLDS A MODEL, the readers' finding on attempt 1:
+        /// a plan that is null or empty hands the walk no name, and with the rebuild box on last week's Generic
+        /// Models set of every model is removed and the NWF saved.
+        /// </summary>
+        [Test]
+        public void TheLeftoverWalkIsRefusedWhereThePlanWasNotMadeOrHoldsNoModel()
+        {
+            Assert.That(GenericModelsPlan.WhyNoLeftoverWalk(null), Is.EqualTo(
+                "the Generic Models plan was not made, so the sets the file no longer names are not walked and no set of either plan is removed"));
+            Assert.That(GenericModelsPlan.WhyNoLeftoverWalk(Plan()), Is.EqualTo(
+                "the Generic Models plan holds no model, so the sets the file no longer names are not walked and no set of either plan is removed"));
+            Assert.That(GenericModelsPlan.WhyNoLeftoverWalk(Plan(string.Empty)), Does.Contain("holds no model"), "a model with no file name has no set");
+            Assert.That(GenericModelsPlan.WhyNoLeftoverWalk(Plan("a.nwc")), Is.Null);
         }
 
         /// <summary>

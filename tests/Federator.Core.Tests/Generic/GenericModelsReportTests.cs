@@ -33,14 +33,23 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// A set already in the document, as the builder records it: counted, and carrying the question the
-        /// document's own set asks, which is what the plan asks unless the test says otherwise.
+        /// document's own set asks, read off it the way the add-in reads it, the conditions and the prose
+        /// SetDrift.AskedNow writes of them, which carries no display names. What the plan asks unless the
+        /// test hands other conditions.
         /// </summary>
         private static SetResult Present(SetBuildOutcome outcome, GenericModelsPlan plan, int model, int items)
         {
+            return Present(outcome, plan, model, items, ReadCondition.Of(plan.Sets[model].Set));
+        }
+
+        private static SetResult Present(SetBuildOutcome outcome, GenericModelsPlan plan, int model, int items, IList<ReadCondition> asks)
+        {
             GenericModelSet set = plan.Sets[model];
             SetResult result = outcome.AddAlreadyPresent(set.Set.Path, set.ModelName, set.Set.ConditionCount, items);
+            SetDrift drift = SetDrift.Compare(asks, set.Set);
 
-            result.Asked = set.Set.Describe();
+            result.Asked = drift.AskedNow();
+            result.AskedConditions = asks;
             return result;
         }
 
@@ -178,8 +187,11 @@ namespace Federator.Core.Tests
             GenericModelsPlan plan = Plan("a.nwc", "b.nwc");
             SetBuildOutcome outcome = new SetBuildOutcome();
             Present(outcome, plan, 0, 8);
-            SetResult old = Present(outcome, plan, 1, 0);
-            old.Asked = "LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals \"Furniture\" and LcOaNodeSourceFile (Source File) contains \"b\"";
+            Present(outcome, plan, 1, 0, new List<ReadCondition>
+            {
+                new ReadCondition("LcRevitData_Element", "LcRevitPropertyElementCategory", "equals", "Furniture", 0),
+                new ReadCondition(string.Empty, "LcOaNodeSourceFile", "contains", "b", 0)
+            });
 
             GenericModelsReport report = GenericModelsReport.From(plan, outcome.Results);
 
@@ -190,6 +202,63 @@ namespace Federator.Core.Tests
             Assert.That(Of(report, "b").WhyNotCounted, Does.Contain("asks something other than the plan asks"));
             Assert.That(Of(report, "b").WhyNotCounted, Does.Contain("equals \"Furniture\""));
             Assert.That(Of(report, "b").WhyNotCounted, Does.Contain("equals \"Generic Models\""));
+        }
+
+        /// <summary>
+        /// THE WEEKLY RERUN, the readers' finding on attempt 1. The question read off a present set is said
+        /// without display names, SetDrift.AskedNow, and the plan's with them, PlannedSet.Describe, so a
+        /// compare of the two words called every present set a set asking another question and every
+        /// model was UNKNOWN after the first run. The set is compared by the keys SetDrift compares on.
+        /// </summary>
+        [Test]
+        public void APresentSetAskingWhatThePlanAsksIsCountedThoughItsWordsCarryNoDisplayNames()
+        {
+            GenericModelsPlan plan = Plan("a.nwc", "b.nwc");
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            SetResult present = Present(outcome, plan, 0, 528);
+            Present(outcome, plan, 1, 0);
+
+            Assert.That(present.Asked, Is.Not.EqualTo(plan.Sets[0].Set.Describe()), "the two prose forms differ, which is the trap");
+            Assert.That(present.Asked, Does.Not.Contain("(Category)"));
+            Assert.That(plan.Sets[0].Set.Describe(), Does.Contain("(Category)"));
+
+            GenericModelsReport report = GenericModelsReport.From(plan, outcome.Results);
+
+            Assert.That(Of(report, "a").Counted, Is.True, "a present set asking the plan's question is counted");
+            Assert.That(Of(report, "a").Items, Is.EqualTo(528));
+            Assert.That(Of(report, "b").Counted, Is.True);
+            Assert.That(report.WithNone, Is.EqualTo(1));
+            Assert.That(report.NotCounted, Is.EqualTo(0));
+        }
+
+        /// <summary>A present set whose value would not read is a question not read, by the same rule, FR-017.</summary>
+        [Test]
+        public void APresentSetWhoseValueWouldNotReadIsNotCounted()
+        {
+            GenericModelsPlan plan = Plan("a.nwc");
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            Present(outcome, plan, 0, 4, new List<ReadCondition>
+            {
+                new ReadCondition("LcRevitData_Element", "LcRevitPropertyElementCategory", "equals", "Generic Models", 0),
+                ReadCondition.Unread(string.Empty, "LcOaNodeSourceFile", "contains", 0, "the value would not read")
+            });
+
+            GenericModelsReport report = GenericModelsReport.From(plan, outcome.Results);
+
+            Assert.That(Of(report, "a").Counted, Is.False);
+            Assert.That(Of(report, "a").WhyNotCounted, Does.Contain("the question it asks was not read"));
+        }
+
+        [Test]
+        public void TheFailedBlockSaysWhatThrewThatTheCountIsUnknownAndThatTheGroupKeepsItsResult()
+        {
+            IList<string> lines = GenericModelsReport.FailedLines("planning the Generic Models sets", "InvalidOperationException: the model would not read");
+
+            Assert.That(lines.Count, Is.EqualTo(2));
+            Assert.That(lines[0], Is.EqualTo("FAILED  planning the Generic Models sets threw InvalidOperationException: the model would not read, "
+                + "so no model of this group is counted, its count is UNKNOWN and the group keeps its own result"));
+            Assert.That(lines[1], Is.EqualTo(GenericModelsReport.NoClashTest));
+            Assert.That(GenericModelsReport.FailedLines(null, null)[0], Does.Contain("the Generic Models count threw UNKNOWN"));
         }
 
         [Test]

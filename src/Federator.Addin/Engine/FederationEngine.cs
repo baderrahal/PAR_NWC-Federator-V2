@@ -2758,8 +2758,21 @@ namespace Federator.Addin.Engine
                 RunSteps.Sets,
                 () =>
                 {
-                    GenericModelsPlan generic = PlanTheGenericSets(document, job, outcome);
+                    GenericModelsPlan generic = PlanTheGenericSets(document, job);
                     bool changed = fromTheFile && BuildTheSetsFromTheFile(document, job, outcome, generic);
+
+                    // Q74. THE PAIR FAILED BETWEEN ITS TWO HALVES and the file's build declared
+                    // the document damaged, so it asked no save. Nothing more goes into that
+                    // document and nothing may be saved from it, so the Generic Models sets are
+                    // not built and the step asks no save, the breaker's finding on attempt 1.
+                    if (outcome.Sets != null && !string.IsNullOrEmpty(outcome.Sets.TheDocumentIsDamaged))
+                    {
+                        genericAcrossTheRun.AddNotCounted(job.Building);
+                        log.Line("SETS     " + job.Building
+                            + " Generic Models, not built, because the picked file's sets left the document damaged, so nothing more is put in and the NWF is not saved");
+                        return false;
+                    }
+
                     return BuildTheGenericSets(document, job, outcome, generic) || changed;
                 },
                 () => SetsPhrase(outcome, fromTheFile));
@@ -2786,9 +2799,11 @@ namespace Federator.Addin.Engine
         /// of an item is the bare name of the Revit file the NWC was published from, and for four of
         /// 1A04PK's ten models that is not the NWC's name, so the NWC's stem would count three of
         /// them at nought where they hold 3, 6 and 32. Null where the models would not read, said
-        /// in the log, and then no set is built and the group is counted as not counted.
+        /// in the log and in a FAILED block, and then no set is built, the group is counted as not
+        /// counted and keeps its own result, the lead's decision on attempt 2, as a report check
+        /// never fails a group.
         /// </summary>
-        private GenericModelsPlan PlanTheGenericSets(Document document, FederationJob job, JobOutcome outcome)
+        private GenericModelsPlan PlanTheGenericSets(Document document, FederationJob job)
         {
             try
             {
@@ -2809,8 +2824,7 @@ namespace Federator.Addin.Engine
 
                 log.Line("SETS     " + job.Building + " Generic Models, " + plan.Sets.Count
                     + (plan.Sets.Count == 1 ? " set" : " sets") + " planned in the folder " + plan.Folder
-                    + ", one search set a model asking " + plan.Asked
-                    + " and its Source File contains the model's Revit file name, no clash test");
+                    + ", one search set a model asking " + plan.Asked + " and " + plan.LooksFor + ", no clash test");
 
                 foreach (string note in plan.Notes)
                 {
@@ -2821,11 +2835,15 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
-                outcome.AddError("planning the Generic Models sets threw " + error.GetType().Name + ": " + error.Message);
+                // Never the group's error. The count is UNKNOWN, the block says so, and the group
+                // keeps its own result, as F127's coverage does.
                 log.Failure(
                     "planning the Generic Models sets for " + job.Building,
                     error,
-                    "kept going, no Generic Models set is built for this group and its count is UNKNOWN");
+                    "kept going, no Generic Models set is built for this group, its count is UNKNOWN and the group keeps its own result");
+                log.Block(
+                    GenericModelsReport.BlockTitle + " " + job.Building,
+                    GenericModelsReport.FailedLines("planning the Generic Models sets", error.GetType().Name + ": " + error.Message));
                 return null;
             }
         }
@@ -2876,12 +2894,16 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
+                // Never the group's error, the lead's decision on attempt 2: a FAILED line in the
+                // block, the count UNKNOWN, and the group keeps its own result.
                 genericAcrossTheRun.AddNotCounted(job.Building);
-                outcome.AddError("building the Generic Models sets threw " + error.GetType().Name + ": " + error.Message);
                 log.Failure(
                     "building the Generic Models sets for " + job.Building,
                     error,
-                    "kept going, the count of this group is UNKNOWN and the tests do not read these sets");
+                    "kept going, the count of this group is UNKNOWN, the tests do not read these sets and the group keeps its own result");
+                log.Block(
+                    GenericModelsReport.BlockTitle + " " + job.Building,
+                    GenericModelsReport.FailedLines("building the Generic Models sets", error.GetType().Name + ": " + error.Message));
                 return false;
             }
         }
@@ -2923,9 +2945,20 @@ namespace Federator.Addin.Engine
                 // tool as this group's only where the group's models name the project they were
                 // measured on, read off the models the EXPORT CHECK read for this group. The
                 // leftover walk is handed the Generic Models set names as wanted, F128, so a set
-                // of theirs the last run saved is not removed as a set the file no longer names.
+                // of theirs the last run saved is not removed as a set the file no longer names,
+                // and it is not walked at all where that plan was not made or holds no model,
+                // because it would then remove last week's set of every model, the readers'
+                // finding on attempt 1. A set of a model that has left the group is stale and
+                // the walk removes it with the box on, which is right.
+                string whyNoWalk = GenericModelsPlan.WhyNoLeftoverWalk(generic);
+
+                if (whyNoWalk != null && reports.RebuildDriftedSets)
+                {
+                    log.Line("SETS     " + job.Building + " " + whyNoWalk);
+                }
+
                 SetBuildOutcome sets = new SetBuilder(Tick, log, Rebuilds())
-                    .Build(plan, EmptySetJudge.For(plan, groupExports, reports.Names), true, generic == null ? null : generic.SetNames);
+                    .Build(plan, EmptySetJudge.For(plan, groupExports, reports.Names), whyNoWalk == null, whyNoWalk == null ? generic.SetNames : null);
                 outcome.Sets = sets;
                 setsAcrossTheRun.Add(sets);
 
@@ -3705,12 +3738,13 @@ namespace Federator.Addin.Engine
                     }
                     catch (Exception error)
                     {
-                        outcome.AddError(
-                            "writing the Generic Models workbook threw " + error.GetType().Name + ": " + error.Message);
+                        // Never the group's error, the lead's decision on attempt 2. The disk is
+                        // read next, so a write that threw with last week's file still there is
+                        // said as written with that file's size, the breaker's dropped point.
                         log.Failure(
                             "writing the Generic Models workbook for " + job.Building,
                             error,
-                            "kept going, the disk is checked next to see whether anything landed");
+                            "kept going, the disk is checked next to see whether anything landed, and the group keeps its own result");
                     }
 
                     outcome.GenericWorkbookSize = log.WriteFinished("XLSX", path);
