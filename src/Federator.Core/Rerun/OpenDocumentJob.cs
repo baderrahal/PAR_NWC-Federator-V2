@@ -271,6 +271,9 @@ namespace Federator.Core.Rerun
         /// groups, and the open file run had nothing, so the RESULT block that followed
         /// counted a group nobody could see. These are the same fields where they apply,
         /// and the ones that do not apply say so rather than being left blank.
+        ///
+        /// F129. A picked NWF runs this same route once this run has opened it, and its
+        /// block says so in the decision line, NwfPick.SummaryTitle above it.
         /// </summary>
         public static IList<string> SummaryLines(
             string openPath,
@@ -279,18 +282,21 @@ namespace Federator.Core.Rerun
             string reportFolder,
             string clashSummary,
             GroupOutcome outcome,
-            string reason)
+            string reason,
+            bool openedByThisRun)
         {
             List<string> lines = new List<string>();
 
             lines.Add("file          : " + Words.Or(openPath, Unsaved + ", nothing to run"));
-            lines.Add("decision      : opened file, no Decide, nothing appended and nothing cleared");
+            lines.Add("decision      : " + (openedByThisRun
+                ? "picked NWF, opened by this run where it sits, its file list not compared, nothing appended and nothing cleared"
+                : "opened file, no Decide, nothing appended and nothing cleared"));
             lines.Add("clash file    : " + Words.Or(clashFile, "none picked"));
             lines.Add("clash         : " + Words.Or(clashSummary, "no clash step ran"));
             lines.Add("NWD           : " + Words.Or(nwdPath, "not written, the file has no folder"));
             lines.Add("report folder : " + Words.Or(reportFolder, "not worked out, the file has no folder"));
             lines.Add("source folder : not applicable, nothing was scanned");
-            lines.Add("grouping      : not applicable, the open file is the one group");
+            lines.Add("grouping      : not applicable, " + (openedByThisRun ? "each picked NWF is one group" : "the open file is the one group"));
             lines.Add("files ticked  : not applicable, the models are the ones inside the file");
             lines.Add("outcome       : " + outcome.ToString().ToUpperInvariant()
                 + (string.IsNullOrEmpty(reason) ? string.Empty : ", " + reason));

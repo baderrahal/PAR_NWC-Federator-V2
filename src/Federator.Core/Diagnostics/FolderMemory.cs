@@ -28,7 +28,14 @@ namespace Federator.Core.Diagnostics
         ByDesign,
 
         /// <summary>The picture the client report page carries, if anyone picks one.</summary>
-        Logo
+        Logo,
+
+        /// <summary>
+        /// The existing NWF or folder of NWFs on the Source step, F129. Its own kind and not
+        /// the NWF output folder's, because the NWFs a person runs as they are and the folder
+        /// a scanned run writes to are not the same place as often as not.
+        /// </summary>
+        PickedNwf
     }
 
     /// <summary>
@@ -135,7 +142,8 @@ namespace Federator.Core.Diagnostics
                 PickerKind.ClashXml,
                 PickerKind.Priority,
                 PickerKind.ByDesign,
-                PickerKind.Logo
+                PickerKind.Logo,
+                PickerKind.PickedNwf
             };
         }
 

@@ -1491,6 +1491,9 @@ namespace Federator.Core.Diagnostics
             Detail("reason   : " + Words.Or(reason, "UNKNOWN"));
         }
 
+        /// <summary>What the GROUP started line says in place of a count where no file list is handed in, F129.</summary>
+        public const string GroupFilesReadAtTheOpen = "its files are read once its NWF opens";
+
         public void GroupStarted(string building, IList<string> files)
         {
             lock (gate)
@@ -1503,7 +1506,10 @@ namespace Federator.Core.Diagnostics
                 censusCost.NextGroup();
             }
 
-            Line("GROUP    started  " + building + "  " + (files == null ? 0 : files.Count) + " files");
+            // F129. A picked NWF's models are known only once it opens, so no list is handed in
+            // and the line says so rather than counting nothing as no files.
+            Line("GROUP    started  " + building + "  "
+                + (files == null ? GroupFilesReadAtTheOpen : files.Count + " files"));
 
             // Said at the top of the group rather than where a census is missing, so no
             // reader ever wonders why a step has none around it.
@@ -2052,11 +2058,12 @@ namespace Federator.Core.Diagnostics
             OffCoordinatesAcrossTheRun thisRun = null,
             bool makeViewpoints = true,
             CoverageAcrossTheRun coverage = null,
-            GenericModelsAcrossTheRun generic = null)
+            GenericModelsAcrossTheRun generic = null,
+            string pickedNwfs = null)
         {
             try
             {
-                WriteTheResult(thisRun, makeViewpoints, coverage, generic);
+                WriteTheResult(thisRun, makeViewpoints, coverage, generic, pickedNwfs);
             }
             finally
             {
@@ -2066,7 +2073,11 @@ namespace Federator.Core.Diagnostics
         }
 
         private void WriteTheResult(
-            OffCoordinatesAcrossTheRun thisRun, bool makeViewpoints, CoverageAcrossTheRun coverage, GenericModelsAcrossTheRun generic)
+            OffCoordinatesAcrossTheRun thisRun,
+            bool makeViewpoints,
+            CoverageAcrossTheRun coverage,
+            GenericModelsAcrossTheRun generic,
+            string pickedNwfs)
         {
             // Before RESULT, so RESULT stays the last thing in the file and does not have
             // to be scrolled for, and so where the time went is read on the way to it.
@@ -2095,6 +2106,13 @@ namespace Federator.Core.Diagnostics
             Line("groups done    : " + CountOf(GroupOutcome.Done));
             Line("groups partial : " + CountOf(GroupOutcome.Partial));
             Line("groups failed  : " + CountOf(GroupOutcome.Failed));
+
+            // F129. Under the group counts, because each picked NWF is one of those groups. Only
+            // for a run of picked NWFs, NwfPickPlan.ResultLine.
+            if (!string.IsNullOrEmpty(pickedNwfs))
+            {
+                Line(pickedNwfs);
+            }
 
             // F136. Under the group counts, because a group of an unticked run is DONE
             // without a viewpoint. No line where the box was ticked.

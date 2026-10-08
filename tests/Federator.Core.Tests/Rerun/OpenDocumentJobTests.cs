@@ -145,7 +145,8 @@ namespace Federator.Core.Tests
                 OpenDocumentJob.ReportFolder(OpenHere, string.Empty).Folder,
                 "1830 created, 48 with clashes",
                 GroupOutcome.Done,
-                null);
+                null,
+                false);
 
             string all = string.Join("\n", new List<string>(lines).ToArray());
 
@@ -163,7 +164,7 @@ namespace Federator.Core.Tests
         {
             IList<string> lines = OpenDocumentJob.SummaryLines(
                 OpenHere, null, OpenDocumentJob.NwdBeside(OpenHere), null, null,
-                GroupOutcome.Failed, "the NWD was requested and is not on disk");
+                GroupOutcome.Failed, "the NWD was requested and is not on disk", false);
 
             Assert.That(lines, Has.Some.StartsWith("source folder : not applicable"));
             Assert.That(lines, Has.Some.StartsWith("grouping      : not applicable"));
@@ -177,6 +178,25 @@ namespace Federator.Core.Tests
                 Assert.That(line.TrimEnd(), Does.Not.EndWith(":"),
                     "a field is never left blank: " + line);
             }
+        }
+
+        /// <summary>
+        /// F129. A picked NWF runs this route once the run has opened it, and its block says
+        /// it was picked and opened by the run, where the open file's says no Decide.
+        /// </summary>
+        [Test]
+        public void APickedNwfsSummarySaysTheRunOpenedItAndEachIsOneGroup()
+        {
+            IList<string> picked = OpenDocumentJob.SummaryLines(
+                OpenHere, null, OpenDocumentJob.NwdBeside(OpenHere), null, null, GroupOutcome.Done, null, true);
+            IList<string> open = OpenDocumentJob.SummaryLines(
+                OpenHere, null, OpenDocumentJob.NwdBeside(OpenHere), null, null, GroupOutcome.Done, null, false);
+
+            Assert.That(picked, Has.Some.StartsWith("decision      : picked NWF, opened by this run where it sits"));
+            Assert.That(picked, Has.Some.EqualTo("grouping      : not applicable, each picked NWF is one group"));
+            Assert.That(picked, Has.None.Contains("no Decide"));
+            Assert.That(open, Has.Some.EqualTo("decision      : opened file, no Decide, nothing appended and nothing cleared"));
+            Assert.That(open, Has.Some.EqualTo("grouping      : not applicable, the open file is the one group"));
         }
 
         /// <summary>
