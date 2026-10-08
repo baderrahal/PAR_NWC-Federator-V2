@@ -181,8 +181,8 @@ FR-179,shift range tick in the group list,F130,3b,Bader's request,open,none,none
 FR-189,nwd listed as written when its publish failed,F119,3b,silent wrong number,open,none,none,2026-10-05
 FR-180,team map beside the picked xml,F131,2b,Bader's decision,merged,135,none,2026-10-07
 FR-181,mechanical sets miss hv pl fp models,F131,2b,Bader's decision,in progress,"135 merged for F131, the COVERAGE block and the form wait for F127",none,2026-10-07
-FR-182,mirrored tests kept once,F132,2a,Bader's decision,merged,UNKNOWN,none,2026-10-08
-FR-183,mirrored tests in an existing nwf,F132,2a,Bader's decision,merged,UNKNOWN,none,2026-10-08
+FR-182,mirrored tests kept once,F132,2a,Bader's decision,merged,177,none,2026-10-08
+FR-183,mirrored tests in an existing nwf,F132,2a,Bader's decision,merged,177,none,2026-10-08
 FR-184,views tree by priority and team pair,F114,2b,Bader's decision,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
 FR-185,one view per test of its open clashes,F114,2b,Bader's decision,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
 FR-186,views made fresh only the tools own,F114,2b,Bader's decision,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
@@ -328,7 +328,7 @@ F128,generic models,F128,2b,fix,open,none,none,2026-10-04
 F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
 F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
 F131,teams,F131,2b,fix,merged,135,none,2026-10-07
-F132,mirrored tests,F132,2a,fix,merged,UNKNOWN,none,2026-10-08
+F132,mirrored tests,F132,2a,fix,merged,177,none,2026-10-08
 F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-06
 F134,the code health gate,F134,beside the waves,fix,in progress,"none, measured under %LOCALAPPDATA%\NwcFederatorLoop\health",none,2026-10-05
 F135,the analyser settings that touch every project,F135,beside the waves,fix,open,none,none,2026-10-05
@@ -348,10 +348,10 @@ Q112-2,coverage of the clash XML (FR-176),F127,2a,Bader's request,in progress,"1
 Q112-3,generic models counted and a set per model (FR-177),F128,2b,Bader's request,open,none,none,2026-10-04
 Q112-4,start from an existing NWF (FR-178),F129,3a,Bader's request,open,none,none,2026-10-04
 Q112-5,Shift range tick in the group list (FR-179),F130,3b,Bader's request,open,none,none,2026-10-04
-Q114,one view per clash test by team (FR-180 to FR-188),"F131, F132, F114",2a and 2b,Bader's request,in progress,"135 merged for F131, UNKNOWN for F132, branch fix-F114",none,2026-10-08
+Q114,one view per clash test by team (FR-180 to FR-188),"F131, F132, F114",2a and 2b,Bader's request,in progress,"135 merged for F131, 177 for F132, branch fix-F114",none,2026-10-08
 Q129,a clean tracker and a code health gate (FR-191 to FR-193),"F133, F134, F135",beside the waves,Bader's request,in progress,"122 merged for F133, F134 and F135 not merged",none,2026-10-06
 Q130,stop the C02 weekly run and no viewpoints in test runs until F114 merges (FR-194),F136,before any test run,Bader's request,merged,"117 for F136, 116 records the stop",none,2026-10-05
-Q132,"the new viewpoints first, F136 then F131, F132 and F114","F136, F131, F132, F114",first of all since Bader's order of 2026-10-05,Bader's request,in progress,"117 merged for F136, 135 for F131, UNKNOWN for F132, branch fix-F114",none,2026-10-08
+Q132,"the new viewpoints first, F136 then F131, F132 and F114","F136, F131, F132, F114",first of all since Bader's order of 2026-10-05,Bader's request,in progress,"117 merged for F136, 135 for F131, 177 for F132, branch fix-F114",none,2026-10-08
 Q25,"five clash item properties reach no output, split into Q35 to Q40",F120,3a,question,merged,131,none,2026-10-06
 Q27,the two choice rule for still outstanding lost every reader,F123,5,question,merged,131,none,2026-10-06
 Q28,two handle reads left where they are,"F123, F121",5 and 4,question,merged,131,none,2026-10-06
@@ -468,7 +468,7 @@ FR-201,shared site named default reported only,F137,before the test of wave 1,Ba
 FR-202,sub object ownership measured before two reads change,F121,4,Bader's decision,open,none,none,2026-10-06
 FR-203,open statuses rule stays naming its reader,F123,5,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
 FR-204,manifest line 9 and its one exception,F123,5,Bader's decision,open,none,none,2026-10-06
-Q140,F132's next attempt only for a fault that can change a clash count or its test,F132,2a,Bader's request,merged,UNKNOWN,none,2026-10-08
+Q140,F132's next attempt only for a fault that can change a clash count or its test,F132,2a,Bader's request,merged,177,none,2026-10-08
 Q141,a clash in a result group with two statuses,none,none,question,merged,139,none,2026-10-07
 Q142,when a mirror's clashes may be merged,none,none,question,merged,139,none,2026-10-07
 T5-R-P15CRASH,"probe P15 read a viewpoints copy after Document.Clear, Navisworks crashed and the guard refused the put back, put back by the lead at 14:53 from its backup",none,none,register row,proven by a run,none,"turn5\restart\putback-rebuild-views-20261007-144356-write, 0 still different",2026-10-07
@@ -499,8 +499,8 @@ F115-R21,a side whose sources read as none counts as zero sides and never as not
 F115-R22,a set created and then lost track of is reported FAILED and may not ask for the save,F115,2a,register row,open,none,none,2026-10-07
 F115-R23,two sets of one name in the picked file are built as one set and counted as one created and one already there,F115,2a,register row,open,none,none,2026-10-07
 Q143,"fast to a team release, the seven limits, the two lanes and the hourly lines",none,none,Bader's request,merged,157,none,2026-10-07
-F132-R4,"the views read the document and not the merged report, so a clash only the mirror found gets no viewpoint and a status restated on the kept row is not the one the views read",F132,2a,silent wrong number,merged,UNKNOWN,none,2026-10-08
-F132-R5,"a run with no XML now hands the by design pass real set names, so with the box ticked it writes Reviewed into saved tests and saves the NWF",F132,2a,silent wrong number,merged,"UNKNOWN, the pass kept and said, Q144 for Bader",none,2026-10-08
+F132-R4,"the views read the document and not the merged report, so a clash only the mirror found gets no viewpoint and a status restated on the kept row is not the one the views read",F132,2a,silent wrong number,merged,177,none,2026-10-08
+F132-R5,"a run with no XML now hands the by design pass real set names, so with the box ticked it writes Reviewed into saved tests and saves the NWF",F132,2a,silent wrong number,merged,"177, the pass kept and said, Q144 for Bader",none,2026-10-08
 F127-R1,read-workbook.ps1 reads every sheet as a test sheet so the Coverage sheet makes every F104 verdict NOT PROVED until it reads a sheet named Coverage into a section of its own,F127,2a,register row,open,none,none,2026-10-07
 F137-R1,ModelFactsReader.SharedCoordinateOn returns an empty site where the Location tab is missing so a read fault reads as a model naming no site and skips the clash,F137,before the test of wave 1,register row,open,none,none,2026-10-07
 F137-R2,the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged,F137,before the test of wave 1,register row,open,none,none,2026-10-07

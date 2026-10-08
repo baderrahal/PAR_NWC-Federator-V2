@@ -52,11 +52,11 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-024 | identical sets signature ignores flags | F115 | silent wrong number | merged | 142 | none | 2026-10-07 |
 | FR-027 | empty sets block never written on a first run | F115 | broken feature | merged | 142 | none | 2026-10-07 |
 | FR-176 | coverage of the clash xml | F127 | Bader's request | in progress | 145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop | none | 2026-10-08 |
-| FR-182 | mirrored tests kept once | F132 | Bader's decision | merged | UNKNOWN | none | 2026-10-08 |
-| FR-183 | mirrored tests in an existing nwf | F132 | Bader's decision | merged | UNKNOWN | none | 2026-10-08 |
+| FR-182 | mirrored tests kept once | F132 | Bader's decision | merged | 177 | none | 2026-10-08 |
+| FR-183 | mirrored tests in an existing nwf | F132 | Bader's decision | merged | 177 | none | 2026-10-08 |
 | F115 | sets | F115 | fix | merged | 142 | none | 2026-10-07 |
 | F127 | coverage of the clash XML | F127 | fix | in progress | 145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop | none | 2026-10-08 |
-| F132 | mirrored tests | F132 | fix | merged | UNKNOWN | none | 2026-10-08 |
+| F132 | mirrored tests | F132 | fix | merged | 177 | none | 2026-10-08 |
 | Q112-2 | coverage of the clash XML (FR-176) | F127 | Bader's request | in progress | 145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop | none | 2026-10-08 |
 | Q46 | F77 against the single discipline rule | F127 | question | merged | 131 | none | 2026-10-06 |
 | Q121 | telecom fixtures and telephone devices | F132 | question | merged | 118 | none | 2026-10-05 |
@@ -65,7 +65,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q127 | how RESULT counts the tests of the XML | F127 | question | merged | 118 | none | 2026-10-05 |
 | Q133 | a mirrored test can find more than the one it mirrors | F132 | question | merged | 121 | none | 2026-10-05 |
 | FR-200 | coverage sheet names every test not created | F127 | Bader's decision | merged | 153 | none | 2026-10-07 |
-| Q140 | F132's next attempt only for a fault that can change a clash count or its test | F132 | Bader's request | merged | UNKNOWN | none | 2026-10-08 |
+| Q140 | F132's next attempt only for a fault that can change a clash count or its test | F132 | Bader's request | merged | 177 | none | 2026-10-08 |
 | F115-R1 | side.Selection and every SelectionSource of the side walk are never disposed | F115 | register row | open | none | none | 2026-10-05 |
 | F115-R2 | a rebuild is recorded only after the re-read so a throw after ReplaceWithCopy reports FAILED and asks for no save | F115 | register row | open | none | none | 2026-10-05 |
 | F115-R3 | two sets of one name in one folder have their drift read off one and the other replaced | F115 | register row | open | none | none | 2026-10-05 |
@@ -88,8 +88,8 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F115-R21 | a side whose sources read as none counts as zero sides and never as not counted | F115 | register row | open | none | none | 2026-10-07 |
 | F115-R22 | a set created and then lost track of is reported FAILED and may not ask for the save | F115 | register row | open | none | none | 2026-10-07 |
 | F115-R23 | two sets of one name in the picked file are built as one set and counted as one created and one already there | F115 | register row | open | none | none | 2026-10-07 |
-| F132-R4 | the views read the document and not the merged report, so a clash only the mirror found gets no viewpoint and a status restated on the kept row is not the one the views read | F132 | silent wrong number | merged | UNKNOWN | none | 2026-10-08 |
-| F132-R5 | a run with no XML now hands the by design pass real set names, so with the box ticked it writes Reviewed into saved tests and saves the NWF | F132 | silent wrong number | merged | UNKNOWN, the pass kept and said, Q144 for Bader | none | 2026-10-08 |
+| F132-R4 | the views read the document and not the merged report, so a clash only the mirror found gets no viewpoint and a status restated on the kept row is not the one the views read | F132 | silent wrong number | merged | 177 | none | 2026-10-08 |
+| F132-R5 | a run with no XML now hands the by design pass real set names, so with the box ticked it writes Reviewed into saved tests and saves the NWF | F132 | silent wrong number | merged | 177, the pass kept and said, Q144 for Bader | none | 2026-10-08 |
 | F127-R1 | read-workbook.ps1 reads every sheet as a test sheet so the Coverage sheet makes every F104 verdict NOT PROVED until it reads a sheet named Coverage into a section of its own | F127 | register row | open | none | none | 2026-10-07 |
 | F132-R1 | under Q142 A only a first run over a new NWF merges, a weekly run never does | F132 | register row | open | none | none | 2026-10-07 |
 | F132-R2 | a set's flags and findspec are not read by the drift check a merge reads | F132 | register row | open | none | none | 2026-10-07 |
@@ -100,7 +100,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| Q114 | one view per clash test by team (FR-180 to FR-188) | F131, F132, F114 | Bader's request | in progress | 135 merged for F131, UNKNOWN for F132, branch fix-F114 | none | 2026-10-08 |
+| Q114 | one view per clash test by team (FR-180 to FR-188) | F131, F132, F114 | Bader's request | in progress | 135 merged for F131, 177 for F132, branch fix-F114 | none | 2026-10-08 |
 
 ## Wave 2b
 
@@ -528,7 +528,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| Q132 | the new viewpoints first, F136 then F131, F132 and F114 | F136, F131, F132, F114 | Bader's request | in progress | 117 merged for F136, 135 for F131, UNKNOWN for F132, branch fix-F114 | none | 2026-10-08 |
+| Q132 | the new viewpoints first, F136 then F131, F132 and F114 | F136, F131, F132, F114 | Bader's request | in progress | 117 merged for F136, 135 for F131, 177 for F132, branch fix-F114 | none | 2026-10-08 |
 
 ## none
 

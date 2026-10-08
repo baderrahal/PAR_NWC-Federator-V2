@@ -23,7 +23,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - 8 Oct: the shutdown came at 19:30:51 on 7 Oct, Arab Standard Time, 46 min after the close at 18:45. A Roamer the loop did not start ran 08:36 to 08:43. His 22.0 key against the backup of 17:34 differs in two CER uptime counters only, Navisworks's own, nothing put back. Keep-awake pid 38340
 - The two the shutdown cut are merged: 157, the close of 7 Oct with main taken in, as 83deae0, and 159, F118's FR-199 and FR-040 with its records, as 1dd68a0, FR-036 and FR-041 on the laptop
 - Lane B, steps\lane-b.md: on again this morning under Bader's message to it, 167, 168 and 169 merged, F127's and F119's Core points, 169 folded here, 170 open on F115 words, then F137, F121 and F123
-- F132 mirrored tests: merged as PR UNKNOWN, the add-in half in two attempts under Q143, Q144 put to Bader on the no XML by design pass, its proof the timed runs
+- F132 mirrored tests: merged as PR 177, the add-in half in two attempts under Q143, Q144 put to Bader on the no XML by design pass, its proof the timed runs
 - Expected release from the pace: 2026-10-13, Q143 item 14, about ten add-in items on the laptop lane at two or three a day over 8, 9, 12 and 13 Oct
 
 ## Next
