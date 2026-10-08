@@ -39,6 +39,34 @@ namespace Federator.Core.Tests
             return ToolViewMark.Judge(path, name, camera, comments, redlines, guid, Settings);
         }
 
+        /// <summary>
+        /// The add-in finds the view it just recorded as the child of its folder with its name
+        /// and no mark, P12 YES, and refuses to mark where a person's unmarked view of that name
+        /// already sits there, P22 unrun. No mark means no comment carrying the tag, so a mark that
+        /// does not read still counts as one, because that view is not the one just recorded.
+        /// </summary>
+        [Test]
+        public void ACommentCarryingTheTagIsAMarkAndAPersonsCommentIsNot()
+        {
+            Assert.That(ToolViewMark.CarriesAMark(new[] { BodyOf(Path, Name, Camera) }, Settings), Is.True);
+            Assert.That(ToolViewMark.CarriesAMark(new[] { "Please keep this one, it shows the riser", BodyOf(Path, Name, Camera) }, Settings), Is.True);
+            Assert.That(ToolViewMark.CarriesAMark(new[] { Settings.MarkTag + " and nothing that reads" }, Settings), Is.True);
+            Assert.That(ToolViewMark.CarriesAMark(new[] { "Please keep this one, it shows the riser" }, Settings), Is.False);
+            Assert.That(ToolViewMark.CarriesAMark(new string[0], Settings), Is.False);
+            Assert.That(ToolViewMark.CarriesAMark(null, Settings), Is.False);
+            Assert.That(ToolViewMark.CarriesAMark(new string[] { null }, Settings), Is.False);
+            Assert.That(() => ToolViewMark.CarriesAMark(new string[0], null), Throws.ArgumentNullException);
+        }
+
+        /// <summary>The comment's author is a setting, the way every word the add-in writes is, and names the tool and no person.</summary>
+        [Test]
+        public void TheMarkAuthorIsASettingThatNamesTheTool()
+        {
+            Assert.That(ViewpointSettings.DefaultMarkAuthor, Is.Not.Empty);
+            Assert.That(ViewpointSettings.DefaultMarkAuthor, Does.Contain("Federator"));
+            Assert.That(new ViewpointSettings().MarkAuthor, Is.EqualTo(ViewpointSettings.DefaultMarkAuthor));
+        }
+
         [Test]
         public void AMarkWrittenThenReadGivesTheSameFingerprint()
         {

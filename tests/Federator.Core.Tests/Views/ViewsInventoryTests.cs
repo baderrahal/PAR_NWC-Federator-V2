@@ -234,6 +234,18 @@ namespace Federator.Core.Tests
                 Is.EqualTo(InventoryDecision.KeepTestNotRead));
         }
 
+        /// <summary>
+        /// P14 measured on 2026-10-07 that RemoveAt on a folder takes every view under it in one
+        /// call, docs\history\scan.md 5z-v, the AR vs AR folder of 2617 in 0.174 s, so the default
+        /// is one call. The setting stays, so one view at a time can be asked for without a build.
+        /// </summary>
+        [Test]
+        public void AFolderGoesWithItsViewsInOneCallByDefaultSinceP14MeasuredIt()
+        {
+            Assert.That(ViewpointSettings.DefaultFolderGoesWithChildren, Is.True, "P14 YES, scan.md 5z-v");
+            Assert.That(new ViewpointSettings().FolderGoesWithChildren, Is.True);
+        }
+
         /// <summary>The 2617 per clash viewpoints the baseline put in one folder go in one call when P14 says a folder goes with its views.</summary>
         [Test]
         public void AFolderOfPerClashViewpointsIsOneRemovalWhenAFolderGoesWithItsViews()
@@ -247,8 +259,9 @@ namespace Federator.Core.Tests
             }
 
             ViewpointSettings oneCall = new ViewpointSettings { FolderGoesWithChildren = true };
+            ViewpointSettings oneAtATime = new ViewpointSettings { FolderGoesWithChildren = false };
             ViewsInventory together = Inventory(tree, PlanOf(T), WrittenOk(), settings: oneCall);
-            ViewsInventory apart = Inventory(tree, PlanOf(T), WrittenOk());
+            ViewsInventory apart = Inventory(tree, PlanOf(T), WrittenOk(), settings: oneAtATime);
 
             Assert.That(together.Removals.Count, Is.EqualTo(2), "the replaced view and the folder");
             Assert.That(together.Removals[1].Node.Name, Is.EqualTo("ME vs ST"));
@@ -257,6 +270,38 @@ namespace Federator.Core.Tests
             Assert.That(apart.Removals[1].Node.IndexInParent, Is.EqualTo(2616), "the latest index first");
             Assert.That(apart.Removals[2617].Node.IndexInParent, Is.EqualTo(0));
             Assert.That(apart.Removals[2618].Node.Name, Is.EqualTo("ME vs ST"), "the folder after its views");
+        }
+
+        /// <summary>
+        /// A folder already empty before the run is never removed, so the add-in walks the tree
+        /// before anything is written and hands the keys of the folders that held nothing to the
+        /// walk it takes after. The rule for which folders those are is here, where a test reads it.
+        /// </summary>
+        [Test]
+        public void TheFoldersThatHeldNothingBeforeTheRunAreReadOffTheWalkBefore()
+        {
+            List<ViewNode> before = new List<ViewNode>
+            {
+                Folder(new string[0], "A", 0),
+                Folder(new[] { "A" }, Pair, 0),
+                View(new[] { "A", Pair }, T, 0),
+                Folder(new[] { "A" }, "Empty one", 1),
+                Folder(new string[0], "Empty too", 1),
+                Folder(new string[0], "Holds a folder", 2),
+                Folder(new[] { "Holds a folder" }, "Empty inside", 0),
+                View(new string[0], "A person's view", 3)
+            };
+
+            ICollection<string> empty = ViewNode.EmptyFolderKeys(before);
+
+            Assert.That(empty, Is.EquivalentTo(new[]
+            {
+                ViewPlace.Key(new[] { "A" }, "Empty one", true),
+                ViewPlace.Key(new string[0], "Empty too", true),
+                ViewPlace.Key(new[] { "Holds a folder" }, "Empty inside", true)
+            }));
+            Assert.That(ViewNode.EmptyFolderKeys(null), Is.Empty);
+            Assert.That(ViewNode.EmptyFolderKeys(new List<ViewNode>()), Is.Empty);
         }
 
         // ---------- folders ----------

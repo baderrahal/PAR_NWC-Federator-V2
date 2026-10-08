@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -55,6 +56,41 @@ namespace Federator.Core.Views
 
         /// <summary>For a folder, whether it held nothing before this run wrote anything.</summary>
         public bool EmptyBeforeTheRun { get; private set; }
+
+        /// <summary>
+        /// The keys of the folders that hold nothing in that walk, ViewPlace.Key, which the add-in
+        /// reads off its walk before anything is written and hands to the walk it takes after, so
+        /// a folder already empty before the run is known again and never removed. A folder holding
+        /// a folder is not empty. Null or no walk gives none.
+        /// </summary>
+        public static ICollection<string> EmptyFolderKeys(IList<ViewNode> walk)
+        {
+            HashSet<string> empty = new HashSet<string>(StringComparer.Ordinal);
+            HashSet<string> parents = new HashSet<string>(StringComparer.Ordinal);
+
+            if (walk == null)
+            {
+                return empty;
+            }
+
+            foreach (ViewNode node in walk)
+            {
+                if (node == null)
+                {
+                    continue;
+                }
+
+                parents.Add(ViewPlace.ParentKey(node.Folders));
+
+                if (node.IsFolder)
+                {
+                    empty.Add(ViewPlace.Key(node.Folders, node.Name, true));
+                }
+            }
+
+            empty.ExceptWith(parents);
+            return empty;
+        }
 
         /// <summary>The folders joined by a slash, ViewPlace's written place.</summary>
         public string FolderPath

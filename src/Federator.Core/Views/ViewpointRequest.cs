@@ -18,13 +18,13 @@ namespace Federator.Core.Views
     public static class ViewpointRequest
     {
         /// <summary>
-        /// Whether the box starts ticked. UNTICKED, Bader's answer B to Q131 on 2026-10-05,
-        /// so nobody makes the old viewpoints until F114, the new viewpoints, merges. His
-        /// same answer ticks it once F114 merges, so F114's pull request sets this back to
-        /// true. A setting, ReportOptions.MakeViewpoints, read off here and never typed into
-        /// the window.
+        /// Whether the box starts ticked. TICKED, Bader's answer B to Q131 on 2026-10-05:
+        /// unticked until F114, the new viewpoints, merged, so nobody made the old viewpoints,
+        /// and ticked once it merges. F114's add-in pass is that merge, so this is true again.
+        /// A setting, ReportOptions.MakeViewpoints, read off here and never typed into the
+        /// window.
         /// </summary>
-        public const bool DefaultMakeViewpoints = false;
+        public const bool DefaultMakeViewpoints = true;
 
         /// <summary>
         /// The tick box on the Clash step. It does not say every clash, because a service of

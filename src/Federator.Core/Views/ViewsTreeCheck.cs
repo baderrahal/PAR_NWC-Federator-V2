@@ -13,7 +13,7 @@ namespace Federator.Core.Views
     ///   2  no Over 150mm folder sits outside its own pair
     ///   3  no view shows a model of a third team, the exceptions Q118 A allows named, read back
     ///   4  no clash is in two views, the plan's keys, and each view's painted items read back
-    ///   5  no mirrored test is run or has a view of this tool's, against the plan's mirror rule
+    ///   5  no mirrored test has a view of this tool's, against the plan's mirror rule
     ///   6  every view and folder the inventory kept is there after, same place and name
     ///   7  no per clash viewpoint of an earlier run is left without a reason
     ///
@@ -28,8 +28,8 @@ namespace Federator.Core.Views
     ///
     /// A CHECK THAT RAN WITHOUT SOMETHING IT NAMES DID NOT RUN FOR THAT THING, F114 attempt 3, by
     /// the same rule. A view whose read back is missing, a planned view not found marked by this
-    /// run in the walk, a view showing a model whose team is UNKNOWN, or a list check 5 needs that
-    /// was not handed in, is named in NotRead, and a check with any is never counted as holding.
+    /// run in the walk, a view showing a model whose team is UNKNOWN, or the walk check 5 needs
+    /// not handed in, is named in NotRead, and a check with any is never counted as holding.
     /// Check 3 with no view read back did not run at all, because what is left is the plan's own
     /// list, which cannot fail against the plan. A read back is read under PlannedTestView.Key
     /// alone, and read backs handed in under any other key are counted in a note.
@@ -117,7 +117,7 @@ namespace Federator.Core.Views
                 NoSizeFolderOutsideItsPair(read),
                 NoThirdTeamShown(read),
                 NoClashInTwoViews(read),
-                NoMirrorRunOrViewed(read),
+                NoMirrorViewed(read),
                 EveryKeptItemStays(read),
                 NoPerClashViewpointLeft(read)
             };
@@ -475,19 +475,21 @@ namespace Federator.Core.Views
         }
 
         /// <summary>
-        /// Check 5 reads the plan's one mirror list against the tests the clash step ran and against
-        /// the walk after, since a mirror not run this week can keep this tool's view of an earlier
-        /// run in the tree, F114 attempt 3. The plan's own views are not read: the plan took the
-        /// same list, so they cannot hold a mirror's view and reading them would test the plan
-        /// against itself.
+        /// Check 5 reads the plan's one mirror list against the walk after, since a mirror can keep
+        /// this tool's view of an earlier run in the tree, F114 attempt 3. The plan's own views are
+        /// not read: the plan took the same list, so they cannot hold a mirror's view and reading
+        /// them would test the plan against itself. THE TESTS RUN ARE NOT READ, Bader's answer D to
+        /// Q133: both tests of a mirrored pair are created and run, so a mirror among the tests run
+        /// is the ordinary case. The half that failed on it, no mirrored test run, went in F114's
+        /// add-in pass, row F114-K20.
         /// </summary>
-        private static ViewsTreeCheck NoMirrorRunOrViewed(Read read)
+        private static ViewsTreeCheck NoMirrorViewed(Read read)
         {
-            ViewsTreeCheck check = new ViewsTreeCheck(5, "no mirrored test is run or has a view");
+            ViewsTreeCheck check = new ViewsTreeCheck(5, "no mirrored test has a view of this tool's");
 
             if (check.CouldNotRun(read.Plan.MirrorRuleHandedIn
                 ? null
-                : "no mirror rule was handed to the plan, so whether a mirrored test ran or has a view is UNKNOWN"))
+                : "no mirror rule was handed to the plan, so whether a mirrored test has a view of this tool's is UNKNOWN"))
             {
                 return check;
             }
@@ -497,30 +499,6 @@ namespace Federator.Core.Views
             if (mirrors.Count == 0)
             {
                 check.Note("the mirror rule found 0 mirrors in this matrix, so this check proves nothing here");
-            }
-
-            string ran;
-
-            if (read.Facts.TestsRun == null)
-            {
-                ran = "not the tests the clash step ran, which were not handed in";
-
-                if (mirrors.Count > 0)
-                {
-                    check.CouldNotRead("the tests the clash step ran, which were not handed in");
-                }
-            }
-            else
-            {
-                ran = "the " + read.Facts.TestsRun.Count + " tests the clash step ran";
-
-                foreach (string test in read.Facts.TestsRun)
-                {
-                    if (mirrors.Contains(test))
-                    {
-                        check.Fail(test + " is a mirror and was run");
-                    }
-                }
             }
 
             string walked;
@@ -556,7 +534,7 @@ namespace Federator.Core.Views
                 walked = "the " + views + " views of the walk after";
             }
 
-            check.Basis = mirrors.Count + " mirrors against " + ran + " and " + walked;
+            check.Basis = mirrors.Count + " mirrors against " + walked;
             return check;
         }
 

@@ -144,11 +144,21 @@ namespace Federator.Core.Views
         public const int DefaultTreeLinesInLog = 300;
 
         /// <summary>
-        /// Whether a folder the tool removes takes every view under it in the one call. UNKNOWN
-        /// until probe P14 measures it, so false, one view at a time from the end, is the
-        /// default that cannot remove more than was judged.
+        /// Whether a folder the tool removes takes every view under it in the one call. TRUE,
+        /// MEASURED by probe P14 on 2026-10-07, docs\history\scan.md 5z-v: RemoveAt(parent, index)
+        /// on the AR vs AR folder took it and all 2617 viewpoints in it in 0.174 s, where one view
+        /// at a time took 20.012 s, and every other item kept its place through a save and a
+        /// reopen. False asks for one view at a time from the end, without a build.
         /// </summary>
-        public const bool DefaultFolderGoesWithChildren = false;
+        public const bool DefaultFolderGoesWithChildren = true;
+
+        /// <summary>
+        /// Who the mark's comment says wrote it, the author Document.CreateCommentWithUniqueId
+        /// takes, P9. The tool and never a person, so a person reading the Comments window sees
+        /// who put it there. The judge reads the body alone, so the author is a word a project
+        /// may change and nothing turns on it.
+        /// </summary>
+        public const string DefaultMarkAuthor = "Parsons NWC Federator";
 
         /// <summary>
         /// How often, in seconds, the VIEWS step writes a progress line to the log, FR-071. Set
@@ -163,6 +173,7 @@ namespace Federator.Core.Views
             FramingMarginMillimetres = DefaultFramingMarginMillimetres;
             MarkSentence = DefaultMarkSentence;
             MarkTag = DefaultMarkTag;
+            MarkAuthor = DefaultMarkAuthor;
             LegacyClashPrefix = DefaultLegacyClashPrefix;
             TreeLinesInLog = DefaultTreeLinesInLog;
             FolderGoesWithChildren = DefaultFolderGoesWithChildren;
@@ -195,6 +206,9 @@ namespace Federator.Core.Views
 
         /// <summary>The start of the mark's fingerprint line.</summary>
         public string MarkTag { get; set; }
+
+        /// <summary>Who the mark's comment names as its author, the tool.</summary>
+        public string MarkAuthor { get; set; }
 
         /// <summary>What sat between the test name and the clash number in an F85 viewpoint.</summary>
         public string LegacyClashPrefix { get; set; }
