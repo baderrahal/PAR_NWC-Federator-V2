@@ -2381,11 +2381,19 @@ docs\history\scan.md 5z-zb of 2026-10-08, and nothing of it has run on Naviswork
   the bare name after the last slash or backslash with its .rvt, measured on 2026-10-08: the
   Source File of an item is the name of the Revit file the NWC was published from, and for four
   of 1A04PK's ten models that is not the NWC's, so the NWC's stem found 531 of 572 and the
-  Revit file's name all 572. A model with no source name is looked for by its stem, which the
-  plan says. The set is still named after the NWC
+  Revit file's name all 572. A model whose source name is blank or ends in a separator is
+  looked for by the stem of its NWC's name, `GenericModelsPlan.LookingForTheStem`, AND THE PLAN
+  SAYS SO, a note naming each such model and the one SETS line, `LooksFor`, saying which text
+  the sets look for, because in silence a model published under another Revit name counts
+  nought, the readers' finding on attempt 1. The set is still named after the NWC
 - A COUNT NOBODY TOOK IS UNKNOWN AND NEVER NOUGHT, `GenericModelsReport.From`: a set not built,
   a count not taken, two results of one path, and a present set whose question was not read
-  or asks other than the plan's are each a model not counted with why. The total says at
+  or asks other than the plan's are each a model not counted with why. A PRESENT SET IS
+  COMPARED WITH THE PLAN BY THE ONE DRIFT RULE, `SetDrift.Compare` on the keys of the
+  conditions read off it, `SetResult.AskedConditions`, and never the two prose strings, because
+  the question read off a set carries no display names and the plan's carries them, so the
+  words called every present set on a weekly rerun a set asking another question and every
+  model was UNKNOWN after the first run, the readers' finding on attempt 1. The total says at
   least where any model was not counted, and where the texts of some sets meet it says it is
   not a count of items, because an item two sets find is in both counts. The count is of
   items, the elements the set finds, and the block says items
@@ -2400,8 +2408,15 @@ docs\history\scan.md 5z-zb of 2026-10-08, and nothing of it has run on Naviswork
 - THE SETS OF THE OTHER PLAN ARE WANTED BY THE LEFTOVER WALK, `GenericModelsPlan.SetNames`,
   handed to the picked file's build, because `SetLeftovers.For` treats every set the names it
   is given do not cover as a leftover and a Generic Models set of the last run has no sides.
-  The Generic Models build walks no leftovers at all, since a walk handed its plan would remove
-  every set of the picked file that no test points at
+  THE WALK RUNS ONLY WHERE THE GENERIC MODELS PLAN WAS MADE AND HOLDS A MODEL,
+  `GenericModelsPlan.WhyNoLeftoverWalk`, because a plan that was not made, a model's read
+  threw, or that holds no set, the document read no models, would hand the walk no name and
+  with the rebuild box on last week's set of every model would be removed and the NWF saved,
+  the readers' finding on attempt 1. Where it is refused one line says why and no set of
+  either plan is removed. A set of a model that has left the group is stale and the walk
+  removes it with the box on, which is right. The Generic Models build walks no leftovers at
+  all, since a walk handed its plan would remove every set of the picked file that no test
+  points at
 - THE SHEET IS ONE SHAPE, `GenericSheet.Rows`, models with items first in the plan's order, then
   the ones not counted with why, none for a model at nought, named by
   `GenericModelsSettings.SheetName`, and the workbook is ONE OF ITS OWN, `GenericWorkbook.Write`,
@@ -2421,6 +2436,11 @@ docs\history\scan.md 5z-zb of 2026-10-08, and nothing of it has run on Naviswork
 - THE GENERIC XLSX STEP, `RunSteps.GenericWorkbook`, after WORKBOOK, times the workbook of its
   own, and the plan, the build and the count are inside the SETS step's own seconds, so the
   timed runs show what each model's search over the whole document costs
+- A THROW IN THE PLAN, THE BUILD OR THE WORKBOOK WRITE NEVER FAILS THE GROUP, the lead's
+  decision on attempt 2, as F127's coverage does and as a report check never fails a group:
+  it is a FAILED line in the GENERIC MODELS block, `GenericModelsReport.FailedLines`, saying
+  what threw and that the count is UNKNOWN and the group keeps its own result, the group is
+  counted as not counted in RESULT, and the failure is logged with what happens next
 - No clash test is made for these sets, and the block says so
 
 ### The machine readable log, F64

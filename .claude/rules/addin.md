@@ -559,7 +559,14 @@ well as to pass.
   `plan.ToBuildPlan()` through `SetBuilder.Build` with NO JUDGE and NO LEFTOVER WALK, because a
   walk handed that plan would remove every set of the picked file that no test points at, while
   the picked file's build is handed `GenericModelsPlan.SetNames` as wanted so its walk keeps
-  them. Their outcome is `JobOutcome.GenericSets`, never the picked file's, so the EMPTY SETS
+  the set of every model still in the group, and a set of a model that has left the group is
+  stale and the walk removes it with the box on, which is right. THE WALK RUNS ONLY WHERE THE
+  GENERIC MODELS PLAN WAS MADE AND HOLDS A MODEL, `GenericModelsPlan.WhyNoLeftoverWalk`, and
+  where it is refused the engine writes that line and `SetBuilder.Build` is told not to walk, so
+  a model's read that threw never removes last week's sets. Where the picked file's build
+  declared the document damaged, Q74, the Generic Models sets are not built, one line says so
+  and the step asks no save, so the OR of the two builds never saves a damaged NWF. Their
+  outcome is `JobOutcome.GenericSets`, never the picked file's, so the EMPTY SETS
   judge and SETS ACROSS THE RUN do not read them, a set created asks for the NWF save as any
   set does, FR-020, and a present set keeps the question it was built with unless the rebuild
   box is ticked, its Asked set to what the document's set asks as every present set's is. The
@@ -569,9 +576,13 @@ well as to pass.
   written whether or not the clash ran, skipped with its own line where no count was taken,
   there is no report folder or no workbook is wanted this run, and read back by size as every
   file is. The settings are `ReportOptions.GenericModels`, read off Core and never typed in the
-  window. A plan or a build that throws adds the group's error, logs what happens next and
-  counts the group as not counted in RESULT, which the window hands the engine's
-  `GenericModelsAcrossTheRun`
+  window. A plan, a build or a workbook write that throws NEVER FAILS THE GROUP, the lead's
+  decision on attempt 2: it logs the failure with what happens next, writes the GENERIC MODELS
+  block with its FAILED line off `GenericModelsReport.FailedLines`, counts the group as not
+  counted in RESULT, which the window hands the engine's `GenericModelsAcrossTheRun`, and the
+  group keeps its own result. The SETS line says which text the sets look for off
+  `GenericModelsPlan.LooksFor`, the stem of the NWC's name for a model whose source name was
+  not read, which the plan also notes by name
 
 ## What a tick box says
 
