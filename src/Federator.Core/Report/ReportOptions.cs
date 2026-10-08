@@ -259,9 +259,9 @@ namespace Federator.Core.Report
         public bool SkipClashOffCoordinates { get; set; }
 
         /// <summary>
-        /// Whether a group makes its saved viewpoints, F136, the box on the Clash step.
-        /// OFF by default, Bader's answer B to Q131, until F114 merges. Off, no group asks for
-        /// one and none can fail it.
+        /// Whether a group makes its saved views, F136, the box on the Clash step. ON by
+        /// default since F114's add-in pass, Bader's answer B to Q131, off until F114 merged.
+        /// Off, no group asks for one and none can fail it.
         /// </summary>
         public bool MakeViewpoints { get; set; }
 
