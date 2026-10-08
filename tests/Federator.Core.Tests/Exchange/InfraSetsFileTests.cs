@@ -116,7 +116,7 @@ namespace Federator.Core.Tests
             }
 
             Assert.That(manholes, Is.Not.Null);
-            Assert.That(manholes.Folders, Is.EqualTo(new[] { "Gravity Networks", "Treated Sewage" }));
+            Assert.That(new List<string>(manholes.Folders), Is.EqualTo(new[] { "Gravity Networks", "Treated Sewage" }));
             Assert.That(
                 manholes.Path,
                 Is.EqualTo("lcop_selection_set_tree/Gravity Networks/Treated Sewage/INF-TE-MH_Manholes"));

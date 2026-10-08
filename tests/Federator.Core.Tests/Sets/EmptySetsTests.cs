@@ -361,7 +361,7 @@ namespace Federator.Core.Tests.Sets
 
             EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
 
-            Assert.That(group.GroupWorksets, Is.EqualTo(ExportCheck.WorksetsOf(models)));
+            Assert.That(new List<string>(group.GroupWorksets), Is.EqualTo(ExportCheck.WorksetsOf(models)));
             Assert.That(new List<string>(group.GroupWorksets), Is.EqualTo(new[] { "ME-Ductwork", "ME-Piping", "AR-EXTERIOR" }));
         }
 

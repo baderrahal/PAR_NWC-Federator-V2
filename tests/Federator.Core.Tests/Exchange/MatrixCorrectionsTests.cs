@@ -1910,7 +1910,7 @@ namespace Federator.Core.Tests
                 MatrixCorrectionList list = MatrixCorrectionList.Beside(xml, new CorrectionListSettings());
 
                 Assert.That(list.Unread, Is.Null);
-                Assert.That(list.Worksets, Is.EqualTo(new[] { "EL-Fire" + NoBreakSpace + "alarm" }));
+                Assert.That(new List<string>(list.Worksets), Is.EqualTo(new[] { "EL-Fire" + NoBreakSpace + "alarm" }));
             }
             finally
             {
