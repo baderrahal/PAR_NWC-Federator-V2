@@ -67,10 +67,13 @@ namespace Federator.Core.Sets
                                 : ". The nearest the models carry is \"" + Nearest + "\", which is a suggestion and not a correction");
 
                 case EmptyReason.TheValueIsThereAnyway:
-                    // WHAT THIS READER ACTUALLY KNOWS. The measured lists are the whole
-                    // PROJECT, 374 categories and 39 worksets across all ten groups, so
-                    // "the models carry it" means some model somewhere does, NOT that a
-                    // model of this group does. A group holding two disciplines out of
+                    // WHAT THIS READER ACTUALLY KNOWS. The measured lists are one folder of
+                    // the project, C02, 374 categories and 39 worksets across its ten
+                    // buildings. For a workset the judge adds what this group's own models
+                    // carry, and the spellings of the list beside the picked file where the
+                    // group is of the lists' project. For a category it adds nothing of this
+                    // group, so "the models carry it" means some model somewhere does, NOT
+                    // that a model of this group does. A group holding two disciplines out of
                     // seven lands most of the client's 61 sets here, and on 1000BS that
                     // was 33 of 54. Saying "something else is wrong" about those would be
                     // this reader claiming to know a thing it cannot see.
