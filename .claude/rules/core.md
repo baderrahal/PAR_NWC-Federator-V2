@@ -1406,17 +1406,49 @@ and 6 does not read as broken.
   otherwise write one picture over another. What a picture shows and its size are
   untouched. The rule lives in Federator.Core.Report.ReportOrder and the rename in
   Federator.Core.Report.ImageRenumbering, so both can be tested without Navisworks. A
-  rename that fails is a warning on the report and never fails the group
+  rename that fails is a warning on the report and never fails the group. A MOVE THAT
+  THROWS IS CAUGHT AT THE MOVE AND EVERYTHING THE TWO PASSES DID IS UNDONE, FR-075 in
+  F120: the pictures already at a final name go back to their holding name, then every
+  holding name goes back to the run order name it came from, each put back read off the
+  disk, so the folder is as it was before the rename and every row, which is pointed only
+  once every move has gone through, points at the picture it was rendered under. The
+  outcome names the move that threw, how many had been moved before it, how many were under
+  a holding name, and every picture that could not be put back with where it is. The
+  engine's lines are the outcome's and never a sentence of its own about the disk, since
+  the one line it had said the pictures not yet renamed keep their run order numbers while
+  they sat under a holding name. The rename is a step of its own, RENUMBER
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
   that is what all 60 pictures of the accepted report measure. An image that fails renders
   nothing, is logged by name, leaves its cell empty and never stops the run. Fifty
   failures of the same reason stop the run, the same way and with the same default as the
-  clash step, and the line says images rather than tests
+  clash step, and the line says images rather than tests. THE GUARD IS ONE FOR THE WHOLE
+  RUN AND IS READ WHERE A PICTURE IS WRITTEN, FR-076 in F120: the engine builds it beside
+  the tests' guard and hands it to each group's writer the way ClashRunner takes its own,
+  so fifty failures in a row across groups stop the run, and the writer renders nothing
+  once it has fired while the runner stops the run after the test the fiftieth fell in,
+  and again after the pictures that waited for a merge, never at the end of the group. A
+  reason is one key for one fault: a render that finished with no file says
+  `Federator.Core.Report.ImageFailure.NoFileArrived` and the path beside it on the line,
+  because with the path inside the reason fifty of them were fifty reasons and the guard
+  never fired. The stop words are ImageFailure's, worded for images, and the label's plain
+  words carry the count alone
 - What the pictures cost is MEASURED and logged per group: seconds per image, total
   seconds, how many, and how many megabytes. Every number anyone has given for this,
   including mine, was a guess until this existed. They are in the log and nowhere else,
-  because the Summary sheet they used to go on is gone
+  because the Summary sheet they used to go on is gone. THE IMAGES STEP SAYS WHERE ITS
+  OWN SECONDS WENT, CALL BY CALL, FR-077 in F120: `Federator.Core.Report.ImagesSeconds`
+  holds one part per call a picture is made of, on the log's own clock, rendering, saving
+  the JPEG and reading the file back, and the whole is the visits to the step added, so
+  what no part holds is the bookkeeping inside a visit and never the harvest's walk, which
+  is HARVEST less IMAGES on the timing block. Set 03 timed the render and the save as ONE
+  watch, 643.150 s over 5679 pictures at 0.113 s each, so which of the two cost the time
+  was UNKNOWN and the speed work could not start. The line is written once per group beside
+  the tally, and the tally's seconds per picture are read off the same visit, so the two
+  come off one clock. The one change made to the writing keeps every picture the same bytes
+  for bytes: the JPEG encoder is found once per group and not looked up on every save, which
+  is what Image.Save with an ImageFormat does before calling the same overload. The size,
+  the format, the quality, the name and the folder of a picture are untouched
 - The report goes out in METERS, always, whatever the document measures in. Q23. It used
   to go out in the document's units, with the rule that converting a number ourselves
   while the document read feet would make the numbers and the label disagree. The run of
@@ -1937,12 +1969,15 @@ Where the time went is the question the log exists to answer, and it can only an
 it if the same work carries the same name every time it is timed.
 
 - the step names live in `Federator.Core.Diagnostics.RunSteps` and nowhere else. Nothing
-  types a step name as a string. Fifteen of them, in the order a group meets them:
+  types a step name as a string. Sixteen of them, in the order a group meets them:
   DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, IMAGES,
-  VIEWS, WORKBOOK, HTML, XML, NWD, CONFIRM.
+  RENUMBER, VIEWS, WORKBOOK, HTML, XML, NWD, CONFIRM.
   VIEWS is F85's and it was untimed before
   that: building the viewpoints was called outside every step, so its seconds came off
-  no total and the run read as faster than it was. A name that is not on the list is refused where the
+  no total and the run read as faster than it was. RENUMBER is FR-077's in F120, the
+  pictures renamed into report order once the clash step has run every test, and it was
+  untimed before that the same way, 20.6 s of one group of set 03 in none of the totals.
+  A name that is not on the list is refused where the
   step opens, because a timing block holding a step nobody named is worse than a short one
 - a step is always opened in a using block, so it closes on the way out whether the work
   finished, returned early or threw. A step left open is the one thing that would make
@@ -2017,7 +2052,10 @@ it if the same work carries the same name every time it is timed.
   work could not start. The rules above hold for it: what no part holds is named on the
   line and never spread, and parts adding to more than the whole are said in words. A
   part the work never entered is left off, so the default route never shows the root
-  route's move. The line is written once per group, whichever way the work ended
+  route's move. The line is written once per group, whichever way the work ended. The
+  stretches, the rest no part holds and the words for it are
+  `Federator.Core.Diagnostics.SecondsByPart`, one copy since F120, which the VIEWS line and
+  the IMAGES line both wear, each with its own parts, its own words and its own whole
 - EACH GROUP'S TIME STANDS BESIDE WHAT IT HELD, Q101 in F114. Bader's answer on
   2026-10-04: the 45 minutes is not judged in this round, and each group's time is
   reported beside the sizes of its NWC files and its item counts so the target can be set

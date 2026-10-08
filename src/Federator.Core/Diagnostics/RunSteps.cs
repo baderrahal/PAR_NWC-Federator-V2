@@ -40,6 +40,13 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public const string Views = "VIEWS";
         public const string Images = "IMAGES";
+
+        /// <summary>
+        /// Renaming the pictures into report order, FR-077, once the clash step has run
+        /// every test and before the viewpoints read the rows. It ran inside no step before
+        /// this, 20.6 s of one group of set 03 in none of the totals.
+        /// </summary>
+        public const string Renumber = "RENUMBER";
         public const string Workbook = "WORKBOOK";
         public const string Html = "HTML";
         public const string Xml = "XML";
@@ -57,6 +64,7 @@ namespace Federator.Core.Diagnostics
             TestsRun,
             Harvest,
             Images,
+            Renumber,
             Views,
             Workbook,
             Html,

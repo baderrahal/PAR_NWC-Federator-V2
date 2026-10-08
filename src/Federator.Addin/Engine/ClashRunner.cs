@@ -516,6 +516,10 @@ namespace Federator.Addin.Engine
                 // the merge changes.
                 MergeTheMirrors(clashTests);
 
+                // FR-076. The pictures of the merged tests render after the loop above, so
+                // the fiftieth failure in a row can fall among them.
+                StopIfTheImagesFailed(outcome);
+
                 // F76. One line per group, whichever way the choice reads.
                 WriteTheToleranceLine();
 
@@ -716,7 +720,32 @@ namespace Federator.Addin.Engine
                     progress(guard.ReasonInPlainWords);
                     return;
                 }
+
+                if (StopIfTheImagesFailed(outcome))
+                {
+                    return;
+                }
             }
+        }
+
+        /// <summary>
+        /// FR-076. The pictures' guard is one for the whole run, like the tests', and it is
+        /// read here after each test and again after the pictures that waited for a merge,
+        /// so a run whose pictures all fail the same way stops at the test the fiftieth in a
+        /// row fell in and not at the end of the group. The writer renders nothing once it
+        /// has fired. A run the tests' guard already stopped is left with that reason.
+        /// </summary>
+        private bool StopIfTheImagesFailed(ClashRunOutcome outcome)
+        {
+            if (Images == null || !Images.ShouldStopTheRun || outcome.StopTheRun)
+            {
+                return false;
+            }
+
+            outcome.StopTheWholeRun(Images.StopReason);
+            log.Line("IMAGES   RUN STOPPED  " + Images.StopReason);
+            progress(Images.StopReasonInPlainWords);
+            return true;
         }
 
         private void OneTest(
