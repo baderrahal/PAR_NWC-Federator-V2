@@ -1,0 +1,394 @@
+MACHINE   [machine]   2026-10-05 13:59:21
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 53216
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-model-worksets.ps1", sha256 7CC0BC7600199E34C85BBBC3E6FC46FE7687BDCE14EC8B13300DB0B430170402
+GUARD     tools\loop\nw-guard.ps1, sha256 EFB1B698DBDF67ADAF34D3FDC9CAC78893BF7C88F74034D096746D131FB71CEA
+PROCESS   powershell.exe pid 53216, started to run -File C:\Users\p003653k\AppData\Local\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-model-worksets.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 499
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\model-worksets-20261005-135921" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\model-worksets-20261005-135921\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123320 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 202 AutoSave files listed and not copied
+  the tool's own logs folder listed: 38 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf", 4699 bytes, sha256 7ECA0ECA8CB2D917D705BD6CE9552632C346C3CDFEB8107CC8BACE7072D0E683
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\model-worksets-20261005-135921\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf", sha256 matches
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\bin\Release\net48\ViewpointProbe.dll", 141824 bytes, written 2026-10-05 13:57:11, sha256 2E60B8C4508ADEAD4BEF7BD6ED1BCF2F6F05B5D13A8D134C672A07A84C206BAC, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  13:59:27.494  t+6.2s  calling new NavisworksApplication()
+  14:00:50.508  t+89.2s  the constructor RETURNED after 83.01 s
+  Roamer processes new since step 2: 1
+    pid 32088, started 13:59:27.561, parent 1392 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 32088, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 32088, started 2026-10-05 13:59:27.561, start ticks UTC 639267947675611371
+  14:01:04.203  t+102.9s  Visible set True, read back True
+  visible top level windows of 32088: 2, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard"
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  14:01:05.109  t+103.8s  AddPluginAssembly RETURNED after 0.128 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode worksets on the copy ====
+  14:01:05.118  t+103.8s  calling ExecuteAddInPlugin(ViewpointProbe.PARS, worksets, the plugin's output file, the copy, "HV,FP")
+  14:01:40.056  t+138.8s  ExecuteAddInPlugin RETURNED 0 after 34.94 s
+  visible top level windows of 32088: 2, hidden: 76, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard"
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | 14:01:05.193  probe started, mode worksets, 2 file(s)
+  | 14:01:05.202  codes asked: HV, FP
+  | 14:01:05.202  opening 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf
+  | 14:01:12.395  TryOpenFile returned True after 7.192 s
+  | 14:01:12.395  models 10, document units Feet
+  | 14:01:12.398     model 0  1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc  under the loop folder True
+  | 14:01:12.398     model 1  1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc  under the loop folder True
+  | 14:01:12.398     model 2  1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc  under the loop folder True  READ, code FP
+  | 14:01:12.398     model 3  1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc  under the loop folder True  READ, code HV
+  | 14:01:12.398     model 4  1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc  under the loop folder True
+  | 14:01:12.398     model 5  1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc  under the loop folder True
+  | 14:01:12.398     model 6  1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc  under the loop folder True
+  | 14:01:12.398     model 7  1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc  under the loop folder True
+  | 14:01:12.399     model 8  1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc  under the loop folder True
+  | 14:01:12.399     model 9  1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc  under the loop folder True
+  | 14:01:12.399  models whose file name carries an asked code: 2
+  | 14:01:12.406  
+  | 14:01:12.407  ================ 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc ================
+  | 14:01:36.369  walk took 23.962 s, the walk threw: no
+  | 14:01:36.369  items 41130, with geometry 21422, with the LcRevitData_Element tab 12127, of those with a Workset value 12127, items whose read threw 0
+  | 14:01:36.369  the Workset property on the Element tab, by display name, internal name and value type:
+  | 14:01:36.369     [Workset] [lcldrevit_parameter_-1002053] DisplayString  on 12127 item(s)
+  | 14:01:36.369  a property naming workset on any OTHER tab, by tab, property and value:
+  | 14:01:36.369     tab [Project] [LcRevitPropertyProject] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Project Info]  on 1 item(s)
+  | 14:01:36.369     tab [Level] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Shared Levels and Grids-ZZ]  on 5744 item(s)
+  | 14:01:36.370     tab [System Type] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Piping System Types]  on 11859 item(s)
+  | 14:01:36.370     tab [Phase Created] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Phase Settings]  on 12127 item(s)
+  | 14:01:36.370     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Generic Models : PAR-ME-GEN-PSN_STEPS_LADDER]  on 1 item(s)
+  | 14:01:36.370     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Generic Models : PAR-ME-GEN-PSN_STEPS_LADDER]  on 1 item(s)
+  | 14:01:36.370     tab [Pipe Segment] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Pipe Segments]  on 6380 item(s)
+  | 14:01:36.370     tab [Schedule/Type] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Pipe Schedule Types]  on 6380 item(s)
+  | 14:01:36.370     tab [Reference Level] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Shared Levels and Grids-ZZ]  on 6380 item(s)
+  | 14:01:36.370     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-Pump_Horizontal splitcase _Centrifugal_Single stage volute pump_Grundfos_LSSM-International]  on 1 item(s)
+  | 14:01:36.370     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-Pump_Horizontal splitcase _Centrifugal_Single stage volute pump_Grundfos_LSSM-International]  on 1 item(s)
+  | 14:01:36.370     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-FL-MEC-FIRE EXTINGUISHER]  on 4 item(s)
+  | 14:01:36.371     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-FL-MEC-FIRE EXTINGUISHER]  on 8 item(s)
+  | 14:01:36.371     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-Diesel Fire Pump1]  on 1 item(s)
+  | 14:01:36.371     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-Diesel Fire Pump1]  on 1 item(s)
+  | 14:01:36.371     tab [FamilyInstance] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [FF-Fire Fighting]  on 1 item(s)
+  | 14:01:36.371     tab [Schedule Level] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Shared Levels and Grids-ZZ]  on 1 item(s)
+  | 14:01:36.371     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-NonReturn Valve Axial Guided]  on 2 item(s)
+  | 14:01:36.371     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-NonReturn Valve Axial Guided]  on 2 item(s)
+  | 14:01:36.371     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-Plumbing_Valves_Brymec_38957_38958_38959_38960_Cast_Iron_PN16_Gate_Valve]  on 2 item(s)
+  | 14:01:36.371     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-Plumbing_Valves_Brymec_38957_38958_38959_38960_Cast_Iron_PN16_Gate_Valve]  on 2 item(s)
+  | 14:01:36.371     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-Dismantling Joint]  on 1 item(s)
+  | 14:01:36.371     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-Dismantling Joint]  on 1 item(s)
+  | 14:01:36.373     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : Landing-Valve_Bib-nosed-Style]  on 11 item(s)
+  | 14:01:36.373     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : Landing-Valve_Bib-nosed-Style]  on 11 item(s)
+  | 14:01:36.373     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : Vortex_Plate]  on 1 item(s)
+  | 14:01:36.374     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : Vortex_Plate]  on 1 item(s)
+  | 14:01:36.374     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Elbow-Welded-Generic]  on 4 item(s)
+  | 14:01:36.374     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Elbow-Welded-Generic]  on 4 item(s)
+  | 14:01:36.374     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Tee-Welded-Generic]  on 5 item(s)
+  | 14:01:36.374     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Tee-Welded-Generic]  on 5 item(s)
+  | 14:01:36.374     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-TEE-BRANCH-REDUCED-THREADED-GMI]  on 2 item(s)
+  | 14:01:36.375     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-TEE-BRANCH-REDUCED-THREADED-GMI]  on 2 item(s)
+  | 14:01:36.375     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : Tee Branch Reduced - Butt Welded - CS]  on 11 item(s)
+  | 14:01:36.375     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : Tee Branch Reduced - Butt Welded - CS]  on 11 item(s)
+  | 14:01:36.376     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-ELBOW-THREADED-GMI1]  on 1 item(s)
+  | 14:01:36.376     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-ELBOW-THREADED-GMI1]  on 1 item(s)
+  | 14:01:36.376     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-DI Tee-Y-Flanged]  on 2 item(s)
+  | 14:01:36.376     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-DI Tee-Y-Flanged]  on 2 item(s)
+  | 14:01:36.376     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-F_DI Flange]  on 2 item(s)
+  | 14:01:36.376     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-F_DI Flange]  on 2 item(s)
+  | 14:01:36.377     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-DI Blind Flange]  on 1 item(s)
+  | 14:01:36.377     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-DI Blind Flange]  on 1 item(s)
+  | 14:01:36.377     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-F_DI Flange new]  on 2 item(s)
+  | 14:01:36.377     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-F_DI Flange new]  on 2 item(s)
+  | 14:01:36.377     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-MEC-PIF-ELBOW-DI-FLANGED]  on 2 item(s)
+  | 14:01:36.378     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-MEC-PIF-ELBOW-DI-FLANGED]  on 2 item(s)
+  | 14:01:36.378     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-FLANGE-DI]  on 2 item(s)
+  | 14:01:36.378     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-FLANGE-DI]  on 2 item(s)
+  | 14:01:36.378     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-SOCKET-REDUCING-THREADED-GMI]  on 1 item(s)
+  | 14:01:36.378     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-SOCKET-REDUCING-THREADED-GMI]  on 1 item(s)
+  | 14:01:36.379     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Transition-Welded-Generic]  on 5 item(s)
+  | 14:01:36.379     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Transition-Welded-Generic]  on 5 item(s)
+  | 14:01:36.379     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Elbow-Threaded-MI-Class150]  on 5 item(s)
+  | 14:01:36.380     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Elbow-Threaded-MI-Class150]  on 5 item(s)
+  | 14:01:36.380     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Pipe Types]  on 24 item(s)
+  | 14:01:36.380     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Sprinklers : PAR-FL-SPK-UPRIGHT]  on 5 item(s)
+  | 14:01:36.380     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Sprinklers : PAR-FL-SPK-UPRIGHT]  on 5 item(s)
+  | 14:01:36.381     tab [Symbol] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Sprinklers : PAR-FL-SPK-UPRIGHT]  on 1123 item(s)
+  | 14:01:36.381     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Generic Models : PAR-ME-GEN-SPAL- MECH EQ -Base]  on 1 item(s)
+  | 14:01:36.381     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Generic Models : PAR-ME-GEN-SPAL- MECH EQ -Base]  on 1 item(s)
+  | 14:01:36.381     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-DIESEL TANK]  on 1 item(s)
+  | 14:01:36.382     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-DIESEL TANK]  on 1 item(s)
+  | 14:01:36.382     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : RCC_M_ ME_FHC I- Surface Mounted.]  on 3 item(s)
+  | 14:01:36.382     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : RCC_M_ ME_FHC I- Surface Mounted.]  on 3 item(s)
+  | 14:01:36.382     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-FL-PPS-FIRE-ZCV]  on 3 item(s)
+  | 14:01:36.382     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-FL-PPS-FIRE-ZCV]  on 3 item(s)
+  | 14:01:36.382     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : toma siamesa]  on 1 item(s)
+  | 14:01:36.382     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : toma siamesa]  on 1 item(s)
+  | 14:01:36.382     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-V_Check Valve-Flanged(Swing)]  on 1 item(s)
+  | 14:01:36.383     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-V_Check Valve-Flanged(Swing)]  on 1 item(s)
+  | 14:01:36.383     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-V_Gate Valve-Flanged]  on 1 item(s)
+  | 14:01:36.383     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-V_Gate Valve-Flanged]  on 2 item(s)
+  | 14:01:36.383     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-V_Dismantle Piece (Flanged)]  on 1 item(s)
+  | 14:01:36.383     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-V_Dismantle Piece (Flanged)]  on 1 item(s)
+  | 14:01:36.384     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-PRESSURE RELIEF VALVE]  on 1 item(s)
+  | 14:01:36.384     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-PRESSURE RELIEF VALVE]  on 1 item(s)
+  | 14:01:36.384     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-Flow Meter FT-3200 Sensor ONICON]  on 1 item(s)
+  | 14:01:36.384     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-Flow Meter FT-3200 Sensor ONICON]  on 1 item(s)
+  | 14:01:36.384     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-DI_FLANGE]  on 1 item(s)
+  | 14:01:36.384     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : PAR-ME-PPA-DI_FLANGE]  on 1 item(s)
+  | 14:01:36.384     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : Mec_Ball Valve - 50-150 mm]  on 1 item(s)
+  | 14:01:36.384     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : Mec_Ball Valve - 50-150 mm]  on 2 item(s)
+  | 14:01:36.384     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : MEC_Flow Control Valve - J-1 (Straight Through)]  on 1 item(s)
+  | 14:01:36.384     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : MEC_Flow Control Valve - J-1 (Straight Through)]  on 1 item(s)
+  | 14:01:36.384     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : MEC_Manual_Air_Vent]  on 1 item(s)
+  | 14:01:36.385     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : MEC_Manual_Air_Vent]  on 1 item(s)
+  | 14:01:36.385     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : VF Bladder Tank - Vertical]  on 1 item(s)
+  | 14:01:36.385     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : VF Bladder Tank - Vertical]  on 1 item(s)
+  | 14:01:36.385     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : MEC_Ratio Controller]  on 1 item(s)
+  | 14:01:36.385     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : MEC_Ratio Controller]  on 1 item(s)
+  | 14:01:36.385     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : BOSS_PipeAccessory_CheckValve_96S_PN32]  on 1 item(s)
+  | 14:01:36.385     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : BOSS_PipeAccessory_CheckValve_96S_PN32]  on 1 item(s)
+  | 14:01:36.385     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : Victaulic-FP-FireLock NXT Deluge Valve Series 769N_2]  on 1 item(s)
+  | 14:01:36.385     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : Victaulic-FP-FireLock NXT Deluge Valve Series 769N_2]  on 1 item(s)
+  | 14:01:36.386     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-BENDVC-SCH-40-DWV1]  on 2 item(s)
+  | 14:01:36.386     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-BENDVC-SCH-40-DWV1]  on 2 item(s)
+  | 14:01:36.386     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-CouplingConcentricReducing-Threaded-MI-Class150]  on 1 item(s)
+  | 14:01:36.386     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-CouplingConcentricReducing-Threaded-MI-Class150]  on 1 item(s)
+  | 14:01:36.386     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-TeeReducing-Threaded-MI-Class150]  on 4 item(s)
+  | 14:01:36.386     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-TeeReducing-Threaded-MI-Class150]  on 4 item(s)
+  | 14:01:36.387     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-PPF-SOCKET-THREADED-GMI]  on 1 item(s)
+  | 14:01:36.387     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-PPF-SOCKET-THREADED-GMI]  on 1 item(s)
+  | 14:01:36.387     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : MEC_Pipe Fitting_Tee Branch Reduced_Threaded]  on 1 item(s)
+  | 14:01:36.387     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : MEC_Pipe Fitting_Tee Branch Reduced_Threaded]  on 1 item(s)
+  | 14:01:36.387     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : MEC_Pipe Fitting_Socket Reducing_Threaded_GMI1]  on 1 item(s)
+  | 14:01:36.387     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : MEC_Pipe Fitting_Socket Reducing_Threaded_GMI1]  on 1 item(s)
+  | 14:01:36.387     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : MEC_Pipe Fitting_Elbow_Threaded_GMI1]  on 1 item(s)
+  | 14:01:36.387     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : MEC_Pipe Fitting_Elbow_Threaded_GMI1]  on 1 item(s)
+  | 14:01:36.387     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-PF-TeeReducingSanitaryVC-Sch40-DWV]  on 1 item(s)
+  | 14:01:36.387     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-PF-TeeReducingSanitaryVC-Sch40-DWV]  on 1 item(s)
+  | 14:01:36.387     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Sprinklers : PAR-FL-SPK-PENDENT]  on 4 item(s)
+  | 14:01:36.388     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Sprinklers : PAR-FL-SPK-PENDENT]  on 4 item(s)
+  | 14:01:36.388     tab [Symbol] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Sprinklers : PAR-FL-SPK-PENDENT]  on 21 item(s)
+  | 14:01:36.388     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Sprinklers : MEC_Sprinkler_Foam]  on 1 item(s)
+  | 14:01:36.388     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Sprinklers : MEC_Sprinkler_Foam]  on 1 item(s)
+  | 14:01:36.388     tab [Symbol] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Sprinklers : MEC_Sprinkler_Foam]  on 6 item(s)
+  | 14:01:36.389     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : AutomaticAirVentValve]  on 1 item(s)
+  | 14:01:36.389     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Accessories : AutomaticAirVentValve]  on 1 item(s)
+  | 14:01:36.389  WORKSET NAMES, 1, each in brackets, with its length and the Element tabs carrying it:
+  | 14:01:36.389     [FF-Fire Fighting]  length 16  on 12127  plain ASCII
+  | 14:01:36.390  LIST WHOLE: YES, the walk finished True, no item's read threw True, read from under the loop folder True
+  | 14:01:36.390  
+  | 14:01:36.390  ================ 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc ================
+  | 14:01:40.042  walk took 3.652 s, the walk threw: no
+  | 14:01:40.042  items 7884, with geometry 2992, with the LcRevitData_Element tab 2409, of those with a Workset value 2409, items whose read threw 0
+  | 14:01:40.042  the Workset property on the Element tab, by display name, internal name and value type:
+  | 14:01:40.042     [Workset] [lcldrevit_parameter_-1002053] DisplayString  on 2409 item(s)
+  | 14:01:40.042  a property naming workset on any OTHER tab, by tab, property and value:
+  | 14:01:40.042     tab [Project] [LcRevitPropertyProject] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Project Info]  on 1 item(s)
+  | 14:01:40.043     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-Supply-Diffuser-with-Plenum-Linear-Slot-Hosted]  on 1 item(s)
+  | 14:01:40.043     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-Supply-Diffuser-with-Plenum-Linear-Slot-Hosted]  on 2 item(s)
+  | 14:01:40.043     tab [System Type] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Duct System Types]  on 608 item(s)
+  | 14:01:40.043     tab [Phase Created] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Phase Settings]  on 2409 item(s)
+  | 14:01:40.043     tab [FamilyInstance] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [ME-Ductwork]  on 12 item(s)
+  | 14:01:40.044     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : HVC-AIR-PAR-DOOR LOUVER1]  on 1 item(s)
+  | 14:01:40.044     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : HVC-AIR-PAR-DOOR LOUVER1]  on 1 item(s)
+  | 14:01:40.044     tab [RevitLinkInstance] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [ME-Links-ZZ]  on 2 item(s)
+  | 14:01:40.044     tab [Level] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Shared Levels and Grids-ZZ]  on 1436 item(s)
+  | 14:01:40.044     tab [System Type] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Piping System Types]  on 1590 item(s)
+  | 14:01:40.044     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-EXAHUST-DIFFUSER]  on 4 item(s)
+  | 14:01:40.044     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-EXAHUST-DIFFUSER]  on 4 item(s)
+  | 14:01:40.044     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-EXHAUST-AIR-GRILLE]  on 1 item(s)
+  | 14:01:40.045     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-EXHAUST-AIR-GRILLE]  on 1 item(s)
+  | 14:01:40.045     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-SUPPLY-AIR-GRILLE-1]  on 1 item(s)
+  | 14:01:40.045     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-SUPPLY-AIR-GRILLE-1]  on 1 item(s)
+  | 14:01:40.045     tab [Reference Level] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Shared Levels and Grids-ZZ]  on 947 item(s)
+  | 14:01:40.045     tab [Pipe Segment] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Pipe Segments]  on 712 item(s)
+  | 14:01:40.045     tab [Schedule/Type] [LcRevitData_Parameter] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Pipe Schedule Types]  on 712 item(s)
+  | 14:01:40.045     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Accessories : M_Balancing Damper - Rectangular]  on 6 item(s)
+  | 14:01:40.046     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Accessories : M_Balancing Damper - Rectangular]  on 6 item(s)
+  | 14:01:40.046     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Accessories : M_Balancing Damper - Round]  on 3 item(s)
+  | 14:01:40.046     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Accessories : M_Balancing Damper - Round]  on 3 item(s)
+  | 14:01:40.046     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-Rectangular-Endcap]  on 6 item(s)
+  | 14:01:40.046     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-Rectangular-Endcap]  on 6 item(s)
+  | 14:01:40.046     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-M-RectangularElbow-Radius]  on 4 item(s)
+  | 14:01:40.046     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-M-RectangularElbow-Radius]  on 4 item(s)
+  | 14:01:40.046     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-M-RectangularTransition-Angle]  on 7 item(s)
+  | 14:01:40.046     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-M-RectangularTransition-Angle]  on 11 item(s)
+  | 14:01:40.046     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-M-RectangularTap-Beveled]  on 11 item(s)
+  | 14:01:40.047     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-M-RectangularTap-Beveled]  on 11 item(s)
+  | 14:01:40.047     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-ROUND-SHOE-BRANCH-SLIP-JOINT]  on 3 item(s)
+  | 14:01:40.047     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-ROUND-SHOE-BRANCH-SLIP-JOINT]  on 3 item(s)
+  | 14:01:40.047     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-RECT-UNION]  on 1 item(s)
+  | 14:01:40.047     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-RECT-UNION]  on 1 item(s)
+  | 14:01:40.047     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-RectangulartoRoundTransition-Angle]  on 7 item(s)
+  | 14:01:40.047     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-RectangulartoRoundTransition-Angle]  on 11 item(s)
+  | 14:01:40.047     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Duct Types]  on 18 item(s)
+  | 14:01:40.047     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-EXHAUST-FAN.0001]  on 4 item(s)
+  | 14:01:40.047     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-EXHAUST-FAN.0001]  on 4 item(s)
+  | 14:01:40.047     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : M_Centrifugal Fan - Inline - Direct Drive]  on 1 item(s)
+  | 14:01:40.048     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : M_Centrifugal Fan - Inline - Direct Drive]  on 2 item(s)
+  | 14:01:40.048     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Elbow-Welded-Generic]  on 11 item(s)
+  | 14:01:40.048     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Elbow-Welded-Generic]  on 11 item(s)
+  | 14:01:40.048     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Pipe Types]  on 11 item(s)
+  | 14:01:40.048     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-Fresh-Air-Sandtrap-Louver-(Rvt-2022)]  on 2 item(s)
+  | 14:01:40.048     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-Fresh-Air-Sandtrap-Louver-(Rvt-2022)]  on 2 item(s)
+  | 14:01:40.048     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-Ex-Air-Louver-(Rvt-2022)]  on 1 item(s)
+  | 14:01:40.048     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-Ex-Air-Louver-(Rvt-2022)]  on 1 item(s)
+  | 14:01:40.048     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-Supply-Air-Grill]  on 10 item(s)
+  | 14:01:40.048     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-Supply-Air-Grill]  on 10 item(s)
+  | 14:01:40.049     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Accessories : M_Fire Damper - Rectangular - Simple]  on 1 item(s)
+  | 14:01:40.049     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Accessories : M_Fire Damper - Rectangular - Simple]  on 1 item(s)
+  | 14:01:40.049     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-Rectangular-Endcap-01]  on 1 item(s)
+  | 14:01:40.049     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-Rectangular-Endcap-01]  on 1 item(s)
+  | 14:01:40.049     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-Rectangular-Transition-Angle]  on 3 item(s)
+  | 14:01:40.049     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-Rectangular-Transition-Angle]  on 3 item(s)
+  | 14:01:40.049     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-Rectangular-Elbow-Radius]  on 2 item(s)
+  | 14:01:40.049     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Duct Fittings : PAR-ME-DCT-Rectangular-Elbow-Radius]  on 2 item(s)
+  | 14:01:40.049     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Flex Duct Types]  on 3 item(s)
+  | 14:01:40.049     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-MECHANICAL-EQUIPMENT-Concealed-Outdoor-Unit]  on 10 item(s)
+  | 14:01:40.051     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-MECHANICAL-EQUIPMENT-Concealed-Outdoor-Unit]  on 16 item(s)
+  | 14:01:40.051     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-PSPU-DX-SPU]  on 10 item(s)
+  | 14:01:40.051     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-PSPU-DX-SPU]  on 14 item(s)
+  | 14:01:40.051     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : M_Fan Coil Unit with Plenum - Horizontal - DX - Rear Return]  on 3 item(s)
+  | 14:01:40.051     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : M_Fan Coil Unit with Plenum - Horizontal - DX - Rear Return]  on 3 item(s)
+  | 14:01:40.051     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : MEC-MEC-VENTELATION PROPELLER FANS-PAR]  on 1 item(s)
+  | 14:01:40.051     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : MEC-MEC-VENTELATION PROPELLER FANS-PAR]  on 2 item(s)
+  | 14:01:40.051     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Transition-Welded-Generic]  on 10 item(s)
+  | 14:01:40.051     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Pipe Fittings : PAR-ME-PPF-M-Transition-Welded-Generic]  on 10 item(s)
+  | 14:01:40.052     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-EXHAUST-Air-Sandtrap-Louver-(Rvt-2022)]  on 3 item(s)
+  | 14:01:40.052     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Air Terminals : PAR-ME-AIR-EXHAUST-Air-Sandtrap-Louver-(Rvt-2022)]  on 4 item(s)
+  | 14:01:40.052     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Plumbing Fixtures : PAR-PL-PLM-FLOOR-DRAIN-COVER]  on 1 item(s)
+  | 14:01:40.052     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Plumbing Fixtures : PAR-PL-PLM-FLOOR-DRAIN-COVER]  on 1 item(s)
+  | 14:01:40.052     tab [Family] [lcldrevit_tab_family] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-FAN-SECTION]  on 1 item(s)
+  | 14:01:40.053     tab [Type] [lcldrevit_tab_type] property [Workset] [lcldrevit_parameter_-1002053] DisplayString value [Family  : Mechanical Equipment : PAR-ME-MEC-FAN-SECTION]  on 1 item(s)
+  | 14:01:40.053  WORKSET NAMES, 3, each in brackets, with its length and the Element tabs carrying it:
+  | 14:01:40.053     [ME-Ductwork]  length 11  on 2218  plain ASCII
+  | 14:01:40.053     [ME-PIPING]  length 9  on 179  plain ASCII
+  | 14:01:40.053     [PL-Drainage]  length 11  on 12  plain ASCII
+  | 14:01:40.053  LIST WHOLE: YES, the walk finished True, no item's read threw True, read from under the loop folder True
+  | 14:01:40.054  probe finished
+
+==== STEP 6. Quit through the API ====
+  14:01:42.598  t+141.3s  Dispose RETURNED after 1.46 s
+  14:01:49.246  t+148.0s  pid 32088 state gone, 6.6 s after Dispose returned, not forced
+
+==== FINALLY ====
+  14:01:49.256  t+148.0s  pid 32088 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 172, longest pass 9129 ms, longest gap between the starts of two passes 9631 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  13:59:22.434  t+1.2s  watchdog started
+  13:59:27.646  t+6.4s  Roamer pid 32088 seen with no readable start time, looked at again at the next pass
+  13:59:33.182  t+11.9s  new process Roamer pid 32088, parent 1392 svchost.exe, started 13:59:27.561, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  13:59:33.333  t+12.1s  Roamer 32088 visible top level windows: none
+  14:00:22.679  t+61.4s  new process AdskLicensingAgent pid 50232, parent 32088 Roamer.exe, started 14:00:13.329, command line holds the word embedding or automation: no
+  14:00:31.817  t+70.5s  new process AdskLicensingAgent pid 52552, parent 32088 Roamer.exe, started 14:00:14.051, command line holds the word embedding or automation: no
+  14:00:37.943  t+76.7s  new process AdskLicensingAgent pid 9444, parent 37712 Revit.exe, started 14:00:30.763, command line holds the word embedding or automation: no
+  14:00:46.585  t+85.3s  new process AdskLicensingAgent pid 41324, parent 37712 Revit.exe, started 14:00:36.030, command line holds the word embedding or automation: no
+  14:00:46.644  t+85.4s  Roamer 32088 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  14:00:47.777  t+86.5s  Roamer 32088 visible top level windows: none
+  14:01:04.473  t+103.2s  new process AdskLicensingInstHelper pid 55800, parent 27400 GenuineService.exe, started 14:00:58.106, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  14:01:04.700  t+103.4s  Roamer 32088 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:01:06.830  t+105.5s  Roamer 32088 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" and 9 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:01:08.917  t+107.6s  Roamer 32088 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;98be4861-45c2-4a58-8721-422f63926f75]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:01:11.056  t+109.8s  Roamer 32088 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;98be4861-45c2-4a58-8721-422f63926f75]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  14:01:14.762  t+113.5s  Roamer 32088 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  14:01:40.302  t+139.0s  Roamer 32088 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  14:01:42.252  t+141.0s  Roamer 32088 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:01:42.821  t+141.5s  Roamer 32088 visible top level windows: none
+  14:01:49.104  t+147.8s  Roamer 32088 has exited
+  14:01:49.618  t+148.3s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 32088, parent 1392 svchost.exe: exited
+  AdskLicensingAgent pid 50232, parent 32088 Roamer.exe: exited
+  AdskLicensingAgent pid 52552, parent 32088 Roamer.exe: exited
+  AdskLicensingAgent pid 9444, parent 37712 Revit.exe: STILL RUNNING
+  AdskLicensingAgent pid 41324, parent 37712 Revit.exe: STILL RUNNING
+  AdskLicensingInstHelper pid 55800, parent 27400 GenuineService.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40809772447973  new QWord 40811173626602
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 94  new DWord 95
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 154  new DWord 155
+  22.0\CER\22.5.1433.58  uptime  old QWord 2412445468750  new QWord 2413840781250
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,144,77,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "lcodpody"  new String "lcodpnwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134355877224561124  new QWord 134356716693582870
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\model-worksets-20261005-135921\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134355688021584428  new QWord 134355688029411525
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc, sha1 E0ADB5881390>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc, sha1 947D2594C4F9>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134355851862024337  new QWord 134355877224561124
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\3  LastOpened  old QWord 134355688077859683  new QWord 134355851862024337
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134355688069609653  new QWord 134355688077859683
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134355688061539629  new QWord 134355688069609653
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134355688053453579  new QWord 134355688061539629
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134355688045001624  new QWord 134355688053453579
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134355688037141969  new QWord 134355688045001624
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134355688029411525  new QWord 134355688037141969
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc, sha1 947D2594C4F9>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>
+  registry: 35 values or keys differ from the backup
+  registry: 35 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 67617 bytes, sha256 5AC073CD8DAF, written 2026-10-05 13:35:14  new 68868 bytes, sha256 D791EEE6FC1B, written 2026-10-05 14:01:42
+  file CHANGED LastSession.xml  old 39513 bytes, sha256 B94B4FFCF6AA, written 2026-10-05 13:35:14  new 39512 bytes, sha256 020F080E17DF, written 2026-10-05 14:01:42
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 7ECA0ECA8CB2D917D705BD6CE9552632C346C3CDFEB8107CC8BACE7072D0E683, the same as before the start
+---- the work folder at the end, sorted by name ----
+  1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf  4699 bytes
+  hkcu-navisworks-manage-22.0-before.reg  123320 bytes
+  mypid.txt  36 bytes
+  plugin-output.txt  41733 bytes
+  ViewpointProbe.dll  141824 bytes
+  watch.txt  4126 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-05 14:01:59, 158 s in all

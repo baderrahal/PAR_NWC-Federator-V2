@@ -1,0 +1,234 @@
+MACHINE   [machine]   2026-10-07 14:05:36
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 40180
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-folder-remove.ps1", sha256 9B3F4884D8ADA6446E422EFC451C3BB086B6DFFEF98E98ADF164C25AEB9F23AD
+GUARD     tools\loop\nw-guard.ps1, sha256 E29D2733A227E6665551BD52866E7C2B40F5A5B09114ECB2AA2FFE233EA23C1A
+PROCESS   powershell.exe pid 40180, started to run -File %USERPROFILE%\AppData\Local\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-folder-remove.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 486
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\folder-remove-20261007-140536" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\folder-remove-20261007-140536\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123148 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 199 AutoSave files listed and not copied
+  the tool's own logs folder listed: 38 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-remove-20261007-133308\p13-remove-saved.nwf", 41287793 bytes, sha256 24E447903F1E8074D1145C39285C516B930C2341E3407D18ACE334EC441860C1
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\folder-remove-20261007-140536\p13-remove-saved.nwf", sha256 matches
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\bin\Release\net48\ViewpointProbe.dll", 265216 bytes, written 2026-10-07 14:03:12, sha256 8385AA5B74729D67B96B0EDE1C067F655FF89444420D784B9AD552F75499779A, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  14:05:44.036  t+7.4s  calling new NavisworksApplication()
+  14:07:00.635  t+84.0s  the constructor RETURNED after 76.59 s
+  Roamer processes new since step 2: 1
+    pid 37348, started 14:05:44.165, parent 1164 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 37348, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 37348, started 2026-10-07 14:05:44.165, start ticks UTC 639269679441651462
+  14:07:10.394  t+93.8s  Visible set True, read back True
+  visible top level windows of 37348: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  14:07:10.787  t+94.2s  AddPluginAssembly RETURNED after 0.067 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode vpfolder on the copy, which it edits and saves as a new file ====
+  14:07:10.796  t+94.2s  calling ExecuteAddInPlugin(ViewpointProbe.PARS, vpfolder, the plugin's output file, the copy, the save path in the work folder)
+  14:07:52.593  t+136.0s  ExecuteAddInPlugin RETURNED 0 after 41.79 s
+  visible top level windows of 37348: 1, hidden: 94, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p13-remove-saved.nwf - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | 14:07:10.813  probe started, mode vpfolder, 2 file(s)
+  | 14:07:10.822  opening p13-remove-saved.nwf
+  | 14:07:15.856  TryOpenFile returned True after 5.034 s
+  | 14:07:15.857  models 4
+  | 14:07:15.859     model 0  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc  under the loop folder True
+  | 14:07:15.859     model 1  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc  under the loop folder True
+  | 14:07:15.859     model 2  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  under the loop folder True
+  | 14:07:15.859     model 3  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc  under the loop folder True
+  | 14:07:15.859  
+  | 14:07:15.860  PART A. THE TOP LEVEL FOLDER HOLDING THE MOST VIEWPOINTS, REMOVED WITH EVERYTHING UNDER IT BY ONE RemoveAt(root, index)
+  | 14:07:15.869  the document at the open: models 4, sets 61, tests 528, results 2939, statuses a person set 0
+  | 14:07:15.889  the tree at the open: items 2868, viewpoints 2846, folders 22, other kinds 0, reads that threw 0, Guids not empty 0, the walk 0.019 s
+  | 14:07:15.892  the target: [AR vs AR] at index path 4, direct children 2617, rows under it 2617, of them viewpoints 2617 and folders 0. Viewpoints elsewhere in the tree 229
+  | 14:07:16.070     A: RemoveAt(parent at the root, 4) on the folder [AR vs AR] of 2617 direct children and 2617 viewpoints under it RETURNED after 0.174 s. The parent held 16 children, the name was found on 1 of them and on 1 folders
+  | 14:07:16.070     A: the root read again holds 15 children
+  | 14:07:16.070  the index path removed 4, the same as the one read off the tree at the open YES
+  | 14:07:16.071  the tree after the removal: items 250, viewpoints 229, folders 21, other kinds 0, reads that threw 0, Guids not empty 0, the walk 0.000 s
+  | 14:07:16.075  the document after the removal: models 4, sets 61, tests 528, results 2939, statuses a person set 0
+  | 14:07:16.078  expected after the removal: the tree at the open less the folder and its 2617 rows, 250 rows, 212 of them later siblings or under one, whose index at that level falls by one
+  | 14:07:16.081     compare after the removal against the open less the folder: rows expected 250, read 250, rows whose names, kind, Guid or comments differ 0, rows whose index path alone differs 0
+  | 14:07:16.081     the target's names find nothing after the removal
+  | 14:07:18.891  SaveFile into p14-folder-saved.nwf took 2.806 s, 7336192 bytes read back off the disk, the copy opened was 41287793
+  | 14:07:19.376  Document.Clear took 0.485 s, models now 0, viewpoints now 0
+  | 14:07:22.270  TryOpenFile of the saved file returned True after 2.895 s
+  | 14:07:22.271  the tree after the save, the clear and the reopen: items 250, viewpoints 229, folders 21, other kinds 0, reads that threw 0, Guids not empty 0, the walk 0.000 s
+  | 14:07:22.274  the document after the reopen: models 4, sets 61, tests 528, results 2939, statuses a person set 0
+  | 14:07:22.274     compare after the reopen against after the removal: rows expected 250, read 250, rows whose names, kind, Guid or comments differ 0, rows whose index path alone differs 0
+  | 14:07:22.274     the target's names find nothing after the reopen
+  | 14:07:22.274  
+  | 14:07:22.274  PART A SUMMARY: viewpoints 2846, 229, 229 at the open, after the removal, after the reopen. Items 2868, 250, 250. Fell by exactly the folder's 2617 viewpoints and 2618 items and stayed YES. Every other item the same folder names, name, kind, Guid and comment count, in the same order, after the removal YES and after the reopen YES. The folder found by its name after the removal NO and after the reopen NO. Models, sets, tests, results and statuses the same at every stage YES. RemoveAt took 0.174 s for a folder of 2617 viewpoints in a tree of 2846
+  | 14:07:22.274  P14 YES   RemoveAt(root, index), the root read fresh and the folder found again by its name, removed the folder with every view under it in one call, and every other item kept its path, name and Guid through a save and a reopen
+  | 14:07:22.274  
+  | 14:07:22.274  PART B. A FOLDER OF VIEWS AND A FOLDER IN IT, WHOSE GUIDS THE PROBE SET, TWO FOLDERS DEEP IN THE REOPENED DOCUMENT, REMOVED BY ONE RemoveAt(parent, index)
+  | 14:07:22.303  added [P14 probe] at the root, in it [P14 keep] of 3 views, [P14 gone] of 12 views and [P14 gone inner] of 3 views after them, and [P14 after] of 2 views, 25 items in all, each Guid set before its AddCopy. To be removed with [P14 gone]: 17
+  | 14:07:22.303  the tree after the adds: items 275, viewpoints 249, folders 26, other kinds 0, reads that threw 0, Guids not empty 25, the walk 0.000 s
+  | 14:07:22.309     ResolveGuid after the adds: kept items found at their index path 25 of 25, removed items resolving to null 0 of 0. The others: none
+  | 14:07:22.311     B: RemoveAt(parent at 15, 1) on the folder [P14 gone] of 13 direct children and 15 viewpoints under it RETURNED after 0.002 s. The parent held 3 children, the name was found on 1 of them and on 1 folders
+  | 14:07:22.311     B: the parent resolved again holds 2 children
+  | 14:07:22.311  the tree after the folder removal: items 258, viewpoints 234, folders 24, other kinds 0, reads that threw 0, Guids not empty 8, the walk 0.000 s
+  | 14:07:22.311     compare after the folder removal against the adds less the folder: rows expected 258, read 258, rows whose names, kind, Guid or comments differ 0, rows whose index path alone differs 0
+  | 14:07:22.311  rows under a later sibling or a later sibling, whose index at that level falls by one: 3
+  | 14:07:22.311     ResolveGuid after the folder removal: kept items found at their index path 8 of 8, removed items resolving to null 17 of 17. The others: none
+  | 14:07:24.977  SaveFile into p14-folder-saved-sentinels.nwf took 2.664 s, 7336784 bytes read back off the disk
+  | 14:07:25.170  Document.Clear took 0.193 s, models now 0, viewpoints now 0
+  | 14:07:27.945  TryOpenFile of the saved file returned True after 2.775 s
+  | 14:07:27.945  the tree after the second save, clear and reopen: items 258, viewpoints 234, folders 24, other kinds 0, reads that threw 0, Guids not empty 8, the walk 0.000 s
+  | 14:07:27.945     compare after the second reopen against after the folder removal: rows expected 258, read 258, rows whose names, kind, Guid or comments differ 0, rows whose index path alone differs 0
+  | 14:07:27.945     ResolveGuid after the second reopen: kept items found at their index path 8 of 8, removed items resolving to null 17 of 17. The others: none
+  | 14:07:27.946  
+  | 14:07:27.946  PART B SUMMARY: RemoveAt on [P14 gone] returned YES after 0.002 s. Every other item the same, in the same order, after the removal YES and after the reopen YES. ResolveGuid gave the item at its index path for 25 of 25 after the adds, for 8 of 8 kept after the removal and 8 of 8 after the reopen. The 17 removed Guids resolved to null 17 after the removal and 17 after the reopen
+  | 14:07:27.946  P14 TWO DEEP WITH GUIDS SET YES   one call took the folder, the folder in it and every view under both, the kept items kept their Guids where they are, and every removed Guid resolved to nothing, through a save and a reopen
+  | 14:07:27.951  
+  | 14:07:27.951  PART C. THE UNTOUCHED COPY REOPENED, THE SAME FOLDER'S VIEWS REMOVED ONE AT A TIME FROM THE END, EACH TIMED, CAPPED AT 600 s
+  | 14:07:28.245  Document.Clear took 0.294 s
+  | 14:07:32.488  TryOpenFile of the untouched copy p13-remove-saved.nwf returned True after 4.242 s
+  | 14:07:32.491  the tree at the second open: items 2868, viewpoints 2846, folders 22, other kinds 0, reads that threw 0, Guids not empty 0, the walk 0.003 s
+  | 14:07:32.513     compare at the second open against the first open: rows expected 2868, read 2868, rows whose names, kind, Guid or comments differ 0, rows whose index path alone differs 0
+  | 14:07:52.578     the series stopped because the folder is empty. Calls 2617, items at the end that were not a viewpoint 0, throws 0
+  | 14:07:52.580     RemoveAt alone: 2617 values, total 20.012 s, mean 0.007647 s, median 0.007474 s, least 0.001369 s, most 0.018294 s
+  | 14:07:52.580     each round, the folder resolved fresh by its name, the last child's kind read and RemoveAt: 2617 values, total 20.063 s, mean 0.007667 s, median 0.007493 s, least 0.001422 s, most 0.018326 s. Wall time of the series 20.064 s
+  | 14:07:52.580     RemoveAt, the first 10 calls: 10 values, total 0.081 s, mean 0.008074 s, median 0.009035 s, least 0.001369 s, most 0.010318 s. The last 10: 10 values, total 0.064 s, mean 0.006359 s, median 0.006222 s, least 0.005904 s, most 0.007160 s
+  | 14:07:52.581  the tree after the series: items 251, viewpoints 229, folders 22, other kinds 0, reads that threw 0, Guids not empty 0, the walk 0.000 s
+  | 14:07:52.581     compare after the series against the second open less every row under the folder, the folder kept: rows expected 251, read 251, rows whose names, kind, Guid or comments differ 0, rows whose index path alone differs 0
+  | 14:07:52.589     C, the emptied folder: RemoveAt(parent at the root, 4) on the folder [AR vs AR] of 0 direct children and 0 viewpoints under it RETURNED after 0.007 s. The parent held 16 children, the name was found on 1 of them and on 1 folders
+  | 14:07:52.589     C, the emptied folder: the root read again holds 15 children
+  | 14:07:52.589  the tree after the emptied folder is removed: items 250, viewpoints 229, folders 21, other kinds 0, reads that threw 0, Guids not empty 0, the walk 0.000 s
+  | 14:07:52.590     compare after the emptied folder is removed against part A after its one call: rows expected 250, read 250, rows whose names, kind, Guid or comments differ 0, rows whose index path alone differs 0
+  | 14:07:52.590  
+  | 14:07:52.590  PART C SUMMARY: the second open read the same as the first YES. 2617 calls of RemoveAt(parent, last) in 20.064 s, the folder emptied YES, every other item the same after the series YES, and after the emptied folder's own RemoveAt, 0.007 s, the tree the same as part A's after its one call YES
+  | 14:07:52.590  probe finished
+  the saved copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\folder-remove-20261007-140536\p14-folder-saved.nwf", 7336192 bytes, sha256 5617FD2F1C96EE3C6CB89FA271F86B74F2EC6B59135BE0E956C0A932B5ED52B4
+  the second saved copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\folder-remove-20261007-140536\p14-folder-saved-sentinels.nwf", 7336784 bytes, sha256 C028187432B13FCF3DFC84D9E9A15D195D3ED89BAEB5318AC65EDBA2C6D2C9A9
+
+==== STEP 6. Quit through the API ====
+  14:07:53.964  t+137.4s  Dispose RETURNED after 0.89 s
+  14:08:01.417  t+144.8s  pid 37348 state gone, 7.4 s after Dispose returned, not forced
+
+==== FINALLY ====
+  14:08:01.426  t+144.8s  pid 37348 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 199, longest pass 10769 ms, longest gap between the starts of two passes 11274 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  14:05:38.006  t+1.4s  watchdog started
+  14:05:44.313  t+7.7s  Roamer pid 37348 seen with no readable start time, looked at again at the next pass
+  14:05:52.139  t+15.5s  new process Roamer pid 37348, parent 1164 svchost.exe, started 14:05:44.165, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  14:05:52.262  t+15.7s  Roamer 37348 visible top level windows: none
+  14:06:26.724  t+50.1s  new process AdskLicensingInstHelper pid 44616, parent 26096 GenuineService.exe, started 14:06:18.766, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  14:06:36.423  t+59.8s  new process AdskLicensingAgent pid 37836, parent 37348 Roamer.exe, started 14:06:29.214, command line holds the word embedding or automation: no
+  14:06:52.039  t+75.4s  Roamer 37348 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  14:06:58.675  t+82.1s  Roamer 37348 visible top level windows: none
+  14:07:07.666  t+91.1s  Roamer 37348 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:07:08.790  t+92.2s  Roamer 37348 visible top level windows: none
+  14:07:09.901  t+93.3s  Roamer 37348 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:07:12.148  t+95.5s  Roamer 37348 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;2a6d081f-3f11-4b8b-8467-dd40d5d127f5]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:07:14.390  t+97.8s  Roamer 37348 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;2a6d081f-3f11-4b8b-8467-dd40d5d127f5]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p13-remove-saved.nwf - Autodesk Navisworks Manage 2025"
+  14:07:16.113  t+99.5s  Roamer 37348 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p13-remove-saved.nwf - Autodesk Navisworks Manage 2025"
+  14:07:17.233  t+100.6s  Roamer 37348 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;32d5b883-379b-4606-9ee1-a92059a8c115]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p13-remove-saved.nwf - Autodesk Navisworks Manage 2025"
+  14:07:17.815  t+101.2s  Roamer 37348 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;32d5b883-379b-4606-9ee1-a92059a8c115]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p14-folder-saved.nwf - Autodesk Navisworks Manage 2025"
+  14:07:29.611  t+113.0s  new process AdskLicensingInstHelper pid 14392, parent 26096 GenuineService.exe, started 14:07:18.406, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  14:07:29.663  t+113.1s  Roamer 37348 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;42d984bd-e7d9-4fa7-a821-e3acbdc01516]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:07:31.352  t+114.8s  Roamer 37348 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;42d984bd-e7d9-4fa7-a821-e3acbdc01516]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p13-remove-saved.nwf - Autodesk Navisworks Manage 2025"
+  14:07:32.493  t+115.9s  Roamer 37348 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;42d984bd-e7d9-4fa7-a821-e3acbdc01516]] "" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p13-remove-saved.nwf - Autodesk Navisworks Manage 2025"
+  14:07:33.057  t+116.5s  Roamer 37348 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p13-remove-saved.nwf - Autodesk Navisworks Manage 2025"
+  14:07:53.434  t+136.8s  Roamer 37348 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:07:53.975  t+137.4s  Roamer 37348 visible top level windows: none
+  14:08:01.784  t+145.2s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 37348, parent 1164 svchost.exe: exited
+  AdskLicensingInstHelper pid 44616, parent 26096 GenuineService.exe: exited
+  AdskLicensingAgent pid 37836, parent 37348 Roamer.exe: STILL RUNNING
+  AdskLicensingInstHelper pid 14392, parent 26096 GenuineService.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40631684692700  new QWord 40633052031238
+  22.0\CER\22.5.1433.58  crashCount  old DWord 40  new DWord 41
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 152  new DWord 153
+  22.0\CER\22.5.1433.58  uptime  old QWord 2353627343750  new QWord 2355020000000
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,144,77,1632,877"
+  22.0\Recent File List\1  DisplayName  old String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"  new String "p13-remove-saved.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134290938074132508  new QWord 134358448510402062
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\folder-remove-20261007-140536\p13-remove-saved.nwf"
+  22.0\Recent File List\10  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134290938039044021  new QWord 134290938049614120
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc, sha1 B1CCD34DBC72>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>
+  22.0\Recent File List\2  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"  new String "p14-folder-saved-sentinels.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134290938070616743  new QWord 134358448464627380
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\folder-remove-20261007-140536\p14-folder-saved-sentinels.nwf"
+  22.0\Recent File List\3  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"  new String "p14-folder-saved.nwf"
+  22.0\Recent File List\3  LastOpened  old QWord 134290938066994697  new QWord 134358448407036356
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\folder-remove-20261007-140536\p14-folder-saved.nwf"
+  22.0\Recent File List\4  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"  new String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134290938062820552  new QWord 134290938074132508
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>  new String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>
+  22.0\Recent File List\5  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"  new String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134290938058967255  new QWord 134290938070616743
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>
+  22.0\Recent File List\6  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134290938054115696  new QWord 134290938066994697
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>
+  22.0\Recent File List\7  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134290938049614120  new QWord 134290938062820552
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>
+  22.0\Recent File List\8  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134290938046297945  new QWord 134290938058967255
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>
+  22.0\Recent File List\9  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134290938042577701  new QWord 134290938054115696
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>
+  registry: 36 values or keys differ from the backup
+  registry: 36 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 68875 bytes, sha256 5771E12A2A08, written 2026-10-07 13:36:12  new 70126 bytes, sha256 3E1B684BD5FD, written 2026-10-07 14:08:01
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 CFB225D1EB92, written 2026-10-07 13:36:12  new 40079 bytes, sha256 8962B892509A, written 2026-10-07 14:07:53
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 24E447903F1E8074D1145C39285C516B930C2341E3407D18ACE334EC441860C1, the same as before the start
+---- the work folder at the end, sorted by name ----
+  hkcu-navisworks-manage-22.0-before.reg  123148 bytes
+  mypid.txt  36 bytes
+  p13-remove-saved.nwf  41287793 bytes
+  p14-folder-saved.nwf  7336192 bytes
+  p14-folder-saved-sentinels.nwf  7336784 bytes
+  plugin-output.txt  9847 bytes
+  ViewpointProbe.dll  265216 bytes
+  watch.txt  4097 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-07 14:08:09, 153 s in all

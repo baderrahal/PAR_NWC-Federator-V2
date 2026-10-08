@@ -137,6 +137,102 @@ namespace ViewpointProbe
                     {
                         MeasureSetRename(parameters[2]);
                     }
+                    else if (mode == "mirror")
+                    {
+                        MeasureMirrorSwap(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
+                    else if (mode == "testremove")
+                    {
+                        MeasureTestRemove(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
+                    else if (mode == "mirrorcount")
+                    {
+                        MeasureMirrorCount(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
+                    else if (mode == "worksets")
+                    {
+                        MeasureModelWorksets(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
+                    else if (mode == "vptree")
+                    {
+                        DumpViewpointTree(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
+                    else if (mode == "vpguid")
+                    {
+                        MeasureViewGuids(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
+                    else if (mode == "vpcopy")
+                    {
+                        MeasureViewCopy(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
+                    else if (mode == "vpspace")
+                    {
+                        MeasureViewNameSpaces(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
+                    else if (mode == "vpremove")
+                    {
+                        MeasureViewRemove(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
+                    else if (mode == "vpfolder")
+                    {
+                        MeasureFolderRemove(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
+                    else if (mode == "vprebuild")
+                    {
+                        MeasureRebuildViews(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
+                    else if (mode == "vpframe")
+                    {
+                        MeasureFraming(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
+                    else if (mode == "vppaint")
+                    {
+                        MeasurePaint(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
+                    else if (mode == "vprate")
+                    {
+                        MeasureViewRate(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null,
+                            parameters.Length > 4 ? parameters[4] : null);
+                    }
+                    else if (mode == "vpcomment")
+                    {
+                        MeasureViewComments(
+                            parameters[2],
+                            parameters.Length > 3 ? parameters[3] : null);
+                    }
                     else
                     {
                         Say("UNKNOWN mode " + mode);
@@ -6771,6 +6867,10359 @@ namespace ViewpointProbe
             catch (Exception)
             {
                 return false;
+            }
+        }
+
+        // ---------- P1 of Q114, a test with its sides swapped, run beside the original ----------
+
+        /// <summary>
+        /// P1 of Q114, scan.md 5z-k. Finds the test named testName in a copy, adds a copy of it
+        /// whose side A is the original's side B and whose side B is the original's side A, clears
+        /// the copy's results, runs the copy and the original, and compares the clashes each finds
+        /// as UNORDERED pairs of item index paths. The copy is saved to saveAs for P2.
+        /// </summary>
+        private void MeasureMirrorSwap(string nwf, string testName, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(testName))
+            {
+                Say("UNKNOWN: no test name was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count + ", document units " + document.Units);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                Model model = document.Models[m];
+                Say("   model " + m + "  " + Path.GetFileName(model.FileName)
+                    + "  under the loop folder " + (model.FileName ?? string.Empty).StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            DocumentClashTests clashTests = document.GetClash().TestsData;
+            Say("tests at the root " + clashTests.Tests.Count);
+
+            int matches;
+            List<int> address = FindTest(clashTests.Tests, testName, new List<int>(), out matches);
+            Say("tests named \"" + testName + "\": " + matches);
+
+            string[] halves = testName.Split(new[] { "-vs-" }, StringSplitOptions.None);
+
+            if (halves.Length == 2)
+            {
+                int mirrors;
+                FindTest(clashTests.Tests, halves[1] + "-vs-" + halves[0], new List<int>(), out mirrors);
+                Say("tests named \"" + halves[1] + "-vs-" + halves[0] + "\", its mirror by name: " + mirrors);
+            }
+
+            if (address == null || matches != 1)
+            {
+                Say("UNKNOWN: the test is not there exactly once, so nothing is created");
+                return;
+            }
+
+            Say("its address " + string.Join(".", Strings(address.ToArray())));
+
+            PairsFound stored;
+
+            using (ClashTest original = ResolveTest(clashTests, address))
+            {
+                SayTest(document, original, "THE ORIGINAL as the NWF holds it");
+                stored = ReadPairs(document, original.Children);
+            }
+
+            SayPairs(stored, "the original's results as the NWF holds them");
+
+            string swapName = testName + " P1 swap";
+            int before = clashTests.Tests.Count;
+            clock = System.Diagnostics.Stopwatch.StartNew();
+
+            // Run 1 made the swap with the original's CreateCopy, and TestsAddCopy threw
+            // "Contains an item whose GUID is already present in the group", because the copy
+            // keeps the original's Guid. So the swap is a new ClashTest, built the way
+            // ClashRunner.Create builds one, carrying every setting SayTest prints, and the
+            // ignore rules are checked to be none, since a new test carries none.
+            using (ClashTest original = ResolveTest(clashTests, address))
+            {
+                if (original.IgnoreRules.Count != 0)
+                {
+                    Say("UNKNOWN: the original carries " + original.IgnoreRules.Count + " ignore rules, which a new test does not, so nothing is created");
+                    return;
+                }
+
+                using (ClashTest swap = new ClashTest())
+                {
+                    swap.DisplayName = swapName;
+                    swap.TestType = original.TestType;
+                    swap.Tolerance = original.Tolerance;
+                    swap.MergeComposites = original.MergeComposites;
+                    swap.SimulationType = original.SimulationType;
+
+                    using (ClashSelection originalA = original.SelectionA)
+                    using (ClashSelection originalB = original.SelectionB)
+                    using (ClashSelection swapA = swap.SelectionA)
+                    using (ClashSelection swapB = swap.SelectionB)
+                    {
+                        swapA.CopyFrom(originalB);
+                        swapB.CopyFrom(originalA);
+                    }
+
+                    clashTests.TestsAddCopy(swap);
+                }
+            }
+
+            int after = clashTests.Tests.Count;
+            Say("new ClashTest, its settings, the two CopyFrom and TestsAddCopy took " + Seconds(clock) + ", tests at the root " + before + " then " + after);
+
+            if (after != before + 1)
+            {
+                Say("UNKNOWN: the root did not grow by one, so the swap cannot be found by its place");
+                return;
+            }
+
+            List<int> swapAddress = new List<int> { before };
+
+            using (ClashTest swap = ResolveTest(clashTests, swapAddress))
+            {
+                if (swap == null || swap.DisplayName != swapName)
+                {
+                    Say("UNKNOWN: the last test at the root is not the swap, it reads " + (swap == null ? "null" : "\"" + swap.DisplayName + "\""));
+                    return;
+                }
+
+                SayTest(document, swap, "THE SWAP as added");
+                Say("   results it carried in from the copy: " + ReadPairs(document, swap.Children).Leaves);
+            }
+
+            using (ClashTest swap = ResolveTest(clashTests, swapAddress))
+            {
+                clashTests.TestsClearResults(swap);
+            }
+
+            using (ClashTest swap = ResolveTest(clashTests, swapAddress))
+            {
+                Say("   results after TestsClearResults: " + ReadPairs(document, swap.Children).Leaves);
+            }
+
+            using (ClashTest swap = ResolveTest(clashTests, swapAddress))
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                clashTests.TestsRunTest(swap);
+                Say("TestsRunTest on the swap took " + Seconds(clock));
+            }
+
+            PairsFound swapped;
+
+            using (ClashTest swap = ResolveTest(clashTests, swapAddress))
+            {
+                Say("   the swap after its run: status " + swap.Status + ", last run " + (swap.LastRun.HasValue ? "set" : "never"));
+                swapped = ReadPairs(document, swap.Children);
+            }
+
+            SayPairs(swapped, "the swap's results after its run");
+
+            using (ClashTest original = ResolveTest(clashTests, address))
+            {
+                if (original == null || original.DisplayName != testName)
+                {
+                    Say("UNKNOWN: the original is no longer at its address");
+                    return;
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                clashTests.TestsRunTest(original);
+                Say("TestsRunTest on the original took " + Seconds(clock));
+            }
+
+            PairsFound rerun;
+
+            using (ClashTest original = ResolveTest(clashTests, address))
+            {
+                rerun = ReadPairs(document, original.Children);
+            }
+
+            SayPairs(rerun, "the original's results after it ran again beside the swap");
+
+            bool swapVsStored = ComparePairs("the swap", swapped, "the original as stored", stored);
+            bool swapVsRerun = ComparePairs("the swap", swapped, "the original run again", rerun);
+            bool rerunVsStored = ComparePairs("the original run again", rerun, "the original as stored", stored);
+
+            int open = stored.Open.Count;
+            bool readable = stored.NullItems == 0 && swapped.NullItems == 0 && rerun.NullItems == 0;
+
+            if (!readable)
+            {
+                Say("P1 UNKNOWN   a result had an item that did not read, so a pair is not whole");
+            }
+            else if (swapVsStored && swapVsRerun)
+            {
+                Say("P1 YES   the swap finds " + swapped.Open.Count + " clashes, the original " + open
+                    + " as stored and " + rerun.Open.Count + " run again, over the same unordered pairs of item index paths");
+            }
+            else
+            {
+                Say("P1 NO   the swap finds " + swapped.Open.Count + " clashes, the original " + open
+                    + " as stored and " + rerun.Open.Count + " run again, and the unordered pairs differ, see the lists above");
+            }
+
+            Say("the original run again finds what it held: " + rerunVsStored);
+
+            if (!string.IsNullOrEmpty(saveAs))
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                document.SaveFile(saveAs);
+                Say("SaveFile of the copy with the swap into " + Path.GetFileName(saveAs) + " took " + Seconds(clock)
+                    + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            }
+        }
+
+        // ---------- P2 of Q114, scan.md 5z-l, does TestsRemoveAt take one test and nothing else ----------
+
+        /// <summary>
+        /// P2 of Q114. Opens a copy of P1's NWF, which holds the swap P1 added, removes that one
+        /// test by DocumentClashTests.TestsRemoveAt(GroupItem parent, int index) with the parent
+        /// read fresh just before the call and the index checked by name, times the call, and
+        /// compares every model, set, test, result, status and viewpoint before the call, after
+        /// it, and after a save, a Document.Clear and a reopen of the saved file.
+        /// </summary>
+        private void MeasureTestRemove(string nwf, string testName, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(testName) || string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no test name or no save path was handed in");
+                return;
+            }
+
+            Say("TestsRemoveAt and TestsRemove on this install, read by reflection:");
+
+            foreach (System.Reflection.MethodInfo method in typeof(DocumentClashTests).GetMethods())
+            {
+                if (method.Name == "TestsRemoveAt" || method.Name == "TestsRemove")
+                {
+                    List<string> args = new List<string>();
+
+                    foreach (System.Reflection.ParameterInfo parameter in method.GetParameters())
+                    {
+                        args.Add(parameter.ParameterType.Name + " " + parameter.Name);
+                    }
+
+                    Say("   " + method.ReturnType.Name + " " + method.Name + "(" + string.Join(", ", args.ToArray()) + ")");
+                }
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            DocumentClashTests clashTests = document.GetClash().TestsData;
+            int matches;
+            List<int> address = FindTest(clashTests.Tests, testName, new List<int>(), out matches);
+            Say("tests named \"" + testName + "\": " + matches);
+
+            if (address == null || matches != 1)
+            {
+                Say("UNKNOWN: the test is not there exactly once, so nothing is removed");
+                return;
+            }
+
+            Say("its address " + string.Join(".", Strings(address.ToArray())));
+            string removedLine;
+            int removedResults;
+
+            using (ClashTest target = ResolveTest(clashTests, address))
+            {
+                SayTest(document, target, "THE TEST TO BE REMOVED");
+                removedLine = TestLine(target, out removedResults);
+                Say("   its census line: " + removedLine);
+            }
+
+            Snapshot before = TakeSnapshot(document);
+            SaySnapshot(before, "BEFORE the remove");
+
+            int index = address[address.Count - 1];
+            List<int> parentAddress = address.GetRange(0, address.Count - 1);
+            double removeSeconds;
+
+            // The parent read fresh, and the child at the index checked by name, just before the call.
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            GroupItem parent = ParentFolderOf(clashTests, parentAddress);
+
+            if (parent == null)
+            {
+                Say("UNKNOWN: the parent folder did not resolve, so nothing is removed");
+                return;
+            }
+
+            using (parent)
+            {
+                string atIndex;
+
+                using (SavedItem child = parent.Children[index])
+                {
+                    atIndex = child == null ? null : child.DisplayName;
+                }
+
+                double resolveSeconds = clock.Elapsed.TotalSeconds;
+                Say("the parent resolved fresh: \"" + Words(parent.DisplayName) + "\", a " + parent.GetType().Name
+                    + ", " + parent.Children.Count + " children, the child at " + index + " reads \"" + Words(atIndex) + "\""
+                    + ", resolve and check took " + resolveSeconds.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s");
+
+                if (!string.Equals(atIndex, testName, StringComparison.Ordinal))
+                {
+                    Say("UNKNOWN: the child at the index is not the test, so nothing is removed");
+                    return;
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                clashTests.TestsRemoveAt(parent, index);
+                removeSeconds = clock.Elapsed.TotalSeconds;
+            }
+
+            Say("TestsRemoveAt(parent, " + index + ") RETURNED after "
+                + removeSeconds.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s");
+
+            int left;
+            FindTest(clashTests.Tests, testName, new List<int>(), out left);
+            Say("tests named \"" + testName + "\" after the call: " + left);
+
+            Snapshot afterRemove = TakeSnapshot(document);
+            SaySnapshot(afterRemove, "AFTER the remove, before any save");
+            bool sameAfterRemove = CompareSnapshots(before, afterRemove, removedLine, removedResults, "after the remove");
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count
+                + ", tests now " + document.GetClash().TestsData.Tests.Count);
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P2 UNKNOWN   the saved file would not reopen, so nothing after a reopen is read");
+                return;
+            }
+
+            int afterReopen;
+            FindTest(document.GetClash().TestsData.Tests, testName, new List<int>(), out afterReopen);
+            Say("tests named \"" + testName + "\" after the reopen: " + afterReopen);
+
+            Snapshot reopenedSnap = TakeSnapshot(document);
+            SaySnapshot(reopenedSnap, "AFTER a save, a clear and a reopen");
+            bool sameAfterReopen = CompareSnapshots(before, reopenedSnap, removedLine, removedResults, "after the reopen");
+            bool removeVsReopen = CompareSnapshots(afterRemove, reopenedSnap, null, 0, "the reopen against the state after the remove");
+
+            if (left == 0 && afterReopen == 0 && sameAfterRemove && sameAfterReopen && removeVsReopen)
+            {
+                Say("P2 YES   TestsRemoveAt(parent, index) took the one test with its " + removedResults
+                    + " results in " + removeSeconds.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)
+                    + " s, and every model, set, other test, result, status and viewpoint read the same after the call and after a save, a clear and a reopen");
+            }
+            else
+            {
+                Say("P2 NO   see the differences above: the test left " + left + " after the call and " + afterReopen
+                    + " after the reopen, the rest the same after the call " + sameAfterRemove + ", after the reopen " + sameAfterReopen
+                    + ", the reopen against the call " + removeVsReopen);
+            }
+        }
+
+        private sealed class Snapshot
+        {
+            public readonly List<string> Models = new List<string>();
+            public readonly List<string> Sets = new List<string>();
+            public readonly List<string> Tests = new List<string>();
+            public readonly List<string> Viewpoints = new List<string>();
+            public int Results;
+            public int NotNew;
+            public int ViewpointLeaves;
+            public int SetLeaves;
+            public int TestLeaves;
+        }
+
+        private static GroupItem ParentFolderOf(DocumentClashTests clashTests, List<int> parentAddress)
+        {
+            GroupItem folder = clashTests.Value.TestsRoot;
+
+            for (int level = 0; level < parentAddress.Count; level++)
+            {
+                if (folder == null || parentAddress[level] >= folder.Children.Count)
+                {
+                    return null;
+                }
+
+                folder = folder.Children[parentAddress[level]] as GroupItem;
+            }
+
+            return folder;
+        }
+
+        private Snapshot TakeSnapshot(Document document)
+        {
+            Snapshot snap = new Snapshot();
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                Model model = document.Models[m];
+                snap.Models.Add(m + "  " + Path.GetFileName(model.FileName ?? string.Empty));
+            }
+
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                SnapTree(root, string.Empty, snap.Sets, ref snap.SetLeaves);
+            }
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SnapTree(root, string.Empty, snap.Viewpoints, ref snap.ViewpointLeaves);
+            }
+
+            SnapTests(document.GetClash().TestsData.Tests, string.Empty, snap);
+            return snap;
+        }
+
+        /// <summary>Every item of a tree as its path, its name and whether it is a folder, in order.</summary>
+        private static void SnapTree(GroupItem folder, string path, List<string> into, ref int leaves)
+        {
+            SavedItemCollection children = folder.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    string where = path + "/" + Words(child.DisplayName);
+                    GroupItem group = child as GroupItem;
+
+                    if (group != null)
+                    {
+                        into.Add(where + "   folder of " + group.Children.Count);
+                        SnapTree(group, where, into, ref leaves);
+                    }
+                    else
+                    {
+                        leaves++;
+                        into.Add(where + "   " + child.GetType().Name);
+                    }
+                }
+            }
+        }
+
+        private void SnapTests(SavedItemCollection items, string path, Snapshot snap)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    ClashTest test = item as ClashTest;
+
+                    if (test != null)
+                    {
+                        int results;
+                        string line = TestLine(test, out results);
+                        int notNew = 0;
+                        CountResultsUnder(test.Children, ref notNew);
+                        snap.Tests.Add(path + "/" + line);
+                        snap.TestLeaves++;
+                        snap.Results += results;
+                        snap.NotNew += notNew;
+                        continue;
+                    }
+
+                    GroupItem folder = item as GroupItem;
+
+                    if (folder != null)
+                    {
+                        snap.Tests.Add(path + "/" + Words(folder.DisplayName) + "   folder of " + folder.Children.Count);
+                        SnapTests(folder.Children, path + "/" + Words(folder.DisplayName), snap);
+                    }
+                }
+            }
+        }
+
+        /// <summary>A test's name, its settings, its result count, its statuses and a hash of every result's name and status in order.</summary>
+        private static string TestLine(ClashTest test, out int results)
+        {
+            List<string> each = new List<string>();
+            Dictionary<string, int> byStatus = new Dictionary<string, int>(StringComparer.Ordinal);
+            ResultsOf(test.Children, string.Empty, each, byStatus);
+            results = each.Count;
+
+            List<string> statuses = new List<string>();
+
+            foreach (KeyValuePair<string, int> pair in byStatus)
+            {
+                statuses.Add(pair.Key + " " + pair.Value);
+            }
+
+            statuses.Sort(StringComparer.Ordinal);
+            string hash;
+
+            using (System.Security.Cryptography.SHA256 sha = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", each.ToArray())));
+                hash = BitConverter.ToString(bytes, 0, 6).Replace("-", string.Empty);
+            }
+
+            return Words(test.DisplayName) + "   type " + test.TestType
+                + ", tolerance " + test.Tolerance.ToString("R", System.Globalization.CultureInfo.InvariantCulture)
+                + ", status " + test.Status + ", results " + results
+                + ", " + (statuses.Count == 0 ? "none" : string.Join(", ", statuses.ToArray()))
+                + ", names and statuses sha256 " + hash;
+        }
+
+        private static void ResultsOf(SavedItemCollection children, string path, List<string> each, Dictionary<string, int> byStatus)
+        {
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem item = children[i])
+                {
+                    ClashResultGroup group = item as ClashResultGroup;
+
+                    if (group != null)
+                    {
+                        ResultsOf(group.Children, path + "/" + Words(group.DisplayName), each, byStatus);
+                        continue;
+                    }
+
+                    ClashResult result = item as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    string status = result.Status.ToString();
+                    int had;
+                    byStatus.TryGetValue(status, out had);
+                    byStatus[status] = had + 1;
+                    each.Add(path + "/" + Words(result.DisplayName) + " " + status);
+                }
+            }
+        }
+
+        private void SaySnapshot(Snapshot snap, string when)
+        {
+            Say(when + ": models " + snap.Models.Count
+                + ", set tree items " + snap.Sets.Count + " of which sets " + snap.SetLeaves
+                + ", test tree items " + snap.Tests.Count + " of which tests " + snap.TestLeaves
+                + ", results " + snap.Results + ", results not New " + snap.NotNew
+                + ", viewpoint tree items " + snap.Viewpoints.Count + " of which viewpoints " + snap.ViewpointLeaves);
+        }
+
+        /// <summary>
+        /// True when the later snapshot is the earlier one with exactly the removed test's line
+        /// gone, or the same when no line was removed. Every other difference is said.
+        /// </summary>
+        private bool CompareSnapshots(Snapshot earlier, Snapshot later, string removedLine, int removedResults, string label)
+        {
+            bool same = true;
+            same &= CompareList(earlier.Models, later.Models, null, "models", label);
+            same &= CompareList(earlier.Sets, later.Sets, null, "sets", label);
+            same &= CompareList(earlier.Viewpoints, later.Viewpoints, null, "viewpoints", label);
+            same &= CompareList(earlier.Tests, later.Tests, removedLine == null ? null : "/" + removedLine, "tests", label);
+
+            int wantResults = earlier.Results - removedResults;
+            Say("   " + label + ": results " + later.Results + " against " + wantResults + " wanted"
+                + (later.Results == wantResults ? ", the same" : ", DIFFERENT"));
+            same &= later.Results == wantResults;
+            return same;
+        }
+
+        private bool CompareList(List<string> earlier, List<string> later, string removed, string what, string label)
+        {
+            List<string> want = new List<string>(earlier);
+            bool removedFound = true;
+
+            if (removed != null)
+            {
+                removedFound = want.Remove(removed);
+            }
+
+            int differ = 0;
+            int shown = 0;
+
+            for (int i = 0; i < Math.Max(want.Count, later.Count); i++)
+            {
+                string a = i < want.Count ? want[i] : "(none)";
+                string b = i < later.Count ? later[i] : "(none)";
+
+                if (!string.Equals(a, b, StringComparison.Ordinal))
+                {
+                    differ++;
+
+                    if (shown < 20)
+                    {
+                        shown++;
+                        Say("      " + what + " " + i + " wanted: " + a);
+                        Say("      " + what + " " + i + " read  : " + b);
+                    }
+                }
+            }
+
+            Say("   " + label + ": " + what + " " + later.Count + " against " + want.Count + " wanted"
+                + (removed == null ? string.Empty : ", the removed test's line found in the earlier list " + removedFound)
+                + ", lines that differ " + differ);
+            return differ == 0 && removedFound;
+        }
+
+        private sealed class PairsFound
+        {
+            public int Leaves;
+            public int Groups;
+            public int NullItems;
+            public int Duplicates;
+            public readonly Dictionary<string, int> ByStatus = new Dictionary<string, int>(StringComparer.Ordinal);
+
+            // Every result whose status is not Resolved, by its unordered pair, holding its
+            // ordered pair and its distance.
+            public readonly Dictionary<string, string> Open = new Dictionary<string, string>(StringComparer.Ordinal);
+            public readonly Dictionary<string, double> Distance = new Dictionary<string, double>(StringComparer.Ordinal);
+        }
+
+        private static string Seconds(System.Diagnostics.Stopwatch clock)
+        {
+            return clock.Elapsed.TotalSeconds.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s";
+        }
+
+        /// <summary>Tests at the root and in folders, a test being a leaf even though it holds results.</summary>
+        private static List<int> FindTest(SavedItemCollection items, string name, List<int> at, out int matches)
+        {
+            matches = 0;
+            List<int> found = null;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    List<int> here = new List<int>(at) { i };
+
+                    if (item is ClashTest)
+                    {
+                        if (string.Equals(item.DisplayName, name, StringComparison.Ordinal))
+                        {
+                            matches++;
+                            found = here;
+                        }
+
+                        continue;
+                    }
+
+                    GroupItem folder = item as GroupItem;
+
+                    if (folder != null)
+                    {
+                        int below;
+                        List<int> under = FindTest(folder.Children, name, here, out below);
+                        matches += below;
+
+                        if (under != null)
+                        {
+                            found = under;
+                        }
+                    }
+                }
+            }
+
+            return found;
+        }
+
+        /// <summary>A fresh handle by address, each level read from the collection again.</summary>
+        private static ClashTest ResolveTest(DocumentClashTests clashTests, List<int> address)
+        {
+            SavedItemCollection children = clashTests.Tests;
+
+            for (int level = 0; level < address.Count; level++)
+            {
+                int index = address[level];
+
+                if (children == null || index < 0 || index >= children.Count)
+                {
+                    return null;
+                }
+
+                SavedItem item = children[index];
+
+                if (level + 1 == address.Count)
+                {
+                    return item as ClashTest;
+                }
+
+                GroupItem folder = item as GroupItem;
+                children = folder == null ? null : folder.Children;
+            }
+
+            return null;
+        }
+
+        private void SayTest(Document document, ClashTest test, string label)
+        {
+            string rules;
+
+            try
+            {
+                rules = test.IgnoreRules.Count.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+            catch (Exception error)
+            {
+                rules = "UNKNOWN, " + error.GetType().Name;
+            }
+
+            Say(label + ": \"" + test.DisplayName + "\"");
+            Say("   type " + test.TestType + ", tolerance " + test.Tolerance.ToString("R", System.Globalization.CultureInfo.InvariantCulture)
+                + ", merge composites " + test.MergeComposites + ", status " + test.Status
+                + ", last run " + (test.LastRun.HasValue ? "set" : "never") + ", ignore rules " + rules
+                + ", simulation " + test.SimulationType);
+
+            using (ClashSelection a = test.SelectionA)
+            {
+                SaySide(document, a, "   side A");
+            }
+
+            using (ClashSelection b = test.SelectionB)
+            {
+                SaySide(document, b, "   side B");
+            }
+        }
+
+        private void SaySide(Document document, ClashSelection side, string label)
+        {
+            List<string> names = new List<string>();
+            int items = -1;
+            bool explicitItems;
+
+            using (Selection selection = side.Selection)
+            {
+                explicitItems = selection.HasExplicitSelection;
+                SelectionSourceCollection sources = selection.SelectionSources;
+
+                for (int i = 0; i < sources.Count; i++)
+                {
+                    try
+                    {
+                        using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[i]))
+                        {
+                            names.Add(pointed == null ? "a source that resolves to nothing" : "\"" + pointed.DisplayName + "\"");
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        names.Add("a source that threw " + error.GetType().Name);
+                    }
+                }
+
+                try
+                {
+                    using (ModelItemCollection got = selection.GetSelectedItems(document))
+                    {
+                        items = got.Count;
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say(label + " GetSelectedItems threw " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+
+            Say(label + ": sets " + (names.Count == 0 ? "none" : string.Join(", ", names.ToArray()))
+                + ", explicit items " + explicitItems + ", items selected " + items
+                + ", self intersect " + side.SelfIntersect + ", primitive types " + side.PrimitiveTypes);
+        }
+
+        private static PairsFound ReadPairs(Document document, SavedItemCollection children)
+        {
+            PairsFound found = new PairsFound();
+            ReadPairsUnder(document, children, found);
+            return found;
+        }
+
+        private static void ReadPairsUnder(Document document, SavedItemCollection children, PairsFound found)
+        {
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem item = children[i])
+                {
+                    ClashResultGroup group = item as ClashResultGroup;
+
+                    if (group != null)
+                    {
+                        found.Groups++;
+                        ReadPairsUnder(document, group.Children, found);
+                        continue;
+                    }
+
+                    ClashResult result = item as ClashResult;
+
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
+                    found.Leaves++;
+                    string status = result.Status.ToString();
+                    int had;
+                    found.ByStatus.TryGetValue(status, out had);
+                    found.ByStatus[status] = had + 1;
+
+                    string first = ItemPath(document, result.Item1);
+                    string second = ItemPath(document, result.Item2);
+
+                    if (first == null || second == null)
+                    {
+                        found.NullItems++;
+                        continue;
+                    }
+
+                    if (result.Status == ClashResultStatus.Resolved)
+                    {
+                        continue;
+                    }
+
+                    string key = string.CompareOrdinal(first, second) <= 0 ? first + " | " + second : second + " | " + first;
+
+                    if (found.Open.ContainsKey(key))
+                    {
+                        found.Duplicates++;
+                        continue;
+                    }
+
+                    found.Open[key] = first + " | " + second;
+                    found.Distance[key] = result.Distance;
+                }
+            }
+        }
+
+        private static string ItemPath(Document document, ModelItem item)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+            using (item)
+            {
+                return string.Join(".", Strings(PathOf(document, item)));
+            }
+        }
+
+        private void SayPairs(PairsFound found, string label)
+        {
+            List<string> statuses = new List<string>();
+
+            foreach (KeyValuePair<string, int> pair in found.ByStatus)
+            {
+                statuses.Add(pair.Key + " " + pair.Value);
+            }
+
+            statuses.Sort(StringComparer.Ordinal);
+            Say(label + ": results " + found.Leaves + ", groups " + found.Groups
+                + ", by status " + (statuses.Count == 0 ? "none" : string.Join(", ", statuses.ToArray()))
+                + ", not Resolved " + found.Open.Count + ", an item that did not read " + found.NullItems
+                + ", a pair met twice " + found.Duplicates);
+
+            List<string> keys = new List<string>(found.Open.Keys);
+            keys.Sort(StringComparer.Ordinal);
+
+            foreach (string key in keys)
+            {
+                Say("      " + found.Open[key] + "   distance " + found.Distance[key].ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+            }
+        }
+
+        /// <summary>True when both hold the same unordered pairs. Says the pairs in one only, which way round each common pair is held, and the largest distance difference.</summary>
+        private bool ComparePairs(string leftLabel, PairsFound left, string rightLabel, PairsFound right)
+        {
+            List<string> onlyLeft = new List<string>();
+            List<string> onlyRight = new List<string>();
+            int same = 0;
+            int reversed = 0;
+            int common = 0;
+            double largest = 0;
+
+            foreach (string key in left.Open.Keys)
+            {
+                if (!right.Open.ContainsKey(key))
+                {
+                    onlyLeft.Add(key);
+                    continue;
+                }
+
+                common++;
+
+                if (left.Open[key] == right.Open[key])
+                {
+                    same++;
+                }
+                else
+                {
+                    reversed++;
+                }
+
+                largest = Math.Max(largest, Math.Abs(left.Distance[key] - right.Distance[key]));
+            }
+
+            foreach (string key in right.Open.Keys)
+            {
+                if (!left.Open.ContainsKey(key))
+                {
+                    onlyRight.Add(key);
+                }
+            }
+
+            onlyLeft.Sort(StringComparer.Ordinal);
+            onlyRight.Sort(StringComparer.Ordinal);
+            Say("COMPARE " + leftLabel + " " + left.Open.Count + " against " + rightLabel + " " + right.Open.Count
+                + ": in both " + common + ", in " + leftLabel + " only " + onlyLeft.Count + ", in " + rightLabel + " only " + onlyRight.Count);
+            Say("   of the " + common + " in both, the same item first " + same + ", the items the other way round " + reversed
+                + ", the largest difference in distance " + largest.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+
+            foreach (string key in onlyLeft)
+            {
+                Say("   only in " + leftLabel + ": " + key);
+            }
+
+            foreach (string key in onlyRight)
+            {
+                Say("   only in " + rightLabel + ": " + key);
+            }
+
+            return onlyLeft.Count == 0 && onlyRight.Count == 0;
+        }
+
+        // ---------- Q133, how often a mirror finds more, and what running both costs ----------
+
+        private sealed class Q133Test
+        {
+            public List<int> Address;
+            public string Name;
+        }
+
+        private sealed class Q133Diff
+        {
+            public int Both;
+            public readonly List<string> OnlyLeft = new List<string>();
+            public readonly List<string> OnlyRight = new List<string>();
+        }
+
+        private sealed class Q133Totals
+        {
+            public int Tests;
+            public int Same;
+            public int More;
+            public int Fewer;
+            public int Other;
+            public int Unknown;
+            public int Stored;
+            public int Original;
+            public int Swap;
+            public int OnlySwap;
+            public int OnlyOriginal;
+            public double OriginalSeconds;
+            public double SwapSeconds;
+            public double CreateSeconds;
+        }
+
+        /// <summary>
+        /// Q133 on one building. Part 1 reads the pairs F132's rule finds in the picked XML, written
+        /// by q133-rule-pairs.py, and for each pair whose two tests are both in the NWF runs both
+        /// and compares their clashes by the unordered pair of item index paths, as P1 did. Part 2
+        /// does, for every test whose stored results hold at least one clash not Resolved, what P1
+        /// did for one test: a new ClashTest with the sides swapped is added at the root, the
+        /// original is run, then the swap, each TestsRunTest timed alone, and the two compared.
+        /// Part 3 does the same for every other test of the NWF. The copy is saved to saveAs.
+        /// </summary>
+        private void MeasureMirrorCount(string nwf, string pairsFile, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count + ", document units " + document.Units);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                Model model = document.Models[m];
+                Say("   model " + m + "  " + Path.GetFileName(model.FileName)
+                    + "  under the loop folder " + (model.FileName ?? string.Empty).StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            DocumentClashTests clashTests = document.GetClash().TestsData;
+            List<Q133Test> tests = new List<Q133Test>();
+            Q133Walk(clashTests.Tests, new List<int>(), tests);
+            Dictionary<string, List<Q133Test>> byName = new Dictionary<string, List<Q133Test>>(StringComparer.Ordinal);
+            int inFolders = 0;
+
+            foreach (Q133Test t in tests)
+            {
+                List<Q133Test> same;
+
+                if (!byName.TryGetValue(t.Name, out same))
+                {
+                    same = new List<Q133Test>();
+                    byName[t.Name] = same;
+                }
+
+                same.Add(t);
+
+                if (t.Address.Count > 1)
+                {
+                    inFolders++;
+                }
+            }
+
+            int rootCount = clashTests.Tests.Count;
+            Say("tests " + tests.Count + ", at the root " + rootCount + ", in a folder " + inFolders + ", names used more than once "
+                + Q133Repeated(byName, 2));
+
+            // The stored results of every test, read before anything runs.
+            Dictionary<string, PairsFound> stored = new Dictionary<string, PairsFound>(StringComparer.Ordinal);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            int storedTotal = 0;
+            int storedTests = 0;
+
+            foreach (Q133Test t in tests)
+            {
+                using (ClashTest test = ResolveTest(clashTests, t.Address))
+                {
+                    PairsFound found = ReadPairs(document, test.Children);
+                    stored[t.Name] = found;
+                    storedTotal += found.Open.Count;
+
+                    if (found.Open.Count > 0)
+                    {
+                        storedTests++;
+                    }
+                }
+            }
+
+            Say("stored results read in " + Seconds(clock) + ": tests with at least one clash not Resolved " + storedTests
+                + ", clashes not Resolved " + storedTotal);
+            Say(string.Empty);
+
+            // ---- Part 1, the rule's pairs ----
+            Say("==== PART 1. The pairs F132's rule finds in the picked XML ====");
+            List<string[]> pairs = new List<string[]>();
+            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+
+            if (string.IsNullOrEmpty(pairsFile) || !File.Exists(pairsFile))
+            {
+                Say("UNKNOWN: no pairs file was handed in, or it is not there");
+            }
+            else
+            {
+                foreach (string line in File.ReadAllLines(pairsFile, new UTF8Encoding(false)))
+                {
+                    if (line.Length == 0 || line.StartsWith("#", StringComparison.Ordinal))
+                    {
+                        if (line.Length > 0)
+                        {
+                            Say("   " + line);
+                        }
+
+                        continue;
+                    }
+
+                    string[] f = line.Split('\t');
+
+                    if (f.Length < 4)
+                    {
+                        Say("   a line of the pairs file with " + f.Length + " fields, skipped: " + line);
+                        continue;
+                    }
+
+                    if (seen.Add(f[1] + "\n" + f[2] + "\n" + f[3]))
+                    {
+                        pairs.Add(new[] { f[1], f[2], f[3] });
+                    }
+                }
+            }
+
+            Say("distinct pairs and self tests over the XMLs read: " + pairs.Count);
+            int pairsBoth = 0;
+            int pairsRun = 0;
+
+            foreach (string[] p in pairs)
+            {
+                int first = byName.ContainsKey(p[1]) ? byName[p[1]].Count : 0;
+                int second = p[2].Length == 0 ? -1 : (byName.ContainsKey(p[2]) ? byName[p[2]].Count : 0);
+                string head = "P1 PAIR  " + p[0] + "  \"" + p[1] + "\" in the NWF " + first
+                    + (second < 0 ? string.Empty : ", \"" + p[2] + "\" in the NWF " + second);
+
+                if (second < 0)
+                {
+                    if (first != 1)
+                    {
+                        Say(head + "  NOT CREATED on this building, so not run");
+                        continue;
+                    }
+
+                    pairsBoth++;
+                    double s;
+                    PairsFound self = Q133Run(document, clashTests, byName[p[1]][0], out s);
+                    pairsRun++;
+                    Say(head + "  ran in " + s.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s, clashes "
+                        + (self == null ? "UNKNOWN" : self.Open.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+                    continue;
+                }
+
+                if (first != 1 || second != 1)
+                {
+                    Say(head + "  NOT BOTH CREATED on this building, so not run");
+                    continue;
+                }
+
+                pairsBoth++;
+                double s1;
+                double s2;
+                PairsFound one = Q133Run(document, clashTests, byName[p[1]][0], out s1);
+                PairsFound two = Q133Run(document, clashTests, byName[p[2]][0], out s2);
+                pairsRun++;
+
+                if (one == null || two == null)
+                {
+                    Say(head + "  UNKNOWN, a test was not at its address when run");
+                    continue;
+                }
+
+                Q133Diff d = Q133Compare(one, two);
+                Say(head + "  first " + one.Open.Count + " in " + s1.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)
+                    + " s, second " + two.Open.Count + " in " + s2.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)
+                    + " s, in both " + d.Both + ", first only " + d.OnlyLeft.Count + ", second only " + d.OnlyRight.Count
+                    + ", items that did not read " + one.NullItems + " and " + two.NullItems);
+
+                foreach (string k in d.OnlyLeft)
+                {
+                    Say("      only in the first: " + k);
+                }
+
+                foreach (string k in d.OnlyRight)
+                {
+                    Say("      only in the second: " + k);
+                }
+            }
+
+            Say("PART 1 TOTAL  pairs and self tests " + pairs.Count + ", with every test in the NWF " + pairsBoth + ", run " + pairsRun);
+            Say(string.Empty);
+
+            // ---- Part 2 and part 3, every test against its swap ----
+            List<Q133Test> withClashes = new List<Q133Test>();
+            List<Q133Test> without = new List<Q133Test>();
+
+            foreach (Q133Test t in tests)
+            {
+                if (byName[t.Name].Count != 1)
+                {
+                    Say("SKIPPED, the name is used more than once: \"" + t.Name + "\"");
+                    continue;
+                }
+
+                if (stored[t.Name].Open.Count > 0)
+                {
+                    withClashes.Add(t);
+                }
+                else
+                {
+                    without.Add(t);
+                }
+            }
+
+            Say("==== PART 2. Every test whose stored results hold a clash, " + withClashes.Count + " tests, against its swap ====");
+            Q133Totals two2 = Q133Swaps(document, clashTests, withClashes, stored, "P2", true);
+            Q133Say("PART 2 TOTAL", two2);
+            Say(string.Empty);
+
+            Say("==== PART 3. Every other test, " + without.Count + " tests, against its swap ====");
+            Q133Totals three = Q133Swaps(document, clashTests, without, stored, "P3", false);
+            Q133Say("PART 3 TOTAL", three);
+            Say(string.Empty);
+
+            Q133Totals all = new Q133Totals();
+            Q133Add(all, two2);
+            Q133Add(all, three);
+            Q133Say("PARTS 2 AND 3 TOTAL", all);
+            Say("tests at the root at the end " + clashTests.Tests.Count + ", against " + rootCount + " at the start");
+
+            if (!string.IsNullOrEmpty(saveAs))
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                document.SaveFile(saveAs);
+                Say("SaveFile of the copy with the swaps into " + Path.GetFileName(saveAs) + " took " + Seconds(clock)
+                    + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            }
+        }
+
+        private static int Q133Repeated(Dictionary<string, List<Q133Test>> byName, int atLeast)
+        {
+            int n = 0;
+
+            foreach (KeyValuePair<string, List<Q133Test>> pair in byName)
+            {
+                if (pair.Value.Count >= atLeast)
+                {
+                    n++;
+                }
+            }
+
+            return n;
+        }
+
+        private static void Q133Walk(SavedItemCollection items, List<int> at, List<Q133Test> into)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    List<int> here = new List<int>(at) { i };
+
+                    if (item is ClashTest)
+                    {
+                        into.Add(new Q133Test { Address = here, Name = item.DisplayName });
+                        continue;
+                    }
+
+                    GroupItem folder = item as GroupItem;
+
+                    if (folder != null)
+                    {
+                        Q133Walk(folder.Children, here, into);
+                    }
+                }
+            }
+        }
+
+        /// <summary>Runs the test at the address, its TestsRunTest timed alone, and reads its results. Null when the name does not match.</summary>
+        private static PairsFound Q133Run(Document document, DocumentClashTests clashTests, Q133Test t, out double seconds)
+        {
+            seconds = -1;
+
+            using (ClashTest test = ResolveTest(clashTests, t.Address))
+            {
+                if (test == null || test.DisplayName != t.Name)
+                {
+                    return null;
+                }
+
+                System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                clashTests.TestsRunTest(test);
+                clock.Stop();
+                seconds = clock.Elapsed.TotalSeconds;
+            }
+
+            using (ClashTest test = ResolveTest(clashTests, t.Address))
+            {
+                return test == null ? null : ReadPairs(document, test.Children);
+            }
+        }
+
+        private static Q133Diff Q133Compare(PairsFound left, PairsFound right)
+        {
+            Q133Diff d = new Q133Diff();
+
+            foreach (string key in left.Open.Keys)
+            {
+                if (right.Open.ContainsKey(key))
+                {
+                    d.Both++;
+                }
+                else
+                {
+                    d.OnlyLeft.Add(key + "   distance " + left.Distance[key].ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+                }
+            }
+
+            foreach (string key in right.Open.Keys)
+            {
+                if (!left.Open.ContainsKey(key))
+                {
+                    d.OnlyRight.Add(key + "   distance " + right.Distance[key].ToString("R", System.Globalization.CultureInfo.InvariantCulture));
+                }
+            }
+
+            d.OnlyLeft.Sort(StringComparer.Ordinal);
+            d.OnlyRight.Sort(StringComparer.Ordinal);
+            return d;
+        }
+
+        private static string SideSets(Document document, ClashSelection side)
+        {
+            List<string> names = new List<string>();
+
+            using (Selection selection = side.Selection)
+            {
+                SelectionSourceCollection sources = selection.SelectionSources;
+
+                for (int i = 0; i < sources.Count; i++)
+                {
+                    try
+                    {
+                        using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[i]))
+                        {
+                            names.Add(pointed == null ? "(a source that resolves to nothing)" : pointed.DisplayName);
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        names.Add("(a source that threw " + error.GetType().Name + ")");
+                    }
+                }
+
+                if (selection.HasExplicitSelection)
+                {
+                    names.Add("(explicit items)");
+                }
+            }
+
+            return string.Join(" + ", names.ToArray());
+        }
+
+        /// <summary>
+        /// Adds a new ClashTest with the original's sides swapped at the end of the root, the way P1
+        /// made its swap, and clears its results. Returns null and the swap's address, or why not.
+        /// </summary>
+        private static string Q133AddSwap(Document document, DocumentClashTests clashTests, Q133Test t, string swapName, out Q133Test swapTest, out bool sidesSwapped)
+        {
+            swapTest = null;
+            sidesSwapped = false;
+            int before = clashTests.Tests.Count;
+            string originalA;
+            string originalB;
+
+            using (ClashTest original = ResolveTest(clashTests, t.Address))
+            {
+                if (original == null || original.DisplayName != t.Name)
+                {
+                    return "the original is not at its address";
+                }
+
+                if (original.IgnoreRules.Count != 0)
+                {
+                    return "the original carries " + original.IgnoreRules.Count + " ignore rules, which a new test does not";
+                }
+
+                using (ClashTest swap = new ClashTest())
+                {
+                    swap.DisplayName = swapName;
+                    swap.TestType = original.TestType;
+                    swap.Tolerance = original.Tolerance;
+                    swap.MergeComposites = original.MergeComposites;
+                    swap.SimulationType = original.SimulationType;
+
+                    using (ClashSelection a = original.SelectionA)
+                    using (ClashSelection b = original.SelectionB)
+                    using (ClashSelection swapA = swap.SelectionA)
+                    using (ClashSelection swapB = swap.SelectionB)
+                    {
+                        originalA = SideSets(document, a);
+                        originalB = SideSets(document, b);
+                        swapA.CopyFrom(b);
+                        swapB.CopyFrom(a);
+                        swapA.SelfIntersect = b.SelfIntersect;
+                        swapB.SelfIntersect = a.SelfIntersect;
+                        swapA.PrimitiveTypes = b.PrimitiveTypes;
+                        swapB.PrimitiveTypes = a.PrimitiveTypes;
+                    }
+
+                    clashTests.TestsAddCopy(swap);
+                }
+            }
+
+            int after = clashTests.Tests.Count;
+
+            if (after != before + 1)
+            {
+                return "the root went from " + before + " to " + after + " tests, not one more";
+            }
+
+            Q133Test added = new Q133Test { Address = new List<int> { before }, Name = swapName };
+
+            using (ClashTest swap = ResolveTest(clashTests, added.Address))
+            {
+                if (swap == null || swap.DisplayName != swapName)
+                {
+                    return "the last test at the root is not the swap";
+                }
+
+                using (ClashSelection a = swap.SelectionA)
+                using (ClashSelection b = swap.SelectionB)
+                {
+                    sidesSwapped = SideSets(document, a) == originalB && SideSets(document, b) == originalA;
+                }
+
+                clashTests.TestsClearResults(swap);
+            }
+
+            swapTest = added;
+            return null;
+        }
+
+        private Q133Totals Q133Swaps(Document document, DocumentClashTests clashTests, List<Q133Test> list, Dictionary<string, PairsFound> stored, string tag, bool listPairs)
+        {
+            Q133Totals totals = new Q133Totals();
+            System.Globalization.CultureInfo inv = System.Globalization.CultureInfo.InvariantCulture;
+
+            foreach (Q133Test t in list)
+            {
+                string swapName = t.Name + " Q133 swap";
+                Q133Test swap;
+                bool sidesSwapped;
+                System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                string why;
+
+                try
+                {
+                    why = Q133AddSwap(document, clashTests, t, swapName, out swap, out sidesSwapped);
+                }
+                catch (Exception error)
+                {
+                    why = "the swap threw " + error.GetType().Name + ": " + error.Message;
+                    swap = null;
+                    sidesSwapped = false;
+                }
+
+                double create = clock.Elapsed.TotalSeconds;
+                totals.Tests++;
+
+                if (why != null)
+                {
+                    totals.Unknown++;
+                    Say(tag + " LINE  \"" + t.Name + "\"  UNKNOWN, no swap: " + why);
+                    continue;
+                }
+
+                double s1;
+                double s2;
+                PairsFound original = Q133Run(document, clashTests, t, out s1);
+                PairsFound swapped = Q133Run(document, clashTests, swap, out s2);
+
+                if (original == null || swapped == null)
+                {
+                    totals.Unknown++;
+                    Say(tag + " LINE  \"" + t.Name + "\"  UNKNOWN, the original or the swap was not at its address when run");
+                    continue;
+                }
+
+                Q133Diff d = Q133Compare(original, swapped);
+                Q133Diff rerun = Q133Compare(stored[t.Name], original);
+                string verdict;
+
+                if (original.NullItems > 0 || swapped.NullItems > 0 || !sidesSwapped)
+                {
+                    verdict = "UNKNOWN";
+                    totals.Unknown++;
+                }
+                else if (d.OnlyLeft.Count == 0 && d.OnlyRight.Count == 0)
+                {
+                    verdict = "same";
+                    totals.Same++;
+                }
+                else if (d.OnlyLeft.Count == 0)
+                {
+                    verdict = "swap finds more";
+                    totals.More++;
+                }
+                else if (d.OnlyRight.Count == 0)
+                {
+                    verdict = "swap finds fewer";
+                    totals.Fewer++;
+                }
+                else
+                {
+                    verdict = "other clashes";
+                    totals.Other++;
+                }
+
+                totals.Stored += stored[t.Name].Open.Count;
+                totals.Original += original.Open.Count;
+                totals.Swap += swapped.Open.Count;
+                totals.OnlySwap += d.OnlyRight.Count;
+                totals.OnlyOriginal += d.OnlyLeft.Count;
+                totals.OriginalSeconds += s1;
+                totals.SwapSeconds += s2;
+                totals.CreateSeconds += create;
+
+                Say(tag + " LINE  \"" + t.Name + "\"  stored " + stored[t.Name].Open.Count
+                    + ", original run " + original.Open.Count + " in " + s1.ToString("0.000", inv) + " s"
+                    + ", swap " + swapped.Open.Count + " in " + s2.ToString("0.000", inv) + " s"
+                    + ", swap made in " + create.ToString("0.000", inv) + " s"
+                    + ", in both " + d.Both + ", original only " + d.OnlyLeft.Count + ", swap only " + d.OnlyRight.Count
+                    + ", run against stored differ " + (rerun.OnlyLeft.Count + rerun.OnlyRight.Count)
+                    + ", items that did not read " + original.NullItems + " and " + swapped.NullItems
+                    + ", sides read swapped " + sidesSwapped + ", " + verdict);
+
+                if (listPairs || d.OnlyLeft.Count > 0 || d.OnlyRight.Count > 0)
+                {
+                    foreach (string k in d.OnlyLeft)
+                    {
+                        Say("      only in the original: " + k);
+                    }
+
+                    foreach (string k in d.OnlyRight)
+                    {
+                        Say("      only in the swap: " + k);
+                    }
+                }
+            }
+
+            return totals;
+        }
+
+        private static void Q133Add(Q133Totals into, Q133Totals from)
+        {
+            into.Tests += from.Tests;
+            into.Same += from.Same;
+            into.More += from.More;
+            into.Fewer += from.Fewer;
+            into.Other += from.Other;
+            into.Unknown += from.Unknown;
+            into.Stored += from.Stored;
+            into.Original += from.Original;
+            into.Swap += from.Swap;
+            into.OnlySwap += from.OnlySwap;
+            into.OnlyOriginal += from.OnlyOriginal;
+            into.OriginalSeconds += from.OriginalSeconds;
+            into.SwapSeconds += from.SwapSeconds;
+            into.CreateSeconds += from.CreateSeconds;
+        }
+
+        private void Q133Say(string label, Q133Totals t)
+        {
+            System.Globalization.CultureInfo inv = System.Globalization.CultureInfo.InvariantCulture;
+            Say(label + "  tests " + t.Tests + ": swap finds the same " + t.Same + ", more " + t.More + ", fewer " + t.Fewer
+                + ", other clashes " + t.Other + ", UNKNOWN " + t.Unknown);
+            Say(label + "  clashes stored " + t.Stored + ", original run " + t.Original + ", swap " + t.Swap
+                + ", only the swap finds " + t.OnlySwap + ", only the original finds " + t.OnlyOriginal);
+            Say(label + "  seconds of TestsRunTest, the originals " + t.OriginalSeconds.ToString("0.000", inv)
+                + ", the swaps " + t.SwapSeconds.ToString("0.000", inv)
+                + ", both " + (t.OriginalSeconds + t.SwapSeconds).ToString("0.000", inv)
+                + ", and making the swaps " + t.CreateSeconds.ToString("0.000", inv));
+        }
+
+        // ---------- P4 of Q114, scan.md 5z-m ----------
+
+        /// <summary>
+        /// The workset names of the models whose file name carries one of the codes handed
+        /// in, each list whole. Whole means every item under the model's root was visited,
+        /// no item's read threw, and the model was read from under the loop folder. The
+        /// Workset is read off the LcRevitData_Element tab the way ModelFactsReader reads
+        /// it, and every other tab is searched for a property whose name holds "workset",
+        /// so a workset carried somewhere else cannot hide.
+        /// </summary>
+        private void MeasureModelWorksets(string nwf, string codes)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(codes))
+            {
+                Say("UNKNOWN: no discipline codes were handed in");
+                return;
+            }
+
+            List<string> wanted = new List<string>();
+
+            foreach (string part in codes.Split(','))
+            {
+                if (part.Trim().Length > 0)
+                {
+                    wanted.Add(part.Trim());
+                }
+            }
+
+            Say("codes asked: " + Joined(wanted));
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count + ", document units " + document.Units);
+
+            List<int> chosen = new List<int>();
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                Model model = document.Models[m];
+                string file = model.FileName ?? string.Empty;
+                string name = Path.GetFileName(file);
+                bool under = file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase);
+                string code = string.Empty;
+
+                foreach (string w in wanted)
+                {
+                    if (name.IndexOf("-" + w + "-", StringComparison.Ordinal) >= 0)
+                    {
+                        code = w;
+                    }
+                }
+
+                Say("   model " + m + "  " + name + "  under the loop folder " + under
+                    + (code.Length > 0 ? "  READ, code " + code : string.Empty));
+
+                if (code.Length > 0)
+                {
+                    chosen.Add(m);
+                }
+            }
+
+            Say("models whose file name carries an asked code: " + chosen.Count);
+
+            foreach (int m in chosen)
+            {
+                WalkWorksetsWhole(document.Models[m], loopRoot);
+            }
+        }
+
+        private void WalkWorksetsWhole(Model model, string loopRoot)
+        {
+            string file = model.FileName ?? string.Empty;
+            bool under = file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase);
+            Say(string.Empty);
+            Say("================ " + Path.GetFileName(file) + " ================");
+
+            int items = 0;
+            int geometry = 0;
+            int elementTabs = 0;
+            int withWorkset = 0;
+            int itemErrors = 0;
+            List<string> errorNotes = new List<string>();
+            string walkThrew = string.Empty;
+            Dictionary<string, int> worksets = new Dictionary<string, int>(StringComparer.Ordinal);
+            Dictionary<string, int> elementProperty = new Dictionary<string, int>(StringComparer.Ordinal);
+            Dictionary<string, int> elsewhere = new Dictionary<string, int>(StringComparer.Ordinal);
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                using (ModelItem root = model.RootItem)
+                {
+                    foreach (ModelItem item in root.DescendantsAndSelf)
+                    {
+                        using (item)
+                        {
+                            items++;
+
+                            try
+                            {
+                                if (item.HasGeometry)
+                                {
+                                    geometry++;
+                                }
+
+                                ReadWorksetTabs(item, worksets, elementProperty, elsewhere, ref elementTabs, ref withWorkset);
+                            }
+                            catch (Exception error)
+                            {
+                                itemErrors++;
+
+                                if (errorNotes.Count < 5)
+                                {
+                                    errorNotes.Add(error.GetType().Name + ": " + error.Message);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                walkThrew = error.GetType().Name + ": " + error.Message;
+            }
+
+            Say("walk took " + Seconds(clock) + ", the walk threw: " + (walkThrew.Length == 0 ? "no" : walkThrew));
+            Say("items " + items + ", with geometry " + geometry + ", with the LcRevitData_Element tab " + elementTabs
+                + ", of those with a Workset value " + withWorkset + ", items whose read threw " + itemErrors);
+
+            foreach (string note in errorNotes)
+            {
+                Say("   an item's read threw " + note);
+            }
+
+            Say("the Workset property on the Element tab, by display name, internal name and value type:");
+
+            if (elementProperty.Count == 0)
+            {
+                Say("   none");
+            }
+
+            foreach (KeyValuePair<string, int> pair in elementProperty)
+            {
+                Say("   " + pair.Key + "  on " + pair.Value + " item(s)");
+            }
+
+            Say("a property naming workset on any OTHER tab, by tab, property and value:");
+
+            if (elsewhere.Count == 0)
+            {
+                Say("   none");
+            }
+
+            foreach (KeyValuePair<string, int> pair in elsewhere)
+            {
+                Say("   " + pair.Key + "  on " + pair.Value + " item(s)");
+            }
+
+            List<string> names = new List<string>(worksets.Keys);
+            names.Sort(StringComparer.Ordinal);
+            Say("WORKSET NAMES, " + names.Count + ", each in brackets, with its length and the Element tabs carrying it:");
+
+            foreach (string name in names)
+            {
+                Say("   [" + name + "]  length " + name.Length + "  on " + worksets[name] + "  " + Unusual(name));
+            }
+
+            bool whole = walkThrew.Length == 0 && itemErrors == 0 && under;
+            Say("LIST WHOLE: " + (whole ? "YES" : "NO")
+                + ", the walk finished " + (walkThrew.Length == 0)
+                + ", no item's read threw " + (itemErrors == 0)
+                + ", read from under the loop folder " + under);
+        }
+
+        private static void ReadWorksetTabs(
+            ModelItem item,
+            Dictionary<string, int> worksets,
+            Dictionary<string, int> elementProperty,
+            Dictionary<string, int> elsewhere,
+            ref int elementTabs,
+            ref int withWorkset)
+        {
+            using (PropertyCategoryCollection tabs = item.PropertyCategories)
+            {
+                if (tabs == null)
+                {
+                    return;
+                }
+
+                foreach (PropertyCategory tab in tabs)
+                {
+                    bool isElement = string.Equals(Words(tab.Name), ElementTabInternalName, StringComparison.OrdinalIgnoreCase);
+
+                    if (isElement)
+                    {
+                        elementTabs++;
+                    }
+
+                    using (DataPropertyCollection properties = tab.Properties)
+                    {
+                        for (int i = 0; i < properties.Count; i++)
+                        {
+                            using (DataProperty property = properties[i])
+                            {
+                                string display = Words(property.DisplayName);
+                                string internalName = Words(property.Name);
+                                string text;
+                                string type;
+
+                                if (isElement && string.Equals(display, "Workset", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    StrictText(property, out text, out type);
+                                    Bump(elementProperty, "[" + display + "] [" + internalName + "] " + type);
+
+                                    if (text.Length > 0)
+                                    {
+                                        withWorkset++;
+                                        Bump(worksets, text);
+                                    }
+                                }
+                                else if (display.IndexOf("workset", StringComparison.OrdinalIgnoreCase) >= 0
+                                    || internalName.IndexOf("workset", StringComparison.OrdinalIgnoreCase) >= 0)
+                                {
+                                    StrictText(property, out text, out type);
+                                    Bump(elsewhere, "tab [" + Words(tab.DisplayName) + "] [" + Words(tab.Name) + "] property ["
+                                        + display + "] [" + internalName + "] " + type + " value [" + text + "]");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>The value as text, letting a failed read throw so it is counted and not hidden.</summary>
+        private static void StrictText(DataProperty property, out string text, out string type)
+        {
+            using (VariantData value = property.Value)
+            {
+                if (value == null)
+                {
+                    text = string.Empty;
+                    type = "null";
+                    return;
+                }
+
+                type = value.DataType.ToString();
+
+                if (value.DataType == VariantDataType.DisplayString)
+                {
+                    text = value.ToDisplayString() ?? string.Empty;
+                }
+                else if (value.DataType == VariantDataType.IdentifierString)
+                {
+                    text = value.ToIdentifierString() ?? string.Empty;
+                }
+                else
+                {
+                    text = value.ToString() ?? string.Empty;
+                }
+            }
+        }
+
+        /// <summary>Says a leading or trailing space and any character outside printable ASCII, by code point.</summary>
+        private static string Unusual(string name)
+        {
+            List<string> notes = new List<string>();
+
+            if (name.Length > 0 && char.IsWhiteSpace(name[0]))
+            {
+                notes.Add("LEADING SPACE");
+            }
+
+            if (name.Length > 0 && char.IsWhiteSpace(name[name.Length - 1]))
+            {
+                notes.Add("TRAILING SPACE");
+            }
+
+            foreach (char c in name)
+            {
+                if (c < 0x20 || c > 0x7e)
+                {
+                    notes.Add("U+" + ((int)c).ToString("X4"));
+                }
+            }
+
+            return notes.Count == 0 ? "plain ASCII" : string.Join(", ", notes.ToArray());
+        }
+
+        // ---------- P8 of Q114, the whole saved viewpoint tree, read only ----------
+
+        /// <summary>
+        /// P8 of Q114, scan.md 5z-n. Read only: opens the copy, writes nothing to it and saves
+        /// nothing. Every item of the saved viewpoint tree goes in the dump with its index
+        /// path, depth, folder or viewpoint, child count, comment count, redline count, Guid,
+        /// folder path and name. Each item is judged by the legacy rule of the design's 1.9 as
+        /// written there, with F85's own defaults: the priority words A, B, C and No priority,
+        /// the codes AR ST ME FF PL DR EL and UNKNOWN sorted Ordinal with " vs " between, the
+        /// size folder Over 150mm, the name separator of two spaces and the prefix Clash. The
+        /// test names are the document's own. The XML's are not read.
+        /// </summary>
+        private void DumpViewpointTree(string nwf, string dumpPath)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(dumpPath))
+            {
+                Say("UNKNOWN: no dump path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count + ", document units " + document.Units);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            HashSet<string> testNames = new HashSet<string>(StringComparer.Ordinal);
+            int testCount = 0;
+            CollectTestNames(document.GetClash().TestsData.Tests, testNames, ref testCount);
+            Say("tests in the document " + testCount + ", distinct names " + testNames.Count);
+
+            TreeTally tally = new TreeTally();
+            List<string> rows = new List<string>();
+            rows.Add("index_path\tdepth\tkind\tchildren\tcomments\tredlines\tguid\tlegacy\twhy\tfolder_path\tname");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                Say("the root: a " + root.GetType().Name + " with " + root.Children.Count + " children");
+                WalkViewpointTree(root, string.Empty, new List<string>(), testNames, rows, tally);
+            }
+
+            Say("the walk took " + Seconds(clock) + ", items " + (rows.Count - 1));
+
+            using (StreamWriter dump = new StreamWriter(dumpPath, false, new UTF8Encoding(false)))
+            {
+                foreach (string row in rows)
+                {
+                    dump.Write(row);
+                    dump.Write("\r\n");
+                }
+            }
+
+            Say("the dump written, " + rows.Count + " lines with its header, " + Bytes(dumpPath) + " bytes read back off the disk");
+            Say(string.Empty);
+            Say("items " + tally.Items + ", folders " + tally.Folders + ", viewpoints " + tally.Viewpoints
+                + ", other kinds " + tally.Other);
+            Say("items whose read threw " + tally.Threw);
+            Say("comment counts that threw " + tally.CommentThrew + ", redline reads that threw " + tally.RedlineThrew);
+            Say("items carrying at least one comment " + tally.WithComments + ", comments in all " + tally.Comments);
+            Say("viewpoints carrying at least one redline " + tally.WithRedlines);
+            Say("Guids read " + tally.Guids.Count + ", empty " + tally.EmptyGuids + ", distinct " + DistinctCount(tally.Guids)
+                + ", Guid reads that threw " + tally.GuidThrew);
+            Say("names with a leading or trailing space " + tally.SpaceEdged);
+
+            foreach (KeyValuePair<int, int> pair in Sorted(tally.ViewpointsAtDepth))
+            {
+                Say("   viewpoints at depth " + pair.Key + ": " + pair.Value);
+            }
+
+            Say(string.Empty);
+            Say("EVERY FOLDER, its index path, depth, children, viewpoints under it and comments:");
+
+            foreach (string line in tally.FolderLines)
+            {
+                Say("   " + line);
+            }
+
+            Say(string.Empty);
+            Say("LEGACY BY THE RULE OF 1.9: " + tally.Legacy + ", NOT LEGACY: " + tally.NotLegacy
+                + " of which viewpoints " + tally.NotLegacyViewpoints + " and folders " + (tally.NotLegacy - tally.NotLegacyViewpoints));
+
+            foreach (KeyValuePair<string, int> pair in SortedText(tally.WhyNot))
+            {
+                Say("   not legacy, " + pair.Key + ": " + pair.Value);
+            }
+
+            Say("legacy viewpoints by folder path:");
+
+            foreach (KeyValuePair<string, int> pair in SortedText(tally.LegacyByFolder))
+            {
+                Say("   " + pair.Value.ToString().PadLeft(5) + "  " + pair.Key);
+            }
+
+            Say(string.Empty);
+            Say("EVERY VIEWPOINT THAT IS NOT LEGACY, its index path, depth, comments, redlines, Guid, why, folder path and [name]:");
+
+            foreach (string line in tally.NotLegacyViewpointLines)
+            {
+                Say("   " + line);
+            }
+
+            Say(string.Empty);
+            Say("legacy viewpoints by test, all of them and those under Over 150mm, for "
+                + tally.LegacyByTest.Count + " tests:");
+            int underOver = 0;
+            int testsWithOver = 0;
+
+            foreach (KeyValuePair<string, int> pair in SortedText(tally.LegacyByTest))
+            {
+                int over;
+                tally.OverByTest.TryGetValue(pair.Key, out over);
+                underOver += over;
+
+                if (over > 0)
+                {
+                    testsWithOver++;
+                }
+
+                Say("   " + pair.Value.ToString().PadLeft(5) + "  over " + over.ToString().PadLeft(5) + "  [" + Shown(pair.Key) + "]");
+            }
+
+            Say("legacy viewpoints under Over 150mm " + underOver + ", in " + testsWithOver + " tests");
+            Say("distinct folders holding a legacy viewpoint " + tally.LegacyByFolder.Count
+                + ", distinct pairs of test and folder path " + tally.TestFolderPairs.Count);
+            Say(string.Empty);
+
+            bool total = tally.Viewpoints == 2847;
+            bool legacy = tally.Legacy == 2813;
+            bool other = tally.NotLegacyViewpoints == 34;
+            Say("P8 " + (total && legacy && other && tally.Threw == 0 ? "YES" : "NO")
+                + "   viewpoints " + tally.Viewpoints + " against 2847, legacy " + tally.Legacy + " against 2813, viewpoints not legacy "
+                + tally.NotLegacyViewpoints + " against 34, items whose read threw " + tally.Threw);
+        }
+
+        private sealed class TreeTally
+        {
+            public int Items;
+            public int Folders;
+            public int Viewpoints;
+            public int Other;
+            public int Threw;
+            public int CommentThrew;
+            public int RedlineThrew;
+            public int GuidThrew;
+            public int WithComments;
+            public int Comments;
+            public int WithRedlines;
+            public int EmptyGuids;
+            public int SpaceEdged;
+            public int Legacy;
+            public int NotLegacy;
+            public int NotLegacyViewpoints;
+            public readonly List<Guid> Guids = new List<Guid>();
+            public readonly Dictionary<int, int> ViewpointsAtDepth = new Dictionary<int, int>();
+            public readonly Dictionary<string, int> WhyNot = new Dictionary<string, int>(StringComparer.Ordinal);
+            public readonly Dictionary<string, int> LegacyByFolder = new Dictionary<string, int>(StringComparer.Ordinal);
+            public readonly Dictionary<string, int> LegacyByTest = new Dictionary<string, int>(StringComparer.Ordinal);
+            public readonly Dictionary<string, int> OverByTest = new Dictionary<string, int>(StringComparer.Ordinal);
+            public readonly HashSet<string> TestFolderPairs = new HashSet<string>(StringComparer.Ordinal);
+            public readonly List<string> FolderLines = new List<string>();
+            public readonly List<string> NotLegacyViewpointLines = new List<string>();
+        }
+
+        private static readonly string[] LegacyPriorityWords = { "A", "B", "C", "No priority" };
+        private static readonly string[] LegacyCodes = { "AR", "ST", "ME", "FF", "PL", "DR", "EL", "UNKNOWN" };
+        private const string LegacyPairSeparator = " vs ";
+        private const string LegacySizeFolder = "Over 150mm";
+        private const string LegacyNameSeparator = "  ";
+        private const string LegacyClashPrefix = "Clash";
+
+        /// <summary>Walks one folder. Returns the viewpoints under it, so a folder's line can carry them.</summary>
+        private int WalkViewpointTree(GroupItem folder, string indexPath, List<string> folders, HashSet<string> testNames, List<string> rows, TreeTally tally)
+        {
+            int under = 0;
+            SavedItemCollection children = folder.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                string at = indexPath.Length == 0 ? i.ToString() : indexPath + "." + i;
+
+                try
+                {
+                    using (SavedItem child = children[i])
+                    {
+                        tally.Items++;
+                        string name = child.DisplayName ?? string.Empty;
+                        int depth = folders.Count;
+                        string folderPath = string.Join("/", folders.ToArray());
+
+                        if (name.Length > 0 && (char.IsWhiteSpace(name[0]) || char.IsWhiteSpace(name[name.Length - 1])))
+                        {
+                            tally.SpaceEdged++;
+                        }
+
+                        string comments = "UNKNOWN";
+                        int commentCount = -1;
+
+                        try
+                        {
+                            commentCount = child.Comments.Count;
+                            comments = commentCount.ToString();
+                            tally.Comments += commentCount;
+
+                            if (commentCount > 0)
+                            {
+                                tally.WithComments++;
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            tally.CommentThrew++;
+                            comments = "THREW " + error.GetType().Name;
+                        }
+
+                        string guid = "UNKNOWN";
+
+                        try
+                        {
+                            Guid g = child.Guid;
+                            guid = g.ToString("D");
+                            tally.Guids.Add(g);
+
+                            if (g == Guid.Empty)
+                            {
+                                tally.EmptyGuids++;
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            tally.GuidThrew++;
+                            guid = "THREW " + error.GetType().Name;
+                        }
+
+                        GroupItem group = child as GroupItem;
+                        SavedViewpoint viewpoint = child as SavedViewpoint;
+                        string kind;
+                        string childCount = string.Empty;
+                        string redlines = string.Empty;
+                        int redlineCount = 0;
+
+                        if (group != null)
+                        {
+                            kind = "folder";
+                            tally.Folders++;
+                            childCount = group.Children.Count.ToString();
+                        }
+                        else if (viewpoint != null)
+                        {
+                            kind = "viewpoint";
+                            tally.Viewpoints++;
+                            under++;
+                            int had;
+                            tally.ViewpointsAtDepth.TryGetValue(depth, out had);
+                            tally.ViewpointsAtDepth[depth] = had + 1;
+
+                            try
+                            {
+                                redlineCount = viewpoint.Redlines.Size();
+                                redlines = redlineCount.ToString();
+
+                                if (redlineCount > 0)
+                                {
+                                    tally.WithRedlines++;
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                tally.RedlineThrew++;
+                                redlineCount = -1;
+                                redlines = "THREW " + error.GetType().Name;
+                            }
+                        }
+                        else
+                        {
+                            kind = child.GetType().Name;
+                            tally.Other++;
+                        }
+
+                        string why = LegacyWhyNot(folders, name, viewpoint != null, commentCount, redlineCount, testNames);
+                        bool isLegacy = why.Length == 0;
+
+                        if (isLegacy)
+                        {
+                            tally.Legacy++;
+                            Bump(tally.LegacyByFolder, folderPath);
+                            string test = name.Substring(0, name.LastIndexOf(LegacyNameSeparator + LegacyClashPrefix, StringComparison.Ordinal));
+                            Bump(tally.LegacyByTest, test);
+                            tally.TestFolderPairs.Add(test + "\n" + folderPath);
+
+                            if (folders[folders.Count - 1] == LegacySizeFolder)
+                            {
+                                Bump(tally.OverByTest, test);
+                            }
+                        }
+                        else
+                        {
+                            tally.NotLegacy++;
+                            Bump(tally.WhyNot, why);
+
+                            if (viewpoint != null)
+                            {
+                                tally.NotLegacyViewpoints++;
+                                tally.NotLegacyViewpointLines.Add(at + "  depth " + depth + "  comments " + comments + "  redlines " + redlines
+                                    + "  " + guid + "  " + why + "  " + Shown(folderPath) + "  [" + Shown(name) + "]");
+                            }
+                        }
+
+                        rows.Add(at + "\t" + depth + "\t" + kind + "\t" + childCount + "\t" + comments + "\t" + redlines + "\t" + guid
+                            + "\t" + (isLegacy ? "legacy" : "no") + "\t" + why + "\t" + Shown(folderPath) + "\t" + Shown(name));
+
+                        if (group != null)
+                        {
+                            folders.Add(name);
+                            int inside = WalkViewpointTree(group, at, folders, testNames, rows, tally);
+                            folders.RemoveAt(folders.Count - 1);
+                            under += inside;
+                            tally.FolderLines.Add(at + "  depth " + depth + "  children " + childCount + "  viewpoints under it " + inside
+                                + "  comments " + comments + "  " + guid + "  [" + Shown(folderPath.Length == 0 ? name : folderPath + "/" + name) + "]");
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    tally.Threw++;
+                    rows.Add(at + "\t\tTHREW\t\t\t\t\t\t" + error.GetType().Name + ": " + Shown(error.Message) + "\t\t");
+                }
+            }
+
+            return under;
+        }
+
+        /// <summary>Empty when the item is legacy by the rule of 1.9, else the first condition it fails.</summary>
+        private static string LegacyWhyNot(List<string> folders, string name, bool isViewpoint, int comments, int redlines, HashSet<string> testNames)
+        {
+            if (!isViewpoint)
+            {
+                return "2 not a viewpoint";
+            }
+
+            if (folders.Count < 1 || folders.Count > 3)
+            {
+                return "1 depth " + folders.Count;
+            }
+
+            int at = 0;
+
+            if (folders.Count > 1 && Array.IndexOf(LegacyPriorityWords, folders[0]) >= 0)
+            {
+                at = 1;
+            }
+
+            if (at >= folders.Count || !IsSortedPair(folders[at]))
+            {
+                return "1 no sorted code pair folder where one belongs";
+            }
+
+            at++;
+
+            if (at < folders.Count && folders[at] == LegacySizeFolder)
+            {
+                at++;
+            }
+
+            if (at != folders.Count)
+            {
+                return "1 a folder the rule does not allow";
+            }
+
+            int split = name.LastIndexOf(LegacyNameSeparator + LegacyClashPrefix, StringComparison.Ordinal);
+
+            if (split <= 0)
+            {
+                return "3 no test, two spaces and Clash";
+            }
+
+            string digits = name.Substring(split + LegacyNameSeparator.Length + LegacyClashPrefix.Length);
+
+            if (digits.Length == 0)
+            {
+                return "3 Clash with no digits";
+            }
+
+            foreach (char c in digits)
+            {
+                if (c < '0' || c > '9')
+                {
+                    return "3 Clash followed by more than digits";
+                }
+            }
+
+            if (!testNames.Contains(name.Substring(0, split)))
+            {
+                return "4 the test is not in the document";
+            }
+
+            if (comments != 0)
+            {
+                return comments < 0 ? "5 comments UNKNOWN" : "5 carries a comment";
+            }
+
+            if (redlines != 0)
+            {
+                return redlines < 0 ? "5 redlines UNKNOWN" : "5 carries a redline";
+            }
+
+            return string.Empty;
+        }
+
+        private static bool IsSortedPair(string folder)
+        {
+            int split = folder.IndexOf(LegacyPairSeparator, StringComparison.Ordinal);
+
+            if (split <= 0)
+            {
+                return false;
+            }
+
+            string first = folder.Substring(0, split);
+            string second = folder.Substring(split + LegacyPairSeparator.Length);
+
+            return Array.IndexOf(LegacyCodes, first) >= 0
+                && Array.IndexOf(LegacyCodes, second) >= 0
+                && string.CompareOrdinal(first, second) <= 0;
+        }
+
+        private static void CollectTestNames(SavedItemCollection items, HashSet<string> names, ref int count)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    if (item is ClashTest)
+                    {
+                        count++;
+                        names.Add(item.DisplayName ?? string.Empty);
+                        continue;
+                    }
+
+                    GroupItem folder = item as GroupItem;
+
+                    if (folder != null)
+                    {
+                        CollectTestNames(folder.Children, names, ref count);
+                    }
+                }
+            }
+        }
+
+        private static int DistinctCount(List<Guid> guids)
+        {
+            return new HashSet<Guid>(guids).Count;
+        }
+
+        private static List<KeyValuePair<int, int>> Sorted(Dictionary<int, int> counts)
+        {
+            List<KeyValuePair<int, int>> list = new List<KeyValuePair<int, int>>(counts);
+            list.Sort((a, b) => a.Key.CompareTo(b.Key));
+            return list;
+        }
+
+        private static List<KeyValuePair<string, int>> SortedText(Dictionary<string, int> counts)
+        {
+            List<KeyValuePair<string, int>> list = new List<KeyValuePair<string, int>>(counts);
+            list.Sort((a, b) => string.CompareOrdinal(a.Key, b.Key));
+            return list;
+        }
+
+        /// <summary>The text as it is, but a tab, a line break or any other control character written as \uXXXX, so a dump row stays one row.</summary>
+        private static string Shown(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return string.Empty;
+            }
+
+            StringBuilder built = new StringBuilder(text.Length);
+
+            foreach (char c in text)
+            {
+                if (c < 0x20 || c == 0x7f || c == '\\')
+                {
+                    built.Append("\\u").Append(((int)c).ToString("X4"));
+                }
+                else
+                {
+                    built.Append(c);
+                }
+            }
+
+            return built.ToString();
+        }
+
+        // ---------- P9 of Q114, scan.md 5z-o, does a comment on a saved view or folder survive ----------
+
+        private const string P9Author = "Parsons NWC Federator";
+        private const string P9Sentence = "Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.";
+        private const string P9Top = "P9 probe";
+        private const string P9Sub = "P9 sub";
+        private const string P9ComFolder = "P9 com folder";
+
+        private sealed class P9Target
+        {
+            public string Label;
+            public string Route;
+            public bool IsFolder;
+            public List<string> Path = new List<string>();
+            public string Body;
+            public bool Written;
+            public string WriteSeconds = "UNKNOWN";
+            public int HiddenBefore = -2;
+            public int MaterialBefore = -2;
+            public int HiddenAfterEdit = -2;
+            public int MaterialAfterEdit = -2;
+            public bool NowSame;
+            public bool ReopenSame;
+            public int HiddenNow = -2;
+            public int MaterialNow = -2;
+            public int HiddenReopen = -2;
+            public int MaterialReopen = -2;
+        }
+
+        /// <summary>
+        /// P9: a comment written by DocumentSavedViewpoints.AddComment after the add, and one put
+        /// on the COM view's Comments() before InwSavedViewsColl.Add where P6 said yes, on a
+        /// viewpoint two folders deep and on a folder. Each is read back off SavedItem.Comments
+        /// before a save, and after a SaveFile, a Document.Clear and a TryOpenFile of the saved
+        /// file. A viewpoint's Hidden count and MaterialOverrides count are read before and after
+        /// the edit, and the seconds of each write are read.
+        /// </summary>
+        private void MeasureViewComments(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            int folders0;
+            int comments0;
+            int views0 = TreeCounts(document, out folders0, out comments0);
+            Say("the tree at the open: viewpoints " + views0 + ", folders " + folders0 + ", comments on any item " + comments0);
+
+            List<string> legacyPath = FirstViewTwoDeep(document);
+
+            if (legacyPath == null)
+            {
+                Say("UNKNOWN: no viewpoint two folders deep in this tree, so the existing view is not measured");
+            }
+            else
+            {
+                Say("the existing viewpoint two folders deep, the first found: [" + Shown(string.Join(" / ", legacyPath.ToArray())) + "]");
+            }
+
+            // The state the new views record: model 0's root hidden, one clash pair painted red and green.
+            int[] first;
+            int[] second;
+            string pairName;
+            document.Models.ResetAllHidden();
+            document.Models.ResetAllTemporaryMaterials();
+
+            using (ModelItemCollection one = new ModelItemCollection())
+            {
+                one.Add(document.Models[0].RootItem);
+                document.Models.SetHidden(one, true);
+            }
+
+            if (FindClashPair(document, out first, out second, out pairName))
+            {
+                PaintOne(document, first, Color.Red);
+                PaintOne(document, second, Color.Green);
+                Say("model 0's root hidden, the pair [" + Shown(pairName) + "] painted red and green");
+            }
+            else
+            {
+                Say("model 0's root hidden, no clash pair with geometry found, so nothing is painted");
+            }
+
+            // The folders, made the way the tool makes them, a .NET FolderItem by AddCopy.
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            EnsureFolder(document, P9Top);
+
+            using (GroupItem top = FindFolderItem(document, P9Top))
+            using (FolderItem sub = new FolderItem())
+            {
+                sub.DisplayName = P9Sub;
+                document.SavedViewpoints.AddCopy(top, sub);
+            }
+
+            Say("folders \"" + P9Top + "\" and \"" + P9Top + " / " + P9Sub + "\" made by FolderItem and AddCopy in " + Seconds(clock));
+
+            string stamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture);
+            List<P9Target> targets = new List<P9Target>();
+
+            P9Target comBefore = NewTarget(targets, "V1", "the COM view's Comments() before the add", false, stamp, P9Top, P9Sub, "P9 view com before add");
+            P9Target addAfter = NewTarget(targets, "V2", "AddComment after the add", false, stamp, P9Top, P9Sub, "P9 view addcomment after add");
+            P9Target plain = NewTarget(targets, "V3", "no comment, the control", false, stamp, P9Top, P9Sub, "P9 view plain");
+            P9Target folderAdd = NewTarget(targets, "F1", "AddComment on a folder one below the root folder", true, stamp, P9Top, P9Sub);
+            P9Target folderCom = NewTarget(targets, "F2", "the COM folder view's Comments() before the add", true, stamp, P9Top, P9ComFolder);
+            P9Target legacy = null;
+
+            if (legacyPath != null)
+            {
+                legacy = NewTarget(targets, "L1", "AddComment on an existing viewpoint two folders deep", false, stamp, legacyPath.ToArray());
+            }
+
+            plain.Body = null;
+            InwOpState10 state = ComApiBridge.State;
+            InwOpFolderView comSub = FindComFolderAt(state, P9Top, P9Sub);
+            InwOpFolderView comTop = FindComFolderAt(state, P9Top);
+            Say("the COM folders found: \"" + P9Top + "\" " + (comTop != null) + ", \"" + P9Top + " / " + P9Sub + "\" " + (comSub != null));
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                // V1, the comment on the COM view before the add.
+                try
+                {
+                    InwOpView view = NewComView(state, comBefore.Path[comBefore.Path.Count - 1], camera);
+                    InwCommentsColl before = view.Comments();
+                    Say("V1 the new COM view's Comments(): Count " + before.Count + ", ReadOnly " + ComReadOnly(before));
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    object made = state.ObjectFactory(nwEObjectType.eObjectType_nwOpComment, null, null);
+                    InwOpComment comment = (InwOpComment)made;
+                    comment.Body = comBefore.Body;
+                    comment.User = P9Author;
+                    before.Add(comment);
+                    comBefore.WriteSeconds = Seconds(clock);
+                    Say("V1 the factory's comment is InwOpComment " + (made is InwOpComment) + ", InwOpComment2 " + (made is InwOpComment2)
+                        + ", InwOpComment3 " + (made is InwOpComment3) + ". Made, Body and User set, and added in " + comBefore.WriteSeconds
+                        + ", the view's Comments().Count now " + view.Comments().Count);
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    comSub.SavedViews().Add(view);
+                    Say("V1 InwSavedViewsColl.Add into \"" + P9Sub + "\" took " + Seconds(clock));
+                    comBefore.Written = true;
+                    SayComViewComments(FindComFolderAt(state, P9Top, P9Sub), comBefore.Path[comBefore.Path.Count - 1], "V1");
+                }
+                catch (Exception error)
+                {
+                    Say("V1 THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                // V2 and V3, the COM view with no comment.
+                foreach (P9Target bare in new[] { addAfter, plain })
+                {
+                    try
+                    {
+                        InwOpView view = NewComView(state, bare.Path[bare.Path.Count - 1], camera);
+                        FindComFolderAt(state, P9Top, P9Sub).SavedViews().Add(view);
+                        Say(bare.Label + " added through COM with no comment");
+
+                        if (bare == plain)
+                        {
+                            plain.Written = true;
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        Say(bare.Label + " THREW " + error.GetType().Name + ": " + error.Message);
+                    }
+                }
+
+                // F2, a COM folder view with a comment before the add.
+                try
+                {
+                    InwOpFolderView folder = (InwOpFolderView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpFolderView, null, null);
+                    folder.name = P9ComFolder;
+                    InwCommentsColl before = folder.Comments();
+                    Say("F2 the new COM folder view's Comments(): Count " + before.Count + ", ReadOnly " + ComReadOnly(before));
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    InwOpComment comment = (InwOpComment)state.ObjectFactory(nwEObjectType.eObjectType_nwOpComment, null, null);
+                    comment.Body = folderCom.Body;
+                    comment.User = P9Author;
+                    before.Add(comment);
+                    folderCom.WriteSeconds = Seconds(clock);
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    FindComFolderAt(state, P9Top).SavedViews().Add(folder);
+                    Say("F2 comment added in " + folderCom.WriteSeconds + ", InwSavedViewsColl.Add into \"" + P9Top + "\" took " + Seconds(clock));
+                    folderCom.Written = true;
+                }
+                catch (Exception error)
+                {
+                    Say("F2 THREW " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+
+            // The .NET edits after the add: V2, F1 and L1.
+            foreach (P9Target edit in new[] { addAfter, folderAdd, legacy })
+            {
+                if (edit == null)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    using (SavedItem item = ResolveNames(document, edit.Path))
+                    {
+                        if (item == null)
+                        {
+                            Say(edit.Label + " NOT FOUND by its names, so no comment is written");
+                            continue;
+                        }
+
+                        if (!edit.IsFolder)
+                        {
+                            edit.HiddenBefore = HiddenCount((SavedViewpoint)item);
+                            edit.MaterialBefore = MaterialCount((SavedViewpoint)item);
+                        }
+
+                        Say(edit.Label + " before the edit: a " + item.GetType().Name + ", comments " + item.Comments.Count
+                            + (edit.IsFolder ? string.Empty : ", Hidden " + edit.HiddenBefore + ", MaterialOverrides " + edit.MaterialBefore));
+
+                        using (Comment comment = document.CreateCommentWithUniqueId(edit.Body, CommentStatus.New, P9Author))
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddComment(item, comment);
+                            edit.WriteSeconds = Seconds(clock);
+                        }
+
+                        edit.Written = true;
+                        Say(edit.Label + " AddComment(item, comment) RETURNED after " + edit.WriteSeconds);
+                    }
+
+                    using (SavedItem again = ResolveNames(document, edit.Path))
+                    {
+                        if (again != null && !edit.IsFolder)
+                        {
+                            edit.HiddenAfterEdit = HiddenCount((SavedViewpoint)again);
+                            edit.MaterialAfterEdit = MaterialCount((SavedViewpoint)again);
+                            Say(edit.Label + " after the edit, re-found by its names: Hidden " + edit.HiddenAfterEdit
+                                + ", MaterialOverrides " + edit.MaterialAfterEdit);
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say(edit.Label + " THREW " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+
+            Say(string.Empty);
+            Say("READ BACK BEFORE ANY SAVE, off SavedItem.Comments, each item re-found by its names from a fresh RootItem:");
+
+            foreach (P9Target target in targets)
+            {
+                target.NowSame = ReadTarget(document, target, false);
+            }
+
+            int folders1;
+            int comments1;
+            int views1 = TreeCounts(document, out folders1, out comments1);
+            Say("the tree before the save: viewpoints " + views1 + ", folders " + folders1 + ", comments on any item " + comments1);
+
+            document.Models.ResetAllHidden();
+            document.Models.ResetAllTemporaryMaterials();
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P9 UNKNOWN   the saved file would not reopen, so nothing after a reopen is read");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("READ BACK AFTER A SAVE, A CLEAR AND A REOPEN:");
+
+            foreach (P9Target target in targets)
+            {
+                target.ReopenSame = ReadTarget(document, target, true);
+            }
+
+            int folders2;
+            int comments2;
+            int views2 = TreeCounts(document, out folders2, out comments2);
+            Say("the tree after the reopen: viewpoints " + views2 + ", folders " + folders2 + ", comments on any item " + comments2);
+            Say(string.Empty);
+            Say("EACH TARGET:  label | route | written | write seconds | read back the same before the save | after the reopen | Hidden before edit, after edit, before save, after reopen | MaterialOverrides the same four");
+
+            foreach (P9Target target in targets)
+            {
+                Say("   " + target.Label + " | " + target.Route + " | " + target.Written + " | " + target.WriteSeconds + " | " + target.NowSame
+                    + " | " + target.ReopenSame
+                    + (target.IsFolder ? " | a folder" : " | " + target.HiddenBefore + ", " + target.HiddenAfterEdit + ", " + target.HiddenNow + ", " + target.HiddenReopen
+                    + " | " + target.MaterialBefore + ", " + target.MaterialAfterEdit + ", " + target.MaterialNow + ", " + target.MaterialReopen));
+            }
+
+            Say("(-2 is not read, -1 is a read that threw)");
+            bool viewAdd = addAfter.Written && addAfter.NowSame && addAfter.ReopenSame;
+            bool viewCom = comBefore.Written && comBefore.NowSame && comBefore.ReopenSame;
+            bool folderA = folderAdd.Written && folderAdd.NowSame && folderAdd.ReopenSame;
+            bool folderC = folderCom.Written && folderCom.NowSame && folderCom.ReopenSame;
+            bool legacyA = legacy != null && legacy.Written && legacy.NowSame && legacy.ReopenSame;
+            bool countsHeld = SameCounts(addAfter) && (legacy == null || SameCounts(legacy));
+            bool comCounts = comBefore.HiddenReopen == plain.HiddenReopen && comBefore.MaterialReopen == plain.MaterialReopen
+                && comBefore.HiddenNow == plain.HiddenNow && comBefore.MaterialNow == plain.MaterialNow;
+            Say("P9 by route: AddComment on a view two folders deep " + Yes(viewAdd) + ", on an existing view two folders deep " + Yes(legacyA)
+                + ", on a folder " + Yes(folderA) + ". COM before the add on a view two folders deep " + Yes(viewCom) + ", on a folder " + Yes(folderC));
+            Say("P9 counts: AddComment left Hidden and MaterialOverrides the same before and after the edit and through the reopen " + Yes(countsHeld)
+                + ". The COM view with a comment reads the same counts as the plain one " + Yes(comCounts));
+            Say("P9 " + ((viewAdd || viewCom) && (folderA || folderC) && countsHeld ? "YES" : "NO")
+                + "   a comment on a view two folders deep and on a folder read back with the same body and author after a save, a clear and a reopen, by at least one route each, with the counts held");
+        }
+
+        private static string Yes(bool value)
+        {
+            return value ? "YES" : "NO";
+        }
+
+        private static bool SameCounts(P9Target t)
+        {
+            return t.HiddenBefore >= 0 && t.MaterialBefore >= 0
+                && t.HiddenBefore == t.HiddenAfterEdit && t.HiddenBefore == t.HiddenNow && t.HiddenBefore == t.HiddenReopen
+                && t.MaterialBefore == t.MaterialAfterEdit && t.MaterialBefore == t.MaterialNow && t.MaterialBefore == t.MaterialReopen;
+        }
+
+        private static P9Target NewTarget(List<P9Target> into, string label, string route, bool isFolder, string stamp, params string[] path)
+        {
+            P9Target target = new P9Target();
+            target.Label = label;
+            target.Route = route;
+            target.IsFolder = isFolder;
+            target.Path.AddRange(path);
+            target.Body = P9Sentence + "\n" + "[nwcfed-mark 1] stamp=" + stamp + " path=" + string.Join("/", path, 0, path.Length - 1)
+                + " name=" + path[path.Length - 1] + " probe=" + label;
+            into.Add(target);
+            return target;
+        }
+
+        private static InwOpView NewComView(InwOpState10 state, string name, Viewpoint camera)
+        {
+            InwOpView view = (InwOpView)state.ObjectFactory(nwEObjectType.eObjectType_nwOpView, null, null);
+            view.name = name;
+            view.ApplyHideAttribs = true;
+            view.ApplyMaterialAttribs = true;
+            view.anonview = ComApiBridge.ToInwOpAnonView(camera);
+            return view;
+        }
+
+        private static string ComReadOnly(InwCommentsColl comments)
+        {
+            try
+            {
+                return comments.ReadOnly.ToString();
+            }
+            catch (Exception error)
+            {
+                return "UNKNOWN, the read threw " + error.GetType().Name;
+            }
+        }
+
+        /// <summary>The COM folder at that path of names from the COM root, each level read fresh.</summary>
+        private static InwOpFolderView FindComFolderAt(InwOpState10 state, params string[] names)
+        {
+            InwSavedViewsColl views = state.SavedViews();
+            InwOpFolderView found = null;
+
+            foreach (string name in names)
+            {
+                found = null;
+
+                for (int i = 1; i <= views.Count; i++)
+                {
+                    InwOpFolderView folder = views[i] as InwOpFolderView;
+
+                    if (folder != null && string.Equals(folder.name, name, StringComparison.Ordinal))
+                    {
+                        found = folder;
+                        break;
+                    }
+                }
+
+                if (found == null)
+                {
+                    return null;
+                }
+
+                views = found.SavedViews();
+            }
+
+            return found;
+        }
+
+        private void SayComViewComments(InwOpFolderView folder, string name, string label)
+        {
+            if (folder == null)
+            {
+                Say(label + " read back through COM: the folder was not found");
+                return;
+            }
+
+            InwSavedViewsColl views = folder.SavedViews();
+
+            for (int i = views.Count; i >= 1; i--)
+            {
+                InwOpView view = views[i] as InwOpView;
+
+                if (view != null && string.Equals(view.name, name, StringComparison.Ordinal))
+                {
+                    InwCommentsColl comments = view.Comments();
+                    Say(label + " read back through COM, the added view's Comments().Count " + comments.Count);
+
+                    for (int c = 1; c <= comments.Count; c++)
+                    {
+                        InwOpComment comment = comments[c] as InwOpComment;
+                        Say("   COM comment " + c + ": " + (comment == null ? "not an InwOpComment" : "User [" + Shown(comment.User) + "] Body [" + Shown(comment.Body) + "]"));
+                    }
+
+                    return;
+                }
+            }
+
+            Say(label + " read back through COM: no view of that name in the folder");
+        }
+
+        /// <summary>The item at that path of names, each level the first child of that name, Ordinal, from a fresh RootItem.</summary>
+        private static SavedItem ResolveNames(Document document, List<string> names)
+        {
+            GroupItem parent = document.SavedViewpoints.RootItem;
+
+            for (int level = 0; level < names.Count; level++)
+            {
+                SavedItem found = null;
+                SavedItemCollection children = parent.Children;
+
+                for (int i = 0; i < children.Count; i++)
+                {
+                    SavedItem child = children[i];
+
+                    if (string.Equals(child.DisplayName, names[level], StringComparison.Ordinal))
+                    {
+                        found = child;
+                        break;
+                    }
+
+                    child.Dispose();
+                }
+
+                parent.Dispose();
+
+                if (found == null)
+                {
+                    return null;
+                }
+
+                if (level == names.Count - 1)
+                {
+                    return found;
+                }
+
+                parent = found as GroupItem;
+
+                if (parent == null)
+                {
+                    found.Dispose();
+                    return null;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>Reads one target's comments and counts, and says whether exactly one comment reads the body and author written.</summary>
+        private bool ReadTarget(Document document, P9Target target, bool reopened)
+        {
+            try
+            {
+                using (SavedItem item = ResolveNames(document, target.Path))
+                {
+                    if (item == null)
+                    {
+                        Say("   " + target.Label + " NOT FOUND by its names [" + Shown(string.Join(" / ", target.Path.ToArray())) + "]");
+                        return false;
+                    }
+
+                    int hidden = -2;
+                    int material = -2;
+                    SavedViewpoint view = item as SavedViewpoint;
+
+                    if (view != null)
+                    {
+                        hidden = HiddenCount(view);
+                        material = MaterialCount(view);
+                    }
+
+                    if (reopened)
+                    {
+                        target.HiddenReopen = hidden;
+                        target.MaterialReopen = material;
+                    }
+                    else
+                    {
+                        target.HiddenNow = hidden;
+                        target.MaterialNow = material;
+                    }
+
+                    CommentCollection comments = item.Comments;
+                    int count = comments == null ? 0 : comments.Count;
+                    Say("   " + target.Label + " a " + item.GetType().Name + ", comments " + count
+                        + (view == null ? string.Empty : ", Hidden " + hidden + ", MaterialOverrides " + material));
+                    bool same = false;
+                    bool sameButNewline = false;
+
+                    for (int c = 0; c < count; c++)
+                    {
+                        Comment comment = comments[c];
+                        Say("      comment " + c + ": Author [" + Shown(comment.Author) + "] Status " + comment.Status + " Id " + comment.Id
+                            + " CreationDate " + comment.CreationDate.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
+                        Say("         Body [" + Shown(comment.Body) + "]");
+
+                        if (target.Body != null && string.Equals(comment.Author, P9Author, StringComparison.Ordinal))
+                        {
+                            if (string.Equals(comment.Body, target.Body, StringComparison.Ordinal))
+                            {
+                                same = true;
+                            }
+                            else if (string.Equals((comment.Body ?? string.Empty).Replace("\r\n", "\n"), target.Body, StringComparison.Ordinal))
+                            {
+                                sameButNewline = true;
+                            }
+                        }
+                    }
+
+                    if (target.Body == null)
+                    {
+                        return count == 0;
+                    }
+
+                    bool exact = same && count == 1;
+                    Say("      written Body [" + Shown(target.Body) + "] Author [" + P9Author + "]");
+                    Say("      " + target.Label + (exact ? " EXACTLY ONE COMMENT, BODY AND AUTHOR THE SAME, Ordinal"
+                        : sameButNewline ? " the body differs from the one written only by its line break"
+                        : same ? " the body and author read the same, but " + count + " comments are there"
+                        : " NOT the same"));
+                    return exact;
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   " + target.Label + " the read THREW " + error.GetType().Name + ": " + error.Message);
+                return false;
+            }
+        }
+
+        private static List<string> FirstViewTwoDeep(Document document)
+        {
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SavedItemCollection top = root.Children;
+
+                for (int i = 0; i < top.Count; i++)
+                {
+                    GroupItem first = top[i] as GroupItem;
+
+                    if (first == null)
+                    {
+                        continue;
+                    }
+
+                    SavedItemCollection middle = first.Children;
+
+                    for (int j = 0; j < middle.Count; j++)
+                    {
+                        GroupItem second = middle[j] as GroupItem;
+
+                        if (second == null)
+                        {
+                            continue;
+                        }
+
+                        SavedItemCollection leaves = second.Children;
+
+                        for (int k = 0; k < leaves.Count; k++)
+                        {
+                            if (leaves[k] is SavedViewpoint)
+                            {
+                                return new List<string> { first.DisplayName, second.DisplayName, leaves[k].DisplayName };
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static int TreeCounts(Document document, out int folders, out int comments)
+        {
+            folders = 0;
+            comments = 0;
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                {
+                    return TreeCountsUnder(root, ref folders, ref comments);
+                }
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        private static int TreeCountsUnder(GroupItem parent, ref int folders, ref int comments)
+        {
+            int views = 0;
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    comments += child.Comments == null ? 0 : child.Comments.Count;
+                    GroupItem group = child as GroupItem;
+
+                    if (group != null)
+                    {
+                        folders++;
+                        views += TreeCountsUnder(group, ref folders, ref comments);
+                    }
+                    else
+                    {
+                        views++;
+                    }
+                }
+            }
+
+            return views;
+        }
+
+        // ---------- P10 of Q114, scan.md 5z-p, does a saved item's Guid hold and resolve ----------
+
+        private const string P10Top = "P10 probe";
+        private const string P10Body = "P10 probe comment, the edit whose effect on the Guid is read";
+
+        private sealed class P10Target
+        {
+            public string Label;
+            public string Route;
+            public bool IsFolder;
+            public bool New;
+            public List<string> Path = new List<string>();
+            public Guid Set = Guid.Empty;
+            public readonly List<string> Stages = new List<string>();
+            public readonly Dictionary<string, string> GuidAt = new Dictionary<string, string>(StringComparer.Ordinal);
+            public readonly Dictionary<string, bool> UniqueAt = new Dictionary<string, bool>(StringComparer.Ordinal);
+            public readonly Dictionary<string, bool> ResolvedAt = new Dictionary<string, bool>(StringComparer.Ordinal);
+        }
+
+        private sealed class GuidTally
+        {
+            public int Items;
+            public int Empty;
+            public int Threw;
+            public readonly Dictionary<Guid, int> Count = new Dictionary<Guid, int>();
+        }
+
+        /// <summary>
+        /// P10: does a viewpoint's Guid read the same after the comment edit and after a save and a
+        /// reopen, is it unique in the tree, and does ResolveGuid return the item? Read on the items
+        /// P9 left in its saved copy and on new items made here by the routes the tool uses, a COM
+        /// view by InwSavedViewsColl.Add and a .NET folder by FolderItem and AddCopy, and by the
+        /// .NET routes with the Guid set before AddCopy and without.
+        /// </summary>
+        private void MeasureViewGuids(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            List<P10Target> targets = new List<P10Target>();
+            P10NewTarget(targets, "E1", "P9's COM view with P9's AddComment comment", false, false, P9Top, P9Sub, "P9 view addcomment after add");
+            P10NewTarget(targets, "E2", "P9's COM view with no comment", false, false, P9Top, P9Sub, "P9 view plain");
+            P10NewTarget(targets, "E3", "P9's .NET folder by FolderItem and AddCopy, one below a root folder", true, false, P9Top, P9Sub);
+            P10NewTarget(targets, "E4", "P9's COM folder view", true, false, P9Top, P9ComFolder);
+            P10NewTarget(targets, "E5", "P9's .NET folder at the root", true, false, P9Top);
+            List<string> legacyPath = FirstViewTwoDeep(document);
+
+            if (legacyPath != null)
+            {
+                P10NewTarget(targets, "E6", "an F85 viewpoint two folders deep, P9's L1", false, false, legacyPath.ToArray());
+            }
+            else
+            {
+                Say("UNKNOWN: no viewpoint two folders deep, so E6 is not read");
+            }
+
+            P10Target n1 = P10NewTarget(targets, "N1", "a .NET folder at the root by FolderItem and AddCopy, the Guid untouched, the tool's folder route", true, true, P10Top);
+            P10Target n2 = P10NewTarget(targets, "N2", "a .NET folder by FolderItem and AddCopy, its Guid set before the AddCopy", true, true, P10Top, "P10 folder guid set");
+            P10Target n3 = P10NewTarget(targets, "N3", "a COM view by InwSavedViewsColl.Add into a folder, the tool's view route", false, true, P10Top, "P10 com view");
+            P10Target n4 = P10NewTarget(targets, "N4", "a .NET SavedViewpoint(Viewpoint) by AddCopy, the Guid untouched", false, true, P10Top, "P10 net view");
+            P10Target n5 = P10NewTarget(targets, "N5", "a .NET SavedViewpoint(Viewpoint) by AddCopy, its Guid set before the AddCopy", false, true, P10Top, "P10 net view guid set");
+
+            Say(string.Empty);
+            Say("STAGE open, P9's items as the saved copy gives them:");
+            GuidTally atOpen = P10Tree(document, "at the open");
+
+            foreach (P10Target t in targets)
+            {
+                if (!t.New)
+                {
+                    P10Read(document, t, "open", atOpen, true);
+                }
+            }
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                using (SavedItem empty = document.SavedViewpoints.ResolveGuid(Guid.Empty))
+                {
+                    Say("ResolveGuid(the empty Guid) returned after " + Seconds(clock) + ": "
+                        + (empty == null ? "null" : "a " + empty.GetType().Name + " [" + Shown(empty.DisplayName) + "] at " + P10IndexPath(document, empty)));
+                }
+            }
+            catch (Exception error)
+            {
+                Say("ResolveGuid(the empty Guid) THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            Say(string.Empty);
+            Say("THE NEW ITEMS, each read back right after its add, re-found by its names from a fresh RootItem:");
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P10Top;
+                    Say("N1 the FolderItem's Guid before the AddCopy " + folder.Guid);
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                Say("N1 AddCopy at the root RETURNED after " + Seconds(clock));
+            }
+            catch (Exception error)
+            {
+                Say("N1 THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            P10Read(document, n1, "add", null, false);
+
+            try
+            {
+                using (GroupItem top = (GroupItem)ResolveNames(document, new List<string> { P10Top }))
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = n2.Path[1];
+                    n2.Set = Guid.NewGuid();
+                    folder.Guid = n2.Set;
+                    Say("N2 the FolderItem's Guid set to " + n2.Set + ", read back off it before the AddCopy " + folder.Guid);
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.SavedViewpoints.AddCopy(top, folder);
+                    Say("N2 AddCopy RETURNED after " + Seconds(clock));
+                }
+            }
+            catch (Exception error)
+            {
+                Say("N2 THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            P10Read(document, n2, "add", null, false);
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                try
+                {
+                    InwOpState10 state = ComApiBridge.State;
+                    InwOpFolderView comTop = FindComFolderAt(state, P10Top);
+                    Say("N3 the COM folder \"" + P10Top + "\" found " + (comTop != null));
+                    InwOpView view = NewComView(state, n3.Path[1], camera);
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    comTop.SavedViews().Add(view);
+                    Say("N3 InwSavedViewsColl.Add RETURNED after " + Seconds(clock));
+                }
+                catch (Exception error)
+                {
+                    Say("N3 THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P10Read(document, n3, "add", null, false);
+
+                foreach (P10Target net in new[] { n4, n5 })
+                {
+                    try
+                    {
+                        using (GroupItem top = (GroupItem)ResolveNames(document, new List<string> { P10Top }))
+                        using (SavedViewpoint view = new SavedViewpoint(camera))
+                        {
+                            view.DisplayName = net.Path[1];
+                            Say(net.Label + " the SavedViewpoint's Guid before anything is set " + view.Guid);
+
+                            if (net == n5)
+                            {
+                                n5.Set = Guid.NewGuid();
+                                view.Guid = n5.Set;
+                                Say("N5 its Guid set to " + n5.Set + ", read back off it before the AddCopy " + view.Guid);
+                            }
+
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddCopy(top, view);
+                            Say(net.Label + " AddCopy RETURNED after " + Seconds(clock));
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        Say(net.Label + " THREW " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    P10Read(document, net, "add", null, false);
+                }
+            }
+
+            Say(string.Empty);
+            Say("THE COMMENT EDIT, AddComment with a comment from CreateCommentWithUniqueId on every item, the Guid read just before and just after:");
+
+            foreach (P10Target t in targets)
+            {
+                try
+                {
+                    using (SavedItem item = ResolveNames(document, t.Path))
+                    {
+                        if (item == null)
+                        {
+                            Say("   " + t.Label + " NOT FOUND by its names, so no comment is written");
+                            continue;
+                        }
+
+                        Guid before = item.Guid;
+
+                        using (Comment comment = document.CreateCommentWithUniqueId(P10Body, CommentStatus.New, P9Author))
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddComment(item, comment);
+                            Say("   " + t.Label + " AddComment RETURNED after " + Seconds(clock) + ", the Guid just before " + before);
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("   " + t.Label + " AddComment THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P10Read(document, t, "edit", null, false);
+            }
+
+            Say(string.Empty);
+            Say("STAGE before the save, the whole tree and every item, with ResolveGuid:");
+            GuidTally beforeSave = P10Tree(document, "before the save");
+
+            foreach (P10Target t in targets)
+            {
+                P10Read(document, t, "save", beforeSave, true);
+            }
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P10 UNKNOWN   the saved file would not reopen, so nothing after a reopen is read");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("STAGE after a save, a clear and a reopen, the whole tree and every item, with ResolveGuid:");
+            GuidTally reopenTally = P10Tree(document, "after the reopen");
+
+            foreach (P10Target t in targets)
+            {
+                P10Read(document, t, "reopen", reopenTally, true);
+            }
+
+            Say(string.Empty);
+            Say("EACH TARGET:  label | route | the Guid at each stage | the same at every stage | not empty | unique in the tree before the save, after the reopen | ResolveGuid gave the item before the save, after the reopen | the set Guid kept | all of these");
+            bool toolView = false;
+            bool toolFolder = false;
+            bool anyKept = false;
+
+            foreach (P10Target t in targets)
+            {
+                List<string> shown = new List<string>();
+                HashSet<string> distinct = new HashSet<string>(StringComparer.Ordinal);
+
+                foreach (string stage in t.Stages)
+                {
+                    string g;
+                    t.GuidAt.TryGetValue(stage, out g);
+                    shown.Add(stage + " " + (g ?? "UNKNOWN"));
+                    distinct.Add(g ?? "UNKNOWN");
+                }
+
+                bool same = t.Stages.Count > 0 && distinct.Count == 1 && !distinct.Contains("UNKNOWN") && !distinct.Contains("NOT FOUND") && !distinct.Contains("THREW");
+                bool notEmpty = same && !distinct.Contains(Guid.Empty.ToString());
+                bool uniqueSave = P10Flag(t.UniqueAt, "save");
+                bool uniqueReopen = P10Flag(t.UniqueAt, "reopen");
+                bool resolvedSave = P10Flag(t.ResolvedAt, "save");
+                bool resolvedReopen = P10Flag(t.ResolvedAt, "reopen");
+                string setKept = t.Set == Guid.Empty ? "not set" : Yes(same && distinct.Contains(t.Set.ToString()));
+                bool all = same && notEmpty && uniqueSave && uniqueReopen && resolvedSave && resolvedReopen;
+
+                Say("   " + t.Label + " | " + t.Route + " | " + string.Join(", ", shown.ToArray()) + " | " + Yes(same) + " | " + Yes(notEmpty)
+                    + " | " + Yes(uniqueSave) + ", " + Yes(uniqueReopen) + " | " + Yes(resolvedSave) + ", " + Yes(resolvedReopen) + " | " + setKept
+                    + " | " + Yes(all));
+
+                if (t == n3)
+                {
+                    toolView = all;
+                }
+
+                if (t == n1)
+                {
+                    toolFolder = all;
+                }
+
+                if (all)
+                {
+                    anyKept = true;
+                }
+            }
+
+            Say("P10 by route: the tool's view route, a COM view, " + Yes(toolView) + ". The tool's folder route, a .NET folder by AddCopy, " + Yes(toolFolder)
+                + ". Any item of any route " + Yes(anyKept));
+            Say("P10 " + (toolView && toolFolder ? "YES" : "NO")
+                + "   a Guid that is not empty, the same after the comment edit and after a save, a clear and a reopen, unique in the tree, and resolved by ResolveGuid to the item, on the tool's view and folder routes");
+        }
+
+        private static bool P10Flag(Dictionary<string, bool> flags, string stage)
+        {
+            bool value;
+            return flags.TryGetValue(stage, out value) && value;
+        }
+
+        private static P10Target P10NewTarget(List<P10Target> into, string label, string route, bool isFolder, bool isNew, params string[] path)
+        {
+            P10Target target = new P10Target();
+            target.Label = label;
+            target.Route = route;
+            target.IsFolder = isFolder;
+            target.New = isNew;
+            target.Path.AddRange(path);
+            into.Add(target);
+            return target;
+        }
+
+        private static string P10IndexPath(Document document, SavedItem item)
+        {
+            try
+            {
+                System.Collections.ObjectModel.Collection<int> path = document.SavedViewpoints.CreateIndexPath(item);
+
+                if (path == null)
+                {
+                    return "null";
+                }
+
+                List<string> parts = new List<string>();
+
+                foreach (int i in path)
+                {
+                    parts.Add(i.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                }
+
+                return string.Join(".", parts.ToArray());
+            }
+            catch (Exception error)
+            {
+                return "THREW " + error.GetType().Name;
+            }
+        }
+
+        /// <summary>Reads one target's Guid and index path at a stage, and where a tally is given, its uniqueness, and where asked, ResolveGuid.</summary>
+        private void P10Read(Document document, P10Target t, string stage, GuidTally tally, bool resolve)
+        {
+            t.Stages.Add(stage);
+
+            try
+            {
+                using (SavedItem item = ResolveNames(document, t.Path))
+                {
+                    if (item == null)
+                    {
+                        t.GuidAt[stage] = "NOT FOUND";
+                        Say("   " + t.Label + " at " + stage + ": NOT FOUND by its names [" + Shown(string.Join(" / ", t.Path.ToArray())) + "]");
+                        return;
+                    }
+
+                    Guid guid = item.Guid;
+                    string at = P10IndexPath(document, item);
+                    string reference;
+
+                    try
+                    {
+                        using (SavedItemReference r = document.SavedViewpoints.CreateReference(item))
+                        {
+                            reference = r == null ? "null" : "SavedItemId [" + Shown(r.SavedItemId) + "]";
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        reference = "THREW " + error.GetType().Name;
+                    }
+
+                    t.GuidAt[stage] = guid.ToString();
+                    string line = "   " + t.Label + " at " + stage + ": a " + item.GetType().Name + ", Guid " + guid + ", index path " + at
+                        + ", comments " + (item.Comments == null ? 0 : item.Comments.Count) + ", CreateReference " + reference;
+
+                    if (tally != null)
+                    {
+                        int count;
+                        tally.Count.TryGetValue(guid, out count);
+                        t.UniqueAt[stage] = guid != Guid.Empty && count == 1;
+                        line += ", items in the tree with this Guid " + count;
+                    }
+
+                    if (resolve)
+                    {
+                        System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+                        try
+                        {
+                            using (SavedItem found = document.SavedViewpoints.ResolveGuid(guid))
+                            {
+                                string seconds = Seconds(clock);
+
+                                if (found == null)
+                                {
+                                    t.ResolvedAt[stage] = false;
+                                    line += ", ResolveGuid null after " + seconds;
+                                }
+                                else
+                                {
+                                    string foundAt = P10IndexPath(document, found);
+                                    bool same = string.Equals(found.DisplayName, item.DisplayName, StringComparison.Ordinal) && string.Equals(foundAt, at, StringComparison.Ordinal);
+                                    t.ResolvedAt[stage] = same && guid != Guid.Empty;
+                                    line += ", ResolveGuid after " + seconds + " gave a " + found.GetType().Name + " [" + Shown(found.DisplayName) + "] at " + foundAt
+                                        + (same ? ", THE SAME ITEM" : ", ANOTHER ITEM");
+                                }
+                            }
+                        }
+                        catch (Exception error)
+                        {
+                            t.ResolvedAt[stage] = false;
+                            line += ", ResolveGuid THREW " + error.GetType().Name + ": " + error.Message;
+                        }
+                    }
+
+                    Say(line);
+                }
+            }
+            catch (Exception error)
+            {
+                t.GuidAt[stage] = "THREW";
+                Say("   " + t.Label + " at " + stage + ": the read THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        /// <summary>Every item's Guid in the saved viewpoint tree, counted.</summary>
+        private GuidTally P10Tree(Document document, string when)
+        {
+            GuidTally tally = new GuidTally();
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                P10TreeUnder(root, tally);
+            }
+
+            int shared = 0;
+            int itemsShared = 0;
+
+            foreach (KeyValuePair<Guid, int> pair in tally.Count)
+            {
+                if (pair.Key != Guid.Empty && pair.Value > 1)
+                {
+                    shared++;
+                    itemsShared += pair.Value;
+                }
+            }
+
+            int distinct = tally.Count.Count - (tally.Count.ContainsKey(Guid.Empty) ? 1 : 0);
+            Say("the tree " + when + ": items " + tally.Items + ", Guid reads that threw " + tally.Threw + ", empty Guids " + tally.Empty
+                + ", distinct Guids that are not empty " + distinct + ", Guids that are not empty carried by more than one item " + shared
+                + " over " + itemsShared + " items, the walk " + Seconds(clock));
+            return tally;
+        }
+
+        private static void P10TreeUnder(GroupItem parent, GuidTally tally)
+        {
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    tally.Items++;
+
+                    try
+                    {
+                        Guid guid = child.Guid;
+                        int count;
+                        tally.Count.TryGetValue(guid, out count);
+                        tally.Count[guid] = count + 1;
+
+                        if (guid == Guid.Empty)
+                        {
+                            tally.Empty++;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        tally.Threw++;
+                    }
+
+                    GroupItem group = child as GroupItem;
+
+                    if (group != null)
+                    {
+                        P10TreeUnder(group, tally);
+                    }
+                }
+            }
+        }
+
+        // ---------- P11 of Q114, scan.md 5z-q, does AddCopy of a marked view give a new Guid, and does its comment travel ----------
+
+        private const string P11Top = "P11 probe";
+        private const string P11Sources = "P11 sources";
+        private const string P11SourceName = "P11 source guid set";
+        private const string P11Body = "P11 probe mark, written on the source whose Guid the probe set";
+
+        private sealed class P11State
+        {
+            public string Type = "NOT FOUND";
+            public string Name = string.Empty;
+            public string Guid = "UNKNOWN";
+            public int Siblings = -1;
+            public int InTree = -1;
+            public int Hidden = -2;
+            public int Material = -2;
+            public readonly List<string> Comments = new List<string>();
+            public readonly List<string> CommentIds = new List<string>();
+        }
+
+        private sealed class P11Item
+        {
+            public string Label;
+            public string Route;
+            public P11Item Source;
+            public List<string> Path;
+            public List<string> Folder;
+            public readonly Dictionary<string, P11State> At = new Dictionary<string, P11State>(StringComparer.Ordinal);
+        }
+
+        /// <summary>
+        /// P11: AddCopy of a view that carries the tool's mark, a comment written by AddComment. Does
+        /// the copy get a new Guid, and does the comment travel with it? Read on P9's COM view with
+        /// its AddComment comment, on F85's view P9 marked, and on a marked view whose Guid the probe
+        /// set, each copied by AddCopy of the document's item itself, of SavedItem.CreateCopy and of
+        /// SavedItem.CreateUniqueCopy, each copy into a folder of its own. Read right after the add,
+        /// before the save, and after a SaveFile, a Document.Clear and a TryOpenFile of the saved file.
+        /// </summary>
+        private void MeasureViewCopy(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            int folders0;
+            int comments0;
+            int views0 = TreeCounts(document, out folders0, out comments0);
+            Say("the tree at the open: viewpoints " + views0 + ", folders " + folders0 + ", comments on any item " + comments0);
+            GuidTally atOpen = P10Tree(document, "at the open");
+
+            List<P11Item> sources = new List<P11Item>();
+            P11Item s1 = P11Source(sources, "S1", "P9's COM view, the tool's view route, marked by AddComment after the add", P9Top, P9Sub, "P9 view addcomment after add");
+            List<string> legacyPath = FirstViewTwoDeep(document);
+            P11Item s2 = null;
+
+            if (legacyPath != null)
+            {
+                s2 = P11Source(sources, "S2", "an F85 view two folders deep, marked by P9's AddComment", legacyPath.ToArray());
+            }
+            else
+            {
+                Say("UNKNOWN: no viewpoint two folders deep, so S2 is not read");
+            }
+
+            P11Item s3 = new P11Item();
+            s3.Label = "S3";
+            s3.Route = "a copy of S1 by CreateCopy, its Guid set to Guid.NewGuid() and its name changed before AddCopy into a folder, marked";
+            s3.Folder = new List<string> { P11Top, P11Sources };
+            sources.Add(s3);
+
+            Say(string.Empty);
+            Say("STAGE open, the sources as P9's saved copy gives them:");
+
+            foreach (P11Item s in sources)
+            {
+                if (s != s3)
+                {
+                    P11Read(document, s, "open", atOpen);
+                }
+            }
+
+            Say(string.Empty);
+            Say("THE FOLDERS, each by FolderItem and AddCopy, one for the source S3 and one for each copy:");
+            List<P11Item> copies = new List<P11Item>();
+            P11Item c1 = P11Copy(copies, "C1", s1, "direct", "AddCopy(folder, S1 itself)");
+            P11Copy(copies, "C2", s1, "copy", "AddCopy(folder, S1.CreateCopy())");
+            P11Copy(copies, "C3", s1, "unique", "AddCopy(folder, S1.CreateUniqueCopy())");
+
+            if (s2 != null)
+            {
+                P11Copy(copies, "C4", s2, "direct", "AddCopy(folder, S2 itself)");
+            }
+
+            P11Copy(copies, "C5", s3, "direct", "AddCopy(folder, S3 itself)");
+            P11Copy(copies, "C6", s3, "copy", "AddCopy(folder, S3.CreateCopy())");
+            P11Copy(copies, "C7", s3, "unique", "AddCopy(folder, S3.CreateUniqueCopy())");
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                EnsureFolder(document, P11Top);
+                List<string> names = new List<string> { P11Sources };
+
+                foreach (P11Item c in copies)
+                {
+                    names.Add(c.Label);
+                }
+
+                foreach (string name in names)
+                {
+                    using (GroupItem top = (GroupItem)ResolveNames(document, new List<string> { P11Top }))
+                    using (FolderItem folder = new FolderItem())
+                    {
+                        folder.DisplayName = name;
+                        document.SavedViewpoints.AddCopy(top, folder);
+                    }
+                }
+
+                Say("\"" + P11Top + "\" at the root and " + names.Count + " folders under it made in " + Seconds(clock) + ": " + string.Join(", ", names.ToArray()));
+            }
+            catch (Exception error)
+            {
+                Say("the folders THREW " + error.GetType().Name + ": " + error.Message);
+                Say("P11 UNKNOWN   the folders could not be made, so nothing is copied");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("THE SOURCE S3, a copy of S1 with a Guid the probe set:");
+            Guid s3Guid = Guid.NewGuid();
+
+            try
+            {
+                using (SavedItem from = P11Resolve(document, s1))
+                using (GroupItem into = (GroupItem)ResolveNames(document, s3.Folder))
+                {
+                    if (from == null || into == null)
+                    {
+                        Say("S3 NOT MADE, S1 found " + (from != null) + ", the folder found " + (into != null));
+                    }
+                    else
+                    {
+                        using (SavedItem made = from.CreateCopy())
+                        {
+                            Say("S3 S1.CreateCopy() gave a " + made.GetType().Name + ", before anything is set: Guid " + made.Guid + ", name [" + Shown(made.DisplayName)
+                                + "], comments " + (made.Comments == null ? 0 : made.Comments.Count));
+                            made.DisplayName = P11SourceName;
+                            made.Guid = s3Guid;
+                            Say("S3 its name set to [" + P11SourceName + "] and its Guid set to " + s3Guid + ", read back off it before the AddCopy " + made.Guid);
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddCopy(into, made);
+                            Say("S3 AddCopy RETURNED after " + Seconds(clock));
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say("S3 THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            P11Read(document, s3, "add", null);
+            P11State s3Added;
+
+            if (s3.At.TryGetValue("add", out s3Added) && s3Added.Type != "NOT FOUND" && s3Added.Comments.Count == 0)
+            {
+                try
+                {
+                    using (SavedItem item = P11Resolve(document, s3))
+                    using (Comment comment = document.CreateCommentWithUniqueId(P11Body, CommentStatus.New, P9Author))
+                    {
+                        clock = System.Diagnostics.Stopwatch.StartNew();
+                        document.SavedViewpoints.AddComment(item, comment);
+                        Say("S3 carried no comment after its AddCopy, so it is marked here: AddComment RETURNED after " + Seconds(clock));
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("S3 AddComment THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P11Read(document, s3, "add", null);
+            }
+
+            Say(string.Empty);
+            Say("THE COPIES, each read back right after its add, as the one child of its own folder:");
+
+            foreach (P11Item c in copies)
+            {
+                P11MakeCopy(document, c);
+                P11Read(document, c, "add", null);
+            }
+
+            Say(string.Empty);
+            Say("STAGE before the save, the whole tree, every source and every copy:");
+            GuidTally beforeSave = P10Tree(document, "before the save");
+
+            foreach (P11Item s in sources)
+            {
+                P11Read(document, s, "save", beforeSave);
+            }
+
+            foreach (P11Item c in copies)
+            {
+                P11Read(document, c, "save", beforeSave);
+            }
+
+            P11ResolveSet(document, s3Guid, "before the save");
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (reopened)
+            {
+                Say(string.Empty);
+                Say("STAGE after a save, a clear and a reopen, the whole tree, every source and every copy:");
+                GuidTally reopenTally = P10Tree(document, "after the reopen");
+
+                foreach (P11Item s in sources)
+                {
+                    P11Read(document, s, "reopen", reopenTally);
+                }
+
+                foreach (P11Item c in copies)
+                {
+                    P11Read(document, c, "reopen", reopenTally);
+                }
+
+                P11ResolveSet(document, s3Guid, "after the reopen");
+                int folders1;
+                int comments1;
+                int views1 = TreeCounts(document, out folders1, out comments1);
+                Say("the tree after the reopen: viewpoints " + views1 + ", folders " + folders1 + ", comments on any item " + comments1);
+            }
+            else
+            {
+                Say("UNKNOWN: the saved file would not reopen, so nothing after a reopen is read");
+            }
+
+            Say(string.Empty);
+            Say("EACH COPY:  label | route | stage | the copy's Guid | the source's Guid | the Guid is | the comments the same as the source's, Body, Author and Status, Ordinal | the comment Ids and dates the same | Hidden and MaterialOverrides the same | its name the same");
+            int travelled = 0;
+            int notTravelled = 0;
+            Dictionary<string, int> guidKinds = new Dictionary<string, int>(StringComparer.Ordinal);
+            string c1Comment = "UNKNOWN";
+            string c1Guid = "UNKNOWN";
+
+            foreach (P11Item c in copies)
+            {
+                bool allTravel = true;
+                HashSet<string> kinds = new HashSet<string>(StringComparer.Ordinal);
+
+                foreach (string stage in new[] { "add", "save", "reopen" })
+                {
+                    P11State mine;
+
+                    if (!c.At.TryGetValue(stage, out mine))
+                    {
+                        Say("   " + c.Label + " | " + stage + " | not read");
+                        allTravel = false;
+                        kinds.Add("UNKNOWN");
+                        continue;
+                    }
+
+                    P11State theirs = P11SourceAt(c.Source, stage);
+
+                    if (mine.Type == "NOT FOUND" || theirs == null || theirs.Type == "NOT FOUND")
+                    {
+                        Say("   " + c.Label + " | " + stage + " | the copy found " + Yes(mine.Type != "NOT FOUND") + ", the source found " + Yes(theirs != null && theirs.Type != "NOT FOUND"));
+                        allTravel = false;
+                        kinds.Add("UNKNOWN");
+                        continue;
+                    }
+
+                    string kind = mine.Guid == Guid.Empty.ToString()
+                        ? (theirs.Guid == Guid.Empty.ToString() ? "empty, as the source's" : "empty, the source's is not")
+                        : mine.Guid == theirs.Guid ? "KEPT, the source's" : "NEW";
+                    bool sameComments = mine.Comments.Count > 0 && P11SameList(mine.Comments, theirs.Comments);
+                    bool sameIds = mine.CommentIds.Count > 0 && P11SameList(mine.CommentIds, theirs.CommentIds);
+                    bool sameCounts = mine.Hidden == theirs.Hidden && mine.Material == theirs.Material && mine.Hidden >= 0 && mine.Material >= 0;
+                    bool sameName = string.Equals(mine.Name, theirs.Name, StringComparison.Ordinal);
+                    kinds.Add(kind);
+
+                    if (!sameComments)
+                    {
+                        allTravel = false;
+                    }
+
+                    Say("   " + c.Label + " | " + c.Route + " | " + stage + " | " + mine.Guid + " | " + theirs.Guid + " | " + kind
+                        + " | " + Yes(sameComments) + " (" + mine.Comments.Count + " and " + theirs.Comments.Count + ")"
+                        + " | " + Yes(sameIds) + " | " + Yes(sameCounts) + " (" + mine.Hidden + ", " + mine.Material + " and " + theirs.Hidden + ", " + theirs.Material + ")"
+                        + " | " + Yes(sameName));
+                }
+
+                string kindText = string.Join(" then ", new List<string>(kinds).ToArray());
+                int seen;
+                guidKinds.TryGetValue(kindText, out seen);
+                guidKinds[kindText] = seen + 1;
+
+                if (allTravel)
+                {
+                    travelled++;
+                }
+                else
+                {
+                    notTravelled++;
+                }
+
+                if (c == c1)
+                {
+                    c1Comment = Yes(allTravel);
+                    c1Guid = kindText;
+                }
+
+                Say("   " + c.Label + " in all: the comment travelled at every stage " + Yes(allTravel) + ", the Guid " + kindText);
+            }
+
+            List<string> kindLines = new List<string>();
+
+            foreach (KeyValuePair<string, int> pair in guidKinds)
+            {
+                kindLines.Add(pair.Value + " " + pair.Key);
+            }
+
+            Say("P11 on the tool's marked view, C1, AddCopy of S1 itself: the comment travels " + c1Comment + ", the Guid " + c1Guid);
+            Say("P11 over all " + copies.Count + " copies: the comment travelled on " + travelled + " and not on " + notTravelled + ". The Guid: " + string.Join(", ", kindLines.ToArray()));
+        }
+
+        private static P11Item P11Source(List<P11Item> into, string label, string route, params string[] path)
+        {
+            P11Item item = new P11Item();
+            item.Label = label;
+            item.Route = route;
+            item.Path = new List<string>(path);
+            into.Add(item);
+            return item;
+        }
+
+        private static P11Item P11Copy(List<P11Item> into, string label, P11Item source, string how, string route)
+        {
+            P11Item item = new P11Item();
+            item.Label = label;
+            item.Route = route;
+            item.Source = source;
+            item.Path = null;
+            item.Folder = new List<string> { P11Top, label };
+            item.At["how"] = new P11State { Type = how };
+            into.Add(item);
+            return item;
+        }
+
+        private static P11State P11SourceAt(P11Item source, string stage)
+        {
+            P11State state;
+
+            foreach (string s in new[] { stage, "add", "open" })
+            {
+                if (source.At.TryGetValue(s, out state))
+                {
+                    return state;
+                }
+            }
+
+            return null;
+        }
+
+        private static bool P11SameList(List<string> a, List<string> b)
+        {
+            if (a.Count != b.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < a.Count; i++)
+            {
+                if (!string.Equals(a[i], b[i], StringComparison.Ordinal))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>The item by its path of names, or the first child of its folder, the folder's child count given out.</summary>
+        private static SavedItem P11Resolve(Document document, P11Item item, out int siblings)
+        {
+            siblings = -1;
+
+            if (item.Path != null)
+            {
+                return ResolveNames(document, item.Path);
+            }
+
+            using (SavedItem found = ResolveNames(document, item.Folder))
+            {
+                GroupItem folder = found as GroupItem;
+
+                if (folder == null)
+                {
+                    return null;
+                }
+
+                SavedItemCollection children = folder.Children;
+                siblings = children.Count;
+                return siblings > 0 ? children[0] : null;
+            }
+        }
+
+        private static SavedItem P11Resolve(Document document, P11Item item)
+        {
+            int siblings;
+            return P11Resolve(document, item, out siblings);
+        }
+
+        private void P11MakeCopy(Document document, P11Item copy)
+        {
+            string how = copy.At["how"].Type;
+
+            try
+            {
+                using (SavedItem source = P11Resolve(document, copy.Source))
+                using (GroupItem folder = (GroupItem)ResolveNames(document, copy.Folder))
+                {
+                    if (source == null || folder == null)
+                    {
+                        Say(copy.Label + " NOT MADE, the source found " + (source != null) + ", its folder found " + (folder != null));
+                        return;
+                    }
+
+                    System.Diagnostics.Stopwatch clock;
+
+                    if (how == "direct")
+                    {
+                        clock = System.Diagnostics.Stopwatch.StartNew();
+                        document.SavedViewpoints.AddCopy(folder, source);
+                        Say(copy.Label + " " + copy.Route + " RETURNED after " + Seconds(clock));
+                        return;
+                    }
+
+                    using (SavedItem made = how == "unique" ? source.CreateUniqueCopy() : source.CreateCopy())
+                    {
+                        Say(copy.Label + " " + (how == "unique" ? "CreateUniqueCopy" : "CreateCopy") + " of " + copy.Source.Label + " gave a " + made.GetType().Name
+                            + ", before the AddCopy: Guid " + made.Guid + ", the source's " + source.Guid + ", name [" + Shown(made.DisplayName)
+                            + "], comments " + (made.Comments == null ? 0 : made.Comments.Count));
+                        clock = System.Diagnostics.Stopwatch.StartNew();
+                        document.SavedViewpoints.AddCopy(folder, made);
+                        Say(copy.Label + " " + copy.Route + " RETURNED after " + Seconds(clock));
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say(copy.Label + " " + copy.Route + " THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        /// <summary>Reads one item at a stage: its type, name, Guid, comments, and for a view its Hidden and MaterialOverrides counts.</summary>
+        private void P11Read(Document document, P11Item target, string stage, GuidTally tally)
+        {
+            P11State state = new P11State();
+            target.At[stage] = state;
+
+            try
+            {
+                int siblings;
+
+                using (SavedItem item = P11Resolve(document, target, out siblings))
+                {
+                    state.Siblings = siblings;
+
+                    if (item == null)
+                    {
+                        Say("   " + target.Label + " at " + stage + ": NOT FOUND" + (siblings >= 0 ? ", its folder holds " + siblings : string.Empty));
+                        return;
+                    }
+
+                    Guid guid = item.Guid;
+                    state.Type = item.GetType().Name;
+                    state.Name = item.DisplayName ?? string.Empty;
+                    state.Guid = guid.ToString();
+                    SavedViewpoint view = item as SavedViewpoint;
+
+                    if (view != null)
+                    {
+                        state.Hidden = HiddenCount(view);
+                        state.Material = MaterialCount(view);
+                    }
+
+                    CommentCollection comments = item.Comments;
+                    int count = comments == null ? 0 : comments.Count;
+
+                    for (int c = 0; c < count; c++)
+                    {
+                        Comment comment = comments[c];
+                        state.Comments.Add("Body [" + Shown(comment.Body) + "] Author [" + Shown(comment.Author) + "] Status " + comment.Status);
+                        state.CommentIds.Add("Id " + comment.Id + " CreationDate "
+                            + comment.CreationDate.ToString("yyyy-MM-dd HH:mm:ss.fffffff", System.Globalization.CultureInfo.InvariantCulture));
+                    }
+
+                    string line = "   " + target.Label + " at " + stage + ": a " + state.Type + " [" + Shown(state.Name) + "], index path " + P10IndexPath(document, item)
+                        + ", Guid " + guid + (siblings >= 0 ? ", its folder holds " + siblings : string.Empty)
+                        + (view == null ? string.Empty : ", Hidden " + state.Hidden + ", MaterialOverrides " + state.Material)
+                        + ", comments " + count;
+
+                    if (tally != null)
+                    {
+                        int inTree;
+                        tally.Count.TryGetValue(guid, out inTree);
+                        state.InTree = inTree;
+                        line += ", items in the tree with this Guid " + inTree;
+                    }
+
+                    Say(line);
+
+                    for (int c = 0; c < count; c++)
+                    {
+                        Say("      comment " + c + ": " + state.Comments[c] + " " + state.CommentIds[c]);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                state.Type = "NOT FOUND";
+                Say("   " + target.Label + " at " + stage + ": the read THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        private void P11ResolveSet(Document document, Guid set, string when)
+        {
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                using (SavedItem found = document.SavedViewpoints.ResolveGuid(set))
+                {
+                    string seconds = Seconds(clock);
+                    Say("ResolveGuid of S3's set Guid " + set + " " + when + " returned after " + seconds + ": "
+                        + (found == null ? "null" : "a " + found.GetType().Name + " [" + Shown(found.DisplayName) + "] at " + P10IndexPath(document, found)));
+                }
+            }
+            catch (Exception error)
+            {
+                Say("ResolveGuid of S3's set Guid " + when + " THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        // ---------- P12 of Q114, does a view whose name ends in a space read back its name unchanged ----------
+
+        private const string P12Top = "P12 probe";
+
+        private sealed class P12Item
+        {
+            public string Label;
+            public string Route;
+            public string Written;
+            public string Body;
+            public bool Control;
+            public readonly List<string> Plain = new List<string>();
+            public readonly List<int> Steps = new List<int>();
+            public readonly List<string> WrittenPath = new List<string>();
+            public readonly Dictionary<string, string> Net = new Dictionary<string, string>(StringComparer.Ordinal);
+            public readonly Dictionary<string, string> Com = new Dictionary<string, string>(StringComparer.Ordinal);
+            public readonly Dictionary<string, bool> ByName = new Dictionary<string, bool>(StringComparer.Ordinal);
+            public readonly Dictionary<string, bool> Mark = new Dictionary<string, bool>(StringComparer.Ordinal);
+        }
+
+        /// <summary>
+        /// P12: a view whose name ends in a space, made by the tool's routes, reads back its
+        /// DisplayName unchanged, Ordinal, right after the add, before a save and after a SaveFile,
+        /// a Document.Clear and a TryOpenFile of the saved file. Each item sits at a known position
+        /// in a folder of plain name, so it is found by position and never by the name being read.
+        /// The COM name of the same item is read too, and whether a lookup by the written names,
+        /// Ordinal, finds that same item. A mark whose body holds the name, in its middle or at its
+        /// end, is read back Ordinal.
+        /// </summary>
+        private void MeasureViewNameSpaces(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            int folders0;
+            int comments0;
+            int views0 = TreeCounts(document, out folders0, out comments0);
+            Say("the tree at the open: viewpoints " + views0 + ", folders " + folders0 + ", comments on any item " + comments0);
+
+            string stamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture);
+            List<P12Item> items = new List<P12Item>();
+            P12Item v0 = P12New(items, "V0", "control, no space, COM view added into its folder's own SavedViews", "V0", 0, "P12 V0 control");
+            v0.Control = true;
+            P12Item v1 = P12New(items, "V1", "COM view added into its folder's own SavedViews, the tool's route, a test name's characters, marked with the name inside the body", "V1", 0, "P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ");
+            P12Item v2 = P12New(items, "V2", "COM view added at the root, AddCopy into its folder, the root one removed, the tool's other route", "V2", 0, "P12 V2 root route one space ");
+            P12Item v3 = P12New(items, "V3", "COM view into its folder, two spaces at the end, marked with the body ending in the name", "V3", 0, "P12 V3 two trailing spaces  ");
+            P12Item v4 = P12New(items, "V4", "COM view into its folder, a space at each end", "V4", 0, " P12 V4 leading and trailing ");
+            P12Item v5a = P12New(items, "V5a", "COM view into its folder, no space, the first of two names that differ by the end space", "V5", 0, "P12 V5 twin");
+            v5a.Control = true;
+            P12Item v5b = P12New(items, "V5b", "COM view into the same folder, the second twin, one space at the end", "V5", 1, "P12 V5 twin ");
+            P12Item v6 = P12New(items, "V6", ".NET new SavedViewpoint(Viewpoint), DisplayName set, AddCopy into its folder", "V6", 0, "P12 V6 dotnet one space ");
+            P12Item v7 = P12New(items, "V7", "COM view into its folder with no space, then DocumentSavedViewpoints.EditDisplayName to a name ending in a space", "V7", 0, "P12 V7 renamed ");
+            P12Item f1 = P12New(items, "F1", "FolderItem, DisplayName set, AddCopy, the tool's folder route, marked with the body ending in the name", "F1", 0, "P12 F1 folder end space ");
+            P12Item f1v = P12New(items, "F1v", "COM view added into the space-ended folder's own SavedViews, found by position", "F1", 0, "P12 F1 view one space ");
+            f1v.Steps.Add(0);
+            f1v.WrittenPath.Clear();
+            f1v.WrittenPath.AddRange(new[] { P12Top, "F1", f1.Written, "P12 F1 view one space " });
+
+            v1.Body = P9Sentence + "\n" + "[nwcfed-mark 1] stamp=" + stamp + " path=" + P12Top + "/V1 name=" + v1.Written + " probe=V1";
+            v3.Body = P9Sentence + "\n" + "[nwcfed-mark 1] stamp=" + stamp + " probe=V3 path=" + P12Top + "/V3 name=" + v3.Written;
+            f1.Body = P9Sentence + "\n" + "[nwcfed-mark 1] stamp=" + stamp + " probe=F1 path=" + P12Top + "/F1 name=" + f1.Written;
+
+            Say(string.Empty);
+            Say("WHAT IS WRITTEN, each name in brackets with its length and its last character:");
+
+            foreach (P12Item it in items)
+            {
+                Say("   " + it.Label + " " + P12Show(it.Written) + " in " + string.Join(" / ", it.Plain.ToArray()) + " at position " + string.Join(".", P12Ints(it.Steps)) + ", " + it.Route);
+            }
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                EnsureFolder(document, P12Top);
+
+                foreach (string name in new[] { "V0", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "F1" })
+                {
+                    using (GroupItem top = (GroupItem)ResolveNames(document, new List<string> { P12Top }))
+                    using (FolderItem folder = new FolderItem())
+                    {
+                        folder.DisplayName = name;
+                        document.SavedViewpoints.AddCopy(top, folder);
+                    }
+                }
+
+                Say("\"" + P12Top + "\" at the root and 9 plain folders under it made by FolderItem and AddCopy in " + Seconds(clock));
+            }
+            catch (Exception error)
+            {
+                Say("the folders THREW " + error.GetType().Name + ": " + error.Message);
+                Say("P12 UNKNOWN   the folders could not be made, so nothing is written");
+                return;
+            }
+
+            InwOpState10 state = ComApiBridge.State;
+            Say(string.Empty);
+            Say("THE WRITES, each item read right after its add:");
+
+            using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+            {
+                foreach (P12Item it in new[] { v0, v1, v3, v4, v5a, v5b })
+                {
+                    P12ComIntoFolder(state, it, it.Written, camera);
+                    P12Read(document, state, it, "add");
+                }
+
+                P12RootRoute(document, state, v2, camera);
+                P12Read(document, state, v2, "add");
+
+                try
+                {
+                    using (SavedViewpoint made = new SavedViewpoint(camera))
+                    {
+                        made.DisplayName = v6.Written;
+                        Say("V6 the new SavedViewpoint's DisplayName read back before the add " + P12Show(made.DisplayName));
+
+                        using (GroupItem folder = (GroupItem)ResolveNames(document, v6.Plain))
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddCopy(folder, made);
+                            Say("V6 AddCopy RETURNED after " + Seconds(clock));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("V6 THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P12Read(document, state, v6, "add");
+
+                P12ComIntoFolder(state, v7, "P12 V7 renamed", camera);
+
+                try
+                {
+                    using (SavedItem item = P12Locate(document, v7))
+                    {
+                        Say("V7 before the rename " + (item == null ? "NOT FOUND" : P12Show(item.DisplayName)));
+
+                        if (item != null)
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.EditDisplayName(item, v7.Written);
+                            Say("V7 EditDisplayName(item, " + P12Show(v7.Written) + ") RETURNED after " + Seconds(clock));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("V7 EditDisplayName THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P12Read(document, state, v7, "add");
+
+                try
+                {
+                    using (FolderItem made = new FolderItem())
+                    {
+                        made.DisplayName = f1.Written;
+                        Say("F1 the new FolderItem's DisplayName read back before the add " + P12Show(made.DisplayName));
+
+                        using (GroupItem folder = (GroupItem)ResolveNames(document, f1.Plain))
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddCopy(folder, made);
+                            Say("F1 AddCopy RETURNED after " + Seconds(clock));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("F1 THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P12Read(document, state, f1, "add");
+
+                try
+                {
+                    InwOpFolderView holder = FindComFolderAt(state, P12Top, "F1");
+                    InwOpFolderView byName = FindComFolderAt(state, P12Top, "F1", f1.Written);
+                    InwOpFolderView spaced = null;
+
+                    if (holder != null && holder.SavedViews().Count >= 1)
+                    {
+                        spaced = holder.SavedViews()[1] as InwOpFolderView;
+                    }
+
+                    Say("F1v the COM folder of F1 found by its written name, Ordinal " + Yes(byName != null) + ", by position " + Yes(spaced != null)
+                        + (spaced == null ? string.Empty : ", its COM name " + P12Show(spaced.name)));
+
+                    if (spaced != null)
+                    {
+                        InwOpView view = NewComView(state, f1v.Written, camera);
+                        Say("F1v the COM view's name read back before the add " + P12Show(view.name));
+                        clock = System.Diagnostics.Stopwatch.StartNew();
+                        spaced.SavedViews().Add(view);
+                        Say("F1v InwSavedViewsColl.Add RETURNED after " + Seconds(clock));
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("F1v THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                P12Read(document, state, f1v, "add");
+            }
+
+            Say(string.Empty);
+            Say("THE MARKS, by AddComment after the add:");
+
+            foreach (P12Item it in new[] { v1, v3, f1 })
+            {
+                try
+                {
+                    using (SavedItem item = P12Locate(document, it))
+                    {
+                        if (item == null)
+                        {
+                            Say(it.Label + " NOT FOUND by position, so no mark is written");
+                            continue;
+                        }
+
+                        using (Comment comment = document.CreateCommentWithUniqueId(it.Body, CommentStatus.New, P9Author))
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.AddComment(item, comment);
+                            Say(it.Label + " AddComment RETURNED after " + Seconds(clock) + ", the body written " + P12Show(it.Body));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say(it.Label + " AddComment THREW " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+
+            Say(string.Empty);
+            Say("STAGE before the save, every item:");
+
+            foreach (P12Item it in items)
+            {
+                P12Read(document, state, it, "save");
+            }
+
+            int folders1;
+            int comments1;
+            int views1 = TreeCounts(document, out folders1, out comments1);
+            Say("the tree before the save: viewpoints " + views1 + ", folders " + folders1 + ", comments on any item " + comments1);
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (reopened)
+            {
+                state = ComApiBridge.State;
+                Say(string.Empty);
+                Say("STAGE after a save, a clear and a reopen, every item:");
+
+                foreach (P12Item it in items)
+                {
+                    P12Read(document, state, it, "reopen");
+                }
+
+                int folders2;
+                int comments2;
+                int views2 = TreeCounts(document, out folders2, out comments2);
+                Say("the tree after the reopen: viewpoints " + views2 + ", folders " + folders2 + ", comments on any item " + comments2);
+            }
+            else
+            {
+                Say("UNKNOWN: the saved file would not reopen, so nothing after a reopen is read");
+            }
+
+            Say(string.Empty);
+            Say("EACH ITEM:  label | written | stage add, save, reopen: the .NET DisplayName the same, Ordinal | the COM name the same | a lookup by the written names finds this item | the mark the same");
+            int spacedSame = 0;
+            int spacedNot = 0;
+            int comSame = 0;
+            int comNot = 0;
+            int nameSame = 0;
+            int nameNot = 0;
+            int markSame = 0;
+            int markNot = 0;
+            List<string> notSame = new List<string>();
+
+            foreach (P12Item it in items)
+            {
+                List<string> netCells = new List<string>();
+                List<string> comCells = new List<string>();
+                List<string> byCells = new List<string>();
+                List<string> markCells = new List<string>();
+                bool netAll = true;
+                bool comAll = true;
+                bool byAll = true;
+                bool markAll = true;
+
+                foreach (string stage in new[] { "add", "save", "reopen" })
+                {
+                    string net;
+                    string com;
+                    bool by;
+                    bool mark;
+                    bool netOk = it.Net.TryGetValue(stage, out net) && net != null && string.Equals(net, it.Written, StringComparison.Ordinal);
+                    bool comOk = it.Com.TryGetValue(stage, out com) && com != null && string.Equals(com, it.Written, StringComparison.Ordinal);
+                    bool byOk = it.ByName.TryGetValue(stage, out by) && by;
+                    netCells.Add(Yes(netOk));
+                    comCells.Add(Yes(comOk));
+                    byCells.Add(Yes(byOk));
+                    netAll &= netOk;
+                    comAll &= comOk;
+                    byAll &= byOk;
+
+                    if (it.Body != null)
+                    {
+                        bool markOk = it.Mark.TryGetValue(stage, out mark) && mark;
+
+                        if (stage != "add")
+                        {
+                            markCells.Add(Yes(markOk));
+                            markAll &= markOk;
+                        }
+                    }
+                }
+
+                Say("   " + it.Label + " | " + P12Show(it.Written) + " | " + string.Join(", ", netCells.ToArray()) + " | " + string.Join(", ", comCells.ToArray())
+                    + " | " + string.Join(", ", byCells.ToArray()) + " | " + (it.Body == null ? "no mark" : string.Join(", ", markCells.ToArray())));
+
+                if (!it.Control)
+                {
+                    if (netAll) { spacedSame++; } else { spacedNot++; notSame.Add(it.Label); }
+                    if (comAll) { comSame++; } else { comNot++; }
+                    if (byAll) { nameSame++; } else { nameNot++; }
+                }
+
+                if (it.Body != null)
+                {
+                    if (markAll) { markSame++; } else { markNot++; }
+                }
+            }
+
+            Say("(the mark is read from the save stage on, since it is written after every add)");
+            Say("P12 over the " + (spacedSame + spacedNot) + " names with a space at an end: the .NET DisplayName read back unchanged at every stage on " + spacedSame
+                + " and not on " + spacedNot + (notSame.Count == 0 ? string.Empty : " (" + string.Join(", ", notSame.ToArray()) + ")")
+                + ". The COM name the same on " + comSame + " and not on " + comNot + ". A lookup by the written names found the item on " + nameSame + " and not on " + nameNot
+                + ". The marks read back the same on " + markSame + " of " + (markSame + markNot));
+            Say("P12 " + (spacedNot == 0 && spacedSame > 0 ? "YES" : "NO") + "   a view or folder whose name ends in a space reads back its DisplayName unchanged, Ordinal, after the add, before the save and after a save, a clear and a reopen, by every route tried");
+        }
+
+        private static P12Item P12New(List<P12Item> into, string label, string route, string folder, int position, string written)
+        {
+            P12Item item = new P12Item();
+            item.Label = label;
+            item.Route = route;
+            item.Written = written;
+            item.Plain.Add(P12Top);
+            item.Plain.Add(folder);
+            item.Steps.Add(position);
+            item.WrittenPath.Add(P12Top);
+            item.WrittenPath.Add(folder);
+            item.WrittenPath.Add(written);
+            into.Add(item);
+            return item;
+        }
+
+        private static string[] P12Ints(List<int> values)
+        {
+            List<string> parts = new List<string>();
+
+            foreach (int v in values)
+            {
+                parts.Add(v.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            }
+
+            return parts.ToArray();
+        }
+
+        /// <summary>The text in brackets, its length, and the code point of its first and last characters.</summary>
+        private static string P12Show(string text)
+        {
+            if (text == null)
+            {
+                return "null";
+            }
+
+            if (text.Length == 0)
+            {
+                return "[] length 0";
+            }
+
+            return "[" + Shown(text) + "] length " + text.Length + ", first U+" + ((int)text[0]).ToString("X4") + ", last U+" + ((int)text[text.Length - 1]).ToString("X4");
+        }
+
+        /// <summary>The item at its plain folder path, then by position, never by the name being measured.</summary>
+        private static SavedItem P12Locate(Document document, P12Item it)
+        {
+            SavedItem current = ResolveNames(document, it.Plain);
+
+            foreach (int position in it.Steps)
+            {
+                GroupItem group = current as GroupItem;
+
+                if (group == null)
+                {
+                    if (current != null)
+                    {
+                        current.Dispose();
+                    }
+
+                    return null;
+                }
+
+                SavedItemCollection children = group.Children;
+                SavedItem next = position < children.Count ? children[position] : null;
+                group.Dispose();
+
+                if (next == null)
+                {
+                    return null;
+                }
+
+                current = next;
+            }
+
+            return current;
+        }
+
+        /// <summary>The COM name of the item at its plain folder path, then by position, or null with why.</summary>
+        private static string P12ComName(InwOpState10 state, P12Item it, out string why)
+        {
+            why = string.Empty;
+
+            try
+            {
+                InwOpFolderView folder = FindComFolderAt(state, it.Plain.ToArray());
+
+                if (folder == null)
+                {
+                    why = "the COM folder " + string.Join(" / ", it.Plain.ToArray()) + " NOT FOUND";
+                    return null;
+                }
+
+                object current = folder;
+
+                foreach (int position in it.Steps)
+                {
+                    InwOpFolderView f = current as InwOpFolderView;
+
+                    if (f == null)
+                    {
+                        why = "a step is not a COM folder";
+                        return null;
+                    }
+
+                    InwSavedViewsColl views = f.SavedViews();
+
+                    if (position + 1 > views.Count)
+                    {
+                        why = "position " + position + " of " + views.Count;
+                        return null;
+                    }
+
+                    current = views[position + 1];
+                }
+
+                InwOpView view = current as InwOpView;
+
+                if (view != null)
+                {
+                    return view.name;
+                }
+
+                InwOpFolderView asFolder = current as InwOpFolderView;
+
+                if (asFolder != null)
+                {
+                    return asFolder.name;
+                }
+
+                why = "UNKNOWN COM type";
+                return null;
+            }
+            catch (Exception error)
+            {
+                why = "THREW " + error.GetType().Name + ": " + error.Message;
+                return null;
+            }
+        }
+
+        private void P12ComIntoFolder(InwOpState10 state, P12Item it, string name, Viewpoint camera)
+        {
+            try
+            {
+                InwOpFolderView folder = FindComFolderAt(state, it.Plain.ToArray());
+
+                if (folder == null)
+                {
+                    Say(it.Label + " NOT MADE, the COM folder " + string.Join(" / ", it.Plain.ToArray()) + " not found");
+                    return;
+                }
+
+                InwOpView view = NewComView(state, name, camera);
+                Say(it.Label + " the COM view's name read back before the add " + P12Show(view.name));
+                System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                folder.SavedViews().Add(view);
+                Say(it.Label + " InwSavedViewsColl.Add into " + string.Join(" / ", it.Plain.ToArray()) + " RETURNED after " + Seconds(clock));
+            }
+            catch (Exception error)
+            {
+                Say(it.Label + " THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        /// <summary>The tool's other route: the COM view added at the root, the last root view named exactly so copied into the folder, and the root one removed.</summary>
+        private void P12RootRoute(Document document, InwOpState10 state, P12Item it, Viewpoint camera)
+        {
+            try
+            {
+                InwOpView view = NewComView(state, it.Written, camera);
+                Say(it.Label + " the COM view's name read back before the add " + P12Show(view.name));
+                state.SavedViews().Add(view);
+                int exact = -1;
+                int count;
+                string lastName;
+
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                {
+                    SavedItemCollection children = root.Children;
+                    count = children.Count;
+                    lastName = null;
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        using (SavedItem child = children[i])
+                        {
+                            if (child is SavedViewpoint && string.Equals(child.DisplayName, it.Written, StringComparison.Ordinal))
+                            {
+                                exact = i;
+                            }
+
+                            if (i == count - 1)
+                            {
+                                lastName = child.DisplayName;
+                            }
+                        }
+                    }
+                }
+
+                Say(it.Label + " added at the root: the root holds " + count + ", its last child " + P12Show(lastName)
+                    + ", the last root view named exactly as written " + (exact < 0 ? "NONE, so the tool's lookup by name would not find it, and the last child is used" : "at " + exact));
+                int use = exact >= 0 ? exact : count - 1;
+
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (SavedItem atRoot = root.Children[use])
+                using (GroupItem folder = (GroupItem)ResolveNames(document, it.Plain))
+                {
+                    System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.SavedViewpoints.AddCopy(folder, atRoot);
+                    bool removed = document.SavedViewpoints.Remove(atRoot);
+                    Say(it.Label + " AddCopy into " + string.Join(" / ", it.Plain.ToArray()) + " and Remove of the root one, Remove returned " + removed + ", both in " + Seconds(clock));
+                }
+            }
+            catch (Exception error)
+            {
+                Say(it.Label + " THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        /// <summary>Reads one item at a stage: its .NET DisplayName found by position, its COM name, whether the written names find it, and its mark.</summary>
+        private void P12Read(Document document, InwOpState10 state, P12Item it, string stage)
+        {
+            string net = null;
+            string at = "NOT FOUND";
+            string type = string.Empty;
+            int comments = -1;
+            bool mark = false;
+            List<string> bodies = new List<string>();
+
+            try
+            {
+                using (SavedItem item = P12Locate(document, it))
+                {
+                    if (item != null)
+                    {
+                        net = item.DisplayName ?? string.Empty;
+                        at = P10IndexPath(document, item);
+                        type = item.GetType().Name;
+                        CommentCollection cc = item.Comments;
+                        comments = cc == null ? 0 : cc.Count;
+
+                        for (int c = 0; c < comments; c++)
+                        {
+                            Comment comment = cc[c];
+                            bodies.Add("Author [" + Shown(comment.Author) + "] Body " + P12Show(comment.Body));
+
+                            if (it.Body != null && comments == 1 && string.Equals(comment.Body, it.Body, StringComparison.Ordinal)
+                                && string.Equals(comment.Author, P9Author, StringComparison.Ordinal))
+                            {
+                                mark = true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                at = "the read THREW " + error.GetType().Name + ": " + error.Message;
+            }
+
+            string why;
+            string com = P12ComName(state, it, out why);
+            string byWritten;
+            bool byOk = false;
+
+            try
+            {
+                using (SavedItem found = ResolveNames(document, it.WrittenPath))
+                {
+                    byWritten = found == null ? "NOT FOUND" : P10IndexPath(document, found);
+                    byOk = found != null && string.Equals(byWritten, at, StringComparison.Ordinal);
+                }
+            }
+            catch (Exception error)
+            {
+                byWritten = "THREW " + error.GetType().Name;
+            }
+
+            List<string> trimmed = new List<string>();
+
+            foreach (string n in it.WrittenPath)
+            {
+                trimmed.Add(n.Trim());
+            }
+
+            string byTrimmed = "the same names";
+
+            if (!P11SameList(trimmed, it.WrittenPath))
+            {
+                try
+                {
+                    using (SavedItem found = ResolveNames(document, trimmed))
+                    {
+                        byTrimmed = found == null ? "NOT FOUND" : P10IndexPath(document, found);
+                    }
+                }
+                catch (Exception error)
+                {
+                    byTrimmed = "THREW " + error.GetType().Name;
+                }
+            }
+
+            it.Net[stage] = net;
+            it.Com[stage] = com;
+            it.ByName[stage] = byOk;
+            it.Mark[stage] = mark;
+            Say("   " + it.Label + " at " + stage + ": " + (net == null ? at : "a " + type + " at " + at + ", DisplayName " + P12Show(net)
+                + ", the same as written, Ordinal " + Yes(string.Equals(net, it.Written, StringComparison.Ordinal))
+                + (string.Equals(net, it.Written, StringComparison.Ordinal) ? string.Empty : ", the same once both are trimmed " + Yes(string.Equals(net.Trim(), it.Written.Trim(), StringComparison.Ordinal)))));
+            Say("      COM name " + (com == null ? why : P12Show(com) + ", the same as written, Ordinal " + Yes(string.Equals(com, it.Written, StringComparison.Ordinal)))
+                + ". The written names, Ordinal, find " + byWritten + (byOk ? ", this item" : string.Empty) + ". The names trimmed find " + byTrimmed
+                + (comments < 0 ? string.Empty : ". Comments " + comments));
+
+            foreach (string body in bodies)
+            {
+                Say("      comment: " + body);
+            }
+
+            if (it.Body != null && comments >= 0)
+            {
+                Say("      the mark: exactly one comment, body and author the same as written, Ordinal " + Yes(mark));
+            }
+        }
+
+        // ---------- P13 of Q114, does RemoveAt(parent, index) remove one viewpoint two folders deep and nothing else ----------
+
+        private const string P13Top = "P13 probe";
+        private const string P13Sub = "P13 sub";
+        private const int P13Sentinels = 12;
+        private const int P13SentinelRemoved = 5;
+        private const int P13Series = 5;
+
+        private sealed class P13Row
+        {
+            public string Index;
+            public string Folder;
+            public string Name;
+            public string Kind;
+            public string Guid;
+            public int Comments;
+
+            public string Key
+            {
+                get { return Folder + "\u0001" + Name + "\u0001" + Kind + "\u0001" + Guid + "\u0001" + Comments.ToString(System.Globalization.CultureInfo.InvariantCulture); }
+            }
+
+            public P13Row Copy()
+            {
+                P13Row row = new P13Row();
+                row.Index = Index;
+                row.Folder = Folder;
+                row.Name = Name;
+                row.Kind = Kind;
+                row.Guid = Guid;
+                row.Comments = Comments;
+                return row;
+            }
+        }
+
+        private sealed class P13Tree
+        {
+            public readonly List<P13Row> Rows = new List<P13Row>();
+            public int Views;
+            public int Folders;
+            public int Other;
+            public int Threw;
+            public int NotEmptyGuids;
+        }
+
+        /// <summary>
+        /// P13: RemoveAt(parent, index), the parent resolved fresh from RootItem by its names and the
+        /// target re-found by its name in it just before, on one viewpoint two folders deep of a fresh
+        /// copy of the baseline NWF. The whole tree is read before, after the call and after a
+        /// SaveFile, a Document.Clear and a TryOpenFile of the saved file: every item's index path,
+        /// folder names, name, kind, Guid and comment count. After the call the tree must be the tree
+        /// at the open less that one row, with only the later siblings' last index one lower, and
+        /// after the reopen exactly the tree after the call. The models, sets, tests, results and
+        /// statuses are counted at each stage. Part B gives a folder of views whose Guids the probe
+        /// set, since every Guid of the baseline reads empty, removes one from the middle and five
+        /// from the end, timed each, and reads the Guids back through ResolveGuid after a second save
+        /// and reopen.
+        /// </summary>
+        private void MeasureViewRemove(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            Say(string.Empty);
+            Say("PART A. ONE VIEWPOINT TWO FOLDERS DEEP OF THE BASELINE TREE, REMOVED BY RemoveAt(parent, index)");
+            string counts0 = P13Counts(document);
+            Say("the document at the open: " + counts0);
+            P13Tree t0 = P13Snap(document, "at the open");
+
+            List<string> folderNames;
+            string targetName;
+            int pickedIndex;
+            int siblings;
+
+            if (!P13Pick(document, out folderNames, out targetName, out pickedIndex, out siblings))
+            {
+                Say("P13 UNKNOWN   the tree holds no folder two deep with at least 3 children and a viewpoint in the middle, so nothing was removed");
+                return;
+            }
+
+            string pickedPath = null;
+
+            foreach (P13Row row in t0.Rows)
+            {
+                if (string.Equals(row.Folder, string.Join("\u0001", folderNames.ToArray()), StringComparison.Ordinal)
+                    && string.Equals(row.Name, targetName, StringComparison.Ordinal))
+                {
+                    pickedPath = row.Index;
+                    Say("the target: [" + Shown(folderNames[0]) + "] / [" + Shown(folderNames[1]) + "] / [" + Shown(targetName) + "], a " + row.Kind
+                        + " at index path " + row.Index + ", child " + pickedIndex + " of " + siblings + " in its folder, Guid " + row.Guid + ", comments " + row.Comments);
+                    break;
+                }
+            }
+
+            string removedA;
+            double secondsA;
+            bool returnedA = P13Remove(document, folderNames, targetName, "A", out removedA, out secondsA);
+
+            if (!returnedA)
+            {
+                Say("P13 NO   RemoveAt did not return on the target, so nothing more is read");
+                return;
+            }
+
+            Say("the index path removed " + removedA + ", the same as the one read off the tree at the open " + Yes(string.Equals(removedA, pickedPath, StringComparison.Ordinal)));
+            P13Tree t1 = P13Snap(document, "after the removal");
+            string counts1 = P13Counts(document);
+            Say("the document after the removal: " + counts1);
+            int shifted1;
+            List<P13Row> expected1 = P13Apply(t0.Rows, removedA, out shifted1);
+            Say("expected after the removal: the tree at the open less 1 row, " + expected1.Count + " rows, " + shifted1 + " of them later siblings whose last index falls by one");
+            int mismatch1 = P13Compare(expected1, t1.Rows, "after the removal against the open less the one");
+            bool gone1 = P13Gone(document, folderNames, targetName, "after the removal");
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P13 UNKNOWN   the saved file would not reopen, so nothing after a reopen is read");
+                return;
+            }
+
+            P13Tree t2 = P13Snap(document, "after the save, the clear and the reopen");
+            string counts2 = P13Counts(document);
+            Say("the document after the reopen: " + counts2);
+            int mismatch2 = P13Compare(t1.Rows, t2.Rows, "after the reopen against after the removal");
+            bool gone2 = P13Gone(document, folderNames, targetName, "after the reopen");
+
+            bool viewsOne = t1.Views == t0.Views - 1 && t2.Views == t1.Views;
+            bool rowsOne = t1.Rows.Count == t0.Rows.Count - 1 && t2.Rows.Count == t1.Rows.Count;
+            bool countsSame = string.Equals(counts0, counts1, StringComparison.Ordinal) && string.Equals(counts1, counts2, StringComparison.Ordinal);
+            Say(string.Empty);
+            Say("PART A SUMMARY: viewpoints " + t0.Views + ", " + t1.Views + ", " + t2.Views + " at the open, after the removal, after the reopen. Items " + t0.Rows.Count + ", " + t1.Rows.Count + ", " + t2.Rows.Count
+                + ". Fell by exactly one and stayed " + Yes(viewsOne && rowsOne)
+                + ". Every other item the same folder names, name, kind, Guid and comment count, in the same order, after the removal " + Yes(mismatch1 == 0) + " and after the reopen " + Yes(mismatch2 == 0)
+                + ". Only the " + shifted1 + " later siblings moved, by one " + Yes(mismatch1 == 0)
+                + ". The target found by its names after the removal " + Yes(!gone1) + " and after the reopen " + Yes(!gone2)
+                + ". Models, sets, tests, results and statuses the same at every stage " + Yes(countsSame)
+                + ". Guids not empty in the tree at the open " + t0.NotEmptyGuids + ". RemoveAt took " + secondsA.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s in a tree of " + t0.Views + " viewpoints");
+            bool yesA = viewsOne && rowsOne && mismatch1 == 0 && mismatch2 == 0 && gone1 && gone2 && countsSame;
+            Say("P13 " + (yesA ? "YES" : "NO") + "   RemoveAt(parent, index), the parent resolved fresh, removed one viewpoint two folders deep, the count fell by exactly one and every other item kept its path, name and Guid through a save and a reopen");
+
+            Say(string.Empty);
+            Say("PART B. A FOLDER OF " + P13Sentinels + " VIEWS WHOSE GUIDS THE PROBE SET, TWO FOLDERS DEEP, IN THE REOPENED DOCUMENT, ONE REMOVED FROM THE MIDDLE AND " + P13Series + " FROM THE END");
+            Dictionary<string, Guid> sentinels = new Dictionary<string, Guid>(StringComparer.Ordinal);
+            List<string> subNames = new List<string> { P13Top, P13Sub };
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P13Top;
+                    folder.Guid = Guid.NewGuid();
+                    sentinels[P13Top] = folder.Guid;
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                using (GroupItem top = (GroupItem)ResolveNames(document, new List<string> { P13Top }))
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P13Sub;
+                    folder.Guid = Guid.NewGuid();
+                    sentinels[P13Sub] = folder.Guid;
+                    document.SavedViewpoints.AddCopy(top, folder);
+                }
+
+                using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+                {
+                    for (int k = 0; k < P13Sentinels; k++)
+                    {
+                        using (GroupItem sub = (GroupItem)ResolveNames(document, subNames))
+                        using (SavedViewpoint view = new SavedViewpoint(camera))
+                        {
+                            view.DisplayName = P13SentinelName(k);
+                            view.Guid = Guid.NewGuid();
+                            sentinels[view.DisplayName] = view.Guid;
+                            document.SavedViewpoints.AddCopy(sub, view);
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say("PART B the adds THREW " + error.GetType().Name + ": " + error.Message + ", so part B stops here");
+                return;
+            }
+
+            Say("added the folder [" + P13Top + "] at the root, [" + P13Sub + "] in it and " + P13Sentinels + " .NET SavedViewpoints in that, each Guid set before its AddCopy");
+            P13Tree b0 = P13Snap(document, "after the adds");
+            int resolved0 = P13Resolve(document, sentinels, b0, "after the adds");
+
+            string removedB;
+            double secondsB;
+            List<double> seconds = new List<double>();
+            List<string> removedNames = new List<string>();
+            string middle = P13SentinelName(P13SentinelRemoved);
+            bool returnedB = P13Remove(document, subNames, middle, "B middle", out removedB, out secondsB);
+
+            if (!returnedB)
+            {
+                Say("PART B RemoveAt did not return on the middle view, so part B stops here");
+                return;
+            }
+
+            seconds.Add(secondsB);
+            removedNames.Add(middle);
+            int shiftedB;
+            List<P13Row> expectedB = P13Apply(b0.Rows, removedB, out shiftedB);
+            P13Tree b1 = P13Snap(document, "after the middle removal");
+            int mismatchB1 = P13Compare(expectedB, b1.Rows, "after the middle removal against the adds less the one");
+            Say("later siblings whose last index falls by one: " + shiftedB);
+
+            for (int s = 0; s < P13Series; s++)
+            {
+                string last = null;
+
+                using (GroupItem sub = (GroupItem)ResolveNames(document, subNames))
+                {
+                    if (sub != null && sub.Children.Count > 0)
+                    {
+                        using (SavedItem child = sub.Children[sub.Children.Count - 1])
+                        {
+                            last = child.DisplayName;
+                        }
+                    }
+                }
+
+                if (last == null)
+                {
+                    Say("PART B the folder [" + P13Sub + "] is not found or empty, so the series stops");
+                    break;
+                }
+
+                string removedS;
+                double secondsS;
+
+                if (!P13Remove(document, subNames, last, "B end " + (s + 1), out removedS, out secondsS))
+                {
+                    Say("PART B the series stops");
+                    break;
+                }
+
+                seconds.Add(secondsS);
+                removedNames.Add(last);
+                int ignored;
+                expectedB = P13Apply(expectedB, removedS, out ignored);
+            }
+
+            P13Tree b2 = P13Snap(document, "after the series");
+            int mismatchB2 = P13Compare(expectedB, b2.Rows, "after the series against the adds less every one removed");
+            int resolved2 = P13Resolve(document, sentinels, b2, "after the series");
+            string saveB = Path.Combine(Path.GetDirectoryName(saveAs), Path.GetFileNameWithoutExtension(saveAs) + "-sentinels.nwf");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveB);
+            Say("SaveFile into " + Path.GetFileName(saveB) + " took " + Seconds(clock) + ", " + Bytes(saveB) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopenedB = document.TryOpenFile(saveB);
+            Say("TryOpenFile of the saved file returned " + reopenedB + " after " + Seconds(clock));
+
+            if (!reopenedB)
+            {
+                Say("PART B UNKNOWN   the second saved file would not reopen");
+                return;
+            }
+
+            P13Tree b3 = P13Snap(document, "after the second save, clear and reopen");
+            int mismatchB3 = P13Compare(b2.Rows, b3.Rows, "after the second reopen against after the series");
+            int resolved3 = P13Resolve(document, sentinels, b3, "after the second reopen");
+            int kept = P13Sentinels + 2 - removedNames.Count;
+            List<string> secondsShown = new List<string>();
+            double total = 0;
+            double most = 0;
+
+            foreach (double d in seconds)
+            {
+                secondsShown.Add(d.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture));
+                total += d;
+                most = Math.Max(most, d);
+            }
+
+            Say(string.Empty);
+            Say("PART B SUMMARY: removed " + removedNames.Count + " of " + P13Sentinels + " views, [" + Shown(string.Join("], [", removedNames.ToArray())) + "]. Every other item the same, in the same order, after the middle removal "
+                + Yes(mismatchB1 == 0) + ", after the series " + Yes(mismatchB2 == 0) + ", after the reopen " + Yes(mismatchB3 == 0)
+                + ". ResolveGuid gave the item at its index path for " + resolved0 + " of " + (P13Sentinels + 2) + " after the adds, " + resolved2 + " of " + kept + " kept after the series, " + resolved3 + " of " + kept + " after the reopen");
+            Say("SECONDS PER RemoveAt CALL: part A " + secondsA.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s in a tree of " + t0.Views + " viewpoints. Part B "
+                + string.Join(", ", secondsShown.ToArray()) + " s, the most " + most.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s, the mean "
+                + (seconds.Count == 0 ? "UNKNOWN" : (total / seconds.Count).ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s") + ", in a tree of " + b0.Views + " viewpoints");
+            bool yesB = mismatchB1 == 0 && mismatchB2 == 0 && mismatchB3 == 0 && resolved0 == P13Sentinels + 2 && resolved2 == kept && resolved3 == kept && removedNames.Count == P13Series + 1;
+            Say("P13 WITH GUIDS SET " + (yesB ? "YES" : "NO") + "   every item left kept its Guid, and ResolveGuid found it where it is, through each removal, a save and a reopen");
+        }
+
+        private static string P13SentinelName(int k)
+        {
+            return "P13 view " + k.ToString("00", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private P13Tree P13Snap(Document document, string when)
+        {
+            P13Tree tree = new P13Tree();
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                P13Walk(root, string.Empty, string.Empty, tree);
+            }
+
+            foreach (P13Row row in tree.Rows)
+            {
+                if (row.Guid != Guid.Empty.ToString())
+                {
+                    tree.NotEmptyGuids++;
+                }
+            }
+
+            Say("the tree " + when + ": items " + tree.Rows.Count + ", viewpoints " + tree.Views + ", folders " + tree.Folders + ", other kinds " + tree.Other
+                + ", reads that threw " + tree.Threw + ", Guids not empty " + tree.NotEmptyGuids + ", the walk " + Seconds(clock));
+            return tree;
+        }
+
+        private static void P13Walk(GroupItem parent, string index, string folder, P13Tree tree)
+        {
+            SavedItemCollection children = parent.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    P13Row row = new P13Row();
+                    string at = i.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    row.Index = index.Length == 0 ? at : index + "." + at;
+                    row.Folder = folder;
+                    row.Kind = child.GetType().Name;
+
+                    try
+                    {
+                        row.Name = child.DisplayName ?? string.Empty;
+                    }
+                    catch (Exception)
+                    {
+                        row.Name = "THREW";
+                        tree.Threw++;
+                    }
+
+                    try
+                    {
+                        row.Guid = child.Guid.ToString();
+                    }
+                    catch (Exception)
+                    {
+                        row.Guid = "THREW";
+                        tree.Threw++;
+                    }
+
+                    try
+                    {
+                        row.Comments = child.Comments == null ? 0 : child.Comments.Count;
+                    }
+                    catch (Exception)
+                    {
+                        row.Comments = -1;
+                        tree.Threw++;
+                    }
+
+                    tree.Rows.Add(row);
+                    GroupItem group = child as GroupItem;
+
+                    if (group != null)
+                    {
+                        tree.Folders++;
+                        P13Walk(group, row.Index, folder.Length == 0 ? row.Name : folder + "\u0001" + row.Name, tree);
+                    }
+                    else if (child is SavedViewpoint)
+                    {
+                        tree.Views++;
+                    }
+                    else
+                    {
+                        tree.Other++;
+                    }
+                }
+            }
+        }
+
+        private static int[] P13Parts(string index)
+        {
+            string[] parts = index.Split('.');
+            int[] values = new int[parts.Length];
+
+            for (int i = 0; i < parts.Length; i++)
+            {
+                values[i] = int.Parse(parts[i], System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+            return values;
+        }
+
+        /// <summary>The rows less the one at the index path and anything under it, with every later sibling and what is under it one lower at that level.</summary>
+        private static List<P13Row> P13Apply(List<P13Row> rows, string removed, out int shifted)
+        {
+            int[] gone = P13Parts(removed);
+            int level = gone.Length - 1;
+            List<P13Row> left = new List<P13Row>();
+            shifted = 0;
+
+            foreach (P13Row row in rows)
+            {
+                int[] parts = P13Parts(row.Index);
+                bool samePrefix = parts.Length >= gone.Length;
+
+                for (int i = 0; samePrefix && i < level; i++)
+                {
+                    if (parts[i] != gone[i])
+                    {
+                        samePrefix = false;
+                    }
+                }
+
+                if (samePrefix && parts[level] == gone[level])
+                {
+                    continue;
+                }
+
+                P13Row copy = row.Copy();
+
+                if (samePrefix && parts[level] > gone[level])
+                {
+                    parts[level]--;
+                    string[] text = new string[parts.Length];
+
+                    for (int i = 0; i < parts.Length; i++)
+                    {
+                        text[i] = parts[i].ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    }
+
+                    copy.Index = string.Join(".", text);
+                    shifted++;
+                }
+
+                left.Add(copy);
+            }
+
+            return left;
+        }
+
+        /// <summary>Row by row, in tree order: folder names, name, kind, Guid and comment count, then the index path.</summary>
+        private int P13Compare(List<P13Row> expected, List<P13Row> actual, string label)
+        {
+            int keys = 0;
+            int indexes = 0;
+            int shown = 0;
+            int most = Math.Max(expected.Count, actual.Count);
+
+            for (int i = 0; i < most; i++)
+            {
+                P13Row e = i < expected.Count ? expected[i] : null;
+                P13Row a = i < actual.Count ? actual[i] : null;
+                string why = null;
+
+                if (e == null || a == null)
+                {
+                    keys++;
+                    why = e == null ? "an extra row" : "a missing row";
+                }
+                else if (!string.Equals(e.Key, a.Key, StringComparison.Ordinal))
+                {
+                    keys++;
+                    why = "folder names, name, kind, Guid or comments differ";
+                }
+                else if (!string.Equals(e.Index, a.Index, StringComparison.Ordinal))
+                {
+                    indexes++;
+                    why = "the index path differs";
+                }
+
+                if (why != null && shown < 10)
+                {
+                    shown++;
+                    Say("      row " + i + ": " + why + ". Expected " + (e == null ? "none" : e.Index + " [" + Shown(e.Folder.Replace("\u0001", " / ")) + "] [" + Shown(e.Name) + "] " + e.Kind + " " + e.Guid + " comments " + e.Comments)
+                        + ", read " + (a == null ? "none" : a.Index + " [" + Shown(a.Folder.Replace("\u0001", " / ")) + "] [" + Shown(a.Name) + "] " + a.Kind + " " + a.Guid + " comments " + a.Comments));
+                }
+            }
+
+            Say("   compare " + label + ": rows expected " + expected.Count + ", read " + actual.Count + ", rows whose names, kind, Guid or comments differ " + keys + ", rows whose index path alone differs " + indexes);
+            return keys + indexes;
+        }
+
+        private bool P13Gone(Document document, List<string> folderNames, string name, string when)
+        {
+            List<string> path = new List<string>(folderNames);
+            path.Add(name);
+
+            using (SavedItem found = ResolveNames(document, path))
+            {
+                Say("   the target's names find " + (found == null ? "nothing" : "a " + found.GetType().Name + " at " + P10IndexPath(document, found)) + " " + when);
+                return found == null;
+            }
+        }
+
+        /// <summary>The first folder two deep, in tree order, with at least 3 children and a viewpoint at its middle child.</summary>
+        private static bool P13Pick(Document document, out List<string> folderNames, out string name, out int index, out int count)
+        {
+            folderNames = null;
+            name = null;
+            index = -1;
+            count = 0;
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SavedItemCollection tops = root.Children;
+
+                for (int i = 0; i < tops.Count; i++)
+                {
+                    using (SavedItem top = tops[i])
+                    {
+                        GroupItem topGroup = top as GroupItem;
+
+                        if (topGroup == null)
+                        {
+                            continue;
+                        }
+
+                        SavedItemCollection subs = topGroup.Children;
+
+                        for (int j = 0; j < subs.Count; j++)
+                        {
+                            using (SavedItem sub = subs[j])
+                            {
+                                GroupItem subGroup = sub as GroupItem;
+
+                                if (subGroup == null || subGroup.Children.Count < 3)
+                                {
+                                    continue;
+                                }
+
+                                int middle = subGroup.Children.Count / 2;
+
+                                using (SavedItem leaf = subGroup.Children[middle])
+                                {
+                                    if (!(leaf is SavedViewpoint))
+                                    {
+                                        continue;
+                                    }
+
+                                    folderNames = new List<string> { top.DisplayName, sub.DisplayName };
+                                    name = leaf.DisplayName;
+                                    index = middle;
+                                    count = subGroup.Children.Count;
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>The parent resolved fresh from RootItem by its names, the target re-found in it by its name, then RemoveAt(parent, index), timed.</summary>
+        private bool P13Remove(Document document, List<string> folderNames, string name, string label, out string removed, out double seconds)
+        {
+            removed = null;
+            seconds = -1;
+            SavedItem resolved = ResolveNames(document, folderNames);
+            GroupItem parent = resolved as GroupItem;
+
+            if (parent == null)
+            {
+                if (resolved != null)
+                {
+                    resolved.Dispose();
+                }
+
+                Say("   " + label + ": the parent [" + Shown(string.Join(" / ", folderNames.ToArray())) + "] is NOT FOUND as a folder by its names");
+                return false;
+            }
+
+            using (parent)
+            {
+                string parentAt = P10IndexPath(document, parent);
+                SavedItemCollection children = parent.Children;
+                int before = children.Count;
+                int at = -1;
+                int same = 0;
+
+                for (int i = 0; i < children.Count; i++)
+                {
+                    using (SavedItem child = children[i])
+                    {
+                        if (child is SavedViewpoint && string.Equals(child.DisplayName, name, StringComparison.Ordinal))
+                        {
+                            same++;
+
+                            if (at < 0)
+                            {
+                                at = i;
+                            }
+                        }
+                    }
+                }
+
+                if (at < 0)
+                {
+                    Say("   " + label + ": no viewpoint named [" + Shown(name) + "] in the parent at " + parentAt);
+                    return false;
+                }
+
+                removed = parentAt + "." + at.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+                try
+                {
+                    document.SavedViewpoints.RemoveAt(parent, at);
+                }
+                catch (Exception error)
+                {
+                    Say("   " + label + ": RemoveAt(parent, " + at + ") THREW after " + Seconds(clock) + ", " + error.GetType().Name + ": " + error.Message);
+                    return false;
+                }
+
+                seconds = clock.Elapsed.TotalSeconds;
+                Say("   " + label + ": RemoveAt(parent at " + parentAt + ", " + at + ") on [" + Shown(name) + "] RETURNED after " + Seconds(clock)
+                    + ". The parent held " + before + " children and the name was found on " + same + " of them");
+            }
+
+            using (SavedItem again = ResolveNames(document, folderNames))
+            {
+                GroupItem group = again as GroupItem;
+                Say("   " + label + ": the parent resolved again holds " + (group == null ? "UNKNOWN, not found" : group.Children.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)) + " children");
+            }
+
+            return true;
+        }
+
+        /// <summary>For each Guid the probe set, ResolveGuid, counted as found when it gives the item of that name at the index path the tree gives that name.</summary>
+        private int P13Resolve(Document document, Dictionary<string, Guid> sentinels, P13Tree tree, string when)
+        {
+            Dictionary<string, string> indexByName = new Dictionary<string, string>(StringComparer.Ordinal);
+
+            foreach (P13Row row in tree.Rows)
+            {
+                if (sentinels.ContainsKey(row.Name) && string.Equals(row.Guid, sentinels[row.Name].ToString(), StringComparison.Ordinal))
+                {
+                    indexByName[row.Name] = row.Index;
+                }
+            }
+
+            int found = 0;
+            List<string> missing = new List<string>();
+
+            foreach (KeyValuePair<string, Guid> pair in sentinels)
+            {
+                string at;
+                bool inTree = indexByName.TryGetValue(pair.Key, out at);
+
+                try
+                {
+                    using (SavedItem item = document.SavedViewpoints.ResolveGuid(pair.Value))
+                    {
+                        if (item == null)
+                        {
+                            missing.Add(pair.Key + (inTree ? " NULL BUT IN THE TREE" : " null, not in the tree"));
+                            continue;
+                        }
+
+                        string itemAt = P10IndexPath(document, item);
+
+                        if (inTree && string.Equals(item.DisplayName, pair.Key, StringComparison.Ordinal) && string.Equals(itemAt, at, StringComparison.Ordinal))
+                        {
+                            found++;
+                        }
+                        else
+                        {
+                            missing.Add(pair.Key + " gave [" + Shown(item.DisplayName) + "] at " + itemAt + (inTree ? ", the tree has it at " + at : ", not in the tree"));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    missing.Add(pair.Key + " THREW " + error.GetType().Name);
+                }
+            }
+
+            Say("   ResolveGuid " + when + ": the item at its index path for " + found + " of " + sentinels.Count + " Guids set. The others: " + (missing.Count == 0 ? "none" : string.Join("; ", missing.ToArray())));
+            return found;
+        }
+
+        private string P13Counts(Document document)
+        {
+            int sets = 0;
+            int withSearch = 0;
+            int unreadable = 0;
+            List<string> ignored = new List<string>();
+
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                WalkSets(root, string.Empty, ignored, ref sets, ref withSearch, ref unreadable);
+            }
+
+            int tests = 0;
+            int results = 0;
+            int statuses = 0;
+
+            try
+            {
+                DocumentClashTests data = document.GetClash().TestsData;
+                tests = data.Tests.Count;
+
+                for (int t = 0; t < data.Tests.Count; t++)
+                {
+                    ClashTest test = data.Tests[t] as ClashTest;
+
+                    if (test != null)
+                    {
+                        results += CountResultsUnder(test.Children, ref statuses);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                return "the clash side THREW " + error.GetType().Name;
+            }
+
+            return "models " + document.Models.Count + ", sets " + sets + ", tests " + tests + ", results " + results + ", statuses a person set " + statuses;
+        }
+
+        // ---------- P14 of Q114, does RemoveAt(parent, index) on a folder take it and every view under it in one call ----------
+
+        private const string P14Top = "P14 probe";
+        private const string P14Keep = "P14 keep";
+        private const string P14Gone = "P14 gone";
+        private const string P14Inner = "P14 gone inner";
+        private const string P14After = "P14 after";
+        private const double P14SeriesCapSeconds = 600;
+
+        /// <summary>
+        /// P14: RemoveAt(parent, index) on a FOLDER, the parent resolved fresh and the folder re-found
+        /// in it by its name just before. Part A takes the top level folder of the copy that holds the
+        /// most viewpoints and removes it in one call, timed. The whole tree is read before, after the
+        /// call and after a SaveFile, a Document.Clear and a TryOpenFile of the saved file. After the
+        /// call the tree must be the tree at the open less the folder and every row under it, with only
+        /// the later siblings one lower, and after the reopen exactly the tree after the call. Part B
+        /// does the same two folders deep on a folder of views and a folder in it whose Guids the probe
+        /// set, beside a folder kept before it and one after it, and reads every Guid back through
+        /// ResolveGuid: the kept ones at their index path, the removed ones null. Part C reopens the
+        /// untouched copy and takes the same folder's views one at a time from the end, each call timed,
+        /// then the empty folder, and compares the tree with part A's.
+        /// </summary>
+        private void MeasureFolderRemove(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            Say(string.Empty);
+            Say("PART A. THE TOP LEVEL FOLDER HOLDING THE MOST VIEWPOINTS, REMOVED WITH EVERYTHING UNDER IT BY ONE RemoveAt(root, index)");
+            string counts0 = P13Counts(document);
+            Say("the document at the open: " + counts0);
+            P13Tree t0 = P13Snap(document, "at the open");
+
+            string folderName;
+            int folderAt;
+
+            if (!P14PickLargest(document, out folderName, out folderAt))
+            {
+                Say("P14 UNKNOWN   the root holds no folder with a viewpoint under it, so nothing was removed");
+                return;
+            }
+
+            string folderIndex = folderAt.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            int underRows = 0;
+            int underViews = 0;
+            int underFolders = 0;
+            int directChildren = 0;
+
+            foreach (P13Row row in t0.Rows)
+            {
+                if (row.Index.StartsWith(folderIndex + ".", StringComparison.Ordinal))
+                {
+                    underRows++;
+
+                    if (row.Kind == "SavedViewpoint")
+                    {
+                        underViews++;
+                    }
+                    else if (row.Kind == "FolderItem" || row.Kind == "GroupItem")
+                    {
+                        underFolders++;
+                    }
+
+                    if (row.Index.IndexOf('.', folderIndex.Length + 1) < 0)
+                    {
+                        directChildren++;
+                    }
+                }
+            }
+
+            Say("the target: [" + Shown(folderName) + "] at index path " + folderIndex + ", direct children " + directChildren + ", rows under it " + underRows
+                + ", of them viewpoints " + underViews + " and folders " + underFolders + ". Viewpoints elsewhere in the tree " + (t0.Views - underViews));
+
+            string removedA;
+            double secondsA;
+            bool returnedA = P14RemoveFolder(document, new List<string>(), folderName, "A", out removedA, out secondsA);
+
+            if (!returnedA)
+            {
+                Say("P14 NO   RemoveAt did not return on the folder, so nothing more is read");
+                return;
+            }
+
+            Say("the index path removed " + removedA + ", the same as the one read off the tree at the open " + Yes(string.Equals(removedA, folderIndex, StringComparison.Ordinal)));
+            P13Tree t1 = P13Snap(document, "after the removal");
+            string counts1 = P13Counts(document);
+            Say("the document after the removal: " + counts1);
+            int shifted1;
+            List<P13Row> expected1 = P13Apply(t0.Rows, removedA, out shifted1);
+            Say("expected after the removal: the tree at the open less the folder and its " + underRows + " rows, " + expected1.Count + " rows, " + shifted1 + " of them later siblings or under one, whose index at that level falls by one");
+            int mismatch1 = P13Compare(expected1, t1.Rows, "after the removal against the open less the folder");
+            bool gone1 = P13Gone(document, new List<string>(), folderName, "after the removal");
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk, the copy opened was " + Bytes(nwf));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P14 UNKNOWN   the saved file would not reopen, so nothing after a reopen is read");
+                return;
+            }
+
+            P13Tree t2 = P13Snap(document, "after the save, the clear and the reopen");
+            string counts2 = P13Counts(document);
+            Say("the document after the reopen: " + counts2);
+            int mismatch2 = P13Compare(t1.Rows, t2.Rows, "after the reopen against after the removal");
+            bool gone2 = P13Gone(document, new List<string>(), folderName, "after the reopen");
+
+            bool viewsFell = t0.Views - t1.Views == underViews && t2.Views == t1.Views;
+            bool rowsFell = t0.Rows.Count - t1.Rows.Count == underRows + 1 && t2.Rows.Count == t1.Rows.Count;
+            bool countsSame = string.Equals(counts0, counts1, StringComparison.Ordinal) && string.Equals(counts1, counts2, StringComparison.Ordinal);
+            Say(string.Empty);
+            Say("PART A SUMMARY: viewpoints " + t0.Views + ", " + t1.Views + ", " + t2.Views + " at the open, after the removal, after the reopen. Items " + t0.Rows.Count + ", " + t1.Rows.Count + ", " + t2.Rows.Count
+                + ". Fell by exactly the folder's " + underViews + " viewpoints and " + (underRows + 1) + " items and stayed " + Yes(viewsFell && rowsFell)
+                + ". Every other item the same folder names, name, kind, Guid and comment count, in the same order, after the removal " + Yes(mismatch1 == 0) + " and after the reopen " + Yes(mismatch2 == 0)
+                + ". The folder found by its name after the removal " + Yes(!gone1) + " and after the reopen " + Yes(!gone2)
+                + ". Models, sets, tests, results and statuses the same at every stage " + Yes(countsSame)
+                + ". RemoveAt took " + secondsA.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s for a folder of " + underViews + " viewpoints in a tree of " + t0.Views);
+            bool yesA = viewsFell && rowsFell && mismatch1 == 0 && mismatch2 == 0 && gone1 && gone2 && countsSame;
+            Say("P14 " + (yesA ? "YES" : "NO") + "   RemoveAt(root, index), the root read fresh and the folder found again by its name, removed the folder with every view under it in one call, and every other item kept its path, name and Guid through a save and a reopen");
+
+            Say(string.Empty);
+            Say("PART B. A FOLDER OF VIEWS AND A FOLDER IN IT, WHOSE GUIDS THE PROBE SET, TWO FOLDERS DEEP IN THE REOPENED DOCUMENT, REMOVED BY ONE RemoveAt(parent, index)");
+            Dictionary<string, Guid> sentinels = new Dictionary<string, Guid>(StringComparer.Ordinal);
+            HashSet<string> removedNames = new HashSet<string>(StringComparer.Ordinal);
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P14Top;
+                    folder.Guid = Guid.NewGuid();
+                    sentinels[P14Top] = folder.Guid;
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                P14AddFolder(document, new List<string> { P14Top }, P14Keep, sentinels);
+                P14AddFolder(document, new List<string> { P14Top }, P14Gone, sentinels);
+                P14AddFolder(document, new List<string> { P14Top, P14Gone }, P14Inner, sentinels);
+                P14AddFolder(document, new List<string> { P14Top }, P14After, sentinels);
+
+                using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+                {
+                    P14AddViews(document, camera, new List<string> { P14Top, P14Keep }, "P14 keep view ", 3, sentinels);
+                    P14AddViews(document, camera, new List<string> { P14Top, P14Gone }, "P14 gone view ", 12, sentinels);
+                    P14AddViews(document, camera, new List<string> { P14Top, P14Gone, P14Inner }, "P14 inner view ", 3, sentinels);
+                    P14AddViews(document, camera, new List<string> { P14Top, P14After }, "P14 after view ", 2, sentinels);
+                }
+            }
+            catch (Exception error)
+            {
+                Say("PART B the adds THREW " + error.GetType().Name + ": " + error.Message + ", so part B stops here");
+                P14SeriesPart(document, nwf, folderName, t0, expected1);
+                return;
+            }
+
+            foreach (string name in sentinels.Keys)
+            {
+                if (name == P14Gone || name == P14Inner || name.StartsWith("P14 gone view ", StringComparison.Ordinal) || name.StartsWith("P14 inner view ", StringComparison.Ordinal))
+                {
+                    removedNames.Add(name);
+                }
+            }
+
+            Say("added [" + P14Top + "] at the root, in it [" + P14Keep + "] of 3 views, [" + P14Gone + "] of 12 views and [" + P14Inner + "] of 3 views after them, and [" + P14After + "] of 2 views, "
+                + sentinels.Count + " items in all, each Guid set before its AddCopy. To be removed with [" + P14Gone + "]: " + removedNames.Count);
+            P13Tree b0 = P13Snap(document, "after the adds");
+            int keptB0;
+            int nullB0;
+            P14Resolve(document, sentinels, new HashSet<string>(StringComparer.Ordinal), b0, "after the adds", out keptB0, out nullB0);
+
+            string removedB;
+            double secondsB;
+            bool returnedB = P14RemoveFolder(document, new List<string> { P14Top }, P14Gone, "B", out removedB, out secondsB);
+            int mismatchB1 = -1;
+            int mismatchB2 = -1;
+            int keptB1 = 0;
+            int nullB1 = 0;
+            int keptB2 = 0;
+            int nullB2 = 0;
+            int keep = sentinels.Count - removedNames.Count;
+
+            if (returnedB)
+            {
+                int shiftedB;
+                List<P13Row> expectedB = P13Apply(b0.Rows, removedB, out shiftedB);
+                P13Tree b1 = P13Snap(document, "after the folder removal");
+                mismatchB1 = P13Compare(expectedB, b1.Rows, "after the folder removal against the adds less the folder");
+                Say("rows under a later sibling or a later sibling, whose index at that level falls by one: " + shiftedB);
+                P14Resolve(document, sentinels, removedNames, b1, "after the folder removal", out keptB1, out nullB1);
+                string saveB = Path.Combine(Path.GetDirectoryName(saveAs), Path.GetFileNameWithoutExtension(saveAs) + "-sentinels.nwf");
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                document.SaveFile(saveB);
+                Say("SaveFile into " + Path.GetFileName(saveB) + " took " + Seconds(clock) + ", " + Bytes(saveB) + " bytes read back off the disk");
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                document.Clear();
+                Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                bool reopenedB = document.TryOpenFile(saveB);
+                Say("TryOpenFile of the saved file returned " + reopenedB + " after " + Seconds(clock));
+
+                if (reopenedB)
+                {
+                    P13Tree b2 = P13Snap(document, "after the second save, clear and reopen");
+                    mismatchB2 = P13Compare(b1.Rows, b2.Rows, "after the second reopen against after the folder removal");
+                    P14Resolve(document, sentinels, removedNames, b2, "after the second reopen", out keptB2, out nullB2);
+                }
+                else
+                {
+                    Say("PART B UNKNOWN   the second saved file would not reopen");
+                }
+            }
+
+            Say(string.Empty);
+            Say("PART B SUMMARY: RemoveAt on [" + P14Gone + "] returned " + Yes(returnedB) + (returnedB ? " after " + secondsB.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s" : string.Empty)
+                + ". Every other item the same, in the same order, after the removal " + Yes(mismatchB1 == 0) + " and after the reopen " + Yes(mismatchB2 == 0)
+                + ". ResolveGuid gave the item at its index path for " + keptB0 + " of " + sentinels.Count + " after the adds, for " + keptB1 + " of " + keep + " kept after the removal and " + keptB2 + " of " + keep + " after the reopen"
+                + ". The " + removedNames.Count + " removed Guids resolved to null " + nullB1 + " after the removal and " + nullB2 + " after the reopen");
+            bool yesB = returnedB && mismatchB1 == 0 && mismatchB2 == 0 && keptB0 == sentinels.Count && keptB1 == keep && keptB2 == keep && nullB1 == removedNames.Count && nullB2 == removedNames.Count;
+            Say("P14 TWO DEEP WITH GUIDS SET " + (yesB ? "YES" : "NO") + "   one call took the folder, the folder in it and every view under both, the kept items kept their Guids where they are, and every removed Guid resolved to nothing, through a save and a reopen");
+
+            P14SeriesPart(document, nwf, folderName, t0, expected1);
+        }
+
+        /// <summary>Part C: the untouched copy reopened, the same folder's views removed one at a time from the end, each call timed, then the empty folder, the tree compared with part A's.</summary>
+        private void P14SeriesPart(Document document, string nwf, string folderName, P13Tree t0, List<P13Row> expectedA)
+        {
+            Say(string.Empty);
+            Say("PART C. THE UNTOUCHED COPY REOPENED, THE SAME FOLDER'S VIEWS REMOVED ONE AT A TIME FROM THE END, EACH TIMED, CAPPED AT " + P14SeriesCapSeconds.ToString("0", System.Globalization.CultureInfo.InvariantCulture) + " s");
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile of the untouched copy " + Path.GetFileName(nwf) + " returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("PART C UNKNOWN   the copy would not reopen");
+                return;
+            }
+
+            P13Tree c0 = P13Snap(document, "at the second open");
+            int mismatchC0 = P13Compare(t0.Rows, c0.Rows, "at the second open against the first open");
+            List<string> names = new List<string> { folderName };
+            List<double> calls = new List<double>();
+            List<double> rounds = new List<double>();
+            int notViews = 0;
+            int threw = 0;
+            string stopped = "the folder is empty";
+            System.Diagnostics.Stopwatch all = System.Diagnostics.Stopwatch.StartNew();
+
+            while (true)
+            {
+                if (all.Elapsed.TotalSeconds > P14SeriesCapSeconds)
+                {
+                    stopped = "the cap of " + P14SeriesCapSeconds.ToString("0", System.Globalization.CultureInfo.InvariantCulture) + " s was reached";
+                    break;
+                }
+
+                System.Diagnostics.Stopwatch round = System.Diagnostics.Stopwatch.StartNew();
+                SavedItem resolved = ResolveNames(document, names);
+                GroupItem parent = resolved as GroupItem;
+
+                if (parent == null)
+                {
+                    if (resolved != null)
+                    {
+                        resolved.Dispose();
+                    }
+
+                    stopped = "the folder was NOT FOUND by its name";
+                    break;
+                }
+
+                using (parent)
+                {
+                    int count = parent.Children.Count;
+
+                    if (count == 0)
+                    {
+                        break;
+                    }
+
+                    using (SavedItem last = parent.Children[count - 1])
+                    {
+                        if (!(last is SavedViewpoint))
+                        {
+                            notViews++;
+                        }
+                    }
+
+                    System.Diagnostics.Stopwatch call = System.Diagnostics.Stopwatch.StartNew();
+
+                    try
+                    {
+                        document.SavedViewpoints.RemoveAt(parent, count - 1);
+                    }
+                    catch (Exception error)
+                    {
+                        threw++;
+                        stopped = "RemoveAt THREW " + error.GetType().Name + ": " + error.Message;
+                        break;
+                    }
+
+                    calls.Add(call.Elapsed.TotalSeconds);
+                }
+
+                rounds.Add(round.Elapsed.TotalSeconds);
+            }
+
+            double wall = all.Elapsed.TotalSeconds;
+            Say("   the series stopped because " + stopped + ". Calls " + calls.Count + ", items at the end that were not a viewpoint " + notViews + ", throws " + threw);
+            Say("   RemoveAt alone: " + P14Stats(calls));
+            Say("   each round, the folder resolved fresh by its name, the last child's kind read and RemoveAt: " + P14Stats(rounds) + ". Wall time of the series " + wall.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s");
+
+            if (calls.Count >= 20)
+            {
+                Say("   RemoveAt, the first 10 calls: " + P14Stats(calls.GetRange(0, 10)) + ". The last 10: " + P14Stats(calls.GetRange(calls.Count - 10, 10)));
+            }
+
+            P13Tree c1 = P13Snap(document, "after the series");
+            string folderIndex = null;
+
+            foreach (P13Row row in c0.Rows)
+            {
+                if (row.Folder.Length == 0 && string.Equals(row.Name, folderName, StringComparison.Ordinal))
+                {
+                    folderIndex = row.Index;
+                    break;
+                }
+            }
+
+            List<P13Row> expectedC = new List<P13Row>();
+
+            foreach (P13Row row in c0.Rows)
+            {
+                if (folderIndex == null || !row.Index.StartsWith(folderIndex + ".", StringComparison.Ordinal))
+                {
+                    expectedC.Add(row.Copy());
+                }
+            }
+
+            int mismatchC1 = P13Compare(expectedC, c1.Rows, "after the series against the second open less every row under the folder, the folder kept");
+            string removedC;
+            double secondsC;
+            bool returnedC = P14RemoveFolder(document, new List<string>(), folderName, "C, the emptied folder", out removedC, out secondsC);
+            int mismatchC2 = -1;
+
+            if (returnedC)
+            {
+                P13Tree c2 = P13Snap(document, "after the emptied folder is removed");
+                mismatchC2 = P13Compare(expectedA, c2.Rows, "after the emptied folder is removed against part A after its one call");
+            }
+
+            Say(string.Empty);
+            Say("PART C SUMMARY: the second open read the same as the first " + Yes(mismatchC0 == 0) + ". " + calls.Count + " calls of RemoveAt(parent, last) in " + wall.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)
+                + " s, the folder emptied " + Yes(stopped == "the folder is empty") + ", every other item the same after the series " + Yes(mismatchC1 == 0)
+                + ", and after the emptied folder's own RemoveAt, " + (returnedC ? secondsC.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture) + " s" : "which did not return") + ", the tree the same as part A's after its one call " + Yes(mismatchC2 == 0));
+        }
+
+        private static string P14Stats(List<double> values)
+        {
+            if (values.Count == 0)
+            {
+                return "none";
+            }
+
+            List<double> sorted = new List<double>(values);
+            sorted.Sort();
+            double total = 0;
+
+            foreach (double d in values)
+            {
+                total += d;
+            }
+
+            System.Globalization.CultureInfo inv = System.Globalization.CultureInfo.InvariantCulture;
+            return values.Count + " values, total " + total.ToString("0.000", inv) + " s, mean " + (total / values.Count).ToString("0.000000", inv) + " s, median "
+                + sorted[sorted.Count / 2].ToString("0.000000", inv) + " s, least " + sorted[0].ToString("0.000000", inv) + " s, most " + sorted[sorted.Count - 1].ToString("0.000000", inv) + " s";
+        }
+
+        /// <summary>The top level folder holding the most viewpoints under it, the first of them in tree order on a tie.</summary>
+        private static bool P14PickLargest(Document document, out string name, out int index)
+        {
+            name = null;
+            index = -1;
+            int most = 0;
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SavedItemCollection tops = root.Children;
+
+                for (int i = 0; i < tops.Count; i++)
+                {
+                    using (SavedItem top = tops[i])
+                    {
+                        GroupItem group = top as GroupItem;
+
+                        if (group == null)
+                        {
+                            continue;
+                        }
+
+                        int views = ViewpointsUnder(group);
+
+                        if (views > most)
+                        {
+                            most = views;
+                            name = top.DisplayName;
+                            index = i;
+                        }
+                    }
+                }
+            }
+
+            return name != null;
+        }
+
+        /// <summary>The parent read fresh, the root when no names are given, the folder re-found in it by its name, then RemoveAt(parent, index), timed.</summary>
+        private bool P14RemoveFolder(Document document, List<string> parentNames, string name, string label, out string removed, out double seconds)
+        {
+            removed = null;
+            seconds = -1;
+            GroupItem parent;
+
+            if (parentNames.Count == 0)
+            {
+                parent = document.SavedViewpoints.RootItem;
+            }
+            else
+            {
+                SavedItem resolved = ResolveNames(document, parentNames);
+                parent = resolved as GroupItem;
+
+                if (parent == null)
+                {
+                    if (resolved != null)
+                    {
+                        resolved.Dispose();
+                    }
+
+                    Say("   " + label + ": the parent [" + Shown(string.Join(" / ", parentNames.ToArray())) + "] is NOT FOUND as a folder by its names");
+                    return false;
+                }
+            }
+
+            using (parent)
+            {
+                string parentAt = parentNames.Count == 0 ? string.Empty : P10IndexPath(document, parent);
+                SavedItemCollection children = parent.Children;
+                int before = children.Count;
+                int at = -1;
+                int same = 0;
+                int anyKind = 0;
+                int childrenOfTarget = -1;
+                int viewsOfTarget = -1;
+
+                for (int i = 0; i < children.Count; i++)
+                {
+                    using (SavedItem child = children[i])
+                    {
+                        if (!string.Equals(child.DisplayName, name, StringComparison.Ordinal))
+                        {
+                            continue;
+                        }
+
+                        anyKind++;
+                        GroupItem group = child as GroupItem;
+
+                        if (group != null)
+                        {
+                            same++;
+
+                            if (at < 0)
+                            {
+                                at = i;
+                                childrenOfTarget = group.Children.Count;
+                                viewsOfTarget = ViewpointsUnder(group);
+                            }
+                        }
+                    }
+                }
+
+                if (at < 0)
+                {
+                    Say("   " + label + ": no folder named [" + Shown(name) + "] in the parent at " + (parentAt.Length == 0 ? "the root" : parentAt));
+                    return false;
+                }
+
+                string atText = at.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                removed = parentAt.Length == 0 ? atText : parentAt + "." + atText;
+                System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+                try
+                {
+                    document.SavedViewpoints.RemoveAt(parent, at);
+                }
+                catch (Exception error)
+                {
+                    Say("   " + label + ": RemoveAt(parent, " + at + ") THREW after " + Seconds(clock) + ", " + error.GetType().Name + ": " + error.Message);
+                    return false;
+                }
+
+                seconds = clock.Elapsed.TotalSeconds;
+                Say("   " + label + ": RemoveAt(parent at " + (parentAt.Length == 0 ? "the root" : parentAt) + ", " + at + ") on the folder [" + Shown(name) + "] of " + childrenOfTarget + " direct children and "
+                    + viewsOfTarget + " viewpoints under it RETURNED after " + Seconds(clock) + ". The parent held " + before + " children, the name was found on " + anyKind + " of them and on " + same + " folders");
+            }
+
+            if (parentNames.Count == 0)
+            {
+                using (GroupItem again = document.SavedViewpoints.RootItem)
+                {
+                    Say("   " + label + ": the root read again holds " + again.Children.Count + " children");
+                }
+            }
+            else
+            {
+                using (SavedItem again = ResolveNames(document, parentNames))
+                {
+                    GroupItem group = again as GroupItem;
+                    Say("   " + label + ": the parent resolved again holds " + (group == null ? "UNKNOWN, not found" : group.Children.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)) + " children");
+                }
+            }
+
+            return true;
+        }
+
+        private static void P14AddFolder(Document document, List<string> parentNames, string name, Dictionary<string, Guid> sentinels)
+        {
+            using (GroupItem parent = (GroupItem)ResolveNames(document, parentNames))
+            using (FolderItem folder = new FolderItem())
+            {
+                folder.DisplayName = name;
+                folder.Guid = Guid.NewGuid();
+                sentinels[name] = folder.Guid;
+                document.SavedViewpoints.AddCopy(parent, folder);
+            }
+        }
+
+        private static void P14AddViews(Document document, Viewpoint camera, List<string> parentNames, string prefix, int count, Dictionary<string, Guid> sentinels)
+        {
+            for (int k = 0; k < count; k++)
+            {
+                using (GroupItem parent = (GroupItem)ResolveNames(document, parentNames))
+                using (SavedViewpoint view = new SavedViewpoint(camera))
+                {
+                    view.DisplayName = prefix + k.ToString("00", System.Globalization.CultureInfo.InvariantCulture);
+                    view.Guid = Guid.NewGuid();
+                    sentinels[view.DisplayName] = view.Guid;
+                    document.SavedViewpoints.AddCopy(parent, view);
+                }
+            }
+        }
+
+        /// <summary>For each Guid the probe set: a kept one counts when ResolveGuid gives the item of that name at the index path the tree gives it, a removed one when ResolveGuid gives null.</summary>
+        private void P14Resolve(Document document, Dictionary<string, Guid> sentinels, HashSet<string> removed, P13Tree tree, string when, out int keptFound, out int removedNull)
+        {
+            keptFound = 0;
+            removedNull = 0;
+            Dictionary<string, string> indexByName = new Dictionary<string, string>(StringComparer.Ordinal);
+
+            foreach (P13Row row in tree.Rows)
+            {
+                if (sentinels.ContainsKey(row.Name) && string.Equals(row.Guid, sentinels[row.Name].ToString(), StringComparison.Ordinal))
+                {
+                    indexByName[row.Name] = row.Index;
+                }
+            }
+
+            List<string> other = new List<string>();
+
+            foreach (KeyValuePair<string, Guid> pair in sentinels)
+            {
+                bool gone = removed.Contains(pair.Key);
+                string at;
+                bool inTree = indexByName.TryGetValue(pair.Key, out at);
+
+                try
+                {
+                    using (SavedItem item = document.SavedViewpoints.ResolveGuid(pair.Value))
+                    {
+                        if (item == null)
+                        {
+                            if (gone && !inTree)
+                            {
+                                removedNull++;
+                            }
+                            else
+                            {
+                                other.Add(pair.Key + " null" + (inTree ? " BUT IN THE TREE at " + at : ", not in the tree"));
+                            }
+
+                            continue;
+                        }
+
+                        string itemAt = P10IndexPath(document, item);
+
+                        if (!gone && inTree && string.Equals(item.DisplayName, pair.Key, StringComparison.Ordinal) && string.Equals(itemAt, at, StringComparison.Ordinal))
+                        {
+                            keptFound++;
+                        }
+                        else
+                        {
+                            other.Add(pair.Key + (gone ? " REMOVED BUT" : string.Empty) + " gave [" + Shown(item.DisplayName) + "] at " + itemAt + (inTree ? ", the tree has it at " + at : ", not in the tree"));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    other.Add(pair.Key + " THREW " + error.GetType().Name);
+                }
+            }
+
+            Say("   ResolveGuid " + when + ": kept items found at their index path " + keptFound + " of " + (sentinels.Count - removed.Count) + ", removed items resolving to null " + removedNull + " of " + removed.Count
+                + ". The others: " + (other.Count == 0 ? "none" : string.Join("; ", other.ToArray())));
+        }
+
+        // ---------- P15 of Q114, do the viewpoints come back whole through CreateCopy, Clear, the appends and CopyFrom ----------
+
+        private const string P15Top = "P15 probe";
+        private const string P15Sub = "P15 sub";
+        private const string P15ComView = "P15 com view marked";
+        private const string P15GuidView = "P15 net view guid set two comments";
+        private const string P15PlainView = "P15 net view plain";
+
+        private sealed class P15Row
+        {
+            public string Index;
+            public string Folder;
+            public string Name;
+            public string Kind;
+            public string Guid;
+            public string Comments = string.Empty;
+            public string Ids = string.Empty;
+            public int CommentCount;
+            public int Hidden = -2;
+            public string HiddenWhat = string.Empty;
+            public int Material = -2;
+
+            public string Key
+            {
+                get
+                {
+                    return Index + "\u0001" + Folder + "\u0001" + Name + "\u0001" + Kind + "\u0001" + Guid + "\u0001" + Comments
+                        + "\u0001" + Hidden.ToString(System.Globalization.CultureInfo.InvariantCulture) + "\u0001" + HiddenWhat
+                        + "\u0001" + Material.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                }
+            }
+        }
+
+        private sealed class P15Tree
+        {
+            public readonly List<P15Row> Rows = new List<P15Row>();
+            public int Views;
+            public int Folders;
+            public int Other;
+            public int Threw;
+            public int Comments;
+            public int NotEmptyGuids;
+            public int WithHidden;
+        }
+
+        /// <summary>
+        /// P15: the clear and rebuild fallback of FederationEngine with the viewpoints copied out and
+        /// back. A small NWF is opened from a copy, marked the way Q114's design marks the tool's
+        /// views (a COM view recorded into a folder with hidden and painted items and marked by
+        /// AddComment, a folder marked by AddComment, a .NET view with its Guid set and two comments,
+        /// a plain view, an existing view marked), saved, cleared and reopened, so the fallback starts
+        /// from an NWF on disk as it does in a run. Then, in the engine's order: the tests and the sets
+        /// copied by CreateCopy, the viewpoints by DocumentSavedViewpoints.CreateCopy, Document.Clear,
+        /// each model the NWF named appended again by TryAppendFile from where the NWF points, the sets
+        /// and the tests put back by CopyFrom only where their count fell, then the viewpoints by
+        /// DocumentSavedViewpoints.CopyFrom. Every item of the tree is read before the copy, off the
+        /// copy itself before and after the clear, after the appends, after CopyFrom, and after a
+        /// SaveFile, a Document.Clear and a TryOpenFile of the rebuilt file: index path, folder names,
+        /// name, kind, Guid, each comment's body, author and status, each comment's Id and date, and on
+        /// a view its Hidden count with its first three hidden items and its MaterialOverrides count.
+        /// </summary>
+        private void MeasureRebuildViews(string nwf, string saveAs)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            string folderOut = Path.GetDirectoryName(saveAs);
+            string rebuiltAs = Path.Combine(folderOut, "p15-rebuilt.nwf");
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            List<string> modelFiles = new List<string>();
+            Dictionary<string, string> modelHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            bool allUnderLoop = true;
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                bool under = file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase);
+                bool there = File.Exists(file);
+                string hash = there ? P15Sha(file) : "not on disk";
+                modelFiles.Add(file);
+                modelHashes[file] = hash;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder " + under + ", on disk " + there + ", " + Bytes(file) + " bytes, sha256 " + hash);
+
+                if (!under || !there)
+                {
+                    allUnderLoop = false;
+                }
+            }
+
+            if (!allUnderLoop || modelFiles.Count == 0)
+            {
+                Say("P15 UNKNOWN   a model is not under the loop folder or not on disk, so nothing is appended and nothing more is done");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("PART 1. THE MARKS, written the way Q114's design writes them, then saved, cleared and reopened");
+            Say("the document at the open: " + P13Counts(document) + ", viewpoints " + CountViewpoints(document));
+            List<string> legacyPath = FirstViewTwoDeep(document);
+            Say(legacyPath == null ? "no viewpoint two folders deep, so no existing view is marked" : "the existing viewpoint two folders deep marked here: [" + Shown(string.Join(" / ", legacyPath.ToArray())) + "]");
+
+            int[] first;
+            int[] second;
+            string pairName;
+            document.Models.ResetAllHidden();
+            document.Models.ResetAllTemporaryMaterials();
+
+            using (ModelItemCollection one = new ModelItemCollection())
+            {
+                one.Add(document.Models[0].RootItem);
+                document.Models.SetHidden(one, true);
+            }
+
+            if (FindClashPair(document, out first, out second, out pairName))
+            {
+                PaintOne(document, first, Color.Red);
+                PaintOne(document, second, Color.Green);
+                Say("model 0's root hidden, the pair [" + Shown(pairName) + "] painted red and green");
+            }
+            else
+            {
+                Say("model 0's root hidden, no clash pair with geometry found, so nothing is painted");
+            }
+
+            Dictionary<string, Guid> sentinels = new Dictionary<string, Guid>(StringComparer.Ordinal);
+            string stamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture);
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P15Top;
+                    folder.Guid = Guid.NewGuid();
+                    sentinels[P15Top] = folder.Guid;
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                using (GroupItem top = (GroupItem)ResolveNames(document, new List<string> { P15Top }))
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P15Sub;
+                    document.SavedViewpoints.AddCopy(top, folder);
+                }
+
+                Say("the folder [" + P15Top + "] at the root, its Guid set by the probe, and [" + P15Sub + "] in it, no Guid set, each by FolderItem and AddCopy");
+
+                using (Viewpoint camera = document.CurrentViewpoint.CreateCopy())
+                {
+                    InwOpState10 state = ComApiBridge.State;
+                    InwOpFolderView comSub = FindComFolderAt(state, P15Top, P15Sub);
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    comSub.SavedViews().Add(NewComView(state, P15ComView, camera));
+                    Say("M1 the COM view [" + P15ComView + "] added into its folder's own SavedViews, ApplyHideAttribs and ApplyMaterialAttribs true, in " + Seconds(clock));
+
+                    using (GroupItem sub = (GroupItem)ResolveNames(document, new List<string> { P15Top, P15Sub }))
+                    using (SavedViewpoint view = new SavedViewpoint(camera))
+                    {
+                        view.DisplayName = P15GuidView;
+                        view.Guid = Guid.NewGuid();
+                        sentinels[P15GuidView] = view.Guid;
+                        document.SavedViewpoints.AddCopy(sub, view);
+                    }
+
+                    using (GroupItem sub = (GroupItem)ResolveNames(document, new List<string> { P15Top, P15Sub }))
+                    using (SavedViewpoint view = new SavedViewpoint(camera))
+                    {
+                        view.DisplayName = P15PlainView;
+                        document.SavedViewpoints.AddCopy(sub, view);
+                    }
+
+                    Say("M2 [" + P15GuidView + "] a .NET view, its Guid set, and M3 [" + P15PlainView + "] a .NET view with nothing set, each by AddCopy into [" + P15Sub + "]");
+                }
+            }
+            catch (Exception error)
+            {
+                Say("PART 1 the adds THREW " + error.GetType().Name + ": " + error.Message + ", so nothing more is done");
+                return;
+            }
+
+            P15Mark(document, new List<string> { P15Top, P15Sub, P15ComView }, P15Body(stamp, "M1", P15Top + "/" + P15Sub, P15ComView), CommentStatus.New);
+            P15Mark(document, new List<string> { P15Top, P15Sub }, P15Body(stamp, "F1", P15Top, P15Sub), CommentStatus.New);
+            P15Mark(document, new List<string> { P15Top, P15Sub, P15GuidView }, P15Body(stamp, "M2", P15Top + "/" + P15Sub, P15GuidView), CommentStatus.New);
+            P15Mark(document, new List<string> { P15Top, P15Sub, P15GuidView }, "A second comment, as a person would add, status Approved", CommentStatus.Approved);
+
+            if (legacyPath != null)
+            {
+                P15Mark(document, legacyPath, P15Body(stamp, "L1", legacyPath[0] + "/" + legacyPath[1], legacyPath[2]), CommentStatus.New);
+            }
+
+            document.Models.ResetAllHidden();
+            document.Models.ResetAllTemporaryMaterials();
+            Say("the hidden state and the temporary colours reset after the marks, so the live state carries nothing the probe set");
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the marked file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P15 UNKNOWN   the marked file would not reopen, so the fallback is not run");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("PART 2. THE FALLBACK, in the engine's order, with the viewpoints copied out and back");
+            int sets0;
+            int tests0;
+            string counts0 = P15Numbers(document, out sets0, out tests0);
+            int views0 = CountViewpoints(document);
+            Say("the document before the copy: " + counts0 + ", viewpoints " + views0);
+            P15Tree t0 = P15SnapDocument(document, "before the copy");
+            P15SayMarked(t0, "before the copy");
+            P15ResolveAll(document, sentinels, t0, "before the copy");
+
+            object testsCopy = null;
+            System.Collections.ObjectModel.Collection<SavedItem> setsCopy = null;
+            System.Collections.ObjectModel.Collection<SavedItem> viewsCopy = null;
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                testsCopy = document.GetClash().TestsData.CreateCopy();
+                Say("DocumentClashTests.CreateCopy RETURNED after " + Seconds(clock) + ", a " + (testsCopy == null ? "null" : testsCopy.GetType().Name));
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                setsCopy = document.SelectionSets.CreateCopy();
+                Say("DocumentSelectionSets.CreateCopy RETURNED after " + Seconds(clock) + ", top level items " + (setsCopy == null ? -1 : setsCopy.Count));
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                viewsCopy = document.SavedViewpoints.CreateCopy();
+                Say("DocumentSavedViewpoints.CreateCopy RETURNED after " + Seconds(clock) + ", a " + (viewsCopy == null ? "null" : viewsCopy.GetType().FullName) + ", top level items " + (viewsCopy == null ? -1 : viewsCopy.Count));
+            }
+            catch (Exception error)
+            {
+                Say("a CreateCopy THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            if (viewsCopy == null)
+            {
+                Say("P15 NO   DocumentSavedViewpoints.CreateCopy gave nothing, so the viewpoints cannot be copied out");
+                return;
+            }
+
+            P15Tree c0 = P15SnapCopy(viewsCopy, "off the copy, before the clear");
+            int copyBefore = P15Compare(t0.Rows, c0.Rows, "the copy before the clear against the document before the copy");
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            Say("the copy is not read after the clear, since the engine does not read it and the run of 2026-10-07 crashed in that read");
+
+            int appended = 0;
+
+            foreach (string file in modelFiles)
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                bool ok = false;
+
+                try
+                {
+                    ok = document.TryAppendFile(file);
+                }
+                catch (Exception error)
+                {
+                    Say("   TryAppendFile of " + Path.GetFileName(file) + " THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                Say("   TryAppendFile of " + Path.GetFileName(file) + " returned " + ok + " after " + Seconds(clock));
+
+                if (ok)
+                {
+                    appended++;
+                }
+            }
+
+            int sets1;
+            int tests1;
+            string counts1 = P15Numbers(document, out sets1, out tests1);
+            int views1 = CountViewpoints(document);
+            Say("after the appends, " + appended + " of " + modelFiles.Count + " appended: " + counts1 + ", viewpoints " + views1);
+            P15Tree ta = P15SnapDocument(document, "after the appends");
+
+            if (sets1 < sets0 && setsCopy != null)
+            {
+                try
+                {
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.SelectionSets.CopyFrom(setsCopy);
+                    Say("the sets fell from " + sets0 + " to " + sets1 + ", so DocumentSelectionSets.CopyFrom, as the engine does, RETURNED after " + Seconds(clock));
+                }
+                catch (Exception error)
+                {
+                    Say("DocumentSelectionSets.CopyFrom THREW " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+            else
+            {
+                Say("the sets did not fall, " + sets0 + " then " + sets1 + ", so they are not put back, as the engine does");
+            }
+
+            int setsMid;
+            int testsMid;
+            P15Numbers(document, out setsMid, out testsMid);
+
+            if (testsMid < tests0 && testsCopy != null)
+            {
+                try
+                {
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.GetClash().TestsData.CopyFrom((ClashTestsData)testsCopy);
+                    Say("the tests fell from " + tests0 + " to " + testsMid + ", so DocumentClashTests.CopyFrom, as the engine does, RETURNED after " + Seconds(clock));
+                }
+                catch (Exception error)
+                {
+                    Say("DocumentClashTests.CopyFrom THREW " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+            else
+            {
+                Say("the tests did not fall, " + tests0 + " then " + testsMid + ", so they are not put back, as the engine does");
+            }
+
+            Say("the document after the sets and the tests: " + P13Counts(document) + ", viewpoints " + CountViewpoints(document));
+
+            bool copied = false;
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                document.SavedViewpoints.CopyFrom((IEnumerable<SavedItem>)viewsCopy);
+                Say("DocumentSavedViewpoints.CopyFrom(IEnumerable<SavedItem>) on the copy RETURNED after " + Seconds(clock));
+                copied = true;
+            }
+            catch (Exception error)
+            {
+                Say("DocumentSavedViewpoints.CopyFrom THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            string counts2 = P13Counts(document);
+            int views2 = CountViewpoints(document);
+            Say("the document after the viewpoints' CopyFrom: " + counts2 + ", viewpoints " + views2);
+            P15Tree t1 = P15SnapDocument(document, "after CopyFrom");
+            int rowsAfterCopy = P15Compare(t0.Rows, t1.Rows, "after CopyFrom against the document before the copy");
+            P15SayMarked(t1, "after CopyFrom");
+            int resolved1 = P15ResolveAll(document, sentinels, t1, "after CopyFrom");
+            string route = "CopyFrom straight after the appends";
+
+            if (!copied || t1.Rows.Count != t0.Rows.Count)
+            {
+                Say(string.Empty);
+                Say("ROUTE B, because CopyFrom " + (copied ? "left " + t1.Rows.Count + " items where " + t0.Rows.Count + " were copied" : "threw") + ": DocumentSavedViewpoints.Clear, then CopyFrom again on the same copy");
+
+                try
+                {
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.SavedViewpoints.Clear();
+                    Say("DocumentSavedViewpoints.Clear RETURNED after " + Seconds(clock) + ", viewpoints now " + CountViewpoints(document));
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.SavedViewpoints.CopyFrom((IEnumerable<SavedItem>)viewsCopy);
+                    Say("CopyFrom RETURNED after " + Seconds(clock));
+                    copied = true;
+                }
+                catch (Exception error)
+                {
+                    Say("route B THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                t1 = P15SnapDocument(document, "after route B");
+                rowsAfterCopy = P15Compare(t0.Rows, t1.Rows, "after route B against the document before the copy");
+                P15SayMarked(t1, "after route B");
+                resolved1 = P15ResolveAll(document, sentinels, t1, "after route B");
+                counts2 = P13Counts(document);
+                Say("the document after route B: " + counts2 + ", viewpoints " + CountViewpoints(document));
+                route = "SavedViewpoints.Clear then CopyFrom";
+            }
+
+            int idsAfterCopy = P15CompareIds(t0.Rows, t1.Rows, "after " + route);
+
+            Say(string.Empty);
+            Say("PART 3. THE REBUILT DOCUMENT SAVED, CLEARED AND REOPENED");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(rebuiltAs);
+            Say("SaveFile into " + Path.GetFileName(rebuiltAs) + " took " + Seconds(clock) + ", " + Bytes(rebuiltAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count + ", viewpoints now " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened2 = document.TryOpenFile(rebuiltAs);
+            Say("TryOpenFile of the rebuilt file returned " + reopened2 + " after " + Seconds(clock));
+            int rowsAfterReopen = -1;
+            int idsAfterReopen = -1;
+            int resolved2 = -1;
+            string counts3 = "UNKNOWN";
+            P15Tree t2 = null;
+
+            if (reopened2)
+            {
+                counts3 = P13Counts(document);
+                Say("the document after the reopen: " + counts3 + ", viewpoints " + CountViewpoints(document));
+                t2 = P15SnapDocument(document, "after the reopen");
+                rowsAfterReopen = P15Compare(t0.Rows, t2.Rows, "after the reopen against the document before the copy");
+                idsAfterReopen = P15CompareIds(t0.Rows, t2.Rows, "after the reopen");
+                P15SayMarked(t2, "after the reopen");
+                resolved2 = P15ResolveAll(document, sentinels, t2, "after the reopen");
+            }
+
+            if (testsCopy is IDisposable)
+            {
+                ((IDisposable)testsCopy).Dispose();
+            }
+
+            Say(string.Empty);
+            Say("the models the appends read, at the end:");
+
+            foreach (string file in modelFiles)
+            {
+                string after = File.Exists(file) ? P15Sha(file) : "not on disk";
+                Say("   " + Path.GetFileName(file) + " sha256 " + after + ", " + (string.Equals(after, modelHashes[file], StringComparison.Ordinal) ? "the same as before" : "CHANGED"));
+            }
+
+            bool countsSame = string.Equals(counts0, counts2, StringComparison.Ordinal) && string.Equals(counts2, counts3, StringComparison.Ordinal);
+            Say(string.Empty);
+            Say("SUMMARY: items " + t0.Rows.Count + " before the copy, " + c0.Rows.Count + " on the copy, not read after the clear, " + ta.Rows.Count + " after the appends, "
+                + t1.Rows.Count + " after " + route + ", " + (t2 == null ? "UNKNOWN" : t2.Rows.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)) + " after the reopen. Viewpoints "
+                + t0.Views + ", " + ta.Views + " after the appends, " + t1.Views + ", " + (t2 == null ? "UNKNOWN" : t2.Views.ToString(System.Globalization.CultureInfo.InvariantCulture))
+                + ". Comments on any item " + t0.Comments + ", " + t1.Comments + ", " + (t2 == null ? "UNKNOWN" : t2.Comments.ToString(System.Globalization.CultureInfo.InvariantCulture))
+                + ". Guids not empty " + t0.NotEmptyGuids + ", " + t1.NotEmptyGuids + ", " + (t2 == null ? "UNKNOWN" : t2.NotEmptyGuids.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+            Say("SUMMARY: rows differing in index path, folder, name, kind, Guid, comment body, author and status, Hidden or MaterialOverrides: on the copy " + copyBefore + ", on the copy after the clear not read"
+                + ", after " + route + " " + rowsAfterCopy + ", after the reopen " + rowsAfterReopen + ". Rows whose comment Ids or dates differ: after " + route + " " + idsAfterCopy + ", after the reopen " + idsAfterReopen
+                + ". ResolveGuid found the item at its index path for " + resolved1 + " and " + resolved2 + " of " + sentinels.Count + " Guids set. Models, sets, tests, results and statuses the same before and after " + Yes(countsSame));
+            bool yes = copied && rowsAfterCopy == 0 && rowsAfterReopen == 0 && resolved1 == sentinels.Count && resolved2 == sentinels.Count && countsSame;
+            Say("P15 " + (yes ? "YES" : "NO") + "   after DocumentSavedViewpoints.CreateCopy, Document.Clear, the appends and CopyFrom (" + route + "), every viewpoint and folder came back with its comments and its Guid, and held through a save and a reopen");
+        }
+
+        private static string P15Body(string stamp, string label, string path, string name)
+        {
+            return P9Sentence + "\n" + "[nwcfed-mark 1] stamp=" + stamp + " path=" + path + " name=" + name + " probe=" + label;
+        }
+
+        private static string P15Sha(string file)
+        {
+            try
+            {
+                using (System.Security.Cryptography.SHA256 sha = System.Security.Cryptography.SHA256.Create())
+                using (FileStream stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    return BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", string.Empty);
+                }
+            }
+            catch (Exception error)
+            {
+                return "UNKNOWN, " + error.GetType().Name;
+            }
+        }
+
+        private void P15Mark(Document document, List<string> path, string body, CommentStatus status)
+        {
+            try
+            {
+                using (SavedItem item = ResolveNames(document, path))
+                {
+                    if (item == null)
+                    {
+                        Say("   the mark on [" + Shown(string.Join(" / ", path.ToArray())) + "] NOT WRITTEN, the item is not found by its names");
+                        return;
+                    }
+
+                    using (Comment comment = document.CreateCommentWithUniqueId(body, status, P9Author))
+                    {
+                        System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                        document.SavedViewpoints.AddComment(item, comment);
+                        Say("   AddComment on [" + Shown(string.Join(" / ", path.ToArray())) + "], status " + status + ", RETURNED after " + Seconds(clock));
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   AddComment on [" + Shown(string.Join(" / ", path.ToArray())) + "] THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        private string P15Numbers(Document document, out int sets, out int tests)
+        {
+            sets = 0;
+            tests = 0;
+            int withSearch = 0;
+            int unreadable = 0;
+            List<string> ignored = new List<string>();
+
+            using (FolderItem root = document.SelectionSets.RootItem)
+            {
+                WalkSets(root, string.Empty, ignored, ref sets, ref withSearch, ref unreadable);
+            }
+
+            try
+            {
+                tests = document.GetClash().TestsData.Tests.Count;
+            }
+            catch (Exception)
+            {
+                tests = -1;
+            }
+
+            return P13Counts(document);
+        }
+
+        private P15Tree P15SnapDocument(Document document, string when)
+        {
+            P15Tree tree = new P15Tree();
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                P15Walk(root.Children, string.Empty, string.Empty, tree, true);
+            }
+
+            P15Close(tree);
+            Say("the tree " + when + ": items " + tree.Rows.Count + ", viewpoints " + tree.Views + ", folders " + tree.Folders + ", other kinds " + tree.Other
+                + ", comments on any item " + tree.Comments + ", Guids not empty " + tree.NotEmptyGuids + ", views with a hidden item " + tree.WithHidden
+                + ", reads that threw " + tree.Threw + ", the walk " + Seconds(clock));
+            return tree;
+        }
+
+        private P15Tree P15SnapCopy(System.Collections.ObjectModel.Collection<SavedItem> copy, string when)
+        {
+            P15Tree tree = new P15Tree();
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                P15Walk(copy, string.Empty, string.Empty, tree, false);
+            }
+            catch (Exception error)
+            {
+                tree.Threw++;
+                Say("   the walk " + when + " THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            P15Close(tree);
+            Say("the tree " + when + ": items " + tree.Rows.Count + ", viewpoints " + tree.Views + ", folders " + tree.Folders + ", other kinds " + tree.Other
+                + ", comments on any item " + tree.Comments + ", Guids not empty " + tree.NotEmptyGuids + ", views with a hidden item " + tree.WithHidden
+                + ", reads that threw " + tree.Threw + ", the walk " + Seconds(clock));
+            return tree;
+        }
+
+        private static void P15Close(P15Tree tree)
+        {
+            foreach (P15Row row in tree.Rows)
+            {
+                if (row.Guid != Guid.Empty.ToString())
+                {
+                    tree.NotEmptyGuids++;
+                }
+
+                tree.Comments += Math.Max(0, row.CommentCount);
+
+                if (row.Hidden > 0)
+                {
+                    tree.WithHidden++;
+                }
+            }
+        }
+
+        /// <summary>Every item in tree order. Items of the document are disposed after their read, items of a copy are not, since the copy is put back after.</summary>
+        private static void P15Walk(IList<SavedItem> children, string index, string folder, P15Tree tree, bool dispose)
+        {
+            for (int i = 0; i < children.Count; i++)
+            {
+                SavedItem child = children[i];
+
+                try
+                {
+                    P15Row row = new P15Row();
+                    string at = i.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    row.Index = index.Length == 0 ? at : index + "." + at;
+                    row.Folder = folder;
+                    row.Kind = child == null ? "null" : child.GetType().Name;
+
+                    if (child == null)
+                    {
+                        tree.Rows.Add(row);
+                        tree.Other++;
+                        continue;
+                    }
+
+                    try
+                    {
+                        row.Name = child.DisplayName ?? string.Empty;
+                    }
+                    catch (Exception)
+                    {
+                        row.Name = "THREW";
+                        tree.Threw++;
+                    }
+
+                    try
+                    {
+                        row.Guid = child.Guid.ToString();
+                    }
+                    catch (Exception)
+                    {
+                        row.Guid = "THREW";
+                        tree.Threw++;
+                    }
+
+                    try
+                    {
+                        CommentCollection comments = child.Comments;
+                        row.CommentCount = comments == null ? 0 : comments.Count;
+                        List<string> bodies = new List<string>();
+                        List<string> ids = new List<string>();
+
+                        for (int c = 0; c < row.CommentCount; c++)
+                        {
+                            Comment comment = comments[c];
+                            bodies.Add("Body [" + Shown(comment.Body) + "] Author [" + Shown(comment.Author) + "] Status " + comment.Status);
+                            ids.Add("Id " + comment.Id + " CreationDate " + comment.CreationDate.ToString("yyyy-MM-dd HH:mm:ss.fffffff", System.Globalization.CultureInfo.InvariantCulture));
+                        }
+
+                        row.Comments = string.Join(" | ", bodies.ToArray());
+                        row.Ids = string.Join(" | ", ids.ToArray());
+                    }
+                    catch (Exception)
+                    {
+                        row.CommentCount = -1;
+                        row.Comments = "THREW";
+                        tree.Threw++;
+                    }
+
+                    SavedViewpoint view = child as SavedViewpoint;
+
+                    if (view != null)
+                    {
+                        row.Hidden = HiddenCount(view);
+                        row.Material = MaterialCount(view);
+                        row.HiddenWhat = P15HiddenWhat(view);
+                    }
+
+                    tree.Rows.Add(row);
+                    GroupItem group = child as GroupItem;
+
+                    if (group != null)
+                    {
+                        tree.Folders++;
+                        P15Walk(group.Children, row.Index, folder.Length == 0 ? row.Name : folder + "\u0001" + row.Name, tree, dispose);
+                    }
+                    else if (view != null)
+                    {
+                        tree.Views++;
+                    }
+                    else
+                    {
+                        tree.Other++;
+                    }
+                }
+                finally
+                {
+                    if (dispose && child != null)
+                    {
+                        child.Dispose();
+                    }
+                }
+            }
+        }
+
+        private static string P15HiddenWhat(SavedViewpoint view)
+        {
+            try
+            {
+                VisibilityOverrides overrides = view.GetVisibilityOverrides();
+
+                if (overrides == null)
+                {
+                    return string.Empty;
+                }
+
+                using (ModelItemCollection hidden = overrides.Hidden)
+                {
+                    if (hidden == null)
+                    {
+                        return string.Empty;
+                    }
+
+                    List<string> names = new List<string>();
+
+                    for (int i = 0; i < hidden.Count && i < 3; i++)
+                    {
+                        ModelItem item = hidden[i];
+                        string model = string.Empty;
+
+                        try
+                        {
+                            if (item.HasModel)
+                            {
+                                model = " model " + Path.GetFileName(item.Model.FileName ?? string.Empty);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            model = " model UNKNOWN";
+                        }
+
+                        names.Add("[" + Shown(item.DisplayName ?? string.Empty) + "]" + model);
+                    }
+
+                    return string.Join(", ", names.ToArray());
+                }
+            }
+            catch (Exception error)
+            {
+                return "THREW " + error.GetType().Name;
+            }
+        }
+
+        /// <summary>Row by row, in tree order: index path, folder names, name, kind, Guid, each comment's body, author and status, Hidden with its first three items, MaterialOverrides.</summary>
+        private int P15Compare(List<P15Row> expected, List<P15Row> actual, string label)
+        {
+            int differ = 0;
+            int shown = 0;
+            int most = Math.Max(expected.Count, actual.Count);
+
+            for (int i = 0; i < most; i++)
+            {
+                P15Row e = i < expected.Count ? expected[i] : null;
+                P15Row a = i < actual.Count ? actual[i] : null;
+
+                if (e != null && a != null && string.Equals(e.Key, a.Key, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                differ++;
+
+                if (shown < 12)
+                {
+                    shown++;
+                    Say("      row " + i + ": expected " + P15Show(e) + ", read " + P15Show(a));
+                }
+            }
+
+            Say("   compare " + label + ": rows expected " + expected.Count + ", read " + actual.Count + ", rows that differ " + differ);
+            return differ;
+        }
+
+        private int P15CompareIds(List<P15Row> expected, List<P15Row> actual, string label)
+        {
+            int differ = 0;
+            int shown = 0;
+            int most = Math.Min(expected.Count, actual.Count);
+
+            for (int i = 0; i < most; i++)
+            {
+                if (string.Equals(expected[i].Ids, actual[i].Ids, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                differ++;
+
+                if (shown < 6)
+                {
+                    shown++;
+                    Say("      row " + i + " [" + Shown(expected[i].Name) + "]: comment Ids and dates before {" + expected[i].Ids + "}, read {" + actual[i].Ids + "}");
+                }
+            }
+
+            Say("   compare the comment Ids and dates " + label + ", over the first " + most + " rows: rows that differ " + differ);
+            return differ;
+        }
+
+        private static string P15Show(P15Row row)
+        {
+            if (row == null)
+            {
+                return "none";
+            }
+
+            return row.Index + " [" + Shown(row.Folder.Replace("\u0001", " / ")) + "] [" + Shown(row.Name ?? string.Empty) + "] " + row.Kind + " " + row.Guid
+                + " comments " + row.CommentCount + (row.CommentCount > 0 ? " {" + row.Comments + "}" : string.Empty)
+                + (row.Hidden == -2 ? string.Empty : " Hidden " + row.Hidden + (row.HiddenWhat.Length > 0 ? " {" + row.HiddenWhat + "}" : string.Empty) + " MaterialOverrides " + row.Material);
+        }
+
+        /// <summary>Every row the probe wrote or marked, and every row carrying a comment, said whole.</summary>
+        private void P15SayMarked(P15Tree tree, string when)
+        {
+            Say("   the probe's rows and every row with a comment, " + when + ":");
+
+            foreach (P15Row row in tree.Rows)
+            {
+                bool probe = (row.Folder.StartsWith(P15Top, StringComparison.Ordinal)) || string.Equals(row.Name, P15Top, StringComparison.Ordinal);
+
+                if (probe || row.CommentCount != 0)
+                {
+                    Say("      " + P15Show(row) + (row.Ids.Length > 0 ? " ids {" + row.Ids + "}" : string.Empty));
+                }
+            }
+        }
+
+        private int P15ResolveAll(Document document, Dictionary<string, Guid> sentinels, P15Tree tree, string when)
+        {
+            int found = 0;
+            List<string> other = new List<string>();
+
+            foreach (KeyValuePair<string, Guid> pair in sentinels)
+            {
+                string at = null;
+
+                foreach (P15Row row in tree.Rows)
+                {
+                    if (string.Equals(row.Name, pair.Key, StringComparison.Ordinal) && string.Equals(row.Guid, pair.Value.ToString(), StringComparison.Ordinal))
+                    {
+                        at = row.Index;
+                        break;
+                    }
+                }
+
+                try
+                {
+                    using (SavedItem item = document.SavedViewpoints.ResolveGuid(pair.Value))
+                    {
+                        if (item == null)
+                        {
+                            other.Add(pair.Key + " null" + (at == null ? ", not in the tree with that Guid" : " BUT IN THE TREE at " + at));
+                            continue;
+                        }
+
+                        string itemAt = P10IndexPath(document, item);
+
+                        if (at != null && string.Equals(item.DisplayName, pair.Key, StringComparison.Ordinal) && string.Equals(itemAt, at, StringComparison.Ordinal))
+                        {
+                            found++;
+                        }
+                        else
+                        {
+                            other.Add(pair.Key + " gave [" + Shown(item.DisplayName) + "] at " + itemAt + (at == null ? ", not in the tree with that Guid" : ", the tree has it at " + at));
+                        }
+                    }
+                }
+                catch (Exception error)
+                {
+                    other.Add(pair.Key + " THREW " + error.GetType().Name);
+                }
+            }
+
+            Say("   ResolveGuid " + when + ": the item at its index path for " + found + " of " + sentinels.Count + " Guids set. The others: " + (other.Count == 0 ? "none" : string.Join("; ", other.ToArray())));
+            return found;
+        }
+
+        // ---------- P16 of Q114, does ZoomBox on a copy of the first open clash's camera frame every open clash of a test ----------
+
+        private const string P16Top = "P16 probe";
+
+        private sealed class P16Cam
+        {
+            public bool Ok;
+            public string Why = string.Empty;
+            public double Px, Py, Pz;
+            public double Dx, Dy, Dz;
+            public double Ux, Uy, Uz;
+            public double QDx, QDy, QDz;
+            public double Hf;
+            public double Aspect;
+            public string Projection = string.Empty;
+            public bool HasFocal;
+            public double Focal;
+            public double VExt = double.NaN;
+            public double HExt = double.NaN;
+            public double RA, RB, RC, RD;
+            public double Angle;
+            public double Ax, Ay, Az;
+        }
+
+        private sealed class P16Case
+        {
+            public string Label = string.Empty;
+            public string Test = string.Empty;
+            public int Results;
+            public int Open;
+            public readonly List<double[]> Centres = new List<double[]>();
+            public string FirstName = string.Empty;
+            public double[] FirstCentre;
+            public P16Cam First;
+            public P16Cam Framed;
+            public string FramedView = string.Empty;
+            public string FirstView = string.Empty;
+            public bool ZoomReturned;
+            public double DirChange = double.NaN;
+            public int InFirst = -1;
+            public int InFramed = -1;
+            public int InWindow = -1;
+            public int InRecorded = -1;
+            public int InFirstWindow = -1;
+            public double DirChangeReopen = double.NaN;
+            public bool CentresSame;
+        }
+
+        /// <summary>
+        /// P16: ZoomBox on a copy of the first open clash's camera, with the box of the test's open clash
+        /// centres padded by a margin, keeps the view direction and puts every centre inside the recorded
+        /// view after a reopen, each centre projected with the window's HeightField, 5m. The open statuses
+        /// are New and Active, the design's ViewStatuses. Two tests are taken off the copy, none named in the
+        /// code: the one with the most open clashes, and the one with the fewest open clashes above one.
+        /// For each, the first open clash's camera comes from TestsViewpointForResult and is copied, the box
+        /// is built from two Point3D, the copy is zoomed, and both the zoomed camera and the first clash's
+        /// own are recorded through the COM view into the folder P16 probe at the root. Then SaveFile,
+        /// Document.Clear and TryOpenFile of the saved file, and each view is read as recorded and pressed,
+        /// and the window's camera is read back. A camera looks along its rotation of (0, 0, -1) with its
+        /// rotation of (0, 1, 0) up, and the probe reads how far the first clash's own centre sits from
+        /// that axis on the first clash's own camera, so the convention is measured and not taken on trust.
+        /// </summary>
+        private void MeasureFraming(string nwf, string saveAs, string marginText)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            double marginMm;
+
+            if (!double.TryParse(marginText ?? string.Empty, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out marginMm) || marginMm < 0)
+            {
+                Say("UNKNOWN: the margin [" + Shown(marginText) + "] is not a number of millimetres at or above 0");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                string file = document.Models[m].FileName ?? string.Empty;
+                Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder "
+                    + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase));
+            }
+
+            double mmPerUnit = P16MillimetresPer(document.Units);
+            string scale = "UNKNOWN";
+
+            try
+            {
+                scale = Round(UnitConversion.ScaleFactor(Units.Millimeters, document.Units));
+            }
+            catch (Exception error)
+            {
+                scale = "threw " + error.GetType().Name;
+            }
+
+            Say("document units " + document.Units + ", millimetres per unit by the probe's own table " + (double.IsNaN(mmPerUnit) ? "UNKNOWN" : Round(mmPerUnit))
+                + ", UnitConversion.ScaleFactor(Millimeters, " + document.Units + ") " + scale);
+
+            if (double.IsNaN(mmPerUnit))
+            {
+                Say("P16 UNKNOWN   the document's unit is not in the probe's table, so no margin can be set");
+                return;
+            }
+
+            double margin = marginMm / mmPerUnit;
+            Say("the margin: " + Round(marginMm) + " mm, chosen for this probe and not measured, " + margin.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture) + " in document units, added on every side of the box");
+            string counts0 = P13Counts(document);
+            Say("the document at the open: " + counts0 + ", viewpoints " + CountViewpoints(document));
+
+            DocumentClashTests data = document.GetClash().TestsData;
+            List<P16Case> all = new List<P16Case>();
+            P16ListTests(data.Tests, all);
+            int noOpen = 0;
+            int oneOpen = 0;
+
+            foreach (P16Case c in all)
+            {
+                if (c.Open == 0)
+                {
+                    noOpen++;
+                }
+                else if (c.Open == 1)
+                {
+                    oneOpen++;
+                }
+            }
+
+            Say("tests read " + all.Count + ", with no open clash " + noOpen + ", with one " + oneOpen + ", with two or more " + (all.Count - noOpen - oneOpen) + ". Open is New or Active");
+            P16Case many = null;
+            P16Case few = null;
+
+            foreach (P16Case c in all)
+            {
+                if (many == null || c.Open > many.Open)
+                {
+                    many = c;
+                }
+
+                if (c.Open >= 2 && (few == null || c.Open < few.Open))
+                {
+                    few = c;
+                }
+            }
+
+            if (many == null || few == null || many.Open < 2 || ReferenceEquals(many, few))
+            {
+                Say("P16 UNKNOWN   the copy does not hold two tests of two or more open clashes each");
+                return;
+            }
+
+            many.Label = "many";
+            few.Label = "few";
+            List<P16Case> cases = new List<P16Case> { many, few };
+
+            foreach (P16Case c in cases)
+            {
+                Say("the test of " + c.Label + ": [" + Shown(c.Test) + "], results " + c.Results + ", open " + c.Open);
+            }
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P16Top;
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                Say("the folder [" + P16Top + "] made at the root by FolderItem and AddCopy");
+            }
+            catch (Exception error)
+            {
+                Say("P16 UNKNOWN   the folder could not be made, " + error.GetType().Name + ": " + error.Message);
+                return;
+            }
+
+            InwOpState10 state = ComApiBridge.State;
+
+            foreach (P16Case c in cases)
+            {
+                Say(string.Empty);
+                Say("THE TEST OF " + c.Label.ToUpperInvariant() + ", [" + Shown(c.Test) + "]");
+                ClashResult first = null;
+
+                try
+                {
+                    ClashTest test = P16FindTest(data.Tests, c.Test);
+
+                    if (test == null)
+                    {
+                        Say("   the test was not found again by its name, so this test is not measured");
+                        continue;
+                    }
+
+                    P16Centres(test.Children, c.Centres, ref first);
+                }
+                catch (Exception error)
+                {
+                    Say("   the walk of its results THREW " + error.GetType().Name + ": " + error.Message);
+                    continue;
+                }
+
+                if (first == null || c.Centres.Count < 2)
+                {
+                    Say("   fewer than two open centres were read, " + c.Centres.Count + ", so this test is not measured");
+                    continue;
+                }
+
+                c.FirstName = first.DisplayName ?? string.Empty;
+                c.FirstCentre = c.Centres[0];
+                Say("   open centres read " + c.Centres.Count + ", the first open clash [" + Shown(c.FirstName) + "] status " + first.Status + " centre " + P16Point(c.FirstCentre));
+                Viewpoint firstCam = null;
+
+                try
+                {
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+
+                    using (Viewpoint fromClash = data.TestsViewpointForResult(first))
+                    {
+                        firstCam = fromClash == null ? null : fromClash.CreateCopy();
+                    }
+
+                    Say("   TestsViewpointForResult and CreateCopy took " + Seconds(clock) + ", " + (firstCam == null ? "null" : "a camera"));
+                }
+                catch (Exception error)
+                {
+                    Say("   TestsViewpointForResult THREW " + error.GetType().Name + ": " + error.Message);
+                }
+                finally
+                {
+                    first.Dispose();
+                }
+
+                if (firstCam == null)
+                {
+                    continue;
+                }
+
+                using (firstCam)
+                {
+                    c.First = P16Snap(firstCam);
+                    Say("   the first clash's camera: " + P16Says(c.First));
+                    P16Convention(c.First, c.FirstCentre);
+                    c.InFirst = P16CountIn(c.First, c.First.Hf, c.First.Aspect, c.Centres, "   the first clash's camera, its own field and aspect", 0);
+
+                    double minX = double.MaxValue, minY = double.MaxValue, minZ = double.MaxValue;
+                    double maxX = double.MinValue, maxY = double.MinValue, maxZ = double.MinValue;
+
+                    foreach (double[] p in c.Centres)
+                    {
+                        minX = Math.Min(minX, p[0]); minY = Math.Min(minY, p[1]); minZ = Math.Min(minZ, p[2]);
+                        maxX = Math.Max(maxX, p[0]); maxY = Math.Max(maxY, p[1]); maxZ = Math.Max(maxZ, p[2]);
+                    }
+
+                    Viewpoint framed = firstCam.CreateCopy();
+
+                    try
+                    {
+                        using (Point3D low = new Point3D(minX - margin, minY - margin, minZ - margin))
+                        using (Point3D high = new Point3D(maxX + margin, maxY + margin, maxZ + margin))
+                        using (BoundingBox3D box = new BoundingBox3D(low, high))
+                        {
+                            Say("   the box of the open centres padded by the margin: min " + P16Point(new[] { low.X, low.Y, low.Z }) + " max " + P16Point(new[] { high.X, high.Y, high.Z })
+                                + " size (" + Round(box.Size.X) + ", " + Round(box.Size.Y) + ", " + Round(box.Size.Z) + "), empty " + box.IsEmpty);
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            framed.ZoomBox(box);
+                            c.ZoomReturned = true;
+                            Say("   ZoomBox on the copy RETURNED after " + Seconds(clock));
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        Say("   ZoomBox THREW " + error.GetType().Name + ": " + error.Message);
+                    }
+
+                    using (framed)
+                    {
+                        c.Framed = P16Snap(framed);
+                        Say("   the zoomed camera: " + P16Says(c.Framed));
+                        c.DirChange = P16Angle(c.First.Dx, c.First.Dy, c.First.Dz, c.Framed.Dx, c.Framed.Dy, c.Framed.Dz);
+                        Say("   the view direction moved by " + P16Deg(c.DirChange) + ", the up by " + P16Deg(P16Angle(c.First.Ux, c.First.Uy, c.First.Uz, c.Framed.Ux, c.Framed.Uy, c.Framed.Uz))
+                            + ", the position by " + Round(P16Dist(c.First, c.Framed)) + " units, the field " + Round(c.First.Hf) + " to " + Round(c.Framed.Hf) + ", the aspect " + Round(c.First.Aspect) + " to " + Round(c.Framed.Aspect));
+                        c.InFramed = P16CountIn(c.Framed, c.Framed.Hf, c.Framed.Aspect, c.Centres, "   the zoomed camera, its own field and aspect", 0);
+                        c.FramedView = "P16 " + c.Label + " framed";
+                        c.FirstView = "P16 " + c.Label + " first clash camera";
+                        P16Record(state, document, c.FramedView, framed, c.Framed);
+                        P16Record(state, document, c.FirstView, firstCam, c.First);
+                    }
+                }
+            }
+
+            Say(string.Empty);
+            Say("the document before the save: " + P13Counts(document) + ", viewpoints " + CountViewpoints(document));
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            if (!reopened)
+            {
+                Say("P16 UNKNOWN   the saved file would not reopen, so nothing after a reopen is read");
+                return;
+            }
+
+            string counts2 = P13Counts(document);
+            Say("the document after the reopen: " + counts2 + ", viewpoints " + CountViewpoints(document));
+            data = document.GetClash().TestsData;
+
+            foreach (P16Case c in cases)
+            {
+                if (c.Framed == null)
+                {
+                    continue;
+                }
+
+                Say(string.Empty);
+                Say("AFTER THE REOPEN, THE TEST OF " + c.Label.ToUpperInvariant() + ", [" + Shown(c.Test) + "]");
+                List<double[]> again = new List<double[]>();
+                ClashResult firstAgain = null;
+
+                try
+                {
+                    ClashTest test = P16FindTest(data.Tests, c.Test);
+
+                    if (test != null)
+                    {
+                        P16Centres(test.Children, again, ref firstAgain);
+                    }
+
+                    if (firstAgain != null)
+                    {
+                        firstAgain.Dispose();
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("   the walk of its results THREW " + error.GetType().Name + ": " + error.Message);
+                }
+
+                double worst = 0;
+                c.CentresSame = again.Count == c.Centres.Count;
+
+                for (int i = 0; c.CentresSame && i < again.Count; i++)
+                {
+                    worst = Math.Max(worst, Math.Abs(again[i][0] - c.Centres[i][0]) + Math.Abs(again[i][1] - c.Centres[i][1]) + Math.Abs(again[i][2] - c.Centres[i][2]));
+                }
+
+                c.CentresSame = c.CentresSame && worst < 1e-9;
+                Say("   open centres read again " + again.Count + ", the same as before the save, in order " + Yes(c.CentresSame) + ", the largest difference " + worst.ToString("0.###E+0", System.Globalization.CultureInfo.InvariantCulture));
+
+                using (GroupItem folder = FindFolderAtRoot(document, P16Top))
+                {
+                    if (folder == null)
+                    {
+                        Say("   the folder [" + P16Top + "] is not at the root after the reopen");
+                        continue;
+                    }
+
+                    foreach (string name in new[] { c.FramedView, c.FirstView })
+                    {
+                        bool isFramed = ReferenceEquals(name, c.FramedView);
+                        P16Cam made = isFramed ? c.Framed : c.First;
+
+                        using (SavedViewpoint view = FindUnder(folder, name))
+                        {
+                            if (view == null)
+                            {
+                                Say("   [" + name + "] NOT FOUND after the reopen");
+                                continue;
+                            }
+
+                            P16Cam recorded = P16Snap(view.Viewpoint);
+                            Say("   [" + name + "] as recorded: " + P16Says(recorded));
+                            Say("      against the camera recorded from: position moved " + Round(P16Dist(made, recorded)) + " units, direction " + P16Deg(P16Angle(made.Dx, made.Dy, made.Dz, recorded.Dx, recorded.Dy, recorded.Dz)));
+
+                            if (isFramed)
+                            {
+                                c.InRecorded = P16CountIn(recorded, recorded.Hf, recorded.Aspect, c.Centres, "      the recorded camera, its own field and aspect", 0);
+                            }
+
+                            P16Cam window = null;
+
+                            try
+                            {
+                                clock = System.Diagnostics.Stopwatch.StartNew();
+                                document.SavedViewpoints.CurrentSavedViewpoint = view;
+
+                                using (Viewpoint now = document.CurrentViewpoint.CreateCopy())
+                                {
+                                    window = P16Snap(now);
+                                }
+
+                                Say("      pressed in " + Seconds(clock) + ", the window's camera: " + P16Says(window));
+                            }
+                            catch (Exception error)
+                            {
+                                Say("      the press THREW " + error.GetType().Name + ": " + error.Message);
+                            }
+
+                            if (window == null || !window.Ok)
+                            {
+                                continue;
+                            }
+
+                            double dirMoved = P16Angle(recorded.Dx, recorded.Dy, recorded.Dz, window.Dx, window.Dy, window.Dz);
+                            Say("      the window against the recorded: position moved " + Round(P16Dist(recorded, window)) + " units, direction " + P16Deg(dirMoved)
+                                + ", field " + Round(recorded.Hf) + " to " + Round(window.Hf) + ", aspect " + Round(recorded.Aspect) + " to " + Round(window.Aspect));
+                            int inWin = P16CountIn(window, window.Hf, window.Aspect, c.Centres, "      the window's camera, the window's field and aspect", 5);
+
+                            if (isFramed)
+                            {
+                                c.InWindow = inWin;
+                                c.DirChangeReopen = P16Angle(c.First.Dx, c.First.Dy, c.First.Dz, window.Dx, window.Dy, window.Dz);
+                                P16CountIn(recorded, window.Hf, window.Aspect, c.Centres, "      the recorded position and direction with the window's field and aspect", 0);
+                            }
+                            else
+                            {
+                                c.InFirstWindow = inWin;
+                            }
+                        }
+                    }
+                }
+            }
+
+            Say(string.Empty);
+            bool allIn = true;
+            bool allKept = true;
+            bool allRead = true;
+
+            foreach (P16Case c in cases)
+            {
+                bool read = c.ZoomReturned && c.InWindow >= 0 && c.CentresSame;
+                bool kept = !double.IsNaN(c.DirChangeReopen) && c.DirChangeReopen * 180 / Math.PI < 0.01;
+                bool inside = c.InWindow == c.Centres.Count && c.Centres.Count > 0;
+                allRead &= read;
+                allKept &= kept;
+                allIn &= inside;
+                Say("SUMMARY " + c.Label + " [" + Shown(c.Test) + "]: open " + c.Centres.Count + ". In view: on the first clash's camera " + c.InFirst + ", on the zoomed camera " + c.InFramed
+                    + ", on the recorded view after the reopen " + c.InRecorded + ", pressed in the window " + c.InWindow + ", the first clash's view pressed in the window " + c.InFirstWindow
+                    + ". ZoomBox returned " + Yes(c.ZoomReturned) + ". Direction moved by ZoomBox " + P16Deg(c.DirChange) + ", from the first clash's camera to the window after the reopen " + P16Deg(c.DirChangeReopen));
+            }
+
+            if (!allRead)
+            {
+                Say("P16 UNKNOWN   a step of the measurement did not complete, so the row is not answered");
+            }
+            else if (allIn && allKept)
+            {
+                Say("P16 YES   ZoomBox kept the view direction and every open centre of both tests sits inside the recorded view pressed in the window after a reopen");
+            }
+            else if (allIn)
+            {
+                Say("P16 YES WITH THE DIRECTION CHANGED   every open centre of both tests sits inside the view pressed after a reopen, and the direction moved");
+            }
+            else
+            {
+                Say("P16 NO   on at least one test a centre falls outside the zoomed view pressed in the window after a reopen");
+            }
+        }
+
+        private static double P16MillimetresPer(Units units)
+        {
+            switch (units)
+            {
+                case Units.Meters: return 1000;
+                case Units.Centimeters: return 10;
+                case Units.Millimeters: return 1;
+                case Units.Feet: return 304.8;
+                case Units.Inches: return 25.4;
+                case Units.Yards: return 914.4;
+                case Units.Kilometers: return 1000000;
+                case Units.Miles: return 1609344;
+                case Units.Micrometers: return 0.001;
+                case Units.Mils: return 0.0254;
+                case Units.Microinches: return 0.0000254;
+                default: return double.NaN;
+            }
+        }
+
+        private static void P16ListTests(SavedItemCollection items, List<P16Case> into)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    ClashTest test = item as ClashTest;
+
+                    if (test != null)
+                    {
+                        P16Case c = new P16Case();
+                        c.Test = test.DisplayName ?? string.Empty;
+                        P16CountOpen(test.Children, ref c.Results, ref c.Open);
+                        into.Add(c);
+                        continue;
+                    }
+
+                    GroupItem group = item as GroupItem;
+
+                    if (group != null)
+                    {
+                        P16ListTests(group.Children, into);
+                    }
+                }
+            }
+        }
+
+        private static bool P16IsOpen(ClashResultStatus status)
+        {
+            return status == ClashResultStatus.New || status == ClashResultStatus.Active;
+        }
+
+        private static void P16CountOpen(SavedItemCollection items, ref int results, ref int open)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    ClashResultGroup group = item as ClashResultGroup;
+
+                    if (group != null)
+                    {
+                        P16CountOpen(group.Children, ref results, ref open);
+                        continue;
+                    }
+
+                    ClashResult result = item as ClashResult;
+
+                    if (result != null)
+                    {
+                        results++;
+
+                        if (P16IsOpen(result.Status))
+                        {
+                            open++;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static ClashTest P16FindTest(SavedItemCollection items, string name)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                SavedItem item = items[i];
+                ClashTest test = item as ClashTest;
+
+                if (test != null && string.Equals(test.DisplayName, name, StringComparison.Ordinal))
+                {
+                    return test;
+                }
+
+                GroupItem group = item as GroupItem;
+
+                if (test == null && group != null)
+                {
+                    ClashTest found = P16FindTest(group.Children, name);
+
+                    if (found != null)
+                    {
+                        return found;
+                    }
+                }
+
+                item.Dispose();
+            }
+
+            return null;
+        }
+
+        /// <summary>Every open result's centre in tree order, and the first open result kept for its camera.</summary>
+        private static void P16Centres(SavedItemCollection items, List<double[]> into, ref ClashResult first)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                SavedItem item = items[i];
+                ClashResultGroup group = item as ClashResultGroup;
+
+                if (group != null)
+                {
+                    P16Centres(group.Children, into, ref first);
+                    continue;
+                }
+
+                ClashResult result = item as ClashResult;
+
+                if (result == null || !P16IsOpen(result.Status))
+                {
+                    item.Dispose();
+                    continue;
+                }
+
+                using (Point3D c = result.Center)
+                {
+                    into.Add(new[] { c.X, c.Y, c.Z });
+                }
+
+                if (first == null)
+                {
+                    first = result;
+                }
+                else
+                {
+                    item.Dispose();
+                }
+            }
+        }
+
+        private static P16Cam P16Snap(Viewpoint v)
+        {
+            P16Cam cam = new P16Cam();
+
+            if (v == null)
+            {
+                cam.Why = "null";
+                return cam;
+            }
+
+            try
+            {
+                using (Point3D p = v.Position)
+                {
+                    cam.Px = p.X; cam.Py = p.Y; cam.Pz = p.Z;
+                }
+
+                using (Rotation3D r = v.Rotation)
+                {
+                    cam.RA = r.A; cam.RB = r.B; cam.RC = r.C; cam.RD = r.D;
+                    AxisAndAngleResult aa = r.ToAxisAndAngle();
+                    cam.Angle = aa.Angle;
+                    cam.Ax = aa.Axis.X; cam.Ay = aa.Axis.Y; cam.Az = aa.Axis.Z;
+                }
+
+                double[] d = P16Rodrigues(cam.Ax, cam.Ay, cam.Az, cam.Angle, 0, 0, -1);
+                double[] u = P16Rodrigues(cam.Ax, cam.Ay, cam.Az, cam.Angle, 0, 1, 0);
+                double[] q = P16Quaternion(cam.RA, cam.RB, cam.RC, cam.RD, 0, 0, -1);
+                cam.Dx = d[0]; cam.Dy = d[1]; cam.Dz = d[2];
+                cam.Ux = u[0]; cam.Uy = u[1]; cam.Uz = u[2];
+                cam.QDx = q[0]; cam.QDy = q[1]; cam.QDz = q[2];
+                cam.Hf = v.HeightField;
+                cam.Aspect = v.AspectRatio;
+                cam.Projection = v.Projection.ToString();
+                cam.HasFocal = v.HasFocalDistance;
+
+                if (cam.HasFocal)
+                {
+                    cam.Focal = v.FocalDistance;
+
+                    try
+                    {
+                        cam.VExt = v.VerticalExtentAtFocalDistance;
+                        cam.HExt = v.HorizontalExtentAtFocalDistance;
+                    }
+                    catch (Exception)
+                    {
+                        cam.VExt = double.NaN;
+                        cam.HExt = double.NaN;
+                    }
+                }
+
+                cam.Ok = true;
+            }
+            catch (Exception error)
+            {
+                cam.Why = "threw " + error.GetType().Name + ": " + error.Message;
+            }
+
+            return cam;
+        }
+
+        private static double[] P16Rodrigues(double kx, double ky, double kz, double angle, double vx, double vy, double vz)
+        {
+            double len = Math.Sqrt(kx * kx + ky * ky + kz * kz);
+
+            if (len < 1e-12)
+            {
+                return new[] { vx, vy, vz };
+            }
+
+            kx /= len; ky /= len; kz /= len;
+            double cos = Math.Cos(angle);
+            double sin = Math.Sin(angle);
+            double dot = kx * vx + ky * vy + kz * vz;
+            double cx = ky * vz - kz * vy;
+            double cy = kz * vx - kx * vz;
+            double cz = kx * vy - ky * vx;
+            return new[]
+            {
+                vx * cos + cx * sin + kx * dot * (1 - cos),
+                vy * cos + cy * sin + ky * dot * (1 - cos),
+                vz * cos + cz * sin + kz * dot * (1 - cos)
+            };
+        }
+
+        /// <summary>The vector turned by the unit quaternion read as A, B, C the vector part and D the scalar part.</summary>
+        private static double[] P16Quaternion(double a, double b, double c, double d, double vx, double vy, double vz)
+        {
+            double tx = 2 * (b * vz - c * vy);
+            double ty = 2 * (c * vx - a * vz);
+            double tz = 2 * (a * vy - b * vx);
+            return new[]
+            {
+                vx + d * tx + (b * tz - c * ty),
+                vy + d * ty + (c * tx - a * tz),
+                vz + d * tz + (a * ty - b * tx)
+            };
+        }
+
+        private static double P16Angle(double ax, double ay, double az, double bx, double by, double bz)
+        {
+            double la = Math.Sqrt(ax * ax + ay * ay + az * az);
+            double lb = Math.Sqrt(bx * bx + by * by + bz * bz);
+
+            if (la < 1e-12 || lb < 1e-12)
+            {
+                return double.NaN;
+            }
+
+            double cos = (ax * bx + ay * by + az * bz) / (la * lb);
+            return Math.Acos(Math.Max(-1, Math.Min(1, cos)));
+        }
+
+        private static string P16Deg(double radians)
+        {
+            return double.IsNaN(radians) ? "UNKNOWN" : (radians * 180 / Math.PI).ToString("0.0000", System.Globalization.CultureInfo.InvariantCulture) + " deg";
+        }
+
+        private static double P16Dist(P16Cam a, P16Cam b)
+        {
+            double dx = a.Px - b.Px, dy = a.Py - b.Py, dz = a.Pz - b.Pz;
+            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+        private static string P16Point(double[] p)
+        {
+            return "(" + Round(p[0]) + ", " + Round(p[1]) + ", " + Round(p[2]) + ")";
+        }
+
+        private static string P16Says(P16Cam c)
+        {
+            if (!c.Ok)
+            {
+                return "UNREAD, " + c.Why;
+            }
+
+            string focal = c.HasFocal ? Round(c.Focal) : "none";
+            string implied = "UNKNOWN";
+            string extRatio = "UNKNOWN";
+
+            if (c.HasFocal && c.Focal > 0 && !double.IsNaN(c.VExt))
+            {
+                implied = Round(2 * Math.Atan(c.VExt / (2 * c.Focal)));
+                extRatio = c.VExt > 0 ? Round(c.HExt / c.VExt) : "UNKNOWN";
+            }
+
+            return "position " + P16Point(new[] { c.Px, c.Py, c.Pz }) + ", rotation A B C D (" + Round6(c.RA) + ", " + Round6(c.RB) + ", " + Round6(c.RC) + ", " + Round6(c.RD) + ")"
+                + ", direction by axis and angle (" + Round6(c.Dx) + ", " + Round6(c.Dy) + ", " + Round6(c.Dz) + ") and by the quaternion (" + Round6(c.QDx) + ", " + Round6(c.QDy) + ", " + Round6(c.QDz) + ")"
+                + ", up (" + Round6(c.Ux) + ", " + Round6(c.Uy) + ", " + Round6(c.Uz) + "), projection " + c.Projection + ", HeightField " + Round6(c.Hf) + ", AspectRatio " + Round6(c.Aspect)
+                + ", focal " + focal + ", extents at the focal distance H " + (double.IsNaN(c.HExt) ? "UNKNOWN" : Round(c.HExt)) + " V " + (double.IsNaN(c.VExt) ? "UNKNOWN" : Round(c.VExt))
+                + ", the full vertical angle the extents imply " + implied + ", H over V " + extRatio;
+        }
+
+        private static string Round6(double d)
+        {
+            return d.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private void P16Convention(P16Cam cam, double[] centre)
+        {
+            if (!cam.Ok)
+            {
+                return;
+            }
+
+            double rx = centre[0] - cam.Px, ry = centre[1] - cam.Py, rz = centre[2] - cam.Pz;
+            Say("   the first clash's centre against the first clash's camera: " + Round(Math.Sqrt(rx * rx + ry * ry + rz * rz)) + " units away, off the axis turned from (0, 0, -1) by axis and angle "
+                + P16Deg(P16Angle(cam.Dx, cam.Dy, cam.Dz, rx, ry, rz)) + ", by the quaternion " + P16Deg(P16Angle(cam.QDx, cam.QDy, cam.QDz, rx, ry, rz))
+                + ", the two directions apart " + P16Deg(P16Angle(cam.Dx, cam.Dy, cam.Dz, cam.QDx, cam.QDy, cam.QDz)));
+        }
+
+        /// <summary>
+        /// Counts the centres inside the view of that position and direction with that field and aspect.
+        /// Perspective: in front, and the tangent of the angle off the axis within half the field up and
+        /// down and aspect times that across. Orthographic: within half the field up and down and aspect
+        /// times that across, an assumption the line says. Prints the reach, 1 being the edge.
+        /// </summary>
+        private int P16CountIn(P16Cam cam, double hf, double aspect, List<double[]> centres, string label, int worstToShow)
+        {
+            if (cam == null || !cam.Ok)
+            {
+                Say(label + ": the camera was not read");
+                return -1;
+            }
+
+            bool ortho = string.Equals(cam.Projection, "Orthographic", StringComparison.Ordinal);
+            double rx = cam.Dy * cam.Uz - cam.Dz * cam.Uy;
+            double ry = cam.Dz * cam.Ux - cam.Dx * cam.Uz;
+            double rz = cam.Dx * cam.Uy - cam.Dy * cam.Ux;
+            double tv = ortho ? hf / 2 : Math.Tan(hf / 2);
+            double th = aspect * tv;
+            int inside = 0;
+            int behind = 0;
+            double maxReach = 0;
+            double maxAcross = 0;
+            double maxUp = 0;
+            List<KeyValuePair<double, int>> reach = new List<KeyValuePair<double, int>>();
+
+            for (int i = 0; i < centres.Count; i++)
+            {
+                double[] p = centres[i];
+                double vx = p[0] - cam.Px, vy = p[1] - cam.Py, vz = p[2] - cam.Pz;
+                double depth = vx * cam.Dx + vy * cam.Dy + vz * cam.Dz;
+                double up = vx * cam.Ux + vy * cam.Uy + vz * cam.Uz;
+                double across = vx * rx + vy * ry + vz * rz;
+                double nx;
+                double ny;
+
+                if (ortho)
+                {
+                    nx = Math.Abs(across) / th;
+                    ny = Math.Abs(up) / tv;
+                }
+                else
+                {
+                    if (depth <= 0)
+                    {
+                        behind++;
+                        reach.Add(new KeyValuePair<double, int>(double.PositiveInfinity, i));
+                        continue;
+                    }
+
+                    nx = Math.Abs(across) / (depth * th);
+                    ny = Math.Abs(up) / (depth * tv);
+                }
+
+                double r = Math.Max(nx, ny);
+                maxAcross = Math.Max(maxAcross, nx);
+                maxUp = Math.Max(maxUp, ny);
+                maxReach = Math.Max(maxReach, r);
+                reach.Add(new KeyValuePair<double, int>(r, i));
+
+                if (r <= 1)
+                {
+                    inside++;
+                }
+            }
+
+            Say(label + " (field " + Round6(hf) + ", aspect " + Round6(aspect) + ", " + (ortho ? "orthographic, half the field taken as half the height" : "perspective") + "): inside " + inside + " of " + centres.Count
+                + ", behind the camera " + behind + ", the largest reach " + (behind > 0 ? "behind" : Round6(maxReach)) + " where 1 is the edge, across " + Round6(maxAcross) + ", up and down " + Round6(maxUp));
+
+            if (worstToShow > 0)
+            {
+                reach.Sort((a, b) => b.Key.CompareTo(a.Key));
+
+                for (int k = 0; k < Math.Min(worstToShow, reach.Count); k++)
+                {
+                    Say(label.Substring(0, label.Length - label.TrimStart().Length) + "   reach " + (double.IsPositiveInfinity(reach[k].Key) ? "behind" : Round6(reach[k].Key)) + " open centre " + reach[k].Value + " " + P16Point(centres[reach[k].Value]));
+                }
+            }
+
+            return inside;
+        }
+
+        private void P16Record(InwOpState10 state, Document document, string name, Viewpoint camera, P16Cam expected)
+        {
+            try
+            {
+                System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                InwOpView view = NewComView(state, name, camera);
+                InwOpFolderView folder = FindComFolderAt(state, P16Top);
+
+                if (folder == null)
+                {
+                    Say("   [" + name + "] NOT RECORDED, the COM folder [" + P16Top + "] was not found");
+                    return;
+                }
+
+                folder.SavedViews().Add(view);
+                Say("   [" + name + "] recorded through the COM view into [" + P16Top + "] in " + Seconds(clock));
+
+                using (GroupItem parent = FindFolderAtRoot(document, P16Top))
+                using (SavedViewpoint back = FindUnder(parent, name))
+                {
+                    if (back == null)
+                    {
+                        Say("      read back: NOT FOUND in the folder");
+                        return;
+                    }
+
+                    P16Cam read = P16Snap(back.Viewpoint);
+                    Say("      read back: position moved " + Round(P16Dist(expected, read)) + " units, direction " + P16Deg(P16Angle(expected.Dx, expected.Dy, expected.Dz, read.Dx, read.Dy, read.Dz))
+                        + ", HeightField " + Round6(read.Hf) + ", AspectRatio " + Round6(read.Aspect) + ", projection " + read.Projection);
+                }
+            }
+            catch (Exception error)
+            {
+                Say("   [" + name + "] the record THREW " + error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        // ---------- P17 of Q114, one reset and one paint per colour over every clashing item of a test, recorded into one view ----------
+
+        private const string P17Top = "P17 probe";
+        private const string P17View = "P17 painted";
+        private const double P17Dim = 0.85;
+        private const double P17Tol = 0.001;
+
+        private sealed class P17Item
+        {
+            public int[] Path;
+            public string Key = string.Empty;
+            public bool Red;
+            public bool Found;
+            public bool HasGeometry;
+            public double OR, OG, OB, OT;
+        }
+
+        private sealed class P17Tally
+        {
+            public string Side = string.Empty;
+            public int Items;
+            public int Judged;
+            public int NoGeometry;
+            public int ColourRight;
+            public int Solid;
+            public int Dimmed;
+            public int Named;
+            public int NamedNoTransparency;
+            public int NamedNoColour;
+            public readonly List<string> Wrong = new List<string>();
+
+            public bool AllRight
+            {
+                get { return Judged > 0 && ColourRight == Judged && Solid == Judged; }
+            }
+        }
+
+        /// <summary>
+        /// P17: on the test with the most open clashes, read off the copy and not named in the code, the
+        /// design's per view sequence over every clashing item at once. Open is New or Active. Red is every
+        /// first item, green every second item not already red, solid all of them, PaintPlan of the design.
+        /// The models that hold no clashing item are hidden by SetHidden on their roots, the others dimmed by
+        /// OverrideTemporaryTransparency on their roots at 0.85, then ONE ResetTemporaryMaterials over every
+        /// clashing item, ONE OverrideTemporaryColor over the red collection and ONE over the green, each call
+        /// timed. The view is recorded through the COM view into the folder P17 probe on the first clash's
+        /// camera zoomed to the open centres, 5z-x. Every item is read three ways: live before the record,
+        /// off the view's own MaterialOverrides as what it WILL SHOW (the override's colour where it names
+        /// the item, the item's own where it does not, 5p), and live after the view is pressed off the
+        /// reopened file. The copy is saved once with the empty folder and no view, and once with the view,
+        /// and both sizes are read off the disk.
+        /// </summary>
+        private void MeasurePaint(string nwf, string saveAs, string marginText)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            double marginMm;
+
+            if (!double.TryParse(marginText ?? string.Empty, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out marginMm) || marginMm < 0)
+            {
+                Say("UNKNOWN: the margin [" + Shown(marginText) + "] is not a number of millimetres at or above 0");
+                return;
+            }
+
+            string plainAs = Path.Combine(Path.GetDirectoryName(saveAs), "p17-plain.nwf");
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+            List<int[]> rootPaths = new List<int[]>();
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                using (Model model = document.Models[m])
+                using (ModelItem root = model.RootItem)
+                {
+                    string file = model.FileName ?? string.Empty;
+                    int[] rp = PathOf(document, root);
+                    rootPaths.Add(rp);
+                    Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder " + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase)
+                        + ", its root's index path [" + P17Key(rp) + "], root hidden " + root.IsHidden);
+                }
+            }
+
+            double mmPerUnit = P16MillimetresPer(document.Units);
+            Say("document units " + document.Units + ", millimetres per unit by the probe's own table " + (double.IsNaN(mmPerUnit) ? "UNKNOWN" : Round(mmPerUnit)));
+            double margin = double.IsNaN(mmPerUnit) ? 0 : marginMm / mmPerUnit;
+            Say("the framing margin: " + Round(marginMm) + " mm, chosen and not measured, as in 5z-x, " + margin.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture) + " in document units");
+            Say("the document at the open: " + P13Counts(document) + ", viewpoints " + CountViewpoints(document));
+
+            DocumentClashTests data = document.GetClash().TestsData;
+            List<P16Case> all = new List<P16Case>();
+            P16ListTests(data.Tests, all);
+            P16Case many = null;
+
+            foreach (P16Case c in all)
+            {
+                if (many == null || c.Open > many.Open)
+                {
+                    many = c;
+                }
+            }
+
+            if (many == null || many.Open < 2)
+            {
+                Say("P17 UNKNOWN   the copy holds no test of two or more open clashes");
+                return;
+            }
+
+            Say("tests read " + all.Count + ". The test of the most open clashes: [" + Shown(many.Test) + "], results " + many.Results + ", open " + many.Open + ". Open is New or Active");
+
+            List<int[]> firsts = new List<int[]>();
+            List<int[]> seconds = new List<int[]>();
+            List<double[]> centres = new List<double[]>();
+            ClashResult first = null;
+            int missing = 0;
+
+            try
+            {
+                ClashTest test = P16FindTest(data.Tests, many.Test);
+
+                if (test == null)
+                {
+                    Say("P17 UNKNOWN   the test was not found again by its name");
+                    return;
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                P17Walk(document, test.Children, firsts, seconds, centres, ref first, ref missing);
+                Say("the open results walked in " + Seconds(clock) + ": open " + centres.Count + ", first items read " + firsts.Count + ", second items read " + seconds.Count + ", sides that read null " + missing);
+            }
+            catch (Exception error)
+            {
+                Say("P17 UNKNOWN   the walk of the results THREW " + error.GetType().Name + ": " + error.Message);
+                return;
+            }
+
+            if (first == null || firsts.Count == 0 || seconds.Count == 0)
+            {
+                Say("P17 UNKNOWN   the walk read no open result with its items");
+                return;
+            }
+
+            Dictionary<string, P17Item> plan = new Dictionary<string, P17Item>(StringComparer.Ordinal);
+            List<P17Item> order = new List<P17Item>();
+            int firstAlsoSecond = 0;
+
+            foreach (int[] p in firsts)
+            {
+                string k = P17Key(p);
+
+                if (!plan.ContainsKey(k))
+                {
+                    P17Item it = new P17Item();
+                    it.Path = p;
+                    it.Key = k;
+                    it.Red = true;
+                    plan[k] = it;
+                    order.Add(it);
+                }
+            }
+
+            int redCount = order.Count;
+            HashSet<string> secondKeys = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (int[] p in seconds)
+            {
+                string k = P17Key(p);
+
+                if (!secondKeys.Add(k))
+                {
+                    continue;
+                }
+
+                P17Item have;
+
+                if (plan.TryGetValue(k, out have))
+                {
+                    firstAlsoSecond++;
+                    continue;
+                }
+
+                P17Item it = new P17Item();
+                it.Path = p;
+                it.Key = k;
+                it.Red = false;
+                plan[k] = it;
+                order.Add(it);
+            }
+
+            int greenCount = order.Count - redCount;
+            Say("the paint plan: red, every distinct first item, " + redCount + ". Green, every distinct second item not already red, " + greenCount + ". Solid, all of them, " + order.Count
+                + ". Distinct second items " + secondKeys.Count + ", of which first in some clash and so red " + firstAlsoSecond);
+
+            HashSet<int> shown = new HashSet<int>();
+            int noHome = 0;
+
+            foreach (P17Item it in order)
+            {
+                int home = -1;
+
+                for (int m = 0; m < rootPaths.Count; m++)
+                {
+                    if (P17Prefix(rootPaths[m], it.Path))
+                    {
+                        home = m;
+                        break;
+                    }
+                }
+
+                if (home < 0)
+                {
+                    noHome++;
+                }
+                else
+                {
+                    shown.Add(home);
+                }
+            }
+
+            List<int> shownList = new List<int>(shown);
+            shownList.Sort();
+            Say("the models holding a clashing item, shown and dimmed: " + string.Join(", ", shownList.ConvertAll(i => i.ToString(System.Globalization.CultureInfo.InvariantCulture)).ToArray())
+                + ". The rest hidden, " + (document.Models.Count - shown.Count) + ". Items under no model root " + noHome);
+
+            int noGeometry = 0;
+            int alreadyTarget = 0;
+            int ownTransparent = 0;
+            clock = System.Diagnostics.Stopwatch.StartNew();
+
+            foreach (P17Item it in order)
+            {
+                using (ModelItem mi = document.Models.ResolveIndexPath(it.Path))
+                {
+                    if (mi == null)
+                    {
+                        continue;
+                    }
+
+                    it.Found = true;
+
+                    if (!mi.HasGeometry)
+                    {
+                        noGeometry++;
+                        continue;
+                    }
+
+                    it.HasGeometry = true;
+
+                    using (ModelGeometry g = mi.Geometry)
+                    {
+                        Color oc = g.OriginalColor;
+                        it.OR = oc.R; it.OG = oc.G; it.OB = oc.B;
+                        it.OT = g.OriginalTransparency;
+                    }
+
+                    if (P17Same(it.OR, it.OG, it.OB, it.Red ? 1 : 0, it.Red ? 0 : 1, 0))
+                    {
+                        alreadyTarget++;
+                    }
+
+                    if (it.OT > P17Tol)
+                    {
+                        ownTransparent++;
+                    }
+                }
+            }
+
+            int notFound = 0;
+
+            foreach (P17Item it in order)
+            {
+                if (!it.Found)
+                {
+                    notFound++;
+                }
+            }
+
+            Say("the own colours read in " + Seconds(clock) + ": items resolved " + (order.Count - notFound) + " of " + order.Count + ", without geometry " + noGeometry
+                + ", whose own colour is already the one they are given " + alreadyTarget + ", whose own transparency is above 0 " + ownTransparent);
+
+            Viewpoint camera = null;
+
+            try
+            {
+                using (Viewpoint fromClash = data.TestsViewpointForResult(first))
+                {
+                    camera = fromClash == null ? null : fromClash.CreateCopy();
+                }
+
+                first.Dispose();
+
+                if (camera != null && !double.IsNaN(mmPerUnit))
+                {
+                    double minX = double.MaxValue, minY = double.MaxValue, minZ = double.MaxValue;
+                    double maxX = double.MinValue, maxY = double.MinValue, maxZ = double.MinValue;
+
+                    foreach (double[] p in centres)
+                    {
+                        minX = Math.Min(minX, p[0]); minY = Math.Min(minY, p[1]); minZ = Math.Min(minZ, p[2]);
+                        maxX = Math.Max(maxX, p[0]); maxY = Math.Max(maxY, p[1]); maxZ = Math.Max(maxZ, p[2]);
+                    }
+
+                    using (Point3D low = new Point3D(minX - margin, minY - margin, minZ - margin))
+                    using (Point3D high = new Point3D(maxX + margin, maxY + margin, maxZ + margin))
+                    using (BoundingBox3D box = new BoundingBox3D(low, high))
+                    {
+                        camera.ZoomBox(box);
+                    }
+
+                    Say("the camera: the first open clash's from TestsViewpointForResult, copied and zoomed to the open centres padded by the margin, as 5z-x");
+                }
+            }
+            catch (Exception error)
+            {
+                Say("the clash camera or its zoom THREW " + error.GetType().Name + ": " + error.Message);
+            }
+
+            if (camera == null)
+            {
+                camera = document.CurrentViewpoint.CreateCopy();
+                Say("the camera: the window's current one, the clash camera could not be read");
+            }
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = P17Top;
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                Say("the folder [" + P17Top + "] made at the root by FolderItem and AddCopy");
+            }
+            catch (Exception error)
+            {
+                Say("P17 UNKNOWN   the folder could not be made, " + error.GetType().Name + ": " + error.Message);
+                return;
+            }
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(plainAs);
+            long plainBytes = P17Bytes(plainAs);
+            Say("SaveFile into " + Path.GetFileName(plainAs) + ", the copy with the empty folder and no view, took " + Seconds(clock) + ", " + plainBytes + " bytes read back off the disk");
+
+            Say(string.Empty);
+            Say("THE SEQUENCE, each call once");
+            List<ModelItem> held = new List<ModelItem>();
+            bool resetOk = false;
+            bool redOk = false;
+            bool greenOk = false;
+            bool recorded = false;
+            P17Tally[] live1 = null;
+            P17Tally[] read1 = null;
+            InwOpState10 state = ComApiBridge.State;
+
+            using (ModelItemCollection shownRoots = new ModelItemCollection())
+            using (ModelItemCollection hiddenRoots = new ModelItemCollection())
+            using (ModelItemCollection solid = new ModelItemCollection())
+            using (ModelItemCollection red = new ModelItemCollection())
+            using (ModelItemCollection green = new ModelItemCollection())
+            {
+                for (int m = 0; m < document.Models.Count; m++)
+                {
+                    using (Model model = document.Models[m])
+                    {
+                        ModelItem root = model.RootItem;
+                        held.Add(root);
+
+                        if (shown.Contains(m))
+                        {
+                            shownRoots.Add(root);
+                        }
+                        else
+                        {
+                            hiddenRoots.Add(root);
+                        }
+                    }
+                }
+
+                if (hiddenRoots.Count > 0)
+                {
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.Models.SetHidden(hiddenRoots, true);
+                    Say("   SetHidden on " + hiddenRoots.Count + " model root(s) in " + Seconds(clock));
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                document.Models.OverrideTemporaryTransparency(shownRoots, P17Dim);
+                Say("   OverrideTemporaryTransparency " + Round(P17Dim) + " on " + shownRoots.Count + " shown model root(s) in " + Seconds(clock));
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                foreach (P17Item it in order)
+                {
+                    if (!it.Found)
+                    {
+                        continue;
+                    }
+
+                    ModelItem mi = document.Models.ResolveIndexPath(it.Path);
+
+                    if (mi == null)
+                    {
+                        continue;
+                    }
+
+                    held.Add(mi);
+                    solid.Add(mi);
+
+                    if (it.Red)
+                    {
+                        red.Add(mi);
+                    }
+                    else
+                    {
+                        green.Add(mi);
+                    }
+                }
+
+                Say("   ResolveIndexPath per item into the collections in " + Seconds(clock) + ": solid " + solid.Count + ", red " + red.Count + ", green " + green.Count);
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                try
+                {
+                    document.Models.ResetTemporaryMaterials(solid);
+                    resetOk = true;
+                    Say("   ResetTemporaryMaterials, ONE call over the " + solid.Count + " solid items, RETURNED in " + Seconds(clock));
+                }
+                catch (Exception error)
+                {
+                    Say("   ResetTemporaryMaterials over " + solid.Count + " items THREW after " + Seconds(clock) + ", " + error.GetType().Name + ": " + error.Message);
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                try
+                {
+                    document.Models.OverrideTemporaryColor(red, new Color(1.0, 0.0, 0.0));
+                    redOk = true;
+                    Say("   OverrideTemporaryColor (1,0,0), ONE call over the " + red.Count + " red items, RETURNED in " + Seconds(clock));
+                }
+                catch (Exception error)
+                {
+                    Say("   OverrideTemporaryColor red over " + red.Count + " items THREW after " + Seconds(clock) + ", " + error.GetType().Name + ": " + error.Message);
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                try
+                {
+                    document.Models.OverrideTemporaryColor(green, new Color(0.0, 1.0, 0.0));
+                    greenOk = true;
+                    Say("   OverrideTemporaryColor (0,1,0), ONE call over the " + green.Count + " green items, RETURNED in " + Seconds(clock));
+                }
+                catch (Exception error)
+                {
+                    Say("   OverrideTemporaryColor green over " + green.Count + " items THREW after " + Seconds(clock) + ", " + error.GetType().Name + ": " + error.Message);
+                }
+
+                live1 = P17Live(document, order, plan, rootPaths, shown, "   LIVE before the record");
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                try
+                {
+                    InwOpView view = NewComView(state, P17View, camera);
+                    InwOpFolderView folder = FindComFolderAt(state, P17Top);
+
+                    if (folder == null)
+                    {
+                        Say("   [" + P17View + "] NOT RECORDED, the COM folder [" + P17Top + "] was not found");
+                    }
+                    else
+                    {
+                        folder.SavedViews().Add(view);
+                        recorded = true;
+                        Say("   [" + P17View + "] recorded through the COM view, ApplyHideAttribs and ApplyMaterialAttribs true, into [" + P17Top + "] in " + Seconds(clock)
+                            + ", the tree now " + CountViewpoints(document) + " viewpoints");
+                    }
+                }
+                catch (Exception error)
+                {
+                    Say("   the record THREW after " + Seconds(clock) + ", " + error.GetType().Name + ": " + error.Message);
+                }
+
+                if (recorded)
+                {
+                    read1 = P17ReadNamed(document, order, "   READ OFF THE VIEW before the save");
+                }
+
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+                {
+                    document.Models.ResetTemporaryMaterials(roots);
+                }
+
+                document.Models.ResetAllHidden();
+                Say("   undone: ResetTemporaryMaterials on every root and ResetAllHidden in " + Seconds(clock) + ". This is a copy, and each root's hidden state at the open is read above");
+            }
+
+            foreach (ModelItem mi in held)
+            {
+                mi.Dispose();
+            }
+
+            camera.Dispose();
+            Say(string.Empty);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            long paintedBytes = P17Bytes(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + ", the copy with the one painted view, took " + Seconds(clock) + ", " + paintedBytes + " bytes read back off the disk, "
+                + (plainBytes >= 0 && paintedBytes >= 0 ? (paintedBytes - plainBytes).ToString(System.Globalization.CultureInfo.InvariantCulture) : "UNKNOWN") + " bytes more than the save with no view");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+
+            P17Tally[] read2 = null;
+            P17Tally[] live2 = null;
+
+            if (reopened)
+            {
+                Say("the document after the reopen: " + P13Counts(document) + ", viewpoints " + CountViewpoints(document));
+                read2 = P17ReadNamed(document, order, "AFTER THE REOPEN, READ OFF THE VIEW");
+
+                try
+                {
+                    using (GroupItem folder = FindFolderAtRoot(document, P17Top))
+                    using (SavedViewpoint view = FindUnder(folder, P17View))
+                    {
+                        if (view == null)
+                        {
+                            Say("AFTER THE REOPEN the view [" + P17View + "] was not found, so it is not pressed");
+                        }
+                        else
+                        {
+                            clock = System.Diagnostics.Stopwatch.StartNew();
+                            document.SavedViewpoints.CurrentSavedViewpoint = view;
+                            Say("AFTER THE REOPEN the view pressed through CurrentSavedViewpoint in " + Seconds(clock));
+                        }
+                    }
+
+                    live2 = P17Live(document, order, plan, rootPaths, shown, "AFTER THE REOPEN, LIVE after the press");
+                }
+                catch (Exception error)
+                {
+                    Say("AFTER THE REOPEN the press THREW " + error.GetType().Name + ": " + error.Message);
+                }
+            }
+
+            Say(string.Empty);
+            bool callsOk = resetOk && redOk && greenOk;
+            bool done = callsOk && recorded && reopened && live1 != null && read1 != null && read2 != null && live2 != null;
+            bool right = done
+                && live1[0].AllRight && live1[1].AllRight
+                && read1[0].AllRight && read1[1].AllRight
+                && read2[0].AllRight && read2[1].AllRight
+                && live2[0].AllRight && live2[1].AllRight;
+            Say("SUMMARY [" + Shown(many.Test) + "]: open " + centres.Count + ", red " + redCount + ", green " + greenCount + ", without geometry and so not judged " + noGeometry
+                + ". One call each: ResetTemporaryMaterials " + Yes(resetOk) + ", red " + Yes(redOk) + ", green " + Yes(greenOk) + ". Recorded " + Yes(recorded) + ", reopened " + Yes(reopened)
+                + ". Bytes with no view " + plainBytes + ", with the painted view " + paintedBytes);
+
+            if (!done)
+            {
+                Say("P17 UNKNOWN   a step of the measurement did not complete, so the row is not answered");
+            }
+            else if (right)
+            {
+                Say("P17 YES   one ResetTemporaryMaterials and one OverrideTemporaryColor per colour recorded into one view where every red and every green item reads back red or green and solid, live, off the view, after a reopen and pressed");
+            }
+            else
+            {
+                Say("P17 NO   at least one item does not read back with the colour or the solidity it was given, read above");
+            }
+        }
+
+        private void P17Walk(Document document, SavedItemCollection items, List<int[]> firsts, List<int[]> seconds, List<double[]> centres, ref ClashResult first, ref int missing)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                SavedItem item = items[i];
+                ClashResultGroup group = item as ClashResultGroup;
+
+                if (group != null)
+                {
+                    P17Walk(document, group.Children, firsts, seconds, centres, ref first, ref missing);
+                    continue;
+                }
+
+                ClashResult result = item as ClashResult;
+
+                if (result == null || !P16IsOpen(result.Status))
+                {
+                    item.Dispose();
+                    continue;
+                }
+
+                using (ModelItem a = result.Item1)
+                {
+                    if (a == null)
+                    {
+                        missing++;
+                    }
+                    else
+                    {
+                        firsts.Add(PathOf(document, a));
+                    }
+                }
+
+                using (ModelItem b = result.Item2)
+                {
+                    if (b == null)
+                    {
+                        missing++;
+                    }
+                    else
+                    {
+                        seconds.Add(PathOf(document, b));
+                    }
+                }
+
+                using (Point3D c = result.Center)
+                {
+                    centres.Add(new[] { c.X, c.Y, c.Z });
+                }
+
+                if (first == null)
+                {
+                    first = result;
+                }
+                else
+                {
+                    item.Dispose();
+                }
+            }
+        }
+
+        private static string P17Key(int[] path)
+        {
+            StringBuilder b = new StringBuilder();
+
+            for (int i = 0; i < path.Length; i++)
+            {
+                if (i > 0)
+                {
+                    b.Append('.');
+                }
+
+                b.Append(path[i].ToString(System.Globalization.CultureInfo.InvariantCulture));
+            }
+
+            return b.ToString();
+        }
+
+        private static bool P17Prefix(int[] prefix, int[] path)
+        {
+            if (prefix == null || path == null || prefix.Length > path.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < prefix.Length; i++)
+            {
+                if (prefix[i] != path[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool P17Same(double r, double g, double b, double wr, double wg, double wb)
+        {
+            return Math.Abs(r - wr) < P17Tol && Math.Abs(g - wg) < P17Tol && Math.Abs(b - wb) < P17Tol;
+        }
+
+        private static long P17Bytes(string file)
+        {
+            try
+            {
+                return File.Exists(file) ? new FileInfo(file).Length : -1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        private static P17Tally[] P17NewTallies()
+        {
+            P17Tally r = new P17Tally();
+            r.Side = "red";
+            P17Tally g = new P17Tally();
+            g.Side = "green";
+            return new[] { r, g };
+        }
+
+        private static void P17Judge(P17Tally t, P17Item it, double r, double g, double b, double tr, string how)
+        {
+            t.Items++;
+
+            if (!it.HasGeometry)
+            {
+                t.NoGeometry++;
+                return;
+            }
+
+            t.Judged++;
+            bool colour = P17Same(r, g, b, it.Red ? 1 : 0, it.Red ? 0 : 1, 0);
+            bool solid = Math.Abs(tr - it.OT) < P17Tol;
+
+            if (colour)
+            {
+                t.ColourRight++;
+            }
+
+            if (solid)
+            {
+                t.Solid++;
+            }
+
+            if (Math.Abs(tr - P17Dim) < P17Tol)
+            {
+                t.Dimmed++;
+            }
+
+            if ((!colour || !solid) && t.Wrong.Count < 10)
+            {
+                t.Wrong.Add("[" + it.Key + "] " + how + " colour (" + Round(r) + "," + Round(g) + "," + Round(b) + ") transparency " + Round(tr) + ", its own transparency " + Round(it.OT));
+            }
+        }
+
+        private void P17Say(P17Tally[] tallies, string label)
+        {
+            foreach (P17Tally t in tallies)
+            {
+                Say(label + ", " + t.Side + ": items " + t.Items + ", judged " + t.Judged + " (without geometry " + t.NoGeometry + "), the colour right " + t.ColourRight + ", solid (its own transparency) " + t.Solid
+                    + ", at the dim " + Round(P17Dim) + " " + t.Dimmed + (t.Named + t.NamedNoTransparency > 0 ? ", named by an override " + t.Named + ", of those with no transparency " + t.NamedNoTransparency + ", with no colour " + t.NamedNoColour : string.Empty)
+                    + ". ALL RIGHT " + Yes(t.AllRight));
+
+                foreach (string w in t.Wrong)
+                {
+                    Say(label + "      wrong: " + w);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Every item's ActiveColor and ActiveTransparency as the window holds them now, and the rest of the
+        /// shown models' geometry counted dimmed or not, items under a clashing item counted on their own.
+        /// </summary>
+        private P17Tally[] P17Live(Document document, List<P17Item> order, Dictionary<string, P17Item> plan, List<int[]> rootPaths, HashSet<int> shown, string label)
+        {
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            P17Tally[] tallies = P17NewTallies();
+
+            foreach (P17Item it in order)
+            {
+                P17Tally t = it.Red ? tallies[0] : tallies[1];
+
+                if (!it.HasGeometry)
+                {
+                    t.Items++;
+                    t.NoGeometry++;
+                    continue;
+                }
+
+                using (ModelItem mi = document.Models.ResolveIndexPath(it.Path))
+                {
+                    if (mi == null || !mi.HasGeometry)
+                    {
+                        t.Items++;
+                        t.Judged++;
+
+                        if (t.Wrong.Count < 10)
+                        {
+                            t.Wrong.Add("[" + it.Key + "] did not resolve with geometry");
+                        }
+
+                        continue;
+                    }
+
+                    using (ModelGeometry g = mi.Geometry)
+                    {
+                        Color ac = g.ActiveColor;
+                        P17Judge(t, it, ac.R, ac.G, ac.B, g.ActiveTransparency, "live");
+                    }
+                }
+            }
+
+            int rest = 0;
+            int restDimmed = 0;
+            int under = 0;
+            int underDimmed = 0;
+            int hiddenGeometry = 0;
+
+            for (int m = 0; m < rootPaths.Count; m++)
+            {
+                if (!shown.Contains(m))
+                {
+                    continue;
+                }
+
+                using (Model model = document.Models[m])
+                using (ModelItem root = model.RootItem)
+                {
+                    foreach (ModelItem d in root.DescendantsAndSelf)
+                    {
+                        using (d)
+                        {
+                            if (!d.HasGeometry)
+                            {
+                                continue;
+                            }
+
+                            int[] p = PathOf(document, d);
+
+                            if (plan.ContainsKey(P17Key(p)))
+                            {
+                                continue;
+                            }
+
+                            bool isUnder = false;
+
+                            for (int len = p.Length - 1; len > 0 && !isUnder; len--)
+                            {
+                                int[] pre = new int[len];
+                                Array.Copy(p, pre, len);
+                                isUnder = plan.ContainsKey(P17Key(pre));
+                            }
+
+                            if (d.IsHidden)
+                            {
+                                hiddenGeometry++;
+                            }
+
+                            double at;
+
+                            using (ModelGeometry g = d.Geometry)
+                            {
+                                at = g.ActiveTransparency;
+                            }
+
+                            bool dim = Math.Abs(at - P17Dim) < P17Tol;
+
+                            if (isUnder)
+                            {
+                                under++;
+                                underDimmed += dim ? 1 : 0;
+                            }
+                            else
+                            {
+                                rest++;
+                                restDimmed += dim ? 1 : 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+            Say(label + ", read in " + Seconds(clock));
+            P17Say(tallies, label);
+            Say(label + ", the rest of the shown models' geometry: " + rest + " items, at the dim " + restDimmed + ". Geometry under a clashing item " + under + ", at the dim " + underDimmed
+                + ". Geometry reading IsHidden " + hiddenGeometry);
+            return tallies;
+        }
+
+        /// <summary>
+        /// What the recorded view WILL SHOW for every item, 5p: the override's colour and transparency where
+        /// its own MaterialOverrides name the item, the item's own colour and transparency where they do not.
+        /// The overrides are walked once into a lookup.
+        /// </summary>
+        private P17Tally[] P17ReadNamed(Document document, List<P17Item> order, string label)
+        {
+            try
+            {
+                using (GroupItem folder = FindFolderAtRoot(document, P17Top))
+                using (SavedViewpoint view = FindUnder(folder, P17View))
+                {
+                    if (view == null)
+                    {
+                        Say(label + ": the view [" + P17View + "] was not found in [" + P17Top + "]");
+                        return null;
+                    }
+
+                    System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+                    Dictionary<string, double[]> named = new Dictionary<string, double[]>(StringComparer.Ordinal);
+                    int total = 0;
+                    int noItem = 0;
+                    int dim = 0;
+                    int noTr = 0;
+                    int redC = 0;
+                    int greenC = 0;
+                    int nullEntry = 0;
+                    int entryThrew = 0;
+                    int noColour = 0;
+                    AppearanceOverrides overrides = view.GetAppearanceOverrides();
+
+                    if (overrides != null && overrides.MaterialOverrides != null)
+                    {
+                        foreach (MaterialOverride mo in overrides.MaterialOverrides)
+                        {
+                            total++;
+
+                            if (mo == null)
+                            {
+                                nullEntry++;
+                                continue;
+                            }
+
+                            try
+                            {
+                                using (ModelItem it = mo.Item)
+                                {
+                                    if (it == null)
+                                    {
+                                        noItem++;
+                                        continue;
+                                    }
+
+                                    Color c = mo.Color;
+                                    double t = mo.Transparency.HasValue ? mo.Transparency.Value : double.NaN;
+                                    double cr = double.NaN, cg = double.NaN, cb = double.NaN;
+
+                                    if (c == null)
+                                    {
+                                        noColour++;
+                                    }
+                                    else
+                                    {
+                                        cr = c.R; cg = c.G; cb = c.B;
+                                    }
+
+                                    if (double.IsNaN(t))
+                                    {
+                                        noTr++;
+                                    }
+                                    else if (Math.Abs(t - P17Dim) < P17Tol)
+                                    {
+                                        dim++;
+                                    }
+
+                                    if (c != null && P17Same(cr, cg, cb, 1, 0, 0))
+                                    {
+                                        redC++;
+                                    }
+                                    else if (c != null && P17Same(cr, cg, cb, 0, 1, 0))
+                                    {
+                                        greenC++;
+                                    }
+
+                                    named[P17Key(PathOf(document, it))] = new[] { cr, cg, cb, t };
+                                }
+                            }
+                            catch (Exception error)
+                            {
+                                if (entryThrew == 0)
+                                {
+                                    Say(label + ": override " + total + " THREW " + error.GetType().Name + ": " + error.Message + " at " + (error.StackTrace ?? string.Empty).Replace("\r", " ").Replace("\n", " "));
+                                }
+
+                                entryThrew++;
+                            }
+                        }
+                    }
+
+                    Say(label + ": MaterialOverrides " + total + " walked in " + Seconds(clock) + ", null entries " + nullEntry + ", entries whose read threw " + entryThrew + ", with no item " + noItem + ", with no colour " + noColour
+                        + ", distinct items " + named.Count + ", transparency " + Round(P17Dim) + " " + dim + ", no transparency " + noTr + ", colour (1,0,0) " + redC + ", colour (0,1,0) " + greenC + ". Hidden " + HiddenCount(view));
+                    P17Tally[] tallies = P17NewTallies();
+
+                    foreach (P17Item it in order)
+                    {
+                        P17Tally t = it.Red ? tallies[0] : tallies[1];
+                        double[] v;
+
+                        if (it.HasGeometry && named.TryGetValue(it.Key, out v))
+                        {
+                            t.Named++;
+
+                            if (double.IsNaN(v[3]))
+                            {
+                                t.NamedNoTransparency++;
+                            }
+
+                            if (double.IsNaN(v[0]))
+                            {
+                                t.NamedNoColour++;
+                                P17Judge(t, it, it.OR, it.OG, it.OB, double.IsNaN(v[3]) ? it.OT : v[3], "named by the view with no colour, its own colour");
+                            }
+                            else
+                            {
+                                P17Judge(t, it, v[0], v[1], v[2], double.IsNaN(v[3]) ? it.OT : v[3], "named by the view");
+                            }
+                        }
+                        else
+                        {
+                            P17Judge(t, it, it.OR, it.OG, it.OB, it.OT, "not named, its own");
+                        }
+                    }
+
+                    P17Say(tallies, label);
+                    return tallies;
+                }
+            }
+            catch (Exception error)
+            {
+                Say(label + " THREW " + error.GetType().Name + ": " + error.Message + " at " + (error.StackTrace ?? string.Empty).Replace("\r", " ").Replace("\n", " "));
+                return null;
+            }
+        }
+
+        // ---------- P18 of Q114, the whole per view sequence timed, ten views into the tree of 2847 and ten after the 2813 are removed ----------
+
+        private const string P18TopA = "P18 probe A";
+        private const string P18TopB = "P18 probe B";
+        private const int P18Count = 10;
+        private const double P18Dim = 0.85;
+        private const double P18Tol = 0.001;
+
+        private sealed class P18Plan
+        {
+            public int No;
+            public string Test = string.Empty;
+            public int Results;
+            public int Open;
+            public int Missing;
+            public int NoHome;
+            public int NotResolved;
+            public int RedGeometry;
+            public int GreenGeometry;
+            public double WalkSeconds;
+            public readonly List<int[]> Red = new List<int[]>();
+            public readonly List<int[]> Green = new List<int[]>();
+            public readonly HashSet<string> RedKeys = new HashSet<string>(StringComparer.Ordinal);
+            public readonly HashSet<string> GreenKeys = new HashSet<string>(StringComparer.Ordinal);
+            public readonly List<double[]> Centres = new List<double[]>();
+            public readonly List<int> Shown = new List<int>();
+            public readonly List<int> Hidden = new List<int>();
+            public Viewpoint Camera;
+        }
+
+        private sealed class P18Times
+        {
+            public double Undim, Hide, Dim, Resolve, Paint, Frame, Folder, Make, Find, Add, Mark, ReadBack, Total;
+            public bool HideSkipped;
+            public bool FolderMade;
+            public bool Recorded;
+            public bool Marked;
+            public int TreeBefore;
+            public string Top = string.Empty;
+            public string Sub = string.Empty;
+            public string Name = string.Empty;
+            public string Body = string.Empty;
+            public double[] Pos;
+            public string Note = string.Empty;
+        }
+
+        private sealed class P18Back
+        {
+            public bool Found;
+            public double PositionOff = double.NaN;
+            public int Comments;
+            public bool MarkSame;
+            public int Hidden;
+            public int HiddenNotRoot;
+            public readonly List<string> HiddenFiles = new List<string>();
+            public bool HiddenFilesMatch;
+            public int Overrides;
+            public int NullEntry;
+            public int NoItem;
+            public int NoColour;
+            public int Dimmed;
+            public int RedRight;
+            public int GreenRight;
+            public int WrongColour;
+            public int Leaks;
+            public int EntryThrew;
+            public string Error = string.Empty;
+        }
+
+        private sealed class P18Removal
+        {
+            public int Folders;
+            public int Views;
+            public int LegacyInKeptFolders;
+            public int NotLegacy;
+            public double Seconds;
+            public double JudgeSeconds;
+            public bool NameChecksHeld = true;
+        }
+
+        private static string P18F(double d)
+        {
+            return double.IsNaN(d) ? "UNKNOWN" : d.ToString("0.000", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private static double P18Sec(System.Diagnostics.Stopwatch clock)
+        {
+            return clock.Elapsed.TotalSeconds;
+        }
+
+        private static string P18Ints(List<int> list)
+        {
+            return "[" + string.Join(",", list.ConvertAll(i => i.ToString(System.Globalization.CultureInfo.InvariantCulture)).ToArray()) + "]";
+        }
+
+        private static bool P18SameInts(List<int> a, List<int> b)
+        {
+            if (a == null || b == null || a.Count != b.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < a.Count; i++)
+            {
+                if (a[i] != b[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool P18SameStrings(List<string> a, List<string> b)
+        {
+            if (a.Count != b.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < a.Count; i++)
+            {
+                if (!string.Equals(a[i], b[i], StringComparison.Ordinal))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool P18AllRight(P18Back back, P18Plan plan)
+        {
+            return back != null && back.Found && back.PositionOff < P18Tol && back.Comments == 1 && back.MarkSame
+                && back.HiddenFilesMatch && back.HiddenNotRoot == 0
+                && back.RedRight == plan.RedGeometry && back.GreenRight == plan.GreenGeometry
+                && back.WrongColour == 0 && back.Leaks == 0 && back.EntryThrew == 0 && back.NullEntry == 0 && back.Error.Length == 0;
+        }
+
+        private static bool P18HiddenRight(P18Back back, P18Plan plan)
+        {
+            return back != null && back.Found && back.HiddenFilesMatch && back.HiddenNotRoot == 0 && back.Hidden == plan.Hidden.Count;
+        }
+
+        private static string P18Body(string stamp, string path, string name, string extra)
+        {
+            return P9Sentence + "\n" + "[nwcfed-mark 1] stamp=" + stamp + " path=" + path + " name=" + name + (extra.Length > 0 ? " " + extra : string.Empty) + " probe=P18";
+        }
+
+        private static ModelItemCollection P18Roots(Document document, List<int> models, List<ModelItem> held)
+        {
+            ModelItemCollection roots = new ModelItemCollection();
+
+            foreach (int m in models)
+            {
+                using (Model model = document.Models[m])
+                {
+                    ModelItem root = model.RootItem;
+                    held.Add(root);
+                    roots.Add(root);
+                }
+            }
+
+            return roots;
+        }
+
+        private bool P18MarkItem(Document document, List<string> path, string body)
+        {
+            using (SavedItem item = ResolveNames(document, path))
+            {
+                if (item == null)
+                {
+                    return false;
+                }
+
+                using (Comment comment = document.CreateCommentWithUniqueId(body, CommentStatus.New, P9Author))
+                {
+                    document.SavedViewpoints.AddComment(item, comment);
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// P18: the seconds of the design's whole per view sequence, part 2 of q114-design: undim the roots
+        /// dimmed before, hide (ResetAllHidden and SetHidden on the model roots, skipped when the shown list
+        /// equals the view before's), dim the shown roots, resolve the items, one reset and one paint per colour,
+        /// frame (a copy of the first open clash's camera zoomed to the open centres padded by the margin, a view
+        /// of one open clash keeping the clash camera), make the view's folder where it is missing and mark it,
+        /// record through the COM view, mark the view by AddComment and read it back: the position, the mark,
+        /// Hidden with each hidden root's Model.FileName (P19) and the MaterialOverrides walked once. Ten views,
+        /// the ten tests of the most open clashes read off the copy and none named in the code, are written into
+        /// the tree as it opens, round A. Then every top level folder whose every viewpoint is a per-clash view of
+        /// F85 by the probe's reading of LegacyClashView is removed by one RemoveAt each, from the end. Then the
+        /// same ten views again, round B. The shown models are the homes of the clashing items, a simplification
+        /// of ShownModels, which needs the team map. The copy is then saved, cleared and reopened and all twenty
+        /// views are read back once more.
+        /// </summary>
+        private void MeasureViewRate(string nwf, string saveAs, string marginText)
+        {
+            Document document = Autodesk.Navisworks.Api.Application.ActiveDocument;
+
+            if (document == null)
+            {
+                Say("UNKNOWN: no active document in this host");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(saveAs))
+            {
+                Say("UNKNOWN: no save path was handed in");
+                return;
+            }
+
+            double marginMm;
+
+            if (!double.TryParse(marginText ?? string.Empty, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out marginMm) || marginMm < 0)
+            {
+                Say("UNKNOWN: the margin [" + Shown(marginText) + "] is not a number of millimetres at or above 0");
+                return;
+            }
+
+            Say("opening " + Path.GetFileName(nwf));
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            bool opened = document.TryOpenFile(nwf);
+            Say("TryOpenFile returned " + opened + " after " + Seconds(clock));
+
+            if (!opened)
+            {
+                Say("UNKNOWN: TryOpenFile returned false");
+                return;
+            }
+
+            string loopRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NwcFederatorLoop") + "\\";
+            Say("models " + document.Models.Count);
+            List<int[]> rootPaths = new List<int[]>();
+            List<string> modelFiles = new List<string>();
+
+            for (int m = 0; m < document.Models.Count; m++)
+            {
+                using (Model model = document.Models[m])
+                using (ModelItem root = model.RootItem)
+                {
+                    string file = model.FileName ?? string.Empty;
+                    int[] rp = PathOf(document, root);
+                    rootPaths.Add(rp);
+                    modelFiles.Add(file);
+                    Say("   model " + m + "  " + Path.GetFileName(file) + "  under the loop folder " + file.StartsWith(loopRoot, StringComparison.OrdinalIgnoreCase)
+                        + ", its root's index path [" + P17Key(rp) + "], root hidden " + root.IsHidden);
+                }
+            }
+
+            double mmPerUnit = P16MillimetresPer(document.Units);
+            double margin = double.IsNaN(mmPerUnit) ? double.NaN : marginMm / mmPerUnit;
+            Say("document units " + document.Units + ", the framing margin " + Round(marginMm) + " mm, chosen and not measured, as in 5z-x, "
+                + (double.IsNaN(margin) ? "UNKNOWN, so no view is zoomed" : margin.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture)) + " in document units");
+            int treeOpen = CountViewpoints(document);
+            Say("the document at the open: " + P13Counts(document) + ", viewpoints " + treeOpen);
+
+            DocumentClashTests data = document.GetClash().TestsData;
+            List<P16Case> all = new List<P16Case>();
+            P16ListTests(data.Tests, all);
+            HashSet<string> testNames = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (P16Case c in all)
+            {
+                testNames.Add(c.Test);
+            }
+
+            List<P16Case> withOpen = all.FindAll(c => c.Open > 0);
+            withOpen.Sort((a, b) => a.Open != b.Open ? b.Open.CompareTo(a.Open) : string.CompareOrdinal(a.Test, b.Test));
+            Say("tests read " + all.Count + ", with at least one open clash " + withOpen.Count + ". Open is New or Active. The " + P18Count
+                + " tests of the most open clashes, ties by name Ordinal, are the views of each round");
+
+            if (withOpen.Count == 0)
+            {
+                Say("P18 UNKNOWN   the copy holds no test with an open clash");
+                return;
+            }
+
+            Say(string.Empty);
+            Say("WALK ONE, once per test, before the rounds and not in any view's seconds. Red is every distinct first item, green every distinct second item not already red, the homes are the models whose root index path is a prefix of an item's:");
+            List<P18Plan> plans = new List<P18Plan>();
+
+            for (int i = 0; i < Math.Min(P18Count, withOpen.Count); i++)
+            {
+                P18Plan plan = P18Walk(document, data, withOpen[i], i + 1, rootPaths);
+
+                if (plan == null)
+                {
+                    Say("P18 UNKNOWN   walk one could not read test " + (i + 1));
+                    return;
+                }
+
+                plans.Add(plan);
+            }
+
+            InwOpState10 state = ComApiBridge.State;
+            List<int> prevShown = null;
+            string stamp = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            List<P18Times> timesA = new List<P18Times>();
+            List<P18Back> backA = new List<P18Back>();
+            List<P18Times> timesB = new List<P18Times>();
+            List<P18Back> backB = new List<P18Back>();
+
+            Say(string.Empty);
+            int treeA = CountViewpoints(document);
+            Say("ROUND A, " + plans.Count + " views into the tree as it opened, " + treeA + " viewpoints");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            P18Round(document, state, plans, P18TopA, "A", ref prevShown, margin, stamp, modelFiles, timesA, backA);
+            Say("ROUND A wall time " + Seconds(clock) + ", the tree now " + CountViewpoints(document) + " viewpoints");
+            P18Summary("A", timesA);
+
+            Say(string.Empty);
+            Say("THE REMOVAL of F85's per-clash views, by the probe's reading of LegacyClashView: a viewpoint at depth 1 to 3 under a top level folder named X vs Y, named T, two spaces, Clash and digits, T a test name of the document, with no comment. A top level folder goes by one RemoveAt(root, index), from the end, only when every viewpoint under it reads so");
+            P18Removal removal = P18RemoveLegacy(document, testNames);
+            int treeAfterRemoval = CountViewpoints(document);
+            Say("   the tree after the removal " + treeAfterRemoval + " viewpoints, " + (treeA + timesA.Count - removal.Views) + " expected from the counts");
+            Say("   the document after the removal: " + P13Counts(document));
+
+            Say(string.Empty);
+            int treeB = CountViewpoints(document);
+            Say("ROUND B, the same " + plans.Count + " views into the tree after the removal, " + treeB + " viewpoints");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            P18Round(document, state, plans, P18TopB, "B", ref prevShown, margin, stamp, modelFiles, timesB, backB);
+            Say("ROUND B wall time " + Seconds(clock) + ", the tree now " + CountViewpoints(document) + " viewpoints");
+            P18Summary("B", timesB);
+
+            Say(string.Empty);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+
+            using (ModelItemCollection roots = document.Models.CreateCollectionFromRootItems())
+            {
+                document.Models.ResetTemporaryMaterials(roots);
+            }
+
+            document.Models.ResetAllHidden();
+            Say("put back: ResetTemporaryMaterials on every root and ResetAllHidden in " + Seconds(clock));
+
+            foreach (P18Plan plan in plans)
+            {
+                if (plan.Camera != null)
+                {
+                    plan.Camera.Dispose();
+                }
+            }
+
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.SaveFile(saveAs);
+            Say("SaveFile into " + Path.GetFileName(saveAs) + " took " + Seconds(clock) + ", " + P17Bytes(saveAs) + " bytes read back off the disk");
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            document.Clear();
+            Say("Document.Clear took " + Seconds(clock) + ", models now " + document.Models.Count);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+            bool reopened = document.TryOpenFile(saveAs);
+            Say("TryOpenFile of the saved file returned " + reopened + " after " + Seconds(clock));
+            int rightAfter = 0;
+            int hiddenRightAfter = 0;
+            int readAfter = 0;
+
+            if (reopened)
+            {
+                Say("the document after the reopen: " + P13Counts(document) + ", viewpoints " + CountViewpoints(document));
+                List<string> files = new List<string>();
+
+                for (int m = 0; m < document.Models.Count; m++)
+                {
+                    using (Model model = document.Models[m])
+                    {
+                        files.Add(model.FileName ?? string.Empty);
+                    }
+                }
+
+                Say("the models after the reopen in the same order as at the open " + Yes(P18SameStrings(files, modelFiles)));
+                Say("AFTER THE REOPEN, every view of both rounds re-found by its names and read back:");
+
+                for (int r = 0; r < 2; r++)
+                {
+                    List<P18Times> times = r == 0 ? timesA : timesB;
+
+                    for (int i = 0; i < times.Count; i++)
+                    {
+                        P18Times t = times[i];
+                        P18Plan plan = plans[i];
+                        P18Back back;
+                        clock = System.Diagnostics.Stopwatch.StartNew();
+
+                        using (SavedItem item = ResolveNames(document, new List<string> { t.Top, t.Sub, t.Name }))
+                        {
+                            back = P18Read(document, item as SavedViewpoint, plan, t.Body, t.Pos, files);
+                        }
+
+                        readAfter++;
+                        rightAfter += P18AllRight(back, plan) ? 1 : 0;
+                        hiddenRightAfter += P18HiddenRight(back, plan) ? 1 : 0;
+                        Say("   " + (r == 0 ? "A" : "B") + " " + plan.No.ToString("00", System.Globalization.CultureInfo.InvariantCulture) + " read in " + Seconds(clock) + ": " + P18BackText(back, plan));
+                    }
+                }
+            }
+
+            Say(string.Empty);
+            int rightA = 0, rightB = 0, hiddenA = 0, hiddenB = 0, recA = 0, recB = 0;
+
+            for (int i = 0; i < plans.Count; i++)
+            {
+                rightA += i < backA.Count && P18AllRight(backA[i], plans[i]) ? 1 : 0;
+                rightB += i < backB.Count && P18AllRight(backB[i], plans[i]) ? 1 : 0;
+                hiddenA += i < backA.Count && P18HiddenRight(backA[i], plans[i]) ? 1 : 0;
+                hiddenB += i < backB.Count && P18HiddenRight(backB[i], plans[i]) ? 1 : 0;
+                recA += i < timesA.Count && timesA[i].Recorded && timesA[i].Note.Length == 0 ? 1 : 0;
+                recB += i < timesB.Count && timesB[i].Recorded && timesB[i].Note.Length == 0 ? 1 : 0;
+            }
+
+            Say("SUMMARY: views " + plans.Count + " a round. Round A into " + treeA + " viewpoints: recorded with no throw " + recA + ", read back all right " + rightA
+                + ". Removal: " + removal.Folders + " folders, " + removal.Views + " viewpoints, in " + P18F(removal.Seconds) + " s. Round B into " + treeB + ": recorded with no throw " + recB + ", read back all right " + rightB
+                + ". After the reopen: read " + readAfter + ", all right " + rightAfter);
+            bool measured = recA == plans.Count && recB == plans.Count;
+
+            if (measured)
+            {
+                Say("P18 MEASURED   the whole sequence, seconds a view: round A mean " + P18F(P18Mean(timesA, 13)) + ", median " + P18F(P18Median(timesA, 13))
+                    + ", the record alone mean " + P18F(P18Mean(timesA, 10)) + ". Round B mean " + P18F(P18Mean(timesB, 13)) + ", median " + P18F(P18Median(timesB, 13))
+                    + ", the record alone mean " + P18F(P18Mean(timesB, 10)));
+            }
+            else
+            {
+                Say("P18 UNKNOWN   at least one view of a round was not recorded, read above");
+            }
+
+            bool p19Live = hiddenA == plans.Count && hiddenB == plans.Count;
+            bool p19Reopen = reopened && hiddenRightAfter == readAfter && readAfter == timesA.Count + timesB.Count;
+            Say("P19 " + (p19Live && p19Reopen ? "YES" : "NO") + "   every recorded view's Hidden read the hidden model roots, each giving its Model.FileName, equal to the plan's hidden models: live "
+                + (hiddenA + hiddenB) + " of " + (timesA.Count + timesB.Count) + ", after the reopen " + hiddenRightAfter + " of " + readAfter);
+        }
+
+        private P18Plan P18Walk(Document document, DocumentClashTests data, P16Case c, int no, List<int[]> rootPaths)
+        {
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            P18Plan plan = new P18Plan();
+            plan.No = no;
+            plan.Test = c.Test;
+            plan.Results = c.Results;
+            plan.Open = c.Open;
+            List<int[]> firsts = new List<int[]>();
+            List<int[]> seconds = new List<int[]>();
+            ClashResult first = null;
+            int missing = 0;
+
+            try
+            {
+                ClashTest test = P16FindTest(data.Tests, c.Test);
+
+                if (test == null)
+                {
+                    Say("   " + no + " [" + Shown(c.Test) + "] was not found again by its name");
+                    return null;
+                }
+
+                P17Walk(document, test.Children, firsts, seconds, plan.Centres, ref first, ref missing);
+                plan.Missing = missing;
+
+                if (first == null)
+                {
+                    Say("   " + no + " [" + Shown(c.Test) + "] the walk read no open result");
+                    return null;
+                }
+
+                using (Viewpoint fromClash = data.TestsViewpointForResult(first))
+                {
+                    plan.Camera = fromClash == null ? null : fromClash.CreateCopy();
+                }
+
+                first.Dispose();
+            }
+            catch (Exception error)
+            {
+                Say("   " + no + " [" + Shown(c.Test) + "] the walk THREW " + error.GetType().Name + ": " + error.Message);
+                return null;
+            }
+
+            if (plan.Camera == null)
+            {
+                Say("   " + no + " [" + Shown(c.Test) + "] TestsViewpointForResult gave no camera");
+                return null;
+            }
+
+            foreach (int[] p in firsts)
+            {
+                if (plan.RedKeys.Add(P17Key(p)))
+                {
+                    plan.Red.Add(p);
+                }
+            }
+
+            foreach (int[] p in seconds)
+            {
+                string k = P17Key(p);
+
+                if (!plan.RedKeys.Contains(k) && plan.GreenKeys.Add(k))
+                {
+                    plan.Green.Add(p);
+                }
+            }
+
+            HashSet<int> homes = new HashSet<int>();
+            List<int[]> both = new List<int[]>(plan.Red);
+            both.AddRange(plan.Green);
+
+            foreach (int[] p in both)
+            {
+                int home = -1;
+
+                for (int m = 0; m < rootPaths.Count; m++)
+                {
+                    if (P17Prefix(rootPaths[m], p))
+                    {
+                        home = m;
+                        break;
+                    }
+                }
+
+                if (home < 0)
+                {
+                    plan.NoHome++;
+                }
+                else
+                {
+                    homes.Add(home);
+                }
+
+                using (ModelItem mi = document.Models.ResolveIndexPath(p))
+                {
+                    if (mi == null)
+                    {
+                        plan.NotResolved++;
+                    }
+                    else if (mi.HasGeometry)
+                    {
+                        if (plan.RedKeys.Contains(P17Key(p)))
+                        {
+                            plan.RedGeometry++;
+                        }
+                        else
+                        {
+                            plan.GreenGeometry++;
+                        }
+                    }
+                }
+            }
+
+            for (int m = 0; m < rootPaths.Count; m++)
+            {
+                if (homes.Contains(m))
+                {
+                    plan.Shown.Add(m);
+                }
+                else
+                {
+                    plan.Hidden.Add(m);
+                }
+            }
+
+            plan.WalkSeconds = P18Sec(clock);
+            Say("   " + no.ToString("00", System.Globalization.CultureInfo.InvariantCulture) + " [" + Shown(c.Test) + "] results " + c.Results + ", open " + c.Open + ", centres " + plan.Centres.Count
+                + ", sides read null " + missing + ". Red " + plan.Red.Count + " (with geometry " + plan.RedGeometry + "), green " + plan.Green.Count + " (with geometry " + plan.GreenGeometry
+                + "), not resolved " + plan.NotResolved + ", under no model root " + plan.NoHome + ". Shown and dimmed " + P18Ints(plan.Shown) + ", hidden " + P18Ints(plan.Hidden)
+                + ". Walked with its camera in " + P18F(plan.WalkSeconds) + " s");
+            return plan;
+        }
+
+        private void P18Round(Document document, InwOpState10 state, List<P18Plan> plans, string top, string label, ref List<int> prevShown, double margin, string stamp, List<string> modelFiles, List<P18Times> times, List<P18Back> backs)
+        {
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                using (FolderItem folder = new FolderItem())
+                {
+                    folder.DisplayName = top;
+                    document.SavedViewpoints.AddCopy(root, folder);
+                }
+
+                bool marked = P18MarkItem(document, new List<string> { top }, P18Body(stamp, string.Empty, top, "folder"));
+                Say("   the round's folder [" + top + "] made at the root by FolderItem and AddCopy, marked " + Yes(marked) + ", in " + Seconds(clock) + ", once a round and in no view's seconds");
+            }
+            catch (Exception error)
+            {
+                Say("   the round's folder [" + top + "] THREW " + error.GetType().Name + ": " + error.Message + ", so the round is not run");
+                return;
+            }
+
+            Say("   per view: label, tree before, then seconds of undim, hide, dim, resolve, paint, frame, folder, the record in three (make the COM view, find the COM folder, Add), mark, read back, and the whole sequence by its own clock, then the read back");
+
+            foreach (P18Plan plan in plans)
+            {
+                P18Back back;
+                int treeBefore = CountViewpoints(document);
+                P18Times t = P18OneView(document, state, plan, top, ref prevShown, margin, stamp, modelFiles, out back);
+                t.TreeBefore = treeBefore;
+                times.Add(t);
+                backs.Add(back);
+                double parts = t.Undim + t.Hide + t.Dim + t.Resolve + t.Paint + t.Frame + t.Folder + t.Make + t.Find + t.Add + t.Mark + t.ReadBack;
+                Say("   " + label + " " + plan.No.ToString("00", System.Globalization.CultureInfo.InvariantCulture) + " open " + plan.Open + ", red " + plan.Red.Count + ", green " + plan.Green.Count
+                    + ", tree " + treeBefore + ": undim " + P18F(t.Undim) + ", hide " + P18F(t.Hide) + (t.HideSkipped ? " skipped" : string.Empty) + ", dim " + P18F(t.Dim)
+                    + ", resolve " + P18F(t.Resolve) + ", paint " + P18F(t.Paint) + ", frame " + P18F(t.Frame) + ", folder " + P18F(t.Folder) + (t.FolderMade ? " made" : " there")
+                    + ", record " + P18F(t.Make) + " + " + P18F(t.Find) + " + " + P18F(t.Add) + ", mark " + P18F(t.Mark) + (t.Marked ? string.Empty : " NOT MARKED")
+                    + ", read back " + P18F(t.ReadBack) + ", WHOLE " + P18F(t.Total) + ", no part " + P18F(t.Total - parts)
+                    + (t.Note.Length > 0 ? ". THREW " + t.Note : string.Empty));
+                Say("        read back: " + P18BackText(back, plan));
+            }
+        }
+
+        private P18Times P18OneView(Document document, InwOpState10 state, P18Plan plan, string top, ref List<int> prevShown, double margin, string stamp, List<string> modelFiles, out P18Back back)
+        {
+            P18Times t = new P18Times();
+            back = new P18Back();
+            t.Top = top;
+            t.Sub = "view " + plan.No.ToString("00", System.Globalization.CultureInfo.InvariantCulture);
+            t.Name = plan.Test;
+            List<ModelItem> held = new List<ModelItem>();
+            Viewpoint camera = null;
+            System.Diagnostics.Stopwatch total = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Stopwatch clock;
+            string step = "undim";
+
+            try
+            {
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                if (prevShown != null && prevShown.Count > 0)
+                {
+                    using (ModelItemCollection before = P18Roots(document, prevShown, held))
+                    {
+                        document.Models.ResetTemporaryMaterials(before);
+                    }
+                }
+
+                t.Undim = P18Sec(clock);
+                step = "hide";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                if (prevShown != null && P18SameInts(prevShown, plan.Shown))
+                {
+                    t.HideSkipped = true;
+                }
+                else
+                {
+                    document.Models.ResetAllHidden();
+
+                    if (plan.Hidden.Count > 0)
+                    {
+                        using (ModelItemCollection hide = P18Roots(document, plan.Hidden, held))
+                        {
+                            document.Models.SetHidden(hide, true);
+                        }
+                    }
+                }
+
+                t.Hide = P18Sec(clock);
+                step = "dim";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                using (ModelItemCollection shown = P18Roots(document, plan.Shown, held))
+                {
+                    document.Models.OverrideTemporaryTransparency(shown, P18Dim);
+                }
+
+                prevShown = plan.Shown;
+                t.Dim = P18Sec(clock);
+
+                using (ModelItemCollection solid = new ModelItemCollection())
+                using (ModelItemCollection red = new ModelItemCollection())
+                using (ModelItemCollection green = new ModelItemCollection())
+                {
+                    step = "resolve";
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+
+                    for (int s = 0; s < 2; s++)
+                    {
+                        foreach (int[] p in s == 0 ? plan.Red : plan.Green)
+                        {
+                            ModelItem mi = document.Models.ResolveIndexPath(p);
+
+                            if (mi == null)
+                            {
+                                continue;
+                            }
+
+                            held.Add(mi);
+                            solid.Add(mi);
+                            (s == 0 ? red : green).Add(mi);
+                        }
+                    }
+
+                    t.Resolve = P18Sec(clock);
+                    step = "paint";
+                    clock = System.Diagnostics.Stopwatch.StartNew();
+                    document.Models.ResetTemporaryMaterials(solid);
+
+                    if (red.Count > 0)
+                    {
+                        document.Models.OverrideTemporaryColor(red, new Color(1.0, 0.0, 0.0));
+                    }
+
+                    if (green.Count > 0)
+                    {
+                        document.Models.OverrideTemporaryColor(green, new Color(0.0, 1.0, 0.0));
+                    }
+
+                    t.Paint = P18Sec(clock);
+                }
+
+                step = "frame";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                camera = plan.Camera.CreateCopy();
+
+                if (plan.Centres.Count > 1 && !double.IsNaN(margin))
+                {
+                    double minX = double.MaxValue, minY = double.MaxValue, minZ = double.MaxValue;
+                    double maxX = double.MinValue, maxY = double.MinValue, maxZ = double.MinValue;
+
+                    foreach (double[] p in plan.Centres)
+                    {
+                        minX = Math.Min(minX, p[0]); minY = Math.Min(minY, p[1]); minZ = Math.Min(minZ, p[2]);
+                        maxX = Math.Max(maxX, p[0]); maxY = Math.Max(maxY, p[1]); maxZ = Math.Max(maxZ, p[2]);
+                    }
+
+                    using (Point3D low = new Point3D(minX - margin, minY - margin, minZ - margin))
+                    using (Point3D high = new Point3D(maxX + margin, maxY + margin, maxZ + margin))
+                    using (BoundingBox3D box = new BoundingBox3D(low, high))
+                    {
+                        camera.ZoomBox(box);
+                    }
+                }
+
+                using (Point3D at = camera.Position)
+                {
+                    t.Pos = new[] { at.X, at.Y, at.Z };
+                }
+
+                t.Frame = P18Sec(clock);
+                step = "folder";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                List<string> subPath = new List<string> { top, t.Sub };
+                bool there;
+
+                using (SavedItem s = ResolveNames(document, subPath))
+                {
+                    there = s != null;
+                }
+
+                if (!there)
+                {
+                    using (SavedItem topItem = ResolveNames(document, new List<string> { top }))
+                    {
+                        GroupItem parent = topItem as GroupItem;
+
+                        if (parent == null)
+                        {
+                            throw new InvalidOperationException("the round's folder was not found by its name");
+                        }
+
+                        using (FolderItem f = new FolderItem())
+                        {
+                            f.DisplayName = t.Sub;
+                            document.SavedViewpoints.AddCopy(parent, f);
+                        }
+                    }
+
+                    if (!P18MarkItem(document, subPath, P18Body(stamp, top, t.Sub, "folder")))
+                    {
+                        throw new InvalidOperationException("the view's folder was not found to mark");
+                    }
+
+                    t.FolderMade = true;
+                }
+
+                t.Folder = P18Sec(clock);
+                step = "record, make";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                InwOpView view = NewComView(state, t.Name, camera);
+                t.Make = P18Sec(clock);
+                step = "record, find";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                InwOpFolderView comFolder = FindComFolderAt(state, top, t.Sub);
+                t.Find = P18Sec(clock);
+
+                if (comFolder == null)
+                {
+                    throw new InvalidOperationException("the COM folder was not found");
+                }
+
+                step = "record, Add";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                comFolder.SavedViews().Add(view);
+                t.Add = P18Sec(clock);
+                t.Recorded = true;
+                step = "mark";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+                t.Body = P18Body(stamp, top + "/" + t.Sub, t.Name, "camera=" + Round(t.Pos[0]) + "," + Round(t.Pos[1]) + "," + Round(t.Pos[2]));
+                List<string> viewPath = new List<string> { top, t.Sub, t.Name };
+                t.Marked = P18MarkItem(document, viewPath, t.Body);
+                t.Mark = P18Sec(clock);
+                step = "read back";
+                clock = System.Diagnostics.Stopwatch.StartNew();
+
+                using (SavedItem item = ResolveNames(document, viewPath))
+                {
+                    back = P18Read(document, item as SavedViewpoint, plan, t.Body, t.Pos, modelFiles);
+                }
+
+                t.ReadBack = P18Sec(clock);
+            }
+            catch (Exception error)
+            {
+                t.Note = "at " + step + ", " + error.GetType().Name + ": " + error.Message;
+            }
+            finally
+            {
+                foreach (ModelItem mi in held)
+                {
+                    mi.Dispose();
+                }
+
+                if (camera != null)
+                {
+                    camera.Dispose();
+                }
+
+                t.Total = P18Sec(total);
+            }
+
+            return t;
+        }
+
+        private P18Back P18Read(Document document, SavedViewpoint view, P18Plan plan, string body, double[] pos, List<string> modelFiles)
+        {
+            P18Back back = new P18Back();
+
+            if (view == null)
+            {
+                back.Error = "not found by its names";
+                return back;
+            }
+
+            back.Found = true;
+
+            try
+            {
+                using (Viewpoint vp = view.Viewpoint)
+                using (Point3D p = vp.Position)
+                {
+                    if (pos != null)
+                    {
+                        back.PositionOff = Math.Sqrt((p.X - pos[0]) * (p.X - pos[0]) + (p.Y - pos[1]) * (p.Y - pos[1]) + (p.Z - pos[2]) * (p.Z - pos[2]));
+                    }
+                }
+
+                CommentCollection cc = view.Comments;
+                back.Comments = cc == null ? 0 : cc.Count;
+                back.MarkSame = back.Comments == 1 && string.Equals(cc[0].Body, body, StringComparison.Ordinal);
+                VisibilityOverrides vo = view.GetVisibilityOverrides();
+
+                if (vo != null)
+                {
+                    using (ModelItemCollection hidden = vo.Hidden)
+                    {
+                        if (hidden != null)
+                        {
+                            foreach (ModelItem h in hidden)
+                            {
+                                back.Hidden++;
+
+                                if (h != null && h.HasModel)
+                                {
+                                    back.HiddenFiles.Add(h.Model.FileName ?? string.Empty);
+                                }
+                                else
+                                {
+                                    back.HiddenNotRoot++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                List<string> want = plan.Hidden.ConvertAll(m => m < modelFiles.Count ? modelFiles[m] : string.Empty);
+                want.Sort(StringComparer.Ordinal);
+                back.HiddenFiles.Sort(StringComparer.Ordinal);
+                back.HiddenFilesMatch = P18SameStrings(want, back.HiddenFiles);
+                AppearanceOverrides ao = view.GetAppearanceOverrides();
+
+                if (ao != null && ao.MaterialOverrides != null)
+                {
+                    foreach (MaterialOverride mo in ao.MaterialOverrides)
+                    {
+                        back.Overrides++;
+
+                        if (mo == null)
+                        {
+                            back.NullEntry++;
+                            continue;
+                        }
+
+                        try
+                        {
+                            using (ModelItem it = mo.Item)
+                            {
+                                if (it == null)
+                                {
+                                    back.NoItem++;
+                                    continue;
+                                }
+
+                                string key = P17Key(PathOf(document, it));
+
+                                if (mo.Transparency.HasValue && Math.Abs(mo.Transparency.Value - P18Dim) < P18Tol)
+                                {
+                                    back.Dimmed++;
+                                }
+
+                                Color c = mo.Color;
+
+                                if (c == null)
+                                {
+                                    back.NoColour++;
+                                    continue;
+                                }
+
+                                bool isRed = P17Same(c.R, c.G, c.B, 1, 0, 0);
+                                bool isGreen = P17Same(c.R, c.G, c.B, 0, 1, 0);
+
+                                if (plan.RedKeys.Contains(key))
+                                {
+                                    if (isRed) { back.RedRight++; } else { back.WrongColour++; }
+                                }
+                                else if (plan.GreenKeys.Contains(key))
+                                {
+                                    if (isGreen) { back.GreenRight++; } else { back.WrongColour++; }
+                                }
+                                else
+                                {
+                                    back.Leaks++;
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            back.EntryThrew++;
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                back.Error = error.GetType().Name + ": " + error.Message;
+            }
+
+            return back;
+        }
+
+        private static string P18BackText(P18Back back, P18Plan plan)
+        {
+            if (back == null || !back.Found)
+            {
+                return "NOT FOUND" + (back != null && back.Error.Length > 0 ? ", " + back.Error : string.Empty);
+            }
+
+            return "position off " + P18F(back.PositionOff) + ", comments " + back.Comments + ", the mark the same " + Yes(back.MarkSame)
+                + ", Hidden " + back.Hidden + " (not a model root " + back.HiddenNotRoot + ") files [" + string.Join(" | ", back.HiddenFiles.ConvertAll(f => Path.GetFileName(f)).ToArray()) + "] equal to the plan's " + Yes(back.HiddenFilesMatch)
+                + ", MaterialOverrides " + back.Overrides + " (null " + back.NullEntry + ", no item " + back.NoItem + ", no colour " + back.NoColour + ", at the dim " + back.Dimmed + ", threw " + back.EntryThrew
+                + "), red right " + back.RedRight + " of " + plan.RedGeometry + ", green right " + back.GreenRight + " of " + plan.GreenGeometry + ", a wrong colour " + back.WrongColour
+                + ", coloured items not of this view " + back.Leaks + (back.Error.Length > 0 ? ", THREW " + back.Error : string.Empty) + ". ALL RIGHT " + Yes(P18AllRight(back, plan));
+        }
+
+        private P18Removal P18RemoveLegacy(Document document, HashSet<string> testNames)
+        {
+            P18Removal removal = new P18Removal();
+            List<int> indexes = new List<int>();
+            List<string> names = new List<string>();
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            System.Text.RegularExpressions.Regex pair = new System.Text.RegularExpressions.Regex("^[^ ]+ vs [^ ]+$");
+
+            using (GroupItem root = document.SavedViewpoints.RootItem)
+            {
+                SavedItemCollection children = root.Children;
+
+                for (int i = 0; i < children.Count; i++)
+                {
+                    using (SavedItem child = children[i])
+                    {
+                        GroupItem group = child as GroupItem;
+
+                        if (group == null)
+                        {
+                            continue;
+                        }
+
+                        int views = 0;
+                        int legacy = 0;
+                        bool namedAsPair = pair.IsMatch(child.DisplayName ?? string.Empty);
+                        P18Judge(group, 1, testNames, namedAsPair, ref views, ref legacy);
+
+                        if (views > 0 && views == legacy)
+                        {
+                            indexes.Add(i);
+                            names.Add(child.DisplayName);
+                            removal.Views += views;
+                            Say("   to remove: top level folder " + i + " [" + Shown(child.DisplayName) + "], " + views + " viewpoints, every one legacy");
+                        }
+                        else
+                        {
+                            removal.LegacyInKeptFolders += legacy;
+                            removal.NotLegacy += views - legacy;
+                            Say("   kept: top level folder " + i + " [" + Shown(child.DisplayName) + "], " + views + " viewpoints, legacy " + legacy);
+                        }
+                    }
+                }
+            }
+
+            removal.JudgeSeconds = P18Sec(clock);
+            Say("   judged in " + P18F(removal.JudgeSeconds) + " s: folders to remove " + indexes.Count + " holding " + removal.Views + " viewpoints. Legacy in kept folders " + removal.LegacyInKeptFolders + ", not legacy " + removal.NotLegacy);
+            clock = System.Diagnostics.Stopwatch.StartNew();
+
+            for (int k = indexes.Count - 1; k >= 0; k--)
+            {
+                System.Diagnostics.Stopwatch one = System.Diagnostics.Stopwatch.StartNew();
+
+                using (GroupItem root = document.SavedViewpoints.RootItem)
+                {
+                    bool same;
+
+                    using (SavedItem at = root.Children[indexes[k]])
+                    {
+                        same = at != null && string.Equals(at.DisplayName, names[k], StringComparison.Ordinal);
+                    }
+
+                    if (!same)
+                    {
+                        removal.NameChecksHeld = false;
+                        Say("   the folder at " + indexes[k] + " no longer reads [" + Shown(names[k]) + "], so it and the folders before it are not removed");
+                        break;
+                    }
+
+                    document.SavedViewpoints.RemoveAt(root, indexes[k]);
+                }
+
+                removal.Folders++;
+                Say("   RemoveAt(root, " + indexes[k] + ") on [" + Shown(names[k]) + "] in " + Seconds(one));
+            }
+
+            removal.Seconds = P18Sec(clock);
+            Say("   removed " + removal.Folders + " folders in " + P18F(removal.Seconds) + " s, the name re-read just before each call held " + Yes(removal.NameChecksHeld));
+            return removal;
+        }
+
+        private static void P18Judge(GroupItem group, int depth, HashSet<string> testNames, bool namedAsPair, ref int views, ref int legacy)
+        {
+            SavedItemCollection children = group.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    GroupItem inner = child as GroupItem;
+
+                    if (inner != null)
+                    {
+                        P18Judge(inner, depth + 1, testNames, namedAsPair, ref views, ref legacy);
+                        continue;
+                    }
+
+                    views++;
+                    string name = child.DisplayName ?? string.Empty;
+                    int cut = name.LastIndexOf("  Clash", StringComparison.Ordinal);
+                    bool digits = cut > 0 && name.Length > cut + 7;
+
+                    for (int c = cut + 7; digits && c < name.Length; c++)
+                    {
+                        digits = name[c] >= '0' && name[c] <= '9';
+                    }
+
+                    int comments = child.Comments == null ? 0 : child.Comments.Count;
+
+                    if (namedAsPair && depth >= 1 && depth <= 3 && digits && testNames.Contains(name.Substring(0, cut)) && comments == 0 && child is SavedViewpoint)
+                    {
+                        legacy++;
+                    }
+                }
+            }
+        }
+
+        private static double P18Part(P18Times t, int k)
+        {
+            switch (k)
+            {
+                case 0: return t.Undim;
+                case 1: return t.Hide;
+                case 2: return t.Dim;
+                case 3: return t.Resolve;
+                case 4: return t.Paint;
+                case 5: return t.Frame;
+                case 6: return t.Folder;
+                case 7: return t.Make;
+                case 8: return t.Find;
+                case 9: return t.Add;
+                case 10: return t.Make + t.Find + t.Add;
+                case 11: return t.Mark;
+                case 12: return t.ReadBack;
+                case 13: return t.Total;
+                case 14: return t.Total - (t.Undim + t.Hide + t.Dim + t.Resolve + t.Paint + t.Frame + t.Folder + t.Make + t.Find + t.Add + t.Mark + t.ReadBack);
+                default: return double.NaN;
+            }
+        }
+
+        private static double P18Mean(List<P18Times> times, int k)
+        {
+            if (times.Count == 0)
+            {
+                return double.NaN;
+            }
+
+            double sum = 0;
+
+            foreach (P18Times t in times)
+            {
+                sum += P18Part(t, k);
+            }
+
+            return sum / times.Count;
+        }
+
+        private static double P18Median(List<P18Times> times, int k)
+        {
+            if (times.Count == 0)
+            {
+                return double.NaN;
+            }
+
+            List<double> v = new List<double>();
+
+            foreach (P18Times t in times)
+            {
+                v.Add(P18Part(t, k));
+            }
+
+            v.Sort();
+            return v.Count % 2 == 1 ? v[v.Count / 2] : (v[v.Count / 2 - 1] + v[v.Count / 2]) / 2;
+        }
+
+        private void P18Summary(string label, List<P18Times> times)
+        {
+            string[] names =
+            {
+                "undim", "hide", "dim", "resolve", "paint", "frame", "folder", "record, make the COM view", "record, find the COM folder", "record, Add",
+                "the record, the three", "mark", "read back", "THE WHOLE SEQUENCE", "seconds no part holds"
+            };
+
+            Say("ROUND " + label + " SECONDS A VIEW, over " + times.Count + " views:");
+
+            for (int k = 0; k < names.Length; k++)
+            {
+                double least = double.MaxValue;
+                double most = double.MinValue;
+                double sum = 0;
+
+                foreach (P18Times t in times)
+                {
+                    double v = P18Part(t, k);
+                    least = Math.Min(least, v);
+                    most = Math.Max(most, v);
+                    sum += v;
+                }
+
+                Say("   " + label + "  " + names[k].PadRight(30) + " total " + P18F(sum) + "   mean " + P18F(P18Mean(times, k)) + "   median " + P18F(P18Median(times, k))
+                    + "   least " + P18F(times.Count == 0 ? double.NaN : least) + "   most " + P18F(times.Count == 0 ? double.NaN : most));
             }
         }
     }

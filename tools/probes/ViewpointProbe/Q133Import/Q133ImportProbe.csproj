@@ -1,29 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    A probe that runs INSIDE Navisworks, F85, scan.md 5j. Not part of the bundle and
-    not part of the solution. It is loaded into a Navisworks started through the
-    automation API with AddPluginAssembly and run with ExecuteAddInPlugin, and it
-    measures the one thing the DLL cannot say: whether a saved viewpoint records the
-    hidden state it was saved with, and brings it back after a save and a reopen. Since
-    the review of the viewpoints round it also measures how the hidden state is put back,
-    5k, and what the clash viewpoint call returns, 5l, so it references the Clash DLL too.
+    Q133 on 1A04PK, 2026-10-07. A probe that runs INSIDE Navisworks, started through the
+    automation API by tools\probes\ViewpointProbe\probe-q133-import.ps1. 1A04PK's NWF holds
+    its models and no sets and no tests, and neither the .NET API nor the COM API carries a
+    clash XML import, read off the install on 2026-10-07. So the sets and tests are made the
+    way the add-in makes them, by the add-in's own code compiled in here from src: every
+    file of Federator.Core and every file of Federator.Addin\Engine but FederationEngine.cs,
+    which holds the window's run. Nothing of src is changed. Compiled into this assembly and
+    not referenced, so no second Federator.Core or Federator.Addin is loaded beside the
+    installed bundle's.
 
-    Built the same way the add-in is, against the DLLs in the install, copy local false:
-
-        dotnet build tools\probes\ViewpointProbe\ViewpointProbe.csproj -c Release
+        dotnet build tools\probes\ViewpointProbe\Q133Import\Q133ImportProbe.csproj -c Release -o <folder>
   -->
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <LangVersion>7.3</LangVersion>
-    <AssemblyName>ViewpointProbe</AssemblyName>
-    <RootNamespace>ViewpointProbe</RootNamespace>
+    <AssemblyName>Q133ImportProbe</AssemblyName>
+    <RootNamespace>Q133ImportProbe</RootNamespace>
     <OutputType>Library</OutputType>
     <IsPackable>false</IsPackable>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <SrcRoot>$(MSBuildThisFileDirectory)..\..\..\..\src\</SrcRoot>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -35,14 +39,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="ClosedXML" Version="0.105.1" />
   </ItemGroup>
 
-  <!-- Q133Import is its own project, Q133 on 1A04PK, and is not compiled into this one. -->
   <ItemGroup>
-    <Compile Remove="Q133Import\**" />
-    <None Remove="Q133Import\**" />
-    <Compile Remove="PropertyProbeRun\**" />
-    <None Remove="PropertyProbeRun\**" />
+    <Compile Include="*.cs" />
+    <Compile Include="$(SrcRoot)Federator.Core\**\*.cs" Exclude="$(SrcRoot)Federator.Core\bin\**;$(SrcRoot)Federator.Core\obj\**" LinkBase="src\Core" />
+    <Compile Include="$(SrcRoot)Federator.Addin\Engine\*.cs" Exclude="$(SrcRoot)Federator.Addin\Engine\FederationEngine.cs" LinkBase="src\Engine" />
+    <EmbeddedResource Include="$(SrcRoot)Federator.Core\Exchange\revit-categories.txt" LogicalName="Federator.Core.Exchange.revit-categories.txt" />
+    <EmbeddedResource Include="$(SrcRoot)Federator.Core\Exchange\revit-worksets.txt" LogicalName="Federator.Core.Exchange.revit-worksets.txt" />
   </ItemGroup>
 
   <ItemGroup>

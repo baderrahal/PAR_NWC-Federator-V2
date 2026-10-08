@@ -1,0 +1,39 @@
+ROAMER    Get-Process Roamer before the read: 0 processes
+ASSEMBLY  Autodesk.Navisworks.Api 22.0.0.0   file 22.5.1433.58, 4261152 bytes, loaded reflection only: True
+FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Api.dll
+MACHINE   [machine]   2026-10-05 12:02
+
+==== Autodesk.Navisworks.Api.BoundingBox3D
+  public class, base Autodesk.Navisworks.Api.NativeHandle
+  every constructor, public and not:
+    public .ctor(Autodesk.Navisworks.Api.Point3D minPoint, Autodesk.Navisworks.Api.Point3D maxPoint)
+    public .ctor()
+    protected .ctor(Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleInit& init)
+  every public static method that returns this type:
+    public static Autodesk.Navisworks.Api.BoundingBox3D InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)
+    public static Autodesk.Navisworks.Api.BoundingBox3D get_Empty()
+
+==== Autodesk.Navisworks.Api.Point3D
+  public class, base Autodesk.Navisworks.Api.NativeHandle
+  every constructor, public and not:
+    public .ctor(Autodesk.Navisworks.Api.VariantData data)
+    public .ctor(System.Double x, System.Double y, System.Double z)
+    public .ctor()
+    protected .ctor(Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleInit& init)
+  every public static method that returns this type:
+    public static Autodesk.Navisworks.Api.Point3D op_Addition(Autodesk.Navisworks.Api.Vector3D value1, Autodesk.Navisworks.Api.Point3D value2)
+    public static Autodesk.Navisworks.Api.Point3D op_Addition(Autodesk.Navisworks.Api.Point3D value1, Autodesk.Navisworks.Api.Vector3D value2)
+    public static Autodesk.Navisworks.Api.Point3D op_Subtraction(Autodesk.Navisworks.Api.Point3D value1, Autodesk.Navisworks.Api.Vector3D value2)
+    public static Autodesk.Navisworks.Api.Point3D InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)
+    public static Autodesk.Navisworks.Api.Point3D get_Origin()
+
+==== Autodesk.Navisworks.Api.Viewpoint, every member named ZoomBox
+  public System.Void ZoomBox(Autodesk.Navisworks.Api.BoundingBox3D box)
+
+==== the answer
+  P5 YES   public .ctor(Autodesk.Navisworks.Api.Point3D minPoint, Autodesk.Navisworks.Api.Point3D maxPoint)
+  first parameter minPoint, second maxPoint
+  implementation Managed, 289 bytes of IL
+  what the box holds when built, and whether min must be below max: UNKNOWN here, the constructor is not invoked
+
+ROAMER    Get-Process Roamer after the read: 0 processes
