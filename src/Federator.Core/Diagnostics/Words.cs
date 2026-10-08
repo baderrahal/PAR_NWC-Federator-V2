@@ -15,8 +15,9 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>
-        /// The number and its noun, 1 test and 2 tests, the one rule for it. Four files each wrote it
-        /// out, T1-N47's shape, and one of them printed the number in the running culture.
+        /// The number and its noun, 1 test and 2 tests, the one rule for it. Five files each wrote it
+        /// out, and four of them printed the number in the running culture, which differs only in the
+        /// sign of a negative one.
         /// </summary>
         public static string Counted(int count, string one, string many)
         {

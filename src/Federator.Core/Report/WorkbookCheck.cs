@@ -327,7 +327,7 @@ namespace Federator.Core.Report
                 }
             }
 
-            CheckOneRowTestsComeLast(spans, firstOneRow);
+            CheckOneRowTestsComeLast(spans, clashes, firstOneRow);
 
             // A sheet of one row tests has no heading row, so the block layout cannot be compared,
             // and the check says so. Row 1 and the column widths hold without a block, so those two
@@ -727,15 +727,25 @@ namespace Federator.Core.Report
         /// the full blocks alone, so a one row test placed before a block with clashes was never named, F118's reader.
         /// Said once, with the first such test and the first block it stands before.
         /// </summary>
-        private void CheckOneRowTestsComeLast(IList<int[]> spans, int firstOneRow)
+        private void CheckOneRowTestsComeLast(IList<int[]> spans, IList<int> clashes, int firstOneRow)
         {
             if (firstOneRow == 0)
             {
                 return;
             }
 
-            foreach (int[] span in spans)
+            for (int i = 0; i < spans.Count; i++)
             {
+                int[] span = spans[i];
+
+                // A block whose Clashes cell is nought holds none, which a test of one row also holds, and ties
+                // keep the order they were created in, as the order check lets them. Such a block is written by
+                // the writer for a result group with nothing under it, so it may follow a one row test.
+                if (clashes[i] == 0)
+                {
+                    continue;
+                }
+
                 // A block starts four rows above its headings, the start the span carries, so its first row is
                 // the span's first.
                 if (span[0] > firstOneRow)
@@ -846,8 +856,8 @@ namespace Federator.Core.Report
                 // every column of every row matched.
                 lines.Add("         The column headings of every block with clashes match the client's report, and so do the "
                     + "fill, border and row height of every cell of the first block, five values of its first clash row, "
-                    + "the column widths and the title row. The blocks with clashes are in their order. The values of the "
-                    + "other blocks and clash rows, and the place of a test with no clash, were not read.");
+                    + "the column widths and the title row. The blocks with clashes are in their order, and no test with no "
+                    + "clash stands before one with clashes. The values of the other blocks and clash rows were not read.");
                 lines.Add("         Not compared: the font, the sheet name, freeze panes, "
                     + "print setup, merged ranges, and whether a value is true. See "
                     + "docs\\history\\scan.md 4q.");

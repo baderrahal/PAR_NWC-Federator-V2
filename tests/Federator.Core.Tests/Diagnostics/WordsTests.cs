@@ -37,5 +37,29 @@ namespace Federator.Core.Tests
             Assert.That(Words.Counted(1000, "test", "tests"), Is.EqualTo("1000 tests"));
             Assert.That(Words.Counted(-1, "test", "tests"), Is.EqualTo("-1 tests"));
         }
+
+        /// <summary>
+        /// The number is written the same under any culture, which four copies of the rule did not do. A culture that
+        /// signs a negative number with a tilde is handed in, and the invariant minus is still what comes out.
+        /// </summary>
+        [Test]
+        public void TheNumberIsWrittenTheSameUnderAnyCulture()
+        {
+            System.Globalization.CultureInfo before = System.Threading.Thread.CurrentThread.CurrentCulture;
+            System.Globalization.CultureInfo odd = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+            odd.NumberFormat.NegativeSign = "~";
+
+            try
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = odd;
+
+                Assert.That((-1).ToString(), Is.EqualTo("~1"), "the culture is odd enough to show a difference");
+                Assert.That(Words.Counted(-1, "test", "tests"), Is.EqualTo("-1 tests"));
+            }
+            finally
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = before;
+            }
+        }
     }
 }
