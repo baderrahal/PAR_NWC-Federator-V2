@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using Federator.Core.Clash;
+using Federator.Core.Exchange;
 
 namespace Federator.Core.Report
 {
@@ -542,7 +543,7 @@ namespace Federator.Core.Report
             OpenDocument = string.Empty;
             SourceFile = string.Empty;
             DocumentUnits = string.Empty;
-            SetTreeRoot = "lcop_selection_set_tree";
+            SetTreeRoot = ExchangeReader.SelectionSetTreeRoot;
             CompactedAway = -1;
             Images = new ImageTally();
             Priorities = PriorityMap.NothingPicked();

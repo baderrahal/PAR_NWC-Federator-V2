@@ -303,17 +303,7 @@ namespace Federator.Core.Report
             name.Style.Font.Bold = true;
             sheet.Range(row, 1, row, 2).Merge();
 
-            int column = ColumnTestHeader;
-            sheet.Cell(row, column++).Value = test.ClientTolerance();
-            sheet.Cell(row, column++).Value = test.RawClashes;
-
-            foreach (ClashStatus status in ClashTally.AllStatuses)
-            {
-                sheet.Cell(row, column++).Value = test.Tally.Of(status);
-            }
-
-            sheet.Cell(row, column++).Value = ClientFormat.TestTypeWording(test.TestTypeName);
-            sheet.Cell(row, column).Value = ClientFormat.StatusWording(test.StatusWord);
+            WriteTestValues(sheet, row, test);
 
             if (priority)
             {
@@ -342,20 +332,30 @@ namespace Federator.Core.Report
                 header.Style.Font.Bold = true;
             }
 
-            int column = ColumnTestHeader;
-            int values = start + 1;
+            WriteTestValues(sheet, start + 1, test);
+        }
 
-            sheet.Cell(values, column++).Value = test.ClientTolerance();
-            sheet.Cell(values, column++).Value = test.RawClashes;
+        /// <summary>
+        /// The nine cells of a test's values, written from the column the header table starts at: the tolerance, the
+        /// raw clashes, the five status counts, the type and the status, which are the five facts the comment on
+        /// the single row names. A test that found something writes them under
+        /// its heading row and one that found nothing writes them on its single row, so they are written here and
+        /// the two shapes cannot disagree about a test.
+        /// </summary>
+        private static void WriteTestValues(IXLWorksheet sheet, int row, TestReport test)
+        {
+            int column = ColumnTestHeader;
+
+            sheet.Cell(row, column++).Value = test.ClientTolerance();
+            sheet.Cell(row, column++).Value = test.RawClashes;
 
             foreach (ClashStatus status in ClashTally.AllStatuses)
             {
-                sheet.Cell(values, column++).Value = test.Tally.Of(status);
+                sheet.Cell(row, column++).Value = test.Tally.Of(status);
             }
 
-            sheet.Cell(values, column++).Value = ClientFormat.TestTypeWording(test.TestTypeName);
-            sheet.Cell(values, column).Value = ClientFormat.StatusWording(test.StatusWord);
-
+            sheet.Cell(row, column++).Value = ClientFormat.TestTypeWording(test.TestTypeName);
+            sheet.Cell(row, column).Value = ClientFormat.StatusWording(test.StatusWord);
         }
 
         /// <summary>

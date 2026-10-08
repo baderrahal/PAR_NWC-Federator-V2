@@ -22,13 +22,16 @@ namespace Federator.Core.Report
     /// WHAT IS NOT COPIED, and why, so a later session does not read these as misses:
     ///
     ///   the 53 columns   theirs runs to BA because an HTML table declares that many. Ours
-    ///                    stops at S, which is the last column either report fills
+    ///                    stops at S, which is the last column either report fills, apart
+    ///                    from the Priority column ours adds in T
     ///   the font colour  theirs is theme 1, ours is an explicit black. They render the
     ///                    same under every stock theme and ClosedXML has no theme colour
     ///   pageSetup        theirs has none because an imported page carries none. ClosedXML
     ///                    writes one whatever we do
     ///   hyperlinks       theirs has none at all. Ours links the picture, which is a rule
     ///                    of its own and is worth more than the match
+    ///   priority column  ours and not theirs, in T one past the last column of theirs,
+    ///                    written only where a priority file was picked
     /// </summary>
     public static class ClientStyle
     {
