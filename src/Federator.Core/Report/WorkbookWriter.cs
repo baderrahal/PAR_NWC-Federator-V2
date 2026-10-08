@@ -263,6 +263,12 @@ namespace Federator.Core.Report
 
             foreach (ClashRow clash in test.Rows)
             {
+                // Before the row is written and not after, because a pasted thumbnail sets the row to its own
+                // height while the row is written, and the height set after it took the picture's away, FR-039.
+                // Measured off every clash row of theirs, so a picture fits rather than being squashed into a
+                // default row.
+                sheet.Row(row).Height = ClashRowHeight;
+
                 WriteClashRow(sheet, row, clash);
 
                 if (priority)
@@ -274,9 +280,6 @@ namespace Federator.Core.Report
                     sheet.Cell(row, ColumnPriority).Value = Priorities.Cell(test.Priority);
                 }
 
-                // Measured off every clash row of theirs, so a picture fits rather than
-                // being squashed into a default row.
-                sheet.Row(row).Height = ClashRowHeight;
                 row++;
             }
 
@@ -295,7 +298,7 @@ namespace Federator.Core.Report
         /// </summary>
         private static void WriteEmptyTestRow(IXLWorksheet sheet, int row, TestReport test, bool priority)
         {
-            ClientStyle.TestHeader(sheet, row, ColumnTestHeader - 1, LastTestHeaderColumn);
+            ClientStyle.TestHeader(sheet, row, ColumnTestHeader - 1, LastTestHeaderColumn, 1);
             sheet.Row(row).Height = ClientStyle.TestValuesRowHeight;
 
             IXLCell name = sheet.Cell(row, 1);
@@ -303,17 +306,7 @@ namespace Federator.Core.Report
             name.Style.Font.Bold = true;
             sheet.Range(row, 1, row, 2).Merge();
 
-            int column = ColumnTestHeader;
-            sheet.Cell(row, column++).Value = test.ClientTolerance();
-            sheet.Cell(row, column++).Value = test.RawClashes;
-
-            foreach (ClashStatus status in ClashTally.AllStatuses)
-            {
-                sheet.Cell(row, column++).Value = test.Tally.Of(status);
-            }
-
-            sheet.Cell(row, column++).Value = ClientFormat.TestTypeWording(test.TestTypeName);
-            sheet.Cell(row, column).Value = ClientFormat.StatusWording(test.StatusWord);
+            WriteTestValues(sheet, row, test);
 
             if (priority)
             {
@@ -342,20 +335,30 @@ namespace Federator.Core.Report
                 header.Style.Font.Bold = true;
             }
 
-            int column = ColumnTestHeader;
-            int values = start + 1;
+            WriteTestValues(sheet, start + 1, test);
+        }
 
-            sheet.Cell(values, column++).Value = test.ClientTolerance();
-            sheet.Cell(values, column++).Value = test.RawClashes;
+        /// <summary>
+        /// The nine cells of a test's values, written from the column the header table starts at: the tolerance, the
+        /// raw clashes, the five status counts, the type and the status, which are the five facts the comment on
+        /// the single row names. A test that found something writes them under
+        /// its heading row and one that found nothing writes them on its single row, so they are written here and
+        /// the two shapes cannot disagree about a test.
+        /// </summary>
+        private static void WriteTestValues(IXLWorksheet sheet, int row, TestReport test)
+        {
+            int column = ColumnTestHeader;
+
+            sheet.Cell(row, column++).Value = test.ClientTolerance();
+            sheet.Cell(row, column++).Value = test.RawClashes;
 
             foreach (ClashStatus status in ClashTally.AllStatuses)
             {
-                sheet.Cell(values, column++).Value = test.Tally.Of(status);
+                sheet.Cell(row, column++).Value = test.Tally.Of(status);
             }
 
-            sheet.Cell(values, column++).Value = ClientFormat.TestTypeWording(test.TestTypeName);
-            sheet.Cell(values, column).Value = ClientFormat.StatusWording(test.StatusWord);
-
+            sheet.Cell(row, column++).Value = ClientFormat.TestTypeWording(test.TestTypeName);
+            sheet.Cell(row, column).Value = ClientFormat.StatusWording(test.StatusWord);
         }
 
         /// <summary>
@@ -622,7 +625,7 @@ namespace Federator.Core.Report
         /// <summary>The size a pasted thumbnail is drawn at, matching their 95 pixel one.</summary>
         private const int ThumbnailPixels = 95;
 
-        private const double ThumbnailPoints = 72.0;
+        internal const double ThumbnailPoints = 72.0;
 
         /// <summary>
         /// Their column widths, read out of the sheet XML of

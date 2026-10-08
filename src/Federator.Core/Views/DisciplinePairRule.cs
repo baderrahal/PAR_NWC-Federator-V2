@@ -6,13 +6,23 @@ namespace Federator.Core.Views
     /// <summary>The two disciplines a clash is between, and the folder they share.</summary>
     public sealed class DisciplinePair
     {
-        internal DisciplinePair(string first, string second, string folder, bool bothKnown)
+        internal DisciplinePair(string first, string second, string folder, bool leftKnown, bool rightKnown)
         {
             First = first;
             Second = second;
             Folder = folder;
-            BothKnown = bothKnown;
+            LeftKnown = leftKnown;
+            RightKnown = rightKnown;
         }
+
+        /// <summary>
+        /// Whether the set named first in the clash carried a code this tool knows. The sort that makes First and
+        /// Second one folder does not move it.
+        /// </summary>
+        public bool LeftKnown { get; private set; }
+
+        /// <summary>The same for the set named second in the clash.</summary>
+        public bool RightKnown { get; private set; }
 
         /// <summary>The first code, sorted.</summary>
         public string First { get; private set; }
@@ -28,7 +38,10 @@ namespace Federator.Core.Views
         /// is COUNTED rather than guessed at: the client's own file holds a set name that
         /// breaks the pattern its siblings follow.
         /// </summary>
-        public bool BothKnown { get; private set; }
+        public bool BothKnown
+        {
+            get { return LeftKnown && RightKnown; }
+        }
 
         public override string ToString()
         {
@@ -86,7 +99,6 @@ namespace Federator.Core.Views
 
             string left = CodeIn(leftSet, settings);
             string right = CodeIn(rightSet, settings);
-            bool bothKnown = left.Length > 0 && right.Length > 0;
 
             string first = left.Length > 0 ? left : settings.UnknownDiscipline;
             string second = right.Length > 0 ? right : settings.UnknownDiscipline;
@@ -99,7 +111,7 @@ namespace Federator.Core.Views
             }
 
             return new DisciplinePair(
-                first, second, first + settings.PairSeparator + second, bothKnown);
+                first, second, first + settings.PairSeparator + second, left.Length > 0, right.Length > 0);
         }
 
         /// <summary>

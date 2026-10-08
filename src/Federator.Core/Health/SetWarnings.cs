@@ -344,9 +344,6 @@ namespace Federator.Core.Health
             return PlannedSet.GroupsOf(set.Conditions, condition => PlannedCondition.StartsAGroupWith(condition.Flags));
         }
 
-        /// <summary>The test attribute a condition carries when its value is a stem.</summary>
-        public const string ContainsTest = "contains";
-
         /// <summary>
         /// Whether the measured categories carry what the condition asks, by the one rule the
         /// EMPTY SETS judge reads too, EmptySets.Carries, FR-010, read only for a condition both

@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-08 10:29, last run 04/item2-C02
+STATE OPEN, 2026-10-08 14:36, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -10,29 +10,29 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
 | 2a | 31 | 5 | 0 | 0 | 25 | 0 | 61 |
 | 2b | 11 | 19 | 0 | 1 | 2 | 0 | 33 |
-| 2c | 6 | 1 | 0 | 0 | 4 | 0 | 11 |
-| 3a | 8 | 4 | 0 | 0 | 8 | 0 | 20 |
-| 3b | 9 | 1 | 0 | 0 | 10 | 0 | 20 |
+| 2c | 7 | 1 | 0 | 0 | 2 | 1 | 11 |
+| 3a | 12 | 4 | 0 | 0 | 5 | 0 | 21 |
+| 3b | 10 | 1 | 0 | 0 | 9 | 0 | 20 |
 | 4 | 6 | 1 | 0 | 0 | 50 | 0 | 57 |
-| 5 | 14 | 3 | 0 | 0 | 55 | 0 | 72 |
-| outside the waves | 156 | 11 | 0 | 2 | 47 | 5 | 221 |
-| total | 260 | 45 | 0 | 3 | 201 | 5 | 514 |
+| 5 | 18 | 3 | 0 | 0 | 51 | 0 | 72 |
+| outside the waves | 156 | 12 | 0 | 2 | 46 | 5 | 221 |
+| total | 270 | 46 | 0 | 3 | 190 | 6 | 515 |
 <!-- the end of the counts -->
 
 ## Now
 - 8 Oct: the shutdown came at 19:30:51 on 7 Oct, Arab Standard Time, 46 min after the close at 18:45. A Roamer the loop did not start ran 08:36 to 08:43. His 22.0 key against the backup of 17:34 differs in two CER uptime counters only, Navisworks's own, nothing put back. Keep-awake pid 38340
-- The two the shutdown cut are merged: 157, the close of 7 Oct with main taken in, as 83deae0, and 159, F118's FR-199 and FR-040 with its records, as 1dd68a0, FR-036 and FR-041 on the laptop
-- Lane B, steps\lane-b.md: on this morning under Bader's messages to it, 167 to 174 merged, F128's Core part as 171 among them, folded here, 176 open on small Core points
-- F132 mirrored tests: merged as PR 177, the add-in half in two attempts under Q143, Q144 put to Bader on the no XML by design pass, its proof the timed runs
+- Merged today on the laptop: 157 the close of 7 Oct, 159 F118's FR-199 and FR-040, and 177 F132's add-in half in two attempts under Q143, as b3aa0db, Q144 put to Bader on the no XML by design pass
+- Lane B, steps\lane-b.md: 167 to 181 merged today, F128's Core part as 171 among them, all folded here, 182 open on where it stopped
+- F120 the pictures: merged as PR 183, the rename's undo, one image guard for the run, the IMAGES seconds split. F128 generic models: the probe at 13:02, scan.md 5z-zb, the add-in part's attempt 1 read by one reviewer and one breaker, four faults the team would see, attempt 2 in work on fix-F128, Q146 put to Bader on where its sheet goes
 - Expected release from the pace: 2026-10-13, Q143 item 14, about ten add-in items on the laptop lane at two or three a day over 8, 9, 12 and 13 Oct
 
 ## Next
-1. F128 generic models by Q145: the one probe of which property names them on 1A02MM and 1A04PK, lane B's Core part, then the add-in part
-2. F120 the pictures that fail and their speed, then F114's add-in pass with the viewpoints box back on at its merge, Q131
-3. Main installed and the timed runs of 1A02MM and 1A04PK proving everything merged, then F129, F130, F109, the close from 18:40 with STATE NIGHT
+1. F128's add-in part attempt 2 read and merged if no fault the team sees remains, then F114's add-in pass taken up again on fix-F114, the box back on at its merge, Q131
+2. Main installed in place and the timed runs of 1A02MM and 1A04PK on set 05, copied at 13:26, proving F114, F132, F128, F120 and everything merged since set 04
+3. F129, F130, F109, then the release, the close from 18:40 with STATE NIGHT and the one records pull request
 
 ## Waiting for Bader
-- Q144, a run with no XML and the by design pass on the saved tests, the lead's choice B applied meanwhile. Steps 228 to 233, the published NWD in ACC, his at the final run after F114 merges
+- Q144, the no XML by design pass, and Q146, where the Generic Models sheet goes, the lead's B applied for each meanwhile. Steps 228 to 233, the published NWD in ACC, his at the final run after F114 merges
 
 ## Blockers and known bugs
 - T5-R-WALKRACE: the harness's walk of the loop folder races a lane's build and stops on a HARNESS FAULT

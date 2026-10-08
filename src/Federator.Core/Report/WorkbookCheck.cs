@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using ClosedXML.Excel;
+using ClosedXML.Excel.Drawings;
 using Federator.Core.Coverage;
 
 namespace Federator.Core.Report
@@ -419,6 +420,19 @@ namespace Federator.Core.Report
             return at;
         }
 
+        private static bool HoldsAPicture(IXLWorksheet sheet, int row)
+        {
+            foreach (IXLPicture picture in sheet.Pictures)
+            {
+                if (picture.TopLeftCell != null && picture.TopLeftCell.Address.RowNumber == row)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         // ---------- cell against cell ----------
 
         /// <summary>
@@ -427,7 +441,11 @@ namespace Federator.Core.Report
         /// </summary>
         private void CheckCells(IXLWorksheet sheet, int row, ClientLayout.RowKind kind)
         {
-            double wanted = ClientLayout.Height(kind);
+            // A clash row holding a pasted thumbnail is the thumbnail's height and not the client's, which has no
+            // picture pasted in the row, FR-039. The writer keeps it now, where it forced the client's height back.
+            double wanted = kind == ClientLayout.RowKind.Clash && HoldsAPicture(sheet, row)
+                ? WorkbookWriter.ThumbnailPoints
+                : ClientLayout.Height(kind);
             double got = sheet.Row(row).Height;
 
             if (Math.Abs(got - wanted) > ClientLayout.Epsilon)

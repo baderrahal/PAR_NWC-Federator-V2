@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using Federator.Core.Clash;
+using Federator.Core.Exchange;
 
 namespace Federator.Core.Report
 {
@@ -92,11 +93,10 @@ namespace Federator.Core.Report
         /// The item category, Pipes or Walls or whatever the model calls it. F72.
         ///
         /// It is read the same way the family, the type and the material are and off the
-        /// same item, and it reaches no output today, exactly like those three. The
-        /// difference is that this one is not only a report column waiting to be asked
-        /// for: the penetration rule turns on it, so a run with the box on has already
-        /// read it off every item of every clash. What it feeds is a decision and not a
-        /// cell, which is why it is here beside them rather than instead of them
+        /// same item, and it reaches no output today, exactly like those three. It does not
+        /// feed the penetration decision either: the rule reads the category of a
+        /// PenetrationSide, which the add-in reads for itself, and nothing reads this one
+        /// back. It is a report column waiting to be asked for, T1-N77
         /// </summary>
         public string Category { get; set; }
 
@@ -542,7 +542,7 @@ namespace Federator.Core.Report
             OpenDocument = string.Empty;
             SourceFile = string.Empty;
             DocumentUnits = string.Empty;
-            SetTreeRoot = "lcop_selection_set_tree";
+            SetTreeRoot = ExchangeReader.SelectionSetTreeRoot;
             CompactedAway = -1;
             Images = new ImageTally();
             Priorities = PriorityMap.NothingPicked();
