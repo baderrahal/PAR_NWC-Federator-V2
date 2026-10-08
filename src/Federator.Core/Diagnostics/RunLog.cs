@@ -69,6 +69,11 @@ namespace Federator.Core.Diagnostics
         private readonly List<GroupRecord> groupRecords = new List<GroupRecord>();
         private bool closed;
 
+        // FR-057. Set once, under the gate, when a write to the file threw. After it nothing more is
+        // written to the file, the lines go on into memory and to the window, and every size or copy
+        // of the file says it is short. A log with no file behind it from the start is not this.
+        private bool diskFault;
+
         // ---------- the steps, F59 ----------
         //
         // Three lists and not one. openSteps is the stack, so a step knows how deep it
@@ -129,7 +134,7 @@ namespace Federator.Core.Diagnostics
         /// <summary>False when no file could be opened anywhere. Lines still reach the window.</summary>
         public bool IsWritingToDisk
         {
-            get { return writer != null; }
+            get { return writer != null && !diskFault; }
         }
 
         /// <summary>
@@ -370,6 +375,15 @@ namespace Federator.Core.Diagnostics
 
             RunLog log = new RunLog(path, startedAt, stream, null);
             log.Line("Log opened at " + path);
+
+            // FR-057. A first line that could not be written is a file that could not be used, so it is a
+            // failed open and the next folder is tried, as it was when the write threw out of Line. A log
+            // left with a file that took nothing would tell the window it was on the disk.
+            if (log.diskFault)
+            {
+                log.Dispose();
+                throw new IOException("The first line could not be written to " + path + ".");
+            }
 
             // Beside the text log and opened straight after it, so a run that dies at
             // startup still leaves both. F64.
@@ -630,23 +644,57 @@ namespace Federator.Core.Diagnostics
 
         private void WriteRaw(string line)
         {
+            string fault = null;
+
             lock (gate)
             {
                 mirror.Append(line).Append(Environment.NewLine);
 
-                if (!closed && writer != null)
+                if (!closed && writer != null && !diskFault)
                 {
-                    writer.WriteLine(line);
-                    writer.Flush();
+                    try
+                    {
+                        writer.WriteLine(line);
+                        writer.Flush();
 
-                    // Flush(true) pushes the operating system buffers to the disk. Without
-                    // it a hard crash loses whatever was still in flight, which is exactly
-                    // the case this log exists for.
-                    stream.Flush(true);
+                        // Flush(true) pushes the operating system buffers to the disk. Without
+                        // it a hard crash loses whatever was still in flight, which is exactly
+                        // the case this log exists for.
+                        stream.Flush(true);
+                    }
+                    catch (Exception error)
+                    {
+                        // FR-057. Logging is never the thing that stops a run, so a full disk or a
+                        // handle gone is said once and the lines carry on without the file.
+                        fault = FileStopped(error);
+                    }
                 }
             }
 
             Tell(line);
+
+            if (fault != null)
+            {
+                Tell(fault);
+            }
+        }
+
+        /// <summary>
+        /// The file stopped taking lines, FR-057. Called under the gate, once. It returns the line that
+        /// says so, which is already in memory, for the caller to tell the window. The label says
+        /// nothing a framework wrote, and the line carries what threw.
+        /// </summary>
+        private string FileStopped(Exception error)
+        {
+            diskFault = true;
+            DisabledReason = "The log file stopped taking lines part way. The lines since then are in this window only.";
+
+            string said = "LOG      the log file stopped taking lines, " + error.GetType().Name + ": " + error.Message
+                + ". The file holds the lines written before this one and the one that failed may be cut short."
+                + " The lines after it are held in memory and shown in the window, and the run goes on";
+
+            mirror.Append(said).Append(Environment.NewLine);
+            return said;
         }
 
         private void Tell(string line)
@@ -2145,7 +2193,8 @@ namespace Federator.Core.Diagnostics
             // BEFORE these last lines are flushed and it says so, because a size is only
             // ever reported as what was actually read off the disk.
             Line("the .log so far: " + DescribeSize(SizeOnDisk(Path))
-                + ", read before this block finished writing");
+                + ", read before this block finished writing"
+                + (diskFault ? ", and the file stopped taking lines part way, so it is short" : string.Empty));
             Line("the .tsv       : " + DescribeSize(SizeOnDisk(RowLogPath))
                 + ", which keeps every line the .log collapsed");
         }
@@ -2178,10 +2227,44 @@ namespace Federator.Core.Diagnostics
                 Directory.CreateDirectory(folder);
                 string target = System.IO.Path.Combine(folder, System.IO.Path.GetFileName(Path));
 
+                string fault = null;
+                string held = null;
+
                 lock (gate)
                 {
-                    writer.Flush();
-                    stream.Flush(true);
+                    if (!diskFault)
+                    {
+                        try
+                        {
+                            writer.Flush();
+                            stream.Flush(true);
+                        }
+                        catch (Exception error)
+                        {
+                            fault = FileStopped(error);
+                        }
+                    }
+
+                    // A file that stopped is short, so its copy is the lines held in memory, which are
+                    // every line there was.
+                    if (diskFault)
+                    {
+                        held = mirror.ToString();
+                    }
+                }
+
+                if (fault != null)
+                {
+                    Tell(fault);
+                }
+
+                if (held != null)
+                {
+                    File.WriteAllText(target, held, new UTF8Encoding(true));
+                    copiedPath = target;
+                    Line("COPY     written  " + target + "  " + DescribeSize(SizeOnDisk(target))
+                        + ", from the lines held in memory, because the log file stopped taking lines");
+                    return true;
                 }
 
                 // Copied through a read rather than File.Copy, because the source is still
@@ -2215,18 +2298,39 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public string ReadAll()
         {
+            string fault = null;
+            string everyLine = null;
+
             lock (gate)
             {
-                if (!closed && writer != null)
+                if (!closed && writer != null && !diskFault)
                 {
-                    writer.Flush();
-                    stream.Flush(true);
+                    try
+                    {
+                        writer.Flush();
+                        stream.Flush(true);
+                    }
+                    catch (Exception error)
+                    {
+                        fault = FileStopped(error);
+                    }
                 }
 
-                if (writer == null)
+                if (writer == null || diskFault)
                 {
-                    return mirror.ToString();
+                    // The file is short or there is none, and memory holds every line.
+                    everyLine = mirror.ToString();
                 }
+            }
+
+            if (fault != null)
+            {
+                Tell(fault);
+            }
+
+            if (everyLine != null)
+            {
+                return everyLine;
             }
 
             try
@@ -2293,6 +2397,19 @@ namespace Federator.Core.Diagnostics
         }
 
 
+        /// <summary>One closing step, whose failure is not worth throwing over: closing the log never stops a run.</summary>
+        private static void Quietly(Action step)
+        {
+            try
+            {
+                step();
+            }
+            catch (Exception)
+            {
+                // Closing the log is never worth throwing over.
+            }
+        }
+
         public void Dispose()
         {
             lock (gate)
@@ -2304,18 +2421,17 @@ namespace Federator.Core.Diagnostics
 
                 closed = true;
 
-                try
+                if (writer != null)
                 {
-                    if (writer != null)
+                    // Each step on its own, so a flush that fails on a file that stopped does not leave
+                    // the handle open, FR-057.
+                    Quietly(delegate
                     {
                         writer.Flush();
                         stream.Flush(true);
-                        writer.Dispose();
-                    }
-                }
-                catch (Exception)
-                {
-                    // Closing the log is never worth throwing over.
+                    });
+                    Quietly(writer.Dispose);
+                    Quietly(stream.Dispose);
                 }
 
                 if (rows != null)

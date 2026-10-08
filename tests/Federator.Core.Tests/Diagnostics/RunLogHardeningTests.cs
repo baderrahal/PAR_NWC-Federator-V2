@@ -46,6 +46,114 @@ namespace Federator.Core.Tests
         // ---------- FR-057, a log line never stops the run ----------
 
         /// <summary>
+        /// A write that fails, a full disk or a handle gone, is made by closing the stream the log holds,
+        /// which is the same exception from the same line. It is the only way in here to a fault the disk
+        /// will not make on demand, and it reaches a private field because no running code needs a member
+        /// to do this.
+        /// </summary>
+        private static void TheDiskFails(RunLog log)
+        {
+            System.Reflection.FieldInfo field = typeof(RunLog).GetField(
+                "stream", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+            Assert.That(field, Is.Not.Null, "RunLog no longer holds a field named stream, so this fault cannot be made");
+            ((FileStream)field.GetValue(log)).Dispose();
+        }
+
+        /// <summary>
+        /// FR-057's disk half. A write to the file that threw came out of Line, up through the run, and
+        /// the failure lines that would have reported it hit the same write. The line is kept in memory
+        /// and told to the window, the file is said to have stopped once, the log says it is no longer
+        /// writing to disk, and the run goes on. The break: lines before the fault are still in the file
+        /// and none after it are, and the memory holds both.
+        /// </summary>
+        [Test]
+        public void AWriteThatFailsStopsTheFileAndNeverTheRun()
+        {
+            using (RunLog log = Start())
+            {
+                List<string> heard = new List<string>();
+                log.LineWritten += heard.Add;
+
+                log.Line("before the fault");
+                TheDiskFails(log);
+
+                Assert.DoesNotThrow(() => log.Line("after the fault"));
+                Assert.DoesNotThrow(() => log.Line("and again after it"));
+
+                Assert.That(log.IsWritingToDisk, Is.False);
+                Assert.That(log.WhereTheLogIs(), Does.StartWith("WARNING the log is not being written to disk."));
+                Assert.That(log.WhereTheLogIs(), Does.Not.Contain("Exception"), "a label never carries a framework message");
+
+                string told = string.Join("\n", heard.ToArray());
+
+                Assert.That(told, Does.Contain("after the fault"));
+                Assert.That(told, Does.Contain("and again after it"));
+                Assert.That(Occurrences(told, "the log file stopped taking lines"), Is.EqualTo(1), "said once, not for every line");
+
+                string whole = log.ReadAll();
+
+                Assert.That(whole, Does.Contain("before the fault"));
+                Assert.That(whole, Does.Contain("after the fault"));
+                Assert.That(whole, Does.Contain("and again after it"));
+
+                string onDisk = ReadWhileOpen(log.Path);
+
+                Assert.That(onDisk, Does.Contain("before the fault"));
+                Assert.That(onDisk, Does.Not.Contain("and again after it"));
+            }
+        }
+
+        /// <summary>
+        /// A copy of a log whose file stopped is the lines held in memory, which are all of them, and says
+        /// so. Reading the short file would hand out a log that ends part way and calls itself the log. The
+        /// RESULT size of the file says it is short and does not print it as the size of a whole log.
+        /// </summary>
+        [Test]
+        public void ACopyAndASizeAfterAFailedWriteAreNeverTheShortFileCalledWhole()
+        {
+            string copies = Path.Combine(folder, "copies");
+
+            using (RunLog log = Start())
+            {
+                log.Line("before the fault");
+                TheDiskFails(log);
+                log.Line("after the fault");
+
+                string copied;
+
+                Assert.That(log.TryCopyTo(copies, out copied), Is.True);
+
+                string copy = File.ReadAllText(copied);
+
+                Assert.That(copy, Does.Contain("before the fault"));
+                Assert.That(copy, Does.Contain("after the fault"));
+
+                string said = log.ReadAll();
+
+                Assert.That(said, Does.Contain("from the lines held in memory, because the log file stopped taking lines"));
+
+                log.WriteResultBlock();
+
+                Assert.That(log.ReadAll(), Does.Contain("the file stopped taking lines part way, so it is short"));
+            }
+        }
+
+        private static int Occurrences(string text, string what)
+        {
+            int count = 0;
+            int at = 0;
+
+            while ((at = text.IndexOf(what, at, StringComparison.Ordinal)) >= 0)
+            {
+                count++;
+                at += what.Length;
+            }
+
+            return count;
+        }
+
+        /// <summary>
         /// The window's listener threw and the exception came out of Line, up through the run. The line is
         /// on the disk first, the listener is named and taken off so it is not called again, and the run
         /// goes on.
