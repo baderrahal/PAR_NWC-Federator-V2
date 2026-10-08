@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-07 17:51, last run 04/item2-C02
+STATE OPEN, 2026-10-08 10:29, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -8,32 +8,31 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 24 | 8 | 0 | 0 | 26 | 0 | 58 |
+| 2a | 30 | 4 | 0 | 0 | 27 | 0 | 61 |
 | 2b | 11 | 16 | 0 | 1 | 5 | 0 | 33 |
-| 2c | 4 | 1 | 0 | 0 | 4 | 0 | 9 |
+| 2c | 6 | 1 | 0 | 0 | 4 | 0 | 11 |
 | 3a | 8 | 4 | 0 | 0 | 8 | 0 | 20 |
-| 3b | 8 | 2 | 0 | 0 | 10 | 0 | 20 |
-| 4 | 0 | 0 | 0 | 0 | 57 | 0 | 57 |
-| 5 | 4 | 0 | 0 | 0 | 68 | 0 | 72 |
-| outside the waves | 154 | 11 | 0 | 1 | 47 | 5 | 218 |
-| total | 232 | 42 | 0 | 2 | 225 | 5 | 506 |
+| 3b | 9 | 1 | 0 | 0 | 10 | 0 | 20 |
+| 4 | 6 | 1 | 0 | 0 | 50 | 0 | 57 |
+| 5 | 14 | 3 | 0 | 0 | 55 | 0 | 72 |
+| outside the waves | 156 | 11 | 0 | 2 | 47 | 5 | 221 |
+| total | 259 | 41 | 0 | 3 | 206 | 5 | 514 |
 <!-- the end of the counts -->
 
 ## Now
-- F139 this page: MERGED as PR 130, ce7fcf5, at 13:34, the keep-awake reading it since 13:38
-- F132 mirrored tests: the Core half read clean at attempt 13, A of Q142, its add-in half in work on fix-F132
-- F114 views: the Core half merged as PR 141, its add-in pass next on the laptop after F132's
-- Probes: P11 to P14 done, P15 to P19 returned and are read next, step 364's property probe running
-- F131 merged as PR 135 and F138 as PR 127, the switch proven by the Q133 probe's real start
-- Lane B, steps\lane-b.md: F115 merged as PR 142 and 144, F127's Core 145 and its sheet 153, F137 part 1 146 with its records, F118's FR-035 and FR-037 147, F119's nine 148
+- 8 Oct: the shutdown came at 19:30:51 on 7 Oct, Arab Standard Time, 46 min after the close at 18:45. A Roamer the loop did not start ran 08:36 to 08:43. His 22.0 key against the backup of 17:34 differs in two CER uptime counters only, Navisworks's own, nothing put back. Keep-awake pid 38340
+- The two the shutdown cut are merged: 157, the close of 7 Oct with main taken in, as 83deae0, and 159, F118's FR-199 and FR-040 with its records, as 1dd68a0, FR-036 and FR-041 on the laptop
+- Lane B, steps\lane-b.md: on again this morning under Bader's message to it, 167, 168 and 169 merged, F127's and F119's Core points, 169 folded here, 170 open on F115 words, then F137, F121 and F123
+- F132 mirrored tests: merged as PR UNKNOWN, the add-in half in two attempts under Q143, Q144 put to Bader on the no XML by design pass, its proof the timed runs
+- Expected release from the pace: 2026-10-13, Q143 item 14, about ten add-in items on the laptop lane at two or three a day over 8, 9, 12 and 13 Oct
 
 ## Next
-1. F132's add-in half read and merged, then F114's add-in pass, in Bader's order of Q143
-2. Main installed in place and the timed runs of 1A02MM and 1A04PK with the new views
-3. The close from 18:40: STATE NIGHT, the one records PR of the day with Q143's limits, SAFE TO SHUT DOWN
+1. F128 generic models by Q145: the one probe of which property names them on 1A02MM and 1A04PK, lane B's Core part, then the add-in part
+2. F120 the pictures that fail and their speed, then F114's add-in pass with the viewpoints box back on at its merge, Q131
+3. Main installed and the timed runs of 1A02MM and 1A04PK proving everything merged, then F129, F130, F109, the close from 18:40 with STATE NIGHT
 
 ## Waiting for Bader
-- No question. Steps 228 to 233, the published NWD in ACC, his at the final run after F114 merges
+- Q144, a run with no XML and the by design pass on the saved tests, the lead's choice B applied meanwhile. Steps 228 to 233, the published NWD in ACC, his at the final run after F114 merges
 
 ## Blockers and known bugs
 - T5-R-WALKRACE: the harness's walk of the loop folder races a lane's build and stops on a HARNESS FAULT
@@ -47,4 +46,4 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - steps\history\log.md: one entry per fix, newest at the top
 - Status of every item and finding: steps\tracker.csv, read as steps\tracker.md
 - Questions and answers: steps\02_questions.md. The plan: steps\01_next.md and steps\fix-round.md
-- Evidence outside the repo: %LOCALAPPDATA%\NwcFederatorLoop\turn5
+- Evidence outside the repo: %LOCALAPPDATA%\NwcFederatorLoop\turn5 and turn6

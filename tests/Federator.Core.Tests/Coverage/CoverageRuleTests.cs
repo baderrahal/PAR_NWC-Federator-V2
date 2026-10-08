@@ -22,10 +22,10 @@ namespace Federator.Core.Tests
     [TestFixture]
     public class CoverageRuleTests
     {
-        private const string Root = "lcop_selection_set_tree";
-        private const string ArFloors = Root + "/Architecture/BLD-AR-Floors";
+        internal const string Root = "lcop_selection_set_tree";
+        internal const string ArFloors = Root + "/Architecture/BLD-AR-Floors";
         private const string ArStairs = Root + "/Architecture/BLD-AR-Stairs";
-        private const string ArWalls = Root + "/Architecture/BLD-AR-Walls";
+        internal const string ArWalls = Root + "/Architecture/BLD-AR-Walls";
         private const string StFoundation = Root + "/Structure/BLD-ST-Foundation";
         private const string FfSprinklers = Root + "/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers";
         private const string Security = Root + "/Electrical/BLD-Security Devices";
@@ -35,12 +35,12 @@ namespace Federator.Core.Tests
 
         // ---------- a plan and a run to read ----------
 
-        private static string Test(string name, string left, string right)
+        internal static string Test(string name, string left, string right)
         {
             return Test(name, left, right, "hard_conservative", true);
         }
 
-        private static string Test(string name, string left, string right, string type, bool tolerance)
+        internal static string Test(string name, string left, string right, string type, bool tolerance)
         {
             return "<clashtest name=\"" + SecurityElement.Escape(name) + "\" test_type=\"" + type + "\""
                 + (tolerance ? " tolerance=\"0.2460629921\"" : string.Empty) + " merge_composites=\"1\">"
@@ -51,7 +51,7 @@ namespace Federator.Core.Tests
                 + "</clashtest>";
         }
 
-        private static ClashTestPlan Plan(params string[] tests)
+        internal static ClashTestPlan Plan(params string[] tests)
         {
             StringBuilder xml = new StringBuilder("<exchange units=\"ft\"><batchtest name=\"b\">");
 
@@ -64,7 +64,7 @@ namespace Federator.Core.Tests
             return ClashTestPlan.From(new ExchangeReader().ReadText(xml.ToString()), "ft");
         }
 
-        private static Dictionary<string, int> Counts(params object[] locatorThenItems)
+        internal static Dictionary<string, int> Counts(params object[] locatorThenItems)
         {
             Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
 
@@ -87,7 +87,7 @@ namespace Federator.Core.Tests
         /// What the runner records for a plan, in its own order: the plan's skips, F77's
         /// creation plan over the counts, and every created test run with no clash.
         /// </summary>
-        private static ClashRunOutcome RunAsTheRunnerDoes(ClashTestPlan plan, IDictionary<string, int> counts)
+        internal static ClashRunOutcome RunAsTheRunnerDoes(ClashTestPlan plan, IDictionary<string, int> counts)
         {
             ClashRunOutcome outcome = new ClashRunOutcome();
 
@@ -113,7 +113,7 @@ namespace Federator.Core.Tests
             return outcome;
         }
 
-        private static IList<TestCoverage> Coverage(ClashTestPlan plan, ClashRunOutcome outcome)
+        internal static IList<TestCoverage> Coverage(ClashTestPlan plan, ClashRunOutcome outcome)
         {
             return CoverageRule.For(plan, outcome, GroupCodes, RunCodes, new ViewpointSettings());
         }

@@ -151,36 +151,70 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The order the blocks are written in. With no file picked it is most clashes
-        /// first, which is measured. With one picked the A test goes first even though it
-        /// holds fewer clashes, which is the point.
+        /// THE BLOCKS STAY IN THE MEASURED ORDER WITH A PRIORITY FILE PICKED, FR-199, Bader's
+        /// answer to Q49: the priority is a column to sort on in Excel, and the blocks keep
+        /// the order measured off the client's exports, most clashes first. Picking a file
+        /// moved the A test to the top though it holds fewer clashes, and the workbook, the
+        /// clash XML and the picture numbers all followed, so a report with a file picked
+        /// listed its tests in an order the client never accepted.
         /// </summary>
         [Test]
-        public void PickingAFileMovesTheABlockToTheTop()
+        public void PickingAFileLeavesTheBlocksInTheMeasuredOrder()
         {
             Assert.That(ReportOrder.Tests(Report(false))[0].Name,
                 Is.EqualTo("BLD-AR-Walls-vs-BLD-AR-Columns"), "six clashes beats two");
             Assert.That(ReportOrder.Tests(Report(true))[0].Name,
-                Is.EqualTo("BLD-ME-Ducts-vs-BLD-AR-Walls"), "A beats no priority");
+                Is.EqualTo("BLD-AR-Walls-vs-BLD-AR-Columns"), "six clashes still beats two, A is a column and not an order");
+            Assert.That(ReportOrder.Tests(Report(true))[1].Priority, Is.EqualTo(ClashPriority.A), "the letter stays on the test");
         }
 
         /// <summary>
-        /// The break. A priority sorted workbook is in priority order on purpose, and the
-        /// order check would call every one of them wrongly ordered, which would be the
-        /// headline of the block on every run that picked a file.
+        /// Since FR-199 a workbook with a priority file picked is in the measured order too, so
+        /// the order check runs whether or not a file was picked, and a block out of order is
+        /// named either way. It used to be switched off for a priority sorted workbook, which
+        /// left every run that picked a file with no order check at all.
         /// </summary>
         [Test]
-        public void ThePriorityOrderIsNotReportedAsTheWrongOrder()
+        public void AWorkbookWithAPriorityFileIsCheckedForTheMeasuredOrderToo()
         {
             string path = Write(true);
 
             WorkbookCheck told = WorkbookCheck.Of(path, true);
-            WorkbookCheck notTold = WorkbookCheck.Of(path, false);
 
             Assert.That(told.Passed, Is.True,
                 string.Join(" ", new List<string>(told.Problems).ToArray()));
-            Assert.That(notTold.Passed, Is.False,
-                "a check that was not told still catches a block order it did not expect");
+
+            PutTheLastBlockOutOfOrder(path);
+
+            WorkbookCheck broken = WorkbookCheck.Of(path, true);
+            string all = string.Join(" ", new List<string>(broken.Problems).ToArray());
+
+            Assert.That(broken.Passed, Is.False);
+            Assert.That(all, Does.Contain("The tests are in the wrong order"));
+        }
+
+        /// <summary>Copies the last clash row of the last block eight times, so that block holds more clashes than the one before it.</summary>
+        private static void PutTheLastBlockOutOfOrder(string path)
+        {
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
+                int last = sheet.LastRowUsed().RowNumber();
+
+                while (last > 1 && sheet.Cell(last, WorkbookWriter.ColumnClashName).GetString().Length == 0)
+                {
+                    last--;
+                }
+
+                sheet.Row(last).InsertRowsBelow(8);
+
+                for (int i = 1; i <= 8; i++)
+                {
+                    sheet.Row(last).CopyTo(sheet.Row(last + i));
+                }
+
+                workbook.Save();
+            }
         }
 
         [Test]

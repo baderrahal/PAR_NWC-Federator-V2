@@ -712,16 +712,14 @@ namespace Federator.Core.Report
 
         // ---------- in what order ----------
 
+        /// <summary>
+        /// Most clashes first, whether or not a priority file was picked, FR-199, Bader's answer to
+        /// Q49: the blocks keep the measured order and the priority is a column, so the order is
+        /// checked on every run. It was skipped for a workbook with a file picked, which left
+        /// every such run with no order check at all.
+        /// </summary>
         private void CheckOrder(IList<int> counts)
         {
-            if (SortedByPriority)
-            {
-                // A priority sorted workbook is in priority order on purpose. What the
-                // clash counts do inside that order says nothing about whether the sort
-                // was right, so there is nothing here to compare.
-                return;
-            }
-
             for (int i = 1; i < counts.Count; i++)
             {
                 if (counts[i] <= counts[i - 1])

@@ -1,6 +1,124 @@
 # log
 
 Newest entry at the top.
+
+## 2026-10-08 The loop, turn 5, the plan of the day: the close of 7 Oct finished, lane B's night folded, F132's add-in half attempt 2, F114's add-in pass, main installed and the timed runs
+
+Picked up by Bader's message headed GOOD MORNING, CONTINUE THE LOOP, BADER, 8 OCT 2026. The System log, read in
+Arab Standard Time, UTC+3: shutdown.exe on behalf of SYSTEM began the shutdown at 19:30:51 on 2026-10-07, 46
+minutes after the day closed at 18:45 with STATE NIGHT, and the PC started at
+08:20:27, which the lead reads as the day closed in time. Get-Process Roamer read one at 08:36:19, pid 38612 with no window title, and none at 08:43:37, a
+Roamer the loop did not start, who started it UNKNOWN, so nothing was closed and nothing waited. His 22.0 key, exported to
+turn6\hkcu-22.0-morning-20261008-084556.reg, against the last backup, probes\property-run-20261007-173442\
+hkcu-navisworks-manage-22.0-before.reg of 17:34 on 2026-10-07: 1243 values each side, two differ, the CER
+calUptime and uptime counters, which Navisworks writes itself, so nothing was put back, and the compare found no difference on the Auto-Save
+enable value. The keep-awake runs again, pid 38340, started 08:46:28 through
+turn5\check-keep-awake.ps1, watching claude.exe pid 14096, its check scheduled in this session at 13 and 43 past each hour, job fec9b717, session only.
+
+The shutdown cut two pull requests. PR 157, the close of 7 Oct, stood CONFLICTING against main, which lane B
+moved by 153, 155, 158 and 160 to 166 after the close branched, so main is merged in here with both sides of
+the four conflicts kept, and the lane's night is folded into the tracker in the same pull request: FR-165's
+second half as 160, FR-168 as 155, FR-172 in part as 161, FR-171 in part as 162 to 165, and the F121 and F123
+rows. PR 159, F118's FR-199 and FR-040 by the lane's worktree session, read MERGEABLE and CLEAN with its one
+check passed this morning, and its one reviewer, the lead's reviewer agent, read APPROVE with four points that
+change nothing the team sees, turn6\f118-pr159-review.json, so it is finished next. STATE OPEN is set here, so the Stop gate holds the session again.
+
+The order on the laptop, Bader's items 8 and 9 of the message and Q143's limits: F132's add-in half attempt 2
+of two on F132-R4 and F132-R5 in wt-f132, one reviewer and one breaker, merged if no fault the team sees
+remains. Then F114's add-in pass. Then main installed in place and the timed runs of 1A02MM and 1A04PK with
+the new views on, against 2 h 12 min for 1A02MM and the hung run of 1A04PK. Then F109, F129, F130 and F120.
+Every hour three lines in the tab, job 42b56482 at 55 past, and the close from 18:40 with STATE NIGHT and the one
+records pull request of the day. Programs started this morning: reg.exe for the export, powershell for the
+keep-awake check and the tracker scripts, python for the resolve, git, gh and dotnet in the pre-commit. Files
+written outside the repo, all under turn6 unless named: the export above, f118-pr159-diff.txt, f118-pr159-review.json,
+f132-attempt2-brief.md, resolve-close.py, fix-plan-entry.py, close-1007-merge-msg.txt, close-1007-pr-body.md,
+close-1007-commit.txt, the keep-awake lines under turn5, and the f132q- files of F132's developer in its worktree
+wt-f132. The merged tree's Core tests in the pre-commit: 2408 passed, 0 failed, 0 skipped, and this pull request
+changes no code, so there is no count before it.
+
+## 2026-10-07 The loop, turn 5, the close of the day: Q143's two lanes, 9 product fixes merged
+
+Bader's order of 15:38, FAST TO A TEAM RELEASE, Q143, two attempts per change, one reviewer, one records PR a day.
+The cloud lane B merged F115 as 142 and its records as 144, F127's Core half as 145, F137 part 1 as 146, F118's
+FR-035 and FR-037 as 147, F119's nine items as 148, F121's six as 150 and F123's three as 151 and six as 154, its page steps\lane-b.md. The laptop
+lane merged F114's Core half as 141 before the order, folded the lane's items and let a lane-b branch through the
+Stop gate as 152 under his order of 17:25, and F132's add-in half, attempt 1 of two, pushed as fd936b1 and read CHANGES by the breaker on two faults the team would see, the views and a no XML by design pass, attempt 2 in the morning.
+The probes P16 to P19 answered on fix-F114-probes, scan.md 5z-x to 5z-z, P15 NOT ANSWERED and left, and step
+364's property probe ran on one ME NWC of run set 04, 8823 rows, 17 categories asked and 10 found, scan.md 5z-za.
+The day closed at 18:45 by the STOP SAFELY procedure, STATE NIGHT, the keep-awake stopped, before the company
+shutdown at about 19:30. The count of the day and the release date from the pace are on steps\PROGRESS.md.
+## 2026-10-07 The loop, turn 5, F118 the workbook and report, FR-035 and FR-037 built by lane B's cloud session as PR 147, FR-199 and FR-040 with the records by the worktree session
+
+Wave 2c of Bader's full fix round, Q98, the workbook and report area, items FR-035, FR-036,
+FR-037, FR-040, FR-041 and FR-199 of steps\fix-round.md. Lane B, the lane of his message of
+7 Oct 2026 headed FAST TO A TEAM RELEASE, took the item on 2026-10-07. Its cloud session, which
+may push one branch and write its record in steps\lane-b.md alone, built FR-035 and FR-037 with
+their tests and put them on main as PR 147, a174ca0, at 14:04, after a reviewer's and a
+breaker's reading, its record and the points it left on that page. This session, in the
+worktree .claude\worktrees\agent-a9ff34180e9235316 of this checkout, built FR-199 and FR-040 in
+Core and carries the records PR 147 left out on purpose, in the pull request named in
+steps\01_next.md.
+
+What PR 147 built, read off the diff of a174ca0 against its first parent, 4 files, 389 lines in
+and 11 out, src\Federator.Core\Clash\PriorityMap.cs, src\Federator.Core\Report\WorkbookCheck.cs
+and the tests PriorityMapTests.cs and WorkbookTestCountTests.cs, new:
+- FR-035. The WORKBOOK CHECK counted a block only where it found the Clash Name heading, so a
+  test of one row that found nothing, Q73, was never counted, every group of set 03's C06 run
+  read 5 blocks against 1830 and said in capitals the workbook was short, and a missing one row
+  test could not be named. `WorkbookCheck.Blocks` is every test, `FullBlocks` and `OneRowTests`
+  apart, the CHECK line says how many of each, and a workbook of one row tests alone has its
+  row 1 and widths read and says no block layout was compared
+- FR-037. A test the priority file named twice was read with the last letter and nothing said,
+  and `PriorityMap.RowCount` was the distinct names. The last letter still wins, the repeat is
+  named with both lines and both letters so a person decides, and the count is the rows of the
+  file, a row left out for its letter not a first naming
+- Core tests under mono in the cloud session, read off its pull request: 2301 passed before and
+  2322 after, 0 failed, 33 skipped
+
+What this session built, Core tests 2395 passed on main baf4a8c before and 2396 after, 0 failed
+and 0 skipped, run here on Windows with dotnet test, check-locals and check-imports clean over
+src. The four new tests did not build against the code before, which had no such member,
+f118-before-fail.txt in the session's scratch folder, and the five tests that pinned the old
+rules failed against the new code and are rewritten to the rules, every number kept:
+- FR-199, Bader's answer to Q49. `ReportOrder.Tests` gives the measured order whether or not a
+  priority file was picked, most clashes first with ties in creation order, and the priority
+  stays a column, F83, so the workbook, the clash XML and the picture numbers, which all walk
+  that one list, keep the order the client accepted. The sort A, then B, then C, then the rest,
+  by name inside each, is gone with its tests, replaced by
+  WithAFilePickedTheOrderIsStillTheMeasuredOne, ThePicturesFollowTheMeasuredOrderWithAFilePicked
+  and PickingAFileLeavesTheBlocksInTheMeasuredOrder. `WorkbookCheck.CheckOrder` runs whether or
+  not a file was picked, where it was switched off for a priority sorted workbook and left
+  every run that picked a file with no order check, AWorkbookWithAPriorityFileIsCheckedForTheMeasuredOrderToo
+  putting the last block out of order on the disk and reading the problem back. The engine
+  still tells the check a file was picked, which since FR-199 means the Priority column checks
+  alone, so no line of its changes and the add-in needs no change for it
+- FR-040. An item whose id came from the GUID fallback has a filled Item ID cell and no id
+  property behind it, and the ITEM IDS block counted it as missing, named no id property as its
+  source and said it was written as Element ID while the cell said Instance GUID, and the
+  workbook and page checks called a first cell of that kind the wrong shape. A missing id is an
+  empty cell, `ClashReportModel.Missing`, the source of such an id is
+  `ClientFormat.GuidFallbackSource` with the label the cell carries,
+  `ClientFormat.GuidIdLabel`, named once in Core, and `ClientShapes.LooksLikeAnItemId` accepts
+  the two labels this tool writes and no other. AnIdOffTheGuidFallbackIsNotMissingAndIsNamedAsTheGuid
+  and TheGuidFallbackCellIsAnItemIdShapeAndAWrongLabelIsNot. The harvest still types the
+  label as a literal, ClashHarvest.cs line 334, which the add-in half points at the constant
+- the rules in .claude\rules\core.md: the F83 bullets read as FR-199 has it, a bullet each for
+  FR-040 and FR-037, and the workbook check bullet says every test is counted, FR-035
+
+NOT BUILT, for the add-in half. FR-036, a skipped test's row keeping the old tolerance after a
+chosen edit, is in ClashRunner, where the row copies the plan before the skips return. FR-041,
+the grid location empty on 345 rows, needs a probe printing ClosestIntersection for the empty
+rows first, by its item. The points the cloud session's readers raised and it left are the
+register rows F118-R1 and F118-R2: the order check reads the full blocks only, so a one row
+test placed before a full block is not named, and with a file picked the check does not run the
+Priority heading check on a sheet with no full block.
+
+The reviewer's read of this pass's diff by this session found no fault that changes a number,
+a status, a file or a clash the team sees. No breaker's read, by Bader's limit of 7 Oct 2026,
+which gives one to the sets area alone. No Navisworks was started and nothing of the add-in was
+built. What waits for the local machine: the test of wave 2c on 1A02MM with the priority file,
+its blocks in the order of set 04's, FR-036 and FR-041, and the harvest's label.
+
 ## 2026-10-07 The loop, turn 5, F137 no site and no clash groups end PARTIAL, FR-195, part 1 built by lane B's cloud session as PR 146, its records by the worktree session
 
 Bader's answers of 2026-10-05, Q111 B and Q125 B, FR-195 of steps\fix-round.md, before the test of

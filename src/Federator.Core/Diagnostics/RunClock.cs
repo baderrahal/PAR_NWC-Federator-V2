@@ -23,7 +23,8 @@ namespace Federator.Core.Diagnostics
     /// and whatever happened after the run finished, which is the result block being
     /// written. The third is small and is named rather than folded into either of the
     /// others, for the same reason the timing block has a row for everything outside every
-    /// step.
+    /// step. A run that never finished, counted to now, has no third stretch, because it
+    /// ends where the block is written, and the block says so and prints no row for it.
     ///
     /// WITH NO RUN MARK AT ALL the run IS the session and the block SAYS it fell back. The
     /// open file run and the two hand buttons on the Clash step never write a run mark,
@@ -63,7 +64,8 @@ namespace Federator.Core.Diagnostics
 
         /// <summary>
         /// A run that started and never finished, a scan that threw after RUN started. It is counted to
-        /// the moment the block is written and says RUN finished was never marked, FR-050.
+        /// the moment the block is written and says RUN finished was never marked, FR-050. It has no
+        /// stretch after the run, so its block prints no row for one and says it was not measured.
         /// </summary>
         public static RunClock Unfinished(double sessionSeconds, double startedAt)
         {
@@ -112,7 +114,9 @@ namespace Federator.Core.Diagnostics
 
         /// <summary>
         /// Between the last group finishing and now, which is the result block being
-        /// written. Small, named, and never folded into either of the other two.
+        /// written. Small, named, and never folded into either of the other two. Nought for a
+        /// run counted to now, which has no such stretch, so a reader checks Finished before
+        /// printing it as a measurement.
         /// </summary>
         public double AfterSeconds
         {
@@ -142,12 +146,21 @@ namespace Federator.Core.Diagnostics
 
             if (!Finished)
             {
-                lines.Add("the run started and RUN finished was never marked, so the run is counted to now");
+                // A run counted to now ends where the block is written, so no stretch after it was
+                // measured, and a row of nought seconds would read as one.
+                lines.Add("the run started and RUN finished was never marked, so the run is counted to now "
+                    + "and the time after the run is not measured");
+            }
+            else
+            {
+                lines.Add(Row(AfterTheRun, AfterSeconds));
             }
 
-            lines.Add(Row(AfterTheRun, AfterSeconds));
-            lines.Add("the run is RUN started to RUN finished, and every share below is "
-                + "worked off it. The other two are not work this tool did");
+            lines.Add(Finished
+                ? "the run is RUN started to RUN finished, and every share below is "
+                    + "worked off it. The other two are not work this tool did"
+                : "the run is RUN started to now, and every share below is "
+                    + "worked off it. Waiting for the person is not work this tool did");
 
             return lines;
         }

@@ -725,9 +725,15 @@ namespace Federator.Core.Report
 
             foreach (string name in names)
             {
+                // FR-040. An id off the GUID fallback is written under its own label, which the
+                // cell carries, and never said to be written as Element ID.
+                string label = string.Equals(name, ClientFormat.GuidFallbackSource, StringComparison.Ordinal)
+                    ? ClientFormat.GuidIdLabel
+                    : ClientFormat.DefaultIdLabel;
+
                 lines.Add(name + " supplied " + counts[name]
                     + (counts[name] == 1 ? " item id" : " item ids")
-                    + " of " + items + ", written as \"" + ClientFormat.DefaultIdLabel + "\"");
+                    + " of " + items + ", written as \"" + label + "\"");
             }
 
             lines.AddRange(MissingIdLines());
@@ -806,11 +812,20 @@ namespace Federator.Core.Report
             return lines;
         }
 
+        /// <summary>
+        /// An id is missing where the cell is empty, FR-040. It was missing where no id PROPERTY
+        /// supplied it, which counted every id off the GUID fallback, a filled cell, as missing.
+        /// </summary>
         private static int Missing(ClashItem item)
         {
-            return item != null && string.IsNullOrEmpty(item.IdFrom) ? 1 : 0;
+            return item != null && string.IsNullOrEmpty(item.ElementId) ? 1 : 0;
         }
 
+        /// <summary>
+        /// The source of an item's id: the property that supplied it, the instance GUID where
+        /// none did and the fallback filled the cell, FR-040, or no id property where the cell
+        /// is empty.
+        /// </summary>
         private static int CountIdSource(ClashItem item, IDictionary<string, int> counts)
         {
             if (item == null)
@@ -818,7 +833,9 @@ namespace Federator.Core.Report
                 return 0;
             }
 
-            string from = string.IsNullOrEmpty(item.IdFrom) ? NoIdProperty : item.IdFrom;
+            string from = !string.IsNullOrEmpty(item.IdFrom)
+                ? item.IdFrom
+                : string.IsNullOrEmpty(item.ElementId) ? NoIdProperty : ClientFormat.GuidFallbackSource;
             int already;
 
             counts[from] = counts.TryGetValue(from, out already) ? already + 1 : 1;

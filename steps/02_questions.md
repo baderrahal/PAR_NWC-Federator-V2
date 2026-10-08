@@ -684,3 +684,55 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 142. From the loop, turn 5, 2026-10-07, F132 under your answers D to Q133, A to Q136, A to Q137 and your rule of Q140, its readers of attempts 7 to 11, `%LOCALAPPDATA%\NwcFederatorLoop\turn5\lanes-1007-break11-F132.json` the last. WHEN A MIRROR'S CLASHES MAY BE MERGED. Under Q140 every attempt since the seventh fixed only faults that can change a clash count or put a clash under the wrong test, and each reading found a new one, five after attempt 11: a saved mirror on a run with no XML paired with another tolerance or type than its kept test, a pair judged on the XML's sets while the NWF still holds the old sets, an ignore rule a person added that no reader compares, a duplicate taken as the mirror under its own XML name, and a clash held in two blocks when one mirror merges and another does not. Each comes from merging a mirror's clashes into a test that is not exactly what the XML asks. A, merge only where this run created both tests of the pair from the picked XML and neither test's sets drifted from the XML, and in every other case, a test the NWF already held, a renamed old test, a run with no XML, each test keeps its own clashes under its own name and the log says a clash both find may be counted twice. B, keep the merge as built and fix each case a reading finds. C, never merge: create and run both tests, each keeping its own clashes under its own name, the mirror named in the log and the workbook, so every count matches the Clash Detective panel exactly. The loop recommends A, since it keeps your D for the weekly XML run, the usual case, and no reading has found a fault there. With A the renamed old tests of Q136 A and the run with no XML of Q137 A keep their own clashes. The build goes on with A until you answer. Its item: FR-182 of steps\fix-round.md.
 
     Answer: Bader, 2026-10-07, his message headed BADER'S ANSWERS, 7 OCT 2026, THE SIX ROWS WAITING FOR HIM AND THE SHUTDOWN TIME. In his words: Q142: A. The lead's note: F132's attempt 12 builds it, a merge only where the run created both tests from the picked XML and neither test's sets drifted, every other case keeping each test's own clashes and saying so.
+
+143. From Bader, 2026-10-07 at 15:38, his message headed BADER, 7 OCT 2026: FAST TO A TEAM RELEASE, not a question put to him but his order, which holds over any earlier rule that conflicts. In his words:
+
+    BADER, 7 OCT 2026: FAST TO A TEAM RELEASE
+    This replaces the blocks headed THE TEAM RELEASE FIRST and THE SPEED ORDER, if either was pasted. The work is too slow: in four days the list grew from 174 items to 473 rows, mostly rows the readings made about the loop's own scripts, the mirror rule reached attempt 12, and today saw about seven records pull requests for one product fix. From now on these limits hold over any earlier rule that conflicts.
+
+    THE GOAL
+    A release Bader's team can use: waves 2 and 3, F137 and the wave 1 test, the viewpoints first. Waves 4 and 5 come after it.
+
+    THE LIMITS
+    1. Two attempts per change. After the second reading it merges if the build is clean, the Core tests pass and no reader found a fault that changes a number, a status, a file or a clash the team sees. Any other point is dropped, not written down.
+    2. A reading adds a tracker row only for a fault that changes what the team sees in the window, the log, the workbook, the NWF or the NWD.
+    3. One reviewer per pull request. A breaker only for alignment, sets, clash counts, mirrors and views, once per change.
+    4. No new probes unless a fix cannot be written without that one fact.
+    5. The loop's own scripts are frozen: no fix to tools\loop, the harness, the guard or the probes unless a run cannot start or its evidence would be wrong.
+    6. Related findings of one area go in one pull request.
+    7. One records pull request a day, at the close. The page and the tracker change inside the product pull requests in between.
+
+    TWO LANES AT ONCE
+    8. This session, on the laptop, does what needs Navisworks or the add-in build: F132's add-in half under Q142 A, F114 with its add-in pass, F109 install, F129 start from an NWF, F130 Shift ticking, F120 pictures, the add-in parts of the other items, the installs and every real run.
+    9. A cloud lane, a second Claude Code session in Anthropic's cloud, takes the release items a Core test proves, with no Navisworks and no add-in build: F115 sets, F127 coverage, F137, F118 workbook and report, F119 run log and RESULT, and F128's Core part. Push the work on fix-F115 and fix-F127 now, so the cloud lane carries them on from those branches. It writes steps\lane-b.md and merges its own pull requests once Actions is green. Read steps\lane-b.md before taking any item, never take one it lists, and leave the files its open branches change alone. Fold its merged items into the tracker.
+    10. Today, before the close: F132 merged, F114's Core merged, and every other ready item merged. Tonight the cloud lane goes on alone.
+
+    THE ORDER ON THE LAPTOP
+    11. F132 under Q142 A, then F114, then install main and the timed runs of 1A02MM and 1A04PK with the new views, then the rest of the laptop items.
+    12. After wave 3: install main, run C06 and C07 in full through the real window with the viewpoints on, check Bader's three tests of done, and tell him in three lines. He then checks one published NWD in ACC, and the tool goes to his team with F109's install.
+
+    REPORTING
+    13. Every hour until the close, three lines in this tab: product fixes merged since this order, what is in review, and anything that broke a limit.
+    14. At the close, write in steps\PROGRESS.md how many product fixes merged today, the expected release date from the pace, and if fewer than three merged, the one reason.
+    Everything else stays as it is.
+
+    Answer: Bader, 2026-10-07, as written above. The lead's notes. The two lanes ran from 15:46, the cloud lane writing steps\lane-b.md and merging 142, 144, 145, 146, 147, 148, 150, 151 and 154, and the laptop lane F132's add-in half, the probes P15 to P19 and step 364, and the fold of the lane's items as 152. The hourly lines were written in the tab at 16:33, 17:25 and 18:25. The count of the day and the release date from the pace are on steps\PROGRESS.md at the close.
+
+144. From the loop, turn 5, 2026-10-08, F132's add-in half, attempt 2 of two under Q143, on the breaker's row F132-R5 of attempt 1, turn5\f132p-break-addin.json. A RUN WITH NO XML NOW REACHES THE SAVED TESTS WITH THEIR REAL SET NAMES. Until attempt 1 the plan of a run with no XML carried placeholders for each saved test's two sides, side A as saved and side B as saved, so the by design pass of F72b, which matches a pair of the CSV on the two set names of a test, matched nothing on a run with no XML and moved no clash, in silence. Since attempt 1 every saved test is read with its sides, so with the by design box ticked the pass matches the saved tests too, writes Reviewed into those at New or Active that a pair names, and the NWF is saved again. The breaker called it a status change written into the NWF by a pass that did nothing on this path the week before. The lead's choice for attempt 2, applied until you say otherwise: the pass stays, because the box is a person's instruction, F72b's rule is a match on the two set names of the test, and a saved test whose sides are real sets is a test the list names, and it is never silent: on a run with no XML each group's BY DESIGN block says its sides were read off the tests saved in the NWF and how many pairs that reached, and the confirm screen's by design line says the pass acts on the tests saved in the NWF as well as those from the file. The other reading, A: a run with no XML moves nothing, as before attempt 1, and says so. B is the lead's choice above. Which do you want?
+
+    Answer:
+
+145. From Bader, 2026-10-08, his message headed BADER, 8 OCT 2026: THE NEW ORDER ON THE LAPTOP, not a question put to him but his order, which sets the order of the work still to do. In his words:
+
+    BADER, 8 OCT 2026: THE NEW ORDER ON THE LAPTOP
+    Bader sets the order of the work still to do:
+    1. Finish F132's add-in half attempt 2, which is already in review, and merge it if no fault the team sees remains. Do not start anything new before it.
+    2. F128, Generic Models: the count per model in the log and in a workbook sheet, and one search set per model in a Generic Models folder in the NWF. Lane B does its Core part first. The laptop does the add-in part.
+    3. F120, the clash pictures: the pictures that fail, and their speed, with the output kept the same.
+    4. Then F114's add-in pass, the new views.
+    5. Then install main and run 1A02MM and 1A04PK with the viewpoints on, timed against the baseline, proving in those runs F114, F132, F128, F120 and everything merged but not yet proven: the coordinates rule, the Coverage sheet, the XML corrections, the workbook, the run log and the sets.
+    6. Then F129, start from an NWF, F130, Shift ticking, and F109, the install for the team.
+    7. Then the release: C06 and C07 in full, and Bader's ACC check.
+    Test runs before F114 merges keep the viewpoints box unticked. Everything else stays as it is, the limits of Q143 included.
+
+    Answer: Bader, 2026-10-08, as written above. The lead's notes: this order replaces item 11 of Q143 from F114 on. F114's add-in pass had its first phase started on fix-F114 at about 10:20, before this order, on files none of F128, F120 or F132 change, and that phase is pushed and parked until item 4. F128's one measurement, which property and value name Generic Models on 1A02MM and 1A04PK, is the one probe Q143 item 4 allows, since the set and the count cannot be written without it.

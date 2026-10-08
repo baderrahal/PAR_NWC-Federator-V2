@@ -1173,24 +1173,31 @@ and 6 does not read as broken.
   re-read off their own exports on every run, and never written into the clash XML,
   because the stylesheet makes a column out of every smarttag and it would then be on the
   page the client receives. `WorkbookCheck.Of` takes whether a file was picked, because a
-  priority sorted workbook is in priority order on purpose and the order check would
-  otherwise call every one of them wrongly ordered, and because a column past their table
-  is invisible to every other check in there
-- WITH A PRIORITY FILE PICKED THE BLOCK ORDER CHANGES, F83: A, then B, then C, then the
-  tests the file says nothing about, and inside each block by test name. THE DEFAULT
-  ORDER IS STILL THE MEASURED ONE and picking a file is the only thing that replaces it.
-  That the two disagree is Q49. `ReportOrder.Tests` is the ONE place the order is
-  decided, and the workbook, the clash XML and the picture numbering all read it, so the
-  page and the workbook cannot list the same tests differently and a picture cannot keep
-  a number from an order nothing else uses. The map lives on the report, `ClashReport
-  .Priorities`, never null, because three callers each passing their own copy is how they
-  stop agreeing
+  column past their table is invisible to every other check in there, and the heading has
+  to be there with a file picked and absent with none. Until FR-199 that flag also switched
+  the order check off, because a priority sorted workbook was in priority order on purpose,
+  and since FR-199 the order is checked whether or not a file was picked
+- THE BLOCKS STAY IN THE MEASURED ORDER WITH A PRIORITY FILE PICKED, FR-199, Bader's answer
+  to Q49 on 2026-10-06 built by F118: the priority is a column to sort on in Excel, and the
+  blocks keep the order measured off the client's exports, most clashes first with ties in
+  creation order. F83 sorted them A, then B, then C, then the tests the file says nothing
+  about, by name inside each, an order the client never accepted, and every output
+  followed. `ReportOrder.Tests` is still the ONE place the order is decided, and the
+  workbook, the clash XML and the picture numbering all read it, so the page and the
+  workbook cannot list the same tests differently and a picture cannot keep a number from
+  an order nothing else uses. The map lives on the report, `ClashReport.Priorities`, never
+  null, because three callers each passing their own copy is how they stop agreeing. The
+  engine still tells the check a file was picked, which since FR-199 means the Priority
+  column alone, so no line of its changes
 - THE PRIORITY FILE IS MATCHED ON THE TEST NAME, EXACTLY, Ordinal and never trimmed,
   F83. A test name is built out of two set names and two of those end in a space. The
   file carries test_name, left_set, right_set and priority, and the sets are read and
   kept so a person can see what a row meant, but nothing matches on them. A row whose
   letter is not A, B or C is a PROBLEM named in the log and left out, never a silent
-  None, because a silent None reads exactly like a test the matrix never mentioned.
+  None, because a silent None reads exactly like a test the matrix never mentioned. A TEST
+  THE FILE NAMES TWICE IS A PROBLEM TOO, FR-037, F118: the last row still wins, as it did,
+  and the repeat is named with both lines and both letters so a person decides which, and
+  `PriorityMap.RowCount` is the rows the file holds, a test named twice counted twice.
   Picking a file NEVER fails a run: a missing or damaged file is a finding in the log and
   a line in the window and the run goes on with no Priority column. `Priorities` is the
   words and the order, None last, and the workbook cell is EMPTY for None while the
@@ -1227,6 +1234,16 @@ and 6 does not read as broken.
   cause is fixed too: the clash gives back the geometry leaf, which on a Revit sourced NWC
   carries a material name and no Revit properties, so the id, the family and the type are
   looked for on the item, then on its composite item, then up its ancestors
+- AN ID OFF THE GUID FALLBACK IS AN ID, FR-040, F118. An item with no id property is given
+  its instance GUID under the label `ClientFormat.GuidIdLabel`, Instance GUID, and the ITEM
+  IDS block counted that filled cell as a missing id, named no id property as its source
+  and said it was written as Element ID while the cell said otherwise, and the workbook
+  and page checks called a first cell of that kind the wrong shape. A missing id is an
+  EMPTY cell, `ClashReportModel.Missing`, the source of such an id is
+  `ClientFormat.GuidFallbackSource` and its line says the label the cell carries, and
+  `ClientShapes.LooksLikeAnItemId` accepts the two labels this tool writes and no other.
+  The harvest types the label as a literal, which is the add-in half to point at the
+  constant
 - Distance is the ROUNDED signed number and the cell carries no number format, which is
   what theirs holds and what the code writes. This bullet asked for a raw number behind a
   format, which is the thing the later bullet says was wrong: the cell read -0.328 while
@@ -1280,7 +1297,14 @@ and 6 does not read as broken.
   check reports the sheets and their names, the blocks, the rows, the clash count of each
   block, and the first thing that differs from the client's layout with both sides printed.
   It counts no column of ours, because since the workbook became their one sheet there is
-  no column of ours on it to count
+  no column of ours on it to count. EVERY TEST IS COUNTED, FR-035, F118: the full blocks
+  with a heading and clashes, and the tests of one row that found nothing, Q73, each said
+  apart, `WorkbookCheck.FullBlocks` and `OneRowTests`, so the BLOCKS line reads one for
+  every test in the file and a missing one row test is a shortfall. It counted a block only
+  where it found the Clash Name heading, so every group of a 1830 test run read 5 blocks
+  against 1830 and said in capitals the workbook was short. A workbook of one row tests
+  alone has no block layout to compare, so its row 1 and widths are read and the check
+  says no block was compared
 - A report check NEVER fails a group. It is a warning on its own list, apart from the
   errors, because the NWF, the NWD and the workbook were all still written. Judging a group
   on it would repeat the fault that once reported a clean 22 group run as FAILED
