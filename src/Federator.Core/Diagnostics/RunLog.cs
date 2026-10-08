@@ -2481,6 +2481,7 @@ namespace Federator.Core.Diagnostics
             }
             catch (Exception)
             {
+                // The file cannot be read here, and the lines held in memory are the same lines.
                 lock (gate)
                 {
                     return mirror.ToString();
@@ -2518,6 +2519,7 @@ namespace Federator.Core.Diagnostics
                 }
                 catch (Exception)
                 {
+                    // Neither figure could be read, and a size is only ever logged after it was read back.
                     return -1;
                 }
             }

@@ -167,6 +167,7 @@ namespace Federator.Core.Rerun
             }
             catch (ArgumentException)
             {
+                // A path the framework will not split stands for itself and is compared whole.
                 return path;
             }
         }
@@ -180,6 +181,7 @@ namespace Federator.Core.Rerun
             }
             catch (ArgumentException)
             {
+                // A path the framework will not split stands for itself and is compared whole.
                 return path;
             }
         }

@@ -53,21 +53,25 @@ namespace Federator.Core.Rerun
         }
 
         /// <summary>
-        /// True where this document can be run at all. Five things are checked in order
-        /// and WhyNot names the first that fails, in the words a person would say:
-        ///   it has a name, because an unsaved document has nowhere to put an NWD or a
+        /// True where this document can be run at all. These are checked in order and WhyNot
+        /// names the first that fails, in the words a person would say:
+        ///   it has a path, because an unsaved document has nowhere to put an NWD or a
         ///     workbook, and saving it somewhere of our choosing would be this tool
         ///     deciding where a person's federation lives
         ///   it was opened from a folder and not from an address, because acc:// and
         ///     https:// name nothing on a disk
+        ///   its path holds no character a path may not, because the documentation says the
+        ///     path methods of .NET Framework throw on one and the window fills a label from
+        ///     this answer, so it is looked for before any of them splits the path, FR-173
+        ///   it has a name, the same words as the first
         ///   it is an NWF, because the NWF is where the clash tests and their results
         ///     live, and an NWD or an NWC opened directly holds neither
         ///   it has a folder in front of its name, because that is where the outputs go
         ///   that folder can be read from here
-        /// No path at all is refused as unsaved first. The address and a character no path may hold
-        /// are looked for before the path is split, because splitting one can throw, and the name
-        /// of what is left is judged after them. D2, decided on 2026-09-12. An NWD opened directly used to be allowed, and the
-        /// NWD this tool publishes would have been written over the file that was open.
+        /// An address is judged before the name, so one ending in a slash is an address and
+        /// not an unsaved document. D2, decided on 2026-09-12. An NWD opened directly used
+        /// to be allowed, and the NWD this tool publishes would have been written over the
+        /// file that was open.
         /// </summary>
         public static bool CanRun(string openPath)
         {
@@ -105,8 +109,9 @@ namespace Federator.Core.Rerun
                 return NotSaved;
             }
 
-            // Before any call that splits the path: an address can hold a character a path may not, and
-            // the path methods of .NET Framework throw on one, into the window code that fills a label, FR-173.
+            // Before any call that splits the path: an address can hold a character a path may not, the
+            // documentation says the path methods of .NET Framework throw on one, and the window fills a
+            // label from this answer, FR-173.
             if (openPath.IndexOf("://", StringComparison.Ordinal) >= 0)
             {
                 return "This document was opened from " + openPath + ", which is an address "

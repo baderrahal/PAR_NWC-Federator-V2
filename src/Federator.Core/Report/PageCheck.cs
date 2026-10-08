@@ -483,6 +483,7 @@ namespace Federator.Core.Report
             }
             catch (Exception)
             {
+                // A reference holding a character no path may hold names no file.
                 return false;
             }
         }

@@ -151,11 +151,11 @@ namespace Federator.Core.Naming
                 throw new InvalidOperationException("The date format " + format + " is not one a date can be written with.");
             }
 
-            // DateTime.ToString does NOT throw on a format string nobody can read. It
-            // treats what it does not recognise as literal text, so "not a real format"
-            // comes back as "noA a real 0or0aA". Measured on 2026-08-31. What matters is
+            // DateTime.ToString throws only on a format it cannot take apart at all, the case above. On
+            // one nobody can read it treats what it does not recognise as literal text, so "not a real
+            // format" comes back as "noA a real 0or0aA". Measured on 2026-08-31. What matters is
             // whether the result can be part of a file name, so that is what is checked
-            // rather than an exception that never arrives.
+            // rather than an exception that does not arrive.
             // The characters are Windows' own, read off FileNames rather than off the
             // platform running this, which off Windows names only two of them.
             if (!FileNames.CanBeAName(written))

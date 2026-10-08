@@ -19,9 +19,10 @@ namespace Federator.Core.Naming
         public const string RefusedPrintable = "<>:\"/\\|?*";
 
         /// <summary>
-        /// The four printable ones the path methods of .NET Framework throw on wherever they sit in a
-        /// path, before they split it. The colon, the star and the question mark are refused in a file
-        /// name and are not among these, because a drive and an address both hold a colon.
+        /// The four printable ones Path.GetInvalidPathChars lists, which the documentation of the path
+        /// methods of .NET Framework says they throw ArgumentException on, with every control character.
+        /// Not run here. The colon is a drive and an address, and the star and the question mark are not
+        /// among the characters that list holds.
         /// </summary>
         public const string RefusedPrintableInAPath = "\"<>|";
 
@@ -44,8 +45,8 @@ namespace Federator.Core.Naming
         }
 
         /// <summary>
-        /// Where the first character is that Path.GetFileName and its kind throw on, or minus one. Asked
-        /// before a path is split, so a path that would throw is named and not handed to them.
+        /// Where the first character is that Path.GetFileName and its kind are documented to throw on,
+        /// or minus one. Asked before a path is split, so such a path is named and not handed to them.
         /// </summary>
         public static int IndexOfRefusedInAPath(string path)
         {

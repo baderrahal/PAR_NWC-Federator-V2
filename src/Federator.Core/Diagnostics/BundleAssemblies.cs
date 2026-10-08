@@ -193,8 +193,8 @@ namespace Federator.Core.Diagnostics
                 }
                 catch (Exception error)
                 {
-                    // The file is in the bundle and would not load, which the runtime's report of the original
-                    // request does not say. It is still handed back as nothing, FR-173.
+                    // The file was found, so the runtime's report of the request would not say why it still
+                    // failed. It is still handed back as nothing, FR-173.
                     Remember(wanted + " was found at " + path + " and could not be loaded, "
                         + error.GetType().Name + ": " + (error.Message ?? string.Empty).TrimEnd('.', ' ', '\r', '\n'));
                     return null;

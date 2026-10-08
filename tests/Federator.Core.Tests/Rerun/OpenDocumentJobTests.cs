@@ -309,10 +309,12 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// FR-173. The path methods of .NET Framework throw on a bar, a quote, an angle bracket or a control
-        /// character before they split anything, and the window fills a label from this answer, so the
-        /// character is named before any of them is called. The folder rule is not read for such a path, so the
-        /// answer is the same on a machine where a backslash is an ordinary character.
+        /// FR-173. The documentation says the path methods of .NET Framework throw on a bar, a quote, an angle
+        /// bracket or a control character, and the window fills a label from this answer, so the character is
+        /// named before any of them is called. That they throw was not run here. The folder rule is not read
+        /// for such a path, so the answer is the same on a machine where a backslash is an ordinary character.
+        /// The paths are typed, against the rule that a path is built, because Path.Combine is one of the
+        /// methods that would throw on the very character each path is there to hold.
         /// </summary>
         [Test]
         public void ACharacterNoPathMayHoldIsNamedBeforeThePathIsSplit()
@@ -337,6 +339,25 @@ namespace Federator.Core.Tests
                 Assert.That(why, Does.Contain(named[i]), opens[i]);
                 Assert.That(why, Does.Not.Contain("no folder"), opens[i]);
                 Assert.That(OpenDocumentJob.Describe(opens[i], string.Empty), Is.EqualTo(OpenDocumentJob.WhyNot(opens[i])), opens[i]);
+            }
+        }
+
+        /// <summary>
+        /// The premise of the check above, which mono cannot show and nothing in this repo had run: that the
+        /// method WhyNot used to call first throws on such a character. It is a rule of the framework and not
+        /// of this tool, so it skips off Windows and is answered by the Windows runner, where the tests are the
+        /// net48 build. A red result here means the premise was wrong and the comments that give it must change.
+        /// </summary>
+        [Test]
+        public void TheMethodWhyNotCalledFirstThrowsOnACharacterNoPathMayHold()
+        {
+            TestPaths.OnWindowsOnly("the path methods of .NET Framework throwing on a character no path may hold");
+
+            string[] opens = { @"D:\Fed|erations\X.nwf", @"D:\Fed""erations\X.nwf", "D:\\Fed\terations\\X.nwf" };
+
+            foreach (string open in opens)
+            {
+                Assert.Throws<ArgumentException>(delegate { Path.GetFileNameWithoutExtension(open); }, open);
             }
         }
 
