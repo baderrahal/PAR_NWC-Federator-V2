@@ -399,7 +399,8 @@ well as to pass.
   appended and nothing cleared, the tests of the XML where one is picked and otherwise the
   tests saved inside, the workbook, the NWD, the NWF looked at once more, the GROUP lines and
   the PICKED NWF or OPEN FILE block. For a picked NWF the one difference is the open,
-  OpenThePickedNwf, timed as DECIDE as the weekly run's open is, through
+  OpenThePickedNwf, timed as DECIDE as the weekly run's open is, the one step the census lets
+  move every count, which an open does, through
   OpenAndWaitForTheModels, the one reader of an NWF, with no clear before it, since the open
   replaces the document as it does for the preview and the probe. One that will not open, or
   opens and reports no models for the whole wait, stops its group FAILED with Core's reason and

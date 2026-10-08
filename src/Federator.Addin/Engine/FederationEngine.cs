@@ -741,7 +741,8 @@ namespace Federator.Addin.Engine
                 try
                 {
                     // F129. The open is timed as DECIDE, the step the weekly run's open of an
-                    // NWF is timed in, so the timing block reads the two alike.
+                    // NWF is timed in, so the timing block reads the two alike, and the one
+                    // step the census lets move every count, which an open does.
                     bool ready = !openItHere || InStepReturning(
                         RunSteps.Decide,
                         () => OpenThePickedNwf(document, job, outcome),
