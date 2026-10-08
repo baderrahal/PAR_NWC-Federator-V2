@@ -1,6 +1,52 @@
 # log
 
 Newest entry at the top.
+
+## 2026-10-08 The loop, turn 5, the plan of the day: the close of 7 Oct finished, lane B's night folded, F132's add-in half attempt 2, F114's add-in pass, main installed and the timed runs
+
+Picked up by Bader's message headed GOOD MORNING, CONTINUE THE LOOP, BADER, 8 OCT 2026. The System log, read in
+Arab Standard Time, UTC+3: shutdown.exe on behalf of SYSTEM began the shutdown at 19:30:51 on 2026-10-07, 46
+minutes after the day closed at 18:45 with STATE NIGHT, and the PC started at
+08:20:27, which the lead reads as the day closed in time. Get-Process Roamer read one at 08:36:19, pid 38612 with no window title, and none at 08:43:37, a
+Roamer the loop did not start, who started it UNKNOWN, so nothing was closed and nothing waited. His 22.0 key, exported to
+turn6\hkcu-22.0-morning-20261008-084556.reg, against the last backup, probes\property-run-20261007-173442\
+hkcu-navisworks-manage-22.0-before.reg of 17:34 on 2026-10-07: 1243 values each side, two differ, the CER
+calUptime and uptime counters, which Navisworks writes itself, so nothing was put back, and the compare found no difference on the Auto-Save
+enable value. The keep-awake runs again, pid 38340, started 08:46:28 through
+turn5\check-keep-awake.ps1, watching claude.exe pid 14096, its check scheduled in this session at 13 and 43 past each hour, job fec9b717, session only.
+
+The shutdown cut two pull requests. PR 157, the close of 7 Oct, stood CONFLICTING against main, which lane B
+moved by 153, 155, 158 and 160 to 166 after the close branched, so main is merged in here with both sides of
+the four conflicts kept, and the lane's night is folded into the tracker in the same pull request: FR-165's
+second half as 160, FR-168 as 155, FR-172 in part as 161, FR-171 in part as 162 to 165, and the F121 and F123
+rows. PR 159, F118's FR-199 and FR-040 by the lane's worktree session, read MERGEABLE and CLEAN with its one
+check passed this morning, and its one reviewer, the lead's reviewer agent, read APPROVE with four points that
+change nothing the team sees, turn6\f118-pr159-review.json, so it is finished next. STATE OPEN is set here, so the Stop gate holds the session again.
+
+The order on the laptop, Bader's items 8 and 9 of the message and Q143's limits: F132's add-in half attempt 2
+of two on F132-R4 and F132-R5 in wt-f132, one reviewer and one breaker, merged if no fault the team sees
+remains. Then F114's add-in pass. Then main installed in place and the timed runs of 1A02MM and 1A04PK with
+the new views on, against 2 h 12 min for 1A02MM and the hung run of 1A04PK. Then F109, F129, F130 and F120.
+Every hour three lines in the tab, job 42b56482 at 55 past, and the close from 18:40 with STATE NIGHT and the one
+records pull request of the day. Programs started this morning: reg.exe for the export, powershell for the
+keep-awake check and the tracker scripts, python for the resolve, git, gh and dotnet in the pre-commit. Files
+written outside the repo, all under turn6 unless named: the export above, f118-pr159-diff.txt, f118-pr159-review.json,
+f132-attempt2-brief.md, resolve-close.py, fix-plan-entry.py, close-1007-merge-msg.txt, close-1007-pr-body.md,
+close-1007-commit.txt, the keep-awake lines under turn5, and the f132q- files of F132's developer in its worktree
+wt-f132. The merged tree's Core tests in the pre-commit: 2408 passed, 0 failed, 0 skipped, and this pull request
+changes no code, so there is no count before it.
+
+## 2026-10-07 The loop, turn 5, the close of the day: Q143's two lanes, 9 product fixes merged
+
+Bader's order of 15:38, FAST TO A TEAM RELEASE, Q143, two attempts per change, one reviewer, one records PR a day.
+The cloud lane B merged F115 as 142 and its records as 144, F127's Core half as 145, F137 part 1 as 146, F118's
+FR-035 and FR-037 as 147, F119's nine items as 148, F121's six as 150 and F123's three as 151 and six as 154, its page steps\lane-b.md. The laptop
+lane merged F114's Core half as 141 before the order, folded the lane's items and let a lane-b branch through the
+Stop gate as 152 under his order of 17:25, and F132's add-in half, attempt 1 of two, pushed as fd936b1 and read CHANGES by the breaker on two faults the team would see, the views and a no XML by design pass, attempt 2 in the morning.
+The probes P16 to P19 answered on fix-F114-probes, scan.md 5z-x to 5z-z, P15 NOT ANSWERED and left, and step
+364's property probe ran on one ME NWC of run set 04, 8823 rows, 17 categories asked and 10 found, scan.md 5z-za.
+The day closed at 18:45 by the STOP SAFELY procedure, STATE NIGHT, the keep-awake stopped, before the company
+shutdown at about 19:30. The count of the day and the release date from the pace are on steps\PROGRESS.md.
 ## 2026-10-07 The loop, turn 5, F137 no site and no clash groups end PARTIAL, FR-195, part 1 built by lane B's cloud session as PR 146, its records by the worktree session
 
 Bader's answers of 2026-10-05, Q111 B and Q125 B, FR-195 of steps\fix-round.md, before the test of

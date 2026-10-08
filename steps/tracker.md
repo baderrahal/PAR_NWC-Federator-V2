@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 503 rows: open 222, in progress 42, in review 0, merged 206, proven by a run 26, waiting for Bader 2, dropped 5
-- By wave: 1 19, 2a 54, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 70, outside the waves 2, right after F133 merges 6
-- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F127 coverage of the clash XML, F132 mirrored tests, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, step 364 the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 25 FR items
+- By status, of 506 rows: open 204, in progress 44, in review 1, merged 223, proven by a run 27, waiting for Bader 2, dropped 5
+- By wave: 1 19, 2a 56, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 9, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 71, outside the waves 2, right after F133 merges 6
+- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, Q140 F132's next attempt only for a fault that can change a clash count or its test, and 27 FR items
 - Waits for Bader, 2 rows: step 228-233, F114-K29
 
 ## Wave 1
@@ -56,7 +56,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-183 | mirrored tests in an existing nwf | F132 | Bader's decision | in progress | none, branch fix-F132 | none | 2026-10-05 |
 | F115 | sets | F115 | fix | merged | 142 | none | 2026-10-07 |
 | F127 | coverage of the clash XML | F127 | fix | in progress | 145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop | none | 2026-10-07 |
-| F132 | mirrored tests | F132 | fix | in progress | none, branch fix-F132 at 93b45b1, attempt 9 on one blocking point next | none | 2026-10-06 |
+| F132 | mirrored tests | F132 | fix | in review | none, branch fix-F132 at fd936b1, the add-in half attempt 1 read CHANGES | none | 2026-10-07 |
 | Q112-2 | coverage of the clash XML (FR-176) | F127 | Bader's request | in progress | 145 the Core steps 1 to 3 and 153 the Coverage sheet merged, the add-in half on the laptop | none | 2026-10-07 |
 | Q46 | F77 against the single discipline rule | F127 | question | merged | 131 | none | 2026-10-06 |
 | Q121 | telecom fixtures and telephone devices | F132 | question | merged | 118 | none | 2026-10-05 |
@@ -88,6 +88,8 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F115-R21 | a side whose sources read as none counts as zero sides and never as not counted | F115 | register row | open | none | none | 2026-10-07 |
 | F115-R22 | a set created and then lost track of is reported FAILED and may not ask for the save | F115 | register row | open | none | none | 2026-10-07 |
 | F115-R23 | two sets of one name in the picked file are built as one set and counted as one created and one already there | F115 | register row | open | none | none | 2026-10-07 |
+| F132-R4 | the views read the document and not the merged report, so a clash only the mirror found gets no viewpoint and a status restated on the kept row is not the one the views read | F132 | silent wrong number | open | none, the breaker of the add-in half attempt 1, turn5\f132p-break-addin.json | none | 2026-10-07 |
+| F132-R5 | a run with no XML now hands the by design pass real set names, so with the box ticked it writes Reviewed into saved tests and saves the NWF | F132 | silent wrong number | open | none, the breaker of the add-in half attempt 1, turn5\f132p-break-addin.json | none | 2026-10-07 |
 | F127-R1 | read-workbook.ps1 reads every sheet as a test sheet so the Coverage sheet makes every F104 verdict NOT PROVED until it reads a sheet named Coverage into a section of its own | F127 | register row | open | none | none | 2026-10-07 |
 
 ## Wave 2a and 2b
@@ -231,23 +233,23 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-103 | remove writes note before delete | F122 | loud failure | open | none | none | 2026-10-04 |
 | FR-104 | set remove advice sends to a refusal | F122 | loud failure | open | none | none | 2026-10-04 |
 | FR-150 | apply file settings does not save nwf | F121 | silent wrong number | open | none | none | 2026-10-04 |
-| FR-151 | rebuild tally before minus one reads as none | F121 | silent wrong number | open | none | none | 2026-10-04 |
+| FR-151 | rebuild tally before minus one reads as none | F121 | silent wrong number | merged | 150 | none | 2026-10-07 |
 | FR-152 | undo auto reviewed undoes a persons reviewed | F121 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-153 | regroup throws away typed names and run ticks | F121 | silent wrong number | open | none | none | 2026-10-04 |
-| FR-154 | scan findings use group key as building code | F121 | silent wrong number | open | none | none | 2026-10-04 |
+| FR-154 | scan findings use group key as building code | F121 | silent wrong number | merged | 150 | none | 2026-10-07 |
 | FR-155 | exchange reader missing attribute becomes zero or false | F121 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-156 | probe csv listed written after write threw | F121 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-157 | probe unread value written as empty value | F121 | silent wrong number | open | none | none | 2026-10-04 |
-| FR-158 | probe category match trims but tally does not | F121 | silent wrong number | open | none | none | 2026-10-04 |
-| FR-159 | emptied pattern field passes name check | F121 | broken feature | open | none | none | 2026-10-04 |
+| FR-158 | probe category match trims but tally does not | F121 | silent wrong number | merged | 150 | none | 2026-10-07 |
+| FR-159 | emptied pattern field passes name check | F121 | broken feature | merged | 150 | none | 2026-10-07 |
 | FR-160 | cleared name cell pinned as empty name | F121 | broken feature | open | none | none | 2026-10-04 |
 | FR-161 | date format has no control | F121 | broken feature | open | none | none | 2026-10-04 |
 | FR-162 | folder memory save failure never reported | F121 | broken feature | open | none | none | 2026-10-04 |
 | FR-163 | title bar close mid run | F121 | broken feature | open | none | none | 2026-10-04 |
-| FR-164 | census sets overload returns zero not minus one | F121 | loud failure | open | none | none | 2026-10-04 |
-| FR-165 | cleared name cell throws out of run click | F121 | loud failure | open | none | none | 2026-10-04 |
+| FR-164 | census sets overload returns zero not minus one | F121 | loud failure | merged | 150 | none | 2026-10-07 |
+| FR-165 | cleared name cell throws out of run click | F121 | loud failure | merged | 150, and 160 the second half, a hand typed name Windows refuses | none | 2026-10-07 |
 | FR-166 | tolerance other blank stops hand buttons | F121 | loud failure | open | none | none | 2026-10-04 |
-| F121 | the rest | F121 | fix | open | none | none | 2026-10-04 |
+| F121 | the rest | F121 | fix | in progress | 150 six items and 160 merged, the rest on the laptop | none | 2026-10-07 |
 | F122 | the loop tools | F122 | fix | open | none | none | 2026-10-04 |
 | F125-R1 | a modeless window up after Run stops the driver while the monitor reads a pane | F122 | register row | open | none | none | 2026-10-04 |
 | F125-R3 | a pane made again with a new handle after Run stops the driver | F122 | register row | open | none | none | 2026-10-04 |
@@ -269,7 +271,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| FR-007 | invisible difference fallback for visible space | F123 | noise | open | none | none | 2026-10-04 |
+| FR-007 | invisible difference fallback for visible space | F123 | noise | merged | 151 | none | 2026-10-07 |
 | FR-029 | set builder handles never disposed | F123 | noise | open | none | none | 2026-10-04 |
 | FR-038 | workbook stray grey row after last empty test | F123 | noise | open | none | none | 2026-10-04 |
 | FR-039 | thumbnail row height overwritten by clash row height | F123 | noise | open | none | none | 2026-10-04 |
@@ -277,10 +279,10 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-058 | first clash line says all tests to create | F123 | noise | open | none | none | 2026-10-04 |
 | FR-059 | result files written leaves out pictures | F123 | noise | open | none | none | 2026-10-04 |
 | FR-060 | result found none counts groups that ran no test | F123 | noise | open | none | none | 2026-10-04 |
-| FR-061 | log says tsv keeps collapsed lines when tsv did not open | F123 | noise | open | none | none | 2026-10-04 |
+| FR-061 | log says tsv keeps collapsed lines when tsv did not open | F123 | noise | merged | 151 | none | 2026-10-07 |
 | FR-062 | units line names unit when second read threw | F123 | noise | open | none | none | 2026-10-04 |
 | FR-063 | tolerance log line says read from xml on no xml run | F123 | noise | open | none | none | 2026-10-04 |
-| FR-064 | category line names no folder | F123 | noise | open | none | none | 2026-10-04 |
+| FR-064 | category line names no folder | F123 | noise | merged | 151 | none | 2026-10-07 |
 | FR-074 | views unknown set not named | F123 | noise | open | none | none | 2026-10-04 |
 | FR-081 | f103w install failure claims and refused text | F123 | noise | open | none | none | 2026-10-04 |
 | FR-105 | run verdict wording and dead fields | F123 | noise | open | none | none | 2026-10-04 |
@@ -303,13 +305,13 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-122 | f105 il reader prints zero for kinds never attempted | F123 | noise | open | none | none | 2026-10-04 |
 | FR-123 | f105 failure list only printed with built addin | F123 | noise | open | none | none | 2026-10-04 |
 | FR-124 | f105 probes share resolver and helpers in copies | F123 | noise | open | none | none | 2026-10-04 |
-| FR-126 | single discipline sentence says every test is created | F123 | noise | open | none | none | 2026-10-04 |
-| FR-127 | tolerance help line says resets results | F123 | noise | open | none | none | 2026-10-04 |
+| FR-126 | single discipline sentence says every test is created | F123 | noise | merged | 154 | none | 2026-10-07 |
+| FR-127 | tolerance help line says resets results | F123 | noise | merged | 154 | none | 2026-10-07 |
 | FR-128 | apply line says results reset contradicts kept | F123 | noise | open | none | none | 2026-10-04 |
-| FR-129 | failure guard words say first n tests | F123 | noise | open | none | none | 2026-10-04 |
-| FR-130 | refill message counts rows not cells | F123 | noise | open | none | none | 2026-10-04 |
-| FR-131 | outputs label wrong reason when nwf inside source | F123 | noise | open | none | none | 2026-10-04 |
-| FR-132 | rebuild box help line omits removal | F123 | noise | open | none | none | 2026-10-04 |
+| FR-129 | failure guard words say first n tests | F123 | noise | merged | 154 | none | 2026-10-07 |
+| FR-130 | refill message counts rows not cells | F123 | noise | merged | 154 | none | 2026-10-07 |
+| FR-131 | outputs label wrong reason when nwf inside source | F123 | noise | merged | 154 | none | 2026-10-07 |
+| FR-132 | rebuild box help line omits removal | F123 | noise | merged | 154 | none | 2026-10-07 |
 | FR-133 | savedviewpoints canbuild switch nothing | F123 | noise | open | none | none | 2026-10-04 |
 | FR-134 | stale units comment in finish the group | F123 | noise | open | none | none | 2026-10-04 |
 | FR-135 | docs bader next says c06 never existed | F123 | noise | open | none | none | 2026-10-04 |
@@ -326,15 +328,15 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-148 | audit 180 findings without verifier | F123 | noise | open | none | none | 2026-10-04 |
 | FR-149 | older machine account name left in tree | F117 | noise | open | none | none | 2026-10-04 |
 | FR-167 | shared source uses group key not building code | F123 | noise | open | none | none | 2026-10-04 |
-| FR-168 | folders memory read failure logged as first run | F123 | noise | open | none | none | 2026-10-04 |
+| FR-168 | folders memory read failure logged as first run | F123 | noise | merged | 155 | none | 2026-10-07 |
 | FR-169 | document guard unreadable name called unsaved | F123 | noise | open | none | none | 2026-10-04 |
 | FR-170 | penetration size catch swallows unit throw | F123 | noise | open | none | none | 2026-10-04 |
-| FR-171 | t1 noise findings 93 | F123 | noise | open | none | none | 2026-10-04 |
-| FR-172 | t1 uncalled members 150 | F123 | noise | open | none | none | 2026-10-04 |
+| FR-171 | t1 noise findings 93 | F123 | noise | in progress | 162, 163, 164 and 165 in part, the rest on the laptop | none | 2026-10-07 |
+| FR-172 | t1 uncalled members 150 | F123 | noise | in progress | 161 two members deleted, the rest on the laptop | none | 2026-10-07 |
 | FR-173 | t1 catch swallowing 77 | F123 | noise | open | none | none | 2026-10-04 |
 | FR-174 | one public type per file | F124 | noise | open | none | none | 2026-10-04 |
 | F117 | the names | F117 | fix | open | none | none | 2026-10-04 |
-| F123 | docs and words, and the noise of every area | F123 | fix | open | none | none | 2026-10-04 |
+| F123 | docs and words, and the noise of every area | F123 | fix | in progress | 151, 154, 155, 161, 162, 163, 164 and 165 merged in part, the rest on the laptop | none | 2026-10-07 |
 | F124 | D1, one public type per file | F124 | fix | open | none | none | 2026-10-04 |
 | Q27 | the two choice rule for still outstanding lost every reader | F123 | question | merged | 131 | none | 2026-10-06 |
 | Q30 | the bundle manifest points at the old scan.md path | F123 | question | merged | 131 | none | 2026-10-06 |
@@ -590,12 +592,13 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F139-R9 | the Stop gate's merge test reads only a line starting STATE and a space in capitals, while its reader takes other spellings, so a page written another way is refused until respelled, the lead writing the plain form | none | register row | open | none | none | 2026-10-07 |
 | step 228-233 | the published NWD checked in ACC, by Bader himself at the final run after F114 merges | none | register row | waiting for Bader | none | none | 2026-10-07 |
 | step 346-352 | the remote branches other than main whose pull requests merged, deleted by the lead by Bader's answer, D6 | none | register row | proven by a run | none | turn5\d6-deleted.txt, 67 deleted and read back, 17 kept by his rule | 2026-10-07 |
-| step 364 | the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept | none | register row | in progress | none | none | 2026-10-07 |
+| step 364 | the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept | none | register row | proven by a run | none | turn5\probe-step364-result.txt and its CSV, scan.md 5z-za, one ME NWC of run set 04 | 2026-10-07 |
 | T5-R-WALKRACE | the harness's walk of the loop folder races a lane building under a wt- folder | none | register row | open | none | none | 2026-10-07 |
 | Q141 | a clash in a result group with two statuses | none | question | merged | 139 | none | 2026-10-07 |
 | Q142 | when a mirror's clashes may be merged | none | question | merged | 139 | none | 2026-10-07 |
 | T5-R-P15CRASH | probe P15 read a viewpoints copy after Document.Clear, Navisworks crashed and the guard refused the put back, put back by the lead at 14:53 from its backup | none | register row | proven by a run | none | turn5\restart\putback-rebuild-views-20261007-144356-write, 0 still different | 2026-10-07 |
 | F115-R13 | the F115 log entry was written as the lead's delegate | none | register row | open | none | none | 2026-10-05 |
+| Q143 | fast to a team release, the seven limits, the two lanes and the hourly lines | none | Bader's request | merged | 157 | none | 2026-10-07 |
 
 ## outside the waves
 
