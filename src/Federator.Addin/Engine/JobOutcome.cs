@@ -202,6 +202,12 @@ namespace Federator.Addin.Engine
         /// <summary>The workbook model for this group, or null when no report was wanted.</summary>
         public ClashReport Report { get; set; }
 
+        /// <summary>
+        /// Where each row of the report came from in the document, F132 attempt 2, handed
+        /// from the clash step to the views, or null when the clash step did not run.
+        /// </summary>
+        public IDictionary<ClashRow, RowAddress> RowAddresses { get; set; }
+
         /// <summary>Size read back off the disk, or minus one when the workbook is not there.</summary>
         public long WorkbookSize { get; set; }
 

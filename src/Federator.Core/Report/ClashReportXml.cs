@@ -225,7 +225,7 @@ namespace Federator.Core.Report
         private XElement Result(ClashRow row)
         {
             XElement element = new XElement(row.IsGroup ? "clashgroup" : "clashresult",
-                new XAttribute("name", Words.Or(row.Name, "clash")),
+                new XAttribute("name", Words.Or(row.WrittenName(), "clash")),
                 new XAttribute("distance", ClientFormat.Fixed(row.Distance)));
 
             // The stylesheet turns its Image column on for boolean(//@href) and reads the

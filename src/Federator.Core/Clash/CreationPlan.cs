@@ -32,7 +32,8 @@ namespace Federator.Core.Clash
     /// THE WORKBOOK STILL CARRIES A BLOCK FOR EVERY TEST IN THE FILE. Not creating a test
     /// changes what goes in the document, never what goes in the report, because the
     /// client's report is the whole matrix and a test missing from it reads as a test
-    /// nobody ran rather than as a test that could not clash.
+    /// nobody ran rather than as a test that could not clash. A mirror merged into its kept
+    /// test, F132, is carried in that test's block, and the check counts it there.
     /// </summary>
     public sealed class CreationPlan
     {
@@ -140,15 +141,43 @@ namespace Federator.Core.Clash
         /// </summary>
         public static string BlockCountLine(int blocksInTheWorkbook, int testsInTheFile)
         {
-            if (blocksInTheWorkbook == testsInTheFile)
+            return BlockCountLine(blocksInTheWorkbook, testsInTheFile, 0);
+        }
+
+        /// <summary>
+        /// The same check where mirrors were merged, F132, Bader's answer D to Q133: a mirror
+        /// merged into its kept test is carried inside that test's block and has no block of
+        /// its own, so the block expected for every test in the file is one fewer for each.
+        /// The number is the report's own, ClashReport.MirrorsMerged, counted where the report
+        /// takes each mirror out, so the check and the report read one rule. With none merged
+        /// the line is word for word the one above.
+        /// </summary>
+        public static string BlockCountLine(int blocksInTheWorkbook, int testsInTheFile, int mirrorsMerged)
+        {
+            if (mirrorsMerged < 0)
             {
-                return "BLOCKS   " + blocksInTheWorkbook + " in the workbook, one for every test in the file";
+                throw new ArgumentOutOfRangeException("mirrorsMerged", "A count of mirrors merged cannot be below zero.");
+            }
+
+            int expected = testsInTheFile - mirrorsMerged;
+            string merged = mirrorsMerged == 0
+                ? string.Empty
+                : mirrorsMerged + (mirrorsMerged == 1 ? " mirror" : " mirrors") + " merged into "
+                    + (mirrorsMerged == 1 ? "its kept test" : "their kept tests");
+
+            if (blocksInTheWorkbook == expected)
+            {
+                return "BLOCKS   " + blocksInTheWorkbook + " in the workbook, one for every test in the file"
+                    + (mirrorsMerged == 0 ? string.Empty : ", " + testsInTheFile + " less the " + merged);
             }
 
             return "BLOCKS   " + blocksInTheWorkbook + " in the workbook against "
-                + testsInTheFile + " tests in the file. THE WORKBOOK MUST CARRY A BLOCK FOR "
-                + "EVERY TEST IN THE FILE, whether or not the test was created, because the "
-                + "client's report is the whole matrix";
+                + (mirrorsMerged == 0
+                    ? testsInTheFile + " tests in the file"
+                    : expected + ", the " + testsInTheFile + " tests in the file less the " + merged)
+                + ". THE WORKBOOK MUST CARRY A BLOCK FOR EVERY TEST IN THE FILE, whether or not the test was "
+                + "created, because the client's report is the whole matrix"
+                + (mirrorsMerged == 0 ? string.Empty : ", and a mirror merged into its kept test is in that test's block");
         }
 
         private static bool Counted(

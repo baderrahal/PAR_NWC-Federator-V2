@@ -61,6 +61,87 @@ namespace Federator.Addin.Engine
             return path[level];
         }
 
+        /// <summary>
+        /// The test at this address in a freshly read collection, checked to be the test
+        /// that name says, or null: nothing is at the address, what is there is not a test,
+        /// or it is a test of another name, which nowNamed then carries so the caller can
+        /// say so. Null rather than the wrong test, because running or reading the wrong
+        /// test writes into somebody else's. The caller disposes what comes back. The
+        /// wrapper is created with eEXTERNAL ownership, so disposing it releases the
+        /// wrapper and never the document's test. Here since F132 attempt 2, so the views
+        /// resolve a test the one way the runner does.
+        /// </summary>
+        public ClashTest ResolveIn(DocumentClashTests clashTests, string name, out string nowNamed)
+        {
+            nowNamed = null;
+            SavedItemCollection children = clashTests.Tests;
+            SavedItem item = null;
+            GroupItem walked = null;
+
+            for (int level = 0; level < path.Length; level++)
+            {
+                int index = path[level];
+
+                if (children == null || index < 0 || index >= children.Count)
+                {
+                    if (walked != null)
+                    {
+                        walked.Dispose();
+                    }
+
+                    return null;
+                }
+
+                item = children[index];
+
+                // The level walked past is released only once the child below it has been
+                // read, which is the order ResolveFolders in SetBuilder uses.
+                if (walked != null)
+                {
+                    walked.Dispose();
+                    walked = null;
+                }
+
+                if (level + 1 == path.Length)
+                {
+                    break;
+                }
+
+                GroupItem group = item as GroupItem;
+
+                if (group == null)
+                {
+                    item.Dispose();
+                    return null;
+                }
+
+                children = group.Children;
+                walked = group;
+                item = null;
+            }
+
+            ClashTest test = item as ClashTest;
+
+            if (test == null)
+            {
+                if (item != null)
+                {
+                    item.Dispose();
+                }
+
+                return null;
+            }
+
+            if (!string.Equals(test.DisplayName, name, StringComparison.Ordinal))
+            {
+                nowNamed = test.DisplayName ?? string.Empty;
+                test.Dispose();
+                return null;
+            }
+
+            return test;
+        }
+
         public override string ToString()
         {
             string[] parts = new string[path.Length];

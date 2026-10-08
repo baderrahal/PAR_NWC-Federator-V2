@@ -384,6 +384,55 @@ namespace Federator.Core.Clash
                 Source, TestsInFile, DocumentUnits, stillBuildable, nowSkipped, unknownTestTypes);
         }
 
+        /// <summary>
+        /// The same plan with every mirror the rule found under the name it is created and
+        /// run under, F132, Bader's answer D to Q133, so both tests of a pair are created and
+        /// run and the mirror stays in Clash Detective with its name ending as the setting
+        /// says. A mirror read off the document keeps its name and its address. The rule is
+        /// the one built over this plan's own buildable tests, and a test is matched as the
+        /// same object. A rule built over another list would rename nothing while its lines
+        /// named each mirror by its new name, so a mirror that is not one of this plan's
+        /// buildable tests is refused.
+        /// </summary>
+        public ClashTestPlan WithMirrorsNamed(MirrorRule mirrors)
+        {
+            if (mirrors == null)
+            {
+                throw new ArgumentNullException("mirrors");
+            }
+
+            HashSet<PlannedClashTest> ours = new HashSet<PlannedClashTest>(buildable);
+            Dictionary<PlannedClashTest, string> byMirror = new Dictionary<PlannedClashTest, string>();
+
+            foreach (MirrorPair pair in mirrors.Pairs)
+            {
+                if (!ours.Contains(pair.Mirror))
+                {
+                    throw new ArgumentException(
+                        "The mirror rule was built over other tests than this plan's, so it would rename nothing "
+                            + "while its lines name each mirror by its new name. " + pair.Mirror.Name
+                            + " is not one of them.",
+                        "mirrors");
+                }
+
+                byMirror[pair.Mirror] = pair.MirrorName;
+            }
+
+            List<PlannedClashTest> named = new List<PlannedClashTest>();
+
+            foreach (PlannedClashTest test in buildable)
+            {
+                string name;
+
+                named.Add(byMirror.TryGetValue(test, out name) && !string.Equals(name, test.Name, StringComparison.Ordinal)
+                    ? test.Named(name)
+                    : test);
+            }
+
+            return new ClashTestPlan(
+                Source, TestsInFile, DocumentUnits, named, new List<SkippedClashTest>(skipped), unknownTestTypes);
+        }
+
         private static string Unresolved(bool leftKnown, bool rightKnown, PlannedClashTest test)
         {
             if (!leftKnown && !rightKnown)

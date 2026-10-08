@@ -254,6 +254,48 @@ namespace Federator.Core.Exchange
 
         public ReadOnlyCollection<SearchConditionDefinition> Conditions { get; private set; }
 
+        /// <summary>
+        /// EVERYTHING THE FILE WRITES FOR WHAT THIS SET FINDS, as one string, F132 attempt 5:
+        /// the findspec's mode, disjoint and the locator its search starts at, then every
+        /// condition in order, its rule signature and its flags whole. Two sets of one whole
+        /// question find the same items in any document, and that is what makes two tests a
+        /// mirrored pair by rule list, Bader's answer B to Q121.
+        ///
+        /// THE FLAGS ARE WHOLE, every bit of SearchConditionOptions, docs\history\scan.md,
+        /// What flags 64 means: the negation 32, the start of an Or group 64, ignoring the
+        /// value's case 16, the ignore name bits 1, 2, 4 and 8, and the accent and width bits
+        /// 128 and 256. The pairing acts on this comparison, adding the clashes of one test to
+        /// another, so a bit whose effect on the items found is not measured is part of the
+        /// question here. Two sets apart by such a bit are left unpaired, which costs no more
+        /// than each test keeping its own clashes. RuleSignature stays the one place a
+        /// condition's rule is read.
+        /// </summary>
+        internal string WholeQuestion
+        {
+            get
+            {
+                List<string> parts = new List<string>
+                {
+                    FindSpecMode ?? string.Empty,
+                    Disjoint ? "1" : "0",
+                    FindSpecLocator ?? string.Empty
+                };
+
+                foreach (SearchConditionDefinition condition in Conditions)
+                {
+                    parts.Add(condition.RuleSignature + QuestionSeparator
+                        + condition.Flags.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                }
+
+                return string.Join(PartSeparator, parts.ToArray());
+            }
+        }
+
+        /// <summary>Separators no mode, locator or rule signature carries, so two questions never join into one string.</summary>
+        private const string PartSeparator = "\u0001";
+
+        private const string QuestionSeparator = "\u0002";
+
         public bool IsAtRoot
         {
             get { return Folders.Count == 0; }
