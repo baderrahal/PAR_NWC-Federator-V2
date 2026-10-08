@@ -23,7 +23,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - Bader keeps the laptop on tonight, Q147: no close at 18:40, the work in progress of every branch pushed every 30 minutes. Keep-awake pid 74832 from 19:07
 - Q147 items 1 and 2: the attribution of commits and pull requests off in .claude\settings.json, and item 5's steps copied into steps\notes\item5-runs-brief.md
 - Merged today on the laptop: 157, 159 F118, 177 F132, 183 F120, 186 F128, 187 the close of the afternoon, and lane B's 167 to 185, the lane stopped at 185
-- F114 the views: merged as PR UNKNOWN, the add-in pass in two attempts and the second reading's faults fixed and re-read, Q148 to Bader on that reading of Q143 item 1, the viewpoints box opens ticked
+- F114 the views: merged as PR 189, the add-in pass in two attempts and the second reading's faults fixed and re-read, Q148 to Bader on that reading of Q143 item 1, the viewpoints box opens ticked
 
 ## Next
 1. F129 start from an NWF and F130 Shift ticking, in work on their branches, each read by one reviewer and merged

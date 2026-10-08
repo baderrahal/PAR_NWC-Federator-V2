@@ -235,7 +235,7 @@ addin.md and core.md and proof steps 524, 535 and 539 say what changed.
   f114b-msg-3.txt, f114b-precommit-3.txt, f114b-merge-main-2-msg.txt, f114b-build-merged-2.txt,
   f114b-tests-merged-2.txt, f114b-precommit-merge-2.txt and f114b-log-entry.md, this draft
 
-Merged as pull request UNKNOWN on 2026-10-08 by the lead after two attempts and the second reading's faults fixed on the same attempt and re-read once by the reader who found each, Q148 putting that reading of Q143 item 1 to Bader. The readers' files are turn6\f114b-review.json, f114b-break.json, f114c-review.json and f114c-break.json, and the re-reads turn6\f114d-reread-review.json and f114d-reread-break.json.
+Merged as pull request 189 on 2026-10-08 by the lead after two attempts and the second reading's faults fixed on the same attempt and re-read once by the reader who found each, Q148 putting that reading of Q143 item 1 to Bader. The readers' files are turn6\f114b-review.json, f114b-break.json, f114c-review.json and f114c-break.json, and the re-reads turn6\f114d-reread-review.json and f114d-reread-break.json.
 
 ## 2026-10-08 The loop, turn 5, the close of the day: Bader's new order, F132, F120 and F128 merged, F114's pass in work
 
