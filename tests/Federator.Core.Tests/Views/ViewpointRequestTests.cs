@@ -72,14 +72,15 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// Bader's answer B to Q131 on 2026-10-05: unticked when the window opens until F114
-        /// merges, so nobody makes the old viewpoints. The window opens with the setting's
-        /// value, so the setting is what this pins.
+        /// merges, so nobody makes the old viewpoints, and ticked once F114 merges. F114's
+        /// add-in pass is that merge, so the box opens ticked. The window opens with the
+        /// setting's value, so the setting is what this pins.
         /// </summary>
         [Test]
-        public void TheBoxStartsUntickedOffTheSetting()
+        public void TheBoxStartsTickedOffTheSetting()
         {
-            Assert.That(ViewpointRequest.DefaultMakeViewpoints, Is.False, "Q131 answer B, unticked until F114 merges");
-            Assert.That(new ReportOptions().MakeViewpoints, Is.False, "the window opens with the box unticked");
+            Assert.That(ViewpointRequest.DefaultMakeViewpoints, Is.True, "Q131 answer B, ticked once F114 merges");
+            Assert.That(new ReportOptions().MakeViewpoints, Is.True, "the window opens with the box ticked");
         }
 
         [Test]

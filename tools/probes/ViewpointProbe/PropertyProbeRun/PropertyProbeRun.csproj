@@ -1,0 +1,81 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Step 364 of steps\03_bader_next.md, 2026-10-07. A probe that runs INSIDE Navisworks, started
+    through the automation API by tools\probes\ViewpointProbe\probe-property-run.ps1. It runs the
+    add-in's own property probe, F86, on one NWC copy, the same PropertyProbe class the button
+    Probe model properties calls, so the CSV and the PROBE block are the ones the button writes.
+    The add-in's code is compiled in here from src as Q133Import does it: every file of
+    Federator.Core and every file of Federator.Addin\Engine but FederationEngine.cs, which holds
+    the window's run. Nothing of src is changed. Compiled into this assembly and not referenced,
+    so no second Federator.Core or Federator.Addin is loaded beside the installed bundle's.
+
+        dotnet build tools\probes\ViewpointProbe\PropertyProbeRun\PropertyProbeRun.csproj -c Release
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>PropertyProbeRun</AssemblyName>
+    <RootNamespace>PropertyProbeRun</RootNamespace>
+    <OutputType>Library</OutputType>
+    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <SrcRoot>$(MSBuildThisFileDirectory)..\..\..\..\src\</SrcRoot>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NavisworksPath Condition="'$(NavisworksPath)' == ''">C:\Program Files\Autodesk\Navisworks Manage 2025</NavisworksPath>
+    <NavisworksPath>$(NavisworksPath.TrimEnd('\'))</NavisworksPath>
+    <NavisworksApiDll>$(NavisworksPath)\Autodesk.Navisworks.Api.dll</NavisworksApiDll>
+    <NavisworksClashDll>$(NavisworksPath)\Autodesk.Navisworks.Clash.dll</NavisworksClashDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="ClosedXML" Version="0.105.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="*.cs" />
+    <Compile Include="$(SrcRoot)Federator.Core\**\*.cs" Exclude="$(SrcRoot)Federator.Core\bin\**;$(SrcRoot)Federator.Core\obj\**" LinkBase="src\Core" />
+    <Compile Include="$(SrcRoot)Federator.Addin\Engine\*.cs" Exclude="$(SrcRoot)Federator.Addin\Engine\FederationEngine.cs" LinkBase="src\Engine" />
+    <EmbeddedResource Include="$(SrcRoot)Federator.Core\Exchange\revit-categories.txt" LogicalName="Federator.Core.Exchange.revit-categories.txt" />
+    <EmbeddedResource Include="$(SrcRoot)Federator.Core\Exchange\revit-worksets.txt" LogicalName="Federator.Core.Exchange.revit-worksets.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Autodesk.Navisworks.Api">
+      <HintPath>$(NavisworksApiDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Autodesk.Navisworks.Clash">
+      <HintPath>$(NavisworksClashDll)</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Autodesk.Navisworks.ComApi">
+      <HintPath>$(NavisworksPath)\Autodesk.Navisworks.ComApi.dll</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Autodesk.Navisworks.Interop.ComApi">
+      <HintPath>$(NavisworksPath)\Autodesk.Navisworks.Interop.ComApi.dll</HintPath>
+      <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+      <EmbedInteropTypes>false</EmbedInteropTypes>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CheckNavisworks" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(NavisworksApiDll)')" Text="Autodesk.Navisworks.Api.dll was not found at $(NavisworksApiDll). Pass -p:NavisworksPath with the real install folder." />
+    <Error Condition="!Exists('$(NavisworksClashDll)')" Text="Autodesk.Navisworks.Clash.dll was not found at $(NavisworksClashDll). Pass -p:NavisworksPath with the real install folder." />
+  </Target>
+
+</Project>

@@ -1,0 +1,139 @@
+ROAMER    Get-Process Roamer before the read: 0 processes
+ASSEMBLY  Autodesk.Navisworks.Api 22.0.0.0   file 22.5.1433.58, 4261152 bytes, loaded reflection only: True
+FILE      C:\Program Files\Autodesk\Navisworks Manage 2025\Autodesk.Navisworks.Api.dll
+MACHINE   [machine]   2026-10-05 12:26
+
+==== Autodesk.Navisworks.Api.SavedViewpoint, every member whose name or type holds Redline
+  property Autodesk.Navisworks.Api.Interop.LcOpRedlineList Redlines { public get }   declared on SavedViewpoint
+  not public Autodesk.Navisworks.Api.Interop.LcOpRedlineList GetRedlines()   declared on SavedViewpoint
+  public Autodesk.Navisworks.Api.Interop.LcOpRedlineList EditRedlines()   declared on SavedViewpoint
+  type of Redlines read off the property: Autodesk.Navisworks.Api.Interop.LcOpRedlineList
+  return type of EditRedlines: Autodesk.Navisworks.Api.Interop.LcOpRedlineList
+
+==== the type of SavedViewpoint.Redlines
+  public class Autodesk.Navisworks.Api.Interop.LcOpRedlineList, defined in Autodesk.Navisworks.Api 22.0.0.0
+  base types, nearest first: Autodesk.Navisworks.Api.Interop.LcOpRedlineListBase <- Autodesk.Navisworks.Api.NativeHandle <- System.Object
+  interfaces: System.IDisposable
+  constructors:
+    public .ctor()   declared on LcOpRedlineList
+    not public .ctor(ref Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleInit init)   declared on LcOpRedlineList
+  public properties, inherited ones included:
+    property System.Boolean IsDisposed { public get }   declared on NativeHandle
+    property System.Boolean IsReadOnly { public get }   declared on LcOpRedlineList
+  public methods, inherited ones included, accessors left out:
+    public System.Void Add(Autodesk.Navisworks.Api.Interop.LcOpRedline redline)   declared on LcOpRedlineList
+    public System.Void Clear()   declared on LcOpRedlineList
+    public System.Void Dispose()   declared on NativeHandle
+    public System.Boolean Equals(System.Object obj)   declared on NativeHandle
+    public static System.Boolean Equals(System.Object objA, System.Object objB)   declared on Object
+    public System.Int32 GetHashCode()   declared on NativeHandle
+    public System.Type GetType()   declared on Object
+    public static Autodesk.Navisworks.Api.Interop.LcOpRedlineList InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)   declared on LcOpRedlineList
+    public static Autodesk.Navisworks.Api.Interop.LcOpRedlineListBase InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)   declared on LcOpRedlineListBase
+    public static Autodesk.Navisworks.Api.NativeHandle InternalFactory(ref Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleInit reserved)   declared on LcOpRedlineListBase
+    public static Autodesk.Navisworks.Api.NativeHandle InternalFactory(ref Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleInit reserved)   declared on LcOpRedlineList
+    public Autodesk.Navisworks.Api.Interop.LcOpRedline ItemAt(System.Int32 n)   declared on LcOpRedlineListBase
+    public static System.Boolean ReferenceEquals(Autodesk.Navisworks.Api.NativeHandle objA, Autodesk.Navisworks.Api.NativeHandle objB)   declared on NativeHandle
+    public static System.Boolean ReferenceEquals(System.Object objA, System.Object objB)   declared on Object
+    public System.Int32 Size()   declared on LcOpRedlineListBase
+    public System.String ToString()   declared on NativeHandle
+
+==== base type Autodesk.Navisworks.Api.Interop.LcOpRedlineListBase, members declared on it alone
+  defined in Autodesk.Navisworks.Api
+    property System.Boolean IsReadOnly { public get }   declared on LcOpRedlineListBase
+    not public System.Void InternalCleanup(System.Boolean queue)   declared on LcOpRedlineListBase
+    public static Autodesk.Navisworks.Api.NativeHandle InternalFactory(ref Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleInit reserved)   declared on LcOpRedlineListBase
+    public static Autodesk.Navisworks.Api.Interop.LcOpRedlineListBase InternalCreator(System.IntPtr handleIn, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle parent)   declared on LcOpRedlineListBase
+    not public LcUOwnAbstractPtrVector<LcOpRedline>* GetNativePtr()   declared on LcOpRedlineListBase
+    public System.Int32 Size()   declared on LcOpRedlineListBase
+    public Autodesk.Navisworks.Api.Interop.LcOpRedline ItemAt(System.Int32 n)   declared on LcOpRedlineListBase
+
+==== base type Autodesk.Navisworks.Api.NativeHandle, members declared on it alone
+  defined in Autodesk.Navisworks.Api
+    property Autodesk.Navisworks.Internal.ApiImplementation.IObjectManager GlobalObjectManager { non-public get; non-public set }   declared on NativeHandle
+    property Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership Ownership { non-public get; non-public set }   declared on NativeHandle
+    property Autodesk.Navisworks.Api.Document DocumentObject { non-public get; non-public set }   declared on NativeHandle
+    property Autodesk.Navisworks.Api.NativeHandle ParentObject { non-public get; non-public set }   declared on NativeHandle
+    property System.IntPtr Handle { non-public get; non-public set }   declared on NativeHandle
+    property System.Void* WeakRef { non-public get; non-public set }   declared on NativeHandle
+    property System.Boolean IsDisposed { public get }   declared on NativeHandle
+    property System.Boolean IsReadOnly { public get }   declared on NativeHandle
+    not public System.Void ~NativeHandle()   declared on NativeHandle
+    public System.Int32 GetHashCode()   declared on NativeHandle
+    public static System.Boolean ReferenceEquals(Autodesk.Navisworks.Api.NativeHandle objA, Autodesk.Navisworks.Api.NativeHandle objB)   declared on NativeHandle
+    public System.Boolean Equals(System.Object obj)   declared on NativeHandle
+    public System.String ToString()   declared on NativeHandle
+    not public System.Void InternalInit(System.Void* ptr, Autodesk.Navisworks.Internal.ApiImplementation.NativeHandleOwnership ownership, Autodesk.Navisworks.Api.NativeHandle source)   declared on NativeHandle
+    not public System.Void* InternalWR()   declared on NativeHandle
+    not public System.Boolean InternalRC()   declared on NativeHandle
+    not public System.Boolean InternalIsReadOnlyByOwnership()   declared on NativeHandle
+    not public System.Void InternalCleanup(System.Boolean queue)   declared on NativeHandle
+    not public System.Void !NativeHandle()   declared on NativeHandle
+    not public static System.Void CheckOwnership(Autodesk.Navisworks.Api.NativeHandle instance)   declared on NativeHandle
+    not public static System.Void ReleaseOwnership(Autodesk.Navisworks.Api.NativeHandle instance)   declared on NativeHandle
+    not public static System.Boolean CanSafeTransferOwnershipFrom(Autodesk.Navisworks.Api.NativeHandle from)   declared on NativeHandle
+    not public static System.Boolean CanSafeTransferOwnershipTo(Autodesk.Navisworks.Api.NativeHandle to)   declared on NativeHandle
+    not public static System.Boolean SafeTransferOwnership(Autodesk.Navisworks.Api.NativeHandle to, Autodesk.Navisworks.Api.NativeHandle from)   declared on NativeHandle
+    not public System.Boolean CleanupAnyWeakRef()   declared on NativeHandle
+    not public System.Void RuntimeChecks(System.Boolean qconst)   declared on NativeHandle
+    not public System.Void InvalidateObject()   declared on NativeHandle
+    not public System.Void Dispose(System.Boolean A_0)   declared on NativeHandle
+    public System.Void Dispose()   declared on NativeHandle
+    not public System.Void Finalize()   declared on NativeHandle
+
+==== every type in the assembly of Redlines whose name holds Redline
+  public   Autodesk.Navisworks.Api.Interop.LcOmWin32RedlineTool
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedline
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedlineArrow
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedlineCloud
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedlineElement
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedlineEllipse
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedlineLine
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedlineList
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedlineListBase
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedlinePointList
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedlineText
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedlineTool
+  public   Autodesk.Navisworks.Api.Interop.LcOpRedlineType
+  not public   Autodesk.Navisworks.cleaner.LcOmWin32RedlineTool
+  not public   Autodesk.Navisworks.cleaner.LcOpRedline
+  not public   Autodesk.Navisworks.cleaner.LcOpRedlineArrow
+  not public   Autodesk.Navisworks.cleaner.LcOpRedlineCloud
+  not public   Autodesk.Navisworks.cleaner.LcOpRedlineEllipse
+  not public   Autodesk.Navisworks.cleaner.LcOpRedlineLine
+  not public   Autodesk.Navisworks.cleaner.LcOpRedlineList
+  not public   Autodesk.Navisworks.cleaner.LcOpRedlineListBase
+  not public   Autodesk.Navisworks.cleaner.LcOpRedlinePointList
+  not public   Autodesk.Navisworks.cleaner.LcOpRedlineText
+  not public   Autodesk.Navisworks.cleaner.LcOpRedlineTool
+  not public   LcOmWin32RedlineTool
+  not public   LcOpMeasureProps+ConvertToRedlineColour
+  not public   LcOpRedline
+  not public   LcOpRedlineArrow
+  not public   LcOpRedlineCloud
+  not public   LcOpRedlineCreator
+  not public   LcOpRedlineElement
+  not public   LcOpRedlineEllipse
+  not public   LcOpRedlineLine
+  not public   LcOpRedlineList
+  not public   LcOpRedlineListCreator
+  not public   LcOpRedlinePointList
+  not public   LcOpRedlineProps
+  not public   LcOpRedlineTag
+  not public   LcOpRedlineText
+  not public   LcOpRedlineTool
+  not public   LcUOwnAbstractPtrVector<LcOpRedline>
+
+==== the answer
+  public type of Redlines: Autodesk.Navisworks.Api.Interop.LcOpRedlineList
+  public members of it, inherited ones included, that read a count:
+    public System.Int32 Size()   declared on LcOpRedlineListBase
+  how each counting member and ItemAt are implemented, read off the method body:
+    LcOpRedlineListBase.Size   implementation Managed, 45 bytes of IL
+    LcOpRedlineListBase.ItemAt   implementation Managed, 58 bytes of IL
+  collection interfaces it implements:
+    none
+  P7 YES   the type of SavedViewpoint.Redlines has a public member that reads a count
+  what the count reads on a tool view and after a redline is drawn: UNKNOWN here, nothing is invoked, P20
+
+ROAMER    Get-Process Roamer after the read: 0 processes

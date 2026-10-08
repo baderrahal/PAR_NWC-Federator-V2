@@ -1,0 +1,11 @@
+READ 2026-10-07 11:46:03, public members whose name holds Import or Xml
+Autodesk.Navisworks.Api.dll  Autodesk.Navisworks.Api.Interop.LcOpRegistry  Method  Boolean SaveXMLOptions(Autodesk.Navisworks.Api.Interop.LcUOptionSet, System.String)
+Autodesk.Navisworks.Api.dll  Autodesk.Navisworks.Api.Interop.LcOpRegistry  Method  Autodesk.Navisworks.Api.Interop.LcUOptionSet LoadXMLOptions(System.String)
+Autodesk.Navisworks.Api.dll  Autodesk.Navisworks.Api.Interop.LcOpModelDataPlugin  Method  Void ImportData(Autodesk.Navisworks.Api.Interop.LcOpModel, System.String)
+Autodesk.Navisworks.Api.dll  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps  Field  Autodesk.Navisworks.Api.Interop.LcOpPluginCaps eCAP_EXPORT_IMPORT
+Autodesk.Navisworks.Api.dll  Autodesk.Navisworks.Api.Plugins.AddInLocation  Field  Autodesk.Navisworks.Api.Plugins.AddInLocation Import
+Autodesk.Navisworks.Api.dll  Autodesk.Navisworks.Api.Interop.Plugins.ModelDataPlugin  Method  Void ImportData(Autodesk.Navisworks.Api.Interop.LcOpModel, System.String)
+Autodesk.Navisworks.Api.dll  types read 4027, members found 6
+Autodesk.Navisworks.Clash.dll  types read 2066, members found 0
+Autodesk.Navisworks.ComApi.dll  types read 1739, members found 0
+Autodesk.Navisworks.Interop.ComApi.dll  types read 262, members found 0

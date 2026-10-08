@@ -82,6 +82,8 @@ namespace Federator.Addin.Engine
             string unitEnumName = UnitEnumName(document);
             string testName = Words.Or(test.DisplayName, "UNKNOWN test");
 
+            sideWalksThrew = 0;
+
             try
             {
                 Walk(test.Children, testName, unitEnumName, tally, wanted);
@@ -94,8 +96,20 @@ namespace Federator.Addin.Engine
                     "kept going, every clash this test holds is left exactly as it was");
             }
 
+            if (sideWalksThrew > 0)
+            {
+                log.Line("PENETRATION " + testName + ": " + sideWalksThrew + " clash side(s) whose parent walk threw, "
+                    + "read as the item alone, FR-072, so a category or a size on a parent was not seen");
+            }
+
             return wanted;
         }
+
+        /// <summary>
+        /// How many clash sides of the test being walked had a parent that would not read,
+        /// FR-072, counted here and said once per test, since the side reader is static.
+        /// </summary>
+        private int sideWalksThrew;
 
         /// <summary>
         /// Every result under this test, descending result groups, the same way the editor
@@ -155,9 +169,16 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            PenetrationSide first = ReadSide(result.Item1, unitEnumName, settings, sizes);
-            PenetrationSide second = ReadSide(result.Item2, unitEnumName, settings, sizes);
+            bool firstThrew;
+            bool secondThrew;
+            PenetrationSide first = ReadSide(result.Item1, unitEnumName, settings, sizes, out firstThrew);
+            PenetrationSide second = ReadSide(result.Item2, unitEnumName, settings, sizes, out secondThrew);
             CoreClashStatus status = (CoreClashStatus)(int)result.Status;
+
+            if (firstThrew || secondThrew)
+            {
+                sideWalksThrew++;
+            }
 
             PenetrationDecision decision =
                 PenetrationRule.Decide(first, second, status, settings, sizes);
@@ -185,18 +206,25 @@ namespace Federator.Addin.Engine
         /// duct against a wall. Where BOTH sides are services, a duct against a pipe,
         /// F72a reads no size at all, Q44, and this takes the larger of the two, so which
         /// side Clash Detective listed first decides nothing. Never throws: a side that
-        /// will not read is a side with no size, which is SizeUnknown, in and said.
+        /// will not read is a side with no size, which is SizeUnknown, in and said, and a
+        /// parent that will not read is said through the out, FR-072, the side read off the
+        /// item alone.
         /// </summary>
         internal static SizeVerdict? ServiceSizeOf(
-            ClashResult result, PenetrationSettings settings, SizeSettings sizes, string unitEnumName)
+            ClashResult result, PenetrationSettings settings, SizeSettings sizes, string unitEnumName, out bool parentThrew)
         {
+            parentThrew = false;
+
             if (result == null || settings == null || sizes == null)
             {
                 return null;
             }
 
-            PenetrationSide first = ReadSide(result.Item1, unitEnumName, settings, sizes);
-            PenetrationSide second = ReadSide(result.Item2, unitEnumName, settings, sizes);
+            bool firstThrew;
+            bool secondThrew;
+            PenetrationSide first = ReadSide(result.Item1, unitEnumName, settings, sizes, out firstThrew);
+            PenetrationSide second = ReadSide(result.Item2, unitEnumName, settings, sizes, out secondThrew);
+            parentThrew = firstThrew || secondThrew;
             bool firstIsService = settings.IsService(first.Category);
             bool secondIsService = settings.IsService(second.Category);
 
@@ -247,8 +275,10 @@ namespace Federator.Addin.Engine
         /// handed to both lookups rather than walked twice.
         /// </summary>
         private static PenetrationSide ReadSide(
-            ModelItem item, string unitEnumName, PenetrationSettings settings, SizeSettings sizes)
+            ModelItem item, string unitEnumName, PenetrationSettings settings, SizeSettings sizes, out bool parentThrew)
         {
+            parentThrew = false;
+
             using (item)
             {
                 if (item == null)
@@ -256,24 +286,29 @@ namespace Federator.Addin.Engine
                     return new PenetrationSide(string.Empty, string.Empty, null);
                 }
 
+                List<ModelItem> lookIn = new List<ModelItem>();
+                lookIn.Add(item);
+
+                try
                 {
-                    IList<ModelItem> lookIn = Upwards(item);
+                    // FR-072. The walk up runs inside this try, so a parent that will not read
+                    // leaves the wrappers walked so far to the finally below and the side reads
+                    // off the item alone, said through the out, instead of throwing out of a
+                    // method whose promise is that it never throws.
+                    parentThrew = !Upwards(item, lookIn);
 
-                    try
-                    {
-                        string name = Words.Or(item.DisplayName, string.Empty);
-                        string category = CategoryOf(lookIn, settings);
-                        double? largest = LargestOf(lookIn, unitEnumName, sizes);
+                    string name = Words.Or(item.DisplayName, string.Empty);
+                    string category = CategoryOf(lookIn, settings);
+                    double? largest = LargestOf(lookIn, unitEnumName, sizes);
 
-                        return new PenetrationSide(name, category, largest);
-                    }
-                    finally
+                    return new PenetrationSide(name, category, largest);
+                }
+                finally
+                {
+                    // Index zero is the item itself, owned by the using above.
+                    for (int i = 1; i < lookIn.Count; i++)
                     {
-                        // Index zero is the item itself, owned by the using above.
-                        for (int i = 1; i < lookIn.Count; i++)
-                        {
-                            lookIn[i].Dispose();
-                        }
+                        lookIn[i].Dispose();
                     }
                 }
             }
@@ -350,33 +385,36 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The item, then the element it belongs to, then up the tree, capped so a deep
-        /// tree cannot turn one clash into a long walk. The same shape the harvest uses.
+        /// The element the item belongs to, then up the tree, added to the chain after the
+        /// item, capped so a deep tree cannot turn one clash into a long walk. The same
+        /// shape the harvest uses. Returns false where a parent would not read, FR-072, the
+        /// parents gathered before it threw left in the chain for the caller to release.
         /// </summary>
-        private static IList<ModelItem> Upwards(ModelItem item)
+        private static bool Upwards(ModelItem item, List<ModelItem> chain)
         {
-            List<ModelItem> chain = new List<ModelItem>();
-
-            if (item == null)
-            {
-                return chain;
-            }
-
-            chain.Add(item);
-
             ModelItem walker = item;
 
-            for (int level = 0; level < LookUpLevels && walker != null; level++)
+            try
             {
-                walker = walker.Parent;
-
-                if (walker != null)
+                for (int level = 0; level < LookUpLevels && walker != null; level++)
                 {
-                    chain.Add(walker);
-                }
-            }
+                    walker = walker.Parent;
 
-            return chain;
+                    if (walker != null)
+                    {
+                        chain.Add(walker);
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                // Said through the false, which every caller counts and writes, FR-072, and the
+                // side is read off what was gathered: the clash is left alone or viewed as the
+                // item alone rather than the test's walk ending on it.
+                return false;
+            }
         }
 
         /// <summary>

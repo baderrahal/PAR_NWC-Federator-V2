@@ -1,0 +1,53 @@
+15:01:20.263  probe started, mode vprebuild, 2 file(s)
+15:01:20.337  opening 1104-PAR-1B06PE-ZZZ-BM-MOD-000001.nwf
+15:01:23.047  TryOpenFile returned True after 2.709 s
+15:01:23.047  models 4
+15:01:23.069     model 0  1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc  under the loop folder True, on disk True, 154671 bytes, sha256 9B349EC05B1F71D8A8D59413FC815A7B8527FB3EAE315F402556A457E4DED79B
+15:01:23.075     model 1  1104-PAR-1B06PE-ZZZ-EL-MOD-000001.nwc  under the loop folder True, on disk True, 603405 bytes, sha256 EE0BC08D414F6FF3BB7C6A7DB934C9955BCF757B531BC58D75D991F83AA94787
+15:01:23.078     model 2  1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc  under the loop folder True, on disk True, 108564 bytes, sha256 93940CDBABA9D4131C54194A905A242137C27ED4970D044246ADEAFE78F34A6E
+15:01:23.082     model 3  1104-PAR-1B06PE-ZZZ-ST-MOD-000001.nwc  under the loop folder True, on disk True, 40391 bytes, sha256 C7B02C158758533AE4EED82C5484F67FE6590F7EB796F3D1314D8C2D587211A0
+15:01:23.083  
+15:01:23.083  PART 1. THE MARKS, written the way Q114's design writes them, then saved, cleared and reopened
+15:01:23.098  the document at the open: models 4, sets 61, tests 153, results 37, statuses a person set 0, viewpoints 33
+15:01:23.099  no viewpoint two folders deep, so no existing view is marked
+15:01:23.122  model 0's root hidden, the pair [BLD-AR-Walls-vs-BLD-AR-Floors  Clash1] painted red and green
+15:01:23.128  the folder [P15 probe] at the root, its Guid set by the probe, and [P15 sub] in it, no Guid set, each by FolderItem and AddCopy
+15:01:23.164  M1 the COM view [P15 com view marked] added into its folder's own SavedViews, ApplyHideAttribs and ApplyMaterialAttribs true, in 0.034 s
+15:01:23.166  M2 [P15 net view guid set two comments] a .NET view, its Guid set, and M3 [P15 net view plain] a .NET view with nothing set, each by AddCopy into [P15 sub]
+15:01:23.171     AddComment on [P15 probe / P15 sub / P15 com view marked], status New, RETURNED after 0.003 s
+15:01:23.172     AddComment on [P15 probe / P15 sub], status New, RETURNED after 0.000 s
+15:01:23.172     AddComment on [P15 probe / P15 sub / P15 net view guid set two comments], status New, RETURNED after 0.000 s
+15:01:23.173     AddComment on [P15 probe / P15 sub / P15 net view guid set two comments], status Approved, RETURNED after 0.001 s
+15:01:23.178  the hidden state and the temporary colours reset after the marks, so the live state carries nothing the probe set
+15:01:24.871  SaveFile into p15-marked.nwf took 1.691 s, 174852 bytes read back off the disk
+15:01:25.094  Document.Clear took 0.223 s, models now 0, viewpoints now 0
+15:01:27.157  TryOpenFile of the marked file returned True after 2.062 s
+15:01:27.157  
+15:01:27.157  PART 2. THE FALLBACK, in the engine's order, with the viewpoints copied out and back
+15:01:27.158  the document before the copy: models 4, sets 61, tests 153, results 37, statuses a person set 0, viewpoints 36
+15:01:27.172  the tree before the copy: items 46, viewpoints 36, folders 10, other kinds 0, comments on any item 4, Guids not empty 2, views with a hidden item 17, reads that threw 0, the walk 0.013 s
+15:01:27.173     the probe's rows and every row with a comment, before the copy:
+15:01:27.174        8 [] [P15 probe] FolderItem 635f7c54-4ac6-4c4f-bd74-4b33e313afef comments 0
+15:01:27.174        8.0 [P15 probe] [P15 sub] FolderItem 00000000-0000-0000-0000-000000000000 comments 1 {Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T12:01:23Z path=P15 probe name=P15 sub probe=F1] Author [Parsons NWC Federator] Status New} ids {Id 2 CreationDate 2026-10-07 12:01:23.0000000}
+15:01:27.174        8.0.0 [P15 probe / P15 sub] [P15 com view marked] SavedViewpoint 00000000-0000-0000-0000-000000000000 comments 1 {Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T12:01:23Z path=P15 probe/P15 sub name=P15 com view marked probe=M1] Author [Parsons NWC Federator] Status New} Hidden 1 {[1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc] model 1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc} MaterialOverrides 2 ids {Id 1 CreationDate 2026-10-07 12:01:23.0000000}
+15:01:27.174        8.0.1 [P15 probe / P15 sub] [P15 net view guid set two comments] SavedViewpoint dd9000c6-821c-49b2-847a-07890b8320d5 comments 2 {Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T12:01:23Z path=P15 probe/P15 sub name=P15 net view guid set two comments probe=M2] Author [Parsons NWC Federator] Status New | Body [A second comment, as a person would add, status Approved] Author [Parsons NWC Federator] Status Approved} Hidden 0 MaterialOverrides 0 ids {Id 3 CreationDate 2026-10-07 12:01:23.0000000 | Id 4 CreationDate 2026-10-07 12:01:23.0000000}
+15:01:27.174        8.0.2 [P15 probe / P15 sub] [P15 net view plain] SavedViewpoint 00000000-0000-0000-0000-000000000000 comments 0 Hidden 0 MaterialOverrides 0
+15:01:27.179     ResolveGuid before the copy: the item at its index path for 2 of 2 Guids set. The others: none
+15:01:27.180  DocumentClashTests.CreateCopy RETURNED after 0.001 s, a ClashTestsData
+15:01:27.181  DocumentSelectionSets.CreateCopy RETURNED after 0.001 s, top level items 4
+15:01:27.182  DocumentSavedViewpoints.CreateCopy RETURNED after 0.000 s, a System.Collections.ObjectModel.Collection`1[[Autodesk.Navisworks.Api.SavedItem, Autodesk.Navisworks.Api, Version=22.0.0.0, Culture=neutral, PublicKeyToken=d85e58fa5af9b484]], top level items 9
+15:01:27.189  the tree off the copy, before the clear: items 46, viewpoints 36, folders 10, other kinds 0, comments on any item 4, Guids not empty 2, views with a hidden item 17, reads that threw 0, the walk 0.006 s
+15:01:27.190     compare the copy before the clear against the document before the copy: rows expected 46, read 46, rows that differ 0
+15:01:27.302  Document.Clear took 0.112 s, models now 0, viewpoints now 0
+15:01:27.302  the copy is not read after the clear, since the engine does not read it and the run of 2026-10-07 crashed in that read
+15:01:29.056     TryAppendFile of 1104-PAR-1B06PE-ZZZ-AR-MOD-000001.nwc returned True after 1.754 s
+15:01:29.127     TryAppendFile of 1104-PAR-1B06PE-ZZZ-EL-MOD-000001.nwc returned True after 0.070 s
+15:01:29.187     TryAppendFile of 1104-PAR-1B06PE-ZZZ-ME-MOD-000001.nwc returned True after 0.059 s
+15:01:29.241     TryAppendFile of 1104-PAR-1B06PE-ZZZ-ST-MOD-000001.nwc returned True after 0.054 s
+15:01:29.241  after the appends, 4 of 4 appended: models 4, sets 0, tests 0, results 0, statuses a person set 0, viewpoints 17
+15:01:29.241  the tree after the appends: items 21, viewpoints 17, folders 4, other kinds 0, comments on any item 0, Guids not empty 0, views with a hidden item 0, reads that threw 0, the walk 0.000 s
+15:01:29.259  the sets fell from 61 to 0, so DocumentSelectionSets.CopyFrom, as the engine does, RETURNED after 0.018 s
+15:01:29.278  the tests fell from 153 to 0, so DocumentClashTests.CopyFrom, as the engine does, RETURNED after 0.018 s
+15:01:29.279  the document after the sets and the tests: models 4, sets 61, tests 153, results 37, statuses a person set 0, viewpoints 17
+15:01:29.283  DocumentSavedViewpoints.CopyFrom(IEnumerable<SavedItem>) on the copy RETURNED after 0.005 s
+15:01:29.284  the document after the viewpoints' CopyFrom: models 4, sets 61, tests 153, results 37, statuses a person set 0, viewpoints 36

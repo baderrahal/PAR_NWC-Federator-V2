@@ -1,0 +1,283 @@
+MACHINE   [machine]   2026-10-05 14:48:32
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 44676
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-view-comments.ps1", sha256 1ADBF615F32D81F1A50C5F0DFAA5DBB9E1FA430312FFF4A169D91D5D82AD8F8C
+GUARD     tools\loop\nw-guard.ps1, sha256 EFB1B698DBDF67ADAF34D3FDC9CAC78893BF7C88F74034D096746D131FB71CEA
+PROCESS   powershell.exe pid 44676, started to run -File C:\Users\p003653k\AppData\Local\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-view-comments.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 542
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123320 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 202 AutoSave files listed and not copied
+  the tool's own logs folder listed: 38 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF "%LOCALAPPDATA%\NwcFederatorLoop\runs\04\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf", 41317271 bytes, sha256 0944C1001095FA95F5AE8887F79450C51EDE836D47F9A38DE3982BB525FB4F37
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf", sha256 matches
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\bin\Release\net48\ViewpointProbe.dll", 169472 bytes, written 2026-10-05 14:46:49, sha256 13A38FAADB50371E4EF0F16B82ACF3041CDEC783C749951DEBE4CA2AF273C816, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  14:48:41.188  t+8.9s  calling new NavisworksApplication()
+  14:49:51.450  t+79.1s  the constructor RETURNED after 70.25 s
+  Roamer processes new since step 2: 1
+    pid 596, started 14:48:41.331, parent 1392 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 596, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 596, started 2026-10-05 14:48:41.331, start ticks UTC 639267977213316501
+  14:50:05.568  t+93.2s  Visible set True, read back True
+  visible top level windows of 596: 2, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard"
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  14:50:06.436  t+94.1s  AddPluginAssembly RETURNED after 0.192 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode vpcomment on the copy, which it edits and saves as a new file ====
+  14:50:06.443  t+94.1s  calling ExecuteAddInPlugin(ViewpointProbe.PARS, vpcomment, the plugin's output file, the copy, the save path in the work folder)
+  14:51:14.312  t+162.0s  ExecuteAddInPlugin RETURNED 0 after 67.87 s
+  visible top level windows of 596: 2, hidden: 86, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p9-copy-with-comments.nwf - Autodesk Navisworks Manage 2025"
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Sets" "Standard" "Static" "-" "Sets"
+---- the plugin's output, every line ----
+  | 14:50:06.475  probe started, mode vpcomment, 2 file(s)
+  | 14:50:06.570  opening 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf
+  | 14:50:15.080  TryOpenFile returned True after 8.508 s
+  | 14:50:15.081  models 4
+  | 14:50:15.083     model 0  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc  under the loop folder True
+  | 14:50:15.083     model 1  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc  under the loop folder True
+  | 14:50:15.083     model 2  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  under the loop folder True
+  | 14:50:15.083     model 3  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc  under the loop folder True
+  | 14:50:15.090  the tree at the open: viewpoints 2847, folders 22, comments on any item 0
+  | 14:50:15.094  the existing viewpoint two folders deep, the first found: [AR vs ME / Over 150mm / BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash1]
+  | 14:50:15.131  model 0's root hidden, the pair [BLD-AR-Curtain Mullions-vs-BLD-AR-Walls  Clash1] painted red and green
+  | 14:50:15.143  folders "P9 probe" and "P9 probe / P9 sub" made by FolderItem and AddCopy in 0.012 s
+  | 14:50:15.320  the COM folders found: "P9 probe" True, "P9 probe / P9 sub" True
+  | 14:50:15.327  V1 the new COM view's Comments(): Count 0, ReadOnly False
+  | 14:50:15.327  V1 the factory's comment is InwOpComment True, InwOpComment2 True, InwOpComment3 True. Made, Body and User set, and added in 0.001 s, the view's Comments().Count now 1
+  | 14:50:24.818  V1 InwSavedViewsColl.Add into "P9 sub" took 9.490 s
+  | 14:50:24.820  V1 read back through COM, the added view's Comments().Count 1
+  | 14:50:24.820     COM comment 1: User [p003653K] Body [Parsons NWC Federator]
+  | 14:50:33.913  V2 added through COM with no comment
+  | 14:50:43.125  V3 added through COM with no comment
+  | 14:50:43.126  F2 the new COM folder view's Comments(): Count 0, ReadOnly False
+  | 14:50:52.120  F2 comment added in 0.000 s, InwSavedViewsColl.Add into "P9 probe" took 8.993 s
+  | 14:50:52.125  V2 before the edit: a SavedViewpoint, comments 0, Hidden 1, MaterialOverrides 2
+  | 14:50:52.128  V2 AddComment(item, comment) RETURNED after 0.003 s
+  | 14:50:52.129  V2 after the edit, re-found by its names: Hidden 1, MaterialOverrides 2
+  | 14:50:52.129  F1 before the edit: a FolderItem, comments 0
+  | 14:50:52.129  F1 AddComment(item, comment) RETURNED after 0.000 s
+  | 14:50:52.150  L1 before the edit: a SavedViewpoint, comments 0, Hidden 2, MaterialOverrides 4697
+  | 14:50:52.151  L1 AddComment(item, comment) RETURNED after 0.000 s
+  | 14:50:52.213  L1 after the edit, re-found by its names: Hidden 2, MaterialOverrides 4697
+  | 14:50:52.214  
+  | 14:50:52.214  READ BACK BEFORE ANY SAVE, off SavedItem.Comments, each item re-found by its names from a fresh RootItem:
+  | 14:50:52.216     V1 a SavedViewpoint, comments 1, Hidden 1, MaterialOverrides 2
+  | 14:50:52.216        comment 0: Author [p003653K] Status New Id 1 CreationDate 2026-10-05 11:50:15
+  | 14:50:52.216           Body [Parsons NWC Federator]
+  | 14:50:52.217        written Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe/P9 sub name=P9 view com before add probe=V1] Author [Parsons NWC Federator]
+  | 14:50:52.217        V1 NOT the same
+  | 14:50:52.217     V2 a SavedViewpoint, comments 1, Hidden 1, MaterialOverrides 2
+  | 14:50:52.217        comment 0: Author [Parsons NWC Federator] Status New Id 3 CreationDate 2026-10-05 11:50:52
+  | 14:50:52.217           Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe/P9 sub name=P9 view addcomment after add probe=V2]
+  | 14:50:52.217        written Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe/P9 sub name=P9 view addcomment after add probe=V2] Author [Parsons NWC Federator]
+  | 14:50:52.217        V2 EXACTLY ONE COMMENT, BODY AND AUTHOR THE SAME, Ordinal
+  | 14:50:52.217     V3 a SavedViewpoint, comments 0, Hidden 1, MaterialOverrides 2
+  | 14:50:52.217     F1 a FolderItem, comments 1
+  | 14:50:52.218        comment 0: Author [Parsons NWC Federator] Status New Id 4 CreationDate 2026-10-05 11:50:52
+  | 14:50:52.218           Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe name=P9 sub probe=F1]
+  | 14:50:52.218        written Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe name=P9 sub probe=F1] Author [Parsons NWC Federator]
+  | 14:50:52.218        F1 EXACTLY ONE COMMENT, BODY AND AUTHOR THE SAME, Ordinal
+  | 14:50:52.219     F2 a FolderItem, comments 1
+  | 14:50:52.219        comment 0: Author [p003653K] Status New Id 2 CreationDate 2026-10-05 11:50:43
+  | 14:50:52.219           Body [Parsons NWC Federator]
+  | 14:50:52.219        written Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe name=P9 com folder probe=F2] Author [Parsons NWC Federator]
+  | 14:50:52.220        F2 NOT the same
+  | 14:50:52.319     L1 a SavedViewpoint, comments 1, Hidden 2, MaterialOverrides 4697
+  | 14:50:52.319        comment 0: Author [Parsons NWC Federator] Status New Id 5 CreationDate 2026-10-05 11:50:52
+  | 14:50:52.319           Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=AR vs ME/Over 150mm name=BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash1 probe=L1]
+  | 14:50:52.321        written Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=AR vs ME/Over 150mm name=BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash1 probe=L1] Author [Parsons NWC Federator]
+  | 14:50:52.321        L1 EXACTLY ONE COMMENT, BODY AND AUTHOR THE SAME, Ordinal
+  | 14:50:52.323  the tree before the save: viewpoints 2850, folders 25, comments on any item 5
+  | 14:51:05.155  SaveFile into p9-copy-with-comments.nwf took 12.823 s, 41319461 bytes read back off the disk
+  | 14:51:06.141  Document.Clear took 0.985 s, models now 0, viewpoints now 0
+  | 14:51:14.226  TryOpenFile of the saved file returned True after 8.084 s
+  | 14:51:14.226  
+  | 14:51:14.226  READ BACK AFTER A SAVE, A CLEAR AND A REOPEN:
+  | 14:51:14.227     V1 a SavedViewpoint, comments 1, Hidden 1, MaterialOverrides 2
+  | 14:51:14.227        comment 0: Author [p003653K] Status New Id 1 CreationDate 2026-10-05 11:50:15
+  | 14:51:14.227           Body [Parsons NWC Federator]
+  | 14:51:14.227        written Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe/P9 sub name=P9 view com before add probe=V1] Author [Parsons NWC Federator]
+  | 14:51:14.227        V1 NOT the same
+  | 14:51:14.227     V2 a SavedViewpoint, comments 1, Hidden 1, MaterialOverrides 2
+  | 14:51:14.228        comment 0: Author [Parsons NWC Federator] Status New Id 3 CreationDate 2026-10-05 11:50:52
+  | 14:51:14.228           Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe/P9 sub name=P9 view addcomment after add probe=V2]
+  | 14:51:14.228        written Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe/P9 sub name=P9 view addcomment after add probe=V2] Author [Parsons NWC Federator]
+  | 14:51:14.228        V2 EXACTLY ONE COMMENT, BODY AND AUTHOR THE SAME, Ordinal
+  | 14:51:14.228     V3 a SavedViewpoint, comments 0, Hidden 1, MaterialOverrides 2
+  | 14:51:14.228     F1 a FolderItem, comments 1
+  | 14:51:14.228        comment 0: Author [Parsons NWC Federator] Status New Id 4 CreationDate 2026-10-05 11:50:52
+  | 14:51:14.228           Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe name=P9 sub probe=F1]
+  | 14:51:14.228        written Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe name=P9 sub probe=F1] Author [Parsons NWC Federator]
+  | 14:51:14.228        F1 EXACTLY ONE COMMENT, BODY AND AUTHOR THE SAME, Ordinal
+  | 14:51:14.229     F2 a FolderItem, comments 1
+  | 14:51:14.229        comment 0: Author [p003653K] Status New Id 2 CreationDate 2026-10-05 11:50:43
+  | 14:51:14.229           Body [Parsons NWC Federator]
+  | 14:51:14.230        written Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=P9 probe name=P9 com folder probe=F2] Author [Parsons NWC Federator]
+  | 14:51:14.230        F2 NOT the same
+  | 14:51:14.260     L1 a SavedViewpoint, comments 1, Hidden 2, MaterialOverrides 4697
+  | 14:51:14.260        comment 0: Author [Parsons NWC Federator] Status New Id 5 CreationDate 2026-10-05 11:50:52
+  | 14:51:14.261           Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=AR vs ME/Over 150mm name=BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash1 probe=L1]
+  | 14:51:14.261        written Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-05T11:50:15Z path=AR vs ME/Over 150mm name=BLD-ME-Ducts&Duct Fittings-vs-BLD-AR-Walls  Clash1 probe=L1] Author [Parsons NWC Federator]
+  | 14:51:14.262        L1 EXACTLY ONE COMMENT, BODY AND AUTHOR THE SAME, Ordinal
+  | 14:51:14.305  the tree after the reopen: viewpoints 2850, folders 25, comments on any item 5
+  | 14:51:14.305  
+  | 14:51:14.305  EACH TARGET:  label | route | written | write seconds | read back the same before the save | after the reopen | Hidden before edit, after edit, before save, after reopen | MaterialOverrides the same four
+  | 14:51:14.306     V1 | the COM view's Comments() before the add | True | 0.001 s | False | False | -2, -2, 1, 1 | -2, -2, 2, 2
+  | 14:51:14.306     V2 | AddComment after the add | True | 0.003 s | True | True | 1, 1, 1, 1 | 2, 2, 2, 2
+  | 14:51:14.306     V3 | no comment, the control | True | UNKNOWN | True | True | -2, -2, 1, 1 | -2, -2, 2, 2
+  | 14:51:14.306     F1 | AddComment on a folder one below the root folder | True | 0.000 s | True | True | a folder
+  | 14:51:14.306     F2 | the COM folder view's Comments() before the add | True | 0.000 s | False | False | a folder
+  | 14:51:14.307     L1 | AddComment on an existing viewpoint two folders deep | True | 0.000 s | True | True | 2, 2, 2, 2 | 4697, 4697, 4697, 4697
+  | 14:51:14.307  (-2 is not read, -1 is a read that threw)
+  | 14:51:14.307  P9 by route: AddComment on a view two folders deep YES, on an existing view two folders deep YES, on a folder YES. COM before the add on a view two folders deep NO, on a folder NO
+  | 14:51:14.308  P9 counts: AddComment left Hidden and MaterialOverrides the same before and after the edit and through the reopen YES. The COM view with a comment reads the same counts as the plain one YES
+  | 14:51:14.308  P9 YES   a comment on a view two folders deep and on a folder read back with the same body and author after a save, a clear and a reopen, by at least one route each, with the counts held
+  | 14:51:14.308  probe finished
+  the saved copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf", 41319461 bytes, sha256 869DD965B03E5A82B6E3AE3DF7E70B4F2462B752B698DFA1F178AD6FCF9A0921
+
+==== STEP 6. Quit through the API ====
+  14:51:16.873  t+164.5s  Dispose RETURNED after 1.55 s
+  14:51:23.813  t+171.5s  pid 596 state gone, 6.9 s after Dispose returned, not forced
+
+==== FINALLY ====
+  14:51:23.825  t+171.5s  pid 596 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 162, longest pass 13875 ms, longest gap between the starts of two passes 14376 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  14:48:33.978  t+1.6s  watchdog started
+  14:48:50.152  t+17.8s  new process AdskLicensingInstHelper pid 53696, parent 27400 GenuineService.exe, started 14:48:40.162, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  14:49:01.429  t+29.1s  new process Roamer pid 596, parent 1392 svchost.exe, started 14:48:41.331, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  14:49:01.571  t+29.2s  Roamer 596 visible top level windows: none
+  14:49:34.100  t+61.8s  new process AdskLicensingAgent pid 40800, parent 596 Roamer.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: no
+  14:49:44.625  t+72.3s  new process AdskLicensingAgent pid 39832, parent 596 Roamer.exe, started 14:49:20.729, command line holds the word embedding or automation: no
+  14:49:44.713  t+72.4s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  14:49:49.909  t+77.6s  Roamer 596 visible top level windows: none
+  14:50:01.371  t+89.0s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "" text: and 10 visible children not read, because the 2 s one pass may spend reading children was spent
+  14:50:01.951  t+89.6s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:50:02.556  t+90.2s  Roamer 596 visible top level windows: none
+  14:50:03.290  t+91.0s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective"
+  14:50:05.574  t+93.2s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard"
+  14:50:06.233  t+93.9s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:50:08.339  t+96.0s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:50:10.431  t+98.1s  Roamer 596 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;52d0dcef-4781-401f-b209-9bec242c58d1]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:50:11.715  t+99.4s  Roamer 596 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;52d0dcef-4781-401f-b209-9bec242c58d1]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "-" "Sets" "-" "Sets" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:50:13.824  t+101.5s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [HwndWrapper[Roamer.exe;ProgressDialog;52d0dcef-4781-401f-b209-9bec242c58d1]] "Working..." text: 
+  14:50:15.172  t+102.8s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Sets" "Standard" "Static" "-" "Sets"
+  14:50:17.253  t+104.9s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent
+  14:50:20.471  t+108.1s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: 
+  14:50:47.224  t+134.9s  new process AdskLicensingInstHelper pid 40172, parent 27400 GenuineService.exe, started 14:50:38.594, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  14:50:54.026  t+141.7s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent
+  14:50:56.142  t+143.8s  Roamer 596 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;6d1dca92-ad13-451f-994a-88a552118194]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent
+  14:50:57.728  t+145.4s  Roamer 596 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;6d1dca92-ad13-451f-994a-88a552118194]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: 
+  14:51:02.372  t+150.0s  Roamer 596 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;6d1dca92-ad13-451f-994a-88a552118194]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p9-copy-with-comments.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: 
+  14:51:06.191  t+153.9s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p9-copy-with-comments.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Standard" "Standard" "Static" "-" "Standard"
+  14:51:08.277  t+155.9s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:51:10.382  t+158.0s  Roamer 596 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;1b8a1881-fc00-47ef-89e8-105fd0ceeb15]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: and 13 visible children not read, because the 2 s one pass may spend reading children was spent | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  14:51:12.778  t+160.4s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "-" "Sets" | [HwndWrapper[Roamer.exe;ProgressDialog;1b8a1881-fc00-47ef-89e8-105fd0ceeb15]] "Working..." text: 
+  14:51:14.324  t+162.0s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p9-copy-with-comments.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Standard" "Static" "-" "Sets" "Standard" "Static" "-" "Sets"
+  14:51:14.940  t+162.6s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p9-copy-with-comments.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-" "Sets" "Standard" "Static" "-" "Sets"
+  14:51:16.579  t+164.2s  Roamer 596 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p9-copy-with-comments.nwf - Autodesk Navisworks Manage 2025" | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Clash Detective" text: "Clash Detective" "Standard" "Static" "-"
+  14:51:17.172  t+164.8s  Roamer 596 visible top level windows: none
+  14:51:23.944  t+171.6s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  AdskLicensingInstHelper pid 53696, parent 27400 GenuineService.exe: exited
+  Roamer pid 596, parent 1392 svchost.exe: exited
+  AdskLicensingAgent pid 40800, parent 596 Roamer.exe: UNKNOWN whether it exited, its start time could not be read when it was seen
+  AdskLicensingAgent pid 39832, parent 596 Roamer.exe: exited
+  AdskLicensingInstHelper pid 40172, parent 27400 GenuineService.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\AutoRecover  FileWas  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>  new String ""
+  22.0\AutoRecover  ID  old DWord 47204  new DWord 0
+  22.0\AutoRecover  LastSaved  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.Autosave115.nwf, sha1 799DBE31D042>  new String ""
+  22.0\AutoRecover  Time  old QWord 1791115744  new QWord 0
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40809772447973  new QWord 40811380921472
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 94  new DWord 95
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 154  new DWord 155
+  22.0\CER\22.5.1433.58  uptime  old QWord 2412445468750  new QWord 2414054843750
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,-1920,-55,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "lcodpody"  new String "lcodpnwf"
+  22.0\Recent File List\1  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"  new String "p9-copy-with-comments.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134355877224561124  new QWord 134356746712737823
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134355688021584428  new QWord 134355688037141969
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc, sha1 E0ADB5881390>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>
+  22.0\Recent File List\2  DisplayName  old String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"  new String "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134355851862024337  new QWord 134356746118979203
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  LastOpened  old QWord 134355688077859683  new QWord 134355877224561124
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, sha1 1A9D41E0C927>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd"
+  22.0\Recent File List\4  LastOpened  old QWord 134355688069609653  new QWord 134355851862024337
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd, sha1 4FAA64A6CD7D>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134355688061539629  new QWord 134355688077859683
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc, sha1 BAB6878F51B7>
+  22.0\Recent File List\6  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"  new String "1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134355688053453579  new QWord 134355688069609653
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc, sha1 30C059A55C8B>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134355688045001624  new QWord 134355688061539629
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc, sha1 8C0DCE8474B2>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134355688037141969  new QWord 134355688053453579
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, sha1 45E5B200A78B>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc, sha1 03BA448F8072>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134355688029411525  new QWord 134355688045001624
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc, sha1 947D2594C4F9>  new String <a path outside the loop folder, file 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, sha1 73635BF6F20D>
+  registry: 40 values or keys differ from the backup
+  registry: 40 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 67617 bytes, sha256 5AC073CD8DAF, written 2026-10-05 14:26:49  new 68868 bytes, sha256 432963F2DF8A, written 2026-10-05 14:51:16
+  file CHANGED LastSession.xml  old 39513 bytes, sha256 B94B4FFCF6AA, written 2026-10-05 14:26:49  new 39512 bytes, sha256 020F080E17DF, written 2026-10-05 14:51:16
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 0944C1001095FA95F5AE8887F79450C51EDE836D47F9A38DE3982BB525FB4F37, the same as before the start
+---- the work folder at the end, sorted by name ----
+  1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf  41317271 bytes
+  hkcu-navisworks-manage-22.0-before.reg  123320 bytes
+  mypid.txt  34 bytes
+  p9-copy-with-comments.nwf  41319461 bytes
+  plugin-output.txt  11773 bytes
+  ViewpointProbe.dll  169472 bytes
+  watch.txt  8966 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-05 14:51:34, 182 s in all

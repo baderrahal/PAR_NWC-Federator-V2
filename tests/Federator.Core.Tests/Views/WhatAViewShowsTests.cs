@@ -324,5 +324,20 @@ namespace Federator.Core.Tests
             Assert.Throws<ArgumentOutOfRangeException>(
                 () => FramingBox.For(new[] { new Point3(0, 0, 0), new Point3(1, 1, 1) }, -1.0, "Millimeters"));
         }
+
+        /// <summary>The breaker's B2 of F114's add-in pass. A view none of whose homes reach a model shows nothing, and a view of nothing is no view.</summary>
+        [Test]
+        public void AViewWhoseHomesReachNoModelIsNoViewAndSaysWhy()
+        {
+            List<ModelTeam> models = new List<ModelTeam> { Model("ST"), Model("EL") };
+            ShownModels nothing = ShownModels.For(PairOf("ST", "EL"), models, new[] { string.Empty, "nowhere.nwc", null });
+
+            Assert.That(nothing.Shown, Is.Empty);
+            Assert.That(nothing.WhyNoView, Is.EqualTo("it would show no model, 2 of its clashing items' models could not be read and 1 named no model of the group, so no view was written for it"));
+
+            ShownModels something = ShownModels.For(PairOf("ST", "EL"), models, new[] { Model("ST").FileName });
+
+            Assert.That(something.WhyNoView, Is.Null);
+        }
     }
 }

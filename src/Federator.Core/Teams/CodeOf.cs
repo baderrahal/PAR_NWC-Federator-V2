@@ -18,8 +18,8 @@ namespace Federator.Core.Teams
     /// set tree names, or UNKNOWN where none does, TeamMap.TeamOfSet, Q117 answered C and A,
     /// named and never guessed: the client's BLD-Security Devices takes Electrical so.
     ///
-    /// THE ONE PLACE A SET NAME'S CODE IS READ. The views' pair rule, DisciplinePairRule.CodeIn,
-    /// reads it here with its own seven codes until F114 replaces it.
+    /// THE ONE PLACE A SET NAME'S CODE IS READ. The views read it through ViewTeams with the
+    /// map's codes and the group's own, F114, and the coverage through its seven codes.
     /// </summary>
     public static class CodeOf
     {

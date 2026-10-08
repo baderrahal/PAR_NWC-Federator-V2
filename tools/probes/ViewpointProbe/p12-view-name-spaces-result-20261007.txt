@@ -1,0 +1,329 @@
+MACHINE   [machine]   2026-10-07 12:57:42
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 26780
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-view-name-spaces.ps1", sha256 170A3C1A80DD0EC6115B7954AFB65AFA63CFF3651A0A75D9E7E0F8A01CD70B75
+GUARD     tools\loop\nw-guard.ps1, sha256 E29D2733A227E6665551BD52866E7C2B40F5A5B09114ECB2AA2FFE233EA23C1A
+PROCESS   powershell.exe pid 26780, started to run -File %USERPROFILE%\AppData\Local\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\probe-view-name-spaces.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 491
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-space-20261007-125742" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-space-20261007-125742\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123148 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 199 AutoSave files listed and not copied
+  the tool's own logs folder listed: 38 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-comments-20261005-144832\p9-copy-with-comments.nwf", 41319461 bytes, sha256 869DD965B03E5A82B6E3AE3DF7E70B4F2462B752B698DFA1F178AD6FCF9A0921
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-space-20261007-125742\p9-copy-with-comments.nwf", sha256 matches
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-probes\tools\probes\ViewpointProbe\bin\Release\net48\ViewpointProbe.dll", 228352 bytes, written 2026-10-07 12:57:04, sha256 F5874016172EBC2580CBA6EF844397642CA4F88F15D8BBE68199A95C3DDDEF72, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  12:57:49.372  t+7.3s  calling new NavisworksApplication()
+  12:59:10.305  t+88.2s  the constructor RETURNED after 80.93 s
+  Roamer processes new since step 2: 1
+    pid 43540, started 12:57:49.451, parent 1164 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 43540, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 43540, started 2026-10-07 12:57:49.451, start ticks UTC 639269638694514933
+  12:59:20.812  t+98.8s  Visible set True, read back True
+  visible top level windows of 43540: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  12:59:21.198  t+99.1s  AddPluginAssembly RETURNED after 0.065 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode vpspace on the copy, which it edits and saves as a new file ====
+  12:59:21.205  t+99.1s  calling ExecuteAddInPlugin(ViewpointProbe.PARS, vpspace, the plugin's output file, the copy, the save path in the work folder)
+  13:00:38.109  t+176.0s  ExecuteAddInPlugin RETURNED 0 after 76.90 s
+  visible top level windows of 43540: 1, hidden: 86, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p12-space-saved.nwf - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | 12:59:21.219  probe started, mode vpspace, 2 file(s)
+  | 12:59:21.275  opening p9-copy-with-comments.nwf
+  | 12:59:25.846  TryOpenFile returned True after 4.571 s
+  | 12:59:25.846  models 4
+  | 12:59:25.847     model 0  1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc  under the loop folder True
+  | 12:59:25.847     model 1  1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc  under the loop folder True
+  | 12:59:25.848     model 2  1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc  under the loop folder True
+  | 12:59:25.849     model 3  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc  under the loop folder True
+  | 12:59:25.853  the tree at the open: viewpoints 2850, folders 25, comments on any item 5
+  | 12:59:25.854  
+  | 12:59:25.854  WHAT IS WRITTEN, each name in brackets with its length and its last character:
+  | 12:59:25.855     V0 [P12 V0 control] length 14, first U+0050, last U+006C in P12 probe / V0 at position 0, control, no space, COM view added into its folder's own SavedViews
+  | 12:59:25.855     V1 [P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ] length 42, first U+0050, last U+0020 in P12 probe / V1 at position 0, COM view added into its folder's own SavedViews, the tool's route, a test name's characters, marked with the name inside the body
+  | 12:59:25.855     V2 [P12 V2 root route one space ] length 28, first U+0050, last U+0020 in P12 probe / V2 at position 0, COM view added at the root, AddCopy into its folder, the root one removed, the tool's other route
+  | 12:59:25.855     V3 [P12 V3 two trailing spaces  ] length 28, first U+0050, last U+0020 in P12 probe / V3 at position 0, COM view into its folder, two spaces at the end, marked with the body ending in the name
+  | 12:59:25.855     V4 [ P12 V4 leading and trailing ] length 29, first U+0020, last U+0020 in P12 probe / V4 at position 0, COM view into its folder, a space at each end
+  | 12:59:25.855     V5a [P12 V5 twin] length 11, first U+0050, last U+006E in P12 probe / V5 at position 0, COM view into its folder, no space, the first of two names that differ by the end space
+  | 12:59:25.856     V5b [P12 V5 twin ] length 12, first U+0050, last U+0020 in P12 probe / V5 at position 1, COM view into the same folder, the second twin, one space at the end
+  | 12:59:25.856     V6 [P12 V6 dotnet one space ] length 24, first U+0050, last U+0020 in P12 probe / V6 at position 0, .NET new SavedViewpoint(Viewpoint), DisplayName set, AddCopy into its folder
+  | 12:59:25.856     V7 [P12 V7 renamed ] length 15, first U+0050, last U+0020 in P12 probe / V7 at position 0, COM view into its folder with no space, then DocumentSavedViewpoints.EditDisplayName to a name ending in a space
+  | 12:59:25.856     F1 [P12 F1 folder end space ] length 24, first U+0050, last U+0020 in P12 probe / F1 at position 0, FolderItem, DisplayName set, AddCopy, the tool's folder route, marked with the body ending in the name
+  | 12:59:25.856     F1v [P12 F1 view one space ] length 22, first U+0050, last U+0020 in P12 probe / F1 at position 0.0, COM view added into the space-ended folder's own SavedViews, found by position
+  | 12:59:25.871  "P12 probe" at the root and 9 plain folders under it made by FolderItem and AddCopy in 0.014 s
+  | 12:59:25.871  
+  | 12:59:25.871  THE WRITES, each item read right after its add:
+  | 12:59:25.879  V0 the COM view's name read back before the add [P12 V0 control] length 14, first U+0050, last U+006C
+  | 12:59:32.682  V0 InwSavedViewsColl.Add into P12 probe / V0 RETURNED after 6.802 s
+  | 12:59:32.688     V0 at add: a SavedViewpoint at 17.0.0, DisplayName [P12 V0 control] length 14, first U+0050, last U+006C, the same as written, Ordinal YES
+  | 12:59:32.689        COM name [P12 V0 control] length 14, first U+0050, last U+006C, the same as written, Ordinal YES. The written names, Ordinal, find 17.0.0, this item. The names trimmed find the same names. Comments 0
+  | 12:59:32.689  V1 the COM view's name read back before the add [P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ] length 42, first U+0050, last U+0020
+  | 12:59:39.093  V1 InwSavedViewsColl.Add into P12 probe / V1 RETURNED after 6.404 s
+  | 12:59:39.093     V1 at add: a SavedViewpoint at 17.1.0, DisplayName [P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ] length 42, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 12:59:39.093        COM name [P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ] length 42, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.1.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 12:59:39.094        the mark: exactly one comment, body and author the same as written, Ordinal NO
+  | 12:59:39.094  V3 the COM view's name read back before the add [P12 V3 two trailing spaces  ] length 28, first U+0050, last U+0020
+  | 12:59:45.910  V3 InwSavedViewsColl.Add into P12 probe / V3 RETURNED after 6.816 s
+  | 12:59:45.910     V3 at add: a SavedViewpoint at 17.3.0, DisplayName [P12 V3 two trailing spaces  ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 12:59:45.911        COM name [P12 V3 two trailing spaces  ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.3.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 12:59:45.911        the mark: exactly one comment, body and author the same as written, Ordinal NO
+  | 12:59:45.911  V4 the COM view's name read back before the add [ P12 V4 leading and trailing ] length 29, first U+0020, last U+0020
+  | 12:59:52.851  V4 InwSavedViewsColl.Add into P12 probe / V4 RETURNED after 6.941 s
+  | 12:59:52.851     V4 at add: a SavedViewpoint at 17.4.0, DisplayName [ P12 V4 leading and trailing ] length 29, first U+0020, last U+0020, the same as written, Ordinal YES
+  | 12:59:52.852        COM name [ P12 V4 leading and trailing ] length 29, first U+0020, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.4.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 12:59:52.852  V5a the COM view's name read back before the add [P12 V5 twin] length 11, first U+0050, last U+006E
+  | 12:59:59.482  V5a InwSavedViewsColl.Add into P12 probe / V5 RETURNED after 6.629 s
+  | 12:59:59.482     V5a at add: a SavedViewpoint at 17.5.0, DisplayName [P12 V5 twin] length 11, first U+0050, last U+006E, the same as written, Ordinal YES
+  | 12:59:59.482        COM name [P12 V5 twin] length 11, first U+0050, last U+006E, the same as written, Ordinal YES. The written names, Ordinal, find 17.5.0, this item. The names trimmed find the same names. Comments 0
+  | 12:59:59.483  V5b the COM view's name read back before the add [P12 V5 twin ] length 12, first U+0050, last U+0020
+  | 13:00:06.445  V5b InwSavedViewsColl.Add into P12 probe / V5 RETURNED after 6.962 s
+  | 13:00:06.446     V5b at add: a SavedViewpoint at 17.5.1, DisplayName [P12 V5 twin ] length 12, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:06.446        COM name [P12 V5 twin ] length 12, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.5.1, this item. The names trimmed find 17.5.0. Comments 0
+  | 13:00:06.448  V2 the COM view's name read back before the add [P12 V2 root route one space ] length 28, first U+0050, last U+0020
+  | 13:00:12.870  V2 added at the root: the root holds 19, its last child [P12 V2 root route one space ] length 28, first U+0050, last U+0020, the last root view named exactly as written at 18
+  | 13:00:12.873  V2 AddCopy into P12 probe / V2 and Remove of the root one, Remove returned True, both in 0.003 s
+  | 13:00:12.873     V2 at add: a SavedViewpoint at 17.2.0, DisplayName [P12 V2 root route one space ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:12.873        COM name [P12 V2 root route one space ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.2.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:12.874  V6 the new SavedViewpoint's DisplayName read back before the add [P12 V6 dotnet one space ] length 24, first U+0050, last U+0020
+  | 13:00:12.875  V6 AddCopy RETURNED after 0.001 s
+  | 13:00:12.876     V6 at add: a SavedViewpoint at 17.6.0, DisplayName [P12 V6 dotnet one space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:12.876        COM name [P12 V6 dotnet one space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.6.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:12.876  V7 the COM view's name read back before the add [P12 V7 renamed] length 14, first U+0050, last U+0064
+  | 13:00:19.377  V7 InwSavedViewsColl.Add into P12 probe / V7 RETURNED after 6.501 s
+  | 13:00:19.377  V7 before the rename [P12 V7 renamed] length 14, first U+0050, last U+0064
+  | 13:00:19.379  V7 EditDisplayName(item, [P12 V7 renamed ] length 15, first U+0050, last U+0020) RETURNED after 0.002 s
+  | 13:00:19.380     V7 at add: a SavedViewpoint at 17.7.0, DisplayName [P12 V7 renamed ] length 15, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:19.380        COM name [P12 V7 renamed ] length 15, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.7.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:19.380  F1 the new FolderItem's DisplayName read back before the add [P12 F1 folder end space ] length 24, first U+0050, last U+0020
+  | 13:00:19.381  F1 AddCopy RETURNED after 0.001 s
+  | 13:00:19.382     F1 at add: a FolderItem at 17.8.0, DisplayName [P12 F1 folder end space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:19.382        COM name [P12 F1 folder end space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.8.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:19.382        the mark: exactly one comment, body and author the same as written, Ordinal NO
+  | 13:00:19.382  F1v the COM folder of F1 found by its written name, Ordinal YES, by position YES, its COM name [P12 F1 folder end space ] length 24, first U+0050, last U+0020
+  | 13:00:19.382  F1v the COM view's name read back before the add [P12 F1 view one space ] length 22, first U+0050, last U+0020
+  | 13:00:25.512  F1v InwSavedViewsColl.Add RETURNED after 6.131 s
+  | 13:00:25.513     F1v at add: a SavedViewpoint at 17.8.0.0, DisplayName [P12 F1 view one space ] length 22, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:25.513        COM name [P12 F1 view one space ] length 22, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.8.0.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:25.513  
+  | 13:00:25.513  THE MARKS, by AddComment after the add:
+  | 13:00:25.516  V1 AddComment RETURNED after 0.002 s, the body written [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T09:59:25Z path=P12 probe/V1 name=P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma  probe=V1] length 221, first U+004D, last U+0031
+  | 13:00:25.517  V3 AddComment RETURNED after 0.000 s, the body written [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T09:59:25Z probe=V3 path=P12 probe/V3 name=P12 V3 two trailing spaces  ] length 207, first U+004D, last U+0020
+  | 13:00:25.517  F1 AddComment RETURNED after 0.000 s, the body written [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T09:59:25Z probe=F1 path=P12 probe/F1 name=P12 F1 folder end space ] length 203, first U+004D, last U+0020
+  | 13:00:25.517  
+  | 13:00:25.517  STAGE before the save, every item:
+  | 13:00:25.518     V0 at save: a SavedViewpoint at 17.0.0, DisplayName [P12 V0 control] length 14, first U+0050, last U+006C, the same as written, Ordinal YES
+  | 13:00:25.518        COM name [P12 V0 control] length 14, first U+0050, last U+006C, the same as written, Ordinal YES. The written names, Ordinal, find 17.0.0, this item. The names trimmed find the same names. Comments 0
+  | 13:00:25.518     V1 at save: a SavedViewpoint at 17.1.0, DisplayName [P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ] length 42, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:25.519        COM name [P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ] length 42, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.1.0, this item. The names trimmed find NOT FOUND. Comments 1
+  | 13:00:25.519        comment: Author [Parsons NWC Federator] Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T09:59:25Z path=P12 probe/V1 name=P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma  probe=V1] length 221, first U+004D, last U+0031
+  | 13:00:25.519        the mark: exactly one comment, body and author the same as written, Ordinal YES
+  | 13:00:25.519     V2 at save: a SavedViewpoint at 17.2.0, DisplayName [P12 V2 root route one space ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:25.519        COM name [P12 V2 root route one space ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.2.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:25.520     V3 at save: a SavedViewpoint at 17.3.0, DisplayName [P12 V3 two trailing spaces  ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:25.520        COM name [P12 V3 two trailing spaces  ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.3.0, this item. The names trimmed find NOT FOUND. Comments 1
+  | 13:00:25.520        comment: Author [Parsons NWC Federator] Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T09:59:25Z probe=V3 path=P12 probe/V3 name=P12 V3 two trailing spaces  ] length 207, first U+004D, last U+0020
+  | 13:00:25.520        the mark: exactly one comment, body and author the same as written, Ordinal YES
+  | 13:00:25.521     V4 at save: a SavedViewpoint at 17.4.0, DisplayName [ P12 V4 leading and trailing ] length 29, first U+0020, last U+0020, the same as written, Ordinal YES
+  | 13:00:25.521        COM name [ P12 V4 leading and trailing ] length 29, first U+0020, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.4.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:25.521     V5a at save: a SavedViewpoint at 17.5.0, DisplayName [P12 V5 twin] length 11, first U+0050, last U+006E, the same as written, Ordinal YES
+  | 13:00:25.521        COM name [P12 V5 twin] length 11, first U+0050, last U+006E, the same as written, Ordinal YES. The written names, Ordinal, find 17.5.0, this item. The names trimmed find the same names. Comments 0
+  | 13:00:25.521     V5b at save: a SavedViewpoint at 17.5.1, DisplayName [P12 V5 twin ] length 12, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:25.521        COM name [P12 V5 twin ] length 12, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.5.1, this item. The names trimmed find 17.5.0. Comments 0
+  | 13:00:25.521     V6 at save: a SavedViewpoint at 17.6.0, DisplayName [P12 V6 dotnet one space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:25.522        COM name [P12 V6 dotnet one space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.6.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:25.522     V7 at save: a SavedViewpoint at 17.7.0, DisplayName [P12 V7 renamed ] length 15, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:25.522        COM name [P12 V7 renamed ] length 15, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.7.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:25.522     F1 at save: a FolderItem at 17.8.0, DisplayName [P12 F1 folder end space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:25.522        COM name [P12 F1 folder end space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.8.0, this item. The names trimmed find NOT FOUND. Comments 1
+  | 13:00:25.523        comment: Author [Parsons NWC Federator] Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T09:59:25Z probe=F1 path=P12 probe/F1 name=P12 F1 folder end space ] length 203, first U+004D, last U+0020
+  | 13:00:25.523        the mark: exactly one comment, body and author the same as written, Ordinal YES
+  | 13:00:25.523     F1v at save: a SavedViewpoint at 17.8.0.0, DisplayName [P12 F1 view one space ] length 22, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:25.523        COM name [P12 F1 view one space ] length 22, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.8.0.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:25.525  the tree before the save: viewpoints 2860, folders 36, comments on any item 8
+  | 13:00:33.024  SaveFile into p12-space-saved.nwf took 7.498 s, 41319983 bytes read back off the disk
+  | 13:00:33.637  Document.Clear took 0.613 s, models now 0, viewpoints now 0
+  | 13:00:38.070  TryOpenFile of the saved file returned True after 4.433 s
+  | 13:00:38.070  
+  | 13:00:38.070  STAGE after a save, a clear and a reopen, every item:
+  | 13:00:38.070     V0 at reopen: a SavedViewpoint at 17.0.0, DisplayName [P12 V0 control] length 14, first U+0050, last U+006C, the same as written, Ordinal YES
+  | 13:00:38.072        COM name [P12 V0 control] length 14, first U+0050, last U+006C, the same as written, Ordinal YES. The written names, Ordinal, find 17.0.0, this item. The names trimmed find the same names. Comments 0
+  | 13:00:38.072     V1 at reopen: a SavedViewpoint at 17.1.0, DisplayName [P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ] length 42, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:38.072        COM name [P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ] length 42, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.1.0, this item. The names trimmed find NOT FOUND. Comments 1
+  | 13:00:38.072        comment: Author [Parsons NWC Federator] Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T09:59:25Z path=P12 probe/V1 name=P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma  probe=V1] length 221, first U+004D, last U+0031
+  | 13:00:38.072        the mark: exactly one comment, body and author the same as written, Ordinal YES
+  | 13:00:38.072     V2 at reopen: a SavedViewpoint at 17.2.0, DisplayName [P12 V2 root route one space ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:38.072        COM name [P12 V2 root route one space ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.2.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:38.072     V3 at reopen: a SavedViewpoint at 17.3.0, DisplayName [P12 V3 two trailing spaces  ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:38.072        COM name [P12 V3 two trailing spaces  ] length 28, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.3.0, this item. The names trimmed find NOT FOUND. Comments 1
+  | 13:00:38.072        comment: Author [Parsons NWC Federator] Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T09:59:25Z probe=V3 path=P12 probe/V3 name=P12 V3 two trailing spaces  ] length 207, first U+004D, last U+0020
+  | 13:00:38.073        the mark: exactly one comment, body and author the same as written, Ordinal YES
+  | 13:00:38.073     V4 at reopen: a SavedViewpoint at 17.4.0, DisplayName [ P12 V4 leading and trailing ] length 29, first U+0020, last U+0020, the same as written, Ordinal YES
+  | 13:00:38.073        COM name [ P12 V4 leading and trailing ] length 29, first U+0020, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.4.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:38.074     V5a at reopen: a SavedViewpoint at 17.5.0, DisplayName [P12 V5 twin] length 11, first U+0050, last U+006E, the same as written, Ordinal YES
+  | 13:00:38.074        COM name [P12 V5 twin] length 11, first U+0050, last U+006E, the same as written, Ordinal YES. The written names, Ordinal, find 17.5.0, this item. The names trimmed find the same names. Comments 0
+  | 13:00:38.074     V5b at reopen: a SavedViewpoint at 17.5.1, DisplayName [P12 V5 twin ] length 12, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:38.075        COM name [P12 V5 twin ] length 12, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.5.1, this item. The names trimmed find 17.5.0. Comments 0
+  | 13:00:38.076     V6 at reopen: a SavedViewpoint at 17.6.0, DisplayName [P12 V6 dotnet one space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:38.076        COM name [P12 V6 dotnet one space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.6.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:38.076     V7 at reopen: a SavedViewpoint at 17.7.0, DisplayName [P12 V7 renamed ] length 15, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:38.076        COM name [P12 V7 renamed ] length 15, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.7.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:38.077     F1 at reopen: a FolderItem at 17.8.0, DisplayName [P12 F1 folder end space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:38.077        COM name [P12 F1 folder end space ] length 24, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.8.0, this item. The names trimmed find NOT FOUND. Comments 1
+  | 13:00:38.077        comment: Author [Parsons NWC Federator] Body [Made by the NWC Federator and replaced on its next run. Rename it, move it or add a comment to keep it.\u000A[nwcfed-mark 1] stamp=2026-10-07T09:59:25Z probe=F1 path=P12 probe/F1 name=P12 F1 folder end space ] length 203, first U+004D, last U+0020
+  | 13:00:38.077        the mark: exactly one comment, body and author the same as written, Ordinal YES
+  | 13:00:38.078     F1v at reopen: a SavedViewpoint at 17.8.0.0, DisplayName [P12 F1 view one space ] length 22, first U+0050, last U+0020, the same as written, Ordinal YES
+  | 13:00:38.078        COM name [P12 F1 view one space ] length 22, first U+0050, last U+0020, the same as written, Ordinal YES. The written names, Ordinal, find 17.8.0.0, this item. The names trimmed find NOT FOUND. Comments 0
+  | 13:00:38.103  the tree after the reopen: viewpoints 2860, folders 36, comments on any item 8
+  | 13:00:38.104  
+  | 13:00:38.104  EACH ITEM:  label | written | stage add, save, reopen: the .NET DisplayName the same, Ordinal | the COM name the same | a lookup by the written names finds this item | the mark the same
+  | 13:00:38.104     V0 | [P12 V0 control] length 14, first U+0050, last U+006C | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+  | 13:00:38.104     V1 | [P12-AR-XX_Alpha-vs-P12-ME-YY_Beta & Gamma ] length 42, first U+0050, last U+0020 | YES, YES, YES | YES, YES, YES | YES, YES, YES | YES, YES
+  | 13:00:38.104     V2 | [P12 V2 root route one space ] length 28, first U+0050, last U+0020 | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+  | 13:00:38.104     V3 | [P12 V3 two trailing spaces  ] length 28, first U+0050, last U+0020 | YES, YES, YES | YES, YES, YES | YES, YES, YES | YES, YES
+  | 13:00:38.105     V4 | [ P12 V4 leading and trailing ] length 29, first U+0020, last U+0020 | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+  | 13:00:38.105     V5a | [P12 V5 twin] length 11, first U+0050, last U+006E | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+  | 13:00:38.105     V5b | [P12 V5 twin ] length 12, first U+0050, last U+0020 | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+  | 13:00:38.105     V6 | [P12 V6 dotnet one space ] length 24, first U+0050, last U+0020 | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+  | 13:00:38.105     V7 | [P12 V7 renamed ] length 15, first U+0050, last U+0020 | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+  | 13:00:38.106     F1 | [P12 F1 folder end space ] length 24, first U+0050, last U+0020 | YES, YES, YES | YES, YES, YES | YES, YES, YES | YES, YES
+  | 13:00:38.106     F1v | [P12 F1 view one space ] length 22, first U+0050, last U+0020 | YES, YES, YES | YES, YES, YES | YES, YES, YES | no mark
+  | 13:00:38.106  (the mark is read from the save stage on, since it is written after every add)
+  | 13:00:38.106  P12 over the 9 names with a space at an end: the .NET DisplayName read back unchanged at every stage on 9 and not on 0. The COM name the same on 9 and not on 0. A lookup by the written names found the item on 9 and not on 0. The marks read back the same on 3 of 3
+  | 13:00:38.106  P12 YES   a view or folder whose name ends in a space reads back its DisplayName unchanged, Ordinal, after the add, before the save and after a save, a clear and a reopen, by every route tried
+  | 13:00:38.106  probe finished
+  the saved copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-space-20261007-125742\p12-space-saved.nwf", 41319983 bytes, sha256 C8E818F2C07C472B5B64803C26522B6BD9EA6E8B7CAE2B054DBB208D18225BCD
+
+==== STEP 6. Quit through the API ====
+  13:00:40.115  t+178.1s  Dispose RETURNED after 0.98 s
+  13:00:48.910  t+186.9s  pid 43540 state gone, 8.8 s after Dispose returned, not forced
+
+==== FINALLY ====
+  13:00:48.920  t+186.9s  pid 43540 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 253, longest pass 8236 ms, longest gap between the starts of two passes 8749 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  12:57:43.668  t+1.6s  watchdog started
+  12:57:49.494  t+7.4s  Roamer pid 43540 seen with no readable start time, looked at again at the next pass
+  12:57:58.150  t+16.1s  new process Roamer pid 43540, parent 1164 svchost.exe, started 12:57:49.451, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  12:57:58.226  t+16.2s  Roamer 43540 visible top level windows: none
+  12:58:26.563  t+44.5s  new process AdskLicensingInstHelper pid 41136, parent 26096 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  12:58:39.561  t+57.5s  new process AdskLicensingAgent pid 30160, parent 43540 Roamer.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: no
+  12:58:47.108  t+65.0s  new process AdskLicensingAgent pid 32624, parent 43540 Roamer.exe, started 12:58:33.243, command line holds the word embedding or automation: no
+  12:59:00.865  t+78.8s  Roamer 43540 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  12:59:07.568  t+85.5s  Roamer 43540 visible top level windows: none
+  12:59:18.162  t+96.1s  Roamer 43540 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "" text: and 10 visible children not read, because the 2 s one pass may spend reading children was spent
+  12:59:25.033  t+103.0s  new process AdskLicensingInstHelper pid 40760, parent 26096 GenuineService.exe, started 12:59:18.404, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  12:59:25.083  t+103.0s  Roamer 43540 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;ffbfddff-b2ed-46d1-b14c-440c112d476d]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p9-copy-with-comments.nwf - Autodesk Navisworks Manage 2025"
+  12:59:26.210  t+104.2s  Roamer 43540 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p9-copy-with-comments.nwf - Autodesk Navisworks Manage 2025"
+  13:00:26.024  t+164.0s  new process AdskLicensingInstHelper pid 17968, parent 26096 GenuineService.exe, started 13:00:18.437, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+  13:00:26.603  t+164.5s  Roamer 43540 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;c1aa2b9a-ff30-44db-930c-3b75e3e716ed]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p9-copy-with-comments.nwf - Autodesk Navisworks Manage 2025"
+  13:00:31.733  t+169.7s  Roamer 43540 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;c1aa2b9a-ff30-44db-930c-3b75e3e716ed]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p12-space-saved.nwf - Autodesk Navisworks Manage 2025"
+  13:00:33.453  t+171.4s  Roamer 43540 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p12-space-saved.nwf - Autodesk Navisworks Manage 2025"
+  13:00:34.020  t+172.0s  Roamer 43540 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  13:00:35.162  t+173.1s  Roamer 43540 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;18b262b1-d312-49e2-9a36-29a3c4b9ac07]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  13:00:36.842  t+174.8s  Roamer 43540 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;18b262b1-d312-49e2-9a36-29a3c4b9ac07]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p12-space-saved.nwf - Autodesk Navisworks Manage 2025"
+  13:00:38.529  t+176.5s  Roamer 43540 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "p12-space-saved.nwf - Autodesk Navisworks Manage 2025"
+  13:00:39.666  t+177.6s  Roamer 43540 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  13:00:40.220  t+178.2s  Roamer 43540 visible top level windows: none
+  13:00:48.995  t+186.9s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 43540, parent 1164 svchost.exe: exited
+  AdskLicensingInstHelper pid 41136, parent 26096 GenuineService.exe: UNKNOWN whether it exited, its start time could not be read when it was seen
+  AdskLicensingAgent pid 30160, parent 43540 Roamer.exe: UNKNOWN whether it exited, its start time could not be read when it was seen
+  AdskLicensingAgent pid 32624, parent 43540 Roamer.exe: exited
+  AdskLicensingInstHelper pid 40760, parent 26096 GenuineService.exe: exited
+  AdskLicensingInstHelper pid 17968, parent 26096 GenuineService.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40631684692700  new QWord 40633461447767
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 93  new DWord 94
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 152  new DWord 153
+  22.0\CER\22.5.1433.58  uptime  old QWord 2353627343750  new QWord 2355436562500
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\GlobalOptions\tools\clash\teststab\testdetails  height  old String "1 353.6000000000000227374"  new String "1 354.0000000000000000000"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,144,77,1632,877"
+  22.0\PluginOptions  DefaultPlugin  old String "LcOpNwcPlugin"  new String "lcodpnwf"
+  22.0\Recent File List\1  DisplayName  old String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"  new String "p12-space-saved.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134290938074132508  new QWord 134358408365088121
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-space-20261007-125742\p12-space-saved.nwf"
+  22.0\Recent File List\10  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134290938039044021  new QWord 134290938046297945
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc, sha1 B1CCD34DBC72>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>
+  22.0\Recent File List\2  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"  new String "p9-copy-with-comments.nwf"
+  22.0\Recent File List\2  LastOpened  old QWord 134290938070616743  new QWord 134358407643477039
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\view-space-20261007-125742\p9-copy-with-comments.nwf"
+  22.0\Recent File List\3  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"  new String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"
+  22.0\Recent File List\3  LastOpened  old QWord 134290938066994697  new QWord 134290938074132508
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>  new String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>
+  22.0\Recent File List\4  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"  new String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134290938062820552  new QWord 134290938070616743
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>
+  22.0\Recent File List\5  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134290938058967255  new QWord 134290938066994697
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>
+  22.0\Recent File List\6  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134290938054115696  new QWord 134290938062820552
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>
+  22.0\Recent File List\7  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134290938049614120  new QWord 134290938058967255
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>
+  22.0\Recent File List\8  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134290938046297945  new QWord 134290938054115696
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>
+  22.0\Recent File List\9  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134290938042577701  new QWord 134290938049614120
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>
+  registry: 38 values or keys differ from the backup
+  registry: 38 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 68875 bytes, sha256 5771E12A2A08, written 2026-10-07 12:26:56  new 70127 bytes, sha256 12DBA9D5749E, written 2026-10-07 13:00:39
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 CFB225D1EB92, written 2026-10-07 12:26:56  new 40079 bytes, sha256 8962B892509A, written 2026-10-07 13:00:39
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 869DD965B03E5A82B6E3AE3DF7E70B4F2462B752B698DFA1F178AD6FCF9A0921, the same as before the start
+---- the work folder at the end, sorted by name ----
+  hkcu-navisworks-manage-22.0-before.reg  123148 bytes
+  mypid.txt  36 bytes
+  p12-space-saved.nwf  41319983 bytes
+  p9-copy-with-comments.nwf  41319461 bytes
+  plugin-output.txt  25877 bytes
+  ViewpointProbe.dll  228352 bytes
+  watch.txt  4183 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-07 13:00:56, 194 s in all
