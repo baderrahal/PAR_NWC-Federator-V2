@@ -41,6 +41,7 @@ namespace Federator.Core.Diagnostics
         public const string Views = "VIEWS";
         public const string Images = "IMAGES";
         public const string Workbook = "WORKBOOK";
+        public const string GenericWorkbook = "GENERIC XLSX";
         public const string Html = "HTML";
         public const string Xml = "XML";
         public const string Nwd = "NWD";
@@ -59,6 +60,7 @@ namespace Federator.Core.Diagnostics
             Images,
             Views,
             Workbook,
+            GenericWorkbook,
             Html,
             Xml,
             Nwd,

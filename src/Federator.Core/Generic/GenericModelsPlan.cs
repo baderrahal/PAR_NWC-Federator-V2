@@ -11,13 +11,43 @@ namespace Federator.Core.Generic
     /// <summary>
     /// One model of a group, as the Generic Models plan is handed it, F128. The file name names the
     /// model and its set. The text to find in the Source File of an item is the file's stem unless
-    /// the caller hands another, because which text of the model the Source File property of an
-    /// item carries, the NWC's name or the name of the Revit file it was published from, is UNKNOWN
-    /// until the probe of the laptop lane reads it. A different text is the caller's to hand in
-    /// after that, and nothing here guesses it.
+    /// the caller hands another.
+    ///
+    /// THE TEXT IS THE FILE NAME OF THE MODEL'S SOURCE FILE NAME, MEASURED ON 2026-10-08, docs\history\scan.md
+    /// 5z-zb. The Source File property of an item holds the bare name of the Revit file the NWC was published
+    /// from, with its .rvt and no folder, and that is exactly the file name of Model.SourceFileName, which reads
+    /// Autodesk Docs://KSA_New Murabba/ and that name. FOR FOUR OF THE TEN MODELS OF 1A04PK THE REVIT NAME IS NOT
+    /// THE NWC'S, so the NWC's stem found 531 of 572 items and missed 41, and the Revit file's name found all
+    /// 572. From reads that name off the two names the add-in hands it, and a model with no source name is
+    /// looked for by its stem, which the plan says.
     /// </summary>
     public sealed class GenericModelInput
     {
+        /// <summary>
+        /// The input for a model as the document holds it: its file, Model.FileName, and the text to find,
+        /// which is the file name of Model.SourceFileName, after its last slash or backslash and with its
+        /// extension, because that is the text every Generic Models item's Source File was measured to hold.
+        /// A source name that is empty or ends in a separator gives no text, so the plan uses the stem.
+        /// </summary>
+        public static GenericModelInput From(string modelFile, string sourceFileName)
+        {
+            return new GenericModelInput(modelFile, FileNameOf(sourceFileName));
+        }
+
+        private static string FileNameOf(string sourceFileName)
+        {
+            if (string.IsNullOrWhiteSpace(sourceFileName))
+            {
+                return null;
+            }
+
+            // Not Path.GetFileName, which refuses a character Windows refuses in a path and would throw on a
+            // source name this tool only reads, and which off Windows does not read a backslash as a separator.
+            int cut = Math.Max(sourceFileName.LastIndexOf('/'), sourceFileName.LastIndexOf('\\'));
+            string name = cut < 0 ? sourceFileName : sourceFileName.Substring(cut + 1);
+            return string.IsNullOrWhiteSpace(name) ? null : name;
+        }
+
         public GenericModelInput(string modelFile)
             : this(modelFile, null)
         {
@@ -106,6 +136,26 @@ namespace Federator.Core.Generic
 
         /// <summary>One set for each model of the group, in the order the models were handed in.</summary>
         public ReadOnlyCollection<GenericModelSet> Sets { get; private set; }
+
+        /// <summary>
+        /// The name of every set of the plan, for the leftover walk of the picked file's build, which removes
+        /// or renames every set of the document that no plan it is handed names. A Generic Models set the last
+        /// run saved in the NWF is wanted, so the walk is handed these beside the file's own.
+        /// </summary>
+        public IList<string> SetNames
+        {
+            get
+            {
+                List<string> names = new List<string>();
+
+                foreach (GenericModelSet set in sets)
+                {
+                    names.Add(set.ModelName);
+                }
+
+                return names;
+            }
+        }
 
         /// <summary>What the plan noticed, a line each, the group's models never changed by it.</summary>
         public ReadOnlyCollection<string> Notes { get; private set; }

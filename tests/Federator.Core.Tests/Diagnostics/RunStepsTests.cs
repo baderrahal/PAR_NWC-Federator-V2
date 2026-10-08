@@ -14,19 +14,21 @@ namespace Federator.Core.Tests
     public class RunStepsTests
     {
         [Test]
-        public void TheFifteenStepsAreThereInTheOrderAGroupMeetsThem()
+        public void TheSixteenStepsAreThereInTheOrderAGroupMeetsThem()
         {
             IList<string> all = RunSteps.All;
 
-            Assert.That(all.Count, Is.EqualTo(15));
+            Assert.That(all.Count, Is.EqualTo(16));
 
             // VIEWS is F85's, between IMAGES and WORKBOOK, because building the viewpoints
             // runs after the clash step and before the second NWF save. It was untimed
-            // before, so the seconds it cost came off no total.
+            // before, so the seconds it cost came off no total. GENERIC XLSX is F128's,
+            // after WORKBOOK, because the Generic Models workbook is written beside the
+            // group's workbook and whether or not the clash step ran.
             string[] expected =
             {
                 "DECIDE", "APPEND", "NWF SAVE", "UNITS", "SETS", "TESTS CREATE", "TESTS RUN",
-                "HARVEST", "IMAGES", "VIEWS", "WORKBOOK", "HTML", "XML", "NWD", "CONFIRM"
+                "HARVEST", "IMAGES", "VIEWS", "WORKBOOK", "GENERIC XLSX", "HTML", "XML", "NWD", "CONFIRM"
             };
 
             for (int i = 0; i < expected.Length; i++)
@@ -54,8 +56,8 @@ namespace Federator.Core.Tests
             {
                 RunSteps.Decide, RunSteps.Append, RunSteps.NwfSave, RunSteps.Units,
                 RunSteps.Sets, RunSteps.TestsCreate, RunSteps.TestsRun, RunSteps.Harvest,
-                RunSteps.Images, RunSteps.Views, RunSteps.Workbook, RunSteps.Html, RunSteps.Xml,
-                RunSteps.Nwd, RunSteps.Confirm
+                RunSteps.Images, RunSteps.Views, RunSteps.Workbook, RunSteps.GenericWorkbook, RunSteps.Html,
+                RunSteps.Xml, RunSteps.Nwd, RunSteps.Confirm
             })
             {
                 Assert.That(RunSteps.IsAStep(name), Is.True, name);
@@ -80,7 +82,7 @@ namespace Federator.Core.Tests
         public void TheOrderIsThePositionOnTheList()
         {
             Assert.That(RunSteps.OrderOf(RunSteps.Decide), Is.EqualTo(0));
-            Assert.That(RunSteps.OrderOf(RunSteps.Confirm), Is.EqualTo(14));
+            Assert.That(RunSteps.OrderOf(RunSteps.Confirm), Is.EqualTo(15));
             Assert.That(
                 RunSteps.OrderOf(RunSteps.Views),
                 Is.GreaterThan(RunSteps.OrderOf(RunSteps.Harvest)),

@@ -2169,7 +2169,8 @@ namespace Federator.Addin.Ui
             {
                 log.WriteResultBlock(
                     engine == null ? null : engine.CoordinatesAcrossTheRun,
-                    engine == null || engine.MakesViewpoints);
+                    engine == null || engine.MakesViewpoints,
+                    generic: engine == null ? null : engine.GenericModelsAcrossTheRun);
             }
             catch (Exception error)
             {

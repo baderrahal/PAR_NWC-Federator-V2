@@ -101,11 +101,15 @@ namespace Federator.Core.Sets
         /// the values this group's models carry, FR-011. THE ONE RULE for which sets are judged:
         /// one at zero items, and never one whose count is UNKNOWN, minus one, FR-018, nor one
         /// whose question could not be read, asked null. A set rebuilt and not found again was
-        /// recorded at 0 and judged empty on the question it asked before the rebuild.
+        /// recorded at 0 and judged empty on the question it asked before the rebuild. NO JUDGE,
+        /// NO JUDGEMENT, F128: the Generic Models sets are built with none, because a set of
+        /// theirs at nought is a model with no such item, which is also what a wrong value gives,
+        /// and the block of their own says what a nought can mean. Judging it would name it as a
+        /// set nobody should have left empty.
         /// </summary>
         public void JudgeIfEmpty(SetResult result, IList<ReadCondition> asked, EmptySetJudge judge)
         {
-            if (result == null || result.ItemCount != 0 || asked == null)
+            if (result == null || result.ItemCount != 0 || asked == null || judge == null)
             {
                 return;
             }

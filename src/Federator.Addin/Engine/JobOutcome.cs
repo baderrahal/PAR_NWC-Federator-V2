@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Health;
+using Federator.Core.Generic;
 using Federator.Core.Report;
 using Federator.Core.Rerun;
 using Federator.Core.Sets;
@@ -195,6 +196,20 @@ namespace Federator.Addin.Engine
 
         /// <summary>What the sets step did for this group, or null when it did not run.</summary>
         public SetBuildOutcome Sets { get; set; }
+
+        /// <summary>
+        /// What the sets step did for the Generic Models sets, F128, an outcome of their own so no
+        /// judge and no tally across the run reads them, or null when the step did not reach them.
+        /// </summary>
+        public SetBuildOutcome GenericSets { get; set; }
+
+        /// <summary>The Generic Models count of this group, F128, or null when none was taken.</summary>
+        public GenericModelsReport GenericModels { get; set; }
+
+        /// <summary>Size read back off the disk, or minus one when the Generic Models workbook is not there.</summary>
+        public long GenericWorkbookSize { get; set; }
+
+        public bool GenericWorkbookOnDisk { get; set; }
 
         /// <summary>What the clash step did for this group, or null when it did not run.</summary>
         public ClashRunOutcome Clash { get; set; }
