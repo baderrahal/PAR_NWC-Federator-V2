@@ -139,6 +139,7 @@ namespace Federator.Core.Report
             }
             catch (Exception)
             {
+                // A label carries no framework message, so what it threw is not shown.
                 return "not worked out yet, the NWF folder on this step cannot be read";
             }
         }
