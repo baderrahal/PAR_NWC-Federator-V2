@@ -118,6 +118,9 @@ namespace Federator.Addin.Engine
         /// <summary>How many items of earlier runs the inventory's removals took out, each a change to the document.</summary>
         public int RemovedCount { get; private set; }
 
+        // What each removal came to, one list of results the tree block's counts are read off.
+        private List<RemovalOutcome> removals;
+
         /// <summary>
         /// The whole of one group: walk, plan, write, inventory, remove, read the tree.
         /// Never throws past a view: one that throws is recorded as failed and the rest are
@@ -161,6 +164,7 @@ namespace Federator.Addin.Engine
             TreeLog = null;
             TreeRows = null;
             RemovedCount = 0;
+            removals = null;
 
             try
             {
@@ -1005,6 +1009,7 @@ namespace Federator.Addin.Engine
             int notRemoved = 0;
             int foundElsewhere = 0;
             int countsOff = 0;
+            removals = new List<RemovalOutcome>();
 
             foreach (InventoryItem item in inventory.Removals)
             {
@@ -1015,11 +1020,13 @@ namespace Federator.Addin.Engine
                     if (!answer.Removed)
                     {
                         notRemoved++;
+                        removals.Add(new RemovalOutcome(item.Node, item.Decision, false, answer.WhyNot));
                         log.Line("VIEWS    " + item.Node + " was not removed, " + answer.WhyNot + ", so it stays");
                         continue;
                     }
 
                     RemovedCount++;
+                    removals.Add(new RemovalOutcome(item.Node, item.Decision, true, null));
 
                     if (answer.FoundElsewhere)
                     {
@@ -1037,6 +1044,7 @@ namespace Federator.Addin.Engine
                 catch (Exception error)
                 {
                     notRemoved++;
+                    removals.Add(new RemovalOutcome(item.Node, item.Decision, false, "RemoveAt threw " + error.GetType().Name + ": " + error.Message));
                     log.Failure(
                         "removing " + item.Node + ", " + item.Why,
                         error,
@@ -1083,6 +1091,7 @@ namespace Federator.Addin.Engine
                     Plan = Plan,
                     Inventory = inventory,
                     Written = written,
+                    Removals = removals,
                     After = after.Nodes,
                     RunStamp = stamp,
                     HiddenReadBack = hiddenReadBack,

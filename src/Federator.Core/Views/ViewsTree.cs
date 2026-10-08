@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Clash;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Views
 {
@@ -438,17 +439,12 @@ namespace Federator.Core.Views
                 return "written " + written + ", read back " + readBack + ", what was removed is UNKNOWN, no inventory was handed to this block";
             }
 
-            int atOnce = 0, earlier = 0, legacy = 0, folders = 0, keptAndWhy = 0;
+            int keptAndWhy = 0;
 
             foreach (InventoryItem item in facts.Inventory.Items)
             {
                 switch (item.Decision)
                 {
-                    case InventoryDecision.RemoveAtOnce: atOnce++; break;
-                    case InventoryDecision.RemoveReplaced:
-                    case InventoryDecision.RemoveNoLongerNeeded: earlier++; break;
-                    case InventoryDecision.RemoveLegacy: legacy++; break;
-                    case InventoryDecision.RemoveFolder: folders++; break;
                     case InventoryDecision.KeepChangedByAPerson:
                     case InventoryDecision.KeepTestNotRead:
                     case InventoryDecision.KeepReplacementFailed:
@@ -457,9 +453,46 @@ namespace Federator.Core.Views
                 }
             }
 
-            return "written " + written + ", read back " + readBack + ", and the inventory removed " + atOnce + " at once, "
+            if (facts.Removals == null)
+            {
+                return "written " + written + ", read back " + readBack + ", what was removed is UNKNOWN, no removal results were handed to this block, and the inventory kept "
+                    + keptAndWhy + " named with why";
+            }
+
+            // THE REMOVED COUNTS ARE WHAT RemoveOne REPORTED, the breaker's B5, one number from
+            // one list of results and never the inventory's decisions, and a removal refused or
+            // thrown is counted and named as not removed.
+            int atOnce = 0, earlier = 0, legacy = 0, folders = 0;
+            List<string> notRemoved = new List<string>();
+
+            foreach (RemovalOutcome removal in facts.Removals)
+            {
+                if (removal == null)
+                {
+                    continue;
+                }
+
+                if (!removal.Removed)
+                {
+                    notRemoved.Add(removal.Node + ", " + Words.Or(removal.WhyNot, "UNKNOWN why"));
+                    continue;
+                }
+
+                switch (removal.Decision)
+                {
+                    case InventoryDecision.RemoveAtOnce: atOnce++; break;
+                    case InventoryDecision.RemoveReplaced:
+                    case InventoryDecision.RemoveNoLongerNeeded: earlier++; break;
+                    case InventoryDecision.RemoveLegacy: legacy++; break;
+                    case InventoryDecision.RemoveFolder: folders++; break;
+                }
+            }
+
+            return "written " + written + ", read back " + readBack + ", removed " + atOnce + " at once, "
                 + earlier + " this tool's earlier views, " + legacy + " per clash viewpoints and " + folders
-                + " folders, and kept " + keptAndWhy + " named with why";
+                + " folders, as the removals reported, " + notRemoved.Count + " not removed"
+                + (notRemoved.Count > 0 ? ": " + string.Join(", ", notRemoved.ToArray()) : string.Empty)
+                + ", and kept " + keptAndWhy + " named with why";
         }
     }
 }

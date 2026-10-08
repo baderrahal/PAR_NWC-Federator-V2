@@ -998,6 +998,33 @@ namespace Federator.Core.Tests
         /// Check 5 broken through its one half since Q133 D, a view this tool made of a mirror in
         /// the walk after. A mirror among the tests run broke it before and is the ordinary case now.
         /// </summary>
+        /// <summary>
+        /// The breaker's B5 of F114's add-in pass. The after line counts what the removals
+        /// reported, never the inventory's decisions, and a removal refused is counted and named
+        /// as not removed. With no removal results handed in the line says so.
+        /// </summary>
+        [Test]
+        public void TheAfterLineCountsTheRemovalsReportedAndNamesEachNotRemoved()
+        {
+            ViewsTreeFacts facts = FactsOf(Good());
+            ViewNode legacy = new ViewNode(new[] { "ME vs ST" }, Ducts + "  Clash9", false, 0, null, 0, Camera, null, false);
+            ViewNode refused = new ViewNode(new[] { "A", "Structure vs Mechanical" }, Ducts, false, 0, null, 0, Camera, null, false);
+            facts.Removals = new List<RemovalOutcome>
+            {
+                new RemovalOutcome(legacy, InventoryDecision.RemoveLegacy, true, null),
+                new RemovalOutcome(refused, InventoryDecision.RemoveReplaced, false, "it is not at index 0 of its folder any more and 0 of the folder's 2 children match its name, kind and mark")
+            };
+
+            string block = Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0));
+
+            Assert.That(block, Does.Contain("removed 0 at once, 0 this tool's earlier views, 1 per clash viewpoints and 0 folders, as the removals reported, 1 not removed: "
+                + "A/Structure vs Mechanical/" + Ducts + ", it is not at index 0 of its folder any more"));
+
+            facts.Removals = null;
+
+            Assert.That(Joined(ViewsTree.Lines(facts, ViewsTreeCheck.Of(facts), 0)), Does.Contain("what was removed is UNKNOWN, no removal results were handed to this block"));
+        }
+
         [Test]
         public void AFailedCheckIsAFailedLineNamingWhatBrokeIt()
         {
