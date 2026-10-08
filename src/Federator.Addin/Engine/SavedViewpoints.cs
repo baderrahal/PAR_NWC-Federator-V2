@@ -502,14 +502,69 @@ namespace Federator.Addin.Engine
 
                 SavedItemCollection children = parent.Children;
 
-                using (SavedItem child = children[unmarked[0]])
-                using (Comment comment = document.CreateCommentWithUniqueId(body, CommentStatus.New, author ?? string.Empty))
+                try
                 {
-                    document.SavedViewpoints.AddComment(child, comment);
+                    using (SavedItem child = children[unmarked[0]])
+                    using (Comment comment = document.CreateCommentWithUniqueId(body, CommentStatus.New, author ?? string.Empty))
+                    {
+                        document.SavedViewpoints.AddComment(child, comment);
+                    }
+                }
+                catch (Exception error)
+                {
+                    // Said through the why, the breaker's B3: the caller removes the unmarked
+                    // view at once and counts it failed, so no view of the tool's is left that
+                    // no later run could know as its own.
+                    whyNot = "AddComment threw " + error.GetType().Name + ": " + error.Message;
+                    return -1;
                 }
 
                 return unmarked[0];
             }
+        }
+
+        /// <summary>
+        /// Takes out the one unmarked view of that name in that folder, the view this run
+        /// recorded and could not mark, the breaker's B3, by RemoveAt with the parent resolved
+        /// fresh, P13. Nothing is removed where there is not exactly one, and the answer says so.
+        /// </summary>
+        public static RemovalReadBack RemoveUnmarked(Document document, IList<string> folders, string name, ViewpointSettings settings)
+        {
+            RemovalReadBack answer = new RemovalReadBack();
+
+            if (document == null || folders == null || string.IsNullOrEmpty(name))
+            {
+                answer.WhyNot = "nothing to remove was named";
+                return answer;
+            }
+
+            using (GroupItem parent = ResolveFolders(document, folders, folders.Count))
+            {
+                if (parent == null)
+                {
+                    answer.WhyNot = "its folder is not there on a fresh read";
+                    return answer;
+                }
+
+                IList<int> unmarked = UnmarkedChildren(parent, name, false, settings);
+                answer.CountBefore = parent.Children.Count;
+
+                if (unmarked.Count != 1)
+                {
+                    answer.WhyNot = "a fresh read of its folder shows " + unmarked.Count + " unmarked views of its name, so which one was just made is UNKNOWN";
+                    return answer;
+                }
+
+                document.SavedViewpoints.RemoveAt(parent, unmarked[0]);
+                answer.Removed = true;
+            }
+
+            using (GroupItem again = ResolveFolders(document, folders, folders.Count))
+            {
+                answer.CountAfter = again == null ? -1 : again.Children.Count;
+            }
+
+            return answer;
         }
 
         /// <summary>The indexes of the parent's children of that name and kind whose comments carry no mark.</summary>

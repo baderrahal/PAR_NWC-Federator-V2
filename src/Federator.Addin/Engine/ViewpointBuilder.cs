@@ -643,12 +643,21 @@ namespace Federator.Addin.Engine
                     + ", a third team's model one of its clashing items lives in, Q118 A");
             }
 
+            // A VIEW OF NOTHING IS NO VIEW, the breaker's B2: shown nothing, it is counted failed
+            // before anything is hidden or dimmed for it.
+            if (shown.WhyNoView != null)
+            {
+                outcome.AddFailed(view.ToString(), showsWords, shown.WhyNoView);
+                return;
+            }
+
             // A person's unmarked view of this name in this folder cannot be told from the
             // one about to be made, P12 and P22 unrun, so none is made and the person's stays.
             if (SavedViewpoints.CountUnmarked(document, view.Folders, view.Name, false, views) > 0)
             {
                 outcome.AddFailed(view.ToString(), showsWords,
-                    "a view of its name with no mark of this tool already sits in its folder, so none was written there and that one is left as it is");
+                    "a view of its name with no mark of this tool sits in " + ViewPlace.FolderPath(view.Folders)
+                    + ", a person's or one an earlier run could not mark, so none was written there and that one is left as it is");
                 return;
             }
 
@@ -825,11 +834,20 @@ namespace Federator.Addin.Engine
 
                 if (index < 0)
                 {
-                    // Not marked, so not provably this tool's and the inventory cannot know it
-                    // by its place: the view, if it is there, is named and left, and the group
-                    // is not DONE on it.
+                    // NOT MARKED IS REMOVED AT ONCE, the design's S2 and the breaker's B3: an
+                    // unmarked view of the tool's would read as a person's every later run and
+                    // block that test's view. It is taken out among the unmarked children of
+                    // its folder of that name, exactly one or it is said, and counted failed.
+                    RemovalReadBack taken;
+
+                    using (seconds.In(ViewsPart.Removing))
+                    {
+                        taken = SavedViewpoints.RemoveUnmarked(document, view.Folders, view.Name, views);
+                    }
+
                     written.Add(new WrittenView(view.Folders, view.Name, -1, false, false));
-                    outcome.AddFailed(view.ToString(), showsWords, "it was added and could not be marked, " + whyNot);
+                    outcome.AddFailed(view.ToString(), showsWords, "it was added and could not be marked, " + whyNot
+                        + (taken.Removed ? ", so it was removed at once" : ", and it was not removed, " + taken.WhyNot + ", so it stays unmarked and is named"));
                     return;
                 }
 
