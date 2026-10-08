@@ -36,18 +36,18 @@ FR-034,auto review record in throws on edited comment,F113,1,loud failure,merged
 FR-035,workbook check counts only blocks with clashes,F118,2c,silent wrong number,merged,147,none,2026-10-07
 FR-036,skipped test row keeps old tolerance after chosen edit,F118,2c,silent wrong number,open,none,none,2026-10-04
 FR-037,priority csv repeated test name last row wins silently,F118,2c,silent wrong number,merged,147,none,2026-10-07
-FR-038,workbook stray grey row after last empty test,F123,5,noise,open,none,none,2026-10-04
-FR-039,thumbnail row height overwritten by clash row height,F123,5,noise,open,none,none,2026-10-04
+FR-038,workbook stray grey row after last empty test,F123,5,noise,merged,181,none,2026-10-08
+FR-039,thumbnail row height overwritten by clash row height,F123,5,noise,merged,181,none,2026-10-08
 FR-040,item ids guid fallback counted missing,F118,2c,silent wrong number,merged,159,none,2026-10-07
 FR-041,grid location empty on 345 rows,F118,2c,broken feature,open,none,none,2026-10-04
-FR-042,page check warns wrong order on priority sorted page,F123,5,noise,open,none,none,2026-10-04
+FR-042,page check warns wrong order on priority sorted page,F123,5,noise,merged,"159, closed by FR-199, the page always in the measured order, read by lane B at 181",none,2026-10-08
 FR-043,reshaped group done but nwf never saved,F119,3b,silent wrong number,open,none,none,2026-10-04
 FR-044,nwf save false return ignored after rebuild,F119,3b,silent wrong number,open,none,none,2026-10-04
 FR-045,nwf save after clash work false return ignored,F119,3b,silent wrong number,open,none,none,2026-10-04
 FR-046,result file sizes wrong for the two open logs,F119,3b,silent wrong number,merged,148,none,2026-10-07
 FR-047,tsv number column rounds a tolerance,F119,3b,silent wrong number,open,none,none,2026-10-04
 FR-048,tsv size zero for nwc not on disk,F119,3b,silent wrong number,merged,148,none,2026-10-07
-FR-049,second run in window result covers both runs,F119,3b,silent wrong number,open,none,none,2026-10-04
+FR-049,second run in window result covers both runs,F119,3b,silent wrong number,merged,179,none,2026-10-08
 FR-050,run started but not finished reads as no run marked,F119,3b,silent wrong number,merged,148,none,2026-10-07
 FR-051,result states zero waiting when no run marked,F119,3b,silent wrong number,merged,148,none,2026-10-07
 FR-052,notolerance skip missing from skip reasons,F119,3b,silent wrong number,merged,148,none,2026-10-07
@@ -72,10 +72,10 @@ FR-070,views 45 minute basis and options,F114,2b,slow,in progress,"141 merged fo
 FR-071,views log silent up to 21 minutes,F114,2b,slow,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
 FR-072,penetrations upwards walk outside try,F114,2b,loud failure,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
 FR-073,views seconds parts do not add,F114,2b,noise,in progress,"141 merged for the Core half, the add-in pass next on fix-F114",none,2026-10-07
-FR-074,views unknown set not named,F123,5,noise,open,none,none,2026-10-04
-FR-075,picture rename two pass has no undo,F120,3a,silent wrong number,open,none,none,2026-10-04
-FR-076,image guard per group not per run,F120,3a,broken feature,open,none,none,2026-10-04
-FR-077,pictures cost 643 seconds,F120,3a,slow,open,none,none,2026-10-04
+FR-074,views unknown set not named,F123,5,noise,merged,181,none,2026-10-08
+FR-075,picture rename two pass has no undo,F120,3a,silent wrong number,merged,UNKNOWN,none,2026-10-08
+FR-076,image guard per group not per run,F120,3a,broken feature,merged,UNKNOWN,none,2026-10-08
+FR-077,pictures cost 643 seconds,F120,3a,slow,merged,"UNKNOWN, the IMAGES seconds split and the encoder looked up once, the seconds saved UNKNOWN until the timed runs",none,2026-10-08
 FR-078,install recursive delete without junction check and partial first install,F109,3a,broken feature,in progress,"none, branch fix-F109 at a0c3829",none,2026-10-04
 FR-079,install killed between move and removal,F109,3a,broken feature,in progress,"none, branch fix-F109 at a0c3829",none,2026-10-04
 FR-080,install leftovers exit codes and success line,F109,3a,broken feature,in progress,"none, branch fix-F109 at a0c3829",none,2026-10-04
@@ -169,7 +169,7 @@ FR-167,shared source uses group key not building code,F123,5,noise,open,none,non
 FR-168,folders memory read failure logged as first run,F123,5,noise,merged,155,none,2026-10-07
 FR-169,document guard unreadable name called unsaved,F123,5,noise,open,none,none,2026-10-04
 FR-170,penetration size catch swallows unit throw,F123,5,noise,open,none,none,2026-10-04
-FR-171,t1 noise findings 93,F123,5,noise,in progress,"162, 163, 164, 165 and 174 in part, the rest on the laptop",none,2026-10-08
+FR-171,t1 noise findings 93,F123,5,noise,in progress,"162, 163, 164, 165, 174, 176 and 180 in part, the rest on the laptop",none,2026-10-08
 FR-172,t1 uncalled members 150,F123,5,noise,in progress,"161 two members deleted, the rest on the laptop",none,2026-10-07
 FR-173,t1 catch swallowing 77,F123,5,noise,open,none,none,2026-10-04
 FR-174,one public type per file,F124,5,noise,open,none,none,2026-10-04
@@ -315,15 +315,15 @@ F115,sets,F115,2a,fix,merged,142,none,2026-10-07
 F116,the clash XML,F116,1,fix,merged,98,none,2026-10-05
 F117,the names,F117,5,fix,open,none,none,2026-10-04
 F118,workbook and report,F118,2c,fix,in progress,"147 FR-035 and FR-037 and 159 FR-199 and FR-040 merged, FR-036 and FR-041 on the laptop",none,2026-10-07
-F119,run log and RESULT,F119,3b,fix,in progress,"148 nine items, 168 two Core points and 169 FR-057's disk half merged, the rest on the laptop",none,2026-10-08
-F120,harvest and pictures,F120,3a,fix,open,none,none,2026-10-04
-F121,the rest,F121,4,fix,in progress,"150 six items and 160 merged, the rest on the laptop",none,2026-10-07
+F119,run log and RESULT,F119,3b,fix,in progress,"148 nine items, 168, 169 and 179 merged, the rest on the laptop",none,2026-10-08
+F120,harvest and pictures,F120,3a,fix,merged,"UNKNOWN, FR-198 open",none,2026-10-08
+F121,the rest,F121,4,fix,in progress,"150 six items, 160 and 173 the SINGLE DISCIPLINE finding merged, the rest on the laptop",none,2026-10-08
 F122,the loop tools,F122,4,fix,open,none,none,2026-10-04
-F123,"docs and words, and the noise of every area",F123,5,fix,in progress,"151, 154, 155, 161, 162, 163, 164 and 165 merged in part, the rest on the laptop",none,2026-10-07
+F123,"docs and words, and the noise of every area",F123,5,fix,in progress,"151, 154, 155, 161 to 165, 174, 176, 178, 180 and 181 merged in part, the rest on the laptop",none,2026-10-08
 F124,"D1, one public type per file",F124,5,fix,open,none,none,2026-10-04
 F125,a window that is not modal is a pane and not a dialog,F125,outside the waves,fix,merged,102,none,2026-10-06
 F126,the window driver unticks a tick box by its AutomationId,F126,outside the waves,fix,merged,112,none,2026-10-05
-F127,coverage of the clash XML,F127,2a,fix,in progress,"145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop",none,2026-10-08
+F127,coverage of the clash XML,F127,2a,fix,in progress,"145 the Core steps 1 to 3, 153 the Coverage sheet, 167 the readers' Core points and 176 the counted words merged, the add-in half on the laptop",none,2026-10-08
 F128,generic models,F128,2b,fix,in progress,"171 the Core part merged by lane B, the plan, the counts, the block and the sheet, the add-in part and the measurement on the laptop",none,2026-10-08
 F129,start from an existing NWF,F129,3a,fix,open,none,none,2026-10-04
 F130,the Shift range in the group list,F130,3b,fix,open,none,none,2026-10-04
@@ -503,13 +503,14 @@ F132-R4,"the views read the document and not the merged report, so a clash only 
 F132-R5,"a run with no XML now hands the by design pass real set names, so with the box ticked it writes Reviewed into saved tests and saves the NWF",F132,2a,silent wrong number,merged,"177, the pass kept and said, Q144 for Bader",none,2026-10-08
 F127-R1,read-workbook.ps1 reads every sheet as a test sheet so the Coverage sheet makes every F104 verdict NOT PROVED until it reads a sheet named Coverage into a section of its own,F127,2a,register row,open,none,none,2026-10-07
 F137-R1,ModelFactsReader.SharedCoordinateOn returns an empty site where the Location tab is missing so a read fault reads as a model naming no site and skips the clash,F137,before the test of wave 1,register row,open,none,none,2026-10-07
-F137-R2,the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged,F137,before the test of wave 1,register row,open,none,none,2026-10-07
+F137-R2,the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged,F137,before the test of wave 1,register row,in progress,"173 the reference line merged by lane B, the ModelsRead half open",none,2026-10-08
 F137-R3,the comments of FederationEngine near lines 2154 and 2300 and ModelFactsReader near 154 still say a model naming no site fails its group either way,F137,before the test of wave 1,register row,open,none,none,2026-10-07
-F118-R1,the order check of the workbook reads the full blocks only so a one row test placed before a full block is not named,F118,2c,register row,open,none,none,2026-10-07
-F118-R2,with a priority file picked the check does not run the Priority heading check on a sheet with no full block,F118,2c,register row,open,none,none,2026-10-07
+F118-R1,the order check of the workbook reads the full blocks only so a one row test placed before a full block is not named,F118,2c,register row,merged,176,none,2026-10-08
+F118-R2,with a priority file picked the check does not run the Priority heading check on a sheet with no full block,F118,2c,register row,dropped,"176, lane B read it as no fault, a sheet of one row tests has no heading row",none,2026-10-08
 F132-R1,"under Q142 A only a first run over a new NWF merges, a weekly run never does",F132,2a,register row,open,none,none,2026-10-07
 F132-R2,a set's flags and findspec are not read by the drift check a merge reads,F132,2a,register row,open,none,none,2026-10-07
 F132-R3,"two clashes of one test between the same two elements on geometry of one name share a merge key, ClashItem.MergeKey, so a clash only a mirror found on such a pair is counted as a repeat and not added, said on the MIRROR MERGE lines",F132,2a,register row,open,none,none,2026-10-07
 Q144,a run with no XML and the by design pass on the saved tests,none,none,question,waiting for Bader,none,none,2026-10-08
 Q145,"the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release",none,none,Bader's request,in progress,none,none,2026-10-08
 F132-R6,"a saved test a person grouped gets one viewpoint per result group since the views read the report's rows, as the workbook and the pictures do, where attempt 1 gave each clash under a group its own, the lead's ruling of by design on the breaker's blocking point of attempt 2, turn6\f132q-break-addin.json, for Bader",F132,2a,register row,open,none,none,2026-10-08
+F120-R1,"a render that throws with a path inside the exception's message is still one reason per path for the fifty failures guard, so such failures never stop the run, the developer's finding on FR-076",F120,3a,register row,open,none,none,2026-10-08

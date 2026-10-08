@@ -2,9 +2,9 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 514 rows: open 201, in progress 45, in review 0, merged 233, proven by a run 27, waiting for Bader 3, dropped 5
-- By wave: 1 19, 2a 60, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 11, 3a 20, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 73, outside the waves 2, right after F133 merges 6
-- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F128 generic models, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q112-3 generic models counted and a set per model (FR-177), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, and 25 FR items
+- By status, of 515 rows: open 190, in progress 46, in review 0, merged 243, proven by a run 27, waiting for Bader 3, dropped 6
+- By wave: 1 19, 2a 60, 2a and 2b 1, 2b 32, 2b and before any test run 1, 2c 11, 3a 21, 3b 20, 4 57, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 73, outside the waves 2, right after F133 merges 6
+- In progress now: F109 install, F114 views, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F128 generic models, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q112-3 generic models counted and a set per model (FR-177), Q114 one view per clash test by team (FR-180 to FR-188), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q132 the new viewpoints first, F136 then F131, F132 and F114, Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, and 25 FR items
 - Waits for Bader, 3 rows: step 228-233, F114-K29, Q144
 
 ## Wave 1
@@ -55,7 +55,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-182 | mirrored tests kept once | F132 | Bader's decision | merged | 177 | none | 2026-10-08 |
 | FR-183 | mirrored tests in an existing nwf | F132 | Bader's decision | merged | 177 | none | 2026-10-08 |
 | F115 | sets | F115 | fix | merged | 142 | none | 2026-10-07 |
-| F127 | coverage of the clash XML | F127 | fix | in progress | 145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop | none | 2026-10-08 |
+| F127 | coverage of the clash XML | F127 | fix | in progress | 145 the Core steps 1 to 3, 153 the Coverage sheet, 167 the readers' Core points and 176 the counted words merged, the add-in half on the laptop | none | 2026-10-08 |
 | F132 | mirrored tests | F132 | fix | merged | 177 | none | 2026-10-08 |
 | Q112-2 | coverage of the clash XML (FR-176) | F127 | Bader's request | in progress | 145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop | none | 2026-10-08 |
 | Q46 | F77 against the single discipline rule | F127 | question | merged | 131 | none | 2026-10-06 |
@@ -158,22 +158,22 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q45 | a count of the clashes this run moved to Reviewed | F118 | question | merged | 131 | none | 2026-10-06 |
 | Q49 | a priority file replaces the measured block order | F118 | question | merged | 131 | none | 2026-10-06 |
 | FR-199 | blocks stay in measured order with a priority file | F118 | Bader's decision | merged | 159 | none | 2026-10-07 |
-| F118-R1 | the order check of the workbook reads the full blocks only so a one row test placed before a full block is not named | F118 | register row | open | none | none | 2026-10-07 |
-| F118-R2 | with a priority file picked the check does not run the Priority heading check on a sheet with no full block | F118 | register row | open | none | none | 2026-10-07 |
+| F118-R1 | the order check of the workbook reads the full blocks only so a one row test placed before a full block is not named | F118 | register row | merged | 176 | none | 2026-10-08 |
+| F118-R2 | with a priority file picked the check does not run the Priority heading check on a sheet with no full block | F118 | register row | dropped | 176, lane B read it as no fault, a sheet of one row tests has no heading row | none | 2026-10-08 |
 
 ## Wave 3a
 
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
-| FR-075 | picture rename two pass has no undo | F120 | silent wrong number | open | none | none | 2026-10-04 |
-| FR-076 | image guard per group not per run | F120 | broken feature | open | none | none | 2026-10-04 |
-| FR-077 | pictures cost 643 seconds | F120 | slow | open | none | none | 2026-10-04 |
+| FR-075 | picture rename two pass has no undo | F120 | silent wrong number | merged | UNKNOWN | none | 2026-10-08 |
+| FR-076 | image guard per group not per run | F120 | broken feature | merged | UNKNOWN | none | 2026-10-08 |
+| FR-077 | pictures cost 643 seconds | F120 | slow | merged | UNKNOWN, the IMAGES seconds split and the encoder looked up once, the seconds saved UNKNOWN until the timed runs | none | 2026-10-08 |
 | FR-078 | install recursive delete without junction check and partial first install | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
 | FR-079 | install killed between move and removal | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
 | FR-080 | install leftovers exit codes and success line | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
 | FR-178 | start from an existing nwf | F129 | Bader's request | open | none | none | 2026-10-04 |
 | F109 | install | F109 | fix | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
-| F120 | harvest and pictures | F120 | fix | open | none | none | 2026-10-04 |
+| F120 | harvest and pictures | F120 | fix | merged | UNKNOWN, FR-198 open | none | 2026-10-08 |
 | F129 | start from an existing NWF | F129 | fix | open | none | none | 2026-10-04 |
 | Q112-4 | start from an existing NWF (FR-178) | F129 | Bader's request | open | none | none | 2026-10-04 |
 | Q25 | five clash item properties reach no output, split into Q35 to Q40 | F120 | question | merged | 131 | none | 2026-10-06 |
@@ -185,6 +185,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q40 | the GAP block, Id From | F120 | question | merged | 131 | none | 2026-10-06 |
 | Q76 | the source file column empty on every row | F120 | question | merged | 131 | none | 2026-10-06 |
 | FR-198 | item properties harvest deleted and gap says read and empty | F120 | Bader's decision | open | none | none | 2026-10-06 |
+| F120-R1 | a render that throws with a path inside the exception's message is still one reason per path for the fifty failures guard, so such failures never stop the run, the developer's finding on FR-076 | F120 | register row | open | none | none | 2026-10-08 |
 
 ## Wave 3b
 
@@ -196,7 +197,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-046 | result file sizes wrong for the two open logs | F119 | silent wrong number | merged | 148 | none | 2026-10-07 |
 | FR-047 | tsv number column rounds a tolerance | F119 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-048 | tsv size zero for nwc not on disk | F119 | silent wrong number | merged | 148 | none | 2026-10-07 |
-| FR-049 | second run in window result covers both runs | F119 | silent wrong number | open | none | none | 2026-10-04 |
+| FR-049 | second run in window result covers both runs | F119 | silent wrong number | merged | 179 | none | 2026-10-08 |
 | FR-050 | run started but not finished reads as no run marked | F119 | silent wrong number | merged | 148 | none | 2026-10-07 |
 | FR-051 | result states zero waiting when no run marked | F119 | silent wrong number | merged | 148 | none | 2026-10-07 |
 | FR-052 | notolerance skip missing from skip reasons | F119 | silent wrong number | merged | 148 | none | 2026-10-07 |
@@ -207,7 +208,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-057 | run log write has no try | F119 | loud failure | merged | 148 the listener half, 169 the disk half | none | 2026-10-08 |
 | FR-179 | shift range tick in the group list | F130 | Bader's request | open | none | none | 2026-10-04 |
 | FR-189 | nwd listed as written when its publish failed | F119 | silent wrong number | open | none | none | 2026-10-05 |
-| F119 | run log and RESULT | F119 | fix | in progress | 148 nine items, 168 two Core points and 169 FR-057's disk half merged, the rest on the laptop | none | 2026-10-08 |
+| F119 | run log and RESULT | F119 | fix | in progress | 148 nine items, 168, 169 and 179 merged, the rest on the laptop | none | 2026-10-08 |
 | F130 | the Shift range in the group list | F130 | fix | open | none | none | 2026-10-04 |
 | Q112-5 | Shift range tick in the group list (FR-179) | F130 | Bader's request | open | none | none | 2026-10-04 |
 
@@ -255,7 +256,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-164 | census sets overload returns zero not minus one | F121 | loud failure | merged | 150 | none | 2026-10-07 |
 | FR-165 | cleared name cell throws out of run click | F121 | loud failure | merged | 150, and 160 the second half, a hand typed name Windows refuses | none | 2026-10-07 |
 | FR-166 | tolerance other blank stops hand buttons | F121 | loud failure | open | none | none | 2026-10-04 |
-| F121 | the rest | F121 | fix | in progress | 150 six items and 160 merged, the rest on the laptop | none | 2026-10-07 |
+| F121 | the rest | F121 | fix | in progress | 150 six items, 160 and 173 the SINGLE DISCIPLINE finding merged, the rest on the laptop | none | 2026-10-08 |
 | F122 | the loop tools | F122 | fix | open | none | none | 2026-10-04 |
 | F125-R1 | a modeless window up after Run stops the driver while the monitor reads a pane | F122 | register row | open | none | none | 2026-10-04 |
 | F125-R3 | a pane made again with a new handle after Run stops the driver | F122 | register row | open | none | none | 2026-10-04 |
@@ -279,9 +280,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 |---|---|---|---|---|---|---|---|
 | FR-007 | invisible difference fallback for visible space | F123 | noise | merged | 151 | none | 2026-10-07 |
 | FR-029 | set builder handles never disposed | F123 | noise | open | none | none | 2026-10-04 |
-| FR-038 | workbook stray grey row after last empty test | F123 | noise | open | none | none | 2026-10-04 |
-| FR-039 | thumbnail row height overwritten by clash row height | F123 | noise | open | none | none | 2026-10-04 |
-| FR-042 | page check warns wrong order on priority sorted page | F123 | noise | open | none | none | 2026-10-04 |
+| FR-038 | workbook stray grey row after last empty test | F123 | noise | merged | 181 | none | 2026-10-08 |
+| FR-039 | thumbnail row height overwritten by clash row height | F123 | noise | merged | 181 | none | 2026-10-08 |
+| FR-042 | page check warns wrong order on priority sorted page | F123 | noise | merged | 159, closed by FR-199, the page always in the measured order, read by lane B at 181 | none | 2026-10-08 |
 | FR-058 | first clash line says all tests to create | F123 | noise | open | none | none | 2026-10-04 |
 | FR-059 | result files written leaves out pictures | F123 | noise | open | none | none | 2026-10-04 |
 | FR-060 | result found none counts groups that ran no test | F123 | noise | open | none | none | 2026-10-04 |
@@ -289,7 +290,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-062 | units line names unit when second read threw | F123 | noise | open | none | none | 2026-10-04 |
 | FR-063 | tolerance log line says read from xml on no xml run | F123 | noise | open | none | none | 2026-10-04 |
 | FR-064 | category line names no folder | F123 | noise | merged | 151 | none | 2026-10-07 |
-| FR-074 | views unknown set not named | F123 | noise | open | none | none | 2026-10-04 |
+| FR-074 | views unknown set not named | F123 | noise | merged | 181 | none | 2026-10-08 |
 | FR-081 | f103w install failure claims and refused text | F123 | noise | open | none | none | 2026-10-04 |
 | FR-105 | run verdict wording and dead fields | F123 | noise | open | none | none | 2026-10-04 |
 | FR-106 | record writes unmasked exception text | F123 | noise | open | none | none | 2026-10-04 |
@@ -337,12 +338,12 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-168 | folders memory read failure logged as first run | F123 | noise | merged | 155 | none | 2026-10-07 |
 | FR-169 | document guard unreadable name called unsaved | F123 | noise | open | none | none | 2026-10-04 |
 | FR-170 | penetration size catch swallows unit throw | F123 | noise | open | none | none | 2026-10-04 |
-| FR-171 | t1 noise findings 93 | F123 | noise | in progress | 162, 163, 164, 165 and 174 in part, the rest on the laptop | none | 2026-10-08 |
+| FR-171 | t1 noise findings 93 | F123 | noise | in progress | 162, 163, 164, 165, 174, 176 and 180 in part, the rest on the laptop | none | 2026-10-08 |
 | FR-172 | t1 uncalled members 150 | F123 | noise | in progress | 161 two members deleted, the rest on the laptop | none | 2026-10-07 |
 | FR-173 | t1 catch swallowing 77 | F123 | noise | open | none | none | 2026-10-04 |
 | FR-174 | one public type per file | F124 | noise | open | none | none | 2026-10-04 |
 | F117 | the names | F117 | fix | open | none | none | 2026-10-04 |
-| F123 | docs and words, and the noise of every area | F123 | fix | in progress | 151, 154, 155, 161, 162, 163, 164 and 165 merged in part, the rest on the laptop | none | 2026-10-07 |
+| F123 | docs and words, and the noise of every area | F123 | fix | in progress | 151, 154, 155, 161 to 165, 174, 176, 178, 180 and 181 merged in part, the rest on the laptop | none | 2026-10-08 |
 | F124 | D1, one public type per file | F124 | fix | open | none | none | 2026-10-04 |
 | Q27 | the two choice rule for still outstanding lost every reader | F123 | question | merged | 131 | none | 2026-10-06 |
 | Q30 | the bundle manifest points at the old scan.md path | F123 | question | merged | 131 | none | 2026-10-06 |
@@ -389,7 +390,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q125 | a group that runs no clash test, a model off the coordinates | F137 | question | merged | 118 | none | 2026-10-05 |
 | FR-201 | shared site named default reported only | F137 | Bader's decision | merged | 131, records only, main already does it | none | 2026-10-06 |
 | F137-R1 | ModelFactsReader.SharedCoordinateOn returns an empty site where the Location tab is missing so a read fault reads as a model naming no site and skips the clash | F137 | register row | open | none | none | 2026-10-07 |
-| F137-R2 | the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged | F137 | register row | open | none | none | 2026-10-07 |
+| F137-R2 | the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged | F137 | register row | in progress | 173 the reference line merged by lane B, the ModelsRead half open | none | 2026-10-08 |
 | F137-R3 | the comments of FederationEngine near lines 2154 and 2300 and ModelFactsReader near 154 still say a model naming no site fails its group either way | F137 | register row | open | none | none | 2026-10-07 |
 
 ## before the waves
