@@ -365,6 +365,110 @@ namespace Federator.Core.Tests.Sets
             Assert.That(new List<string>(group.GroupWorksets), Is.EqualTo(new[] { "ME-Ductwork", "ME-Piping", "AR-EXTERIOR" }));
         }
 
+        // ---------- a model whose walk stopped, and a list not read, F115 R14 and R10 ----------
+
+        private static ModelExport Walked(string discipline, params string[] worksets)
+        {
+            return new ModelExport(
+                "1104-PAR-1B06BC-ZZZ-" + discipline + "-MOD-000001.nwc", discipline, 10, 10, 10, new List<string>(worksets));
+        }
+
+        private static ModelExport Stopped(string discipline)
+        {
+            return new ModelExport(
+                "1104-PAR-1B06BC-ZZZ-" + discipline + "-MOD-000001.nwc",
+                discipline,
+                ModelExport.NotCounted,
+                ModelExport.NotCounted,
+                ModelExport.NotCounted,
+                new List<string> { "ST-SUB" });
+        }
+
+        private static List<ReadCondition> AsksWorkset(string value)
+        {
+            return new List<ReadCondition> { Workset(value) };
+        }
+
+        /// <summary>
+        /// A MODEL WHOSE WALK STOPPED HAS WORKSETS NOBODY READ, so a workset no other model of the group
+        /// carries may be carried by it, and the judge cannot call a condition on it wrong. The judge was
+        /// handed the models and never read a count, so it said the condition was wrong over a model it
+        /// had not read. The break: the same group with every model walked is told the condition is wrong.
+        /// </summary>
+        [Test]
+        public void AGroupHoldingAModelWhoseWalkStoppedCannotTellAboutAWorksetNoOtherModelCarries()
+        {
+            List<ModelExport> whole = new List<ModelExport> { Walked("ME", "ME-DUCTWORK"), Walked("AR", "AR-EXTERIOR") };
+            EmptySetJudge walked = EmptySetJudge.For(Plan(), whole, new ContainerNameSettings());
+
+            Assert.That(walked.ModelsNotWalked, Is.Empty);
+            Assert.That(EmptySets.Why("a/BLD-ST-Beams", AsksWorkset("ST-NO-SUCH-WORKSET"), walked).Reason, Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
+
+            List<ModelExport> withStopped = new List<ModelExport>(whole) { Stopped("ST") };
+            EmptySetJudge stopped = EmptySetJudge.For(Plan(), withStopped, new ContainerNameSettings());
+            EmptySet why = EmptySets.Why("a/BLD-ST-Beams", AsksWorkset("ST-NO-SUCH-WORKSET"), stopped);
+
+            Assert.That(new List<string>(stopped.ModelsNotWalked), Is.EqualTo(new[] { "1104-PAR-1B06BC-ZZZ-ST-MOD-000001" }));
+            Assert.That(why.Reason, Is.EqualTo(EmptyReason.CannotTell));
+            Assert.That(why.WhyNotTold, Is.EqualTo(
+                "the worksets of 1 model of this group were not read (1104-PAR-1B06BC-ZZZ-ST-MOD-000001), so which worksets it carries is UNKNOWN"));
+            Assert.That(why.Line(), Does.EndWith("THIS READER CANNOT TELL WHY, because " + why.WhyNotTold));
+
+            Assert.That(EmptySets.Why("a/BLD-ME-Ducts", AsksWorkset("ME-DUCTWORK"), stopped).Reason, Is.EqualTo(EmptyReason.TheValueIsThereAnyway),
+                "a workset the models that were read carry is still carried");
+        }
+
+        /// <summary>The models are named three at most and the rest counted, and one with no file name is said so.</summary>
+        [Test]
+        public void TheModelsWhoseWorksetsWereNotReadAreNamedThreeAtMostAndTheRestCounted()
+        {
+            List<ModelExport> models = new List<ModelExport> { Walked("ME", "ME-DUCTWORK") };
+            models.Add(Stopped("ST"));
+            models.Add(Stopped("EL"));
+            EmptySetJudge two = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+
+            Assert.That(EmptySets.Why("a/b", AsksWorkset("ST-NO-SUCH-WORKSET"), two).WhyNotTold, Is.EqualTo(
+                "the worksets of 2 models of this group were not read (1104-PAR-1B06BC-ZZZ-ST-MOD-000001 and 1104-PAR-1B06BC-ZZZ-EL-MOD-000001),"
+                    + " so which worksets they carry is UNKNOWN"));
+
+            models.Add(Stopped("PL"));
+            models.Add(Stopped("FF"));
+            models.Add(Stopped("DR"));
+            EmptySetJudge five = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+
+            Assert.That(EmptySets.Why("a/b", AsksWorkset("ST-NO-SUCH-WORKSET"), five).WhyNotTold, Is.EqualTo(
+                "the worksets of 5 models of this group were not read (1104-PAR-1B06BC-ZZZ-ST-MOD-000001, 1104-PAR-1B06BC-ZZZ-EL-MOD-000001,"
+                    + " 1104-PAR-1B06BC-ZZZ-PL-MOD-000001 and 2 more), so which worksets they carry is UNKNOWN"));
+
+            EmptySetJudge nameless = EmptySetJudge.For(
+                Plan(),
+                new List<ModelExport> { new ModelExport(null, "ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, null) },
+                new ContainerNameSettings());
+
+            Assert.That(new List<string>(nameless.ModelsNotWalked), Is.EqualTo(new[] { "a model with no file name" }));
+        }
+
+        /// <summary>
+        /// A LIST NOT READ IS SAID, FR-012, and is never read as one holding no name. The DLL's answer cannot be
+        /// changed here, so the judge takes it as an argument and For reads RevitWorksets.ResourceFound. What the
+        /// group's own models carry is still carried. The break: the same judge with the list read calls the same
+        /// value wrong.
+        /// </summary>
+        [Test]
+        public void AWorksetListNotReadIsSaidAndNeverReadAsOneHoldingNoName()
+        {
+            EmptySetJudge unread = new EmptySetJudge(RevitWorksets.With(null), RevitWorksets.Project, new List<string> { "X-CARRIED" }, null, null, false);
+            EmptySet why = EmptySets.Why("a/BLD-ST-Beams", AsksWorkset("ST-NO-SUCH-WORKSET"), unread);
+
+            Assert.That(why.Reason, Is.EqualTo(EmptyReason.CannotTell));
+            Assert.That(why.WhyNotTold, Is.EqualTo("the workset list inside Federator.Core.dll could not be read"));
+            Assert.That(EmptySets.Why("a/b", AsksWorkset("X-CARRIED"), unread).Reason, Is.EqualTo(EmptyReason.TheValueIsThereAnyway));
+
+            EmptySetJudge read = new EmptySetJudge(RevitWorksets.With(null), RevitWorksets.Project, new List<string> { "X-CARRIED" });
+
+            Assert.That(EmptySets.Why("a/BLD-ST-Beams", AsksWorkset("ST-NO-SUCH-WORKSET"), read).Reason, Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
+        }
+
         /// <summary>
         /// A NEAREST VALUE DIFFERING ONLY BY LETTER CASE SAYS SO, FR-027, because the match is
         /// case sensitive and that is the whole of what is wrong with such a set, Q68.
