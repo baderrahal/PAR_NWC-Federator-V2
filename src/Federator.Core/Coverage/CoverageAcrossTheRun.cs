@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Coverage
 {
@@ -195,13 +196,13 @@ namespace Federator.Core.Coverage
             int ranNeverWithAClash = ranOnce.Count - withClashesOnce.Count;
 
             lines.Add("COVERAGE tests counted            : " + names.Count + " names, each once across "
-                + Count(groupsWithTests, "group", "groups"));
+                + Words.Counted(groupsWithTests, "group", "groups"));
             lines.Add("COVERAGE in the document in one group at least : " + inTheDocumentOnce.Count
                 + ", never in the document " + neverInTheDocument);
             lines.Add("COVERAGE run in one group at least : " + ranOnce.Count);
             lines.Add("COVERAGE with clashes in one group at least : " + withClashesOnce.Count);
             lines.Add("COVERAGE run, never with a clash  : " + ranNeverWithAClash);
-            lines.Add("COVERAGE over " + Count(groupsWithTests, "group", "groups") + ", added up : " + places
+            lines.Add("COVERAGE over " + Words.Counted(groupsWithTests, "group", "groups") + ", added up : " + places
                 + " places, " + created + " created this run, " + alreadyThere + " already there, " + notCreated
                 + " not created" + (presenceUnknown > 0 ? ", " + presenceUnknown + " whose presence is UNKNOWN" : string.Empty)
                 + ", " + ran + " run, " + withClashes + " with clashes, " + (ran - withClashes) + " without, "
@@ -219,7 +220,7 @@ namespace Federator.Core.Coverage
             List<string> lines = new List<string>(TestLines());
             int compared = Agree + Failed;
             string notChecked = GroupsNotChecked > 0
-                ? ", " + Count(GroupsNotChecked, "group", "groups") + " not checked, "
+                ? ", " + Words.Counted(GroupsNotChecked, "group", "groups") + " not checked, "
                     + (GroupsNotChecked == 1 ? "its tests" : "their tests") + " in none of these counts"
                 : string.Empty;
 
@@ -235,16 +236,16 @@ namespace Federator.Core.Coverage
 
             if (compared == 0)
             {
-                lines.Add(CheckedLabel + "UNKNOWN, 0 compared in " + Count(Groups, "group", "groups") + ", "
+                lines.Add(CheckedLabel + "UNKNOWN, 0 compared in " + Words.Counted(Groups, "group", "groups") + ", "
                     + NotCompared + " not compared" + neither + notChecked + ", so no count was checked");
                 AddNotInTheXml(lines);
                 return lines;
             }
 
             lines.Add(CheckedLabel + compared + " compared, " + Agree + " agree, " + Failed + " FAILED in "
-                + GroupsWithAFailedLine + " of " + Count(Groups, "group", "groups") + ", " + NotCompared
+                + GroupsWithAFailedLine + " of " + Words.Counted(Groups, "group", "groups") + ", " + NotCompared
                 + " not compared" + neither + notChecked + ", every group keeps its own result, "
-                + Count(compared + NotCompared + HeldByNeither, "test place", "test places")
+                + Words.Counted(compared + NotCompared + HeldByNeither, "test place", "test places")
                 + " in the groups checked, a test once for each group it is in");
             AddNotInTheXml(lines);
 
@@ -275,7 +276,7 @@ namespace Federator.Core.Coverage
         {
             if (NotInTheXml > 0)
             {
-                lines.Add("COVERAGE not named    : " + Count(NotInTheXml, "test", "tests")
+                lines.Add("COVERAGE not named    : " + Words.Counted(NotInTheXml, "test", "tests")
                     + " in Clash Detective that the picked file does not name"
                     + (notNamedPlaces != NotInTheXml
                         ? " (each name once here, " + notNamedPlaces + " places over the groups)"
@@ -308,11 +309,6 @@ namespace Federator.Core.Coverage
         public static string NoneTaken()
         {
             return CheckedLabel + "UNKNOWN, no coverage was taken in this run";
-        }
-
-        private static string Count(int count, string one, string many)
-        {
-            return count + " " + (count == 1 ? one : many);
         }
     }
 }

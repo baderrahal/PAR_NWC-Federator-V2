@@ -249,6 +249,42 @@ namespace Federator.Core.Tests
             Assert.That(lines, Does.Not.Contain("Every column, value shape, fill, border, row height"));
         }
 
+        /// <summary>
+        /// The order check read the full blocks alone, so a test with no clash placed before a test with clashes was
+        /// never named. A copy of the one row test is put in front of the first block, and the check names it once.
+        /// The break: the workbook the writer made, with every one row test last, says nothing of the kind.
+        /// </summary>
+        [Test]
+        public void AOneRowTestBeforeATestWithClashesIsNamedAsOutOfOrder()
+        {
+            string path = TwoWithClashesAndThreeWithNone();
+
+            Assert.That(string.Join("\n", WorkbookCheck.Of(path).Lines()), Does.Not.Contain("stands before the test with clashes"));
+
+            int lastRow;
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(1);
+                lastRow = sheet.LastRowUsed().RowNumber();
+                string name = sheet.Cell(lastRow, 1).GetString();
+                string tolerance = sheet.Cell(lastRow, WorkbookWriter.ColumnTestHeader).GetString();
+
+                Assert.That(name, Is.Not.Empty, "the last row is the one row of a test that found nothing");
+
+                sheet.Row(4).InsertRowsAbove(1);
+                sheet.Cell(4, 1).Value = name;
+                sheet.Cell(4, WorkbookWriter.ColumnTestHeader).Value = tolerance;
+                workbook.SaveAs(path);
+            }
+
+            WorkbookCheck told = WorkbookCheck.Of(path);
+            string lines = string.Join("\n", told.Lines());
+
+            Assert.That(told.Passed, Is.False);
+            Assert.That(lines, Does.Contain("The tests are in the wrong order. The test with no clash at row 4 stands before the test with clashes at row 5."));
+        }
+
         /// <summary>The sheet wide things a one row workbook can still be wrong in are still read.</summary>
         [Test]
         public void AWorkbookOfOneRowTestsStillNamesAWrongTitleAndAWrongWidth()

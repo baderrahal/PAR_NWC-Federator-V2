@@ -306,6 +306,7 @@ namespace Federator.Core.Report
             // saw it. It is a row below the title, outside every full block, holding a name or its
             // tolerance, and the one place a test with no name still shows is the tolerance.
             int oneRow = 0;
+            int firstOneRow = 0;
 
             for (int row = 4; row <= lastRow; row++)
             {
@@ -318,8 +319,15 @@ namespace Federator.Core.Report
                     || sheet.Cell(row, WorkbookWriter.ColumnTestHeader).GetString().Length > 0)
                 {
                     oneRow++;
+
+                    if (firstOneRow == 0)
+                    {
+                        firstOneRow = row;
+                    }
                 }
             }
+
+            CheckOneRowTestsComeLast(spans, firstOneRow);
 
             // A sheet of one row tests has no heading row, so the block layout cannot be compared,
             // and the check says so. Row 1 and the column widths hold without a block, so those two
@@ -713,6 +721,33 @@ namespace Federator.Core.Report
         }
 
         // ---------- in what order ----------
+
+        /// <summary>
+        /// A test that found nothing holds no clash and goes after every test that holds some. The order check reads
+        /// the full blocks alone, so a one row test placed before a block with clashes was never named, F118's reader.
+        /// Said once, with the first such test and the first block it stands before.
+        /// </summary>
+        private void CheckOneRowTestsComeLast(IList<int[]> spans, int firstOneRow)
+        {
+            if (firstOneRow == 0)
+            {
+                return;
+            }
+
+            foreach (int[] span in spans)
+            {
+                // A block starts four rows above its headings, the start the span carries, so its first row is
+                // the span's first.
+                if (span[0] > firstOneRow)
+                {
+                    Say("The tests are in the wrong order. The test with no clash at row " + firstOneRow
+                        + " stands before the test with clashes at row " + span[0]
+                        + ". The client's report puts the most clashes first, so a reader is "
+                        + "not scrolling past empty tests.");
+                    return;
+                }
+            }
+        }
 
         /// <summary>
         /// Most clashes first, whether or not a priority file was picked, FR-199, Bader's answer to

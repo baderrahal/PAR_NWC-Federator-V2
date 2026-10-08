@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Exchange
 {
@@ -371,23 +372,18 @@ namespace Federator.Core.Exchange
             // The also-asks are named only where the list holds one, so the line of a list
             // holding none reads as it did before F131.
             string kinds = AlsoAsks.Count == 0
-                ? Counted(Renames.Count, "rename", "renames") + ", "
-                    + Counted(CatchAlls.Count, "catch-all", "catch-alls") + " and "
-                    + Counted(SourceFiles.Count, "Source File rule", "Source File rules")
-                : Counted(Renames.Count, "rename", "renames") + ", "
-                    + Counted(CatchAlls.Count, "catch-all", "catch-alls") + ", "
-                    + Counted(SourceFiles.Count, "Source File rule", "Source File rules") + " and "
-                    + Counted(AlsoAsks.Count, "also-ask", "also-asks");
+                ? Words.Counted(Renames.Count, "rename", "renames") + ", "
+                    + Words.Counted(CatchAlls.Count, "catch-all", "catch-alls") + " and "
+                    + Words.Counted(SourceFiles.Count, "Source File rule", "Source File rules")
+                : Words.Counted(Renames.Count, "rename", "renames") + ", "
+                    + Words.Counted(CatchAlls.Count, "catch-all", "catch-alls") + ", "
+                    + Words.Counted(SourceFiles.Count, "Source File rule", "Source File rules") + " and "
+                    + Words.Counted(AlsoAsks.Count, "also-ask", "also-asks");
 
             return "the corrections are read from " + ListPath + ", the list beside this file. It holds "
-                + Counted(Renames.Count + CatchAlls.Count + SourceFiles.Count + AlsoAsks.Count, "correction", "corrections") + ", "
+                + Words.Counted(Renames.Count + CatchAlls.Count + SourceFiles.Count + AlsoAsks.Count, "correction", "corrections") + ", "
                 + kinds + ", and "
-                + Counted(Worksets.Count, "workset spelling", "workset spellings");
-        }
-
-        private static string Counted(int count, string one, string many)
-        {
-            return count + " " + (count == 1 ? one : many);
+                + Words.Counted(Worksets.Count, "workset spelling", "workset spellings");
         }
 
         private static MatrixCorrectionList Refused(string path, string why)

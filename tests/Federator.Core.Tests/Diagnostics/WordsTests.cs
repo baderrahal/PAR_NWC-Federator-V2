@@ -26,5 +26,16 @@ namespace Federator.Core.Tests
             // trimmed into nothing here.
             Assert.That(Words.Or(" ", "UNKNOWN"), Is.EqualTo(" "));
         }
+
+        /// <summary>One rule for a number and its noun, which four files each wrote out. Nought and a thousand take the plural.</summary>
+        [Test]
+        public void ANumberTakesItsNounInTheSingularOnlyAtOne()
+        {
+            Assert.That(Words.Counted(1, "test", "tests"), Is.EqualTo("1 test"));
+            Assert.That(Words.Counted(0, "test", "tests"), Is.EqualTo("0 tests"));
+            Assert.That(Words.Counted(2, "test", "tests"), Is.EqualTo("2 tests"));
+            Assert.That(Words.Counted(1000, "test", "tests"), Is.EqualTo("1000 tests"));
+            Assert.That(Words.Counted(-1, "test", "tests"), Is.EqualTo("-1 tests"));
+        }
     }
 }

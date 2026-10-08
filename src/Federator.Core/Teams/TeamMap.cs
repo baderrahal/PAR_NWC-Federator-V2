@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
 using Federator.Core.Views;
@@ -575,7 +576,7 @@ namespace Federator.Core.Teams
 
             lines.Add(Prefix + (NoXmlPicked ? "no clash XML was picked, so the teams are read from " : "the teams are read from ")
                 + ListPath + ", " + (NoXmlPicked ? Kept : "the team map beside this file") + ". It holds "
-                + Counted(Teams.Count, "team", "teams") + " and " + Counted(Codes.Count, "code", "codes")
+                + Words.Counted(Teams.Count, "team", "teams") + " and " + Words.Counted(Codes.Count, "code", "codes")
                 + ", and a code on no line is a team of its own named by its code");
 
             for (int i = 0; i < Teams.Count; i++)
@@ -617,11 +618,6 @@ namespace Federator.Core.Teams
             }
 
             return "Teams: " + Teams.Count.ToString(CultureInfo.InvariantCulture) + " read from the map beside the XML";
-        }
-
-        private static string Counted(int count, string one, string many)
-        {
-            return count.ToString(CultureInfo.InvariantCulture) + " " + (count == 1 ? one : many);
         }
 
         /// <summary>Parts read as a list: one alone, two joined by the last word, more with commas before it.</summary>
