@@ -120,12 +120,24 @@ namespace Federator.Core.Tests
             ProveOnePicker(PickerKind.ByDesign, "by-design");
         }
 
+        /// <summary>
+        /// F129. The existing NWF or folder of NWFs on the Source step. Its two Browse buttons,
+        /// one for a file and one for a folder, share this one kind, so a person picking a
+        /// folder after a file opens where the file was.
+        /// </summary>
+        [Test]
+        public void ThePickedNwfPickerRemembersItsOwnFolder()
+        {
+            ProveOnePicker(PickerKind.PickedNwf, "picked-nwf");
+        }
+
         [Test]
         public void EveryPickerInTheWindowIsCoveredHere()
         {
-            // Eight Browse buttons, eight kinds, eight tests above. If a ninth picker is
-            // added this fails until it is proved too.
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(8));
+            // Nine kinds and nine tests above, since F129. The existing NWF picker has two
+            // Browse buttons on one kind. If a tenth kind is added this fails until it is
+            // proved too.
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(9));
         }
 
         // ---------- the one that was actually broken ----------
