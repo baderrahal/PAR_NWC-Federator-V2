@@ -62,6 +62,37 @@ namespace Federator.Core.Report
             return read;
         }
 
+        /// <summary>
+        /// The client's sheet of the clash workbook at that path, read BY ITS NAME and never by its place,
+        /// the readers' point on F127 that Read handed the first sheet would read any sheet put before it.
+        /// The name is the one the writer gives the client's sheet, SheetNames.ForReport of the report's
+        /// output name. Null where there is no file at the path or no sheet of that name, exactly, with
+        /// why. A file that will not open throws, so the caller logs what it threw.
+        /// </summary>
+        public static WorkbookTests ReadFile(string path, string sheetName, out string whyNotRead)
+        {
+            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
+            {
+                whyNotRead = "there is no workbook at " + (path ?? string.Empty);
+                return null;
+            }
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                foreach (IXLWorksheet sheet in workbook.Worksheets)
+                {
+                    if (string.Equals(sheet.Name, sheetName, StringComparison.Ordinal))
+                    {
+                        whyNotRead = null;
+                        return Read(sheet);
+                    }
+                }
+            }
+
+            whyNotRead = "the workbook at " + path + " holds no sheet named " + (sheetName ?? string.Empty);
+            return null;
+        }
+
         /// <summary>Every test of the sheet with that name, Ordinal and never trimmed. Two or more is a doubt.</summary>
         public IList<WorkbookTest> Named(string name)
         {

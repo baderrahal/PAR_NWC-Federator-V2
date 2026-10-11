@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using ClosedXML.Excel;
 using ClosedXML.Excel.Drawings;
-using Federator.Core.Coverage;
 
 namespace Federator.Core.Report
 {
@@ -186,56 +185,27 @@ namespace Federator.Core.Report
 
             SheetName = sheets[0].Name;
 
-            // Theirs is one sheet holding every test, and ours had fifty. Since F127 the one
-            // sheet of ours is the Coverage sheet, second and last, by Bader's request 2 under
-            // Q112, so the client's sheet first, then at most that one, and anything else is
-            // named. Only sheet 1 is compared with the client's layout.
-            string coverage = CoverageSettings.DefaultSheetName;
-
-            if (string.Equals(sheets[0].Name, coverage, StringComparison.OrdinalIgnoreCase))
-            {
-                problems.Add("The Coverage sheet comes first and the client's sheet must, because Excel opens"
-                    + " on the first sheet and the client's report is the one they open.");
-            }
-
-            if (Sheets >= 2)
-            {
-                string second = sheets[1].Name;
-
-                if (string.Equals(second, coverage, StringComparison.Ordinal))
-                {
-                    HasCoverageSheet = true;
-                }
-                else if (string.Equals(second, coverage, StringComparison.OrdinalIgnoreCase))
-                {
-                    problems.Add("The second sheet is named " + second + " and the tool's own sheet is named "
-                        + coverage + ", which differs by letter case alone.");
-                }
-                else
-                {
-                    problems.Add("The workbook has a second sheet named " + second
-                        + ", which is neither the client's sheet nor the tool's own " + coverage + " sheet.");
-                }
-            }
-
-            if (Sheets > 2)
+            // Theirs is one sheet holding every test. Ours had fifty. FR-200 allowed the Coverage
+            // sheet second for a while, and Bader's answer B to Q146 of 11 Oct 2026 put it in the
+            // internal workbook beside this one, so this workbook is the client's sheet alone again
+            // and a second sheet of any name is named, the Coverage sheet included.
+            if (Sheets != 1)
             {
                 List<string> names = new List<string>();
 
-                for (int i = 2; i < sheets.Count && i < 5; i++)
+                for (int i = 0; i < sheets.Count && i < 4; i++)
                 {
                     names.Add(sheets[i].Name);
                 }
 
-                problems.Add("The workbook has " + Sheets + " sheets and the tool writes at most two, the client's"
-                    + " and " + coverage + ". The rest start " + string.Join(", ", names.ToArray()) + ".");
+                problems.Add("The workbook has " + Sheets
+                    + " sheets and the client's report has one. Ours starts "
+                    + string.Join(", ", names.ToArray())
+                    + " and theirs is a single sheet holding every test one after another.");
             }
 
             ReadSheet(sheets[0]);
         }
-
-        /// <summary>Whether the tool's own Coverage sheet is there, second and named exactly, F127.</summary>
-        public bool HasCoverageSheet { get; private set; }
 
         private void ReadSheet(IXLWorksheet sheet)
         {
