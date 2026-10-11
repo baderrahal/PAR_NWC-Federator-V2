@@ -86,6 +86,12 @@ namespace Federator.Addin.Engine
         /// </summary>
         public ImageGenerationStyle Style { get; set; }
 
+        /// <summary>
+        /// The seconds from which one render is named on a CALL line, F143, the runner's
+        /// ProgressSettings.LongCallSeconds handed down. The default where none is handed.
+        /// </summary>
+        public double LongCallSeconds { get; set; } = ProgressSettings.DefaultLongCallSeconds;
+
         /// <summary>Where this group's IMAGES seconds went, call by call, FR-077.</summary>
         public ImagesSeconds Seconds
         {
@@ -185,7 +191,7 @@ namespace Federator.Addin.Engine
                         Directory.CreateDirectory(folder);
                     }
 
-                    Render(clashTests, result, path);
+                    Render(clashTests, result, path, test.Name + " " + row.Name);
 
                     // The size is read back off the disk. A render that returned without
                     // writing anything must not be counted as a picture.
@@ -234,13 +240,25 @@ namespace Federator.Addin.Engine
         /// native image handle and one per clash across 1830 tests is how a run runs a
         /// machine out of memory. No copy of it is made on the way to the disk.
         /// </summary>
-        private void Render(DocumentClashTests clashTests, IClashResult result, string path)
+        private void Render(DocumentClashTests clashTests, IClashResult result, string path, string on)
         {
             Bitmap bitmap;
 
             using (seconds.In(ImagesPart.Rendering))
             {
-                bitmap = clashTests.TestsImageForResult(result, Style, options.Width, options.Height);
+                // F143. The call alone is timed, and named on a CALL line with its .tsv row where
+                // it took the setting's seconds or more, in the finally, so a call that throws
+                // after a long wait is named too.
+                double from = log.ElapsedSeconds;
+
+                try
+                {
+                    bitmap = clashTests.TestsImageForResult(result, Style, options.Width, options.Height);
+                }
+                finally
+                {
+                    LongCall.Say(log, "TestsImageForResult", on, log.ElapsedSeconds - from, LongCallSeconds);
+                }
             }
 
             using (bitmap)

@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-10-11 The loop, turn 6, F143 the harvest answers between rows, attempt 2 of two, written by the lead
+
+Bader's order of 2026-10-11 headed 1A04PK IS FROZEN, item 4. Branch fix-F143 off main d7d7c01.
+
+What was done:
+- The frozen run was read at 16:08 with nothing closed, runs\06\item1-C04\diag-1625: busy, 163 s of
+  processor in 120 s, 6.1 GB private and 34.8 GB free, every window hung, no dialog. The time sat in the
+  harvest of one test, 5817 s for 1556 clashes after a clash call of 0.3 s, and the harvest never let the
+  window pump between rows
+- The harvest now pumps and writes a PROGRESS line at most every 30 s between rows, items under a group in a
+  merge and pictures that waited for a merge, and a TestsRunTest or TestsImageForResult of 30 s or more is
+  named on a CALL line with its .tsv row. StepProgress is the one rule ViewsProgress reads, the VIEWS line
+  every 30 s
+- Attempt 2 answered the reviewer's eight points and the breaker's four
+- Proved here: Core tests 2848 passed before and 2862 passed, 0 failed, 0 skipped after. The solution builds
+  with 0 warnings and 0 errors
+
+What remains: the fast checks on Navisworks, steps 634 to 638.
+
+Known bugs: rows F143-R1 and F143-R2.
+
+What comes next: the fast checks, then the speed fix of the harvest's cost per row.
+
 ## 2026-10-11 The loop, turn 6, F142 the life check, attempt 2 of two, written by the lead
 
 Bader's order of 2026-10-11 headed 1A04PK IS FROZEN, item 3, with the freeze of Q143 on the loop's own
