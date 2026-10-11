@@ -441,6 +441,37 @@ well as to pass.
   nothing changes for it. The status guard, `StatusesThisToolMayMoveFrom`, is kept. No handle
   is held across `TestsEditDisplayName`, `TestsRunTest` or any mutator, and every wrapper is
   disposed. The mirror rule's ending is `ClashRunner.Mirrors`, a `MirrorSettings` at its default
+- THE PICKED NWFS RUN THE OPEN FILE RUN'S ROUTE, F129, Bader's request 4 under Q112, and
+  every rule and every word is Core's, core.md, THE PICKED NWFS. Read off the code on
+  2026-10-08 before anything was built: the scanned run reaches an NWF only through Decide,
+  which compares its file list against a scan, and the open file run already runs an NWF where
+  it sits with no scan and no Decide, through FinishTheGroup, the tail both share. So
+  FederationEngine.RunOpenDocument and RunPickedNwfs both run each file through ONE method,
+  RunAnOpenFile, and nothing of that route is copied: the check by OpenDocumentJob.CanRun
+  before any open, the report folder, the OPEN lines, the census, Decision Open, nothing
+  appended and nothing cleared, the tests of the XML where one is picked and otherwise the
+  tests saved inside, the workbook, the NWD, the NWF looked at once more, the GROUP lines and
+  the PICKED NWF or OPEN FILE block. For a picked NWF the one difference is the open,
+  OpenThePickedNwf, timed as DECIDE as the weekly run's open is, the one step the census lets
+  move every count, which an open does, through
+  OpenAndWaitForTheModels, the one reader of an NWF, with no clear before it, since the open
+  replaces the document as it does for the preview and the probe. One that will not open, or
+  opens and reports no models for the whole wait, stops its group FAILED with Core's reason and
+  nothing is run on it, F74, and its GROUP finished line is labelled off that by
+  RunPath.ForAnOpenFile, Stopped for one that read empty, never Weekly run, the DECIDE phrase
+  NwfPick.DecidePhrase. The run stops after a group as the scanned run stops, through the
+  one StopsTheRunAfter, and the gaps line, the list for the modellers, the timing beside size
+  and each file's block are written once after the last file, WriteTheEndOfAnOpenFileRun. The
+  window, OnRunPickedNwfs, reads the run settings first, refuses a tolerance that is not one, a
+  pick Core refuses and two NWFs writing one file before anything is opened, asks before the
+  open document goes, marks RUN started and finished, writes RUN SETTINGS with Core's lines and
+  the scanned run's own choices through the one SayTheRunsChoices, reads the clash file through
+  the open file run's ReadTheXmlForAnOpenFileRun, writes the lines across the run through the
+  one SayWhatAnOpenFileRunAddedUp and SETS ACROSS THE RUN, and RESULT with Core's line, the
+  second copy of the log going to the folder picked or the picked file's folder. The box and
+  its three buttons sit in their own row on the Source step under the NWC folder, the label and
+  grey line set off Core in the constructor. What a run of it reads on Navisworks is UNKNOWN
+  until the proof steps of steps\03_bader_next.md run
 - SINCE F114 A VIEW IS PER CLASH TEST, which replaces F85's viewpoint per clash, which had
   reversed what this rule said before it, that no clash is ever saved as a viewpoint.
   Bader's Q114: the thing a person presses is a test's open clashes framed together in the
@@ -677,6 +708,24 @@ well as to pass.
   group keeps its own result. The SETS line says which text the sets look for off
   `GenericModelsPlan.LooksFor`, the stem of the NWC's name for a model whose source name was
   not read, which the plan also notes by name
+- THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
+  core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
+  stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and
+  Shift only widened the row selection, turn5\measure-shift.md. Its CheckBox is bound TwoWay
+  to Include and raises Click into `OnRunBoxClicked`, which reads Keyboard.Modifiers at that
+  click, hands `ShiftRange.Of` the rows of `GroupsGrid.Items`, the shown order, sets every row
+  it hands back through Include, keeps the row clicked and its state as the anchor and calls
+  `RefreshOutputsSummary` once. The column is read only so the grid begins no edit that would
+  swap the box out under the click, and its SortMemberPath is Include so it sorts as before.
+  The anchor is the window's and `Regroup` drops it, since every row is made again there. A
+  plain click is meant to flip the box on the one click, where the stock column, read off its
+  IL and never clicked, took a click to select the row before one that flipped it. Whether
+  the template's box flips on the first click in Navisworks is UNKNOWN until step 546 of
+  steps\03_bader_next.md. The grey line under the list, x:Name RunRangeHelp, is set
+  off `ShiftRange.HelpLine` in the constructor. The box has no x:Name and no label, so it is
+  not one of the sixteen tick boxes counted below. The window driver cannot carry Shift
+  without real input, turn5\measure-shift-driver-result.md, so its proof is numbered steps in
+  steps\03_bader_next.md
 
 ## What a tick box says
 
