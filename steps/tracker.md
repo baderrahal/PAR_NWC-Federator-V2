@@ -2,7 +2,7 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 533 rows: open 197, in progress 29, in review 6, merged 265, proven by a run 27, waiting for Bader 3, dropped 6
+- By status, of 533 rows: open 197, in progress 29, in review 3, merged 268, proven by a run 27, waiting for Bader 3, dropped 6
 - By wave: 1 19, 2a 62, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 23, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 77, outside the waves 2, right after F133 merges 6
 - In progress now: F109 install, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, and 12 FR items
 - Waits for Bader, 3 rows: step 228-233, F114-K29, F109-R1
@@ -218,11 +218,11 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-055 | tsv files never pruned | F119 | broken feature | merged | 148 | none | 2026-10-07 |
 | FR-056 | live line slower compares one test with whole group | F119 | broken feature | merged | 148 | none | 2026-10-07 |
 | FR-057 | run log write has no try | F119 | loud failure | merged | 148 the listener half, 169 the disk half | none | 2026-10-08 |
-| FR-179 | shift range tick in the group list | F130 | Bader's request | in review | UNKNOWN | none | 2026-10-11 |
+| FR-179 | shift range tick in the group list | F130 | Bader's request | merged | 192 | none | 2026-10-11 |
 | FR-189 | nwd listed as written when its publish failed | F119 | silent wrong number | open | none | none | 2026-10-05 |
 | F119 | run log and RESULT | F119 | fix | in progress | 148 nine items, 168, 169 and 179 merged, the rest on the laptop | none | 2026-10-08 |
-| F130 | the Shift range in the group list | F130 | fix | in review | UNKNOWN | none | 2026-10-11 |
-| Q112-5 | Shift range tick in the group list (FR-179) | F130 | Bader's request | in review | UNKNOWN | none | 2026-10-11 |
+| F130 | the Shift range in the group list | F130 | fix | merged | 192 | none | 2026-10-11 |
+| Q112-5 | Shift range tick in the group list (FR-179) | F130 | Bader's request | merged | 192 | none | 2026-10-11 |
 | F130-R1 | a person who arrows onto the Run cell and presses Space no longer toggles it since the column is read only, the box itself still taking Space, the reviewer's point, UNKNOWN whether anyone ticks that way | F130 | register row | open | none | none | 2026-10-11 |
 
 ## Wave 4

@@ -177,7 +177,7 @@ FR-175,no sleep and keep awake,none,none,Bader's request,merged,"99, records onl
 FR-176,coverage of the clash xml,F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop",none,2026-10-08
 FR-177,generic models counted and a set per model,F128,2b,Bader's request,merged,"171 and 186",none,2026-10-08
 FR-178,start from an existing nwf,F129,3a,Bader's request,in review,"none, branch fix-F129 at 9056504",none,2026-10-08
-FR-179,shift range tick in the group list,F130,3b,Bader's request,in review,UNKNOWN,none,2026-10-11
+FR-179,shift range tick in the group list,F130,3b,Bader's request,merged,192,none,2026-10-11
 FR-189,nwd listed as written when its publish failed,F119,3b,silent wrong number,open,none,none,2026-10-05
 FR-180,team map beside the picked xml,F131,2b,Bader's decision,merged,135,none,2026-10-07
 FR-181,mechanical sets miss hv pl fp models,F131,2b,Bader's decision,in progress,"135 merged for F131, the COVERAGE block and the form wait for F127",none,2026-10-07
@@ -326,7 +326,7 @@ F126,the window driver unticks a tick box by its AutomationId,F126,outside the w
 F127,coverage of the clash XML,F127,2a,fix,in progress,"145 the Core steps 1 to 3, 153 the Coverage sheet, 167 the readers' Core points and 176 the counted words merged, the add-in half on the laptop",none,2026-10-08
 F128,generic models,F128,2b,fix,merged,"171 the Core part by lane B and 186 the probe and the add-in part",none,2026-10-08
 F129,start from an existing NWF,F129,3a,fix,in review,"none, branch fix-F129 at 9056504, attempt 2 built on its reviewer's one fault, its second reading next",none,2026-10-08
-F130,the Shift range in the group list,F130,3b,fix,in review,UNKNOWN,none,2026-10-11
+F130,the Shift range in the group list,F130,3b,fix,merged,192,none,2026-10-11
 F131,teams,F131,2b,fix,merged,135,none,2026-10-07
 F132,mirrored tests,F132,2a,fix,merged,177,none,2026-10-08
 F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-06
@@ -347,7 +347,7 @@ Q112-1,no sleep and keep awake (FR-175),none,none,Bader's request,merged,"99, re
 Q112-2,coverage of the clash XML (FR-176),F127,2a,Bader's request,in progress,"145 the Core steps 1 to 3, 153 the Coverage sheet and 167 the readers' Core points merged, the add-in half on the laptop",none,2026-10-08
 Q112-3,generic models counted and a set per model (FR-177),F128,2b,Bader's request,merged,"171 and 186",none,2026-10-08
 Q112-4,start from an existing NWF (FR-178),F129,3a,Bader's request,in review,"none, branch fix-F129 at 9056504",none,2026-10-08
-Q112-5,Shift range tick in the group list (FR-179),F130,3b,Bader's request,in review,UNKNOWN,none,2026-10-11
+Q112-5,Shift range tick in the group list (FR-179),F130,3b,Bader's request,merged,192,none,2026-10-11
 Q114,one view per clash test by team (FR-180 to FR-188),"F131, F132, F114",2a and 2b,Bader's request,merged,"135 for F131, 177 for F132, 189 for F114",none,2026-10-08
 Q129,a clean tracker and a code health gate (FR-191 to FR-193),"F133, F134, F135",beside the waves,Bader's request,in progress,"122 merged for F133, F134 and F135 not merged",none,2026-10-06
 Q130,stop the C02 weekly run and no viewpoints in test runs until F114 merges (FR-194),F136,before any test run,Bader's request,merged,"117 for F136, 116 records the stop",none,2026-10-05
