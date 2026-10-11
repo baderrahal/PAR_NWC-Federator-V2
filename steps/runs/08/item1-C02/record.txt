@@ -1,0 +1,214 @@
+RUN RECORD, run.ps1 sha256 736E2DC284A2793DB4D8B6ACAA536A3CA162FB6009CAF20519E209B06E23ACF2, nw-guard.ps1 sha256 8CAC3B67DF49FF8AFD3556E7B270DD8C0895E39CB8F2CB2B2CE83C18620F076E, drive-window-run.ps1 sha256 4BB985434F14C8AECC84BDB370028F3179BB6EC31A7BA40DDDEC0684887A2070, -Mode Run -Set 08 -Item 1 -Folder C02 -Xml exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml -Untick SkipClashOffCoordinates -Stamp cdf8d4ed, the window run
+  the run folder "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\item1-C02", every line from here is also in its record.txt
+  the driver unticks, by AutomationId, before it presses anything: SkipClashOffCoordinates. Each is read, toggled only when it reads On, read back Off, and read Off again before Run or Run the open file is pressed, and any other reading stops the driver, UNTICK, with neither pressed. Every other tick box is left as the window opens it
+  the watchdog started, constructor deadline 300 s, ceiling 43200 s from adoption
+---- check 13, his logs folder ----
+  45 files listed into logs-before.txt, 2 copied into logs-backup and read back
+---- check 13b, team-map.txt, the team map the tool keeps between runs, Q123 ----
+  team-map.txt is not there before the start, so one the run writes is taken out again after it
+---- check 14, his AutoSave folder ----
+  199 files listed into autosave-before.txt, 0 copied into autosave-backup and read back. Nothing is written into his AutoSave folder before the put back at the end, Q86
+---- check 15, the settings backup ----
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\item1-C02\settings\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123148 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 199 AutoSave files listed and not copied
+  the tool's own logs folder listed: 45 files
+---- M5 before, the write times of the keys under HKCU\Software\Autodesk ----
+  6670 keys read
+---- check 17, keep awake ----
+  SetThreadExecutionState(ES_CONTINUOUS, ES_SYSTEM_REQUIRED, ES_DISPLAY_REQUIRED) returned 0x80000000 on native thread 40928
+---- check 18, the last read before the constructor ----
+  no start this probe could not prove is recorded
+  no Roamer is running
+  the session reads unlocked
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+==== THE START ====
+  21:40:55.028  calling new NavisworksApplication() on the main thread
+  the constructor RETURNED after 74.79 s
+  Roamer processes new since step 2: 1
+    pid 46084, started 21:40:55.089, parent 1976 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 46084, and the start ticks read again through it are equal
+  ADOPTED, pid 46084, start ticks UTC 639273408550894200, held through its handle
+  Visible set True, read back True
+---- the driver and the plugin call ----
+  the driver started as pid 45760, held through its handle: powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File "%LOCALAPPDATA%\NwcFederatorLoop\wt-main2\tools\probes\drive-window-run.ps1" -OwnerPid 46084 -OwnerStartTicks 639273408550894200 -Set 08 -Stamp cdf8d4ed -Notes "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\item1-C02\driver.txt" -Source "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\NWC\C02" -Nwf "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\NWF\C02" -Nwd "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\NWD\C02" -Excel "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\Clash Report\C02" -Xml "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml" -Untick SkipClashOffCoordinates
+  21:42:18.385  calling ExecuteAddInPlugin(ParsonsNwcFederator.PARS, no parameters) on the main thread. AddPluginAssembly is never called, so the installed build runs
+21:42:18  t+83s  MONITOR started, a pass every 15 s, hang limit 300 s with under 20 s of processor time in it, fixed hold 0 s
+21:42:18  t+84s  the tool's log is found, run-20261011-214218.log, with its .tsv run-20261011-214218.tsv, both named in toollog-name.txt. Its SESSION names cdf8d4ed. Both clocks of the hang rule start now
+21:42:18  t+84s  LOG 21:42:18.423  +0000.016s  RETAIN   keeping 30 logs, deleted 1, could not delete 0, and 0 .tsv beside them
+21:42:18  t+84s  LOG SESSION
+21:42:18  t+84s  LOG 21:42:18.433  +0000.025s  plugin version : 1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41
+21:42:18  t+84s  LOG 21:42:18.433  +0000.026s  open document  : none, the document is clear
+21:42:18  t+84s  SAMPLE processor 81.000 s, the log 2313 bytes
+21:42:18  t+84s  LIFE  the tool's window answers, Windows counts it hung no, processor UNKNOWN since the last LIFE line, private 609 MB, working set 519 MB, the machine's free physical 36419 MB of 65221 MB and free commit 40252 MB, the tool's last step: 21:42:18.556 +0000.150s TEAMS no clash XML was picked and no team map is kept from a run with one. Every discipline code is a team of its own and no pair carrie
+21:42:18  t+84s  WINDOW: class HwndWrapper[Roamer.exe;;7bfb21db-777b-4ef1-9ff5-1eda207c0358], caption "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]", owner 11604498, class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Untitled - Autodesk Navisworks Manage 2025", visible True, enabled False, process the adopted one
+21:42:18  t+84s  MAIN: class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "Untitled - Autodesk Navisworks Manage 2025", owner 9311938, class WindowsForms10.Window.0.app.0.27a2811_r7_ad1, caption "", visible False, enabled True, process the adopted one
+21:42:18  t+84s  SESSION LOCK unlocked
+21:42:18  t+84s  the tool's window is open, caption "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]"
+21:42:33  t+99s  SAMPLE processor 82.703 s, 1.703 s since the last pass, the log 2539 bytes
+21:42:48  t+114s  LOG RUN SETTINGS
+21:42:48  t+114s  the tool's log shows a run has started, so from here only its RESULT block ends the run through WM_CLOSE
+21:42:48  t+114s  LOG 21:42:38.565  +0020.158s  groups built      : 1
+21:42:48  t+114s  LOG 21:42:38.566  +0020.159s  grouping         : One file per building
+21:42:48  t+114s  LOG GROUPS
+21:42:48  t+114s  LOG 21:42:38.579  +0020.172s  run       1A02MM      4 files  1104-PAR-1A02MM-ZZZ-BM-MOD-000001  [AR, EL, ME, ST]  First run
+21:42:48  t+114s  LOG 21:42:38.588  +0020.181s  RUN      started, 1 group
+21:42:48  t+114s  LOG 21:42:38.737  +0020.331s  RUN      the Clash step picked %LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+21:42:48  t+114s  LOG 21:42:38.740  +0020.332s  RUN      it holds 61 sets and 1830 tests
+21:42:48  t+114s  LOG 21:42:38.771  +0020.364s  RUN      workbooks go in %LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\Clash Report\C02
+21:42:48  t+114s  LOG 21:42:38.771  +0020.365s  RUN      the clash XML is off
+21:42:48  t+114s  LOG 21:42:38.857  +0020.450s  GROUP    started  1A02MM  4 files
+21:42:48  t+114s  SAMPLE processor 113.469 s, 30.766 s since the last pass, the log 90733 bytes
+21:42:49  t+115s  LIFE  the tool's window answers, Windows counts it hung no, processor 32.5 s since the last LIFE line, private 1105 MB, working set 1079 MB, the machine's free physical 35657 MB of 65221 MB and free commit 39545 MB, the tool's last step: 21:42:43.874 +0025.466s STEP IMAGES entered again. Every further visit in this group is counted, not written out
+21:42:49  t+115s  MAIN: class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025", owner 9311938, class WindowsForms10.Window.0.app.0.27a2811_r7_ad1, caption "", visible False, enabled True, process the adopted one
+21:42:49  t+115s  DRIVER exited 0, PRESSED, its last line: 21:42:39.570  DRIVER EXIT 0 PRESSED: Run, and OK on the confirm, whose texts name no path outside the loop folder. The confirm read gone after OK
+21:43:03  t+129s  SAMPLE processor 142.188 s, 28.719 s since the last pass, the log 90733 bytes
+21:43:18  t+144s  SAMPLE processor 179.453 s, 37.266 s since the last pass, the log 90854 bytes
+21:43:19  t+144s  LIFE  the tool's window answers, Windows counts it hung no, processor 66.0 s since the last LIFE line, private 3037 MB, working set 2984 MB, the machine's free physical 33614 MB of 65221 MB and free commit 37449 MB, the tool's last step: 21:43:16.643 +0058.236s PROGRESS HARVEST BLD-AR-Curtain Mullions-vs-BLD-AR-Windows row 633 of 2568, 30s into the step
+21:43:19  t+144s  SESSION LOCK unlocked
+21:43:19  t+144s  HEARTBEAT the log 90854 bytes, its last line "21:43:16.643  +0058.236s  PROGRESS HARVEST BLD-AR-Curtain Mullions-vs-BLD-AR-Windows row 633 of 2568, 30s into the step", processor 179.453 s, the log still for 0 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 21:42:40.651  t+116.1s  Roamer 46084 visible top level windows: [HwndWrapper[Roamer.exe;;7bfb21db-777b-4ef1-9ff5-1eda207c0358]] "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+21:43:33  t+159s  SAMPLE processor 231.406 s, 51.953 s since the last pass, the log 90854 bytes
+21:43:49  t+174s  SAMPLE processor 298.672 s, 67.266 s since the last pass, the log 90976 bytes
+21:43:49  t+174s  LIFE  the tool's window answers, Windows counts it hung no, processor 119.2 s since the last LIFE line, private 4656 MB, working set 4602 MB, the machine's free physical 32411 MB of 65221 MB and free commit 35838 MB, the tool's last step: 21:43:46.655 +0088.248s PROGRESS HARVEST BLD-AR-Curtain Mullions-vs-BLD-AR-Windows row 1163 of 2568, 60s into the step
+21:44:04  t+189s  SAMPLE processor 375.344 s, 76.672 s since the last pass, the log 90976 bytes
+21:44:19  t+204s  SAMPLE processor 440.938 s, 65.594 s since the last pass, the log 91098 bytes
+21:44:20  t+205s  LIFE  the tool's window answers, Windows counts it hung no, processor 142.3 s since the last LIFE line, private 6172 MB, working set 6104 MB, the machine's free physical 31292 MB of 65221 MB and free commit 34747 MB, the tool's last step: 21:44:16.658 +0118.250s PROGRESS HARVEST BLD-AR-Curtain Mullions-vs-BLD-AR-Windows row 1660 of 2568, 90s into the step
+21:44:20  t+205s  SESSION LOCK unlocked
+21:44:20  t+205s  HEARTBEAT the log 91098 bytes, growth 244 bytes, its last line "21:44:16.658  +0118.250s  PROGRESS HARVEST BLD-AR-Curtain Mullions-vs-BLD-AR-Windows row 1660 of 2568, 90s into the step", processor 440.938 s, growth 261.484 s, the log still for 0 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 21:42:40.651  t+116.1s  Roamer 46084 visible top level windows: [HwndWrapper[Roamer.exe;;7bfb21db-777b-4ef1-9ff5-1eda207c0358]] "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+21:44:34  t+219s  SAMPLE processor 524.328 s, 83.391 s since the last pass, the log 91098 bytes
+21:44:49  t+235s  SAMPLE processor 634.531 s, 110.203 s since the last pass, the log 91223 bytes
+21:44:50  t+235s  LIFE  the tool's window answers, Windows counts it hung no, processor 193.6 s since the last LIFE line, private 7421 MB, working set 7369 MB, the machine's free physical 29960 MB of 65221 MB and free commit 33455 MB, the tool's last step: 21:44:46.747 +0148.340s PROGRESS HARVEST BLD-AR-Curtain Mullions-vs-BLD-AR-Windows row 2090 of 2568, 120.1s into the step
+21:45:04  t+250s  SAMPLE processor 729.219 s, 94.688 s since the last pass, the log 91223 bytes
+21:45:19  t+265s  SAMPLE processor 797.719 s, 68.500 s since the last pass, the log 91719 bytes
+21:45:20  t+265s  LIFE  the tool's window answers, Windows counts it hung no, processor 163.2 s since the last LIFE line, private 8782 MB, working set 8718 MB, the machine's free physical 28446 MB of 65221 MB and free commit 31967 MB, the tool's last step: 21:45:16.770 +0178.362s PROGRESS HARVEST BLD-AR-Curtain Mullions-vs-BLD-AR-Windows row 2529 of 2568, 150.1s into the step
+21:45:20  t+265s  SESSION LOCK unlocked
+21:45:20  t+265s  HEARTBEAT the log 91719 bytes, growth 621 bytes, its last line "21:45:18.628  +0180.221s  CLASH    clashes BLD-AR-Doors-vs-BLD-AR-Floors  items 10 v 3  New 1  0.0s", processor 797.719 s, growth 356.781 s, the log still for 0 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 21:42:40.651  t+116.1s  Roamer 46084 visible top level windows: [HwndWrapper[Roamer.exe;;7bfb21db-777b-4ef1-9ff5-1eda207c0358]] "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+21:45:34  t+280s  SAMPLE processor 844.703 s, 46.984 s since the last pass, the log 92722 bytes
+21:45:50  t+295s  SAMPLE processor 869.109 s, 24.406 s since the last pass, the log 93207 bytes
+21:45:50  t+295s  LIFE  the tool's window answers, Windows counts it hung no, processor 71.4 s since the last LIFE line, private 9240 MB, working set 9176 MB, the machine's free physical 28113 MB of 65221 MB and free commit 31629 MB, the tool's last step: 21:45:16.770 +0178.362s PROGRESS HARVEST BLD-AR-Curtain Mullions-vs-BLD-AR-Windows row 2529 of 2568, 150.1s into the step
+21:46:05  t+310s  SAMPLE processor 919.047 s, 49.938 s since the last pass, the log 93595 bytes
+21:46:20  t+325s  SAMPLE processor 936.734 s, 17.688 s since the last pass, the log 94177 bytes
+21:46:20  t+325s  LIFE  the tool's window answers, Windows counts it hung no, processor 67.6 s since the last LIFE line, private 9636 MB, working set 9576 MB, the machine's free physical 27708 MB of 65221 MB and free commit 31240 MB, the tool's last step: 21:45:16.770 +0178.362s PROGRESS HARVEST BLD-AR-Curtain Mullions-vs-BLD-AR-Windows row 2529 of 2568, 150.1s into the step
+21:46:20  t+325s  SESSION LOCK unlocked
+21:46:20  t+325s  HEARTBEAT the log 94177 bytes, growth 2458 bytes, its last line "21:46:19.800  +0241.392s  CLASH    475 of 528 tests, 475 run, 1302 skipped, 2922 clashes so far", processor 936.734 s, growth 139.016 s, the log still for 0 s against 300, and the processor used an amount not known yet, the samples do not reach back that far, in the last 300 s against 20, the watchdog's last line: 21:42:40.651  t+116.1s  Roamer 46084 visible top level windows: [HwndWrapper[Roamer.exe;;7bfb21db-777b-4ef1-9ff5-1eda207c0358]] "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+21:46:35  t+340s  SAMPLE processor 950.828 s, 14.094 s since the last pass, the log 135598 bytes
+21:46:50  t+355s  SAMPLE processor 965.984 s, 15.156 s since the last pass, the log 135598 bytes
+21:46:50  t+356s  LIFE  the tool's window NOT ANSWERING at every reading over 2 s, Windows counts it hung yes, processor 29.3 s since the last LIFE line, private 9679 MB, working set 9606 MB, the machine's free physical 27567 MB of 65221 MB and free commit 31116 MB, the tool's last step: 21:46:24.883 +0246.475s STEP RENUMBER started
+21:47:05  t+370s  SAMPLE processor 980.734 s, 14.750 s since the last pass, the log 136744 bytes
+21:47:20  t+385s  SAMPLE processor 996.781 s, 16.047 s since the last pass, the log 155002 bytes
+21:47:22  t+388s  LIFE  the tool's window NOT ANSWERING at every reading over 32 s, Windows counts it hung no, processor 30.8 s since the last LIFE line, private 9723 MB, working set 9644 MB, the machine's free physical 27385 MB of 65221 MB and free commit 30903 MB, the tool's last step: 21:47:20.123 +0301.715s STEP WORKBOOK started
+21:47:22  t+388s  SESSION LOCK unlocked
+21:47:22  t+388s  HEARTBEAT the log 155002 bytes, growth 60825 bytes, its last line "21:47:20.460  +0302.051s  BUNDLE   System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyTo", processor 996.781 s, growth 60.047 s, the log still for 0 s against 300, and the processor used 915.781 s in the last 300 s against 20, the watchdog's last line: 21:47:20.597  t+396.1s  Roamer 46084 visible top level windows: [HwndWrapper[Roamer.exe;;7bfb21db-777b-4ef1-9ff5-1eda207c0358]] "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+21:47:35  t+401s  LOG 21:47:31.325  +0312.917s  GROUP    finished 1A02MM  FAILED  292.444s  First run  1 model(s) were exported on Revit's internal origin and not on a shared site, which puts them in a different coordinate system from the rest of the group: ST  1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc
+21:47:35  t+401s  LOG 21:47:31.385  +0312.977s  group total              292.444s
+21:47:35  t+401s  LOG 21:47:31.479  +0313.072s  groups in this run : 1
+21:47:35  t+401s  LOG 21:47:31.602  +0313.194s  RUN      finished
+21:47:35  t+401s  LOG 21:47:31.649  +0313.241s  session                 : 5 minutes 13 seconds, 313.2 seconds
+21:47:35  t+401s  LOG 21:47:31.674  +0313.266s  run total                293.013s
+21:47:35  t+401s  LOG RESULT
+21:47:35  t+401s  LOG 21:47:31.809  +0313.401s  groups done    : 0
+21:47:35  t+401s  LOG 21:47:31.811  +0313.403s  groups partial : 0
+21:47:35  t+401s  LOG 21:47:31.814  +0313.405s  groups failed  : 1
+21:47:35  t+401s  LOG 21:47:31.926  +0313.518s  run time       : 293.013s
+21:47:35  t+401s  LOG 21:47:31.952  +0313.544s  COPY     written  %LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\NWF\C02\run-20261011-214218.log  189,226 bytes
+21:47:35  t+401s  SAMPLE processor 1008.328 s, 11.547 s since the last pass, the log 189381 bytes
+21:47:50  t+416s  SAMPLE processor 1008.453 s, 0.125 s since the last pass, the log 189381 bytes
+21:47:50  t+416s  LIFE the stretch not answering that began at 21:46:50 ended, not answering at every reading over 32 s, it answers again, in the tool's step: 21:46:24.883 +0246.475s STEP RENUMBER started
+21:47:50  t+416s  LIFE  the tool's window answers, Windows counts it hung no, processor 11.7 s since the last LIFE line, private 9777 MB, working set 9692 MB, the machine's free physical 27617 MB of 65221 MB and free commit 31120 MB, the tool's last step: 21:47:31.314 +0312.906s STEP IMAGES 2931 visits, 165.173s in total
+21:47:50  t+416s  WM_CLOSE posted to the tool's window 3870932, caption "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]", PostMessage returned True
+21:47:50  t+416s  WM_CLOSE was posted because the tool's log holds its RESULT block and a COPY line after it and has been quiet for 15 s. The window has 120 s to close
+  ExecuteAddInPlugin RETURNED 0, called 21:42:18.385, returned 21:47:50.965, after 332.58 s. Nothing is judged by what it returned
+21:48:05  t+431s  LOG 21:47:50.962  +0332.554s  Window closed.
+21:48:05  t+431s  SAMPLE processor 1008.750 s, 0.297 s since the last pass, the log 189423 bytes
+21:48:05  t+431s  AGAIN, its kind or state changed. It read MAIN with the window itself enabled False and its owner enabled True when last written, and reads MAIN with the window itself enabled True and its owner enabled True now. MAIN: class WindowsForms10.Window.8.app.0.27a2811_r7_ad1, caption "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025", owner 9311938, class WindowsForms10.Window.0.app.0.27a2811_r7_ad1, caption "", visible False, enabled True, process the adopted one
+21:48:05  t+431s  the tool's window is closed, Window closed. is in the tool's log, 15 s after WM_CLOSE
+21:48:05  t+431s  LIFE SUMMARY: 12 readings, 1 stretch(es) not answering, the longest not answering at every reading over 32 s, in the tool's step: 21:46:24.883 +0246.475s STEP RENUMBER started, peak working set 9791 MB as the process counts it, private at most 9777 MB of the readings, one every 30 s
+21:48:05  t+431s  MONITOR stopped
+==== THE RUN ENDED: CLOSED ====
+  21:48:06.287  calling Dispose()
+  Dispose returned after 0.63 s
+  the adopted process reads gone 8.5 s after Dispose returned
+==== FINALLY ====
+  the driver exited 0, PRESSED, its last line: 21:42:39.570  DRIVER EXIT 0 PRESSED: Run, and OK on the confirm, whose texts name no path outside the loop folder. The confirm read gone after OK
+---- M5, what changed outside the loop folder while the start ran, by any program, read before the put back ----
+  keys under HKCU\Software\Autodesk whose write time changed, appeared or went: 21. Files listed in m5.txt of the run folder, which stays out of the evidence until it is masked
+  %APPDATA%\Autodesk: 9 files written at or after the call
+  %APPDATA%\Microsoft\Windows\Recent: 0 files written at or after the call
+  %LOCALAPPDATA%\Autodesk: 10 files written at or after the call
+  %PROGRAMDATA%\Autodesk: 7 files written at or after the call
+  %TEMP%: 1 files written at or after the call
+---- the watchdog's end ----
+  watchdog passes 1064, longest pass 7452 ms, longest gap 7962 ms, error lines 0, early fails 0, runspace errors 0, lines it could not write 0, forced: no
+---- starts the loop could not prove ----
+  none
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the AutoSave compare reads autosave-before.txt back, 199 files
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40636046192989  new QWord 40640432128789
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 93  new DWord 94
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 152  new DWord 153
+  22.0\CER\22.5.1433.58  uptime  old QWord 2353587343750  new QWord 2363740937500
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,969"  new String "0,144,85,1632,969"
+  22.0\PluginOptions  DefaultPlugin  old String "LcOpNwcPlugin"  new String "lcodpnwf"
+  22.0\Recent File List\1  DisplayName  old String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134290938074132508  new QWord 134362180390613478
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134290938039044021  new QWord 134290938046297945
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc, sha1 B1CCD34DBC72>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>
+  22.0\Recent File List\2  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\2  LastOpened  old QWord 134290938070616743  new QWord 134362177592711639
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\3  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"  new String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"
+  22.0\Recent File List\3  LastOpened  old QWord 134290938066994697  new QWord 134290938074132508
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>  new String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>
+  22.0\Recent File List\4  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"  new String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134290938062820552  new QWord 134290938070616743
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>
+  22.0\Recent File List\5  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134290938058967255  new QWord 134290938066994697
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>
+  22.0\Recent File List\6  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134290938054115696  new QWord 134290938062820552
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>
+  22.0\Recent File List\7  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134290938049614120  new QWord 134290938058967255
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>
+  22.0\Recent File List\8  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134290938046297945  new QWord 134290938054115696
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>
+  22.0\Recent File List\9  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134290938042577701  new QWord 134290938049614120
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>
+  registry: 37 values or keys differ from the backup
+  registry: 37 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 71384 bytes, sha256 580D6E106497, written 2026-10-11 21:03:33  new 72642 bytes, sha256 2A56452EFC52, written 2026-10-11 21:48:06
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 A553406E169E, written 2026-10-11 21:03:33  new 40079 bytes, sha256 366D01A23906, written 2026-10-11 21:48:06
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+---- his AutoSave folder, Q86 ----
+  AutoSave: 0 put back as they were and read back, 0 not as they were before the run
+---- team-map.txt, the team map the tool keeps between runs, Q123 ----
+  team-map.txt ADDED by the run, removed, read back gone
+  team map: 1 put back as it was and read back, 0 not as it was before the run
+---- his logs folder, after ----
+    GONE run-20260901-223042.log, logs-backup holds it as it was before the run, the tool's own pruning of its oldest logs, Q82
+    ADDED run-20261011-214218.log, the loop's own, named in toollog-name.txt for the close of the loop, Q82
+    ADDED run-20261011-214218.tsv, the loop's own, named in toollog-name.txt for the close of the loop, Q82
+  his logs folder after the window run, Q82: 3 differences, LOST, a file of his gone or changed with no copy from before the run in logs-backup: 0
+---- the tool's log, the outputs and the workbooks ----
+  the tool's log on disk shows the run RAN: its RESULT block, its SESSION naming cdf8d4ed, and its GROUPS block reading no group unticked
+  the tool's log, 1386 lines, copied into the run folder's toollog with its FOLDERS REMEMBERED block masked, 5 lines, Q87, its TEAMS KEPT block masked, 1 lines, Q123, and every other line naming his logs folder or the kept team map masked, 4 lines, F131
+  the tool's .tsv copied into the run folder's toollog, 810314 bytes
+  outputs.txt lists 2939 files, 2 of them workbooks
+  read-workbook.ps1 on Clash Report\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001 Internal.xlsx ran as pid 3472 and exited 0, its read-out is workbooks\Clash_Report_C02_1104-PAR-1A02MM-ZZZ-BM-MOD-000001_Internal.xlsx.txt
+  read-workbook.ps1 on Clash Report\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.xlsx ran as pid 32220 and exited 0, its read-out is workbooks\Clash_Report_C02_1104-PAR-1A02MM-ZZZ-BM-MOD-000001.xlsx.txt
+  keep awake OFF returned 0x80000003 on native thread 40928. ON was thread 40928. Same thread True, returned 0x80000003 True
+  lines that could not be written to record.txt: 0, by the monitor: 0
+VERDICT: RAN, item 1 through the window, the log's RESULT block read, closed by Dispose, put back
