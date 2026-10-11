@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-11 21:58, last run 08/item1-C02
+STATE OPEN, 2026-10-11 22:39, last run 08/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -20,22 +20,22 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 <!-- the end of the counts -->
 
 ## Now
-- Bader's orders of 11 Oct: 1A04PK IS FROZEN, the life check and the cause fixed, and NO MORE TWO HOUR TEST LOOPS, fast checks on 1A02MM and a cut down 1A04PK, the one full run only when he says
-- F141 DONE: attempt 2 merged as 201, main cdf8d4e installed in place at 21:40, 1A02MM's fast check 08/item1-C02 in 4 min 53 s, 69 of 69 views created with their dim and paint, 7 of 7 hold, 528 of 528 counts agree
-- Set 08's three test cut of 1A04PK measured the pictures, 830.7 s rendering of a group of 884.7 s, Q150 to Bader
-- F145 next: RENUMBER renames every picture with no pump, 39.5 s on 1A02MM and the window 32 s not answering, sets 07 and 08 alike
+- Bader's orders of 11 Oct: 1A04PK IS FROZEN, NO MORE TWO HOUR TEST LOOPS, and Q150 NOT YET A CHOICE, change nothing in the tool until he answers Q150
+- F141 DONE: attempt 2 merged as 201, main cdf8d4e installed in place at 21:40, 1A02MM's fast check 08/item1-C02 in 4 min 53 s, 69 of 69 views created with their dim and paint, 7 of 7 hold
+- Q150 measured, scan.md 5z-zc: a picture 7.76 s today, 1.78 s with only the test's models shown, Shaded changes nothing, 800 by 600 1.70 s and not the export's square. Back to Bader with the folders
+- F145, the renumber answering between pictures, built with 3 Core tests, 2865 passed, parked on fix-F145 with no pull request until he answers
 
 ## Next
-1. F145, the renumber answering between pictures with a PROGRESS line, its Core tests, merged, installed, 1A02MM's fast check
-2. Bader's answer to Q150, then the 50 test cut of 1A04PK with it
+1. Bader's choice on Q150, then that change as its own fix with the fast checks of 1A02MM and the cut down 1A04PK
+2. F145 brought out of its park once he answers, read, merged and proved by 1A02MM's renumber answering
 3. Ask Bader before the one full 1A04PK run. Then F140 prepared, waves 4 and 5
 
 ## Waiting for Bader
-- Q150, the pictures of 1A04PK: a cap per test, smaller pictures, or as they are
+- Q150, the pictures of 1A04PK: only the test's models shown, shaded, 800 by 600, all three, or as they are
 - The team package, F140, made only when he writes make the team package, Q149
 
 ## Blockers and known bugs
-- F145: the window 32 s not answering while RENUMBER renames 2931 pictures on 1A02MM, our own code
+- F145: the window 32 s not answering while RENUMBER renames 2931 pictures on 1A02MM, our own code, parked
 - F143-R2: one render of 4 to 8.6 s a row on 1A04PK, the window answering only between rows
 - F144-R1: the 50 test cut of 1A04PK is hours long while every picture is rendered, Q150
 - T5-R-OLDKEY: his 22.0 key reads an older copy after each restart, the writer UNKNOWN

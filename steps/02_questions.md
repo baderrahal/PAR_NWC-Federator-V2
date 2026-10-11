@@ -777,4 +777,16 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
     The full 1A04PK run waits for your word in the tab in any case, item 4 of the same order.
 
+    Bader, 2026-10-11, his message headed BADER'S ANSWER, 11 OCT 2026, Q150, NOT YET A CHOICE, not a choice of the three above. In his words: No cap. The client needs a picture for every clash. Since 99 percent of a picture's time is inside TestsImageForResult, measure what makes that call faster, on the same 20 clashes of BLD-AR-Walls-vs-BLD-AR-Floors, each against today's 8.0 s a picture: 1. Only the models of the test shown, every other model hidden, before the pictures of that test. 2. Shaded drawing instead of full rendering, on top of 1. 3. A picture size of 800 by 600, on top of 1. 4. All three together. For each, save the 20 pictures in a folder of its own under the run's folder, give the seconds per picture and the total for 1A04PK's 1,556 clashes of that test, and say in one line whether the picture still matches the layout of the Navisworks export. Then put the four back to Bader as Q150 with the numbers and the folders. He looks and chooses. Change nothing in the tool until he answers. Do 1A02MM's 5 minute check of the colour fix first.
+
+    THE FOUR, MEASURED 2026-10-11, docs\history\scan.md 5z-zc. The colour fix check came first, at 21:42, steps\runs\08\item1-C02, F141 proved. Then one probe, tools\probes\PictureSpeed, made the test with the tool's own code on a copy of set 08's NWF of 1A04PK, 1556 clashes as sets 06 and 07 read, and rendered its first 20 rows under each setting, today's first and today's again last. The mean of a picture, its render and its JPEG save, and that times 1556:
+
+    0. Today's, every model shown, 1024 by 1024: 7.76 s a picture, 3 h 21 min. Run again last, 8.00 s, 3 h 27 min
+    1. Only the models of the test shown: 1.78 s a picture, 46 min. MATCHES the export's layout: the same 1024 square, camera, grid label at the bottom left, red and green, and the other nine models' items gone from behind
+    2. Shaded on top of 1: 2.16 s a picture, 56 min. THE SAME PICTURE AS 1: today's pictures are already drawn Shaded with a headlight, read off the view and off each clash's own viewpoint, so there was no full rendering to turn off, and the pictures differ from 1's by 0.01 of 255 a pixel, below the 0.05 between today's run twice. The seconds are 1's within the spread of one setting
+    3. 800 by 600 on top of 1: 1.70 s a picture, 43 min. DOES NOT MATCH: a picture four by three, where all 131 clash pictures of the accepted report are 1024 by 1024
+    4. All three: 2.00 s a picture, 51 min. DOES NOT MATCH, for the reason of 3
+
+    The folders, 20 pictures each with times.csv beside them: %LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261011-222207\pictures\0-today, 1-models, 2-shaded, 3-800x600, 4-all-three and 5-today-again. Which do you want, 1, 2, 3, 4, or today's as it is?
+
     Answer:
