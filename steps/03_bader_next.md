@@ -314,14 +314,14 @@ why step 624 runs a second group.
 627. Look for, on every run above: no group ends FAILED or PARTIAL on account of the coverage, and each group's clash workbook holds ONE sheet, its `WORKBOOK CHECK` block naming no second sheet
 628. Send the log file and the `.tsv` beside it, and say which of steps 616 to 627 did not read as written, with the seconds of the `COVERAGE` step off the `TIMING` block, UNKNOWN until this run
 
-## Proof F141 the framed views, added 2026-10-11
+## Proof F141 the framed views, added 2026-10-11, rewritten for attempt 2
 
-The loop runs these on its own copy, 1A02MM again from a fresh set, after main with F141 is installed in place. They are here so a run on the local machine reads the same.
+The loop runs these on its own copy, 1A02MM again from a fresh set, after main with F141 attempt 2 is installed in place. They are here so a run on the local machine reads the same. Attempt 1 was proved by set 07's run of 1A02MM on main 89082a2, no view threw. That run read all 69 views back with no material override, F141-R1, which attempt 2 takes.
 
-629. Install main with F141 merged, then scan the C02 folder, pick the clash XML, untick Skip clash for models off shared coordinates, leave Make viewpoints ticked, tick 1A02MM alone and press Run
-630. Look for, in the `VIEWS BUILT` block of 1A02MM: no line naming `ObjectDisposedException`, and every view of a test with two clashes or more counted created, where set 06's run on main 4bc4c83 failed all 47 of them
-631. Look for, on the same block: whether the views of one clash still read `it was added without its dimming`. Either way, write down how many do, since that is the measurement for F141-R1
-632. Look for, in the `VIEWS TREE` block: its seven checks, how many hold, and no `FAILED CHECK` naming a framed view
+629. Install main with F141 attempt 2 merged, then scan the C02 folder, pick the clash XML, untick Skip clash for models off shared coordinates, leave Make viewpoints ticked, tick 1A02MM alone and press Run
+630. Look for, in the `VIEWS BUILT` block of 1A02MM: `views created     :` equal to the plan's views, 69 in set 07's run, NO `views that failed` line, and no line naming `ObjectDisposedException` or `Clash Detective gave no camera for its first clash`
+631. Look for, on the same block: no view reading `it was added without its dimming`, where set 07's run read it on all 69
+632. Look for, in the `VIEWS TREE` block: `CHECK 3` and `CHECK 4` each `0 broke it`, where set 07's run read `FAILED CHECK 4` with `the painted items of 69 of 69 views read back off the document`, and the last line `7 of 7 hold`
 633. Send the log file and the `.tsv` beside it, with the `VIEWS` seconds off the `TIMING` block, against 7487.104 s in set 04's run of the same building
 
 ## Proof F143 the harvest answers between rows, added 2026-10-11

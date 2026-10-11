@@ -18,10 +18,11 @@ namespace Federator.Addin.Engine
     ///
     /// THE ORDER, the design's S2, so a run that stops part way leaves the old picture or a
     /// checked new one and never neither: a fresh walk of the tree, walk one over the rows
-    /// of the merged report, the plan, then per view the hide, the dim, the paint, the
-    /// frame, the folders, the record, the mark and the read back, then a fresh walk and
-    /// the inventory over it, the removals it gave, the document put back, and a last
-    /// fresh walk for the VIEWS TREE block and its seven checks.
+    /// of the merged report, the plan, the hidden state read, every view's camera read once,
+    /// then per view the hide, the dim, the paint, the frame of the camera read, the folders,
+    /// the record, the mark and the read back, then a fresh walk and the inventory over it,
+    /// the removals it gave, the document put back, and a last fresh walk for the VIEWS TREE
+    /// block and its seven checks.
     ///
     /// WALK ONE KEEPS F132's SHAPE, attempt 2 of its add-in half: the rows come off the
     /// merged report, ReportClashes.Of, under the test the report holds them under and at
@@ -31,9 +32,10 @@ namespace Federator.Addin.Engine
     /// becomes is a ViewClash: the two items' index paths, plain ints and not handles, the
     /// clash centre, the model each item lives in by its file name, and the size of the
     /// larger service ONLY for a clash whose test's pair carries the size folder, row
-    /// F114-K9, so the teams are read before the walk. The camera is read after the plan,
-    /// for each view's camera clash alone, TestsViewpointForResult on a copy, where F85
-    /// read one per clash.
+    /// F114-K9, so the teams are read before the walk. The camera is read after the plan
+    /// and before the first view is touched, for each view's camera clash alone,
+    /// TestsViewpointForResult on a copy, where F85 read one per clash, and held until the
+    /// views end, F141 attempt 2.
     ///
     /// WHAT A VIEW SHOWS, Bader's answer B to Q119: only the models its clashing items
     /// live in, ShownModels, every other hidden, the shown ones dimmed and every clashing
@@ -633,35 +635,78 @@ namespace Federator.Addin.Engine
             int foldersNotMarked = 0;
             int hidesSkipped = 0;
 
-            foreach (PlannedTestView view in Plan.Views)
+            // What was hidden is read before anything of this step reads a camera or changes the
+            // document, so the put back returns the document to what it held.
+            Touch(document);
+
+            // THE CAMERAS FIRST, F141 attempt 2, P18's measured shape: P18 read every test's
+            // camera from TestsViewpointForResult in its walk before any view, and per view only
+            // copied and zoomed it after the hiding, the dim and the paint, and read every
+            // override back, and F85, which set 04 ran at e4484d1, read every camera in its walk
+            // too and read 2813 views back painted. WriteOne read it per view between the paint
+            // and the record, and set 07's 1A02MM then wrote 69 views of which none read back a
+            // material override while their hidden models read back right. That one of CameraOf's
+            // three clash calls, the test resolved, the result resolved and
+            // TestsViewpointForResult, undoes the dim and the paint is read off that difference
+            // and not measured alone.
+            Dictionary<string, Viewpoint> cameras = new Dictionary<string, Viewpoint>(StringComparer.Ordinal);
+            Dictionary<string, string> noCameras = new Dictionary<string, string>(StringComparer.Ordinal);
+
+            try
             {
-                done++;
+                CamerasFirst(clashTests, cameras, noCameras);
 
-                using (seconds.In(ViewsPart.SayingHowFar))
+                foreach (PlannedTestView view in Plan.Views)
                 {
-                    progress("View " + view);
+                    done++;
 
-                    if (said.Due(log.ElapsedSeconds))
+                    using (seconds.In(ViewsPart.SayingHowFar))
                     {
-                        log.Line(said.Line(done, Plan.Views.Count, written.Count, log.ElapsedSeconds));
+                        progress("View " + view);
+
+                        if (said.Due(log.ElapsedSeconds))
+                        {
+                            log.Line(said.Line(done, Plan.Views.Count, written.Count, log.ElapsedSeconds));
+                        }
+                    }
+
+                    try
+                    {
+                        WriteOne(document, clashTests, view, models, indexOf, unitEnumName, outcome, written,
+                            hiddenReadBack, paintedReadBack, cameras, noCameras,
+                            ref shownBefore, ref foldersMarked, ref foldersNotMarked, ref hidesSkipped);
+                    }
+                    catch (Exception error)
+                    {
+                        // The type as well as the text, because a member of this API behaving
+                        // differently from the way it was measured is the most likely failure, and
+                        // the type name is what says which.
+                        outcome.AddFailed(view.ToString(), view.Pair.Folder, error.GetType().Name + ": " + error.Message);
+                        log.Failure(
+                            "putting the view " + view + " into the NWF",
+                            error,
+                            "kept going, the other views are still tried and the block carries the total");
                     }
                 }
-
-                try
+            }
+            finally
+            {
+                // Each in its own try, so one that throws leaves the others released and the
+                // inventory and the removals still run, as a throw in a view's own release did
+                // when each view read its camera.
+                foreach (Viewpoint camera in cameras.Values)
                 {
-                    WriteOne(document, clashTests, view, models, indexOf, unitEnumName, outcome, written,
-                        hiddenReadBack, paintedReadBack, ref shownBefore, ref foldersMarked, ref foldersNotMarked, ref hidesSkipped);
-                }
-                catch (Exception error)
-                {
-                    // The type as well as the text, because a member of this API behaving
-                    // differently from the way it was measured is the most likely failure, and
-                    // the type name is what says which.
-                    outcome.AddFailed(view.ToString(), view.Pair.Folder, error.GetType().Name + ": " + error.Message);
-                    log.Failure(
-                        "putting the view " + view + " into the NWF",
-                        error,
-                        "kept going, the other views are still tried and the block carries the total");
+                    try
+                    {
+                        camera.Dispose();
+                    }
+                    catch (Exception error)
+                    {
+                        log.Failure(
+                            "releasing a camera read for the views",
+                            error,
+                            "kept going, the other cameras are released and the views step carries on");
+                    }
                 }
             }
 
@@ -669,6 +714,46 @@ namespace Federator.Addin.Engine
                 + foldersMarked + " folder(s) made and marked"
                 + (foldersNotMarked > 0 ? ", " + foldersNotMarked + " made and NOT marked, said above" : string.Empty)
                 + (hidesSkipped > 0 ? ", the hiding skipped for " + hidesSkipped + " view(s) showing the same models as the one before" : string.Empty));
+        }
+
+        /// <summary>
+        /// Every planned view's camera, read once before the first view is touched, each a copy
+        /// held by key until the views end, or why there is none. One that throws is logged with
+        /// what happens next, and that view is failed with why and nothing is recorded for it.
+        /// The seconds sit in none of the parts, where they sat when each view read its own.
+        /// </summary>
+        private void CamerasFirst(DocumentClashTests clashTests, Dictionary<string, Viewpoint> cameras, Dictionary<string, string> noCameras)
+        {
+            foreach (PlannedTestView view in Plan.Views)
+            {
+                if (cameras.ContainsKey(view.Key) || noCameras.ContainsKey(view.Key))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    string why;
+                    Viewpoint camera = CameraOf(clashTests, view.CameraClash, out why);
+
+                    if (camera != null)
+                    {
+                        cameras[view.Key] = camera;
+                    }
+                    else
+                    {
+                        noCameras[view.Key] = why;
+                    }
+                }
+                catch (Exception error)
+                {
+                    noCameras[view.Key] = "reading it threw " + error.GetType().Name + ": " + error.Message;
+                    log.Failure(
+                        "reading the camera of the view " + view,
+                        error,
+                        "kept going, that view is failed with why and the other views are still written");
+                }
+            }
         }
 
         private void WriteOne(
@@ -682,6 +767,8 @@ namespace Federator.Addin.Engine
             List<WrittenView> written,
             Dictionary<string, IList<string>> hiddenReadBack,
             Dictionary<string, IList<ItemPath>> paintedReadBack,
+            Dictionary<string, Viewpoint> cameras,
+            Dictionary<string, string> noCameras,
             ref HashSet<int> shownBefore,
             ref int foldersMarked,
             ref int foldersNotMarked,
@@ -725,6 +812,17 @@ namespace Federator.Addin.Engine
                 outcome.AddFailed(view.ToString(), showsWords,
                     "a view of its name with no mark of this tool sits in " + ViewPlace.FolderPath(view.Folders)
                     + ", a person's or one an earlier run could not mark, so none was written there and that one is left as it is");
+                return;
+            }
+
+            // NO CAMERA IS NO VIEW, failed with why before anything is hidden or dimmed for it.
+            Viewpoint first;
+
+            if (!cameras.TryGetValue(view.Key, out first) || first == null)
+            {
+                string noCamera;
+                noCameras.TryGetValue(view.Key, out noCamera);
+                outcome.AddFailed(view.ToString(), showsWords, "Clash Detective gave no camera for its first clash, " + (noCamera ?? "UNKNOWN why"));
                 return;
             }
 
@@ -811,23 +909,14 @@ namespace Federator.Addin.Engine
                 SayOnce("VIEWS    " + view + ": " + paint.NotPointedAt + " clash(es) with an item that could not be pointed at, so not painted");
             }
 
-            // THE CAMERA, Clash Detective's own for the camera clash, framed on the box over
-            // every clash centre where there are two or more, P16, its source kept until the
-            // view is written, F141.
+            // THE CAMERA, Clash Detective's own for the camera clash, read for every view before
+            // the first was touched, CamerasFirst, framed on the box over every clash centre where
+            // there are two or more, P16, and a copy of it where there is one. The copy is this
+            // view's and the camera read first is held until every view is written, F141.
             Viewpoint camera = null;
-            Viewpoint framedFrom = null;
 
             try
             {
-                string noCamera;
-                camera = CameraOf(clashTests, view.CameraClash, out noCamera);
-
-                if (camera == null)
-                {
-                    outcome.AddFailed(view.ToString(), showsWords, "Clash Detective gave no camera for its first clash, " + noCamera);
-                    return;
-                }
-
                 using (seconds.In(ViewsPart.Framing))
                 {
                     List<Point3> centres = new List<Point3>();
@@ -842,12 +931,7 @@ namespace Federator.Addin.Engine
 
                     FramingBox box = FramingBox.For(centres, views.FramingMarginMillimetres, unitEnumName);
 
-                    if (box != null)
-                    {
-                        Viewpoint framed = SavedViewpoints.Framed(camera, box);
-                        framedFrom = camera;
-                        camera = framed;
-                    }
+                    camera = box != null ? SavedViewpoints.Framed(first, box) : first.CreateCopy();
                 }
 
                 Point3 cameraPoint;
@@ -960,11 +1044,6 @@ namespace Federator.Addin.Engine
                 if (camera != null)
                 {
                     camera.Dispose();
-                }
-
-                if (framedFrom != null)
-                {
-                    framedFrom.Dispose();
                 }
             }
         }
