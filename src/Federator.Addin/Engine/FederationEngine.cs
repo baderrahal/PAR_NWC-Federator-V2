@@ -167,7 +167,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The discipline codes of every group the scan made, F127, which the coverage judges a side that
+        /// The discipline codes of the ticked groups of this run, F127, which the coverage judges a side that
         /// found nothing against. Null for the open file run, whose run is its one group.
         /// </summary>
         private List<IList<string>> scannedGroupCodes;
@@ -496,7 +496,7 @@ namespace Federator.Addin.Engine
             CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
                 reports.SkipClashOffCoordinates, DateTime.Now, jobs.Count);
 
-            // F127. The codes of every group the scan made, so a side's code is judged against the
+            // F127. The codes of the ticked groups of this run, so a side's code is judged against the
             // whole run, and the picked XML's bytes, read once for every group's coverage.
             scannedGroupCodes = new List<IList<string>>();
 
@@ -845,6 +845,10 @@ namespace Federator.Addin.Engine
             {
                 groupClock.Stop();
 
+                // F127b, as RunOne: the file is in RESULT's coverage count once, as not checked where it
+                // ended before its COVERAGE step.
+                InTheCoverage(job, outcome).NotChecked();
+
                 // The open file is always a Weekly run. There is no First run on this
                 // path, because the NWF already exists and is the document. A picked NWF
                 // this run opened is labelled off how its open went, F129 attempt 2, so one
@@ -1079,6 +1083,13 @@ namespace Federator.Addin.Engine
                 outcome.NwdSize = log.CheckOnDisk("NWD", job.NwdPath);
                 outcome.NwfOnDisk = outcome.NwfSize >= 0;
                 outcome.NwdOnDisk = outcome.NwdSize >= 0;
+            }
+            finally
+            {
+                // F127b, the breaker's second finding. Every group the run took is in RESULT's coverage
+                // count, one that ended before its COVERAGE step, refused, a rebuild that failed or a
+                // throw, as not checked, and a group already counted is not counted again.
+                InTheCoverage(job, outcome).NotChecked();
             }
 
             // F61. Outside the try, so a group that threw still carries whatever the
@@ -3969,7 +3980,7 @@ namespace Federator.Addin.Engine
                 {
                     log.Block(title, CoverageBlock.NotTakenLines(
                         "the clash step made no plan of tests for it, and the CLASH lines above say why"));
-                    coverageAcrossTheRun.Add(building, null);
+                    InTheCoverage(job, outcome).NotChecked();
                     return;
                 }
 
@@ -4035,8 +4046,7 @@ namespace Federator.Addin.Engine
                         CoverageBlock.RowText(test));
                 }
 
-                coverageAcrossTheRun.Add(building, check);
-                coverageAcrossTheRun.AddTests(building, tests);
+                InTheCoverage(job, outcome).Checked(check, tests);
                 outcome.Coverage = data;
             }
             catch (Exception error)
@@ -4049,8 +4059,26 @@ namespace Federator.Addin.Engine
                     error,
                     "kept going, the coverage of this group is UNKNOWN, no Coverage sheet is written for it and the group keeps its own result");
                 log.Block(title, CoverageBlock.NotTakenLines("taking it threw " + error.GetType().Name + ": " + error.Message));
-                coverageAcrossTheRun.Add(building, null);
+
+                // Once, the breaker's fifth finding on F127b: a group whose check was already counted
+                // before the throw is not counted again as not checked.
+                InTheCoverage(job, outcome).NotChecked();
             }
+        }
+
+        /// <summary>
+        /// The group in the coverage across the run, F127b, taken the first time it is asked for, so every
+        /// group the run took is counted once: checked where the COVERAGE step judged it, and not checked
+        /// where it ended before, which RunOne and RunAnOpenFile say when the group ends.
+        /// </summary>
+        private GroupInTheRun InTheCoverage(FederationJob job, JobOutcome outcome)
+        {
+            if (outcome.InTheCoverage == null)
+            {
+                outcome.InTheCoverage = coverageAcrossTheRun.For(Words.Or(job.Building, "this group"));
+            }
+
+            return outcome.InTheCoverage;
         }
 
         /// <summary>

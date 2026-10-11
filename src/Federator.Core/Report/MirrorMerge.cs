@@ -164,6 +164,36 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
+        /// The tests whose clashes AddTo merged, the kept test and each mirror by the name it ran under,
+        /// for F127's count check, which compares none of them, since the kept test's block in the clash
+        /// workbook then carries its mirrors' clashes and no mirror has a block. None before AddTo and
+        /// none where AddTo merged nothing, a pair the rule planned and AddTo refused at run time, so such
+        /// a pair is compared like any other test, the breaker's first finding on F127b. AddTo merges
+        /// every mirror of a kept test or none, so a merge part made names none.
+        /// </summary>
+        public IList<string> MergedNames
+        {
+            get
+            {
+                List<string> names = new List<string>();
+
+                if (!added || mirrors.Count == 0 || !mirrors.TrueForAll(counts => counts.Merged))
+                {
+                    return names;
+                }
+
+                names.Add(Kept.Name);
+
+                foreach (MirrorCounts counts in mirrors)
+                {
+                    names.Add(counts.Pair.MirrorName);
+                }
+
+                return names;
+            }
+        }
+
+        /// <summary>
         /// The clashes the merge added to the kept test, each once, the number the kept test's
         /// ROWS line reads, ReportedCount.Line. A count taken once AddTo has run: a mirror
         /// that did not run adds nothing, so nothing of it is among them, and what it would

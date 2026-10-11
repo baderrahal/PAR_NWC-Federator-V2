@@ -2314,9 +2314,11 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   record keeps and a saved test's sides are its sets and never the placeholder. The plan it
   was handed where the runner stopped before it had one
 - THE CODES A SIDE IS JUDGED BY are the group's models' codes, `CoverageRule.GroupCodesOf`,
-  read off the EXPORT CHECK's models, and the run's, `CoverageRule.RunCodesOf`, every group the
-  scan made and the group's own, so a code the group carries is always a code of the run. The
-  open file run has no scan and its run is its one group
+  read off the EXPORT CHECK's models, and the run's, `CoverageRule.RunCodesOf`, the ticked groups
+  of this run and the group's own, so a code the group carries is always a code of the run. The
+  open file run has no scan and its run is its one group. A group the scan found and the run did
+  not tick is not among them, so a code only it carries reads UNKNOWN and never not in the
+  group, row F127-R3
 - A TEST THE RUN LEFT NO RECORD OF, OR NEVER REACHED, IS NOT COMPARED, and one the run knows it
   did not create, F77 kept it out or the plan dropped it before the model, is held by neither
   side. A test the plan dropped before the model that Clash Detective holds with results names
@@ -2363,7 +2365,9 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   its check 2 names an empty result group, which the harvest counts as one clash, and this
   has no such words, and a test in the workbook only whose every number is nought is counted
   and not judged there, where here it is a test F77 did not create and is held by neither
-  side, counted apart from agree since PR 145. Agree only where both equal. Failed for any
+  side, counted apart from agree since PR 145. Agree only where both equal AND THE TEST RAN THIS
+  RUN, the breaker's third finding on F127b: a test that did not run with equal counts, nought
+  and nought most often, is NOT COMPARED, `CountCheck.DidNotRunWhy`. Failed for any
   other difference, for a test the document holds with no block, and for a block with
   numbers that the document does not hold. NOT COMPARED, NEVER AGREE, where a count on
   either side is minus one, the workbook's included, so a block that could not be read whole
@@ -2387,12 +2391,14 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   the tests after the clash step, so they are what the NWF holds after Compact and include
   the tests a weekly run did not run. A count not taken is minus one and never zero.
   Statuses are not read, because they are not judged, PQ4 of F104 being unmeasured
-- THE TESTS OF A MIRRORED PAIR F132'S RULE MERGES ARE NOT COMPARED, `CountCheck.InAMergeWhy`,
-  the kept test and each mirror by its run name, `ClashRunner.InAMerge`, because a merge
-  carries a mirror's clashes in the kept test's block of the clash workbook and leaves none of
-  the mirror's, so neither block is one test's count. Not compared either way where the merge
-  refused at run time, since which happened is not handed in. A merge never makes a COVERAGE
-  FAILED line, and a test proves the same numbers with no merge named are FAILED
+- THE TESTS OF A MIRRORED PAIR WHOSE CLASHES F132 MERGED ARE NOT COMPARED, `CountCheck.InAMergeWhy`,
+  the kept test and each mirror by its run name, `MirrorMerge.MergedNames` read through
+  `ClashRunner.InAMerge`, because a merge carries a mirror's clashes in the kept test's block of
+  the clash workbook and leaves none of the mirror's, so neither block is one test's count. READ
+  OFF WHAT AddTo DID AND NEVER OFF THE PLAN, the breaker's first finding on F127b: a pair the
+  rule planned and AddTo refused at run time keeps both blocks and names no test, so it is
+  compared like any other test and a real difference is a FAILED line, which a test breaks. A
+  merge never makes a COVERAGE FAILED line
 - THE CLIENT'S SHEET IS READ BACK BY ITS NAME, `WorkbookTests.ReadFile`, the name the writer
   gives it, `SheetNames.ForReport` of the report's output name, and never by its place, the
   readers' point that a sheet put before it would be read in its stead. No file or no sheet of
@@ -2422,7 +2428,11 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   Clash Detective holds that the picked file does not name, then every FAILED line in full.
   Nothing compared reads UNKNOWN and never nought FAILED, because both wave buildings skip
   their clash under F112 and compare nothing. A group whose coverage could not be taken, or
-  whose clash step made no plan of tests, is counted not checked. Where no group failed and no error was logged but a count differs,
+  whose clash step made no plan of tests, is counted not checked. EVERY GROUP THE RUN TOOK IS
+  COUNTED, AND ONCE, `CoverageAcrossTheRun.For` and `GroupInTheRun`, the breaker's second and
+  fifth findings on F127b: a group that ended before its COVERAGE step, refused, a rebuild
+  that failed, a throw or no document, is counted not checked when it ends, and the first word
+  on a group is the one counted, so a throw after its check was counted never counts it twice. Where no group failed and no error was logged but a count differs,
   RESULT closes on a line saying so and never on Nothing failed, and the group's count,
   facts and judgement do not move. A run that hands in no coverage writes that none was
   taken, because a missing line reads as a check that did not run

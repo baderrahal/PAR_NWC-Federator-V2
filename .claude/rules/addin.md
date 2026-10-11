@@ -718,12 +718,13 @@ well as to pass.
   coordinates, one discipline and side checks, so every skip reads the counts that made it. It
   hands out `RunPlan`, the plan it ran, each mirror under its run name and each saved test with
   its sides, which the engine keeps on `JobOutcome.ClashPlan` in place of the plan it handed in,
-  and `InAMerge`, the tests of every mirrored pair its rule merges. THE COVERAGE STEP,
+  and `InAMerge`, the tests of every mirrored pair whose clashes `MirrorMerge.AddTo` merged,
+  read off what the merge did and never off the plan. THE COVERAGE STEP,
   `RunSteps.Coverage`, runs in FinishTheGroup after the clash workbook, its page and its XML and
   before the internal workbook and the NWD, so the document is still open and the clash
   workbook is on the disk, for the scanned run and the open file run alike: `CoverageRule.For`
   over the plan and the runner's record with the group's codes off the EXPORT CHECK's models
-  and the run's off every group the scan made, Clash Detective's two counts of every test in
+  and the run's off the ticked groups of this run, Clash Detective's two counts of every test in
   ONE WALK, `DocumentCensusReader.TestsWithTheirCounts`, the census's walk with every wrapper
   disposed and no handle kept, a test whose count throws logged and read minus one, the clash
   workbook read back BY THE CLIENT'S SHEET'S NAME, `WorkbookTests.ReadFile`, ONLY WHERE THIS RUN
@@ -732,8 +733,11 @@ well as to pass.
   last week's file at the same path would be read as this week's, then `CountCheck.Judge` with
   Compact's count and the merged tests, the COVERAGE block, `CoverageBlock.Lines`, one .tsv row
   a test, `coverage test`, and the group added to the run's `CoverageAcrossTheRun`, which the
-  window hands to `RunLog.WriteResultBlock` on both runs. A group whose clash step made no plan
-  writes a block saying so and is counted not checked. A THROW ANYWHERE IN IT NEVER FAILS THE
+  window hands to `RunLog.WriteResultBlock` on every run. A group whose clash step made no plan
+  writes a block saying so and is counted not checked. EVERY GROUP THE RUN TOOK IS COUNTED ONCE,
+  through `JobOutcome.InTheCoverage`, a `GroupInTheRun`: RunOne's finally and RunAnOpenFile's,
+  the open file and F129's picked NWFs, say NotChecked when the group ends, which counts a group
+  that ended early and changes nothing for one the COVERAGE step counted. A THROW ANYWHERE IN IT NEVER FAILS THE
   GROUP: it is logged with what happens next, the block says the coverage is UNKNOWN and the
   group is counted not checked, since a report check never fails a group. The picked XML's
   sha256 is read once when the run starts, one COVERAGE line, and a read that throws is logged

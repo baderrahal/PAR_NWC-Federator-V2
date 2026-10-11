@@ -686,5 +686,28 @@ namespace Federator.Core.Tests
         {
             Assert.Throws<ArgumentNullException>(() => CountCheck.Judge(null, Document(), null, null, -1));
         }
+
+        // ---------- agree only where the test ran, F127b, the breaker's third finding ----------
+
+        /// <summary>
+        /// THE BREAK. A test that did not run this run, nought in Clash Detective and nought in the
+        /// workbook, read AGREE because whether it ran was never read. Equal counts of a test that did
+        /// not run check nothing this run did, so it is NOT COMPARED and says it did not run, whatever
+        /// the two equal numbers are. A test that ran with nought on both sides still agrees.
+        /// </summary>
+        [Test]
+        public void ATestThatDidNotRunIsNeverCountedAsAgreeing()
+        {
+            CountCheck check = Judge(
+                Tests(CreatedNotRun("T"), NotRun("U"), Ran("V")),
+                Document(InDocument("T", 0, 0), InDocument("U", 2, 2), InDocument("V", 0, 0)),
+                Workbook("T", 0, 0, "U", 2, 0, "V", 0, 0));
+
+            Assert.That(Judged(check, "T").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "T").Why, Does.Contain("did not run this run"));
+            Assert.That(Judged(check, "U").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "V").Verdict, Is.EqualTo(CountVerdict.Agree), "a test that ran agrees as before");
+            Assert.That(check.CountOf(CountVerdict.Agree), Is.EqualTo(1));
+        }
     }
 }

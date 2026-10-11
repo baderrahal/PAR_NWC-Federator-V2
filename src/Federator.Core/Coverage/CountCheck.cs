@@ -23,7 +23,8 @@ namespace Federator.Core.Coverage
     /// this check reads the document through the add-in, which the harvest reads through too,
     /// and a check sharing the code it checks cannot catch a fault common to both.
     ///
-    /// AGREE only when both numbers equal on both sides. A test the run did not create, F77 kept it
+    /// AGREE only when both numbers equal on both sides and the test ran this run, a test that did not
+    /// run with equal counts being NOT COMPARED. A test the run did not create, F77 kept it
     /// out or the plan dropped it, that is not in the document, whose block reads no row and Clashes
     /// nought, is HELD BY NEITHER side, counted apart from Agree. One the run left no record of is
     /// NOT COMPARED instead. FAILED for every other difference, a test the document
@@ -64,6 +65,13 @@ namespace Federator.Core.Coverage
 
         /// <summary>The tests the document holds that the picked file does not, named and not judged.</summary>
         public ReadOnlyCollection<string> NotInTheXml { get; private set; }
+
+        /// <summary>
+        /// Why a test that did not run this run is not compared where its two sides hold equal counts, so
+        /// agree counts only the tests that ran.
+        /// </summary>
+        public const string DidNotRunWhy =
+            "it did not run this run, so the equal counts in Clash Detective and the workbook check nothing this run did";
 
         /// <summary>
         /// Why a test of a mirrored pair F132 merges is not compared, said on its row and in the block.
@@ -304,7 +312,11 @@ namespace Federator.Core.Coverage
 
             if (w.Rows == d.TopLevel && w.Clashes == d.Leaves)
             {
-                return new CountedTest(test.Name, CountVerdict.Agree, true, top, leaves, true, rows, clashes, string.Empty);
+                // AGREE ONLY FOR A TEST THAT RAN, the breaker's third finding on F127b. Equal counts of a
+                // test that did not run this run, nought and nought most often, check nothing this run did.
+                return test.Ran
+                    ? new CountedTest(test.Name, CountVerdict.Agree, true, top, leaves, true, rows, clashes, string.Empty)
+                    : new CountedTest(test.Name, CountVerdict.NotCompared, true, top, leaves, true, rows, clashes, DidNotRunWhy);
             }
 
             return new CountedTest(test.Name, CountVerdict.Failed, true, top, leaves, true, rows, clashes,

@@ -236,10 +236,12 @@ namespace Federator.Addin.Engine
         public ClashTestPlan RunPlan { get; private set; }
 
         /// <summary>
-        /// The names of the tests of every mirrored pair F132 merges, the kept test and each mirror
-        /// by the name it runs under, for the coverage's count check, which compares none of them
-        /// because the clash workbook carries a mirror's clashes in the kept test's block. Empty
-        /// where no pair merges.
+        /// The names of the tests of every mirrored pair whose clashes MirrorMerge.AddTo merged this
+        /// run, the kept test and each mirror by the name it ran under, `MirrorMerge.MergedNames`, for
+        /// the coverage's count check, which compares none of them because the clash workbook carries
+        /// a mirror's clashes in the kept test's block. Read off what AddTo did and never off the plan,
+        /// so a pair AddTo refused is compared like any other test, the breaker's first finding on
+        /// F127b. Empty where no pair merged.
         /// </summary>
         public ICollection<string> InAMerge
         {
@@ -249,12 +251,7 @@ namespace Federator.Addin.Engine
 
                 foreach (MirrorMerge merge in merges)
                 {
-                    names.Add(merge.Kept.Name);
-
-                    foreach (MirrorPair pair in merge.Pairs)
-                    {
-                        names.Add(pair.MirrorName);
-                    }
+                    names.UnionWith(merge.MergedNames);
                 }
 
                 return names;

@@ -159,7 +159,7 @@ namespace Federator.Core.Coverage
         }
 
         /// <summary>
-        /// The discipline codes of every file of the run: the codes of each group the scan made, and the
+        /// The discipline codes of every file of the run: the codes of each group the run took, and the
         /// group's own codes, so a code the group carries is always a code of the run. The open file run has
         /// no scan and hands no groups, and its run is the one group, so its codes are the group's. Null where
         /// neither gives any, which For reads as not read.

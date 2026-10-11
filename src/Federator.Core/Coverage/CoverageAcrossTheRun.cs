@@ -59,6 +59,16 @@ namespace Federator.Core.Coverage
             failedLinesShown = settings.FailedLinesInResult;
         }
 
+        /// <summary>
+        /// One group of the run, through which the run says once whether its check was made, F127b. The
+        /// engine takes one for each group it starts and says NotChecked when the group ends, which
+        /// changes nothing where the group's check was already counted.
+        /// </summary>
+        public GroupInTheRun For(string group)
+        {
+            return new GroupInTheRun(this, group);
+        }
+
         /// <summary>How many groups were added, a group whose check could not be made among them.</summary>
         public int Groups { get; private set; }
 

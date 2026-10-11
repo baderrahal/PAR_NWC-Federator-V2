@@ -223,9 +223,9 @@ namespace Federator.Addin.Engine
         public ClashTestPlan ClashPlan { get; set; }
 
         /// <summary>
-        /// The tests of every mirrored pair F132's rule merges in this group, F127, the kept test and each
-        /// mirror by its run name, which the count check does not compare, or null where the clash step
-        /// did not run.
+        /// The tests of every mirrored pair whose clashes F132 merged in this group, F127, the kept test and
+        /// each mirror by its run name, read off what the merge did, which the count check does not compare,
+        /// or null where the clash step did not run.
         /// </summary>
         public ICollection<string> InAMerge { get; set; }
 
@@ -242,6 +242,12 @@ namespace Federator.Addin.Engine
         /// step was not reached.
         /// </summary>
         public string WorkbookNotReadBecause { get; set; }
+
+        /// <summary>
+        /// This group in the coverage across the run, F127b, taken when the coverage first speaks of it, so
+        /// the group is counted once, checked or not, whichever way it ends.
+        /// </summary>
+        public GroupInTheRun InTheCoverage { get; set; }
 
         /// <summary>What the clash step did for this group, or null when it did not run.</summary>
         public ClashRunOutcome Clash { get; set; }
