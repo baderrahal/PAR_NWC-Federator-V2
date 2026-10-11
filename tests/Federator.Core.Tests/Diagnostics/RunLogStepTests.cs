@@ -302,11 +302,21 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// F148. Its only folder is a file of this test's own, so the log truly cannot write to
+        /// disk, as the name says. On the system temp folder it wrote there and left its files.
+        /// </summary>
         [Test]
         public void ALogThatCannotWriteToDiskStillTakesSteps()
         {
-            using (RunLog log = RunLog.StartOrDisabled(null, new DateTime(2026, 9, 19), 5))
+            string notAFolder = Path.Combine(folder, "a-file-where-the-fallback-should-be");
+            File.WriteAllText(notAFolder, "this is a file");
+
+            using (RunLog log = RunLog.StartOrDisabled(null, notAFolder, new DateTime(2026, 9, 19), 5))
             {
+                Assert.That(log.IsWritingToDisk, Is.False, "nothing on the disk could be opened");
+                Assert.That(log.DisabledReason, Does.Contain(notAFolder), "the folder it tried is named");
+
                 List<string> said = new List<string>();
                 log.LineWritten += said.Add;
 
