@@ -332,6 +332,16 @@ The loop runs these on its own copy, 1A02MM again from a fresh set, after main w
 637. Look for, on the run's TIMING block: VIEWS lines every 30 s where the step is long, and the same rows, pictures and workbook as before, the fix changing no output
 638. Send the log and the `.tsv` beside it, with the longest gap between two lines of the harvest
 
+## Proof F145 only the test's models shown for its pictures, added 2026-10-11, rewritten for attempt 2
+
+639. Install main with F145 merged, then run 1A02MM as F141's steps 629 to 633 do, and look for the same: `views created     :` equal to the plan's views, `7 of 7 hold`, and the VIEWS line `hidden state put back: nothing was hidden before the views and nothing is hidden now`, which says nothing hidden for a picture was carried into the views, the NWF or the NWD
+640. Look for, in the same log: one line `IMAGES   only the models of each test shown for its pictures:`, its tests with models hidden, the tests kept with every model shown, and the seconds reading the tests' sides and the seconds hiding and putting back, and no failure line naming `reading which models the sides`, `hiding the models other than`, `putting the hidden state back` or `reading the hidden state`. Open a picture of a test between two models, such as an ME test against AR: both models' items behind the clash
+641. Run 1A04PK on the 50 test cut of the corrected matrix, Make viewpoints ticked, and look for the same `IMAGES` line and no such failure line
+642. Open three pictures of BLD-AR-Walls-vs-BLD-AR-Floors in the group's picture folder: the same 1024 square, camera, grid label, red and green as before, and only the AR model's items behind the two clashing ones. Open a picture of the mirror pair's kept test where it has one
+643. Look for, in the `IMAGES` lines of the group: the seconds each picture took, against 7.76 s a picture on that test before F145, and the group's seconds off its `GROUP finished` line
+644. Compare the Grid Location and Level cells of the rows of BLD-AR-Ramps-vs-BLD-AR-Floors in this run's internal workbook with set 08's, `steps\runs\08\item1-C04`: the same cells, read now under the hide
+645. Send the log and the `.tsv` beside it, with the longest stretch the window did not answer and the peak memory off the run's `LIFE SUMMARY` where the loop ran it
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,

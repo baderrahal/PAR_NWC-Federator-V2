@@ -544,10 +544,8 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// Where one clashing item is, its index path as plain ints, and the model it lives
-        /// in by that model's file name. MEASURED on 2026-09-20, docs\history\scan.md 5n: on
-        /// a clash leaf HasModel reads false and Model reads null, and the one item that
-        /// carries the model is the TOPMOST of its ancestors, six to nine levels up. Item1 is
-        /// a fresh wrapper on every read, and so is every parent, so each is released here.
+        /// in by that model's file name, SavedViewpoints.ModelFileOf's walk. Item1 is a fresh
+        /// wrapper on every read, so it is released here, and the walk releases every parent.
         /// </summary>
         private static ItemPath ReadPlace(Document document, ModelItem item, out string home)
         {
@@ -558,54 +556,17 @@ namespace Federator.Addin.Engine
                 return null;
             }
 
-            List<ModelItem> chain = new List<ModelItem>();
-            chain.Add(item);
-
             try
             {
                 int[] path = SavedViewpoints.PathOf(document, item);
-                ModelItem walker = item;
-
-                while (chain.Count < HomeWalkBound)
-                {
-                    ModelItem parent = walker.Parent;
-
-                    if (parent == null)
-                    {
-                        break;
-                    }
-
-                    chain.Add(parent);
-                    walker = parent;
-                }
-
-                ModelItem top = chain[chain.Count - 1];
-
-                if (top.HasModel)
-                {
-                    using (Model model = top.Model)
-                    {
-                        home = model == null ? null : model.FileName;
-                    }
-                }
-
+                home = SavedViewpoints.ModelFileOf(item);
                 return path == null ? null : new ItemPath(path);
             }
             finally
             {
-                for (int i = 0; i < chain.Count; i++)
-                {
-                    chain[i].Dispose();
-                }
+                item.Dispose();
             }
         }
-
-        /// <summary>
-        /// The most levels the home walk climbs. 5n measured six and nine on this project,
-        /// and a bound stops a malformed tree turning one clash into an endless climb. It
-        /// is a guard on a walk and not a number that shapes a run.
-        /// </summary>
-        private const int HomeWalkBound = 64;
 
         // ---------- the views ----------
 

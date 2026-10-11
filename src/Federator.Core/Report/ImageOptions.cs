@@ -36,6 +36,7 @@ namespace Federator.Core.Report
             Height = DefaultPixels;
             EmbedThumbnail = false;
             StopAfterFailures = DefaultStopAfterFailures;
+            OnlyTheTestsModels = true;
 
             // New, Active and Reviewed. The same three Navisworks itself calls open, but
             // set out here in its own right, because this is which clashes are worth a
@@ -73,10 +74,39 @@ namespace Federator.Core.Report
         /// <summary>How many failures in a row end the run. Zero switches the guard off.</summary>
         public int StopAfterFailures { get; set; }
 
+        /// <summary>
+        /// On. Each test's pictures are taken with only the models its two sides live in shown,
+        /// every other model hidden once before them and the hidden state put back after, F145,
+        /// Bader's choice of Q150 on 2026-10-11. PictureModels holds the rule.
+        /// </summary>
+        public bool OnlyTheTestsModels { get; set; }
+
         /// <summary>Is this clash one to render.</summary>
         public bool Wants(ClashStatus status)
         {
             return Write && statuses.Contains(status);
+        }
+
+        /// <summary>
+        /// Whether a test with these clashes gets any picture, a clash of a status asked for, F145,
+        /// so its models are hidden only where a picture will be taken.
+        /// </summary>
+        public bool WouldTakeAPicture(ClashTally tally)
+        {
+            if (tally == null || !Write)
+            {
+                return false;
+            }
+
+            foreach (ClashStatus status in statuses)
+            {
+                if (tally.Of(status) > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -146,6 +176,7 @@ namespace Federator.Core.Report
             return "Images on, " + Width + " by " + Height + " pixels, " + statusList
                 + " only, " + cap + ", "
                 + (EmbedThumbnail ? "with a thumbnail in the cell" : "linked rather than pasted in")
+                + (OnlyTheTestsModels ? ", only the models of each test shown" : ", every model shown")
                 + ".";
         }
 

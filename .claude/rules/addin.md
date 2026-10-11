@@ -791,6 +791,24 @@ well as to pass.
   penetration and by design passes, off by default, have no piece yet, row F143-R1. The runner's
   ProgressSettings is ClashRunner.Progress at its defaults, 30 s each, and it hands the render's to
   ClashImages
+- ONLY THE TEST'S MODELS SHOWN FOR ITS PICTURES, F145, Bader's choice of Q150 on 2026-10-11, measured
+  first, scan.md 5z-zc: 7.76 s a picture with every model shown and 1.78 s with only the test's on the
+  first 20 clashes of 1A04PK's Walls-vs-Floors, the export's layout kept. TestModelsShown is one for the
+  clash step, made in ClashRunner.Run where pictures are written and ended in its finally in a try of its
+  own before the sets index is released, which puts back any hidden state still changed and writes the
+  one IMAGES line of PictureModelsTally. Read takes the models off the test's OWN SelectionA and
+  SelectionB, never off the file's set paths, since a test found in the document keeps its own sides,
+  each item enumerated off GetSelectedItems, never disposed one by one, and walked to its model by
+  SavedViewpoints.ModelFileOf, which releases the parents and never the item. Hide takes the hidden state
+  once by SnapshotHidden, measured in 5k, adds hiding to every other model's root by HideTheOtherModels,
+  which unlike ShowOnlyModels resets nothing, so every hide the document held stays in the pictures, and
+  hands back what puts the state back by RestoreHiddenState after the test. NO CLASH HANDLE IS READ ACROSS
+  THE HIDE: OneTest reads the models off the test it holds and hands harvest.Into a handle resolved after
+  the hide, and RenderThePicturesWaiting reads them off a handle released before the hide and pictures
+  through one resolved after, the order 5z-zc ran in. A put back that fails is tried again at the end of
+  the step and said, and a hidden state that cannot be read stops the hiding for the step. Which models
+  stay shown is Core's PictureModels, and a test kept with every model shown is said with why on an
+  IMAGES line
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
   core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
   stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and
