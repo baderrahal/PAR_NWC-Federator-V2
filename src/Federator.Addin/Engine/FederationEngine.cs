@@ -8,6 +8,7 @@ using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
 using Autodesk.Navisworks.Api.DocumentParts;
 using Federator.Core.Clash;
+using Federator.Core.Coverage;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 using Federator.Core.Findings;
@@ -154,6 +155,30 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// The coverage of the picked tests across this run, F127, each group's count check and tests
+        /// added as its COVERAGE step takes them, for the RESULT lines the window hands it. Made with the
+        /// engine, which is made for one press of a button, so a second run never carries the first's.
+        /// </summary>
+        private readonly CoverageAcrossTheRun coverageAcrossTheRun;
+
+        public CoverageAcrossTheRun CoverageAcrossTheRun
+        {
+            get { return coverageAcrossTheRun; }
+        }
+
+        /// <summary>
+        /// The discipline codes of every group the scan made, F127, which the coverage judges a side that
+        /// found nothing against. Null for the open file run, whose run is its one group.
+        /// </summary>
+        private List<IList<string>> scannedGroupCodes;
+
+        /// <summary>
+        /// The picked XML's sha256, F127, read once when the run starts so the COVERAGE blocks and the
+        /// Coverage sheets of every group name the same bytes. Null where no XML was picked.
+        /// </summary>
+        private string xmlFingerprint;
+
+        /// <summary>
         /// For a scanned run. The exchange document is whatever was picked in the Clash
         /// step, read once. It can hold sets, tests, or both, and any of the three is a
         /// normal case. Null when nothing was picked, and then no set is built and no test
@@ -208,6 +233,7 @@ namespace Federator.Addin.Engine
                 ? new RepeatedFailureGuard(this.reports.Images.StopAfterFailures)
                 : null;
             this.reportFolder = null;
+            this.coverageAcrossTheRun = new CoverageAcrossTheRun(this.reports.Coverage);
             this.live = new LiveLine(() => log.ElapsedSeconds);
             this.live.PaceReader = OnTheGroupBefore;
 
@@ -470,6 +496,17 @@ namespace Federator.Addin.Engine
             CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
                 reports.SkipClashOffCoordinates, DateTime.Now, jobs.Count);
 
+            // F127. The codes of every group the scan made, so a side's code is judged against the
+            // whole run, and the picked XML's bytes, read once for every group's coverage.
+            scannedGroupCodes = new List<IList<string>>();
+
+            foreach (FederationJob scanned in jobs)
+            {
+                scannedGroupCodes.Add(scanned.Disciplines);
+            }
+
+            FingerprintThePickedXml();
+
             for (int i = 0; i < jobs.Count; i++)
             {
                 FederationJob job = jobs[i];
@@ -607,6 +644,11 @@ namespace Federator.Addin.Engine
             // one for a scan.
             CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
                 reports.SkipClashOffCoordinates, DateTime.Now, 1);
+
+            // F127. No scan, so the run's codes are the one group's, and the picked XML's bytes are
+            // read once as a scanned run reads them.
+            scannedGroupCodes = null;
+            FingerprintThePickedXml();
 
             // One group of one. The open file run has no scan and no grouping, and the
             // live line says so rather than reading as the first of an unknown number.
@@ -1113,9 +1155,20 @@ namespace Federator.Addin.Engine
             // NWD does not carry.
             WriteWorkbook(job, outcome);
 
-            // F128. Beside the group's workbook, and whether or not the clash step ran,
-            // because the count comes from the sets step and not from the clash.
-            WriteTheGenericWorkbook(job, outcome);
+            // F127. After the clash workbook, because the count check reads it back, and while
+            // the document is still open, because it reads Clash Detective's counts. A group
+            // whose clash was skipped is covered too, its workbook side not compared.
+            InStep(
+                RunSteps.Coverage,
+                () => TakeTheCoverage(document, job, outcome),
+                () => outcome.Coverage == null
+                    ? "no coverage taken"
+                    : Words.Counted(outcome.Coverage.Tests.Count, "test", "tests") + " covered");
+
+            // F128 and F127, Q146 answered B. The internal workbook beside the clash workbook,
+            // holding the Generic Models sheet and the Coverage sheet, written whether or not
+            // the clash step ran, because the count comes from the sets step.
+            WriteTheInternalWorkbook(job, outcome);
 
             InStep(
                 RunSteps.Nwd,
@@ -3032,6 +3085,7 @@ namespace Federator.Addin.Engine
                     }
 
                     plan = ClashTestPlan.From(exchange, units);
+                    outcome.ClashPlan = plan;
 
                     foreach (string unknown in plan.UnknownTestTypes)
                     {
@@ -3048,6 +3102,7 @@ namespace Federator.Addin.Engine
                     // address, and every one is run where it sits. Nothing is created and
                     // nothing is compared, because there is no file to compare against.
                     plan = ClashTestPlan.FromDocument(SavedTests.Read(document), units);
+                    outcome.ClashPlan = plan;
 
                     foreach (string unknown in plan.UnknownTestTypes)
                     {
@@ -3169,6 +3224,12 @@ namespace Federator.Addin.Engine
                 }
 
                 ClashRunOutcome clash = runner.Run(plan);
+
+                // F127. The plan the runner ran, each mirror under its run name and each saved test
+                // with its sides, so the coverage reads each test as the record keeps it, and the
+                // tests of every merge, which its count check does not compare.
+                outcome.ClashPlan = runner.RunPlan ?? plan;
+                outcome.InAMerge = runner.InAMerge;
 
                 // F132 attempt 2. Where every row of the report came from, for the views,
                 // which read the merged report's rows and resolve each by this.
@@ -3626,6 +3687,7 @@ namespace Federator.Addin.Engine
                 log.WriteSkipped("XLSX", outputs.WriteWorkbook ? why : OutputPlan.NotWanted);
                 log.WriteSkipped("HTML", outputs.WriteHtml ? why : OutputPlan.NotWanted);
                 log.WriteSkipped("XML", outputs.WriteXml ? why : OutputPlan.NotWanted);
+                outcome.WorkbookNotReadBecause = "no clash workbook was written, " + (outputs.WriteWorkbook ? why : OutputPlan.NotWanted);
                 return;
             }
 
@@ -3645,6 +3707,7 @@ namespace Federator.Addin.Engine
                 log.WriteSkipped("XLSX", "the numbers are not in " + ReportUnits.Name);
                 log.WriteSkipped("HTML", "the numbers are not in " + ReportUnits.Name);
                 log.WriteSkipped("XML", "the numbers are not in " + ReportUnits.Name);
+                outcome.WorkbookNotReadBecause = "no clash workbook was written, the numbers are not in " + ReportUnits.Name;
                 return;
             }
 
@@ -3652,6 +3715,7 @@ namespace Federator.Addin.Engine
 
             {
                 log.WriteSkipped("XLSX", OutputPlan.NotWanted);
+                outcome.WorkbookNotReadBecause = "no clash workbook was written, " + OutputPlan.NotWanted;
             }
             else
             {
@@ -3693,6 +3757,7 @@ namespace Federator.Addin.Engine
         {
             Say("Writing the workbook for " + job.Building);
             log.WriteAttempted("XLSX", path);
+            bool threw = false;
 
             try
             {
@@ -3700,6 +3765,7 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
+                threw = true;
                 outcome.AddError(
                     "writing the workbook threw " + error.GetType().Name + ": " + error.Message);
                 log.Failure(
@@ -3711,6 +3777,13 @@ namespace Federator.Addin.Engine
             outcome.WorkbookSize = log.WriteFinished("XLSX", path);
             outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
 
+            // F127, the readers' point on the stamp. The count check reads the clash workbook
+            // back only where THIS RUN wrote it whole, because a write that threw leaves last
+            // week's file at the same path, which would be read as this week's.
+            outcome.WorkbookNotReadBecause = threw
+                ? "writing the clash workbook threw, so the file at its path may be an earlier run's and is not read"
+                : outcome.WorkbookOnDisk ? null : "the clash workbook is not on the disk after its write";
+
             CheckTheWorkbook(
                 job,
                 path,
@@ -3719,68 +3792,220 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The Generic Models workbook of the group, F128, a workbook of its own beside the group's
-        /// workbook in the Clash Reports folder, the lead's choice until Bader answers, because
-        /// FR-200 makes the Coverage sheet the second and last sheet of the group's workbook and
-        /// the workbook check allows nothing after it. Written whether or not the clash step ran,
-        /// since the count does not depend on it, and only where a count was taken and a workbook
-        /// is wanted this run. Listed in the files written and read back by size as every file is.
+        /// The coverage of the picked tests in this group, F127's add-in half, Bader's request 2 under Q112:
+        /// every test of the plan against what the run did with it, CoverageRule, Clash Detective's count of
+        /// each test off one walk of the document, the clash workbook read back by the client's sheet's name,
+        /// the count check, the COVERAGE block, one .tsv row a test, and the tally across the run. Every rule
+        /// and every word is Core's, and this gathers the facts. A group whose clash step made no plan writes
+        /// a block saying why and is counted not checked. A throw anywhere here never fails the group, a
+        /// report check never does: it is logged, the block says the coverage is UNKNOWN, and the group is
+        /// counted not checked in RESULT.
         /// </summary>
-        private void WriteTheGenericWorkbook(FederationJob job, JobOutcome outcome)
+        private void TakeTheCoverage(Document document, FederationJob job, JobOutcome outcome)
         {
-            GenericModelsReport report = outcome.GenericModels;
-            GenericModelsSettings settings = reports.GenericModels;
+            string building = Words.Or(job.Building, "this group");
+            string title = CoverageBlock.Title + " " + building;
 
-            if (report == null)
+            try
             {
-                log.WriteSkipped("XLSX", "no Generic Models count was taken for " + job.Building + ", so no Generic Models workbook");
+                if (outcome.ClashPlan == null)
+                {
+                    log.Block(title, CoverageBlock.NotTakenLines(
+                        "the clash step made no plan of tests for it, and the CLASH lines above say why"));
+                    coverageAcrossTheRun.Add(building, null);
+                    return;
+                }
+
+                ICollection<string> groupCodes = CoverageRule.GroupCodesOf(groupExports);
+                IList<TestCoverage> tests = CoverageRule.For(
+                    outcome.ClashPlan,
+                    outcome.Clash,
+                    groupCodes,
+                    CoverageRule.RunCodesOf(scannedGroupCodes, groupCodes),
+                    new ViewpointSettings());
+
+                IList<DocumentTestCount> held = DocumentCensusReader.TestsWithTheirCounts(document, log);
+                string noWorkbook = outcome.WorkbookNotReadBecause;
+                WorkbookTests workbook = null;
+
+                if (noWorkbook == null)
+                {
+                    string path = ReportPaths.Workbook(reportFolder, job.WorkbookName);
+
+                    try
+                    {
+                        workbook = WorkbookTests.ReadFile(path, SheetNames.ForReport(outcome.Report.OutputName), out noWorkbook);
+                    }
+                    catch (Exception error)
+                    {
+                        noWorkbook = "reading the clash workbook back threw " + error.GetType().Name;
+                        log.Failure(
+                            "reading the clash workbook back for the coverage of " + building,
+                            error,
+                            "kept going, its counts are not compared and the group keeps its own result");
+                    }
+                }
+
+                if (workbook != null && workbook.Doubts.Count > 0)
+                {
+                    log.Line("COVERAGE " + building + " the clash workbook read back with "
+                        + Words.Counted(workbook.Doubts.Count, "doubt", "doubts") + ", the first: " + workbook.Doubts[0]);
+                }
+
+                CountCheck check = CountCheck.Judge(
+                    tests, held, workbook, noWorkbook, outcome.Clash == null ? -1 : outcome.Clash.Compacted, outcome.InAMerge);
+
+                CoverageSheetData data = new CoverageSheetData(
+                    exchange == null ? null : exchange.SourcePath,
+                    xmlFingerprint,
+                    exchange == null || exchange.Corrections.Count == 0 ? null : exchange.Corrections[0],
+                    groupExports,
+                    tests,
+                    check,
+                    outcome.Sets == null ? null : outcome.Sets.Results,
+                    ThePriorities());
+
+                log.Block(title, CoverageBlock.Lines(building, data, reports.Coverage));
+
+                // F64. Every test as a row, because the block names a few for each reason and the
+                // .tsv has to carry what the sheet carries.
+                foreach (TestCoverage test in tests)
+                {
+                    log.Row(
+                        "coverage test",
+                        test.Name,
+                        test.Ran ? EventRow.Count(test.ClashesFound) : string.Empty,
+                        CoverageBlock.RowText(test));
+                }
+
+                coverageAcrossTheRun.Add(building, check);
+                coverageAcrossTheRun.AddTests(building, tests);
+                outcome.Coverage = data;
+            }
+            catch (Exception error)
+            {
+                // Never the group's error. The coverage of this group is UNKNOWN, the block says so,
+                // and the group is counted not checked in RESULT.
+                outcome.Coverage = null;
+                log.Failure(
+                    "taking the coverage of " + building,
+                    error,
+                    "kept going, the coverage of this group is UNKNOWN, no Coverage sheet is written for it and the group keeps its own result");
+                log.Block(title, CoverageBlock.NotTakenLines("taking it threw " + error.GetType().Name + ": " + error.Message));
+                coverageAcrossTheRun.Add(building, null);
+            }
+        }
+
+        /// <summary>
+        /// The picked XML's sha256, F127, read once when the run starts so every group names the same bytes,
+        /// and said on one line. Where it cannot be read the line says so and the sheets read UNKNOWN. It is
+        /// read apart from the parse the window made of the file at the press, so a file changed between the
+        /// two would be named by bytes the plan did not parse, a known gap of FileFingerprint.
+        /// </summary>
+        private void FingerprintThePickedXml()
+        {
+            xmlFingerprint = null;
+
+            if (exchange == null || string.IsNullOrEmpty(exchange.SourcePath))
+            {
+                return;
+            }
+
+            try
+            {
+                xmlFingerprint = FileFingerprint.Sha256(exchange.SourcePath);
+                log.Line("COVERAGE the picked XML " + exchange.SourcePath + " reads sha256 " + xmlFingerprint);
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading the sha256 of the picked XML " + exchange.SourcePath,
+                    error,
+                    "kept going, the Coverage sheets and the COVERAGE blocks read its sha256 as UNKNOWN");
+            }
+        }
+
+        /// <summary>
+        /// The internal workbook of the group, Bader's answer B to Q146 of 11 Oct 2026, beside the clash
+        /// workbook in the Clash Reports folder, named by GenericModelsSettings.WorkbookNameFor: the Generic
+        /// Models sheet of F128 and the Coverage sheet of F127 in one save, written with what the group has.
+        /// The clash workbook goes to the client and keeps the Navisworks export's layout. Written whether or
+        /// not the clash step ran, since the count does not depend on it, and only where a workbook is wanted
+        /// this run. Listed in the files written and read back by size as every file is, then read back by
+        /// its sheets' names.
+        /// </summary>
+        private void WriteTheInternalWorkbook(FederationJob job, JobOutcome outcome)
+        {
+            GenericModelsReport generic = outcome.GenericModels;
+            CoverageSheetData coverage = outcome.Coverage;
+            GenericModelsSettings settings = reports.GenericModels;
+            string coverageSheet = reports.Coverage.SheetName;
+
+            if (generic == null && coverage == null)
+            {
+                log.WriteSkipped("XLSX", "no Generic Models count and no coverage were taken for " + job.Building + ", so no internal workbook");
                 return;
             }
 
             if (reportFolder == null)
             {
-                log.WriteSkipped("XLSX", "no report folder, so no Generic Models workbook");
+                log.WriteSkipped("XLSX", "no report folder, so no internal workbook");
                 return;
             }
 
             if (!OutputPlan.From(reports).WriteWorkbook)
             {
-                log.WriteSkipped("XLSX", OutputPlan.NotWanted + ", so no Generic Models workbook");
+                log.WriteSkipped("XLSX", OutputPlan.NotWanted + ", so no internal workbook");
                 return;
             }
 
             string path = ReportPaths.Workbook(reportFolder, settings.WorkbookNameFor(job.WorkbookName));
 
+            if (generic == null)
+            {
+                log.Line("XLSX     internal  no Generic Models count was taken for " + job.Building + ", so the internal workbook holds the Coverage sheet alone");
+            }
+
+            if (coverage == null)
+            {
+                log.Line("XLSX     internal  no coverage was taken for " + job.Building + ", so the internal workbook holds the Generic Models sheet alone");
+            }
+
+            string whyNoGeneric = generic == null ? null : InternalWorkbook.WhyNoGenericSheet(coverage, settings.SheetName, coverageSheet);
+
+            if (whyNoGeneric != null)
+            {
+                log.Line("XLSX     internal  " + whyNoGeneric);
+            }
+
             InStep(
-                RunSteps.GenericWorkbook,
+                RunSteps.InternalWorkbook,
                 () =>
                 {
-                    Say("Writing the Generic Models workbook for " + job.Building);
+                    Say("Writing the internal workbook for " + job.Building);
                     log.WriteAttempted("XLSX", path);
-                    bool threw = false;
+                    IList<string> written = null;
 
                     try
                     {
-                        GenericWorkbook.Write(path, report, job.Building, settings.SheetName);
+                        written = InternalWorkbook.Write(path, job.Building, generic, settings.SheetName, coverage, coverageSheet);
                     }
                     catch (Exception error)
                     {
-                        // Never the group's error, the lead's decision on attempt 2. A FILE THIS
-                        // TOOL DID NOT WRITE IS NEVER LISTED AS WRITTEN: the save goes straight
-                        // onto the final path, so a throw with last week's file still there must
-                        // not read that file's size back as this run's, the breaker's finding on
-                        // the second reading of attempt 2.
-                        threw = true;
+                        // Never the group's error, the lead's decision on attempt 2 of F128. A FILE THIS
+                        // TOOL DID NOT WRITE IS NEVER LISTED AS WRITTEN: the save goes straight onto the
+                        // final path, so a throw with last week's file still there must not read that
+                        // file's size back as this run's, the breaker's finding on F128.
                         log.Failure(
-                            "writing the Generic Models workbook for " + job.Building,
+                            "writing the internal workbook for " + job.Building,
                             error,
                             "kept going, nothing is listed as written, the path is looked at for a file of an earlier run, and the group keeps its own result");
                     }
 
-                    if (threw)
+                    if (written == null)
                     {
-                        outcome.GenericWorkbookSize = -1;
-                        outcome.GenericWorkbookOnDisk = false;
+                        outcome.InternalWorkbookSize = -1;
+                        outcome.InternalWorkbookOnDisk = false;
                         // A file at the path is not called an earlier run's untouched, because a save
                         // that threw after opening the path, a full disk or a fault while writing the
                         // package, leaves the old file cut short and File.Exists still reads true.
@@ -3790,11 +4015,19 @@ namespace Federator.Addin.Engine
                         return;
                     }
 
-                    outcome.GenericWorkbookSize = log.WriteFinished("XLSX", path);
-                    outcome.GenericWorkbookOnDisk = outcome.GenericWorkbookSize >= 0;
+                    outcome.InternalWorkbookSize = log.WriteFinished("XLSX", path);
+                    outcome.InternalWorkbookOnDisk = outcome.InternalWorkbookSize >= 0;
+
+                    if (outcome.InternalWorkbookOnDisk)
+                    {
+                        foreach (string line in InternalWorkbook.Check(path, written))
+                        {
+                            log.Line("XLSX     internal  " + line);
+                        }
+                    }
                 },
-                () => outcome.GenericWorkbookOnDisk
-                    ? "wrote " + outcome.GenericWorkbookSize + " bytes"
+                () => outcome.InternalWorkbookOnDisk
+                    ? "wrote " + outcome.InternalWorkbookSize + " bytes"
                     : "nothing written");
         }
 

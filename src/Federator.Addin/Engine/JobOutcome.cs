@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Clash;
+using Federator.Core.Coverage;
 using Federator.Core.Diagnostics;
 using Federator.Core.Health;
 using Federator.Core.Generic;
@@ -21,6 +22,7 @@ namespace Federator.Addin.Engine
             FailedFiles = new List<string>();
             ElementCount = GroupSize.Unknown;
             ViewpointsCreated = GroupSize.Unknown;
+            WorkbookNotReadBecause = "the workbook step was not reached";
         }
 
         public FederationJob Job { get; private set; }
@@ -206,10 +208,40 @@ namespace Federator.Addin.Engine
         /// <summary>The Generic Models count of this group, F128, or null when none was taken.</summary>
         public GenericModelsReport GenericModels { get; set; }
 
-        /// <summary>Size read back off the disk, or minus one when the Generic Models workbook is not there.</summary>
-        public long GenericWorkbookSize { get; set; }
+        /// <summary>
+        /// Size read back off the disk, or minus one when the internal workbook is not there, the workbook
+        /// beside the clash workbook holding the Generic Models sheet and the Coverage sheet, Q146 answered B.
+        /// </summary>
+        public long InternalWorkbookSize { get; set; }
 
-        public bool GenericWorkbookOnDisk { get; set; }
+        public bool InternalWorkbookOnDisk { get; set; }
+
+        /// <summary>
+        /// The tests the clash step planned for this group, F127, the picked file's or the ones saved in the
+        /// document, or null where it made no plan. The coverage reads every test of it.
+        /// </summary>
+        public ClashTestPlan ClashPlan { get; set; }
+
+        /// <summary>
+        /// The tests of every mirrored pair F132's rule merges in this group, F127, the kept test and each
+        /// mirror by its run name, which the count check does not compare, or null where the clash step
+        /// did not run.
+        /// </summary>
+        public ICollection<string> InAMerge { get; set; }
+
+        /// <summary>
+        /// The coverage of this group, F127, what its Coverage sheet and its COVERAGE block are written
+        /// from, or null where none was taken.
+        /// </summary>
+        public CoverageSheetData Coverage { get; set; }
+
+        /// <summary>
+        /// Why the count check reads no clash workbook for this group, or null where THIS RUN wrote it whole,
+        /// the readers' point on F127 that a write that threw leaves last week's file at the same path to be
+        /// read as this week's. Set by the workbook step on every path through it, and until then it says the
+        /// step was not reached.
+        /// </summary>
+        public string WorkbookNotReadBecause { get; set; }
 
         /// <summary>What the clash step did for this group, or null when it did not run.</summary>
         public ClashRunOutcome Clash { get; set; }

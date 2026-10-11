@@ -226,6 +226,41 @@ namespace Federator.Addin.Engine
         /// </summary>
         public IList<string> MirrorNames { get; private set; }
 
+        /// <summary>
+        /// The plan this run ran, F127: the picked file's tests resolved against the document's sets
+        /// and each mirror under the name it runs under, or the saved tests read with their sides,
+        /// so the coverage reads every test by the name the record keeps it under and each side by
+        /// its set. Null where the run stopped before it had one, and the coverage then reads the
+        /// plan it was handed.
+        /// </summary>
+        public ClashTestPlan RunPlan { get; private set; }
+
+        /// <summary>
+        /// The names of the tests of every mirrored pair F132 merges, the kept test and each mirror
+        /// by the name it runs under, for the coverage's count check, which compares none of them
+        /// because the clash workbook carries a mirror's clashes in the kept test's block. Empty
+        /// where no pair merges.
+        /// </summary>
+        public ICollection<string> InAMerge
+        {
+            get
+            {
+                HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);
+
+                foreach (MirrorMerge merge in merges)
+                {
+                    names.Add(merge.Kept.Name);
+
+                    foreach (MirrorPair pair in merge.Pairs)
+                    {
+                        names.Add(pair.MirrorName);
+                    }
+                }
+
+                return names;
+            }
+        }
+
         /// <summary>How the discipline is read off a source file name. A setting.</summary>
         public ContainerNameSettings NameSettings { get; set; }
 
@@ -377,6 +412,7 @@ namespace Federator.Addin.Engine
             mergeOfMirror.Clear();
             pairOfMirror.Clear();
             MirrorNames = null;
+            RunPlan = null;
             renameFailed.Clear();
             picturesWaiting.Clear();
             rowAddresses.Clear();
@@ -487,6 +523,8 @@ namespace Federator.Addin.Engine
 
                     resolved = resolved.WithMirrorsNamed(mirrored);
                 }
+
+                RunPlan = resolved;
 
                 foreach (SkippedClashTest test in resolved.Skipped)
                 {
@@ -863,6 +901,11 @@ namespace Federator.Addin.Engine
                         rightItems = ItemsOn(document, right, byPath, planned.Right.Locator);
                     }
                 }
+
+                // F127. The two counts read off this test's own sides, which decide both skips
+                // below, kept on the record so the coverage gives a skipped test the reason the
+                // counts that skipped it give.
+                outcome.RecordSides(planned.Name, leftItems, rightItems);
 
                 TestReport summary = ReportFor(planned);
 
@@ -1871,6 +1914,10 @@ namespace Federator.Addin.Engine
 
             Dictionary<string, int> itemsByLocator =
                 CountItemsPerSet(document, byPath, resolved.DistinctLocators());
+
+            // F127. The very counts the creation plan decides on, kept on the record, so the
+            // coverage reads why a test was not created off what decided it.
+            outcome.KeepItemsByLocator(itemsByLocator);
             CreationPlan creation = CreationPlan.For(absent, itemsByLocator);
             outcome.NotCreatedASideFindsNothing = creation.NotCreatedCount;
             log.Line(creation.CountedLine(resolved.TestsInFile));

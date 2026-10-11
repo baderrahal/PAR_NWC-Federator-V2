@@ -66,17 +66,31 @@ namespace Federator.Core.Coverage
         public ReadOnlyCollection<string> NotInTheXml { get; private set; }
 
         /// <summary>
+        /// Why a test of a mirrored pair F132 merges is not compared, said on its row and in the block.
+        /// </summary>
+        public const string InAMergeWhy =
+            "it is a test of a mirrored pair F132's rule merges, whose clashes may sit in the kept test's block of the"
+            + " clash workbook, so that block may not be one test's count and this test is not compared";
+
+        /// <summary>
         /// The verdict for each test of the coverage. The document's counts are null where
         /// they were not read, and the workbook is null where none was written or read, with
         /// the reason where known. Compacted is the clash step's own count of Resolved clashes
-        /// Compact removed, minus one where compacting was not asked for.
+        /// Compact removed, minus one where compacting was not asked for. InAMerge names the
+        /// tests of every mirrored pair F132's rule merges, the kept test and each mirror by the
+        /// name it ran under, null where no pair merges: a merge carries a mirror's clashes in
+        /// the kept test's block and leaves no block of the mirror's, so neither block is one
+        /// test's count and each is NOT COMPARED, never a FAILED line the merge made. The merge
+        /// can still refuse at run time and say so in its MIRROR MERGE lines, and these tests
+        /// are not compared either way, since which happened is not handed in.
         /// </summary>
         public static CountCheck Judge(
             IList<TestCoverage> tests,
             IList<DocumentTestCount> document,
             WorkbookTests workbook,
             string noWorkbookBecause,
-            int compacted)
+            int compacted,
+            ICollection<string> inAMerge = null)
         {
             if (tests == null)
             {
@@ -102,7 +116,7 @@ namespace Federator.Core.Coverage
                 // would count a test that does not exist.
                 check.tests.Add(timesNamed[test.Name] > 1
                     ? NotCompared(test.Name, "the name is on " + timesNamed[test.Name] + " tests of the picked file")
-                    : One(test, document, workbook, noWorkbookBecause, compacted));
+                    : One(test, document, workbook, noWorkbookBecause, compacted, inAMerge));
             }
 
             if (document != null)
@@ -189,7 +203,8 @@ namespace Federator.Core.Coverage
             IList<DocumentTestCount> document,
             WorkbookTests workbook,
             string noWorkbookBecause,
-            int compacted)
+            int compacted,
+            ICollection<string> inAMerge)
         {
             if (workbook == null)
             {
@@ -230,6 +245,11 @@ namespace Federator.Core.Coverage
             int leaves = d == null ? -1 : d.Leaves;
             int rows = w == null ? -1 : w.Rows;
             int clashes = w == null ? -1 : w.Clashes;
+
+            if (inAMerge != null && inAMerge.Contains(test.Name))
+            {
+                return new CountedTest(test.Name, CountVerdict.NotCompared, d != null, top, leaves, w != null, rows, clashes, InAMergeWhy);
+            }
 
             if (d != null && !d.Counted)
             {

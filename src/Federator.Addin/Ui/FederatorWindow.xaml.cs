@@ -2167,10 +2167,13 @@ namespace Federator.Addin.Ui
         {
             try
             {
+                // F127. The coverage of this run, the engine's own tally, so RESULT carries every
+                // group's COVERAGE FAILED line and the counts of the tests once across the run.
                 log.WriteResultBlock(
                     engine == null ? null : engine.CoordinatesAcrossTheRun,
                     engine == null || engine.MakesViewpoints,
-                    generic: engine == null ? null : engine.GenericModelsAcrossTheRun);
+                    engine == null ? null : engine.CoverageAcrossTheRun,
+                    engine == null ? null : engine.GenericModelsAcrossTheRun);
             }
             catch (Exception error)
             {

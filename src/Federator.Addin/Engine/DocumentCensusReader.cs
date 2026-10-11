@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
 using Autodesk.Navisworks.Api.DocumentParts;
+using Federator.Core.Coverage;
 using Federator.Core.Diagnostics;
 
 namespace Federator.Addin.Engine
@@ -144,6 +146,118 @@ namespace Federator.Addin.Engine
             catch (Exception)
             {
                 return DocumentCensus.NotCounted;
+            }
+        }
+
+        /// <summary>
+        /// Every clash test the document holds with its two counts, F127, for the count check: the results
+        /// at the top level, a result group counting as one, which is one clash workbook row each, and every
+        /// clash under it, the clashes inside each group counted, which is the Clashes cell. One walk after
+        /// the clash step, so the counts are what the NWF holds after Compact and include the tests a weekly
+        /// run did not run. The same walk as Results, sharing ResultsUnder, every wrapper disposed and no
+        /// handle kept. A test whose count throws is minus one on both and logged, and the walk goes on. A
+        /// walk that cannot start returns null, logged, which the check reads as Clash Detective's counts
+        /// not read.
+        /// </summary>
+        public static IList<DocumentTestCount> TestsWithTheirCounts(Document document, RunLog log)
+        {
+            if (document == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                DocumentClash clash = document.GetClash();
+                DocumentClashTests tests = clash == null ? null : clash.TestsData;
+
+                if (tests == null)
+                {
+                    log.Line("COVERAGE Clash Detective's tests could not be reached, so their counts were not read");
+                    return null;
+                }
+
+                List<DocumentTestCount> counts = new List<DocumentTestCount>();
+                CountsUnderTests(tests.Tests, string.Empty, counts, log);
+                return counts;
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "reading Clash Detective's count of every test for the coverage",
+                    error,
+                    "kept going, every test of this group reads as not compared, Clash Detective's counts not read");
+                return null;
+            }
+        }
+
+        private static void CountsUnderTests(SavedItemCollection items, string folder, List<DocumentTestCount> counts, RunLog log)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                using (SavedItem item = items[i])
+                {
+                    ClashTest test = item as ClashTest;
+
+                    if (test != null)
+                    {
+                        counts.Add(CountOf(test, folder, log));
+                        continue;
+                    }
+
+                    GroupItem group = item as GroupItem;
+
+                    if (group != null)
+                    {
+                        CountsUnderTests(
+                            group.Children,
+                            folder.Length == 0 ? group.DisplayName : folder + "/" + group.DisplayName,
+                            counts,
+                            log);
+                    }
+                }
+            }
+        }
+
+        /// <summary>One test's two counts. A ClashTest is tested for before a folder, as ResultsUnderTests does.</summary>
+        private static DocumentTestCount CountOf(ClashTest test, string folder, RunLog log)
+        {
+            string name = string.Empty;
+
+            try
+            {
+                name = test.DisplayName;
+                SavedItemCollection children = test.Children;
+                int topLevel = 0;
+
+                if (children != null)
+                {
+                    for (int i = 0; i < children.Count; i++)
+                    {
+                        using (SavedItem child = children[i])
+                        {
+                            if (child is ClashResultGroup || child is ClashResult)
+                            {
+                                topLevel++;
+                            }
+                        }
+                    }
+                }
+
+                return new DocumentTestCount(name, folder, topLevel, ResultsUnder(children));
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "counting the results of the test \"" + name + "\" for the coverage",
+                    error,
+                    "kept going, its counts read minus one and it is not compared");
+                return new DocumentTestCount(name, folder, DocumentCensus.NotCounted, DocumentCensus.NotCounted);
             }
         }
 

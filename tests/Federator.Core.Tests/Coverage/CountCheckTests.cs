@@ -558,8 +558,8 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// A group with no test sheet to read is not compared and says why: a coordinates skip,
-        /// whose workbook holds the Coverage sheet alone by Bader's answer B to Q126, outputs off or
-        /// a refused unit.
+        /// which writes no clash workbook and whose Coverage sheet is in the internal workbook by
+        /// Bader's answers B to Q126 and Q146, outputs off or a refused unit.
         /// </summary>
         [Test]
         public void NoWorkbookIsNotComparedAndTheReasonIsKept()
@@ -588,6 +588,48 @@ namespace Federator.Core.Tests
             Assert.That(check.Tests.Count, Is.EqualTo(1));
             Assert.That(check.NotInTheXml.Count, Is.EqualTo(1));
             Assert.That(check.NotInTheXml[0], Is.EqualTo("Old"));
+        }
+
+        // ---------- the mirrored pairs F132 merges ----------
+
+        /// <summary>
+        /// F132 merges a mirror's clashes into the kept test's block of the clash workbook and leaves no
+        /// block of the mirror's, so the kept test's block reads more rows than Clash Detective holds for
+        /// it and the mirror reads no block at all. Neither is one test's count, so both are NOT COMPARED
+        /// with why, and no COVERAGE FAILED line is made by the merge. Their numbers still ride beside them.
+        /// </summary>
+        [Test]
+        public void TheTestsOfAMergeAreNotComparedAndNeverAFailedLine()
+        {
+            CountCheck check = CountCheck.Judge(
+                Tests(Ran("K"), Ran("M (mirror)")),
+                Document(InDocument("K", 2, 2), InDocument("M (mirror)", 3, 3)),
+                Workbook("K", 4, 0),
+                null,
+                -1,
+                new List<string> { "K", "M (mirror)" });
+
+            Assert.That(Judged(check, "K").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "K").Why, Is.EqualTo(CountCheck.InAMergeWhy));
+            Assert.That(Judged(check, "K").WorkbookRows, Is.EqualTo(4));
+            Assert.That(Judged(check, "K").DocumentTopLevel, Is.EqualTo(2));
+            Assert.That(Judged(check, "M (mirror)").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "M (mirror)").InWorkbook, Is.False);
+            Assert.That(check.FailedLines("100000"), Is.Empty);
+        }
+
+        /// <summary>The break: the same numbers with no merge named are both FAILED, so the rule above is the merge's alone.</summary>
+        [Test]
+        public void TheSameNumbersWithNoMergeAreFailed()
+        {
+            CountCheck check = Judge(
+                Tests(Ran("K"), Ran("M (mirror)")),
+                Document(InDocument("K", 2, 2), InDocument("M (mirror)", 3, 3)),
+                Workbook("K", 4, 0));
+
+            Assert.That(Judged(check, "K").Verdict, Is.EqualTo(CountVerdict.Failed));
+            Assert.That(Judged(check, "M (mirror)").Verdict, Is.EqualTo(CountVerdict.Failed));
+            Assert.That(check.FailedLines("100000").Count, Is.EqualTo(2));
         }
 
         // ---------- the FAILED line ----------
