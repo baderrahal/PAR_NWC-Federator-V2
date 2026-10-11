@@ -2,15 +2,28 @@
 
 Newest entry at the top.
 
-## 2026-10-11 The loop, turn 6, F141 attempt 2 of two, the camera before the paint, written by the lead
+## 2026-10-11 The loop, turn 6, F141 attempt 2 of two, every camera read before the first view, written by the lead
 
-Branch fix-F141c off main 89082a2. Set 07's fast check of 1A02MM proved attempt 1, no view threw, and showed
-F141-R1 on every view: 69 written, marked and read back with no material override, the hidden models kept.
-P18's measured order read the camera before any paint, and WriteOne read it between the paint and the record
-through TestsViewpointForResult. The camera is now read and framed first. The rule is in addin.md. Proved
-here: the build, 0 warnings and 0 errors, and Core tests 2862 passed, 0 failed, 0 skipped, nothing under Core
-changed. What remains: the next fast check of 1A02MM, where 69 views written and read back with their dim and
-paint proves it. Known bugs: none new. What comes next: the cut down 1A04PK's numbers and the speed fix.
+Branch fix-F141c off main 89082a2.
+
+What was done:
+- Set 07's fast check of 1A02MM proved attempt 1, no view threw, and showed F141-R1 on every view: 69
+  written, marked and read back with no material override, the hidden models kept, CHECK 3 holding and
+  CHECK 4 failing on 69 of 69
+- P18's measured shape read every camera in its walk before any view, where WriteOne read each between the
+  paint and the record through TestsViewpointForResult. Every view's camera is now read once before the
+  first view is touched and framed per view after its paint. A first form read each camera just before its
+  own view's hiding, and the breaker found that read under the paint the view before left, so it was
+  reshaped. The rule is in addin.md
+- Proved here: the solution builds with 0 warnings and 0 errors, and Core tests 2862 passed, 0 failed, 0
+  skipped before and after, nothing under Core changed
+
+What remains: the fast check of 1A02MM on main with this merged, where 69 views created, no view failed on
+its dimming and CHECK 4 holding prove it, steps 629 to 633 of steps\03_bader_next.md.
+
+Known bugs: none new.
+
+What comes next: the three test cut of 1A04PK's measured split of a picture row, then the speed fix.
 
 ## 2026-10-11 The loop, turn 6, F143 the harvest answers between rows, attempt 2 of two, written by the lead
 
