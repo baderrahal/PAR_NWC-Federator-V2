@@ -54,8 +54,14 @@ namespace Federator.Addin.Engine
         /// </summary>
         internal PictureModels Read(string testName, ClashTest test)
         {
-            if (!on || stopped || document == null || test == null)
+            if (!on || document == null || test == null)
             {
+                return null;
+            }
+
+            if (!PutBackWhatIsStillChanged(testName))
+            {
+                tally.KeptEvery();
                 return null;
             }
 
@@ -112,7 +118,7 @@ namespace Federator.Addin.Engine
         /// </summary>
         internal IDisposable Hide(string testName, PictureModels rule)
         {
-            if (rule == null || !rule.HidesAny || stopped)
+            if (rule == null || !rule.HidesAny || !PutBackWhatIsStillChanged(testName))
             {
                 return null;
             }
@@ -177,8 +183,31 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// False where the hiding has stopped for the step. A put back that failed after an earlier
+        /// test is tried again first, since a hide adds to what is hidden and resets nothing, so the
+        /// models it left hidden would stay hidden in every later picture, and where it fails again
+        /// the hiding stops for the step and every later test keeps every model shown.
+        /// </summary>
+        private bool PutBackWhatIsStillChanged(string testName)
+        {
+            if (stopped)
+            {
+                return false;
+            }
+
+            if (needsPutBack && !PutTheStateBack("the test before " + testName + ", tried again"))
+            {
+                stopped = true;
+                log.Line("IMAGES   the hidden state could not be put back twice, so no model is hidden for any later picture of this clash step");
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Puts the hidden state back, true where it read back. One that fails is said and left marked,
-        /// so the end of the clash step tries it again.
+        /// so the next test or the end of the clash step tries it again.
         /// </summary>
         private bool PutTheStateBack(string testName)
         {
@@ -203,7 +232,7 @@ namespace Federator.Addin.Engine
                 log.Failure(
                     "putting the hidden state back after the pictures of " + testName,
                     error,
-                    "kept going, it is tried again at the end of the clash step");
+                    "kept going, it is tried again before the next test's pictures and at the end of the clash step");
                 return false;
             }
         }
@@ -270,8 +299,10 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            indexOfFile = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            sharedFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            // Built whole and only then kept, so a read that throws part way leaves no half map
+            // that would miss a file name two models share.
+            Dictionary<string, int> index = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> shared = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             for (int i = 0; i < document.Models.Count; i++)
             {
@@ -279,16 +310,19 @@ namespace Federator.Addin.Engine
                 {
                     string file = model.FileName ?? string.Empty;
 
-                    if (indexOfFile.ContainsKey(file))
+                    if (index.ContainsKey(file))
                     {
-                        sharedFiles.Add(file);
+                        shared.Add(file);
                     }
                     else
                     {
-                        indexOfFile.Add(file, i);
+                        index.Add(file, i);
                     }
                 }
             }
+
+            sharedFiles = shared;
+            indexOfFile = index;
         }
 
         /// <summary>What a test's hiding hands back: disposed once its pictures are taken, it puts the hidden state back and counts the test.</summary>

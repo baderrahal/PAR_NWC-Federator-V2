@@ -129,7 +129,7 @@ namespace Federator.Core.Report
 
             if (empty > 0)
             {
-                return Every(empty + (empty == 1 ? " side" : " sides") + " of the test hold no item");
+                return Every(empty + (empty == 1 ? " side of the test holds" : " sides of the test hold") + " no item");
             }
 
             if (shared > 0)
@@ -217,7 +217,7 @@ namespace Federator.Core.Report
                 : ", " + (ModelsHidden / (double)TestsHidden).ToString("0.#", CultureInfo.InvariantCulture) + " model(s) hidden on average";
 
             return "IMAGES   only the models of each test shown for its pictures: " + TestsHidden + " test(s) with models hidden"
-                + each + ", " + TestsKeptEvery + " test(s) kept every model shown, why on the IMAGES lines above, reading the tests' sides took "
+                + each + ", " + TestsKeptEvery + " test(s) kept every model shown, why said above on an IMAGES or a failure line, a repeated reason counted rather than written again, reading the tests' sides took "
                 + ReadingSeconds.ToString("0.000", CultureInfo.InvariantCulture) + "s and the hiding and the putting back took "
                 + HidingSeconds.ToString("0.000", CultureInfo.InvariantCulture) + "s";
         }

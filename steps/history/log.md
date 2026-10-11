@@ -26,6 +26,7 @@ Known bugs: none new. A view and a picture of one test can show different models
 pair's teams and the clashing items' homes, Q118 A, the pictures the models the test's sides live in.
 
 What comes next: F147, long runs from slowing, and F146, the renumber answering, then the proof run.
+
 ## 2026-10-11 The loop, turn 6, F148 two tests that filled the shared temp folder, written by the lead
 
 Branch fix-F148 off main cdf8d4e. Found when fix-Q150's pre-commit refused its commit.

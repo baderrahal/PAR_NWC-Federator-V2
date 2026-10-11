@@ -609,7 +609,7 @@ namespace Federator.Addin.Engine
                         log.Failure(
                             "ending the clash step's hiding of the models for the pictures",
                             error,
-                            "kept going, the sets index is released and the views step reads the hidden state again");
+                            "kept going, the sets index is released, and whatever is still hidden is carried into the views, the NWF and the NWD");
                     }
                     finally
                     {
@@ -1181,20 +1181,33 @@ namespace Federator.Addin.Engine
                                 // harvest ends. The harvest reads a handle resolved after the hide,
                                 // the order 5z-zc measured, and the one read before is not read again.
                                 IDisposable hidden = modelsShown == null ? null : modelsShown.Hide(planned.Name, pictureModels);
+                                bool harvested = false;
 
                                 using (hidden)
                                 {
-                                    if (hidden == null)
-                                    {
-                                        harvest.Into(document, clashTests, after, Report, summary);
-                                    }
-                                    else
+                                    if (hidden != null)
                                     {
                                         using (ClashTest underTheHide = Resolve(clashTests, address, planned.Name))
                                         {
-                                            harvest.Into(document, clashTests, underTheHide ?? after, Report, summary);
+                                            if (underTheHide != null)
+                                            {
+                                                harvest.Into(document, clashTests, underTheHide, Report, summary);
+                                                harvested = true;
+                                            }
+                                            else
+                                            {
+                                                log.Line("IMAGES   " + planned.Name + " was not found again once the other models were hidden, "
+                                                    + "so its rows and pictures are read after the hidden state is put back, with every model shown");
+                                            }
                                         }
                                     }
+                                }
+
+                                // Read through the handle of before the hide only where the
+                                // document is again as it was when that handle was read.
+                                if (!harvested)
+                                {
+                                    harvest.Into(document, clashTests, after, Report, summary);
                                 }
 
                                 harvesting.Changed(planned.Name);

@@ -77,7 +77,7 @@ namespace Federator.Core.Tests
             PictureModels rule = PictureModels.For(10, new[] { Side(0), new PictureSide(new int[0], 0, 0, 0) });
 
             Assert.That(rule.HidesAny, Is.False);
-            Assert.That(rule.WhyEveryModel, Does.StartWith("1 side of the test hold no item"));
+            Assert.That(rule.WhyEveryModel, Does.StartWith("1 side of the test holds no item"));
         }
 
         [Test]
@@ -139,7 +139,8 @@ namespace Federator.Core.Tests
             Assert.That(tally.TestsKeptEvery, Is.EqualTo(1));
             Assert.That(tally.Line(true), Is.EqualTo(
                 "IMAGES   only the models of each test shown for its pictures: 2 test(s) with models hidden, "
-                + "8.5 model(s) hidden on average, 1 test(s) kept every model shown, why on the IMAGES lines above, "
+                + "8.5 model(s) hidden on average, 1 test(s) kept every model shown, why said above on an IMAGES or a failure line, "
+                + "a repeated reason counted rather than written again, "
                 + "reading the tests' sides took 0.103s and the hiding and the putting back took 0.022s"));
         }
 

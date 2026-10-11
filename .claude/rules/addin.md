@@ -805,8 +805,9 @@ well as to pass.
   hands back what puts the state back by RestoreHiddenState after the test. NO CLASH HANDLE IS READ ACROSS
   THE HIDE: OneTest reads the models off the test it holds and hands harvest.Into a handle resolved after
   the hide, and RenderThePicturesWaiting reads them off a handle released before the hide and pictures
-  through one resolved after, the order 5z-zc ran in. A put back that fails is tried again at the end of
-  the step and said, and a hidden state that cannot be read stops the hiding for the step. Which models
+  through one resolved after, the order 5z-zc ran in. A put back that fails is tried again before the next
+  test and at the end of the step, since a hide only adds, and where it fails twice, or the hidden state
+  cannot be read, the hiding stops for the step and every later test keeps every model shown. Which models
   stay shown is Core's PictureModels, and a test kept with every model shown is said with why on an
   IMAGES line
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
