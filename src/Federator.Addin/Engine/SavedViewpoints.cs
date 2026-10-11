@@ -948,7 +948,10 @@ namespace Federator.Addin.Engine
         /// A copy of that camera zoomed to that box, P16: ZoomBox on a copy keeps the view
         /// direction and puts every centre inside the view, through a save, a reopen and a
         /// press, 5z-x. The box is built from the two corners, P5, 5z-h. The caller disposes
-        /// what comes back, and the camera handed in is left as it was.
+        /// what comes back, and the camera handed in is left as it was. THE CAMERA HANDED IN
+        /// OUTLIVES THE COPY: P16 kept it alive while the copy was read, and set 06's run of
+        /// 1A02MM, which disposed it first, threw ObjectDisposedException on the copy's
+        /// Position for all 47 framed views, F141.
         /// </summary>
         public static Viewpoint Framed(Viewpoint camera, FramingBox box)
         {
