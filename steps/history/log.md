@@ -2,6 +2,74 @@
 
 Newest entry at the top.
 
+## 2026-10-08 The loop, turn 6, F130 the Shift range in the group list, FR-179, Core done and the add-in built
+
+Bader's request 5 under Q112, FR-179 of steps\fix-round.md read whole with its two measurements,
+turn5\measure-shift.md of 2026-10-04 and turn5\measure-shift-driver-result.md of 2026-10-05, in his
+order of the evening of 8 Oct 2026, Q147 item 3, F114, then F129, F130 and F109, under Q143's
+limits, two attempts, one reviewer, no breaker, no new probe and no change to tools\loop. Branch
+fix-F130 off origin/main ca0d9b9 in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f130, every
+file named below under turn6 with the prefix f130-. Navisworks was not started, no probe and no
+harness was run.
+
+- BEFORE, on ca0d9b9 from an empty git status: the solution built --no-incremental with 0 warnings
+  and 0 errors, f130-build-before.txt, and the Core tests 2796 passed, 0 failed, 0 skipped,
+  f130-tests-before.txt
+- ROOT CAUSE, the measurement of 2026-10-04 read again on ca0d9b9. The Run column was a stock
+  DataGridCheckBoxColumn bound to Include with no handler, FederatorWindow.xaml lines 184 to 191,
+  whose box is not hit testable when not editing, so the cell took the click, and Shift only
+  widened the row selection, which nothing in the window read. Nothing wrote a range of ticks
+- THE RULE. `Federator.Core.Grouping.ShiftRange.Of` is handed the rows in the order the grid shows
+  them, the anchor, the row clicked last, with the state that click left it in, the row clicked
+  now with the state its own box flipped to, and whether Shift was held, and hands back
+  `RowsToSet`, the rows and the one state they take. With Shift, every row from the anchor to the
+  row clicked, both ends included, in the shown order, at the anchor's state, so a sorted or
+  filtered grid ranges over what the person sees. Anything else is a plain click, the row clicked
+  alone at its own state: no Shift, no anchor, an anchor no longer shown, the anchor itself, or a
+  row the grid does not show. Rows match by reference. `ShiftRange.HelpLine` is the grey line
+  under the list, twelve words. Tests ShiftRangeTests, eleven. Against a stub holding today's
+  behaviour, the row clicked alone, 4 failed and 7 passed, the Shift click down, up, across a
+  sorted order and across a filtered one, f130-tests-failing-first.txt
+- THE WINDOW. The Run column is a DataGridTemplateColumn, header Run and width 40 as before, read
+  only so the grid begins no edit that swaps the box out under the click, SortMemberPath Include so
+  it still sorts, its cell style still disabling a blocked row. Its CheckBox is bound TwoWay to
+  Include and raises Click into `OnRunBoxClicked`, which reads Keyboard.Modifiers at that click,
+  hands the rule the rows of `GroupsGrid.Items`, sets each row handed back through Include, so a
+  blocked row still refuses and TickedGroupKeys, the GROUPS block and the jobs read the ticks as
+  before, keeps the anchor and calls `RefreshOutputsSummary` once. `Regroup` drops the anchor.
+  The grey line, x:Name RunRangeHelp, is set off `ShiftRange.HelpLine` in the constructor
+- DECIDED HERE. The anchor after a Shift click is the row just clicked at the state the range took,
+  the brief's row last clicked, where Explorer keeps the first anchor. The preview refreshed is
+  the Outputs summary, N groups ticked to run, refreshed on a plain click too, where before it
+  read stale after a tick. A plain click is meant to flip the box on the one click, where the
+  stock column took a click to select the row first, read off its IL and never clicked, and
+  whether it does in Navisworks is UNKNOWN until step 546
+- FOUND AND NOT CHANGED. The stand-in window of tools\loop still builds the stock column, line 109
+  of tools\loop\StandIn\ToolWindow.cs on ca0d9b9, since tools\loop is not changed in this pass.
+  Every untick still goes back to ticked when the groups are made again, measured on 2026-10-04
+  and not asked of F130
+- AFTER, from an empty git status at 891828d: the Core tests 2807 passed, 0 failed, 0 skipped,
+  f130-tests-after.txt, the solution with the add-in built --no-incremental with 0 warnings and 0
+  errors, f130-build-after.txt, check-locals and check-imports clean over src, f130-check-locals.txt
+  and f130-check-imports.txt. The rules in .claude\rules\core.md, A SHIFT CLICK ON A RUN BOX, and
+  .claude\rules\addin.md, THE RUN COLUMN OF THE GROUP LIST, the order line 55 and the F130 section
+  of steps\01_next.md
+- READ BY THE REVIEWER at 891828d, APPROVE, its one record point, the grey line twelve words and
+  not eleven, made true here and in steps\01_next.md. Then main eaad566, F114 merged, taken in at
+  4e5384f with both sides kept and no conflict, its pre-commit 2785 passed, 0 failed, 0 skipped,
+  f130b-precommit-merge.txt. F130's proof steps renumbered from 507 to 545 to 542 to 580 to follow
+  F114's 507 to 541, with every reference in steps\01_next.md and .claude\rules\addin.md. On
+  4e5384f from an empty git status: the solution --no-incremental 0 warnings and 0 errors,
+  f130b-build-after.txt, the Core tests 2785 passed, 0 failed, 0 skipped, f130b-tests-after.txt,
+  the 11 of ShiftRangeTests among them, fewer than 2807 since F114 took ClashViewpointPlanTests out
+- WHAT WAITS for the local machine: steps 542 to 580 of steps\03_bader_next.md, by hand, since the
+  window driver cannot carry Shift without real input: a plain click, a Shift click down, a Shift
+  click up, the Outputs summary, a Shift click after a new scan acting as a plain click, a Shift
+  click across the grid sorted by its Run column, and the GROUPS block of RUN SETTINGS naming the
+  one group left ticked
+
+Merged as pull request UNKNOWN on 2026-10-11 by the lead, first of Bader's order of that morning, read APPROVE by its one reviewer on 8 Oct, turn6\f130-review.json, with the twelve words corrected and main taken in.
+
 ## 2026-10-11 The loop, turn 5, the plan of the day: Bader's three answers, F130, F129 and F109 merged, the Coverage sheet moved, main installed and the proof runs of 1A02MM and 1A04PK
 
 Picked up by Bader's message headed GOOD MORNING, CONTINUE THE LOOP, BADER, 11 OCT 2026. The System log, read in Arab
