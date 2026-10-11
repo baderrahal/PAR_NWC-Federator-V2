@@ -342,6 +342,12 @@ The loop runs these on its own copy, 1A02MM again from a fresh set, after main w
 644. Compare the Grid Location and Level cells of the rows of BLD-AR-Ramps-vs-BLD-AR-Floors in this run's internal workbook with set 08's, `steps\runs\08\item1-C04`: the same cells, read now under the hide
 645. Send the log and the `.tsv` beside it, with the longest stretch the window did not answer and the peak memory off the run's `LIFE SUMMARY` where the loop ran it
 
+## Proof F149 pictures taken in the report's order, added 2026-10-12
+
+649. Install main with F145 and F149 merged, then run 1A02MM with its clash XML, Make viewpoints ticked
+650. Look for, after the CLASH lines: the IMAGES line `numbered in report order: 0 renamed, 2931 already right, 0 missing`, where set 09 read 2931 renamed, and RENUMBER's seconds on the TIMING block near nought against 38.930 s in set 09
+651. Look for: 2931 pictures written, the workbook's Image cells and links pointing at them as before, `7 of 7 hold`, and 528 of 528 counts agreeing
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,

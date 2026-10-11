@@ -803,13 +803,18 @@ well as to pass.
   once by SnapshotHidden, measured in 5k, adds hiding to every other model's root by HideTheOtherModels,
   which unlike ShowOnlyModels resets nothing, so every hide the document held stays in the pictures, and
   hands back what puts the state back by RestoreHiddenState after the test. NO CLASH HANDLE IS READ ACROSS
-  THE HIDE: OneTest reads the models off the test it holds and hands harvest.Into a handle resolved after
-  the hide, and RenderThePicturesWaiting reads them off a handle released before the hide and pictures
-  through one resolved after, the order 5z-zc ran in. A put back that fails is tried again before the next
+  THE HIDE: RenderThePicturesWaiting, where since F149 every picture is taken, reads them off a handle
+  released before the hide and pictures through one resolved after, the order 5z-zc ran in. A put back that fails is tried again before the next
   test and at the end of the step, since a hide only adds, and where it fails twice, or the hidden state
   cannot be read, the hiding stops for the step and every later test keeps every model shown. Which models
   stay shown is Core's PictureModels, and a test kept with every model shown is said with why on an
   IMAGES line
+- EVERY PICTURE TAKEN IN THE REPORT'S ORDER, F149: every test's pictures wait, the harvest reads rows only and
+  hides nothing, and RenderThePicturesWaiting, called by Run after MergeTheMirrors whether or not a merge was
+  made, takes the tests in ReportOrder.Tests and each test's rows in its own order, so every picture is
+  written under its final name and the renumber renames none. Consecutive rows read from one test make one
+  stretch, resolved once and hidden for by F145's rule only where a row of it is of a status a picture is
+  asked for
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
   core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
   stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and

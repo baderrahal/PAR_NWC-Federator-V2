@@ -574,13 +574,16 @@ namespace Federator.Addin.Engine
                 RunEach(document, sets, clashTests, byPath, present, toRun, outcome);
 
                 // F132. After the run has set every test's state and never before: each
-                // merge into its kept test, its MIRROR lines, the kept test's ROWS line and
-                // the pictures of every test in a merge, whose rows, statuses and numbers
-                // the merge changes.
+                // merge into its kept test, its MIRROR lines and the kept test's ROWS line,
+                // since the merge changes rows, statuses and numbers.
                 MergeTheMirrors(clashTests);
 
-                // FR-076. The pictures of the merged tests render after the loop above, so
-                // the fiftieth failure in a row can fall among them.
+                // F149. Then the picture of every row, test by test in the report's order,
+                // each under its final name, whether or not any merge was made.
+                RenderThePicturesWaiting(clashTests);
+
+                // FR-076. The pictures render after the loop above, so the fiftieth failure in
+                // a row can fall among them.
                 StopIfTheImagesFailed(outcome);
 
                 // F76. One line per group, whichever way the choice reads.
@@ -1158,17 +1161,12 @@ namespace Federator.Addin.Engine
                         bool inAMerge = asKept != null || asMirror != null;
 
                         // Every row is recorded with where its result sits, attempt 2, so
-                        // the views resolve each row of the merged report by it, and the
-                        // pictures of a test in a merge wait for the merge.
+                        // the views resolve each row of the merged report by it. F149: the
+                        // pictures of every test wait until every test has run and every merge
+                        // is made, and are then taken test by test in the report's order, so
+                        // each is written under its final name and none is renamed.
                         harvest.Recorded = new List<RowUnderTest>();
-                        harvest.PicturesWait = inAMerge;
-
-                        // F145. Which models this test's own sides live in, read off it before
-                        // anything is hidden, and only where a picture will be taken here. A test
-                        // in a merge takes its pictures after the merge, under the same rule.
-                        PictureModels pictureModels = modelsShown == null || inAMerge || !Images.WouldTakeAPicture(tally)
-                            ? null
-                            : modelsShown.Read(planned.Name, after);
+                        harvest.PicturesWait = Images != null;
 
                         using (RunStep harvesting = log.Step(RunSteps.Harvest))
                         {
@@ -1176,40 +1174,7 @@ namespace Federator.Addin.Engine
 
                             try
                             {
-                                // Only the test's models shown while its pictures are taken, and
-                                // the hidden state put back once they are, whichever way the
-                                // harvest ends. The harvest reads a handle resolved after the hide,
-                                // the order 5z-zc measured, and the one read before is not read again.
-                                IDisposable hidden = modelsShown == null ? null : modelsShown.Hide(planned.Name, pictureModels);
-                                bool harvested = false;
-
-                                using (hidden)
-                                {
-                                    if (hidden != null)
-                                    {
-                                        using (ClashTest underTheHide = Resolve(clashTests, address, planned.Name))
-                                        {
-                                            if (underTheHide != null)
-                                            {
-                                                harvest.Into(document, clashTests, underTheHide, Report, summary);
-                                                harvested = true;
-                                            }
-                                            else
-                                            {
-                                                log.Line("IMAGES   " + planned.Name + " was not found again once the other models were hidden, "
-                                                    + "so its rows and pictures are read after the hidden state is put back, with every model shown");
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // Read through the handle of before the hide only where the
-                                // document is again as it was when that handle was read.
-                                if (!harvested)
-                                {
-                                    harvest.Into(document, clashTests, after, Report, summary);
-                                }
-
+                                harvest.Into(document, clashTests, after, Report, summary);
                                 harvesting.Changed(planned.Name);
                             }
                             finally
@@ -1223,7 +1188,7 @@ namespace Federator.Addin.Engine
                             RowAddress where = new RowAddress(address, planned.Name, row);
                             rowAddresses[row.Row] = where;
 
-                            if (inAMerge)
+                            if (harvest.PicturesWait)
                             {
                                 picturesWaiting.Add(where);
                             }
@@ -2478,31 +2443,59 @@ namespace Federator.Addin.Engine
                             + inDocument);
                 }
             }
-
-            RenderThePicturesWaiting(clashTests);
         }
 
         /// <summary>
-        /// The pictures of every test in a merge, after the merge: each row recorded while
-        /// its test was read, where the report still holds it, under the test the report
-        /// holds it under now, by the index path of its result under the test it was read
-        /// from, resolved again by address. A row of a mirror taken out of the report gets
-        /// none, and a row only a mirror found is pictured under the kept test.
+        /// The picture of every row, F149, once every test has run and every merge is made: each
+        /// row recorded while its test was read, where the report still holds it, under the test the
+        /// report holds it under now, by the index path of its result under the test it was read from,
+        /// resolved again by address. A row of a mirror taken out of the report gets none, and a row
+        /// only a mirror found is pictured under the kept test.
+        ///
+        /// THE REPORT'S ORDER, SO NO PICTURE IS RENAMED. The tests are taken in ReportOrder.Tests and
+        /// each test's rows in its own order, the order the pictures are numbered in, so a test takes
+        /// its block number at its first picture and each row its clash number as it comes, and every
+        /// picture is written under the name the renumber would give it. Sets 07 to 09 spent 39 s to
+        /// 44 s of 1A02MM renaming 2931 pictures taken in the order the tests ran. The renumber stays as
+        /// the check that finds every picture already right. Consecutive rows read from one test make one
+        /// stretch, resolved and hidden for once by F145's rule.
         /// </summary>
         private void RenderThePicturesWaiting(DocumentClashTests clashTests)
         {
-            if (picturesWaiting.Count == 0 || Images == null)
+            if (picturesWaiting.Count == 0 || Images == null || Report == null)
             {
                 return;
             }
 
-            Dictionary<ClashRow, TestReport> holder = new Dictionary<ClashRow, TestReport>();
+            Dictionary<ClashRow, RowAddress> waitingFor = new Dictionary<ClashRow, RowAddress>();
 
-            foreach (TestReport test in Report.Tests)
+            foreach (RowAddress waiting in picturesWaiting)
+            {
+                waitingFor[waiting.Row.Row] = waiting;
+            }
+
+            List<PictureStretch> stretches = new List<PictureStretch>();
+
+            foreach (TestReport test in ReportOrder.Tests(Report))
             {
                 foreach (ClashRow row in test.Rows)
                 {
-                    holder[row] = test;
+                    RowAddress waiting;
+
+                    if (!waitingFor.TryGetValue(row, out waiting))
+                    {
+                        continue;
+                    }
+
+                    PictureStretch last = stretches.Count == 0 ? null : stretches[stretches.Count - 1];
+
+                    if (last == null || last.Into != test || last.Key != waiting.TestKey)
+                    {
+                        last = new PictureStretch(test, waiting.TestKey);
+                        stretches.Add(last);
+                    }
+
+                    last.Rows.Add(waiting);
                 }
             }
 
@@ -2510,35 +2503,24 @@ namespace Federator.Addin.Engine
             harvest.Images = Images;
             harvest.WorkbookPath = WorkbookPath;
 
-            List<string> order = new List<string>();
-            Dictionary<string, List<RowAddress>> byTest = new Dictionary<string, List<RowAddress>>(StringComparer.Ordinal);
-
-            foreach (RowAddress waiting in picturesWaiting)
+            foreach (PictureStretch stretch in stretches)
             {
-                string key = waiting.TestKey;
-                List<RowAddress> rows;
-
-                if (!byTest.TryGetValue(key, out rows))
-                {
-                    rows = new List<RowAddress>();
-                    byTest.Add(key, rows);
-                    order.Add(key);
-                }
-
-                rows.Add(waiting);
-            }
-
-            foreach (string key in order)
-            {
-                List<RowAddress> rows = byTest[key];
+                List<RowAddress> rows = stretch.Rows;
                 RowAddress first = rows[0];
 
                 try
                 {
                     // F145. The models of the test the rows were read from, whose sides the items
                     // of every one of them live in, read off a handle released before the hide,
-                    // and the pictures taken through one resolved after it.
+                    // and the pictures taken through one resolved after it, only where a row of
+                    // the stretch is of a status a picture is asked for.
                     PictureModels pictureModels = null;
+                    ClashTally statuses = new ClashTally();
+
+                    foreach (RowAddress waiting in rows)
+                    {
+                        statuses.Add(waiting.Row.Row.Status);
+                    }
 
                     using (ClashTest forSides = Resolve(clashTests, first.Address, first.TestName))
                     {
@@ -2549,7 +2531,7 @@ namespace Federator.Addin.Engine
                             continue;
                         }
 
-                        if (modelsShown != null)
+                        if (modelsShown != null && Images.WouldTakeAPicture(statuses))
                         {
                             pictureModels = modelsShown.Read(first.TestName, forSides);
                         }
@@ -2565,19 +2547,13 @@ namespace Federator.Addin.Engine
                             continue;
                         }
 
-                        HandTheProgress(harvest, first.TestName);
+                        HandTheProgress(harvest, stretch.Into.Name);
                         harvest.BeginPieces(RunSteps.Images);
                         int done = 0;
 
                         foreach (RowAddress waiting in rows)
                         {
-                            TestReport into;
-
-                            if (holder.TryGetValue(waiting.Row.Row, out into))
-                            {
-                                harvest.PictureLater(clashTests, test, Report, into, waiting.Row);
-                            }
-
+                            harvest.PictureLater(clashTests, test, Report, stretch.Into, waiting.Row);
                             done++;
                             harvest.Piece("picture", done, rows.Count);
                         }
@@ -2586,11 +2562,29 @@ namespace Federator.Addin.Engine
                 catch (Exception error)
                 {
                     log.Failure(
-                        "rendering the pictures of " + first.TestName + " after the mirror merge",
+                        "rendering the pictures of " + stretch.Into.Name + " read from " + first.TestName + " once every test had run",
                         error,
-                        "kept going, the rows of that test not yet pictured keep an empty Image cell");
+                        "kept going, the rows of that stretch not yet pictured keep an empty Image cell, and the renumber puts the "
+                            + "pictures written after them under their report order names");
                 }
             }
+        }
+
+        /// <summary>Consecutive rows of one test of the report, read from one test of the document, F149.</summary>
+        private sealed class PictureStretch
+        {
+            internal PictureStretch(TestReport into, string key)
+            {
+                Into = into;
+                Key = key;
+                Rows = new List<RowAddress>();
+            }
+
+            internal TestReport Into { get; private set; }
+
+            internal string Key { get; private set; }
+
+            internal List<RowAddress> Rows { get; private set; }
         }
 
         // ---------- reading the two trees ----------

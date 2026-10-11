@@ -551,4 +551,5 @@ F142-R2,"the life check's query of the machine's memory has a 5 s timeout on rea
 F144,the first-50 copy for the fast checks,F144,none,fix,merged,200,none,2026-10-11
 F144-R1,"the first 50 tests of the corrected matrix on 1A04PK hold BLD-AR-Walls-vs-BLD-AR-Floors, whose harvest took 5817 s in set 06, so the cut down 1A04PK is a check of hours and not minutes until the speed fix",F144,none,register row,open,none,none,2026-10-11
 F145,only the test's models shown for its pictures,F145,none,fix,in review,UNKNOWN,none,2026-10-11
+F149,pictures taken in the report's order so none is renamed,F149,none,fix,in review,UNKNOWN,none,2026-10-12
 F148,two tests that filled the shared temp folder,F148,none,fix,merged,203,none,2026-10-11

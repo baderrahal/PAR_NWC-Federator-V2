@@ -2,6 +2,23 @@
 
 Newest entry at the top.
 
+## 2026-10-12 The loop, turn 6, F149 pictures taken in the report's order, attempt 1, written by the lead
+
+Branch fix-F149 off fix-F145 at 8aa6273, Bader's order of 2026-10-12 to fix the slowest step.
+
+What was done:
+- Every test's pictures wait until every test has run and every merge is made, and are taken test by test in
+  the report's order, so each is written under its final name and RENUMBER, 39 s of set 09's 1A02MM, has
+  nothing to rename. The harvest only reads rows. F145's hiding moved with the pictures
+- Proved here: the solution builds with 0 warnings and 0 errors, nothing under Core changed
+
+What remains: its reviewer and breaker, F145's merge then this one's, and 1A02MM's fast check, steps 649 to 651
+of steps\03_bader_next.md.
+
+Known bugs: none new.
+
+What comes next: the JPEG save, 33 s of 1A02MM, and the speed loop's next measurement.
+
 ## 2026-10-12 The loop, turn 6, F145 only the test's models shown for its pictures, attempt 2 of two, written by the lead
 
 Bader's answer of 2026-10-11 to Q150, item 1. Branch fix-F145 off main, main 493ecdb taken in.
