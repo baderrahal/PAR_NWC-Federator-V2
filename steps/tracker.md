@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 549 rows: open 206, in progress 24, in review 0, merged 284, proven by a run 27, waiting for Bader 1, dropped 7
-- By wave: 1 19, 2a 65, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 91, outside the waves 2, right after F133 merges 6
+- By status, of 551 rows: open 207, in progress 24, in review 0, merged 285, proven by a run 27, waiting for Bader 1, dropped 7
+- By wave: 1 19, 2a 65, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 93, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, and 8 FR items
 - Waits for Bader, 1 row: F114-K29
 
@@ -642,6 +642,8 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F142 | the life check | F142 | fix | merged | 198 | none | 2026-10-11 |
 | F142-R1 | one run of prove-life.ps1 of three ended exit -1 right after its first check in the runspace it makes, no error printed, its finally not run and its three LifeStandIn stand-ins left to end by themselves, turn6 f142b-prove-1.txt, cause UNKNOWN | F142 | register row | open | none | none | 2026-10-11 |
 | F142-R2 | the life check's query of the machine's memory has a 5 s timeout on reading its results, and whether that timeout also bounds the connection to WMI is UNKNOWN, so a WinMgmt that will not connect could still hold a pass of the monitor, the reviewer's point 6 on attempt 2 | F142 | register row | open | none | none | 2026-10-11 |
+| F144 | the first-50 copy for the fast checks | F144 | fix | merged | 200 | none | 2026-10-11 |
+| F144-R1 | the first 50 tests of the corrected matrix on 1A04PK hold BLD-AR-Walls-vs-BLD-AR-Floors, whose harvest took 5817 s in set 06, so the cut down 1A04PK is a check of hours and not minutes until the speed fix | F144 | register row | open | none | none | 2026-10-11 |
 
 ## outside the waves
 
