@@ -510,11 +510,11 @@ F118-R2,with a priority file picked the check does not run the Priority heading 
 F132-R1,"under Q142 A only a first run over a new NWF merges, a weekly run never does",F132,2a,register row,open,none,none,2026-10-07
 F132-R2,a set's flags and findspec are not read by the drift check a merge reads,F132,2a,register row,open,none,none,2026-10-07
 F132-R3,"two clashes of one test between the same two elements on geometry of one name share a merge key, ClashItem.MergeKey, so a clash only a mirror found on such a pair is counted as a repeat and not added, said on the MIRROR MERGE lines",F132,2a,register row,open,none,none,2026-10-07
-Q144,a run with no XML and the by design pass on the saved tests,none,none,question,in review,UNKNOWN,none,2026-10-11
+Q144,a run with no XML and the by design pass on the saved tests,none,none,question,merged,191,none,2026-10-11
 Q145,"the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release",none,none,Bader's request,in progress,none,none,2026-10-08
 F132-R6,"a saved test a person grouped gets one viewpoint per result group since the views read the report's rows, as the workbook and the pictures do, where attempt 1 gave each clash under a group its own, the lead's ruling of by design on the breaker's blocking point of attempt 2, turn6\f132q-break-addin.json, for Bader",F132,2a,register row,open,none,none,2026-10-08
 F120-R1,"a render that throws with a path inside the exception's message is still one reason per path for the fifty failures guard, so such failures never stop the run, the developer's finding on FR-076",F120,3a,register row,open,none,none,2026-10-08
-Q146,where the Generic Models sheet goes,none,none,question,in review,UNKNOWN,none,2026-10-11
+Q146,where the Generic Models sheet goes,none,none,question,merged,191,none,2026-10-11
 F118-R3,"the group's own workbook is listed as written with last week's size where its save threw and an earlier run's file is at the path, the developer's reading on F128's attempt 2, older than F128, the same fault FR-189 names for the NWD",F118,2c,register row,open,none,none,2026-10-08
 F115-R24,"a document the leftover walk declared damaged is still taken through the clash step and saved where a test is created or a view is built, the sets only return being the one guard, the breaker's reading of F128's attempt 2, older than F128",F115,2a,register row,open,none,none,2026-10-08
 Q147,"two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109",none,none,Bader's request,in progress,none,none,2026-10-08
@@ -525,7 +525,7 @@ F114-K35,"a model whose code will not read is shown only where a clashing item l
 F114-K36,"a test whose open clashes are all result groups gets no view and keeps its old ones, not counted FAILED, the lead's decision on the breaker's F3, for Bader",F114,2b,register row,open,none,none,2026-10-08
 F114-K37,"whether the NWF keeps a saved camera at single precision is UNKNOWN, so a camera far from the origin may read every tool view as a person's after a reopen, read on the timed runs",F114,2b,register row,open,none,none,2026-10-08
 F114-K38,"a test whose harvest threw after only closed rows reads whole, so its old view is removed while its open clashes were never harvested, the reviewer's D1, UNKNOWN how often",F114,2b,register row,open,none,none,2026-10-08
-Q148,a fault found at the second reading,none,none,question,in review,UNKNOWN,none,2026-10-11
+Q148,a fault found at the second reading,none,none,question,merged,191,none,2026-10-11
 F129-R1,"the picked NWFs walk follows a junction looping back until Windows refuses the path, so the same NWFs can be read under longer paths, a person's mklink needed, the scan sharing the exposure, the reviewer's point on attempt 1",F129,3a,register row,open,none,none,2026-10-08
 T6-R-TESTTEMP,"RowLogTests.ALogThatFellBackTakesItsRowFileWithIt writes a log into the shared temp folder on every run, so it fails once about 100 have built up and when two worktrees test at once, seen on the F130 and F109 commits, the files moved aside to turn6 f109b-temp-runlogs",none,none,register row,open,none,none,2026-10-08
 F109-R1,"how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, for Bader",F109,3a,register row,waiting for Bader,none,none,2026-10-08

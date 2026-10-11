@@ -2,7 +2,7 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 532 rows: open 196, in progress 29, in review 9, merged 262, proven by a run 27, waiting for Bader 3, dropped 6
+- By status, of 532 rows: open 196, in progress 29, in review 6, merged 265, proven by a run 27, waiting for Bader 3, dropped 6
 - By wave: 1 19, 2a 62, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 23, 3b 20, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 77, outside the waves 2, right after F133 merges 6
 - In progress now: F109 install, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, and 12 FR items
 - Waits for Bader, 3 rows: step 228-233, F114-K29, F109-R1
@@ -619,11 +619,11 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | T5-R-P15CRASH | probe P15 read a viewpoints copy after Document.Clear, Navisworks crashed and the guard refused the put back, put back by the lead at 14:53 from its backup | none | register row | proven by a run | none | turn5\restart\putback-rebuild-views-20261007-144356-write, 0 still different | 2026-10-07 |
 | F115-R13 | the F115 log entry was written as the lead's delegate | none | register row | open | none | none | 2026-10-05 |
 | Q143 | fast to a team release, the seven limits, the two lanes and the hourly lines | none | Bader's request | merged | 157 | none | 2026-10-07 |
-| Q144 | a run with no XML and the by design pass on the saved tests | none | question | in review | UNKNOWN | none | 2026-10-11 |
+| Q144 | a run with no XML and the by design pass on the saved tests | none | question | merged | 191 | none | 2026-10-11 |
 | Q145 | the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release | none | Bader's request | in progress | none | none | 2026-10-08 |
-| Q146 | where the Generic Models sheet goes | none | question | in review | UNKNOWN | none | 2026-10-11 |
+| Q146 | where the Generic Models sheet goes | none | question | merged | 191 | none | 2026-10-11 |
 | Q147 | two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109 | none | Bader's request | in progress | none | none | 2026-10-08 |
-| Q148 | a fault found at the second reading | none | question | in review | UNKNOWN | none | 2026-10-11 |
+| Q148 | a fault found at the second reading | none | question | merged | 191 | none | 2026-10-11 |
 | T6-R-TESTTEMP | RowLogTests.ALogThatFellBackTakesItsRowFileWithIt writes a log into the shared temp folder on every run, so it fails once about 100 have built up and when two worktrees test at once, seen on the F130 and F109 commits, the files moved aside to turn6 f109b-temp-runlogs | none | register row | open | none | none | 2026-10-08 |
 
 ## outside the waves
