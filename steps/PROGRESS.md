@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-11 12:47, last run 04/item2-C02
+STATE OPEN, 2026-10-11 13:37, last run 05/item1-C04
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -24,12 +24,14 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 - Bader's answers Q144 B, Q146 B, Q148 B. Q149: no release runs, the proof runs of 1A02MM and 1A04PK the last, the team package prepared and made only when he asks
 - F130 Shift ticking merged as PR 192, first today. F129 start from an NWF merged as PR 193, the picked NWFs running the open file run's route. F109 the install merged as PR 194, install.ps1 refusing a link, finding a cut run's leftovers, and ending on one of four lines
 - F127 the coverage of the picked tests merged as PR 195: a COVERAGE block and rows per group, a tally in RESULT, the Coverage sheet in the internal workbook beside Generic Models, the clash workbook one sheet again
+- Main 4bc4c83 installed in place at 13:05, its INSTALLED line naming it. Set 05's 1A02MM and 1A04PK ran 31 s and 58 s, RAN, PARTIAL, the clash skipped by Bader's coordinates rule, Q98 B2, the EL and ST models of 1A02MM 2,823 km from the reference. Views, the clash workbook, the merge and the counts not reached
 
 ## Next
 1. F130, F129 and F109 merged in that order, Bader's item 6, done
 2. The Coverage sheet moved into the internal workbook, F127-R2, merged as PR 195, done
-3. F140 the team package prepared on its own branch, no team zip until Bader writes make the team package
-4. Main installed in place and 1A02MM and 1A04PK run with the box ticked, steps\notes\item5-runs-brief.md, findings in set 03's shape
+3. F140 the team package, the reviewer's nine points made in attempt 1 and read once more, no team zip until Bader writes make the team package
+4. 1A02MM and 1A04PK run again with -Untick SkipClashOffCoordinates, F126's switch, so the clash runs as in set 04's baseline, the viewpoints box ticked. F140's proof held until Navisworks is closed
+5. Findings in set 03's shape for the four runs, the records, and three lines to Bader
 
 ## Waiting for Bader
 - No question. The team package, F140, is prepared and made only when Bader writes make the team package, Q149
