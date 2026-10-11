@@ -2,6 +2,59 @@
 
 Newest entry at the top.
 
+## 2026-10-11 The loop, turn 6, F109 the install for the team, FR-078, FR-079 and FR-080, attempt 1 of two, written by the developer as the lead's delegate
+
+Bader's order of the evening of 8 Oct 2026, Q147 item 3, and Q145 item 6, held to by his message of 11 Oct headed
+GOOD MORNING, CONTINUE THE LOOP, item 6, F130, then F129, then F109, under Q143's limits: two attempts, one reviewer,
+no breaker, no new probe, nothing under tools\loop changed. The brief is turn6\f109-brief.md. Branch fix-F109b off
+origin/main eaad566 in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f109b, every file named below under turn6 with
+the prefix f109b-. Work began on 8 Oct, stopped for the night at Bader's word with 9b489ff pushed, and was finished on
+11 Oct with main 848d3dd merged in. fix-F109 at a0c3829, the earlier pass, is left as it is. Navisworks was not
+started, tools\loop\prove-run.ps1 was not run, and Get-Process Roamer read 0 before every run of the proof.
+
+- WHAT THE EARLIER PASS TAUGHT, read off origin/fix-F109 and its section: every file OneDrive syncs carries the reparse
+  point attribute with no link type, so a link is told by the link type PowerShell reads, kept as `LinkKind`. Its
+  in-place path for a refused move aside is not this pass's and is not carried
+- THE ENDS, written once at the top of `build\install.ps1` and copied into INSTALL.md word for word: exit 0 and the
+  line telling a person to start Navisworks, printed only when nothing is left beside the add-in, 1 FAILED, 2
+  REFUSED, 3 LEFT. Every end but 0 goes through one `Finish`, naming each folder left beside the add-in on its own
+  line first, and whatever throws reaches one trap, which takes the new add-in out and puts the old one back
+- FR-078. Every recursive removal goes through `RemoveTree`, which reads every folder under it one at a time and
+  removes nothing through a junction or a link. A link in the staging folder or the installed bundle refuses before
+  anything changes, one REFUSED line naming it. A failed first install takes the partial folder out of the load path,
+  removed or moved to `.failed-`, and says where. MEASURED on 2026-10-08, cases C and J run on main's install.ps1:
+  Windows PowerShell 5.1 here removed a junction inside a folder and left what it points at, so the harm is not
+  shown on this machine, and a symbolic link is UNKNOWN
+- FR-079. At its start the script reads `.replaced-*` and `.failed-*` beside the target, one pattern each on the
+  plugin folder. An empty or part filled load path with exactly one whole add-in beside it gets that one put back,
+  PUT BACK, and the install goes on. Any other leftover refuses, exit 2, each named, with what a person does
+- FR-080. A failed removal of the old bundle ends on LEFT, exit 3. The checks that gate the removal read the installed
+  bundle, the reference walk reading each assembly from its bytes so no file stays held, and the installed stamp is
+  read against the one the build wrote. A wrong stamp ends FAILED with every leftover named first
+- THE PROOF, turn6\f109b-proof\f109b-proof.ps1, copies of install.ps1 with -SkipBuild against a throwaway APPDATA, each
+  case broken one thing at a time and its line read back, main's install.ps1 on the same breaks for the fault before:
+  85 passed, 0 failed at 7379f71 on 2026-10-08, f109b-proof-output-20261008-222319.txt, and 85 passed, 0 failed at
+  f749f62 on 2026-10-11, f109b-proof-output-20261011-100155.txt. Its first two runs on 8 Oct found the leftover count
+  joined as a number, which threw, fixed in 7379f71, and a folder path past 260 characters under its own long folder
+- COUNTS. The solution 0 warnings and 0 errors before on eaad566, after, and with --no-incremental from an empty git
+  status at f749f62, f109b-build-before.txt, f109b-build-after.txt and f109b-build-merged.txt. Core tests 2774
+  passed, 0 failed, 0 skipped before, after and on the merged tree, nothing under src or tests changed. check-locals
+  and check-imports pass
+- DECIDED, for the lead. A leftover refuses with exit 2, the code every refusal has. LEFT takes the new exit 3, which
+  run.ps1 -Mode Install, frozen, reads as STOP with exit 1 where it read INSTALLED with a FINDING. The failure lines
+  keep the words prove-run.ps1 trials 6a and 6b read, proved by cases W1 to W3, and its trial 6c cannot run as
+  written, its line gone and its exit 0 the fault FR-080 removes, rows for F122. A whole add-in is today's 15 files.
+  The refused move aside keeps its words, FR-081 being F123's. INSTALL.md step 1 no longer names one machine's folder
+- FOUND. The Core test ALogThatFellBackTakesItsRowFileWithIt refused the first commit on 8 Oct with 200 of its files
+  in the temp folder, moved, not deleted, into turn6\f109b-temp-runlogs, row T6-R-TESTTEMP. How the 27 get a built
+  bundle with no compiler, row F109-R1. The move aside refused on 2026-10-01 with no Navisworks running is left as it was
+- COMMITS on fix-F109b: 3f1cf21 and 7379f71 the script, 9b489ff INSTALL.md and the rules, f749f62 main 848d3dd merged
+  in, and the records, the plan's section and steps 607 to 615 of steps\03_bader_next.md, numbered after F129's 581
+  to 606 and moved at the merge if those differ. WHAT WAITS: one reviewer, the merge, the real install of main, and
+  steps 607 to 615
+
+Merged as pull request 194 on 2026-10-11 by the lead, third of Bader's order of that morning, read APPROVE by its one reviewer, turn6\f109b-review.json, with two words of INSTALL.md made right before the merge, the folder a person deletes after a LEFT end and the last line read before the exit code.
+
 ## 2026-10-08 F129 start from an existing NWF, built on fix-F129, attempt 1, on Bader's request 4 under Q112
 
 Bader's request 4 under Q112, FR-178 of steps\fix-round.md, third in his order of the evening of 8 Oct 2026,

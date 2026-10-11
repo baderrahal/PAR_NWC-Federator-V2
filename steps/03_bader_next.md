@@ -279,7 +279,7 @@ without its extension.
 496. Look for, in the `STEP` line that closes `SETS`: the picked file's summary, then `. Generic Models: 10 created (5 finding items, 5 at zero), 0 already there.`
 497. Look for: no `EMPTY SETS` line naming a Generic Models set, and in the `SETS ACROSS THE RUN` block at the end of the run no set whose path holds `Generic Models`
 498. Look for, after the `WORKBOOK`, `HTML`, `XML` and `COVERAGE` steps: a step `INTERNAL` with `INTERNAL attempt` and `INTERNAL written` naming a file in the Clash Reports folder whose name is the group's workbook name, a space and `Internal`, ending `.xlsx`, with its size read back, beside the group's own workbook, then `INTERNAL read back, it holds 2 sheets, Generic Models, Coverage, each found by the name it was written under`. Your answer B to Q146 of 11 Oct 2026 puts the Coverage sheet in this workbook beside the Generic Models sheet. If the group's clash was skipped under F112, the group's workbook is skipped and this one is still written with both sheets
-499. Open that workbook: its first sheet is named `Generic Models` and its second `Coverage`, which steps 613 and 614 read. The first sheet's first cell `Generic Models, written by the NWC Federator and not part of the client's report`, `Group: 1A04PK` under it, the summary line `10 models: 5 found some, 5 found none and are left out, 0 not counted. 572 items in all`, the headings `Model`, `Items` and `Why not counted`, five rows in the order of the models with 528 as a number and no row for a model at nought, and under them the note on what a nought can mean and `No clash test is made for these sets`
+499. Open that workbook: its first sheet is named `Generic Models` and its second `Coverage`, which steps 622 and 623 read. The first sheet's first cell `Generic Models, written by the NWC Federator and not part of the client's report`, `Group: 1A04PK` under it, the summary line `10 models: 5 found some, 5 found none and are left out, 0 not counted. 572 items in all`, the headings `Model`, `Items` and `Why not counted`, five rows in the order of the models with 528 as a number and no row for a model at nought, and under them the note on what a nought can mean and `No clash test is made for these sets`
 500. Open the group's own workbook: ONE SHEET, the client's sheet and nothing of ours after it, the Navisworks export's layout, and the `WORKBOOK CHECK` block names no second sheet
 501. In the Sets panel of Navisworks: a folder `Generic Models` holding ten search sets named after the ten NWCs, and in Clash Detective no test naming any of them
 502. Look for, in `RESULT` under the `COVERAGE` lines: `generic models : 572 items in 5 models of 10 over 1 group, 5 at nought, 0 not counted`, and the internal workbook among the files written with its size, its kind `INTERNAL`
@@ -298,21 +298,21 @@ the clash workbook holds the client's sheet alone. Every number below that this 
 is named by its shape, because the counts of 1A04PK's tests are UNKNOWN until it runs. Where
 1A04PK's clash is skipped under F112, as `.claude\rules\core.md` reads of both wave buildings,
 no test runs there, no clash workbook is written and the count check compares none, which is
-why step 615 runs a second group.
+why step 624 runs a second group.
 
-607. Look for, before the first group: `COVERAGE the picked XML` with the XML's full path, then `reads sha256 ` and 64 letters and digits
-608. Look for, in 1A04PK after its `XML` step: a step `COVERAGE` and a block headed `COVERAGE 1A04PK` whose first line reads `the tests        : 1830 in the picked file` with the XML's path, its sha256 and the corrections line of the list beside it
-609. Look for, in that block: a `counted          :` line reading `1830 tests in the picked file:` then how many were created this run, already there, not created, run, with clashes and without. Where the clash was skipped under F112, the `run` count reads 0
-610. Look for, under `one reason each  :`: one line for each reason with its count, the counts adding up to 1830, `not run, the clash was skipped by the coordinates rule` among them where the clash was skipped, and under them at most five tests named for each reason that has no results, then `and N more of this reason, every one on the Coverage sheet of the internal workbook and in the .tsv`
-611. Look for, where the clash was skipped: `workbook against Clash Detective : UNKNOWN, 0 compared` then the counts not compared and held by neither side, the first not compared tests saying `no workbook was read, no clash workbook was written` and why, no line starting `COVERAGE FAILED`, and the block's last line `the group keeps its own result, a coverage count never fails a group`
-612. Look for, in the `.tsv` beside the log: 1830 rows whose event is `coverage test`, one for each test of the file, each carrying its position, whether it is in the document, whether it ran and its reason
-613. Open the internal workbook of step 498 and its `Coverage` sheet: its first cell `Coverage, written by the NWC Federator and not part of the client's report`, the picked file with `sha256:` beside it, the models with their codes, the counts line of step 609, then a `TESTS` table of 1830 rows in the file's order, a test not created among them with `not created` and `no` and its reason, and no empty cell where a number was not taken, which reads `UNKNOWN`
-614. Look for, on the same sheet: the `MIRRORED PAIRS` section reading `UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged`, never that the rule is not on main
-615. Scan a folder holding a group of two disciplines or more whose models sit on the same shared coordinates, the fixture of steps 410 to 416, pick the same XML and press Run
-616. Look for, in that group's `COVERAGE` block: `workbook against Clash Detective :` then a number compared, the same number agree and `0 FAILED`, the counts of Clash Detective's panel for each test that ran equal to the rows of its block in the clash workbook. Where any line starts `COVERAGE FAILED`, it names the group, the test and all four numbers, and RESULT carries the same line
-617. Look for, in `RESULT`: the `COVERAGE tests counted` lines, the counts of the tests once across the run, then `COVERAGE checked :` with how many were compared, agreed and FAILED over how many groups, and never `COVERAGE checked : UNKNOWN, no coverage was taken in this run`
-618. Look for, on every run above: no group ends FAILED or PARTIAL on account of the coverage, and each group's clash workbook holds ONE sheet, its `WORKBOOK CHECK` block naming no second sheet
-619. Send the log file and the `.tsv` beside it, and say which of steps 607 to 618 did not read as written, with the seconds of the `COVERAGE` step off the `TIMING` block, UNKNOWN until this run
+616. Look for, before the first group: `COVERAGE the picked XML` with the XML's full path, then `reads sha256 ` and 64 letters and digits
+617. Look for, in 1A04PK after its `XML` step: a step `COVERAGE` and a block headed `COVERAGE 1A04PK` whose first line reads `the tests        : 1830 in the picked file` with the XML's path, its sha256 and the corrections line of the list beside it
+618. Look for, in that block: a `counted          :` line reading `1830 tests in the picked file:` then how many were created this run, already there, not created, run, with clashes and without. Where the clash was skipped under F112, the `run` count reads 0
+619. Look for, under `one reason each  :`: one line for each reason with its count, the counts adding up to 1830, `not run, the clash was skipped by the coordinates rule` among them where the clash was skipped, and under them at most five tests named for each reason that has no results, then `and N more of this reason, every one on the Coverage sheet of the internal workbook and in the .tsv`
+620. Look for, where the clash was skipped: `workbook against Clash Detective : UNKNOWN, 0 compared` then the counts not compared and held by neither side, the first not compared tests saying `no workbook was read, no clash workbook was written` and why, no line starting `COVERAGE FAILED`, and the block's last line `the group keeps its own result, a coverage count never fails a group`
+621. Look for, in the `.tsv` beside the log: 1830 rows whose event is `coverage test`, one for each test of the file, each carrying its position, whether it is in the document, whether it ran and its reason
+622. Open the internal workbook of step 498 and its `Coverage` sheet: its first cell `Coverage, written by the NWC Federator and not part of the client's report`, the picked file with `sha256:` beside it, the models with their codes, the counts line of step 618, then a `TESTS` table of 1830 rows in the file's order, a test not created among them with `not created` and `no` and its reason, and no empty cell where a number was not taken, which reads `UNKNOWN`
+623. Look for, on the same sheet: the `MIRRORED PAIRS` section reading `UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged`, never that the rule is not on main
+624. Scan a folder holding a group of two disciplines or more whose models sit on the same shared coordinates, the fixture of steps 410 to 416, pick the same XML and press Run
+625. Look for, in that group's `COVERAGE` block: `workbook against Clash Detective :` then a number compared, the same number agree and `0 FAILED`, the counts of Clash Detective's panel for each test that ran equal to the rows of its block in the clash workbook. Where any line starts `COVERAGE FAILED`, it names the group, the test and all four numbers, and RESULT carries the same line
+626. Look for, in `RESULT`: the `COVERAGE tests counted` lines, the counts of the tests once across the run, then `COVERAGE checked :` with how many were compared, agreed and FAILED over how many groups, and never `COVERAGE checked : UNKNOWN, no coverage was taken in this run`
+627. Look for, on every run above: no group ends FAILED or PARTIAL on account of the coverage, and each group's clash workbook holds ONE sheet, its `WORKBOOK CHECK` block naming no second sheet
+628. Send the log file and the `.tsv` beside it, and say which of steps 616 to 627 did not read as written, with the seconds of the `COVERAGE` step off the `TIMING` block, UNKNOWN until this run
 
 ## Proof of F130, the Shift range in the group list
 
@@ -401,6 +401,23 @@ and whether Navisworks reads them by the full path or beside the NWF is not meas
 604. Clear the Excel folder box and delete the folder `three`
 605. Type into the box the path of the NWD step 587 wrote in `one` and press `Run NWFs`. Look for: the dialog and the line `RUN      refused before starting. This document is a .nwd file and this tool runs an NWF, which is where the clash tests and their results live. Open the NWF instead.`, and no group started
 606. Send the log file named on the `log file` line of the SESSION block, say which of steps 585 to 605 did not read as written, and read off the `TIMING` blocks the `DECIDE` seconds of each picked NWF beside the `DECIDE` seconds of the same group in set 05's runs
+
+## Proof F109 the install for the team, added 2026-10-11
+
+The install's four ends, its links guard and its read of what an earlier run left were proved
+on the laptop against a throwaway APPDATA, never yours, turn6\f109b-proof. These steps read the
+real install once F109 has merged, with Navisworks closed. INSTALL.md is what a person on the
+team follows, and these steps follow it.
+
+607. Close Navisworks Manage 2025, pull main in GitHub Desktop once F109 has merged, and build, steps 7 to 11
+608. Install, step 22
+609. Before you type anything else, since the next step prints a line of its own, look for, as the terminal's last line: `Start Navisworks Manage 2025 and look on the Tool Add-ins tab for Parsons NWC Federator.`, and above it `The installed add-in reads the stamp` with main's eight character commit and `the one the build wrote`, then `every reference is satisfied, 14 assemblies checked. Navisworks supplies its own.`
+610. Then run `$LASTEXITCODE` in the same terminal. Look for: `0`
+611. Open File Explorer, paste `%APPDATA%\Autodesk\ApplicationPlugins` into its address bar. Look for: `ParsonsNwcFederator.bundle`, and NO folder whose name starts `ParsonsNwcFederator.bundle.replaced-` or `ParsonsNwcFederator.bundle.failed-`
+612. If step 610 read `3`, the last line starts `LEFT:` and names two folders, the new add-in first, which stays, and the add-in installed before. The line above it starting `left beside the add-in:` names the old one alone, and that is the one to delete. Do INSTALL.md step 9 and send the whole output
+613. If step 610 read `2`, the last line starts `REFUSED:`. Where it reads `the installed add-in could not be moved aside`, that is the refusal of 2026-10-01 with no Navisworks running, which this pass does not change, so send the whole output and stop. Otherwise do what it says, INSTALL.md step 10, and send the whole output
+614. If step 610 read `1`, the last line starts `FAILED:`. Send the whole output and stop
+615. Open Navisworks. Look for: Parsons NWC Federator on the Tool Add-ins tab, and main's commit in the title bar
 
 ## Proof F34, the window, and F33, the units combo
 
