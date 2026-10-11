@@ -759,6 +759,19 @@ well as to pass.
   CLASH WORKBOOK HOLDS THE CLIENT'S SHEET ALONE, the Navisworks export's layout, and its
   WORKBOOK CHECK calls a second sheet a problem. The settings are `ReportOptions.Coverage`, read
   off Core and never typed in the window. The two hand buttons take no coverage, they are not runs
+- THE HARVEST ANSWERS BETWEEN ROWS, F143, Bader's order of 2026-10-11 headed 1A04PK IS FROZEN.
+  Set 06's run of 1A04PK sat from 14:44 to 16:21 in the rows of BLD-AR-Walls-vs-BLD-AR-Floors, 1556
+  clashes, with no line in the log and the window not answering, while TestsRunTest took 0.3 s, and
+  1A02MM's harvest of set 06 was 90 percent pictures, 136.5 s of rendering of 198.3 s. The window pumps
+  only when the engine's throttle renders the live line, FederatorWindow.Pump, so ClashHarvest now calls
+  the runner's callback, ClashHarvest.Tick, after each row of a test, once the row's wrappers are
+  released, and writes a PROGRESS line naming HARVEST, the test and the row once
+  ProgressSettings.EverySeconds has passed, StepProgress. The pictures that wait for a merge are pieces
+  the same way, IMAGES and the picture, in RenderThePicturesWaiting, where the test's handle stays held
+  across the pump as it is across the render. A single Navisworks call cannot be split, so TestsRunTest
+  and each TestsImageForResult are timed on the log's clock and named on a CALL line, LongCall.Line,
+  where they took ProgressSettings.LongCallSeconds or more. The runner's ProgressSettings is
+  ClashRunner.Progress at its defaults, 30 s each, and it hands the render's to ClashImages
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
   core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
   stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and

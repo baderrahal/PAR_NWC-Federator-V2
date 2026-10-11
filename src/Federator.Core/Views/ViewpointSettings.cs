@@ -158,9 +158,10 @@ namespace Federator.Core.Views
         /// <summary>
         /// How often, in seconds, the VIEWS step writes a progress line to the log, FR-071. Set
         /// 03 left the log still for up to 1269 s inside the step, so a busy step and a hung one
-        /// looked alike. Once a minute at least.
+        /// looked alike. Once a minute until F143, and since then the one default of every long
+        /// step, ProgressSettings.DefaultEverySeconds, 30 s by Bader's order of 2026-10-11.
         /// </summary>
-        public const double DefaultProgressEverySeconds = 60.0;
+        public const double DefaultProgressEverySeconds = Federator.Core.Diagnostics.ProgressSettings.DefaultEverySeconds;
 
         public ViewpointSettings()
         {

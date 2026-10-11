@@ -2505,6 +2505,22 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   read-out is never paired with an NWF, since the add-in writes it under its own kind,
   INTERNAL, and not XLSX
 
+### Long steps, F143
+
+- A LONG STEP SAYS WHERE IT IS AT LEAST EVERY 30 S, Bader's order of 2026-10-11 headed 1A04PK IS FROZEN.
+  `StepProgress` is the one rule of when a progress line is due, the setting's seconds since the step
+  began or the last line on the log's own clock, or every piece at nought or below, and of its words,
+  PROGRESS, the step, what it is on, the piece and its count of the total, UNKNOWN where the total is
+  below nought, and its seconds into the step. `ViewsProgress`, FR-071, reads its rule, so the two cannot
+  drift apart
+- ONE NAVISWORKS CALL THAT TOOK LONG IS NAMED, `LongCall.Line`: CALL, the call, what it was on and its
+  seconds, with the words that the window could not answer for that long, and null under the setting or
+  for a length not known
+- THE NUMBERS ARE `ProgressSettings`: EverySeconds and LongCallSeconds, 30 each by his words. A long call
+  of nought or below is refused where it is set. The VIEWS step's default,
+  `ViewpointSettings.DefaultProgressEverySeconds`, is `ProgressSettings.DefaultEverySeconds`, 60 s until
+  F143
+
 ### Generic models, F128
 
 Bader's request 3 under Q112 and FR-177, taken first by his order of 8 Oct 2026, Q145 item 2.

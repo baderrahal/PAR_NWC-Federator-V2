@@ -59,6 +59,52 @@ namespace Federator.Addin.Engine
         public string WorkbookPath { get; set; }
 
         /// <summary>
+        /// The runner's callback, which renders the live line and, through the window's pump,
+        /// lets the window answer, F143. Called between two clashes, so the window answers
+        /// between them where it answered only between tests. Null says nothing.
+        /// </summary>
+        public Action<string> Tick { get; set; }
+
+        /// <summary>The seconds of the PROGRESS lines, F143. Null writes none.</summary>
+        public ProgressSettings Progress { get; set; }
+
+        /// <summary>The test the rows are read for, named on the live line and the PROGRESS lines.</summary>
+        public string TestName { get; set; }
+
+        private StepProgress said;
+        private string saidStep;
+
+        /// <summary>
+        /// Starts the count of one stretch of pieces, F143: the rows of one test, or the pictures
+        /// that waited for a merge. The PROGRESS line is due once the setting's seconds have
+        /// passed from here.
+        /// </summary>
+        public void BeginPieces(string step)
+        {
+            saidStep = step;
+            said = Progress == null ? null : new StepProgress(Progress.EverySeconds, log.ElapsedSeconds);
+        }
+
+        /// <summary>
+        /// Between two pieces of a stretch, F143: the live line, whose callback lets the window
+        /// answer, and a PROGRESS line naming the step, the test and the count once one is due.
+        /// Set 06's run of 1A04PK sat 97 minutes in the rows of one test with neither.
+        /// </summary>
+        public void Piece(string piece, int done, int total)
+        {
+            if (Tick != null)
+            {
+                Tick(TestName + ", " + piece + " " + done.ToString(CultureInfo.InvariantCulture)
+                    + " of " + total.ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (said != null && said.Due(log.ElapsedSeconds))
+            {
+                log.Line(said.Line(saidStep, TestName, piece, done, total, log.ElapsedSeconds));
+            }
+        }
+
+        /// <summary>
         /// The merge the test harvested is the test kept of, F132's add-in half, or null for
         /// a test of no merge. Every clash of the test is handed to it as it is read, each
         /// clash under a group on its own with the group's row, MirrorMerge.KeptFound, so
@@ -126,6 +172,7 @@ namespace Federator.Addin.Engine
             }
 
             GridSystem grid = ActiveGrid(document);
+            BeginPieces(RunSteps.Harvest);
 
             try
             {
@@ -172,22 +219,25 @@ namespace Federator.Addin.Engine
                         into.Add(groupRow);
                         HandTheClashesUnder(document, grid, group.Children, groupRow, path);
                         PictureOrDefer(clashTests, group, report, into, groupRow, path);
-                        path.RemoveAt(path.Count - 1);
-                        continue;
                     }
-
-                    ClashResult result = child as ClashResult;
-
-                    if (result != null)
+                    else
                     {
-                        ClashRow resultRow = ResultRow(document, grid, result);
-                        into.Add(resultRow);
-                        HandOne(resultRow, resultRow);
-                        PictureOrDefer(clashTests, result, report, into, resultRow, path);
+                        ClashResult result = child as ClashResult;
+
+                        if (result != null)
+                        {
+                            ClashRow resultRow = ResultRow(document, grid, result);
+                            into.Add(resultRow);
+                            HandOne(resultRow, resultRow);
+                            PictureOrDefer(clashTests, result, report, into, resultRow, path);
+                        }
                     }
 
                     path.RemoveAt(path.Count - 1);
                 }
+
+                // After the wrapper is released, so no handle is held across the pump.
+                Piece("row", i + 1, children.Count);
             }
         }
 

@@ -86,6 +86,12 @@ namespace Federator.Addin.Engine
         /// </summary>
         public ImageGenerationStyle Style { get; set; }
 
+        /// <summary>
+        /// The seconds from which one render is named on a CALL line, F143, the runner's
+        /// ProgressSettings.LongCallSeconds handed down. The default where none is handed.
+        /// </summary>
+        public double LongCallSeconds { get; set; } = ProgressSettings.DefaultLongCallSeconds;
+
         /// <summary>Where this group's IMAGES seconds went, call by call, FR-077.</summary>
         public ImagesSeconds Seconds
         {
@@ -185,7 +191,18 @@ namespace Federator.Addin.Engine
                         Directory.CreateDirectory(folder);
                     }
 
+                    double renderFrom = log.ElapsedSeconds;
                     Render(clashTests, result, path);
+
+                    // F143. One render is one Navisworks call the window cannot answer during,
+                    // named with its seconds where it took the setting's or more.
+                    string call = LongCall.Line(
+                        "TestsImageForResult", test.Name + " " + row.Name, log.ElapsedSeconds - renderFrom, LongCallSeconds);
+
+                    if (call != null)
+                    {
+                        log.Line(call);
+                    }
 
                     // The size is read back off the disk. A render that returned without
                     // writing anything must not be counted as a picture.

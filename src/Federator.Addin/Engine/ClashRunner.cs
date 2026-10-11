@@ -148,6 +148,13 @@ namespace Federator.Addin.Engine
         /// <summary>The ending a mirror's name carries, a setting, MirrorSettings' default (mirror).</summary>
         public MirrorSettings Mirrors { get; set; }
 
+        /// <summary>
+        /// The seconds of the PROGRESS lines between a test's rows and of the CALL line for one long
+        /// Navisworks call, F143, ProgressSettings at its defaults, 30 s each by Bader's order of
+        /// 2026-10-11.
+        /// </summary>
+        public ProgressSettings Progress { get; set; } = new ProgressSettings();
+
         /// <summary>One merge per test kept whose mirrors the rule merges, MirrorMerge.Of, none where pairing threw.</summary>
         private IList<MirrorMerge> merges = new List<MirrorMerge>();
 
@@ -983,6 +990,15 @@ namespace Federator.Addin.Engine
                     ranFor = running.SecondsSoFar();
                 }
 
+                // F143. Running one test is one Navisworks call the window cannot answer during,
+                // named with its seconds where it took the setting's or more.
+                string longRun = LongCall.Line("TestsRunTest", planned.Name, ranFor, Progress.LongCallSeconds);
+
+                if (longRun != null)
+                {
+                    log.Line(longRun);
+                }
+
                 // F54. Between the run and the harvest, and never after the clash step.
                 // ClashHarvest reads a result's status while building the report rows, so
                 // a status applied later would leave the workbook and the page carrying
@@ -1088,6 +1104,7 @@ namespace Federator.Addin.Engine
                         ClashHarvest harvest = new ClashHarvest(log, NameSettings);
                         harvest.Images = Images;
                         harvest.WorkbookPath = WorkbookPath;
+                        HandTheProgress(harvest, planned.Name);
 
                         // F132. A test in a merge hands every clash to it as the rows are
                         // read, and its pictures wait for the merge, which changes which
@@ -1871,6 +1888,23 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// F143. The harvest is handed the runner's callback, so the live line moves and the
+        /// window answers between two rows, the PROGRESS seconds, the test it reads, and the
+        /// seconds from which one render is named on a CALL line.
+        /// </summary>
+        private void HandTheProgress(ClashHarvest harvest, string testName)
+        {
+            harvest.Tick = progress;
+            harvest.Progress = Progress;
+            harvest.TestName = testName;
+
+            if (Images != null && Progress != null)
+            {
+                Images.LongCallSeconds = Progress.LongCallSeconds;
+            }
+        }
+
+        /// <summary>
         /// Writes a skip into the log, at most MaxSkipExamples of them for each reason,
         /// then one line saying the rest are counted. Everything skipped still reaches the
         /// block at the end, where it is counted by reason with its examples.
@@ -2424,6 +2458,10 @@ namespace Federator.Addin.Engine
                             continue;
                         }
 
+                        HandTheProgress(harvest, first.TestName);
+                        harvest.BeginPieces(RunSteps.Images);
+                        int done = 0;
+
                         foreach (RowAddress waiting in rows)
                         {
                             TestReport into;
@@ -2432,6 +2470,9 @@ namespace Federator.Addin.Engine
                             {
                                 harvest.PictureLater(clashTests, test, Report, into, waiting.Row);
                             }
+
+                            done++;
+                            harvest.Piece("picture", done, rows.Count);
                         }
                     }
                 }
