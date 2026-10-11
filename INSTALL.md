@@ -28,8 +28,8 @@ powershell -ExecutionPolicy Bypass -File build\install.ps1
 
 6. Read the terminal's last line first, before you type anything else, because the next
    step prints a line of its own. The install ends one of four ways, each with its own exit
-   code and last line, written once at the top of `build\install.ps1` and copied here word
-   for word:
+   code and last line, written once at the top of `build\install.ps1`, the exit 0 line in
+   `build\install-common.ps1`, and copied here word for word:
 
 | exit | last line | what it means |
 |---|---|---|

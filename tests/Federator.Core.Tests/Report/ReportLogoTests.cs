@@ -159,19 +159,31 @@ namespace Federator.Core.Tests
                     + string.Join(", ", found));
             }
 
-            // install.ps1 must not carry one in its file list either.
-            string install = Path.Combine(repo, @"build\install.ps1");
+            // The bundle's file list must not carry one either. Since F140 the list lives in
+            // build\install-common.ps1, which install.ps1 and the team install both read, so
+            // that is the file read, and its absence fails rather than skips.
+            string list = Path.Combine(repo, @"build\install-common.ps1");
 
-            if (File.Exists(install))
-            {
-                // A logo FILE, not the word. install.ps1 passes --nologo to dotnet, which
-                // is the build flag and has nothing to do with a picture.
-                Assert.That(
-                    Regex.IsMatch(File.ReadAllText(install), @"logo\.(jpg|jpeg|png|gif|bmp)",
-                        RegexOptions.IgnoreCase),
-                    Is.False,
-                    "install.ps1 names a logo file, so one would ship in the bundle");
-            }
+            Assert.That(File.Exists(list), Is.True, "the bundle's file list is not at " + list);
+            Assert.That(NamesALogoFile(File.ReadAllText(list)), Is.False,
+                "install-common.ps1 names a logo file, so one would ship in the bundle");
+        }
+
+        // A logo FILE, not the word. install.ps1 passes --nologo to dotnet, which is the build
+        // flag and has nothing to do with a picture.
+        private static bool NamesALogoFile(string script)
+        {
+            return Regex.IsMatch(script, @"logo\.(jpg|jpeg|png|gif|bmp)", RegexOptions.IgnoreCase);
+        }
+
+        // The break for the guard above: a list with a logo in it is named, the build flag is not.
+        [Test]
+        public void TheBundleListGuardNamesALogoFileAndNotTheBuildFlag()
+        {
+            Assert.That(NamesALogoFile("$library = @(\r\n    \"ClosedXML.dll\",\r\n    \"logo.jpg\",\r\n)"),
+                Is.True, "a list naming logo.jpg was not caught");
+            Assert.That(NamesALogoFile("& dotnet build $addinProj --nologo -v minimal"),
+                Is.False, "the --nologo build flag was taken for a logo file");
         }
 
         /// <summary>

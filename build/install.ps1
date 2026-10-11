@@ -26,8 +26,8 @@ $ErrorActionPreference = "Stop"
 # end is one exit code and one last line. Every end but the first names, each on a line of its
 # own before the last line, the folders a run of this script left beside the add-in.
 #
-#   exit 0  the last line is the one in $InstalledLine. The new add-in is installed, every check
-#           of it passed, and no folder is left beside it
+#   exit 0  the last line is the one in $InstalledLine, $StartLine of install-common.ps1. The new
+#           add-in is installed, every check of it passed, and no folder is left beside it
 #   exit 1  the last line starts FAILED:. The new add-in is not installed. The line says why,
 #           where the add-in installed before is, and where the new one went
 #   exit 2  the last line starts REFUSED:. Nothing was installed. The line says why and what a
@@ -35,7 +35,7 @@ $ErrorActionPreference = "Stop"
 #   exit 3  the last line starts LEFT:. The new add-in is installed and every check of it passed,
 #           and the add-in installed before is still beside it, named on that line
 $InstalledExit = 0
-$InstalledLine = "Start Navisworks Manage 2025 and look on the Tool Add-ins tab for Parsons NWC Federator."
+$InstalledLine = $StartLine
 $FailedExit    = 1
 $FailedStart   = "FAILED: "
 $RefusedExit   = 2

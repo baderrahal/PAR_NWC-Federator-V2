@@ -11,13 +11,15 @@ To install
    inside the zip without extracting it does not work.
 3. Double click "Install Parsons NWC Federator.cmd". A black window opens. If Windows asks
    whether to run it, choose Run.
-4. Read the last line in the window, then press any key to close it.
-     DONE:     it worked. The line says which version is installed, where, and where the
-               version you had before is kept.
-     REFUSED:  nothing was changed. The line says why and what to do, most often close
-               Navisworks and double click the file again.
-     FAILED:   it stopped part way. The line says where each version is and what to do.
+4. Read the last line before "Press any key to continue". It starts with one of three words:
+     DONE:     It worked. The line says which version is installed and where, and where the version you had before is kept.
+     FAILED:   It stopped part way. The line says what is in each folder and what to do.
+     REFUSED:  Nothing was changed. The line says why and what to do.
+   Then press any key to close the window.
 5. Start Navisworks Manage 2025 and look on the Tool Add-ins tab for Parsons NWC Federator.
+
+If the window ends on red text that starts with none of those three words, take a screenshot
+of the whole window and send it to Bader.
 
 Installing a newer zip the same way replaces the add-in and keeps the version you had before.
 Only one earlier version is kept, so each install replaces the one kept before it.
@@ -27,9 +29,10 @@ To go back to the version you had before
 
 1. Close Navisworks Manage 2025.
 2. Double click "Put back the previous version.cmd" in the folder of any extracted zip.
-3. Read the last line. DONE: says which version is back. The version you had installed is not
-   kept, so to have it again, run the install in the folder of its zip.
+3. Read the last line before "Press any key to continue". DONE: says which version is back. The
+   version you had installed is not kept, so to have it again, run the install in the folder of
+   its zip.
 
 
 If a line says FAILED, or you are not sure, take a screenshot of the whole window and send it
-to whoever sent you this zip.
+to Bader.

@@ -26,7 +26,8 @@ $ErrorActionPreference = "Stop"
 # How this script ends, written here once.
 #
 #   exit 0  the last line starts PACKAGED: and names the zip, its size, and what it holds
-#   exit 1  the last line starts FAILED:. Something threw. No zip was written to the folder
+#   exit 1  the last line starts FAILED:. Something threw. A zip already copied into the folder
+#           is deleted, and where it cannot be the line says it was left and where
 #   exit 2  the last line starts REFUSED:. No zip was written to the folder. The line says why
 $PackagedStart = "PACKAGED: "
 $FailedExit    = 1
@@ -44,6 +45,7 @@ $builtDll = Join-Path $repo "src\Federator.Addin\bin\Release\net48\Federator.Add
 $ps       = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
 $nothing  = "No zip was written."
 $scratch  = $null
+$copiedTo = $null
 
 function Refuse($why) { ClearScratch; Write-Host ""; Write-Host ($RefusedStart + $why); exit $RefusedExit }
 
@@ -55,11 +57,21 @@ function ClearScratch {
     if ($null -ne $notGone) { Write-Host ("The scratch folder " + $script:scratch + " could not be removed, " + $notGone) }
 }
 
+# A zip copied into the output folder by a run that then failed is deleted. Returns the words
+# for the end of the FAILED line: no zip written, or the zip left and where.
+function DropZip {
+    if ($null -eq $script:copiedTo -or -not (Test-Path -LiteralPath $script:copiedTo)) { return $nothing }
+    try { Remove-Item -LiteralPath $script:copiedTo -Force -ErrorAction Stop }
+    catch { return ("The zip was left at " + $script:copiedTo + " and could not be deleted, " + (Why $_.Exception) + ". Delete it, it is not the team zip.") }
+    return ("The zip copied to " + $script:copiedTo + " was deleted. " + $nothing)
+}
+
 trap {
     $why = Why $_.Exception
+    $zipWords = DropZip
     ClearScratch
     Write-Host ""
-    Write-Host ($FailedStart + $why + ". " + $nothing)
+    Write-Host ($FailedStart + $why + ". " + $zipWords)
     exit $FailedExit
 }
 
@@ -174,8 +186,9 @@ try {
     if ($entries.Count -ne $laid.Count) { throw ("the zip holds " + $entries.Count + " files where " + $laid.Count + " were laid out") }
 }
 finally { $zip.Dispose() }
+$script:copiedTo = $zipAt
 Copy-Item -LiteralPath $zipScratch -Destination $zipAt
-if ((Get-FileHash -LiteralPath $zipAt -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath $zipScratch -Algorithm SHA256).Hash) { throw ("the zip copied to " + $zipAt + " does not read the same as the one made, and it is left there") }
+if ((Get-FileHash -LiteralPath $zipAt -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath $zipScratch -Algorithm SHA256).Hash) { throw ("the zip copied to " + $zipAt + " does not read the same as the one made") }
 $size = (Get-Item -LiteralPath $zipAt).Length
 ClearScratch
 

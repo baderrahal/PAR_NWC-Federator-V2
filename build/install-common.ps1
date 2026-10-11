@@ -10,6 +10,10 @@
 $target  = Join-Path $env:APPDATA "Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle"
 $plugins = Split-Path $target -Parent
 
+# The line each install ends on when the add-in is in place, telling a person where to look.
+# INSTALL.md and INSTALL-TEAM.txt carry it word for word for a person to read.
+$StartLine = "Start Navisworks Manage 2025 and look on the Tool Add-ins tab for Parsons NWC Federator."
+
 # The two the tool is, and the workbook library the report writer needs. ClosedXML pulls
 # eleven more DLLs and every one of them has to travel, or the add-in loads and then
 # throws the first time a group finishes. Checked on 2026-08-31: none of them collides
