@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 539 rows: open 199, in progress 24, in review 0, merged 281, proven by a run 27, waiting for Bader 1, dropped 7
-- By wave: 1 19, 2a 65, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 81, outside the waves 2, right after F133 merges 6
+- By status, of 542 rows: open 202, in progress 24, in review 0, merged 281, proven by a run 27, waiting for Bader 1, dropped 7
+- By wave: 1 19, 2a 65, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 84, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, and 8 FR items
 - Waits for Bader, 1 row: F114-K29
 
@@ -632,6 +632,9 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q149-1 | no release runs, the full runs of C06 and C07 and the ACC check dropped, the proof runs of 1A02MM and 1A04PK the last | none | Bader's request | merged | 194 | none | 2026-10-11 |
 | Q149-2 | the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks | F140 | Bader's request | in progress | none | none | 2026-10-11 |
 | F140 | the team package, prepared and no team zip made until Bader writes make the team package | F140 | fix | open | none | none | 2026-10-11 |
+| T6-R-ZEROCLASHES | TIMING BESIDE SIZE writes 0 clashes for a group whose clash was skipped, while RESULT reads clashes found UNKNOWN and the block's own legend says UNKNOWN is never a zero, set 05 item1-C02 line 625 and item1-C04 line 684 | F119 | register row | open | none | none | 2026-10-11 |
+| T6-R-MIRRORWORDS | the MIRROR block says both tests of each pair are run over a group whose clash the coordinates rule skipped, set 05 item1-C02 line 263 and item1-C04 line 322 | F132 | register row | open | none | none | 2026-10-11 |
+| T6-R-TREEREMOVED | the VIEWS TREE after line reads removed 0 at once where the inventory removed 14 views at once with their folder in one RemoveAt, so the views written and removed read as never removed, set 06 item1-C02 lines 1504 to 1520 against 1745 | F114 | register row | open | none | none | 2026-10-11 |
 
 ## outside the waves
 
