@@ -8515,8 +8515,11 @@ Navisworks, pid 46824, adopted by the four conditions, the Auto-Save switch writ
 last Roamer read and put back after, quit by Dispose and gone 8.5 s later, not forced, 37 registry
 values and 2 files of Bader's put back with 0 still differing, no AutoSave file added. The plugin
 `PictureSpeedProbe.dll`, `tools\probes\PictureSpeed\PictureSpeedProbePlugin.cs`, compiles src's Core
-and Engine into itself as Q133Import does, built with 0 warnings and 0 errors. On a copy of set 08's
-NWF of 1A04PK, which holds the tool's 61 sets, it made the test with the tool's own
+and Engine into itself as Q133Import does, built with 0 warnings, its error count not kept. The launcher
+keeps every guard of probe-q133-import.ps1 but the two that belonged to its cap: the cap's floor and the
+refusal that kept the adopted deadline 1800 s past the cap, and its default adopted deadline is 3600 s
+where Q133's was 14400 s. On a copy of set 08's NWF of 1A04PK, which holds 71 sets, the 61 of the XML
+and 10 of Generic Models, result line 71, it made the test with the tool's own
 `ClashRunner.PlanTheCreation` and `Create` off the corrected matrix of set 08, ran it, and rendered
 the first 20 rows in Clash Detective's order under six settings, today's first and today's again last,
 each `TestsImageForResult` with `ScenePlusOverlay` and each JPEG save timed alone, each picture kept in
@@ -8541,21 +8544,22 @@ clashes, the count sets 06 and 07 read, line 78.
 | 0, today's, every model shown, 1024 by 1024 | 7.762 s | 6.397 s | 1.950 s | 15.824 s | 3 h 21 min | 104 |
 | 1, only the test's model shown | 1.778 s | 1.527 s | 0.652 s | 3.199 s | 46 min | 130 |
 | 2, Shaded on top of 1 | 2.160 s | 1.304 s | 0.705 s | 5.166 s | 56 min | 155 |
-| 3, 800 by 600 on top of 1 | 1.695 s | 1.413 s | 0.721 s | 3.173 s | 43 min | 181 |
-| 4, all three | 1.996 s | 1.368 s | 0.808 s | 3.712 s | 51 min | 206 |
+| 3, 800 by 600 on top of 1 | 1.695 s | 1.413 s | 0.721 s | 3.173 s | 44 min | 181 |
+| 4, all three | 1.996 s | 1.368 s | 0.808 s | 3.712 s | 52 min | 206 |
 | 5, today's again | 7.999 s | 8.193 s | 2.551 s | 14.545 s | 3 h 27 min | 231 |
 
-A save took 0.016 to 0.022 s in every setting. The same setup measured twice differs by 0.24 to 0.38 s
+The minutes are rounded here, where the probe's own lines cut them down. A save took 0.010 to 0.023 s. The same setup measured twice differs by 0.24 to 0.38 s
 a picture, today's against today's again, 1 against 2 and 3 against 4, each pair the same picture as
 the next section reads, and each later one slower, so the run cannot tell a drift over the session from
 the setting. Only the step from every model shown to the test's model alone is far outside that spread.
 
 **WHAT EACH ONE IS.**
 
-1. THE PICTURES ARE ALREADY SHADED. The current viewpoint read Shaded with Headlight before any setting
-   and in every setting, and the first row's own viewpoint, `TestsViewpointForResult`, reads it has a
-   render style, Shaded, and lighting, Headlight, lines 80, 83, 106 and 157. So setting 2 had nothing to
-   turn off: its pictures differ from setting 1's by a mean of 0.01 of 255 a pixel channel, measured by
+1. THE STYLE ALREADY READ SHADED, AND SETTING 2 CHANGED NOTHING IN THE PICTURES. The current viewpoint
+   read Shaded with Headlight before any setting and in every setting, and the first row's own viewpoint,
+   `TestsViewpointForResult`, read for that row alone, reads it has a render style, Shaded, and lighting,
+   Headlight, lines 80, 83, 106 and 157. Either the pictures were already drawn Shaded or the call does
+   not follow the style, and this run cannot tell which. Setting 2's pictures differ from setting 1's by a mean of 0.01 of 255 a pixel channel, measured by
    the lead over all 20, below the 0.05 between today's and today's again, and setting 4's from setting
    3's by 0.02. Its seconds are setting 1's within the spread of one setting. Whether the clash's own
    viewpoint or the current one decides the style of a picture is UNKNOWN, both reading the same.
@@ -8563,15 +8567,16 @@ the setting. Only the step from every model shown to the test's model alone is f
    the camera, the grid label at the bottom left, the red and the green, and loses the other nine
    models' items from behind, a mean of 22 of 255 a pixel channel from today's.
 3. 800 BY 600 SHOWS NO SAVING ON TOP OF 1: its 0.08 s a picture is inside the 0.24 to 0.38 s spread
-   above. It gives a picture four by three, where all 131 clash pictures of the accepted report in
-   samples\client-report are 1024 by 1024, so it no longer matches the export's layout.
+   above. It gives a picture four by three, where all 129 clash pictures of the two accepted reports in
+   samples\client-report, 1A02WN and 1A04WN, read 1024 by 1024 by the lead on 2026-10-11, the other two
+   pictures there being their logos of 239 by 66, so it no longer matches the export's layout.
 
 **WHAT THIS RUN DOES NOT SHOW, the reviewer's reading of the probe and its run.** Whether
 `TestsImageForResult` follows the current viewpoint's render style at all, and what full rendering
 would cost, since the NWF the tool wrote opened Shaded and the style never changed, so the class
 comment's promise to read it off the times could not be kept. The totals are the mean of the first 20
-rows times the -ProjectTo given, 1556, which is this test's count, and rows 1 to 8 ran about three times
-slower than rows 9 to 20 in every setting. The put back read true, and RestoreHiddenState reads true
+rows times the -ProjectTo given, 1556, which is this test's count, and rows 1 to 8 ran 2.3 to 3.4 times
+slower than rows 9 to 20, by setting. The put back read true, and RestoreHiddenState reads true
 without reading anything where nothing was hidden before, the hidden count not logged, and setting 0
 showed every model by ResetAllHidden rather than as the document opened. The probe's words call the 741
 tests PlanTheCreation hands back the tests the tool would create, where that list also holds the tests
