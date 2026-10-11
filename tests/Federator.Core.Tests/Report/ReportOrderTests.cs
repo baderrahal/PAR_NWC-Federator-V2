@@ -415,7 +415,7 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Missing, Is.EqualTo(0));
         }
 
-        // ---------- saying how far it has got, F145 ----------
+        // ---------- saying how far it has got, F146 ----------
 
         // Set 07's and set 08's 1A02MM renamed 2931 pictures in one stretch, the window not
         // answering for 32 s. Said is handed every picture of every pass, counted from one to

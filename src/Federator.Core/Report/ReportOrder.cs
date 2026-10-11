@@ -183,7 +183,7 @@ namespace Federator.Core.Report
     {
         private const string Holding = ".moving";
 
-        /// <summary>The words handed to the caller's said after each picture, F145.</summary>
+        /// <summary>The words handed to the caller's said after each picture, F146.</summary>
         private const string PictureChecked = "picture checked";
 
         private const string PictureMovedAside = "picture moved aside";
@@ -193,7 +193,7 @@ namespace Federator.Core.Report
         /// <summary>
         /// Renames every picture into the report order. Said, where it is not null, is handed
         /// what was just done to one picture, how many of the pass are done and the pass's
-        /// count, after every picture checked, moved aside and renamed, F145: set 07's and set
+        /// count, after every picture checked, moved aside and renamed, F146: set 07's and set
         /// 08's 1A02MM renamed 2931 pictures in one stretch of 44 s and 39 s with the window
         /// not answering for 32 s, and the add-in lets the window answer through it. A said
         /// that throws is named once in the lines and handed nothing more, and the renaming
@@ -416,7 +416,7 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// The caller's said, handed nothing more once it has thrown, F145. The throw is named in
+        /// The caller's said, handed nothing more once it has thrown, F146. The throw is named in
         /// the lines with what happened next, so it is never lost and never stops a picture.
         /// </summary>
         private sealed class Saying
