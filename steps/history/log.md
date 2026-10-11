@@ -2,6 +2,24 @@
 
 Newest entry at the top.
 
+## 2026-10-12 The loop, turn 6, F146 the renumber answers while it renames, written by the lead
+
+Branch fix-F146 off main, parked on 2026-10-11 by Bader's word to change nothing in the tool until he answered
+Q150, renamed from F145 when he gave that number to his picture choice, main 493ecdb taken in.
+
+What was done:
+- ImageRenumbering.Apply hands a said every picture checked, moved aside and renamed, and the engine passes Tick
+  and a PROGRESS line through it, so the window answers while 2931 pictures are renamed. A said that throws is
+  named once and the renaming goes on
+- Proved here: the solution builds with 0 warnings and 0 errors, and Core tests 2862 passed, 0 failed, 0
+  skipped on main 493ecdb and 2865 passed, 0 failed, 0 skipped after
+
+What remains: its reviewer, the merge, and 1A02MM's fast check, steps 646 to 648 of steps\03_bader_next.md.
+
+Known bugs: none new. The renaming still takes about 39 s on 1A02MM, a step for the speed loop.
+
+What comes next: the speed loop of Bader's order of 2026-10-12.
+
 ## 2026-10-11 The loop, turn 6, F148 two tests that filled the shared temp folder, written by the lead
 
 Branch fix-F148 off main cdf8d4e. Found when fix-Q150's pre-commit refused its commit.

@@ -332,6 +332,12 @@ The loop runs these on its own copy, 1A02MM again from a fresh set, after main w
 637. Look for, on the run's TIMING block: VIEWS lines every 30 s where the step is long, and the same rows, pictures and workbook as before, the fix changing no output
 638. Send the log and the `.tsv` beside it, with the longest gap between two lines of the harvest
 
+## Proof F146 the renumber answers while it renames, added 2026-10-12
+
+646. Install main with F146 merged, then run 1A02MM with its clash XML, Make viewpoints ticked
+647. Look for, in the log while the pictures are renamed: `PROGRESS RENUMBER 1A02MM picture checked`, `picture moved aside` and `picture renamed` lines at least every 30 s, and the window's live line moving through them
+648. Look for, in the run's LIFE readings where the loop ran it: no stretch not answering in RENUMBER, where sets 07 to 09 read 32 s, and the IMAGES line `numbered in report order: 2931 renamed` as before
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,

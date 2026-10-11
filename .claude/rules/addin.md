@@ -791,6 +791,11 @@ well as to pass.
   penetration and by design passes, off by default, have no piece yet, row F143-R1. The runner's
   ProgressSettings is ClashRunner.Progress at its defaults, 30 s each, and it hands the render's to
   ClashImages
+- THE RENUMBER ANSWERS WHILE IT RENAMES, F146: FederationEngine.RenumberThePictures hands
+  ImageRenumbering.Apply a said that renders the live line through Tick, whose callback lets the window
+  answer about once a second, and writes a PROGRESS line with its .tsv row through StepProgress once the
+  runner's ProgressSettings says one is due, null settings writing none. Sets 07 to 09 read 1A02MM's window
+  32 s not answering in RENUMBER
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
   core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
   stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and
