@@ -272,25 +272,29 @@ well as to pass.
   `ShownModels.WhyNoView` before anything is hidden or dimmed for it. EVERY CAMERA IS READ
   FIRST, F141 attempt 2, P18's shape: once the hidden state is read and before the first view is
   touched, each planned view's camera clash is read once through `CameraOf`, `TestsViewpointForResult`
-  on a copy, held by the view's key and disposed when the views end, and a camera not read fails its
-  view with why. Per view the held camera is framed, or copied for a view of one clash, after the
-  hiding, the undim, the dim and the paint, so `TestsViewpointForResult` is never called while a
-  view's dim and paint stand. Set 07's 1A02MM, calling it per view between the paint and the record,
-  wrote 69 views and read back no material override on any, the hidden models kept, and that the call
-  takes the dim and the paint off is read off that difference and not measured alone. PER VIEW, each stretch
+  on a copy, held by the view's key and disposed when the views end, each release in its own try,
+  and a view with no camera is failed with why before anything is hidden or dimmed for it. Per view
+  the held camera is framed, or copied for a view of one clash, after the hiding, the undim, the dim
+  and the paint, so none of `CameraOf`'s three clash calls, the test resolved, the result resolved
+  and `TestsViewpointForResult`, is made while a view's dim and paint stand. F85, which set 04 ran at
+  e4484d1, read every camera in its walk too and read 2813 views back painted. Set 07's 1A02MM,
+  making those calls per view between the paint and the record, wrote 69 views and read back no
+  material override on any, the hidden models kept, and that one of them takes the dim and the
+  paint off is read off that difference and not measured alone. PER VIEW, each stretch
   timed into its `ViewsPart`, FR-073: the hiding
   by `ShowOnlyModels` over the indexes of `ShownModels.Shown`, skipped where the view before
   showed the same models, P18, the undim of what the view before left, FR-065, one
   `DimAllBut` over the shown roots with ONE reset over the collection of every clashing item,
   one `OverrideTemporaryColor` per colour over the red and the green collections of
   `PaintPlan`, P17, `FramingBox` over the clash centres and `ZoomBox` on a copy of the camera
-  clash's camera, P16, THE CAMERA THE COPY WAS MADE FROM KEPT UNTIL THE VIEW IS WRITTEN AND
-  DISPOSED AFTER THE COPY, as P16 kept it, F141: set 06's run of 1A02MM on 2026-10-11 disposed
-  it first and every one of its 47 framed views threw ObjectDisposedException on the copy's
-  Position, steps\runs\06\item1-C02, while a copy made by `CameraOf` inside a using of the
-  viewpoint `TestsViewpointForResult` gave read whole in all 14 views of one clash, so which
-  sources a copy outlives is read off those two and not assumed for any other, a view of one
-  clash keeping Clash Detective's own, `EnsureFolders`
+  clash's camera held since the cameras were read, P16, or a plain copy of it for a view of one
+  clash, THE CAMERA A COPY IS MADE FROM KEPT UNTIL THE COPY IS DISPOSED, as P16 kept it, F141:
+  set 06's run of 1A02MM on 2026-10-11 disposed it first and every one of its 47 framed views
+  threw ObjectDisposedException on the copy's Position, steps\runs\06\item1-C02, while a copy
+  made by `CameraOf` inside a using of the viewpoint `TestsViewpointForResult` gave read whole
+  in all 14 views of one clash, and P18 held such a copy across 20 views and a removal and copied
+  it per view, so which sources a copy outlives is read off those three and not assumed for any
+  other, `EnsureFolders`
   REUSING a folder at its path and returning the depths it made so each folder the tool
   makes is marked and no other, row F114-K5, the record through the COM view with
   ApplyHideAttribs and ApplyMaterialAttribs, 5m, and the mark by

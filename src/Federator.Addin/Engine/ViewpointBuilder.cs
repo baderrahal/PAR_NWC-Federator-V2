@@ -642,10 +642,13 @@ namespace Federator.Addin.Engine
             // THE CAMERAS FIRST, F141 attempt 2, P18's measured shape: P18 read every test's
             // camera from TestsViewpointForResult in its walk before any view, and per view only
             // copied and zoomed it after the hiding, the dim and the paint, and read every
-            // override back. WriteOne read it per view between the paint and the record, and set
-            // 07's 1A02MM then wrote 69 views of which none read back a material override while
-            // their hidden models read back right. That the call undoes the dim and the paint is
-            // read off that difference and not measured alone.
+            // override back, and F85, which set 04 ran at e4484d1, read every camera in its walk
+            // too and read 2813 views back painted. WriteOne read it per view between the paint
+            // and the record, and set 07's 1A02MM then wrote 69 views of which none read back a
+            // material override while their hidden models read back right. That one of CameraOf's
+            // three clash calls, the test resolved, the result resolved and
+            // TestsViewpointForResult, undoes the dim and the paint is read off that difference
+            // and not measured alone.
             Dictionary<string, Viewpoint> cameras = new Dictionary<string, Viewpoint>(StringComparer.Ordinal);
             Dictionary<string, string> noCameras = new Dictionary<string, string>(StringComparer.Ordinal);
 
@@ -688,9 +691,22 @@ namespace Federator.Addin.Engine
             }
             finally
             {
+                // Each in its own try, so one that throws leaves the others released and the
+                // inventory and the removals still run, as a throw in a view's own release did
+                // when each view read its camera.
                 foreach (Viewpoint camera in cameras.Values)
                 {
-                    camera.Dispose();
+                    try
+                    {
+                        camera.Dispose();
+                    }
+                    catch (Exception error)
+                    {
+                        log.Failure(
+                            "releasing a camera read for the views",
+                            error,
+                            "kept going, the other cameras are released and the views step carries on");
+                    }
                 }
             }
 
@@ -703,41 +719,39 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// Every planned view's camera, read once before the first view is touched, each a copy
         /// held by key until the views end, or why there is none. One that throws is logged with
-        /// what happens next and that view is written with no camera, failed with why.
+        /// what happens next, and that view is failed with why and nothing is recorded for it.
+        /// The seconds sit in none of the parts, where they sat when each view read its own.
         /// </summary>
         private void CamerasFirst(DocumentClashTests clashTests, Dictionary<string, Viewpoint> cameras, Dictionary<string, string> noCameras)
         {
-            using (seconds.In(ViewsPart.Framing))
+            foreach (PlannedTestView view in Plan.Views)
             {
-                foreach (PlannedTestView view in Plan.Views)
+                if (cameras.ContainsKey(view.Key) || noCameras.ContainsKey(view.Key))
                 {
-                    if (cameras.ContainsKey(view.Key) || noCameras.ContainsKey(view.Key))
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    try
-                    {
-                        string why;
-                        Viewpoint camera = CameraOf(clashTests, view.CameraClash, out why);
+                try
+                {
+                    string why;
+                    Viewpoint camera = CameraOf(clashTests, view.CameraClash, out why);
 
-                        if (camera != null)
-                        {
-                            cameras[view.Key] = camera;
-                        }
-                        else
-                        {
-                            noCameras[view.Key] = why;
-                        }
-                    }
-                    catch (Exception error)
+                    if (camera != null)
                     {
-                        noCameras[view.Key] = "reading it threw " + error.GetType().Name + ": " + error.Message;
-                        log.Failure(
-                            "reading the camera of the view " + view,
-                            error,
-                            "kept going, that view is failed with why and the other views are still written");
+                        cameras[view.Key] = camera;
                     }
+                    else
+                    {
+                        noCameras[view.Key] = why;
+                    }
+                }
+                catch (Exception error)
+                {
+                    noCameras[view.Key] = "reading it threw " + error.GetType().Name + ": " + error.Message;
+                    log.Failure(
+                        "reading the camera of the view " + view,
+                        error,
+                        "kept going, that view is failed with why and the other views are still written");
                 }
             }
         }
@@ -798,6 +812,17 @@ namespace Federator.Addin.Engine
                 outcome.AddFailed(view.ToString(), showsWords,
                     "a view of its name with no mark of this tool sits in " + ViewPlace.FolderPath(view.Folders)
                     + ", a person's or one an earlier run could not mark, so none was written there and that one is left as it is");
+                return;
+            }
+
+            // NO CAMERA IS NO VIEW, failed with why before anything is hidden or dimmed for it.
+            Viewpoint first;
+
+            if (!cameras.TryGetValue(view.Key, out first) || first == null)
+            {
+                string noCamera;
+                noCameras.TryGetValue(view.Key, out noCamera);
+                outcome.AddFailed(view.ToString(), showsWords, "Clash Detective gave no camera for its first clash, " + (noCamera ?? "UNKNOWN why"));
                 return;
             }
 
@@ -892,16 +917,6 @@ namespace Federator.Addin.Engine
 
             try
             {
-                Viewpoint first;
-
-                if (!cameras.TryGetValue(view.Key, out first) || first == null)
-                {
-                    string noCamera;
-                    noCameras.TryGetValue(view.Key, out noCamera);
-                    outcome.AddFailed(view.ToString(), showsWords, "Clash Detective gave no camera for its first clash, " + (noCamera ?? "UNKNOWN why"));
-                    return;
-                }
-
                 using (seconds.In(ViewsPart.Framing))
                 {
                     List<Point3> centres = new List<Point3>();
