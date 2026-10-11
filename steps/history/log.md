@@ -2,6 +2,24 @@
 
 Newest entry at the top.
 
+## 2026-10-11 The loop, turn 6, F148 two tests that filled the shared temp folder, written by the lead
+
+Branch fix-F148 off main cdf8d4e. Found when fix-Q150's pre-commit refused its commit.
+
+What was done:
+- RowLogTests.ALogThatFellBackTakesItsRowFileWithIt and RunLogStepTests.ALogThatCannotWriteToDiskStillTakesSteps
+  fell back to the system temp folder and left a log and a .tsv there on every run, 200 of each on this
+  machine, until all 100 names were taken and the first test failed on every run after. Each now
+  has a folder of its own, the second one a fallback that cannot open, as its name says
+- Proved here: Core tests 2861 passed and 1 failed before on this machine, 2862 passed, 0 failed, 0
+  skipped after, and the run added no file to the temp folder
+
+What remains: the merge, then the branches waiting on a commit take main in.
+
+Known bugs: none new. The 400 files left in the temp folder are named to Bader and not removed.
+
+What comes next: fix-Q150's corrections, F145's reviewer and breaker.
+
 ## 2026-10-11 The loop, turn 6, F141 attempt 2 of two, every camera read before the first view, written by the lead
 
 Branch fix-F141c off main 89082a2.
