@@ -8499,3 +8499,90 @@ own case. What Source File holds for an NWC published from a Revit file on a dis
 Docs, all fourteen being from Autodesk Docs. How many items a Source File condition with no tab matches
 on a model whose items carry the property on a second tab, there being one tab here. Whether 1A02MM's
 nought holds for the files of a later week.
+
+## 5z-zc. WHAT MAKES A CLASH PICTURE FASTER ON 1A04PK, MEASURED 2026-10-11
+
+Q150, Bader's answer of 2026-10-11 headed Q150, NOT YET A CHOICE. Set 08's three test cut of 1A04PK,
+`steps\runs\08\item1-C04`, spent 830.7 s of a group of 884.7 s inside `TestsImageForResult`, 8.0 s a
+picture, and 2.3 s saving the JPEGs. He asked, with no cap, since the client needs a picture for every
+clash, what makes that call faster on the same 20 clashes of BLD-AR-Walls-vs-BLD-AR-Floors, each
+against today's: 1, only the models of the test shown, every other model hidden, 2, shaded drawing
+instead of full rendering on top of 1, 3, a picture of 800 by 600 on top of 1, and 4, all three.
+
+**HOW.** `tools\probes\PictureSpeed\probe-picture-speed.ps1`, probe-q133-import.ps1 with the mode
+picspeed, through the guarded start of `tools\loop\nw-guard.ps1`, unchanged, sha256 8CAC3B67. One
+Navisworks, pid 46824, adopted by the four conditions, the Auto-Save switch written "3 0" after the
+last Roamer read and put back after, quit by Dispose and gone 8.5 s later, not forced, 37 registry
+values and 2 files of Bader's put back with 0 still differing, no AutoSave file added. The plugin
+`PictureSpeedProbe.dll`, `tools\probes\PictureSpeed\PictureSpeedProbePlugin.cs`, compiles src's Core
+and Engine into itself as Q133Import does, built with 0 warnings and 0 errors. On a copy of set 08's
+NWF of 1A04PK, which holds the tool's 61 sets, it made the test with the tool's own
+`ClashRunner.PlanTheCreation` and `Create` off the corrected matrix of set 08, ran it, and rendered
+the first 20 rows in Clash Detective's order under six settings, today's first and today's again last,
+each `TestsImageForResult` with `ScenePlusOverlay` and each JPEG save timed alone, each picture kept in
+a folder of its setting. The models of the test are the models the items of its two sets live in.
+Shaded is the current viewpoint's `RenderStyle`, set through a copy and `CopyFrom`, settable by the
+DLL read the same day: `ViewpointRenderStyle` FullRender 0, Preview 1, Shaded 2, Wireframe 3,
+HiddenLine 4, and `ViewpointLighting` None 0, SceneLights 1, Headlight 2, FullLights 3. The hidden state
+and the viewpoint were put back at the end, read back as before, and nothing was saved. The NWF and the
+XML read the same sha256 after. The result is `tools\probes\PictureSpeed\picture-speed-result-20261011.txt`,
+347 lines, the machine name masked, 585 s in all. The pictures are not committed and stay in
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261011-222207\pictures`, a folder a setting, with
+times.csv beside them.
+
+**THE TEST.** The sets find 2608 walls and 199 floors, all in one model of ten, AR-MOD-000001, result
+lines 73 to 75. Create took 0.015 s, TestsRunTest 0.706 s, and the test holds 1556 rows and 1556
+clashes, the count sets 06 and 07 read, line 78.
+
+**THE SECONDS, 20 pictures a setting, render and save, and that mean times 1556.**
+
+| Setting | Mean | Median render | Least | Most | 1556 pictures | Lines |
+|---|---|---|---|---|---|---|
+| 0, today's, every model shown, 1024 by 1024 | 7.762 s | 6.397 s | 1.950 s | 15.824 s | 3 h 21 min | 104 |
+| 1, only the test's model shown | 1.778 s | 1.527 s | 0.652 s | 3.199 s | 46 min | 130 |
+| 2, Shaded on top of 1 | 2.160 s | 1.304 s | 0.705 s | 5.166 s | 56 min | 155 |
+| 3, 800 by 600 on top of 1 | 1.695 s | 1.413 s | 0.721 s | 3.173 s | 43 min | 181 |
+| 4, all three | 1.996 s | 1.368 s | 0.808 s | 3.712 s | 51 min | 206 |
+| 5, today's again | 7.999 s | 8.193 s | 2.551 s | 14.545 s | 3 h 27 min | 231 |
+
+A save took 0.016 to 0.022 s in every setting. The same setup measured twice differs by 0.24 to 0.38 s
+a picture, today's against today's again, 1 against 2 and 3 against 4, each pair the same picture as
+the next section reads, and each later one slower, so the run cannot tell a drift over the session from
+the setting. Only the step from every model shown to the test's model alone is far outside that spread.
+
+**WHAT EACH ONE IS.**
+
+1. THE PICTURES ARE ALREADY SHADED. The current viewpoint read Shaded with Headlight before any setting
+   and in every setting, and the first row's own viewpoint, `TestsViewpointForResult`, reads it has a
+   render style, Shaded, and lighting, Headlight, lines 80, 83, 106 and 157. So setting 2 had nothing to
+   turn off: its pictures differ from setting 1's by a mean of 0.01 of 255 a pixel channel, measured by
+   the lead over all 20, below the 0.05 between today's and today's again, and setting 4's from setting
+   3's by 0.02. Its seconds are setting 1's within the spread of one setting. Whether the clash's own
+   viewpoint or the current one decides the style of a picture is UNKNOWN, both reading the same.
+2. HIDING THE OTHER MODELS IS WHAT MAKES IT FASTER, 4.4 times on these 20. The picture keeps the size,
+   the camera, the grid label at the bottom left, the red and the green, and loses the other nine
+   models' items from behind, a mean of 22 of 255 a pixel channel from today's.
+3. 800 BY 600 SHOWS NO SAVING ON TOP OF 1: its 0.08 s a picture is inside the 0.24 to 0.38 s spread
+   above. It gives a picture four by three, where all 131 clash pictures of the accepted report in
+   samples\client-report are 1024 by 1024, so it no longer matches the export's layout.
+
+**WHAT THIS RUN DOES NOT SHOW, the reviewer's reading of the probe and its run.** Whether
+`TestsImageForResult` follows the current viewpoint's render style at all, and what full rendering
+would cost, since the NWF the tool wrote opened Shaded and the style never changed, so the class
+comment's promise to read it off the times could not be kept. The totals are the mean of the first 20
+rows times the -ProjectTo given, 1556, which is this test's count, and rows 1 to 8 ran about three times
+slower than rows 9 to 20 in every setting. The put back read true, and RestoreHiddenState reads true
+without reading anything where nothing was hidden before, the hidden count not logged, and setting 0
+showed every model by ResetAllHidden rather than as the document opened. The probe's words call the 741
+tests PlanTheCreation hands back the tests the tool would create, where that list also holds the tests
+already in the document, and Create is called on the one named whatever the list says, which here made
+Walls-vs-Floors once since the NWF held only Stairs-vs-Floors, Ramps-vs-Floors and Ramps-vs-Stairs. The
+models of the test are read off the items of its two sets, where the views read the models of the
+clashing items, the same model here. Its home walk and its JPEG lookup copy the tool's in the probe. The
+launcher's adopted deadline of 3600 s is linked to no -Count, so a -Count above about 145 would reach it.
+The code is kept as it ran, so the record's sha256 of the probe stays true.
+
+**UNKNOWN.** How the share holds over all 1556 rows and on other tests, these being the first 20 of one
+test whose two sets live in one model. What the rows of a test between two models cost with only those
+two shown. Whether the client accepts a picture with the other trades' models gone from behind. Bader
+looks at the folders and chooses, Q150.
