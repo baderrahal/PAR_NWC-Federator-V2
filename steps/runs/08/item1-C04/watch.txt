@@ -1,0 +1,22 @@
+20:43:22.032  t+1.5s  watchdog started
+20:43:31.336  t+10.8s  Roamer pid 44692 seen with no readable start time, looked at again at the next pass
+20:43:36.375  t+15.8s  new process Roamer pid 44692, parent 1976 svchost.exe, started 20:43:31.283, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+20:43:36.432  t+15.9s  Roamer 44692 visible top level windows: none
+20:44:16.267  t+55.7s  new process AdskLicensingAgent pid 40136, parent 44692 Roamer.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: no
+20:44:24.199  t+63.7s  new process AdskLicensingAgent pid 30000, parent 44692 Roamer.exe, started 20:44:11.466, command line holds the word embedding or automation: no
+20:44:36.470  t+75.9s  Roamer 44692 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+20:44:41.270  t+80.7s  Roamer 44692 visible top level windows: none
+20:44:49.295  t+88.8s  Roamer 44692 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "" text: 
+20:44:49.827  t+89.3s  Roamer 44692 visible top level windows: none
+20:44:50.368  t+89.8s  Roamer 44692 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+20:44:51.465  t+90.9s  Roamer 44692 visible top level windows: [HwndWrapper[Roamer.exe;;d27bdecc-f90e-4c12-a552-51546639f4b5]] "Parsons NWC Federator   [1.0.0.0 89082a29 built 2026-10-11 19:10:46]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+20:45:12.586  t+112.1s  Roamer 44692 visible top level windows: [HwndWrapper[Roamer.exe;;d27bdecc-f90e-4c12-a552-51546639f4b5]] "Parsons NWC Federator   [1.0.0.0 89082a29 built 2026-10-11 19:10:46]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+20:45:13.668  t+113.1s  Roamer 44692 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;14a351c4-48de-45f2-b873-3de67b2f8358]] "Working..." text:  | [HwndWrapper[Roamer.exe;;d27bdecc-f90e-4c12-a552-51546639f4b5]] "Parsons NWC Federator   [1.0.0.0 89082a29 built 2026-10-11 19:10:46]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+20:45:14.200  t+113.7s  Roamer 44692 visible top level windows: [HwndWrapper[Roamer.exe;;d27bdecc-f90e-4c12-a552-51546639f4b5]] "Parsons NWC Federator   [1.0.0.0 89082a29 built 2026-10-11 19:10:46]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+20:45:17.455  t+116.9s  Roamer 44692 visible top level windows: [HwndWrapper[Roamer.exe;;d27bdecc-f90e-4c12-a552-51546639f4b5]] "Parsons NWC Federator   [1.0.0.0 89082a29 built 2026-10-11 19:10:46]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+20:59:41.374  t+980.8s  Roamer 44692 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;dc52a49d-6a80-49a7-8fc7-199827f6142f]] "Working..." text:  | [HwndWrapper[Roamer.exe;;d27bdecc-f90e-4c12-a552-51546639f4b5]] "Parsons NWC Federator   [1.0.0.0 89082a29 built 2026-10-11 19:10:46]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+20:59:56.536  t+996.0s  Roamer 44692 visible top level windows: [HwndWrapper[Roamer.exe;;d27bdecc-f90e-4c12-a552-51546639f4b5]] "Parsons NWC Federator   [1.0.0.0 89082a29 built 2026-10-11 19:10:46]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+21:00:27.484  t+1027.0s  Roamer 44692 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+21:00:43.297  t+1042.8s  Roamer 44692 visible top level windows: none
+21:00:50.279  t+1049.8s  Roamer 44692 has exited
+21:03:30.277  t+1209.7s  watchdog stopped

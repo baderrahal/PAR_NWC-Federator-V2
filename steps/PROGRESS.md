@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-11 20:15, last run 07/item1-C02
+STATE OPEN, 2026-10-11 21:16, last run 08/item1-C04
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,29 +15,29 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 13 | 1 | 0 | 0 | 7 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
-| outside the waves | 165 | 14 | 0 | 0 | 59 | 6 | 244 |
-| total | 312 | 24 | 0 | 1 | 210 | 7 | 554 |
+| outside the waves | 165 | 14 | 0 | 1 | 59 | 6 | 245 |
+| total | 312 | 24 | 0 | 2 | 210 | 7 | 555 |
 <!-- the end of the counts -->
 
 ## Now
 - Bader's orders of 11 Oct: 1A04PK IS FROZEN, the life check and the cause fixed, and NO MORE TWO HOUR TEST LOOPS, fast checks on 1A02MM and a cut down 1A04PK, the one full run only when he says
-- Set 06's 1A04PK ended at 19:31, closed Not Responding, Application Hang 1002, after 5 h 6 min at test 75 of 741, his settings put back. Findings in steps\runs\06\findings.md
-- Main 89082a2 installed in place at 19:40. Fast check 1A02MM, 07/item1-C02: 5 min 2 s, 2931 clashes, coverage 528 of 528, PROGRESS lines every 30 s, LIFE lines, no view threw, and 69 of 69 views read back no material override, F141-R1
-- F141 attempt 2 on fix-F141c: the camera read before the hiding, the dim and the paint, P18's order, with its reviewer and breaker
-- Fast check 1A04PK on first50 running since 19:58, a LIFE CLASS busy at 20:02, rows of 7 to 13 s, the window pumped between them
+- Set 07's 50 test cut of 1A04PK, 07/item1-C04, stopped by the lead at 20:35 after 37 min 38 s at test 16 of 52, row 305 of 1556, his settings put back, VERDICT STOPPED, F144-R1
+- Set 08's three test cut, 08/item1-C04, main 89082a2: group 884.7 s, pictures 833.1 s of which 830.7 s rendering, 8.0 s a picture, 3 of 3 counts agree, both views failed on the dimming, F141-R1. Q150 to Bader on the pictures
+- F141 attempt 2 on fix-F141c: every camera read before the first view, P18's and F85's shape, read by the reviewer and the breaker with nothing blocking, its pull request next
 
 ## Next
-1. The cut down 1A04PK to its end, its IMAGES line splitting render from the rest, three lines to Bader, then the speed fix or his choice on the pictures
-2. F141 attempt 2 merged, installed, and 1A02MM's fast check again, 69 views written with their dim and paint proving it
+1. F141 attempt 2 merged, main installed in place, 1A02MM's fast check on set 08's C02, steps 629 to 633
+2. Bader's answer to Q150, then the 50 test cut of 1A04PK with it
 3. Ask Bader before the one full 1A04PK run. Then F140 prepared, waves 4 and 5
 
 ## Waiting for Bader
-- No question open. The team package, F140, made only when he writes make the team package, Q149
+- Q150, the pictures of 1A04PK: a cap per test, smaller pictures, or as they are
+- The team package, F140, made only when he writes make the team package, Q149
 
 ## Blockers and known bugs
-- F141-R1: every view read back with no material override on 1A02MM, attempt 2 waiting for its fast check
-- F143-R2: one render of 3 to 13 s a row on 1A04PK, the window answering only between rows
-- F144-R1: the first 50 tests on 1A04PK hold Walls-vs-Floors, about 90 minutes of rows
+- F141-R1: every view read back with no material override, attempt 2 waiting for its merge and fast check
+- F143-R2: one render of 4 to 8.6 s a row on 1A04PK, the window answering only between rows
+- F144-R1: the 50 test cut of 1A04PK is hours long while every picture is rendered, Q150
 - T5-R-OLDKEY: his 22.0 key reads an older copy after each restart, the writer UNKNOWN
 
 ## Where the long history is

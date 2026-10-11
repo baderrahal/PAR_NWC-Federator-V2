@@ -768,3 +768,13 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
     Write both in steps\02_questions.md, set the rows, and carry on with F129, F109, F127-R2, then the proof runs.
 
     Answer: Bader, 2026-10-11, as written above. The lead's notes. Item 1: the row of steps 228 to 233 reads dropped, and Q145's item 7, the release, is dropped with it while Q145's other items go on, so its row stays in progress. No row of its own named the full runs of C06 and C07. Item 2: the team package is F140, rows Q149-2 and F140, built as scripts and a page on a branch of its own after the proof runs' order of the day allows, tested by building a zip into a throwaway folder that is deleted after the test, and no team zip is made or handed to anyone until Bader writes make the team package. F109-R1 is answered by it and reads in progress with F140.
+
+150. From the loop, turn 6, 2026-10-11, Bader's order headed NO MORE TWO HOUR TEST LOOPS, item 2. THE PICTURES ARE THE SLOW STEP AND NO FIX KEEPS THEM THE SAME. Set 08's three test cut of 1A04PK on main 89082a2, steps\runs\08\item1-C04, measured where a row's seconds go: 104 pictures, 830.7 s rendering inside Navisworks's own call TestsImageForResult and 2.3 s saving the JPEG, of a group of 884.7 s, so the render is 94% of the group. A render took 8.0 s on average there, against 0.045 s on 1A02MM in set 07. 104 renders wrote 104 pictures, so nothing is rendered twice. The render is one Navisworks call, so nothing in this tool makes it faster and keeps every picture the same, and no fix attempt was spent on it. Set 06's full 1A04PK reached test 75 of 741 with 3272 clashes in 5 h 6 min, and set 07's 50 test cut reached row 305 of 1556 of its test 16 in 37 min 38 s and was stopped by the lead. Which do you want?
+
+    A. A cap per test, the window's existing box At most per test, 0 for no cap. Pictures past the cap are not rendered and their cells stay empty. No code changes. A cap of 25 would leave 25 pictures where Walls-vs-Floors has 1556
+    B. Smaller pictures, the window's size box, now 1024 by 1024 as the accepted report's. How much faster a smaller render is stays UNKNOWN until a run measures it
+    C. As it is: every picture at 1024, and 1A04PK runs for hours
+
+    The full 1A04PK run waits for your word in the tab in any case, item 4 of the same order.
+
+    Answer:
