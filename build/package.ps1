@@ -66,7 +66,7 @@ trap {
 # git in the repo, its output as lines, a failure thrown with its exit code. Its standard error
 # goes to the window as it is, since Windows PowerShell 5.1 turns a redirected line of it into
 # an error.
-function Git {
+function GitLines {
     $lines = @(& git -C $repo @args)
     if ($LASTEXITCODE -ne 0) { throw ("git " + ($args -join " ") + " failed with exit code " + $LASTEXITCODE) }
     return @($lines | ForEach-Object { [string]$_ })
@@ -89,9 +89,9 @@ if ($LASTEXITCODE -ne 0 -or $branch.Count -ne 1 -or $branch[0] -ne "main") {
     if ($branch.Count -eq 1) { $on = "the branch " + $branch[0] }
     Refuse ("the checkout is on " + $on + ", and the team zip is made from main alone. Check out main, pull it, and run this again. " + $nothing)
 }
-$dirty = @(Git status --porcelain)
+$dirty = @(GitLines status --porcelain)
 if ($dirty.Count -gt 0) { Refuse ("git status prints " + $dirty.Count + " line(s), the first " + $dirty[0].Trim() + ", and the team zip is made from a clean checkout of main alone. " + $nothing) }
-$head = (Git rev-parse --short=8 HEAD)[0]
+$head = (GitLines rev-parse --short=8 HEAD)[0]
 
 Write-Host ("Building main at " + $head + "...")
 & dotnet build $solution -c Release --no-incremental -p:NavisworksPath="$NavisworksPath" --nologo -v minimal
