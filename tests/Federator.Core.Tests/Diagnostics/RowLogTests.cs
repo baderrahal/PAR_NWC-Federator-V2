@@ -211,12 +211,18 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// A log that fell back to another folder takes its row file with it. The two
-        /// always sit beside each other, wherever they landed.
+        /// always sit beside each other, wherever they landed. The fallback is a folder of
+        /// this test's own, F148: on the system temp folder each run left its pair of files
+        /// under the next suffix and never took them out, so once all 100 names were taken
+        /// the next run could not open the log. The folder is not there before, so the test
+        /// also proves Start makes it.
         /// </summary>
         [Test]
         public void ALogThatFellBackTakesItsRowFileWithIt()
         {
-            using (RunLog log = RunLog.StartOrDisabled(null, new DateTime(2026, 9, 19, 9, 14, 22), 5))
+            string fallback = Path.Combine(folder, "fallback");
+
+            using (RunLog log = RunLog.StartOrDisabled(null, fallback, new DateTime(2026, 9, 19, 9, 14, 22), 5))
             {
                 Assert.That(log.IsWritingToDisk, Is.True, "the fallback folder is what this is for");
                 Assert.That(() => log.Numbered("a line", "counted", "thing", "1", null), Throws.Nothing);
