@@ -76,7 +76,9 @@ well as to pass.
 - `Say` renders every time and `Tick` renders at most once a second. The pieces that
   speak once per test, once per set and once per viewpoint get `Tick`, so a loop over
   1830 tests repaints the window about as often as a person can read it. Anything said
-  through `Tick` is in the log as well, so a message the throttle skips is never lost
+  through `Tick` is in the log as well, so a message the throttle skips is never lost, bar
+  one since F143: the harvest's sentence for each row reaches the log as a PROGRESS line
+  at most every 30 s, since a line per row would be 1556 lines for one test
 - RENDERING THE LINE IS WHAT MARKS IT AS SAID. A caller that renders the line itself and
   then hands the result to the throttle gets skipped by that throttle, which is how the
   step name nearly never reached the window. A caller that wants the throttle to render
@@ -759,6 +761,24 @@ well as to pass.
   CLASH WORKBOOK HOLDS THE CLIENT'S SHEET ALONE, the Navisworks export's layout, and its
   WORKBOOK CHECK calls a second sheet a problem. The settings are `ReportOptions.Coverage`, read
   off Core and never typed in the window. The two hand buttons take no coverage, they are not runs
+- THE HARVEST ANSWERS BETWEEN ROWS, F143, Bader's order of 2026-10-11 headed 1A04PK IS FROZEN.
+  Set 06's run of 1A04PK sat from 14:44 to 16:21 in the rows of BLD-AR-Walls-vs-BLD-AR-Floors, 1556
+  clashes, with no line in the log and the window not answering, while TestsRunTest took 0.3 s, and
+  1A02MM's harvest of set 06 was 90 percent pictures, 136.5 s of rendering of 198.3 s. The window pumps
+  only when the engine's throttle renders the live line, FederatorWindow.Pump, so ClashHarvest now calls
+  the runner's callback, ClashHarvest.Tick, through ClashHarvest.Piece after each top level row of a
+  test, after the row's own wrapper is released, and after each item under a group row of a test in a
+  merge, whose count of the whole is UNKNOWN. The test, its children and the grid stay held across the
+  pump, as they are across every render, and so does the test's handle in RenderThePicturesWaiting,
+  whose pictures are pieces the same way: the tool's window is modal over Navisworks and every handler
+  of it that touches Navisworks returns while a run is going, Scan among them since F143. Piece writes a
+  PROGRESS line with its .tsv row once ProgressSettings.EverySeconds has passed, StepProgress. The two
+  calls that can be long, TestsRunTest and TestsImageForResult, are timed alone on the log's clock and
+  named on a CALL line with its .tsv row where they took ProgressSettings.LongCallSeconds or more,
+  LongCall.Say, in a finally, so one that throws is named too. Other passes over every clash, the
+  penetration and by design passes, off by default, have no piece yet, row F143-R1. The runner's
+  ProgressSettings is ClashRunner.Progress at its defaults, 30 s each, and it hands the render's to
+  ClashImages
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
   core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
   stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and
