@@ -486,5 +486,57 @@ namespace Federator.Core.Tests
             Assert.That(some.ResultLines()[0], Does.StartWith("COVERAGE tests counted"));
             Assert.That(some.ResultLines()[6], Does.StartWith("COVERAGE checked"));
         }
+
+        // ---------- every group once, F127b, the breaker's second and fifth findings ----------
+
+        /// <summary>
+        /// THE BREAK. A group that ended early, refused, a rebuild that failed or a throw before the
+        /// COVERAGE step, never reaches the count check, and is still a group the run took, so it counts
+        /// among the groups not checked and the headline's groups are every group of the run.
+        /// </summary>
+        [Test]
+        public void AGroupThatEndsEarlyCountsAmongTheGroupsNotChecked()
+        {
+            CoverageAcrossTheRun coverage = new CoverageAcrossTheRun(new CoverageSettings());
+
+            coverage.For("100000").Checked(OneTest("100000", 1, 1), new List<TestCoverage> { Ran("T") });
+            coverage.For("100001").NotChecked();
+
+            Assert.That(coverage.Groups, Is.EqualTo(2));
+            Assert.That(coverage.GroupsNotChecked, Is.EqualTo(1));
+            Assert.That(string.Join("\n", new List<string>(coverage.ResultLines()).ToArray()),
+                Does.Contain("1 compared, 1 agree, 0 FAILED in 0 of 2 groups"));
+            Assert.That(string.Join("\n", new List<string>(coverage.ResultLines()).ToArray()),
+                Does.Contain("1 group not checked, its tests in none of these counts"));
+        }
+
+        /// <summary>
+        /// THE BREAK. A group is added once whatever follows: a throw after its check was added used to
+        /// add it again as not checked, counting it twice. The first word on a group is the one counted.
+        /// </summary>
+        [Test]
+        public void AGroupIsAddedOnceWhateverFollows()
+        {
+            CoverageAcrossTheRun coverage = new CoverageAcrossTheRun(new CoverageSettings());
+            GroupInTheRun checkedFirst = coverage.For("100000");
+
+            checkedFirst.Checked(OneTest("100000", 1, 1), new List<TestCoverage> { Ran("T") });
+            checkedFirst.NotChecked();
+            checkedFirst.Checked(OneTest("100000", 1, 1), new List<TestCoverage> { Ran("T") });
+
+            Assert.That(coverage.Groups, Is.EqualTo(1));
+            Assert.That(coverage.GroupsNotChecked, Is.EqualTo(0));
+            Assert.That(coverage.Agree, Is.EqualTo(1));
+
+            GroupInTheRun notCheckedFirst = coverage.For("100001");
+
+            notCheckedFirst.NotChecked();
+            notCheckedFirst.Checked(OneTest("100001", 1, 1), new List<TestCoverage> { Ran("T") });
+
+            Assert.That(coverage.Groups, Is.EqualTo(2));
+            Assert.That(coverage.GroupsNotChecked, Is.EqualTo(1));
+            Assert.That(coverage.Agree, Is.EqualTo(1));
+            Assert.That(checkedFirst.Added && notCheckedFirst.Added, Is.True);
+        }
     }
 }

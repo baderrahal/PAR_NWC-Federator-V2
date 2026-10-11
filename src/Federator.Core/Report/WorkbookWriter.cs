@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using ClosedXML.Excel;
 using Federator.Core.Clash;
-using Federator.Core.Coverage;
 
 namespace Federator.Core.Report
 {
@@ -104,20 +103,13 @@ namespace Federator.Core.Report
         /// <summary>
         /// Writes the workbook and returns the path. Overwrites, the same as the NWF and
         /// the NWD. The caller reads the size back off the disk, this never reports one.
+        ///
+        /// THE CLIENT'S SHEET ALONE. FR-200 put the Coverage sheet second in this workbook,
+        /// and Bader's answer B to Q146 of 11 Oct 2026 took it out again: this workbook goes
+        /// to the client and keeps the Navisworks export's layout, so the Coverage sheet is in
+        /// the internal workbook beside it, InternalWorkbook, with the Generic Models sheet.
         /// </summary>
         public string Write(ClashReport report, string path)
-        {
-            return Write(report, path, null, null);
-        }
-
-        /// <summary>
-        /// The same workbook with the Coverage sheet after the client's sheet, F127 and FR-200,
-        /// both in the one save, so the client's sheet never goes through a second round trip.
-        /// A null coverage writes the client's sheet alone, and a coverage whose sheet
-        /// CoverageSheet.WhyRefused refuses is left out, which the caller reads off that rule
-        /// and logs, since this writes a file and never a line.
-        /// </summary>
-        public string Write(ClashReport report, string path, CoverageSheetData coverage, CoverageSettings settings)
         {
             if (report == null)
             {
@@ -139,13 +131,6 @@ namespace Federator.Core.Report
             using (XLWorkbook workbook = new XLWorkbook())
             {
                 IXLWorksheet sheet = workbook.Worksheets.Add(SheetNames.ForReport(report.OutputName));
-                string coverageSheet = (settings ?? new CoverageSettings()).SheetName;
-
-                if (coverage != null && CoverageSheet.WhyRefused(report, coverageSheet) == null)
-                {
-                    CoverageSheet.Write(workbook, coverage, coverageSheet);
-                }
-
                 int row = WriteTitle(sheet, report);
                 bool priority = HasPriority(report);
 

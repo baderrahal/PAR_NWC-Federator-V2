@@ -2,6 +2,86 @@
 
 Newest entry at the top.
 
+## 2026-10-11 The loop, turn 6, F127 the add-in half with the Coverage sheet in the internal workbook, Q146 answered B, row F127-R2, attempt 1 of two, written by the developer as the lead's delegate
+
+Bader's request 2 under Q112, FR-176 and FR-200, and his answer B to Q146 of 11 Oct 2026: the Generic Models
+sheet in a workbook of its own beside the clash workbook, and the Coverage sheet moves into that same internal
+workbook, because the clash workbook goes to the client and keeps the Navisworks export's layout. Q143's limits,
+two attempts, one reviewer, and a breaker since this change reads clash counts and mirrors, two of the five things Q143 item 4 lets a breaker read, no new probe and no change to tools\loop. The brief is
+turn6\f127-addin-brief.md. Branch fix-F127b off main 5436385 in the worktree
+%LOCALAPPDATA%\NwcFederatorLoop\wt-f127b, every file named below under turn6 with the prefix f127b-. Main taken
+in three times, F130 at 5b97f3a, F129 at d13f55f and F109, both sides kept. Navisworks was not started and no probe was run.
+
+- THE MOVE, Q146 B. `WorkbookWriter.Write` takes no coverage, so the clash workbook holds the client's sheet alone
+  again. `WorkbookCheck` expects one sheet and names a second of any name, the Coverage sheet included, in the
+  words it used before FR-200, and `HasCoverageSheet` is gone. `InternalWorkbook`, which was `GenericWorkbook`,
+  writes the Generic Models sheet and then the Coverage sheet in one save, the one alone where the other was not
+  taken, refuses a group with neither, leaves the Generic Models sheet out where the two names are one to Excel by
+  `GenericSheet.WhyRefused`, now handed the Coverage sheet's name alone, and reads the file back by its sheets'
+  names, `InternalWorkbook.Check`. `CoverageSheet.WhyRefused`, which met the client's sheet, is gone with its
+  test. The suffix that names the workbook is `Internal`, the step that times it `INTERNAL`, after a new step
+  `COVERAGE`, eight letters because a longer name widens every STEP line, and its lines and rows the kind
+  INTERNAL and never XLSX, so the loop's documents read, which refuses a group naming two workbooks written and
+  did for every group since F128 wrote a second one, pairs each NWF with its one clash workbook again
+- THE ADD-IN HALF. `ClashRunner` calls `KeepItemsByLocator` before `CreationPlan.For` and `RecordSides` as soon
+  as a test's sides are read, before the coordinates, one discipline and side checks, and hands out `RunPlan`,
+  the plan it ran, each mirror under its run name and each saved test with its sides, and `InAMerge`, the tests
+  of every mirrored pair its rule merges. `FederationEngine.TakeTheCoverage`, in the COVERAGE step after the
+  clash workbook: `CoverageRule.For` with `GroupCodesOf` the group's models and `RunCodesOf` every group the scan
+  made, Clash Detective's two counts of every test in one walk, `DocumentCensusReader.TestsWithTheirCounts`, the
+  clash workbook read back by the client's sheet's name, `WorkbookTests.ReadFile`, only where this run wrote it
+  whole, `JobOutcome.WorkbookNotReadBecause`, `CountCheck.Judge`, the COVERAGE block, `CoverageBlock.Lines`, one
+  `coverage test` row a test, and `CoverageAcrossTheRun`, which the window hands to RESULT on every run, the
+  picked NWFs of F129 included. The XML's sha256 is read once when the run starts. A throw in the coverage never
+  fails a group, and a group whose clash step made no plan is counted not checked
+- THE READERS' POINTS TAKEN. `WorkbookTests.Read` handed the first sheet, now `ReadFile` by the sheet's name, and
+  the workbook stamp, the workbook not read where its write threw. One more found while wiring: a merge of F132
+  puts a mirror's clashes in the kept test's block and leaves no block of the mirror's, which the count check
+  would have called two COVERAGE FAILED lines, so the tests of a merge are NOT COMPARED, `CountCheck.InAMergeWhy`.
+  The MIRRORED PAIRS section of the sheet no longer says F132 is not on main. A COVERAGE block of a coverage not
+  taken keeps an exception message on one line
+- TESTS, FAILING FIRST. Against main's source eight changed tests failed, the one sheet check, the step list and
+  the suffix, f127b-tests-failing-first-1.txt, and the new ones did not build, f127b-tests-failing-first-2.txt.
+  The merge tests did not build against the old `CountCheck`, f127b-tests-failing-first-3.txt, and the one line
+  test failed against the old block, f127b-tests-failing-first-4.txt. 23 tests more, four removed with the
+  writer's coverage overload and `CoverageSheet.WhyRefused` they proved, their rule now proved by the clash
+  workbook of one sheet and the internal workbook of both
+- RULES AND STEPS. core.md, Coverage of the picked tests: the add-in half, the plan the runner ran, the codes, lane
+  B's lines on a test with no record, a dropped test, the tests not named and the test places, the merged tests,
+  the sheet read by name and only where this run wrote it, the fingerprint, the internal workbook, the one sheet
+  check and F127-R1 with nothing left to change, and the F128 lines the move changes. addin.md, THE COVERAGE OF
+  THE PICKED TESTS. 01_next.md, the F127 section and order line 49. 03_bader_next.md, step 174 saying `No set was
+  counted, so nothing is said of what the sets found.` and the Generic Models SET lines, steps 498 to 506 on the
+  internal workbook, the silent miss note, and steps 616 to 628, after F109's 615
+- LEFT AS ROWS, by the brief: the codes of every NWC the scan found, ticked or not, the fingerprint taken around
+  the window's parse, the runner's one record of every test with no active document, the categories no set
+  catches, a mirror named by its run name and not the XML's on its coverage row, the run.ps1 read-out of the
+  internal workbook, which carries doubts of its own and is never paired, and steps\notes\item5-runs-brief.md, a
+  copy as written, still naming GENERIC XLSX
+
+- THE SECOND READING, of 519c28f. The reviewer, f127b-review.json, CHANGES with one finding of the records:
+  the rules and two comments said the run's codes come from every group the scan made, where the engine is
+  handed the ticked groups of this run, and they now say so, row F127-R3 open for the wider question. A
+  breaker, f127b-breaker.md, under Q143 item 4 since the change compares clash counts and handles mirrors,
+  found three faults the team would see and one more, fixed in this attempt under Q148 B, each with a test
+  failing first, f127b-r2-failing-first-build.txt and f127b-r2-failing-first-agree.txt. The tests of a
+  mirrored merge came off the plan, so a pair `MirrorMerge.AddTo` refused read NOT COMPARED and hid a real
+  difference: they now come off what AddTo did, `MirrorMerge.MergedNames`. Only the groups that reached the
+  COVERAGE step were in RESULT's count: every group the run took is now counted, one that ended early as not
+  checked, through `GroupInTheRun`, which also counts a group once where a throw after its check would have
+  added it again. A test that did not run with equal counts read AGREE: it is NOT COMPARED,
+  `CountCheck.DidNotRunWhy`. Breaker 4 waits for the proof runs, 6 is row F127-R5, 7 is dropped under Q143
+  item 1. Core tests 2843 before these changes and 2848 after, 0 failed, 0 skipped
+
+Core tests 2774 passed, 0 failed, 0 skipped before at 5436385, f127b-tests-before.txt, 2797 at c205ee6 before
+main was taken in, and 2843 passed, 0 failed, 0 skipped after at 519c28f with F130's and F129's,
+f127b-tests-after.txt. `dotnet build ParsonsNwcFederator.sln -c Release --no-incremental` from an empty git status
+0 warnings and 0 errors before, f127b-build-before.txt, and after, f127b-build-after.txt. check-locals.sh and
+check-imports.sh exit 0 over src at d13f55f, whose src 519c28f keeps, f127b-checks.txt. Waits for the reviewer's reading under Q143, and for the local
+machine, steps 616 to 628 and 498 to 506 of steps\03_bader_next.md.
+
+Merged as pull request 195 on 2026-10-11 by the lead, fourth of Bader's order of that morning. The reviewer read 519c28f CHANGES on one record line, turn6\f127b-review.json, and a breaker read it beside, turn6\f127b-breaker.md, its points 1, 2, 3 and 5 fixed in the same attempt under Q148 B, 4 left to the proof runs, 6 row F127-R5 and 7 dropped under Q143 item 1. The reviewer read c5caa0e once more, APPROVE, with one note outside Q143's limits, the doc comment on CountCheck.Judge still saying the tests of a merge are not compared either way, made true by the lead before the pull request.
+
 ## 2026-10-11 The loop, turn 6, F109 the install for the team, FR-078, FR-079 and FR-080, attempt 1 of two, written by the developer as the lead's delegate
 
 Bader's order of the evening of 8 Oct 2026, Q147 item 3, and Q145 item 6, held to by his message of 11 Oct headed

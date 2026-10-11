@@ -10,10 +10,11 @@ using Federator.Core.Sets;
 namespace Federator.Core.Report
 {
     /// <summary>
-    /// The Coverage sheet, F127, Bader's request 2 under Q112 and FR-200: the second and last
-    /// sheet of the group's workbook, named by CoverageSettings.SheetName, Coverage by default,
-    /// written in the same save as the client's sheet so that sheet never goes through a second
-    /// round trip. Nothing of ours goes on sheet 1, which stays exactly theirs.
+    /// The Coverage sheet, F127, Bader's request 2 under Q112 and FR-200, named by
+    /// CoverageSettings.SheetName, Coverage by default. Since Bader's answer B to Q146 of 11 Oct
+    /// 2026 it is a sheet of the internal workbook beside the clash workbook, InternalWorkbook,
+    /// after the Generic Models sheet, and never a sheet of the clash workbook, which goes to the
+    /// client and keeps the Navisworks export's layout.
     ///
     /// ONE ROW PER TEST OF THE PICKED FILE, in the file's order, A TEST NOT CREATED INCLUDED,
     /// FR-200, Bader's decision under Q46: F77 keeps a test whose side finds nothing out of the
@@ -25,8 +26,9 @@ namespace Federator.Core.Report
     /// THE ROWS ARE ONE SHAPE, TestRows, read by the writer here and by any check of the sheet,
     /// so the two cannot disagree about a cell. The sets, the items no set catches and the
     /// mirrored pairs the design names are sections of their own: the sets as the sets step
-    /// counted them, and the other two said as not in this build, since the count of items no
-    /// set catches and F132's mirror rule are not on main.
+    /// counted them, the items no set catches said as not in this build, and the mirrored pairs
+    /// said as UNKNOWN on this sheet, since F132's rule is on main and its pairs are named in the
+    /// log's MIRROR blocks and not handed to this sheet.
     /// </summary>
     public static class CoverageSheet
     {
@@ -72,27 +74,12 @@ namespace Federator.Core.Report
         public const string NotNamedSection = "TESTS IN THE DOCUMENT NOT IN THE XML";
 
         /// <summary>
-        /// Why no Coverage sheet can be written beside that report, or null where it can: a report
-        /// whose own sheet is named like the coverage sheet, since Excel refuses two sheets of one
-        /// name and the client's sheet keeps its name.
+        /// What the MIRRORED PAIRS section says. F132's mirror rule is on main and the clash step names its
+        /// pairs in the MIRROR and MIRROR COVERAGE blocks of the log, which nothing hands to this sheet, so
+        /// the sheet says where they are and never that the rule is missing.
         /// </summary>
-        public static string WhyRefused(ClashReport report, string sheetName)
-        {
-            if (report == null)
-            {
-                throw new ArgumentNullException("report");
-            }
-
-            string theirs = SheetNames.ForReport(report.OutputName);
-
-            if (string.Equals(theirs, sheetName, StringComparison.OrdinalIgnoreCase))
-            {
-                return "no Coverage sheet was written, because the report's own sheet is named " + theirs
-                    + " and the coverage sheet would be named " + sheetName + ", which Excel reads as one name";
-            }
-
-            return null;
-        }
+        public const string MirrorsUnknown =
+            "UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged";
 
         /// <summary>
         /// The TESTS rows, one string array per test in the order of the file, each cell the text
@@ -236,7 +223,7 @@ namespace Federator.Core.Report
             sheet.Cell(row, 1).Value = MirrorsSection;
             sheet.Cell(row, 1).Style.Font.Bold = true;
             row++;
-            sheet.Cell(row, 1).Value = "UNKNOWN, the mirror rule of F132 is not on main, so no pair was judged";
+            sheet.Cell(row, 1).Value = MirrorsUnknown;
             row += 2;
 
             sheet.Cell(row, 1).Value = NotNamedSection;

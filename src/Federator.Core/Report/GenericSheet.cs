@@ -12,11 +12,9 @@ namespace Federator.Core.Report
     /// an open workbook and the caller saves, the way the Coverage sheet is, so this class decides what is
     /// on the sheet and nothing about which workbook it goes into or where it stands among the sheets.
     ///
-    /// WHERE IT GOES IS NOT DECIDED HERE. FR-200, Bader's request 2 under Q112, makes the Coverage sheet the
-    /// second and last sheet of the group's workbook, and the check of the workbook allows nothing else after
-    /// the client's sheet. A third sheet breaks one of those two, and a workbook of its own for the group,
-    /// as Q126 B gives the Coverage sheet when the clash is skipped, breaks neither. The laptop lane puts
-    /// the question to him with the add-in half.
+    /// WHERE IT GOES IS InternalWorkbook, Bader's answer B to Q146 of 11 Oct 2026: the internal workbook
+    /// beside the clash workbook, first, with the Coverage sheet after it. The clash workbook goes to the
+    /// client and holds the client's sheet alone.
     ///
     /// THE ROWS ARE ONE SHAPE, Rows, read by the writer and by any check of the sheet. A count is a number,
     /// and a count nobody took is the word UNKNOWN with why, never an empty cell and never nought.
@@ -33,21 +31,17 @@ namespace Federator.Core.Report
         public static readonly double[] Widths = { 60, 12, 70 };
 
         /// <summary>
-        /// Why no Generic Models sheet can be written beside the sheets named, or null where it can: Excel
-        /// refuses two sheets of one name, whatever the case, and the sheets already there keep theirs.
+        /// Why no Generic Models sheet can be written beside the Coverage sheet of the internal workbook, or
+        /// null where it can, and null where no Coverage sheet is written: Excel refuses two sheets of one name,
+        /// whatever the case, and the Coverage sheet keeps its name. The internal workbook holds no sheet of
+        /// the client's, Q146 answered B, so the report's sheet is not one this meets.
         /// </summary>
-        public static string WhyRefused(string reportSheetName, string coverageSheetName, string sheetName)
+        public static string WhyRefused(string coverageSheetName, string sheetName)
         {
             // The name Write gives the sheet, after the floor every sheet name goes through, which takes
             // a space or an apostrophe off its ends. Compared raw, a name with a trailing space passed here
             // and then met the sheet it matches in the workbook.
             string wouldBe = SheetNames.Sanitise(sheetName, GenericModelsSettings.DefaultSheetName);
-
-            if (SameSheet(reportSheetName, wouldBe))
-            {
-                return "no Generic Models sheet was written, because the report's own sheet is named " + reportSheetName
-                    + " and this sheet would be named " + wouldBe + ", which Excel reads as one name";
-            }
 
             if (SameSheet(coverageSheetName, wouldBe))
             {

@@ -30,16 +30,17 @@ namespace Federator.Core.Generic
         /// <summary>The folder of the saved sets tree the sets go in, Bader's own words, request 3 under Q112.</summary>
         public const string DefaultFolderName = "Generic Models";
 
-        /// <summary>The name of the sheet in the Generic Models workbook, the folder's own words.</summary>
+        /// <summary>The name of the Generic Models sheet in the internal workbook, the folder's own words.</summary>
         public const string DefaultSheetName = "Generic Models";
 
         /// <summary>
-        /// What is put after the group's workbook name to name the Generic Models workbook, the folder's own
-        /// words, so the two workbooks of a group sit together in the Clash Reports folder. A workbook of its
-        /// own because FR-200 makes the Coverage sheet the second and last sheet of the group's workbook and
-        /// the workbook check allows nothing after it, the lead's choice until Bader answers.
+        /// What is put after the group's workbook name to name the internal workbook, so the two workbooks of a
+        /// group sit together in the Clash Reports folder. Bader's answer B to Q146, 11 Oct 2026: the clash
+        /// workbook goes to the client and keeps the Navisworks export's layout, so the Generic Models sheet and
+        /// the Coverage sheet go in an internal workbook beside it, and its name says Internal because it holds
+        /// both. It was Generic Models while it held that sheet alone.
         /// </summary>
-        public const string DefaultWorkbookSuffix = "Generic Models";
+        public const string DefaultWorkbookSuffix = "Internal";
 
         /// <summary>
         /// The Element tab, the category every Revit property of an item sits under, as the client's matrix writes it.
@@ -140,7 +141,7 @@ namespace Federator.Core.Generic
         }
 
         /// <summary>
-        /// What follows the group's workbook name, with one space between, to name the Generic Models workbook.
+        /// What follows the group's workbook name, with one space between, to name the internal workbook.
         /// Refused where Windows refuses it in a file name, by FileNames' own rule, so a suffix nobody can write
         /// never loses the workbook.
         /// </summary>
@@ -156,7 +157,7 @@ namespace Federator.Core.Generic
                 if (string.IsNullOrWhiteSpace(value) || !FileNames.CanBeAName(value))
                 {
                     throw new ArgumentException(
-                        "The Generic Models workbook needs a suffix Windows accepts in a file name: not blank and none of "
+                        "The internal workbook needs a suffix Windows accepts in a file name: not blank and none of "
                             + FileNames.RefusedPrintable + ".",
                         "value");
                 }
@@ -166,14 +167,15 @@ namespace Federator.Core.Generic
         }
 
         /// <summary>
-        /// The name of the group's Generic Models workbook, without its extension: the group's workbook name,
-        /// one space and the suffix, so the two sit together in the Clash Reports folder under one name.
+        /// The name of the group's internal workbook, without its extension: the group's workbook name, one
+        /// space and the suffix, so the two sit together in the Clash Reports folder under one name. It holds
+        /// the Generic Models sheet and the Coverage sheet, Q146 answered B.
         /// </summary>
         public string WorkbookNameFor(string groupWorkbookName)
         {
             if (string.IsNullOrEmpty(groupWorkbookName))
             {
-                throw new ArgumentException("The Generic Models workbook is named after the group's workbook, which needs a name.", "groupWorkbookName");
+                throw new ArgumentException("The internal workbook is named after the group's workbook, which needs a name.", "groupWorkbookName");
             }
 
             return groupWorkbookName + " " + workbookSuffix;

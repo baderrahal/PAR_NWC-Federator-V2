@@ -2281,9 +2281,10 @@ reason for each test that has no results. The design is
 %LOCALAPPDATA%\NwcFederatorLoop\turn5\f127-design.md. Its Core steps 1 to 3 were built on
 branch fix-F127 and put on main by lane B as PR 145 on 2026-10-07, with the RESULT lines of
 the count check. The Coverage sheet, the sheets the workbook check allows and the RESULT
-count of the tests of Q127 followed in the worktree session's pull request. NOTHING IN THE
-ADD-IN HANDS IN A COVERAGE YET, so a build writes that no coverage was taken and no sheet,
-until the add-in half wires the engine. The COVERAGE block of the log is that half's too.
+count of the tests of Q127 followed in the worktree session's pull request. THE ADD-IN HALF
+WIRES THE ENGINE since branch fix-F127b of 2026-10-11, addin.md THE COVERAGE OF THE PICKED
+TESTS: each group's COVERAGE block, its .tsv rows, the Coverage sheet in the internal workbook
+and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
 
 - THE REASON IS THE RUNNER'S OWN RECORD, READ IN THE ORDER THE CODE APPLIES IT.
   `Federator.Core.Coverage.CoverageRule.For` takes the plan, the clash step's
@@ -2304,7 +2305,28 @@ until the add-in half wires the engine. The COVERAGE block of the log is that ha
   the counts the creation plan decided on, `KeepItemsByLocator`, and the two counts the run
   time check read off each test's own sides, `RecordSides`. A side reason reads the run time
   counts where the check reached the test, because they decided the skip, and the creation
-  plan's where it did not
+  plan's where it did not. ClashRunner calls the two beside its two skip sites, the first
+  before `CreationPlan.For` and the second as soon as a test's sides are read, before the
+  coordinates, one discipline and side checks, so all three skips read the counts that made them
+- THE PLAN THE COVERAGE READS IS THE PLAN THE RUNNER RAN, `ClashRunner.RunPlan`: the picked
+  file's tests resolved against the document's sets and each mirror under the name it runs
+  under, or the saved tests read with their sides, so a mirror is read under the name its
+  record keeps and a saved test's sides are its sets and never the placeholder. The plan it
+  was handed where the runner stopped before it had one
+- THE CODES A SIDE IS JUDGED BY are the group's models' codes, `CoverageRule.GroupCodesOf`,
+  read off the EXPORT CHECK's models, and the run's, `CoverageRule.RunCodesOf`, the ticked groups
+  of this run and the group's own, so a code the group carries is always a code of the run. The
+  open file run has no scan and its run is its one group. A group the scan found and the run did
+  not tick is not among them, so a code only it carries reads UNKNOWN and never not in the
+  group, row F127-R3
+- A TEST THE RUN LEFT NO RECORD OF, OR NEVER REACHED, IS NOT COMPARED, and one the run knows it
+  did not create, F77 kept it out or the plan dropped it before the model, is held by neither
+  side. A test the plan dropped before the model that Clash Detective holds with results names
+  an earlier run as the cause, and the same is not said of a test F77 kept out, since the
+  runner walks the document first and finds none of that name. The tests the file does not
+  name are counted once by name across the run. The headline counts test places, a test once
+  for each group it is in. A set is counted once per group and is not at zero where one set of
+  its path was not counted, and the F82 section names a set never counted on its own line
 - PRESENCE IS SAID APART FROM THE REASON, `TestPresence`: created this run, already there,
   not created by F77, or UNKNOWN where the runner never looked. The words for both are
   `CoverageWords`, and no reason claims a test was created, because a test already in the
@@ -2343,7 +2365,9 @@ until the add-in half wires the engine. The COVERAGE block of the log is that ha
   its check 2 names an empty result group, which the harvest counts as one clash, and this
   has no such words, and a test in the workbook only whose every number is nought is counted
   and not judged there, where here it is a test F77 did not create and is held by neither
-  side, counted apart from agree since PR 145. Agree only where both equal. Failed for any
+  side, counted apart from agree since PR 145. Agree only where both equal AND THE TEST RAN THIS
+  RUN, the breaker's third finding on F127b: a test that did not run with equal counts, nought
+  and nought most often, is NOT COMPARED, `CountCheck.DidNotRunWhy`. Failed for any
   other difference, for a test the document holds with no block, and for a block with
   numbers that the document does not hold. NOT COMPARED, NEVER AGREE, where a count on
   either side is minus one, the workbook's included, so a block that could not be read whole
@@ -2367,6 +2391,21 @@ until the add-in half wires the engine. The COVERAGE block of the log is that ha
   the tests after the clash step, so they are what the NWF holds after Compact and include
   the tests a weekly run did not run. A count not taken is minus one and never zero.
   Statuses are not read, because they are not judged, PQ4 of F104 being unmeasured
+- THE TESTS OF A MIRRORED PAIR WHOSE CLASHES F132 MERGED ARE NOT COMPARED, `CountCheck.InAMergeWhy`,
+  the kept test and each mirror by its run name, `MirrorMerge.MergedNames` read through
+  `ClashRunner.InAMerge`, because a merge carries a mirror's clashes in the kept test's block of
+  the clash workbook and leaves none of the mirror's, so neither block is one test's count. READ
+  OFF WHAT AddTo DID AND NEVER OFF THE PLAN, the breaker's first finding on F127b: a pair the
+  rule planned and AddTo refused at run time keeps both blocks and names no test, so it is
+  compared like any other test and a real difference is a FAILED line, which a test breaks. A
+  merge never makes a COVERAGE FAILED line
+- THE CLIENT'S SHEET IS READ BACK BY ITS NAME, `WorkbookTests.ReadFile`, the name the writer
+  gives it, `SheetNames.ForReport` of the report's output name, and never by its place, the
+  readers' point that a sheet put before it would be read in its stead. No file or no sheet of
+  that name exactly is a reason and never a throw. AND ONLY WHERE THIS RUN WROTE IT WHOLE, the
+  readers' point on the stamp: the engine hands the count check no workbook where the write
+  threw, since last week's file at the same path would be read as this week's, and the reason
+  says so
 - THE CLIENT'S SHEET IS READ BACK TEST BY TEST, `Federator.Core.Report.WorkbookTests.Read`, by
   the name in column A, in both shapes: a full block gives the clash rows under it, counted
   the way WorkbookCheck counts them, and its Clashes cell, and the one row of a test that
@@ -2388,8 +2427,12 @@ until the add-in half wires the engine. The COVERAGE block of the log is that ha
   compared and held by neither side, a label that is not the FAILED prefix, how many tests
   Clash Detective holds that the picked file does not name, then every FAILED line in full.
   Nothing compared reads UNKNOWN and never nought FAILED, because both wave buildings skip
-  their clash under F112 and compare nothing. A group whose coverage could not be taken is
-  counted not checked. Where no group failed and no error was logged but a count differs,
+  their clash under F112 and compare nothing. A group whose coverage could not be taken, or
+  whose clash step made no plan of tests, is counted not checked. EVERY GROUP THE RUN TOOK IS
+  COUNTED, AND ONCE, `CoverageAcrossTheRun.For` and `GroupInTheRun`, the breaker's second and
+  fifth findings on F127b: a group that ended before its COVERAGE step, refused, a rebuild
+  that failed, a throw or no document, is counted not checked when it ends, and the first word
+  on a group is the one counted, so a throw after its check was counted never counts it twice. Where no group failed and no error was logged but a count differs,
   RESULT closes on a line saying so and never on Nothing failed, and the group's count,
   facts and judgement do not move. A run that hands in no coverage writes that none was
   taken, because a missing line reads as a check that did not run
@@ -2414,18 +2457,22 @@ until the add-in half wires the engine. The COVERAGE block of the log is that ha
   lower case hexadecimal characters, so a run says which bytes it read. Set 03's C06 run
   carried none, and its XML had to be told from the exchange file by its SET lines asking
   ME-PIPING where the exchange file asks ME-Piping. A file not there throws naming its path
-  and nothing is caught, because a fingerprint that could not be read is not one. It reads
-  the file again when asked, so a file changed during a run would be described by other
-  bytes than the plan parsed, a known bug for the add-in half to close
-- THE MIRRORED PAIRS OF Q114 POINT 5 ARE F132'S `MirrorRule.Pairs`, built on branch fix-F132
-  before this design was written, though the design's step 3 names them. The COVERAGE block
-  lists them off that one rule once both are on main, and F127 builds no second copy. Until
-  then the sheet's MIRRORED PAIRS section says UNKNOWN
-- THE COVERAGE SHEET IS THE SECOND AND LAST SHEET OF THE GROUP'S WORKBOOK, Bader's request 2
-  under Q112 and his decision under Q46, FR-200, `Federator.Core.Report.CoverageSheet`,
-  written by `WorkbookWriter.Write` in the one save with the client's sheet, so that sheet
-  never goes through a second round trip, and nothing of ours goes on it: a test proves the
-  client's sheet reads cell for cell the same with the Coverage sheet and without. ONE ROW
+  and nothing is caught, because a fingerprint that could not be read is not one. The add-in
+  reads it ONCE when the run starts, one COVERAGE line, so every group names the same bytes.
+  It is still a second read beside the window's parse at the press, so a file changed between
+  the two would be named by bytes the plan did not parse, a known gap the add-in half narrowed
+  to the seconds between the press and the run and did not close
+- THE MIRRORED PAIRS OF Q114 POINT 5 ARE F132'S `MirrorRule.Pairs`, on main since F132, whose
+  MIRROR and MIRROR COVERAGE blocks the clash step writes. F127 builds no second copy, and the
+  sheet's MIRRORED PAIRS section says UNKNOWN on the sheet and names those blocks,
+  `CoverageSheet.MirrorsUnknown`, never that the rule is missing
+- THE COVERAGE SHEET IS A SHEET OF THE INTERNAL WORKBOOK, Bader's answer B to Q146 of 11 Oct
+  2026, `Federator.Core.Report.CoverageSheet` written by `InternalWorkbook.Write` after the
+  Generic Models sheet in one save, beside the clash workbook, which goes to the client and
+  keeps the Navisworks export's layout, the client's sheet alone. It was the second and last
+  sheet of the clash workbook by FR-200, Bader's request 2 under Q112 and his decision under
+  Q46, until his answer moved it. A test writes both workbooks of one group and reads the
+  clash workbook as one sheet and the internal one as both. ONE ROW
   PER TEST OF THE PICKED FILE, IN THE FILE'S ORDER, A TEST NOT CREATED INCLUDED, with its
   position, its name, its priority where a file was picked, both sets and their items, its
   presence, whether it ran, the count check's four numbers and verdict where the check holds
@@ -2437,21 +2484,26 @@ until the add-in half wires the engine. The COVERAGE block of the log is that ha
   sets step's own results, each set with its conditions, its items in this group and whether
   it is at zero, or UNKNOWN where none was handed in. The items no set catches and the
   mirrored pairs read UNKNOWN until their rules are on main, and the tests Clash Detective
-  holds that the file does not name are listed off the count check. A report whose own sheet
-  is named like the Coverage sheet gets none, `CoverageSheet.WhyRefused` saying why for the
-  log, because Excel reads the two as one name. Which groups get a sheet, and the workbook of
-  the Coverage sheet alone for a group whose clash is skipped, Q126 answered B, are the
-  add-in half's
-- THE WORKBOOK CHECK ALLOWS THE CLIENT'S SHEET FIRST AND THE COVERAGE SHEET SECOND, AND
-  NOTHING ELSE, `WorkbookCheck.HasCoverageSheet`. The Coverage sheet first, a second sheet of
-  another name, one named Coverage in another letter case and a third sheet are each a
-  problem line naming the sheet, a warning that never fails a group, and a workbook of the
-  client's sheet alone still passes. Only sheet 1 is compared with the client's layout
-- THE LOOP'S read-workbook.ps1 READS EVERY SHEET AS A TEST SHEET, the design's section 3, so
-  once the add-in writes the Coverage sheet every F104 verdict reads NOT PROVED until that
-  script reads a sheet named Coverage into a section of its own. The loop's scripts were
-  frozen on 2026-10-07, so the change waits for the add-in half's pull request, which must
-  carry it, F127-R1
+  holds that the file does not name are listed off the count check. Every group with a
+  coverage gets a sheet, a group whose clash is skipped included, Q126 answered B, since its
+  internal workbook is written whether or not the clash ran
+- THE INTERNAL WORKBOOK WRITES WHAT THE GROUP HAS, `InternalWorkbook.Write`: the Generic Models
+  sheet and the Coverage sheet, the one alone where the other was not taken, and a group with
+  neither is refused so the engine writes none and says so. Where the two names are one to
+  Excel the Generic Models sheet is left out by `GenericSheet.WhyRefused`, the one rule for it,
+  `InternalWorkbook.WhyNoGenericSheet` handing it the Coverage sheet's name. Read back by its
+  sheets' names, `InternalWorkbook.Check`, one line where it holds what was written and a line
+  for each sheet missing or not written, never a throw
+- THE WORKBOOK CHECK EXPECTS THE CLIENT'S SHEET ALONE, AS IT DID BEFORE FR-200, Q146 answered B:
+  a second sheet of any name, the Coverage sheet included, is a problem line naming the sheets,
+  a warning that never fails a group. Only sheet 1 is compared with the client's layout
+- THE LOOP'S read-workbook.ps1 READ EVERY SHEET AS A TEST SHEET, the design's section 3, so a
+  Coverage sheet in the clash workbook would have made every F104 verdict NOT PROVED, F127-R1.
+  With the Coverage sheet in the internal workbook the clash workbook is one sheet again and
+  F127-R1 has nothing left to change. The loop's run.ps1 reads every workbook of the run with
+  that script, so the internal workbook's read-out carries doubts of its own, and that
+  read-out is never paired with an NWF, since the add-in writes it under its own kind,
+  INTERNAL, and not XLSX
 
 ### Generic models, F128
 
@@ -2509,13 +2561,14 @@ docs\history\scan.md 5z-zb of 2026-10-08, and nothing of it has run on Naviswork
   points at
 - THE SHEET IS ONE SHAPE, `GenericSheet.Rows`, models with items first in the plan's order, then
   the ones not counted with why, none for a model at nought, named by
-  `GenericModelsSettings.SheetName`, and the workbook is ONE OF ITS OWN, `GenericWorkbook.Write`,
-  beside the group's workbook in the Clash Reports folder, named by
+  `GenericModelsSettings.SheetName`, and it is the first sheet of THE INTERNAL WORKBOOK,
+  `InternalWorkbook.Write`, beside the clash workbook in the Clash Reports folder, named by
   `GenericModelsSettings.WorkbookNameFor`, the group's workbook name, a space and the suffix,
-  because FR-200 makes the Coverage sheet the second and last sheet of the group's workbook and
-  the workbook check allows nothing after it. The lead's choice until Bader answers, so nothing
-  in `WorkbookCheck` changes. Written whether or not the clash step ran, since the count does
-  not depend on it, and read back by size as every file is
+  Internal by default, Bader's answer B to Q146 of 11 Oct 2026, which also put the Coverage
+  sheet after it. The suffix was Generic Models while the workbook held that sheet alone, and a
+  name never says Generic Models where the workbook holds both. Written whether or not the
+  clash step ran, since the count does not depend on it, and read back by size and by its
+  sheets' names
 - ONE LINE ACROSS THE RUN, `GenericModelsAcrossTheRun.ResultLine`, `generic models :` in RESULT
   under the coverage lines, written by `RunLog.WriteResultBlock` off the tally the window hands
   it and never kept: the items, the models with items of the models planned over the groups,
@@ -2523,9 +2576,12 @@ docs\history\scan.md 5z-zb of 2026-10-08, and nothing of it has run on Naviswork
   count of items where the texts met in any group, and the groups that reached no count named.
   A run that hands none in writes that no count was handed in, because a missing line reads as
   a count that did not run
-- THE GENERIC XLSX STEP, `RunSteps.GenericWorkbook`, after WORKBOOK, times the workbook of its
-  own, and the plan, the build and the count are inside the SETS step's own seconds, so the
-  timed runs show what each model's search over the whole document costs
+- THE INTERNAL STEP, `RunSteps.InternalWorkbook`, after COVERAGE, times the internal workbook,
+  and the plan, the build and the count are inside the SETS step's own seconds, so the timed
+  runs show what each model's search over the whole document costs. It was GENERIC XLSX, and
+  it is eight letters because a name longer than TESTS CREATE widens every STEP line of the log.
+  THE COVERAGE STEP, `RunSteps.Coverage`, after the clash workbook, its page and its XML, times
+  the walk of Clash Detective's tests, the read back and the block
 - A THROW IN THE PLAN, THE BUILD OR THE WORKBOOK WRITE NEVER FAILS THE GROUP, the lead's
   decision on attempt 2, as F127's coverage does and as a report check never fails a group:
   it is a FAILED line in the GENERIC MODELS block, `GenericModelsReport.FailedLines`, saying

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Federator.Core.Clash;
+using Federator.Core.Health;
 using Federator.Core.Views;
 
 namespace Federator.Core.Coverage
@@ -129,6 +130,74 @@ namespace Federator.Core.Coverage
             }
 
             return rows;
+        }
+
+        /// <summary>
+        /// The discipline codes of the group's models, each read off its name by the one parser as the
+        /// EXPORT CHECK reads it, part 5, so the codes are of the models the document holds and not of the
+        /// files the scan handed in. Null where the models were not read, which For reads as not read, and a
+        /// model whose name gave no code adds none, never trimmed and never changed in case.
+        /// </summary>
+        public static ICollection<string> GroupCodesOf(IEnumerable<ModelExport> models)
+        {
+            if (models == null)
+            {
+                return null;
+            }
+
+            HashSet<string> codes = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (ModelExport model in models)
+            {
+                if (model != null && model.Discipline.Length > 0)
+                {
+                    codes.Add(model.Discipline);
+                }
+            }
+
+            return codes;
+        }
+
+        /// <summary>
+        /// The discipline codes of every file of the run: the codes of each group the run took, and the
+        /// group's own codes, so a code the group carries is always a code of the run. The open file run has
+        /// no scan and hands no groups, and its run is the one group, so its codes are the group's. Null where
+        /// neither gives any, which For reads as not read.
+        /// </summary>
+        public static ICollection<string> RunCodesOf(IEnumerable<IEnumerable<string>> scannedGroups, ICollection<string> groupCodes)
+        {
+            if (scannedGroups == null && groupCodes == null)
+            {
+                return null;
+            }
+
+            HashSet<string> codes = new HashSet<string>(StringComparer.Ordinal);
+
+            if (scannedGroups != null)
+            {
+                foreach (IEnumerable<string> group in scannedGroups)
+                {
+                    if (group == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (string code in group)
+                    {
+                        if (!string.IsNullOrEmpty(code))
+                        {
+                            codes.Add(code);
+                        }
+                    }
+                }
+            }
+
+            if (groupCodes != null)
+            {
+                codes.UnionWith(groupCodes);
+            }
+
+            return codes;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 using System;
 using Federator.Core.Clash;
+using Federator.Core.Coverage;
 using Federator.Core.Generic;
 using Federator.Core.Health;
 using Federator.Core.Naming;
@@ -44,6 +45,7 @@ namespace Federator.Core.Report
             Images = new ImageOptions();
             Names = new ContainerNameSettings();
             GenericModels = new GenericModelsSettings();
+            Coverage = new CoverageSettings();
         }
 
         /// <summary>Clash pictures. On by default, because the accepted report has them.</summary>
@@ -271,11 +273,18 @@ namespace Federator.Core.Report
         public ContainerNameSettings Names { get; set; }
 
         /// <summary>
-        /// The Generic Models sets, count, block and workbook of every group, F128 and FR-177. Always on, by
-        /// Bader's request, and its three values and the workbook suffix are read off Core here and never
-        /// typed in the window.
+        /// The Generic Models sets, count, block and sheet of every group, F128 and FR-177, and the suffix that
+        /// names the internal workbook the sheet goes in, Q146 answered B. Always on, by Bader's request, and
+        /// its three values and the workbook suffix are read off Core here and never typed in the window.
         /// </summary>
         public GenericModelsSettings GenericModels { get; set; }
+
+        /// <summary>
+        /// The coverage of the picked tests of every group, F127: the Coverage sheet's name, the examples the
+        /// COVERAGE block names for each reason and the FAILED lines RESULT lists. Read off Core here and never
+        /// typed in the window.
+        /// </summary>
+        public CoverageSettings Coverage { get; set; }
 
         /// <summary>The folder for this run, given where the NWF files are going.</summary>
         internal string FolderFor(string nwfFolder)
