@@ -183,7 +183,24 @@ namespace Federator.Core.Report
     {
         private const string Holding = ".moving";
 
-        public static ImageRenumberingOutcome Apply(ClashReport report, string workbookPath)
+        /// <summary>The words handed to the caller's said after each picture, F145.</summary>
+        private const string PictureChecked = "picture checked";
+
+        private const string PictureMovedAside = "picture moved aside";
+
+        private const string PictureRenamed = "picture renamed";
+
+        /// <summary>
+        /// Renames every picture into the report order. Said, where it is not null, is handed
+        /// what was just done to one picture, how many of the pass are done and the pass's
+        /// count, after every picture checked, moved aside and renamed, F145: set 07's and set
+        /// 08's 1A02MM renamed 2931 pictures in one stretch of 44 s and 39 s with the window
+        /// not answering for 32 s, and the add-in lets the window answer through it. A said
+        /// that throws is named once in the lines and handed nothing more, and the renaming
+        /// goes on, since saying how far it has got is never worth a picture.
+        /// </summary>
+        public static ImageRenumberingOutcome Apply(
+            ClashReport report, string workbookPath, Action<string, int, int> said = null)
         {
             if (report == null)
             {
@@ -197,36 +214,16 @@ namespace Federator.Core.Report
                 return outcome;
             }
 
+            Saying saying = new Saying(said, outcome);
             IList<PictureNumber> numbers = ReportOrder.PictureNumbers(report);
             List<Move> moves = new List<Move>();
+            int planned = 0;
 
             foreach (PictureNumber number in numbers)
             {
-                string from = number.Row.ImagePath;
-                string to = ImageNaming.PathFor(workbookPath, number.TestIndex, number.ClashIndex);
-
-                if (string.IsNullOrEmpty(from))
-                {
-                    outcome.Missing++;
-                    continue;
-                }
-
-                if (string.Equals(Path.GetFullPath(from), Path.GetFullPath(to), StringComparison.OrdinalIgnoreCase))
-                {
-                    outcome.Unchanged++;
-                    Point(number, workbookPath);
-                    continue;
-                }
-
-                if (!File.Exists(from))
-                {
-                    outcome.Missing++;
-                    outcome.Add(number.Row.Name + " should be " + number.FileName
-                        + " and its picture is not on disk at " + from);
-                    continue;
-                }
-
-                moves.Add(new Move(number, from, to));
+                Plan(number, workbookPath, moves, outcome);
+                planned++;
+                saying.Say(PictureChecked, planned, numbers.Count);
             }
 
             List<Move> held = new List<Move>();
@@ -248,6 +245,7 @@ namespace Federator.Core.Report
                 }
 
                 held.Add(move);
+                saying.Say(PictureMovedAside, held.Count, moves.Count);
             }
 
             // Pass two, holding name to final name. A file already at a final name is not
@@ -272,6 +270,7 @@ namespace Federator.Core.Report
 
                 held.Remove(move);
                 done.Add(move);
+                saying.Say(PictureRenamed, done.Count, moves.Count);
             }
 
             // The rows follow only once every picture is at its final name, so a fault
@@ -290,6 +289,39 @@ namespace Federator.Core.Report
             }
 
             return outcome;
+        }
+
+        /// <summary>
+        /// One picture checked: a row with no picture or one not on disk is counted missing, one
+        /// already under its report order name is pointed at it, and any other is planned as a move.
+        /// </summary>
+        private static void Plan(PictureNumber number, string workbookPath, List<Move> moves, ImageRenumberingOutcome outcome)
+        {
+            string from = number.Row.ImagePath;
+            string to = ImageNaming.PathFor(workbookPath, number.TestIndex, number.ClashIndex);
+
+            if (string.IsNullOrEmpty(from))
+            {
+                outcome.Missing++;
+                return;
+            }
+
+            if (string.Equals(Path.GetFullPath(from), Path.GetFullPath(to), StringComparison.OrdinalIgnoreCase))
+            {
+                outcome.Unchanged++;
+                Point(number, workbookPath);
+                return;
+            }
+
+            if (!File.Exists(from))
+            {
+                outcome.Missing++;
+                outcome.Add(number.Row.Name + " should be " + number.FileName
+                    + " and its picture is not on disk at " + from);
+                return;
+            }
+
+            moves.Add(new Move(number, from, to));
         }
 
         private static void Point(PictureNumber number, string workbookPath)
@@ -381,6 +413,41 @@ namespace Federator.Core.Report
         private static string Words(Exception error)
         {
             return error.GetType().Name + ": " + error.Message;
+        }
+
+        /// <summary>
+        /// The caller's said, handed nothing more once it has thrown, F145. The throw is named in
+        /// the lines with what happened next, so it is never lost and never stops a picture.
+        /// </summary>
+        private sealed class Saying
+        {
+            private readonly ImageRenumberingOutcome outcome;
+            private Action<string, int, int> said;
+
+            internal Saying(Action<string, int, int> said, ImageRenumberingOutcome outcome)
+            {
+                this.said = said;
+                this.outcome = outcome;
+            }
+
+            internal void Say(string piece, int done, int total)
+            {
+                if (said == null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    said(piece, done, total);
+                }
+                catch (Exception error)
+                {
+                    said = null;
+                    outcome.Add("saying how far the renaming had got threw at " + piece + " " + done + " of " + total
+                        + ", " + Words(error) + ", so nothing more was said and the renaming went on");
+                }
+            }
         }
 
         private sealed class Move
