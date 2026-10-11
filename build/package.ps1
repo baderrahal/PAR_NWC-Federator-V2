@@ -91,7 +91,7 @@ if ($LASTEXITCODE -ne 0 -or $branch.Count -ne 1 -or $branch[0] -ne "main") {
 }
 $dirty = @(GitLines status --porcelain)
 if ($dirty.Count -gt 0) { Refuse ("git status prints " + $dirty.Count + " line(s), the first " + $dirty[0].Trim() + ", and the team zip is made from a clean checkout of main alone. " + $nothing) }
-$head = (GitLines rev-parse --short=8 HEAD)[0]
+$head = @(GitLines rev-parse --short=8 HEAD)[0]
 
 Write-Host ("Building main at " + $head + "...")
 & dotnet build $solution -c Release --no-incremental -p:NavisworksPath="$NavisworksPath" --nologo -v minimal
