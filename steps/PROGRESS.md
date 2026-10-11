@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-11 13:37, last run 05/item1-C04
+STATE OPEN, 2026-10-11 14:08, last run 05/item1-C04
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -20,18 +20,16 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 <!-- the end of the counts -->
 
 ## Now
-- 11 Oct: last shutdown the restart at 08:59:41, Riyadh time. Roamer none. His key differs from the backup in five values, an older copy back after the restarts of 10 Oct, T5-R-OLDKEY, nothing put back. Keep-awake pid 18216
+- 11 Oct 14:01, after the usage limit: Roamer none. His 22.0 key equal line for line to run.ps1's backup of 13:19, nothing put back. Keep-awake pid 18216. F140 at fcd3228 pushed and parked, no PR. The plan is the top entry of steps\history\log.md
 - Bader's answers Q144 B, Q146 B, Q148 B. Q149: no release runs, the proof runs of 1A02MM and 1A04PK the last, the team package prepared and made only when he asks
 - F130 Shift ticking merged as PR 192, first today. F129 start from an NWF merged as PR 193, the picked NWFs running the open file run's route. F109 the install merged as PR 194, install.ps1 refusing a link, finding a cut run's leftovers, and ending on one of four lines
 - F127 the coverage of the picked tests merged as PR 195: a COVERAGE block and rows per group, a tally in RESULT, the Coverage sheet in the internal workbook beside Generic Models, the clash workbook one sheet again
 - Main 4bc4c83 installed in place at 13:05, its INSTALLED line naming it. Set 05's 1A02MM and 1A04PK ran 31 s and 58 s, RAN, PARTIAL, the clash skipped by Bader's coordinates rule, Q98 B2, the EL and ST models of 1A02MM 2,823 km from the reference. Views, the clash workbook, the merge and the counts not reached
 
 ## Next
-1. F130, F129 and F109 merged in that order, Bader's item 6, done
-2. The Coverage sheet moved into the internal workbook, F127-R2, merged as PR 195, done
-3. F140 the team package, the reviewer's nine points made in attempt 1 and read once more, no team zip until Bader writes make the team package
-4. 1A02MM and 1A04PK run again with -Untick SkipClashOffCoordinates, F126's switch, so the clash runs as in set 04's baseline, the viewpoints box ticked. F140's proof held until Navisworks is closed
-5. Findings in set 03's shape for the four runs, the records, and three lines to Bader
+1. A fresh copy, prepare-copy.ps1 -Set 06, then 1A02MM and 1A04PK with -Set 06 -Item 1 -Untick SkipClashOffCoordinates, the viewpoints box ticked, main 4bc4c83's stamp read back first
+2. Findings in set 03's shape for set 05's pair and set 06's, each merged fix proven or failed with its line, the records on fix-T6-runs-1011
+3. A fault the team would see fixed in two attempts and its building run again from set 07. Then F140 prepared, no team zip until Bader writes make the team package, then waves 4 and 5
 
 ## Waiting for Bader
 - No question. The team package, F140, is prepared and made only when Bader writes make the team package, Q149

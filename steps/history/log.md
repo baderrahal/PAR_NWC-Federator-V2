@@ -2,6 +2,40 @@
 
 Newest entry at the top.
 
+## 2026-10-11 The loop, turn 6, the plan after the usage limit: the proof runs of 1A02MM and 1A04PK from a fresh set 06
+
+Bader's message CONTINUE THE LOOP, 11 OCT 2026, AFTER THE USAGE LIMIT. Written at 14:05 before any edit,
+by the lead, on the records branch fix-T6-runs-1011, today's one records pull request, Q143.
+
+What was read before the plan: Roamer none at 13:57. The keep-awake, process 18216, alive since 09:23. His
+22.0 key exported at 14:01 reads line for line equal to the backup run.ps1 took at 13:19 before set 05's
+run of C04, so nothing was put back. fix-F140 at fcd3228 equals origin, its worktree clean, no pull request,
+parked as it is. Main is 4bc4c83, installed in place at 13:05. Set 05's pair ran 31 s and 58 s, the clash
+skipped by the coordinates rule on 1A02MM's EL and ST, 2,823 km from the reference on the sites LTB2 and
+Internal, a real offset in the files and not a misreading, so that run is the coordinates rule's proof.
+
+The plan, in order:
+
+1. The installed stamp read back as main's commit. Main is installed again only if it moved
+2. A fresh copy, tools\loop\prepare-copy.ps1 -Set 06, since set 05 refuses a second copy and its item1
+   evidence folders hold files
+3. 1A02MM then 1A04PK, run.ps1 -Mode Run -Set 06 -Item 1, the viewpoints box ticked as F114 left it, and
+   -Untick SkipClashOffCoordinates, F126's switch, since with the box ticked the clash never runs on these
+   files and nothing past the clash can be proved. This departs from the item 5 brief's NO -Untick, which
+   was written before the rule was seen skipping, and matches set 04's baseline, which ran before the rule
+4. Each run waited on by Q83's two clocks, read by the log-reader, timed against 2 h 12 min for 1A02MM and
+   the hung run for 1A04PK, and each merged fix marked proven or failed with its line: the views by team,
+   the mirror rule, Generic Models, the coordinates rule, the Coverage sheet, the XML corrections, the
+   workbook, the run log, the sets, the clash counts and the pictures
+5. The evidence masked and committed here, the findings in set 03's shape, the rows a run proves set to
+   proven by a run
+6. A fault the team would see fixed on its own fix branch, two attempts, one reviewer, a breaker only on
+   alignment, sets, clash counts, mirrors and views, then that building run again from a fresh set 07
+7. F140 prepared on its branch, no team zip until Bader writes make the team package, then waves 4 and 5
+
+What waits for the local machine: everything above runs on it. Core test counts are not changed by this
+entry, which holds no code.
+
 ## 2026-10-11 The loop, turn 6, F127 the add-in half with the Coverage sheet in the internal workbook, Q146 answered B, row F127-R2, attempt 1 of two, written by the developer as the lead's delegate
 
 Bader's request 2 under Q112, FR-176 and FR-200, and his answer B to Q146 of 11 Oct 2026: the Generic Models
