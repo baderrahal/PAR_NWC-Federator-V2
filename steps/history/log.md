@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-10-11 The loop, turn 6, F142 the life check, attempt 2 of two, written by the lead
+
+Bader's order of 2026-10-11 headed 1A04PK IS FROZEN, item 3, with the freeze of Q143 on the loop's own
+scripts lifted for it. Branch fix-F142 off main d7d7c01 in %LOCALAPPDATA%\NwcFederatorLoop\wt-f142.
+
+What was done:
+- run.ps1's monitor writes a LIFE line every 30 s into record.txt and life.txt, a LIFE CLASS line where the
+  tool's window or the Navisworks window has not answered at any reading for 2 minutes, busy, memory or stuck
+  with its numbers, and a LIFE SUMMARY line at the end with the longest stretch, its step and the peak memory.
+  It reads and never acts. The rule is in .claude\rules\loop.md
+- Attempt 2 answered the reviewer's ten points and the breaker's eight of attempt 1, the window judged by the
+  guard's one rule, the stretch counted between the readings that saw it, and the proof holding every number to
+  the process's and the machine's own
+- Proved here: prove-life.ps1 55 right and 0 WRONG twice. Core tests 2848 passed, 0 failed, 0 skipped before
+  and after, nothing under src changed. prove-run.ps1 not run, its stand-ins being named Roamer while a loop run
+  held the only Navisworks
+
+What remains: the first loop run after the merge, read off its life.txt.
+
+Known bugs: rows F142-R1 and F142-R2.
+
+What comes next: F143 the window answering during the harvest, the first-50 copy, and the fast checks.
+
 ## 2026-10-11 The loop, turn 6, F141 the framed views that threw, attempt 1 of two, written by the lead
 
 Bader's message after the usage limit, item 11: a fault a proof run shows that the team would see is fixed
