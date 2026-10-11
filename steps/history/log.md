@@ -2,6 +2,30 @@
 
 Newest entry at the top.
 
+## 2026-10-11 The loop, turn 5, the plan of the day: Bader's three answers, F130, F129 and F109 merged, the Coverage sheet moved, main installed and the proof runs of 1A02MM and 1A04PK
+
+Picked up by Bader's message headed GOOD MORNING, CONTINUE THE LOOP, BADER, 11 OCT 2026. The System log, read in Arab
+Standard Time, UTC+3: the stop of 8 Oct, a power off at 23:05:24 by the Start menu, then the PC up on 10 Oct from
+20:06 with an update restart at 21:50:22 and two power offs by hand, the last at 22:34:33, and this morning up at
+08:47:40 and restarted at 08:59:41, the last shutdown, up at 09:00:15. Get-Process Roamer read none at 09:21. His 22.0
+key, exported to turn6\hkcu-22.0-morning-20261011-092229.reg, against the last backup, the one taken before F128's
+probe at 12:59 on 8 Oct: 1243 values each side, five differ, the CER calUptime and uptime counters, SessionStartCount
+and SessionCleanCloseCount one LOWER than the backup, and MainWindow Placement 877 against 969 in height. Counters
+going back means an older copy of his key came back after the restarts of 10 Oct, row T5-R-OLDKEY, the writer UNKNOWN
+and not the loop, which ran no Navisworks since 8 Oct, so nothing was put back, the rule putting back only what the
+loop's own Navisworks changed. The Auto-Save switch reads 0, as the backup holds. The keep-awake runs again, pid 18216
+from 09:23:40, the 30 minute push at 7 and 37 past the hour and the hourly lines at 57 past.
+
+Bader's answers, item 5, written under each question: Q144 B, Q146 B with the Coverage sheet moving into the internal
+workbook, row F127-R2, and Q148 B.
+
+The order of the day, item 6 and 7, under Q143's limits and Q148 B: F130 Shift ticking, read APPROVE on 8 Oct, merged
+with main taken in. F129 start from an NWF, attempt 2 at 9056504, its second reading by one reviewer, its proof steps
+renumbered after F130's, merged. F109 the install, its plan section and proof steps from the drafts, its one reviewer,
+merged. Then the Coverage sheet's move of Q146 B, one reviewer, so the runs prove it. Then main installed in place and
+1A02MM and 1A04PK run through the real window with the viewpoints box ticked by steps\notes\item5-runs-brief.md,
+timed against 2 h 12 min and the hung run, the findings in the shape of set 03's, and three lines to Bader.
+
 ## 2026-10-08 The loop, turn 5, the evening of 8 Oct under Q147, and the stop for the night
 
 Bader kept the laptop on, Q147. Merged after the close of the afternoon: 188, the attribution of commits and pull
