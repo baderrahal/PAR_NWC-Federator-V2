@@ -269,7 +269,12 @@ well as to pass.
   plan for each view's camera clash alone, `TestsViewpointForResult` on a copy, where F85
   read one per clash. A VIEW OF NOTHING IS NO VIEW, B2: a view none of whose clashing items'
   models could be read or named a model of the group is counted FAILED with
-  `ShownModels.WhyNoView` before anything is hidden or dimmed for it. PER VIEW, each stretch
+  `ShownModels.WhyNoView` before anything is hidden or dimmed for it. THE CAMERA IS READ AND
+  FRAMED FIRST, F141 attempt 2, before the hiding, the undim, the dim and the paint, as P18 read it
+  in its walk before any view, so TestsViewpointForResult is never called between the paint and the
+  record: set 07's 1A02MM, calling it there, wrote 69 views and read back no material override on any,
+  the hidden models kept, and that this call puts Clash Detective's own display back is read off the
+  order and not measured alone. PER VIEW, each stretch
   timed into its `ViewsPart`, FR-073: the hiding
   by `ShowOnlyModels` over the indexes of `ShownModels.Shown`, skipped where the view before
   showed the same models, P18, the undim of what the view before left, FR-065, one

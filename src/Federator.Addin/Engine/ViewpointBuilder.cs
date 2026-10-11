@@ -728,89 +728,6 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            // THE HIDING, skipped where the view before showed the same models, P18, since
-            // the document already holds that state.
-            using (seconds.In(ViewsPart.ShowingAndHiding))
-            {
-                Touch(document);
-
-                if (shownBefore != null && shownBefore.SetEquals(keep))
-                {
-                    hidesSkipped++;
-                }
-                else
-                {
-                    SavedViewpoints.ShowOnlyModels(document, keep);
-                    shownBefore = new HashSet<int>(keep);
-                }
-            }
-
-            // WHAT THE VIEW BEFORE LEFT IS TAKEN OFF FIRST, FR-065. The dimming and the paint
-            // are temporary materials on the document, so without this a view carries the
-            // last one's colours and a model dimmed for an earlier view stays dimmed while
-            // hidden for this one, a material override per item in every view after it.
-            if (dimmedNow)
-            {
-                using (seconds.In(ViewsPart.Dimming))
-                {
-                    SavedViewpoints.Undim(document);
-                    dimmedNow = false;
-                }
-            }
-
-            PaintPlan paint = PaintPlan.For(view.Clashes);
-            int solidCount = 0;
-            int redCount = 0;
-            int greenCount = 0;
-            int notResolved = 0;
-            bool dimmedThisOne = false;
-
-            if (views.DimsAnything && paint.Solid.Count > 0)
-            {
-                using (seconds.In(ViewsPart.Dimming))
-                {
-                    int lost;
-
-                    using (ModelItemCollection solid = SavedViewpoints.Resolve(document, paint.Solid, out lost))
-                    {
-                        notResolved += lost;
-
-                        // Before the call, so a dim that throws part way is still taken off
-                        // before the next view is written.
-                        dimmedNow = true;
-                        dimmedAnything = true;
-                        solidCount = SavedViewpoints.DimAllBut(document, views.DimTransparency, keep, solid);
-                        dimmedThisOne = solidCount > 0;
-                    }
-
-                    // THE PAINT GOES ON AFTER THE DIMMING, Q58, one call per colour, P17.
-                    if (dimmedThisOne && views.ColoursAnything)
-                    {
-                        using (ModelItemCollection red = SavedViewpoints.Resolve(document, paint.Red, out lost))
-                        {
-                            notResolved += lost;
-                            redCount = SavedViewpoints.PaintMany(document, red, views.FirstItemColour);
-                        }
-
-                        using (ModelItemCollection green = SavedViewpoints.Resolve(document, paint.Green, out lost))
-                        {
-                            notResolved += lost;
-                            greenCount = SavedViewpoints.PaintMany(document, green, views.SecondItemColour);
-                        }
-                    }
-                }
-            }
-
-            if (notResolved > 0)
-            {
-                SayOnce("VIEWS    " + view + ": " + notResolved + " clashing item path(s) resolved no item, so they are not solid or painted");
-            }
-
-            if (paint.NotPointedAt > 0)
-            {
-                SayOnce("VIEWS    " + view + ": " + paint.NotPointedAt + " clash(es) with an item that could not be pointed at, so not painted");
-            }
-
             // THE CAMERA, Clash Detective's own for the camera clash, framed on the box over
             // every clash centre where there are two or more, P16, its source kept until the
             // view is written, F141.
@@ -848,6 +765,96 @@ namespace Federator.Addin.Engine
                         framedFrom = camera;
                         camera = framed;
                     }
+                }
+
+                // THE CAMERA COMES BEFORE THE HIDING, THE DIM AND THE PAINT, F141 attempt 2, as P18
+                // read it, in its walk before any view. Set 07's 1A02MM, with CameraOf between the
+                // paint and the record, wrote 69 views of which none read back a material override,
+                // the dim and the paint gone while the hidden models stayed, and
+                // TestsViewpointForResult is the one call there that P18 did not make. That it puts
+                // Clash Detective's own display back is read off that order, not measured alone.
+
+                // THE HIDING, skipped where the view before showed the same models, P18, since
+                // the document already holds that state.
+                using (seconds.In(ViewsPart.ShowingAndHiding))
+                {
+                    Touch(document);
+
+                    if (shownBefore != null && shownBefore.SetEquals(keep))
+                    {
+                        hidesSkipped++;
+                    }
+                    else
+                    {
+                        SavedViewpoints.ShowOnlyModels(document, keep);
+                        shownBefore = new HashSet<int>(keep);
+                    }
+                }
+
+                // WHAT THE VIEW BEFORE LEFT IS TAKEN OFF FIRST, FR-065. The dimming and the paint
+                // are temporary materials on the document, so without this a view carries the
+                // last one's colours and a model dimmed for an earlier view stays dimmed while
+                // hidden for this one, a material override per item in every view after it.
+                if (dimmedNow)
+                {
+                    using (seconds.In(ViewsPart.Dimming))
+                    {
+                        SavedViewpoints.Undim(document);
+                        dimmedNow = false;
+                    }
+                }
+
+                PaintPlan paint = PaintPlan.For(view.Clashes);
+                int solidCount = 0;
+                int redCount = 0;
+                int greenCount = 0;
+                int notResolved = 0;
+                bool dimmedThisOne = false;
+
+                if (views.DimsAnything && paint.Solid.Count > 0)
+                {
+                    using (seconds.In(ViewsPart.Dimming))
+                    {
+                        int lost;
+
+                        using (ModelItemCollection solid = SavedViewpoints.Resolve(document, paint.Solid, out lost))
+                        {
+                            notResolved += lost;
+
+                            // Before the call, so a dim that throws part way is still taken off
+                            // before the next view is written.
+                            dimmedNow = true;
+                            dimmedAnything = true;
+                            solidCount = SavedViewpoints.DimAllBut(document, views.DimTransparency, keep, solid);
+                            dimmedThisOne = solidCount > 0;
+                        }
+
+                        // THE PAINT GOES ON AFTER THE DIMMING, Q58, one call per colour, P17.
+                        if (dimmedThisOne && views.ColoursAnything)
+                        {
+                            using (ModelItemCollection red = SavedViewpoints.Resolve(document, paint.Red, out lost))
+                            {
+                                notResolved += lost;
+                                redCount = SavedViewpoints.PaintMany(document, red, views.FirstItemColour);
+                            }
+
+                            using (ModelItemCollection green = SavedViewpoints.Resolve(document, paint.Green, out lost))
+                            {
+                                notResolved += lost;
+                                greenCount = SavedViewpoints.PaintMany(document, green, views.SecondItemColour);
+                            }
+                        }
+                    }
+                }
+
+                if (notResolved > 0)
+                {
+                    SayOnce("VIEWS    " + view + ": " + notResolved + " clashing item path(s) resolved no item, so they are not solid or painted");
+                }
+
+                if (paint.NotPointedAt > 0)
+                {
+                    SayOnce("VIEWS    " + view + ": " + paint.NotPointedAt + " clash(es) with an item that could not be pointed at, so not painted");
                 }
 
                 Point3 cameraPoint;

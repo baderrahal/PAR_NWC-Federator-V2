@@ -2,6 +2,16 @@
 
 Newest entry at the top.
 
+## 2026-10-11 The loop, turn 6, F141 attempt 2 of two, the camera before the paint, written by the lead
+
+Branch fix-F141c off main 89082a2. Set 07's fast check of 1A02MM proved attempt 1, no view threw, and showed
+F141-R1 on every view: 69 written, marked and read back with no material override, the hidden models kept.
+P18's measured order read the camera before any paint, and WriteOne read it between the paint and the record
+through TestsViewpointForResult. The camera is now read and framed first. The rule is in addin.md. Proved
+here: the build, 0 warnings and 0 errors, and Core tests 2862 passed, 0 failed, 0 skipped, nothing under Core
+changed. What remains: the next fast check of 1A02MM, where 69 views written and read back with their dim and
+paint proves it. Known bugs: none new. What comes next: the cut down 1A04PK's numbers and the speed fix.
+
 ## 2026-10-11 The loop, turn 6, F143 the harvest answers between rows, attempt 2 of two, written by the lead
 
 Bader's order of 2026-10-11 headed 1A04PK IS FROZEN, item 4. Branch fix-F143 off main d7d7c01.
