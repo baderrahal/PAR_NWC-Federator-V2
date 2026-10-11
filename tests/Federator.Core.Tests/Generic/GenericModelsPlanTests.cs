@@ -503,15 +503,19 @@ namespace Federator.Core.Tests
             Assert.That(Plan().SetNames, Is.Empty);
         }
 
-        // ---------- the workbook of its own ----------
+        // ---------- the internal workbook ----------
 
+        /// <summary>
+        /// Bader's answer B to Q146: the internal workbook beside the clash workbook holds the Generic Models
+        /// sheet and the Coverage sheet, so its name says Internal and never Generic Models alone.
+        /// </summary>
         [Test]
         public void TheWorkbookIsNamedAfterTheGroupsWorkbookWithTheSuffix()
         {
             GenericModelsSettings settings = new GenericModelsSettings();
 
-            Assert.That(settings.WorkbookSuffix, Is.EqualTo("Generic Models"));
-            Assert.That(settings.WorkbookNameFor("1104-PAR-1A02MM-ZZZ-BM-RPT-000001"), Is.EqualTo("1104-PAR-1A02MM-ZZZ-BM-RPT-000001 Generic Models"));
+            Assert.That(settings.WorkbookSuffix, Is.EqualTo("Internal"));
+            Assert.That(settings.WorkbookNameFor("1104-PAR-1A02MM-ZZZ-BM-RPT-000001"), Is.EqualTo("1104-PAR-1A02MM-ZZZ-BM-RPT-000001 Internal"));
 
             settings.WorkbookSuffix = "GM";
             Assert.That(settings.WorkbookNameFor("x"), Is.EqualTo("x GM"));
@@ -529,7 +533,7 @@ namespace Federator.Core.Tests
             Assert.Throws<ArgumentException>(() => settings.WorkbookNameFor(string.Empty));
             Assert.Throws<ArgumentException>(() => settings.WorkbookNameFor(null));
 
-            Assert.That(settings.WorkbookSuffix, Is.EqualTo("Generic Models"), "a refused value changes nothing");
+            Assert.That(settings.WorkbookSuffix, Is.EqualTo("Internal"), "a refused value changes nothing");
         }
     }
 }

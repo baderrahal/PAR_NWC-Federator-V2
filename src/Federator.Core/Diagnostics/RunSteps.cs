@@ -48,9 +48,24 @@ namespace Federator.Core.Diagnostics
         /// </summary>
         public const string Renumber = "RENUMBER";
         public const string Workbook = "WORKBOOK";
-        public const string GenericWorkbook = "GENERIC XLSX";
         public const string Html = "HTML";
         public const string Xml = "XML";
+
+        /// <summary>
+        /// The coverage of the picked tests, F127's add-in half: one walk of Clash Detective's
+        /// tests for their counts, the clash workbook read back test by test, the count check
+        /// and the COVERAGE block. After the clash workbook, its page and its XML, because it
+        /// reads that workbook, and timed because the walk's seconds were UNKNOWN in the design.
+        /// </summary>
+        public const string Coverage = "COVERAGE";
+
+        /// <summary>
+        /// The internal workbook beside the clash workbook, Bader's answer B to Q146, holding the
+        /// Generic Models sheet of F128 and the Coverage sheet, written once both are taken. It
+        /// was F128's GENERIC XLSX, when the workbook held the Generic Models sheet alone. Eight letters and
+        /// not INTERNAL XLSX, because a name longer than TESTS CREATE widens every STEP line of the log.
+        /// </summary>
+        public const string InternalWorkbook = "INTERNAL";
         public const string Nwd = "NWD";
         public const string Confirm = "CONFIRM";
 
@@ -68,9 +83,10 @@ namespace Federator.Core.Diagnostics
             Renumber,
             Views,
             Workbook,
-            GenericWorkbook,
             Html,
             Xml,
+            Coverage,
+            InternalWorkbook,
             Nwd,
             Confirm
         };

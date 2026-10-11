@@ -10,19 +10,20 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// The Generic Models workbook of a group, F128 and FR-177: a workbook of its own beside the group's
-    /// workbook, holding the Generic Models sheet alone, written into a folder that may not be there yet.
-    /// Every workbook here is a real xlsx read back off the disk.
+    /// The internal workbook of a group, Bader's answer B to Q146: a workbook of its own beside the clash
+    /// workbook, holding the Generic Models sheet of F128 and FR-177, here with no coverage handed in, so that
+    /// sheet alone, written into a folder that may not be there yet. The Coverage sheet beside it is proved in
+    /// CoverageSheetTests. Every workbook here is a real xlsx read back off the disk.
     /// </summary>
     [TestFixture]
-    public class GenericWorkbookTests
+    public class InternalWorkbookTests
     {
         private string folder;
 
         [SetUp]
         public void MakeFolder()
         {
-            folder = TempFolder.Make("FederatorGenericWorkbook");
+            folder = TempFolder.Make("FederatorInternalWorkbook");
         }
 
         [TearDown]
@@ -57,9 +58,10 @@ namespace Federator.Core.Tests
             GenericModelsSettings settings = new GenericModelsSettings();
             string path = ReportPaths.Workbook(Path.Combine(folder, "Clash Reports"), settings.WorkbookNameFor("1A04PK"));
 
-            GenericWorkbook.Write(path, Report(528, 0, 3), "1A04PK", settings.SheetName);
+            IList<string> written = InternalWorkbook.Write(path, "1A04PK", Report(528, 0, 3), settings.SheetName, null, "Coverage");
 
-            Assert.That(path, Does.EndWith(Path.Combine("Clash Reports", "1A04PK Generic Models.xlsx")));
+            Assert.That(path, Does.EndWith(Path.Combine("Clash Reports", "1A04PK Internal.xlsx")));
+            Assert.That(written, Is.EqualTo(new[] { "Generic Models" }));
             Assert.That(File.Exists(path), Is.True);
 
             using (XLWorkbook workbook = new XLWorkbook(path))
@@ -80,8 +82,8 @@ namespace Federator.Core.Tests
         {
             string path = Path.Combine(folder, "g.xlsx");
 
-            GenericWorkbook.Write(path, Report(1, 2), "g", "Generic Models");
-            GenericWorkbook.Write(path, Report(7), "g", "Generic Models");
+            InternalWorkbook.Write(path, "g", Report(1, 2), "Generic Models", null, "Coverage");
+            InternalWorkbook.Write(path, "g", Report(7), "Generic Models", null, "Coverage");
 
             using (XLWorkbook workbook = new XLWorkbook(path))
             {
@@ -91,10 +93,10 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void APathOrAReportMissingIsRefused()
+        public void APathOrBothSheetsMissingIsRefused()
         {
-            Assert.Throws<ArgumentException>(() => GenericWorkbook.Write(string.Empty, Report(1), "g", "Generic Models"));
-            Assert.Throws<ArgumentNullException>(() => GenericWorkbook.Write(Path.Combine(folder, "g.xlsx"), null, "g", "Generic Models"));
+            Assert.Throws<ArgumentException>(() => InternalWorkbook.Write(string.Empty, "g", Report(1), "Generic Models", null, "Coverage"));
+            Assert.Throws<ArgumentException>(() => InternalWorkbook.Write(Path.Combine(folder, "g.xlsx"), "g", null, "Generic Models", null, "Coverage"));
         }
     }
 }

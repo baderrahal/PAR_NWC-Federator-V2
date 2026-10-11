@@ -558,8 +558,8 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// A group with no test sheet to read is not compared and says why: a coordinates skip,
-        /// whose workbook holds the Coverage sheet alone by Bader's answer B to Q126, outputs off or
-        /// a refused unit.
+        /// which writes no clash workbook and whose Coverage sheet is in the internal workbook by
+        /// Bader's answers B to Q126 and Q146, outputs off or a refused unit.
         /// </summary>
         [Test]
         public void NoWorkbookIsNotComparedAndTheReasonIsKept()
@@ -588,6 +588,48 @@ namespace Federator.Core.Tests
             Assert.That(check.Tests.Count, Is.EqualTo(1));
             Assert.That(check.NotInTheXml.Count, Is.EqualTo(1));
             Assert.That(check.NotInTheXml[0], Is.EqualTo("Old"));
+        }
+
+        // ---------- the mirrored pairs F132 merges ----------
+
+        /// <summary>
+        /// F132 merges a mirror's clashes into the kept test's block of the clash workbook and leaves no
+        /// block of the mirror's, so the kept test's block reads more rows than Clash Detective holds for
+        /// it and the mirror reads no block at all. Neither is one test's count, so both are NOT COMPARED
+        /// with why, and no COVERAGE FAILED line is made by the merge. Their numbers still ride beside them.
+        /// </summary>
+        [Test]
+        public void TheTestsOfAMergeAreNotComparedAndNeverAFailedLine()
+        {
+            CountCheck check = CountCheck.Judge(
+                Tests(Ran("K"), Ran("M (mirror)")),
+                Document(InDocument("K", 2, 2), InDocument("M (mirror)", 3, 3)),
+                Workbook("K", 4, 0),
+                null,
+                -1,
+                new List<string> { "K", "M (mirror)" });
+
+            Assert.That(Judged(check, "K").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "K").Why, Is.EqualTo(CountCheck.InAMergeWhy));
+            Assert.That(Judged(check, "K").WorkbookRows, Is.EqualTo(4));
+            Assert.That(Judged(check, "K").DocumentTopLevel, Is.EqualTo(2));
+            Assert.That(Judged(check, "M (mirror)").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "M (mirror)").InWorkbook, Is.False);
+            Assert.That(check.FailedLines("100000"), Is.Empty);
+        }
+
+        /// <summary>The break: the same numbers with no merge named are both FAILED, so the rule above is the merge's alone.</summary>
+        [Test]
+        public void TheSameNumbersWithNoMergeAreFailed()
+        {
+            CountCheck check = Judge(
+                Tests(Ran("K"), Ran("M (mirror)")),
+                Document(InDocument("K", 2, 2), InDocument("M (mirror)", 3, 3)),
+                Workbook("K", 4, 0));
+
+            Assert.That(Judged(check, "K").Verdict, Is.EqualTo(CountVerdict.Failed));
+            Assert.That(Judged(check, "M (mirror)").Verdict, Is.EqualTo(CountVerdict.Failed));
+            Assert.That(check.FailedLines("100000").Count, Is.EqualTo(2));
         }
 
         // ---------- the FAILED line ----------
@@ -643,6 +685,29 @@ namespace Federator.Core.Tests
         public void NoTestsToJudgeIsRefused()
         {
             Assert.Throws<ArgumentNullException>(() => CountCheck.Judge(null, Document(), null, null, -1));
+        }
+
+        // ---------- agree only where the test ran, F127b, the breaker's third finding ----------
+
+        /// <summary>
+        /// THE BREAK. A test that did not run this run, nought in Clash Detective and nought in the
+        /// workbook, read AGREE because whether it ran was never read. Equal counts of a test that did
+        /// not run check nothing this run did, so it is NOT COMPARED and says it did not run, whatever
+        /// the two equal numbers are. A test that ran with nought on both sides still agrees.
+        /// </summary>
+        [Test]
+        public void ATestThatDidNotRunIsNeverCountedAsAgreeing()
+        {
+            CountCheck check = Judge(
+                Tests(CreatedNotRun("T"), NotRun("U"), Ran("V")),
+                Document(InDocument("T", 0, 0), InDocument("U", 2, 2), InDocument("V", 0, 0)),
+                Workbook("T", 0, 0, "U", 2, 0, "V", 0, 0));
+
+            Assert.That(Judged(check, "T").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "T").Why, Does.Contain("did not run this run"));
+            Assert.That(Judged(check, "U").Verdict, Is.EqualTo(CountVerdict.NotCompared));
+            Assert.That(Judged(check, "V").Verdict, Is.EqualTo(CountVerdict.Agree), "a test that ran agrees as before");
+            Assert.That(check.CountOf(CountVerdict.Agree), Is.EqualTo(1));
         }
     }
 }

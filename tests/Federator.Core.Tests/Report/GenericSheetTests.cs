@@ -271,13 +271,16 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// The internal workbook holds the Generic Models sheet and the Coverage sheet and no sheet of the
+        /// client's, Q146 answered B, so the one name this sheet can meet is the Coverage sheet's.
+        /// </summary>
         [Test]
         public void TwoSheetsOfOneNameAreRefusedWhateverTheCase()
         {
-            Assert.That(GenericSheet.WhyRefused(ReportSheet, "Coverage", "Generic Models"), Is.Null);
-            Assert.That(GenericSheet.WhyRefused("generic models", "Coverage", "Generic Models"),
-                Does.Contain("the report's own sheet is named generic models"));
-            Assert.That(GenericSheet.WhyRefused(ReportSheet, "GENERIC MODELS", "Generic Models"),
+            Assert.That(GenericSheet.WhyRefused("Coverage", "Generic Models"), Is.Null);
+            Assert.That(GenericSheet.WhyRefused(null, "Generic Models"), Is.Null, "no Coverage sheet to meet");
+            Assert.That(GenericSheet.WhyRefused("GENERIC MODELS", "Generic Models"),
                 Does.Contain("the Coverage sheet is named GENERIC MODELS"));
         }
 
@@ -288,9 +291,9 @@ namespace Federator.Core.Tests
         [Test]
         public void AnEdgeSpaceDoesNotHideTwoSheetsOfOneName()
         {
-            Assert.That(GenericSheet.WhyRefused(ReportSheet, "Coverage", "Coverage "), Does.Contain("the Coverage sheet is named Coverage"));
-            Assert.That(GenericSheet.WhyRefused(ReportSheet, "Coverage", " Generic"), Is.Null);
-            Assert.That(GenericSheet.WhyRefused("Generic ", "Coverage", "Generic"), Does.Contain("the report's own sheet is named Generic "));
+            Assert.That(GenericSheet.WhyRefused("Coverage", "Coverage "), Does.Contain("the Coverage sheet is named Coverage"));
+            Assert.That(GenericSheet.WhyRefused("Coverage", " Generic"), Is.Null);
+            Assert.That(GenericSheet.WhyRefused("Generic ", "Generic"), Does.Contain("the Coverage sheet is named Generic "));
         }
 
         [Test]

@@ -306,5 +306,60 @@ namespace Federator.Core.Tests
         {
             Assert.Throws<ArgumentNullException>(() => WorkbookTests.Read(null));
         }
+
+        // ---------- the clash workbook read by the client's sheet's name ----------
+
+        /// <summary>
+        /// THE CLIENT'S SHEET IS READ BY ITS NAME, the readers' point on F127 that Read handed the first
+        /// sheet would read a sheet put before it. A sheet named Coverage put first is not read, and the
+        /// client's sheet behind it is. The break beside it: the first sheet read by place holds none of the
+        /// client's tests.
+        /// </summary>
+        [Test]
+        public void ReadFileReadsTheClientsSheetByItsNameWhereAnotherSheetStandsFirst()
+        {
+            ClashReport report = Report();
+            AddTest(report, "T1", 2, 0);
+            string path = Write(report, folder);
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                workbook.Worksheets.Add("Coverage", 1);
+                workbook.Save();
+            }
+
+            string why;
+            WorkbookTests read = WorkbookTests.ReadFile(path, SheetNames.ForReport(OutputName), out why);
+
+            Assert.That(why, Is.Null);
+            Assert.That(read, Is.Not.Null);
+            Assert.That(Only(read, "T1").Rows, Is.EqualTo(2));
+            Assert.That(ReadBack(path).Named("T1"), Is.Empty, "the first sheet by place is the one put before it");
+        }
+
+        [Test]
+        public void ReadFileSaysWhereTheWorkbookHoldsNoSheetOfThatName()
+        {
+            ClashReport report = Report();
+            AddTest(report, "T1", 2, 0);
+            string path = Write(report, folder);
+            string why;
+
+            Assert.That(WorkbookTests.ReadFile(path, "Coverage", out why), Is.Null);
+            Assert.That(why, Is.EqualTo("the workbook at " + path + " holds no sheet named Coverage"));
+
+            // Exactly, so a name differing by letter case alone is not the client's sheet.
+            Assert.That(WorkbookTests.ReadFile(path, SheetNames.ForReport(OutputName).ToLowerInvariant(), out why), Is.Null);
+        }
+
+        [Test]
+        public void ReadFileSaysWhereThereIsNoWorkbook()
+        {
+            string path = Path.Combine(folder, "not-there.xlsx");
+            string why;
+
+            Assert.That(WorkbookTests.ReadFile(path, "x", out why), Is.Null);
+            Assert.That(why, Is.EqualTo("there is no workbook at " + path));
+        }
     }
 }

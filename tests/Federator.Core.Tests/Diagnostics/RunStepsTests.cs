@@ -14,11 +14,11 @@ namespace Federator.Core.Tests
     public class RunStepsTests
     {
         [Test]
-        public void TheSeventeenStepsAreThereInTheOrderAGroupMeetsThem()
+        public void TheEighteenStepsAreThereInTheOrderAGroupMeetsThem()
         {
             IList<string> all = RunSteps.All;
 
-            Assert.That(all.Count, Is.EqualTo(17));
+            Assert.That(all.Count, Is.EqualTo(18));
 
             // VIEWS is F85's, between IMAGES and WORKBOOK, because building the viewpoints
             // runs after the clash step and before the second NWF save. It was untimed
@@ -26,13 +26,16 @@ namespace Federator.Core.Tests
             // between IMAGES and VIEWS, because the pictures are renamed into report order
             // once the clash step has run them all and before the viewpoints read the rows.
             // It ran inside no step before, 20.6 s of one group in none of the totals.
-            // GENERIC XLSX is F128's, after WORKBOOK, because the Generic Models workbook
-            // is written beside the group's workbook and whether or not the clash step ran.
-            // Seventeen steps.
+            // COVERAGE is F127's add-in half, after the clash workbook, its page and its XML,
+            // because it reads Clash Detective's counts and the clash workbook back. INTERNAL
+            // follows it, Bader's answer B to Q146: the internal workbook beside the clash
+            // workbook holds the Generic Models sheet of F128 and the Coverage sheet, so it is
+            // written once both are taken and whether or not the clash step ran. It was F128's
+            // GENERIC XLSX, listed after WORKBOOK while the engine wrote it after XML. Eighteen steps.
             string[] expected =
             {
                 "DECIDE", "APPEND", "NWF SAVE", "UNITS", "SETS", "TESTS CREATE", "TESTS RUN",
-                "HARVEST", "IMAGES", "RENUMBER", "VIEWS", "WORKBOOK", "GENERIC XLSX", "HTML", "XML", "NWD", "CONFIRM"
+                "HARVEST", "IMAGES", "RENUMBER", "VIEWS", "WORKBOOK", "HTML", "XML", "COVERAGE", "INTERNAL", "NWD", "CONFIRM"
             };
 
             for (int i = 0; i < expected.Length; i++)
@@ -60,8 +63,8 @@ namespace Federator.Core.Tests
             {
                 RunSteps.Decide, RunSteps.Append, RunSteps.NwfSave, RunSteps.Units,
                 RunSteps.Sets, RunSteps.TestsCreate, RunSteps.TestsRun, RunSteps.Harvest,
-                RunSteps.Images, RunSteps.Renumber, RunSteps.Views, RunSteps.Workbook, RunSteps.GenericWorkbook, RunSteps.Html,
-                RunSteps.Xml, RunSteps.Nwd, RunSteps.Confirm
+                RunSteps.Images, RunSteps.Renumber, RunSteps.Views, RunSteps.Workbook, RunSteps.Html,
+                RunSteps.Xml, RunSteps.Coverage, RunSteps.InternalWorkbook, RunSteps.Nwd, RunSteps.Confirm
             })
             {
                 Assert.That(RunSteps.IsAStep(name), Is.True, name);
@@ -86,7 +89,7 @@ namespace Federator.Core.Tests
         public void TheOrderIsThePositionOnTheList()
         {
             Assert.That(RunSteps.OrderOf(RunSteps.Decide), Is.EqualTo(0));
-            Assert.That(RunSteps.OrderOf(RunSteps.Confirm), Is.EqualTo(16));
+            Assert.That(RunSteps.OrderOf(RunSteps.Confirm), Is.EqualTo(17));
             Assert.That(
                 RunSteps.OrderOf(RunSteps.Views),
                 Is.GreaterThan(RunSteps.OrderOf(RunSteps.Harvest)),

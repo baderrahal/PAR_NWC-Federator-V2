@@ -4,6 +4,7 @@ using System.IO;
 using ClosedXML.Excel;
 using Federator.Core.Clash;
 using Federator.Core.Coverage;
+using Federator.Core.Generic;
 using Federator.Core.Health;
 using Federator.Core.Report;
 using Federator.Core.Sets;
@@ -13,9 +14,11 @@ namespace Federator.Core.Tests
 {
     /// <summary>
     /// The Coverage sheet, F127, Bader's request 2 under Q112 and his decision under Q46,
-    /// FR-200: the second and last sheet of the group's workbook, one row per test of the
-    /// picked file in the file's order, a test F77 did not create included, with its reason.
-    /// Every workbook here is a real xlsx the writer made, read back off the disk as a file.
+    /// FR-200: one row per test of the picked file in the file's order, a test F77 did not
+    /// create included, with its reason. Since Bader's answer B to Q146 a sheet of the internal
+    /// workbook beside the clash workbook, after the Generic Models sheet, and the clash workbook
+    /// holds the client's sheet alone. Every workbook here is a real xlsx the writer made, read
+    /// back off the disk as a file.
     /// </summary>
     [TestFixture]
     public class CoverageSheetTests
@@ -82,10 +85,39 @@ namespace Federator.Core.Tests
             return report;
         }
 
-        private string Write(ClashReport report, CoverageSheetData coverage)
+        /// <summary>A Generic Models count of two models, one with items, for the sheet beside the Coverage sheet.</summary>
+        private static GenericModelsReport Generic()
         {
-            return new WorkbookWriter(new ReportOptions()).Write(
-                report, Path.Combine(folder, OutputName + ".xlsx"), coverage, new CoverageSettings());
+            GenericModelsPlan plan = GenericModelsPlan.For(
+                new List<GenericModelInput> { new GenericModelInput("model0.nwc"), new GenericModelInput("model1.nwc") },
+                new GenericModelsSettings());
+            SetBuildOutcome outcome = new SetBuildOutcome();
+            outcome.AddCreated(plan.Sets[0].Set, 5, null);
+            outcome.AddCreated(plan.Sets[1].Set, 0, null);
+            return GenericModelsReport.From(plan, outcome.Results);
+        }
+
+        /// <summary>The internal workbook of the group, with the Generic Models sheet where a count is handed in.</summary>
+        private string Write(GenericModelsReport generic, CoverageSheetData coverage)
+        {
+            string path = Path.Combine(folder, new GenericModelsSettings().WorkbookNameFor(OutputName) + ".xlsx");
+            InternalWorkbook.Write(path, "100000", generic, GenericModelsSettings.DefaultSheetName, coverage, CoverageSettings.DefaultSheetName);
+            return path;
+        }
+
+        private static List<string> SheetsOf(string path)
+        {
+            List<string> names = new List<string>();
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                foreach (IXLWorksheet sheet in workbook.Worksheets)
+                {
+                    names.Add(sheet.Name);
+                }
+            }
+
+            return names;
         }
 
         /// <summary>The TESTS rows read back off the file: the row of each test by its name in column B, as cell texts.</summary>
@@ -95,7 +127,7 @@ namespace Federator.Core.Tests
 
             using (XLWorkbook workbook = new XLWorkbook(path))
             {
-                IXLWorksheet sheet = workbook.Worksheet(2);
+                IXLWorksheet sheet = workbook.Worksheet(CoverageSettings.DefaultSheetName);
                 int last = sheet.LastRowUsed().RowNumber();
                 bool inTests = false;
 
@@ -146,7 +178,7 @@ namespace Federator.Core.Tests
         public void ATestNotCreatedHasARowOnTheSheetWithItsReason()
         {
             IList<TestCoverage> tests = new List<TestCoverage> { Ran(1, "T1", 2), KeptOut(2, "BLD-AR-Stairs-vs-BLD-AR-Floors") };
-            string path = Write(Report("T1"), Data(tests, null, null));
+            string path = Write((GenericModelsReport)null, Data(tests, null, null));
 
             Dictionary<string, string[]> rows = TestRowsOnDisk(path);
 
@@ -167,7 +199,7 @@ namespace Federator.Core.Tests
         {
             IList<TestCoverage> tests = new List<TestCoverage> { Ran(1, "T1", 2), KeptOut(2, "T2") };
             CoverageSheetData data = Data(tests, null, null);
-            string path = Write(Report("T1"), data);
+            string path = Write((GenericModelsReport)null, data);
 
             Dictionary<string, string[]> onDisk = TestRowsOnDisk(path);
             IList<string[]> given = CoverageSheet.TestRows(data);
@@ -180,101 +212,150 @@ namespace Federator.Core.Tests
             }
         }
 
-        // ---------- where it sits ----------
+        // ---------- where it sits, Q146 answered B ----------
 
+        /// <summary>
+        /// THE COVERAGE SHEET IS IN THE INTERNAL WORKBOOK BESIDE THE GENERIC MODELS SHEET, Bader's answer B to
+        /// Q146, and the clash workbook of the same group holds the client's sheet alone, the Navisworks
+        /// export's layout. Both sheets in one save, named as the settings name them, Generic Models first.
+        /// </summary>
         [Test]
-        public void TheSheetIsSecondAndLastAndNamedCoverageAndTheClientsSheetIsFirst()
+        public void TheCoverageSheetIsInTheInternalWorkbookAndTheClashWorkbookHoldsTheClientsSheetAlone()
         {
-            string path = Write(Report("T1"), Data(new List<TestCoverage> { Ran(1, "T1", 2) }, null, null));
+            string clash = new WorkbookWriter(new ReportOptions()).Write(Report("T1"), Path.Combine(folder, OutputName + ".xlsx"));
+            string path = Path.Combine(folder, new GenericModelsSettings().WorkbookNameFor(OutputName) + ".xlsx");
+            IList<string> written = InternalWorkbook.Write(
+                path, "100000", Generic(), GenericModelsSettings.DefaultSheetName,
+                Data(new List<TestCoverage> { Ran(1, "T1", 2) }, null, null), CoverageSettings.DefaultSheetName);
+
+            Assert.That(path, Does.EndWith(OutputName + " Internal.xlsx"));
+            Assert.That(written, Is.EqualTo(new[] { GenericModelsSettings.DefaultSheetName, CoverageSettings.DefaultSheetName }));
+            Assert.That(SheetsOf(path), Is.EqualTo(written), "both sheets in the one file, in the order written");
+            Assert.That(SheetsOf(clash), Is.EqualTo(new[] { OutputName.Substring(0, 31) }), "the clash workbook holds the client's sheet alone");
 
             using (XLWorkbook workbook = new XLWorkbook(path))
             {
-                List<string> names = new List<string>();
-
-                foreach (IXLWorksheet sheet in workbook.Worksheets)
-                {
-                    names.Add(sheet.Name);
-                }
-
-                Assert.That(names.Count, Is.EqualTo(2));
-                Assert.That(names[0], Is.EqualTo(OutputName.Substring(0, 31)), "the client's sheet first");
-                Assert.That(names[1], Is.EqualTo(CoverageSettings.DefaultSheetName));
+                Assert.That(workbook.Worksheet(CoverageSettings.DefaultSheetName).Cell(1, 1).GetString(), Is.EqualTo(CoverageSheet.Title));
+                Assert.That(workbook.Worksheet(GenericModelsSettings.DefaultSheetName).Cell(1, 1).GetString(), Is.EqualTo(GenericSheet.Title));
             }
 
-            // The check's cell rules read the rows of this small report too, so only its sheet
-            // rules are asserted here: the Coverage sheet second is no problem of the sheets.
-            WorkbookCheck check = WorkbookCheck.Of(path);
-            Assert.That(check.Ran, Is.True, check.CouldNotRead);
-            Assert.That(check.HasCoverageSheet, Is.True);
-            Assert.That(check.Sheets, Is.EqualTo(2));
-
-            foreach (string problem in check.Problems)
-            {
-                Assert.That(problem, Does.Not.Contain("sheet").IgnoreCase, problem);
-            }
+            Assert.That(WorkbookCheck.Of(clash).Sheets, Is.EqualTo(1));
         }
 
-        /// <summary>Nothing of ours goes on sheet 1: the client's sheet reads cell for cell as it does with no Coverage sheet.</summary>
+        /// <summary>A group with a coverage and no Generic Models count writes the workbook with the Coverage sheet alone.</summary>
         [Test]
-        public void TheClientsSheetIsTheSameCellForCellWithAndWithoutTheCoverageSheet()
+        public void ACoverageAndNoGenericModelsCountWritesTheCoverageSheetAlone()
         {
-            string with = Write(Report("T1", "T2"), Data(new List<TestCoverage> { Ran(1, "T1", 2), Ran(2, "T2", 2) }, null, null));
-            string without = new WorkbookWriter(new ReportOptions()).Write(Report("T1", "T2"), Path.Combine(folder, "without.xlsx"));
+            string path = Write((GenericModelsReport)null, Data(new List<TestCoverage> { Ran(1, "T1", 2) }, null, null));
 
-            using (XLWorkbook a = new XLWorkbook(with))
-            using (XLWorkbook b = new XLWorkbook(without))
+            Assert.That(SheetsOf(path), Is.EqualTo(new[] { CoverageSettings.DefaultSheetName }));
+        }
+
+        /// <summary>A group with a Generic Models count and no coverage writes the workbook with the Generic Models sheet alone.</summary>
+        [Test]
+        public void AGenericModelsCountAndNoCoverageWritesTheGenericModelsSheetAlone()
+        {
+            string path = Write(Generic(), null);
+
+            Assert.That(SheetsOf(path), Is.EqualTo(new[] { GenericModelsSettings.DefaultSheetName }));
+        }
+
+        /// <summary>A group with neither is refused, so the caller writes no workbook and says why.</summary>
+        [Test]
+        public void NeitherACountNorACoverageIsRefusedAndNoFileIsWritten()
+        {
+            string path = Path.Combine(folder, "neither.xlsx");
+
+            Assert.Throws<ArgumentException>(() => InternalWorkbook.Write(path, "100000", null, "Generic Models", null, "Coverage"));
+            Assert.That(File.Exists(path), Is.False);
+            Assert.Throws<ArgumentException>(() => InternalWorkbook.Write(string.Empty, "100000", Generic(), "Generic Models", null, "Coverage"));
+        }
+
+        /// <summary>
+        /// Two sheets Excel reads as one name: the Generic Models sheet is left out by GenericSheet's one rule
+        /// and the Coverage sheet keeps its name, and the rule says why for the log.
+        /// </summary>
+        [Test]
+        public void AGenericModelsSheetNamedLikeTheCoverageSheetIsLeftOutAndTheRuleSaysWhy()
+        {
+            CoverageSheetData data = Data(new List<TestCoverage> { Ran(1, "T1", 2) }, null, null);
+
+            Assert.That(InternalWorkbook.WhyNoGenericSheet(data, "coverage", "Coverage"), Does.Contain("no Generic Models sheet was written"));
+            Assert.That(InternalWorkbook.WhyNoGenericSheet(data, "Generic Models", "Coverage"), Is.Null);
+            Assert.That(InternalWorkbook.WhyNoGenericSheet(null, "Coverage", "Coverage"), Is.Null, "no Coverage sheet to meet");
+
+            string path = Path.Combine(folder, "one-name.xlsx");
+            IList<string> written = InternalWorkbook.Write(path, "100000", Generic(), "coverage", data, "Coverage");
+
+            Assert.That(written, Is.EqualTo(new[] { "Coverage" }));
+            Assert.That(SheetsOf(path), Is.EqualTo(new[] { "Coverage" }));
+        }
+
+        /// <summary>The check reads both sheets back by name and says so, the good file.</summary>
+        [Test]
+        public void TheCheckReadsBothSheetsBackByName()
+        {
+            string path = Write(Generic(), Data(new List<TestCoverage> { Ran(1, "T1", 2) }, null, null));
+            IList<string> lines = InternalWorkbook.Check(path, SheetsOf(path));
+
+            Assert.That(lines.Count, Is.EqualTo(1));
+            Assert.That(lines[0], Is.EqualTo("read back, it holds 2 sheets, Generic Models, Coverage, each found by the name it was written under"));
+        }
+
+        /// <summary>The break: a sheet written and not in the file, and one in the file not written, are each named.</summary>
+        [Test]
+        public void TheCheckNamesASheetMissingAndASheetNotWritten()
+        {
+            string path = Write(Generic(), Data(new List<TestCoverage> { Ran(1, "T1", 2) }, null, null));
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
             {
-                IXLWorksheet first = a.Worksheet(1);
-                IXLWorksheet second = b.Worksheet(1);
-                int rows = first.LastRowUsed().RowNumber();
-                int columns = first.LastColumnUsed().ColumnNumber();
+                workbook.Worksheet(CoverageSettings.DefaultSheetName).Delete();
+                workbook.Worksheets.Add("Summary");
+                workbook.Save();
+            }
 
-                Assert.That(second.LastRowUsed().RowNumber(), Is.EqualTo(rows));
-                Assert.That(second.LastColumnUsed().ColumnNumber(), Is.EqualTo(columns));
+            string lines = string.Join(" | ", new List<string>(InternalWorkbook.Check(
+                path, new List<string> { GenericModelsSettings.DefaultSheetName, CoverageSettings.DefaultSheetName })).ToArray());
 
-                for (int row = 1; row <= rows; row++)
+            Assert.That(lines, Does.Contain("the sheet Coverage was written and the workbook read back holds no sheet of that name"));
+            Assert.That(lines, Does.Contain("holds a sheet Summary this run did not write"));
+            Assert.That(lines, Does.Not.Contain("read back, it holds"));
+        }
+
+        /// <summary>A file that will not open is said with what it threw, and nothing throws out of the check.</summary>
+        [Test]
+        public void TheCheckSaysAFileThatWillNotOpen()
+        {
+            IList<string> lines = InternalWorkbook.Check(Path.Combine(folder, "not-there.xlsx"), new List<string> { "Coverage" });
+
+            Assert.That(lines.Count, Is.EqualTo(1));
+            Assert.That(lines[0], Does.StartWith("the internal workbook could not be read back, "));
+        }
+
+        /// <summary>The MIRRORED PAIRS section never says F132's rule is missing, since it is on main.</summary>
+        [Test]
+        public void TheMirroredPairsSectionSaysWhereThePairsAreNamed()
+        {
+            string path = Write((GenericModelsReport)null, Data(new List<TestCoverage> { Ran(1, "T1", 2) }, null, null));
+            bool found = false;
+
+            using (XLWorkbook workbook = new XLWorkbook(path))
+            {
+                IXLWorksheet sheet = workbook.Worksheet(CoverageSettings.DefaultSheetName);
+
+                for (int row = 1; row <= sheet.LastRowUsed().RowNumber(); row++)
                 {
-                    for (int column = 1; column <= columns; column++)
+                    if (sheet.Cell(row, 1).GetString() == CoverageSheet.MirrorsSection)
                     {
-                        Assert.That(first.Cell(row, column).GetString(), Is.EqualTo(second.Cell(row, column).GetString()),
-                            "row " + row + " column " + column);
+                        Assert.That(sheet.Cell(row + 1, 1).GetString(), Is.EqualTo(CoverageSheet.MirrorsUnknown));
+                        Assert.That(sheet.Cell(row + 1, 1).GetString(), Does.Not.Contain("not on main"));
+                        found = true;
                     }
                 }
             }
-        }
 
-        [Test]
-        public void NoCoverageHandedInWritesTheClientsSheetAlone()
-        {
-            string path = Write(Report("T1"), null);
-
-            using (XLWorkbook workbook = new XLWorkbook(path))
-            {
-                Assert.That(workbook.Worksheets.Count, Is.EqualTo(1));
-            }
-
-            Assert.That(WorkbookCheck.Of(path).HasCoverageSheet, Is.False);
-        }
-
-        /// <summary>A report whose own sheet would be named like the Coverage sheet gets no Coverage sheet, and the rule says why.</summary>
-        [Test]
-        public void AReportNamedCoverageGetsNoCoverageSheetAndTheRuleSaysWhy()
-        {
-            ClashReport report = new ClashReport("100000", "Coverage");
-            report.DocumentUnits = "m";
-            WorkbookTestsTests.AddTest(report, "T1", 2, 0);
-
-            string why = CoverageSheet.WhyRefused(report, CoverageSettings.DefaultSheetName);
-            Assert.That(why, Does.Contain("no Coverage sheet was written"));
-            Assert.That(CoverageSheet.WhyRefused(Report("T1"), CoverageSettings.DefaultSheetName), Is.Null);
-
-            string path = new WorkbookWriter(new ReportOptions()).Write(
-                report, Path.Combine(folder, "coverage-named.xlsx"), Data(new List<TestCoverage> { Ran(1, "T1", 2) }, null, null), new CoverageSettings());
-
-            using (XLWorkbook workbook = new XLWorkbook(path))
-            {
-                Assert.That(workbook.Worksheets.Count, Is.EqualTo(1));
-            }
+            Assert.That(found, Is.True);
         }
 
         // ---------- the cells ----------
@@ -375,30 +456,47 @@ namespace Federator.Core.Tests
             return string.Join("\n", new List<string>(check.Problems).ToArray());
         }
 
+        /// <summary>
+        /// THE CLASH WORKBOOK HOLDS THE CLIENT'S SHEET ALONE AGAIN, Bader's answer B to Q146: it goes to the
+        /// client and keeps the Navisworks export's layout, and the Coverage sheet is in the internal workbook
+        /// beside it. So a Coverage sheet second in the clash workbook is a problem, as any second sheet was
+        /// before FR-200.
+        /// </summary>
         [Test]
-        public void ASecondSheetThatIsNotTheCoverageSheetIsNamedAsAProblem()
+        public void ACoverageSheetSecondInTheClashWorkbookIsAProblem()
+        {
+            WorkbookCheck check = WorkbookCheck.Of(WorkbookWithSheets("1104-PAR-100000-ZZZ-BM-RPT-0000", "Coverage"));
+
+            Assert.That(check.Sheets, Is.EqualTo(2));
+            Assert.That(Problems(check), Does.Contain("The workbook has 2 sheets and the client's report has one"));
+            Assert.That(Problems(check), Does.Contain("Coverage"));
+        }
+
+        [Test]
+        public void ASecondSheetOfAnotherNameIsAProblem()
         {
             WorkbookCheck check = WorkbookCheck.Of(WorkbookWithSheets("1104-PAR-100000-ZZZ-BM-RPT-0000", "Summary"));
 
-            Assert.That(check.HasCoverageSheet, Is.False);
-            Assert.That(Problems(check), Does.Contain("second sheet named Summary"));
+            Assert.That(Problems(check), Does.Contain("The workbook has 2 sheets and the client's report has one"));
+            Assert.That(Problems(check), Does.Contain("Summary"));
         }
 
         [Test]
-        public void ACoverageSheetDifferingByLetterCaseIsNamedAsAProblem()
+        public void ACoverageSheetInAnyLetterCaseIsASecondSheetAndAProblem()
         {
             WorkbookCheck check = WorkbookCheck.Of(WorkbookWithSheets("1104-PAR-100000-ZZZ-BM-RPT-0000", "COVERAGE"));
 
-            Assert.That(check.HasCoverageSheet, Is.False);
-            Assert.That(Problems(check), Does.Contain("differs by letter case alone"));
+            Assert.That(Problems(check), Does.Contain("The workbook has 2 sheets and the client's report has one"));
+            Assert.That(Problems(check), Does.Contain("COVERAGE"));
         }
 
         [Test]
-        public void ACoverageSheetFirstIsNamedAsAProblem()
+        public void ACoverageSheetFirstIsAProblemOfTheSheetCount()
         {
             WorkbookCheck check = WorkbookCheck.Of(WorkbookWithSheets("Coverage", "1104-PAR-100000-ZZZ-BM-RPT-0000"));
 
-            Assert.That(Problems(check), Does.Contain("The Coverage sheet comes first"));
+            Assert.That(check.SheetName, Is.EqualTo("Coverage"));
+            Assert.That(Problems(check), Does.Contain("The workbook has 2 sheets and the client's report has one"));
         }
 
         [Test]
@@ -406,9 +504,23 @@ namespace Federator.Core.Tests
         {
             WorkbookCheck check = WorkbookCheck.Of(WorkbookWithSheets("1104-PAR-100000-ZZZ-BM-RPT-0000", "Coverage", "Generic Models"));
 
-            Assert.That(check.HasCoverageSheet, Is.True, "the Coverage sheet is still second");
-            Assert.That(Problems(check), Does.Contain("at most two"));
-            Assert.That(Problems(check), Does.Contain("Generic Models"));
+            Assert.That(Problems(check), Does.Contain("The workbook has 3 sheets and the client's report has one"));
+            Assert.That(Problems(check), Does.Contain("Coverage, Generic Models"));
+        }
+
+        /// <summary>The good file, so the problem above is the second sheet and nothing else of the small report.</summary>
+        [Test]
+        public void TheClientsSheetAloneIsNoProblemOfTheSheets()
+        {
+            WorkbookCheck check = WorkbookCheck.Of(WorkbookWithSheets("1104-PAR-100000-ZZZ-BM-RPT-0000"));
+
+            Assert.That(check.Ran, Is.True, check.CouldNotRead);
+            Assert.That(check.Sheets, Is.EqualTo(1));
+
+            foreach (string problem in check.Problems)
+            {
+                Assert.That(problem, Does.Not.Contain("sheet").IgnoreCase, problem);
+            }
         }
     }
 }

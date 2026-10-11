@@ -16,7 +16,7 @@ those Look for lines.
 Set 04's first run of the C02 folder, steps\runs\04\item1-C02, is 1A02MM alone: the run took 2 hours 12
 minutes 6 seconds, 7925.970 s, with VIEWS 7487.104 s of it, F85's per clash views. Set 04's run of C04,
 steps\runs\04\item1-C04, is 1A04PK and hung, so 1A04PK has no baseline, Q124. The new runs are read
-against those two: the whole run and the VIEWS, SETS, IMAGES, RENUMBER and GENERIC XLSX seconds.
+against those two: the whole run and the VIEWS, SETS, IMAGES, RENUMBER and INTERNAL seconds, INTERNAL the step F128 named GENERIC XLSX until F127 merged.
 
 ## The copy
 

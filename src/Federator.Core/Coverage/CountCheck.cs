@@ -23,7 +23,8 @@ namespace Federator.Core.Coverage
     /// this check reads the document through the add-in, which the harvest reads through too,
     /// and a check sharing the code it checks cannot catch a fault common to both.
     ///
-    /// AGREE only when both numbers equal on both sides. A test the run did not create, F77 kept it
+    /// AGREE only when both numbers equal on both sides and the test ran this run, a test that did not
+    /// run with equal counts being NOT COMPARED. A test the run did not create, F77 kept it
     /// out or the plan dropped it, that is not in the document, whose block reads no row and Clashes
     /// nought, is HELD BY NEITHER side, counted apart from Agree. One the run left no record of is
     /// NOT COMPARED instead. FAILED for every other difference, a test the document
@@ -66,17 +67,37 @@ namespace Federator.Core.Coverage
         public ReadOnlyCollection<string> NotInTheXml { get; private set; }
 
         /// <summary>
+        /// Why a test that did not run this run is not compared where its two sides hold equal counts, so
+        /// agree counts only the tests that ran.
+        /// </summary>
+        public const string DidNotRunWhy =
+            "it did not run this run, so the equal counts in Clash Detective and the workbook check nothing this run did";
+
+        /// <summary>
+        /// Why a test of a mirrored pair F132 merges is not compared, said on its row and in the block.
+        /// </summary>
+        public const string InAMergeWhy =
+            "it is a test of a mirrored pair F132's rule merges, whose clashes may sit in the kept test's block of the"
+            + " clash workbook, so that block may not be one test's count and this test is not compared";
+
+        /// <summary>
         /// The verdict for each test of the coverage. The document's counts are null where
         /// they were not read, and the workbook is null where none was written or read, with
         /// the reason where known. Compacted is the clash step's own count of Resolved clashes
-        /// Compact removed, minus one where compacting was not asked for.
+        /// Compact removed, minus one where compacting was not asked for. InAMerge names the
+        /// tests of every mirrored pair the merge made this run, the kept test and each mirror by
+        /// the name it ran under, null where no pair merged: a merge carries a mirror's clashes in
+        /// the kept test's block and leaves no block of the mirror's, so neither block is one
+        /// test's count and each is NOT COMPARED, never a FAILED line the merge made. A pair the
+        /// merge refused at run time is not named, so its tests are compared like any other.
         /// </summary>
         public static CountCheck Judge(
             IList<TestCoverage> tests,
             IList<DocumentTestCount> document,
             WorkbookTests workbook,
             string noWorkbookBecause,
-            int compacted)
+            int compacted,
+            ICollection<string> inAMerge = null)
         {
             if (tests == null)
             {
@@ -102,7 +123,7 @@ namespace Federator.Core.Coverage
                 // would count a test that does not exist.
                 check.tests.Add(timesNamed[test.Name] > 1
                     ? NotCompared(test.Name, "the name is on " + timesNamed[test.Name] + " tests of the picked file")
-                    : One(test, document, workbook, noWorkbookBecause, compacted));
+                    : One(test, document, workbook, noWorkbookBecause, compacted, inAMerge));
             }
 
             if (document != null)
@@ -189,7 +210,8 @@ namespace Federator.Core.Coverage
             IList<DocumentTestCount> document,
             WorkbookTests workbook,
             string noWorkbookBecause,
-            int compacted)
+            int compacted,
+            ICollection<string> inAMerge)
         {
             if (workbook == null)
             {
@@ -230,6 +252,11 @@ namespace Federator.Core.Coverage
             int leaves = d == null ? -1 : d.Leaves;
             int rows = w == null ? -1 : w.Rows;
             int clashes = w == null ? -1 : w.Clashes;
+
+            if (inAMerge != null && inAMerge.Contains(test.Name))
+            {
+                return new CountedTest(test.Name, CountVerdict.NotCompared, d != null, top, leaves, w != null, rows, clashes, InAMergeWhy);
+            }
 
             if (d != null && !d.Counted)
             {
@@ -284,7 +311,11 @@ namespace Federator.Core.Coverage
 
             if (w.Rows == d.TopLevel && w.Clashes == d.Leaves)
             {
-                return new CountedTest(test.Name, CountVerdict.Agree, true, top, leaves, true, rows, clashes, string.Empty);
+                // AGREE ONLY FOR A TEST THAT RAN, the breaker's third finding on F127b. Equal counts of a
+                // test that did not run this run, nought and nought most often, check nothing this run did.
+                return test.Ran
+                    ? new CountedTest(test.Name, CountVerdict.Agree, true, top, leaves, true, rows, clashes, string.Empty)
+                    : new CountedTest(test.Name, CountVerdict.NotCompared, true, top, leaves, true, rows, clashes, DidNotRunWhy);
             }
 
             return new CountedTest(test.Name, CountVerdict.Failed, true, top, leaves, true, rows, clashes,

@@ -1091,5 +1091,70 @@ namespace Federator.Core.Tests
             Assert.That(CreationPlan.BlockCountLine(report.Tests.Count, 2, report.MirrorsMerged),
                 Is.EqualTo(CreationPlan.BlockCountLine(2, 2)));
         }
+
+        // ---------- what the coverage's count check is told, F127b, the breaker's first finding ----------
+
+        /// <summary>
+        /// A merge AddTo made names the kept test and each mirror by its run name, the tests whose
+        /// blocks in the clash workbook are not one test's count. Before AddTo it names none.
+        /// </summary>
+        [Test]
+        public void AMergeMadeNamesTheKeptTestAndEachMirror()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 0);
+
+            Assert.That(merge.MergedNames, Is.Empty, "nothing is merged before AddTo");
+
+            merge.AddTo(report);
+
+            Assert.That(merge.MergedNames, Is.EqualTo(new[] { Kept, Mirror }));
+        }
+
+        /// <summary>
+        /// THE BREAK. A pair the rule planned to merge that AddTo refused, here a kept test that did not
+        /// run, keeps both blocks, so it names no test, and the count check compares it like any other
+        /// test: where Clash Detective holds 2 and the block reads 4 rows it is FAILED, never NOT COMPARED.
+        /// </summary>
+        [Test]
+        public void APairPlannedAndRefusedIsComparedAndAFailedLineWhereTheNumbersDiffer()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 0);
+
+            Named(report, Kept).State = TestState.Skipped;
+            merge.AddTo(report);
+
+            Assert.That(merge.MergedNames, Is.Empty, "the merge was refused at run time");
+
+            string folder = TempFolder.Make("FederatorRefusedMerge");
+
+            try
+            {
+                ClashReport written = new ClashReport("1A02MM", "1104-PAR-1A02MM-ZZZ-BM-RPT-000001");
+                written.DocumentUnits = "m";
+                WorkbookTestsTests.AddTest(written, Kept, 4, 0);
+                Federator.Core.Report.WorkbookTests workbook = WorkbookTestsTests.ReadBack(WorkbookTestsTests.Write(written, folder));
+
+                Federator.Core.Coverage.TestCoverage ran = new Federator.Core.Coverage.TestCoverage(
+                    1, Kept, string.Empty, string.Empty, 2, 2, Federator.Core.Coverage.TestPresence.CreatedThisRun,
+                    true, 2, Federator.Core.Coverage.CoverageReason.HasClashes, string.Empty);
+
+                Federator.Core.Coverage.CountCheck check = Federator.Core.Coverage.CountCheck.Judge(
+                    new List<Federator.Core.Coverage.TestCoverage> { ran },
+                    new List<Federator.Core.Coverage.DocumentTestCount> { new Federator.Core.Coverage.DocumentTestCount(Kept, "Tests", 2, 2) },
+                    workbook,
+                    null,
+                    -1,
+                    merge.MergedNames);
+
+                Assert.That(check.Tests[0].Verdict, Is.EqualTo(Federator.Core.Coverage.CountVerdict.Failed));
+                Assert.That(check.FailedLines("1A02MM").Count, Is.EqualTo(1));
+            }
+            finally
+            {
+                TempFolder.Remove(folder);
+            }
+        }
     }
 }
