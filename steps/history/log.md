@@ -25,6 +25,25 @@ Known bugs: rows F143-R1 and F143-R2.
 
 What comes next: the fast checks, then the speed fix of the harvest's cost per row.
 
+## 2026-10-11 The loop, turn 6, F144 the first-50 copy for the fast checks, written by the lead
+
+Bader's order of 2026-10-11 headed NO MORE TWO HOUR TEST LOOPS, item 3. Branch fix-F144 off main 30a50f1.
+
+What was done: tools\loop\cut-xml.ps1 writes the first 50 tests of a picked XML with every set and the
+mirrors the product's rule pairs, read back through Federator.Core, the full XML's sha256 unchanged. The fast
+checks and the one full run asked of Bader first are in .claude\rules\loop.md.
+
+Proved here: the copy of set 06's corrected matrix, 52 tests, one pair, 61 sets, turn6\cut-test-2\cut.txt.
+Attempt 2 on the reviewer's eight points: read through ReadPicked, cut in the text, pairs read back name
+for name, turn6\cut-test-4. Core tests 2862 passed, 0 failed, 0 skipped before and after, nothing under
+src changed.
+
+What remains: the fast checks themselves, once the only Navisworks is free.
+
+Known bugs: row F144-R1.
+
+What comes next: the fast checks of 1A02MM and the cut down 1A04PK, then the speed fix.
+
 ## 2026-10-11 The loop, turn 6, F142 the life check, attempt 2 of two, written by the lead
 
 Bader's order of 2026-10-11 headed 1A04PK IS FROZEN, item 3, with the freeze of Q143 on the loop's own

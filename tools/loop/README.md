@@ -269,6 +269,27 @@ and exits 0, 1 for a WRONG check or 2 when it could not run.
 - starts: dotnet build of tools\loop\StandIn, and two LifeStandIn.exe, each ending by itself
   within 65 s and closed by the proof in its finally
 
+## cut-xml.ps1
+
+F144, Bader's order of 2026-10-11 headed NO MORE TWO HOUR TEST LOOPS, item 3. Writes a copy of a picked
+clash XML that keeps every selection set and only the first -Tests tests in the XML's order, 50 by
+default, mirrors included, so a fast check of 1A04PK runs the code paths of the whole file.
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\loop\cut-xml.ps1 -Xml <the picked XML>
+-OutFolder <a folder not there yet, under the run set's copy> -CoreDll <a Federator.Core.dll>. The pairs
+are Federator.Core's MirrorRule over the file as MatrixCorrections.ReadPicked reads it, the add-in's one
+reader, -CoreDll loaded from its bytes so no installed file is held, and where the first tests hold no
+pair the first pair in the XML's order is kept too. The cut is made in the file's own text, so every
+byte but the test elements taken out is the full file's. Exit 0 when every read back holds, 1 when one
+does not, 2 when it refuses or throws.
+
+- reads: -Xml, its sha256 before and after, which must not move, the teams and corrections files beside
+  it, and -CoreDll
+- writes: only -OutFolder, the copy under the full XML's own name, read back against the bytes written by
+  sha256, the corrections and teams files beside it under the names Core's settings give, each read back
+  against its source, and cut.txt naming every test added for a mirror and the read back, read back too.
+  The copy is read again through ReadPicked, its tests in order, its sets and its pairs name for name
+- starts: nothing
+
 ## run.ps1
 
 F103 part 1, built from the design in steps\notes\f103-design.md. Always started as

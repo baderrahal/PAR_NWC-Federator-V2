@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-11 18:25, last run 06/item1-C02
+STATE OPEN, 2026-10-11 19:05, last run 06/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,18 +15,18 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 13 | 1 | 0 | 0 | 7 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
-| outside the waves | 164 | 14 | 0 | 0 | 58 | 6 | 242 |
-| total | 311 | 24 | 0 | 1 | 209 | 7 | 552 |
+| outside the waves | 165 | 14 | 0 | 0 | 59 | 6 | 244 |
+| total | 312 | 24 | 0 | 1 | 210 | 7 | 554 |
 <!-- the end of the counts -->
 
 ## Now
 - Bader's orders of 11 Oct: 1A04PK IS FROZEN, the life check and the cause fixed, and NO MORE TWO HOUR TEST LOOPS, fast checks on 1A02MM and a cut down 1A04PK, the one full run only when he says
-- Set 06's 1A04PK, started 14:25, still running, busy and not stuck: 25 of 741 tests by 16:41, 5817 s in one test's harvest, diag-1625. Its 12 h ceiling is 02:25. Asked Bader at 16:50 and 18:20 whether to close it now, no answer yet
-- Merged today: F141 views as PRs 196 and 197, F142 the life check as PR 198, F143 the harvest answering between rows as PR 199, main 0deeec2. F144 the first-50 copy on fix-F144, with its reviewer
-- Set 06's 1A02MM: 4 min 59 s, 2931 clashes, coverage 528 of 528, no view written, which F141 fixes
+- Set 06's 1A04PK, started 14:25, still running, busy and not stuck, 25 of 741 tests by 16:41. Its 12 h ceiling is 02:25. Asked Bader at 16:50 and 18:20 whether to close it now, no answer yet
+- Merged today: F141 views as PRs 196 and 197, F142 the life check as 198, F143 the harvest answering between rows as 199, F144 the first-50 copy as 200, main 89082a2
+- Set 07 made at 18:56, the corrected matrix under runs\07\NMFed\exchange and its first-50 cut, 52 tests and one pair, under runs\07\NMFed\first50
 
 ## Next
-1. Close the frozen run once Bader says, or at its ceiling. Then main 0deeec2 installed in place, a fresh set 07, the first-50 copy, and the fast checks of 1A02MM and the cut down 1A04PK with the life check on, three lines after each
+1. Close the frozen run once Bader says, or at its ceiling. Then main 89082a2 installed in place and the fast checks on set 07: 1A02MM on the full matrix and 1A04PK on first50, the life check on, -Untick SkipClashOffCoordinates, three lines after each
 2. The speed fix of the harvest's cost per row on 1A04PK, measured off the cut down run's IMAGES line, two attempts, the output the same
 3. Ask Bader before the one full 1A04PK run. Then F140 prepared, waves 4 and 5
 
