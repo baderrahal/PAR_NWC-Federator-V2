@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-11 09:56, last run 04/item2-C02
+STATE OPEN, 2026-10-11 10:36, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -22,7 +22,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 ## Now
 - 11 Oct: last shutdown the restart at 08:59:41, Riyadh time. Roamer none. His key differs from the backup in five values, an older copy back after the restarts of 10 Oct, T5-R-OLDKEY, nothing put back. Keep-awake pid 18216
 - Bader's answers: Q144 B, Q146 B with the Coverage sheet moving into the internal workbook, row F127-R2, Q148 B
-- F130 Shift ticking merged as PR 192, first today. F129 start from an NWF at 9056504, its second reading next. F109 the install at 9b489ff, its records and reading next
+- F130 Shift ticking merged as PR 192, first today. F129 start from an NWF merged as PR UNKNOWN, the picked NWFs running the open file run's route. F109 the install at 9b489ff, its records and reading next
 
 ## Next
 1. F130, then F129, then F109, each merged in that order, Bader's item 6

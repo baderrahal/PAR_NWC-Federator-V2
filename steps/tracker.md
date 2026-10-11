@@ -181,11 +181,11 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-078 | install recursive delete without junction check and partial first install | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
 | FR-079 | install killed between move and removal | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
 | FR-080 | install leftovers exit codes and success line | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
-| FR-178 | start from an existing nwf | F129 | Bader's request | in review | none, branch fix-F129 at 9056504 | none | 2026-10-08 |
+| FR-178 | start from an existing nwf | F129 | Bader's request | in review | UNKNOWN | none | 2026-10-11 |
 | F109 | install | F109 | fix | in progress | none, branch fix-F109b, 9b489ff pushed with install.ps1 built and its 85 proof checks passed, its plan section, proof steps and reading next | none | 2026-10-08 |
 | F120 | harvest and pictures | F120 | fix | merged | 183, FR-198 open | none | 2026-10-08 |
-| F129 | start from an existing NWF | F129 | fix | in review | none, branch fix-F129 at 9056504, attempt 2 built on its reviewer's one fault, its second reading next | none | 2026-10-08 |
-| Q112-4 | start from an existing NWF (FR-178) | F129 | Bader's request | in review | none, branch fix-F129 at 9056504 | none | 2026-10-08 |
+| F129 | start from an existing NWF | F129 | fix | in review | UNKNOWN | none | 2026-10-11 |
+| Q112-4 | start from an existing NWF (FR-178) | F129 | Bader's request | in review | UNKNOWN | none | 2026-10-11 |
 | Q25 | five clash item properties reach no output, split into Q35 to Q40 | F120 | question | merged | 131 | none | 2026-10-06 |
 | Q35 | the GAP block, Family reaches no output | F120 | question | merged | 131 | none | 2026-10-06 |
 | Q36 | the GAP block, Type Name | F120 | question | merged | 131 | none | 2026-10-06 |
