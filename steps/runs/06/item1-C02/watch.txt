@@ -1,0 +1,24 @@
+14:11:05.648  t+1.4s  watchdog started
+14:11:15.499  t+11.3s  Roamer pid 10224 seen with no readable start time, looked at again at the next pass
+14:11:27.732  t+23.5s  new process Roamer pid 10224, parent 1976 svchost.exe, started 14:11:15.402, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+14:11:27.792  t+23.6s  Roamer 10224 visible top level windows: none
+14:12:06.567  t+62.3s  new process AdskLicensingAgent pid 36708, parent 10224 Roamer.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: no
+14:12:15.033  t+70.8s  new process AdskLicensingAgent pid 48692, parent 10224 Roamer.exe, started 14:11:57.813, command line holds the word embedding or automation: no
+14:12:20.951  t+76.7s  Roamer 10224 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+14:12:26.938  t+82.7s  Roamer 10224 visible top level windows: none
+14:12:41.751  t+97.5s  Roamer 10224 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "" text: 
+14:12:42.300  t+98.1s  Roamer 10224 visible top level windows: none
+14:12:42.866  t+98.6s  Roamer 10224 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+14:12:43.986  t+99.7s  Roamer 10224 visible top level windows: [HwndWrapper[Roamer.exe;;d7a8517a-c6da-47ac-bcc9-644b0c2b8799]] "Parsons NWC Federator   [1.0.0.0 4bc4c83d built 2026-10-11 13:04:29]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+14:13:14.113  t+129.9s  new process AdskLicensingInstHelper pid 42356, parent 26484 GenuineService.exe, started 14:13:02.405, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:13:14.171  t+129.9s  Roamer 10224 visible top level windows: [HwndWrapper[Roamer.exe;;d7a8517a-c6da-47ac-bcc9-644b0c2b8799]] "Parsons NWC Federator   [1.0.0.0 4bc4c83d built 2026-10-11 13:04:29]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+14:14:11.740  t+187.5s  new process AdskLicensingInstHelper pid 36244, parent 26484 GenuineService.exe, started 14:14:02.346, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:15:06.724  t+242.5s  new process AdskLicensingInstHelper pid 21564, parent 26484 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:16:08.518  t+304.3s  new process AdskLicensingInstHelper pid 10684, parent 26484 GenuineService.exe, started 14:16:02.347, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:17:09.193  t+365.0s  new process AdskLicensingInstHelper pid 44440, parent 26484 GenuineService.exe, started 14:17:02.392, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:18:08.784  t+424.5s  new process AdskLicensingInstHelper pid 50088, parent 26484 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:18:31.606  t+447.4s  Roamer 10224 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+14:18:47.306  t+463.1s  Roamer 10224 visible top level windows: none
+14:18:55.328  t+471.1s  Roamer 10224 has exited
+14:19:07.598  t+483.4s  new process AdskLicensingInstHelper pid 13656, parent 26484 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:21:36.627  t+632.4s  watchdog stopped

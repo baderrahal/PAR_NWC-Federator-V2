@@ -1,0 +1,22 @@
+13:20:43.103  driver started, pid 48400, owner pid 48636, start ticks UTC 639273107659536874, set 05, stamp 4bc4c83d
+13:20:43.335  the tool's window, handle 267510, class HwndWrapper[Roamer.exe;;011e5221-c645-43e6-aa40-a627d064c742], caption "Parsons NWC Federator   [1.0.0.0 4bc4c83d built 2026-10-11 13:04:29]", a window of pid 48636
+13:20:46.836  typed into SourceFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\NWC\C04, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\NWC\C04
+13:20:46.864  IncludeSubfolders reads On, left as the window opened it
+13:20:46.904  pressed Scan
+13:20:46.999  the scan ended after 0.1 s, the window moved itself to 2. Grouping
+13:20:47.862  SourceSummary reads: 10 NWC found, 10 readable, 0 that cannot be read. FilesGrid rows 10
+13:20:48.735  GroupsGrid rows 1, every group ticked: 1 groups, 0 unticked. The tool's GROUPS block is the proof either way
+13:20:49.992  typed into NwfFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\NWF\C04, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\NWF\C04
+13:20:50.468  typed into NwdFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\NWD\C04, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\NWD\C04
+13:20:50.956  typed into ExcelFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\Clash Report\C04, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\Clash Report\C04
+13:20:52.275  typed into ExchangeFileBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+13:20:56.806  read back SourceFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\NWC\C04
+13:20:56.808  read back NwfFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\NWF\C04
+13:20:56.810  read back NwdFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\NWD\C04
+13:20:56.811  read back ExcelFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\Clash Report\C04
+13:20:56.812  read back ExchangeFileBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\05\NMFed\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+13:20:56.963  ToleranceBox reads Use the value in the XML, MarkByDesign Off, MarkPenetrations Off, PriorityBox empty, each left as the window opened it
+13:20:56.997  pressed RunButton
+13:20:58.133  the confirm of pid 48636: class #32770, caption "Parsons NWC Federator", every text: "OK" "Cancel" "This run federates 1 group.    First run: 1. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus XML: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is brought up to date without clearing it, and a shape that cannot be is cleared and rebuilt with its saved tests kept. Only known once each NWF is opened.    Nothing is open at the moment, so nothing is lost.    Carry on?"
+13:20:58.208  answered the confirm with OK, WM_COMMAND 1 posted to dialog 267506 of pid 48636, PostMessage returned True
+13:20:59.240  DRIVER EXIT 0 PRESSED: Run, and OK on the confirm, whose texts name no path outside the loop folder. The confirm read gone after OK
