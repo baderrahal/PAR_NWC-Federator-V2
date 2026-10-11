@@ -2,7 +2,7 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 533 rows: open 197, in progress 29, in review 3, merged 268, proven by a run 27, waiting for Bader 3, dropped 6
+- By status, of 533 rows: open 197, in progress 29, in review 0, merged 271, proven by a run 27, waiting for Bader 3, dropped 6
 - By wave: 1 19, 2a 62, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 23, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 77, outside the waves 2, right after F133 merges 6
 - In progress now: F109 install, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, and 12 FR items
 - Waits for Bader, 3 rows: step 228-233, F114-K29, F109-R1
@@ -181,11 +181,11 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-078 | install recursive delete without junction check and partial first install | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
 | FR-079 | install killed between move and removal | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
 | FR-080 | install leftovers exit codes and success line | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
-| FR-178 | start from an existing nwf | F129 | Bader's request | in review | none, branch fix-F129 at 9056504 | none | 2026-10-08 |
+| FR-178 | start from an existing nwf | F129 | Bader's request | merged | 193 | none | 2026-10-11 |
 | F109 | install | F109 | fix | in progress | none, branch fix-F109b, 9b489ff pushed with install.ps1 built and its 85 proof checks passed, its plan section, proof steps and reading next | none | 2026-10-08 |
 | F120 | harvest and pictures | F120 | fix | merged | 183, FR-198 open | none | 2026-10-08 |
-| F129 | start from an existing NWF | F129 | fix | in review | none, branch fix-F129 at 9056504, attempt 2 built on its reviewer's one fault, its second reading next | none | 2026-10-08 |
-| Q112-4 | start from an existing NWF (FR-178) | F129 | Bader's request | in review | none, branch fix-F129 at 9056504 | none | 2026-10-08 |
+| F129 | start from an existing NWF | F129 | fix | merged | 193 | none | 2026-10-11 |
+| Q112-4 | start from an existing NWF (FR-178) | F129 | Bader's request | merged | 193 | none | 2026-10-11 |
 | Q25 | five clash item properties reach no output, split into Q35 to Q40 | F120 | question | merged | 131 | none | 2026-10-06 |
 | Q35 | the GAP block, Family reaches no output | F120 | question | merged | 131 | none | 2026-10-06 |
 | Q36 | the GAP block, Type Name | F120 | question | merged | 131 | none | 2026-10-06 |
