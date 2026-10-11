@@ -101,14 +101,14 @@ namespace Federator.Core.Coverage
         }
 
         /// <summary>
-        /// The block of a group whose coverage was not taken, saying why, so a missing block is never read
-        /// as a check that ran and found nothing.
+        /// The block of a group whose coverage was not taken, saying why on one line whatever an exception
+        /// message held, so a missing block is never read as a check that ran and found nothing.
         /// </summary>
         public static IList<string> NotTakenLines(string why)
         {
             return new List<string>
             {
-                "the tests        : UNKNOWN, no coverage was taken for this group, " + (string.IsNullOrEmpty(why) ? "and why is UNKNOWN" : why),
+                "the tests        : UNKNOWN, no coverage was taken for this group, " + (string.IsNullOrEmpty(why) ? "and why is UNKNOWN" : OneLine(why)),
                 KeepsItsResult
             };
         }

@@ -170,6 +170,8 @@ namespace Federator.Core.Tests
             Assert.That(lines[0], Is.EqualTo("the tests        : UNKNOWN, no coverage was taken for this group, no clash test was planned for this group"));
             Assert.That(lines[1], Is.EqualTo(CoverageBlock.KeepsItsResult));
             Assert.That(CoverageBlock.NotTakenLines(null)[0], Does.EndWith("and why is UNKNOWN"));
+            Assert.That(CoverageBlock.NotTakenLines("taking it threw IOException: a\r\nb")[0], Does.EndWith("taking it threw IOException: a b"),
+                "one line whatever the message held");
         }
 
         /// <summary>Every test gets its .tsv row, the detail on one line whatever it held.</summary>
