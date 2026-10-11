@@ -1264,3 +1264,20 @@ run, and F132's steps 459 to 481 stand.
 539. ATTEMPT 2, B5: in Run B's `VIEWS TREE` block, the `after      :` line reads `as the removals reported` and `0 not removed`, its per clash viewpoint count the same as the `N of N RemoveAt call(s) made` line of step 524, and no `is counted as not removed` line, which a folder count that did not fall by exactly one writes. A count above zero names each not removed with why, and is worth sending
 540. ATTEMPT 2, B6: in Run B2's `VIEWS INVENTORY` block, no view of the tool's that nobody touched reads `its camera was moved`. Every untouched view of Run B reads `removed, this tool's earlier view replaced at its place`, and whether the NWF keeps a camera at single precision is read off this step
 541. Send the three logs of Runs A, B and B2 and the 1A04PK log, each named on its `log file` line, and keep the NWFs on your machine
+
+## Proof F109 the install for the team, added 2026-10-11
+
+The install's four ends, its links guard and its read of what an earlier run left were proved
+on the laptop against a throwaway APPDATA, never yours, turn6\f109b-proof. These steps read the
+real install once F109 has merged, with Navisworks closed. INSTALL.md is what a person on the
+team follows, and these steps follow it.
+
+607. Close Navisworks Manage 2025, pull main in GitHub Desktop once F109 has merged, and build, steps 7 to 11
+608. Install, step 22
+609. Run `$LASTEXITCODE` in the same terminal. Look for: `0`
+610. Look for, as the terminal's last line: `Start Navisworks Manage 2025 and look on the Tool Add-ins tab for Parsons NWC Federator.`, and above it `The installed add-in reads the stamp` with main's eight character commit and `the one the build wrote`, then `every reference is satisfied, 14 assemblies checked. Navisworks supplies its own.`
+611. Open File Explorer, paste `%APPDATA%\Autodesk\ApplicationPlugins` into its address bar. Look for: `ParsonsNwcFederator.bundle`, and NO folder whose name starts `ParsonsNwcFederator.bundle.replaced-` or `ParsonsNwcFederator.bundle.failed-`
+612. If step 609 read `3`, the last line starts `LEFT:` and names one folder. Do INSTALL.md step 9 and send the whole output
+613. If step 609 read `2`, the last line starts `REFUSED:`. Where it reads `the installed add-in could not be moved aside`, that is the refusal of 2026-10-01 with no Navisworks running, which this pass does not change, so send the whole output and stop. Otherwise do what it says, INSTALL.md step 10, and send the whole output
+614. If step 609 read `1`, the last line starts `FAILED:`. Send the whole output and stop
+615. Open Navisworks. Look for: Parsons NWC Federator on the Tool Add-ins tab, and main's commit in the title bar
