@@ -394,9 +394,9 @@ drives the tool's window or reads its log: every 30 s the monitor writes one LIF
 record.txt and into life.txt beside it, whether the window WindowKind reads as the tool's, or else
 the Navisworks main window, answers WM_NULL within 2 s, whether Windows counts it hung, the
 processor seconds since the last LIFE line, the private bytes and working set, the machine's free
-physical memory and free commit, and the tool's last STEP, PROGRESS or CALL line, masked. A
+physical memory and free commit, and the tool's last STEP line, or PROGRESS or CALL line once F143 writes them, masked. A
 stretch not answering runs from the first reading that found it to the last, plus the 2 s wait,
-a lower bound, and belongs to the window it began on. Not answering at every reading for 2
+the span the readings saw and no more, and belongs to the window it began on. Not answering at every reading for 2
 minutes gets a LIFE CLASS line, memory under 2048 MB free, busy at Q83's rate of processor time
 or more, stuck under it, UNKNOWN where a number was not read, and the run ends on a LIFE SUMMARY
 line, the longest stretch with the step it began in, the peak working set as the process counts

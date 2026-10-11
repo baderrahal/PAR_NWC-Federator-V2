@@ -103,7 +103,7 @@ Check "the numbers are written with their units" ($w.Contains("processor 19.8 s"
 Check "the step is written last" ($w.EndsWith("the tool's last step: STEP HARVEST")) $w
 $r.Answers = $false; $r.Hung = $true; $r.Private = $null; $r.MemoryWhy = "the process's memory is not read, its refresh failed this pass"
 $w = LifeWords $r $null 45.4 "x"
-Check "no answer reads NOT ANSWERING for at least its seconds" ($w.Contains("NOT ANSWERING for at least 45 s") -and $w.Contains("hung yes")) $w
+Check "no answer reads NOT ANSWERING over the span its readings saw" ($w.Contains("NOT ANSWERING at every reading over 45 s") -and $w.Contains("hung yes")) $w
 Check "a number not read is UNKNOWN with why, never nought" ($w.Contains("processor UNKNOWN") -and $w.Contains("private UNKNOWN") -and $w.Contains("(the process's memory is not read, its refresh failed this pass)")) $w
 $r.Answers = $null; $r.Hung = $null; $r.WindowWhy = "no window of the adopted Navisworks is up"
 $w = LifeWords $r 1.0 $null "x"
@@ -161,7 +161,6 @@ try {
   $tool.Refresh()
   Check "LifeRead: its private bytes are the process's own, in MB" (Near $a.Private ($tool.PrivateMemorySize64 / 1MB) 0.1) ("read " + $a.Private + ", the process " + [math]::Round($tool.PrivateMemorySize64 / 1MB))
   Check "LifeRead: its working set and peak are the process's own, in MB" ((Near $a.Ws ($tool.WorkingSet64 / 1MB) 0.2) -and (Near $a.PeakWs ($tool.PeakWorkingSet64 / 1MB) 0.2)) ("read " + $a.Ws + " and " + $a.PeakWs)
-  $ci = New-Object -ComObject "WbemScripting.SWbemLocator"
   $os = Get-CimInstance Win32_OperatingSystem
   Check "LifeRead: the machine's total is its own, in MB" (Near $a.TotalPhys ($os.TotalVisibleMemorySize / 1KB) 0.01) ("read " + $a.TotalPhys + ", the machine " + [math]::Round($os.TotalVisibleMemorySize / 1KB))
   Check "LifeRead: the machine's free physical and free commit are near its own, in MB" ((Near $a.FreePhys ($os.FreePhysicalMemory / 1KB) 0.15) -and (Near $a.FreeCommit ($os.FreeVirtualMemory / 1KB) 0.15)) ("read " + $a.FreePhys + " and " + $a.FreeCommit)
@@ -207,8 +206,8 @@ try {
   Write-Output ("  " + ($lines -join "`n  "))
   Check "LifePass runs in the runspace with no error and writes a LIFE line each reading" ((@($lines | Where-Object { $_ -match '^[12]\|LIFE  the Navisworks window NOT ANSWERING' })).Count -eq 2) ""
   Check "the second reading, 130 s on and not answering at both, writes a LIFE CLASS stuck line with its step" ($all -match '2\|LIFE CLASS stuck: the Navisworks window has not answered at any reading for 130 s' -and $all -match "step when it stopped answering: 16:00:00.000 \+0100.000s STEP HARVEST entered again") ""
-  Check "the LIFE line counts the stretch from the first reading to the last, plus the wait" ($all -match '2\|LIFE  the Navisworks window NOT ANSWERING for at least 132 s') ""
-  Check "LIFE SUMMARY names the longest stretch, its step and the peak working set" ($all -match 'S\|LIFE SUMMARY: 2 readings, 1 stretch\(es\) not answering, one still not answering at the last reading, for at least 132 s, the longest at least 132 s, in the tool''s step: 16:00:00.000 \+0100.000s STEP HARVEST entered again, peak working set \d+ MB as the process counts it') ""
+  Check "the LIFE line counts the stretch from the first reading to the last, plus the wait" ($all -match '2\|LIFE  the Navisworks window NOT ANSWERING at every reading over 132 s') ""
+  Check "LIFE SUMMARY names the longest stretch, its step and the peak working set" ($all -match 'S\|LIFE SUMMARY: 2 readings, 1 stretch\(es\) not answering, one still not answering at the last reading, at every reading over 132 s, the longest not answering at every reading over 132 s, in the tool''s step: 16:00:00.000 \+0100.000s STEP HARVEST entered again, peak working set \d+ MB as the process counts it') ""
   Check "LIFE SUMMARY with no reading says so" ($all -match 'E\|LIFE SUMMARY: no LIFE reading was taken before the monitor ended') ""
 } finally {
   foreach ($p in $started) { try { if (-not $p.HasExited) { $p.Kill(); [void]$p.WaitForExit(10000) } } catch { } }

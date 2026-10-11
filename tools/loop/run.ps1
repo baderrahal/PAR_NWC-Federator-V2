@@ -1239,7 +1239,9 @@ function CpuUsedSince($samples, $sinceUtc) {
 # A STRETCH IS WHAT THE READINGS SAW AND NO MORE, attempt 2 on the breaker's points: it runs from the
 # first reading that found the window not answering to the last reading that did, plus the 2 s that
 # reading waited, so a blip one reading caught is 2 s and never the 30 s to the next reading. Its
-# length is a lower bound and every line says at least. It belongs to the window it began on, the
+# length is the span of the readings that saw it and every line says so: a window that did not answer
+# at each of two readings 30 s apart may have answered between them, which the readings cannot see.
+# It belongs to the window it began on, the
 # tool's window or the Navisworks window, and a reading of the other ends it there, said, since
 # the tool's window closing after RESULT would otherwise read as the stretch ending or going on.
 #
@@ -1262,7 +1264,7 @@ function LifeWaitSeconds { return 2 }
 # The state of the life check across a run, new at the monitor's start.
 function NewLifeState { return [pscustomobject]@{ Since = $null; LastNot = $null; SinceC = $null; SinceStep = ""; SinceWindow = ""; Classed = ""; EndedLength = 0.0; EndedStep = ""; EndedWhy = ""; Longest = 0.0; LongestStep = ""; Spells = 0; PeakPrivate = $null; PeakWs = $null; LastC = $null; LastAt = $null; Readings = 0 } }
 # The length of the stretch open now, from its first to its last reading not answering plus one
-# wait, a lower bound, or null where none is open.
+# wait, the span the readings saw, or null where none is open.
 function LifeOpenLength($st) {
   if ($null -eq $st.Since) { return $null }
   return (($st.LastNot - $st.Since).TotalSeconds + (LifeWaitSeconds))
@@ -1312,7 +1314,7 @@ function LifeCut($line) {
 function LifeWords($r, $cpuSince, $notFor, $step) {
   $ans = "UNKNOWN, " + $r.WindowWhy
   if ($r.Answers -eq $true) { $ans = "answers" }
-  elseif ($r.Answers -eq $false) { $ans = "NOT ANSWERING" + $(if ($null -ne $notFor) { " for at least " + ([double]$notFor).ToString("0") + " s" } else { "" }) }
+  elseif ($r.Answers -eq $false) { $ans = "NOT ANSWERING" + $(if ($null -ne $notFor) { " at every reading over " + ([double]$notFor).ToString("0") + " s" } else { "" }) }
   $hung = "UNKNOWN"; if ($null -ne $r.Hung) { $hung = $(if ($r.Hung) { "yes" } else { "no" }) }
   $cpu = "UNKNOWN"; if ($null -ne $cpuSince) { $cpu = ([double]$cpuSince).ToString("0.0") + " s" }
   $mem = ""; if ($r.MemoryWhy -ne "") { $mem = " (" + $r.MemoryWhy + ")" }
@@ -1323,7 +1325,11 @@ function LifeWords($r, $cpuSince, $notFor, $step) {
 # Navisworks main window, MAIN, else none and the answer UNKNOWN, so a message box titled like the
 # tool, the confirm or a pane is never judged. The one message is WM_NULL to that window, with
 # SMTO_ABORTIFHUNG and 2000 ms, so a window Windows counts hung costs no wait, and a send that
-# fails on a window no longer visible is UNKNOWN and never not answering. The process's memory is
+# fails on a window no longer visible is UNKNOWN and never not answering. A hung window stays
+# visible to this read: at 16:08 on 2026-10-11, 84 minutes into the harvest of set 06's 1A04PK, the
+# tool's window and the Navisworks frame both read visible True and hung True, runs\06\item1-C04
+# diag-1625. The 5 s timeout bounds reading the results, and whether it bounds the connection to
+# WMI as well is UNKNOWN, row F142-R2. The process's memory is
 # read only where the pass's refresh worked, $fresh, and its peak working set is the process's own
 # count. The machine's is Win32_OperatingSystem with a 5 s timeout. Each read is in its own try and
 # a read that fails is UNKNOWN with why, masked.
@@ -1368,7 +1374,8 @@ function LifeRead($sync, $fresh) {
   return $r
 }
 # The tool's last step for a LIFE line: the newest line of the tool's log naming a STEP, a
-# PROGRESS line or a CALL, which F143 writes, else the newest line, or "" where none was read.
+# PROGRESS line or a CALL, the kinds F143 is to write and no build of the tool writes before it, else
+# the newest line, or "" where none was read.
 function LifeStepOf($tail) {
   for ($i = $tail.Count - 1; $i -ge 0; $i--) { if ($tail[$i] -match '^\S+\s+\+\S+\s+(STEP|PROGRESS|CALL)\s') { return $tail[$i] } }
   if ($tail.Count -gt 0) { return $tail[$tail.Count - 1] }
@@ -1394,7 +1401,7 @@ function LifePass($sync, $life, $tail, $c, $nowUtc) {
   }
   $from = $life.Since
   $ev = LifeSpell $life $r.Answers $r.Window $nowUtc $c $step $sync.LifeClassSeconds $class
-  if ($ev -eq "end" -or $ev -eq "moved") { $lines.Add("LIFE the stretch not answering that began at " + $from.ToLocalTime().ToString("HH:mm:ss") + " ended, at least " + $life.EndedLength.ToString("0") + " s, " + $life.EndedWhy + ", in the tool's step: " + $life.EndedStep) }
+  if ($ev -eq "end" -or $ev -eq "moved") { $lines.Add("LIFE the stretch not answering that began at " + $from.ToLocalTime().ToString("HH:mm:ss") + " ended, not answering at every reading over " + $life.EndedLength.ToString("0") + " s, " + $life.EndedWhy + ", in the tool's step: " + $life.EndedStep) }
   $lines.Add((LifeWords $r $cpuSince (LifeOpenLength $life) $step))
   if ($ev -eq "class") {
     $rate = $sync.HangCpuSeconds * $spell / $sync.HangLimit
@@ -1412,9 +1419,9 @@ function LifeSummary($sync, $life) {
   $openFor = LifeOpenLength $life
   if ($null -ne $openFor) {
     if ($openFor -gt $life.Longest) { $life.Longest = $openFor; $life.LongestStep = $life.SinceStep }
-    $open = ", one still not answering at the last reading, for at least " + $openFor.ToString("0") + " s"
+    $open = ", one still not answering at the last reading, at every reading over " + $openFor.ToString("0") + " s"
   }
-  return ("LIFE SUMMARY: " + $life.Readings + " readings, " + $life.Spells + " stretch(es) not answering" + $open + ", the longest at least " + $life.Longest.ToString("0") + " s" + $(if ($life.Spells -gt 0) { ", in the tool's step: " + $life.LongestStep } else { "" }) + ", peak working set " + (LifeNum $life.PeakWs " MB") + " as the process counts it, private at most " + (LifeNum $life.PeakPrivate " MB") + " of the readings, one every " + $sync.LifeSeconds + " s")
+  return ("LIFE SUMMARY: " + $life.Readings + " readings, " + $life.Spells + " stretch(es) not answering" + $open + ", the longest not answering at every reading over " + $life.Longest.ToString("0") + " s" + $(if ($life.Spells -gt 0) { ", in the tool's step: " + $life.LongestStep } else { "" }) + ", peak working set " + (LifeNum $life.PeakWs " MB") + " as the process counts it, private at most " + (LifeNum $life.PeakPrivate " MB") + " of the readings, one every " + $sync.LifeSeconds + " s")
 }
 # The verdict of a Run and its exit code, pure, from what the run recorded. The first that
 # applies in the order refused, a fault before the constructor, 3 not adopted, 6 not put

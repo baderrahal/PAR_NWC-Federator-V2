@@ -21,7 +21,7 @@ What was done:
 
 What remains: the first loop run after the merge, read off its life.txt.
 
-Known bugs: row F142-R1.
+Known bugs: rows F142-R1 and F142-R2.
 
 What comes next: F143 the window answering during the harvest, the first-50 copy, and the fast checks.
 
