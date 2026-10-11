@@ -2,6 +2,157 @@
 
 Newest entry at the top.
 
+## 2026-10-11 The loop, turn 6, F109 the install for the team, FR-078, FR-079 and FR-080, attempt 1 of two, written by the developer as the lead's delegate
+
+Bader's order of the evening of 8 Oct 2026, Q147 item 3, and Q145 item 6, held to by his message of 11 Oct headed
+GOOD MORNING, CONTINUE THE LOOP, item 6, F130, then F129, then F109, under Q143's limits: two attempts, one reviewer,
+no breaker, no new probe, nothing under tools\loop changed. The brief is turn6\f109-brief.md. Branch fix-F109b off
+origin/main eaad566 in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f109b, every file named below under turn6 with
+the prefix f109b-. Work began on 8 Oct, stopped for the night at Bader's word with 9b489ff pushed, and was finished on
+11 Oct with main 848d3dd merged in. fix-F109 at a0c3829, the earlier pass, is left as it is. Navisworks was not
+started, tools\loop\prove-run.ps1 was not run, and Get-Process Roamer read 0 before every run of the proof.
+
+- WHAT THE EARLIER PASS TAUGHT, read off origin/fix-F109 and its section: every file OneDrive syncs carries the reparse
+  point attribute with no link type, so a link is told by the link type PowerShell reads, kept as `LinkKind`. Its
+  in-place path for a refused move aside is not this pass's and is not carried
+- THE ENDS, written once at the top of `build\install.ps1` and copied into INSTALL.md word for word: exit 0 and the
+  line telling a person to start Navisworks, printed only when nothing is left beside the add-in, 1 FAILED, 2
+  REFUSED, 3 LEFT. Every end but 0 goes through one `Finish`, naming each folder left beside the add-in on its own
+  line first, and whatever throws reaches one trap, which takes the new add-in out and puts the old one back
+- FR-078. Every recursive removal goes through `RemoveTree`, which reads every folder under it one at a time and
+  removes nothing through a junction or a link. A link in the staging folder or the installed bundle refuses before
+  anything changes, one REFUSED line naming it. A failed first install takes the partial folder out of the load path,
+  removed or moved to `.failed-`, and says where. MEASURED on 2026-10-08, cases C and J run on main's install.ps1:
+  Windows PowerShell 5.1 here removed a junction inside a folder and left what it points at, so the harm is not
+  shown on this machine, and a symbolic link is UNKNOWN
+- FR-079. At its start the script reads `.replaced-*` and `.failed-*` beside the target, one pattern each on the
+  plugin folder. An empty or part filled load path with exactly one whole add-in beside it gets that one put back,
+  PUT BACK, and the install goes on. Any other leftover refuses, exit 2, each named, with what a person does
+- FR-080. A failed removal of the old bundle ends on LEFT, exit 3. The checks that gate the removal read the installed
+  bundle, the reference walk reading each assembly from its bytes so no file stays held, and the installed stamp is
+  read against the one the build wrote. A wrong stamp ends FAILED with every leftover named first
+- THE PROOF, turn6\f109b-proof\f109b-proof.ps1, copies of install.ps1 with -SkipBuild against a throwaway APPDATA, each
+  case broken one thing at a time and its line read back, main's install.ps1 on the same breaks for the fault before:
+  85 passed, 0 failed at 7379f71 on 2026-10-08, f109b-proof-output-20261008-222319.txt, and 85 passed, 0 failed at
+  f749f62 on 2026-10-11, f109b-proof-output-20261011-100155.txt. Its first two runs on 8 Oct found the leftover count
+  joined as a number, which threw, fixed in 7379f71, and a folder path past 260 characters under its own long folder
+- COUNTS. The solution 0 warnings and 0 errors before on eaad566, after, and with --no-incremental from an empty git
+  status at f749f62, f109b-build-before.txt, f109b-build-after.txt and f109b-build-merged.txt. Core tests 2774
+  passed, 0 failed, 0 skipped before, after and on the merged tree, nothing under src or tests changed. check-locals
+  and check-imports pass
+- DECIDED, for the lead. A leftover refuses with exit 2, the code every refusal has. LEFT takes the new exit 3, which
+  run.ps1 -Mode Install, frozen, reads as STOP with exit 1 where it read INSTALLED with a FINDING. The failure lines
+  keep the words prove-run.ps1 trials 6a and 6b read, proved by cases W1 to W3, and its trial 6c cannot run as
+  written, its line gone and its exit 0 the fault FR-080 removes, rows for F122. A whole add-in is today's 15 files.
+  The refused move aside keeps its words, FR-081 being F123's. INSTALL.md step 1 no longer names one machine's folder
+- FOUND. The Core test ALogThatFellBackTakesItsRowFileWithIt refused the first commit on 8 Oct with 200 of its files
+  in the temp folder, moved, not deleted, into turn6\f109b-temp-runlogs, row T6-R-TESTTEMP. How the 27 get a built
+  bundle with no compiler, row F109-R1. The move aside refused on 2026-10-01 with no Navisworks running is left as it was
+- COMMITS on fix-F109b: 3f1cf21 and 7379f71 the script, 9b489ff INSTALL.md and the rules, f749f62 main 848d3dd merged
+  in, and the records, the plan's section and steps 607 to 615 of steps\03_bader_next.md, numbered after F129's 581
+  to 606 and moved at the merge if those differ. WHAT WAITS: one reviewer, the merge, the real install of main, and
+  steps 607 to 615
+
+Merged as pull request 194 on 2026-10-11 by the lead, third of Bader's order of that morning, read APPROVE by its one reviewer, turn6\f109b-review.json, with two words of INSTALL.md made right before the merge, the folder a person deletes after a LEFT end and the last line read before the exit code.
+
+## 2026-10-08 F129 start from an existing NWF, built on fix-F129, attempt 1, on Bader's request 4 under Q112
+
+Bader's request 4 under Q112, FR-178 of steps\fix-round.md, third in his order of the evening of 8 Oct 2026,
+Q147 item 3, F114 then F129, F130 and F109, under Q143's limits: two attempts, one reviewer and no breaker, since
+this is not alignment, sets, clash counts, mirrors or views, no new probe and no change to tools\loop. Built by the
+developer in the worktree wt-f129 on branch fix-F129 off main ca0d9b9. Main eaad566, F114's add-in pass merged as
+pull request 189, taken in at the end as a58d15e by the brief, one conflict in .claude\rules\addin.md resolved with
+both sides kept, the F129 bullet beside main's SINCE F114 bullet that replaced F85's, and F129's proof steps
+renumbered 542 to 566 after F114's 507 to 541, and on 11 Oct 581 to 606 after F130's 542 to 580, main
+8a73a72 taken in.
+
+What was read first, off main ca0d9b9 with no probe. The scanned run, FederationEngine.Run at line 458, reaches an
+NWF only through RunOne at line 751, which clears the document at line 775 and then opens the NWF inside Decide at
+line 1279 to compare its file list against the scan, the weekly OPENED case at line 850. A picked NWF has no scan
+behind it, so that route would need a file list it does not have. The open file run, RunOpenDocument at line 599 with
+OpenJob at line 737, runs an NWF where it sits with no scan and no Decide, judged first by OpenDocumentJob.CanRun and
+WhyNot at lines 77 to 163 of src\Federator.Core\Rerun\OpenDocumentJob.cs, its outputs named by NwdBeside at line 191
+and ReportFolder at line 218, and both routes end in FinishTheGroup at line 1043. The window's open file run is
+OnRunOpenDocument at line 2336 of FederatorWindow.xaml.cs, the scanned run OnRun at line 1744 with its RUN SETTINGS at
+line 1830 and RunJobs at line 2037. So the picked NWFs reuse the open file run's route and copy neither.
+
+What was done. Core, each with a test: NwfPick.From gives the NWFs a pick gives, a folder listed whole with no
+pattern and an NWF taken by its .nwf extension alone, read case blind, its subfolders only where the Include
+subfolders box of the Source step asks, a subfolder that will not read named with what the disk said while the rest
+still run, each NWF judged by OpenDocumentJob.WhyNot before it is opened, its NWD, report folder and workbook named
+through OpenDocumentJob, and the run refused before anything opens where nothing is picked, the pick is not there,
+the picked folder will not read or holds no NWF, a picked file is refused, none can run, or two NWFs would write one
+NWD or one workbook, read case blind, named in one sentence each with both NWFs and the path. NwfPickPlan carries the
+RUN SETTINGS lines, the RESULT line under the group counts and the window line, which never carries what the disk
+said. PickerKind.PickedNwf remembers the picker on its own. RunLog.GroupStarted with no list says the files are read
+once the NWF opens, RunLog.GroupFilesReadAtTheOpen, and RunLog.WriteResultBlock takes the picked NWFs line.
+OpenDocumentJob.SummaryLines says a picked NWF was opened by this run. The add-in: RunOpenDocument and the new
+RunPickedNwfs run each file through one method, RunAnOpenFile, the open file run's route moved whole, a picked NWF
+first judged by OpenDocumentJob.CanRun and then opened by OpenThePickedNwf through OpenAndWaitForTheModels, timed as
+DECIDE, the weekly run's step for an open and the one step the census lets move every count, one that will not open
+or reports no models for the whole wait stopping its group FAILED with Core's reason. The stop after a group is one
+method for the scanned run and the picked NWFs, StopsTheRunAfter, and the end of an open file run one,
+WriteTheEndOfAnOpenFileRun, its block per file headed OPEN FILE or PICKED NWF. The window: a row on the Source step
+under the NWC folder with a box, File, Folder and Run NWFs, the label and the grey line set off Core,
+OnRunPickedNwfs, and three pieces each moved into one method both runs call, SayTheRunsChoices for the scanned run's
+choices under RUN SETTINGS, ReadTheXmlForAnOpenFileRun and SayWhatAnOpenFileRunAddedUp for the open file run's
+clash file and lines across the run, with RunFinishedLine for the progress line. The rule bullets are in core.md,
+THE PICKED NWFS, and addin.md, THE PICKED NWFS RUN THE OPEN FILE RUN'S ROUTE.
+
+Decided by the developer, the lead's to confirm: the subfolders box the pick reads is the Source step's own, ticked
+by default, so a folder of NWFs is read with its subfolders as a scan is. A refused NWF in a folder is named in RUN
+SETTINGS, never opened, and counted a FAILED group in RESULT, while a refused single file, a folder where none can
+run and two NWFs writing one file stop the run. No clear before each open, as the preview and the probe open one NWF
+after another. The second copy of the log goes to the folder picked or the picked file's folder. The confirm before
+the run is the one the probe asks, which speaks only where something open would be discarded.
+
+Build before any change, --no-incremental from an empty git status at ca0d9b9, 0 warnings and 0 errors,
+turn6\f129-build-before.txt, and after at 8227c54 with the tree clean the same, f129-build-after.txt. Core tests 2796
+passed, 0 failed, 0 skipped before, f129-tests-before.txt, and 2824 passed, 0 failed, 0 skipped after,
+f129-tests-after.txt. The new tests do not build against main, f129-tests-failing.txt, CS0246 on NwfPickDisk. 28
+tests added, 21 of NwfPick, 5 of the log and the picker memory, 1 of the summary and 1 of the picker start, and the
+two counts of pickers moved from 8 to 9 with the ninth proved as the test asks. check-locals and check-imports clean
+over src. The pre-commit ran the full set on each commit. Commits c047cf8, 7ecd4af and 8227c54. On the merged tree at
+a58d15e with the tree clean the build is 0 warnings and 0 errors, f129-build-merged.txt, and the Core tests 2802
+passed, 0 failed, 0 skipped, f129-tests-merged.txt, 28 of them F129's. check-locals and check-imports on it in
+f129-checks.txt.
+
+What waits for the local machine: steps 581 to 606 of steps\03_bader_next.md, after the timed runs of set 05, on
+copies of the NWFs set 05 writes for 1A02MM and 1A04PK in runs\05\f129, never their own files: one NWF with no XML,
+the folder of two with the XML, the subfolders box unticked, two NWFs writing one workbook, and a picked NWD. UNKNOWN
+until that run: whether an NWF copied into another folder still finds its NWCs, step 591 says what the log reads if
+not, and the DECIDE seconds of a picked NWF beside the weekly run's. No pull request was opened, by the brief.
+
+Known bugs: none found. Open for the reviewer: the walk of subfolders follows what Directory.GetDirectories gives,
+so a junction looping to an ancestor is read until the disk refuses the path and then named as a folder that would
+not read. Whether the scan's AllDirectories does the same is UNKNOWN.
+
+ATTEMPT 2 on 2026-10-08 at 4dd4959, the second and last under Q143 item 1, on the reviewer's reading of 297f172,
+turn6\f129-review.json, CHANGES on one blocking finding. A picked NWF that opened and read empty was FAILED while its
+GROUP finished line and RESULT's path tally called it a Weekly run, so RESULT never wrote its NWF read empty line, an
+NWF that would not open read Weekly run too, and the DECIDE phrase said not opened for one that had opened.
+RunPath.ForAnOpenFile now labels a group of the open file run's route: the document already open is a Weekly run as
+before, a picked NWF this run opened is labelled off its decision, Stopped for one that read empty as the scanned run
+labels the same F74 refusal, and Build for one that would not open or was refused before the open, the label the
+scanned run gives a group whose Decide threw and the default GroupJudgement judges by. NwfPick.DecidePhrase gives the
+DECIDE step opened and read empty, not opened, or the label of the run. Taken with it, the reviewer's two smaller
+points: the window line after a pick said the log names each folder that would not read while nothing is logged
+until Run NWFs is pressed, and now says RUN SETTINGS names each then, NwfPick.NamedOncePressed, and
+NwfPickPlan.Problems, read by tests alone, is internal. The proof steps gain the label and RESULT lines at step 591
+and step 599, the census and the workbook of the second NWF of a run against the same NWF run on its own, so a leak
+between NWFs with nothing cleared between the opens is seen, the steps after it renumbered to 567, now 606. The lead's fix of
+three control characters in steps\01_next.md and steps\history\log.md went in with the commit. 5 label tests, 3 seen
+failing against the old label, turn6\f129b-tests-failing.txt, and 2 more tests of NwfPick. Core tests 2802 passed
+before at a58d15e, f129-tests-merged.txt, and 2809 passed, 0 failed, 0 skipped after, f129b-tests-after.txt. The
+build at 4dd4959 with the tree clean, --no-incremental, 0 warnings and 0 errors, f129b-build.txt. check-locals and
+check-imports clean, f129b-checks.txt. The reviewer's other points: the junction walk is row F129-R1, and the list for
+the modellers beside the last NWF only, a refused name's report folder and a second rule of outputs on one name are
+left by Q143 item 1.
+
+What comes next: F130 and F109 in Bader's order.
+
+Merged as pull request UNKNOWN on 2026-10-11 by the lead, after F130 by Bader's order of that morning, read by its one reviewer twice, turn6\f129-review.json and f129b-review.json, the second APPROVE.
+
 ## 2026-10-08 The loop, turn 6, F130 the Shift range in the group list, FR-179, Core done and the add-in built
 
 Bader's request 5 under Q112, FR-179 of steps\fix-round.md read whole with its two measurements,

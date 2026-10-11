@@ -441,6 +441,37 @@ well as to pass.
   nothing changes for it. The status guard, `StatusesThisToolMayMoveFrom`, is kept. No handle
   is held across `TestsEditDisplayName`, `TestsRunTest` or any mutator, and every wrapper is
   disposed. The mirror rule's ending is `ClashRunner.Mirrors`, a `MirrorSettings` at its default
+- THE PICKED NWFS RUN THE OPEN FILE RUN'S ROUTE, F129, Bader's request 4 under Q112, and
+  every rule and every word is Core's, core.md, THE PICKED NWFS. Read off the code on
+  2026-10-08 before anything was built: the scanned run reaches an NWF only through Decide,
+  which compares its file list against a scan, and the open file run already runs an NWF where
+  it sits with no scan and no Decide, through FinishTheGroup, the tail both share. So
+  FederationEngine.RunOpenDocument and RunPickedNwfs both run each file through ONE method,
+  RunAnOpenFile, and nothing of that route is copied: the check by OpenDocumentJob.CanRun
+  before any open, the report folder, the OPEN lines, the census, Decision Open, nothing
+  appended and nothing cleared, the tests of the XML where one is picked and otherwise the
+  tests saved inside, the workbook, the NWD, the NWF looked at once more, the GROUP lines and
+  the PICKED NWF or OPEN FILE block. For a picked NWF the one difference is the open,
+  OpenThePickedNwf, timed as DECIDE as the weekly run's open is, the one step the census lets
+  move every count, which an open does, through
+  OpenAndWaitForTheModels, the one reader of an NWF, with no clear before it, since the open
+  replaces the document as it does for the preview and the probe. One that will not open, or
+  opens and reports no models for the whole wait, stops its group FAILED with Core's reason and
+  nothing is run on it, F74, and its GROUP finished line is labelled off that by
+  RunPath.ForAnOpenFile, Stopped for one that read empty, never Weekly run, the DECIDE phrase
+  NwfPick.DecidePhrase. The run stops after a group as the scanned run stops, through the
+  one StopsTheRunAfter, and the gaps line, the list for the modellers, the timing beside size
+  and each file's block are written once after the last file, WriteTheEndOfAnOpenFileRun. The
+  window, OnRunPickedNwfs, reads the run settings first, refuses a tolerance that is not one, a
+  pick Core refuses and two NWFs writing one file before anything is opened, asks before the
+  open document goes, marks RUN started and finished, writes RUN SETTINGS with Core's lines and
+  the scanned run's own choices through the one SayTheRunsChoices, reads the clash file through
+  the open file run's ReadTheXmlForAnOpenFileRun, writes the lines across the run through the
+  one SayWhatAnOpenFileRunAddedUp and SETS ACROSS THE RUN, and RESULT with Core's line, the
+  second copy of the log going to the folder picked or the picked file's folder. The box and
+  its three buttons sit in their own row on the Source step under the NWC folder, the label and
+  grey line set off Core in the constructor. What a run of it reads on Navisworks is UNKNOWN
+  until the proof steps of steps\03_bader_next.md run
 - SINCE F114 A VIEW IS PER CLASH TEST, which replaces F85's viewpoint per clash, which had
   reversed what this rule said before it, that no clash is ever saved as a viewpoint.
   Bader's Q114: the thing a person presses is a test's open clashes framed together in the
@@ -579,7 +610,27 @@ well as to pass.
   if any reference is satisfied by neither the bundle, the framework, nor the
   Navisworks folder. A missing file is caught at install rather than ninety seconds
   into a run. The version mismatches are printed too, labelled as expected, so nobody
-  reads them as faults
+  reads them as faults. Since F109 that walk, the file list and the stamp read the
+  INSTALLED bundle, never the staging copy, each assembly read from its bytes so the
+  script holds no file of it open, and the installed Federator.Addin.dll must read the
+  stamp the build wrote
+- install.ps1 ends one of four ways, each an exit code and a last line written once at
+  the top of the script and copied word for word into INSTALL.md: 0 and the line telling
+  a person to start Navisworks, 1 FAILED, 2 REFUSED, 3 LEFT, installed and checked with
+  the add-in installed before still beside it. The installed line is printed only when
+  nothing is left beside the add-in, so it always means a whole install. Every other end
+  names each folder left beside the add-in on its own line first, F109, FR-080
+- install.ps1 removes no folder through a junction or a link. Every recursive removal
+  goes through RemoveTree, which reads every folder under it for one first, by the link
+  type PowerShell reads off a reparse point, because every file OneDrive syncs carries
+  the reparse point attribute with no link type. A link in the staging folder or in the
+  installed bundle refuses before anything changes. A copy that fails on a first install
+  takes the new folder out of the load path, removed or moved to .failed-, F109, FR-078
+- install.ps1 reads the .replaced- and .failed- folders beside the bundle at its start,
+  by one pattern each on the plugin folder and never a search below it. An empty or part
+  filled load path with one whole add-in beside it gets that one put back, PUT BACK, and
+  any other leftover refuses with each named, because which one a person keeps is theirs
+  to say, F109, FR-079
 - The NWF is looked at ONCE MORE after the NWD is published, because the NWD is published
   last and the NWF is the only record of what has been fixed. The line says intact and the
   size, or CHANGED with both sizes, or GONE. Nothing was checking this, so a run that did

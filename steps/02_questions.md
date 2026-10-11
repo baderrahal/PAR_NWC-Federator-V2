@@ -754,3 +754,17 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 148. From the loop, turn 5, 2026-10-08, Q143 item 1 as the lead has read it today. A FAULT FOUND AT THE SECOND READING. Your item 1 says a change merges after its second reading if no reader found a fault that changes a number, a status, a file or a clash the team sees, and says nothing of what happens when one did. On F132 and F128 today, and on F114 tonight, the second reading found such faults, and the lead had the developer fix them on the same attempt, a few lines each, then had the reader who found them re-read only the fix, and merged. A stricter reading counts that as a third attempt, which item 1 does not allow. Two readings. A: a fault at the second reading stops the change, it does not merge, and the faults go to you with what each attempt did. B: the lead's reading, applied meanwhile, a fault at the second reading is fixed on the same attempt and re-read by the reader who found it, once, and merges if that re-read finds no fault the team sees, a second fault at the re-read stopping it as A. Which do you want?
 
     Answer: Bader, 2026-10-11, his message headed GOOD MORNING, CONTINUE THE LOOP, BADER, 11 OCT 2026, item 5. In his words: Q148 B, a fault the team would see, found at the second reading, is fixed in that same attempt and read once more. The lead's note: B is what F132, F128 and F114 did on 8 Oct.
+
+149. From Bader, 2026-10-11 at about 11:00, his message headed BADER, 11 OCT 2026: NO RELEASE RUNS, AND THE TEAM PACKAGE ONLY WHEN BADER ASKS, not a question put to him but his order. In his words:
+
+    BADER, 11 OCT 2026: NO RELEASE RUNS, AND THE TEAM PACKAGE ONLY WHEN BADER ASKS
+    This replaces the block headed BADER, 11 OCT 2026: NO RELEASE RUNS, AND F109-R1, if it was pasted.
+    1. No release runs: the full runs of C06 and C07 and the check of a published NWD in ACC, steps 228 to 233, are dropped. Set those rows to dropped. The proof runs of 1A02MM and 1A04PK stay as the last runs.
+    2. F109-R1, the team package: prepare it now, but make no team zip until Bader writes "make the team package". He asks only once the proof runs show the main functions work.
+       - The packaging builds a zip of the bundle on this laptop, with a one-click install script that copies it to the person's own %APPDATA%\Autodesk\ApplicationPlugins with no admin rights, and says plainly what it did.
+       - Each zip carries the version, main's commit and the date in its name and in a file inside it.
+       - Installing a newer zip replaces the old add-in and keeps the previous one as a backup. The script can put the previous one back with one step.
+       - A short install page in plain words goes inside the zip.
+    Write both in steps\02_questions.md, set the rows, and carry on with F129, F109, F127-R2, then the proof runs.
+
+    Answer: Bader, 2026-10-11, as written above. The lead's notes. Item 1: the row of steps 228 to 233 reads dropped, and Q145's item 7, the release, is dropped with it while Q145's other items go on, so its row stays in progress. No row of its own named the full runs of C06 and C07. Item 2: the team package is F140, rows Q149-2 and F140, built as scripts and a page on a branch of its own after the proof runs' order of the day allows, tested by building a zip into a throwaway folder that is deleted after the test, and no team zip is made or handed to anyone until Bader writes make the team package. F109-R1 is answered by it and reads in progress with F140.

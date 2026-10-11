@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 533 rows: open 197, in progress 29, in review 3, merged 268, proven by a run 27, waiting for Bader 3, dropped 6
-- By wave: 1 19, 2a 62, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 23, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 77, outside the waves 2, right after F133 merges 6
-- In progress now: F109 install, F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, and 12 FR items
-- Waits for Bader, 3 rows: step 228-233, F114-K29, F109-R1
+- By status, of 536 rows: open 198, in progress 27, in review 0, merged 276, proven by a run 27, waiting for Bader 1, dropped 7
+- By wave: 1 19, 2a 62, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 81, outside the waves 2, right after F133 merges 6
+- In progress now: F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F127 coverage of the clash XML, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q112-2 coverage of the clash XML (FR-176), Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, and 9 FR items
+- Waits for Bader, 1 row: F114-K29
 
 ## Wave 1
 
@@ -178,14 +178,14 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-075 | picture rename two pass has no undo | F120 | silent wrong number | merged | 183 | none | 2026-10-08 |
 | FR-076 | image guard per group not per run | F120 | broken feature | merged | 183 | none | 2026-10-08 |
 | FR-077 | pictures cost 643 seconds | F120 | slow | merged | 183, the IMAGES seconds split and the encoder looked up once, the seconds saved UNKNOWN until the timed runs | none | 2026-10-08 |
-| FR-078 | install recursive delete without junction check and partial first install | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
-| FR-079 | install killed between move and removal | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
-| FR-080 | install leftovers exit codes and success line | F109 | broken feature | in progress | none, branch fix-F109 at a0c3829 | none | 2026-10-04 |
-| FR-178 | start from an existing nwf | F129 | Bader's request | in review | none, branch fix-F129 at 9056504 | none | 2026-10-08 |
-| F109 | install | F109 | fix | in progress | none, branch fix-F109b, 9b489ff pushed with install.ps1 built and its 85 proof checks passed, its plan section, proof steps and reading next | none | 2026-10-08 |
+| FR-078 | install recursive delete without junction check and partial first install | F109 | broken feature | merged | 194 | none | 2026-10-11 |
+| FR-079 | install killed between move and removal | F109 | broken feature | merged | 194 | none | 2026-10-11 |
+| FR-080 | install leftovers exit codes and success line | F109 | broken feature | merged | 194 | none | 2026-10-11 |
+| FR-178 | start from an existing nwf | F129 | Bader's request | merged | 193 | none | 2026-10-11 |
+| F109 | install | F109 | fix | merged | 194 | none | 2026-10-11 |
 | F120 | harvest and pictures | F120 | fix | merged | 183, FR-198 open | none | 2026-10-08 |
-| F129 | start from an existing NWF | F129 | fix | in review | none, branch fix-F129 at 9056504, attempt 2 built on its reviewer's one fault, its second reading next | none | 2026-10-08 |
-| Q112-4 | start from an existing NWF (FR-178) | F129 | Bader's request | in review | none, branch fix-F129 at 9056504 | none | 2026-10-08 |
+| F129 | start from an existing NWF | F129 | fix | merged | 193 | none | 2026-10-11 |
+| Q112-4 | start from an existing NWF (FR-178) | F129 | Bader's request | merged | 193 | none | 2026-10-11 |
 | Q25 | five clash item properties reach no output, split into Q35 to Q40 | F120 | question | merged | 131 | none | 2026-10-06 |
 | Q35 | the GAP block, Family reaches no output | F120 | question | merged | 131 | none | 2026-10-06 |
 | Q36 | the GAP block, Type Name | F120 | question | merged | 131 | none | 2026-10-06 |
@@ -197,7 +197,6 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-198 | item properties harvest deleted and gap says read and empty | F120 | Bader's decision | open | none | none | 2026-10-06 |
 | F120-R1 | a render that throws with a path inside the exception's message is still one reason per path for the fifty failures guard, so such failures never stop the run, the developer's finding on FR-076 | F120 | register row | open | none | none | 2026-10-08 |
 | F129-R1 | the picked NWFs walk follows a junction looping back until Windows refuses the path, so the same NWFs can be read under longer paths, a person's mklink needed, the scan sharing the exposure, the reviewer's point on attempt 1 | F129 | register row | open | none | none | 2026-10-08 |
-| F109-R1 | how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, for Bader | F109 | register row | waiting for Bader | none | none | 2026-10-08 |
 
 ## Wave 3b
 
@@ -611,7 +610,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F139-R7 | a commit staging tracker.csv or the page is refused where no powershell is on PATH, such as a container, a stated limit the lead accepted | none | register row | dropped | none | none | 2026-10-07 |
 | F139-R8 | steps\logs\README.md line 11 names steps/log.md, in a folder never edited, for Bader | none | register row | merged | 139 | none | 2026-10-07 |
 | F139-R9 | the Stop gate's merge test reads only a line starting STATE and a space in capitals, while its reader takes other spellings, so a page written another way is refused until respelled, the lead writing the plain form | none | register row | open | none | none | 2026-10-07 |
-| step 228-233 | the published NWD checked in ACC, by Bader himself at the final run after F114 merges | none | register row | waiting for Bader | none | none | 2026-10-07 |
+| step 228-233 | the published NWD checked in ACC, by Bader himself at the final run after F114 merges, dropped by his Q149 item 1 | none | register row | dropped | none | none | 2026-10-11 |
 | step 346-352 | the remote branches other than main whose pull requests merged, deleted by the lead by Bader's answer, D6 | none | register row | proven by a run | none | turn5\d6-deleted.txt, 67 deleted and read back, 17 kept by his rule | 2026-10-07 |
 | step 364 | the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept | none | register row | proven by a run | none | turn5\probe-step364-result.txt and its CSV, scan.md 5z-za, one ME NWC of run set 04 | 2026-10-07 |
 | T5-R-WALKRACE | the harness's walk of the loop folder races a lane building under a wt- folder | none | register row | open | none | none | 2026-10-07 |
@@ -626,6 +625,10 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q147 | two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109 | none | Bader's request | in progress | none | none | 2026-10-08 |
 | Q148 | a fault found at the second reading | none | question | merged | 191 | none | 2026-10-11 |
 | T6-R-TESTTEMP | RowLogTests.ALogThatFellBackTakesItsRowFileWithIt writes a log into the shared temp folder on every run, so it fails once about 100 have built up and when two worktrees test at once, seen on the F130 and F109 commits, the files moved aside to turn6 f109b-temp-runlogs | none | register row | open | none | none | 2026-10-08 |
+| F109-R1 | how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140 | F140 | register row | in progress | none, F140 prepares it, no team zip until Bader asks | none | 2026-10-11 |
+| Q149-1 | no release runs, the full runs of C06 and C07 and the ACC check dropped, the proof runs of 1A02MM and 1A04PK the last | none | Bader's request | merged | 194 | none | 2026-10-11 |
+| Q149-2 | the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks | F140 | Bader's request | in progress | none | none | 2026-10-11 |
+| F140 | the team package, prepared and no team zip made until Bader writes make the team package | F140 | fix | open | none | none | 2026-10-11 |
 
 ## outside the waves
 
