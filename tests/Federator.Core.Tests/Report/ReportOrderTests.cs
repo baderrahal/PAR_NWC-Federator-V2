@@ -417,7 +417,7 @@ namespace Federator.Core.Tests
 
         // ---------- saying how far it has got, F146 ----------
 
-        // Set 07's and set 08's 1A02MM renamed 2931 pictures in one stretch, the window not
+        // Sets 07, 08 and 09's 1A02MM renamed 2931 pictures in one stretch, the window not
         // answering for 32 s. Said is handed every picture of every pass, counted from one to
         // the pass's count, and the folder ends with every picture under its row's number.
         [Test]
@@ -470,7 +470,7 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Unchanged, Is.EqualTo(5));
         }
 
-        // A said that throws, as a pump whose window is gone would, is named once with where it
+        // A said that throws, for whatever reason, is named once with where it
         // threw, is handed nothing more, and every picture is still renamed.
         [Test]
         public void ASaidThatThrowsIsNamedOnceAndEveryPictureIsStillRenamed()
@@ -495,6 +495,26 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Lines()[1], Is.EqualTo(
                 "IMAGES   saying how far the renaming had got threw at picture moved aside 2 of 6, "
                 + "InvalidOperationException: the window is gone, so nothing more was said and the renaming went on"));
+            AssertEveryRowPointsAtItsOwnPicture(report);
+        }
+
+        // F146, the breaker's point: a renaming cut off part way left a picture under a holding
+        // name. Before F146 the move onto it threw and every picture of the group went back under
+        // its run order name. Now it is taken out first and said, and every picture ends under its row.
+        [Test]
+        public void AHoldingNameAnEarlierRenamingLeftIsTakenOutFirstAndSaid()
+        {
+            ClashReport report = MixedOrder();
+            RenderInRunOrder(report, null);
+            File.WriteAllText(ImageNaming.PathFor(workbook, 0, 1) + ".moving", "an earlier run's picture");
+
+            ImageRenumberingOutcome outcome = ImageRenumbering.Apply(report, workbook);
+
+            Assert.That(outcome.Renamed, Is.EqualTo(6));
+            Assert.That(outcome.NotPutBack, Is.EqualTo(0));
+            Assert.That(outcome.Problems.Count, Is.EqualTo(1));
+            Assert.That(outcome.Problems[0], Is.EqualTo(
+                "Floors 1: cd000001.jpg.moving, a holding name an earlier renaming left, was taken out before the move"));
             AssertEveryRowPointsAtItsOwnPicture(report);
         }
 

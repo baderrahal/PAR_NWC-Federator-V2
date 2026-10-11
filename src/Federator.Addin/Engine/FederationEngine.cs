@@ -3567,8 +3567,8 @@ namespace Federator.Addin.Engine
         /// of this file's about the state of the disk. The one throw that can still reach
         /// here is from the planning before any move, so nothing on the disk has changed.
         ///
-        /// THE WINDOW ANSWERS WHILE IT RENAMES, F146. Set 07's and set 08's 1A02MM renamed 2931
-        /// pictures in one stretch of 44 s and 39 s and the life check read the window not
+        /// THE WINDOW ANSWERS WHILE IT RENAMES, F146. Sets 07, 08 and 09's 1A02MM renamed 2931
+        /// pictures in one stretch of 44 s, 39 s and 39 s and the life check read the window not
         /// answering for 32 s, our own code. After every picture the live line goes through
         /// Tick, whose callback lets the window answer about once a second, and a PROGRESS line
         /// with its .tsv row is written once the runner's setting says one is due. Null
@@ -3605,10 +3605,7 @@ namespace Federator.Addin.Engine
         /// <summary>One picture of the renaming done, F146: the live line, and a PROGRESS line when one is due.</summary>
         private void SayHowFarTheRenamingIs(FederationJob job, StepProgress said, string piece, int done, int total)
         {
-            string count = done.ToString(System.Globalization.CultureInfo.InvariantCulture) + " of "
-                + total.ToString(System.Globalization.CultureInfo.InvariantCulture);
-
-            Tick(job.Building + ", " + piece + " " + count);
+            Tick(StepProgress.Live(job.Building, piece, done, total));
 
             if (said != null && said.Due(log.ElapsedSeconds))
             {
@@ -3617,7 +3614,7 @@ namespace Federator.Addin.Engine
                     "progress",
                     job.Building,
                     done.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                    RunSteps.Renumber + " " + piece + " " + count);
+                    StepProgress.RowText(RunSteps.Renumber, piece, done, total));
             }
         }
 

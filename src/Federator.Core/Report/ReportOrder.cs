@@ -193,8 +193,8 @@ namespace Federator.Core.Report
         /// <summary>
         /// Renames every picture into the report order. Said, where it is not null, is handed
         /// what was just done to one picture, how many of the pass are done and the pass's
-        /// count, after every picture checked, moved aside and renamed, F146: set 07's and set
-        /// 08's 1A02MM renamed 2931 pictures in one stretch of 44 s and 39 s with the window
+        /// count, after every picture checked, moved aside and renamed, F146: sets 07, 08 and
+        /// 09's 1A02MM renamed 2931 pictures in one stretch of 44 s, 39 s and 39 s with the window
         /// not answering for 32 s, and the add-in lets the window answer through it. A said
         /// that throws is named once in the lines and handed nothing more, and the renaming
         /// goes on, since saying how far it has got is never worth a picture.
@@ -236,7 +236,21 @@ namespace Federator.Core.Report
             {
                 try
                 {
-                    File.Move(move.From, move.From + Holding);
+                    // F146, the breaker's point: a renaming cut off part way, the process killed
+                    // while pictures sat under holding names, leaves them there, and a move onto
+                    // one throws and puts every picture of the group back under its run order name
+                    // every week after. No holding name is this run's before its own move, so one
+                    // there now is an earlier run's and is taken out first, and said.
+                    string holding = move.From + Holding;
+
+                    if (File.Exists(holding))
+                    {
+                        File.Delete(holding);
+                        outcome.Add(move.Number.Row.Name + ": " + Path.GetFileName(holding)
+                            + ", a holding name an earlier renaming left, was taken out before the move");
+                    }
+
+                    File.Move(move.From, holding);
                 }
                 catch (Exception error)
                 {

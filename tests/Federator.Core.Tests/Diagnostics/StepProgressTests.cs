@@ -100,5 +100,19 @@ namespace Federator.Core.Tests
             Assert.That(new ViewpointSettings().ProgressEverySeconds, Is.EqualTo(ProgressSettings.DefaultEverySeconds));
             Assert.That(ProgressSettings.DefaultEverySeconds, Is.EqualTo(30.0));
         }
+
+        // F146, the reviewer's point: the harvest and the renumber said how far they had got with
+        // two copies of these words, which had already drifted on a count not known.
+        [Test]
+        public void TheCountWordsAreOneRuleForEveryCaller()
+        {
+            Assert.That(StepProgress.Count(3, 10), Is.EqualTo("3 of 10"));
+            Assert.That(StepProgress.Count(4, -1), Is.EqualTo("4 of UNKNOWN"));
+            Assert.That(StepProgress.Live("1A02MM", "picture renamed", 12, 2931), Is.EqualTo("1A02MM, picture renamed 12 of 2931"));
+            Assert.That(StepProgress.RowText("RENUMBER", "picture renamed", 12, 2931), Is.EqualTo("RENUMBER picture renamed 12 of 2931"));
+            Assert.That(StepProgress.RowText("HARVEST", "item under a group", 7, -1), Is.EqualTo("HARVEST item under a group 7 of UNKNOWN"));
+            Assert.That(new StepProgress(30, 0).Line("RENUMBER", "1A02MM", "picture renamed", 12, 2931, 31.0),
+                Is.EqualTo("PROGRESS RENUMBER 1A02MM picture renamed 12 of 2931, 31s into the step"));
+        }
     }
 }
