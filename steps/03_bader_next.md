@@ -393,6 +393,28 @@ team follows, and these steps follow it.
 614. If step 610 read `1`, the last line starts `FAILED:`. Send the whole output and stop
 615. Open Navisworks. Look for: Parsons NWC Federator on the Tool Add-ins tab, and main's commit in the title bar
 
+## Proof F140 the team package, added 2026-10-11
+
+NOTHING HERE HAPPENS until you write "make the team package", your order of 11 Oct, Q149, once the
+proof runs show the main functions work. The package and its install were proved on the laptop
+against throwaway folders, never your own add-in, turn6\f140-proof, and no team zip was made. These
+steps try the zip on your own machine before anyone on the team gets it. They replace the add-in
+you have installed, and step 625 puts it back.
+
+616. Write "make the team package" in the chat. The lead runs `build\package.ps1` on the laptop from a clean checkout of main, into a folder outside the repo, and pastes its last line, which starts `PACKAGED:` and names the zip, `ParsonsNwcFederator-1.0.0.0-` then main's eight characters, a dash, the day's date and `.zip`
+617. Close Navisworks Manage 2025
+618. Copy the zip into your Downloads folder, right click it and choose Extract All, then open the folder that makes
+619. Open `VERSION.txt`. Look for: `commit  :` with main's eight characters the lead named, and `date    :` with the day the zip was made
+620. Open `INSTALL-TEAM.txt`. Look for: a page you would hand a person who is not a developer. Say any line that is not plain to you
+621. Double click `Install Parsons NWC Federator.cmd`. If Windows asks whether to run it, choose Run, and say that it asked. Look for, as the last line before `Press any key to continue`: `DONE: Parsons NWC Federator version 1.0.0.0, commit` with main's eight characters, `is installed at` your `AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle`, then `The version installed before,` with the commit you had, `is kept at` the same path ending `.previous`
+622. Press any key. Open File Explorer and paste `%APPDATA%\Autodesk\ApplicationPlugins` into its address bar. Look for: `ParsonsNwcFederator.bundle` and `ParsonsNwcFederator.bundle.previous`, and NO `ParsonsNwcFederator.bundle.copying`
+623. Start Navisworks Manage 2025. Look for: ONE Parsons NWC Federator on the Tool Add-ins tab, and main's commit in the title bar. Two of it would mean Navisworks loads the `.previous` folder too, which is UNKNOWN until this step, so say so
+624. Close Navisworks
+625. Double click `Put back the previous version.cmd`. Look for: `DONE: the previous version,` with the commit you had before step 621, `is back at` the same `ParsonsNwcFederator.bundle`, then `The version that was installed,` with main's commit, `was replaced and is not kept.`
+626. Start Navisworks. Look for: the commit you had before step 621 in the title bar. Close Navisworks
+627. Double click `Install Parsons NWC Federator.cmd` again. Look for: `DONE:` with main's commit, and the commit you had before step 621 kept at `.previous`
+628. Send the text of every window whose last line did not read as written, and say whether the zip goes to the team. Nobody on the team gets it before you say so
+
 ## Proof F34, the window, and F33, the units combo
 
 24. Close Navisworks if it is open
