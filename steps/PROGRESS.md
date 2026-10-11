@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-11 19:05, last run 06/item1-C02
+STATE OPEN, 2026-10-11 20:15, last run 07/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -21,23 +21,24 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 
 ## Now
 - Bader's orders of 11 Oct: 1A04PK IS FROZEN, the life check and the cause fixed, and NO MORE TWO HOUR TEST LOOPS, fast checks on 1A02MM and a cut down 1A04PK, the one full run only when he says
-- Set 06's 1A04PK, started 14:25, still running, busy and not stuck, 25 of 741 tests by 16:41. Its 12 h ceiling is 02:25. Asked Bader at 16:50 and 18:20 whether to close it now, no answer yet
-- Merged today: F141 views as PRs 196 and 197, F142 the life check as 198, F143 the harvest answering between rows as 199, F144 the first-50 copy as 200, main 89082a2
-- Set 07 made at 18:56, the corrected matrix under runs\07\NMFed\exchange and its first-50 cut, 52 tests and one pair, under runs\07\NMFed\first50
+- Set 06's 1A04PK ended at 19:31, closed Not Responding, Application Hang 1002, after 5 h 6 min at test 75 of 741, his settings put back. Findings in steps\runs\06\findings.md
+- Main 89082a2 installed in place at 19:40. Fast check 1A02MM, 07/item1-C02: 5 min 2 s, 2931 clashes, coverage 528 of 528, PROGRESS lines every 30 s, LIFE lines, no view threw, and 69 of 69 views read back no material override, F141-R1
+- F141 attempt 2 on fix-F141c: the camera read before the hiding, the dim and the paint, P18's order, with its reviewer and breaker
+- Fast check 1A04PK on first50 running since 19:58, a LIFE CLASS busy at 20:02, rows of 7 to 13 s, the window pumped between them
 
 ## Next
-1. Close the frozen run once Bader says, or at its ceiling. Then main 89082a2 installed in place and the fast checks on set 07: 1A02MM on the full matrix and 1A04PK on first50, the life check on, -Untick SkipClashOffCoordinates, three lines after each
-2. The speed fix of the harvest's cost per row on 1A04PK, measured off the cut down run's IMAGES line, two attempts, the output the same
+1. The cut down 1A04PK to its end, its IMAGES line splitting render from the rest, three lines to Bader, then the speed fix or his choice on the pictures
+2. F141 attempt 2 merged, installed, and 1A02MM's fast check again, 69 views written with their dim and paint proving it
 3. Ask Bader before the one full 1A04PK run. Then F140 prepared, waves 4 and 5
 
 ## Waiting for Bader
-- Whether to close the frozen 1A04PK now. The team package, F140, made only when he writes make the team package, Q149
+- No question open. The team package, F140, made only when he writes make the team package, Q149
 
 ## Blockers and known bugs
-- The frozen 1A04PK holds the only Navisworks, so no fast check can start
-- F141-R1: every view of one clash failed as added without its dimming, to be read on the fast check
+- F141-R1: every view read back with no material override on 1A02MM, attempt 2 waiting for its fast check
+- F143-R2: one render of 3 to 13 s a row on 1A04PK, the window answering only between rows
+- F144-R1: the first 50 tests on 1A04PK hold Walls-vs-Floors, about 90 minutes of rows
 - T5-R-OLDKEY: his 22.0 key reads an older copy after each restart, the writer UNKNOWN
-- F142-R1: one proof run of three died with no error, cause UNKNOWN
 
 ## Where the long history is
 - steps\history\loop.md: every turn, the form and the register table, its closed rows the record
