@@ -288,43 +288,93 @@ without its extension.
 505. Look for, on every run above: no group ends FAILED or PARTIAL on account of these sets, since a throw in their plan, build or workbook write is a `FAILED` line in the `GENERIC MODELS` block and the count `UNKNOWN`, never the group's error, and where none threw no such line is in any block
 506. Send the log file named on the `log file` line of the SESSION block, say which of steps 492 to 505 did not read as written, and read off the `TIMING` block of 1A04PK the seconds of `SETS` and of `GENERIC XLSX`, which are Q145 item 5's and UNKNOWN until this run
 
+## Proof of F130, the Shift range in the group list
+
+THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,
+your request 5 under Q112. They were read off the add-in on fix-F130 and nothing of it has run on
+Navisworks yet. The window driver cannot make a Shift click without real input, measured on
+2026-10-05, `turn5\measure-shift-driver-result.md` under the loop's folder, so these are yours by
+hand, with the mouse and the Shift key. They use the C02 folder of ten groups named at the top of
+this file, whose groups the list shows in building order: 1000BS, 1A0215, 1A02BS, 1A02MM, 1A02MS,
+1A02WE, 1A02WL, 1A02WM, 1A02WN and 1A02WO. A scan, a grouping change or a Use box makes the groups
+again and ticks every one, so change nothing on the Source step unless a step says so.
+
+542. Go to the Source step, pick the C02 folder of ten groups and press Scan
+543. Go to the Grouping step
+544. Look for: ten rows in the building order above, every Run box ticked, the first column headed `Run` and as narrow as before, and under the list the grey line `Shift click a Run box to tick or untick the rows between`
+545. Click the Run box of 1A0215 once, holding no key
+546. Look for: 1A0215 unticked on that one click and the other nine ticked. If the click only highlighted the row and the box stayed ticked, say so, since the flip on one click is UNKNOWN until here
+547. Hold Shift and click the Run box of 1A02MS
+548. Look for: 1A0215, 1A02BS, 1A02MM and 1A02MS unticked, both ends included, and 1000BS and the five from 1A02WE to 1A02WO ticked
+549. Click the Run box of 1A02MM once, holding no key
+550. Look for: 1A02MM ticked again and 1A0215, 1A02BS and 1A02MS still unticked
+551. Hold Shift and click the Run box of 1000BS
+552. Look for: 1000BS, 1A0215, 1A02BS and 1A02MM ticked, 1A02MS alone unticked, and the five after it ticked
+553. Go to the Outputs step
+554. Look for: the line at the foot of the Outputs step begins `9 groups ticked to run.`
+555. Go to the Source step and press Scan again, which makes the groups again
+556. Go to the Grouping step
+557. Look for: all ten ticked again
+558. Hold Shift and click the Run box of 1A02WE
+559. Look for: 1A02WE alone unticked, because the groups were made again and no box was clicked since, so that Shift click was a plain click
+560. Click the Run box of 1A02WO once, holding no key
+561. Click the header `Run` of the first column once
+562. Look for: 1A02WE and 1A02WO as the two top rows, both unticked, and the eight ticked rows under them. If the two sit at the bottom, click the header once more
+563. Click the Run box of the fourth row from the top once, holding no key
+564. Hold Shift and click the Run box of the top row
+565. Look for: exactly the four rows shown at the top unticked, 1A02WE, 1A02WO and the third and fourth rows whichever buildings they are, and the six rows under them ticked. If a row moved when a box was clicked, say so
+566. Go to the Source step and press Scan again
+567. Go to the Grouping step
+568. Click the header `Building` once
+569. Look for: ten rows in building order, every one ticked
+570. Click the Run box of 1000BS once, holding no key
+571. Hold Shift and click the Run box of 1A02WO
+572. Look for: all ten unticked
+573. Go to the Outputs step
+574. Look for: the line at the foot of the Outputs step begins `0 groups ticked to run.`
+575. Go to the Grouping step
+576. Click the Run box of 1A02MM once, holding no key
+577. Look for: 1A02MM alone ticked
+578. Press Run with the folders and the Clash step as the proofs above left them, and let the one group finish
+579. Look for, in the log after the `RUN SETTINGS` lines: the `GROUPS` block with `run` beside 1A02MM, `unticked` beside the other nine, and the line `9 groups unticked in the Run column, nothing else drops a group`
+580. Send the log file named on the `log file` line of the SESSION block and say which of steps 544 to 579 did not read as written
 
 ## Proof of F129, a picked NWF or a folder of NWFs, run where it sits
 
-THESE STEPS FOLLOW STEP 541 IN THE SAME NAVISWORKS SESSION, your request 4 under Q112 and your
+THESE STEPS FOLLOW STEP 580 IN THE SAME NAVISWORKS SESSION, your request 4 under Q112 and your
 order of the evening of 8 Oct 2026, Q147 item 3, once F129 has merged and is installed and once
 the timed runs of set 05 of Q145 item 5 have written the NWFs of 1A02MM and 1A04PK. They run on
 COPIES of those two NWFs and never on the NWFs set 05 wrote. They were read off the add-in on
 fix-F129 and nothing of it has run on Navisworks yet. Whether an NWF copied into another folder
-still finds its NWCs is UNKNOWN until step 547: an NWF holds pointers to the NWCs and not copies,
+still finds its NWCs is UNKNOWN until step 586: an NWF holds pointers to the NWCs and not copies,
 and whether Navisworks reads them by the full path or beside the NWF is not measured.
 
-542. Build and install main once F129 has merged, steps 7 to 12
-543. In Explorer, make a folder `f129` under `%LOCALAPPDATA%\NwcFederatorLoop\runs\05`, and in it two folders, `one` and `two`
-544. Copy into `one` the NWF set 05's run of C02 wrote for 1A02MM, the path named on that run's `files written` lines in RESULT, and nothing else
-545. Copy into `two` the NWF set 05's run of C04 wrote for 1A04PK, the same way, and nothing else
-546. Open the window, step 1. Source. Look for, under the Folder row: a row labelled `Existing NWF or folder of NWFs` with a box, the buttons `File`, `Folder` and `Run NWFs`, and under the box the grey line `Runs each where it sits, its NWD and report beside it`
-547. Press `File`, pick the 1A02MM copy in `one`. Look for, at the bottom of the step: `1 NWF found in` the copy's path `, 1 can run. Each writes its NWD and report beside it.`
-548. Clear the Clash XML box on step 4, leave every tick box as the runs of set 05 left it, and press `Run NWFs`. If a document is open, a question names what is discarded, press OK
-549. Look for, in a block headed `RUN SETTINGS`: `NWFs picked       :` the copy's path `, one file`, `include subfolders: not applicable, one file was picked`, `NWFs found        : 1`, `NWFs refused      : 0`, a line beginning `each NWF          : opened where it sits and run the way the open file run runs it`, `NWD               : beside each NWF with the extension swapped`, `reports           : in Clash Reports beside each NWF`, `source folder     : not applicable, nothing is scanned`, `grouping          : not applicable, each NWF is one group`, then the lines from `apply file to old:` to `report units     :` the scanned run writes
-550. Look for, after it: `OPEN     no XML picked, so the tests saved in the document run, or nothing runs when it holds none`, then the TEAMS lines of the kept map
-551. Look for, in the group: `GROUP    started  1104-PAR-1A02MM` with the rest of the copy's name `  its files are read once its NWF opens`, then `OPEN     running a picked NWF, opened by this run where it sits, no scan`, `OPEN     file` with the copy's path, `OPEN     NWD` with the same path ending `.nwd`, `OPEN     report` ending `(beside the file, no Excel folder picked)`
-552. Look for, then: a `DECIDE` step holding `OPEN     opening the picked NWF` and the load wait line, its closing `STEP` line ending `Weekly run`, then the census line naming what the document held. No `CLEAR` line and no `APPEND` line anywhere in the group. If instead the group reads `opened with no error and then reported no models at all`, the copy did not find its NWCs, which answers the UNKNOWN above: then the `DECIDE` step's closing `STEP` line ends `opened and read empty`, the `GROUP    finished` line reads `FAILED` and `Stopped (the NWF read empty)` and never `Weekly run`, RESULT reads `NWF read empty : 1` under the path counts, and the next step is to send the log
-553. Look for: the clash step saying it runs the tests saved in the document, the same count of tests as set 05's run of 1A02MM left in its NWF, and the group's `GROUP    finished` line reading `DONE` and `Weekly run`
-554. Look for, after the group: a block headed `PICKED NWF` whose lines read `decision      : picked NWF, opened by this run where it sits, its file list not compared, nothing appended and nothing cleared` and `grouping      : not applicable, each picked NWF is one group`, then `SOURCE   findings skipped, the picked NWFs have no scanned source folder to compare against`
-555. Look for, in `RESULT`: `groups done    : 1`, and right under `groups failed  : 0` the line `NWFs picked    : 1 from` the copy's path `, each run as the open file run runs it`, and among the files written the NWD in `one` and the workbook in `one\Clash Reports`, and no path under set 05's own folders
-556. In Explorer: `one` holds the copy, an NWD of the same name and a `Clash Reports` folder with the workbook, and the NWF and NWD set 05 wrote carry the times they had before step 548
-557. Press `Folder`, pick `f129` itself, keep `Include subfolders` ticked. Look for, at the bottom of the step: `2 NWFs found in` the path of `f129` `, 2 can run.`
-558. Pick in the Clash XML box the corrected XML set 05 picked and press `Run NWFs`
-559. Look for: `NWFs picked       :` the path of `f129` `, a folder`, `include subfolders: yes`, `NWFs found        : 2`, then `OPEN     clash file` with the XML, then two groups, 1A02MM first and 1A04PK second, each with the lines of steps 551 and 552 and the tests of the XML found already there and left alone, since set 05 put them in
-560. Look for, in the second group of that run, 1A04PK's: its census line straight after the `DECIDE` step names the same models, sets, tests, results and views as the census line of the same copy run on its own, which you get by pressing `File`, picking the copy in `two` and pressing `Run NWFs` once more after step 566, and its workbook in `two\Clash Reports` carries only the tests 1A04PK's NWF holds and none named only in 1A02MM's, so nothing of the first NWF leaks into the second, since nothing is cleared between the two opens
-561. Look for, in `RESULT`: `groups done    : 2` and `NWFs picked    : 2 from` the path of `f129`, and a `SETS ACROSS THE RUN` block before it
-562. Untick `Include subfolders` and press `Run NWFs` again. Look for: a dialog beginning `The run cannot start.` and the line `RUN      refused before starting. The folder` the path of `f129` ` holds no NWF, and its subfolders were not read, because the box to include them is unticked.`, and no group started
-563. Tick `Include subfolders` again, make a folder `three` in `f129` and copy the 1A02MM copy of `one` into it
-564. Pick a folder of your own in the Excel folder box on step 3 and press `Run NWFs`. Look for: the dialog and a `RUN      refused before starting.` line naming the copy in `one` and the copy in `three` `would both write` the workbook path in your Excel folder `, so the second would write over the first`, and no group started
-565. Clear the Excel folder box and delete the folder `three`
-566. Type into the box the path of the NWD step 548 wrote in `one` and press `Run NWFs`. Look for: the dialog and the line `RUN      refused before starting. This document is a .nwd file and this tool runs an NWF, which is where the clash tests and their results live. Open the NWF instead.`, and no group started
-567. Send the log file named on the `log file` line of the SESSION block, say which of steps 546 to 566 did not read as written, and read off the `TIMING` blocks the `DECIDE` seconds of each picked NWF beside the `DECIDE` seconds of the same group in set 05's runs
+581. Build and install main once F129 has merged, steps 7 to 12
+582. In Explorer, make a folder `f129` under `%LOCALAPPDATA%\NwcFederatorLoop\runs\05`, and in it two folders, `one` and `two`
+583. Copy into `one` the NWF set 05's run of C02 wrote for 1A02MM, the path named on that run's `files written` lines in RESULT, and nothing else
+584. Copy into `two` the NWF set 05's run of C04 wrote for 1A04PK, the same way, and nothing else
+585. Open the window, step 1. Source. Look for, under the Folder row: a row labelled `Existing NWF or folder of NWFs` with a box, the buttons `File`, `Folder` and `Run NWFs`, and under the box the grey line `Runs each where it sits, its NWD and report beside it`
+586. Press `File`, pick the 1A02MM copy in `one`. Look for, at the bottom of the step: `1 NWF found in` the copy's path `, 1 can run. Each writes its NWD and report beside it.`
+587. Clear the Clash XML box on step 4, leave every tick box as the runs of set 05 left it, and press `Run NWFs`. If a document is open, a question names what is discarded, press OK
+588. Look for, in a block headed `RUN SETTINGS`: `NWFs picked       :` the copy's path `, one file`, `include subfolders: not applicable, one file was picked`, `NWFs found        : 1`, `NWFs refused      : 0`, a line beginning `each NWF          : opened where it sits and run the way the open file run runs it`, `NWD               : beside each NWF with the extension swapped`, `reports           : in Clash Reports beside each NWF`, `source folder     : not applicable, nothing is scanned`, `grouping          : not applicable, each NWF is one group`, then the lines from `apply file to old:` to `report units     :` the scanned run writes
+589. Look for, after it: `OPEN     no XML picked, so the tests saved in the document run, or nothing runs when it holds none`, then the TEAMS lines of the kept map
+590. Look for, in the group: `GROUP    started  1104-PAR-1A02MM` with the rest of the copy's name `  its files are read once its NWF opens`, then `OPEN     running a picked NWF, opened by this run where it sits, no scan`, `OPEN     file` with the copy's path, `OPEN     NWD` with the same path ending `.nwd`, `OPEN     report` ending `(beside the file, no Excel folder picked)`
+591. Look for, then: a `DECIDE` step holding `OPEN     opening the picked NWF` and the load wait line, its closing `STEP` line ending `Weekly run`, then the census line naming what the document held. No `CLEAR` line and no `APPEND` line anywhere in the group. If instead the group reads `opened with no error and then reported no models at all`, the copy did not find its NWCs, which answers the UNKNOWN above: then the `DECIDE` step's closing `STEP` line ends `opened and read empty`, the `GROUP    finished` line reads `FAILED` and `Stopped (the NWF read empty)` and never `Weekly run`, RESULT reads `NWF read empty : 1` under the path counts, and the next step is to send the log
+592. Look for: the clash step saying it runs the tests saved in the document, the same count of tests as set 05's run of 1A02MM left in its NWF, and the group's `GROUP    finished` line reading `DONE` and `Weekly run`
+593. Look for, after the group: a block headed `PICKED NWF` whose lines read `decision      : picked NWF, opened by this run where it sits, its file list not compared, nothing appended and nothing cleared` and `grouping      : not applicable, each picked NWF is one group`, then `SOURCE   findings skipped, the picked NWFs have no scanned source folder to compare against`
+594. Look for, in `RESULT`: `groups done    : 1`, and right under `groups failed  : 0` the line `NWFs picked    : 1 from` the copy's path `, each run as the open file run runs it`, and among the files written the NWD in `one` and the workbook in `one\Clash Reports`, and no path under set 05's own folders
+595. In Explorer: `one` holds the copy, an NWD of the same name and a `Clash Reports` folder with the workbook, and the NWF and NWD set 05 wrote carry the times they had before step 587
+596. Press `Folder`, pick `f129` itself, keep `Include subfolders` ticked. Look for, at the bottom of the step: `2 NWFs found in` the path of `f129` `, 2 can run.`
+597. Pick in the Clash XML box the corrected XML set 05 picked and press `Run NWFs`
+598. Look for: `NWFs picked       :` the path of `f129` `, a folder`, `include subfolders: yes`, `NWFs found        : 2`, then `OPEN     clash file` with the XML, then two groups, 1A02MM first and 1A04PK second, each with the lines of steps 590 and 591 and the tests of the XML found already there and left alone, since set 05 put them in
+599. Look for, in the second group of that run, 1A04PK's: its census line straight after the `DECIDE` step names the same models, sets, tests, results and views as the census line of the same copy run on its own, which you get by pressing `File`, picking the copy in `two` and pressing `Run NWFs` once more after step 605, and its workbook in `two\Clash Reports` carries only the tests 1A04PK's NWF holds and none named only in 1A02MM's, so nothing of the first NWF leaks into the second, since nothing is cleared between the two opens
+600. Look for, in `RESULT`: `groups done    : 2` and `NWFs picked    : 2 from` the path of `f129`, and a `SETS ACROSS THE RUN` block before it
+601. Untick `Include subfolders` and press `Run NWFs` again. Look for: a dialog beginning `The run cannot start.` and the line `RUN      refused before starting. The folder` the path of `f129` ` holds no NWF, and its subfolders were not read, because the box to include them is unticked.`, and no group started
+602. Tick `Include subfolders` again, make a folder `three` in `f129` and copy the 1A02MM copy of `one` into it
+603. Pick a folder of your own in the Excel folder box on step 3 and press `Run NWFs`. Look for: the dialog and a `RUN      refused before starting.` line naming the copy in `one` and the copy in `three` `would both write` the workbook path in your Excel folder `, so the second would write over the first`, and no group started
+604. Clear the Excel folder box and delete the folder `three`
+605. Type into the box the path of the NWD step 587 wrote in `one` and press `Run NWFs`. Look for: the dialog and the line `RUN      refused before starting. This document is a .nwd file and this tool runs an NWF, which is where the clash tests and their results live. Open the NWF instead.`, and no group started
+606. Send the log file named on the `log file` line of the SESSION block, say which of steps 585 to 605 did not read as written, and read off the `TIMING` blocks the `DECIDE` seconds of each picked NWF beside the `DECIDE` seconds of the same group in set 05's runs
 
 ## Proof F34, the window, and F33, the units combo
 
