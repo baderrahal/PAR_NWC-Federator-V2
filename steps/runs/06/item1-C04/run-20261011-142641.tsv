@@ -1,0 +1,425 @@
+﻿time	seconds	group	step	event	name	number	text
+14:27:02.358	21.321	1A04PK	DECIDE	step started	DECIDE	0	
+14:27:02.362	21.325	1A04PK	DECIDE	census before	models	0	
+14:27:02.363	21.325	1A04PK	DECIDE	census before	sets	0	
+14:27:02.363	21.325	1A04PK	DECIDE	census before	tests	0	
+14:27:02.363	21.326	1A04PK	DECIDE	census before	results	0	
+14:27:02.363	21.326	1A04PK	DECIDE	census before	views	0	
+14:27:02.380	21.343	1A04PK		census after	models	0	
+14:27:02.380	21.344	1A04PK		census after	sets	0	
+14:27:02.381	21.344	1A04PK		census after	tests	0	
+14:27:02.381	21.344	1A04PK		census after	results	0	
+14:27:02.381	21.344	1A04PK		census after	views	0	
+14:27:02.386	21.348	1A04PK		step finished	DECIDE	0.022	First run
+14:27:02.405	21.369	1A04PK	APPEND	step started	APPEND	0	
+14:27:02.407	21.370	1A04PK	APPEND	census before	models	0	
+14:27:02.407	21.371	1A04PK	APPEND	census before	sets	0	
+14:27:02.407	21.371	1A04PK	APPEND	census before	tests	0	
+14:27:02.407	21.371	1A04PK	APPEND	census before	results	0	
+14:27:02.409	21.371	1A04PK	APPEND	census before	views	0	
+14:27:04.273	23.235	1A04PK	APPEND	appended	APPEND	21582228	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\06\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc
+14:27:05.258	24.221	1A04PK	APPEND	appended	APPEND	107281275	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\06\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc
+14:27:05.841	24.803	1A04PK	APPEND	appended	APPEND	24705684	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\06\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc
+14:27:06.065	25.027	1A04PK	APPEND	appended	APPEND	2177136	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\06\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc
+14:27:06.227	25.190	1A04PK	APPEND	appended	APPEND	490559	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\06\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc
+14:27:06.425	25.387	1A04PK	APPEND	appended	APPEND	3014645	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\06\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc
+14:27:06.680	25.642	1A04PK	APPEND	appended	APPEND	4501778	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\06\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc
+14:27:07.089	26.052	1A04PK	APPEND	appended	APPEND	13793539	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\06\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc
+14:27:07.303	26.265	1A04PK	APPEND	appended	APPEND	1175415	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\06\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc
+14:27:07.515	26.478	1A04PK	APPEND	appended	APPEND	136241	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\06\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc
+14:27:07.536	26.498	1A04PK		census after	models	10	
+14:27:07.536	26.498	1A04PK		census after	sets	0	
+14:27:07.536	26.498	1A04PK		census after	tests	0	
+14:27:07.537	26.499	1A04PK		census after	results	0	
+14:27:07.537	26.499	1A04PK		census after	views	105	
+14:27:07.541	26.502	1A04PK		step finished	APPEND	5.131	10 of 10 appended
+14:27:07.542	26.504	1A04PK	NWF SAVE	step started	NWF SAVE	0	
+14:27:07.545	26.507	1A04PK	NWF SAVE	census before	models	10	
+14:27:07.546	26.507	1A04PK	NWF SAVE	census before	sets	0	
+14:27:07.546	26.508	1A04PK	NWF SAVE	census before	tests	0	
+14:27:07.546	26.508	1A04PK	NWF SAVE	census before	results	0	
+14:27:07.546	26.508	1A04PK	NWF SAVE	census before	views	105	
+14:27:09.010	27.973	1A04PK	NWF SAVE	written	NWF	4744	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\06\\NMFed\\NWF\\C04\\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf
+14:27:09.014	27.976	1A04PK		census after	models	10	
+14:27:09.014	27.976	1A04PK		census after	sets	0	
+14:27:09.015	27.976	1A04PK		census after	tests	0	
+14:27:09.015	27.976	1A04PK		census after	results	0	
+14:27:09.015	27.977	1A04PK		census after	views	105	
+14:27:09.017	27.979	1A04PK		step finished	NWF SAVE	1.47	saved 4744 bytes
+14:27:09.021	27.983	1A04PK	UNITS	step started	UNITS	0	
+14:27:09.022	27.984	1A04PK	UNITS	census before	models	10	
+14:27:09.022	27.984	1A04PK	UNITS	census before	sets	0	
+14:27:09.023	27.985	1A04PK	UNITS	census before	tests	0	
+14:27:09.023	27.985	1A04PK	UNITS	census before	results	0	
+14:27:09.023	27.985	1A04PK	UNITS	census before	views	105	
+14:27:09.714	28.676	1A04PK		census after	models	10	
+14:27:09.714	28.677	1A04PK		census after	sets	0	
+14:27:09.715	28.677	1A04PK		census after	tests	0	
+14:27:09.715	28.677	1A04PK		census after	results	0	
+14:27:09.715	28.678	1A04PK		census after	views	105	
+14:27:09.717	28.679	1A04PK		step finished	UNITS	0.694	the document was asked for Meters
+14:27:09.784	28.746	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc	685385.01	IRPS-SharedCoordinate
+14:27:09.784	28.746	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc	687385.01	IP3_Shared_Location
+14:27:09.785	28.747	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc	686285.01	16-S01
+14:27:09.785	28.747	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc	686285.01	16-S01
+14:27:09.785	28.747	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc	683024.01	IRR INFRA-05
+14:27:09.786	28.747	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc	685435.01	MECH_IRPS1_CHLORINATION
+14:27:09.786	28.748	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc	678205.01	IRR SITE -03
+14:27:09.786	28.748	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc	686285.01	16-S01
+14:27:09.786	28.748	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc	685435.01	IPS-A(1)
+14:27:09.787	28.749	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc	682485.01	Internal
+14:27:11.815	30.776	1A04PK		model export	1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc	6057	elements 6057   with a workset 6057   worksets 3   element id 100%
+14:27:11.815	30.776	1A04PK		model export	1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc	6515	elements 6515   with a workset 6515   worksets 11   element id 100%
+14:27:11.815	30.777	1A04PK		model export	1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc	12127	elements 12127   with a workset 12127   worksets 1   element id 100%
+14:27:11.816	30.777	1A04PK		model export	1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc	2409	elements 2409   with a workset 2409   worksets 3   element id 100%
+14:27:11.816	30.777	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc	80	elements 80   with a workset 80   worksets 1   element id 100%
+14:27:11.816	30.777	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc	277	elements 277   with a workset 277   worksets 2   element id 100%
+14:27:11.816	30.777	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc	869	elements 869   with a workset 869   worksets 2   element id 100%
+14:27:11.816	30.778	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc	5372	elements 5372   with a workset 5372   worksets 3   element id 100%
+14:27:11.817	30.778	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc	1381	elements 1381   with a workset 1381   worksets 2   element id 100%
+14:27:11.817	30.778	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc	11	elements 11   with a workset 11   worksets 2   element id 100%
+14:27:11.817	30.779	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc	3	AR-EXTERIOR | +LINK-FP-IRRIGATION PUMPING STATION | AR-INTERIOR
+14:27:11.818	30.779	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc	11	EV-Containment | EL-Containment | EL-Lightning Protection | EV-IT | EL-Power | EL-Electrical Equipment | EL-Lighting | EL-Fire alarm | 00-EL-Levels Grids | EV-Cctv system | EV-Access Control
+14:27:11.818	30.779	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc	1	FF-Fire Fighting
+14:27:11.818	30.779	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc	3	ME-Ductwork | ME-PIPING | PL-Drainage
+14:27:11.818	30.779	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc	1	ME-Piping
+14:27:11.818	30.780	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc	2	ME-Piping | ME-Equipment
+14:27:11.819	30.780	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc	2	ME-Piping | ME-Equipment
+14:27:11.819	30.780	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc	3	PL-Domestic Water | PL-Drainage | PUMP ROOM
+14:27:11.819	30.781	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc	2	ST-SUP | ST-SUB
+14:27:11.820	30.781	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc	2	STR-SUB STRUCTURE | ST-SUB
+14:27:11.854	30.815	1A04PK	SETS	step started	SETS	0	
+14:27:11.855	30.816	1A04PK	SETS	census before	models	10	
+14:27:11.855	30.816	1A04PK	SETS	census before	sets	0	
+14:27:11.855	30.817	1A04PK	SETS	census before	tests	0	
+14:27:11.855	30.817	1A04PK	SETS	census before	results	0	
+14:27:11.856	30.817	1A04PK	SETS	census before	views	105	
+14:27:22.654	41.614	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-AR-MOD-000001	0	items in 1A04PK
+14:27:22.654	41.614	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-EL-MOD-000001	0	items in 1A04PK
+14:27:22.655	41.615	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-FP-MOD-000001	3	items in 1A04PK
+14:27:22.664	41.625	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-HV-MOD-000001	0	items in 1A04PK
+14:27:22.664	41.625	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000001	0	items in 1A04PK
+14:27:22.664	41.625	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000002	0	items in 1A04PK
+14:27:22.665	41.625	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000003	0	items in 1A04PK
+14:27:22.665	41.626	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000004	0	items in 1A04PK
+14:27:22.665	41.626	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ST-MOD-000001	528	items in 1A04PK
+14:27:22.665	41.626	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ST-MOD-000002	3	items in 1A04PK
+14:27:22.669	41.630	1A04PK		census after	models	10	
+14:27:22.669	41.630	1A04PK		census after	sets	71	
+14:27:22.670	41.630	1A04PK		census after	tests	0	
+14:27:22.670	41.631	1A04PK		census after	results	0	
+14:27:22.670	41.631	1A04PK		census after	views	105	
+14:27:22.672	41.632	1A04PK		step finished	SETS	10.814	61 created (39 finding items, 22 at zero), 0 already there.. Generic Models: 10 created (3 finding items, 7 at zero), 0 already there.
+14:27:22.994	41.954	1A04PK	TESTS CREATE	step started	TESTS CREATE	0	
+14:27:22.996	41.956	1A04PK	TESTS CREATE	census before	models	10	
+14:27:22.996	41.956	1A04PK	TESTS CREATE	census before	sets	71	
+14:27:22.996	41.956	1A04PK	TESTS CREATE	census before	tests	0	
+14:27:22.997	41.956	1A04PK	TESTS CREATE	census before	results	0	
+14:27:22.997	41.957	1A04PK	TESTS CREATE	census before	views	105	
+14:27:23.045	42.005	1A04PK	TESTS CREATE	test created	BLD-AR-Stairs-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+14:27:23.077	42.037	1A04PK		census after	models	10	
+14:27:23.077	42.037	1A04PK		census after	sets	71	
+14:27:23.077	42.037	1A04PK		census after	tests	1	
+14:27:23.077	42.037	1A04PK		census after	results	0	
+14:27:23.078	42.038	1A04PK		census after	views	105	
+14:27:23.079	42.039	1A04PK		step finished	TESTS CREATE	0.082	BLD-AR-Stairs-vs-BLD-AR-Floors
+14:27:23.083	42.043	1A04PK	TESTS RUN	step started	TESTS RUN	0	
+14:27:23.085	42.045	1A04PK	TESTS RUN	census before	models	10	
+14:27:23.085	42.045	1A04PK	TESTS RUN	census before	sets	71	
+14:27:23.085	42.045	1A04PK	TESTS RUN	census before	tests	1	
+14:27:23.086	42.046	1A04PK	TESTS RUN	census before	results	0	
+14:27:23.086	42.046	1A04PK	TESTS RUN	census before	views	105	
+14:27:23.194	42.154	1A04PK		census after	models	10	
+14:27:23.194	42.155	1A04PK		census after	sets	71	
+14:27:23.194	42.155	1A04PK		census after	tests	1	
+14:27:23.194	42.155	1A04PK		census after	results	7	
+14:27:23.195	42.155	1A04PK		census after	views	105	
+14:27:23.196	42.157	1A04PK		step finished	TESTS RUN	0.111	BLD-AR-Stairs-vs-BLD-AR-Floors
+14:27:23.201	42.162	1A04PK	HARVEST	step started	HARVEST	0	
+14:27:23.203	42.163	1A04PK	HARVEST	census before	models	10	
+14:27:23.204	42.164	1A04PK	HARVEST	census before	sets	71	
+14:27:23.204	42.164	1A04PK	HARVEST	census before	tests	1	
+14:27:23.204	42.164	1A04PK	HARVEST	census before	results	7	
+14:27:23.204	42.165	1A04PK	HARVEST	census before	views	105	
+14:27:23.264	42.224	1A04PK	IMAGES	step started	IMAGES	0	
+14:27:23.266	42.226	1A04PK	IMAGES	census before	models	10	
+14:27:23.266	42.226	1A04PK	IMAGES	census before	sets	71	
+14:27:23.266	42.226	1A04PK	IMAGES	census before	tests	1	
+14:27:23.266	42.227	1A04PK	IMAGES	census before	results	7	
+14:27:23.267	42.227	1A04PK	IMAGES	census before	views	105	
+14:27:23.558	42.518	1A04PK	HARVEST	census after	models	10	
+14:27:23.558	42.519	1A04PK	HARVEST	census after	sets	71	
+14:27:23.558	42.519	1A04PK	HARVEST	census after	tests	1	
+14:27:23.558	42.519	1A04PK	HARVEST	census after	results	7	
+14:27:23.559	42.519	1A04PK	HARVEST	census after	views	105	
+14:27:23.560	42.521	1A04PK	HARVEST	step finished	IMAGES	0.294	BLD-AR-Stairs-vs-BLD-AR-Floors
+14:27:25.414	44.375	1A04PK		census after	models	10	
+14:27:25.414	44.375	1A04PK		census after	sets	71	
+14:27:25.416	44.375	1A04PK		census after	tests	1	
+14:27:25.416	44.376	1A04PK		census after	results	7	
+14:27:25.416	44.376	1A04PK		census after	views	105	
+14:27:25.417	44.378	1A04PK		step finished	HARVEST	2.213	BLD-AR-Stairs-vs-BLD-AR-Floors
+14:27:25.419	44.379	1A04PK		rows for the workbook	BLD-AR-Stairs-vs-BLD-AR-Floors	7	7 in the document
+14:27:25.422	44.382	1A04PK		test found clashes	BLD-AR-Stairs-vs-BLD-AR-Floors	7	ran and found clashes
+14:27:25.479	44.439	1A04PK	TESTS CREATE	test created	BLD-AR-Ramps-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+14:44:14.400	1053.327	1A04PK		rows for the workbook	BLD-AR-Ramps-vs-BLD-AR-Floors	97	97 in the document
+14:44:14.402	1053.330	1A04PK		test found clashes	BLD-AR-Ramps-vs-BLD-AR-Floors	97	ran and found clashes
+14:44:14.528	1053.456	1A04PK	TESTS CREATE	test created	BLD-AR-Ramps-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+14:44:14.655	1053.583	1A04PK		rows for the workbook	BLD-AR-Ramps-vs-BLD-AR-Stairs	0	0 in the document
+14:44:14.658	1053.586	1A04PK		test passed	BLD-AR-Ramps-vs-BLD-AR-Stairs	0	ran and found nothing
+14:44:14.699	1053.627	1A04PK	TESTS CREATE	test created	BLD-AR-Walls-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:21:11.912	6870.755	1A04PK		rows for the workbook	BLD-AR-Walls-vs-BLD-AR-Floors	1556	1556 in the document
+16:21:11.914	6870.758	1A04PK		test found clashes	BLD-AR-Walls-vs-BLD-AR-Floors	1556	ran and found clashes
+16:21:12.153	6870.997	1A04PK	TESTS CREATE	test created	BLD-AR-Walls-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:25:03.299	7102.142	1A04PK		rows for the workbook	BLD-AR-Walls-vs-BLD-AR-Stairs	71	71 in the document
+16:25:03.301	7102.144	1A04PK		test found clashes	BLD-AR-Walls-vs-BLD-AR-Stairs	71	ran and found clashes
+16:25:03.469	7102.312	1A04PK	TESTS CREATE	test created	BLD-AR-Walls-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:29:04.555	7343.399	1A04PK		rows for the workbook	BLD-AR-Walls-vs-BLD-AR-Ramps	24	24 in the document
+16:29:04.558	7343.401	1A04PK		test found clashes	BLD-AR-Walls-vs-BLD-AR-Ramps	24	ran and found clashes
+16:29:04.656	7343.500	1A04PK	TESTS CREATE	test created	BLD-AR-Windows-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:29:04.781	7343.625	1A04PK		rows for the workbook	BLD-AR-Windows-vs-BLD-AR-Floors	0	0 in the document
+16:29:04.781	7343.625	1A04PK		test passed	BLD-AR-Windows-vs-BLD-AR-Floors	0	ran and found nothing
+16:29:04.812	7343.655	1A04PK	TESTS CREATE	test created	BLD-AR-Windows-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:29:04.921	7343.764	1A04PK		rows for the workbook	BLD-AR-Windows-vs-BLD-AR-Stairs	0	0 in the document
+16:29:04.921	7343.765	1A04PK		test passed	BLD-AR-Windows-vs-BLD-AR-Stairs	0	ran and found nothing
+16:29:04.951	7343.794	1A04PK	TESTS CREATE	test created	BLD-AR-Windows-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:29:05.058	7343.901	1A04PK		rows for the workbook	BLD-AR-Windows-vs-BLD-AR-Ramps	0	0 in the document
+16:29:05.059	7343.902	1A04PK		test passed	BLD-AR-Windows-vs-BLD-AR-Ramps	0	ran and found nothing
+16:29:05.087	7343.930	1A04PK	TESTS CREATE	test created	BLD-AR-Windows-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:29:07.410	7346.253	1A04PK		rows for the workbook	BLD-AR-Windows-vs-BLD-AR-Walls	7	7 in the document
+16:29:07.410	7346.254	1A04PK		test found clashes	BLD-AR-Windows-vs-BLD-AR-Walls	7	ran and found clashes
+16:29:07.476	7346.320	1A04PK	TESTS CREATE	test created	BLD-AR-Doors-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:29:07.667	7346.510	1A04PK		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Floors	0	0 in the document
+16:29:07.667	7346.511	1A04PK		test passed	BLD-AR-Doors-vs-BLD-AR-Floors	0	ran and found nothing
+16:29:07.697	7346.540	1A04PK	TESTS CREATE	test created	BLD-AR-Doors-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:29:07.781	7346.624	1A04PK		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Stairs	0	0 in the document
+16:29:07.781	7346.625	1A04PK		test passed	BLD-AR-Doors-vs-BLD-AR-Stairs	0	ran and found nothing
+16:29:07.822	7346.665	1A04PK	TESTS CREATE	test created	BLD-AR-Doors-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:29:07.897	7346.740	1A04PK		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Ramps	0	0 in the document
+16:29:07.897	7346.740	1A04PK		test passed	BLD-AR-Doors-vs-BLD-AR-Ramps	0	ran and found nothing
+16:29:07.944	7346.787	1A04PK	TESTS CREATE	test created	BLD-AR-Doors-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:40:23.198	8022.041	1A04PK		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Walls	300	300 in the document
+16:40:23.199	8022.042	1A04PK		test found clashes	BLD-AR-Doors-vs-BLD-AR-Walls	300	ran and found clashes
+16:40:23.259	8022.102	1A04PK	TESTS CREATE	test created	BLD-AR-Doors-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:40:23.339	8022.182	1A04PK		rows for the workbook	BLD-AR-Doors-vs-BLD-AR-Windows	0	0 in the document
+16:40:23.339	8022.182	1A04PK		test passed	BLD-AR-Doors-vs-BLD-AR-Windows	0	ran and found nothing
+16:40:23.398	8022.241	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:40:23.616	8022.459	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Floors	0	0 in the document
+16:40:23.617	8022.460	1A04PK		test passed	BLD-AR-Parking-vs-BLD-AR-Floors	0	ran and found nothing
+16:40:23.650	8022.493	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:40:23.731	8022.574	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Stairs	0	0 in the document
+16:40:23.731	8022.574	1A04PK		test passed	BLD-AR-Parking-vs-BLD-AR-Stairs	0	ran and found nothing
+16:40:23.759	8022.601	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:40:23.841	8022.683	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Ramps	0	0 in the document
+16:40:23.841	8022.684	1A04PK		test passed	BLD-AR-Parking-vs-BLD-AR-Ramps	0	ran and found nothing
+16:40:23.899	8022.742	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:40:23.984	8022.826	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Walls	0	0 in the document
+16:40:23.984	8022.827	1A04PK		test passed	BLD-AR-Parking-vs-BLD-AR-Walls	0	ran and found nothing
+16:40:24.038	8022.881	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:40:24.145	8022.988	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Windows	0	0 in the document
+16:40:24.145	8022.989	1A04PK		test passed	BLD-AR-Parking-vs-BLD-AR-Windows	0	ran and found nothing
+16:40:24.195	8023.037	1A04PK	TESTS CREATE	test created	BLD-AR-Parking-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:40:24.300	8023.143	1A04PK		rows for the workbook	BLD-AR-Parking-vs-BLD-AR-Doors	0	0 in the document
+16:40:24.300	8023.143	1A04PK		test passed	BLD-AR-Parking-vs-BLD-AR-Doors	0	ran and found nothing
+16:40:24.334	8023.177	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:40:25.124	8023.966	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Floors	1	1 in the document
+16:40:25.124	8023.967	1A04PK		test found clashes	BLD-AR-Railings-vs-BLD-AR-Floors	1	ran and found clashes
+16:40:25.163	8024.005	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:06.378	8065.221	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Stairs	20	20 in the document
+16:41:06.379	8065.221	1A04PK		test found clashes	BLD-AR-Railings-vs-BLD-AR-Stairs	20	ran and found clashes
+16:41:06.455	8065.297	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:06.533	8065.375	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Ramps	0	0 in the document
+16:41:06.533	8065.376	1A04PK		test passed	BLD-AR-Railings-vs-BLD-AR-Ramps	0	ran and found nothing
+16:41:06.566	8065.409	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:12.225	8071.068	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Walls	25	25 in the document
+16:41:12.226	8071.069	1A04PK		test found clashes	BLD-AR-Railings-vs-BLD-AR-Walls	25	ran and found clashes
+16:41:12.269	8071.111	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:12.361	8071.203	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Windows	0	0 in the document
+16:41:12.361	8071.203	1A04PK		test passed	BLD-AR-Railings-vs-BLD-AR-Windows	0	ran and found nothing
+16:41:12.396	8071.238	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:12.469	8071.312	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Doors	0	0 in the document
+16:41:12.470	8071.313	1A04PK		test passed	BLD-AR-Railings-vs-BLD-AR-Doors	0	ran and found nothing
+16:41:12.501	8071.344	1A04PK	TESTS CREATE	test created	BLD-AR-Railings-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:12.592	8071.435	1A04PK		rows for the workbook	BLD-AR-Railings-vs-BLD-AR-Parking	0	0 in the document
+16:41:12.592	8071.435	1A04PK		test passed	BLD-AR-Railings-vs-BLD-AR-Parking	0	ran and found nothing
+16:41:12.626	8071.468	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:12.714	8071.556	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Floors	0	0 in the document
+16:41:12.715	8071.557	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Floors	0	ran and found nothing
+16:41:12.751	8071.594	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:12.825	8071.668	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Stairs	0	0 in the document
+16:41:12.825	8071.668	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Stairs	0	ran and found nothing
+16:41:12.862	8071.704	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:12.934	8071.777	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Ramps	0	0 in the document
+16:41:12.934	8071.777	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Ramps	0	ran and found nothing
+16:41:12.970	8071.813	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:44.487	8103.330	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Walls	3	3 in the document
+16:41:44.487	8103.330	1A04PK		test found clashes	BLD-AR-Site-vs-BLD-AR-Walls	3	ran and found clashes
+16:41:44.556	8103.398	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:44.648	8103.491	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Windows	0	0 in the document
+16:41:44.648	8103.491	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Windows	0	ran and found nothing
+16:41:44.681	8103.524	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:44.750	8103.593	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Doors	0	0 in the document
+16:41:44.750	8103.593	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Doors	0	ran and found nothing
+16:41:44.790	8103.633	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:44.868	8103.711	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Parking	0	0 in the document
+16:41:44.868	8103.711	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Parking	0	ran and found nothing
+16:41:44.900	8103.743	1A04PK	TESTS CREATE	test created	BLD-AR-Site-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:44.976	8103.819	1A04PK		rows for the workbook	BLD-AR-Site-vs-BLD-AR-Railings	0	0 in the document
+16:41:44.976	8103.819	1A04PK		test passed	BLD-AR-Site-vs-BLD-AR-Railings	0	ran and found nothing
+16:41:45.023	8103.866	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:45.131	8103.973	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Floors	0	0 in the document
+16:41:45.131	8103.974	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Floors	0	ran and found nothing
+16:41:45.178	8104.021	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:45.364	8104.207	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Stairs	1	1 in the document
+16:41:45.365	8104.207	1A04PK		test found clashes	BLD-ST-Foundation-vs-BLD-AR-Stairs	1	ran and found clashes
+16:41:45.398	8104.241	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:41:45.506	8104.348	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Ramps	0	0 in the document
+16:41:45.506	8104.348	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Ramps	0	ran and found nothing
+16:41:45.555	8104.397	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:42:08.655	8127.498	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Walls	16	16 in the document
+16:42:08.655	8127.498	1A04PK		test found clashes	BLD-ST-Foundation-vs-BLD-AR-Walls	16	ran and found clashes
+16:42:08.713	8127.556	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:42:08.794	8127.636	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Windows	0	0 in the document
+16:42:08.794	8127.637	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Windows	0	ran and found nothing
+16:42:08.821	8127.664	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:42:08.898	8127.741	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Doors	0	0 in the document
+16:42:08.898	8127.741	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Doors	0	ran and found nothing
+16:42:08.961	8127.804	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:42:09.069	8127.912	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Parking	0	0 in the document
+16:42:09.069	8127.912	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Parking	0	ran and found nothing
+16:42:09.133	8127.976	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:42:09.241	8128.083	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Railings	0	0 in the document
+16:42:09.241	8128.084	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Railings	0	ran and found nothing
+16:42:09.275	8128.118	1A04PK	TESTS CREATE	test created	BLD-ST-Foundation-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+16:42:09.350	8128.193	1A04PK		rows for the workbook	BLD-ST-Foundation-vs-BLD-AR-Site	0	0 in the document
+16:42:09.350	8128.193	1A04PK		test passed	BLD-ST-Foundation-vs-BLD-AR-Site	0	ran and found nothing
+16:42:09.384	8128.227	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+17:59:28.347	12767.119	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Floors	345	345 in the document
+17:59:28.348	12767.119	1A04PK		test found clashes	BLD-ST-Columns-vs-BLD-AR-Floors	345	ran and found clashes
+17:59:28.423	12767.195	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+17:59:28.530	12767.301	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Stairs	0	0 in the document
+17:59:28.530	12767.301	1A04PK		test passed	BLD-ST-Columns-vs-BLD-AR-Stairs	0	ran and found nothing
+17:59:28.596	12767.367	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+17:59:28.703	12767.475	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Ramps	0	0 in the document
+17:59:28.704	12767.475	1A04PK		test passed	BLD-ST-Columns-vs-BLD-AR-Ramps	0	ran and found nothing
+17:59:28.767	12767.538	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:00:09.176	12807.948	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Walls	23	23 in the document
+18:00:09.176	12807.948	1A04PK		test found clashes	BLD-ST-Columns-vs-BLD-AR-Walls	23	ran and found clashes
+18:00:09.239	12808.010	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:00:09.329	12808.100	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Windows	0	0 in the document
+18:00:09.329	12808.100	1A04PK		test passed	BLD-ST-Columns-vs-BLD-AR-Windows	0	ran and found nothing
+18:00:09.362	12808.134	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:00:09.454	12808.225	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Doors	0	0 in the document
+18:00:09.454	12808.226	1A04PK		test passed	BLD-ST-Columns-vs-BLD-AR-Doors	0	ran and found nothing
+18:00:09.488	12808.259	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:10:12.742	13411.502	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Parking	128	128 in the document
+18:10:12.743	13411.502	1A04PK		test found clashes	BLD-ST-Columns-vs-BLD-AR-Parking	128	ran and found clashes
+18:10:12.812	13411.572	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:10:12.895	13411.655	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Railings	0	0 in the document
+18:10:12.895	13411.655	1A04PK		test passed	BLD-ST-Columns-vs-BLD-AR-Railings	0	ran and found nothing
+18:10:12.937	13411.697	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:10:42.161	13440.920	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-AR-Site	3	3 in the document
+18:10:42.162	13440.920	1A04PK		test found clashes	BLD-ST-Columns-vs-BLD-AR-Site	3	ran and found clashes
+18:10:42.221	13440.980	1A04PK	TESTS CREATE	test created	BLD-ST-Columns-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:12:58.860	13577.613	1A04PK		rows for the workbook	BLD-ST-Columns-vs-BLD-ST-Foundation	21	21 in the document
+18:12:58.860	13577.614	1A04PK		test found clashes	BLD-ST-Columns-vs-BLD-ST-Foundation	21	ran and found clashes
+18:12:58.920	13577.674	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:17:55.710	13874.459	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Floors	27	27 in the document
+18:17:55.711	13874.459	1A04PK		test found clashes	BLD-ST-Framing-vs-BLD-AR-Floors	27	ran and found clashes
+18:17:55.780	13874.529	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:17:55.855	13874.604	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Stairs	0	0 in the document
+18:17:55.856	13874.605	1A04PK		test passed	BLD-ST-Framing-vs-BLD-AR-Stairs	0	ran and found nothing
+18:17:55.887	13874.636	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:17:55.980	13874.729	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Ramps	0	0 in the document
+18:17:55.980	13874.729	1A04PK		test passed	BLD-ST-Framing-vs-BLD-AR-Ramps	0	ran and found nothing
+18:17:56.015	13874.763	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:17:56.092	13874.840	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Walls	0	0 in the document
+18:17:56.092	13874.841	1A04PK		test passed	BLD-ST-Framing-vs-BLD-AR-Walls	0	ran and found nothing
+18:17:56.127	13874.876	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:17:56.203	13874.951	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Windows	0	0 in the document
+18:17:56.203	13874.952	1A04PK		test passed	BLD-ST-Framing-vs-BLD-AR-Windows	0	ran and found nothing
+18:17:56.236	13874.984	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:17:56.309	13875.058	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Doors	0	0 in the document
+18:17:56.309	13875.058	1A04PK		test passed	BLD-ST-Framing-vs-BLD-AR-Doors	0	ran and found nothing
+18:17:56.345	13875.094	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:21:32.708	14091.455	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Parking	27	27 in the document
+18:21:32.709	14091.456	1A04PK		test found clashes	BLD-ST-Framing-vs-BLD-AR-Parking	27	ran and found clashes
+18:21:32.798	14091.545	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:21:32.870	14091.618	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Railings	0	0 in the document
+18:21:32.871	14091.618	1A04PK		test passed	BLD-ST-Framing-vs-BLD-AR-Railings	0	ran and found nothing
+18:21:32.903	14091.651	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:22:14.489	14133.236	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-AR-Site	9	9 in the document
+18:22:14.489	14133.237	1A04PK		test found clashes	BLD-ST-Framing-vs-BLD-AR-Site	9	ran and found clashes
+18:22:14.572	14133.319	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:22:14.657	14133.404	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-ST-Foundation	0	0 in the document
+18:22:14.657	14133.404	1A04PK		test passed	BLD-ST-Framing-vs-BLD-ST-Foundation	0	ran and found nothing
+18:22:14.696	14133.443	1A04PK	TESTS CREATE	test created	BLD-ST-Framing-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:50:43.609	15842.325	1A04PK		rows for the workbook	BLD-ST-Framing-vs-BLD-ST-Columns	537	537 in the document
+18:50:43.609	15842.325	1A04PK		test found clashes	BLD-ST-Framing-vs-BLD-ST-Columns	537	ran and found clashes
+18:50:43.677	15842.393	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:52:43.032	15961.746	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Floors	14	14 in the document
+18:52:43.032	15961.747	1A04PK		test found clashes	BLD-ST-Walls-vs-BLD-AR-Floors	14	ran and found clashes
+18:52:43.104	15961.819	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:52:43.191	15961.906	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Stairs	0	0 in the document
+18:52:43.191	15961.906	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Stairs	0	ran and found nothing
+18:52:43.229	15961.943	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:52:43.314	15962.028	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Ramps	0	0 in the document
+18:52:43.314	15962.029	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Ramps	0	ran and found nothing
+18:52:43.354	15962.069	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:52:46.719	15965.434	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Walls	10	10 in the document
+18:52:46.720	15965.434	1A04PK		test found clashes	BLD-ST-Walls-vs-BLD-AR-Walls	10	ran and found clashes
+18:52:46.747	15965.462	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:52:46.839	15965.554	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Windows	0	0 in the document
+18:52:46.840	15965.555	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Windows	0	ran and found nothing
+18:52:46.874	15965.589	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:52:46.949	15965.664	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Doors	0	0 in the document
+18:52:46.950	15965.664	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Doors	0	ran and found nothing
+18:52:46.983	15965.698	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:52:47.063	15965.778	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Parking	0	0 in the document
+18:52:47.063	15965.778	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Parking	0	ran and found nothing
+18:52:47.109	15965.823	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:52:47.204	15965.919	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Railings	0	0 in the document
+18:52:47.204	15965.919	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Railings	0	ran and found nothing
+18:52:47.262	15965.977	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:52:47.345	15966.060	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-AR-Site	0	0 in the document
+18:52:47.345	15966.060	1A04PK		test passed	BLD-ST-Walls-vs-BLD-AR-Site	0	ran and found nothing
+18:52:47.388	15966.102	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+18:53:50.011	16028.725	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-ST-Foundation	25	25 in the document
+18:53:50.011	16028.725	1A04PK		test found clashes	BLD-ST-Walls-vs-BLD-ST-Foundation	25	ran and found clashes
+18:53:50.085	16028.799	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:03:01.444	16580.155	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-ST-Columns	88	88 in the document
+19:03:01.445	16580.156	1A04PK		test found clashes	BLD-ST-Walls-vs-BLD-ST-Columns	88	ran and found clashes
+19:03:01.628	16580.340	1A04PK	TESTS CREATE	test created	BLD-ST-Walls-vs-BLD-ST-Framing	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:04:14.800	16653.511	1A04PK		rows for the workbook	BLD-ST-Walls-vs-BLD-ST-Framing	29	29 in the document
+19:04:14.801	16653.511	1A04PK		test found clashes	BLD-ST-Walls-vs-BLD-ST-Framing	29	ran and found clashes
+19:04:14.875	16653.586	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:04:38.443	16677.154	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Floors	5	5 in the document
+19:04:38.443	16677.154	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-AR-Floors	5	ran and found clashes
+19:04:38.502	16677.213	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:04:54.106	16692.816	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Stairs	9	9 in the document
+19:04:54.106	16692.817	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-AR-Stairs	9	ran and found clashes
+19:04:54.159	16692.869	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Ramps	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:06:05.729	16764.439	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Ramps	10	10 in the document
+19:06:05.729	16764.440	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-AR-Ramps	10	ran and found clashes
+19:06:05.804	16764.515	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Walls	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:24:16.615	17855.309	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Walls	800	800 in the document
+19:24:16.615	17855.309	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-AR-Walls	800	ran and found clashes
+19:24:16.686	17855.381	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Windows	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:24:16.779	17855.474	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Windows	0	0 in the document
+19:24:16.779	17855.474	1A04PK		test passed	BLD-ST-Floors-vs-BLD-AR-Windows	0	ran and found nothing
+19:24:16.830	17855.524	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Doors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:24:16.907	17855.602	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Doors	0	0 in the document
+19:24:16.907	17855.602	1A04PK		test passed	BLD-ST-Floors-vs-BLD-AR-Doors	0	ran and found nothing
+19:24:16.953	17855.647	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Parking	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:24:17.049	17855.744	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Parking	0	0 in the document
+19:24:17.049	17855.744	1A04PK		test passed	BLD-ST-Floors-vs-BLD-AR-Parking	0	ran and found nothing
+19:24:17.081	17855.777	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Railings	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:24:17.512	17856.207	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Railings	1	1 in the document
+19:24:17.513	17856.208	1A04PK		test found clashes	BLD-ST-Floors-vs-BLD-AR-Railings	1	ran and found clashes
+19:24:17.537	17856.232	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-AR-Site	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:24:17.608	17856.303	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-AR-Site	0	0 in the document
+19:24:17.608	17856.304	1A04PK		test passed	BLD-ST-Floors-vs-BLD-AR-Site	0	ran and found nothing
+19:24:17.642	17856.338	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-ST-Foundation	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+19:24:17.720	17856.415	1A04PK		rows for the workbook	BLD-ST-Floors-vs-BLD-ST-Foundation	0	0 in the document
+19:24:17.720	17856.415	1A04PK		test passed	BLD-ST-Floors-vs-BLD-ST-Foundation	0	ran and found nothing
+19:24:17.754	17856.449	1A04PK	TESTS CREATE	test created	BLD-ST-Floors-vs-BLD-ST-Columns	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft

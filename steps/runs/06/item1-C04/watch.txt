@@ -1,0 +1,41 @@
+14:25:15.913  t+1.6s  watchdog started
+14:25:26.263  t+11.9s  Roamer pid 896 seen with no readable start time, looked at again at the next pass
+14:25:33.406  t+19.0s  new process Roamer pid 896, parent 1976 svchost.exe, started 14:25:26.159, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+14:25:33.500  t+19.1s  Roamer 896 visible top level windows: none
+14:26:09.259  t+54.9s  new process AdskLicensingInstHelper pid 8660, parent 26484 GenuineService.exe, started 14:26:02.404, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:26:16.398  t+62.0s  new process AdskLicensingAgent pid 17224, parent 896 Roamer.exe, started 14:26:04.641, command line holds the word embedding or automation: no
+14:26:23.147  t+68.8s  new process AdskLicensingAgent pid 26216, parent 896 Roamer.exe, started 14:26:03.987, command line holds the word embedding or automation: no
+14:26:25.831  t+71.5s  Roamer 896 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+14:26:31.254  t+76.9s  Roamer 896 visible top level windows: none
+14:26:38.230  t+83.9s  Roamer 896 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+14:26:39.299  t+84.9s  Roamer 896 visible top level windows: none
+14:26:40.410  t+86.0s  Roamer 896 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+14:26:41.532  t+87.2s  Roamer 896 visible top level windows: [HwndWrapper[Roamer.exe;;b9438705-d458-47dd-b10e-9d33cf788dc5]] "Parsons NWC Federator   [1.0.0.0 4bc4c83d built 2026-10-11 13:04:29]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+14:27:01.958  t+107.6s  Roamer 896 visible top level windows: [#32770] "Parsons NWC Federator" text: "OK" "Cancel" "This run federates 1 group.    First run: 1. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus XML: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is brought up to date without clearing it, and a shape that cannot be is cleared and rebuilt with its saved tests kept. Only known once each NWF is opened.    Nothing is open at the moment, so nothing is lost.    Carry on?" | [HwndWrapper[Roamer.exe;;b9438705-d458-47dd-b10e-9d33cf788dc5]] "Parsons NWC Federator   [1.0.0.0 4bc4c83d built 2026-10-11 13:04:29]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+14:27:07.908  t+113.5s  new process AdskLicensingInstHelper pid 28548, parent 26484 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:27:07.951  t+113.6s  Roamer 896 visible top level windows: [HwndWrapper[Roamer.exe;;b9438705-d458-47dd-b10e-9d33cf788dc5]] "Parsons NWC Federator   [1.0.0.0 4bc4c83d built 2026-10-11 13:04:29]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+14:29:07.743  t+233.4s  new process AdskLicensingInstHelper pid 46948, parent 26484 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:30:09.441  t+295.1s  new process AdskLicensingInstHelper pid 36140, parent 26484 GenuineService.exe, started 14:30:02.395, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:34:07.243  t+532.9s  new process AdskLicensingInstHelper pid 39900, parent 26484 GenuineService.exe, started 14:34:02.379, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:35:06.400  t+592.0s  new process AdskLicensingInstHelper pid 48136, parent 26484 GenuineService.exe, started 14:35:02.379, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:36:12.275  t+657.9s  new process AdskLicensingInstHelper pid 44900, parent 26484 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:37:14.451  t+720.1s  new process AdskLicensingInstHelper pid 48448, parent 26484 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:38:09.206  t+774.8s  new process AdskLicensingInstHelper pid 36808, parent 26484 GenuineService.exe, started 14:38:02.380, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:39:07.166  t+832.8s  new process AdskLicensingInstHelper pid 41788, parent 26484 GenuineService.exe, started 14:39:02.378, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:45:08.797  t+1194.4s  new process AdskLicensingInstHelper pid 33072, parent 26484 GenuineService.exe, started 14:45:02.388, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:49:09.943  t+1435.6s  new process AdskLicensingInstHelper pid 21212, parent 26484 GenuineService.exe, started 14:49:02.439, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:52:11.880  t+1617.5s  new process AdskLicensingInstHelper pid 48212, parent 26484 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+14:55:08.870  t+1794.5s  new process AdskLicensingInstHelper pid 43360, parent 26484 GenuineService.exe, started 14:55:02.464, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+15:07:12.765  t+2518.4s  new process AdskLicensingInstHelper pid 9052, parent 26484 GenuineService.exe, started 15:07:02.394, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+15:09:09.887  t+2635.5s  new process AdskLicensingInstHelper pid 33952, parent 26484 GenuineService.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+15:12:10.228  t+2815.9s  new process AdskLicensingInstHelper pid 41080, parent 26484 GenuineService.exe, started 15:12:02.414, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+15:48:43.335  t+5009.0s  new process WerFault pid 6756, parent 30044 FOS.AddInProcess.AutoCAD.exe, started 15:48:37.092, command line holds the word embedding or automation: no
+15:49:11.424  t+5037.1s  new process WerFault pid 39968, parent 29688 svchost.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+15:50:15.117  t+5100.8s  new process WerFault pid 29624, parent 29688 svchost.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+15:54:21.101  t+5346.7s  new process WerFault pid 48708, parent 31776 FOS.AddInProcess.AutoCAD.exe, started 15:54:13.346, command line holds the word embedding or automation: no
+15:55:51.362  t+5437.0s  new process WerFault pid 29784, parent 29688 svchost.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: UNKNOWN, the command line could not be read
+15:55:59.505  t+5445.1s  new process WerFault pid 35168, parent 35948 FOS.AddInProcess.AutoCAD.exe, started 15:55:47.709, command line holds the word embedding or automation: no
+16:00:40.615  t+5726.3s  new process WerFault pid 49176, parent 39680 FOS.AddInProcess.AutoCAD.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: no
+19:31:34.790  t+18380.4s  Roamer 896 visible top level windows: none
+19:31:36.910  t+18382.5s  Roamer 896 has exited
+19:34:18.544  t+18544.2s  watchdog stopped
