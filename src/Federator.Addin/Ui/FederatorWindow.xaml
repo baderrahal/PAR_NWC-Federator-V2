@@ -178,17 +178,32 @@
                     <TextBlock DockPanel.Dock="Bottom" x:Name="NearbyNwfLine"
                                Style="{StaticResource FindingLine}" Visibility="Collapsed" />
 
+                    <!-- F130. The Shift range, said once under the list. Its words are in Core. -->
+                    <TextBlock DockPanel.Dock="Bottom" x:Name="RunRangeHelp"
+                               Style="{StaticResource FindingLine}" />
+
                     <DataGrid x:Name="GroupsGrid" AutoGenerateColumns="False" CanUserAddRows="False"
                               GridLinesVisibility="Horizontal" HeadersVisibility="Column">
                         <DataGrid.Columns>
-                            <DataGridCheckBoxColumn Header="Run" Width="40"
-                                                    Binding="{Binding Include, UpdateSourceTrigger=PropertyChanged}">
-                                <DataGridCheckBoxColumn.CellStyle>
+                            <!-- F130. A template column and not the stock tick box column, so the box
+                                 itself takes the click and OnRunBoxClicked reads Shift at that click.
+                                 Read only so the grid begins no edit that would swap the box out
+                                 under the click. SortMemberPath keeps the column sortable as before. -->
+                            <DataGridTemplateColumn Header="Run" Width="40" IsReadOnly="True"
+                                                    SortMemberPath="Include">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Top"
+                                                  IsChecked="{Binding Include, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  Click="OnRunBoxClicked" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellStyle>
                                     <Style TargetType="DataGridCell">
                                         <Setter Property="IsEnabled" Value="{Binding CanInclude}" />
                                     </Style>
-                                </DataGridCheckBoxColumn.CellStyle>
-                            </DataGridCheckBoxColumn>
+                                </DataGridTemplateColumn.CellStyle>
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn Header="Building" Width="90" IsReadOnly="True"
                                                 Binding="{Binding Building}" />
                             <DataGridTextColumn Header="Files" Width="50" IsReadOnly="True"

@@ -279,7 +279,7 @@ without its extension.
 496. Look for, in the `STEP` line that closes `SETS`: the picked file's summary, then `. Generic Models: 10 created (5 finding items, 5 at zero), 0 already there.`
 497. Look for: no `EMPTY SETS` line naming a Generic Models set, and in the `SETS ACROSS THE RUN` block at the end of the run no set whose path holds `Generic Models`
 498. Look for, after the `WORKBOOK`, `HTML`, `XML` and `COVERAGE` steps: a step `INTERNAL` with `INTERNAL attempt` and `INTERNAL written` naming a file in the Clash Reports folder whose name is the group's workbook name, a space and `Internal`, ending `.xlsx`, with its size read back, beside the group's own workbook, then `INTERNAL read back, it holds 2 sheets, Generic Models, Coverage, each found by the name it was written under`. Your answer B to Q146 of 11 Oct 2026 puts the Coverage sheet in this workbook beside the Generic Models sheet. If the group's clash was skipped under F112, the group's workbook is skipped and this one is still written with both sheets
-499. Open that workbook: its first sheet is named `Generic Models` and its second `Coverage`, steps 542 to 553 read the second. The first sheet's first cell `Generic Models, written by the NWC Federator and not part of the client's report`, `Group: 1A04PK` under it, the summary line `10 models: 5 found some, 5 found none and are left out, 0 not counted. 572 items in all`, the headings `Model`, `Items` and `Why not counted`, five rows in the order of the models with 528 as a number and no row for a model at nought, and under them the note on what a nought can mean and `No clash test is made for these sets`
+499. Open that workbook: its first sheet is named `Generic Models` and its second `Coverage`, which steps 587 and 588 read. The first sheet's first cell `Generic Models, written by the NWC Federator and not part of the client's report`, `Group: 1A04PK` under it, the summary line `10 models: 5 found some, 5 found none and are left out, 0 not counted. 572 items in all`, the headings `Model`, `Items` and `Why not counted`, five rows in the order of the models with 528 as a number and no row for a model at nought, and under them the note on what a nought can mean and `No clash test is made for these sets`
 500. Open the group's own workbook: ONE SHEET, the client's sheet and nothing of ours after it, the Navisworks export's layout, and the `WORKBOOK CHECK` block names no second sheet
 501. In the Sets panel of Navisworks: a folder `Generic Models` holding ten search sets named after the ten NWCs, and in Clash Detective no test naming any of them
 502. Look for, in `RESULT` under the `COVERAGE` lines: `generic models : 572 items in 5 models of 10 over 1 group, 5 at nought, 0 not counted`, and the internal workbook among the files written with its size, its kind `INTERNAL`
@@ -298,21 +298,72 @@ the clash workbook holds the client's sheet alone. Every number below that this 
 is named by its shape, because the counts of 1A04PK's tests are UNKNOWN until it runs. Where
 1A04PK's clash is skipped under F112, as `.claude\rules\core.md` reads of both wave buildings,
 no test runs there, no clash workbook is written and the count check compares none, which is
-why step 550 runs a second group.
+why step 589 runs a second group.
 
-542. Look for, before the first group: `COVERAGE the picked XML` with the XML's full path, then `reads sha256 ` and 64 letters and digits
-543. Look for, in 1A04PK after its `XML` step: a step `COVERAGE` and a block headed `COVERAGE 1A04PK` whose first line reads `the tests        : 1830 in the picked file` with the XML's path, its sha256 and the corrections line of the list beside it
-544. Look for, in that block: a `counted          :` line reading `1830 tests in the picked file:` then how many were created this run, already there, not created, run, with clashes and without. Where the clash was skipped under F112, the `run` count reads 0
-545. Look for, under `one reason each  :`: one line for each reason with its count, the counts adding up to 1830, `not run, the clash was skipped by the coordinates rule` among them where the clash was skipped, and under them at most five tests named for each reason that has no results, then `and N more of this reason, every one on the Coverage sheet of the internal workbook and in the .tsv`
-546. Look for, where the clash was skipped: `workbook against Clash Detective : UNKNOWN, 0 compared` then the counts not compared and held by neither side, the first not compared tests saying `no workbook was read, no clash workbook was written` and why, no line starting `COVERAGE FAILED`, and the block's last line `the group keeps its own result, a coverage count never fails a group`
-547. Look for, in the `.tsv` beside the log: 1830 rows whose event is `coverage test`, one for each test of the file, each carrying its position, whether it is in the document, whether it ran and its reason
-548. Open the internal workbook of step 498 and its `Coverage` sheet: its first cell `Coverage, written by the NWC Federator and not part of the client's report`, the picked file with `sha256:` beside it, the models with their codes, the counts line of step 544, then a `TESTS` table of 1830 rows in the file's order, a test not created among them with `not created` and `no` and its reason, and no empty cell where a number was not taken, which reads `UNKNOWN`
-549. Look for, on the same sheet: the `MIRRORED PAIRS` section reading `UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged`, never that the rule is not on main
-550. Scan a folder holding a group of two disciplines or more whose models sit on the same shared coordinates, the fixture of steps 410 to 416, pick the same XML and press Run
-551. Look for, in that group's `COVERAGE` block: `workbook against Clash Detective :` then a number compared, the same number agree and `0 FAILED`, the counts of Clash Detective's panel for each test that ran equal to the rows of its block in the clash workbook. Where any line starts `COVERAGE FAILED`, it names the group, the test and all four numbers, and RESULT carries the same line
-552. Look for, in `RESULT`: the `COVERAGE tests counted` lines, the counts of the tests once across the run, then `COVERAGE checked :` with how many were compared, agreed and FAILED over how many groups, and never `COVERAGE checked : UNKNOWN, no coverage was taken in this run`
-553. Look for, on every run above: no group ends FAILED or PARTIAL on account of the coverage, and each group's clash workbook holds ONE sheet, its `WORKBOOK CHECK` block naming no second sheet
-554. Send the log file and the `.tsv` beside it, and say which of steps 542 to 553 did not read as written, with the seconds of the `COVERAGE` step off the `TIMING` block, UNKNOWN until this run
+581. Look for, before the first group: `COVERAGE the picked XML` with the XML's full path, then `reads sha256 ` and 64 letters and digits
+582. Look for, in 1A04PK after its `XML` step: a step `COVERAGE` and a block headed `COVERAGE 1A04PK` whose first line reads `the tests        : 1830 in the picked file` with the XML's path, its sha256 and the corrections line of the list beside it
+583. Look for, in that block: a `counted          :` line reading `1830 tests in the picked file:` then how many were created this run, already there, not created, run, with clashes and without. Where the clash was skipped under F112, the `run` count reads 0
+584. Look for, under `one reason each  :`: one line for each reason with its count, the counts adding up to 1830, `not run, the clash was skipped by the coordinates rule` among them where the clash was skipped, and under them at most five tests named for each reason that has no results, then `and N more of this reason, every one on the Coverage sheet of the internal workbook and in the .tsv`
+585. Look for, where the clash was skipped: `workbook against Clash Detective : UNKNOWN, 0 compared` then the counts not compared and held by neither side, the first not compared tests saying `no workbook was read, no clash workbook was written` and why, no line starting `COVERAGE FAILED`, and the block's last line `the group keeps its own result, a coverage count never fails a group`
+586. Look for, in the `.tsv` beside the log: 1830 rows whose event is `coverage test`, one for each test of the file, each carrying its position, whether it is in the document, whether it ran and its reason
+587. Open the internal workbook of step 498 and its `Coverage` sheet: its first cell `Coverage, written by the NWC Federator and not part of the client's report`, the picked file with `sha256:` beside it, the models with their codes, the counts line of step 583, then a `TESTS` table of 1830 rows in the file's order, a test not created among them with `not created` and `no` and its reason, and no empty cell where a number was not taken, which reads `UNKNOWN`
+588. Look for, on the same sheet: the `MIRRORED PAIRS` section reading `UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged`, never that the rule is not on main
+589. Scan a folder holding a group of two disciplines or more whose models sit on the same shared coordinates, the fixture of steps 410 to 416, pick the same XML and press Run
+590. Look for, in that group's `COVERAGE` block: `workbook against Clash Detective :` then a number compared, the same number agree and `0 FAILED`, the counts of Clash Detective's panel for each test that ran equal to the rows of its block in the clash workbook. Where any line starts `COVERAGE FAILED`, it names the group, the test and all four numbers, and RESULT carries the same line
+591. Look for, in `RESULT`: the `COVERAGE tests counted` lines, the counts of the tests once across the run, then `COVERAGE checked :` with how many were compared, agreed and FAILED over how many groups, and never `COVERAGE checked : UNKNOWN, no coverage was taken in this run`
+592. Look for, on every run above: no group ends FAILED or PARTIAL on account of the coverage, and each group's clash workbook holds ONE sheet, its `WORKBOOK CHECK` block naming no second sheet
+593. Send the log file and the `.tsv` beside it, and say which of steps 581 to 592 did not read as written, with the seconds of the `COVERAGE` step off the `TIMING` block, UNKNOWN until this run
+
+## Proof of F130, the Shift range in the group list
+
+THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,
+your request 5 under Q112. They were read off the add-in on fix-F130 and nothing of it has run on
+Navisworks yet. The window driver cannot make a Shift click without real input, measured on
+2026-10-05, `turn5\measure-shift-driver-result.md` under the loop's folder, so these are yours by
+hand, with the mouse and the Shift key. They use the C02 folder of ten groups named at the top of
+this file, whose groups the list shows in building order: 1000BS, 1A0215, 1A02BS, 1A02MM, 1A02MS,
+1A02WE, 1A02WL, 1A02WM, 1A02WN and 1A02WO. A scan, a grouping change or a Use box makes the groups
+again and ticks every one, so change nothing on the Source step unless a step says so.
+
+542. Go to the Source step, pick the C02 folder of ten groups and press Scan
+543. Go to the Grouping step
+544. Look for: ten rows in the building order above, every Run box ticked, the first column headed `Run` and as narrow as before, and under the list the grey line `Shift click a Run box to tick or untick the rows between`
+545. Click the Run box of 1A0215 once, holding no key
+546. Look for: 1A0215 unticked on that one click and the other nine ticked. If the click only highlighted the row and the box stayed ticked, say so, since the flip on one click is UNKNOWN until here
+547. Hold Shift and click the Run box of 1A02MS
+548. Look for: 1A0215, 1A02BS, 1A02MM and 1A02MS unticked, both ends included, and 1000BS and the five from 1A02WE to 1A02WO ticked
+549. Click the Run box of 1A02MM once, holding no key
+550. Look for: 1A02MM ticked again and 1A0215, 1A02BS and 1A02MS still unticked
+551. Hold Shift and click the Run box of 1000BS
+552. Look for: 1000BS, 1A0215, 1A02BS and 1A02MM ticked, 1A02MS alone unticked, and the five after it ticked
+553. Go to the Outputs step
+554. Look for: the line at the foot of the Outputs step begins `9 groups ticked to run.`
+555. Go to the Source step and press Scan again, which makes the groups again
+556. Go to the Grouping step
+557. Look for: all ten ticked again
+558. Hold Shift and click the Run box of 1A02WE
+559. Look for: 1A02WE alone unticked, because the groups were made again and no box was clicked since, so that Shift click was a plain click
+560. Click the Run box of 1A02WO once, holding no key
+561. Click the header `Run` of the first column once
+562. Look for: 1A02WE and 1A02WO as the two top rows, both unticked, and the eight ticked rows under them. If the two sit at the bottom, click the header once more
+563. Click the Run box of the fourth row from the top once, holding no key
+564. Hold Shift and click the Run box of the top row
+565. Look for: exactly the four rows shown at the top unticked, 1A02WE, 1A02WO and the third and fourth rows whichever buildings they are, and the six rows under them ticked. If a row moved when a box was clicked, say so
+566. Go to the Source step and press Scan again
+567. Go to the Grouping step
+568. Click the header `Building` once
+569. Look for: ten rows in building order, every one ticked
+570. Click the Run box of 1000BS once, holding no key
+571. Hold Shift and click the Run box of 1A02WO
+572. Look for: all ten unticked
+573. Go to the Outputs step
+574. Look for: the line at the foot of the Outputs step begins `0 groups ticked to run.`
+575. Go to the Grouping step
+576. Click the Run box of 1A02MM once, holding no key
+577. Look for: 1A02MM alone ticked
+578. Press Run with the folders and the Clash step as the proofs above left them, and let the one group finish
+579. Look for, in the log after the `RUN SETTINGS` lines: the `GROUPS` block with `run` beside 1A02MM, `unticked` beside the other nine, and the line `9 groups unticked in the Run column, nothing else drops a group`
+580. Send the log file named on the `log file` line of the SESSION block and say which of steps 544 to 579 did not read as written
 
 ## Proof F34, the window, and F33, the units combo
 
