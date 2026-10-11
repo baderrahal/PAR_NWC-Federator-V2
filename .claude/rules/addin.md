@@ -368,8 +368,9 @@ well as to pass.
   own step and never counts the group's finished export check as not read:
   `SilentMisses.Find` over the picked XML's sets and the models `ModelFactsReader.Exports`
   read, its `GroupLines` given the document's model count so a model Exports dropped is
-  counted. No coverage count is handed in until F127's COVERAGE block is on main, so no
-  silent miss is named and each is counted as UNKNOWN until the coverage counts them. The
+  counted. No coverage count is handed in, because F127's COVERAGE block does not count the
+  categories no set catches in this build, so no silent miss is named and each is counted as
+  UNKNOWN until the coverage counts them. The
   two hand presses that federate no group, Undo and Probe, hand the engine no map
 - THE MIRRORED TESTS, F132's add-in half, built on 2026-10-07 under Bader's answer A to Q142.
   The add-in holds only the calls, and every rule and every word is Core's, core.md, BOTH
@@ -386,7 +387,8 @@ well as to pass.
   the engine hands from `outcome.Sets` after the sets build and before the clash step, the
   priority file and the XML's sets, and with no XML over the saved tests alone, then its
   MIRROR block, its MIRROR RENAMES block and its MIRROR COVERAGE block, the coverage names
-  of F127 written as the Core gives them until the sheet exists, and a rule that threw is a
+  of F127 written as the Core gives them, which the Coverage sheet's MIRRORED PAIRS section
+  points at and does not copy, and a rule that threw is a
   FAILURE line, no test paired, every test under the plan's name. THE RENAMES, `MakeTheRenames`,
   before any test is found by name or created: each by the saved test's address through
   `TestsEditDisplayName` on a handle resolved for it, its results counted by status before and
@@ -641,9 +643,9 @@ well as to pass.
   box is ticked, its Asked set to what the document's set asks as every present set's is. The
   plan is made before the file's build and its sets are built after, all inside the one SETS
   step, so the step's seconds show both. The GENERIC MODELS block and one row a model follow
-  the build. The workbook of its own is the GENERIC XLSX step after the group's workbook,
-  written whether or not the clash ran, skipped with its own line where no count was taken,
-  there is no report folder or no workbook is wanted this run, and where the write throws
+  the build. Its sheet goes in the internal workbook, the INTERNAL step, below, written whether
+  or not the clash ran, skipped with its own line where neither a count nor a coverage was
+  taken, there is no report folder or no workbook is wanted this run, and where the write throws
   nothing is listed as written, the size stays unread and one line says whether a file of that
   name is at the path, and that whether it is an earlier run's file untouched or one this run
   cut short is UNKNOWN, since a save that threw after opening the path leaves the old file cut
@@ -657,6 +659,45 @@ well as to pass.
   group keeps its own result. The SETS line says which text the sets look for off
   `GenericModelsPlan.LooksFor`, the stem of the NWC's name for a model whose source name was
   not read, which the plan also notes by name
+- THE COVERAGE OF THE PICKED TESTS, F127's add-in half, built on 2026-10-11 on branch fix-F127b
+  and not yet run on Navisworks. The add-in holds only the calls, and every rule and every word
+  is Core's, core.md Coverage of the picked tests. CLASHRUNNER keeps the counts the creation
+  plan decides on, `ClashRunOutcome.KeepItemsByLocator`, before `CreationPlan.For`, and each
+  test's two side counts, `RecordSides`, as soon as its sides are read and before the
+  coordinates, one discipline and side checks, so every skip reads the counts that made it. It
+  hands out `RunPlan`, the plan it ran, each mirror under its run name and each saved test with
+  its sides, which the engine keeps on `JobOutcome.ClashPlan` in place of the plan it handed in,
+  and `InAMerge`, the tests of every mirrored pair its rule merges. THE COVERAGE STEP,
+  `RunSteps.Coverage`, runs in FinishTheGroup after the clash workbook, its page and its XML and
+  before the internal workbook and the NWD, so the document is still open and the clash
+  workbook is on the disk, for the scanned run and the open file run alike: `CoverageRule.For`
+  over the plan and the runner's record with the group's codes off the EXPORT CHECK's models
+  and the run's off every group the scan made, Clash Detective's two counts of every test in
+  ONE WALK, `DocumentCensusReader.TestsWithTheirCounts`, the census's walk with every wrapper
+  disposed and no handle kept, a test whose count throws logged and read minus one, the clash
+  workbook read back BY THE CLIENT'S SHEET'S NAME, `WorkbookTests.ReadFile`, ONLY WHERE THIS RUN
+  WROTE IT WHOLE, `JobOutcome.WorkbookNotReadBecause`, which the workbook step sets on every path
+  through it and which says why the workbook is not read, a write that threw included, since
+  last week's file at the same path would be read as this week's, then `CountCheck.Judge` with
+  Compact's count and the merged tests, the COVERAGE block, `CoverageBlock.Lines`, one .tsv row
+  a test, `coverage test`, and the group added to the run's `CoverageAcrossTheRun`, which the
+  window hands to `RunLog.WriteResultBlock` on both runs. A group whose clash step made no plan
+  writes a block saying so and is counted not checked. A THROW ANYWHERE IN IT NEVER FAILS THE
+  GROUP: it is logged with what happens next, the block says the coverage is UNKNOWN and the
+  group is counted not checked, since a report check never fails a group. The picked XML's
+  sha256 is read once when the run starts, one COVERAGE line, and a read that throws is logged
+  and reads UNKNOWN. THE INTERNAL WORKBOOK, Bader's answer B to Q146 of 11 Oct 2026, the INTERNAL
+  step after COVERAGE, `InternalWorkbook.Write` beside the clash workbook, named by
+  `GenericModelsSettings.WorkbookNameFor`, the Generic Models sheet and the Coverage sheet in one
+  save or the one the group has, each lack said on its own line, the Generic Models sheet left
+  out with `InternalWorkbook.WhyNoGenericSheet`'s words where the two names are one to Excel,
+  logged under its own kind, INTERNAL attempt and INTERNAL written, and never XLSX, so the
+  loop's documents read pairs each NWF with its one clash workbook, then read back by size and
+  by its sheets' names, `InternalWorkbook.Check`. A write that throws lists nothing as written
+  and says whether a file of that name is at the path, as the Generic Models workbook did. THE
+  CLASH WORKBOOK HOLDS THE CLIENT'S SHEET ALONE, the Navisworks export's layout, and its
+  WORKBOOK CHECK calls a second sheet a problem. The settings are `ReportOptions.Coverage`, read
+  off Core and never typed in the window. The two hand buttons take no coverage, they are not runs
 
 ## What a tick box says
 

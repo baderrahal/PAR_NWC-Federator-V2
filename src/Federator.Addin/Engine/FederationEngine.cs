@@ -3926,6 +3926,13 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// The kind the internal workbook's lines and rows are written under, never XLSX, so a reader of
+        /// the log or the .tsv, the loop's documents read among them, finds one clash workbook a group and
+        /// never takes the internal workbook for it. Eight letters, the width of the kind column.
+        /// </summary>
+        private const string InternalKind = "INTERNAL";
+
+        /// <summary>
         /// The internal workbook of the group, Bader's answer B to Q146 of 11 Oct 2026, beside the clash
         /// workbook in the Clash Reports folder, named by GenericModelsSettings.WorkbookNameFor: the Generic
         /// Models sheet of F128 and the Coverage sheet of F127 in one save, written with what the group has.
@@ -3943,19 +3950,19 @@ namespace Federator.Addin.Engine
 
             if (generic == null && coverage == null)
             {
-                log.WriteSkipped("XLSX", "no Generic Models count and no coverage were taken for " + job.Building + ", so no internal workbook");
+                log.WriteSkipped(InternalKind, "no Generic Models count and no coverage were taken for " + job.Building + ", so no internal workbook");
                 return;
             }
 
             if (reportFolder == null)
             {
-                log.WriteSkipped("XLSX", "no report folder, so no internal workbook");
+                log.WriteSkipped(InternalKind, "no report folder, so no internal workbook");
                 return;
             }
 
             if (!OutputPlan.From(reports).WriteWorkbook)
             {
-                log.WriteSkipped("XLSX", OutputPlan.NotWanted + ", so no internal workbook");
+                log.WriteSkipped(InternalKind, OutputPlan.NotWanted + ", so no internal workbook");
                 return;
             }
 
@@ -3963,19 +3970,19 @@ namespace Federator.Addin.Engine
 
             if (generic == null)
             {
-                log.Line("XLSX     internal  no Generic Models count was taken for " + job.Building + ", so the internal workbook holds the Coverage sheet alone");
+                log.Line(InternalKind + " no Generic Models count was taken for " + job.Building + ", so the internal workbook holds the Coverage sheet alone");
             }
 
             if (coverage == null)
             {
-                log.Line("XLSX     internal  no coverage was taken for " + job.Building + ", so the internal workbook holds the Generic Models sheet alone");
+                log.Line(InternalKind + " no coverage was taken for " + job.Building + ", so the internal workbook holds the Generic Models sheet alone");
             }
 
             string whyNoGeneric = generic == null ? null : InternalWorkbook.WhyNoGenericSheet(coverage, settings.SheetName, coverageSheet);
 
             if (whyNoGeneric != null)
             {
-                log.Line("XLSX     internal  " + whyNoGeneric);
+                log.Line(InternalKind + " " + whyNoGeneric);
             }
 
             InStep(
@@ -3983,7 +3990,7 @@ namespace Federator.Addin.Engine
                 () =>
                 {
                     Say("Writing the internal workbook for " + job.Building);
-                    log.WriteAttempted("XLSX", path);
+                    log.WriteAttempted(InternalKind, path);
                     IList<string> written = null;
 
                     try
@@ -4009,20 +4016,20 @@ namespace Federator.Addin.Engine
                         // A file at the path is not called an earlier run's untouched, because a save
                         // that threw after opening the path, a full disk or a fault while writing the
                         // package, leaves the old file cut short and File.Exists still reads true.
-                        log.Line("XLSX     not written  " + path + (File.Exists(path)
+                        log.Line(InternalKind + " not written  " + path + (File.Exists(path)
                             ? "  a file of that name is at the path, and whether it is an earlier run's file untouched or one this run cut short is UNKNOWN, so open it knowing that"
                             : "  and no file is at the path"));
                         return;
                     }
 
-                    outcome.InternalWorkbookSize = log.WriteFinished("XLSX", path);
+                    outcome.InternalWorkbookSize = log.WriteFinished(InternalKind, path);
                     outcome.InternalWorkbookOnDisk = outcome.InternalWorkbookSize >= 0;
 
                     if (outcome.InternalWorkbookOnDisk)
                     {
                         foreach (string line in InternalWorkbook.Check(path, written))
                         {
-                            log.Line("XLSX     internal  " + line);
+                            log.Line(InternalKind + " " + line);
                         }
                     }
                 },
