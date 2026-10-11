@@ -274,7 +274,13 @@ well as to pass.
   `DimAllBut` over the shown roots with ONE reset over the collection of every clashing item,
   one `OverrideTemporaryColor` per colour over the red and the green collections of
   `PaintPlan`, P17, `FramingBox` over the clash centres and `ZoomBox` on a copy of the camera
-  clash's camera, P16, a view of one clash keeping Clash Detective's own, `EnsureFolders`
+  clash's camera, P16, THE CAMERA THE COPY WAS MADE FROM KEPT UNTIL THE VIEW IS WRITTEN AND
+  DISPOSED AFTER THE COPY, as P16 kept it, F141: set 06's run of 1A02MM on 2026-10-11 disposed
+  it first and every one of its 47 framed views threw ObjectDisposedException on the copy's
+  Position, steps\runs\06\item1-C02, while a copy made by `CameraOf` inside a using of the
+  viewpoint `TestsViewpointForResult` gave read whole in all 14 views of one clash, so which
+  sources a copy outlives is read off those two and not assumed for any other, a view of one
+  clash keeping Clash Detective's own, `EnsureFolders`
   REUSING a folder at its path and returning the depths it made so each folder the tool
   makes is marked and no other, row F114-K5, the record through the COM view with
   ApplyHideAttribs and ApplyMaterialAttribs, 5m, and the mark by
