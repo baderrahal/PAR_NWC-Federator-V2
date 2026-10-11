@@ -812,10 +812,8 @@ namespace Federator.Addin.Engine
             }
 
             // THE CAMERA, Clash Detective's own for the camera clash, framed on the box over
-            // every clash centre where there are two or more, P16. The camera a framed copy
-            // was made from is kept until the view is written, as P16 kept it: set 06's run
-            // of 1A02MM disposed it first and all 47 framed views threw ObjectDisposedException
-            // on the copy's Position, F141.
+            // every clash centre where there are two or more, P16, its source kept until the
+            // view is written, F141.
             Viewpoint camera = null;
             Viewpoint framedFrom = null;
 
@@ -846,8 +844,9 @@ namespace Federator.Addin.Engine
 
                     if (box != null)
                     {
+                        Viewpoint framed = SavedViewpoints.Framed(camera, box);
                         framedFrom = camera;
-                        camera = SavedViewpoints.Framed(framedFrom, box);
+                        camera = framed;
                     }
                 }
 

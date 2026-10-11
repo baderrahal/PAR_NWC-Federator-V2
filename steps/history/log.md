@@ -2,6 +2,36 @@
 
 Newest entry at the top.
 
+## 2026-10-11 The loop, turn 6, F141 the framed views that threw, attempt 1 of two, written by the lead
+
+Bader's message after the usage limit, item 11: a fault a proof run shows that the team would see is fixed
+next, in two attempts at most, then proven by running that building again. Q143's limits, one reviewer and a
+breaker since this is the views. Branch fix-F141 off main 4bc4c83 in %LOCALAPPDATA%\NwcFederatorLoop\wt-f141.
+
+What was done:
+- Set 06's run of 1A02MM on main, steps\runs\06\item1-C02, wrote no view: 0 created and 61 failed. 47 of them,
+  every view of two or more clashes, threw ObjectDisposedException at Viewpoint.get_Position in WriteOne,
+  because WriteOne disposed the camera Clash Detective gave before it read the framed copy made from it. P16
+  read its copy with that camera still open, so the order the add-in used was never measured
+- WriteOne keeps the source in framedFrom and disposes it in the finally after the copy, the copy made into a
+  local first so a Framed that throws leaves one owner, the reviewer's and the breaker's shared point. The rule
+  is written once, in .claude\rules\addin.md beside the P16 sentence
+- Proved here: the solution builds with 0 warnings and 0 errors before and after. Core tests 2848 passed, 0
+  failed, 0 skipped before, at main 4bc4c83's records commit, and after, at 54e1c21's pre-commit, nothing in Core
+  changed
+- THE MERGE IN TWO. Pull request 196 merged 54e1c21 alone at b0d0007, since the pushes of 8a7fb46 and 0a98b49
+  failed on a git config error that the lead's output filter hid, and the lead merged without reading the pull
+  request's head back. So main carried the first form, which disposes one camera twice where Framed throws, and
+  none of these records. Branch fix-F141b carries the two commits onto main, pushed by an explicit refspec and
+  its head read back before the merge
+
+What remains: the merge, main installed in place, and 1A02MM run again from a fresh copy, steps 629 to 633 of
+steps\03_bader_next.md. That run proves the 47 or fails them, and it measures F141-R1.
+
+Known bugs: rows F141-R1 to F141-R3 of steps\tracker.csv.
+
+What comes next: 1A02MM again from set 07, then attempt 2 on F141-R1 only if the views of one clash still fail.
+
 ## 2026-10-11 The loop, turn 6, the plan after the usage limit: the proof runs of 1A02MM and 1A04PK from a fresh set 06
 
 Bader's message CONTINUE THE LOOP, 11 OCT 2026, AFTER THE USAGE LIMIT. Written at 14:05 before any edit,

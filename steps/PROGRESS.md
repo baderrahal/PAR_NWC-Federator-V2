@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-11 15:10, last run 06/item1-C02
+STATE OPEN, 2026-10-11 15:50, last run 06/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,21 +15,21 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 13 | 1 | 0 | 0 | 7 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
-| outside the waves | 161 | 14 | 0 | 0 | 51 | 6 | 232 |
-| total | 308 | 24 | 0 | 1 | 202 | 7 | 542 |
+| outside the waves | 162 | 14 | 0 | 0 | 54 | 6 | 236 |
+| total | 309 | 24 | 0 | 1 | 205 | 7 | 546 |
 <!-- the end of the counts -->
 
 ## Now
 - 11 Oct 14:01, after the usage limit: Roamer none, his 22.0 key equal to the backup of 13:19, keep-awake 18216. F140 at fcd3228 pushed and parked, no PR
-- Main 4bc4c83 installed, read back 14:09. Set 05's pair proved the coordinates rule, Generic Models, the coverage and the internal workbook, the clash skipped on 1A02MM's EL and ST at 2,823 km
-- Set 06 made fresh at 14:10, the desktop folder changed since set 05. 1A02MM ran 4 min 59 s against 2 h 12 min, 2931 clashes, coverage 528 of 528 agree, the workbook one sheet. NO VIEW WRITTEN, 61 of 61 failed, the group FAILED
-- F141 on fix-F141: 47 framed views threw because the camera was disposed before its copy was read. Attempt 1 built, reviewed, broken, records written, its pull request next
-- 1A04PK running since 14:25 with the repo's corrected matrix and its teams and corrections files under runs\06\NMFed\exchange, the team map read
+- Set 05's pair proved the coordinates rule, Generic Models, the coverage and the internal workbook. Findings in steps\runs\05\findings.md
+- Set 06's 1A02MM on main 4bc4c83: 4 min 59 s against 2 h 12 min, 2931 clashes, coverage 528 of 528 agree. NO VIEW WRITTEN, 61 of 61 failed
+- F141 merged in two: PR 196 took its first commit alone, the next pushes having failed unread, and PR 197 the readers' form and the records, main d7d7c01. Not installed while 1A04PK runs
+- 1A04PK running since 14:25 on the repo's corrected matrix with its teams and corrections files, inside Walls-vs-Floors at 15:33, which took 70 min in set 04
 
 ## Next
 1. 1A04PK to its end by Q83's clocks, its evidence masked, the log-reader on it, three lines to Bader
-2. F141 merged once Actions is green, main installed in place, 1A02MM run again from a fresh set 07, attempt 2 on F141-R1 only if views of one clash still fail
-3. Findings in set 03's shape for sets 05 and 06, the rows each run proves, the records pull request. Then F140 prepared, no team zip, then waves 4 and 5
+2. Main d7d7c01 installed in place, 1A02MM run again from a fresh set 07, attempt 2 on F141-R1 only if views of one clash still fail
+3. Findings for set 06, the rows each run proves, the records pull request. Then F140 prepared, no team zip, then waves 4 and 5
 
 ## Waiting for Bader
 - No question. The team package, F140, is prepared and made only when Bader writes make the team package, Q149
