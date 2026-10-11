@@ -1274,10 +1274,10 @@ team follows, and these steps follow it.
 
 607. Close Navisworks Manage 2025, pull main in GitHub Desktop once F109 has merged, and build, steps 7 to 11
 608. Install, step 22
-609. Run `$LASTEXITCODE` in the same terminal. Look for: `0`
-610. Look for, as the terminal's last line: `Start Navisworks Manage 2025 and look on the Tool Add-ins tab for Parsons NWC Federator.`, and above it `The installed add-in reads the stamp` with main's eight character commit and `the one the build wrote`, then `every reference is satisfied, 14 assemblies checked. Navisworks supplies its own.`
+609. Before you type anything else, since the next step prints a line of its own, look for, as the terminal's last line: `Start Navisworks Manage 2025 and look on the Tool Add-ins tab for Parsons NWC Federator.`, and above it `The installed add-in reads the stamp` with main's eight character commit and `the one the build wrote`, then `every reference is satisfied, 14 assemblies checked. Navisworks supplies its own.`
+610. Then run `$LASTEXITCODE` in the same terminal. Look for: `0`
 611. Open File Explorer, paste `%APPDATA%\Autodesk\ApplicationPlugins` into its address bar. Look for: `ParsonsNwcFederator.bundle`, and NO folder whose name starts `ParsonsNwcFederator.bundle.replaced-` or `ParsonsNwcFederator.bundle.failed-`
-612. If step 609 read `3`, the last line starts `LEFT:` and names one folder. Do INSTALL.md step 9 and send the whole output
-613. If step 609 read `2`, the last line starts `REFUSED:`. Where it reads `the installed add-in could not be moved aside`, that is the refusal of 2026-10-01 with no Navisworks running, which this pass does not change, so send the whole output and stop. Otherwise do what it says, INSTALL.md step 10, and send the whole output
-614. If step 609 read `1`, the last line starts `FAILED:`. Send the whole output and stop
+612. If step 610 read `3`, the last line starts `LEFT:` and names two folders, the new add-in first, which stays, and the add-in installed before. The line above it starting `left beside the add-in:` names the old one alone, and that is the one to delete. Do INSTALL.md step 9 and send the whole output
+613. If step 610 read `2`, the last line starts `REFUSED:`. Where it reads `the installed add-in could not be moved aside`, that is the refusal of 2026-10-01 with no Navisworks running, which this pass does not change, so send the whole output and stop. Otherwise do what it says, INSTALL.md step 10, and send the whole output
+614. If step 610 read `1`, the last line starts `FAILED:`. Send the whole output and stop
 615. Open Navisworks. Look for: Parsons NWC Federator on the Tool Add-ins tab, and main's commit in the title bar

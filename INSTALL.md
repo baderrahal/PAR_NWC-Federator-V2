@@ -26,13 +26,8 @@ dotnet build ParsonsNwcFederator.sln -c Release -p:NavisworksPath="D:\Autodesk\N
 powershell -ExecutionPolicy Bypass -File build\install.ps1
 ```
 
-6. Read the exit code:
-
-```
-$LASTEXITCODE
-```
-
-7. Read the terminal's last line. The install ends one of four ways, each with its own exit
+6. Read the terminal's last line first, before you type anything else, because the next
+   step prints a line of its own. The install ends one of four ways, each with its own exit
    code and last line, written once at the top of `build\install.ps1` and copied here word
    for word:
 
@@ -46,12 +41,21 @@ $LASTEXITCODE
    Every end but exit 0 names, each on a line of its own before the last line and starting
    `left beside the add-in:`, the folders an install left beside the add-in.
 
+7. Then read the exit code, and look for the number the table gives the last line you read
+   in step 6:
+
+```
+$LASTEXITCODE
+```
+
 8. Exit 0, it worked. Open Navisworks and look on the Tool Add-ins tab for Parsons NWC Federator
-9. Exit 3, installed but one folder left. Close Navisworks, open File Explorer, paste the
-   folder the `LEFT:` line names into its address bar, go up one folder and delete that one
-   folder. Whether Navisworks loads a folder whose name does not end in .bundle is UNKNOWN, so
-   do this before you start Navisworks. Until it is gone every install refuses and names it.
-   Then run step 5 again and look for exit 0
+9. Exit 3, installed but one folder left. The `LEFT:` line names two folders, the new add-in
+   first, which stays, and the add-in installed before. Delete only the folder on the line
+   just above it that starts `left beside the add-in:`, which names the old one alone. Close
+   Navisworks, open File Explorer, paste that folder into its address bar, go up one folder
+   and delete that one folder. Whether Navisworks loads a folder whose name does not end in
+   .bundle is UNKNOWN, so do this before you start Navisworks. Until it is gone every install
+   refuses and names it. Then run step 5 again and look for exit 0
 10. Exit 2, refused. Do what the `REFUSED:` line says, then run step 5 again. Where it names
     folders `left beside the add-in:`, close Navisworks and delete each one it tells you to
     in File Explorer the same way. Where it says which one goes back is for a person to say,
