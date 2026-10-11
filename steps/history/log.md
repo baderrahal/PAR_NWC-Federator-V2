@@ -11,12 +11,19 @@ What was done:
 - ImageRenumbering.Apply hands a said every picture checked, moved aside and renamed, and the engine passes Tick
   and a PROGRESS line through it, so the window answers while 2931 pictures are renamed. A said that throws is
   named once and the renaming goes on
+- Attempt 2 on the reviewer's and the breaker's points: the words of how far a step has got are one Core rule
+  the harvest and the renumber share, and a holding name an earlier, cut off renaming left is taken out before
+  the move onto it, where the move threw and rolled the group back every week after
 - Proved here: the solution builds with 0 warnings and 0 errors, and Core tests 2862 passed, 0 failed, 0
-  skipped on main 493ecdb and 2865 passed, 0 failed, 0 skipped after
+  skipped on main 493ecdb and 2867 passed, 0 failed, 0 skipped after
 
-What remains: its reviewer, the merge, and 1A02MM's fast check, steps 646 to 648 of steps\03_bader_next.md.
+What remains: the merge, and 1A02MM's fast check, steps 646 to 648 of steps\03_bader_next.md.
 
-Known bugs: none new. The renaming still takes about 39 s on 1A02MM, a step for the speed loop.
+Known bugs: the put back after a move that throws is not pumped and says nothing while it runs, so on that rare
+path the window can freeze again. A modal box opened from the window during a pump, a Browse button or Close,
+pauses the renaming, as it pauses the harvest since F143. A pictures folder within 7 characters of the path
+limit would take the final names and refuse the holding ones. The renaming still takes about 39 s, which F149
+takes away.
 
 What comes next: the speed loop of Bader's order of 2026-10-12.
 

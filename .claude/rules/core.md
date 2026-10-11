@@ -1419,7 +1419,8 @@ and 6 does not read as broken.
   they sat under a holding name. The rename is a step of its own, RENUMBER. IT SAYS HOW FAR
   IT HAS GOT AFTER EVERY PICTURE, F146: Apply hands an optional said each picture checked, moved
   aside and renamed with its count, so the engine lets the window answer and writes a PROGRESS
-  line, and a said that throws is named once in the outcome and the renaming goes on
+  line, and a said that throws is named once in the outcome and the renaming goes on. A holding name an
+  earlier, cut off renaming left is taken out before the move onto it and said
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
   that is what all 60 pictures of the accepted report measure. An image that fails renders
