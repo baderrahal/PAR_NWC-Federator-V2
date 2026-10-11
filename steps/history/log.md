@@ -19,6 +19,11 @@ What was done:
 - Proved here: the solution builds with 0 warnings and 0 errors before and after. Core tests 2848 passed, 0
   failed, 0 skipped before, at main 4bc4c83's records commit, and after, at 54e1c21's pre-commit, nothing in Core
   changed
+- THE MERGE IN TWO. Pull request 196 merged 54e1c21 alone at b0d0007, since the pushes of 8a7fb46 and 0a98b49
+  failed on a git config error that the lead's output filter hid, and the lead merged without reading the pull
+  request's head back. So main carried the first form, which disposes one camera twice where Framed throws, and
+  none of these records. Branch fix-F141b carries the two commits onto main, pushed by an explicit refspec and
+  its head read back before the merge
 
 What remains: the merge, main installed in place, and 1A02MM run again from a fresh copy, steps 629 to 633 of
 steps\03_bader_next.md. That run proves the 47 or fails them, and it measures F141-R1.
