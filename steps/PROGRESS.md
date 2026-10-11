@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-11 11:25, last run 04/item2-C02
+STATE OPEN, 2026-10-11 12:47, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -8,7 +8,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 32 | 4 | 0 | 0 | 27 | 0 | 63 |
+| 2a | 37 | 1 | 0 | 0 | 28 | 0 | 66 |
 | 2b | 28 | 2 | 0 | 1 | 9 | 0 | 40 |
 | 2c | 7 | 1 | 0 | 0 | 3 | 1 | 12 |
 | 3a | 19 | 0 | 0 | 0 | 3 | 0 | 22 |
@@ -16,17 +16,18 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
 | outside the waves | 161 | 14 | 0 | 0 | 48 | 6 | 229 |
-| total | 303 | 27 | 0 | 1 | 198 | 7 | 536 |
+| total | 308 | 24 | 0 | 1 | 199 | 7 | 539 |
 <!-- the end of the counts -->
 
 ## Now
 - 11 Oct: last shutdown the restart at 08:59:41, Riyadh time. Roamer none. His key differs from the backup in five values, an older copy back after the restarts of 10 Oct, T5-R-OLDKEY, nothing put back. Keep-awake pid 18216
 - Bader's answers Q144 B, Q146 B, Q148 B. Q149: no release runs, the proof runs of 1A02MM and 1A04PK the last, the team package prepared and made only when he asks
 - F130 Shift ticking merged as PR 192, first today. F129 start from an NWF merged as PR 193, the picked NWFs running the open file run's route. F109 the install merged as PR 194, install.ps1 refusing a link, finding a cut run's leftovers, and ending on one of four lines
+- F127 the coverage of the picked tests merged as PR 195: a COVERAGE block and rows per group, a tally in RESULT, the Coverage sheet in the internal workbook beside Generic Models, the clash workbook one sheet again
 
 ## Next
 1. F130, F129 and F109 merged in that order, Bader's item 6, done
-2. The Coverage sheet moved into the internal workbook, F127-R2, one reviewer
+2. The Coverage sheet moved into the internal workbook, F127-R2, merged as PR 195, done
 3. F140 the team package prepared on its own branch, no team zip until Bader writes make the team package
 4. Main installed in place and 1A02MM and 1A04PK run with the box ticked, steps\notes\item5-runs-brief.md, findings in set 03's shape
 
