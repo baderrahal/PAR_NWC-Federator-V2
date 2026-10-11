@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-11 09:25, last run 04/item2-C02
+STATE OPEN, 2026-10-11 09:56, last run 04/item2-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -12,17 +12,17 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 2b | 28 | 2 | 0 | 1 | 9 | 0 | 40 |
 | 2c | 7 | 1 | 0 | 0 | 3 | 1 | 12 |
 | 3a | 12 | 4 | 3 | 1 | 3 | 0 | 23 |
-| 3b | 10 | 1 | 3 | 0 | 6 | 0 | 20 |
+| 3b | 10 | 1 | 3 | 0 | 7 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
 | outside the waves | 160 | 12 | 0 | 1 | 47 | 5 | 225 |
-| total | 292 | 29 | 6 | 3 | 196 | 6 | 532 |
+| total | 292 | 29 | 6 | 3 | 197 | 6 | 533 |
 <!-- the end of the counts -->
 
 ## Now
 - 11 Oct: last shutdown the restart at 08:59:41, Riyadh time. Roamer none. His key differs from the backup in five values, an older copy back after the restarts of 10 Oct, T5-R-OLDKEY, nothing put back. Keep-awake pid 18216
 - Bader's answers: Q144 B, Q146 B with the Coverage sheet moving into the internal workbook, row F127-R2, Q148 B
-- F130 Shift ticking read APPROVE at 83da565, merged first today. F129 start from an NWF at 9056504, its second reading next. F109 the install at 9b489ff, its records and reading next
+- F130 Shift ticking merged as PR UNKNOWN, first today. F129 start from an NWF at 9056504, its second reading next. F109 the install at 9b489ff, its records and reading next
 
 ## Next
 1. F130, then F129, then F109, each merged in that order, Bader's item 6
