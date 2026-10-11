@@ -276,14 +276,18 @@ clash XML that keeps every selection set and only the first -Tests tests in the 
 default, mirrors included, so a fast check of 1A04PK runs the code paths of the whole file.
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\loop\cut-xml.ps1 -Xml <the picked XML>
 -OutFolder <a folder not there yet, under the run set's copy> -CoreDll <a Federator.Core.dll>. The pairs
-are Federator.Core's MirrorRule over the whole file, -CoreDll loaded from its bytes so no installed file
-is held, and where the first tests hold no pair the first pair in the XML's order is kept too. Exit 0
-when every read back holds, 1 when one does not, 2 when it refuses.
+are Federator.Core's MirrorRule over the file as MatrixCorrections.ReadPicked reads it, the add-in's one
+reader, -CoreDll loaded from its bytes so no installed file is held, and where the first tests hold no
+pair the first pair in the XML's order is kept too. The cut is made in the file's own text, so every
+byte but the test elements taken out is the full file's. Exit 0 when every read back holds, 1 when one
+does not, 2 when it refuses or throws.
 
 - reads: -Xml, its sha256 before and after, which must not move, the teams and corrections files beside
   it, and -CoreDll
-- writes: only -OutFolder, the copy under the full XML's own name, the two files beside it under theirs,
-  each read back by sha256, and cut.txt naming every test added for a mirror and the read back
+- writes: only -OutFolder, the copy under the full XML's own name, read back against the bytes written by
+  sha256, the corrections and teams files beside it under the names Core's settings give, each read back
+  against its source, and cut.txt naming every test added for a mirror and the read back, read back too.
+  The copy is read again through ReadPicked, its tests in order, its sets and its pairs name for name
 - starts: nothing
 
 ## run.ps1

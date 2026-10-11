@@ -34,7 +34,9 @@ mirrors the product's rule pairs, read back through Federator.Core, the full XML
 checks and the one full run asked of Bader first are in .claude\rules\loop.md.
 
 Proved here: the copy of set 06's corrected matrix, 52 tests, one pair, 61 sets, turn6\cut-test-2\cut.txt.
-Core tests unchanged, nothing under src changed.
+Attempt 2 on the reviewer's eight points: read through ReadPicked, cut in the text, pairs read back name
+for name, turn6\cut-test-4. Core tests 2862 passed, 0 failed, 0 skipped before and after, nothing under
+src changed.
 
 What remains: the fast checks themselves, once the only Navisworks is free.
 

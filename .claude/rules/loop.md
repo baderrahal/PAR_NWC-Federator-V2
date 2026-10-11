@@ -403,12 +403,15 @@ line, the longest stretch with the step it began in, the peak working set as the
 it and the highest private bytes read. It reads and never acts, the hang rule stays the only
 close for being stuck. The lead's own waiter, outside the repo, reads life.txt and posts three
 lines in the tab on a LIFE CLASS line. tools\loop\prove-life.ps1 proves it, its stand-in copied
-as LifeStandIn.exe so no process named Roamer starts during another run. FAST CHECKS, Bader's order of 2026-10-11 headed NO MORE TWO HOUR TEST LOOPS: a full run of
+as LifeStandIn.exe so no process named Roamer starts during another run.
+
+FAST CHECKS, Bader's order of 2026-10-11 headed NO MORE TWO HOUR TEST LOOPS: a full run of
 1A04PK takes hours, so a fix is proved on 1A02MM and on a cut down 1A04PK, the same models run with the
 copy tools\loop\cut-xml.ps1 writes of the picked XML, the first 50 tests in its order, mirrors included,
 under the run set's copy, the full XML never edited. After each fast check the lead gives Bader three
 lines in the tab, its time, what is proven and what failed. The whole 1A04PK runs once, after the speed
 fix and the fast checks pass, with the life check on, and only once Bader has said in the tab to start it.
+
 Any dialog Navisworks raises during a run is a finding with its text. A pane is not a dialog,
 F125, such as a floating Clash Detective pane of unknown origin, likely from his saved layout,
 UNKNOWN, up in both runs of set 04 item 1 on C02 on 2026-10-04: a window
