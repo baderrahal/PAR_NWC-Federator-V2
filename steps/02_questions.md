@@ -784,9 +784,9 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
     0. Today's, every model shown, 1024 by 1024: 7.76 s a picture, 3 h 21 min. Run again last, 8.00 s, 3 h 27 min
     1. Only the models of the test shown: 1.78 s a picture, 46 min. MATCHES the export's layout: the same 1024 square, camera, grid label at the bottom left, red and green, and the other nine models' items gone from behind
     2. Shaded on top of 1: 2.16 s a picture, 56 min. THE SAME PICTURE AS 1: today's pictures are already drawn Shaded with a headlight, read off the view and off each clash's own viewpoint, so there was no full rendering to turn off, and the pictures differ from 1's by 0.01 of 255 a pixel, below the 0.05 between today's run twice. The seconds are 1's within the spread of one setting
-    3. 800 by 600 on top of 1: 1.70 s a picture, 43 min. DOES NOT MATCH: a picture four by three, where all 131 clash pictures of the accepted report are 1024 by 1024
+    3. 800 by 600 on top of 1: 1.70 s a picture, 43 min, NO SAVING SHOWN over 1, its 0.08 s inside the 0.24 to 0.38 s by which one setting measured twice differs. DOES NOT MATCH: a picture four by three, where all 131 clash pictures of the accepted report are 1024 by 1024
     4. All three: 2.00 s a picture, 51 min. DOES NOT MATCH, for the reason of 3
 
-    The folders, 20 pictures each with times.csv beside them: %LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261011-222207\pictures\0-today, 1-models, 2-shaded, 3-800x600, 4-all-three and 5-today-again. Which do you want, 1, 2, 3, 4, or today's as it is?
+    Each total is the mean of the first 20 rows times 1556, and rows 1 to 8 ran about three times slower than rows 9 to 20 in every setting, so only the step from today's to 1 is far outside the spread. The folders, 20 pictures each with times.csv beside them: %LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261011-222207\pictures\0-today, 1-models, 2-shaded, 3-800x600, 4-all-three and 5-today-again. Which do you want, 1, 2, 3, 4, or today's as it is?
 
     Answer:
