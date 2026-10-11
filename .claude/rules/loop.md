@@ -389,7 +389,18 @@ was measured at 2 to 8 s. Then the last lines are saved, that Navisworks is clos
 the handle its adoption holds, and the hang is a finding. A sample that cannot be read
 restarts both clocks, so it never counts toward a hang. A run still going 12 hours after
 adoption is closed the same way and recorded as CEILING, never HUNG, Bader's answer Q84.
-Any dialog Navisworks raises during a run is a finding with its text. A pane is not a dialog,
+THE LIFE CHECK, F142, Bader's order of 2026-10-11 headed 1A04PK IS FROZEN, on every window
+run: every 30 s the monitor writes one LIFE line into record.txt and into life.txt beside it,
+whether the tool's window answers WM_NULL within 2 s, whether Windows counts it hung, the
+processor seconds since the last LIFE line, the private bytes and working set, the machine's
+free physical memory and free commit, and the tool's last STEP, PROGRESS or CALL line. A
+window not answering for 2 minutes gets a LIFE CLASS line, memory under 2048 MB free, busy at
+Q83's rate of processor time or more, stuck under it, UNKNOWN where a number was not read, and
+the run ends on a LIFE SUMMARY line, the longest stretch not answering with its step and the
+peak memory. It reads and never acts, the hang rule stays the only close for being stuck. The
+lead's waiter reads life.txt and posts three lines in the tab on a LIFE CLASS line.
+tools\loop\prove-life.ps1 proves it, its stand-in copied as LifeStandIn.exe so no process named
+Roamer starts during another run. Any dialog Navisworks raises during a run is a finding with its text. A pane is not a dialog,
 F125, such as a floating Clash Detective pane of unknown origin, likely from his saved layout,
 UNKNOWN, up in both runs of set 04 item 1 on C02 on 2026-10-04: a window
 of that Navisworks of the WinForms class, whose caption is not the main window's, owned by a

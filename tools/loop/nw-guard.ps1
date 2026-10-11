@@ -426,7 +426,10 @@ foreach ($def in @(
     # F106: WM_CLOSE to the tool's window of the adopted Navisworks once its run has ended,
     # posted only by run.ps1's PostClose after the window's process and start ticks read equal,
     # and WM_COMMAND OK or Cancel to the tool's confirm, posted only by the driver's Answer.
-    @("user32.dll", "PostMessageW", [bool], [Type[]]@([IntPtr], [uint32], [IntPtr], [IntPtr])))) {
+    @("user32.dll", "PostMessageW", [bool], [Type[]]@([IntPtr], [uint32], [IntPtr], [IntPtr])),
+    # F142, the life check of run.ps1's monitor: whether Windows counts a window of the adopted
+    # Navisworks hung, read only and with no message.
+    @("user32.dll", "IsHungAppWindow", [bool], [Type[]]@([IntPtr])))) {
   $pm = $tb.DefinePInvokeMethod($def[1], $def[0], [System.Reflection.MethodAttributes]"Public,Static,PinvokeImpl,HideBySig", [System.Reflection.CallingConventions]::Standard, $def[2], $def[3], [System.Runtime.InteropServices.CallingConvention]::Winapi, [System.Runtime.InteropServices.CharSet]::Unicode)
   $pm.SetImplementationFlags($pm.GetMethodImplementationFlags() -bor [System.Reflection.MethodImplAttributes]::PreserveSig)
 }

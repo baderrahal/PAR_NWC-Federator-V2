@@ -89,8 +89,14 @@ $ErrorActionPreference = "Stop"
 # ceiling's 12 hours, Q84, the 120 s a call into the adopted Navisworks may take, which is also
 # the time the tool's window has to close after WM_CLOSE, the 600 s OpenFile may take, which no
 # run has measured, item 0's hold of 360 s, the 15 s the tool's log stays quiet after its
-# RESULT block before WM_CLOSE, the monitor's pass of 15 s and its heartbeat of 60 s.
+# RESULT block before WM_CLOSE, the monitor's pass of 15 s and its heartbeat of 60 s, and since
+# F142 the life check's 30 s between LIFE lines, its 120 s before a window not answering is
+# classed, both Bader's order of 2026-10-11, and its 2048 MB of free memory under which the class
+# is memory, chosen and not measured.
 
+$LifeSeconds = 30
+$LifeClassSeconds = 120
+$LifeLowMB = 2048
 $HangLimitSeconds = 300
 $HangCpuSeconds = 20
 $CtorDeadlineSeconds = 300
@@ -1218,6 +1224,111 @@ function CpuUsedSince($samples, $sinceUtc) {
   if ($null -eq $base -or $null -eq $last) { return $null }
   return ([double]($last.C - $base.C) / 1e7)
 }
+# =======================================================================================
+# THE LIFE CHECK, F142, Bader's order of 2026-10-11 headed 1A04PK IS FROZEN. Every $LifeSeconds
+# the monitor writes one LIFE line into the record and into life.txt beside it: whether the
+# tool's window answers, the processor seconds since the last LIFE line, the adopted process's
+# private bytes and working set, the machine's free memory and the tool's last step. A window
+# that has not answered for $LifeClassSeconds gets one LIFE CLASS line, again only where the
+# class changes, and the run ends on one LIFE SUMMARY line: the longest stretch not answering
+# and the step it was in, and the peak memory. It reads and it never acts: the hang rule above
+# stays the only thing that closes a Navisworks for being stuck. LifeClass, LifeSpell and
+# LifeWords are pure, proved by tools\loop\prove-life.ps1.
+#
+# The class, read in this order. Memory where the machine's free physical memory or its free
+# commit is under $lowMB, since a machine out of memory slows every process and its processor
+# time says nothing about why. Busy where the process used at least Q83's rate of processor time
+# over the stretch, 20 s in 300 s, the rate the hang rule already reads as working. Stuck where
+# it used less and both memory numbers were read. A number that was not read makes the class
+# UNKNOWN and never stuck.
+function LifeClass($spellSeconds, $cpuSeconds, $freePhysMB, $freeCommitMB, $lowMB, $hangLimit, $hangCpu) {
+  if ($null -ne $freePhysMB -and $freePhysMB -lt $lowMB) { return "memory" }
+  if ($null -ne $freeCommitMB -and $freeCommitMB -lt $lowMB) { return "memory" }
+  if ($null -eq $cpuSeconds -or $null -eq $spellSeconds -or $spellSeconds -le 0) { return "UNKNOWN" }
+  if ($cpuSeconds -ge ($hangCpu * $spellSeconds / $hangLimit)) { return "busy" }
+  if ($null -eq $freePhysMB -or $null -eq $freeCommitMB) { return "UNKNOWN" }
+  return "stuck"
+}
+# The state of the life check across a run, new at the monitor's start.
+function NewLifeState { return [pscustomobject]@{ Since = $null; SinceC = $null; SinceStep = ""; Classed = ""; Longest = 0.0; LongestStep = ""; Spells = 0; PeakPrivate = $null; PeakWs = $null; LastC = $null; LastAt = $null } }
+# One reading folded into the state. Returns what happened: "start" where the window stopped
+# answering, "class" where it has not answered for $classSeconds and the class read now is not the
+# one written last for this stretch, "end" where it answers again after not answering, or "".
+# An answer that could not be read, $null, starts and ends nothing, so an unknown is never a
+# stretch not answering. The longest stretch is taken where one ends, and again at the summary
+# for one still open. $cpuTicks may be null and then the class reads UNKNOWN.
+function LifeSpell($st, $answers, $nowUtc, $cpuTicks, $step, $classSeconds, $class) {
+  if ($null -eq $answers) { return "" }
+  if (-not $answers) {
+    if ($null -eq $st.Since) { $st.Since = $nowUtc; $st.SinceC = $cpuTicks; $st.SinceStep = $step; $st.Classed = ""; $st.Spells = $st.Spells + 1; return "start" }
+    if (($nowUtc - $st.Since).TotalSeconds -ge $classSeconds -and $class -ne $st.Classed) { $st.Classed = $class; return "class" }
+    return ""
+  }
+  if ($null -ne $st.Since) {
+    $len = ($nowUtc - $st.Since).TotalSeconds
+    if ($len -gt $st.Longest) { $st.Longest = $len; $st.LongestStep = $st.SinceStep }
+    $st.Since = $null; $st.SinceC = $null; $st.Classed = ""
+    return "end"
+  }
+  return ""
+}
+# The words of a number that may not have been read.
+function LifeNum($v, $unit) { if ($null -eq $v) { return "UNKNOWN" }; return ([string]$v + $unit) }
+# The LIFE line, pure. $r is LifeRead's reading, $cpuSince the processor seconds since the last
+# LIFE line or null, $notFor the seconds not answering so far or null.
+function LifeWords($r, $cpuSince, $notFor, $step) {
+  $ans = "UNKNOWN, " + $r.WindowWhy
+  if ($r.Answers -eq $true) { $ans = "answers" }
+  elseif ($r.Answers -eq $false) { $ans = "NOT ANSWERING" + $(if ($null -ne $notFor) { " for " + ([double]$notFor).ToString("0") + " s" } else { "" }) }
+  $hung = "UNKNOWN"; if ($null -ne $r.Hung) { $hung = $(if ($r.Hung) { "yes" } else { "no" }) }
+  $cpu = "UNKNOWN"; if ($null -ne $cpuSince) { $cpu = ([double]$cpuSince).ToString("0.0") + " s" }
+  return ("LIFE  the " + $r.Window + " " + $ans + ", Windows counts it hung " + $hung + ", processor " + $cpu + " since the last LIFE line, private " + (LifeNum $r.Private " MB") + ", working set " + (LifeNum $r.Ws " MB") + ", the machine's free physical " + (LifeNum $r.FreePhys " MB") + " of " + (LifeNum $r.TotalPhys " MB") + " and free commit " + (LifeNum $r.FreeCommit " MB") + ", the tool's last step: " + $step)
+}
+# What the life check reads, never a message but WM_NULL to the one window it judges. The tool's
+# window where it is up, its caption starting Parsons NWC Federator, else the Navisworks main
+# window, its caption naming Autodesk Navisworks, else none and the answer UNKNOWN. WM_NULL goes
+# with SMTO_ABORTIFHUNG and 2000 ms, so a window Windows counts hung costs no wait. The memory of
+# the process is read off the process object the pass has just refreshed, and the machine's off
+# Win32_OperatingSystem. Each read is in its own try and a read that throws is UNKNOWN with why.
+function LifeRead($sync) {
+  $r = [pscustomobject]@{ Answers = $null; Hung = $null; Window = "window"; WindowWhy = "no window of the adopted Navisworks is up"; Private = $null; Ws = $null; FreePhys = $null; TotalPhys = $null; FreeCommit = $null }
+  try { $r.Private = [long][math]::Round($sync.MyProc.PrivateMemorySize64 / 1MB); $r.Ws = [long][math]::Round($sync.MyProc.WorkingSet64 / 1MB) } catch { }
+  try {
+    $q = New-Object System.Management.ManagementObjectSearcher("SELECT FreePhysicalMemory, TotalVisibleMemorySize, FreeVirtualMemory FROM Win32_OperatingSystem")
+    try { foreach ($o in $q.Get()) { $r.FreePhys = [long][math]::Round([double]$o["FreePhysicalMemory"] / 1KB); $r.TotalPhys = [long][math]::Round([double]$o["TotalVisibleMemorySize"] / 1KB); $r.FreeCommit = [long][math]::Round([double]$o["FreeVirtualMemory"] / 1KB) } } finally { $q.Dispose() }
+  } catch { }
+  try {
+    $tool = $null; $main = $null
+    foreach ($h in (WinHandlesOf $sync.WinType $sync.ProcType ([uint32]$sync.MyPid) ([IntPtr]::Zero))) {
+      if (-not $sync.WinType::IsWindowVisible($h)) { continue }
+      $t = New-Object System.Text.StringBuilder 512
+      [void]$sync.WinType::GetWindowTextW($h, $t, 512)
+      $cap = $t.ToString()
+      if ($null -eq $tool -and $cap.StartsWith("Parsons NWC Federator")) { $tool = $h }
+      elseif ($null -eq $main -and $cap.Contains("Autodesk Navisworks")) { $main = $h }
+    }
+    $h = $tool; $r.Window = "tool's window"
+    if ($null -eq $h) { $h = $main; $r.Window = "Navisworks window" }
+    if ($null -ne $h) {
+      [IntPtr]$res = [IntPtr]::Zero
+      $ok = $sync.WinType::SendMessageTimeoutW($h, [uint32]0, [IntPtr]::Zero, $null, [uint32]0x0002, [uint32]2000, [ref]$res)
+      $r.Answers = ($ok -ne [IntPtr]::Zero)
+      $r.Hung = $sync.WinType::IsHungAppWindow($h)
+    } else { $r.Window = "window" }
+  } catch { $r.Answers = $null; $r.WindowWhy = "the window could not be read, " + $_.Exception.Message }
+  return $r
+}
+# The tool's last step for a LIFE line: the newest line of the tool's log naming a STEP, a
+# PROGRESS line or a CALL, and its time, else the newest line, masked and cut at 160.
+function LifeStepOf($tail) {
+  $pick = ""
+  for ($i = $tail.Count - 1; $i -ge 0; $i--) { if ($tail[$i] -match '^\S+\s+\+\S+\s+(STEP|PROGRESS|CALL)\s') { $pick = $tail[$i]; break } }
+  if ($pick -eq "" -and $tail.Count -gt 0) { $pick = $tail[$tail.Count - 1] }
+  if ($pick -eq "") { return "none read yet" }
+  $pick = $pick -replace '\s+', ' '
+  if ($pick.Length -gt 160) { $pick = $pick.Substring(0, 160) }
+  return $pick
+}
 # The verdict of a Run and its exit code, pure, from what the run recorded. The first that
 # applies in the order refused, a fault before the constructor, 3 not adopted, 6 not put
 # back, 4 hung, a window that WM_CLOSE did not close, a blocked call or the ceiling, 7 ended
@@ -1491,6 +1602,15 @@ function Monitor($sync) {
     [Console]::Out.WriteLine($line)
     if (-not (RecordAppend $sync.RecordLock $sync.RecordFile $line)) { $sync.MonitorWriteFails = $sync.MonitorWriteFails + 1 }
   }
+  # F142. A LIFE line goes into the record through M and, stamped the same, into life.txt beside
+  # it, which only this monitor writes. A write to life.txt that throws is counted with the
+  # record's, so a life check that could not write is never silent.
+  function LifeSay($t) {
+    M $t
+    $line = [DateTime]::Now.ToString("HH:mm:ss") + "  t+" + ([DateTime]::UtcNow - $sync.CallStartUtc).TotalSeconds.ToString("0") + "s  " + $t
+    try { [System.IO.File]::AppendAllText((Join-Path $sync.RunDir "life.txt"), $line + "`r`n", (New-Object System.Text.UTF8Encoding($false))) } catch { $sync.MonitorWriteFails = $sync.MonitorWriteFails + 1 }
+  }
+  $life = NewLifeState
   $clk = $null
   $logPath = $null
   $stream = $null
@@ -1636,6 +1756,31 @@ function Monitor($sync) {
       elseif ($docs -and $null -ne $prog -and $null -eq $prog.Why) { $lText = ", the read-outs " + $prog.Bytes + " bytes, " + $prog.Partial + " being written, " + $prog.Whole + " in place" }
       M ("SAMPLE processor " + $cText + $grow + $lText)
       $lastC = $c
+      # F142, the life check, every $LifeSeconds on a run that drives the tool's window or reads
+      # its log. The class is read off the stretch before this reading is folded in, so the first
+      # reading of a stretch writes no class.
+      if (($win -or $sync.ReadToolLog) -and ($null -eq $life.LastAt -or ($now - $life.LastAt).TotalSeconds -ge $sync.LifeSeconds)) {
+        $lr = LifeRead $sync
+        $step = MaskLine (LifeStepOf $tail)
+        if ($null -ne $lr.Private -and ($null -eq $life.PeakPrivate -or $lr.Private -gt $life.PeakPrivate)) { $life.PeakPrivate = $lr.Private }
+        if ($null -ne $lr.Ws -and ($null -eq $life.PeakWs -or $lr.Ws -gt $life.PeakWs)) { $life.PeakWs = $lr.Ws }
+        $cpuSince = $null; if ($null -ne $c -and $null -ne $life.LastC) { $cpuSince = [double]($c - $life.LastC) / 1e7 }
+        $class = ""; $spell = $null; $spellCpu = $null; $from = $life.Since; $fromStep = $life.SinceStep
+        if ($null -ne $from) {
+          $spell = ($now - $from).TotalSeconds
+          if ($null -ne $c -and $null -ne $life.SinceC) { $spellCpu = [double]($c - $life.SinceC) / 1e7 }
+          $class = LifeClass $spell $spellCpu $lr.FreePhys $lr.FreeCommit $sync.LifeLowMB $sync.HangLimit $sync.HangCpuSeconds
+        }
+        $ev = LifeSpell $life $lr.Answers $now $c $step $sync.LifeClassSeconds $class
+        $notFor = $null; if ($null -ne $life.Since) { $notFor = ($now - $life.Since).TotalSeconds }
+        LifeSay (LifeWords $lr $cpuSince $notFor $step)
+        if ($ev -eq "class") {
+          $rate = $sync.HangCpuSeconds * $spell / $sync.HangLimit
+          LifeSay ("LIFE CLASS " + $class + ": the " + $lr.Window + " has not answered for " + $spell.ToString("0") + " s, since " + $from.ToLocalTime().ToString("HH:mm:ss") + ", the processor used " + $(if ($null -ne $spellCpu) { $spellCpu.ToString("0.0") + " s" } else { "UNKNOWN" }) + " over it against Q83's rate of " + $rate.ToString("0.0") + " s, private " + (LifeNum $lr.Private " MB") + ", working set " + (LifeNum $lr.Ws " MB") + ", the machine's free physical " + (LifeNum $lr.FreePhys " MB") + " and free commit " + (LifeNum $lr.FreeCommit " MB") + " against " + $sync.LifeLowMB + " MB, and the tool's step when it stopped answering: " + $fromStep)
+        }
+        if ($ev -eq "end") { LifeSay ("LIFE the " + $lr.Window + " answers again after " + $spell.ToString("0") + " s not answering, which began at " + $from.ToLocalTime().ToString("HH:mm:ss") + " in the tool's step: " + $fromStep) }
+        $life.LastC = $c; $life.LastAt = $now
+      }
       # WindowRecords returns its list as one object, so the call is put in brackets and piped,
       # which hands on each record. Wrapped bare in @() the list stayed one record, measured on
       # 2026-10-01 in Windows PowerShell 5.1, and the window rule threw on its arrays.
@@ -1763,7 +1908,21 @@ function Monitor($sync) {
     $sync.MonitorFault = (Err $_.Exception)
     M ("MONITOR FAULT: " + $sync.MonitorFault)
     if ($sync.RunOver -eq "") { $sync.RunOver = "FAULT" }
-  } finally { if ($null -ne $stream) { $stream.Dispose() } }
+  } finally {
+    if ($null -ne $stream) { $stream.Dispose() }
+    # F142. One summary, whichever way the monitor ended. A stretch still open counts to now.
+    if ($null -ne $life.LastAt) {
+      try {
+        $open = ""
+        if ($null -ne $life.Since) {
+          $openFor = ([DateTime]::UtcNow - $life.Since).TotalSeconds
+          if ($openFor -gt $life.Longest) { $life.Longest = $openFor; $life.LongestStep = $life.SinceStep }
+          $open = ", one still not answering at the end, for " + $openFor.ToString("0") + " s"
+        }
+        LifeSay ("LIFE SUMMARY: " + $life.Spells + " stretch(es) not answering" + $open + ", the longest " + $life.Longest.ToString("0") + " s" + $(if ($life.Spells -gt 0) { ", in the tool's step: " + $life.LongestStep } else { "" }) + ", peak private " + (LifeNum $life.PeakPrivate " MB") + ", peak working set " + (LifeNum $life.PeakWs " MB") + ", read every " + $sync.LifeSeconds + " s, so a stretch is known to " + $sync.LifeSeconds + " s")
+      } catch { M ("LIFE SUMMARY not written, " + (Err $_.Exception)) }
+    }
+  }
   M "MONITOR stopped"
 }
 # F106. Once the monitor has ended a window run, a plugin call that has not returned has the
@@ -2325,7 +2484,7 @@ try {
         $sync.MonitorStop = $false; $sync.RunOver = ""; $sync.MonitorFault = ""; $sync.MonitorWriteFails = 0
         $sync.Dialogs = 0; $sync.ToolLog = $null; $sync.LogAmbiguous = $false; $sync.ReadToolLog = $win
         $sync.LogsFolder = $paths.HisLogs; $sync.LogsBefore = $logsBefore
-        $sync.HangLimit = $HangLimitSeconds; $sync.HangCpuSeconds = $HangCpuSeconds; $sync.PassSeconds = $PassSeconds; $sync.HoldSeconds = $(if ($win -or $docsMode) { 0 } else { $HoldSeconds }); $sync.BeatSeconds = $BeatSeconds
+        $sync.HangLimit = $HangLimitSeconds; $sync.HangCpuSeconds = $HangCpuSeconds; $sync.PassSeconds = $PassSeconds; $sync.HoldSeconds = $(if ($win -or $docsMode) { 0 } else { $HoldSeconds }); $sync.BeatSeconds = $BeatSeconds; $sync.LifeSeconds = $LifeSeconds; $sync.LifeClassSeconds = $LifeClassSeconds; $sync.LifeLowMB = $LifeLowMB
         $sync.Window = $win; $sync.Stamp = $Stamp; $sync.QuietSeconds = $QuietSeconds; $sync.EndCloseSeconds = $CallLimitSeconds; $sync.EndForced = ""
         $sync.DriverProc = $null; $sync.DriverExit = $null; $sync.DriverLine = ""; $sync.DriverNotes = Join-Path $paths.RunDir "driver.txt"; $sync.DriverPressed = (DriverCode "PRESSED")
         # F104 part 2. The folder the probe writes into, read by the monitor in place of the
@@ -2597,7 +2756,7 @@ try {
             }
           }
           if ($win -and $null -ne $paths.RunDir -and (Test-Path -LiteralPath $paths.RunDir)) {
-            foreach ($n in @("watch.txt", "settings.txt", "driver.txt", "toollog-name.txt", "outputs.txt")) { $src = Join-Path $paths.RunDir $n; if (Test-Path -LiteralPath $src) { $evPlan.Add([pscustomobject]@{ Name = $n; From = $src }) } }
+            foreach ($n in @("watch.txt", "settings.txt", "driver.txt", "toollog-name.txt", "outputs.txt", "life.txt")) { $src = Join-Path $paths.RunDir $n; if (Test-Path -LiteralPath $src) { $evPlan.Add([pscustomobject]@{ Name = $n; From = $src }) } }
             # A plain foreach, never @($evPlan): @() on a List[object] throws in 5.1, CpuUsedSince.
             foreach ($p in $evPlan) {
               $len = (Get-Item -LiteralPath $p.From).Length
