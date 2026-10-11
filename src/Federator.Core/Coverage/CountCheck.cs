@@ -85,12 +85,11 @@ namespace Federator.Core.Coverage
         /// they were not read, and the workbook is null where none was written or read, with
         /// the reason where known. Compacted is the clash step's own count of Resolved clashes
         /// Compact removed, minus one where compacting was not asked for. InAMerge names the
-        /// tests of every mirrored pair F132's rule merges, the kept test and each mirror by the
-        /// name it ran under, null where no pair merges: a merge carries a mirror's clashes in
+        /// tests of every mirrored pair the merge made this run, the kept test and each mirror by
+        /// the name it ran under, null where no pair merged: a merge carries a mirror's clashes in
         /// the kept test's block and leaves no block of the mirror's, so neither block is one
-        /// test's count and each is NOT COMPARED, never a FAILED line the merge made. The merge
-        /// can still refuse at run time and say so in its MIRROR MERGE lines, and these tests
-        /// are not compared either way, since which happened is not handed in.
+        /// test's count and each is NOT COMPARED, never a FAILED line the merge made. A pair the
+        /// merge refused at run time is not named, so its tests are compared like any other.
         /// </summary>
         public static CountCheck Judge(
             IList<TestCoverage> tests,
