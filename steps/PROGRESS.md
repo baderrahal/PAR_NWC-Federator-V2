@@ -11,18 +11,18 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 2a | 32 | 4 | 0 | 0 | 27 | 0 | 63 |
 | 2b | 28 | 2 | 0 | 1 | 9 | 0 | 40 |
 | 2c | 7 | 1 | 0 | 0 | 3 | 1 | 12 |
-| 3a | 12 | 4 | 3 | 1 | 3 | 0 | 23 |
+| 3a | 15 | 4 | 0 | 1 | 3 | 0 | 23 |
 | 3b | 13 | 1 | 0 | 0 | 7 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
 | outside the waves | 160 | 12 | 0 | 1 | 47 | 5 | 225 |
-| total | 295 | 29 | 3 | 3 | 197 | 6 | 533 |
+| total | 298 | 29 | 0 | 3 | 197 | 6 | 533 |
 <!-- the end of the counts -->
 
 ## Now
 - 11 Oct: last shutdown the restart at 08:59:41, Riyadh time. Roamer none. His key differs from the backup in five values, an older copy back after the restarts of 10 Oct, T5-R-OLDKEY, nothing put back. Keep-awake pid 18216
 - Bader's answers: Q144 B, Q146 B with the Coverage sheet moving into the internal workbook, row F127-R2, Q148 B
-- F130 Shift ticking merged as PR 192, first today. F129 start from an NWF merged as PR UNKNOWN, the picked NWFs running the open file run's route. F109 the install at 9b489ff, its records and reading next
+- F130 Shift ticking merged as PR 192, first today. F129 start from an NWF merged as PR 193, the picked NWFs running the open file run's route. F109 the install at 9b489ff, its records and reading next
 
 ## Next
 1. F130, then F129, then F109, each merged in that order, Bader's item 6
