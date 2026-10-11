@@ -198,11 +198,34 @@ namespace Federator.Addin.Engine
             if (needsPutBack && !PutTheStateBack("the test before " + testName + ", tried again"))
             {
                 stopped = true;
-                log.Line("IMAGES   the hidden state could not be put back twice, so no model is hidden for any later picture of this clash step");
+                ShowEverythingAfterTwoFailures();
                 return false;
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// The last try where the snapshot could not be put back twice, one that needs no snapshot:
+        /// every model and item shown, so no later picture of the step misses a model a failed put back
+        /// left hidden, the document's own hides lost for those pictures until the end of the step tries
+        /// the snapshot once more. Each outcome is said as it is.
+        /// </summary>
+        private void ShowEverythingAfterTwoFailures()
+        {
+            try
+            {
+                document.Models.ResetAllHidden();
+                log.Line("IMAGES   the hidden state could not be put back twice, so every item is shown for every later "
+                    + "picture of this clash step, the items the document hid among them, and no model is hidden for a test any more");
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "showing every item after the hidden state could not be put back twice",
+                    error,
+                    "kept going, the later pictures of this clash step may miss the models the failed put back left hidden");
+            }
         }
 
         /// <summary>
