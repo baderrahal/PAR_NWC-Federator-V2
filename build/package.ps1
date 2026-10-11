@@ -148,11 +148,22 @@ $version = @(
 
 # The zip is written in the scratch folder, read back entry by entry against what was laid out,
 # and only then copied to the output folder and read back there by its SHA256.
+# Each entry is named with forward slashes, as the zip format asks. ZipFile.CreateFromDirectory
+# under Windows PowerShell 5.1 named them with backslashes, measured on 2026-10-11 by the third
+# run of turn6\f140-proof.
+Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $zipScratch = Join-Path $scratch ($name + ".zip")
-[System.IO.Compression.ZipFile]::CreateFromDirectory($lay, $zipScratch, [System.IO.Compression.CompressionLevel]::Optimal, $false)
 $laid = @{}
-foreach ($f in @(Get-ChildItem -LiteralPath $lay -Recurse -File -Force)) { $laid[$f.FullName.Substring($lay.Length + 1).Replace('\', '/')] = $f.Length }
+$archive = [System.IO.Compression.ZipFile]::Open($zipScratch, [System.IO.Compression.ZipArchiveMode]::Create)
+try {
+    foreach ($f in @(Get-ChildItem -LiteralPath $lay -Recurse -File -Force | Sort-Object FullName)) {
+        $entry = $f.FullName.Substring($lay.Length + 1).Replace('\', '/')
+        [void][System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $f.FullName, $entry, [System.IO.Compression.CompressionLevel]::Optimal)
+        $laid[$entry] = $f.Length
+    }
+}
+finally { $archive.Dispose() }
 $zip = [System.IO.Compression.ZipFile]::OpenRead($zipScratch)
 try {
     $entries = @($zip.Entries | Where-Object { -not $_.FullName.EndsWith("/") })
