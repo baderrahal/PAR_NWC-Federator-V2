@@ -550,3 +550,4 @@ F142-R1,"one run of prove-life.ps1 of three ended exit -1 right after its first 
 F142-R2,"the life check's query of the machine's memory has a 5 s timeout on reading its results, and whether that timeout also bounds the connection to WMI is UNKNOWN, so a WinMgmt that will not connect could still hold a pass of the monitor, the reviewer's point 6 on attempt 2",F142,none,register row,open,none,none,2026-10-11
 F144,the first-50 copy for the fast checks,F144,none,fix,merged,200,none,2026-10-11
 F144-R1,"the first 50 tests of the corrected matrix on 1A04PK hold BLD-AR-Walls-vs-BLD-AR-Floors, whose harvest took 5817 s in set 06, so the cut down 1A04PK is a check of hours and not minutes until the speed fix",F144,none,register row,open,none,none,2026-10-11
+F148,two tests that filled the shared temp folder,F148,none,fix,in review,UNKNOWN,none,2026-10-11
