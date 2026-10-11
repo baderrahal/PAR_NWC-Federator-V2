@@ -24,5 +24,23 @@ namespace Federator.Core.Diagnostics
                 + seconds.ToString("0.0", CultureInfo.InvariantCulture)
                 + "s, one Navisworks call, so the window could not answer for that long";
         }
+
+        /// <summary>
+        /// Writes the line where there is one, with its .tsv row, the seconds as its number, through
+        /// RunLog.Numbered, the one way a line carrying a number reaches the log. Called by the
+        /// add-in in the finally around the call, so a call that throws after a long wait is named
+        /// too. A null log writes nothing.
+        /// </summary>
+        public static void Say(RunLog log, string call, string on, double seconds, double longCallSeconds)
+        {
+            string line = Line(call, on, seconds, longCallSeconds);
+
+            if (log == null || line == null)
+            {
+                return;
+            }
+
+            log.Numbered(line, "long call", call, seconds.ToString("0.0", CultureInfo.InvariantCulture), on);
+        }
     }
 }

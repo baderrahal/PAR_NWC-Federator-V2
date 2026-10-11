@@ -157,6 +157,13 @@ namespace Federator.Addin.Ui
 
         private void OnScan(object sender, RoutedEventArgs e)
         {
+            // F143. The harvest pumps the window between rows, so Scan, which empties the file
+            // list a run reads, is refused while a run is going, as every other handler is.
+            if (running)
+            {
+                return;
+            }
+
             string folder = SourceFolderBox.Text == null ? string.Empty : SourceFolderBox.Text.Trim();
 
             if (folder.Length == 0 || !Directory.Exists(folder))

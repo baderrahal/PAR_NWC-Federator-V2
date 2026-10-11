@@ -73,6 +73,7 @@ namespace Federator.Addin.Engine
 
         private StepProgress said;
         private string saidStep;
+        private int underGroups;
 
         /// <summary>
         /// Starts the count of one stretch of pieces, F143: the rows of one test, or the pictures
@@ -82,25 +83,34 @@ namespace Federator.Addin.Engine
         public void BeginPieces(string step)
         {
             saidStep = step;
+            underGroups = 0;
             said = Progress == null ? null : new StepProgress(Progress.EverySeconds, log.ElapsedSeconds);
         }
 
         /// <summary>
         /// Between two pieces of a stretch, F143: the live line, whose callback lets the window
-        /// answer, and a PROGRESS line naming the step, the test and the count once one is due.
-        /// Set 06's run of 1A04PK sat 97 minutes in the rows of one test with neither.
+        /// answer, and a PROGRESS line with its .tsv row naming the step, the test and the count
+        /// once one is due. Set 06's run of 1A04PK sat 97 minutes in the rows of one test with
+        /// neither. A total below nought is a count not known.
         /// </summary>
         public void Piece(string piece, int done, int total)
         {
+            string count = done.ToString(CultureInfo.InvariantCulture) + " of "
+                + (total < 0 ? "UNKNOWN" : total.ToString(CultureInfo.InvariantCulture));
+
             if (Tick != null)
             {
-                Tick(TestName + ", " + piece + " " + done.ToString(CultureInfo.InvariantCulture)
-                    + " of " + total.ToString(CultureInfo.InvariantCulture));
+                Tick(TestName + ", " + piece + " " + count);
             }
 
             if (said != null && said.Due(log.ElapsedSeconds))
             {
-                log.Line(said.Line(saidStep, TestName, piece, done, total, log.ElapsedSeconds));
+                log.Numbered(
+                    said.Line(saidStep, TestName, piece, done, total, log.ElapsedSeconds),
+                    "progress",
+                    TestName,
+                    done.ToString(CultureInfo.InvariantCulture),
+                    saidStep + " " + piece + " " + count);
             }
         }
 
@@ -236,7 +246,10 @@ namespace Federator.Addin.Engine
                     path.RemoveAt(path.Count - 1);
                 }
 
-                // After the wrapper is released, so no handle is held across the pump.
+                // After the row's own wrapper is released. The test, its children and the grid
+                // stay held across the pump as they are across every render: the tool's window is
+                // modal over Navisworks and every handler of it that touches Navisworks returns
+                // while a run is going, so nothing the pump dispatches changes the document.
                 Piece("row", i + 1, children.Count);
             }
         }
@@ -293,6 +306,12 @@ namespace Federator.Addin.Engine
 
                     path.RemoveAt(path.Count - 1);
                 }
+
+                // F143, the readers' point: in a merge every clash under a group row is read on its
+                // own, so a group of thousands is no longer one silent piece. A group under a group
+                // counts as an item too, and the count of the whole is not known here, UNKNOWN.
+                underGroups++;
+                Piece("item under a group", underGroups, -1);
             }
         }
 

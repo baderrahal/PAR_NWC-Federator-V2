@@ -978,7 +978,18 @@ namespace Federator.Addin.Engine
                                 return;
                             }
 
-                            clashTests.TestsRunTest(test);
+                            // F143. The call alone is timed and named where it took the setting's
+                            // seconds or more, in the finally, so a run that throws is named too.
+                            double from = log.ElapsedSeconds;
+
+                            try
+                            {
+                                clashTests.TestsRunTest(test);
+                            }
+                            finally
+                            {
+                                LongCall.Say(log, "TestsRunTest", planned.Name, log.ElapsedSeconds - from, Settings().LongCallSeconds);
+                            }
                         }
                     }
                     finally
@@ -988,15 +999,6 @@ namespace Federator.Addin.Engine
 
                     running.Changed(planned.Name);
                     ranFor = running.SecondsSoFar();
-                }
-
-                // F143. Running one test is one Navisworks call the window cannot answer during,
-                // named with its seconds where it took the setting's or more.
-                string longRun = LongCall.Line("TestsRunTest", planned.Name, ranFor, Progress.LongCallSeconds);
-
-                if (longRun != null)
-                {
-                    log.Line(longRun);
                 }
 
                 // F54. Between the run and the harvest, and never after the clash step.
@@ -1895,13 +1897,24 @@ namespace Federator.Addin.Engine
         private void HandTheProgress(ClashHarvest harvest, string testName)
         {
             harvest.Tick = progress;
-            harvest.Progress = Progress;
+            harvest.Progress = Settings();
             harvest.TestName = testName;
 
-            if (Images != null && Progress != null)
+            if (Images != null)
             {
-                Images.LongCallSeconds = Progress.LongCallSeconds;
+                Images.LongCallSeconds = Settings().LongCallSeconds;
             }
+        }
+
+        /// <summary>The runner's ProgressSettings, its defaults where a caller set Progress to null.</summary>
+        private ProgressSettings Settings()
+        {
+            if (Progress == null)
+            {
+                Progress = new ProgressSettings();
+            }
+
+            return Progress;
         }
 
         /// <summary>

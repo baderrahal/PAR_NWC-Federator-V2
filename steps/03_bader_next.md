@@ -324,6 +324,14 @@ The loop runs these on its own copy, 1A02MM again from a fresh set, after main w
 632. Look for, in the `VIEWS TREE` block: its seven checks, how many hold, and no `FAILED CHECK` naming a framed view
 633. Send the log file and the `.tsv` beside it, with the `VIEWS` seconds off the `TIMING` block, against 7487.104 s in set 04's run of the same building
 
+## Proof F143 the harvest answers between rows, added 2026-10-11
+
+634. Install main with F143, then run 1A04PK on a cut down XML or the whole one, Make viewpoints ticked
+635. Look for, in the log while a test with many clashes is read: a `PROGRESS HARVEST <test> row N of M` line at least every 30 s, the window's live line moving, and the window answering a click on its title bar between rows
+636. Look for, where one picture or one test took 30 s or more: a `CALL     TestsImageForResult on <test> <clash> took Ns` or `CALL     TestsRunTest on <test> took Ns` line, and no CALL line under 30 s
+637. Look for, on the run's TIMING block: VIEWS lines every 30 s where the step is long, and the same rows, pictures and workbook as before, the fix changing no output
+638. Send the log and the `.tsv` beside it, with the longest gap between two lines of the harvest
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,
