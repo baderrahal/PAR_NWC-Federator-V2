@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-11 12:47, last run 04/item2-C02
+STATE OPEN, 2026-10-12 10:36, last run 09/item1-C04
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -20,25 +20,35 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 <!-- the end of the counts -->
 
 ## Now
-- 11 Oct: last shutdown the restart at 08:59:41, Riyadh time. Roamer none. His key differs from the backup in five values, an older copy back after the restarts of 10 Oct, T5-R-OLDKEY, nothing put back. Keep-awake pid 18216
-- Bader's answers Q144 B, Q146 B, Q148 B. Q149: no release runs, the proof runs of 1A02MM and 1A04PK the last, the team package prepared and made only when he asks
-- F130 Shift ticking merged as PR 192, first today. F129 start from an NWF merged as PR 193, the picked NWFs running the open file run's route. F109 the install merged as PR 194, install.ps1 refusing a link, finding a cut run's leftovers, and ending on one of four lines
-- F127 the coverage of the picked tests merged as PR 195: a COVERAGE block and rows per group, a tally in RESULT, the Coverage sheet in the internal workbook beside Generic Models, the clash workbook one sheet again
+- Bader's order of 12 Oct, WRAP UP NOW, NO MORE TESTS, item 156: no probe, fast check, speed loop or run. He runs the tool himself on his desktop PC
+- Item 1 done: no run was in progress, hardware acceleration put back to his "3 0" and read back
+- Merged: 202, 204 F145 and 207 F149 by Bader on GitHub, 205 F146 as 2955d0e, 208 F140 the team package as 69de6ed
+- The team zip waits for no Navisworks to run on this laptop, since the package script refuses while one runs, and a watcher makes it then
+- Q151, Hide Other: not built, no documented API and no probe allowed, the guide's step 2 sets it by hand, row F150
+
+## Speed
+No measurement with F145, F146 or F149 merged. Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
+
+| date | build | a picture | 1A02MM | longest freeze | most time |
+|---|---|---|---|---|---|
+| Bader's PC, 11 Oct | cdf8d4e, DirectX 11 hardware | 0.049 s | 156 s | 0 s | UNKNOWN |
+| 11 Oct 21:42 | cdf8d4e, acceleration off | 7.76 s | 293 s | 32 s, RENUMBER | HARVEST 187 s |
+| 12 Oct 01:20 | cdf8d4e, acceleration on | 0.168 s, 0.120 s with F145's rule | 253 s | 32 s, RENUMBER | HARVEST 150 s |
+| 12 Oct 03:47, probe only | cdf8d4e's code, Hide Other on for one start | 0.067 s, 0.059 s with F145's rule | not run | not run | not run |
 
 ## Next
-1. F130, F129 and F109 merged in that order, Bader's item 6, done
-2. The Coverage sheet moved into the internal workbook, F127-R2, merged as PR 195, done
-3. F140 the team package prepared on its own branch, no team zip until Bader writes make the team package
-4. Main installed in place and 1A02MM and 1A04PK run with the box ticked, steps\notes\item5-runs-brief.md, findings in set 03's shape
+1. The team zip from main once no Navisworks runs, checked to open, its path and size to Bader
+2. The final state on this page and the closing entry of steps\history\log.md, STATE WAITING, then 206 merged last
+3. Stop, item 6 of his order
 
 ## Waiting for Bader
-- No question. The team package, F140, is prepared and made only when Bader writes make the team package, Q149
+- Q155, F147 stopped under Q148 B
+- F150, Hide Other set by the tool, which needs one probe of the API
+- His Navisworks closed on this laptop, for the zip
 
 ## Blockers and known bugs
-- T5-R-WALKRACE: the harness's walk of the loop folder races a lane's build and stops on a HARNESS FAULT
-- T5-R-HELDOFF: a run that leaves "3 0" makes the next backup read it as his, put back by hand
-- T5-R-OLDKEY: his 22.0 key reads an older copy after each restart, the writer UNKNOWN, seen again on 11 Oct
-- T6-R-TESTTEMP: a test fails as its logs build up in the temp folder
+- T6-R-WPFBOX: a caption less WPF window of Navisworks as the tool's window closed in set 09
+- F149-R1: the pictures' guard stops a run only once every test of the group has run
 
 ## Where the long history is
 - steps\history\loop.md: every turn, the form and the register table, its closed rows the record
