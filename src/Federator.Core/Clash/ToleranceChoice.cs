@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Federator.Core.Exchange;
+using Federator.Core.Report;
 
 namespace Federator.Core.Clash
 {
@@ -187,6 +188,27 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
+        /// The report row of a test that now carries the chosen value, created at it or set to
+        /// it on a saved test, says that value in the document's units and that it was chosen
+        /// in the tool, FR-036. The row was given the plan's value before the test was touched,
+        /// and a test that then does not run never reaches the reading off the document, so a
+        /// skipped test said the old value and where the old value came from while the
+        /// document held the chosen one. Under the default nothing was chosen and the row
+        /// keeps what the plan gave it, Bader's answer to Q54. A row of null is no row.
+        /// </summary>
+        public void PutOn(TestReport row, string documentUnits)
+        {
+            if (!chosen || row == null)
+            {
+                return;
+            }
+
+            row.Tolerance = InDocumentUnits(documentUnits);
+            row.ToleranceUnits = documentUnits ?? string.Empty;
+            row.ToleranceFrom = ToleranceOrigin.Tool;
+        }
+
+        /// <summary>
         /// The line one group writes. Both counts are read, neither is worked out from the
         /// other, and the converted value is on it so nobody has to do the arithmetic to
         /// find out what 25 mm was in a document measuring feet.
@@ -253,6 +275,9 @@ namespace Federator.Core.Clash
         /// makes the split visible. It says RAN and not carry a clash, because a test that
         /// ran and found nothing is among the ran. Every number is read off the report
         /// rows and the third is the first two subtracted, said so a reader can check it.
+        /// It said their tolerance reads off the picked file, which a saved test read out of
+        /// the document and, since FR-036, a test carrying a value chosen in the tool do not,
+        /// so it points at ReadFromLine, which counts where every row's value was read.
         /// </summary>
         public static string BlocksLine(int blocks, int ran)
         {
@@ -261,7 +286,7 @@ namespace Federator.Core.Clash
 
             return "WORKBOOK " + blocks.ToString("N0", invariant) + " test blocks, "
                 + ran.ToString("N0", invariant) + " ran and " + neverRan.ToString("N0", invariant)
-                + " are tests that never ran. Their tolerance reads off the picked file";
+                + " are tests that never ran. Where each block's tolerance was read is on the line below";
         }
 
         /// <summary>
