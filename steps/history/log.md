@@ -11,6 +11,15 @@ passes 5 GB, logging its size before and after. Branch fix-F147, main 80314b9 ta
 F146, F149 and F140.
 
 What was done:
+- THE READERS OF ATTEMPT 3, finished after the usage limit of 2026-10-12. The reviewer approved. The breaker's two points are
+  fixed in this attempt under Q148 B: a step entered again and again in a group gets one MEMORY line across all its
+  visits where the group's repeated steps are summed, one read a group, beside the pair around its first visit, and the
+  cache's bar for a clearing is brought down to what a check reads whole under it, TextureCache.BarAfter, wired into the
+  watch, with a failed read after a clearing leaving no bar. Two attempt 2 tests were rewritten for Bader's choice A,
+  AFileInUse and AClearingThatRemovedSome, and the memory test for a repeated step was rewritten for the new line.
+  The reviewer's records points are fixed: steps 667 and 670 quote what the log writes, and the comments of
+  FederationEngine and JobOutcome say Report and RowAddresses are null once the group ends. Core tests 2940 on main
+  80314b9, 2949 after attempt 3 and 2964 after its fixes
 - Attempts 1 and 2, as written before: the undo off through the picture pass with its state read before,
   during and after, and the texture cache read across the pass and cleared past 5 GB by Core's TextureCache
   and TextureCacheWatch, the walk never leaving the folder. The breaker's re-read of attempt 2 found two

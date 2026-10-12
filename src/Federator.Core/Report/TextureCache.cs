@@ -58,11 +58,22 @@ namespace Federator.Core.Report
 
         /// <summary>
         /// What a clearing left, the bar the cache must grow past before it is cleared again: its size
-        /// read after the clearing, or where that read was not whole, its size before it.
+        /// read after the clearing, or where that read was not whole, no bar, so the next check past the
+        /// limit clears, the breaker's 3b on pull request 217.
         /// </summary>
-        public static long LeftBy(long before, long after)
+        public static long LeftBy(long after)
         {
-            return after >= 0 ? after : before;
+            return after >= 0 ? after : NoClearingYet;
+        }
+
+        /// <summary>
+        /// The bar after a check: brought down to a size read whole under it, so a cache that shrank as
+        /// Navisworks let go of files and then grew is cleared once it passes what the check read, and
+        /// left where it was otherwise. No bar stays no bar. The breaker's 3a on pull request 217.
+        /// </summary>
+        public static long BarAfter(long bar, long bytes)
+        {
+            return bar >= 0 && bytes >= 0 && bytes < bar ? bytes : bar;
         }
 
         /// <summary>Whether a clearing left the cache not under the limit, past it or not read whole, said on its line.</summary>
@@ -158,13 +169,17 @@ namespace Federator.Core.Report
         /// <summary>
         /// The line of one clearing: the size and the files before, what was removed, what could not
         /// be, what had gone before its turn, and the size after, read again. A clearing that leaves the
-        /// cache still past the limit says the size it must grow past before it is cleared again.
+        /// cache still past the limit says the size it must grow past before it is cleared again, or
+        /// where its size after was not read, that the next check past the limit clears.
         /// </summary>
         public static string ClearedLine(
             string folder, long before, int filesBefore, long limitBytes, int removed, int notRemoved, int goneBefore,
             long after, int filesAfter, double seconds)
         {
-            bool stillPast = StillPast(after, limitBytes);
+            string again = after < 0
+                ? ", and since its size after it is UNKNOWN it is cleared again at the next check past the limit"
+                : ", and since it is not under the limit it is cleared again only once it holds more than "
+                    + Exactly(LeftBy(after)) + ", or more than a later check reads under that";
 
             return "the texture cache at " + Words.Or(folder, "UNKNOWN") + " held " + Exactly(before) + " in "
                 + Files(filesBefore) + ", past the limit of " + Exactly(limitBytes) + ", so "
@@ -173,9 +188,7 @@ namespace Federator.Core.Report
                 + (goneBefore > 0 ? ", " + Words.Counted(goneBefore, "file", "files") + " had gone before its turn" : string.Empty)
                 + ", and it holds " + Exactly(after) + " in " + Files(filesAfter) + " now, "
                 + Seconds(seconds) + " for the clearing"
-                + (stillPast
-                    ? ", and since it is not under the limit it is cleared again only once it holds more than " + Exactly(LeftBy(before, after))
-                    : string.Empty);
+                + (StillPast(after, limitBytes) ? again : string.Empty);
         }
 
         /// <summary>The line of the first check whose walk did not finish, so nothing was cleared at it. Later ones are counted on the pass line.</summary>

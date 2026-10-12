@@ -95,6 +95,21 @@ namespace Federator.Core.Diagnostics
                 + Why(end);
         }
 
+        /// <summary>
+        /// One line for a step entered again and again in a group, written where the group's repeated steps
+        /// are summed: how far each number moved from the start of the step's FIRST visit to now, so the step
+        /// that grows the most is not read as flat off the end line of its first visit alone.
+        /// </summary>
+        public static string RepeatedLine(string step, int visits, ProcessMemory firstStart, ProcessMemory now)
+        {
+            return "MEMORY   across the " + visits.ToString(CultureInfo.InvariantCulture) + " visits of "
+                + Words.Or(step, "UNKNOWN") + " in this group, from the start of the first to now, "
+                + "private bytes " + NowAndMoved(Of(now, m => m.PrivateBytes), Of(firstStart, m => m.PrivateBytes)) + ", "
+                + "working set " + NowAndMoved(Of(now, m => m.WorkingSet), Of(firstStart, m => m.WorkingSet)) + ", "
+                + "managed heap " + NowAndMoved(Of(now, m => m.ManagedBytes), Of(firstStart, m => m.ManagedBytes))
+                + Why(now) + ". The end line of the first visit covers that visit only";
+        }
+
         /// <summary>A number of bytes in megabytes to one place, UNKNOWN where it was not read.</summary>
         private static string Megabytes(long bytes)
         {

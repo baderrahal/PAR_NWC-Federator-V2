@@ -154,6 +154,10 @@ namespace Federator.Core.Report
                     filesAtStart = now.FileCount;
                 }
 
+                // The bar comes down to a size read whole under it, so a cache that shrank as files were
+                // let go and then grew is cleared once it passes what this check read.
+                leftByLastClearing = TextureCache.BarAfter(leftByLastClearing, now.Bytes);
+
                 if (TextureCache.ShouldClear(now.Bytes, limitBytes, leftByLastClearing))
                 {
                     Clear();
@@ -299,7 +303,7 @@ namespace Federator.Core.Report
                 SayNotWholeOnce(error);
             }
 
-            leftByLastClearing = TextureCache.LeftBy(before.Bytes, after.Bytes);
+            leftByLastClearing = TextureCache.LeftBy(after.Bytes);
 
             say(TextureCache.ClearedLine(
                 folder, before.Bytes, before.FileCount, limitBytes, removed, notRemoved, goneBefore,

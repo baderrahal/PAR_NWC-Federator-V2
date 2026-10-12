@@ -79,7 +79,7 @@ namespace Federator.Core.Tests
         // The cost guard: TESTS RUN is entered once a test, and its memory is read where its own
         // start and finish lines are written, the first visit of the group, and not at every test.
         [Test]
-        public void AStepEnteredAgainInAGroupReadsTheMemoryOnlyAroundItsFirstVisit()
+        public void AStepEnteredAgainInAGroupGetsOneLineAcrossAllItsVisitsBesideTheFirstVisitsPair()
         {
             using (RunLog log = Start())
             {
@@ -96,9 +96,13 @@ namespace Federator.Core.Tests
                 log.GroupFinished("1B06PH", GroupOutcome.Done, 1.0, null, "Weekly run");
                 string text = Text(log);
 
-                Assert.That(asked, Is.EqualTo(2));
+                // Two around the first visit, and one where the group's repeated steps are summed, so the
+                // step entered five times is not read as flat off its first visit alone.
+                Assert.That(asked, Is.EqualTo(3));
                 Assert.That(Occurrences(text, "MEMORY   at the start of TESTS RUN"), Is.EqualTo(1));
                 Assert.That(Occurrences(text, "MEMORY   at the end of TESTS RUN"), Is.EqualTo(1));
+                Assert.That(Occurrences(text, "MEMORY   across the 5 visits of TESTS RUN in this group"), Is.EqualTo(1));
+                Assert.That(text, Does.Contain("The end line of the first visit covers that visit only"));
             }
         }
 

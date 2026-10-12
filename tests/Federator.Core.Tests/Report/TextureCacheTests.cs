@@ -73,8 +73,30 @@ namespace Federator.Core.Tests
             Assert.That(TextureCache.ShouldClear(301, 100, 300), Is.True, "grown past what the last clearing left");
             Assert.That(TextureCache.ShouldClear(150, 100, 50), Is.True, "a clearing that brought it under the limit sets no bar past it");
             Assert.That(TextureCache.ShouldClear(301, 0, 300), Is.False, "a limit of zero still switches it off");
-            Assert.That(TextureCache.LeftBy(500, 300), Is.EqualTo(300), "what the clearing left, read after it");
-            Assert.That(TextureCache.LeftBy(500, -1), Is.EqualTo(500), "not read after it, so what it held before is the bar");
+            Assert.That(TextureCache.LeftBy(300), Is.EqualTo(300), "what the clearing left, read after it");
+        }
+
+        // The breaker's 3b on pull request 217: a read after a clearing that failed sets no bar, so
+        // the next check past the limit clears, where the size before the clearing was the bar.
+        [Test]
+        public void AClearingNotReadAfterItSetsNoBar()
+        {
+            Assert.That(TextureCache.LeftBy(-1), Is.EqualTo(TextureCache.NoClearingYet));
+            Assert.That(TextureCache.ShouldClear(101, 100, TextureCache.LeftBy(-1)), Is.True);
+            Assert.That(
+                TextureCache.ClearedLine("C:\\t\\ogs", 500, 2, 100, 1, 1, 0, -1, -1, 0.5),
+                Does.EndWith("and since its size after it is UNKNOWN it is cleared again at the next check past the limit"));
+        }
+
+        // The breaker's 3a on pull request 217: the bar comes down to a check that reads the cache
+        // under it, so a cache that shrank and grew again is cleared once it passes what it last held.
+        [Test]
+        public void TheBarComesDownToACheckThatReadsTheCacheUnderIt()
+        {
+            Assert.That(TextureCache.BarAfter(300, 200), Is.EqualTo(200), "read under the bar");
+            Assert.That(TextureCache.BarAfter(300, 400), Is.EqualTo(300), "read over it, the bar stays");
+            Assert.That(TextureCache.BarAfter(300, -1), Is.EqualTo(300), "a size not read moves nothing");
+            Assert.That(TextureCache.BarAfter(TextureCache.NoClearingYet, 200), Is.EqualTo(TextureCache.NoClearingYet), "no bar, none is set");
         }
 
         [Test]
@@ -287,7 +309,7 @@ namespace Federator.Core.Tests
                 Assert.That(File.Exists(held), Is.True);
                 Assert.That(said.Count, Is.EqualTo(1), "checked again at the interval, and not cleared again since it has not grown");
                 Assert.That(said[0], Does.Contain("so 0 files were removed, 1 file could not be removed"));
-                Assert.That(said[0], Does.EndWith("and since it is not under the limit it is cleared again only once it holds more than 3.0 MB (3145728 bytes)"));
+                Assert.That(said[0], Does.EndWith("and since it is not under the limit it is cleared again only once it holds more than 3.0 MB (3145728 bytes), or more than a later check reads under that"));
                 Assert.That(watch.AtTheEnd(), Does.Contain("checked 2 times against the limit of 1.0 MB (1048576 bytes), cleared 1 time removing 0 files"));
             }
         }
@@ -329,6 +351,44 @@ namespace Federator.Core.Tests
                 Assert.That(said[1], Does.Contain("held 5.0 MB (5242880 bytes) in 2 files"));
                 Assert.That(said[1], Does.Contain("so 1 file was removed, 1 file could not be removed"));
                 Assert.That(watch.AtTheEnd(), Does.Contain("checked 3 times against the limit of 1.0 MB (1048576 bytes), cleared 2 times removing 2 files"));
+            }
+        }
+
+        // The breaker's 3a on pull request 217: Navisworks lets go of a file it held, the cache reads
+        // under what the clearing left, and then grows. It is cleared once it passes what the check
+        // read, where the bar left at the clearing's 4 MB let it grow to 4 MB unseen.
+        [Test]
+        public void ACacheThatShrankUnderTheBarIsClearedOnceItGrowsPastWhatItLastHeld()
+        {
+            TestPaths.OnWindowsOnly("share locking");
+
+            string kept = Path.Combine(folder, "kept.bin");
+            string letGo = Path.Combine(folder, "let-go.bin");
+            string grown = Path.Combine(folder, "new.bin");
+            Write(kept, 2 * Megabyte);
+            Write(letGo, 2 * Megabyte);
+
+            using (new FileStream(kept, FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                TextureCacheWatch watch = Watch(1 * Megabyte, 60);
+
+                using (new FileStream(letGo, FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    watch.BetweenTests();
+                }
+
+                File.Delete(letGo);
+                now = 61;
+                watch.BetweenTests();
+
+                Write(grown, 1 * Megabyte);
+                now = 122;
+                watch.BetweenTests();
+
+                Assert.That(said.Count, Is.EqualTo(2), "the clearing at 0 s left 4 MB, the check at 61 s read 2 MB, and 3 MB at 122 s is past it");
+                Assert.That(said[1], Does.Contain("held 3.0 MB (3145728 bytes) in 2 files"));
+                Assert.That(File.Exists(grown), Is.False);
+                Assert.That(File.Exists(kept), Is.True);
             }
         }
 

@@ -4135,11 +4135,6 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The group in the coverage across the run, F127b, taken the first time it is asked for, so every
-        /// group the run took is counted once: checked where the COVERAGE step judged it, and not checked
-        /// where it ended before, which RunOne and RunAnOpenFile say when the group ends.
-        /// </summary>
-        /// <summary>
         /// What the group held for its rows, released as the group ends whichever way it ended,
         /// F147, Bader's answer to Q155 on 2026-10-12: release what each step holds as soon as the
         /// step ends. The report model, every row of the group, is read last by the GAPS block at
@@ -4154,6 +4149,11 @@ namespace Federator.Addin.Engine
             outcome.RowAddresses = null;
         }
 
+        /// <summary>
+        /// The group in the coverage across the run, F127b, taken the first time it is asked for, so every
+        /// group the run took is counted once: checked where the COVERAGE step judged it, and not checked
+        /// where it ended before, which RunOne and RunAnOpenFile say when the group ends.
+        /// </summary>
         private GroupInTheRun InTheCoverage(FederationJob job, JobOutcome outcome)
         {
             if (outcome.InTheCoverage == null)
