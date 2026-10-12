@@ -2517,13 +2517,15 @@ namespace Federator.Addin.Engine
                 StepStarted(RunSteps.Pictures);
 
                 TextureCacheWatch textures = null;
+                bool? offBefore = UndoReadsOff(document);
                 string undoBefore = UndoState(document);
-                bool undoOff = KeepTheUndoOff(document);
+                bool undoOff = KeepTheUndoOff(document, offBefore);
+                string undoDuring = UndoState(document);
 
                 try
                 {
                     textures = new TextureCacheWatch(
-                        TextureCacheWatch.FolderIn(TempFolder()),
+                        CacheFolder(),
                         Images.TextureCacheLimitBytes,
                         Images.TextureCacheCheckEverySeconds,
                         () => log.ElapsedSeconds,
@@ -2539,7 +2541,7 @@ namespace Federator.Addin.Engine
                 }
                 finally
                 {
-                    PutTheUndoBack(document, undoOff, undoBefore);
+                    PutTheUndoBack(document, undoOff, offBefore, undoBefore, undoDuring);
 
                     if (textures != null)
                     {
@@ -2551,12 +2553,12 @@ namespace Federator.Addin.Engine
             }
         }
 
-        /// <summary>The user's temp folder, where Navisworks keeps its texture cache, or null, said, where it cannot be read.</summary>
-        private string TempFolder()
+        /// <summary>The folder ogs under the user's temp folder, where Navisworks keeps its texture cache, or null, said, where it cannot be made.</summary>
+        private string CacheFolder()
         {
             try
             {
-                return System.IO.Path.GetTempPath();
+                return TextureCacheWatch.FolderIn(System.IO.Path.GetTempPath());
             }
             catch (Exception error)
             {
@@ -2568,23 +2570,28 @@ namespace Federator.Addin.Engine
             }
         }
 
+        /// <summary>Whether the undo reads off by IsUndoDisabled, null where it cannot be read.</summary>
+        private static bool? UndoReadsOff(Document document)
+        {
+            try
+            {
+                return document.IsUndoDisabled;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         /// <summary>
         /// Whether the undo reads off, by IsUndoDisabled, and the name of the step Undo would take next,
-        /// nothing where there is none, each UNKNOWN where it cannot be read.
+        /// a name and not the depth of the stack, nothing where there is none, each UNKNOWN where it
+        /// cannot be read.
         /// </summary>
         private static string UndoState(Document document)
         {
-            string off;
+            bool? off = UndoReadsOff(document);
             string next;
-
-            try
-            {
-                off = document.IsUndoDisabled ? "off" : "on";
-            }
-            catch (Exception error)
-            {
-                off = "UNKNOWN, " + error.GetType().Name;
-            }
 
             try
             {
@@ -2595,11 +2602,15 @@ namespace Federator.Addin.Engine
                 next = "UNKNOWN, " + error.GetType().Name;
             }
 
-            return off + " with " + next + " as the step Undo would take next";
+            return (off == null ? "UNKNOWN" : off.Value ? "off" : "on") + " with " + next + " as the step Undo would take next";
         }
 
-        /// <summary>The undo switched off for the pictures, F147. False, and said, where the call threw, so nothing is switched on that was not switched off.</summary>
-        private bool KeepTheUndoOff(Document document)
+        /// <summary>
+        /// The undo switched off for the pictures, F147. Where the call threw, false and said, unless the
+        /// undo now reads off where it read on before, since then the call took the counter before it
+        /// threw and its matching call must still be made.
+        /// </summary>
+        private bool KeepTheUndoOff(Document document, bool? offBefore)
         {
             try
             {
@@ -2608,20 +2619,25 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
+                bool tookIt = offBefore == false && UndoReadsOff(document) == true;
+
                 log.Failure(
                     "switching the undo off for the pictures",
                     error,
-                    "kept going with the undo on, so each hiding and putting back of the models may add to it");
-                return false;
+                    tookIt
+                        ? "kept going, the undo reads off now where it read on before, so it is switched on again after the pictures"
+                        : "kept going with the undo on, so each hiding and putting back of the models may add to it");
+                return tookIt;
             }
         }
 
         /// <summary>
         /// The undo switched on again after the pictures by the call matching the one that switched it
-        /// off, F147, and its state read before and after, so the line says what was read and never
-        /// that it is on where it reads off.
+        /// off, F147, and its state as read before, during and after the pictures on one line, so the
+        /// line says what was read. An undo that reads off after where it read on before is said on a
+        /// line of its own, since Undo then does nothing in that session.
         /// </summary>
-        private void PutTheUndoBack(Document document, bool undoOff, string undoBefore)
+        private void PutTheUndoBack(Document document, bool undoOff, bool? offBefore, string undoBefore, string undoDuring)
         {
             if (!undoOff)
             {
@@ -2631,8 +2647,14 @@ namespace Federator.Addin.Engine
             try
             {
                 document.EndDisableUndo();
-                log.Line("IMAGES   the undo was switched off for the pictures and the matching call to switch it on returned, it read "
-                    + undoBefore + " before them and reads " + UndoState(document) + " after");
+                log.Line("IMAGES   the undo for the pictures read " + undoBefore + " before them, " + undoDuring
+                    + " during them, and " + UndoState(document) + " after");
+
+                if (offBefore == false && UndoReadsOff(document) == true)
+                {
+                    log.Line("IMAGES   THE UNDO IS LEFT OFF after the pictures where it read on before them, so Undo does nothing in this "
+                        + "Navisworks until it is restarted");
+                }
             }
             catch (Exception error)
             {

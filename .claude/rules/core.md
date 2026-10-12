@@ -1487,24 +1487,29 @@ and 6 does not read as broken.
 - THE TEXTURE CACHE, F147, Bader's order of 2026-10-11, Q152 item 2: Navisworks' cache under
   %TEMP%\ogs is cleared between tests once it passes 5 GB, its size said before and after.
   `Federator.Core.Report.TextureCache` holds the rule and `TextureCacheWatch` the watch over one picture
-  pass: read as it begins, between two stretches at most once every 60 s, the interval counted from the
-  end of the last read, cleared there only once a size read whole is past the limit, and read once more
-  as it ends, never clearing there, for one IMAGES line of the size and the files at the start and the
-  end, the reads and those not whole, the clearings and the files they removed, and the seconds the
-  watch took. Bader's words are between tests, and the 60 s is the loop's, a setting, so a walk of a
-  large cache is not made between every two of 741 tests. A gigabyte is 1024 cubed bytes. THE WALK
-  NEVER LEAVES THE FOLDER: only a rooted folder named ogs is walked, any other path refused before
-  anything is read, the walk is made a folder at a time and never into a link, a junction or a symbolic
-  link, counted and left, since the framework's walk with AllDirectories follows links, and a cache
-  folder that is itself a link is never walked. A clearing removes only the files that walk read,
-  never a folder, counts a file removed only where it was there to remove, counts what it could not
-  remove, says the size and the files before and after, and is not tried again in the pass once one
-  removed nothing. A walk that fails part way is said with why, counted as not whole, and clears
-  nothing. Every line names the folder walked. The watch never throws. The limit and the interval are
-  settings on ImageOptions, `TextureCacheLimitBytes` and `TextureCacheCheckEverySeconds`, a limit of
-  zero switching the clearing off. The cache held no file when read on 2026-10-12, so what removing
-  its files while Navisworks runs does, and the seconds of a walk of a large cache, are UNKNOWN. A second
-  Navisworks of the same user shares the folder, and its files not held open would go with the rest
+  pass: checked as it begins and between two stretches at most once every 60 s, the interval counted
+  from the end of the last check, cleared there only once a size read whole is past the limit, and read
+  once more as it ends, never clearing there, for one IMAGES line of the size and the files at the start
+  and the end, the checks against the limit and the reads not whole, the clearings and the files they
+  removed, and the seconds the watch took. A count not read whole is UNKNOWN on every line and never
+  nought. Bader's words are between tests, and the 60 s is the loop's, a setting, so a walk of a large
+  cache is not made between every two of 741 tests. A gigabyte is 1024 cubed bytes, and a size compared
+  with the limit carries its exact bytes. THE WALK NEVER LEAVES THE FOLDER: only a fully qualified folder
+  named ogs is walked, any other path refused before anything is read and said once on the pass line,
+  the walk is made a folder at a time and never into a link, a junction or a symbolic link, counted and
+  left, since the framework's walk with AllDirectories follows links, and a cache folder that is itself a
+  link is never walked. A folder inside that goes while it is walked is passed over and counted. A
+  clearing walks again keeping the paths, removes only the files that walk read, never a folder, counts
+  a file removed only where it was there to remove, counts what it could not remove and what had gone
+  before its turn, and says the size and the files before and after. ONCE A CLEARING LEAVES THE CACHE
+  NOT UNDER THE LIMIT, files held open among it, the cache is not checked again until the pass ends, so
+  a cache that cannot be cleared costs one clearing and not one a minute for hours. A walk that fails is
+  said once with why and counted as not whole, and clears nothing. Every line names the folder walked.
+  The watch never throws. The limit and the interval are settings on ImageOptions,
+  `TextureCacheLimitBytes` and `TextureCacheCheckEverySeconds`, a limit of zero switching the clearing
+  off. The cache held no file when read on 2026-10-12, so what removing its files while Navisworks runs
+  does, and the seconds of a walk of a large cache, are UNKNOWN. A second Navisworks of the same user
+  shares the folder, and its files not held open would go with the rest
 - The report goes out in METERS, always, whatever the document measures in. Q23. It used
   to go out in the document's units, with the rule that converting a number ourselves
   while the document read feet would make the numbers and the label disagree. The run of

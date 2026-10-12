@@ -6,21 +6,23 @@ namespace Federator.Core.Report
 {
     /// <summary>
     /// Watches Navisworks' texture cache across one picture pass, F147, by TextureCache's rule:
-    /// read as the pass begins, between two tests' pictures at most once a check interval, cleared
-    /// there once a size read whole is past the limit with its size said before and after, and read
-    /// once more as the pass ends, never clearing there, for one line. Each line is handed to the
-    /// caller to write.
+    /// checked as the pass begins and between two tests' pictures at most once a check interval,
+    /// cleared there once a size read whole is past the limit with its size said before and after,
+    /// and read once more as the pass ends, never clearing there, for one line. Each line is handed
+    /// to the caller to write.
     ///
     /// THE WALK NEVER LEAVES THE FOLDER. It is made by hand, a folder at a time, and a folder that is
     /// a link, a junction or a symbolic link, is counted and never stepped into, since the framework's
     /// own walk with AllDirectories follows links and a clearing would then remove another folder's
     /// files. A cache folder that is itself a link is not walked at all, and a folder that is not a
-    /// rooted folder named ogs is refused before anything is read. A clearing removes only the files
-    /// the walk just read, never a folder, and counts a file removed only when it was there to remove.
+    /// fully qualified folder named ogs is refused before anything is read. A clearing removes only
+    /// the files its own walk read, never a folder, and counts a file removed only where it was there
+    /// to remove. A folder inside that goes while it is walked is passed over, since its files are gone.
     ///
-    /// It never throws. A walk that fails part way is said with why, counted as not whole, and
-    /// clears nothing. A clearing that removed nothing is not tried again in the same pass, so files
-    /// held open are not walked and refused once a minute for hours.
+    /// It never throws. A walk that fails is said once with why, counted as not whole, and clears
+    /// nothing. Once a clearing leaves the cache not under the limit, files held open among them, the
+    /// cache is not walked again until the pass ends, so a cache that cannot be cleared costs one
+    /// clearing and not one a minute for hours. File paths are kept only by the walk of a clearing.
     /// </summary>
     public sealed class TextureCacheWatch
     {
@@ -33,16 +35,18 @@ namespace Federator.Core.Report
 
         private bool measuredBefore;
         private double lastAt;
-        private bool stopClearing;
-        private bool folderThere;
-        private bool linkSaid;
+        private bool stopChecking;
+        private bool everThere;
+        private bool linked;
+        private bool notWholeSaid;
         private long atStart = -1;
-        private int filesAtStart;
-        private int reads;
+        private int filesAtStart = -1;
+        private int checks;
         private int notWhole;
         private int clearings;
         private int removedInAll;
         private int linksLeft;
+        private int foldersGone;
         private double seconds;
 
         public TextureCacheWatch(string folder, long limitBytes, int everySeconds, Func<double> clock, Action<string> say)
@@ -71,30 +75,24 @@ namespace Federator.Core.Report
             return string.IsNullOrEmpty(tempFolder) ? null : Path.Combine(tempFolder, TextureCache.FolderUnderTemp);
         }
 
-        /// <summary>As the pass begins: read once, and cleared if it is already past the limit. A refused folder is said here.</summary>
+        /// <summary>As the pass begins: checked once, and cleared if it is already past the limit.</summary>
         public void AtTheStart()
         {
-            if (limitBytes > 0 && refused)
-            {
-                say(TextureCache.RefusedLine(folder));
-                return;
-            }
-
             Check(true);
         }
 
-        /// <summary>Between two tests' pictures: read once the interval has passed, and cleared past the limit.</summary>
+        /// <summary>Between two tests' pictures: checked once the interval has passed, and cleared past the limit.</summary>
         public void BetweenTests()
         {
             Check(false);
         }
 
-        /// <summary>As the pass ends: read once more and never cleared, and the pass's one line handed back.</summary>
+        /// <summary>As the pass ends: read once more and never cleared, and the pass's one line handed back, a refused folder's line among them.</summary>
         public string AtTheEnd()
         {
             if (limitBytes <= 0)
             {
-                return TextureCache.PassLine(folder, limitBytes, false, -1, 0, -1, 0, 0, 0, 0, 0, 0, 0);
+                return TextureCache.PassLine(folder, limitBytes, false, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0);
             }
 
             if (refused)
@@ -102,132 +100,137 @@ namespace Federator.Core.Report
                 return TextureCache.RefusedLine(folder);
             }
 
+            Reading end = Reading.Unknown;
+
             try
             {
-                Reading end = Read();
-
-                return TextureCache.PassLine(
-                    folder, limitBytes, folderThere, atStart, filesAtStart, end.Bytes, end.Files.Count,
-                    reads, notWhole, clearings, removedInAll, linksLeft, seconds);
+                if (!linked)
+                {
+                    end = Read(false);
+                }
             }
             catch (Exception error)
             {
-                return TextureCache.NotReadWholeLine(folder, error.GetType().Name + ": " + error.Message)
-                    + ", as the pictures ended, cleared " + clearings + " time(s) before";
+                notWhole++;
+                SayNotWholeOnce(error);
             }
+
+            return TextureCache.PassLine(
+                folder, limitBytes, everThere, atStart, filesAtStart, end.Bytes, end.FileCount,
+                checks, notWhole, clearings, removedInAll, linksLeft, foldersGone, seconds);
         }
 
         private void Check(bool first)
         {
-            if (limitBytes <= 0 || refused)
+            if (limitBytes <= 0 || refused || stopChecking)
             {
                 return;
             }
 
+            if (!first && !TextureCache.DueToMeasure(measuredBefore, clock() - lastAt, everySeconds))
+            {
+                return;
+            }
+
+            measuredBefore = true;
+
             try
             {
-                if (!first && !TextureCache.DueToMeasure(measuredBefore, clock() - lastAt, everySeconds))
-                {
-                    return;
-                }
-
-                measuredBefore = true;
-                Reading now = Read();
-                lastAt = clock();
+                Reading now = Read(false);
+                checks++;
 
                 if (first)
                 {
                     atStart = now.Bytes;
-                    filesAtStart = now.Files.Count;
+                    filesAtStart = now.FileCount;
                 }
 
-                if (!stopClearing && TextureCache.ShouldClear(now.Bytes, limitBytes))
+                if (TextureCache.ShouldClear(now.Bytes, limitBytes))
                 {
-                    Clear(now);
+                    Clear();
                 }
             }
             catch (Exception error)
             {
-                say(TextureCache.NotReadWholeLine(folder, error.GetType().Name + ": " + error.Message) + ", kept going with the pictures");
+                checks++;
+                notWhole++;
+                SayNotWholeOnce(error);
+            }
+            finally
+            {
+                lastAt = clock();
             }
         }
 
         /// <summary>
-        /// The bytes and the files under the folder, read a folder at a time and never into a link.
-        /// Zero where there is no folder, and below zero, said once with why, where the walk failed.
+        /// The bytes and the files under the folder, read a folder at a time and never into a link,
+        /// the paths kept only where asked. Zero where there is no folder, UNKNOWN where the folder is
+        /// a link. A walk that fails throws, for the caller to count and say.
         /// </summary>
-        private Reading Read()
+        private Reading Read(bool keepPaths)
         {
             double from = clock();
-            Reading reading = new Reading();
-            reads++;
 
             try
             {
                 DirectoryInfo root = new DirectoryInfo(folder);
-                folderThere = root.Exists;
 
-                if (!folderThere)
+                if (!root.Exists)
                 {
-                    return reading;
+                    return new Reading(0, 0, keepPaths);
                 }
+
+                everThere = true;
 
                 if ((root.Attributes & FileAttributes.ReparsePoint) != 0)
                 {
-                    if (!linkSaid)
-                    {
-                        say(TextureCache.LinkedLine(folder));
-                        linkSaid = true;
-                    }
-
-                    stopClearing = true;
-                    reading.Bytes = -1;
-                    return reading;
+                    say(TextureCache.LinkedLine(folder));
+                    linked = true;
+                    stopChecking = true;
+                    notWhole++;
+                    return Reading.Unknown;
                 }
 
+                Reading reading = new Reading(0, 0, keepPaths);
                 int links = 0;
                 Stack<DirectoryInfo> waiting = new Stack<DirectoryInfo>();
                 waiting.Push(root);
 
                 while (waiting.Count > 0)
                 {
-                    foreach (FileSystemInfo entry in waiting.Pop().EnumerateFileSystemInfos())
+                    DirectoryInfo current = waiting.Pop();
+
+                    try
                     {
-                        DirectoryInfo inner = entry as DirectoryInfo;
-
-                        if (inner != null)
+                        foreach (FileSystemInfo entry in current.EnumerateFileSystemInfos())
                         {
-                            if ((inner.Attributes & FileAttributes.ReparsePoint) != 0)
+                            DirectoryInfo inner = entry as DirectoryInfo;
+
+                            if (inner != null)
                             {
-                                links++;
-                            }
-                            else
-                            {
-                                waiting.Push(inner);
+                                if ((inner.Attributes & FileAttributes.ReparsePoint) != 0)
+                                {
+                                    links++;
+                                }
+                                else
+                                {
+                                    waiting.Push(inner);
+                                }
+
+                                continue;
                             }
 
-                            continue;
+                            reading.Add((FileInfo)entry);
                         }
-
-                        FileInfo file = (FileInfo)entry;
-                        reading.Bytes += file.Length;
-                        reading.Files.Add(file.FullName);
+                    }
+                    catch (DirectoryNotFoundException) when (!ReferenceEquals(current, root))
+                    {
+                        foldersGone++;
                     }
                 }
 
                 linksLeft = Math.Max(linksLeft, links);
                 return reading;
-            }
-            catch (Exception error)
-            {
-                if (!(error is IOException) && !(error is UnauthorizedAccessException) && !(error is System.Security.SecurityException))
-                {
-                    throw;
-                }
-
-                notWhole++;
-                say(TextureCache.NotReadWholeLine(folder, error.GetType().Name + ": " + error.Message));
-                return new Reading { Bytes = -1 };
             }
             finally
             {
@@ -235,54 +238,119 @@ namespace Federator.Core.Report
             }
         }
 
-        private void Clear(Reading before)
+        private void Clear()
         {
             double from = clock();
+            Reading before;
+
+            try
+            {
+                before = Read(true);
+            }
+            catch (Exception error)
+            {
+                notWhole++;
+                SayNotWholeOnce(error);
+                return;
+            }
+
+            if (!TextureCache.ShouldClear(before.Bytes, limitBytes))
+            {
+                return;
+            }
+
             int removed = 0;
             int notRemoved = 0;
+            int goneBefore = 0;
 
-            foreach (string path in before.Files)
+            foreach (string path in before.Paths)
             {
                 try
                 {
                     if (!File.Exists(path))
                     {
+                        goneBefore++;
                         continue;
                     }
 
                     File.Delete(path);
                     removed++;
                 }
-                catch (IOException)
-                {
-                    notRemoved++;
-                }
-                catch (UnauthorizedAccessException)
+                catch (Exception)
                 {
                     notRemoved++;
                 }
             }
 
-            seconds += clock() - from;
             clearings++;
             removedInAll += removed;
 
-            if (removed == 0)
+            Reading after = Reading.Unknown;
+
+            try
             {
-                stopClearing = true;
+                after = Read(false);
+            }
+            catch (Exception error)
+            {
+                notWhole++;
+                SayNotWholeOnce(error);
             }
 
-            Reading after = Read();
+            if (TextureCache.StillPast(after.Bytes, limitBytes))
+            {
+                stopChecking = true;
+            }
 
             say(TextureCache.ClearedLine(
-                folder, before.Bytes, before.Files.Count, limitBytes, removed, notRemoved, after.Bytes, after.Files.Count,
-                clock() - from));
+                folder, before.Bytes, before.FileCount, limitBytes, removed, notRemoved, goneBefore,
+                after.Bytes, after.FileCount, clock() - from));
         }
 
+        private void SayNotWholeOnce(Exception error)
+        {
+            if (notWholeSaid)
+            {
+                return;
+            }
+
+            notWholeSaid = true;
+            say(TextureCache.NotReadWholeLine(folder, error.GetType().Name + ": " + error.Message));
+        }
+
+        /// <summary>What one walk read: the bytes and the count of files, and their paths where kept.</summary>
         private sealed class Reading
         {
-            public long Bytes;
-            public readonly List<string> Files = new List<string>();
+            public static readonly Reading Unknown = new Reading(-1, -1, false);
+
+            private readonly List<string> paths;
+
+            public Reading(long bytes, int fileCount, bool keepPaths)
+            {
+                Bytes = bytes;
+                FileCount = fileCount;
+                paths = keepPaths ? new List<string>() : null;
+            }
+
+            public long Bytes { get; private set; }
+
+            public int FileCount { get; private set; }
+
+            public IList<string> Paths
+            {
+                get { return paths ?? (IList<string>)new string[0]; }
+            }
+
+            public void Add(FileInfo file)
+            {
+                Bytes += file.Length;
+                FileCount++;
+
+                if (paths != null)
+                {
+                    paths.Add(file.FullName);
+                }
+            }
         }
     }
 }

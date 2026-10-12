@@ -21,10 +21,14 @@ What was done:
 - Every picture was already disposed, the pass moves no camera so a jump cut has nothing to change, and
   every call of the pass is on the main thread, each said in the rule
 - Proved here: the solution builds with 0 warnings and 0 errors, and Core tests 2899 passed, 0 failed, 0
-  skipped at c557337 and 2914 passed, 0 failed, 0 skipped after attempt 2. The junction test was seen
-  failing with the link guard taken out
+  skipped at c557337, 2914 passed after attempt 2 and 2918 passed, 0 failed, 0 skipped after the fixes of
+  its second reading. The junction test was seen failing with the link guard taken out
+- The second reading: the reviewer approved, and the breaker's points that change a line the team reads
+  were fixed in the same attempt under Q148 B: the undo read before, during and after with a line of its
+  own if it is left off, a count not read whole UNKNOWN and never nought, the cache not checked again once
+  a clearing leaves it not under the limit, and a failed walk said once
 
-What remains: the reviewer's and the breaker's second look, the merges of F145 and F149 first, then this
+What remains: the breaker's look at the second reading's fixes, the merges of F145 and F149 first, then this
 one's, and steps 660 and 661 of steps\03_bader_next.md off F149's run.
 
 Known bugs: the cache held no file on this laptop, so the clearing has not run on a real cache, and what

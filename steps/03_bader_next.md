@@ -362,7 +362,7 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 
 These read the log of the run of F149's steps 649 to 659, which step 659 sends, once F147 is merged with F145 and F149 before that install, so they need no run of their own.
 
-660. Look for, in that log after the `STEP     PICTURES` line: `IMAGES   the undo was switched off for the pictures and the matching call to switch it on returned, it read on with` a step name `before them and reads on with` the same name `after`
+660. Look for, in that log after the `STEP     PICTURES` line: `IMAGES   the undo for the pictures read on with` a step name `as the step Undo would take next before them, off with` the same name `during them, and on with` the same name `after`, and no line `THE UNDO IS LEFT OFF`
 661. Look for, in the same log: `IMAGES   the texture cache at` the folder ogs under the temp folder, `held` a size and its files as the pictures began and as they ended, `against the limit of 5.00 GB, cleared 0 times`, or the line saying it `is not there`
 
 ## Proof of F130, the Shift range in the group list
