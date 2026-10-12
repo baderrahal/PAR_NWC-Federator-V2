@@ -8672,3 +8672,58 @@ the same, both items here living in one model. Whether the client accepts a pict
 the two items, which is Bader's to say, Q151. The pictures stay in
 `%LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261012-030837\pictures`, a folder a setting,
 with times.csv beside them, and are not committed.
+
+## 5z-ze. CLASH DETECTIVE'S HIDE OTHER, AND WHY BADER'S PC WRITES 48 KB A PICTURE, MEASURED 2026-10-12
+
+Bader's order of 2026-10-12 says his PC wrote a mean picture file of 48 KB where this laptop writes 510
+KB for the same clash, with the same build cdf8d4ed, so something on the laptop makes each picture far
+bigger. 5z-zd's pictures of the two items alone came to 50 to 52 KB. Clash Detective's display settings,
+under `HKCU\Software\Autodesk\Navisworks Manage\22.0\GlobalOptions\tools\clash\displaysettings`, all
+read "0" on this laptop, never set, so Navisworks' defaults apply, among them `dim_other`,
+`transparent_dimming` and `hide_other`. Hide Other is the one setting there that would leave only the
+two items in the picture.
+
+**HOW.** The launcher of 5z-zd gained a switch, `-HideOther`, its sha256 now C31B91B4, the guard
+unchanged, 8CAC3B67. After the guard's backup and its Auto-Save switch it writes `hide_other` "3 1" and
+reads it back, where it read "0". So the put back at the end restores it with Bader's other settings,
+and on a failed write it writes the old value back and stops before any start. Then the mode picspeed of
+5z-zc ran unchanged on the same copy, the same test and the same 20 clashes, the six settings in order.
+One Navisworks, pid 9364, started by Automation, guard steps 2 to 6 passed, quit by Dispose and gone 8.0 s
+later, not forced. 39 values were put back, `hide_other` among them, with 0 still differing, and
+`hide_other` read "0" again after, read by the lead. The result is
+`tools\probes\PictureSpeed\picture-speed-hideother-result-20261012.txt`, 352 lines, the machine name
+masked. Hardware acceleration on, as since 5z-zd.
+
+**THE SECONDS, 20 pictures a setting, render and save, against 5z-zd's run with acceleration on.**
+
+| Setting of 5z-zc | Hide Other on | 1556 pictures | Hide Other off, 5z-zd |
+|---|---|---|---|
+| 0, today's, every model shown | 0.067 s | 104 s | 0.517 s |
+| 1, only the test's model shown | 0.059 s | 92 s | 0.120 s |
+| 2, Shaded on top of 1 | 0.060 s | 93 s | 0.119 s |
+| 3, 800 by 600 on top of 1 | 0.050 s | 78 s | 0.100 s |
+| 4, all three | 0.050 s | 77 s | 0.090 s |
+| 5, today's again | 0.061 s | 96 s | 0.168 s |
+
+No first picture ran slow here, the most of setting 0 being 0.148 s.
+
+**THE PICTURES.** Every setting's 20 files average 48 KB, where 5z-zd's today's averaged 559 KB. Row 1
+viewed by the lead: `TestsImageForResult`, the tool's own call, drew the two items in red and green on the
+background and nothing else, the same camera and grid label as before, the look of 5z-zd's two items
+alone. So Hide Other is followed by the tool's call, and the PC's 48 KB matches this look in size. Whether
+Bader's PC has Hide Other on is UNKNOWN until he reads it, Clash Detective, Results, Display Settings,
+Isolation.
+
+**THE ACCEPTED REPORTS.** Two pictures of the accepted reports in `samples\client-report`,
+`1104-PAR-1A02WN-XXX-BM-RPT-000001_files\cd000002.jpg` and `1104-PAR-1A04WN-XXX-BM-RPT-000001_files\cd010005.jpg`,
+viewed by the lead: the two items in red and green with other items drawn ghosted around them, the
+look of Navisworks' defaults, Dim Other with transparent dimming. The 65 pictures of 1A02WN's folder
+average 151 KB. So the export's look is the ghosted one, and a picture with Hide Other on does not match
+it.
+
+**WHAT THIS DOES NOT SHOW.** Two pictures of the accepted reports were viewed, not all 129. Which items
+the ghosting there holds, every model or only some, is UNKNOWN. How Hide Other reads in the tool's whole
+run, with the views and F145's hiding, is not measured, since the probe ran only the pictures. The
+setting is per user, so each of the 27 machines draws its pictures by its own Clash Detective display
+settings, and whether the API lets the tool set them for the pictures alone is UNKNOWN. Q151 puts the
+look to Bader.

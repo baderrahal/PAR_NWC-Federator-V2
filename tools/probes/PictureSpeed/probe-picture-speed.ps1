@@ -6,6 +6,7 @@ param(
   [string]$Corrections = "",
   [string]$Test = "",
   [string]$Mode = "picspeed",
+  [switch]$HideOther,
   [int]$Count = 20,
   [int]$ProjectTo = 1556,
   [string]$PluginAssembly = "",
@@ -205,6 +206,26 @@ if (RoamerRefusal) { StopEarly "STOP before the constructor, so nothing is start
 $ao = SwitchAutoSaveOff $regSub $regRoot $regBefore
 if (-not $ao.Ok) { StopEarly ("STOP before the constructor, so nothing is started, the backup stays in the work folder: " + $ao.Line) }
 Say ("  " + $ao.Line)
+if ($HideOther) {
+  # Bader's PC wrote 48 KB a picture where this laptop writes about 550 KB for the same clash. Clash
+  # Detective's Hide Other is the one display setting that would leave only the two items in the
+  # picture. It is written after the backup, so the put back at the end restores it with the rest.
+  $hoKey = $regSub + "\GlobalOptions\tools\clash\displaysettings"
+  $hoOld = $null; $hoNow = $null; $hoErr = ""
+  try {
+    $k = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($hoKey, $true)
+    if ($null -eq $k) { $hoErr = "its key is not there, and a key is never made" }
+    else { try { $hoOld = $k.GetValue("hide_other"); $k.SetValue("hide_other", "3 1", [Microsoft.Win32.RegistryValueKind]::String); $hoNow = $k.GetValue("hide_other") } finally { $k.Close() } }
+  } catch { $hoErr = "the write threw, " + (Err $_.Exception) }
+  if ($hoErr -ne "" -or $hoNow -ne "3 1") {
+    $back = "nothing was written"
+    if ($null -ne $hoOld -and $hoNow -ne $hoOld) {
+      try { $k = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($hoKey, $true); try { $k.SetValue("hide_other", $hoOld, [Microsoft.Win32.RegistryValueKind]::String); $back = "written back to '" + $hoOld + "' and it reads '" + $k.GetValue("hide_other") + "'" } finally { $k.Close() } } catch { $back = "it could not be written back, " + (Err $_.Exception) + ", and must be put back by hand to '" + $hoOld + "'" }
+    }
+    StopEarly ("STOP before the constructor, so nothing is started: hide_other under GlobalOptions\tools\clash\displaysettings could not be written '3 1'" + $(if ($hoErr -ne "") { ", " + $hoErr } else { ", it reads '" + $hoNow + "'" }) + ", " + $back)
+  }
+  Say ("  Clash Detective's Hide Other written on for this start: hide_other under GlobalOptions\tools\clash\displaysettings written '3 1' and read back so, where it read '" + $hoOld + "'. Until the put back it reads so for Bader too")
+}
 Say ""
 try {
   Say "==== STEP 3. Start one Navisworks through the API and adopt it ===="
