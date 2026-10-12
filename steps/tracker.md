@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 554 rows: open 206, in progress 24, in review 1, merged 288, proven by a run 27, waiting for Bader 1, dropped 7
-- By wave: 1 19, 2a 65, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 96, outside the waves 2, right after F133 merges 6
+- By status, of 555 rows: open 207, in progress 24, in review 1, merged 288, proven by a run 27, waiting for Bader 1, dropped 7
+- By wave: 1 19, 2a 65, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 97, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, and 8 FR items
 - Waits for Bader, 1 row: F114-K29
 
@@ -646,6 +646,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F144-R1 | the first 50 tests of the corrected matrix on 1A04PK hold BLD-AR-Walls-vs-BLD-AR-Floors, whose harvest took 5817 s in set 06, so the cut down 1A04PK is a check of hours and not minutes until the speed fix | F144 | register row | open | none | none | 2026-10-11 |
 | F145 | only the test's models shown for its pictures | F145 | fix | merged | 204 | none | 2026-10-12 |
 | F149 | pictures taken in the report's order so none is renamed | F149 | fix | in review | UNKNOWN | none | 2026-10-12 |
+| F149-R1 | since F149 every picture is taken once every test of the group has run, so the pictures' guard can stop a run only after the whole group's clash tests, where before it stopped after the test the fiftieth failure in a row fell in, a cost said in the rule that Bader has not weighed, the reviewer's first point on attempt 1 | F149 | register row | open | none | none | 2026-10-12 |
 | F148 | two tests that filled the shared temp folder | F148 | fix | merged | 203 | none | 2026-10-11 |
 
 ## outside the waves
