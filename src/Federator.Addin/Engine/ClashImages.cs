@@ -92,6 +92,24 @@ namespace Federator.Addin.Engine
         /// </summary>
         public double LongCallSeconds { get; set; } = ProgressSettings.DefaultLongCallSeconds;
 
+        /// <summary>
+        /// Whether each test's pictures are taken with only its models shown, F145, the setting
+        /// on ImageOptions, and only where pictures are written at all.
+        /// </summary>
+        public bool OnlyTheTestsModels
+        {
+            get { return options.Write && options.OnlyTheTestsModels; }
+        }
+
+        /// <summary>
+        /// Whether a test with these clashes gets any picture, F145, the options' rule and the
+        /// guard not fired, so a test's models are hidden only where a picture will be taken.
+        /// </summary>
+        public bool WouldTakeAPicture(ClashTally tally)
+        {
+            return !ShouldStopTheRun && options.WouldTakeAPicture(tally);
+        }
+
         /// <summary>Where this group's IMAGES seconds went, call by call, FR-077.</summary>
         public ImagesSeconds Seconds
         {

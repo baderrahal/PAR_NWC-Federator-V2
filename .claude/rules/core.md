@@ -1419,7 +1419,13 @@ and 6 does not read as broken.
   they sat under a holding name. The rename is a step of its own, RENUMBER
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
-  that is what all 60 pictures of the accepted report measure. An image that fails renders
+  that is what all 60 pictures of the accepted report measure. ONLY THE TEST'S MODELS SHOWN FOR
+  ITS PICTURES, F145, Bader's choice of Q150, ImageOptions.OnlyTheTestsModels on by default with no
+  box in the window, and only where WouldTakeAPicture finds a clash of a status asked for: which
+  models stay shown is PictureModels' rule over the PictureSide of each of the test's own two sides,
+  and every doubt, no side, a side not read, a side of no item, an item in a model whose file name
+  another model shares, an item whose model was not read, no model read or a model outside the
+  document's, keeps every model shown and says why. An image that fails renders
   nothing, is logged by name, leaves its cell empty and never stops the run. Fifty
   failures of the same reason stop the run, the same way and with the same default as the
   clash step, and the line says images rather than tests. THE GUARD IS ONE FOR THE WHOLE

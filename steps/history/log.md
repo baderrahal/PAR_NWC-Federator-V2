@@ -2,6 +2,32 @@
 
 Newest entry at the top.
 
+## 2026-10-12 The loop, turn 6, F145 only the test's models shown for its pictures, attempt 2 of two, written by the lead
+
+Bader's answer of 2026-10-11 to Q150, item 1. Branch fix-F145 off main, main 493ecdb taken in.
+
+What was done:
+- Each test's pictures are taken with only the models its own two sides live in shown, every other model
+  hidden once before them and the hidden state put back after, at the same size and style, every hide the
+  document held kept. The rule is Core's, PictureModels over PictureSide, with the setting
+  ImageOptions.OnlyTheTestsModels on by default and WouldTakeAPicture. The add-in's TestModelsShown reads
+  the models off the test's own sides, hides by adding to the other models' roots and puts the state back
+  after each test. The home walk of the views moved into SavedViewpoints.ModelFileOf, so both share one walk
+- Attempt 1 read the models off the XML's set paths, held a clash handle across the hide and reset every
+  hide the document held. The reviewer and the breaker found those and four more, and attempt 2 answers
+  each, the doubts of a side of no item and of two models of one file name among them
+- Proved here: the solution builds with 0 warnings and 0 errors, and Core tests 2862 passed, 0 failed, 0
+  skipped on main 493ecdb and 2878 passed, 0 failed, 0 skipped after
+
+What remains: the readers' second look, the merge, main installed in place, 1A02MM's fast check and the 50
+test cut of 1A04PK, steps 639 to 645 of steps\03_bader_next.md.
+
+Known bugs: none new. A view and a picture of one test can show different models, a view showing only the
+models its clashing items live in, Q119 B, a third team's named under Q118 A, and the pictures the models
+the test's two sides live in.
+
+What comes next: F147, long runs from slowing, and F146, the renumber answering, then the proof run.
+
 ## 2026-10-11 The loop, turn 6, F148 two tests that filled the shared temp folder, written by the lead
 
 Branch fix-F148 off main cdf8d4e. Found when fix-Q150's pre-commit refused its commit.

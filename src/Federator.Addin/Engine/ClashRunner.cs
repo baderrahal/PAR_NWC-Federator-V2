@@ -173,6 +173,12 @@ namespace Federator.Addin.Engine
         /// <summary>The rows of every test in a merge whose pictures wait for the merge, in Clash Detective's order.</summary>
         private readonly List<RowAddress> picturesWaiting = new List<RowAddress>();
 
+        /// <summary>
+        /// Only each test's models shown for its pictures, F145, one for the clash step, made once
+        /// the sets are indexed where pictures are written and null otherwise.
+        /// </summary>
+        private TestModelsShown modelsShown;
+
         /// <summary>Where every row of the report came from in the document, by the row, for the views after the merge.</summary>
         private readonly Dictionary<ClashRow, RowAddress> rowAddresses = new Dictionary<ClashRow, RowAddress>();
 
@@ -451,6 +457,12 @@ namespace Federator.Addin.Engine
 
                 DocumentSelectionSets sets = document.SelectionSets;
                 byPath = IndexSets(sets);
+
+                if (Images != null)
+                {
+                    modelsShown = new TestModelsShown(document, log, Images.OnlyTheTestsModels);
+                }
+
                 ClashTestPlan resolved;
 
                 // F132. Every test the document holds, each side as the set it points at,
@@ -584,6 +596,27 @@ namespace Federator.Addin.Engine
             }
             finally
             {
+                // It puts back any hidden state still changed and writes its one IMAGES line, in
+                // its own try so the index below is released whatever it does.
+                if (modelsShown != null)
+                {
+                    try
+                    {
+                        modelsShown.Dispose();
+                    }
+                    catch (Exception error)
+                    {
+                        log.Failure(
+                            "ending the clash step's hiding of the models for the pictures",
+                            error,
+                            "kept going, the sets index is released, and whatever is still hidden is carried into the views, the NWF and the NWD");
+                    }
+                    finally
+                    {
+                        modelsShown = null;
+                    }
+                }
+
                 ReleaseTheIndex(byPath);
                 stepClock.Stop();
                 outcome.Seconds = stepClock.Elapsed.TotalSeconds;
@@ -1130,13 +1163,53 @@ namespace Federator.Addin.Engine
                         harvest.Recorded = new List<RowUnderTest>();
                         harvest.PicturesWait = inAMerge;
 
+                        // F145. Which models this test's own sides live in, read off it before
+                        // anything is hidden, and only where a picture will be taken here. A test
+                        // in a merge takes its pictures after the merge, under the same rule.
+                        PictureModels pictureModels = modelsShown == null || inAMerge || !Images.WouldTakeAPicture(tally)
+                            ? null
+                            : modelsShown.Read(planned.Name, after);
+
                         using (RunStep harvesting = log.Step(RunSteps.Harvest))
                         {
                             StepStarted(RunSteps.Harvest);
 
                             try
                             {
-                                harvest.Into(document, clashTests, after, Report, summary);
+                                // Only the test's models shown while its pictures are taken, and
+                                // the hidden state put back once they are, whichever way the
+                                // harvest ends. The harvest reads a handle resolved after the hide,
+                                // the order 5z-zc measured, and the one read before is not read again.
+                                IDisposable hidden = modelsShown == null ? null : modelsShown.Hide(planned.Name, pictureModels);
+                                bool harvested = false;
+
+                                using (hidden)
+                                {
+                                    if (hidden != null)
+                                    {
+                                        using (ClashTest underTheHide = Resolve(clashTests, address, planned.Name))
+                                        {
+                                            if (underTheHide != null)
+                                            {
+                                                harvest.Into(document, clashTests, underTheHide, Report, summary);
+                                                harvested = true;
+                                            }
+                                            else
+                                            {
+                                                log.Line("IMAGES   " + planned.Name + " was not found again once the other models were hidden, "
+                                                    + "so its rows and pictures are read after the hidden state is put back, with every model shown");
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Read through the handle of before the hide only where the
+                                // document is again as it was when that handle was read.
+                                if (!harvested)
+                                {
+                                    harvest.Into(document, clashTests, after, Report, summary);
+                                }
+
                                 harvesting.Changed(planned.Name);
                             }
                             finally
@@ -2462,6 +2535,27 @@ namespace Federator.Addin.Engine
 
                 try
                 {
+                    // F145. The models of the test the rows were read from, whose sides the items
+                    // of every one of them live in, read off a handle released before the hide,
+                    // and the pictures taken through one resolved after it.
+                    PictureModels pictureModels = null;
+
+                    using (ClashTest forSides = Resolve(clashTests, first.Address, first.TestName))
+                    {
+                        if (forSides == null)
+                        {
+                            log.Line("IMAGE    " + first.TestName + " is not at " + first.Address + " any more, so the "
+                                + "pictures of its " + rows.Count + (rows.Count == 1 ? " row" : " rows") + " are not rendered");
+                            continue;
+                        }
+
+                        if (modelsShown != null)
+                        {
+                            pictureModels = modelsShown.Read(first.TestName, forSides);
+                        }
+                    }
+
+                    using (modelsShown == null ? null : modelsShown.Hide(first.TestName, pictureModels))
                     using (ClashTest test = Resolve(clashTests, first.Address, first.TestName))
                     {
                         if (test == null)
