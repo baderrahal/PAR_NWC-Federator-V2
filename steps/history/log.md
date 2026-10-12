@@ -2,6 +2,70 @@
 
 Newest entry at the top.
 
+## 2026-10-12 F118 the workbook and report, the add-in pass, FR-036, F118-R3 and FR-041's count, on branch fix-F118c
+
+Wave 2c of Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under the
+limits of Q143, the rows of steps\tracker.csv in area F118 that were open or in progress: FR-036,
+FR-041, F118 and F118-R3. Built in the worktree wt-f118c off main 80314b9.
+
+### What was done
+
+- FR-036, a silent wrong number in the workbook and the TOLERANCE counts. With a tolerance chosen
+  in the tool, a saved test set to it and then skipped kept the row the plan gave it, its old value
+  and origin Document, and a test created at it and skipped said the XML's value. Root cause:
+  src\Federator.Addin\Engine\ClashRunner.cs gives every row the plan's value when the report is
+  laid out, and only a test that runs is read off the document after. `ToleranceChoice.PutOn` in
+  Core gives the row the chosen value in the document's units and origin Tool, and the runner calls
+  it where it creates a test, sets the chosen value on a saved one or finds it already at it. Under
+  the default a row of a test that never ran keeps the plan's value, Bader's answer to Q54.
+  `ToleranceChoice.BlocksLine` said those blocks read off the picked file, which a chosen value and
+  a saved test read out of the document do not, and now points at the line below it
+- F118-R3, the clash workbook listed as written with last week's size. Root cause:
+  FederationEngine.WriteTheWorkbook called `RunLog.WriteFinished` after a save that threw, which
+  lists any file at the path, and then ran the WORKBOOK CHECK on that file. `RunLog.WriteThrew` in
+  Core records nothing, takes an entry of that path and kind off the list, returns minus one and
+  says whether a file of that name is at the path. The clash workbook and the internal workbook,
+  whose line F128 typed inline, both write through it, and the WORKBOOK CHECK is not run after a
+  throw, one line saying why
+- FR-041, empty Grid Location cells. The cause is UNKNOWN, a probe is outside this order, so it is
+  not fixed. Built: `ClashReport.GridLocationLine`, one GRID line a group after the UNITS line
+  counting the clash rows with an empty cell, with the heights of the empty and the filled rows,
+  which is what FR-041 names as the first thing to measure
+- The harvest gives an id off the GUID fallback `ClientFormat.GuidIdLabel` where it typed the
+  label, the last of F118's NOT BUILT list
+- Tests: 13 new and 1 changed, in ToleranceChoiceTests, WrittenFileAuthorshipTests and the new
+  GridLocationLineTests. Against the three Core rules stubbed to the old behaviour, WriteThrew
+  calling WriteFinished, PutOn doing nothing, the old BlocksLine and no GRID line, 11 failed and
+  30 passed of the 41 in those three fixtures, the 2 new ones passing being the edges a stub already
+  meets, a row under the default and a report with no clash row
+- Core tests on this machine: 2921 passed, 0 failed, 0 skipped before, on main 80314b9. 2933
+  passed, 0 failed, 0 skipped after
+- dotnet build ParsonsNwcFederator.sln -c Release, rebuilt from nothing: Federator.Core,
+  Federator.Core.Tests and Federator.Addin, 0 warnings and 0 errors. check-locals and
+  check-imports clean
+- The rules in .claude\rules\core.md, three new bullets and the FR-040 bullet's last line, and the
+  internal workbook bullet of addin.md
+
+### What remains
+
+- FR-041's cause. The GRID lines of the next run give the heights of the empty rows against the
+  filled ones, and a probe printing ClosestIntersection for those points, if Bader allows one,
+  says why the grid gives nothing
+- FR-189, FR-044 and FR-045, the same fault as F118-R3 for the NWD and the NWF, are area F119 and
+  untouched. `RunLog.WriteThrew` is there for them
+
+### Known bugs
+
+- None found beyond the rows above. A saved test whose chosen value could not be set, the copy
+  not a clash test or the edit throwing, keeps the plan's value on its row, which is what it holds
+  where the plan read it off the document and the XML's value where the plan is the XML, as Q54
+  has it for every row of a test that never ran
+
+### What comes next
+
+1. The lead calls the reviewer and the breaker on fix-F118c and merges once Actions is green
+2. Bader works steps 664 to 672 of steps\03_bader_next.md and sends the GRID lines
+
 ## 2026-10-12 The loop, turn 6 closes on Bader's order WRAP UP NOW, written by the lead
 
 Bader's order of 2026-10-12 headed BADER, 12 OCT 2026: WRAP UP NOW, NO MORE TESTS. No probe, fast check, speed

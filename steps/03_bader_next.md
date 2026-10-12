@@ -1476,3 +1476,17 @@ run, and F132's steps 459 to 481 stand.
 539. ATTEMPT 2, B5: in Run B's `VIEWS TREE` block, the `after      :` line reads `as the removals reported` and `0 not removed`, its per clash viewpoint count the same as the `N of N RemoveAt call(s) made` line of step 524, and no `is counted as not removed` line, which a folder count that did not fall by exactly one writes. A count above zero names each not removed with why, and is worth sending
 540. ATTEMPT 2, B6: in Run B2's `VIEWS INVENTORY` block, no view of the tool's that nobody touched reads `its camera was moved`. Every untouched view of Run B reads `removed, this tool's earlier view replaced at its place`, and whether the NWF keeps a camera at single precision is read off this step
 541. Send the three logs of Runs A, B and B2 and the 1A04PK log, each named on its `log file` line, and keep the NWFs on your machine
+
+## Proof F118 the workbook and report, added 2026-10-12
+
+Three things the add-in pass of F118 changed, proved on one group of one discipline and one ordinary group. FR-036 first, because it costs two short runs of one group, then F118-R3, which needs Excel to hold the workbook open, then FR-041, read off any run.
+
+664. Build and install main once fix-F118c has merged, steps 7 to 12
+665. Copy the NWC folder of 1A04MS, which holds one discipline so every test is created and none runs, to a new folder with no NWF beside it, pick the exchange XML `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`, leave Clash tolerance on `Use the value in the XML`, and run the one group
+666. Run the same group again with Clash tolerance set to `50 mm`
+667. Look for, in the second run's log: `TOLERANCE on the report, read off the clash test in the document for 0, the clash XML for 0, chosen in the tool for` the group's test count, and the line above it ending `Where each block's tolerance was read is on the line below`
+668. Open the second run's workbook. Look for: the Tolerance cell of every test block reading `0.050m`, where before this fix it read the 25 mm of the first run
+669. Run any group that already has a clash workbook in its Clash Reports folder, with that workbook open in Excel the whole run, so its save is refused
+670. Look for, in that group: `XLSX     NOT WRITTEN` with the workbook's path and `its save threw, and a file of that name is at the path. Whether it is an earlier run's file untouched or one this run cut short is UNKNOWN`, then `WORKBOOK CHECK` with the group's name and `not run, writing the clash workbook threw`, and NO `XLSX     written` line for that path
+671. Look for, in the RESULT block's files written list: NOT that workbook. Close Excel
+672. Look for, in every group that ran a clash test, one line after the `UNITS` line: `GRID     Grid Location empty on N of M clash rows` with the heights of the empty and the filled rows, or `GRID     Grid Location filled on every one of M clash rows`. Send the lines of every group, since why the cells are empty is UNKNOWN and the heights against the grid levels are the first thing to read
