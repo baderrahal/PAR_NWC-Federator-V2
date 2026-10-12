@@ -301,8 +301,13 @@ namespace Federator.Core.Sets
             return true;
         }
 
-        /// <summary>The block, or empty where the picked file names everything the document holds.</summary>
-        public static IList<string> Lines(IList<LeftoverSet> leftovers)
+        /// <summary>
+        /// The block, or empty where the picked file names everything the document holds. boxTicked
+        /// is whether the box of Q72 is on, F115 R20: with it off the leftovers are decided and
+        /// reported, and nothing is done, so the block says that what it lists is what a run with
+        /// the box ticked would do. With the box off they were neither decided nor reported.
+        /// </summary>
+        public static IList<string> Lines(IList<LeftoverSet> leftovers, bool boxTicked)
         {
             List<string> lines = new List<string>();
 
@@ -337,6 +342,12 @@ namespace Federator.Core.Sets
             }
 
             lines.Add(leftovers.Count + " set(s) in this NWF are not named by the picked file:");
+
+            if (!boxTicked)
+            {
+                lines.Add("   NOTHING BELOW IS DONE, because \"" + SetRebuildSettings.TickLabel
+                    + "\" is off. Each line says what a run with it ticked would do");
+            }
             lines.Add("   " + removed + " nothing points at, so they are removed");
             lines.Add("   " + renamed + " are the working half of a pair, so the unused half goes and this one takes its name");
             lines.Add("   " + refused + " are pointed at with no twin, so nothing is done about them");

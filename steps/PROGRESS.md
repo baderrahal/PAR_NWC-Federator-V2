@@ -8,7 +8,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 37 | 1 | 0 | 0 | 28 | 0 | 66 |
+| 2a | 37 | 0 | 18 | 0 | 9 | 3 | 67 |
 | 2b | 28 | 2 | 0 | 1 | 9 | 0 | 40 |
 | 2c | 7 | 1 | 0 | 0 | 3 | 1 | 12 |
 | 3a | 19 | 0 | 0 | 0 | 3 | 0 | 22 |
@@ -16,7 +16,7 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
 | outside the waves | 175 | 16 | 0 | 2 | 60 | 6 | 259 |
-| total | 322 | 26 | 0 | 3 | 211 | 7 | 569 |
+| total | 322 | 25 | 18 | 3 | 192 | 10 | 570 |
 <!-- the end of the counts -->
 
 ## Now

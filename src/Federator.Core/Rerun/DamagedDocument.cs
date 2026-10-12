@@ -37,9 +37,9 @@ namespace Federator.Core.Rerun
     /// of Q74, which has the same shape: a remove and a rename that are two calls and one
     /// change, with a window between them where neither set carries the corrected name.
     ///
-    /// PART 2 IS KEPT BY THE RESHAPE AND NOT YET BY THE SET PAIR. The engine goes on to the clash tests after a
-    /// failed pair and saves if they put anything in, which the page of lane B records, so the sentence below that
-    /// says it was not saved can be untrue for that caller.
+    /// PART 2 IS KEPT BY BOTH. The engine went on to the clash tests and the viewpoints after a failed pair and
+    /// saved if they put anything in. Since F115 R15 and R24 it creates and runs no test over a damaged document
+    /// and stops the group before the views and every save, as it stops after a reshape that failed.
     /// </summary>
     public static class DamagedDocument
     {

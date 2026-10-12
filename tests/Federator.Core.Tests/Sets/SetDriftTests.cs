@@ -428,8 +428,8 @@ namespace Federator.Core.Tests.Sets
                 new List<ReadCondition> { Asked(Workset, "equals", "ME-DUCTWORK") },
                 Planned("a", Wants(Workset, ConditionTest.Equals, "ME-Ductwork")));
 
-            outcome.AddDrift(one, true);
-            outcome.AddDrift(one, false);
+            outcome.AddDrift(one, true, SetDriftTests.AsksWhatTheFileAsks());
+            outcome.AddDrift(one, false, null);
 
             Assert.That(outcome.Drifted.Count, Is.EqualTo(2), "both are drift");
             Assert.That(outcome.RebuiltCount, Is.EqualTo(1), "and only one was rebuilt");
@@ -445,6 +445,20 @@ namespace Federator.Core.Tests.Sets
         private static string SetsBlock(SetBuildOutcome outcome)
         {
             return string.Join("\n", new List<string>(outcome.Lines()).ToArray());
+        }
+
+        /// <summary>A rebuilt set read back off the document asking what the picked file asks, a rebuild that took.</summary>
+        internal static SetDrift AsksWhatTheFileAsks()
+        {
+            return SetDrift.Compare(
+                new List<ReadCondition> { Asked(Workset, "equals", "ME-Ductwork") },
+                Planned("a/BLD-ME-Ducts", Wants(Workset, ConditionTest.Equals, "ME-Ductwork")));
+        }
+
+        /// <summary>The drifted set used across these tests, asking the old spelling against the corrected one.</summary>
+        internal static SetDrift TheOldSpelling()
+        {
+            return OneDrift();
         }
 
         private static SetDrift OneDrift()
@@ -473,7 +487,7 @@ namespace Federator.Core.Tests.Sets
         public void ThePresentSetsBlockCountsTheDriftWhenTheBoxIsOff()
         {
             SetBuildOutcome outcome = OutcomeWithOnePresentSet();
-            outcome.AddDrift(OneDrift(), false);
+            outcome.AddDrift(OneDrift(), false, null);
 
             string block = SetsBlock(outcome);
 
@@ -486,8 +500,8 @@ namespace Federator.Core.Tests.Sets
         public void ThePresentSetsBlockSaysHowManyWereRebuiltWhenTheBoxIsOn()
         {
             SetBuildOutcome outcome = OutcomeWithOnePresentSet();
-            outcome.AddDrift(OneDrift(), true);
-            outcome.AddDrift(OneDrift(), false);
+            outcome.AddDrift(OneDrift(), true, SetDriftTests.AsksWhatTheFileAsks());
+            outcome.AddDrift(OneDrift(), false, null);
 
             string block = SetsBlock(outcome);
 
@@ -508,12 +522,14 @@ namespace Federator.Core.Tests.Sets
             outcome.AddAlreadyPresent("a/BLD-AR-Floors", "BLD-AR-Floors", 1, 4);
             outcome.AddDrift(
                 SetDrift.Compare(null, Planned("a/BLD-ME-Ducts", Wants(Workset, ConditionTest.Equals, "ME-Ductwork"))),
-                false);
+                false,
+                null);
             outcome.AddDrift(
                 SetDrift.Compare(
                     new List<ReadCondition> { Asked(Category, "equals", "Floors") },
                     Planned("a/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors"))),
-                false);
+                false,
+                null);
 
             string block = SetsBlock(outcome);
 
@@ -530,10 +546,11 @@ namespace Federator.Core.Tests.Sets
         {
             SetBuildOutcome outcome = OutcomeWithOnePresentSet();
             outcome.AddAlreadyPresent("a/BLD-AR-Floors", "BLD-AR-Floors", 1, 4);
-            outcome.AddDrift(OneDrift(), false);
+            outcome.AddDrift(OneDrift(), false, null);
             outcome.AddDrift(
                 SetDrift.Compare(null, Planned("a/BLD-AR-Floors", Wants(Category, ConditionTest.Equals, "Floors"))),
-                false);
+                false,
+                null);
 
             Assert.That(SetsBlock(outcome), Does.Contain("1 more could not be read, so whether it asks what the file asks is UNKNOWN"));
         }

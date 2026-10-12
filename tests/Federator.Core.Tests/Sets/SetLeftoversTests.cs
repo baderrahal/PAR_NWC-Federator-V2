@@ -284,7 +284,7 @@ namespace Federator.Core.Tests.Sets
             }
 
             Assert.That(
-                Joined(SetLeftovers.Lines(leftovers)),
+                Joined(SetLeftovers.Lines(leftovers, true)),
                 Does.Contain("2 are left alone because the clash test sides of this NWF could not all be counted"));
         }
 
@@ -316,15 +316,15 @@ namespace Federator.Core.Tests.Sets
                 },
                 new List<string> { "BLD-Corrected" });
 
-            string block = Joined(SetLeftovers.Lines(leftovers));
+            string block = Joined(SetLeftovers.Lines(leftovers, true));
 
             Assert.That(block, Does.Contain("3 set(s) in this NWF are not named by the picked file"));
             Assert.That(block, Does.Contain("1 nothing points at"));
             Assert.That(block, Does.Contain("1 are the working half of a pair"));
             Assert.That(block, Does.Contain("1 are pointed at with no twin"));
 
-            Assert.That(SetLeftovers.Lines(new List<LeftoverSet>()), Is.Empty);
-            Assert.That(SetLeftovers.Lines(null), Is.Empty);
+            Assert.That(SetLeftovers.Lines(new List<LeftoverSet>(), true), Is.Empty);
+            Assert.That(SetLeftovers.Lines(null, true), Is.Empty);
         }
 
         /// <summary>Names are Ordinal and never trimmed, because two set names in the reference file end in a space.</summary>

@@ -379,6 +379,33 @@ and 6 does not read as broken.
   first leftover asking its question and refuses the next, because the first removes the twin
   and takes its name, so the second would then remove the first, a working set with sides, by
   that name, while both lines said RENAMED
+- A REBUILD IS READ BACK AGAINST THE FILE, F115 R19. `SetBuildOutcome.AddDrift` takes the set read
+  again after the rebuild, and `Took` is the one rule for a rebuild that took: found again, read,
+  and asking what the file asks. One that did not is in `RebuiltNotTaken` and the lines say so.
+  It still counts as rebuilt for the save, since the document changed
+- A SET PUT IN AND THEN LOST ASKS FOR THE SAVE, F115 R2 and R22. `AddFailedAfterPutIn` records a
+  set created or replaced and then lost track of as FAILED with `SetResult.PutIn`, its line says
+  the document holds it, and `PutAnythingIn` reads `FailedAfterPutInCount`
+- THE BOX IS BLAMED ONLY WHERE IT IS OFF, F115 R18. `RebuildsAsked` is set by the builder, a
+  drifted set not rebuilt with it ticked is said as a rebuild that failed, `NotRebuiltCount`, and
+  the old and new questions are said to be in the run log, which the window does not show
+- THE SUMMARY CARRIES THE DRIFT COUNTS AND THE DAMAGE, F115 R7 and R15. `Summary()` adds the
+  drifted, rebuilt and could not be read counts where any is above nought, and `Summary()` and
+  `Lines()` say a document the leftover pair damaged, so the Build sets button shows it
+- A SET AT ZERO NOT READ IS COUNTED IN THE EMPTY SETS BLOCK, F115 R6. `JudgeIfEmpty` counts a set at
+  zero with no question read in `AtZeroNotJudged` where a judge was handed, and `EmptySets.Lines`
+  counts it in the block's header with a line of its own. `EmptySets.LinesWithNoTest` is the block
+  where no clash test ran, F115 R4, saying no cost was counted
+- THE JUDGE NEVER THROWS ON THE NAMING SETTINGS, F115 R9, and KNOWS OF A MODEL THE EXPORT CHECK
+  DROPPED, F115 R14. `EmptySetJudge.For` reads the settings through Validate first and makes their
+  words the reason the project is UNKNOWN, and takes how many models the document holds, minus one
+  where not read, so a workset no model read carries is one it cannot tell about where a model was
+  dropped
+- ONE PATH HOLDS ONE SET IN THE PLAN, F115 R23. `SetBuildPlan.From` skips a second set at a path
+  the picked file already used, by name with why. `NamesInTheFile` is every name the file holds,
+  the skipped among them, and is what the leftover walk reads as named, F115 R16
+- THE LEFTOVERS ARE REPORTED WITH THE BOX OFF, F115 R20. `SetLeftovers.Lines` takes whether the box
+  is ticked and with it off says nothing it lists is done
 
 ### The teams of the picked file, F131
 

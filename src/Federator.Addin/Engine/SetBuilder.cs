@@ -395,26 +395,45 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// The sets one side points at, EVERY SOURCE OF IT, FR-014, and each set once per side.
         /// Only the first source was read, so a set named second in a side counted 0 sides from it.
+        ///
+        /// The side's selection and every source read out of it are this tool's wrappers and are
+        /// disposed, F115 R1. Sources that read as none throw, so the caller counts the side as not
+        /// read, F115 R21: it was counted as a side pointing at nothing, which makes a set look
+        /// unused, and an unused set is removed with the box ticked. A source that resolves to a
+        /// FOLDER of sets credits every set inside it, F115 R8, since removing one of them changes
+        /// what that side finds. Whether Navisworks stores a folder as a clash source is UNKNOWN.
         /// </summary>
         private static void CountSide(
             Document document, Autodesk.Navisworks.Api.Clash.ClashSelection side, Dictionary<string, int> sides)
         {
-            SelectionSourceCollection sources = side.Selection.SelectionSources;
-
-            if (sources == null)
-            {
-                return;
-            }
-
             HashSet<string> named = new HashSet<string>(StringComparer.Ordinal);
 
-            for (int s = 0; s < sources.Count; s++)
+            using (Selection selection = side.Selection)
             {
-                using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(sources[s]))
+                SelectionSourceCollection sources = selection == null ? null : selection.SelectionSources;
+
+                if (sources == null)
                 {
-                    if (pointed != null)
+                    throw new InvalidOperationException("the side's selection sources read as none, so what it points at is UNKNOWN");
+                }
+
+                for (int s = 0; s < sources.Count; s++)
+                {
+                    using (SelectionSource source = sources[s])
+                    using (SavedItem pointed = document.SelectionSets.ResolveSelectionSource(source))
                     {
-                        named.Add(pointed.DisplayName ?? string.Empty);
+                        if (pointed is SelectionSet)
+                        {
+                            named.Add(pointed.DisplayName ?? string.Empty);
+                            continue;
+                        }
+
+                        GroupItem folder = pointed as GroupItem;
+
+                        if (folder != null)
+                        {
+                            NameEverySetIn(folder, named);
+                        }
                     }
                 }
             }
@@ -422,6 +441,31 @@ namespace Federator.Addin.Engine
             foreach (string name in named)
             {
                 sides[name] = sides.ContainsKey(name) ? sides[name] + 1 : 1;
+            }
+        }
+
+        /// <summary>Every set under that folder, at any depth, each child disposed as it is read, F115 R8.</summary>
+        private static void NameEverySetIn(GroupItem folder, HashSet<string> named)
+        {
+            SavedItemCollection children = folder.Children;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                using (SavedItem child = children[i])
+                {
+                    if (child is SelectionSet)
+                    {
+                        named.Add(child.DisplayName ?? string.Empty);
+                        continue;
+                    }
+
+                    GroupItem inner = child as GroupItem;
+
+                    if (inner != null)
+                    {
+                        NameEverySetIn(inner, named);
+                    }
+                }
             }
         }
 
@@ -540,12 +584,17 @@ namespace Federator.Addin.Engine
             return false;
         }
 
-        /// <summary>Where that set sits under that folder right now, or minus one.</summary>
+        /// <summary>
+        /// Where that set sits under that folder right now, or minus one. Read from the end, the
+        /// order FindSelectionSet reads, F115 R3, so with two sets of one name in one folder the set
+        /// the drift was read off is the set replaced. It read from the start, so the rebuild
+        /// replaced the other one and the REBUILT count was the unreplaced set's.
+        /// </summary>
         private static int IndexOfSet(GroupItem parent, string name)
         {
             SavedItemCollection children = parent.Children;
 
-            for (int i = 0; i < children.Count; i++)
+            for (int i = children.Count - 1; i >= 0; i--)
             {
                 using (SavedItem child = children[i])
                 {
@@ -595,6 +644,7 @@ namespace Federator.Addin.Engine
             // what it was counted against.
             string openDocument = NavisworksFacts.OpenDocument();
             outcome.OpenDocument = openDocument;
+            outcome.RebuildsAsked = rebuilds.RebuildDriftedSets;
             log.Line("SET      ran against " + openDocument);
 
             DocumentSelectionSets sets = document.SelectionSets;
@@ -610,11 +660,13 @@ namespace Federator.Addin.Engine
             // about it. Last, because it reads the tree as the build left it and because
             // a leftover is only a leftover once everything the file DOES name is there.
             //
-            // THE BOX HAS TO BE ON. It is off by default, it changes the NWF, and the NWF
-            // is the only record of what has been fixed.
-            if (walkLeftovers && rebuilds.RebuildDriftedSets)
+            // THE BOX HAS TO BE ON FOR ANYTHING TO BE DONE. It is off by default, it changes
+            // the NWF, and the NWF is the only record of what has been fixed. With it off the
+            // leftovers are decided and reported and nothing is done, F115 R20, where they
+            // were neither.
+            if (walkLeftovers)
             {
-                HandleLeftovers(document, sets, plan, alsoWanted, outcome);
+                HandleLeftovers(document, sets, plan, alsoWanted, outcome, rebuilds.RebuildDriftedSets);
             }
 
             return outcome;
@@ -633,14 +685,11 @@ namespace Federator.Addin.Engine
         /// the NWF worse than it started and nothing may be saved from it.
         /// </summary>
         private void HandleLeftovers(
-            Document document, DocumentSelectionSets sets, SetBuildPlan plan, IList<string> alsoWanted, SetBuildOutcome outcome)
+            Document document, DocumentSelectionSets sets, SetBuildPlan plan, IList<string> alsoWanted, SetBuildOutcome outcome,
+            bool boxTicked)
         {
-            List<string> named = new List<string>();
-
-            foreach (PlannedSet planned in plan.Buildable)
-            {
-                named.Add(planned.Name);
-            }
+            // Every set the file names, the sets the plan skipped among them, F115 R16.
+            List<string> named = new List<string>(plan.NamesInTheFile());
 
             // The sets of the other plan are wanted too, F128, so a Generic Models set the
             // last run saved is not read as a set the file no longer names and removed.
@@ -658,14 +707,21 @@ namespace Federator.Addin.Engine
 
             IList<LeftoverSet> leftovers = SetLeftovers.For(inDocument, named);
 
-            foreach (string line in SetLeftovers.Lines(leftovers))
+            foreach (string line in SetLeftovers.Lines(leftovers, boxTicked))
             {
                 log.Line("SET      " + line);
             }
 
             foreach (LeftoverSet leftover in leftovers)
             {
-                CarryOut(document, sets, leftover, outcome);
+                if (boxTicked)
+                {
+                    CarryOut(document, sets, leftover, outcome);
+                }
+                else
+                {
+                    outcome.AddLeftover(leftover, false);
+                }
             }
         }
 
@@ -742,6 +798,10 @@ namespace Federator.Addin.Engine
         private void BuildOne(
             Document document, DocumentSelectionSets sets, PlannedSet planned, EmptySetJudge judge, SetBuildOutcome outcome)
         {
+            // F115 R2 and R22. True from the moment the set is in the document, created or replaced,
+            // so a throw after it is said as a set put in and then lost, which asks for the NWF save.
+            bool putIn = false;
+
             try
             {
                 using (GroupItem parent = EnsureFolders(sets, planned.Folders))
@@ -771,6 +831,7 @@ namespace Federator.Addin.Engine
                         if (drift.Drifted && rebuilds.RebuildDriftedSets)
                         {
                             rebuilt = Rebuild(document, sets, planned, parent);
+                            putIn = rebuilt;
                         }
 
                         // THE SET IS READ AGAIN AFTER THE REBUILD AND NEVER BEFORE IT.
@@ -837,8 +898,9 @@ namespace Federator.Addin.Engine
                         outcome.JudgeIfEmpty(present, asking, judge);
 
                         // Every present set, so one whose search could not be read is counted
-                        // and the lines never claim it asks what the file asks, FR-021.
-                        outcome.AddDrift(drift, rebuilt);
+                        // and the lines never claim it asks what the file asks, FR-021. A rebuilt
+                        // set is handed with what it was read back asking, F115 R19.
+                        outcome.AddDrift(drift, rebuilt, after);
 
                         // Core decides which sets have lines and what they say: the old question
                         // and the new one for a drifted set, and for one whose search or a value
@@ -849,13 +911,25 @@ namespace Federator.Addin.Engine
                             log.Line("SET      " + line);
                         }
 
+                        // F115 R18. The box is named only where it is off. With it ticked a rebuild
+                        // that failed has its FAILURE line above, and the box was blamed for it.
                         if (drift.Drifted)
                         {
                             log.Line("SET      " + (!rebuilt
-                                ? "   left alone. Tick \"" + SetRebuildSettings.TickLabel + "\" to rebuild it, Q72"
+                                ? rebuilds.RebuildDriftedSets
+                                    ? "   NOT rebuilt, though \"" + SetRebuildSettings.TickLabel + "\" is ticked. The line above says why"
+                                    : "   left alone. Tick \"" + SetRebuildSettings.TickLabel + "\" to rebuild it, Q72"
                                 : found < 0
                                     ? "   REBUILT from the picked file, and it could not be found again to count, so what it finds is UNKNOWN"
                                     : "   REBUILT from the picked file, and it now finds " + found + " item(s). The clash tests pointing at it keep their results and their statuses, 5v"));
+
+                            // F115 R19. Read back against the file, so a rebuild that did not take is said.
+                            if (outcome.RebuiltNotTaken.Contains(drift))
+                            {
+                                log.Line("SET      "
+                                    + "   read back after the rebuild it does NOT ask what the picked file asks, or could not be found or read again,"
+                                    + " so the rebuild did not take or whether it took is UNKNOWN");
+                            }
                         }
 
                         // A rebuilt set read again whose search would not read says why as well.
@@ -890,6 +964,7 @@ namespace Federator.Addin.Engine
                         {
                             set.DisplayName = planned.Name;
                             sets.AddCopy(parent, set);
+                            putIn = true;
                         }
 
                         // AddCopy takes a copy, so the item in the tree is not the object
@@ -911,14 +986,23 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
-                outcome.AddFailed(
-                    planned.Path, planned.Name, planned.ConditionCount,
-                    error.GetType().Name + ": " + error.Message);
+                string why = error.GetType().Name + ": " + error.Message;
+
+                if (putIn)
+                {
+                    outcome.AddFailedAfterPutIn(planned.Path, planned.Name, planned.ConditionCount, why);
+                }
+                else
+                {
+                    outcome.AddFailed(planned.Path, planned.Name, planned.ConditionCount, why);
+                }
 
                 log.Failure(
                     "building set " + planned.Path,
                     error,
-                    "kept going with the next set, this one is reported as FAILED");
+                    putIn
+                        ? "kept going with the next set, this one is reported as FAILED and it is in the document, so the NWF save is asked for"
+                        : "kept going with the next set, this one is reported as FAILED");
             }
         }
 
