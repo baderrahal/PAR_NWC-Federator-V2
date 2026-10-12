@@ -82,7 +82,7 @@ namespace Federator.Core.Tests
             string[] writeAFile =
             {
                 RunSteps.NwfSave, RunSteps.Workbook, RunSteps.Html, RunSteps.Xml,
-                RunSteps.Nwd, RunSteps.Confirm, RunSteps.Harvest, RunSteps.Images,
+                RunSteps.Nwd, RunSteps.Confirm, RunSteps.Harvest, RunSteps.Pictures, RunSteps.Images,
                 RunSteps.Renumber, RunSteps.Units
             };
 

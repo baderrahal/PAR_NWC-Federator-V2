@@ -158,6 +158,19 @@ namespace Federator.Core.Report
             get { return ImageNaming.FileNameFor(TestIndex, ClashIndex); }
         }
 
+        /// <summary>
+        /// Points the row at this number's picture beside the workbook: its file, the link the cell
+        /// carries and the path. The one place a row is pointed at its picture, read by the writer
+        /// once the file is read back off the disk and by the renumber once every move has gone
+        /// through, where each set the three apart until F149.
+        /// </summary>
+        public void PointTheRow(string workbookPath)
+        {
+            Row.ImageFile = FileName;
+            Row.ImageLink = ImageNaming.LinkFor(workbookPath, TestIndex, ClashIndex);
+            Row.ImagePath = ImageNaming.PathFor(workbookPath, TestIndex, ClashIndex);
+        }
+
         public override string ToString()
         {
             return FileName + "  " + Row.Name;
@@ -168,12 +181,15 @@ namespace Federator.Core.Report
     /// Renames the pictures once, after the run, so every picture carries the number of
     /// its row in the report order.
     ///
-    /// WHY A RENAME. A picture is rendered while its test runs, and the report order
-    /// depends on the clash count of every test, which is only known when the last test
-    /// has run. So a picture is rendered under a temporary number, the run order, and
-    /// renamed here in one pass once the order is known. Two passes on disk, first to a
-    /// holding name and then to the final one, because a swap between two tests would
-    /// otherwise write one picture over another.
+    /// WHY A RENAME. The report order depends on the clash count of every test, which is
+    /// only known when the last test has run. Until F149 a picture was rendered while its
+    /// test ran, under a temporary number, the run order, and renamed here in one pass once
+    /// the order was known, 39 s of set 09's 1A02MM. Since F149 every picture is taken once
+    /// every test has run, in the order PictureWalk walks, under the number this pass gives
+    /// it, so this pass finds each already right and renames none. It stays as the check
+    /// that says so, and as the rename for a picture taken under any other number. Two passes
+    /// on disk, first to a holding name and then to the final one, because a swap between two
+    /// tests would otherwise write one picture over another.
     ///
     /// What a picture shows and its size are untouched. Only the name changes, and the
     /// row's file, link and path are moved with it so the workbook, the XML and the page
@@ -214,7 +230,7 @@ namespace Federator.Core.Report
                 if (string.Equals(Path.GetFullPath(from), Path.GetFullPath(to), StringComparison.OrdinalIgnoreCase))
                 {
                     outcome.Unchanged++;
-                    Point(number, workbookPath);
+                    number.PointTheRow(workbookPath);
                     continue;
                 }
 
@@ -278,7 +294,7 @@ namespace Federator.Core.Report
             // above leaves every row pointing at the name its picture is still under.
             foreach (Move move in done)
             {
-                Point(move.Number, workbookPath);
+                move.Number.PointTheRow(workbookPath);
                 outcome.Renamed++;
             }
 
@@ -290,13 +306,6 @@ namespace Federator.Core.Report
             }
 
             return outcome;
-        }
-
-        private static void Point(PictureNumber number, string workbookPath)
-        {
-            number.Row.ImageFile = number.FileName;
-            number.Row.ImageLink = ImageNaming.LinkFor(workbookPath, number.TestIndex, number.ClashIndex);
-            number.Row.ImagePath = ImageNaming.PathFor(workbookPath, number.TestIndex, number.ClashIndex);
         }
 
         /// <summary>

@@ -88,25 +88,42 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
-        /// Whether a test with these clashes gets any picture, a clash of a status asked for, F145,
-        /// so its models are hidden only where a picture will be taken.
+        /// Whether a picture of this row is taken now: pictures on, the run not stopped by the
+        /// pictures' guard, FR-076, the row of a status asked for and its test under the cap. A row
+        /// passed over on its status or the cap is counted on the report's tally here and nowhere
+        /// else, so the writer and the picture pass, which reads this before it resolves the row's
+        /// result, count it once. F149, the reviewer's eighth point on attempt 1: a row that takes
+        /// no picture costs no walk to its result, and a stretch none of whose rows takes one is
+        /// not resolved or hidden for. It replaced F145's WouldTakeAPicture over a test's tally,
+        /// since a stretch is passed over row by row and the cap is read as its pictures are taken.
+        /// A guard of null is a run with no guard.
         /// </summary>
-        public bool WouldTakeAPicture(ClashTally tally)
+        public bool TakesAPictureOf(ClashReport report, TestReport test, ClashRow row, RepeatedFailureGuard guard)
         {
-            if (tally == null || !Write)
+            if (report == null || test == null || row == null || !Write)
             {
                 return false;
             }
 
-            foreach (ClashStatus status in statuses)
+            // Nothing is counted once the guard has fired, since the run stops and the rest is not attempted.
+            if (guard != null && guard.ShouldStopTheRun)
             {
-                if (tally.Of(status) > 0)
-                {
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            if (!Wants(row.Status))
+            {
+                report.Images.WrongStatus();
+                return false;
+            }
+
+            if (!RoomFor(test.ImageCount))
+            {
+                report.Images.CappedOne();
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>

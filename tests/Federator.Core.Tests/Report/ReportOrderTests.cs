@@ -89,11 +89,13 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Renders the pictures the way the add-in does during the run: the test number
-        /// is handed out in the order the tests write their first picture, which is the
-        /// order they RAN, and the clash number counts up inside the test. Each picture
-        /// holds its own row's name, so a picture that ends up under another row's number
-        /// is visible as a wrong name, not just a wrong count.
+        /// Renders the pictures in the order the tests RAN, the way the add-in did before F149,
+        /// through the numbering its writer reads, ClashReport.NextPictureOf and
+        /// PictureNumber.PointTheRow: the test number is handed out in the order the tests write
+        /// their first picture, and the clash number counts up inside the test. Each picture
+        /// holds its own row's name, so a picture that ends up under another row's number is
+        /// visible as a wrong name, not just a wrong count. Since F149 the add-in takes its
+        /// pictures in the report's order, PictureWalkTests, and the renumber finds them right.
         /// </summary>
         private void RenderInRunOrder(ClashReport report, IList<string> skip)
         {
@@ -108,14 +110,9 @@ namespace Federator.Core.Tests
                         continue;
                     }
 
-                    int testIndex = report.ImageIndexFor(test);
-                    int clashIndex = test.ImageCount + 1;
-                    string path = ImageNaming.PathFor(workbook, testIndex, clashIndex);
-                    File.WriteAllText(path, row.Name);
-
-                    row.ImageFile = ImageNaming.FileNameFor(testIndex, clashIndex);
-                    row.ImageLink = ImageNaming.LinkFor(workbook, testIndex, clashIndex);
-                    row.ImagePath = path;
+                    PictureNumber number = report.NextPictureOf(test, row);
+                    File.WriteAllText(ImageNaming.PathFor(workbook, number.TestIndex, number.ClashIndex), row.Name);
+                    number.PointTheRow(workbook);
                 }
 
                 report.ReleaseImageIndex(test);

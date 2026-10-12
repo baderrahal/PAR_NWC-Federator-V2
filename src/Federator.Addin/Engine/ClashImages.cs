@@ -38,10 +38,11 @@ namespace Federator.Addin.Engine
     /// F114 made it one view per clash test of its open clashes beside a picture per clash,
     /// planned by TestViewPlan and written by ViewpointBuilder. Neither is this file.
     ///
-    /// The number a picture is written under here is the RUN order, because the report
-    /// order is only known once every test has run. ImageRenumbering in Federator.Core
-    /// renames every picture once after the run, so what the client receives is numbered
-    /// the way the Navisworks export numbers it.
+    /// The number a picture is written under here is ClashReport.NextPictureOf's. Since F149
+    /// every picture is asked for once every test has run, in the order PictureWalk walks the
+    /// report, so that number is already the one the Navisworks export gives it, and
+    /// ImageRenumbering in Federator.Core, which renamed every picture once after the run
+    /// while the pictures were taken in the order the tests ran, finds each already right.
     ///
     /// WHERE THE SECONDS GO IS MEASURED CALL BY CALL, FR-077. One watch sat around the
     /// render and the save, so of the 0.113 s a picture cost in set 03, which was Navisworks
@@ -102,12 +103,14 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Whether a test with these clashes gets any picture, F145, the options' rule and the
-        /// guard not fired, so a test's models are hidden only where a picture will be taken.
+        /// Whether a picture of this row is written now, with a workbook to sit beside, by the
+        /// options' rule, ImageOptions.TakesAPictureOf, which counts a row passed over on its
+        /// status or the cap. Write reads it, and the picture pass reads it before it resolves a
+        /// row's result, F149, so a row that takes no picture costs no walk to its result.
         /// </summary>
-        public bool WouldTakeAPicture(ClashTally tally)
+        public bool Wanted(ClashReport report, TestReport test, ClashRow row, string workbookPath)
         {
-            return !ShouldStopTheRun && options.WouldTakeAPicture(tally);
+            return !string.IsNullOrEmpty(workbookPath) && options.TakesAPictureOf(report, test, row, guard);
         }
 
         /// <summary>Where this group's IMAGES seconds went, call by call, FR-077.</summary>
@@ -160,45 +163,17 @@ namespace Federator.Addin.Engine
         {
             using (ImagesVisit visit = seconds.Visit())
             {
-                if (report == null || test == null || row == null)
+                // FR-076. The guard is read in Wanted, where a picture is written, so nothing is
+                // rendered, counted or logged once it has fired. Since F149 every picture is taken
+                // in the picture pass, once every test of the group has run, so the run stops when
+                // that pass ends, and the pass asks for no picture after the guard has fired.
+                if (clashTests == null || result == null || !Wanted(report, test, row, workbookPath))
                 {
                     return false;
                 }
 
-                if (!options.Write || clashTests == null || result == null)
-                {
-                    return false;
-                }
-
-                if (string.IsNullOrEmpty(workbookPath))
-                {
-                    return false;
-                }
-
-                // FR-076. Read here, where a picture is written, so the run stops at the
-                // fiftieth failure in a row and not at the end of the group. Nothing is
-                // rendered, counted or logged once it has fired, and the runner stops the
-                // run after the test it fell in.
-                if (ShouldStopTheRun)
-                {
-                    return false;
-                }
-
-                if (!options.Wants(row.Status))
-                {
-                    report.Images.WrongStatus();
-                    return false;
-                }
-
-                if (!options.RoomFor(test.ImageCount))
-                {
-                    report.Images.CappedOne();
-                    return false;
-                }
-
-                int testIndex = report.ImageIndexFor(test);
-                int clashIndex = test.ImageCount + 1;
-                string path = ImageNaming.PathFor(workbookPath, testIndex, clashIndex);
+                PictureNumber number = report.NextPictureOf(test, row);
+                string path = ImageNaming.PathFor(workbookPath, number.TestIndex, number.ClashIndex);
 
                 try
                 {
@@ -230,10 +205,7 @@ namespace Federator.Addin.Engine
                     }
 
                     report.Images.Wrote(visit.Elapsed, length);
-
-                    row.ImageFile = ImageNaming.FileNameFor(testIndex, clashIndex);
-                    row.ImageLink = ImageNaming.LinkFor(workbookPath, testIndex, clashIndex);
-                    row.ImagePath = path;
+                    number.PointTheRow(workbookPath);
 
                     if (guard != null)
                     {
@@ -334,9 +306,37 @@ namespace Federator.Addin.Engine
         private void Missed(
             ClashReport report, TestReport test, ClashRow row, double tookSeconds, ImageFailure why)
         {
-            report.Images.RenderFailed(row.Name, tookSeconds);
             report.ReleaseImageIndex(test);
+            Failed(report, row, tookSeconds, why);
+        }
 
+        /// <summary>
+        /// One picture the picture pass could not ask for, F149, the breaker's first point on
+        /// attempt 1: its test or its clash was not found again once every test had run, or a
+        /// throw ended its stretch before its turn. Passed over where Wanted passes it over, on
+        /// its status, the cap or a fired guard, and otherwise counted and told to the guard as a
+        /// failure, the way a render that failed is, so the IMAGES line and the fifty in a row
+        /// see it and an empty Image cell never reads as a picture nobody asked for. A row that
+        /// already has its picture is never one.
+        /// </summary>
+        public void NotReached(ClashReport report, TestReport test, ClashRow row, string workbookPath, ImageFailure why)
+        {
+            if (why == null)
+            {
+                throw new ArgumentNullException("why");
+            }
+
+            if (row == null || row.HasImage || !Wanted(report, test, row, workbookPath))
+            {
+                return;
+            }
+
+            Failed(report, row, 0.0, why);
+        }
+
+        private void Failed(ClashReport report, ClashRow row, double tookSeconds, ImageFailure why)
+        {
+            report.Images.RenderFailed(row.Name, tookSeconds);
             log.Detail("IMAGE    failed for " + Name(row) + ". " + why.Line());
 
             if (guard != null)

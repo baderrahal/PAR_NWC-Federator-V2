@@ -25,7 +25,10 @@ namespace Federator.Addin.Engine
     /// every model shown and says why. Hide adds hiding to the other models and leaves every hide
     /// the document held, and the state is read once before the first hide by
     /// SavedViewpoints.SnapshotHidden, measured in 5k, and put back after each test by
-    /// RestoreHiddenState. The runner makes one for its clash step and disposes it at the end, which
+    /// RestoreHiddenState. Since F149 the pictures are taken once every test has run, in stretches
+    /// of rows read from one test, so a test here is a stretch, and a test whose rows sit in two
+    /// stretches, another test's rows between them, is read and hidden for once for each.
+    /// The runner makes one for its clash step and disposes it at the end, which
     /// puts back any state still changed, releases the snapshot and writes the one IMAGES line.
     /// </summary>
     internal sealed class TestModelsShown : IDisposable

@@ -170,8 +170,12 @@ namespace Federator.Addin.Engine
         /// <summary>The names the plan runs under whose rename in the document failed, so no test of the name is created beside the old one.</summary>
         private readonly HashSet<string> renameFailed = new HashSet<string>(StringComparer.Ordinal);
 
-        /// <summary>The rows of every test in a merge whose pictures wait for the merge, in Clash Detective's order.</summary>
-        private readonly List<RowAddress> picturesWaiting = new List<RowAddress>();
+        /// <summary>
+        /// Every row read while pictures are written, by the row, with where its result sits, F149,
+        /// kept whichever way its harvest ended, so the picture pass takes each by its address once
+        /// every test has run and every merge is made, walking the report's order, PictureWalk.
+        /// </summary>
+        private readonly Dictionary<ClashRow, RowAddress> picturesWaiting = new Dictionary<ClashRow, RowAddress>();
 
         /// <summary>
         /// Only each test's models shown for its pictures, F145, one for the clash step, made once
@@ -575,15 +579,21 @@ namespace Federator.Addin.Engine
 
                 // F132. After the run has set every test's state and never before: each
                 // merge into its kept test, its MIRROR lines and the kept test's ROWS line,
-                // since the merge changes rows, statuses and numbers.
-                MergeTheMirrors(clashTests);
+                // since the merge changes rows, statuses and numbers. F149: then the picture
+                // of every row, test by test in the report's order, each under its final name,
+                // whether or not any merge was made. In a finally, the breaker's fourth point on
+                // attempt 1, so a throw out of the merge loses no picture and still goes on up.
+                try
+                {
+                    MergeTheMirrors(clashTests);
+                }
+                finally
+                {
+                    RenderThePicturesWaiting(clashTests);
+                }
 
-                // F149. Then the picture of every row, test by test in the report's order,
-                // each under its final name, whether or not any merge was made.
-                RenderThePicturesWaiting(clashTests);
-
-                // FR-076. The pictures render after the loop above, so the fiftieth failure in
-                // a row can fall among them.
+                // FR-076. Every picture is taken above, so this is where the pictures' guard can
+                // stop the run, once every test of the group has run, F149.
                 StopIfTheImagesFailed(outcome);
 
                 // F76. One line per group, whichever way the choice reads.
@@ -779,6 +789,16 @@ namespace Federator.Addin.Engine
         {
             int total = toRun.Count;
 
+            // FR-076. Nothing in this loop takes a picture since F149, so the pictures' guard cannot
+            // fire here, and it is read once before the first test where it was read after each one.
+            // It can read fired only where an earlier group fired it and its stop never reached the
+            // engine, its clash step having thrown after its pictures, and then this group runs no
+            // test for pictures the writer would not take.
+            if (StopIfTheImagesFailed(outcome))
+            {
+                return;
+            }
+
             for (int i = 0; i < total; i++)
             {
                 PlannedClashTest planned = toRun[i];
@@ -807,20 +827,18 @@ namespace Federator.Addin.Engine
                     progress(guard.ReasonInPlainWords);
                     return;
                 }
-
-                if (StopIfTheImagesFailed(outcome))
-                {
-                    return;
-                }
             }
         }
 
         /// <summary>
         /// FR-076. The pictures' guard is one for the whole run, like the tests', and it is
-        /// read here after each test and again after the pictures that waited for a merge,
-        /// so a run whose pictures all fail the same way stops at the test the fiftieth in a
-        /// row fell in and not at the end of the group. The writer renders nothing once it
-        /// has fired. A run the tests' guard already stopped is left with that reason.
+        /// read here once the picture pass has run, which since F149 is after every test of
+        /// the group has run, and once before a group's first test. So a run whose pictures
+        /// all fail the same way runs every test of the group the fiftieth failure in a row
+        /// fell in, then stops at the end of that group's picture pass, where before F149 it
+        /// stopped after the test the fiftieth fell in. The pass and the writer take, resolve
+        /// and count nothing once it has fired. A run the tests' guard already stopped is left
+        /// with that reason.
         /// </summary>
         private bool StopIfTheImagesFailed(ClashRunOutcome outcome)
         {
@@ -1140,13 +1158,11 @@ namespace Federator.Addin.Engine
                         summary.ToleranceFrom = ToleranceOrigin.Document;
 
                         ClashHarvest harvest = new ClashHarvest(log, NameSettings);
-                        harvest.Images = Images;
-                        harvest.WorkbookPath = WorkbookPath;
                         HandTheProgress(harvest, planned.Name);
 
                         // F132. A test in a merge hands every clash to it as the rows are
-                        // read, and its pictures wait for the merge, which changes which
-                        // rows the report holds, their statuses and their numbers.
+                        // read, and the merge then changes which rows the report holds, their
+                        // statuses and their numbers.
                         MirrorMerge asKept;
                         MirrorMerge asMirror;
                         MirrorPair pair;
@@ -1158,15 +1174,13 @@ namespace Federator.Addin.Engine
                         harvest.MergeAsMirror = asMirror;
                         harvest.AsMirror = pair;
 
-                        bool inAMerge = asKept != null || asMirror != null;
-
                         // Every row is recorded with where its result sits, attempt 2, so
                         // the views resolve each row of the merged report by it. F149: the
-                        // pictures of every test wait until every test has run and every merge
-                        // is made, and are then taken test by test in the report's order, so
-                        // each is written under its final name and none is renamed.
+                        // harvest takes no picture. Every picture waits until every test has
+                        // run and every merge is made, and is then taken test by test in the
+                        // report's order, so each is written under its final name.
                         harvest.Recorded = new List<RowUnderTest>();
-                        harvest.PicturesWait = Images != null;
+                        bool readWhole = false;
 
                         using (RunStep harvesting = log.Step(RunSteps.Harvest))
                         {
@@ -1174,23 +1188,14 @@ namespace Federator.Addin.Engine
 
                             try
                             {
-                                harvest.Into(document, clashTests, after, Report, summary);
+                                harvest.Into(document, after, summary);
+                                readWhole = true;
                                 harvesting.Changed(planned.Name);
                             }
                             finally
                             {
                                 StepEnded();
-                            }
-                        }
-
-                        foreach (RowUnderTest row in harvest.Recorded)
-                        {
-                            RowAddress where = new RowAddress(address, planned.Name, row);
-                            rowAddresses[row.Row] = where;
-
-                            if (harvest.PicturesWait)
-                            {
-                                picturesWaiting.Add(where);
+                                KeepWhereTheRowsCameFrom(address, planned.Name, harvest.Recorded, readWhole);
                             }
                         }
 
@@ -1250,6 +1255,31 @@ namespace Federator.Addin.Engine
                     "clash test " + planned.Name,
                     error,
                     "kept going with the next test, this one is reported as skipped and was not run");
+            }
+        }
+
+        /// <summary>
+        /// Where each row the harvest recorded came from, as it ends, F149. Every row is kept for
+        /// its picture whichever way the harvest ended, the breaker's fifth point on attempt 1, so
+        /// the rows a harvest read before it threw keep their pictures as they did before F149.
+        /// The views are handed the rows of a harvest that read its test whole, as before, so a
+        /// test whose harvest threw is still not read for the views, which their own line says.
+        /// </summary>
+        private void KeepWhereTheRowsCameFrom(TestAddress address, string testName, IList<RowUnderTest> recorded, bool readWhole)
+        {
+            foreach (RowUnderTest row in recorded)
+            {
+                RowAddress where = new RowAddress(address, testName, row);
+
+                if (readWhole)
+                {
+                    rowAddresses[row.Row] = where;
+                }
+
+                if (Images != null)
+                {
+                    picturesWaiting[row.Row] = where;
+                }
             }
         }
 
@@ -2388,9 +2418,9 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// After the run has set every test's state, F132: each merge into its kept test,
         /// MirrorMerge.AddTo, which merges nothing where its own rule says so, then its
-        /// MIRROR lines, the kept test's ROWS line with the clashes only its mirrors found,
-        /// and the pictures of every test in a merge, rendered off the rows the report now
-        /// holds. With no report there is nothing to merge into, which is said.
+        /// MIRROR lines and the kept test's ROWS line with the clashes only its mirrors found.
+        /// With no report there is nothing to merge into, which is said. Every picture is taken
+        /// after it, by Run, off the rows the report then holds, F149.
         /// </summary>
         private void MergeTheMirrors(DocumentClashTests clashTests)
         {
@@ -2452,13 +2482,17 @@ namespace Federator.Addin.Engine
         /// resolved again by address. A row of a mirror taken out of the report gets none, and a row
         /// only a mirror found is pictured under the kept test.
         ///
-        /// THE REPORT'S ORDER, SO NO PICTURE IS RENAMED. The tests are taken in ReportOrder.Tests and
-        /// each test's rows in its own order, the order the pictures are numbered in, so a test takes
-        /// its block number at its first picture and each row its clash number as it comes, and every
-        /// picture is written under the name the renumber would give it. Sets 07 to 09 spent 39 s to
-        /// 44 s of 1A02MM renaming 2931 pictures taken in the order the tests ran. The renumber stays as
-        /// the check that finds every picture already right. Consecutive rows read from one test make one
-        /// stretch, resolved and hidden for once by F145's rule.
+        /// THE REPORT'S ORDER, SO NO PICTURE IS RENAMED. Core's PictureWalk takes the tests in
+        /// ReportOrder.Tests and each test's rows in its own order, the order the pictures are numbered
+        /// in, so a test takes its block number at its first picture and each row its clash number as
+        /// it comes, ClashReport.NextPictureOf, and every picture is written under the name the renumber
+        /// would give it. Sets 07 to 09 spent 39 s to 44 s of 1A02MM renaming 2931 pictures taken in the
+        /// order the tests ran. The renumber stays as the check that finds every picture already right.
+        ///
+        /// ONE STEP, PICTURES, the reviewer's third point on attempt 1, opened as the engine's InStep
+        /// opens one, so the walk, the resolves and the hiding are timed, the live line names the step,
+        /// and one count of PROGRESS lines runs across the whole pass. A throw out of the pass outside
+        /// a stretch marks the step and goes on up, as InStep's does.
         /// </summary>
         private void RenderThePicturesWaiting(DocumentClashTests clashTests)
         {
@@ -2467,124 +2501,173 @@ namespace Federator.Addin.Engine
                 return;
             }
 
-            Dictionary<ClashRow, RowAddress> waitingFor = new Dictionary<ClashRow, RowAddress>();
-
-            foreach (RowAddress waiting in picturesWaiting)
+            using (RunStep picturing = log.Step(RunSteps.Pictures))
             {
-                waitingFor[waiting.Row.Row] = waiting;
-            }
-
-            List<PictureStretch> stretches = new List<PictureStretch>();
-
-            foreach (TestReport test in ReportOrder.Tests(Report))
-            {
-                foreach (ClashRow row in test.Rows)
-                {
-                    RowAddress waiting;
-
-                    if (!waitingFor.TryGetValue(row, out waiting))
-                    {
-                        continue;
-                    }
-
-                    PictureStretch last = stretches.Count == 0 ? null : stretches[stretches.Count - 1];
-
-                    if (last == null || last.Into != test || last.Key != waiting.TestKey)
-                    {
-                        last = new PictureStretch(test, waiting.TestKey);
-                        stretches.Add(last);
-                    }
-
-                    last.Rows.Add(waiting);
-                }
-            }
-
-            ClashHarvest harvest = new ClashHarvest(log, NameSettings);
-            harvest.Images = Images;
-            harvest.WorkbookPath = WorkbookPath;
-
-            foreach (PictureStretch stretch in stretches)
-            {
-                List<RowAddress> rows = stretch.Rows;
-                RowAddress first = rows[0];
+                StepStarted(RunSteps.Pictures);
 
                 try
                 {
-                    // F145. The models of the test the rows were read from, whose sides the items
-                    // of every one of them live in, read off a handle released before the hide,
-                    // and the pictures taken through one resolved after it, only where a row of
-                    // the stretch is of a status a picture is asked for.
-                    PictureModels pictureModels = null;
-                    ClashTally statuses = new ClashTally();
-
-                    foreach (RowAddress waiting in rows)
-                    {
-                        statuses.Add(waiting.Row.Row.Status);
-                    }
-
-                    using (ClashTest forSides = Resolve(clashTests, first.Address, first.TestName))
-                    {
-                        if (forSides == null)
-                        {
-                            log.Line("IMAGE    " + first.TestName + " is not at " + first.Address + " any more, so the "
-                                + "pictures of its " + rows.Count + (rows.Count == 1 ? " row" : " rows") + " are not rendered");
-                            continue;
-                        }
-
-                        if (modelsShown != null && Images.WouldTakeAPicture(statuses))
-                        {
-                            pictureModels = modelsShown.Read(first.TestName, forSides);
-                        }
-                    }
-
-                    using (modelsShown == null ? null : modelsShown.Hide(first.TestName, pictureModels))
-                    using (ClashTest test = Resolve(clashTests, first.Address, first.TestName))
-                    {
-                        if (test == null)
-                        {
-                            log.Line("IMAGE    " + first.TestName + " is not at " + first.Address + " any more, so the "
-                                + "pictures of its " + rows.Count + (rows.Count == 1 ? " row" : " rows") + " are not rendered");
-                            continue;
-                        }
-
-                        HandTheProgress(harvest, stretch.Into.Name);
-                        harvest.BeginPieces(RunSteps.Images);
-                        int done = 0;
-
-                        foreach (RowAddress waiting in rows)
-                        {
-                            harvest.PictureLater(clashTests, test, Report, stretch.Into, waiting.Row);
-                            done++;
-                            harvest.Piece("picture", done, rows.Count);
-                        }
-                    }
+                    picturing.Changed(TakeThePictures(clashTests));
                 }
-                catch (Exception error)
+                catch (Exception)
                 {
-                    log.Failure(
-                        "rendering the pictures of " + stretch.Into.Name + " read from " + first.TestName + " once every test had run",
-                        error,
-                        "kept going, the rows of that stretch not yet pictured keep an empty Image cell, and the renumber puts the "
-                            + "pictures written after them under their report order names");
+                    picturing.Failed();
+                    throw;
+                }
+                finally
+                {
+                    StepEnded();
                 }
             }
         }
 
-        /// <summary>Consecutive rows of one test of the report, read from one test of the document, F149.</summary>
-        private sealed class PictureStretch
+        /// <summary>The pass inside its step: Core's walk, then each stretch in turn until the guard fires. Hands back the step's phrase.</summary>
+        private string TakeThePictures(DocumentClashTests clashTests)
         {
-            internal PictureStretch(TestReport into, string key)
+            PictureWalkOutcome walk = PictureWalk.Of(Report, ReadFrom);
+
+            foreach (string line in walk.MetTwice)
             {
-                Into = into;
-                Key = key;
-                Rows = new List<RowAddress>();
+                log.Line("IMAGES   " + line);
             }
 
-            internal TestReport Into { get; private set; }
+            // One harvest and one count of pieces for the whole pass, so a PROGRESS line comes at
+            // least every 30 s across it, the breaker's third point on attempt 1, where a count per
+            // stretch left a test of fewer than about sixteen pictures with no line at all.
+            ClashHarvest harvest = new ClashHarvest(log, NameSettings);
+            harvest.Images = Images;
+            harvest.WorkbookPath = WorkbookPath;
+            HandTheProgress(harvest, string.Empty);
+            harvest.BeginPieces(RunSteps.Pictures);
 
-            internal string Key { get; private set; }
+            int done = 0;
 
-            internal List<RowAddress> Rows { get; private set; }
+            foreach (PictureStretch stretch in walk.Stretches)
+            {
+                // FR-076. Nothing more is resolved, asked for or counted once the guard has fired,
+                // the reviewer's first point on attempt 1, and Run stops the run once the pass ends.
+                if (Images.ShouldStopTheRun)
+                {
+                    break;
+                }
+
+                TakeTheStretch(clashTests, harvest, stretch, done, walk.Rows);
+                done += stretch.Rows.Count;
+            }
+
+            return Words.Counted(walk.Rows, "row", "rows") + " in report order in "
+                + Words.Counted(walk.Stretches.Count, "stretch", "stretches")
+                + (Images.ShouldStopTheRun ? ", the pictures' guard fired" : string.Empty);
+        }
+
+        /// <summary>The key of the test of the document a row was read from, or null for a row that waits for no picture.</summary>
+        private string ReadFrom(ClashRow row)
+        {
+            RowAddress where;
+            return picturesWaiting.TryGetValue(row, out where) ? where.TestKey : null;
+        }
+
+        /// <summary>
+        /// The pictures of one stretch, F149: consecutive rows of one test of the report read from one
+        /// test of the document, resolved once and hidden for once by F145's rule. The rows before the
+        /// first that takes a picture are passed over, each counted as the writer counts it, so a
+        /// stretch none of whose rows takes one resolves nothing, the reviewer's eighth point on
+        /// attempt 1. Every picture not taken for a fault, its test not found again or a throw ending
+        /// the stretch, is counted as failed, the breaker's first point, so the IMAGES line and the
+        /// guard see it.
+        /// </summary>
+        private void TakeTheStretch(DocumentClashTests clashTests, ClashHarvest harvest, PictureStretch stretch, int doneBefore, int total)
+        {
+            IList<ClashRow> rows = stretch.Rows;
+            TestReport into = stretch.Into;
+            RowAddress first = picturesWaiting[rows[0]];
+            int next = 0;
+
+            HandTheProgress(harvest, into.Name);
+
+            try
+            {
+                while (next < rows.Count && !Images.Wanted(Report, into, rows[next], WorkbookPath))
+                {
+                    next++;
+                    harvest.Piece("picture", doneBefore + next, total);
+                }
+
+                if (next == rows.Count)
+                {
+                    return;
+                }
+
+                PictureModels pictureModels = null;
+
+                // F145. The models of the test the rows were read from, whose sides the items of every
+                // one of them live in, read off a handle released before the hide, and the pictures
+                // taken through one resolved after it.
+                using (ClashTest forSides = Resolve(clashTests, first.Address, first.TestName))
+                {
+                    if (forSides == null)
+                    {
+                        NotFoundAgain(into, rows, next, first);
+                        return;
+                    }
+
+                    if (modelsShown != null)
+                    {
+                        pictureModels = modelsShown.Read(first.TestName, forSides);
+                    }
+                }
+
+                using (modelsShown == null ? null : modelsShown.Hide(first.TestName, pictureModels))
+                using (ClashTest test = Resolve(clashTests, first.Address, first.TestName))
+                {
+                    if (test == null)
+                    {
+                        NotFoundAgain(into, rows, next, first);
+                        return;
+                    }
+
+                    // FR-076. No row is resolved or counted once the guard has fired.
+                    while (next < rows.Count && !Images.ShouldStopTheRun)
+                    {
+                        harvest.PictureLater(clashTests, test, Report, into, picturesWaiting[rows[next]].Row);
+                        next++;
+                        harvest.Piece("picture", doneBefore + next, total);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "taking the pictures of " + into.Name + " read from " + first.TestName + " once every test had run",
+                    error,
+                    "kept going, each row of that stretch not yet pictured keeps an empty Image cell and is counted as failed, "
+                        + "and the pictures after them keep their report order names");
+                CountTheRowsLeft(into, rows, next, ImageFailure.BecauseItsStretchEnded(error));
+            }
+        }
+
+        /// <summary>The rows of a stretch from one on, whose test was not found again once every test had run, F149.</summary>
+        private void NotFoundAgain(TestReport into, IList<ClashRow> rows, int from, RowAddress first)
+        {
+            string where = first.TestName + " is not at " + first.Address + " any more";
+
+            log.Line("IMAGE    " + where + ", so no picture of the " + Words.Counted(rows.Count - from, "row", "rows")
+                + " left in its stretch under " + into.Name + " is taken, and each one asked for is counted as failed");
+            CountTheRowsLeft(into, rows, from, ImageFailure.BecauseItsTestWasNotFoundAgain(where));
+        }
+
+        /// <summary>
+        /// The rows of a stretch from one on that no picture could be asked for, F149, the breaker's
+        /// first point on attempt 1: each counted as failed under the reason, unless its status, the
+        /// cap or a fired guard passes it over, ClashImages.NotReached, so the IMAGES line and the
+        /// guard see them and an empty Image cell never reads as a picture nobody asked for.
+        /// </summary>
+        private void CountTheRowsLeft(TestReport into, IList<ClashRow> rows, int from, ImageFailure why)
+        {
+            for (int i = from; i < rows.Count && !Images.ShouldStopTheRun; i++)
+            {
+                Images.NotReached(Report, into, rows[i], WorkbookPath, why);
+            }
         }
 
         // ---------- reading the two trees ----------

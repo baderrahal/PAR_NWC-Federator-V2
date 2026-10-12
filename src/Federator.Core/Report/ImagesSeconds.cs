@@ -14,8 +14,9 @@ namespace Federator.Core.Report
     ///
     /// THE WHOLE IS THE VISITS. The step is entered once per picture asked for, and the
     /// whole is those visits added, so what no part holds is the bookkeeping inside a visit
-    /// and never the harvest's walk between two pictures, which is HARVEST's and is read off
-    /// the timing block as HARVEST less IMAGES. The stretches, the rest and the words are
+    /// and never the walk between two pictures, which since F149 is the picture pass's, its
+    /// resolves and its hiding among it, read off the timing block as PICTURES less IMAGES,
+    /// and was HARVEST less IMAGES before. The stretches, the rest and the words are
     /// SecondsByPart, shared with the VIEWS line, and the parts and their words are this
     /// file's. One line per group, written beside the IMAGES tally.
     /// </summary>
