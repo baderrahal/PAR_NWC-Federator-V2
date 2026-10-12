@@ -33,7 +33,10 @@ namespace Federator.Core.Report
     /// round, P1's point 2, so the two items are keyed the same whichever comes first, on
     /// ByDesignPairs.KeyFor, the one unordered key of two strings. What an item's key is, an
     /// index path or anything else that names one item in the document, is the add-in's,
-    /// and an empty or UNKNOWN key is an item not read.
+    /// and an empty or UNKNOWN key is an item not read. Two clashes of one test can share a
+    /// key, one element carrying two pieces of geometry of one name, so a key is counted as
+    /// many times as each test found it: a mirror's clash past the kept test's count of its
+    /// key is found by the mirror only, F132-R3, where it was read as a repeat and left out.
     ///
     /// FAIL CLOSED ON WHAT WAS NOT READ. A mirror is merged only where every clash on both
     /// sides, the kept test's and the mirror's, has both items read. A clash of a mirror with
@@ -78,9 +81,9 @@ namespace Federator.Core.Report
     /// </summary>
     public sealed class MirrorMerge
     {
-        private readonly Dictionary<string, KeptClash> keptPairs = new Dictionary<string, KeptClash>(StringComparer.Ordinal);
+        private readonly Dictionary<string, List<KeptClash>> keptPairs = new Dictionary<string, List<KeptClash>>(StringComparer.Ordinal);
         private readonly Dictionary<ClashRow, int> keptRows = new Dictionary<ClashRow, int>();
-        private readonly HashSet<string> addedPairs = new HashSet<string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, int> addedPairs = new Dictionary<string, int>(StringComparer.Ordinal);
         private readonly List<MirrorCounts> mirrors = new List<MirrorCounts>();
         private readonly List<Handed> handed = new List<Handed>();
         private int keptFound;
@@ -241,10 +244,15 @@ namespace Federator.Core.Report
                 return;
             }
 
-            if (!keptPairs.ContainsKey(key))
+            List<KeptClash> found;
+
+            if (!keptPairs.TryGetValue(key, out found))
             {
-                keptPairs.Add(key, new KeptClash(status, row));
+                found = new List<KeptClash>();
+                keptPairs.Add(key, found);
             }
+
+            found.Add(new KeptClash(status, row));
         }
 
         /// <summary>
@@ -370,10 +378,14 @@ namespace Federator.Core.Report
             held = kept.RawClashes;
         }
 
-        /// <summary>Every clash one mirror handed, each counted once under the first thing it is.</summary>
+        /// <summary>
+        /// Every clash one mirror handed, each counted once under the first thing it is. The mirror's
+        /// clash of a key past as many as the kept test found of it, F132-R3, is one the kept test did not
+        /// find, and past as many as earlier mirrors added of it too is one no earlier mirror added.
+        /// </summary>
         private void Merge(MirrorCounts counts, TestReport kept)
         {
-            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+            Dictionary<string, int> seen = new Dictionary<string, int>(StringComparer.Ordinal);
 
             foreach (Handed clash in handed)
             {
@@ -382,14 +394,18 @@ namespace Federator.Core.Report
                     continue;
                 }
 
-                KeptClash keptClash;
+                int before;
+                seen.TryGetValue(clash.Key, out before);
+                seen[clash.Key] = before + 1;
 
-                if (!seen.Add(clash.Key))
+                List<KeptClash> keptClashes;
+                int keptOfTheKey = keptPairs.TryGetValue(clash.Key, out keptClashes) ? keptClashes.Count : 0;
+                int added;
+                addedPairs.TryGetValue(clash.Key, out added);
+
+                if (before < keptOfTheKey)
                 {
-                    counts.Repeats++;
-                }
-                else if (keptPairs.TryGetValue(clash.Key, out keptClash))
-                {
+                    KeptClash keptClash = keptClashes[before];
                     counts.Both++;
 
                     if (keptClash.Status != clash.Row.Status)
@@ -397,12 +413,13 @@ namespace Federator.Core.Report
                         counts.StatusesDiffer.Add(Weighed(kept, keptClash, clash.Row, counts.Pair.MirrorName));
                     }
                 }
-                else if (!addedPairs.Add(clash.Key))
+                else if (before - keptOfTheKey < added)
                 {
                     counts.Earlier++;
                 }
                 else
                 {
+                    addedPairs[clash.Key] = added + 1;
                     clash.Row.FoundOnlyByMirror = counts.Pair.MirrorName;
                     counts.Only.Add(clash.Row);
                     kept.Add(clash.Row);
@@ -534,8 +551,8 @@ namespace Federator.Core.Report
         /// <summary>
         /// The MIRROR lines for the log, once AddTo has run. Where nothing was merged, the one
         /// line saying why. Otherwise for each mirror merged what it and the kept test found,
-        /// then every clash only that mirror found, each named, his words, then once what it
-        /// repeated, then how many clashes both found carry another status under it and every
+        /// then every clash only that mirror found, each named, his words, then how many
+        /// clashes both found carry another status under it and every
         /// one of them named with both statuses and the one the report shows, his words to
         /// Q138, and that it was taken out of the report. A mirror that did not run, was handed
         /// another number of clashes than its report holds, or was handed a clash with an item
@@ -615,14 +632,6 @@ namespace Federator.Core.Report
                 {
                     lines.Add(MirrorRule.Prefix + "   found by the mirror only, added to " + kept + ": " + Said(row.Name)
                         + " of " + mirror + ", " + Said(row.Left.Name) + " against " + Said(row.Right.Name));
-                }
-
-                if (counts.Repeats > 0)
-                {
-                    lines.Add(MirrorRule.Prefix + "   " + counts.Repeats
-                        + (counts.Repeats == 1
-                            ? " clash of " + mirror + " repeats a pair of items it already gave, so it is counted once"
-                            : " clashes of " + mirror + " repeat a pair of items it already gave, so each is counted once"));
                 }
 
                 int differ = counts.StatusesDiffer.Count;
@@ -750,8 +759,6 @@ namespace Federator.Core.Report
             internal int Found { get; set; }
 
             internal int NotRead { get; set; }
-
-            internal int Repeats { get; set; }
 
             internal int Both { get; set; }
 

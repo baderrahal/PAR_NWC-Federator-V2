@@ -664,7 +664,11 @@ and 6 does not read as broken.
   the kept test does not would be added from the other and still held in its own block, the
   breaker's finding 5 on attempt 11, and where the kept test has more than one mirror a
   MIRROR line says so. A clash is the unordered pair of its two items' keys, the add-in's to
-  read. `AddTo(ClashReport)` is called once the run has set every test's state, and it reads
+  read. TWO CLASHES OF ONE TEST CAN SHARE THAT PAIR, one element carrying two pieces of
+  geometry of one name, `ClashItem.MergeKey`, so a pair is counted as many times as each test
+  found it: a mirror's clash past the kept test's count of its pair is found by the mirror only
+  and added, and past what earlier mirrors added of it too, F132-R3, where until 2026-10-12 it
+  was read as a repeat and left out, in no block once the mirror was taken out. `AddTo(ClashReport)` is called once the run has set every test's state, and it reads
   ran off `TestReport.State`, never off a count of calls: a kept test that did not run, or is
   not in the report exactly once, merges nothing and each mirror is reported as its own test,
   and a mirror that did not run, or is not in the report exactly once, is said UNKNOWN and

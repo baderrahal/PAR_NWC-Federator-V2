@@ -117,8 +117,8 @@ namespace Federator.Core.Report
         /// so no index path is read. An item with no id, a model carrying no id property and no
         /// real instance GUID, is not read, UNKNOWN, which MirrorMerge reads as an item not read
         /// and fails closed on. Two clashes of one test between the same two elements on
-        /// geometry of one name share a key, and the merge then counts the second as a repeat
-        /// and says so, never adding a clash twice.
+        /// geometry of one name share a key, so the merge counts a key as many times as each
+        /// test found it, F132-R3.
         /// </summary>
         public string MergeKey()
         {
