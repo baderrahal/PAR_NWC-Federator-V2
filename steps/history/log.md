@@ -36,6 +36,51 @@ THE READING, 2026-10-12 evening: the reviewer found the code sound and asked for
 action each. They are split, 698 to 711, with the move to the Outputs step and the report as steps of their own.
 Main 9fd16d6 was merged in before the reading and the solution built in Release with 0 warnings and 0 errors,
 turn6\f130c-build-merged.txt. No file of Core or its tests changed, so the Core tests stand as on 80314b9
+## 2026-10-12 The fix round, wave 2a, F127 the coverage, rows F127-R3 to F127-R5, written by the developer as the lead's delegate
+
+Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under Q143's limits. Branch
+fix-F127c off origin/main 80314b9 in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f127c, every file named below
+under turn6 with the prefix f127c-. No Navisworks, probe or harness was started.
+
+ATTEMPT 2, the reviewer's three points on pull request 209, read at 14:30 and finished after the usage limit:
+- The window no longer reads the tolerance box to reach the internal workbook's naming. One field of the window,
+  internalWorkbook, is read by the check before a run, the name preview, the picked NWF plan and the run's options, so
+  Other with an empty box cannot throw out of Run, a scan or a name edit
+- NwfPick.Collisions also compares each NWF's internal workbook with the other NWFs' clash workbooks, so A.nwf beside
+  `A Internal.nwf` is refused before any file is written. Tests in NwfPickTests
+- The proof steps hold one action each, 680 to 710, and the two new cases have steps of their own. The second
+  reading approved the code and found four steps that could not give what they named: no NWF or NWD folder
+  was picked, so Run refused for that first, no control gives a typed name back, typing into the picked NWF
+  box updates nothing, and the two NWFs had no step making them. Each has its own steps now
+- Core tests 2921 on main 80314b9, 2926 after attempt 1 and 2941 after attempt 2, 0 failed, 0 skipped
+
+What was done:
+- F127-R5 FIXED. A group's internal workbook is named after its workbook with the suffix Internal, so a group
+  whose workbook was typed as X Internal beside a group X had one written over the other with no line.
+  OutputNameTable.WhyTheRunCannotStart now takes the GenericModelsSettings the engine names the internal
+  workbook by, reads each internal workbook name against every other group's workbook name, ignoring case, and
+  names both groups and the name. The window hands it the run's settings at the name preview and at Run, so the
+  run does not start. Five tests in OutputNameTableTests, three of them failing first against the new argument
+  ignored, f127c-failing-first.txt
+- F127-R3 DROPPED under Q143. A code only an unticked building carries reads UNKNOWN on the coverage row and
+  never a wrong word, so nothing the team sees is wrong, and the change would hand the window's whole scan to the
+  engine for one more definite word
+- F127-R4 DROPPED under Q143. A mirror's coverage row carries the name Clash Detective and the clash workbook
+  show, and the MIRROR COVERAGE block of the log ties it to the name the XML gives it, so nothing the team sees
+  is wrong
+- The rule in core.md beside the collision check, and F127-R3's line in the coverage section. The F127 section of
+  steps\01_next.md and steps 664 to 668 of steps\03_bader_next.md
+
+Core tests 2921 passed, 0 failed, 0 skipped before on main 80314b9, f127c-before.txt, and 2926 passed, 0 failed,
+0 skipped after, f127c-tests-after.txt. dotnet build ParsonsNwcFederator.sln -c Release --no-incremental 0 warnings
+and 0 errors after, f127c-build-after.txt, and 0 and 0 before. check-locals and check-imports exit 0 over src,
+f127c-checks.txt.
+
+What remains: the window's refusal on Navisworks, steps 664 to 668 of steps\03_bader_next.md.
+
+Known bugs: none found in this pass.
+
+What comes next: the reviewer's reading, then the pull request merged by the lead.
 
 ## 2026-10-12 F129 the junction row of the NWF pick, F129-R1, wave 3a, branch fix-F129c
 
