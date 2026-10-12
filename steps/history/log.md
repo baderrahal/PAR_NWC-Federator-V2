@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-10-12 The loop, turn 6, F147 long runs kept from slowing, written by the lead
+
+Bader's order of 2026-10-11, Q152 item 2. Branch fix-F147 off fix-F149 at c557337, attempt 1.
+
+What was done:
+- The undo is off through the picture pass and on again after, Document.StartDisableUndo and its matched
+  EndDisableUndo, and one IMAGES line names the step Undo would take next before and after
+- Navisworks' texture cache under %TEMP%\ogs is measured as the pass begins and ends and between two
+  stretches at most once a minute, and cleared there past 5 GB with its size said before and after, by
+  Core's TextureCache and TextureCacheWatch with tests. The limit and the interval are settings
+- Every picture was already disposed, the pass moves no camera so a jump cut has nothing to change, and
+  every call of the pass is on the main thread, each said in the rule
+- Proved here: the solution builds with 0 warnings and 0 errors, and Core tests 2899 passed, 0 failed, 0
+  skipped at c557337 and 2911 passed, 0 failed, 0 skipped after
+
+What remains: the reviewer's reading, the merges of F145 and F149 first, then this one's, and steps 660 and
+661 of steps\03_bader_next.md off F149's run.
+
+Known bugs: none seen. The cache held no file on this laptop, so the clearing has not run on a real cache,
+and what removing its files while Navisworks runs does is UNKNOWN. The views step keeps the undo on.
+
+What comes next: the merges Bader makes, then the fast checks and a SPEED row.
+
 ## 2026-10-12 The loop, turn 6, F149 pictures taken in the report's order, attempt 2 of two, written by the developer as the lead's delegate
 
 Bader's order of 2026-10-12 to fix the slowest step. Branch fix-F149 off fix-F145 at 8aa6273, attempt 1

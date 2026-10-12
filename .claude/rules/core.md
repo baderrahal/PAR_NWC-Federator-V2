@@ -1484,6 +1484,17 @@ and 6 does not read as broken.
   for bytes: the JPEG encoder is found once per group and not looked up on every save, which
   is what Image.Save with an ImageFormat does before calling the same overload. The size,
   the format, the quality, the name and the folder of a picture are untouched
+- THE TEXTURE CACHE, F147, Bader's order of 2026-10-11, Q152 item 2: Navisworks' cache under
+  %TEMP%\ogs is cleared between tests once it passes 5 GB, its size said before and after.
+  `Federator.Core.Report.TextureCache` holds the rule and `TextureCacheWatch` the watch over one picture
+  pass: measured as it begins, between two stretches at most once every 60 s so walking a large cache
+  never slows a run itself, cleared there only once a size read is past the limit, and measured once more
+  as it ends for one IMAGES line of the sizes at the start and the end. A gigabyte is 1024 cubed bytes. A
+  clearing removes files and never a folder, leaves a file in use and counts it, and says the size before
+  and after. A size not read is UNKNOWN and clears nothing, and the watch never throws. The limit and the
+  interval are settings on ImageOptions, `TextureCacheLimitBytes` and `TextureCacheCheckEverySeconds`, a
+  limit of zero switching the clearing off. The cache held no file after any run on this laptop up to
+  2026-10-12, so what removing its files while Navisworks runs does is UNKNOWN
 - The report goes out in METERS, always, whatever the document measures in. Q23. It used
   to go out in the document's units, with the rule that converting a number ourselves
   while the document read feet would make the numbers and the label disagree. The run of

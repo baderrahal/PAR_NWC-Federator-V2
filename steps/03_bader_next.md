@@ -358,6 +358,13 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 658. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 659. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
+## Proof F147 long runs kept from slowing, added 2026-10-12
+
+These read the log of the same run as F149's steps 649 to 659, which step 659 sends, so they need no run of their own.
+
+660. Look for, in that log after the `STEP     PICTURES` line: `IMAGES   the undo was off for the pictures and is on again, the step Undo would take next read X before them and Y after`, with X and Y the same
+661. Look for, in the same log: `IMAGES   the texture cache under %TEMP%\ogs held` with the sizes as the pictures began and ended, `against the limit of 5.00 GB and cleared 0 times`, or the line saying it `is not there`
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,
