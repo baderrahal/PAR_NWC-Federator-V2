@@ -455,6 +455,25 @@ again and ticks every one, so change nothing on the Source step unless a step sa
 579. Look for, in the log after the `RUN SETTINGS` lines: the `GROUPS` block with `run` beside 1A02MM, `unticked` beside the other nine, and the line `9 groups unticked in the Run column, nothing else drops a group`
 580. Send the log file named on the `log file` line of the SESSION block and say which of steps 544 to 579 did not read as written
 
+## Proof of F130-R1, the space bar on the Run cell, added 2026-10-12
+
+These run no group and can follow step 580 in the same session, once fix-F130c has merged and is installed. They are yours by hand, with the arrow keys and the space bar, since the window driver cannot carry Shift. They use the C02 folder of ten groups of steps 542 to 580.
+
+698. Go to the Source step and press Scan
+699. Go to the Grouping step. Look for: ten rows, every Run box ticked
+700. Click the Building cell of 1A0215 once
+701. Press the Left arrow once. Look for: the Run cell of 1A0215 has the focus, its border drawn
+702. Press Space. Look for: 1A0215 unticked and the other nine ticked
+703. Go to the Outputs step. Look for, at its foot: `9 groups ticked to run.`
+704. Go back to the Grouping step and click the Building cell of 1A0215 once
+705. Press the Left arrow once
+706. Press the Down arrow three times. Look for: the Run cell of 1A02MS has the focus
+707. Hold Shift and press Space. Look for: 1A0215, 1A02BS, 1A02MM and 1A02MS unticked, both ends included, and the other six ticked
+708. Press Space again, holding no key. Look for: 1A02MS alone ticked again, the box flipping once and not twice
+709. Click the Run box of 1A02WE itself once. Look for: 1A02WE unticked by the click
+710. Press Space with no other key. Look for: 1A02WE ticked again by the Space, the box flipping once
+711. Say which of steps 698 to 710 did not read as written
+
 ## Proof of F129, a picked NWF or a folder of NWFs, run where it sits
 
 THESE STEPS FOLLOW STEP 580 IN THE SAME NAVISWORKS SESSION, your request 4 under Q112 and your
