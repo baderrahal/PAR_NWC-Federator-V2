@@ -8,6 +8,15 @@ Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, und
 fix-F127c off origin/main 80314b9 in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f127c, every file named below
 under turn6 with the prefix f127c-. No Navisworks, probe or harness was started.
 
+ATTEMPT 2, the reviewer's three points on pull request 209, read at 14:30 and finished after the usage limit:
+- The window no longer reads the tolerance box to reach the internal workbook's naming. One field of the window,
+  internalWorkbook, is read by the check before a run, the name preview, the picked NWF plan and the run's options, so
+  Other with an empty box cannot throw out of Run, a scan or a name edit
+- NwfPick.Collisions also compares each NWF's internal workbook with the other NWFs' clash workbooks, so A.nwf beside
+  `A Internal.nwf` is refused before any file is written. Tests in NwfPickTests
+- The proof steps hold one action each, 680 to 696, and the two new cases have steps of their own
+- Core tests 2921 on main 80314b9, 2926 after attempt 1 and 2941 after attempt 2, 0 failed, 0 skipped
+
 What was done:
 - F127-R5 FIXED. A group's internal workbook is named after its workbook with the suffix Internal, so a group
   whose workbook was typed as X Internal beside a group X had one written over the other with no line.
