@@ -260,6 +260,14 @@ the question Q144 asks you.
 480. Only once your answer B to Q131 is lifted and the viewpoints box is ticked on a first run over a new NWF, the run of step 461 again with the box on: look for, in the `VIEWS` lines, no line reading `is on the report and not in the document`, no line counting rows that `have no recorded place` or `no longer lead to their result`, and in the saved viewpoints tree one viewpoint under the kept test's name for each clash only its mirror found, named the kept test, the separator, the clash's name and `, found by the mirror only in` the mirror's name, and none under the mirror's name
 481. Send the log file named on the `log file` line of the SESSION block, the one holding the four runs, and say which of steps 462 to 480 did not read as written
 
+## Proof F132-R3 a second clash of a mirror on one pair of items, added 2026-10-12
+
+On the run of step 461 with fix-F132c merged, a first run over a new NWF, the one run that merges.
+
+669. Look for, in every `MIRROR MERGE` block: each mirror's line `found N, the mirror M, B by both and O by the mirror only`, with B, O and the count of its `found by an earlier mirror` part adding up to M, and no line reading `repeats a pair of items it already gave`
+670. Open the workbook: each kept test's block holds as many rows whose name holds `, found by the mirror only in` as its mirrors' MIRROR MERGE lines count by the mirror only
+671. Look for, in every `MIRROR MERGE` block: any line ending `Which copy is the twin of which is UNKNOWN, so no status was carried across and the report keeps` the kept test's name, and any line ending `is the twin of this one is not weighed`. Send each one, since neither has been seen on a run
+
 ## Proof of F128, the Generic Models sets, count and workbook
 
 THESE STEPS FOLLOW STEP 481 IN THE SAME NAVISWORKS SESSION, your request 3 under Q112 and your
