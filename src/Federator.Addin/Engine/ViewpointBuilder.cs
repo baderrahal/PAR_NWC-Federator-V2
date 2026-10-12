@@ -128,7 +128,8 @@ namespace Federator.Addin.Engine
         /// Never throws past a view: one that throws is recorded as failed and the rest are
         /// still tried. The tests ran, the test names, the mirrors and whether the clash step
         /// was sound are the inventory's facts, Core's contracts of rows F114-K12 and K20. The
-        /// tests the clash step skipped are read for the ones it failed on, row F114-K38.
+        /// tests the clash step skipped are read for the ones it failed on, with the kept test
+        /// of each merged mirror, row F114-K38.
         /// </summary>
         public ViewpointBuildOutcome BuildForGroup(
             Document document,
@@ -139,6 +140,7 @@ namespace Federator.Addin.Engine
             IList<ModelTeam> models,
             ICollection<string> testsRan,
             IEnumerable<SkippedClashTest> testsSkipped,
+            IDictionary<string, string> keptOfMirror,
             ICollection<string> testNames,
             ICollection<string> mirrors,
             bool clashStepSound)
@@ -187,8 +189,9 @@ namespace Federator.Addin.Engine
                     // no row, so the inventory removes its old view as no longer needed.
                     testsRead.Ran(testsRan);
 
-                    // F114-K38. A test whose harvest threw after only closed rows is not whole.
-                    testsRead.ClashStepFailed(testsSkipped);
+                    // F114-K38. A test whose harvest threw after only closed rows is not whole,
+                    // and nor is the kept test of a mirror it failed on.
+                    testsRead.ClashStepFailed(testsSkipped, keptOfMirror);
                     Plan = TestViewPlan.For(clashes, teams, mirrors, views);
                 }
 

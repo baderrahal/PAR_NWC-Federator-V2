@@ -552,7 +552,68 @@ namespace Federator.Core.Tests
             Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Structure vs Mechanical"));
             Assert.That(plan.Views[1].Pair.Folder, Is.EqualTo("Structure vs Electrical"));
             Assert.That(plan.Views[2].Pair.Folder, Is.EqualTo("Structure vs UNKNOWN"));
-            Assert.That(plan.UnknownSets, Is.EqualTo(new[] { "BLD-Devices" }), "named by its set name, never the locator");
+            Assert.That(plan.UnknownSets, Is.EqualTo(new[] { Nowhere }), "each side by its whole locator");
+        }
+
+        /// <summary>
+        /// N5 of the second reading of F114c. Two sides of one set name in two folders can read
+        /// UNKNOWN for two reasons, so the plan keys an UNKNOWN side on its whole locator and
+        /// writes each reason. Keyed on the set name, the second reason was never written.
+        /// </summary>
+        [Test]
+        public void EachUnknownSideOfOneSetNameIsNamedWithItsOwnReason()
+        {
+            ViewTeams teams = new ViewTeams(
+                TeamMapTests.MapOf(TeamMapTests.BadersMap),
+                new[] { Set("BLD-Devices", "Electrical"), Set("BLD-Devices", "Mechanical"), Set("BLD-Devices", "Security") },
+                GroupCodes,
+                new ViewpointSettings());
+            const string Security = "lcop_selection_set_tree/Security/BLD-Devices";
+            const string Nowhere = "lcop_selection_set_tree/Other/BLD-Devices";
+            const string Floors = "lcop_selection_set_tree/Structure/BLD-ST-Floors";
+
+            TestViewPlanOutcome plan = TestViewPlan.For(
+                new[] { Clash("T", "Clash1", Security, Floors), Clash("U", "Clash1", Nowhere, Floors) },
+                teams,
+                null,
+                new ViewpointSettings());
+
+            Assert.That(plan.UnknownSets, Is.EqualTo(new[] { Security, Nowhere }));
+            IList<string> lines = plan.Lines(new SizeSettings());
+            Assert.That(lines, Has.Member(UnknownSetsLine + "2" + UnknownSetsTail));
+            Assert.That(lines, Has.Member("    BLD-Devices" + NoCode + "no folder above it in the clash XML's set tree names a team"));
+            Assert.That(
+                lines,
+                Has.Member("    BLD-Devices" + NoCode + "its 3 sets of that name in the clash XML's set tree give the teams Electrical, Mechanical, UNKNOWN"));
+        }
+
+        /// <summary>
+        /// The breaker's point 3 on attempt 1 of F114c. A weekly run with no clash XML picked hands
+        /// the views no set tree, and a side handed as its whole locator then reads exactly the team
+        /// its set name read before F114-K30: the code its name carries through the map, so its pair
+        /// and its size folder stay, and UNKNOWN with why where its name carries no code.
+        /// </summary>
+        [Test]
+        public void WithNoSetTreeALocatorReadsTheTeamItsSetNameReads()
+        {
+            ViewTeams teams = Teams();
+            const string Ducts = "lcop_selection_set_tree/Mechanical/BLD-ME-Ducts";
+            const string Columns = "lcop_selection_set_tree/Structure/BLD-ST-Columns";
+            const string Devices = "lcop_selection_set_tree/Electrical/BLD-Devices";
+
+            Assert.That(teams.TeamOfSet(Ducts), Is.EqualTo(teams.TeamOfSet("BLD-ME-Ducts")));
+            Assert.That(teams.TeamOfSet(Ducts), Is.EqualTo("Mechanical"));
+            Assert.That(teams.TeamOfSet(Devices), Is.EqualTo(teams.TeamOfSet("BLD-Devices")));
+            Assert.That(teams.UnknownWords(Devices), Is.EqualTo(teams.UnknownWords("BLD-Devices")));
+
+            TestViewPlanOutcome byLocator = TestViewPlan.For(
+                new[] { Clash("T", "Clash1", Ducts, Columns, size: SizeVerdict.Large) }, teams, null, new ViewpointSettings());
+            TestViewPlanOutcome byName = TestViewPlan.For(
+                new[] { Clash("T", "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns", size: SizeVerdict.Large) }, teams, null, new ViewpointSettings());
+
+            Assert.That(byLocator.Views[0].Pair.Folder, Is.EqualTo("Structure vs Mechanical"));
+            Assert.That(byLocator.Views[0].Pair.Folder, Is.EqualTo(byName.Views[0].Pair.Folder));
+            Assert.That(byLocator.Views[0].Folders, Is.EqualTo(byName.Views[0].Folders), "the size folder kept");
         }
 
         private static SelectionSetDefinition Set(string name, params string[] folders)

@@ -163,7 +163,7 @@ namespace Federator.Core.Views
 
             if (words != null)
             {
-                outcome.NameUnknownSet(ByDesignRule.SetNameIn(side), words);
+                outcome.NameUnknownSet(side, words);
             }
         }
 

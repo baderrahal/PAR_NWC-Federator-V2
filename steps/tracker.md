@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 570 rows: open 207, in progress 25, in review 4, merged 294, proven by a run 29, waiting for Bader 3, dropped 8
-- By wave: 1 19, 2a 65, 2a and 2b 1, 2b 40, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 111, outside the waves 2, right after F133 merges 6
+- By status, of 569 rows: open 207, in progress 25, in review 3, merged 294, proven by a run 29, waiting for Bader 3, dropped 8
+- By wave: 1 19, 2a 65, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 111, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 7 FR items
 - Waits for Bader, 3 rows: F114-K29, Q155, F150
 
@@ -113,7 +113,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 |---|---|---|---|---|---|---|---|
 | FR-065 | viewpoint dimming carries between viewpoints | F114 | silent wrong number | merged | 141 the Core half and 189 the add-in pass | none | 2026-10-08 |
 | FR-066 | size text reads tail of word digits | F114 | silent wrong number | merged | 141 the Core half and 189 the add-in pass | none | 2026-10-08 |
-| FR-067 | clear rebuild drops viewpoints | F114 | broken feature | in review | UNKNOWN | none | 2026-10-12 |
+| FR-067 | clear rebuild drops viewpoints, waits for the P15 probe docs\history\scan.md 5z-w names, not answered, Navisworks having failed twice at a read after CopyFrom | F114 | broken feature | open | none | none | 2026-10-12 |
 | FR-068 | size tally never constructed | F114 | broken feature | merged | 141 the Core half and 189 the add-in pass | none | 2026-10-08 |
 | FR-069 | views cost per viewpoint | F114 | slow | merged | 141 the Core half and 189 the add-in pass | none | 2026-10-08 |
 | FR-070 | views 45 minute basis and options | F114 | slow | merged | 141 the Core half and 189 the add-in pass | none | 2026-10-08 |
@@ -150,7 +150,6 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F114-K36 | a test whose open clashes are all result groups gets no view and keeps its old ones, not counted FAILED, the lead's decision on the breaker's F3, for Bader | F114 | register row | open | none | none | 2026-10-08 |
 | F114-K37 | whether the NWF keeps a saved camera at single precision is UNKNOWN, so a camera far from the origin may read every tool view as a person's after a reopen, read on the timed runs | F114 | register row | open | none | none | 2026-10-08 |
 | F114-K38 | a test whose harvest threw after only closed rows reads whole, so its old view is removed while its open clashes were never harvested, the reviewer's D1, UNKNOWN how often | F114 | register row | in review | UNKNOWN | none | 2026-10-12 |
-| F114-K39 | a clear and rebuild whose appends bring at least as many viewpoints as the NWF held puts none back, so a person's view can go while the VIEWS line reads kept | F114 | register row | open | none | none | 2026-10-12 |
 
 ## Wave 2b and before any test run
 

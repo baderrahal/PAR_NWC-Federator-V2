@@ -2128,27 +2128,6 @@ namespace Federator.Addin.Engine
                     "kept going, whether the clear keeps them is read off the document after the appends");
             }
 
-            // FR-067, Bader's answer to Q77: the clear and rebuild keeps the viewpoints, so a view
-            // a person made survives it. DocumentSavedViewpoints has the same CreateCopy and
-            // CopyFrom(IEnumerable<SavedItem>) as the sets, docs\history\scan.md 5m, and P15 read
-            // them on 2026-10-07, scan.md 5z-w: 36 viewpoints in the copy, 17 after the appends,
-            // which the models brought, and 36 after CopyFrom, so CopyFrom puts the copy's tree in
-            // place of the one the appends made. Whether the marks of this tool's views survive it
-            // is UNKNOWN, P15 not answered, and the VIEWS TREE lines of the group say what they read.
-            Collection<SavedItem> viewsCopy = null;
-
-            try
-            {
-                viewsCopy = document.SavedViewpoints.CreateCopy();
-            }
-            catch (Exception error)
-            {
-                log.Failure(
-                    "copying the saved viewpoints of " + job.Building + " before the clear",
-                    error,
-                    "kept going, whether the clear keeps them is read off the document after the appends");
-            }
-
             try
             {
                 log.Line("CLEAR    the document, before rebuilding " + job.Building + " from the scan folder");
@@ -2201,31 +2180,14 @@ namespace Federator.Addin.Engine
                     }
                 }
 
-                // The viewpoints go back from their own copy where the count fell, FR-067, the
-                // one rule the sets and the tests read, RebuiltThing.NeedsRestoring, so the
-                // VIEWS line says what was done. The statuses ride back inside the tests' copy.
-                // Both are counted because a count is the only way to know they came, and
-                // because counting them is what turns a silent loss into a group that fails with
-                // the NWF left alone. Both are read after everything else has been put back, so
-                // what they report is the final state of the document and not a stage of it.
+                // The viewpoints and the statuses ride back inside the two copies above and
+                // nothing puts them back on their own. They are counted because a count is
+                // the only way to know they came, and because counting them is what turns a
+                // silent loss into a group that fails with the NWF left alone. Both are read
+                // after everything else has been put back, so what they report is the final
+                // state of the document and not a stage of it.
                 views.AfterAppends = SavedViewpoints.Count(document);
                 views.AfterRestore = views.AfterAppends;
-
-                if (views.NeedsRestoring && viewsCopy != null)
-                {
-                    try
-                    {
-                        document.SavedViewpoints.CopyFrom((IEnumerable<SavedItem>)viewsCopy);
-                        views.AfterRestore = SavedViewpoints.Count(document);
-                    }
-                    catch (Exception error)
-                    {
-                        log.Failure(
-                            "putting the saved viewpoints back into " + job.Building,
-                            error,
-                            "the VIEWS line below carries what the document holds now");
-                    }
-                }
 
                 statuses.AfterAppends = SavedStatuses.SetByAPerson(document);
                 statuses.AfterRestore = statuses.AfterAppends;
@@ -2268,27 +2230,18 @@ namespace Federator.Addin.Engine
                 // Collection<SavedItem>, which is not itself IDisposable, and every SavedItem
                 // in it is. Disposing them here is safe because every use of the copy is
                 // inside the try above, and disposing a wrapper releases the wrapper and
-                // never the document's own object. The viewpoints' copy is the same shape.
-                DisposeEach(setsCopy);
-                DisposeEach(viewsCopy);
-            }
-        }
-
-        /// <summary>Every SavedItem of a copy CreateCopy made, each disposed, the collection itself being no IDisposable.</summary>
-        private static void DisposeEach(Collection<SavedItem> copy)
-        {
-            if (copy == null)
-            {
-                return;
-            }
-
-            for (int i = 0; i < copy.Count; i++)
-            {
-                SavedItem copied = copy[i];
-
-                if (copied != null)
+                // never the document's own object.
+                if (setsCopy != null)
                 {
-                    copied.Dispose();
+                    for (int i = 0; i < setsCopy.Count; i++)
+                    {
+                        SavedItem copied = setsCopy[i];
+
+                        if (copied != null)
+                        {
+                            copied.Dispose();
+                        }
+                    }
                 }
             }
         }
@@ -3453,6 +3406,7 @@ namespace Federator.Addin.Engine
                 // F114. The mirrors' run names, so no mirrored test gets a view, or null where
                 // no mirror rule ran, which the VIEWS block says.
                 outcome.MirrorNames = runner.MirrorNames;
+                outcome.KeptOfMirror = runner.KeptOfMirror;
 
                 // The skipped group's own CLASH block and summary say the clash was skipped
                 // rather than print nought for what never ran.
@@ -4436,7 +4390,8 @@ namespace Federator.Addin.Engine
                     RunSteps.Views,
                     () => built = builder.BuildForGroup(
                         document, job.Building, outcome.Report, outcome.RowAddresses, viewTeams, models,
-                        testsRan, outcome.Clash == null ? null : outcome.Clash.Skipped, testNames, outcome.MirrorNames, clashStepSound),
+                        testsRan, outcome.Clash == null ? null : outcome.Clash.Skipped, outcome.KeptOfMirror,
+                        testNames, outcome.MirrorNames, clashStepSound),
                     () => built == null ? "nothing" : built.Summary());
             }
             catch (Exception error)

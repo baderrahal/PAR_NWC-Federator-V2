@@ -35,7 +35,7 @@ namespace Federator.Core.Views
         private readonly HashSet<ClashStatus> inScope;
         private readonly List<string> order = new List<string>();
         private readonly Dictionary<string, Entry> entries = new Dictionary<string, Entry>(StringComparer.Ordinal);
-        private readonly HashSet<string> clashStepFailed = new HashSet<string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, List<string>> clashStepFailed = new Dictionary<string, List<string>>(StringComparer.Ordinal);
 
         /// <summary>A record of the tests read, judged against the views' statuses.</summary>
         public TestsRead(IEnumerable<ClashStatus> inScope)
@@ -67,8 +67,13 @@ namespace Federator.Core.Views
             }
         }
 
-        /// <summary>Every test the clash step skipped as failed is not read whole, met before or after, F114-K38.</summary>
-        public void ClashStepFailed(IEnumerable<SkippedClashTest> skipped)
+        /// <summary>
+        /// Every test the clash step skipped as failed is not read whole, met before or after,
+        /// F114-K38, and so is the test kept of a mirror that failed, by keptOfMirror, the kept
+        /// test's name by each mirror's run name, since the mirror's clashes are merged into the
+        /// kept test's rows, the breaker's point 2 on attempt 1. Null where no mirror was paired.
+        /// </summary>
+        public void ClashStepFailed(IEnumerable<SkippedClashTest> skipped, IDictionary<string, string> keptOfMirror)
         {
             foreach (SkippedClashTest test in skipped ?? new SkippedClashTest[0])
             {
@@ -77,14 +82,37 @@ namespace Federator.Core.Views
                     continue;
                 }
 
-                clashStepFailed.Add(test.Name);
+                MarkFailed(test.Name, "the clash step failed on it");
 
-                Entry entry;
+                string kept;
 
-                if (entries.TryGetValue(test.Name, out entry))
+                if (keptOfMirror != null && keptOfMirror.TryGetValue(test.Name, out kept) && !string.IsNullOrEmpty(kept))
                 {
-                    entry.ClashStepFailed = true;
+                    MarkFailed(kept, "the clash step failed on its mirror " + test.Name);
                 }
+            }
+        }
+
+        private void MarkFailed(string test, string why)
+        {
+            List<string> said;
+
+            if (!clashStepFailed.TryGetValue(test, out said))
+            {
+                said = new List<string>();
+                clashStepFailed.Add(test, said);
+            }
+
+            if (!said.Contains(why))
+            {
+                said.Add(why);
+            }
+
+            Entry entry;
+
+            if (entries.TryGetValue(test, out entry))
+            {
+                entry.FailedWhy = said;
             }
         }
 
@@ -200,7 +228,7 @@ namespace Federator.Core.Views
             if (!entries.TryGetValue(name, out entry))
             {
                 entry = new Entry();
-                entry.ClashStepFailed = clashStepFailed.Contains(name);
+                clashStepFailed.TryGetValue(name, out entry.FailedWhy);
                 entries.Add(name, entry);
                 order.Add(name);
             }
@@ -216,11 +244,11 @@ namespace Federator.Core.Views
             public int RowsWithNoAddress;
             public bool NotAtAddress;
             public bool Threw;
-            public bool ClashStepFailed;
+            public List<string> FailedWhy;
 
             public bool Whole
             {
-                get { return !NotAtAddress && !Threw && !ClashStepFailed && RowsNotFound == 0 && RowsWithNoAddress == 0; }
+                get { return !NotAtAddress && !Threw && FailedWhy == null && RowsNotFound == 0 && RowsWithNoAddress == 0; }
             }
 
             public bool OnlyGroups
@@ -232,9 +260,9 @@ namespace Federator.Core.Views
             {
                 List<string> why = new List<string>();
 
-                if (ClashStepFailed)
+                if (FailedWhy != null)
                 {
-                    why.Add("the clash step failed on it, so its open clashes may never have reached the report");
+                    why.Add(string.Join(" and ", FailedWhy.ToArray()) + ", so its open clashes may never have reached the report");
                 }
 
                 if (NotAtAddress)

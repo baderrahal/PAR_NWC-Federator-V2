@@ -155,11 +155,11 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// F114's add-in pass. The row becomes the view plan's clash: the test the report holds
-        /// it under, the two set names, the row's status and the test's priority off the report,
+        /// it under, the test's two locators whole, F114-K30, the row's status and the test's priority off the report,
         /// and what the add-in read off the resolved result handed in, nulls where it read none.
         /// </summary>
         [Test]
-        public void ToViewCarriesTheTestTheTwoSetNamesTheRowStatusThePriorityAndWhatTheAddInRead()
+        public void ToViewCarriesTheTestTheTwoLocatorsTheRowStatusThePriorityAndWhatTheAddInRead()
         {
             ReportClash first = ReportClashes.Of(MergedReport()).Clashes[0];
             ItemPath left = new ItemPath(new[] { 0, 3, 7 });

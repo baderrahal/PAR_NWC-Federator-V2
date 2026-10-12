@@ -176,7 +176,7 @@ namespace Federator.Core.Tests
 
             TestsRead read = NewAndActive();
             read.Met("Closed only");
-            read.ClashStepFailed(clash.Skipped);
+            read.ClashStepFailed(clash.Skipped, null);
             read.Met("No locator");
             read.Met("Whole");
             read.RowRead("Whole", false);
@@ -191,11 +191,46 @@ namespace Federator.Core.Tests
             Assert.That(read.IsWhole("Not on the report"), Is.False);
 
             TestsRead before = NewAndActive();
-            before.ClashStepFailed(clash.Skipped);
+            before.ClashStepFailed(clash.Skipped, null);
             before.Met("Closed only");
 
             Assert.That(before.IsWhole("Closed only"), Is.False, "marked whether it is met before or after");
-            Assert.That(() => before.ClashStepFailed(null), Throws.Nothing);
+            Assert.That(() => before.ClashStepFailed(null, null), Throws.Nothing);
+        }
+
+        /// <summary>
+        /// The breaker's point 2 on attempt 1 of F114c. A mirror's clashes are merged into its kept
+        /// test's rows, so where the clash step failed on the mirror the kept test is not read whole
+        /// either, read by the mirror's run name, and says which mirror. A kept test whose mirror ran
+        /// is left whole, and a failed test that is no mirror marks no other test.
+        /// </summary>
+        [Test]
+        public void TheKeptTestOfAMirrorTheClashStepFailedOnIsNotWhole()
+        {
+            ClashRunOutcome clash = new ClashRunOutcome();
+            clash.AddSkipped("Columns-vs-Ducts (mirror)", ClashSkipReason.Failed, "IOException: the harvest threw");
+            clash.AddSkipped("Lonely", ClashSkipReason.Failed, "IOException: the harvest threw");
+            Dictionary<string, string> keptOfMirror = new Dictionary<string, string>
+            {
+                { "Columns-vs-Ducts (mirror)", "Ducts-vs-Columns" },
+                { "Floors-vs-Walls (mirror)", "Walls-vs-Floors" }
+            };
+
+            TestsRead read = NewAndActive();
+            read.Met("Ducts-vs-Columns");
+            read.RowRead("Ducts-vs-Columns", false);
+            read.Met("Walls-vs-Floors");
+            read.RowRead("Walls-vs-Floors", false);
+            read.ClashStepFailed(clash.Skipped, keptOfMirror);
+
+            Assert.That(read.IsWhole("Ducts-vs-Columns"), Is.False);
+            Assert.That(read.WholeNames, Is.EqualTo(new[] { "Walls-vs-Floors" }));
+            IList<KeyValuePair<string, string>> notWhole = read.NotWhole();
+            Assert.That(notWhole.Count, Is.EqualTo(1));
+            Assert.That(notWhole[0].Key, Is.EqualTo("Ducts-vs-Columns"));
+            Assert.That(
+                notWhole[0].Value,
+                Does.Contain("the clash step failed on its mirror Columns-vs-Ducts (mirror), so its open clashes may never have reached the report"));
         }
     }
 }
