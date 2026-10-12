@@ -1,0 +1,431 @@
+﻿time	seconds	group	step	event	name	number	text
+20:45:12.018	20.998	1A04PK	DECIDE	step started	DECIDE	0	
+20:45:12.022	21.002	1A04PK	DECIDE	census before	models	0	
+20:45:12.022	21.002	1A04PK	DECIDE	census before	sets	0	
+20:45:12.023	21.002	1A04PK	DECIDE	census before	tests	0	
+20:45:12.023	21.003	1A04PK	DECIDE	census before	results	0	
+20:45:12.023	21.003	1A04PK	DECIDE	census before	views	0	
+20:45:12.040	21.020	1A04PK		census after	models	0	
+20:45:12.040	21.020	1A04PK		census after	sets	0	
+20:45:12.040	21.020	1A04PK		census after	tests	0	
+20:45:12.040	21.020	1A04PK		census after	results	0	
+20:45:12.042	21.021	1A04PK		census after	views	0	
+20:45:12.046	21.025	1A04PK		step finished	DECIDE	0.021	First run
+20:45:12.057	21.037	1A04PK	APPEND	step started	APPEND	0	
+20:45:12.059	21.038	1A04PK	APPEND	census before	models	0	
+20:45:12.059	21.039	1A04PK	APPEND	census before	sets	0	
+20:45:12.060	21.039	1A04PK	APPEND	census before	tests	0	
+20:45:12.060	21.039	1A04PK	APPEND	census before	results	0	
+20:45:12.060	21.039	1A04PK	APPEND	census before	views	0	
+20:45:13.739	22.718	1A04PK	APPEND	appended	APPEND	21582228	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc
+20:45:14.691	23.671	1A04PK	APPEND	appended	APPEND	107281275	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc
+20:45:15.230	24.210	1A04PK	APPEND	appended	APPEND	24705684	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc
+20:45:15.446	24.426	1A04PK	APPEND	appended	APPEND	2177136	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc
+20:45:15.610	24.590	1A04PK	APPEND	appended	APPEND	490559	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc
+20:45:15.792	24.772	1A04PK	APPEND	appended	APPEND	3014645	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc
+20:45:16.054	25.034	1A04PK	APPEND	appended	APPEND	4501778	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc
+20:45:16.455	25.434	1A04PK	APPEND	appended	APPEND	13793539	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc
+20:45:16.676	25.656	1A04PK	APPEND	appended	APPEND	1175415	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc
+20:45:16.866	25.846	1A04PK	APPEND	appended	APPEND	136241	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc
+20:45:16.883	25.863	1A04PK		census after	models	10	
+20:45:16.884	25.863	1A04PK		census after	sets	0	
+20:45:16.884	25.864	1A04PK		census after	tests	0	
+20:45:16.884	25.864	1A04PK		census after	results	0	
+20:45:16.884	25.864	1A04PK		census after	views	105	
+20:45:16.888	25.867	1A04PK		step finished	APPEND	4.826	10 of 10 appended
+20:45:16.889	25.869	1A04PK	NWF SAVE	step started	NWF SAVE	0	
+20:45:16.890	25.870	1A04PK	NWF SAVE	census before	models	10	
+20:45:16.891	25.870	1A04PK	NWF SAVE	census before	sets	0	
+20:45:16.891	25.870	1A04PK	NWF SAVE	census before	tests	0	
+20:45:16.891	25.871	1A04PK	NWF SAVE	census before	results	0	
+20:45:16.891	25.871	1A04PK	NWF SAVE	census before	views	105	
+20:45:18.072	27.051	1A04PK	NWF SAVE	written	NWF	4744	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWF\\C04\\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf
+20:45:18.074	27.053	1A04PK		census after	models	10	
+20:45:18.074	27.054	1A04PK		census after	sets	0	
+20:45:18.074	27.054	1A04PK		census after	tests	0	
+20:45:18.074	27.054	1A04PK		census after	results	0	
+20:45:18.075	27.055	1A04PK		census after	views	105	
+20:45:18.077	27.056	1A04PK		step finished	NWF SAVE	1.184	saved 4744 bytes
+20:45:18.080	27.060	1A04PK	UNITS	step started	UNITS	0	
+20:45:18.082	27.061	1A04PK	UNITS	census before	models	10	
+20:45:18.082	27.062	1A04PK	UNITS	census before	sets	0	
+20:45:18.082	27.062	1A04PK	UNITS	census before	tests	0	
+20:45:18.082	27.062	1A04PK	UNITS	census before	results	0	
+20:45:18.083	27.062	1A04PK	UNITS	census before	views	105	
+20:45:18.554	27.534	1A04PK		census after	models	10	
+20:45:18.555	27.534	1A04PK		census after	sets	0	
+20:45:18.555	27.534	1A04PK		census after	tests	0	
+20:45:18.555	27.535	1A04PK		census after	results	0	
+20:45:18.555	27.535	1A04PK		census after	views	105	
+20:45:18.556	27.536	1A04PK		step finished	UNITS	0.474	the document was asked for Meters
+20:45:18.616	27.596	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc	685385.01	IRPS-SharedCoordinate
+20:45:18.616	27.596	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc	687385.01	IP3_Shared_Location
+20:45:18.616	27.596	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc	686285.01	16-S01
+20:45:18.616	27.596	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc	686285.01	16-S01
+20:45:18.617	27.597	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc	683024.01	IRR INFRA-05
+20:45:18.617	27.597	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc	685435.01	MECH_IRPS1_CHLORINATION
+20:45:18.617	27.597	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc	678205.01	IRR SITE -03
+20:45:18.617	27.597	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc	686285.01	16-S01
+20:45:18.618	27.597	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc	685435.01	IPS-A(1)
+20:45:18.618	27.598	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc	682485.01	Internal
+20:45:20.520	29.499	1A04PK		model export	1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc	6057	elements 6057   with a workset 6057   worksets 3   element id 100%
+20:45:20.520	29.500	1A04PK		model export	1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc	6515	elements 6515   with a workset 6515   worksets 11   element id 100%
+20:45:20.521	29.500	1A04PK		model export	1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc	12127	elements 12127   with a workset 12127   worksets 1   element id 100%
+20:45:20.521	29.500	1A04PK		model export	1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc	2409	elements 2409   with a workset 2409   worksets 3   element id 100%
+20:45:20.521	29.500	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc	80	elements 80   with a workset 80   worksets 1   element id 100%
+20:45:20.521	29.501	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc	277	elements 277   with a workset 277   worksets 2   element id 100%
+20:45:20.522	29.501	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc	869	elements 869   with a workset 869   worksets 2   element id 100%
+20:45:20.522	29.501	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc	5372	elements 5372   with a workset 5372   worksets 3   element id 100%
+20:45:20.522	29.501	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc	1381	elements 1381   with a workset 1381   worksets 2   element id 100%
+20:45:20.522	29.501	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc	11	elements 11   with a workset 11   worksets 2   element id 100%
+20:45:20.523	29.502	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc	3	AR-EXTERIOR | +LINK-FP-IRRIGATION PUMPING STATION | AR-INTERIOR
+20:45:20.523	29.502	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc	11	EV-Containment | EL-Containment | EL-Lightning Protection | EV-IT | EL-Power | EL-Electrical Equipment | EL-Lighting | EL-Fire alarm | 00-EL-Levels Grids | EV-Cctv system | EV-Access Control
+20:45:20.523	29.502	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc	1	FF-Fire Fighting
+20:45:20.523	29.503	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc	3	ME-Ductwork | ME-PIPING | PL-Drainage
+20:45:20.524	29.503	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc	1	ME-Piping
+20:45:20.524	29.503	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc	2	ME-Piping | ME-Equipment
+20:45:20.524	29.503	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc	2	ME-Piping | ME-Equipment
+20:45:20.524	29.504	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc	3	PL-Domestic Water | PL-Drainage | PUMP ROOM
+20:45:20.525	29.504	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc	2	ST-SUP | ST-SUB
+20:45:20.525	29.504	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc	2	STR-SUB STRUCTURE | ST-SUB
+20:45:20.552	29.532	1A04PK	SETS	step started	SETS	0	
+20:45:20.553	29.533	1A04PK	SETS	census before	models	10	
+20:45:20.553	29.533	1A04PK	SETS	census before	sets	0	
+20:45:20.554	29.533	1A04PK	SETS	census before	tests	0	
+20:45:20.554	29.533	1A04PK	SETS	census before	results	0	
+20:45:20.554	29.534	1A04PK	SETS	census before	views	105	
+20:45:31.136	40.116	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-AR-MOD-000001	0	items in 1A04PK
+20:45:31.136	40.116	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-EL-MOD-000001	0	items in 1A04PK
+20:45:31.136	40.116	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-FP-MOD-000001	3	items in 1A04PK
+20:45:31.137	40.116	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-HV-MOD-000001	0	items in 1A04PK
+20:45:31.137	40.117	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000001	0	items in 1A04PK
+20:45:31.137	40.117	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000002	0	items in 1A04PK
+20:45:31.137	40.117	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000003	0	items in 1A04PK
+20:45:31.137	40.117	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000004	0	items in 1A04PK
+20:45:31.138	40.117	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ST-MOD-000001	528	items in 1A04PK
+20:45:31.138	40.118	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ST-MOD-000002	3	items in 1A04PK
+20:45:31.142	40.121	1A04PK		census after	models	10	
+20:45:31.142	40.121	1A04PK		census after	sets	71	
+20:45:31.142	40.122	1A04PK		census after	tests	0	
+20:45:31.142	40.122	1A04PK		census after	results	0	
+20:45:31.143	40.122	1A04PK		census after	views	105	
+20:45:31.144	40.123	1A04PK		step finished	SETS	10.589	61 created (39 finding items, 22 at zero), 0 already there.. Generic Models: 10 created (3 finding items, 7 at zero), 0 already there.
+20:45:31.308	40.287	1A04PK	TESTS CREATE	step started	TESTS CREATE	0	
+20:45:31.310	40.289	1A04PK	TESTS CREATE	census before	models	10	
+20:45:31.310	40.289	1A04PK	TESTS CREATE	census before	sets	71	
+20:45:31.310	40.290	1A04PK	TESTS CREATE	census before	tests	0	
+20:45:31.311	40.290	1A04PK	TESTS CREATE	census before	results	0	
+20:45:31.311	40.290	1A04PK	TESTS CREATE	census before	views	105	
+20:45:31.370	40.350	1A04PK	TESTS CREATE	test created	BLD-AR-Stairs-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+20:45:31.399	40.379	1A04PK		census after	models	10	
+20:45:31.400	40.380	1A04PK		census after	sets	71	
+20:45:31.400	40.380	1A04PK		census after	tests	1	
+20:45:31.400	40.380	1A04PK		census after	results	0	
+20:45:31.400	40.380	1A04PK		census after	views	105	
+20:45:31.402	40.382	1A04PK		step finished	TESTS CREATE	0.092	BLD-AR-Stairs-vs-BLD-AR-Floors
+20:45:31.404	40.384	1A04PK	TESTS RUN	step started	TESTS RUN	0	
+20:45:31.406	40.386	1A04PK	TESTS RUN	census before	models	10	
+20:45:31.406	40.386	1A04PK	TESTS RUN	census before	sets	71	
+20:45:31.406	40.386	1A04PK	TESTS RUN	census before	tests	1	
+20:45:31.407	40.387	1A04PK	TESTS RUN	census before	results	0	
+20:45:31.407	40.387	1A04PK	TESTS RUN	census before	views	105	
+20:45:31.519	40.498	1A04PK		census after	models	10	
+20:45:31.519	40.498	1A04PK		census after	sets	71	
+20:45:31.519	40.498	1A04PK		census after	tests	1	
+20:45:31.519	40.499	1A04PK		census after	results	7	
+20:45:31.519	40.499	1A04PK		census after	views	105	
+20:45:31.521	40.500	1A04PK		step finished	TESTS RUN	0.113	BLD-AR-Stairs-vs-BLD-AR-Floors
+20:45:31.525	40.504	1A04PK	HARVEST	step started	HARVEST	0	
+20:45:31.526	40.506	1A04PK	HARVEST	census before	models	10	
+20:45:31.527	40.506	1A04PK	HARVEST	census before	sets	71	
+20:45:31.527	40.506	1A04PK	HARVEST	census before	tests	1	
+20:45:31.527	40.507	1A04PK	HARVEST	census before	results	7	
+20:45:31.527	40.507	1A04PK	HARVEST	census before	views	105	
+20:45:31.583	40.563	1A04PK	IMAGES	step started	IMAGES	0	
+20:45:31.585	40.564	1A04PK	IMAGES	census before	models	10	
+20:45:31.585	40.565	1A04PK	IMAGES	census before	sets	71	
+20:45:31.586	40.565	1A04PK	IMAGES	census before	tests	1	
+20:45:31.586	40.565	1A04PK	IMAGES	census before	results	7	
+20:45:31.586	40.565	1A04PK	IMAGES	census before	views	105	
+20:45:31.890	40.870	1A04PK	HARVEST	census after	models	10	
+20:45:31.891	40.870	1A04PK	HARVEST	census after	sets	71	
+20:45:31.891	40.870	1A04PK	HARVEST	census after	tests	1	
+20:45:31.891	40.871	1A04PK	HARVEST	census after	results	7	
+20:45:31.892	40.871	1A04PK	HARVEST	census after	views	105	
+20:45:31.893	40.872	1A04PK	HARVEST	step finished	IMAGES	0.307	BLD-AR-Stairs-vs-BLD-AR-Floors
+20:45:33.475	42.455	1A04PK		census after	models	10	
+20:45:33.475	42.456	1A04PK		census after	sets	71	
+20:45:33.475	42.456	1A04PK		census after	tests	1	
+20:45:33.477	42.456	1A04PK		census after	results	7	
+20:45:33.477	42.456	1A04PK		census after	views	105	
+20:45:33.478	42.458	1A04PK		step finished	HARVEST	1.95	BLD-AR-Stairs-vs-BLD-AR-Floors
+20:45:33.480	42.459	1A04PK		rows for the workbook	BLD-AR-Stairs-vs-BLD-AR-Floors	7	7 in the document
+20:45:33.482	42.461	1A04PK		test found clashes	BLD-AR-Stairs-vs-BLD-AR-Floors	7	ran and found clashes
+20:45:33.545	42.525	1A04PK	TESTS CREATE	test created	BLD-AR-Ramps-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+20:46:19.660	88.639	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	4	HARVEST row 4 of 97
+20:46:50.656	119.635	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	7	HARVEST row 7 of 97
+20:47:20.838	149.815	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	13	HARVEST row 13 of 97
+20:47:52.602	181.575	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	17	HARVEST row 17 of 97
+20:48:23.408	212.379	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	20	HARVEST row 20 of 97
+20:49:01.043	250.012	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	23	HARVEST row 23 of 97
+20:49:34.370	283.335	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	27	HARVEST row 27 of 97
+20:50:12.016	320.980	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	31	HARVEST row 31 of 97
+20:50:51.374	360.335	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	35	HARVEST row 35 of 97
+20:51:33.518	402.478	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	40	HARVEST row 40 of 97
+20:52:05.348	434.307	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	45	HARVEST row 45 of 97
+20:52:46.293	475.251	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	50	HARVEST row 50 of 97
+20:53:27.591	516.547	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	57	HARVEST row 57 of 97
+20:54:13.895	562.850	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	61	HARVEST row 61 of 97
+20:54:49.452	598.406	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	67	HARVEST row 67 of 97
+20:55:20.788	629.741	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	73	HARVEST row 73 of 97
+20:55:50.968	659.921	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	78	HARVEST row 78 of 97
+20:56:21.762	690.714	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	81	HARVEST row 81 of 97
+20:56:55.594	724.547	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	84	HARVEST row 84 of 97
+20:57:28.256	757.208	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	87	HARVEST row 87 of 97
+20:58:03.063	792.014	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	90	HARVEST row 90 of 97
+20:58:35.716	824.667	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	93	HARVEST row 93 of 97
+20:59:17.392	866.342	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	96	HARVEST row 96 of 97
+20:59:31.631	880.581	1A04PK		rows for the workbook	BLD-AR-Ramps-vs-BLD-AR-Floors	97	97 in the document
+20:59:31.634	880.583	1A04PK		test found clashes	BLD-AR-Ramps-vs-BLD-AR-Floors	97	ran and found clashes
+20:59:31.697	880.648	1A04PK	TESTS CREATE	test created	BLD-AR-Ramps-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+20:59:31.818	880.768	1A04PK		rows for the workbook	BLD-AR-Ramps-vs-BLD-AR-Stairs	0	0 in the document
+20:59:31.820	880.770	1A04PK		test passed	BLD-AR-Ramps-vs-BLD-AR-Stairs	0	ran and found nothing
+20:59:31.962	880.913	1A04PK		set finding nothing	lcop_selection_set_tree/Architecture/BLD-AR-Roofs		lcop_selection_set_tree/Architecture/BLD-AR-Roofs   asks for "Roofs" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT. The nearest the models carry is "Doors", which is a suggestion and not a correction
+20:59:31.963	880.913	1A04PK		set finding nothing	lcop_selection_set_tree/Architecture/BLD-AR-Ceilings		lcop_selection_set_tree/Architecture/BLD-AR-Ceilings   asks for "Ceilings", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.963	880.914	1A04PK		set finding nothing	lcop_selection_set_tree/Architecture/BLD-AR-Columns		lcop_selection_set_tree/Architecture/BLD-AR-Columns   asks for "Columns" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+20:59:31.963	880.914	1A04PK		set finding nothing	lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels		lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels   asks for "Curtain Panels", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.964	880.914	1A04PK		set finding nothing	lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions		lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions   asks for "Curtain Wall Mullions", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.964	880.915	1A04PK		set finding nothing	lcop_selection_set_tree/Architecture/BLD-AR-Casework		lcop_selection_set_tree/Architecture/BLD-AR-Casework   asks for "Casework" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+20:59:31.964	880.915	1A04PK		set finding nothing	lcop_selection_set_tree/Architecture/BLD-AR-Furniture		lcop_selection_set_tree/Architecture/BLD-AR-Furniture   asks for "Furniture", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.965	880.915	1A04PK		set finding nothing	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes		lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes   asks for "Flex Pipes", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.965	880.915	1A04PK		set finding nothing	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings		lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings   asks for "Pipes", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.966	880.916	1A04PK		set finding nothing	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories		lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories   asks for "Pipe Accessories", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.966	880.916	1A04PK		set finding nothing	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations		lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations   asks for "Pipe Insulation" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+20:59:31.966	880.916	1A04PK		set finding nothing	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures		lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures   asks for "Plumbing Fixtures", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.967	880.917	1A04PK		set finding nothing	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers		lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers   asks for "Sprinklers", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.967	880.917	1A04PK		set finding nothing	lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations		lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations   asks for "Pipe Insulation" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+20:59:31.967	880.917	1A04PK		set finding nothing	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment		lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment   asks for "Mechanical Equipment", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.967	880.918	1A04PK		set finding nothing	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories		lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories   asks for "Pipe Accessories", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.968	880.918	1A04PK		set finding nothing	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations		lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations   asks for "Pipe Insulation" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+20:59:31.968	880.918	1A04PK		set finding nothing	lcop_selection_set_tree/Electrical/BLD-EL-Devices		lcop_selection_set_tree/Electrical/BLD-EL-Devices   asks for "Devices", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.968	880.918	1A04PK		set finding nothing	lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment		lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment   asks for "Telephone Equipment" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+20:59:31.969	880.919	1A04PK		set finding nothing	lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures		lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures   asks for "Telephone Devices" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+20:59:31.969	880.919	1A04PK		set finding nothing	lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices		lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices   asks for "Communication Devices", WHICH MODELS IN THIS PROJECT DO CARRY, and still found nothing HERE. Either this group holds no model of that kind, which is ordinary, or something else is wrong, and this reader cannot tell which
+20:59:31.969	880.920	1A04PK		set finding nothing	lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices		lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices   asks for "Telephone Devices" and NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES IT, and nothing the models carry is close to it
+20:59:31.981	880.932	1A04PK	RENUMBER	step started	RENUMBER	0	
+20:59:31.984	880.934	1A04PK	RENUMBER	census before	models	10	
+20:59:31.984	880.935	1A04PK	RENUMBER	census before	sets	71	
+20:59:31.984	880.935	1A04PK	RENUMBER	census before	tests	3	
+20:59:31.985	880.935	1A04PK	RENUMBER	census before	results	104	
+20:59:31.985	880.936	1A04PK	RENUMBER	census before	views	105	
+20:59:33.778	882.728	1A04PK		census after	models	10	
+20:59:33.778	882.729	1A04PK		census after	sets	71	
+20:59:33.778	882.729	1A04PK		census after	tests	3	
+20:59:33.779	882.729	1A04PK		census after	results	104	
+20:59:33.779	882.729	1A04PK		census after	views	105	
+20:59:33.780	882.731	1A04PK		step finished	RENUMBER	1.796	the pictures of 1A04PK
+20:59:33.800	882.751	1A04PK	VIEWS	step started	VIEWS	0	
+20:59:33.802	882.753	1A04PK	VIEWS	census before	models	10	
+20:59:33.803	882.753	1A04PK	VIEWS	census before	sets	71	
+20:59:33.803	882.754	1A04PK	VIEWS	census before	tests	3	
+20:59:33.803	882.754	1A04PK	VIEWS	census before	results	104	
+20:59:33.803	882.754	1A04PK	VIEWS	census before	views	105	
+20:59:34.261	883.211	1A04PK		census after	models	10	
+20:59:34.262	883.212	1A04PK		census after	sets	71	
+20:59:34.262	883.212	1A04PK		census after	tests	3	
+20:59:34.262	883.212	1A04PK		census after	results	104	
+20:59:34.262	883.212	1A04PK		census after	views	105	
+20:59:34.264	883.214	1A04PK		step finished	VIEWS	0.46	0 created, 2 failed.
+20:59:34.344	883.294	1A04PK		views tree	1A04PK	1	VIEWS TREE 1A04PK
+20:59:34.344	883.295	1A04PK		views tree	1A04PK	2	team map   : C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\first3\\1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt, 4 teams, 10 codes
+20:59:34.345	883.295	1A04PK		views tree	1A04PK	3	models     : AR Architecture, EL Electrical, FP Mechanical, HV Mechanical, ME Mechanical, ST Structure
+20:59:34.345	883.295	1A04PK		views tree	1A04PK	4	before     : 107 views once this run had written its own: 2 written by this run, 0 this tool's of earlier runs, 0 per clash viewpoints of earlier runs, 0 this tool's changed by a person, 105 not this tool's
+20:59:34.345	883.295	1A04PK		views tree	1A04PK	5	No priority
+20:59:34.345	883.296	1A04PK		views tree	1A04PK	6	  Architecture vs Architecture
+20:59:34.346	883.296	1A04PK		views tree	1A04PK	7	    BLD-AR-Ramps-vs-BLD-AR-Floors  97 open clashes, shows AR, hides EL FP HV ME ST, NOT READ BACK
+20:59:34.346	883.296	1A04PK		views tree	1A04PK	8	    BLD-AR-Stairs-vs-BLD-AR-Floors  7 open clashes, shows AR, hides EL FP HV ME ST, NOT READ BACK
+20:59:34.346	883.296	1A04PK		views tree	1A04PK	9	left out   : 0 Reviewed, 0 Approved, 0 Resolved, 0 clashes of 0 mirrored tests, 3 tests ran, 2 with a view and 1 with no open clash
+20:59:34.346	883.297	1A04PK		views tree	1A04PK	10	after      : written 2, read back 0, removed 0 at once, 0 this tool's earlier views, 0 per clash viewpoints and 1 folders, as the removals reported, 0 not removed, and kept 0 named with why
+20:59:34.347	883.297	1A04PK		views tree	1A04PK	11	CHECK 1  no team pair folder holds a test of another pair  DID NOT RUN, none of the 2 planned views was found marked by this run in the walk after, the tree lines say which were not written or not marked
+20:59:34.347	883.297	1A04PK		views tree	1A04PK	12	CHECK 2  no Over 150mm folder sits outside its own pair  DID NOT RUN, none of the 2 planned views was found marked by this run in the walk after, the tree lines say which were not written or not marked
+20:59:34.347	883.297	1A04PK		views tree	1A04PK	13	CHECK 3  no view shows a model of a third team  0 broke it, 2 views, their hidden models read back off the document
+20:59:34.347	883.298	1A04PK		views tree	1A04PK	14	FAILED CHECK 4  no clash is in two views  2 broke it, the plan's keys of 104 open clashes, and the painted items of 2 of 2 views read back off the document
+20:59:34.348	883.298	1A04PK		views tree	1A04PK	15	    No priority/Architecture vs Architecture/BLD-AR-Ramps-vs-BLD-AR-Floors reads back 67 of its clashing items unpainted and 0 painted items that are not its clashes'
+20:59:34.348	883.298	1A04PK		views tree	1A04PK	16	    No priority/Architecture vs Architecture/BLD-AR-Stairs-vs-BLD-AR-Floors reads back 14 of its clashing items unpainted and 0 painted items that are not its clashes'
+20:59:34.348	883.299	1A04PK		views tree	1A04PK	17	CHECK 5  no mirrored test has a view of this tool's  0 broke it, 1 mirrors against the 105 views of the walk after
+20:59:34.349	883.299	1A04PK		views tree	1A04PK	18	CHECK 6  every view and folder the inventory kept is there after, same place and name  0 broke it, 115 of 115 kept there after, off the document
+20:59:34.349	883.299	1A04PK		views tree	1A04PK	19	CHECK 7  no per clash viewpoint of an earlier run is left without a reason  0 broke it, 0 left, 0 kept and named, off the document
+20:59:34.349	883.299	1A04PK		views tree	1A04PK	20	open clashes in views 104, tests with open clashes 2, views planned 2, views written 2
+20:59:34.349	883.300	1A04PK		views tree	1A04PK	21	4 of 7 hold, 2 did not run, none of them counted as holding, each failure named above, and the group keeps its own result
+20:59:35.681	884.631	1A04PK	NWF SAVE	written	NWF	39853	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWF\\C04\\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf
+20:59:35.688	884.639	1A04PK	WORKBOOK	step started	WORKBOOK	0	
+20:59:35.690	884.641	1A04PK	WORKBOOK	census before	models	10	
+20:59:35.691	884.641	1A04PK	WORKBOOK	census before	sets	71	
+20:59:35.691	884.642	1A04PK	WORKBOOK	census before	tests	3	
+20:59:35.691	884.642	1A04PK	WORKBOOK	census before	results	104	
+20:59:35.691	884.642	1A04PK	WORKBOOK	census before	views	105	
+20:59:37.419	886.370	1A04PK	WORKBOOK	written	XLSX	23016	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\Clash Report\\C04\\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.xlsx
+20:59:38.718	887.668	1A04PK		census after	models	10	
+20:59:38.719	887.669	1A04PK		census after	sets	71	
+20:59:38.719	887.669	1A04PK		census after	tests	3	
+20:59:38.719	887.670	1A04PK		census after	results	104	
+20:59:38.720	887.670	1A04PK		census after	views	105	
+20:59:38.722	887.673	1A04PK		step finished	WORKBOOK	3.028	wrote 23016 bytes
+20:59:38.725	887.675	1A04PK	HTML	step started	HTML	0	
+20:59:38.728	887.678	1A04PK	HTML	census before	models	10	
+20:59:38.728	887.679	1A04PK	HTML	census before	sets	71	
+20:59:38.729	887.679	1A04PK	HTML	census before	tests	3	
+20:59:38.729	887.679	1A04PK	HTML	census before	results	104	
+20:59:38.729	887.680	1A04PK	HTML	census before	views	105	
+20:59:39.404	888.353	1A04PK	HTML	written	HTML	128879	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\Clash Report\\C04\\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.html
+20:59:39.483	888.434	1A04PK		census after	models	10	
+20:59:39.484	888.434	1A04PK		census after	sets	71	
+20:59:39.484	888.434	1A04PK		census after	tests	3	
+20:59:39.484	888.435	1A04PK		census after	results	104	
+20:59:39.485	888.435	1A04PK		census after	views	105	
+20:59:39.486	888.437	1A04PK		step finished	HTML	0.758	wrote 128879 bytes
+20:59:39.491	888.441	1A04PK	COVERAGE	step started	COVERAGE	0	
+20:59:39.493	888.443	1A04PK	COVERAGE	census before	models	10	
+20:59:39.493	888.444	1A04PK	COVERAGE	census before	sets	71	
+20:59:39.494	888.444	1A04PK	COVERAGE	census before	tests	3	
+20:59:39.494	888.444	1A04PK	COVERAGE	census before	results	104	
+20:59:39.494	888.444	1A04PK	COVERAGE	census before	views	105	
+20:59:39.617	888.567	1A04PK	COVERAGE	coverage test	BLD-AR-Stairs-vs-BLD-AR-Floors	7	position 1, created this run, ran, has clashes
+20:59:39.617	888.567	1A04PK	COVERAGE	coverage test	BLD-AR-Ramps-vs-BLD-AR-Floors	97	position 2, created this run, ran, has clashes
+20:59:39.617	888.567	1A04PK	COVERAGE	coverage test	BLD-AR-Ramps-vs-BLD-AR-Stairs	0	position 3, created this run, ran, ran and found no clashes
+20:59:39.618	888.568	1A04PK	COVERAGE	coverage test	BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors		position 4, not created, not run, a side's set found no items in this group, left "lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures" 0 items, code EL, the group holds AR, EL, FP, HV, ME, ST
+20:59:39.618	888.568	1A04PK	COVERAGE	coverage test	BLD-EL-Telephone Devices-vs-BLD-AR-Floors (mirror)		position 5, not created, not run, a side's set found no items in this group, left "lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices" 0 items, code EL, the group holds AR, EL, FP, HV, ME, ST
+20:59:39.621	888.572	1A04PK		census after	models	10	
+20:59:39.621	888.572	1A04PK		census after	sets	71	
+20:59:39.622	888.572	1A04PK		census after	tests	3	
+20:59:39.622	888.572	1A04PK		census after	results	104	
+20:59:39.622	888.573	1A04PK		census after	views	105	
+20:59:39.624	888.575	1A04PK		step finished	COVERAGE	0.13	5 tests covered
+20:59:39.628	888.578	1A04PK	INTERNAL	step started	INTERNAL	0	
+20:59:39.630	888.580	1A04PK	INTERNAL	census before	models	10	
+20:59:39.630	888.580	1A04PK	INTERNAL	census before	sets	71	
+20:59:39.630	888.581	1A04PK	INTERNAL	census before	tests	3	
+20:59:39.630	888.581	1A04PK	INTERNAL	census before	results	104	
+20:59:39.630	888.581	1A04PK	INTERNAL	census before	views	105	
+20:59:39.701	888.651	1A04PK	INTERNAL	written	INTERNAL	12405	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\Clash Report\\C04\\1104-PAR-1A04PK-ZZZ-BM-MOD-000001 Internal.xlsx
+20:59:39.720	888.670	1A04PK		census after	models	10	
+20:59:39.720	888.670	1A04PK		census after	sets	71	
+20:59:39.721	888.671	1A04PK		census after	tests	3	
+20:59:39.721	888.671	1A04PK		census after	results	104	
+20:59:39.722	888.671	1A04PK		census after	views	105	
+20:59:39.724	888.673	1A04PK		step finished	INTERNAL	0.092	wrote 12405 bytes
+20:59:39.725	888.675	1A04PK	NWD	step started	NWD	0	
+20:59:39.727	888.677	1A04PK	NWD	census before	models	10	
+20:59:39.727	888.678	1A04PK	NWD	census before	sets	71	
+20:59:39.728	888.678	1A04PK	NWD	census before	tests	3	
+20:59:39.728	888.678	1A04PK	NWD	census before	results	104	
+20:59:39.728	888.678	1A04PK	NWD	census before	views	105	
+20:59:56.450	905.400	1A04PK	NWD	written	NWD	126692827	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\NWD\\C04\\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwd
+20:59:56.453	905.403	1A04PK		census after	models	10	
+20:59:56.454	905.404	1A04PK		census after	sets	71	
+20:59:56.454	905.404	1A04PK		census after	tests	3	
+20:59:56.454	905.404	1A04PK		census after	results	104	
+20:59:56.454	905.404	1A04PK		census after	views	105	
+20:59:56.456	905.407	1A04PK		step finished	NWD	16.727	published 126692827 bytes
+20:59:56.458	905.409	1A04PK	CONFIRM	step started	CONFIRM	0	
+20:59:56.460	905.411	1A04PK	CONFIRM	census before	models	10	
+20:59:56.461	905.411	1A04PK	CONFIRM	census before	sets	71	
+20:59:56.461	905.411	1A04PK	CONFIRM	census before	tests	3	
+20:59:56.461	905.412	1A04PK	CONFIRM	census before	results	104	
+20:59:56.462	905.412	1A04PK	CONFIRM	census before	views	105	
+20:59:56.626	905.576	1A04PK		census after	models	10	
+20:59:56.627	905.577	1A04PK		census after	sets	71	
+20:59:56.627	905.577	1A04PK		census after	tests	3	
+20:59:56.627	905.577	1A04PK		census after	results	104	
+20:59:56.627	905.578	1A04PK		census after	views	105	
+20:59:56.630	905.580	1A04PK		step finished	CONFIRM	0.167	the NWF is 39853 bytes
+20:59:56.661	905.611	1A04PK		gap	Family	208	it would belong in a workbook column of ours, which is Q25
+20:59:56.662	905.612	1A04PK		gap	Type Name	208	it would belong in a workbook column of ours, which is Q25
+20:59:56.665	905.615	1A04PK		gap	Material	111	it would belong in a workbook column of ours, which is Q25
+20:59:56.665	905.615	1A04PK		gap	Id From	208	the ITEM IDS block counts it per property and no output names it per item
+20:59:56.684	905.634	1A04PK		step total	NWF SAVE	2.516	
+20:59:56.684	905.634	1A04PK		step total	TESTS CREATE	0.171	
+20:59:56.685	905.634	1A04PK		step total	TESTS RUN	0.314	
+20:59:56.685	905.635	1A04PK		step total	HARVEST	839.912	
+20:59:56.685	905.635	1A04PK		step total	IMAGES	833.098	
+20:59:56.691	905.640			group finished	1A04PK	884.675	FAILED First run
+20:59:56.745	905.696			timing	HARVEST	839.912	3 visits
+20:59:56.747	905.696			timing	NWD	16.727	1 visits
+20:59:56.747	905.696			timing	SETS	10.589	1 visits
+20:59:56.747	905.697			timing	APPEND	4.826	1 visits
+20:59:56.747	905.697			timing	WORKBOOK	3.028	1 visits
+20:59:56.748	905.697			timing	NWF SAVE	2.516	2 visits
+20:59:56.748	905.698			timing	RENUMBER	1.796	1 visits
+20:59:56.748	905.698			timing	HTML	0.758	1 visits
+20:59:56.748	905.698			timing	UNITS	0.474	1 visits
+20:59:56.749	905.698			timing	VIEWS	0.46	1 visits
+20:59:56.749	905.699			timing	TESTS RUN	0.314	3 visits
+20:59:56.749	905.699			timing	TESTS CREATE	0.171	3 visits
+20:59:56.749	905.699			timing	CONFIRM	0.167	1 visits
+20:59:56.750	905.699			timing	COVERAGE	0.13	1 visits
+20:59:56.750	905.700			timing	INTERNAL	0.092	1 visits
+20:59:56.750	905.700			timing	DECIDE	0.021	1 visits
+20:59:56.751	905.700			timing nested	IMAGES	833.098	104 visits
+20:59:56.785	905.735			written	LIST	2132	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\08\\NMFed\\Clash Report\\C04\\Models not on the same shared coordinates, run 2026-10-11 204511.txt
+20:59:56.820	905.770			timing beside size	1A04PK	884.675	10 NWC files, 178858500 bytes, 35098 elements, 104 clashes, 0 viewpoints
+20:59:56.908	905.858			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Floors	0	found nothing in 0 of 1 group
+20:59:56.909	905.858			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Stairs	0	found nothing in 0 of 1 group
+20:59:56.909	905.859			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Ramps	0	found nothing in 0 of 1 group
+20:59:56.909	905.859			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Roofs	1	found nothing in 1 of 1 group
+20:59:56.910	905.859			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Ceilings	1	found nothing in 1 of 1 group
+20:59:56.910	905.860			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Columns	1	found nothing in 1 of 1 group
+20:59:56.910	905.860			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Walls	0	found nothing in 0 of 1 group
+20:59:56.910	905.860			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Windows	0	found nothing in 0 of 1 group
+20:59:56.911	905.860			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels	1	found nothing in 1 of 1 group
+20:59:56.911	905.861			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions	1	found nothing in 1 of 1 group
+20:59:56.911	905.861			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Doors	0	found nothing in 0 of 1 group
+20:59:56.912	905.861			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Casework	1	found nothing in 1 of 1 group
+20:59:56.912	905.861			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Furniture	1	found nothing in 1 of 1 group
+20:59:56.912	905.862			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Parking	0	found nothing in 0 of 1 group
+20:59:56.912	905.862			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Railings	0	found nothing in 0 of 1 group
+20:59:56.913	905.862			set across the run	lcop_selection_set_tree/Architecture/BLD-AR-Site	0	found nothing in 0 of 1 group
+20:59:56.913	905.863			set across the run	lcop_selection_set_tree/Structure/BLD-ST-Foundation	0	found nothing in 0 of 1 group
+20:59:56.913	905.863			set across the run	lcop_selection_set_tree/Structure/BLD-ST-Columns	0	found nothing in 0 of 1 group
+20:59:56.914	905.863			set across the run	lcop_selection_set_tree/Structure/BLD-ST-Framing	0	found nothing in 0 of 1 group
+20:59:56.914	905.863			set across the run	lcop_selection_set_tree/Structure/BLD-ST-Walls	0	found nothing in 0 of 1 group
+20:59:56.914	905.864			set across the run	lcop_selection_set_tree/Structure/BLD-ST-Floors	0	found nothing in 0 of 1 group
+20:59:56.915	905.864			set across the run	lcop_selection_set_tree/Structure/BLD-ST-Stair	0	found nothing in 0 of 1 group
+20:59:56.915	905.865			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Ducts&Duct Fittings	0	found nothing in 0 of 1 group
+20:59:56.915	905.865			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Duct Accessory	0	found nothing in 0 of 1 group
+20:59:56.915	905.865			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Mechanical Equipment	0	found nothing in 0 of 1 group
+20:59:56.915	905.865			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts	0	found nothing in 0 of 1 group
+20:59:56.916	905.866			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals	0	found nothing in 0 of 1 group
+20:59:56.916	905.866			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings	0	found nothing in 0 of 1 group
+20:59:56.916	905.866			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories	0	found nothing in 0 of 1 group
+20:59:56.916	905.867			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures	0	found nothing in 0 of 1 group
+20:59:56.916	905.867			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes	1	found nothing in 1 of 1 group
+20:59:56.916	905.867			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment	0	found nothing in 0 of 1 group
+20:59:56.918	905.867			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings	1	found nothing in 1 of 1 group
+20:59:56.918	905.868			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories	1	found nothing in 1 of 1 group
+20:59:56.918	905.868			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations	1	found nothing in 1 of 1 group
+20:59:56.918	905.868			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures	1	found nothing in 1 of 1 group
+20:59:56.919	905.869			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers	1	found nothing in 1 of 1 group
+20:59:56.919	905.869			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment	0	found nothing in 0 of 1 group
+20:59:56.919	905.869			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings	0	found nothing in 0 of 1 group
+20:59:56.920	905.869			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories	0	found nothing in 0 of 1 group
+20:59:56.920	905.870			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations	1	found nothing in 1 of 1 group
+20:59:56.920	905.870			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures	0	found nothing in 0 of 1 group
+20:59:56.920	905.870			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment	1	found nothing in 1 of 1 group
+20:59:56.920	905.871			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipes & Pipe Fittings	0	found nothing in 0 of 1 group
+20:59:56.921	905.871			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories	1	found nothing in 1 of 1 group
+20:59:56.921	905.871			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations	1	found nothing in 1 of 1 group
+20:59:56.921	905.871			set across the run	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Plumbing Fixtures	0	found nothing in 0 of 1 group
+20:59:56.921	905.872			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings	0	found nothing in 0 of 1 group
+20:59:56.922	905.872			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment	0	found nothing in 0 of 1 group
+20:59:56.922	905.872			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures	0	found nothing in 0 of 1 group
+20:59:56.922	905.873			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings	0	found nothing in 0 of 1 group
+20:59:56.923	905.873			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Devices	1	found nothing in 1 of 1 group
+20:59:56.923	905.873			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures	0	found nothing in 0 of 1 group
+20:59:56.923	905.873			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices	0	found nothing in 0 of 1 group
+20:59:56.923	905.874			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices	0	found nothing in 0 of 1 group
+20:59:56.924	905.874			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment	1	found nothing in 1 of 1 group
+20:59:56.924	905.874			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures	1	found nothing in 1 of 1 group
+20:59:56.924	905.875			set across the run	lcop_selection_set_tree/Electrical/BLD-Security Devices	0	found nothing in 0 of 1 group
+20:59:56.924	905.875			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices	1	found nothing in 1 of 1 group
+20:59:56.924	905.875			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices	1	found nothing in 1 of 1 group
+20:59:56.926	905.875			set across the run	lcop_selection_set_tree/Electrical/BLD-EL-Data Devices	0	found nothing in 0 of 1 group

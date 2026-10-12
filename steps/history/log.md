@@ -39,6 +39,81 @@ the undo on.
 
 What comes next: the merges Bader makes, then the fast checks and a SPEED row.
 
+## 2026-10-12 The loop, turn 6 closes on Bader's order WRAP UP NOW, written by the lead
+
+Bader's order of 2026-10-12 headed BADER, 12 OCT 2026: WRAP UP NOW, NO MORE TESTS. No probe, fast check, speed
+loop or full run after it. Bader runs the tool himself on his desktop PC.
+
+What was done:
+- No run was in progress. Navisworks' hardware acceleration on this laptop, "3 1" since 01:06 by his leave,
+  was put back to his "3 0" and read back, and Hide Other reads his "0". Every probe's guard had put back the rest
+- Merged this turn: 202, the picture probe and scan.md 5z-zc to 5z-ze, as 1bfe0d2. 204, F145, as 116d8ed and 207,
+  F149, as 99bae1d, both merged by Bader on GitHub. 205, F146, as 2955d0e. 208, F140, the team package, as
+  69de6ed. And this records pull request, 206
+- The team zip, built from main in Release, unsigned: %USERPROFILE%\OneDrive - Parsons Corp\Documents\NWC Federator package\ParsonsNwcFederator-1.0.0.0-69de6ed4-20261012.zip, 3298080 bytes, 21 files
+- Q151, Hide Other: not built in the tool. The install's Autodesk.Navisworks.Api.xml gives no documented way to set
+  Clash Detective's Hide Other, its ApplicationOptions holding the grids alone, and no probe may run. The tool's own
+  picture call follows the user's Hide Other, scan.md 5z-ze, so step 2 of the guide sets it by hand. Row F150
+
+THE SPEED TABLE, as it stands. No measurement was made with F145, F146 or F149 merged, so their gain on this
+laptop is UNKNOWN.
+
+| date | build | a picture | 1A02MM | longest freeze | most time |
+|---|---|---|---|---|---|
+| Bader's PC, 11 Oct | cdf8d4e, DirectX 11 hardware | 0.049 s | 156 s | 0 s | UNKNOWN |
+| 11 Oct 21:42 | cdf8d4e, acceleration off | 7.76 s | 293 s | 32 s, RENUMBER | HARVEST 187 s |
+| 12 Oct 01:20 | cdf8d4e, acceleration on | 0.168 s, 0.120 s with F145's rule | 253 s | 32 s, RENUMBER | HARVEST 150 s |
+| 12 Oct 03:47, probe only | cdf8d4e's code, Hide Other on for one start | 0.067 s, 0.059 s with F145's rule | not run | not run | not run |
+
+PROVEN BY A REAL RUN on this laptop, steps\runs: the views of F141, set 08, steps\runs\08\item1-C02. 1A02MM in 253 s
+with hardware acceleration on, set 09. The look of Hide Other, 0.067 s and 48 KB a picture, scan.md 5z-ze. Before
+this turn, the 29 rows of steps\tracker.csv that read proven by a run.
+
+BUILT AND MERGED, NOT PROVEN BY A RUN: F145, only the test's models shown for its pictures. F149, every picture taken
+in the report's order in a step of its own, PICTURES. F146, the renumber answering while it renames. F140, the team
+package and its page. And from before, F109, F114's add-in pass, F120, F127, F128, F129, F130, F132, F142, F143,
+F144 and F148, each with its proof steps in steps\03_bader_next.md.
+
+BUILT, NOT MERGED: F147, long runs kept from slowing, branch fix-F147, stopped under Q148 B, Q155.
+
+KNOWN ISSUES: T6-R-WPFBOX, a caption less window of Navisworks as the tool's window closed in set 09. F149-R1, the
+pictures' guard stops a run only once every test of the group has run. T6-R-ZEROCLASHES, T6-R-MIRRORWORDS and
+T6-R-TREEREMOVED, three log lines that read wrong. T5-R-OLDKEY, his 22.0 key reading an older copy after a restart.
+The box Skip clash when models sit off shared coordinates starts ticked, so 1A02MM's clash is skipped unless it is
+unticked. Each person's Clash Detective display settings decide the look of the pictures. The branches fix-Q150,
+fix-F145 and fix-F149 stay on GitHub, their deletion refused by Claude Code's auto mode classifier.
+
+What comes next: Bader installs the zip on his desktop PC and runs his own folder through the tool's window. Waves 4
+and 5, the speed loop, F147 and F150 wait for his word.
+
+## 2026-10-12 The loop, turn 6, F146 the renumber answers while it renames, written by the lead
+
+Branch fix-F146 off main, parked on 2026-10-11 by Bader's word to change nothing in the tool until he answered
+Q150, renamed from F145 when he gave that number to his picture choice, main 493ecdb taken in.
+
+What was done:
+- ImageRenumbering.Apply hands a said every picture checked, moved aside and renamed, and the engine passes Tick
+  and a PROGRESS line through it, so the window can answer while 2931 pictures are renamed, which waits for a
+  run to show. A said that throws is named once and the renaming goes on
+- Attempt 2 on the reviewer's and the breaker's points: the words of how far a step has got are one Core rule
+  the harvest and the renumber share, and a holding name an earlier, cut off renaming left is taken out before
+  the move onto it, where the move threw and rolled the group back every week after. That case is read off
+  the code and a test, not seen in a run
+- Proved here: the solution builds with 0 warnings and 0 errors, and Core tests 2862 passed, 0 failed, 0
+  skipped on main 493ecdb and 2867 passed, 0 failed, 0 skipped after
+
+What remains: the merge, and 1A02MM's fast check, steps 646 to 648 of steps\03_bader_next.md.
+
+Known bugs: the put back after a move that throws is not pumped and says nothing while it runs, so on that rare
+path the window can freeze again. A modal box opened from the window during a pump, a Browse button or Close,
+pauses the renaming, as it pauses the harvest since F143. A pictures folder within 7 characters of the path
+limit would take the final names and refuse the holding ones. Two moves sharing one source path would clash,
+the breaker's conditional case, which no path builds since each picture's path is set from its own test and
+clash number. F149, merged as 207 before this, writes every picture under its final name, so in a run
+that goes as planned the renumber renames none, and main 99bae1d was taken in with F145 and F149.
+
+What comes next: the speed loop of Bader's order of 2026-10-12.
+
 ## 2026-10-12 The loop, turn 6, F149 pictures taken in the report's order, attempt 2 of two, written by the developer as the lead's delegate
 
 Bader's order of 2026-10-12 to fix the slowest step. Branch fix-F149 off fix-F145 at 8aa6273, attempt 1
@@ -264,6 +339,40 @@ steps\03_bader_next.md. That run proves the 47 or fails them, and it measures F1
 Known bugs: rows F141-R1 to F141-R3 of steps\tracker.csv.
 
 What comes next: 1A02MM again from set 07, then attempt 2 on F141-R1 only if the views of one clash still fail.
+
+## 2026-10-11 The loop, turn 6, the plan after the usage limit: the proof runs of 1A02MM and 1A04PK from a fresh set 06
+
+Bader's message CONTINUE THE LOOP, 11 OCT 2026, AFTER THE USAGE LIMIT. Written at 14:05 before any edit,
+by the lead, on the records branch fix-T6-runs-1011, today's one records pull request, Q143.
+
+What was read before the plan: Roamer none at 13:57. The keep-awake, process 18216, alive since 09:23. His
+22.0 key exported at 14:01 reads line for line equal to the backup run.ps1 took at 13:19 before set 05's
+run of C04, so nothing was put back. fix-F140 at fcd3228 equals origin, its worktree clean, no pull request,
+parked as it is. Main is 4bc4c83, installed in place at 13:05. Set 05's pair ran 31 s and 58 s, the clash
+skipped by the coordinates rule on 1A02MM's EL and ST, 2,823 km from the reference on the sites LTB2 and
+Internal, a real offset in the files and not a misreading, so that run is the coordinates rule's proof.
+
+The plan, in order:
+
+1. The installed stamp read back as main's commit. Main is installed again only if it moved
+2. A fresh copy, tools\loop\prepare-copy.ps1 -Set 06, since set 05 refuses a second copy and its item1
+   evidence folders hold files
+3. 1A02MM then 1A04PK, run.ps1 -Mode Run -Set 06 -Item 1, the viewpoints box ticked as F114 left it, and
+   -Untick SkipClashOffCoordinates, F126's switch, since with the box ticked the clash never runs on these
+   files and nothing past the clash can be proved. This departs from the item 5 brief's NO -Untick, which
+   was written before the rule was seen skipping, and matches set 04's baseline, which ran before the rule
+4. Each run waited on by Q83's two clocks, read by the log-reader, timed against 2 h 12 min for 1A02MM and
+   the hung run for 1A04PK, and each merged fix marked proven or failed with its line: the views by team,
+   the mirror rule, Generic Models, the coordinates rule, the Coverage sheet, the XML corrections, the
+   workbook, the run log, the sets, the clash counts and the pictures
+5. The evidence masked and committed here, the findings in set 03's shape, the rows a run proves set to
+   proven by a run
+6. A fault the team would see fixed on its own fix branch, two attempts, one reviewer, a breaker only on
+   alignment, sets, clash counts, mirrors and views, then that building run again from a fresh set 07
+7. F140 prepared on its branch, no team zip until Bader writes make the team package, then waves 4 and 5
+
+What waits for the local machine: everything above runs on it. Core test counts are not changed by this
+entry, which holds no code.
 
 ## 2026-10-11 The loop, turn 6, F127 the add-in half with the Coverage sheet in the internal workbook, Q146 answered B, row F127-R2, attempt 1 of two, written by the developer as the lead's delegate
 

@@ -1,0 +1,231 @@
+﻿time	seconds	group	step	event	name	number	text
+19:59:58.334	20.581	1A04PK	DECIDE	step started	DECIDE	0	
+19:59:58.338	20.585	1A04PK	DECIDE	census before	models	0	
+19:59:58.338	20.585	1A04PK	DECIDE	census before	sets	0	
+19:59:58.338	20.585	1A04PK	DECIDE	census before	tests	0	
+19:59:58.338	20.586	1A04PK	DECIDE	census before	results	0	
+19:59:58.339	20.586	1A04PK	DECIDE	census before	views	0	
+19:59:58.362	20.609	1A04PK		census after	models	0	
+19:59:58.362	20.609	1A04PK		census after	sets	0	
+19:59:58.362	20.609	1A04PK		census after	tests	0	
+19:59:58.362	20.610	1A04PK		census after	results	0	
+19:59:58.363	20.610	1A04PK		census after	views	0	
+19:59:58.366	20.614	1A04PK		step finished	DECIDE	0.027	First run
+19:59:58.383	20.630	1A04PK	APPEND	step started	APPEND	0	
+19:59:58.385	20.632	1A04PK	APPEND	census before	models	0	
+19:59:58.385	20.632	1A04PK	APPEND	census before	sets	0	
+19:59:58.385	20.632	1A04PK	APPEND	census before	tests	0	
+19:59:58.385	20.632	1A04PK	APPEND	census before	results	0	
+19:59:58.386	20.633	1A04PK	APPEND	census before	views	0	
+20:00:00.003	22.250	1A04PK	APPEND	appended	APPEND	21582228	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\07\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc
+20:00:00.986	23.233	1A04PK	APPEND	appended	APPEND	107281275	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\07\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc
+20:00:01.558	23.806	1A04PK	APPEND	appended	APPEND	24705684	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\07\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc
+20:00:01.784	24.032	1A04PK	APPEND	appended	APPEND	2177136	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\07\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc
+20:00:01.953	24.201	1A04PK	APPEND	appended	APPEND	490559	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\07\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc
+20:00:02.159	24.407	1A04PK	APPEND	appended	APPEND	3014645	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\07\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc
+20:00:02.414	24.662	1A04PK	APPEND	appended	APPEND	4501778	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\07\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc
+20:00:02.782	25.029	1A04PK	APPEND	appended	APPEND	13793539	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\07\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc
+20:00:02.986	25.234	1A04PK	APPEND	appended	APPEND	1175415	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\07\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc
+20:00:03.182	25.429	1A04PK	APPEND	appended	APPEND	136241	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\07\\NMFed\\NWC\\C04\\1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc
+20:00:03.199	25.447	1A04PK		census after	models	10	
+20:00:03.201	25.448	1A04PK		census after	sets	0	
+20:00:03.201	25.448	1A04PK		census after	tests	0	
+20:00:03.201	25.448	1A04PK		census after	results	0	
+20:00:03.201	25.448	1A04PK		census after	views	105	
+20:00:03.204	25.451	1A04PK		step finished	APPEND	4.817	10 of 10 appended
+20:00:03.206	25.453	1A04PK	NWF SAVE	step started	NWF SAVE	0	
+20:00:03.207	25.454	1A04PK	NWF SAVE	census before	models	10	
+20:00:03.207	25.454	1A04PK	NWF SAVE	census before	sets	0	
+20:00:03.207	25.454	1A04PK	NWF SAVE	census before	tests	0	
+20:00:03.207	25.455	1A04PK	NWF SAVE	census before	results	0	
+20:00:03.208	25.455	1A04PK	NWF SAVE	census before	views	105	
+20:00:04.397	26.645	1A04PK	NWF SAVE	written	NWF	4743	C:\\Users\\p003653k\\AppData\\Local\\NwcFederatorLoop\\runs\\07\\NMFed\\NWF\\C04\\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf
+20:00:04.399	26.647	1A04PK		census after	models	10	
+20:00:04.400	26.647	1A04PK		census after	sets	0	
+20:00:04.400	26.648	1A04PK		census after	tests	0	
+20:00:04.400	26.648	1A04PK		census after	results	0	
+20:00:04.400	26.648	1A04PK		census after	views	105	
+20:00:04.402	26.650	1A04PK		step finished	NWF SAVE	1.194	saved 4743 bytes
+20:00:04.405	26.653	1A04PK	UNITS	step started	UNITS	0	
+20:00:04.408	26.656	1A04PK	UNITS	census before	models	10	
+20:00:04.408	26.656	1A04PK	UNITS	census before	sets	0	
+20:00:04.408	26.656	1A04PK	UNITS	census before	tests	0	
+20:00:04.408	26.657	1A04PK	UNITS	census before	results	0	
+20:00:04.410	26.657	1A04PK	UNITS	census before	views	105	
+20:00:04.897	27.145	1A04PK		census after	models	10	
+20:00:04.897	27.145	1A04PK		census after	sets	0	
+20:00:04.897	27.145	1A04PK		census after	tests	0	
+20:00:04.898	27.145	1A04PK		census after	results	0	
+20:00:04.898	27.146	1A04PK		census after	views	105	
+20:00:04.899	27.147	1A04PK		step finished	UNITS	0.492	the document was asked for Meters
+20:00:04.958	27.205	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc	685385.01	IRPS-SharedCoordinate
+20:00:04.958	27.206	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc	687385.01	IP3_Shared_Location
+20:00:04.959	27.206	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc	686285.01	16-S01
+20:00:04.959	27.206	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc	686285.01	16-S01
+20:00:04.959	27.206	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc	683024.01	IRR INFRA-05
+20:00:04.959	27.207	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc	685435.01	MECH_IRPS1_CHLORINATION
+20:00:04.960	27.207	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc	678205.01	IRR SITE -03
+20:00:04.960	27.207	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc	686285.01	16-S01
+20:00:04.960	27.207	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc	685435.01	IPS-A(1)
+20:00:04.960	27.208	1A04PK		model placement	1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc	682485.01	Internal
+20:00:06.846	29.093	1A04PK		model export	1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc	6057	elements 6057   with a workset 6057   worksets 3   element id 100%
+20:00:06.846	29.094	1A04PK		model export	1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc	6515	elements 6515   with a workset 6515   worksets 11   element id 100%
+20:00:06.846	29.094	1A04PK		model export	1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc	12127	elements 12127   with a workset 12127   worksets 1   element id 100%
+20:00:06.847	29.094	1A04PK		model export	1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc	2409	elements 2409   with a workset 2409   worksets 3   element id 100%
+20:00:06.847	29.094	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc	80	elements 80   with a workset 80   worksets 1   element id 100%
+20:00:06.847	29.095	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc	277	elements 277   with a workset 277   worksets 2   element id 100%
+20:00:06.847	29.095	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc	869	elements 869   with a workset 869   worksets 2   element id 100%
+20:00:06.847	29.095	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc	5372	elements 5372   with a workset 5372   worksets 3   element id 100%
+20:00:06.847	29.095	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc	1381	elements 1381   with a workset 1381   worksets 2   element id 100%
+20:00:06.848	29.095	1A04PK		model export	1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc	11	elements 11   with a workset 11   worksets 2   element id 100%
+20:00:06.848	29.096	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc	3	AR-EXTERIOR | +LINK-FP-IRRIGATION PUMPING STATION | AR-INTERIOR
+20:00:06.849	29.096	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc	11	EV-Containment | EL-Containment | EL-Lightning Protection | EV-IT | EL-Power | EL-Electrical Equipment | EL-Lighting | EL-Fire alarm | 00-EL-Levels Grids | EV-Cctv system | EV-Access Control
+20:00:06.849	29.096	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc	1	FF-Fire Fighting
+20:00:06.849	29.097	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc	3	ME-Ductwork | ME-PIPING | PL-Drainage
+20:00:06.849	29.097	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc	1	ME-Piping
+20:00:06.849	29.097	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc	2	ME-Piping | ME-Equipment
+20:00:06.849	29.097	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc	2	ME-Piping | ME-Equipment
+20:00:06.850	29.098	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc	3	PL-Domestic Water | PL-Drainage | PUMP ROOM
+20:00:06.850	29.098	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc	2	ST-SUP | ST-SUB
+20:00:06.851	29.098	1A04PK		model worksets	1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc	2	STR-SUB STRUCTURE | ST-SUB
+20:00:06.879	29.127	1A04PK	SETS	step started	SETS	0	
+20:00:06.880	29.128	1A04PK	SETS	census before	models	10	
+20:00:06.880	29.128	1A04PK	SETS	census before	sets	0	
+20:00:06.880	29.128	1A04PK	SETS	census before	tests	0	
+20:00:06.880	29.128	1A04PK	SETS	census before	results	0	
+20:00:06.880	29.129	1A04PK	SETS	census before	views	105	
+20:00:17.405	39.653	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-AR-MOD-000001	0	items in 1A04PK
+20:00:17.405	39.653	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-EL-MOD-000001	0	items in 1A04PK
+20:00:17.406	39.653	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-FP-MOD-000001	3	items in 1A04PK
+20:00:17.406	39.653	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-HV-MOD-000001	0	items in 1A04PK
+20:00:17.406	39.654	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000001	0	items in 1A04PK
+20:00:17.406	39.654	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000002	0	items in 1A04PK
+20:00:17.406	39.654	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000003	0	items in 1A04PK
+20:00:17.407	39.654	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ME-MOD-000004	0	items in 1A04PK
+20:00:17.407	39.655	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ST-MOD-000001	528	items in 1A04PK
+20:00:17.407	39.655	1A04PK	SETS	generic models	1104-PAR-1A04PK-ZZZ-ST-MOD-000002	3	items in 1A04PK
+20:00:17.411	39.658	1A04PK		census after	models	10	
+20:00:17.411	39.658	1A04PK		census after	sets	71	
+20:00:17.411	39.659	1A04PK		census after	tests	0	
+20:00:17.411	39.659	1A04PK		census after	results	0	
+20:00:17.412	39.659	1A04PK		census after	views	105	
+20:00:17.413	39.660	1A04PK		step finished	SETS	10.531	61 created (39 finding items, 22 at zero), 0 already there.. Generic Models: 10 created (3 finding items, 7 at zero), 0 already there.
+20:00:17.569	39.817	1A04PK	TESTS CREATE	step started	TESTS CREATE	0	
+20:00:17.570	39.818	1A04PK	TESTS CREATE	census before	models	10	
+20:00:17.570	39.819	1A04PK	TESTS CREATE	census before	sets	71	
+20:00:17.571	39.819	1A04PK	TESTS CREATE	census before	tests	0	
+20:00:17.571	39.819	1A04PK	TESTS CREATE	census before	results	0	
+20:00:17.571	39.819	1A04PK	TESTS CREATE	census before	views	105	
+20:00:17.627	39.875	1A04PK	TESTS CREATE	test created	BLD-AR-Stairs-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+20:00:17.651	39.899	1A04PK		census after	models	10	
+20:00:17.652	39.900	1A04PK		census after	sets	71	
+20:00:17.652	39.900	1A04PK		census after	tests	1	
+20:00:17.652	39.900	1A04PK		census after	results	0	
+20:00:17.652	39.900	1A04PK		census after	views	105	
+20:00:17.654	39.902	1A04PK		step finished	TESTS CREATE	0.082	BLD-AR-Stairs-vs-BLD-AR-Floors
+20:00:17.657	39.904	1A04PK	TESTS RUN	step started	TESTS RUN	0	
+20:00:17.658	39.906	1A04PK	TESTS RUN	census before	models	10	
+20:00:17.658	39.906	1A04PK	TESTS RUN	census before	sets	71	
+20:00:17.659	39.906	1A04PK	TESTS RUN	census before	tests	1	
+20:00:17.659	39.906	1A04PK	TESTS RUN	census before	results	0	
+20:00:17.659	39.907	1A04PK	TESTS RUN	census before	views	105	
+20:00:17.773	40.021	1A04PK		census after	models	10	
+20:00:17.773	40.021	1A04PK		census after	sets	71	
+20:00:17.773	40.021	1A04PK		census after	tests	1	
+20:00:17.773	40.021	1A04PK		census after	results	7	
+20:00:17.774	40.021	1A04PK		census after	views	105	
+20:00:17.775	40.023	1A04PK		step finished	TESTS RUN	0.115	BLD-AR-Stairs-vs-BLD-AR-Floors
+20:00:17.779	40.027	1A04PK	HARVEST	step started	HARVEST	0	
+20:00:17.780	40.028	1A04PK	HARVEST	census before	models	10	
+20:00:17.781	40.029	1A04PK	HARVEST	census before	sets	71	
+20:00:17.781	40.029	1A04PK	HARVEST	census before	tests	1	
+20:00:17.781	40.029	1A04PK	HARVEST	census before	results	7	
+20:00:17.782	40.030	1A04PK	HARVEST	census before	views	105	
+20:00:17.819	40.066	1A04PK	IMAGES	step started	IMAGES	0	
+20:00:17.820	40.068	1A04PK	IMAGES	census before	models	10	
+20:00:17.821	40.068	1A04PK	IMAGES	census before	sets	71	
+20:00:17.821	40.068	1A04PK	IMAGES	census before	tests	1	
+20:00:17.821	40.069	1A04PK	IMAGES	census before	results	7	
+20:00:17.821	40.069	1A04PK	IMAGES	census before	views	105	
+20:00:18.122	40.370	1A04PK	HARVEST	census after	models	10	
+20:00:18.122	40.370	1A04PK	HARVEST	census after	sets	71	
+20:00:18.123	40.371	1A04PK	HARVEST	census after	tests	1	
+20:00:18.123	40.371	1A04PK	HARVEST	census after	results	7	
+20:00:18.123	40.371	1A04PK	HARVEST	census after	views	105	
+20:00:18.125	40.373	1A04PK	HARVEST	step finished	IMAGES	0.304	BLD-AR-Stairs-vs-BLD-AR-Floors
+20:00:19.740	41.988	1A04PK		census after	models	10	
+20:00:19.740	41.989	1A04PK		census after	sets	71	
+20:00:19.741	41.989	1A04PK		census after	tests	1	
+20:00:19.741	41.989	1A04PK		census after	results	7	
+20:00:19.741	41.990	1A04PK		census after	views	105	
+20:00:19.743	41.991	1A04PK		step finished	HARVEST	1.961	BLD-AR-Stairs-vs-BLD-AR-Floors
+20:00:19.745	41.993	1A04PK		rows for the workbook	BLD-AR-Stairs-vs-BLD-AR-Floors	7	7 in the document
+20:00:19.748	41.996	1A04PK		test found clashes	BLD-AR-Stairs-vs-BLD-AR-Floors	7	ran and found clashes
+20:00:19.789	42.037	1A04PK	TESTS CREATE	test created	BLD-AR-Ramps-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+20:01:06.096	88.345	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	4	HARVEST row 4 of 97
+20:01:38.665	120.915	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	9	HARVEST row 9 of 97
+20:02:17.424	159.673	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	14	HARVEST row 14 of 97
+20:02:51.553	193.803	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	19	HARVEST row 19 of 97
+20:03:30.471	232.722	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	22	HARVEST row 22 of 97
+20:04:07.682	269.933	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	25	HARVEST row 25 of 97
+20:04:38.877	301.128	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	29	HARVEST row 29 of 97
+20:05:13.069	335.321	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	32	HARVEST row 32 of 97
+20:05:43.592	365.843	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	36	HARVEST row 36 of 97
+20:06:17.314	399.566	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	40	HARVEST row 40 of 97
+20:06:50.701	432.953	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	45	HARVEST row 45 of 97
+20:07:21.215	463.467	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	49	HARVEST row 49 of 97
+20:07:56.202	498.454	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	56	HARVEST row 56 of 97
+20:08:33.420	535.672	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	60	HARVEST row 60 of 97
+20:09:05.162	567.414	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	63	HARVEST row 63 of 97
+20:09:35.186	597.438	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	69	HARVEST row 69 of 97
+20:10:07.591	629.843	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	75	HARVEST row 75 of 97
+20:10:41.577	663.829	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	80	HARVEST row 80 of 97
+20:11:21.766	704.017	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	83	HARVEST row 83 of 97
+20:11:53.038	735.289	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	86	HARVEST row 86 of 97
+20:12:29.259	771.510	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	89	HARVEST row 89 of 97
+20:13:06.635	808.886	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	92	HARVEST row 92 of 97
+20:13:47.713	849.965	1A04PK	HARVEST	progress	BLD-AR-Ramps-vs-BLD-AR-Floors	95	HARVEST row 95 of 97
+20:14:11.215	873.467	1A04PK		rows for the workbook	BLD-AR-Ramps-vs-BLD-AR-Floors	97	97 in the document
+20:14:11.218	873.469	1A04PK		test found clashes	BLD-AR-Ramps-vs-BLD-AR-Floors	97	ran and found clashes
+20:14:11.245	873.497	1A04PK	TESTS CREATE	test created	BLD-AR-Ramps-vs-BLD-AR-Stairs	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+20:14:11.359	873.610	1A04PK		rows for the workbook	BLD-AR-Ramps-vs-BLD-AR-Stairs	0	0 in the document
+20:14:11.361	873.612	1A04PK		test passed	BLD-AR-Ramps-vs-BLD-AR-Stairs	0	ran and found nothing
+20:14:11.387	873.639	1A04PK	TESTS CREATE	test created	BLD-AR-Walls-vs-BLD-AR-Floors	0.082	hard_conservative, 0.0820209974 ft is 0.0820209974 ft
+20:14:44.876	907.127	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	5	HARVEST row 5 of 1556
+20:15:15.845	938.097	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	13	HARVEST row 13 of 1556
+20:15:49.711	971.962	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	24	HARVEST row 24 of 1556
+20:16:20.953	1003.204	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	31	HARVEST row 31 of 1556
+20:16:53.116	1035.367	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	37	HARVEST row 37 of 1556
+20:17:28.952	1071.203	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	51	HARVEST row 51 of 1556
+20:18:03.085	1105.336	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	63	HARVEST row 63 of 1556
+20:18:37.138	1139.388	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	75	HARVEST row 75 of 1556
+20:19:09.185	1171.436	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	78	HARVEST row 78 of 1556
+20:19:40.634	1202.884	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	84	HARVEST row 84 of 1556
+20:20:14.297	1236.548	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	96	HARVEST row 96 of 1556
+20:20:44.815	1267.065	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	103	HARVEST row 103 of 1556
+20:21:16.280	1298.531	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	107	HARVEST row 107 of 1556
+20:21:47.138	1329.388	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	115	HARVEST row 115 of 1556
+20:22:23.198	1365.448	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	122	HARVEST row 122 of 1556
+20:22:55.814	1398.065	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	125	HARVEST row 125 of 1556
+20:23:26.655	1428.905	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	127	HARVEST row 127 of 1556
+20:23:59.440	1461.691	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	132	HARVEST row 132 of 1556
+20:24:32.483	1494.732	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	138	HARVEST row 138 of 1556
+20:25:02.915	1525.165	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	142	HARVEST row 142 of 1556
+20:25:34.094	1556.344	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	156	HARVEST row 156 of 1556
+20:26:11.158	1593.408	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	162	HARVEST row 162 of 1556
+20:26:47.237	1629.487	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	169	HARVEST row 169 of 1556
+20:27:19.925	1662.175	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	194	HARVEST row 194 of 1556
+20:27:54.961	1697.212	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	202	HARVEST row 202 of 1556
+20:28:28.625	1730.874	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	214	HARVEST row 214 of 1556
+20:29:00.895	1763.144	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	228	HARVEST row 228 of 1556
+20:29:41.932	1804.180	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	235	HARVEST row 235 of 1556
+20:30:14.588	1836.837	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	240	HARVEST row 240 of 1556
+20:30:46.606	1868.855	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	249	HARVEST row 249 of 1556
+20:31:17.503	1899.752	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	257	HARVEST row 257 of 1556
+20:31:55.638	1937.886	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	265	HARVEST row 265 of 1556
+20:32:34.215	1976.463	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	270	HARVEST row 270 of 1556
+20:33:09.904	2012.152	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	274	HARVEST row 274 of 1556
+20:33:41.097	2043.345	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	280	HARVEST row 280 of 1556
+20:34:14.034	2076.283	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	287	HARVEST row 287 of 1556
+20:34:45.425	2107.676	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	294	HARVEST row 294 of 1556
+20:35:19.653	2141.901	1A04PK	HARVEST	progress	BLD-AR-Walls-vs-BLD-AR-Floors	305	HARVEST row 305 of 1556

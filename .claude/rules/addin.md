@@ -659,6 +659,47 @@ well as to pass.
   filled load path with one whole add-in beside it gets that one put back, PUT BACK, and
   any other leftover refuses with each named, because which one a person keeps is theirs
   to say, F109, FR-079
+- What install.ps1 and the team install both hold to is written once, in
+  build\install-common.ps1, which each dot-sources: the place the add-in goes, the line
+  telling a person to start Navisworks, the 15 files of a whole bundle, the stamp and its
+  parts, the Roamer refusal in one set of words, the walk from %APPDATA% down, and
+  RemoveTree with LinksAt, so no junction or link is ever removed through by either. A copy
+  of one of these in another script is a bug. INSTALL.md and INSTALL-TEAM.txt carry the
+  start line for a person, and the Core test that no logo ships reads the file list there,
+  F140
+- The team zip is made by build\package.ps1 alone, and only when Bader has written "make
+  the team package", Q149. It refuses with one REFUSED line and writes no zip on a checkout
+  not on main, a git status that prints anything, a build of the solution with
+  --no-incremental that fails, a stamp reading +edits or naming another commit, an output
+  folder inside the repo, a zip of that name already there, or any end of install.ps1 but
+  exit 0. A zip copied into the folder by a run that then fails is deleted, and where it
+  cannot be the FAILED line says it was left and where. It stages and checks the bundle by running install.ps1 -SkipBuild against a
+  throwaway APPDATA, so a bundle is assembled and checked one way, zips what that run
+  installed, and names the zip and VERSION.txt from the stamp read off the built add-in,
+  never typed. A zip is never committed, F140
+- The team install, build\team-install.ps1 started by the two .cmd files of build\team,
+  copies and never renames, because the rename of the installed bundle was refused on this
+  machine with no Navisworks running on 2026-10-01 while a copy over it worked. It makes the
+  installed folder hold exactly the zip's files, reads every file back by its SHA256, and
+  takes the internet mark off what it wrote, since Roamer.exe.config names no
+  loadFromRemoteSources, read on 2026-10-11, and whether Navisworks loads a marked DLL is
+  UNKNOWN. The version installed before goes to ParsonsNwcFederator.bundle.previous, the
+  one backup, but only when it is whole, not the very build being installed, and not left
+  by a run that stopped part way, which ParsonsNwcFederator.bundle.copying beside it marks.
+  An install that fails part way puts the kept one back and reads it back. Where nothing was
+  kept, a whole add-in of the same build is left where it is and read again against the zip,
+  and only a load path that held nothing, part of an add-in or what a stopped run left is
+  cleared. Put back first copies the add-in installed aside to
+  ParsonsNwcFederator.bundle.before-put-back and reads it back, then copies the kept one in.
+  A put back that fails part way copies the one set aside back and reads it back, so the load
+  path holds part of two versions only where both the put back and that copy back fail, and
+  the line then says where each whole one is. The kept one stays at .previous. It ends DONE 0,
+  FAILED 1 or REFUSED 2, each written once at the top of the script and carried word for
+  word by INSTALL-TEAM.txt, and a FAILED line says what each folder holds. Whether Navisworks
+  loads a folder whose name does not end in .bundle, such as .previous, is UNKNOWN, F140
+- The .cmd files of the team zip check that team-install.ps1 and install-common.ps1 are
+  beside them before they start PowerShell, and refuse in plain words when either is not,
+  as when a file is started from inside the zip, F140
 - The NWF is looked at ONCE MORE after the NWD is published, because the NWD is published
   last and the NWF is the only record of what has been fixed. The line says intact and the
   size, or CHANGED with both sizes, or GONE. Nothing was checking this, so a run that did
@@ -797,6 +838,12 @@ well as to pass.
   penetration and by design passes, off by default, have no piece yet, row F143-R1. The runner's
   ProgressSettings is ClashRunner.Progress at its defaults, 30 s each, and it hands the render's to
   ClashImages
+- THE RENUMBER ANSWERS WHILE IT RENAMES, F146: FederationEngine.RenumberThePictures hands
+  ImageRenumbering.Apply a said that renders the live line through Tick, whose callback lets the window
+  answer about once a second, and writes a PROGRESS line with its .tsv row through StepProgress once the
+  runner's ProgressSettings says one is due, null settings writing none. Sets 07 to 09 read 1A02MM's window
+  32 s not answering in RENUMBER. Since F149 every picture is written under its final name, so in a run
+  that goes as planned the renumber checks every picture and renames none, and this paces the check
 - ONLY THE TEST'S MODELS SHOWN FOR ITS PICTURES, F145, Bader's choice of Q150 on 2026-10-11, measured
   first, scan.md 5z-zc: 7.76 s a picture with every model shown and 1.78 s with only the test's on the
   first 20 clashes of 1A04PK's Walls-vs-Floors, the export's layout kept. TestModelsShown is one for the

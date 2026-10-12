@@ -49,3 +49,8 @@ tools/tracker/fixtures/csv-lone-cr/** -text
 # The fixtures of the tracker check whose one fault is a Windows-1252 byte that is not UTF-8.
 # Their bytes are the fixture, so no checkout may convert them. F133.
 tools/tracker/fixtures/*-not-utf8/** -text
+
+# The team zip's two .cmd files and its page, build\team, F140. cmd.exe reads a batch file
+# with LF alone wrongly round a label, and a person on the team opens the page in Notepad, so
+# they are CRLF on every checkout and package.ps1 copies them into the zip as they are.
+build/team/* text eol=crlf

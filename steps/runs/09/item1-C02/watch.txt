@@ -1,0 +1,23 @@
+01:13:32.326  t+1.4s  watchdog started
+01:13:42.093  t+11.1s  Roamer pid 15264 seen with no readable start time, looked at again at the next pass
+01:13:54.886  t+23.9s  new process Roamer pid 15264, parent 1976 svchost.exe, started 01:13:41.728, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+01:13:54.939  t+24.0s  Roamer 15264 visible top level windows: none
+01:14:37.962  t+67.0s  new process AdskLicensingAgent pid 32724, parent 15264 Roamer.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: no
+01:14:45.799  t+74.8s  new process AdskLicensingAgent pid 49076, parent 15264 Roamer.exe, started 01:14:28.056, command line holds the word embedding or automation: no
+01:14:53.801  t+82.8s  Roamer 15264 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+01:14:59.136  t+88.2s  Roamer 15264 visible top level windows: none
+01:15:10.969  t+100.0s  Roamer 15264 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+01:15:12.055  t+101.1s  Roamer 15264 visible top level windows: none
+01:15:13.173  t+102.2s  Roamer 15264 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+01:15:13.742  t+102.8s  Roamer 15264 visible top level windows: [HwndWrapper[Roamer.exe;;b9e8a935-0bce-417b-b4ac-4e6493e6bac5]] "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+01:15:33.721  t+122.7s  Roamer 15264 visible top level windows: [#32770] "Parsons NWC Federator" text: "OK" "Cancel" "This run federates 1 group.    First run: 1. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus XML: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is brought up to date without clearing it, and a shape that cannot be is cleared and rebuilt with its saved tests kept. Only known once each NWF is opened.    Nothing is open at the moment, so nothing is lost.    Carry on?" | [HwndWrapper[Roamer.exe;;b9e8a935-0bce-417b-b4ac-4e6493e6bac5]] "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+01:15:34.803  t+123.8s  Roamer 15264 visible top level windows: [HwndWrapper[Roamer.exe;;b9e8a935-0bce-417b-b4ac-4e6493e6bac5]] "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+01:15:35.349  t+124.4s  Roamer 15264 visible top level windows: [HwndWrapper[Roamer.exe;;b9e8a935-0bce-417b-b4ac-4e6493e6bac5]] "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+01:15:36.417  t+125.4s  Roamer 15264 visible top level windows: [HwndWrapper[Roamer.exe;;b9e8a935-0bce-417b-b4ac-4e6493e6bac5]] "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+01:15:36.959  t+126.0s  Roamer 15264 visible top level windows: [HwndWrapper[Roamer.exe;;b9e8a935-0bce-417b-b4ac-4e6493e6bac5]] "Parsons NWC Federator   [1.0.0.0 cdf8d4ed built 2026-10-11 21:39:41]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+01:20:16.402  t+405.4s  Roamer 15264 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+01:20:17.477  t+406.5s  Roamer 15264 visible top level windows: [HwndWrapper[Roamer.exe;;e3fd01b2-70dd-44e8-aff3-521fd54ec23b]] "" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+01:20:32.003  t+421.0s  Roamer 15264 visible top level windows: [HwndWrapper[Roamer.exe;;e3fd01b2-70dd-44e8-aff3-521fd54ec23b]] "" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+01:20:32.542  t+421.6s  Roamer 15264 visible top level windows: none
+01:20:39.430  t+428.5s  Roamer 15264 has exited
+01:23:19.604  t+588.6s  watchdog stopped

@@ -1,0 +1,8 @@
+the full XML: C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, sha256 94897667ADB466AE97A29B8DF80B17B7FE52AC701F7F5FF174B975308471EBC9, 1830 test elements in its text, 1830 tests read by ReadPicked, 61 sets, 59 mirror pairs by the product's rule
+the first 50 tests hold no mirror pair, so the first pair in the XML's order is kept too, so the mirror rule runs: BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors, place 1541, and its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Floors, place 1712
+the copy: C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\first50\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml, 52 tests kept, the first 50 and 2 for the mirrors, sha256 5DD5A42F803731827136A1BF26A58CF26DA2D424DE873242866D5CB37F67E1AE, read back equal to the bytes written True, 1342334 characters of test elements taken out and every other one the full file's
+copied beside it: 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, read back equal True
+copied beside it: 1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt, read back equal True
+read back through ReadPicked: 52 tests, the order and names kept True, 61 sets against 61 True, 1 mirror pair(s), the pairs of the full file among the tests kept True
+  pair: BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors | BLD-EL-Telephone Devices-vs-BLD-AR-Floors
+the full XML after: sha256 94897667ADB466AE97A29B8DF80B17B7FE52AC701F7F5FF174B975308471EBC9, unchanged True

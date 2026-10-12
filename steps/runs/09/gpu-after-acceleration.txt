@@ -1,0 +1,111 @@
+01:06:53  sampler started, waiting for one Roamer
+01:06:58  Roamer pid 46548
+01:07:00  adapter local memory luid_0x00000000_0x00040536_phys_0_part_0 940 MB
+01:07:00  adapter local memory luid_0x00000000_0x000408fe_phys_0_part_0 0 MB
+01:07:00  adapter local memory luid_0x00000000_0x00040969_phys_0 0 MB
+01:07:01  adapter dedicated memory luid_0x00000000_0x00040536_phys_0 0 MB
+01:07:01  adapter dedicated memory luid_0x00000000_0x000408fe_phys_0 0 MB
+01:07:01  adapter dedicated memory luid_0x00000000_0x00040969_phys_0 0 MB
+01:07:01  cpu 2.4 s, engines busy: none, dedicated: none
+01:07:02  cpu 3.3 s, engines busy: none, dedicated: none
+01:07:03  cpu 4.3 s, engines busy: none, dedicated: none
+01:07:04  cpu 5.3 s, engines busy: none, dedicated: none
+01:07:05  cpu 6.3 s, engines busy: none, dedicated: none
+01:07:06  cpu 7.2 s, engines busy: none, dedicated: none
+01:07:07  cpu 8.2 s, engines busy: none, dedicated: none
+01:07:08  cpu 9.2 s, engines busy: none, dedicated: none
+01:07:09  cpu 10.1 s, engines busy: none, dedicated: none
+01:07:10  cpu 11.2 s, engines busy: none, dedicated: none
+01:07:11  cpu 12.2 s, engines busy: none, dedicated: none
+01:07:12  cpu 13.2 s, engines busy: none, dedicated: none
+01:07:13  cpu 14 s, engines busy: none, dedicated: none
+01:07:14  cpu 14 s, engines busy: none, dedicated: none
+01:07:15  cpu 14.7 s, engines busy: none, dedicated: none
+01:07:16  cpu 15.5 s, engines busy: none, dedicated: none
+01:07:17  cpu 16.3 s, engines busy: none, dedicated: none
+01:07:18  cpu 16.7 s, engines busy: none, dedicated: none
+01:07:19  cpu 17.5 s, engines busy: none, dedicated: none
+01:07:20  cpu 18.4 s, engines busy: none, dedicated: none
+01:07:21  cpu 19.3 s, engines busy: none, dedicated: none
+01:07:22  cpu 20.4 s, engines busy: none, dedicated: none
+01:07:23  cpu 21.4 s, engines busy: none, dedicated: none
+01:07:24  cpu 22.4 s, engines busy: none, dedicated: none
+01:07:25  cpu 23.3 s, engines busy: none, dedicated: none
+01:07:26  cpu 24.3 s, engines busy: none, dedicated: none
+01:07:27  cpu 25.2 s, engines busy: none, dedicated: none
+01:07:28  cpu 26.2 s, engines busy: none, dedicated: none
+01:07:29  cpu 27.2 s, engines busy: none, dedicated: none
+01:07:31  cpu 28.2 s, engines busy: none, dedicated: none
+01:07:32  cpu 29.2 s, engines busy: none, dedicated: none
+01:07:33  cpu 30.2 s, engines busy: none, dedicated: none
+01:07:34  cpu 31.2 s, engines busy: none, dedicated: none
+01:07:35  cpu 32.2 s, engines busy: none, dedicated: none
+01:07:36  cpu 33.2 s, engines busy: none, dedicated: none
+01:07:37  cpu 34.2 s, engines busy: none, dedicated: none
+01:07:38  cpu 35.2 s, engines busy: none, dedicated: none
+01:07:39  cpu 36.2 s, engines busy: none, dedicated: none
+01:07:40  cpu 37.2 s, engines busy: none, dedicated: none
+01:07:41  cpu 38.1 s, engines busy: none, dedicated: none
+01:07:42  cpu 39.2 s, engines busy: none, dedicated: none
+01:07:43  cpu 41 s, engines busy: none, dedicated: none
+01:07:44  cpu 42.2 s, engines busy: none, dedicated: none
+01:07:45  cpu 43.5 s, engines busy: none, dedicated: none
+01:07:46  cpu 45 s, engines busy: none, dedicated: none
+01:07:47  cpu 46 s, engines busy: none, dedicated: none
+01:07:48  cpu 46.9 s, engines busy: none, dedicated: none
+01:07:49  cpu 47.8 s, engines busy: none, dedicated: none
+01:07:50  cpu 49.3 s, engines busy: none, dedicated: none
+01:07:51  cpu 50.4 s, engines busy: none, dedicated: none
+01:07:52  cpu 51.4 s, engines busy: none, dedicated: none
+01:07:53  cpu 52.4 s, engines busy: none, dedicated: none
+01:07:54  cpu 53.4 s, engines busy: none, dedicated: none
+01:07:55  cpu 54.2 s, engines busy: none, dedicated: none
+01:07:56  cpu 55 s, engines busy: none, dedicated: none
+01:07:57  cpu 55.9 s, engines busy: none, dedicated: none
+01:07:58  cpu 56.8 s, engines busy: none, dedicated: none
+01:07:59  cpu 58 s, engines busy: none, dedicated: none
+01:08:00  cpu 59 s, engines busy: none, dedicated: none
+01:08:01  cpu 60 s, engines busy: none, dedicated: none
+01:08:02  cpu 61 s, engines busy: none, dedicated: none
+01:08:03  cpu 62 s, engines busy: none, dedicated: none
+01:08:04  cpu 63 s, engines busy: none, dedicated: none
+01:08:05  cpu 64 s, engines busy: none, dedicated: none
+01:08:06  cpu 65 s, engines busy: none, dedicated: none
+01:08:07  cpu 65.9 s, engines busy: none, dedicated: none
+01:08:08  cpu 66.9 s, engines busy: none, dedicated: none
+01:08:09  cpu 68 s, engines busy: none, dedicated: none
+01:08:10  cpu 68.9 s, engines busy: none, dedicated: none
+01:08:11  cpu 70 s, engines busy: none, dedicated: none
+01:08:12  cpu 70.9 s, engines busy: none, dedicated: none
+01:08:15  cpu 73.7 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=8MB
+01:08:18  cpu 74.8 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:21  cpu 74.8 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:24  cpu 74.8 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:28  cpu 74.8 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:31  cpu 74.9 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:34  cpu 74.9 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:37  cpu 74.9 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:40  cpu 74.9 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:43  cpu 74.9 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:46  cpu 74.9 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:49  cpu 74.9 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:52  cpu 75.2 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:55  cpu 76.1 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:08:58  cpu 76.1 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:09:01  cpu 78.3 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=20MB
+01:09:04  cpu 82.1 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=28MB
+01:09:07  cpu 85.2 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=28MB
+01:09:10  cpu 88.3 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=28MB
+01:09:13  cpu 94.1 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=28MB
+01:09:16  cpu 100.7 s, engines busy: luid_0x00000000_0x00040969_phys_0_eng_0_engtype_3d=21.7%, dedicated: luid_0x00000000_0x00040969_phys_0=131MB
+01:09:19  cpu 105.3 s, engines busy: luid_0x00000000_0x00040969_phys_0_eng_0_engtype_3d=20.2%, dedicated: luid_0x00000000_0x00040969_phys_0=239MB
+01:09:22  cpu 109.4 s, engines busy: luid_0x00000000_0x00040969_phys_0_eng_0_engtype_3d=26.9%, dedicated: luid_0x00000000_0x00040969_phys_0=316MB
+01:09:25  cpu 113.3 s, engines busy: luid_0x00000000_0x00040969_phys_0_eng_0_engtype_3d=23%, dedicated: luid_0x00000000_0x00040969_phys_0=328MB
+01:09:28  cpu 116.8 s, engines busy: luid_0x00000000_0x00040969_phys_0_eng_0_engtype_3d=17.9%, dedicated: luid_0x00000000_0x00040969_phys_0=328MB
+01:09:31  cpu 120.4 s, engines busy: luid_0x00000000_0x00040969_phys_0_eng_0_engtype_3d=15.1%, dedicated: luid_0x00000000_0x00040969_phys_0=368MB
+01:09:34  cpu 124 s, engines busy: luid_0x00000000_0x00040969_phys_0_eng_0_engtype_3d=28.6%, dedicated: luid_0x00000000_0x00040969_phys_0=369MB
+01:09:37  cpu 127.3 s, engines busy: luid_0x00000000_0x00040969_phys_0_eng_0_engtype_3d=22.5%, dedicated: luid_0x00000000_0x00040969_phys_0=253MB
+01:09:41  cpu 129.9 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=253MB
+01:09:44  cpu 132.6 s, engines busy: none, dedicated: luid_0x00000000_0x00040969_phys_0=253MB
+01:09:46  a sample could not be read, The data in one of the performance counter samples is not valid. View the Status property for each PerformanceCounterSample object to make sure it contains valid data.
+01:09:47  sampler ended

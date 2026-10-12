@@ -1,0 +1,67 @@
+Parsons NWC Federator, how to install it and run it
+
+This is an add-in for Navisworks Manage 2025. It installs for you alone, in your own Windows
+profile, and needs no admin rights. VERSION.txt in this folder says which version this zip holds.
+
+
+To install
+
+1. Close Navisworks Manage 2025.
+2. Right click the zip and choose Extract All, then open the folder that makes. A file opened
+   inside the zip without extracting it does not work.
+3. Double click "Install Parsons NWC Federator.cmd". A black window opens. If Windows asks
+   whether to run it, choose Run.
+4. Read the last line before "Press any key to continue". It starts with one of three words:
+     DONE:     It worked. The line says which version is installed and where, and where the version you had before is kept.
+     FAILED:   It stopped part way. The line says what is in each folder and what to do.
+     REFUSED:  Nothing was changed. The line says why and what to do.
+   Then press any key to close the window.
+5. Start Navisworks Manage 2025 and look on the Tool Add-ins tab for Parsons NWC Federator.
+
+Installing a newer zip the same way replaces the add-in and keeps the version you had before.
+
+
+To run it
+
+1. With Navisworks Manage 2025 open, click Parsons NWC Federator on the Tool Add-ins tab. The
+   tool's window opens.
+2. For pictures that show only the two clashing items, open Clash Detective, go to the Results
+   tab, open Display Settings, and under Isolation choose Hide Other. Navisworks keeps this.
+3. In the tool's window, on step 1 Source, press Browse beside Folder and pick the NWC folder.
+4. Press Scan. The files found are listed, with any that cannot be read and why.
+5. On step 2 Grouping, tick in the Run column each building to run.
+6. On step 3 Outputs, press Browse beside NWF folder and pick where the NWF files go.
+7. Press Browse beside NWD folder and pick where the NWD files go.
+8. Leave the Excel folder empty, and the workbooks go in a folder called Clash Reports beside
+   the NWF folder. Or press Browse beside Excel folder and pick another.
+9. On step 4 Clash, press Browse beside Clash XML and pick the clash XML. For buildings that
+   already have their NWF, leave it empty and the tests saved in each NWF are run.
+10. Where a building's models sit off shared coordinates, its clash is skipped. To clash it
+    anyway, untick "Skip clash when models sit off shared coordinates" on step 4.
+11. Press Run. The window says which building it is on, and when the run is done.
+
+
+Where it writes
+
+  NWF and NWD files   the NWF folder and the NWD folder of step 3
+  Workbooks           the Excel folder, or Clash Reports beside the NWF folder, with each
+                      workbook's pictures in the folder beside it
+  The run's log       press Open log folder at the bottom of the window. Each run writes a
+                      .log file and a .tsv file of the same name, in
+                      %LOCALAPPDATA%\ParsonsNwcFederator\logs
+
+
+If something goes wrong
+
+1. Press Open log folder and send Bader the newest .log file and the .tsv beside it.
+2. Take a screenshot of the whole tool window and send it too.
+
+
+To go back to the version you had before
+
+1. Close Navisworks Manage 2025.
+2. Double click "Put back the previous version.cmd" in the folder of any extracted zip.
+3. Read the last line before "Press any key to continue". DONE: says which version is back.
+
+If any install window ends on FAILED, or on red text that starts with none of the three words,
+take a screenshot of the whole window and send it to Bader.
