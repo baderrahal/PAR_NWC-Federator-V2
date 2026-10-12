@@ -784,9 +784,88 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
     0. Today's, every model shown, 1024 by 1024: 7.76 s a picture, 3 h 21 min. Run again last, 8.00 s, 3 h 27 min
     1. Only the models of the test shown: 1.78 s a picture, 46 min. MATCHES the export's layout: the same 1024 square, camera, grid label at the bottom left, red and green, and the other nine models' items gone from behind
     2. Shaded on top of 1: 2.16 s a picture, 56 min. THE SAME PICTURE AS 1: today's pictures are already drawn Shaded with a headlight, read off the view and off each clash's own viewpoint, so there was no full rendering to turn off, and the pictures differ from 1's by 0.01 of 255 a pixel, below the 0.05 between today's run twice. The seconds are 1's within the spread of one setting
-    3. 800 by 600 on top of 1: 1.70 s a picture, 43 min, NO SAVING SHOWN over 1, its 0.08 s inside the 0.24 to 0.38 s by which one setting measured twice differs. DOES NOT MATCH: a picture four by three, where all 131 clash pictures of the accepted report are 1024 by 1024
+    3. 800 by 600 on top of 1: 1.70 s a picture, 43 min, NO SAVING SHOWN over 1, its 0.08 s inside the 0.24 to 0.38 s by which one setting measured twice differs. DOES NOT MATCH: a picture four by three, where all 129 clash pictures of the two accepted reports are 1024 by 1024
     4. All three: 2.00 s a picture, 51 min. DOES NOT MATCH, for the reason of 3
 
     Each total is the mean of the first 20 rows times 1556, and rows 1 to 8 ran about three times slower than rows 9 to 20 in every setting, so only the step from today's to 1 is far outside the spread. The folders, 20 pictures each with times.csv beside them: %LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261011-222207\pictures\0-today, 1-models, 2-shaded, 3-800x600, 4-all-three and 5-today-again. Which do you want, 1, 2, 3, 4, or today's as it is?
 
+    Answer: Bader, 2026-10-11, his message headed BADER'S ANSWER, 11 OCT 2026, Q150, AND THE PICTURE SPEED WORK, item 1, written whole as item 152. In his words: Q150, BADER'S CHOICE: only the models of the test shown, every other model hidden once before that test's pictures and put back after, at today's square size and today's style. Build it as F145 in two attempts at most, with a reviewer and a breaker. The lead's note: F145, pull request 204.
+
+151. From the loop, turn 6, 2026-10-12, Bader's message headed BADER'S ANSWER, 11 OCT 2026, Q150, AND THE PICTURE SPEED WORK, item 4, and his order of 12 Oct headed KEEP FIXING THE TIME UNTIL IT IS AT ITS MINIMUM, its first item, the 150 times gap. A PICTURE OF THE TWO CLASHING ITEMS ALONE IS FASTER, AND IT IS LIKELY WHAT YOUR PC WRITES, BUT IT IS NOT THE EXPORT'S LOOK. Measured on the same 20 clashes of BLD-AR-Walls-vs-BLD-AR-Floors of 1A04PK, with hardware acceleration on since 01:06, docs\history\scan.md 5z-zd and 5z-ze. The mean seconds of a picture, render and save, and that times 1556:
+
+    - Today's, every model shown: 0.168 s, 4 min, files about 559 KB
+    - F145's rule, your choice of Q150, only the test's models shown: 0.120 s, 3 min
+    - Clash Detective's Hide Other on, through the tool's same call: 0.067 s, 104 s, and 0.059 s with F145's rule. Files 48 KB, the mean your PC wrote
+    - View.GenerateImage with only the clash's two items shown, which you asked for: 0.098 s, 152 s, files 50 to 52 KB
+
+    The look. With Hide Other on, and through GenerateImage, a picture keeps the 1024 square, the camera, the grid label and the red and green, and shows the two items alone, nothing around them. The pictures of the two accepted reports in samples\client-report, two of them viewed, show other items ghosted around the two, Navisworks' default of Dim Other with transparent dimming, so neither matches the export. Every Clash Detective display value on this laptop reads never set, so its defaults apply. Your PC's mean of 48 KB is what Hide Other writes here, so your PC may have it ticked, under Clash Detective, Results, Display Settings, Isolation. That setting is each user's own, so each of the 27 machines writes the look its own setting gives. GenerateImage gives the look of Hide Other, slower and through new code.
+
+    The folders, 20 pictures each with times.csv beside them, under %LOCALAPPDATA%\NwcFederatorLoop\probes: picture-speed-20261012-034509\pictures for Hide Other, picture-speed-20261012-030837\pictures\7-generate-two-items for GenerateImage, and picture-speed-20261012-010654\pictures for today's and F145's rule with acceleration on.
+
+    A. The export's look, F145's rule, 0.120 s a picture. The lead's choice, since the target of 0.2 s a picture is met with it
+    B. The two items alone through Hide Other, 0.06 s a picture, the tool setting it for its pictures and putting the user's value back after, if the API allows that, which is UNKNOWN until a probe reads it
+    C. The two items alone through GenerateImage, 0.098 s a picture, new code
+
+    Whichever look, the tool could set the display settings for its pictures and put each user's back after, so all 27 machines write the same pictures, as your order of 12 Oct asks for the size. Whether the API allows it is UNKNOWN. Two things only you can read: whether your PC has Hide Other ticked, and one picture it wrote. Nothing in the tool changes for this until you answer.
+
     Answer:
+
+152. From Bader, 2026-10-11 at about 22:55, his message headed BADER'S ANSWER, 11 OCT 2026, Q150, AND THE PICTURE SPEED WORK, not a question put to him but his answer to Q150 and his order. In his words:
+
+    BADER'S ANSWER, 11 OCT 2026, Q150, AND THE PICTURE SPEED WORK
+    Every clash keeps its own picture, as the native Clash Detective report does. The native Write Report cannot be called from the API, so the tool keeps drawing each picture. Measured on 20 clashes of BLD-AR-Walls-vs-BLD-AR-Floors: today 7.76 s a picture, only the test's models shown 1.78 s with the export's layout kept, 800 by 600 1.70 s but not the export's square, shaded no change.
+    1. Q150, BADER'S CHOICE: only the models of the test shown, every other model hidden once before that test's pictures and put back after, at today's square size and today's style. Build it as F145 in two attempts at most, with a reviewer and a breaker.
+    2. KEEP LONG RUNS FROM SLOWING: dispose every picture, use jump cut camera changes, keep the undo stack from growing during the pictures, and between tests clear Navisworks' texture cache under %TEMP%\ogs when it passes 5 GB, logging its size before and after. All Navisworks calls stay on the main thread.
+    3. PROVE IT on the 50 test cut of 1A04PK: the seconds a picture, the group's total, the longest time the window did not answer, and the peak memory. Three lines to Bader.
+    4. THEN, WITHOUT HOLDING ANYTHING UP:
+       - Check, reading only, whether Roamer.exe runs on the discrete GPU or the integrated one, and which Navisworks graphics driver and graphics system are in use. Change nothing of Bader's without asking. One line to Bader.
+       - Read what TestsImageForResult does inside, from the installed SDK's reference and from what it changes in the document, and say where its time goes.
+       - Measure, on the same 20 clashes, hiding everything once per test and showing only each clash's two items for its picture, through View.GenerateImage. Save its 20 pictures in a folder of its own.
+       - If it gives under 1 s a picture with a look the client can accept, put it to Bader as Q151 with the numbers and the folder. Change nothing further until he answers.
+    5. ONE FULL 1A04PK RUN only when Bader says, after these.
+    The limits of Q143 hold. Everything else stays as it is.
+
+    Answer: Bader, 2026-10-11, as written above. The lead's notes. Item 1 is F145, pull request 204, and is written as Q150's answer. Item 2 is F147, not yet built. Every picture is already disposed, the call moves no camera of the view, and it adds no undo step, scan.md 5z-zd, and %TEMP%\ogs held no file after the runs. Item 3 waits for F145's merge. Item 4: the GPU, the driver and the system are read in scan.md 5z-zd. No SDK is installed and no Autodesk.Navisworks.Clash.xml lies beside the DLLs, so what the call does inside is read off the document around it, 5z-zd. The measurement is 5z-zd and 5z-ze, put to him as Q151. Item 5 waits for his word.
+
+153. From Bader, 2026-10-12 at about 00:42, his message headed BADER, 12 OCT 2026: KEEP FIXING THE TIME UNTIL IT IS AT ITS MINIMUM, not a question put to him but his order. In his words:
+
+    BADER, 12 OCT 2026: KEEP FIXING THE TIME UNTIL IT IS AT ITS MINIMUM
+    This includes and replaces the block headed WHY THE LAPTOP'S PICTURES ARE 150 TIMES SLOWER, if it was pasted.
+    WHAT WE KNOW
+    A separate test on Bader's desktop PC (i7-12700, 16 GB, Intel UHD 770, Autodesk graphics on the DirectX 11 hardware driver), with the same build cdf8d4ed and the same clashes, gave:
+    - 0.049 s a picture on 1A04PK, against 7.76 s on this laptop
+    - 1A02MM in 156 s, against 292 s here
+    - the longest the window did not answer: 0 s there, 32 s here
+    - the mean picture file: 48 KB there, 510 KB here, for the same clash
+    So the PC shows what is possible. The laptop is not just slower: something on it makes each picture far bigger and far slower.
+    THE TARGETS, ON THIS LAPTOP
+    1. A clash picture in 0.2 s or less.
+    2. 1A02MM, the whole group, in 3 minutes or less, with all its views.
+    3. The window never left not answering for more than 5 s.
+    4. The full 1A04PK in 45 minutes or less.
+    THE LOOP: keep going through these until every target is met
+    1. MEASURE: from the TIMING, PROGRESS and LIFE lines, give the seconds of every step of the last fast check. Write a SPEED table in steps\PROGRESS.md, one row per measurement: the date, the build, the picture seconds, the 1A02MM total, the longest freeze, and the step that took the most.
+    2. FIX THE SLOWEST STEP, in two attempts at most, with one reviewer, and a breaker for anything in the pictures or the harvest. The output stays the same, apart from Bader's choices: one picture per clash, and the client workbook's layout kept.
+    3. MEASURE AGAIN with the fast checks only: the same 20 clashes of BLD-AR-Walls-vs-BLD-AR-Floors, 1A02MM, and the 3 test cut of 1A04PK. Three lines in this tab, against the last row and the PC's numbers.
+    4. REPEAT from 1.
+    STOP only when every target is met, or when two fixes in a row each gain under 10 percent. Then write which step is left, why it cannot go lower, and what would be needed.
+    FIRST IN THE LOOP: THE 150 TIMES GAP
+    - Read, changing nothing yet:
+      - Navisworks Options, Interface, Display: the graphics system, the driver in use and the driver order, hardware acceleration and anti-aliasing, against the PC's
+      - which GPU Roamer.exe runs on, from Windows graphics settings and from Task Manager's GPU engine during one picture
+      - the screen the Navisworks window sits on, its resolution and Windows scaling, and the 3D view's size in pixels
+      - the pixel size of the pictures made here
+      - whether the screen was locked, off or remote while the pictures were made
+    - Name the cause in three lines in this tab.
+    - If the pictures follow the window's or the screen's size, give every clash picture a fixed size in the tool, the same on every PC, matching the pictures in the accepted client reports under samples, so Bader's team gets the same pictures on any machine.
+    - If the cause is a Navisworks graphics setting or the GPU Windows gives Roamer.exe, Bader allows the change: save the old value in the run's folder, change it, say exactly what changed in this tab, and put it back if it does not help.
+    ALSO IN ORDER
+    - F145, only the test's models shown, merged as Bader chose, since it still helps when drawing is slow.
+    - The full 1A04PK runs once, when the fast checks meet the targets and no Navisworks of Bader's is open. Its time is the fourth target.
+    THE RULES
+    - The limits of Q143 hold.
+    - Push the work in progress every 30 minutes, so a shutdown loses little.
+    - Every hour, three lines in this tab: what merged, the latest SPEED row, and the step now being fixed.
+    Everything else stays as it is.
+
+    Answer: Bader, 2026-10-12, as written above. The lead's notes. The cause was Navisworks' hardware acceleration, off, so every picture was drawn by Windows' renderer on the processor. With his leave it was switched on at 01:06, the old value kept in %LOCALAPPDATA%\NwcFederatorLoop\probes\gpu-fix-20261012, and it stays on since it helped, scan.md 5z-zd. The pictures do not follow the window's or the screen's size, every one 1024 by 1024 with the view at 902 by 367, so no fixed size was needed. The bigger files are Clash Detective's display settings, 5z-ze, put to him as Q151. The SPEED table is in steps\PROGRESS.md. F145 is pull request 204.
