@@ -18,19 +18,24 @@ What was done:
   Space makes the range of Core's ShiftRange and the Outputs summary is refreshed. Space with the box itself
   focused is left to the box
 - No Core change: the range is Core's ShiftRange, unchanged and tested by F130, and which key on which cell
-  reaches it is WPF's alone, so there is no Core test to fail first. Its proof is steps 698 to 704 of
+  reaches it is WPF's alone, so there is no Core test to fail first. Its proof is steps 698 to 711 of
   steps\03_bader_next.md, by hand
 - Proved here: the solution builds in Release with 0 warnings and 0 errors, turn6\f130c-build-after.txt, and
   0 warnings and 0 errors on main 80314b9 before, turn6\f120c-build-before.txt. Core tests 2921 passed, 0
   failed, 0 skipped before, turn6\f120c-tests-before.txt, and after, turn6\f130c-tests-after.txt, nothing in
   Core changed. check-locals and check-imports over src clean, f130c-checks.txt. Navisworks was not started
 
-What remains: the merge, and steps 698 to 704 of steps\03_bader_next.md on the C02 folder, by hand.
+What remains: the merge, and steps 698 to 711 of steps\03_bader_next.md on the C02 folder, by hand.
 
 Known bugs: none known. The step numbers follow main's 691, F118's merged as 210 and taken in here, and F120c's
 692 to 697, so the lead renumbers at the merge where another branch takes them first.
 
 What comes next: the lead's reading of the three branches of this order.
+
+THE READING, 2026-10-12 evening: the reviewer found the code sound and asked for the proof steps to hold one
+action each. They are split, 698 to 711, with the move to the Outputs step and the report as steps of their own.
+Main 9fd16d6 was merged in before the reading and the solution built in Release with 0 warnings and 0 errors,
+turn6\f130c-build-merged.txt. No file of Core or its tests changed, so the Core tests stand as on 80314b9
 
 ## 2026-10-12 F118 the workbook and report, the add-in pass, FR-036, F118-R3 and FR-041's count, on branch fix-F118c
 
