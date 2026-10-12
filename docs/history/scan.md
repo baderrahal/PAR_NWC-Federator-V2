@@ -8727,3 +8727,39 @@ run, with the views and F145's hiding, is not measured, since the probe ran only
 setting is per user, so each of the 27 machines draws its pictures by its own Clash Detective display
 settings, and whether the API lets the tool set them for the pictures alone is UNKNOWN. Q151 puts the
 look to Bader.
+
+## 5z-zf. CAN THE TOOL SET CLASH DETECTIVE'S HIDE OTHER FOR ITS OWN PICTURES, MEASURED 2026-10-12
+
+F150, Bader's answer to Q151 and his yes of 2026-10-12 to one short API test. 5z-ze showed the tool's
+own picture call follows Hide Other when the value is in the registry before Navisworks starts. The
+question here is whether the tool can set it inside a running Navisworks and put the user's value back.
+
+**READ OFF THE INSTALLED DLLS, no Navisworks started.** Autodesk.Navisworks.Api.dll holds
+`Autodesk.Navisworks.Api.Interop.LcUOption` with static `GetBoolean`, `TryGetBoolean(string, ref bool)`
+and `SetBoolean(string, bool)` on an option path, `LcUOptionLock` and `LcUOption.GetSet(path, lock)`,
+and `LcOpState.GetActiveInstance()`, static. Autodesk.Navisworks.Clash.dll holds
+`Interop.LcClClashDisplaySettings`, with `HideOther`, `DimOther` and `TransparentDimming` each with a
+getter and a setter, handed out only by `Interop.LcClClashResultHighlighter.DisplaySettings`, and the
+highlighter by its static `GetInstance(LcOpState)`. The highlighter also holds `MakeClashResultImage`.
+None of these is in the install's Autodesk.Navisworks.Api.xml, so each is undocumented.
+
+**THE TEST.** `tools\probes\PictureSpeed`, the new mode hideapi, the launcher sha256 now AA0D3FED, the
+guard unchanged. One Navisworks started by Automation on the copy of set 08's NWF of 1A04PK, the test
+BLD-AR-Walls-vs-BLD-AR-Floors made the tool's way, guard steps 2 to 6 passed, 36 registry values put
+back with 0 still differing. Hardware acceleration read Bader's "3 0", put back that morning, so a
+picture took about 12.5 s. The result is
+`tools\probes\PictureSpeed\picture-speed-hideapi-result-20261012.txt`, 219 lines, the machine name masked.
+
+- The option path `tools.clash.displaysettings.hide_other` reads False, and dim_other and
+  transparent_dimming read True, the same by the path and by the set under a lock.
+- `LcUOption.SetBoolean(tools.clash.displaysettings.hide_other, true)` returned True and the value
+  read True both ways. Set back to False it returned True and read False.
+- THE PICTURES DID NOT FOLLOW. The first three rows through `TestsImageForResult` averaged 547 KB with
+  the user's value, 547 KB with Hide Other set through the option, and 547 KB after the put back.
+- At the quit Navisworks wrote hide_other "3 0" into the registry, which the guard put back to "0".
+
+**WHAT IT MEANS.** An option set during the session does not reach the picture call, so Clash
+Detective reads its display settings into its highlighter at some point before. The highlighter's own
+`DisplaySettings` is the next way, read off the DLL and not run here, and F150 is built on it. Whether
+the picture call draws through that highlighter is UNKNOWN until the 1A02MM check after the wave shows
+picture files near 48 KB rather than about 550 KB.
