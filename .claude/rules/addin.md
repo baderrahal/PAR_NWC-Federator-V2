@@ -819,8 +819,9 @@ well as to pass.
   every cell of a row, its Grid Location and Level among them, is read with every model shown
 - EVERY PICTURE TAKEN ONCE EVERY TEST HAS RUN, IN THE REPORT'S ORDER, F149, Bader's order of 2026-10-12 to
   fix the slowest step: set 09's 1A02MM spent 39 s of 253 s in RENUMBER. The harvest reads rows only and
-  hides nothing. Run calls RenderThePicturesWaiting in a finally after MergeTheMirrors, whether or not a
-  merge was made, inside a step of its own, PICTURES, opened as the engine's InStep opens one, with
+  hides nothing. Run calls RenderThePicturesWaiting after MergeTheMirrors, whether or not a merge was made,
+  and where the merge threw, through RenderThePicturesAfterTheMergeThrew before the merge's error goes on
+  up. The pass runs inside a step of its own, PICTURES, opened as the engine's InStep opens one, with
   Live.StepStarted and one count of PROGRESS lines across the whole pass, `PROGRESS PICTURES`. It walks
   Core's PictureWalk over the rows the runner kept with their addresses, every row a harvest recorded
   whichever way it ended, while the views are handed the rows of a harvest that read its test whole, as
@@ -839,7 +840,8 @@ well as to pass.
   Run reads the guard when the pass ends, so the guard stops a run only once every test of the group has
   run, row F149-R1, and RunEach reads it once before a group's first test for a stop an earlier group's
   throw lost. A result is found again by its name read through ClashRow.NameOf, the rule the harvest
-  names a row by, so a result or a group with no display name is found again
+  names a row by. A result or a group with no display name is found again only at its recorded index and
+  only where nothing can have moved it, the pictures, which run before Compact, and the views refuse it
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
   core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
   stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and
