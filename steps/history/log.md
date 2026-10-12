@@ -28,7 +28,7 @@ was started, no probe was run and tools\loop, tools\probes and the guard were no
   point 2, the kept test of a failed mirror, and point 3, the read with no set tree, pinned by a test. N5, each
   UNKNOWN side by its whole locator. The proof steps one action each
 - The rules: core.md's TEAMS line bullet, its ONE VIEW PER CLASH TEST bullet and its ViewsInventory words,
-  addin.md's ONLY A TEST READ WHOLE GETS A VIEW words. Proof steps 664 to 678 of steps\03_bader_next.md
+  addin.md's ONLY A TEST READ WHOLE GETS A VIEW words. Proof steps 692 to 706 of steps\03_bader_next.md
 - Tests: 6 new. TeamMapTests.ASetWithNoNameIsSaidAsOneAndByItsFolders,
   TestViewPlanTests.TwoSetsOfOneNameAreToldApartByTheFoldersTheirLocatorHolds,
   EachUnknownSideOfOneSetNameIsNamedWithItsOwnReason and WithNoSetTreeALocatorReadsTheTeamItsSetNameReads,
@@ -43,7 +43,7 @@ was started, no probe was run and tools\loop, tools\probes and the guard were no
 
 ### What remains
 
-- The proof on the local machine, steps 664 to 678
+- The proof on the local machine, steps 692 to 706
 - FR-067 waits for the P15 probe scan.md 5z-w names, not answered
 - FR-181 of F131 stays in progress with no branch: naming a silent miss needs the count of items no set catches,
   which the COVERAGE block reads as UNKNOWN, not counted in this build. Set 09's TEAMS block of 1A04PK reads 23 of 25
@@ -57,6 +57,82 @@ was started, no probe was run and tools\loop, tools\probes and the guard were no
 ### What comes next
 
 - The reviewer and the breaker re-read attempt 2. The lead sets the rows to merged with 213 before merging
+
+## 2026-10-12 F118 the workbook and report, the add-in pass, FR-036, F118-R3 and FR-041's count, on branch fix-F118c
+
+Wave 2c of Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under the
+limits of Q143, the rows of steps\tracker.csv in area F118 that were open or in progress: FR-036,
+FR-041, F118 and F118-R3. Built in the worktree wt-f118c off main 80314b9.
+
+### What was done
+
+- FR-036, a silent wrong number in the workbook and the TOLERANCE counts. With a tolerance chosen
+  in the tool, a saved test set to it and then skipped kept the row the plan gave it, its old value
+  and origin Document, and a test created at it and skipped said the XML's value. Root cause:
+  src\Federator.Addin\Engine\ClashRunner.cs gives every row the plan's value when the report is
+  laid out, and only a test that runs is read off the document after. `ToleranceChoice.PutOn` in
+  Core gives the row the chosen value in the document's units and origin Tool, and the runner calls
+  it where it creates a test, sets the chosen value on a saved one or finds it already at it. Under
+  the default a row of a test that never ran keeps the plan's value, Bader's answer to Q54.
+  `ToleranceChoice.BlocksLine` said those blocks read off the picked file, which a chosen value and
+  a saved test read out of the document do not, and now points at the line below it
+- F118-R3, the clash workbook listed as written with last week's size. Root cause:
+  FederationEngine.WriteTheWorkbook called `RunLog.WriteFinished` after a save that threw, which
+  lists any file at the path, and then ran the WORKBOOK CHECK on that file. `RunLog.WriteThrew` in
+  Core records nothing, takes an entry of that path and kind off the list, returns minus one and
+  says whether a file of that name is at the path. The clash workbook and the internal workbook,
+  whose line F128 typed inline, both write through it, and the WORKBOOK CHECK is not run after a
+  throw, one line saying why
+- FR-041, empty Grid Location cells. The cause is UNKNOWN, a probe is outside this order, so it is
+  not fixed. Built: `ClashReport.GridLocationLine`, one GRID line a group after the UNITS line
+  counting the clash rows with an empty cell, with the heights of the empty and the filled rows,
+  which is what FR-041 names as the first thing to measure
+- The harvest gives an id off the GUID fallback `ClientFormat.GuidIdLabel` where it typed the
+  label, the last of F118's NOT BUILT list
+- Tests: 12 new and 1 changed, in ToleranceChoiceTests, WrittenFileAuthorshipTests and the new
+  GridLocationLineTests. Against the three Core rules stubbed to the old behaviour, WriteThrew
+  calling WriteFinished, PutOn doing nothing, the old BlocksLine and no GRID line, 11 failed and
+  30 passed of the 41 in those three fixtures, the 2 new ones passing being the edges a stub already
+  meets, a row under the default and a report with no clash row
+- Core tests on this machine: 2921 passed, 0 failed, 0 skipped before, on main 80314b9. 2933
+  passed, 0 failed, 0 skipped after
+- dotnet build ParsonsNwcFederator.sln -c Release, rebuilt from nothing: Federator.Core,
+  Federator.Core.Tests and Federator.Addin, 0 warnings and 0 errors. check-locals and
+  check-imports clean
+- The rules in .claude\rules\core.md, three new bullets and the FR-040 bullet's last line, and the
+  internal workbook bullet of addin.md
+
+### What remains
+
+- FR-041's cause. The GRID lines of the next run give the heights of the empty rows against the
+  filled ones, and a probe printing ClosestIntersection for those points, if Bader allows one,
+  says why the grid gives nothing
+- FR-189, FR-044 and FR-045, the same fault as F118-R3 for the NWD and the NWF, are area F119 and
+  untouched. `RunLog.WriteThrew` is there for them
+
+### Known bugs
+
+- None found beyond the rows above. A saved test whose chosen value could not be set, the copy
+  not a clash test or the edit throwing, keeps the plan's value on its row, which is what it holds
+  where the plan read it off the document and the XML's value where the plan is the XML, as Q54
+  has it for every row of a test that never ran
+
+### What comes next
+
+1. The lead calls the reviewer and the breaker on fix-F118c and merges once Actions is green
+2. Bader works steps 664 to 691 of steps\03_bader_next.md and sends the GRID lines
+
+Attempt 2, on the reviewer's reading of pull request 210, CHANGES with one blocking point. Proof
+steps 665 to 668 expected every test of 1A04MS's second run to read chosen in the tool and
+0.050m, and since F77 ClashRunner never creates a test whose side finds nothing, so those rows
+keep the XML's value and origin File and never reach PutOn. The steps now expect the chosen value
+on the tests the first run's CLASH line counts as created and the XML's 25 mm on the rest, split
+to one action a step, 664 to 691, and the run proof of FR-036 in steps\fix-round.md says the same.
+The WORKBOOK step's finish says nothing written after a save that threw, as the internal
+workbook's does, where it said nothing on disk under a line saying a file is at the path. The
+GRID line is written through Numbered and has a .tsv row. The test count above read 13 new where
+it is 12, 2921 to 2933. A sentence of addin.md ran into the next. Main had not moved, origin/main
+merged as already up to date.
 
 ## 2026-10-12 The loop, turn 6 closes on Bader's order WRAP UP NOW, written by the lead
 
