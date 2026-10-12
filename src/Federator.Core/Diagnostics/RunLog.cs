@@ -1711,6 +1711,28 @@ namespace Federator.Core.Diagnostics
         }
 
         /// <summary>
+        /// An output whose save threw. A save goes straight onto the final path, so the file
+        /// there may be an earlier run's, untouched, or one this save cut short, and which is
+        /// UNKNOWN. So nothing is recorded as written, an entry of this path and kind already
+        /// on the list leaves it, and the line says what is at the path. Returns minus one,
+        /// the size of a file this run did not write. F118-R3, the clash workbook listed as
+        /// written with last week's size, and F128's breaker's finding on the internal one.
+        /// </summary>
+        public long WriteThrew(string kind, string path)
+        {
+            lock (gate)
+            {
+                written.RemoveAll(seen => string.Equals(seen.Path, path, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(seen.Kind, kind, StringComparison.Ordinal));
+            }
+
+            Line(kind.PadRight(8) + " NOT WRITTEN  " + path + (SizeOnDisk(path) >= 0
+                ? "  its save threw, and a file of that name is at the path. Whether it is an earlier run's file untouched or one this run cut short is UNKNOWN, so open it knowing that"
+                : "  its save threw, and no file is at the path"));
+            return -1;
+        }
+
+        /// <summary>
         /// Checks the file is really there, reads its real size, records it for the result
         /// block and logs it. Returns minus one when the file is not on disk, and in that
         /// case nothing is recorded as written.
