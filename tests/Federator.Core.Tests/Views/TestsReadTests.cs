@@ -158,5 +158,44 @@ namespace Federator.Core.Tests
             Assert.That(read.WholeNames, Is.EqualTo(new[] { "Mixed" }));
             Assert.That(read.NotWhole(), Is.Empty);
         }
+
+        /// <summary>
+        /// Row F114-K38, the reviewer's D1. A test whose harvest threw after reading only closed
+        /// rows has no in scope row on the report, so it read whole and its old view went while its
+        /// open clashes were never harvested. A test the clash step skipped as failed is not read
+        /// whole, whichever way it was met, and says why. A test skipped for another reason, and a
+        /// failed one with no row on the report, are left as they were.
+        /// </summary>
+        [Test]
+        public void ATestTheClashStepFailedIsNotWholeEvenWithOnlyClosedRows()
+        {
+            ClashRunOutcome clash = new ClashRunOutcome();
+            clash.AddSkipped("Closed only", ClashSkipReason.Failed, "IOException: the harvest threw");
+            clash.AddSkipped("Not on the report", ClashSkipReason.Failed, "IOException: creating it threw");
+            clash.AddSkipped("No locator", ClashSkipReason.NoLocator, "a side carried no locator");
+
+            TestsRead read = NewAndActive();
+            read.Met("Closed only");
+            read.ClashStepFailed(clash.Skipped);
+            read.Met("No locator");
+            read.Met("Whole");
+            read.RowRead("Whole", false);
+
+            Assert.That(read.IsWhole("Closed only"), Is.False);
+            Assert.That(read.WholeNames, Is.EqualTo(new[] { "No locator", "Whole" }));
+            IList<KeyValuePair<string, string>> notWhole = read.NotWhole();
+            Assert.That(notWhole.Count, Is.EqualTo(1));
+            Assert.That(notWhole[0].Key, Is.EqualTo("Closed only"));
+            Assert.That(notWhole[0].Value, Does.Contain("the clash step failed on it, so its open clashes may never have reached the report"));
+            Assert.That(notWhole[0].Value, Does.Contain("its views of earlier runs are kept"));
+            Assert.That(read.IsWhole("Not on the report"), Is.False);
+
+            TestsRead before = NewAndActive();
+            before.ClashStepFailed(clash.Skipped);
+            before.Met("Closed only");
+
+            Assert.That(before.IsWhole("Closed only"), Is.False, "marked whether it is met before or after");
+            Assert.That(() => before.ClashStepFailed(null), Throws.Nothing);
+        }
     }
 }

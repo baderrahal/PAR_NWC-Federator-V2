@@ -19,6 +19,11 @@ namespace Federator.Core.Views
     /// recorded, never makes its test not read, C1. A test the clash step ran with no row on the
     /// report is read whole with no row, N2, so its old views go as no longer needed.
     ///
+    /// A test the clash step skipped as FAILED is never read whole, row F114-K38, the reviewer's
+    /// D1: its harvest may have thrown after reading only closed rows, so the report holds no
+    /// open clash of it while the document may. A failed test with no row on the report is never
+    /// met and stays as it was, its old views kept.
+    ///
     /// Only a whole test gets a view and loses its old views. A test read in part or not at all
     /// is NOT READ: no view, its old views kept, counted failed with why, so the group is not
     /// DONE on it. A test whose in scope rows are ALL result groups, F3, the lead's decision,
@@ -30,6 +35,7 @@ namespace Federator.Core.Views
         private readonly HashSet<ClashStatus> inScope;
         private readonly List<string> order = new List<string>();
         private readonly Dictionary<string, Entry> entries = new Dictionary<string, Entry>(StringComparer.Ordinal);
+        private readonly HashSet<string> clashStepFailed = new HashSet<string>(StringComparer.Ordinal);
 
         /// <summary>A record of the tests read, judged against the views' statuses.</summary>
         public TestsRead(IEnumerable<ClashStatus> inScope)
@@ -57,6 +63,27 @@ namespace Federator.Core.Views
                 if (!string.IsNullOrEmpty(test))
                 {
                     EntryOf(test);
+                }
+            }
+        }
+
+        /// <summary>Every test the clash step skipped as failed is not read whole, met before or after, F114-K38.</summary>
+        public void ClashStepFailed(IEnumerable<SkippedClashTest> skipped)
+        {
+            foreach (SkippedClashTest test in skipped ?? new SkippedClashTest[0])
+            {
+                if (test == null || test.Kind != ClashSkipReason.Failed || string.IsNullOrEmpty(test.Name))
+                {
+                    continue;
+                }
+
+                clashStepFailed.Add(test.Name);
+
+                Entry entry;
+
+                if (entries.TryGetValue(test.Name, out entry))
+                {
+                    entry.ClashStepFailed = true;
                 }
             }
         }
@@ -173,6 +200,7 @@ namespace Federator.Core.Views
             if (!entries.TryGetValue(name, out entry))
             {
                 entry = new Entry();
+                entry.ClashStepFailed = clashStepFailed.Contains(name);
                 entries.Add(name, entry);
                 order.Add(name);
             }
@@ -188,10 +216,11 @@ namespace Federator.Core.Views
             public int RowsWithNoAddress;
             public bool NotAtAddress;
             public bool Threw;
+            public bool ClashStepFailed;
 
             public bool Whole
             {
-                get { return !NotAtAddress && !Threw && RowsNotFound == 0 && RowsWithNoAddress == 0; }
+                get { return !NotAtAddress && !Threw && !ClashStepFailed && RowsNotFound == 0 && RowsWithNoAddress == 0; }
             }
 
             public bool OnlyGroups
@@ -202,6 +231,11 @@ namespace Federator.Core.Views
             public string Why()
             {
                 List<string> why = new List<string>();
+
+                if (ClashStepFailed)
+                {
+                    why.Add("the clash step failed on it, so its open clashes may never have reached the report");
+                }
 
                 if (NotAtAddress)
                 {

@@ -511,6 +511,50 @@ namespace Federator.Core.Tests
             Assert.That(plan.UnknownSets, Is.EqualTo(new[] { "BLD-Devices", "BLD-Signs" }));
         }
 
+        /// <summary>
+        /// Row F114-K30. A side is the test's locator whole, its folders and its set name, so two
+        /// sets of one name in two folders naming two teams are told apart by the folders the
+        /// locator holds, each reading the team its own folder names. A locator naming a path no
+        /// set of the tree is at reads by the name alone, as before, UNKNOWN with why.
+        /// </summary>
+        [Test]
+        public void TwoSetsOfOneNameAreToldApartByTheFoldersTheirLocatorHolds()
+        {
+            ViewTeams teams = new ViewTeams(
+                TeamMapTests.MapOf(TeamMapTests.BadersMap),
+                new[] { Set("BLD-Devices", "Electrical"), Set("BLD-Devices", "Mechanical", "Mechanical-HVAC") },
+                GroupCodes,
+                new ViewpointSettings());
+            const string Electrical = "lcop_selection_set_tree/Electrical/BLD-Devices";
+            const string Mechanical = "lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-Devices";
+            const string Nowhere = "lcop_selection_set_tree/Security/BLD-Devices";
+
+            Assert.That(teams.TeamOfSet(Electrical), Is.EqualTo("Electrical"));
+            Assert.That(teams.TeamOfSet(Mechanical), Is.EqualTo("Mechanical"));
+            Assert.That(teams.UnknownWords(Electrical), Is.Null);
+            Assert.That(teams.TeamOfSet("BLD-Devices"), Is.EqualTo("UNKNOWN"), "a set name alone still reads both sets");
+            Assert.That(teams.TeamOfSet(Nowhere), Is.EqualTo("UNKNOWN"));
+            Assert.That(
+                teams.UnknownWords(Nowhere),
+                Is.EqualTo("BLD-Devices" + NoCode + "its 2 sets of that name in the clash XML's set tree give the teams Electrical, Mechanical"));
+
+            TestViewPlanOutcome plan = TestViewPlan.For(
+                new[]
+                {
+                    Clash("T", "Clash1", Electrical, "lcop_selection_set_tree/Structure/BLD-ST-Floors"),
+                    Clash("U", "Clash1", Mechanical, "lcop_selection_set_tree/Structure/BLD-ST-Floors"),
+                    Clash("V", "Clash1", Nowhere, "lcop_selection_set_tree/Structure/BLD-ST-Floors")
+                },
+                teams,
+                null,
+                new ViewpointSettings());
+
+            Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Structure vs Mechanical"));
+            Assert.That(plan.Views[1].Pair.Folder, Is.EqualTo("Structure vs Electrical"));
+            Assert.That(plan.Views[2].Pair.Folder, Is.EqualTo("Structure vs UNKNOWN"));
+            Assert.That(plan.UnknownSets, Is.EqualTo(new[] { "BLD-Devices" }), "named by its set name, never the locator");
+        }
+
         private static SelectionSetDefinition Set(string name, params string[] folders)
         {
             return new SelectionSetDefinition(

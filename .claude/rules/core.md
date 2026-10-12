@@ -406,7 +406,9 @@ and 6 does not read as broken.
   `TeamMapSettings.UnknownTeam`, UNKNOWN, the one word `ViewpointSettings.DefaultUnknownDiscipline`
   reads. NAMED IN THE LOG: `TeamMap.SetLines` gives a TEAMS line for each set of the picked XML
   whose name carries no code of the map, with its team or UNKNOWN, said after the map's own
-  lines, and none where the map maps no team
+  lines, and none where the map maps no team. A set with no name is said as one, by the
+  folders above it or at the root, as one no test side can name, so no team is read for it,
+  row F114-K31, and never as a line naming no set
 - A MAP THAT CANNOT BE READ IS SAID, NEVER HALF READ AND NEVER A THROW. A line it does not
   know, a code on two teams or twice on one line, a team named twice, a team with no code,
   an empty name or code, a code holding any space or a character a person cannot see, a team
@@ -1732,8 +1734,12 @@ and 6 does not read as broken.
   never copied. A SIDE'S TEAM IS `TeamMap.TeamOfSet`, the one rule the TEAMS lines read,
   with the clash XML's sets handed to `ViewTeams`: the team of the code its set name
   carries, and where it carries none the team a folder above it names, so BLD-Security
-  Devices is Electrical in both. A side is named by its set name alone, so two sets of one
-  name whose folders give two teams read UNKNOWN. A SET WITH NO NAME NEVER THROWS, F114
+  Devices is Electrical in both. A SIDE IS THE TEST'S LOCATOR WHOLE, row F114-K30,
+  `ViewClash.LeftSide` off `TestReport.LeftLocator`: where a set of the tree is at exactly that
+  path, `SelectionSetDefinition.Path`, the side reads the folders of the sets at that path
+  alone, so two sets of one name in two folders each read the team their own folder names.
+  Where none is, or the side is a set name alone, every set of that name is read, and two
+  whose folders give two teams read UNKNOWN, named by the set name and never the locator. A SET WITH NO NAME NEVER THROWS, F114
   attempt 8: the reader gives a set or a set folder with no name attribute a null name, no
   side can name it, so `ViewTeams` leaves it out, and a side with no set name reads UNKNOWN,
   as `ExportCheck` and `CodeOf` treat a set with no name. A side reading UNKNOWN is named in

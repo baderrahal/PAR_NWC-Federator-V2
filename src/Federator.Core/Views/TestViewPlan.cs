@@ -101,11 +101,11 @@ namespace Federator.Core.Views
                 }
 
                 ViewClash first = all[0];
-                TeamPair pair = teams.PairOf(first.LeftSet, first.RightSet);
+                TeamPair pair = teams.PairOf(first.LeftSide, first.RightSide);
 
                 outcome.Pair(test, pair);
-                NameAnUnknownSide(outcome, teams, first.LeftSet);
-                NameAnUnknownSide(outcome, teams, first.RightSet);
+                NameAnUnknownSide(outcome, teams, first.LeftSide);
+                NameAnUnknownSide(outcome, teams, first.RightSide);
 
                 List<ViewClash> inPair = new List<ViewClash>();
                 List<ViewClash> overSize = new List<ViewClash>();
@@ -157,13 +157,13 @@ namespace Federator.Core.Views
             return outcome;
         }
 
-        private static void NameAnUnknownSide(TestViewPlanOutcome outcome, ViewTeams teams, string setName)
+        private static void NameAnUnknownSide(TestViewPlanOutcome outcome, ViewTeams teams, string side)
         {
-            string words = teams.UnknownWords(setName);
+            string words = teams.UnknownWords(side);
 
             if (words != null)
             {
-                outcome.NameUnknownSet(setName, words);
+                outcome.NameUnknownSet(ByDesignRule.SetNameIn(side), words);
             }
         }
 

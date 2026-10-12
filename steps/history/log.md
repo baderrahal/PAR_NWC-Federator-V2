@@ -2,6 +2,54 @@
 
 Newest entry at the top.
 
+## 2026-10-12 F114c, the views' sides, a failed harvest and the rebuild's viewpoints, wave 2b
+
+Branch fix-F114c off main 80314b9, worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f114c, on Bader's order of
+2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under Q143's limits. No Navisworks was started, no
+probe was run and tools\loop, tools\probes and the guard were not touched.
+
+### What was done
+
+- FR-067, Bader's answer to Q77. The clear and rebuild now copies the saved viewpoints before the clear and puts
+  them back with CopyFrom where their count fell, the rule the sets and the tests read, every copied item disposed
+  after. P15's read of 2026-10-07, scan.md 5z-w, had measured the two calls: 36 in the copy, 17 after the appends,
+  36 after CopyFrom. So a group whose NWF holds views is no longer refused its save on every rebuild
+- F114-K30. A view's side is the test's locator whole, and the views read the sets at exactly that path first, so
+  two sets of one name in two team folders each read their own folder's team and no longer UNKNOWN
+- F114-K31. A set with no name gets a TEAMS line saying it is a set with no name, by its folders or at the root,
+  where its line named no set
+- F114-K38, the reviewer's D1. A test the clash step failed on is never read whole for the views, so a harvest that
+  threw after only closed rows no longer removes the test's old view. It is counted failed with why
+- F114-K35 set merged by 189, whose VIEWS line already says what the row asks. F114-K33 dropped, P18 having read
+  the whole read back at 0.014 s a view, no time the team sees
+- The rules: core.md's TEAMS line bullet and its ONE VIEW PER CLASH TEST bullet, addin.md's rebuild case and its
+  ONLY A TEST READ WHOLE GETS A VIEW words. Proof steps 664 to 677 of steps\03_bader_next.md
+- Tests: 3 new, TeamMapTests.ASetWithNoNameIsSaidAsOneAndByItsFolders,
+  TestViewPlanTests.TwoSetsOfOneNameAreToldApartByTheFoldersTheirLocatorHolds and
+  TestsReadTests.ATestTheClashStepFailedIsNotWholeEvenWithOnlyClosedRows, and ReportClashesTests reading the sides as
+  the locators. The first two seen failing on wrong values with the other two files held back, the rest as 7
+  compile errors, %LOCALAPPDATA%\NwcFederatorLoop\f114c-before-fail.txt and f114c-before-compile.txt
+- Core tests 2921 passed, 0 failed, 0 skipped before and 2924 passed, 0 failed, 0 skipped after. The solution built
+  with --no-incremental in Release, 0 warnings and 0 errors, f114c-build-code.txt. check-locals and check-imports
+  pass. make-tracker.ps1 run and check-tracker.ps1 reads clean
+
+### What remains
+
+- The proof on the local machine, steps 664 to 677, a forced clear and rebuild of 1A02MM first
+- FR-181 of F131 stays in progress with no branch: naming a silent miss needs the count of items no set catches,
+  which the COVERAGE block reads as UNKNOWN, not counted in this build. Set 09's TEAMS block of 1A04PK reads 23 of 25
+  mechanical sets unable to reach the FP model and 12 of 25 the HV model, each UNKNOWN as a miss until that count
+  is built
+
+### Known bugs
+
+- F114-K39, new: a rebuild whose appends bring at least as many viewpoints as the NWF held puts none back
+- F114-K32, K34, K36 and K37 stay open, each needing a probe, a run or Bader's word, as steps\01_next.md says
+
+### What comes next
+
+- One reviewer and the breaker read the branch. The lead sets the rows to merged with the number before merging
+
 ## 2026-10-12 The loop, turn 6 closes on Bader's order WRAP UP NOW, written by the lead
 
 Bader's order of 2026-10-12 headed BADER, 12 OCT 2026: WRAP UP NOW, NO MORE TESTS. No probe, fast check, speed

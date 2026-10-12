@@ -112,7 +112,13 @@ well as to pass.
     NWF there and the file list differs, log CHANGED with the counts, then REBUILT
       naming every file added, moved and removed, read the saved tests, clear the
       document, append the scan in scan order, put the saved sets and tests back
-      where the clear dropped them, and only then save the NWF over. Bader decided
+      where the clear dropped them, put the saved viewpoints back from their own
+      copy where their count fell, FR-067 under Bader's answer to Q77, CopyFrom
+      putting the copy's tree in place of the one the appends made, P15's read of
+      2026-10-07, and only then save the NWF over, every one of them counted out and
+      back. Whether the marks of this tool's views survive that is UNKNOWN until a
+      run reads its VIEWS TREE lines, and appends that bring at least as many
+      viewpoints as the NWF held put none back, row F114-K39. Bader decided
       this on 2026-09-07, Q22, so the rule above holds for a matching NWF and a
       differing one is rebuilt rather than left alone
   The file list is read out of the opened NWF. No side file records what went in,
@@ -259,7 +265,9 @@ well as to pass.
   handed to the plan unread, its status checked before `ResultAt`, so a Resolved row Compact
   removed never makes its test not read, C1. A test the clash step ran with no row on the
   report is read whole with no row, `TestsRead.Ran`, N2, and its old view goes as no longer
-  needed. A test whose open rows are ALL result groups gets no view, keeps its old views and
+  needed. A test the clash step skipped as FAILED is never read whole, `TestsRead.ClashStepFailed`
+  handed the clash record's skipped tests, row F114-K38, since its harvest may have thrown after
+  reading only closed rows, so its old views stay and it is counted failed with why. A test whose open rows are ALL result groups gets no view, keeps its old views and
   is named on one VIEWS line, never counted failed, `TestsRead.OnlyGroups`, F3, the lead's
   decision that a person's grouping must not cost the group DONE. A test not read whole hands the
   plan none of its rows, is counted FAILED on the VIEWS BUILT block with why, so the group is

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Clash;
 using Federator.Core.Exchange;
 using Federator.Core.Teams;
 
@@ -12,8 +13,12 @@ namespace Federator.Core.Views
     /// and where it carries none the team a folder above it in the clash XML's set tree names,
     /// or UNKNOWN. The pair and its one order are TeamPair's, read here and never copied.
     ///
-    /// A SIDE IS NAMED BY ITS SET NAME ALONE, ViewClash.LeftSet, so two sets of one name whose
-    /// folders give two teams read UNKNOWN, never one of the two guessed.
+    /// A SIDE IS THE TEST'S LOCATOR WHOLE, ViewClash.LeftSide, its folders and its set name, the
+    /// text after its last slash, row F114-K30. Where a set of the tree is at exactly that path,
+    /// SelectionSetDefinition.Path, the side reads the folders of the sets at that path alone, so
+    /// two sets of one name in two folders are told apart. Where none is, or the side is a set
+    /// name alone, every set of that name is read, and two whose folders give two teams read
+    /// UNKNOWN, never one of the two guessed.
     ///
     /// THE KNOWN CODES are the map's and the group's own models' codes, TeamMap.KnownCodes, so a
     /// code that is a team of its own is still read off a set name.
@@ -32,6 +37,8 @@ namespace Federator.Core.Views
         private readonly string pairSeparator;
         private readonly bool treeRead;
         private readonly Dictionary<string, List<IList<string>>> foldersOf =
+            new Dictionary<string, List<IList<string>>>(StringComparer.Ordinal);
+        private readonly Dictionary<string, List<IList<string>>> foldersAt =
             new Dictionary<string, List<IList<string>>>(StringComparer.Ordinal);
 
         /// <summary>The teams of a group's views, with the clash XML's sets, or null where no set tree was read.</summary>
@@ -55,45 +62,57 @@ namespace Federator.Core.Views
 
             foreach (SelectionSetDefinition set in sets ?? new SelectionSetDefinition[0])
             {
-                List<IList<string>> trees;
-
                 if (string.IsNullOrEmpty(set.Name))
                 {
                     continue;
                 }
 
-                if (!foldersOf.TryGetValue(set.Name, out trees))
-                {
-                    trees = new List<IList<string>>();
-                    foldersOf[set.Name] = trees;
-                }
+                Keep(foldersOf, set.Name, set.Folders);
 
-                trees.Add(set.Folders);
+                if (!string.IsNullOrEmpty(set.Path))
+                {
+                    Keep(foldersAt, set.Path, set.Folders);
+                }
             }
+        }
+
+        private static void Keep(Dictionary<string, List<IList<string>>> by, string key, IList<string> folders)
+        {
+            List<IList<string>> trees;
+
+            if (!by.TryGetValue(key, out trees))
+            {
+                trees = new List<IList<string>>();
+                by[key] = trees;
+            }
+
+            trees.Add(folders);
         }
 
         /// <summary>The team map these teams are read through.</summary>
         public TeamMap Map { get; private set; }
 
-        /// <summary>The team of a set name, TeamMap.TeamOfSet over every set of that name, UNKNOWN where they give two.</summary>
-        public string TeamOfSet(string setName)
+        /// <summary>The team of a side, its locator or a set name, TeamMap.TeamOfSet over the sets it can be, UNKNOWN where they give two.</summary>
+        public string TeamOfSet(string side)
         {
             string why;
-            return Read(setName, out why);
+            return Read(side, out why);
         }
 
         /// <summary>The set name of a side read as UNKNOWN and why, FR-074, or null where the side reads a team.</summary>
-        public string UnknownWords(string setName)
+        public string UnknownWords(string side)
         {
             string why;
-            string team = Read(setName, out why);
+            string team = Read(side, out why);
 
             return string.Equals(team, Map.UnknownTeam, StringComparison.Ordinal) ? why : null;
         }
 
-        /// <summary>The team of a set name, and the words saying why, which are read only where the team is UNKNOWN.</summary>
-        private string Read(string setName, out string why)
+        /// <summary>The team of a side, and the words saying why, which are read only where the team is UNKNOWN.</summary>
+        private string Read(string side, out string why)
         {
+            string setName = ByDesignRule.SetNameIn(side);
+
             if (string.IsNullOrEmpty(setName))
             {
                 why = "a side with no set name, so no code and no folder above it could be read";
@@ -121,6 +140,13 @@ namespace Federator.Core.Views
                 return Map.TeamOfSet(code, null);
             }
 
+            List<IList<string>> atPath;
+
+            if (foldersAt.TryGetValue(side, out atPath))
+            {
+                trees = atPath;
+            }
+
             List<string> teams = new List<string>();
 
             foreach (IList<string> folders in trees)
@@ -144,10 +170,10 @@ namespace Federator.Core.Views
             return teams[0];
         }
 
-        /// <summary>The team pair of a test's two sides, in the map's one order.</summary>
-        public TeamPair PairOf(string leftSet, string rightSet)
+        /// <summary>The team pair of a test's two sides, each its locator or a set name, in the map's one order.</summary>
+        public TeamPair PairOf(string leftSide, string rightSide)
         {
-            return TeamPair.For(TeamOfSet(leftSet), TeamOfSet(rightSet), Map, pairSeparator);
+            return TeamPair.For(TeamOfSet(leftSide), TeamOfSet(rightSide), Map, pairSeparator);
         }
     }
 }

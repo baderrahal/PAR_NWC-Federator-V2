@@ -368,6 +368,25 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
+## Proof F114c the views' sides, a failed harvest and the rebuild's viewpoints, added 2026-10-12
+
+The rebuild comes first, because it decides whether an NWF that holds views is saved over at all. Before FR-067 it never was.
+
+664. Install main with fix-F114c merged
+665. Scan the C02 folder, pick the clash XML, leave Make viewpoints ticked, tick 1A02MM alone and press Run, so its NWF holds this tool's views
+666. Open that NWF in Navisworks, save one view of your own in Saved Viewpoints, save the NWF and close it
+667. Copy the C02 NWC folder to a new folder, so every file of 1A02MM reads as moved
+668. Scan the new folder, keeping the NWF folder of step 665
+669. Tick 1A02MM alone and press Run
+670. Look for, in the log of 1A02MM: a `RESHAPE` line ending `so the clear and rebuild is used instead`
+671. Look for, after the `CLEAR` line: `VIEWS    saved viewpoints kept: before clear N, after appends M, after restore N, put back from the copy`, N the same both times, and no line reading `saved viewpoints LOST`
+672. Look for, after it: no line reading `NOT saved over`, and the group DONE
+673. Look for, in the group's `VIEWS INVENTORY` block: the views of step 665 `removed, this tool's earlier view replaced at its place`, and your view of step 666 `kept, not this tool's`. A view of step 665 read as `kept, not this tool's` means its mark did not survive the copy, which P15 asked and is worth sending
+674. Open the NWF in Navisworks: your view of step 666 is in Saved Viewpoints
+675. On any run where a `CLASH` failure line says a test `is reported as skipped and was not run` and the workbook still holds rows of that test, look in `VIEWS BUILT` for it `FAILED, not read whole for the views, the clash step failed on it`, and in `VIEWS INVENTORY` its views of earlier runs kept
+676. On a clash XML holding two sets of one name in two team folders, look in the `VIEWS` block for each test's pair folder naming the team of its own set's folder, and no `sets of that name in the clash XML's set tree give the teams` line for those sets. The picked XML holds no two sets of one name, so on it this step reads nothing
+677. Send the log of step 669 and keep the NWF
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,

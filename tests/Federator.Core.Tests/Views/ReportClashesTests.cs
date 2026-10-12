@@ -169,10 +169,10 @@ namespace Federator.Core.Tests
 
             Assert.That(clash.TestName, Is.EqualTo(Kept));
             Assert.That(clash.ClashName, Is.EqualTo("Clash1"));
-            Assert.That(first.LeftSet, Is.EqualTo("BLD-ME-Ducts"), "read off the row before the walk, for the pair");
-            Assert.That(first.RightSet, Is.EqualTo("BLD-ST-Columns"));
-            Assert.That(clash.LeftSet, Is.EqualTo("BLD-ME-Ducts"));
-            Assert.That(clash.RightSet, Is.EqualTo("BLD-ST-Columns"));
+            Assert.That(first.LeftSide, Is.EqualTo(MirrorRuleTests.Ducts), "read off the row before the walk, for the pair, its folders with it, F114-K30");
+            Assert.That(first.RightSide, Is.EqualTo(MirrorRuleTests.Columns));
+            Assert.That(clash.LeftSide, Is.EqualTo(MirrorRuleTests.Ducts));
+            Assert.That(clash.RightSide, Is.EqualTo(MirrorRuleTests.Columns));
             Assert.That(clash.Status, Is.EqualTo(ClashStatus.Active));
             Assert.That(clash.Priority, Is.EqualTo(ClashPriority.A));
             Assert.That(clash.ServiceSize, Is.EqualTo(SizeVerdict.Large));
