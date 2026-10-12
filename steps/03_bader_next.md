@@ -372,12 +372,12 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 
 Core is proved by its tests. These steps read the GAP and ITEM IDS blocks of one run against set 09's, `steps\runs\09\item1-C02`. F120-R1, the pictures' guard on throws naming their path, has no step, since no run a person makes throws fifty times that way, and its proof is the Core tests.
 
-664. Install main with fix-F120c merged, then run 1A02MM with its clash XML as set 09 ran, steps 649 to 654
-665. Look for, in the `GAP 1A02MM` block: the line `2 numbers are measured off every item and reach no output`, then a `Source File` line and an `Id From` line, and no `Family`, `Type Name` or `Material` line, where set 09 read four lines
-666. Look for, on the `Source File` line: `read on N item cells and empty on every one`, N the run's item cells, 5,862 in set 09, which left the line out. A line reading `of N item cells carry it` instead means the source file was read on this run, and row F120-R2 is answered by it
-667. Look for, in the `ITEM IDS 1A02MM` block: `Id supplied 5862 item ids of 5862, written as "Element ID"`, as set 09 read, the count the run's own
-668. Look for, at the end of the run: `GAPS     2 things are measured on every item and reach no output, over 1 group: Source File, Id From`
-669. Open the clash workbook of 1A02MM beside set 09's: the same columns and the same cells on the first block, and send the log with the HARVEST seconds off the TIMING block against set 09's
+692. Install main with fix-F120c merged, then run 1A02MM with its clash XML as set 09 ran, steps 649 to 654
+693. Look for, in the `GAP 1A02MM` block: the line `2 numbers are measured off every item and reach no output`, then a `Source File` line and an `Id From` line, and no `Family`, `Type Name` or `Material` line, where set 09 read four lines
+694. Look for, on the `Source File` line: `read on N item cells and empty on every one`, N the run's item cells, 5,862 in set 09, which left the line out. A line reading `of N item cells carry it` instead means the source file was read on this run, and row F120-R2 is answered by it
+695. Look for, in the `ITEM IDS 1A02MM` block: `Id supplied 5862 item ids of 5862, written as "Element ID"`, as set 09 read, the count the run's own
+696. Look for, at the end of the run: `GAPS     2 things are measured on every item and reach no output, over 1 group: Source File, Id From`
+697. Open the clash workbook of 1A02MM beside set 09's: the same columns and the same cells on the first block, and send the log with the HARVEST seconds off the TIMING block against set 09's
 
 ## Proof of F130, the Shift range in the group list
 
@@ -1487,3 +1487,36 @@ run, and F132's steps 459 to 481 stand.
 539. ATTEMPT 2, B5: in Run B's `VIEWS TREE` block, the `after      :` line reads `as the removals reported` and `0 not removed`, its per clash viewpoint count the same as the `N of N RemoveAt call(s) made` line of step 524, and no `is counted as not removed` line, which a folder count that did not fall by exactly one writes. A count above zero names each not removed with why, and is worth sending
 540. ATTEMPT 2, B6: in Run B2's `VIEWS INVENTORY` block, no view of the tool's that nobody touched reads `its camera was moved`. Every untouched view of Run B reads `removed, this tool's earlier view replaced at its place`, and whether the NWF keeps a camera at single precision is read off this step
 541. Send the three logs of Runs A, B and B2 and the 1A04PK log, each named on its `log file` line, and keep the NWFs on your machine
+
+## Proof F118 the workbook and report, added 2026-10-12
+
+Three things the add-in pass of F118 changed. FR-036 first, because it costs two short runs of one group of one discipline, then F118-R3 on the same group, which needs Excel to hold its workbook open, then FR-041, which needs a group that runs clash tests. Since F77 a test whose side finds nothing is never created, so in the group of one discipline only the tests the first run created are in the document, and only those carry the chosen value on the second run.
+
+664. Build and install main once fix-F118c has merged, steps 7 to 12
+665. In Explorer copy the NWC folder of 1A04MS, which holds one discipline, to a new folder on the desktop with no NWF beside it
+666. In the add-in go to the Source step and pick that folder
+667. Press Scan
+668. Go to the Outputs step and pick a new empty folder on the desktop for the NWF, the NWD and the reports
+669. Go to the Clash step and pick the exchange XML `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`
+670. Leave Clash tolerance on `Use the value in the XML`
+671. Press Run, then OK, and wait for it to finish
+672. Look for: one line `CLASH 1830 in the file, N created, M not created, a side finds nothing`, and write down N
+673. Set Clash tolerance to `50 mm`
+674. Press Run, then OK, and wait for it to finish
+675. Look for, near the end of the log: `TOLERANCE on the report, read off the clash test in the document for 0, the clash XML for` 1830 less N, `chosen in the tool for` N, with N from step 672. Before this fix N read under the clash XML
+676. Look for, on the line above it: the line ending `Where each block's tolerance was read is on the line below`
+677. Open in Excel the clash workbook this run wrote in the reports folder of step 668
+678. Look for: the Tolerance cell reading `0.050m` in the blocks of the N tests the first run created, and `0.025m`, the XML's 25 mm, in the blocks of the rest. Before this fix every block read `0.025m`
+679. Leave that workbook open in Excel
+680. Press Run, then OK, and wait for it to finish
+681. Look for, in the group: `XLSX     NOT WRITTEN` with the workbook's path and `its save threw, and a file of that name is at the path. Whether it is an earlier run's file untouched or one this run cut short is UNKNOWN`
+682. Look for, after it: `WORKBOOK CHECK 1A04MS not run, writing the clash workbook threw`, and NO `XLSX     written` line for that path
+683. Look for, in the RESULT block's files written list: NOT that workbook
+684. Close Excel
+685. Set Clash tolerance back to `Use the value in the XML`
+686. Go to the Source step and pick `C:\00-NM\Federation Task\C02 + 04\C02`
+687. Press Scan
+688. In the group list untick every group but 1A02MM
+689. Press Run, then OK, and wait for it to finish
+690. Look for, in the group, one line after the `UNITS` line: `GRID     Grid Location empty on N of M clash rows` with the heights of the empty and the filled rows, or `GRID     Grid Location filled on every one of M clash rows`, and the same words on a row of the `.tsv` beside the log, happening `grid location counted`
+691. Send the logs of steps 671, 674, 680 and 689, each named on its `log file` line. Why the Grid Location cells are empty is UNKNOWN, and the heights of step 690 against the grid levels are the first thing to read
