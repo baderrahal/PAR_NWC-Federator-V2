@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Federator.Core.Diagnostics;
+using Federator.Core.Generic;
 using Federator.Core.Grouping;
 
 namespace Federator.Core.Naming
@@ -311,8 +312,13 @@ namespace Federator.Core.Naming
         /// Why the run cannot start, or null when it can. Checked before anything is
         /// cleared or written.
         /// </summary>
-        public string WhyTheRunCannotStart()
+        public string WhyTheRunCannotStart(GenericModelsSettings internalWorkbook)
         {
+            if (internalWorkbook == null)
+            {
+                throw new ArgumentNullException("internalWorkbook");
+            }
+
             List<string> lines = new List<string>(Unusable());
 
             foreach (NameCollision collision in Collisions())
@@ -327,9 +333,67 @@ namespace Federator.Core.Naming
                 lines.Add(collision.Sentence());
             }
 
+            lines.AddRange(InternalWorkbookCollisions(internalWorkbook));
+
             return lines.Count == 0
                 ? null
                 : string.Join(Environment.NewLine + Environment.NewLine, lines.ToArray());
+        }
+
+        /// <summary>
+        /// One sentence for each group whose internal workbook, named after its workbook by
+        /// GenericModelsSettings.WorkbookNameFor, would be written as another group's workbook, X Internal
+        /// beside X, F127-R5. Both sit in the Clash Reports folder, so one would overwrite the other with no
+        /// line. Read as the three kinds are, ignoring case, and a name that cannot be used is told as
+        /// unusable and never here.
+        /// </summary>
+        private IList<string> InternalWorkbookCollisions(GenericModelsSettings internalWorkbook)
+        {
+            Dictionary<string, List<string>> byWorkbook = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (OutputNameRow row in rows)
+            {
+                if (WhyUnusable(row.WorkbookName) != null)
+                {
+                    continue;
+                }
+
+                List<string> named;
+
+                if (!byWorkbook.TryGetValue(row.WorkbookName, out named))
+                {
+                    named = new List<string>();
+                    byWorkbook.Add(row.WorkbookName, named);
+                }
+
+                named.Add(row.Group);
+            }
+
+            List<string> found = new List<string>();
+
+            foreach (OutputNameRow row in rows)
+            {
+                if (WhyUnusable(row.WorkbookName) != null)
+                {
+                    continue;
+                }
+
+                string internalName = internalWorkbook.WorkbookNameFor(row.WorkbookName);
+                List<string> named;
+
+                if (!byWorkbook.TryGetValue(internalName, out named))
+                {
+                    continue;
+                }
+
+                foreach (string other in named)
+                {
+                    found.Add("The internal workbook of " + row.Group + " and the workbook of " + other
+                        + " would both be written as " + internalName + ". One would overwrite the other, so the run does not start.");
+                }
+            }
+
+            return found;
         }
 
         /// <summary>

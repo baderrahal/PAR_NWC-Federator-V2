@@ -11,6 +11,7 @@ using Federator.Addin.Engine;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Findings;
+using Federator.Core.Generic;
 using Federator.Core.Grouping;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
@@ -58,6 +59,12 @@ namespace Federator.Addin.Ui
         private readonly TeamMapMemory keptTeams = TeamMapMemory.Load();
 
         private readonly TeamMapSettings teamSettings = new TeamMapSettings();
+
+        /// <summary>
+        /// How the internal workbook is named, the one copy the run's options and the checks before a run
+        /// both read, so a check never reads the tolerance box to reach it, F127-R5 attempt 2.
+        /// </summary>
+        private readonly GenericModelsSettings internalWorkbook = new GenericModelsSettings();
 
         /// <summary>One row per group, filled from the patterns and editable in place.</summary>
         private OutputNameTable nameTable = new OutputNameTable();
@@ -305,7 +312,7 @@ namespace Federator.Addin.Ui
         {
             try
             {
-                return NwfPick.From(Trimmed(PickedNwfBox.Text), IncludeSubfolders.IsChecked == true, excelFolder);
+                return NwfPick.From(Trimmed(PickedNwfBox.Text), IncludeSubfolders.IsChecked == true, excelFolder, internalWorkbook);
             }
             catch (Exception error)
             {
@@ -885,7 +892,7 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            string collisions = nameTable.WhyTheRunCannotStart();
+            string collisions = nameTable.WhyTheRunCannotStart(internalWorkbook);
 
             NamePreview.Text = "The first group would be written as:" + Environment.NewLine
                 + string.Join(Environment.NewLine, lines.ToArray())
@@ -1817,6 +1824,7 @@ namespace Federator.Addin.Ui
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
             options.Names = settings;
+            options.GenericModels = internalWorkbook;
             return options;
         }
 
@@ -2000,8 +2008,9 @@ namespace Federator.Addin.Ui
 
             // Outputs overwrite with no date suffix, so two groups sharing a name is not a
             // warning. The second silently destroys the first and only shows up later as a
-            // federation nobody can find. Caught before anything is cleared or written.
-            string collisions = nameTable.Only(TickedGroupKeys()).WhyTheRunCannotStart();
+            // federation nobody can find. Caught before anything is cleared or written, and so is a
+            // workbook named as another group's internal workbook, F127-R5.
+            string collisions = nameTable.Only(TickedGroupKeys()).WhyTheRunCannotStart(internalWorkbook);
 
             if (collisions != null)
             {

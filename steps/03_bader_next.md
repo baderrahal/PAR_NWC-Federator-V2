@@ -368,6 +368,42 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
+## Proof F127-R5 a workbook named as another group's internal workbook, added 2026-10-12, rewritten for attempt 2
+
+No group runs in these steps, so they can follow any install of main with fix-F127c merged.
+
+680. Install main with fix-F127c merged
+681. Start Navisworks Manage 2025 and open the tool's window
+682. In Explorer make a new empty folder on the desktop named F127 outputs
+683. On 1. Source press Browse beside Folder and pick a folder holding at least two groups
+684. Press Scan
+685. Open 3. Outputs
+686. Press Browse beside NWF folder and pick F127 outputs
+687. Press Browse beside NWD folder and pick F127 outputs
+688. Copy the Workbook name of the first group in the table
+689. Type it, with one space and Internal after it, into the Workbook name cell of the second group
+690. Look for, in the name preview under the table: `THE RUN CANNOT START.` and `The internal workbook of <first group> and the workbook of <second group> would both be written as <that name>. One would overwrite the other, so the run does not start.`
+691. Open 2. Grouping and see that the Run box of both groups is ticked, ticking any that is not
+692. Press Run
+693. Look for: a warning holding the same sentence, the window back on 3. Outputs, and in the log one line starting `RUN      refused before starting.` with it
+694. Open 1. Source and press Scan again, which gives every Workbook name cell back to its pattern
+695. Open 2. Grouping and see that the Run box of both groups is ticked, ticking any that is not
+696. Open 4. Clash and pick Other in the Clash tolerance list, leaving the box beside it empty
+697. Open 3. Outputs and type one letter at the end of the Workbook name cell of the first group
+698. Look for: no error box appears and the name preview under the table shows the new name
+699. Delete that letter again
+700. Press Run
+701. Look for: a warning about the clash tolerance, and nothing run
+702. In Explorer make a new empty folder on the desktop named F127 NWFs
+703. Copy into it one NWF an earlier run of the tool wrote, together with the NWD beside it
+704. Copy that NWF and its NWD into the same folder a second time
+705. Rename the first NWF and its NWD to A.nwf and A.nwd
+706. Rename the second NWF and its NWD to `A Internal.nwf` and `A Internal.nwd`
+707. In the tool open 1. Source and press Folder beside Existing NWF or folder of NWFs
+708. Pick the folder F127 NWFs
+709. Look for, in the summary under that row: the run refused, naming A and `A Internal` and the workbook name `A Internal` they would both write
+710. Send the log with the refusal of step 693 and the summary of step 709
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,

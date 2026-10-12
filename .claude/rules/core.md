@@ -39,7 +39,14 @@ because the person meant that value.
 
 The collision check runs on the table, not on the patterns, so two names typed to the
 same thing is caught the same way two patterns colliding is. It names both groups and
-the run does not start.
+the run does not start. A group's internal workbook is named after its workbook with the
+suffix, `GenericModelsSettings.WorkbookNameFor`, and sits beside it in the Clash Reports
+folder, so the check reads each internal workbook name against every other group's
+workbook name too, ignoring case as the three kinds are read: a group whose workbook is X
+Internal beside a group X is named with both groups and the run does not start, F127-R5,
+the breaker's point 6 on F127b. `OutputNameTable.WhyTheRunCannotStart` takes the settings
+the engine names the internal workbook by, so the suffix the check reads is the one the run
+writes.
 
 Every supplied field is shown in the Outputs step and can be changed there. The
 defaults are ZZZ for the level, which is the ISO 19650 code for all levels, BM for
@@ -2395,7 +2402,7 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   of this run and the group's own, so a code the group carries is always a code of the run. The
   open file run has no scan and its run is its one group. A group the scan found and the run did
   not tick is not among them, so a code only it carries reads UNKNOWN and never not in the
-  group, row F127-R3
+  group, row F127-R3, dropped on 2026-10-12 under Q143 since UNKNOWN is never a wrong word
 - A TEST THE RUN LEFT NO RECORD OF, OR NEVER REACHED, IS NOT COMPARED, and one the run knows it
   did not create, F77 kept it out or the plan dropped it before the model, is held by neither
   side. A test the plan dropped before the model that Clash Detective holds with results names
