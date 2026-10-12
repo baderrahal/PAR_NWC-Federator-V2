@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using Federator.Core.Clash;
+using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 
 namespace Federator.Core.Report
@@ -157,6 +158,39 @@ namespace Federator.Core.Report
         }
 
         public string Name { get; set; }
+
+        /// <summary>
+        /// The name a row carries off its result's display name in Clash Detective: the display
+        /// name, or clash for a result and group for a result group where it has none. The one
+        /// rule, F149, the breaker's point on attempt 1: the harvest names a row by it and the read
+        /// back of a recorded row matches each sibling by it, so a result with no display name is
+        /// found again under the name its row carries, where its raw empty name matched nothing
+        /// and its picture was never taken. Such a row is found again only at its recorded index
+        /// and only where nothing can have moved it, NoNameOfItsOwn.
+        /// </summary>
+        public static string NameOf(string displayName, bool isGroup)
+        {
+            return Words.Or(displayName, isGroup ? "group" : "clash");
+        }
+
+        /// <summary>
+        /// Names the row off its result's display name by NameOf, and keeps whether the result had a
+        /// name of its own. The harvest names every row by it.
+        /// </summary>
+        public void NameAfter(string displayName, bool isGroup)
+        {
+            Name = NameOf(displayName, isGroup);
+            NoNameOfItsOwn = string.IsNullOrEmpty(displayName);
+        }
+
+        /// <summary>
+        /// True where Clash Detective gave the row's result no display name, so Name is the word its
+        /// kind is given, which every other unnamed result of the test carries too. A sibling carrying
+        /// that word is then no proof it is this row's result, F149, the breaker's first point on the
+        /// second reading, ResultSiblings.PickUnnamed: after the compact the next unnamed result sits
+        /// at the recorded index, and the views framed it as this row's.
+        /// </summary>
+        public bool NoNameOfItsOwn { get; private set; }
 
         /// <summary>
         /// The name of the mirror test that alone found this clash, F132, Bader's answer D to
@@ -592,6 +626,26 @@ namespace Federator.Core.Report
 
             test.ImageIndex = next;
             return next;
+        }
+
+        /// <summary>
+        /// The number the next picture of this test is written under: the test's index, claimed
+        /// here at its first picture, and one more than its rows already pictured. The one place
+        /// the writer numbers a picture, F149, the reviewer's fourth point on attempt 1, where it
+        /// was typed out in the add-in beside ReportOrder.PictureNumbers. Asked in the order
+        /// PictureWalk walks, it is the number PictureNumbers gives once every picture is written,
+        /// so the renumber renames none. Asked in any other order it is not, which is what the
+        /// renumber is kept for.
+        /// </summary>
+        public PictureNumber NextPictureOf(TestReport test, ClashRow row)
+        {
+            if (row == null)
+            {
+                throw new ArgumentNullException("row");
+            }
+
+            int testIndex = ImageIndexFor(test);
+            return new PictureNumber(test, row, testIndex, test.ImageCount + 1);
         }
 
         /// <summary>

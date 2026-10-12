@@ -332,6 +332,42 @@ The loop runs these on its own copy, 1A02MM again from a fresh set, after main w
 637. Look for, on the run's TIMING block: VIEWS lines every 30 s where the step is long, and the same rows, pictures and workbook as before, the fix changing no output
 638. Send the log and the `.tsv` beside it, with the longest gap between two lines of the harvest
 
+## Proof F145 only the test's models shown for its pictures, added 2026-10-11, rewritten for attempt 2
+
+639. Install main with F145 merged, then run 1A02MM as F141's steps 629 to 633 do, and look for the same: `views created     :` equal to the plan's views, `7 of 7 hold`, and the VIEWS line `hidden state put back: nothing was hidden before the views and nothing is hidden now`, which says nothing hidden for a picture was carried into the views, the NWF or the NWD
+640. Look for, in the same log: one line `IMAGES   only the models of each test shown for its pictures:`, its tests with models hidden, the tests kept with every model shown, and the seconds reading the tests' sides and the seconds hiding and putting back, and no failure line naming `reading which models the sides`, `hiding the models other than`, `putting the hidden state back` or `reading the hidden state`. Open a picture of a test between two models, such as an ME test against AR: both models' items behind the clash
+641. Run 1A04PK on the 50 test cut of the corrected matrix, Make viewpoints ticked, and look for the same `IMAGES` line and no such failure line
+642. Open three pictures of BLD-AR-Walls-vs-BLD-AR-Floors in the group's picture folder: the same 1024 square, camera, grid label, red and green as before, and only the AR model's items behind the two clashing ones. Open a picture of the mirror pair's kept test where it has one
+643. Look for, in the `IMAGES` lines of the group: the seconds each picture took, against the probe's 0.168 s a picture on that test with every model shown and 0.120 s with only the test's, with hardware acceleration on, `docs\history\scan.md` 5z-zd, and the group's seconds off its `GROUP finished` line
+644. Compare the Grid Location and Level cells of the rows of BLD-AR-Ramps-vs-BLD-AR-Floors in this run's internal workbook with set 08's, `steps\runs\08\item1-C04`: the same cells. With F149 merged the harvest hides nothing and every row is read before any model is hidden for a picture, so these cells are read with every model shown, as set 08 read them
+645. Send the log and the `.tsv` beside it, with the longest stretch the window did not answer and the peak memory off the run's `LIFE SUMMARY` where the loop ran it
+
+## Proof F146 the renumber answers while it renames, added 2026-10-12
+
+646. Install main with F146 merged, then run 1A02MM with its clash XML, Make viewpoints ticked
+647. Look for, in the log while the pictures are renamed: one `PROGRESS RENUMBER 1A02MM` line about 30 s into the step, naming the pass it fell in, and the window's live line moving through picture checked, picture moved aside and picture renamed
+648. Look for, in the run's LIFE readings where the loop ran it: no stretch not answering in RENUMBER, where sets 07 to 09 read 32 s, and the IMAGES line `numbered in report order: 2931 renamed` as before
+
+## Proof F149 pictures taken in the report's order, added 2026-10-12, rewritten for attempt 2
+
+The renumber line comes first, because it is the whole of the fix: a picture written under any other name than its final one shows there as renamed. The TIMING block next, since the pictures' seconds move from HARVEST to a step of their own, PICTURES, and a reading against set 09 that misses the move reads HARVEST as faster than it is.
+
+649. Install main with F145 and F149 merged
+650. Scan the C02 folder
+651. Pick the clash XML
+652. Untick `Skip clash when models sit off shared coordinates` on the Clash step, as set 09 ran, whose log says the rule was off. The box starts ticked on every open
+653. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
+654. Press Run
+655. Look for, after the CLASH lines of 1A02MM: the IMAGES line `numbered in report order: 0 renamed, 2931 already right, 0 missing`, where set 09 read 2931 renamed
+656. Look for, on the group's TIMING block: a `PICTURES` row among the top level steps and `IMAGES` among the nested ones, `RENUMBER` near nought against 38.930 s in set 09, and `HARVEST` lower than set 09's by about the pictures' seconds, which now sit under PICTURES
+657. Look for, in the log while the pictures are taken: the `STEP     PICTURES` started line, then a `PROGRESS PICTURES <test> picture N of M` line at least every 30 s until its finished line, and the window's live line naming PICTURES
+658. Look for, in the group's IMAGES lines: the line starting `IMAGES   2931 written,` with no line under it saying `failed. Their cells are empty and the run carried on`, since that line is written only where a picture failed, and no `IMAGE    failed for` line and no `IMAGE ` line saying `so no picture of the`
+659. Open the clash workbook of 1A02MM: each Image cell carries its picture's name and its link opens that picture, as in set 09
+660. Open cd000001.jpg, cd000002.jpg and cd010001.jpg of this run beside set 09's pictures of the same names: each shows the same two clashing items at the same camera, with only the test's models behind them where set 09 showed every model, F145
+661. Look for, in the `VIEWS TREE` block: the last line `7 of 7 hold`
+662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
+663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,
@@ -436,6 +472,33 @@ team follows, and these steps follow it.
 613. If step 610 read `2`, the last line starts `REFUSED:`. Where it reads `the installed add-in could not be moved aside`, that is the refusal of 2026-10-01 with no Navisworks running, which this pass does not change, so send the whole output and stop. Otherwise do what it says, INSTALL.md step 10, and send the whole output
 614. If step 610 read `1`, the last line starts `FAILED:`. Send the whole output and stop
 615. Open Navisworks. Look for: Parsons NWC Federator on the Tool Add-ins tab, and main's commit in the title bar
+
+## Proof F140 the team package, added 2026-10-11
+
+NOTHING HERE HAPPENS until you write "make the team package", your order of 11 Oct, Q149, once the
+proof runs show the main functions work. The package and its install were proved on the laptop
+against throwaway folders, never your own add-in, turn6\f140-proof, and no team zip was made. These
+steps try the zip on your own machine the way the team will get it, before anyone on the team gets
+it. They replace the add-in you have installed, and step 640 puts it back. A double click, the
+question Windows may ask before it runs a file from the internet, and a policy set on your machine
+are not proved on the laptop, so steps 631, 632 and 636 read them.
+
+629. Write "make the team package" in the chat. The lead runs `build\package.ps1` on the laptop from a clean checkout of main, into a folder outside the repo, and pastes its last line, which starts `PACKAGED:` and names the zip, `ParsonsNwcFederator-1.0.0.0-` then main's eight characters, a dash, the day's date and `.zip`
+630. Close Navisworks Manage 2025
+631. Open Windows PowerShell on your machine and run `Get-ExecutionPolicy -List`. Look for: `MachinePolicy` and `UserPolicy` both reading `Undefined`, as they read on the laptop on 2026-10-11. Any other value there is a Group Policy that comes before the Bypass the install starts PowerShell with, and whether the install then runs is UNKNOWN, so send what it reads before you go on
+632. Get the zip the way the team will: have the lead send it to you in a Teams chat, or send it to yourself there, and save it from Teams into your Downloads folder. Right click the saved zip and choose Properties. Say whether the General tab shows a line about the file coming from another computer with an Unblock box. Do not tick it, and close Properties
+633. Right click the zip and choose Extract All, then open the folder that makes
+634. Open `VERSION.txt`. Look for: `commit  :` with main's eight characters the lead named, and `date    :` with the day the zip was made
+635. Open `INSTALL-TEAM.txt`. Look for: a page you would hand a person who is not a developer. Say any line that is not plain to you
+636. Double click `Install Parsons NWC Federator.cmd`. If Windows asks whether to run it, choose Run, and say that it asked and what its window said. Look for, as the last line before `Press any key to continue`: `DONE: Parsons NWC Federator version 1.0.0.0, commit` with main's eight characters, `is installed at` your `AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle`, then `The version installed before,` with the commit you had, `is kept at` the same path ending `.previous`. If the window ends on red text that starts with none of DONE, FAILED and REFUSED, send the whole window and stop
+637. Press any key. Open File Explorer and paste `%APPDATA%\Autodesk\ApplicationPlugins` into its address bar. Look for: `ParsonsNwcFederator.bundle` and `ParsonsNwcFederator.bundle.previous`, and NO `ParsonsNwcFederator.bundle.copying`
+638. Start Navisworks Manage 2025. Look for: ONE Parsons NWC Federator on the Tool Add-ins tab, and main's commit in the title bar. Two of it would mean Navisworks loads the `.previous` folder too, which is UNKNOWN until this step, so say so
+639. Close Navisworks
+640. Double click `Put back the previous version.cmd`. Look for, as the last line before `Press any key to continue`: `DONE: the previous version,` with the commit you had before step 636, `is back at` the same `ParsonsNwcFederator.bundle`, then `The version that was installed,` with main's commit, `was replaced and is not kept.`
+641. Press any key. In the File Explorer window of step 637, press F5. Look for: `ParsonsNwcFederator.bundle` and `ParsonsNwcFederator.bundle.previous`, and NO `ParsonsNwcFederator.bundle.before-put-back` and NO `ParsonsNwcFederator.bundle.copying`
+642. Start Navisworks. Look for: the commit you had before step 636 in the title bar. Close Navisworks
+643. Double click `Install Parsons NWC Federator.cmd` again. Look for: `DONE:` with main's commit, and the commit you had before step 636 kept at `.previous`
+644. Send the text of every window whose last line did not read as written, and say whether the zip goes to the team. Nobody on the team gets it before you say so
 
 ## Proof F34, the window, and F33, the units combo
 

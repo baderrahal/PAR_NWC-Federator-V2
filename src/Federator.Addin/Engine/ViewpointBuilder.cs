@@ -365,8 +365,11 @@ namespace Federator.Addin.Engine
                         {
                             string whyNot;
                             bool moved;
+                            // The views run after the compact, which can move a result from its
+                            // recorded index, so a row with no name of its own is never taken on
+                            // its name, F149, and is counted and said here as a row not found.
                             SavedItem item = ResultPath.ResultAt(
-                                test, addresses[clash.Row].Row, first.TestName, out whyNot, out moved);
+                                test, addresses[clash.Row].Row, first.TestName, false, out whyNot, out moved);
 
                             if (item == null)
                             {
@@ -544,10 +547,8 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// Where one clashing item is, its index path as plain ints, and the model it lives
-        /// in by that model's file name. MEASURED on 2026-09-20, docs\history\scan.md 5n: on
-        /// a clash leaf HasModel reads false and Model reads null, and the one item that
-        /// carries the model is the TOPMOST of its ancestors, six to nine levels up. Item1 is
-        /// a fresh wrapper on every read, and so is every parent, so each is released here.
+        /// in by that model's file name, SavedViewpoints.ModelFileOf's walk. Item1 is a fresh
+        /// wrapper on every read, so it is released here, and the walk releases every parent.
         /// </summary>
         private static ItemPath ReadPlace(Document document, ModelItem item, out string home)
         {
@@ -558,54 +559,17 @@ namespace Federator.Addin.Engine
                 return null;
             }
 
-            List<ModelItem> chain = new List<ModelItem>();
-            chain.Add(item);
-
             try
             {
                 int[] path = SavedViewpoints.PathOf(document, item);
-                ModelItem walker = item;
-
-                while (chain.Count < HomeWalkBound)
-                {
-                    ModelItem parent = walker.Parent;
-
-                    if (parent == null)
-                    {
-                        break;
-                    }
-
-                    chain.Add(parent);
-                    walker = parent;
-                }
-
-                ModelItem top = chain[chain.Count - 1];
-
-                if (top.HasModel)
-                {
-                    using (Model model = top.Model)
-                    {
-                        home = model == null ? null : model.FileName;
-                    }
-                }
-
+                home = SavedViewpoints.ModelFileOf(item);
                 return path == null ? null : new ItemPath(path);
             }
             finally
             {
-                for (int i = 0; i < chain.Count; i++)
-                {
-                    chain[i].Dispose();
-                }
+                item.Dispose();
             }
         }
-
-        /// <summary>
-        /// The most levels the home walk climbs. 5n measured six and nine on this project,
-        /// and a bound stops a malformed tree turning one clash into an endless climb. It
-        /// is a guard on a walk and not a number that shapes a run.
-        /// </summary>
-        private const int HomeWalkBound = 64;
 
         // ---------- the views ----------
 
@@ -1131,7 +1095,7 @@ namespace Federator.Addin.Engine
 
                 bool moved;
                 string notFound;
-                SavedItem item = ResultPath.ResultAt(test, where.Row, where.TestName, out notFound, out moved);
+                SavedItem item = ResultPath.ResultAt(test, where.Row, where.TestName, false, out notFound, out moved);
 
                 if (item == null)
                 {

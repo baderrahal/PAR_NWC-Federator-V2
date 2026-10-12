@@ -48,9 +48,30 @@ namespace Federator.Core.Diagnostics
         {
             Said(nowSeconds);
 
-            return "PROGRESS " + step + " " + on + " " + piece + " " + done.ToString(CultureInfo.InvariantCulture)
-                + " of " + (total < 0 ? "UNKNOWN" : total.ToString(CultureInfo.InvariantCulture)) + ", "
+            return "PROGRESS " + step + " " + on + " " + piece + " " + Count(done, total) + ", "
                 + SecondsIn(nowSeconds).ToString("0.#", CultureInfo.InvariantCulture) + "s into the step";
+        }
+
+        /// <summary>How far through, N of M, a total below nought written UNKNOWN and never nought.</summary>
+        public static string Count(int done, int total)
+        {
+            return done.ToString(CultureInfo.InvariantCulture) + " of "
+                + (total < 0 ? "UNKNOWN" : total.ToString(CultureInfo.InvariantCulture));
+        }
+
+        /// <summary>
+        /// The live line's sentence of one piece, what it is on, the piece and how far, the one form
+        /// the harvest's rows and pictures and the renumber's pictures say, F146.
+        /// </summary>
+        public static string Live(string on, string piece, int done, int total)
+        {
+            return on + ", " + piece + " " + Count(done, total);
+        }
+
+        /// <summary>The text of a PROGRESS line's .tsv row, the step, the piece and how far, F146.</summary>
+        public static string RowText(string step, string piece, int done, int total)
+        {
+            return step + " " + piece + " " + Count(done, total);
         }
     }
 }

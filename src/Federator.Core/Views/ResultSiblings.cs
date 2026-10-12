@@ -5,12 +5,19 @@ namespace Federator.Core.Views
     /// <summary>Which sibling a recorded row resolves to, ResultSiblings.Pick, or none and how many carried the name.</summary>
     public sealed class SiblingPick
     {
-        internal SiblingPick(int index, bool atRecorded, int carrying)
+        internal SiblingPick(int index, bool atRecorded, int carrying, bool noProof = false)
         {
             Index = index;
             AtRecorded = atRecorded;
             Carrying = carrying;
+            NoProof = noProof;
         }
+
+        /// <summary>
+        /// True where a row with no name of its own was refused because its siblings could have
+        /// moved since it was read, so the word it carries proves nothing, ResultSiblings.PickUnnamed.
+        /// </summary>
+        public bool NoProof { get; private set; }
 
         /// <summary>The index to take among the siblings, or minus one where none is taken.</summary>
         public int Index { get; private set; }
@@ -70,6 +77,38 @@ namespace Federator.Core.Views
             }
 
             return carrying == 1 ? new SiblingPick(found, false, 1) : new SiblingPick(-1, false, carrying);
+        }
+
+        /// <summary>
+        /// WHICH SIBLING A ROW WITH NO NAME OF ITS OWN RESOLVES TO, F149, the breaker's first point on
+        /// the second reading. A result or a group Clash Detective gave no display name carries the
+        /// word its kind is given, ClashRow.NameOf, as every other unnamed sibling does, so a name
+        /// match proves nothing about it. It is taken at its recorded index where that sibling carries
+        /// the word, and only where nothing can have moved it since it was read, the pictures, taken
+        /// before the compact. Anywhere else, the views among them, it is refused with NoProof and no
+        /// sibling is read, since the compact moves every live result after a Resolved one an index
+        /// left and the sibling at the index would be the next unnamed one, framed and painted as
+        /// this row's with nothing said. It is never looked for by name among the siblings.
+        /// </summary>
+        public static SiblingPick PickUnnamed(string wanted, int recordedIndex, int count, Func<int, string> nameAt, bool indexIsExact)
+        {
+            if (nameAt == null)
+            {
+                throw new ArgumentNullException("nameAt");
+            }
+
+            if (!indexIsExact)
+            {
+                return new SiblingPick(-1, false, 0, true);
+            }
+
+            if (!string.IsNullOrEmpty(wanted) && recordedIndex >= 0 && recordedIndex < count
+                && string.Equals(nameAt(recordedIndex) ?? string.Empty, wanted, StringComparison.Ordinal))
+            {
+                return new SiblingPick(recordedIndex, true, 1);
+            }
+
+            return new SiblingPick(-1, false, 0);
         }
     }
 }

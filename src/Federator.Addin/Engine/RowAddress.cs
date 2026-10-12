@@ -5,9 +5,10 @@ namespace Federator.Addin.Engine
     /// <summary>
     /// Where one row of the report came from in the document, F132's add-in half: the test
     /// it was read from, where that test sits, and the index path of its result under it.
-    /// Recorded for every row as the test is read, so the pictures of a test in a merge
-    /// are rendered after the merge and, since attempt 2, the views resolve each row of the
-    /// merged report by it, under the test the report holds the row under.
+    /// Recorded for every row as the test is read, so the views resolve each row of the
+    /// merged report by it, under the test the report holds the row under, F132 attempt 2,
+    /// and since F149 every picture is taken by it once every test has run and every merge
+    /// is made.
     /// </summary>
     public sealed class RowAddress
     {
