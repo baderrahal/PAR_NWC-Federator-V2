@@ -2,6 +2,66 @@
 
 Newest entry at the top.
 
+## 2026-10-12 The loop, turn 6, F149 pictures taken in the report's order, attempt 2 of two, written by the developer as the lead's delegate
+
+Bader's order of 2026-10-12 to fix the slowest step. Branch fix-F149 off fix-F145 at 8aa6273, attempt 1
+f783618, fix-F145 taken in again at c052bdb.
+
+What was done:
+- Every picture is taken once every test has run and every merge is made, test by test in the report's
+  order, so each is written under its final name and RENUMBER, 39 s of set 09's 1A02MM, has nothing to
+  rename. The harvest only reads rows and hides nothing, so every cell of a row is read with every model
+  shown
+- Attempt 2 answered the reviewer's ten points and the breaker's seven of attempt 1. The pass is a step of
+  its own, PICTURES, with one count of PROGRESS lines across it and the live line naming it. It breaks out
+  as soon as the pictures' guard fires. A picture not asked for because its test or its clash was not found
+  again, or because a throw ended its stretch, is counted as failed on the IMAGES line and told to the
+  guard. Nothing is resolved for a row that takes no picture, and a stretch with none is not resolved or
+  hidden for. The pass runs in a finally after the merge, every row a harvest read before a throw keeps its
+  picture, a row met under two tests is pictured once, and a result with no display name is found again
+  under its row's name. The dead flag, its branch and every stale text the two readings named are gone
+- The second reading of attempt 2 found faults the team would see, fixed in this attempt under Bader's
+  Q148 B. One fault, a stretch's test not found again or a throw ending a stretch, now reaches the
+  pictures' guard ONCE and not once a row, so one throw can no longer stop the run as fifty failed renders,
+  and its rows are counted as the writer would have counted them, passed over on status or the cap and the
+  room under the cap as failed, by ImageOptions.CountTheRowsLeft, said on one IMAGE line with the counts. A
+  clash not found again stays one attempt each. A row whose result had no display name is never taken on
+  its name by the views, which run after the compact and framed the next unnamed result as its own, and is
+  said on their line of rows not found, ResultSiblings.PickUnnamed. A group row is recorded as it is added,
+  so a merge handing that throws leaves it its picture. A throw out of the pictures after a merge that threw
+  is a failure line and the merge's error goes on up. The pictures' guard firing after the tests' guard
+  stopped the run is said. The tally counts tests by name, the renumber's words and comments name the name
+  a picture was written under, and the proof steps untick the coordinates box as set 09 ran
+- The rules are Core's with tests: the walk and its stretches, PictureWalk, the number of each picture,
+  ClashReport.NextPictureOf, which the writer and the renumber now share with PictureNumber.PointTheRow,
+  the row's name, ClashRow.NameOf, the choice of a picture, ImageOptions.TakesAPictureOf, which replaced
+  F145's WouldTakeAPicture and its test, rewritten to the new rule, and the three reasons of a picture not
+  reached. A Core test proves a walk in the report's order leaves the renumber nothing to rename and one in
+  the order the tests ran does not
+- The cost of F149, said plainly: the pictures' guard can stop a run only once every test of the group has
+  run, where before it stopped after the test the fiftieth failure in a row fell in, row F149-R1. No
+  question is put to Bader for it, which is the lead's to put. RunEach reads the guard once before a
+  group's first test and no longer after each one, since nothing there can fire it. Each picture also costs
+  a walk to its result by its recorded path, which a test of no merge had in hand before F149, its seconds
+  UNKNOWN until the run reads PICTURES less IMAGES
+- Not changed: the views still read no row of a test whose harvest threw, as before F149, said by their own
+  line. A row left under two tests of the report by a merge that threw between two mirrors is pictured once,
+  and is still numbered under both by the renumber, an input both readers judged impossible in practice.
+  Whether a picture taken once every test has run shows what it showed straight after its own test is not
+  measured here and is step 660. Steps 646 to 648 are still not written, and whether that gap is meant is
+  UNKNOWN
+- Proved here: Core tests 2878 passed, 0 failed, 0 skipped before attempt 2 on fix-F145 c052bdb taken in,
+  2899 passed after its first reading, and 2915 passed, 0 failed, 0 skipped after the second. The new tests
+  failed before their Core was there, the step list's two at 18 steps for 19 and the rest not compiling. The
+  solution builds with 0 warnings and 0 errors, 0 and 0 before, and the locals and imports checks pass
+
+What remains: the reviewer and the breaker on the second reading's fixes, F145's merge then this one's, and
+1A02MM's fast check on the local machine, steps 649 to 663 of steps\03_bader_next.md.
+
+Known bugs: row F149-R1.
+
+What comes next: the JPEG save, 33 s of 1A02MM, and the speed loop's next measurement.
+
 ## 2026-10-12 The loop, turn 6, F145 only the test's models shown for its pictures, attempt 2 of two, written by the lead
 
 Bader's answer of 2026-10-11 to Q150, item 1. Branch fix-F145 off main, main 493ecdb taken in.

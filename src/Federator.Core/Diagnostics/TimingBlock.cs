@@ -43,8 +43,9 @@ namespace Federator.Core.Diagnostics
     /// for a stretch of time it says so and names the difference rather than quietly
     /// spreading it over the steps it does know about.
     ///
-    /// SHARES ARE WORKED OUT OVER THE TOP LEVEL STEPS ALONE. IMAGES runs inside HARVEST,
-    /// so its seconds are already inside HARVEST's. Counting both would give a group a
+    /// SHARES ARE WORKED OUT OVER THE TOP LEVEL STEPS ALONE. IMAGES runs inside PICTURES
+    /// since F149, and inside HARVEST before it, so its seconds are already inside that
+    /// step's. Counting both would give a group a
     /// set of shares adding to more than a hundred, which is the kind of number that
     /// makes a reader stop trusting the rest of the block.
     /// </summary>
@@ -338,8 +339,8 @@ namespace Federator.Core.Diagnostics
         /// <summary>
         /// The steps that ran inside another one, under a line saying their seconds are
         /// already counted. They are kept out of the share column so it reads down to a
-        /// hundred, and listed rather than dropped because IMAGES taking most of HARVEST
-        /// is exactly the sort of thing this block exists to show.
+        /// hundred, and listed rather than dropped because IMAGES taking most of the step it
+        /// runs in is exactly the sort of thing this block exists to show.
         /// </summary>
         private static void AddTheNestedOnes(
             List<string> lines, IList<TimedThing> things, double total)

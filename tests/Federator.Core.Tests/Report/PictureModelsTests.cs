@@ -128,20 +128,38 @@ namespace Federator.Core.Tests
         {
             PictureModelsTally tally = new PictureModelsTally();
             tally.SidesRead(0.060);
-            tally.Hid(9, 0.010);
+            tally.Hid("Walls", 9, 0.010);
             tally.SidesRead(0.040);
-            tally.Hid(8, 0.012);
+            tally.Hid("Floors", 8, 0.012);
             tally.SidesRead(0.003);
-            tally.KeptEvery();
+            tally.KeptEvery("Ramps");
 
             Assert.That(tally.TestsHidden, Is.EqualTo(2));
             Assert.That(tally.ModelsHidden, Is.EqualTo(17));
             Assert.That(tally.TestsKeptEvery, Is.EqualTo(1));
             Assert.That(tally.Line(true), Is.EqualTo(
                 "IMAGES   only the models of each test shown for its pictures: 2 test(s) with models hidden, "
-                + "8.5 model(s) hidden on average, 1 test(s) kept every model shown, why said above on an IMAGES or a failure line, "
+                + "8.5 model(s) hidden on average each time, 1 test(s) kept every model shown, why said above on an IMAGES or a failure line, "
                 + "a repeated reason counted rather than written again, "
                 + "reading the tests' sides took 0.103s and the hiding and the putting back took 0.022s"));
+        }
+
+        // F149, the second reading. The pictures are taken in stretches of one test's rows, so a test whose
+        // rows sit in two stretches is hidden for twice and is still one test on the line, and the average
+        // is over each time models were hidden.
+        [Test]
+        public void ATestHiddenForInTwoStretchesIsOneTest()
+        {
+            PictureModelsTally tally = new PictureModelsTally();
+            tally.Hid("Walls", 9, 0.010);
+            tally.Hid("Walls", 7, 0.010);
+            tally.KeptEvery("Floors");
+            tally.KeptEvery("Floors");
+
+            Assert.That(tally.TestsHidden, Is.EqualTo(1));
+            Assert.That(tally.ModelsHidden, Is.EqualTo(16));
+            Assert.That(tally.TestsKeptEvery, Is.EqualTo(1));
+            Assert.That(tally.Line(true), Does.Contain("1 test(s) with models hidden, 8 model(s) hidden on average each time"));
         }
 
         [Test]
@@ -172,26 +190,87 @@ namespace Federator.Core.Tests
             Assert.That(options.Describe(), Does.Contain("every model shown"));
         }
 
-        // A test whose clashes are all of a status no picture is asked for takes none, so its
-        // models are not hidden for nothing.
+        // A clash of a status no picture is asked for takes none, so a stretch of such clashes is
+        // passed over and its models are not hidden for nothing. F149 reads this row by row, the
+        // rule that replaced F145's WouldTakeAPicture over a test's tally, since a stretch is passed
+        // over row by row and the cap is read as its pictures are taken.
         [Test]
         public void APictureIsTakenOnlyWhereAClashIsOfAStatusAskedFor()
         {
             ImageOptions options = new ImageOptions();
-            ClashTally resolvedOnly = new ClashTally();
-            resolvedOnly.Add(ClashStatus.Resolved, 4);
-            ClashTally oneNew = new ClashTally();
-            oneNew.Add(ClashStatus.Resolved, 4);
-            oneNew.Add(ClashStatus.New, 1);
+            ClashReport report = new ClashReport("1C07BC", "out");
+            TestReport test = report.AddTest("Walls");
+            ClashRow resolved = new ClashRow();
+            resolved.Status = ClashStatus.Resolved;
+            ClashRow fresh = new ClashRow();
+            fresh.Status = ClashStatus.New;
+            test.Add(resolved);
+            test.Add(fresh);
 
-            Assert.That(options.WouldTakeAPicture(resolvedOnly), Is.False);
-            Assert.That(options.WouldTakeAPicture(oneNew), Is.True);
-            Assert.That(options.WouldTakeAPicture(new ClashTally()), Is.False);
-            Assert.That(options.WouldTakeAPicture(null), Is.False);
+            Assert.That(options.TakesAPictureOf(report, test, resolved, null), Is.False);
+            Assert.That(options.TakesAPictureOf(report, test, fresh, null), Is.True);
+            Assert.That(options.TakesAPictureOf(null, test, fresh, null), Is.False);
+            Assert.That(options.TakesAPictureOf(report, null, fresh, null), Is.False);
+            Assert.That(options.TakesAPictureOf(report, test, null, null), Is.False);
 
             options.Write = false;
 
-            Assert.That(options.WouldTakeAPicture(oneNew), Is.False);
+            Assert.That(options.TakesAPictureOf(report, test, fresh, null), Is.False);
+        }
+
+        // Each row passed over on its status or the cap is counted where it is passed over and nowhere
+        // else, so the writer and the picture pass, which both read the rule, count it once.
+        [Test]
+        public void ARowPassedOverOnItsStatusOrTheCapIsCountedOnce()
+        {
+            ImageOptions options = new ImageOptions();
+            options.CapPerTest = 1;
+            ClashReport report = new ClashReport("1C07BC", "out");
+            TestReport test = report.AddTest("Walls");
+            ClashRow resolved = new ClashRow();
+            resolved.Status = ClashStatus.Resolved;
+            ClashRow pictured = new ClashRow();
+            pictured.Status = ClashStatus.New;
+            pictured.ImageFile = "cd000001.jpg";
+            ClashRow pastTheCap = new ClashRow();
+            pastTheCap.Status = ClashStatus.New;
+            test.Add(resolved);
+            test.Add(pictured);
+            test.Add(pastTheCap);
+
+            Assert.That(options.TakesAPictureOf(report, test, resolved, null), Is.False);
+            Assert.That(options.TakesAPictureOf(report, test, pastTheCap, null), Is.False);
+
+            Assert.That(report.Images.SkippedByStatus, Is.EqualTo(1));
+            Assert.That(report.Images.SkippedByCap, Is.EqualTo(1));
+        }
+
+        // FR-076. Once the pictures' guard has fired no row takes a picture and none is counted, since
+        // the run stops and the rest is not attempted.
+        [Test]
+        public void AFiredGuardTakesNoPictureAndCountsNothing()
+        {
+            ImageOptions options = new ImageOptions();
+            ClashReport report = new ClashReport("1C07BC", "out");
+            TestReport test = report.AddTest("Walls");
+            ClashRow resolved = new ClashRow();
+            resolved.Status = ClashStatus.Resolved;
+            ClashRow fresh = new ClashRow();
+            fresh.Status = ClashStatus.New;
+            test.Add(resolved);
+            test.Add(fresh);
+
+            RepeatedFailureGuard guard = new RepeatedFailureGuard(2);
+            guard.RecordFailure(ImageFailure.NoFileArrived);
+
+            Assert.That(options.TakesAPictureOf(report, test, fresh, guard), Is.True, "one failure does not fire a guard of two");
+
+            guard.RecordFailure(ImageFailure.NoFileArrived);
+
+            Assert.That(options.TakesAPictureOf(report, test, fresh, guard), Is.False);
+            Assert.That(options.TakesAPictureOf(report, test, resolved, guard), Is.False);
+            Assert.That(report.Images.SkippedByStatus, Is.EqualTo(0));
+            Assert.That(report.Images.SkippedByCap, Is.EqualTo(0));
         }
     }
 }

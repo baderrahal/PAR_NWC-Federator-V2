@@ -89,11 +89,13 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Renders the pictures the way the add-in does during the run: the test number
-        /// is handed out in the order the tests write their first picture, which is the
-        /// order they RAN, and the clash number counts up inside the test. Each picture
-        /// holds its own row's name, so a picture that ends up under another row's number
-        /// is visible as a wrong name, not just a wrong count.
+        /// Renders the pictures in the order the tests RAN, the way the add-in did before F149,
+        /// through the numbering its writer reads, ClashReport.NextPictureOf and
+        /// PictureNumber.PointTheRow: the test number is handed out in the order the tests write
+        /// their first picture, and the clash number counts up inside the test. Each picture
+        /// holds its own row's name, so a picture that ends up under another row's number is
+        /// visible as a wrong name, not just a wrong count. Since F149 the add-in takes its
+        /// pictures in the report's order, PictureWalkTests, and the renumber finds them right.
         /// </summary>
         private void RenderInRunOrder(ClashReport report, IList<string> skip)
         {
@@ -108,14 +110,9 @@ namespace Federator.Core.Tests
                         continue;
                     }
 
-                    int testIndex = report.ImageIndexFor(test);
-                    int clashIndex = test.ImageCount + 1;
-                    string path = ImageNaming.PathFor(workbook, testIndex, clashIndex);
-                    File.WriteAllText(path, row.Name);
-
-                    row.ImageFile = ImageNaming.FileNameFor(testIndex, clashIndex);
-                    row.ImageLink = ImageNaming.LinkFor(workbook, testIndex, clashIndex);
-                    row.ImagePath = path;
+                    PictureNumber number = report.NextPictureOf(test, row);
+                    File.WriteAllText(ImageNaming.PathFor(workbook, number.TestIndex, number.ClashIndex), row.Name);
+                    number.PointTheRow(workbook);
                 }
 
                 report.ReleaseImageIndex(test);
@@ -467,7 +464,7 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Problems[0], Does.StartWith("the renaming stopped at Walls 2, cd010002.jpg to cd000002.jpg, which threw IOException"));
             Assert.That(outcome.Problems[0], Does.Contain(
                 "1 picture had been moved before it and 5 were under a holding name, "
-                + "and all 6 were put back under their run order names, each read back off the disk"));
+                + "and all 6 were put back under the names they were written under, each read back off the disk"));
             Assert.That(outcome.Lines()[0], Is.EqualTo(
                 "IMAGES   numbered in report order: 0 renamed, 0 already right, 0 missing"));
             Assert.That(outcome.Lines()[1], Does.StartWith("IMAGES   the renaming stopped at Walls 2"));
@@ -496,7 +493,7 @@ namespace Federator.Core.Tests
                 "the renaming stopped at Floors 1, cd000001.jpg to cd020001.jpg, which threw IOException"));
             Assert.That(outcome.Problems[0], Does.Contain(
                 "no picture had been moved before it and 5 were under a holding name, "
-                + "and all 5 were put back under their run order names, each read back off the disk"));
+                + "and all 5 were put back under the names they were written under, each read back off the disk"));
         }
 
         // ---------- what points at the renamed file ----------

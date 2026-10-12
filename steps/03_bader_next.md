@@ -339,8 +339,28 @@ The loop runs these on its own copy, 1A02MM again from a fresh set, after main w
 641. Run 1A04PK on the 50 test cut of the corrected matrix, Make viewpoints ticked, and look for the same `IMAGES` line and no such failure line
 642. Open three pictures of BLD-AR-Walls-vs-BLD-AR-Floors in the group's picture folder: the same 1024 square, camera, grid label, red and green as before, and only the AR model's items behind the two clashing ones. Open a picture of the mirror pair's kept test where it has one
 643. Look for, in the `IMAGES` lines of the group: the seconds each picture took, against the probe's 0.168 s a picture on that test with every model shown and 0.120 s with only the test's, with hardware acceleration on, `docs\history\scan.md` 5z-zd, and the group's seconds off its `GROUP finished` line
-644. Compare the Grid Location and Level cells of the rows of BLD-AR-Ramps-vs-BLD-AR-Floors in this run's internal workbook with set 08's, `steps\runs\08\item1-C04`: the same cells, read now under the hide
+644. Compare the Grid Location and Level cells of the rows of BLD-AR-Ramps-vs-BLD-AR-Floors in this run's internal workbook with set 08's, `steps\runs\08\item1-C04`: the same cells. With F149 merged the harvest hides nothing and every row is read before any model is hidden for a picture, so these cells are read with every model shown, as set 08 read them
 645. Send the log and the `.tsv` beside it, with the longest stretch the window did not answer and the peak memory off the run's `LIFE SUMMARY` where the loop ran it
+
+## Proof F149 pictures taken in the report's order, added 2026-10-12, rewritten for attempt 2
+
+The renumber line comes first, because it is the whole of the fix: a picture written under any other name than its final one shows there as renamed. The TIMING block next, since the pictures' seconds move from HARVEST to a step of their own, PICTURES, and a reading against set 09 that misses the move reads HARVEST as faster than it is.
+
+649. Install main with F145 and F149 merged
+650. Scan the C02 folder
+651. Pick the clash XML
+652. Untick `Skip clash when models sit off shared coordinates` on the Clash step, as set 09 ran, whose log says the rule was off. The box starts ticked on every open
+653. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
+654. Press Run
+655. Look for, after the CLASH lines of 1A02MM: the IMAGES line `numbered in report order: 0 renamed, 2931 already right, 0 missing`, where set 09 read 2931 renamed
+656. Look for, on the group's TIMING block: a `PICTURES` row among the top level steps and `IMAGES` among the nested ones, `RENUMBER` near nought against 38.930 s in set 09, and `HARVEST` lower than set 09's by about the pictures' seconds, which now sit under PICTURES
+657. Look for, in the log while the pictures are taken: the `STEP     PICTURES` started line, then a `PROGRESS PICTURES <test> picture N of M` line at least every 30 s until its finished line, and the window's live line naming PICTURES
+658. Look for, in the group's IMAGES lines: the line starting `IMAGES   2931 written,` with no line under it saying `failed. Their cells are empty and the run carried on`, since that line is written only where a picture failed, and no `IMAGE    failed for` line and no `IMAGE ` line saying `so no picture of the`
+659. Open the clash workbook of 1A02MM: each Image cell carries its picture's name and its link opens that picture, as in set 09
+660. Open cd000001.jpg, cd000002.jpg and cd010001.jpg of this run beside set 09's pictures of the same names: each shows the same two clashing items at the same camera, with only the test's models behind them where set 09 showed every model, F145
+661. Look for, in the `VIEWS TREE` block: the last line `7 of 7 hold`
+662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
+663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
 ## Proof of F130, the Shift range in the group list
 

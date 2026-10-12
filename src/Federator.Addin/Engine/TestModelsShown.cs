@@ -25,7 +25,10 @@ namespace Federator.Addin.Engine
     /// every model shown and says why. Hide adds hiding to the other models and leaves every hide
     /// the document held, and the state is read once before the first hide by
     /// SavedViewpoints.SnapshotHidden, measured in 5k, and put back after each test by
-    /// RestoreHiddenState. The runner makes one for its clash step and disposes it at the end, which
+    /// RestoreHiddenState. Since F149 the pictures are taken once every test has run, in stretches
+    /// of rows read from one test, so a test here is a stretch, and a test whose rows sit in two
+    /// stretches, another test's rows between them, is read and hidden for once for each.
+    /// The runner makes one for its clash step and disposes it at the end, which
     /// puts back any state still changed, releases the snapshot and writes the one IMAGES line.
     /// </summary>
     internal sealed class TestModelsShown : IDisposable
@@ -61,7 +64,7 @@ namespace Federator.Addin.Engine
 
             if (!PutBackWhatIsStillChanged(testName))
             {
-                tally.KeptEvery();
+                tally.KeptEvery(testName);
                 return null;
             }
 
@@ -87,7 +90,7 @@ namespace Federator.Addin.Engine
             catch (Exception error)
             {
                 tally.SidesRead(clock.Elapsed.TotalSeconds);
-                tally.KeptEvery();
+                tally.KeptEvery(testName);
                 log.Failure(
                     "reading which models the sides of " + testName + " live in",
                     error,
@@ -99,7 +102,7 @@ namespace Federator.Addin.Engine
 
             if (!rule.HidesAny)
             {
-                tally.KeptEvery();
+                tally.KeptEvery(testName);
                 log.NumberedRepeat(
                     "IMAGES every model shown for a test",
                     "IMAGES   " + testName + ": " + rule.WhyEveryModel,
@@ -134,7 +137,7 @@ namespace Federator.Addin.Engine
                 catch (Exception error)
                 {
                     stopped = true;
-                    tally.KeptEvery();
+                    tally.KeptEvery(testName);
                     log.Failure(
                         "reading the hidden state before the first test's pictures",
                         error,
@@ -151,7 +154,7 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
-                tally.KeptEvery();
+                tally.KeptEvery(testName);
                 log.Failure(
                     "hiding the models other than those of " + testName + " for its pictures",
                     error,
@@ -375,7 +378,7 @@ namespace Federator.Addin.Engine
                 done = true;
                 Stopwatch back = Stopwatch.StartNew();
                 owner.PutTheStateBack(testName);
-                owner.tally.Hid(hidden, hidingSeconds + back.Elapsed.TotalSeconds);
+                owner.tally.Hid(testName, hidden, hidingSeconds + back.Elapsed.TotalSeconds);
             }
         }
     }

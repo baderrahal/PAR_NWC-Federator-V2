@@ -168,15 +168,27 @@ namespace Federator.Core.Report
     /// line: the tests whose pictures were taken with models hidden, how many models each hid, the
     /// tests that kept every model shown, the seconds reading the tests' sides took and the seconds
     /// the hiding and the putting back took, apart, so the cost of the rule is read beside what it
-    /// saves.
+    /// saves. SINCE F149 THE TESTS ARE COUNTED BY NAME, the second reading: the pictures are taken in
+    /// stretches of one test's rows, so a test whose rows sit in two stretches is hidden for twice and
+    /// is one test on the line, and the models hidden are averaged over each time they were hidden.
     /// </summary>
     public sealed class PictureModelsTally
     {
-        public int TestsHidden { get; private set; }
+        private readonly HashSet<string> hidden = new HashSet<string>(StringComparer.Ordinal);
+        private readonly HashSet<string> keptEvery = new HashSet<string>(StringComparer.Ordinal);
+        private int hides;
+
+        public int TestsHidden
+        {
+            get { return hidden.Count; }
+        }
 
         public int ModelsHidden { get; private set; }
 
-        public int TestsKeptEvery { get; private set; }
+        public int TestsKeptEvery
+        {
+            get { return keptEvery.Count; }
+        }
 
         public double ReadingSeconds { get; private set; }
 
@@ -187,16 +199,17 @@ namespace Federator.Core.Report
             ReadingSeconds += Math.Max(0.0, seconds);
         }
 
-        public void Hid(int models, double seconds)
+        public void Hid(string testName, int models, double seconds)
         {
-            TestsHidden++;
+            hidden.Add(testName ?? string.Empty);
+            hides++;
             ModelsHidden += Math.Max(0, models);
             HidingSeconds += Math.Max(0.0, seconds);
         }
 
-        public void KeptEvery()
+        public void KeptEvery(string testName)
         {
-            TestsKeptEvery++;
+            keptEvery.Add(testName ?? string.Empty);
         }
 
         /// <summary>The one line, which says the setting was off where it was.</summary>
@@ -212,9 +225,9 @@ namespace Federator.Core.Report
                 return "IMAGES   only the models of each test shown for its pictures, and no test had a picture to take";
             }
 
-            string each = TestsHidden == 0
+            string each = hides == 0
                 ? string.Empty
-                : ", " + (ModelsHidden / (double)TestsHidden).ToString("0.#", CultureInfo.InvariantCulture) + " model(s) hidden on average";
+                : ", " + (ModelsHidden / (double)hides).ToString("0.#", CultureInfo.InvariantCulture) + " model(s) hidden on average each time";
 
             return "IMAGES   only the models of each test shown for its pictures: " + TestsHidden + " test(s) with models hidden"
                 + each + ", " + TestsKeptEvery + " test(s) kept every model shown, why said above on an IMAGES or a failure line, a repeated reason counted rather than written again, reading the tests' sides took "

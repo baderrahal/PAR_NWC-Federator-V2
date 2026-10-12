@@ -14,11 +14,11 @@ namespace Federator.Core.Tests
     public class RunStepsTests
     {
         [Test]
-        public void TheEighteenStepsAreThereInTheOrderAGroupMeetsThem()
+        public void TheNineteenStepsAreThereInTheOrderAGroupMeetsThem()
         {
             IList<string> all = RunSteps.All;
 
-            Assert.That(all.Count, Is.EqualTo(18));
+            Assert.That(all.Count, Is.EqualTo(19));
 
             // VIEWS is F85's, between IMAGES and WORKBOOK, because building the viewpoints
             // runs after the clash step and before the second NWF save. It was untimed
@@ -31,11 +31,15 @@ namespace Federator.Core.Tests
             // follows it, Bader's answer B to Q146: the internal workbook beside the clash
             // workbook holds the Generic Models sheet of F128 and the Coverage sheet, so it is
             // written once both are taken and whether or not the clash step ran. It was F128's
-            // GENERIC XLSX, listed after WORKBOOK while the engine wrote it after XML. Eighteen steps.
+            // GENERIC XLSX, listed after WORKBOOK while the engine wrote it after XML. PICTURES is
+            // F149's, between HARVEST and IMAGES: every picture is taken once every test has run,
+            // in the report's order, and each picture's IMAGES visit nests inside it, where it
+            // nested inside HARVEST before. Nineteen steps.
             string[] expected =
             {
                 "DECIDE", "APPEND", "NWF SAVE", "UNITS", "SETS", "TESTS CREATE", "TESTS RUN",
-                "HARVEST", "IMAGES", "RENUMBER", "VIEWS", "WORKBOOK", "HTML", "XML", "COVERAGE", "INTERNAL", "NWD", "CONFIRM"
+                "HARVEST", "PICTURES", "IMAGES", "RENUMBER", "VIEWS", "WORKBOOK", "HTML", "XML", "COVERAGE", "INTERNAL",
+                "NWD", "CONFIRM"
             };
 
             for (int i = 0; i < expected.Length; i++)
@@ -63,7 +67,7 @@ namespace Federator.Core.Tests
             {
                 RunSteps.Decide, RunSteps.Append, RunSteps.NwfSave, RunSteps.Units,
                 RunSteps.Sets, RunSteps.TestsCreate, RunSteps.TestsRun, RunSteps.Harvest,
-                RunSteps.Images, RunSteps.Renumber, RunSteps.Views, RunSteps.Workbook, RunSteps.Html,
+                RunSteps.Pictures, RunSteps.Images, RunSteps.Renumber, RunSteps.Views, RunSteps.Workbook, RunSteps.Html,
                 RunSteps.Xml, RunSteps.Coverage, RunSteps.InternalWorkbook, RunSteps.Nwd, RunSteps.Confirm
             })
             {
@@ -89,11 +93,19 @@ namespace Federator.Core.Tests
         public void TheOrderIsThePositionOnTheList()
         {
             Assert.That(RunSteps.OrderOf(RunSteps.Decide), Is.EqualTo(0));
-            Assert.That(RunSteps.OrderOf(RunSteps.Confirm), Is.EqualTo(17));
+            Assert.That(RunSteps.OrderOf(RunSteps.Confirm), Is.EqualTo(18));
             Assert.That(
                 RunSteps.OrderOf(RunSteps.Views),
                 Is.GreaterThan(RunSteps.OrderOf(RunSteps.Harvest)),
                 "the viewpoints are built after the clash step");
+            Assert.That(
+                RunSteps.OrderOf(RunSteps.Pictures),
+                Is.GreaterThan(RunSteps.OrderOf(RunSteps.Harvest)),
+                "the pictures are taken once every test's rows are read, F149");
+            Assert.That(
+                RunSteps.OrderOf(RunSteps.Images),
+                Is.GreaterThan(RunSteps.OrderOf(RunSteps.Pictures)),
+                "and each picture's visit sits inside the picture pass");
             Assert.That(
                 RunSteps.OrderOf(RunSteps.Renumber),
                 Is.GreaterThan(RunSteps.OrderOf(RunSteps.Images)),

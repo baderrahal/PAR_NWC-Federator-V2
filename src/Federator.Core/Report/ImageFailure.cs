@@ -17,6 +17,18 @@ namespace Federator.Core.Report
         /// <summary>The render returned and the file is not on the disk, or is empty.</summary>
         public const string NoFileArrived = "the render finished but no file arrived";
 
+        /// <summary>
+        /// The test the clash was read from was not found again at its place once every test had
+        /// run, F149, so none of the pictures read from it could be asked for.
+        /// </summary>
+        public const string TestNotFoundAgain = "the test it was read from was not found again";
+
+        /// <summary>
+        /// The clash was not found again in the test it was read from, by its index or by its
+        /// name among its siblings, F149, so its picture could not be asked for.
+        /// </summary>
+        public const string ClashNotFoundAgain = "the clash was not found again in its test";
+
         private ImageFailure(string reason, string detail)
         {
             Reason = reason;
@@ -42,6 +54,38 @@ namespace Federator.Core.Report
             }
 
             return new ImageFailure(error.GetType().Name + ": " + error.Message, null);
+        }
+
+        /// <summary>
+        /// A picture whose test was not found again once every test had run, F149, the breaker's
+        /// first point on attempt 1, which left its cell empty and counted it nowhere. Where it was
+        /// looked for is said beside the reason.
+        /// </summary>
+        public static ImageFailure BecauseItsTestWasNotFoundAgain(string where)
+        {
+            return new ImageFailure(TestNotFoundAgain, Beside(where));
+        }
+
+        /// <summary>A picture whose clash was not found again in its test, F149, with what was found instead beside the reason.</summary>
+        public static ImageFailure BecauseItWasNotFoundAgain(string whyNot)
+        {
+            return new ImageFailure(ClashNotFoundAgain, Beside(whyNot));
+        }
+
+        /// <summary>
+        /// A picture not yet asked for when a throw ended the pictures of its stretch, F149. It
+        /// failed for that throw, so it is counted under the throw's own reason, the one a render
+        /// that threw the same way is counted under, and the line says the throw ended its stretch.
+        /// </summary>
+        public static ImageFailure BecauseItsStretchEnded(Exception error)
+        {
+            ImageFailure thrown = BecauseItThrew(error);
+            return new ImageFailure(thrown.Reason, "(it ended the pictures of its stretch before this one's turn)");
+        }
+
+        private static string Beside(string detail)
+        {
+            return string.IsNullOrEmpty(detail) ? null : "(" + detail + ")";
         }
 
         /// <summary>The reason with its detail, for the log line.</summary>
