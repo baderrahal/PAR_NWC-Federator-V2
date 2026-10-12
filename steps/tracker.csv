@@ -551,7 +551,7 @@ F142-R2,"the life check's query of the machine's memory has a 5 s timeout on rea
 F144,the first-50 copy for the fast checks,F144,none,fix,merged,200,none,2026-10-11
 F144-R1,"the first 50 tests of the corrected matrix on 1A04PK hold BLD-AR-Walls-vs-BLD-AR-Floors, whose harvest took 5817 s in set 06, so the cut down 1A04PK is a check of hours and not minutes until the speed fix",F144,none,register row,open,none,none,2026-10-11
 F145,only the test's models shown for its pictures,F145,none,fix,merged,204,none,2026-10-12
-F149,pictures taken in the report's order so none is renamed,F149,none,fix,in review,UNKNOWN,none,2026-10-12
+F149,pictures taken in the report's order so none is renamed,F149,none,fix,merged,207,none,2026-10-12
 F149-R1,"since F149 every picture is taken once every test of the group has run, so the pictures' guard can stop a run only after the whole group's clash tests, where before it stopped after the test the fiftieth failure in a row fell in, a cost said in the rule that Bader has not weighed, the reviewer's first point on attempt 1",F149,none,register row,open,none,none,2026-10-12
 F148,two tests that filled the shared temp folder,F148,none,fix,merged,203,none,2026-10-11
 F147,"long runs kept from slowing, the undo kept from growing during the pictures and the texture cache under %TEMP%\ogs cleared between tests past 5 GB, Q152 item 2",F147,none,fix,in review,UNKNOWN,none,2026-10-12
