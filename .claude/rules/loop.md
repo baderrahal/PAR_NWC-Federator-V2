@@ -389,6 +389,29 @@ was measured at 2 to 8 s. Then the last lines are saved, that Navisworks is clos
 the handle its adoption holds, and the hang is a finding. A sample that cannot be read
 restarts both clocks, so it never counts toward a hang. A run still going 12 hours after
 adoption is closed the same way and recorded as CEILING, never HUNG, Bader's answer Q84.
+THE LIFE CHECK, F142, Bader's order of 2026-10-11 headed 1A04PK IS FROZEN, on every run that
+drives the tool's window or reads its log: every 30 s the monitor writes one LIFE line into
+record.txt and into life.txt beside it, whether the window WindowKind reads as the tool's, or else
+the Navisworks main window, answers WM_NULL within 2 s, whether Windows counts it hung, the
+processor seconds since the last LIFE line, the private bytes and working set, the machine's free
+physical memory and free commit, and the tool's last STEP line, or PROGRESS or CALL line once F143 writes them, masked. A
+stretch not answering runs from the first reading that found it to the last, plus the 2 s wait,
+the span the readings saw and no more, and belongs to the window it began on. Not answering at every reading for 2
+minutes gets a LIFE CLASS line, memory under 2048 MB free, busy at Q83's rate of processor time
+or more, stuck under it, UNKNOWN where a number was not read, and the run ends on a LIFE SUMMARY
+line, the longest stretch with the step it began in, the peak working set as the process counts
+it and the highest private bytes read. It reads and never acts, the hang rule stays the only
+close for being stuck. The lead's own waiter, outside the repo, reads life.txt and posts three
+lines in the tab on a LIFE CLASS line. tools\loop\prove-life.ps1 proves it, its stand-in copied
+as LifeStandIn.exe so no process named Roamer starts during another run.
+
+FAST CHECKS, Bader's order of 2026-10-11 headed NO MORE TWO HOUR TEST LOOPS: a full run of
+1A04PK takes hours, so a fix is proved on 1A02MM and on a cut down 1A04PK, the same models run with the
+copy tools\loop\cut-xml.ps1 writes of the picked XML, the first 50 tests in its order, mirrors included,
+under the run set's copy, the full XML never edited. After each fast check the lead gives Bader three
+lines in the tab, its time, what is proven and what failed. The whole 1A04PK runs once, after the speed
+fix and the fast checks pass, with the life check on, and only once Bader has said in the tab to start it.
+
 Any dialog Navisworks raises during a run is a finding with its text. A pane is not a dialog,
 F125, such as a floating Clash Detective pane of unknown origin, likely from his saved layout,
 UNKNOWN, up in both runs of set 04 item 1 on C02 on 2026-10-04: a window

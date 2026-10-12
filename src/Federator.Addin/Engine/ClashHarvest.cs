@@ -59,6 +59,63 @@ namespace Federator.Addin.Engine
         public string WorkbookPath { get; set; }
 
         /// <summary>
+        /// The runner's callback, which renders the live line and, through the window's pump,
+        /// lets the window answer, F143. Called between two clashes, so the window answers
+        /// between them where it answered only between tests. Null says nothing.
+        /// </summary>
+        public Action<string> Tick { get; set; }
+
+        /// <summary>The seconds of the PROGRESS lines, F143. Null writes none.</summary>
+        public ProgressSettings Progress { get; set; }
+
+        /// <summary>The test the rows are read for, named on the live line and the PROGRESS lines.</summary>
+        public string TestName { get; set; }
+
+        private StepProgress said;
+        private string saidStep;
+        private int underGroups;
+
+        /// <summary>
+        /// Starts the count of one stretch of pieces, F143: the rows of one test, or every picture
+        /// of the picture pass, F149, one count across the whole pass so a PROGRESS line comes at
+        /// least every setting's seconds over it. The PROGRESS line is due once the setting's
+        /// seconds have passed from here.
+        /// </summary>
+        public void BeginPieces(string step)
+        {
+            saidStep = step;
+            underGroups = 0;
+            said = Progress == null ? null : new StepProgress(Progress.EverySeconds, log.ElapsedSeconds);
+        }
+
+        /// <summary>
+        /// Between two pieces of a stretch, F143: the live line, whose callback lets the window
+        /// answer, and a PROGRESS line with its .tsv row naming the step, the test and the count
+        /// once one is due. Set 06's run of 1A04PK sat 97 minutes in the rows of one test with
+        /// neither. A total below nought is a count not known.
+        /// </summary>
+        public void Piece(string piece, int done, int total)
+        {
+            string count = done.ToString(CultureInfo.InvariantCulture) + " of "
+                + (total < 0 ? "UNKNOWN" : total.ToString(CultureInfo.InvariantCulture));
+
+            if (Tick != null)
+            {
+                Tick(TestName + ", " + piece + " " + count);
+            }
+
+            if (said != null && said.Due(log.ElapsedSeconds))
+            {
+                log.Numbered(
+                    said.Line(saidStep, TestName, piece, done, total, log.ElapsedSeconds),
+                    "progress",
+                    TestName,
+                    done.ToString(CultureInfo.InvariantCulture),
+                    saidStep + " " + piece + " " + count);
+            }
+        }
+
+        /// <summary>
         /// The merge the test harvested is the test kept of, F132's add-in half, or null for
         /// a test of no merge. Every clash of the test is handed to it as it is read, each
         /// clash under a group on its own with the group's row, MirrorMerge.KeptFound, so
@@ -76,17 +133,12 @@ namespace Federator.Addin.Engine
         /// Where set, every row is recorded here with the index path of its result under
         /// the test, RowUnderTest, as it is read. The runner keeps the address of each row
         /// by it, so the views resolve each row of the merged report in the document, F132
-        /// attempt 2, and the pictures of a test in a merge are rendered after the merge.
+        /// attempt 2, and every picture is taken by it once every test has run and every
+        /// merge is made, F149. No picture is taken while the rows are read, since the merge
+        /// changes which rows the report holds, their statuses and their numbers, and the
+        /// report's order is known only once the last test has run.
         /// </summary>
         public IList<RowUnderTest> Recorded { get; set; }
-
-        /// <summary>
-        /// Where true, no picture is rendered while the rows are read. The runner renders
-        /// them after the merge from Recorded, since the merge changes which rows the report
-        /// holds, their statuses, which the choice of a picture reads, and their numbers.
-        /// False renders each picture as the row is read, as every test of no merge does.
-        /// </summary>
-        public bool PicturesWait { get; set; }
 
         /// <summary>
         /// The property display names to look for, in order, the first that resolves
@@ -106,19 +158,12 @@ namespace Federator.Addin.Engine
         public string[] CategoryNames { get; set; }
 
         /// <summary>
-        /// Every row for one test, and a picture for each row that asked for one.
-        ///
-        /// The picture is rendered here rather than in a second pass because this is
-        /// where the result handle already is, and it is rendered only once the row has
-        /// been fully read, so a render that somehow invalidated the handle could not
-        /// cost a single column.
+        /// Every row for one test, each recorded with the path of its result where Recorded is
+        /// set. Its pictures are taken by PictureLater once every test has run, F149, in the
+        /// report's order, where until then each was rendered here as its row was read, under
+        /// a number the renumber then changed.
         /// </summary>
-        public void Into(
-            Document document,
-            DocumentClashTests clashTests,
-            ClashTest test,
-            ClashReport report,
-            TestReport into)
+        public void Into(Document document, ClashTest test, TestReport into)
         {
             if (into == null)
             {
@@ -126,10 +171,11 @@ namespace Federator.Addin.Engine
             }
 
             GridSystem grid = ActiveGrid(document);
+            BeginPieces(RunSteps.Harvest);
 
             try
             {
-                Walk(document, clashTests, grid, test.Children, report, into, new List<int>());
+                Walk(document, grid, test.Children, into, new List<int>());
             }
             finally
             {
@@ -142,14 +188,12 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// The rows, in Clash Detective's order. The path is the index of each level under
-        /// the test, kept for a picture rendered after the merge, RowUnderTest.
+        /// the test, kept for the picture taken once every test has run, RowUnderTest.
         /// </summary>
         private void Walk(
             Document document,
-            DocumentClashTests clashTests,
             GridSystem grid,
             SavedItemCollection children,
-            ClashReport report,
             TestReport into,
             List<int> path)
         {
@@ -166,28 +210,37 @@ namespace Federator.Addin.Engine
 
                     ClashResultGroup group = child as ClashResultGroup;
 
+                    // Each row recorded as it is added to the report, F149, the second reading: a
+                    // group row recorded after the clashes under it were handed was in neither of the
+                    // runner's maps where that handing threw, so it had no picture and no view.
                     if (group != null)
                     {
                         ClashRow groupRow = GroupRow(document, grid, group);
                         into.Add(groupRow);
+                        Record(groupRow, path);
                         HandTheClashesUnder(document, grid, group.Children, groupRow, path);
-                        PictureOrDefer(clashTests, group, report, into, groupRow, path);
-                        path.RemoveAt(path.Count - 1);
-                        continue;
                     }
-
-                    ClashResult result = child as ClashResult;
-
-                    if (result != null)
+                    else
                     {
-                        ClashRow resultRow = ResultRow(document, grid, result);
-                        into.Add(resultRow);
-                        HandOne(resultRow, resultRow);
-                        PictureOrDefer(clashTests, result, report, into, resultRow, path);
+                        ClashResult result = child as ClashResult;
+
+                        if (result != null)
+                        {
+                            ClashRow resultRow = ResultRow(document, grid, result);
+                            into.Add(resultRow);
+                            Record(resultRow, path);
+                            HandOne(resultRow, resultRow);
+                        }
                     }
 
                     path.RemoveAt(path.Count - 1);
                 }
+
+                // After the row's own wrapper is released. The test, its children and the grid
+                // stay held across the pump as they are across every render: the tool's window is
+                // modal over Navisworks and every handler of it that touches Navisworks returns
+                // while a run is going, so nothing the pump dispatches changes the document.
+                Piece("row", i + 1, children.Count);
             }
         }
 
@@ -243,6 +296,12 @@ namespace Federator.Addin.Engine
 
                     path.RemoveAt(path.Count - 1);
                 }
+
+                // F143, the readers' point: in a merge every clash under a group row is read on its
+                // own, so a group of thousands is no longer one silent piece. A group under a group
+                // counts as an item too, and the count of the whole is not known here, UNKNOWN.
+                underGroups++;
+                Piece("item under a group", underGroups, -1);
             }
         }
 
@@ -325,49 +384,54 @@ namespace Federator.Addin.Engine
             return read.MergeKey();
         }
 
-        /// <summary>The row recorded with its path where Recorded is set, then a picture now unless the pictures wait for the merge.</summary>
-        private void PictureOrDefer(
-            DocumentClashTests clashTests,
-            IClashResult result,
-            ClashReport report,
-            TestReport test,
-            ClashRow row,
-            List<int> path)
+        /// <summary>
+        /// The row recorded with its path where Recorded is set. Since F149 no picture is taken
+        /// while the rows are read, so attempt 1's branch that took one here, which no run with
+        /// pictures reached any more, is gone with the flag that chose it.
+        /// </summary>
+        private void Record(ClashRow row, List<int> path)
         {
             if (Recorded != null)
             {
                 Recorded.Add(new RowUnderTest(row, path));
             }
-
-            if (PicturesWait)
-            {
-                return;
-            }
-
-            Picture(clashTests, result, report, test, row);
         }
 
         /// <summary>
-        /// Renders the picture of one row recorded while its test was read, F132's add-in
-        /// half, after the merge, by the index path of its result under the test handed in,
-        /// freshly resolved by the runner, ResultPath. A path that no longer leads to the
-        /// row's result is said and the cell is left empty. Every wrapper walked is disposed.
+        /// Renders the picture of one row recorded while its test was read, once every test has
+        /// run and every merge is made, F149, by the index path of its result under the test
+        /// handed in, freshly resolved by the runner, ResultPath. Nothing is resolved for a row
+        /// that takes no picture, ClashImages.Wanted, and a path that no longer leads to the
+        /// row's result is counted as a picture failed, ClashImages.NotReached, and its cell left
+        /// empty. Every wrapper walked is disposed.
         /// </summary>
         public void PictureLater(
             DocumentClashTests clashTests, ClashTest test, ClashReport report, TestReport into, RowUnderTest recorded)
         {
-            if (test == null || recorded == null)
+            if (test == null || recorded == null || Images == null || report == null || into == null)
             {
                 return;
             }
 
+            // F149, the reviewer's eighth point on attempt 1: a row of a status not asked for, past
+            // the cap or after the guard fired is passed over here, counted as the writer counts it,
+            // before its result is resolved.
+            if (!Images.Wanted(report, into, recorded.Row, WorkbookPath))
+            {
+                return;
+            }
+
+            // The pictures are taken before the compact, so nothing has moved a result since its row
+            // was read and a row with no name of its own is taken at its recorded index.
             string whyNot;
             bool moved;
-            SavedItem item = ResultPath.ResultAt(test, recorded, into.Name, out whyNot, out moved);
+            SavedItem item = ResultPath.ResultAt(test, recorded, into.Name, true, out whyNot, out moved);
 
             if (item == null)
             {
-                log.Detail("IMAGE    " + whyNot + ", so its picture is not rendered");
+                // One clash not found again is one attempt that failed, so it reaches the guard on its own.
+                ImageFailure notFound = ImageFailure.BecauseItWasNotFoundAgain(whyNot);
+                Images.NotReached(report, into, new[] { recorded.Row }, 0, WorkbookPath, notFound, notFound);
                 return;
             }
 
@@ -401,7 +465,7 @@ namespace Federator.Addin.Engine
             // The clashes under it and no more, F113, so a group with none under it adds
             // nothing to the Clashes cell or to its status's cell.
             ClashRow row = ClashRow.ForGroup(CountLeaves(group.Children, distances));
-            row.Name = Words.Or(group.DisplayName, "group");
+            row.NameAfter(group.DisplayName, true);
             row.Status = (CoreClashStatus)(int)group.Status;
             row.Distance = ClashRow.MostSevere(distances, group.Distance);
             row.Description = Words.Or(group.Description, string.Empty);
@@ -428,7 +492,7 @@ namespace Federator.Addin.Engine
             ClashRow row = new ClashRow();
             row.IsGroup = false;
             row.RawClashes = 1;
-            row.Name = Words.Or(result.DisplayName, "clash");
+            row.NameAfter(result.DisplayName, false);
             row.Status = (CoreClashStatus)(int)result.Status;
             row.Distance = result.Distance;
 
@@ -618,13 +682,8 @@ namespace Federator.Addin.Engine
             TestReport test,
             ClashRow row)
         {
-            if (Images == null || report == null || string.IsNullOrEmpty(WorkbookPath))
-            {
-                return;
-            }
-
-            // After the guard, so a run with the pictures switched off carries no IMAGES
-            // step at all rather than thousands of steps that did nothing.
+            // After PictureLater's choice, so a run with the pictures switched off carries no
+            // IMAGES step at all, and since F149 a row passed over opens none either.
             using (RunStep step = log.Step(RunSteps.Images))
             {
                 Images.Write(clashTests, result, report, test, row, WorkbookPath);
@@ -945,10 +1004,10 @@ namespace Federator.Addin.Engine
     }
 
     /// <summary>
-    /// One row of a test in a merge whose picture waits for the merge, F132's add-in half:
-    /// the row and the index path of its result under its test, each level's index from
-    /// the test's own children down, so the result is found again by address once the
-    /// merge has run and never held across it.
+    /// One row as its test was read, F132's add-in half: the row and the index path of its
+    /// result under its test, each level's index from the test's own children down, so the
+    /// result is found again by address for the views and, since F149, for every picture,
+    /// taken once every test has run and every merge is made, and never held across either.
     /// </summary>
     public sealed class RowUnderTest
     {

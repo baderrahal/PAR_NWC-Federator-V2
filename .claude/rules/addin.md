@@ -76,7 +76,9 @@ well as to pass.
 - `Say` renders every time and `Tick` renders at most once a second. The pieces that
   speak once per test, once per set and once per viewpoint get `Tick`, so a loop over
   1830 tests repaints the window about as often as a person can read it. Anything said
-  through `Tick` is in the log as well, so a message the throttle skips is never lost
+  through `Tick` is in the log as well, so a message the throttle skips is never lost, bar
+  one since F143: the harvest's sentence for each row reaches the log as a PROGRESS line
+  at most every 30 s, since a line per row would be 1556 lines for one test
 - RENDERING THE LINE IS WHAT MARKS IT AS SAID. A caller that renders the line itself and
   then hands the result to the throttle gets skipped by that throttle, which is how the
   step name nearly never reached the window. A caller that wants the throttle to render
@@ -267,14 +269,32 @@ well as to pass.
   plan for each view's camera clash alone, `TestsViewpointForResult` on a copy, where F85
   read one per clash. A VIEW OF NOTHING IS NO VIEW, B2: a view none of whose clashing items'
   models could be read or named a model of the group is counted FAILED with
-  `ShownModels.WhyNoView` before anything is hidden or dimmed for it. PER VIEW, each stretch
+  `ShownModels.WhyNoView` before anything is hidden or dimmed for it. EVERY CAMERA IS READ
+  FIRST, F141 attempt 2, P18's shape: once the hidden state is read and before the first view is
+  touched, each planned view's camera clash is read once through `CameraOf`, `TestsViewpointForResult`
+  on a copy, held by the view's key and disposed when the views end, each release in its own try,
+  and a view with no camera is failed with why before anything is hidden or dimmed for it. Per view
+  the held camera is framed, or copied for a view of one clash, after the hiding, the undim, the dim
+  and the paint, so none of `CameraOf`'s three clash calls, the test resolved, the result resolved
+  and `TestsViewpointForResult`, is made while a view's dim and paint stand. F85, which set 04 ran at
+  e4484d1, read every camera in its walk too and read 2813 views back painted. Set 07's 1A02MM,
+  making those calls per view between the paint and the record, wrote 69 views and read back no
+  material override on any, the hidden models kept, and that one of them takes the dim and the
+  paint off is read off that difference and not measured alone. PER VIEW, each stretch
   timed into its `ViewsPart`, FR-073: the hiding
   by `ShowOnlyModels` over the indexes of `ShownModels.Shown`, skipped where the view before
   showed the same models, P18, the undim of what the view before left, FR-065, one
   `DimAllBut` over the shown roots with ONE reset over the collection of every clashing item,
   one `OverrideTemporaryColor` per colour over the red and the green collections of
   `PaintPlan`, P17, `FramingBox` over the clash centres and `ZoomBox` on a copy of the camera
-  clash's camera, P16, a view of one clash keeping Clash Detective's own, `EnsureFolders`
+  clash's camera held since the cameras were read, P16, or a plain copy of it for a view of one
+  clash, THE CAMERA A COPY IS MADE FROM KEPT UNTIL THE COPY IS DISPOSED, as P16 kept it, F141:
+  set 06's run of 1A02MM on 2026-10-11 disposed it first and every one of its 47 framed views
+  threw ObjectDisposedException on the copy's Position, steps\runs\06\item1-C02, while a copy
+  made by `CameraOf` inside a using of the viewpoint `TestsViewpointForResult` gave read whole
+  in all 14 views of one clash, and P18 held such a copy across 20 views and a removal and copied
+  it per view, so which sources a copy outlives is read off those three and not assumed for any
+  other, `EnsureFolders`
   REUSING a folder at its path and returning the depths it made so each folder the tool
   makes is marked and no other, row F114-K5, the record through the COM view with
   ApplyHideAttribs and ApplyMaterialAttribs, 5m, and the mark by
@@ -403,14 +423,14 @@ well as to pass.
   row of its own read whole, `ClashItem.MergeKey`, the one key, read off the file, the id and
   the geometry name the harvest read, UNKNOWN with no id. A clash that would not hand is a
   FAILURE line and the merge fails closed by its own rule. AFTER THE RUN AND NEVER BEFORE,
-  `MergeTheMirrors`: `AddTo` per merge, its MIRROR MERGE block, the kept test's ROWS line with
-  `AddedToTheKeptTest`, held back from the harvest for it alone, then the pictures of every
-  test in a merge, `RenderThePicturesWaiting`: no picture of such a test is rendered while its
-  rows are read, `ClashHarvest.PicturesWait`, `ClashHarvest.Recorded` records every row of
-  every test with the index path of its result, `RowUnderTest`, and after the merge each row
-  the report still holds is rendered under the test the report holds it under, the result
-  resolved again by the test's address and that path, `PictureLater`, so a mirror taken out
-  gets none and a row only a mirror found is pictured under the kept test. The BLOCKS check is
+  `MergeTheMirrors`: `AddTo` per merge, its MIRROR MERGE block and the kept test's ROWS line with
+  `AddedToTheKeptTest`, held back from the harvest for it alone. Then, in a finally so a throw
+  out of the merge loses none, every picture, `RenderThePicturesWaiting`, F149: no picture is
+  rendered while rows are read, `ClashHarvest.Recorded` records every row of every test with
+  the index path of its result, `RowUnderTest`, and each row the report still holds is pictured
+  under the test the report holds it under, the result resolved again by the test's address and
+  that path, `PictureLater`, so a mirror taken out gets none and a row only a mirror found is
+  pictured under the kept test. The BLOCKS check is
   handed `ClashReport.MirrorsMerged`. THE VIEWS READ THE MERGED REPORT AND NEVER THE DOCUMENT
   BY NAME, attempt 2 of 2026-10-08 on the breaker's finding R4: `ViewpointBuilder.Collect`
   takes `Federator.Core.Views.ReportClashes.Of(report)`, the rows the merged report holds under
@@ -425,7 +445,13 @@ well as to pass.
   every Resolved result before the views run and moves every live result after one an index
   left, so a row not named at its recorded index is taken from the one sibling carrying its
   name, refused with the count where none or more than one does, and the rows so moved are
-  counted on a VIEWS line. So a mirror taken out of the
+  counted on a VIEWS line. A ROW WHOSE RESULT HAD NO NAME OF ITS OWN, `ClashRow.NoNameOfItsOwn`,
+  set by `ClashRow.NameAfter`, carries the word its kind is given, as every other unnamed
+  sibling does, so a name match proves nothing about it, F149's second reading:
+  `ResultSiblings.PickUnnamed` takes it at its recorded index only where `ResultPath.ResultAt` is
+  told the index is exact, which the pictures, taken before the compact, say, and refuses it for
+  the views, which say no, so it is counted and said on their line of rows not found, as it was
+  before F149, and never framed and painted on the next unnamed result. So a mirror taken out of the
   report gets no view, a clash only a mirror found is viewed under the kept test and named as
   the workbook names it, and a row whose result is not found again, or with no address, is
   counted on a VIEWS line and gets none. A group row is one view framed on the group, as the
@@ -794,6 +820,69 @@ well as to pass.
   CLASH WORKBOOK HOLDS THE CLIENT'S SHEET ALONE, the Navisworks export's layout, and its
   WORKBOOK CHECK calls a second sheet a problem. The settings are `ReportOptions.Coverage`, read
   off Core and never typed in the window. The two hand buttons take no coverage, they are not runs
+- THE HARVEST ANSWERS BETWEEN ROWS, F143, Bader's order of 2026-10-11 headed 1A04PK IS FROZEN.
+  Set 06's run of 1A04PK sat from 14:44 to 16:21 in the rows of BLD-AR-Walls-vs-BLD-AR-Floors, 1556
+  clashes, with no line in the log and the window not answering, while TestsRunTest took 0.3 s, and
+  1A02MM's harvest of set 06 was 90 percent pictures, 136.5 s of rendering of 198.3 s. The window pumps
+  only when the engine's throttle renders the live line, FederatorWindow.Pump, so ClashHarvest now calls
+  the runner's callback, ClashHarvest.Tick, through ClashHarvest.Piece after each top level row of a
+  test, after the row's own wrapper is released, and after each item under a group row of a test in a
+  merge, whose count of the whole is UNKNOWN. The test, its children and the grid stay held across the
+  pump, as they are across every render, and so does the test's handle in RenderThePicturesWaiting,
+  whose pictures are pieces the same way: the tool's window is modal over Navisworks and every handler
+  of it that touches Navisworks returns while a run is going, Scan among them since F143. Piece writes a
+  PROGRESS line with its .tsv row once ProgressSettings.EverySeconds has passed, StepProgress. The two
+  calls that can be long, TestsRunTest and TestsImageForResult, are timed alone on the log's clock and
+  named on a CALL line with its .tsv row where they took ProgressSettings.LongCallSeconds or more,
+  LongCall.Say, in a finally, so one that throws is named too. Other passes over every clash, the
+  penetration and by design passes, off by default, have no piece yet, row F143-R1. The runner's
+  ProgressSettings is ClashRunner.Progress at its defaults, 30 s each, and it hands the render's to
+  ClashImages
+- ONLY THE TEST'S MODELS SHOWN FOR ITS PICTURES, F145, Bader's choice of Q150 on 2026-10-11, measured
+  first, scan.md 5z-zc: 7.76 s a picture with every model shown and 1.78 s with only the test's on the
+  first 20 clashes of 1A04PK's Walls-vs-Floors, the export's layout kept. TestModelsShown is one for the
+  clash step, made in ClashRunner.Run where pictures are written and ended in its finally in a try of its
+  own before the sets index is released, which puts back any hidden state still changed and writes the
+  one IMAGES line of PictureModelsTally, which counts the tests by name since F149's second reading, so a
+  test hidden for in two stretches is one test. Read takes the models off the test's OWN SelectionA and
+  SelectionB, never off the file's set paths, since a test found in the document keeps its own sides,
+  each item enumerated off GetSelectedItems, never disposed one by one, and walked to its model by
+  SavedViewpoints.ModelFileOf, which releases the parents and never the item. Hide takes the hidden state
+  once by SnapshotHidden, measured in 5k, adds hiding to every other model's root by HideTheOtherModels,
+  which unlike ShowOnlyModels resets nothing, so every hide the document held stays in the pictures, and
+  hands back what puts the state back by RestoreHiddenState after the stretch. NO CLASH HANDLE IS READ
+  ACROSS THE HIDE: RenderThePicturesWaiting, where since F149 every picture is taken, reads the models off a
+  handle released before the hide and pictures through one resolved after, the order 5z-zc ran in. A put
+  back that fails is tried again before the next stretch and at the end of the step, since a hide only
+  adds, and where it fails twice, or the hidden state cannot be read, the hiding stops for the step and
+  every later stretch keeps every model shown. Which models stay shown is Core's PictureModels, and a test
+  kept with every model shown is said with why on an IMAGES line. Since F149 the harvest hides nothing, so
+  every cell of a row, its Grid Location and Level among them, is read with every model shown
+- EVERY PICTURE TAKEN ONCE EVERY TEST HAS RUN, IN THE REPORT'S ORDER, F149, Bader's order of 2026-10-12 to
+  fix the slowest step: set 09's 1A02MM spent 39 s of 253 s in RENUMBER. The harvest reads rows only and
+  hides nothing. Run calls RenderThePicturesWaiting after MergeTheMirrors, whether or not a merge was made,
+  and where the merge threw, through RenderThePicturesAfterTheMergeThrew before the merge's error goes on
+  up. The pass runs inside a step of its own, PICTURES, opened as the engine's InStep opens one, with
+  Live.StepStarted and one count of PROGRESS lines across the whole pass, `PROGRESS PICTURES`. It walks
+  Core's PictureWalk over the rows the runner kept with their addresses, every row a harvest recorded
+  whichever way it ended, while the views are handed the rows of a harvest that read its test whole, as
+  before. A stretch is resolved once and hidden for by F145's rule only once a row of it takes a picture by
+  ImageOptions.TakesAPictureOf, read before any result is resolved, and each picture is numbered by
+  ClashReport.NextPictureOf, so it is written under its final name and the renumber renames none. A
+  picture not asked for because its test or its clash was not found again, or a throw ended its stretch,
+  is counted by ClashImages.NotReached, which reads Core's ImageOptions.CountTheRowsLeft: each row left by one
+  fault counted as the writer would have counted it, a row of a status not asked for or past the cap as passed
+  over and every other one as failed, and the fault told to the pictures' guard ONCE, the second reading, so one
+  throw never reads as fifty failed renders, and each fault said on one IMAGE line with its counts. A group row
+  is recorded as it is added to the report, before the clashes under it are handed to a merge, so a handing that
+  throws leaves it its picture. A throw out of the merge leaves the pictures taken, and a throw out of them then
+  is a failure line, so the merge's error is the one that goes on up. A pictures' guard firing after the tests'
+  guard stopped the run is said on an IMAGES line. The pass breaks out once the pictures' guard fires and
+  Run reads the guard when the pass ends, so the guard stops a run only once every test of the group has
+  run, row F149-R1, and RunEach reads it once before a group's first test for a stop an earlier group's
+  throw lost. A result is found again by its name read through ClashRow.NameOf, the rule the harvest
+  names a row by. A result or a group with no display name is found again only at its recorded index and
+  only where nothing can have moved it, the pictures, which run before Compact, and the views refuse it
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
   core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
   stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and

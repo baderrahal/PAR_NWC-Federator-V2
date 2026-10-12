@@ -2,6 +2,232 @@
 
 Newest entry at the top.
 
+## 2026-10-12 The loop, turn 6, F149 pictures taken in the report's order, attempt 2 of two, written by the developer as the lead's delegate
+
+Bader's order of 2026-10-12 to fix the slowest step. Branch fix-F149 off fix-F145 at 8aa6273, attempt 1
+f783618, fix-F145 taken in again at c052bdb.
+
+What was done:
+- Every picture is taken once every test has run and every merge is made, test by test in the report's
+  order, so each is written under its final name and RENUMBER, 39 s of set 09's 1A02MM, has nothing to
+  rename. The harvest only reads rows and hides nothing, so every cell of a row is read with every model
+  shown
+- Attempt 2 answered the reviewer's ten points and the breaker's seven of attempt 1. The pass is a step of
+  its own, PICTURES, with one count of PROGRESS lines across it and the live line naming it. It breaks out
+  as soon as the pictures' guard fires. A picture not asked for because its test or its clash was not found
+  again, or because a throw ended its stretch, is counted as failed on the IMAGES line and told to the
+  guard. Nothing is resolved for a row that takes no picture, and a stretch with none is not resolved or
+  hidden for. The pass runs in a finally after the merge, every row a harvest read before a throw keeps its
+  picture, a row met under two tests is pictured once, and a result with no display name is found again
+  under its row's name. The dead flag, its branch and every stale text the two readings named are gone
+- The second reading of attempt 2 found faults the team would see, fixed in this attempt under Bader's
+  Q148 B. One fault, a stretch's test not found again or a throw ending a stretch, now reaches the
+  pictures' guard ONCE and not once a row, so one throw can no longer stop the run as fifty failed renders,
+  and its rows are counted as the writer would have counted them, passed over on status or the cap and the
+  room under the cap as failed, by ImageOptions.CountTheRowsLeft, said on one IMAGE line with the counts. A
+  clash not found again stays one attempt each. A row whose result had no display name is never taken on
+  its name by the views, which run after the compact and framed the next unnamed result as its own, and is
+  said on their line of rows not found, ResultSiblings.PickUnnamed. A group row is recorded as it is added,
+  so a merge handing that throws leaves it its picture. A throw out of the pictures after a merge that threw
+  is a failure line and the merge's error goes on up. The pictures' guard firing after the tests' guard
+  stopped the run is said. The tally counts tests by name, the renumber's words and comments name the name
+  a picture was written under, and the proof steps untick the coordinates box as set 09 ran
+- The rules are Core's with tests: the walk and its stretches, PictureWalk, the number of each picture,
+  ClashReport.NextPictureOf, which the writer and the renumber now share with PictureNumber.PointTheRow,
+  the row's name, ClashRow.NameOf, the choice of a picture, ImageOptions.TakesAPictureOf, which replaced
+  F145's WouldTakeAPicture and its test, rewritten to the new rule, and the three reasons of a picture not
+  reached. A Core test proves a walk in the report's order leaves the renumber nothing to rename and one in
+  the order the tests ran does not
+- The cost of F149, said plainly: the pictures' guard can stop a run only once every test of the group has
+  run, where before it stopped after the test the fiftieth failure in a row fell in, row F149-R1. No
+  question is put to Bader for it, which is the lead's to put. RunEach reads the guard once before a
+  group's first test and no longer after each one, since nothing there can fire it. Each picture also costs
+  a walk to its result by its recorded path, which a test of no merge had in hand before F149, its seconds
+  UNKNOWN until the run reads PICTURES less IMAGES
+- Not changed: the views still read no row of a test whose harvest threw, as before F149, said by their own
+  line. A row left under two tests of the report by a merge that threw between two mirrors is pictured once,
+  and is still numbered under both by the renumber, an input both readers judged impossible in practice.
+  Whether a picture taken once every test has run shows what it showed straight after its own test is not
+  measured here and is step 660. Steps 646 to 648 are still not written, and whether that gap is meant is
+  UNKNOWN
+- Proved here: Core tests 2878 passed, 0 failed, 0 skipped before attempt 2 on fix-F145 c052bdb taken in,
+  2899 passed after its first reading, and 2915 passed, 0 failed, 0 skipped after the second. The new tests
+  failed before their Core was there, the step list's two at 18 steps for 19 and the rest not compiling. The
+  solution builds with 0 warnings and 0 errors, 0 and 0 before, and the locals and imports checks pass
+
+What remains: the reviewer and the breaker on the second reading's fixes, F145's merge then this one's, and
+1A02MM's fast check on the local machine, steps 649 to 663 of steps\03_bader_next.md.
+
+Known bugs: row F149-R1.
+
+What comes next: the JPEG save, 33 s of 1A02MM, and the speed loop's next measurement.
+
+## 2026-10-12 The loop, turn 6, F145 only the test's models shown for its pictures, attempt 2 of two, written by the lead
+
+Bader's answer of 2026-10-11 to Q150, item 1. Branch fix-F145 off main, main 493ecdb taken in.
+
+What was done:
+- Each test's pictures are taken with only the models its own two sides live in shown, every other model
+  hidden once before them and the hidden state put back after, at the same size and style, every hide the
+  document held kept. The rule is Core's, PictureModels over PictureSide, with the setting
+  ImageOptions.OnlyTheTestsModels on by default and WouldTakeAPicture. The add-in's TestModelsShown reads
+  the models off the test's own sides, hides by adding to the other models' roots and puts the state back
+  after each test. The home walk of the views moved into SavedViewpoints.ModelFileOf, so both share one walk
+- Attempt 1 read the models off the XML's set paths, held a clash handle across the hide and reset every
+  hide the document held. The reviewer and the breaker found those and four more, and attempt 2 answers
+  each, the doubts of a side of no item and of two models of one file name among them
+- Proved here: the solution builds with 0 warnings and 0 errors, and Core tests 2862 passed, 0 failed, 0
+  skipped on main 493ecdb and 2878 passed, 0 failed, 0 skipped after
+
+What remains: the readers' second look, the merge, main installed in place, 1A02MM's fast check and the 50
+test cut of 1A04PK, steps 639 to 645 of steps\03_bader_next.md.
+
+Known bugs: none new. A view and a picture of one test can show different models, a view showing only the
+models its clashing items live in, Q119 B, a third team's named under Q118 A, and the pictures the models
+the test's two sides live in.
+
+What comes next: F147, long runs from slowing, and F146, the renumber answering, then the proof run.
+
+## 2026-10-11 The loop, turn 6, F148 two tests that filled the shared temp folder, written by the lead
+
+Branch fix-F148 off main cdf8d4e. Found when fix-Q150's pre-commit refused its commit.
+
+What was done:
+- RowLogTests.ALogThatFellBackTakesItsRowFileWithIt and RunLogStepTests.ALogThatCannotWriteToDiskStillTakesSteps
+  fell back to the system temp folder and left a log and a .tsv there on every run, 200 of each on this
+  machine, until all 100 names were taken and the first test failed on every run after. Each now
+  has a folder of its own, the second one a fallback that cannot open, as its name says
+- Proved here: Core tests 2861 passed and 1 failed before on this machine, 2862 passed, 0 failed, 0
+  skipped after, and the run added no file to the temp folder
+
+What remains: the merge, then the branches waiting on a commit take main in.
+
+Known bugs: none new. The 400 files left in the temp folder are named to Bader and not removed.
+
+What comes next: fix-Q150's corrections, F145's reviewer and breaker.
+
+## 2026-10-11 The loop, turn 6, F141 attempt 2 of two, every camera read before the first view, written by the lead
+
+Branch fix-F141c off main 89082a2.
+
+What was done:
+- Set 07's fast check of 1A02MM proved attempt 1, no view threw, and showed F141-R1 on every view: 69
+  written, marked and read back with no material override, the hidden models kept, CHECK 3 holding and
+  CHECK 4 failing on 69 of 69
+- P18's measured shape read every camera in its walk before any view, and so did F85, which set 04 ran at
+  e4484d1 and read 2813 views back painted, where WriteOne made CameraOf's three clash calls between the
+  paint and the record. Every view's camera is now read once before the first view is touched and framed
+  per view after its paint, a view with no camera failed before anything is hidden for it, and each held
+  camera released in its own try. A first form read each camera just before its own view's hiding, and the
+  breaker found that read under the paint the view before left, so it was reshaped. The reviewer and the
+  breaker read the reshaped form and found nothing in the code that blocks, three sentences of the records
+  and the rule were corrected on their word. The rule is in addin.md
+- Proved here: the solution builds with 0 warnings and 0 errors, and Core tests 2862 passed, 0 failed, 0
+  skipped before and after, nothing under Core changed
+
+What remains: the fast check of 1A02MM on main with this merged, where 69 views created, no view failed on
+its dimming and CHECK 4 holding prove it, steps 629 to 633 of steps\03_bader_next.md.
+
+Known bugs: none new.
+
+What comes next: set 08's three test cut of 1A04PK measured a picture row, 830.7 s of 833.1 s rendering,
+so the choice on the pictures goes to Bader.
+
+## 2026-10-11 The loop, turn 6, F143 the harvest answers between rows, attempt 2 of two, written by the lead
+
+Bader's order of 2026-10-11 headed 1A04PK IS FROZEN, item 4. Branch fix-F143 off main d7d7c01.
+
+What was done:
+- The frozen run was read at 16:08 with nothing closed, runs\06\item1-C04\diag-1625: busy, 163 s of
+  processor in 120 s, 6.1 GB private and 34.8 GB free, every window hung, no dialog. The time sat in the
+  harvest of one test, 5817 s for 1556 clashes after a clash call of 0.3 s, and the harvest never let the
+  window pump between rows
+- The harvest now pumps and writes a PROGRESS line at most every 30 s between rows, items under a group in a
+  merge and pictures that waited for a merge, and a TestsRunTest or TestsImageForResult of 30 s or more is
+  named on a CALL line with its .tsv row. StepProgress is the one rule ViewsProgress reads, the VIEWS line
+  every 30 s
+- Attempt 2 answered the reviewer's eight points and the breaker's four
+- Proved here: Core tests 2848 passed before and 2862 passed, 0 failed, 0 skipped after. The solution builds
+  with 0 warnings and 0 errors
+
+What remains: the fast checks on Navisworks, steps 634 to 638.
+
+Known bugs: rows F143-R1 and F143-R2.
+
+What comes next: the fast checks, then the speed fix of the harvest's cost per row.
+
+## 2026-10-11 The loop, turn 6, F144 the first-50 copy for the fast checks, written by the lead
+
+Bader's order of 2026-10-11 headed NO MORE TWO HOUR TEST LOOPS, item 3. Branch fix-F144 off main 30a50f1.
+
+What was done: tools\loop\cut-xml.ps1 writes the first 50 tests of a picked XML with every set and the
+mirrors the product's rule pairs, read back through Federator.Core, the full XML's sha256 unchanged. The fast
+checks and the one full run asked of Bader first are in .claude\rules\loop.md.
+
+Proved here: the copy of set 06's corrected matrix, 52 tests, one pair, 61 sets, turn6\cut-test-2\cut.txt.
+Attempt 2 on the reviewer's eight points: read through ReadPicked, cut in the text, pairs read back name
+for name, turn6\cut-test-4. Core tests 2862 passed, 0 failed, 0 skipped before and after, nothing under
+src changed.
+
+What remains: the fast checks themselves, once the only Navisworks is free.
+
+Known bugs: row F144-R1.
+
+What comes next: the fast checks of 1A02MM and the cut down 1A04PK, then the speed fix.
+
+## 2026-10-11 The loop, turn 6, F142 the life check, attempt 2 of two, written by the lead
+
+Bader's order of 2026-10-11 headed 1A04PK IS FROZEN, item 3, with the freeze of Q143 on the loop's own
+scripts lifted for it. Branch fix-F142 off main d7d7c01 in %LOCALAPPDATA%\NwcFederatorLoop\wt-f142.
+
+What was done:
+- run.ps1's monitor writes a LIFE line every 30 s into record.txt and life.txt, a LIFE CLASS line where the
+  tool's window or the Navisworks window has not answered at any reading for 2 minutes, busy, memory or stuck
+  with its numbers, and a LIFE SUMMARY line at the end with the longest stretch, its step and the peak memory.
+  It reads and never acts. The rule is in .claude\rules\loop.md
+- Attempt 2 answered the reviewer's ten points and the breaker's eight of attempt 1, the window judged by the
+  guard's one rule, the stretch counted between the readings that saw it, and the proof holding every number to
+  the process's and the machine's own
+- Proved here: prove-life.ps1 55 right and 0 WRONG twice. Core tests 2848 passed, 0 failed, 0 skipped before
+  and after, nothing under src changed. prove-run.ps1 not run, its stand-ins being named Roamer while a loop run
+  held the only Navisworks
+
+What remains: the first loop run after the merge, read off its life.txt.
+
+Known bugs: rows F142-R1 and F142-R2.
+
+What comes next: F143 the window answering during the harvest, the first-50 copy, and the fast checks.
+
+## 2026-10-11 The loop, turn 6, F141 the framed views that threw, attempt 1 of two, written by the lead
+
+Bader's message after the usage limit, item 11: a fault a proof run shows that the team would see is fixed
+next, in two attempts at most, then proven by running that building again. Q143's limits, one reviewer and a
+breaker since this is the views. Branch fix-F141 off main 4bc4c83 in %LOCALAPPDATA%\NwcFederatorLoop\wt-f141.
+
+What was done:
+- Set 06's run of 1A02MM on main, steps\runs\06\item1-C02, wrote no view: 0 created and 61 failed. 47 of them,
+  every view of two or more clashes, threw ObjectDisposedException at Viewpoint.get_Position in WriteOne,
+  because WriteOne disposed the camera Clash Detective gave before it read the framed copy made from it. P16
+  read its copy with that camera still open, so the order the add-in used was never measured
+- WriteOne keeps the source in framedFrom and disposes it in the finally after the copy, the copy made into a
+  local first so a Framed that throws leaves one owner, the reviewer's and the breaker's shared point. The rule
+  is written once, in .claude\rules\addin.md beside the P16 sentence
+- Proved here: the solution builds with 0 warnings and 0 errors before and after. Core tests 2848 passed, 0
+  failed, 0 skipped before, at main 4bc4c83's records commit, and after, at 54e1c21's pre-commit, nothing in Core
+  changed
+- THE MERGE IN TWO. Pull request 196 merged 54e1c21 alone at b0d0007, since the pushes of 8a7fb46 and 0a98b49
+  failed on a git config error that the lead's output filter hid, and the lead merged without reading the pull
+  request's head back. So main carried the first form, which disposes one camera twice where Framed throws, and
+  none of these records. Branch fix-F141b carries the two commits onto main, pushed by an explicit refspec and
+  its head read back before the merge
+
+What remains: the merge, main installed in place, and 1A02MM run again from a fresh copy, steps 629 to 633 of
+steps\03_bader_next.md. That run proves the 47 or fails them, and it measures F141-R1.
+
+Known bugs: rows F141-R1 to F141-R3 of steps\tracker.csv.
+
+What comes next: 1A02MM again from set 07, then attempt 2 on F141-R1 only if the views of one clash still fail.
+
 ## 2026-10-11 The loop, turn 6, F127 the add-in half with the Coverage sheet in the internal workbook, Q146 answered B, row F127-R2, attempt 1 of two, written by the developer as the lead's delegate
 
 Bader's request 2 under Q112, FR-176 and FR-200, and his answer B to Q146 of 11 Oct 2026: the Generic Models

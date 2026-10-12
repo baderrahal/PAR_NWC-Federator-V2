@@ -253,6 +253,43 @@ read.
 
 How a change to a wall is proved with it and copied in is in .claude\rules\loop.md.
 
+## prove-life.ps1
+
+F142. Proves the life check of run.ps1's monitor with no Navisworks: LifeClass, LifeSpell,
+LifeWords and LifeStepOf on cases written out in full, and LifeRead on two stand-ins, one window
+that answers and one whose thread is blocked.
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\loop\prove-life.ps1 -Work <a folder
+that is not there>. It refuses a -Work that is there, ends past -LimitSeconds, 600 by default,
+and exits 0, 1 for a WRONG check or 2 when it could not run.
+
+- reads: run.ps1's function definitions off its syntax tree and nw-guard.ps1, dot-sourced
+- writes outside the repo: only -Work, the stand-in's build there with the exe copied as
+  LifeStandIn.exe, its build output and the stand-ins' ready and log files. A process named
+  Roamer is never started, so a loop run going at the same time reads no other Navisworks
+- starts: dotnet build of tools\loop\StandIn, and two LifeStandIn.exe, each ending by itself
+  within 65 s and closed by the proof in its finally
+
+## cut-xml.ps1
+
+F144, Bader's order of 2026-10-11 headed NO MORE TWO HOUR TEST LOOPS, item 3. Writes a copy of a picked
+clash XML that keeps every selection set and only the first -Tests tests in the XML's order, 50 by
+default, mirrors included, so a fast check of 1A04PK runs the code paths of the whole file.
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\loop\cut-xml.ps1 -Xml <the picked XML>
+-OutFolder <a folder not there yet, under the run set's copy> -CoreDll <a Federator.Core.dll>. The pairs
+are Federator.Core's MirrorRule over the file as MatrixCorrections.ReadPicked reads it, the add-in's one
+reader, -CoreDll loaded from its bytes so no installed file is held, and where the first tests hold no
+pair the first pair in the XML's order is kept too. The cut is made in the file's own text, so every
+byte but the test elements taken out is the full file's. Exit 0 when every read back holds, 1 when one
+does not, 2 when it refuses or throws.
+
+- reads: -Xml, its sha256 before and after, which must not move, the teams and corrections files beside
+  it, and -CoreDll
+- writes: only -OutFolder, the copy under the full XML's own name, read back against the bytes written by
+  sha256, the corrections and teams files beside it under the names Core's settings give, each read back
+  against its source, and cut.txt naming every test added for a mirror and the read back, read back too.
+  The copy is read again through ReadPicked, its tests in order, its sets and its pairs name for name
+- starts: nothing
+
 ## run.ps1
 
 F103 part 1, built from the design in steps\notes\f103-design.md. Always started as
@@ -430,7 +467,8 @@ the close, the watchdog's end, the put back, the keep awake release or the verdi
   and the probe's build
 - writes outside the repo, all under %LOCALAPPDATA%\NwcFederatorLoop: runs\NN\item0 with
   record.txt, watch.txt, mypid.txt, logs-before.txt, logs-after.txt, autosave-before.txt,
-  hang-tail.txt at a hang, settings\ with the export, the copies and before.clixml,
+  hang-tail.txt at a hang, life.txt with the LIFE lines of a window run since F142, copied to
+  the run's evidence with the others, settings\ with the export, the copies and before.clixml,
   settings.txt and m5.txt, the run folder of an earlier call moved aside as
   item0-aside-yyyyMMdd-HHmmss and never emptied, logs-backup\since-yyyyMMdd-HHmmss and
   autosave-backup\since-yyyyMMdd-HHmmss for files the backups did not hold,

@@ -31,6 +31,15 @@ namespace Federator.Core.Diagnostics
         public const string Harvest = "HARVEST";
 
         /// <summary>
+        /// The picture pass, F149: every picture taken once every test has run and every mirror
+        /// merge is made, in the report's order, so each is written under its final name. IMAGES,
+        /// one visit per picture asked for, nests inside it, where it nested inside HARVEST while
+        /// the pictures were taken as the rows were read. Attempt 1 ran the pass inside no step,
+        /// so its walk, its resolves and its hiding came off no total, the reviewer's third point.
+        /// </summary>
+        public const string Pictures = "PICTURES";
+
+        /// <summary>
         /// Building the saved viewpoints, F85. It runs after the clash step and before the
         /// second NWF save, and it was UNTIMED before this: BuildViewpoints was called
         /// outside every step, so the seconds it cost came off no total and the run read as
@@ -79,6 +88,7 @@ namespace Federator.Core.Diagnostics
             TestsCreate,
             TestsRun,
             Harvest,
+            Pictures,
             Images,
             Renumber,
             Views,

@@ -1,20 +1,21 @@
 using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
+using Federator.Core.Report;
 using Federator.Core.Views;
 
 namespace Federator.Addin.Engine
 {
     /// <summary>
     /// The one walk from a test to the result a recorded row points at, by the index path
-    /// the harvest recorded, RowUnderTest, F132 attempt 2 of the add-in half. The pictures
-    /// rendered after the mirror merge and the views both resolve a row this way, so the
-    /// rule of what counts as found again lives here once.
+    /// the harvest recorded, RowUnderTest, F132 attempt 2 of the add-in half. Every picture,
+    /// taken once every test has run since F149, and the views both resolve a row this way,
+    /// so the rule of what counts as found again lives here once.
     ///
     /// THE NAME IS READ BACK. TestsCompactAllTests removes every Resolved result after the
     /// merge and before the views, so a path recorded while the test was read can lead to
-    /// another result by then. What is found is the row's result only where its display
-    /// name is the row's name, and anything else is refused and said rather than viewed or
-    /// pictured as the wrong clash.
+    /// another result by then. What is found is the row's result only where its name, read
+    /// by the rule the harvest named the row by, ClashRow.NameOf, is the row's name, and
+    /// anything else is refused and said rather than viewed or pictured as the wrong clash.
     /// </summary>
     internal static class ResultPath
     {
@@ -25,11 +26,16 @@ namespace Federator.Addin.Engine
         /// recorded index where it carries the row's name, else the one sibling carrying
         /// that name, since TestsCompactAllTests after the merge removes every Resolved
         /// result and moves the live ones after it one index left, and movedFromRecorded
-        /// says so. Every wrapper walked past, and every sibling read for its name, is
-        /// disposed here.
+        /// says so. A row whose result had no name of its own, ClashRow.NoNameOfItsOwn, is
+        /// decided by ResultSiblings.PickUnnamed instead, F149, the breaker's first point on
+        /// the second reading: taken at its recorded index only where indexIsExact, which the
+        /// caller says, the pictures, taken before the compact, and refused with why for the
+        /// views, since the word it carries is carried by every unnamed sibling and after the
+        /// compact the one at its index is the next unnamed result. Every wrapper walked past,
+        /// and every sibling read for its name, is disposed here.
         /// </summary>
         public static SavedItem ResultAt(
-            ClashTest test, RowUnderTest recorded, string under, out string whyNot, out bool movedFromRecorded)
+            ClashTest test, RowUnderTest recorded, string under, bool indexIsExact, out string whyNot, out bool movedFromRecorded)
         {
             whyNot = null;
             movedFromRecorded = false;
@@ -78,8 +84,24 @@ namespace Federator.Addin.Engine
 
                 SavedItemCollection siblings = children;
                 int count = siblings == null ? 0 : siblings.Count;
-                SiblingPick pick = ResultSiblings.Pick(
-                    recorded.Row.Name, recorded.Path[last], count, i => NameOf(siblings, i));
+                bool unnamed = recorded.Row.NoNameOfItsOwn;
+                SiblingPick pick = unnamed
+                    ? ResultSiblings.PickUnnamed(recorded.Row.Name, recorded.Path[last], count, i => NameOf(siblings, i), indexIsExact)
+                    : ResultSiblings.Pick(recorded.Row.Name, recorded.Path[last], count, i => NameOf(siblings, i));
+
+                if (!pick.Found && pick.NoProof)
+                {
+                    whyNot = "the result at " + recorded + " under " + under + " had no name of its own, so a result named \""
+                        + recorded.Row.Name + "\" there is no proof it is the row's once the compact can have moved it";
+                    return null;
+                }
+
+                if (!pick.Found && unnamed)
+                {
+                    whyNot = "the result at " + recorded + " under " + under + " had no name of its own and no result named \""
+                        + recorded.Row.Name + "\" is at that index among the " + count + " any more";
+                    return null;
+                }
 
                 if (!pick.Found)
                 {
@@ -113,12 +135,14 @@ namespace Federator.Addin.Engine
             }
         }
 
-        /// <summary>One sibling's display name, its wrapper released as soon as it is read.</summary>
+        /// <summary>One sibling's name as its row would carry it, its wrapper released as soon as it is read.</summary>
         private static string NameOf(SavedItemCollection siblings, int index)
         {
             using (SavedItem sibling = siblings[index])
             {
-                return sibling.DisplayName ?? string.Empty;
+                // F149, the breaker's point on attempt 1: a result or a group with no display
+                // name is found again under the name the harvest gave its row.
+                return ClashRow.NameOf(sibling.DisplayName, sibling is ClashResultGroup);
             }
         }
     }

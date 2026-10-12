@@ -8499,3 +8499,231 @@ own case. What Source File holds for an NWC published from a Revit file on a dis
 Docs, all fourteen being from Autodesk Docs. How many items a Source File condition with no tab matches
 on a model whose items carry the property on a second tab, there being one tab here. Whether 1A02MM's
 nought holds for the files of a later week.
+
+## 5z-zc. WHAT MAKES A CLASH PICTURE FASTER ON 1A04PK, MEASURED 2026-10-11
+
+Q150, Bader's answer of 2026-10-11 headed Q150, NOT YET A CHOICE. Set 08's three test cut of 1A04PK,
+`steps\runs\08\item1-C04`, spent 830.7 s of a group of 884.7 s inside `TestsImageForResult`, 8.0 s a
+picture, and 2.3 s saving the JPEGs. He asked, with no cap, since the client needs a picture for every
+clash, what makes that call faster on the same 20 clashes of BLD-AR-Walls-vs-BLD-AR-Floors, each
+against today's: 1, only the models of the test shown, every other model hidden, 2, shaded drawing
+instead of full rendering on top of 1, 3, a picture of 800 by 600 on top of 1, and 4, all three.
+
+**HOW.** `tools\probes\PictureSpeed\probe-picture-speed.ps1`, probe-q133-import.ps1 with the mode
+picspeed, through the guarded start of `tools\loop\nw-guard.ps1`, unchanged, sha256 8CAC3B67. One
+Navisworks, pid 46824, adopted by the four conditions, the Auto-Save switch written "3 0" after the
+last Roamer read and put back after, quit by Dispose and gone 8.5 s later, not forced, 37 registry
+values and 2 files of Bader's put back with 0 still differing, no AutoSave file added. The plugin
+`PictureSpeedProbe.dll`, `tools\probes\PictureSpeed\PictureSpeedProbePlugin.cs`, compiles src's Core
+and Engine into itself as Q133Import does, built with 0 warnings, its error count not kept. The launcher
+keeps every guard of probe-q133-import.ps1 but the two that belonged to its cap: the cap's floor and the
+refusal that kept the adopted deadline 1800 s past the cap, and its default adopted deadline is 3600 s
+where Q133's was 14400 s. On a copy of set 08's NWF of 1A04PK, which holds 71 sets, the 61 of the XML
+and 10 of Generic Models, result line 71, it made the test with the tool's own
+`ClashRunner.PlanTheCreation` and `Create` off the corrected matrix of set 08, ran it, and rendered
+the first 20 rows in Clash Detective's order under six settings, today's first and today's again last,
+each `TestsImageForResult` with `ScenePlusOverlay` and each JPEG save timed alone, each picture kept in
+a folder of its setting. The models of the test are the models the items of its two sets live in.
+Shaded is the current viewpoint's `RenderStyle`, set through a copy and `CopyFrom`, settable by the
+DLL read the same day: `ViewpointRenderStyle` FullRender 0, Preview 1, Shaded 2, Wireframe 3,
+HiddenLine 4, and `ViewpointLighting` None 0, SceneLights 1, Headlight 2, FullLights 3. The hidden state
+and the viewpoint were put back at the end, read back as before, and nothing was saved. The NWF and the
+XML read the same sha256 after. The result is `tools\probes\PictureSpeed\picture-speed-result-20261011.txt`,
+347 lines, the machine name masked, 585 s in all. The pictures are not committed and stay in
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261011-222207\pictures`, a folder a setting, with
+times.csv beside them.
+
+**THE TEST.** The sets find 2608 walls and 199 floors, all in one model of ten, AR-MOD-000001, result
+lines 73 to 75. Create took 0.015 s, TestsRunTest 0.706 s, and the test holds 1556 rows and 1556
+clashes, the count sets 06 and 07 read, line 78.
+
+**THE SECONDS, 20 pictures a setting, render and save, and that mean times 1556.**
+
+| Setting | Mean | Median render | Least | Most | 1556 pictures | Lines |
+|---|---|---|---|---|---|---|
+| 0, today's, every model shown, 1024 by 1024 | 7.762 s | 6.397 s | 1.950 s | 15.824 s | 3 h 21 min | 104 |
+| 1, only the test's model shown | 1.778 s | 1.527 s | 0.652 s | 3.199 s | 46 min | 130 |
+| 2, Shaded on top of 1 | 2.160 s | 1.304 s | 0.705 s | 5.166 s | 56 min | 155 |
+| 3, 800 by 600 on top of 1 | 1.695 s | 1.413 s | 0.721 s | 3.173 s | 44 min | 181 |
+| 4, all three | 1.996 s | 1.368 s | 0.808 s | 3.712 s | 52 min | 206 |
+| 5, today's again | 7.999 s | 8.193 s | 2.551 s | 14.545 s | 3 h 27 min | 231 |
+
+The minutes are rounded here, where the probe's own lines cut them down. A save took 0.010 to 0.023 s. The same setup measured twice differs by 0.24 to 0.38 s
+a picture, today's against today's again, 1 against 2 and 3 against 4, each pair the same picture as
+the next section reads, and each later one slower, so the run cannot tell a drift over the session from
+the setting. Only the step from every model shown to the test's model alone is far outside that spread.
+
+**WHAT EACH ONE IS.**
+
+1. THE STYLE ALREADY READ SHADED, AND SETTING 2 CHANGED NOTHING IN THE PICTURES. The current viewpoint
+   read Shaded with Headlight before any setting and in every setting, and the first row's own viewpoint,
+   `TestsViewpointForResult`, read for that row alone, reads it has a render style, Shaded, and lighting,
+   Headlight, lines 80, 83, 106 and 157. Either the pictures were already drawn Shaded or the call does
+   not follow the style, and this run cannot tell which. Setting 2's pictures differ from setting 1's by a mean of 0.01 of 255 a pixel channel, measured by
+   the lead over all 20, below the 0.05 between today's and today's again, and setting 4's from setting
+   3's by 0.02. Its seconds are setting 1's within the spread of one setting. Whether the clash's own
+   viewpoint or the current one decides the style of a picture is UNKNOWN, both reading the same.
+2. HIDING THE OTHER MODELS IS WHAT MAKES IT FASTER, 4.4 times on these 20. The picture keeps the size,
+   the camera, the grid label at the bottom left, the red and the green, and loses the other nine
+   models' items from behind, a mean of 22 of 255 a pixel channel from today's.
+3. 800 BY 600 SHOWS NO SAVING ON TOP OF 1: its 0.08 s a picture is inside the 0.24 to 0.38 s spread
+   above. It gives a picture four by three, where all 129 clash pictures of the two accepted reports in
+   samples\client-report, 1A02WN and 1A04WN, read 1024 by 1024 by the lead on 2026-10-11, the other two
+   pictures there being their logos of 239 by 66, so it no longer matches the export's layout.
+
+**WHAT THIS RUN DOES NOT SHOW, the reviewer's reading of the probe and its run.** Whether
+`TestsImageForResult` follows the current viewpoint's render style at all, and what full rendering
+would cost, since the NWF the tool wrote opened Shaded and the style never changed, so the class
+comment's promise to read it off the times could not be kept. The totals are the mean of the first 20
+rows times the -ProjectTo given, 1556, which is this test's count, and rows 1 to 8 ran 2.3 to 3.4 times
+slower than rows 9 to 20, by setting. The put back read true, and RestoreHiddenState reads true
+without reading anything where nothing was hidden before, the hidden count not logged, and setting 0
+showed every model by ResetAllHidden rather than as the document opened. The probe's words call the 741
+tests PlanTheCreation hands back the tests the tool would create, where that list also holds the tests
+already in the document, and Create is called on the one named whatever the list says, which here made
+Walls-vs-Floors once since the NWF held only Stairs-vs-Floors, Ramps-vs-Floors and Ramps-vs-Stairs. The
+models of the test are read off the items of its two sets, where the views read the models of the
+clashing items, the same model here. Its home walk and its JPEG lookup copy the tool's in the probe. The
+launcher's adopted deadline of 3600 s is linked to no -Count, so a -Count above about 145 would reach it.
+The code as it ran is the launcher at commit dc18c6c, where the record's sha256 of the probe holds, 5z-zd having since added a mode.
+
+**UNKNOWN.** How the share holds over all 1556 rows and on other tests, these being the first 20 of one
+test whose two sets live in one model. What the rows of a test between two models cost with only those
+two shown. Whether the client accepts a picture with the other trades' models gone from behind. Bader
+looks at the folders and chooses, Q150.
+
+## 5z-zd. HARDWARE ACCELERATION, AND A PICTURE OF THE CLASH'S TWO ITEMS ALONE, MEASURED 2026-10-12
+
+Bader's order of 2026-10-12 headed KEEP FIXING THE TIME UNTIL IT IS AT ITS MINIMUM. His PC, an i7-12700
+with a UHD 770 drawing through DirectX 11 hardware, wrote a picture in 0.049 s where this laptop took
+7.76 s in 5z-zc, and he asked first for the display, the GPU, the screen and the settings, read before
+any change, with leave to change a graphics setting if that was the cause, the old value kept. Then item
+4 of his answer of 2026-10-11 headed Q150, AND THE PICTURE SPEED WORK: measure `View.GenerateImage` with
+only each clash's two items shown, on the same 20 clashes, its pictures in a folder of their own.
+
+**THE CAUSE, READ BEFORE ANY CHANGE.** Navisworks's own option `hw_accel`, under
+`HKCU\Software\Autodesk\Navisworks Manage\22.0\GlobalOptions\interface\display\graphics`, read "3 0",
+hardware acceleration off, at 01:06:24, `steps\runs\09\hw_accel-before.txt`. While the probe of 5z-zc
+ran again, `picture-speed-20261012-005914`, the GPU counters of Roamer's process, sampled every one to
+three seconds by `%LOCALAPPDATA%\NwcFederatorLoop\turn6\gpu-sampler.ps1`, read its 3D engine busy at 52
+to 94 percent on the adapter of LUID 0x408fe and on no other, with no memory of that adapter in use,
+`steps\runs\09\gpu-before-acceleration.txt`. Of the three adapters the counters list, 0x40536 is the
+only one with local memory, 974 MB, the Intel UHD sharing the system's memory, and 0x40969 is the only
+one with an optical flow engine, the NVIDIA, both read by the lead off the counters' engine list on
+2026-10-12. So 0x408fe is the Microsoft Basic Render Driver, Windows' renderer on the processor. That is a
+reading by elimination, not a name the counters gave. The probe's pictures took 13.3 s each in that run.
+
+**THE CHANGE, by Bader's leave.** The old value saved in
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\gpu-fix-20261012`, `hw_accel-before.txt` and
+`graphics-before.reg`, then `hw_accel` set to "3 1" at 01:06 with no Navisworks running, and nothing else
+changed. The same probe again, `picture-speed-20261012-010654`: the counters read Roamer's 3D engine at
+15 to 29 percent on 0x40969, the NVIDIA, with 131 to 369 MB of its dedicated memory in use,
+`steps\runs\09\gpu-after-acceleration.txt`, and its 20 pictures a setting took
+
+| Setting of 5z-zc | Render and save, mean | 1556 pictures |
+|---|---|---|
+| 0, today's, every model shown | 0.517 s | 13 min |
+| 1, only the test's model shown | 0.120 s | 3 min |
+| 2, Shaded on top of 1 | 0.119 s | 3 min |
+| 3, 800 by 600 on top of 1 | 0.100 s | 2 min |
+| 4, all three | 0.090 s | 2 min |
+| 5, today's again | 0.168 s | 4 min |
+
+Setting 0's mean carries a first picture of 5.683 s, its median render 0.176 s. Acceleration helped, so
+the value stays "3 1". 1A02MM's whole group went from 293 s to 253 s, set 09, `steps\runs\09\item1-C02`.
+
+**THE SCREEN AND THE VIEW, read on 2026-10-12, nothing changed.** One display, 1920 by 1200 on the Intel
+UHD at 120 dots an inch, 125 percent, so 1536 by 960 to Windows Forms. Windows 11 Enterprise build 26200,
+the NVIDIA driver 32.0.15.9671 and the Intel driver 32.0.101.7088. The active view under Automation read
+902 by 367 pixels and not interactive, the line at 01:09:13 of the 010654 run, and every picture is 1024
+by 1024 whatever the view, read off the JPEGs. `%TEMP%\ogs` held no file.
+
+**TWO ITEMS ALONE, THE MODE genimage.** The probe gained a mode,
+`tools\probes\PictureSpeed\PictureSpeedGenerateImage.cs`, and the launcher a `-Mode` parameter, the
+rest of the launcher unchanged, its sha256 now B6D79518, the guard unchanged, 8CAC3B67. The 11 Oct
+record's 4C42BB1A is the launcher at commit dc18c6c. One Navisworks, pid 42680, started by Automation,
+guard steps 2 to 6 passed, 38 registry values put back with 0 still differing, 2 files put back and
+matching, no AutoSave file added, and the NWF and the XML read the same sha256 after. The result is
+`tools\probes\PictureSpeed\picture-speed-genimage-result-20261012.txt`, 243 lines, the machine name
+masked, 141 s in all. The test was made the tool's way as in 5z-zc, 1556 clashes. Four settings, in
+this order, each on the first rows in Clash Detective's order:
+
+- 6, `TestsImageForResult` as the tool calls it, 5 pictures, the camera's position and the next undo
+  step's name read before and after each call: nothing read changed. The call moves no camera the view
+  keeps and adds no undo step. Its mean of 1.376 s carries a first picture of 5.330 s.
+- 7, per clash: every root and every child off the two items' paths hidden, 178 items, the camera put on
+  the clash's own viewpoint, `TestsViewpointForResult`, by `CopyViewpointFrom` with a jump cut, the two
+  items painted red and green with the views' own paint and colours, `View.GenerateImage` with
+  ScenePlusOverlay at 1024 by 1024, the JPEG saved, then the paint and the hiding taken off. Every part
+  0.098 s a picture: the hiding 0.012 s, the camera 0.029 s, the drawing 0.030 s, the save 0.010 s and
+  the taking off 0.014 s. 152 s for 1556.
+- 8, 7 again: 0.097 s, 151 s, every file the same number of bytes as 7's.
+- 9, `TestsImageForResult` again, every model shown: 0.225 s, 350 s for 1556.
+
+**WHAT THE PICTURES SHOW, rows 1 and 14 viewed by the lead.** 7's pictures keep the 1024 square, the same
+camera as 9's and the grid label at the bottom left, and show the two items in flat red and green on the
+background and nothing else: no other item of either model, nothing ghosted behind. 9's show every model
+ghosted around the two. 7's files are 50 to 52 KB, 9's 551 to 593 KB.
+
+**WHAT THIS DOES NOT SHOW.** Setting 7 is the probe's code, not the tool's, and 1 of 5z-zc, the rule F145
+builds, was not run in this session, so 7 against F145's rule is 0.098 s here against 0.120 s in another
+session. The hiding is per clash where F145 hides once a test. Whether a clash between two models costs
+the same, both items here living in one model. Whether the client accepts a picture with nothing around
+the two items, which is Bader's to say, Q151. The pictures stay in
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261012-030837\pictures`, a folder a setting,
+with times.csv beside them, and are not committed.
+
+## 5z-ze. CLASH DETECTIVE'S HIDE OTHER, AND WHY BADER'S PC WRITES 48 KB A PICTURE, MEASURED 2026-10-12
+
+Bader's order of 2026-10-12 says his PC wrote a mean picture file of 48 KB where this laptop writes 510
+KB for the same clash, with the same build cdf8d4ed, so something on the laptop makes each picture far
+bigger. 5z-zd's pictures of the two items alone came to 50 to 52 KB. Clash Detective's display settings,
+under `HKCU\Software\Autodesk\Navisworks Manage\22.0\GlobalOptions\tools\clash\displaysettings`, all
+read "0" on this laptop, never set, so Navisworks' defaults apply, among them `dim_other`,
+`transparent_dimming` and `hide_other`. Hide Other is the one setting there that would leave only the
+two items in the picture.
+
+**HOW.** The launcher of 5z-zd gained a switch, `-HideOther`, its sha256 now C31B91B4, the guard
+unchanged, 8CAC3B67. After the guard's backup and its Auto-Save switch it writes `hide_other` "3 1" and
+reads it back, where it read "0". So the put back at the end restores it with Bader's other settings,
+and on a failed write it writes the old value back and stops before any start. Then the mode picspeed of
+5z-zc ran unchanged on the same copy, the same test and the same 20 clashes, the six settings in order.
+One Navisworks, pid 9364, started by Automation, guard steps 2 to 6 passed, quit by Dispose and gone 8.0 s
+later, not forced. 39 values were put back, `hide_other` among them, with 0 still differing, and
+`hide_other` read "0" again after, read by the lead. The result is
+`tools\probes\PictureSpeed\picture-speed-hideother-result-20261012.txt`, 352 lines, the machine name
+masked. Hardware acceleration on, as since 5z-zd.
+
+**THE SECONDS, 20 pictures a setting, render and save, against 5z-zd's run with acceleration on.**
+
+| Setting of 5z-zc | Hide Other on | 1556 pictures | Hide Other off, 5z-zd |
+|---|---|---|---|
+| 0, today's, every model shown | 0.067 s | 104 s | 0.517 s |
+| 1, only the test's model shown | 0.059 s | 92 s | 0.120 s |
+| 2, Shaded on top of 1 | 0.060 s | 93 s | 0.119 s |
+| 3, 800 by 600 on top of 1 | 0.050 s | 78 s | 0.100 s |
+| 4, all three | 0.050 s | 77 s | 0.090 s |
+| 5, today's again | 0.061 s | 96 s | 0.168 s |
+
+No first picture ran slow here, the most of setting 0 being 0.148 s.
+
+**THE PICTURES.** Every setting's 20 files average 48 KB, where 5z-zd's today's averaged 559 KB. Row 1
+viewed by the lead: `TestsImageForResult`, the tool's own call, drew the two items in red and green on the
+background and nothing else, the same camera and grid label as before, the look of 5z-zd's two items
+alone. So Hide Other is followed by the tool's call, and the PC's 48 KB matches this look in size. Whether
+Bader's PC has Hide Other on is UNKNOWN until he reads it, Clash Detective, Results, Display Settings,
+Isolation.
+
+**THE ACCEPTED REPORTS.** Two pictures of the accepted reports in `samples\client-report`,
+`1104-PAR-1A02WN-XXX-BM-RPT-000001_files\cd000002.jpg` and `1104-PAR-1A04WN-XXX-BM-RPT-000001_files\cd010005.jpg`,
+viewed by the lead: the two items in red and green with other items drawn ghosted around them, the
+look of Navisworks' defaults, Dim Other with transparent dimming. The 65 pictures of 1A02WN's folder
+average 151 KB. So the export's look is the ghosted one, and a picture with Hide Other on does not match
+it.
+
+**WHAT THIS DOES NOT SHOW.** Two pictures of the accepted reports were viewed, not all 129. Which items
+the ghosting there holds, every model or only some, is UNKNOWN. How Hide Other reads in the tool's whole
+run, with the views and F145's hiding, is not measured, since the probe ran only the pictures. The
+setting is per user, so each of the 27 machines draws its pictures by its own Clash Detective display
+settings, and whether the API lets the tool set them for the pictures alone is UNKNOWN. Q151 puts the
+look to Bader.

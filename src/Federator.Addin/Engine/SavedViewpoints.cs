@@ -948,7 +948,8 @@ namespace Federator.Addin.Engine
         /// A copy of that camera zoomed to that box, P16: ZoomBox on a copy keeps the view
         /// direction and puts every centre inside the view, through a save, a reopen and a
         /// press, 5z-x. The box is built from the two corners, P5, 5z-h. The caller disposes
-        /// what comes back, and the camera handed in is left as it was.
+        /// what comes back, and the camera handed in is left as it was. The camera handed in
+        /// is disposed only after the copy, F141, .claude\rules\addin.md.
         /// </summary>
         public static Viewpoint Framed(Viewpoint camera, FramingBox box)
         {
@@ -997,7 +998,27 @@ namespace Federator.Addin.Engine
             }
 
             document.Models.ResetAllHidden();
+            return HideTheRootsOfAllBut(document, keep);
+        }
 
+        /// <summary>
+        /// Hides every model whose index is not in the list and leaves every other hide as it
+        /// stands, F145, so the items the document already hid stay hidden in a test's pictures
+        /// as they do in every other picture. The caller puts the state back through
+        /// RestoreHiddenState with the snapshot it took before the first call.
+        /// </summary>
+        public static int HideTheOtherModels(Document document, ICollection<int> keep)
+        {
+            if (document == null || keep == null)
+            {
+                return 0;
+            }
+
+            return HideTheRootsOfAllBut(document, keep);
+        }
+
+        private static int HideTheRootsOfAllBut(Document document, ICollection<int> keep)
+        {
             using (ModelItemCollection hide = new ModelItemCollection())
             {
                 for (int i = 0; i < document.Models.Count; i++)
@@ -1220,6 +1241,66 @@ namespace Federator.Addin.Engine
             path.CopyTo(copy, 0);
             return copy;
         }
+
+        /// <summary>
+        /// The file name of the model an item lives in, or null where none is read. MEASURED on
+        /// 2026-09-20, docs\history\scan.md 5n: on a clash leaf HasModel reads false and Model
+        /// reads null, and the one item that carries the model is the TOPMOST of its ancestors,
+        /// six to nine levels up. Every parent is a fresh wrapper and is released here. The item
+        /// itself is the caller's, since an item enumerated off a collection threw when disposed
+        /// one by one, 5z-z, so the views and F145's pictures share this one walk.
+        /// </summary>
+        public static string ModelFileOf(ModelItem item)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+            List<ModelItem> parents = new List<ModelItem>();
+
+            try
+            {
+                ModelItem walker = item;
+
+                while (parents.Count + 1 < HomeWalkBound)
+                {
+                    ModelItem parent = walker.Parent;
+
+                    if (parent == null)
+                    {
+                        break;
+                    }
+
+                    parents.Add(parent);
+                    walker = parent;
+                }
+
+                if (!walker.HasModel)
+                {
+                    return null;
+                }
+
+                using (Model model = walker.Model)
+                {
+                    return model == null ? null : model.FileName;
+                }
+            }
+            finally
+            {
+                for (int i = 0; i < parents.Count; i++)
+                {
+                    parents[i].Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The most levels the home walk climbs, the item counted. 5n measured six and nine on
+        /// this project, and a bound stops a malformed tree turning one item into an endless
+        /// climb. It is a guard on a walk and not a number that shapes a run.
+        /// </summary>
+        private const int HomeWalkBound = 64;
 
         /// <summary>
         /// The hidden state the document holds right now, read off a runtime capture that
