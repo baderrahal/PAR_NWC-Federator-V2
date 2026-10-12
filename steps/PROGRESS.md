@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-12 10:36, last run 09/item1-C04
+STATE WAITING, 2026-10-12 10:45
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,16 +15,15 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 13 | 1 | 0 | 0 | 7 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
-| outside the waves | 173 | 17 | 0 | 1 | 61 | 6 | 258 |
-| total | 320 | 27 | 0 | 2 | 212 | 7 | 568 |
+| outside the waves | 175 | 16 | 0 | 2 | 60 | 6 | 259 |
+| total | 322 | 26 | 0 | 3 | 211 | 7 | 569 |
 <!-- the end of the counts -->
 
 ## Now
-- Bader's order of 12 Oct, WRAP UP NOW, NO MORE TESTS, item 156: no probe, fast check, speed loop or run. He runs the tool himself on his desktop PC
-- Item 1 done: no run was in progress, hardware acceleration put back to his "3 0" and read back
-- Merged: 202, 204 F145 and 207 F149 by Bader on GitHub, 205 F146 as 2955d0e, 208 F140 the team package as 69de6ed
-- The team zip waits for no Navisworks to run on this laptop, since the package script refuses while one runs, and a watcher makes it then
-- Q151, Hide Other: not built, no documented API and no probe allowed, the guide's step 2 sets it by hand, row F150
+- Turn 6 closed on Bader's order of 12 Oct, WRAP UP NOW, NO MORE TESTS. No probe, fast check, speed loop or run until he says
+- Merged: 202, 204 F145, 207 F149, 205 F146, 208 F140 the team package, and this records pull request
+- The team zip: %USERPROFILE%\OneDrive - Parsons Corp\Documents\NWC Federator package\ParsonsNwcFederator-1.0.0.0-69de6ed4-20261012.zip, 3298080 bytes, 21 files
+- The closing entry of steps\history\log.md holds what is proven by a run, what is built and not proven, and the known issues
 
 ## Speed
 No measurement with F145, F146 or F149 merged. Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
@@ -37,18 +36,19 @@ No measurement with F145, F146 or F149 merged. Targets: a picture 0.2 s or less,
 | 12 Oct 03:47, probe only | cdf8d4e's code, Hide Other on for one start | 0.067 s, 0.059 s with F145's rule | not run | not run | not run |
 
 ## Next
-1. The team zip from main once no Navisworks runs, checked to open, its path and size to Bader
-2. The final state on this page and the closing entry of steps\history\log.md, STATE WAITING, then 206 merged last
-3. Stop, item 6 of his order
+1. Bader installs the zip on his desktop PC: extract it and double click Install Parsons NWC Federator.cmd
+2. He runs his own folder through the tool's window, the guide's steps 1 to 11
+3. He sends back the run's .log and the .tsv beside it, and the loop reads them when he says
 
 ## Waiting for Bader
+- His run on his PC and its log
 - Q155, F147 stopped under Q148 B
-- F150, Hide Other set by the tool, which needs one probe of the API
-- His Navisworks closed on this laptop, for the zip
+- F150, Hide Other set by the tool, needs one probe of the API, which waits for his word
 
 ## Blockers and known bugs
 - T6-R-WPFBOX: a caption less WPF window of Navisworks as the tool's window closed in set 09
 - F149-R1: the pictures' guard stops a run only once every test of the group has run
+- The coordinates box starts ticked, so a group whose models sit off shared coordinates is not clashed unless it is unticked
 
 ## Where the long history is
 - steps\history\loop.md: every turn, the form and the register table, its closed rows the record

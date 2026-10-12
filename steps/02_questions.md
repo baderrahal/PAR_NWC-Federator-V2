@@ -899,3 +899,24 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
     Nothing of F147 merges until you answer.
 
     Answer:
+
+156. From Bader, 2026-10-12, his message headed BADER, 12 OCT 2026: WRAP UP NOW, NO MORE TESTS, not a question put to him but his order. In his words:
+
+    BADER, 12 OCT 2026: WRAP UP NOW, NO MORE TESTS
+    Too much time was lost on testing. From now on the loop runs no more probes, fast checks, speed loops or full runs of any building, and starts no new fix beyond the ones named here. Bader will do the full work himself on his desktop PC, through the tool's window, on his own selected folder. Code does not run the tool on that PC and never touches it.
+    DO THESE, IN THIS ORDER
+    1. Stop the speed loop and any run in progress by the guards. Put Bader's Navisworks settings back and say so in one line.
+    2. Merge the open pull requests 204, 205, 206 and 207, one at a time, each after merging origin/main into its branch and with green checks. If one needs a fix, one attempt only. If it still fails, leave it open and say why in one line.
+    3. Q151 is Bader's answer: Hide Other for every clash picture, one picture per clash, the ghosted look kept as one setting off by default. If it is not yet in main, build it in one attempt, with the same reviewer, and merge it. If it is already in, say so.
+    4. Make the install package now. Bader's word counts as make the team package, for his own PC first. Build main in Release, unsigned, into one zip named with the version, main's commit and the date. Inside it:
+       - the add-in bundle
+       - a one-click install script that copies it to the person's own %APPDATA%\Autodesk\ApplicationPlugins with no admin rights, keeps the previous version as a backup, can put it back with one step, and says plainly what it did
+       - a one page install guide in plain words, with numbered one action steps, covering how to install, how to open the tool's window, how to pick the NWC folder, the clash XML and the output folder, how to start the run, where the run's log and the workbooks are written, and what to send back if something goes wrong
+       Check the zip opens, and put it where Bader can reach it. Tell him in this tab the path and the size.
+    5. Write the final state: update steps\PROGRESS.md and the tracker, set STATE WAITING with the exact next action, push every branch with work in progress, and merge one last records pull request. Put in it the final speed table, what is proven by a real run, what is built but not proven, and the known issues.
+    6. Then stop. Do not start waves 4 and 5, the speed loop, F147 or any other item. They wait until Bader says.
+    THE RULES
+    - The limits of Q143 hold. No AI line in any commit.
+    - Three lines in this tab at the end: what merged, where the zip is, and what Bader does next.
+
+    Answer: Bader, 2026-10-12, as written above. The lead's notes. Item 1: no run was in progress, and hardware acceleration was put back to his "3 0" and read back. Item 2: 204 and 207 were merged by Bader on GitHub, 205 by the loop after main was taken in, and 206 is this records pull request, merged last as item 5 asks. Item 3: not built, since the install's API reference gives no documented way for the tool to set Hide Other and no probe may run, and the guide's step 2 sets it by hand, row F150. Item 4: F140, pull request 208, and the zip %USERPROFILE%\OneDrive - Parsons Corp\Documents\NWC Federator package\ParsonsNwcFederator-1.0.0.0-69de6ed4-20261012.zip, 3298080 bytes, 21 files. Item 5: the closing entry of steps\history\log.md and the page.
