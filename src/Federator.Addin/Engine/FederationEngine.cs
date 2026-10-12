@@ -3515,7 +3515,7 @@ namespace Federator.Addin.Engine
                     // total, 20.6 s of one group of set 03.
                     InStep(
                         RunSteps.Renumber,
-                        () => RenumberThePictures(job, outcome, runner.WorkbookPath),
+                        () => RenumberThePictures(job, outcome, runner.WorkbookPath, runner.Progress),
                         () => "the pictures of " + job.Building);
                 }
 
@@ -3568,12 +3568,27 @@ namespace Federator.Addin.Engine
         /// and what could not be, so the lines here are the outcome's and never a sentence
         /// of this file's about the state of the disk. The one throw that can still reach
         /// here is from the planning before any move, so nothing on the disk has changed.
+        ///
+        /// THE WINDOW ANSWERS WHILE IT RENAMES, F146. Sets 07, 08 and 09's 1A02MM renamed 2931
+        /// pictures in one stretch of 44 s, 39 s and 39 s and the life check read the window not
+        /// answering for 32 s, our own code. After every picture the live line goes through
+        /// Tick, whose callback lets the window answer about once a second, and a PROGRESS line
+        /// with its .tsv row is written once the runner's setting says one is due. Null
+        /// settings write no PROGRESS line and the window still answers.
         /// </summary>
-        private void RenumberThePictures(FederationJob job, JobOutcome outcome, string workbookPath)
+        private void RenumberThePictures(
+            FederationJob job, JobOutcome outcome, string workbookPath, ProgressSettings progressSettings)
         {
             try
             {
-                ImageRenumberingOutcome renumbered = ImageRenumbering.Apply(outcome.Report, workbookPath);
+                StepProgress said = progressSettings == null
+                    ? null
+                    : new StepProgress(progressSettings.EverySeconds, log.ElapsedSeconds);
+
+                ImageRenumberingOutcome renumbered = ImageRenumbering.Apply(
+                    outcome.Report,
+                    workbookPath,
+                    (piece, done, total) => SayHowFarTheRenamingIs(job, said, piece, done, total));
 
                 foreach (string line in renumbered.Lines())
                 {
@@ -3586,6 +3601,22 @@ namespace Federator.Addin.Engine
                     "planning the renaming of the pictures for " + job.Building,
                     error,
                     "kept going, no picture was moved, so every row points at the picture it was rendered under");
+            }
+        }
+
+        /// <summary>One picture of the renaming done, F146: the live line, and a PROGRESS line when one is due.</summary>
+        private void SayHowFarTheRenamingIs(FederationJob job, StepProgress said, string piece, int done, int total)
+        {
+            Tick(StepProgress.Live(job.Building, piece, done, total));
+
+            if (said != null && said.Due(log.ElapsedSeconds))
+            {
+                log.Numbered(
+                    said.Line(RunSteps.Renumber, job.Building, piece, done, total, log.ElapsedSeconds),
+                    "progress",
+                    job.Building,
+                    done.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                    StepProgress.RowText(RunSteps.Renumber, piece, done, total));
             }
         }
 
