@@ -8763,3 +8763,25 @@ Detective reads its display settings into its highlighter at some point before. 
 `DisplaySettings` is the next way, read off the DLL and not run here, and F150 is built on it. Whether
 the picture call draws through that highlighter is UNKNOWN until the 1A02MM check after the wave shows
 picture files near 48 KB rather than about 550 KB.
+
+**THE HANDLES, READ OFF THE IL ON 2026-10-12 for F150 attempt 2, no Navisworks started.** Each method body read with
+`MethodInfo.GetMethodBody().GetILAsByteArray()` in Windows PowerShell 5.1 off the installed DLLs, the call tokens
+resolved through the module. `NativeHandleOwnership` reads eINVALID 0, eEXTERNAL 1, eWRAPPER 2, eREF_COUNTED 3 and
+eWEAK_REFERENCE 4.
+
+- `LcOpState.GetActiveInstance()`, Api.dll: `28 8A 16 00 06 28 C7 00 00 0A 17 14 28 E1 27 00 06 2A`, the native
+  GetActiveInstance, IntPtr.op_Explicit, then `ldc.i4.1 ldnull` and `LcOpState.InternalCreator`, so ownership 1,
+  eEXTERNAL, with no parent
+- `LcClClashResultHighlighter.GetInstance(LcOpState)`, Clash.dll: a null and IsDisposed check that throws
+  ArgumentException, NativeHandleImpl.GetHandle on the state, the native GetInstance, GC.KeepAlive, IntPtr.op_Explicit,
+  then `17 14`, `ldc.i4.1 ldnull`, and `LcClClashResultHighlighter.InternalCreator`, so ownership 1, eEXTERNAL
+- `LcClClashResultHighlighter.get_DisplaySettings`, Clash.dll: `02 28 50 05 00 06 2A`, a call to GetDisplaySettings,
+  whose body is `02 16 28 8C 00 00 0A 02 28 49 05 00 06 28 8C 01 00 06 28 5C 00 00 0A 17 02 28 06 05 00 06 2A`:
+  NativeHandleImpl.RuntimeChecks, GetNativePtr, the native GetDisplaySettings, IntPtr.op_Explicit, then `17 02`,
+  `ldc.i4.1 ldarg.0`, and `LcClClashDisplaySettings.InternalCreator`, so ownership 1, eEXTERNAL, its parent the
+  highlighter
+- `get_HideOther` is `02 28 2C 05 00 06 2A`, a call to GetHideOther, and `set_HideOther` is `02 03 28 2D 05 00 06 2A`,
+  a call to SetHideOther. `GetInstance` reads IsStatic True, the `DisplaySettings` getter False
+
+So disposing any of the three releases the wrapper and never the native object, which is why F150 disposes each
+inside one read or one write. What disposing an eEXTERNAL handle does beyond that was not read.

@@ -2527,11 +2527,11 @@ namespace Federator.Addin.Engine
 
                 try
                 {
-                    // F150. Clash Detective's Hide Other set on for the pass and the user's value put
-                    // back at its end on every path, with its one IMAGES line.
-                    using (new PicturesHideOther(log, Images.GhostTheOtherItems))
+                    // F150. Clash Detective's Hide Other set for the pass once a stretch takes a picture,
+                    // and the user's value put back at its end on every path, with its one IMAGES line.
+                    using (PicturesHideOther hideOther = new PicturesHideOther(log, Images.GhostTheOtherItems, Images.HideOther))
                     {
-                        picturing.Changed(TakeThePictures(clashTests));
+                        picturing.Changed(TakeThePictures(clashTests, hideOther));
                     }
                 }
                 catch (Exception)
@@ -2567,7 +2567,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>The pass inside its step: Core's walk, then each stretch in turn until the guard fires. Hands back the step's phrase.</summary>
-        private string TakeThePictures(DocumentClashTests clashTests)
+        private string TakeThePictures(DocumentClashTests clashTests, PicturesHideOther hideOther)
         {
             PictureWalkOutcome walk = PictureWalk.Of(Report, ReadFrom);
 
@@ -2596,7 +2596,7 @@ namespace Federator.Addin.Engine
                     break;
                 }
 
-                TakeTheStretch(clashTests, harvest, stretch, done, walk.Rows);
+                TakeTheStretch(clashTests, harvest, stretch, done, walk.Rows, hideOther);
                 done += stretch.Rows.Count;
             }
 
@@ -2621,7 +2621,8 @@ namespace Federator.Addin.Engine
         /// the stretch, is counted as failed, the breaker's first point, so the IMAGES line and the
         /// guard see it.
         /// </summary>
-        private void TakeTheStretch(DocumentClashTests clashTests, ClashHarvest harvest, PictureStretch stretch, int doneBefore, int total)
+        private void TakeTheStretch(
+            DocumentClashTests clashTests, ClashHarvest harvest, PictureStretch stretch, int doneBefore, int total, PicturesHideOther hideOther)
         {
             IList<ClashRow> rows = stretch.Rows;
             TestReport into = stretch.Into;
@@ -2642,6 +2643,10 @@ namespace Federator.Addin.Engine
                 {
                     return;
                 }
+
+                // F150. Only once a row of the pass takes a picture, so a pass that takes none
+                // reads and sets nothing, the breaker's fifth point on attempt 1. Once a pass.
+                hideOther.Begin();
 
                 PictureModels pictureModels = null;
 

@@ -55,6 +55,7 @@ namespace Federator.Addin.Engine
         private readonly RunLog log;
         private readonly ImageOptions options;
         private readonly RepeatedFailureGuard guard;
+        private readonly HideOtherAcrossTheRun hideOther;
         private readonly ImagesSeconds seconds;
         private readonly ImageCodecInfo jpeg;
 
@@ -63,8 +64,10 @@ namespace Federator.Addin.Engine
         /// FR-076, the way ClashRunner takes the tests' guard. Built new per group it never
         /// fired across groups, and read only after the group's clash step it let the rest
         /// of the group render once it had. Null switches it off.
+        /// The user's Clash Detective Hide Other is the run's too, F150, kept by the engine for
+        /// the run and handed in the same way, null giving this group one of its own.
         /// </summary>
-        public ClashImages(RunLog log, ImageOptions options, RepeatedFailureGuard guard)
+        public ClashImages(RunLog log, ImageOptions options, RepeatedFailureGuard guard, HideOtherAcrossTheRun hideOther)
         {
             if (log == null)
             {
@@ -74,6 +77,7 @@ namespace Federator.Addin.Engine
             this.log = log;
             this.options = options ?? new ImageOptions();
             this.guard = guard;
+            this.hideOther = hideOther ?? new HideOtherAcrossTheRun();
             this.seconds = new ImagesSeconds(() => log.ElapsedSeconds);
             this.jpeg = JpegEncoder();
 
@@ -110,6 +114,12 @@ namespace Federator.Addin.Engine
         public bool GhostTheOtherItems
         {
             get { return options.GhostTheOtherItems; }
+        }
+
+        /// <summary>The user's Hide Other as the run's first group read it, and what the run owes, F150.</summary>
+        public HideOtherAcrossTheRun HideOther
+        {
+            get { return hideOther; }
         }
 
         /// <summary>

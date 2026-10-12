@@ -2,35 +2,44 @@
 
 Newest entry at the top.
 
-## 2026-10-12 The loop, turn 6, F150 each picture shows only its two clashing items, attempt 1, written by the developer as the lead's delegate
+## 2026-10-12 The loop, turn 6, F150 Clash Detective asked to hide the other items for the pictures, attempt 2, written by the developer as the lead's delegate
 
 Bader's answer to Q151 and his order of 2026-10-12, item 157 of steps\02_questions.md. Branch fix-F150 off main
-80314b9, at 278717f with the probe of scan.md 5z-zf and the records of item 157.
+80314b9, at 278717f with the probe of scan.md 5z-zf and the records of item 157. Attempt 1 at 7d6b709, pull
+request 214.
 
 What was done:
-- Every clash picture is to show only its two clashing items, the same on every PC. The add-in sets Clash
-  Detective's Hide Other on for the picture pass and puts the user's value back on every path out, with one
-  IMAGES line saying what it read, what it set and what it read after. The ghosted look of the accepted
-  reports is one box under More, rarely changed, off by default
-- Not the option path, which scan.md 5z-zf showed reads back with the pictures not following. The value is
-  set on Clash Detective's own highlighter, LcOpState.GetActiveInstance, LcClClashResultHighlighter.GetInstance
-  and its DisplaySettings, undocumented and read off the DLLs. Each of the three handles is made eEXTERNAL,
-  read off its IL, so disposing it releases the wrapper and never the native object, and each is disposed
-  inside one read or one write
-- The rule and the line are Core's, OtherItemsInPictures, with ImageOptions.GhostTheOtherItems. Nothing is set
-  where the value could not be read or the ghosted look is ticked, the value read is written back wherever a
-  set was tried, and a value left changed or not read after is named with where a person sets it by hand.
-  The add-in's PicturesHideOther holds only the calls into Navisworks, every throw a failure line
-- Proved here: Core tests 2921 passed, 0 failed, 0 skipped on 278717f, and 2932 passed, 0 failed, 0 skipped
-  after, the 11 new OtherItemsInPicturesTests, which do not build against the base's Core. The solution
-  builds with 0 warnings and 0 errors, 0 and 0 before, and the locals and imports checks pass
+- For each group's picture pass the add-in sets Clash Detective's Hide Other, ON to hide the other items, or OFF
+  where the box Ghost the other items in clash photos is ticked, the box off by default, reads it back at once,
+  and puts the user's value back on every path out, with one IMAGES line saying what it asked for, read, set,
+  read back, put back and read after. A group that takes no picture reads and sets nothing
+- Not the option path, which scan.md 5z-zf showed reads back with the pictures not following. The value is set
+  on Clash Detective's own highlighter, LcOpState.GetActiveInstance, LcClClashResultHighlighter.GetInstance and
+  its DisplaySettings, undocumented. Each handle is made eEXTERNAL, its IL now recorded in scan.md 5z-zf, and
+  each is disposed inside one read or one write
+- Attempt 1 was read by the reviewer and the breaker, CHANGES on both. Its line said the pictures show only the
+  two items, which nothing reads, a failed put back made the value it left read as the user's in the next
+  group, the pass touched Hide Other in a group that took no picture, the ticked box left the user's value,
+  and four proof steps held more than one action. Attempt 2 answers every point. The line now says whether
+  the pictures follow is UNKNOWN until a run's picture sizes show it. The user's value is the one the run's
+  first group read, HideOtherAcrossTheRun, a put back still owed is tried once more at the end of the run and
+  is one of the group's errors so the window shows it, and the two paths of the add-in rule that held control
+  bytes are mended
+- The rule and the lines are Core's, OtherItemsInPictures and HideOtherAcrossTheRun, with
+  ImageOptions.GhostTheOtherItems. The add-in's PicturesHideOther holds only the calls into Navisworks
+- Proved here: Core tests 2921 passed, 0 failed, 0 skipped on 278717f, 2932 passed after attempt 1, and
+  2936 passed, 0 failed, 0 skipped after attempt 2, the 15 OtherItemsInPicturesTests, which do not build
+  against the base's Core. The solution builds with 0 warnings and 0 errors, 0 and 0 before, and the locals
+  and imports checks pass
 
-What remains: the reviewer and the breaker, the merge, and the lead's 1A02MM check, steps 664 to 677 of
+What remains: the readers' second look, the merge, and the lead's 1A02MM check, steps 664 to 696 of
 steps\03_bader_next.md: the IMAGES line, picture files near 48 KB, and the user's Clash Detective setting
 unchanged after the run.
 
-Known bugs: none known. Whether the picture call draws through the highlighter the tool sets is UNKNOWN until
-that check, and if it does not, the pictures keep the user's own look and the line still reads set on.
+Known bugs: row F150-R1, a stop between the set and the put back, Navisworks closed or killed in the pass,
+leaves Hide Other set for the user, and whether Navisworks keeps it for the next start is UNKNOWN. Whether the
+picture call draws through the highlighter the tool sets is UNKNOWN until the 1A02MM check. Dim Other and
+transparent dimming are left as the user has them, so the ghosted look holds only where they read on.
 
 What comes next: the 1A02MM check.
 

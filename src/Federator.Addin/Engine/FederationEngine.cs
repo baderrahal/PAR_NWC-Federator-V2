@@ -75,6 +75,12 @@ namespace Federator.Addin.Engine
         /// </summary>
         private readonly RepeatedFailureGuard imageGuard;
 
+        /// <summary>
+        /// The user's Clash Detective Hide Other as the run's first group read it, and the put back
+        /// a group left owed, F150, kept for the run beside the pictures' guard.
+        /// </summary>
+        private readonly HideOtherAcrossTheRun hideOtherAcrossTheRun = new HideOtherAcrossTheRun();
+
         /// <summary>Why the run was abandoned, or null while it is still going.</summary>
         private string stopTheRun;
 
@@ -550,6 +556,8 @@ namespace Federator.Addin.Engine
             WriteTheListForTheModellers();
 
             // Q101. After the last group, every group's time beside what it held.
+            // F150. A put back a group left owed is tried once more when the run ends.
+            PicturesHideOther.AtTheEnd(log, hideOtherAcrossTheRun);
             WriteTimingBesideSize();
 
             return outcomes;
@@ -925,6 +933,8 @@ namespace Federator.Addin.Engine
             // held nothing back saying so is a check that ran and silence is not.
             log.Line(gaps.Line());
             WriteTheListForTheModellers();
+            // F150. A put back a group left owed is tried once more when the run ends.
+            PicturesHideOther.AtTheEnd(log, hideOtherAcrossTheRun);
             WriteTimingBesideSize();
 
             foreach (IList<string> summary in summaries)
@@ -3378,7 +3388,7 @@ namespace Federator.Addin.Engine
                     if (outputs.WriteImages && reportFolder != null)
                     {
                         runner.WorkbookPath = ReportPaths.Workbook(reportFolder, job.WorkbookName);
-                        runner.Images = new ClashImages(log, reports.Images, imageGuard);
+                        runner.Images = new ClashImages(log, reports.Images, imageGuard, hideOtherAcrossTheRun);
                         log.Line("CLASH    " + reports.Images.Describe());
                     }
                     else
@@ -3532,6 +3542,13 @@ namespace Federator.Addin.Engine
                     }
 
                     log.Line(runner.Images.Seconds.Line());
+                }
+
+                if (runner.Images != null)
+                {
+                    // F150. A Hide Other this group could not put back is one of its errors, so the
+                    // window shows it and not the log alone, the breaker's second point on attempt 1.
+                    outcome.AddError(hideOtherAcrossTheRun.TakeTheGroupError());
                 }
                 log.Line("CLASH    " + job.Building + " finished. " + clash.Summary());
 

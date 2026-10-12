@@ -1480,17 +1480,23 @@ and 6 does not read as broken.
   because with the path inside the reason fifty of them were fifty reasons and the guard
   never fired. The stop words are ImageFailure's, worded for images, and the label's plain
   words carry the count alone
-- EACH PICTURE SHOWS ONLY ITS TWO CLASHING ITEMS ON EVERY PC, F150, Bader's answer to Q151 and his order
-  of 2026-10-12. The picture call draws by Clash Detective's display settings, which are per user, scan.md
-  5z-ze, so the add-in sets Hide Other on for the picture pass and puts the user's value back after it.
-  `OtherItemsInPictures` is the rule and the one IMAGES line: Hide Other is set only where the ghosted look
-  is not asked for and the user's value was READ as off, never where it could not be read, since a value
-  never read cannot be put back. Where a set was tried, done or thrown, the value read is written back,
-  then read once more, and the line says what was read, what was set and what was read after. A setting
-  that reads after the pictures as other than it read before, or could not be read after, is named with
-  where a person sets it by hand. The ghosted look, the look of the accepted reports, is ONE setting,
-  `ImageOptions.GhostTheOtherItems`, OFF by default, said by `Describe`, its box beside the photo settings
-  labelled by `OtherItemsInPictures.TickLabel` and its grey line `HelpLine`
+- CLASH DETECTIVE IS ASKED TO HIDE THE OTHER ITEMS FOR THE PICTURES, F150, Bader's answer to Q151 and his
+  order of 2026-10-12. The picture call draws by Clash Detective's display settings, which are per user,
+  scan.md 5z-ze, so the add-in sets Hide Other for each group's picture pass and puts the user's value back
+  after. `OtherItemsInPictures` is the rule of one group and its one IMAGES line. The value asked for is ON
+  where `ImageOptions.GhostTheOtherItems` is unticked, its default, and OFF where it is ticked, the ghosted
+  look. It is set only where it was READ and reads other than that, never where it could not be read, since
+  a value never read cannot be put back, and it is read back at once after the set. The value written back,
+  `PutBackTo`, is the user's as the RUN'S FIRST GROUP read it, `HideOtherAcrossTheRun`, so a put back that
+  failed in one group is never taken as the user's value by the next, and a group reading another value says
+  so and puts the run's back. A group that leaves it other than the user's value, or whose put back threw,
+  owes a put back, tried once more at the end of the run with its own line, `AtTheEnd`, and hands the window
+  one error, `TakeTheGroupError`. A group that takes no picture touches nothing and says so. THE LINE CLAIMS
+  ONLY WHAT WAS READ: where the tool set the value it says whether the pictures follow is UNKNOWN until a
+  run's picture sizes show it, near 48 KB a picture with the other items hidden against about 550 KB with
+  them drawn, and `Describe` and the grey line say Clash Detective is asked, never what it draws. The box is
+  labelled by `OtherItemsInPictures.TickLabel` and its grey line is `HelpLine`. A stop between the set and the
+  put back is row F150-R1
 - What the pictures cost is MEASURED and logged per group: seconds per image, total
   seconds, how many, and how many megabytes. Every number anyone has given for this,
   including mine, was a guess until this existed. They are in the log and nowhere else,
