@@ -22,8 +22,9 @@ What was done:
 What remains: the readers' second look, the merge, main installed in place, 1A02MM's fast check and the 50
 test cut of 1A04PK, steps 639 to 645 of steps\03_bader_next.md.
 
-Known bugs: none new. A view and a picture of one test can show different models, the views reading the
-pair's teams and the clashing items' homes, Q118 A, the pictures the models the test's sides live in.
+Known bugs: none new. A view and a picture of one test can show different models, a view showing only the
+models its clashing items live in, Q119 B, a third team's named under Q118 A, and the pictures the models
+the test's two sides live in.
 
 What comes next: F147, long runs from slowing, and F146, the renumber answering, then the proof run.
 
