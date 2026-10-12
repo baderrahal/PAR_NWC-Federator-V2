@@ -1,0 +1,262 @@
+﻿16:08:21.695  pid 896 Roamer, start ticks UTC 639273147261593398 read equal, started 2026-10-11 14:25:26
+16:08:21.717  main window handle 0, title [], IsHungAppWindow False, WM_NULL NO ANSWER in 0 ms
+16:08:21.732    top window 266738 class tooltips_class32 title [] visible False enabled True owner 2888186 hung True
+16:08:21.737    top window 2757098 class tooltips_class32 title [] visible False enabled True owner 2888186 hung True
+16:08:21.740    top window 1708598 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.745    top window 266866 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.753    top window 660126 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.756    top window 1905176 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.760    top window 266948 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.765    top window 332244 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.768    top window 332584 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.771    top window 463580 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.775    top window 1118598 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.778    top window 463584 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.781    top window 463314 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.784    top window 1312996 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.788    top window 1181910 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.791    top window 3149240 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.794    top window 266934 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.797    top window 6360616 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.811    top window 266936 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.814    top window 266884 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.817    top window 266940 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.824    top window 266942 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.827    top window 17633520 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.830    top window 4656584 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.833    top window 1704844 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.835    top window 332460 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.840    top window 266922 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.843    top window 266920 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.847    top window 266914 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.851    top window 266930 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.855    top window 397852 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.858    top window 2429380 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.862    top window 594496 class tooltips_class32 title [] visible False enabled True owner 5902482 hung True
+16:08:21.866    top window 6099436 class HwndWrapper[Roamer.exe;;b9438705-d458-47dd-b10e-9d33cf788dc5] title [Parsons NWC Federator   [1.0.0.0 4bc4c83d built 2026-10-11 13:04:29]] visible True enabled True owner 5902482 hung True
+16:08:21.871    top window 267430 class AdApplicationButton title [AdApplicationButton] visible False enabled True owner 5902482 hung True
+16:08:21.875    top window 266956 class AdApplicationButton title [AdApplicationButton] visible False enabled True owner 5902482 hung True
+16:08:21.879    top window 332314 class AdApplicationButton title [AdApplicationButton] visible False enabled True owner 5902482 hung True
+16:08:21.882    top window 5902482 class WindowsForms10.Window.8.app.0.27a2811_r7_ad1 title [1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025] visible True enabled False owner 3281294 hung True
+16:08:21.886        child AfxFrameOrView140u [Untitled - Navisworks]
+16:08:21.890        child WindowsForms10.Window.8.app.0.27a2811_r7_ad1 [View0]
+16:08:21.894        child WindowsForms10.Window.8.app.0.27a2811_r7_ad1 [Clash Detective]
+16:08:21.897        child #32770 [Standard]
+16:08:21.901        child Static [Static]
+16:08:21.904        child Button [OK]
+16:08:21.907        child Button [Cancel]
+16:08:21.910        child Button [&Apply]
+16:08:21.913        child Button [Help]
+16:08:21.917        child Button [-]
+16:08:21.920        child #32770 [Standard]
+16:08:21.923        child Static [Static]
+16:08:21.926        child Button [OK]
+16:08:21.929        child Button [Cancel]
+16:08:21.932        child Button [&Apply]
+16:08:21.935        child Button [Help]
+16:08:21.938        child Button [-]
+16:08:21.941        child WindowsForms10.Window.8.app.0.27a2811_r7_ad1 [Properties]
+16:08:21.945        child WindowsForms10.Window.8.app.0.27a2811_r7_ad1 [Selection Tree]
+16:08:21.948        child #32770 [Standard]
+16:08:21.951        child Static [Static]
+16:08:21.954        child Button [OK]
+16:08:21.957        child Button [Cancel]
+16:08:21.961        child Button [&Apply]
+16:08:21.964        child Button [Help]
+16:08:21.968        child Button [-]
+16:08:21.971        child AdImpApplicationFrame [AdImpApplicationFrame]
+16:08:21.974        child HwndWrapper[Roamer.exe;;f8e64006-31bd-4449-b9a7-88e77f0e0fa9] [QATHwndSource]
+16:08:21.978        child HwndWrapper[Roamer.exe;;44ae4e95-4901-4074-a2dd-19ee9aef0f4c] [InfoCenterHwndSource]
+16:08:21.982    top window 3281294 class WindowsForms10.Window.0.app.0.27a2811_r7_ad1 title [] visible False enabled True owner 0 hung True
+16:08:21.986    top window 17043710 class HwndWrapper[Roamer.exe;ProgressDialog;f4648b89-07c8-4edb-8613-4ec08e08522e] title [MediaContextNotificationWindow] visible False enabled True owner 0 hung False
+16:08:21.989    top window 4854042 class HwndWrapper[Roamer.exe;ProgressDialog;df92b8df-cc68-4dc5-a4fa-7986afe99e2a] title [SystemResourceNotifyWindow] visible False enabled False owner 0 hung False
+16:08:21.993    top window 1642980 class HwndWrapper[Roamer.exe;;190affad-d4f9-4f6d-9730-e9589e3586b1] title [Hidden Window] visible False enabled True owner 0 hung True
+16:08:21.997    top window 397790 class HwndWrapper[Roamer.exe;;682d4851-eae2-4056-8879-d635820faf61] title [] visible False enabled True owner 0 hung True
+16:08:22.000    top window 266878 class OleDdeWndClass title [DDE Server Window] visible False enabled True owner 0 hung True
+16:08:22.004    top window 8523522 class tooltips_class32 title [] visible False enabled True owner 0 hung True
+16:08:22.008    top window 398072 class tooltips_class32 title [] visible False enabled True owner 2888186 hung True
+16:08:22.012    top window 397942 class tooltips_class32 title [] visible False enabled True owner 0 hung True
+16:08:22.016    top window 1904928 class tooltips_class32 title [] visible False enabled True owner 0 hung True
+16:08:22.020    top window 7999788 class tooltips_class32 title [] visible False enabled True owner 0 hung True
+16:08:22.023    top window 660366 class tooltips_class32 title [] visible False enabled True owner 0 hung True
+16:08:22.029    top window 332356 class ComboLBox title [] visible False enabled False owner 0 hung True
+16:08:22.032    top window 266856 class ComboLBox title [] visible False enabled False owner 0 hung True
+16:08:22.036    top window 266994 class ComboLBox title [] visible False enabled True owner 0 hung True
+16:08:22.041    top window 267042 class ComboLBox title [] visible False enabled True owner 0 hung True
+16:08:22.045    top window 332226 class ComboLBox title [] visible False enabled True owner 0 hung True
+16:08:22.048    top window 332286 class ComboLBox title [] visible False enabled True owner 0 hung True
+16:08:22.051    top window 4985216 class ComboLBox title [] visible False enabled True owner 0 hung True
+16:08:22.054    top window 267050 class ComboLBox title [] visible False enabled True owner 0 hung True
+16:08:22.058    top window 266824 class ComboLBox title [] visible False enabled True owner 0 hung True
+16:08:22.062    top window 857336 class ComboLBox title [] visible False enabled True owner 0 hung True
+16:08:22.065    top window 3935216 class ComboLBox title [] visible False enabled True owner 0 hung True
+16:08:22.068    top window 855686 class HwndWrapper[Roamer.exe;;ed255f3a-3589-4851-929e-40cb7929bf13] title [MediaContextNotificationWindow] visible False enabled True owner 0 hung True
+16:08:22.072    top window 5771750 class HwndWrapper[Roamer.exe;;23304e34-5ea0-4a71-850a-f2bdcfd334ab] title [SystemResourceNotifyWindow] visible False enabled False owner 0 hung True
+16:08:22.076    top window 3542998 class Static title [lcautocam_MSG_WINDOW] visible False enabled True owner 0 hung True
+16:08:22.080    top window 855586 class LcOmWin32KernelTimer title [] visible False enabled True owner 0 hung True
+16:08:22.083    top window 2363676 class .NET-BroadcastEventWindow.4.0.0.0.27a2811.0 title [.NET-BroadcastEventWindow.4.0.0.0.27a2811.0] visible False enabled True owner 0 hung True
+16:08:22.087    top window 6885678 class GDI+ Hook Window Class title [GDI+ Window (Roamer.exe)] visible False enabled True owner 0 hung False
+16:08:22.090    top window 14160068 class Qt653ScreenChangeObserverWindow title [] visible False enabled True owner 0 hung True
+16:08:22.093    top window 4133590 class adpsdknotification title [NotificationWindowHelper] visible False enabled True owner 0 hung False
+16:08:22.097    top window 917636 class autodesk.navisworks.app.Text3DRendererWindow title [] visible False enabled True owner 0 hung True
+16:08:22.100    top window 3019890 class OGS_Hidden_Window title [Hidden] visible False enabled True owner 0 hung True
+16:08:22.103    top window 398032 class CiceroUIWndFrame title [CiceroUIWndFrame] visible False enabled False owner 528740 hung False
+16:08:22.106    top window 1118560 class CiceroUIWndFrame title [CiceroUIWndFrame] visible False enabled False owner 398540 hung True
+16:08:22.110    top window 398098 class MSCTFIME UI title [MSCTFIME UI] visible False enabled False owner 594450 hung True
+16:08:22.113    top window 594450 class IME title [Default IME] visible False enabled False owner 6099436 hung True
+16:08:22.116    top window 398224 class IME title [Default IME] visible False enabled False owner 17043710 hung False
+16:08:22.120    top window 266764 class MSCTFIME UI title [MSCTFIME UI] visible False enabled False owner 398224 hung False
+16:08:22.124    top window 528740 class CiceroUIWndFrame title [CiceroUIWndFrame] visible False enabled False owner 0 hung False
+16:08:22.127    top window 398540 class CiceroUIWndFrame title [CiceroUIWndFrame] visible False enabled False owner 0 hung True
+16:08:22.131    top window 1510706 class IME title [Default IME] visible False enabled False owner 6885678 hung False
+16:08:22.134    top window 10228050 class IME title [Default IME] visible False enabled False owner 4133590 hung False
+16:08:28.060  memory at the start: private 6134 MB, working set 6082 MB, peak working set 6084 MB, virtual 11.5 GB, handles 1689, threads 125. Machine: free physical 34767 MB of 65221 MB, free commit 38678 MB of 74949 MB
+16:08:28.068  tool log run-20261011-142641.log, 99543 bytes, last written 14:56:44
+16:08:28.075    log| 14:27:25.450  +0044.410s  STEP     TESTS CREATE  entered again. Every further visit in this group is counted, not written out
+16:08:28.078    log| 14:27:25.479  +0044.440s  CLASH    created  BLD-AR-Ramps-vs-BLD-AR-Floors  hard_conservative  tolerance 0.0820209974 ft is 0.0820209974 ft  merge composites on
+16:08:28.080    log| 14:27:25.485  +0044.446s  STEP     TESTS RUN     entered again. Every further visit in this group is counted, not written out
+16:08:28.083    log| 14:27:25.590  +0044.550s  STEP     HARVEST       entered again. Every further visit in this group is counted, not written out
+16:08:28.086    log| 14:44:14.400  +1053.328s  ROWS     BLD-AR-Ramps-vs-BLD-AR-Floors  97 rows for the workbook, 97 clashes in the document, they agree
+16:08:28.089    log| 14:44:14.402  +1053.330s  CLASH    clashes BLD-AR-Ramps-vs-BLD-AR-Floors  items 18 v 199  New 97  0.1s
+16:08:28.092    log| 14:44:14.528  +1053.457s  CLASH    created  BLD-AR-Ramps-vs-BLD-AR-Stairs  hard_conservative  tolerance 0.0820209974 ft is 0.0820209974 ft  merge composites on
+16:08:28.096    log| 14:44:14.656  +1053.584s  ROWS     BLD-AR-Ramps-vs-BLD-AR-Stairs  0 rows for the workbook, 0 clashes in the document, they agree
+16:08:28.099    log| 14:44:14.658  +1053.586s  CLASH    passed  BLD-AR-Ramps-vs-BLD-AR-Stairs  items 18 v 20  none  0.1s
+16:08:28.101    log| 14:44:14.699  +1053.628s  CLASH    created  BLD-AR-Walls-vs-BLD-AR-Floors  hard_conservative  tolerance 0.0820209974 ft is 0.0820209974 ft  merge composites on
+16:08:28.112  last STEP line: 14:27:25.590  +0044.550s  STEP     HARVEST       entered again. Every further visit in this group is counted, not written out
+16:08:43.141    t+15 s processor +19.8 s, window NO ANSWER in 0 ms, hung False, log 99543 bytes
+16:08:58.158    t+30 s processor +20.1 s, window NO ANSWER in 0 ms, hung False, log 99543 bytes
+16:09:13.165    t+45 s processor +22.7 s, window NO ANSWER in 0 ms, hung False, log 99543 bytes
+16:09:28.170    t+60 s processor +21.6 s, window NO ANSWER in 0 ms, hung False, log 99543 bytes
+16:09:43.178    t+75 s processor +19.4 s, window NO ANSWER in 0 ms, hung False, log 99543 bytes
+16:09:58.190    t+90 s processor +20.2 s, window NO ANSWER in 0 ms, hung False, log 99543 bytes
+16:10:13.205    t+105 s processor +18.7 s, window NO ANSWER in 0 ms, hung False, log 99543 bytes
+16:10:28.223    t+120 s processor +20.7 s, window NO ANSWER in 0 ms, hung False, log 99543 bytes
+16:10:28.230  processor over 120 s: 163.2 s, 4.9 percent of 28 logical processors
+16:10:35.962  memory at the end: private 6194 MB, working set 6112 MB, peak working set 6132 MB, virtual 11.6 GB, handles 1686, threads 123. Machine: free physical 34799 MB of 65221 MB, free commit 38587 MB of 74949 MB
+16:10:35.966  threads, the busiest over the window first:
+16:10:36.003    thread 46868 started 14:25:26 Wait Executive, +15 s over the window, 885.7 s in all
+16:10:36.006    thread 40552 started 16:08:25 Wait EventPairLow, +14.5 s over the window, 14.7 s in all
+16:10:36.011    thread 48240 started 15:49:25 Wait EventPairLow, +14.1 s over the window, 115.3 s in all
+16:10:36.015    thread 43020 started 16:05:27 Wait EventPairLow, +13.4 s over the window, 24.4 s in all
+16:10:36.018    thread 46100 started 15:34:04 Wait EventPairLow, +13.2 s over the window, 165.9 s in all
+16:10:36.022    thread 41092 started 15:48:30 Wait EventPairLow, +12.1 s over the window, 111.5 s in all
+16:10:36.026    thread 17720 started 15:41:50 Wait EventPairLow, +11.2 s over the window, 144.8 s in all
+16:10:36.029    thread 17296 started 14:44:22 Wait EventPairLow, +10.9 s over the window, 382.1 s in all
+16:10:36.032    thread 43360 started 15:42:32 Wait EventPairLow, +10.8 s over the window, 135.6 s in all
+16:10:36.036    thread 5508 started 15:00:55 Wait EventPairLow, +9.5 s over the window, 349 s in all
+16:10:36.039    thread 42088 started 15:50:55 Wait EventPairLow, +9.1 s over the window, 102.3 s in all
+16:10:36.043    thread 26324 started 15:06:33 Running, +8.5 s over the window, 339.7 s in all
+16:10:36.046    thread 40296 started 16:01:29 Wait EventPairLow, +7.9 s over the window, 39.4 s in all
+16:10:36.049    thread 46076 started 14:25:26 Wait EventPairLow, +6 s over the window, 473.5 s in all
+16:10:36.052    thread 28212 started 15:45:18 Wait EventPairLow, +3.7 s over the window, 117.7 s in all
+16:10:36.056    thread 43220 started 14:26:31 Wait Unknown, +0.7 s over the window, 33.8 s in all
+16:10:36.059    thread 27184 started 14:26:02 Wait ExecutionDelay, +0.2 s over the window, 8.6 s in all
+16:10:36.062    thread 50104 started 14:26:02 Wait ExecutionDelay, +0.1 s over the window, 7.2 s in all
+16:10:36.066    thread 37128 started 14:26:01 Wait ExecutionDelay, +0 s over the window, 1.9 s in all
+16:10:36.069    thread 40288 started 14:26:14 Wait ExecutionDelay, +0 s over the window, 0.8 s in all
+16:10:36.073    thread 3924 started 14:26:01 Wait Unknown, +0 s over the window, 0.5 s in all
+16:10:36.076    thread 3388 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.079    thread 29272 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.083    thread 40492 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.086    thread 49752 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.089    thread 33568 started 14:26:01 Wait Unknown, +0 s over the window, 0.5 s in all
+16:10:36.093    thread 46444 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.096    thread 42408 started 14:25:59 Wait EventPairLow, +0 s over the window, 0 s in all
+16:10:36.100    thread 40152 started 14:26:01 Wait UserRequest, +0 s over the window, 0 s in all
+16:10:36.103    thread 47144 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.107    thread 49444 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.110    thread 46092 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.114    thread 48928 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.117    thread 3852 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.120    thread 43112 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.123    thread 45900 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.126    thread 43968 started 14:25:42 Wait Unknown, +0 s over the window, 0.2 s in all
+16:10:36.130    thread 10016 started 14:25:42 Wait Unknown, +0 s over the window, 0.3 s in all
+16:10:36.133    thread 46892 started 14:26:14 Wait ExecutionDelay, +0 s over the window, 0 s in all
+16:10:36.137    thread 18212 started 14:26:15 Wait UserRequest, +0 s over the window, 0 s in all
+16:10:36.140    thread 45040 started 14:26:08 Wait UserRequest, +0 s over the window, 0 s in all
+16:10:36.143    thread 10188 started 14:26:40 Wait UserRequest, +0 s over the window, 0.5 s in all
+16:10:36.147    thread 22676 started 14:26:22 Wait UserRequest, +0 s over the window, 1.3 s in all
+16:10:36.150    thread 41388 started 14:26:40 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.153    thread 43296 started 14:26:40 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.156    thread 32908 started 14:26:31 Wait UserRequest, +0 s over the window, 0.2 s in all
+16:10:36.160    thread 39212 started 14:26:40 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.163    thread 14472 started 14:26:43 Wait UserRequest, +0 s over the window, 0.8 s in all
+16:10:36.166    thread 43560 started 14:26:40 Wait UserRequest, +0 s over the window, 0.7 s in all
+16:10:36.170    thread 47032 started 14:27:02 Wait UserRequest, +0 s over the window, 0.1 s in all
+16:10:36.173    thread 21840 started 14:26:01 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.176    thread 35620 started 14:26:02 Wait ExecutionDelay, +0 s over the window, 0.1 s in all
+16:10:36.181    thread 44700 started 14:26:02 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.185    thread 12872 started 14:26:02 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.188    thread 49868 started 14:26:02 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.191    thread 40316 started 14:26:02 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.194    thread 33540 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.198    thread 2952 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.202    thread 44860 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.205    thread 50080 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.208    thread 48608 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.211    thread 46016 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.215    thread 41284 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.218    thread 35452 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.221    thread 33560 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.225    thread 47552 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.229    thread 48192 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.233    thread 44368 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.237    thread 26556 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.241    thread 37380 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.245    thread 44320 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.248    thread 41152 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.252    thread 45368 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.257    thread 27696 started 14:25:26 Wait UserRequest, +0 s over the window, 0 s in all
+16:10:36.261    thread 39400 started 14:25:26 Wait UserRequest, +0 s over the window, 0.8 s in all
+16:10:36.265    thread 20344 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.268    thread 34148 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.272    thread 49948 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.276    thread 12444 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.279    thread 40164 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.283    thread 49356 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.286    thread 10192 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.290    thread 24824 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.294    thread 4320 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.298    thread 47636 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.302    thread 2348 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.307    thread 47368 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.311    thread 10568 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.314    thread 44156 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.317    thread 17872 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.321    thread 37988 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.325    thread 32984 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.328    thread 13036 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.332    thread 36708 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.335    thread 11452 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.339    thread 48460 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.342    thread 2988 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.346    thread 44760 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.349    thread 39020 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.353    thread 15188 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.357    thread 44628 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.360    thread 39296 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.365    thread 32920 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.368    thread 36316 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.372    thread 24772 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.375    thread 41548 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.378    thread 44488 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.381    thread 2640 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.384    thread 38892 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.388    thread 46944 started 14:25:42 Wait Unknown, +0 s over the window, 0 s in all
+16:10:36.392    thread 48456 started 16:10:21 Wait Unknown, +UNKNOWN s over the window, 0 s in all
+16:10:36.395    thread 19128 started 16:10:21 Wait Unknown, +UNKNOWN s over the window, 0 s in all
+16:10:36.399    thread 40548 started 16:10:21 Wait UserRequest, +UNKNOWN s over the window, 0.1 s in all
+16:10:36.403    thread 46564 started 16:10:21 Wait UserRequest, +UNKNOWN s over the window, 0 s in all
+16:10:36.407    thread 46500 started 16:10:21 Wait UserRequest, +UNKNOWN s over the window, 0 s in all
+16:10:36.411    thread 41588 started 16:10:21 Wait Unknown, +UNKNOWN s over the window, 0 s in all
+16:10:36.415    thread 41924 started 16:10:05 Wait UserRequest, +UNKNOWN s over the window, 0 s in all
+16:10:36.418    thread 49700 started 16:10:05 Wait UserRequest, +UNKNOWN s over the window, 0 s in all
+16:10:36.422    thread 36440 started 16:10:05 Wait UserRequest, +UNKNOWN s over the window, 0 s in all
+16:10:36.425    thread 24672 started 16:08:38 Wait EventPairLow, +UNKNOWN s over the window, 8.2 s in all
+16:10:36.429    thread 42716 started 16:10:05 Wait UserRequest, +UNKNOWN s over the window, 0 s in all
+16:10:36.432    thread 45268 started 16:10:05 Wait UserRequest, +UNKNOWN s over the window, 0 s in all
+16:10:36.436    thread 37000 started 16:10:05 Wait UserRequest, +UNKNOWN s over the window, 0 s in all
+16:10:36.440  main window at the end: IsHungAppWindow False, WM_NULL NO ANSWER in 0 ms
+16:10:42.841  minidump: written, 3131481 bytes, C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\06\item1-C04\diag-1625\roamer-896.dmp
+16:10:42.845  END

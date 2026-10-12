@@ -1,0 +1,460 @@
+19:59:37.753  +0000.000s  <a line naming his logs folder or the kept team map, masked by run.ps1, F131>
+19:59:37.763  +0000.010s  <a line naming his logs folder or the kept team map, masked by run.ps1, F131>
+19:59:37.772  +0000.019s  RETAIN   keeping 30 logs, deleted 1, could not delete 0, and 0 .tsv beside them
+
+================================================================
+SESSION
+================================================================
+19:59:37.782  +0000.029s  started        : 2026-10-11 19:59:37
+19:59:37.783  +0000.029s  plugin version : 1.0.0.0 89082a29 built 2026-10-11 19:10:46
+19:59:37.783  +0000.030s  navisworks     : Autodesk Navisworks Manage 2025  runtime 22.5  build 0  api 22.0 (stable)  language en-US  runtime string Navisworks Manage
+19:59:37.783  +0000.030s  open document  : none, the document is clear
+19:59:37.783  +0000.030s  <a line naming his logs folder or the kept team map, masked by run.ps1, F131>
+19:59:37.877  +0000.123s  LOGO     the report will carry C:\Program Files\Autodesk\Navisworks Manage 2025\Images\logo.jpg
+
+================================================================
+FOLDERS REMEMBERED
+================================================================
+19:59:37.913  +0000.160s  <a remembered folder, masked by run.ps1, Q87>
+19:59:37.914  +0000.160s  <a remembered folder, masked by run.ps1, Q87>
+19:59:37.914  +0000.161s  <a remembered folder, masked by run.ps1, Q87>
+19:59:37.914  +0000.161s  <a remembered folder, masked by run.ps1, Q87>
+19:59:37.914  +0000.161s  <a remembered folder, masked by run.ps1, Q87>
+
+================================================================
+TEAMS KEPT
+================================================================
+19:59:37.918  +0000.165s  <a line of the kept team map, masked by run.ps1, Q123>
+19:59:47.126  +0009.373s  SCAN     started  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04  including subfolders
+19:59:47.131  +0009.379s  SCAN     finished 10 found, 10 readable, 0 that cannot be read
+19:59:57.931  +0020.178s  PREVIEW  1A04PK  First run
+19:59:57.932  +0020.179s  PREVIEW  opened 0 NWFs before the confirm dialog in 0.0s
+
+================================================================
+RUN SETTINGS
+================================================================
+19:59:58.107  +0020.355s  source folder     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04
+19:59:58.108  +0020.356s  include subfolders: yes
+19:59:58.109  +0020.356s  NWF folder        : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWF\C04
+19:59:58.109  +0020.357s  NWD folder        : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWD\C04
+19:59:58.111  +0020.359s  files found       : 10
+19:59:58.112  +0020.359s  files ticked      : 10
+19:59:58.112  +0020.360s  groups built      : 1
+19:59:58.113  +0020.361s  grouping         : One file per building
+19:59:58.114  +0020.362s  apply file to old: no, differences are reported and nothing is changed
+19:59:58.115  +0020.363s  compact resolved : no
+19:59:58.116  +0020.364s  penetrations     : no, every clash keeps the status it has
+19:59:58.117  +0020.364s  clash tolerance  : Use the value in the XML, read per test out of the XML
+19:59:58.117  +0020.365s  priority file    : none, so no Priority column and the measured block order
+19:59:58.118  +0020.366s  by design        : no, the pairs file is not read
+19:59:58.119  +0020.366s  viewpoints       : yes, saved viewpoints are made for the clashes
+19:59:58.119  +0020.367s  NWD naming       : overwrites, so only the latest week exists
+19:59:58.120  +0020.368s  republish NWD    : yes, fixed
+19:59:58.121  +0020.369s  model units      : Meters, which is what the models are set to
+19:59:58.122  +0020.369s  report units     : Meters (m), always, converted before anything is written
+
+================================================================
+GROUPS
+================================================================
+19:59:58.130  +0020.377s  run       1A04PK     10 files  1104-PAR-1A04PK-ZZZ-BM-MOD-000001  [AR, EL, FP, HV, ME, ST]  First run
+19:59:58.131  +0020.378s  0 groups unticked in the Run column, nothing else drops a group
+
+================================================================
+FINDINGS
+================================================================
+19:59:58.135  +0020.382s  Disciplines in this run: AR, EL, FP, HV, ME, ST
+19:59:58.136  +0020.383s  Nothing odd. Every building code shares its shape with another, no two codes differ by a single character that is easy to misread, and every group holds every discipline in the run.
+19:59:58.139  +0020.387s  RUN      started, 1 group
+19:59:58.200  +0020.448s  RUN      the Clash step picked C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\first50\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml
+19:59:58.201  +0020.449s  RUN      it holds 61 sets and 52 tests
+19:59:58.203  +0020.450s  TEAMS    the teams are read from C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\first50\1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt, the team map beside this file. It holds 4 teams and 10 codes, and a code on no line is a team of its own named by its code
+19:59:58.204  +0020.451s  TEAMS    Architecture is AR
+19:59:58.205  +0020.452s  TEAMS    Structure is ST
+19:59:58.205  +0020.453s  TEAMS    Mechanical is HV, PL, FP, ME, DR and FF
+19:59:58.206  +0020.453s  TEAMS    Electrical is EL and EV
+19:59:58.207  +0020.454s  TEAMS    a pair is written in the order Architecture, Structure, Mechanical, Electrical, then any other team by its name, then UNKNOWN
+19:59:58.208  +0020.455s  TEAMS    a pair holding Mechanical or Electrical carries the size folder
+19:59:58.210  +0020.458s  TEAMS    BLD-Security Devices carries no discipline code the map lists, so its team is Electrical, which a folder above it in the clash XML's set tree names, unless a model of its group carries a code its name holds
+19:59:58.217  +0020.464s  <a line naming his logs folder or the kept team map, masked by run.ps1, F131>
+19:59:58.218  +0020.465s  MATRIX   the corrections are read from C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\first50\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, the list beside this file. It holds 3 corrections, 1 rename, 1 catch-all and 1 Source File rule, and 30 workset spellings
+19:59:58.219  +0020.466s  MATRIX   BLD-DRPipe Accessories to BLD-DR-Pipe Accessories  0 occurrences. this file does not hold that name
+19:59:58.219  +0020.467s  MATRIX   BLD-EL-Devices asks for a category holding Devices and none of the 6 its siblings claim  0 occurrences. that set already asks exactly this, so it was left alone. contains, then one negated equals per category another set asks for, F87 since scan.md 5g
+19:59:58.220  +0020.467s  MATRIX   the value ME-DUCTWORK is asked as ME-DUCTWORK or ME-Ductwork, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+19:59:58.221  +0020.468s  MATRIX   the value ME-EQUIPMENT is asked as ME-EQUIPMENT or ME-Equipment, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+19:59:58.222  +0020.469s  MATRIX   the value ME-PIPING is asked as ME-PIPING or ME-Piping, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+19:59:58.223  +0020.470s  MATRIX   the value FF-Fire Fighting is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+19:59:58.224  +0020.471s  MATRIX   the value FP-PIPING is left alone  0 occurrences. the models measured so far in this project spell it exactly as the matrix does, and no other way
+19:59:58.225  +0020.472s  MATRIX   the value PL-Domestic Water is asked as PL-Domestic Water or PL-Domestic water, every spelling measured so far in this project's models  0 occurrences. every set asking for it already asks every spelling
+19:59:58.225  +0020.472s  MATRIX   the value PL-Drainage is left alone  0 occurrences. the list beside this file names no spelling of it
+19:59:58.226  +0020.473s  MATRIX   every set beside those asking Source File contains -AR- whose category another discipline also uses asks it already  0 occurrences
+19:59:58.227  +0020.474s  MATRIX   a set already in an NWF keeps the conditions it was built with and is not given what this file asks unless the box "Rebuild sets that drifted from the file" is ticked. The SETS block of each group names every such set as DRIFTED
+19:59:58.227  +0020.475s  MATRIX   no correction was applied to this file: 6 were already made in it and 4 found nothing in it to change
+19:59:58.228  +0020.476s  RUN      workbooks go in C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\Clash Report\C04
+19:59:58.229  +0020.477s  RUN      the clash XML is off
+19:59:58.243  +0020.490s  COVERAGE the picked XML C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\first50\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml reads sha256 5dd5a42f803731827136a1bf26a58cf26da2d424de873242866d5cb37f67e1ae
+19:59:58.283  +0020.530s  GROUP    started  1A04PK  10 files
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc
+                          file     : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc
+19:59:58.296  +0020.543s  CLEAR    the document, at the top of 1A04PK, before Decide
+19:59:58.329  +0020.577s  CENSUS CLEAR  the document was emptied and every count read zero
+19:59:58.333  +0020.580s  STEP     DECIDE        started
+19:59:58.336  +0020.583s  CENSUS   before DECIDE  models 0  sets 0  tests 0  results 0  views 0
+19:59:58.360  +0020.608s  CENSUS   after  DECIDE  models 0  sets 0  tests 0  results 0  views 0
+19:59:58.365  +0020.613s  STEP     DECIDE        finished 0.027s  First run
+19:59:58.368  +0020.615s  BUILD    no NWF at C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf, building it from 10 files
+19:59:58.369  +0020.616s  CLEAR    the document, before building 1A04PK from scratch
+19:59:58.382  +0020.629s  STEP     APPEND        started
+19:59:58.384  +0020.631s  CENSUS   before APPEND  models 0  sets 0  tests 0  results 0  views 0
+19:59:58.403  +0020.650s  APPEND   attempt  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc
+20:00:00.000  +0022.247s  APPEND   ok      C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc  21,582,228 bytes
+20:00:00.003  +0022.250s  APPEND   attempt  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc
+20:00:00.985  +0023.232s  APPEND   ok      C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc  107,281,275 bytes
+20:00:00.986  +0023.233s  APPEND   attempt  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc
+20:00:01.555  +0023.803s  APPEND   ok      C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc  24,705,684 bytes
+20:00:01.559  +0023.806s  APPEND   attempt  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc
+20:00:01.783  +0024.031s  APPEND   ok      C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc  2,177,136 bytes
+20:00:01.785  +0024.032s  APPEND   attempt  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc
+20:00:01.952  +0024.200s  APPEND   ok      C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc  490,559 bytes
+20:00:01.954  +0024.201s  APPEND   attempt  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc
+20:00:02.158  +0024.406s  APPEND   ok      C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc  3,014,645 bytes
+20:00:02.160  +0024.407s  APPEND   attempt  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc
+20:00:02.413  +0024.661s  APPEND   ok      C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc  4,501,778 bytes
+20:00:02.414  +0024.662s  APPEND   attempt  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc
+20:00:02.781  +0025.028s  APPEND   ok      C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc  13,793,539 bytes
+20:00:02.782  +0025.030s  APPEND   attempt  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc
+20:00:02.985  +0025.233s  APPEND   ok      C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc  1,175,415 bytes
+20:00:02.987  +0025.234s  APPEND   attempt  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc
+20:00:03.180  +0025.428s  APPEND   ok      C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc  136,241 bytes
+20:00:03.182  +0025.430s  APPEND   10 of 10 appended for 1A04PK
+20:00:03.185  +0025.433s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-AR-MOD-000001.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc]
+20:00:03.186  +0025.434s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-EL-MOD-000001.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc]
+20:00:03.187  +0025.435s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-FP-MOD-000004.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc]
+20:00:03.188  +0025.436s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-HV-MOD-000001.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc]
+20:00:03.190  +0025.438s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-ME-MOD-000001.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc]
+20:00:03.193  +0025.441s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-ME-MOD-000002.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc]
+20:00:03.194  +0025.442s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-ME-MOD-000003.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc]
+20:00:03.195  +0025.443s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-ME-MOD-000004.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc]
+20:00:03.196  +0025.444s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-ST-MOD-000001.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc]
+20:00:03.197  +0025.445s           holds   C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc   [source Autodesk Docs://KSA_New Murabba/1104-PAR-1A04PK-ZZZ-ST-MOD-000002.rvt, file C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWC\C04\1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc]
+20:00:03.199  +0025.446s  CENSUS   after  APPEND  models 10  sets 0  tests 0  results 0  views 105
+20:00:03.202  +0025.450s  CENSUS NOTED  APPEND  saved viewpoints went from 0 to 105, which is what that step does: an NWC exported from Revit carries the saved viewpoints that model was exported with, so appending files brings them in. Nothing was undone and this group can still be DONE
+20:00:03.203  +0025.451s  STEP     APPEND        finished 4.817s  10 of 10 appended
+20:00:03.204  +0025.452s  STEP     NWF SAVE      started
+20:00:03.206  +0025.453s  CENSUS   before NWF SAVE  models 10  sets 0  tests 0  results 0  views 105
+20:00:03.314  +0025.562s  NWF      attempt  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf
+20:00:04.395  +0026.642s  NWF      written  C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf  4,743 bytes
+20:00:04.398  +0026.646s  CENSUS   after  NWF SAVE  models 10  sets 0  tests 0  results 0  views 105
+20:00:04.401  +0026.648s  STEP     NWF SAVE      finished 1.194s  saved 4743 bytes
+20:00:04.404  +0026.652s  STEP     UNITS         started
+20:00:04.406  +0026.654s  CENSUS   before UNITS  models 10  sets 0  tests 0  results 0  views 105
+20:00:04.421  +0026.668s  UNITS    the document is in Feet (ft) and the report needs Meters (m). Setting every model.
+20:00:04.895  +0027.143s  UNITS    10 models set, 0 that would not, document shows Feet (ft). Every report number is converted to Meters (m) before it is written, so the report is metric whatever this says.
+20:00:04.896  +0027.144s  CENSUS   after  UNITS  models 10  sets 0  tests 0  results 0  views 105
+20:00:04.898  +0027.146s  STEP     UNITS         finished 0.492s  the document was asked for Meters
+
+================================================================
+ALIGNMENT 1A04PK
+================================================================
+20:00:04.920  +0027.168s  AR  1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc is the reference
+20:00:04.921  +0027.168s     AR  1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc   reference, shared coordinate "IRPS-SharedCoordinate"
+20:00:04.922  +0027.169s     EL  1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc   DIFFERENT  dx 1609.9 mm  dy 768.8 mm  dz 2000 mm, shared coordinate "IP3_Shared_Location"
+20:00:04.923  +0027.170s        ask the EL originator to re-export on the project shared coordinates
+20:00:04.923  +0027.171s     FP  1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc   DIFFERENT  dx 473.27 mm  dy 224.92 mm  dz 900 mm, shared coordinate "16-S01"
+20:00:04.924  +0027.172s        ask the FP originator to re-export on the project shared coordinates
+20:00:04.925  +0027.173s     HV  1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc   DIFFERENT  dx 473.27 mm  dy 224.92 mm  dz 900 mm, shared coordinate "16-S01"
+20:00:04.926  +0027.173s        ask the HV originator to re-export on the project shared coordinates
+20:00:04.929  +0027.176s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc   DIFFERENT  dx 327611.41 mm  dy -102942.98 mm  dz -2361 mm, shared coordinate "IRR INFRA-05"
+20:00:04.930  +0027.177s        ask the ME originator to re-export on the project shared coordinates
+20:00:04.931  +0027.178s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc   DIFFERENT  dx 81289.63 mm  dy 62826.78 mm  dz 50 mm, shared coordinate "MECH_IRPS1_CHLORINATION"
+20:00:04.931  +0027.179s        ask the ME originator to re-export on the project shared coordinates
+20:00:04.932  +0027.180s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc   DIFFERENT  dx 155093.83 mm  dy -212132.59 mm  dz -7180 mm, shared coordinate "IRR SITE -03"
+20:00:04.933  +0027.180s        ask the ME originator to re-export on the project shared coordinates
+20:00:04.934  +0027.181s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc   DIFFERENT  dx 473.27 mm  dy 224.92 mm  dz 900 mm, shared coordinate "16-S01"
+20:00:04.934  +0027.182s        ask the ME originator to re-export on the project shared coordinates
+20:00:04.935  +0027.183s     ST  1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc   DIFFERENT  dx 45871.79 mm  dy -51074.79 mm  dz 50 mm, shared coordinate "IPS-A(1)"
+20:00:04.936  +0027.184s        ask the ST originator to re-export on the project shared coordinates
+20:00:04.937  +0027.185s     ST  1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc   DIFFERENT  dx 27436.18 mm  dy -105287.89 mm  dz -2900 mm, shared coordinate "Internal"
+20:00:04.938  +0027.185s        ask the ST originator to re-export on the project shared coordinates
+20:00:04.938  +0027.186s  9 of 10 model(s) sit somewhere the reference does not. Nothing is changed and the run goes on.
+20:00:04.939  +0027.187s  9 model(s) are not on the same shared coordinates. The rule that skips the clash for them is off for this run, so the group is clashed as before:
+20:00:04.940  +0027.188s     EL  1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc   shared site "IP3_Shared_Location"   X 1609.9 mm  Y 768.8 mm  Z 2000 mm from the reference, 2.68 m in a straight line, more than 1 m
+20:00:04.941  +0027.189s     FP  1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc   shared site "16-S01"   X 473.27 mm  Y 224.92 mm  Z 900 mm from the reference, 1.041 m in a straight line, more than 1 m
+20:00:04.942  +0027.190s     HV  1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc   shared site "16-S01"   X 473.27 mm  Y 224.92 mm  Z 900 mm from the reference, 1.041 m in a straight line, more than 1 m
+20:00:04.943  +0027.190s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc   shared site "IRR INFRA-05"   X 327611.41 mm  Y -102942.98 mm  Z -2361 mm from the reference, 343.412 m in a straight line, more than 1 m
+20:00:04.944  +0027.191s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc   shared site "MECH_IRPS1_CHLORINATION"   X 81289.63 mm  Y 62826.78 mm  Z 50 mm from the reference, 102.739 m in a straight line, more than 1 m
+20:00:04.945  +0027.192s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc   shared site "IRR SITE -03"   X 155093.83 mm  Y -212132.59 mm  Z -7180 mm from the reference, 262.88 m in a straight line, more than 1 m
+20:00:04.947  +0027.195s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc   shared site "16-S01"   X 473.27 mm  Y 224.92 mm  Z 900 mm from the reference, 1.041 m in a straight line, more than 1 m
+20:00:04.948  +0027.196s     ST  1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc   shared site "IPS-A(1)"   X 45871.79 mm  Y -51074.79 mm  Z 50 mm from the reference, 68.65 m in a straight line, more than 1 m
+20:00:04.948  +0027.197s     ST  1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc   shared site "Internal", Revit's own origin and not a shared site   X 27436.18 mm  Y -105287.89 mm  Z -2900 mm from the reference, 108.843 m in a straight line, more than 1 m
+20:00:04.950  +0027.198s  this group names 8 different shared coordinates: 16-S01, IP3_Shared_Location, IPS-A(1), IRPS-SharedCoordinate, IRR INFRA-05, IRR SITE -03, Internal, MECH_IRPS1_CHLORINATION
+20:00:04.951  +0027.199s  1 model(s) name their site "Internal", which is what Revit calls a model that was not exported on a shared site at all
+20:00:04.956  +0027.203s  THIS GROUP IS FAILED. 1 model(s) were exported on Revit's internal origin and not on a shared site, which puts them in a different coordinate system from the rest of the group: ST  1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc.
+
+================================================================
+EXPORT CHECK 1A04PK
+================================================================
+20:00:06.828  +0029.076s     AR  1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc   elements 6057   with a workset 6057   worksets 3   element id 100%
+20:00:06.829  +0029.076s     EL  1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc   elements 6515   with a workset 6515   worksets 11   element id 100%
+20:00:06.830  +0029.077s     FP  1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc   elements 12127   with a workset 12127   worksets 1   element id 100%
+20:00:06.831  +0029.078s     HV  1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc   elements 2409   with a workset 2409   worksets 3   element id 100%
+20:00:06.832  +0029.079s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc   elements 80   with a workset 80   worksets 1   element id 100%
+20:00:06.832  +0029.080s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc   elements 277   with a workset 277   worksets 2   element id 100%
+20:00:06.837  +0029.085s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc   elements 869   with a workset 869   worksets 2   element id 100%
+20:00:06.838  +0029.086s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc   elements 5372   with a workset 5372   worksets 3   element id 100%
+20:00:06.839  +0029.086s     ST  1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc   elements 1381   with a workset 1381   worksets 2   element id 100%
+20:00:06.840  +0029.087s     ST  1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc   elements 11   with a workset 11   worksets 2   element id 100%
+20:00:06.841  +0029.088s  all 10 model(s) carry a workset on every element and an element id on every element
+20:00:06.842  +0029.089s  worksets seen: AR-EXTERIOR, +LINK-FP-IRRIGATION PUMPING STATION, AR-INTERIOR, EV-Containment, EL-Containment, EL-Lightning Protection, EV-IT, EL-Power, EL-Electrical Equipment, EL-Lighting, and 15 more, counted and not listed
+20:00:06.842  +0029.090s  no workset name a set of the picked file asks for differs by letter case alone from one a model here carries
+20:00:06.844  +0029.091s  1 pair(s) of workset names are close enough to be one word typed twice. NOTHING IS MERGED: a person reads these and fixes the models, and this tool never decides which of two spellings is the right one. 2 more pair(s) are close enough too and are NOT listed, because a person has already decided they are two different worksets.
+20:00:06.845  +0029.092s     "ME-Piping" in 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc, 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc, 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc   against   "ME-PIPING" in 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc   the same word in a different case
+
+================================================================
+TEAMS 1A04PK
+================================================================
+20:00:06.862  +0029.110s     AR  1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc   AR in Architecture, no set of its team with another code was judged against it
+20:00:06.863  +0029.111s     EL  1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc   EL in Electrical, none of the 1 set(s) of its team with another code is kept out of it by a workset or a file name it asks
+20:00:06.865  +0029.113s     FP  1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc   FP in Mechanical, 23 of the 25 set(s) of its team with another code cannot reach it
+20:00:06.866  +0029.114s     HV  1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc   HV in Mechanical, 12 of the 25 set(s) of its team with another code cannot reach it
+20:00:06.867  +0029.115s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc   ME in Mechanical, 16 of the 16 set(s) of its team with another code cannot reach it
+20:00:06.868  +0029.115s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc   ME in Mechanical, 16 of the 16 set(s) of its team with another code cannot reach it
+20:00:06.870  +0029.117s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc   ME in Mechanical, 16 of the 16 set(s) of its team with another code cannot reach it
+20:00:06.872  +0029.119s     ME  1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc   ME in Mechanical, 6 of the 16 set(s) of its team with another code cannot reach it
+20:00:06.873  +0029.120s     ST  1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc   ST in Structure, no set of its team with another code was judged against it
+20:00:06.874  +0029.121s     ST  1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc   ST in Structure, no set of its team with another code was judged against it
+20:00:06.875  +0029.122s  89 set and model pair(s) of one team where the set cannot reach the model are not listed, because whether the model holds items of the set's categories that no set catches is UNKNOWN until the coverage counts them
+20:00:06.877  +0029.124s  CLASH    source   tests from XML, the picked file holds 61 sets and 52 tests
+20:00:06.878  +0029.126s  STEP     SETS          started
+20:00:06.879  +0029.127s  CENSUS   before SETS  models 10  sets 0  tests 0  results 0  views 105
+20:00:06.914  +0029.161s  SETS     1A04PK Generic Models, 10 sets planned in the folder Generic Models, one search set a model asking Category equals "Generic Models" and its Source File contains the model's Revit file name, no clash test
+20:00:06.919  +0029.167s  SETS     1A04PK, 61 to build, 0 skipped
+20:00:06.924  +0029.172s  SET      ran against C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf  (10 models loaded)
+20:00:06.945  +0029.192s  SET      folder   Architecture
+20:00:07.072  +0029.319s  SET      ok      lcop_selection_set_tree/Architecture/BLD-AR-Floors  2 conditions  199 items
+20:00:07.181  +0029.428s  SET      ok      lcop_selection_set_tree/Architecture/BLD-AR-Stairs  2 conditions  20 items
+20:00:07.293  +0029.541s  SET      ok      lcop_selection_set_tree/Architecture/BLD-AR-Ramps  2 conditions  18 items
+20:00:07.407  +0029.655s  SET      ZERO    lcop_selection_set_tree/Architecture/BLD-AR-Roofs  1 condition  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Roofs"
+20:00:07.521  +0029.769s  SET      ZERO    lcop_selection_set_tree/Architecture/BLD-AR-Ceilings  1 condition  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Ceilings"
+20:00:07.632  +0029.880s  SET      ZERO    lcop_selection_set_tree/Architecture/BLD-AR-Columns  1 condition  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Columns"
+20:00:07.739  +0029.987s  SET      ok      lcop_selection_set_tree/Architecture/BLD-AR-Walls  2 conditions  2608 items
+20:00:07.847  +0030.095s  SET      ok      lcop_selection_set_tree/Architecture/BLD-AR-Windows  1 condition  5 items
+20:00:07.957  +0030.205s  SET      ZERO    lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels  1 condition  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Curtain Panels"
+20:00:08.076  +0030.324s  SET      ZERO    lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions  1 condition  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Curtain Wall Mullions"
+20:00:08.187  +0030.435s  SET      ok      lcop_selection_set_tree/Architecture/BLD-AR-Doors  1 condition  182 items
+20:00:08.295  +0030.543s  SET      ZERO    lcop_selection_set_tree/Architecture/BLD-AR-Casework  1 condition  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Casework"
+20:00:08.402  +0030.650s  SET      ZERO    lcop_selection_set_tree/Architecture/BLD-AR-Furniture  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Furniture" and LcOaNodeSourceFile (Source File) contains "-AR-"
+20:00:08.509  +0030.757s  SET      ok      lcop_selection_set_tree/Architecture/BLD-AR-Parking  1 condition  2388 items
+20:00:08.618  +0030.865s  SET      ok      lcop_selection_set_tree/Architecture/BLD-AR-Railings  2 conditions  21 items
+20:00:08.724  +0030.971s  SET      ok      lcop_selection_set_tree/Architecture/BLD-AR-Site  2 conditions  362 items
+20:00:08.725  +0030.973s  SET      folder   Structure
+20:00:08.831  +0031.079s  SET      ok      lcop_selection_set_tree/Structure/BLD-ST-Foundation  1 condition  29 items
+20:00:08.940  +0031.188s  SET      ok      lcop_selection_set_tree/Structure/BLD-ST-Columns  1 condition  112 items
+20:00:09.050  +0031.297s  SET      ok      lcop_selection_set_tree/Structure/BLD-ST-Framing  1 condition  486 items
+20:00:09.180  +0031.428s  SET      ok      lcop_selection_set_tree/Structure/BLD-ST-Walls  2 conditions  99 items
+20:00:09.285  +0031.533s  SET      ok      lcop_selection_set_tree/Structure/BLD-ST-Floors  2 conditions  22 items
+20:00:09.390  +0031.638s  SET      ok      lcop_selection_set_tree/Structure/BLD-ST-Stair  2 conditions  19 items
+20:00:09.393  +0031.641s  SET      folder   Mechanical
+20:00:09.394  +0031.642s  SET      folder   Mechanical/Mechanical-HVAC
+20:00:09.790  +0032.039s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Ducts&Duct Fittings  8 conditions  471 items
+20:00:09.998  +0032.245s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Duct Accessory  4 conditions  32 items
+20:00:10.291  +0032.539s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Mechanical Equipment  4 conditions  17 items
+20:00:10.520  +0032.768s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts  4 conditions  9 items
+20:00:10.721  +0032.968s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals  4 conditions  91 items
+20:00:11.194  +0033.441s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings  8 conditions  483 items
+20:00:11.404  +0033.651s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories  4 conditions  397 items
+20:00:11.643  +0033.890s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures  4 conditions  2 items
+20:00:11.846  +0034.094s  SET      ZERO    lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes  4 conditions  0 items  asked for (LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Flex Pipes" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "ME-PIPING") or (LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Flex Pipes" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "ME-Piping")
+20:00:11.848  +0034.096s  SET      folder   Mechanical/Mechanical-Fire Fighting
+20:00:11.956  +0034.204s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment  2 conditions  68 items
+20:00:12.201  +0034.449s  SET      ZERO    lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings  4 conditions  0 items  asked for (LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Pipes" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "FP-PIPING") or (LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Pipe Fittings" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "FP-PIPING")
+20:00:12.311  +0034.559s  SET      ZERO    lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Pipe Accessories" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "FP-PIPING"
+20:00:12.417  +0034.664s  SET      ZERO    lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Pipe Insulation" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "FP-PIPING"
+20:00:12.546  +0034.794s  SET      ZERO    lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Plumbing Fixtures" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "FF-Fire Fighting"
+20:00:12.656  +0034.904s  SET      ZERO    lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Sprinklers" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "FP-PIPING"
+20:00:12.658  +0034.906s  SET      folder   Mechanical/Mechanical-Water Supply
+20:00:12.864  +0035.112s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment  4 conditions  7 items
+20:00:13.335  +0035.583s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings  8 conditions  1127 items
+20:00:13.551  +0035.799s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories  4 conditions  90 items
+20:00:13.820  +0036.068s  SET      ZERO    lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations  4 conditions  0 items  asked for (LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Pipe Insulation" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "PL-Domestic Water") or (LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Pipe Insulation" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "PL-Domestic water")
+20:00:14.034  +0036.282s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures  4 conditions  24 items
+20:00:14.036  +0036.283s  SET      folder   Mechanical/Mechanical-Drainage
+20:00:14.147  +0036.394s  SET      ZERO    lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Mechanical Equipment" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "PL-Drainage"
+20:00:14.395  +0036.643s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipes & Pipe Fittings  4 conditions  1402 items
+20:00:14.505  +0036.753s  SET      ZERO    lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Pipe Accessories" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "PL-Drainage"
+20:00:14.617  +0036.864s  SET      ZERO    lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Pipe Insulation" and LcRevitData_Element/lcldrevit_parameter_-1002053 (Workset) equals "PL-Drainage"
+20:00:14.737  +0036.984s  SET      ok      lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Plumbing Fixtures  2 conditions  193 items
+20:00:14.738  +0036.986s  SET      folder   Electrical
+20:00:14.840  +0037.088s  SET      ok      lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings  1 condition  492 items
+20:00:14.950  +0037.198s  SET      ok      lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment  1 condition  751 items
+20:00:15.064  +0037.312s  SET      ok      lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures  1 condition  384 items
+20:00:15.174  +0037.422s  SET      ok      lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings  1 condition  883 items
+20:00:15.295  +0037.543s  SET      ZERO    lcop_selection_set_tree/Electrical/BLD-EL-Devices  7 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) contains "Devices" and LcRevitData_Element/LcRevitPropertyElementCategory (Category) not equals "Communication Devices" and LcRevitData_Element/LcRevitPropertyElementCategory (Category) not equals "Data Devices" and LcRevitData_Element/LcRevitPropertyElementCategory (Category) not equals "Fire Alarm Devices" and LcRevitData_Element/LcRevitPropertyElementCategory (Category) not equals "Lighting Devices" and LcRevitData_Element/LcRevitPropertyElementCategory (Category) not equals "Security Devices" and LcRevitData_Element/LcRevitPropertyElementCategory (Category) not equals "Telephone Devices"
+20:00:15.404  +0037.652s  SET      ok      lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures  1 condition  1669 items
+20:00:15.515  +0037.762s  SET      ok      lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices  1 condition  357 items
+20:00:15.620  +0037.869s  SET      ok      lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices  1 condition  214 items
+20:00:15.751  +0037.998s  SET      ZERO    lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment  1 condition  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Telephone Equipment"
+20:00:15.856  +0038.104s  SET      ZERO    lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures  1 condition  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Telephone Devices"
+20:00:15.963  +0038.211s  SET      ok      lcop_selection_set_tree/Electrical/BLD-Security Devices  1 condition  514 items
+20:00:16.075  +0038.323s  SET      ZERO    lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices  1 condition  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Communication Devices"
+20:00:16.186  +0038.434s  SET      ZERO    lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices  1 condition  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Telephone Devices"
+20:00:16.298  +0038.545s  SET      ok      lcop_selection_set_tree/Electrical/BLD-EL-Data Devices  1 condition  477 items
+20:00:16.302  +0038.550s  SETS     1A04PK put into the document: 61 created, 0 already there and left alone
+20:00:16.305  +0038.553s  SET      ran against C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf  (10 models loaded)
+20:00:16.307  +0038.555s  SET      folder   Generic Models
+20:00:16.414  +0038.662s  SET      ZERO    lcop_selection_set_tree/Generic Models/1104-PAR-1A04PK-ZZZ-AR-MOD-000001  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Generic Models" and LcOaNodeSourceFile (Source File) contains "1104-PAR-1A04PK-ZZZ-AR-MOD-000001.rvt"
+20:00:16.518  +0038.766s  SET      ZERO    lcop_selection_set_tree/Generic Models/1104-PAR-1A04PK-ZZZ-EL-MOD-000001  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Generic Models" and LcOaNodeSourceFile (Source File) contains "1104-PAR-1A04PK-ZZZ-EL-MOD-000001.rvt"
+20:00:16.622  +0038.870s  SET      ok      lcop_selection_set_tree/Generic Models/1104-PAR-1A04PK-ZZZ-FP-MOD-000001  2 conditions  3 items
+20:00:16.742  +0038.989s  SET      ZERO    lcop_selection_set_tree/Generic Models/1104-PAR-1A04PK-ZZZ-HV-MOD-000001  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Generic Models" and LcOaNodeSourceFile (Source File) contains "1104-PAR-1A04PK-ZZZ-HV-MOD-000001.rvt"
+20:00:16.846  +0039.094s  SET      ZERO    lcop_selection_set_tree/Generic Models/1104-PAR-1A04PK-ZZZ-ME-MOD-000001  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Generic Models" and LcOaNodeSourceFile (Source File) contains "1104-PAR-1A04PK-ZZZ-ME-MOD-000001.rvt"
+20:00:16.952  +0039.199s  SET      ZERO    lcop_selection_set_tree/Generic Models/1104-PAR-1A04PK-ZZZ-ME-MOD-000002  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Generic Models" and LcOaNodeSourceFile (Source File) contains "1104-PAR-1A04PK-ZZZ-ME-MOD-000002.rvt"
+20:00:17.062  +0039.310s  SET      ZERO    lcop_selection_set_tree/Generic Models/1104-PAR-1A04PK-ZZZ-ME-MOD-000003  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Generic Models" and LcOaNodeSourceFile (Source File) contains "1104-PAR-1A04PK-ZZZ-ME-MOD-000003.rvt"
+20:00:17.170  +0039.418s  SET      ZERO    lcop_selection_set_tree/Generic Models/1104-PAR-1A04PK-ZZZ-ME-MOD-000004  2 conditions  0 items  asked for LcRevitData_Element/LcRevitPropertyElementCategory (Category) equals "Generic Models" and LcOaNodeSourceFile (Source File) contains "1104-PAR-1A04PK-ZZZ-ME-MOD-000004.rvt"
+20:00:17.277  +0039.525s  SET      ok      lcop_selection_set_tree/Generic Models/1104-PAR-1A04PK-ZZZ-ST-MOD-000001  2 conditions  528 items
+20:00:17.383  +0039.631s  SET      ok      lcop_selection_set_tree/Generic Models/1104-PAR-1A04PK-ZZZ-ST-MOD-000002  2 conditions  3 items
+20:00:17.388  +0039.636s  SETS     1A04PK Generic Models put into the document: 10 created, 0 already there and left alone
+
+================================================================
+GENERIC MODELS 1A04PK
+================================================================
+20:00:17.396  +0039.644s  asked   : Category equals "Generic Models", found in each model by its Source File
+20:00:17.397  +0039.645s  models  : 10 models in this group, 3 found some, 7 found none and are left out, 0 were not counted
+20:00:17.399  +0039.646s  items   : 534 in all
+20:00:17.400  +0039.647s  nought  : a model counted at nought holds no item of the category whose Source File contains the text its set looks for, which is its file name without the extension unless another text was handed in
+20:00:17.401  +0039.648s      1104-PAR-1A04PK-ZZZ-FP-MOD-000001  3
+20:00:17.402  +0039.650s      1104-PAR-1A04PK-ZZZ-ST-MOD-000001  528
+20:00:17.403  +0039.651s      1104-PAR-1A04PK-ZZZ-ST-MOD-000002  3
+20:00:17.404  +0039.652s  no clash test is made for these sets
+20:00:17.409  +0039.657s  CENSUS   after  SETS  models 10  sets 71  tests 0  results 0  views 105
+20:00:17.412  +0039.659s  STEP     SETS          finished 10.531s  61 created (39 finding items, 22 at zero), 0 already there.. Generic Models: 10 created (3 finding items, 7 at zero), 0 already there.
+20:00:17.425  +0039.673s  CLASH    1A04PK, 52 in the file, 52 to create, 0 skipped before the model
+20:00:17.431  +0039.679s  OUTPUTS  workbook on, XML off, HTML on, images on
+20:00:17.435  +0039.683s  CLASH    Images on, 1024 by 1024 pixels, New, Active, Reviewed only, no cap per test, linked rather than pasted in.
+20:00:17.439  +0039.688s  CLASH    ran against C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf  (10 models loaded)
+20:00:17.441  +0039.689s  CLASH    the document measures in ft, every tolerance was converted into it
+20:00:17.446  +0039.694s  CLASH    the document holds 71 sets and the tests name 13 sets
+
+================================================================
+MIRROR C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf  (10 models loaded)
+================================================================
+20:00:17.506  +0039.755s  MIRROR   1 pair of tests that ask the same question among the 52 tests whose two sets were read, 0 with the same two sets swapped and 1 whose sets carry the same rule lists. Both tests of each pair are run. 1 mirror is to be merged by the pair of items into the one kept once both tests of the pair run, the higher priority, A before B before C before no priority, and where equal the one first in the XML, and 0 keep their own clashes, since a mirror is merged only where this run created both tests of the pair and every set of both from the picked XML
+20:00:17.508  +0039.756s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors is kept, BLD-EL-Telephone Devices-vs-BLD-AR-Floors is its mirror, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Floors (mirror)
+
+================================================================
+MIRROR RENAMES C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf  (10 models loaded)
+================================================================
+20:00:17.514  +0039.761s  MIRROR   0 of the 0 tests saved in the document are renamed as the mirror they were saved for before the mirror rule, and 0 under the XML's name of a mirror are not
+20:00:17.515  +0039.762s  MIRROR   0 of the 0 tests saved in the document are renamed to the name of a test the XML runs under its own name, whose mirror an earlier run made them, and 0 are not
+
+================================================================
+MIRROR COVERAGE C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\07\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf  (10 models loaded)
+================================================================
+20:00:17.523  +0039.772s  MIRROR   BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors  kept of a mirrored pair, the clashes only its mirror BLD-EL-Telephone Devices-vs-BLD-AR-Floors (mirror) finds are to be added to it once both run
+20:00:17.524  +0039.773s  MIRROR   BLD-EL-Telephone Devices-vs-BLD-AR-Floors  a mirror of BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors, its sets carry the same rule lists as BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors's, BLD-EL-Telephone Devices as BLD-EL-Telecom Fixtures, created and run as BLD-EL-Telephone Devices-vs-BLD-AR-Floors (mirror), its clashes to be merged into BLD-EL-Telecom Fixtures-vs-BLD-AR-Floors's once both run
+20:00:17.533  +0039.782s  CLASH    the document already holds 0 clash tests, so everything created here is new
+20:00:17.538  +0039.785s  CLASH    counted the items of 13 sets for the creation plan in 0.000035s
+20:00:17.540  +0039.788s  CLASH 52 in the file, 13 created, 39 not created, a side finds nothing
+20:00:17.543  +0039.791s  CLASH    SKIPPED  BLD-AR-Roofs-vs-BLD-AR-Floors  the left side "lcop_selection_set_tree/Architecture/BLD-AR-Roofs" finds nothing in this model, the right finds 199
+20:00:17.545  +0039.793s  CLASH    SKIPPED  BLD-AR-Roofs-vs-BLD-AR-Stairs  the left side "lcop_selection_set_tree/Architecture/BLD-AR-Roofs" finds nothing in this model, the right finds 20
+20:00:17.546  +0039.794s  CLASH    SKIPPED  BLD-AR-Roofs-vs-BLD-AR-Ramps  the left side "lcop_selection_set_tree/Architecture/BLD-AR-Roofs" finds nothing in this model, the right finds 18
+20:00:17.547  +0039.795s  CLASH    SKIPPED  BLD-AR-Ceilings-vs-BLD-AR-Floors  the left side "lcop_selection_set_tree/Architecture/BLD-AR-Ceilings" finds nothing in this model, the right finds 199
+20:00:17.549  +0039.796s  CLASH    SKIPPED  BLD-AR-Ceilings-vs-BLD-AR-Stairs  the left side "lcop_selection_set_tree/Architecture/BLD-AR-Ceilings" finds nothing in this model, the right finds 20
+20:00:17.550  +0039.798s  CLASH    further skips for "a side finds nothing in this model" are counted, not listed. The block at the end carries the total.
+20:00:17.568  +0039.815s  STEP     TESTS CREATE  started
+20:00:17.569  +0039.817s  CENSUS   before TESTS CREATE  models 10  sets 71  tests 0  results 0  views 105
+20:00:17.628  +0039.876s  CLASH    created  BLD-AR-Stairs-vs-BLD-AR-Floors  hard_conservative  tolerance 0.0820209974 ft is 0.0820209974 ft  merge composites on
+20:00:17.649  +0039.898s  CENSUS   after  TESTS CREATE  models 10  sets 71  tests 1  results 0  views 105
+20:00:17.652  +0039.900s  STEP     TESTS CREATE  finished 0.082s  BLD-AR-Stairs-vs-BLD-AR-Floors
+20:00:17.656  +0039.903s  STEP     TESTS RUN     started
+20:00:17.657  +0039.905s  CENSUS   before TESTS RUN  models 10  sets 71  tests 1  results 0  views 105
+20:00:17.771  +0040.019s  CENSUS   after  TESTS RUN  models 10  sets 71  tests 1  results 7  views 105
+20:00:17.774  +0040.022s  STEP     TESTS RUN     finished 0.115s  BLD-AR-Stairs-vs-BLD-AR-Floors
+20:00:17.778  +0040.026s  STEP     HARVEST       started
+20:00:17.779  +0040.027s  CENSUS   before HARVEST  models 10  sets 71  tests 1  results 7  views 105
+20:00:17.817  +0040.065s  STEP       IMAGES        started
+20:00:17.819  +0040.067s  CENSUS   before IMAGES  models 10  sets 71  tests 1  results 7  views 105
+20:00:18.120  +0040.369s  CENSUS   after  IMAGES  models 10  sets 71  tests 1  results 7  views 105
+20:00:18.123  +0040.371s  STEP       IMAGES        finished 0.304s  BLD-AR-Stairs-vs-BLD-AR-Floors
+20:00:18.140  +0040.388s  STEP     IMAGES        entered again. Every further visit in this group is counted, not written out
+20:00:19.739  +0041.987s  CENSUS   after  HARVEST  models 10  sets 71  tests 1  results 7  views 105
+20:00:19.742  +0041.990s  STEP     HARVEST       finished 1.961s  BLD-AR-Stairs-vs-BLD-AR-Floors
+20:00:19.745  +0041.993s  ROWS     BLD-AR-Stairs-vs-BLD-AR-Floors  7 rows for the workbook, 7 clashes in the document, they agree
+20:00:19.748  +0041.996s  CLASH    clashes BLD-AR-Stairs-vs-BLD-AR-Floors  items 20 v 199  New 7  0.1s
+20:00:19.772  +0042.020s  STEP     TESTS CREATE  entered again. Every further visit in this group is counted, not written out
+20:00:19.789  +0042.038s  CLASH    created  BLD-AR-Ramps-vs-BLD-AR-Floors  hard_conservative  tolerance 0.0820209974 ft is 0.0820209974 ft  merge composites on
+20:00:19.796  +0042.044s  STEP     TESTS RUN     entered again. Every further visit in this group is counted, not written out
+20:00:19.903  +0042.150s  STEP     HARVEST       entered again. Every further visit in this group is counted, not written out
+20:01:06.095  +0088.343s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 4 of 97, 46.2s into the step
+20:01:38.664  +0120.913s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 9 of 97, 78.7s into the step
+20:02:17.422  +0159.672s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 14 of 97, 117.5s into the step
+20:02:51.552  +0193.802s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 19 of 97, 151.6s into the step
+20:03:30.469  +0232.720s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 22 of 97, 190.5s into the step
+20:04:07.681  +0269.931s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 25 of 97, 227.8s into the step
+20:04:38.876  +0301.127s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 29 of 97, 258.9s into the step
+20:05:13.067  +0335.319s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 32 of 97, 293.1s into the step
+20:05:43.590  +0365.841s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 36 of 97, 323.7s into the step
+20:06:17.312  +0399.564s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 40 of 97, 357.4s into the step
+20:06:50.700  +0432.951s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 45 of 97, 390.8s into the step
+20:07:21.213  +0463.465s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 49 of 97, 421.3s into the step
+20:07:56.201  +0498.453s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 56 of 97, 456.3s into the step
+20:08:33.418  +0535.670s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 60 of 97, 493.5s into the step
+20:09:05.160  +0567.412s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 63 of 97, 525.2s into the step
+20:09:35.184  +0597.436s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 69 of 97, 555.3s into the step
+20:10:07.589  +0629.841s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 75 of 97, 587.7s into the step
+20:10:41.576  +0663.828s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 80 of 97, 621.6s into the step
+20:11:21.764  +0704.015s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 83 of 97, 661.8s into the step
+20:11:53.034  +0735.286s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 86 of 97, 693.1s into the step
+20:12:29.257  +0771.508s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 89 of 97, 729.3s into the step
+20:13:06.633  +0808.884s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 92 of 97, 766.7s into the step
+20:13:47.711  +0849.962s  PROGRESS HARVEST BLD-AR-Ramps-vs-BLD-AR-Floors row 95 of 97, 807.8s into the step
+20:14:11.216  +0873.467s  ROWS     BLD-AR-Ramps-vs-BLD-AR-Floors  97 rows for the workbook, 97 clashes in the document, they agree
+20:14:11.218  +0873.470s  CLASH    clashes BLD-AR-Ramps-vs-BLD-AR-Floors  items 18 v 199  New 97  0.1s
+20:14:11.246  +0873.497s  CLASH    created  BLD-AR-Ramps-vs-BLD-AR-Stairs  hard_conservative  tolerance 0.0820209974 ft is 0.0820209974 ft  merge composites on
+20:14:11.359  +0873.610s  ROWS     BLD-AR-Ramps-vs-BLD-AR-Stairs  0 rows for the workbook, 0 clashes in the document, they agree
+20:14:11.362  +0873.613s  CLASH    passed  BLD-AR-Ramps-vs-BLD-AR-Stairs  items 18 v 20  none  0.1s
+20:14:11.388  +0873.639s  CLASH    created  BLD-AR-Walls-vs-BLD-AR-Floors  hard_conservative  tolerance 0.0820209974 ft is 0.0820209974 ft  merge composites on
+20:14:44.875  +0907.126s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 5 of 1556, 33.3s into the step
+20:15:15.843  +0938.095s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 13 of 1556, 64.2s into the step
+20:15:49.710  +0971.961s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 24 of 1556, 98.1s into the step
+20:16:20.951  +1003.202s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 31 of 1556, 129.3s into the step
+20:16:53.114  +1035.365s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 37 of 1556, 161.5s into the step
+20:17:28.950  +1071.201s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 51 of 1556, 197.3s into the step
+20:18:03.083  +1105.334s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 63 of 1556, 231.5s into the step
+20:18:37.136  +1139.387s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 75 of 1556, 265.5s into the step
+20:19:09.183  +1171.435s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 78 of 1556, 297.6s into the step
+20:19:40.632  +1202.883s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 84 of 1556, 329s into the step
+20:20:14.296  +1236.546s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 96 of 1556, 362.7s into the step
+20:20:44.812  +1267.063s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 103 of 1556, 393.2s into the step
+20:21:16.278  +1298.529s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 107 of 1556, 424.7s into the step
+20:21:47.136  +1329.386s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 115 of 1556, 455.5s into the step
+20:22:23.197  +1365.447s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 122 of 1556, 491.6s into the step
+20:22:55.813  +1398.063s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 125 of 1556, 524.2s into the step
+20:23:26.653  +1428.903s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 127 of 1556, 555s into the step
+20:23:59.438  +1461.688s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 132 of 1556, 587.8s into the step
+20:24:32.481  +1494.731s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 138 of 1556, 620.9s into the step
+20:25:02.914  +1525.164s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 142 of 1556, 651.3s into the step
+20:25:34.093  +1556.342s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 156 of 1556, 682.5s into the step
+20:26:11.156  +1593.406s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 162 of 1556, 719.5s into the step
+20:26:47.235  +1629.485s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 169 of 1556, 755.6s into the step
+20:27:19.924  +1662.173s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 194 of 1556, 788.3s into the step
+20:27:54.961  +1697.210s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 202 of 1556, 823.3s into the step
+20:28:28.623  +1730.872s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 214 of 1556, 857s into the step
+20:29:00.893  +1763.142s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 228 of 1556, 889.3s into the step
+20:29:41.929  +1804.178s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 235 of 1556, 930.3s into the step
+20:30:14.586  +1836.835s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 240 of 1556, 963s into the step
+20:30:46.604  +1868.853s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 249 of 1556, 995s into the step
+20:31:17.502  +1899.750s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 257 of 1556, 1025.9s into the step
+20:31:55.635  +1937.884s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 265 of 1556, 1064s into the step
+20:32:34.213  +1976.462s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 270 of 1556, 1102.6s into the step
+20:33:09.902  +2012.150s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 274 of 1556, 1138.3s into the step
+20:33:41.091  +2043.344s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 280 of 1556, 1169.5s into the step
+20:34:14.032  +2076.280s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 287 of 1556, 1202.4s into the step
+20:34:45.425  +2107.674s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 294 of 1556, 1233.8s into the step
+20:35:19.651  +2141.899s  PROGRESS HARVEST BLD-AR-Walls-vs-BLD-AR-Floors row 305 of 1556, 1268s into the step

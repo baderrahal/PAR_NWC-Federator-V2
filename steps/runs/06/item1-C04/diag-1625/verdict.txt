@@ -1,0 +1,29 @@
+VERDICT of the lead, 2026-10-11 16:20, read off diag.txt beside this file, taken 16:08:21 to 16:10:42 with nothing closed.
+
+CLASS: busy, in our own loop over one Navisworks call per clash. Not out of memory and not stuck.
+
+- Processor: pid 896 used 163.2 s in 120 s, about 20 s every 15 s throughout. The thread that started first,
+  46868 at 14:25:26, the window's, used 15 s of it. Navisworks's worker threads used the rest
+- Memory: private 6,134 MB rising to 6,194 MB, working set 6,082 to 6,112 MB, peak 6,132 MB. Machine 34,767 MB
+  free physical of 65,221 MB and 38,678 MB free commit of 74,949 MB
+- Windows: every top window of the process reads IsHungAppWindow true, the tool's window and the Navisworks
+  frame among them. The frame is disabled under the tool's window, so the process gives no main window
+  handle. No dialog: the owned windows are tooltips, the Clash Detective and Selection Tree panes and two
+  property pages with OK, Cancel, Apply and Help, none visible on its own
+- Threads: 125, none in a state that reads stuck. The window's thread was in Wait Executive at the read
+- The tool's log: 99,543 bytes, last written 14:56:44 in file time, its last line 14:44:14.699
+  "CLASH created BLD-AR-Walls-vs-BLD-AR-Floors". Its last STEP line is HARVEST, entered again
+- Minidump: roamer-896.dmp, 3,131,481 bytes, threads and modules, no heap. No debugger is on this machine to
+  read it
+
+WHERE THE TIME GOES, from the log and the code, an inference until the group's IMAGES seconds line splits it:
+- In set 04 the same test's clash call took 0.3 s, the CLASH line's seconds being the TestsRunTest stretch
+  alone, ClashRunner.cs 959 to 984, and the test then took 70 minutes to its ROWS line, 1186 clashes
+- Today BLD-AR-Ramps-vs-BLD-AR-Floors went from created at 14:27:25 to its ROWS line at 14:44:14 for 97
+  clashes, about 10 s a clash, where 1A02MM's harvest took 0.07 s a clash
+- After TestsRunTest the harvest walks every clash and renders its picture through
+  DocumentClashTests.TestsImageForResult, ClashImages.cs 243, on the window's thread, with no log line and no
+  pump between clashes. The window pumps only on a progress call, FederatorWindow.xaml.cs 2935, so a test of
+  many clashes leaves it not answering for the whole of its harvest
+
+THE RUN: busy by Q83, processor far over 20 s in five minutes, so it is left running and watched.

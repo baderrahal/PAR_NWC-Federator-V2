@@ -1,0 +1,637 @@
+workbook C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\08\NMFed\Clash Report\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001 Internal.xlsx
+bytes 12405, written 2026-10-11 17:59:39 UTC, sha256 BA984D30E1A8CEFA418DA3635D834C7CB1E771DF2BBBF7D05C70CC7A8CE17320
+sheets 2: Generic Models, Coverage
+
+== sheet Generic Models
+-- tests: shape, row, test, tolerance, clashes, new, active, reviewed, approved, resolved, type, status, clash rows under it
+one row	1	Generic Models, written by the NWC Federator and not part of the client's report										0
+one row	2	Group: 1A04PK										0
+one row	3	10 models: 3 found some, 7 found none and are left out, 0 not counted. 534 items in all										0
+one row	5	Model	Why not counted									0
+one row	6	1104-PAR-1A04PK-ZZZ-FP-MOD-000001										0
+one row	7	1104-PAR-1A04PK-ZZZ-ST-MOD-000001										0
+one row	8	1104-PAR-1A04PK-ZZZ-ST-MOD-000002										0
+one row	10	note: a model counted at nought holds no item of the category whose Source File contains the text its set looks for, which is its file name without the extension unless another text was handed in										0
+one row	11	No clash test is made for these sets										0
+
+-- clash rows: test, clash name, status, distance, grid location, clash point, picture link
+
+sheet totals: tests 9, clash rows 0, from the tests' own numbers clashes 0, new 0, active 0, reviewed 0, approved 0, resolved 0
+no full block on this sheet, so the one row tests were read in columns C to K, which is where WorkbookWriter puts them
+
+== sheet Coverage
+-- tests: shape, row, test, tolerance, clashes, new, active, reviewed, approved, resolved, type, status, clash rows under it
+one row	1	Coverage, written by the NWC Federator and not part of the client's report										0
+one row	2	Picked file: C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\08\NMFed\first3\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml	Corrections: MATRIX   the corrections are read from C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\08\NMFed\first3\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, the list beside this file. It holds 3 corrections, 1 rename, 1 catch-all and 1 Source File rule, and 30 workset spellings									0
+one row	3	Models: 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc (AR, 6057 elements); 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc (EL, 6515 elements); 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc (FP, 12127 elements); 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc (HV, 2409 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc (ME, 80 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc (ME, 277 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc (ME, 869 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc (ME, 5372 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc (ST, 1381 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc (ST, 11 elements)										0
+one row	4	5 tests in the picked file: 3 created this run, 0 already there, 2 not created, 3 run, 2 with clashes, 1 without										0
+one row	6	TESTS										0
+one row	7	Position	Priority	Left set	Left items	Right set	Right items	In the document	Run	Results at the top level in Clash Detective	Clashes in Clash Detective	0
+one row	8	1	no priority file	lcop_selection_set_tree/Architecture/BLD-AR-Stairs	20	lcop_selection_set_tree/Architecture/BLD-AR-Floors	199	created this run	yes	7	7	0
+one row	9	2	no priority file	lcop_selection_set_tree/Architecture/BLD-AR-Ramps	18	lcop_selection_set_tree/Architecture/BLD-AR-Floors	199	created this run	yes	97	97	0
+one row	10	3	no priority file	lcop_selection_set_tree/Architecture/BLD-AR-Ramps	18	lcop_selection_set_tree/Architecture/BLD-AR-Stairs	20	created this run	yes	0	0	0
+one row	11	4	no priority file	lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures	0	lcop_selection_set_tree/Architecture/BLD-AR-Floors	199	not created	no	UNKNOWN	UNKNOWN	0
+one row	12	5	no priority file	lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices	0	lcop_selection_set_tree/Architecture/BLD-AR-Floors	199	not created	no	UNKNOWN	UNKNOWN	0
+one row	14	SETS										0
+one row	15	Set	Items in this group	At zero								0
+one row	16	lcop_selection_set_tree/Architecture/BLD-AR-Floors	199	no								0
+one row	17	lcop_selection_set_tree/Architecture/BLD-AR-Stairs	20	no								0
+one row	18	lcop_selection_set_tree/Architecture/BLD-AR-Ramps	18	no								0
+one row	19	lcop_selection_set_tree/Architecture/BLD-AR-Roofs	0	yes								0
+one row	20	lcop_selection_set_tree/Architecture/BLD-AR-Ceilings	0	yes								0
+one row	21	lcop_selection_set_tree/Architecture/BLD-AR-Columns	0	yes								0
+one row	22	lcop_selection_set_tree/Architecture/BLD-AR-Walls	2608	no								0
+one row	23	lcop_selection_set_tree/Architecture/BLD-AR-Windows	5	no								0
+one row	24	lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels	0	yes								0
+one row	25	lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions	0	yes								0
+one row	26	lcop_selection_set_tree/Architecture/BLD-AR-Doors	182	no								0
+one row	27	lcop_selection_set_tree/Architecture/BLD-AR-Casework	0	yes								0
+one row	28	lcop_selection_set_tree/Architecture/BLD-AR-Furniture	0	yes								0
+one row	29	lcop_selection_set_tree/Architecture/BLD-AR-Parking	2388	no								0
+one row	30	lcop_selection_set_tree/Architecture/BLD-AR-Railings	21	no								0
+one row	31	lcop_selection_set_tree/Architecture/BLD-AR-Site	362	no								0
+one row	32	lcop_selection_set_tree/Structure/BLD-ST-Foundation	29	no								0
+one row	33	lcop_selection_set_tree/Structure/BLD-ST-Columns	112	no								0
+one row	34	lcop_selection_set_tree/Structure/BLD-ST-Framing	486	no								0
+one row	35	lcop_selection_set_tree/Structure/BLD-ST-Walls	99	no								0
+one row	36	lcop_selection_set_tree/Structure/BLD-ST-Floors	22	no								0
+one row	37	lcop_selection_set_tree/Structure/BLD-ST-Stair	19	no								0
+one row	38	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Ducts&Duct Fittings	471	no								0
+one row	39	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Duct Accessory	32	no								0
+one row	40	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Mechanical Equipment	17	no								0
+one row	41	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts	9	no								0
+one row	42	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals	91	no								0
+one row	43	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings	483	no								0
+one row	44	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories	397	no								0
+one row	45	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures	2	no								0
+one row	46	lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes	0	yes								0
+one row	47	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment	68	no								0
+one row	48	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings	0	yes								0
+one row	49	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories	0	yes								0
+one row	50	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations	0	yes								0
+one row	51	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures	0	yes								0
+one row	52	lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers	0	yes								0
+one row	53	lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment	7	no								0
+one row	54	lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings	1127	no								0
+one row	55	lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories	90	no								0
+one row	56	lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations	0	yes								0
+one row	57	lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures	24	no								0
+one row	58	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment	0	yes								0
+one row	59	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipes & Pipe Fittings	1402	no								0
+one row	60	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories	0	yes								0
+one row	61	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations	0	yes								0
+one row	62	lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Plumbing Fixtures	193	no								0
+one row	63	lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings	492	no								0
+one row	64	lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment	751	no								0
+one row	65	lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures	384	no								0
+one row	66	lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings	883	no								0
+one row	67	lcop_selection_set_tree/Electrical/BLD-EL-Devices	0	yes								0
+one row	68	lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures	1669	no								0
+one row	69	lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices	357	no								0
+one row	70	lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices	214	no								0
+one row	71	lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment	0	yes								0
+one row	72	lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures	0	yes								0
+one row	73	lcop_selection_set_tree/Electrical/BLD-Security Devices	514	no								0
+one row	74	lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices	0	yes								0
+one row	75	lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices	0	yes								0
+one row	76	lcop_selection_set_tree/Electrical/BLD-EL-Data Devices	477	no								0
+one row	78	ITEMS NO SET CATCHES										0
+one row	79	UNKNOWN, the count of items no set catches is not in this build										0
+one row	81	MIRRORED PAIRS										0
+one row	82	UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged										0
+one row	84	TESTS IN THE DOCUMENT NOT IN THE XML										0
+one row	85	none										0
+
+-- clash rows: test, clash name, status, distance, grid location, clash point, picture link
+
+sheet totals: tests 80, clash rows 0, from the tests' own numbers clashes 0, new 56, active 0, reviewed 816, approved 0, resolved 0
+no full block on this sheet, so the one row tests were read in columns C to K, which is where WorkbookWriter puts them
+
+TOTALS: tests 89 (0 full blocks, 89 one row, 0 with no name), clash rows 0, picture links in cells 0, links that open no picture 0, pictures stored in the workbook 0, pictures in the sheet that point at a file outside it 0
+TOTALS from the tests' own numbers: clashes 0, new 56, active 0, reviewed 816, approved 0, resolved 0
+DOUBTS: 524
+  sheet Generic Models, row 1, Generic Models, written by the NWC Federator and not part of the client's report: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 1, Generic Models, written by the NWC Federator and not part of the client's report: New reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 1, Generic Models, written by the NWC Federator and not part of the client's report: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 1, Generic Models, written by the NWC Federator and not part of the client's report: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 1, Generic Models, written by the NWC Federator and not part of the client's report: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 1, Generic Models, written by the NWC Federator and not part of the client's report: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 2, Group: 1A04PK: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 2, Group: 1A04PK: New reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 2, Group: 1A04PK: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 2, Group: 1A04PK: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 2, Group: 1A04PK: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 2, Group: 1A04PK: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 3, 10 models: 3 found some, 7 found none and are left out, 0 not counted. 534 items in all: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 3, 10 models: 3 found some, 7 found none and are left out, 0 not counted. 534 items in all: New reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 3, 10 models: 3 found some, 7 found none and are left out, 0 not counted. 534 items in all: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 3, 10 models: 3 found some, 7 found none and are left out, 0 not counted. 534 items in all: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 3, 10 models: 3 found some, 7 found none and are left out, 0 not counted. 534 items in all: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 3, 10 models: 3 found some, 7 found none and are left out, 0 not counted. 534 items in all: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 5, Model: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 5, Model: New reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 5, Model: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 5, Model: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 5, Model: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 5, Model: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 6, 1104-PAR-1A04PK-ZZZ-FP-MOD-000001: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 6, 1104-PAR-1A04PK-ZZZ-FP-MOD-000001: New reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 6, 1104-PAR-1A04PK-ZZZ-FP-MOD-000001: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 6, 1104-PAR-1A04PK-ZZZ-FP-MOD-000001: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 6, 1104-PAR-1A04PK-ZZZ-FP-MOD-000001: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 6, 1104-PAR-1A04PK-ZZZ-FP-MOD-000001: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 7, 1104-PAR-1A04PK-ZZZ-ST-MOD-000001: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 7, 1104-PAR-1A04PK-ZZZ-ST-MOD-000001: New reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 7, 1104-PAR-1A04PK-ZZZ-ST-MOD-000001: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 7, 1104-PAR-1A04PK-ZZZ-ST-MOD-000001: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 7, 1104-PAR-1A04PK-ZZZ-ST-MOD-000001: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 7, 1104-PAR-1A04PK-ZZZ-ST-MOD-000001: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 8, 1104-PAR-1A04PK-ZZZ-ST-MOD-000002: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 8, 1104-PAR-1A04PK-ZZZ-ST-MOD-000002: New reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 8, 1104-PAR-1A04PK-ZZZ-ST-MOD-000002: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 8, 1104-PAR-1A04PK-ZZZ-ST-MOD-000002: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 8, 1104-PAR-1A04PK-ZZZ-ST-MOD-000002: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 8, 1104-PAR-1A04PK-ZZZ-ST-MOD-000002: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 10, note: a model counted at nought holds no item of the category whose Source File contains the text its set looks for, which is its file name without the extension unless another text was handed in: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 10, note: a model counted at nought holds no item of the category whose Source File contains the text its set looks for, which is its file name without the extension unless another text was handed in: New reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 10, note: a model counted at nought holds no item of the category whose Source File contains the text its set looks for, which is its file name without the extension unless another text was handed in: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 10, note: a model counted at nought holds no item of the category whose Source File contains the text its set looks for, which is its file name without the extension unless another text was handed in: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 10, note: a model counted at nought holds no item of the category whose Source File contains the text its set looks for, which is its file name without the extension unless another text was handed in: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 10, note: a model counted at nought holds no item of the category whose Source File contains the text its set looks for, which is its file name without the extension unless another text was handed in: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 11, No clash test is made for these sets: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 11, No clash test is made for these sets: New reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 11, No clash test is made for these sets: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 11, No clash test is made for these sets: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 11, No clash test is made for these sets: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Generic Models, row 11, No clash test is made for these sets: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 1, Coverage, written by the NWC Federator and not part of the client's report: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 1, Coverage, written by the NWC Federator and not part of the client's report: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 1, Coverage, written by the NWC Federator and not part of the client's report: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 1, Coverage, written by the NWC Federator and not part of the client's report: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 1, Coverage, written by the NWC Federator and not part of the client's report: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 1, Coverage, written by the NWC Federator and not part of the client's report: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 2, Picked file: C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\08\NMFed\first3\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 2, Picked file: C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\08\NMFed\first3\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 2, Picked file: C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\08\NMFed\first3\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 2, Picked file: C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\08\NMFed\first3\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 2, Picked file: C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\08\NMFed\first3\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 2, Picked file: C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\08\NMFed\first3\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 3, Models: 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc (AR, 6057 elements); 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc (EL, 6515 elements); 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc (FP, 12127 elements); 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc (HV, 2409 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc (ME, 80 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc (ME, 277 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc (ME, 869 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc (ME, 5372 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc (ST, 1381 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc (ST, 11 elements): Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 3, Models: 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc (AR, 6057 elements); 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc (EL, 6515 elements); 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc (FP, 12127 elements); 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc (HV, 2409 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc (ME, 80 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc (ME, 277 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc (ME, 869 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc (ME, 5372 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc (ST, 1381 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc (ST, 11 elements): New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 3, Models: 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc (AR, 6057 elements); 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc (EL, 6515 elements); 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc (FP, 12127 elements); 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc (HV, 2409 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc (ME, 80 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc (ME, 277 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc (ME, 869 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc (ME, 5372 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc (ST, 1381 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc (ST, 11 elements): Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 3, Models: 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc (AR, 6057 elements); 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc (EL, 6515 elements); 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc (FP, 12127 elements); 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc (HV, 2409 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc (ME, 80 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc (ME, 277 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc (ME, 869 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc (ME, 5372 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc (ST, 1381 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc (ST, 11 elements): Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 3, Models: 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc (AR, 6057 elements); 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc (EL, 6515 elements); 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc (FP, 12127 elements); 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc (HV, 2409 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc (ME, 80 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc (ME, 277 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc (ME, 869 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc (ME, 5372 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc (ST, 1381 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc (ST, 11 elements): Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 3, Models: 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc (AR, 6057 elements); 1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc (EL, 6515 elements); 1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc (FP, 12127 elements); 1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc (HV, 2409 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc (ME, 80 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc (ME, 277 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc (ME, 869 elements); 1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc (ME, 5372 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc (ST, 1381 elements); 1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc (ST, 11 elements): Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 4, 5 tests in the picked file: 3 created this run, 0 already there, 2 not created, 3 run, 2 with clashes, 1 without: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 4, 5 tests in the picked file: 3 created this run, 0 already there, 2 not created, 3 run, 2 with clashes, 1 without: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 4, 5 tests in the picked file: 3 created this run, 0 already there, 2 not created, 3 run, 2 with clashes, 1 without: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 4, 5 tests in the picked file: 3 created this run, 0 already there, 2 not created, 3 run, 2 with clashes, 1 without: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 4, 5 tests in the picked file: 3 created this run, 0 already there, 2 not created, 3 run, 2 with clashes, 1 without: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 4, 5 tests in the picked file: 3 created this run, 0 already there, 2 not created, 3 run, 2 with clashes, 1 without: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 6, TESTS: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 6, TESTS: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 6, TESTS: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 6, TESTS: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 6, TESTS: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 6, TESTS: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 7, Position: Clashes reads 'Left set', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 7, Position: New reads 'Left items', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 7, Position: Active reads 'Right set', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 7, Position: Reviewed reads 'Right items', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 7, Position: Approved reads 'In the document', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 7, Position: Resolved reads 'Run', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 8, 1: Clashes reads 'lcop_selection_set_tree/Architecture/BLD-AR-Stairs', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 8, 1: Active reads 'lcop_selection_set_tree/Architecture/BLD-AR-Floors', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 8, 1: Approved reads 'created this run', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 8, 1: Resolved reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 9, 2: Clashes reads 'lcop_selection_set_tree/Architecture/BLD-AR-Ramps', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 9, 2: Active reads 'lcop_selection_set_tree/Architecture/BLD-AR-Floors', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 9, 2: Approved reads 'created this run', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 9, 2: Resolved reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 10, 3: Clashes reads 'lcop_selection_set_tree/Architecture/BLD-AR-Ramps', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 10, 3: Active reads 'lcop_selection_set_tree/Architecture/BLD-AR-Stairs', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 10, 3: Approved reads 'created this run', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 10, 3: Resolved reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 11, 4: Clashes reads 'lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 11, 4: Active reads 'lcop_selection_set_tree/Architecture/BLD-AR-Floors', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 11, 4: Approved reads 'not created', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 11, 4: Resolved reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 12, 5: Clashes reads 'lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 12, 5: Active reads 'lcop_selection_set_tree/Architecture/BLD-AR-Floors', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 12, 5: Approved reads 'not created', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 12, 5: Resolved reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 14, SETS: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 14, SETS: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 14, SETS: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 14, SETS: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 14, SETS: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 14, SETS: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 15, Set: Clashes reads 'At zero', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 15, Set: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 15, Set: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 15, Set: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 15, Set: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 15, Set: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 16, lcop_selection_set_tree/Architecture/BLD-AR-Floors: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 16, lcop_selection_set_tree/Architecture/BLD-AR-Floors: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 16, lcop_selection_set_tree/Architecture/BLD-AR-Floors: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 16, lcop_selection_set_tree/Architecture/BLD-AR-Floors: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 16, lcop_selection_set_tree/Architecture/BLD-AR-Floors: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 16, lcop_selection_set_tree/Architecture/BLD-AR-Floors: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 17, lcop_selection_set_tree/Architecture/BLD-AR-Stairs: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 17, lcop_selection_set_tree/Architecture/BLD-AR-Stairs: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 17, lcop_selection_set_tree/Architecture/BLD-AR-Stairs: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 17, lcop_selection_set_tree/Architecture/BLD-AR-Stairs: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 17, lcop_selection_set_tree/Architecture/BLD-AR-Stairs: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 17, lcop_selection_set_tree/Architecture/BLD-AR-Stairs: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 18, lcop_selection_set_tree/Architecture/BLD-AR-Ramps: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 18, lcop_selection_set_tree/Architecture/BLD-AR-Ramps: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 18, lcop_selection_set_tree/Architecture/BLD-AR-Ramps: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 18, lcop_selection_set_tree/Architecture/BLD-AR-Ramps: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 18, lcop_selection_set_tree/Architecture/BLD-AR-Ramps: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 18, lcop_selection_set_tree/Architecture/BLD-AR-Ramps: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 19, lcop_selection_set_tree/Architecture/BLD-AR-Roofs: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 19, lcop_selection_set_tree/Architecture/BLD-AR-Roofs: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 19, lcop_selection_set_tree/Architecture/BLD-AR-Roofs: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 19, lcop_selection_set_tree/Architecture/BLD-AR-Roofs: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 19, lcop_selection_set_tree/Architecture/BLD-AR-Roofs: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 19, lcop_selection_set_tree/Architecture/BLD-AR-Roofs: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 20, lcop_selection_set_tree/Architecture/BLD-AR-Ceilings: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 20, lcop_selection_set_tree/Architecture/BLD-AR-Ceilings: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 20, lcop_selection_set_tree/Architecture/BLD-AR-Ceilings: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 20, lcop_selection_set_tree/Architecture/BLD-AR-Ceilings: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 20, lcop_selection_set_tree/Architecture/BLD-AR-Ceilings: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 20, lcop_selection_set_tree/Architecture/BLD-AR-Ceilings: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 21, lcop_selection_set_tree/Architecture/BLD-AR-Columns: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 21, lcop_selection_set_tree/Architecture/BLD-AR-Columns: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 21, lcop_selection_set_tree/Architecture/BLD-AR-Columns: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 21, lcop_selection_set_tree/Architecture/BLD-AR-Columns: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 21, lcop_selection_set_tree/Architecture/BLD-AR-Columns: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 21, lcop_selection_set_tree/Architecture/BLD-AR-Columns: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 22, lcop_selection_set_tree/Architecture/BLD-AR-Walls: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 22, lcop_selection_set_tree/Architecture/BLD-AR-Walls: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 22, lcop_selection_set_tree/Architecture/BLD-AR-Walls: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 22, lcop_selection_set_tree/Architecture/BLD-AR-Walls: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 22, lcop_selection_set_tree/Architecture/BLD-AR-Walls: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 22, lcop_selection_set_tree/Architecture/BLD-AR-Walls: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 23, lcop_selection_set_tree/Architecture/BLD-AR-Windows: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 23, lcop_selection_set_tree/Architecture/BLD-AR-Windows: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 23, lcop_selection_set_tree/Architecture/BLD-AR-Windows: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 23, lcop_selection_set_tree/Architecture/BLD-AR-Windows: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 23, lcop_selection_set_tree/Architecture/BLD-AR-Windows: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 23, lcop_selection_set_tree/Architecture/BLD-AR-Windows: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 24, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 24, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 24, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 24, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 24, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 24, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Panels: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 25, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 25, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 25, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 25, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 25, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 25, lcop_selection_set_tree/Architecture/BLD-AR-Curtain Mullions: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 26, lcop_selection_set_tree/Architecture/BLD-AR-Doors: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 26, lcop_selection_set_tree/Architecture/BLD-AR-Doors: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 26, lcop_selection_set_tree/Architecture/BLD-AR-Doors: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 26, lcop_selection_set_tree/Architecture/BLD-AR-Doors: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 26, lcop_selection_set_tree/Architecture/BLD-AR-Doors: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 26, lcop_selection_set_tree/Architecture/BLD-AR-Doors: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 27, lcop_selection_set_tree/Architecture/BLD-AR-Casework: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 27, lcop_selection_set_tree/Architecture/BLD-AR-Casework: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 27, lcop_selection_set_tree/Architecture/BLD-AR-Casework: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 27, lcop_selection_set_tree/Architecture/BLD-AR-Casework: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 27, lcop_selection_set_tree/Architecture/BLD-AR-Casework: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 27, lcop_selection_set_tree/Architecture/BLD-AR-Casework: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 28, lcop_selection_set_tree/Architecture/BLD-AR-Furniture: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 28, lcop_selection_set_tree/Architecture/BLD-AR-Furniture: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 28, lcop_selection_set_tree/Architecture/BLD-AR-Furniture: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 28, lcop_selection_set_tree/Architecture/BLD-AR-Furniture: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 28, lcop_selection_set_tree/Architecture/BLD-AR-Furniture: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 28, lcop_selection_set_tree/Architecture/BLD-AR-Furniture: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 29, lcop_selection_set_tree/Architecture/BLD-AR-Parking: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 29, lcop_selection_set_tree/Architecture/BLD-AR-Parking: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 29, lcop_selection_set_tree/Architecture/BLD-AR-Parking: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 29, lcop_selection_set_tree/Architecture/BLD-AR-Parking: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 29, lcop_selection_set_tree/Architecture/BLD-AR-Parking: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 29, lcop_selection_set_tree/Architecture/BLD-AR-Parking: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 30, lcop_selection_set_tree/Architecture/BLD-AR-Railings: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 30, lcop_selection_set_tree/Architecture/BLD-AR-Railings: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 30, lcop_selection_set_tree/Architecture/BLD-AR-Railings: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 30, lcop_selection_set_tree/Architecture/BLD-AR-Railings: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 30, lcop_selection_set_tree/Architecture/BLD-AR-Railings: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 30, lcop_selection_set_tree/Architecture/BLD-AR-Railings: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 31, lcop_selection_set_tree/Architecture/BLD-AR-Site: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 31, lcop_selection_set_tree/Architecture/BLD-AR-Site: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 31, lcop_selection_set_tree/Architecture/BLD-AR-Site: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 31, lcop_selection_set_tree/Architecture/BLD-AR-Site: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 31, lcop_selection_set_tree/Architecture/BLD-AR-Site: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 31, lcop_selection_set_tree/Architecture/BLD-AR-Site: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 32, lcop_selection_set_tree/Structure/BLD-ST-Foundation: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 32, lcop_selection_set_tree/Structure/BLD-ST-Foundation: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 32, lcop_selection_set_tree/Structure/BLD-ST-Foundation: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 32, lcop_selection_set_tree/Structure/BLD-ST-Foundation: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 32, lcop_selection_set_tree/Structure/BLD-ST-Foundation: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 32, lcop_selection_set_tree/Structure/BLD-ST-Foundation: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 33, lcop_selection_set_tree/Structure/BLD-ST-Columns: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 33, lcop_selection_set_tree/Structure/BLD-ST-Columns: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 33, lcop_selection_set_tree/Structure/BLD-ST-Columns: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 33, lcop_selection_set_tree/Structure/BLD-ST-Columns: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 33, lcop_selection_set_tree/Structure/BLD-ST-Columns: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 33, lcop_selection_set_tree/Structure/BLD-ST-Columns: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 34, lcop_selection_set_tree/Structure/BLD-ST-Framing: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 34, lcop_selection_set_tree/Structure/BLD-ST-Framing: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 34, lcop_selection_set_tree/Structure/BLD-ST-Framing: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 34, lcop_selection_set_tree/Structure/BLD-ST-Framing: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 34, lcop_selection_set_tree/Structure/BLD-ST-Framing: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 34, lcop_selection_set_tree/Structure/BLD-ST-Framing: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 35, lcop_selection_set_tree/Structure/BLD-ST-Walls: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 35, lcop_selection_set_tree/Structure/BLD-ST-Walls: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 35, lcop_selection_set_tree/Structure/BLD-ST-Walls: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 35, lcop_selection_set_tree/Structure/BLD-ST-Walls: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 35, lcop_selection_set_tree/Structure/BLD-ST-Walls: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 35, lcop_selection_set_tree/Structure/BLD-ST-Walls: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 36, lcop_selection_set_tree/Structure/BLD-ST-Floors: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 36, lcop_selection_set_tree/Structure/BLD-ST-Floors: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 36, lcop_selection_set_tree/Structure/BLD-ST-Floors: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 36, lcop_selection_set_tree/Structure/BLD-ST-Floors: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 36, lcop_selection_set_tree/Structure/BLD-ST-Floors: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 36, lcop_selection_set_tree/Structure/BLD-ST-Floors: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 37, lcop_selection_set_tree/Structure/BLD-ST-Stair: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 37, lcop_selection_set_tree/Structure/BLD-ST-Stair: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 37, lcop_selection_set_tree/Structure/BLD-ST-Stair: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 37, lcop_selection_set_tree/Structure/BLD-ST-Stair: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 37, lcop_selection_set_tree/Structure/BLD-ST-Stair: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 37, lcop_selection_set_tree/Structure/BLD-ST-Stair: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 38, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Ducts&Duct Fittings: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 38, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Ducts&Duct Fittings: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 38, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Ducts&Duct Fittings: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 38, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Ducts&Duct Fittings: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 38, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Ducts&Duct Fittings: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 38, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Ducts&Duct Fittings: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 39, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Duct Accessory: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 39, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Duct Accessory: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 39, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Duct Accessory: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 39, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Duct Accessory: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 39, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Duct Accessory: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 39, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Duct Accessory: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 40, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Mechanical Equipment: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 40, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Mechanical Equipment: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 40, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Mechanical Equipment: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 40, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Mechanical Equipment: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 40, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Mechanical Equipment: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 40, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Mechanical Equipment: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 41, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 41, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 41, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 41, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 41, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 41, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Ducts: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 42, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 42, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 42, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 42, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 42, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 42, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Air Terminals: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 43, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 43, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 43, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 43, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 43, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 43, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipes&Pipe Fittings: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 44, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 44, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 44, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 44, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 44, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 44, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Pipe Accessories: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 45, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 45, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 45, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 45, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 45, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 45, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Plumbing Fixtures: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 46, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 46, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 46, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 46, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 46, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 46, lcop_selection_set_tree/Mechanical/Mechanical-HVAC/BLD-ME-Flex Pipes: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 47, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 47, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 47, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 47, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 47, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 47, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Mechanical Equipment: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 48, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 48, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 48, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 48, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 48, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 48, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipes & Pipe Fittings: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 49, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 49, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 49, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 49, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 49, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 49, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Accessories: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 50, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 50, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 50, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 50, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 50, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 50, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Pipe Insulations: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 51, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 51, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 51, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 51, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 51, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 51, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Plumbing Fixtures: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 52, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 52, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 52, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 52, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 52, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 52, lcop_selection_set_tree/Mechanical/Mechanical-Fire Fighting/BLD-FF-Sprinklers: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 53, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 53, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 53, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 53, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 53, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 53, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Mechanical Equipment: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 54, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 54, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 54, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 54, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 54, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 54, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipes & Pipe Fittings: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 55, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 55, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 55, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 55, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 55, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 55, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Accessories: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 56, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 56, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 56, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 56, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 56, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 56, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Pipe Insulations: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 57, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 57, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 57, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 57, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 57, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 57, lcop_selection_set_tree/Mechanical/Mechanical-Water Supply/BLD-PL-Plumbing Fixtures: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 58, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 58, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 58, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 58, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 58, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 58, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Mechanical Equipment: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 59, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipes & Pipe Fittings: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 59, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipes & Pipe Fittings: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 59, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipes & Pipe Fittings: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 59, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipes & Pipe Fittings: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 59, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipes & Pipe Fittings: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 59, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipes & Pipe Fittings: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 60, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 60, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 60, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 60, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 60, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 60, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Accessories: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 61, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 61, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 61, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 61, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 61, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 61, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Pipe Insulations: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 62, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Plumbing Fixtures: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 62, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Plumbing Fixtures: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 62, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Plumbing Fixtures: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 62, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Plumbing Fixtures: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 62, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Plumbing Fixtures: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 62, lcop_selection_set_tree/Mechanical/Mechanical-Drainage/BLD-DR-Plumbing Fixtures: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 63, lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 63, lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 63, lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 63, lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 63, lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 63, lcop_selection_set_tree/Electrical/BLD-EL-Cable Tray&Cable Tray Fittings: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 64, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 64, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 64, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 64, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 64, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 64, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Equipment: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 65, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 65, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 65, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 65, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 65, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 65, lcop_selection_set_tree/Electrical/BLD-EL-Electrical Fixtures: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 66, lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 66, lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 66, lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 66, lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 66, lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 66, lcop_selection_set_tree/Electrical/BLD-EL-Conduits & Conduit Fittings: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 67, lcop_selection_set_tree/Electrical/BLD-EL-Devices: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 67, lcop_selection_set_tree/Electrical/BLD-EL-Devices: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 67, lcop_selection_set_tree/Electrical/BLD-EL-Devices: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 67, lcop_selection_set_tree/Electrical/BLD-EL-Devices: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 67, lcop_selection_set_tree/Electrical/BLD-EL-Devices: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 67, lcop_selection_set_tree/Electrical/BLD-EL-Devices: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 68, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 68, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 68, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 68, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 68, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 68, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Fixtures: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 69, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 69, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 69, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 69, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 69, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 69, lcop_selection_set_tree/Electrical/BLD-EL-Lighting Devices: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 70, lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 70, lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 70, lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 70, lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 70, lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 70, lcop_selection_set_tree/Electrical/BLD-EL-Fire Alarm Devices: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 71, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 71, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 71, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 71, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 71, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 71, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Equipment: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 72, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 72, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 72, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 72, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 72, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 72, lcop_selection_set_tree/Electrical/BLD-EL-Telecom Fixtures: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 73, lcop_selection_set_tree/Electrical/BLD-Security Devices: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 73, lcop_selection_set_tree/Electrical/BLD-Security Devices: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 73, lcop_selection_set_tree/Electrical/BLD-Security Devices: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 73, lcop_selection_set_tree/Electrical/BLD-Security Devices: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 73, lcop_selection_set_tree/Electrical/BLD-Security Devices: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 73, lcop_selection_set_tree/Electrical/BLD-Security Devices: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 74, lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 74, lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 74, lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 74, lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 74, lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 74, lcop_selection_set_tree/Electrical/BLD-EL-Communication Devices: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 75, lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices: Clashes reads 'yes', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 75, lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 75, lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 75, lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 75, lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 75, lcop_selection_set_tree/Electrical/BLD-EL-Telephone Devices: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 76, lcop_selection_set_tree/Electrical/BLD-EL-Data Devices: Clashes reads 'no', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 76, lcop_selection_set_tree/Electrical/BLD-EL-Data Devices: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 76, lcop_selection_set_tree/Electrical/BLD-EL-Data Devices: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 76, lcop_selection_set_tree/Electrical/BLD-EL-Data Devices: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 76, lcop_selection_set_tree/Electrical/BLD-EL-Data Devices: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 76, lcop_selection_set_tree/Electrical/BLD-EL-Data Devices: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 78, ITEMS NO SET CATCHES: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 78, ITEMS NO SET CATCHES: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 78, ITEMS NO SET CATCHES: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 78, ITEMS NO SET CATCHES: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 78, ITEMS NO SET CATCHES: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 78, ITEMS NO SET CATCHES: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 79, UNKNOWN, the count of items no set catches is not in this build: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 79, UNKNOWN, the count of items no set catches is not in this build: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 79, UNKNOWN, the count of items no set catches is not in this build: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 79, UNKNOWN, the count of items no set catches is not in this build: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 79, UNKNOWN, the count of items no set catches is not in this build: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 79, UNKNOWN, the count of items no set catches is not in this build: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 81, MIRRORED PAIRS: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 81, MIRRORED PAIRS: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 81, MIRRORED PAIRS: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 81, MIRRORED PAIRS: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 81, MIRRORED PAIRS: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 81, MIRRORED PAIRS: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 82, UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 82, UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 82, UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 82, UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 82, UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 82, UNKNOWN on this sheet, the MIRROR and MIRROR COVERAGE blocks of the log name the pairs F132's rule judged: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 84, TESTS IN THE DOCUMENT NOT IN THE XML: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 84, TESTS IN THE DOCUMENT NOT IN THE XML: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 84, TESTS IN THE DOCUMENT NOT IN THE XML: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 84, TESTS IN THE DOCUMENT NOT IN THE XML: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 84, TESTS IN THE DOCUMENT NOT IN THE XML: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 84, TESTS IN THE DOCUMENT NOT IN THE XML: Resolved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 85, none: Clashes reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 85, none: New reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 85, none: Active reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 85, none: Reviewed reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 85, none: Approved reads '', which is not a whole number, and is left out of the totals
+  sheet Coverage, row 85, none: Resolved reads '', which is not a whole number, and is left out of the totals
+END OF READ-OUT
