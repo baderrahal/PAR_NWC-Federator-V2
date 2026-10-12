@@ -746,6 +746,11 @@ well as to pass.
   R21, and a source resolving to a folder credits every set inside it, R8. IndexOfSet reads from
   the end as FindSelectionSet does, R3, so the set the drift was read off is the set replaced.
   The leftovers are walked and reported with the box off and acted on only with it ticked, R20.
+  CarryOut finds every set again by its PATH, IndexPathsAt, and acts on nothing where a path
+  holds no set or more than one, and nothing more is removed or renamed once the document is
+  damaged, F115 attempt 2. A throw after the twin is gone declares the document damaged. With
+  the box off a read of the walk that failed is one FINDING line and not a FAILURE. Every
+  Search read off a set by the drift or the walk is disposed.
   The EMPTY SETS block is written by WriteTheEmptySets wherever the sets were judged, after the
   clash run and where no test ran, R4
 - THE GENERIC MODELS SETS ARE BUILT IN THE SETS STEP OF EVERY GROUP, F128, with an XML picked

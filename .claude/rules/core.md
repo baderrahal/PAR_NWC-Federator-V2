@@ -404,8 +404,14 @@ and 6 does not read as broken.
 - ONE PATH HOLDS ONE SET IN THE PLAN, F115 R23. `SetBuildPlan.From` skips a second set at a path
   the picked file already used, by name with why. `NamesInTheFile` is every name the file holds,
   the skipped among them, and is what the leftover walk reads as named, F115 R16
-- THE LEFTOVERS ARE REPORTED WITH THE BOX OFF, F115 R20. `SetLeftovers.Lines` takes whether the box
-  is ticked and with it off says nothing it lists is done
+- THE LEFTOVERS ARE REPORTED WITH THE BOX OFF, F115 R20. `SetLeftovers.Lines` and `LeftoverSet.Line`
+  take whether the box is ticked and with it off say nothing is done and what a ticked run would
+  do, F115 attempt 2. A read of the walk that failed with the box off is one line,
+  `SetLeftovers.NotReadWithTheBoxOff`, a FINDING and never a FAILURE
+- A LEFTOVER CARRIES ITS TWIN'S PATH AND WHERE ITS RENAME LANDS, `TwinPath` and `RenamedPath`, F115
+  attempt 2, so the add-in acts on the sets at the paths Core decided and never on the first of a
+  name. `StoppedBecause` makes a build that stopped say so in `Summary()` and `Lines()`, and
+  `AddLeftoverUntouched` counts the leftovers not acted on once the document is damaged
 
 ### The teams of the picked file, F131
 

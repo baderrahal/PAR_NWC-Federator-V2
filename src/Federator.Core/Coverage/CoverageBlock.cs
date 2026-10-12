@@ -187,7 +187,8 @@ namespace Federator.Core.Coverage
             return lines;
         }
 
-        private static string OneLine(string text)
+        /// <summary>That text on one line, its line breaks made spaces, for a block line or a row of the .tsv.</summary>
+        internal static string OneLine(string text)
         {
             return (text ?? string.Empty).Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ");
         }

@@ -132,7 +132,8 @@ namespace Federator.Core.Sets
             catch (ArgumentException error)
             {
                 // Carried, not swallowed: the settings' own words become the reason the judge gives.
-                return "the naming settings will not read a model's name, " + error.Message.TrimEnd('.')
+                // On one line, since the reason reaches a row of the .tsv, the breaker's finding 9 on attempt 1.
+                return "the naming settings will not read a model's name, " + Coverage.CoverageBlock.OneLine(error.Message).Trim().TrimEnd('.')
                     + ", so which project this group's models are of is UNKNOWN";
             }
         }

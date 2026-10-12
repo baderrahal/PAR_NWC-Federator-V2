@@ -53,13 +53,16 @@ namespace Federator.Addin.Engine
                 if (existing.HasSearch)
                 {
                     asked = new List<ReadCondition>();
-                    Search search = existing.Search;
 
-                    if (search != null)
+                    // This tool's wrapper, disposed, the reviewer's finding 6 on F115 attempt 1.
+                    using (Search search = existing.Search)
                     {
-                        foreach (SearchCondition condition in search.SearchConditions)
+                        if (search != null)
                         {
-                            asked.Add(Read(condition));
+                            foreach (SearchCondition condition in search.SearchConditions)
+                            {
+                                asked.Add(Read(condition));
+                            }
                         }
                     }
                 }
@@ -211,29 +214,46 @@ namespace Federator.Addin.Engine
         /// rather than off the picked file, because the tests that point at the broken
         /// name were saved in the NWF by an earlier run and are in no file.
         /// </summary>
-        private IList<DocumentSet> ReadEverySetInTheDocument(Document document)
+        private IList<DocumentSet> ReadEverySetInTheDocument(Document document, bool boxTicked)
         {
             List<DocumentSet> found = new List<DocumentSet>();
-            Dictionary<string, int> sides = SidesBySetName(document);
+            Dictionary<string, int> sides = SidesBySetName(document, boxTicked);
 
             try
             {
                 using (FolderItem root = document.SelectionSets.RootItem)
                 {
-                    WalkForLeftovers(root, "lcop_selection_set_tree", found, sides);
+                    WalkForLeftovers(root, TreeRoot, found, sides);
                 }
             }
             catch (Exception error)
             {
-                log.Failure(
-                    "reading the sets already in this NWF",
-                    error,
-                    "no set is removed or renamed and the run goes on");
-
+                NotRead(boxTicked, "reading the sets already in this NWF", error, "no set is removed or renamed and the run goes on");
                 return new List<DocumentSet>();
             }
 
             return found;
+        }
+
+        /// <summary>The first part of every set's path, as WalkForLeftovers writes it and IndexPathsAt reads it.</summary>
+        private const string TreeRoot = "lcop_selection_set_tree";
+
+        /// <summary>
+        /// A read of the leftover walk that failed. With the box ticked it is a FAILURE, since sets
+        /// may be removed. With it off nothing would be done, so it is one finding line and never a
+        /// FAILURE, which turned RESULT to errors on every weekly run once the walk ran with the box
+        /// off, the reviewer's finding 5 on F115 attempt 1. Core words it on one line.
+        /// </summary>
+        private void NotRead(bool boxTicked, string what, Exception error, string whatNext)
+        {
+            if (boxTicked)
+            {
+                log.Failure(what, error, whatNext);
+                return;
+            }
+
+            log.Line("SET      " + SetLeftovers.NotReadWithTheBoxOff(
+                what, error == null ? null : error.GetType().Name + ": " + error.Message));
         }
 
         private static void WalkForLeftovers(
@@ -254,17 +274,25 @@ namespace Federator.Addin.Engine
 
                         try
                         {
-                            if (set.HasSearch && set.Search != null)
+                            if (set.HasSearch)
                             {
-                                List<ReadCondition> read = new List<ReadCondition>();
-
-                                foreach (SearchCondition condition in set.Search.SearchConditions)
+                                // Read once and disposed, the reviewer's finding 6 on F115 attempt 1,
+                                // since this walk now runs on every weekly run.
+                                using (Search search = set.Search)
                                 {
-                                    read.Add(Read(condition));
-                                }
+                                    if (search != null)
+                                    {
+                                        List<ReadCondition> read = new List<ReadCondition>();
 
-                                // FR-017. None where a value would not read, so it pairs with nothing.
-                                keys = ReadCondition.KeysOf(read);
+                                        foreach (SearchCondition condition in search.SearchConditions)
+                                        {
+                                            read.Add(Read(condition));
+                                        }
+
+                                        // FR-017. None where a value would not read, so it pairs with nothing.
+                                        keys = ReadCondition.KeysOf(read);
+                                    }
+                                }
                             }
                         }
                         catch (Exception)
@@ -306,7 +334,7 @@ namespace Federator.Addin.Engine
         /// here removed every set the file no longer names with the box on and orphaned the
         /// tests pointing at it. The comment over the old catch argued the opposite.
         /// </summary>
-        private Dictionary<string, int> SidesBySetName(Document document)
+        private Dictionary<string, int> SidesBySetName(Document document, bool boxTicked)
         {
             Dictionary<string, int> sides = new Dictionary<string, int>(StringComparer.Ordinal);
             int notRead = 0;
@@ -318,7 +346,8 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
-                log.Failure(
+                NotRead(
+                    boxTicked,
                     "reading what the clash tests point at",
                     error,
                     "how many sides point at each set is UNKNOWN, so no set is removed or renamed and the run goes on");
@@ -328,7 +357,8 @@ namespace Federator.Addin.Engine
 
             if (notRead > 0)
             {
-                log.Failure(
+                NotRead(
+                    boxTicked,
                     "reading what " + notRead + " clash test side(s) point at",
                     first,
                     "how many sides point at each set is UNKNOWN, so no set is removed or renamed and the run goes on");
@@ -470,19 +500,17 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Takes that set out through the PARENT SCOPED form and READS THE TREE BACK.
-        /// `Remove(SavedItem)` addresses the root collection and returns False without
-        /// throwing for a nested set, so the return value is never what decides.
+        /// Takes the set at that index path out through the PARENT SCOPED form and READS THE TREE
+        /// BACK at its set path. `Remove(SavedItem)` addresses the root collection and returns False
+        /// without throwing for a nested set, so the return value is never what decides.
+        ///
+        /// BY PATH AND NEVER BY NAME, the breaker's finding 1 on F115 attempt 1. The first set of
+        /// the name was taken and read back by name, so with two sets of one name the line said could
+        /// not remove about a set that was gone, and a rename that happened read as one that did not
+        /// and declared the document damaged, which stops the group.
         /// </summary>
-        private bool RemoveSet(Document document, DocumentSelectionSets sets, string name)
+        private bool RemoveSetAt(Document document, DocumentSelectionSets sets, int[] path, string setPath)
         {
-            int[] path = PathToSetNamed(document, name);
-
-            if (path == null)
-            {
-                return false;
-            }
-
             int last = path[path.Length - 1];
 
             if (path.Length == 1)
@@ -511,19 +539,16 @@ namespace Federator.Addin.Engine
             }
 
             // READ THE TREE BACK. The return value of a remove is not evidence.
-            return PathToSetNamed(document, name) == null;
+            return IndexPathsAt(document, setPath).Count == 0;
         }
 
-        /// <summary>Renames that set and reads the tree back, for the same reason.</summary>
-        private bool RenameSet(Document document, DocumentSelectionSets sets, string from, string to)
+        /// <summary>
+        /// Renames the set at that index path and reads the tree back at both set paths, for the
+        /// same reason: none left where it was and exactly one where it lands.
+        /// </summary>
+        private bool RenameSetAt(
+            Document document, DocumentSelectionSets sets, int[] path, string fromPath, string to, string toPath)
         {
-            int[] path = PathToSetNamed(document, from);
-
-            if (path == null)
-            {
-                return false;
-            }
-
             using (SavedItem found = sets.ResolveIndexPath(path))
             {
                 if (found == null)
@@ -534,54 +559,69 @@ namespace Federator.Addin.Engine
                 sets.EditDisplayName(found, to);
             }
 
-            return PathToSetNamed(document, to) != null && PathToSetNamed(document, from) == null;
+            return IndexPathsAt(document, toPath).Count == 1 && IndexPathsAt(document, fromPath).Count == 0;
         }
 
-        /// <summary>The index path to that set as plain ints, which survive across a mutator.</summary>
-        private static int[] PathToSetNamed(Document document, string name)
+        /// <summary>
+        /// The index paths, plain ints which survive across a mutator, of every set whose path, built as
+        /// WalkForLeftovers builds it, is that path. One where the set is there alone, none where it has
+        /// gone, and more where sets share the path, which no caller acts on.
+        /// </summary>
+        private static IList<int[]> IndexPathsAt(Document document, string setPath)
         {
+            List<int[]> found = new List<int[]>();
+
             using (FolderItem root = document.SelectionSets.RootItem)
             {
-                List<int> path = new List<int>();
-
-                return WalkToNamedSet(root, name, path) ? path.ToArray() : null;
+                CollectAt(root, TreeRoot, setPath ?? string.Empty, new List<int>(), found);
             }
+
+            return found;
         }
 
-        private static bool WalkToNamedSet(GroupItem parent, string name, List<int> path)
+        private static void CollectAt(GroupItem parent, string path, string wanted, List<int> at, List<int[]> found)
         {
             SavedItemCollection children = parent.Children;
 
             for (int i = 0; i < children.Count; i++)
             {
-                SavedItem child = children[i];
-
-                if (child is SelectionSet && string.Equals(child.DisplayName, name, StringComparison.Ordinal))
+                using (SavedItem child = children[i])
                 {
-                    path.Add(i);
-                    child.Dispose();
-                    return true;
-                }
+                    string here = path + "/" + child.DisplayName;
 
-                GroupItem folder = child as GroupItem;
-
-                if (folder != null)
-                {
-                    path.Add(i);
-
-                    if (WalkToNamedSet(folder, name, path))
+                    if (child is SelectionSet)
                     {
-                        child.Dispose();
-                        return true;
+                        if (string.Equals(here, wanted, StringComparison.Ordinal))
+                        {
+                            at.Add(i);
+                            found.Add(at.ToArray());
+                            at.RemoveAt(at.Count - 1);
+                        }
+
+                        continue;
                     }
 
-                    path.RemoveAt(path.Count - 1);
-                }
+                    GroupItem folder = child as GroupItem;
 
-                child.Dispose();
+                    if (folder != null && wanted.StartsWith(here + "/", StringComparison.Ordinal))
+                    {
+                        at.Add(i);
+                        CollectAt(folder, here, wanted, at, found);
+                        at.RemoveAt(at.Count - 1);
+                    }
+                }
+            }
+        }
+
+        /// <summary>Why the set at that path cannot be acted on, or null where it is there alone.</summary>
+        private static string WhyNotOneAt(IList<int[]> found, string setPath)
+        {
+            if (found.Count == 0)
+            {
+                return "no set is at " + setPath + " any more";
             }
 
-            return false;
+            return found.Count > 1 ? found.Count + " sets are at " + setPath + ", so which one was decided is UNKNOWN" : null;
         }
 
         /// <summary>
@@ -636,6 +676,8 @@ namespace Federator.Addin.Engine
 
             if (document == null)
             {
+                // Said in the summary and the lines too, the breaker's finding 4 on F115 attempt 1.
+                outcome.StoppedBecause = "there is no active document";
                 log.Line("SET      stopped, there is no active document");
                 return outcome;
             }
@@ -698,7 +740,7 @@ namespace Federator.Addin.Engine
                 named.AddRange(alsoWanted);
             }
 
-            IList<DocumentSet> inDocument = ReadEverySetInTheDocument(document);
+            IList<DocumentSet> inDocument = ReadEverySetInTheDocument(document, boxTicked);
 
             if (inDocument.Count == 0)
             {
@@ -714,14 +756,26 @@ namespace Federator.Addin.Engine
 
             foreach (LeftoverSet leftover in leftovers)
             {
-                if (boxTicked)
-                {
-                    CarryOut(document, sets, leftover, outcome);
-                }
-                else
+                if (!boxTicked || leftover.Action == LeftoverAction.Refuse)
                 {
                     outcome.AddLeftover(leftover, false);
                 }
+                else if (!string.IsNullOrEmpty(outcome.TheDocumentIsDamaged))
+                {
+                    // NOTHING MORE IS CHANGED IN A DAMAGED DOCUMENT, the breaker's finding 5 on F115
+                    // attempt 1. The leftovers after the damage were still removed and renamed.
+                    outcome.AddLeftoverUntouched(leftover);
+                }
+                else
+                {
+                    CarryOut(document, sets, leftover, outcome);
+                }
+            }
+
+            if (outcome.LeftoversUntouched > 0)
+            {
+                log.Line("SET      " + outcome.LeftoversUntouched
+                    + " more set(s) the file no longer names were left untouched, because the document is damaged and nothing more is changed in it");
             }
         }
 
@@ -735,17 +789,29 @@ namespace Federator.Addin.Engine
         private void CarryOut(
             Document document, DocumentSelectionSets sets, LeftoverSet leftover, SetBuildOutcome outcome)
         {
-            if (leftover.Action == LeftoverAction.Refuse)
-            {
-                outcome.AddLeftover(leftover, false);
-                return;
-            }
+            // True once the twin is gone, so a throw after it is the window of the pair and never a
+            // set left exactly as it was.
+            bool twinGone = false;
 
             try
             {
+                // EVERY SET IS FOUND AGAIN BY THE PATH SetLeftovers DECIDED IT BY, the breaker's
+                // finding 1 on F115 attempt 1, and a path holding no set or more than one is acted on
+                // not at all and said.
+                IList<int[]> own = IndexPathsAt(document, leftover.Path);
+
                 if (leftover.Action == LeftoverAction.Remove)
                 {
-                    bool went = RemoveSet(document, sets, leftover.Name);
+                    string whyNot = WhyNotOneAt(own, leftover.Path);
+
+                    if (whyNot != null)
+                    {
+                        outcome.AddLeftover(leftover, false);
+                        log.Line("SET      nothing removed for " + leftover.Path + ", because " + whyNot);
+                        return;
+                    }
+
+                    bool went = RemoveSetAt(document, sets, own[0], leftover.Path);
                     outcome.AddLeftover(leftover, went);
 
                     log.Line("SET      " + (went
@@ -755,44 +821,82 @@ namespace Federator.Addin.Engine
                     return;
                 }
 
-                // THE PAIR. The twin first, then the rename into the freed name.
-                if (!RemoveSet(document, sets, leftover.TwinName))
+                // THE PAIR. Both ends found alone at their paths, and nothing else where the rename
+                // lands but the twin itself, before anything is touched.
+                IList<int[]> twin = IndexPathsAt(document, leftover.TwinPath);
+                int landing = leftover.RenamedPath.Length == 0 ? -1 : IndexPathsAt(document, leftover.RenamedPath).Count
+                    - (string.Equals(leftover.RenamedPath, leftover.TwinPath, StringComparison.Ordinal) ? 1 : 0);
+                string whyNotPair = WhyNotOneAt(twin, leftover.TwinPath)
+                    ?? WhyNotOneAt(own, leftover.Path)
+                    ?? (landing != 0 ? "where it would land once renamed is not free, or UNKNOWN" : null);
+
+                if (whyNotPair != null)
                 {
                     outcome.AddLeftover(leftover, false);
-                    log.Line("SET      the unused \"" + leftover.TwinName
-                        + "\" would not remove, so \"" + leftover.Name
+                    log.Line("SET      nothing done for " + leftover.Path + " and its unused twin " + leftover.TwinPath
+                        + ", because " + whyNotPair);
+                    return;
+                }
+
+                // The twin first, then the rename into the freed name.
+                if (!RemoveSetAt(document, sets, twin[0], leftover.TwinPath))
+                {
+                    outcome.AddLeftover(leftover, false);
+                    log.Line("SET      the unused \"" + leftover.TwinPath
+                        + "\" would not remove, so \"" + leftover.Path
                         + "\" is left exactly as it was and its "
                         + leftover.Sides + " test side(s) still work");
                     return;
                 }
 
-                if (!RenameSet(document, sets, leftover.Name, leftover.TwinName))
+                twinGone = true;
+
+                // Found again, since the removal may have moved it in the tree.
+                own = IndexPathsAt(document, leftover.Path);
+
+                if (own.Count != 1
+                    || !RenameSetAt(document, sets, own[0], leftover.Path, leftover.TwinName, leftover.RenamedPath))
                 {
                     // THE WINDOW. The twin is gone and the rename did not happen, so
                     // NEITHER set carries the corrected name and the document is worse
                     // than it started. Nothing may be saved from here.
-                    outcome.AddLeftover(leftover, false);
-                    outcome.TheDocumentIsDamaged = Federator.Core.Rerun.DamagedDocument.TheDocumentIsDamaged(
-                        "the unused \"" + leftover.TwinName + "\" was removed and \""
-                            + leftover.Name + "\" would not take its name");
-
-                    log.Line("SET      " + outcome.TheDocumentIsDamaged);
+                    Damaged(leftover, outcome, "would not take its name");
                     return;
                 }
 
                 outcome.AddLeftover(leftover, true);
-                log.Line("SET      RENAMED \"" + leftover.Name + "\" to \"" + leftover.TwinName
-                    + "\" and removed the unused set that held that name. Its "
+                log.Line("SET      RENAMED \"" + leftover.Path + "\" to \"" + leftover.RenamedPath
+                    + "\" and removed the unused set at \"" + leftover.TwinPath + "\". Its "
                     + leftover.Sides + " test side(s) keep working and now ask what the file asks");
             }
             catch (Exception error)
             {
+                if (twinGone)
+                {
+                    log.Failure(
+                        "renaming the set " + leftover.Path + " after its unused twin was removed",
+                        error,
+                        "the document is damaged, nothing more is changed in it and nothing is saved from it");
+                    Damaged(leftover, outcome, "threw " + error.GetType().Name + " as it was renamed into its name");
+                    return;
+                }
+
                 outcome.AddLeftover(leftover, false);
                 log.Failure(
                     "bringing the set " + leftover.Path + " up to date",
                     error,
                     "the set is left exactly as it was and the run goes on");
             }
+        }
+
+        /// <summary>The pair failed between its two halves: recorded, the document declared damaged and said.</summary>
+        private void Damaged(LeftoverSet leftover, SetBuildOutcome outcome, string what)
+        {
+            outcome.AddLeftover(leftover, false);
+            outcome.TheDocumentIsDamaged = Federator.Core.Rerun.DamagedDocument.TheDocumentIsDamaged(
+                "the unused \"" + leftover.TwinPath + "\" was removed and \"" + leftover.Path + "\" " + what);
+
+            log.Line("SET      " + outcome.TheDocumentIsDamaged);
         }
 
         private void BuildOne(
@@ -917,7 +1021,8 @@ namespace Federator.Addin.Engine
                         {
                             log.Line("SET      " + (!rebuilt
                                 ? rebuilds.RebuildDriftedSets
-                                    ? "   NOT rebuilt, though \"" + SetRebuildSettings.TickLabel + "\" is ticked. The line above says why"
+                                    ? "   NOT rebuilt, though \"" + SetRebuildSettings.TickLabel + "\" is ticked. Why is said where"
+                                        + " the rebuild was tried, before this set's present line"
                                     : "   left alone. Tick \"" + SetRebuildSettings.TickLabel + "\" to rebuild it, Q72"
                                 : found < 0
                                     ? "   REBUILT from the picked file, and it could not be found again to count, so what it finds is UNKNOWN"

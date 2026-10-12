@@ -26,19 +26,28 @@ What was done:
   drift use one lookup from the end, R3. Over a damaged document no test is created or run and the group stops
   before the views, the NWF save, the workbook and the NWD, R15 and R24
 - Dropped with why, in steps\01_next.md: R5, R11 and R17. R12 stays open for the weekly run with the box ticked
+- Attempt 2, on the reviewer's and the breaker's readings of attempt 1. The leftovers are removed and renamed at
+  the path SetLeftovers decided, the twin's path carried on the leftover, and a path holding no set or more than
+  one is acted on not at all and said, where the first set of the NAME was taken, breaker 1. Nothing more is
+  changed once the document is damaged and the leftovers left untouched are counted, breaker 5. A build that
+  stopped for no active document says so, breaker 4. With the box off each leftover line says what a ticked run
+  would do, breaker 14. The judge's reason from the naming settings is one line, breaker 9. With the box off a
+  read of the leftover walk that failed is one FINDING line and never a FAILURE, reviewer 5. The Search wrappers
+  read by the drift and the leftover walk are disposed, reviewer 6. Six more tests, each seen failing against its
+  rule broken, turn6\f115c-before-fail-3.txt. Breaker 2, 3 and 6 are older than this change, rows F115-R26 to R28
 - Proved here: the solution builds in Release with 0 warnings and 0 errors, turn6\f115c-build.txt. Core tests 2921
   passed, 0 failed, 0 skipped before, turn6\f115c-test-before.txt, and 2933 passed, 0 failed, 0 skipped after,
   turn6\f115c-test-after.txt. check-locals.sh and check-imports.sh over src clean
 
 What remains:
-- Every add-in line waits for a run, steps 664 to 683 of steps\03_bader_next.md. The leftover walk now runs with the
+- Every add-in line waits for a run, steps 664 to 685 of steps\03_bader_next.md. The leftover walk now runs with the
   box off on every weekly run, and what it costs in the SETS step's seconds is UNKNOWN until step 671
-- R12, whether SearchCondition.Options reads back StartGroup 64, step 681
+- R12, whether SearchCondition.Options reads back StartGroup 64, step 682
 
-Known bugs: one found and not fixed, older than F115, row F115-R25 in steps	racker.csv.
+Known bugs: four found and not fixed, older than this change, rows F115-R25 to F115-R28 in steps\tracker.csv.
 
 What comes next: the lead calls the reviewer and the breaker on the branch, then the draft pull request merges once
-Actions is green, and Bader runs steps 664 to 683.
+Actions is green, and Bader runs steps 664 to 685.
 
 ## 2026-10-12 The loop, turn 6 closes on Bader's order WRAP UP NOW, written by the lead
 

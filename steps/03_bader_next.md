@@ -378,7 +378,7 @@ The weekly run with the box off comes first, because it is the run the team make
 667. Leave `Rebuild sets that drifted from the file` unticked
 668. Tick 1A02MM alone in the group list
 669. Press Run
-670. Look for, in the SET lines of 1A02MM: either no block about sets the file does not name, or one starting `set(s) in this NWF are not named by the picked file:` whose next line reads `NOTHING BELOW IS DONE, because "Rebuild sets that drifted from the file" is off`, R20
+670. Look for, in the SET lines of 1A02MM: either no block about sets the file does not name, or one starting `set(s) in this NWF are not named by the picked file:` whose next line reads `NOTHING BELOW IS DONE, because "Rebuild sets that drifted from the file" is off`, and each line under it saying what `a run with the box ticked would` do, R20
 671. Look for, on the group's TIMING block: the SETS seconds, to send beside the last run's, since the leftover walk now reads every clash test side with the box off too, R20
 672. Look for, in the SETS step's finish phrase and the line under the SETS lines: a count `drifted` or `could not be read` wherever the SET DRIFT lines name a set drifted or not read, R7
 673. Look for, after the CLASH block: the EMPTY SETS block as before, and a line `were not judged` only where a SET NOT READ line names a set at zero, R6
@@ -388,10 +388,12 @@ The weekly run with the box off comes first, because it is the run the team make
 677. Look for, in the log after the button's SET lines: an EMPTY SETS block ending `no clash test ran with these sets here, so what they cost in clash tests is not counted`, wherever the window's lines show a set at zero, R4
 678. Close the NWF without saving it
 679. Tick `Rebuild sets that drifted from the file`
-680. Tick 1A02MM alone and press Run
-681. Look for, under the SET DRIFT lines of each drifted set: `REBUILT from the picked file`, and no line `read back after the rebuild it does NOT ask what the picked file asks`, R19. Where that line shows under an Or set, it is the answer to F115-R12
-682. Look for: no line `NOT rebuilt, though "Rebuild sets that drifted from the file" is ticked`, R18. Where one shows, the FAILURE line above it says why
-683. Send the log and the `.tsv` beside it, with the SETS seconds of both runs
+680. Tick 1A02MM alone in the group list
+681. Press Run
+682. Look for, under the SET DRIFT lines of each drifted set: `REBUILT from the picked file`, and no line `read back after the rebuild it does NOT ask what the picked file asks`, R19. Where that line shows under an Or set, it is the answer to F115-R12
+683. Look for: no line `NOT rebuilt, though "Rebuild sets that drifted from the file" is ticked`, R18. Where one shows, why is said where the rebuild was tried, before the set's present line
+684. Look for: no line `nothing removed for`, `nothing done for` or `so it was NOT saved`. Where one shows, send it with the SET lines before it
+685. Send the log and the `.tsv` beside it, with the SETS seconds of both runs
 
 ## Proof of F130, the Shift range in the group list
 

@@ -344,5 +344,126 @@ namespace Federator.Core.Tests.Sets
                 "NOTHING BELOW IS DONE, because \"" + SetRebuildSettings.TickLabel + "\" is off. Each line says what a run with it ticked would do"));
             Assert.That(ticked, Does.Not.Contain("NOTHING BELOW IS DONE"));
         }
+
+        // ---------- attempt 2, the readings of attempt 1 ----------
+
+        private static IList<LeftoverSet> APairAndAnUnusedSet()
+        {
+            List<string> keys = new List<string> { "ducts" };
+
+            return SetLeftovers.For(
+                new List<DocumentSet>
+                {
+                    new DocumentSet("lcop_selection_set_tree/A/BLD-OLD", "BLD-OLD", new List<string>(), 0),
+                    new DocumentSet("lcop_selection_set_tree/A/BLD-ME-Ductwork", "BLD-ME-Ductwork", keys, 12),
+                    new DocumentSet("lcop_selection_set_tree/B/BLD-ME-Ducts", "BLD-ME-Ducts", keys, 0),
+                },
+                new List<string> { "BLD-ME-Ducts" });
+        }
+
+        /// <summary>
+        /// The breaker's finding 14. With the box off each leftover line still said it is removed and
+        /// renamed into it. The guard: with the box ticked the lines read as they did.
+        /// </summary>
+        [Test]
+        public void WithTheBoxOffEachLeftoverLineSaysWhatATickedRunWouldDo()
+        {
+            IList<LeftoverSet> leftovers = APairAndAnUnusedSet();
+            string off = Joined(SetLeftovers.Lines(leftovers, false));
+            string ticked = Joined(SetLeftovers.Lines(leftovers, true));
+
+            Assert.That(off, Does.Contain("NOTHING points at it, so a run with the box ticked would remove it"));
+            Assert.That(off, Does.Contain("a run with the box ticked would remove that one and rename this one into it"));
+            Assert.That(off, Does.Contain("nothing points at, so they would be removed"));
+            Assert.That(off, Does.Not.Contain("so it is removed"));
+            Assert.That(off, Does.Not.Contain("so that one is removed"));
+            Assert.That(ticked, Does.Contain("NOTHING points at it, so it is removed"));
+            Assert.That(ticked, Does.Contain("so that one is removed and this one is renamed into it"));
+        }
+
+        /// <summary>
+        /// The breaker's finding 1. The add-in removed and renamed the first set of a NAME where Core had
+        /// decided by PATH. The leftover carries the twin's path and where the rename lands, so the add-in
+        /// acts on the set at the path decided. The twin in another folder lands beside the leftover.
+        /// </summary>
+        [Test]
+        public void ALeftoverCarriesItsTwinsPathAndWhereTheRenameLands()
+        {
+            LeftoverSet pair = APairAndAnUnusedSet()[1];
+
+            Assert.That(pair.Action, Is.EqualTo(LeftoverAction.RemoveTheTwinThenRename));
+            Assert.That(pair.TwinPath, Is.EqualTo("lcop_selection_set_tree/B/BLD-ME-Ducts"));
+            Assert.That(pair.RenamedPath, Is.EqualTo("lcop_selection_set_tree/A/BLD-ME-Ducts"));
+            Assert.That(APairAndAnUnusedSet()[0].TwinPath, Is.Empty);
+        }
+
+        /// <summary>
+        /// The breaker's finding 4. A build that stopped for no active document read as a file holding no
+        /// set. The guard: a file with no set still reads as one.
+        /// </summary>
+        [Test]
+        public void ABuildThatStoppedSaysItStoppedAndWhy()
+        {
+            SetBuildOutcome stopped = new SetBuildOutcome();
+            stopped.StoppedBecause = "there is no active document";
+
+            Assert.That(stopped.Summary(), Is.EqualTo("The sets build STOPPED before any set, because there is no active document."));
+            Assert.That(stopped.Lines()[0], Is.EqualTo("The sets build STOPPED before any set, because there is no active document."));
+            Assert.That(new SetBuildOutcome().Summary(), Is.EqualTo("This file holds no sets. Nothing to build."));
+        }
+
+        /// <summary>
+        /// The breaker's finding 5. After the document was damaged the leftovers after it were still
+        /// acted on. Each is recorded as not acted on and counted, and the lines say how many.
+        /// </summary>
+        [Test]
+        public void TheLeftoversAfterTheDamageAreCountedAsUntouched()
+        {
+            SetBuildOutcome outcome = OnePresentDrifted();
+            outcome.TheDocumentIsDamaged = "the pair failed";
+
+            foreach (LeftoverSet leftover in APairAndAnUnusedSet())
+            {
+                outcome.AddLeftoverUntouched(leftover);
+            }
+
+            Assert.That(outcome.LeftoversUntouched, Is.EqualTo(2));
+            Assert.That(outcome.ActedOnLeftovers, Is.EqualTo(0));
+            Assert.That(outcome.Lines()[1], Is.EqualTo(
+                "2 more set(s) the file no longer names were left untouched, since nothing more is changed in a damaged document."));
+            Assert.That(Joined(OnePresentDrifted().Lines()), Does.Not.Contain("left untouched"));
+        }
+
+        /// <summary>The breaker's finding 9. A reason of the judge reaches a row of the .tsv, so it is one line.</summary>
+        [Test]
+        public void TheJudgesReasonFromTheNamingSettingsIsOneLine()
+        {
+            ContainerNameSettings bad = new ContainerNameSettings();
+            bad.ProjectPart = 0;
+            List<ModelExport> models = new List<ModelExport> { Walked("ME", "ME-DUCTWORK") };
+
+            EmptySetJudge judge = EmptySetJudge.For(SetBuildPlan.From(new List<SelectionSetDefinition>()), models, bad, 1);
+            string why = EmptySets.Why(Ducts, AsksWorkset("ST-NO-SUCH-WORKSET"), judge).WhyNotTold;
+
+            Assert.That(why, Does.Contain("the naming settings will not read a model's name, Part positions are one based. Parameter name: ProjectPart"));
+            Assert.That(why, Does.Not.Contain("\n"));
+            Assert.That(why, Does.Not.Contain("\r"));
+        }
+
+        /// <summary>
+        /// The reviewer's finding 5. With the box off a side not read was a FAILURE on every weekly run. It
+        /// is one finding line, its error on one line.
+        /// </summary>
+        [Test]
+        public void AReadOfTheLeftoverWalkThatFailedWithTheBoxOffIsOneFindingLine()
+        {
+            string line = SetLeftovers.NotReadWithTheBoxOff(
+                "reading what 2 clash test side(s) point at", "InvalidOperationException: first\r\nsecond");
+
+            Assert.That(line, Does.StartWith("FINDING  reading what 2 clash test side(s) point at failed, InvalidOperationException: first second."));
+            Assert.That(line, Does.EndWith("is off, so nothing would have been removed or renamed"));
+            Assert.That(line, Does.Not.Contain("\n"));
+            Assert.That(SetLeftovers.NotReadWithTheBoxOff(null, null), Does.Contain("why is UNKNOWN"));
+        }
     }
 }

@@ -204,6 +204,30 @@ namespace Federator.Core.Sets
         /// </summary>
         public string TheDocumentIsDamaged { get; set; }
 
+        /// <summary>
+        /// Why the build stopped before any set, or null where it ran, the breaker's finding 4 on
+        /// attempt 1. Set by the builder where there is no active document.
+        /// </summary>
+        public string StoppedBecause { get; set; }
+
+        /// <summary>
+        /// How many leftovers were not acted on because the document was damaged by an earlier one,
+        /// the breaker's finding 5 on attempt 1. Nothing more is removed or renamed once it is.
+        /// </summary>
+        public int LeftoversUntouched { get; private set; }
+
+        /// <summary>A leftover not acted on because the document is damaged, counted and recorded as not acted on.</summary>
+        public void AddLeftoverUntouched(LeftoverSet leftover)
+        {
+            if (leftover == null)
+            {
+                return;
+            }
+
+            AddLeftover(leftover, false);
+            LeftoversUntouched++;
+        }
+
         /// <summary>The sets the picked file no longer names.</summary>
         public ReadOnlyCollection<LeftoverSet> Leftovers
         {
@@ -617,6 +641,13 @@ namespace Federator.Core.Sets
         /// </summary>
         public string Summary()
         {
+            // The breaker's finding 4 on attempt 1. A build that stopped read as a file holding no set.
+            if (!string.IsNullOrEmpty(StoppedBecause))
+            {
+                return "The sets build STOPPED before any set, because " + StoppedBecause + "."
+                    + (skipped.Count > 0 ? " " + skipped.Count + " skipped." : string.Empty);
+            }
+
             if (results.Count == 0)
             {
                 return skipped.Count > 0
@@ -664,9 +695,21 @@ namespace Federator.Core.Sets
 
             // F115 R15. The Build sets button showed nothing of a pair that failed between its
             // two halves, so a person could save the document it had damaged.
+            if (!string.IsNullOrEmpty(StoppedBecause))
+            {
+                lines.Add("The sets build STOPPED before any set, because " + StoppedBecause + ".");
+                lines.Add(string.Empty);
+            }
+
             if (!string.IsNullOrEmpty(TheDocumentIsDamaged))
             {
                 lines.Add("THE DOCUMENT IS DAMAGED: " + TheDocumentIsDamaged + ". Do not save it.");
+
+                if (LeftoversUntouched > 0)
+                {
+                    lines.Add(LeftoversUntouched + " more set(s) the file no longer names were left untouched, since nothing more is changed in a damaged document.");
+                }
+
                 lines.Add(string.Empty);
             }
 
