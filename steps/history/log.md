@@ -40,7 +40,9 @@ What was done:
   and steps 669 to 671 of steps\03_bader_next.md
 
 Core tests 2921 passed, 0 failed, 0 skipped before on main 80314b9, f127c-before.txt, 2924 passed, 0 failed,
-0 skipped after attempt 1, f132c-tests-after.txt, and after attempt 2 the counts of f132c-a2-tests-after.txt. dotnet build ParsonsNwcFederator.sln -c Release --no-incremental 0 warnings
+0 skipped after attempt 1, f132c-tests-after.txt, and 2926 passed, 0 failed, 0 skipped after attempt 2,
+f132c-a2-tests-after.txt and by its pre-commit, f132c-a2-precommit.txt. dotnet build
+ParsonsNwcFederator.sln -c Release --no-incremental 0 warnings, f132c-a2-build-after.txt for attempt 2,
 and 0 errors after, f132c-build-after.txt, and 0 and 0 before. check-locals and check-imports exit 0 over src,
 f132c-checks.txt.
 
