@@ -885,7 +885,7 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            string collisions = nameTable.WhyTheRunCannotStart();
+            string collisions = nameTable.WhyTheRunCannotStart(ReportsWanted().GenericModels);
 
             NamePreview.Text = "The first group would be written as:" + Environment.NewLine
                 + string.Join(Environment.NewLine, lines.ToArray())
@@ -2000,8 +2000,9 @@ namespace Federator.Addin.Ui
 
             // Outputs overwrite with no date suffix, so two groups sharing a name is not a
             // warning. The second silently destroys the first and only shows up later as a
-            // federation nobody can find. Caught before anything is cleared or written.
-            string collisions = nameTable.Only(TickedGroupKeys()).WhyTheRunCannotStart();
+            // federation nobody can find. Caught before anything is cleared or written, and so is a
+            // workbook named as another group's internal workbook, F127-R5.
+            string collisions = nameTable.Only(TickedGroupKeys()).WhyTheRunCannotStart(ReportsWanted().GenericModels);
 
             if (collisions != null)
             {

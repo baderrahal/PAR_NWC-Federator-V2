@@ -2,6 +2,40 @@
 
 Newest entry at the top.
 
+## 2026-10-12 The fix round, wave 2a, F127 the coverage, rows F127-R3 to F127-R5, written by the developer as the lead's delegate
+
+Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under Q143's limits. Branch
+fix-F127c off origin/main 80314b9 in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f127c, every file named below
+under turn6 with the prefix f127c-. No Navisworks, probe or harness was started.
+
+What was done:
+- F127-R5 FIXED. A group's internal workbook is named after its workbook with the suffix Internal, so a group
+  whose workbook was typed as X Internal beside a group X had one written over the other with no line.
+  OutputNameTable.WhyTheRunCannotStart now takes the GenericModelsSettings the engine names the internal
+  workbook by, reads each internal workbook name against every other group's workbook name, ignoring case, and
+  names both groups and the name. The window hands it the run's settings at the name preview and at Run, so the
+  run does not start. Five tests in OutputNameTableTests, three of them failing first against the new argument
+  ignored, f127c-failing-first.txt
+- F127-R3 DROPPED under Q143. A code only an unticked building carries reads UNKNOWN on the coverage row and
+  never a wrong word, so nothing the team sees is wrong, and the change would hand the window's whole scan to the
+  engine for one more definite word
+- F127-R4 DROPPED under Q143. A mirror's coverage row carries the name Clash Detective and the clash workbook
+  show, and the MIRROR COVERAGE block of the log ties it to the name the XML gives it, so nothing the team sees
+  is wrong
+- The rule in core.md beside the collision check, and F127-R3's line in the coverage section. The F127 section of
+  steps\01_next.md and steps 664 to 668 of steps\03_bader_next.md
+
+Core tests 2921 passed, 0 failed, 0 skipped before on main 80314b9, f127c-before.txt, and 2926 passed, 0 failed,
+0 skipped after, f127c-tests-after.txt. dotnet build ParsonsNwcFederator.sln -c Release --no-incremental 0 warnings
+and 0 errors after, f127c-build-after.txt, and 0 and 0 before. check-locals and check-imports exit 0 over src,
+f127c-checks.txt.
+
+What remains: the window's refusal on Navisworks, steps 664 to 668 of steps\03_bader_next.md.
+
+Known bugs: none found in this pass.
+
+What comes next: the reviewer's reading, then the pull request merged by the lead.
+
 ## 2026-10-12 The loop, turn 6 closes on Bader's order WRAP UP NOW, written by the lead
 
 Bader's order of 2026-10-12 headed BADER, 12 OCT 2026: WRAP UP NOW, NO MORE TESTS. No probe, fast check, speed

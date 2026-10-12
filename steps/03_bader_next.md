@@ -368,6 +368,16 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
+## Proof F127-R5 a workbook named as another group's internal workbook, added 2026-10-12
+
+No group runs in these steps, so they can follow any install of main with fix-F127c merged.
+
+664. Install main with fix-F127c merged, start Navisworks and open the tool's window
+665. Scan a folder holding at least two groups, then open 3. Outputs
+666. Copy the Workbook name of the first group, and type it with one space and Internal after it into the Workbook name cell of the second group
+667. Look for, in the name preview under the table: `THE RUN CANNOT START.` and `The internal workbook of <first group> and the workbook of <second group> would both be written as <that name>. One would overwrite the other, so the run does not start.`
+668. Tick both groups and press Run. Look for: a warning holding the same sentence, the window back on 3. Outputs, and in the log one line starting `RUN      refused before starting.` with it. Then give the cell back to the pattern
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,
