@@ -1,4 +1,4 @@
-STATE NIGHT, 2026-10-12 15:56
+STATE OPEN, 2026-10-12 19:17, last run 09/item1-C04
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -11,32 +11,33 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 2a | 37 | 1 | 0 | 0 | 28 | 0 | 66 |
 | 2b | 28 | 2 | 0 | 1 | 9 | 0 | 40 |
 | 2c | 9 | 2 | 0 | 0 | 0 | 1 | 12 |
-| 3a | 19 | 0 | 0 | 0 | 3 | 0 | 22 |
+| 3a | 19 | 0 | 0 | 0 | 2 | 1 | 22 |
 | 3b | 13 | 1 | 0 | 0 | 7 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
 | outside the waves | 175 | 16 | 0 | 2 | 60 | 6 | 259 |
-| total | 324 | 27 | 0 | 3 | 208 | 7 | 569 |
+| total | 324 | 27 | 0 | 3 | 207 | 8 | 569 |
 <!-- the end of the counts -->
 
 ## Now
-- Bader closed the laptop at about 15:55 on 12 Oct and will say go. The fix round of waves 2 to 5 is unfinished. No agent runs, no Navisworks runs, every branch is pushed and clean. 210 is merged
-- Each pull request is a draft on its own branch. Their state, 209 to 219, is in the next list
+- Bader said go at 19:13 on 12 Oct. The fix round of waves 2 to 5 carries on under his order of that evening headed BADER SAYS GO, under the limits of Q143
+- No Navisworks runs, his settings read what the 12:28 backup holds, set 09's two runs finished and were put back
+- Main is taken into each branch, smallest first, then the readers, two at a time, then the merges in his order
 
 ## Open pull requests, head and what is left
-- 209 F127c bf1c414: attempt 2 read, APPROVE. Fix proof steps 687 to 696 first: add steps picking an NWF and an NWD folder, Scan again instead of give back, Folder under Existing NWF, then merge
-- 211 F132c cae0f84, 212 F115c f7b2c5d, 213 F114c 7d29148, 214 F150 147ef46: attempt 2 pushed, one breaker re-read each is left. 214 also needs its 1A02MM check before it merges
-- 215 F120c 03573b2: main merged in, first reading left. 216 F129c cbb3abd: records only, drop of F129-R1, main in, merge once its checks are green
-- 217 F147 88d8013: attempt 3 fixes pushed, breaker's narrow re-read left. 218 F130c 233b455: reviewer wants proof steps 698 to 704 split to one action each, then merge
-- 219 F119c 4ec1733: first reading left, and main not yet merged in
+- 216 F129c: records only, drop of F129-R1, main in, this page rides on it. Merge once green
+- 209 F127c: approved. Proof steps 687 to 696 to fix as the reviewer said, then merge
+- 218 F130c: proof steps 698 to 704 to split to one action each, then merge
+- 211 F132c, 212 F115c, 213 F114c: one breaker re-read each of attempt 2 is left
+- 217 F147: the breaker's narrow re-read of attempt 3 is left. 215 F120c and 219 F119c: first reading left
+- 214 F150: breaker re-read, then main taken in, its head installed in place and 1A02MM run once, then merge
 
 ## Next
-1. Say go. Run mergemain.py in turn6 on a branch to take main in, readers two at a time, smallest first
-2. Merge each green pull request, then install main in place, run 1A02MM once with viewpoints ticked for the wave and for F150
-3. From 17:00 or when done, build the new zip from main and give Bader its path, size and what changed
+1. Merge 216, then 209 and 218 once their steps are fixed, then 211, 212, 213, 217, 215 and 219 as their readers finish
+2. Renumber the proof steps once, after the merges. Then 214's check on 1A02MM and its merge
+3. The new zip from main, then waves 3, 4 and 5, rows the team sees only
 
 ## Waiting for Bader
-- His word to go
 - His run on his PC and its log, from the team zip of 12 Oct, 69de6ed4
 
 ## Blockers and known bugs
