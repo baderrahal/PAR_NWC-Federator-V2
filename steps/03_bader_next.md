@@ -473,6 +473,33 @@ team follows, and these steps follow it.
 614. If step 610 read `1`, the last line starts `FAILED:`. Send the whole output and stop
 615. Open Navisworks. Look for: Parsons NWC Federator on the Tool Add-ins tab, and main's commit in the title bar
 
+## Proof F140 the team package, added 2026-10-11
+
+NOTHING HERE HAPPENS until you write "make the team package", your order of 11 Oct, Q149, once the
+proof runs show the main functions work. The package and its install were proved on the laptop
+against throwaway folders, never your own add-in, turn6\f140-proof, and no team zip was made. These
+steps try the zip on your own machine the way the team will get it, before anyone on the team gets
+it. They replace the add-in you have installed, and step 640 puts it back. A double click, the
+question Windows may ask before it runs a file from the internet, and a policy set on your machine
+are not proved on the laptop, so steps 631, 632 and 636 read them.
+
+629. Write "make the team package" in the chat. The lead runs `build\package.ps1` on the laptop from a clean checkout of main, into a folder outside the repo, and pastes its last line, which starts `PACKAGED:` and names the zip, `ParsonsNwcFederator-1.0.0.0-` then main's eight characters, a dash, the day's date and `.zip`
+630. Close Navisworks Manage 2025
+631. Open Windows PowerShell on your machine and run `Get-ExecutionPolicy -List`. Look for: `MachinePolicy` and `UserPolicy` both reading `Undefined`, as they read on the laptop on 2026-10-11. Any other value there is a Group Policy that comes before the Bypass the install starts PowerShell with, and whether the install then runs is UNKNOWN, so send what it reads before you go on
+632. Get the zip the way the team will: have the lead send it to you in a Teams chat, or send it to yourself there, and save it from Teams into your Downloads folder. Right click the saved zip and choose Properties. Say whether the General tab shows a line about the file coming from another computer with an Unblock box. Do not tick it, and close Properties
+633. Right click the zip and choose Extract All, then open the folder that makes
+634. Open `VERSION.txt`. Look for: `commit  :` with main's eight characters the lead named, and `date    :` with the day the zip was made
+635. Open `INSTALL-TEAM.txt`. Look for: a page you would hand a person who is not a developer. Say any line that is not plain to you
+636. Double click `Install Parsons NWC Federator.cmd`. If Windows asks whether to run it, choose Run, and say that it asked and what its window said. Look for, as the last line before `Press any key to continue`: `DONE: Parsons NWC Federator version 1.0.0.0, commit` with main's eight characters, `is installed at` your `AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle`, then `The version installed before,` with the commit you had, `is kept at` the same path ending `.previous`. If the window ends on red text that starts with none of DONE, FAILED and REFUSED, send the whole window and stop
+637. Press any key. Open File Explorer and paste `%APPDATA%\Autodesk\ApplicationPlugins` into its address bar. Look for: `ParsonsNwcFederator.bundle` and `ParsonsNwcFederator.bundle.previous`, and NO `ParsonsNwcFederator.bundle.copying`
+638. Start Navisworks Manage 2025. Look for: ONE Parsons NWC Federator on the Tool Add-ins tab, and main's commit in the title bar. Two of it would mean Navisworks loads the `.previous` folder too, which is UNKNOWN until this step, so say so
+639. Close Navisworks
+640. Double click `Put back the previous version.cmd`. Look for, as the last line before `Press any key to continue`: `DONE: the previous version,` with the commit you had before step 636, `is back at` the same `ParsonsNwcFederator.bundle`, then `The version that was installed,` with main's commit, `was replaced and is not kept.`
+641. Press any key. In the File Explorer window of step 637, press F5. Look for: `ParsonsNwcFederator.bundle` and `ParsonsNwcFederator.bundle.previous`, and NO `ParsonsNwcFederator.bundle.before-put-back` and NO `ParsonsNwcFederator.bundle.copying`
+642. Start Navisworks. Look for: the commit you had before step 636 in the title bar. Close Navisworks
+643. Double click `Install Parsons NWC Federator.cmd` again. Look for: `DONE:` with main's commit, and the commit you had before step 636 kept at `.previous`
+644. Send the text of every window whose last line did not read as written, and say whether the zip goes to the team. Nobody on the team gets it before you say so
+
 ## Proof F34, the window, and F33, the units combo
 
 24. Close Navisworks if it is open
