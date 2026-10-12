@@ -20,6 +20,18 @@ What was done:
   hidden for. The pass runs in a finally after the merge, every row a harvest read before a throw keeps its
   picture, a row met under two tests is pictured once, and a result with no display name is found again
   under its row's name. The dead flag, its branch and every stale text the two readings named are gone
+- The second reading of attempt 2 found faults the team would see, fixed in this attempt under Bader's
+  Q148 B. One fault, a stretch's test not found again or a throw ending a stretch, now reaches the
+  pictures' guard ONCE and not once a row, so one throw can no longer stop the run as fifty failed renders,
+  and its rows are counted as the writer would have counted them, passed over on status or the cap and the
+  room under the cap as failed, by ImageOptions.CountTheRowsLeft, said on one IMAGE line with the counts. A
+  clash not found again stays one attempt each. A row whose result had no display name is never taken on
+  its name by the views, which run after the compact and framed the next unnamed result as its own, and is
+  said on their line of rows not found, ResultSiblings.PickUnnamed. A group row is recorded as it is added,
+  so a merge handing that throws leaves it its picture. A throw out of the pictures after a merge that threw
+  is a failure line and the merge's error goes on up. The pictures' guard firing after the tests' guard
+  stopped the run is said. The tally counts tests by name, the renumber's words and comments name the name
+  a picture was written under, and the proof steps untick the coordinates box as set 09 ran
 - The rules are Core's with tests: the walk and its stretches, PictureWalk, the number of each picture,
   ClashReport.NextPictureOf, which the writer and the renumber now share with PictureNumber.PointTheRow,
   the row's name, ClashRow.NameOf, the choice of a picture, ImageOptions.TakesAPictureOf, which replaced
@@ -33,16 +45,18 @@ What was done:
   a walk to its result by its recorded path, which a test of no merge had in hand before F149, its seconds
   UNKNOWN until the run reads PICTURES less IMAGES
 - Not changed: the views still read no row of a test whose harvest threw, as before F149, said by their own
-  line. Whether a picture taken once every test has run shows what it showed straight after its own test is
-  not measured here and is step 656. Steps 646 to 648 are still not written, and whether that gap is meant
-  is UNKNOWN
+  line. A row left under two tests of the report by a merge that threw between two mirrors is pictured once,
+  and is still numbered under both by the renumber, an input both readers judged impossible in practice.
+  Whether a picture taken once every test has run shows what it showed straight after its own test is not
+  measured here and is step 660. Steps 646 to 648 are still not written, and whether that gap is meant is
+  UNKNOWN
 - Proved here: Core tests 2878 passed, 0 failed, 0 skipped before attempt 2 on fix-F145 c052bdb taken in,
-  and 2899 passed, 0 failed, 0 skipped after. The new tests failed before their Core was there, the step
-  list's two at 18 steps for 19 and the rest not compiling. The solution builds with 0 warnings and 0 errors,
-  0 and 0 before, and the locals and imports checks pass
+  2899 passed after its first reading, and 2915 passed, 0 failed, 0 skipped after the second. The new tests
+  failed before their Core was there, the step list's two at 18 steps for 19 and the rest not compiling. The
+  solution builds with 0 warnings and 0 errors, 0 and 0 before, and the locals and imports checks pass
 
-What remains: the reviewer and the breaker on attempt 2, F145's merge then this one's, and 1A02MM's fast
-check on the local machine, steps 649 to 659 of steps\03_bader_next.md.
+What remains: the reviewer and the breaker on the second reading's fixes, F145's merge then this one's, and
+1A02MM's fast check on the local machine, steps 649 to 663 of steps\03_bader_next.md.
 
 Known bugs: row F149-R1.
 
