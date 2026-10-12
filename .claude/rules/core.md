@@ -894,6 +894,16 @@ and 6 does not read as broken.
   it is still visible. `ToleranceChoice.ReadFromLine` counts the four across the run, so
   a report reading the file rather than the document shows as a number rather than being
   trusted
+- A ROW WHOSE TEST CARRIES THE CHOSEN VALUE SAYS IT, FR-036, F118. The row is given the plan's
+  value before the test is touched, and a test that then does not run, one discipline, off
+  the coordinates or a side finding nothing, never reaches the reading off the document. So a
+  saved test set to the chosen value and then skipped said its old value and origin Document,
+  and a test created at the chosen value said the XML's. `ToleranceChoice.PutOn` gives the row
+  the chosen value in the document's units and origin Tool, where the test was created at it,
+  set to it or already at it, and does nothing under the default, where a row of a test that
+  never ran keeps what the plan gave it, Bader's answer to Q54. A test that runs is still read
+  off the document. `ToleranceChoice.BlocksLine` no longer says the blocks that never ran read
+  off the picked file, and points at the line below it, `ReadFromLine`, for where each was read
 - Tolerance is read per test and converted from the file units attribute into the
   units of the open document before it is set. There is no global tolerance setting
   in this tool. Both numbers and both unit names go in the log, because which units
@@ -1275,8 +1285,15 @@ and 6 does not read as broken.
   EMPTY cell, `ClashReportModel.Missing`, the source of such an id is
   `ClientFormat.GuidFallbackSource` and its line says the label the cell carries, and
   `ClientShapes.LooksLikeAnItemId` accepts the two labels this tool writes and no other.
-  The harvest types the label as a literal, which is the add-in half to point at the
-  constant
+  The harvest gives the cell `ClientFormat.GuidIdLabel` since F118's add-in pass, where it
+  typed the label as a literal
+- EVERY EMPTY GRID LOCATION CELL IS COUNTED, FR-041, F118, `ClashReport.GridLocationLine`, one
+  GRID line per group after the units line, with its row in the .tsv: how many clash rows of the report carry an empty
+  Grid Location cell, with the heights of the empty rows and of the filled ones in the units
+  the rows are in, or that every row has one. Set 03 left the cell empty on 345 of 5679 rows
+  and the checks read the first clash row only, so nothing said so. Why the grid gives nothing
+  for those rows is UNKNOWN, and the heights are what the next run measures against the grid
+  levels. No line where the report holds no clash row
 - Distance is the ROUNDED signed number and the cell carries no number format, which is
   what theirs holds and what the code writes. This bullet asked for a raw number behind a
   format, which is the thing the later bullet says was wrong: the cell read -0.328 while
@@ -2091,6 +2108,14 @@ survive the crash rather than to be tidy.
   then to window only output
 - a size is only logged after File.Exists passes and the real size is read back.
   Never log a size that was not read
+- A SAVE THAT THREW LISTS NOTHING AS WRITTEN, `RunLog.WriteThrew`, F118-R3. A save goes
+  straight onto the final path, so after a throw the file there may be an earlier run's
+  untouched or one this save cut short, and which is UNKNOWN. WriteFinished would list it
+  with its size as this run's, which is what the clash workbook's write did with last week's
+  workbook. WriteThrew records nothing, takes an entry of that path and kind off the list,
+  returns minus one and writes one NOT WRITTEN line saying whether a file of that name is at
+  the path. The clash workbook and the internal workbook both write through it. FR-189 is the
+  same fault for the NWD and FR-044 and FR-045 for the NWF, area F119
 - on start, the oldest logs are deleted until 30 remain, the live file included.
   The live file is never a candidate. A delete that fails writes one line naming
   the file and the reason. 30 is a setting, RunLog.KeepLogs, static because the log opens
