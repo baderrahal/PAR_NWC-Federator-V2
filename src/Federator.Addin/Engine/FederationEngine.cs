@@ -3917,6 +3917,20 @@ namespace Federator.Addin.Engine
             ReportUnitsOutcome units = ReportUnits.ToMeters(report);
             log.Line(units.Line());
 
+            // FR-041. Every empty Grid Location cell counted, since the checks read the first
+            // clash row only, with the heights in the units the rows are now in.
+            string gridLine = report.GridLocationLine();
+
+            if (gridLine != null)
+            {
+                log.Numbered(
+                    gridLine,
+                    "grid location counted",
+                    job.Building,
+                    string.Empty,
+                    gridLine.Substring(ClashReport.GridPrefix.Length));
+            }
+
             if (units.Refused)
             {
                 outcome.AddError(
@@ -3944,7 +3958,7 @@ namespace Federator.Addin.Engine
                     () => WriteTheWorkbook(job, outcome, report, path),
                     () => outcome.WorkbookOnDisk
                         ? "wrote " + outcome.WorkbookSize + " bytes"
-                        : "nothing on disk");
+                        : "nothing written");
             }
 
             InStep(
@@ -3992,7 +4006,10 @@ namespace Federator.Addin.Engine
                     "kept going, the disk is checked next to see whether anything landed");
             }
 
-            outcome.WorkbookSize = log.WriteFinished("XLSX", path);
+            // F118-R3. A FILE THIS TOOL DID NOT WRITE IS NEVER LISTED AS WRITTEN. The save goes
+            // straight onto the final path, so after a throw the file there may be last week's,
+            // and WriteFinished would list it with last week's size as this run's.
+            outcome.WorkbookSize = threw ? log.WriteThrew("XLSX", path) : log.WriteFinished("XLSX", path);
             outcome.WorkbookOnDisk = outcome.WorkbookSize >= 0;
 
             // F127, the readers' point on the stamp. The count check reads the clash workbook
@@ -4001,6 +4018,14 @@ namespace Federator.Addin.Engine
             outcome.WorkbookNotReadBecause = threw
                 ? "writing the clash workbook threw, so the file at its path may be an earlier run's and is not read"
                 : outcome.WorkbookOnDisk ? null : "the clash workbook is not on the disk after its write";
+
+            if (threw)
+            {
+                // F118-R3. The WORKBOOK CHECK read the file at the path after a throw, so it
+                // judged an earlier run's workbook as this one.
+                log.Line("WORKBOOK CHECK " + job.Building + " not run, " + outcome.WorkbookNotReadBecause);
+                return;
+            }
 
             CheckTheWorkbook(
                 job,
@@ -4246,14 +4271,11 @@ namespace Federator.Addin.Engine
 
                     if (written == null)
                     {
-                        outcome.InternalWorkbookSize = -1;
-                        outcome.InternalWorkbookOnDisk = false;
                         // A file at the path is not called an earlier run's untouched, because a save
                         // that threw after opening the path, a full disk or a fault while writing the
                         // package, leaves the old file cut short and File.Exists still reads true.
-                        log.Line(InternalKind + " not written  " + path + (File.Exists(path)
-                            ? "  a file of that name is at the path, and whether it is an earlier run's file untouched or one this run cut short is UNKNOWN, so open it knowing that"
-                            : "  and no file is at the path"));
+                        outcome.InternalWorkbookSize = log.WriteThrew(InternalKind, path);
+                        outcome.InternalWorkbookOnDisk = false;
                         return;
                     }
 

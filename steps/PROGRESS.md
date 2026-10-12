@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-12 12:43, last run 09/item1-C04
+STATE WAITING, 2026-10-12 10:45
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -10,13 +10,13 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
 | 2a | 37 | 1 | 0 | 0 | 28 | 0 | 66 |
 | 2b | 28 | 2 | 0 | 1 | 9 | 0 | 40 |
-| 2c | 7 | 1 | 0 | 0 | 3 | 1 | 12 |
+| 2c | 9 | 2 | 0 | 0 | 0 | 1 | 12 |
 | 3a | 19 | 0 | 0 | 0 | 3 | 0 | 22 |
 | 3b | 13 | 1 | 0 | 0 | 7 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
 | outside the waves | 175 | 17 | 2 | 0 | 61 | 6 | 261 |
-| total | 322 | 27 | 2 | 1 | 212 | 7 | 571 |
+| total | 324 | 28 | 2 | 1 | 209 | 7 | 571 |
 <!-- the end of the counts -->
 
 ## Now
