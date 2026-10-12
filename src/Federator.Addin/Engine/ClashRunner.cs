@@ -2495,12 +2495,15 @@ namespace Federator.Addin.Engine
         /// a stretch marks the step and goes on up, as InStep's does.
         ///
         /// LONG RUNS KEPT FROM SLOWING, F147, Bader's order of 2026-10-11, Q152 item 2. The undo is
-        /// off for the whole pass and on again after, Document.StartDisableUndo and its matched
-        /// EndDisableUndo, so the hiding and the putting back of F145 add nothing to the undo, and the
-        /// next undo step is read before and after so the log shows it. The texture cache is watched
-        /// across the pass by Core's TextureCacheWatch. Every picture is already disposed as its save
-        /// returns, and the pass moves no camera, TestsImageForResult taking none, so there is no
-        /// camera change to make a jump cut. Every call here is on the main thread.
+        /// switched off for the whole pass by Document.StartDisableUndo and its matched EndDisableUndo,
+        /// a counter by the install's API reference, so the hiding and the putting back of F145 inside
+        /// the pass are not meant to add to it. Whether they did before is UNKNOWN. A put back retried by
+        /// modelsShown.Dispose in Run's finally runs after the undo is on again. One line reads
+        /// IsUndoDisabled and the name of the step Undo would take next before and after the pass, a
+        /// name and not the depth of the stack. The texture cache is watched across the pass by Core's
+        /// TextureCacheWatch. Every picture is already disposed as its save returns, and the pass moves
+        /// no camera, TestsImageForResult taking none, so there is no camera change to make a jump cut.
+        /// Every call here is on the main thread.
         /// </summary>
         private void RenderThePicturesWaiting(Document document, DocumentClashTests clashTests)
         {
@@ -2513,18 +2516,19 @@ namespace Federator.Addin.Engine
             {
                 StepStarted(RunSteps.Pictures);
 
-                TextureCacheWatch textures = new TextureCacheWatch(
-                    TextureCacheWatch.FolderIn(System.IO.Path.GetTempPath()),
-                    Images.TextureCacheLimitBytes,
-                    Images.TextureCacheCheckEverySeconds,
-                    () => log.ElapsedSeconds,
-                    line => log.Line("IMAGES   " + line));
-
-                string undoBefore = NextUndo(document);
+                TextureCacheWatch textures = null;
+                string undoBefore = UndoState(document);
                 bool undoOff = KeepTheUndoOff(document);
 
                 try
                 {
+                    textures = new TextureCacheWatch(
+                        TextureCacheWatch.FolderIn(TempFolder()),
+                        Images.TextureCacheLimitBytes,
+                        Images.TextureCacheCheckEverySeconds,
+                        () => log.ElapsedSeconds,
+                        line => log.Line("IMAGES   " + line));
+
                     textures.AtTheStart();
                     picturing.Changed(TakeThePictures(clashTests, textures));
                 }
@@ -2536,23 +2540,62 @@ namespace Federator.Addin.Engine
                 finally
                 {
                     PutTheUndoBack(document, undoOff, undoBefore);
-                    log.Line("IMAGES   " + textures.AtTheEnd());
+
+                    if (textures != null)
+                    {
+                        log.Line("IMAGES   " + textures.AtTheEnd());
+                    }
+
                     StepEnded();
                 }
             }
         }
 
-        /// <summary>The name of the step Undo would take next, nothing where there is none, UNKNOWN where it cannot be read.</summary>
-        private static string NextUndo(Document document)
+        /// <summary>The user's temp folder, where Navisworks keeps its texture cache, or null, said, where it cannot be read.</summary>
+        private string TempFolder()
         {
             try
             {
-                return Words.Or(document.NextUndo, "nothing");
+                return System.IO.Path.GetTempPath();
             }
             catch (Exception error)
             {
-                return "UNKNOWN, " + error.GetType().Name;
+                log.Failure(
+                    "reading the temp folder for the texture cache",
+                    error,
+                    "kept going, the texture cache is not checked in this pass");
+                return null;
             }
+        }
+
+        /// <summary>
+        /// Whether the undo reads off, by IsUndoDisabled, and the name of the step Undo would take next,
+        /// nothing where there is none, each UNKNOWN where it cannot be read.
+        /// </summary>
+        private static string UndoState(Document document)
+        {
+            string off;
+            string next;
+
+            try
+            {
+                off = document.IsUndoDisabled ? "off" : "on";
+            }
+            catch (Exception error)
+            {
+                off = "UNKNOWN, " + error.GetType().Name;
+            }
+
+            try
+            {
+                next = Words.Or(document.NextUndo, "nothing");
+            }
+            catch (Exception error)
+            {
+                next = "UNKNOWN, " + error.GetType().Name;
+            }
+
+            return off + " with " + next + " as the step Undo would take next";
         }
 
         /// <summary>The undo switched off for the pictures, F147. False, and said, where the call threw, so nothing is switched on that was not switched off.</summary>
@@ -2573,7 +2616,11 @@ namespace Federator.Addin.Engine
             }
         }
 
-        /// <summary>The undo switched on again after the pictures, F147, and the next undo step said before and after.</summary>
+        /// <summary>
+        /// The undo switched on again after the pictures by the call matching the one that switched it
+        /// off, F147, and its state read before and after, so the line says what was read and never
+        /// that it is on where it reads off.
+        /// </summary>
         private void PutTheUndoBack(Document document, bool undoOff, string undoBefore)
         {
             if (!undoOff)
@@ -2584,8 +2631,8 @@ namespace Federator.Addin.Engine
             try
             {
                 document.EndDisableUndo();
-                log.Line("IMAGES   the undo was off for the pictures and is on again, the step Undo would take next read "
-                    + undoBefore + " before them and " + NextUndo(document) + " after");
+                log.Line("IMAGES   the undo was switched off for the pictures and the matching call to switch it on returned, it read "
+                    + undoBefore + " before them and reads " + UndoState(document) + " after");
             }
             catch (Exception error)
             {

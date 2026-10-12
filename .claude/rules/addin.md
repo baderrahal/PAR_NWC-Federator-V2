@@ -827,14 +827,17 @@ well as to pass.
   throw lost. A result is found again by its name read through ClashRow.NameOf, the rule the harvest
   names a row by, so a result or a group with no display name is found again
 - LONG RUNS KEPT FROM SLOWING, F147, Bader's order of 2026-10-11, Q152 item 2. RenderThePicturesWaiting
-  switches the undo off for the whole PICTURES step by Document.StartDisableUndo and on again in its
-  finally by the matched EndDisableUndo, both read in the install's Autodesk.Navisworks.Api.xml on
-  2026-10-12, and one IMAGES line names the step Undo would take next before and after. A call that
-  throws is said and the pass goes on, and the undo is switched on only where it was switched off. Core's
-  TextureCacheWatch watches %TEMP%\ogs across the pass, the folder the add-in hands it off
-  Path.GetTempPath, and it is checked between two stretches, core.md, THE TEXTURE CACHE. Every picture is
-  already disposed as its save returns, and the pass moves no camera, so there is no camera change for a
-  jump cut. Every call of the pass is on the main thread. The views step keeps the undo on
+  switches the undo off for the whole PICTURES step by Document.StartDisableUndo and, in its finally, on
+  again by the matched EndDisableUndo, a counter by the install's Autodesk.Navisworks.Api.xml read on
+  2026-10-12, and only where the switch off returned. One IMAGES line reads IsUndoDisabled and the name
+  of the step Undo would take next before and after, a name and not the depth of the stack, so it says
+  what it read and never that the undo is on where it reads off. A put back retried by
+  modelsShown.Dispose in Run's finally runs after the undo is on again. Core's TextureCacheWatch watches
+  the folder ogs under Path.GetTempPath across the pass, built inside the step's try, a temp folder that
+  cannot be read said and the cache left unchecked, and it is checked between two stretches, core.md,
+  THE TEXTURE CACHE. Every picture is already disposed as its save returns, and the pass moves no
+  camera, so there is no camera change for a jump cut. Every call of the pass is on the main thread. The
+  views step keeps the undo on
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
   core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
   stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and
