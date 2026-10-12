@@ -33,7 +33,7 @@ FR-041, F118 and F118-R3. Built in the worktree wt-f118c off main 80314b9.
   which is what FR-041 names as the first thing to measure
 - The harvest gives an id off the GUID fallback `ClientFormat.GuidIdLabel` where it typed the
   label, the last of F118's NOT BUILT list
-- Tests: 13 new and 1 changed, in ToleranceChoiceTests, WrittenFileAuthorshipTests and the new
+- Tests: 12 new and 1 changed, in ToleranceChoiceTests, WrittenFileAuthorshipTests and the new
   GridLocationLineTests. Against the three Core rules stubbed to the old behaviour, WriteThrew
   calling WriteFinished, PutOn doing nothing, the old BlocksLine and no GRID line, 11 failed and
   30 passed of the 41 in those three fixtures, the 2 new ones passing being the edges a stub already
@@ -64,7 +64,19 @@ FR-041, F118 and F118-R3. Built in the worktree wt-f118c off main 80314b9.
 ### What comes next
 
 1. The lead calls the reviewer and the breaker on fix-F118c and merges once Actions is green
-2. Bader works steps 664 to 672 of steps\03_bader_next.md and sends the GRID lines
+2. Bader works steps 664 to 691 of steps\03_bader_next.md and sends the GRID lines
+
+Attempt 2, on the reviewer's reading of pull request 210, CHANGES with one blocking point. Proof
+steps 665 to 668 expected every test of 1A04MS's second run to read chosen in the tool and
+0.050m, and since F77 ClashRunner never creates a test whose side finds nothing, so those rows
+keep the XML's value and origin File and never reach PutOn. The steps now expect the chosen value
+on the tests the first run's CLASH line counts as created and the XML's 25 mm on the rest, split
+to one action a step, 664 to 691, and the run proof of FR-036 in steps\fix-round.md says the same.
+The WORKBOOK step's finish says nothing written after a save that threw, as the internal
+workbook's does, where it said nothing on disk under a line saying a file is at the path. The
+GRID line is written through Numbered and has a .tsv row. The test count above read 13 new where
+it is 12, 2921 to 2933. A sentence of addin.md ran into the next. Main had not moved, origin/main
+merged as already up to date.
 
 ## 2026-10-12 The loop, turn 6 closes on Bader's order WRAP UP NOW, written by the lead
 

@@ -1255,7 +1255,7 @@ and 6 does not read as broken.
   The harvest gives the cell `ClientFormat.GuidIdLabel` since F118's add-in pass, where it
   typed the label as a literal
 - EVERY EMPTY GRID LOCATION CELL IS COUNTED, FR-041, F118, `ClashReport.GridLocationLine`, one
-  GRID line per group after the units line: how many clash rows of the report carry an empty
+  GRID line per group after the units line, with its row in the .tsv: how many clash rows of the report carry an empty
   Grid Location cell, with the heights of the empty rows and of the filled ones in the units
   the rows are in, or that every row has one. Set 03 left the cell empty on 345 of 5679 rows
   and the checks read the first clash row only, so nothing said so. Why the grid gives nothing

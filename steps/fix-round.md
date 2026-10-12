@@ -1206,8 +1206,10 @@ counts, though the document no longer holds that value.
   gives a skipped row the chosen value in document units with origin Tool, for example
   ToleranceChoice returning both. It fails today because the row copies the plan. Run proof in
   set 05: a weekly run with a tolerance chosen (not in the standard five) on a single
-  discipline group, then the workbook tolerance cell of every block reads the chosen value and
-  the origin counts say Tool.
+  discipline group, then the workbook tolerance cell of every block of a test the document
+  holds reads the chosen value and those blocks count under Tool. Since F77 a test whose side
+  finds nothing is never created, so its block keeps the XML's value and counts under the clash
+  XML, the reviewer's reading of F118's add-in pass, attempt 1.
 - Note: The XML path does the same for a test already in the document (:630 then a skip), where
   the row says File with the XML value. The same file, ClashRunner.cs, carries FR-047, FR-053,
   FR-063, FR-128 and FR-150. Not reached in set 03: no saved test existed, 'the document already

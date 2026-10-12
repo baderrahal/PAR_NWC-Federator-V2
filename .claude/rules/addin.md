@@ -771,7 +771,7 @@ well as to pass.
   not write is never listed as written, and otherwise read back by size as every
   file is. The clash workbook's write that throws goes through WriteThrew the same way since
   F118-R3, and its WORKBOOK CHECK is not run, one line saying why, since it would read the
-  file at the path as this run's The settings are `ReportOptions.GenericModels`, read off Core and never typed in the
+  file at the path as this run's. The settings are `ReportOptions.GenericModels`, read off Core and never typed in the
   window. A plan, a build or a workbook write that throws NEVER FAILS THE GROUP, the lead's
   decision on attempt 2: it logs the failure with what happens next, writes the GENERIC MODELS
   block with its FAILED line off `GenericModelsReport.FailedLines`, counts the group as not

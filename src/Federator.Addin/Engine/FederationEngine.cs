@@ -3906,7 +3906,12 @@ namespace Federator.Addin.Engine
 
             if (gridLine != null)
             {
-                log.Line(gridLine);
+                log.Numbered(
+                    gridLine,
+                    "grid location counted",
+                    job.Building,
+                    string.Empty,
+                    gridLine.Substring(ClashReport.GridPrefix.Length));
             }
 
             if (units.Refused)
@@ -3936,7 +3941,7 @@ namespace Federator.Addin.Engine
                     () => WriteTheWorkbook(job, outcome, report, path),
                     () => outcome.WorkbookOnDisk
                         ? "wrote " + outcome.WorkbookSize + " bytes"
-                        : "nothing on disk");
+                        : "nothing written");
             }
 
             InStep(
