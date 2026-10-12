@@ -325,7 +325,7 @@ F125,a window that is not modal is a pane and not a dialog,F125,outside the wave
 F126,the window driver unticks a tick box by its AutomationId,F126,outside the waves,fix,merged,112,none,2026-10-05
 F127,coverage of the clash XML,F127,2a,fix,merged,"145 the Core steps 1 to 3, 153 the Coverage sheet, 167 the readers' Core points, 176 the counted words and 195 the add-in half with the sheet in the internal workbook",none,2026-10-11
 F128,generic models,F128,2b,fix,merged,"171 the Core part by lane B and 186 the probe and the add-in part",none,2026-10-08
-F129,start from an existing NWF,F129,3a,fix,merged,193,none,2026-10-11
+F129,start from an existing NWF,F129,3a,fix,merged,"193, F129-R1 dropped on fix-F129c",none,2026-10-12
 F130,the Shift range in the group list,F130,3b,fix,merged,192,none,2026-10-11
 F131,teams,F131,2b,fix,merged,135,none,2026-10-07
 F132,mirrored tests,F132,2a,fix,merged,177,none,2026-10-08
@@ -526,7 +526,7 @@ F114-K36,"a test whose open clashes are all result groups gets no view and keeps
 F114-K37,"whether the NWF keeps a saved camera at single precision is UNKNOWN, so a camera far from the origin may read every tool view as a person's after a reopen, read on the timed runs",F114,2b,register row,open,none,none,2026-10-08
 F114-K38,"a test whose harvest threw after only closed rows reads whole, so its old view is removed while its open clashes were never harvested, the reviewer's D1, UNKNOWN how often",F114,2b,register row,open,none,none,2026-10-08
 Q148,a fault found at the second reading,none,none,question,merged,191,none,2026-10-11
-F129-R1,"the picked NWFs walk follows a junction looping back until Windows refuses the path, so the same NWFs can be read under longer paths, a person's mklink needed, the scan sharing the exposure, the reviewer's point on attempt 1",F129,3a,register row,open,none,none,2026-10-08
+F129-R1,"the picked NWFs walk follows a junction looping back until Windows refuses the path, so the same NWFs can be read under longer paths, a person's mklink needed, the scan sharing the exposure, the reviewer's point on attempt 1",F129,3a,register row,dropped,UNKNOWN,none,2026-10-12
 T6-R-TESTTEMP,"RowLogTests.ALogThatFellBackTakesItsRowFileWithIt writes a log into the shared temp folder on every run, so it fails once about 100 have built up and when two worktrees test at once, seen on the F130 and F109 commits, the files moved aside to turn6 f109b-temp-runlogs",none,none,register row,open,none,none,2026-10-08
 F109-R1,"how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140",F140,none,register row,in progress,"none, F140 prepares it, no team zip until Bader asks",none,2026-10-11
 F109-R2,"run.ps1 reads the new exit 3 of install.ps1 as STOP where it read INSTALLED with a FINDING, and prove-run.ps1 trial 6c cannot run as written, the loop scripts frozen by Q143 item 5",F122,4,register row,open,none,none,2026-10-08
