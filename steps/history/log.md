@@ -14,7 +14,10 @@ ATTEMPT 2, the reviewer's three points on pull request 209, read at 14:30 and fi
   Other with an empty box cannot throw out of Run, a scan or a name edit
 - NwfPick.Collisions also compares each NWF's internal workbook with the other NWFs' clash workbooks, so A.nwf beside
   `A Internal.nwf` is refused before any file is written. Tests in NwfPickTests
-- The proof steps hold one action each, 680 to 696, and the two new cases have steps of their own
+- The proof steps hold one action each, 680 to 710, and the two new cases have steps of their own. The second
+  reading approved the code and found four steps that could not give what they named: no NWF or NWD folder
+  was picked, so Run refused for that first, no control gives a typed name back, typing into the picked NWF
+  box updates nothing, and the two NWFs had no step making them. Each has its own steps now
 - Core tests 2921 on main 80314b9, 2926 after attempt 1 and 2941 after attempt 2, 0 failed, 0 skipped
 
 What was done:
