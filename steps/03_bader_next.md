@@ -423,13 +423,13 @@ again and ticks every one, so change nothing on the Source step unless a step sa
 
 These run no group and can follow step 580 in the same session, once fix-F130c has merged and is installed. They are yours by hand, with the arrow keys and the space bar, since the window driver cannot carry Shift. They use the C02 folder of ten groups of steps 542 to 580.
 
-670. Go to the Source step and press Scan, then go to the Grouping step. Look for: ten rows, every Run box ticked
-671. Click the Building cell of 1A0215 once, then press the Left arrow once, so the Run cell of 1A0215 has the focus, its border drawn
-672. Press Space. Look for: 1A0215 unticked and the other nine ticked, and at the foot of the Outputs step `9 groups ticked to run.`
-673. Go back to the Grouping step, click the Building cell of 1A0215 and press the Left arrow once more, then press the Down arrow three times, so the Run cell of 1A02MS has the focus
-674. Hold Shift and press Space. Look for: 1A0215, 1A02BS, 1A02MM and 1A02MS unticked, both ends included, and the other six ticked
-675. Press Space again, holding no key. Look for: 1A02MS alone ticked again, the box flipping once and not twice
-676. Click the Run box of 1A02WE itself once, then press Space with no other key. Look for: 1A02WE unticked by the click and ticked again by the Space, each flipping it once, then say which of steps 670 to 675 did not read as written
+698. Go to the Source step and press Scan, then go to the Grouping step. Look for: ten rows, every Run box ticked
+699. Click the Building cell of 1A0215 once, then press the Left arrow once, so the Run cell of 1A0215 has the focus, its border drawn
+700. Press Space. Look for: 1A0215 unticked and the other nine ticked, and at the foot of the Outputs step `9 groups ticked to run.`
+701. Go back to the Grouping step, click the Building cell of 1A0215 and press the Left arrow once more, then press the Down arrow three times, so the Run cell of 1A02MS has the focus
+702. Hold Shift and press Space. Look for: 1A0215, 1A02BS, 1A02MM and 1A02MS unticked, both ends included, and the other six ticked
+703. Press Space again, holding no key. Look for: 1A02MS alone ticked again, the box flipping once and not twice
+704. Click the Run box of 1A02WE itself once, then press Space with no other key. Look for: 1A02WE unticked by the click and ticked again by the Space, each flipping it once, then say which of steps 698 to 703 did not read as written
 
 ## Proof of F129, a picked NWF or a folder of NWFs, run where it sits
 
@@ -1488,3 +1488,36 @@ run, and F132's steps 459 to 481 stand.
 539. ATTEMPT 2, B5: in Run B's `VIEWS TREE` block, the `after      :` line reads `as the removals reported` and `0 not removed`, its per clash viewpoint count the same as the `N of N RemoveAt call(s) made` line of step 524, and no `is counted as not removed` line, which a folder count that did not fall by exactly one writes. A count above zero names each not removed with why, and is worth sending
 540. ATTEMPT 2, B6: in Run B2's `VIEWS INVENTORY` block, no view of the tool's that nobody touched reads `its camera was moved`. Every untouched view of Run B reads `removed, this tool's earlier view replaced at its place`, and whether the NWF keeps a camera at single precision is read off this step
 541. Send the three logs of Runs A, B and B2 and the 1A04PK log, each named on its `log file` line, and keep the NWFs on your machine
+
+## Proof F118 the workbook and report, added 2026-10-12
+
+Three things the add-in pass of F118 changed. FR-036 first, because it costs two short runs of one group of one discipline, then F118-R3 on the same group, which needs Excel to hold its workbook open, then FR-041, which needs a group that runs clash tests. Since F77 a test whose side finds nothing is never created, so in the group of one discipline only the tests the first run created are in the document, and only those carry the chosen value on the second run.
+
+664. Build and install main once fix-F118c has merged, steps 7 to 12
+665. In Explorer copy the NWC folder of 1A04MS, which holds one discipline, to a new folder on the desktop with no NWF beside it
+666. In the add-in go to the Source step and pick that folder
+667. Press Scan
+668. Go to the Outputs step and pick a new empty folder on the desktop for the NWF, the NWD and the reports
+669. Go to the Clash step and pick the exchange XML `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`
+670. Leave Clash tolerance on `Use the value in the XML`
+671. Press Run, then OK, and wait for it to finish
+672. Look for: one line `CLASH 1830 in the file, N created, M not created, a side finds nothing`, and write down N
+673. Set Clash tolerance to `50 mm`
+674. Press Run, then OK, and wait for it to finish
+675. Look for, near the end of the log: `TOLERANCE on the report, read off the clash test in the document for 0, the clash XML for` 1830 less N, `chosen in the tool for` N, with N from step 672. Before this fix N read under the clash XML
+676. Look for, on the line above it: the line ending `Where each block's tolerance was read is on the line below`
+677. Open in Excel the clash workbook this run wrote in the reports folder of step 668
+678. Look for: the Tolerance cell reading `0.050m` in the blocks of the N tests the first run created, and `0.025m`, the XML's 25 mm, in the blocks of the rest. Before this fix every block read `0.025m`
+679. Leave that workbook open in Excel
+680. Press Run, then OK, and wait for it to finish
+681. Look for, in the group: `XLSX     NOT WRITTEN` with the workbook's path and `its save threw, and a file of that name is at the path. Whether it is an earlier run's file untouched or one this run cut short is UNKNOWN`
+682. Look for, after it: `WORKBOOK CHECK 1A04MS not run, writing the clash workbook threw`, and NO `XLSX     written` line for that path
+683. Look for, in the RESULT block's files written list: NOT that workbook
+684. Close Excel
+685. Set Clash tolerance back to `Use the value in the XML`
+686. Go to the Source step and pick `C:\00-NM\Federation Task\C02 + 04\C02`
+687. Press Scan
+688. In the group list untick every group but 1A02MM
+689. Press Run, then OK, and wait for it to finish
+690. Look for, in the group, one line after the `UNITS` line: `GRID     Grid Location empty on N of M clash rows` with the heights of the empty and the filled rows, or `GRID     Grid Location filled on every one of M clash rows`, and the same words on a row of the `.tsv` beside the log, happening `grid location counted`
+691. Send the logs of steps 671, 674, 680 and 689, each named on its `log file` line. Why the Grid Location cells are empty is UNKNOWN, and the heights of step 690 against the grid levels are the first thing to read
