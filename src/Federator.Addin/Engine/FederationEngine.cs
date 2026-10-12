@@ -3561,10 +3561,10 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Renames the pictures into report order. The rule and the two pass move live in
-        /// Federator.Core.Report.ImageRenumbering so they can be tested without Navisworks.
-        /// A move that throws is caught there, FR-075, every picture is put back under its
-        /// run order name, and the outcome's lines say what was moved, what was put back
+        /// Renames the pictures into report order, which since F149 finds each already there. The
+        /// rule and the two pass move live in Federator.Core.Report.ImageRenumbering so they can
+        /// be tested without Navisworks. A move that throws is caught there, FR-075, every picture
+        /// is put back under the name it was written under, and the outcome's lines say what was moved, what was put back
         /// and what could not be, so the lines here are the outcome's and never a sentence
         /// of this file's about the state of the disk. The one throw that can still reach
         /// here is from the planning before any move, so nothing on the disk has changed.

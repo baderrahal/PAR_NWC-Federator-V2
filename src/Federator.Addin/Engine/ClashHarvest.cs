@@ -210,12 +210,15 @@ namespace Federator.Addin.Engine
 
                     ClashResultGroup group = child as ClashResultGroup;
 
+                    // Each row recorded as it is added to the report, F149, the second reading: a
+                    // group row recorded after the clashes under it were handed was in neither of the
+                    // runner's maps where that handing threw, so it had no picture and no view.
                     if (group != null)
                     {
                         ClashRow groupRow = GroupRow(document, grid, group);
                         into.Add(groupRow);
-                        HandTheClashesUnder(document, grid, group.Children, groupRow, path);
                         Record(groupRow, path);
+                        HandTheClashesUnder(document, grid, group.Children, groupRow, path);
                     }
                     else
                     {
@@ -225,8 +228,8 @@ namespace Federator.Addin.Engine
                         {
                             ClashRow resultRow = ResultRow(document, grid, result);
                             into.Add(resultRow);
-                            HandOne(resultRow, resultRow);
                             Record(resultRow, path);
+                            HandOne(resultRow, resultRow);
                         }
                     }
 
@@ -418,13 +421,17 @@ namespace Federator.Addin.Engine
                 return;
             }
 
+            // The pictures are taken before the compact, so nothing has moved a result since its row
+            // was read and a row with no name of its own is taken at its recorded index.
             string whyNot;
             bool moved;
-            SavedItem item = ResultPath.ResultAt(test, recorded, into.Name, out whyNot, out moved);
+            SavedItem item = ResultPath.ResultAt(test, recorded, into.Name, true, out whyNot, out moved);
 
             if (item == null)
             {
-                Images.NotReached(report, into, recorded.Row, WorkbookPath, ImageFailure.BecauseItWasNotFoundAgain(whyNot));
+                // One clash not found again is one attempt that failed, so it reaches the guard on its own.
+                ImageFailure notFound = ImageFailure.BecauseItWasNotFoundAgain(whyNot);
+                Images.NotReached(report, into, new[] { recorded.Row }, 0, WorkbookPath, notFound, notFound);
                 return;
             }
 
@@ -458,7 +465,7 @@ namespace Federator.Addin.Engine
             // The clashes under it and no more, F113, so a group with none under it adds
             // nothing to the Clashes cell or to its status's cell.
             ClashRow row = ClashRow.ForGroup(CountLeaves(group.Children, distances));
-            row.Name = ClashRow.NameOf(group.DisplayName, true);
+            row.NameAfter(group.DisplayName, true);
             row.Status = (CoreClashStatus)(int)group.Status;
             row.Distance = ClashRow.MostSevere(distances, group.Distance);
             row.Description = Words.Or(group.Description, string.Empty);
@@ -485,7 +492,7 @@ namespace Federator.Addin.Engine
             ClashRow row = new ClashRow();
             row.IsGroup = false;
             row.RawClashes = 1;
-            row.Name = ClashRow.NameOf(result.DisplayName, false);
+            row.NameAfter(result.DisplayName, false);
             row.Status = (CoreClashStatus)(int)result.Status;
             row.Distance = result.Distance;
 

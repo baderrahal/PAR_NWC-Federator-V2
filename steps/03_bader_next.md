@@ -347,23 +347,27 @@ The loop runs these on its own copy, 1A02MM again from a fresh set, after main w
 The renumber line comes first, because it is the whole of the fix: a picture written under any other name than its final one shows there as renamed. The TIMING block next, since the pictures' seconds move from HARVEST to a step of their own, PICTURES, and a reading against set 09 that misses the move reads HARVEST as faster than it is.
 
 649. Install main with F145 and F149 merged
-650. Scan the C02 folder, pick the clash XML, leave Make viewpoints ticked, tick 1A02MM alone and press Run
-651. Look for, after the CLASH lines of 1A02MM: the IMAGES line `numbered in report order: 0 renamed, 2931 already right, 0 missing`, where set 09 read 2931 renamed
-652. Look for, on the group's TIMING block: a `PICTURES` row among the top level steps and `IMAGES` among the nested ones, `RENUMBER` near nought against 38.930 s in set 09, and `HARVEST` lower than set 09's by about the pictures' seconds, which now sit under PICTURES
-653. Look for, in the log while the pictures are taken: the `STEP     PICTURES` started line, then a `PROGRESS PICTURES <test> picture N of M` line at least every 30 s until its finished line, and the window's live line naming PICTURES
-654. Look for, in the group's IMAGES lines: 2931 written and 0 failed, and no `IMAGE    failed for` line saying `was not found again` or `ended the pictures of its stretch`
-655. Open the clash workbook of 1A02MM: each Image cell carries its picture's name and its link opens that picture, as in set 09
-656. Open cd000001.jpg, cd000002.jpg and cd010001.jpg of this run beside set 09's pictures of the same names: each shows the same two clashing items at the same camera, with only the test's models behind them where set 09 showed every model, F145
-657. Look for, in the `VIEWS TREE` block: the last line `7 of 7 hold`
-658. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
-659. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
+650. Scan the C02 folder
+651. Pick the clash XML
+652. Untick `Skip clash when models sit off shared coordinates` on the Clash step, as set 09 ran, whose log says the rule was off. The box starts ticked on every open
+653. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
+654. Press Run
+655. Look for, after the CLASH lines of 1A02MM: the IMAGES line `numbered in report order: 0 renamed, 2931 already right, 0 missing`, where set 09 read 2931 renamed
+656. Look for, on the group's TIMING block: a `PICTURES` row among the top level steps and `IMAGES` among the nested ones, `RENUMBER` near nought against 38.930 s in set 09, and `HARVEST` lower than set 09's by about the pictures' seconds, which now sit under PICTURES
+657. Look for, in the log while the pictures are taken: the `STEP     PICTURES` started line, then a `PROGRESS PICTURES <test> picture N of M` line at least every 30 s until its finished line, and the window's live line naming PICTURES
+658. Look for, in the group's IMAGES lines: the line starting `IMAGES   2931 written,` with no line under it saying `failed. Their cells are empty and the run carried on`, since that line is written only where a picture failed, and no `IMAGE    failed for` line and no `IMAGE ` line saying `so no picture of the`
+659. Open the clash workbook of 1A02MM: each Image cell carries its picture's name and its link opens that picture, as in set 09
+660. Open cd000001.jpg, cd000002.jpg and cd010001.jpg of this run beside set 09's pictures of the same names: each shows the same two clashing items at the same camera, with only the test's models behind them where set 09 showed every model, F145
+661. Look for, in the `VIEWS TREE` block: the last line `7 of 7 hold`
+662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
+663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
 ## Proof F147 long runs kept from slowing, added 2026-10-12
 
-These read the log of the run of F149's steps 649 to 659, which step 659 sends, once F147 is merged with F145 and F149 before that install, so they need no run of their own.
+These read the log of the run of F149's steps 649 to 663, which step 663 sends, once F147 is merged with F145 and F149 before that install, so they need no run of their own.
 
-660. Look for, in that log after the `STEP     PICTURES` line: `IMAGES   the undo for the pictures read on with` a step name `as the step Undo would take next before them, off with` the same name `during them, and on with` the same name `after`, and no line `THE UNDO IS LEFT OFF`
-661. Look for, in the same log: `IMAGES   the texture cache at` the folder ogs under the temp folder, `held` a size and its files as the pictures began and as they ended, `against the limit of 5.00 GB, cleared 0 times`, or the line saying it `is not there`
+664. Look for, in that log after the `STEP     PICTURES` line: `IMAGES   the undo for the pictures read on with` a step name `as the step Undo would take next before them, off with` the same name `during them, and on with` the same name `after`, and no line `THE UNDO IS LEFT OFF`
+665. Look for, in the same log: `IMAGES   the texture cache at` the folder ogs under the temp folder, `held` a size and its files as the pictures began and as they ended, `against the limit of 5.00 GB, cleared 0 times`, or the line saying it `is not there`
 
 ## Proof of F130, the Shift range in the group list
 

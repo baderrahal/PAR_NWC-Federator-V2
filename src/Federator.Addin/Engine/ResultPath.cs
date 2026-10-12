@@ -26,11 +26,16 @@ namespace Federator.Addin.Engine
         /// recorded index where it carries the row's name, else the one sibling carrying
         /// that name, since TestsCompactAllTests after the merge removes every Resolved
         /// result and moves the live ones after it one index left, and movedFromRecorded
-        /// says so. Every wrapper walked past, and every sibling read for its name, is
-        /// disposed here.
+        /// says so. A row whose result had no name of its own, ClashRow.NoNameOfItsOwn, is
+        /// decided by ResultSiblings.PickUnnamed instead, F149, the breaker's first point on
+        /// the second reading: taken at its recorded index only where indexIsExact, which the
+        /// caller says, the pictures, taken before the compact, and refused with why for the
+        /// views, since the word it carries is carried by every unnamed sibling and after the
+        /// compact the one at its index is the next unnamed result. Every wrapper walked past,
+        /// and every sibling read for its name, is disposed here.
         /// </summary>
         public static SavedItem ResultAt(
-            ClashTest test, RowUnderTest recorded, string under, out string whyNot, out bool movedFromRecorded)
+            ClashTest test, RowUnderTest recorded, string under, bool indexIsExact, out string whyNot, out bool movedFromRecorded)
         {
             whyNot = null;
             movedFromRecorded = false;
@@ -79,8 +84,24 @@ namespace Federator.Addin.Engine
 
                 SavedItemCollection siblings = children;
                 int count = siblings == null ? 0 : siblings.Count;
-                SiblingPick pick = ResultSiblings.Pick(
-                    recorded.Row.Name, recorded.Path[last], count, i => NameOf(siblings, i));
+                bool unnamed = recorded.Row.NoNameOfItsOwn;
+                SiblingPick pick = unnamed
+                    ? ResultSiblings.PickUnnamed(recorded.Row.Name, recorded.Path[last], count, i => NameOf(siblings, i), indexIsExact)
+                    : ResultSiblings.Pick(recorded.Row.Name, recorded.Path[last], count, i => NameOf(siblings, i));
+
+                if (!pick.Found && pick.NoProof)
+                {
+                    whyNot = "the result at " + recorded + " under " + under + " had no name of its own, so a result named \""
+                        + recorded.Row.Name + "\" there is no proof it is the row's once the compact can have moved it";
+                    return null;
+                }
+
+                if (!pick.Found && unnamed)
+                {
+                    whyNot = "the result at " + recorded + " under " + under + " had no name of its own and no result named \""
+                        + recorded.Row.Name + "\" is at that index among the " + count + " any more";
+                    return null;
+                }
 
                 if (!pick.Found)
                 {

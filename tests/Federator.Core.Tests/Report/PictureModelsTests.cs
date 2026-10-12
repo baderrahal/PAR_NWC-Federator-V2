@@ -128,20 +128,38 @@ namespace Federator.Core.Tests
         {
             PictureModelsTally tally = new PictureModelsTally();
             tally.SidesRead(0.060);
-            tally.Hid(9, 0.010);
+            tally.Hid("Walls", 9, 0.010);
             tally.SidesRead(0.040);
-            tally.Hid(8, 0.012);
+            tally.Hid("Floors", 8, 0.012);
             tally.SidesRead(0.003);
-            tally.KeptEvery();
+            tally.KeptEvery("Ramps");
 
             Assert.That(tally.TestsHidden, Is.EqualTo(2));
             Assert.That(tally.ModelsHidden, Is.EqualTo(17));
             Assert.That(tally.TestsKeptEvery, Is.EqualTo(1));
             Assert.That(tally.Line(true), Is.EqualTo(
                 "IMAGES   only the models of each test shown for its pictures: 2 test(s) with models hidden, "
-                + "8.5 model(s) hidden on average, 1 test(s) kept every model shown, why said above on an IMAGES or a failure line, "
+                + "8.5 model(s) hidden on average each time, 1 test(s) kept every model shown, why said above on an IMAGES or a failure line, "
                 + "a repeated reason counted rather than written again, "
                 + "reading the tests' sides took 0.103s and the hiding and the putting back took 0.022s"));
+        }
+
+        // F149, the second reading. The pictures are taken in stretches of one test's rows, so a test whose
+        // rows sit in two stretches is hidden for twice and is still one test on the line, and the average
+        // is over each time models were hidden.
+        [Test]
+        public void ATestHiddenForInTwoStretchesIsOneTest()
+        {
+            PictureModelsTally tally = new PictureModelsTally();
+            tally.Hid("Walls", 9, 0.010);
+            tally.Hid("Walls", 7, 0.010);
+            tally.KeptEvery("Floors");
+            tally.KeptEvery("Floors");
+
+            Assert.That(tally.TestsHidden, Is.EqualTo(1));
+            Assert.That(tally.ModelsHidden, Is.EqualTo(16));
+            Assert.That(tally.TestsKeptEvery, Is.EqualTo(1));
+            Assert.That(tally.Line(true), Does.Contain("1 test(s) with models hidden, 8 model(s) hidden on average each time"));
         }
 
         [Test]

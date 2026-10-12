@@ -64,7 +64,7 @@ namespace Federator.Addin.Engine
 
             if (!PutBackWhatIsStillChanged(testName))
             {
-                tally.KeptEvery();
+                tally.KeptEvery(testName);
                 return null;
             }
 
@@ -90,7 +90,7 @@ namespace Federator.Addin.Engine
             catch (Exception error)
             {
                 tally.SidesRead(clock.Elapsed.TotalSeconds);
-                tally.KeptEvery();
+                tally.KeptEvery(testName);
                 log.Failure(
                     "reading which models the sides of " + testName + " live in",
                     error,
@@ -102,7 +102,7 @@ namespace Federator.Addin.Engine
 
             if (!rule.HidesAny)
             {
-                tally.KeptEvery();
+                tally.KeptEvery(testName);
                 log.NumberedRepeat(
                     "IMAGES every model shown for a test",
                     "IMAGES   " + testName + ": " + rule.WhyEveryModel,
@@ -137,7 +137,7 @@ namespace Federator.Addin.Engine
                 catch (Exception error)
                 {
                     stopped = true;
-                    tally.KeptEvery();
+                    tally.KeptEvery(testName);
                     log.Failure(
                         "reading the hidden state before the first test's pictures",
                         error,
@@ -154,7 +154,7 @@ namespace Federator.Addin.Engine
             }
             catch (Exception error)
             {
-                tally.KeptEvery();
+                tally.KeptEvery(testName);
                 log.Failure(
                     "hiding the models other than those of " + testName + " for its pictures",
                     error,
@@ -378,7 +378,7 @@ namespace Federator.Addin.Engine
                 done = true;
                 Stopwatch back = Stopwatch.StartNew();
                 owner.PutTheStateBack(testName);
-                owner.tally.Hid(hidden, hidingSeconds + back.Elapsed.TotalSeconds);
+                owner.tally.Hid(testName, hidden, hidingSeconds + back.Elapsed.TotalSeconds);
             }
         }
     }

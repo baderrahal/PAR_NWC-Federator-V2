@@ -464,7 +464,7 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Problems[0], Does.StartWith("the renaming stopped at Walls 2, cd010002.jpg to cd000002.jpg, which threw IOException"));
             Assert.That(outcome.Problems[0], Does.Contain(
                 "1 picture had been moved before it and 5 were under a holding name, "
-                + "and all 6 were put back under their run order names, each read back off the disk"));
+                + "and all 6 were put back under the names they were written under, each read back off the disk"));
             Assert.That(outcome.Lines()[0], Is.EqualTo(
                 "IMAGES   numbered in report order: 0 renamed, 0 already right, 0 missing"));
             Assert.That(outcome.Lines()[1], Does.StartWith("IMAGES   the renaming stopped at Walls 2"));
@@ -493,7 +493,7 @@ namespace Federator.Core.Tests
                 "the renaming stopped at Floors 1, cd000001.jpg to cd020001.jpg, which threw IOException"));
             Assert.That(outcome.Problems[0], Does.Contain(
                 "no picture had been moved before it and 5 were under a holding name, "
-                + "and all 5 were put back under their run order names, each read back off the disk"));
+                + "and all 5 were put back under the names they were written under, each read back off the disk"));
         }
 
         // ---------- what points at the renamed file ----------
