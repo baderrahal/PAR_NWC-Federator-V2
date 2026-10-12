@@ -37,6 +37,32 @@ action each. They are split, 698 to 711, with the move to the Outputs step and t
 Main 9fd16d6 was merged in before the reading and the solution built in Release with 0 warnings and 0 errors,
 turn6\f130c-build-merged.txt. No file of Core or its tests changed, so the Core tests stand as on 80314b9
 
+## 2026-10-12 F129 the junction row of the NWF pick, F129-R1, wave 3a, branch fix-F129c
+
+Bader's order of 2026-10-12, item 157 of steps\02_questions.md, wave 3 of the fix round, under his Q143 limits.
+The open row of area F129 in steps\tracker.csv, F129-R1, read against main 80314b9.
+
+What was done:
+- F129-R1 dropped, no code changed. The walk of the picked NWFs, `NwfPickDisk.Real` in
+  src\Federator.Core\Rerun\NwfPick.cs, lists subfolders by Directory.GetDirectories and follows a junction. A
+  junction that loops back to a folder above it exists only where a person made one with mklink inside the
+  folder they pick, and no folder the team is known to pick holds one. The NWC scan of the window,
+  Directory.GetFiles with AllDirectories, shares the exposure and has met no such folder either
+- The one cheap guard, a folder skipped where it carries the reparse point mark, would skip real folders.
+  Measured on this machine on 2026-10-12: a folder OneDrive syncs reads `ReadOnly, Directory, Archive,
+  ReparsePoint` with no link type, the same F109 measured on files. Telling a junction by its link type needs a
+  call into Windows this tool makes nowhere, for a fault no one on the team is known to meet, so the fix would
+  risk what the team sees for a case none of them makes
+- Proved here: nothing in src or tests changed. Core tests 2921 passed, 0 failed, 0 skipped on main 80314b9,
+  turn6\f120c-tests-before.txt, and the solution built in Release with 0 warnings and 0 errors there,
+  turn6\f120c-build-before.txt, both run in this worktree's sister worktrees of the same commit
+
+What remains: the merge. No proof step, since nothing the add-in does changed.
+
+Known bugs: a folder a person links back into itself with mklink is walked until Windows refuses the path, by the
+NWF pick and by the NWC scan, as before.
+
+What comes next: F130 of the same order.
 ## 2026-10-12 F118 the workbook and report, the add-in pass, FR-036, F118-R3 and FR-041's count, on branch fix-F118c
 
 Wave 2c of Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under the
