@@ -14,6 +14,7 @@ using Federator.Addin.Engine;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
+using Federator.Core.Views;
 
 namespace Federator.Addin
 {
@@ -47,7 +48,7 @@ namespace PictureSpeedProbe
     /// </summary>
     [Plugin(PluginName, DeveloperCode, DisplayName = "Picture speed probe", ToolTip = "Q150, what makes a clash picture faster")]
     [AddInPlugin(AddInLocation.AddIn)]
-    public sealed class PictureSpeedProbePlugin : AddInPlugin
+    public sealed partial class PictureSpeedProbePlugin : AddInPlugin
     {
         public const string PluginName = "PictureSpeedProbe";
         public const string DeveloperCode = "PARS";
@@ -56,9 +57,12 @@ namespace PictureSpeedProbe
 
         private StreamWriter results;
 
+        /// <summary>picspeed, the four ways of Q150, or genimage, Bader's item 4 of his answer to Q150.</summary>
+        private string mode;
+
         public override int Execute(params string[] parameters)
         {
-            if (parameters == null || parameters.Length < 9 || parameters[0] != "picspeed")
+            if (parameters == null || parameters.Length < 9 || (parameters[0] != "picspeed" && parameters[0] != "genimage"))
             {
                 return 2;
             }
@@ -66,6 +70,7 @@ namespace PictureSpeedProbe
             using (results = new StreamWriter(parameters[1], true, new UTF8Encoding(false)))
             {
                 results.AutoFlush = true;
+                mode = parameters[0];
                 Say("probe started, mode " + parameters[0]);
 
                 try
@@ -250,6 +255,12 @@ namespace PictureSpeedProbe
                 return;
             }
 
+            if (mode == "genimage")
+            {
+                GenerateImageStudy(document, clashTests, address, testName, Math.Min(count, rows), picturesRoot, projectTo);
+                return;
+            }
+
             Pictures(document, clashTests, address, testName, Math.Min(count, rows), picturesRoot, keep, projectTo);
         }
 
@@ -426,6 +437,18 @@ namespace PictureSpeedProbe
             }
 
             Say("the current viewpoint before: render style " + styleBefore + ", lighting " + lightingBefore);
+
+            // Q150's gap, Bader's order of 2026-10-12: the 3D view's own size in pixels, read off the
+            // active view, since a picture that followed the window would follow this.
+            try
+            {
+                View active = document.ActiveView;
+                Say("the active view: " + (active == null ? "none" : active.Width + " by " + active.Height + " pixels, interactive " + active.IsInteractive));
+            }
+            catch (Exception error)
+            {
+                Say("the active view could not be read, " + error.GetType().Name + ": " + error.Message + ", the probe goes on");
+            }
 
             List<Setting> settings = new List<Setting>
             {

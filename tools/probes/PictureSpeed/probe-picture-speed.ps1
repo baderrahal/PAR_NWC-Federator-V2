@@ -5,6 +5,7 @@ param(
   [string]$Xml = "",
   [string]$Corrections = "",
   [string]$Test = "",
+  [string]$Mode = "picspeed",
   [int]$Count = 20,
   [int]$ProjectTo = 1556,
   [string]$PluginAssembly = "",
@@ -91,6 +92,7 @@ $refusals = New-Object System.Collections.Generic.List[string]
 if ($ConstructorDeadlineSeconds -lt 60) { $refusals.Add("-ConstructorDeadlineSeconds is " + $ConstructorDeadlineSeconds + ", below 60") }
 if ($AdoptedDeadlineSeconds -lt 60) { $refusals.Add("-AdoptedDeadlineSeconds is " + $AdoptedDeadlineSeconds + ", below 60") }
 if ($Test -eq "") { $refusals.Add("-Test is empty") }
+if ($Mode -ne "picspeed" -and $Mode -ne "genimage") { $refusals.Add("-Mode is " + $Mode + ", neither picspeed nor genimage") }
 if ($Count -lt 1) { $refusals.Add("-Count is " + $Count + ", below 1") }
 if ($ProjectTo -lt 1) { $refusals.Add("-ProjectTo is " + $ProjectTo + ", below 1") }
 $nwfFull = $null
@@ -241,12 +243,12 @@ try {
   $outcome["4"] = "passed"
   Say ""
 
-  Say "==== STEP 5. ExecuteAddInPlugin, the mode picspeed on the copies ===="
+  Say ("==== STEP 5. ExecuteAddInPlugin, the mode " + $Mode + " on the copies ====")
   $currentStep = "5"; $outcome["5"] = "started, did not finish"
-  Say ("  " + (Stamp) + "  calling ExecuteAddInPlugin(" + $probeId + ", picspeed, the plugin's output file, the NWF's copy, the XML's copy, the test " + $Test + ", " + $Count + " pictures a setting, the pictures folder, the tool log folder, the totals for " + $ProjectTo + ")")
+  Say ("  " + (Stamp) + "  calling ExecuteAddInPlugin(" + $probeId + ", " + $Mode + ", the plugin's output file, the NWF's copy, the XML's copy, the test " + $Test + ", " + $Count + " pictures a setting, the pictures folder, the tool log folder, the totals for " + $ProjectTo + ")")
   $sw = [Diagnostics.Stopwatch]::StartNew()
   $err = $null; $ret = $null
-  try { $ret = $app.ExecuteAddInPlugin($probeId, [string[]]@("picspeed", $pluginOut, $nwfCopy, $xmlCopy, $Test, [string]$Count, $pictures, $toolLogs, [string]$ProjectTo)) } catch { $err = $_.Exception }
+  try { $ret = $app.ExecuteAddInPlugin($probeId, [string[]]@($Mode, $pluginOut, $nwfCopy, $xmlCopy, $Test, [string]$Count, $pictures, $toolLogs, [string]$ProjectTo)) } catch { $err = $_.Exception }
   Say ("  " + (Stamp) + "  ExecuteAddInPlugin " + $(if ($null -eq $err) { "RETURNED " + $ret } else { "THREW" }) + " after " + $sw.Elapsed.TotalSeconds.ToString("0.00") + " s")
   if ($null -ne $err) { Say ("    " + (Err $err)) }
   WindowsOf $myPid $myTicks

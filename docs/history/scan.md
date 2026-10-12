@@ -8585,9 +8585,90 @@ Walls-vs-Floors once since the NWF held only Stairs-vs-Floors, Ramps-vs-Floors a
 models of the test are read off the items of its two sets, where the views read the models of the
 clashing items, the same model here. Its home walk and its JPEG lookup copy the tool's in the probe. The
 launcher's adopted deadline of 3600 s is linked to no -Count, so a -Count above about 145 would reach it.
-The code is kept as it ran, so the record's sha256 of the probe stays true.
+The code as it ran is the launcher at commit dc18c6c, where the record's sha256 of the probe holds, 5z-zd having since added a mode.
 
 **UNKNOWN.** How the share holds over all 1556 rows and on other tests, these being the first 20 of one
 test whose two sets live in one model. What the rows of a test between two models cost with only those
 two shown. Whether the client accepts a picture with the other trades' models gone from behind. Bader
 looks at the folders and chooses, Q150.
+
+## 5z-zd. HARDWARE ACCELERATION, AND A PICTURE OF THE CLASH'S TWO ITEMS ALONE, MEASURED 2026-10-12
+
+Bader's order of 2026-10-12 headed KEEP FIXING THE TIME UNTIL IT IS AT ITS MINIMUM. His PC, an i7-12700
+with a UHD 770 drawing through DirectX 11 hardware, wrote a picture in 0.049 s where this laptop took
+7.76 s in 5z-zc, and he asked first for the display, the GPU, the screen and the settings, read before
+any change, with leave to change a graphics setting if that was the cause, the old value kept. Then item
+4 of his answer of 2026-10-11 headed Q150, AND THE PICTURE SPEED WORK: measure `View.GenerateImage` with
+only each clash's two items shown, on the same 20 clashes, its pictures in a folder of their own.
+
+**THE CAUSE, READ BEFORE ANY CHANGE.** Navisworks's own option `hw_accel`, under
+`HKCU\Software\Autodesk\Navisworks Manage\22.0\GlobalOptions\interface\display\graphics`, read "3 0",
+hardware acceleration off, at 01:06:24, `steps\runs\09\hw_accel-before.txt`. While the probe of 5z-zc
+ran again, `picture-speed-20261012-005914`, the GPU counters of Roamer's process, sampled every one to
+three seconds by `%LOCALAPPDATA%\NwcFederatorLoop\turn6\gpu-sampler.ps1`, read its 3D engine busy at 52
+to 94 percent on the adapter of LUID 0x408fe and on no other, with no memory of that adapter in use,
+`steps\runs\09\gpu-before-acceleration.txt`. Of the three adapters the counters list, 0x40536 is the
+only one with local memory, 974 MB, the Intel UHD sharing the system's memory, and 0x40969 is the only
+one with an optical flow engine, the NVIDIA, both read by the lead off the counters' engine list on
+2026-10-12. So 0x408fe is the Microsoft Basic Render Driver, Windows' renderer on the processor. That is a
+reading by elimination, not a name the counters gave. The probe's pictures took 13.3 s each in that run.
+
+**THE CHANGE, by Bader's leave.** The old value saved in
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\gpu-fix-20261012`, `hw_accel-before.txt` and
+`graphics-before.reg`, then `hw_accel` set to "3 1" at 01:06 with no Navisworks running, and nothing else
+changed. The same probe again, `picture-speed-20261012-010654`: the counters read Roamer's 3D engine at
+15 to 29 percent on 0x40969, the NVIDIA, with 131 to 369 MB of its dedicated memory in use,
+`steps\runs\09\gpu-after-acceleration.txt`, and its 20 pictures a setting took
+
+| Setting of 5z-zc | Render and save, mean | 1556 pictures |
+|---|---|---|
+| 0, today's, every model shown | 0.517 s | 13 min |
+| 1, only the test's model shown | 0.120 s | 3 min |
+| 2, Shaded on top of 1 | 0.119 s | 3 min |
+| 3, 800 by 600 on top of 1 | 0.100 s | 2 min |
+| 4, all three | 0.090 s | 2 min |
+| 5, today's again | 0.168 s | 4 min |
+
+Setting 0's mean carries a first picture of 5.683 s, its median render 0.176 s. Acceleration helped, so
+the value stays "3 1". 1A02MM's whole group went from 293 s to 253 s, set 09, `steps\runs\09\item1-C02`.
+
+**THE SCREEN AND THE VIEW, read on 2026-10-12, nothing changed.** One display, 1920 by 1200 on the Intel
+UHD at 120 dots an inch, 125 percent, so 1536 by 960 to Windows Forms. Windows 11 Enterprise build 26200,
+the NVIDIA driver 32.0.15.9671 and the Intel driver 32.0.101.7088. The active view under Automation read
+902 by 367 pixels and not interactive, the line at 01:09:13 of the 010654 run, and every picture is 1024
+by 1024 whatever the view, read off the JPEGs. `%TEMP%\ogs` held no file.
+
+**TWO ITEMS ALONE, THE MODE genimage.** The probe gained a mode,
+`tools\probes\PictureSpeed\PictureSpeedGenerateImage.cs`, and the launcher a `-Mode` parameter, the
+rest of the launcher unchanged, its sha256 now B6D79518, the guard unchanged, 8CAC3B67. The 11 Oct
+record's 4C42BB1A is the launcher at commit dc18c6c. One Navisworks, pid 42680, started by Automation,
+guard steps 2 to 6 passed, 38 registry values put back with 0 still differing, 2 files put back and
+matching, no AutoSave file added, and the NWF and the XML read the same sha256 after. The result is
+`tools\probes\PictureSpeed\picture-speed-genimage-result-20261012.txt`, 243 lines, the machine name
+masked, 141 s in all. The test was made the tool's way as in 5z-zc, 1556 clashes. Four settings, in
+this order, each on the first rows in Clash Detective's order:
+
+- 6, `TestsImageForResult` as the tool calls it, 5 pictures, the camera's position and the next undo
+  step's name read before and after each call: nothing read changed. The call moves no camera the view
+  keeps and adds no undo step. Its mean of 1.376 s carries a first picture of 5.330 s.
+- 7, per clash: every root and every child off the two items' paths hidden, 178 items, the camera put on
+  the clash's own viewpoint, `TestsViewpointForResult`, by `CopyViewpointFrom` with a jump cut, the two
+  items painted red and green with the views' own paint and colours, `View.GenerateImage` with
+  ScenePlusOverlay at 1024 by 1024, the JPEG saved, then the paint and the hiding taken off. Every part
+  0.098 s a picture: the hiding 0.012 s, the camera 0.029 s, the drawing 0.030 s, the save 0.010 s and
+  the taking off 0.014 s. 152 s for 1556.
+- 8, 7 again: 0.097 s, 151 s, every file the same number of bytes as 7's.
+- 9, `TestsImageForResult` again, every model shown: 0.225 s, 350 s for 1556.
+
+**WHAT THE PICTURES SHOW, rows 1 and 14 viewed by the lead.** 7's pictures keep the 1024 square, the same
+camera as 9's and the grid label at the bottom left, and show the two items in flat red and green on the
+background and nothing else: no other item of either model, nothing ghosted behind. 9's show every model
+ghosted around the two. 7's files are 50 to 52 KB, 9's 551 to 593 KB.
+
+**WHAT THIS DOES NOT SHOW.** Setting 7 is the probe's code, not the tool's, and 1 of 5z-zc, the rule F145
+builds, was not run in this session, so 7 against F145's rule is 0.098 s here against 0.120 s in another
+session. The hiding is per clash where F145 hides once a test. Whether a clash between two models costs
+the same, both items here living in one model. Whether the client accepts a picture with nothing around
+the two items, which is Bader's to say, Q151. The pictures stay in
+`%LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261012-030837\pictures`, a folder a setting,
+with times.csv beside them, and are not committed.
