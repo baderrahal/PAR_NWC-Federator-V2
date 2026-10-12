@@ -849,7 +849,10 @@ and 6 does not read as broken.
   finds DIFFERENT clashes next run and NOT that its results are reset, 5y, and says
   nothing at all under the default, because a line that reads the same on every run
   teaches people to skip the screen. One TOLERANCE line per group carries both counts and
-  the converted value. Why it exists: the matrix is written at 25 mm, the NWFs on disk
+  the converted value. Under Set on a saved test counts only where its tolerance was
+  changed, FR-053, and every other saved test is named on the same line by what happened
+  to it, already at the value, not found, would not copy as a clash test or threw,
+  `SavedTestTolerances`, recorded once per test whichever way it left. Why it exists: the matrix is written at 25 mm, the NWFs on disk
   held tests at 75 mm, a test already in the document is left exactly as it is, so the
   run clashed at 75 while everybody believed it was clashing at 25
 - THE REPORT READS ITS TOLERANCE OFF THE CLASH TEST IN THE DOCUMENT, F76, because the
@@ -967,6 +970,13 @@ and 6 does not read as broken.
   on to its NWD. The steps are judged as they would be without it and what they find is
   named after it, so a missing NWD, or one not from this run, is never hidden behind the
   models
+- AN NWF SAVE IS JUDGED BY WHAT THE SAVE SAID, as the NWD publish is, FR-043 to FR-045.
+  `GroupFacts.NwfSavesAsked` counts every save of the NWF this run asked and
+  `NwfSavesThatFailed` those that returned false or threw. Any failed save is FAILED with
+  the reason that the NWF does not hold what this run put in, and how many of how many
+  where there were two. A Rebuilt group that saved none is FAILED with the reason that its
+  NWF keeps the old file list, because the NWD carries the new one. An opened group that
+  saved none is not judged on it, since the NWF it opened is the one it leaves
 - A GROUP NOT ON THE SAME SHARED COORDINATES SKIPS ITS CLASH AND NOTHING ELSE, Q98 B2
   and Bader's answer to Q99 and Q100 on 2026-10-04. A model is not on the same
   coordinates when it names Internal as its shared site, when its site was read and names
@@ -987,8 +997,9 @@ and 6 does not read as broken.
   written, so it names the models and their sites and NOTHING OF A FILE. The steps that
   write say what was written. The ALIGNMENT failed run line, `AlignmentCheck.FailedRunLine`,
   names both causes whichever way the rule is set, and says nothing of which files were
-  written either, because the files written list can name an NWD whose publish returned
-  false. The distance is the STRAIGHT LINE of dx, dy and
+  written either, because the line is made before any file is and the steps that write say
+  what was written. The files written list named an NWD whose publish returned false until
+  FR-189. The distance is the STRAIGHT LINE of dx, dy and
   dz and never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m away
   and under a metre on every axis. The metre is a setting, `ReportOptions.FarModelMillimetres`,
   defaulting to `AlignmentCheck.DefaultFarModelMillimetres`.
@@ -1073,6 +1084,14 @@ and 6 does not read as broken.
   them as its own, and a file that was checked rather than written is logged with
   CheckOnDisk, which reports the size and records nothing. A file this run removed
   leaves the list through WriteRemoved, and only once it is gone from the disk
+- A WRITE WHOSE OWN CALL SAYS WHETHER IT WROTE HANDS THAT TO THE LOG, FR-189 and FR-044.
+  The save of the NWF and the publish of the NWD call `RunLog.WriteFinished` with the bool
+  the call gave, false where it threw. A file there after a call that did not report
+  success is read and said on a NOT WRITTEN line with its row, and is never added to the
+  files written list, since it is last week's file. A file an earlier write of this run put
+  there, the NWF of its first save, keeps its entry with the size read now. The size read
+  is returned either way, so the judgement still tells a file there from no file, and
+  names the failed save or publish
 - The workbook is ONE SHEET, laid out exactly as the report the client receives: every
   test one after another, most clashes first. The Summary sheet, the Matrix sheet and the
   sheet per test are GONE. All three were asked for in an earlier session, before anyone
@@ -2169,7 +2188,10 @@ it if the same work carries the same name every time it is timed.
   the Revit elements the EXPORT CHECK counted, the clash total and the viewpoints created,
   every one a number the run already read and none a new Navisworks call. The block says
   where each number comes from. A number that could not be read is UNKNOWN and never
-  zero, and a total over parts of which one could not be read is UNKNOWN too. It judges
+  zero, and a total over parts of which one could not be read is UNKNOWN too. A group
+  whose clash was skipped for the shared coordinates has UNKNOWN clashes, as RESULT says,
+  `GroupSize.ClashesIn`, T6-R-ZEROCLASHES, and a test that ran and found nothing is a real
+  zero. It judges
   nothing and sets no target, and the line about the 45 minutes stays the last line of
   the run block, as it was
 
@@ -2677,6 +2699,10 @@ per event, eight columns, tab separated, with a header.
   cannot be added without its row and a row cannot say something the text log does not
 - a sentence with no number in it writes NO row. That is the rule and not an oversight:
   a row whose number column is empty is noise in a file whose whole purpose is numbers
+- a tolerance in the number column keeps the ten decimals the clash file gives,
+  `EventRow.Tolerance`, FR-047, the one formatter of a tolerance as a number, which the
+  plan, the drift and the created line read too. `EventRow.Exact` is for sizes and
+  seconds, three decimals, and made 0.0820209974 ft read 0.082
 - tab separated and not comma, because a clash name, a set locator and a file path all
   hold commas and none of them holds a tab, and Excel opens a tab separated file with no
   import dialog

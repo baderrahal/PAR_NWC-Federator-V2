@@ -368,6 +368,24 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
+## Proof F119 the NWF saves, the files written list and the tolerance rows, added 2026-10-12
+
+The reshape comes first, because it is the one item a plain run shows: a group whose file list changed and whose clash step and views put nothing in. The read only files come after it, since they are what makes a save or a publish fail on purpose, and they are put back at the end.
+
+700. Install main with F119's last six merged
+701. Copy the NWC folder of a group of one discipline and two or more NWC files, which runs no clash test, that already has an NWF from an earlier run of this tool to a new folder, its NWF beside it where the run writes it, and move one of its NWC files out of the copy, so the group reads CHANGED. Write down the NWF's size in bytes off its Properties
+702. Scan the copy, pick no clash XML, untick Make viewpoints, tick that group alone and press Run
+703. Look for, in the group's lines: a `RESHAPE` line, then `NWF      attempt` and `NWF      written` with a size different from step 701's, then the group DONE on its `GROUP` finished line, as Rebuilt in the RESULT block
+704. Open the NWF in Navisworks: the Selection Tree holds no model of the NWC moved out at step 701, where before this fix the NWF on disk kept it
+705. Run 1A02MM with the corrected 25 mm XML, `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`, and open the `.tsv` beside the log in Excel. Look for, on every `test created` row: the tolerance with all its decimals in the number column, 0.0820209974 where the document measures in feet, where set 03 read 0.082, or 0.025 where it measures in metres, the text column saying which
+706. Run 1A02MM again on the NWF step 705 wrote, with 25 mm chosen in the clash tolerance list on the Clash step. Look for, on the `TOLERANCE` line: `Set on N tests, 0 created fresh and N already in the document` where the saved tests were at another value, or `Not set on N saved tests: N already at the value` where they were at 25 mm, and no saved test counted twice
+707. Set the NWF of 1A02MM read only in its Properties, then run 1A02MM with its XML. Look for: `NWF      NOT WRITTEN` with `the call that writes it did not report success`, the group FAILED with the reason `the NWF save did not report success` or `1 of 2 saves of the NWF did not report success`, naming the NWF's path, and send whether a `the save after the clash work returned false` line or a failure line came before it
+708. Clear the read only box of the NWF
+709. Set the NWD of 1A02MM read only in its Properties, then run 1A02MM with its XML. Look for: `NWD      NOT WRITTEN` with `are not from this run`, no NWD of 1A02MM under `files written` in the RESULT block, and the group FAILED with the reason that the NWD publish did not report success
+710. Clear the read only box of the NWD
+711. Run 1A02MM with `Skip clash when models sit off shared coordinates` ticked, as it starts. Look for, in TIMING BESIDE SIZE: the row of 1A02MM reading `UNKNOWN clashes`, where set 05 read `0 clashes`, while RESULT reads `clashes found  : UNKNOWN`
+712. Send the logs and the `.tsv` files beside them
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,

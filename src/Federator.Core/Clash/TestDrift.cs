@@ -144,7 +144,7 @@ namespace Federator.Core.Clash
             if (Math.Abs(inFile.Tolerance - inDocument.Tolerance) > ToleranceEpsilon)
             {
                 Add(found, testName, ToleranceField,
-                    Number(inFile.Tolerance), Number(inDocument.Tolerance));
+                    EventRow.Tolerance(inFile.Tolerance), EventRow.Tolerance(inDocument.Tolerance));
             }
 
             if (inFile.TestType != inDocument.TestType)
@@ -244,11 +244,6 @@ namespace Federator.Core.Clash
             IList<TestDifference> found, string testName, string field, string inFile, string inDocument)
         {
             found.Add(new TestDifference(testName, field, inFile, inDocument));
-        }
-
-        private static string Number(double value)
-        {
-            return value.ToString("0.##########", CultureInfo.InvariantCulture);
         }
 
         private static string OnOff(bool value)

@@ -26,6 +26,7 @@ namespace Federator.Core.Tests
             {
                 Decision = RerunDecision.Build,
                 NwfOnDisk = true,
+                NwfSavesAsked = 1,
                 NwdRequested = true,
                 NwdOnDisk = true,
                 NwdPublishReportedSuccess = true,
@@ -494,6 +495,83 @@ namespace Federator.Core.Tests
             facts.NwdPublishReportedSuccess = false;
 
             Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Failed));
+        }
+
+        /// <summary>
+        /// FR-043. A reshaped group is Rebuilt, and where neither the clash step nor the
+        /// views put anything in, nothing on that path saved the NWF, so the NWD carried the
+        /// new file list and the NWF on disk kept the old one while the group read DONE.
+        /// </summary>
+        [Test]
+        public void ARebuiltGroupWhoseNwfThisRunNeverSavedIsFailed()
+        {
+            GroupFacts facts = Clean();
+            facts.Decision = RerunDecision.Rebuilt;
+            facts.AppendedCount = 5;
+            facts.FileCount = 5;
+            facts.NwfSavesAsked = 0;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Does.Contain("nothing saved its NWF"));
+            Assert.That(reason, Does.Contain(facts.NwfPath));
+            Assert.That(reason, Does.Contain("old file list"));
+        }
+
+        /// <summary>
+        /// FR-044. The save after a rebuild returned false or threw, and the older NWF at the
+        /// path was logged as written and the group judged DONE. One fact broken, the rest
+        /// of the group right.
+        /// </summary>
+        [Test]
+        public void ARebuiltGroupWhoseNwfSaveDidNotReportSuccessIsFailed()
+        {
+            GroupFacts facts = Clean();
+            facts.Decision = RerunDecision.Rebuilt;
+            facts.AppendedCount = 5;
+            facts.FileCount = 5;
+            facts.NwfSavesAsked = 1;
+            facts.NwfSavesThatFailed = 1;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Does.Contain("the NWF save did not report success"));
+            Assert.That(reason, Does.Contain(facts.NwfPath));
+        }
+
+        /// <summary>
+        /// FR-045. The save after the clash work returned false on an opened group, so the
+        /// sets, the tests and the views this run put in reached the NWD and not the NWF.
+        /// Two saves, the second failed, and the reason says how many of them.
+        /// </summary>
+        [Test]
+        public void AnOpenedGroupWhoseSaveAfterTheClashWorkFailedIsFailed()
+        {
+            GroupFacts facts = Clean();
+            facts.Decision = RerunDecision.Open;
+            facts.NwfSavesAsked = 2;
+            facts.NwfSavesThatFailed = 1;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
+            Assert.That(reason, Does.Contain("1 of 2 saves of the NWF did not report success"));
+        }
+
+        /// <summary>
+        /// An opened group whose clash step and views put nothing in saves nothing, and that
+        /// is right: the NWF it opened is the one it leaves. Only a rebuilt group has to save.
+        /// </summary>
+        [Test]
+        public void AnOpenedGroupThatSavedNothingIsStillDone()
+        {
+            GroupFacts facts = Clean();
+            facts.Decision = RerunDecision.Open;
+            facts.NwfSavesAsked = 0;
+
+            Assert.That(GroupJudgement.Judge(facts), Is.EqualTo(GroupOutcome.Done));
         }
 
         [Test]

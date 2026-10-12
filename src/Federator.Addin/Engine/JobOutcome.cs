@@ -37,6 +37,12 @@ namespace Federator.Addin.Engine
         /// </summary>
         public bool NwfOnDisk { get; set; }
 
+        /// <summary>How many times this run asked Navisworks to save the NWF, FR-043.</summary>
+        public int NwfSavesAsked { get; set; }
+
+        /// <summary>How many of those saves returned false or threw, FR-044 and FR-045.</summary>
+        public int NwfSavesThatFailed { get; set; }
+
         public bool NwdOnDisk { get; set; }
 
         /// <summary>
@@ -145,6 +151,8 @@ namespace Federator.Addin.Engine
                 Decision = Decision,
                 NwfReadEmptyReason = NwfReadEmptyReason,
                 NwfOnDisk = NwfOnDisk,
+                NwfSavesAsked = NwfSavesAsked,
+                NwfSavesThatFailed = NwfSavesThatFailed,
 
                 // Republishing the NWD is fixed on, so it is always a requested step. The
                 // fact stays on GroupFacts because the rule that a step switched off is not

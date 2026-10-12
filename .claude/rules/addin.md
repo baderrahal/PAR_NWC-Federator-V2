@@ -200,7 +200,13 @@ well as to pass.
   either is UNKNOWN until a run, so the numbers are read and never assumed. The NWF on disk is only saved over once every test read before
   the clear is back, and otherwise the group fails, says so, and the NWF keeps its file
   list and its tests. A rebuilt group ends as Rebuilt and is judged DONE when everything
-  after the rebuild went right, in Federator.Core.Rerun.GroupJudgement. Q22
+  after the rebuild went right, in Federator.Core.Rerun.GroupJudgement. Q22. THE RESHAPE
+  SAVES THE NWF THE SAME WAY, through WriteNwf once all four came back, FR-043, where it
+  saved nothing and a group whose clash step and views put nothing in left the old file
+  list in the NWF. Every save of the NWF counts on the outcome, `NwfSavesAsked` and
+  `NwfSavesThatFailed`, a false return and a throw alike, and hands its bool to
+  `RunLog.WriteFinished`, FR-044 and FR-045, and the publish of the NWD hands its own,
+  FR-189
 - The NWF is the record, so a rebuild counts FOUR things out and counts all four back.
   It carries the file list, the sets, the tests, every clash result with the status a
   person set on it, and since F52 the viewpoints, and not one of those has a second copy

@@ -153,6 +153,21 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// FR-047. The test created rows carried 0.082 for a tolerance of 0.0820209974 ft in
+        /// 3024 rows of one run, because the tolerance went through the formatter for sizes
+        /// and seconds. A tolerance keeps every decimal the clash file gives, ten.
+        /// </summary>
+        [Test]
+        public void AToleranceKeepsEveryDecimalTheFileGives()
+        {
+            Assert.That(EventRow.Tolerance(0.0820209974), Is.EqualTo("0.0820209974"));
+            Assert.That(EventRow.Tolerance(0.2460629921), Is.EqualTo("0.2460629921"));
+            Assert.That(EventRow.Tolerance(0.025), Is.EqualTo("0.025"));
+            Assert.That(EventRow.Tolerance(0.0820209974), Is.Not.EqualTo(EventRow.Exact(0.0820209974)),
+                "a tolerance read through the formatter for seconds loses its decimals");
+        }
+
+        /// <summary>
         /// The break. A size in bytes is a LONG. An NWD of a large federation goes past
         /// 2,147,483,647, and a size clamped to that is a number nothing on the disk
         /// matches, written into a file whose whole purpose is numbers. A size is only

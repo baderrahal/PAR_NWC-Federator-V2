@@ -218,5 +218,86 @@ namespace Federator.Core.Tests
                 Assert.That(log.WrittenFiles.Count, Is.EqualTo(1));
             }
         }
+
+        /// <summary>
+        /// FR-189. The publish of the NWD returned false and last week's NWD was still at the
+        /// path, so the list of files written named it with its size as this run's own. The
+        /// call that writes the file says whether it wrote, and a file it did not write is
+        /// read and said and never listed.
+        /// </summary>
+        [Test]
+        public void AFileWhoseWriteDidNotReportSuccessIsNotListedAsWritten()
+        {
+            using (RunLog log = Start())
+            {
+                string stale = LastWeeksFile("1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd");
+
+                long size = log.WriteFinished("NWD", stale, false);
+
+                Assert.That(size, Is.EqualTo(500), "what is at the path is still read and said");
+                Assert.That(log.WrittenFiles.Count, Is.EqualTo(0),
+                    "a file the publish did not report writing was listed as written");
+
+                log.GroupFinished("1C07BC", GroupOutcome.Failed, 1.0, "the NWD publish did not report success", null);
+                log.WriteResultBlock();
+                string text = ReadWhileOpen(log);
+
+                Assert.That(text, Does.Contain("NWD      NOT WRITTEN  " + stale));
+                Assert.That(text, Does.Contain("did not report success"));
+                Assert.That(text, Does.Not.Contain("NWD      written"));
+                Assert.That(text, Does.Contain("files written  : none"));
+            }
+        }
+
+        /// <summary>The same call with the write reported, so the test above is the flag and nothing else.</summary>
+        [Test]
+        public void AFileWhoseWriteReportedSuccessIsListedAsWritten()
+        {
+            using (RunLog log = Start())
+            {
+                string fresh = LastWeeksFile("1104-PAR-1C07BC-ZZZ-BM-MOD-000001.nwd");
+
+                Assert.That(log.WriteFinished("NWD", fresh, true), Is.EqualTo(500));
+                Assert.That(log.WrittenFiles.Count, Is.EqualTo(1));
+                Assert.That(ReadWhileOpen(log), Does.Contain("NWD      written  " + fresh));
+            }
+        }
+
+        /// <summary>
+        /// FR-045. The NWF is saved after the models and again after the clash work. Where the
+        /// first save wrote it and the second did not report success, the file stays listed,
+        /// since this run did write it, its size is the one read now, and the line says the
+        /// second save did not write it.
+        /// </summary>
+        [Test]
+        public void AFileThisRunWroteKeepsItsEntryWhenALaterWriteDidNotReportSuccess()
+        {
+            using (RunLog log = Start())
+            {
+                string nwf = Path.Combine(folder, "group.nwf");
+                File.WriteAllText(nwf, new string('a', 120));
+                log.WriteFinished("NWF", nwf, true);
+
+                File.WriteAllText(nwf, new string('a', 130));
+                Assert.That(log.WriteFinished("NWF", nwf, false), Is.EqualTo(130));
+
+                Assert.That(log.WrittenFiles.Count, Is.EqualTo(1));
+                Assert.That(log.WrittenFiles[0].SizeInBytes, Is.EqualTo(130));
+                Assert.That(ReadWhileOpen(log), Does.Contain("NWF      NOT WRITTEN  " + nwf));
+            }
+        }
+
+        [Test]
+        public void AFileWhoseWriteDidNotReportSuccessAndIsNotThereIsMissing()
+        {
+            using (RunLog log = Start())
+            {
+                string never = Path.Combine(folder, "never-made.nwd");
+
+                Assert.That(log.WriteFinished("NWD", never, false), Is.EqualTo(-1));
+                Assert.That(log.WrittenFiles.Count, Is.EqualTo(0));
+                Assert.That(ReadWhileOpen(log), Does.Contain("NWD      MISSING  " + never));
+            }
+        }
     }
 }

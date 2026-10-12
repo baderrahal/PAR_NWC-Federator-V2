@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Health;
 using NUnit.Framework;
@@ -211,6 +212,40 @@ namespace Federator.Core.Tests
 
             Assert.That(unread.RowText(),
                 Is.EqualTo("2 NWC files, UNKNOWN bytes, UNKNOWN elements, UNKNOWN clashes, UNKNOWN viewpoints"));
+        }
+
+        /// <summary>
+        /// T6-R-ZEROCLASHES. A group whose clash was skipped for the shared coordinates read 0
+        /// clashes in this block while RESULT read clashes found UNKNOWN and the block's own
+        /// legend says UNKNOWN is never a zero. A clash that never ran found no number.
+        /// </summary>
+        [Test]
+        public void AGroupWhoseClashWasSkippedHasUnknownClashesAndNotZero()
+        {
+            ClashRunOutcome skipped = new ClashRunOutcome();
+            skipped.ClashSkipped = OffCoordinates.ClashSkippedReason;
+
+            Assert.That(GroupSize.ClashesIn(skipped), Is.EqualTo(GroupSize.Unknown));
+            Assert.That(GroupSize.ClashesIn(null), Is.EqualTo(GroupSize.Unknown),
+                "a group with no clash step has no clash count either");
+        }
+
+        /// <summary>The break: the same group with its tests run carries its real total, a zero included.</summary>
+        [Test]
+        public void AGroupWhoseTestsRanCarriesItsTotal()
+        {
+            ClashRunOutcome ran = new ClashRunOutcome();
+            ClashTally tally = new ClashTally();
+            tally.Add(ClashStatus.New, 7);
+            ran.AddRan("a", 10, 10, tally, 1.0);
+
+            Assert.That(GroupSize.ClashesIn(ran), Is.EqualTo(7));
+
+            ClashRunOutcome clean = new ClashRunOutcome();
+            clean.AddRan("b", 10, 10, new ClashTally(), 1.0);
+
+            Assert.That(GroupSize.ClashesIn(clean), Is.EqualTo(0),
+                "a test that ran and found nothing is a real zero");
         }
 
         [Test]
