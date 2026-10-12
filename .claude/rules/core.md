@@ -1420,9 +1420,9 @@ and 6 does not read as broken.
   rename that fails is a warning on the report and never fails the group. A MOVE THAT
   THROWS IS CAUGHT AT THE MOVE AND EVERYTHING THE TWO PASSES DID IS UNDONE, FR-075 in
   F120: the pictures already at a final name go back to their holding name, then every
-  holding name goes back to the run order name it came from, each put back read off the
-  disk, so the folder is as it was before the rename and every row, which is pointed only
-  once every move has gone through, points at the picture it was rendered under. The
+  holding name goes back to the name its picture was written under, each put back read off
+  the disk, so the folder is as it was before the rename and every row, which is pointed only
+  once every move has gone through, points at the picture it was written under. The
   outcome names the move that threw, how many had been moved before it, how many were under
   a holding name, and every picture that could not be put back with where it is. The
   engine's lines are the outcome's and never a sentence of its own about the disk, since
@@ -1438,17 +1438,27 @@ and 6 does not read as broken.
   and every doubt, no side, a side not read, a side of no item, an item in a model whose file name
   another model shares, an item whose model was not read, no model read or a model outside the
   document's, keeps every model shown and says why. An image that fails renders
-  nothing, is logged by name, leaves its cell empty and never stops the run by itself. A
+  nothing, is logged by name, leaves its cell empty and is told to the guard, and one such
+  failure never stops the run. A
   ROW TAKES A PICTURE BY ONE RULE, `ImageOptions.TakesAPictureOf`, F149: pictures on, the
   guard not fired, its status asked for and its test under the cap, a row passed over on its
   status or the cap counted on the tally there and nowhere else. The writer reads it and so
   does the picture pass before it resolves a row's result, so a row that takes no picture
-  costs no walk and a stretch with none is not resolved or hidden for. A PICTURE THE PASS
-  COULD NOT ASK FOR IS A FAILURE, F149: its test not found again, its clash not found again,
-  or a throw ending its stretch before its turn is counted on the IMAGES line and told to the
-  guard, under `ImageFailure.TestNotFoundAgain`, `ImageFailure.ClashNotFoundAgain` or the
-  throw's own reason with the words that it ended the stretch, so an empty Image cell never
-  reads as a picture nobody asked for. Fifty
+  costs no walk and a stretch with none is not resolved or hidden for. THE ROWS ONE FAULT LEFT
+  ARE COUNTED AND THE FAULT IS TOLD TO THE GUARD ONCE, F149 and its second reading,
+  `ImageOptions.CountTheRowsLeft`: where a stretch's test is not found again once every test
+  has run, or a throw ends the stretch, each row from there on is counted on the IMAGES tally
+  as the writer would have counted it had it been asked for, a row of a status not asked for
+  passed over on its status, as many as the room under the cap counted as failed, the room
+  taken as if each had been written, and the rest passed over on the cap, and the guard is told
+  of the fault ONCE, and only where a row was counted as failed. Told once a row, one
+  ObjectDisposedException at row 11 of a 1556 row test fired the guard and stopped the run
+  saying fifty images failed when not one render was tried. Nothing is counted once the guard
+  has fired. A clash not found again in its test is one attempt and is told on its own. The
+  reasons are `ImageFailure.TestNotFoundAgain`, `ImageFailure.ClashNotFoundAgain` and a throw's
+  own, the row the throw met named with the throw's words and the rest with the words that it
+  ended the stretch, and the add-in says each fault on one IMAGE line with its counts, so an
+  empty Image cell never reads as a picture nobody asked for. Fifty
   failures of the same reason stop the run, the same way and with the same default as the
   clash step, and the line says images rather than tests. THE GUARD IS ONE FOR THE WHOLE
   RUN AND IS READ WHERE A PICTURE IS WRITTEN, FR-076 in F120: the engine builds it beside

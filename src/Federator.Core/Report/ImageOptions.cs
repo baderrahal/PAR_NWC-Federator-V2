@@ -127,6 +127,68 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
+        /// The rows from one on that ONE fault left with no picture asked for, F149: their test not
+        /// found again once every test has run, a throw that ended their stretch of pictures, or one
+        /// clash not found again in its test. Each is counted on the report's tally as the writer
+        /// would have counted it had it been asked for: a row of a status not asked for passed over
+        /// on its status, then as many as the room under the cap counted as failed, the room taken
+        /// as if each had been written, and the rest passed over on the cap. The guard is told ONCE,
+        /// for the one fault, under its reason, and only where a row was counted as failed, the
+        /// second reading's blocking point: told once a row, one ObjectDisposedException at row 11
+        /// of a 1556 row test fired the fifty in a row guard and stopped the run saying fifty images
+        /// failed when not one render was tried. Nothing is counted once the guard has fired. A row
+        /// that already has its picture is not one of them. A guard of null is a run with no guard.
+        /// </summary>
+        public RowsLeftCount CountTheRowsLeft(
+            ClashReport report, TestReport test, IList<ClashRow> rows, int from, string reason, RepeatedFailureGuard guard)
+        {
+            RowsLeftCount counted = new RowsLeftCount();
+
+            if (report == null || test == null || rows == null || !Write || (guard != null && guard.ShouldStopTheRun))
+            {
+                return counted;
+            }
+
+            int taken = test.ImageCount;
+
+            for (int i = Math.Max(0, from); i < rows.Count; i++)
+            {
+                ClashRow row = rows[i];
+
+                if (row == null || row.HasImage)
+                {
+                    continue;
+                }
+
+                if (!Wants(row.Status))
+                {
+                    report.Images.WrongStatus();
+                    counted.OnItsStatus();
+                    continue;
+                }
+
+                if (!RoomFor(taken))
+                {
+                    report.Images.CappedOne();
+                    counted.OnTheCap();
+                    continue;
+                }
+
+                taken++;
+                report.Images.RenderFailed(row.Name, 0.0);
+                counted.FailedOne(row);
+            }
+
+            if (counted.Failed.Count > 0 && guard != null)
+            {
+                guard.RecordFailure(reason);
+                counted.ToldTheGuard();
+            }
+
+            return counted;
+        }
+
+        /// <summary>
         /// Is there room under the cap for one more on this test. The count is what has
         /// already been written for it.
         /// </summary>

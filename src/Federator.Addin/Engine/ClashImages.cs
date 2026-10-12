@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -311,27 +312,36 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// One picture the picture pass could not ask for, F149, the breaker's first point on
-        /// attempt 1: its test or its clash was not found again once every test had run, or a
-        /// throw ended its stretch before its turn. Passed over where Wanted passes it over, on
-        /// its status, the cap or a fired guard, and otherwise counted and told to the guard as a
-        /// failure, the way a render that failed is, so the IMAGES line and the fifty in a row
-        /// see it and an empty Image cell never reads as a picture nobody asked for. A row that
-        /// already has its picture is never one.
+        /// The pictures one fault left the picture pass unable to ask for, F149: the rows from one
+        /// on, whose test was not found again once every test had run, whose stretch a throw ended,
+        /// or one clash not found again in its test. Counted by Core's rule,
+        /// ImageOptions.CountTheRowsLeft, as the writer would have counted them: a row of a status
+        /// not asked for passed over on its status, as many as the room under the cap counted as
+        /// failed and the rest passed over on the cap, nothing once the guard has fired, and the
+        /// guard told ONCE for the fault, the second reading's blocking point, where told once a
+        /// row one throw fired the fifty in a row guard with no render tried. Each row counted as
+        /// failed is named on a line, the first with the fault's own words and the rest with the
+        /// words for a row it left, so an empty Image cell never reads as a picture nobody asked for.
         /// </summary>
-        public void NotReached(ClashReport report, TestReport test, ClashRow row, string workbookPath, ImageFailure why)
+        public RowsLeftCount NotReached(
+            ClashReport report, TestReport test, IList<ClashRow> rows, int from, string workbookPath, ImageFailure first, ImageFailure rest)
         {
-            if (why == null)
+            if (first == null || rest == null)
             {
-                throw new ArgumentNullException("why");
+                throw new ArgumentNullException(first == null ? "first" : "rest");
             }
 
-            if (row == null || row.HasImage || !Wanted(report, test, row, workbookPath))
+            // With no workbook to sit beside no picture is written, as Wanted says, so nothing is counted.
+            ClashReport countOn = string.IsNullOrEmpty(workbookPath) ? null : report;
+            RowsLeftCount counted = options.CountTheRowsLeft(countOn, test, rows, from, first.Reason, guard);
+            ClashRow firstRow = rows != null && from >= 0 && from < rows.Count ? rows[from] : null;
+
+            foreach (ClashRow row in counted.Failed)
             {
-                return;
+                log.Detail("IMAGE    failed for " + Name(row) + ". " + (ReferenceEquals(row, firstRow) ? first : rest).Line());
             }
 
-            Failed(report, row, 0.0, why);
+            return counted;
         }
 
         private void Failed(ClashReport report, ClashRow row, double tookSeconds, ImageFailure why)

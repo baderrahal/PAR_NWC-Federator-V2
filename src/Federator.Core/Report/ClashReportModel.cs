@@ -165,12 +165,32 @@ namespace Federator.Core.Report
         /// rule, F149, the breaker's point on attempt 1: the harvest names a row by it and the read
         /// back of a recorded row matches each sibling by it, so a result with no display name is
         /// found again under the name its row carries, where its raw empty name matched nothing
-        /// and its picture was never taken.
+        /// and its picture was never taken. Such a row is found again only at its recorded index
+        /// and only where nothing can have moved it, NoNameOfItsOwn.
         /// </summary>
         public static string NameOf(string displayName, bool isGroup)
         {
             return Words.Or(displayName, isGroup ? "group" : "clash");
         }
+
+        /// <summary>
+        /// Names the row off its result's display name by NameOf, and keeps whether the result had a
+        /// name of its own. The harvest names every row by it.
+        /// </summary>
+        public void NameAfter(string displayName, bool isGroup)
+        {
+            Name = NameOf(displayName, isGroup);
+            NoNameOfItsOwn = string.IsNullOrEmpty(displayName);
+        }
+
+        /// <summary>
+        /// True where Clash Detective gave the row's result no display name, so Name is the word its
+        /// kind is given, which every other unnamed result of the test carries too. A sibling carrying
+        /// that word is then no proof it is this row's result, F149, the breaker's first point on the
+        /// second reading, ResultSiblings.PickUnnamed: after the compact the next unnamed result sits
+        /// at the recorded index, and the views framed it as this row's.
+        /// </summary>
+        public bool NoNameOfItsOwn { get; private set; }
 
         /// <summary>
         /// The name of the mirror test that alone found this clash, F132, Bader's answer D to

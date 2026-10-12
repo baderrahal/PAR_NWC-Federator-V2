@@ -310,17 +310,19 @@ namespace Federator.Core.Report
 
         /// <summary>
         /// Undoes what the two passes did before a move threw, so the folder is as it was
-        /// before them, every picture under its run order name, which is the name its row
-        /// still points at. FR-075: a throw part way used to leave the pictures not yet
-        /// moved under their holding names with their rows pointing at the old names, and
-        /// the log said the pictures not yet renamed keep their run order numbers, which
-        /// was not the state on disk.
+        /// before them, every picture under the name it was written under, which is the name
+        /// its row still points at. FR-075: a throw part way used to leave the pictures not
+        /// yet moved under their holding names with their rows pointing at the old names, and
+        /// the log said the pictures not yet renamed keep their run order numbers, which was
+        /// not the state on disk. Since F149 the pictures are written under their report order
+        /// names, so a move is planned only for a picture written under any other.
         ///
         /// The pictures at a final name go back to their holding name first, which is free
         /// because the pass vacated it, and then every holding name goes back to the name
         /// it came from, which is free because pass one vacated it and every final name is
-        /// vacated again. One move straight from a final name to a run order name could
-        /// write one picture over another, the swap the holding name exists for. Each put
+        /// vacated again. One move straight from a final name to the name a picture was
+        /// written under could write one picture over another, the swap the holding name
+        /// exists for. Each put
         /// back is read off the disk, and one that fails is named with where its picture
         /// is, so a row pointing at a file that is not there is said and never silent.
         /// </summary>
@@ -377,7 +379,7 @@ namespace Federator.Core.Report
                 ? "no picture had been moved before it"
                 : done.Count + (done.Count == 1 ? " picture" : " pictures") + " had been moved before it";
             string result = outcome.NotPutBack == 0
-                ? "all " + touched + " were put back under their run order names, each read back off the disk"
+                ? "all " + touched + " were put back under the names they were written under, each read back off the disk"
                 : outcome.NotPutBack + " of the " + touched
                     + " could not be put back and are named below, so their rows point at a file that is not where they say";
 
@@ -414,7 +416,7 @@ namespace Federator.Core.Report
     {
         private readonly List<string> problems = new List<string>();
 
-        /// <summary>Pictures whose run order number was already their report order number.</summary>
+        /// <summary>Pictures already under their report order number, the number the picture pass writes each under since F149.</summary>
         public int Unchanged { get; internal set; }
 
         public int Renamed { get; internal set; }

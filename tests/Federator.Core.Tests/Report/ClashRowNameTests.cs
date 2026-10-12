@@ -34,6 +34,26 @@ namespace Federator.Core.Tests
             Assert.That(ClashRow.NameOf(string.Empty, true), Is.EqualTo("group"));
         }
 
+        // The second reading: the row keeps whether its result had a name of its own, so a match on the word
+        // its kind is given is never taken as proof where the compact can have moved it.
+        [Test]
+        public void ARowKeepsWhetherItsResultHadANameOfItsOwn()
+        {
+            ClashRow named = new ClashRow();
+            named.NameAfter("Clash12", false);
+            ClashRow unnamed = new ClashRow();
+            unnamed.NameAfter(string.Empty, false);
+            ClashRow unnamedGroup = new ClashRow();
+            unnamedGroup.NameAfter(null, true);
+
+            Assert.That(named.Name, Is.EqualTo("Clash12"));
+            Assert.That(named.NoNameOfItsOwn, Is.False);
+            Assert.That(unnamed.Name, Is.EqualTo("clash"));
+            Assert.That(unnamed.NoNameOfItsOwn, Is.True);
+            Assert.That(unnamedGroup.Name, Is.EqualTo("group"));
+            Assert.That(unnamedGroup.NoNameOfItsOwn, Is.True);
+        }
+
         // The break. The row is named by the rule and its siblings read back raw, as attempt 1 did,
         // and no sibling carries the name the row was given, so its picture was never taken.
         [Test]

@@ -432,6 +432,7 @@ namespace Federator.Addin.Engine
             rowAddresses.Clear();
             clashesInDocument.Clear();
             savedSidesNotRead = 0;
+            imagesStopSaid = false;
 
             Stopwatch stepClock = Stopwatch.StartNew();
 
@@ -581,16 +582,20 @@ namespace Federator.Addin.Engine
                 // merge into its kept test, its MIRROR lines and the kept test's ROWS line,
                 // since the merge changes rows, statuses and numbers. F149: then the picture
                 // of every row, test by test in the report's order, each under its final name,
-                // whether or not any merge was made. In a finally, the breaker's fourth point on
-                // attempt 1, so a throw out of the merge loses no picture and still goes on up.
+                // whether or not any merge was made. A throw out of the merge loses no picture,
+                // the breaker's fourth point on attempt 1, and is the error that goes on up, a throw
+                // out of those pictures then written as a failure line, the second reading.
                 try
                 {
                     MergeTheMirrors(clashTests);
                 }
-                finally
+                catch (Exception)
                 {
-                    RenderThePicturesWaiting(clashTests);
+                    RenderThePicturesAfterTheMergeThrew(clashTests);
+                    throw;
                 }
+
+                RenderThePicturesWaiting(clashTests);
 
                 // FR-076. Every picture is taken above, so this is where the pictures' guard can
                 // stop the run, once every test of the group has run, F149.
@@ -838,13 +843,24 @@ namespace Federator.Addin.Engine
         /// fell in, then stops at the end of that group's picture pass, where before F149 it
         /// stopped after the test the fiftieth fell in. The pass and the writer take, resolve
         /// and count nothing once it has fired. A run the tests' guard already stopped is left
-        /// with that reason.
+        /// with that reason, and the pictures' guard firing as well is said on an IMAGES line
+        /// with its own reason, the second reading, where before nothing said it. Said once a
+        /// group, whichever of the two reads find it fired.
         /// </summary>
         private bool StopIfTheImagesFailed(ClashRunOutcome outcome)
         {
-            if (Images == null || !Images.ShouldStopTheRun || outcome.StopTheRun)
+            if (Images == null || !Images.ShouldStopTheRun || imagesStopSaid)
             {
                 return false;
+            }
+
+            imagesStopSaid = true;
+
+            if (outcome.StopTheRun)
+            {
+                log.Line("IMAGES   the pictures' guard fired as well, after the tests' guard had stopped the run, whose reason "
+                    + "stays the run's. " + Images.StopReason);
+                return true;
             }
 
             outcome.StopTheWholeRun(Images.StopReason);
@@ -852,6 +868,9 @@ namespace Federator.Addin.Engine
             progress(Images.StopReasonInPlainWords);
             return true;
         }
+
+        /// <summary>Whether this group's log already says the pictures' guard fired, so it is said once, F149.</summary>
+        private bool imagesStopSaid;
 
         private void OneTest(
             Document document,
@@ -2492,7 +2511,8 @@ namespace Federator.Addin.Engine
         /// ONE STEP, PICTURES, the reviewer's third point on attempt 1, opened as the engine's InStep
         /// opens one, so the walk, the resolves and the hiding are timed, the live line names the step,
         /// and one count of PROGRESS lines runs across the whole pass. A throw out of the pass outside
-        /// a stretch marks the step and goes on up, as InStep's does.
+        /// a stretch marks the step and goes on up, as InStep's does, except after a merge that threw,
+        /// RenderThePicturesAfterTheMergeThrew.
         /// </summary>
         private void RenderThePicturesWaiting(DocumentClashTests clashTests)
         {
@@ -2518,6 +2538,26 @@ namespace Federator.Addin.Engine
                 {
                     StepEnded();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Every picture where the merge threw, F149: taken all the same, the breaker's fourth point
+        /// on attempt 1, and a throw out of them written as a failure line, the second reading, so
+        /// the merge's own error is the one that goes on up and is never lost behind the pass's.
+        /// </summary>
+        private void RenderThePicturesAfterTheMergeThrew(DocumentClashTests clashTests)
+        {
+            try
+            {
+                RenderThePicturesWaiting(clashTests);
+            }
+            catch (Exception error)
+            {
+                log.Failure(
+                    "taking the pictures after the mirror merge threw",
+                    error,
+                    "kept going, the rows not yet pictured keep an empty Image cell, and the merge's own error goes on up");
             }
         }
 
@@ -2640,9 +2680,11 @@ namespace Federator.Addin.Engine
                 log.Failure(
                     "taking the pictures of " + into.Name + " read from " + first.TestName + " once every test had run",
                     error,
-                    "kept going, each row of that stretch not yet pictured keeps an empty Image cell and is counted as failed, "
-                        + "and the pictures after them keep their report order names");
-                CountTheRowsLeft(into, rows, next, ImageFailure.BecauseItsStretchEnded(error));
+                    "kept going, the rows of that stretch not yet pictured keep an empty Image cell and are counted on the "
+                        + "IMAGE line after this, and the pictures after them keep their report order names");
+                CountTheRowsLeft(
+                    "a throw ended the pictures of " + first.TestName, into, rows, next,
+                    ImageFailure.BecauseItThrew(error), ImageFailure.BecauseItsStretchEnded(error));
             }
         }
 
@@ -2650,24 +2692,40 @@ namespace Federator.Addin.Engine
         private void NotFoundAgain(TestReport into, IList<ClashRow> rows, int from, RowAddress first)
         {
             string where = first.TestName + " is not at " + first.Address + " any more";
-
-            log.Line("IMAGE    " + where + ", so no picture of the " + Words.Counted(rows.Count - from, "row", "rows")
-                + " left in its stretch under " + into.Name + " is taken, and each one asked for is counted as failed");
-            CountTheRowsLeft(into, rows, from, ImageFailure.BecauseItsTestWasNotFoundAgain(where));
+            ImageFailure notFound = ImageFailure.BecauseItsTestWasNotFoundAgain(where);
+            CountTheRowsLeft(where, into, rows, from, notFound, notFound);
         }
 
         /// <summary>
-        /// The rows of a stretch from one on that no picture could be asked for, F149, the breaker's
-        /// first point on attempt 1: each counted as failed under the reason, unless its status, the
-        /// cap or a fired guard passes it over, ClashImages.NotReached, so the IMAGES line and the
-        /// guard see them and an empty Image cell never reads as a picture nobody asked for.
+        /// The rows of a stretch from one on that ONE fault left with no picture asked for, F149,
+        /// the breaker's first point on attempt 1 and the second reading's blocking point. Counted
+        /// by ClashImages.NotReached as the writer would have counted them, a row of a status not
+        /// asked for or past the cap as passed over and every other one as failed, the fault told
+        /// to the pictures' guard ONCE and not once a row, and nothing counted where the guard has
+        /// already fired. Said on one line with the counts, so an empty Image cell never reads as a
+        /// picture nobody asked for and one fault never reads as fifty failed renders.
         /// </summary>
-        private void CountTheRowsLeft(TestReport into, IList<ClashRow> rows, int from, ImageFailure why)
+        private void CountTheRowsLeft(string fault, TestReport into, IList<ClashRow> rows, int from, ImageFailure first, ImageFailure rest)
         {
-            for (int i = from; i < rows.Count && !Images.ShouldStopTheRun; i++)
+            if (from >= rows.Count)
             {
-                Images.NotReached(Report, into, rows[i], WorkbookPath, why);
+                return;
             }
+
+            string left = Words.Counted(rows.Count - from, "row", "rows") + " left in its stretch under " + into.Name;
+
+            if (Images.ShouldStopTheRun)
+            {
+                log.Line("IMAGE    " + fault + ", and none of the " + left + " is counted, since the pictures' guard has fired");
+                return;
+            }
+
+            RowsLeftCount counted = Images.NotReached(Report, into, rows, from, WorkbookPath, first, rest);
+
+            log.Line("IMAGE    " + fault + ", so no picture of the " + left + " is taken: "
+                + counted.Failed.Count + " counted as failed, " + counted.PassedOverOnStatus + " passed over on status and "
+                + counted.PassedOverOnTheCap + " on the cap, "
+                + (counted.GuardTold ? "the fault told to the pictures' guard once" : "nothing told to the pictures' guard"));
         }
 
         // ---------- reading the two trees ----------

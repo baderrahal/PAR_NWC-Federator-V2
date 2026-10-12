@@ -445,7 +445,13 @@ well as to pass.
   every Resolved result before the views run and moves every live result after one an index
   left, so a row not named at its recorded index is taken from the one sibling carrying its
   name, refused with the count where none or more than one does, and the rows so moved are
-  counted on a VIEWS line. So a mirror taken out of the
+  counted on a VIEWS line. A ROW WHOSE RESULT HAD NO NAME OF ITS OWN, `ClashRow.NoNameOfItsOwn`,
+  set by `ClashRow.NameAfter`, carries the word its kind is given, as every other unnamed
+  sibling does, so a name match proves nothing about it, F149's second reading:
+  `ResultSiblings.PickUnnamed` takes it at its recorded index only where `ResultPath.ResultAt` is
+  told the index is exact, which the pictures, taken before the compact, say, and refuses it for
+  the views, which say no, so it is counted and said on their line of rows not found, as it was
+  before F149, and never framed and painted on the next unnamed result. So a mirror taken out of the
   report gets no view, a clash only a mirror found is viewed under the kept test and named as
   the workbook names it, and a row whose result is not found again, or with no address, is
   counted on a VIEWS line and gets none. A group row is one view framed on the group, as the
@@ -796,7 +802,8 @@ well as to pass.
   first 20 clashes of 1A04PK's Walls-vs-Floors, the export's layout kept. TestModelsShown is one for the
   clash step, made in ClashRunner.Run where pictures are written and ended in its finally in a try of its
   own before the sets index is released, which puts back any hidden state still changed and writes the
-  one IMAGES line of PictureModelsTally. Read takes the models off the test's OWN SelectionA and
+  one IMAGES line of PictureModelsTally, which counts the tests by name since F149's second reading, so a
+  test hidden for in two stretches is one test. Read takes the models off the test's OWN SelectionA and
   SelectionB, never off the file's set paths, since a test found in the document keeps its own sides,
   each item enumerated off GetSelectedItems, never disposed one by one, and walked to its model by
   SavedViewpoints.ModelFileOf, which releases the parents and never the item. Hide takes the hidden state
@@ -821,7 +828,14 @@ well as to pass.
   ImageOptions.TakesAPictureOf, read before any result is resolved, and each picture is numbered by
   ClashReport.NextPictureOf, so it is written under its final name and the renumber renames none. A
   picture not asked for because its test or its clash was not found again, or a throw ended its stretch,
-  is counted as failed by ClashImages.NotReached. The pass breaks out once the pictures' guard fires and
+  is counted by ClashImages.NotReached, which reads Core's ImageOptions.CountTheRowsLeft: each row left by one
+  fault counted as the writer would have counted it, a row of a status not asked for or past the cap as passed
+  over and every other one as failed, and the fault told to the pictures' guard ONCE, the second reading, so one
+  throw never reads as fifty failed renders, and each fault said on one IMAGE line with its counts. A group row
+  is recorded as it is added to the report, before the clashes under it are handed to a merge, so a handing that
+  throws leaves it its picture. A throw out of the merge leaves the pictures taken, and a throw out of them then
+  is a failure line, so the merge's error is the one that goes on up. A pictures' guard firing after the tests'
+  guard stopped the run is said on an IMAGES line. The pass breaks out once the pictures' guard fires and
   Run reads the guard when the pass ends, so the guard stops a run only once every test of the group has
   run, row F149-R1, and RunEach reads it once before a group's first test for a stop an earlier group's
   throw lost. A result is found again by its name read through ClashRow.NameOf, the rule the harvest
