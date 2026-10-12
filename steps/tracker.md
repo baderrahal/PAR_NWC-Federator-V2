@@ -2,7 +2,7 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 569 rows: open 208, in progress 27, in review 2, merged 293, proven by a run 29, waiting for Bader 3, dropped 7
+- By status, of 569 rows: open 208, in progress 27, in review 0, merged 295, proven by a run 29, waiting for Bader 3, dropped 7
 - By wave: 1 19, 2a 65, 2a and 2b 1, 2b 39, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 111, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F115-R14 the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 9 FR items
 - Waits for Bader, 3 rows: F114-K29, Q155, F150
@@ -162,7 +162,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | id | short title | area | class | status | PR | the run that proved it | the date of the last change |
 |---|---|---|---|---|---|---|---|
 | FR-035 | workbook check counts only blocks with clashes | F118 | silent wrong number | merged | 147 | none | 2026-10-07 |
-| FR-036 | skipped test row keeps old tolerance after chosen edit | F118 | silent wrong number | in review | UNKNOWN | none | 2026-10-12 |
+| FR-036 | skipped test row keeps old tolerance after chosen edit | F118 | silent wrong number | merged | 210 | none | 2026-10-12 |
 | FR-037 | priority csv repeated test name last row wins silently | F118 | silent wrong number | merged | 147 | none | 2026-10-07 |
 | FR-040 | item ids guid fallback counted missing | F118 | silent wrong number | merged | 159 | none | 2026-10-07 |
 | FR-041 | grid location empty on 345 rows | F118 | broken feature | in progress | UNKNOWN | none | 2026-10-12 |
@@ -172,7 +172,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-199 | blocks stay in measured order with a priority file | F118 | Bader's decision | merged | 159 | none | 2026-10-07 |
 | F118-R1 | the order check of the workbook reads the full blocks only so a one row test placed before a full block is not named | F118 | register row | merged | 176 | none | 2026-10-08 |
 | F118-R2 | with a priority file picked the check does not run the Priority heading check on a sheet with no full block | F118 | register row | dropped | 176, lane B read it as no fault, a sheet of one row tests has no heading row | none | 2026-10-08 |
-| F118-R3 | the group's own workbook is listed as written with last week's size where its save threw and an earlier run's file is at the path, the developer's reading on F128's attempt 2, older than F128, the same fault FR-189 names for the NWD | F118 | register row | in review | UNKNOWN | none | 2026-10-12 |
+| F118-R3 | the group's own workbook is listed as written with last week's size where its save threw and an earlier run's file is at the path, the developer's reading on F128's attempt 2, older than F128, the same fault FR-189 names for the NWD | F118 | register row | merged | 210 | none | 2026-10-12 |
 
 ## Wave 3a
 
