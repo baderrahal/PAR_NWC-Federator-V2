@@ -96,12 +96,9 @@ namespace Federator.Addin.Engine
         /// </summary>
         public void Piece(string piece, int done, int total)
         {
-            string count = done.ToString(CultureInfo.InvariantCulture) + " of "
-                + (total < 0 ? "UNKNOWN" : total.ToString(CultureInfo.InvariantCulture));
-
             if (Tick != null)
             {
-                Tick(TestName + ", " + piece + " " + count);
+                Tick(StepProgress.Live(TestName, piece, done, total));
             }
 
             if (said != null && said.Due(log.ElapsedSeconds))
@@ -111,7 +108,7 @@ namespace Federator.Addin.Engine
                     "progress",
                     TestName,
                     done.ToString(CultureInfo.InvariantCulture),
-                    saidStep + " " + piece + " " + count);
+                    StepProgress.RowText(saidStep, piece, done, total));
             }
         }
 

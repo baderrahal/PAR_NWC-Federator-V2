@@ -797,6 +797,12 @@ well as to pass.
   penetration and by design passes, off by default, have no piece yet, row F143-R1. The runner's
   ProgressSettings is ClashRunner.Progress at its defaults, 30 s each, and it hands the render's to
   ClashImages
+- THE RENUMBER ANSWERS WHILE IT RENAMES, F146: FederationEngine.RenumberThePictures hands
+  ImageRenumbering.Apply a said that renders the live line through Tick, whose callback lets the window
+  answer about once a second, and writes a PROGRESS line with its .tsv row through StepProgress once the
+  runner's ProgressSettings says one is due, null settings writing none. Sets 07 to 09 read 1A02MM's window
+  32 s not answering in RENUMBER. Since F149 every picture is written under its final name, so in a run
+  that goes as planned the renumber checks every picture and renames none, and this paces the check
 - ONLY THE TEST'S MODELS SHOWN FOR ITS PICTURES, F145, Bader's choice of Q150 on 2026-10-11, measured
   first, scan.md 5z-zc: 7.76 s a picture with every model shown and 1.78 s with only the test's on the
   first 20 clashes of 1A04PK's Walls-vs-Floors, the export's layout kept. TestModelsShown is one for the

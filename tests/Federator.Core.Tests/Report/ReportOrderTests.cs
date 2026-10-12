@@ -412,6 +412,109 @@ namespace Federator.Core.Tests
             Assert.That(outcome.Missing, Is.EqualTo(0));
         }
 
+        // ---------- saying how far it has got, F146 ----------
+
+        // Sets 07, 08 and 09's 1A02MM renamed 2931 pictures in one stretch, the window not
+        // answering for 32 s. Said is handed every picture of every pass, counted from one to
+        // the pass's count, and the folder ends with every picture under its row's number.
+        [Test]
+        public void SaidIsHandedEveryPictureOfEveryPassAndThePicturesEndUnderTheirRows()
+        {
+            ClashReport report = MixedOrder();
+            RenderInRunOrder(report, null);
+            List<string> heard = new List<string>();
+
+            ImageRenumberingOutcome outcome = ImageRenumbering.Apply(
+                report, workbook, (piece, done, total) => heard.Add(piece + " " + done + " of " + total));
+
+            List<string> expected = new List<string>();
+
+            foreach (string piece in new[] { "picture checked", "picture moved aside", "picture renamed" })
+            {
+                for (int i = 1; i <= 6; i++)
+                {
+                    expected.Add(piece + " " + i + " of 6");
+                }
+            }
+
+            Assert.That(heard, Is.EqualTo(expected));
+            Assert.That(outcome.Renamed, Is.EqualTo(6));
+            Assert.That(outcome.Problems, Is.Empty);
+            AssertEveryRowPointsAtItsOwnPicture(report);
+            Assert.That(File.ReadAllText(ImageNaming.PathFor(workbook, 0, 1)), Is.EqualTo("Walls 1"));
+            Assert.That(File.ReadAllText(ImageNaming.PathFor(workbook, 1, 2)), Is.EqualTo("Columns 2"));
+            Assert.That(File.ReadAllText(ImageNaming.PathFor(workbook, 2, 1)), Is.EqualTo("Floors 1"));
+        }
+
+        // Every picture is checked, and only the pictures that move are counted in the two passes.
+        [Test]
+        public void SaidCountsEveryPictureCheckedAndOnlyThePicturesMoved()
+        {
+            ClashReport report = Report();
+            Found(report, "Walls", "Walls 1", "Walls 2", "Walls 3");
+            Found(report, "Columns", "Columns 1", "Columns 2");
+            RenderInRunOrder(report, null);
+            List<string> heard = new List<string>();
+
+            ImageRenumberingOutcome outcome = ImageRenumbering.Apply(
+                report, workbook, (piece, done, total) => heard.Add(piece + " " + done + " of " + total));
+
+            Assert.That(heard, Is.EqualTo(new[]
+            {
+                "picture checked 1 of 5", "picture checked 2 of 5", "picture checked 3 of 5",
+                "picture checked 4 of 5", "picture checked 5 of 5",
+            }));
+            Assert.That(outcome.Unchanged, Is.EqualTo(5));
+        }
+
+        // A said that throws, for whatever reason, is named once with where it
+        // threw, is handed nothing more, and every picture is still renamed.
+        [Test]
+        public void ASaidThatThrowsIsNamedOnceAndEveryPictureIsStillRenamed()
+        {
+            ClashReport report = MixedOrder();
+            RenderInRunOrder(report, null);
+            int calls = 0;
+
+            ImageRenumberingOutcome outcome = ImageRenumbering.Apply(report, workbook, (piece, done, total) =>
+            {
+                calls++;
+
+                if (piece == "picture moved aside" && done == 2)
+                {
+                    throw new InvalidOperationException("the window is gone");
+                }
+            });
+
+            Assert.That(calls, Is.EqualTo(8), "six checked and two moved aside, then nothing more");
+            Assert.That(outcome.Renamed, Is.EqualTo(6));
+            Assert.That(outcome.Problems.Count, Is.EqualTo(1));
+            Assert.That(outcome.Lines()[1], Is.EqualTo(
+                "IMAGES   saying how far the renaming had got threw at picture moved aside 2 of 6, "
+                + "InvalidOperationException: the window is gone, so nothing more was said and the renaming went on"));
+            AssertEveryRowPointsAtItsOwnPicture(report);
+        }
+
+        // F146, the breaker's point: a renaming cut off part way left a picture under a holding
+        // name. Before F146 the move onto it threw and every picture of the group went back under
+        // its run order name. Now it is taken out first and said, and every picture ends under its row.
+        [Test]
+        public void AHoldingNameAnEarlierRenamingLeftIsTakenOutFirstAndSaid()
+        {
+            ClashReport report = MixedOrder();
+            RenderInRunOrder(report, null);
+            File.WriteAllText(ImageNaming.PathFor(workbook, 0, 1) + ".moving", "an earlier run's picture");
+
+            ImageRenumberingOutcome outcome = ImageRenumbering.Apply(report, workbook);
+
+            Assert.That(outcome.Renamed, Is.EqualTo(6));
+            Assert.That(outcome.NotPutBack, Is.EqualTo(0));
+            Assert.That(outcome.Problems.Count, Is.EqualTo(1));
+            Assert.That(outcome.Problems[0], Is.EqualTo(
+                "Floors 1: cd000001.jpg.moving, a holding name an earlier renaming left, was taken out before the move"));
+            AssertEveryRowPointsAtItsOwnPicture(report);
+        }
+
         // ---------- a move that throws, FR-075 ----------
 
         /// <summary>

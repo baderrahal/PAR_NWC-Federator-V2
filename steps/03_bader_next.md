@@ -342,6 +342,12 @@ The loop runs these on its own copy, 1A02MM again from a fresh set, after main w
 644. Compare the Grid Location and Level cells of the rows of BLD-AR-Ramps-vs-BLD-AR-Floors in this run's internal workbook with set 08's, `steps\runs\08\item1-C04`: the same cells. With F149 merged the harvest hides nothing and every row is read before any model is hidden for a picture, so these cells are read with every model shown, as set 08 read them
 645. Send the log and the `.tsv` beside it, with the longest stretch the window did not answer and the peak memory off the run's `LIFE SUMMARY` where the loop ran it
 
+## Proof F146 the renumber answers while it renames, added 2026-10-12
+
+646. Install main with F146 merged, then run 1A02MM with its clash XML, Make viewpoints ticked
+647. Look for, in the log while the pictures are renamed: one `PROGRESS RENUMBER 1A02MM` line about 30 s into the step, naming the pass it fell in, and the window's live line moving through picture checked, picture moved aside and picture renamed
+648. Look for, in the run's LIFE readings where the loop ran it: no stretch not answering in RENUMBER, where sets 07 to 09 read 32 s, and the IMAGES line `numbered in report order: 2931 renamed` as before
+
 ## Proof F149 pictures taken in the report's order, added 2026-10-12, rewritten for attempt 2
 
 The renumber line comes first, because it is the whole of the fix: a picture written under any other name than its final one shows there as renamed. The TIMING block next, since the pictures' seconds move from HARVEST to a step of their own, PICTURES, and a reading against set 09 that misses the move reads HARVEST as faster than it is.

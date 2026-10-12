@@ -2,6 +2,34 @@
 
 Newest entry at the top.
 
+## 2026-10-12 The loop, turn 6, F146 the renumber answers while it renames, written by the lead
+
+Branch fix-F146 off main, parked on 2026-10-11 by Bader's word to change nothing in the tool until he answered
+Q150, renamed from F145 when he gave that number to his picture choice, main 493ecdb taken in.
+
+What was done:
+- ImageRenumbering.Apply hands a said every picture checked, moved aside and renamed, and the engine passes Tick
+  and a PROGRESS line through it, so the window can answer while 2931 pictures are renamed, which waits for a
+  run to show. A said that throws is named once and the renaming goes on
+- Attempt 2 on the reviewer's and the breaker's points: the words of how far a step has got are one Core rule
+  the harvest and the renumber share, and a holding name an earlier, cut off renaming left is taken out before
+  the move onto it, where the move threw and rolled the group back every week after. That case is read off
+  the code and a test, not seen in a run
+- Proved here: the solution builds with 0 warnings and 0 errors, and Core tests 2862 passed, 0 failed, 0
+  skipped on main 493ecdb and 2867 passed, 0 failed, 0 skipped after
+
+What remains: the merge, and 1A02MM's fast check, steps 646 to 648 of steps\03_bader_next.md.
+
+Known bugs: the put back after a move that throws is not pumped and says nothing while it runs, so on that rare
+path the window can freeze again. A modal box opened from the window during a pump, a Browse button or Close,
+pauses the renaming, as it pauses the harvest since F143. A pictures folder within 7 characters of the path
+limit would take the final names and refuse the holding ones. Two moves sharing one source path would clash,
+the breaker's conditional case, which no path builds since each picture's path is set from its own test and
+clash number. F149, merged as 207 before this, writes every picture under its final name, so in a run
+that goes as planned the renumber renames none, and main 99bae1d was taken in with F145 and F149.
+
+What comes next: the speed loop of Bader's order of 2026-10-12.
+
 ## 2026-10-12 The loop, turn 6, F149 pictures taken in the report's order, attempt 2 of two, written by the developer as the lead's delegate
 
 Bader's order of 2026-10-12 to fix the slowest step. Branch fix-F149 off fix-F145 at 8aa6273, attempt 1
