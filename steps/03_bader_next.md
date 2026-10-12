@@ -368,12 +368,18 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
-## Proof F147 long runs kept from slowing, added 2026-10-12
+## Proof F147 long runs kept from slowing, added 2026-10-12, rewritten for attempt 3
 
-These read the log of the run of F149's steps 649 to 663, which step 663 sends, once F147 is merged with F145 and F149 before that install, so they need no run of their own.
+These read one run of 1A02MM with F147 merged, the run of F149's steps 650 to 654. One group is enough for every line here. The memory a group releases shows only at the next group's start, so it is not read here.
 
-664. Look for, in that log after the `STEP     PICTURES` line: `IMAGES   the undo for the pictures read on with` a step name `as the step Undo would take next before them, off with` the same name `during them, and on with` the same name `after`, and no line `THE UNDO IS LEFT OFF`
-665. Look for, in the same log: `IMAGES   the texture cache at` the folder ogs under the temp folder, `held` a size and its files as the pictures began and as they ended, `against the limit of 5.00 GB, cleared 0 times`, or the line saying it `is not there`
+664. Install main with F147 merged
+665. Run 1A02MM as steps 650 to 654 say
+666. Look for, in the log under the first `STEP     DECIDE` started line: `MEMORY   at the start of DECIDE, private bytes` a size in MB, `working set` a size in MB, `managed heap` a size in MB
+667. Look for, just before the `STEP     DECIDE` finished line: `MEMORY   at the end of DECIDE,` the same three, each followed by `up`, `down` or `unchanged`
+668. Look for: one MEMORY start line and one MEMORY end line for each STEP started line of the group, one pair only for TESTS RUN and one only for HARVEST however many tests ran, and no MEMORY line holding `UNKNOWN`
+669. Look for, in the same log after the `STEP     PICTURES` line: `IMAGES   the undo for the pictures read on with` a step name `as the step Undo would take next before them, off with` the same name `during them, and on with` the same name `after`, and no line `THE UNDO IS LEFT OFF`
+670. Look for, in the same log: `IMAGES   the texture cache at` the folder ogs under the temp folder, `held` a size and its files as the pictures began and as they ended, `against the limit of 5.00 GB, cleared 0 times`, or the line saying it `is not there`. Where a clearing line was written, it ends `cleared again only once it holds more than` a size, or carries no such words
+671. Send the log and the `.tsv` beside it, with the MEMORY lines at the start of DECIDE and at the end of CONFIRM
 
 ## Proof of F130, the Shift range in the group list
 

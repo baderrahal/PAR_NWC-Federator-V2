@@ -2,42 +2,53 @@
 
 Newest entry at the top.
 
-## 2026-10-12 The loop, turn 6, F147 long runs kept from slowing, attempt 2 of two, written by the lead
+## 2026-10-12 The loop, turn 6, F147 long runs kept from slowing, attempt 3 under Q155, written by the developer as the lead's delegate
 
-Bader's order of 2026-10-11, Q152 item 2. Branch fix-F147 off fix-F149 at c557337.
+Bader's order of 2026-10-11, Q152 item 2, and his answer to Q155 on 2026-10-12, "Q2 yes: build F147", with
+item 2 of his order: release what each step holds as soon as the step ends, log the memory at the start and
+end of each step, dispose every picture, and clear the texture cache under %TEMP%\ogs between tests when it
+passes 5 GB, logging its size before and after. Branch fix-F147, main 80314b9 taken in first, with F145,
+F146, F149 and F140.
 
 What was done:
-- The undo is off through the picture pass and on again after, Document.StartDisableUndo and its matched
-  EndDisableUndo, and one IMAGES line reads IsUndoDisabled and the next undo step before and after
-- Navisworks' texture cache under %TEMP%\ogs is read as the pass begins and ends and between two stretches
-  at most once a minute, and cleared there past 5 GB with its size said before and after, by Core's
-  TextureCache and TextureCacheWatch with tests. The limit and the interval are settings
-- Attempt 1, c71a40f: the reviewer asked for changes on a member only a test read and a catch that dropped
-  a size unsaid, and the breaker found the framework's walk following a junction out of the folder, so a
-  clearing could remove another folder's files, and a pass line counting attempts. Attempt 2 walks a folder
-  at a time and never into a link, walks only a rooted folder named ogs, counts only what it removed, stops
-  clearing once a clearing removed nothing, says a failed walk, names the folder walked, and reads the
-  undo's state rather than saying it
-- Every picture was already disposed, the pass moves no camera so a jump cut has nothing to change, and
-  every call of the pass is on the main thread, each said in the rule
-- Proved here: the solution builds with 0 warnings and 0 errors, and Core tests 2899 passed, 0 failed, 0
-  skipped at c557337, 2914 passed after attempt 2 and 2918 passed, 0 failed, 0 skipped after the fixes of
-  its second reading, and 2934 passed once F149's fixes at e21fbb1 were taken in. The junction test was
-  seen failing with the link guard taken out
-- The second reading: the reviewer approved, and the breaker's points that change a line the team reads
-  were fixed in the same attempt under Q148 B: the undo read before, during and after with a line of its
-  own if it is left off, a count not read whole UNKNOWN and never nought, the cache not checked again once
-  a clearing leaves it not under the limit, and a failed walk said once
+- Attempts 1 and 2, as written before: the undo off through the picture pass with its state read before,
+  during and after, and the texture cache read across the pass and cleared past 5 GB by Core's TextureCache
+  and TextureCacheWatch, the walk never leaving the folder. The breaker's re-read of attempt 2 found two
+  points, Q155, and F147 stopped under Q148 B
+- The two points of Q155. The pass line's seconds are every check whole, its walks, its clearing and the
+  clearing's deletions, and the last read, where the walks alone were counted. A clearing that leaves the
+  cache past the limit no longer stops the checks: they go on at the interval, and the cache is cleared
+  again only once it holds more than that clearing left, TextureCache.ShouldClear and LeftBy, the clearing's
+  line naming that size
+- The memory at the start and the end of each step: RunLog.Step writes a MEMORY line under each step's
+  started line and one before its finished line, the private bytes and the working set as the life check
+  reads them and the managed heap, in MB, the end saying how far each moved. Core's ProcessMemory holds the
+  reading and the lines, and the engine sets RunLog.MemoryReader to ProcessMemory.Read beside the census
+  reader. It is read where the step's own lines are written, so TESTS RUN costs two reads a group
+- Released as each step ends, each read off every reader in src: ClashRunner's picturesWaiting, emptied as
+  the PICTURES step ends. JobOutcome.RowAddresses, set to null as the VIEWS step returns, its one reader.
+  JobOutcome.Report, the group's report model with every row, released with it by LetGoOfTheRows in the
+  finally of RunOne and RunAnOpenFile, since the run keeps every outcome for RESULT and each group's rows
+  stayed until the run ended. Every Navisworks wrapper of the clash step was already disposed where read
+- Already in, said so: every picture is disposed as its save returns, ClashImages.Render, and the texture
+  cache is cleared between tests past 5 GB with its size said before and after, attempts 1 and 2
+- Proved here: the solution builds with 0 warnings and 0 errors. Core tests 2940 passed, 0 failed, 0 skipped
+  with main taken in, and 2949 passed, 0 failed, 0 skipped after, 21 in TextureCacheTests and 7 in
+  RunLogMemoryTests. The three new watch tests were seen failing on the attempt 2 watch, a clearing of
+  1.25 s on a pass line of 1.0 s and a cache grown after a clearing left uncleared, and four memory tests
+  failing with the step's read taken out. check-locals and check-imports pass
 
-What remains: the breaker's look at the second reading's fixes, the merges of F145 and F149 first, then this
-one's, and steps 664 and 665 of steps\03_bader_next.md off F149's run.
+What remains: the reviewer and the breaker, the merge, and steps 664 to 671 of steps\03_bader_next.md off a
+run of 1A02MM. Q155's answer and Bader's order item in steps\02_questions.md are the lead's to write.
 
 Known bugs: the cache held no file on this laptop, so the clearing has not run on a real cache, and what
 removing its files while Navisworks runs does is UNKNOWN. A second Navisworks of the same user shares the
-folder. The check is at most once a minute where Bader's words are between tests. The views step keeps
-the undo on.
+folder. The check is at most once a minute where Bader's words are between tests. The views step keeps the
+undo on. Whether the collector takes back what a group releases before the next group, and how much, is
+UNKNOWN until a run of two groups reads the MEMORY lines. A step entered again in a group says its memory
+only around its first visit.
 
-What comes next: the merges Bader makes, then the fast checks and a SPEED row.
+What comes next: the reviewer and the breaker on this attempt, then the merge Bader makes.
 
 ## 2026-10-12 The loop, turn 6 closes on Bader's order WRAP UP NOW, written by the lead
 

@@ -1505,7 +1505,8 @@ and 6 does not read as broken.
   from the end of the last check, cleared there only once a size read whole is past the limit, and read
   once more as it ends, never clearing there, for one IMAGES line of the size and the files at the start
   and the end, the checks against the limit and the reads not whole, the clearings and the files they
-  removed, and the seconds the watch took. A count not read whole is UNKNOWN on every line and never
+  removed, and the seconds the watch took, every check whole with its clearing and the clearing's
+  deletions, and the last read, Q155. A count not read whole is UNKNOWN on every line and never
   nought. Bader's words are between tests, and the 60 s is the loop's, a setting, so a walk of a large
   cache is not made between every two of 741 tests. A gigabyte is 1024 cubed bytes, and a size compared
   with the limit carries its exact bytes. THE WALK NEVER LEAVES THE FOLDER: only a fully qualified folder
@@ -1516,8 +1517,13 @@ and 6 does not read as broken.
   clearing walks again keeping the paths, removes only the files that walk read, never a folder, counts
   a file removed only where it was there to remove, counts what it could not remove and what had gone
   before its turn, and says the size and the files before and after. ONCE A CLEARING LEAVES THE CACHE
-  NOT UNDER THE LIMIT, files held open among it, the cache is not checked again until the pass ends, so
-  a cache that cannot be cleared costs one clearing and not one a minute for hours. A walk that fails is
+  NOT UNDER THE LIMIT, files held open among it, the checks go on at the interval for the rest of the
+  pass, and the cache is cleared again only once it holds more than that clearing left, its size read
+  after the clearing or, where that read was not whole, before it, `TextureCache.ShouldClear` and
+  `LeftBy`, Bader's choice A of Q155 on 2026-10-12. So new files are cleared at the next check, and a
+  cache that cannot be cleared is not cleared again while it has not grown, and the clearing's line names
+  the size it must grow past. Before Q155 one such clearing stopped the checks for the rest of the pass,
+  so new files grew unseen until the next group, the breaker's re-read of attempt 2. A walk that fails is
   said once with why and counted as not whole, and clears nothing. Every line names the folder walked.
   The watch never throws. The limit and the interval are settings on ImageOptions,
   `TextureCacheLimitBytes` and `TextureCacheCheckEverySeconds`, a limit of zero switching the clearing
@@ -2198,6 +2204,23 @@ it if the same work carries the same name every time it is timed.
   zero, and a total over parts of which one could not be read is UNKNOWN too. It judges
   nothing and sets no target, and the line about the 45 minutes stays the last line of
   the run block, as it was
+
+### The memory around each step, F147
+
+- Bader's answer to Q155 on 2026-10-12, item 2 of his order: the memory at the start and the end of
+  each step. `RunLog.Step` writes one MEMORY line under a step's started line and one before its
+  finished line, through `RunLog.MemoryReader`, which the engine sets to `ProcessMemory.Read`, so every
+  step gets it in one place and no step's code says it. Three numbers in megabytes of 1024 squared
+  bytes: the private bytes and the working set as the loop's life check reads them, and the managed heap
+  read without a collection, so reading it never changes it. The end line says how far each moved since
+  the start, up, down or unchanged
+- read where the step's own started and finished lines are written, the first visit of a step in a
+  group, so TESTS RUN, entered once a test, costs two reads a group and not two a test. The start is
+  read after the census before a step and the end before the census after it, so the census's reading
+  is not counted to the step. A nested step's pair is inside its parent's
+- a number not read is UNKNOWN and never nought, and the reason is said on the line. A read Windows
+  refuses keeps the managed heap, and a reader that throws is said as the reason, so logging never
+  stops a run. With no reader set, no MEMORY line is written. RunLogMemoryTests
 
 ### The document census, F61
 

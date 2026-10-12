@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using Federator.Core.Report;
 using NUnit.Framework;
 
@@ -52,14 +54,27 @@ namespace Federator.Core.Tests
         [Test]
         public void OnlyASizeReadAndPastTheLimitClears()
         {
-            Assert.That(TextureCache.ShouldClear(101, 100), Is.True);
-            Assert.That(TextureCache.ShouldClear(100, 100), Is.False, "at the limit is not past it");
-            Assert.That(TextureCache.ShouldClear(-1, 100), Is.False, "a size not read never clears anything");
-            Assert.That(TextureCache.ShouldClear(long.MaxValue, 0), Is.False, "a limit of zero switches the clearing off");
-            Assert.That(TextureCache.ShouldClear(long.MaxValue, -5), Is.False);
+            long none = TextureCache.NoClearingYet;
+            Assert.That(TextureCache.ShouldClear(101, 100, none), Is.True);
+            Assert.That(TextureCache.ShouldClear(100, 100, none), Is.False, "at the limit is not past it");
+            Assert.That(TextureCache.ShouldClear(-1, 100, none), Is.False, "a size not read never clears anything");
+            Assert.That(TextureCache.ShouldClear(long.MaxValue, 0, none), Is.False, "a limit of zero switches the clearing off");
+            Assert.That(TextureCache.ShouldClear(long.MaxValue, -5, none), Is.False);
             Assert.That(TextureCache.StillPast(100, 100), Is.False, "under or at the limit after a clearing");
             Assert.That(TextureCache.StillPast(101, 100), Is.True);
             Assert.That(TextureCache.StillPast(-1, 100), Is.True, "not read whole after a clearing is not known to be under it");
+        }
+
+        // Q155 A. Past the limit and grown past what the last clearing left, or no clearing yet.
+        [Test]
+        public void AfterAClearingOnlyACacheGrownPastWhatItLeftClearsAgain()
+        {
+            Assert.That(TextureCache.ShouldClear(300, 100, 300), Is.False, "no more than the last clearing left");
+            Assert.That(TextureCache.ShouldClear(301, 100, 300), Is.True, "grown past what the last clearing left");
+            Assert.That(TextureCache.ShouldClear(150, 100, 50), Is.True, "a clearing that brought it under the limit sets no bar past it");
+            Assert.That(TextureCache.ShouldClear(301, 0, 300), Is.False, "a limit of zero still switches it off");
+            Assert.That(TextureCache.LeftBy(500, 300), Is.EqualTo(300), "what the clearing left, read after it");
+            Assert.That(TextureCache.LeftBy(500, -1), Is.EqualTo(500), "not read after it, so what it held before is the bar");
         }
 
         [Test]
@@ -252,8 +267,10 @@ namespace Federator.Core.Tests
             Assert.That(line, Does.Contain("cleared 1 time removing 1 file"));
         }
 
+        // Q155, Bader's choice A of 2026-10-12. A clearing that removed nothing leaves the checks on at
+        // the interval, and clears again only once the cache holds more than that clearing left.
         [Test]
-        public void AFileInUseIsLeftAndTheCacheIsNotCheckedAgainOnceAClearingLeftItPastTheLimit()
+        public void AFileInUseIsLeftAndTheCacheIsClearedAgainOnlyOnceItGrowsPastWhatTheClearingLeft()
         {
             TestPaths.OnWindowsOnly("share locking");
 
@@ -262,40 +279,78 @@ namespace Federator.Core.Tests
 
             using (new FileStream(held, FileMode.Open, FileAccess.Read, FileShare.None))
             {
-                TextureCacheWatch watch = Watch(1 * Megabyte, 0);
+                TextureCacheWatch watch = Watch(1 * Megabyte, 60);
                 watch.BetweenTests();
+                now = 61;
                 watch.BetweenTests();
 
                 Assert.That(File.Exists(held), Is.True);
-                Assert.That(said.Count, Is.EqualTo(1), "one clearing that could not bring it under the limit, then none again in the pass");
+                Assert.That(said.Count, Is.EqualTo(1), "checked again at the interval, and not cleared again since it has not grown");
                 Assert.That(said[0], Does.Contain("so 0 files were removed, 1 file could not be removed"));
-                Assert.That(said[0], Does.EndWith("and since it is not under the limit it is not cleared again in this pass"));
-                Assert.That(watch.AtTheEnd(), Does.Contain("checked 1 time against the limit of 1.0 MB (1048576 bytes), cleared 1 time removing 0 files"));
+                Assert.That(said[0], Does.EndWith("and since it is not under the limit it is cleared again only once it holds more than 3.0 MB (3145728 bytes)"));
+                Assert.That(watch.AtTheEnd(), Does.Contain("checked 2 times against the limit of 1.0 MB (1048576 bytes), cleared 1 time removing 0 files"));
             }
         }
 
-        // The realistic case: Navisworks holds most of its cache open, a clearing removes the rest, and
-        // the cache stays past the limit. It is cleared once, not once a minute for hours.
+        // The realistic case, the breaker's point of Q155: Navisworks holds most of its cache open, a
+        // clearing removes the rest, and the cache stays past the limit. The checks go on at the
+        // interval for the rest of the pass, and new files are cleared once the cache has grown past
+        // what that clearing left, never at every check while it has not.
         [Test]
-        public void AClearingThatRemovedSomeButLeftItPastTheLimitIsNotRepeated()
+        public void AClearingThatRemovedSomeButLeftItPastTheLimitKeepsTheChecksAndClearsAgainOnceItGrows()
         {
             TestPaths.OnWindowsOnly("share locking");
 
             string held = Path.Combine(folder, "held.bin");
+            string grown = Path.Combine(folder, "new.bin");
             Write(held, 3 * Megabyte);
             Write(Path.Combine(folder, "free.bin"), 2 * Megabyte);
 
             using (new FileStream(held, FileMode.Open, FileAccess.Read, FileShare.None))
             {
-                TextureCacheWatch watch = Watch(1 * Megabyte, 0);
+                TextureCacheWatch watch = Watch(1 * Megabyte, 60);
                 watch.BetweenTests();
-                Write(Path.Combine(folder, "new.bin"), 2 * Megabyte);
+                Write(grown, 2 * Megabyte);
+
+                now = 30;
+                watch.BetweenTests();
+                Assert.That(File.Exists(grown), Is.True, "30 s after the clearing, so not checked");
+
+                now = 61;
+                watch.BetweenTests();
+                Assert.That(File.Exists(grown), Is.False, "checked at the interval, grown past the 3 MB the clearing left, so cleared");
+
+                now = 122;
                 watch.BetweenTests();
 
-                Assert.That(said.Count, Is.EqualTo(1));
+                Assert.That(File.Exists(held), Is.True);
+                Assert.That(said.Count, Is.EqualTo(2), "the check at 122 s found 3 MB, no more than the last clearing left");
                 Assert.That(said[0], Does.Contain("so 1 file was removed, 1 file could not be removed"));
-                Assert.That(File.Exists(Path.Combine(folder, "new.bin")), Is.True, "not walked again in the pass");
+                Assert.That(said[1], Does.Contain("held 5.0 MB (5242880 bytes) in 2 files"));
+                Assert.That(said[1], Does.Contain("so 1 file was removed, 1 file could not be removed"));
+                Assert.That(watch.AtTheEnd(), Does.Contain("checked 3 times against the limit of 1.0 MB (1048576 bytes), cleared 2 times removing 2 files"));
             }
+        }
+
+        // Q155, the breaker's other point: the pass line's seconds left out the deletions, counting
+        // only the walks. Every clearing's own seconds, its deletions among them, are in the pass's.
+        [Test]
+        public void ThePassLineSecondsHoldEveryClearingWithItsDeletions()
+        {
+            Write(Path.Combine(folder, "a.bin"), 2 * Megabyte);
+            Write(Path.Combine(folder, "b.bin"), 2 * Megabyte);
+            tick = 0.25;
+
+            TextureCacheWatch watch = Watch(1 * Megabyte, 0);
+            watch.BetweenTests();
+            string pass = watch.AtTheEnd();
+
+            Assert.That(said.Count, Is.EqualTo(1));
+            double clearing = SecondsBefore(said[0], " s for the clearing");
+            double inAll = SecondsBefore(pass, " s in all");
+
+            Assert.That(clearing, Is.GreaterThan(0));
+            Assert.That(inAll, Is.GreaterThanOrEqualTo(clearing), "the pass line's seconds hold the clearing's");
         }
 
         // The framework's own walk with AllDirectories follows a junction, so a clearing would empty
@@ -344,6 +399,13 @@ namespace Federator.Core.Tests
         private TextureCacheWatch Watch(long limit, int every)
         {
             return new TextureCacheWatch(folder, limit, every, Clock, line => said.Add(line));
+        }
+
+        private static double SecondsBefore(string line, string words)
+        {
+            Match found = Regex.Match(line, @"(\d+\.\d{3})" + Regex.Escape(words));
+            Assert.That(found.Success, Is.True, "no seconds before \"" + words + "\" in: " + line);
+            return double.Parse(found.Groups[1].Value, CultureInfo.InvariantCulture);
         }
 
         private double Clock()

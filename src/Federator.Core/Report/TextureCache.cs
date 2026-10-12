@@ -40,20 +40,32 @@ namespace Federator.Core.Report
             return !measuredBefore || everySeconds <= 0 || secondsSinceLast >= everySeconds;
         }
 
+        /// <summary>What the last clearing left before any clearing of the pass, so no bar is set.</summary>
+        public const long NoClearingYet = -1;
+
         /// <summary>
-        /// Whether to clear it: only a size read whole and past the limit. A limit of zero or less
-        /// switches the clearing off, and a size not read, below zero, never clears anything.
+        /// Whether to clear it: only a size read whole, past the limit, and past what the last clearing
+        /// of the pass left, Bader's choice A of Q155 on 2026-10-12. A clearing that cannot bring the
+        /// cache under the limit, its files held open, is not repeated at every check while the cache
+        /// has not grown, and once it grows the new files are cleared at the next check. A limit of zero
+        /// or less switches the clearing off, and a size not read, below zero, never clears anything.
         /// </summary>
-        public static bool ShouldClear(long bytes, long limitBytes)
+        public static bool ShouldClear(long bytes, long limitBytes, long leftByLastClearing)
         {
-            return limitBytes > 0 && bytes >= 0 && bytes > limitBytes;
+            return limitBytes > 0 && bytes >= 0 && bytes > limitBytes
+                && (leftByLastClearing < 0 || bytes > leftByLastClearing);
         }
 
         /// <summary>
-        /// Whether a clearing left the cache not under the limit, past it or not read whole, so it is
-        /// not cleared again in the pass: files held open stay, and a clearing that cannot bring the
-        /// cache under the limit is not walked and refused again once a minute for hours.
+        /// What a clearing left, the bar the cache must grow past before it is cleared again: its size
+        /// read after the clearing, or where that read was not whole, its size before it.
         /// </summary>
+        public static long LeftBy(long before, long after)
+        {
+            return after >= 0 ? after : before;
+        }
+
+        /// <summary>Whether a clearing left the cache not under the limit, past it or not read whole, said on its line.</summary>
         public static bool StillPast(long after, long limitBytes)
         {
             return limitBytes > 0 && (after < 0 || after > limitBytes);
@@ -146,7 +158,7 @@ namespace Federator.Core.Report
         /// <summary>
         /// The line of one clearing: the size and the files before, what was removed, what could not
         /// be, what had gone before its turn, and the size after, read again. A clearing that leaves the
-        /// cache still past the limit says it is not cleared again in this pass.
+        /// cache still past the limit says the size it must grow past before it is cleared again.
         /// </summary>
         public static string ClearedLine(
             string folder, long before, int filesBefore, long limitBytes, int removed, int notRemoved, int goneBefore,
@@ -161,7 +173,9 @@ namespace Federator.Core.Report
                 + (goneBefore > 0 ? ", " + Words.Counted(goneBefore, "file", "files") + " had gone before its turn" : string.Empty)
                 + ", and it holds " + Exactly(after) + " in " + Files(filesAfter) + " now, "
                 + Seconds(seconds) + " for the clearing"
-                + (stillPast ? ", and since it is not under the limit it is not cleared again in this pass" : string.Empty);
+                + (stillPast
+                    ? ", and since it is not under the limit it is cleared again only once it holds more than " + Exactly(LeftBy(before, after))
+                    : string.Empty);
         }
 
         /// <summary>The line of the first check whose walk did not finish, so nothing was cleared at it. Later ones are counted on the pass line.</summary>

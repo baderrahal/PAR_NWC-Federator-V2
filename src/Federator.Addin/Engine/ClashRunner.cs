@@ -173,7 +173,8 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// Every row read while pictures are written, by the row, with where its result sits, F149,
         /// kept whichever way its harvest ended, so the picture pass takes each by its address once
-        /// every test has run and every merge is made, walking the report's order, PictureWalk.
+        /// every test has run and every merge is made, walking the report's order, PictureWalk, and
+        /// emptied as the pass ends, F147.
         /// </summary>
         private readonly Dictionary<ClashRow, RowAddress> picturesWaiting = new Dictionary<ClashRow, RowAddress>();
 
@@ -2568,6 +2569,8 @@ namespace Federator.Addin.Engine
                         log.Line("IMAGES   " + textures.AtTheEnd());
                     }
 
+                    // F147, Bader's answer to Q155. Read by this pass alone, so released as it ends.
+                    picturesWaiting.Clear();
                     StepEnded();
                 }
             }
