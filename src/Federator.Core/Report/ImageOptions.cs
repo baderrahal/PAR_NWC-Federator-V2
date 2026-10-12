@@ -37,6 +37,7 @@ namespace Federator.Core.Report
             EmbedThumbnail = false;
             StopAfterFailures = DefaultStopAfterFailures;
             OnlyTheTestsModels = true;
+            GhostTheOtherItems = false;
 
             // New, Active and Reviewed. The same three Navisworks itself calls open, but
             // set out here in its own right, because this is which clashes are worth a
@@ -80,6 +81,16 @@ namespace Federator.Core.Report
         /// Bader's choice of Q150 on 2026-10-11. PictureModels holds the rule.
         /// </summary>
         public bool OnlyTheTestsModels { get; set; }
+
+        /// <summary>
+        /// Off. Each picture shows only its two clashing items, the add-in setting Clash Detective's
+        /// Hide Other on for the picture pass and putting the user's value back after, so the
+        /// pictures are the same on every PC whatever its display settings, F150, Bader's answer to
+        /// Q151. On, Hide Other is left as the user has it and the other items are drawn as Clash
+        /// Detective draws them, ghosted by Navisworks' defaults, the look of the accepted reports.
+        /// OtherItemsInPictures holds the rule.
+        /// </summary>
+        public bool GhostTheOtherItems { get; set; }
 
         /// <summary>Is this clash one to render.</summary>
         public bool Wants(ClashStatus status)
@@ -256,6 +267,7 @@ namespace Federator.Core.Report
                 + " only, " + cap + ", "
                 + (EmbedThumbnail ? "with a thumbnail in the cell" : "linked rather than pasted in")
                 + (OnlyTheTestsModels ? ", only the models of each test shown" : ", every model shown")
+                + (GhostTheOtherItems ? ", the other items as Clash Detective shows them" : ", only the two clashing items in each")
                 + ".";
         }
 

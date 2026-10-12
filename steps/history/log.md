@@ -2,6 +2,38 @@
 
 Newest entry at the top.
 
+## 2026-10-12 The loop, turn 6, F150 each picture shows only its two clashing items, attempt 1, written by the developer as the lead's delegate
+
+Bader's answer to Q151 and his order of 2026-10-12, item 157 of steps\02_questions.md. Branch fix-F150 off main
+80314b9, at 278717f with the probe of scan.md 5z-zf and the records of item 157.
+
+What was done:
+- Every clash picture is to show only its two clashing items, the same on every PC. The add-in sets Clash
+  Detective's Hide Other on for the picture pass and puts the user's value back on every path out, with one
+  IMAGES line saying what it read, what it set and what it read after. The ghosted look of the accepted
+  reports is one box under More, rarely changed, off by default
+- Not the option path, which scan.md 5z-zf showed reads back with the pictures not following. The value is
+  set on Clash Detective's own highlighter, LcOpState.GetActiveInstance, LcClClashResultHighlighter.GetInstance
+  and its DisplaySettings, undocumented and read off the DLLs. Each of the three handles is made eEXTERNAL,
+  read off its IL, so disposing it releases the wrapper and never the native object, and each is disposed
+  inside one read or one write
+- The rule and the line are Core's, OtherItemsInPictures, with ImageOptions.GhostTheOtherItems. Nothing is set
+  where the value could not be read or the ghosted look is ticked, the value read is written back wherever a
+  set was tried, and a value left changed or not read after is named with where a person sets it by hand.
+  The add-in's PicturesHideOther holds only the calls into Navisworks, every throw a failure line
+- Proved here: Core tests 2921 passed, 0 failed, 0 skipped on 278717f, and 2932 passed, 0 failed, 0 skipped
+  after, the 11 new OtherItemsInPicturesTests, which do not build against the base's Core. The solution
+  builds with 0 warnings and 0 errors, 0 and 0 before, and the locals and imports checks pass
+
+What remains: the reviewer and the breaker, the merge, and the lead's 1A02MM check, steps 664 to 677 of
+steps\03_bader_next.md: the IMAGES line, picture files near 48 KB, and the user's Clash Detective setting
+unchanged after the run.
+
+Known bugs: none known. Whether the picture call draws through the highlighter the tool sets is UNKNOWN until
+that check, and if it does not, the pictures keep the user's own look and the line still reads set on.
+
+What comes next: the 1A02MM check.
+
 ## 2026-10-12 The loop, turn 6 closes on Bader's order WRAP UP NOW, written by the lead
 
 Bader's order of 2026-10-12 headed BADER, 12 OCT 2026: WRAP UP NOW, NO MORE TESTS. No probe, fast check, speed

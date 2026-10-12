@@ -889,6 +889,20 @@ well as to pass.
   throw lost. A result is found again by its name read through ClashRow.NameOf, the rule the harvest
   names a row by. A result or a group with no display name is found again only at its recorded index and
   only where nothing can have moved it, the pictures, which run before Compact, and the views refuse it
+- CLASH DETECTIVE'S HIDE OTHER IS SET FOR THE PICTURE PASS AND PUT BACK, F150, Bader's answer to Q151 and
+  his order of 2026-10-12, item 157 of steps_questions.md: every picture shows only its two clashing items,
+  the same on every PC. The picture call draws by the user's Clash Detective display settings, scan.md 5z-ze,
+  so RenderThePicturesWaiting makes one PicturesHideOther inside the PICTURES step, in a using around the
+  pass, which reads the user's Hide Other, sets it on where Core's OtherItemsInPictures says so, and on every
+  path out writes the value read back, reads it once more and writes the one IMAGES line. Never set where
+  ImageOptions.GhostTheOtherItems is ticked. Every throw is a failure line and the pass goes on with the
+  user's own setting. NOT THE OPTION PATH: LcUOption.SetBoolean on tools.clash.displaysettings.hide_other
+  reads back but the pictures did not follow, scan.md 5z-zf. The value is set on Clash Detective's own
+  highlighter, LcOpState.GetActiveInstance, LcClClashResultHighlighter.GetInstance and its DisplaySettings,
+  each undocumented, each a NativeHandle made eEXTERNAL, read off their IL on 2026-10-12, so disposing one
+  releases the wrapper and never the native object, and all three are made and disposed inside one read or
+  one write. Whether the picture call draws through that highlighter is UNKNOWN until the 1A02MM check shows
+  picture files near 48 KB, steps_bader_next.md, Proof F150
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
   core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
   stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and

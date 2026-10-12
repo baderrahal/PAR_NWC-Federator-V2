@@ -104,6 +104,15 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// Whether the other items are left as Clash Detective draws them in the pictures, F150, the
+        /// setting on ImageOptions. Off, PicturesHideOther sets Hide Other on for the picture pass.
+        /// </summary>
+        public bool GhostTheOtherItems
+        {
+            get { return options.GhostTheOtherItems; }
+        }
+
+        /// <summary>
         /// Whether a picture of this row is written now, with a workbook to sit beside, by the
         /// options' rule, ImageOptions.TakesAPictureOf, which counts a row passed over on its
         /// status or the cap. Write reads it, and the picture pass reads it before it resolves a

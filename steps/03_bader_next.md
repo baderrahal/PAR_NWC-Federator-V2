@@ -368,6 +368,25 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
+## Proof F150 each picture shows only its two clashing items, added 2026-10-12
+
+The IMAGES line comes first, because it says what the tool read, what it set and what it read after, and a picture of 48 KB means nothing until that line says Hide Other was set. Then the pictures, then your own setting, which the run must leave as it found it.
+
+664. Install main with F150 merged
+665. Start Navisworks Manage 2025 and open any NWF
+666. Open Clash Detective, its Results tab, and Display Settings. Write down whether Hide Other under Isolation is ticked, and leave it as it is
+667. Run 1A02MM as steps 650 to 654 do, the box `Ghost the other items in clash photos` under More, rarely changed left unticked as it starts
+668. Look for, in the CLASH lines of 1A02MM: the line `CLASH    Images on,` ending `only the two clashing items in each.`
+669. Look for, after the PICTURES lines: ONE line starting `IMAGES   Clash Detective's Hide Other read off before the pictures, set on for them so each shows only its two clashing items, then put back to off. It read off after the pictures, the user's own setting` where step 666 read it unticked, or `read on before the pictures, the user's own` where it read ticked
+670. Look for, in the whole log: NO failure line naming `Clash Detective's Hide Other`, and no line saying `left changed` or `is UNKNOWN` beside Hide Other
+671. Open the group's picture folder beside the workbook and sort by size: files near 48 KB each, the look of `docs\history\scan.md` 5z-ze, against about 550 KB with the user's own setting in 5z-zf
+672. Open cd000001.jpg: the two clashing items in red and green on the background, and no other item drawn
+673. In Navisworks, open Clash Detective, Results, Display Settings again: Hide Other reads as step 666 wrote it down
+674. Tick `Ghost the other items in clash photos` under More, rarely changed
+675. Run 1A02MM again
+676. Look for: the IMAGES line `Clash Detective's Hide Other read` with `left as the user has it, since the box "Ghost the other items in clash photos" is ticked`, the CLASH line ending `the other items as Clash Detective shows them.`, and pictures drawn as your own Clash Detective setting draws them
+677. Send the two logs and the `.tsv` beside each, with the picture folder's mean file size of each run and what step 673 read
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,

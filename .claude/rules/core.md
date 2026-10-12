@@ -1480,6 +1480,17 @@ and 6 does not read as broken.
   because with the path inside the reason fifty of them were fifty reasons and the guard
   never fired. The stop words are ImageFailure's, worded for images, and the label's plain
   words carry the count alone
+- EACH PICTURE SHOWS ONLY ITS TWO CLASHING ITEMS ON EVERY PC, F150, Bader's answer to Q151 and his order
+  of 2026-10-12. The picture call draws by Clash Detective's display settings, which are per user, scan.md
+  5z-ze, so the add-in sets Hide Other on for the picture pass and puts the user's value back after it.
+  `OtherItemsInPictures` is the rule and the one IMAGES line: Hide Other is set only where the ghosted look
+  is not asked for and the user's value was READ as off, never where it could not be read, since a value
+  never read cannot be put back. Where a set was tried, done or thrown, the value read is written back,
+  then read once more, and the line says what was read, what was set and what was read after. A setting
+  that reads after the pictures as other than it read before, or could not be read after, is named with
+  where a person sets it by hand. The ghosted look, the look of the accepted reports, is ONE setting,
+  `ImageOptions.GhostTheOtherItems`, OFF by default, said by `Describe`, its box beside the photo settings
+  labelled by `OtherItemsInPictures.TickLabel` and its grey line `HelpLine`
 - What the pictures cost is MEASURED and logged per group: seconds per image, total
   seconds, how many, and how many megabytes. Every number anyone has given for this,
   including mine, was a guess until this existed. They are in the log and nowhere else,

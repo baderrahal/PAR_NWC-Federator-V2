@@ -2527,7 +2527,12 @@ namespace Federator.Addin.Engine
 
                 try
                 {
-                    picturing.Changed(TakeThePictures(clashTests));
+                    // F150. Clash Detective's Hide Other set on for the pass and the user's value put
+                    // back at its end on every path, with its one IMAGES line.
+                    using (new PicturesHideOther(log, Images.GhostTheOtherItems))
+                    {
+                        picturing.Changed(TakeThePictures(clashTests));
+                    }
                 }
                 catch (Exception)
                 {
