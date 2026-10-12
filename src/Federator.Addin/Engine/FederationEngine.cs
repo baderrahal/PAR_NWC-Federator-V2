@@ -3503,11 +3503,13 @@ namespace Federator.Addin.Engine
 
                 if (outcome.Report != null && runner.Images != null)
                 {
-                    // The pictures were rendered under run order numbers while the tests
-                    // ran, because the report order is only known when the last test has
-                    // run. Renamed once here, before any report is written, so every
-                    // picture carries the number of its row. A rename that fails is a
-                    // warning on the report and never fails the group, since the NWF, the
+                    // Since F149 every picture is taken once every test has run, in the
+                    // report's order and under its final number, so this finds each already
+                    // right and renames none, where until then the pictures were rendered
+                    // under run order numbers while the tests ran and renamed here, 39 s of
+                    // set 09's 1A02MM. It stays, before any report is written, as the check
+                    // that every picture carries the number of its row. A rename that fails is
+                    // a warning on the report and never fails the group, since the NWF, the
                     // pictures and the workbook are all still written. A step of its own,
                     // FR-077, because it ran inside no step and its seconds came off no
                     // total, 20.6 s of one group of set 03.
@@ -3559,10 +3561,10 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Renames the pictures into report order. The rule and the two pass move live in
-        /// Federator.Core.Report.ImageRenumbering so they can be tested without Navisworks.
-        /// A move that throws is caught there, FR-075, every picture is put back under its
-        /// run order name, and the outcome's lines say what was moved, what was put back
+        /// Renames the pictures into report order, which since F149 finds each already there. The
+        /// rule and the two pass move live in Federator.Core.Report.ImageRenumbering so they can
+        /// be tested without Navisworks. A move that throws is caught there, FR-075, every picture
+        /// is put back under the name it was written under, and the outcome's lines say what was moved, what was put back
         /// and what could not be, so the lines here are the outcome's and never a sentence
         /// of this file's about the state of the disk. The one throw that can still reach
         /// here is from the planning before any move, so nothing on the disk has changed.

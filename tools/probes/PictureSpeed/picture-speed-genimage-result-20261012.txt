@@ -1,0 +1,243 @@
+MACHINE   [machine]   2026-10-12 03:08:37
+HOST      powershell 5.1.26100.9444, 64 bit process True, apartment STA, pid 47340
+SCRIPT    "%LOCALAPPDATA%\NwcFederatorLoop\wt-q150\tools\probes\PictureSpeed\probe-picture-speed.ps1", sha256 B6D795189495207C7DA368671EE255CCD89B9102E3F0EC7FC13AA1382E51952F
+GUARD     tools\loop\nw-guard.ps1, sha256 8CAC3B67DF49FF8AFD3556E7B270DD8C0895E39CB8F2CB2B2CE83C18620F076E
+PROCESS   powershell.exe pid 47340, started to run -File C:\Users\p003653k\AppData\Local\NwcFederatorLoop\wt-q150\tools\probes\PictureSpeed\probe-picture-speed.ps1, which is this script: True
+
+==== STEP 2. Starts this probe could not prove, then every Roamer running before anything starts ====
+  no start this probe could not prove is recorded
+  no Roamer is running
+  every process id on the machine taken as the before set: 424
+
+==== THE WORK FOLDER, new on every call ====
+  "%LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261012-030837" created empty
+
+==== BADER'S SETTINGS, backed up before anything starts ====
+  HKCU\Software\Autodesk\Navisworks Manage\22.0 exported to "%LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261012-030837\hkcu-navisworks-manage-22.0-before.reg", reg.exe exit 0, 123148 bytes
+  read key by key: 303 keys, 1243 values, 0 keys that could not be read
+  %APPDATA%\Autodesk\Navisworks Manage 2025: 9 files copied to the work folder and read back with their source's sha256, 0 not backed up, 199 AutoSave files listed and not copied
+  the tool's own logs folder listed: 48 files
+
+==== THE COPIES, made before anything starts ====
+  the NWF "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\NWF\C04\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf", 39853 bytes, sha256 49FD09DC70CB029A600F64BAE0BBE0C09FEAD2B83BDA503F24F45E176FBA9B14
+  its copy "%LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261012-030837\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf", sha256 matches
+  the XML "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml", 1463259 bytes, sha256 94897667ADB466AE97A29B8DF80B17B7FE52AC701F7F5FF174B975308471EBC9, its copy matches
+  the corrections list "%LOCALAPPDATA%\NwcFederatorLoop\runs\08\NMFed\exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt", sha256 AFC463BE841A4DF2FD4D056ECBF3386E8F68C2ED37384BCB72934C35F0CB6C0C, copied beside the XML's copy as 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt, matches
+  the probe "%LOCALAPPDATA%\NwcFederatorLoop\wt-q150\tools\probes\PictureSpeed\bin\Release\net48\PictureSpeedProbe.dll", 1010176 bytes, written 2026-10-12 03:08:07, sha256 A440B55AD8A8A5FE93EFB251F0A50D069769DF147EB97B12BE1BC01A91230E94, its copy matches
+
+==== THE LAST READ BEFORE THE CONSTRUCTOR, the same as step 2 ====
+  no Roamer is running
+  Auto-Save switch written off for this start, Q135: enable under 22.0\GlobalOptions\general\autosave written String "3 0" and read back so, the backup holds String "0". Until the put back it reads so for Bader too. Whether Navisworks reads it as off is UNKNOWN until a start writes no autosave
+
+==== STEP 3. Start one Navisworks through the API and adopt it ====
+  03:08:41.755  t+4.2s  calling new NavisworksApplication()
+  03:10:06.367  t+88.8s  the constructor RETURNED after 84.61 s
+  Roamer processes new since step 2: 1
+    pid 42680, started 03:08:41.777, parent 1976 svchost.exe, path "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe"
+    a possible start, its command line holds embedding, command line: "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  adopt only if all four: constructor returned without throwing True, exactly one possible start new True, it started at or after the call True, its command line holds -Embedding True
+  the held handle is open on pid 42680, and the start ticks read again through it are equal
+  ADOPTED, MY PID IS 42680, started 2026-10-12 03:08:41.777, start ticks UTC 639273605217772635
+  03:10:15.058  t+97.5s  Visible set True, read back True
+  visible top level windows of 42680: 1, hidden: 70, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+
+==== STEP 4. AddPluginAssembly with the probe's copy ====
+  03:10:15.428  t+97.9s  AddPluginAssembly RETURNED after 0.129 s
+
+==== STEP 5. ExecuteAddInPlugin, the mode genimage on the copies ====
+  03:10:15.433  t+97.9s  calling ExecuteAddInPlugin(PictureSpeedProbe.PARS, genimage, the plugin's output file, the NWF's copy, the XML's copy, the test BLD-AR-Walls-vs-BLD-AR-Floors, 20 pictures a setting, the pictures folder, the tool log folder, the totals for 1556)
+  03:10:44.296  t+126.7s  ExecuteAddInPlugin RETURNED 0 after 28.86 s
+  visible top level windows of 42680: 1, hidden: 80, dialogs of class #32770 visible: 0
+    [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+---- the plugin's output, every line ----
+  | 03:10:15.484  probe started, mode genimage
+  | 03:10:15.488  opening 1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf
+  | 03:10:19.182  TryOpenFile returned True after 3.693 s
+  | 03:10:19.182  models 10, document units Feet
+  | 03:10:19.182     model 0  1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc  under the loop folder True
+  | 03:10:19.183     model 1  1104-PAR-1A04PK-ZZZ-EL-MOD-000001.nwc  under the loop folder True
+  | 03:10:19.183     model 2  1104-PAR-1A04PK-ZZZ-FP-MOD-000001.nwc  under the loop folder True
+  | 03:10:19.183     model 3  1104-PAR-1A04PK-ZZZ-HV-MOD-000001.nwc  under the loop folder True
+  | 03:10:19.183     model 4  1104-PAR-1A04PK-ZZZ-ME-MOD-000001.nwc  under the loop folder True
+  | 03:10:19.183     model 5  1104-PAR-1A04PK-ZZZ-ME-MOD-000002.nwc  under the loop folder True
+  | 03:10:19.183     model 6  1104-PAR-1A04PK-ZZZ-ME-MOD-000003.nwc  under the loop folder True
+  | 03:10:19.183     model 7  1104-PAR-1A04PK-ZZZ-ME-MOD-000004.nwc  under the loop folder True
+  | 03:10:19.183     model 8  1104-PAR-1A04PK-ZZZ-ST-MOD-000001.nwc  under the loop folder True
+  | 03:10:19.184     model 9  1104-PAR-1A04PK-ZZZ-ST-MOD-000002.nwc  under the loop folder True
+  | 03:10:19.184  clash tests at the root 3
+  | 03:10:19.205  ==== THE TEST, made by the add-in's own code ====
+  | 03:10:19.363  MatrixCorrections.ReadPicked: sets in the file 61, tests in the file 1830
+  | 03:10:27.907  sets indexed 71, tests already in the document 3, the tool would create 741
+  | 03:10:27.907  the planned test: BLD-AR-Walls-vs-BLD-AR-Floors, hard_conservative, tolerance 0.0820209974 ft, merge composites True, left lcop_selection_set_tree/Architecture/BLD-AR-Walls, right lcop_selection_set_tree/Architecture/BLD-AR-Floors
+  | 03:10:27.968  the set lcop_selection_set_tree/Architecture/BLD-AR-Walls finds 2608 item(s)
+  | 03:10:27.977  the set lcop_selection_set_tree/Architecture/BLD-AR-Floors finds 199 item(s)
+  | 03:10:27.978  the models of the test, 1 of 10: 0 1104-PAR-1A04PK-ZZZ-AR-MOD-000001.nwc
+  | 03:10:27.992  the tool's Create took 0.014 s, address read
+  | 03:10:28.813  TestsRunTest took 0.819 s
+  | 03:10:28.813  the test holds 1556 row(s) at its top and 1556 clash(es) in all
+  | 03:10:28.814  
+  | 03:10:28.826  ==== SETTING 6-tests-image-watched, TestsImageForResult as the tool calls it, the document read before and after ====
+  | 03:10:34.158  01  Clash1  render 5.330 s, before: camera at 2159084.49 9009753.741 1878.931, next undo TestsRunTest, after: camera at 2159084.49 9009753.741 1878.931, next undo TestsRunTest, nothing read changed
+  | 03:10:34.687  02  Clash2  render 0.528 s, before: camera at 2159084.49 9009753.741 1878.931, next undo TestsRunTest, after: camera at 2159084.49 9009753.741 1878.931, next undo TestsRunTest, nothing read changed
+  | 03:10:35.098  03  Clash3  render 0.410 s, before: camera at 2159084.49 9009753.741 1878.931, next undo TestsRunTest, after: camera at 2159084.49 9009753.741 1878.931, next undo TestsRunTest, nothing read changed
+  | 03:10:35.358  04  Clash4  render 0.259 s, before: camera at 2159084.49 9009753.741 1878.931, next undo TestsRunTest, after: camera at 2159084.49 9009753.741 1878.931, next undo TestsRunTest, nothing read changed
+  | 03:10:35.713  05  Clash5  render 0.354 s, before: camera at 2159084.49 9009753.741 1878.931, next undo TestsRunTest, after: camera at 2159084.49 9009753.741 1878.931, next undo TestsRunTest, nothing read changed
+  | 03:10:35.716  ==== SETTING 7-generate-two-items, only the clash's two items shown, painted red and green, its own camera, View.GenerateImage 1024 by 1024 ====
+  | 03:10:35.845  01  Clash1  hide 0.036 s (178 items), camera 0.029 s, paint 0.001 s, render 0.034 s, save 0.010 s, restore 0.015 s, all 0.126 s, 50534 bytes
+  | 03:10:35.940  02  Clash2  hide 0.012 s (178 items), camera 0.027 s, paint 0.000 s, render 0.029 s, save 0.010 s, restore 0.014 s, all 0.092 s, 51677 bytes
+  | 03:10:36.038  03  Clash3  hide 0.012 s (178 items), camera 0.029 s, paint 0.000 s, render 0.028 s, save 0.011 s, restore 0.015 s, all 0.096 s, 49875 bytes
+  | 03:10:36.143  04  Clash4  hide 0.013 s (178 items), camera 0.031 s, paint 0.000 s, render 0.032 s, save 0.010 s, restore 0.015 s, all 0.102 s, 50949 bytes
+  | 03:10:36.242  05  Clash5  hide 0.014 s (178 items), camera 0.030 s, paint 0.000 s, render 0.030 s, save 0.010 s, restore 0.014 s, all 0.098 s, 49852 bytes
+  | 03:10:36.334  06  Clash6  hide 0.012 s (178 items), camera 0.028 s, paint 0.000 s, render 0.028 s, save 0.007 s, restore 0.014 s, all 0.089 s, 51395 bytes
+  | 03:10:36.428  07  Clash7  hide 0.012 s (178 items), camera 0.030 s, paint 0.000 s, render 0.028 s, save 0.010 s, restore 0.014 s, all 0.093 s, 51695 bytes
+  | 03:10:36.522  08  Clash8  hide 0.012 s (178 items), camera 0.027 s, paint 0.000 s, render 0.028 s, save 0.010 s, restore 0.014 s, all 0.090 s, 49826 bytes
+  | 03:10:36.617  09  Clash9  hide 0.012 s (178 items), camera 0.030 s, paint 0.000 s, render 0.029 s, save 0.007 s, restore 0.014 s, all 0.093 s, 51675 bytes
+  | 03:10:36.721  10  Clash10  hide 0.013 s (178 items), camera 0.032 s, paint 0.000 s, render 0.030 s, save 0.011 s, restore 0.015 s, all 0.101 s, 49880 bytes
+  | 03:10:36.825  11  Clash11  hide 0.014 s (178 items), camera 0.033 s, paint 0.000 s, render 0.031 s, save 0.010 s, restore 0.015 s, all 0.102 s, 50503 bytes
+  | 03:10:36.940  12  Clash12  hide 0.013 s (178 items), camera 0.029 s, paint 0.000 s, render 0.046 s, save 0.010 s, restore 0.014 s, all 0.113 s, 52113 bytes
+  | 03:10:37.039  13  Clash13  hide 0.012 s (178 items), camera 0.029 s, paint 0.000 s, render 0.031 s, save 0.010 s, restore 0.014 s, all 0.096 s, 49883 bytes
+  | 03:10:37.136  14  Clash14  hide 0.012 s (178 items), camera 0.031 s, paint 0.000 s, render 0.027 s, save 0.010 s, restore 0.014 s, all 0.094 s, 51508 bytes
+  | 03:10:37.232  15  Clash15  hide 0.012 s (178 items), camera 0.028 s, paint 0.000 s, render 0.027 s, save 0.010 s, restore 0.017 s, all 0.094 s, 52106 bytes
+  | 03:10:37.330  16  Clash16  hide 0.013 s (178 items), camera 0.030 s, paint 0.000 s, render 0.028 s, save 0.010 s, restore 0.014 s, all 0.095 s, 49814 bytes
+  | 03:10:37.430  17  Clash17  hide 0.013 s (178 items), camera 0.032 s, paint 0.000 s, render 0.032 s, save 0.008 s, restore 0.013 s, all 0.098 s, 50954 bytes
+  | 03:10:37.525  18  Clash18  hide 0.013 s (178 items), camera 0.029 s, paint 0.000 s, render 0.027 s, save 0.010 s, restore 0.013 s, all 0.093 s, 49886 bytes
+  | 03:10:37.622  19  Clash19  hide 0.014 s (178 items), camera 0.027 s, paint 0.000 s, render 0.028 s, save 0.010 s, restore 0.015 s, all 0.095 s, 51708 bytes
+  | 03:10:37.724  20  Clash20  hide 0.014 s (178 items), camera 0.029 s, paint 0.000 s, render 0.033 s, save 0.010 s, restore 0.015 s, all 0.100 s, 52136 bytes
+  | 03:10:37.727  ==== SETTING 8-generate-two-items-again, only the clash's two items shown, painted red and green, its own camera, View.GenerateImage 1024 by 1024 ====
+  | 03:10:37.831  01  Clash1  hide 0.013 s (178 items), camera 0.029 s, paint 0.000 s, render 0.033 s, save 0.010 s, restore 0.015 s, all 0.099 s, 50534 bytes
+  | 03:10:37.926  02  Clash2  hide 0.012 s (178 items), camera 0.027 s, paint 0.000 s, render 0.030 s, save 0.010 s, restore 0.015 s, all 0.093 s, 51677 bytes
+  | 03:10:38.022  03  Clash3  hide 0.012 s (178 items), camera 0.033 s, paint 0.000 s, render 0.028 s, save 0.007 s, restore 0.013 s, all 0.093 s, 49875 bytes
+  | 03:10:38.116  04  Clash4  hide 0.012 s (178 items), camera 0.029 s, paint 0.000 s, render 0.028 s, save 0.010 s, restore 0.014 s, all 0.092 s, 50949 bytes
+  | 03:10:38.210  05  Clash5  hide 0.012 s (178 items), camera 0.028 s, paint 0.000 s, render 0.029 s, save 0.008 s, restore 0.014 s, all 0.092 s, 49852 bytes
+  | 03:10:38.306  06  Clash6  hide 0.012 s (178 items), camera 0.029 s, paint 0.000 s, render 0.028 s, save 0.010 s, restore 0.015 s, all 0.093 s, 51395 bytes
+  | 03:10:38.405  07  Clash7  hide 0.012 s (178 items), camera 0.030 s, paint 0.000 s, render 0.031 s, save 0.010 s, restore 0.014 s, all 0.097 s, 51695 bytes
+  | 03:10:38.498  08  Clash8  hide 0.012 s (178 items), camera 0.027 s, paint 0.000 s, render 0.029 s, save 0.010 s, restore 0.013 s, all 0.091 s, 49826 bytes
+  | 03:10:38.595  09  Clash9  hide 0.013 s (178 items), camera 0.027 s, paint 0.000 s, render 0.029 s, save 0.010 s, restore 0.015 s, all 0.095 s, 51675 bytes
+  | 03:10:38.694  10  Clash10  hide 0.013 s (178 items), camera 0.027 s, paint 0.000 s, render 0.030 s, save 0.010 s, restore 0.015 s, all 0.096 s, 49880 bytes
+  | 03:10:38.794  11  Clash11  hide 0.013 s (178 items), camera 0.031 s, paint 0.000 s, render 0.029 s, save 0.010 s, restore 0.015 s, all 0.098 s, 50503 bytes
+  | 03:10:38.895  12  Clash12  hide 0.014 s (178 items), camera 0.031 s, paint 0.000 s, render 0.030 s, save 0.010 s, restore 0.014 s, all 0.099 s, 52113 bytes
+  | 03:10:39.020  13  Clash13  hide 0.013 s (178 items), camera 0.027 s, paint 0.000 s, render 0.055 s, save 0.010 s, restore 0.016 s, all 0.122 s, 49883 bytes
+  | 03:10:39.118  14  Clash14  hide 0.015 s (178 items), camera 0.030 s, paint 0.000 s, render 0.028 s, save 0.010 s, restore 0.014 s, all 0.096 s, 51508 bytes
+  | 03:10:39.220  15  Clash15  hide 0.012 s (178 items), camera 0.031 s, paint 0.000 s, render 0.026 s, save 0.008 s, restore 0.021 s, all 0.099 s, 52106 bytes
+  | 03:10:39.323  16  Clash16  hide 0.014 s (178 items), camera 0.033 s, paint 0.000 s, render 0.029 s, save 0.011 s, restore 0.014 s, all 0.101 s, 49814 bytes
+  | 03:10:39.425  17  Clash17  hide 0.013 s (178 items), camera 0.031 s, paint 0.000 s, render 0.030 s, save 0.011 s, restore 0.014 s, all 0.098 s, 50954 bytes
+  | 03:10:39.528  18  Clash18  hide 0.013 s (178 items), camera 0.032 s, paint 0.000 s, render 0.031 s, save 0.010 s, restore 0.015 s, all 0.101 s, 49886 bytes
+  | 03:10:39.628  19  Clash19  hide 0.014 s (178 items), camera 0.029 s, paint 0.000 s, render 0.029 s, save 0.010 s, restore 0.015 s, all 0.097 s, 51708 bytes
+  | 03:10:39.723  20  Clash20  hide 0.012 s (178 items), camera 0.027 s, paint 0.000 s, render 0.030 s, save 0.010 s, restore 0.014 s, all 0.094 s, 52136 bytes
+  | 03:10:39.729  ==== SETTING 9-tests-image-again, TestsImageForResult as the tool calls it, every model shown, 1024 by 1024 ====
+  | 03:10:44.293  PUT BACK  the paint taken off, the viewpoint the document opened with, and the hidden state read back as before: True
+  | 03:10:44.293  
+  | 03:10:44.293  ==== SUMMARY, mode genimage ====
+  | 03:10:44.293  6-tests-image-watched  5 pictures, render mean 1.376 s
+  | 03:10:44.293  7-generate-two-items  20 pictures, render mean 0.030 s, median 0.029 s, every part mean 0.098 s, for 1556 pictures 152 s
+  | 03:10:44.293  8-generate-two-items-again  20 pictures, render mean 0.031 s, median 0.029 s, every part mean 0.097 s, for 1556 pictures 151 s
+  | 03:10:44.293  9-tests-image-again  20 pictures, render and save mean 0.225 s, for 1556 pictures 350 s
+  | 03:10:44.295  probe finished
+
+==== STEP 6. Quit through the API ====
+  03:10:45.208  t+127.6s  Dispose RETURNED after 0.73 s
+  03:10:54.504  t+136.9s  pid 42680 state gone, 9.3 s after Dispose returned, not forced
+
+==== FINALLY ====
+  03:10:54.510  t+136.9s  pid 42680 state gone, nothing to close
+  watchdog forced anything: no
+  watchdog passes 213, longest pass 10046 ms, longest gap between the starts of two passes 10547 ms, error lines 0, passes that failed before their process loop 0, errors in its runspace 0, lines it could not write 0
+---- the watchdog's record ----
+  03:08:38.623  t+1.0s  watchdog started
+  03:08:41.792  t+4.2s  Roamer pid 42680 seen with no readable start time, looked at again at the next pass
+  03:08:47.747  t+10.2s  new process Roamer pid 42680, parent 1976 svchost.exe, started 03:08:41.777, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+  03:08:47.811  t+10.2s  Roamer 42680 visible top level windows: none
+  03:09:38.231  t+60.7s  new process AdskLicensingAgent pid 26244, parent 42680 Roamer.exe, started 03:09:27.815, command line holds the word embedding or automation: no
+  03:09:45.679  t+68.1s  new process AdskLicensingAgent pid 36520, parent 42680 Roamer.exe, started 03:09:28.751, command line holds the word embedding or automation: no
+  03:10:00.562  t+83.0s  Roamer 42680 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+  03:10:05.370  t+87.8s  Roamer 42680 visible top level windows: none
+  03:10:12.898  t+95.3s  Roamer 42680 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  03:10:13.989  t+96.4s  Roamer 42680 visible top level windows: none
+  03:10:15.078  t+97.5s  Roamer 42680 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  03:10:16.710  t+99.1s  Roamer 42680 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;198abb14-5f34-44c4-a403-19d425691868]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  03:10:18.336  t+100.8s  Roamer 42680 visible top level windows: [HwndWrapper[Roamer.exe;ProgressDialog;198abb14-5f34-44c4-a403-19d425691868]] "Working..." text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  03:10:19.430  t+101.9s  Roamer 42680 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+  03:10:45.119  t+127.5s  Roamer 42680 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+  03:10:45.652  t+128.1s  Roamer 42680 visible top level windows: none
+  03:10:54.670  t+137.1s  watchdog stopped
+---- every process the watchdog recorded, at the end ----
+  Roamer pid 42680, parent 1976 svchost.exe: exited
+  AdskLicensingAgent pid 26244, parent 42680 Roamer.exe: exited
+  AdskLicensingAgent pid 36520, parent 42680 Roamer.exe: exited
+  Roamers running now that were not in step 2: 0
+---- STARTS THIS PROBE COULD NOT PROVE, written down for later runs ----
+  none
+
+---- BADER'S SETTINGS, compared, and put back only when no other Navisworks ran ----
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 40636046192989  new QWord 40637350880354
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 93  new DWord 94
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 152  new DWord 153
+  22.0\CER\22.5.1433.58  uptime  old QWord 2353587343750  new QWord 2354911875000
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\GlobalOptions\interface\display\graphics  hw_accel  old String "3 1"  new String "0"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,969"  new String "0,144,85,1632,969"
+  22.0\PluginOptions  DefaultPlugin  old String "LcOpNwcPlugin"  new String "lcodpnwf"
+  22.0\Recent File List\1  DisplayName  old String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"  new String "1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\1  LastOpened  old QWord 134290938074132508  new QWord 134362374181424125
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>  new String "%LOCALAPPDATA%\NwcFederatorLoop\probes\picture-speed-20261012-030837\1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134290938039044021  new QWord 134290938042577701
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005003.nwc, sha1 B1CCD34DBC72>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>
+  22.0\Recent File List\2  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"  new String "BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc"
+  22.0\Recent File List\2  LastOpened  old QWord 134290938070616743  new QWord 134290938074132508
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>  new String <a path outside the loop folder, file BV-BVI-143-0000-PRS-DDE-LI-A00-0000001.nwc, sha1 B5824C527A99>
+  22.0\Recent File List\3  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"  new String "BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc"
+  22.0\Recent File List\3  LastOpened  old QWord 134290938066994697  new QWord 134290938070616743
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-LA-A00-0000001.nwc, sha1 A0FAF7B3CDCD>
+  22.0\Recent File List\4  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134290938062820552  new QWord 134290938066994697
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005010.nwc, sha1 A000E99A4015>
+  22.0\Recent File List\5  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134290938058967255  new QWord 134290938062820552
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005009.nwc, sha1 8D02C1526ADC>
+  22.0\Recent File List\6  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc"
+  22.0\Recent File List\6  LastOpened  old QWord 134290938054115696  new QWord 134290938058967255
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005008.nwc, sha1 F4151795966E>
+  22.0\Recent File List\7  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134290938049614120  new QWord 134290938054115696
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005007.nwc, sha1 1F527852AE60>
+  22.0\Recent File List\8  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134290938046297945  new QWord 134290938049614120
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005006.nwc, sha1 EBD937B97C9F>
+  22.0\Recent File List\9  DisplayName  old String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc"  new String "BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134290938042577701  new QWord 134290938046297945
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005004.nwc, sha1 4C0D86461D9C>  new String <a path outside the loop folder, file BV-BVI-143-0000-FPP-DDE-AR-A00-0005005.nwc, sha1 79F410BF024C>
+  registry: 38 values or keys differ from the backup
+  registry: 38 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 71384 bytes, sha256 580D6E106497, written 2026-10-12 03:06:48  new 71531 bytes, sha256 0652395627BC, written 2026-10-12 03:10:45
+  file CHANGED LastSession.xml  old 40082 bytes, sha256 A553406E169E, written 2026-10-12 01:30:44  new 40079 bytes, sha256 366D01A23906, written 2026-10-12 03:10:45
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+  files in %LOCALAPPDATA%\ParsonsNwcFederator\logs added or changed: 0
+
+---- the NWF the copy was made from, at the end ----
+  sha256 49FD09DC70CB029A600F64BAE0BBE0C09FEAD2B83BDA503F24F45E176FBA9B14, the same as before the start
+---- the XML the copy was made from, at the end ----
+  sha256 94897667ADB466AE97A29B8DF80B17B7FE52AC701F7F5FF174B975308471EBC9, the same as before the start
+---- the work folder at the end, sorted by name ----
+  1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt  6079 bytes
+  1104-PAR_CLASH_AllInOne_25mm_FIXED.xml  1463259 bytes
+  1104-PAR-1A04PK-ZZZ-BM-MOD-000001.nwf  39853 bytes
+  hkcu-navisworks-manage-22.0-before.reg  123148 bytes
+  mypid.txt  36 bytes
+  PictureSpeedProbe.dll  1010176 bytes
+  plugin-output.txt  10728 bytes
+  watch.txt  2363 bytes
+---- outcome ----
+  step 2 passed, no Roamer running
+  step 3 passed
+  step 4 passed
+  step 5 passed, returned 0
+  step 6 passed, state gone
+  lines that could not be written to the result file: 0
+  finished 2026-10-12 03:10:58, 141 s in all

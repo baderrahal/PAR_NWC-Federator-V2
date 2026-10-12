@@ -1398,10 +1398,21 @@ and 6 does not read as broken.
 - The pictures are NUMBERED IN THE EXPORT ORDER, which is the order the rows are written:
   tests most clashes first with ties in creation order, and inside a test the clashes as
   Clash Detective lists them. Measured off both exports in samples\client-report, where
-  the first block is cd00 and the second cd01 whatever order the tests ran in. A picture is
-  rendered while its test runs, under the run order number, because the report order is
-  only known when the last test has run. So after the run every picture is renamed ONCE,
-  in one pass, and the row, the workbook link, the XML href and the page all follow it. The
+  the first block is cd00 and the second cd01 whatever order the tests ran in. The report
+  order is only known when the last test has run, so SINCE F149 EVERY PICTURE IS TAKEN ONCE
+  EVERY TEST HAS RUN AND EVERY MIRROR MERGE IS MADE, walking `Federator.Core.Report.PictureWalk`:
+  the tests in ReportOrder.Tests and each test's rows in its own order, each picture numbered
+  by `ClashReport.NextPictureOf`, the test's index claimed at its first picture and one more
+  than its rows already pictured, and its row pointed at it by `PictureNumber.PointTheRow`, the
+  one place each of the two is done. So every picture is written under its final name, and
+  `PictureWalkTests` prove the renumber then renames none and that a walk in the order the
+  tests ran leaves pictures to rename. Until F149 a picture was rendered while its test ran,
+  under the run order number, and renamed after the run, 39 s of set 09's 1A02MM. Consecutive
+  rows of one test of the report read from one test of the document make one stretch, a row
+  waiting for no picture ends none, and a row met under a second test of the report is walked
+  once and named. The rename stays, ONCE, in one pass, as the check that finds every picture
+  already right and the rename of any picture under another number, and the row, the workbook
+  link, the XML href and the page all follow it. The
   rename goes through a holding name first, because a swap between two tests would
   otherwise write one picture over another. What a picture shows and its size are
   untouched. The rule lives in Federator.Core.Report.ReportOrder and the rename in
@@ -1409,9 +1420,9 @@ and 6 does not read as broken.
   rename that fails is a warning on the report and never fails the group. A MOVE THAT
   THROWS IS CAUGHT AT THE MOVE AND EVERYTHING THE TWO PASSES DID IS UNDONE, FR-075 in
   F120: the pictures already at a final name go back to their holding name, then every
-  holding name goes back to the run order name it came from, each put back read off the
-  disk, so the folder is as it was before the rename and every row, which is pointed only
-  once every move has gone through, points at the picture it was rendered under. The
+  holding name goes back to the name its picture was written under, each put back read off
+  the disk, so the folder is as it was before the rename and every row, which is pointed only
+  once every move has gone through, points at the picture it was written under. The
   outcome names the move that threw, how many had been moved before it, how many were under
   a holding name, and every picture that could not be put back with where it is. The
   engine's lines are the outcome's and never a sentence of its own about the disk, since
@@ -1423,15 +1434,47 @@ and 6 does not read as broken.
   earlier, cut off renaming left is taken out before the move onto it and said
 - The image settings: on by default, a cap per test defaulting to off, a status filter
   defaulting to New Active and Reviewed, and a size defaulting to 1024 by 1024 because
-  that is what all 60 pictures of the accepted report measure. An image that fails renders
-  nothing, is logged by name, leaves its cell empty and never stops the run. Fifty
+  that is what all 60 pictures of the accepted report measure. ONLY THE TEST'S MODELS SHOWN FOR
+  ITS PICTURES, F145, Bader's choice of Q150, ImageOptions.OnlyTheTestsModels on by default with no
+  box in the window, and only for a stretch with a row that takes a picture by
+  `ImageOptions.TakesAPictureOf`, F149, which replaced F145's WouldTakeAPicture over a test's tally: which
+  models stay shown is PictureModels' rule over the PictureSide of each of the test's own two sides,
+  and every doubt, no side, a side not read, a side of no item, an item in a model whose file name
+  another model shares, an item whose model was not read, no model read or a model outside the
+  document's, keeps every model shown and says why. An image that fails renders
+  nothing, is logged by name, leaves its cell empty and is told to the guard, and one such
+  failure never stops the run. A
+  ROW TAKES A PICTURE BY ONE RULE, `ImageOptions.TakesAPictureOf`, F149: pictures on, the
+  guard not fired, its status asked for and its test under the cap, a row passed over on its
+  status or the cap counted on the tally there and nowhere else. The writer reads it and so
+  does the picture pass before it resolves a row's result, so a row that takes no picture
+  costs no walk and a stretch with none is not resolved or hidden for. THE ROWS ONE FAULT LEFT
+  ARE COUNTED AND THE FAULT IS TOLD TO THE GUARD ONCE, F149 and its second reading,
+  `ImageOptions.CountTheRowsLeft`: where a stretch's test is not found again once every test
+  has run, or a throw ends the stretch, each row from there on is counted on the IMAGES tally
+  as the writer would have counted it had it been asked for, a row of a status not asked for
+  passed over on its status, as many as the room under the cap counted as failed, the room
+  taken as if each had been written, and the rest passed over on the cap, and the guard is told
+  of the fault ONCE, and only where a row was counted as failed. Told once a row, one
+  ObjectDisposedException at row 11 of a 1556 row test fired the guard and stopped the run
+  saying fifty images failed when not one render was tried. Nothing is counted once the guard
+  has fired. A clash not found again in its test is one attempt and is told on its own. The
+  reasons are `ImageFailure.TestNotFoundAgain`, `ImageFailure.ClashNotFoundAgain` and a throw's
+  own, the row the throw met named with the throw's words and the rest with the words that it
+  ended the stretch, and the add-in says each fault on one IMAGE line with its counts, so an
+  empty Image cell never reads as a picture nobody asked for. Fifty
   failures of the same reason stop the run, the same way and with the same default as the
   clash step, and the line says images rather than tests. THE GUARD IS ONE FOR THE WHOLE
   RUN AND IS READ WHERE A PICTURE IS WRITTEN, FR-076 in F120: the engine builds it beside
   the tests' guard and hands it to each group's writer the way ClashRunner takes its own,
-  so fifty failures in a row across groups stop the run, and the writer renders nothing
-  once it has fired while the runner stops the run after the test the fiftieth fell in,
-  and again after the pictures that waited for a merge, never at the end of the group. A
+  so fifty failures in a row across groups stop the run, and nothing is rendered, resolved
+  or counted once it has fired. SINCE F149 THE GUARD FIRES LATE, A COST OF F149: every
+  picture is taken once every test of the group has run, so the runner reads the guard when
+  the picture pass ends, and a run whose pictures all fail runs every test of the group the
+  fiftieth failure fell in before it stops, where before F149 it stopped after the test the
+  fiftieth fell in. The pass breaks out of its stretches and rows as soon as the guard fires,
+  and the runner reads it once more before a group's first test, for a guard an earlier
+  group fired whose stop never reached the engine, row F149-R1. A
   reason is one key for one fault: a render that finished with no file says
   `Federator.Core.Report.ImageFailure.NoFileArrived` and the path beside it on the line,
   because with the path inside the reason fifty of them were fifty reasons and the guard
@@ -1444,8 +1487,10 @@ and 6 does not read as broken.
   OWN SECONDS WENT, CALL BY CALL, FR-077 in F120: `Federator.Core.Report.ImagesSeconds`
   holds one part per call a picture is made of, on the log's own clock, rendering, saving
   the JPEG and reading the file back, and the whole is the visits to the step added, so
-  what no part holds is the bookkeeping inside a visit and never the harvest's walk, which
-  is HARVEST less IMAGES on the timing block. Set 03 timed the render and the save as ONE
+  what no part holds is the bookkeeping inside a visit and never the walk between two
+  pictures, which since F149 is PICTURES less IMAGES on the timing block, the pass's resolves
+  and hiding among it, and was HARVEST less IMAGES before. A row passed over opens no visit
+  since F149, so the visits are the pictures asked for. Set 03 timed the render and the save as ONE
   watch, 643.150 s over 5679 pictures at 0.113 s each, so which of the two cost the time
   was UNKNOWN and the speed work could not start. The line is written once per group beside
   the tally, and the tally's seconds per picture are read off the same visit, so the two
@@ -2025,10 +2070,11 @@ Where the time went is the question the log exists to answer, and it can only an
 it if the same work carries the same name every time it is timed.
 
 - the step names live in `Federator.Core.Diagnostics.RunSteps` and nowhere else. Nothing
-  types a step name as a string. Sixteen of them, in the order a group meets them:
-  DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, IMAGES,
-  RENUMBER, VIEWS, WORKBOOK, HTML, XML, NWD, CONFIRM.
-  VIEWS is F85's and it was untimed before
+  types a step name as a string. Nineteen of them, in the order a group meets them:
+  DECIDE, APPEND, NWF SAVE, UNITS, SETS, TESTS CREATE, TESTS RUN, HARVEST, PICTURES, IMAGES,
+  RENUMBER, VIEWS, WORKBOOK, HTML, XML, COVERAGE, INTERNAL, NWD, CONFIRM.
+  PICTURES is F149's, the picture pass once every test has run, which its attempt 1 ran
+  inside no step. VIEWS is F85's and it was untimed before
   that: building the viewpoints was called outside every step, so its seconds came off
   no total and the run read as faster than it was. RENUMBER is FR-077's in F120, the
   pictures renamed into report order once the clash step has run every test, and it was
@@ -2056,8 +2102,10 @@ it if the same work carries the same name every time it is timed.
   and it is here for the same reason, a run that once left a 17.8 MB log
 - a step inside a step is indented by its depth and carries that depth, so the timing
   block can work its shares out over the top level alone. IMAGES is the only one nested
-  today, inside HARVEST, because a picture is written while the harvest walks the results.
-  TESTS CREATE, TESTS RUN and HARVEST each open and close on their own
+  today, inside PICTURES since F149, because each picture's visit is taken inside the picture
+  pass. It nested inside HARVEST while a picture was written as the harvest walked the
+  results, so against a run before F149 HARVEST drops by the pictures and PICTURES is a row of
+  its own. TESTS CREATE, TESTS RUN, HARVEST and PICTURES each open and close on their own
 - outside a group there is no group to count visits against, so each press of the two
   hand buttons on the Clash step is its own occasion and writes its own pair of lines
 - the step never changes what the run does. It opens, the work runs exactly as it did,
@@ -2513,7 +2561,8 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
 
 - THE HARVEST AND THE VIEWS SAY WHERE THEY ARE AT LEAST EVERY 30 S BETWEEN TWO PIECES, Bader's order of
   2026-10-11 headed 1A04PK IS FROZEN, a piece being a row of a test, an item under a group row of a test
-  in a merge, a picture that waited for a merge, or a view, so a single piece longer than that is
+  in a merge, a picture of the picture pass, one count across the whole pass since F149, or a view,
+  so a single piece longer than that is
   silent for its length and its call is named instead. `StepProgress` is the one rule of when a progress
   line is due, the setting's seconds since the step
   began or the last line on the log's own clock, or every piece at nought or below, and of its words,
