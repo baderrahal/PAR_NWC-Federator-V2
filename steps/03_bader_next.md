@@ -264,8 +264,9 @@ the question Q144 asks you.
 
 On the run of step 461 with fix-F132c merged, a first run over a new NWF, the one run that merges.
 
-669. Look for, in every `MIRROR MERGE` block: each kept test's line `found N, the mirror M, B by both and O by the mirror only`, with B and O adding up to M, or to M less the count its `found by an earlier mirror` part gives, and no line reading `repeats a pair of items it already gave`
-670. Open the workbook: each kept test's block holds as many rows ending `, found by the mirror only in` as its MIRROR MERGE line counts by the mirror only
+669. Look for, in every `MIRROR MERGE` block: each mirror's line `found N, the mirror M, B by both and O by the mirror only`, with B, O and the count of its `found by an earlier mirror` part adding up to M, and no line reading `repeats a pair of items it already gave`
+670. Open the workbook: each kept test's block holds as many rows whose name holds `, found by the mirror only in` as its mirrors' MIRROR MERGE lines count by the mirror only
+671. Look for, in every `MIRROR MERGE` block: any line ending `Which copy is the twin of which is UNKNOWN, so no status was carried across and the report keeps` the kept test's name, and any line ending `is the twin of this one is not weighed`. Send each one, since neither has been seen on a run
 
 ## Proof of F128, the Generic Models sets, count and workbook
 

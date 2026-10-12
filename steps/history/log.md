@@ -18,19 +18,33 @@ What was done:
   all five failing first, f132c-failing-first.txt. The two tests that asserted the repeat,
   ARepeatOfTheMirrorIsSaidOnce and AClashTheMirrorGivesTwiceIsAddedOnce, asserted the fault itself and are
   replaced by TwoClashesOfTheMirrorOnOnePairTheKeptTestNeverFoundAreBothAdded on the same input
+- ATTEMPT 2, on the one blocking point the reviewer and the breaker of pull request 211 both found. Each copy of a
+  pair both tests found was paired with a kept copy by the order handed, and its status weighed onto that row,
+  where which copy is the twin of which is UNKNOWN, so a person's Approved or Resolved could be written onto the
+  wrong clash. Where a pair has more than one copy under the kept test or the mirror and its copies carry more than
+  one status, no status is carried across, the kept test's stay, and one MIRROR line names the pair. A pair with
+  one copy on each side is weighed as before. The breaker's point 3, a later mirror's copy of a clash an earlier
+  mirror added dropping its status without a word, is named where the two differ. The local that hid the field
+  added is renamed. EachClashBothFoundOnASharedPairIsWeighedAgainstItsOwnCopy is replaced by two tests pinning the
+  rule, one with the order reversed, and one more for point 3, all three failing first against attempt 1,
+  f132c-a2-failing-first.txt
+- WHAT IS NOT KNOWN. Whether two copies of one pair in one test are two clashes or one clash read twice is UNKNOWN
+  and was never measured. What stops a double count is the guard of MirrorMerge.AddTo, a mirror merged only where
+  the clashes handed are as many as its report holds and the kept test only where every row it holds was handed
+  with as many clashes as it stands for
 - F132-R1 DROPPED. It is Bader's answer A to Q142, and every pair not merged is said on a MIRROR line
 - F132-R2 DROPPED. Since attempt 13 a set already in the document merges nothing whatever the drift check read,
   so no merge reads that check
 - F132-R6 DROPPED under Q143. One view per row of the report is what the workbook and the pictures show
 - The rule in core.md, THE MERGE, and the comment on ClashItem.MergeKey. The F132 section of steps\01_next.md
-  and steps 669 and 670 of steps\03_bader_next.md
+  and steps 669 to 671 of steps\03_bader_next.md
 
-Core tests 2921 passed, 0 failed, 0 skipped before on main 80314b9, f127c-before.txt, and 2924 passed, 0 failed,
-0 skipped after, f132c-tests-after.txt. dotnet build ParsonsNwcFederator.sln -c Release --no-incremental 0 warnings
+Core tests 2921 passed, 0 failed, 0 skipped before on main 80314b9, f127c-before.txt, 2924 passed, 0 failed,
+0 skipped after attempt 1, f132c-tests-after.txt, and after attempt 2 the counts of f132c-a2-tests-after.txt. dotnet build ParsonsNwcFederator.sln -c Release --no-incremental 0 warnings
 and 0 errors after, f132c-build-after.txt, and 0 and 0 before. check-locals and check-imports exit 0 over src,
 f132c-checks.txt.
 
-What remains: a first run over a new NWF with a merge, steps 669 and 670 of steps\03_bader_next.md. Row
+What remains: a first run over a new NWF with a merge, steps 669 to 671 of steps\03_bader_next.md. Row
 T6-R-MIRRORWORDS of the area, at no wave, was not in this brief and stays open.
 
 Known bugs: none found in this pass.
