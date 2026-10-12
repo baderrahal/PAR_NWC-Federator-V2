@@ -418,11 +418,9 @@ namespace Federator.Core.Tests
             row.Left.ElementId = "2635048";
             row.Left.Name = "PAR-CONC-FOUNDATION";
             row.Left.ItemType = "Solid";
-            row.Left.Family = "Basic Wall";
             row.Right.ElementId = "814542";
             row.Right.Name = "Mx_Exterior_EW6_ Alum Sheet (Dark)";
             row.Right.ItemType = "Solid";
-            row.Right.Family = "Structural Column";
             test.Add(row);
 
             return test;

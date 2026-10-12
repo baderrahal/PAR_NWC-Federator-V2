@@ -368,6 +368,17 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
+## Proof F120 the GAP block after FR-198, added 2026-10-12
+
+Core is proved by its tests. These steps read the GAP and ITEM IDS blocks of one run against set 09's, `steps\runs\09\item1-C02`. F120-R1, the pictures' guard on throws naming their path, has no step, since no run a person makes throws fifty times that way, and its proof is the Core tests.
+
+664. Install main with fix-F120c merged, then run 1A02MM with its clash XML as set 09 ran, steps 649 to 654
+665. Look for, in the `GAP 1A02MM` block: the line `2 numbers are measured off every item and reach no output`, then a `Source File` line and an `Id From` line, and no `Family`, `Type Name` or `Material` line, where set 09 read four lines
+666. Look for, on the `Source File` line: `read on N item cells and empty on every one`, N the run's item cells, 5,862 in set 09, which left the line out. A line reading `of N item cells carry it` instead means the source file was read on this run, and row F120-R2 is answered by it
+667. Look for, in the `ITEM IDS 1A02MM` block: `Id supplied 5862 item ids of 5862, written as "Element ID"`, as set 09 read, the count the run's own
+668. Look for, at the end of the run: `GAPS     2 things are measured on every item and reach no output, over 1 group: Source File, Id From`
+669. Open the clash workbook of 1A02MM beside set 09's: the same columns and the same cells on the first block, and send the log with the HARVEST seconds off the TIMING block against set 09's
+
 ## Proof of F130, the Shift range in the group list
 
 THESE STEPS RUN NO GROUP UNTIL STEP 578 and can follow step 541 in the same Navisworks session,

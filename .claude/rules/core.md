@@ -1478,8 +1478,12 @@ and 6 does not read as broken.
   reason is one key for one fault: a render that finished with no file says
   `Federator.Core.Report.ImageFailure.NoFileArrived` and the path beside it on the line,
   because with the path inside the reason fifty of them were fifty reasons and the guard
-  never fired. The stop words are ImageFailure's, worded for images, and the label's plain
-  words carry the count alone
+  never fired. A render or a save that threw is `ImageFailure.BecauseItThrewWriting`, the
+  type and the message with the picture's path and the picture's folder said as those words
+  wherever the message named them, in any capitals, and the path beside it on the line, so
+  fifty throws of access denied, each naming its own file, are one reason, F120-R1. The stop
+  words are ImageFailure's, worded for images, and the label's plain words carry the count
+  alone
 - What the pictures cost is MEASURED and logged per group: seconds per image, total
   seconds, how many, and how many megabytes. Every number anyone has given for this,
   including mine, was a guess until this existed. They are in the log and nowhere else,
@@ -2235,8 +2239,10 @@ is exactly it, found by an audit of every file under src. The run says it itself
 - a gap names three things: what is missing, what it came to on this group, and where
   it would belong. A gap with no value is a complaint and one with no place to go is a
   shrug
-- a property NOTHING carried is not a gap. Reporting it would say the run is holding
-  back something it never read
+- a property read on every item and empty on every one is SAID, with its count, `read on N
+  item cells and empty on every one`, Bader's Q76 in FR-198. It was left out, so the block
+  could not tell an output carrying it from the run reading nothing. A report with no item
+  read nothing and has no gap
 - the block is written even when it is empty, saying nothing was held back, because a
   missing block reads as a check that did not run
 - nothing acts on it. A gap does not fail a group, does not stop a run and does not
@@ -2250,6 +2256,13 @@ is exactly it, found by an audit of every file under src. The run says it itself
   HtmlTabularWriter and ClientReportColumns name none of Family, Type, Material,
   SourceFile, Discipline or IdFrom anywhere, and ClashReportXml writes two quick
   properties and says in its own comment that the five used to be written and are not
+- TWO ARE LEFT SINCE FR-198. Bader deleted Family, Type Name, Material and the per item
+  discipline with their harvest and their names settings on 2026-10-06, Q35, Q36, Q37 and
+  Q39, so ClashItem holds none of them and the harvest reads none. The discipline read off
+  part 5 of the NWC name is untouched. The source file is still read off every item, since
+  `ClashItem.MergeKey` reads it for the mirror merge, F132, which came after Q38 was
+  measured, and the id's property is kept as the ITEM IDS block counts it, Q40. Each is in
+  no output and the block names both
 
 ### The run against the session, F80
 

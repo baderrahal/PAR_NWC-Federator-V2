@@ -63,5 +63,15 @@ namespace Federator.Core.Report
                 + " of " + outOf.ToString("#,##0", CultureInfo.InvariantCulture)
                 + (outOf == 1 ? " item cell carries it" : " item cells carry it");
         }
+
+        /// <summary>
+        /// The value of a property read on every item cell and empty on every one, Q76,
+        /// with the count of cells read.
+        /// </summary>
+        public static string ReadAndEmpty(int outOf)
+        {
+            return "read on " + outOf.ToString("#,##0", CultureInfo.InvariantCulture)
+                + (outOf == 1 ? " item cell and empty on it" : " item cells and empty on every one");
+        }
     }
 }

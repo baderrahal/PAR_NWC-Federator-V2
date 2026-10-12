@@ -3287,7 +3287,6 @@ namespace Federator.Addin.Engine
                 // The three steps that run per test are opened in there, so the live line
                 // is handed over rather than the engine guessing at what it is doing.
                 runner.Live = live;
-                runner.NameSettings = reports.Names;
                 runner.SingleDisciplineGroup = job.IsSingleDiscipline;
                 runner.ClashSkippedOffCoordinates = outcome.ClashSkippedBecause != null;
                 runner.ApplyFileSettings = reports.ApplyFileSettings;

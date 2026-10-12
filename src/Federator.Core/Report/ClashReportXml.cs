@@ -58,8 +58,8 @@ namespace Federator.Core.Report
         /// anything of ours here becomes a column on the page the client receives.
         ///
         /// Family, Type Name, Material, Source File and Discipline used to be written
-        /// here as well. They belong in the workbook, which is ours, and never on the
-        /// page, which is theirs.
+        /// here as well. None of them goes on the page, which is theirs, and the first
+        /// three and the discipline are read nowhere since FR-198.
         /// </summary>
         internal static readonly string[] QuickProperties = ClientReportColumns.QuickProperties;
 
@@ -271,9 +271,9 @@ namespace Federator.Core.Report
 
         /// <summary>
         /// One side. The id goes in as the one objectattribute and the two quick
-        /// properties as smarttags, and nothing else does. The family, type name, material,
-        /// source file and discipline are read off the item and written nowhere, because
-        /// the stylesheet makes a column out of every smarttag and the page is theirs.
+        /// properties as smarttags, and nothing else does. The source file is read off the
+        /// item for the mirror merge and written nowhere, because the stylesheet makes a
+        /// column out of every smarttag and the page is theirs.
         /// </summary>
         private XElement Item(ClashItem item, string level)
         {

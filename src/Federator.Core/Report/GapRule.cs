@@ -22,12 +22,15 @@ namespace Federator.Core.Report
     /// group, does not stop a run and does not change a single output. It is information
     /// in the log, which is the rule this whole tool is built on.
     ///
-    /// THE SIX, AND WHY THEY ARE THE SIX. Measured on 2026-09-19 by reading all three
-    /// writers. WorkbookWriter, HtmlTabularWriter and ClientReportColumns name none of
-    /// Family, Type, Material, SourceFile, Discipline or IdFrom anywhere, and
-    /// ClashReportXml writes two quick properties and says in its own comment that the
-    /// five used to be written and are not. ClashHarvest reads every one of them off
-    /// every item of every clash, which is a property lookup per item per run.
+    /// THE TWO, AND WHY THEY ARE THE TWO. There were six, measured on 2026-09-19 by
+    /// reading all three writers. Bader deleted Family, Type Name, Material and the per
+    /// item discipline with their harvest on 2026-10-06, Q35 to Q39, FR-198. The two left
+    /// are read off every item and reach no output, each kept for one reader: the source
+    /// file for the mirror merge's key and the id's property for the ITEM IDS block.
+    ///
+    /// READ AND EMPTY EVERY TIME, Q76. A property read on every item that came back empty
+    /// on every one is said with its count. It was left out, so a block naming nothing
+    /// could not be told from a block whose outputs carried everything.
     /// </summary>
     public static class GapRule
     {
@@ -40,14 +43,6 @@ namespace Federator.Core.Report
         /// </summary>
         public const string Prefix = "GAP      ";
 
-        /// <summary>
-        /// Where the five per item properties would go if anyone wanted them. The
-        /// workbook is ours and the page is the client's, so that is the answer for all
-        /// of them, and Q25 is where the decision sits.
-        /// </summary>
-        public const string InTheWorkbook =
-            "it would belong in a workbook column of ours, which is Q25";
-
         /// <summary>Every gap in one group's report, in the order they are always listed.</summary>
         public static IList<ReportGap> For(ClashReport report)
         {
@@ -59,11 +54,7 @@ namespace Federator.Core.Report
             }
 
             int items = 0;
-            int family = 0;
-            int type = 0;
-            int material = 0;
             int sourceFile = 0;
-            int discipline = 0;
             int idFrom = 0;
 
             foreach (TestReport test in report.Tests)
@@ -79,21 +70,18 @@ namespace Federator.Core.Report
 
                         items++;
 
-                        if (!string.IsNullOrEmpty(item.Family)) { family++; }
-                        if (!string.IsNullOrEmpty(item.Type)) { type++; }
-                        if (!string.IsNullOrEmpty(item.Material)) { material++; }
                         if (!string.IsNullOrEmpty(item.SourceFile)) { sourceFile++; }
-                        if (!string.IsNullOrEmpty(item.Discipline)) { discipline++; }
                         if (!string.IsNullOrEmpty(item.IdFrom)) { idFrom++; }
                     }
                 }
             }
 
-            Add(gaps, "Family", family, items, InTheWorkbook);
-            Add(gaps, "Type Name", type, items, InTheWorkbook);
-            Add(gaps, "Material", material, items, InTheWorkbook);
-            Add(gaps, "Source File", sourceFile, items, InTheWorkbook);
-            Add(gaps, "Discipline", discipline, items, InTheWorkbook);
+            Add(
+                gaps,
+                "Source File",
+                sourceFile,
+                items,
+                "the mirror merge reads it and the SOURCE FINDINGS block names each model's source, Q38");
             Add(
                 gaps,
                 "Id From",
@@ -151,14 +139,15 @@ namespace Federator.Core.Report
 
         private static void Add(List<ReportGap> gaps, string name, int carried, int outOf, string belongs)
         {
-            // A property nothing carried is not a gap. Reporting it would say the run is
-            // holding back something it never read, which is the opposite of true.
-            if (carried < 1)
+            // No item read, nothing measured. A property read on items and empty on every one
+            // is said with its count, Q76, where it was left out and read as carried.
+            if (outOf < 1)
             {
                 return;
             }
 
-            ReportGap gap = new ReportGap(name, ReportGap.Counted(carried, outOf), belongs);
+            string value = carried < 1 ? ReportGap.ReadAndEmpty(outOf) : ReportGap.Counted(carried, outOf);
+            ReportGap gap = new ReportGap(name, value, belongs);
             gap.Carried = carried;
             gap.OutOf = outOf;
             gaps.Add(gap);
