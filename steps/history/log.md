@@ -2,6 +2,36 @@
 
 Newest entry at the top.
 
+## 2026-10-12 F130 the space bar on the Run cell, F130-R1, wave 3b, branch fix-F130c
+
+Bader's order of 2026-10-12, item 157 of steps\02_questions.md, wave 3 of the fix round, under his Q143 limits.
+The open row of area F130 in steps\tracker.csv, F130-R1, read against main 80314b9.
+
+What was done:
+- F130-R1 fixed in the add-in. F130 made the Run column a read only template column, so Space pressed on its
+  cell, which the stock tick box column took as a tick, ticked nothing, and a person who moves through the list
+  with the arrow keys lost the one key that ticked. That changes what the team does in the window, so it is
+  fixed and not dropped, though whether anyone ticks that way is UNKNOWN
+- The grid's PreviewKeyDown, `OnGroupsGridKeyDown` in src\Federator.Addin\Ui\FederatorWindow.xaml.cs, takes
+  Space on a cell of the Run column, named RunColumn in the XAML, flips its row through Include where the row
+  can be ticked, and goes on through `RunBoxFlipped`, the path a click on the box now shares, so Shift with
+  Space makes the range of Core's ShiftRange and the Outputs summary is refreshed. Space with the box itself
+  focused is left to the box
+- No Core change: the range is Core's ShiftRange, unchanged and tested by F130, and which key on which cell
+  reaches it is WPF's alone, so there is no Core test to fail first. Its proof is steps 670 to 676 of
+  steps\03_bader_next.md, by hand
+- Proved here: the solution builds in Release with 0 warnings and 0 errors, turn6\f130c-build-after.txt, and
+  0 warnings and 0 errors on main 80314b9 before, turn6\f120c-build-before.txt. Core tests 2921 passed, 0
+  failed, 0 skipped before, turn6\f120c-tests-before.txt, and after, turn6\f130c-tests-after.txt, nothing in
+  Core changed. check-locals and check-imports over src clean, f130c-checks.txt. Navisworks was not started
+
+What remains: the merge, and steps 670 to 676 of steps\03_bader_next.md on the C02 folder, by hand.
+
+Known bugs: none known. The step numbers follow F120c's 664 to 669 and other branches of this wave start at
+664 too, so the lead renumbers at the merge.
+
+What comes next: the lead's reading of the three branches of this order.
+
 ## 2026-10-12 The loop, turn 6 closes on Bader's order WRAP UP NOW, written by the lead
 
 Bader's order of 2026-10-12 headed BADER, 12 OCT 2026: WRAP UP NOW, NO MORE TESTS. No probe, fast check, speed

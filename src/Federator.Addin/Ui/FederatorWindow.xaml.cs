@@ -463,8 +463,43 @@ namespace Federator.Addin.Ui
         private void OnRunBoxClicked(object sender, RoutedEventArgs e)
         {
             CheckBox box = sender as CheckBox;
-            GroupRow clicked = box == null ? null : box.DataContext as GroupRow;
+            RunBoxFlipped(box == null ? null : box.DataContext as GroupRow);
+        }
 
+        /// <summary>
+        /// The space bar on a Run cell, F130-R1, the reviewer's point on F130. The stock column
+        /// ticked a row when Space was pressed on its cell, and the read only template column
+        /// took that away, so a person who arrows onto the Run cell and presses Space ticked
+        /// nothing. Space on the cell now flips its row and goes the way a click on the box
+        /// goes, Shift and all. Space on the box itself is left to the box, which raises Click.
+        /// </summary>
+        private void OnGroupsGridKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            DataGridCell cell = e.OriginalSource as DataGridCell;
+
+            if (e.Key != System.Windows.Input.Key.Space || cell == null || !ReferenceEquals(cell.Column, RunColumn))
+            {
+                return;
+            }
+
+            GroupRow row = cell.DataContext as GroupRow;
+
+            if (row == null || !row.CanInclude)
+            {
+                return;
+            }
+
+            e.Handled = true;
+            row.Include = !row.Include;
+            RunBoxFlipped(row);
+        }
+
+        /// <summary>
+        /// One Run box flipped, by a click on it or the space bar on its cell. The row has already
+        /// taken its new state.
+        /// </summary>
+        private void RunBoxFlipped(GroupRow clicked)
+        {
             if (clicked == null)
             {
                 return;
