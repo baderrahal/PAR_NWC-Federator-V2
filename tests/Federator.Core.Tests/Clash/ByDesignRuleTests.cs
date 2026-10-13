@@ -540,10 +540,10 @@ namespace Federator.Core.Tests
         {
             Assert.That(ByDesignPairs.TickLabel, Is.EqualTo("Mark by design connections as Reviewed"));
             Assert.That(ByDesignPairs.TickLabel.Split(' ').Length, Is.LessThanOrEqualTo(8));
-            // The brief wrote "From a list file", which is thirteen words. A grey line is
-            // twelve at most, so the word that carries least came off.
+            // Twelve words, the limit of a grey line. Since F154 the list is built in and
+            // no file is picked, so the line says so.
             Assert.That(ByDesignPairs.HelpLine,
-                Is.EqualTo("Column on foundation, door in wall, valve in pipe. From a file"));
+                Is.EqualTo("Column on foundation, door in wall, valve in pipe. Built in list"));
             Assert.That(ByDesignPairs.HelpLine.Split(' ').Length, Is.LessThanOrEqualTo(12));
         }
 
@@ -551,7 +551,6 @@ namespace Federator.Core.Tests
         public void TheBoxIsOffByDefaultBecauseItWritesIntoTheNwf()
         {
             Assert.That(new ReportOptions().MarkByDesign, Is.False);
-            Assert.That(new ReportOptions().ByDesignPath, Is.EqualTo(string.Empty));
         }
 
         // ---------- a run with no XML, F132 attempt 2, the breaker's finding R5 ----------

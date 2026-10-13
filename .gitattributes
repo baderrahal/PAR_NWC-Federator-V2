@@ -42,6 +42,11 @@ steps/runs/** -text
 # which is 29006 lines of difference and is the line count of the file.
 exchange/** -text
 
+# The matrix packs built into Federator.Core, F154 and F155. Each file is a copy of a sample or
+# of an exchange file, proved byte for byte against it by MatrixPackTests, so no checkout may
+# change its line ends, for the reason the exchange line above gives.
+src/Federator.Core/Packs/** -text
+
 # A fixture of the tracker check whose one fault is a carriage return with no line feed after
 # it. Its bytes are the fixture, so no checkout may change its line ends. F133.
 tools/tracker/fixtures/csv-lone-cr/** -text

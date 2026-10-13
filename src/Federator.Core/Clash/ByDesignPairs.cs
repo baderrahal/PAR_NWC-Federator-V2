@@ -80,12 +80,11 @@ namespace Federator.Core.Clash
         /// The grey line under it. Twelve words, which is exactly the limit, so any
         /// rewording has to be counted again.
         ///
-        /// The brief wrote it as "From a list file", which is thirteen words and one over
-        /// the limit a grey line has. The word list is the one that carries least: a file
-        /// picked beside a tick box is a list and the picker beside it says so.
+        /// Since F154, Bader's decision of 2026-10-13, the pairs are built into the tool in the
+        /// matrix pack and no file is picked, so the line names the built in list.
         /// </summary>
         public const string HelpLine =
-            "Column on foundation, door in wall, valve in pipe. From a file";
+            "Column on foundation, door in wall, valve in pipe. Built in list";
 
         /// <summary>
         /// The one line the confirm screen carries for this box, or null where it is off,
@@ -101,7 +100,7 @@ namespace Federator.Core.Clash
                 return null;
             }
 
-            return "Clashes between two sets the by design pairs file names are moved to Reviewed in the NWF, "
+            return "Clashes between two sets the built in by design pairs name are moved to Reviewed in the NWF, "
                 + "in the tests created from the picked file and in the tests already saved in the NWF, whose "
                 + "sides are read off the tests themselves on a run with no clash XML. A clash already Reviewed, "
                 + "Approved or Resolved is left as it is, and the BY DESIGN block of each group says what moved.";

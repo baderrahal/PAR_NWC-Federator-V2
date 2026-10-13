@@ -107,7 +107,6 @@ namespace Federator.Addin.Ui
             ShowImageDefaults();
             ShowPenetrationWording();
             FillTolerance();
-            ShowPriorityWording();
             ShowByDesignWording();
             ShowUndoWording();
             ShowProbeWording();
@@ -1461,49 +1460,8 @@ namespace Federator.Addin.Ui
             }
         }
 
-        /// <summary>The grey line under the priority picker names the file's columns off Core, F83.</summary>
-        private void ShowPriorityWording()
-        {
-            if (PriorityHelp == null)
-            {
-                return;
-            }
-
-            PriorityHelp.Text = "Optional. Columns " + string.Join(", ", PriorityMap.Columns)
-                + ", the priority A, B or C.";
-        }
-
         /// <summary>
-        /// The priority CSV picker, F83. Optional, and its own remembered folder, because
-        /// the matrix and the clash XML live in different folders as often as not.
-        /// </summary>
-        private void OnBrowsePriorityFile(object sender, RoutedEventArgs e)
-        {
-            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
-            {
-                dialog.Title = "Pick the clash priority CSV, one row per test name";
-                dialog.Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*";
-                dialog.CheckFileExists = true;
-
-                string folder = StartFor(PickerKind.Priority, PriorityBox.Text);
-
-                if (folder.Length > 0 && Directory.Exists(folder))
-                {
-                    dialog.InitialDirectory = folder;
-                }
-
-                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    return;
-                }
-
-                RememberFolder(PickerKind.Priority, dialog.FileName);
-                PriorityBox.Text = dialog.FileName;
-            }
-        }
-
-        /// <summary>
-        /// The by design box's label and grey line, and the picker's grey line, all read
+        /// The by design box's label and grey line, read
         /// off Core, F72b. Nothing here is typed into the XAML.
         /// </summary>
         private void ShowByDesignWording()
@@ -1559,38 +1517,6 @@ namespace Federator.Addin.Ui
             if (MakeViewpointsHelp != null)
             {
                 MakeViewpointsHelp.Text = ViewpointRequest.HelpLine;
-            }
-
-            if (ByDesignHelp != null)
-            {
-                ByDesignHelp.Text = "Read only with the box below on. Columns "
-                    + string.Join(", ", ByDesignPairs.Columns) + ".";
-            }
-        }
-
-        /// <summary>The by design pairs picker, F72b. Its own remembered folder, like the others.</summary>
-        private void OnBrowseByDesignFile(object sender, RoutedEventArgs e)
-        {
-            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
-            {
-                dialog.Title = "Pick the by design pairs CSV, one row per pair of sets";
-                dialog.Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*";
-                dialog.CheckFileExists = true;
-
-                string folder = StartFor(PickerKind.ByDesign, ByDesignBox.Text);
-
-                if (folder.Length > 0 && Directory.Exists(folder))
-                {
-                    dialog.InitialDirectory = folder;
-                }
-
-                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    return;
-                }
-
-                RememberFolder(PickerKind.ByDesign, dialog.FileName);
-                ByDesignBox.Text = dialog.FileName;
             }
         }
 
@@ -1884,12 +1810,10 @@ namespace Federator.Addin.Ui
             options.CompactResolved = CompactResolved.IsChecked == true;
             options.MarkPenetrations = MarkPenetrations.IsChecked == true;
             options.Tolerance = tolerance;
-            options.PriorityPath = Trimmed(PriorityBox.Text);
             options.MarkByDesign = MarkByDesign.IsChecked == true;
             options.RebuildDriftedSets = RebuildDriftedSets.IsChecked == true;
             options.SkipClashOffCoordinates = SkipClashOffCoordinates.IsChecked == true;
             options.MakeViewpoints = MakeViewpoints.IsChecked == true;
-            options.ByDesignPath = Trimmed(ByDesignBox.Text);
             options.LogoPath = Trimmed(LogoBox.Text);
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
@@ -2185,12 +2109,11 @@ namespace Federator.Addin.Ui
                 + (tolerance.ChosenInTheTool
                     ? ", chosen in the tool, set on every test and beats the XML and the document"
                     : ", read per test out of the XML"));
-            log.Line("priority file    : " + (Trimmed(PriorityBox.Text).Length == 0
-                ? "none, so no Priority column and the measured block order"
-                : Trimmed(PriorityBox.Text)));
+            log.Line("priority         : built in, read off the matrix pack built into the tool, so "
+                + "a Priority column where the pack reads, which its PACK and PRIORITY lines say");
             log.Line("by design        : " + (MarkByDesign.IsChecked == true
-                ? "YES, a clash between two sets the pairs file names becomes Reviewed"
-                : "no, the pairs file is not read"));
+                ? "YES, a clash between two sets the built in pairs name becomes Reviewed"
+                : "no, the built in pairs are not read"));
             log.Line(ViewpointRequest.SettingsLine(MakeViewpoints.IsChecked == true));
             log.Line("NWD naming       : "
                 + (DateTheNwd.IsChecked == true

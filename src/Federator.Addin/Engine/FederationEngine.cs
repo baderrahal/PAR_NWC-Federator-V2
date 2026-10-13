@@ -320,10 +320,44 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
+        /// The matrix pack built into the tool, F154, Bader's decision of 2026-10-13, read once
+        /// per run and named on one PACK line. With one pack the run reads it, and with none or
+        /// more than one there is none and the line says why, MatrixPack.TheOne.
+        /// </summary>
+        private MatrixPack pack;
+
+        private bool packLooked;
+
+        private MatrixPack ThePack()
+        {
+            if (packLooked)
+            {
+                return pack;
+            }
+
+            packLooked = true;
+            string whyNone = null;
+
+            try
+            {
+                pack = MatrixPack.TheOne(MatrixPack.All(), out whyNone);
+            }
+            catch (Exception error)
+            {
+                log.Failure("listing the matrix packs built into the tool", error, "kept going with no pack");
+                pack = null;
+                whyNone = "the packs could not be listed, " + RunLog.TheLogSaysWhy();
+            }
+
+            log.Line(MatrixPack.Line(pack, whyNone));
+            return pack;
+        }
+
+        /// <summary>
         /// The clash priorities off the client's matrix, F83, read once per run from the
-        /// CSV picked on the Clash step, or NothingPicked. A file that will not read is a
-        /// finding in the log and a line in the window, and the run goes on with no
-        /// Priority column, because picking a file never fails a run.
+        /// matrix pack built into the tool, F154, always on since Bader's decision of
+        /// 2026-10-13. A pack that cannot be read is a finding in the log and a line in the
+        /// window, and the run goes on with no Priority column.
         /// </summary>
         private PriorityMap priorities;
 
@@ -337,35 +371,36 @@ namespace Federator.Addin.Engine
                 return priorities;
             }
 
-            string path = reports.PriorityPath ?? string.Empty;
+            MatrixPack built = ThePack();
 
-            if (path.Length == 0)
+            if (built == null)
             {
+                log.Line(PriorityMap.Prefix + " none, no matrix pack was read, so no Priority column");
                 priorities = PriorityMap.NothingPicked();
                 return priorities;
             }
 
             try
             {
-                priorities = PriorityMap.Read(File.ReadAllText(path), path);
-                log.Line(PriorityMap.Prefix + " read " + path + ", " + priorities.RowCount
-                    + (priorities.RowCount == 1 ? " row" : " rows"));
+                priorities = built.Priorities();
+                log.Line(PriorityMap.Prefix + " read " + built.Describe(MatrixPack.PriorityFile) + ", "
+                    + priorities.RowCount + (priorities.RowCount == 1 ? " row" : " rows"));
 
                 foreach (string problem in priorities.Problems)
                 {
                     log.Line(PriorityMap.Prefix + " " + problem);
                 }
 
-                // The RESULT line is the log's to write, and only where a file was picked.
+                // The RESULT line is the log's to write, wherever the priorities were read.
                 log.PriorityAcrossTheRun = priorityAcrossTheRun;
             }
             catch (Exception error)
             {
                 log.Failure(
-                    "reading the priority file " + path,
+                    "reading the priorities of " + built.Describe(MatrixPack.PriorityFile),
                     error,
-                    "kept going with no Priority column, a picked file never fails a run");
-                Say("The priority file would not read. " + RunLog.TheLogSaysWhy());
+                    "kept going with no Priority column, the priorities never fail a run");
+                Say("The built in priorities would not read. " + RunLog.TheLogSaysWhy());
                 priorities = PriorityMap.NothingPicked();
             }
 
@@ -409,11 +444,10 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The by design pairs, F72b, read once per run from the CSV picked on the Clash
-        /// step, or NothingPicked. Read only when the box is on, because a file picked with
-        /// the box off would be read and then ignored, which reads as a file that did
-        /// nothing. A file that will not read is a finding and the run goes on moving
-        /// nothing under this rule.
+        /// The by design pairs, F72b, read once per run from the matrix pack built into the
+        /// tool, F154, or NothingPicked. Read only when the box is on, because pairs read with
+        /// the box off would then be ignored, which reads as a list that did nothing. A pack
+        /// that cannot be read is a finding and the run goes on moving nothing under this rule.
         /// </summary>
         private ByDesignPairs pairs;
 
@@ -427,25 +461,27 @@ namespace Federator.Addin.Engine
                 return pairs;
             }
 
-            string path = reports.ByDesignPath ?? string.Empty;
-
-            if (!reports.MarkByDesign || path.Length == 0)
+            if (!reports.MarkByDesign)
             {
-                if (reports.MarkByDesign)
-                {
-                    log.Line(ReviewedLine.Prefix + " rule B is on and no pairs file was picked, "
-                        + "so it moves nothing and no list is invented");
-                }
+                pairs = ByDesignPairs.NothingPicked();
+                return pairs;
+            }
 
+            MatrixPack built = ThePack();
+
+            if (built == null)
+            {
+                log.Line(ReviewedLine.Prefix + " rule B is on and no matrix pack was read, "
+                    + "so it moves nothing and no list is invented");
                 pairs = ByDesignPairs.NothingPicked();
                 return pairs;
             }
 
             try
             {
-                pairs = ByDesignPairs.Read(File.ReadAllText(path), path);
-                log.Line(ReviewedLine.Prefix + " rule B reads " + path + ", " + pairs.Count
-                    + (pairs.Count == 1 ? " pair" : " pairs"));
+                pairs = built.ByDesign();
+                log.Line(ReviewedLine.Prefix + " rule B reads " + built.Describe(MatrixPack.ByDesignFile) + ", "
+                    + pairs.Count + (pairs.Count == 1 ? " pair" : " pairs"));
 
                 foreach (string problem in pairs.Problems)
                 {
@@ -455,10 +491,10 @@ namespace Federator.Addin.Engine
             catch (Exception error)
             {
                 log.Failure(
-                    "reading the by design pairs file " + path,
+                    "reading the by design pairs of " + built.Describe(MatrixPack.ByDesignFile),
                     error,
-                    "kept going, rule B moves nothing and a picked file never fails a run");
-                Say("The by design pairs file would not read. " + RunLog.TheLogSaysWhy());
+                    "kept going, rule B moves nothing and the pairs never fail a run");
+                Say("The built in by design pairs would not read. " + RunLog.TheLogSaysWhy());
                 pairs = ByDesignPairs.NothingPicked();
             }
 

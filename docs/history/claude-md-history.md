@@ -1020,6 +1020,20 @@ a gap. Never report a check that did not run.
 Each entry names the rule as it stood, the date it changed, who decided and why, and where
 the rule lives now. The snapshot above stays as it was.
 
+## 2026-10-13, F154, the priorities and the by design pairs are built in
+
+The rules were F83's "the clash priority is the one column of ours, and only when a priority CSV is
+picked", nothing picked meaning no Priority column, and F72b's pairs file picked on the Clash step,
+read only with its box on. Bader's run of 2026-10-13 had no priority CSV and the by design box on
+with no pairs file, so no Priority column and no pair moved. He decided the same day that the clash
+matrix is built into the tool, each project with its own, and that the two CSVs become embedded
+resources of Federator.Core in the matrix pack, read through PriorityMap.Read and ByDesignPairs.Read
+with no change, the priority always on and the by design box kept. So the pack is a folder,
+src\Federator.Core\Packs\1104-PAR, its files embedded by one wildcard and found by their resource
+names, MatrixPack, and the two picker rows, their remembered folders and ReportOptions.PriorityPath
+and ByDesignPath are gone. The rules live in core.md, THE PRIORITIES AND THE BY DESIGN PAIRS ARE
+BUILT IN, and the F83 and F72b bullets.
+
 ## 2026-10-13, F153, a test with no clash writes nothing in the workbook
 
 The rule was Q73's answer b, built in the workbook writer: a test that found nothing is one row

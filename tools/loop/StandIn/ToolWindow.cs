@@ -119,7 +119,6 @@ namespace NwcFederatorLoop.StandIn
             tolerance.Items.Add("25 mm");
             tolerance.Items.Add("Other");
             tolerance.SelectedIndex = mode == "tolerance" ? 1 : 0;
-            TextBox priority = new TextBox { Name = "PriorityBox" };
             CheckBox penetrations = new CheckBox { Name = "MarkPenetrations", Content = "Mark penetrations", IsChecked = false };
             CheckBox byDesign = new CheckBox { Name = "MarkByDesign", Content = "Mark by design", IsChecked = false };
             CheckBox skip = new CheckBox { Name = "SkipClashOffCoordinates", Content = "The stand-in's box for F112's rule", IsChecked = mode != "skip-off" };
@@ -170,7 +169,7 @@ namespace NwcFederatorLoop.StandIn
             steps.Items.Add(new TabItem { Header = "1. Source", Content = Stack(source, subfolders, scan, summary, filesGrid) });
             steps.Items.Add(new TabItem { Header = "2. Grouping", Content = Stack(groupsGrid) });
             steps.Items.Add(new TabItem { Header = "3. Outputs", Content = Stack(nwf, nwd, excel) });
-            steps.Items.Add(new TabItem { Header = "4. Clash", Content = Stack(exchange, tolerance, priority, penetrations, byDesign, skip, runOpen, openLine) });
+            steps.Items.Add(new TabItem { Header = "4. Clash", Content = Stack(exchange, tolerance, penetrations, byDesign, skip, runOpen, openLine) });
 
             DockPanel dock = new DockPanel();
             DockPanel.SetDock(run, Dock.Bottom);

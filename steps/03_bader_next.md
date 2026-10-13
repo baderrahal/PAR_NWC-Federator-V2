@@ -1990,3 +1990,19 @@ Only Excel can show these two things: that the pictures show, and that Excel ask
 1460. Open `1104-PAR-1A02MM-ZZZ-BM-MOD-000001.html` in `F153 out` in a browser and look for: a block for every test, 1830, the tests with no clash among them
 1461. Open the internal workbook, the one whose name ends `Internal`, in Excel, and look for: the Coverage sheet lists every test of the file, one row each
 1462. Send the log
+
+### F154, the priority and by design files built in
+
+1470. Install main once fix-F154 has merged, steps 7 to 12
+1471. Start Navisworks and open the tool
+1472. On 4. Clash look for: no Priority CSV row and no By design CSV row
+1473. Look for, under Mark by design connections as Reviewed: the grey line `Column on foundation, door in wall, valve in pipe. Built in list`
+1474. Tick Mark by design connections as Reviewed
+1475. Make a new folder on the desktop named `F154 out`
+1476. Run 1A02MM from `F151 source` as in steps 1404 to 1411, with `F154 out` picked for the NWF, NWD and Excel folders
+1477. Look for, in the log: `PACK     the built in matrix pack 1104-PAR, holding by-design-pairs.csv, clash-priority-map.csv`
+1478. Look for: `PRIORITY read the built in matrix pack 1104-PAR, clash-priority-map.csv, 1830 rows` and no PRIORITY line naming a problem
+1479. Look for: a line with `rule B reads the built in matrix pack 1104-PAR, by-design-pairs.csv, 55 pairs`
+1480. Open the workbook of 1A02MM in `F154 out` in Excel and look for: the heading Priority in column T beside the first block, and A, B or C on its clash rows. Close Excel and answer Do not save
+1481. Look for, in the RESULT block: the line of clashes by priority
+1482. Send the log
