@@ -497,28 +497,29 @@ The first run reads that no view moved to another pair folder now a side is read
 
 The weekly run with the box off comes first, because it is the run the team makes every week and it is where the leftovers are now reported and the SETS step may take longer. The run with the box ticked last, since it changes the NWF. A damaged document, two sets of one name in one folder, a folder as a clash source and a set lost after it was put in cannot be made to happen on a real folder, so those rows are read and not run.
 
-664. Install main with the F115 register rows merged
-665. Scan the C02 folder
-666. Pick the clash XML
-667. Leave `Rebuild sets that drifted from the file` unticked
-668. Tick 1A02MM alone in the group list
-669. Press Run
-670. Look for, in the SET lines of 1A02MM: either no block about sets the file does not name, or one starting `set(s) in this NWF are not named by the picked file:` whose next line reads `NOTHING BELOW IS DONE, because "Rebuild sets that drifted from the file" is off`, and each line under it saying what `a run with the box ticked would` do, R20
-671. Look for, on the group's TIMING block: the SETS seconds, to send beside the last run's, since the leftover walk now reads every clash test side with the box off too, R20
-672. Look for, in the SETS step's finish phrase and the line under the SETS lines: a count `drifted` or `could not be read` wherever the SET DRIFT lines name a set drifted or not read, R7
-673. Look for, after the CLASH block: the EMPTY SETS block as before, and a line `were not judged` only where a SET NOT READ line names a set at zero, R6
-674. Look for: no FAILURE line naming `the side's selection sources read as none`, R21
-675. Open the NWF of 1A02MM in Navisworks with the tool's window open and the clash XML picked
-676. Press Build sets
-677. Look for, in the log after the button's SET lines: an EMPTY SETS block ending `no clash test ran with these sets here, so what they cost in clash tests is not counted`, wherever the window's lines show a set at zero, R4
-678. Close the NWF without saving it
-679. Tick `Rebuild sets that drifted from the file`
-680. Tick 1A02MM alone in the group list
-681. Press Run
-682. Look for, under the SET DRIFT lines of each drifted set: `REBUILT from the picked file`, and no line `read back after the rebuild it does NOT ask what the picked file asks`, R19. Where that line shows under an Or set, it is the answer to F115-R12
-683. Look for: no line `NOT rebuilt, though "Rebuild sets that drifted from the file" is ticked`, R18. Where one shows, why is said where the rebuild was tried, before the set's present line
-684. Look for: no line `nothing removed for`, `nothing done for` or `so it was NOT saved`. Where one shows, send it with the SET lines before it
-685. Send the log and the `.tsv` beside it, with the SETS seconds of both runs
+956. Install main with the F115 register rows merged
+957. Scan the C02 folder
+958. Pick the clash XML
+959. Leave `Rebuild sets that drifted from the file` unticked
+960. Tick 1A02MM alone in the group list
+961. Press Run
+962. Look for, in the SET lines of 1A02MM: either no block about sets the file does not name, or one starting `set(s) in this NWF are not named by the picked file:` whose next line reads `NOTHING BELOW IS DONE, because "Rebuild sets that drifted from the file" is off`, and each line under it saying what `a run with the box ticked would` do, R20
+963. Look for, on the group's TIMING block: the SETS seconds, to send beside the last run's, since the leftover walk now reads every clash test side with the box off too, R20
+964. Look for, in the SETS step's finish phrase and the line under the SETS lines: a count `drifted` or `could not be read` wherever the SET DRIFT lines name a set drifted or not read, R7
+965. Look for, after the CLASH block: the EMPTY SETS block as before, and a line `were not judged` only where a SET NOT READ line names a set at zero, R6
+966. Look for: no FAILURE line naming `the side's selection sources read as none`, R21
+967. Open the NWF of 1A02MM in Navisworks with the tool's window open and the clash XML picked
+968. Press Build sets
+969. Look for, in the log after the button's SET lines: an EMPTY SETS block ending `no clash test ran with these sets here, so what they cost in clash tests is not counted`, wherever the window's lines show a set at zero, R4
+970. Close the NWF without saving it
+971. Tick `Rebuild sets that drifted from the file`
+972. Tick 1A02MM alone in the group list
+973. Press Run
+974. Look for, under the SET DRIFT lines of each drifted set: `REBUILT from the picked file`, and no line `read back after the rebuild it does NOT ask what the picked file asks`, R19. Where that line shows under an Or set, it is the answer to F115-R12
+975. Look for: no line `NOT rebuilt, though "Rebuild sets that drifted from the file" is ticked`, R18. Where one shows, why is said where the rebuild was tried, before the set's present line
+976. Look for: no line `nothing removed for`, `nothing done for` or `so it was NOT saved`. Where one shows, send it with the SET lines before it
+977. Send the log and the `.tsv` beside it, with the SETS seconds of both runs
+
 ## Proof F121 wave 4, the NWF saved after an apply, the second undo and the folders file, added 2026-10-13
 
 Everything runs on copies in two new folders on the desktop, so no NWF of the real folders is changed. The apply comes first, since it needs 1A02MM's clash skipped off the shared coordinates, as the box starts. The undo second, since it needs that clash run. The folders file last, since it needs Navisworks closed. FR-155 has no step: it is Core alone, proved by its tests, and a file every exporter writes whole reads as before.
@@ -591,28 +592,6 @@ Everything runs on copies in two new folders on the desktop, so no NWF of the re
 865. Open `folders.txt` in Notepad
 866. Look for: a line `Nwd=` naming `F121 out`
 867. Send the log of steps 856 to 864
-956. Install main with the F115 register rows merged
-957. Scan the C02 folder
-958. Pick the clash XML
-959. Leave `Rebuild sets that drifted from the file` unticked
-960. Tick 1A02MM alone in the group list
-961. Press Run
-962. Look for, in the SET lines of 1A02MM: either no block about sets the file does not name, or one starting `set(s) in this NWF are not named by the picked file:` whose next line reads `NOTHING BELOW IS DONE, because "Rebuild sets that drifted from the file" is off`, and each line under it saying what `a run with the box ticked would` do, R20
-963. Look for, on the group's TIMING block: the SETS seconds, to send beside the last run's, since the leftover walk now reads every clash test side with the box off too, R20
-964. Look for, in the SETS step's finish phrase and the line under the SETS lines: a count `drifted` or `could not be read` wherever the SET DRIFT lines name a set drifted or not read, R7
-965. Look for, after the CLASH block: the EMPTY SETS block as before, and a line `were not judged` only where a SET NOT READ line names a set at zero, R6
-966. Look for: no FAILURE line naming `the side's selection sources read as none`, R21
-967. Open the NWF of 1A02MM in Navisworks with the tool's window open and the clash XML picked
-968. Press Build sets
-969. Look for, in the log after the button's SET lines: an EMPTY SETS block ending `no clash test ran with these sets here, so what they cost in clash tests is not counted`, wherever the window's lines show a set at zero, R4
-970. Close the NWF without saving it
-971. Tick `Rebuild sets that drifted from the file`
-972. Tick 1A02MM alone in the group list
-973. Press Run
-974. Look for, under the SET DRIFT lines of each drifted set: `REBUILT from the picked file`, and no line `read back after the rebuild it does NOT ask what the picked file asks`, R19. Where that line shows under an Or set, it is the answer to F115-R12
-975. Look for: no line `NOT rebuilt, though "Rebuild sets that drifted from the file" is ticked`, R18. Where one shows, why is said where the rebuild was tried, before the set's present line
-976. Look for: no line `nothing removed for`, `nothing done for` or `so it was NOT saved`. Where one shows, send it with the SET lines before it
-977. Send the log and the `.tsv` beside it, with the SETS seconds of both runs
 ## Proof F127-R5 a workbook named as another group's internal workbook, added 2026-10-12, rewritten for attempt 2
 
 No group runs in these steps, so they can follow any install of main with fix-F127c merged.
@@ -1834,39 +1813,42 @@ Everything runs on copies in two new folders on the desktop, so no NWF of the re
 1117. Look for: the Run box of 1A02WL ticked
 1118. On 3. Outputs look for: the NWF name of 1A02MM still `F121E-TYPED-NWF` and its Edited cell `by hand`, where before this fix it went back to the pattern's name
 1119. Double click the NWF name cell of 1A02MM
-1120. Press Ctrl+A, then Delete, then Enter
-1121. Look for: the cell holding a name with 1A02MM in it, built the way the NWD name beside it is, and the Edited cell empty, where before this fix the cell stayed empty and read `by hand`
-1122. Look for, under the names: no line `THE RUN CANNOT START` and no `The NWF name of 1A02MM cannot be used, it is empty.`
-1123. Look for: the NWD name and the Workbook name of 1A02MM as they were before step 1119
-1124. On 4. Clash set Clash tolerance to `Other`
-1125. Leave the number box beside it empty
-1126. Press `Undo auto Reviewed`
-1127. Look for: no window saying `The undo stopped.`, and the line beside the button saying how many were put back of how many looked at, or `Nothing was read.`
-1128. Press `Probe model properties`
-1129. Press No, to read the document that is open
-1130. Look for: no window saying `The probe stopped.`, and `Probe finished.` on the progress line
-1131. Press Browse beside Clash XML and pick `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` of the repo
-1132. Press `Sets into open model`
-1133. Look for: no window saying `Building the sets stopped.`, and `Sets finished.` on the progress line
-1134. Press `Tests into open model`
-1135. Look for: a window saying `The clash tolerance is set to Other and no number is typed beside it.`
-1136. Press OK
-1137. Look for, in the log: `TOLERANCE Tests into open model did not start.` with the same words, and no `CLASH    started by hand` line after it
-1138. Type `abc` in the number box
-1139. Press Run
-1140. Look for: a window saying `A tolerance that is not a number is not a tolerance.` with no `Parameter name` line under it
-1141. Press OK
-1142. Look for, in the log: `TOLERANCE the run did not start. A tolerance that is not a number is not a tolerance.`
-1143. Set Clash tolerance back to `Use the value in the XML`
-1144. Press Run, then OK
-1145. While the run is going, press the X at the top right of the tool's window
-1146. Look for: a window saying `The run is still going. Let it finish.`, and the tool's window still open behind it, where before this fix the tool's window closed under the run
-1147. Press OK
-1148. Click on the tool's window and press Alt+F4
-1149. Look for: the same window, and the tool still open
+1120. Press Ctrl+A
+1121. Press Delete
+1122. Press Enter
+1123. Look for: the cell holding a name with 1A02MM in it, built the way the NWD name beside it is, and the Edited cell empty, where before this fix the cell stayed empty and read `by hand`
+1124. Look for, under the names: no line `THE RUN CANNOT START` and no `The NWF name of 1A02MM cannot be used, it is empty.`
+1125. Look for: the NWD name and the Workbook name of 1A02MM as they were before step 1119
+1126. On 4. Clash set Clash tolerance to `Other`
+1127. Leave the number box beside it empty
+1128. Press `Undo auto Reviewed`
+1129. Look for: no window saying `The undo stopped.`, and the line beside the button saying how many were put back of how many looked at, or `Nothing was read.`
+1130. Press `Probe model properties`
+1131. Press No, to read the document that is open
+1132. Look for: no window saying `The probe stopped.`, and `Probe finished.` on the progress line
+1133. Press Browse beside Clash XML
+1134. Pick `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` of the repo
+1135. Press `Sets into open model`
+1136. Look for: no window saying `Building the sets stopped.`, and `Sets finished.` on the progress line
+1137. Press `Tests into open model`
+1138. Look for: a window saying `The clash tolerance is set to Other and no number is typed beside it.`
+1139. Press OK
+1140. Look for, in the log: `TOLERANCE Tests into open model did not start.` with the same words, and no `CLASH    started by hand` line after it
+1141. Type `abc` in the number box
+1142. Press Run
+1143. Look for: a window saying `A tolerance that is not a number is not a tolerance.` with no `Parameter name` line under it
+1144. Press OK
+1145. Look for, in the log: `TOLERANCE the run did not start. A tolerance that is not a number is not a tolerance.`
+1146. Set Clash tolerance back to `Use the value in the XML`
+1147. Press Run, then OK
+1148. While the run is going, press the X at the top right of the tool's window
+1149. Look for: a window saying `The run is still going. Let it finish.`, and the tool's window still open behind it, where before this fix the tool's window closed under the run
 1150. Press OK
-1151. Wait for the run to finish
-1152. Look for: the RESULT block, with 1A02WL in it and not 1A02MM, which step 1114 unticked
-1153. Press the X at the top right of the tool's window
-1154. Look for: the tool's window closes with no message
-1155. Send the log of steps 1105 to 1154, named on its `log file` line
+1151. Click on the tool's window and press Alt+F4
+1152. Look for: the same window, and the tool still open
+1153. Press OK
+1154. Wait for the run to finish
+1155. Look for: the RESULT block, with 1A02WL in it and not 1A02MM, which step 1114 unticked
+1156. Press the X at the top right of the tool's window
+1157. Look for: the tool's window closes with no message
+1158. Send the log of steps 1105 to 1157, named on its `log file` line

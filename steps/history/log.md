@@ -43,7 +43,7 @@ What was done:
   shows no Parameter name line any more. ToleranceOrSayWhyNot logs a TOLERANCE line and warns before anything
   starts for the four runs that create or run tests, ReportsWanted takes the tolerance, and Undo, Probe and Sets
   into open model hand the file's
-- The rules in .claude\rules\core.md and addin.md, the section in steps\01_next.md, steps 1100 to 1155 of
+- The rules in .claude\rules\core.md and addin.md, the section in steps\01_next.md, steps 1100 to 1158 of
   steps\03_bader_next.md, and the four rows of steps\tracker.csv in review. The F121 area row is left as main has
   it, since fix-F121d changes that row too and two changes of one line would conflict
 - Proved here: Core tests 3035 passed, 0 failed, 0 skipped on main 8e100bf6. Nineteen new tests run first against
@@ -53,20 +53,18 @@ What was done:
   table from any list of files. The solution builds in Release with 0 warnings and 0 errors before and after, the
   add-in included. check-locals and check-imports read clean. make-tracker and check-tracker read clean
 
-What waits for the local machine: steps 1100 to 1155 of steps\03_bader_next.md, a typed name and an unticked Run box
+What waits for the local machine: steps 1100 to 1158 of steps\03_bader_next.md, a typed name and an unticked Run box
 across a file unticked in another building, a name cell cleared, the four buttons with Other left blank and with
 abc, and one run closed from the title bar and with Alt+F4 while it goes. FR-163 is proved by nothing else, and the
 window halves of the other three by nothing else. Nothing of it has run on Navisworks.
 
-Known bugs: a new Scan regroups too, so a group whose key is the same keeps its typed names and its Run tick across
-a Scan, a Scan of another folder included. That is the rule as written, and whether Bader wants a Scan to start
-clean is his. The refused close warns over the run's pump, so the run waits while the message is open, as it did
+Known bugs: The refused close warns over the run's pump, so the run waits while the message is open, as it did
 under the Close button's warning. Whether reading the edited row back after a cell edit disturbs a cell of the same
 row the person has already begun typing into is UNKNOWN until step 1119. What the Navisworks main window does when
 it is closed with the tool open is UNKNOWN, the note of FR-163.
 
 What comes next: the lead's reviewer and breaker, the merge after pull request 222 or before it, then the run of
-steps 1100 to 1155.
+steps 1100 to 1158.
 
 THE LEAD, before the reading, 2026-10-13:
 - A Scan starts the groups clean again, every one ticked and named by its pattern, as before. FR-153 keeps a typed
@@ -75,6 +73,13 @@ THE LEAD, before the reading, 2026-10-13:
   would no longer hold. Whether a Scan of the same folder should keep them is put to Bader in the tab
 - F127-R5's step 992 gives the name back by clearing the cell, FR-160, where it pressed Scan again
 - Main 524f4b17 merged in, the records of both sides kept
+- THE READING approved. The grouping change starts clean too, Regroup(false), since the row names a file unticked
+  only and a key means another group under another grouping. The stale known bug on Scan is struck. Steps 1120 and
+  1131 are split to one action each, the section now 1100 to 1158
+- THE STEPS OF F115 put back. Pull request 222 was cut before the renumber of 221, and its merge kept both sides of
+  steps\03_bader_next.md, so main held F115's old steps 664 to 685 under its heading and the renumbered 956 to 977 under
+  F121's, three numbers used twice. The old copy is taken out and 956 to 977 sit under F115 again, read equal to main
+  8e100bf6. turn6\mergemain.py no longer keeps both sides of that file, it stops there for a person to read
 
 
 ## 2026-10-13 F121 wave 4, FR-150, FR-152, FR-155 and FR-162, written by the developer as the lead's delegate
