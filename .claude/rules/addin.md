@@ -920,7 +920,12 @@ well as to pass.
   IL and never clicked, took a click to select the row before one that flipped it. Whether
   the template's box flips on the first click in Navisworks is UNKNOWN until step 546 of
   steps\03_bader_next.md. The grey line under the list, x:Name RunRangeHelp, is set
-  off `ShiftRange.HelpLine` in the constructor. The box has no x:Name and no label, so it is
+  off `ShiftRange.HelpLine` in the constructor. THE SPACE BAR ON THE RUN CELL TICKS AS THE
+  STOCK COLUMN DID, F130-R1: the grid's PreviewKeyDown, `OnGroupsGridKeyDown`, takes Space on a
+  DataGridCell of the column named RunColumn, flips its row through Include where CanInclude
+  allows and goes on as a click does, through `RunBoxFlipped`, the one path both share, Shift
+  making a range. Space with the box itself focused is left to the box, which raises Click.
+  The box has no x:Name and no label, so it is
   not one of the sixteen tick boxes counted below. The window driver cannot carry Shift
   without real input, turn5\measure-shift-driver-result.md, so its proof is numbered steps in
   steps\03_bader_next.md

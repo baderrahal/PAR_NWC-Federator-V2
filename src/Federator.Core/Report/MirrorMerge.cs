@@ -33,7 +33,16 @@ namespace Federator.Core.Report
     /// round, P1's point 2, so the two items are keyed the same whichever comes first, on
     /// ByDesignPairs.KeyFor, the one unordered key of two strings. What an item's key is, an
     /// index path or anything else that names one item in the document, is the add-in's,
-    /// and an empty or UNKNOWN key is an item not read.
+    /// and an empty or UNKNOWN key is an item not read. Two clashes of one test can share a
+    /// key, one element carrying two pieces of geometry of one name, so a key is counted as
+    /// many times as each test found it: a mirror's clash past the kept test's count of its
+    /// key is found by the mirror only, F132-R3, where it was read as a repeat and left out.
+    /// Whether two copies of one key in one test are two clashes or one clash read twice is
+    /// UNKNOWN and was never measured. What stops a double count is the guard of AddTo: a
+    /// mirror is merged only where the clashes handed are as many as its report holds, and
+    /// the kept test only where every row it holds was handed with as many clashes as it
+    /// stands for. Which copy of such a key is the twin of which is UNKNOWN too, so where the
+    /// copies carry more than one status no status is carried across, F132-R3 attempt 2.
     ///
     /// FAIL CLOSED ON WHAT WAS NOT READ. A mirror is merged only where every clash on both
     /// sides, the kept test's and the mirror's, has both items read. A clash of a mirror with
@@ -78,9 +87,9 @@ namespace Federator.Core.Report
     /// </summary>
     public sealed class MirrorMerge
     {
-        private readonly Dictionary<string, KeptClash> keptPairs = new Dictionary<string, KeptClash>(StringComparer.Ordinal);
+        private readonly Dictionary<string, List<KeptClash>> keptPairs = new Dictionary<string, List<KeptClash>>(StringComparer.Ordinal);
         private readonly Dictionary<ClashRow, int> keptRows = new Dictionary<ClashRow, int>();
-        private readonly HashSet<string> addedPairs = new HashSet<string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, List<AddedClash>> addedPairs = new Dictionary<string, List<AddedClash>>(StringComparer.Ordinal);
         private readonly List<MirrorCounts> mirrors = new List<MirrorCounts>();
         private readonly List<Handed> handed = new List<Handed>();
         private int keptFound;
@@ -241,10 +250,15 @@ namespace Federator.Core.Report
                 return;
             }
 
-            if (!keptPairs.ContainsKey(key))
+            List<KeptClash> found;
+
+            if (!keptPairs.TryGetValue(key, out found))
             {
-                keptPairs.Add(key, new KeptClash(status, row));
+                found = new List<KeptClash>();
+                keptPairs.Add(key, found);
             }
+
+            found.Add(new KeptClash(status, row));
         }
 
         /// <summary>
@@ -370,10 +384,19 @@ namespace Federator.Core.Report
             held = kept.RawClashes;
         }
 
-        /// <summary>Every clash one mirror handed, each counted once under the first thing it is.</summary>
+        /// <summary>
+        /// Every clash one mirror handed, each counted once under the first thing it is. The mirror's
+        /// clash of a key past as many as the kept test found of it, F132-R3, is one the kept test did not
+        /// find, and past as many as earlier mirrors added of it too is one no earlier mirror added. A key
+        /// with more than one copy under the kept test or under this mirror whose copies carry more than
+        /// one status restates nothing, since which copy is the twin of which is UNKNOWN, and is named once.
+        /// A copy an earlier mirror added whose status differs from this mirror's is named, its status
+        /// kept as added.
+        /// </summary>
         private void Merge(MirrorCounts counts, TestReport kept)
         {
-            HashSet<string> seen = new HashSet<string>(StringComparer.Ordinal);
+            string mirror = counts.Pair.MirrorName;
+            Dictionary<string, List<ClashRow>> copies = new Dictionary<string, List<ClashRow>>(StringComparer.Ordinal);
 
             foreach (Handed clash in handed)
             {
@@ -382,32 +405,123 @@ namespace Federator.Core.Report
                     continue;
                 }
 
-                KeptClash keptClash;
+                List<ClashRow> ofTheKey;
 
-                if (!seen.Add(clash.Key))
+                if (!copies.TryGetValue(clash.Key, out ofTheKey))
                 {
-                    counts.Repeats++;
+                    ofTheKey = new List<ClashRow>();
+                    copies.Add(clash.Key, ofTheKey);
                 }
-                else if (keptPairs.TryGetValue(clash.Key, out keptClash))
+
+                ofTheKey.Add(clash.Row);
+            }
+
+            Dictionary<string, int> seen = new Dictionary<string, int>(StringComparer.Ordinal);
+            HashSet<string> named = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (Handed clash in handed)
+            {
+                if (!ReferenceEquals(clash.Counts, counts))
                 {
+                    continue;
+                }
+
+                int before;
+                seen.TryGetValue(clash.Key, out before);
+                seen[clash.Key] = before + 1;
+
+                List<KeptClash> keptClashes;
+                int keptOfTheKey = keptPairs.TryGetValue(clash.Key, out keptClashes) ? keptClashes.Count : 0;
+                List<AddedClash> addedOfTheKey;
+                int addedCount = addedPairs.TryGetValue(clash.Key, out addedOfTheKey) ? addedOfTheKey.Count : 0;
+
+                if (before < keptOfTheKey)
+                {
+                    KeptClash keptClash = keptClashes[before];
                     counts.Both++;
 
-                    if (keptClash.Status != clash.Row.Status)
+                    if (TwinUnknown(keptClashes, copies[clash.Key]))
                     {
-                        counts.StatusesDiffer.Add(Weighed(kept, keptClash, clash.Row, counts.Pair.MirrorName));
+                        if (named.Add(clash.Key))
+                        {
+                            counts.NotCarried.Add(NotCarried(keptClashes, copies[clash.Key], clash.Row, mirror));
+                        }
+                    }
+                    else if (keptClash.Status != clash.Row.Status)
+                    {
+                        counts.StatusesDiffer.Add(Weighed(kept, keptClash, clash.Row, mirror));
                     }
                 }
-                else if (!addedPairs.Add(clash.Key))
+                else if (before - keptOfTheKey < addedCount)
                 {
                     counts.Earlier++;
+
+                    AddedClash first = addedOfTheKey[before - keptOfTheKey];
+
+                    if (first.Row.Status != clash.Row.Status)
+                    {
+                        counts.NotCarried.Add(Said(first.Row.Name) + " of " + Kept.Name + ", " + Said(clash.Row.Left.Name)
+                            + " against " + Said(clash.Row.Right.Name) + ", added from " + first.Mirror + " at "
+                            + first.Row.Status + ", is " + clash.Row.Status + " under " + mirror + ", and the report keeps "
+                            + first.Row.Status + " as added, since which copy " + first.Mirror + " gave is the twin of "
+                            + "this one is not weighed");
+                    }
                 }
                 else
                 {
+                    if (addedOfTheKey == null)
+                    {
+                        addedOfTheKey = new List<AddedClash>();
+                        addedPairs.Add(clash.Key, addedOfTheKey);
+                    }
+
+                    addedOfTheKey.Add(new AddedClash(clash.Row, mirror));
                     clash.Row.FoundOnlyByMirror = counts.Pair.MirrorName;
                     counts.Only.Add(clash.Row);
                     kept.Add(clash.Row);
                 }
             }
+        }
+
+        /// <summary>
+        /// Whether which copy of a key under the kept test is the twin of which under the mirror is
+        /// UNKNOWN in a way that matters: more than one copy on either side, and more than one status
+        /// among them all, F132-R3 attempt 2. A key with one copy on each side is weighed as before.
+        /// </summary>
+        private static bool TwinUnknown(List<KeptClash> keptClashes, List<ClashRow> mirrorCopies)
+        {
+            if (keptClashes.Count < 2 && mirrorCopies.Count < 2)
+            {
+                return false;
+            }
+
+            ClashStatus first = keptClashes[0].Status;
+
+            return keptClashes.Exists(copy => copy.Status != first) || mirrorCopies.Exists(copy => copy.Status != first);
+        }
+
+        /// <summary>The words for a key whose twins are UNKNOWN, named once, no status carried across.</summary>
+        private string NotCarried(List<KeptClash> keptClashes, List<ClashRow> mirrorCopies, ClashRow mirrorRow, string mirror)
+        {
+            List<string> keptStatuses = new List<string>();
+            List<string> mirrorStatuses = new List<string>();
+
+            foreach (KeptClash copy in keptClashes)
+            {
+                keptStatuses.Add(copy.Status.ToString());
+            }
+
+            foreach (ClashRow copy in mirrorCopies)
+            {
+                mirrorStatuses.Add(copy.Status.ToString());
+            }
+
+            return keptClashes.Count + (keptClashes.Count == 1 ? " clash" : " clashes") + " under " + Kept.Name + " and "
+                + mirrorCopies.Count + " under " + mirror + " share one pair of items, " + Said(mirrorRow.Left.Name)
+                + " against " + Said(mirrorRow.Right.Name) + ", at " + string.Join(", ", keptStatuses.ToArray()) + " under "
+                + Kept.Name + " and " + string.Join(", ", mirrorStatuses.ToArray()) + " under " + mirror
+                + ". Which copy is the twin of which is UNKNOWN, so no status was carried across and the report keeps "
+                + Kept.Name + "'s";
         }
 
         /// <summary>
@@ -534,10 +648,11 @@ namespace Federator.Core.Report
         /// <summary>
         /// The MIRROR lines for the log, once AddTo has run. Where nothing was merged, the one
         /// line saying why. Otherwise for each mirror merged what it and the kept test found,
-        /// then every clash only that mirror found, each named, his words, then once what it
-        /// repeated, then how many clashes both found carry another status under it and every
+        /// then every clash only that mirror found, each named, his words, then how many
+        /// clashes both found carry another status under it and every
         /// one of them named with both statuses and the one the report shows, his words to
-        /// Q138, and that it was taken out of the report. A mirror that did not run, was handed
+        /// Q138, then every pair of items whose status was not carried across, and that it was
+        /// taken out of the report. A mirror that did not run, was handed
         /// another number of clashes than its report holds, or was handed a clash with an item
         /// not read, is one line saying so, UNKNOWN and never 0, and where the kept test has more
         /// than one mirror one line then says none of them is merged, F132 attempt 12. Last, what
@@ -617,14 +732,6 @@ namespace Federator.Core.Report
                         + " of " + mirror + ", " + Said(row.Left.Name) + " against " + Said(row.Right.Name));
                 }
 
-                if (counts.Repeats > 0)
-                {
-                    lines.Add(MirrorRule.Prefix + "   " + counts.Repeats
-                        + (counts.Repeats == 1
-                            ? " clash of " + mirror + " repeats a pair of items it already gave, so it is counted once"
-                            : " clashes of " + mirror + " repeat a pair of items it already gave, so each is counted once"));
-                }
-
                 int differ = counts.StatusesDiffer.Count;
 
                 if (differ > 0)
@@ -638,6 +745,11 @@ namespace Federator.Core.Report
                     {
                         lines.Add(MirrorRule.Prefix + "   " + clash);
                     }
+                }
+
+                foreach (string clash in counts.NotCarried)
+                {
+                    lines.Add(MirrorRule.Prefix + "   " + clash);
                 }
 
                 lines.Add(MirrorRule.Prefix + "   " + mirror
@@ -743,6 +855,7 @@ namespace Federator.Core.Report
                 Pair = pair;
                 Only = new List<ClashRow>();
                 StatusesDiffer = new List<string>();
+                NotCarried = new List<string>();
             }
 
             internal MirrorPair Pair { get; private set; }
@@ -751,14 +864,18 @@ namespace Federator.Core.Report
 
             internal int NotRead { get; set; }
 
-            internal int Repeats { get; set; }
-
             internal int Both { get; set; }
 
             internal int Earlier { get; set; }
 
             /// <summary>Each clash both found whose two statuses differ, in words, Q138.</summary>
             internal List<string> StatusesDiffer { get; private set; }
+
+            /// <summary>
+            /// Each pair of items whose status was not carried across, in words, F132-R3 attempt 2: a key
+            /// whose twins are UNKNOWN, named once, and a copy an earlier mirror added at another status.
+            /// </summary>
+            internal List<string> NotCarried { get; private set; }
 
             /// <summary>Whether the mirror is in the report once and ran, read by AddTo off its state.</summary>
             internal bool Ran { get; set; }
@@ -796,6 +913,20 @@ namespace Federator.Core.Report
             internal string Key { get; private set; }
 
             internal ClashRow Row { get; private set; }
+        }
+
+        /// <summary>A clash a mirror added to the kept test, with the mirror it came from.</summary>
+        private sealed class AddedClash
+        {
+            internal AddedClash(ClashRow row, string mirror)
+            {
+                Row = row;
+                Mirror = mirror;
+            }
+
+            internal ClashRow Row { get; private set; }
+
+            internal string Mirror { get; private set; }
         }
 
         /// <summary>

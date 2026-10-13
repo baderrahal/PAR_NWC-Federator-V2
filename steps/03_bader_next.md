@@ -260,6 +260,14 @@ the question Q144 asks you.
 480. Only once your answer B to Q131 is lifted and the viewpoints box is ticked on a first run over a new NWF, the run of step 461 again with the box on: look for, in the `VIEWS` lines, no line reading `is on the report and not in the document`, no line counting rows that `have no recorded place` or `no longer lead to their result`, and in the saved viewpoints tree one viewpoint under the kept test's name for each clash only its mirror found, named the kept test, the separator, the clash's name and `, found by the mirror only in` the mirror's name, and none under the mirror's name
 481. Send the log file named on the `log file` line of the SESSION block, the one holding the four runs, and say which of steps 462 to 480 did not read as written
 
+## Proof F132-R3 a second clash of a mirror on one pair of items, added 2026-10-12
+
+On the run of step 461 with fix-F132c merged, a first run over a new NWF, the one run that merges.
+
+669. Look for, in every `MIRROR MERGE` block: each mirror's line `found N, the mirror M, B by both and O by the mirror only`, with B, O and the count of its `found by an earlier mirror` part adding up to M, and no line reading `repeats a pair of items it already gave`
+670. Open the workbook: each kept test's block holds as many rows whose name holds `, found by the mirror only in` as its mirrors' MIRROR MERGE lines count by the mirror only
+671. Look for, in every `MIRROR MERGE` block: any line ending `Which copy is the twin of which is UNKNOWN, so no status was carried across and the report keeps` the kept test's name, and any line ending `is the twin of this one is not weighed`. Send each one, since neither has been seen on a run
+
 ## Proof of F128, the Generic Models sets, count and workbook
 
 THESE STEPS FOLLOW STEP 481 IN THE SAME NAVISWORKS SESSION, your request 3 under Q112 and your
@@ -394,6 +402,41 @@ The weekly run with the box off comes first, because it is the run the team make
 683. Look for: no line `NOT rebuilt, though "Rebuild sets that drifted from the file" is ticked`, R18. Where one shows, why is said where the rebuild was tried, before the set's present line
 684. Look for: no line `nothing removed for`, `nothing done for` or `so it was NOT saved`. Where one shows, send it with the SET lines before it
 685. Send the log and the `.tsv` beside it, with the SETS seconds of both runs
+## Proof F127-R5 a workbook named as another group's internal workbook, added 2026-10-12, rewritten for attempt 2
+
+No group runs in these steps, so they can follow any install of main with fix-F127c merged.
+
+680. Install main with fix-F127c merged
+681. Start Navisworks Manage 2025 and open the tool's window
+682. In Explorer make a new empty folder on the desktop named F127 outputs
+683. On 1. Source press Browse beside Folder and pick a folder holding at least two groups
+684. Press Scan
+685. Open 3. Outputs
+686. Press Browse beside NWF folder and pick F127 outputs
+687. Press Browse beside NWD folder and pick F127 outputs
+688. Copy the Workbook name of the first group in the table
+689. Type it, with one space and Internal after it, into the Workbook name cell of the second group
+690. Look for, in the name preview under the table: `THE RUN CANNOT START.` and `The internal workbook of <first group> and the workbook of <second group> would both be written as <that name>. One would overwrite the other, so the run does not start.`
+691. Open 2. Grouping and see that the Run box of both groups is ticked, ticking any that is not
+692. Press Run
+693. Look for: a warning holding the same sentence, the window back on 3. Outputs, and in the log one line starting `RUN      refused before starting.` with it
+694. Open 1. Source and press Scan again, which gives every Workbook name cell back to its pattern
+695. Open 2. Grouping and see that the Run box of both groups is ticked, ticking any that is not
+696. Open 4. Clash and pick Other in the Clash tolerance list, leaving the box beside it empty
+697. Open 3. Outputs and type one letter at the end of the Workbook name cell of the first group
+698. Look for: no error box appears and the name preview under the table shows the new name
+699. Delete that letter again
+700. Press Run
+701. Look for: a warning about the clash tolerance, and nothing run
+702. In Explorer make a new empty folder on the desktop named F127 NWFs
+703. Copy into it one NWF an earlier run of the tool wrote, together with the NWD beside it
+704. Copy that NWF and its NWD into the same folder a second time
+705. Rename the first NWF and its NWD to A.nwf and A.nwd
+706. Rename the second NWF and its NWD to `A Internal.nwf` and `A Internal.nwd`
+707. In the tool open 1. Source and press Folder beside Existing NWF or folder of NWFs
+708. Pick the folder F127 NWFs
+709. Look for, in the summary under that row: the run refused, naming A and `A Internal` and the workbook name `A Internal` they would both write
+710. Send the log with the refusal of step 693 and the summary of step 709
 
 ## Proof of F130, the Shift range in the group list
 
@@ -445,6 +488,25 @@ again and ticks every one, so change nothing on the Source step unless a step sa
 578. Press Run with the folders and the Clash step as the proofs above left them, and let the one group finish
 579. Look for, in the log after the `RUN SETTINGS` lines: the `GROUPS` block with `run` beside 1A02MM, `unticked` beside the other nine, and the line `9 groups unticked in the Run column, nothing else drops a group`
 580. Send the log file named on the `log file` line of the SESSION block and say which of steps 544 to 579 did not read as written
+
+## Proof of F130-R1, the space bar on the Run cell, added 2026-10-12
+
+These run no group and can follow step 580 in the same session, once fix-F130c has merged and is installed. They are yours by hand, with the arrow keys and the space bar, since the window driver cannot carry Shift. They use the C02 folder of ten groups of steps 542 to 580.
+
+698. Go to the Source step and press Scan
+699. Go to the Grouping step. Look for: ten rows, every Run box ticked
+700. Click the Building cell of 1A0215 once
+701. Press the Left arrow once. Look for: the Run cell of 1A0215 has the focus, its border drawn
+702. Press Space. Look for: 1A0215 unticked and the other nine ticked
+703. Go to the Outputs step. Look for, at its foot: `9 groups ticked to run.`
+704. Go back to the Grouping step and click the Building cell of 1A0215 once
+705. Press the Left arrow once
+706. Press the Down arrow three times. Look for: the Run cell of 1A02MS has the focus
+707. Hold Shift and press Space. Look for: 1A0215, 1A02BS, 1A02MM and 1A02MS unticked, both ends included, and the other six ticked
+708. Press Space again, holding no key. Look for: 1A02MS alone ticked again, the box flipping once and not twice
+709. Click the Run box of 1A02WE itself once. Look for: 1A02WE unticked by the click
+710. Press Space with no other key. Look for: 1A02WE ticked again by the Space, the box flipping once
+711. Say which of steps 698 to 710 did not read as written
 
 ## Proof of F129, a picked NWF or a folder of NWFs, run where it sits
 

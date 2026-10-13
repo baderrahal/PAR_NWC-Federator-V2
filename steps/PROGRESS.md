@@ -1,4 +1,4 @@
-STATE NIGHT, 2026-10-12 15:56
+STATE OPEN, 2026-10-13 09:25, last run 09/item1-C04
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -8,35 +8,36 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 37 | 0 | 18 | 0 | 12 | 3 | 70 |
+| 2a | 57 | 0 | 0 | 0 | 8 | 8 | 73 |
 | 2b | 28 | 2 | 0 | 1 | 9 | 0 | 40 |
 | 2c | 9 | 2 | 0 | 0 | 0 | 1 | 12 |
-| 3a | 19 | 0 | 0 | 0 | 3 | 0 | 22 |
-| 3b | 13 | 1 | 0 | 0 | 7 | 0 | 21 |
+| 3a | 19 | 0 | 0 | 0 | 2 | 1 | 22 |
+| 3b | 14 | 1 | 0 | 0 | 6 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
 | outside the waves | 175 | 16 | 0 | 2 | 60 | 6 | 259 |
-| total | 324 | 26 | 18 | 3 | 192 | 10 | 573 |
+| total | 345 | 26 | 0 | 3 | 186 | 16 | 576 |
 <!-- the end of the counts -->
 
 ## Now
-- Bader closed the laptop at about 15:55 on 12 Oct and will say go. The fix round of waves 2 to 5 is unfinished. No agent runs, no Navisworks runs, every branch is pushed and clean. 210 is merged
-- Each pull request is a draft on its own branch. Their state, 209 to 219, is in the next list
+- Bader said go at 09:08 on 13 Oct. The fix round carries on under his order of 12 Oct headed BADER SAYS GO, under the limits of Q143
+- A Navisworks of his runs since 09:07, started by hand, so no install or run of the loop until it closes. His settings read what the backup holds
+- Merged so far: 216, 209, 218, 211 on 12 Oct, and 212 F115c with this page
 
-## Open pull requests, head and what is left
-- 209 F127c bf1c414: attempt 2 read, APPROVE. Fix proof steps 687 to 696 first: add steps picking an NWF and an NWD folder, Scan again instead of give back, Folder under Existing NWF, then merge
-- 211 F132c cae0f84, 212 F115c f7b2c5d, 213 F114c 7d29148, 214 F150 147ef46: attempt 2 pushed, one breaker re-read each is left. 214 also needs its 1A02MM check before it merges
-- 215 F120c 03573b2: main merged in, first reading left. 216 F129c cbb3abd: records only, drop of F129-R1, main in, merge once its checks are green
-- 217 F147 88d8013: attempt 3 fixes pushed, breaker's narrow re-read left. 218 F130c 233b455: reviewer wants proof steps 698 to 704 split to one action each, then merge
-- 219 F119c 4ec1733: first reading left, and main not yet merged in
+## Open pull requests, in Bader's order of merging
+- 213 F114c a237ca2: ready. Take main in, add a row for a refused mirror pair whose clashes get no view, rows.py merged 213, merge
+- 217 F147 88d8013: ready. Take main in, rows.py merged 217, merge
+- 215 F120c 03573b2: split proof steps 692 and 697, fix stale words in core.md 1219, 1361, 2277 and addin.md 719, ClashHarvest.cs 647 and the unreachable singular of GapRule.cs 121, then one re-read
+- 219 F119c 4ec1733: first reading left, main not yet taken in
+- 214 F150 9f3f742: breaker found no fault. Take main in, install its head in place once no Navisworks of his runs, run 1A02MM once with viewpoints ticked, check the pictures and the put back, then merge
 
 ## Next
-1. Say go. Run mergemain.py in turn6 on a branch to take main in, readers two at a time, smallest first
-2. Merge each green pull request, then install main in place, run 1A02MM once with viewpoints ticked for the wave and for F150
-3. From 17:00 or when done, build the new zip from main and give Bader its path, size and what changed
+1. 213 and 217 merged the same way as 212
+2. 215's changes and re-read, 219's first reading, then their merges, then 214's check and merge
+3. Renumber the proof steps once, build the new zip from main, then waves 3, 4 and 5, rows the team sees only
 
 ## Waiting for Bader
-- His word to go
+- Q38 said delete the per item harvest. 215 keeps the source file read since the merge key reads it, which may be his to decide
 - His run on his PC and its log, from the team zip of 12 Oct, 69de6ed4
 
 ## Blockers and known bugs

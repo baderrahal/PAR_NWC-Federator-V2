@@ -48,6 +48,162 @@ Known bugs: four found and not fixed, older than this change, rows F115-R25 to F
 
 What comes next: the lead calls the reviewer and the breaker on the branch, then the draft pull request merges once
 Actions is green, and Bader runs steps 664 to 685.
+## 2026-10-12 The fix round, wave 2a, F132 the mirrored tests, rows F132-R1 to F132-R3 and F132-R6, written by the developer as the lead's delegate
+
+Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under Q143's limits. Branch
+fix-F132c off origin/main 80314b9 in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f132c, every file named below
+under turn6 with the prefix f132c-. No Navisworks, probe or harness was started. No add-in file changed.
+
+What was done:
+- F132-R3 FIXED. Two clashes of one test can share the pair of item keys, one element carrying two pieces of
+  geometry of one name, and MirrorMerge read a mirror's second clash on such a pair as a repeat and left it out,
+  so once the mirror was taken out of the report that clash was in no block of the workbook. A key is now counted
+  as many times as each test found it: a mirror's clash past the kept test's count of its key is added, and past
+  what earlier mirrors added of it too, each clash both found weighed against its own copy under Bader's answer B
+  to Q138. The repeat line and its count are gone with nothing left to call them. Five tests in MirrorMergeTests,
+  all five failing first, f132c-failing-first.txt. The two tests that asserted the repeat,
+  ARepeatOfTheMirrorIsSaidOnce and AClashTheMirrorGivesTwiceIsAddedOnce, asserted the fault itself and are
+  replaced by TwoClashesOfTheMirrorOnOnePairTheKeptTestNeverFoundAreBothAdded on the same input
+- ATTEMPT 2, on the one blocking point the reviewer and the breaker of pull request 211 both found. Each copy of a
+  pair both tests found was paired with a kept copy by the order handed, and its status weighed onto that row,
+  where which copy is the twin of which is UNKNOWN, so a person's Approved or Resolved could be written onto the
+  wrong clash. Where a pair has more than one copy under the kept test or the mirror and its copies carry more than
+  one status, no status is carried across, the kept test's stay, and one MIRROR line names the pair. A pair with
+  one copy on each side is weighed as before. The breaker's point 3, a later mirror's copy of a clash an earlier
+  mirror added dropping its status without a word, is named where the two differ. The local that hid the field
+  added is renamed. EachClashBothFoundOnASharedPairIsWeighedAgainstItsOwnCopy is replaced by two tests pinning the
+  rule, one with the order reversed, and one more for point 3, all three failing first against attempt 1,
+  f132c-a2-failing-first.txt
+- WHAT IS NOT KNOWN. Whether two copies of one pair in one test are two clashes or one clash read twice is UNKNOWN
+  and was never measured. What stops a double count is the guard of MirrorMerge.AddTo, a mirror merged only where
+  the clashes handed are as many as its report holds and the kept test only where every row it holds was handed
+  with as many clashes as it stands for
+- F132-R1 DROPPED. It is Bader's answer A to Q142, and every pair not merged is said on a MIRROR line
+- F132-R2 DROPPED. Since attempt 13 a set already in the document merges nothing whatever the drift check read,
+  so no merge reads that check
+- F132-R6 DROPPED under Q143. One view per row of the report is what the workbook and the pictures show
+- The rule in core.md, THE MERGE, and the comment on ClashItem.MergeKey. The F132 section of steps\01_next.md
+  and steps 669 to 671 of steps\03_bader_next.md
+
+Core tests 2921 passed, 0 failed, 0 skipped before on main 80314b9, f127c-before.txt, 2924 passed, 0 failed,
+0 skipped after attempt 1, f132c-tests-after.txt, and 2926 passed, 0 failed, 0 skipped after attempt 2,
+f132c-a2-tests-after.txt and by its pre-commit, f132c-a2-precommit.txt. dotnet build
+ParsonsNwcFederator.sln -c Release --no-incremental 0 warnings, f132c-a2-build-after.txt for attempt 2,
+and 0 errors after, f132c-build-after.txt, and 0 and 0 before. check-locals and check-imports exit 0 over src,
+f132c-checks.txt.
+
+What remains: a first run over a new NWF with a merge, steps 669 to 671 of steps\03_bader_next.md. Row
+T6-R-MIRRORWORDS of the area, at no wave, was not in this brief and stays open.
+
+Known bugs: none found in this pass.
+
+What comes next: the reviewer's and the breaker's reading, then the pull request merged by the lead.
+## 2026-10-12 F130 the space bar on the Run cell, F130-R1, wave 3b, branch fix-F130c
+
+Bader's order of 2026-10-12, item 157 of steps\02_questions.md, wave 3 of the fix round, under his Q143 limits.
+The open row of area F130 in steps\tracker.csv, F130-R1, read against main 80314b9.
+
+What was done:
+- F130-R1 fixed in the add-in. F130 made the Run column a read only template column, so Space pressed on its
+  cell, which the stock tick box column took as a tick, ticked nothing, and a person who moves through the list
+  with the arrow keys lost the one key that ticked. That changes what the team does in the window, so it is
+  fixed and not dropped, though whether anyone ticks that way is UNKNOWN
+- The grid's PreviewKeyDown, `OnGroupsGridKeyDown` in src\Federator.Addin\Ui\FederatorWindow.xaml.cs, takes
+  Space on a cell of the Run column, named RunColumn in the XAML, flips its row through Include where the row
+  can be ticked, and goes on through `RunBoxFlipped`, the path a click on the box now shares, so Shift with
+  Space makes the range of Core's ShiftRange and the Outputs summary is refreshed. Space with the box itself
+  focused is left to the box
+- No Core change: the range is Core's ShiftRange, unchanged and tested by F130, and which key on which cell
+  reaches it is WPF's alone, so there is no Core test to fail first. Its proof is steps 698 to 711 of
+  steps\03_bader_next.md, by hand
+- Proved here: the solution builds in Release with 0 warnings and 0 errors, turn6\f130c-build-after.txt, and
+  0 warnings and 0 errors on main 80314b9 before, turn6\f120c-build-before.txt. Core tests 2921 passed, 0
+  failed, 0 skipped before, turn6\f120c-tests-before.txt, and after, turn6\f130c-tests-after.txt, nothing in
+  Core changed. check-locals and check-imports over src clean, f130c-checks.txt. Navisworks was not started
+
+What remains: the merge, and steps 698 to 711 of steps\03_bader_next.md on the C02 folder, by hand.
+
+Known bugs: none known. The step numbers follow main's 691, F118's merged as 210 and taken in here, and F120c's
+692 to 697, so the lead renumbers at the merge where another branch takes them first.
+
+What comes next: the lead's reading of the three branches of this order.
+
+THE READING, 2026-10-12 evening: the reviewer found the code sound and asked for the proof steps to hold one
+action each. They are split, 698 to 711, with the move to the Outputs step and the report as steps of their own.
+Main 9fd16d6 was merged in before the reading and the solution built in Release with 0 warnings and 0 errors,
+turn6\f130c-build-merged.txt. No file of Core or its tests changed, so the Core tests stand as on 80314b9
+## 2026-10-12 The fix round, wave 2a, F127 the coverage, rows F127-R3 to F127-R5, written by the developer as the lead's delegate
+
+Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under Q143's limits. Branch
+fix-F127c off origin/main 80314b9 in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f127c, every file named below
+under turn6 with the prefix f127c-. No Navisworks, probe or harness was started.
+
+ATTEMPT 2, the reviewer's three points on pull request 209, read at 14:30 and finished after the usage limit:
+- The window no longer reads the tolerance box to reach the internal workbook's naming. One field of the window,
+  internalWorkbook, is read by the check before a run, the name preview, the picked NWF plan and the run's options, so
+  Other with an empty box cannot throw out of Run, a scan or a name edit
+- NwfPick.Collisions also compares each NWF's internal workbook with the other NWFs' clash workbooks, so A.nwf beside
+  `A Internal.nwf` is refused before any file is written. Tests in NwfPickTests
+- The proof steps hold one action each, 680 to 710, and the two new cases have steps of their own. The second
+  reading approved the code and found four steps that could not give what they named: no NWF or NWD folder
+  was picked, so Run refused for that first, no control gives a typed name back, typing into the picked NWF
+  box updates nothing, and the two NWFs had no step making them. Each has its own steps now
+- Core tests 2921 on main 80314b9, 2926 after attempt 1 and 2941 after attempt 2, 0 failed, 0 skipped
+
+What was done:
+- F127-R5 FIXED. A group's internal workbook is named after its workbook with the suffix Internal, so a group
+  whose workbook was typed as X Internal beside a group X had one written over the other with no line.
+  OutputNameTable.WhyTheRunCannotStart now takes the GenericModelsSettings the engine names the internal
+  workbook by, reads each internal workbook name against every other group's workbook name, ignoring case, and
+  names both groups and the name. The window hands it the run's settings at the name preview and at Run, so the
+  run does not start. Five tests in OutputNameTableTests, three of them failing first against the new argument
+  ignored, f127c-failing-first.txt
+- F127-R3 DROPPED under Q143. A code only an unticked building carries reads UNKNOWN on the coverage row and
+  never a wrong word, so nothing the team sees is wrong, and the change would hand the window's whole scan to the
+  engine for one more definite word
+- F127-R4 DROPPED under Q143. A mirror's coverage row carries the name Clash Detective and the clash workbook
+  show, and the MIRROR COVERAGE block of the log ties it to the name the XML gives it, so nothing the team sees
+  is wrong
+- The rule in core.md beside the collision check, and F127-R3's line in the coverage section. The F127 section of
+  steps\01_next.md and steps 664 to 668 of steps\03_bader_next.md
+
+Core tests 2921 passed, 0 failed, 0 skipped before on main 80314b9, f127c-before.txt, and 2926 passed, 0 failed,
+0 skipped after, f127c-tests-after.txt. dotnet build ParsonsNwcFederator.sln -c Release --no-incremental 0 warnings
+and 0 errors after, f127c-build-after.txt, and 0 and 0 before. check-locals and check-imports exit 0 over src,
+f127c-checks.txt.
+
+What remains: the window's refusal on Navisworks, steps 664 to 668 of steps\03_bader_next.md.
+
+Known bugs: none found in this pass.
+
+What comes next: the reviewer's reading, then the pull request merged by the lead.
+
+## 2026-10-12 F129 the junction row of the NWF pick, F129-R1, wave 3a, branch fix-F129c
+
+Bader's order of 2026-10-12, item 157 of steps\02_questions.md, wave 3 of the fix round, under his Q143 limits.
+The open row of area F129 in steps\tracker.csv, F129-R1, read against main 80314b9.
+
+What was done:
+- F129-R1 dropped, no code changed. The walk of the picked NWFs, `NwfPickDisk.Real` in
+  src\Federator.Core\Rerun\NwfPick.cs, lists subfolders by Directory.GetDirectories and follows a junction. A
+  junction that loops back to a folder above it exists only where a person made one with mklink inside the
+  folder they pick, and no folder the team is known to pick holds one. The NWC scan of the window,
+  Directory.GetFiles with AllDirectories, shares the exposure and has met no such folder either
+- The one cheap guard, a folder skipped where it carries the reparse point mark, would skip real folders.
+  Measured on this machine on 2026-10-12: a folder OneDrive syncs reads `ReadOnly, Directory, Archive,
+  ReparsePoint` with no link type, the same F109 measured on files. Telling a junction by its link type needs a
+  call into Windows this tool makes nowhere, for a fault no one on the team is known to meet, so the fix would
+  risk what the team sees for a case none of them makes
+- Proved here: nothing in src or tests changed. Core tests 2921 passed, 0 failed, 0 skipped on main 80314b9,
+  turn6\f120c-tests-before.txt, and the solution built in Release with 0 warnings and 0 errors there,
+  turn6\f120c-build-before.txt, both run in this worktree's sister worktrees of the same commit
+
+What remains: the merge. No proof step, since nothing the add-in does changed.
+
+Known bugs: a folder a person links back into itself with mklink is walked until Windows refuses the path, by the
+NWF pick and by the NWC scan, as before.
+
+What comes next: F130 of the same order.
 ## 2026-10-12 F118 the workbook and report, the add-in pass, FR-036, F118-R3 and FR-041's count, on branch fix-F118c
 
 Wave 2c of Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under the
