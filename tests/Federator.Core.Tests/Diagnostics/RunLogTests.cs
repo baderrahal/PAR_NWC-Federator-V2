@@ -326,53 +326,6 @@ namespace Federator.Core.Tests
             }
         }
 
-        // A bad output folder must not cost the log. The fixed path copy is the one that
-        // matters and it has to survive, carrying the reason the second copy failed.
-        [Test]
-        public void ABadOutputFolderStillLeavesTheLogInTheFixedPath()
-        {
-            using (RunLog log = Start())
-            {
-                // A folder UNDER a file that is already there. No system makes one, which
-                // is what the missing drive letter used to mean here and only meant on
-                // Windows: off it, Z:\no-such-drive is an ordinary relative folder name and
-                // the copy succeeded.
-                string nowhere = Path.Combine(log.Path, "nowhere");
-
-                string copied;
-                bool ok = log.TryCopyTo(nowhere, out copied);
-
-                Assert.That(ok, Is.False);
-                Assert.That(copied, Is.Null);
-
-                Assert.That(File.Exists(log.Path), Is.True, "the fixed path log was lost");
-
-                string text = ReadWhileOpen(log);
-                Assert.That(text, Does.Contain("FAILURE"));
-                Assert.That(text, Does.Contain(nowhere));
-                Assert.That(text, Does.Contain("kept going"));
-            }
-        }
-
-        [Test]
-        public void AGoodOutputFolderGetsASecondCopyOfTheWholeLog()
-        {
-            using (RunLog log = Start())
-            {
-                log.Line("a line that has to reach the copy");
-
-                string beside = Path.Combine(folder, "beside-the-nwf");
-                string copied;
-                bool ok = log.TryCopyTo(beside, out copied);
-
-                Assert.That(ok, Is.True);
-                Assert.That(copied, Is.Not.Null);
-                Assert.That(File.Exists(copied), Is.True);
-                Assert.That(Path.GetFileName(copied), Is.EqualTo(Path.GetFileName(log.Path)));
-                Assert.That(File.ReadAllText(copied), Does.Contain("a line that has to reach the copy"));
-            }
-        }
-
         [Test]
         public void TheFixedFolderNeverDependsOnAFolderTheUserPicked()
         {

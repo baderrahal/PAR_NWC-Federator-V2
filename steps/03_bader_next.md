@@ -1921,3 +1921,34 @@ view. Rows F114-K34 and F114-R1. Everything runs on a copy.
 1308. Look for: its rows at New or Active counted equal to that mirror's N, and its other rows counted equal to its M
 1309. Where step 1304 read 0, no mirror not merged held a clash on this run, so the new lines are proved by the Core tests alone. Say so when you send the log
 1310. Send the log of steps 1302 to 1309, named on its `log file` line
+
+## Proof of the round of 2026-10-13, F151 to F155, added 2026-10-13
+
+One section for the five fixes of your message of 2026-10-13, each with its own steps. Core is
+proved by its tests on the laptop. What only Navisworks or Excel can show is here. Everything
+runs on copies in new folders on the desktop, so no NWF of the real folders is changed.
+
+### F151, no copy of the log beside the NWF
+
+1400. Install main once fix-F151 has merged, steps 7 to 12
+1401. In Explorer make a new folder on the desktop named `F151 source`
+1402. Copy the NWC files of 1A02MM from `C:\00-NM\Federation Task\C02 + 04\C02` into `F151 source`
+1403. Make a second new folder on the desktop named `F151 out`
+1404. Start Navisworks and open the tool
+1405. On 1. Source pick `F151 source`
+1406. Press Scan
+1407. On 3. Outputs pick `F151 out` for the NWF folder, the NWD folder and the Excel folder
+1408. Look for, on the grey line of 3. Outputs: `The log is written to` and a path under `AppData\Local\ParsonsNwcFederator\logs`, ending with a full stop and with no words `copied next to the NWF folder`
+1409. Press Run
+1410. Press OK on the confirm
+1411. Wait for the run to finish
+1412. In Explorer open `F151 out`
+1413. Look for: no file whose name starts `run-` and ends `.log` or `.tsv`
+1414. Open the log the tool names on its `log file` line
+1415. Look for: the RESULT block is the last block, and no line after it starts with `COPY`
+1416. Look for, in RESULT: the line under `pictures` reading `The logo copied beside each report is not counted`
+1417. In the tool, on 1. Source, press File beside the NWFs box and pick the NWF of 1A02MM in `F151 out`
+1418. Press Run NWFs
+1419. Press OK on the confirm and wait for the run to finish
+1420. Look for: still no `run-*.log` file in `F151 out`
+1421. Send both logs, named on their `log file` lines

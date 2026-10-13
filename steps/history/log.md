@@ -2,6 +2,31 @@
 
 Newest entry at the top.
 
+## 2026-10-13 F151 no copy of the log beside the NWF, item 1 of Bader's message of 2026-10-13, Q162-1
+
+Branch fix-F151 off main 1a0f62d. His run of 2026-10-13 20:33 on 1A02MM wrote the copy of the log into his NWF folder
+for C02, and he decided the log stays in the logs folder only, with RESULT still written.
+
+What was done:
+- The window writes the RESULT block and no copy at the end of the scanned run, the open file run and the run of
+  picked NWFs, through one method, WriteTheResult. The grey line of 3. Outputs no longer says the log is copied
+- RunLog.TryCopyTo and NwfPick.LogFolder had no other caller in src and are gone, with the two tests of RunLogTests that tested the copy alone.
+  The hardening tests that also read ReadAll, the closed log among them,
+  keep that half, the reviewer's point. The RESULT pictures line no longer names a copy of the log. A new test fails if either member
+  comes back
+- tools\loop\run.ps1 closed a window run once RESULT and a COPY line after it were in the log, so it now closes it on
+  RESULT and 15 s of quiet, and the stand-in no longer calls TryCopyTo. Both under Q143 limit 5, since otherwise a
+  loop run never closes on RESULT and the harness cannot build the stand-in. prove-run.ps1 was not run, UNKNOWN
+- core.md ONE PLACE, addin.md, and a first dated entry under Rules changed since in docs\history\claude-md-history.md
+- Core tests before 3099 passed, 0 failed, 0 skipped, after 3098 passed, 0 failed, 0 skipped. The solution builds in
+  Release with 0 warnings and 0 errors. The stand-in builds with 0 warnings and 0 errors
+
+What remains: not run on Navisworks, steps 1400 to 1421 of steps\03_bader_next.md and the loop's run of the round.
+
+Known bugs: none new.
+
+What comes next: F152, the linked pictures.
+
 ## 2026-10-13 F114-K36 a test of result groups gets a view of the clashes inside them, Bader's answer B, Q160
 
 Branch fix-F114-K36 off fix-F114-K29, Bader's message of 2026-10-13 headed BADER, 13 OCT 2026: HIS ANSWERS, THE CSV AND

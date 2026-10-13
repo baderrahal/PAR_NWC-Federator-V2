@@ -369,7 +369,7 @@ modes:
   the one run-*.log made after that call whose SESSION names the installed stamp, and names it
   and its .tsv in toollog-name.txt. HUNG is the log still for 300 s with under 20 s of
   processor time in them, Q83, and the clocks start again while the session reads locked.
-  Once the log holds its RESULT block and a COPY line and has been quiet 15 s, or the driver
+  Once the log holds its RESULT block and has been quiet 15 s, F151, or the driver
   stopped with nothing that runs pressed and no run started, it posts WM_CLOSE to the tool's
   window of the adopted pid, and only while no other window of that pid is up but one the window
   rule reads as a pane, which since F125 the record writes as PANE and leaves as it is. Then

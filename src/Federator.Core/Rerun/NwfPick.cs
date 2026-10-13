@@ -202,12 +202,6 @@ namespace Federator.Core.Rerun
             return nwfs.ConvertAll(n => n.Path);
         }
 
-        /// <summary>Where the second copy of the log goes: the folder picked, or the picked file's own folder.</summary>
-        public string LogFolder
-        {
-            get { return PickedAFolder ? Picked : OpenDocumentJob.FolderOf(Picked); }
-        }
-
         internal void Add(PickedNwf nwf)
         {
             nwfs.Add(nwf);

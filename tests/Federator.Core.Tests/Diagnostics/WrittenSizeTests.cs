@@ -209,9 +209,21 @@ namespace Federator.Core.Tests
                 Assert.That(text, Does.Contain("files written  : 1, every size read back off the disk"),
                     "the files list stays a list of the files");
                 Assert.That(text, Does.Contain("pictures       : 3 written beside the files listed below, 3.00 MB"));
-                Assert.That(text, Does.Contain("the copy of this log are not counted"),
+                Assert.That(text, Does.Contain("The logo copied beside each report is not counted"),
                     "what neither line counts is said rather than left to be guessed");
+                Assert.That(text, Does.Not.Contain("copy of this log"),
+                    "since F151 no copy of the log is written, so RESULT names none");
             }
+        }
+
+        // F151, Bader's decision of 2026-10-13: the log stays in the logs folder alone. The
+        // member that wrote a second copy beside the NWF folder is gone, and this fails the
+        // day one comes back.
+        [Test]
+        public void TheLogHasNoMemberThatCopiesItAnywhereElse()
+        {
+            Assert.That(typeof(RunLog).GetMethod("TryCopyTo"), Is.Null);
+            Assert.That(typeof(Federator.Core.Rerun.NwfPickPlan).GetProperty("LogFolder"), Is.Null);
         }
 
         [Test]
