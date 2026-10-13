@@ -183,6 +183,48 @@ namespace Federator.Core.Tests
             }
         }
 
+        // ---------- the pictures beside the files, FR-059 ----------
+
+        // Set 03 log:8466 said files written : 88 and nothing else, while the run wrote 5679
+        // pictures besides, 1376 MB. The pictures are counted and their size said, and the
+        // files list stays a list of the files.
+        [Test]
+        public void ResultSaysHowManyPicturesAndHowManyMegabytesBesideTheFiles()
+        {
+            using (RunLog log = Log())
+            {
+                log.WriteFinished("NWF", Write("federation.nwf", 4141));
+
+                Federator.Core.Report.ImageTally first = new Federator.Core.Report.ImageTally();
+                first.Wrote(0.5, 1048576);
+                first.Wrote(0.5, 1048576);
+                Federator.Core.Report.ImageTally second = new Federator.Core.Report.ImageTally();
+                second.Wrote(0.5, 1048576);
+                log.PicturesAcrossTheRun.Add(first);
+                log.PicturesAcrossTheRun.Add(second);
+
+                log.WriteResultBlock();
+                string text = Read(log);
+
+                Assert.That(text, Does.Contain("files written  : 1, every size read back off the disk"),
+                    "the files list stays a list of the files");
+                Assert.That(text, Does.Contain("pictures       : 3 written beside the files listed below, 3.00 MB"));
+                Assert.That(text, Does.Contain("the copy of this log are not counted"),
+                    "what neither line counts is said rather than left to be guessed");
+            }
+        }
+
+        [Test]
+        public void ResultOfARunThatWroteNoPictureSaysNoneWritten()
+        {
+            using (RunLog log = Log())
+            {
+                log.WriteResultBlock();
+
+                Assert.That(Read(log), Does.Contain("pictures       : none written"));
+            }
+        }
+
         /// <summary>Reads the live log the way the Copy log button does, share aware.</summary>
         private static string Read(RunLog log)
         {

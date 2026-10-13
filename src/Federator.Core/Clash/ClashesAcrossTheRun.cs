@@ -25,12 +25,14 @@ namespace Federator.Core.Clash
         private readonly List<string> names = new List<string>();
         private readonly List<int> found = new List<int>();
         private readonly List<int> testsWithClashes = new List<int>();
+        private readonly List<int> testsRun = new List<int>();
 
         /// <summary>One group's numbers, added as its CLASH block is written.</summary>
-        public void Add(string group, int clashes, int testsThatFoundSomething)
+        public void Add(string group, int clashes, int testsThatRan, int testsThatFoundSomething)
         {
             names.Add(string.IsNullOrEmpty(group) ? "UNKNOWN" : group);
             found.Add(clashes < 0 ? 0 : clashes);
+            testsRun.Add(testsThatRan < 0 ? 0 : testsThatRan);
             testsWithClashes.Add(testsThatFoundSomething < 0 ? 0 : testsThatFoundSomething);
         }
 
@@ -56,16 +58,19 @@ namespace Federator.Core.Clash
             }
         }
 
-        /// <summary>Groups whose clash count was zero. Said apart, because none is not the same as few.</summary>
+        /// <summary>
+        /// Groups that ran a test and found no clash. Said apart, because none is not the same
+        /// as few. A group that ran no test is not one of them, FR-060.
+        /// </summary>
         public int GroupsThatFoundNothing
         {
             get
             {
                 int none = 0;
 
-                foreach (int one in found)
+                for (int i = 0; i < found.Count; i++)
                 {
-                    if (one == 0)
+                    if (found[i] == 0 && testsRun[i] > 0)
                     {
                         none++;
                     }
@@ -73,6 +78,34 @@ namespace Federator.Core.Clash
 
                 return none;
             }
+        }
+
+        /// <summary>
+        /// Groups that ran no test at all, FR-060. Set 03 counted six one discipline groups,
+        /// every block reading tests run : 0, under found none, which reads as six clean
+        /// groups where nothing was looked at.
+        /// </summary>
+        private int GroupsThatRanNoTest
+        {
+            get
+            {
+                int none = 0;
+
+                for (int i = 0; i < found.Count; i++)
+                {
+                    if (RanNoTest(i))
+                    {
+                        none++;
+                    }
+                }
+
+                return none;
+            }
+        }
+
+        private bool RanNoTest(int group)
+        {
+            return found[group] == 0 && testsRun[group] == 0;
         }
 
         /// <summary>
@@ -96,13 +129,18 @@ namespace Federator.Core.Clash
                 + " across " + names.Count + (names.Count == 1 ? " group" : " groups")
                 + (GroupsThatFoundNothing > 0
                     ? ", " + GroupsThatFoundNothing + " of which found none"
+                    : string.Empty)
+                + (GroupsThatRanNoTest > 0
+                    ? ", " + GroupsThatRanNoTest + " of which ran no test"
                     : string.Empty));
 
             for (int i = 0; i < names.Count; i++)
             {
                 lines.Add("      " + names[i].PadRight(10) + " "
                     + found[i].ToString(CultureInfo.InvariantCulture).PadLeft(6)
-                    + "  from " + testsWithClashes[i] + " test(s) that found something");
+                    + (RanNoTest(i)
+                        ? "  no test ran"
+                        : "  from " + testsWithClashes[i] + " test(s) that found something"));
             }
 
             return lines;

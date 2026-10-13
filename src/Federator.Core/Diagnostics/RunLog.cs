@@ -575,6 +575,7 @@ namespace Federator.Core.Diagnostics
         private void StartTheTallies()
         {
             ClashesFound = new ClashesAcrossTheRun();
+            PicturesAcrossTheRun = new Federator.Core.Report.ImageTally();
             PenetrationsAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "penetrations   ");
             ByDesignAcrossTheRun = new MovedAcrossTheRun("moved to Reviewed", "by design      ");
         }
@@ -2158,6 +2159,12 @@ namespace Federator.Core.Diagnostics
         public ClashesAcrossTheRun ClashesFound { get; private set; }
 
         /// <summary>
+        /// Every picture the run wrote, each group's tally added as its IMAGES lines are
+        /// written, FR-059. Never null. The RESULT block says it beside the files written.
+        /// </summary>
+        public Federator.Core.Report.ImageTally PicturesAcrossTheRun { get; private set; }
+
+        /// <summary>
         /// How many clashes the penetration rule moved, per group and added up, with how
         /// many it looked at beside each. Never null. Only written where the box was on.
         /// </summary>
@@ -2383,6 +2390,13 @@ namespace Federator.Core.Diagnostics
 
             IList<WrittenFile> files = WrittenFiles;
             Blank();
+
+            // FR-059. The pictures are on no files list, so they are counted here, above the
+            // list, with their size, where set 03 said 88 files and left out 5679 pictures.
+            foreach (string line in PicturesAcrossTheRun.ResultLines())
+            {
+                Line(line);
+            }
 
             if (files.Count == 0)
             {

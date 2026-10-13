@@ -92,13 +92,11 @@ namespace Federator.Addin.Engine
 
             if (before == wanted)
             {
-                log.Line("UNITS    the document is already in " + Name(wanted)
-                    + ", so nothing was changed.");
+                log.Line(UnitsLines.AlreadyIn(wanted.ToString()));
                 return before;
             }
 
-            log.Line("UNITS    the document is in " + Name(before) + " and the report needs "
-                + Name(wanted) + ". Setting every model.");
+            log.Line(UnitsLines.Setting(before.ToString(), wanted.ToString()));
 
             int changed = 0;
             int failed = 0;
@@ -115,21 +113,23 @@ namespace Federator.Addin.Engine
                 }
             }
 
+            // FR-062. A second read that throws is a failure line of its own, and the UNITS
+            // line then names no unit as what the document shows, since none was read.
             Units after = before;
+            string afterName = null;
 
             try
             {
                 after = document.Units;
+                afterName = after.ToString();
             }
-            catch (Exception)
+            catch (Exception error)
             {
-                // The line below still says what was attempted.
+                log.Failure("reading the document units again after setting the models", error,
+                    "kept going, the UNITS line below says the units could not be read again");
             }
 
-            log.Line("UNITS    " + changed + " model" + (changed == 1 ? "" : "s") + " set, "
-                + failed + " that would not, document shows " + Name(after)
-                + ". Every report number is converted to " + Federator.Core.Report.ReportUnits.Name
-                + " before it is written, so the report is metric whatever this says.");
+            log.Line(UnitsLines.AfterSetting(changed, failed, before.ToString(), afterName));
 
             return after;
         }
@@ -175,22 +175,5 @@ namespace Federator.Addin.Engine
                 return false;
             }
         }
-
-        /// <summary>
-        /// The short name the log writes, read off UnitTable so it is the same short name
-        /// everywhere. An enum value the table does not carry is written as its own name,
-        /// which is what a person would need to read to add the row.
-        /// </summary>
-        public static string Short(Units units)
-        {
-            UnitRow row = UnitTable.FindByEnumName(units.ToString());
-            return row == null ? units.ToString() : row.Short;
-        }
-
-        private static string Name(Units units)
-        {
-            return units.ToString() + " (" + Short(units) + ")";
-        }
-
     }
 }

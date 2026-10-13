@@ -19,7 +19,11 @@ namespace Federator.Core.Findings
             SourceName = sourceName;
         }
 
-        /// <summary>The building code of the group this model was federated into.</summary>
+        /// <summary>
+        /// The key of the group this model was federated into, which is a building code only
+        /// where the run groups per building. Read to tell two pairs apart and never as a
+        /// building code, FR-167.
+        /// </summary>
         public string GroupBuilding { get; private set; }
 
         /// <summary>Model.FileName, the NWC this run appended or the NWF points at.</summary>
@@ -55,7 +59,7 @@ namespace Federator.Core.Findings
 
         public const string NothingOdd =
             "Every NWC came from a Revit model with the same building code, and no two "
-            + "federations are being built from the same Revit building.";
+            + "NWC building codes were published from the same Revit building.";
 
         private SourceMismatchFindings(
             IList<ScanFinding> all,
@@ -165,7 +169,7 @@ namespace Federator.Core.Findings
                     continue;
                 }
 
-                compared.Add(new Comparison(pair, nwc, source));
+                compared.Add(new Comparison(nwc, source));
             }
 
             AddMismatches(compared, findings);
@@ -206,8 +210,8 @@ namespace Federator.Core.Findings
                     SourceMismatchLabel,
                     "The NWC files named " + one.NwcBuilding
                         + " were published from a Revit model named " + one.SourceBuilding + ".",
-                    "The federation is named from the NWC file name, so it will be called "
-                        + one.NwcBuilding + ". Usually this means the Revit file still carries an "
+                    "This tool reads the building code off the NWC file name and never off the "
+                        + "Revit model. Usually this means the Revit file still carries an "
                         + "older building code, or the NWC was exported under a name typed by hand. "
                         + "Nothing is changed and neither name is assumed right.",
                     new List<string> { one.NwcBuilding, one.SourceBuilding },
@@ -216,43 +220,49 @@ namespace Federator.Core.Findings
         }
 
         /// <summary>
-        /// One Revit building code feeding more than one group. That means one building
-        /// has been split in two by a naming error, so it is worth saying on its own
-        /// rather than leaving it to be spotted across two mismatch lines.
+        /// One Revit building code published under more than one NWC building code. That
+        /// means one building has been split in two by a naming error, so it is worth saying
+        /// on its own rather than leaving it to be spotted across two mismatch lines.
+        ///
+        /// FR-167. Keyed by the building code on each NWC and never by the group it went
+        /// into, since the group is the grouping a person chose: per building and discipline
+        /// one building is two groups by choice, and per discipline two building codes share
+        /// a group. Keyed by the group the first was reported as a naming error and the
+        /// second was never seen.
         /// </summary>
         private static void AddSharedSources(IList<Comparison> compared, IList<ScanFinding> findings)
         {
-            Dictionary<string, List<string>> groupsBySource =
+            Dictionary<string, List<string>> codesBySource =
                 new Dictionary<string, List<string>>(StringComparer.Ordinal);
             List<string> sourceOrder = new List<string>();
 
             foreach (Comparison one in compared)
             {
-                List<string> groups;
+                List<string> codes;
 
-                if (!groupsBySource.TryGetValue(one.SourceBuilding, out groups))
+                if (!codesBySource.TryGetValue(one.SourceBuilding, out codes))
                 {
-                    groups = new List<string>();
-                    groupsBySource.Add(one.SourceBuilding, groups);
+                    codes = new List<string>();
+                    codesBySource.Add(one.SourceBuilding, codes);
                     sourceOrder.Add(one.SourceBuilding);
                 }
 
-                if (!groups.Contains(one.GroupBuilding))
+                if (!codes.Contains(one.NwcBuilding))
                 {
-                    groups.Add(one.GroupBuilding);
+                    codes.Add(one.NwcBuilding);
                 }
             }
 
             foreach (string source in sourceOrder)
             {
-                List<string> groups = groupsBySource[source];
+                List<string> codes = codesBySource[source];
 
-                if (groups.Count < 2)
+                if (codes.Count < 2)
                 {
                     continue;
                 }
 
-                List<string> named = new List<string>(groups);
+                List<string> named = new List<string>(codes);
                 named.Sort(StringComparer.Ordinal);
 
                 List<string> buildings = new List<string> { source };
@@ -261,7 +271,7 @@ namespace Federator.Core.Findings
                 findings.Add(new ScanFinding(
                     FindingKind.SharedSourceBuilding,
                     SharedSourceLabel,
-                    named.Count + " federations are being built from the same Revit building, "
+                    named.Count + " NWC building codes were published from the same Revit building, "
                         + source + ".",
                     "They are " + string.Join(" and ", named.ToArray())
                         + ". That usually means one of the NWC file names is wrong and these should "
@@ -322,14 +332,11 @@ namespace Federator.Core.Findings
         /// <summary>One NWC name and its Revit source, both already read.</summary>
         private sealed class Comparison
         {
-            internal Comparison(SourcePair pair, ParsedContainerName nwc, ParsedContainerName source)
+            internal Comparison(ParsedContainerName nwc, ParsedContainerName source)
             {
-                Pair = pair;
                 Nwc = nwc;
                 Source = source;
             }
-
-            internal SourcePair Pair { get; private set; }
 
             internal ParsedContainerName Nwc { get; private set; }
 
@@ -343,18 +350,6 @@ namespace Federator.Core.Findings
             internal string SourceBuilding
             {
                 get { return Source.Building; }
-            }
-
-            /// <summary>
-            /// The group this model was federated into. Falls back to the code on the NWC
-            /// itself, because that is what the grouping used.
-            /// </summary>
-            internal string GroupBuilding
-            {
-                get
-                {
-                    return string.IsNullOrEmpty(Pair.GroupBuilding) ? NwcBuilding : Pair.GroupBuilding;
-                }
             }
         }
     }

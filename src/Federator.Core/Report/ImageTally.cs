@@ -154,6 +154,34 @@ namespace Federator.Core.Report
         }
 
         /// <summary>
+        /// The pictures of the whole run in the RESULT block, FR-059, from the groups' tallies
+        /// added up. Set 03 said files written : 88 while the run wrote 5679 pictures besides,
+        /// 1376 MB of them, because a picture is counted here and never on the written list.
+        /// The pictures are counted and not listed, since 5679 paths would bury the 88 files a
+        /// person looks for. Every size was read back off the disk by the writer, which counts
+        /// a picture only once its file is there. The logo copied beside each report and the
+        /// copy of the log are on neither list, and the line says so rather than leaving them
+        /// to be guessed at.
+        /// </summary>
+        public IList<string> ResultLines()
+        {
+            string failed = Failed > 0 ? ", " + Failed + " failed and left their cells empty" : string.Empty;
+
+            if (written == 0)
+            {
+                return new List<string> { "pictures       : none written" + failed };
+            }
+
+            return new List<string>
+            {
+                "pictures       : " + written + " written beside the files listed below, "
+                    + Two(TotalMegabytes) + " MB, every size read back off the disk" + failed,
+                "                 counted and not listed one by one. The logo copied beside each "
+                    + "report and the copy of this log are not counted"
+            };
+        }
+
+        /// <summary>
         /// The block that goes in the log. Every number here was measured, so where
         /// nothing was written it says so rather than printing a rate over zero.
         /// </summary>

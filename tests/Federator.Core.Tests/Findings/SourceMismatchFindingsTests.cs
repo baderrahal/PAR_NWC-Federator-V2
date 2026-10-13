@@ -196,8 +196,10 @@ namespace Federator.Core.Tests
             IList<ScanFinding> shared = findings.OfKind(FindingKind.SharedSourceBuilding);
 
             Assert.That(shared.Count, Is.EqualTo(1), "one line for the shared code, not one per group");
-            Assert.That(shared[0].Headline, Does.Contain("3 federations"));
-            Assert.That(shared[0].Buildings.Count, Is.EqualTo(4), "the source and its three groups");
+            // FR-167. Counted by the building code on each NWC, which is a federation only
+            // where the run groups per building, so the headline names codes.
+            Assert.That(shared[0].Headline, Does.Contain("3 NWC building codes"));
+            Assert.That(shared[0].Buildings.Count, Is.EqualTo(4), "the source and its three codes");
         }
 
         // Two groups whose codes agree with their own sources cannot be sharing anything.
@@ -208,6 +210,58 @@ namespace Federator.Core.Tests
                 new List<SourcePair> { Pair("1B06BC", "1B06BC"), Pair("1B06BS", "1B06BS") });
 
             Assert.That(findings.OfKind(FindingKind.SharedSourceBuilding).Count, Is.EqualTo(0));
+        }
+
+        // ---------- the grouping a person chose is not a naming error, FR-167 ----------
+
+        // Per building and discipline: one building's AR and ME are two groups by choice, both
+        // published from the one Revit building. That is the chosen split and names nothing wrong.
+        [Test]
+        public void OneBuildingSplitByDisciplineIsNotASharedSource()
+        {
+            SourceMismatchFindings findings = SourceMismatchFindings.From(
+                new List<SourcePair>
+                {
+                    new SourcePair("1C07BC-AR", Nwc("1C07BC", "AR"), Revit("1C07BC", "AR", "003000")),
+                    new SourcePair("1C07BC-ME", Nwc("1C07BC", "ME"), Revit("1C07BC", "ME", "003000"))
+                });
+
+            Assert.That(findings.OfKind(FindingKind.SharedSourceBuilding).Count, Is.EqualTo(0),
+                "the split a person chose was reported as a naming error");
+            Assert.That(findings.Any, Is.False);
+        }
+
+        // Per discipline: one group holds two building codes published from one Revit building.
+        // That is the naming error the finding is for, whatever the grouping.
+        [Test]
+        public void TwoBuildingCodesFromOneRevitBuildingInOneGroupAreStillASharedSource()
+        {
+            SourceMismatchFindings findings = SourceMismatchFindings.From(
+                new List<SourcePair>
+                {
+                    new SourcePair("AR", Nwc("1B06K1", "AR"), Revit("0000KI", "AR", "003000")),
+                    new SourcePair("AR", Nwc("1B06KI", "AR"), Revit("0000KI", "AR", "003000"))
+                });
+
+            IList<ScanFinding> shared = findings.OfKind(FindingKind.SharedSourceBuilding);
+
+            Assert.That(shared.Count, Is.EqualTo(1));
+            Assert.That(shared[0].Detail, Does.Contain("1B06K1 and 1B06KI"));
+        }
+
+        // Per discipline the federation is named for the discipline, so the mismatch must not
+        // say it will be called by the building code on the NWC.
+        [Test]
+        public void TheMismatchDoesNotSayWhatTheFederationWillBeCalled()
+        {
+            SourceMismatchFindings findings = SourceMismatchFindings.From(
+                new List<SourcePair> { new SourcePair("AR", Nwc("1B06BC", "AR"), Revit("0000BC", "AR", "003000")) });
+
+            IList<ScanFinding> mismatch = findings.OfKind(FindingKind.SourceMismatch);
+
+            Assert.That(mismatch.Count, Is.EqualTo(1));
+            Assert.That(mismatch[0].Detail, Does.Not.Contain("will be called"));
+            Assert.That(mismatch[0].Detail, Does.Contain("building code off the NWC file name"));
         }
 
         // ---------- reading the names ----------
@@ -304,7 +358,10 @@ namespace Federator.Core.Tests
             string block = Block(SourceMismatchFindings.From(RealRun()));
 
             Assert.That(block, Does.Contain("neither name is assumed right"));
-            Assert.That(block, Does.Contain("The federation is named from the NWC file name"));
+
+            // FR-167. Which name the tool reads is still said plainly, in words true in every
+            // grouping, where the federation is named for a discipline or for the whole run too.
+            Assert.That(block, Does.Contain("This tool reads the building code off the NWC file name"));
         }
 
         [Test]

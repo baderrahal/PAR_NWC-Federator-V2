@@ -1640,7 +1640,7 @@ namespace Federator.Addin.Engine
         {
             try
             {
-                log.Line(Tolerance.LogLine(toleranceOnCreated, toleranceOnExisting, documentUnits));
+                log.Line(Tolerance.LogLine(RunPlan.Source, toleranceOnCreated, toleranceOnExisting, documentUnits));
             }
             catch (Exception error)
             {

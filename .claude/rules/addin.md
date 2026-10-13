@@ -747,7 +747,11 @@ well as to pass.
   what tolerances for clash detection are set in. Whether Document.Units reads that option
   is not readable off the DLL, so it is not claimed. The words DID NOT FOLLOW are gone from
   the log. The combo on the Outputs step is MODEL units, defaulting to Meters, and its help
-  line says the report is always in metres
+  line says the report is always in metres. DocumentUnits reads and sets and nothing more:
+  its three UNITS lines are Core's `UnitsLines`, and the read of Document.Units after the
+  models were set is a failure line where it throws and hands null on, FR-062
+- DocumentGuard reads IsClear, the file name and the model count, and hands each read that
+  threw on with its reason to Core's `DiscardWarning`, FR-169, which words the warning
 - A tick box has to earn being a decision. How many there are and how many sit up front is
   counted once, in What a tick box says below. Republishing the NWD, writing the client page and rendering the
   photos are fixed ON, because a weekly run wants all three every time. Client columns only
