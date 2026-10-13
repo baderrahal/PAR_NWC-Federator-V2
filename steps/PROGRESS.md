@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-13 11:57, last run 10/item1-C02
+STATE OPEN, 2026-10-13 16:32, last run 10/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -21,9 +21,9 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 
 ## Now
 - Bader said go at 09:08 on 13 Oct, under his order of 12 Oct headed BADER SAYS GO and the limits of Q143
-- Merged since: 216, 209, 218, 211 on 12 Oct, then 212, 213, 217, 215, 219 and 214 F150 with this page
-- Set 10, the one 1A02MM check of F150, ran at 028c3a71: pictures 35 KB each showing only their two items, views 69 of 69
-- The developer works FR-150, FR-152, FR-155 and FR-162 of F121, wave 4, on fix-F121d
+- Merged on 13 Oct: 212, 213, 217, 215, 219, 214 F150, 221 the steps renumbered, 222 and 223 F121 wave 4, 224 F114d, 225 F123b
+- The team zip of 8e100bf6, built 12:27, holds everything up to 214. 222 to 225 are on main, built and tested, not run on Navisworks
+- No pull request is open and no agent or Navisworks runs
 
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
@@ -35,14 +35,14 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | 13 Oct 11:40, set 10 | 028c3a71, F150 Hide Other | 0.031 s, 35 KB | 169 s | about 30 s, WORKBOOK | clash step 140.5 s |
 
 ## Next
-1. Renumber the proof steps once on a records branch off main
-2. Build the new zip from main and give Bader its path, size and what changed since 69de6ed4
-3. Read and merge fix-F121d, then the window rows of F121: FR-153, FR-160, FR-163 and FR-166
+1. A zip of main with 222 to 225 when Bader asks, and his run of steps 800 to 867, 1100 to 1158, 1200 to 1244 and 1300 to 1310
+2. Wave 4 and 5 rows the team sees that are left: FR-161 the date format control, F114-K32 and K36 once Bader answers
+3. The register rows of today: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30, F150-R2
 
 ## Waiting for Bader
-- Q38 said delete the per item harvest. 215 kept the source file read since the merge key reads it
-- F150-R2: Hide Other put back as off writes "3 0" where his PC held "0", a value never set. Off either way
-- His run on his PC and its log, from the team zip
+- F114-K32: a person's own view named as a test, fail the group or a VIEWS line. F114-K36: A keep F3, B view inside groups, C no view
+- Whether a Scan of the same folder keeps typed names and unticked groups. Q38: the source file read is kept for the merge key
+- F150-R2: Hide Other put back as off writes "3 0" where his PC held "0". His run on his PC from the team zip
 
 ## Blockers and known bugs
 - The WORKBOOK step leaves the window not answering for about 30 s on 1A02MM
