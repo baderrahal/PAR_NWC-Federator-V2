@@ -1271,7 +1271,8 @@ and 6 does not read as broken.
   C off the client's clash matrix. Status is the Navisworks word, New, Active, Reviewed,
   Approved or Resolved, and lives on a clash. Nothing in ClashPriority names a status and
   nothing in ClashStatus names a priority
-- Our extra columns, family, type name, material, source file and discipline, come AFTER
+- Our extra columns, none since FR-198 deleted family, type name, material and the per item
+  discipline and left the source file reaching no output, would come AFTER
   theirs and never in place of any of them, on the CLASH XML and nowhere else. THE ONE
   EXCEPTION IS THE PRIORITY COLUMN ABOVE, which goes on the workbook and not on the clash
   XML, and only when a file is picked. The Client
@@ -1413,7 +1414,7 @@ and 6 does not read as broken.
 - Every clashobject carries the SAME list of smarttags, empty values included. The
   stylesheet counts them once off the first clashobject and uses that count for every row,
   so one item with fewer of them slides every column after it sideways
-- Date Found and our five extra item properties are ours, not theirs. Their report has
+- Date Found and the item properties this tool reads and they do not, two since FR-198, are ours, not theirs. Their report has
   neither, and there is no longer a choice about it: the workbook is their one sheet with
   none of ours on it, so both are left out everywhere and neither is written at all
 - The logo is DATA, read by the stylesheet from //logo/@href, not part of the layout, and
@@ -2340,7 +2341,7 @@ is exactly it, found by an audit of every file under src. The run says it itself
   change an output. It is information in the log, which is the rule this tool is built
   on
 - the run line counts gaps by NAME and not by line. The same ones are held back on
-  every group, so a run of twenty two groups would report 132 and say nothing except
+  every group, so a run of twenty two groups would report 44 and say nothing except
   how many groups there were. The number that means something is how many distinct
   things this tool knows and does not show
 - the six were MEASURED on 2026-09-19 by reading all three writers. WorkbookWriter,

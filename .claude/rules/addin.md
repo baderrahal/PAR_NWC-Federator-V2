@@ -719,9 +719,10 @@ well as to pass.
   GetDataType, but it prefixes the kind and hands back "Int32:702888". So the kind is read
   and the right accessor called, with ToString as the fallback for a kind nobody has seen
   and its prefix stripped. Measured, see docs\history\scan.md section 4n
-- Anything that can throw per item goes in its own try. The source file and the discipline
-  are read last and were lost to a throw three properties earlier, on all 426 items, which
-  is one throw costing three columns
+- Anything that can throw per item goes in its own try. Since FR-198 the source file is the
+  one property read off each item past the quick ones, in its own try, for the mirror merge
+  key. Before it the source file and the discipline were read last and were lost to a throw
+  three properties earlier, on all 426 items, one throw costing three columns
 - Setting the models is still done, BEFORE the clash step, and it is kept because it fixes
   what the person sees in Navisworks. Measured on 2026-09-01 across all 4027 types:
   Document.Units is read only, Model.Units is read only, and the only public managed member

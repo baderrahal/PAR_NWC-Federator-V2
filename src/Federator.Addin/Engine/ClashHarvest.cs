@@ -644,7 +644,7 @@ namespace Federator.Addin.Engine
                 log.Failure(
                     "reading which file a clashing item came from",
                     error,
-                    "kept going, the columns this item did not fill are left empty");
+                    "kept going, the file part of this item's merge key is left empty");
             }
         }
 

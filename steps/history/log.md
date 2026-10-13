@@ -37,7 +37,7 @@ What was done:
   2925 passed, 0 failed, 0 skipped after, f120c-tests-after.txt. check-locals and check-imports over src clean,
   f120c-checks.txt. Navisworks was not started and no probe was run
 
-What remains: the merge, and steps 692 to 697 of steps\03_bader_next.md on 1A02MM, the GAP and ITEM IDS blocks
+What remains: the merge, and steps 760 to 768 of steps\03_bader_next.md on 1A02MM, the GAP and ITEM IDS blocks
 against set 09's. F120-R1 has no step a person can take on a real run, since it needs fifty renders that throw
 naming their path, so its proof is the Core tests.
 
@@ -48,6 +48,18 @@ picture pass. The proof step numbers follow main's 691, F118's merged as 210 and
 renumbers at the merge where another branch takes them first.
 
 What comes next: F129 and F130 of the same order.
+
+ATTEMPT 2, the reviewer's first reading of pull request 215 on 2026-10-13, which found the code sound:
+- The proof steps hold one action each, 760 to 768, numbered after the steps main took in
+- GapRule.Lines no longer carries a singular nothing reaches, since For gives both properties or none
+- The failure line of the source file read says the merge key's file part is left empty, not columns
+- The rules lose their stale words: core.md on our extra columns, the five item properties and the 132 gaps, now
+  44 as GapTally says, and addin.md on the discipline read last
+- Item 157 of steps\02_questions.md, which this entry cites, reaches main with pull request 214, which records it
+- Q38 said delete the per item harvest. The source file is still read since the mirror merge key reads it, which is
+  put to Bader in the tab rather than decided here
+- Main 082ae86 merged in with no code conflict. Built in Release with 0 warnings and 0 errors, Core tests 2974
+
 
 ## 2026-10-12 F114c, the views' sides and a failed harvest, wave 2b
 

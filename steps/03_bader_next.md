@@ -380,12 +380,15 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 
 Core is proved by its tests. These steps read the GAP and ITEM IDS blocks of one run against set 09's, `steps\runs\09\item1-C02`. F120-R1, the pictures' guard on throws naming their path, has no step, since no run a person makes throws fifty times that way, and its proof is the Core tests.
 
-692. Install main with fix-F120c merged, then run 1A02MM with its clash XML as set 09 ran, steps 649 to 654
-693. Look for, in the `GAP 1A02MM` block: the line `2 numbers are measured off every item and reach no output`, then a `Source File` line and an `Id From` line, and no `Family`, `Type Name` or `Material` line, where set 09 read four lines
-694. Look for, on the `Source File` line: `read on N item cells and empty on every one`, N the run's item cells, 5,862 in set 09, which left the line out. A line reading `of N item cells carry it` instead means the source file was read on this run, and row F120-R2 is answered by it
-695. Look for, in the `ITEM IDS 1A02MM` block: `Id supplied 5862 item ids of 5862, written as "Element ID"`, as set 09 read, the count the run's own
-696. Look for, at the end of the run: `GAPS     2 things are measured on every item and reach no output, over 1 group: Source File, Id From`
-697. Open the clash workbook of 1A02MM beside set 09's: the same columns and the same cells on the first block, and send the log with the HARVEST seconds off the TIMING block against set 09's
+760. Install main with fix-F120c merged
+761. Run 1A02MM with its clash XML as set 09 ran, by steps 649 to 654
+762. Look for, in the `GAP 1A02MM` block: the line `2 numbers are measured off every item and reach no output`, then a `Source File` line and an `Id From` line, and no `Family`, `Type Name` or `Material` line, where set 09 read four lines
+763. Look for, on the `Source File` line: `read on N item cells and empty on every one`, N the run's item cells, 5,862 in set 09, which left the line out. A line reading `of N item cells carry it` instead means the source file was read on this run, and row F120-R2 is answered by it
+764. Look for, in the `ITEM IDS 1A02MM` block: `Id supplied 5862 item ids of 5862, written as "Element ID"`, as set 09 read, the count the run's own
+765. Look for, at the end of the run: `GAPS     2 things are measured on every item and reach no output, over 1 group: Source File, Id From`
+766. Open the clash workbook of 1A02MM beside set 09's
+767. Look for: the same columns and the same cells on the first block
+768. Send the log with the HARVEST seconds off its TIMING block, beside set 09's
 ## Proof F114c the views' sides, added 2026-10-12, rewritten for attempt 2
 
 The first run reads that no view moved to another pair folder now a side is read by its whole locator. The second reads the same with no clash XML picked, where the views get no set tree. A test the clash step failed on, F114-K38, cannot be made to fail by hand, so no step forces it. FR-067 is not in this pass.

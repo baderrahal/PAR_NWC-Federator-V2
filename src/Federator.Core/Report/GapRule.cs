@@ -118,7 +118,8 @@ namespace Federator.Core.Report
                 return lines;
             }
 
-            lines.Add(gaps.Count + (gaps.Count == 1 ? " number is" : " numbers are")
+            // For gives both properties or none, so the count is never one.
+            lines.Add(gaps.Count + " numbers are"
                 + " measured off every item and reach no output. Nothing here is a fault "
                 + "and nothing acts on it");
 
