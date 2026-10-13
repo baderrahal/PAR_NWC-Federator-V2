@@ -3659,10 +3659,10 @@ namespace Federator.Addin.Engine
                     outcome.AddError(clash.StopTheRunReason);
                 }
 
-                // F54. A status written into the document is a write like any other, so it
-                // asks for the NWF to be saved again even where nothing was created and
-                // nothing ran.
-                return clash.CreatedCount > 0 || clash.RanCount > 0 || runner.ChangedAStatus;
+                // F54 and FR-150. A status written into the document, or the file's settings
+                // put onto a saved test, is a write like any other, so it asks for the NWF to
+                // be saved again even where nothing was created and nothing ran.
+                return clash.SavesTheNwfAgain(runner.ChangedAStatus);
             }
             catch (Exception error)
             {

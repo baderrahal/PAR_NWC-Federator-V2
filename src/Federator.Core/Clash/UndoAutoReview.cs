@@ -13,7 +13,13 @@ namespace Federator.Core.Clash
         NotOurs = 1,
 
         /// <summary>This tool moved it and somebody has since moved it again, on or back. That stands.</summary>
-        SomebodyMovedItOn = 2
+        SomebodyMovedItOn = 2,
+
+        /// <summary>
+        /// An undo already put it back, FR-152, so a Reviewed it carries now is a person's
+        /// and stands.
+        /// </summary>
+        AlreadyPutBack = 3
     }
 
     /// <summary>
@@ -50,11 +56,19 @@ namespace Federator.Core.Clash
 
         /// <summary>
         /// What to do with one clash, and the status to put it back to. The status is only
-        /// meaningful where the verdict is PutBack.
+        /// meaningful where the verdict is PutBack. The comment is the last of ours,
+        /// AutoReviewRecord.LastOfOurs, and where that is the record of an undo, FR-152, the
+        /// move was already put back and whatever the clash carries now is a person's.
         /// </summary>
         public static UndoVerdict Judge(string comment, ClashStatus now, out ClashStatus putBackTo)
         {
             putBackTo = now;
+
+            if (AutoReviewRecord.IsUndone(comment))
+            {
+                return UndoVerdict.AlreadyPutBack;
+            }
+
             AutoReviewRecord record = AutoReviewRecord.In(comment);
 
             if (record == null)
@@ -82,15 +96,20 @@ namespace Federator.Core.Clash
                     return "this tool never moved it, so there was nothing of ours to undo";
                 case UndoVerdict.SomebodyMovedItOn:
                     return "this tool moved it and somebody has since moved it again, so that stands";
+                case UndoVerdict.AlreadyPutBack:
+                    return "an undo already put it back, so the status it carries now is a person's and stands";
                 default:
                     return "UNKNOWN";
             }
         }
 
-        /// <summary>The three in the order the block lists them.</summary>
+        /// <summary>The four in the order the block lists them.</summary>
         public static UndoVerdict[] InOrder()
         {
-            return new[] { UndoVerdict.PutBack, UndoVerdict.NotOurs, UndoVerdict.SomebodyMovedItOn };
+            return new[]
+            {
+                UndoVerdict.PutBack, UndoVerdict.NotOurs, UndoVerdict.SomebodyMovedItOn, UndoVerdict.AlreadyPutBack
+            };
         }
 
         /// <summary>
@@ -104,6 +123,20 @@ namespace Federator.Core.Clash
             return Prefix + " no clash carries a record of this tool moving it, because "
                 + (string.IsNullOrEmpty(whyTheApiCannot) ? "UNKNOWN" : whyTheApiCannot)
                 + ". Nothing was put back and nothing stands in for the record";
+        }
+
+        /// <summary>
+        /// The one line for an undo that could not leave its own record, FR-152. The clashes
+        /// are still put back, so the block's count stays true, and the line says what is
+        /// lost: a later undo cannot tell a Reviewed a person sets on one of them from this
+        /// tool's.
+        /// </summary>
+        public static string CannotRecordTheUndoLine(string whyTheApiCannot)
+        {
+            return Prefix + " the record of this undo could not be written, because "
+                + (string.IsNullOrEmpty(whyTheApiCannot) ? "UNKNOWN" : whyTheApiCannot)
+                + ". The clashes are still put back, and a later undo cannot tell a Reviewed a person "
+                + "sets on one of them from one this tool set";
         }
     }
 

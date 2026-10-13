@@ -13,10 +13,10 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 2c | 9 | 2 | 0 | 0 | 0 | 1 | 12 |
 | 3a | 21 | 0 | 0 | 0 | 0 | 1 | 22 |
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
-| 4 | 6 | 1 | 4 | 0 | 47 | 0 | 58 |
+| 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
 | outside the waves | 180 | 16 | 0 | 0 | 60 | 6 | 262 |
-| total | 363 | 24 | 4 | 1 | 172 | 17 | 581 |
+| total | 371 | 24 | 0 | 1 | 168 | 17 | 581 |
 <!-- the end of the counts -->
 
 ## Now

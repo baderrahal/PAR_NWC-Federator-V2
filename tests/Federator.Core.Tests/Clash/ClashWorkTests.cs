@@ -111,12 +111,14 @@ namespace Federator.Core.Tests
         [Test]
         public void AFileHoldingTestsOnlyIsStillAcceptedWithOnePicker()
         {
+            // Each side carries selfintersect and primtypes, as every real file writes them.
+            // Left out, the test is skipped by name, FR-155, and would not plan below.
             ExchangeDocument testsOnly = new ExchangeReader().ReadText(
                 "<exchange units=\"ft\"><batchtest name=\"b\">"
                 + "<clashtest name=\"T\" test_type=\"hard\" tolerance=\"0.25\" merge_composites=\"1\">"
-                + "<left><clashselection><locator>lcop_selection_set_tree/A</locator>"
+                + "<left><clashselection selfintersect=\"0\" primtypes=\"1\"><locator>lcop_selection_set_tree/A</locator>"
                 + "</clashselection></left>"
-                + "<right><clashselection><locator>lcop_selection_set_tree/B</locator>"
+                + "<right><clashselection selfintersect=\"0\" primtypes=\"1\"><locator>lcop_selection_set_tree/B</locator>"
                 + "</clashselection></right>"
                 + "</clashtest></batchtest></exchange>");
 

@@ -158,7 +158,7 @@ namespace Federator.Addin.Ui
 
             if (picked != null)
             {
-                folders.Remember(PickerKind.Source, picked);
+                RememberFolder(PickerKind.Source, picked);
                 SourceFolderBox.Text = picked;
             }
         }
@@ -238,7 +238,10 @@ namespace Federator.Addin.Ui
 
             log.ScanFinished(found.Length, found.Length - unreadable, unreadable);
 
-            Regroup();
+            // A Scan starts the groups clean, every one ticked and named by its pattern, as it
+            // always has. FR-153 keeps the person's choices only where a regroup follows a file
+            // ticked or unticked, or the grouping changed, within the folder already scanned.
+            Regroup(false);
             Steps.SelectedIndex = 1;
         }
 
@@ -294,7 +297,7 @@ namespace Federator.Addin.Ui
         /// </summary>
         private void PickedNwfChosen(string picked)
         {
-            folders.Remember(PickerKind.PickedNwf, picked);
+            RememberFolder(PickerKind.PickedNwf, picked);
             PickedNwfBox.Text = picked;
 
             NwfPickPlan plan = PlanThePickedNwfs(Trimmed(ExcelFolderBox.Text));
@@ -537,18 +540,27 @@ namespace Federator.Addin.Ui
 
         private void Regroup()
         {
+            Regroup(true);
+        }
+
+        private void Regroup(bool keepChoices)
+        {
             if (suspendRegroup)
             {
                 return;
             }
 
             // FR-153. The Run boxes are read before the rows go, so a group the person unticked
-            // stays unticked once the groups are made again.
+            // stays unticked once the groups are made again. A Scan reads none, so every group
+            // starts ticked.
             KeptRunTicks runTicks = new KeptRunTicks();
 
-            foreach (GroupRow row in groups)
+            if (keepChoices)
             {
-                runTicks.Read(row.Building, row.IsBlocked, row.Include);
+                foreach (GroupRow row in groups)
+                {
+                    runTicks.Read(row.Building, row.IsBlocked, row.Include);
+                }
             }
 
             groups.Clear();
@@ -587,7 +599,11 @@ namespace Federator.Addin.Ui
             // typed over in a group that is still a group is kept by its key, where every
             // one was thrown away. A pattern change goes through Refill instead.
             OutputNameTable rebuilt = OutputNameTable.From(result.Groups, naming, settings);
-            rebuilt.KeepTypedFrom(nameTable);
+            if (keepChoices)
+            {
+                rebuilt.KeepTypedFrom(nameTable);
+            }
+
             nameTable = rebuilt;
             lastRefill = string.Empty;
 
@@ -1248,7 +1264,7 @@ namespace Federator.Addin.Ui
 
             if (picked != null)
             {
-                folders.Remember(PickerKind.Nwf, picked);
+                RememberFolder(PickerKind.Nwf, picked);
                 NwfFolderBox.Text = picked;
                 RefreshOutputsSummary();
             }
@@ -1261,7 +1277,7 @@ namespace Federator.Addin.Ui
 
             if (picked != null)
             {
-                folders.Remember(PickerKind.Nwd, picked);
+                RememberFolder(PickerKind.Nwd, picked);
                 NwdFolderBox.Text = picked;
                 RefreshOutputsSummary();
             }
@@ -1479,7 +1495,7 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
-                folders.Remember(PickerKind.Priority, dialog.FileName);
+                RememberFolder(PickerKind.Priority, dialog.FileName);
                 PriorityBox.Text = dialog.FileName;
             }
         }
@@ -1571,7 +1587,7 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
-                folders.Remember(PickerKind.ByDesign, dialog.FileName);
+                RememberFolder(PickerKind.ByDesign, dialog.FileName);
                 ByDesignBox.Text = dialog.FileName;
             }
         }
@@ -1814,7 +1830,7 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
-                folders.Remember(PickerKind.Logo, dialog.FileName);
+                RememberFolder(PickerKind.Logo, dialog.FileName);
                 LogoBox.Text = dialog.FileName;
                 RefreshOutputsSummary();
             }
@@ -1827,7 +1843,7 @@ namespace Federator.Addin.Ui
 
             if (picked != null)
             {
-                folders.Remember(PickerKind.Excel, picked);
+                RememberFolder(PickerKind.Excel, picked);
                 ExcelFolderBox.Text = picked;
                 RefreshOutputsSummary();
             }
@@ -2543,7 +2559,7 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
-                folders.Remember(PickerKind.ClashXml, dialog.FileName);
+                RememberFolder(PickerKind.ClashXml, dialog.FileName);
                 ExchangeFileBox.Text = dialog.FileName;
                 SetsSummary.Text = Describe(dialog.FileName);
             }
@@ -2599,6 +2615,20 @@ namespace Federator.Addin.Ui
         private string StartFor(PickerKind kind, string inTheBox)
         {
             return PickerStart.For(folders, kind, inTheBox);
+        }
+
+        /// <summary>
+        /// Remembers what one picker was pointed at, and logs the one line Core hands back
+        /// where the folders file could not be written, FR-162.
+        /// </summary>
+        private void RememberFolder(PickerKind kind, string picked)
+        {
+            string couldNotKeep = folders.Remember(kind, picked);
+
+            if (couldNotKeep != null)
+            {
+                log.Line(couldNotKeep);
+            }
         }
 
         /// <summary>

@@ -1,3 +1,5 @@
+using System.IO;
+using Federator.Core.Clash;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
 using NUnit.Framework;
@@ -266,6 +268,65 @@ namespace Federator.Core.Tests
             Assert.That(document.HasSets, Is.True);
             Assert.That(health.Line(true),
                 Is.EqualTo("1 of 2 locators name no set in the file, so 1 test would be skipped by name."));
+        }
+
+        // ---------- a setting left out or written wrong, FR-155 ----------
+
+        /// <summary>
+        /// FR-155. A test whose file leaves out merge composites, or a side's self intersect or
+        /// primitive types, became false or 0 with no word said and was planned as buildable,
+        /// where a test with no tolerance is skipped by name. Each is skipped by name now,
+        /// naming the setting left out.
+        /// </summary>
+        [Test]
+        public void ATestWhoseFileLeavesOutASettingIsSkippedByNameNamingIt()
+        {
+            string[][] cases =
+            {
+                new[] { " merge_composites=\"1\"", "merge_composites" },
+                new[] { " primtypes=\"1\"", "left primtypes" },
+                new[] { " selfintersect=\"1\"", "right selfintersect" }
+            };
+
+            foreach (string[] one in cases)
+            {
+                ClashTestPlan plan = ClashTestPlan.From(
+                    new ExchangeReader().ReadText(TestsOnly.Replace(one[0], string.Empty)), "ft");
+
+                Assert.That(plan.Buildable.Count, Is.EqualTo(0), one[1] + " left out is still planned");
+                Assert.That(plan.Skipped.Count, Is.EqualTo(1), one[1]);
+                Assert.That(plan.Skipped[0].Name, Is.EqualTo("T1"), "the test has to be reported by name");
+                Assert.That(plan.Skipped[0].Kind, Is.EqualTo(ClashSkipReason.MissingSetting), one[1]);
+                Assert.That(plan.Skipped[0].Reason, Does.Contain(one[1]));
+            }
+        }
+
+        /// <summary>
+        /// FR-155. A setting written but not a whole number read as 0 or false, where a
+        /// tolerance written wrong is refused with its name and the test's. These are refused
+        /// the same way, and a condition's flags too, since 0 there drops a negation or turns
+        /// an OR into an AND.
+        /// </summary>
+        [Test]
+        public void ASettingWrittenWrongIsRefusedNamingItAndWhereItIs()
+        {
+            string[][] cases =
+            {
+                new[] { TestsOnly.Replace("merge_composites=\"1\"", "merge_composites=\"x\""), "merge_composites", "T1" },
+                new[] { TestsOnly.Replace("primtypes=\"3\"", "primtypes=\"many\""), "primtypes", "T1" },
+                new[] { TestsOnly.Replace("selfintersect=\"1\"", "selfintersect=\"yes\""), "selfintersect", "T1" },
+                new[] { SetsOnly.Replace("flags=\"64\"", "flags=\"or\""), "flags", "Loose" },
+                new[] { SetsOnly.Replace("disjoint=\"1\"", "disjoint=\"x\""), "disjoint", "Loose" }
+            };
+
+            foreach (string[] one in cases)
+            {
+                InvalidDataException refused = Assert.Throws<InvalidDataException>(
+                    delegate { new ExchangeReader().ReadText(one[0]); }, one[1] + " written wrong read as a number");
+
+                Assert.That(refused.Message, Does.Contain(one[1]));
+                Assert.That(refused.Message, Does.Contain(one[2]));
+            }
         }
     }
 }

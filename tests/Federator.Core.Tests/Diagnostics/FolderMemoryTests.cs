@@ -213,6 +213,57 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// FR-162. Remember dropped what Save said, so a folders file that could not be written
+        /// lost every folder picked in the session at the next start and nothing said why. It
+        /// hands back the one line saying so, with the reason, for the window to log.
+        /// </summary>
+        [Test]
+        public void AFolderThatCouldNotBeKeptIsSaidWithWhy()
+        {
+            string here = Path.Combine(root, "not-a-folder.txt");
+            File.WriteAllText(here, "a file, not a folder");
+            string unwritable = Path.Combine(here, "folders.txt");
+
+            FolderMemory memory = FolderMemory.Load(unwritable);
+            string said = memory.Remember(PickerKind.Source, TestPaths.At("in", "nwc"));
+
+            Assert.That(said, Is.Not.Null.And.Not.Empty, "a save that failed has to be said");
+            Assert.That(said, Does.Contain("Source"));
+            Assert.That(said, Does.Contain(unwritable));
+            Assert.That(said, Does.Contain(memory.DisabledReason));
+        }
+
+        /// <summary>
+        /// Said once while the file stays unwritable, and said again only after a save has
+        /// worked in between, so ten picks do not make ten lines of the same failure.
+        /// </summary>
+        [Test]
+        public void TheSameFailureIsSaidOnceAndAGoodSaveIsSaidNotAtAll()
+        {
+            string here = Path.Combine(root, "not-a-folder.txt");
+            File.WriteAllText(here, "a file, not a folder");
+
+            FolderMemory memory = FolderMemory.Load(Path.Combine(here, "folders.txt"));
+
+            Assert.That(memory.Remember(PickerKind.Source, TestPaths.At("in", "nwc")), Is.Not.Null);
+            Assert.That(memory.Remember(PickerKind.Nwf, TestPaths.At("out", "nwf")), Is.Null,
+                "the same failure a second time");
+
+            File.Delete(here);
+            Directory.CreateDirectory(here);
+
+            Assert.That(memory.Remember(PickerKind.Nwd, TestPaths.At("out", "nwd")), Is.Null, "a save that worked");
+
+            Directory.Delete(here, true);
+            File.WriteAllText(here, "a file, not a folder");
+
+            Assert.That(memory.Remember(PickerKind.Excel, TestPaths.At("out", "xlsx")), Is.Not.Null,
+                "failing again after a save that worked is new");
+            Assert.That(FolderMemory.Load(file).Remember(PickerKind.Source, TestPaths.At("in", "nwc")), Is.Null,
+                "a writable file says nothing");
+        }
+
+        /// <summary>
         /// FR-168. A folders file that would not open left the memory empty and the startup block said
         /// Nothing remembered yet, which reads as a first run. It names the file as not used, with why.
         /// </summary>
