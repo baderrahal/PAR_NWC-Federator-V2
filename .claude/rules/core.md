@@ -1012,8 +1012,8 @@ and 6 does not read as broken.
   the same way and never what they threw
 - Findings are written in the words a person would say, never in the words the tool
   thinks in. A shape is described by naming a real code that has it, not by printing
-  9A99AA. A shared Revit source says two federations are being built from one Revit
-  building, names both, and says that usually means one NWC file name is wrong. The
+  9A99AA. A shared Revit source says two NWC building codes were published from one Revit
+  building, names both, and says that usually means one NWC file name is wrong, FR-167. The
   short code stays as its own column so it can still be sorted on
 - A group holding fewer than two disciplines cannot clash with anything, whatever the
   test list says, because every clash test is one discipline against another. One NWC is
