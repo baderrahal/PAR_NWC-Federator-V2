@@ -1966,7 +1966,14 @@ and 6 does not read as broken.
   are no mirrored tests: the plan takes the run names of the mirrors F132's rule paired,
   `MirrorPair.MirrorName` off `MirrorRule.Pairs`, handed by the engine since F114's add-in
   pass, null and said where no rule ran. A mirror's clashes are left out and counted and the
-  test named, and with no mirror rule handed in the plan's lines say so. The plan keeps the
+  test named, and with no mirror rule handed in the plan's lines say so. A MIRROR NOT MERGED
+  IS COUNTED BY ITS OPEN CLASHES, rows F114-K34 and F114-R1 of 2026-10-13: a mirror whose
+  clashes the merge took is out of the report, so every mirror the plan meets was not merged
+  and keeps its rows under its own name, and its open clashes are in no view. Each mirror is
+  named with its open clashes and those at a status no view shows, and one line gives the
+  open ones in all and says a clash only that mirror finds is in no view, how many UNKNOWN.
+  They never go into the kept test's view, which no rule says, and whether they should is
+  Bader's. The plan keeps the
   mirror list it was handed, `MirrorRule`, the one copy of it the VIEWS TREE reads. The
   views come in the order a person reads them, priority, pair in the map's order, the pair's
   views, its size folder, test name Ordinal. A VIEW SHOWS ONLY THE MODELS ITS CLASHING ITEMS

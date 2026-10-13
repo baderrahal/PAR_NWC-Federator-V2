@@ -2,8 +2,8 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 581 rows: open 161, in progress 24, in review 7, merged 342, proven by a run 29, waiting for Bader 1, dropped 17
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 40, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 114, outside the waves 2, right after F133 merges 6
+- By status, of 582 rows: open 160, in progress 24, in review 0, merged 351, proven by a run 29, waiting for Bader 1, dropped 17
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 41, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 114, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
 - Waits for Bader, 1 row: F114-K29
 
@@ -153,12 +153,13 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F114-K31 | a set with no name in the clash XML gets a TEAMS line naming no set, TeamMap.SetLines | F114 | register row | merged | 213 | none | 2026-10-13 |
 | F114-K32 | a person's unmarked view of a test's name in the view's folder stops the tool's view of that test and costs the group DONE, for Bader | F114 | register row | open | none | none | 2026-10-08 |
 | F114-K33 | the read back walks the material overrides one index path each, 3153 for a view of one model of 1A02MM, dropped on 2026-10-12 under Q143 since P18 read the whole read back at 0.014 s a view, no time the team sees | F114 | register row | dropped | none | none | 2026-10-12 |
-| F114-K34 | a mirror the rule paired and did not merge gets no view and its clashes are in no view, the VIEWS block counting them | F114 | register row | open | none | none | 2026-10-08 |
+| F114-K34 | a mirror the rule paired and did not merge gets no view and its clashes are in no view, the VIEWS block counting them | F114 | register row | merged | 224 | none | 2026-10-13 |
 | F114-K35 | a model whose code will not read is shown only where a clashing item lives in it, the VIEWS line saying so once a model | F114 | register row | merged | 189 | none | 2026-10-12 |
 | F114-K36 | a test whose open clashes are all result groups gets no view and keeps its old ones, not counted FAILED, the lead's decision on the breaker's F3, for Bader | F114 | register row | open | none | none | 2026-10-08 |
 | F114-K37 | whether the NWF keeps a saved camera at single precision is UNKNOWN, so a camera far from the origin may read every tool view as a person's after a reopen, read on the timed runs | F114 | register row | open | none | none | 2026-10-08 |
 | F114-K38 | a test whose harvest threw after only closed rows reads whole, so its old view is removed while its open clashes were never harvested, the reviewer's D1, UNKNOWN how often | F114 | register row | merged | 213 | none | 2026-10-13 |
-| F114-R1 | a mirror pair the rule pairs but the merge refuses keeps its clashes on its own report test, and since the views read the rule's pairs those clashes get no view, so the views can hold fewer clashes than the report for that pair, named in the VIEWS block, the breaker's re-read of attempt 2 on pull request 213 | F114 | register row | open | none | none | 2026-10-13 |
+| F114-R1 | a mirror pair the rule pairs but the merge refuses keeps its clashes on its own report test, and since the views read the rule's pairs those clashes get no view, so the views can hold fewer clashes than the report for that pair, named in the VIEWS block, the breaker's re-read of attempt 2 on pull request 213 | F114 | register row | merged | 224 | none | 2026-10-13 |
+| F114-R2 | a mirror whose open rows are all result groups or that was not read whole never reaches the views' plan, so the line of open clashes of the mirrored tests in no view leaves its clashes out, named elsewhere, the reviewer's first point on pull request 224 | F114 | register row | open | none | none | 2026-10-13 |
 
 ## Wave 2b and before any test run
 
@@ -308,12 +309,12 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-038 | workbook stray grey row after last empty test | F123 | noise | merged | 181 | none | 2026-10-08 |
 | FR-039 | thumbnail row height overwritten by clash row height | F123 | noise | merged | 181 | none | 2026-10-08 |
 | FR-042 | page check warns wrong order on priority sorted page | F123 | noise | merged | 159, closed by FR-199, the page always in the measured order, read by lane B at 181 | none | 2026-10-08 |
-| FR-058 | first clash line says all tests to create | F123 | noise | in review | UNKNOWN | none | 2026-10-13 |
-| FR-059 | result files written leaves out pictures | F123 | noise | in review | UNKNOWN | none | 2026-10-13 |
-| FR-060 | result found none counts groups that ran no test | F123 | noise | in review | UNKNOWN | none | 2026-10-13 |
+| FR-058 | first clash line says all tests to create | F123 | noise | merged | 225 | none | 2026-10-13 |
+| FR-059 | result files written leaves out pictures | F123 | noise | merged | 225 | none | 2026-10-13 |
+| FR-060 | result found none counts groups that ran no test | F123 | noise | merged | 225 | none | 2026-10-13 |
 | FR-061 | log says tsv keeps collapsed lines when tsv did not open | F123 | noise | merged | 151 | none | 2026-10-07 |
-| FR-062 | units line names unit when second read threw | F123 | noise | in review | UNKNOWN | none | 2026-10-13 |
-| FR-063 | tolerance log line says read from xml on no xml run | F123 | noise | in review | UNKNOWN | none | 2026-10-13 |
+| FR-062 | units line names unit when second read threw | F123 | noise | merged | 225 | none | 2026-10-13 |
+| FR-063 | tolerance log line says read from xml on no xml run | F123 | noise | merged | 225 | none | 2026-10-13 |
 | FR-064 | category line names no folder | F123 | noise | merged | 151 | none | 2026-10-07 |
 | FR-074 | views unknown set not named | F123 | noise | merged | 181 | none | 2026-10-08 |
 | FR-081 | f103w install failure claims and refused text | F123 | noise | open | none | none | 2026-10-04 |
@@ -359,16 +360,16 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-147 | restated facts check missing | F123 | noise | open | none | none | 2026-10-04 |
 | FR-148 | audit 180 findings without verifier | F123 | noise | open | none | none | 2026-10-04 |
 | FR-149 | older machine account name left in tree | F117 | noise | open | none | none | 2026-10-04 |
-| FR-167 | shared source uses group key not building code | F123 | noise | in review | UNKNOWN | none | 2026-10-13 |
+| FR-167 | shared source uses group key not building code | F123 | noise | merged | 225 | none | 2026-10-13 |
 | FR-168 | folders memory read failure logged as first run | F123 | noise | merged | 155 | none | 2026-10-07 |
-| FR-169 | document guard unreadable name called unsaved | F123 | noise | in review | UNKNOWN | none | 2026-10-13 |
+| FR-169 | document guard unreadable name called unsaved | F123 | noise | merged | 225 | none | 2026-10-13 |
 | FR-170 | penetration size catch swallows unit throw | F123 | noise | open | none | none | 2026-10-04 |
 | FR-171 | t1 noise findings 93 | F123 | noise | in progress | 162, 163, 164, 165, 174, 176 and 180 in part, the rest on the laptop | none | 2026-10-08 |
 | FR-172 | t1 uncalled members 150 | F123 | noise | in progress | 161 two members deleted, the rest on the laptop | none | 2026-10-07 |
 | FR-173 | t1 catch swallowing 77 | F123 | noise | in progress | 184 the 34 catches in Core sorted and five mended by lane B, the rest on the laptop | none | 2026-10-08 |
 | FR-174 | one public type per file | F124 | noise | open | none | none | 2026-10-04 |
 | F117 | the names | F117 | fix | open | none | none | 2026-10-04 |
-| F123 | docs and words, and the noise of every area | F123 | fix | in progress | 151, 154, 155, 161 to 165, 174, 176, 178, 180, 181, 182 and 184 merged in part, lane B stopped at 185, FR-058, FR-059, FR-060, FR-062, FR-063, FR-167 and FR-169 in review on fix-F123b, the rest on the laptop | none | 2026-10-13 |
+| F123 | docs and words, and the noise of every area | F123 | fix | in progress | 225, 151, 154, 155, 161 to 165, 174, 176, 178, 180, 181, 182 and 184 merged in part, lane B stopped at 185, FR-058, FR-059, FR-060, FR-062, FR-063, FR-167 and FR-169 in review on fix-F123b, the rest on the laptop | none | 2026-10-13 |
 | F124 | D1, one public type per file | F124 | fix | open | none | none | 2026-10-04 |
 | Q27 | the two choice rule for still outstanding lost every reader | F123 | question | merged | 131 | none | 2026-10-06 |
 | Q30 | the bundle manifest points at the old scan.md path | F123 | question | merged | 131 | none | 2026-10-06 |

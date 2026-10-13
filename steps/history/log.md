@@ -74,6 +74,55 @@ renames, as none does since F149, would still be counted. Whether Document.Units
 UNKNOWN, the notes of FR-062 and FR-169.
 
 What comes next: the lead's reviewer and breaker, the merge, then the run of steps 1200 to 1244.
+## 2026-10-13 F114d the views, rows F114-K32, K34, K36 and R1, written by the developer as the lead's delegate
+
+Branch fix-F114d off main 402a8155, worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f114d, Bader's order of 2026-10-12
+headed BADER SAYS GO, item 7: only rows that change what the team sees, under his Q143 limits. Four open register
+rows of area F114 on one branch and one pull request. Two rules held: no mirrored test gets a view, Bader's rule,
+and no Navisworks member or behaviour is assumed. No Navisworks was started and no probe was run. Line numbers below
+are main's at 402a8155.
+
+What was done:
+- F114-K34 with F114-R1, a mirror the rule paired and did not merge. A mirror whose clashes the merge took is out of
+  the report, MirrorMerge.AddTo, so every mirror the plan meets was not merged and keeps its rows under its own name.
+  By core.md's NO MIRRORED TEST GETS A VIEW it gets no view, so its open clashes are in no view. The fault the team
+  saw: TestViewPlan.For, TestViewPlan.cs line 99, counted every clash of a mirror as one number whatever its status,
+  and TestViewPlanOutcome.Lines, lines 188 and 189, named the mirror alone, so the VIEWS block never said how many
+  open clashes were in no view. Now each mirror is named with its open clashes and those at a status no view shows,
+  and one line gives the open ones in all and says a clash only that mirror finds is in no view, how many UNKNOWN.
+  The rule says they are left out, counted and named, and none says they go into the kept test's view, so they do
+  not. Under Bader's answer A to Q142 a weekly run on an NWF that already holds both tests merges no mirror, so
+  this is the usual case and not an edge
+- The rule in .claude\rules\core.md, ONE VIEW PER CLASH TEST, the words A MIRROR NOT MERGED IS COUNTED BY ITS OPEN
+  CLASHES. The section in steps\01_next.md. Steps 1300 to 1310 of steps\03_bader_next.md, no number used twice in
+  the file. Rows F114-K34 and F114-R1 of steps\tracker.csv in review, make-tracker and check-tracker clean
+- Proved here: Core tests 3065 passed, 0 failed, 0 skipped on main 402a8155. The new test
+  TestViewPlanTests.TheOpenClashesOfAMirrorNotMergedAreCountedPerMirrorAndSaidToBeInNoView and the strengthened
+  AMirroredTestGetsNoViewAndIsNamed, whose mirror line now carries the counts, failed first against the old rule,
+  2 failed and 29 passed, %LOCALAPPDATA%\NwcFederatorLoop\turn6\f114d-failing-first.txt. After the fix 3066 passed,
+  0 failed, 0 skipped, turn6\f114k-tests-after.txt. The solution builds in Release with --no-incremental, 0 warnings
+  and 0 errors, the add-in included, turn6\f114k-build.txt. check-locals and check-imports read clean
+
+Left open:
+- F114-K32, needing a fact. ViewpointBuilder.cs line 782 writes no view where SavedViewpoints.CountUnmarked finds an
+  unmarked view of the test's name in its folder, because SavedViewpoints.Mark, SavedViewpoints.cs line 499, finds
+  the view just made as the one unmarked child of that name, P12, and two could not be told apart. Telling them apart
+  needs P22 of the design, whether the COM folder's Add puts the new view last among the folder's children, a probe
+  Q143 item 4 and Q157 do not allow. The question for Bader: should a person's unmarked view of a test's name cost the
+  group DONE, or be named on a VIEWS line as F3 names a test of only result groups
+- F114-K36, needing Bader's word. TestsRead.OnlyGroups, TestsRead.cs line 256, and the VIEWS line at
+  ViewpointBuilder.cs line 204 are addin.md's F3 rule, the lead's decision. Reading the clashes inside each group,
+  as the harvest does, would give such a test a view, but which of them are open is UNKNOWN, Q141 having left
+  unmeasured whether a group's status follows its clashes. The question for Bader: A, keep F3, B, view the clashes
+  inside each group at each one's own status, C, no view and its old views removed as for a test with no open clash
+
+What waits for the local machine: steps 1300 to 1310 of steps\03_bader_next.md, a weekly run of 1A02MM on a copy of
+Run A's NWF, whose VIEWS block names each mirror not merged with its open clashes, read against the clash workbook.
+
+Known bugs: the clashes of a mirror not merged stay in no view, by the rule, and the line says how many are open. How
+many of them only the mirror finds is UNKNOWN, since the merge that would tell was not made.
+
+What comes next: the lead's reviewer and breaker, then the merge.
 
 ## 2026-10-13 F121 wave 4 part two, FR-153, FR-160, FR-163 and FR-166, written by the developer as the lead's delegate
 

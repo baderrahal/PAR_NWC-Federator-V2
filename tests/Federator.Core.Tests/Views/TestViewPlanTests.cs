@@ -657,8 +657,52 @@ namespace Federator.Core.Tests
             IList<string> lines = plan.Lines(new SizeSettings());
 
             Assert.That(lines, Has.Member("mirrored tests, so no view : 1, their 2 clashes left out"));
-            Assert.That(lines, Has.Member("    " + Mirror));
+            Assert.That(lines, Has.Member("    " + Mirror + " : 1 open and in no view, 1 at a status no view shows"));
             Assert.That(lines, Has.Member("clashes looked at : 3, open in views 1, left out by status 0, of mirrored tests 2"));
+        }
+
+        /// <summary>
+        /// Rows F114-K34 and F114-R1. A mirror the rule paired whose clashes were not merged into the
+        /// test it mirrors keeps its rows on the report under its own name, and gets no view by
+        /// Bader's rule, so its open clashes are in no view of their own. The VIEWS block counts
+        /// those open clashes apart from the closed ones, per mirror and in all, and says a clash
+        /// only that mirror finds is then in no view, so the views can hold fewer clashes than the
+        /// report. It never moves them into the kept test's view, which no rule says.
+        /// </summary>
+        [Test]
+        public void TheOpenClashesOfAMirrorNotMergedAreCountedPerMirrorAndSaidToBeInNoView()
+        {
+            const string Kept = "BLD-ME-Ducts-vs-BLD-ST-Columns";
+            const string Mirror = "BLD-ST-Columns-vs-BLD-ME-Ducts (mirror)";
+            const string OtherKept = "BLD-EL-Devices-vs-BLD-AR-Walls";
+            const string OtherMirror = "BLD-AR-Walls-vs-BLD-EL-Devices (mirror)";
+
+            TestViewPlanOutcome plan = TestViewPlan.For(
+                new[]
+                {
+                    Clash(Kept, "Clash1", "BLD-ME-Ducts", "BLD-ST-Columns"),
+                    Clash(Mirror, "Clash1", "BLD-ST-Columns", "BLD-ME-Ducts", ClashStatus.New),
+                    Clash(Mirror, "Clash2", "BLD-ST-Columns", "BLD-ME-Ducts", ClashStatus.Active),
+                    Clash(Mirror, "Clash3", "BLD-ST-Columns", "BLD-ME-Ducts", ClashStatus.Approved),
+                    Clash(OtherKept, "Clash1", "BLD-EL-Devices", "BLD-AR-Walls"),
+                    Clash(OtherMirror, "Clash1", "BLD-AR-Walls", "BLD-EL-Devices", ClashStatus.Resolved)
+                },
+                Teams(),
+                new[] { Mirror, OtherMirror },
+                new ViewpointSettings());
+
+            Assert.That(plan.Views.Count, Is.EqualTo(2), "each kept test keeps its own view and no mirror gets one");
+            Assert.That(plan.LeftOutAsMirrors, Is.EqualTo(4));
+
+            IList<string> lines = plan.Lines(new SizeSettings());
+
+            Assert.That(lines, Has.Member("mirrored tests, so no view : 2, their 4 clashes left out"));
+            Assert.That(lines, Has.Member(
+                "open clashes of those mirrored tests, in no view : 2, each on the report under its mirror's own name because "
+                + "its clashes were not merged into the test it mirrors, so a clash only that mirror finds is in no view "
+                + "and how many of them it alone finds is UNKNOWN"));
+            Assert.That(lines, Has.Member("    " + Mirror + " : 2 open and in no view, 1 at a status no view shows"));
+            Assert.That(lines, Has.Member("    " + OtherMirror + " : 0 open and in no view, 1 at a status no view shows"));
         }
 
         /// <summary>With no mirror rule handed in the plan cannot know a mirror, and its lines say so.</summary>

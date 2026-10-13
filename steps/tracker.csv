@@ -56,12 +56,12 @@ FR-054,log prune in temp fallback deletes other programs logs,F119,3b,broken fea
 FR-055,tsv files never pruned,F119,3b,broken feature,merged,148,none,2026-10-07
 FR-056,live line slower compares one test with whole group,F119,3b,broken feature,merged,148,none,2026-10-07
 FR-057,run log write has no try,F119,3b,loud failure,merged,"148 the listener half, 169 the disk half",none,2026-10-08
-FR-058,first clash line says all tests to create,F123,5,noise,in review,UNKNOWN,none,2026-10-13
-FR-059,result files written leaves out pictures,F123,5,noise,in review,UNKNOWN,none,2026-10-13
-FR-060,result found none counts groups that ran no test,F123,5,noise,in review,UNKNOWN,none,2026-10-13
+FR-058,first clash line says all tests to create,F123,5,noise,merged,225,none,2026-10-13
+FR-059,result files written leaves out pictures,F123,5,noise,merged,225,none,2026-10-13
+FR-060,result found none counts groups that ran no test,F123,5,noise,merged,225,none,2026-10-13
 FR-061,log says tsv keeps collapsed lines when tsv did not open,F123,5,noise,merged,151,none,2026-10-07
-FR-062,units line names unit when second read threw,F123,5,noise,in review,UNKNOWN,none,2026-10-13
-FR-063,tolerance log line says read from xml on no xml run,F123,5,noise,in review,UNKNOWN,none,2026-10-13
+FR-062,units line names unit when second read threw,F123,5,noise,merged,225,none,2026-10-13
+FR-063,tolerance log line says read from xml on no xml run,F123,5,noise,merged,225,none,2026-10-13
 FR-064,category line names no folder,F123,5,noise,merged,151,none,2026-10-07
 FR-065,viewpoint dimming carries between viewpoints,F114,2b,silent wrong number,merged,"141 the Core half and 189 the add-in pass",none,2026-10-08
 FR-066,size text reads tail of word digits,F114,2b,silent wrong number,merged,"141 the Core half and 189 the add-in pass",none,2026-10-08
@@ -165,9 +165,9 @@ FR-163,title bar close mid run,F121,4,broken feature,merged,223,none,2026-10-13
 FR-164,census sets overload returns zero not minus one,F121,4,loud failure,merged,150,none,2026-10-07
 FR-165,cleared name cell throws out of run click,F121,4,loud failure,merged,"150, and 160 the second half, a hand typed name Windows refuses",none,2026-10-07
 FR-166,tolerance other blank stops hand buttons,F121,4,loud failure,merged,223,none,2026-10-13
-FR-167,shared source uses group key not building code,F123,5,noise,in review,UNKNOWN,none,2026-10-13
+FR-167,shared source uses group key not building code,F123,5,noise,merged,225,none,2026-10-13
 FR-168,folders memory read failure logged as first run,F123,5,noise,merged,155,none,2026-10-07
-FR-169,document guard unreadable name called unsaved,F123,5,noise,in review,UNKNOWN,none,2026-10-13
+FR-169,document guard unreadable name called unsaved,F123,5,noise,merged,225,none,2026-10-13
 FR-170,penetration size catch swallows unit throw,F123,5,noise,open,none,none,2026-10-04
 FR-171,t1 noise findings 93,F123,5,noise,in progress,"162, 163, 164, 165, 174, 176 and 180 in part, the rest on the laptop",none,2026-10-08
 FR-172,t1 uncalled members 150,F123,5,noise,in progress,"161 two members deleted, the rest on the laptop",none,2026-10-07
@@ -319,7 +319,7 @@ F119,run log and RESULT,F119,3b,fix,merged,"148 nine items, 168, 169 and 179, an
 F120,harvest and pictures,F120,3a,fix,merged,"183, 215 FR-198 and F120-R1",none,2026-10-12
 F121,the rest,F121,4,fix,in progress,"222, 150 six items, 160 and 173 the SINGLE DISCIPLINE finding merged, FR-150, FR-152, FR-155 and FR-162 in review on fix-F121d, the rest on the laptop",none,2026-10-13
 F122,the loop tools,F122,4,fix,open,none,none,2026-10-04
-F123,"docs and words, and the noise of every area",F123,5,fix,in progress,"151, 154, 155, 161 to 165, 174, 176, 178, 180, 181, 182 and 184 merged in part, lane B stopped at 185, FR-058, FR-059, FR-060, FR-062, FR-063, FR-167 and FR-169 in review on fix-F123b, the rest on the laptop",none,2026-10-13
+F123,"docs and words, and the noise of every area",F123,5,fix,in progress,"225, 151, 154, 155, 161 to 165, 174, 176, 178, 180, 181, 182 and 184 merged in part, lane B stopped at 185, FR-058, FR-059, FR-060, FR-062, FR-063, FR-167 and FR-169 in review on fix-F123b, the rest on the laptop",none,2026-10-13
 F124,"D1, one public type per file",F124,5,fix,open,none,none,2026-10-04
 F125,a window that is not modal is a pane and not a dialog,F125,outside the waves,fix,merged,102,none,2026-10-06
 F126,the window driver unticks a tick box by its AutomationId,F126,outside the waves,fix,merged,112,none,2026-10-05
@@ -520,7 +520,7 @@ F115-R24,"a document the leftover walk declared damaged is still taken through t
 Q147,"two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109",none,none,Bader's request,in progress,none,none,2026-10-08
 F114-K32,"a person's unmarked view of a test's name in the view's folder stops the tool's view of that test and costs the group DONE, for Bader",F114,2b,register row,open,none,none,2026-10-08
 F114-K33,"the read back walks the material overrides one index path each, 3153 for a view of one model of 1A02MM, dropped on 2026-10-12 under Q143 since P18 read the whole read back at 0.014 s a view, no time the team sees",F114,2b,register row,dropped,none,none,2026-10-12
-F114-K34,"a mirror the rule paired and did not merge gets no view and its clashes are in no view, the VIEWS block counting them",F114,2b,register row,open,none,none,2026-10-08
+F114-K34,"a mirror the rule paired and did not merge gets no view and its clashes are in no view, the VIEWS block counting them",F114,2b,register row,merged,224,none,2026-10-13
 F114-K35,"a model whose code will not read is shown only where a clashing item lives in it, the VIEWS line saying so once a model",F114,2b,register row,merged,189,none,2026-10-12
 F114-K36,"a test whose open clashes are all result groups gets no view and keeps its old ones, not counted FAILED, the lead's decision on the breaker's F3, for Bader",F114,2b,register row,open,none,none,2026-10-08
 F114-K37,"whether the NWF keeps a saved camera at single precision is UNKNOWN, so a camera far from the origin may read every tool view as a person's after a reopen, read on the timed runs",F114,2b,register row,open,none,none,2026-10-08
@@ -578,5 +578,6 @@ F115-R27,"two sets at one path in the document are not said, the drift read, the
 F115-R28,"the leftover decision counts sides only off tests already saved in the document, so a set the picked XML's own tests point at but the XML does not define can be removed before those tests are made, older than PR 212",F115,2a,register row,open,none,none,2026-10-12
 F115-R29,"a set's planned twin is found by name and not in the leftover's folder, so a file that moved a set between folders can leave one set name in two folders, the breaker's re-read of attempt 2 on pull request 212",F115,2a,register row,open,none,none,2026-10-13
 F115-R30,"a side whose selection sources read null makes the side count null and refuses every leftover with a FAILURE line, whether Navisworks returns null there is UNKNOWN until a run, the breaker's re-read of attempt 2 on pull request 212",F115,2a,register row,open,none,none,2026-10-13
-F114-R1,"a mirror pair the rule pairs but the merge refuses keeps its clashes on its own report test, and since the views read the rule's pairs those clashes get no view, so the views can hold fewer clashes than the report for that pair, named in the VIEWS block, the breaker's re-read of attempt 2 on pull request 213",F114,2b,register row,open,none,none,2026-10-13
+F114-R1,"a mirror pair the rule pairs but the merge refuses keeps its clashes on its own report test, and since the views read the rule's pairs those clashes get no view, so the views can hold fewer clashes than the report for that pair, named in the VIEWS block, the breaker's re-read of attempt 2 on pull request 213",F114,2b,register row,merged,224,none,2026-10-13
 F150-R2,"the put back of Hide Other writes the value read, off, so the registry holds the set form 3 0 where it held 0, a value never set, before the first run on a PC, Clash Detective reading off either way, set 10",F150,none,register row,open,none,none,2026-10-13
+F114-R2,"a mirror whose open rows are all result groups or that was not read whole never reaches the views' plan, so the line of open clashes of the mirrored tests in no view leaves its clashes out, named elsewhere, the reviewer's first point on pull request 224",F114,2b,register row,open,none,none,2026-10-13

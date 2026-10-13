@@ -30,6 +30,9 @@ namespace Federator.Core.Views
     /// still hold the results of an earlier run in the document. A mirrored test's clashes are
     /// left out and counted, and the test is named. Until fix-F132 is merged the add-in hands in
     /// a plain list of test names, and null where no mirror rule ran, which the lines say.
+    /// A mirror whose clashes the merge took is out of the report, so a mirror the plan meets
+    /// was not merged, rows F114-K34 and F114-R1: its open clashes are counted apart from the
+    /// rest, per mirror and in all, since a clash only it finds is in no view.
     /// </summary>
     public static class TestViewPlan
     {
@@ -96,7 +99,17 @@ namespace Federator.Core.Views
 
                 if (mirrored.Contains(test))
                 {
-                    outcome.LeaveOutMirror(test, all.Count);
+                    int open = 0;
+
+                    foreach (ViewClash clash in all)
+                    {
+                        if (inScope.Contains(clash.Status))
+                        {
+                            open++;
+                        }
+                    }
+
+                    outcome.LeaveOutMirror(test, open, all.Count - open);
                     continue;
                 }
 
