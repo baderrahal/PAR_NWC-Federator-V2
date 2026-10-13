@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-13 09:25, last run 09/item1-C04
+STATE OPEN, 2026-10-13 11:57, last run 10/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -15,34 +15,38 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
-| outside the waves | 177 | 17 | 2 | 0 | 59 | 6 | 261 |
-| total | 360 | 25 | 2 | 1 | 175 | 17 | 580 |
+| outside the waves | 180 | 16 | 0 | 0 | 60 | 6 | 262 |
+| total | 363 | 24 | 0 | 1 | 176 | 17 | 581 |
 <!-- the end of the counts -->
 
 ## Now
-- Bader said go at 09:08 on 13 Oct. The fix round carries on under his order of 12 Oct headed BADER SAYS GO, under the limits of Q143
-- A Navisworks of his runs since 09:07, started by hand, so no install or run of the loop until it closes. His settings read what the backup holds
-- Merged so far: 216, 209, 218, 211 on 12 Oct, and 212 F115c with this page
+- Bader said go at 09:08 on 13 Oct, under his order of 12 Oct headed BADER SAYS GO and the limits of Q143
+- Merged since: 216, 209, 218, 211 on 12 Oct, then 212, 213, 217, 215, 219 and 214 F150 with this page
+- Set 10, the one 1A02MM check of F150, ran at 028c3a71: pictures 35 KB each showing only their two items, views 69 of 69
+- The developer works FR-150, FR-152, FR-155 and FR-162 of F121, wave 4, on fix-F121d
 
-## Open pull requests, in Bader's order of merging
-- 213 F114c a237ca2: ready. Take main in, add a row for a refused mirror pair whose clashes get no view, rows.py merged 213, merge
-- 217 F147 88d8013: ready. Take main in, rows.py merged 217, merge
-- 215 F120c 03573b2: split proof steps 692 and 697, fix stale words in core.md 1219, 1361, 2277 and addin.md 719, ClashHarvest.cs 647 and the unreachable singular of GapRule.cs 121, then one re-read
-- 219 F119c 4ec1733: first reading left, main not yet taken in
-- 214 F150 9f3f742: breaker found no fault. Take main in, install its head in place once no Navisworks of his runs, run 1A02MM once with viewpoints ticked, check the pictures and the put back, then merge
+## Speed
+Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
+
+| date | build | a picture | 1A02MM | longest freeze | most time |
+|---|---|---|---|---|---|
+| Bader's PC, 11 Oct | cdf8d4e, DirectX 11 hardware | 0.049 s | 156 s | 0 s | UNKNOWN |
+| 12 Oct 01:20 | cdf8d4e, acceleration on | 0.168 s, 0.120 s with F145's rule | 253 s | 32 s, RENUMBER | HARVEST 150 s |
+| 13 Oct 11:40, set 10 | 028c3a71, F150 Hide Other | 0.031 s, 35 KB | 169 s | about 30 s, WORKBOOK | clash step 140.5 s |
 
 ## Next
-1. 213 and 217 merged the same way as 212
-2. 215's changes and re-read, 219's first reading, then their merges, then 214's check and merge
-3. Renumber the proof steps once, build the new zip from main, then waves 3, 4 and 5, rows the team sees only
+1. Renumber the proof steps once on a records branch off main
+2. Build the new zip from main and give Bader its path, size and what changed since 69de6ed4
+3. Read and merge fix-F121d, then the window rows of F121: FR-153, FR-160, FR-163 and FR-166
 
 ## Waiting for Bader
-- Q38 said delete the per item harvest. 215 keeps the source file read since the merge key reads it, which may be his to decide
-- His run on his PC and its log, from the team zip of 12 Oct, 69de6ed4
+- Q38 said delete the per item harvest. 215 kept the source file read since the merge key reads it
+- F150-R2: Hide Other put back as off writes "3 0" where his PC held "0", a value never set. Off either way
+- His run on his PC and its log, from the team zip
 
 ## Blockers and known bugs
-- Proof step numbers collide across the open branches and are renumbered once, after the merges
-- FR-067 is out of 213: P15 shows its sequence crashed Navisworks twice, so a probe answers it first
+- The WORKBOOK step leaves the window not answering for about 30 s on 1A02MM
+- FR-067 is out: P15 shows its sequence crashed Navisworks twice, so a probe answers it first
 - T6-R-WPFBOX, F149-R1 and the coordinates box starting ticked, as before
 
 ## Where the long history is

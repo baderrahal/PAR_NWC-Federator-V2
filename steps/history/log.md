@@ -2,6 +2,37 @@
 
 Newest entry at the top.
 
+## 2026-10-13 Set 10, the one 1A02MM check of F150 before its merge, written by the lead
+
+Bader's order of 12 Oct headed BADER SAYS GO, item 5. Branch fix-F150 at 028c3a71, main 0a54132 with F150 merged in,
+built in Release with 0 warnings and 0 errors, staged and installed in place by turn4\install-in-place.ps1 over the
+installed cdf8d4ed, held first in %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup-cdf8d4ed, the installed stamp read back
+as 028c3a71. A fresh copy by prepare-copy.ps1 -Set 10, then turn6\set10-start-run.ps1, set 09's script with the set
+changed, run.ps1 -Set 10 -Item 1 on the C02 folder set 09 ran, the corrected 25 mm XML, -Untick SkipClashOffCoordinates,
+the viewpoints box left ticked. One Navisworks started, adopted and closed by Dispose. No other run and no 1A04PK.
+Evidence masked in steps\runs\10\item1-C02, the raw copy in turn6\set10-raw.
+
+What the run showed, each against set 09's 1A02MM, steps\runs\09\item1-C02:
+- VERDICT RAN, put back, no DIALOG and no PANE line, where set 09 had one dialog finding
+- The run took 2 minutes 49 seconds, 169.269 s, against 253.547 s. The clash step 140.5 s against 183.2 s
+- The group FAILED on its ST model exported on Revit's internal origin, as in set 09. The workbook against Clash
+  Detective: 528 compared, 528 agree
+- VIEWS 69 of 69 planned views written, as in set 09
+- IMAGES 2931 written, 100.08 MB, 0.031 s each on average, slowest 0.093, 35 KB each, against 630.82 MB, 0.044 s,
+  slowest 0.207 and 220 KB. Rendering 66.0 s against 95.1 s. Numbered in report order with 0 renamed, RENUMBER 0.055 s
+  against 38.9 s
+- The Hide Other line: asked on for the pictures, read off before, set on and read back on, put back to off, read off
+  after. Three pictures opened show only their two clashing items, where set 09's cd000001.jpg showed the outlines of
+  the other items. cd600001.jpg is solid green in both sets, so F150 did not cause it
+- One LIFE stretch not answering, about 30 s from 11:43:32, in STEP WORKBOOK. Peak working set 9843 MB
+
+What it found: F150-R2. hide_other under GlobalOptions\tools\clash\displaysettings read "0", a value never set, before
+the run, and "3 0", set and off, when the loop's Navisworks closed, listed by run.ps1 as M5. The tool put back the value
+it read, off, so Clash Detective reads off as before, but the registry holds the set form. run.ps1's settings put back
+wrote "0" again here. On a team PC no loop puts it back. A register row, since what a person sees is the same off.
+
+What comes next: 214 merges with F150-R2 open, then the proof steps are renumbered once and the zip is built from main.
+
 ## 2026-10-12 The loop, turn 6, F150 Clash Detective asked to hide the other items for the pictures, attempt 2, written by the developer as the lead's delegate
 
 Bader's answer to Q151 and his order of 2026-10-12, item 157 of steps\02_questions.md. Branch fix-F150 off main
