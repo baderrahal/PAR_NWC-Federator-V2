@@ -2,6 +2,25 @@
 
 Newest entry at the top.
 
+## 2026-10-13 The proof steps renumbered once after the merges of the fix round, written by the lead
+
+Bader's order of 12 Oct headed BADER SAYS GO, item 4. Once 209 to 219 had merged, twelve sections of
+steps\03_bader_next.md shared 63 step numbers, since each branch numbered its steps off the main it was cut from.
+The sections from before 12 Oct keep their numbers, F132-R3, F141, F143 and F145. The eight others get fresh numbers
+from 900 in file order, by turn6\renumber.py, which moves inside each section its own numbers and every reference
+to them after step, steps, to or and, and leaves a number of another section as it was. No number is used twice
+after it, read by the same script's count. Records only, no code changed.
+
+The map, for any line elsewhere that still names an old number:
+- Proof F150 Clash Detective asked to hide the other items for the pictures: 664 to 696 became 900 to 932
+- Proof F147 long runs kept from slowing: 664 to 671 became 933 to 940
+- Proof F114c the views' sides: 692 to 706 became 941 to 955
+- Proof F115 the register rows of the sets: 664 to 685 became 956 to 977
+- Proof F127-R5 a workbook named as another group's internal workbook: 680 to 710 became 978 to 1008
+- Proof of F130-R1: 698 to 711 became 1009 to 1022
+- Proof F140 the team package: 629 to 644 became 1023 to 1038
+- Proof F118 the workbook and report: 664 to 691 became 1039 to 1066
+
 ## 2026-10-13 Set 10, the one 1A02MM check of F150 before its merge, written by the lead
 
 Bader's order of 12 Oct headed BADER SAYS GO, item 5. Branch fix-F150 at 028c3a71, main 0a54132 with F150 merged in,
