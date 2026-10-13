@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-13 16:32, last run 10/item1-C02
+STATE OPEN, 2026-10-14 01:40, last run 94/item1-C02
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -20,10 +20,10 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 <!-- the end of the counts -->
 
 ## Now
-- Bader said go at 09:08 on 13 Oct, under his order of 12 Oct headed BADER SAYS GO and the limits of Q143
-- Merged on 13 Oct: 212, 213, 217, 215, 219, 214 F150, 221 the steps renumbered, 222 and 223 F121 wave 4, 224 F114d, 225 F123b
-- The team zip of 8e100bf6, built 12:27, holds everything up to 214. 222 to 225 are on main, built and tested, not run on Navisworks
-- No pull request is open and no agent or Navisworks runs
+- Bader's message of 13 Oct, Q162, five things: all merged on 14 Oct, F151 232, F152 233, F153 234, F154 235, F155 236
+- F156 237: build\install.ps1 refused every build since F152, found by the loop's install, fixed and installed
+- Set 94, main 51d9f31d, 1A02MM through the window: RAN, no log beside the NWF, 4160 linked pictures and none embedded,
+  130 blocks, the built in pack, 25 mm on every test. Excel read the 4160 as linked pictures. steps\history\log.md
 
 ## Speed
 Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
@@ -31,22 +31,25 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | date | build | a picture | 1A02MM | longest freeze | most time |
 |---|---|---|---|---|---|
 | Bader's PC, 11 Oct | cdf8d4e, DirectX 11 hardware | 0.049 s | 156 s | 0 s | UNKNOWN |
-| 12 Oct 01:20 | cdf8d4e, acceleration on | 0.168 s, 0.120 s with F145's rule | 253 s | 32 s, RENUMBER | HARVEST 150 s |
-| 13 Oct 11:40, set 10 | 028c3a71, F150 Hide Other | 0.031 s, 35 KB | 169 s | about 30 s, WORKBOOK | clash step 140.5 s |
-| 13 Oct 20:17, desktop PC | cad45fd4, main after 230 | 0.028 s | 232 s, 141 of 141 views, group FAILED on a model on Revit's internal origin | about 30 s, WORKBOOK | PICTURES 117 s |
+| 13 Oct 20:17, set 93 | cad45fd4, main after 230 | 0.028 s | 232 s, group FAILED on a model on Revit's internal origin | about 30 s, WORKBOOK | PICTURES 117 s |
+| 14 Oct 01:28, set 94 | 51d9f31d, main after 237 | 0.027 s | 245 s, group FAILED on the same model | none in 10 readings | PICTURES 112.5 s |
 
 ## Next
-1. A zip of main with 222 to 225 when Bader asks, and his run of steps 800 to 867, 1100 to 1158, 1200 to 1244 and 1300 to 1310
-2. F114-R3, two clashes of one group with one display name share a key, an add-in counter on the name, then the team zip when Bader asks
-3. Wave 4 and 5 rows the team sees that are left: FR-161 the date format control
-4. The register rows of today: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30
+1. Bader's proof of the round on his desktop PC, steps 1390 to 1513 of steps\03_bader_next.md: the build and install
+   in VS Code, the four NWC files of 1A02MM copied by hand, and what only Excel shows, steps 1435 to 1446
+2. His answers to Q163 to Q168
+3. tools\loop\prove-run.ps1 stops at its install.ps1 trials on main, 28 FAIL, and its H12b trial of install.ps1 at
+   0eb4ede exits 1 on any build since F152, so its window cases do not run
+4. The register rows of 13 Oct: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30
 
 ## Waiting for Bader
-- Nothing waits on a question. Bader answered F114-K32 B, F114-K36 B, F150-R2 B and gave his words on F114-K29, read as only the map's teams get pair folders, which he may correct
-- Whether a Scan of the same folder keeps typed names and unticked groups. Q38: the source file read is kept for the merge key
+- Q163 the picture click link, Q164 a second pack, Q165 ReadPicked and cut-xml.ps1, Q166 the Weekly run plus XML label,
+  Q167 the two checks that still read the XML's tolerance, Q168 a saved test the matrix does not name is not run
+- What Excel shows a person when it opens a workbook of 4160 linked pictures, steps 1435 to 1437
 
 ## Blockers and known bugs
-- The WORKBOOK step leaves the window not answering for about 30 s on 1A02MM
+- A saved test the built in matrix does not name is not run since F155, Q168
+- One DIALOG finding at the close of set 94, a captionless Navisworks window after RESULT, UNKNOWN
 - FR-067 is out: P15 shows its sequence crashed Navisworks twice, so a probe answers it first
 - T6-R-WPFBOX, F149-R1 and the coordinates box starting ticked, as before
 
@@ -55,4 +58,3 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 - steps\history\log.md: one entry per fix, newest at the top
 - Status of every item and finding: steps\tracker.csv, read as steps\tracker.md
 - Questions and answers: steps\02_questions.md. The plan: steps\01_next.md and steps\fix-round.md
-- Evidence outside the repo: %LOCALAPPDATA%\NwcFederatorLoop\turn5 and turn6

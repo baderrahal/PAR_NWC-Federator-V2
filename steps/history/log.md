@@ -2,6 +2,45 @@
 
 Newest entry at the top.
 
+## 2026-10-14 the window run of set 94 on main 51d9f31d, the round of F151 to F156 in Navisworks
+
+Branch record-round-20261013 off main 51d9f31d. Set 94 is a new run set made from the four NWC files of 1A02MM that
+set 93 held, read back by sha256 against its manifest, with empty output folders. Nothing of Bader's was read or written.
+
+What was run, each through tools\loop:
+- run.ps1 -Mode Install -Stamp 41b4ac32, main after F155: install.ps1 exited 1, Federator.Core needs
+  System.IO.Compression, and the add-in installed before was put back. That is F156
+- run.ps1 -Mode Install -Stamp e2082a73, the F156 commit, then -Stamp 51d9f31d, main after F156: INSTALLED
+- run.ps1 -Mode Run -Set 94 -Item 1 -Folder C02 -Stamp 51d9f31d -Untick SkipClashOffCoordinates, as set 93 ran:
+  VERDICT RAN, 300 s, Navisworks closed by Dispose, every setting put back. One DIALOG finding, a window of Navisworks
+  with no caption seen as the tool's window closed, after RESULT. Set 93 had none. What it was is UNKNOWN
+- A hidden Excel 16.0 started through automation opened the workbook read only, alerts and link updates off, and was
+  closed. Its pid was gone after Quit
+
+What it proved, read off the tool's log and the files the run wrote:
+- F151: the NWF folder holds the NWF alone, no run-*.log beside it, where set 93 had one
+- F152: XLSX 4160 linked pictures. The drawing holds 4160 twoCellAnchor editAs oneCell, each by r:link, 4160 image
+  relationships with TargetMode External and a file:/// target with %20 for each space, 0 embedded, 0 files under
+  xl/media, and the _files folder holds the 4160 jpgs. Navisworks loaded the zip types, so the 4.2.0.0 reference of F156
+  is unified at run time too. Excel read 4160 shapes, every one type 11, a linked picture, the first over A9 at 71.4 pt,
+  and 4160 cell links
+- F153: BLOCKS 130 in the workbook, the other 1700 of 1830 on the page and the Coverage sheet alone. The workbook
+  check reads 130 blocks and 4160 clash rows and no problem. read-workbook.ps1 reads 130 full blocks and 0 one row tests
+- F154: PACK names the five files of 1104-PAR. PRIORITY read 1830 rows
+- F155: RUN the clash matrix is the built in matrix pack. TEAMS and MATRIX read the pack's lists. TOLERANCE 25 mm chosen
+  in the tool, set on 561 tests, 0.082021 ft. The report rows read 561 off the document and 1269 chosen in the tool,
+  none off the XML
+- The group ended FAILED, as set 93 did, on its ST model exported on Revit's internal origin, Q70
+
+Speed: session 245 s, PICTURES 112.5 s for 4160, 0.027 s a picture, VIEWS 43 s, WORKBOOK 8.2 s, no stretch not
+answering in 10 readings.
+
+What remains UNKNOWN: what a person sees when Excel opens the workbook, a question or a bar about links, since the
+automation turned alerts off. Steps 1435 to 1437 ask it. A UNC path as a picture target. A weekly run on the NWF set 94
+wrote, which this run did not make.
+
+Evidence: steps\runs\94\item1-C02, masked by mask-evidence.ps1, read clean by check-evidence-ids.sh.
+
 ## 2026-10-14 F156 the install refused every build since F152
 
 Branch fix-F156 off main 41b4ac32. Found by the loop's install of main after F155 merged.

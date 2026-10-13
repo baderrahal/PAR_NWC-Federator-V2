@@ -1,0 +1,49 @@
+  the AutoSave compare reads autosave-before.txt back, 58 files
+  the watchdog's record shows no other Navisworks ran from the backup to now, and the adopted one is gone, so what changed is put back, each write after a last check
+  22.0\CER\22.5.1433.58  calUptime  old QWord 1813167990140  new QWord 1816187370549
+  22.0\CER\22.5.1433.58  SessionCleanCloseCount  old DWord 116  new DWord 117
+  22.0\CER\22.5.1433.58  SessionStartCount  old DWord 123  new DWord 124
+  22.0\CER\22.5.1433.58  uptime  old QWord 300062968750  new QWord 302053125000
+  22.0\GlobalOptions\general\autosave  enable  old String "0"  new String "3 0"
+  22.0\MainWindow  Placement  old String "2,0,0,1632,877"  new String "0,144,77,1632,877"
+  22.0\Recent File List\1  LastOpened  old QWord 134363868753822009  new QWord 134364043182266462
+  22.0\Recent File List\1  Path  old String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf, sha1 BF9FA3E257C1>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\NWF\C02\1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\10  DisplayName  old String "1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc"
+  22.0\Recent File List\10  LastOpened  old QWord 134363862678786210  new QWord 134363862991542173
+  22.0\Recent File List\10  Path  old String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, sha1 E94461404EB3>  new String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, sha1 F7C937C43EAA>
+  22.0\Recent File List\2  LastOpened  old QWord 134363865379544071  new QWord 134364041053230570
+  22.0\Recent File List\2  Path  old String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc, sha1 B22D49C8FED5>  new String "%LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\NWC\C02\1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\3  DisplayName  old String "1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf"
+  22.0\Recent File List\3  LastOpened  old QWord 134363863789768231  new QWord 134363868753822009
+  22.0\Recent File List\3  Path  old String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, sha1 71B182404FA7>  new String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf, sha1 BF9FA3E257C1>
+  22.0\Recent File List\4  DisplayName  old String "1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"
+  22.0\Recent File List\4  LastOpened  old QWord 134363863789768231  new QWord 134363865379544071
+  22.0\Recent File List\4  Path  old String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, sha1 16941A39CBFC>  new String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc, sha1 B22D49C8FED5>
+  22.0\Recent File List\5  DisplayName  old String "1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\5  LastOpened  old QWord 134363863789758262  new QWord 134363863789768231
+  22.0\Recent File List\5  Path  old String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, sha1 35A96CB3690B>  new String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, sha1 71B182404FA7>
+  22.0\Recent File List\6  LastOpened  old QWord 134363862991562149  new QWord 134363863789768231
+  22.0\Recent File List\6  Path  old String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, sha1 BCAFFAD2763D>  new String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, sha1 16941A39CBFC>
+  22.0\Recent File List\7  DisplayName  old String "1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc"
+  22.0\Recent File List\7  LastOpened  old QWord 134363862991552178  new QWord 134363863789758262
+  22.0\Recent File List\7  Path  old String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, sha1 3DD9CDD62AA6>  new String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, sha1 35A96CB3690B>
+  22.0\Recent File List\8  DisplayName  old String "1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc"
+  22.0\Recent File List\8  LastOpened  old QWord 134363862991542173  new QWord 134363862991562149
+  22.0\Recent File List\8  Path  old String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-EL-MOD-000001.nwc, sha1 F7C937C43EAA>  new String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-ST-MOD-000001.nwc, sha1 BCAFFAD2763D>
+  22.0\Recent File List\9  DisplayName  old String "1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc"  new String "1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc"
+  22.0\Recent File List\9  LastOpened  old QWord 134363862991532175  new QWord 134363862991552178
+  22.0\Recent File List\9  Path  old String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc, sha1 13D749F80054>  new String <a path outside the loop folder, file 1104-PAR-1A02MM-ZZZ-ME-MOD-000001.nwc, sha1 3DD9CDD62AA6>
+  registry: 33 values or keys differ from the backup
+  registry: 33 values put back of which 0 were deletes of a value that appeared, 0 keys made again, 0 keys removed, 0 failed, 0 not written, stopped by a Roamer False, and read again 0 still differ
+  file CHANGED CommCenter\en-US\InfoCenter.log  old 80018 bytes, sha256 9FAE5EACDB6E, written 2026-10-13 20:30:45  new 81273 bytes, sha256 05CEA7E0D934, written 2026-10-14 01:28:07
+  file CHANGED LastSession.xml  old 39291 bytes, sha256 5F16FC55454D, written 2026-10-13 22:28:19  new 39291 bytes, sha256 7942D1DBCC42, written 2026-10-14 01:32:54
+  files: 2 differ from the backup
+  CommCenter\en-US\InfoCenter.log put back, read back, sha256 matches the backup
+  LastSession.xml put back, read back, sha256 matches the backup
+  files: 2 put back and matching, 0 failed, 0 not written, stopped by a Roamer False
+  AutoSave files added, changed, gone or unreadable: 0
+---- his AutoSave folder, Q86 ----
+  AutoSave: 0 put back as they were and read back, 0 not as they were before the run
+---- team-map.txt, the team map the tool keeps between runs, Q123 ----
+  team-map.txt reads as it did before the start, sha256 7B671B5F3BD2BFFA386CE495DCBDB65944F8BC06DA9464A2CF639DAE1F3AD781
+  team map: 0 put back as it was and read back, 0 not as it was before the run

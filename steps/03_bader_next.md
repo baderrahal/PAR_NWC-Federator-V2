@@ -1924,17 +1924,29 @@ view. Rows F114-K34 and F114-R1. Everything runs on a copy.
 1309. Where step 1304 read 0, no mirror not merged held a clash on this run, so the new lines are proved by the Core tests alone. Say so when you send the log
 1310. Send the log of steps 1302 to 1309, named on its `log file` line
 
-## Proof of the round of 2026-10-13, F151 to F155, added 2026-10-13
+## Proof of the round of 2026-10-13, F151 to F156, added 2026-10-13
 
-One section for the five fixes of your message of 2026-10-13, each with its own steps. Core is
-proved by its tests on the laptop. What only Navisworks or Excel can show is here. Everything
-runs on copies in new folders on the desktop, so no NWF of the real folders is changed.
+One section for the five fixes of your message of 2026-10-13 and F156, which the install of this round needed. Core is proved by its tests on the laptop. What only Navisworks or Excel can show is here. Everything runs on copies in new folders on the desktop, so no NWF of the real folders is changed. The loop's window run of 1A02MM on its own copy, 2026-10-14, is in `steps\runs\94\item1-C02`, and what it proved is in steps\history\log.md.
+
+FILES TO COPY BY HAND, once, before step 1401: the NWC files of 1A02MM, the four files whose names start `1104-PAR-1A02MM-`, from `C:\00-NM\Federation Task\C02 + 04\C02` into a new folder on the desktop named `F151 source`. Copy, never move. Nothing else is copied: the clash matrix, the priority list and the by design pairs are built into the tool since F154 and F155.
+
+BUILD AND INSTALL ONCE FOR THE WHOLE ROUND, in VS Code, after fix-F156 has merged. Close Navisworks first.
+
+1390. Open VS Code
+1391. Press File, then Open Folder, and open `C:\Users\bader\Documents\GitHub\PAR_NWC-Federator-V2`
+1392. Press Terminal, then New Terminal
+1393. Type `git checkout main` and press Enter
+1394. Type `git pull` and press Enter
+1395. Type `dotnet build ParsonsNwcFederator.sln -c Release` and press Enter
+1396. Look for: `Build succeeded.` with `0 Error(s)`. If it fails, do steps 9 to 21
+1397. Type `powershell -ExecutionPolicy Bypass -File build\install.ps1` and press Enter
+1398. Look for: `All 15 expected files are present.`, no line with `needs`, and `The installed add-in reads the stamp` with the first eight characters of the last commit of main. Then steps 1511 to 1513 are done too
 
 ### F151, no copy of the log beside the NWF
 
-1400. Build and install main once fix-F151 has merged, steps 1 to 23
-1401. In Explorer make a new folder on the desktop named `F151 source`
-1402. Copy the NWC files of 1A02MM from `C:\00-NM\Federation Task\C02 + 04\C02` into `F151 source`
+1400. Build and install main once for the round, steps 1390 to 1398, if not done yet
+1401. Look for: `F151 source` on the desktop holds the four NWC files of 1A02MM, copied by hand as said above
+1402. Look for: no other file in `F151 source`
 1403. Make a second new folder on the desktop named `F151 out`
 1404. Start Navisworks and open the tool
 1405. On 1. Source pick `F151 source`
@@ -1959,7 +1971,7 @@ runs on copies in new folders on the desktop, so no NWF of the real folders is c
 
 Only Excel can show these two things: that the pictures show, and that Excel asks nothing when it opens a workbook of thousands of linked pictures. Write down the exact words of any question or bar Excel shows.
 
-1430. Build and install main once fix-F152 has merged, steps 1 to 23
+1430. Build and install main once for the round, steps 1390 to 1398, if not done yet
 1431. Make a new folder on the desktop named `F152 out`
 1432. Run 1A02MM from `F151 source` as in steps 1404 to 1411, with `F152 out` picked for the NWF, NWD and Excel folders
 1433. Look for, in the log of that run: a line starting `XLSX     ` and a number, then `linked pictures in the workbook, each pointing at its jpg in`, the `_files` folder in `F152 out`, and `None is embedded, so they show only while that folder stays where it was written`
@@ -1979,7 +1991,7 @@ Only Excel can show these two things: that the pictures show, and that Excel ask
 
 ### F153, no workbook rows for tests with no clash
 
-1450. Build and install main once fix-F153 has merged, steps 1 to 23
+1450. Build and install main once for the round, steps 1390 to 1398, if not done yet
 1451. Make a new folder on the desktop named `F153 out`
 1452. Run 1A02MM from `F151 source` as in steps 1404 to 1411, with `F153 out` picked for the NWF, NWD and Excel folders
 1453. Look for, in the `WORKBOOK CHECK 1A02MM` block of the log: `CHECK    1 sheet,` then a number of test blocks `with clashes`, and no line saying a row holds a test with no clash
@@ -1995,7 +2007,7 @@ Only Excel can show these two things: that the pictures show, and that Excel ask
 
 ### F154, the priority and by design files built in
 
-1470. Build and install main once fix-F154 has merged, steps 1 to 23
+1470. Build and install main once for the round, steps 1390 to 1398, if not done yet
 1471. Start Navisworks and open the tool
 1472. On 4. Clash look for: no Priority CSV row and no By design CSV row
 1473. Look for, under Mark by design connections as Reviewed: the grey line `Column on foundation, door in wall, valve in pipe. Built in list`
@@ -2011,7 +2023,7 @@ Only Excel can show these two things: that the pictures show, and that Excel ask
 
 ### F155, the clash matrix built in, the tolerance from the drop down alone
 
-1490. Build and install main once fix-F155 has merged, steps 1 to 23
+1490. Build and install main once for the round, steps 1390 to 1398, if not done yet
 1491. Start Navisworks and open the tool
 1492. On 4. Clash look for: no Clash XML row, no Browse button and no Teams line
 1493. Look for: the drop down Clash tolerance reading `25 mm`, and under it the grey line `Set on every test of the run. Results and statuses are kept`
@@ -2031,7 +2043,7 @@ Only Excel can show these two things: that the pictures show, and that Excel ask
 
 ### F156, the install refused every build since F152
 
-1510. Build and install main once fix-F156 has merged, steps 1 to 23
+1510. Build and install main once for the round, steps 1390 to 1398, if not done yet
 1511. Look for, in its output: `All 15 expected files are present.`
 1512. Look for: no line with `needs System.IO.Compression`
 1513. Look for: `The installed add-in reads the stamp` and the first eight characters of the last commit of main

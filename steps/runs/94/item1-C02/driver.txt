@@ -1,0 +1,22 @@
+01:28:07.342  driver started, pid 7456, owner pid 21436, start ticks UTC 639275272743039591, set 94, stamp 51d9f31d, -Untick SkipClashOffCoordinates
+01:28:09.608  the tool's window, handle 330620, class HwndWrapper[Roamer.exe;;c442159f-b885-4ca3-b448-e527e45663e8], caption "Parsons NWC Federator   [1.0.0.0 51d9f31d built 2026-10-14 01:27:45]", a window of pid 21436
+01:28:15.292  untick SkipClashOffCoordinates on the tab 4. Clash: before On, toggled once, after Off
+01:28:16.509  typed into SourceFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\NWC\C02, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\NWC\C02
+01:28:16.526  IncludeSubfolders reads On, left as the window opened it, bar the boxes -Untick names, SkipClashOffCoordinates
+01:28:16.571  pressed Scan
+01:28:16.641  the scan ended after 0.1 s, the window moved itself to 2. Grouping
+01:28:17.431  SourceSummary reads: 4 NWC found, 4 readable, 0 that cannot be read. FilesGrid rows 4
+01:28:18.262  GroupsGrid rows 1, every group ticked: 1 groups, 0 unticked. The tool's GROUPS block is the proof either way
+01:28:19.486  typed into NwfFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\NWF\C02, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\NWF\C02
+01:28:19.953  typed into NwdFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\NWD\C02, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\NWD\C02
+01:28:20.419  typed into ExcelFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\Clash Report\C02, it reads %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\Clash Report\C02
+01:28:22.026  read back SourceFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\NWC\C02
+01:28:22.027  read back NwfFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\NWF\C02
+01:28:22.028  read back NwdFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\NWD\C02
+01:28:22.028  read back ExcelFolderBox: %LOCALAPPDATA%\NwcFederatorLoop\runs\94\NMFed\Clash Report\C02
+01:28:22.905  ToleranceBox reads 25 mm, MarkByDesign Off, MarkPenetrations Off, each left as the window opened it, bar the boxes -Untick names, SkipClashOffCoordinates
+01:28:23.655  untick SkipClashOffCoordinates read again on the tab 4. Clash just before RunButton: Off
+01:28:23.670  pressed RunButton
+01:28:24.760  the confirm of pid 21436: class #32770, caption "Parsons NWC Federator", every text: "OK" "Cancel" "This run federates 1 group.    First run: 1. The NWF is built new, and the document is cleared before each one.  Weekly run: 0.  Weekly run plus XML: 0.  Rebuilt: 0. An NWF that no longer matches the scan folder is brought up to date without clearing it, and a shape that cannot be is cleared and rebuilt with its saved tests kept. Only known once each NWF is opened.    Clash tolerance: 25 mm, chosen in the tool.  It is set on every clash test in this run, which is 1 group of 1830 tests from the built in matrix, plus every test already saved in each NWF.  It beats the tolerance in the built in matrix and the tolerance in the document.  Every recorded result and every status a person set is KEPT. What changes is which clashes each test finds when it runs, so a clash somebody marked may not come back at the new tolerance.    Nothing is open at the moment, so nothing is lost.    Carry on?"
+01:28:24.800  answered the confirm with OK, WM_COMMAND 1 posted to dialog 396162 of pid 21436, PostMessage returned True
+01:28:25.835  DRIVER EXIT 0 PRESSED: Run, and OK on the confirm, whose texts name no path outside the loop folder. The confirm read gone after OK
