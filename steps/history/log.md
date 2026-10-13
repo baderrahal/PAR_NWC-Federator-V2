@@ -2,6 +2,29 @@
 
 Newest entry at the top.
 
+## 2026-10-13 F114-K29 only the teams the map names get view pair folders, Bader's words, Q159
+
+Branch fix-F114-K29 off fix-F114-K32, Bader's message of 2026-10-13 headed BADER, 13 OCT 2026: HIS ANSWERS, THE CSV AND
+THREE SMALL CHANGES. His words were "the idea is to create A B C and delete what come outside". The reading built is
+written under Q159 and stands until he corrects it.
+
+What was done:
+- ViewTeams.NamedByTheMap says whether a team is one the map names and not UNKNOWN. With no map read, or a map holding
+  no team, it says yes for every team, so a run with no map is as it was
+- TestViewPlan leaves out a test with a side on a team the map does not name, or on UNKNOWN: no view, its open clashes
+  counted apart, TestViewPlanOutcome.OutsideTheMap and OpenOutsideTheMap, and one VIEWS plan line with the count and a
+  line per test with the two teams read. Nothing is deleted from the NWF, the clashes, the sets or the report
+- Four tests that expected a pair folder with UNKNOWN in it now expect no view and the test named. The generated
+  partition test no longer draws a set with no code, and three new tests cover the rule and the no map case
+- Core tests before 3093 passed, after 3096 passed, 0 failed, 0 skipped. No add-in file changed
+
+What remains: the tool's own earlier view of a test now outside the map goes through the inventory as a view no longer
+needed. That is the reading of "delete what come outside" and it is for Bader to confirm. Not run on Navisworks.
+
+Known bugs: none new.
+
+What comes next: fix-F114-K36.
+
 ## 2026-10-13 F114-K32 a person's view named like a tool view is skipped, Bader's answer B, Q158
 
 Branch fix-F114-K32 off main 99c7f288, Bader's message of 2026-10-13 headed BADER, 13 OCT 2026: HIS ANSWERS, THE CSV AND

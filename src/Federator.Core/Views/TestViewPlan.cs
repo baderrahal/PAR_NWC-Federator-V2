@@ -120,6 +120,29 @@ namespace Federator.Core.Views
                 NameAnUnknownSide(outcome, teams, first.LeftSide);
                 NameAnUnknownSide(outcome, teams, first.RightSide);
 
+                // F114-K29, Bader's words "the idea is to create A B C and delete what come outside":
+                // only the teams the map names get pair folders, so a test with a side on a team the
+                // map does not name, or on UNKNOWN, gets no view. Nothing is deleted from the NWF, the
+                // clashes, the sets or the report, and the open clashes it holds are counted and named.
+                string leftTeam = teams.TeamOfSet(first.LeftSide);
+                string rightTeam = teams.TeamOfSet(first.RightSide);
+
+                if (!teams.NamedByTheMap(leftTeam) || !teams.NamedByTheMap(rightTeam))
+                {
+                    int openOutside = 0;
+
+                    foreach (ViewClash clash in all)
+                    {
+                        if (inScope.Contains(clash.Status))
+                        {
+                            openOutside++;
+                        }
+                    }
+
+                    outcome.LeaveOutUnmapped(test, openOutside, all.Count - openOutside, leftTeam, rightTeam);
+                    continue;
+                }
+
                 List<ViewClash> inPair = new List<ViewClash>();
                 List<ViewClash> overSize = new List<ViewClash>();
 

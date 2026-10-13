@@ -333,8 +333,11 @@ namespace Federator.Core.Tests
                 Clash("T", "Clash2", "BLD-EL-Lighting Fixtures", "BLD-Security Devices"),
                 Clash("U", "Clash1", "BLD-Security Devices", "BLD-ST-Floors"));
 
-            Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Structure vs UNKNOWN"));
-            Assert.That(plan.Views[1].Pair.Folder, Is.EqualTo("Electrical vs UNKNOWN"));
+            // F114-K29: a side on UNKNOWN is outside the map, so neither test gets a view, and
+            // each is named with its open clashes counted.
+            Assert.That(plan.Views.Count, Is.EqualTo(0));
+            Assert.That(plan.OutsideTheMap, Is.EqualTo(new[] { "T", "U" }));
+            Assert.That(plan.OpenOutsideTheMap, Is.EqualTo(3));
             Assert.That(plan.UnknownSets, Is.EqualTo(new[] { "BLD-Security Devices" }));
         }
 
@@ -439,7 +442,8 @@ namespace Federator.Core.Tests
             TestViewPlanOutcome plan = TestViewPlan.For(
                 new[] { Clash("T", "Clash1", null, "BLD-ST-Floors") }, teams, null, new ViewpointSettings());
 
-            Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Structure vs UNKNOWN"));
+            Assert.That(plan.Views.Count, Is.EqualTo(0), "F114-K29, a side on UNKNOWN gets no view");
+            Assert.That(plan.OutsideTheMap, Is.EqualTo(new[] { "T" }));
             Assert.That(plan.UnknownSets, Is.EqualTo(new[] { string.Empty }));
         }
 
@@ -506,8 +510,8 @@ namespace Federator.Core.Tests
                 null,
                 new ViewpointSettings());
 
-            Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Architecture vs UNKNOWN"));
-            Assert.That(plan.Views[1].Pair.Folder, Is.EqualTo("Structure vs UNKNOWN"));
+            Assert.That(plan.Views.Count, Is.EqualTo(0), "F114-K29, a side on UNKNOWN gets no view");
+            Assert.That(plan.OutsideTheMap, Is.EqualTo(new[] { "T", "U" }));
             Assert.That(plan.UnknownSets, Is.EqualTo(new[] { "BLD-Devices", "BLD-Signs" }));
         }
 
@@ -549,9 +553,10 @@ namespace Federator.Core.Tests
                 null,
                 new ViewpointSettings());
 
+            Assert.That(plan.Views.Count, Is.EqualTo(2));
             Assert.That(plan.Views[0].Pair.Folder, Is.EqualTo("Structure vs Mechanical"));
             Assert.That(plan.Views[1].Pair.Folder, Is.EqualTo("Structure vs Electrical"));
-            Assert.That(plan.Views[2].Pair.Folder, Is.EqualTo("Structure vs UNKNOWN"));
+            Assert.That(plan.OutsideTheMap, Is.EqualTo(new[] { "V" }), "F114-K29, UNKNOWN is outside the map");
             Assert.That(plan.UnknownSets, Is.EqualTo(new[] { Nowhere }), "each side by its whole locator");
         }
 
@@ -772,13 +777,75 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// F114-K29, Bader's words of 2026-10-13, "the idea is to create A B C and delete what come
+        /// outside". Read as: only the teams the map names get pair folders, a test with a side on
+        /// a team the map does not name, or on UNKNOWN, gets no view, and nothing else is removed.
+        /// The plan names the test, counts its open clashes apart and the lines say how many.
+        /// </summary>
+        [Test]
+        public void ATestWithASideOnATeamTheMapDoesNotNameGetsNoViewAndIsCountedAndNamed()
+        {
+            TestViewPlanOutcome plan = Plan(
+                Clash("In", "Clash1", "BLD-EL-Lighting Fixtures", "BLD-ST-Floors", ClashStatus.New),
+                Clash("Out", "Clash1", "BLD-QQ-Widgets", "BLD-ST-Floors", ClashStatus.New),
+                Clash("Out", "Clash2", "BLD-QQ-Widgets", "BLD-ST-Floors", ClashStatus.Active),
+                Clash("Out", "Clash3", "BLD-QQ-Widgets", "BLD-ST-Floors", ClashStatus.Approved));
+
+            Assert.That(plan.Views.Count, Is.EqualTo(1));
+            Assert.That(plan.Views[0].Name, Is.EqualTo("In"));
+            Assert.That(plan.OutsideTheMap, Is.EqualTo(new[] { "Out" }));
+            Assert.That(plan.OpenOutsideTheMap, Is.EqualTo(2));
+            Assert.That(plan.TestsWithNoOpenClash, Is.EqualTo(0));
+
+            IList<string> lines = plan.Lines(new SizeSettings());
+
+            Assert.That(
+                lines,
+                Does.Contain("tests with a side on a team the team map does not name, or on UNKNOWN, so no view : 1, their 2 open clashes in no view, "
+                    + "and nothing deleted from the NWF, the clashes, the sets or the report"));
+            Assert.That(
+                lines,
+                Does.Contain("    Out : 2 open and in no view, 1 at a status no view shows, its sides read as the teams UNKNOWN and Structure"));
+        }
+
+        [Test]
+        public void WithNoTeamMapEveryTeamIsTakenAsNamedAndTheRuleIsNotApplied()
+        {
+            ViewTeams noMap = new ViewTeams(
+                TeamMap.NoXml(new TeamMapSettings()), null, GroupCodes, new ViewpointSettings());
+
+            Assert.That(noMap.NamedByTheMap("QQ"), Is.True);
+            Assert.That(noMap.NamedByTheMap("UNKNOWN"), Is.True);
+
+            TestViewPlanOutcome plan = TestViewPlan.For(
+                new[] { Clash("T", "Clash1", "BLD-QQ-Widgets", "BLD-ST-Floors") }, noMap, null, new ViewpointSettings());
+
+            Assert.That(plan.Views.Count, Is.EqualTo(1));
+            Assert.That(plan.OutsideTheMap, Is.Empty);
+        }
+
+        [Test]
+        public void ATeamTheMapNamesIsNamedAndOneNamedUnknownOrOutsideIsNot()
+        {
+            ViewTeams teams = Teams();
+
+            Assert.That(teams.NamedByTheMap("Structure"), Is.True);
+            Assert.That(teams.NamedByTheMap("Electrical"), Is.True);
+            Assert.That(teams.NamedByTheMap("UNKNOWN"), Is.False);
+            Assert.That(teams.NamedByTheMap("QQ"), Is.False);
+            Assert.That(teams.NamedByTheMap(null), Is.False);
+        }
+
+        /// <summary>
         /// Every open clash is in exactly one view and no clash a view does not show is in any,
         /// over generated clashes of many tests, statuses and sizes, and the counts add up.
         /// </summary>
         [Test]
         public void EveryOpenClashIsInExactlyOneViewOverGeneratedClashes()
         {
-            string[] sets = { "BLD-AR-Walls", "BLD-ST-Columns", "BLD-ME-Ducts", "BLD-EL-Cable Trays", "BLD-Security Devices" };
+            // Every set here has a code the map names, so none is outside the map, F114-K29, which
+            // its own tests below cover.
+            string[] sets = { "BLD-AR-Walls", "BLD-ST-Columns", "BLD-ME-Ducts", "BLD-EL-Cable Trays" };
             ClashStatus[] statuses = (ClashStatus[])Enum.GetValues(typeof(ClashStatus));
             SizeVerdict?[] sizes = { null, SizeVerdict.Large, SizeVerdict.Small, SizeVerdict.SizeUnknown };
             ClashPriority[] priorities = Priorities.AllWithNone;
