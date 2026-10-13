@@ -65,6 +65,96 @@ ATTEMPT 2, the reviewer's reading of pull request 222 on 2026-10-13, made by the
 - A comment of UndoAutoReview.InOrder says four, as the array holds
 
 
+## 2026-10-13 The proof steps renumbered once after the merges of the fix round, written by the lead
+
+Bader's order of 12 Oct headed BADER SAYS GO, item 4. Once 209 to 219 had merged, twelve sections of
+steps\03_bader_next.md shared 63 step numbers, since each branch numbered its steps off the main it was cut from.
+The sections from before 12 Oct keep their numbers, F132-R3, F141, F143 and F145. The eight others get fresh numbers
+from 900 in file order, by turn6\renumber.py, which moves inside each section its own numbers and every reference
+to them after step, steps, to or and, and leaves a number of another section as it was. No number is used twice
+after it, read by the same script's count. Records only, no code changed.
+
+The map, for any line elsewhere that still names an old number:
+- Proof F150 Clash Detective asked to hide the other items for the pictures: 664 to 696 became 900 to 932
+- Proof F147 long runs kept from slowing: 664 to 671 became 933 to 940
+- Proof F114c the views' sides: 692 to 706 became 941 to 955
+- Proof F115 the register rows of the sets: 664 to 685 became 956 to 977
+- Proof F127-R5 a workbook named as another group's internal workbook: 680 to 710 became 978 to 1008
+- Proof of F130-R1: 698 to 711 became 1009 to 1022
+- Proof F140 the team package: 629 to 644 became 1023 to 1038
+- Proof F118 the workbook and report: 664 to 691 became 1039 to 1066
+
+## 2026-10-13 Set 10, the one 1A02MM check of F150 before its merge, written by the lead
+
+Bader's order of 12 Oct headed BADER SAYS GO, item 5. Branch fix-F150 at 028c3a71, main 0a54132 with F150 merged in,
+built in Release with 0 warnings and 0 errors, staged and installed in place by turn4\install-in-place.ps1 over the
+installed cdf8d4ed, held first in %LOCALAPPDATA%\NwcFederatorLoop\bundle-backup-cdf8d4ed, the installed stamp read back
+as 028c3a71. A fresh copy by prepare-copy.ps1 -Set 10, then turn6\set10-start-run.ps1, set 09's script with the set
+changed, run.ps1 -Set 10 -Item 1 on the C02 folder set 09 ran, the corrected 25 mm XML, -Untick SkipClashOffCoordinates,
+the viewpoints box left ticked. One Navisworks started, adopted and closed by Dispose. No other run and no 1A04PK.
+Evidence masked in steps\runs\10\item1-C02, the raw copy in turn6\set10-raw.
+
+What the run showed, each against set 09's 1A02MM, steps\runs\09\item1-C02:
+- VERDICT RAN, put back, no DIALOG and no PANE line, where set 09 had one dialog finding
+- The run took 2 minutes 49 seconds, 169.269 s, against 253.547 s. The clash step 140.5 s against 183.2 s
+- The group FAILED on its ST model exported on Revit's internal origin, as in set 09. The workbook against Clash
+  Detective: 528 compared, 528 agree
+- VIEWS 69 of 69 planned views written, as in set 09
+- IMAGES 2931 written, 100.08 MB, 0.031 s each on average, slowest 0.093, 35 KB each, against 630.82 MB, 0.044 s,
+  slowest 0.207 and 220 KB. Rendering 66.0 s against 95.1 s. Numbered in report order with 0 renamed, RENUMBER 0.055 s
+  against 38.9 s
+- The Hide Other line: asked on for the pictures, read off before, set on and read back on, put back to off, read off
+  after. Three pictures opened show only their two clashing items, where set 09's cd000001.jpg showed the outlines of
+  the other items. cd600001.jpg is solid green in both sets, so F150 did not cause it
+- One LIFE stretch not answering, about 30 s from 11:43:32, in STEP WORKBOOK. Peak working set 9843 MB
+
+What it found: F150-R2. hide_other under GlobalOptions\tools\clash\displaysettings read "0", a value never set, before
+the run, and "3 0", set and off, when the loop's Navisworks closed, listed by run.ps1 as M5. The tool put back the value
+it read, off, so Clash Detective reads off as before, but the registry holds the set form. run.ps1's settings put back
+wrote "0" again here. On a team PC no loop puts it back. A register row, since what a person sees is the same off.
+
+What comes next: 214 merges with F150-R2 open, then the proof steps are renumbered once and the zip is built from main.
+
+## 2026-10-12 The loop, turn 6, F150 Clash Detective asked to hide the other items for the pictures, attempt 2, written by the developer as the lead's delegate
+
+Bader's answer to Q151 and his order of 2026-10-12, item 157 of steps\02_questions.md. Branch fix-F150 off main
+80314b9, at 278717f with the probe of scan.md 5z-zf and the records of item 157. Attempt 1 at 7d6b709, pull
+request 214.
+
+What was done:
+- For each group's picture pass the add-in sets Clash Detective's Hide Other, ON to hide the other items, or OFF
+  where the box Ghost the other items in clash photos is ticked, the box off by default, reads it back at once,
+  and puts the user's value back on every path out, with one IMAGES line saying what it asked for, read, set,
+  read back, put back and read after. A group that takes no picture reads and sets nothing
+- Not the option path, which scan.md 5z-zf showed reads back with the pictures not following. The value is set
+  on Clash Detective's own highlighter, LcOpState.GetActiveInstance, LcClClashResultHighlighter.GetInstance and
+  its DisplaySettings, undocumented. Each handle is made eEXTERNAL, its IL now recorded in scan.md 5z-zf, and
+  each is disposed inside one read or one write
+- Attempt 1 was read by the reviewer and the breaker, CHANGES on both. Its line said the pictures show only the
+  two items, which nothing reads, a failed put back made the value it left read as the user's in the next
+  group, the pass touched Hide Other in a group that took no picture, the ticked box left the user's value,
+  and four proof steps held more than one action. Attempt 2 answers every point. The line now says whether
+  the pictures follow is UNKNOWN until a run's picture sizes show it. The user's value is the one the run's
+  first group read, HideOtherAcrossTheRun, a put back still owed is tried once more at the end of the run and
+  is one of the group's errors so the window shows it, and the two paths of the add-in rule that held control
+  bytes are mended
+- The rule and the lines are Core's, OtherItemsInPictures and HideOtherAcrossTheRun, with
+  ImageOptions.GhostTheOtherItems. The add-in's PicturesHideOther holds only the calls into Navisworks
+- Proved here: Core tests 2921 passed, 0 failed, 0 skipped on 278717f, 2932 passed after attempt 1, and
+  2936 passed, 0 failed, 0 skipped after attempt 2, the 15 OtherItemsInPicturesTests, which do not build
+  against the base's Core. The solution builds with 0 warnings and 0 errors, 0 and 0 before, and the locals
+  and imports checks pass
+
+What remains: the readers' second look, the merge, and the lead's 1A02MM check, steps 664 to 696 of
+steps\03_bader_next.md: the IMAGES line, picture files near 48 KB, and the user's Clash Detective setting
+unchanged after the run.
+
+Known bugs: row F150-R1, a stop between the set and the put back, Navisworks closed or killed in the pass,
+leaves Hide Other set for the user, and whether Navisworks keeps it for the next start is UNKNOWN. Whether the
+picture call draws through the highlighter the tool sets is UNKNOWN until the 1A02MM check. Dim Other and
+transparent dimming are left as the user has them, so the ghosted look holds only where they read on.
+
+What comes next: the 1A02MM check.
 ## 2026-10-12 F119 the run log and RESULT, the six items left, written by the developer as the lead's delegate
 
 Branch fix-F119c off main 80314b9, Bader's order of 2026-10-12, item 157 of steps\02_questions.md, wave 3b under

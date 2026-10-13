@@ -62,7 +62,7 @@ namespace PictureSpeedProbe
 
         public override int Execute(params string[] parameters)
         {
-            if (parameters == null || parameters.Length < 9 || (parameters[0] != "picspeed" && parameters[0] != "genimage"))
+            if (parameters == null || parameters.Length < 9 || (parameters[0] != "picspeed" && parameters[0] != "genimage" && parameters[0] != "hideapi"))
             {
                 return 2;
             }
@@ -252,6 +252,12 @@ namespace PictureSpeedProbe
             if (rows == 0)
             {
                 Say("UNKNOWN: the test found no clash, nothing is measured");
+                return;
+            }
+
+            if (mode == "hideapi")
+            {
+                HideOtherApiStudy(clashTests, address, testName, Math.Min(count, rows), picturesRoot);
                 return;
             }
 

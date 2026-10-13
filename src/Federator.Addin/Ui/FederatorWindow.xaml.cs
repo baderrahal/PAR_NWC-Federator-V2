@@ -1872,6 +1872,7 @@ namespace Federator.Addin.Ui
         {
             ImageOptions images = new ImageOptions();
             images.EmbedThumbnail = EmbedThumbnails.IsChecked == true;
+            images.GhostTheOtherItems = GhostOtherItems.IsChecked == true;
 
             int pixels = Number(ImagePixelsBox.Text, ImageOptions.DefaultPixels);
             images.Width = pixels;
@@ -1934,6 +1935,12 @@ namespace Federator.Addin.Ui
             ImageCapBox.Text = defaults.CapPerTest.ToString(
                 System.Globalization.CultureInfo.InvariantCulture);
             EmbedThumbnails.IsChecked = defaults.EmbedThumbnail;
+
+            // F150. The label and the grey line read off Core, as AlignmentCheck.TickLabel is,
+            // and the default off the options the run reads, never typed into the XAML.
+            GhostOtherItems.Content = OtherItemsInPictures.TickLabel;
+            GhostOtherItems.IsChecked = defaults.GhostTheOtherItems;
+            GhostOtherItemsHelp.Text = OtherItemsInPictures.HelpLine;
 
             ImageNew.IsChecked = defaults.Wants(ClashStatus.New);
             ImageActive.IsChecked = defaults.Wants(ClashStatus.Active);

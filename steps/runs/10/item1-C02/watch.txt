@@ -1,0 +1,19 @@
+11:38:52.701  t+1.3s  watchdog started
+11:39:07.263  t+15.9s  Roamer pid 35576 seen with no readable start time, looked at again at the next pass
+11:39:14.517  t+23.1s  new process Roamer pid 35576, parent 1968 svchost.exe, started 11:39:07.180, command line holds the word embedding or automation: YES, automation form "C:\Program Files\Autodesk\Navisworks Manage 2025\Roamer.exe" -Embedding
+11:39:14.609  t+23.2s  Roamer 35576 visible top level windows: none
+11:39:46.064  t+54.7s  new process AdskLicensingAgent pid 17996, parent 35576 Roamer.exe, started UNKNOWN, it could not be read, command line holds the word embedding or automation: no
+11:39:52.828  t+61.4s  new process AdskLicensingAgent pid 8632, parent 35576 Roamer.exe, started 11:39:41.948, command line holds the word embedding or automation: no
+11:40:12.196  t+80.8s  Roamer 35576 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] ""
+11:40:16.541  t+85.1s  Roamer 35576 visible top level windows: none
+11:40:28.247  t+96.8s  Roamer 35576 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "" text: and 8 visible children not read, because the 2 s one pass may spend reading children was spent
+11:40:28.784  t+97.4s  Roamer 35576 visible top level windows: none
+11:40:29.851  t+98.4s  Roamer 35576 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+11:40:30.975  t+99.6s  Roamer 35576 visible top level windows: [HwndWrapper[Roamer.exe;;b1f76b40-4a6d-4c3c-9852-9df174afbd3a]] "Parsons NWC Federator   [1.0.0.0 028c3a71 built 2026-10-13 11:35:00]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+11:40:51.637  t+120.2s  Roamer 35576 visible top level windows: [HwndWrapper[Roamer.exe;;b1f76b40-4a6d-4c3c-9852-9df174afbd3a]] "Parsons NWC Federator   [1.0.0.0 028c3a71 built 2026-10-13 11:35:00]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-AR-MOD-000001.nwc - Autodesk Navisworks Manage 2025"
+11:40:52.188  t+120.8s  Roamer 35576 visible top level windows: [HwndWrapper[Roamer.exe;;b1f76b40-4a6d-4c3c-9852-9df174afbd3a]] "Parsons NWC Federator   [1.0.0.0 028c3a71 built 2026-10-13 11:35:00]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "Untitled - Autodesk Navisworks Manage 2025"
+11:40:52.741  t+121.3s  Roamer 35576 visible top level windows: [HwndWrapper[Roamer.exe;;b1f76b40-4a6d-4c3c-9852-9df174afbd3a]] "Parsons NWC Federator   [1.0.0.0 028c3a71 built 2026-10-13 11:35:00]" text:  | [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+11:44:03.254  t+311.8s  Roamer 35576 visible top level windows: [WindowsForms10.Window.8.app.0.27a2811_r7_ad1] "1104-PAR-1A02MM-ZZZ-BM-MOD-000001.nwf - Autodesk Navisworks Manage 2025"
+11:44:18.539  t+327.1s  Roamer 35576 visible top level windows: none
+11:44:25.498  t+334.1s  Roamer 35576 has exited
+11:48:17.017  t+565.6s  watchdog stopped

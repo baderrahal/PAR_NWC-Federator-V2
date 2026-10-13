@@ -1583,6 +1583,25 @@ and 6 does not read as broken.
   reason is one key for one fault: a render that finished with no file says
   `Federator.Core.Report.ImageFailure.NoFileArrived` and the path beside it on the line,
   because with the path inside the reason fifty of them were fifty reasons and the guard
+  never fired. The stop words are ImageFailure's, worded for images, and the label's plain
+  words carry the count alone
+- CLASH DETECTIVE IS ASKED TO HIDE THE OTHER ITEMS FOR THE PICTURES, F150, Bader's answer to Q151 and his
+  order of 2026-10-12. The picture call draws by Clash Detective's display settings, which are per user,
+  scan.md 5z-ze, so the add-in sets Hide Other for each group's picture pass and puts the user's value back
+  after. `OtherItemsInPictures` is the rule of one group and its one IMAGES line. The value asked for is ON
+  where `ImageOptions.GhostTheOtherItems` is unticked, its default, and OFF where it is ticked, the ghosted
+  look. It is set only where it was READ and reads other than that, never where it could not be read, since
+  a value never read cannot be put back, and it is read back at once after the set. The value written back,
+  `PutBackTo`, is the user's as the RUN'S FIRST GROUP read it, `HideOtherAcrossTheRun`, so a put back that
+  failed in one group is never taken as the user's value by the next, and a group reading another value says
+  so and puts the run's back. A group that leaves it other than the user's value, or whose put back threw,
+  owes a put back, tried once more at the end of the run with its own line, `AtTheEnd`, and hands the window
+  one error, `TakeTheGroupError`. A group that takes no picture touches nothing and says so. THE LINE CLAIMS
+  ONLY WHAT WAS READ: where the tool set the value it says whether the pictures follow is UNKNOWN until a
+  run's picture sizes show it, near 48 KB a picture with the other items hidden against about 550 KB with
+  them drawn, and `Describe` and the grey line say Clash Detective is asked, never what it draws. The box is
+  labelled by `OtherItemsInPictures.TickLabel` and its grey line is `HelpLine`. A stop between the set and the
+  put back is row F150-R1
   never fired. A render or a save that threw is `ImageFailure.BecauseItThrewWriting`, the
   type and the message with the picture's path and the picture's folder said as those words
   wherever the message named them, in any capitals, and the path beside it on the line, so

@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 578 rows: open 170, in progress 24, in review 4, merged 331, proven by a run 29, waiting for Bader 3, dropped 17
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 40, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 111, outside the waves 2, right after F133 merges 6
-- In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
-- Waits for Bader, 3 rows: F114-K29, Q155, F150
+- By status, of 581 rows: open 172, in progress 23, in review 0, merged 339, proven by a run 29, waiting for Bader 1, dropped 17
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 40, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 114, outside the waves 2, right after F133 merges 6
+- In progress now: F118 workbook and report, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
+- Waits for Bader, 1 row: F114-K29
 
 ## Wave 1
 
@@ -263,24 +263,24 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-102 | copy manifest kept short or changed | F122 | loud failure | open | none | none | 2026-10-04 |
 | FR-103 | remove writes note before delete | F122 | loud failure | open | none | none | 2026-10-04 |
 | FR-104 | set remove advice sends to a refusal | F122 | loud failure | open | none | none | 2026-10-04 |
-| FR-150 | apply file settings does not save nwf | F121 | silent wrong number | in review | UNKNOWN | none | 2026-10-13 |
+| FR-150 | apply file settings does not save nwf | F121 | silent wrong number | merged | 222 | none | 2026-10-13 |
 | FR-151 | rebuild tally before minus one reads as none | F121 | silent wrong number | merged | 150 | none | 2026-10-07 |
-| FR-152 | undo auto reviewed undoes a persons reviewed | F121 | silent wrong number | in review | UNKNOWN | none | 2026-10-13 |
+| FR-152 | undo auto reviewed undoes a persons reviewed | F121 | silent wrong number | merged | 222 | none | 2026-10-13 |
 | FR-153 | regroup throws away typed names and run ticks | F121 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-154 | scan findings use group key as building code | F121 | silent wrong number | merged | 150 | none | 2026-10-07 |
-| FR-155 | exchange reader missing attribute becomes zero or false | F121 | silent wrong number | in review | UNKNOWN | none | 2026-10-13 |
+| FR-155 | exchange reader missing attribute becomes zero or false | F121 | silent wrong number | merged | 222 | none | 2026-10-13 |
 | FR-156 | probe csv listed written after write threw | F121 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-157 | probe unread value written as empty value | F121 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-158 | probe category match trims but tally does not | F121 | silent wrong number | merged | 150 | none | 2026-10-07 |
 | FR-159 | emptied pattern field passes name check | F121 | broken feature | merged | 150 | none | 2026-10-07 |
 | FR-160 | cleared name cell pinned as empty name | F121 | broken feature | open | none | none | 2026-10-04 |
 | FR-161 | date format has no control | F121 | broken feature | open | none | none | 2026-10-04 |
-| FR-162 | folder memory save failure never reported | F121 | broken feature | in review | UNKNOWN | none | 2026-10-13 |
+| FR-162 | folder memory save failure never reported | F121 | broken feature | merged | 222 | none | 2026-10-13 |
 | FR-163 | title bar close mid run | F121 | broken feature | open | none | none | 2026-10-04 |
 | FR-164 | census sets overload returns zero not minus one | F121 | loud failure | merged | 150 | none | 2026-10-07 |
 | FR-165 | cleared name cell throws out of run click | F121 | loud failure | merged | 150, and 160 the second half, a hand typed name Windows refuses | none | 2026-10-07 |
 | FR-166 | tolerance other blank stops hand buttons | F121 | loud failure | open | none | none | 2026-10-04 |
-| F121 | the rest | F121 | fix | in progress | 150 six items, 160 and 173 the SINGLE DISCIPLINE finding merged, FR-150, FR-152, FR-155 and FR-162 in review on fix-F121d, the rest on the laptop | none | 2026-10-13 |
+| F121 | the rest | F121 | fix | merged | 222, 150 six items, 160 and 173 the SINGLE DISCIPLINE finding merged, FR-150, FR-152, FR-155 and FR-162 in review on fix-F121d, the rest on the laptop | none | 2026-10-13 |
 | F122 | the loop tools | F122 | fix | open | none | none | 2026-10-04 |
 | F125-R1 | a modeless window up after Run stops the driver while the monitor reads a pane | F122 | register row | open | none | none | 2026-10-04 |
 | F125-R3 | a pane made again with a new handle after Run stops the driver | F122 | register row | open | none | none | 2026-10-04 |
@@ -664,13 +664,16 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F147 | long runs kept from slowing, the undo kept from growing during the pictures, the texture cache under %TEMP%\ogs cleared between tests past 5 GB, the memory at the start and end of each step and the rows each step holds released as it ends, Q152 item 2 and Q155 | F147 | fix | merged | 217 | none | 2026-10-13 |
 | T6-R-WPFBOX | a caption less WPF window of Navisworks came up as the tool's window closed in both of set 09's runs, steps\runs\09, its text UNKNOWN, first seen with acceleration on | none | register row | open | none | none | 2026-10-12 |
 | Q154 | Hide Other for every picture set by the tool, the permission that blocks the merges, the five merges, then the speed loop | none | Bader's request | merged | 206 | none | 2026-10-12 |
-| Q155 | F147 stopped under Q148 B at the re-read, a third attempt for the seconds of the deletions and the checks after a partial clearing | none | question | waiting for Bader | none | none | 2026-10-12 |
-| F150 | Hide Other set by the tool for its pictures and the user's value put back, the ghosted look one setting off by default, Q151 | F150 | fix | waiting for Bader | none | none | 2026-10-12 |
+| Q155 | F147 stopped under Q148 B at the re-read, a third attempt for the seconds of the deletions and the checks after a partial clearing | none | question | merged | 214 | none | 2026-10-13 |
+| F150 | Hide Other set by the tool for its pictures and the user's value put back, the ghosted look one setting off by default, Q151 | F150 | fix | merged | 214 | none | 2026-10-13 |
+| F150-R1 | a stop between the set of Clash Detective's Hide Other and its put back, Navisworks closed or killed in the picture pass, leaves the value set for the user, and whether Navisworks keeps it for the next start is UNKNOWN, the breaker's third point on attempt 1 | F150 | register row | open | none | none | 2026-10-12 |
 | F145 | only the test's models shown for its pictures | F145 | fix | merged | 204 | none | 2026-10-12 |
 | F149 | pictures taken in the report's order so none is renamed | F149 | fix | merged | 207 | none | 2026-10-12 |
 | F149-R1 | since F149 every picture is taken once every test of the group has run, so the pictures' guard can stop a run only after the whole group's clash tests, where before it stopped after the test the fiftieth failure in a row fell in, a cost said in the rule that Bader has not weighed, the reviewer's first point on attempt 1 | F149 | register row | open | none | none | 2026-10-12 |
 | F146 | the renumber answers while it renames | F146 | fix | merged | 205 | none | 2026-10-12 |
 | Q156 | wrap up now, no more tests, the merges, the team zip for his PC, the final state and stop | none | Bader's request | merged | 206 | none | 2026-10-12 |
+| Q157 | the fix round of waves 2 to 5 until 17:30, F150 after one API test, F147, a 1A02MM check after each wave, a new zip at the end | none | Bader's request | merged | 214 | none | 2026-10-13 |
+| F150-R2 | the put back of Hide Other writes the value read, off, so the registry holds the set form 3 0 where it held 0, a value never set, before the first run on a PC, Clash Detective reading off either way, set 10 | F150 | register row | open | none | none | 2026-10-13 |
 
 ## outside the waves
 

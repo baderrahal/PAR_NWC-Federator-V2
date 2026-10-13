@@ -376,6 +376,43 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
+## Proof F150 Clash Detective asked to hide the other items for the pictures, added 2026-10-12, rewritten for attempt 2
+
+Your own setting is written down first, because the run must leave it as it found it. Then the IMAGES line, which says what the tool read, set and read back, and then the picture sizes, which are the only thing that says whether the pictures followed: a read back says what Clash Detective holds and never what it drew.
+
+900. Install main with F150 merged
+901. Start Navisworks Manage 2025
+902. Open any NWF
+903. Open Clash Detective
+904. Open its Results tab
+905. Press Display Settings. Write down whether Hide Other under Isolation is ticked, and change nothing
+906. Open the Parsons NWC Federator window and scan the C02 folder
+907. Pick the clash XML
+908. Untick `Skip clash when models sit off shared coordinates` on the Clash step, as set 09 ran
+909. Open More, rarely changed and leave `Ghost the other items in clash photos` unticked, as it starts
+910. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
+911. Press Run
+912. Look for, in the CLASH lines of 1A02MM: the line `CLASH    Images on,` ending `Clash Detective asked to hide the other items.`
+913. Look for, after the PICTURES lines, where step 905 read Hide Other unticked: ONE line `IMAGES   Clash Detective's Hide Other asked on for the pictures, to hide the other items: it read off before the pictures, set on, and it read back on, then put back to off. It read off after the pictures, the user's own setting.` and then `Whether the pictures follow it is UNKNOWN until a run's picture sizes show it`
+914. Where step 905 read Hide Other ticked, look for instead: `it read on before the pictures, already on, so nothing was set`, and no `put back`
+915. Look for, in the whole log: NO failure line naming `Clash Detective's Hide Other`, no `left changed`, and no line `put back once more at the end of the run`
+916. Open the group's picture folder beside the workbook
+917. Sort it by size. Look for: files near 48 KB each, the look of `docs\history\scan.md` 5z-ze. Files near 550 KB mean the pictures did NOT follow the value set, which is the answer this proof is for, so send it
+918. Open cd000001.jpg. Look for: the two clashing items in red and green on the background, and no other item drawn
+919. Open Clash Detective in Navisworks
+920. Open its Results tab
+921. Press Display Settings. Look for: Hide Other under Isolation ticked or not exactly as step 905 wrote it down
+922. Open More, rarely changed on the tool's window
+923. Tick `Ghost the other items in clash photos`
+924. Press Run
+925. Look for, in the CLASH lines: the line `CLASH    Images on,` ending `Clash Detective asked to show the other items.`
+926. Look for, after the PICTURES lines: `IMAGES   Clash Detective's Hide Other asked off for the pictures, to show the other items, since the box "Ghost the other items in clash photos" is ticked:`, then `already off, so nothing was set` where step 905 read it unticked, or `set off, and it read back off, then put back to on` where it read ticked
+927. Open the group's picture folder and sort it by size. Look for: files clearly larger than step 917's, since the other items are drawn. How large is UNKNOWN, since with every model drawn the laptop wrote about 550 KB, scan.md 5z-zf, and since F145 only the test's models are shown
+928. Open cd000001.jpg. Look for: the two clashing items with the other items drawn ghosted around them
+929. Open Clash Detective in Navisworks
+930. Open its Results tab
+931. Press Display Settings. Look for: Hide Other exactly as step 905 wrote it down
+932. Send the two logs and the `.tsv` beside each, with the picture folder's mean file size of each run and what steps 905, 685 and 931 read
 ## Proof F119 the NWF saves, the files written list and the tolerance rows, added 2026-10-12
 
 The reshape comes first, because it is the one item a plain run shows: a group whose file list changed and whose clash step and views put nothing in. The read only files come after it, since they are what makes a save or a publish fail on purpose, and they are put back at the end.
@@ -429,33 +466,33 @@ Core is proved by its tests. These steps read the GAP and ITEM IDS blocks of one
 
 These read one run of 1A02MM with F147 merged, the run of F149's steps 650 to 654. One group is enough for every line here. The memory a group releases shows only at the next group's start, so it is not read here.
 
-664. Install main with F147 merged
-665. Run 1A02MM as steps 650 to 654 say
-666. Look for, in the log under the first `STEP     DECIDE` started line: `MEMORY   at the start of DECIDE, private bytes` a size in MB, `working set` a size in MB, `managed heap` a size in MB
-667. Look for, above the `STEP     DECIDE` finished line, with the census lines between: `MEMORY   at the end of DECIDE,` the same three, each followed by `up`, `down` or `unchanged`
-668. Look for: one MEMORY start line and one MEMORY end line for each STEP started line of the group, one pair only for TESTS RUN and one only for HARVEST however many tests ran, no MEMORY line holding `UNKNOWN`, and after the group's repeated step lines one `MEMORY   across the` N `visits of TESTS RUN in this group` for each step entered again
-669. Look for, in the same log after the `STEP     PICTURES` line: `IMAGES   the undo for the pictures read on with` a step name `as the step Undo would take next before them, off with` the same name `during them, and on with` the same name `after`, and no line `THE UNDO IS LEFT OFF`
-670. Look for, in the same log: `IMAGES   the texture cache at` the folder ogs under the temp folder, `held` a size and its files as the pictures began and as they ended, `against the limit of 5.00 GB (5368709120 bytes)` and `cleared 0 times`, or the line saying it `is not there`. Where a clearing line was written, it ends `cleared again only once it holds more than` a size, or carries no such words
-671. Send the log and the `.tsv` beside it, with the MEMORY lines at the start of DECIDE and at the end of CONFIRM
+933. Install main with F147 merged
+934. Run 1A02MM as steps 650 to 654 say
+935. Look for, in the log under the first `STEP     DECIDE` started line: `MEMORY   at the start of DECIDE, private bytes` a size in MB, `working set` a size in MB, `managed heap` a size in MB
+936. Look for, above the `STEP     DECIDE` finished line, with the census lines between: `MEMORY   at the end of DECIDE,` the same three, each followed by `up`, `down` or `unchanged`
+937. Look for: one MEMORY start line and one MEMORY end line for each STEP started line of the group, one pair only for TESTS RUN and one only for HARVEST however many tests ran, no MEMORY line holding `UNKNOWN`, and after the group's repeated step lines one `MEMORY   across the` N `visits of TESTS RUN in this group` for each step entered again
+938. Look for, in the same log after the `STEP     PICTURES` line: `IMAGES   the undo for the pictures read on with` a step name `as the step Undo would take next before them, off with` the same name `during them, and on with` the same name `after`, and no line `THE UNDO IS LEFT OFF`
+939. Look for, in the same log: `IMAGES   the texture cache at` the folder ogs under the temp folder, `held` a size and its files as the pictures began and as they ended, `against the limit of 5.00 GB (5368709120 bytes)` and `cleared 0 times`, or the line saying it `is not there`. Where a clearing line was written, it ends `cleared again only once it holds more than` a size, or carries no such words
+940. Send the log and the `.tsv` beside it, with the MEMORY lines at the start of DECIDE and at the end of CONFIRM
 ## Proof F114c the views' sides, added 2026-10-12, rewritten for attempt 2
 
 The first run reads that no view moved to another pair folder now a side is read by its whole locator. The second reads the same with no clash XML picked, where the views get no set tree. A test the clash step failed on, F114-K38, cannot be made to fail by hand, so no step forces it. FR-067 is not in this pass.
 
-692. Install main with fix-F114c merged
-693. Scan the C02 folder
-694. Pick the clash XML
-695. Untick `Skip clash when models sit off shared coordinates` on the Clash step
-696. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
-697. Press Run
-698. Look for, in the `VIEWS` block of 1A02MM: the same pair folders as set 09's run of 1A02MM, `steps\runs\09\item1-C02`, and in the `VIEWS TREE` block the last line `7 of 7 hold`
-699. Close Navisworks
-700. Start Navisworks and open the tool
-701. Scan the C02 folder again, picking no clash XML
-702. Untick `Skip clash when models sit off shared coordinates` on the Clash step, which starts ticked on every open
-703. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
-704. Press Run
-705. Look for, in the `VIEWS INVENTORY` block: the views of step 697 `removed, this tool's earlier view replaced at its place`, and in the `VIEWS` block the same pair folders as step 698, but for a test with a side whose set name carries no code, such as BLD-Security Devices, which with no clash XML reads UNKNOWN as it did before this pass
-706. Send the logs of steps 697 and 704
+941. Install main with fix-F114c merged
+942. Scan the C02 folder
+943. Pick the clash XML
+944. Untick `Skip clash when models sit off shared coordinates` on the Clash step
+945. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
+946. Press Run
+947. Look for, in the `VIEWS` block of 1A02MM: the same pair folders as set 09's run of 1A02MM, `steps\runs\09\item1-C02`, and in the `VIEWS TREE` block the last line `7 of 7 hold`
+948. Close Navisworks
+949. Start Navisworks and open the tool
+950. Scan the C02 folder again, picking no clash XML
+951. Untick `Skip clash when models sit off shared coordinates` on the Clash step, which starts ticked on every open
+952. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
+953. Press Run
+954. Look for, in the `VIEWS INVENTORY` block: the views of step 946 `removed, this tool's earlier view replaced at its place`, and in the `VIEWS` block the same pair folders as step 947, but for a test with a side whose set name carries no code, such as BLD-Security Devices, which with no clash XML reads UNKNOWN as it did before this pass
+955. Send the logs of steps 946 and 953
 ## Proof F115 the register rows of the sets, added 2026-10-12
 
 The weekly run with the box off comes first, because it is the run the team makes every week and it is where the leftovers are now reported and the SETS step may take longer. The run with the box ticked last, since it changes the NWF. A damaged document, two sets of one name in one folder, a folder as a clash source and a set lost after it was put in cannot be made to happen on a real folder, so those rows are read and not run.
@@ -554,41 +591,63 @@ Everything runs on copies in two new folders on the desktop, so no NWF of the re
 865. Open `folders.txt` in Notepad
 866. Look for: a line `Nwd=` naming `F121 out`
 867. Send the log of steps 856 to 864
+956. Install main with the F115 register rows merged
+957. Scan the C02 folder
+958. Pick the clash XML
+959. Leave `Rebuild sets that drifted from the file` unticked
+960. Tick 1A02MM alone in the group list
+961. Press Run
+962. Look for, in the SET lines of 1A02MM: either no block about sets the file does not name, or one starting `set(s) in this NWF are not named by the picked file:` whose next line reads `NOTHING BELOW IS DONE, because "Rebuild sets that drifted from the file" is off`, and each line under it saying what `a run with the box ticked would` do, R20
+963. Look for, on the group's TIMING block: the SETS seconds, to send beside the last run's, since the leftover walk now reads every clash test side with the box off too, R20
+964. Look for, in the SETS step's finish phrase and the line under the SETS lines: a count `drifted` or `could not be read` wherever the SET DRIFT lines name a set drifted or not read, R7
+965. Look for, after the CLASH block: the EMPTY SETS block as before, and a line `were not judged` only where a SET NOT READ line names a set at zero, R6
+966. Look for: no FAILURE line naming `the side's selection sources read as none`, R21
+967. Open the NWF of 1A02MM in Navisworks with the tool's window open and the clash XML picked
+968. Press Build sets
+969. Look for, in the log after the button's SET lines: an EMPTY SETS block ending `no clash test ran with these sets here, so what they cost in clash tests is not counted`, wherever the window's lines show a set at zero, R4
+970. Close the NWF without saving it
+971. Tick `Rebuild sets that drifted from the file`
+972. Tick 1A02MM alone in the group list
+973. Press Run
+974. Look for, under the SET DRIFT lines of each drifted set: `REBUILT from the picked file`, and no line `read back after the rebuild it does NOT ask what the picked file asks`, R19. Where that line shows under an Or set, it is the answer to F115-R12
+975. Look for: no line `NOT rebuilt, though "Rebuild sets that drifted from the file" is ticked`, R18. Where one shows, why is said where the rebuild was tried, before the set's present line
+976. Look for: no line `nothing removed for`, `nothing done for` or `so it was NOT saved`. Where one shows, send it with the SET lines before it
+977. Send the log and the `.tsv` beside it, with the SETS seconds of both runs
 ## Proof F127-R5 a workbook named as another group's internal workbook, added 2026-10-12, rewritten for attempt 2
 
 No group runs in these steps, so they can follow any install of main with fix-F127c merged.
 
-680. Install main with fix-F127c merged
-681. Start Navisworks Manage 2025 and open the tool's window
-682. In Explorer make a new empty folder on the desktop named F127 outputs
-683. On 1. Source press Browse beside Folder and pick a folder holding at least two groups
-684. Press Scan
-685. Open 3. Outputs
-686. Press Browse beside NWF folder and pick F127 outputs
-687. Press Browse beside NWD folder and pick F127 outputs
-688. Copy the Workbook name of the first group in the table
-689. Type it, with one space and Internal after it, into the Workbook name cell of the second group
-690. Look for, in the name preview under the table: `THE RUN CANNOT START.` and `The internal workbook of <first group> and the workbook of <second group> would both be written as <that name>. One would overwrite the other, so the run does not start.`
-691. Open 2. Grouping and see that the Run box of both groups is ticked, ticking any that is not
-692. Press Run
-693. Look for: a warning holding the same sentence, the window back on 3. Outputs, and in the log one line starting `RUN      refused before starting.` with it
-694. Open 1. Source and press Scan again, which gives every Workbook name cell back to its pattern
-695. Open 2. Grouping and see that the Run box of both groups is ticked, ticking any that is not
-696. Open 4. Clash and pick Other in the Clash tolerance list, leaving the box beside it empty
-697. Open 3. Outputs and type one letter at the end of the Workbook name cell of the first group
-698. Look for: no error box appears and the name preview under the table shows the new name
-699. Delete that letter again
-700. Press Run
-701. Look for: a warning about the clash tolerance, and nothing run
-702. In Explorer make a new empty folder on the desktop named F127 NWFs
-703. Copy into it one NWF an earlier run of the tool wrote, together with the NWD beside it
-704. Copy that NWF and its NWD into the same folder a second time
-705. Rename the first NWF and its NWD to A.nwf and A.nwd
-706. Rename the second NWF and its NWD to `A Internal.nwf` and `A Internal.nwd`
-707. In the tool open 1. Source and press Folder beside Existing NWF or folder of NWFs
-708. Pick the folder F127 NWFs
-709. Look for, in the summary under that row: the run refused, naming A and `A Internal` and the workbook name `A Internal` they would both write
-710. Send the log with the refusal of step 693 and the summary of step 709
+978. Install main with fix-F127c merged
+979. Start Navisworks Manage 2025 and open the tool's window
+980. In Explorer make a new empty folder on the desktop named F127 outputs
+981. On 1. Source press Browse beside Folder and pick a folder holding at least two groups
+982. Press Scan
+983. Open 3. Outputs
+984. Press Browse beside NWF folder and pick F127 outputs
+985. Press Browse beside NWD folder and pick F127 outputs
+986. Copy the Workbook name of the first group in the table
+987. Type it, with one space and Internal after it, into the Workbook name cell of the second group
+988. Look for, in the name preview under the table: `THE RUN CANNOT START.` and `The internal workbook of <first group> and the workbook of <second group> would both be written as <that name>. One would overwrite the other, so the run does not start.`
+989. Open 2. Grouping and see that the Run box of both groups is ticked, ticking any that is not
+990. Press Run
+991. Look for: a warning holding the same sentence, the window back on 3. Outputs, and in the log one line starting `RUN      refused before starting.` with it
+992. Open 1. Source and press Scan again, which gives every Workbook name cell back to its pattern
+993. Open 2. Grouping and see that the Run box of both groups is ticked, ticking any that is not
+994. Open 4. Clash and pick Other in the Clash tolerance list, leaving the box beside it empty
+995. Open 3. Outputs and type one letter at the end of the Workbook name cell of the first group
+996. Look for: no error box appears and the name preview under the table shows the new name
+997. Delete that letter again
+998. Press Run
+999. Look for: a warning about the clash tolerance, and nothing run
+1000. In Explorer make a new empty folder on the desktop named F127 NWFs
+1001. Copy into it one NWF an earlier run of the tool wrote, together with the NWD beside it
+1002. Copy that NWF and its NWD into the same folder a second time
+1003. Rename the first NWF and its NWD to A.nwf and A.nwd
+1004. Rename the second NWF and its NWD to `A Internal.nwf` and `A Internal.nwd`
+1005. In the tool open 1. Source and press Folder beside Existing NWF or folder of NWFs
+1006. Pick the folder F127 NWFs
+1007. Look for, in the summary under that row: the run refused, naming A and `A Internal` and the workbook name `A Internal` they would both write
+1008. Send the log with the refusal of step 991 and the summary of step 1007
 
 ## Proof of F130, the Shift range in the group list
 
@@ -645,20 +704,20 @@ again and ticks every one, so change nothing on the Source step unless a step sa
 
 These run no group and can follow step 580 in the same session, once fix-F130c has merged and is installed. They are yours by hand, with the arrow keys and the space bar, since the window driver cannot carry Shift. They use the C02 folder of ten groups of steps 542 to 580.
 
-698. Go to the Source step and press Scan
-699. Go to the Grouping step. Look for: ten rows, every Run box ticked
-700. Click the Building cell of 1A0215 once
-701. Press the Left arrow once. Look for: the Run cell of 1A0215 has the focus, its border drawn
-702. Press Space. Look for: 1A0215 unticked and the other nine ticked
-703. Go to the Outputs step. Look for, at its foot: `9 groups ticked to run.`
-704. Go back to the Grouping step and click the Building cell of 1A0215 once
-705. Press the Left arrow once
-706. Press the Down arrow three times. Look for: the Run cell of 1A02MS has the focus
-707. Hold Shift and press Space. Look for: 1A0215, 1A02BS, 1A02MM and 1A02MS unticked, both ends included, and the other six ticked
-708. Press Space again, holding no key. Look for: 1A02MS alone ticked again, the box flipping once and not twice
-709. Click the Run box of 1A02WE itself once. Look for: 1A02WE unticked by the click
-710. Press Space with no other key. Look for: 1A02WE ticked again by the Space, the box flipping once
-711. Say which of steps 698 to 710 did not read as written
+1009. Go to the Source step and press Scan
+1010. Go to the Grouping step. Look for: ten rows, every Run box ticked
+1011. Click the Building cell of 1A0215 once
+1012. Press the Left arrow once. Look for: the Run cell of 1A0215 has the focus, its border drawn
+1013. Press Space. Look for: 1A0215 unticked and the other nine ticked
+1014. Go to the Outputs step. Look for, at its foot: `9 groups ticked to run.`
+1015. Go back to the Grouping step and click the Building cell of 1A0215 once
+1016. Press the Left arrow once
+1017. Press the Down arrow three times. Look for: the Run cell of 1A02MS has the focus
+1018. Hold Shift and press Space. Look for: 1A0215, 1A02BS, 1A02MM and 1A02MS unticked, both ends included, and the other six ticked
+1019. Press Space again, holding no key. Look for: 1A02MS alone ticked again, the box flipping once and not twice
+1020. Click the Run box of 1A02WE itself once. Look for: 1A02WE unticked by the click
+1021. Press Space with no other key. Look for: 1A02WE ticked again by the Space, the box flipping once
+1022. Say which of steps 1009 to 1021 did not read as written
 
 ## Proof of F129, a picked NWF or a folder of NWFs, run where it sits
 
@@ -720,26 +779,26 @@ NOTHING HERE HAPPENS until you write "make the team package", your order of 11 O
 proof runs show the main functions work. The package and its install were proved on the laptop
 against throwaway folders, never your own add-in, turn6\f140-proof, and no team zip was made. These
 steps try the zip on your own machine the way the team will get it, before anyone on the team gets
-it. They replace the add-in you have installed, and step 640 puts it back. A double click, the
+it. They replace the add-in you have installed, and step 1034 puts it back. A double click, the
 question Windows may ask before it runs a file from the internet, and a policy set on your machine
-are not proved on the laptop, so steps 631, 632 and 636 read them.
+are not proved on the laptop, so steps 1025, 632 and 1030 read them.
 
-629. Write "make the team package" in the chat. The lead runs `build\package.ps1` on the laptop from a clean checkout of main, into a folder outside the repo, and pastes its last line, which starts `PACKAGED:` and names the zip, `ParsonsNwcFederator-1.0.0.0-` then main's eight characters, a dash, the day's date and `.zip`
-630. Close Navisworks Manage 2025
-631. Open Windows PowerShell on your machine and run `Get-ExecutionPolicy -List`. Look for: `MachinePolicy` and `UserPolicy` both reading `Undefined`, as they read on the laptop on 2026-10-11. Any other value there is a Group Policy that comes before the Bypass the install starts PowerShell with, and whether the install then runs is UNKNOWN, so send what it reads before you go on
-632. Get the zip the way the team will: have the lead send it to you in a Teams chat, or send it to yourself there, and save it from Teams into your Downloads folder. Right click the saved zip and choose Properties. Say whether the General tab shows a line about the file coming from another computer with an Unblock box. Do not tick it, and close Properties
-633. Right click the zip and choose Extract All, then open the folder that makes
-634. Open `VERSION.txt`. Look for: `commit  :` with main's eight characters the lead named, and `date    :` with the day the zip was made
-635. Open `INSTALL-TEAM.txt`. Look for: a page you would hand a person who is not a developer. Say any line that is not plain to you
-636. Double click `Install Parsons NWC Federator.cmd`. If Windows asks whether to run it, choose Run, and say that it asked and what its window said. Look for, as the last line before `Press any key to continue`: `DONE: Parsons NWC Federator version 1.0.0.0, commit` with main's eight characters, `is installed at` your `AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle`, then `The version installed before,` with the commit you had, `is kept at` the same path ending `.previous`. If the window ends on red text that starts with none of DONE, FAILED and REFUSED, send the whole window and stop
-637. Press any key. Open File Explorer and paste `%APPDATA%\Autodesk\ApplicationPlugins` into its address bar. Look for: `ParsonsNwcFederator.bundle` and `ParsonsNwcFederator.bundle.previous`, and NO `ParsonsNwcFederator.bundle.copying`
-638. Start Navisworks Manage 2025. Look for: ONE Parsons NWC Federator on the Tool Add-ins tab, and main's commit in the title bar. Two of it would mean Navisworks loads the `.previous` folder too, which is UNKNOWN until this step, so say so
-639. Close Navisworks
-640. Double click `Put back the previous version.cmd`. Look for, as the last line before `Press any key to continue`: `DONE: the previous version,` with the commit you had before step 636, `is back at` the same `ParsonsNwcFederator.bundle`, then `The version that was installed,` with main's commit, `was replaced and is not kept.`
-641. Press any key. In the File Explorer window of step 637, press F5. Look for: `ParsonsNwcFederator.bundle` and `ParsonsNwcFederator.bundle.previous`, and NO `ParsonsNwcFederator.bundle.before-put-back` and NO `ParsonsNwcFederator.bundle.copying`
-642. Start Navisworks. Look for: the commit you had before step 636 in the title bar. Close Navisworks
-643. Double click `Install Parsons NWC Federator.cmd` again. Look for: `DONE:` with main's commit, and the commit you had before step 636 kept at `.previous`
-644. Send the text of every window whose last line did not read as written, and say whether the zip goes to the team. Nobody on the team gets it before you say so
+1023. Write "make the team package" in the chat. The lead runs `build\package.ps1` on the laptop from a clean checkout of main, into a folder outside the repo, and pastes its last line, which starts `PACKAGED:` and names the zip, `ParsonsNwcFederator-1.0.0.0-` then main's eight characters, a dash, the day's date and `.zip`
+1024. Close Navisworks Manage 2025
+1025. Open Windows PowerShell on your machine and run `Get-ExecutionPolicy -List`. Look for: `MachinePolicy` and `UserPolicy` both reading `Undefined`, as they read on the laptop on 2026-10-11. Any other value there is a Group Policy that comes before the Bypass the install starts PowerShell with, and whether the install then runs is UNKNOWN, so send what it reads before you go on
+1026. Get the zip the way the team will: have the lead send it to you in a Teams chat, or send it to yourself there, and save it from Teams into your Downloads folder. Right click the saved zip and choose Properties. Say whether the General tab shows a line about the file coming from another computer with an Unblock box. Do not tick it, and close Properties
+1027. Right click the zip and choose Extract All, then open the folder that makes
+1028. Open `VERSION.txt`. Look for: `commit  :` with main's eight characters the lead named, and `date    :` with the day the zip was made
+1029. Open `INSTALL-TEAM.txt`. Look for: a page you would hand a person who is not a developer. Say any line that is not plain to you
+1030. Double click `Install Parsons NWC Federator.cmd`. If Windows asks whether to run it, choose Run, and say that it asked and what its window said. Look for, as the last line before `Press any key to continue`: `DONE: Parsons NWC Federator version 1.0.0.0, commit` with main's eight characters, `is installed at` your `AppData\Roaming\Autodesk\ApplicationPlugins\ParsonsNwcFederator.bundle`, then `The version installed before,` with the commit you had, `is kept at` the same path ending `.previous`. If the window ends on red text that starts with none of DONE, FAILED and REFUSED, send the whole window and stop
+1031. Press any key. Open File Explorer and paste `%APPDATA%\Autodesk\ApplicationPlugins` into its address bar. Look for: `ParsonsNwcFederator.bundle` and `ParsonsNwcFederator.bundle.previous`, and NO `ParsonsNwcFederator.bundle.copying`
+1032. Start Navisworks Manage 2025. Look for: ONE Parsons NWC Federator on the Tool Add-ins tab, and main's commit in the title bar. Two of it would mean Navisworks loads the `.previous` folder too, which is UNKNOWN until this step, so say so
+1033. Close Navisworks
+1034. Double click `Put back the previous version.cmd`. Look for, as the last line before `Press any key to continue`: `DONE: the previous version,` with the commit you had before step 1030, `is back at` the same `ParsonsNwcFederator.bundle`, then `The version that was installed,` with main's commit, `was replaced and is not kept.`
+1035. Press any key. In the File Explorer window of step 1031, press F5. Look for: `ParsonsNwcFederator.bundle` and `ParsonsNwcFederator.bundle.previous`, and NO `ParsonsNwcFederator.bundle.before-put-back` and NO `ParsonsNwcFederator.bundle.copying`
+1036. Start Navisworks. Look for: the commit you had before step 1030 in the title bar. Close Navisworks
+1037. Double click `Install Parsons NWC Federator.cmd` again. Look for: `DONE:` with main's commit, and the commit you had before step 1030 kept at `.previous`
+1038. Send the text of every window whose last line did not read as written, and say whether the zip goes to the team. Nobody on the team gets it before you say so
 
 ## Proof F34, the window, and F33, the units combo
 
@@ -1722,31 +1781,31 @@ run, and F132's steps 459 to 481 stand.
 
 Three things the add-in pass of F118 changed. FR-036 first, because it costs two short runs of one group of one discipline, then F118-R3 on the same group, which needs Excel to hold its workbook open, then FR-041, which needs a group that runs clash tests. Since F77 a test whose side finds nothing is never created, so in the group of one discipline only the tests the first run created are in the document, and only those carry the chosen value on the second run.
 
-664. Build and install main once fix-F118c has merged, steps 7 to 12
-665. In Explorer copy the NWC folder of 1A04MS, which holds one discipline, to a new folder on the desktop with no NWF beside it
-666. In the add-in go to the Source step and pick that folder
-667. Press Scan
-668. Go to the Outputs step and pick a new empty folder on the desktop for the NWF, the NWD and the reports
-669. Go to the Clash step and pick the exchange XML `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`
-670. Leave Clash tolerance on `Use the value in the XML`
-671. Press Run, then OK, and wait for it to finish
-672. Look for: one line `CLASH 1830 in the file, N created, M not created, a side finds nothing`, and write down N
-673. Set Clash tolerance to `50 mm`
-674. Press Run, then OK, and wait for it to finish
-675. Look for, near the end of the log: `TOLERANCE on the report, read off the clash test in the document for 0, the clash XML for` 1830 less N, `chosen in the tool for` N, with N from step 672. Before this fix N read under the clash XML
-676. Look for, on the line above it: the line ending `Where each block's tolerance was read is on the line below`
-677. Open in Excel the clash workbook this run wrote in the reports folder of step 668
-678. Look for: the Tolerance cell reading `0.050m` in the blocks of the N tests the first run created, and `0.025m`, the XML's 25 mm, in the blocks of the rest. Before this fix every block read `0.025m`
-679. Leave that workbook open in Excel
-680. Press Run, then OK, and wait for it to finish
-681. Look for, in the group: `XLSX     NOT WRITTEN` with the workbook's path and `its save threw, and a file of that name is at the path. Whether it is an earlier run's file untouched or one this run cut short is UNKNOWN`
-682. Look for, after it: `WORKBOOK CHECK 1A04MS not run, writing the clash workbook threw`, and NO `XLSX     written` line for that path
-683. Look for, in the RESULT block's files written list: NOT that workbook
-684. Close Excel
-685. Set Clash tolerance back to `Use the value in the XML`
-686. Go to the Source step and pick `C:\00-NM\Federation Task\C02 + 04\C02`
-687. Press Scan
-688. In the group list untick every group but 1A02MM
-689. Press Run, then OK, and wait for it to finish
-690. Look for, in the group, one line after the `UNITS` line: `GRID     Grid Location empty on N of M clash rows` with the heights of the empty and the filled rows, or `GRID     Grid Location filled on every one of M clash rows`, and the same words on a row of the `.tsv` beside the log, happening `grid location counted`
-691. Send the logs of steps 671, 674, 680 and 689, each named on its `log file` line. Why the Grid Location cells are empty is UNKNOWN, and the heights of step 690 against the grid levels are the first thing to read
+1039. Build and install main once fix-F118c has merged, steps 7 to 12
+1040. In Explorer copy the NWC folder of 1A04MS, which holds one discipline, to a new folder on the desktop with no NWF beside it
+1041. In the add-in go to the Source step and pick that folder
+1042. Press Scan
+1043. Go to the Outputs step and pick a new empty folder on the desktop for the NWF, the NWD and the reports
+1044. Go to the Clash step and pick the exchange XML `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`
+1045. Leave Clash tolerance on `Use the value in the XML`
+1046. Press Run, then OK, and wait for it to finish
+1047. Look for: one line `CLASH 1830 in the file, N created, M not created, a side finds nothing`, and write down N
+1048. Set Clash tolerance to `50 mm`
+1049. Press Run, then OK, and wait for it to finish
+1050. Look for, near the end of the log: `TOLERANCE on the report, read off the clash test in the document for 0, the clash XML for` 1830 less N, `chosen in the tool for` N, with N from step 1047. Before this fix N read under the clash XML
+1051. Look for, on the line above it: the line ending `Where each block's tolerance was read is on the line below`
+1052. Open in Excel the clash workbook this run wrote in the reports folder of step 1043
+1053. Look for: the Tolerance cell reading `0.050m` in the blocks of the N tests the first run created, and `0.025m`, the XML's 25 mm, in the blocks of the rest. Before this fix every block read `0.025m`
+1054. Leave that workbook open in Excel
+1055. Press Run, then OK, and wait for it to finish
+1056. Look for, in the group: `XLSX     NOT WRITTEN` with the workbook's path and `its save threw, and a file of that name is at the path. Whether it is an earlier run's file untouched or one this run cut short is UNKNOWN`
+1057. Look for, after it: `WORKBOOK CHECK 1A04MS not run, writing the clash workbook threw`, and NO `XLSX     written` line for that path
+1058. Look for, in the RESULT block's files written list: NOT that workbook
+1059. Close Excel
+1060. Set Clash tolerance back to `Use the value in the XML`
+1061. Go to the Source step and pick `C:\00-NM\Federation Task\C02 + 04\C02`
+1062. Press Scan
+1063. In the group list untick every group but 1A02MM
+1064. Press Run, then OK, and wait for it to finish
+1065. Look for, in the group, one line after the `UNITS` line: `GRID     Grid Location empty on N of M clash rows` with the heights of the empty and the filled rows, or `GRID     Grid Location filled on every one of M clash rows`, and the same words on a row of the `.tsv` beside the log, happening `grid location counted`
+1066. Send the logs of steps 1046, 674, 680 and 1064, each named on its `log file` line. Why the Grid Location cells are empty is UNKNOWN, and the heights of step 1065 against the grid levels are the first thing to read
