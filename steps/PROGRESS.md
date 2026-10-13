@@ -9,14 +9,14 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
 | 2a | 57 | 0 | 0 | 0 | 9 | 8 | 74 |
-| 2b | 34 | 4 | 0 | 0 | 3 | 1 | 42 |
+| 2b | 37 | 1 | 0 | 0 | 4 | 1 | 43 |
 | 2c | 9 | 2 | 0 | 0 | 0 | 1 | 12 |
 | 3a | 21 | 0 | 0 | 0 | 0 | 1 | 22 |
 | 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 14 | 1 | 0 | 0 | 43 | 0 | 58 |
 | 5 | 25 | 4 | 0 | 0 | 45 | 0 | 74 |
-| outside the waves | 180 | 16 | 4 | 0 | 59 | 7 | 266 |
-| total | 380 | 27 | 4 | 0 | 159 | 18 | 588 |
+| outside the waves | 184 | 16 | 0 | 0 | 59 | 7 | 266 |
+| total | 387 | 24 | 0 | 0 | 160 | 18 | 589 |
 <!-- the end of the counts -->
 
 ## Now
@@ -33,10 +33,11 @@ Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04
 | Bader's PC, 11 Oct | cdf8d4e, DirectX 11 hardware | 0.049 s | 156 s | 0 s | UNKNOWN |
 | 12 Oct 01:20 | cdf8d4e, acceleration on | 0.168 s, 0.120 s with F145's rule | 253 s | 32 s, RENUMBER | HARVEST 150 s |
 | 13 Oct 11:40, set 10 | 028c3a71, F150 Hide Other | 0.031 s, 35 KB | 169 s | about 30 s, WORKBOOK | clash step 140.5 s |
+| 13 Oct 20:17, desktop PC | cad45fd4, main after 230 | 0.028 s | 232 s, 141 of 141 views, group FAILED on a model on Revit's internal origin | about 30 s, WORKBOOK | PICTURES 117 s |
 
 ## Next
 1. A zip of main with 222 to 225 when Bader asks, and his run of steps 800 to 867, 1100 to 1158, 1200 to 1244 and 1300 to 1310
-2. Merge the three branches fix-F114-K32, fix-F114-K29, fix-F114-K36 and fix-F150-R2-dropped in that order, the connector could not open pull requests (403), then run 1A02MM once with the viewpoints box ticked
+2. F114-R3, two clashes of one group with one display name share a key, an add-in counter on the name, then the team zip when Bader asks
 3. Wave 4 and 5 rows the team sees that are left: FR-161 the date format control
 4. The register rows of today: F114-R2, F123-R1, F123-R2, F132-R7, F115-R29, F115-R30
 
