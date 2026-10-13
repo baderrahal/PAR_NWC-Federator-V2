@@ -240,7 +240,7 @@ namespace Federator.Addin.Ui
 
             // A Scan starts the groups clean, every one ticked and named by its pattern, as it
             // always has. FR-153 keeps the person's choices only where a regroup follows a file
-            // ticked or unticked, or the grouping changed, within the folder already scanned.
+            // ticked or unticked within the folder already scanned.
             Regroup(false);
             Steps.SelectedIndex = 1;
         }
@@ -446,7 +446,9 @@ namespace Federator.Addin.Ui
         private void OnGroupingModeChanged(
             object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            Regroup();
+            // Another grouping makes other groups, and a key means another thing under it, so
+            // the groups start clean as after a Scan.
+            Regroup(false);
         }
 
         private void OnFileRowChanged(object sender, PropertyChangedEventArgs e)
