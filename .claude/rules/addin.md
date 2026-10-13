@@ -916,6 +916,28 @@ well as to pass.
   throw lost. A result is found again by its name read through ClashRow.NameOf, the rule the harvest
   names a row by. A result or a group with no display name is found again only at its recorded index and
   only where nothing can have moved it, the pictures, which run before Compact, and the views refuse it
+- CLASH DETECTIVE'S HIDE OTHER IS SET FOR THE PICTURE PASS AND PUT BACK, F150, Bader's answer to Q151 and
+  his order of 2026-10-12, item 157 of steps\02_questions.md. The picture call draws by the user's Clash
+  Detective display settings, scan.md 5z-ze, so RenderThePicturesWaiting makes one PicturesHideOther in a using
+  around the pass inside the PICTURES step. It touches nothing until TakeTheStretch calls Begin, once a row
+  of the pass takes a picture, so a group that takes none reads and sets nothing. Begin reads Hide Other, sets
+  it to the value Core's OtherItemsInPictures asks for, ON where ImageOptions.GhostTheOtherItems is unticked and
+  OFF where it is ticked, and reads it back at once. Dispose, on every path out, writes back the user's value
+  as the RUN'S FIRST GROUP read it, HideOtherAcrossTheRun, which the engine keeps for the run beside the
+  pictures' guard and hands to each group's ClashImages, then reads it once more and writes the one IMAGES
+  line. A put back that leaves it changed is one of the group's errors, so the window shows it, and is tried
+  once more at the end of the run by PicturesHideOther.AtTheEnd. Every throw is a failure line and the pass
+  goes on. NOT THE OPTION PATH: LcUOption.SetBoolean on tools.clash.displaysettings.hide_other reads back but
+  the pictures did not follow, scan.md 5z-zf. The value is set on Clash Detective's own highlighter,
+  LcOpState.GetActiveInstance, LcClClashResultHighlighter.GetInstance and its DisplaySettings, each
+  undocumented, each a NativeHandle made eEXTERNAL, its IL in scan.md 5z-zf, so disposing one releases the
+  wrapper and never the native object, and all three are made and disposed inside one read or one write.
+  WHAT IS NOT KNOWN: the read back says what the highlighter holds and never what the picture call drew with,
+  so whether the pictures follow is UNKNOWN until a run's picture sizes show it, near 48 KB against about
+  550 KB, and the line says so. Dim Other and transparent dimming are left as the user has them, so the
+  ghosted look holds only where they read on. A STOP BETWEEN THE SET AND THE PUT BACK, Navisworks closed or
+  killed in the pass, leaves the value set, and whether Navisworks keeps it for the user's next start is
+  UNKNOWN, row F150-R1
 - LONG RUNS KEPT FROM SLOWING, F147, Bader's order of 2026-10-11, Q152 item 2. RenderThePicturesWaiting
   switches the undo off for the whole PICTURES step by Document.StartDisableUndo and, in its finally, on
   again by the matched EndDisableUndo, a counter by the install's Autodesk.Navisworks.Api.xml read on

@@ -1,0 +1,9 @@
+﻿NM Fed        : C:\Users\p003653k\OneDrive - Parsons Corp\Desktop\NM Fed
+copy          : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\source
+copy of set 10: C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\10\NMFed
+NM Fed holds  : 156 files, 154 of them NWC, 385.5 MB, 16 folders
+kept          : the copy matches NM Fed on every file by name, size and sha256, and on every folder
+room on C:\    : 413.2 GB free, 1.4 GB needed for the copy of set 10
+copied        : 156 files and 20 folders into the copy of set 10, 385.5 MB, every file read back by sha256 against source.manifest.txt
+folders made  : Clash Report\C02, Clash Report\C04, Clash Report\C06, Clash Report\C07, one under Clash Report for each folder under NWC
+marked whole  : C:\Users\p003653k\AppData\Local\NwcFederatorLoop\runs\10\NMFed.manifest.txt, 156 lines, written last

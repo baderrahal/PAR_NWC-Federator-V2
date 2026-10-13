@@ -93,7 +93,7 @@ $refusals = New-Object System.Collections.Generic.List[string]
 if ($ConstructorDeadlineSeconds -lt 60) { $refusals.Add("-ConstructorDeadlineSeconds is " + $ConstructorDeadlineSeconds + ", below 60") }
 if ($AdoptedDeadlineSeconds -lt 60) { $refusals.Add("-AdoptedDeadlineSeconds is " + $AdoptedDeadlineSeconds + ", below 60") }
 if ($Test -eq "") { $refusals.Add("-Test is empty") }
-if ($Mode -ne "picspeed" -and $Mode -ne "genimage") { $refusals.Add("-Mode is " + $Mode + ", neither picspeed nor genimage") }
+if ($Mode -ne "picspeed" -and $Mode -ne "genimage" -and $Mode -ne "hideapi") { $refusals.Add("-Mode is " + $Mode + ", not picspeed, genimage or hideapi") }
 if ($Count -lt 1) { $refusals.Add("-Count is " + $Count + ", below 1") }
 if ($ProjectTo -lt 1) { $refusals.Add("-ProjectTo is " + $ProjectTo + ", below 1") }
 $nwfFull = $null

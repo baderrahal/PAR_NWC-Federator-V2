@@ -37,6 +37,7 @@ namespace Federator.Core.Report
             EmbedThumbnail = false;
             StopAfterFailures = DefaultStopAfterFailures;
             OnlyTheTestsModels = true;
+            GhostTheOtherItems = false;
             TextureCacheLimitBytes = TextureCache.DefaultLimitBytes;
             TextureCacheCheckEverySeconds = TextureCache.DefaultCheckEverySeconds;
 
@@ -82,6 +83,16 @@ namespace Federator.Core.Report
         /// Bader's choice of Q150 on 2026-10-11. PictureModels holds the rule.
         /// </summary>
         public bool OnlyTheTestsModels { get; set; }
+
+        /// <summary>
+        /// Off. For each group's picture pass the add-in asks Clash Detective to hide the other items,
+        /// setting its Hide Other on and putting the user's value back after, so the pictures do not
+        /// hang on each PC's display settings, F150, Bader's answer to Q151. On, it asks for them shown,
+        /// Hide Other set off, the ghosted look of the accepted reports where Dim Other reads on.
+        /// Whether the pictures follow is UNKNOWN until a run's picture sizes show it. OtherItemsInPictures
+        /// holds the rule.
+        /// </summary>
+        public bool GhostTheOtherItems { get; set; }
 
         /// <summary>
         /// The size past which Navisworks' texture cache is cleared between two tests' pictures,
@@ -268,6 +279,7 @@ namespace Federator.Core.Report
                 + " only, " + cap + ", "
                 + (EmbedThumbnail ? "with a thumbnail in the cell" : "linked rather than pasted in")
                 + (OnlyTheTestsModels ? ", only the models of each test shown" : ", every model shown")
+                + (GhostTheOtherItems ? ", Clash Detective asked to show the other items" : ", Clash Detective asked to hide the other items")
                 + ".";
         }
 

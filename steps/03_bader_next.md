@@ -376,6 +376,43 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
+## Proof F150 Clash Detective asked to hide the other items for the pictures, added 2026-10-12, rewritten for attempt 2
+
+Your own setting is written down first, because the run must leave it as it found it. Then the IMAGES line, which says what the tool read, set and read back, and then the picture sizes, which are the only thing that says whether the pictures followed: a read back says what Clash Detective holds and never what it drew.
+
+664. Install main with F150 merged
+665. Start Navisworks Manage 2025
+666. Open any NWF
+667. Open Clash Detective
+668. Open its Results tab
+669. Press Display Settings. Write down whether Hide Other under Isolation is ticked, and change nothing
+670. Open the Parsons NWC Federator window and scan the C02 folder
+671. Pick the clash XML
+672. Untick `Skip clash when models sit off shared coordinates` on the Clash step, as set 09 ran
+673. Open More, rarely changed and leave `Ghost the other items in clash photos` unticked, as it starts
+674. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
+675. Press Run
+676. Look for, in the CLASH lines of 1A02MM: the line `CLASH    Images on,` ending `Clash Detective asked to hide the other items.`
+677. Look for, after the PICTURES lines, where step 669 read Hide Other unticked: ONE line `IMAGES   Clash Detective's Hide Other asked on for the pictures, to hide the other items: it read off before the pictures, set on, and it read back on, then put back to off. It read off after the pictures, the user's own setting.` and then `Whether the pictures follow it is UNKNOWN until a run's picture sizes show it`
+678. Where step 669 read Hide Other ticked, look for instead: `it read on before the pictures, already on, so nothing was set`, and no `put back`
+679. Look for, in the whole log: NO failure line naming `Clash Detective's Hide Other`, no `left changed`, and no line `put back once more at the end of the run`
+680. Open the group's picture folder beside the workbook
+681. Sort it by size. Look for: files near 48 KB each, the look of `docs\history\scan.md` 5z-ze. Files near 550 KB mean the pictures did NOT follow the value set, which is the answer this proof is for, so send it
+682. Open cd000001.jpg. Look for: the two clashing items in red and green on the background, and no other item drawn
+683. Open Clash Detective in Navisworks
+684. Open its Results tab
+685. Press Display Settings. Look for: Hide Other under Isolation ticked or not exactly as step 669 wrote it down
+686. Open More, rarely changed on the tool's window
+687. Tick `Ghost the other items in clash photos`
+688. Press Run
+689. Look for, in the CLASH lines: the line `CLASH    Images on,` ending `Clash Detective asked to show the other items.`
+690. Look for, after the PICTURES lines: `IMAGES   Clash Detective's Hide Other asked off for the pictures, to show the other items, since the box "Ghost the other items in clash photos" is ticked:`, then `already off, so nothing was set` where step 669 read it unticked, or `set off, and it read back off, then put back to on` where it read ticked
+691. Open the group's picture folder and sort it by size. Look for: files clearly larger than step 681's, since the other items are drawn. How large is UNKNOWN, since with every model drawn the laptop wrote about 550 KB, scan.md 5z-zf, and since F145 only the test's models are shown
+692. Open cd000001.jpg. Look for: the two clashing items with the other items drawn ghosted around them
+693. Open Clash Detective in Navisworks
+694. Open its Results tab
+695. Press Display Settings. Look for: Hide Other exactly as step 669 wrote it down
+696. Send the two logs and the `.tsv` beside each, with the picture folder's mean file size of each run and what steps 669, 685 and 695 read
 ## Proof F119 the NWF saves, the files written list and the tolerance rows, added 2026-10-12
 
 The reshape comes first, because it is the one item a plain run shows: a group whose file list changed and whose clash step and views put nothing in. The read only files come after it, since they are what makes a save or a publish fail on purpose, and they are put back at the end.

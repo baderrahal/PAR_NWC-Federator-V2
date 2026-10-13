@@ -898,7 +898,7 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 
     Nothing of F147 merges until you answer.
 
-    Answer:
+    Answer: Bader, 2026-10-12, his message headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, written whole as item 157. In his words: Q2 yes: build F147. The lead's note: F147 is built on, and his item 2 adds that each step releases what it holds as it ends and logs the memory at its start and end.
 
 156. From Bader, 2026-10-12, his message headed BADER, 12 OCT 2026: WRAP UP NOW, NO MORE TESTS, not a question put to him but his order. In his words:
 
@@ -920,3 +920,29 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
     - Three lines in this tab at the end: what merged, where the zip is, and what Bader does next.
 
     Answer: Bader, 2026-10-12, as written above. The lead's notes. Item 1: no run was in progress, and hardware acceleration was put back to his "3 0" and read back. Item 2: 204 and 207 were merged by Bader on GitHub, 205 by the loop after main was taken in, and 206 is this records pull request, merged last as item 5 asks. Item 3: not built, since the install's API reference gives no documented way for the tool to set Hide Other and no probe may run, and the guide's step 2 sets it by hand, row F150. Item 4: F140, pull request 208, and the zip %USERPROFILE%\OneDrive - Parsons Corp\Documents\NWC Federator package\ParsonsNwcFederator-1.0.0.0-69de6ed4-20261012.zip, 3298080 bytes, 21 files. Item 5: the closing entry of steps\history\log.md and the page.
+
+157. From Bader, 2026-10-12, his message headed BADER, 12 OCT 2026: THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, not a question put to him but his answers and his order. In his words:
+
+    BADER, 12 OCT 2026: THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30
+    This replaces the block headed WRAP UP NOW, NO MORE TESTS, only for the checks named below. The package of F140 is built and Bader runs his own folder on his desktop PC. The loop now fixes what is left. Read steps\PROGRESS.md, steps\tracker.md and steps\fix-round.md first, then set STATE OPEN.
+    BADER'S ANSWERS, write each under its row in steps\02_questions.md
+    - Q1 yes: run the one short API test for F150, then build it.
+    - Q2 yes: build F147.
+    - Q3 b: one 5 minute check of 1A02MM after each wave, when the wave is finished, and the one F150 test. No other Navisworks run, no probe beyond F150's, no run of 1A04PK.
+    - Q4: the loop's own scripts stay frozen unless a run cannot start.
+    - Q5: push at every main stage. The laptop closes at 17:30 today, so close the day from 17:00: push every branch, merge what is ready, write steps\PROGRESS.md with the exact next action, set STATE NIGHT, and say so in this tab.
+    THE ORDER
+    1. F150, Hide Other set by the tool: one short probe of the API on this laptop, then build it, as Q151 says. The tool sets Hide Other for the pictures itself, puts the user's setting back after, and keeps the ghosted look as one setting, off by default.
+    2. F147, long runs: release what each step holds as soon as the step ends, log the memory at the start and end of each step, dispose every picture, and clear Navisworks' texture cache under %TEMP%\ogs between tests when it passes 5 GB, logging its size before and after.
+    3. Wave 2, the rows left of sets, coverage, mirrors, then views and Generic Models. Then wave 2c, workbook and report.
+    4. Wave 3, the rows left of pictures, the install, start from an NWF, Shift ticking, the run log and RESULT.
+    5. After each wave: build, run the Core tests, and one 5 minute check of 1A02MM with the viewpoints box ticked. Give three lines in this tab: the time, the views written of how many, and what failed. A fault the team would see found by the check is fixed first, in two attempts at most.
+    6. Wave 4, but not the loop's own scripts. Then wave 5. Take first the rows that change what Bader's team sees in the window, the log, the workbook, the NWF or the NWD, and put related rows of one area in one pull request. Waves 4 and 5 may not finish today. That is fine. Say which rows are left.
+    7. AT THE END, build the package again from main as a new zip, with the new commit and date in its name and the same one click install, and tell Bader in this tab the path, the size and what changed since the last zip. He copies it to his PC himself.
+    THE RULES
+    - The limits of Q143 hold: two attempts per change, rows only for what the team sees, one reviewer, a breaker only on alignment, sets, clash counts, mirrors, views and pictures.
+    - Merge each pull request yourself once its checks are green, after merging origin/main into it. No AI line in any commit.
+    - Every hour, three lines in this tab: what merged, the wave in hand, and what is next.
+    Everything else stays as it is.
+
+    Answer: Bader, 2026-10-12, as written above. The lead's notes. No questions numbered Q1 to Q5 were put to him, so each answer is written here and under the row it settles: Q1 under F150's row, the API test run as scan.md 5z-zf, Q2 under Q155. Q3, Q4 and Q5 are rules of the round.
