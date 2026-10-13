@@ -741,6 +741,18 @@ well as to pass.
   collapsed under More, rarely changed. The two that destroy data are collapsed on their
   own under Things that destroy data, because they do not belong beside ordinary output
   options. Fewer decisions is the goal, not more words explaining them
+- THE SIDE WALK OF THE LEFTOVERS, SetBuilder.CountSide, F115: the side's selection and every
+  source read out of it are disposed, R1, sources that read as none count the side as not read,
+  R21, and a source resolving to a folder credits every set inside it, R8. IndexOfSet reads from
+  the end as FindSelectionSet does, R3, so the set the drift was read off is the set replaced.
+  The leftovers are walked and reported with the box off and acted on only with it ticked, R20.
+  CarryOut finds every set again by its PATH, IndexPathsAt, and acts on nothing where a path
+  holds no set or more than one, and nothing more is removed or renamed once the document is
+  damaged, F115 attempt 2. A throw after the twin is gone declares the document damaged. With
+  the box off a read of the walk that failed is one FINDING line and not a FAILURE. Every
+  Search read off a set by the drift or the walk is disposed.
+  The EMPTY SETS block is written by WriteTheEmptySets wherever the sets were judged, after the
+  clash run and where no test ran, R4
 - THE GENERIC MODELS SETS ARE BUILT IN THE SETS STEP OF EVERY GROUP, F128, with an XML picked
   or without one, since they come from the models and not from the file. `PlanTheGenericSets`
   reads Model.FileName and Model.SourceFileName off each model of the document, each wrapper
@@ -754,7 +766,10 @@ well as to pass.
   where it is refused the engine writes that line and `SetBuilder.Build` is told not to walk, so
   a model's read that threw never removes last week's sets. Where the picked file's build
   declared the document damaged, Q74, the Generic Models sets are not built, one line says so
-  and the step asks no save, so the OR of the two builds never saves a damaged NWF. Their
+  and the step asks no save, so the OR of the two builds never saves a damaged NWF. The clash
+  step then creates and runs no test and FinishTheGroup stops before the views, the NWF save,
+  the workbook and the NWD, F115 R15 and R24, since a test or a view asked for the save over
+  the damage. Their
   outcome is `JobOutcome.GenericSets`, never the picked file's, so the EMPTY SETS
   judge and SETS ACROSS THE RUN do not read them, a set created asks for the NWF save as any
   set does, FR-020, and a present set keeps the question it was built with unless the rebuild

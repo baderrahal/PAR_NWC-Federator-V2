@@ -23,20 +23,42 @@ namespace Federator.Core.Sets
     /// <summary>One leftover set and what is to be done about it.</summary>
     public sealed class LeftoverSet
     {
-        internal LeftoverSet(string path, string name, int sides, LeftoverAction action, string twinName)
-            : this(path, name, sides, action, twinName, false)
+        internal LeftoverSet(string path, string name, int sides, LeftoverAction action, DocumentSet twin)
+            : this(path, name, sides, action, twin, false)
         {
         }
 
         internal LeftoverSet(
-            string path, string name, int sides, LeftoverAction action, string twinName, bool sidesUnknown)
+            string path, string name, int sides, LeftoverAction action, DocumentSet twin, bool sidesUnknown)
         {
             Path = path ?? string.Empty;
             Name = name ?? string.Empty;
             Sides = sides;
             Action = action;
-            TwinName = twinName ?? string.Empty;
+            TwinName = twin == null ? string.Empty : twin.Name ?? string.Empty;
+            TwinPath = twin == null ? string.Empty : twin.Path ?? string.Empty;
             SidesUnknown = sidesUnknown;
+        }
+
+        /// <summary>
+        /// The path of the unused set that gets removed first, or empty. The add-in acts on the set at
+        /// this path and never on the first set of the name, F115 attempt 2, the breaker's finding 1,
+        /// since two sets of one name in two folders are two sets and this one was decided by its path.
+        /// </summary>
+        public string TwinPath { get; private set; }
+
+        /// <summary>
+        /// Where this set sits once it is renamed into the twin's name, the folder of its own path
+        /// with the twin's name, so the rename is read back at the path it lands on.
+        /// </summary>
+        public string RenamedPath
+        {
+            get
+            {
+                return Path.EndsWith("/" + Name, StringComparison.Ordinal)
+                    ? Path.Substring(0, Path.Length - Name.Length) + TwinName
+                    : string.Empty;
+            }
         }
 
         /// <summary>
@@ -57,8 +79,12 @@ namespace Federator.Core.Sets
         /// <summary>The name of the unused set that gets removed first, or empty.</summary>
         public string TwinName { get; private set; }
 
-        /// <summary>What the log says about it, naming what points at it every time.</summary>
-        public string Line()
+        /// <summary>
+        /// What the log says about it, naming what points at it every time. With the box off it says
+        /// what a run with the box ticked would do, F115 attempt 2, the breaker's finding 14, since
+        /// nothing is done and the line said it is removed.
+        /// </summary>
+        public string Line(bool boxTicked)
         {
             if (SidesUnknown)
             {
@@ -70,14 +96,18 @@ namespace Federator.Core.Sets
             switch (Action)
             {
                 case LeftoverAction.Remove:
-                    return Path + "   the picked file does not name it and NOTHING points at it, so it is removed";
+                    return Path + "   the picked file does not name it and NOTHING points at it, so "
+                        + (boxTicked ? "it is removed" : "a run with the box ticked would remove it");
 
                 case LeftoverAction.RemoveTheTwinThenRename:
                     return Path + "   the picked file does not name it and " + Sides
                         + " clash test side(s) point at it. It asks exactly what \"" + TwinName
-                        + "\" asks, which the file DOES name and which nothing points at, so that one is"
-                        + " removed and this one is renamed into it. The sides keep working and start"
-                        + " asking what the file asks";
+                        + "\" asks, which the file DOES name and which nothing points at, so "
+                        + (boxTicked
+                            ? "that one is removed and this one is renamed into it. The sides keep working and start"
+                                + " asking what the file asks"
+                            : "a run with the box ticked would remove that one and rename this one into it, and the"
+                                + " sides would keep working and start asking what the file asks");
 
                 default:
                     return Path + "   the picked file does not name it and " + Sides
@@ -230,7 +260,7 @@ namespace Federator.Core.Sets
                     ? new LeftoverSet(set.Path, set.Name, set.Sides, LeftoverAction.Refuse, null)
                     : new LeftoverSet(
                         set.Path, set.Name, set.Sides,
-                        LeftoverAction.RemoveTheTwinThenRename, twin.Name));
+                        LeftoverAction.RemoveTheTwinThenRename, twin));
             }
 
             return leftovers;
@@ -301,8 +331,26 @@ namespace Federator.Core.Sets
             return true;
         }
 
-        /// <summary>The block, or empty where the picked file names everything the document holds.</summary>
-        public static IList<string> Lines(IList<LeftoverSet> leftovers)
+        /// <summary>
+        /// The one line the leftover walk writes where a read of it failed with the box off, the
+        /// reviewer's finding 5 on F115 attempt 1. A finding and never a FAILURE, since with the box
+        /// off nothing would be removed or renamed, and on one line, the error's breaks made spaces.
+        /// </summary>
+        public static string NotReadWithTheBoxOff(string what, string error)
+        {
+            return "FINDING  " + (string.IsNullOrEmpty(what) ? "a read of the leftover walk" : what) + " failed"
+                + (string.IsNullOrEmpty(error) ? ", why is UNKNOWN" : ", " + Coverage.CoverageBlock.OneLine(error).Trim())
+                + ". Which sets the file no longer names are unused is UNKNOWN. The box \"" + SetRebuildSettings.TickLabel
+                + "\" is off, so nothing would have been removed or renamed";
+        }
+
+        /// <summary>
+        /// The block, or empty where the picked file names everything the document holds. boxTicked
+        /// is whether the box of Q72 is on, F115 R20: with it off the leftovers are decided and
+        /// reported, and nothing is done, so the block says that what it lists is what a run with
+        /// the box ticked would do. With the box off they were neither decided nor reported.
+        /// </summary>
+        public static IList<string> Lines(IList<LeftoverSet> leftovers, bool boxTicked)
         {
             List<string> lines = new List<string>();
 
@@ -337,8 +385,15 @@ namespace Federator.Core.Sets
             }
 
             lines.Add(leftovers.Count + " set(s) in this NWF are not named by the picked file:");
-            lines.Add("   " + removed + " nothing points at, so they are removed");
-            lines.Add("   " + renamed + " are the working half of a pair, so the unused half goes and this one takes its name");
+
+            if (!boxTicked)
+            {
+                lines.Add("   NOTHING BELOW IS DONE, because \"" + SetRebuildSettings.TickLabel
+                    + "\" is off. Each line says what a run with it ticked would do");
+            }
+            lines.Add("   " + removed + " nothing points at, so they " + (boxTicked ? "are removed" : "would be removed"));
+            lines.Add("   " + renamed + " are the working half of a pair, so the unused half "
+                + (boxTicked ? "goes and this one takes its name" : "would go and this one would take its name"));
             lines.Add("   " + refused + " are pointed at with no twin, so nothing is done about them");
 
             if (uncounted > 0)
@@ -348,7 +403,7 @@ namespace Federator.Core.Sets
 
             foreach (LeftoverSet one in leftovers)
             {
-                lines.Add("   " + one.Line());
+                lines.Add("   " + one.Line(boxTicked));
             }
 
             return lines;

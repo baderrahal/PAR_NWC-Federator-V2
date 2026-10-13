@@ -2,6 +2,52 @@
 
 Newest entry at the top.
 
+## 2026-10-12 F115 the register rows of the sets, wave 2a, branch fix-F115c
+
+Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under his Q143 limits. Every open
+row of area F115 in steps\tracker.csv, F115-R1 to R24 but R10, merged as 172, and R13, the lead's, read against
+main 80314b9.
+
+What was done:
+- Eighteen rows fixed in one change and set in review: R1, R2, R3, R4, R6, R7, R8, R9, R14, R15, R16, R18, R19,
+  R20, R21, R22, R23 and R24. The rule of each that a test can prove is in Core with a test in
+  tests\Federator.Core.Tests\Sets\SetsRegisterRowsTests.cs, twelve tests, each seen failing against its rule broken
+  on purpose, %LOCALAPPDATA%\NwcFederatorLoop\turn6\f115c-before-fail-1.txt, 7 failed, and -2.txt, 5 failed
+- A rebuilt set is read back against the file and one that did not take is said, R19. A set created or replaced
+  and then lost is FAILED with the document holding it and asks the NWF save, R2 and R22. The box is blamed only
+  where it is off, R18. The summary in the window and the SETS phrase carries the drifted, rebuilt and not read
+  counts, R7, and the damage of a failed pair, R15. The EMPTY SETS block counts a set at zero it could not judge,
+  R6, and is written where no test ran, the Build sets button and an XML of sets alone, R4. The judge never throws
+  on naming settings that will not read, R9, and knows of a model the export check dropped, R14. A second set at
+  one path of the picked file is skipped by name, R23, the skipped sets are named for the leftover walk, R16, and
+  the leftovers are reported with the box off and acted on only with it ticked, R20
+- In the add-in alone, read and built: the side walk disposes the selection and each source, R1, counts a side
+  whose sources read as none as not read, R21, and credits every set of a folder source, R8. The rebuild and the
+  drift use one lookup from the end, R3. Over a damaged document no test is created or run and the group stops
+  before the views, the NWF save, the workbook and the NWD, R15 and R24
+- Dropped with why, in steps\01_next.md: R5, R11 and R17. R12 stays open for the weekly run with the box ticked
+- Attempt 2, on the reviewer's and the breaker's readings of attempt 1. The leftovers are removed and renamed at
+  the path SetLeftovers decided, the twin's path carried on the leftover, and a path holding no set or more than
+  one is acted on not at all and said, where the first set of the NAME was taken, breaker 1. Nothing more is
+  changed once the document is damaged and the leftovers left untouched are counted, breaker 5. A build that
+  stopped for no active document says so, breaker 4. With the box off each leftover line says what a ticked run
+  would do, breaker 14. The judge's reason from the naming settings is one line, breaker 9. With the box off a
+  read of the leftover walk that failed is one FINDING line and never a FAILURE, reviewer 5. The Search wrappers
+  read by the drift and the leftover walk are disposed, reviewer 6. Six more tests, each seen failing against its
+  rule broken, turn6\f115c-before-fail-3.txt. Breaker 2, 3 and 6 are older than this change, rows F115-R26 to R28
+- Proved here: the solution builds in Release with 0 warnings and 0 errors, turn6\f115c-build.txt. Core tests 2921
+  passed, 0 failed, 0 skipped before, turn6\f115c-test-before.txt, and 2933 passed, 0 failed, 0 skipped after,
+  turn6\f115c-test-after.txt. check-locals.sh and check-imports.sh over src clean
+
+What remains:
+- Every add-in line waits for a run, steps 664 to 685 of steps\03_bader_next.md. The leftover walk now runs with the
+  box off on every weekly run, and what it costs in the SETS step's seconds is UNKNOWN until step 671
+- R12, whether SearchCondition.Options reads back StartGroup 64, step 682
+
+Known bugs: four found and not fixed, older than this change, rows F115-R25 to F115-R28 in steps\tracker.csv.
+
+What comes next: the lead calls the reviewer and the breaker on the branch, then the draft pull request merges once
+Actions is green, and Bader runs steps 664 to 685.
 ## 2026-10-12 The fix round, wave 2a, F132 the mirrored tests, rows F132-R1 to F132-R3 and F132-R6, written by the developer as the lead's delegate
 
 Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under Q143's limits. Branch

@@ -37,9 +37,9 @@ namespace Federator.Core.Rerun
     /// of Q74, which has the same shape: a remove and a rename that are two calls and one
     /// change, with a window between them where neither set carries the corrected name.
     ///
-    /// PART 2 IS KEPT BY THE RESHAPE AND NOT YET BY THE SET PAIR. The engine goes on to the clash tests after a
-    /// failed pair and saves if they put anything in, which the page of lane B records, so the sentence below that
-    /// says it was not saved can be untrue for that caller.
+    /// PART 2 IS KEPT BY BOTH. The engine went on to the clash tests and the viewpoints after a failed pair and
+    /// saved if they put anything in. Since F115 R15 and R24 it creates and runs no test over a damaged document
+    /// and stops the group before the views and every save, as it stops after a reshape that failed.
     /// </summary>
     public static class DamagedDocument
     {
@@ -81,7 +81,8 @@ namespace Federator.Core.Rerun
         /// <summary>
         /// Whether the file on disk may be written, by the rule above. Only the tests read it, and no caller in the
         /// engine or the set builder passes through it, so it is the rule written down and not a gate. Whether a
-        /// path saves after a failure is the engine's own, and the set pair of Q74 still saves after one.
+        /// path saves after a failure is the engine's own. The set pair of Q74 saves nothing after one since F115
+        /// R15 and R24, the engine stopping the group before the views and every save.
         /// </summary>
         public static bool TheFileMayBeSaved(bool anythingWasChanged, bool everythingWorked)
         {
