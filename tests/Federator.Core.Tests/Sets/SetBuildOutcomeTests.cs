@@ -328,7 +328,7 @@ namespace Federator.Core.Tests
         {
             SetBuildOutcome outcome = new SetBuildOutcome();
             outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Ducts", "Ducts", 1, 12);
-            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), true);
+            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), true, Sets.SetDriftTests.AsksWhatTheFileAsks());
 
             Assert.That(outcome.CreatedCount, Is.EqualTo(0));
             Assert.That(outcome.RebuiltCount, Is.EqualTo(1));
@@ -345,7 +345,7 @@ namespace Federator.Core.Tests
             SetBuildOutcome outcome = new SetBuildOutcome();
             outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Ducts", "Ducts", 1, 12);
             outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Pipes", "Pipes", 1, 7);
-            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), true);
+            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), true, Sets.SetDriftTests.AsksWhatTheFileAsks());
 
             string lines = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
 
@@ -371,7 +371,7 @@ namespace Federator.Core.Tests
         {
             SetBuildOutcome outcome = new SetBuildOutcome();
             outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Ducts", "Ducts", 1, 12);
-            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), false);
+            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), false, null);
 
             Assert.That(outcome.PutAnythingIn, Is.False);
         }
@@ -407,7 +407,7 @@ namespace Federator.Core.Tests
         {
             SetBuildOutcome outcome = new SetBuildOutcome();
             outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Ducts", "Ducts", 1, 12);
-            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), true);
+            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), true, Sets.SetDriftTests.AsksWhatTheFileAsks());
             outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Pipes", "Pipes", 1, 3);
 
             Assert.That(outcome.PutInLine(), Is.EqualTo(
@@ -421,7 +421,7 @@ namespace Federator.Core.Tests
             SetBuildOutcome outcome = new SetBuildOutcome();
             outcome.AddCreated("lcop_selection_set_tree/A/One", "One", 1, 12);
             outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Ducts", "Ducts", 1, 12);
-            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), false);
+            outcome.AddDrift(OneDrift("lcop_selection_set_tree/A/Ducts"), false, null);
             outcome.AddLeftover(
                 SetLeftovers.For(
                     new List<DocumentSet> { new DocumentSet("a/Old", "Old", new List<string> { "k" }, 0) },

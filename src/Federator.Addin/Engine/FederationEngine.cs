@@ -111,6 +111,12 @@ namespace Federator.Addin.Engine
         /// </summary>
         private IList<ModelExport> groupExports;
 
+        /// <summary>
+        /// How many models the document of that group held when the EXPORT CHECK read it, or minus
+        /// one where it was not read, so the judge knows of a model the check dropped, F115 R14.
+        /// </summary>
+        private int groupModelsInDocument = -1;
+
         // What the two new blocks found across the whole run, for the RESULT block. A
         // count and never an action: the tool reports what it noticed and Bader decides.
         private int alignmentDifferences;
@@ -1305,6 +1311,17 @@ namespace Federator.Addin.Engine
             WhatTheModelsCarry(document, job, outcome);
 
             bool clashPutSomethingIn = ClashStep(document, job, outcome, source, savedTests);
+
+            // F115 R15 and R24. NOTHING IS SAVED FROM A DAMAGED DOCUMENT, DamagedDocument's rule, so
+            // the group stops here as a reshape that failed after a change does: no viewpoint, no NWF
+            // save, no workbook and no NWD. The error on the outcome says the NWF was not saved, and
+            // a view built here asked for the save and made that untrue.
+            if (TheSetsDamagedIt(outcome))
+            {
+                log.Line("SETS     " + job.Building + " stops here, no viewpoint, no NWF save, no workbook and no NWD,"
+                    + " because the sets left the document damaged");
+                return;
+            }
 
             // F52. After the clash run and before the NWF is saved again, so a viewpoint
             // this run made is inside the file the NWD is published from.
@@ -2534,6 +2551,7 @@ namespace Federator.Addin.Engine
             // Null until this group's models are read, so the sets step never reads another
             // group's, FR-011.
             groupExports = null;
+            groupModelsInDocument = -1;
 
             IList<ModelExport> exports;
 
@@ -2541,6 +2559,7 @@ namespace Federator.Addin.Engine
             {
                 exports = ModelFactsReader.Exports(document, reports.Names, log);
                 groupExports = exports;
+                groupModelsInDocument = document.Models.Count;
                 outcome.ElementCount = GroupSize.ElementsIn(exports);
 
                 // S03-2. The names are compared by letter case with what the picked file's
@@ -2821,6 +2840,17 @@ namespace Federator.Addin.Engine
                 return changed;
             }
 
+            // F115 R15 and R24. A pair that failed between its two halves left the document
+            // damaged, and a test created or run here asked for the NWF save over it. No test is
+            // created or run, and FinishTheGroup stops before the views and every save.
+            if (TheSetsDamagedIt(outcome))
+            {
+                log.Line("CLASH    no test is created or run in " + job.Building
+                    + ", because the sets left the document damaged and nothing may be saved from it");
+                WriteTheEmptySets(job, outcome, null);
+                return false;
+            }
+
             // Deliberately not short circuited. A file holding tests only is a normal
             // case, so the tests are created whether or not any set was built here.
             // F54. A status written into the document is a change, so it asks for the NWF
@@ -2949,8 +2979,54 @@ namespace Federator.Addin.Engine
             // No EXPORT CHECK reads the models on this button, so none of a group read earlier
             // reaches its judge, FR-011.
             groupExports = null;
+            groupModelsInDocument = -1;
             BuildTheSets(document, job, outcome, true);
+
+            // F115 R4. The button runs no clash test, and the EMPTY SETS block was written only
+            // after one, so the sets it judged were said nowhere.
+            WriteTheEmptySets(job, outcome, null);
             return outcome.Sets ?? new SetBuildOutcome();
+        }
+
+        /// <summary>
+        /// The EMPTY SETS block of a group and its rows, wherever its sets were judged, F115 R4: after
+        /// the clash run with what the empty sets cost, and with no test run, the Build sets button, a
+        /// picked XML of sets alone and a group whose sets left the document damaged, saying no cost
+        /// was counted. Core decides whether there is a block at all.
+        /// </summary>
+        private void WriteTheEmptySets(FederationJob job, JobOutcome outcome, ClashRunOutcome clash)
+        {
+            if (outcome.Sets == null)
+            {
+                return;
+            }
+
+            IList<string> lines = clash == null
+                ? EmptySets.LinesWithNoTest(outcome.Sets.Empty, outcome.Sets.AtZeroNotJudged)
+                : EmptySets.Lines(
+                    outcome.Sets.Empty, clash.TestsWithAnEmptySide, clash.TestsInFile, clash.TestsNoSideCountFor,
+                    outcome.Sets.AtZeroNotJudged);
+
+            if (lines.Count == 0)
+            {
+                return;
+            }
+
+            log.Block("EMPTY SETS " + Words.Or(job.Building, "this group"), lines);
+
+            foreach (EmptySet empty in outcome.Sets.Empty)
+            {
+                log.Row("set finding nothing", empty.Path, string.Empty, empty.Line());
+            }
+        }
+
+        /// <summary>
+        /// Whether this group's sets build left the document damaged, a remove and rename pair that
+        /// failed between its two halves. Nothing may be saved from it, DamagedDocument's rule.
+        /// </summary>
+        private static bool TheSetsDamagedIt(JobOutcome outcome)
+        {
+            return outcome.Sets != null && !string.IsNullOrEmpty(outcome.Sets.TheDocumentIsDamaged);
         }
 
         /// <summary>
@@ -2995,11 +3071,10 @@ namespace Federator.Addin.Engine
 
                     // Q74. THE PAIR FAILED BETWEEN ITS TWO HALVES and the file's build declared
                     // the document damaged, so it asked no save. This step puts nothing more into
-                    // that document and asks no save, the breaker's finding on attempt 1. What the
-                    // steps after it do with the damage is theirs and is not said here, since the
-                    // clash step and the views do not read it, a hole older than F128 and a row
-                    // for F121.
-                    if (outcome.Sets != null && !string.IsNullOrEmpty(outcome.Sets.TheDocumentIsDamaged))
+                    // that document and asks no save, the breaker's finding on attempt 1. The clash
+                    // step creates no test over it and the group stops before the views and every
+                    // save, F115 R15 and R24.
+                    if (TheSetsDamagedIt(outcome))
                     {
                         genericAcrossTheRun.AddNotCounted(job.Building);
                         log.Line("SETS     " + job.Building
@@ -3186,13 +3261,19 @@ namespace Federator.Addin.Engine
                 // the walk removes it with the box on, which is right.
                 string whyNoWalk = GenericModelsPlan.WhyNoLeftoverWalk(generic);
 
-                if (whyNoWalk != null && reports.RebuildDriftedSets)
+                // The leftovers are walked and reported with the box off too, F115 R20, so why
+                // they are not walked is said with it off too.
+                if (whyNoWalk != null)
                 {
                     log.Line("SETS     " + job.Building + " " + whyNoWalk);
                 }
 
                 SetBuildOutcome sets = new SetBuilder(Tick, log, Rebuilds())
-                    .Build(plan, EmptySetJudge.For(plan, groupExports, reports.Names), whyNoWalk == null, whyNoWalk == null ? generic.SetNames : null);
+                    .Build(
+                        plan,
+                        EmptySetJudge.For(plan, groupExports, reports.Names, groupModelsInDocument),
+                        whyNoWalk == null,
+                        whyNoWalk == null ? generic.SetNames : null);
                 outcome.Sets = sets;
                 setsAcrossTheRun.Add(sets);
 
@@ -3249,6 +3330,9 @@ namespace Federator.Addin.Engine
                     if (!ClashWork.CreatesTests(exchange))
                     {
                         log.Line("CLASH    the picked file holds no clash test, so none was created");
+
+                        // F115 R4. The sets were judged and no test runs, so the block is written here.
+                        WriteTheEmptySets(job, outcome, null);
                         return false;
                     }
 
@@ -3442,17 +3526,7 @@ namespace Federator.Addin.Engine
                 // now nothing said which of those sets is WRONG and which is a model with
                 // no such content. Written after the clash step because the cost is the
                 // number of tests a side emptied, which only the creation plan knows.
-                if (outcome.Sets != null && outcome.Sets.Empty.Count > 0)
-                {
-                    log.Block(
-                        "EMPTY SETS " + Words.Or(job.Building, "this group"),
-                        EmptySets.Lines(outcome.Sets.Empty, clash.TestsWithAnEmptySide, clash.TestsInFile, clash.TestsNoSideCountFor));
-
-                    foreach (EmptySet empty in outcome.Sets.Empty)
-                    {
-                        log.Row("set finding nothing", empty.Path, string.Empty, empty.Line());
-                    }
-                }
+                WriteTheEmptySets(job, outcome, clash);
 
                 // F72. Straight after the CLASH block, because it is about the clashes that
                 // block just counted. Written even when nothing moved, saying so, because a
