@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using Federator.Core.Diagnostics;
 using Federator.Core.Exchange;
 
 namespace Federator.Core.Clash
@@ -311,7 +312,7 @@ namespace Federator.Core.Clash
             if (string.IsNullOrEmpty(test.FileUnits))
             {
                 return "the file gives no units, so the tolerance "
-                    + test.ToleranceInFileUnits.ToString("0.##########", CultureInfo.InvariantCulture)
+                    + EventRow.Tolerance(test.ToleranceInFileUnits)
                     + " cannot be converted";
             }
 

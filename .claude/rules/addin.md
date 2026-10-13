@@ -200,7 +200,13 @@ well as to pass.
   either is UNKNOWN until a run, so the numbers are read and never assumed. The NWF on disk is only saved over once every test read before
   the clear is back, and otherwise the group fails, says so, and the NWF keeps its file
   list and its tests. A rebuilt group ends as Rebuilt and is judged DONE when everything
-  after the rebuild went right, in Federator.Core.Rerun.GroupJudgement. Q22
+  after the rebuild went right, in Federator.Core.Rerun.GroupJudgement. Q22. THE RESHAPE
+  SAVES THE NWF THE SAME WAY, through WriteNwf once all four came back, FR-043, where it
+  saved nothing and a group whose clash step and views put nothing in left the old file
+  list in the NWF. Every save of the NWF counts on the outcome, `NwfSavesAsked` and
+  `NwfSavesThatFailed`, a false return and a throw alike, and hands its bool to
+  `RunLog.WriteFinished`, FR-044 and FR-045, and the publish of the NWD hands its own,
+  FR-189
 - The NWF is the record, so a rebuild counts FOUR things out and counts all four back.
   It carries the file list, the sets, the tests, every clash result with the status a
   person set on it, and since F52 the viewpoints, and not one of those has a second copy
@@ -259,7 +265,10 @@ well as to pass.
   handed to the plan unread, its status checked before `ResultAt`, so a Resolved row Compact
   removed never makes its test not read, C1. A test the clash step ran with no row on the
   report is read whole with no row, `TestsRead.Ran`, N2, and its old view goes as no longer
-  needed. A test whose open rows are ALL result groups gets no view, keeps its old views and
+  needed. A test the clash step skipped as FAILED is never read whole, and nor is the kept test
+  of a merged mirror it failed on, `TestsRead.ClashStepFailed` handed the clash record's skipped
+  tests and `ClashRunner.KeptOfMirror`, row F114-K38, since its harvest may have thrown after
+  reading only closed rows, so its old views stay and it is counted failed with why. A test whose open rows are ALL result groups gets no view, keeps its old views and
   is named on one VIEWS line, never counted failed, `TestsRead.OnlyGroups`, F3, the lead's
   decision that a person's grouping must not cost the group DONE. A test not read whole hands the
   plan none of its rows, is counted FAILED on the VIEWS BUILT block with why, so the group is
@@ -716,9 +725,10 @@ well as to pass.
   GetDataType, but it prefixes the kind and hands back "Int32:702888". So the kind is read
   and the right accessor called, with ToString as the fallback for a kind nobody has seen
   and its prefix stripped. Measured, see docs\history\scan.md section 4n
-- Anything that can throw per item goes in its own try. The source file and the discipline
-  are read last and were lost to a throw three properties earlier, on all 426 items, which
-  is one throw costing three columns
+- Anything that can throw per item goes in its own try. Since FR-198 the source file is the
+  one property read off each item past the quick ones, in its own try, for the mirror merge
+  key. Before it the source file and the discipline were read last and were lost to a throw
+  three properties earlier, on all 426 items, one throw costing three columns
 - Setting the models is still done, BEFORE the clash step, and it is kept because it fixes
   what the person sees in Navisworks. Measured on 2026-09-01 across all 4027 types:
   Document.Units is read only, Model.Units is read only, and the only public managed member
@@ -741,6 +751,18 @@ well as to pass.
   collapsed under More, rarely changed. The two that destroy data are collapsed on their
   own under Things that destroy data, because they do not belong beside ordinary output
   options. Fewer decisions is the goal, not more words explaining them
+- THE SIDE WALK OF THE LEFTOVERS, SetBuilder.CountSide, F115: the side's selection and every
+  source read out of it are disposed, R1, sources that read as none count the side as not read,
+  R21, and a source resolving to a folder credits every set inside it, R8. IndexOfSet reads from
+  the end as FindSelectionSet does, R3, so the set the drift was read off is the set replaced.
+  The leftovers are walked and reported with the box off and acted on only with it ticked, R20.
+  CarryOut finds every set again by its PATH, IndexPathsAt, and acts on nothing where a path
+  holds no set or more than one, and nothing more is removed or renamed once the document is
+  damaged, F115 attempt 2. A throw after the twin is gone declares the document damaged. With
+  the box off a read of the walk that failed is one FINDING line and not a FAILURE. Every
+  Search read off a set by the drift or the walk is disposed.
+  The EMPTY SETS block is written by WriteTheEmptySets wherever the sets were judged, after the
+  clash run and where no test ran, R4
 - THE GENERIC MODELS SETS ARE BUILT IN THE SETS STEP OF EVERY GROUP, F128, with an XML picked
   or without one, since they come from the models and not from the file. `PlanTheGenericSets`
   reads Model.FileName and Model.SourceFileName off each model of the document, each wrapper
@@ -754,7 +776,10 @@ well as to pass.
   where it is refused the engine writes that line and `SetBuilder.Build` is told not to walk, so
   a model's read that threw never removes last week's sets. Where the picked file's build
   declared the document damaged, Q74, the Generic Models sets are not built, one line says so
-  and the step asks no save, so the OR of the two builds never saves a damaged NWF. Their
+  and the step asks no save, so the OR of the two builds never saves a damaged NWF. The clash
+  step then creates and runs no test and FinishTheGroup stops before the views, the NWF save,
+  the workbook and the NWD, F115 R15 and R24, since a test or a view asked for the save over
+  the damage. Their
   outcome is `JobOutcome.GenericSets`, never the picked file's, so the EMPTY SETS
   judge and SETS ACROSS THE RUN do not read them, a set created asks for the NWF save as any
   set does, FR-020, and a present set keeps the question it was built with unless the rebuild
@@ -913,6 +938,31 @@ well as to pass.
   ghosted look holds only where they read on. A STOP BETWEEN THE SET AND THE PUT BACK, Navisworks closed or
   killed in the pass, leaves the value set, and whether Navisworks keeps it for the user's next start is
   UNKNOWN, row F150-R1
+- LONG RUNS KEPT FROM SLOWING, F147, Bader's order of 2026-10-11, Q152 item 2. RenderThePicturesWaiting
+  switches the undo off for the whole PICTURES step by Document.StartDisableUndo and, in its finally, on
+  again by the matched EndDisableUndo, a counter by the install's Autodesk.Navisworks.Api.xml read on
+  2026-10-12. The matching call is made only where the switch off returned, or where it threw and the
+  undo reads off by IsUndoDisabled where it read on before, since the call then took the counter. One
+  IMAGES line reads IsUndoDisabled and the name of the step Undo would take next before, during and
+  after the pictures, a name and not the depth of the stack, so it says what it read, and an undo that
+  reads off after where it read on before gets a line of its own, THE UNDO IS LEFT OFF. A put back
+  retried by modelsShown.Dispose in Run's finally runs after the undo is on again. Core's
+  TextureCacheWatch watches the folder ogs under Path.GetTempPath across the pass, built inside the
+  step's try, a temp folder that cannot be read or joined said and the cache left unchecked, and it is
+  checked between two stretches, core.md, THE TEXTURE CACHE. Every picture is already disposed as its
+  save returns, and the pass moves no camera, so there is no camera change for a jump cut. Every call of
+  the pass is on the main thread. The views step keeps the undo on
+- WHAT EACH STEP HOLDS IS RELEASED AS IT ENDS, F147, Bader's answer to Q155 on 2026-10-12, item 2,
+  read off every reader in src, no speculative rewrite. ClashRunner's picturesWaiting, one entry a row,
+  is read by the PICTURES step alone and emptied in its finally. JobOutcome.RowAddresses, where every row
+  came from, is read by the VIEWS step alone and set to null in FinishTheGroup as BuildViewpoints
+  returns. JobOutcome.Report, the group's report model with every row, is read last by the GAPS block
+  and released with RowAddresses by LetGoOfTheRows in the finally of RunOne and RunAnOpenFile, whichever
+  way the group ended, since the run keeps every outcome for RESULT and each group's rows stayed until
+  the run ended. A new reader of either after the group must move that release. Every Navisworks wrapper
+  of the clash step was already disposed where it was read, and the sets index in Run's finally. The
+  engine sets RunLog.MemoryReader to ProcessMemory.Read beside the census reader, core.md, THE MEMORY
+  AROUND EACH STEP
 - THE RUN COLUMN OF THE GROUP LIST TAKES A SHIFT RANGE, F130, FR-179. The rule is Core's,
   core.md, A SHIFT CLICK ON A RUN BOX. The column is a DataGridTemplateColumn and never the
   stock DataGridCheckBoxColumn, whose box is not hit testable, so the cell took the click and
@@ -927,7 +977,12 @@ well as to pass.
   IL and never clicked, took a click to select the row before one that flipped it. Whether
   the template's box flips on the first click in Navisworks is UNKNOWN until step 546 of
   steps\03_bader_next.md. The grey line under the list, x:Name RunRangeHelp, is set
-  off `ShiftRange.HelpLine` in the constructor. The box has no x:Name and no label, so it is
+  off `ShiftRange.HelpLine` in the constructor. THE SPACE BAR ON THE RUN CELL TICKS AS THE
+  STOCK COLUMN DID, F130-R1: the grid's PreviewKeyDown, `OnGroupsGridKeyDown`, takes Space on a
+  DataGridCell of the column named RunColumn, flips its row through Include where CanInclude
+  allows and goes on as a click does, through `RunBoxFlipped`, the one path both share, Shift
+  making a range. Space with the box itself focused is left to the box, which raises Click.
+  The box has no x:Name and no label, so it is
   not one of the sixteen tick boxes counted below. The window driver cannot carry Shift
   without real input, turn5\measure-shift-driver-result.md, so its proof is numbered steps in
   steps\03_bader_next.md

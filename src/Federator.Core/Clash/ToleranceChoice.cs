@@ -211,25 +211,68 @@ namespace Federator.Core.Clash
         /// <summary>
         /// The line one group writes. Both counts are read, neither is worked out from the
         /// other, and the converted value is on it so nobody has to do the arithmetic to
-        /// find out what 25 mm was in a document measuring feet.
+        /// find out what 25 mm was in a document measuring feet. Under Set on a saved test
+        /// counts only where its tolerance was changed, FR-053, and every other saved test is
+        /// named by what happened to it.
         /// </summary>
-        public string LogLine(int created, int alreadyInTheDocument, string documentUnits)
+        public string LogLine(int created, SavedTestTolerances saved, string documentUnits)
         {
-            int total = created + alreadyInTheDocument;
+            if (saved == null)
+            {
+                saved = new SavedTestTolerances();
+            }
 
             if (!chosen)
             {
+                int total = created + saved.Total;
+
                 return Prefix + " read per test out of the XML, which is what this tool does "
                     + "unless a tolerance is chosen on the Clash step. " + total
                     + Word(total, " test", " tests") + ", " + created + " created fresh and "
-                    + alreadyInTheDocument + " left as the document has them";
+                    + saved.Total + " left as the document has them";
             }
 
+            int set = saved.Of(SavedTestTolerance.Set);
+            int setOn = created + set;
+
             return Prefix + " " + Words(millimetres) + " chosen in the tool, so it beats both "
-                + "the XML and the document. Set on " + total + Word(total, " test", " tests")
-                + ", " + created + " created fresh and " + alreadyInTheDocument
-                + " already in the document. " + Words(millimetres) + " is " + Converted(documentUnits)
-                + " in this document";
+                + "the XML and the document. Set on " + setOn + Word(setOn, " test", " tests")
+                + ", " + created + " created fresh and " + set
+                + " already in the document. " + NotSet(saved)
+                + Words(millimetres) + " is " + Converted(documentUnits) + " in this document";
+        }
+
+        /// <summary>
+        /// The saved tests whose tolerance this run did not change, each kind on its own, or
+        /// nothing where there are none.
+        /// </summary>
+        private static string NotSet(SavedTestTolerances saved)
+        {
+            List<string> parts = new List<string>();
+            int notSet = 0;
+
+            foreach (KeyValuePair<SavedTestTolerance, string> kind in new[]
+            {
+                new KeyValuePair<SavedTestTolerance, string>(SavedTestTolerance.AlreadyAtTheValue, "already at the value"),
+                new KeyValuePair<SavedTestTolerance, string>(SavedTestTolerance.NotFound, "not found"),
+                new KeyValuePair<SavedTestTolerance, string>(SavedTestTolerance.WouldNotCopy, "would not copy as a clash test"),
+                new KeyValuePair<SavedTestTolerance, string>(SavedTestTolerance.Threw, "threw"),
+                new KeyValuePair<SavedTestTolerance, string>(SavedTestTolerance.LeftAsTheDocumentHasIt, "left as the document has them")
+            })
+            {
+                int count = saved.Of(kind.Key);
+
+                if (count > 0)
+                {
+                    parts.Add(count + " " + kind.Value);
+                    notSet += count;
+                }
+            }
+
+            return notSet == 0
+                ? string.Empty
+                : "Not set on " + notSet + Word(notSet, " saved test", " saved tests") + ": "
+                    + string.Join(", ", parts.ToArray()) + ". ";
         }
 
         /// <summary>

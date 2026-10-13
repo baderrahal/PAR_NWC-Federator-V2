@@ -11,22 +11,18 @@ namespace Federator.Core.Report
     /// <summary>
     /// One side of one clash row.
     ///
-    /// Family, type name, material, source file and discipline are read off every item and
-    /// reach no output. They were put here so whoever has to fix a clash would not have to
-    /// open the model, and then the workbook became the client's one sheet with none of
-    /// ours on it and the page stayed theirs. Whether they go or wait for a column that
-    /// does not exist yet is Q25.
+    /// Family, type name, material and the discipline of each item were read off every
+    /// item and reached no output, and Bader deleted them with their harvest on 2026-10-06,
+    /// Q35, Q36, Q37 and Q39, FR-198. The source file and the id's property are still read
+    /// off every item and reach no output, each kept only for what reads it: the mirror
+    /// merge's key and the ITEM IDS block, Q38 and Q40.
     /// </summary>
     public sealed class ClashItem
     {
         public ClashItem()
         {
             Name = string.Empty;
-            Family = string.Empty;
-            Type = string.Empty;
-            Material = string.Empty;
             SourceFile = string.Empty;
-            Discipline = string.Empty;
             ElementId = string.Empty;
             ItemType = string.Empty;
             IdLabel = ClientFormat.DefaultIdLabel;
@@ -38,8 +34,8 @@ namespace Federator.Core.Report
 
         /// <summary>
         /// The client's Item Type column, which is the Navisworks item type and reads
-        /// Solid on every one of the 120 item cells in the accepted report. Not the same
-        /// as <see cref="Type"/>, which is the Revit type name and is ours.
+        /// Solid on every one of the 120 item cells in the accepted report. Not the Revit
+        /// type name, which is read nowhere since FR-198.
         /// </summary>
         public string ItemType { get; set; }
 
@@ -84,27 +80,24 @@ namespace Federator.Core.Report
             return ClientFormat.ItemId(IdLabel, ElementId);
         }
 
-        public string Family { get; set; }
-
-        public string Type { get; set; }
-
-        public string Material { get; set; }
-
         /// <summary>
         /// The item category, Pipes or Walls or whatever the model calls it. F72.
         ///
-        /// It is read the same way the family, the type and the material are and off the
-        /// same item, and it reaches no output today, exactly like those three. It does not
+        /// It is read off the item by the names of a setting, and it reaches no output
+        /// today. It does not
         /// feed the penetration decision either: the rule reads the category of a
         /// PenetrationSide, which the add-in reads for itself, and nothing reads this one
         /// back. It is a report column waiting to be asked for, T1-N77
         /// </summary>
         public string Category { get; set; }
 
-        /// <summary>The NWC the item came from, which is how a discipline is traced back.</summary>
+        /// <summary>
+        /// The NWC the item came from. Bader's Q38 says the SOURCE FINDINGS block is enough
+        /// and the per item harvest goes, FR-198, but MergeKey reads it, F132's add-in half,
+        /// which came after the item was measured. So it is read for the merge alone, in no
+        /// output, and the GAP block says how many items carried it.
+        /// </summary>
         public string SourceFile { get; set; }
-
-        public string Discipline { get; set; }
 
         /// <summary>The Revit element id where there is one, otherwise the instance GUID.</summary>
         public string ElementId { get; set; }
@@ -117,8 +110,8 @@ namespace Federator.Core.Report
         /// so no index path is read. An item with no id, a model carrying no id property and no
         /// real instance GUID, is not read, UNKNOWN, which MirrorMerge reads as an item not read
         /// and fails closed on. Two clashes of one test between the same two elements on
-        /// geometry of one name share a key, and the merge then counts the second as a repeat
-        /// and says so, never adding a clash twice.
+        /// geometry of one name share a key, so the merge counts a key as many times as each
+        /// test found it, F132-R3.
         /// </summary>
         public string MergeKey()
         {

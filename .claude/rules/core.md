@@ -39,7 +39,14 @@ because the person meant that value.
 
 The collision check runs on the table, not on the patterns, so two names typed to the
 same thing is caught the same way two patterns colliding is. It names both groups and
-the run does not start.
+the run does not start. A group's internal workbook is named after its workbook with the
+suffix, `GenericModelsSettings.WorkbookNameFor`, and sits beside it in the Clash Reports
+folder, so the check reads each internal workbook name against every other group's
+workbook name too, ignoring case as the three kinds are read: a group whose workbook is X
+Internal beside a group X is named with both groups and the run does not start, F127-R5,
+the breaker's point 6 on F127b. `OutputNameTable.WhyTheRunCannotStart` takes the settings
+the engine names the internal workbook by, so the suffix the check reads is the one the run
+writes.
 
 Every supplied field is shown in the Outputs step and can be changed there. The
 defaults are ZZZ for the level, which is the ISO 19650 code for all levels, BM for
@@ -379,6 +386,39 @@ and 6 does not read as broken.
   first leftover asking its question and refuses the next, because the first removes the twin
   and takes its name, so the second would then remove the first, a working set with sides, by
   that name, while both lines said RENAMED
+- A REBUILD IS READ BACK AGAINST THE FILE, F115 R19. `SetBuildOutcome.AddDrift` takes the set read
+  again after the rebuild, and `Took` is the one rule for a rebuild that took: found again, read,
+  and asking what the file asks. One that did not is in `RebuiltNotTaken` and the lines say so.
+  It still counts as rebuilt for the save, since the document changed
+- A SET PUT IN AND THEN LOST ASKS FOR THE SAVE, F115 R2 and R22. `AddFailedAfterPutIn` records a
+  set created or replaced and then lost track of as FAILED with `SetResult.PutIn`, its line says
+  the document holds it, and `PutAnythingIn` reads `FailedAfterPutInCount`
+- THE BOX IS BLAMED ONLY WHERE IT IS OFF, F115 R18. `RebuildsAsked` is set by the builder, a
+  drifted set not rebuilt with it ticked is said as a rebuild that failed, `NotRebuiltCount`, and
+  the old and new questions are said to be in the run log, which the window does not show
+- THE SUMMARY CARRIES THE DRIFT COUNTS AND THE DAMAGE, F115 R7 and R15. `Summary()` adds the
+  drifted, rebuilt and could not be read counts where any is above nought, and `Summary()` and
+  `Lines()` say a document the leftover pair damaged, so the Build sets button shows it
+- A SET AT ZERO NOT READ IS COUNTED IN THE EMPTY SETS BLOCK, F115 R6. `JudgeIfEmpty` counts a set at
+  zero with no question read in `AtZeroNotJudged` where a judge was handed, and `EmptySets.Lines`
+  counts it in the block's header with a line of its own. `EmptySets.LinesWithNoTest` is the block
+  where no clash test ran, F115 R4, saying no cost was counted
+- THE JUDGE NEVER THROWS ON THE NAMING SETTINGS, F115 R9, and KNOWS OF A MODEL THE EXPORT CHECK
+  DROPPED, F115 R14. `EmptySetJudge.For` reads the settings through Validate first and makes their
+  words the reason the project is UNKNOWN, and takes how many models the document holds, minus one
+  where not read, so a workset no model read carries is one it cannot tell about where a model was
+  dropped
+- ONE PATH HOLDS ONE SET IN THE PLAN, F115 R23. `SetBuildPlan.From` skips a second set at a path
+  the picked file already used, by name with why. `NamesInTheFile` is every name the file holds,
+  the skipped among them, and is what the leftover walk reads as named, F115 R16
+- THE LEFTOVERS ARE REPORTED WITH THE BOX OFF, F115 R20. `SetLeftovers.Lines` and `LeftoverSet.Line`
+  take whether the box is ticked and with it off say nothing is done and what a ticked run would
+  do, F115 attempt 2. A read of the walk that failed with the box off is one line,
+  `SetLeftovers.NotReadWithTheBoxOff`, a FINDING and never a FAILURE
+- A LEFTOVER CARRIES ITS TWIN'S PATH AND WHERE ITS RENAME LANDS, `TwinPath` and `RenamedPath`, F115
+  attempt 2, so the add-in acts on the sets at the paths Core decided and never on the first of a
+  name. `StoppedBecause` makes a build that stopped say so in `Summary()` and `Lines()`, and
+  `AddLeftoverUntouched` counts the leftovers not acted on once the document is damaged
 
 ### The teams of the picked file, F131
 
@@ -406,7 +446,9 @@ and 6 does not read as broken.
   `TeamMapSettings.UnknownTeam`, UNKNOWN, the one word `ViewpointSettings.DefaultUnknownDiscipline`
   reads. NAMED IN THE LOG: `TeamMap.SetLines` gives a TEAMS line for each set of the picked XML
   whose name carries no code of the map, with its team or UNKNOWN, said after the map's own
-  lines, and none where the map maps no team
+  lines, and none where the map maps no team. A set with no name is said as one, by the
+  folders above it or at the root, as one no test side can name, so no team is read for it,
+  row F114-K31, and never as a line naming no set
 - A MAP THAT CANNOT BE READ IS SAID, NEVER HALF READ AND NEVER A THROW. A line it does not
   know, a code on two teams or twice on one line, a team named twice, a team with no code,
   an empty name or code, a code holding any space or a character a person cannot see, a team
@@ -664,7 +706,20 @@ and 6 does not read as broken.
   the kept test does not would be added from the other and still held in its own block, the
   breaker's finding 5 on attempt 11, and where the kept test has more than one mirror a
   MIRROR line says so. A clash is the unordered pair of its two items' keys, the add-in's to
-  read. `AddTo(ClashReport)` is called once the run has set every test's state, and it reads
+  read. TWO CLASHES OF ONE TEST CAN SHARE THAT PAIR, one element carrying two pieces of
+  geometry of one name, `ClashItem.MergeKey`, so a pair is counted as many times as each test
+  found it: a mirror's clash past the kept test's count of its pair is found by the mirror only
+  and added, and past what earlier mirrors added of it too, F132-R3, where until 2026-10-12 it
+  was read as a repeat and left out, in no block once the mirror was taken out. Whether two
+  copies of one pair in one test are two clashes or one read twice is UNKNOWN and unmeasured,
+  and what stops a double count is the guard of AddTo, a mirror merged only where the clashes
+  handed are as many as its report holds. WHICH COPY IS THE TWIN OF WHICH IS UNKNOWN, F132-R3
+  attempt 2: where a pair has more than one copy under the kept test or under the mirror and
+  its copies carry more than one status, no status is carried across, the kept test's stay,
+  and one MIRROR line names the pair, its statuses on both sides and that the twin is UNKNOWN.
+  A pair with one copy on each side is weighed as below. A later mirror's copy of a clash an
+  earlier mirror added keeps the status as added, and where the two differ a MIRROR line names
+  it. `AddTo(ClashReport)` is called once the run has set every test's state, and it reads
   ran off `TestReport.State`, never off a count of calls: a kept test that did not run, or is
   not in the report exactly once, merges nothing and each mirror is reported as its own test,
   and a mirror that did not run, or is not in the report exactly once, is said UNKNOWN and
@@ -849,7 +904,10 @@ and 6 does not read as broken.
   finds DIFFERENT clashes next run and NOT that its results are reset, 5y, and says
   nothing at all under the default, because a line that reads the same on every run
   teaches people to skip the screen. One TOLERANCE line per group carries both counts and
-  the converted value. Why it exists: the matrix is written at 25 mm, the NWFs on disk
+  the converted value. Under Set on a saved test counts only where its tolerance was
+  changed, FR-053, and every other saved test is named on the same line by what happened
+  to it, already at the value, not found, would not copy as a clash test or threw,
+  `SavedTestTolerances`, recorded once per test whichever way it left. Why it exists: the matrix is written at 25 mm, the NWFs on disk
   held tests at 75 mm, a test already in the document is left exactly as it is, so the
   run clashed at 75 while everybody believed it was clashing at 25
 - THE REPORT READS ITS TOLERANCE OFF THE CLASH TEST IN THE DOCUMENT, F76, because the
@@ -977,6 +1035,13 @@ and 6 does not read as broken.
   on to its NWD. The steps are judged as they would be without it and what they find is
   named after it, so a missing NWD, or one not from this run, is never hidden behind the
   models
+- AN NWF SAVE IS JUDGED BY WHAT THE SAVE SAID, as the NWD publish is, FR-043 to FR-045.
+  `GroupFacts.NwfSavesAsked` counts every save of the NWF this run asked and
+  `NwfSavesThatFailed` those that returned false or threw. Any failed save is FAILED with
+  the reason that the NWF does not hold what this run put in, and how many of how many
+  where there were two. A Rebuilt group that saved none is FAILED with the reason that its
+  NWF keeps the old file list, because the NWD carries the new one. An opened group that
+  saved none is not judged on it, since the NWF it opened is the one it leaves
 - A GROUP NOT ON THE SAME SHARED COORDINATES SKIPS ITS CLASH AND NOTHING ELSE, Q98 B2
   and Bader's answer to Q99 and Q100 on 2026-10-04. A model is not on the same
   coordinates when it names Internal as its shared site, when its site was read and names
@@ -997,8 +1062,9 @@ and 6 does not read as broken.
   written, so it names the models and their sites and NOTHING OF A FILE. The steps that
   write say what was written. The ALIGNMENT failed run line, `AlignmentCheck.FailedRunLine`,
   names both causes whichever way the rule is set, and says nothing of which files were
-  written either, because the files written list can name an NWD whose publish returned
-  false. The distance is the STRAIGHT LINE of dx, dy and
+  written either, because the line is made before any file is and the steps that write say
+  what was written. The files written list named an NWD whose publish returned false until
+  FR-189. The distance is the STRAIGHT LINE of dx, dy and
   dz and never each axis on its own, because 1B06WM's ME in the C06 run sat 1.206 m away
   and under a metre on every axis. The metre is a setting, `ReportOptions.FarModelMillimetres`,
   defaulting to `AlignmentCheck.DefaultFarModelMillimetres`.
@@ -1083,6 +1149,14 @@ and 6 does not read as broken.
   them as its own, and a file that was checked rather than written is logged with
   CheckOnDisk, which reports the size and records nothing. A file this run removed
   leaves the list through WriteRemoved, and only once it is gone from the disk
+- A WRITE WHOSE OWN CALL SAYS WHETHER IT WROTE HANDS THAT TO THE LOG, FR-189 and FR-044.
+  The save of the NWF and the publish of the NWD call `RunLog.WriteFinished` with the bool
+  the call gave, false where it threw. A file there after a call that did not report
+  success is read and said on a NOT WRITTEN line with its row, and is never added to the
+  files written list, since it is last week's file. A file an earlier write of this run put
+  there, the NWF of its first save, keeps its entry with the size read now. The size read
+  is returned either way, so the judgement still tells a file there from no file, and
+  names the failed save or publish
 - The workbook is ONE SHEET, laid out exactly as the report the client receives: every
   test one after another, most clashes first. The Summary sheet, the Matrix sheet and the
   sheet per test are GONE. All three were asked for in an earlier session, before anyone
@@ -1216,7 +1290,8 @@ and 6 does not read as broken.
   C off the client's clash matrix. Status is the Navisworks word, New, Active, Reviewed,
   Approved or Resolved, and lives on a clash. Nothing in ClashPriority names a status and
   nothing in ClashStatus names a priority
-- Our extra columns, family, type name, material, source file and discipline, come AFTER
+- Our extra columns, none since FR-198 deleted family, type name, material and the per item
+  discipline and left the source file reaching no output, would come AFTER
   theirs and never in place of any of them, on the CLASH XML and nowhere else. THE ONE
   EXCEPTION IS THE PRIORITY COLUMN ABOVE, which goes on the workbook and not on the clash
   XML, and only when a file is picked. The Client
@@ -1358,7 +1433,7 @@ and 6 does not read as broken.
 - Every clashobject carries the SAME list of smarttags, empty values included. The
   stylesheet counts them once off the first clashobject and uses that count for every row,
   so one item with fewer of them slides every column after it sideways
-- Date Found and our five extra item properties are ours, not theirs. Their report has
+- Date Found and the item properties this tool reads and they do not, two since FR-198, are ours, not theirs. Their report has
   neither, and there is no longer a choice about it: the workbook is their one sheet with
   none of ours on it, so both are left out everywhere and neither is written at all
 - The logo is DATA, read by the stylesheet from //logo/@href, not part of the layout, and
@@ -1514,6 +1589,12 @@ and 6 does not read as broken.
   them drawn, and `Describe` and the grey line say Clash Detective is asked, never what it draws. The box is
   labelled by `OtherItemsInPictures.TickLabel` and its grey line is `HelpLine`. A stop between the set and the
   put back is row F150-R1
+  never fired. A render or a save that threw is `ImageFailure.BecauseItThrewWriting`, the
+  type and the message with the picture's path and the picture's folder said as those words
+  wherever the message named them, in any capitals, and the path beside it on the line, so
+  fifty throws of access denied, each naming its own file, are one reason, F120-R1. The stop
+  words are ImageFailure's, worded for images, and the label's plain words carry the count
+  alone
 - What the pictures cost is MEASURED and logged per group: seconds per image, total
   seconds, how many, and how many megabytes. Every number anyone has given for this,
   including mine, was a guess until this existed. They are in the log and nowhere else,
@@ -1532,6 +1613,38 @@ and 6 does not read as broken.
   for bytes: the JPEG encoder is found once per group and not looked up on every save, which
   is what Image.Save with an ImageFormat does before calling the same overload. The size,
   the format, the quality, the name and the folder of a picture are untouched
+- THE TEXTURE CACHE, F147, Bader's order of 2026-10-11, Q152 item 2: Navisworks' cache under
+  %TEMP%\ogs is cleared between tests once it passes 5 GB, its size said before and after.
+  `Federator.Core.Report.TextureCache` holds the rule and `TextureCacheWatch` the watch over one picture
+  pass: checked as it begins and between two stretches at most once every 60 s, the interval counted
+  from the end of the last check, cleared there only once a size read whole is past the limit, and read
+  once more as it ends, never clearing there, for one IMAGES line of the size and the files at the start
+  and the end, the checks against the limit and the reads not whole, the clearings and the files they
+  removed, and the seconds the watch took, every check whole with its clearing and the clearing's
+  deletions, and the last read, Q155. A count not read whole is UNKNOWN on every line and never
+  nought. Bader's words are between tests, and the 60 s is the loop's, a setting, so a walk of a large
+  cache is not made between every two of 741 tests. A gigabyte is 1024 cubed bytes, and a size compared
+  with the limit carries its exact bytes. THE WALK NEVER LEAVES THE FOLDER: only a fully qualified folder
+  named ogs is walked, any other path refused before anything is read and said once on the pass line,
+  the walk is made a folder at a time and never into a link, a junction or a symbolic link, counted and
+  left, since the framework's walk with AllDirectories follows links, and a cache folder that is itself a
+  link is never walked. A folder inside that goes while it is walked is passed over and counted. A
+  clearing walks again keeping the paths, removes only the files that walk read, never a folder, counts
+  a file removed only where it was there to remove, counts what it could not remove and what had gone
+  before its turn, and says the size and the files before and after. ONCE A CLEARING LEAVES THE CACHE
+  NOT UNDER THE LIMIT, files held open among it, the checks go on at the interval for the rest of the
+  pass, and the cache is cleared again only once it holds more than that clearing left, its size read
+  after the clearing or, where that read was not whole, before it, `TextureCache.ShouldClear` and
+  `LeftBy`, Bader's choice A of Q155 on 2026-10-12. So new files are cleared at the next check, and a
+  cache that cannot be cleared is not cleared again while it has not grown, and the clearing's line names
+  the size it must grow past. Before Q155 one such clearing stopped the checks for the rest of the pass,
+  so new files grew unseen until the next group, the breaker's re-read of attempt 2. A walk that fails is
+  said once with why and counted as not whole, and clears nothing. Every line names the folder walked.
+  The watch never throws. The limit and the interval are settings on ImageOptions,
+  `TextureCacheLimitBytes` and `TextureCacheCheckEverySeconds`, a limit of zero switching the clearing
+  off. The cache held no file when read on 2026-10-12, so what removing its files while Navisworks runs
+  does, and the seconds of a walk of a large cache, are UNKNOWN. A second Navisworks of the same user
+  shares the folder, and its files not held open would go with the rest
 - The report goes out in METERS, always, whatever the document measures in. Q23. It used
   to go out in the document's units, with the rule that converting a number ourselves
   while the document read feet would make the numbers and the label disagree. The run of
@@ -1766,8 +1879,15 @@ and 6 does not read as broken.
   never copied. A SIDE'S TEAM IS `TeamMap.TeamOfSet`, the one rule the TEAMS lines read,
   with the clash XML's sets handed to `ViewTeams`: the team of the code its set name
   carries, and where it carries none the team a folder above it names, so BLD-Security
-  Devices is Electrical in both. A side is named by its set name alone, so two sets of one
-  name whose folders give two teams read UNKNOWN. A SET WITH NO NAME NEVER THROWS, F114
+  Devices is Electrical in both. A SIDE IS THE TEST'S LOCATOR WHOLE, row F114-K30,
+  `ViewClash.LeftSide` off `TestReport.LeftLocator`: where a set of the tree is at exactly that
+  path, `SelectionSetDefinition.Path`, the side reads the folders of the sets at that path
+  alone, so two sets of one name in two folders each read the team their own folder names.
+  Where none is, or the side is a set name alone, every set of that name is read, and two
+  whose folders give two teams read UNKNOWN. An UNKNOWN side is kept by its whole locator,
+  so two sides of one set name write each its own reason, N5 of F114c. With no set tree read,
+  a weekly run with no clash XML, the locator reads exactly the team its set name read before
+  F114-K30, the code its name carries, so no pair and no size folder moves. A SET WITH NO NAME NEVER THROWS, F114
   attempt 8: the reader gives a set or a set folder with no name attribute a null name, no
   side can name it, so `ViewTeams` leaves it out, and a side with no set name reads UNKNOWN,
   as `ExportCheck` and `CodeOf` treat a set with no name. A side reading UNKNOWN is named in
@@ -1844,7 +1964,11 @@ and 6 does not read as broken.
   and a test not read is one `TestsRead` did not read whole, B1, never one the clash step
   did not run: keyed by the report's test name, its in scope rows alone needing reading, a
   test the clash step ran with no row whole with no row, and a test whose open rows are all
-  result groups in neither list, kept and never failed, F114's second reading,
+  result groups in neither list, kept and never failed, F114's second reading. A test the
+  clash step skipped as FAILED is never whole, met before or after, and nor is the kept test
+  of a merged mirror it failed on, read by the mirror's run name, `TestsRead.ClashStepFailed`,
+  row F114-K38, each saying why, since a harvest that threw after only closed rows leaves the
+  report with no open clash of it while the document may hold some,
   nothing goes when the clash step was not sound, nothing goes under two folders of one
   name side by side, and a folder goes only when it is the tool's and this run empties it.
   Removals go deepest first and latest index first, 5z, and `FolderGoesWithChildren`, true
@@ -2211,9 +2335,29 @@ it if the same work carries the same name every time it is timed.
   the Revit elements the EXPORT CHECK counted, the clash total and the viewpoints created,
   every one a number the run already read and none a new Navisworks call. The block says
   where each number comes from. A number that could not be read is UNKNOWN and never
-  zero, and a total over parts of which one could not be read is UNKNOWN too. It judges
+  zero, and a total over parts of which one could not be read is UNKNOWN too. A group
+  whose clash was skipped for the shared coordinates has UNKNOWN clashes, as RESULT says,
+  `GroupSize.ClashesIn`, T6-R-ZEROCLASHES, and a test that ran and found nothing is a real
+  zero. It judges
   nothing and sets no target, and the line about the 45 minutes stays the last line of
   the run block, as it was
+
+### The memory around each step, F147
+
+- Bader's answer to Q155 on 2026-10-12, item 2 of his order: the memory at the start and the end of
+  each step. `RunLog.Step` writes one MEMORY line under a step's started line and one before its
+  finished line, through `RunLog.MemoryReader`, which the engine sets to `ProcessMemory.Read`, so every
+  step gets it in one place and no step's code says it. Three numbers in megabytes of 1024 squared
+  bytes: the private bytes and the working set as the loop's life check reads them, and the managed heap
+  read without a collection, so reading it never changes it. The end line says how far each moved since
+  the start, up, down or unchanged
+- read where the step's own started and finished lines are written, the first visit of a step in a
+  group, so TESTS RUN, entered once a test, costs two reads a group and not two a test. The start is
+  read after the census before a step and the end before the census after it, so the census's reading
+  is not counted to the step. A nested step's pair is inside its parent's
+- a number not read is UNKNOWN and never nought, and the reason is said on the line. A read Windows
+  refuses keeps the managed heap, and a reader that throws is said as the reason, so logging never
+  stops a run. With no reader set, no MEMORY line is written. RunLogMemoryTests
 
 ### The document census, F61
 
@@ -2277,21 +2421,30 @@ is exactly it, found by an audit of every file under src. The run says it itself
 - a gap names three things: what is missing, what it came to on this group, and where
   it would belong. A gap with no value is a complaint and one with no place to go is a
   shrug
-- a property NOTHING carried is not a gap. Reporting it would say the run is holding
-  back something it never read
+- a property read on every item and empty on every one is SAID, with its count, `read on N
+  item cells and empty on every one`, Bader's Q76 in FR-198. It was left out, so the block
+  could not tell an output carrying it from the run reading nothing. A report with no item
+  read nothing and has no gap
 - the block is written even when it is empty, saying nothing was held back, because a
   missing block reads as a check that did not run
 - nothing acts on it. A gap does not fail a group, does not stop a run and does not
   change an output. It is information in the log, which is the rule this tool is built
   on
 - the run line counts gaps by NAME and not by line. The same ones are held back on
-  every group, so a run of twenty two groups would report 132 and say nothing except
+  every group, so a run of twenty two groups would report 44 and say nothing except
   how many groups there were. The number that means something is how many distinct
   things this tool knows and does not show
 - the six were MEASURED on 2026-09-19 by reading all three writers. WorkbookWriter,
   HtmlTabularWriter and ClientReportColumns name none of Family, Type, Material,
   SourceFile, Discipline or IdFrom anywhere, and ClashReportXml writes two quick
   properties and says in its own comment that the five used to be written and are not
+- TWO ARE LEFT SINCE FR-198. Bader deleted Family, Type Name, Material and the per item
+  discipline with their harvest and their names settings on 2026-10-06, Q35, Q36, Q37 and
+  Q39, so ClashItem holds none of them and the harvest reads none. The discipline read off
+  part 5 of the NWC name is untouched. The source file is still read off every item, since
+  `ClashItem.MergeKey` reads it for the mirror merge, F132, which came after Q38 was
+  measured, and the id's property is kept as the ITEM IDS block counts it, Q40. Each is in
+  no output and the block names both
 
 ### The run against the session, F80
 
@@ -2412,7 +2565,7 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   of this run and the group's own, so a code the group carries is always a code of the run. The
   open file run has no scan and its run is its one group. A group the scan found and the run did
   not tick is not among them, so a code only it carries reads UNKNOWN and never not in the
-  group, row F127-R3
+  group, row F127-R3, dropped on 2026-10-12 under Q143 since UNKNOWN is never a wrong word
 - A TEST THE RUN LEFT NO RECORD OF, OR NEVER REACHED, IS NOT COMPARED, and one the run knows it
   did not create, F77 kept it out or the plan dropped it before the model, is held by neither
   side. A test the plan dropped before the model that Clash Detective holds with results names
@@ -2719,6 +2872,10 @@ per event, eight columns, tab separated, with a header.
   cannot be added without its row and a row cannot say something the text log does not
 - a sentence with no number in it writes NO row. That is the rule and not an oversight:
   a row whose number column is empty is noise in a file whose whole purpose is numbers
+- a tolerance in the number column keeps the ten decimals the clash file gives,
+  `EventRow.Tolerance`, FR-047, the one formatter of a tolerance as a number, which the
+  plan, the drift and the created line read too. `EventRow.Exact` is for sizes and
+  seconds, three decimals, and made 0.0820209974 ft read 0.082
 - tab separated and not comma, because a clash name, a set locator and a file path all
   hold commas and none of them holds a tab, and Excel opens a tab separated file with no
   import dialog

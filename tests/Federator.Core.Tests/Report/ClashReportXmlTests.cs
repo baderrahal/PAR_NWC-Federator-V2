@@ -63,14 +63,9 @@ namespace Federator.Core.Tests
             group.Y = -3.25;
             group.Z = 9.0;
             group.Left.Name = "Floor 200mm";
-            group.Left.Family = "Floor";
-            group.Left.Type = "Generic 200mm";
-            group.Left.Material = "Concrete";
             group.Left.SourceFile = "1104-PAR-1C07BC-ZZZ-AR-MOD-000001.nwc";
-            group.Left.Discipline = "AR";
             group.Left.ElementId = "884213";
             group.Right.Name = "Duct";
-            group.Right.Discipline = "ME";
             test.Add(group);
 
             ClashRow single = new ClashRow();
@@ -198,8 +193,8 @@ namespace Federator.Core.Tests
             Assert.That(objects[0].Element("layer").Value, Is.EqualTo("Level 03"));
         }
 
-        // Family, type and material go in as objectattribute pairs, which is the shape the
-        // stylesheets read arbitrary item properties out of.
+        // The id is the one objectattribute pair, which is the shape the stylesheets read
+        // arbitrary item properties out of.
         [Test]
         public void TheIdIsTheOneObjectattributeAndEverythingElseIsAQuickProperty()
         {

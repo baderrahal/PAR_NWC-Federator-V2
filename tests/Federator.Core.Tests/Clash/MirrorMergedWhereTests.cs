@@ -134,7 +134,7 @@ namespace Federator.Core.Tests
         {
             SetBuildOutcome swapped = MirrorRuleTests.Built(Ducts);
             Present(swapped, Columns, "Category equals Old Columns");
-            swapped.AddDrift(DriftOf(Columns, "Old Columns", "Structural Columns"), false);
+            swapped.AddDrift(DriftOf(Columns, "Old Columns", "Structural Columns"), false, null);
 
             MirrorRule rule = Over(MirrorRuleTests.NothingSaved(), swapped);
 
@@ -144,7 +144,7 @@ namespace Federator.Core.Tests
 
             SetBuildOutcome byRuleList = MirrorRuleTests.Built(Telecom, Walls);
             Present(byRuleList, Telephone, "Category equals Telephones");
-            byRuleList.AddDrift(DriftOf(Telephone, "Telephones", "Telephone Devices"), true);
+            byRuleList.AddDrift(DriftOf(Telephone, "Telephones", "Telephone Devices"), true, Sets.SetDriftTests.AsksWhatTheFileAsks());
 
             MirrorRule alike = MirrorRuleTests.RuleBuilt(
                 MirrorRuleTests.Plan(

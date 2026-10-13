@@ -107,6 +107,18 @@ namespace Federator.Addin.Engine
             get { return options.Write && options.OnlyTheTestsModels; }
         }
 
+        /// <summary>The size past which the texture cache is cleared between two tests' pictures, F147, the setting on ImageOptions.</summary>
+        public long TextureCacheLimitBytes
+        {
+            get { return options.TextureCacheLimitBytes; }
+        }
+
+        /// <summary>The least seconds between two measurements of the texture cache, F147, the setting on ImageOptions.</summary>
+        public int TextureCacheCheckEverySeconds
+        {
+            get { return options.TextureCacheCheckEverySeconds; }
+        }
+
         /// <summary>
         /// Whether the other items are left as Clash Detective draws them in the pictures, F150, the
         /// setting on ImageOptions. Off, PicturesHideOther sets Hide Other on for the picture pass.
@@ -236,7 +248,7 @@ namespace Federator.Addin.Engine
                 }
                 catch (Exception error)
                 {
-                    Missed(report, test, row, visit.Elapsed, ImageFailure.BecauseItThrew(error));
+                    Missed(report, test, row, visit.Elapsed, ImageFailure.BecauseItThrewWriting(error, path));
                     return false;
                 }
             }

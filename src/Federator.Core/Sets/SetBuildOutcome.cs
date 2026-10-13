@@ -16,6 +16,8 @@ namespace Federator.Core.Sets
         private readonly List<SetDrift> notRead = new List<SetDrift>();
         private readonly List<EmptySet> empty = new List<EmptySet>();
         private int rebuiltCount;
+        private readonly List<SetDrift> rebuiltNotTaken = new List<SetDrift>();
+        private int atZeroNotJudged;
         private readonly List<LeftoverSet> leftovers = new List<LeftoverSet>();
         private int actedOnLeftovers;
 
@@ -56,9 +58,10 @@ namespace Federator.Core.Sets
         /// run rebuilt it. One whose question differs is kept as drifted, one whose search
         /// could not be read as not read, FR-021, and one asking what the file asks is not
         /// kept. Apart from the results list because a drifted set is still a present set and
-        /// is counted as one.
+        /// is counted as one. readBack is the set read again off the document after a rebuild,
+        /// or null where it was not rebuilt or could not be found again, F115 R19.
         /// </summary>
-        public void AddDrift(SetDrift drift, bool rebuilt)
+        public void AddDrift(SetDrift drift, bool rebuilt, SetDrift readBack)
         {
             if (drift == null)
             {
@@ -78,11 +81,44 @@ namespace Federator.Core.Sets
 
             drifted.Add(drift);
 
-            if (rebuilt)
+            if (!rebuilt)
             {
-                rebuiltCount++;
+                return;
+            }
+
+            rebuiltCount++;
+
+            // F115 R19. A set replaced from the picked file is read back against the file, and one
+            // that still asks another question, or could not be found or read again, is said as a
+            // rebuild that did not take or is UNKNOWN. It was counted rebuilt on every run.
+            if (!Took(readBack))
+            {
+                rebuiltNotTaken.Add(drift);
             }
         }
+
+        /// <summary>
+        /// Whether a rebuilt set read back off the document asks what the picked file asks, the one
+        /// rule for a rebuild that took. Not where it could not be found again, not where its search
+        /// would not read, and not where it still asks another question.
+        /// </summary>
+        internal static bool Took(SetDrift readBack)
+        {
+            return readBack != null && !readBack.CouldNotRead && !readBack.Drifted;
+        }
+
+        /// <summary>The rebuilt sets that were not read back asking what the picked file asks, F115 R19.</summary>
+        public ReadOnlyCollection<SetDrift> RebuiltNotTaken
+        {
+            get { return new ReadOnlyCollection<SetDrift>(rebuiltNotTaken); }
+        }
+
+        /// <summary>
+        /// Whether this run was asked to rebuild a drifted set, the box of Q72. Set by the builder, so
+        /// a drifted set left as it was is never blamed on the box where the box was ticked and the
+        /// rebuild failed, F115 R18.
+        /// </summary>
+        public bool RebuildsAsked { get; set; }
 
         /// <summary>
         /// Every set that found NOTHING, with which of three things is wrong with it, 3b.
@@ -109,12 +145,29 @@ namespace Federator.Core.Sets
         /// </summary>
         public void JudgeIfEmpty(SetResult result, IList<ReadCondition> asked, EmptySetJudge judge)
         {
-            if (result == null || result.ItemCount != 0 || asked == null || judge == null)
+            if (result == null || result.ItemCount != 0 || judge == null)
             {
                 return;
             }
 
+            // F115 R6. A set at zero whose question could not be read is counted, so the EMPTY
+            // SETS block says how many sets at zero it could not judge.
+            if (asked == null)
+            {
+                atZeroNotJudged++;
+                return;
+            }
+
             AddEmpty(EmptySets.Why(result.Path, asked, judge));
+        }
+
+        /// <summary>
+        /// The sets at zero a judge was handed and could not judge, because what they ask could not
+        /// be read, F115 R6.
+        /// </summary>
+        public int AtZeroNotJudged
+        {
+            get { return atZeroNotJudged; }
         }
 
         /// <summary>The sets that found nothing and why.</summary>
@@ -150,6 +203,30 @@ namespace Federator.Core.Sets
         /// from it, which is the rule `DamagedDocument` holds for both callers.
         /// </summary>
         public string TheDocumentIsDamaged { get; set; }
+
+        /// <summary>
+        /// Why the build stopped before any set, or null where it ran, the breaker's finding 4 on
+        /// attempt 1. Set by the builder where there is no active document.
+        /// </summary>
+        public string StoppedBecause { get; set; }
+
+        /// <summary>
+        /// How many leftovers were not acted on because the document was damaged by an earlier one,
+        /// the breaker's finding 5 on attempt 1. Nothing more is removed or renamed once it is.
+        /// </summary>
+        public int LeftoversUntouched { get; private set; }
+
+        /// <summary>A leftover not acted on because the document is damaged, counted and recorded as not acted on.</summary>
+        public void AddLeftoverUntouched(LeftoverSet leftover)
+        {
+            if (leftover == null)
+            {
+                return;
+            }
+
+            AddLeftover(leftover, false);
+            LeftoversUntouched++;
+        }
 
         /// <summary>The sets the picked file no longer names.</summary>
         public ReadOnlyCollection<LeftoverSet> Leftovers
@@ -299,6 +376,38 @@ namespace Federator.Core.Sets
             return result;
         }
 
+        /// <summary>
+        /// A set that failed AFTER it was put into the document, F115 R2 and R22: created by AddCopy
+        /// or replaced by ReplaceWithCopy, and then lost track of, so the document holds it and the
+        /// NWF save is asked for. It was reported FAILED and asked no save, so the NWF on disk could
+        /// keep the old set while the NWD was published from the new one.
+        /// </summary>
+        public SetResult AddFailedAfterPutIn(string path, string name, int conditionCount, string error)
+        {
+            SetResult result = AddFailed(path, name, conditionCount, error);
+            result.PutIn = true;
+            return result;
+        }
+
+        /// <summary>Sets that failed after they were put into the document, F115 R2 and R22.</summary>
+        public int FailedAfterPutInCount
+        {
+            get
+            {
+                int count = 0;
+
+                foreach (SetResult result in results)
+                {
+                    if (result.PutIn && !result.Created && !result.Present)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
+
         /// <summary>Sets that reached the model and resolved.</summary>
         public int CreatedCount
         {
@@ -316,7 +425,7 @@ namespace Federator.Core.Sets
         /// </summary>
         public bool PutAnythingIn
         {
-            get { return CreatedCount > 0 || RebuiltCount > 0 || ActedOnLeftovers > 0; }
+            get { return CreatedCount > 0 || RebuiltCount > 0 || ActedOnLeftovers > 0 || FailedAfterPutInCount > 0; }
         }
 
         /// <summary>Created sets that found at least one item.</summary>
@@ -498,10 +607,25 @@ namespace Federator.Core.Sets
                     ? ", " + RebuiltCount + " of them rebuilt from the picked file and "
                         + (AlreadyPresentCount - RebuiltCount) + " left alone"
                     : " and left alone")
+                + (RebuiltNotTaken.Count > 0
+                    ? ", " + RebuiltNotTaken.Count + " of the rebuilt not read back asking what the file asks"
+                    : string.Empty)
+                + (FailedAfterPutInCount > 0
+                    ? ", " + FailedAfterPutInCount + " put in and then FAILED"
+                    : string.Empty)
                 + (Leftovers.Count > 0
                     ? ", " + ActedOnLeftovers + " of " + Leftovers.Count
                         + " set(s) the file no longer names brought up to date"
                     : string.Empty);
+        }
+
+        /// <summary>
+        /// The drifted sets a ticked box did not rebuild, because the rebuild failed or the set
+        /// could not be found again, F115 R18. Zero where the box is off.
+        /// </summary>
+        public int NotRebuiltCount
+        {
+            get { return RebuildsAsked ? Drifted.Count - RebuiltCount : 0; }
         }
 
         private static string WhetherTheyAsk(int notRead)
@@ -517,6 +641,13 @@ namespace Federator.Core.Sets
         /// </summary>
         public string Summary()
         {
+            // The breaker's finding 4 on attempt 1. A build that stopped read as a file holding no set.
+            if (!string.IsNullOrEmpty(StoppedBecause))
+            {
+                return "The sets build STOPPED before any set, because " + StoppedBecause + "."
+                    + (skipped.Count > 0 ? " " + skipped.Count + " skipped." : string.Empty);
+            }
+
             if (results.Count == 0)
             {
                 return skipped.Count > 0
@@ -541,7 +672,17 @@ namespace Federator.Core.Sets
                     : string.Empty)
                 + (FailedCount > 0 ? ", " + FailedCount + " failed" : string.Empty)
                 + (SkippedCount > 0 ? ", " + SkippedCount + " skipped" : string.Empty)
-                + ".";
+                // F115 R7. The drift counts, said in the window and the SETS step's phrase too and
+                // not only in the run log, so a weekly run whose sets drifted does not read clean.
+                + (Drifted.Count > 0
+                    ? ", " + Drifted.Count + " drifted"
+                        + (RebuiltCount > 0 ? " (" + RebuiltCount + " rebuilt)" : string.Empty)
+                    : string.Empty)
+                + (NotRead.Count > 0 ? ", " + NotRead.Count + " could not be read" : string.Empty)
+                + "."
+                + (string.IsNullOrEmpty(TheDocumentIsDamaged)
+                    ? string.Empty
+                    : " The document is DAMAGED and nothing may be saved from it.");
         }
 
         /// <summary>
@@ -551,6 +692,26 @@ namespace Federator.Core.Sets
         public IList<string> Lines()
         {
             List<string> lines = new List<string>();
+
+            // F115 R15. The Build sets button showed nothing of a pair that failed between its
+            // two halves, so a person could save the document it had damaged.
+            if (!string.IsNullOrEmpty(StoppedBecause))
+            {
+                lines.Add("The sets build STOPPED before any set, because " + StoppedBecause + ".");
+                lines.Add(string.Empty);
+            }
+
+            if (!string.IsNullOrEmpty(TheDocumentIsDamaged))
+            {
+                lines.Add("THE DOCUMENT IS DAMAGED: " + TheDocumentIsDamaged + ". Do not save it.");
+
+                if (LeftoversUntouched > 0)
+                {
+                    lines.Add(LeftoversUntouched + " more set(s) the file no longer names were left untouched, since nothing more is changed in a damaged document.");
+                }
+
+                lines.Add(string.Empty);
+            }
 
             foreach (SetResult result in results)
             {
@@ -622,14 +783,30 @@ namespace Federator.Core.Sets
                 }
                 else if (RebuiltCount == 0)
                 {
-                    lines.Add("      " + Drifted.Count + " of them DRIFTED and none was rebuilt, because the box is off. Each is"
-                        + " named above with the old question and the new one");
+                    // F115 R18. The box is blamed only where it is off, and the old and new
+                    // questions are in the run log, which the window does not show.
+                    lines.Add("      " + Drifted.Count + " of them DRIFTED and none was rebuilt, "
+                        + (RebuildsAsked
+                            ? "though the box is ticked, so each rebuild failed or its set was not found."
+                            : "because the box is off.")
+                        + " The run log names each with the old question and the new one");
                 }
                 else
                 {
                     lines.Add("      " + Drifted.Count + " of them DRIFTED and " + RebuiltCount
                         + " were REBUILT from the picked file. The clash tests");
                     lines.Add("      pointing at a rebuilt set keep their results and their statuses, measured 5v");
+
+                    if (NotRebuiltCount > 0)
+                    {
+                        lines.Add("      " + NotRebuiltCount + " more could not be rebuilt though the box is ticked. The run log says why");
+                    }
+
+                    if (RebuiltNotTaken.Count > 0)
+                    {
+                        lines.Add("      " + RebuiltNotTaken.Count + " of the rebuilt were not read back asking what the file asks,"
+                            + " so the rebuild did not take or whether it took is UNKNOWN. The run log names each");
+                    }
                 }
 
                 if (Drifted.Count > 0 && NotRead.Count > 0)
@@ -649,7 +826,10 @@ namespace Federator.Core.Sets
 
             if (FailedCount > 0)
             {
-                lines.Add("sets that failed  : " + FailedCount);
+                lines.Add("sets that failed  : " + FailedCount
+                    + (FailedAfterPutInCount > 0
+                        ? ", " + FailedAfterPutInCount + " of them after they were put into the document, so the NWF save is asked for"
+                        : string.Empty));
             }
 
             if (SkippedCount > 0)

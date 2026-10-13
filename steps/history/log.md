@@ -42,6 +42,407 @@ picture call draws through the highlighter the tool sets is UNKNOWN until the 1A
 transparent dimming are left as the user has them, so the ghosted look holds only where they read on.
 
 What comes next: the 1A02MM check.
+## 2026-10-12 F119 the run log and RESULT, the six items left, written by the developer as the lead's delegate
+
+Branch fix-F119c off main 80314b9, Bader's order of 2026-10-12, item 157 of steps\02_questions.md, wave 3b under
+his Q143 limits. The rows of steps\tracker.csv with area F119 still open: FR-043, FR-044, FR-045, FR-047, FR-053 and
+FR-189, and the register row T6-R-ZEROCLASHES. Each changes what the team sees in the log, the .tsv, the NWF or the
+NWD, so none was dropped.
+
+What was done:
+- FR-043, a reshaped group judged DONE with its NWF never saved. The reshape now saves the NWF through WriteNwf once
+  every one of the four came back, as the clear and rebuild does, and a Rebuilt group that saved its NWF none of the
+  times is FAILED with the reason that its NWF keeps the old file list
+- FR-044 and FR-045, a save of the NWF that returned false, after the rebuild or after the clash work, judged DONE.
+  Both saves count on the outcome, a false return and a throw alike, and any failed save is FAILED with the reason
+  that the NWF does not hold what this run put in, and how many of how many saves where there were two
+- FR-189, an NWD whose publish did not report success listed as written. RunLog.WriteFinished takes the write's own
+  result. A file there after a call that did not report success is said on a NOT WRITTEN line with its .tsv row and
+  kept off the files written list, and an NWF the first save of this run wrote keeps its entry with the size read
+  now. The NWF's two saves hand their result the same way
+- FR-047, the .tsv number column rounding a tolerance to three decimals. EventRow.Tolerance keeps the ten decimals
+  the clash file gives and is the one formatter of a tolerance as a number, read by the two rows of ClashRunner and
+  by the plan, the drift and the created line, where three private copies of the same format sat
+- FR-053, the TOLERANCE line counting a saved test as set before it was found. Each saved test is recorded once by
+  what happened to its tolerance, SavedTestTolerances, and the line counts under Set on only a test whose tolerance
+  changed and names the rest apart, already at the value, not found, would not copy as a clash test or threw
+- T6-R-ZEROCLASHES, TIMING BESIDE SIZE writing 0 clashes for a group whose clash was skipped. GroupSize.ClashesIn
+  is UNKNOWN there, as RESULT says, and a test that ran and found nothing stays a real zero
+- The rules in .claude\rules\core.md and addin.md, the section in steps\01_next.md and steps 720 to 750 of
+  steps\03_bader_next.md
+- Proved here: Core tests 2921 passed, 0 failed, 0 skipped on main 80314b9. The 14 new tests did not build there,
+  and against the new members written first with the old behaviour 9 of them failed, 2935 run. After the fix 2935
+  passed, 0 failed, 0 skipped. The solution builds in Release with 0 warnings and 0 errors, the add-in included.
+  check-locals and check-imports read clean
+
+What remains: the merge, and the run of steps 720 to 750 of steps\03_bader_next.md. Nothing of it has run on
+Navisworks.
+
+Known bugs: whether TrySaveFile and TryPublishFile return false or throw on a read only file is UNKNOWN, and either
+way the group now names the failed save. A save that returned false and wrote the file anyway would now fail its
+group, a case no run has shown. The reshape of a group whose clash step or views put something in now saves the NWF
+twice, as the clear and rebuild always did.
+
+What comes next: the lead's reviewer, then the run.
+
+ATTEMPT 2, the reviewer's first reading of pull request 219 on 2026-10-13:
+- FIXED, the one fault the team would see. A built or rebuilt group saves its NWF twice, and the count of failed saves
+  only went up, so a first save that failed and a second that reported success judged the group FAILED with a reason
+  saying the file was short, though the second save wrote the whole document. GroupFacts.LastNwfSaveFailed is set by
+  both saves and the judgement fails the group only when the last save failed. Test
+  AGroupWhoseFirstSaveFailedAndWhoseLastReportedSuccessIsNotFailedOnItsNwf fails before and passes after
+- The test of a group saving twice now uses a built group, since an opened group saves once
+- The proof steps hold one action each and are numbered 720 to 750 after the steps main took in
+- Main 6e0b57c merged in, with one conflict in ClashRunner.ApplyChosenTolerance: the counter of this branch kept and
+  FR-036's PutOn of main kept in the case already at the value. Built in Release with 0 warnings and 0 errors, Core
+  tests 2960 after the merge and 2961 after attempt 2, 0 failed, 0 skipped
+
+
+## 2026-10-12 F120 the harvest and the pictures' guard, FR-198 and F120-R1, wave 3a, branch fix-F120c
+
+Bader's order of 2026-10-12, item 157 of steps\02_questions.md, wave 3 of the fix round, under his Q143 limits.
+The open rows of area F120 in steps\tracker.csv, FR-198 and F120-R1, read against main 80314b9.
+
+What was done:
+- FR-198, his answers to Q35 to Q40 and Q76. Family, Type Name and Material are deleted with their reads and
+  their names settings, and the per item discipline with its read and the name settings ClashRunner carried for
+  it alone. ClashItem holds none of the four. The discipline read off part 5 of the NWC name is untouched
+- FR-198, measured first as the item asks. The per item source file is NOT deleted: ClashItem.MergeKey reads it
+  for the mirror merge, F132's add-in half, merged after the item was measured on 2eda020. It is read for the
+  key alone and in no output. Id From is kept as the ITEM IDS block counts it, Q40. So the GAP block reads two,
+  Source File and Id From
+- FR-198, Q76. A property read on every item and empty on every one is said with its count, `read on N item
+  cells and empty on every one`, where GapRule left it out. Set 09's 1A02MM block,
+  steps\runs\09\item1-C02\run-20261012-011513.log lines 1184 to 1190, names no Source File line, so on that
+  run no item carried one and the merge key's file part was empty on every item: row F120-R2, area F132
+- F120-R1. A render or a save that threw is `ImageFailure.BecauseItThrewWriting`, the reason saying the
+  picture's path and the picture's folder where the message named them, in any capitals, and the path beside
+  it on the line, so fifty throws of access denied each naming its own file are one reason for the guard.
+  ClashImages' catch calls it, one line. ClashRunner.RenderThePicturesWaiting is not touched
+- Tests, each seen failing first: `APropertyReadOnEveryItemAndEmptyEveryTimeIsSaidWithItsCount` and
+  `TheFourDeletedPropertiesAreNotOnTheItem` failed on main, turn6\f120c-fr198-before-fail.txt, 2 failed. The
+  path in the reason failed on main through today's call, turn6\f120c-r1-before-fail.txt, 1 failed, and its
+  three tests in ImageFailureTests name the new call. GapRuleTests are rewritten to the two properties left.
+  `APropertyNothingCarriedIsNotAGap` became `AReportWithNoItemHasNoGap`, Q76 reversing its rule.
+  `OneGapReadsInTheSingular` became `OneItemCellReadAndEmptyReadsInTheSingular`, since both properties are read
+  off every item and a block of one gap can no longer be made. ClientFormatTests'
+  `TheTwoTypeColumnsAreDifferentThings` is deleted with the Type property it read. Five test files lost the
+  lines that set the four deleted properties
+- Proved here: the solution builds in Release with 0 warnings and 0 errors, turn6\f120c-build-before.txt and
+  f120c-build-after.txt. Core tests 2921 passed, 0 failed, 0 skipped before, turn6\f120c-tests-before.txt, and
+  2925 passed, 0 failed, 0 skipped after, f120c-tests-after.txt. check-locals and check-imports over src clean,
+  f120c-checks.txt. Navisworks was not started and no probe was run
+
+What remains: the merge, and steps 760 to 768 of steps\03_bader_next.md on 1A02MM, the GAP and ITEM IDS blocks
+against set 09's. F120-R1 has no step a person can take on a real run, since it needs fifty renders that throw
+naming their path, so its proof is the Core tests.
+
+Known bugs: row F120-R2, the merge key's empty file part, open for F132. The category is still read off every
+item and reaches no output, outside Bader's answers and not in the GAP block, as before. The one line changed in
+ClashRunner.TakeThePictures, the harvest built without the name settings, sits beside F150's work on the
+picture pass. The proof step numbers follow main's 691, F118's merged as 210 and taken in here, so the lead
+renumbers at the merge where another branch takes them first.
+
+What comes next: F129 and F130 of the same order.
+
+ATTEMPT 2, the reviewer's first reading of pull request 215 on 2026-10-13, which found the code sound:
+- The proof steps hold one action each, 760 to 768, numbered after the steps main took in
+- GapRule.Lines no longer carries a singular nothing reaches, since For gives both properties or none
+- The failure line of the source file read says the merge key's file part is left empty, not columns
+- The rules lose their stale words: core.md on our extra columns, the five item properties and the 132 gaps, now
+  44 as GapTally says, and addin.md on the discipline read last
+- Item 157 of steps\02_questions.md, which this entry cites, reaches main with pull request 214, which records it
+- Q38 said delete the per item harvest. The source file is still read since the mirror merge key reads it, which is
+  put to Bader in the tab rather than decided here
+- Main 082ae86 merged in with no code conflict. Built in Release with 0 warnings and 0 errors, Core tests 2974
+
+## 2026-10-12 The loop, turn 6, F147 long runs kept from slowing, attempt 3 under Q155, written by the developer as the lead's delegate
+
+Bader's order of 2026-10-11, Q152 item 2, and his answer to Q155 on 2026-10-12, "Q2 yes: build F147", with
+item 2 of his order: release what each step holds as soon as the step ends, log the memory at the start and
+end of each step, dispose every picture, and clear the texture cache under %TEMP%\ogs between tests when it
+passes 5 GB, logging its size before and after. Branch fix-F147, main 80314b9 taken in first, with F145,
+F146, F149 and F140.
+
+What was done:
+- THE READERS OF ATTEMPT 3, finished after the usage limit of 2026-10-12. The reviewer approved. The breaker's two points are
+  fixed in this attempt under Q148 B: a step entered again and again in a group gets one MEMORY line across all its
+  visits where the group's repeated steps are summed, one read a group, beside the pair around its first visit, and the
+  cache's bar for a clearing is brought down to what a check reads whole under it, TextureCache.BarAfter, wired into the
+  watch, with a failed read after a clearing leaving no bar. Two attempt 2 tests were rewritten for Bader's choice A,
+  AFileInUse and AClearingThatRemovedSome, and the memory test for a repeated step was rewritten for the new line.
+  The reviewer's records points are fixed: steps 667 and 670 quote what the log writes, and the comments of
+  FederationEngine and JobOutcome say Report and RowAddresses are null once the group ends. Core tests 2940 on main
+  80314b9, 2949 after attempt 3 and 2964 after its fixes
+- Attempts 1 and 2, as written before: the undo off through the picture pass with its state read before,
+  during and after, and the texture cache read across the pass and cleared past 5 GB by Core's TextureCache
+  and TextureCacheWatch, the walk never leaving the folder. The breaker's re-read of attempt 2 found two
+  points, Q155, and F147 stopped under Q148 B
+- The two points of Q155. The pass line's seconds are every check whole, its walks, its clearing and the
+  clearing's deletions, and the last read, where the walks alone were counted. A clearing that leaves the
+  cache past the limit no longer stops the checks: they go on at the interval, and the cache is cleared
+  again only once it holds more than that clearing left, TextureCache.ShouldClear and LeftBy, the clearing's
+  line naming that size
+- The memory at the start and the end of each step: RunLog.Step writes a MEMORY line under each step's
+  started line and one before its finished line, the private bytes and the working set as the life check
+  reads them and the managed heap, in MB, the end saying how far each moved. Core's ProcessMemory holds the
+  reading and the lines, and the engine sets RunLog.MemoryReader to ProcessMemory.Read beside the census
+  reader. It is read where the step's own lines are written, so TESTS RUN costs two reads a group
+- Released as each step ends, each read off every reader in src: ClashRunner's picturesWaiting, emptied as
+  the PICTURES step ends. JobOutcome.RowAddresses, set to null as the VIEWS step returns, its one reader.
+  JobOutcome.Report, the group's report model with every row, released with it by LetGoOfTheRows in the
+  finally of RunOne and RunAnOpenFile, since the run keeps every outcome for RESULT and each group's rows
+  stayed until the run ended. Every Navisworks wrapper of the clash step was already disposed where read
+- Already in, said so: every picture is disposed as its save returns, ClashImages.Render, and the texture
+  cache is cleared between tests past 5 GB with its size said before and after, attempts 1 and 2
+- Proved here: the solution builds with 0 warnings and 0 errors. Core tests 2940 passed, 0 failed, 0 skipped
+  with main taken in, and 2949 passed, 0 failed, 0 skipped after, 21 in TextureCacheTests and 7 in
+  RunLogMemoryTests. The three new watch tests were seen failing on the attempt 2 watch, a clearing of
+  1.25 s on a pass line of 1.0 s and a cache grown after a clearing left uncleared, and four memory tests
+  failing with the step's read taken out. check-locals and check-imports pass
+
+What remains: the reviewer and the breaker, the merge, and steps 664 to 671 of steps\03_bader_next.md off a
+run of 1A02MM. Q155's answer and Bader's order item in steps\02_questions.md are the lead's to write.
+
+Known bugs: the cache held no file on this laptop, so the clearing has not run on a real cache, and what
+removing its files while Navisworks runs does is UNKNOWN. A second Navisworks of the same user shares the
+folder. The check is at most once a minute where Bader's words are between tests. The views step keeps the
+undo on. Whether the collector takes back what a group releases before the next group, and how much, is
+UNKNOWN until a run of two groups reads the MEMORY lines. A step entered again in a group says its memory
+only around its first visit.
+
+What comes next: the reviewer and the breaker on this attempt, then the merge Bader makes.
+
+## 2026-10-12 F114c, the views' sides and a failed harvest, wave 2b
+
+Branch fix-F114c off main 80314b9, worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f114c, on Bader's order of
+2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under Q143's limits, pull request 213. No Navisworks
+was started, no probe was run and tools\loop, tools\probes and the guard were not touched.
+
+### What was done
+
+- F114-K30. A view's side is the test's locator whole, and the views read the sets at exactly that path first, so
+  two sets of one name in two team folders each read their own folder's team and no longer UNKNOWN. With no set
+  tree read, a weekly run with no clash XML, a side reads exactly the team its set name read before. An UNKNOWN
+  side is kept by its whole locator, so each reason is written
+- F114-K31. A set with no name gets a TEAMS line saying it is a set with no name, by its folders or at the root,
+  where its line named no set
+- F114-K38, the reviewer's D1. A test the clash step failed on is never read whole for the views, and nor is the
+  kept test of a merged mirror it failed on, so a harvest that threw after only closed rows no longer removes a
+  test's old view. It is counted failed with why
+- F114-K35 set merged by 189, whose VIEWS line already says what the row asks. F114-K33 dropped, P18 having read
+  the whole read back at 0.014 s a view, no time the team sees
+- ATTEMPT 2, on the lead's list after the reviewer and the breaker read attempt 1. FR-067 taken out: attempt 1
+  copied the viewpoints out before the clear and put them back with CopyFrom, and said P15 had measured that. It
+  had not. scan.md 5z-w is headed NOT ANSWERED, and Navisworks failed twice there, at a read of the copy after the
+  clear and at a walk of the items after CopyFrom. FR-067 reads open again and waits for that probe. The breaker's
+  point 2, the kept test of a failed mirror, and point 3, the read with no set tree, pinned by a test. N5, each
+  UNKNOWN side by its whole locator. The proof steps one action each
+- The rules: core.md's TEAMS line bullet, its ONE VIEW PER CLASH TEST bullet and its ViewsInventory words,
+  addin.md's ONLY A TEST READ WHOLE GETS A VIEW words. Proof steps 692 to 706 of steps\03_bader_next.md
+- Tests: 6 new. TeamMapTests.ASetWithNoNameIsSaidAsOneAndByItsFolders,
+  TestViewPlanTests.TwoSetsOfOneNameAreToldApartByTheFoldersTheirLocatorHolds,
+  EachUnknownSideOfOneSetNameIsNamedWithItsOwnReason and WithNoSetTreeALocatorReadsTheTeamItsSetNameReads,
+  TestsReadTests.ATestTheClashStepFailedIsNotWholeEvenWithOnlyClosedRows and
+  TheKeptTestOfAMirrorTheClashStepFailedOnIsNotWhole. ReportClashesTests reads the sides as the locators, its test
+  renamed to say so. Each new test was seen failing first against the old rule, f114c-before-fail.txt,
+  f114c-before-compile.txt and f114c-a2-before-fail.txt in %LOCALAPPDATA%\NwcFederatorLoop, but the one with no set
+  tree, which passes on the old rule too, since it proves nothing moved
+- Core tests 2921 passed, 0 failed, 0 skipped before, at main 80314b9, and 2927 passed, 0 failed, 0 skipped after.
+  The solution builds in Release with 0 warnings and 0 errors. check-locals and check-imports pass.
+  make-tracker.ps1 run and check-tracker.ps1 reads clean
+
+### What remains
+
+- The proof on the local machine, steps 692 to 706
+- FR-067 waits for the P15 probe scan.md 5z-w names, not answered
+- FR-181 of F131 stays in progress with no branch: naming a silent miss needs the count of items no set catches,
+  which the COVERAGE block reads as UNKNOWN, not counted in this build. Set 09's TEAMS block of 1A04PK reads 23 of 25
+  mechanical sets unable to reach the FP model and 12 of 25 the HV model, each UNKNOWN as a miss until that count
+  is built
+
+### Known bugs
+
+- F114-K32, K34, K36 and K37 stay open, each needing a probe, a run or Bader's word, as steps\01_next.md says
+
+### What comes next
+
+- The reviewer and the breaker re-read attempt 2. The lead sets the rows to merged with 213 before merging
+## 2026-10-12 F115 the register rows of the sets, wave 2a, branch fix-F115c
+
+Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under his Q143 limits. Every open
+row of area F115 in steps\tracker.csv, F115-R1 to R24 but R10, merged as 172, and R13, the lead's, read against
+main 80314b9.
+
+What was done:
+- Eighteen rows fixed in one change and set in review: R1, R2, R3, R4, R6, R7, R8, R9, R14, R15, R16, R18, R19,
+  R20, R21, R22, R23 and R24. The rule of each that a test can prove is in Core with a test in
+  tests\Federator.Core.Tests\Sets\SetsRegisterRowsTests.cs, twelve tests, each seen failing against its rule broken
+  on purpose, %LOCALAPPDATA%\NwcFederatorLoop\turn6\f115c-before-fail-1.txt, 7 failed, and -2.txt, 5 failed
+- A rebuilt set is read back against the file and one that did not take is said, R19. A set created or replaced
+  and then lost is FAILED with the document holding it and asks the NWF save, R2 and R22. The box is blamed only
+  where it is off, R18. The summary in the window and the SETS phrase carries the drifted, rebuilt and not read
+  counts, R7, and the damage of a failed pair, R15. The EMPTY SETS block counts a set at zero it could not judge,
+  R6, and is written where no test ran, the Build sets button and an XML of sets alone, R4. The judge never throws
+  on naming settings that will not read, R9, and knows of a model the export check dropped, R14. A second set at
+  one path of the picked file is skipped by name, R23, the skipped sets are named for the leftover walk, R16, and
+  the leftovers are reported with the box off and acted on only with it ticked, R20
+- In the add-in alone, read and built: the side walk disposes the selection and each source, R1, counts a side
+  whose sources read as none as not read, R21, and credits every set of a folder source, R8. The rebuild and the
+  drift use one lookup from the end, R3. Over a damaged document no test is created or run and the group stops
+  before the views, the NWF save, the workbook and the NWD, R15 and R24
+- Dropped with why, in steps\01_next.md: R5, R11 and R17. R12 stays open for the weekly run with the box ticked
+- Attempt 2, on the reviewer's and the breaker's readings of attempt 1. The leftovers are removed and renamed at
+  the path SetLeftovers decided, the twin's path carried on the leftover, and a path holding no set or more than
+  one is acted on not at all and said, where the first set of the NAME was taken, breaker 1. Nothing more is
+  changed once the document is damaged and the leftovers left untouched are counted, breaker 5. A build that
+  stopped for no active document says so, breaker 4. With the box off each leftover line says what a ticked run
+  would do, breaker 14. The judge's reason from the naming settings is one line, breaker 9. With the box off a
+  read of the leftover walk that failed is one FINDING line and never a FAILURE, reviewer 5. The Search wrappers
+  read by the drift and the leftover walk are disposed, reviewer 6. Six more tests, each seen failing against its
+  rule broken, turn6\f115c-before-fail-3.txt. Breaker 2, 3 and 6 are older than this change, rows F115-R26 to R28
+- Proved here: the solution builds in Release with 0 warnings and 0 errors, turn6\f115c-build.txt. Core tests 2921
+  passed, 0 failed, 0 skipped before, turn6\f115c-test-before.txt, and 2933 passed, 0 failed, 0 skipped after,
+  turn6\f115c-test-after.txt. check-locals.sh and check-imports.sh over src clean
+
+What remains:
+- Every add-in line waits for a run, steps 664 to 685 of steps\03_bader_next.md. The leftover walk now runs with the
+  box off on every weekly run, and what it costs in the SETS step's seconds is UNKNOWN until step 671
+- R12, whether SearchCondition.Options reads back StartGroup 64, step 682
+
+Known bugs: four found and not fixed, older than this change, rows F115-R25 to F115-R28 in steps\tracker.csv.
+
+What comes next: the lead calls the reviewer and the breaker on the branch, then the draft pull request merges once
+Actions is green, and Bader runs steps 664 to 685.
+## 2026-10-12 The fix round, wave 2a, F132 the mirrored tests, rows F132-R1 to F132-R3 and F132-R6, written by the developer as the lead's delegate
+
+Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under Q143's limits. Branch
+fix-F132c off origin/main 80314b9 in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f132c, every file named below
+under turn6 with the prefix f132c-. No Navisworks, probe or harness was started. No add-in file changed.
+
+What was done:
+- F132-R3 FIXED. Two clashes of one test can share the pair of item keys, one element carrying two pieces of
+  geometry of one name, and MirrorMerge read a mirror's second clash on such a pair as a repeat and left it out,
+  so once the mirror was taken out of the report that clash was in no block of the workbook. A key is now counted
+  as many times as each test found it: a mirror's clash past the kept test's count of its key is added, and past
+  what earlier mirrors added of it too, each clash both found weighed against its own copy under Bader's answer B
+  to Q138. The repeat line and its count are gone with nothing left to call them. Five tests in MirrorMergeTests,
+  all five failing first, f132c-failing-first.txt. The two tests that asserted the repeat,
+  ARepeatOfTheMirrorIsSaidOnce and AClashTheMirrorGivesTwiceIsAddedOnce, asserted the fault itself and are
+  replaced by TwoClashesOfTheMirrorOnOnePairTheKeptTestNeverFoundAreBothAdded on the same input
+- ATTEMPT 2, on the one blocking point the reviewer and the breaker of pull request 211 both found. Each copy of a
+  pair both tests found was paired with a kept copy by the order handed, and its status weighed onto that row,
+  where which copy is the twin of which is UNKNOWN, so a person's Approved or Resolved could be written onto the
+  wrong clash. Where a pair has more than one copy under the kept test or the mirror and its copies carry more than
+  one status, no status is carried across, the kept test's stay, and one MIRROR line names the pair. A pair with
+  one copy on each side is weighed as before. The breaker's point 3, a later mirror's copy of a clash an earlier
+  mirror added dropping its status without a word, is named where the two differ. The local that hid the field
+  added is renamed. EachClashBothFoundOnASharedPairIsWeighedAgainstItsOwnCopy is replaced by two tests pinning the
+  rule, one with the order reversed, and one more for point 3, all three failing first against attempt 1,
+  f132c-a2-failing-first.txt
+- WHAT IS NOT KNOWN. Whether two copies of one pair in one test are two clashes or one clash read twice is UNKNOWN
+  and was never measured. What stops a double count is the guard of MirrorMerge.AddTo, a mirror merged only where
+  the clashes handed are as many as its report holds and the kept test only where every row it holds was handed
+  with as many clashes as it stands for
+- F132-R1 DROPPED. It is Bader's answer A to Q142, and every pair not merged is said on a MIRROR line
+- F132-R2 DROPPED. Since attempt 13 a set already in the document merges nothing whatever the drift check read,
+  so no merge reads that check
+- F132-R6 DROPPED under Q143. One view per row of the report is what the workbook and the pictures show
+- The rule in core.md, THE MERGE, and the comment on ClashItem.MergeKey. The F132 section of steps\01_next.md
+  and steps 669 to 671 of steps\03_bader_next.md
+
+Core tests 2921 passed, 0 failed, 0 skipped before on main 80314b9, f127c-before.txt, 2924 passed, 0 failed,
+0 skipped after attempt 1, f132c-tests-after.txt, and 2926 passed, 0 failed, 0 skipped after attempt 2,
+f132c-a2-tests-after.txt and by its pre-commit, f132c-a2-precommit.txt. dotnet build
+ParsonsNwcFederator.sln -c Release --no-incremental 0 warnings, f132c-a2-build-after.txt for attempt 2,
+and 0 errors after, f132c-build-after.txt, and 0 and 0 before. check-locals and check-imports exit 0 over src,
+f132c-checks.txt.
+
+What remains: a first run over a new NWF with a merge, steps 669 to 671 of steps\03_bader_next.md. Row
+T6-R-MIRRORWORDS of the area, at no wave, was not in this brief and stays open.
+
+Known bugs: none found in this pass.
+
+What comes next: the reviewer's and the breaker's reading, then the pull request merged by the lead.
+## 2026-10-12 F130 the space bar on the Run cell, F130-R1, wave 3b, branch fix-F130c
+
+Bader's order of 2026-10-12, item 157 of steps\02_questions.md, wave 3 of the fix round, under his Q143 limits.
+The open row of area F130 in steps\tracker.csv, F130-R1, read against main 80314b9.
+
+What was done:
+- F130-R1 fixed in the add-in. F130 made the Run column a read only template column, so Space pressed on its
+  cell, which the stock tick box column took as a tick, ticked nothing, and a person who moves through the list
+  with the arrow keys lost the one key that ticked. That changes what the team does in the window, so it is
+  fixed and not dropped, though whether anyone ticks that way is UNKNOWN
+- The grid's PreviewKeyDown, `OnGroupsGridKeyDown` in src\Federator.Addin\Ui\FederatorWindow.xaml.cs, takes
+  Space on a cell of the Run column, named RunColumn in the XAML, flips its row through Include where the row
+  can be ticked, and goes on through `RunBoxFlipped`, the path a click on the box now shares, so Shift with
+  Space makes the range of Core's ShiftRange and the Outputs summary is refreshed. Space with the box itself
+  focused is left to the box
+- No Core change: the range is Core's ShiftRange, unchanged and tested by F130, and which key on which cell
+  reaches it is WPF's alone, so there is no Core test to fail first. Its proof is steps 698 to 711 of
+  steps\03_bader_next.md, by hand
+- Proved here: the solution builds in Release with 0 warnings and 0 errors, turn6\f130c-build-after.txt, and
+  0 warnings and 0 errors on main 80314b9 before, turn6\f120c-build-before.txt. Core tests 2921 passed, 0
+  failed, 0 skipped before, turn6\f120c-tests-before.txt, and after, turn6\f130c-tests-after.txt, nothing in
+  Core changed. check-locals and check-imports over src clean, f130c-checks.txt. Navisworks was not started
+
+What remains: the merge, and steps 698 to 711 of steps\03_bader_next.md on the C02 folder, by hand.
+
+Known bugs: none known. The step numbers follow main's 691, F118's merged as 210 and taken in here, and F120c's
+692 to 697, so the lead renumbers at the merge where another branch takes them first.
+
+What comes next: the lead's reading of the three branches of this order.
+
+THE READING, 2026-10-12 evening: the reviewer found the code sound and asked for the proof steps to hold one
+action each. They are split, 698 to 711, with the move to the Outputs step and the report as steps of their own.
+Main 9fd16d6 was merged in before the reading and the solution built in Release with 0 warnings and 0 errors,
+turn6\f130c-build-merged.txt. No file of Core or its tests changed, so the Core tests stand as on 80314b9
+## 2026-10-12 The fix round, wave 2a, F127 the coverage, rows F127-R3 to F127-R5, written by the developer as the lead's delegate
+
+Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under Q143's limits. Branch
+fix-F127c off origin/main 80314b9 in the worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f127c, every file named below
+under turn6 with the prefix f127c-. No Navisworks, probe or harness was started.
+
+ATTEMPT 2, the reviewer's three points on pull request 209, read at 14:30 and finished after the usage limit:
+- The window no longer reads the tolerance box to reach the internal workbook's naming. One field of the window,
+  internalWorkbook, is read by the check before a run, the name preview, the picked NWF plan and the run's options, so
+  Other with an empty box cannot throw out of Run, a scan or a name edit
+- NwfPick.Collisions also compares each NWF's internal workbook with the other NWFs' clash workbooks, so A.nwf beside
+  `A Internal.nwf` is refused before any file is written. Tests in NwfPickTests
+- The proof steps hold one action each, 680 to 710, and the two new cases have steps of their own. The second
+  reading approved the code and found four steps that could not give what they named: no NWF or NWD folder
+  was picked, so Run refused for that first, no control gives a typed name back, typing into the picked NWF
+  box updates nothing, and the two NWFs had no step making them. Each has its own steps now
+- Core tests 2921 on main 80314b9, 2926 after attempt 1 and 2941 after attempt 2, 0 failed, 0 skipped
+
+What was done:
+- F127-R5 FIXED. A group's internal workbook is named after its workbook with the suffix Internal, so a group
+  whose workbook was typed as X Internal beside a group X had one written over the other with no line.
+  OutputNameTable.WhyTheRunCannotStart now takes the GenericModelsSettings the engine names the internal
+  workbook by, reads each internal workbook name against every other group's workbook name, ignoring case, and
+  names both groups and the name. The window hands it the run's settings at the name preview and at Run, so the
+  run does not start. Five tests in OutputNameTableTests, three of them failing first against the new argument
+  ignored, f127c-failing-first.txt
+- F127-R3 DROPPED under Q143. A code only an unticked building carries reads UNKNOWN on the coverage row and
+  never a wrong word, so nothing the team sees is wrong, and the change would hand the window's whole scan to the
+  engine for one more definite word
+- F127-R4 DROPPED under Q143. A mirror's coverage row carries the name Clash Detective and the clash workbook
+  show, and the MIRROR COVERAGE block of the log ties it to the name the XML gives it, so nothing the team sees
+  is wrong
+- The rule in core.md beside the collision check, and F127-R3's line in the coverage section. The F127 section of
+  steps\01_next.md and steps 664 to 668 of steps\03_bader_next.md
+
+Core tests 2921 passed, 0 failed, 0 skipped before on main 80314b9, f127c-before.txt, and 2926 passed, 0 failed,
+0 skipped after, f127c-tests-after.txt. dotnet build ParsonsNwcFederator.sln -c Release --no-incremental 0 warnings
+and 0 errors after, f127c-build-after.txt, and 0 and 0 before. check-locals and check-imports exit 0 over src,
+f127c-checks.txt.
+
+What remains: the window's refusal on Navisworks, steps 664 to 668 of steps\03_bader_next.md.
+
+Known bugs: none found in this pass.
+
+What comes next: the reviewer's reading, then the pull request merged by the lead.
 
 ## 2026-10-12 F129 the junction row of the NWF pick, F129-R1, wave 3a, branch fix-F129c
 

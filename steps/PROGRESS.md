@@ -1,4 +1,4 @@
-STATE OPEN, 2026-10-12 19:17, last run 09/item1-C04
+STATE OPEN, 2026-10-13 09:25, last run 09/item1-C04
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -8,36 +8,36 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 37 | 1 | 0 | 0 | 28 | 0 | 66 |
-| 2b | 28 | 2 | 0 | 1 | 9 | 0 | 40 |
+| 2a | 57 | 0 | 0 | 0 | 9 | 8 | 74 |
+| 2b | 32 | 1 | 0 | 1 | 6 | 1 | 41 |
 | 2c | 9 | 2 | 0 | 0 | 0 | 1 | 12 |
-| 3a | 19 | 0 | 0 | 0 | 2 | 1 | 22 |
-| 3b | 13 | 1 | 0 | 0 | 7 | 0 | 21 |
+| 3a | 21 | 0 | 0 | 0 | 0 | 1 | 22 |
+| 3b | 21 | 0 | 0 | 0 | 0 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
-| outside the waves | 175 | 17 | 2 | 0 | 61 | 6 | 261 |
-| total | 324 | 28 | 2 | 1 | 208 | 8 | 571 |
+| outside the waves | 177 | 17 | 2 | 0 | 59 | 6 | 261 |
+| total | 360 | 25 | 2 | 1 | 175 | 17 | 580 |
 <!-- the end of the counts -->
 
 ## Now
-- Bader said go at 19:13 on 12 Oct. The fix round of waves 2 to 5 carries on under his order of that evening headed BADER SAYS GO, under the limits of Q143
-- No Navisworks runs, his settings read what the 12:28 backup holds, set 09's two runs finished and were put back
-- Main is taken into each branch, smallest first, then the readers, two at a time, then the merges in his order
+- Bader said go at 09:08 on 13 Oct. The fix round carries on under his order of 12 Oct headed BADER SAYS GO, under the limits of Q143
+- A Navisworks of his runs since 09:07, started by hand, so no install or run of the loop until it closes. His settings read what the backup holds
+- Merged so far: 216, 209, 218, 211 on 12 Oct, and 212 F115c with this page
 
-## Open pull requests, head and what is left
-- 216 F129c: records only, drop of F129-R1, main in, this page rides on it. Merge once green
-- 209 F127c: approved. Proof steps 687 to 696 to fix as the reviewer said, then merge
-- 218 F130c: proof steps 698 to 704 to split to one action each, then merge
-- 211 F132c, 212 F115c, 213 F114c: one breaker re-read each of attempt 2 is left
-- 217 F147: the breaker's narrow re-read of attempt 3 is left. 215 F120c and 219 F119c: first reading left
-- 214 F150: breaker re-read, then main taken in, its head installed in place and 1A02MM run once, then merge
+## Open pull requests, in Bader's order of merging
+- 213 F114c a237ca2: ready. Take main in, add a row for a refused mirror pair whose clashes get no view, rows.py merged 213, merge
+- 217 F147 88d8013: ready. Take main in, rows.py merged 217, merge
+- 215 F120c 03573b2: split proof steps 692 and 697, fix stale words in core.md 1219, 1361, 2277 and addin.md 719, ClashHarvest.cs 647 and the unreachable singular of GapRule.cs 121, then one re-read
+- 219 F119c 4ec1733: first reading left, main not yet taken in
+- 214 F150 9f3f742: breaker found no fault. Take main in, install its head in place once no Navisworks of his runs, run 1A02MM once with viewpoints ticked, check the pictures and the put back, then merge
 
 ## Next
-1. Merge 216, then 209 and 218 once their steps are fixed, then 211, 212, 213, 217, 215 and 219 as their readers finish
-2. Renumber the proof steps once, after the merges. Then 214's check on 1A02MM and its merge
-3. The new zip from main, then waves 3, 4 and 5, rows the team sees only
+1. 213 and 217 merged the same way as 212
+2. 215's changes and re-read, 219's first reading, then their merges, then 214's check and merge
+3. Renumber the proof steps once, build the new zip from main, then waves 3, 4 and 5, rows the team sees only
 
 ## Waiting for Bader
+- Q38 said delete the per item harvest. 215 keeps the source file read since the merge key reads it, which may be his to decide
 - His run on his PC and its log, from the team zip of 12 Oct, 69de6ed4
 
 ## Blockers and known bugs

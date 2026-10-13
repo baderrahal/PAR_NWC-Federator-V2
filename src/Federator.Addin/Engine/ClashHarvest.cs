@@ -5,7 +5,6 @@ using Autodesk.Navisworks.Api;
 using Autodesk.Navisworks.Api.Clash;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
-using Federator.Core.Naming;
 using Federator.Core.Report;
 using CoreClashStatus = Federator.Core.Clash.ClashStatus;
 
@@ -26,9 +25,8 @@ namespace Federator.Addin.Engine
     public sealed class ClashHarvest
     {
         private readonly RunLog log;
-        private readonly ContainerNameSettings settings;
 
-        public ClashHarvest(RunLog log, ContainerNameSettings settings)
+        public ClashHarvest(RunLog log)
         {
             if (log == null)
             {
@@ -36,14 +34,10 @@ namespace Federator.Addin.Engine
             }
 
             this.log = log;
-            this.settings = settings ?? new ContainerNameSettings();
 
-            FamilyNames = new[] { "Family", "Family Name" };
-            TypeNames = new[] { "Type", "Type Name" };
-            MaterialNames = new[] { "Material", "Material Name", "Structural Material" };
             ElementIdNames = new[] { "Id", "Element Id", "ElementId", "Element ID" };
 
-            // F72. The same shape as the four above and the same defaults the penetration
+            // F72. The same shape as the one above and the same defaults the penetration
             // settings carry, so the two read a category the same way.
             CategoryNames = new List<string>(PenetrationSettings.DefaultCategoryNames).ToArray();
             LookUpLevels = DefaultLookUpLevels;
@@ -143,12 +137,6 @@ namespace Federator.Addin.Engine
         /// differently, and a name nobody has seen leaves the cell empty rather than
         /// guessing.
         /// </summary>
-        public string[] FamilyNames { get; set; }
-
-        public string[] TypeNames { get; set; }
-
-        public string[] MaterialNames { get; set; }
-
         public string[] ElementIdNames { get; set; }
 
         /// <summary>Where the item category is read from, in order. F72.</summary>
@@ -569,8 +557,9 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// One item. The family, the type and the material matter because without them
-        /// whoever fixes it has to open the model to see what they are looking at.
+        /// One item: its name, category, item type and id, and the file it came from. The
+        /// family, the type name, the material and the discipline of each item were read here
+        /// and reached no output, and Bader deleted them with their harvest, Q35 to Q39, FR-198.
         /// </summary>
         private void Describe(Document document, ModelItem item, ModelItem whole, ClashItem into)
         {
@@ -588,9 +577,6 @@ namespace Federator.Addin.Engine
                 IList<ModelItem> lookIn = Upwards(item, whole);
 
                 into.Name = Words.Or(item.DisplayName, string.Empty);
-                into.Family = FirstProperty(lookIn, FamilyNames);
-                into.Type = FirstProperty(lookIn, TypeNames);
-                into.Material = FirstProperty(lookIn, MaterialNames);
 
                 // F72. The penetration rule turns on this one, and it is read here as
                 // well so the row carries what the decision was made on. The pass that
@@ -615,9 +601,8 @@ namespace Federator.Addin.Engine
                 // first in the list above that came out as "Id: 990299" against their
                 // "Element ID: 702888".
                 //
-                // Which property actually supplied the value is not lost, it goes in the
-                // log, because renaming a value is only honest if what was renamed is
-                // still visible somewhere.
+                // Which property actually supplied the value is not lost. The ITEM IDS block
+                // counts it per property, and no output names it per item, Q40.
                 into.IdLabel = ClientFormat.DefaultIdLabel;
                 into.IdFrom = idFrom;
 
@@ -645,26 +630,21 @@ namespace Federator.Addin.Engine
                     "kept going, the columns this item did not fill are left empty");
             }
 
-            // In its OWN try, so a property that will not read cannot take these with it.
+            // In its OWN try, so a property that will not read cannot take it with it.
             // That is exactly what happened on 2026-09-01: one NotSupportedException out
-            // of ToDisplayString aborted the whole of this method, and the source file and
-            // the discipline came out empty on all 426 items because they are read last.
+            // of ToDisplayString aborted the whole of this method, and the source file
+            // came out empty on all 426 items because it is read last. Read for the mirror
+            // merge's key alone, ClashItem.MergeKey, and in no output, FR-198.
             try
             {
-                string source = SourceFileOf(item);
-                into.SourceFile = source;
-
-                // The discipline comes out of the same parser the NWC names go through,
-                // never a second rule and never a list of codes in this tool.
-                ParsedContainerName parsed = ContainerName.Parse(source, settings);
-                into.Discipline = parsed.IsReadable ? parsed.Discipline : string.Empty;
+                into.SourceFile = SourceFileOf(item);
             }
             catch (Exception error)
             {
                 log.Failure(
                     "reading which file a clashing item came from",
                     error,
-                    "kept going, the columns this item did not fill are left empty");
+                    "kept going, the file part of this item's merge key is left empty");
             }
         }
 

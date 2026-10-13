@@ -200,5 +200,16 @@ namespace Federator.Core.Diagnostics
         {
             return number.ToString("0.###", CultureInfo.InvariantCulture);
         }
+
+        /// <summary>
+        /// A clash tolerance, with every decimal the clash file gives, ten, and no
+        /// separators, FR-047. The three decimals of Exact made 0.0820209974 ft read 0.082
+        /// in the number column. The one way this tool writes a tolerance as a number, in
+        /// the rows and in the lines that name one.
+        /// </summary>
+        public static string Tolerance(double tolerance)
+        {
+            return tolerance.ToString("0.##########", CultureInfo.InvariantCulture);
+        }
     }
 }

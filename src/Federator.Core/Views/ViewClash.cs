@@ -12,8 +12,8 @@ namespace Federator.Core.Views
         public ViewClash(
             string testName,
             string clashName,
-            string leftSet,
-            string rightSet,
+            string leftSide,
+            string rightSide,
             ClashStatus status,
             ClashPriority priority,
             SizeVerdict? serviceSize,
@@ -25,8 +25,8 @@ namespace Federator.Core.Views
         {
             TestName = testName ?? string.Empty;
             ClashName = clashName ?? string.Empty;
-            LeftSet = leftSet ?? string.Empty;
-            RightSet = rightSet ?? string.Empty;
+            LeftSide = leftSide ?? string.Empty;
+            RightSide = rightSide ?? string.Empty;
             Status = status;
             Priority = priority;
             ServiceSize = serviceSize;
@@ -43,11 +43,15 @@ namespace Federator.Core.Views
         /// <summary>The clash's own name, unique within its test, such as Clash1.</summary>
         public string ClashName { get; private set; }
 
-        /// <summary>The set name of the test's left side, the text after the last slash of its locator.</summary>
-        public string LeftSet { get; private set; }
+        /// <summary>
+        /// The test's left side, its locator whole, the set's folders and its name after the last
+        /// slash, so ViewTeams tells two sets of one name apart, row F114-K30. A set name alone
+        /// reads by that name.
+        /// </summary>
+        public string LeftSide { get; private set; }
 
-        /// <summary>The set name of the test's right side.</summary>
-        public string RightSet { get; private set; }
+        /// <summary>The test's right side, its locator whole.</summary>
+        public string RightSide { get; private set; }
 
         public ClashStatus Status { get; private set; }
 

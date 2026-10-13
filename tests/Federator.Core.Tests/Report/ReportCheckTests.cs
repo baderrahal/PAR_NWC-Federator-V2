@@ -83,20 +83,12 @@ namespace Federator.Core.Tests
             row.Left.IdLabel = "Element ID";
             row.Left.Name = "PAR-CONC-FOUNDATION";
             row.Left.ItemType = "Solid";
-            row.Left.Family = "Basic Wall";
-            row.Left.Type = "HBLK 200";
-            row.Left.Material = "Concrete";
             row.Left.SourceFile = @"C:\in\1104-PAR-1C07BC-ZZZ-AR-MOD-000001.nwc";
-            row.Left.Discipline = "AR";
             row.Right.ElementId = (807077 + number).ToString();
             row.Right.IdLabel = "Element ID";
             row.Right.Name = "Mx_Exterior";
             row.Right.ItemType = "Solid";
-            row.Right.Family = "Structural Column";
-            row.Right.Type = "UC 305";
-            row.Right.Material = "Steel";
             row.Right.SourceFile = @"C:\in\1104-PAR-1C07BC-ZZZ-ST-MOD-000001.nwc";
-            row.Right.Discipline = "ST";
             return row;
         }
 

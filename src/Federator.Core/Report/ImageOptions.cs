@@ -38,6 +38,8 @@ namespace Federator.Core.Report
             StopAfterFailures = DefaultStopAfterFailures;
             OnlyTheTestsModels = true;
             GhostTheOtherItems = false;
+            TextureCacheLimitBytes = TextureCache.DefaultLimitBytes;
+            TextureCacheCheckEverySeconds = TextureCache.DefaultCheckEverySeconds;
 
             // New, Active and Reviewed. The same three Navisworks itself calls open, but
             // set out here in its own right, because this is which clashes are worth a
@@ -91,6 +93,16 @@ namespace Federator.Core.Report
         /// holds the rule.
         /// </summary>
         public bool GhostTheOtherItems { get; set; }
+
+        /// <summary>
+        /// The size past which Navisworks' texture cache is cleared between two tests' pictures,
+        /// five gigabytes, F147, Bader's order of 2026-10-11. Zero or less switches the clearing off.
+        /// TextureCache holds the rule.
+        /// </summary>
+        public long TextureCacheLimitBytes { get; set; }
+
+        /// <summary>The least seconds between two measurements of the texture cache, sixty, F147.</summary>
+        public int TextureCacheCheckEverySeconds { get; set; }
 
         /// <summary>Is this clash one to render.</summary>
         public bool Wants(ClashStatus status)

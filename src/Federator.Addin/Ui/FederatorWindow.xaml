@@ -207,13 +207,15 @@
                                Style="{StaticResource FindingLine}" />
 
                     <DataGrid x:Name="GroupsGrid" AutoGenerateColumns="False" CanUserAddRows="False"
-                              GridLinesVisibility="Horizontal" HeadersVisibility="Column">
+                              GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                              PreviewKeyDown="OnGroupsGridKeyDown">
                         <DataGrid.Columns>
                             <!-- F130. A template column and not the stock tick box column, so the box
                                  itself takes the click and OnRunBoxClicked reads Shift at that click.
                                  Read only so the grid begins no edit that would swap the box out
-                                 under the click. SortMemberPath keeps the column sortable as before. -->
-                            <DataGridTemplateColumn Header="Run" Width="40" IsReadOnly="True"
+                                 under the click. SortMemberPath keeps the column sortable as before.
+                                 Named so OnGroupsGridKeyDown knows its cell, F130-R1. -->
+                            <DataGridTemplateColumn x:Name="RunColumn" Header="Run" Width="40" IsReadOnly="True"
                                                     SortMemberPath="Include">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>

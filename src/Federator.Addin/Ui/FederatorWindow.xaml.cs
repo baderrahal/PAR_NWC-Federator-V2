@@ -11,6 +11,7 @@ using Federator.Addin.Engine;
 using Federator.Core.Clash;
 using Federator.Core.Diagnostics;
 using Federator.Core.Findings;
+using Federator.Core.Generic;
 using Federator.Core.Grouping;
 using Federator.Core.Exchange;
 using Federator.Core.Health;
@@ -58,6 +59,12 @@ namespace Federator.Addin.Ui
         private readonly TeamMapMemory keptTeams = TeamMapMemory.Load();
 
         private readonly TeamMapSettings teamSettings = new TeamMapSettings();
+
+        /// <summary>
+        /// How the internal workbook is named, the one copy the run's options and the checks before a run
+        /// both read, so a check never reads the tolerance box to reach it, F127-R5 attempt 2.
+        /// </summary>
+        private readonly GenericModelsSettings internalWorkbook = new GenericModelsSettings();
 
         /// <summary>One row per group, filled from the patterns and editable in place.</summary>
         private OutputNameTable nameTable = new OutputNameTable();
@@ -305,7 +312,7 @@ namespace Federator.Addin.Ui
         {
             try
             {
-                return NwfPick.From(Trimmed(PickedNwfBox.Text), IncludeSubfolders.IsChecked == true, excelFolder);
+                return NwfPick.From(Trimmed(PickedNwfBox.Text), IncludeSubfolders.IsChecked == true, excelFolder, internalWorkbook);
             }
             catch (Exception error)
             {
@@ -463,8 +470,43 @@ namespace Federator.Addin.Ui
         private void OnRunBoxClicked(object sender, RoutedEventArgs e)
         {
             CheckBox box = sender as CheckBox;
-            GroupRow clicked = box == null ? null : box.DataContext as GroupRow;
+            RunBoxFlipped(box == null ? null : box.DataContext as GroupRow);
+        }
 
+        /// <summary>
+        /// The space bar on a Run cell, F130-R1, the reviewer's point on F130. The stock column
+        /// ticked a row when Space was pressed on its cell, and the read only template column
+        /// took that away, so a person who arrows onto the Run cell and presses Space ticked
+        /// nothing. Space on the cell now flips its row and goes the way a click on the box
+        /// goes, Shift and all. Space on the box itself is left to the box, which raises Click.
+        /// </summary>
+        private void OnGroupsGridKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            DataGridCell cell = e.OriginalSource as DataGridCell;
+
+            if (e.Key != System.Windows.Input.Key.Space || cell == null || !ReferenceEquals(cell.Column, RunColumn))
+            {
+                return;
+            }
+
+            GroupRow row = cell.DataContext as GroupRow;
+
+            if (row == null || !row.CanInclude)
+            {
+                return;
+            }
+
+            e.Handled = true;
+            row.Include = !row.Include;
+            RunBoxFlipped(row);
+        }
+
+        /// <summary>
+        /// One Run box flipped, by a click on it or the space bar on its cell. The row has already
+        /// taken its new state.
+        /// </summary>
+        private void RunBoxFlipped(GroupRow clicked)
+        {
             if (clicked == null)
             {
                 return;
@@ -885,7 +927,7 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            string collisions = nameTable.WhyTheRunCannotStart();
+            string collisions = nameTable.WhyTheRunCannotStart(internalWorkbook);
 
             NamePreview.Text = "The first group would be written as:" + Environment.NewLine
                 + string.Join(Environment.NewLine, lines.ToArray())
@@ -1817,6 +1859,7 @@ namespace Federator.Addin.Ui
             options.UnitsName = ChosenUnits();
             options.Images = ImagesWanted();
             options.Names = settings;
+            options.GenericModels = internalWorkbook;
             return options;
         }
 
@@ -2007,8 +2050,9 @@ namespace Federator.Addin.Ui
 
             // Outputs overwrite with no date suffix, so two groups sharing a name is not a
             // warning. The second silently destroys the first and only shows up later as a
-            // federation nobody can find. Caught before anything is cleared or written.
-            string collisions = nameTable.Only(TickedGroupKeys()).WhyTheRunCannotStart();
+            // federation nobody can find. Caught before anything is cleared or written, and so is a
+            // workbook named as another group's internal workbook, F127-R5.
+            string collisions = nameTable.Only(TickedGroupKeys()).WhyTheRunCannotStart(internalWorkbook);
 
             if (collisions != null)
             {
