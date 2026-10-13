@@ -441,6 +441,31 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
+        /// Row F114-K31. The reader gives a set with no name attribute a null name, and its TEAMS
+        /// line named no set at all. It is said as a set with no name, by the folders above it,
+        /// and as one no test side can name, so no team is read for it.
+        /// </summary>
+        [Test]
+        public void ASetWithNoNameIsSaidAsOneAndByItsFolders()
+        {
+            IList<SelectionSetDefinition> sets = new ExchangeReader().ReadText(
+                "<exchange units=\"ft\"><selectionsets>"
+                + "<viewfolder name=\"Electrical\"><viewfolder name=\"Lights\"><selectionset guid=\"g1\"/></viewfolder></viewfolder>"
+                + "<selectionset guid=\"g2\"/>"
+                + "<selectionset name=\"Loose\" guid=\"g3\"/>"
+                + "</selectionsets></exchange>").Sets;
+
+            Same(
+                MapOf(BadersMap).SetLines(sets, '-'),
+                "TEAMS    a set with no name in the clash XML's set tree, under Electrical/Lights, which no test side can name,"
+                    + " so no team is read for it",
+                "TEAMS    a set with no name in the clash XML's set tree, at its root, which no test side can name,"
+                    + " so no team is read for it",
+                "TEAMS    Loose carries no discipline code the map lists and no folder above it in the clash XML's set tree"
+                    + " names a team, so its team is UNKNOWN, unless a model of its group carries a code its name holds");
+        }
+
+        /// <summary>
         /// Q123 answered B: a run with no clash XML reads the team map the window kept, by its
         /// one full path, and every TEAMS line and the window line say it is the kept map. Gone,
         /// unread or holding no team it maps nothing and says which, as a map beside an XML does.

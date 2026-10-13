@@ -127,7 +127,9 @@ namespace Federator.Addin.Engine
         /// The whole of one group: walk, plan, write, inventory, remove, read the tree.
         /// Never throws past a view: one that throws is recorded as failed and the rest are
         /// still tried. The tests ran, the test names, the mirrors and whether the clash step
-        /// was sound are the inventory's facts, Core's contracts of rows F114-K12 and K20.
+        /// was sound are the inventory's facts, Core's contracts of rows F114-K12 and K20. The
+        /// tests the clash step skipped are read for the ones it failed on, with the kept test
+        /// of each merged mirror, row F114-K38.
         /// </summary>
         public ViewpointBuildOutcome BuildForGroup(
             Document document,
@@ -137,6 +139,8 @@ namespace Federator.Addin.Engine
             ViewTeams teams,
             IList<ModelTeam> models,
             ICollection<string> testsRan,
+            IEnumerable<SkippedClashTest> testsSkipped,
+            IDictionary<string, string> keptOfMirror,
             ICollection<string> testNames,
             ICollection<string> mirrors,
             bool clashStepSound)
@@ -184,6 +188,10 @@ namespace Federator.Addin.Engine
                     // N2. A test the clash step ran with no row on the report is read whole with
                     // no row, so the inventory removes its old view as no longer needed.
                     testsRead.Ran(testsRan);
+
+                    // F114-K38. A test whose harvest threw after only closed rows is not whole,
+                    // and nor is the kept test of a mirror it failed on.
+                    testsRead.ClashStepFailed(testsSkipped, keptOfMirror);
                     Plan = TestViewPlan.For(clashes, teams, mirrors, views);
                 }
 
@@ -358,8 +366,8 @@ namespace Federator.Addin.Engine
                         }
 
                         // The size is read only in a pair that carries the size folder, row
-                        // F114-K9, and the pair is the test's, read off its first row's sets.
-                        bool carriesSize = teams.PairOf(under[0].LeftSet, under[0].RightSet).CarriesSizeFolder;
+                        // F114-K9, and the pair is the test's, read off its first row's sides.
+                        bool carriesSize = teams.PairOf(under[0].LeftSide, under[0].RightSide).CarriesSizeFolder;
 
                         foreach (ReportClash clash in under)
                         {

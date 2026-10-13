@@ -376,6 +376,25 @@ The renumber line comes first, because it is the whole of the fix: a picture wri
 662. Look for, in the `COVERAGE` block: every count compared agreeing, 528 of 528 in set 09
 663. Send the log and the `.tsv` beside it, with the PICTURES, IMAGES, HARVEST and RENUMBER seconds off the TIMING block
 
+## Proof F114c the views' sides, added 2026-10-12, rewritten for attempt 2
+
+The first run reads that no view moved to another pair folder now a side is read by its whole locator. The second reads the same with no clash XML picked, where the views get no set tree. A test the clash step failed on, F114-K38, cannot be made to fail by hand, so no step forces it. FR-067 is not in this pass.
+
+692. Install main with fix-F114c merged
+693. Scan the C02 folder
+694. Pick the clash XML
+695. Untick `Skip clash when models sit off shared coordinates` on the Clash step
+696. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
+697. Press Run
+698. Look for, in the `VIEWS` block of 1A02MM: the same pair folders as set 09's run of 1A02MM, `steps\runs\09\item1-C02`, and in the `VIEWS TREE` block the last line `7 of 7 hold`
+699. Close Navisworks
+700. Start Navisworks and open the tool
+701. Scan the C02 folder again, picking no clash XML
+702. Untick `Skip clash when models sit off shared coordinates` on the Clash step, which starts ticked on every open
+703. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
+704. Press Run
+705. Look for, in the `VIEWS INVENTORY` block: the views of step 697 `removed, this tool's earlier view replaced at its place`, and in the `VIEWS` block the same pair folders as step 698, but for a test with a side whose set name carries no code, such as BLD-Security Devices, which with no clash XML reads UNKNOWN as it did before this pass
+706. Send the logs of steps 697 and 704
 ## Proof F115 the register rows of the sets, added 2026-10-12
 
 The weekly run with the box off comes first, because it is the run the team makes every week and it is where the leftovers are now reported and the SETS step may take longer. The run with the box ticked last, since it changes the NWF. A damaged document, two sets of one name in one folder, a folder as a clash source and a set lost after it was put in cannot be made to happen on a real folder, so those rows are read and not run.

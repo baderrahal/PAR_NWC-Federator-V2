@@ -244,6 +244,26 @@ namespace Federator.Addin.Engine
         public IList<string> MirrorNames { get; private set; }
 
         /// <summary>
+        /// The kept test's name by the run name of each mirror whose clashes a merge takes,
+        /// read off the merges this run indexed, so the views treat the kept test of a mirror
+        /// the clash step failed on as not read whole, row F114-K38. Empty where none was paired.
+        /// </summary>
+        public IDictionary<string, string> KeptOfMirror
+        {
+            get
+            {
+                Dictionary<string, string> kept = new Dictionary<string, string>(StringComparer.Ordinal);
+
+                foreach (KeyValuePair<string, MirrorPair> pair in pairOfMirror)
+                {
+                    kept[pair.Key] = pair.Value.Kept.Name;
+                }
+
+                return kept;
+            }
+        }
+
+        /// <summary>
         /// The plan this run ran, F127: the picked file's tests resolved against the document's sets
         /// and each mirror under the name it runs under, or the saved tests read with their sides,
         /// so the coverage reads every test by the name the record keeps it under and each side by

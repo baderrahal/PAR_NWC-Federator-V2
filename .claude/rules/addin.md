@@ -259,7 +259,10 @@ well as to pass.
   handed to the plan unread, its status checked before `ResultAt`, so a Resolved row Compact
   removed never makes its test not read, C1. A test the clash step ran with no row on the
   report is read whole with no row, `TestsRead.Ran`, N2, and its old view goes as no longer
-  needed. A test whose open rows are ALL result groups gets no view, keeps its old views and
+  needed. A test the clash step skipped as FAILED is never read whole, and nor is the kept test
+  of a merged mirror it failed on, `TestsRead.ClashStepFailed` handed the clash record's skipped
+  tests and `ClashRunner.KeptOfMirror`, row F114-K38, since its harvest may have thrown after
+  reading only closed rows, so its old views stay and it is counted failed with why. A test whose open rows are ALL result groups gets no view, keeps its old views and
   is named on one VIEWS line, never counted failed, `TestsRead.OnlyGroups`, F3, the lead's
   decision that a person's grouping must not cost the group DONE. A test not read whole hands the
   plan none of its rows, is counted FAILED on the VIEWS BUILT block with why, so the group is

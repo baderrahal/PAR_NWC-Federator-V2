@@ -2,6 +2,61 @@
 
 Newest entry at the top.
 
+## 2026-10-12 F114c, the views' sides and a failed harvest, wave 2b
+
+Branch fix-F114c off main 80314b9, worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f114c, on Bader's order of
+2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under Q143's limits, pull request 213. No Navisworks
+was started, no probe was run and tools\loop, tools\probes and the guard were not touched.
+
+### What was done
+
+- F114-K30. A view's side is the test's locator whole, and the views read the sets at exactly that path first, so
+  two sets of one name in two team folders each read their own folder's team and no longer UNKNOWN. With no set
+  tree read, a weekly run with no clash XML, a side reads exactly the team its set name read before. An UNKNOWN
+  side is kept by its whole locator, so each reason is written
+- F114-K31. A set with no name gets a TEAMS line saying it is a set with no name, by its folders or at the root,
+  where its line named no set
+- F114-K38, the reviewer's D1. A test the clash step failed on is never read whole for the views, and nor is the
+  kept test of a merged mirror it failed on, so a harvest that threw after only closed rows no longer removes a
+  test's old view. It is counted failed with why
+- F114-K35 set merged by 189, whose VIEWS line already says what the row asks. F114-K33 dropped, P18 having read
+  the whole read back at 0.014 s a view, no time the team sees
+- ATTEMPT 2, on the lead's list after the reviewer and the breaker read attempt 1. FR-067 taken out: attempt 1
+  copied the viewpoints out before the clear and put them back with CopyFrom, and said P15 had measured that. It
+  had not. scan.md 5z-w is headed NOT ANSWERED, and Navisworks failed twice there, at a read of the copy after the
+  clear and at a walk of the items after CopyFrom. FR-067 reads open again and waits for that probe. The breaker's
+  point 2, the kept test of a failed mirror, and point 3, the read with no set tree, pinned by a test. N5, each
+  UNKNOWN side by its whole locator. The proof steps one action each
+- The rules: core.md's TEAMS line bullet, its ONE VIEW PER CLASH TEST bullet and its ViewsInventory words,
+  addin.md's ONLY A TEST READ WHOLE GETS A VIEW words. Proof steps 692 to 706 of steps\03_bader_next.md
+- Tests: 6 new. TeamMapTests.ASetWithNoNameIsSaidAsOneAndByItsFolders,
+  TestViewPlanTests.TwoSetsOfOneNameAreToldApartByTheFoldersTheirLocatorHolds,
+  EachUnknownSideOfOneSetNameIsNamedWithItsOwnReason and WithNoSetTreeALocatorReadsTheTeamItsSetNameReads,
+  TestsReadTests.ATestTheClashStepFailedIsNotWholeEvenWithOnlyClosedRows and
+  TheKeptTestOfAMirrorTheClashStepFailedOnIsNotWhole. ReportClashesTests reads the sides as the locators, its test
+  renamed to say so. Each new test was seen failing first against the old rule, f114c-before-fail.txt,
+  f114c-before-compile.txt and f114c-a2-before-fail.txt in %LOCALAPPDATA%\NwcFederatorLoop, but the one with no set
+  tree, which passes on the old rule too, since it proves nothing moved
+- Core tests 2921 passed, 0 failed, 0 skipped before, at main 80314b9, and 2927 passed, 0 failed, 0 skipped after.
+  The solution builds in Release with 0 warnings and 0 errors. check-locals and check-imports pass.
+  make-tracker.ps1 run and check-tracker.ps1 reads clean
+
+### What remains
+
+- The proof on the local machine, steps 692 to 706
+- FR-067 waits for the P15 probe scan.md 5z-w names, not answered
+- FR-181 of F131 stays in progress with no branch: naming a silent miss needs the count of items no set catches,
+  which the COVERAGE block reads as UNKNOWN, not counted in this build. Set 09's TEAMS block of 1A04PK reads 23 of 25
+  mechanical sets unable to reach the FP model and 12 of 25 the HV model, each UNKNOWN as a miss until that count
+  is built
+
+### Known bugs
+
+- F114-K32, K34, K36 and K37 stay open, each needing a probe, a run or Bader's word, as steps\01_next.md says
+
+### What comes next
+
+- The reviewer and the breaker re-read attempt 2. The lead sets the rows to merged with 213 before merging
 ## 2026-10-12 F115 the register rows of the sets, wave 2a, branch fix-F115c
 
 Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under his Q143 limits. Every open

@@ -3490,6 +3490,7 @@ namespace Federator.Addin.Engine
                 // F114. The mirrors' run names, so no mirrored test gets a view, or null where
                 // no mirror rule ran, which the VIEWS block says.
                 outcome.MirrorNames = runner.MirrorNames;
+                outcome.KeptOfMirror = runner.KeptOfMirror;
 
                 // The skipped group's own CLASH block and summary say the clash was skipped
                 // rather than print nought for what never ran.
@@ -4485,7 +4486,8 @@ namespace Federator.Addin.Engine
                     RunSteps.Views,
                     () => built = builder.BuildForGroup(
                         document, job.Building, outcome.Report, outcome.RowAddresses, viewTeams, models,
-                        testsRan, testNames, outcome.MirrorNames, clashStepSound),
+                        testsRan, outcome.Clash == null ? null : outcome.Clash.Skipped, outcome.KeptOfMirror,
+                        testNames, outcome.MirrorNames, clashStepSound),
                     () => built == null ? "nothing" : built.Summary());
             }
             catch (Exception error)
