@@ -533,6 +533,7 @@ namespace Federator.Core.Tests
             facts.FileCount = 5;
             facts.NwfSavesAsked = 1;
             facts.NwfSavesThatFailed = 1;
+            facts.LastNwfSaveFailed = true;
 
             string reason;
 
@@ -542,22 +543,42 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// FR-045. The save after the clash work returned false on an opened group, so the
+        /// FR-045. The save after the clash work returned false on a built group, so the
         /// sets, the tests and the views this run put in reached the NWD and not the NWF.
         /// Two saves, the second failed, and the reason says how many of them.
         /// </summary>
         [Test]
-        public void AnOpenedGroupWhoseSaveAfterTheClashWorkFailedIsFailed()
+        public void ABuiltGroupWhoseSaveAfterTheClashWorkFailedIsFailed()
         {
             GroupFacts facts = Clean();
-            facts.Decision = RerunDecision.Open;
+            facts.Decision = RerunDecision.Build;
             facts.NwfSavesAsked = 2;
             facts.NwfSavesThatFailed = 1;
+            facts.LastNwfSaveFailed = true;
 
             string reason;
 
             Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Failed));
             Assert.That(reason, Does.Contain("1 of 2 saves of the NWF did not report success"));
+        }
+
+        /// <summary>
+        /// The reader's point on pull request 219. The first save failed, a lock passing say, and
+        /// the save after the clash work reported success, so the NWF holds the whole document and
+        /// the group is not failed on its NWF. It was, with a reason saying the file was short.
+        /// </summary>
+        [Test]
+        public void AGroupWhoseFirstSaveFailedAndWhoseLastReportedSuccessIsNotFailedOnItsNwf()
+        {
+            GroupFacts facts = Clean();
+            facts.Decision = RerunDecision.Rebuilt;
+            facts.NwfSavesAsked = 2;
+            facts.NwfSavesThatFailed = 1;
+            facts.LastNwfSaveFailed = false;
+
+            string reason;
+
+            Assert.That(GroupJudgement.Judge(facts, out reason), Is.EqualTo(GroupOutcome.Done));
         }
 
         /// <summary>

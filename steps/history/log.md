@@ -28,14 +28,14 @@ What was done:
   changed and names the rest apart, already at the value, not found, would not copy as a clash test or threw
 - T6-R-ZEROCLASHES, TIMING BESIDE SIZE writing 0 clashes for a group whose clash was skipped. GroupSize.ClashesIn
   is UNKNOWN there, as RESULT says, and a test that ran and found nothing stays a real zero
-- The rules in .claude\rules\core.md and addin.md, the section in steps\01_next.md and steps 700 to 712 of
+- The rules in .claude\rules\core.md and addin.md, the section in steps\01_next.md and steps 720 to 750 of
   steps\03_bader_next.md
 - Proved here: Core tests 2921 passed, 0 failed, 0 skipped on main 80314b9. The 14 new tests did not build there,
   and against the new members written first with the old behaviour 9 of them failed, 2935 run. After the fix 2935
   passed, 0 failed, 0 skipped. The solution builds in Release with 0 warnings and 0 errors, the add-in included.
   check-locals and check-imports read clean
 
-What remains: the merge, and the run of steps 700 to 712 of steps\03_bader_next.md. Nothing of it has run on
+What remains: the merge, and the run of steps 720 to 750 of steps\03_bader_next.md. Nothing of it has run on
 Navisworks.
 
 Known bugs: whether TrySaveFile and TryPublishFile return false or throw on a read only file is UNKNOWN, and either
@@ -44,6 +44,20 @@ group, a case no run has shown. The reshape of a group whose clash step or views
 twice, as the clear and rebuild always did.
 
 What comes next: the lead's reviewer, then the run.
+
+ATTEMPT 2, the reviewer's first reading of pull request 219 on 2026-10-13:
+- FIXED, the one fault the team would see. A built or rebuilt group saves its NWF twice, and the count of failed saves
+  only went up, so a first save that failed and a second that reported success judged the group FAILED with a reason
+  saying the file was short, though the second save wrote the whole document. GroupFacts.LastNwfSaveFailed is set by
+  both saves and the judgement fails the group only when the last save failed. Test
+  AGroupWhoseFirstSaveFailedAndWhoseLastReportedSuccessIsNotFailedOnItsNwf fails before and passes after
+- The test of a group saving twice now uses a built group, since an opened group saves once
+- The proof steps hold one action each and are numbered 720 to 750 after the steps main took in
+- Main 6e0b57c merged in, with one conflict in ClashRunner.ApplyChosenTolerance: the counter of this branch kept and
+  FR-036's PutOn of main kept in the case already at the value. Built in Release with 0 warnings and 0 errors, Core
+  tests 2960 after the merge and 2961 after attempt 2, 0 failed, 0 skipped
+
+
 ## 2026-10-12 The fix round, wave 2a, F132 the mirrored tests, rows F132-R1 to F132-R3 and F132-R6, written by the developer as the lead's delegate
 
 Bader's order of 2026-10-12 headed THE FIX ROUND, WAVES 2 TO 5, UNTIL 17:30, under Q143's limits. Branch

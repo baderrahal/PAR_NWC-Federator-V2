@@ -44,6 +44,13 @@ namespace Federator.Core.Rerun
         public int NwfSavesThatFailed { get; set; }
 
         /// <summary>
+        /// Whether the LAST save of the NWF this run asked for returned false or threw. Each save
+        /// writes the whole document, so a save that reported success after one that failed left
+        /// the file holding everything, and only a failed last save leaves it short.
+        /// </summary>
+        public bool LastNwfSaveFailed { get; set; }
+
+        /// <summary>
         /// Whether this run was asked to republish the NWD. With the tick box off the NWD
         /// is not a requested step, so its absence is not a failure.
         /// </summary>
@@ -267,10 +274,12 @@ namespace Federator.Core.Rerun
 
             // FR-044 and FR-045. A save of the NWF that returned false or threw left the file
             // at the path as it was, so what this run put in reached the NWD and not the NWF.
-            if (facts.NwfSavesThatFailed > 0)
+            // Only the last save decides, since a later one that reported success wrote the whole
+            // document over it.
+            if (facts.NwfSavesThatFailed > 0 && facts.LastNwfSaveFailed)
             {
                 reason = (facts.NwfSavesAsked > 1
-                        ? facts.NwfSavesThatFailed + " of " + facts.NwfSavesAsked + " saves of the NWF did not report success"
+                        ? facts.NwfSavesThatFailed + " of " + facts.NwfSavesAsked + " saves of the NWF did not report success, the last among them"
                         : "the NWF save did not report success")
                     + ", so the file at " + Words.Or(facts.NwfPath, "an unknown path")
                     + " does not hold what this run put in";

@@ -2443,6 +2443,8 @@ namespace Federator.Addin.Engine
                 outcome.NwfSavesThatFailed++;
             }
 
+            outcome.LastNwfSaveFailed = !saved;
+
             // Never report a file as written without looking for it. WriteFinished reads
             // the size back off the disk itself.
             outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath, saved);
@@ -4354,6 +4356,8 @@ namespace Federator.Addin.Engine
             {
                 outcome.NwfSavesThatFailed++;
             }
+
+            outcome.LastNwfSaveFailed = !saved;
 
             outcome.NwfSize = log.WriteFinished("NWF", job.NwfPath, saved);
             outcome.NwfOnDisk = outcome.NwfSize >= 0;
