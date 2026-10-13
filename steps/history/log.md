@@ -61,7 +61,8 @@ ATTEMPT 2, the reviewer's reading of pull request 222 on 2026-10-13, made by the
   samples, and FR-155 skips and refuses no test in any of them: 1830 tests each with merge_composites, 3660 sides each
   with selfintersect and primtypes, and flags and disjoint whole numbers wherever written
 - The refusal of disjoint written wrong has its case in ASettingWrittenWrongIsRefusedNamingItAndWhereItIs
-- Steps 853 and 859 hold one action each, the proof steps now 800 to 867
+- The old steps 853 and 859 are split to one action each, now 853 and 854 and 860 to 862, the proof steps 800 to 867
+- Built in Release with 0 warnings and 0 errors after main 8e100bf6 was merged in, Core tests 3046 passed, 0 failed, 0 skipped
 - A comment of UndoAutoReview.InOrder says four, as the array holds
 
 
