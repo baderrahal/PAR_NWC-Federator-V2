@@ -390,19 +390,6 @@ namespace Federator.Core.Report
             return at;
         }
 
-        private static bool HoldsAPicture(IXLWorksheet sheet, int row)
-        {
-            foreach (IXLPicture picture in sheet.Pictures)
-            {
-                if (picture.TopLeftCell != null && picture.TopLeftCell.Address.RowNumber == row)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         // ---------- cell against cell ----------
 
         /// <summary>
@@ -411,11 +398,9 @@ namespace Federator.Core.Report
         /// </summary>
         private void CheckCells(IXLWorksheet sheet, int row, ClientLayout.RowKind kind)
         {
-            // A clash row holding a pasted thumbnail is the thumbnail's height and not the client's, which has no
-            // picture pasted in the row, FR-039. The writer keeps it now, where it forced the client's height back.
-            double wanted = kind == ClientLayout.RowKind.Clash && HoldsAPicture(sheet, row)
-                ? WorkbookWriter.ThumbnailPoints
-                : ClientLayout.Height(kind);
+            // Every row is the client's height. A linked picture runs into the row below as theirs does and
+            // changes no row's height, F152, so the thumbnail height FR-039 allowed went with the thumbnail.
+            double wanted = ClientLayout.Height(kind);
             double got = sheet.Row(row).Height;
 
             if (Math.Abs(got - wanted) > ClientLayout.Epsilon)

@@ -4093,7 +4093,11 @@ namespace Federator.Addin.Engine
 
             try
             {
-                new WorkbookWriter(reports).Write(report, path);
+                // F152. The pictures are linked in the client's form, so the log says how many and
+                // that they show only while the _files folder stays where it was written.
+                WorkbookWriter writer = new WorkbookWriter();
+                writer.Write(report, path);
+                log.Line(LinkedPictures.Line(writer.PicturesLinked, path));
             }
             catch (Exception error)
             {

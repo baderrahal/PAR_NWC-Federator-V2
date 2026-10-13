@@ -1952,3 +1952,25 @@ runs on copies in new folders on the desktop, so no NWF of the real folders is c
 1419. Press OK on the confirm and wait for the run to finish
 1420. Look for: still no `run-*.log` file in `F151 out`
 1421. Send both logs, named on their `log file` lines
+
+### F152, the workbook's pictures as linked pictures
+
+Only Excel can show these two things: that the pictures show, and that Excel asks nothing when it opens a workbook of thousands of linked pictures. Write down the exact words of any question or bar Excel shows.
+
+1430. Install main once fix-F152 has merged, steps 7 to 12
+1431. Make a new folder on the desktop named `F152 out`
+1432. Run 1A02MM from `F151 source` as in steps 1404 to 1411, with `F152 out` picked for the NWF, NWD and Excel folders
+1433. Look for, in the log of that run: a line starting `XLSX     ` and a number, then `linked pictures in the workbook, each pointing at its jpg in`, the `_files` folder in `F152 out`, and `None is embedded, so they show only while that folder stays where it was written`
+1434. Look for: that number the same as the number of pictures on the `IMAGES` line of 1A02MM
+1435. In Explorer open `F152 out` and double click `1104-PAR-1A02MM-ZZZ-BM-MOD-000001.xlsx`
+1436. Note how many seconds Excel takes to show the sheet
+1437. Look for: no question, no yellow or red bar and no message about links, security or updating. Write down the exact words of any that shows
+1438. Look for: a picture in column A of the first clash row of the first block, over the Image cell, running a little into the row below
+1439. Look for: it is the same picture as `cd000001.jpg` in the `_files` folder
+1440. Press Ctrl+End and scroll up to the last block's clash rows
+1441. Look for: their pictures show too
+1442. Click the part of an Image cell the picture does not cover
+1443. Look for: the jpg of that row opens
+1444. Close Excel and answer Do not save
+1445. In Explorer rename the `_files` folder to `moved`, open the workbook again and look for: the pictures no longer show, which is what the client's own file does. Close Excel without saving and rename the folder back
+1446. Send the log, the seconds of step 1436 and the words of any question from step 1437

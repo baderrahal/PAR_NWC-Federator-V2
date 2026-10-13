@@ -2,10 +2,10 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 595 rows: open 164, in progress 24, in review 0, merged 360, proven by a run 29, waiting for Bader 0, dropped 18
-- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 124, outside the waves 2, right after F133 merges 6
+- By status, of 597 rows: open 163, in progress 24, in review 0, merged 362, proven by a run 29, waiting for Bader 1, dropped 18
+- By wave: 1 19, 2a 73, 2a and 2b 1, 2b 42, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 73, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 126, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
-- Waits for Bader: nothing
+- Waits for Bader, 1 row: Q163
 
 ## Wave 1
 
@@ -684,10 +684,12 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | F150-R2 | the put back of Hide Other writes the value read, off, so the registry holds the set form 3 0 where it held 0, a value never set, before the first run on a PC, Clash Detective reading off either way, set 10, dropped by Bader's answer B of 2026-10-13, Q161 | F150 | register row | dropped | 230 | none | 2026-10-13 |
 | F151 | no copy of the log beside the NWF folder, the picked NWFs or the open file, the log stays in the logs folder, Q162-1 | F151 | fix | merged | 232 | none | 2026-10-13 |
 | Q162-1 | no log copy in the NWF folder, the log in the logs folder only and RESULT still written, F151 | none | Bader's request | merged | 232 | none | 2026-10-13 |
-| Q162-2 | Excel pictures as linked pictures in the form of his by-hand client workbook, F152 | none | Bader's request | open | none | none | 2026-10-13 |
+| Q162-2 | Excel pictures as linked pictures in the form of his by-hand client workbook, F152 | none | Bader's request | merged | 233 | none | 2026-10-13 |
 | Q162-3 | no Excel rows for tests with no clash, the HTML and the Coverage sheet keep every test, F153 | none | Bader's request | open | none | none | 2026-10-13 |
 | Q162-4 | the priority and by design CSVs built in, the two picker rows gone, F154 | none | Bader's request | open | none | none | 2026-10-13 |
 | Q162-5 | the clash matrix built in as a pack, the tolerance from the drop down alone, F155 | none | Bader's request | open | none | none | 2026-10-13 |
+| F152 | the workbook's pictures as linked pictures in the form of the client's own file, the thumbnail box gone, Q162-2 | F152 | fix | merged | 233 | none | 2026-10-13 |
+| Q163 | whether each linked picture also carries the client's click link to its jpg, F152 | none | question | waiting for Bader | none | none | 2026-10-13 |
 
 ## outside the waves
 

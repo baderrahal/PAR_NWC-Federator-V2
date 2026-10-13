@@ -219,7 +219,7 @@ namespace Federator.Core.Report
         /// <summary>What the workbook cell links to, relative so the pair can be moved.</summary>
         public string ImageLink { get; set; }
 
-        /// <summary>Where the picture actually is, for embedding a thumbnail.</summary>
+        /// <summary>Where the picture actually is, the absolute path a linked picture of the workbook points at, F152.</summary>
         public string ImagePath { get; set; }
 
         /// <summary>True when this row has a picture beside the workbook.</summary>

@@ -610,7 +610,7 @@ namespace Federator.Core.Tests
             RenderInRunOrder(report, null);
             ImageRenumbering.Apply(report, workbook);
 
-            string path = new WorkbookWriter(new ReportOptions()).Write(report, workbook);
+            string path = new WorkbookWriter().Write(report, workbook);
 
             using (XLWorkbook written = new XLWorkbook(path))
             {

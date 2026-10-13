@@ -57,7 +57,7 @@ foreach ($n in @("NwfLevel","NwfDiscipline","NwfType","NwfNumber","NwfAllBuildin
 
 Write-Output ""
 Write-Output "==== the tick boxes, their text and their state ===="
-foreach ($n in @("WriteClashXml","DateTheNwd","EmbedThumbnails",
+foreach ($n in @("WriteClashXml","DateTheNwd",
                  "ApplyFileSettings","CompactResolved","IncludeSubfolders")) {
   $b = Box $n
   if ($null -eq $b) { Write-Output ("  {0,-20} NOT FOUND" -f $n); continue }

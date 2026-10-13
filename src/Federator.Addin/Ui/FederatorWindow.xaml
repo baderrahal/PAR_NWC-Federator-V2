@@ -343,7 +343,6 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
                                 <StackPanel Grid.Row="0" Grid.ColumnSpan="5">
@@ -362,34 +361,26 @@
                                                Text="One extra file per building, under a megabyte." />
                                 </StackPanel>
 
-                                <StackPanel Grid.Row="2" Grid.ColumnSpan="5">
-                                    <CheckBox x:Name="EmbedThumbnails"
-                                              Content="Paste the photos into the cells"
-                                              Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
-                                    <TextBlock Style="{StaticResource TickHelp}"
-                                               Text="Off. Neither report pastes them, both link to the _files folder." />
-                                </StackPanel>
-
                                 <!-- F150. The label and the grey line are read off Core,
                                      OtherItemsInPictures, and the default off ImageOptions. -->
-                                <StackPanel Grid.Row="3" Grid.ColumnSpan="5">
+                                <StackPanel Grid.Row="2" Grid.ColumnSpan="5">
                                     <CheckBox x:Name="GhostOtherItems"
                                               Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
                                     <TextBlock x:Name="GhostOtherItemsHelp" Style="{StaticResource TickHelp}" />
                                 </StackPanel>
 
-                                <Label Grid.Row="4" Grid.Column="0" Content="Photo size" VerticalAlignment="Center" />
-                                <TextBox Grid.Row="4" Grid.Column="1" x:Name="ImagePixelsBox"
+                                <Label Grid.Row="3" Grid.Column="0" Content="Photo size" VerticalAlignment="Center" />
+                                <TextBox Grid.Row="3" Grid.Column="1" x:Name="ImagePixelsBox"
                                          MinWidth="70" VerticalAlignment="Center" Margin="0,0,12,4"
                                          TextChanged="OnImageSettingChanged" />
-                                <Label Grid.Row="4" Grid.Column="2" Content="At most per test, 0 for no cap"
+                                <Label Grid.Row="3" Grid.Column="2" Content="At most per test, 0 for no cap"
                                        VerticalAlignment="Center" />
-                                <TextBox Grid.Row="4" Grid.Column="3" x:Name="ImageCapBox"
+                                <TextBox Grid.Row="3" Grid.Column="3" x:Name="ImageCapBox"
                                          MinWidth="70" VerticalAlignment="Center" Margin="0,0,0,4"
                                          TextChanged="OnImageSettingChanged" />
 
-                                <Label Grid.Row="5" Grid.Column="0" Content="Photo of" VerticalAlignment="Center" />
-                                <StackPanel Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="4"
+                                <Label Grid.Row="4" Grid.Column="0" Content="Photo of" VerticalAlignment="Center" />
+                                <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4"
                                             Orientation="Horizontal" VerticalAlignment="Center">
                                     <CheckBox x:Name="ImageNew" Content="New" Margin="0,0,10,0"
                                               Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
@@ -403,7 +394,7 @@
                                               Checked="OnImageSettingChanged" Unchecked="OnImageSettingChanged" />
                                 </StackPanel>
 
-                                <TextBlock Grid.Row="6" Grid.ColumnSpan="5" x:Name="ImageSummary"
+                                <TextBlock Grid.Row="5" Grid.ColumnSpan="5" x:Name="ImageSummary"
                                            Margin="0,6,0,0" TextWrapping="Wrap" Foreground="#606060"
                                            Text="Photos on." />
                             </Grid>

@@ -34,7 +34,6 @@ namespace Federator.Core.Report
             CapPerTest = 0;
             Width = DefaultPixels;
             Height = DefaultPixels;
-            EmbedThumbnail = false;
             StopAfterFailures = DefaultStopAfterFailures;
             OnlyTheTestsModels = true;
             GhostTheOtherItems = false;
@@ -67,12 +66,6 @@ namespace Federator.Core.Report
         public int Width { get; set; }
 
         public int Height { get; set; }
-
-        /// <summary>
-        /// Off. The accepted report links to its pictures and does not paste them into
-        /// cells, so a thumbnail in the cell is an addition rather than a match.
-        /// </summary>
-        public bool EmbedThumbnail { get; set; }
 
         /// <summary>How many failures in a row end the run. Zero switches the guard off.</summary>
         public int StopAfterFailures { get; set; }
@@ -277,7 +270,7 @@ namespace Federator.Core.Report
 
             return "Images on, " + Width + " by " + Height + " pixels, " + statusList
                 + " only, " + cap + ", "
-                + (EmbedThumbnail ? "with a thumbnail in the cell" : "linked rather than pasted in")
+                + "linked rather than pasted in"
                 + (OnlyTheTestsModels ? ", only the models of each test shown" : ", every model shown")
                 + (GhostTheOtherItems ? ", Clash Detective asked to show the other items" : ", Clash Detective asked to hide the other items")
                 + ".";

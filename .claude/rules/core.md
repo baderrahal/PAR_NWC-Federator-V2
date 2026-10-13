@@ -1478,13 +1478,32 @@ and 6 does not read as broken.
   differing and is correct. The precision was ours
 - A picture reference on the page uses a BACKSLASH, for the clash pictures and for the
   logo, because that is what both supplied reports write and the client opens these in
-  Excel on Windows. The workbook keeps a forward slash, because a hyperlink there is a Uri
-  and their own xlsx has no picture hyperlinks at all to match
-- Neither their report nor ours embeds a picture in the xlsx, measured on the zip of each.
-  The native export never does. Pictures show only when the _files folder sits beside the
-  file, so the page and its folder are what gets sent. That used to be said by a tick box
-  and the box is gone, because the accepted report has photos and one without them is not
-  the thing the client agreed to receive, so it is fixed on
+  Excel on Windows. The workbook's cell link keeps a forward slash, because a hyperlink there
+  is a Uri, and the click link on each picture of Bader's by-hand client xlsx is relative and
+  forward slashed too, read on 2026-10-13
+- THE WORKBOOK'S PICTURES ARE LINKED PICTURES IN THE CLIENT'S FORM, F152, Bader's decision of
+  2026-10-13, Q162-2: pictures stay links, the same form as the client's own file.
+  samples\client-report\1104-PAR-1A02WN-XXX-BM-RPT-000001.xlsx, his by-hand workbook, holds
+  xl\drawings\drawing1.xml with one twoCellAnchor of editAs oneCell per picture, 64 and the
+  logo, every picture 906780 EMU square from column A of its row, each blip carrying r:link
+  and no r:embed, and one relationship per picture of Type image, TargetMode External, to
+  file:/// and the jpg's absolute path with a space written %20, read on 2026-10-13.
+  `Federator.Core.Report.LinkedPictures` writes the same after ClosedXML's SaveAs, which
+  writes no linked picture, by editing the xlsx as the zip it is: the drawing part, its rels,
+  its content type, the sheet's relationship to it and the drawing element of the sheet,
+  before the first element the schema puts after it. One picture per clash row with a
+  picture, anchored at column A of that row, its far corner worked out from the sheet's own
+  widths and heights, so a 60 point clash row gives the client's own end, column A at
+  906780 and the next row at 144780. The target is the absolute path of the jpg in the
+  _files folder beside the workbook, `ImageNaming.PathFor`, as the client's file has it, and
+  the cell keeps its relative link. NO PICTURE IS EMBEDDED, so THE PICTURES SHOW ONLY WHILE
+  THAT FOLDER STAYS WHERE IT WAS WRITTEN, which the WORKBOOK step's XLSX line says,
+  `LinkedPictures.Line`. Every part is made and turned into bytes first, then written into a copy that replaces
+  the workbook only once it is whole, so a fault leaves the file as ClosedXML wrote it, and a sheet
+  already holding a drawing is refused. Whether Excel shows the pictures, and whether it asks
+  anything when it opens a file of thousands of them, only Excel can show, the proof steps of
+  steps\03_bader_next.md. The page is unchanged: the page and its _files folder are still what
+  gets sent
 - Exactly ONE objectattribute per clashobject, and it is the id. The Item ID cell is
   value-of over ./objectattribute/name, which takes the FIRST node, so writing several put
   the item's Name in the id column. Everything else about an item is a smarttag, which is
@@ -1532,9 +1551,9 @@ and 6 does not read as broken.
 - Images are ON by default, because the report the client has already accepted has them
   and one without them is not the thing they agreed to receive. They go where that report
   puts them, in a folder beside the workbook named after it with _files on the end, as
-  loose jpg. The workbook links to them and does not paste them in. A thumbnail in the
-  cell is a tick box, off, because pasting is not what the accepted report does and it
-  makes the file many times larger. A PICTURE IS NOT A VIEWPOINT and nothing in the image
+  loose jpg. The workbook links to them and does not paste them in, the linked pictures
+  above. The thumbnail tick box that pasted them into the cells is gone, F152, with
+  ImageOptions.EmbedThumbnail and the writer's two thumbnail sizes. A PICTURE IS NOT A VIEWPOINT and nothing in the image
   code touches SavedViewpoints. This bullet used to end by saying no clash is ever saved
   as a viewpoint, and F85 reverses that half of it: a clash now gets a viewpoint as well
   as a picture, planned by `Federator.Core.Views.ClashViewpointPlan` and written by

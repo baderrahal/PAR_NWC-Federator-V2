@@ -222,7 +222,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheCoverageSheetIsInTheInternalWorkbookAndTheClashWorkbookHoldsTheClientsSheetAlone()
         {
-            string clash = new WorkbookWriter(new ReportOptions()).Write(Report("T1"), Path.Combine(folder, OutputName + ".xlsx"));
+            string clash = new WorkbookWriter().Write(Report("T1"), Path.Combine(folder, OutputName + ".xlsx"));
             string path = Path.Combine(folder, new GenericModelsSettings().WorkbookNameFor(OutputName) + ".xlsx");
             IList<string> written = InternalWorkbook.Write(
                 path, "100000", Generic(), GenericModelsSettings.DefaultSheetName,
@@ -430,7 +430,7 @@ namespace Federator.Core.Tests
         private string WorkbookWithSheets(params string[] names)
         {
             string path = Path.Combine(folder, "sheets-" + names.Length + ".xlsx");
-            new WorkbookWriter(new ReportOptions()).Write(Report("T1"), path);
+            new WorkbookWriter().Write(Report("T1"), path);
 
             using (XLWorkbook workbook = new XLWorkbook(path))
             {

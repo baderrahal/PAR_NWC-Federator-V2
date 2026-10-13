@@ -1020,6 +1020,20 @@ a gap. Never report a check that did not run.
 Each entry names the rule as it stood, the date it changed, who decided and why, and where
 the rule lives now. The snapshot above stays as it was.
 
+## 2026-10-13, F152, the workbook's pictures are linked pictures
+
+The rules were "The workbook links to them and does not paste them in. A thumbnail in the cell is
+a tick box, off", in core.md, with "Neither their report nor ours embeds a picture in the xlsx",
+and the workbook held a cell hyperlink and no picture, so a person saw no picture in Excel. Bader's
+run of 2026-10-13 read 0 pictures and 4160 cell links in the workbook and 4160 pictures on the
+page. He decided the same day that pictures stay links, the same form as the client's own file,
+his by-hand workbook 1104-PAR-1A02WN-XXX-BM-RPT-000001.xlsx, which holds a drawing of linked
+pictures. So the workbook gets one linked picture per clash row with a picture, written by
+Federator.Core.Report.LinkedPictures after ClosedXML's save, the cell keeps its link, nothing is
+embedded, and the thumbnail tick box, ImageOptions.EmbedThumbnail and the writer's thumbnail sizes
+are gone. The rule lives in core.md, THE WORKBOOK'S PICTURES ARE LINKED PICTURES IN THE CLIENT'S
+FORM.
+
 ## 2026-10-13, F151, the log is written in one place
 
 The rule was "two places, always", in The diagnostic log above and in core.md: the log at

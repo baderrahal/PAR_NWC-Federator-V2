@@ -232,155 +232,69 @@ namespace Federator.Core.Tests
             Assert.That(naming.Workbook.Number.Length, Is.EqualTo(6));
         }
 
-        // ---------- the thumbnails are off ----------
+        // ---------- the pictures are linked and never pasted ----------
 
-        // The one the brief asks for by name. Their report links to its pictures. Ours
-        // pasted them in as well and came out at 51.7 MB where the same workbook without
-        // them is about 0.3 MB, and the pictures are in the folder beside it either way.
+        // Their report links to its pictures. Ours pasted them in as well once and came out at
+        // 51.7 MB where the same workbook without them is about 0.3 MB. Since F152 the option to
+        // paste is gone and every picture is a linked picture in the client's form, so the file
+        // holds no media of its own however many pictures it shows.
         [Test]
-        public void PastingThumbnailsIsOffByDefault()
-        {
-            Assert.That(new ImageOptions().EmbedThumbnail, Is.False);
-            Assert.That(new ReportOptions().Images.EmbedThumbnail, Is.False);
-            Assert.That(new ImageOptions().Describe(), Does.Contain("linked rather than pasted in"));
-        }
-
-        [Test]
-        public void WithThumbnailsOffTheWorkbookHoldsNoPictures()
+        public void TheWorkbookHoldsNoEmbeddedPictureAndTheCellKeepsItsLink()
         {
             ClashReport report = Report();
             TestReport test = OneTest(report, -0.05);
-
-            // A real picture beside the workbook, linked from the row.
-            string images = ImageNaming.FolderFor(Path.Combine(folder, report.OutputName + ".xlsx"));
-            Directory.CreateDirectory(images);
-            string jpg = Path.Combine(images, ImageNaming.FileNameFor(0, 1));
-            File.WriteAllBytes(jpg, Jpeg());
+            string workbook = Path.Combine(folder, report.OutputName + ".xlsx");
 
             test.Rows[0].ImageFile = ImageNaming.FileNameFor(0, 1);
-            test.Rows[0].ImageLink = ImageNaming.LinkFor(
-                Path.Combine(folder, report.OutputName + ".xlsx"), 0, 1);
-            test.Rows[0].ImagePath = jpg;
+            test.Rows[0].ImageLink = ImageNaming.LinkFor(workbook, 0, 1);
+            test.Rows[0].ImagePath = ImageNaming.PathFor(workbook, 0, 1);
 
             string path = Write(report, new ReportOptions());
 
-            Assert.That(Pictures(path), Is.EqualTo(0),
-                "the default pasted the pictures in and made the file 170 times bigger");
+            Assert.That(Pictures(path), Is.EqualTo(0), "a linked picture carries no media of its own");
 
-            using (XLWorkbook workbook = new XLWorkbook(path))
+            using (XLWorkbook book = new XLWorkbook(path))
             {
-                IXLWorksheet sheet = workbook.Worksheets.Worksheet(1);
+                IXLWorksheet sheet = book.Worksheets.Worksheet(1);
                 IXLCell cell = sheet.Cell(HeaderRow(sheet) + 1, WorkbookWriter.ColumnImage);
 
-                Assert.That(cell.HasHyperlink, Is.True,
-                    "the row still has to reach its picture, it is just not pasted in");
-            }
-        }
-
-        [Test]
-        public void TickingThumbnailsOnDoesPasteThem()
-        {
-            ClashReport report = Report();
-            TestReport test = OneTest(report, -0.05);
-
-            string images = ImageNaming.FolderFor(Path.Combine(folder, report.OutputName + ".xlsx"));
-            Directory.CreateDirectory(images);
-            string jpg = Path.Combine(images, ImageNaming.FileNameFor(0, 1));
-            File.WriteAllBytes(jpg, Jpeg());
-
-            test.Rows[0].ImageFile = ImageNaming.FileNameFor(0, 1);
-            test.Rows[0].ImageLink = "x_files/cd000001.jpg";
-            test.Rows[0].ImagePath = jpg;
-
-            ReportOptions pasted = new ReportOptions();
-            pasted.Images.EmbedThumbnail = true;
-
-            Assert.That(Pictures(Write(report, pasted)), Is.EqualTo(1));
-        }
-
-        /// <summary>
-        /// The row a pasted thumbnail sits in takes the thumbnail's height. The clash row height was set after the
-        /// picture was pasted and took it away, so a 95 pixel picture overhung the next row, FR-039. The break:
-        /// the same row without a picture keeps the client's measured height.
-        /// </summary>
-        [Test]
-        public void ARowHoldingAPastedThumbnailKeepsTheThumbnailsHeight()
-        {
-            ClashReport report = Report();
-            TestReport test = OneTest(report, -0.05);
-
-            string images = ImageNaming.FolderFor(Path.Combine(folder, report.OutputName + ".xlsx"));
-            Directory.CreateDirectory(images);
-            string jpg = Path.Combine(images, ImageNaming.FileNameFor(0, 1));
-            File.WriteAllBytes(jpg, Jpeg());
-
-            test.Rows[0].ImageFile = ImageNaming.FileNameFor(0, 1);
-            test.Rows[0].ImageLink = "x_files/cd000001.jpg";
-            test.Rows[0].ImagePath = jpg;
-
-            ReportOptions pasted = new ReportOptions();
-            pasted.Images.EmbedThumbnail = true;
-
-            using (XLWorkbook workbook = new XLWorkbook(Write(report, pasted)))
-            {
-                IXLWorksheet sheet = workbook.Worksheet(1);
-
-                Assert.That(
-                    sheet.Row(HeaderRow(sheet) + 1).Height,
-                    Is.EqualTo(WorkbookWriter.ThumbnailPoints).Within(0.001));
-            }
-
-            using (XLWorkbook workbook = new XLWorkbook(Write(report, new ReportOptions())))
-            {
-                IXLWorksheet sheet = workbook.Worksheet(1);
-
-                Assert.That(sheet.Row(HeaderRow(sheet) + 1).Height, Is.EqualTo(WorkbookWriter.ClashRowHeight).Within(0.001));
+                Assert.That(cell.HasHyperlink, Is.True, "the cell keeps its link beside the picture");
+                Assert.That(sheet.Row(HeaderRow(sheet) + 1).Height,
+                    Is.EqualTo(WorkbookWriter.ClashRowHeight).Within(0.001),
+                    "a linked picture runs into the row below as theirs does and changes no height");
             }
         }
 
         /// <summary>
-        /// The workbook check expects the thumbnail's height on a clash row that holds a picture, where it expected
-        /// the client's 60 and would have said the row was wrong on every run with the box ticked once the writer
-        /// kept the thumbnail's height, FR-039. A row at that height holding no picture is still named.
+        /// The workbook check holds every clash row to the client's 60 points, a row with a picture
+        /// among them, since the thumbnail's 72 went with the thumbnail, F152. The break: the same
+        /// pictured row set to 72 is named.
         /// </summary>
         [Test]
-        public void TheWorkbookCheckAcceptsTheThumbnailsHeightOnlyOnARowHoldingOne()
+        public void TheWorkbookCheckHoldsAPicturedRowToTheClientsHeight()
         {
             ClashReport report = Report();
             TestReport test = OneTest(report, -0.05);
-
-            string images = ImageNaming.FolderFor(Path.Combine(folder, report.OutputName + ".xlsx"));
-            Directory.CreateDirectory(images);
-            string jpg = Path.Combine(images, ImageNaming.FileNameFor(0, 1));
-            File.WriteAllBytes(jpg, Jpeg());
+            string workbook = Path.Combine(folder, report.OutputName + ".xlsx");
 
             test.Rows[0].ImageFile = ImageNaming.FileNameFor(0, 1);
-            test.Rows[0].ImageLink = "x_files/cd000001.jpg";
-            test.Rows[0].ImagePath = jpg;
+            test.Rows[0].ImageLink = ImageNaming.LinkFor(workbook, 0, 1);
+            test.Rows[0].ImagePath = ImageNaming.PathFor(workbook, 0, 1);
 
-            ReportOptions pasted = new ReportOptions();
-            pasted.Images.EmbedThumbnail = true;
+            string path = Write(report, new ReportOptions());
 
-            string path = Write(report, pasted);
+            Assert.That(string.Join("\n", WorkbookCheck.Of(path).Lines()), Does.Not.Contain(" high and the client's report has it at "));
+
+            using (XLWorkbook book = new XLWorkbook(path))
+            {
+                IXLWorksheet sheet = book.Worksheet(1);
+                sheet.Row(HeaderRow(sheet) + 1).Height = 72.0;
+                book.SaveAs(path);
+            }
 
             Assert.That(
                 string.Join("\n", WorkbookCheck.Of(path).Lines()),
-                Does.Not.Contain("is 72 high"),
-                "the picture is in the row and the row is the picture's height");
-
-            string plain = Write(report, new ReportOptions());
-
-            using (XLWorkbook workbook = new XLWorkbook(plain))
-            {
-                IXLWorksheet sheet = workbook.Worksheet(1);
-                sheet.Row(HeaderRow(sheet) + 1).Height = WorkbookWriter.ThumbnailPoints;
-                workbook.SaveAs(plain);
-            }
-
-            Assert.That(
-                string.Join("\n", WorkbookCheck.Of(plain).Lines()),
-                Does.Contain("is 72 high and the client's report has it at 60"),
-                "the same height with no picture in the row is still a fault");
+                Does.Contain("is 72 high and the client's report has it at 60"));
         }
 
         // ---------- helpers ----------
@@ -429,7 +343,7 @@ namespace Federator.Core.Tests
         private string Write(ClashReport report, ReportOptions options)
         {
             string path = Path.Combine(folder, report.OutputName + ".xlsx");
-            return new WorkbookWriter(options).Write(report, path);
+            return new WorkbookWriter().Write(report, path);
         }
 
         private static int HeaderRow(IXLWorksheet sheet)
@@ -477,17 +391,6 @@ namespace Federator.Core.Tests
             }
 
             return count;
-        }
-
-        /// <summary>The smallest thing ClosedXML will accept as a jpg.</summary>
-        private static byte[] Jpeg()
-        {
-            using (System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(8, 8))
-            using (MemoryStream stream = new MemoryStream())
-            {
-                bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
-                return stream.ToArray();
-            }
         }
     }
 }

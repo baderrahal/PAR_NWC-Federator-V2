@@ -338,7 +338,7 @@ namespace Federator.Core.Tests
             ClashReport report = Report(clashes);
 
             string path = Path.Combine(folder, OutputName + ".xlsx");
-            return new WorkbookWriter(new ReportOptions()).Write(report, path);
+            return new WorkbookWriter().Write(report, path);
         }
 
         // The workbook check used to count how many rows filled each of OUR columns. There

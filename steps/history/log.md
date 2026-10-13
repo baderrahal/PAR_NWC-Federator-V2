@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-10-13 F152 the workbook's pictures are linked pictures, item 2 of Bader's message of 2026-10-13, Q162-2
+
+Branch fix-F152 off main 36edef0. His run of 2026-10-13 read 0 pictures and 4160 cell links in the workbook. He decided
+pictures stay links in the form of his by-hand client workbook, which was read first.
+
+What was done:
+- LinkedPictures adds, after ClosedXML's save, one linked picture per clash row with a picture by editing the xlsx as
+  a zip: drawing, rels, content type, the sheet's relationship and the drawing element in the schema's order. No
+  media. The anchor and the size are the client's, read off its drawing by a test. The cell link stays
+- WorkbookWriter says how many it linked and the engine writes one XLSX line saying they show only while the _files
+  folder stays where it was written
+- ImageOptions.EmbedThumbnail, the EmbedThumbnails box, ThumbnailPixels, ThumbnailPoints, the writer's options and
+  the workbook check's thumbnail height are gone, with five tests. tools\probes\probe-window-defaults.ps1 no longer
+  names the box
+- Q163 asks whether each picture also gets the click link the client's pictures carry
+- core.md, addin.md with the tick box count read again, sixteen, and the history entry
+- Core tests before 3098 passed, 0 failed, 0 skipped, after 3103 passed, 0 failed, 0 skipped. One reviewer, four
+  points fixed: the edit goes through a copy, the targets compared as a set, the before branch and the refusal
+  tested. A throwaway scale run, 4160 pictured rows, wrote 4160 anchors and no media in 6.56 s. The solution builds in
+  Release with 0 warnings and 0 errors
+
+What remains: only Excel can show the pictures and whether it asks anything at the open, steps 1430 to 1446. The
+pictures show only while the _files folder stays where it was written. A UNC path as the target is UNKNOWN, since
+the client's file and every run so far used a drive letter.
+
+Known bugs: none new.
+
+What comes next: F153, no workbook rows for tests with no clash.
+
 ## 2026-10-13 F151 no copy of the log beside the NWF, item 1 of Bader's message of 2026-10-13, Q162-1
 
 Branch fix-F151 off main 1a0f62d. His run of 2026-10-13 20:33 on 1A02MM wrote the copy of the log into his NWF folder
