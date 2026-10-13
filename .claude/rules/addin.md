@@ -770,12 +770,14 @@ well as to pass.
   the build. Its sheet goes in the internal workbook, the INTERNAL step, below, written whether
   or not the clash ran, skipped with its own line where neither a count nor a coverage was
   taken, there is no report folder or no workbook is wanted this run, and where the write throws
-  nothing is listed as written, the size stays unread and one line says whether a file of that
-  name is at the path, and that whether it is an earlier run's file untouched or one this run
-  cut short is UNKNOWN, since a save that threw after opening the path leaves the old file cut
-  short and File.Exists still reads true, because a file this tool did not write is never
-  listed as written, and otherwise read back by size as every
-  file is. The settings are `ReportOptions.GenericModels`, read off Core and never typed in the
+  nothing is listed as written, through `RunLog.WriteThrew`, the size stays unread and one line
+  says whether a file of that name is at the path, and that whether it is an earlier run's file
+  untouched or one this run cut short is UNKNOWN, since a save that threw after opening the path
+  leaves the old file cut short and File.Exists still reads true, because a file this tool did
+  not write is never listed as written, and otherwise read back by size as every
+  file is. The clash workbook's write that throws goes through WriteThrew the same way since
+  F118-R3, and its WORKBOOK CHECK is not run, one line saying why, since it would read the
+  file at the path as this run's. The settings are `ReportOptions.GenericModels`, read off Core and never typed in the
   window. A plan, a build or a workbook write that throws NEVER FAILS THE GROUP, the lead's
   decision on attempt 2: it logs the failure with what happens next, writes the GENERIC MODELS
   block with its FAILED line off `GenericModelsReport.FailedLines`, counts the group as not
@@ -909,7 +911,12 @@ well as to pass.
   IL and never clicked, took a click to select the row before one that flipped it. Whether
   the template's box flips on the first click in Navisworks is UNKNOWN until step 546 of
   steps\03_bader_next.md. The grey line under the list, x:Name RunRangeHelp, is set
-  off `ShiftRange.HelpLine` in the constructor. The box has no x:Name and no label, so it is
+  off `ShiftRange.HelpLine` in the constructor. THE SPACE BAR ON THE RUN CELL TICKS AS THE
+  STOCK COLUMN DID, F130-R1: the grid's PreviewKeyDown, `OnGroupsGridKeyDown`, takes Space on a
+  DataGridCell of the column named RunColumn, flips its row through Include where CanInclude
+  allows and goes on as a click does, through `RunBoxFlipped`, the one path both share, Shift
+  making a range. Space with the box itself focused is left to the box, which raises Click.
+  The box has no x:Name and no label, so it is
   not one of the sixteen tick boxes counted below. The window driver cannot carry Shift
   without real input, turn5\measure-shift-driver-result.md, so its proof is numbered steps in
   steps\03_bader_next.md

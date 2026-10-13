@@ -117,8 +117,8 @@ namespace Federator.Core.Report
         /// so no index path is read. An item with no id, a model carrying no id property and no
         /// real instance GUID, is not read, UNKNOWN, which MirrorMerge reads as an item not read
         /// and fails closed on. Two clashes of one test between the same two elements on
-        /// geometry of one name share a key, and the merge then counts the second as a repeat
-        /// and says so, never adding a clash twice.
+        /// geometry of one name share a key, so the merge counts a key as many times as each
+        /// test found it, F132-R3.
         /// </summary>
         public string MergeKey()
         {
@@ -792,6 +792,67 @@ namespace Federator.Core.Report
 
             lines.AddRange(MissingIdLines());
             return lines;
+        }
+
+        /// <summary>The words that begin the line of empty Grid Location cells.</summary>
+        public const string GridPrefix = "GRID     ";
+
+        /// <summary>
+        /// How many clash rows of this report carry an empty Grid Location cell, FR-041, with
+        /// the heights of the empty rows and of the filled ones in the units the rows are in.
+        /// Set 03 left the cell empty on 345 of 5679 rows and on all 13 of one group, and
+        /// nothing in the log said so, because the WORKBOOK and REPORT CHECKs read the first
+        /// clash row only. Why the grid gives nothing for those rows is UNKNOWN, and the first
+        /// thing to measure is the height against the grid levels, which these two ranges let
+        /// a run show without a probe. Null where the report holds no clash row.
+        /// </summary>
+        public string GridLocationLine()
+        {
+            int rows = 0;
+            int empty = 0;
+            double emptyLow = double.MaxValue;
+            double emptyHigh = double.MinValue;
+            double filledLow = double.MaxValue;
+            double filledHigh = double.MinValue;
+
+            foreach (TestReport test in tests)
+            {
+                foreach (ClashRow row in test.Rows)
+                {
+                    rows++;
+
+                    if (row.ClientGridLocation().Length == 0)
+                    {
+                        empty++;
+                        emptyLow = Math.Min(emptyLow, row.Z);
+                        emptyHigh = Math.Max(emptyHigh, row.Z);
+                    }
+                    else
+                    {
+                        filledLow = Math.Min(filledLow, row.Z);
+                        filledHigh = Math.Max(filledHigh, row.Z);
+                    }
+                }
+            }
+
+            if (rows == 0)
+            {
+                return null;
+            }
+
+            string units = string.IsNullOrEmpty(DocumentUnits) ? " in UNKNOWN units" : " " + DocumentUnits;
+            string ofRows = rows + (rows == 1 ? " clash row" : " clash rows");
+
+            if (empty == 0)
+            {
+                return GridPrefix + "Grid Location filled on every one of " + ofRows;
+            }
+
+            return GridPrefix + "Grid Location empty on " + empty + " of " + ofRows + ", the empty ones at z "
+                + ClientFormat.Fixed(emptyLow) + " to " + ClientFormat.Fixed(emptyHigh) + units
+                + (empty == rows
+                    ? ", and no row has one"
+                    : ", the filled ones at z " + ClientFormat.Fixed(filledLow) + " to " + ClientFormat.Fixed(filledHigh) + units);
         }
 
         /// <summary>The words the block uses for an item with no id property at all.</summary>

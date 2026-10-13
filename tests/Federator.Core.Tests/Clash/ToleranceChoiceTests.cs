@@ -312,8 +312,70 @@ namespace Federator.Core.Tests
             string line = ToleranceChoice.BlocksLine(18300, 1041);
 
             Assert.That(line, Does.StartWith("WORKBOOK 18,300 test blocks, 1,041 ran and 17,259 are tests that never ran"));
-            Assert.That(line, Does.Contain("Their tolerance reads off the picked file"));
+            Assert.That(line, Does.EndWith("Where each block's tolerance was read is on the line below"));
             Assert.That(ToleranceChoice.BlocksLine(0, 0), Does.StartWith("WORKBOOK 0 test blocks, 0 ran and 0 are tests that never ran"));
+        }
+
+        /// <summary>
+        /// FR-036. The blocks of tests that never ran are not all the picked file's since a
+        /// chosen value reaches their rows, so the line no longer says they read off it.
+        /// </summary>
+        [Test]
+        public void TheBlocksLineNoLongerSaysEveryTestThatNeverRanReadsOffThePickedFile()
+        {
+            Assert.That(ToleranceChoice.BlocksLine(18300, 1041), Does.Not.Contain("reads off the picked file"));
+        }
+
+        /// <summary>
+        /// FR-036. A saved test set to 25 mm chosen in the tool and then skipped kept the row
+        /// the plan gave it, 75 mm off the document, in its workbook block and in the counts.
+        /// </summary>
+        [Test]
+        public void ARowWhoseTestCarriesTheChosenValueSaysItAndThatTheToolChoseIt()
+        {
+            TestReport row = new TestReport(1, "ARC vs MEP");
+            row.Tolerance = 0.2460629921;
+            row.ToleranceUnits = "ft";
+            row.ToleranceFrom = ToleranceOrigin.Document;
+
+            ToleranceChoice.Of(25.0).PutOn(row, "ft");
+
+            Assert.That(row.Tolerance, Is.EqualTo(25.0 / 304.8).Within(1e-12),
+                "the row kept the old value the plan read off the document");
+            Assert.That(row.ToleranceUnits, Is.EqualTo("ft"));
+            Assert.That(row.ToleranceFrom, Is.EqualTo(ToleranceOrigin.Tool),
+                "the row still says the document gave it its value");
+            Assert.That(row.ClientTolerance(), Is.EqualTo("0.082ft"));
+        }
+
+        [Test]
+        public void ARowCreatedFromTheXmlAtTheChosenValueSaysTheToolChoseIt()
+        {
+            TestReport row = new TestReport(2, "STR vs MEP");
+            row.Tolerance = 0.075;
+            row.ToleranceUnits = "m";
+            row.ToleranceFrom = ToleranceOrigin.File;
+
+            ToleranceChoice.Of(50.0).PutOn(row, "m");
+
+            Assert.That(row.Tolerance, Is.EqualTo(0.05).Within(1e-12));
+            Assert.That(row.ToleranceFrom, Is.EqualTo(ToleranceOrigin.Tool));
+        }
+
+        /// <summary>Q54. Under the default a row keeps what the plan gave it, untouched.</summary>
+        [Test]
+        public void UnderTheDefaultTheRowKeepsWhatThePlanGaveIt()
+        {
+            TestReport row = new TestReport(1, "ARC vs MEP");
+            row.Tolerance = 0.2460629921;
+            row.ToleranceUnits = "ft";
+            row.ToleranceFrom = ToleranceOrigin.File;
+
+            ToleranceChoice.FromTheFile().PutOn(row, "ft");
+            ToleranceChoice.Of(25.0).PutOn(null, "ft");
+
+            Assert.That(row.Tolerance, Is.EqualTo(0.2460629921));
+            Assert.That(row.ToleranceFrom, Is.EqualTo(ToleranceOrigin.File));
         }
     }
 }

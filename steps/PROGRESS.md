@@ -1,4 +1,4 @@
-STATE WAITING, 2026-10-12 10:45
+STATE NIGHT, 2026-10-12 20:59
 
 <!-- the counts below are made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never typed -->
 ## Counts
@@ -8,47 +8,44 @@ Made from steps\tracker.csv by tools\tracker\make-tracker.ps1, never typed. Done
 | wave | done | in progress | in review | waiting for Bader | open | dropped | rows |
 |---|---|---|---|---|---|---|---|
 | 1 | 19 | 0 | 0 | 0 | 0 | 0 | 19 |
-| 2a | 37 | 1 | 0 | 0 | 28 | 0 | 66 |
+| 2a | 39 | 1 | 0 | 0 | 22 | 5 | 67 |
 | 2b | 28 | 2 | 0 | 1 | 9 | 0 | 40 |
-| 2c | 7 | 1 | 0 | 0 | 3 | 1 | 12 |
-| 3a | 19 | 0 | 0 | 0 | 3 | 0 | 22 |
-| 3b | 13 | 0 | 7 | 0 | 1 | 0 | 21 |
+| 2c | 9 | 2 | 0 | 0 | 0 | 1 | 12 |
+| 3a | 19 | 0 | 0 | 0 | 2 | 1 | 22 |
+| 3b | 14 | 0 | 7 | 0 | 0 | 0 | 21 |
 | 4 | 6 | 1 | 0 | 0 | 51 | 0 | 58 |
 | 5 | 18 | 4 | 0 | 0 | 50 | 0 | 72 |
 | outside the waves | 175 | 16 | 1 | 2 | 59 | 6 | 259 |
-| total | 322 | 25 | 8 | 3 | 204 | 7 | 569 |
+| total | 327 | 26 | 8 | 3 | 193 | 13 | 570 |
 <!-- the end of the counts -->
 
 ## Now
-- Turn 6 closed on Bader's order of 12 Oct, WRAP UP NOW, NO MORE TESTS. No probe, fast check, speed loop or run until he says
-- Merged: 202, 204 F145, 207 F149, 205 F146, 208 F140 the team package, and this records pull request
-- The team zip: %USERPROFILE%\OneDrive - Parsons Corp\Documents\NWC Federator package\ParsonsNwcFederator-1.0.0.0-69de6ed4-20261012.zip, 3298080 bytes, 21 files
-- The closing entry of steps\history\log.md holds what is proven by a run, what is built and not proven, and the known issues
+- Bader said go at 19:13 on 12 Oct and asked for a stop when safe in the evening. No agent and no Navisworks runs, every branch is pushed and clean
+- Merged this evening: 216 F129c, 209 F127c, 218 F130c, and 211 F132c with this page
+- Readers done: breaker re-reads of 211, 212, 213 and 214 and the narrow re-read of 217 found no fault the team sees. 215's first reading asks for changes
 
-## Speed
-No measurement with F145, F146 or F149 merged. Targets: a picture 0.2 s or less, 1A02MM 3 min or less, no freeze over 5 s, 1A04PK 45 min or less.
-
-| date | build | a picture | 1A02MM | longest freeze | most time |
-|---|---|---|---|---|---|
-| Bader's PC, 11 Oct | cdf8d4e, DirectX 11 hardware | 0.049 s | 156 s | 0 s | UNKNOWN |
-| 11 Oct 21:42 | cdf8d4e, acceleration off | 7.76 s | 293 s | 32 s, RENUMBER | HARVEST 187 s |
-| 12 Oct 01:20 | cdf8d4e, acceleration on | 0.168 s, 0.120 s with F145's rule | 253 s | 32 s, RENUMBER | HARVEST 150 s |
-| 12 Oct 03:47, probe only | cdf8d4e's code, Hide Other on for one start | 0.067 s, 0.059 s with F145's rule | not run | not run | not run |
+## Open pull requests, in Bader's order of merging
+- 212 F115c 617d2be: ready. Take main in, add rows F115-R29 one set name in two folders and F115-R30 a null side count refusing every leftover, rows.py merged 212, merge
+- 213 F114c a237ca2: ready. Take main in, add a row for a refused mirror pair whose clashes get no view, rows.py merged 213, merge
+- 217 F147 88d8013: ready. Take main in, rows.py merged 217, merge
+- 215 F120c 03573b2: split proof steps 692 and 697, fix stale words in core.md 1219, 1361, 2277 and addin.md 719, ClashHarvest.cs 647 and the unreachable singular of GapRule.cs 121. Its citation of item 157 holds once 214 merges, which records it
+- 219 F119c 4ec1733: first reading left, main not yet taken in
+- 214 F150 9f3f742: breaker found no fault. Take main in, install its head in place, run 1A02MM once with viewpoints ticked, check the pictures and the put back, then merge
 
 ## Next
-1. Bader installs the zip on his desktop PC: extract it and double click Install Parsons NWC Federator.cmd
-2. He runs his own folder through the tool's window, the guide's steps 1 to 11
-3. He sends back the run's .log and the .tsv beside it, and the loop reads them when he says
+1. Say go. In turn6 run mergemain.py then rows.py on 212, push, merge, then 213 and 217 the same way
+2. 215's changes and its re-read, 219's first reading, then 214's check on 1A02MM and its merge
+3. Renumber the proof steps once, build the new zip from main, then waves 3, 4 and 5, rows the team sees only
 
 ## Waiting for Bader
-- His run on his PC and its log
-- Q155, F147 stopped under Q148 B
-- F150, Hide Other set by the tool, needs one probe of the API, which waits for his word
+- His word to go
+- Q38 said delete the per item harvest. 215 keeps the source file read since the merge key reads it, which may be his to decide
+- His run on his PC and its log, from the team zip of 12 Oct, 69de6ed4
 
 ## Blockers and known bugs
-- T6-R-WPFBOX: a caption less WPF window of Navisworks as the tool's window closed in set 09
-- F149-R1: the pictures' guard stops a run only once every test of the group has run
-- The coordinates box starts ticked, so a group whose models sit off shared coordinates is not clashed unless it is unticked
+- Proof step numbers collide across the open branches and are renumbered once, after the merges
+- FR-067 is out of 213: P15 shows its sequence crashed Navisworks twice, so a probe answers it first
+- T6-R-WPFBOX, F149-R1 and the coordinates box starting ticked, as before
 
 ## Where the long history is
 - steps\history\loop.md: every turn, the form and the register table, its closed rows the record

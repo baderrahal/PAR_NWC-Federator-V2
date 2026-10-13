@@ -632,7 +632,7 @@ namespace Federator.Addin.Engine
                     if (!ClientFormat.NoIdAtAll(guid))
                     {
                         into.ElementId = guid;
-                        into.IdLabel = "Instance GUID";
+                        into.IdLabel = ClientFormat.GuidIdLabel;
                     }
                 }
 

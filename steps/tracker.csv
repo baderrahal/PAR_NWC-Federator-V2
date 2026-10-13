@@ -34,12 +34,12 @@ FR-032,empty result group counted as one clash,F113,1,silent wrong number,merged
 FR-033,bydesign unnamed clash counted as moved,F113,1,silent wrong number,merged,95,none,2026-10-04
 FR-034,auto review record in throws on edited comment,F113,1,loud failure,merged,95,none,2026-10-04
 FR-035,workbook check counts only blocks with clashes,F118,2c,silent wrong number,merged,147,none,2026-10-07
-FR-036,skipped test row keeps old tolerance after chosen edit,F118,2c,silent wrong number,open,none,none,2026-10-04
+FR-036,skipped test row keeps old tolerance after chosen edit,F118,2c,silent wrong number,merged,210,none,2026-10-12
 FR-037,priority csv repeated test name last row wins silently,F118,2c,silent wrong number,merged,147,none,2026-10-07
 FR-038,workbook stray grey row after last empty test,F123,5,noise,merged,181,none,2026-10-08
 FR-039,thumbnail row height overwritten by clash row height,F123,5,noise,merged,181,none,2026-10-08
 FR-040,item ids guid fallback counted missing,F118,2c,silent wrong number,merged,159,none,2026-10-07
-FR-041,grid location empty on 345 rows,F118,2c,broken feature,open,none,none,2026-10-04
+FR-041,grid location empty on 345 rows,F118,2c,broken feature,in progress,UNKNOWN,none,2026-10-12
 FR-042,page check warns wrong order on priority sorted page,F123,5,noise,merged,"159, closed by FR-199, the page always in the measured order, read by lane B at 181",none,2026-10-08
 FR-043,reshaped group done but nwf never saved,F119,3b,silent wrong number,in review,UNKNOWN,none,2026-10-12
 FR-044,nwf save false return ignored after rebuild,F119,3b,silent wrong number,in review,UNKNOWN,none,2026-10-12
@@ -314,7 +314,7 @@ F114,views,F114,2b,fix,merged,"141 the Core half and 189 the add-in pass",none,2
 F115,sets,F115,2a,fix,merged,142,none,2026-10-07
 F116,the clash XML,F116,1,fix,merged,98,none,2026-10-05
 F117,the names,F117,5,fix,open,none,none,2026-10-04
-F118,workbook and report,F118,2c,fix,in progress,"147 FR-035 and FR-037 and 159 FR-199 and FR-040 merged, FR-036 and FR-041 on the laptop",none,2026-10-07
+F118,workbook and report,F118,2c,fix,in progress,"147 FR-035 and FR-037 and 159 FR-199 and FR-040 merged, FR-036 and F118-R3 in review on fix-F118c, FR-041 counted on fix-F118c and its cause waits for a run",none,2026-10-12
 F119,run log and RESULT,F119,3b,fix,in review,"148 nine items, 168, 169 and 179 merged, the last six UNKNOWN",none,2026-10-12
 F120,harvest and pictures,F120,3a,fix,merged,"183, FR-198 open",none,2026-10-08
 F121,the rest,F121,4,fix,in progress,"150 six items, 160 and 173 the SINGLE DISCIPLINE finding merged, the rest on the laptop",none,2026-10-08
@@ -325,8 +325,8 @@ F125,a window that is not modal is a pane and not a dialog,F125,outside the wave
 F126,the window driver unticks a tick box by its AutomationId,F126,outside the waves,fix,merged,112,none,2026-10-05
 F127,coverage of the clash XML,F127,2a,fix,merged,"145 the Core steps 1 to 3, 153 the Coverage sheet, 167 the readers' Core points, 176 the counted words and 195 the add-in half with the sheet in the internal workbook",none,2026-10-11
 F128,generic models,F128,2b,fix,merged,"171 the Core part by lane B and 186 the probe and the add-in part",none,2026-10-08
-F129,start from an existing NWF,F129,3a,fix,merged,193,none,2026-10-11
-F130,the Shift range in the group list,F130,3b,fix,merged,192,none,2026-10-11
+F129,start from an existing NWF,F129,3a,fix,merged,"193, F129-R1 dropped on fix-F129c",none,2026-10-12
+F130,the Shift range in the group list,F130,3b,fix,merged,"192, 218 F130-R1",none,2026-10-12
 F131,teams,F131,2b,fix,merged,135,none,2026-10-07
 F132,mirrored tests,F132,2a,fix,merged,177,none,2026-10-08
 F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-06
@@ -507,15 +507,15 @@ F137-R2,the reference model can itself name no site and ModelsRead counts placem
 F137-R3,the comments of FederationEngine near lines 2154 and 2300 and ModelFactsReader near 154 still say a model naming no site fails its group either way,F137,before the test of wave 1,register row,open,none,none,2026-10-07
 F118-R1,the order check of the workbook reads the full blocks only so a one row test placed before a full block is not named,F118,2c,register row,merged,176,none,2026-10-08
 F118-R2,with a priority file picked the check does not run the Priority heading check on a sheet with no full block,F118,2c,register row,dropped,"176, lane B read it as no fault, a sheet of one row tests has no heading row",none,2026-10-08
-F132-R1,"under Q142 A only a first run over a new NWF merges, a weekly run never does",F132,2a,register row,open,none,none,2026-10-07
-F132-R2,a set's flags and findspec are not read by the drift check a merge reads,F132,2a,register row,open,none,none,2026-10-07
-F132-R3,"two clashes of one test between the same two elements on geometry of one name share a merge key, ClashItem.MergeKey, so a clash only a mirror found on such a pair is counted as a repeat and not added, said on the MIRROR MERGE lines",F132,2a,register row,open,none,none,2026-10-07
+F132-R1,"under Q142 A only a first run over a new NWF merges, a weekly run never does, dropped on 2026-10-12 since it is Bader's answer A to Q142 and every such pair is said on a MIRROR line",F132,2a,register row,dropped,none,none,2026-10-12
+F132-R2,"a set's flags and findspec are not read by the drift check a merge reads, dropped on 2026-10-12 since attempt 13 merges only on sets this run built, so no merge reads the drift check",F132,2a,register row,dropped,none,none,2026-10-12
+F132-R3,"two clashes of one test between the same two elements on geometry of one name share a merge key, ClashItem.MergeKey, so a clash only a mirror found on such a pair is counted as a repeat and not added, said on the MIRROR MERGE lines",F132,2a,register row,merged,211,none,2026-10-12
 Q144,a run with no XML and the by design pass on the saved tests,none,none,question,merged,191,none,2026-10-11
 Q145,"the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release",none,none,Bader's request,in progress,none,none,2026-10-08
-F132-R6,"a saved test a person grouped gets one viewpoint per result group since the views read the report's rows, as the workbook and the pictures do, where attempt 1 gave each clash under a group its own, the lead's ruling of by design on the breaker's blocking point of attempt 2, turn6\f132q-break-addin.json, for Bader",F132,2a,register row,open,none,none,2026-10-08
+F132-R6,"a saved test a person grouped gets one viewpoint per result group since the views read the report's rows, as the workbook and the pictures do, where attempt 1 gave each clash under a group its own, the lead's ruling of by design on the breaker's blocking point of attempt 2, turn6\f132q-break-addin.json, for Bader, dropped on 2026-10-12 under Q143 since one view per row is what the workbook and the pictures show",F132,2a,register row,dropped,none,none,2026-10-12
 F120-R1,"a render that throws with a path inside the exception's message is still one reason per path for the fifty failures guard, so such failures never stop the run, the developer's finding on FR-076",F120,3a,register row,open,none,none,2026-10-08
 Q146,where the Generic Models sheet goes,none,none,question,merged,191,none,2026-10-11
-F118-R3,"the group's own workbook is listed as written with last week's size where its save threw and an earlier run's file is at the path, the developer's reading on F128's attempt 2, older than F128, the same fault FR-189 names for the NWD",F118,2c,register row,open,none,none,2026-10-08
+F118-R3,"the group's own workbook is listed as written with last week's size where its save threw and an earlier run's file is at the path, the developer's reading on F128's attempt 2, older than F128, the same fault FR-189 names for the NWD",F118,2c,register row,merged,210,none,2026-10-12
 F115-R24,"a document the leftover walk declared damaged is still taken through the clash step and saved where a test is created or a view is built, the sets only return being the one guard, the breaker's reading of F128's attempt 2, older than F128",F115,2a,register row,open,none,none,2026-10-08
 Q147,"two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109",none,none,Bader's request,in progress,none,none,2026-10-08
 F114-K32,"a person's unmarked view of a test's name in the view's folder stops the tool's view of that test and costs the group DONE, for Bader",F114,2b,register row,open,none,none,2026-10-08
@@ -526,18 +526,18 @@ F114-K36,"a test whose open clashes are all result groups gets no view and keeps
 F114-K37,"whether the NWF keeps a saved camera at single precision is UNKNOWN, so a camera far from the origin may read every tool view as a person's after a reopen, read on the timed runs",F114,2b,register row,open,none,none,2026-10-08
 F114-K38,"a test whose harvest threw after only closed rows reads whole, so its old view is removed while its open clashes were never harvested, the reviewer's D1, UNKNOWN how often",F114,2b,register row,open,none,none,2026-10-08
 Q148,a fault found at the second reading,none,none,question,merged,191,none,2026-10-11
-F129-R1,"the picked NWFs walk follows a junction looping back until Windows refuses the path, so the same NWFs can be read under longer paths, a person's mklink needed, the scan sharing the exposure, the reviewer's point on attempt 1",F129,3a,register row,open,none,none,2026-10-08
+F129-R1,"the picked NWFs walk follows a junction looping back until Windows refuses the path, so the same NWFs can be read under longer paths, a person's mklink needed, the scan sharing the exposure, the reviewer's point on attempt 1",F129,3a,register row,dropped,216,none,2026-10-12
 T6-R-TESTTEMP,"RowLogTests.ALogThatFellBackTakesItsRowFileWithIt writes a log into the shared temp folder on every run, so it fails once about 100 have built up and when two worktrees test at once, seen on the F130 and F109 commits, the files moved aside to turn6 f109b-temp-runlogs",none,none,register row,open,none,none,2026-10-08
 F109-R1,"how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140",F140,none,register row,in progress,"none, F140 prepares it, no team zip until Bader asks",none,2026-10-11
 F109-R2,"run.ps1 reads the new exit 3 of install.ps1 as STOP where it read INSTALLED with a FINDING, and prove-run.ps1 trial 6c cannot run as written, the loop scripts frozen by Q143 item 5",F122,4,register row,open,none,none,2026-10-08
 F127-R2,"the Coverage sheet moves out of the clash workbook into the internal workbook of its own beside it, where the Generic Models sheet is, Bader's answer B to Q146, the clash workbook keeping the Navisworks export's layout",F127,2a,register row,merged,195,none,2026-10-11
-F130-R1,"a person who arrows onto the Run cell and presses Space no longer toggles it since the column is read only, the box itself still taking Space, the reviewer's point, UNKNOWN whether anyone ticks that way",F130,3b,register row,open,none,none,2026-10-11
+F130-R1,"a person who arrows onto the Run cell and presses Space no longer toggles it since the column is read only, the box itself still taking Space, the reviewer's point, UNKNOWN whether anyone ticks that way",F130,3b,register row,merged,218,none,2026-10-12
 Q149-1,"no release runs, the full runs of C06 and C07 and the ACC check dropped, the proof runs of 1A02MM and 1A04PK the last",none,none,Bader's request,merged,194,none,2026-10-11
 Q149-2,"the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks",F140,none,Bader's request,in progress,none,none,2026-10-11
 F140,"the team package, prepared and no team zip made until Bader writes make the team package",F140,none,fix,merged,208,none,2026-10-12
-F127-R3,"the coverage reads the run's codes off the ticked groups, not every NWC the scan found, so a category only an unticked building carries is not named, the breaker's point",F127,2a,register row,open,none,none,2026-10-11
-F127-R4,"a mirrored test's coverage row is named by its run name, not the name the XML gives it, so the row is found by the name Clash Detective shows",F127,2a,register row,open,none,none,2026-10-11
-F127-R5,"an internal workbook can take the path of another group's clash workbook, a group named X Internal beside a group X with the suffix Internal, one written over the other with no line, the breaker's point 6",F127,2a,register row,open,none,none,2026-10-11
+F127-R3,"the coverage reads the run's codes off the ticked groups, not every NWC the scan found, so a category only an unticked building carries is not named, the breaker's point, dropped on 2026-10-12 under Q143 since the row reads UNKNOWN and never a wrong word",F127,2a,register row,dropped,none,none,2026-10-12
+F127-R4,"a mirrored test's coverage row is named by its run name, not the name the XML gives it, so the row is found by the name Clash Detective shows, dropped on 2026-10-12 under Q143 since the row carries the name the panel and the workbook show",F127,2a,register row,dropped,none,none,2026-10-12
+F127-R5,"an internal workbook can take the path of another group's clash workbook, a group named X Internal beside a group X with the suffix Internal, one written over the other with no line, the breaker's point 6",F127,2a,register row,merged,209,none,2026-10-12
 T6-R-ZEROCLASHES,"TIMING BESIDE SIZE writes 0 clashes for a group whose clash was skipped, while RESULT reads clashes found UNKNOWN and the block's own legend says UNKNOWN is never a zero, set 05 item1-C02 line 625 and item1-C04 line 684",F119,none,register row,in review,UNKNOWN,none,2026-10-12
 T6-R-MIRRORWORDS,"the MIRROR block says both tests of each pair are run over a group whose clash the coordinates rule skipped, set 05 item1-C02 line 263 and item1-C04 line 322",F132,none,register row,open,none,none,2026-10-11
 T6-R-TREEREMOVED,"the VIEWS TREE after line reads removed 0 at once where the inventory removed 14 views at once with their folder in one RemoveAt, so the views written and removed read as never removed, set 06 item1-C02 lines 1504 to 1520 against 1745",F114,none,register row,open,none,none,2026-10-11
@@ -568,3 +568,4 @@ F149,pictures taken in the report's order so none is renamed,F149,none,fix,merge
 F149-R1,"since F149 every picture is taken once every test of the group has run, so the pictures' guard can stop a run only after the whole group's clash tests, where before it stopped after the test the fiftieth failure in a row fell in, a cost said in the rule that Bader has not weighed, the reviewer's first point on attempt 1",F149,none,register row,open,none,none,2026-10-12
 F146,the renumber answers while it renames,F146,none,fix,merged,205,none,2026-10-12
 Q156,"wrap up now, no more tests, the merges, the team zip for his PC, the final state and stop",none,none,Bader's request,merged,206,none,2026-10-12
+F132-R7,"a status can be carried onto the wrong clash where one kept test has two mirrors and the first holds two copies of one pair with mixed statuses, since the twin check reads each mirror alone, the breaker's re-read of attempt 2 on pull request 211",F132,2a,register row,open,none,none,2026-10-12

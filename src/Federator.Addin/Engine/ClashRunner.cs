@@ -913,7 +913,7 @@ namespace Federator.Addin.Engine
                     // it is neither created nor checked for drift.
                     address = TestAddress.At(planned.Address);
                     outcome.AddAlreadyPresent(planned.Name);
-                    ApplyChosenTolerance(clashTests, address, planned.Name);
+                    ApplyChosenTolerance(clashTests, address, planned);
                 }
                 else if (present.TryGetValue(planned.Name, out address))
                 {
@@ -926,7 +926,7 @@ namespace Federator.Addin.Engine
                     // the two are compared and every difference is reported by name.
                     outcome.AddAlreadyPresent(planned.Name);
                     CompareAndMaybeApply(clashTests, address, planned, byPath, sets);
-                    ApplyChosenTolerance(clashTests, address, planned.Name);
+                    ApplyChosenTolerance(clashTests, address, planned);
                 }
                 else
                 {
@@ -958,6 +958,10 @@ namespace Federator.Addin.Engine
 
                     outcome.AddCreated(planned.Name);
                     toleranceOnCreated++;
+
+                    // FR-036. Created at the chosen value, ToleranceFor, so a row that then does
+                    // not run says that value and not the plan's.
+                    Tolerance.PutOn(ReportFor(planned), documentUnits);
                 }
 
                 int leftItems;
@@ -1518,8 +1522,10 @@ namespace Federator.Addin.Engine
         /// SavedItem.CreateCopy, so only the tolerance moves and the file's other settings
         /// never ride in on it, which is what ApplyFileSettings is for.
         /// </summary>
-        private void ApplyChosenTolerance(DocumentClashTests clashTests, TestAddress address, string name)
+        private void ApplyChosenTolerance(DocumentClashTests clashTests, TestAddress address, PlannedClashTest planned)
         {
+            string name = planned.Name;
+
             if (!Tolerance.ChosenInTheTool)
             {
                 toleranceOnExisting.Record(SavedTestTolerance.LeftAsTheDocumentHasIt);
@@ -1547,6 +1553,9 @@ namespace Federator.Addin.Engine
                     if (Math.Abs(already - wanted) <= TestDrift.ToleranceEpsilon)
                     {
                         what = SavedTestTolerance.AlreadyAtTheValue;
+
+                        // FR-036. Already at the chosen value, so a row that does not run says it.
+                        Tolerance.PutOn(ReportFor(planned), documentUnits);
                         return;
                     }
 
@@ -1569,6 +1578,11 @@ namespace Federator.Addin.Engine
 
                     what = SavedTestTolerance.Set;
                     changedTheDocument = true;
+
+                    // FR-036. The row was given the plan's value, the old one read off the
+                    // document or the XML's, and a test skipped below never reaches the reading
+                    // off the document, so it said a value the document no longer holds.
+                    Tolerance.PutOn(ReportFor(planned), documentUnits);
 
                     log.NumberedRepeat(
                         "CLASH tolerance set on a saved test",

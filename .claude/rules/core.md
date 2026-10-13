@@ -39,7 +39,14 @@ because the person meant that value.
 
 The collision check runs on the table, not on the patterns, so two names typed to the
 same thing is caught the same way two patterns colliding is. It names both groups and
-the run does not start.
+the run does not start. A group's internal workbook is named after its workbook with the
+suffix, `GenericModelsSettings.WorkbookNameFor`, and sits beside it in the Clash Reports
+folder, so the check reads each internal workbook name against every other group's
+workbook name too, ignoring case as the three kinds are read: a group whose workbook is X
+Internal beside a group X is named with both groups and the run does not start, F127-R5,
+the breaker's point 6 on F127b. `OutputNameTable.WhyTheRunCannotStart` takes the settings
+the engine names the internal workbook by, so the suffix the check reads is the one the run
+writes.
 
 Every supplied field is shown in the Outputs step and can be changed there. The
 defaults are ZZZ for the level, which is the ISO 19650 code for all levels, BM for
@@ -664,7 +671,20 @@ and 6 does not read as broken.
   the kept test does not would be added from the other and still held in its own block, the
   breaker's finding 5 on attempt 11, and where the kept test has more than one mirror a
   MIRROR line says so. A clash is the unordered pair of its two items' keys, the add-in's to
-  read. `AddTo(ClashReport)` is called once the run has set every test's state, and it reads
+  read. TWO CLASHES OF ONE TEST CAN SHARE THAT PAIR, one element carrying two pieces of
+  geometry of one name, `ClashItem.MergeKey`, so a pair is counted as many times as each test
+  found it: a mirror's clash past the kept test's count of its pair is found by the mirror only
+  and added, and past what earlier mirrors added of it too, F132-R3, where until 2026-10-12 it
+  was read as a repeat and left out, in no block once the mirror was taken out. Whether two
+  copies of one pair in one test are two clashes or one read twice is UNKNOWN and unmeasured,
+  and what stops a double count is the guard of AddTo, a mirror merged only where the clashes
+  handed are as many as its report holds. WHICH COPY IS THE TWIN OF WHICH IS UNKNOWN, F132-R3
+  attempt 2: where a pair has more than one copy under the kept test or under the mirror and
+  its copies carry more than one status, no status is carried across, the kept test's stay,
+  and one MIRROR line names the pair, its statuses on both sides and that the twin is UNKNOWN.
+  A pair with one copy on each side is weighed as below. A later mirror's copy of a clash an
+  earlier mirror added keeps the status as added, and where the two differ a MIRROR line names
+  it. `AddTo(ClashReport)` is called once the run has set every test's state, and it reads
   ran off `TestReport.State`, never off a count of calls: a kept test that did not run, or is
   not in the report exactly once, merges nothing and each mirror is reported as its own test,
   and a mirror that did not run, or is not in the report exactly once, is said UNKNOWN and
@@ -864,6 +884,16 @@ and 6 does not read as broken.
   it is still visible. `ToleranceChoice.ReadFromLine` counts the four across the run, so
   a report reading the file rather than the document shows as a number rather than being
   trusted
+- A ROW WHOSE TEST CARRIES THE CHOSEN VALUE SAYS IT, FR-036, F118. The row is given the plan's
+  value before the test is touched, and a test that then does not run, one discipline, off
+  the coordinates or a side finding nothing, never reaches the reading off the document. So a
+  saved test set to the chosen value and then skipped said its old value and origin Document,
+  and a test created at the chosen value said the XML's. `ToleranceChoice.PutOn` gives the row
+  the chosen value in the document's units and origin Tool, where the test was created at it,
+  set to it or already at it, and does nothing under the default, where a row of a test that
+  never ran keeps what the plan gave it, Bader's answer to Q54. A test that runs is still read
+  off the document. `ToleranceChoice.BlocksLine` no longer says the blocks that never ran read
+  off the picked file, and points at the line below it, `ReadFromLine`, for where each was read
 - Tolerance is read per test and converted from the file units attribute into the
   units of the open document before it is set. There is no global tolerance setting
   in this tool. Both numbers and both unit names go in the log, because which units
@@ -1261,8 +1291,15 @@ and 6 does not read as broken.
   EMPTY cell, `ClashReportModel.Missing`, the source of such an id is
   `ClientFormat.GuidFallbackSource` and its line says the label the cell carries, and
   `ClientShapes.LooksLikeAnItemId` accepts the two labels this tool writes and no other.
-  The harvest types the label as a literal, which is the add-in half to point at the
-  constant
+  The harvest gives the cell `ClientFormat.GuidIdLabel` since F118's add-in pass, where it
+  typed the label as a literal
+- EVERY EMPTY GRID LOCATION CELL IS COUNTED, FR-041, F118, `ClashReport.GridLocationLine`, one
+  GRID line per group after the units line, with its row in the .tsv: how many clash rows of the report carry an empty
+  Grid Location cell, with the heights of the empty rows and of the filled ones in the units
+  the rows are in, or that every row has one. Set 03 left the cell empty on 345 of 5679 rows
+  and the checks read the first clash row only, so nothing said so. Why the grid gives nothing
+  for those rows is UNKNOWN, and the heights are what the next run measures against the grid
+  levels. No line where the report holds no clash row
 - Distance is the ROUNDED signed number and the cell carries no number format, which is
   what theirs holds and what the code writes. This bullet asked for a raw number behind a
   format, which is the thing the later bullet says was wrong: the cell read -0.328 while
@@ -2077,6 +2114,14 @@ survive the crash rather than to be tidy.
   then to window only output
 - a size is only logged after File.Exists passes and the real size is read back.
   Never log a size that was not read
+- A SAVE THAT THREW LISTS NOTHING AS WRITTEN, `RunLog.WriteThrew`, F118-R3. A save goes
+  straight onto the final path, so after a throw the file there may be an earlier run's
+  untouched or one this save cut short, and which is UNKNOWN. WriteFinished would list it
+  with its size as this run's, which is what the clash workbook's write did with last week's
+  workbook. WriteThrew records nothing, takes an entry of that path and kind off the list,
+  returns minus one and writes one NOT WRITTEN line saying whether a file of that name is at
+  the path. The clash workbook and the internal workbook both write through it. FR-189 is the
+  same fault for the NWD and FR-044 and FR-045 for the NWF, area F119
 - on start, the oldest logs are deleted until 30 remain, the live file included.
   The live file is never a candidate. A delete that fails writes one line naming
   the file and the reason. 30 is a setting, RunLog.KeepLogs, static because the log opens
@@ -2392,7 +2437,7 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   of this run and the group's own, so a code the group carries is always a code of the run. The
   open file run has no scan and its run is its one group. A group the scan found and the run did
   not tick is not among them, so a code only it carries reads UNKNOWN and never not in the
-  group, row F127-R3
+  group, row F127-R3, dropped on 2026-10-12 under Q143 since UNKNOWN is never a wrong word
 - A TEST THE RUN LEFT NO RECORD OF, OR NEVER REACHED, IS NOT COMPARED, and one the run knows it
   did not create, F77 kept it out or the plan dropped it before the model, is held by neither
   side. A test the plan dropped before the model that Clash Detective holds with results names

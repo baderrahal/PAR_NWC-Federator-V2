@@ -71,6 +71,66 @@ namespace Federator.Core.Tests
             }
         }
 
+        /// <summary>
+        /// F118-R3. The clash workbook's save threw with last week's workbook at its path, and
+        /// WriteFinished listed that file as written by this run with last week's size.
+        /// </summary>
+        [Test]
+        public void AWorkbookWhoseSaveThrewIsNotListedAsWrittenWithLastWeeksSize()
+        {
+            using (RunLog log = Start())
+            {
+                string stale = LastWeeksFile("Clash_Report_1104-PAR-1C07BC-ZZZ-BM-MOD-000001.xlsx");
+
+                log.WriteAttempted("XLSX", stale);
+                long size = log.WriteThrew("XLSX", stale);
+
+                Assert.That(size, Is.EqualTo(-1), "the size of last week's file came back as this run's");
+                Assert.That(log.WrittenFiles.Count, Is.EqualTo(0),
+                    "last week's workbook was listed as written by this run");
+
+                string text = ReadWhileOpen(log);
+                Assert.That(text, Does.Contain("XLSX     NOT WRITTEN  " + stale + "  its save threw, and a file of that name is at the path"));
+                Assert.That(text, Does.Contain("UNKNOWN"));
+                Assert.That(text, Does.Not.Contain("XLSX     written"));
+                Assert.That(text, Does.Not.Contain("500 bytes"));
+            }
+        }
+
+        [Test]
+        public void ASaveThatThrewWithNoFileAtThePathSaysNoFileIsThere()
+        {
+            using (RunLog log = Start())
+            {
+                string path = Path.Combine(folder, "never-made.xlsx");
+
+                Assert.That(log.WriteThrew("INTERNAL", path), Is.EqualTo(-1));
+                Assert.That(log.WrittenFiles.Count, Is.EqualTo(0));
+                Assert.That(ReadWhileOpen(log), Does.Contain("INTERNAL NOT WRITTEN  " + path + "  its save threw, and no file is at the path"));
+            }
+        }
+
+        /// <summary>
+        /// A file this run listed and then saved again with a throw is no longer known to be
+        /// whole, so it leaves the list. A file of another kind at another path stays.
+        /// </summary>
+        [Test]
+        public void ASecondSaveThatThrewTakesTheFileOffTheList()
+        {
+            using (RunLog log = Start())
+            {
+                string workbook = LastWeeksFile("Clash_Report_A.xlsx");
+                string nwf = LastWeeksFile("A.nwf");
+
+                log.WriteFinished("XLSX", workbook);
+                log.WriteFinished("NWF", nwf);
+                log.WriteThrew("XLSX", workbook);
+
+                Assert.That(log.WrittenFiles.Count, Is.EqualTo(1), "the workbook stayed on the list after its save threw");
+                Assert.That(log.WrittenFiles[0].Kind, Is.EqualTo("NWF"));
+            }
+        }
+
         [Test]
         public void CheckingAFileThatIsNotThereSaysSoAndRecordsNothing()
         {
