@@ -1852,3 +1852,22 @@ Everything runs on copies in two new folders on the desktop, so no NWF of the re
 1156. Press the X at the top right of the tool's window
 1157. Look for: the tool's window closes with no message
 1158. Send the log of steps 1105 to 1157, named on its `log file` line
+
+## Proof F114d the open clashes of a mirror not merged, added 2026-10-13
+
+Core is proved by its tests and the add-in did not change. These steps read the VIEWS block
+of a weekly run on an NWF that already holds both tests of each mirrored pair, which under
+your answer A to Q142 merges no mirror, so each mirror keeps its own clashes and gets no
+view. Rows F114-K34 and F114-R1. Everything runs on a copy.
+
+1300. Install main once fix-F114d has merged, steps 7 to 12
+1301. Copy the folder Run A of step 508 ran in, with the NWF it wrote, to a new folder on the desktop named `F114d mirrors`
+1302. Run the group 1A02MM on `F114d mirrors` with the same XML, corrections, teams and priority files as Run A, the viewpoints box ticked
+1303. Look for, in the `MIRROR` lines of the CLASH step: the 59 pairs, and write down the names of the mirrors whose clashes were not merged
+1304. Look for, in the `VIEWS 1A02MM` block: the line starting `mirrored tests, so no view :` and its count
+1305. Look for, where that count is above 0, the next line: `open clashes of those mirrored tests, in no view :` with a number equal to the sum of the first numbers on the mirror lines under it
+1306. Look for, under it: one line per mirror shaped `<name> (mirror) : N open and in no view, M at a status no view shows`, each a mirror written down at step 1303
+1307. Open the clash workbook of 1A02MM the run wrote and find the block of the first mirror named at step 1306
+1308. Look for: its rows at New or Active counted equal to that mirror's N, and its other rows counted equal to its M
+1309. Where step 1304 read 0, no mirror not merged held a clash on this run, so the new lines are proved by the Core tests alone. Say so when you send the log
+1310. Send the log of steps 1302 to 1309, named on its `log file` line
