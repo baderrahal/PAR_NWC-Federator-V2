@@ -161,6 +161,7 @@ namespace Federator.Core.Exchange
             // tool does not know is judged once, in ClashTestPlan.Convert, where the test
             // is skipped by name. Converting here threw on the whole file instead.
             XElement linkage = Child(test, "linkage");
+            List<string> missing = new List<string>();
 
             return new ClashTestDefinition(
                 name,
@@ -169,11 +170,33 @@ namespace Federator.Core.Exchange
                 !string.IsNullOrEmpty(toleranceText),
                 tolerance,
                 units,
-                ReadFlag(Attribute(test, "merge_composites")),
+                ReadSetting(test, "merge_composites", "merge_composites", name, missing) != 0,
                 linkage == null ? null : Attribute(linkage, "mode"),
                 ReadRules(test),
-                ReadSide(test, "left"),
-                ReadSide(test, "right"));
+                ReadSide(test, "left", name, missing),
+                ReadSide(test, "right", name, missing),
+                missing);
+        }
+
+        /// <summary>
+        /// A whole number setting of a test, FR-155, read the way the tolerance is. Left out,
+        /// it is named in missing, read as 0, and the plan skips the test by name, because a
+        /// 0 or a false read in its place is a setting nobody wrote. Written but not a whole
+        /// number, it is refused naming the attribute and the test, as a tolerance written
+        /// wrong is.
+        /// </summary>
+        private static int ReadSetting(
+            XElement element, string attributeName, string named, string testName, List<string> missing)
+        {
+            string text = Attribute(element, attributeName);
+
+            if (string.IsNullOrEmpty(text))
+            {
+                missing.Add(named);
+                return 0;
+            }
+
+            return ReadInt(text, attributeName, "clash test \"" + testName + "\"");
         }
 
         private static IList<string> ReadRules(XElement test)
@@ -195,7 +218,8 @@ namespace Federator.Core.Exchange
             return rules;
         }
 
-        private static ClashSideDefinition ReadSide(XElement test, string sideName)
+        private static ClashSideDefinition ReadSide(
+            XElement test, string sideName, string testName, List<string> missing)
         {
             XElement side = Child(test, sideName);
 
@@ -214,8 +238,8 @@ namespace Federator.Core.Exchange
             XElement locator = Child(selection, "locator");
 
             return new ClashSideDefinition(
-                ReadFlag(Attribute(selection, "selfintersect")),
-                ReadInt(Attribute(selection, "primtypes")),
+                ReadSetting(selection, "selfintersect", sideName + " selfintersect", testName, missing) != 0,
+                ReadSetting(selection, "primtypes", sideName + " primtypes", testName, missing),
                 locator == null ? null : locator.Value);
         }
 
@@ -262,7 +286,7 @@ namespace Federator.Core.Exchange
             if (findSpec != null)
             {
                 mode = Attribute(findSpec, "mode");
-                disjoint = ReadFlag(Attribute(findSpec, "disjoint"));
+                disjoint = ReadInt(Attribute(findSpec, "disjoint"), "disjoint", "set \"" + name + "\"") != 0;
 
                 XElement locator = Child(findSpec, "locator");
                 findSpecLocator = locator == null ? null : locator.Value;
@@ -291,12 +315,15 @@ namespace Federator.Core.Exchange
         /// <summary>
         /// One condition element read. Also how WrittenCondition reads the text MatrixCorrections
         /// rewrites, so the condition corrected and the condition built are read one way, F116.
+        /// Flags written but not a whole number are refused, FR-155, because a 0 read in their
+        /// place drops a negation or turns an OR into an AND. Flags left out still read as 0,
+        /// and whether Navisworks reads a condition with none the same way is UNKNOWN.
         /// </summary>
         internal static SearchConditionDefinition ReadCondition(XElement condition)
         {
             return new SearchConditionDefinition(
                 Attribute(condition, "test"),
-                ReadInt(Attribute(condition, "flags")),
+                ReadInt(Attribute(condition, "flags"), "flags", "a condition of set \"" + SetNameOf(condition) + "\""),
                 ReadNameReference(Child(condition, "category")),
                 ReadNameReference(Child(condition, "property")),
                 ReadValueReference(Child(condition, "value")));
@@ -407,12 +434,32 @@ namespace Federator.Core.Exchange
             return attribute == null ? null : attribute.Value;
         }
 
-        private static bool ReadFlag(string text)
+        /// <summary>
+        /// The name of the set a condition belongs to, for the line that refuses it, or
+        /// UNKNOWN where the condition was read on its own, as WrittenCondition reads one.
+        /// </summary>
+        private static string SetNameOf(XElement condition)
         {
-            return ReadInt(text) != 0;
+            foreach (XElement candidate in condition.Ancestors())
+            {
+                string local = candidate.Name.LocalName;
+
+                if (string.Equals(local, "selectionset", StringComparison.Ordinal)
+                    || string.Equals(local, "selectionsetgroup", StringComparison.Ordinal))
+                {
+                    return Attribute(candidate, "name") ?? "UNKNOWN";
+                }
+            }
+
+            return "UNKNOWN";
         }
 
-        private static int ReadInt(string text)
+        /// <summary>
+        /// A whole number as written. Absent reads as 0 and the caller decides what absent
+        /// means. Written but not a whole number is refused naming the attribute and where it
+        /// is, FR-155, where it read as 0 with no word said.
+        /// </summary>
+        private static int ReadInt(string text, string attributeName, string where)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -421,9 +468,13 @@ namespace Federator.Core.Exchange
 
             int value;
 
-            return int.TryParse(text.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value)
-                ? value
-                : 0;
+            if (!int.TryParse(text.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
+            {
+                throw new InvalidDataException(
+                    "Could not read the " + attributeName + " attribute \"" + text + "\" on " + where + ".");
+            }
+
+            return value;
         }
 
         /// <summary>

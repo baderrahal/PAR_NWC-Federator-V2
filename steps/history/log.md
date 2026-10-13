@@ -2,6 +2,70 @@
 
 Newest entry at the top.
 
+## 2026-10-13 F121 wave 4, FR-150, FR-152, FR-155 and FR-162, written by the developer as the lead's delegate
+
+Branch fix-F121d off main 0a54132, Bader's order of 2026-10-12 headed BADER SAYS GO, item 7: waves 3, 4 and 5,
+only rows that change what the team sees, under his Q143 limits. Four rows of area F121 of wave 4, one branch and
+one pull request. Each row's evidence in steps\fix-round.md was read again against the code, since the lines had
+moved, and each held.
+
+What was done:
+- FR-150, the NWF not saved after the file's settings were put onto a saved test that was then skipped. The cause
+  was ClashRunner.Apply, which edited the test and counted nothing, and the engine's own expression of what the
+  clash step wrote, created or ran or a status changed, FederationEngine.cs line 3648 at 0a54132. The rule is Core
+  now, ClashRunOutcome.SavesTheNwfAgain with the applied count in it, Apply counts each edit through AddApplied, and
+  the engine returns the rule
+- FR-152, the second undo putting back a Reviewed a person set after the first. The cause was UndoAutoReview.Judge,
+  which read only the record of the move, with ClashStatusEditor writing no record on an undo. An undo now leaves
+  its own record beside the move's, AutoReviewRecord.UndoneText, which is never read as a move, the last comment of
+  ours is judged, AutoReviewRecord.LastOfOurs, and where it is an undo's record the clash is left alone,
+  UndoVerdict.AlreadyPutBack, said on its own line of the UNDO block. AutoReviewRecord.MayUndo and WhyNotUndone, a
+  second copy of the judgement with the same gap and no caller in src, are deleted with their asserts, the words of
+  the verdicts asserted through UndoAutoReview.Describe instead
+- FR-155, a missing or unreadable merge_composites, selfintersect, primtypes or flags becoming 0 or false. The cause
+  was ExchangeReader.ReadInt and ReadFlag. A test whose file leaves out any of the first three is skipped by name,
+  ClashSkipReason.MissingSetting, naming what was left out, and any of the four, or disjoint, written but not a
+  whole number is refused with InvalidDataException naming the attribute and the test or the set, the way a
+  tolerance is. WrittenCondition.Read reads such a condition as one it cannot read, so the corrections keep their
+  rule of counting and saying and never throwing, and the reader then refuses the file. Core only
+- FR-162, a folders file that could not be written never reported. FolderMemory.Remember dropped what Save said. It
+  hands back one FOLDERS line naming the picker, the file and the reason, once until a save works again, and the
+  window logs it through RememberFolder, the nine picks of the window routed through it
+- The rules in .claude\rules\core.md and addin.md, the section in steps\01_next.md, steps 800 to 867 of
+  steps\03_bader_next.md, and the four rows of steps\tracker.csv in review with the area's row naming them
+- Proved here: Core tests 3020 passed, 0 failed, 0 skipped on main 0a54132. Ten new tests run against the new
+  members written first with the old behaviour, 6 failed and 4 passed, the 4 the guards that hold either way,
+  %LOCALAPPDATA%\NwcFederatorLoop\turn6\f121d-failing-first.txt. After the fix 3031 passed, 0 failed, 0 skipped,
+  the eleventh new test the line of an undo that could not leave its record. Two older fixtures, in
+  ClashTestPlanTests and ClashWorkTests, wrote clash sides with no selfintersect or primtypes, unlike every real
+  file, and failed on the new skip. They carry the two attributes now and assert what they asserted. The solution
+  builds in Release with 0 warnings and 0 errors, the add-in included. check-locals and check-imports read clean.
+  make-tracker and check-tracker read clean
+
+What waits for the local machine: steps 800 to 867 of steps\03_bader_next.md, the apply on 1A02MM skipped off the
+shared coordinates, the undo pressed twice around a Reviewed set by hand, and folders.txt set read only. Nothing of
+it has run on Navisworks.
+
+Known bugs: an undo whose own record cannot be written still puts the clash back, so the UNDO block's count stays
+true, and a later undo cannot tell that clash's next Reviewed from a person's, said on one UNDO line. Whether Clash
+Detective lists a clash's comments in the order they were written is UNKNOWN, and LastOfOurs, like the code before
+it, reads the last in the collection as the newest, step 842 reads it. A condition or a findspec that leaves out
+flags or disjoint still reads 0 and false, UNKNOWN whether Navisworks reads it so, which a probe building one set
+from a condition with no flags and reading its options back would measure. The APPLIED line still says the edit
+reset the results, against the measurement 5y, which is FR-128 and not this branch's.
+
+What comes next: the lead's reviewer and breaker, the merge, then the run of steps 800 to 867.
+
+ATTEMPT 2, the reviewer's reading of pull request 222 on 2026-10-13, made by the lead:
+- The reviewer read every clash XML the team uses, exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml and the four under
+  samples, and FR-155 skips and refuses no test in any of them: 1830 tests each with merge_composites, 3660 sides each
+  with selfintersect and primtypes, and flags and disjoint whole numbers wherever written
+- The refusal of disjoint written wrong has its case in ASettingWrittenWrongIsRefusedNamingItAndWhereItIs
+- The old steps 853 and 859 are split to one action each, now 853 and 854 and 860 to 862, the proof steps 800 to 867
+- Built in Release with 0 warnings and 0 errors after main 8e100bf6 was merged in, Core tests 3046 passed, 0 failed, 0 skipped
+- A comment of UndoAutoReview.InOrder says four, as the array holds
+
+
 ## 2026-10-13 The proof steps renumbered once after the merges of the fix round, written by the lead
 
 Bader's order of 12 Oct headed BADER SAYS GO, item 4. Once 209 to 219 had merged, twelve sections of

@@ -942,7 +942,7 @@ namespace Federator.Addin.Engine
                     // Left alone means a tolerance changed in the file never reaches it, so
                     // the two are compared and every difference is reported by name.
                     outcome.AddAlreadyPresent(planned.Name);
-                    CompareAndMaybeApply(clashTests, address, planned, byPath, sets);
+                    CompareAndMaybeApply(clashTests, address, planned, byPath, sets, outcome);
                     ApplyChosenTolerance(clashTests, address, planned);
                 }
                 else
@@ -1335,7 +1335,8 @@ namespace Federator.Addin.Engine
             TestAddress address,
             PlannedClashTest planned,
             Dictionary<string, SelectionSet> byPath,
-            DocumentSelectionSets sets)
+            DocumentSelectionSets sets,
+            ClashRunOutcome outcome)
         {
             using (ClashTest test = Resolve(clashTests, address, planned.Name))
             {
@@ -1373,7 +1374,7 @@ namespace Federator.Addin.Engine
 
             // Applying is a mutation, so the handle above is finished with before this and
             // the test is resolved again inside.
-            Apply(clashTests, address, planned, byPath, sets);
+            Apply(clashTests, address, planned, byPath, sets, outcome);
         }
 
         /// <summary>
@@ -1465,7 +1466,8 @@ namespace Federator.Addin.Engine
             TestAddress address,
             PlannedClashTest planned,
             Dictionary<string, SelectionSet> byPath,
-            DocumentSelectionSets sets)
+            DocumentSelectionSets sets,
+            ClashRunOutcome outcome)
         {
             try
             {
@@ -1494,6 +1496,9 @@ namespace Federator.Addin.Engine
                     }
                 }
 
+                // FR-150. A write, so it asks for the NWF to be saved again even where the
+                // test is then skipped and nothing runs.
+                outcome.AddApplied();
                 log.Line("CLASH    APPLIED  " + planned.Name
                     + "  the file's settings were put onto the test in the document, which reset "
                     + "its results");

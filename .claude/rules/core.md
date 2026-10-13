@@ -887,7 +887,16 @@ and 6 does not read as broken.
   test type, the tolerance, merge composites, and per side the self intersect and the
   primitive type flags. A test whose tolerance attribute is not there at all is SKIPPED by
   name, the way an unknown test type is, because a missing tolerance became zero and zero
-  reads as a real tolerance. A tolerance written as zero is a real one and is created
+  reads as a real tolerance. A tolerance written as zero is a real one and is created.
+  THE OTHER THREE THE SAME WAY, FR-155: a test whose file leaves out merge_composites, or a
+  side's selfintersect or primtypes, is SKIPPED by name as `ClashSkipReason.MissingSetting`,
+  the reason naming each left out through `ClashTestDefinition.MissingSettings`, because each
+  read as 0 or false with no word said. Any of them, or a condition's flags or a findspec's
+  disjoint, written but not a whole number is REFUSED by `ExchangeReader` with an
+  InvalidDataException naming the attribute and the test or the set, as a tolerance written
+  wrong is, and `WrittenCondition.Read` reads such a condition as one it cannot read. Flags and
+  disjoint left out still read as 0 and false, and whether Navisworks reads a condition with no
+  flags the same way is UNKNOWN
 - THE TOLERANCE CAN BE CHOSEN IN THE TOOL AND THEN IT BEATS EVERYTHING, F76. The Clash
   step carries a drop down, `Federator.Core.Clash.ToleranceChoice`: Use the value in the
   XML, which is the default and changes nothing, then 25 mm, 50 mm, 75 mm, then Other
@@ -955,7 +964,11 @@ and 6 does not read as broken.
   remembered folder that has gone is not an error and is never cleared, the picker opens
   at the nearest parent still on disk and says so, which is what happens when a project
   drive is not mounted yet. Remembering never stops a run: an unwritable location is
-  recorded as a reason and the session still remembers, it just does not survive a restart
+  recorded as a reason and the session still remembers, it just does not survive a restart.
+  AND IT IS SAID, FR-162: `FolderMemory.Remember` hands back one FOLDERS line naming the
+  picker, the file and the reason where the save failed, once until a save works again, and
+  null otherwise, and the window logs it. It dropped what Save said, so a session's picks were
+  gone at the next start with no word
 - No code identifier and no framework message ever reaches a label. It said
   "Workbooks go in UNKNOWN" before a scan, with "Parameter name: nwfFolder" behind it,
   because an empty NWF folder threw and the message went straight to the window. Nothing was
@@ -2121,7 +2134,16 @@ and 6 does not read as broken.
   whether that is the right shape. A COMMENT NAMING ONE OF THOSE THREE IS NOT ONE OF OURS,
   F113, and `AutoReviewRecord.In` reads it as no record, because only a hand can have
   written it. It used to read all five and hand the three to the constructor, which
-  threw, and the undo then left every clash of that test alone
+  threw, and the undo then left every clash of that test alone. AN UNDO LEAVES ITS OWN
+  RECORD, FR-152, `AutoReviewRecord.UndoneText`, a comment starting
+  `AutoReviewRecord.UndoneMarker`, never the marker of a move, beside the record it undoes,
+  and what is judged is the LAST of ours, a move or an undo, `AutoReviewRecord.LastOfOurs`.
+  Where that is an undo's record the verdict is `UndoVerdict.AlreadyPutBack` and the clash is
+  left alone, so a Reviewed a person sets after an undo is never put back by the next. A later
+  run that moves it again writes a newer move, which the next undo puts back. An undo whose
+  record could not be written still puts the clash back, so the block's count stays true, and
+  says so on `UndoAutoReview.CannotRecordTheUndoLine`. `MayUndo` and `WhyNotUndone`, a second
+  copy of the judgement with the same gap and no caller in src, are gone
 - NOTHING MOVES SILENTLY. A PENETRATION block per group names every clash moved with both
   categories and the service size, then the totals and ONE LINE PER REASON for every clash
   left alone, including the reasons at zero, because a reason missing from the block reads

@@ -181,31 +181,27 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The LAST comment on the clash that is one of ours, or an empty string. A
-        /// comment a person wrote is never one of ours, because it does not carry the
-        /// marker, and the last of ours is the most recent move.
+        /// The LAST comment on the clash that is one of ours, a move or an undo, or an empty
+        /// string. Which comments count is Core's, AutoReviewRecord.LastOfOurs, FR-152. This
+        /// reads the bodies in the order Navisworks holds them and nothing else.
         /// </summary>
         private static string OurComment(ClashResult result)
         {
-            string ours = string.Empty;
             CommentCollection comments = result.Comments;
 
             if (comments == null)
             {
-                return ours;
+                return string.Empty;
             }
+
+            List<string> bodies = new List<string>();
 
             for (int i = 0; i < comments.Count; i++)
             {
-                string body = comments[i].Body;
-
-                if (AutoReviewRecord.In(body) != null)
-                {
-                    ours = body;
-                }
+                bodies.Add(comments[i].Body);
             }
 
-            return ours;
+            return AutoReviewRecord.LastOfOurs(bodies);
         }
     }
 }

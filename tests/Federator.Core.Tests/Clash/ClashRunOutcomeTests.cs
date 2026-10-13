@@ -624,5 +624,51 @@ namespace Federator.Core.Tests
 
             Assert.That(refused.ParamName, Is.EqualTo("every"));
         }
+
+        // ---------- what asks for the NWF to be saved again ----------
+
+        /// <summary>
+        /// FR-150. The file's settings put onto a saved test that was then skipped changed the
+        /// document, and the save asked only after a test created, a test run or a status
+        /// changed, so the NWD carried the edit and the NWF did not, and the next run found
+        /// the same drift and applied it again.
+        /// </summary>
+        [Test]
+        public void ATestThatTookTheFilesSettingsAndThenWasSkippedAsksForTheNwfToBeSavedAgain()
+        {
+            ClashRunOutcome outcome = new ClashRunOutcome();
+            outcome.AddAlreadyPresent("T");
+            outcome.AddApplied();
+            outcome.AddSkipped("T", ClashSkipReason.EmptySide, "the left side finds nothing in this model");
+
+            Assert.That(outcome.AppliedCount, Is.EqualTo(1));
+            Assert.That(outcome.SavesTheNwfAgain(false), Is.True,
+                "the edit is in the document, so the NWF has to be written again to carry it");
+        }
+
+        [Test]
+        public void NothingWrittenAsksForNoSave()
+        {
+            ClashRunOutcome outcome = new ClashRunOutcome();
+            outcome.AddAlreadyPresent("T");
+            outcome.AddSkipped("T", ClashSkipReason.EmptySide, "the left side finds nothing in this model");
+
+            Assert.That(outcome.SavesTheNwfAgain(false), Is.False,
+                "a test only compared and then skipped wrote nothing");
+        }
+
+        [Test]
+        public void ACreatedTestARunTestOrAChangeTheRunnerMadeEachAskForTheSave()
+        {
+            ClashRunOutcome created = new ClashRunOutcome();
+            created.AddCreated("T");
+
+            ClashRunOutcome ran = new ClashRunOutcome();
+            ran.AddRan("T", 1, 1, new ClashTally(), 0.0);
+
+            Assert.That(created.SavesTheNwfAgain(false), Is.True, "created");
+            Assert.That(ran.SavesTheNwfAgain(false), Is.True, "ran");
+            Assert.That(new ClashRunOutcome().SavesTheNwfAgain(true), Is.True, "a status the runner moved");
+        }
     }
 }

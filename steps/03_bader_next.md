@@ -497,6 +497,100 @@ The first run reads that no view moved to another pair folder now a side is read
 
 The weekly run with the box off comes first, because it is the run the team makes every week and it is where the leftovers are now reported and the SETS step may take longer. The run with the box ticked last, since it changes the NWF. A damaged document, two sets of one name in one folder, a folder as a clash source and a set lost after it was put in cannot be made to happen on a real folder, so those rows are read and not run.
 
+664. Install main with the F115 register rows merged
+665. Scan the C02 folder
+666. Pick the clash XML
+667. Leave `Rebuild sets that drifted from the file` unticked
+668. Tick 1A02MM alone in the group list
+669. Press Run
+670. Look for, in the SET lines of 1A02MM: either no block about sets the file does not name, or one starting `set(s) in this NWF are not named by the picked file:` whose next line reads `NOTHING BELOW IS DONE, because "Rebuild sets that drifted from the file" is off`, and each line under it saying what `a run with the box ticked would` do, R20
+671. Look for, on the group's TIMING block: the SETS seconds, to send beside the last run's, since the leftover walk now reads every clash test side with the box off too, R20
+672. Look for, in the SETS step's finish phrase and the line under the SETS lines: a count `drifted` or `could not be read` wherever the SET DRIFT lines name a set drifted or not read, R7
+673. Look for, after the CLASH block: the EMPTY SETS block as before, and a line `were not judged` only where a SET NOT READ line names a set at zero, R6
+674. Look for: no FAILURE line naming `the side's selection sources read as none`, R21
+675. Open the NWF of 1A02MM in Navisworks with the tool's window open and the clash XML picked
+676. Press Build sets
+677. Look for, in the log after the button's SET lines: an EMPTY SETS block ending `no clash test ran with these sets here, so what they cost in clash tests is not counted`, wherever the window's lines show a set at zero, R4
+678. Close the NWF without saving it
+679. Tick `Rebuild sets that drifted from the file`
+680. Tick 1A02MM alone in the group list
+681. Press Run
+682. Look for, under the SET DRIFT lines of each drifted set: `REBUILT from the picked file`, and no line `read back after the rebuild it does NOT ask what the picked file asks`, R19. Where that line shows under an Or set, it is the answer to F115-R12
+683. Look for: no line `NOT rebuilt, though "Rebuild sets that drifted from the file" is ticked`, R18. Where one shows, why is said where the rebuild was tried, before the set's present line
+684. Look for: no line `nothing removed for`, `nothing done for` or `so it was NOT saved`. Where one shows, send it with the SET lines before it
+685. Send the log and the `.tsv` beside it, with the SETS seconds of both runs
+## Proof F121 wave 4, the NWF saved after an apply, the second undo and the folders file, added 2026-10-13
+
+Everything runs on copies in two new folders on the desktop, so no NWF of the real folders is changed. The apply comes first, since it needs 1A02MM's clash skipped off the shared coordinates, as the box starts. The undo second, since it needs that clash run. The folders file last, since it needs Navisworks closed. FR-155 has no step: it is Core alone, proved by its tests, and a file every exporter writes whole reads as before.
+
+800. Install main with fix-F121d merged
+801. In Explorer make a new folder on the desktop named `F121 source`
+802. Copy the NWC files of 1A02MM into `F121 source`
+803. Make a second new folder on the desktop named `F121 out`
+804. Copy `1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` and the two `.txt` files beside it from the `exchange` folder of the repo into `F121 out`
+805. Open the copy in `F121 out` in Notepad
+806. Replace every `tolerance="0.0820209974"` with `tolerance="0.1640419948"`, which is 50 mm where the file says 25 mm
+807. Save and close Notepad
+808. Start Navisworks and open the tool
+809. On 1. Source pick `F121 source` and press Scan
+810. On 3. Outputs pick `F121 out` for the NWF folder
+811. Pick `F121 out` for the NWD folder
+812. Pick `F121 out` for the Excel folder
+813. On 4. Clash pick the clash XML `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` of the repo, not the copy
+814. Untick Make viewpoints
+815. Leave `Skip clash when models sit off shared coordinates` ticked, as it starts
+816. On 2. Grouping tick 1A02MM alone
+817. Press Run and wait for it to finish
+818. Look for: the clash of 1A02MM skipped as not on the same shared coordinates, its tests created and none run. Where its tests ran instead, steps 819 to 830 cannot show the fault, and say so
+819. In Explorer write down the modified time of the NWF of 1A02MM in `F121 out`
+820. On 4. Clash pick the copy in `F121 out` as the clash XML
+821. Tick `Apply the file's settings to existing tests`
+822. Press Run and wait for it to finish
+823. Look for, in the `DRIFT` block of 1A02MM: a difference in `the tolerance` across the tests, and the line starting `APPLYING these to the tests in the document`
+824. Look for: a `CLASH    APPLIED` line for each test of the group, then each test skipped as not on the same shared coordinates
+825. Look for, after the CLASH lines: a `STEP     NWF SAVE` line and an `NWF` line with the size written, where before this fix no NWF SAVE step came after an apply where nothing ran. Where a SET line of this run says a set was created or rebuilt, the save would have come anyway, and say so
+826. In Explorer look at the NWF's modified time: later than the one of step 819
+827. Press Run again with the same picks and wait for it to finish
+828. Look for, in the `DRIFT` block: `Nothing has drifted. Every one of them matches the file.`, and no `CLASH    APPLIED` line, where before this fix the same drift was found and applied again
+829. Untick `Apply the file's settings to existing tests`
+830. Send the logs of steps 817, 822 and 827
+831. On 4. Clash pick the clash XML `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` of the repo again
+832. Untick `Skip clash when models sit off shared coordinates`
+833. Tick `Mark penetrations as Reviewed`
+834. Press Run and wait for it to finish
+835. Look for, in the `PENETRATION` block of 1A02MM: a count of clashes moved to Reviewed above 0. Where it reads 0, steps 836 to 849 cannot be read, and say so
+836. Open the NWF of 1A02MM in `F121 out` in Navisworks
+837. In the tool on 4. Clash press `Undo auto Reviewed`
+838. Look for, in the log: the `UNDO` block with `put back          :` the count of step 835, and a line `0  an undo already put it back, so the status it carries now is a person's and stands`
+839. Open Clash Detective
+840. Pick the test named on the first `UNDO` line of that block
+841. Pick the clash named on the same line
+842. Look for, in its Comments: `Parsons NWC Federator auto Reviewed [penetration] [was New]` and after it `Parsons NWC Federator put back [penetration] [to New] by Undo auto Reviewed`, and its status New, or Active in all three places where the clash was Active before the run. Whether the panel lists the two in that order is UNKNOWN, and write down the order shown
+843. Set that clash to Reviewed by hand in Clash Detective
+844. In the tool press `Undo auto Reviewed` again
+845. Look for, in the new `UNDO` block: no line naming that clash, `put back          : 0`, and the line `an undo already put it back, so the status it carries now is a person's and stands` counting at least 1
+846. Look for, in Clash Detective: that clash still Reviewed, where before this fix the second undo put it back to New
+847. Close the NWF without saving it
+848. Untick `Mark penetrations as Reviewed`
+849. Send the log of steps 837 and 844
+850. Close Navisworks
+851. In Explorer open the folder holding the file named on the `log file` line of the last log
+852. Open the Properties of `folders.txt` in that folder
+853. Tick Read-only
+854. Press OK
+855. Start Navisworks and open the tool
+856. On 1. Source press Browse and pick `F121 source`
+857. Look for, in the log: `FOLDERS  the folder picked for Source is remembered for this session only, because` the path of `folders.txt` `could not be written:` and the reason
+858. On 3. Outputs press Browse beside the NWF folder and pick `F121 out`
+859. Look for: no second `FOLDERS` line
+860. In Explorer open the Properties of `folders.txt` again
+861. Clear Read-only
+862. Press OK
+863. On 3. Outputs press Browse beside the NWD folder and pick `F121 out`
+864. Look for: no `FOLDERS` line
+865. Open `folders.txt` in Notepad
+866. Look for: a line `Nwd=` naming `F121 out`
+867. Send the log of steps 856 to 864
 956. Install main with the F115 register rows merged
 957. Scan the C02 folder
 958. Pick the clash XML

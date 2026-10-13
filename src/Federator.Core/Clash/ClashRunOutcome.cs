@@ -142,6 +142,28 @@ namespace Federator.Core.Clash
             alreadyPresent.Add(name);
         }
 
+        /// <summary>
+        /// The file's settings were put onto a test already in the document, FR-150. That is
+        /// a write, whether or not the test then runs.
+        /// </summary>
+        public void AddApplied()
+        {
+            AppliedCount++;
+        }
+
+        /// <summary>Tests already in the document that took the file's settings, FR-150.</summary>
+        public int AppliedCount { get; private set; }
+
+        /// <summary>
+        /// Whether the clash step wrote into the document, so the NWF is saved again, F54 and
+        /// FR-150: a test created, a test run, a test that took the file's settings, or
+        /// anything else the runner changed in the document, which it hands in.
+        /// </summary>
+        public bool SavesTheNwfAgain(bool runnerChangedTheDocument)
+        {
+            return CreatedCount > 0 || RanCount > 0 || AppliedCount > 0 || runnerChangedTheDocument;
+        }
+
         public void AddSkipped(SkippedClashTest test)
         {
             if (test == null)
@@ -589,6 +611,7 @@ namespace Federator.Core.Clash
                     ClashSkipReason.NoLocator,
                     ClashSkipReason.UnknownUnits,
                     ClashSkipReason.NoTolerance,
+                    ClashSkipReason.MissingSetting,
                     ClashSkipReason.NoName,
                     ClashSkipReason.Failed
                 })

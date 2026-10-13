@@ -134,9 +134,6 @@ namespace Federator.Core.Tests
                 ClashStatus back;
 
                 Assert.That(AutoReviewRecord.In(comment), Is.Null, comment);
-                Assert.That(AutoReviewRecord.MayUndo(comment, ClashStatus.Reviewed), Is.False, comment);
-                Assert.That(AutoReviewRecord.WhyNotUndone(comment, ClashStatus.Reviewed),
-                    Does.Contain("nothing of ours to undo"), comment);
                 Assert.That(UndoAutoReview.Judge(comment, ClashStatus.Reviewed, out back),
                     Is.EqualTo(UndoVerdict.NotOurs), comment);
                 Assert.That(back, Is.EqualTo(ClashStatus.Reviewed), "nothing is moved");
@@ -153,7 +150,6 @@ namespace Federator.Core.Tests
             Assert.That(UndoAutoReview.Judge(APenetration().Text(), ClashStatus.Reviewed, out back),
                 Is.EqualTo(UndoVerdict.PutBack));
             Assert.That(back, Is.EqualTo(ClashStatus.New));
-            Assert.That(AutoReviewRecord.MayUndo(APenetration().Text(), ClashStatus.Reviewed), Is.True);
         }
 
         [Test]
@@ -164,8 +160,7 @@ namespace Federator.Core.Tests
             Assert.That(UndoAutoReview.Judge("somebody's own note", ClashStatus.Reviewed, out back),
                 Is.EqualTo(UndoVerdict.NotOurs));
             Assert.That(back, Is.EqualTo(ClashStatus.Reviewed), "nothing is moved");
-            Assert.That(AutoReviewRecord.WhyNotUndone("somebody's own note", ClashStatus.Reviewed),
-                Does.Contain("nothing of ours to undo"));
+            Assert.That(UndoAutoReview.Describe(UndoVerdict.NotOurs), Does.Contain("nothing of ours to undo"));
         }
 
         /// <summary>
@@ -183,11 +178,63 @@ namespace Federator.Core.Tests
 
                 Assert.That(UndoAutoReview.Judge(APenetration().Text(), now, out back),
                     Is.EqualTo(UndoVerdict.SomebodyMovedItOn), now.ToString());
-                Assert.That(AutoReviewRecord.MayUndo(APenetration().Text(), now), Is.False);
+                Assert.That(back, Is.EqualTo(now), "nothing is moved");
             }
 
-            Assert.That(AutoReviewRecord.WhyNotUndone(APenetration().Text(), ClashStatus.Approved),
-                Does.Contain("that decision stands"));
+            Assert.That(UndoAutoReview.Describe(UndoVerdict.SomebodyMovedItOn), Does.Contain("so that stands"));
+        }
+
+        // ---------- a second undo ----------
+
+        /// <summary>
+        /// FR-152. An undo put a clash back to New and left the record of the move as it was,
+        /// so a person who then set it to Reviewed by hand had it moved back to New by the
+        /// next undo, as put back where this tool found it. The undo leaves its own record
+        /// and the last of ours is what is judged, so that Reviewed is the person's and stands.
+        /// </summary>
+        [Test]
+        public void AReviewedAPersonSetAfterAnUndoIsLeftAloneByTheNextUndo()
+        {
+            AutoReviewRecord record = APenetration();
+            List<string> comments = new List<string> { record.Text(), record.UndoneText() };
+            ClashStatus back;
+
+            UndoVerdict verdict = UndoAutoReview.Judge(
+                AutoReviewRecord.LastOfOurs(comments), ClashStatus.Reviewed, out back);
+
+            Assert.That(verdict, Is.EqualTo(UndoVerdict.AlreadyPutBack));
+            Assert.That(back, Is.EqualTo(ClashStatus.Reviewed), "nothing is moved");
+        }
+
+        /// <summary>
+        /// The other half. A clash an undo put back and a later run moved to Reviewed again
+        /// carries a newer record of a move, so the next undo puts it back once more.
+        /// </summary>
+        [Test]
+        public void AClashThisToolMovedAgainAfterAnUndoIsPutBackByTheNextUndo()
+        {
+            AutoReviewRecord record = APenetration();
+            List<string> comments = new List<string> { record.Text(), record.UndoneText(), record.Text() };
+            ClashStatus back;
+
+            Assert.That(UndoAutoReview.Judge(AutoReviewRecord.LastOfOurs(comments), ClashStatus.Reviewed, out back),
+                Is.EqualTo(UndoVerdict.PutBack));
+            Assert.That(back, Is.EqualTo(ClashStatus.New));
+        }
+
+        [Test]
+        public void TheRecordOfAnUndoIsNeverReadAsAMoveAndAPersonsNoteIsNeverOurs()
+        {
+            AutoReviewRecord record = APenetration();
+
+            Assert.That(record.UndoneText(), Does.StartWith(AutoReviewRecord.UndoneMarker));
+            Assert.That(record.UndoneText(), Does.Not.StartWith(AutoReviewRecord.Marker));
+            Assert.That(AutoReviewRecord.In(record.UndoneText()), Is.Null);
+            Assert.That(AutoReviewRecord.IsUndone(record.Text()), Is.False);
+            Assert.That(
+                AutoReviewRecord.LastOfOurs(new List<string> { record.Text(), "a person's own note" }),
+                Is.EqualTo(record.Text()));
+            Assert.That(AutoReviewRecord.LastOfOurs(new List<string> { "a person's own note" }), Is.Empty);
         }
 
         // ---------- what an undo may set ----------
@@ -273,6 +320,23 @@ namespace Federator.Core.Tests
             Assert.That(line, Does.Contain("no writable comment"));
             Assert.That(line, Does.Contain("nothing stands in for the record"));
             Assert.That(UndoAutoReview.CannotLine(null), Does.Contain("UNKNOWN"));
+        }
+
+        /// <summary>
+        /// FR-152. An undo that could not leave its own record still puts the clashes back,
+        /// so the block's count is true, and the one line says what is lost by it rather than
+        /// the line of a run, which says nothing was put back.
+        /// </summary>
+        [Test]
+        public void AnUndoThatCouldNotLeaveItsRecordSaysWhatIsLost()
+        {
+            string line = UndoAutoReview.CannotRecordTheUndoLine("writing one threw X on the first clash");
+
+            Assert.That(line, Does.StartWith("UNDO the record of this undo could not be written"));
+            Assert.That(line, Does.Contain("writing one threw X"));
+            Assert.That(line, Does.Contain("still put back"));
+            Assert.That(line, Does.Not.Contain("Nothing was put back"));
+            Assert.That(UndoAutoReview.CannotRecordTheUndoLine(null), Does.Contain("UNKNOWN"));
         }
 
         [Test]

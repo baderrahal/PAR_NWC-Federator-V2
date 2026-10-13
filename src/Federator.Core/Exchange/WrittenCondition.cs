@@ -64,7 +64,20 @@ namespace Federator.Core.Exchange
                 return null;
             }
 
-            SearchConditionDefinition read = ExchangeReader.ReadCondition(parsed);
+            SearchConditionDefinition read;
+
+            try
+            {
+                read = ExchangeReader.ReadCondition(parsed);
+            }
+            catch (InvalidDataException)
+            {
+                // FR-155. Flags that are not a whole number. Read as a set this cannot read,
+                // counted and said on a MATRIX line, and the reader then refuses the file
+                // naming the set.
+                return null;
+            }
+
             int shut;
             int end;
 
