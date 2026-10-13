@@ -334,6 +334,15 @@ foreach ($f in (Get-ChildItem $installed -Filter *.dll | Sort-Object Name)) {
             try { [System.Reflection.Assembly]::ReflectionOnlyLoad($ref.Name) | Out-Null; $ok = $true } catch { }
         }
 
+        # F156. The reflection only context applies no binding policy, so a reference the
+        # runtime unifies with the framework's own file reads as missing there. Core has asked
+        # for System.IO.Compression 4.2.0.0 since F152, the version the .NET 4.8 reference
+        # assemblies carry, and the runtime loads the framework's 4.0.0.0 for it, read on
+        # 2026-10-14. The name after policy is the one the runtime loads, so it is read too.
+        if (-not $ok) {
+            try { [System.Reflection.Assembly]::ReflectionOnlyLoad([AppDomain]::CurrentDomain.ApplyPolicy($ref.FullName)) | Out-Null; $ok = $true } catch { }
+        }
+
         if (-not $ok -and -not $seen.ContainsKey($ref.Name)) {
             $seen[$ref.Name] = $true
             $missing += ("  {0} needs {1}, which is neither in the bundle nor in the framework" -f $asm.GetName().Name, $ref.Name)
