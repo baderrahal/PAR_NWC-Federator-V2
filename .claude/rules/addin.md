@@ -259,7 +259,10 @@ well as to pass.
   handed to the plan unread, its status checked before `ResultAt`, so a Resolved row Compact
   removed never makes its test not read, C1. A test the clash step ran with no row on the
   report is read whole with no row, `TestsRead.Ran`, N2, and its old view goes as no longer
-  needed. A test whose open rows are ALL result groups gets no view, keeps its old views and
+  needed. A test the clash step skipped as FAILED is never read whole, and nor is the kept test
+  of a merged mirror it failed on, `TestsRead.ClashStepFailed` handed the clash record's skipped
+  tests and `ClashRunner.KeptOfMirror`, row F114-K38, since its harvest may have thrown after
+  reading only closed rows, so its old views stay and it is counted failed with why. A test whose open rows are ALL result groups gets no view, keeps its old views and
   is named on one VIEWS line, never counted failed, `TestsRead.OnlyGroups`, F3, the lead's
   decision that a person's grouping must not cost the group DONE. A test not read whole hands the
   plan none of its rows, is counted FAILED on the VIEWS BUILT block with why, so the group is
@@ -741,6 +744,18 @@ well as to pass.
   collapsed under More, rarely changed. The two that destroy data are collapsed on their
   own under Things that destroy data, because they do not belong beside ordinary output
   options. Fewer decisions is the goal, not more words explaining them
+- THE SIDE WALK OF THE LEFTOVERS, SetBuilder.CountSide, F115: the side's selection and every
+  source read out of it are disposed, R1, sources that read as none count the side as not read,
+  R21, and a source resolving to a folder credits every set inside it, R8. IndexOfSet reads from
+  the end as FindSelectionSet does, R3, so the set the drift was read off is the set replaced.
+  The leftovers are walked and reported with the box off and acted on only with it ticked, R20.
+  CarryOut finds every set again by its PATH, IndexPathsAt, and acts on nothing where a path
+  holds no set or more than one, and nothing more is removed or renamed once the document is
+  damaged, F115 attempt 2. A throw after the twin is gone declares the document damaged. With
+  the box off a read of the walk that failed is one FINDING line and not a FAILURE. Every
+  Search read off a set by the drift or the walk is disposed.
+  The EMPTY SETS block is written by WriteTheEmptySets wherever the sets were judged, after the
+  clash run and where no test ran, R4
 - THE GENERIC MODELS SETS ARE BUILT IN THE SETS STEP OF EVERY GROUP, F128, with an XML picked
   or without one, since they come from the models and not from the file. `PlanTheGenericSets`
   reads Model.FileName and Model.SourceFileName off each model of the document, each wrapper
@@ -754,7 +769,10 @@ well as to pass.
   where it is refused the engine writes that line and `SetBuilder.Build` is told not to walk, so
   a model's read that threw never removes last week's sets. Where the picked file's build
   declared the document damaged, Q74, the Generic Models sets are not built, one line says so
-  and the step asks no save, so the OR of the two builds never saves a damaged NWF. Their
+  and the step asks no save, so the OR of the two builds never saves a damaged NWF. The clash
+  step then creates and runs no test and FinishTheGroup stops before the views, the NWF save,
+  the workbook and the NWD, F115 R15 and R24, since a test or a view asked for the save over
+  the damage. Their
   outcome is `JobOutcome.GenericSets`, never the picked file's, so the EMPTY SETS
   judge and SETS ACROSS THE RUN do not read them, a set created asks for the NWF save as any
   set does, FR-020, and a present set keeps the question it was built with unless the rebuild
@@ -905,7 +923,12 @@ well as to pass.
   IL and never clicked, took a click to select the row before one that flipped it. Whether
   the template's box flips on the first click in Navisworks is UNKNOWN until step 546 of
   steps\03_bader_next.md. The grey line under the list, x:Name RunRangeHelp, is set
-  off `ShiftRange.HelpLine` in the constructor. The box has no x:Name and no label, so it is
+  off `ShiftRange.HelpLine` in the constructor. THE SPACE BAR ON THE RUN CELL TICKS AS THE
+  STOCK COLUMN DID, F130-R1: the grid's PreviewKeyDown, `OnGroupsGridKeyDown`, takes Space on a
+  DataGridCell of the column named RunColumn, flips its row through Include where CanInclude
+  allows and goes on as a click does, through `RunBoxFlipped`, the one path both share, Shift
+  making a range. Space with the box itself focused is left to the box, which raises Click.
+  The box has no x:Name and no label, so it is
   not one of the sixteen tick boxes counted below. The window driver cannot carry Shift
   without real input, turn5\measure-shift-driver-result.md, so its proof is numbered steps in
   steps\03_bader_next.md

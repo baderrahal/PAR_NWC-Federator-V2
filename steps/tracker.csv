@@ -65,7 +65,7 @@ FR-063,tolerance log line says read from xml on no xml run,F123,5,noise,open,non
 FR-064,category line names no folder,F123,5,noise,merged,151,none,2026-10-07
 FR-065,viewpoint dimming carries between viewpoints,F114,2b,silent wrong number,merged,"141 the Core half and 189 the add-in pass",none,2026-10-08
 FR-066,size text reads tail of word digits,F114,2b,silent wrong number,merged,"141 the Core half and 189 the add-in pass",none,2026-10-08
-FR-067,clear rebuild drops viewpoints,F114,2b,broken feature,in progress,"189 names the marks a clear and rebuild loses, P15 not answered so whether they are kept is UNKNOWN",none,2026-10-08
+FR-067,"clear rebuild drops viewpoints, waits for the P15 probe docs\history\scan.md 5z-w names, not answered, Navisworks having failed twice at a read after CopyFrom",F114,2b,broken feature,open,none,none,2026-10-12
 FR-068,size tally never constructed,F114,2b,broken feature,merged,"141 the Core half and 189 the add-in pass",none,2026-10-08
 FR-069,views cost per viewpoint,F114,2b,slow,merged,"141 the Core half and 189 the add-in pass",none,2026-10-08
 FR-070,views 45 minute basis and options,F114,2b,slow,merged,"141 the Core half and 189 the add-in pass",none,2026-10-08
@@ -325,8 +325,8 @@ F125,a window that is not modal is a pane and not a dialog,F125,outside the wave
 F126,the window driver unticks a tick box by its AutomationId,F126,outside the waves,fix,merged,112,none,2026-10-05
 F127,coverage of the clash XML,F127,2a,fix,merged,"145 the Core steps 1 to 3, 153 the Coverage sheet, 167 the readers' Core points, 176 the counted words and 195 the add-in half with the sheet in the internal workbook",none,2026-10-11
 F128,generic models,F128,2b,fix,merged,"171 the Core part by lane B and 186 the probe and the add-in part",none,2026-10-08
-F129,start from an existing NWF,F129,3a,fix,merged,193,none,2026-10-11
-F130,the Shift range in the group list,F130,3b,fix,merged,192,none,2026-10-11
+F129,start from an existing NWF,F129,3a,fix,merged,"193, F129-R1 dropped on fix-F129c",none,2026-10-12
+F130,the Shift range in the group list,F130,3b,fix,merged,"192, 218 F130-R1",none,2026-10-12
 F131,teams,F131,2b,fix,merged,135,none,2026-10-07
 F132,mirrored tests,F132,2a,fix,merged,177,none,2026-10-08
 F133,the work tracker,F133,beside the waves,fix,merged,122,none,2026-10-06
@@ -472,32 +472,32 @@ Q140,F132's next attempt only for a fault that can change a clash count or its t
 Q141,a clash in a result group with two statuses,none,none,question,merged,139,none,2026-10-07
 Q142,when a mirror's clashes may be merged,none,none,question,merged,139,none,2026-10-07
 T5-R-P15CRASH,"probe P15 read a viewpoints copy after Document.Clear, Navisworks crashed and the guard refused the put back, put back by the lead at 14:53 from its backup",none,none,register row,proven by a run,none,"turn5\restart\putback-rebuild-views-20261007-144356-write, 0 still different",2026-10-07
-F115-R1,side.Selection and every SelectionSource of the side walk are never disposed,F115,2a,register row,open,none,none,2026-10-05
-F115-R2,a rebuild is recorded only after the re-read so a throw after ReplaceWithCopy reports FAILED and asks for no save,F115,2a,register row,open,none,none,2026-10-05
-F115-R3,two sets of one name in one folder have their drift read off one and the other replaced,F115,2a,register row,open,none,none,2026-10-05
-F115-R4,a picked XML of sets alone or the Build sets button writes no EMPTY SETS block and no tsv row,F115,2a,register row,open,none,none,2026-10-05
-F115-R5,the category list of ten federations is handed to the judge as complete,F115,2a,register row,open,none,none,2026-10-05
-F115-R6,a present set at zero whose search would not read is in the at zero count but not judged and no line says so,F115,2a,register row,open,none,none,2026-10-05
-F115-R7,the sets summary carries no drifted or rebuilt or could not read count,F115,2a,register row,open,none,none,2026-10-05
-F115-R8,a clash side whose source is a folder of sets credits the folder and not the sets in it,F115,2a,register row,open,none,none,2026-10-05
-F115-R9,the judge reads the model names through ContainerName.Parse outside any guard so bad naming settings fail the group,F115,2a,register row,open,none,none,2026-10-05
+F115-R1,side.Selection and every SelectionSource of the side walk are never disposed,F115,2a,register row,merged,212,none,2026-10-13
+F115-R2,a rebuild is recorded only after the re-read so a throw after ReplaceWithCopy reports FAILED and asks for no save,F115,2a,register row,merged,212,none,2026-10-13
+F115-R3,two sets of one name in one folder have their drift read off one and the other replaced,F115,2a,register row,merged,212,none,2026-10-13
+F115-R4,a picked XML of sets alone or the Build sets button writes no EMPTY SETS block and no tsv row,F115,2a,register row,merged,212,none,2026-10-13
+F115-R5,"the category list of ten federations is handed to the judge as complete, dropped since the verdict already reads no model measured so far in this project carries it or the project has not been measured that far, F115 attempt 2, and no model read gives a category",F115,2a,register row,dropped,UNKNOWN,none,2026-10-12
+F115-R6,a present set at zero whose search would not read is in the at zero count but not judged and no line says so,F115,2a,register row,merged,212,none,2026-10-13
+F115-R7,the sets summary carries no drifted or rebuilt or could not read count,F115,2a,register row,merged,212,none,2026-10-13
+F115-R8,a clash side whose source is a folder of sets credits the folder and not the sets in it,F115,2a,register row,merged,212,none,2026-10-13
+F115-R9,the judge reads the model names through ContainerName.Parse outside any guard so bad naming settings fail the group,F115,2a,register row,merged,212,none,2026-10-13
 F115-R10,the judge branch for the workset list inside Core not read has no test,F115,2a,register row,merged,172,none,2026-10-08
-F115-R11,the Build sets button judges every set at zero CANNOT TELL,F115,2a,register row,open,none,none,2026-10-05
+F115-R11,"the Build sets button judges every set at zero CANNOT TELL, dropped since the button reads no model by design and says it cannot tell and why, which is true",F115,2a,register row,dropped,UNKNOWN,none,2026-10-12
 F115-R12,whether SearchCondition.Options reads back StartGroup 64 is UNKNOWN until the wave 2a weekly run,F115,2a,register row,open,none,none,2026-10-05
 F115-R13,the F115 log entry was written as the lead's delegate,none,none,register row,open,none,none,2026-10-05
 F114-K29,"a team map may name a team UNKNOWN, so a side with no code and a side of that team share a pair folder",F114,2b,register row,waiting for Bader,none,none,2026-10-07
-F114-K30,"a view side is read by its set name alone, so two sets of one name giving two teams read UNKNOWN in the views and two teams on the TEAMS lines",F114,2b,register row,open,none,none,2026-10-07
-F114-K31,"a set with no name in the clash XML gets a TEAMS line naming no set, TeamMap.SetLines",F114,2b,register row,open,none,none,2026-10-07
-F115-R14,the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports,F115,2a,register row,in progress,"172 the Core half merged by lane B, the add-in half on the laptop",none,2026-10-08
-F115-R15,a damaged NWF is still saved after a leftover rename fails and the Build sets button says nothing of it,F115,2a,register row,open,none,none,2026-10-07
-F115-R16,a set the plan skipped is read as one the file does not name and can be removed with the box on,F115,2a,register row,open,none,none,2026-10-07
-F115-R17,the HEALTH block's category check reads the 374 categories of one project with no project guard,F115,2a,register row,open,none,none,2026-10-07
-F115-R18,the sets lines blame the box where a rebuild failed and name lines the window does not show,F115,2a,register row,open,none,none,2026-10-07
-F115-R19,a rebuilt set is not read against the file after the rebuild so one that did not take is counted rebuilt every run,F115,2a,register row,open,none,none,2026-10-07
-F115-R20,leftovers are neither decided nor reported with the rebuild box off,F115,2a,register row,open,none,none,2026-10-07
-F115-R21,a side whose sources read as none counts as zero sides and never as not counted,F115,2a,register row,open,none,none,2026-10-07
-F115-R22,a set created and then lost track of is reported FAILED and may not ask for the save,F115,2a,register row,open,none,none,2026-10-07
-F115-R23,two sets of one name in the picked file are built as one set and counted as one created and one already there,F115,2a,register row,open,none,none,2026-10-07
+F114-K30,"a view side is read by its set name alone, so two sets of one name giving two teams read UNKNOWN in the views and two teams on the TEAMS lines",F114,2b,register row,merged,213,none,2026-10-13
+F114-K31,"a set with no name in the clash XML gets a TEAMS line naming no set, TeamMap.SetLines",F114,2b,register row,merged,213,none,2026-10-13
+F115-R14,the judge calls a value carried by no model where a model's walk stopped or a model was dropped from the exports,F115,2a,register row,merged,212,none,2026-10-13
+F115-R15,a damaged NWF is still saved after a leftover rename fails and the Build sets button says nothing of it,F115,2a,register row,merged,212,none,2026-10-13
+F115-R16,a set the plan skipped is read as one the file does not name and can be removed with the box on,F115,2a,register row,merged,212,none,2026-10-13
+F115-R17,"the HEALTH block's category check reads the 374 categories of one project with no project guard, dropped since the HEALTH line names the folder its list was measured on since PR 151 and the pick reads no model to guard by",F115,2a,register row,dropped,UNKNOWN,none,2026-10-12
+F115-R18,the sets lines blame the box where a rebuild failed and name lines the window does not show,F115,2a,register row,merged,212,none,2026-10-13
+F115-R19,a rebuilt set is not read against the file after the rebuild so one that did not take is counted rebuilt every run,F115,2a,register row,merged,212,none,2026-10-13
+F115-R20,leftovers are neither decided nor reported with the rebuild box off,F115,2a,register row,merged,212,none,2026-10-13
+F115-R21,a side whose sources read as none counts as zero sides and never as not counted,F115,2a,register row,merged,212,none,2026-10-13
+F115-R22,a set created and then lost track of is reported FAILED and may not ask for the save,F115,2a,register row,merged,212,none,2026-10-13
+F115-R23,two sets of one name in the picked file are built as one set and counted as one created and one already there,F115,2a,register row,merged,212,none,2026-10-13
 Q143,"fast to a team release, the seven limits, the two lanes and the hourly lines",none,none,Bader's request,merged,157,none,2026-10-07
 F132-R4,"the views read the document and not the merged report, so a clash only the mirror found gets no viewpoint and a status restated on the kept row is not the one the views read",F132,2a,silent wrong number,merged,177,none,2026-10-08
 F132-R5,"a run with no XML now hands the by design pass real set names, so with the box ticked it writes Reviewed into saved tests and saves the NWF",F132,2a,silent wrong number,merged,"177, the pass kept and said, Q144 for Bader",none,2026-10-08
@@ -507,37 +507,37 @@ F137-R2,the reference model can itself name no site and ModelsRead counts placem
 F137-R3,the comments of FederationEngine near lines 2154 and 2300 and ModelFactsReader near 154 still say a model naming no site fails its group either way,F137,before the test of wave 1,register row,open,none,none,2026-10-07
 F118-R1,the order check of the workbook reads the full blocks only so a one row test placed before a full block is not named,F118,2c,register row,merged,176,none,2026-10-08
 F118-R2,with a priority file picked the check does not run the Priority heading check on a sheet with no full block,F118,2c,register row,dropped,"176, lane B read it as no fault, a sheet of one row tests has no heading row",none,2026-10-08
-F132-R1,"under Q142 A only a first run over a new NWF merges, a weekly run never does",F132,2a,register row,open,none,none,2026-10-07
-F132-R2,a set's flags and findspec are not read by the drift check a merge reads,F132,2a,register row,open,none,none,2026-10-07
-F132-R3,"two clashes of one test between the same two elements on geometry of one name share a merge key, ClashItem.MergeKey, so a clash only a mirror found on such a pair is counted as a repeat and not added, said on the MIRROR MERGE lines",F132,2a,register row,open,none,none,2026-10-07
+F132-R1,"under Q142 A only a first run over a new NWF merges, a weekly run never does, dropped on 2026-10-12 since it is Bader's answer A to Q142 and every such pair is said on a MIRROR line",F132,2a,register row,dropped,none,none,2026-10-12
+F132-R2,"a set's flags and findspec are not read by the drift check a merge reads, dropped on 2026-10-12 since attempt 13 merges only on sets this run built, so no merge reads the drift check",F132,2a,register row,dropped,none,none,2026-10-12
+F132-R3,"two clashes of one test between the same two elements on geometry of one name share a merge key, ClashItem.MergeKey, so a clash only a mirror found on such a pair is counted as a repeat and not added, said on the MIRROR MERGE lines",F132,2a,register row,merged,211,none,2026-10-12
 Q144,a run with no XML and the by design pass on the saved tests,none,none,question,merged,191,none,2026-10-11
 Q145,"the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release",none,none,Bader's request,in progress,none,none,2026-10-08
-F132-R6,"a saved test a person grouped gets one viewpoint per result group since the views read the report's rows, as the workbook and the pictures do, where attempt 1 gave each clash under a group its own, the lead's ruling of by design on the breaker's blocking point of attempt 2, turn6\f132q-break-addin.json, for Bader",F132,2a,register row,open,none,none,2026-10-08
+F132-R6,"a saved test a person grouped gets one viewpoint per result group since the views read the report's rows, as the workbook and the pictures do, where attempt 1 gave each clash under a group its own, the lead's ruling of by design on the breaker's blocking point of attempt 2, turn6\f132q-break-addin.json, for Bader, dropped on 2026-10-12 under Q143 since one view per row is what the workbook and the pictures show",F132,2a,register row,dropped,none,none,2026-10-12
 F120-R1,"a render that throws with a path inside the exception's message is still one reason per path for the fifty failures guard, so such failures never stop the run, the developer's finding on FR-076",F120,3a,register row,in review,UNKNOWN,none,2026-10-12
 Q146,where the Generic Models sheet goes,none,none,question,merged,191,none,2026-10-11
 F118-R3,"the group's own workbook is listed as written with last week's size where its save threw and an earlier run's file is at the path, the developer's reading on F128's attempt 2, older than F128, the same fault FR-189 names for the NWD",F118,2c,register row,merged,210,none,2026-10-12
-F115-R24,"a document the leftover walk declared damaged is still taken through the clash step and saved where a test is created or a view is built, the sets only return being the one guard, the breaker's reading of F128's attempt 2, older than F128",F115,2a,register row,open,none,none,2026-10-08
+F115-R24,"a document the leftover walk declared damaged is still taken through the clash step and saved where a test is created or a view is built, the sets only return being the one guard, the breaker's reading of F128's attempt 2, older than F128",F115,2a,register row,merged,212,none,2026-10-13
 Q147,"two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109",none,none,Bader's request,in progress,none,none,2026-10-08
 F114-K32,"a person's unmarked view of a test's name in the view's folder stops the tool's view of that test and costs the group DONE, for Bader",F114,2b,register row,open,none,none,2026-10-08
-F114-K33,"the read back walks the material overrides one index path each, 3153 for a view of one model of 1A02MM, its cost read in the timed runs",F114,2b,register row,open,none,none,2026-10-08
+F114-K33,"the read back walks the material overrides one index path each, 3153 for a view of one model of 1A02MM, dropped on 2026-10-12 under Q143 since P18 read the whole read back at 0.014 s a view, no time the team sees",F114,2b,register row,dropped,none,none,2026-10-12
 F114-K34,"a mirror the rule paired and did not merge gets no view and its clashes are in no view, the VIEWS block counting them",F114,2b,register row,open,none,none,2026-10-08
-F114-K35,"a model whose code will not read is shown only where a clashing item lives in it, the VIEWS line saying so once a model",F114,2b,register row,open,none,none,2026-10-08
+F114-K35,"a model whose code will not read is shown only where a clashing item lives in it, the VIEWS line saying so once a model",F114,2b,register row,merged,189,none,2026-10-12
 F114-K36,"a test whose open clashes are all result groups gets no view and keeps its old ones, not counted FAILED, the lead's decision on the breaker's F3, for Bader",F114,2b,register row,open,none,none,2026-10-08
 F114-K37,"whether the NWF keeps a saved camera at single precision is UNKNOWN, so a camera far from the origin may read every tool view as a person's after a reopen, read on the timed runs",F114,2b,register row,open,none,none,2026-10-08
-F114-K38,"a test whose harvest threw after only closed rows reads whole, so its old view is removed while its open clashes were never harvested, the reviewer's D1, UNKNOWN how often",F114,2b,register row,open,none,none,2026-10-08
+F114-K38,"a test whose harvest threw after only closed rows reads whole, so its old view is removed while its open clashes were never harvested, the reviewer's D1, UNKNOWN how often",F114,2b,register row,merged,213,none,2026-10-13
 Q148,a fault found at the second reading,none,none,question,merged,191,none,2026-10-11
-F129-R1,"the picked NWFs walk follows a junction looping back until Windows refuses the path, so the same NWFs can be read under longer paths, a person's mklink needed, the scan sharing the exposure, the reviewer's point on attempt 1",F129,3a,register row,open,none,none,2026-10-08
+F129-R1,"the picked NWFs walk follows a junction looping back until Windows refuses the path, so the same NWFs can be read under longer paths, a person's mklink needed, the scan sharing the exposure, the reviewer's point on attempt 1",F129,3a,register row,dropped,216,none,2026-10-12
 T6-R-TESTTEMP,"RowLogTests.ALogThatFellBackTakesItsRowFileWithIt writes a log into the shared temp folder on every run, so it fails once about 100 have built up and when two worktrees test at once, seen on the F130 and F109 commits, the files moved aside to turn6 f109b-temp-runlogs",none,none,register row,open,none,none,2026-10-08
 F109-R1,"how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140",F140,none,register row,in progress,"none, F140 prepares it, no team zip until Bader asks",none,2026-10-11
 F109-R2,"run.ps1 reads the new exit 3 of install.ps1 as STOP where it read INSTALLED with a FINDING, and prove-run.ps1 trial 6c cannot run as written, the loop scripts frozen by Q143 item 5",F122,4,register row,open,none,none,2026-10-08
 F127-R2,"the Coverage sheet moves out of the clash workbook into the internal workbook of its own beside it, where the Generic Models sheet is, Bader's answer B to Q146, the clash workbook keeping the Navisworks export's layout",F127,2a,register row,merged,195,none,2026-10-11
-F130-R1,"a person who arrows onto the Run cell and presses Space no longer toggles it since the column is read only, the box itself still taking Space, the reviewer's point, UNKNOWN whether anyone ticks that way",F130,3b,register row,open,none,none,2026-10-11
+F130-R1,"a person who arrows onto the Run cell and presses Space no longer toggles it since the column is read only, the box itself still taking Space, the reviewer's point, UNKNOWN whether anyone ticks that way",F130,3b,register row,merged,218,none,2026-10-12
 Q149-1,"no release runs, the full runs of C06 and C07 and the ACC check dropped, the proof runs of 1A02MM and 1A04PK the last",none,none,Bader's request,merged,194,none,2026-10-11
 Q149-2,"the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks",F140,none,Bader's request,in progress,none,none,2026-10-11
 F140,"the team package, prepared and no team zip made until Bader writes make the team package",F140,none,fix,merged,208,none,2026-10-12
-F127-R3,"the coverage reads the run's codes off the ticked groups, not every NWC the scan found, so a category only an unticked building carries is not named, the breaker's point",F127,2a,register row,open,none,none,2026-10-11
-F127-R4,"a mirrored test's coverage row is named by its run name, not the name the XML gives it, so the row is found by the name Clash Detective shows",F127,2a,register row,open,none,none,2026-10-11
-F127-R5,"an internal workbook can take the path of another group's clash workbook, a group named X Internal beside a group X with the suffix Internal, one written over the other with no line, the breaker's point 6",F127,2a,register row,open,none,none,2026-10-11
+F127-R3,"the coverage reads the run's codes off the ticked groups, not every NWC the scan found, so a category only an unticked building carries is not named, the breaker's point, dropped on 2026-10-12 under Q143 since the row reads UNKNOWN and never a wrong word",F127,2a,register row,dropped,none,none,2026-10-12
+F127-R4,"a mirrored test's coverage row is named by its run name, not the name the XML gives it, so the row is found by the name Clash Detective shows, dropped on 2026-10-12 under Q143 since the row carries the name the panel and the workbook show",F127,2a,register row,dropped,none,none,2026-10-12
+F127-R5,"an internal workbook can take the path of another group's clash workbook, a group named X Internal beside a group X with the suffix Internal, one written over the other with no line, the breaker's point 6",F127,2a,register row,merged,209,none,2026-10-12
 T6-R-ZEROCLASHES,"TIMING BESIDE SIZE writes 0 clashes for a group whose clash was skipped, while RESULT reads clashes found UNKNOWN and the block's own legend says UNKNOWN is never a zero, set 05 item1-C02 line 625 and item1-C04 line 684",F119,none,register row,open,none,none,2026-10-11
 T6-R-MIRRORWORDS,"the MIRROR block says both tests of each pair are run over a group whose clash the coordinates rule skipped, set 05 item1-C02 line 263 and item1-C04 line 322",F132,none,register row,open,none,none,2026-10-11
 T6-R-TREEREMOVED,"the VIEWS TREE after line reads removed 0 at once where the inventory removed 14 views at once with their folder in one RemoveAt, so the views written and removed read as never removed, set 06 item1-C02 lines 1504 to 1520 against 1745",F114,none,register row,open,none,none,2026-10-11
@@ -569,3 +569,11 @@ F149-R1,"since F149 every picture is taken once every test of the group has run,
 F146,the renumber answers while it renames,F146,none,fix,merged,205,none,2026-10-12
 Q156,"wrap up now, no more tests, the merges, the team zip for his PC, the final state and stop",none,none,Bader's request,merged,206,none,2026-10-12
 F120-R2,"the source file of every clash item reads empty on real runs, set 09's GAP block of 1A02MM naming no Source File line since no item carried one, so the file part of ClashItem.MergeKey is empty on every item and the mirror merge cannot tell two models' items of one id and one geometry name apart, found by FR-198's pass, which keeps the read for the key and says it read and empty",F132,2a,register row,open,none,none,2026-10-12
+F115-R25,"the leftover walk clears the keys of a set whose search will not read and says nothing of why, SetBuilder.WalkForLeftovers, older than F115",F115,2a,register row,open,none,none,2026-10-12
+F115-R26,"the twin of a leftover is paired by set name and not by folder, so removing the twin can take the set at the path the file names while the leftover is renamed elsewhere, and the file's tests lose their side, older than PR 212",F115,2a,register row,open,none,none,2026-10-12
+F115-R27,"two sets at one path in the document are not said, the drift read, the rebuild, the finds count and the EMPTY SETS judgement describe the last copy and the other stays, older than PR 212",F115,2a,register row,open,none,none,2026-10-12
+F115-R28,"the leftover decision counts sides only off tests already saved in the document, so a set the picked XML's own tests point at but the XML does not define can be removed before those tests are made, older than PR 212",F115,2a,register row,open,none,none,2026-10-12
+F132-R7,"a status can be carried onto the wrong clash where one kept test has two mirrors and the first holds two copies of one pair with mixed statuses, since the twin check reads each mirror alone, the breaker's re-read of attempt 2 on pull request 211",F132,2a,register row,open,none,none,2026-10-12
+F115-R29,"a set's planned twin is found by name and not in the leftover's folder, so a file that moved a set between folders can leave one set name in two folders, the breaker's re-read of attempt 2 on pull request 212",F115,2a,register row,open,none,none,2026-10-13
+F115-R30,"a side whose selection sources read null makes the side count null and refuses every leftover with a FAILURE line, whether Navisworks returns null there is UNKNOWN until a run, the breaker's re-read of attempt 2 on pull request 212",F115,2a,register row,open,none,none,2026-10-13
+F114-R1,"a mirror pair the rule pairs but the merge refuses keeps its clashes on its own report test, and since the views read the rule's pairs those clashes get no view, so the views can hold fewer clashes than the report for that pair, named in the VIEWS block, the breaker's re-read of attempt 2 on pull request 213",F114,2b,register row,open,none,none,2026-10-13

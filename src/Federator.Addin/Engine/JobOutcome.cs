@@ -267,6 +267,9 @@ namespace Federator.Addin.Engine
         /// </summary>
         public IList<string> MirrorNames { get; set; }
 
+        /// <summary>The kept test's name by each merged mirror's run name, for the views, row F114-K38, or null where the clash step did not run.</summary>
+        public IDictionary<string, string> KeptOfMirror { get; set; }
+
         /// <summary>Size read back off the disk, or minus one when the workbook is not there.</summary>
         public long WorkbookSize { get; set; }
 

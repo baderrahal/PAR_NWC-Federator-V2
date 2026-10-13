@@ -39,7 +39,14 @@ because the person meant that value.
 
 The collision check runs on the table, not on the patterns, so two names typed to the
 same thing is caught the same way two patterns colliding is. It names both groups and
-the run does not start.
+the run does not start. A group's internal workbook is named after its workbook with the
+suffix, `GenericModelsSettings.WorkbookNameFor`, and sits beside it in the Clash Reports
+folder, so the check reads each internal workbook name against every other group's
+workbook name too, ignoring case as the three kinds are read: a group whose workbook is X
+Internal beside a group X is named with both groups and the run does not start, F127-R5,
+the breaker's point 6 on F127b. `OutputNameTable.WhyTheRunCannotStart` takes the settings
+the engine names the internal workbook by, so the suffix the check reads is the one the run
+writes.
 
 Every supplied field is shown in the Outputs step and can be changed there. The
 defaults are ZZZ for the level, which is the ISO 19650 code for all levels, BM for
@@ -379,6 +386,39 @@ and 6 does not read as broken.
   first leftover asking its question and refuses the next, because the first removes the twin
   and takes its name, so the second would then remove the first, a working set with sides, by
   that name, while both lines said RENAMED
+- A REBUILD IS READ BACK AGAINST THE FILE, F115 R19. `SetBuildOutcome.AddDrift` takes the set read
+  again after the rebuild, and `Took` is the one rule for a rebuild that took: found again, read,
+  and asking what the file asks. One that did not is in `RebuiltNotTaken` and the lines say so.
+  It still counts as rebuilt for the save, since the document changed
+- A SET PUT IN AND THEN LOST ASKS FOR THE SAVE, F115 R2 and R22. `AddFailedAfterPutIn` records a
+  set created or replaced and then lost track of as FAILED with `SetResult.PutIn`, its line says
+  the document holds it, and `PutAnythingIn` reads `FailedAfterPutInCount`
+- THE BOX IS BLAMED ONLY WHERE IT IS OFF, F115 R18. `RebuildsAsked` is set by the builder, a
+  drifted set not rebuilt with it ticked is said as a rebuild that failed, `NotRebuiltCount`, and
+  the old and new questions are said to be in the run log, which the window does not show
+- THE SUMMARY CARRIES THE DRIFT COUNTS AND THE DAMAGE, F115 R7 and R15. `Summary()` adds the
+  drifted, rebuilt and could not be read counts where any is above nought, and `Summary()` and
+  `Lines()` say a document the leftover pair damaged, so the Build sets button shows it
+- A SET AT ZERO NOT READ IS COUNTED IN THE EMPTY SETS BLOCK, F115 R6. `JudgeIfEmpty` counts a set at
+  zero with no question read in `AtZeroNotJudged` where a judge was handed, and `EmptySets.Lines`
+  counts it in the block's header with a line of its own. `EmptySets.LinesWithNoTest` is the block
+  where no clash test ran, F115 R4, saying no cost was counted
+- THE JUDGE NEVER THROWS ON THE NAMING SETTINGS, F115 R9, and KNOWS OF A MODEL THE EXPORT CHECK
+  DROPPED, F115 R14. `EmptySetJudge.For` reads the settings through Validate first and makes their
+  words the reason the project is UNKNOWN, and takes how many models the document holds, minus one
+  where not read, so a workset no model read carries is one it cannot tell about where a model was
+  dropped
+- ONE PATH HOLDS ONE SET IN THE PLAN, F115 R23. `SetBuildPlan.From` skips a second set at a path
+  the picked file already used, by name with why. `NamesInTheFile` is every name the file holds,
+  the skipped among them, and is what the leftover walk reads as named, F115 R16
+- THE LEFTOVERS ARE REPORTED WITH THE BOX OFF, F115 R20. `SetLeftovers.Lines` and `LeftoverSet.Line`
+  take whether the box is ticked and with it off say nothing is done and what a ticked run would
+  do, F115 attempt 2. A read of the walk that failed with the box off is one line,
+  `SetLeftovers.NotReadWithTheBoxOff`, a FINDING and never a FAILURE
+- A LEFTOVER CARRIES ITS TWIN'S PATH AND WHERE ITS RENAME LANDS, `TwinPath` and `RenamedPath`, F115
+  attempt 2, so the add-in acts on the sets at the paths Core decided and never on the first of a
+  name. `StoppedBecause` makes a build that stopped say so in `Summary()` and `Lines()`, and
+  `AddLeftoverUntouched` counts the leftovers not acted on once the document is damaged
 
 ### The teams of the picked file, F131
 
@@ -406,7 +446,9 @@ and 6 does not read as broken.
   `TeamMapSettings.UnknownTeam`, UNKNOWN, the one word `ViewpointSettings.DefaultUnknownDiscipline`
   reads. NAMED IN THE LOG: `TeamMap.SetLines` gives a TEAMS line for each set of the picked XML
   whose name carries no code of the map, with its team or UNKNOWN, said after the map's own
-  lines, and none where the map maps no team
+  lines, and none where the map maps no team. A set with no name is said as one, by the
+  folders above it or at the root, as one no test side can name, so no team is read for it,
+  row F114-K31, and never as a line naming no set
 - A MAP THAT CANNOT BE READ IS SAID, NEVER HALF READ AND NEVER A THROW. A line it does not
   know, a code on two teams or twice on one line, a team named twice, a team with no code,
   an empty name or code, a code holding any space or a character a person cannot see, a team
@@ -664,7 +706,20 @@ and 6 does not read as broken.
   the kept test does not would be added from the other and still held in its own block, the
   breaker's finding 5 on attempt 11, and where the kept test has more than one mirror a
   MIRROR line says so. A clash is the unordered pair of its two items' keys, the add-in's to
-  read. `AddTo(ClashReport)` is called once the run has set every test's state, and it reads
+  read. TWO CLASHES OF ONE TEST CAN SHARE THAT PAIR, one element carrying two pieces of
+  geometry of one name, `ClashItem.MergeKey`, so a pair is counted as many times as each test
+  found it: a mirror's clash past the kept test's count of its pair is found by the mirror only
+  and added, and past what earlier mirrors added of it too, F132-R3, where until 2026-10-12 it
+  was read as a repeat and left out, in no block once the mirror was taken out. Whether two
+  copies of one pair in one test are two clashes or one read twice is UNKNOWN and unmeasured,
+  and what stops a double count is the guard of AddTo, a mirror merged only where the clashes
+  handed are as many as its report holds. WHICH COPY IS THE TWIN OF WHICH IS UNKNOWN, F132-R3
+  attempt 2: where a pair has more than one copy under the kept test or under the mirror and
+  its copies carry more than one status, no status is carried across, the kept test's stay,
+  and one MIRROR line names the pair, its statuses on both sides and that the twin is UNKNOWN.
+  A pair with one copy on each side is weighed as below. A later mirror's copy of a clash an
+  earlier mirror added keeps the status as added, and where the two differ a MIRROR line names
+  it. `AddTo(ClashReport)` is called once the run has set every test's state, and it reads
   ran off `TestReport.State`, never off a count of calls: a kept test that did not run, or is
   not in the report exactly once, merges nothing and each mirror is reported as its own test,
   and a mirror that did not run, or is not in the report exactly once, is said UNKNOWN and
@@ -1753,8 +1808,15 @@ and 6 does not read as broken.
   never copied. A SIDE'S TEAM IS `TeamMap.TeamOfSet`, the one rule the TEAMS lines read,
   with the clash XML's sets handed to `ViewTeams`: the team of the code its set name
   carries, and where it carries none the team a folder above it names, so BLD-Security
-  Devices is Electrical in both. A side is named by its set name alone, so two sets of one
-  name whose folders give two teams read UNKNOWN. A SET WITH NO NAME NEVER THROWS, F114
+  Devices is Electrical in both. A SIDE IS THE TEST'S LOCATOR WHOLE, row F114-K30,
+  `ViewClash.LeftSide` off `TestReport.LeftLocator`: where a set of the tree is at exactly that
+  path, `SelectionSetDefinition.Path`, the side reads the folders of the sets at that path
+  alone, so two sets of one name in two folders each read the team their own folder names.
+  Where none is, or the side is a set name alone, every set of that name is read, and two
+  whose folders give two teams read UNKNOWN. An UNKNOWN side is kept by its whole locator,
+  so two sides of one set name write each its own reason, N5 of F114c. With no set tree read,
+  a weekly run with no clash XML, the locator reads exactly the team its set name read before
+  F114-K30, the code its name carries, so no pair and no size folder moves. A SET WITH NO NAME NEVER THROWS, F114
   attempt 8: the reader gives a set or a set folder with no name attribute a null name, no
   side can name it, so `ViewTeams` leaves it out, and a side with no set name reads UNKNOWN,
   as `ExportCheck` and `CodeOf` treat a set with no name. A side reading UNKNOWN is named in
@@ -1831,7 +1893,11 @@ and 6 does not read as broken.
   and a test not read is one `TestsRead` did not read whole, B1, never one the clash step
   did not run: keyed by the report's test name, its in scope rows alone needing reading, a
   test the clash step ran with no row whole with no row, and a test whose open rows are all
-  result groups in neither list, kept and never failed, F114's second reading,
+  result groups in neither list, kept and never failed, F114's second reading. A test the
+  clash step skipped as FAILED is never whole, met before or after, and nor is the kept test
+  of a merged mirror it failed on, read by the mirror's run name, `TestsRead.ClashStepFailed`,
+  row F114-K38, each saying why, since a harvest that threw after only closed rows leaves the
+  report with no open clash of it while the document may hold some,
   nothing goes when the clash step was not sound, nothing goes under two folders of one
   name side by side, and a folder goes only when it is the tool's and this run empties it.
   Removals go deepest first and latest index first, 5z, and `FolderGoesWithChildren`, true
@@ -2408,7 +2474,7 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   of this run and the group's own, so a code the group carries is always a code of the run. The
   open file run has no scan and its run is its one group. A group the scan found and the run did
   not tick is not among them, so a code only it carries reads UNKNOWN and never not in the
-  group, row F127-R3
+  group, row F127-R3, dropped on 2026-10-12 under Q143 since UNKNOWN is never a wrong word
 - A TEST THE RUN LEFT NO RECORD OF, OR NEVER REACHED, IS NOT COMPARED, and one the run knows it
   did not create, F77 kept it out or the plan dropped it before the model, is held by neither
   side. A test the plan dropped before the model that Clash Detective holds with results names
