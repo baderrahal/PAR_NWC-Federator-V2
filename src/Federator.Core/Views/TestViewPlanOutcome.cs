@@ -15,7 +15,9 @@ namespace Federator.Core.Views
         private readonly List<string> unknownSets = new List<string>();
         private readonly List<string> unknownWords = new List<string>();
         private readonly List<string> mirrored = new List<string>();
+        private readonly List<string> mirrorWords = new List<string>();
         private readonly List<string> mirrorRule = new List<string>();
+        private int mirrorsOpen;
 
         internal TestViewPlanOutcome(IList<ClashStatus> inScope, ICollection<string> mirrorRule)
         {
@@ -129,10 +131,16 @@ namespace Federator.Core.Views
             leftOut[status] = LeftOutAt(status) + 1;
         }
 
-        internal void LeaveOutMirror(string testName, int clashes)
+        /// <summary>
+        /// One mirror's clashes left out, its open ones apart from the rest, rows F114-K34 and R1:
+        /// the plan meets only a mirror not merged, so its open clashes are in no view.
+        /// </summary>
+        internal void LeaveOutMirror(string testName, int open, int atAnotherStatus)
         {
             mirrored.Add(testName);
-            LeftOutAsMirrors = LeftOutAsMirrors + clashes;
+            mirrorWords.Add(testName + " : " + open + " open and in no view, " + atAnotherStatus + " at a status no view shows");
+            mirrorsOpen = mirrorsOpen + open;
+            LeftOutAsMirrors = LeftOutAsMirrors + open + atAnotherStatus;
         }
 
         internal void Pair(string testName, TeamPair pair)
@@ -159,7 +167,7 @@ namespace Federator.Core.Views
 
         /// <summary>
         /// The VIEWS block's plan lines: the counts, the clashes left out by status, the mirrored
-        /// tests named or said UNKNOWN, every size that could not be read named, or as many as the
+        /// tests named, each with its open clashes in no view counted, or said UNKNOWN, every size that could not be read named, or as many as the
         /// settings say with the rest counted, and every set whose side reads UNKNOWN named with
         /// why. Nothing is guessed and nothing is silent.
         /// </summary>
@@ -186,7 +194,15 @@ namespace Federator.Core.Views
             if (MirrorRuleHandedIn)
             {
                 lines.Add("mirrored tests, so no view : " + mirrored.Count + ", their " + LeftOutAsMirrors + " clashes left out");
-                Named(lines, mirrored, null);
+
+                if (mirrored.Count > 0)
+                {
+                    lines.Add("open clashes of those mirrored tests, in no view : " + mirrorsOpen
+                        + ", each on the report under its mirror's own name because its clashes were not merged into the test it mirrors, "
+                        + "so a clash only that mirror finds is in no view and how many of them it alone finds is UNKNOWN");
+                }
+
+                Named(lines, mirrorWords, null);
             }
             else
             {
