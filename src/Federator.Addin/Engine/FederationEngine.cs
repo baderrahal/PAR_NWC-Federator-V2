@@ -248,6 +248,10 @@ namespace Federator.Addin.Engine
             // at that moment rather than one captured here, because a group opening its
             // NWF replaces the open document.
             log.CensusReader = () => DocumentCensusReader.Read(NavisworksApplication.ActiveDocument);
+
+            // F147, Bader's answer to Q155. The memory at the start and the end of each step,
+            // read and written by the log in one place, RunLog.Step.
+            log.MemoryReader = ProcessMemory.Read;
         }
 
         /// <summary>
@@ -882,6 +886,8 @@ namespace Federator.Addin.Engine
                     outcome.Result,
                     outcome.Reason,
                     openItHere));
+
+                LetGoOfTheRows(outcome);
             }
         }
 
@@ -1096,6 +1102,7 @@ namespace Federator.Addin.Engine
                 // count, one that ended before its COVERAGE step, refused, a rebuild that failed or a
                 // throw, as not checked, and a group already counted is not counted again.
                 InTheCoverage(job, outcome).NotChecked();
+                LetGoOfTheRows(outcome);
             }
 
             // F61. Outside the try, so a group that threw still carries whatever the
@@ -1326,6 +1333,9 @@ namespace Federator.Addin.Engine
             // F52. After the clash run and before the NWF is saved again, so a viewpoint
             // this run made is inside the file the NWD is published from.
             bool viewsPutSomethingIn = BuildViewpoints(document, job, outcome);
+
+            // F147. Read by the VIEWS step alone, so released as it ends, LetGoOfTheRows.
+            outcome.RowAddresses = null;
 
             if (clashPutSomethingIn || viewsPutSomethingIn)
             {
@@ -4196,6 +4206,21 @@ namespace Federator.Addin.Engine
                 // before the throw is not counted again as not checked.
                 InTheCoverage(job, outcome).NotChecked();
             }
+        }
+
+        /// <summary>
+        /// What the group held for its rows, released as the group ends whichever way it ended,
+        /// F147, Bader's answer to Q155 on 2026-10-12: release what each step holds as soon as the
+        /// step ends. The report model, every row of the group, is read last by the GAPS block at
+        /// the end of FinishTheGroup, and where every row came from is read by the VIEWS step alone.
+        /// The run keeps every group's outcome for its RESULT block, so before this each group's rows
+        /// stayed in memory until the run ended. Nothing after the group reads either, read off every
+        /// reader in src on 2026-10-12. The counts the RESULT block needs are on the clash record.
+        /// </summary>
+        private static void LetGoOfTheRows(JobOutcome outcome)
+        {
+            outcome.Report = null;
+            outcome.RowAddresses = null;
         }
 
         /// <summary>

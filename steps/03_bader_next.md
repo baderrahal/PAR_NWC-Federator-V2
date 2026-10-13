@@ -389,6 +389,19 @@ Core is proved by its tests. These steps read the GAP and ITEM IDS blocks of one
 766. Open the clash workbook of 1A02MM beside set 09's
 767. Look for: the same columns and the same cells on the first block
 768. Send the log with the HARVEST seconds off its TIMING block, beside set 09's
+
+## Proof F147 long runs kept from slowing, added 2026-10-12, rewritten for attempt 3
+
+These read one run of 1A02MM with F147 merged, the run of F149's steps 650 to 654. One group is enough for every line here. The memory a group releases shows only at the next group's start, so it is not read here.
+
+664. Install main with F147 merged
+665. Run 1A02MM as steps 650 to 654 say
+666. Look for, in the log under the first `STEP     DECIDE` started line: `MEMORY   at the start of DECIDE, private bytes` a size in MB, `working set` a size in MB, `managed heap` a size in MB
+667. Look for, above the `STEP     DECIDE` finished line, with the census lines between: `MEMORY   at the end of DECIDE,` the same three, each followed by `up`, `down` or `unchanged`
+668. Look for: one MEMORY start line and one MEMORY end line for each STEP started line of the group, one pair only for TESTS RUN and one only for HARVEST however many tests ran, no MEMORY line holding `UNKNOWN`, and after the group's repeated step lines one `MEMORY   across the` N `visits of TESTS RUN in this group` for each step entered again
+669. Look for, in the same log after the `STEP     PICTURES` line: `IMAGES   the undo for the pictures read on with` a step name `as the step Undo would take next before them, off with` the same name `during them, and on with` the same name `after`, and no line `THE UNDO IS LEFT OFF`
+670. Look for, in the same log: `IMAGES   the texture cache at` the folder ogs under the temp folder, `held` a size and its files as the pictures began and as they ended, `against the limit of 5.00 GB (5368709120 bytes)` and `cleared 0 times`, or the line saying it `is not there`. Where a clearing line was written, it ends `cleared again only once it holds more than` a size, or carries no such words
+671. Send the log and the `.tsv` beside it, with the MEMORY lines at the start of DECIDE and at the end of CONFIRM
 ## Proof F114c the views' sides, added 2026-10-12, rewritten for attempt 2
 
 The first run reads that no view moved to another pair folder now a side is read by its whole locator. The second reads the same with no clash XML picked, where the views get no set tree. A test the clash step failed on, F114-K38, cannot be made to fail by hand, so no step forces it. FR-067 is not in this pass.

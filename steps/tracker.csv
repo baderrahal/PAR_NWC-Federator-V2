@@ -316,7 +316,7 @@ F116,the clash XML,F116,1,fix,merged,98,none,2026-10-05
 F117,the names,F117,5,fix,open,none,none,2026-10-04
 F118,workbook and report,F118,2c,fix,in progress,"147 FR-035 and FR-037 and 159 FR-199 and FR-040 merged, FR-036 and F118-R3 in review on fix-F118c, FR-041 counted on fix-F118c and its cause waits for a run",none,2026-10-12
 F119,run log and RESULT,F119,3b,fix,in progress,"148 nine items, 168, 169 and 179 merged, the rest on the laptop",none,2026-10-08
-F120,harvest and pictures,F120,3a,fix,merged,"183, FR-198 and F120-R1 in review on fix-F120c",none,2026-10-12
+F120,harvest and pictures,F120,3a,fix,merged,"183, 215 FR-198 and F120-R1",none,2026-10-12
 F121,the rest,F121,4,fix,in progress,"150 six items, 160 and 173 the SINGLE DISCIPLINE finding merged, the rest on the laptop",none,2026-10-08
 F122,the loop tools,F122,4,fix,open,none,none,2026-10-04
 F123,"docs and words, and the noise of every area",F123,5,fix,in progress,"151, 154, 155, 161 to 165, 174, 176, 178, 180, 181, 182 and 184 merged in part, lane B stopped at 185, the rest on the laptop",none,2026-10-08
@@ -461,7 +461,7 @@ step 228-233,"the published NWD checked in ACC, by Bader himself at the final ru
 step 346-352,"the remote branches other than main whose pull requests merged, deleted by the lead by Bader's answer, D6",none,none,register row,proven by a run,none,"turn5\d6-deleted.txt, 67 deleted and read back, 17 kept by his rule",2026-10-07
 step 364,"the property probe on one mechanical NWC, run by the lead by Bader's answer, its CSV and PROBE block kept",none,none,register row,proven by a run,none,"turn5\probe-step364-result.txt and its CSV, scan.md 5z-za, one ME NWC of run set 04",2026-10-07
 T5-R-WALKRACE,the harness's walk of the loop folder races a lane building under a wt- folder,none,none,register row,open,none,none,2026-10-07
-FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,in review,UNKNOWN,none,2026-10-12
+FR-198,item properties harvest deleted and gap says read and empty,F120,3a,Bader's decision,merged,215,none,2026-10-13
 FR-199,blocks stay in measured order with a priority file,F118,2c,Bader's decision,merged,159,none,2026-10-07
 FR-200,coverage sheet names every test not created,F127,2a,Bader's decision,merged,153,none,2026-10-07
 FR-201,shared site named default reported only,F137,before the test of wave 1,Bader's decision,merged,"131, records only, main already does it",none,2026-10-06
@@ -513,7 +513,7 @@ F132-R3,"two clashes of one test between the same two elements on geometry of on
 Q144,a run with no XML and the by design pass on the saved tests,none,none,question,merged,191,none,2026-10-11
 Q145,"the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release",none,none,Bader's request,in progress,none,none,2026-10-08
 F132-R6,"a saved test a person grouped gets one viewpoint per result group since the views read the report's rows, as the workbook and the pictures do, where attempt 1 gave each clash under a group its own, the lead's ruling of by design on the breaker's blocking point of attempt 2, turn6\f132q-break-addin.json, for Bader, dropped on 2026-10-12 under Q143 since one view per row is what the workbook and the pictures show",F132,2a,register row,dropped,none,none,2026-10-12
-F120-R1,"a render that throws with a path inside the exception's message is still one reason per path for the fifty failures guard, so such failures never stop the run, the developer's finding on FR-076",F120,3a,register row,in review,UNKNOWN,none,2026-10-12
+F120-R1,"a render that throws with a path inside the exception's message is still one reason per path for the fifty failures guard, so such failures never stop the run, the developer's finding on FR-076",F120,3a,register row,merged,215,none,2026-10-13
 Q146,where the Generic Models sheet goes,none,none,question,merged,191,none,2026-10-11
 F118-R3,"the group's own workbook is listed as written with last week's size where its save threw and an earlier run's file is at the path, the developer's reading on F128's attempt 2, older than F128, the same fault FR-189 names for the NWD",F118,2c,register row,merged,210,none,2026-10-12
 F115-R24,"a document the leftover walk declared damaged is still taken through the clash step and saved where a test is created or a view is built, the sets only return being the one guard, the breaker's reading of F128's attempt 2, older than F128",F115,2a,register row,merged,212,none,2026-10-13
@@ -558,7 +558,7 @@ F148,two tests that filled the shared temp folder,F148,none,fix,merged,203,none,
 Q151,"a picture of the two clashing items alone, through Hide Other or GenerateImage, faster but not the export's look, and which look every machine writes",none,none,question,merged,206,none,2026-10-12
 Q152,"Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word",none,none,Bader's request,in progress,none,none,2026-10-12
 Q153,"keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged",none,none,Bader's request,in progress,none,none,2026-10-12
-F147,"long runs kept from slowing, the undo kept from growing during the pictures and the texture cache under %TEMP%\ogs cleared between tests past 5 GB, Q152 item 2",F147,none,fix,open,none,none,2026-10-12
+F147,"long runs kept from slowing, the undo kept from growing during the pictures, the texture cache under %TEMP%\ogs cleared between tests past 5 GB, the memory at the start and end of each step and the rows each step holds released as it ends, Q152 item 2 and Q155",F147,none,fix,merged,217,none,2026-10-13
 T6-R-WPFBOX,"a caption less WPF window of Navisworks came up as the tool's window closed in both of set 09's runs, steps\runs\09, its text UNKNOWN, first seen with acceleration on",none,none,register row,open,none,none,2026-10-12
 Q154,"Hide Other for every picture set by the tool, the permission that blocks the merges, the five merges, then the speed loop",none,none,Bader's request,merged,206,none,2026-10-12
 Q155,"F147 stopped under Q148 B at the re-read, a third attempt for the seconds of the deletions and the checks after a partial clearing",none,none,question,waiting for Bader,none,none,2026-10-12

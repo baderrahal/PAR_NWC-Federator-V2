@@ -1575,6 +1575,38 @@ and 6 does not read as broken.
   for bytes: the JPEG encoder is found once per group and not looked up on every save, which
   is what Image.Save with an ImageFormat does before calling the same overload. The size,
   the format, the quality, the name and the folder of a picture are untouched
+- THE TEXTURE CACHE, F147, Bader's order of 2026-10-11, Q152 item 2: Navisworks' cache under
+  %TEMP%\ogs is cleared between tests once it passes 5 GB, its size said before and after.
+  `Federator.Core.Report.TextureCache` holds the rule and `TextureCacheWatch` the watch over one picture
+  pass: checked as it begins and between two stretches at most once every 60 s, the interval counted
+  from the end of the last check, cleared there only once a size read whole is past the limit, and read
+  once more as it ends, never clearing there, for one IMAGES line of the size and the files at the start
+  and the end, the checks against the limit and the reads not whole, the clearings and the files they
+  removed, and the seconds the watch took, every check whole with its clearing and the clearing's
+  deletions, and the last read, Q155. A count not read whole is UNKNOWN on every line and never
+  nought. Bader's words are between tests, and the 60 s is the loop's, a setting, so a walk of a large
+  cache is not made between every two of 741 tests. A gigabyte is 1024 cubed bytes, and a size compared
+  with the limit carries its exact bytes. THE WALK NEVER LEAVES THE FOLDER: only a fully qualified folder
+  named ogs is walked, any other path refused before anything is read and said once on the pass line,
+  the walk is made a folder at a time and never into a link, a junction or a symbolic link, counted and
+  left, since the framework's walk with AllDirectories follows links, and a cache folder that is itself a
+  link is never walked. A folder inside that goes while it is walked is passed over and counted. A
+  clearing walks again keeping the paths, removes only the files that walk read, never a folder, counts
+  a file removed only where it was there to remove, counts what it could not remove and what had gone
+  before its turn, and says the size and the files before and after. ONCE A CLEARING LEAVES THE CACHE
+  NOT UNDER THE LIMIT, files held open among it, the checks go on at the interval for the rest of the
+  pass, and the cache is cleared again only once it holds more than that clearing left, its size read
+  after the clearing or, where that read was not whole, before it, `TextureCache.ShouldClear` and
+  `LeftBy`, Bader's choice A of Q155 on 2026-10-12. So new files are cleared at the next check, and a
+  cache that cannot be cleared is not cleared again while it has not grown, and the clearing's line names
+  the size it must grow past. Before Q155 one such clearing stopped the checks for the rest of the pass,
+  so new files grew unseen until the next group, the breaker's re-read of attempt 2. A walk that fails is
+  said once with why and counted as not whole, and clears nothing. Every line names the folder walked.
+  The watch never throws. The limit and the interval are settings on ImageOptions,
+  `TextureCacheLimitBytes` and `TextureCacheCheckEverySeconds`, a limit of zero switching the clearing
+  off. The cache held no file when read on 2026-10-12, so what removing its files while Navisworks runs
+  does, and the seconds of a walk of a large cache, are UNKNOWN. A second Navisworks of the same user
+  shares the folder, and its files not held open would go with the rest
 - The report goes out in METERS, always, whatever the document measures in. Q23. It used
   to go out in the document's units, with the rule that converting a number ourselves
   while the document read feet would make the numbers and the label disagree. The run of
@@ -2268,6 +2300,23 @@ it if the same work carries the same name every time it is timed.
   zero, and a total over parts of which one could not be read is UNKNOWN too. It judges
   nothing and sets no target, and the line about the 45 minutes stays the last line of
   the run block, as it was
+
+### The memory around each step, F147
+
+- Bader's answer to Q155 on 2026-10-12, item 2 of his order: the memory at the start and the end of
+  each step. `RunLog.Step` writes one MEMORY line under a step's started line and one before its
+  finished line, through `RunLog.MemoryReader`, which the engine sets to `ProcessMemory.Read`, so every
+  step gets it in one place and no step's code says it. Three numbers in megabytes of 1024 squared
+  bytes: the private bytes and the working set as the loop's life check reads them, and the managed heap
+  read without a collection, so reading it never changes it. The end line says how far each moved since
+  the start, up, down or unchanged
+- read where the step's own started and finished lines are written, the first visit of a step in a
+  group, so TESTS RUN, entered once a test, costs two reads a group and not two a test. The start is
+  read after the census before a step and the end before the census after it, so the census's reading
+  is not counted to the step. A nested step's pair is inside its parent's
+- a number not read is UNKNOWN and never nought, and the reason is said on the line. A read Windows
+  refuses keeps the managed heap, and a reader that throws is said as the reason, so logging never
+  stops a run. With no reader set, no MEMORY line is written. RunLogMemoryTests
 
 ### The document census, F61
 

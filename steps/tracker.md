@@ -2,7 +2,7 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 578 rows: open 182, in progress 25, in review 2, merged 320, proven by a run 29, waiting for Bader 3, dropped 17
+- By status, of 578 rows: open 181, in progress 25, in review 0, merged 323, proven by a run 29, waiting for Bader 3, dropped 17
 - By wave: 1 19, 2a 73, 2a and 2b 1, 2b 40, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 111, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F119 run log and RESULT, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
 - Waits for Bader, 3 rows: F114-K29, Q155, F150
@@ -195,7 +195,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-080 | install leftovers exit codes and success line | F109 | broken feature | merged | 194 | none | 2026-10-11 |
 | FR-178 | start from an existing nwf | F129 | Bader's request | merged | 193 | none | 2026-10-11 |
 | F109 | install | F109 | fix | merged | 194 | none | 2026-10-11 |
-| F120 | harvest and pictures | F120 | fix | merged | 183, FR-198 and F120-R1 in review on fix-F120c | none | 2026-10-12 |
+| F120 | harvest and pictures | F120 | fix | merged | 183, 215 FR-198 and F120-R1 | none | 2026-10-12 |
 | F129 | start from an existing NWF | F129 | fix | merged | 193, F129-R1 dropped on fix-F129c | none | 2026-10-12 |
 | Q112-4 | start from an existing NWF (FR-178) | F129 | Bader's request | merged | 193 | none | 2026-10-11 |
 | Q25 | five clash item properties reach no output, split into Q35 to Q40 | F120 | question | merged | 131 | none | 2026-10-06 |
@@ -206,8 +206,8 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q39 | the GAP block, Discipline | F120 | question | merged | 131 | none | 2026-10-06 |
 | Q40 | the GAP block, Id From | F120 | question | merged | 131 | none | 2026-10-06 |
 | Q76 | the source file column empty on every row | F120 | question | merged | 131 | none | 2026-10-06 |
-| FR-198 | item properties harvest deleted and gap says read and empty | F120 | Bader's decision | in review | UNKNOWN | none | 2026-10-12 |
-| F120-R1 | a render that throws with a path inside the exception's message is still one reason per path for the fifty failures guard, so such failures never stop the run, the developer's finding on FR-076 | F120 | register row | in review | UNKNOWN | none | 2026-10-12 |
+| FR-198 | item properties harvest deleted and gap says read and empty | F120 | Bader's decision | merged | 215 | none | 2026-10-13 |
+| F120-R1 | a render that throws with a path inside the exception's message is still one reason per path for the fifty failures guard, so such failures never stop the run, the developer's finding on FR-076 | F120 | register row | merged | 215 | none | 2026-10-13 |
 | F129-R1 | the picked NWFs walk follows a junction looping back until Windows refuses the path, so the same NWFs can be read under longer paths, a person's mklink needed, the scan sharing the exposure, the reviewer's point on attempt 1 | F129 | register row | dropped | 216 | none | 2026-10-12 |
 
 ## Wave 3b
@@ -661,7 +661,7 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | Q151 | a picture of the two clashing items alone, through Hide Other or GenerateImage, faster but not the export's look, and which look every machine writes | none | question | merged | 206 | none | 2026-10-12 |
 | Q152 | Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word | none | Bader's request | in progress | none | none | 2026-10-12 |
 | Q153 | keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged | none | Bader's request | in progress | none | none | 2026-10-12 |
-| F147 | long runs kept from slowing, the undo kept from growing during the pictures and the texture cache under %TEMP%\ogs cleared between tests past 5 GB, Q152 item 2 | F147 | fix | open | none | none | 2026-10-12 |
+| F147 | long runs kept from slowing, the undo kept from growing during the pictures, the texture cache under %TEMP%\ogs cleared between tests past 5 GB, the memory at the start and end of each step and the rows each step holds released as it ends, Q152 item 2 and Q155 | F147 | fix | merged | 217 | none | 2026-10-13 |
 | T6-R-WPFBOX | a caption less WPF window of Navisworks came up as the tool's window closed in both of set 09's runs, steps\runs\09, its text UNKNOWN, first seen with acceleration on | none | register row | open | none | none | 2026-10-12 |
 | Q154 | Hide Other for every picture set by the tool, the permission that blocks the merges, the five merges, then the speed loop | none | Bader's request | merged | 206 | none | 2026-10-12 |
 | Q155 | F147 stopped under Q148 B at the re-read, a third attempt for the seconds of the deletions and the checks after a partial clearing | none | question | waiting for Bader | none | none | 2026-10-12 |

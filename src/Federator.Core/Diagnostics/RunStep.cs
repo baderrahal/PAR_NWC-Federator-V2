@@ -57,6 +57,12 @@ namespace Federator.Core.Diagnostics
         internal DocumentCensus CensusBefore { get; set; }
 
         /// <summary>
+        /// The process's memory when this step opened, or null where it was not read around
+        /// it. F147. Set and read by the log, as the census is.
+        /// </summary>
+        internal ProcessMemory MemoryBefore { get; set; }
+
+        /// <summary>
         /// How many steps were already open when this one opened. Zero at the top. The
         /// timing block works its shares out over the steps at zero alone, because a step
         /// inside another one is counted in both and shares over all of them would add up
