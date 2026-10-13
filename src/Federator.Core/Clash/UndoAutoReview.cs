@@ -103,7 +103,7 @@ namespace Federator.Core.Clash
             }
         }
 
-        /// <summary>The three in the order the block lists them.</summary>
+        /// <summary>The four in the order the block lists them.</summary>
         public static UndoVerdict[] InOrder()
         {
             return new[]

@@ -539,18 +539,21 @@ Everything runs on copies in two new folders on the desktop, so no NWF of the re
 850. Close Navisworks
 851. In Explorer open the folder holding the file named on the `log file` line of the last log
 852. Open the Properties of `folders.txt` in that folder
-853. Tick Read-only and press OK
-854. Start Navisworks and open the tool
-855. On 1. Source press Browse and pick `F121 source`
-856. Look for, in the log: `FOLDERS  the folder picked for Source is remembered for this session only, because` the path of `folders.txt` `could not be written:` and the reason
-857. On 3. Outputs press Browse beside the NWF folder and pick `F121 out`
-858. Look for: no second `FOLDERS` line
-859. In Explorer clear Read-only in the Properties of `folders.txt`
-860. On 3. Outputs press Browse beside the NWD folder and pick `F121 out`
-861. Look for: no `FOLDERS` line
-862. Open `folders.txt` in Notepad
-863. Look for: a line `Nwd=` naming `F121 out`
-864. Send the log of steps 855 to 860
+853. Tick Read-only
+854. Press OK
+855. Start Navisworks and open the tool
+856. On 1. Source press Browse and pick `F121 source`
+857. Look for, in the log: `FOLDERS  the folder picked for Source is remembered for this session only, because` the path of `folders.txt` `could not be written:` and the reason
+858. On 3. Outputs press Browse beside the NWF folder and pick `F121 out`
+859. Look for: no second `FOLDERS` line
+860. In Explorer open the Properties of `folders.txt` again
+861. Clear Read-only
+862. Press OK
+863. On 3. Outputs press Browse beside the NWD folder and pick `F121 out`
+864. Look for: no `FOLDERS` line
+865. Open `folders.txt` in Notepad
+866. Look for: a line `Nwd=` naming `F121 out`
+867. Send the log of steps 856 to 864
 ## Proof F127-R5 a workbook named as another group's internal workbook, added 2026-10-12, rewritten for attempt 2
 
 No group runs in these steps, so they can follow any install of main with fix-F127c merged.

@@ -315,7 +315,8 @@ namespace Federator.Core.Tests
                 new[] { TestsOnly.Replace("merge_composites=\"1\"", "merge_composites=\"x\""), "merge_composites", "T1" },
                 new[] { TestsOnly.Replace("primtypes=\"3\"", "primtypes=\"many\""), "primtypes", "T1" },
                 new[] { TestsOnly.Replace("selfintersect=\"1\"", "selfintersect=\"yes\""), "selfintersect", "T1" },
-                new[] { SetsOnly.Replace("flags=\"64\"", "flags=\"or\""), "flags", "Loose" }
+                new[] { SetsOnly.Replace("flags=\"64\"", "flags=\"or\""), "flags", "Loose" },
+                new[] { SetsOnly.Replace("disjoint=\"1\"", "disjoint=\"x\""), "disjoint", "Loose" }
             };
 
             foreach (string[] one in cases)

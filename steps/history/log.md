@@ -31,7 +31,7 @@ What was done:
 - FR-162, a folders file that could not be written never reported. FolderMemory.Remember dropped what Save said. It
   hands back one FOLDERS line naming the picker, the file and the reason, once until a save works again, and the
   window logs it through RememberFolder, the nine picks of the window routed through it
-- The rules in .claude\rules\core.md and addin.md, the section in steps\01_next.md, steps 800 to 864 of
+- The rules in .claude\rules\core.md and addin.md, the section in steps\01_next.md, steps 800 to 867 of
   steps\03_bader_next.md, and the four rows of steps\tracker.csv in review with the area's row naming them
 - Proved here: Core tests 3020 passed, 0 failed, 0 skipped on main 0a54132. Ten new tests run against the new
   members written first with the old behaviour, 6 failed and 4 passed, the 4 the guards that hold either way,
@@ -42,7 +42,7 @@ What was done:
   builds in Release with 0 warnings and 0 errors, the add-in included. check-locals and check-imports read clean.
   make-tracker and check-tracker read clean
 
-What waits for the local machine: steps 800 to 864 of steps\03_bader_next.md, the apply on 1A02MM skipped off the
+What waits for the local machine: steps 800 to 867 of steps\03_bader_next.md, the apply on 1A02MM skipped off the
 shared coordinates, the undo pressed twice around a Reviewed set by hand, and folders.txt set read only. Nothing of
 it has run on Navisworks.
 
@@ -54,7 +54,16 @@ flags or disjoint still reads 0 and false, UNKNOWN whether Navisworks reads it s
 from a condition with no flags and reading its options back would measure. The APPLIED line still says the edit
 reset the results, against the measurement 5y, which is FR-128 and not this branch's.
 
-What comes next: the lead's reviewer and breaker, the merge, then the run of steps 800 to 864.
+What comes next: the lead's reviewer and breaker, the merge, then the run of steps 800 to 867.
+
+ATTEMPT 2, the reviewer's reading of pull request 222 on 2026-10-13, made by the lead:
+- The reviewer read every clash XML the team uses, exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml and the four under
+  samples, and FR-155 skips and refuses no test in any of them: 1830 tests each with merge_composites, 3660 sides each
+  with selfintersect and primtypes, and flags and disjoint whole numbers wherever written
+- The refusal of disjoint written wrong has its case in ASettingWrittenWrongIsRefusedNamingItAndWhereItIs
+- Steps 853 and 859 hold one action each, the proof steps now 800 to 867
+- A comment of UndoAutoReview.InOrder says four, as the array holds
+
 
 ## 2026-10-12 F119 the run log and RESULT, the six items left, written by the developer as the lead's delegate
 
