@@ -1932,7 +1932,7 @@ runs on copies in new folders on the desktop, so no NWF of the real folders is c
 
 ### F151, no copy of the log beside the NWF
 
-1400. Install main once fix-F151 has merged, steps 7 to 12
+1400. Build and install main once fix-F151 has merged, steps 1 to 23
 1401. In Explorer make a new folder on the desktop named `F151 source`
 1402. Copy the NWC files of 1A02MM from `C:\00-NM\Federation Task\C02 + 04\C02` into `F151 source`
 1403. Make a second new folder on the desktop named `F151 out`
@@ -1959,7 +1959,7 @@ runs on copies in new folders on the desktop, so no NWF of the real folders is c
 
 Only Excel can show these two things: that the pictures show, and that Excel asks nothing when it opens a workbook of thousands of linked pictures. Write down the exact words of any question or bar Excel shows.
 
-1430. Install main once fix-F152 has merged, steps 7 to 12
+1430. Build and install main once fix-F152 has merged, steps 1 to 23
 1431. Make a new folder on the desktop named `F152 out`
 1432. Run 1A02MM from `F151 source` as in steps 1404 to 1411, with `F152 out` picked for the NWF, NWD and Excel folders
 1433. Look for, in the log of that run: a line starting `XLSX     ` and a number, then `linked pictures in the workbook, each pointing at its jpg in`, the `_files` folder in `F152 out`, and `None is embedded, so they show only while that folder stays where it was written`
@@ -1979,7 +1979,7 @@ Only Excel can show these two things: that the pictures show, and that Excel ask
 
 ### F153, no workbook rows for tests with no clash
 
-1450. Install main once fix-F153 has merged, steps 7 to 12
+1450. Build and install main once fix-F153 has merged, steps 1 to 23
 1451. Make a new folder on the desktop named `F153 out`
 1452. Run 1A02MM from `F151 source` as in steps 1404 to 1411, with `F153 out` picked for the NWF, NWD and Excel folders
 1453. Look for, in the `WORKBOOK CHECK 1A02MM` block of the log: `CHECK    1 sheet,` then a number of test blocks `with clashes`, and no line saying a row holds a test with no clash
@@ -1995,7 +1995,7 @@ Only Excel can show these two things: that the pictures show, and that Excel ask
 
 ### F154, the priority and by design files built in
 
-1470. Install main once fix-F154 has merged, steps 7 to 12
+1470. Build and install main once fix-F154 has merged, steps 1 to 23
 1471. Start Navisworks and open the tool
 1472. On 4. Clash look for: no Priority CSV row and no By design CSV row
 1473. Look for, under Mark by design connections as Reviewed: the grey line `Column on foundation, door in wall, valve in pipe. Built in list`
@@ -2011,7 +2011,7 @@ Only Excel can show these two things: that the pictures show, and that Excel ask
 
 ### F155, the clash matrix built in, the tolerance from the drop down alone
 
-1490. Install main once fix-F155 has merged, steps 7 to 12
+1490. Build and install main once fix-F155 has merged, steps 1 to 23
 1491. Start Navisworks and open the tool
 1492. On 4. Clash look for: no Clash XML row, no Browse button and no Teams line
 1493. Look for: the drop down Clash tolerance reading `25 mm`, and under it the grey line `Set on every test of the run. Results and statuses are kept`
@@ -2028,3 +2028,10 @@ Only Excel can show these two things: that the pictures show, and that Excel ask
 1504. Open the workbook of 1A02MM in `F155 out` in Excel and look for: the Tolerance cell of the first block reads 25 mm in the document's units, `0.025m` or `0.082ft`. Close Excel and answer Do not save
 1505. Run 1A02MM again the same way, the NWF now in `F155 out`, and look for: the group reads `Weekly run plus XML`, and a TOLERANCE line naming `already in the document`
 1506. Send the log
+
+### F156, the install refused every build since F152
+
+1510. Build and install main once fix-F156 has merged, steps 1 to 23
+1511. Look for, in its output: `All 15 expected files are present.`
+1512. Look for: no line with `needs System.IO.Compression`
+1513. Look for: `The installed add-in reads the stamp` and the first eight characters of the last commit of main

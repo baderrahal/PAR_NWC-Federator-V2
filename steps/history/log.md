@@ -2,6 +2,28 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F156 the install refused every build since F152
+
+Branch fix-F156 off main 41b4ac32. Found by the loop's install of main after F155 merged.
+
+What was done:
+- build\install.ps1 exited 1 on main: Federator.Core needs System.IO.Compression, which is neither in the bundle nor in the
+  framework. It put the add-in installed before back
+- Core references System.IO.Compression 4.2.0.0 since F152, the version of the .NET 4.8 reference assemblies. The runtime
+  loads the framework's 4.0.0.0 for it, read by an ordinary load on this machine. The check's reflection only context
+  applies no binding policy
+- The check now also reads the name after AppDomain.ApplyPolicy. A truly missing reference is still refused
+- addin.md carries the rule
+
+Proved here: run.ps1 -Mode Install -Stamp e2082a73 exited VERDICT: INSTALLED e2082a73, install.ps1 exit 0. Core tests
+3099 passed, 0 failed, 0 skipped, by the commit hook, Core not changed.
+
+What remains: whether Navisworks loads the zip types in a run, the window run of this round.
+
+Known bugs: none new.
+
+What comes next: the window run of set 94 on main.
+
 ## 2026-10-14 F155 the clash matrix built in, the tolerance from the drop down alone, item 5 of Bader's message of 2026-10-13, Q162-5
 
 Branch fix-F155 off main c26339a. He decided the clash matrix is built in, one per project and no picker now, and
