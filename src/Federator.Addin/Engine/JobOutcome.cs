@@ -264,12 +264,17 @@ namespace Federator.Addin.Engine
         /// <summary>What the clash step did for this group, or null when it did not run.</summary>
         public ClashRunOutcome Clash { get; set; }
 
-        /// <summary>The workbook model for this group, or null when no report was wanted.</summary>
+        /// <summary>
+        /// The workbook model for this group, or null when no report was wanted. Null once the
+        /// group has ended, F147, FederationEngine.LetGoOfTheRows, so nothing after the group
+        /// may read it.
+        /// </summary>
         public ClashReport Report { get; set; }
 
         /// <summary>
         /// Where each row of the report came from in the document, F132 attempt 2, handed
-        /// from the clash step to the views, or null when the clash step did not run.
+        /// from the clash step to the views, or null when the clash step did not run. Null once
+        /// the VIEWS step has returned and once the group has ended, F147.
         /// </summary>
         public IDictionary<ClashRow, RowAddress> RowAddresses { get; set; }
 
@@ -278,6 +283,9 @@ namespace Federator.Addin.Engine
         /// where no mirror rule ran, which the VIEWS block says.
         /// </summary>
         public IList<string> MirrorNames { get; set; }
+
+        /// <summary>The kept test's name by each merged mirror's run name, for the views, row F114-K38, or null where the clash step did not run.</summary>
+        public IDictionary<string, string> KeptOfMirror { get; set; }
 
         /// <summary>Size read back off the disk, or minus one when the workbook is not there.</summary>
         public long WorkbookSize { get; set; }

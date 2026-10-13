@@ -411,6 +411,77 @@ The reshape comes first, because it is the one item a plain run shows: a group w
 748. Run 1A02MM with `Skip clash when models sit off shared coordinates` ticked, as it starts
 749. Look for, in TIMING BESIDE SIZE: the row of 1A02MM reading `UNKNOWN clashes`, where set 05 read `0 clashes`, while RESULT reads `clashes found  : UNKNOWN`
 750. Send the logs and the `.tsv` files beside them
+## Proof F120 the GAP block after FR-198, added 2026-10-12
+
+Core is proved by its tests. These steps read the GAP and ITEM IDS blocks of one run against set 09's, `steps\runs\09\item1-C02`. F120-R1, the pictures' guard on throws naming their path, has no step, since no run a person makes throws fifty times that way, and its proof is the Core tests.
+
+760. Install main with fix-F120c merged
+761. Run 1A02MM with its clash XML as set 09 ran, by steps 649 to 654
+762. Look for, in the `GAP 1A02MM` block: the line `2 numbers are measured off every item and reach no output`, then a `Source File` line and an `Id From` line, and no `Family`, `Type Name` or `Material` line, where set 09 read four lines
+763. Look for, on the `Source File` line: `read on N item cells and empty on every one`, N the run's item cells, 5,862 in set 09, which left the line out. A line reading `of N item cells carry it` instead means the source file was read on this run, and row F120-R2 is answered by it
+764. Look for, in the `ITEM IDS 1A02MM` block: `Id supplied 5862 item ids of 5862, written as "Element ID"`, as set 09 read, the count the run's own
+765. Look for, at the end of the run: `GAPS     2 things are measured on every item and reach no output, over 1 group: Source File, Id From`
+766. Open the clash workbook of 1A02MM beside set 09's
+767. Look for: the same columns and the same cells on the first block
+768. Send the log with the HARVEST seconds off its TIMING block, beside set 09's
+
+## Proof F147 long runs kept from slowing, added 2026-10-12, rewritten for attempt 3
+
+These read one run of 1A02MM with F147 merged, the run of F149's steps 650 to 654. One group is enough for every line here. The memory a group releases shows only at the next group's start, so it is not read here.
+
+664. Install main with F147 merged
+665. Run 1A02MM as steps 650 to 654 say
+666. Look for, in the log under the first `STEP     DECIDE` started line: `MEMORY   at the start of DECIDE, private bytes` a size in MB, `working set` a size in MB, `managed heap` a size in MB
+667. Look for, above the `STEP     DECIDE` finished line, with the census lines between: `MEMORY   at the end of DECIDE,` the same three, each followed by `up`, `down` or `unchanged`
+668. Look for: one MEMORY start line and one MEMORY end line for each STEP started line of the group, one pair only for TESTS RUN and one only for HARVEST however many tests ran, no MEMORY line holding `UNKNOWN`, and after the group's repeated step lines one `MEMORY   across the` N `visits of TESTS RUN in this group` for each step entered again
+669. Look for, in the same log after the `STEP     PICTURES` line: `IMAGES   the undo for the pictures read on with` a step name `as the step Undo would take next before them, off with` the same name `during them, and on with` the same name `after`, and no line `THE UNDO IS LEFT OFF`
+670. Look for, in the same log: `IMAGES   the texture cache at` the folder ogs under the temp folder, `held` a size and its files as the pictures began and as they ended, `against the limit of 5.00 GB (5368709120 bytes)` and `cleared 0 times`, or the line saying it `is not there`. Where a clearing line was written, it ends `cleared again only once it holds more than` a size, or carries no such words
+671. Send the log and the `.tsv` beside it, with the MEMORY lines at the start of DECIDE and at the end of CONFIRM
+## Proof F114c the views' sides, added 2026-10-12, rewritten for attempt 2
+
+The first run reads that no view moved to another pair folder now a side is read by its whole locator. The second reads the same with no clash XML picked, where the views get no set tree. A test the clash step failed on, F114-K38, cannot be made to fail by hand, so no step forces it. FR-067 is not in this pass.
+
+692. Install main with fix-F114c merged
+693. Scan the C02 folder
+694. Pick the clash XML
+695. Untick `Skip clash when models sit off shared coordinates` on the Clash step
+696. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
+697. Press Run
+698. Look for, in the `VIEWS` block of 1A02MM: the same pair folders as set 09's run of 1A02MM, `steps\runs\09\item1-C02`, and in the `VIEWS TREE` block the last line `7 of 7 hold`
+699. Close Navisworks
+700. Start Navisworks and open the tool
+701. Scan the C02 folder again, picking no clash XML
+702. Untick `Skip clash when models sit off shared coordinates` on the Clash step, which starts ticked on every open
+703. Tick 1A02MM alone in the group list, leaving Make viewpoints ticked
+704. Press Run
+705. Look for, in the `VIEWS INVENTORY` block: the views of step 697 `removed, this tool's earlier view replaced at its place`, and in the `VIEWS` block the same pair folders as step 698, but for a test with a side whose set name carries no code, such as BLD-Security Devices, which with no clash XML reads UNKNOWN as it did before this pass
+706. Send the logs of steps 697 and 704
+## Proof F115 the register rows of the sets, added 2026-10-12
+
+The weekly run with the box off comes first, because it is the run the team makes every week and it is where the leftovers are now reported and the SETS step may take longer. The run with the box ticked last, since it changes the NWF. A damaged document, two sets of one name in one folder, a folder as a clash source and a set lost after it was put in cannot be made to happen on a real folder, so those rows are read and not run.
+
+664. Install main with the F115 register rows merged
+665. Scan the C02 folder
+666. Pick the clash XML
+667. Leave `Rebuild sets that drifted from the file` unticked
+668. Tick 1A02MM alone in the group list
+669. Press Run
+670. Look for, in the SET lines of 1A02MM: either no block about sets the file does not name, or one starting `set(s) in this NWF are not named by the picked file:` whose next line reads `NOTHING BELOW IS DONE, because "Rebuild sets that drifted from the file" is off`, and each line under it saying what `a run with the box ticked would` do, R20
+671. Look for, on the group's TIMING block: the SETS seconds, to send beside the last run's, since the leftover walk now reads every clash test side with the box off too, R20
+672. Look for, in the SETS step's finish phrase and the line under the SETS lines: a count `drifted` or `could not be read` wherever the SET DRIFT lines name a set drifted or not read, R7
+673. Look for, after the CLASH block: the EMPTY SETS block as before, and a line `were not judged` only where a SET NOT READ line names a set at zero, R6
+674. Look for: no FAILURE line naming `the side's selection sources read as none`, R21
+675. Open the NWF of 1A02MM in Navisworks with the tool's window open and the clash XML picked
+676. Press Build sets
+677. Look for, in the log after the button's SET lines: an EMPTY SETS block ending `no clash test ran with these sets here, so what they cost in clash tests is not counted`, wherever the window's lines show a set at zero, R4
+678. Close the NWF without saving it
+679. Tick `Rebuild sets that drifted from the file`
+680. Tick 1A02MM alone in the group list
+681. Press Run
+682. Look for, under the SET DRIFT lines of each drifted set: `REBUILT from the picked file`, and no line `read back after the rebuild it does NOT ask what the picked file asks`, R19. Where that line shows under an Or set, it is the answer to F115-R12
+683. Look for: no line `NOT rebuilt, though "Rebuild sets that drifted from the file" is ticked`, R18. Where one shows, why is said where the rebuild was tried, before the set's present line
+684. Look for: no line `nothing removed for`, `nothing done for` or `so it was NOT saved`. Where one shows, send it with the SET lines before it
+685. Send the log and the `.tsv` beside it, with the SETS seconds of both runs
 ## Proof F127-R5 a workbook named as another group's internal workbook, added 2026-10-12, rewritten for attempt 2
 
 No group runs in these steps, so they can follow any install of main with fix-F127c merged.

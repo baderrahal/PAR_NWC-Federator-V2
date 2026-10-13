@@ -92,6 +92,12 @@ namespace Federator.Core.Diagnostics
         private readonly Dictionary<string, int> visitsInGroup =
             new Dictionary<string, int>(StringComparer.Ordinal);
 
+        // F147. The reading taken as each step's first visit began in this group, so a step entered
+        // again and again gets one MEMORY line across all its visits where the groups' repeated steps
+        // are summed, and not only the end line of its first visit.
+        private readonly Dictionary<string, ProcessMemory> memoryAtFirstStart =
+            new Dictionary<string, ProcessMemory>(StringComparer.Ordinal);
+
         private string currentGroup;
 
         /// <summary>
@@ -1027,6 +1033,38 @@ namespace Federator.Core.Diagnostics
         public Func<DocumentCensus> CensusReader { get; set; }
 
         /// <summary>
+        /// How the log reads the process's memory around each step, F147, Bader's answer to
+        /// Q155 on 2026-10-12. The engine sets it to ProcessMemory.Read, and with none set no
+        /// MEMORY line is written. It is read where the step's own start and finish lines are
+        /// written, the first time a step is entered in a group, so TESTS RUN, entered once a
+        /// test, costs two reads a group and not two a test.
+        /// </summary>
+        public Func<ProcessMemory> MemoryReader { get; set; }
+
+        /// <summary>
+        /// One reading of the memory, or null with no reader. A reader that throws is said on
+        /// the line as the reason its numbers are UNKNOWN, since logging never stops a run.
+        /// </summary>
+        private ProcessMemory ReadMemory()
+        {
+            Func<ProcessMemory> reader = MemoryReader;
+
+            if (reader == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                return reader() ?? new ProcessMemory(-1, -1, -1, "the reader handed back nothing");
+            }
+            catch (Exception error)
+            {
+                return new ProcessMemory(-1, -1, -1, error.GetType().Name + ": " + error.Message);
+            }
+        }
+
+        /// <summary>
         /// Every count that moved under a step the rule says may not move it, since the
         /// group started, in the words the log used. The engine puts these on the group so
         /// it is not reported DONE.
@@ -1162,6 +1200,22 @@ namespace Federator.Core.Diagnostics
                 }
             }
 
+            // F147. Last, so the census's own reading is not counted to the step.
+            if (visits == 1)
+            {
+                step.MemoryBefore = ReadMemory();
+
+                if (step.MemoryBefore != null)
+                {
+                    lock (gate)
+                    {
+                        memoryAtFirstStart[step.Name] = step.MemoryBefore;
+                    }
+
+                    Line(ProcessMemory.StartLine(step.Name, step.MemoryBefore));
+                }
+            }
+
             return step;
         }
 
@@ -1193,6 +1247,12 @@ namespace Federator.Core.Diagnostics
                 // Back to whatever was open underneath, which is the parent of a nested
                 // step and nothing at all at the top.
                 currentStep = openSteps.Count > 0 ? openSteps[openSteps.Count - 1].Name : null;
+            }
+
+            // F147. First, before the census reads anything, so the end is the step's own.
+            if (step.MemoryBefore != null)
+            {
+                Line(ProcessMemory.EndLine(step.Name, step.MemoryBefore, ReadMemory()));
             }
 
             // Before the finish line, so a count that moved is named while the step is
@@ -1364,6 +1424,8 @@ namespace Federator.Core.Diagnostics
             }
 
             List<string> repeated = new List<string>();
+            List<KeyValuePair<string, KeyValuePair<int, ProcessMemory>>> repeatedMemory =
+                new List<KeyValuePair<string, KeyValuePair<int, ProcessMemory>>>();
 
             lock (gate)
             {
@@ -1379,14 +1441,34 @@ namespace Federator.Core.Diagnostics
                     StepTotal total = TotalOf(name);
 
                     repeated.Add(StepRecord.RepeatedLine(name, visits, total.Seconds, total.Threw));
+
+                    ProcessMemory first;
+
+                    if (memoryAtFirstStart.TryGetValue(name, out first))
+                    {
+                        repeatedMemory.Add(new KeyValuePair<string, KeyValuePair<int, ProcessMemory>>(
+                            name, new KeyValuePair<int, ProcessMemory>(visits, first)));
+                    }
                 }
 
                 visitsInGroup.Clear();
+                memoryAtFirstStart.Clear();
             }
 
             foreach (string line in repeated)
             {
                 Line(line);
+            }
+
+            // F147. One reading for the whole summary, so a group costs one read for all its repeated steps.
+            if (repeatedMemory.Count > 0)
+            {
+                ProcessMemory now = ReadMemory();
+
+                foreach (KeyValuePair<string, KeyValuePair<int, ProcessMemory>> one in repeatedMemory)
+                {
+                    Line(ProcessMemory.RepeatedLine(one.Key, one.Value.Key, one.Value.Value, now));
+                }
             }
 
             foreach (StepRecord record in RepeatedTotals())
@@ -1502,6 +1584,7 @@ namespace Federator.Core.Diagnostics
                 // so this only has to say which building the next ones belong to.
                 currentGroup = building;
                 visitsInGroup.Clear();
+                memoryAtFirstStart.Clear();
                 censusFaults.Clear();
                 censusCost.NextGroup();
             }

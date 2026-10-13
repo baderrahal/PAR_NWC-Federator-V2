@@ -6,11 +6,11 @@ namespace Federator.Core.Report
     /// <summary>
     /// How many gaps a whole run found, counted by NAME and not by line.
     ///
-    /// WHY DISTINCT AND NOT ADDED UP. The same six are held back on every group, so a run
-    /// of twenty two groups would report 132 gaps, which says nothing except that there
-    /// were twenty two groups. The number that means something is how many distinct
-    /// things this tool knows and does not show, and that is six however many buildings
-    /// it ran over.
+    /// WHY DISTINCT AND NOT ADDED UP. The same two are held back on every group since
+    /// FR-198, so a run of twenty two groups would report 44 gaps, which says nothing
+    /// except that there were twenty two groups. The number that means something is how
+    /// many distinct things this tool knows and does not show, and that is two however
+    /// many buildings it ran over.
     /// </summary>
     public sealed class GapTally
     {

@@ -103,6 +103,18 @@ namespace Federator.Addin.Engine
             get { return options.Write && options.OnlyTheTestsModels; }
         }
 
+        /// <summary>The size past which the texture cache is cleared between two tests' pictures, F147, the setting on ImageOptions.</summary>
+        public long TextureCacheLimitBytes
+        {
+            get { return options.TextureCacheLimitBytes; }
+        }
+
+        /// <summary>The least seconds between two measurements of the texture cache, F147, the setting on ImageOptions.</summary>
+        public int TextureCacheCheckEverySeconds
+        {
+            get { return options.TextureCacheCheckEverySeconds; }
+        }
+
         /// <summary>
         /// Whether a picture of this row is written now, with a workbook to sit beside, by the
         /// options' rule, ImageOptions.TakesAPictureOf, which counts a row passed over on its
@@ -217,7 +229,7 @@ namespace Federator.Addin.Engine
                 }
                 catch (Exception error)
                 {
-                    Missed(report, test, row, visit.Elapsed, ImageFailure.BecauseItThrew(error));
+                    Missed(report, test, row, visit.Elapsed, ImageFailure.BecauseItThrewWriting(error, path));
                     return false;
                 }
             }

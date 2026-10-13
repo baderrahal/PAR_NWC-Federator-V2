@@ -27,6 +27,7 @@ namespace Federator.Core.Sets
 
         private readonly string whyNoProject;
         private readonly bool workListRead;
+        private readonly int modelsDropped;
 
         /// <summary>
         /// workListRead is whether the list of workset names inside Core was read, which For takes off
@@ -39,7 +40,8 @@ namespace Federator.Core.Sets
             IList<string> groupWorksets,
             string whyNoProject = null,
             IList<string> modelsNotWalked = null,
-            bool workListRead = true)
+            bool workListRead = true,
+            int modelsDropped = 0)
         {
             Worksets = new ReadOnlyCollection<string>(new List<string>(worksets ?? new List<string>()));
             RunProject = runProject;
@@ -47,6 +49,7 @@ namespace Federator.Core.Sets
             ModelsNotWalked = new ReadOnlyCollection<string>(new List<string>(modelsNotWalked ?? new List<string>()));
             this.whyNoProject = whyNoProject;
             this.workListRead = workListRead;
+            this.modelsDropped = Math.Max(0, modelsDropped);
         }
 
         /// <summary>
@@ -82,25 +85,57 @@ namespace Federator.Core.Sets
         /// <summary>
         /// The judge for that plan and the models of the group as the EXPORT CHECK read them, or
         /// null where they were not read: the spellings of the plan and the project the models'
-        /// names agree on.
+        /// names agree on. modelsInTheDocument is how many models the document holds, or minus
+        /// one where that was not read, so a model the EXPORT CHECK dropped is one whose worksets
+        /// were not read, F115 R14.
         /// </summary>
-        public static EmptySetJudge For(SetBuildPlan plan, IList<ModelExport> models, ContainerNameSettings names)
+        public static EmptySetJudge For(
+            SetBuildPlan plan, IList<ModelExport> models, ContainerNameSettings names, int modelsInTheDocument)
         {
             if (plan == null)
             {
                 throw new ArgumentNullException("plan");
             }
 
+            // F115 R9. Naming settings that will not read a name are said as the reason the project
+            // is UNKNOWN, and never thrown out of the judge, a diagnostic, into the group's catch,
+            // where no set of the group was built. A report check never fails a group.
+            string whyNames = WhyTheNamesWillNotRead(names);
+            bool read = models != null && models.Count > 0;
+
             // A group whose models were not read, as on the Build sets button, is said as not read
             // and never as names that would not read, which reports a read that never ran. The
             // group's worksets by the EXPORT CHECK's own rule, one list for both blocks.
             return new EmptySetJudge(
                 plan.Worksets,
-                ProjectOf(models, names),
+                whyNames == null ? ProjectOf(models, names) : null,
                 ExportCheck.WorksetsOf(models),
-                models == null || models.Count == 0 ? ModelsNotRead : null,
+                !read ? ModelsNotRead : whyNames,
                 NotWalked(models),
-                RevitWorksets.ResourceFound);
+                RevitWorksets.ResourceFound,
+                read && modelsInTheDocument > models.Count ? modelsInTheDocument - models.Count : 0);
+        }
+
+        /// <summary>Why those naming settings will not read a name, or null where they will.</summary>
+        private static string WhyTheNamesWillNotRead(ContainerNameSettings names)
+        {
+            if (names == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                names.Validate();
+                return null;
+            }
+            catch (ArgumentException error)
+            {
+                // Carried, not swallowed: the settings' own words become the reason the judge gives.
+                // On one line, since the reason reaches a row of the .tsv, the breaker's finding 9 on attempt 1.
+                return "the naming settings will not read a model's name, " + Coverage.CoverageBlock.OneLine(error.Message).Trim().TrimEnd('.')
+                    + ", so which project this group's models are of is UNKNOWN";
+            }
         }
 
         /// <summary>
@@ -209,7 +244,7 @@ namespace Federator.Core.Sets
                     }
                 }
 
-                if (ModelsNotWalked.Count > 0)
+                if (ModelsNotWalked.Count > 0 || modelsDropped > 0)
                 {
                     return Known.Unknown(WhyWorksetsNotAllRead(), carried);
                 }
@@ -222,6 +257,23 @@ namespace Federator.Core.Sets
 
         /// <summary>Why a workset nobody here carries is not one no model carries, where some model's worksets were not read.</summary>
         private string WhyWorksetsNotAllRead()
+        {
+            // F115 R14. A model the EXPORT CHECK handed back nothing for is in no list, so the judge
+            // is told how many the document holds and says them apart from the ones it can name.
+            string dropped = modelsDropped == 1
+                ? "1 model of this group was not read by the export check at all, so which worksets it carries is UNKNOWN"
+                : modelsDropped + " models of this group were not read by the export check at all, so which worksets they carry is UNKNOWN";
+
+            if (ModelsNotWalked.Count == 0)
+            {
+                return dropped;
+            }
+
+            return WhyWalksStopped() + (modelsDropped > 0 ? ", and " + dropped : string.Empty);
+        }
+
+        /// <summary>Why the worksets of the models whose walks stopped are UNKNOWN, naming them.</summary>
+        private string WhyWalksStopped()
         {
             List<string> named = new List<string>();
 

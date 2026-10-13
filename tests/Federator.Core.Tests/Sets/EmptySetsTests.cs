@@ -316,7 +316,7 @@ namespace Federator.Core.Tests.Sets
                 new ModelExport("1104-PAR-1B06BC-ZZZ-ME-MOD-000001.nwc", "ME", 10, 10, 10, new List<string> { "ME-DUCTWORK", "ME-EQUIPMENT" })
             };
 
-            EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+            EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings(), -1);
 
             Assert.That(new List<string>(group.GroupWorksets), Is.EqualTo(new[] { "ME-DUCTWORK", "ME-EQUIPMENT" }));
             Assert.That(
@@ -333,7 +333,7 @@ namespace Federator.Core.Tests.Sets
                 new ModelExport("2207-PAR-0001AA-ZZZ-ME-MOD-000001.nwc", "ME", 10, 10, 10, new List<string> { "ME-DUCTWORK" })
             };
 
-            EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+            EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings(), -1);
 
             Assert.That(
                 EmptySets.Why("a/BLD-ME-Ducts", new List<ReadCondition> { Workset("ME-DUCTWORK") }, group).Reason,
@@ -360,7 +360,7 @@ namespace Federator.Core.Tests.Sets
                 new ModelExport("1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc", "ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, new List<string> { "ST-SUB" })
             };
 
-            EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+            EmptySetJudge group = EmptySetJudge.For(Plan(), models, new ContainerNameSettings(), -1);
 
             Assert.That(new List<string>(group.GroupWorksets), Is.EqualTo(ExportCheck.WorksetsOf(models)));
             Assert.That(new List<string>(group.GroupWorksets), Is.EqualTo(new[] { "ME-Ductwork", "ME-Piping", "AR-EXTERIOR" }));
@@ -400,13 +400,13 @@ namespace Federator.Core.Tests.Sets
         public void AGroupHoldingAModelWhoseWalkStoppedCannotTellAboutAWorksetNoOtherModelCarries()
         {
             List<ModelExport> whole = new List<ModelExport> { Walked("ME", "ME-DUCTWORK"), Walked("AR", "AR-EXTERIOR") };
-            EmptySetJudge walked = EmptySetJudge.For(Plan(), whole, new ContainerNameSettings());
+            EmptySetJudge walked = EmptySetJudge.For(Plan(), whole, new ContainerNameSettings(), -1);
 
             Assert.That(walked.ModelsNotWalked, Is.Empty);
             Assert.That(EmptySets.Why("a/BLD-ST-Beams", AsksWorkset("ST-NO-SUCH-WORKSET"), walked).Reason, Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
 
             List<ModelExport> withStopped = new List<ModelExport>(whole) { Stopped("ST") };
-            EmptySetJudge stopped = EmptySetJudge.For(Plan(), withStopped, new ContainerNameSettings());
+            EmptySetJudge stopped = EmptySetJudge.For(Plan(), withStopped, new ContainerNameSettings(), -1);
             EmptySet why = EmptySets.Why("a/BLD-ST-Beams", AsksWorkset("ST-NO-SUCH-WORKSET"), stopped);
 
             Assert.That(new List<string>(stopped.ModelsNotWalked), Is.EqualTo(new[] { "1104-PAR-1B06BC-ZZZ-ST-MOD-000001" }));
@@ -430,7 +430,7 @@ namespace Federator.Core.Tests.Sets
             List<ModelExport> models = new List<ModelExport> { Walked("ME", "ME-DUCTWORK") };
             models.Add(Stopped("ST"));
             models.Add(Stopped("EL"));
-            EmptySetJudge two = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+            EmptySetJudge two = EmptySetJudge.For(Plan(), models, new ContainerNameSettings(), -1);
 
             Assert.That(EmptySets.Why("a/b", AsksWorkset("ST-NO-SUCH-WORKSET"), two).WhyNotTold, Is.EqualTo(
                 "the worksets of 2 models of this group were not read (1104-PAR-1B06BC-ZZZ-ST-MOD-000001 and 1104-PAR-1B06BC-ZZZ-EL-MOD-000001),"
@@ -443,7 +443,7 @@ namespace Federator.Core.Tests.Sets
                 models.Add(Stopped(discipline));
             }
 
-            EmptySetJudge seven = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+            EmptySetJudge seven = EmptySetJudge.For(Plan(), models, new ContainerNameSettings(), -1);
 
             Assert.That(RunLog.KeptOfARepeat, Is.EqualTo(5), "the number the sentence below is written for");
             Assert.That(EmptySets.Why("a/b", AsksWorkset("ST-NO-SUCH-WORKSET"), seven).WhyNotTold, Is.EqualTo(
@@ -454,7 +454,8 @@ namespace Federator.Core.Tests.Sets
             EmptySetJudge nameless = EmptySetJudge.For(
                 Plan(),
                 new List<ModelExport> { new ModelExport(null, "ST", ModelExport.NotCounted, ModelExport.NotCounted, ModelExport.NotCounted, null) },
-                new ContainerNameSettings());
+                new ContainerNameSettings(),
+                -1);
 
             Assert.That(new List<string>(nameless.ModelsNotWalked), Is.EqualTo(new[] { "a model with no name" }));
         }
@@ -475,7 +476,7 @@ namespace Federator.Core.Tests.Sets
                 new ModelExport("1104-PAR-1B06BC-ZZZ-ST-MOD-000001.nwc", "ST", 12, 0, 12, new List<string>())
             };
 
-            EmptySetJudge judge = EmptySetJudge.For(Plan(), models, new ContainerNameSettings());
+            EmptySetJudge judge = EmptySetJudge.For(Plan(), models, new ContainerNameSettings(), -1);
 
             Assert.That(judge.ModelsNotWalked, Is.Empty);
             Assert.That(EmptySets.Why("a/BLD-ST-Beams", AsksWorkset("ST-NO-SUCH-WORKSET"), judge).Reason, Is.EqualTo(EmptyReason.NoModelCarriesTheValue));
@@ -570,7 +571,7 @@ namespace Federator.Core.Tests.Sets
                 EmptySet why = EmptySets.Why(
                     "a/BLD-X",
                     new List<ReadCondition> { Category("Nurse Call Devices") },
-                    EmptySetJudge.For(Plan(), none, new ContainerNameSettings()));
+                    EmptySetJudge.For(Plan(), none, new ContainerNameSettings(), -1));
 
                 Assert.That(why.Reason, Is.EqualTo(EmptyReason.CannotTell));
                 Assert.That(why.Line(), Does.Not.Contain("could not be read off their names"));

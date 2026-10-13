@@ -456,6 +456,9 @@ namespace Federator.Core.Teams
         /// after the map's own lines. A model of a group carrying a code the set's name holds
         /// gives it that code's team in that group, CodeOf.Set, which the lines say. None where
         /// this map maps no team, its first TEAMS line saying every code is a team of its own.
+        /// A set with no name, which the reader gives a set with no name attribute, is said as
+        /// one by the folders above it, row F114-K31, since no test side can name it and the
+        /// views leave it out, ViewTeams.
         /// </summary>
         public IList<string> SetLines(IEnumerable<SelectionSetDefinition> sets, char separator)
         {
@@ -469,6 +472,14 @@ namespace Federator.Core.Teams
 
             foreach (SelectionSetDefinition set in sets)
             {
+                if (string.IsNullOrEmpty(set.Name))
+                {
+                    lines.Add("TEAMS    a set with no name in the clash XML's set tree, "
+                        + (set.Folders.Count == 0 ? "at its root" : "under " + string.Join("/", set.Folders))
+                        + ", which no test side can name, so no team is read for it");
+                    continue;
+                }
+
                 if (CodeOf.Set(set.Name, Codes, separator).Length > 0)
                 {
                     continue;

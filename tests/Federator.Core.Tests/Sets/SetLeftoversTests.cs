@@ -46,7 +46,7 @@ namespace Federator.Core.Tests.Sets
 
             Assert.That(leftovers.Count, Is.EqualTo(1));
             Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Remove));
-            Assert.That(leftovers[0].Line(), Does.Contain("NOTHING points at it"));
+            Assert.That(leftovers[0].Line(true), Does.Contain("NOTHING points at it"));
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Federator.Core.Tests.Sets
             Assert.That(leftovers[0].Sides, Is.EqualTo(60));
             Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.RemoveTheTwinThenRename));
             Assert.That(leftovers[0].TwinName, Is.EqualTo("BLD-DR-Pipe Accessories"));
-            Assert.That(leftovers[0].Line(), Does.Contain("60 clash test side(s) point at it"));
+            Assert.That(leftovers[0].Line(true), Does.Contain("60 clash test side(s) point at it"));
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Federator.Core.Tests.Sets
             Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.RemoveTheTwinThenRename));
             Assert.That(leftovers[1].Name, Is.EqualTo("BLD-DR Pipe Accessories"));
             Assert.That(leftovers[1].Action, Is.EqualTo(LeftoverAction.Refuse));
-            Assert.That(leftovers[1].Line(), Does.Contain("no unused twin"));
+            Assert.That(leftovers[1].Line(true), Does.Contain("no unused twin"));
         }
 
         /// <summary>
@@ -113,9 +113,9 @@ namespace Federator.Core.Tests.Sets
                 new List<string> { "BLD-Something-Else" });
 
             Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Refuse));
-            Assert.That(leftovers[0].Line(), Does.Contain("17 clash test side(s) point at it"));
-            Assert.That(leftovers[0].Line(), Does.Contain("NOTHING IS DONE"));
-            Assert.That(leftovers[0].Line(), Does.Contain("could never find anything again"));
+            Assert.That(leftovers[0].Line(true), Does.Contain("17 clash test side(s) point at it"));
+            Assert.That(leftovers[0].Line(true), Does.Contain("NOTHING IS DONE"));
+            Assert.That(leftovers[0].Line(true), Does.Contain("could never find anything again"));
         }
 
         /// <summary>A twin asking a DIFFERENT question is a different set that happens to sit nearby.</summary>
@@ -253,8 +253,8 @@ namespace Federator.Core.Tests.Sets
 
             Assert.That(leftovers[0].Action, Is.EqualTo(LeftoverAction.Refuse));
             Assert.That(leftovers[0].SidesUnknown, Is.True);
-            Assert.That(leftovers[0].Line(), Does.Contain("could not all be counted"));
-            Assert.That(leftovers[0].Line(), Does.Contain("NOTHING IS DONE"));
+            Assert.That(leftovers[0].Line(true), Does.Contain("could not all be counted"));
+            Assert.That(leftovers[0].Line(true), Does.Contain("NOTHING IS DONE"));
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace Federator.Core.Tests.Sets
             }
 
             Assert.That(
-                Joined(SetLeftovers.Lines(leftovers)),
+                Joined(SetLeftovers.Lines(leftovers, true)),
                 Does.Contain("2 are left alone because the clash test sides of this NWF could not all be counted"));
         }
 
@@ -316,15 +316,15 @@ namespace Federator.Core.Tests.Sets
                 },
                 new List<string> { "BLD-Corrected" });
 
-            string block = Joined(SetLeftovers.Lines(leftovers));
+            string block = Joined(SetLeftovers.Lines(leftovers, true));
 
             Assert.That(block, Does.Contain("3 set(s) in this NWF are not named by the picked file"));
             Assert.That(block, Does.Contain("1 nothing points at"));
             Assert.That(block, Does.Contain("1 are the working half of a pair"));
             Assert.That(block, Does.Contain("1 are pointed at with no twin"));
 
-            Assert.That(SetLeftovers.Lines(new List<LeftoverSet>()), Is.Empty);
-            Assert.That(SetLeftovers.Lines(null), Is.Empty);
+            Assert.That(SetLeftovers.Lines(new List<LeftoverSet>(), true), Is.Empty);
+            Assert.That(SetLeftovers.Lines(null, true), Is.Empty);
         }
 
         /// <summary>Names are Ordinal and never trimmed, because two set names in the reference file end in a space.</summary>
