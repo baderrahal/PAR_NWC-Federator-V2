@@ -182,20 +182,6 @@ namespace Federator.Core.Tests
             Assert.That(Named(report, Kept).Rows.Count, Is.EqualTo(1));
         }
 
-        [Test]
-        public void AClashTheMirrorGivesTwiceIsAddedOnce()
-        {
-            MirrorMerge merge = TheMerge();
-            ClashReport report = TheReport(merge, 1);
-
-            Found(report, merge, 0, "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
-            Found(report, merge, 0, "item 8", "item 7", Row("Clash3", ClashStatus.New, "duct 8", "column 7"));
-            merge.AddTo(report);
-
-            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
-            Assert.That(Named(report, Kept).Rows.Count, Is.EqualTo(2));
-        }
-
         // A clash only the mirror found keeps the status it carries, and every count by
         // status is read off the merged list.
         [Test]
@@ -921,18 +907,169 @@ namespace Federator.Core.Tests
             Assert.That(merge.Lines(), Is.EqualTo(new[] { KeptNotReadLine(1) }));
         }
 
+        // ---------- two clashes on one pair of item keys, F132-R3 ----------
+
+        /// <summary>
+        /// One element can carry two pieces of geometry of one name, so two clashes of one test can share the
+        /// pair of item keys. Until F132-R3 the second clash of the mirror on such a pair was read as a repeat
+        /// and left out, so a clash only the mirror found was in no block of the workbook once the mirror was
+        /// taken out. Each pair is now counted as many times as each test found it.
+        /// </summary>
         [Test]
-        public void ARepeatOfTheMirrorIsSaidOnce()
+        public void TwoClashesOfTheMirrorOnOnePairTheKeptTestNeverFoundAreBothAdded()
         {
             MirrorMerge merge = TheMerge();
             ClashReport report = TheReport(merge, 1);
+            TestReport kept = Named(report, Kept);
 
             Found(report, merge, 0, "item 7", "item 8", Row("Clash2", ClashStatus.New, "column 7", "duct 8"));
             Found(report, merge, 0, "item 8", "item 7", Row("Clash3", ClashStatus.New, "duct 8", "column 7"));
             merge.AddTo(report);
 
-            Assert.That(Text(merge.Lines()), Does.Contain(MirrorRule.Prefix + "   1 clash of " + Mirror
-                + " repeats a pair of items it already gave, so it is counted once"));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(2));
+            Assert.That(kept.RawClashes, Is.EqualTo(3), "the kept test's own clash and the two only the mirror found");
+            Assert.That(Text(merge.Lines()), Does.Contain(": " + Kept + " found 1, the mirror 2, 0 by both and 2 by the mirror only"));
+            Assert.That(Text(merge.Lines()), Does.Not.Contain("repeat"));
+        }
+
+        /// <summary>The kept test found the pair once and the mirror twice, so the mirror's second clash is added.</summary>
+        [Test]
+        public void ASecondClashOfTheMirrorOnAPairTheKeptTestFoundOnceIsAdded()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 1);
+            TestReport kept = Named(report, Kept);
+
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 1", "item 101", Row("Clash2", ClashStatus.New, "column 1", "duct 1"));
+            merge.AddTo(report);
+
+            Assert.That(merge.FoundByBoth, Is.EqualTo(1));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
+            Assert.That(kept.RawClashes, Is.EqualTo(2));
+            Assert.That(kept.Rows[1].FoundOnlyByMirror, Is.EqualTo(Mirror));
+        }
+
+        /// <summary>Both tests found the pair twice, so both clashes are found by both and nothing is added.</summary>
+        [Test]
+        public void APairBothTestsFoundTwiceAddsNothing()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReport(merge, 1);
+            TestReport kept = Named(report, Kept);
+            ClashRow second = Row("Clash2", ClashStatus.New, "duct 1", "column 1");
+
+            kept.Add(second);
+            merge.KeptFound("item 1", "item 101", ClashStatus.New, second);
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash2", ClashStatus.New, "column 1", "duct 1"));
+            merge.AddTo(report);
+
+            Assert.That(merge.FoundByBoth, Is.EqualTo(2));
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(0));
+            Assert.That(kept.RawClashes, Is.EqualTo(2));
+            Assert.That(Text(merge.Lines()), Does.Not.Contain("twin"), "every copy is New, so no status could move");
+        }
+
+        /// <summary>
+        /// Which copy of a shared pair under the kept test is the twin of which under the mirror is UNKNOWN, so
+        /// where the copies carry more than one status none is carried across, the kept test's statuses stay and
+        /// the pair is named once, F132-R3 attempt 2, the reviewer's and the breaker's blocking point. Paired by
+        /// the order handed, Reviewed would have been written onto the New clash.
+        /// </summary>
+        [Test]
+        public void ASharedPairWhoseCopiesCarryTwoStatusesCarriesNoStatusAcross()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReportWith(merge, ClashStatus.Approved);
+            TestReport kept = Named(report, Kept);
+            ClashRow second = Row("Clash2", ClashStatus.New, "duct 1", "column 1");
+
+            kept.Add(second);
+            merge.KeptFound("item 1", "item 101", ClashStatus.New, second);
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.Active, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash2", ClashStatus.Reviewed, "column 1", "duct 1"));
+            merge.AddTo(report);
+
+            Assert.That(kept.Rows[0].Status, Is.EqualTo(ClashStatus.Approved));
+            Assert.That(kept.Rows[1].Status, Is.EqualTo(ClashStatus.New), "a status was carried onto a clash whose twin is UNKNOWN");
+            Assert.That(merge.FoundByBoth, Is.EqualTo(2));
+            Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   2 clashes under " + Kept + " and 2 under " + Mirror
+                + " share one pair of items, column 1 against duct 1, at Approved, New under " + Kept + " and Active, Reviewed under "
+                + Mirror + ". Which copy is the twin of which is UNKNOWN, so no status was carried across and the report keeps "
+                + Kept + "'s"));
+            Assert.That(Text(merge.Lines()), Does.Not.Contain("clash both found carries"));
+        }
+
+        /// <summary>
+        /// The same pair with the mirror's copies in the other order. Paired by the order handed, Approved would
+        /// have been written onto the New clash. No status moves either way.
+        /// </summary>
+        [Test]
+        public void ASharedPairInTheOtherOrderMovesNoStatusEither()
+        {
+            MirrorMerge merge = TheMerge();
+            ClashReport report = TheReportWith(merge, ClashStatus.Approved);
+            TestReport kept = Named(report, Kept);
+            ClashRow second = Row("Clash2", ClashStatus.New, "duct 1", "column 1");
+
+            kept.Add(second);
+            merge.KeptFound("item 1", "item 101", ClashStatus.New, second);
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash1", ClashStatus.New, "column 1", "duct 1"));
+            Found(report, merge, 0, "item 101", "item 1", Row("Clash2", ClashStatus.Approved, "column 1", "duct 1"));
+            merge.AddTo(report);
+
+            Assert.That(kept.Rows[0].Status, Is.EqualTo(ClashStatus.Approved));
+            Assert.That(kept.Rows[1].Status, Is.EqualTo(ClashStatus.New), "a status was carried onto a clash whose twin is UNKNOWN");
+            Assert.That(Text(merge.Lines()), Does.Contain("Which copy is the twin of which is UNKNOWN"));
+        }
+
+        /// <summary>
+        /// A later mirror's copy of a clash an earlier mirror added, at another status, keeps the status as added
+        /// and is named, where it was dropped without a word, the breaker's point 3 on attempt 1.
+        /// </summary>
+        [Test]
+        public void ALaterMirrorsCopyAtAnotherStatusIsNamed()
+        {
+            MirrorMerge merge = TheMergeOfTwoMirrors();
+            ClashReport report = TheReport(merge, 0);
+            TestReport kept = Named(report, KeptOfTwo);
+
+            Found(report, merge, 0, "item 7", "item 8", Row("Clash1", ClashStatus.New, "phone 7", "wall 8"));
+            Found(report, merge, 1, "item 8", "item 7", Row("Clash1", ClashStatus.Approved, "wall 8", "phone 7"));
+            merge.AddTo(report);
+
+            Assert.That(kept.Rows[0].Status, Is.EqualTo(ClashStatus.New));
+            Assert.That(merge.Lines(), Does.Contain(MirrorRule.Prefix + "   Clash1 of " + KeptOfTwo + ", wall 8 against phone 7, "
+                + "added from " + FirstMirror + " (mirror) at New, is Approved under " + SecondMirror + " (mirror), and the report "
+                + "keeps New as added, since which copy " + FirstMirror + " (mirror) gave is the twin of this one is not weighed"));
+        }
+
+        /// <summary>
+        /// Two mirrors of one kept test each found the pair twice where the kept test found it once, so the one
+        /// clash more is added once, under the first mirror, and the second mirror's copy of it is said as found
+        /// by an earlier mirror.
+        /// </summary>
+        [Test]
+        public void TwoMirrorsFindingASharedPairTwiceAddItsSecondClashOnce()
+        {
+            MirrorMerge merge = TheMergeOfTwoMirrors();
+            ClashReport report = TheReport(merge, 1);
+            TestReport kept = Named(report, KeptOfTwo);
+
+            Found(report, merge, 0, "item 1", "item 101", Row("Clash1", ClashStatus.New, "phone 1", "wall 101"));
+            Found(report, merge, 0, "item 1", "item 101", Row("Clash2", ClashStatus.New, "phone 1", "wall 101"));
+            Found(report, merge, 1, "item 101", "item 1", Row("Clash1", ClashStatus.New, "wall 101", "phone 1"));
+            Found(report, merge, 1, "item 101", "item 1", Row("Clash2", ClashStatus.New, "wall 101", "phone 1"));
+            merge.AddTo(report);
+
+            Assert.That(merge.AddedToTheKeptTest, Is.EqualTo(1));
+            Assert.That(merge.FoundByBoth, Is.EqualTo(2));
+            Assert.That(kept.RawClashes, Is.EqualTo(2));
+            Assert.That(kept.Rows[1].FoundOnlyByMirror, Is.EqualTo(FirstMirror + " (mirror)"));
+            Assert.That(Text(merge.Lines()), Does.Contain(SecondMirror + " (mirror): " + KeptOfTwo
+                + " found 1, the mirror 2, 1 by both and 0 by the mirror only, added to " + KeptOfTwo
+                + ", and 1 found by an earlier mirror of " + KeptOfTwo + " as well, added once"));
         }
 
         // ---------- F132 attempt 6 ----------

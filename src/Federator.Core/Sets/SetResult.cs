@@ -64,6 +64,13 @@ namespace Federator.Core.Sets
         /// </summary>
         public bool Present { get; private set; }
 
+        /// <summary>
+        /// Failed after it was put into the document, created or replaced and then lost track of,
+        /// F115 R2 and R22, so the document holds it whatever its line says. Set by
+        /// SetBuildOutcome.AddFailedAfterPutIn alone.
+        /// </summary>
+        public bool PutIn { get; internal set; }
+
         /// <summary>Created by this build and resolved. A present set is not created.</summary>
         public bool Created
         {
@@ -91,7 +98,8 @@ namespace Federator.Core.Sets
             if (!Created)
             {
                 return "FAILED  " + Path + "  " + ConditionCount
-                    + Word(ConditionCount, " condition", " conditions") + "  " + Error;
+                    + Word(ConditionCount, " condition", " conditions") + "  " + Error
+                    + (PutIn ? ". It was put into the document before it failed, so the document holds it" : string.Empty);
             }
 
             // A created set whose count could not be taken says UNKNOWN, never -1, as a present one does.

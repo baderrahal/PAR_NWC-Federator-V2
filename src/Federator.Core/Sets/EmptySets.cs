@@ -245,38 +245,24 @@ namespace Federator.Core.Sets
         /// <summary>The block, one line per empty set plus the counts and what it costs.</summary>
         public static IList<string> Lines(IList<EmptySet> empty, int testsWithAnEmptySide, int testsInAll)
         {
-            return Lines(empty, testsWithAnEmptySide, testsInAll, 0);
+            return Lines(empty, testsWithAnEmptySide, testsInAll, 0, 0);
         }
 
         /// <summary>
         /// The same block, plus how many tests this run could form no opinion about
         /// because a side of theirs was in no count. Said rather than folded into the
-        /// cost, because a cost with a silent hole in it reads as a smaller cost.
+        /// cost, because a cost with a silent hole in it reads as a smaller cost. And how
+        /// many sets at zero were not judged because what they ask could not be read, F115 R6,
+        /// so the block's count of sets that found nothing agrees with the sets summary.
         /// </summary>
         public static IList<string> Lines(
-            IList<EmptySet> empty, int testsWithAnEmptySide, int testsInAll, int testsNoSideCountFor)
+            IList<EmptySet> empty, int testsWithAnEmptySide, int testsInAll, int testsNoSideCountFor, int atZeroNotJudged)
         {
-            List<string> lines = new List<string>();
+            List<string> lines = Judged(empty, atZeroNotJudged);
 
-            if (empty == null || empty.Count == 0)
+            if (lines.Count == 0)
             {
                 return lines;
-            }
-
-            int wrong = Of(empty, EmptyReason.NoModelCarriesTheValue);
-            int there = Of(empty, EmptyReason.TheValueIsThereAnyway);
-            int cannot = Of(empty, EmptyReason.CannotTell);
-
-            lines.Add(empty.Count + " set(s) found nothing in this group, and this is why:");
-            lines.Add("   " + wrong + " ask for a value NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES, so the condition is wrong"
-                + " or the project has not been measured that far");
-            lines.Add("   " + there + " ask for a value models in this project DO carry, so either this group"
-                + " holds no model of that kind or something else is wrong");
-            lines.Add("   " + cannot + " this reader cannot tell about");
-
-            for (int i = 0; i < empty.Count; i++)
-            {
-                lines.Add("   " + empty[i].Line());
             }
 
             // WHAT IT COSTS, which is the number his own report made urgent. A set that
@@ -287,6 +273,61 @@ namespace Federator.Core.Sets
             {
                 lines.Add("   and " + testsNoSideCountFor
                     + " more test(s) had a side no count was taken for, so they are in neither number");
+            }
+
+            return lines;
+        }
+
+        /// <summary>
+        /// The block where the sets were built and no clash test ran with them, F115 R4: a picked
+        /// XML holding sets and no test, the Build sets button, and a group whose sets left the
+        /// document damaged. The sets were judged and no block was written, so a set that found
+        /// nothing was said nowhere but its own ZERO line.
+        /// </summary>
+        public static IList<string> LinesWithNoTest(IList<EmptySet> empty, int atZeroNotJudged)
+        {
+            List<string> lines = Judged(empty, atZeroNotJudged);
+
+            if (lines.Count > 0)
+            {
+                lines.Add("no clash test ran with these sets here, so what they cost in clash tests is not counted");
+            }
+
+            return lines;
+        }
+
+        /// <summary>The block's lines above the cost, or none where no set found nothing.</summary>
+        private static List<string> Judged(IList<EmptySet> empty, int atZeroNotJudged)
+        {
+            List<string> lines = new List<string>();
+            int judged = empty == null ? 0 : empty.Count;
+            int notJudged = Math.Max(0, atZeroNotJudged);
+
+            if (judged == 0 && notJudged == 0)
+            {
+                return lines;
+            }
+
+            int wrong = judged == 0 ? 0 : Of(empty, EmptyReason.NoModelCarriesTheValue);
+            int there = judged == 0 ? 0 : Of(empty, EmptyReason.TheValueIsThereAnyway);
+            int cannot = judged == 0 ? 0 : Of(empty, EmptyReason.CannotTell);
+
+            lines.Add((judged + notJudged) + " set(s) found nothing in this group, and this is why:");
+            lines.Add("   " + wrong + " ask for a value NO MODEL MEASURED SO FAR IN THIS PROJECT CARRIES, so the condition is wrong"
+                + " or the project has not been measured that far");
+            lines.Add("   " + there + " ask for a value models in this project DO carry, so either this group"
+                + " holds no model of that kind or something else is wrong");
+            lines.Add("   " + cannot + " this reader cannot tell about");
+
+            if (notJudged > 0)
+            {
+                lines.Add("   " + notJudged + " were not judged, because what they ask could not be read off the document."
+                    + " The SET NOT READ lines of the run log say why");
+            }
+
+            for (int i = 0; i < judged; i++)
+            {
+                lines.Add("   " + empty[i].Line());
             }
 
             return lines;

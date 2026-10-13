@@ -64,22 +64,22 @@ namespace Federator.Core.Views
             get { return row.Status; }
         }
 
-        /// <summary>The set name of the test's left side, the text after the last slash of its locator, read once here.</summary>
-        public string LeftSet
+        /// <summary>The test's left side, its locator whole, its folders with its set name, row F114-K30.</summary>
+        public string LeftSide
         {
-            get { return ByDesignRule.SetNameIn(test.LeftLocator); }
+            get { return test.LeftLocator; }
         }
 
-        /// <summary>The set name of the test's right side.</summary>
-        public string RightSet
+        /// <summary>The test's right side, its locator whole.</summary>
+        public string RightSide
         {
-            get { return ByDesignRule.SetNameIn(test.RightLocator); }
+            get { return test.RightLocator; }
         }
 
         /// <summary>
         /// What the per test view plan is handed for this row, F114: the test the report holds
-        /// it under, the clash's name as the workbook writes it, the two set names off the test's
-        /// locators, the row's status and the test's priority, with what the add-in read off the
+        /// it under, the clash's name as the workbook writes it, the test's two locators whole,
+        /// the row's status and the test's priority, with what the add-in read off the
         /// resolved result, the size verdict of the larger service where the test's pair carries
         /// the size folder, the two items' paths, the clash centre and the model each item lives
         /// in, each null or empty where it was not or could not be read.
@@ -90,8 +90,8 @@ namespace Federator.Core.Views
             return new ViewClash(
                 test.Name,
                 ClashName,
-                LeftSet,
-                RightSet,
+                LeftSide,
+                RightSide,
                 row.Status,
                 test.Priority,
                 serviceSize,

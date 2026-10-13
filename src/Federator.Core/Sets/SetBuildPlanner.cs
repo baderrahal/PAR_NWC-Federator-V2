@@ -39,6 +39,28 @@ namespace Federator.Core.Sets
         /// <summary>Sets that will not be rebuilt, each carrying the reason.</summary>
         public ReadOnlyCollection<SkippedSet> Skipped { get; private set; }
 
+        /// <summary>
+        /// Every set name the picked file holds, the sets it skips among them, which is what the
+        /// leftover walk reads as named by the file, F115 R16. A set the plan skipped was read as
+        /// one the file does not name, and with the box ticked one nothing points at was removed.
+        /// </summary>
+        public IList<string> NamesInTheFile()
+        {
+            List<string> names = new List<string>();
+
+            foreach (PlannedSet set in Buildable)
+            {
+                names.Add(set.Name);
+            }
+
+            foreach (SkippedSet set in Skipped)
+            {
+                names.Add(set.Name);
+            }
+
+            return names;
+        }
+
         /// <summary>Every distinct test value that stopped a set, in the order first seen.</summary>
         public ReadOnlyCollection<string> UnknownTestValues { get; private set; }
 
@@ -155,9 +177,24 @@ namespace Federator.Core.Sets
             List<SkippedSet> skipped = new List<SkippedSet>();
             List<string> unknownTests = new List<string>();
             HashSet<string> unknownSeen = new HashSet<string>(StringComparer.Ordinal);
+            HashSet<string> pathsSeen = new HashSet<string>(StringComparer.Ordinal);
 
             foreach (SelectionSetDefinition set in sets)
             {
+                // F115 R23. A second set at one path in the picked file is skipped by name. Both were
+                // built into one slot, the second found the first and was counted as one already
+                // there, and the SET DRIFT check compared the first set with the second's question.
+                // Ordinal and never trimmed, as every set name is compared.
+                if (!pathsSeen.Add(set.Path ?? string.Empty))
+                {
+                    skipped.Add(new SkippedSet(
+                        set.Name,
+                        set.Path,
+                        "the picked file holds another set at this path before this one, so only the first is built."
+                            + " One path holds one set, F28"));
+                    continue;
+                }
+
                 string offending;
                 List<PlannedCondition> conditions = Plan(set, out offending);
 

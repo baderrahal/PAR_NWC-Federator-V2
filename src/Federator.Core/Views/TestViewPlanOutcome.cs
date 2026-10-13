@@ -77,7 +77,7 @@ namespace Federator.Core.Views
             get { return new ReadOnlyCollection<string>(sizeUnknown); }
         }
 
-        /// <summary>Every set name whose side reads UNKNOWN, each once, FR-074, the empty name for a side with no set name. Lines says why.</summary>
+        /// <summary>Every side that reads UNKNOWN, each once by its whole locator, FR-074 and N5 of F114c, the empty side for a side with no set name. Lines says why, each reason written.</summary>
         public ReadOnlyCollection<string> UnknownSets
         {
             get { return new ReadOnlyCollection<string>(unknownSets); }
@@ -148,11 +148,11 @@ namespace Federator.Core.Views
             sizeUnknown.Add(testName + " / " + clashName);
         }
 
-        internal void NameUnknownSet(string setName, string words)
+        internal void NameUnknownSet(string side, string words)
         {
-            if (!unknownSets.Contains(setName))
+            if (!unknownSets.Contains(side))
             {
-                unknownSets.Add(setName);
+                unknownSets.Add(side);
                 unknownWords.Add(words);
             }
         }
