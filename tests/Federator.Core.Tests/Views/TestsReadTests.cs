@@ -138,12 +138,12 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// F3, the lead's decision. A test whose in scope rows are all result groups gets no view,
-        /// is not counted failed, since a person's grouping must not cost the group DONE, and keeps
-        /// its old views, so it is in neither list and is named on its own.
+        /// F114-K36, Bader's answer B, which retires the lead's F3. A test whose in scope rows are
+        /// all result groups is read whole like any other, since the add-in reads the clashes
+        /// inside each group, and its groups are counted apart.
         /// </summary>
         [Test]
-        public void ATestWhoseInScopeRowsAreAllResultGroupsIsNeitherWholeNorFailedAndIsNamed()
+        public void ATestWhoseInScopeRowsAreAllResultGroupsIsWholeAndItsGroupsAreCounted()
         {
             TestsRead read = NewAndActive();
             read.Met("Grouped");
@@ -153,10 +153,50 @@ namespace Federator.Core.Tests
             read.RowRead("Mixed", true);
             read.RowRead("Mixed", false);
 
-            Assert.That(read.OnlyGroups, Is.EqualTo(new[] { "Grouped" }));
-            Assert.That(read.IsWhole("Grouped"), Is.False);
-            Assert.That(read.WholeNames, Is.EqualTo(new[] { "Mixed" }));
+            Assert.That(read.IsWhole("Grouped"), Is.True);
+            Assert.That(read.WholeNames, Is.EqualTo(new[] { "Grouped", "Mixed" }));
+            Assert.That(read.GroupsReadOf("Grouped"), Is.EqualTo(2));
+            Assert.That(read.GroupsReadOf("Mixed"), Is.EqualTo(1));
             Assert.That(read.NotWhole(), Is.Empty);
+        }
+
+        /// <summary>
+        /// A result group whose place or result cannot be read makes its test not read whole at
+        /// whatever status its own row stands at, since its clashes are what the views show.
+        /// </summary>
+        [Test]
+        public void AResultGroupNotFoundOrWithNoAddressIsNotReadWholeAtAnyStatus()
+        {
+            TestsRead read = NewAndActive();
+            read.Met("Lost");
+            read.RowNotFound("Lost", ClashStatus.Resolved, true);
+            read.Met("Placeless");
+            read.RowWithNoAddress("Placeless", ClashStatus.Resolved, true);
+            read.Met("Plain");
+            read.RowNotFound("Plain", ClashStatus.Resolved);
+
+            Assert.That(read.IsWhole("Lost"), Is.False);
+            Assert.That(read.IsWhole("Placeless"), Is.False);
+            Assert.That(read.IsWhole("Plain"), Is.True, "a plain row at a status no view shows needs nothing read");
+        }
+
+        [Test]
+        public void AClashInsideAGroupIsPlannedAtItsOwnNameAndStatus()
+        {
+            TestViewPlanOutcome plan = TestViewPlan.For(
+                new[]
+                {
+                    new ViewClash("T", "Clash1", "BLD-EL-Lighting Fixtures", "BLD-ST-Floors", ClashStatus.New, ClashPriority.A, null, null, null, null, null, null),
+                    new ViewClash("T", "Clash2", "BLD-EL-Lighting Fixtures", "BLD-ST-Floors", ClashStatus.Resolved, ClashPriority.A, null, null, null, null, null, null)
+                },
+                new ViewTeams(TeamMapTests.MapOf(TeamMapTests.BadersMap), null, new[] { "AR", "EL", "ME", "ST" }, new ViewpointSettings()),
+                null,
+                new ViewpointSettings());
+
+            Assert.That(plan.Views.Count, Is.EqualTo(1));
+            Assert.That(plan.Views[0].Clashes.Count, Is.EqualTo(1));
+            Assert.That(plan.Views[0].Clashes[0].ClashName, Is.EqualTo("Clash1"));
+            Assert.That(plan.LeftOutAt(ClashStatus.Resolved), Is.EqualTo(1));
         }
 
         /// <summary>

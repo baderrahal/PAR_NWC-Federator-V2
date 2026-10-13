@@ -2,6 +2,33 @@
 
 Newest entry at the top.
 
+## 2026-10-13 F114-K36 a test of result groups gets a view of the clashes inside them, Bader's answer B, Q160
+
+Branch fix-F114-K36 off fix-F114-K29, Bader's message of 2026-10-13 headed BADER, 13 OCT 2026: HIS ANSWERS, THE CSV AND
+THREE SMALL CHANGES. Option B read as the one that shows the grouped clashes' items, as his order says.
+
+What was done:
+- TestsRead no longer sets a test of result groups apart: IsWhole and WholeNames hold it when it was read whole, the
+  OnlyGroups list and the F3 line are gone, and RowNotFound and RowWithNoAddress take an isGroup flag so a group row is
+  judged at whatever status its own row stands at. GroupsReadOf counts the groups of a test
+- ReportClash.ToViewOfMember plans a clash inside a group under the group row's test with its own name and status
+- ViewpointBuilder reads a result group row at any status, walks the clashes inside it however deep, and hands each to
+  the plan with its items, size and centre read as for a clash row. The group row itself is in no view, so no clash is
+  in two. The camera of such a view is Clash Detective's for the group, by the group's address. A VIEWS line counts the
+  groups read and the clashes inside them. Callers of CollectOne, ReadTheClashesInside, ToViewOfMember, RowNotFound and
+  RowWithNoAddress were read after the edit, arity matches
+- addin.md says it. Row F114-R2 is closed for its result group half only: a mirror not read whole still never
+  reaches the plan
+- Core tests before 3096 passed, after 3099 passed, 0 failed, 0 skipped. The solution builds in Release with
+  --no-incremental, 0 warnings and 0 errors. check-locals and check-imports read clean
+
+What remains: not run on Navisworks. Two clashes of one group with one display name would share a key in a view. A
+group read inside costs time on a test with thousands of grouped clashes, which a 1A02MM run will say.
+
+Known bugs: none new.
+
+What comes next: the pull requests of the three branches, in order K32, K29, K36, which the connector could not open.
+
 ## 2026-10-13 F114-K29 only the teams the map names get view pair folders, Bader's words, Q159
 
 Branch fix-F114-K29 off fix-F114-K32, Bader's message of 2026-10-13 headed BADER, 13 OCT 2026: HIS ANSWERS, THE CSV AND

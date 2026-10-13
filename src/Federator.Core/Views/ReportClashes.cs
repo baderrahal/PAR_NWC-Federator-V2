@@ -84,6 +84,30 @@ namespace Federator.Core.Views
         /// the size folder, the two items' paths, the clash centre and the model each item lives
         /// in, each null or empty where it was not or could not be read.
         /// </summary>
+        /// <summary>
+        /// One clash INSIDE a result group of this row, F114-K36, Bader's answer B: it is planned
+        /// under the group's test, the sides and priority of that test, with its OWN name and
+        /// its OWN status, since a group's clashes can stand at statuses its row does not.
+        /// </summary>
+        public ViewClash ToViewOfMember(
+            string memberName, ClashStatus memberStatus,
+            SizeVerdict? serviceSize, ItemPath firstItem, ItemPath secondItem, Point3 centre, string firstHome, string secondHome)
+        {
+            return new ViewClash(
+                test.Name,
+                string.IsNullOrEmpty(memberName) ? "clash" : memberName,
+                LeftSide,
+                RightSide,
+                memberStatus,
+                test.Priority,
+                serviceSize,
+                firstItem,
+                secondItem,
+                centre,
+                firstHome,
+                secondHome);
+        }
+
         public ViewClash ToView(
             SizeVerdict? serviceSize, ItemPath firstItem, ItemPath secondItem, Point3 centre, string firstHome, string secondHome)
         {

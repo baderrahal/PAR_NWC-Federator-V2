@@ -26,9 +26,12 @@ namespace Federator.Core.Views
     ///
     /// Only a whole test gets a view and loses its old views. A test read in part or not at all
     /// is NOT READ: no view, its old views kept, counted failed with why, so the group is not
-    /// DONE on it. A test whose in scope rows are ALL result groups, F3, the lead's decision,
-    /// carries no items to show, so it gets no view and keeps its old views and is named on its
-    /// own, never counted failed, since a person's grouping must not cost the group DONE.
+    /// DONE on it.
+    ///
+    /// RESULT GROUPS, F114-K36, Bader's answer B of 2026-10-13, which retires the lead's F3: a
+    /// test whose open rows are all result groups is no longer left without a view. The add-in
+    /// reads the clashes inside each group and plans each at its own status, so a group row is
+    /// read like any row and a test of groups alone is whole when its groups were read whole.
     /// </summary>
     public sealed class TestsRead
     {
@@ -116,7 +119,10 @@ namespace Federator.Core.Views
             }
         }
 
-        /// <summary>One in scope row of the test led to its result, a result group or one clash.</summary>
+        /// <summary>
+        /// One in scope row of the test led to its result, a result group or one clash. A group
+        /// is counted apart, since the add-in reads the clashes inside it, F114-K36.
+        /// </summary>
         public void RowRead(string test, bool isGroup)
         {
             Entry entry = EntryOf(test);
@@ -128,23 +134,30 @@ namespace Federator.Core.Views
             }
         }
 
+        /// <summary>The result groups of that test that were read, whose clashes the plan holds at their own statuses.</summary>
+        public int GroupsReadOf(string test)
+        {
+            Entry entry;
+            return entries.TryGetValue(test ?? string.Empty, out entry) ? entry.GroupsRead : 0;
+        }
+
         /// <summary>One row of the test no longer leads to its result, counted only where its status needs reading, C1.</summary>
-        public void RowNotFound(string test, ClashStatus status)
+        public void RowNotFound(string test, ClashStatus status, bool isGroup = false)
         {
             Entry entry = EntryOf(test);
 
-            if (NeedsReading(status))
+            if (isGroup || NeedsReading(status))
             {
                 entry.RowsNotFound++;
             }
         }
 
         /// <summary>One row of the test has no recorded place, counted only where its status needs reading, C1.</summary>
-        public void RowWithNoAddress(string test, ClashStatus status)
+        public void RowWithNoAddress(string test, ClashStatus status, bool isGroup = false)
         {
             Entry entry = EntryOf(test);
 
-            if (NeedsReading(status))
+            if (isGroup || NeedsReading(status))
             {
                 entry.RowsWithNoAddress++;
             }
@@ -168,23 +181,17 @@ namespace Federator.Core.Views
             }
         }
 
-        /// <summary>Whether the test was read whole and has a row a view can show, the only test that gets a view.</summary>
+        /// <summary>Whether the test was read whole, the only test that gets a view and loses its old ones.</summary>
         public bool IsWhole(string test)
         {
             Entry entry;
-            return entries.TryGetValue(test ?? string.Empty, out entry) && entry.Whole && !entry.OnlyGroups;
+            return entries.TryGetValue(test ?? string.Empty, out entry) && entry.Whole;
         }
 
         /// <summary>The names of the tests read whole, in the order met, the inventory's testsRead.</summary>
         public ReadOnlyCollection<string> WholeNames
         {
-            get { return Names(entry => entry.Whole && !entry.OnlyGroups); }
-        }
-
-        /// <summary>The tests read whole whose in scope rows are all result groups, F3, named on their own and never failed.</summary>
-        public ReadOnlyCollection<string> OnlyGroups
-        {
-            get { return Names(entry => entry.Whole && entry.OnlyGroups); }
+            get { return Names(entry => entry.Whole); }
         }
 
         /// <summary>Each test not read whole with why, in the order met, each one a failed view of the group.</summary>
@@ -249,11 +256,6 @@ namespace Federator.Core.Views
             public bool Whole
             {
                 get { return !NotAtAddress && !Threw && FailedWhy == null && RowsNotFound == 0 && RowsWithNoAddress == 0; }
-            }
-
-            public bool OnlyGroups
-            {
-                get { return RowsRead > 0 && GroupsRead == RowsRead; }
             }
 
             public string Why()
