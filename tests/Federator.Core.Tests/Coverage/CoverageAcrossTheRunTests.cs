@@ -192,7 +192,7 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// The tests neither side holds are counted apart from the ones that agree, and the tests Clash
-        /// Detective holds that the picked file does not name are said, so the headline is never a
+        /// Detective holds that the clash matrix does not name are said, so the headline is never a
         /// clean bill over a test nobody set beside the panel.
         /// </summary>
         [Test]
@@ -224,7 +224,7 @@ namespace Federator.Core.Tests
                     "COVERAGE checked : 1 compared, 1 agree, 0 FAILED in 0 of 1 group, 0 not compared, "
                         + "3 held by neither side, tests no count was set beside"));
                 Assert.That(result, Does.Contain(
-                    "COVERAGE not named    : 2 tests in Clash Detective that the picked file does not name, not compared"));
+                    "COVERAGE not named    : 2 tests in Clash Detective that the clash matrix does not name, not compared"));
             }
         }
 
@@ -279,7 +279,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The tests the picked file does not name are counted by name across the run, as Q127 A counts
+        /// The tests the clash matrix does not name are counted by name across the run, as Q127 A counts
         /// every other test. One old test sitting in the NWFs of 46 groups read as 46 tests, which says
         /// the document holds 46 tests the file does not name. The break: a second, different old test
         /// in one group only makes two names over 47 places.
@@ -309,7 +309,7 @@ namespace Federator.Core.Tests
             List<string> lines = new List<string>(coverage.ResultLines());
             string named = lines.Find(line => line.StartsWith("COVERAGE not named", StringComparison.Ordinal));
 
-            Assert.That(named, Does.Contain("1 test in Clash Detective that the picked file does not name"));
+            Assert.That(named, Does.Contain("1 test in Clash Detective that the clash matrix does not name"));
             Assert.That(named, Does.Contain("each name once here, 46 places over the groups"));
 
             coverage.Add("last", CountCheck.Judge(
@@ -328,7 +328,7 @@ namespace Federator.Core.Tests
             named = new List<string>(coverage.ResultLines())
                 .Find(line => line.StartsWith("COVERAGE not named", StringComparison.Ordinal));
 
-            Assert.That(named, Does.Contain("2 tests in Clash Detective that the picked file does not name"));
+            Assert.That(named, Does.Contain("2 tests in Clash Detective that the clash matrix does not name"));
             Assert.That(named, Does.Contain("each name once here, 47 places over the groups"));
         }
 
@@ -432,7 +432,7 @@ namespace Federator.Core.Tests
             Assert.Throws<ArgumentNullException>(() => new CoverageAcrossTheRun(null));
         }
 
-        // ---------- the tests of the picked file, Q127 answered A ----------
+        // ---------- the tests of the clash matrix, Q127 answered A ----------
 
         private static TestCoverage Clashed(string name)
         {

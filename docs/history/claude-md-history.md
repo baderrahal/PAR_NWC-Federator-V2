@@ -1020,6 +1020,25 @@ a gap. Never report a check that did not run.
 Each entry names the rule as it stood, the date it changed, who decided and why, and where
 the rule lives now. The snapshot above stays as it was.
 
+## 2026-10-13, F155, the clash matrix is built in and the tolerance comes from the drop down
+
+The rules were "The clash test file is picked at run time, every run, and can be from any project",
+in addin.md, with the user picking the clash XML each run, and F76's tolerance drop down, whose
+default Use the value in the XML read the tolerance written in the XML, with an entry Other and a
+box for a typed value. Bader's run of 2026-10-13 read a picked XML with the tolerance left on Use
+the value in the XML. He decided the same day that the clash matrix is built in, one built in
+matrix per project, and that the tolerance is a drop down only. So the rule "the user uploads the
+clash XML each run" is replaced by "each project has a built in matrix pack that Bader supplies".
+The pack of F154 now holds the corrected XML of exchange with its team map and its list of
+corrections, read through ExchangeReader, TeamMap and MatrixCorrections by MatrixCorrections.ReadPack.
+The Clash XML row, its Browse button, the Teams line, the remembered ClashXml folder and the picked
+paths are gone. The drop down offers 25, 50 and 75 mm with 25 selected, its value is set on every
+test, and the XML's tolerance is never read into a run. "Nothing in the code names any one
+project's file" stays true, CLAUDE.md, with the pack named as the project's data, and a test reads
+every code line of src for the pack's name. The rules live in core.md, THE CLASH MATRIX IS BUILT IN
+TOO, THE TOLERANCE IS CHOSEN IN THE TOOL AND BEATS EVERYTHING and The teams of the matrix, and in
+addin.md, EACH PROJECT HAS A BUILT IN MATRIX PACK THAT BADER SUPPLIES.
+
 ## 2026-10-13, F154, the priorities and the by design pairs are built in
 
 The rules were F83's "the clash priority is the one column of ours, and only when a priority CSV is

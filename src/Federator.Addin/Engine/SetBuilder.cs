@@ -36,7 +36,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// What a set already in the document is asking, against what the picked file
+        /// What a set already in the document is asking, against what the clash matrix
         /// asks. Read off `SelectionSet.Search`, which is a getter nothing in this tool
         /// read until 5w measured that it works on every set of all ten of his groups.
         /// A search that will not read comes back as NOT READ and is never called
@@ -152,7 +152,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Replaces a drifted set in its own slot with one built from the picked file,
+        /// Replaces a drifted set in its own slot with one built from the clash matrix,
         /// Q72. `ReplaceWithCopy` and never a remove and an add, because 5v measured that
         /// the replace keeps the clash test pointing at it, its results, its statuses and
         /// its place in the tree, through a save and a reopen.
@@ -211,7 +211,7 @@ namespace Federator.Addin.Engine
         /// Every set in the document, with its path, what it asks in the keys Core
         /// compares on, and HOW MANY CLASH TEST SIDES RESOLVE TO IT. That last number is
         /// what decides everything about a leftover, and it is read off the document
-        /// rather than off the picked file, because the tests that point at the broken
+        /// rather than off the clash matrix, because the tests that point at the broken
         /// name were saved in the NWF by an earlier run and are in no file.
         /// </summary>
         private IList<DocumentSet> ReadEverySetInTheDocument(Document document, bool boxTicked)
@@ -652,7 +652,7 @@ namespace Federator.Addin.Engine
         /// Builds the plan's sets. The judge says why a set that found nothing found nothing,
         /// by what it knows of the values this group's models carry, FR-011, and no judge judges
         /// nothing, F128. walkLeftovers is whether the sets of the document this plan does not
-        /// name are read and acted on, which only the picked file's build does, because a walk
+        /// name are read and acted on, which only the clash matrix's build does, because a walk
         /// handed the Generic Models plan would remove every set of the file that no test points
         /// at. alsoWanted names the sets of the other plan that walk keeps, the Generic Models
         /// sets the last run saved in the NWF, F128, or null where there are none.
@@ -982,10 +982,10 @@ namespace Federator.Addin.Engine
                             planned.Path, planned.Name, planned.ConditionCount, found);
 
                         log.Line("SET      " + present.Line()
-                            + (rebuilt ? ", and REBUILT from the picked file" : string.Empty));
+                            + (rebuilt ? ", and REBUILT from the clash matrix" : string.Empty));
 
                         // 3a. What the set in the DOCUMENT asks, read off the set and
-                        // never off the picked file. SETS ACROSS THE RUN used to say
+                        // never off the clash matrix. SETS ACROSS THE RUN used to say
                         // "asked UNKNOWN, because it was already in the NWF and this
                         // run never read its question". 5w reads it.
                         present.Asked = askedNow;
@@ -1025,14 +1025,14 @@ namespace Federator.Addin.Engine
                                         + " the rebuild was tried, before this set's present line"
                                     : "   left alone. Tick \"" + SetRebuildSettings.TickLabel + "\" to rebuild it, Q72"
                                 : found < 0
-                                    ? "   REBUILT from the picked file, and it could not be found again to count, so what it finds is UNKNOWN"
-                                    : "   REBUILT from the picked file, and it now finds " + found + " item(s). The clash tests pointing at it keep their results and their statuses, 5v"));
+                                    ? "   REBUILT from the clash matrix, and it could not be found again to count, so what it finds is UNKNOWN"
+                                    : "   REBUILT from the clash matrix, and it now finds " + found + " item(s). The clash tests pointing at it keep their results and their statuses, 5v"));
 
                             // F115 R19. Read back against the file, so a rebuild that did not take is said.
                             if (outcome.RebuiltNotTaken.Contains(drift))
                             {
                                 log.Line("SET      "
-                                    + "   read back after the rebuild it does NOT ask what the picked file asks, or could not be found or read again,"
+                                    + "   read back after the rebuild it does NOT ask what the clash matrix asks, or could not be found or read again,"
                                     + " so the rebuild did not take or whether it took is UNKNOWN");
                             }
                         }

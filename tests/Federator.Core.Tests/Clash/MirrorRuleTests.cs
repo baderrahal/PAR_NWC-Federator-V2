@@ -144,7 +144,7 @@ namespace Federator.Core.Tests
             return MirrorRule.Of(tests, priorities, TheUsualSets(), new MirrorSettings(), saved, built);
         }
 
-        /// <summary>A sets build that created every one of those sets from the picked XML.</summary>
+        /// <summary>A sets build that created every one of those sets from the clash matrix.</summary>
         internal static SetBuildOutcome BuiltFrom(IEnumerable<SelectionSetDefinition> sets)
         {
             List<string> paths = new List<string>();
@@ -157,7 +157,7 @@ namespace Federator.Core.Tests
             return Built(paths.ToArray());
         }
 
-        /// <summary>A sets build that created the sets at those paths from the picked XML, and nothing else.</summary>
+        /// <summary>A sets build that created the sets at those paths from the clash matrix, and nothing else.</summary>
         internal static SetBuildOutcome Built(params string[] paths)
         {
             SetBuildOutcome built = new SetBuildOutcome();
@@ -315,7 +315,7 @@ namespace Federator.Core.Tests
             Assert.That(rule.Pairs[0].Mirror.Name, Is.EqualTo(ColumnsVsDucts));
         }
 
-        // Bader's own example, as the picked XML holds it: the Ducts set against the AR
+        // Bader's own example, as the clash matrix holds it: the Ducts set against the AR
         // Columns and against the ST Columns. Two Columns sets of two disciplines are two
         // sets, so these are two tests over two pairs and not a mirror.
         [Test]
@@ -825,8 +825,10 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Not.Contain("counted and not listed"));
         }
 
+        // F155. Every test of a run is set to the tolerance chosen in the drop down, so the tolerances
+        // the XML writes are never compared, and a pair written at 25 and 75 mm reads alike.
         [Test]
-        public void DifferentTolerancesNameBoth()
+        public void TheXmlsTolerancesAreNeverComparedSinceEveryTestRunsAtTheChosenOne()
         {
             ClashTestPlan plan = Plan(
                 Test(DuctsVsColumns, Ducts, Columns, Mm25),
@@ -834,25 +836,8 @@ namespace Federator.Core.Tests
 
             string line = LineNaming(Rule(plan.Buildable, PriorityMap.NothingPicked()), ColumnsVsDucts);
 
-            Assert.That(line, Does.Contain("tolerance 0.025 m"));
-            Assert.That(line, Does.Contain("0.075 m"));
-        }
-
-        // A tolerance travels through a unit conversion, so two written a hair apart are one
-        // tolerance, compared within TestDrift.ToleranceEpsilon and never exactly.
-        [Test]
-        public void TolerancesWithinTheEpsilonAreAlike()
-        {
-            ClashTestPlan plan = Plan(
-                Test(DuctsVsColumns, Ducts, Columns, Mm25),
-                Test(ColumnsVsDucts, Columns, Ducts, "0.08202099"));
-
-            MirrorRule rule = Rule(plan.Buildable, PriorityMap.NothingPicked());
-
-            Assert.That(plan.Buildable[0].Tolerance, Is.Not.EqualTo(plan.Buildable[1].Tolerance),
-                "the two are written apart, by less than the epsilon");
-            Assert.That(rule.Pairs.Count, Is.EqualTo(1));
-            Assert.That(LineNaming(rule, ColumnsVsDucts), Does.Not.Contain("tolerance"));
+            Assert.That(line, Does.Not.Contain("tolerance"));
+            Assert.That(line, Does.Not.Contain("0.075 m"));
         }
 
         [Test]
@@ -1490,7 +1475,7 @@ namespace Federator.Core.Tests
             Assert.That(Rule(plan.Buildable, PriorityMap.NothingPicked()).CoverageNames(), Is.Empty);
         }
 
-        // ---------- the picked XML's own samples ----------
+        // ---------- the clash matrix's own samples ----------
 
         private static PriorityMap TheSamplePriorities()
         {

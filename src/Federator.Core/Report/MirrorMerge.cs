@@ -17,7 +17,7 @@ namespace Federator.Core.Report
     /// docs\history\scan.md 5z-k on the branch fix-F114-probes.
     ///
     /// ONLY THE PAIRS THE RULE MERGES, F132 attempt 12, the lead's Q142 A: Of takes the pairs
-    /// MirrorRule says are merged, where this run created both tests from the picked XML and
+    /// MirrorRule says are merged, where this run created both tests from the clash matrix and
     /// no set of either drifted from it. Every other pair keeps its own clashes and has no
     /// merge here.
     ///

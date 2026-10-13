@@ -7,7 +7,7 @@ using Federator.Core.Views;
 namespace Federator.Core.Coverage
 {
     /// <summary>
-    /// Every test of the picked file against what happened to it, one reason each, F127,
+    /// Every test of the clash matrix against what happened to it, one reason each, F127,
     /// Bader's request 2 under Q112, section 1.2 of the F127 design, which the loop keeps outside the repo as turn5\f127-design.md.
     ///
     /// THE REASON IS THE RUNNER'S OWN RECORD, ClashRunOutcome, read in the order the code

@@ -1,7 +1,7 @@
 namespace Federator.Core.Coverage
 {
     /// <summary>
-    /// One test of the picked file, or of the tests saved in the document where no file was
+    /// One test of the clash matrix, or of the tests saved in the document where no file was
     /// picked, against what the run did with it, F127. Built by CoverageRule and by nothing
     /// else, so every row is read off the same record the same way.
     /// </summary>
@@ -33,7 +33,7 @@ namespace Federator.Core.Coverage
             Detail = detail ?? string.Empty;
         }
 
-        /// <summary>Where the test sits in the picked file, or in the document, from one.</summary>
+        /// <summary>Where the test sits in the clash matrix, or in the document, from one.</summary>
         public int Position { get; private set; }
 
         /// <summary>The test name exactly as the file carries it, never trimmed.</summary>

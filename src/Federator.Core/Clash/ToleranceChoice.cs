@@ -19,9 +19,6 @@ namespace Federator.Core.Clash
         /// <summary>Read off the clash test in the open document, which is what produced the row.</summary>
         Document = 1,
 
-        /// <summary>Read off the clash XML, converted into the document units.</summary>
-        File = 2,
-
         /// <summary>Chosen on the Clash step, which beats both of the other two.</summary>
         Tool = 3
     }
@@ -43,9 +40,9 @@ namespace Federator.Core.Clash
     /// the FILE'S settings reach a saved test, and this wins over it, because a value a
     /// person typed beats a value read out of a file.
     ///
-    /// THE DEFAULT CHANGES NOTHING. Use the value in the XML is what the tool has always
-    /// done and is what it still does unless somebody chooses otherwise, so a run set up
-    /// the old way behaves the old way.
+    /// THE DROP DOWN IS THE ONLY SOURCE SINCE F155, Bader's decision of 2026-10-13. Use the value in the
+    /// XML and Other are gone, 25 mm is selected when the window opens, and the value is set on every
+    /// test of every run, so the XML's tolerance is never used again.
     ///
     /// THE COST IS SAID BEFORE THE RUN, NOT AFTER, and what the cost IS was measured on
     /// 2026-09-20, 5y. Changing the tolerance on a test already in the document RESETS
@@ -63,194 +60,120 @@ namespace Federator.Core.Clash
     /// </summary>
     public sealed class ToleranceChoice
     {
-        /// <summary>The first entry of the drop down and the default.</summary>
-        public const string UseTheFile = "Use the value in the XML";
-
-        /// <summary>The last entry, which turns the number box on.</summary>
-        public const string Other = "Other";
-
-        /// <summary>The three the drop down offers between those two, in millimetres.</summary>
+        /// <summary>
+        /// The values the drop down offers, in millimetres, in its order, F155, Bader's decision of 2026-10-13: the
+        /// drop down is the only source of a run's tolerance and its only control. The entry Use the value in the
+        /// XML, the entry Other and its number box went with it, and the XML's tolerance is never used again.
+        /// </summary>
         public static readonly double[] OfferedMillimetres = { 25.0, 50.0, 75.0 };
+
+        /// <summary>The value selected when the window opens, and the one every button that runs no test hands on.</summary>
+        public const double DefaultMillimetres = 25.0;
 
         /// <summary>The words beside the drop down.</summary>
         public const string PickerLabel = "Clash tolerance";
 
-        /// <summary>The grey line under it. Eleven words, under the limit of twelve.</summary>
+        /// <summary>The grey line under it. Twelve words, the limit, with no word about the XML.</summary>
         public const string HelpLine =
-            "Beats the XML and the document. Results and statuses are kept";
+            "Set on every test of the run. Results and statuses are kept";
 
         /// <summary>The words that begin every line this rule writes.</summary>
         public const string Prefix = "TOLERANCE";
 
-        private readonly bool chosen;
+        /// <summary>What the drop down hands back where nothing is selected, which the window never leaves it at.</summary>
+        public const string NothingSelected = "No clash tolerance is selected in the drop down.";
+
         private readonly double millimetres;
 
-        private ToleranceChoice(bool chosen, double millimetres)
+        private ToleranceChoice(double millimetres)
         {
-            this.chosen = chosen;
             this.millimetres = millimetres;
         }
 
-        /// <summary>The default. Every test keeps whatever its own source gave it.</summary>
-        public static ToleranceChoice FromTheFile()
+        /// <summary>The value the window opens at, DefaultMillimetres.</summary>
+        public static ToleranceChoice Default()
         {
-            return new ToleranceChoice(false, 0.0);
+            return Of(DefaultMillimetres);
         }
 
         /// <summary>
-        /// A tolerance chosen in the tool, in millimetres. Zero is a real tolerance and is
-        /// allowed, because a file may carry one and the tool must be able to say the same
-        /// thing. A negative one is not a tolerance at all and is refused where it is set,
-        /// rather than reaching 1830 tests and being discovered in a report.
+        /// A tolerance in millimetres. Zero is a real tolerance and is allowed. A negative one is not a tolerance at
+        /// all and is refused where it is set, rather than reaching 1830 tests and being discovered in a report.
         /// </summary>
         public static ToleranceChoice Of(double millimetres)
         {
-            string refused = WhyNot(millimetres);
-
-            if (refused != null)
-            {
-                throw new ArgumentOutOfRangeException("millimetres", refused);
-            }
-
-            return new ToleranceChoice(true, millimetres);
-        }
-
-        /// <summary>Why a number is not a tolerance, or null where it is one. The one rule Of and the drop down read.</summary>
-        private static string WhyNot(double millimetres)
-        {
             if (double.IsNaN(millimetres) || double.IsInfinity(millimetres))
             {
-                return "A tolerance that is not a number is not a tolerance.";
+                throw new ArgumentOutOfRangeException("millimetres", "A tolerance that is not a number is not a tolerance.");
             }
 
             if (millimetres < 0)
             {
-                return "A tolerance below zero is not a tolerance. Zero is a real one and is allowed.";
+                throw new ArgumentOutOfRangeException("millimetres", "A tolerance below zero is not a tolerance. Zero is a real one and is allowed.");
             }
 
-            return null;
+            return new ToleranceChoice(millimetres);
         }
 
-        /// <summary>What the drop down hands back where Other is chosen and its box is empty.</summary>
-        public const string OtherIsBlank = "The clash tolerance is set to Other and no number is typed beside it.";
-
         /// <summary>
-        /// What the drop down says, FR-166, read without a throw: the entry at its place in
-        /// Choices(), the file first, the offered values, then Other with the text of its number
-        /// box. Null where Other's text is not a tolerance, and then refused holds why, in the
-        /// words Of throws with, so each caller decides whether the tolerance matters to it. Before,
-        /// the window called Of on the text and every button that read the run's settings stopped
-        /// on a blank box, Undo, Probe and Build sets among them, which never use the tolerance.
+        /// What the drop down says, read without a throw, FR-166: the entry at its place in Choices(). Null where
+        /// nothing is selected, and then refused holds why, so each caller decides whether the tolerance matters to
+        /// it. The window selects 25 mm when it opens and offers nothing else to type, so only a selection taken away
+        /// reaches it.
         /// </summary>
-        public static ToleranceChoice FromThePicker(int at, string otherText, out string refused)
+        public static ToleranceChoice FromThePicker(int at, out string refused)
         {
-            refused = null;
-
-            if (at <= 0)
+            if (at < 0 || at >= OfferedMillimetres.Length)
             {
-                return FromTheFile();
-            }
-
-            if (at <= OfferedMillimetres.Length)
-            {
-                return Of(OfferedMillimetres[at - 1]);
-            }
-
-            if (string.IsNullOrWhiteSpace(otherText))
-            {
-                refused = OtherIsBlank;
+                refused = NothingSelected;
                 return null;
             }
 
-            double typed;
-
-            if (!double.TryParse(otherText.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out typed))
-            {
-                typed = double.NaN;
-            }
-
-            refused = WhyNot(typed);
-            return refused == null ? new ToleranceChoice(true, typed) : null;
+            refused = null;
+            return Of(OfferedMillimetres[at]);
         }
 
-        /// <summary>Whether a value was chosen at all.</summary>
-        public bool ChosenInTheTool
-        {
-            get { return chosen; }
-        }
-
-        /// <summary>The chosen value in millimetres. Zero where nothing was chosen.</summary>
+        /// <summary>The value in millimetres.</summary>
         public double Millimetres
         {
             get { return millimetres; }
         }
 
-        /// <summary>Where a test's tolerance comes from under this choice.</summary>
-        public ToleranceOrigin Origin
-        {
-            get { return chosen ? ToleranceOrigin.Tool : ToleranceOrigin.File; }
-        }
-
-        /// <summary>The drop down entries, in order, with the default first.</summary>
+        /// <summary>The drop down entries, in order, the default first.</summary>
         public static IList<string> Choices()
         {
             List<string> choices = new List<string>();
-            choices.Add(UseTheFile);
 
             foreach (double value in OfferedMillimetres)
             {
                 choices.Add(Words(value));
             }
 
-            choices.Add(Other);
             return choices;
         }
 
         /// <summary>What the drop down reads once this choice is made.</summary>
         public string Label()
         {
-            return chosen ? Words(millimetres) : UseTheFile;
+            return Words(millimetres);
         }
 
         /// <summary>
-        /// The chosen tolerance in the units the open document measures in. Throws on a
-        /// unit the table has not been taught, the same way a file tolerance does, because
-        /// a report in the wrong unit reads as real and is not.
+        /// The tolerance in the units the open document measures in. Throws on a unit the table has not been taught,
+        /// the same way a file tolerance does, because a report in the wrong unit reads as real and is not.
         /// </summary>
         public double InDocumentUnits(string documentUnits)
         {
-            if (!chosen)
-            {
-                throw new InvalidOperationException(
-                    "Nothing was chosen, so there is no tolerance to convert. "
-                        + "Ask ChosenInTheTool before asking for this.");
-            }
-
             return ExchangeUnits.Convert(millimetres, "mm", documentUnits);
         }
 
         /// <summary>
-        /// What one test's tolerance ends up as, in document units. The whole rule in one
-        /// place: a chosen value wins, and otherwise whatever the caller already worked
-        /// out from the file or read off the document stands.
-        /// </summary>
-        public double For(double otherwise, string documentUnits)
-        {
-            return chosen ? InDocumentUnits(documentUnits) : otherwise;
-        }
-
-        /// <summary>
-        /// The report row of a test that now carries the chosen value, created at it or set to
-        /// it on a saved test, says that value in the document's units and that it was chosen
-        /// in the tool, FR-036. The row was given the plan's value before the test was touched,
-        /// and a test that then does not run never reaches the reading off the document, so a
-        /// skipped test said the old value and where the old value came from while the
-        /// document held the chosen one. Under the default nothing was chosen and the row
-        /// keeps what the plan gave it, Bader's answer to Q54. A row of null is no row.
+        /// The report row of a test that carries the chosen value, created at it or set to it on a saved test, says
+        /// that value in the document's units and that it was chosen in the tool, FR-036. A row of null is no row.
         /// </summary>
         public void PutOn(TestReport row, string documentUnits)
         {
-            if (!chosen || row == null)
+            if (row == null)
             {
                 return;
             }
@@ -267,7 +190,7 @@ namespace Federator.Core.Clash
         /// counts only where its tolerance was changed, FR-053, and every other saved test is
         /// named by what happened to it.
         ///
-        /// FR-063. The source is the plan's: with no XML picked the saved tests are the plan,
+        /// FR-063. The source is the plan's: with no clash matrix read the saved tests are the plan,
         /// so no tolerance was read out of an XML and none was beaten, and the line says the
         /// tolerance is the one each saved test holds. It said read per test out of the XML on
         /// every group of such a run.
@@ -281,24 +204,11 @@ namespace Federator.Core.Clash
 
             bool noXml = source == ClashPlanSource.Document;
 
-            if (!chosen)
-            {
-                int total = created + saved.Total;
-
-                return Prefix + (noXml
-                        ? " as each test saved in the document holds it, since no file of clash tests "
-                            + "was picked and no tolerance was chosen on the Clash step. "
-                        : " read per test out of the XML, which is what this tool does "
-                            + "unless a tolerance is chosen on the Clash step. ")
-                    + total + Word(total, " test", " tests") + ", " + created + " created fresh and "
-                    + saved.Total + " left as the document has them";
-            }
-
             int set = saved.Of(SavedTestTolerance.Set);
             int setOn = created + set;
 
             return Prefix + " " + Words(millimetres) + " chosen in the tool, so it beats "
-                + (noXml ? "the document" : "both the XML and the document")
+                + (noXml ? "the document" : "both the built in matrix and the document")
                 + ". Set on " + setOn + Word(setOn, " test", " tests")
                 + ", " + created + " created fresh and " + set
                 + " already in the document. " + NotSet(saved)
@@ -339,25 +249,19 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
-        /// What the confirm screen says before the run starts, or nothing at all where the
-        /// default is in force, because a line saying the tool is doing what it has always
-        /// done on every run teaches people to skip the screen.
+        /// What the confirm screen says before the run starts. Since F155 a tolerance is chosen on every run,
+        /// the drop down being its only source, so the screen says it on every run.
         /// </summary>
         public IList<string> WarningLines(int groups, int testsInTheFile)
         {
             List<string> lines = new List<string>();
 
-            if (!chosen)
-            {
-                return lines;
-            }
-
             lines.Add(PickerLabel + ": " + Words(millimetres) + ", chosen in the tool.");
             lines.Add("It is set on every clash test in this run, which is " + groups
                 + Word(groups, " group", " groups") + " of " + testsInTheFile
-                + Word(testsInTheFile, " test", " tests") + " from the XML, plus every test "
+                + Word(testsInTheFile, " test", " tests") + " from the built in matrix, plus every test "
                 + "already saved in each NWF.");
-            lines.Add("It beats the tolerance in the XML and the tolerance in the document.");
+            lines.Add("It beats the tolerance in the built in matrix and the tolerance in the document.");
             // WHAT IT ACTUALLY COSTS, measured 5y on 2026-09-20. This line said it reset
             // the results and it does not: every recorded result and every status a
             // person set is kept, through a save and a reopen. The real cost is that the
@@ -381,7 +285,7 @@ namespace Federator.Core.Clash
         /// makes the split visible. It says RAN and not carry a clash, because a test that
         /// ran and found nothing is among the ran. Every number is read off the report
         /// rows and the third is the first two subtracted, said so a reader can check it.
-        /// It said their tolerance reads off the picked file, which a saved test read out of
+        /// It said their tolerance reads off the clash matrix, which a saved test read out of
         /// the document and, since FR-036, a test carrying a value chosen in the tool do not,
         /// so it points at ReadFromLine, which counts where every row's value was read.
         /// </summary>
@@ -398,7 +302,7 @@ namespace Federator.Core.Clash
         /// <summary>
         /// The line that says where the tolerance on every report row was READ, F76. The
         /// report is produced by the clash tests in the open document, so every one of
-        /// them should read off the document. A count under any of the other three is the
+        /// them should read off the document. A count under either of the other two is the
         /// report saying a number the run did not clash at, which is what happened: the
         /// matrix is written at 25 mm, the NWFs on disk held tests at 75 mm, and the
         /// report said 25 while the run clashed at 75.
@@ -406,13 +310,12 @@ namespace Federator.Core.Clash
         /// Every count is READ off the rows. None is worked out from another, and the
         /// total is on the end so a row the tally missed shows as a difference.
         /// </summary>
-        public static string ReadFromLine(int fromDocument, int fromFile, int fromTool, int unknown)
+        public static string ReadFromLine(int fromDocument, int fromTool, int unknown)
         {
-            int total = fromDocument + fromFile + fromTool + unknown;
+            int total = fromDocument + fromTool + unknown;
 
             return Prefix + " on the report, read off " + Words(ToleranceOrigin.Document)
-                + " for " + fromDocument + ", " + Words(ToleranceOrigin.File)
-                + " for " + fromFile + ", " + Words(ToleranceOrigin.Tool)
+                + " for " + fromDocument + ", " + Words(ToleranceOrigin.Tool)
                 + " for " + fromTool + ", " + Words(ToleranceOrigin.Unknown)
                 + " for " + unknown + ", " + total + Word(total, " test", " tests") + " in all";
         }
@@ -432,7 +335,6 @@ namespace Federator.Core.Clash
             switch (origin)
             {
                 case ToleranceOrigin.Document: return "the clash test in the document";
-                case ToleranceOrigin.File: return "the clash XML";
                 case ToleranceOrigin.Tool: return "chosen in the tool";
                 default: return "UNKNOWN";
             }

@@ -318,7 +318,7 @@ namespace Federator.Core.Tests.Sets
 
             string block = Joined(SetLeftovers.Lines(leftovers, true));
 
-            Assert.That(block, Does.Contain("3 set(s) in this NWF are not named by the picked file"));
+            Assert.That(block, Does.Contain("3 set(s) in this NWF are not named by the clash matrix"));
             Assert.That(block, Does.Contain("1 nothing points at"));
             Assert.That(block, Does.Contain("1 are the working half of a pair"));
             Assert.That(block, Does.Contain("1 are pointed at with no twin"));

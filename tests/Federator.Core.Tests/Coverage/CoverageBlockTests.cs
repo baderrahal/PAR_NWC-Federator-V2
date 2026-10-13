@@ -58,8 +58,8 @@ namespace Federator.Core.Tests
             IList<TestCoverage> tests = new List<TestCoverage> { Ran(1, "T1", 2), Ran(2, "T2", 0), KeptOut(3, "T3") };
             IList<string> lines = CoverageBlock.Lines("100000", Data(tests, null), new CoverageSettings());
 
-            Assert.That(lines[0], Is.EqualTo(@"the tests        : 3 in the picked file C:\picked\clash.xml, sha256 ab12, corrected by nothing"));
-            Assert.That(lines[1], Is.EqualTo("counted          : 3 tests in the picked file: 2 created this run, 0 already there, 1 not created, 2 run, 1 with clashes, 1 without"));
+            Assert.That(lines[0], Is.EqualTo(@"the tests        : 3 in the clash matrix, C:\picked\clash.xml, sha256 ab12, corrected by nothing"));
+            Assert.That(lines[1], Is.EqualTo("counted          : 3 tests in the clash matrix: 2 created this run, 0 already there, 1 not created, 2 run, 1 with clashes, 1 without"));
             Assert.That(lines, Does.Contain("         1  has clashes"));
             Assert.That(lines, Does.Contain("         1  ran and found no clashes"));
             Assert.That(lines, Does.Contain("         1  " + CoverageWords.For(CoverageReason.SideFoundNothing)));
@@ -67,7 +67,7 @@ namespace Federator.Core.Tests
             Assert.That(lines[lines.Count - 1], Is.EqualTo(CoverageBlock.KeepsItsResult));
         }
 
-        /// <summary>The saved tests with no XML picked are named as that, never as a picked file.</summary>
+        /// <summary>The saved tests with no clash matrix read are named as that, never as a clash matrix.</summary>
         [Test]
         public void TheSavedTestsAreNamedAsTheSavedTests()
         {
@@ -159,7 +159,7 @@ namespace Federator.Core.Tests
 
             Assert.That(block, Does.Contain("workbook against Clash Detective : UNKNOWN, 0 compared, 0 agree, 0 FAILED, 1 not compared, 0 held by neither side"));
             Assert.That(block, Does.Contain("    not compared  T1  no workbook was read, the clash was skipped"));
-            Assert.That(block, Does.Contain("not in the file  : 1 test in Clash Detective that the picked file does not name, not compared: Old"));
+            Assert.That(block, Does.Contain("not in the file  : 1 test in Clash Detective that the clash matrix does not name, not compared: Old"));
         }
 
         [Test]

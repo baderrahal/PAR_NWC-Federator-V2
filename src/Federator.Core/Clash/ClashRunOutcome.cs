@@ -23,7 +23,7 @@ namespace Federator.Core.Clash
         private readonly Dictionary<string, int> itemsByLocator = new Dictionary<string, int>(StringComparer.Ordinal);
         private readonly Dictionary<string, int[]> sidesRead = new Dictionary<string, int[]>(StringComparer.Ordinal);
 
-        /// <summary>How many clashtest elements the picked file held.</summary>
+        /// <summary>How many clashtest elements the clash matrix held.</summary>
         public int TestsInFile { get; set; }
 
         /// <summary>

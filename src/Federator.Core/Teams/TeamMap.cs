@@ -94,13 +94,13 @@ namespace Federator.Core.Teams
             Codes = new ReadOnlyCollection<string>(every);
         }
 
-        /// <summary>The full path the map was read from or looked for, or null where no XML was picked.</summary>
+        /// <summary>The full path the map was read from or looked for, or null where no clash matrix was read.</summary>
         public string ListPath { get; private set; }
 
         /// <summary>Whether no file is at that path.</summary>
         public bool Missing { get; private set; }
 
-        /// <summary>Whether no clash XML was picked, so the map is the one kept from the last run with one, or none, Q123.</summary>
+        /// <summary>Whether no clash matrix was read, so the map is the one kept from the last run with one, or none, Q123.</summary>
         public bool NoXmlPicked { get; private set; }
 
         /// <summary>Why the map could not be read, or null where it was read whole or is not there.</summary>
@@ -122,7 +122,7 @@ namespace Federator.Core.Teams
         /// </summary>
         public ReadOnlyCollection<string> SizeFolderTeams { get; private set; }
 
-        /// <summary>Whether the map is there and was read whole, beside the picked XML or kept for a run with none.</summary>
+        /// <summary>Whether the map is there and was read whole, beside the clash matrix or kept for a run with none.</summary>
         public bool IsRead
         {
             get { return ListPath != null && !Missing && Unread == null; }
@@ -149,7 +149,7 @@ namespace Federator.Core.Teams
         }
 
         /// <summary>
-        /// The map of a run with no clash XML picked, the one the window kept from the last run
+        /// The map of a run with no clash matrix read, the one the window kept from the last run
         /// with one, at that full path, Q123 answered B. Read as a map beside an XML is, and said
         /// as the kept map. Never a throw.
         /// </summary>
@@ -166,7 +166,7 @@ namespace Federator.Core.Teams
         }
 
         /// <summary>
-        /// The map of a run with no clash XML picked whose memory of the kept map could not be
+        /// The map of a run with no clash matrix read whose memory of the kept map could not be
         /// read, with why, at the memory's path, TeamMapMemory.ForNoXml.
         /// </summary>
         internal static TeamMap MemoryUnread(string memoryPath, string unread, TeamMapSettings settings)
@@ -190,7 +190,40 @@ namespace Federator.Core.Teams
                 why => Nothing(path, false, false, why, settings.UnknownTeam));
         }
 
-        /// <summary>The map of a run with no clash XML picked and no map kept from a run with one.</summary>
+        /// <summary>
+        /// The map of a matrix pack, F155: the file of the pack named after its clash XML with the suffix, as the
+        /// map beside a clash matrix is named, read by the same Read and named by the pack. Not in the pack, it is
+        /// Missing. Never a throw.
+        /// </summary>
+        public static TeamMap InPack(MatrixPack pack, string xmlFile, TeamMapSettings settings)
+        {
+            if (pack == null || settings == null)
+            {
+                throw new ArgumentNullException(pack == null ? "pack" : "settings");
+            }
+
+            string file = Path.GetFileNameWithoutExtension(xmlFile) + settings.Suffix;
+            string named = pack.Describe(file);
+
+            if (!pack.Holds(file))
+            {
+                return Nothing(named, true, false, null, settings.UnknownTeam);
+            }
+
+            try
+            {
+                using (StringReader reader = new StringReader(pack.ReadText(file)))
+                {
+                    return Read(reader, named, settings);
+                }
+            }
+            catch (Exception error)
+            {
+                return Nothing(named, false, false, error.Message, settings.UnknownTeam);
+            }
+        }
+
+        /// <summary>The map of a run with no clash matrix read and no map kept from a run with one.</summary>
         public static TeamMap NoXml(TeamMapSettings settings)
         {
             if (settings == null)
@@ -451,7 +484,7 @@ namespace Federator.Core.Teams
         }
 
         /// <summary>
-        /// The TEAMS lines naming each set of the picked XML whose name carries no code of this
+        /// The TEAMS lines naming each set of the clash matrix whose name carries no code of this
         /// map, with the team a folder above it names or UNKNOWN, Q117 answered C and A, said
         /// after the map's own lines. A model of a group carrying a code the set's name holds
         /// gives it that code's team in that group, CodeOf.Set, which the lines say. None where
@@ -557,14 +590,14 @@ namespace Federator.Core.Teams
 
             if (NoXmlPicked && ListPath == null)
             {
-                lines.Add(Prefix + "no clash XML was picked and no team map is kept from a run with one" + NothingApplies);
+                lines.Add(Prefix + "no clash matrix was read and no team map is kept from a run with one" + NothingApplies);
                 return lines;
             }
 
             if (Missing)
             {
                 lines.Add(Prefix + (NoXmlPicked
-                    ? "no clash XML was picked, and " + Kept + ", " + ListPath + ", is not there"
+                    ? "no clash matrix was read, and " + Kept + ", " + ListPath + ", is not there"
                     : "no team map is beside this file: " + ListPath + " was looked for and is not there") + NothingApplies);
                 return lines;
             }
@@ -572,7 +605,7 @@ namespace Federator.Core.Teams
             if (Unread != null)
             {
                 lines.Add(Prefix + (NoXmlPicked
-                    ? "no clash XML was picked, and " + (memoryUnread ? "the memory of " + Kept : Kept).ToUpperInvariant() + ", " + ListPath + ", COULD NOT BE READ: "
+                    ? "no clash matrix was read, and " + (memoryUnread ? "the memory of " + Kept : Kept).ToUpperInvariant() + ", " + ListPath + ", COULD NOT BE READ: "
                     : "THE TEAM MAP BESIDE THIS FILE, " + ListPath + ", COULD NOT BE READ: ") + Unread + NothingApplies);
                 return lines;
             }
@@ -580,12 +613,12 @@ namespace Federator.Core.Teams
             if (HoldsNone)
             {
                 lines.Add(Prefix + (NoXmlPicked
-                    ? "no clash XML was picked, and " + Kept + ", " + ListPath + ", holds no team"
+                    ? "no clash matrix was read, and " + Kept + ", " + ListPath + ", holds no team"
                     : "the team map beside this file, " + ListPath + ", holds no team") + NothingApplies);
                 return lines;
             }
 
-            lines.Add(Prefix + (NoXmlPicked ? "no clash XML was picked, so the teams are read from " : "the teams are read from ")
+            lines.Add(Prefix + (NoXmlPicked ? "no clash matrix was read, so the teams are read from " : "the teams are read from ")
                 + ListPath + ", " + (NoXmlPicked ? Kept : "the team map beside this file") + ". It holds "
                 + Words.Counted(Teams.Count, "team", "teams") + " and " + Words.Counted(Codes.Count, "code", "codes")
                 + ", and a code on no line is a team of its own named by its code");
@@ -599,36 +632,6 @@ namespace Federator.Core.Teams
             lines.Add(Prefix + TeamPair.SizeFolderWords(this));
 
             return lines;
-        }
-
-        /// <summary>The window's one grey line at the pick, plain words and twelve at most.</summary>
-        public string WindowLine()
-        {
-            if (NoXmlPicked)
-            {
-                return ListPath == null ? "Teams: no XML picked, no map kept yet"
-                    : Missing ? "Teams: no XML picked, the kept map is gone"
-                    : Unread != null ? (memoryUnread ? "Teams: no XML picked, the kept map's memory could not be read" : "Teams: no XML picked, the kept map could not be read")
-                    : HoldsNone ? "Teams: no XML picked, the kept map holds no team"
-                    : "Teams: no XML picked, " + Teams.Count.ToString(CultureInfo.InvariantCulture) + " read from the kept map";
-            }
-
-            if (Missing)
-            {
-                return "Teams: no map beside the XML, each code is its own team";
-            }
-
-            if (Unread != null)
-            {
-                return "Teams: the map beside the XML could not be read";
-            }
-
-            if (HoldsNone)
-            {
-                return "Teams: the map beside the XML holds no team";
-            }
-
-            return "Teams: " + Teams.Count.ToString(CultureInfo.InvariantCulture) + " read from the map beside the XML";
         }
 
         /// <summary>Parts read as a list: one alone, two joined by the last word, more with commas before it.</summary>

@@ -81,7 +81,7 @@ namespace Federator.Core.Tests
             Assert.That(ClashWork.RunsATest(ClashSource.TestsSavedInDocument, null, false), Is.True);
 
             Assert.That(ClashWork.RunsATest(ClashSource.Nothing, null, false), Is.False,
-                "no XML picked and no test saved in the document");
+                "no clash matrix read and no test saved in the document");
             Assert.That(ClashWork.RunsATest(ClashWork.SourceFor(setsOnly, 0), setsOnly, false), Is.False,
                 "an XML that holds sets and no test");
             Assert.That(ClashWork.RunsATest(ClashSource.TestsFromXml, both, true), Is.False,

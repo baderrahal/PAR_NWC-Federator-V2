@@ -266,10 +266,10 @@ namespace Federator.Core.Tests.Sets
             return new List<ReadCondition> { new ReadCondition("LcRevitData_Element", EmptySets.WorksetProperty, "equals", value, 0) };
         }
 
-        // ---------- R23 and R16, the names of the picked file ----------
+        // ---------- R23 and R16, the names of the clash matrix ----------
 
         /// <summary>
-        /// Two sets at one path in the picked file were built as one and counted as one created and one
+        /// Two sets at one path in the clash matrix were built as one and counted as one created and one
         /// already there. The second is skipped by name. The guard: two names in one folder are both built.
         /// </summary>
         [Test]
@@ -285,7 +285,7 @@ namespace Federator.Core.Tests.Sets
             Assert.That(plan.Buildable.Count, Is.EqualTo(2));
             Assert.That(plan.Skipped.Count, Is.EqualTo(1));
             Assert.That(plan.Skipped[0].Path, Is.EqualTo(Ducts));
-            Assert.That(plan.Skipped[0].Reason, Does.StartWith("the picked file holds another set at this path before this one"));
+            Assert.That(plan.Skipped[0].Reason, Does.StartWith("the clash matrix holds another set at this path before this one"));
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ namespace Federator.Core.Tests
 {
     /// <summary>
     /// The Coverage sheet, F127, Bader's request 2 under Q112 and his decision under Q46,
-    /// FR-200: one row per test of the picked file in the file's order, a test F77 did not
+    /// FR-200: one row per test of the clash matrix in the file's order, a test F77 did not
     /// create included, with its reason. Since Bader's answer B to Q146 a sheet of the internal
     /// workbook beside the clash workbook, after the Generic Models sheet, and the clash workbook
     /// holds the client's sheet alone. Every workbook here is a real xlsx the writer made, read
@@ -405,7 +405,7 @@ namespace Federator.Core.Tests
             IList<TestCoverage> tests = new List<TestCoverage> { Ran(1, "T1", 2), Ran(2, "T2", 0), KeptOut(3, "T3") };
 
             Assert.That(CoverageSheet.Counts(Data(tests, null, null)), Is.EqualTo(
-                "3 tests in the picked file: 2 created this run, 0 already there, 1 not created, 2 run, 1 with clashes, 1 without"));
+                "3 tests in the clash matrix: 2 created this run, 0 already there, 1 not created, 2 run, 1 with clashes, 1 without"));
         }
 
         [Test]

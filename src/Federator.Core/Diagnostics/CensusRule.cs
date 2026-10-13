@@ -39,7 +39,7 @@ namespace Federator.Core.Diagnostics
         /// raised them from 0 to 20 in every group and every group was reported FAILED
         /// for it. Sets, tests and results still may not move there, because an NWC
         /// carries geometry, properties and viewpoints, and none of those three.
-        /// SETS builds the selection sets out of the picked file.
+        /// SETS builds the selection sets out of the clash matrix.
         /// TESTS CREATE creates the clash tests.
         /// TESTS RUN produces the clash results, and creates none of the rest.
         /// VIEWS puts the saved viewpoints in, F85, so the viewpoint count moves there and

@@ -43,8 +43,8 @@ $ErrorActionPreference = "Stop"
 #                              the window run on the run set's copy, runs\NN\NMFed: the same
 #                              refusals, backups, start, adoption, watchdog and put back, then
 #                              the driver tools\probes\drive-window-run.ps1 started as a child
-#                              and ExecuteAddInPlugin called on the main thread. Item 1 takes
-#                              -Xml, a file under runs\NN\NMFed. Item 5 takes -OpenFile, the
+#                              and ExecuteAddInPlugin called on the main thread. No item takes
+#                              -Xml since F155, the matrix is built in. Item 5 takes -OpenFile, the
 #                              plain name of an .nwf in NMFed\NWF\<Folder> or an .nwd in
 #                              NMFed\NWD\<Folder>, copied into the run folder's open\ and
 #                              opened there. F126: -Untick names tick boxes of the tool's window
@@ -232,8 +232,9 @@ function ModeOf($mode) {
 }
 
 # Check 2, the parameters, as an allow list. Returns each refusal as the text after REFUSED:.
-# F106: items 1 to 5 take -Folder, a plain folder name, item 1 alone takes -Xml and item 5 alone
-# -OpenFile, and every path they name must lie under runs\NN, the run set's own folder.
+# F106: items 1 to 5 take -Folder, a plain folder name, and item 5 alone -OpenFile. No run takes
+# -Xml since F155, the clash matrix being built into the tool, and every path they name must
+# lie under runs\NN, the run set's own folder.
 # F104 part 2: Documents, and Check -For Documents, take -Set, -Item 1 to 5 and -Folder as the
 # window run they read, -OpenFile for item 5 alone, which names that run, no -Stamp and no
 # -Xml, and alone take the three switches handed to compare-document.ps1. Their words are
@@ -288,10 +289,7 @@ function ParamRefusal($mode, $set, $item, $stamp, $runFolder, $folder, $xml, $op
   if ($window) {
     if ($folder -eq "") { $why.Add("-Folder is missing, and item " + $item + " needs the name of one folder of NMFed\NWC, such as C06") }
     elseif ($folder -notmatch '^[A-Za-z0-9_-]+$') { $why.Add("-Folder is " + $folder + ", not the plain name of one folder of NMFed\NWC") }
-    if ($docs) { if ($xml -ne "") { $why.Add("-Xml is " + $xml + ", and a documents read takes none, it reads what the window run already wrote") } }
-    elseif ($item -eq "1" -and $xml -eq "") { $why.Add("-Xml is missing, and item 1, the first run, needs the clash XML of the copy") }
-    elseif ($item -eq "1" -and -not $xml.EndsWith(".xml", [StringComparison]::OrdinalIgnoreCase)) { $why.Add("-Xml is " + $xml + ", not an .xml file") }
-    if (-not $docs -and $item -ne "1" -and $xml -ne "") { $why.Add("-Xml is " + $xml + ", and only item 1 takes the XML, the runs after it run with none") }
+    if ($xml -ne "") { $why.Add("-Xml is " + $xml + ", and no run takes one, the clash matrix is built into the tool since F155") }
     if ($item -eq "5" -and $openFile -eq "") { $why.Add("-OpenFile is missing, and item 5 needs the plain name of an .nwf in NMFed\NWF\<Folder> or an .nwd in NMFed\NWD\<Folder>") }
     elseif ($item -eq "5" -and $openFile -notmatch '^[^\\/:*?"<>|]+\.(nwf|nwd)$') { $why.Add("-OpenFile is " + $openFile + ", not the plain name of an .nwf or an .nwd file") }
     if ($item -ne "5" -and $openFile -ne "") { $why.Add("-OpenFile is " + $openFile + ", and only item 5 takes it") }
@@ -438,7 +436,6 @@ function OutputsRefusal($paths, $item) {
     }
   }
   if ($why.Count -gt 0) { return ,$why }
-  if ($item -eq "1" -and -not (Test-Path -LiteralPath $paths.XmlFile -PathType Leaf)) { $why.Add("-Xml names " + (Mask $paths.XmlFile) + ", which is not a file of the copy. Nothing was written") }
   if ($item -match '^[234]$' -and @(Get-ChildItem -LiteralPath $paths.Nwf -File -Force -Filter "*.nwf").Count -eq 0) { $why.Add("item " + $item + " runs on the NWFs the first run wrote, and " + (Mask $paths.Nwf) + " holds none. Nothing was written") }
   if ($item -eq "5" -and -not (Test-Path -LiteralPath $paths.OpenSource -PathType Leaf)) { $why.Add("-OpenFile names " + (Mask $paths.OpenSource) + ", which is not there. Nothing was written") }
   return ,$why
@@ -2165,13 +2162,12 @@ function PairLine($pair) {
 }
 # F106, the driver's command line, moved into this function by F126 with the -Untick it hands on,
 # so the harness builds it the way a run does: the adopted pid and start ticks, the set, the
-# stamp and the notes file, then -OpenRun for item 5 or the four folders, with item 1's XML.
+# stamp and the notes file, then -OpenRun for item 5 or the four folders, and no XML since F155.
 function DriverArguments($drv, $ownerPid, $ownerTicks, $set, $stamp, $notes, $item, $paths, $untick) {
   $a = "-NoProfile -STA -ExecutionPolicy Bypass -File `"" + $drv + "`" -OwnerPid " + $ownerPid + " -OwnerStartTicks " + $ownerTicks + " -Set " + $set + " -Stamp " + $stamp + " -Notes `"" + $notes + "`""
   if ($item -eq "5") { $a += " -OpenRun" }
   else {
     $a += " -Source `"" + $paths.Nwc + "`" -Nwf `"" + $paths.Nwf + "`" -Nwd `"" + $paths.Nwd + "`" -Excel `"" + $paths.Report + "`""
-    if ($item -eq "1") { $a += " -Xml `"" + $paths.XmlFile + "`"" }
   }
   $ids = @(UntickIds $untick)
   if ($ids.Count -gt 0) { $a += " -Untick " + ($ids -join ",") }

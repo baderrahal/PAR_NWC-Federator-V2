@@ -45,7 +45,7 @@ namespace Federator.Addin.Engine
         private readonly ExchangeDocument exchange;
 
         /// <summary>
-        /// The team map of this run, F131: the one beside the picked XML, or the one the window
+        /// The team map of this run, F131: the one beside the clash matrix, or the one the window
         /// kept for a run with none, Q123 answered B. Null for a press that federates no group
         /// and so reads no model's team.
         /// </summary>
@@ -185,8 +185,8 @@ namespace Federator.Addin.Engine
         private List<IList<string>> scannedGroupCodes;
 
         /// <summary>
-        /// The picked XML's sha256, F127, read once when the run starts so the COVERAGE blocks and the
-        /// Coverage sheets of every group name the same bytes. Null where no XML was picked.
+        /// The clash matrix's sha256, F127, read once when the run starts so the COVERAGE blocks and the
+        /// Coverage sheets of every group name the same bytes. Null where no clash matrix was read.
         /// </summary>
         private string xmlFingerprint;
 
@@ -278,8 +278,6 @@ namespace Federator.Addin.Engine
         /// </summary>
         public int ToleranceFromDocument { get; private set; }
 
-        public int ToleranceFromFile { get; private set; }
-
         public int ToleranceFromTool { get; private set; }
 
         public int ToleranceUnknown { get; private set; }
@@ -289,7 +287,7 @@ namespace Federator.Addin.Engine
 
         public int ReportRan { get; private set; }
 
-        /// <summary>Counts one group's rows into the four, F76. Read, never worked out.</summary>
+        /// <summary>Counts one group's rows into the three, F76. Read, never worked out.</summary>
         private void CountToleranceOrigins(ClashReport report)
         {
             if (report == null)
@@ -305,9 +303,6 @@ namespace Federator.Addin.Engine
                 {
                     case ToleranceOrigin.Document:
                         ToleranceFromDocument++;
-                        break;
-                    case ToleranceOrigin.File:
-                        ToleranceFromFile++;
                         break;
                     case ToleranceOrigin.Tool:
                         ToleranceFromTool++;
@@ -549,7 +544,7 @@ namespace Federator.Addin.Engine
                 reports.SkipClashOffCoordinates, DateTime.Now, jobs.Count);
 
             // F127. The codes of the ticked groups of this run, so a side's code is judged against the
-            // whole run, and the picked XML's bytes, read once for every group's coverage.
+            // whole run, and the clash matrix's bytes, read once for every group's coverage.
             scannedGroupCodes = new List<IList<string>>();
 
             foreach (FederationJob scanned in jobs)
@@ -710,7 +705,7 @@ namespace Federator.Addin.Engine
             CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
                 reports.SkipClashOffCoordinates, DateTime.Now, 1);
 
-            // F127. No scan, so the run's codes are the one group's, and the picked XML's bytes are
+            // F127. No scan, so the run's codes are the one group's, and the clash matrix's bytes are
             // read once as a scanned run reads them.
             scannedGroupCodes = null;
             FingerprintThePickedXml();
@@ -750,7 +745,7 @@ namespace Federator.Addin.Engine
             CoordinatesAcrossTheRun = new OffCoordinatesAcrossTheRun(
                 reports.SkipClashOffCoordinates, DateTime.Now, nwfs.Count);
 
-            // F127. No scan, so each picked NWF's run codes are its own group's, and the picked XML's
+            // F127. No scan, so each picked NWF's run codes are its own group's, and the clash matrix's
             // bytes are read once for every NWF of the pick.
             scannedGroupCodes = null;
             FingerprintThePickedXml();
@@ -2525,7 +2520,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Builds the sets the picked file holds, creates the tests it holds and runs
+        /// Builds the sets the clash matrix holds, creates the tests it holds and runs
         /// them, all into the document that is open for this group. Returns true when
         /// anything was put into the document, which is what decides whether the NWF is
         /// saved again.
@@ -2633,7 +2628,7 @@ namespace Federator.Addin.Engine
                 groupModelsInDocument = document.Models.Count;
                 outcome.ElementCount = GroupSize.ElementsIn(exports);
 
-                // S03-2. The names are compared by letter case with what the picked file's
+                // S03-2. The names are compared by letter case with what the clash matrix's
                 // sets ask, and with no file picked the block says nothing was compared.
                 log.Block(
                     ExportCheck.BlockTitle + " " + Words.Or(job.Building, "this group"),
@@ -2895,12 +2890,12 @@ namespace Federator.Addin.Engine
             Document document, FederationJob job, JobOutcome outcome, ClashSource source, int savedTests)
         {
             // Three things can happen and the log names which, in the same words on the
-            // scanned run and on the open file run: tests from the picked XML, the tests
-            // already saved in the document when no XML was picked, or nothing. The source
+            // scanned run and on the open file run: tests from the clash matrix, the tests
+            // already saved in the document when no clash matrix was read, or nothing. The source
             // was read once by FinishTheGroup, before the ALIGNMENT block.
             log.Line("CLASH    source   " + ClashWork.DescribeSource(source, exchange, savedTests));
 
-            // The picked file's sets come from the XML and from nowhere else, so with no
+            // The clash matrix's sets come from the XML and from nowhere else, so with no
             // XML the sets of the document are left exactly as they are. The Generic Models
             // sets come from the models, F128, so the SETS step runs for every group and
             // builds them with an XML or without one.
@@ -3029,7 +3024,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The Build sets button on the Clash step: the picked file's sets into the open
+        /// The Build sets button on the Clash step: the clash matrix's sets into the open
         /// document, nothing else. No scan, no NWF saved, no test created. It is the same
         /// BuildTheSets the run calls per group, so the SETS lines in the log read the
         /// same whichever way the sets were built. The open file stands as the group. D4.
@@ -3101,7 +3096,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The Run tests button on the Clash step: the picked file's tests created into
+        /// The Run tests button on the Clash step: the clash matrix's tests created into
         /// and run against the open document, nothing federated and no NWF saved. It is
         /// the same CreateAndRunTheTests the run calls per group, so the CLASH lines in
         /// the log read the same either way, and the report is built in memory the way a
@@ -3130,7 +3125,7 @@ namespace Federator.Addin.Engine
         {
             // Inside the method, because the run and the Sets into open model button both
             // call it and the SETS lines have to read the same whichever way they were built.
-            // The Generic Models plan is made first, because the picked file's leftover walk
+            // The Generic Models plan is made first, because the clash matrix's leftover walk
             // is handed its names as wanted, and its sets are built after the file's, F128,
             // all inside the one step so its seconds show the cost of both.
             return InStepReturning(
@@ -3149,7 +3144,7 @@ namespace Federator.Addin.Engine
                     {
                         genericAcrossTheRun.AddNotCounted(job.Building);
                         log.Line("SETS     " + job.Building
-                            + " Generic Models, not built, because the picked file's sets left the document damaged, so this step puts no Generic Models set in and asks no save");
+                            + " Generic Models, not built, because the clash matrix's sets left the document damaged, so this step puts no Generic Models set in and asks no save");
                         return false;
                     }
 
@@ -3158,11 +3153,11 @@ namespace Federator.Addin.Engine
                 () => SetsPhrase(outcome, fromTheFile));
         }
 
-        /// <summary>The SETS step's finish phrase, the picked file's sets and the Generic Models sets each said as what they were.</summary>
+        /// <summary>The SETS step's finish phrase, the clash matrix's sets and the Generic Models sets each said as what they were.</summary>
         private static string SetsPhrase(JobOutcome outcome, bool fromTheFile)
         {
             string file = !fromTheFile
-                ? "no XML picked, so no set of a file"
+                ? "no clash matrix read, so no set of a file"
                 : outcome.Sets == null ? "UNKNOWN, no set outcome was recorded" : outcome.Sets.Summary();
             string generic = outcome.GenericSets == null
                 ? "UNKNOWN, no Generic Models outcome was recorded"
@@ -3230,11 +3225,11 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// The Generic Models sets built into the document and counted, F128 and FR-177, Bader's
-        /// request 3 under Q112. Their own SetBuildOutcome, never the picked file's, so the EMPTY
+        /// request 3 under Q112. Their own SetBuildOutcome, never the clash matrix's, so the EMPTY
         /// SETS judge and SETS ACROSS THE RUN do not read them, and no judge, because a set of theirs
         /// at nought is a model with no such item, which is also what a wrong value gives, and the
         /// block says what a nought can mean. No leftover walk, because a walk handed this plan would
-        /// remove every set of the picked file that no test points at. A set created asks for the NWF
+        /// remove every set of the clash matrix that no test points at. A set created asks for the NWF
         /// save, FR-020, as any set does. The count is the items each set found, the block says
         /// items, and a count nobody took is UNKNOWN and never nought.
         /// </summary>
@@ -3400,7 +3395,7 @@ namespace Federator.Addin.Engine
                 {
                     if (!ClashWork.CreatesTests(exchange))
                     {
-                        log.Line("CLASH    the picked file holds no clash test, so none was created");
+                        log.Line("CLASH    the clash matrix holds no clash test, so none was created");
 
                         // F115 R4. The sets were judged and no test runs, so the block is written here.
                         WriteTheEmptySets(job, outcome, null);
@@ -4308,7 +4303,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The picked XML's sha256, F127, read once when the run starts so every group names the same bytes,
+        /// The clash matrix's sha256, F127, read once when the run starts so every group names the same bytes,
         /// and said on one line. Where it cannot be read the line says so and the sheets read UNKNOWN. It is
         /// read apart from the parse the window made of the file at the press, so a file changed between the
         /// two would be named by bytes the plan did not parse, a known gap of FileFingerprint.
@@ -4324,13 +4319,13 @@ namespace Federator.Addin.Engine
 
             try
             {
-                xmlFingerprint = FileFingerprint.Sha256(exchange.SourcePath);
-                log.Line("COVERAGE the picked XML " + exchange.SourcePath + " reads sha256 " + xmlFingerprint);
+                xmlFingerprint = exchange.Sha256();
+                log.Line("COVERAGE the clash matrix " + exchange.SourcePath + " reads sha256 " + xmlFingerprint);
             }
             catch (Exception error)
             {
                 log.Failure(
-                    "reading the sha256 of the picked XML " + exchange.SourcePath,
+                    "reading the sha256 of the clash matrix " + exchange.SourcePath,
                     error,
                     "kept going, the Coverage sheets and the COVERAGE blocks read its sha256 as UNKNOWN");
             }
@@ -4522,7 +4517,7 @@ namespace Federator.Addin.Engine
         /// are inside the file the NWD is published from. The plan is
         /// Federator.Core.Views.TestViewPlan, the writing is ViewpointBuilder, and the step
         /// is timed like every other one. The engine hands the builder what Core's rules
-        /// read: the run's team map, the picked XML's sets, the group's models with their
+        /// read: the run's team map, the clash matrix's sets, the group's models with their
         /// codes and teams, the tests the clash step ran, the test names of the document and
         /// of the XML, the mirrors' names and whether the clash step was sound. Returns
         /// whether anything changed in the document, a view written or an earlier one
@@ -4702,7 +4697,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// Every test name the document holds, SavedTests.Read, and every one the picked XML
+        /// Every test name the document holds, SavedTests.Read, and every one the clash matrix
         /// holds, each once, which LegacyClashView reads a per clash viewpoint's name against.
         /// </summary>
         private ICollection<string> TestNamesKnown(Document document)

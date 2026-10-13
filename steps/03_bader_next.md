@@ -1,5 +1,7 @@
 # 03 Bader next
 
+**SINCE F155, 2026-10-14, THE CLASH XML BOX IS GONE.** There is no Clash XML box, no Browse beside it, no Teams line under it, and no entry `Use the value in the XML` or `Other` in the tolerance drop down. The clash matrix is built into the tool. Earlier steps in this file that use them, steps 422 to 504, 587, 597, 1045 to 1060, 1133 to 1146 and 1222, cannot be followed as written on a build with F155. Skip them. The steps from 1400 on are written for the build with F155.
+
 **The last run, 2026-09-20 16:20, was the worksets round proving run against HIS OWN C02 folders, log `run-20260920-162006.log`, and it reads 8 groups DONE and 2 FAILED. The two are 1A02MM and 1A02WL, failed on purpose under Q70 because a structural model in each was exported on Revit`s internal origin, and BOTH still wrote their NWF, their NWD and their report. THE WORKSETS ROUND IS NOT ON MAIN YET: it is the branch `round-worksets` and has to be merged before a build here carries any of what these steps describe. THE ADD-IN BUILDS, 0 errors and 0 warnings.**
 
 One action per step. Do them in order. One build, one install and one Navisworks session cover every proof: the window checks first, then the C06 rebuild run, then one building twice, then the rest.
@@ -2006,3 +2008,23 @@ Only Excel can show these two things: that the pictures show, and that Excel ask
 1480. Open the workbook of 1A02MM in `F154 out` in Excel and look for: the heading Priority in column T beside the first block, and A, B or C on its clash rows. Close Excel and answer Do not save
 1481. Look for, in the RESULT block: the line of clashes by priority
 1482. Send the log
+
+### F155, the clash matrix built in, the tolerance from the drop down alone
+
+1490. Install main once fix-F155 has merged, steps 7 to 12
+1491. Start Navisworks and open the tool
+1492. On 4. Clash look for: no Clash XML row, no Browse button and no Teams line
+1493. Look for: the drop down Clash tolerance reading `25 mm`, and under it the grey line `Set on every test of the run. Results and statuses are kept`
+1494. Open the drop down and look for: `25 mm`, `50 mm` and `75 mm` and nothing else
+1495. Leave it on `25 mm`
+1496. Look for, on 4. Clash: `Built in matrix 1104-PAR. It holds` then its sets and `1830 tests.`
+1497. Make a new folder on the desktop named `F155 out`
+1498. Run 1A02MM from `F151 source` as in steps 1404 to 1411, with `F155 out` picked for the NWF, NWD and Excel folders
+1499. Look for, in the log: `MATRIX   the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml holds` and `1830 tests.`
+1500. Look for: `RUN      the clash matrix is the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.xml`
+1501. Look for: `MATRIX   the corrections are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.corrections.txt`
+1502. Look for: `TEAMS    the teams are read from the built in matrix pack 1104-PAR, 1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt`
+1503. Look for: a line starting `TOLERANCE 25 mm chosen in the tool, so it beats both the built in matrix and the document`
+1504. Open the workbook of 1A02MM in `F155 out` in Excel and look for: the Tolerance cell of the first block reads 25 mm in the document's units, `0.025m` or `0.082ft`. Close Excel and answer Do not save
+1505. Run 1A02MM again the same way, the NWF now in `F155 out`, and look for: the group reads `Weekly run plus XML`, and a TOLERANCE line naming `already in the document`
+1506. Send the log

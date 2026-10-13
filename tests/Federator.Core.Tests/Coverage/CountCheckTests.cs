@@ -232,7 +232,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// A name on two tests of the picked file was judged twice against the one test of the
+        /// A name on two tests of the clash matrix was judged twice against the one test of the
         /// document and the one block of the workbook, so the totals counted a test that does not exist.
         /// Both rows are not compared, as a name on two tests of either other side already is.
         /// </summary>
@@ -244,7 +244,7 @@ namespace Federator.Core.Tests
             Assert.That(check.Tests.Count, Is.EqualTo(2));
             Assert.That(check.CountOf(CountVerdict.Agree), Is.EqualTo(0));
             Assert.That(check.CountOf(CountVerdict.NotCompared), Is.EqualTo(2));
-            Assert.That(check.Tests[0].Why, Does.Contain("the name is on 2 tests of the picked file"));
+            Assert.That(check.Tests[0].Why, Does.Contain("the name is on 2 tests of the clash matrix"));
             Assert.That(check.FailedLines("100000"), Is.Empty);
         }
 

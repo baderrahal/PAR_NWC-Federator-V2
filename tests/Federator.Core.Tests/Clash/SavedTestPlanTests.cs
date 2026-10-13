@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// L1. With no XML picked the tool said it was running the tests already in the
+    /// L1. With no clash matrix read the tool said it was running the tests already in the
     /// document and ran nothing. The second way to build a plan is from the tests saved
     /// in the document, by address, and this is the shape of it.
     /// </summary>
@@ -162,7 +162,7 @@ namespace Federator.Core.Tests
             Assert.That(xml, Does.Contain("1 test"));
             Assert.That(saved, Does.StartWith("tests saved in the document"));
             Assert.That(saved, Does.Contain("1830 of them"));
-            Assert.That(saved, Does.Contain("no XML picked"));
+            Assert.That(saved, Does.Contain("no clash matrix read"));
             Assert.That(nothing, Does.StartWith("nothing"));
             Assert.That(nothing, Does.Contain("holds no clash test"));
             Assert.That(nothing, Does.Contain("nothing ran"));

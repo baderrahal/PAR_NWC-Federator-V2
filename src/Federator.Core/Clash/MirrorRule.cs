@@ -19,7 +19,7 @@ namespace Federator.Core.Clash
     /// every condition's rule and flags, are the same, SelectionSetDefinition.WholeQuestion,
     /// grouped by SetWarnings.FindIdentical, the HEALTH block's own grouping. The flags are
     /// whole, the negation, the Or group, the ignore case and the ignore name bits, because
-    /// the merge acts on this comparison. The sets are the picked XML's. A side is matched by
+    /// the merge acts on this comparison. The sets are the clash matrix's. A side is matched by
     /// its locator, Ordinal and never trimmed, because two set names in the reference file
     /// end in a space.
     ///
@@ -50,7 +50,7 @@ namespace Federator.Core.Clash
     ///
     /// WHERE A MIRROR'S CLASHES ARE MERGED, F132 attempts 12 and 13, Bader's answer A to Q142 of
     /// 2026-10-07. Only where this run created both tests of the pair and every set of both from
-    /// the picked XML: the document holds no test under the kept test's name, the mirror's XML
+    /// the clash matrix: the document holds no test under the kept test's name, the mirror's XML
     /// name or the name the mirror runs under, no rename lands on one of them, and every set
     /// either test names was created by this run's sets build,
     /// SetBuildOutcome.NotCreatedFromTheFile. A set already in the document is UNKNOWN whatever
@@ -153,15 +153,15 @@ namespace Federator.Core.Clash
         /// The rule over tests in the XML's order, or in the document's where no XML was
         /// picked. The priority file is the one the run picked, NothingPicked where none was,
         /// and then every pair keeps the one first in the XML. The sets are the ones the
-        /// tests' sides name, the picked XML's, ExchangeDocument.Sets, whose whole questions
+        /// tests' sides name, the clash matrix's, ExchangeDocument.Sets, whose whole questions
         /// pair two tests of two sets alike, or null where none was read. A test read off the
         /// document with the ending pairs by its sides, never by its name. The tests saved in
-        /// the document are handed once: as the tests where no XML was picked, savedInTheDocument
+        /// the document are handed once: as the tests where no clash matrix was read, savedInTheDocument
         /// then null, and as savedInTheDocument where one was, ClashTestPlan.FromDocument over
         /// every test the document holds with each side as the set it points at, a plan of
         /// none where it holds none. The sets build is this run's, SetBuildOutcome, read before
         /// any merge for the sets this run created, an outcome holding nothing where no set was
-        /// built, and null where no XML was picked, since then nothing is merged. An XML's tests
+        /// built, and null where no clash matrix was read, since then nothing is merged. An XML's tests
         /// with no document or no sets build are refused, because a mirror merged blind could
         /// add the clashes of another question or of other settings to its kept test.
         /// </summary>
@@ -264,7 +264,7 @@ namespace Federator.Core.Clash
             if (saved.Count > 0 && savedInTheDocument != null)
             {
                 throw new ArgumentException(
-                    "The tests saved in the document are handed once, as the tests where no XML was picked and as the "
+                    "The tests saved in the document are handed once, as the tests where no clash matrix was read and as the "
                         + "document where one was.",
                     "savedInTheDocument");
             }
@@ -326,7 +326,7 @@ namespace Federator.Core.Clash
         /// The renames an XML run makes in the document before the tests are found by name,
         /// and their MIRROR lines: each test saved before the mirror rule under the XML's name of
         /// a mirror, Q136 A, and each mirror an earlier run made of a test the XML now runs under
-        /// its own name, renamed back to it. With no XML picked nothing is planned and nothing
+        /// its own name, renamed back to it. With no clash matrix read nothing is planned and nothing
         /// said, since there is no XML name to rename for.
         /// </summary>
         public MirrorRenames Renames { get; private set; }
@@ -335,7 +335,7 @@ namespace Federator.Core.Clash
         /// The one rule of which pairs are merged, F132 attempts 12 and 13, Bader's answer A to
         /// Q142. Every pair starts not merged, MirrorPair.Merges, and only this sets one merged.
         /// A pair of a run with no XML is never merged. An XML pair is merged only where this
-        /// run created both its tests and every set of both from the picked XML, the document
+        /// run created both its tests and every set of both from the clash matrix, the document
         /// holding no test under the kept test's name, the mirror's XML name or the name the
         /// mirror runs under, no rename landing on one, and every set either test names created
         /// by this run's sets build, SetBuildOutcome.NotCreatedFromTheFile. The mirrors of one
@@ -802,7 +802,7 @@ namespace Federator.Core.Clash
                         + "higher priority, A before B before C before no priority, and where equal the one first in the "
                         + "XML, and " + apart + (apart == 1 ? " keeps its" : " keep their") + " own clashes, since a mirror "
                         + "is merged only where this run created both tests of the pair and every set of both from the "
-                        + "picked XML");
+                        + "clash matrix");
                 }
 
                 if (!rulesRead)
@@ -827,7 +827,7 @@ namespace Federator.Core.Clash
                         : ". No rule list of a set was read, so only a test with the same two sets swapped pairs")
                     + (named == 0
                         ? string.Empty
-                        : ". No XML was picked, so no pair is merged: both tests of each pair are run as they are "
+                        : ". No clash matrix was read, so no pair is merged: both tests of each pair are run as they are "
                             + "saved and each keeps its own clashes under its own name, and a clash both find may be "
                             + "counted twice"));
             }

@@ -15,43 +15,56 @@ namespace Federator.Core.Tests
     [TestFixture]
     public class ToleranceChoiceTests
     {
+        /// <summary>
+        /// F155, Bader's decision of 2026-10-13: the drop down is the only source of a run's tolerance and offers 25,
+        /// 50 and 75 mm and nothing else. The break: an entry for the XML or for a typed value back on the list fails.
+        /// </summary>
         [Test]
-        public void TheDefaultChoosesNothingAndChangesNothing()
-        {
-            ToleranceChoice choice = ToleranceChoice.FromTheFile();
-
-            Assert.That(choice.ChosenInTheTool, Is.False);
-            Assert.That(choice.Label(), Is.EqualTo(ToleranceChoice.UseTheFile));
-            Assert.That(choice.Origin, Is.EqualTo(ToleranceOrigin.File));
-            Assert.That(choice.For(0.2460629921, "ft"), Is.EqualTo(0.2460629921),
-                "the default leaves whatever the caller worked out exactly as it was");
-        }
-
-        [Test]
-        public void TheDropDownOffersTheFileThenThreeValuesThenOther()
+        public void TheDropDownOffersTwentyFiveFiftyAndSeventyFiveAndNothingElse()
         {
             IList<string> choices = ToleranceChoice.Choices();
 
-            Assert.That(choices.Count, Is.EqualTo(5));
-            Assert.That(choices[0], Is.EqualTo("Use the value in the XML"));
-            Assert.That(choices[1], Is.EqualTo("25 mm"));
-            Assert.That(choices[2], Is.EqualTo("50 mm"));
-            Assert.That(choices[3], Is.EqualTo("75 mm"));
-            Assert.That(choices[4], Is.EqualTo("Other"));
+            Assert.That(choices.Count, Is.EqualTo(3));
+            Assert.That(choices[0], Is.EqualTo("25 mm"));
+            Assert.That(choices[1], Is.EqualTo("50 mm"));
+            Assert.That(choices[2], Is.EqualTo("75 mm"));
+            Assert.That(choices, Does.Not.Contain("Use the value in the XML"));
+            Assert.That(choices, Does.Not.Contain("Other"));
         }
 
-        /// <summary>The break. A chosen value wins over whatever the file or the document said.</summary>
+        /// <summary>25 mm is selected when the window opens, and every button that runs no test hands it on.</summary>
         [Test]
-        public void AChosenValueBeatsTheFileAndTheDocument()
+        public void TwentyFiveIsTheDefaultAndTheFirstEntry()
         {
-            ToleranceChoice choice = ToleranceChoice.Of(25.0);
+            Assert.That(ToleranceChoice.Default().Millimetres, Is.EqualTo(25.0));
+            Assert.That(Array.IndexOf(ToleranceChoice.OfferedMillimetres, ToleranceChoice.DefaultMillimetres), Is.EqualTo(0));
+            Assert.That(new ReportOptions().Tolerance.Millimetres, Is.EqualTo(25.0));
+        }
 
-            Assert.That(choice.ChosenInTheTool, Is.True);
-            Assert.That(choice.Origin, Is.EqualTo(ToleranceOrigin.Tool));
-            Assert.That(choice.For(0.2460629921, "mm"), Is.EqualTo(25.0),
-                "the 75 mm the file asked for loses");
-            Assert.That(choice.For(999.0, "mm"), Is.EqualTo(25.0),
-                "and so does whatever the document had");
+        /// <summary>
+        /// The entry for the XML's value, the entry Other and what only served them are gone, so the XML's tolerance can
+        /// never be chosen again and no typed text is parsed.
+        /// </summary>
+        [Test]
+        public void TheXmlEntryOtherAndTheTypedTextAreGone()
+        {
+            Type type = typeof(ToleranceChoice);
+
+            Assert.That(type.GetField("UseTheFile"), Is.Null);
+            Assert.That(type.GetField("Other"), Is.Null);
+            Assert.That(type.GetField("OtherIsBlank"), Is.Null);
+            Assert.That(type.GetMethod("FromTheFile"), Is.Null);
+            Assert.That(type.GetProperty("ChosenInTheTool"), Is.Null);
+            Assert.That(type.GetMethod("FromThePicker").GetParameters().Length, Is.EqualTo(2), "the index and the refusal, no text");
+        }
+
+        /// <summary>The grey line says what the box does in twelve words at most and names no XML.</summary>
+        [Test]
+        public void TheGreyLineIsTwelveWordsAtMostAndNamesNoXml()
+        {
+            Assert.That(ToleranceChoice.HelpLine.Split(' ').Length, Is.LessThanOrEqualTo(12));
+            Assert.That(ToleranceChoice.HelpLine, Does.Not.Contain("XML"));
+            Assert.That(ToleranceChoice.PickerLabel.Split(' ').Length, Is.LessThanOrEqualTo(8));
         }
 
         [Test]
@@ -77,14 +90,6 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void AskingTheDefaultForAValueIsARefusalAndNotAZero()
-        {
-            ToleranceChoice choice = ToleranceChoice.FromTheFile();
-
-            Assert.Throws<InvalidOperationException>(delegate { choice.InDocumentUnits("mm"); });
-        }
-
-        [Test]
         public void ZeroIsARealToleranceAndANegativeOneIsNot()
         {
             Assert.That(ToleranceChoice.Of(0.0).Millimetres, Is.EqualTo(0.0));
@@ -96,103 +101,36 @@ namespace Federator.Core.Tests
 
         // ---------- the drop down read without a throw, FR-166 ----------
 
-        private static readonly int OtherAt = ToleranceChoice.Choices().Count - 1;
-
-        /// <summary>
-        /// FR-166. Other chosen with the box blank threw out of every button that read the run's
-        /// settings, the ones that never use the tolerance among them. Read here, a blank box is a
-        /// refusal handed back with no throw, so each caller decides whether it matters.
-        /// </summary>
         [Test]
-        public void OtherWithTheBoxBlankIsRefusedWithoutAThrow()
+        public void EachEntryOfTheDropDownIsItsValue()
         {
-            foreach (string blank in new[] { null, string.Empty, "   " })
+            for (int at = 0; at < ToleranceChoice.Choices().Count; at++)
             {
                 string refused;
-                ToleranceChoice chosen = ToleranceChoice.FromThePicker(OtherAt, blank, out refused);
-
-                Assert.That(chosen, Is.Null, "\"" + blank + "\"");
-                Assert.That(refused, Is.EqualTo(ToleranceChoice.OtherIsBlank), "\"" + blank + "\"");
-            }
-        }
-
-        [Test]
-        public void OtherWithTextThatIsNoNumberIsRefusedWithoutAThrow()
-        {
-            foreach (string text in new[] { "abc", "25mm", "NaN", "Infinity", "-Infinity", "1e400" })
-            {
-                string refused;
-                ToleranceChoice chosen = ToleranceChoice.FromThePicker(OtherAt, text, out refused);
-
-                Assert.That(chosen, Is.Null, text);
-                Assert.That(refused, Is.EqualTo("A tolerance that is not a number is not a tolerance."), text);
-            }
-        }
-
-        [Test]
-        public void OtherBelowZeroIsRefusedWithoutAThrow()
-        {
-            string refused;
-            ToleranceChoice chosen = ToleranceChoice.FromThePicker(OtherAt, "-1", out refused);
-
-            Assert.That(chosen, Is.Null);
-            Assert.That(refused, Is.EqualTo("A tolerance below zero is not a tolerance. Zero is a real one and is allowed."));
-        }
-
-        /// <summary>One rule: the words the drop down hands back are the words Of throws with.</summary>
-        [Test]
-        public void TheRefusalIsInTheSameWordsOfThrowsWith()
-        {
-            string refused;
-            ToleranceChoice.FromThePicker(OtherAt, "-2", out refused);
-
-            ArgumentOutOfRangeException thrown =
-                Assert.Throws<ArgumentOutOfRangeException>(delegate { ToleranceChoice.Of(-2.0); });
-
-            Assert.That(refused, Is.Not.Null);
-            Assert.That(thrown.Message, Does.StartWith(refused));
-        }
-
-        [Test]
-        public void OtherWithANumberIsThatTolerance()
-        {
-            foreach (KeyValuePair<string, double> typed in new Dictionary<string, double>
-            {
-                { "0", 0.0 }, { "12.5", 12.5 }, { " 30 ", 30.0 }
-            })
-            {
-                string refused;
-                ToleranceChoice chosen = ToleranceChoice.FromThePicker(OtherAt, typed.Key, out refused);
-
-                Assert.That(refused, Is.Null, typed.Key);
-                Assert.That(chosen.ChosenInTheTool, Is.True, typed.Key);
-                Assert.That(chosen.Millimetres, Is.EqualTo(typed.Value), typed.Key);
-            }
-        }
-
-        /// <summary>The entries before Other never read the box, so junk left in it refuses nothing.</summary>
-        [Test]
-        public void TheEntriesBeforeOtherNeverReadTheBox()
-        {
-            string refused;
-
-            Assert.That(ToleranceChoice.FromThePicker(0, "junk", out refused).ChosenInTheTool, Is.False);
-            Assert.That(refused, Is.Null);
-            Assert.That(ToleranceChoice.FromThePicker(-1, "junk", out refused).ChosenInTheTool, Is.False,
-                "nothing picked reads as the file");
-
-            for (int at = 1; at < OtherAt; at++)
-            {
-                ToleranceChoice chosen = ToleranceChoice.FromThePicker(at, "junk", out refused);
+                ToleranceChoice chosen = ToleranceChoice.FromThePicker(at, out refused);
 
                 Assert.That(refused, Is.Null, ToleranceChoice.Choices()[at]);
-                Assert.That(chosen.Millimetres, Is.EqualTo(ToleranceChoice.OfferedMillimetres[at - 1]));
+                Assert.That(chosen.Millimetres, Is.EqualTo(ToleranceChoice.OfferedMillimetres[at]));
                 Assert.That(chosen.Label(), Is.EqualTo(ToleranceChoice.Choices()[at]));
             }
         }
 
+        /// <summary>FR-166. Nothing selected is a refusal handed back with no throw, so each caller decides whether it matters.</summary>
         [Test]
-        public void ATypedValueReadsInTheWordsAPersonSays()
+        public void NothingSelectedIsRefusedWithoutAThrow()
+        {
+            foreach (int at in new[] { -1, ToleranceChoice.Choices().Count })
+            {
+                string refused;
+                ToleranceChoice chosen = ToleranceChoice.FromThePicker(at, out refused);
+
+                Assert.That(chosen, Is.Null, at.ToString());
+                Assert.That(refused, Is.EqualTo(ToleranceChoice.NothingSelected), at.ToString());
+            }
+        }
+
+        [Test]
+        public void AValueReadsInTheWordsAPersonSays()
         {
             Assert.That(ToleranceChoice.Of(37.5).Label(), Is.EqualTo("37.5 mm"));
             Assert.That(ToleranceChoice.Of(25.0).Label(), Is.EqualTo("25 mm"));
@@ -219,41 +157,13 @@ namespace Federator.Core.Tests
             string line = ToleranceChoice.Of(25.0).LogLine(ClashPlanSource.ExchangeFile, 211, Saved(SavedTestTolerance.Set, 1619), "ft");
 
             Assert.That(line, Does.StartWith("TOLERANCE 25 mm chosen in the tool"));
-            Assert.That(line, Does.Contain("beats both the XML and the document"));
+            Assert.That(line, Does.Contain("beats both the built in matrix and the document"));
             Assert.That(line, Does.Contain("Set on 1830 tests"));
             Assert.That(line, Does.Contain("211 created fresh"));
             Assert.That(line, Does.Contain("1619 already in the document"));
             Assert.That(line, Does.Contain("0.082021 ft"));
             Assert.That(line, Does.Not.Contain("Not set on"),
                 "a line where every saved test was set has nothing to say apart");
-        }
-
-        [Test]
-        public void TheDefaultLineSaysTheDocumentWasLeftAlone()
-        {
-            string line = ToleranceChoice.FromTheFile()
-                .LogLine(ClashPlanSource.ExchangeFile, 211, Saved(SavedTestTolerance.LeftAsTheDocumentHasIt, 1619), "ft");
-
-            Assert.That(line, Does.Contain("read per test out of the XML"));
-            Assert.That(line, Does.Contain("1619 left as the document has them"));
-            Assert.That(line, Does.Not.Contain("beats"));
-        }
-
-        /// <summary>
-        /// FR-063. With no XML picked the saved tests are the plan and every tolerance is the
-        /// one the document holds, so a line saying it was read per test out of the XML is
-        /// false on every group of that run.
-        /// </summary>
-        [Test]
-        public void TheDefaultLineOfARunWithNoXmlDoesNotSayTheXmlWasRead()
-        {
-            string line = ToleranceChoice.FromTheFile()
-                .LogLine(ClashPlanSource.Document, 0, Saved(SavedTestTolerance.LeftAsTheDocumentHasIt, 1830), "ft");
-
-            Assert.That(line, Does.Not.Contain("read per test out of the XML"));
-            Assert.That(line, Does.Not.Contain("XML"), "no XML was picked, so none was read and none is beaten");
-            Assert.That(line, Does.StartWith("TOLERANCE as each test saved in the document holds it"));
-            Assert.That(line, Does.Contain("1830 left as the document has them"));
         }
 
         /// <summary>FR-063. A value chosen on a run with no XML beats the document alone.</summary>
@@ -344,7 +254,7 @@ namespace Federator.Core.Tests
             Assert.That(all, Does.Contain("7 groups"));
             Assert.That(all, Does.Contain("1830 tests"));
             Assert.That(all, Does.Contain("already saved in each NWF"));
-            Assert.That(all, Does.Contain("beats the tolerance in the XML and the tolerance in the document"));
+            Assert.That(all, Does.Contain("beats the tolerance in the built in matrix and the tolerance in the document"));
             // 5y measured on 2026-09-20 that it resets NOTHING, and this line asserted
             // it did. The real cost is which clashes the test finds next time.
             Assert.That(all, Does.Contain("Every recorded result and every status a person set is KEPT"));
@@ -352,9 +262,9 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheDefaultWarnsAboutNothing()
+        public void EveryRunWarnsWithItsValueSinceAValueIsAlwaysChosen()
         {
-            Assert.That(ToleranceChoice.FromTheFile().WarningLines(7, 1830), Is.Empty);
+            Assert.That(ToleranceChoice.Default().WarningLines(7, 1830)[0], Is.EqualTo("Clash tolerance: 25 mm, chosen in the tool."));
         }
 
         // ---------- where the report read it ----------
@@ -367,21 +277,21 @@ namespace Federator.Core.Tests
         [Test]
         public void TheReportSaysWhereEveryToleranceWasRead()
         {
-            string line = ToleranceChoice.ReadFromLine(1830, 0, 0, 0);
+            string line = ToleranceChoice.ReadFromLine(1830, 0, 0);
 
             Assert.That(line, Does.Contain("the clash test in the document for 1830"));
-            Assert.That(line, Does.Contain("the clash XML for 0"));
+            Assert.That(line, Does.Not.Contain("XML"), "F155, no row reads its tolerance off the XML");
             Assert.That(line, Does.Contain("chosen in the tool for 0"));
             Assert.That(line, Does.Contain("UNKNOWN for 0"));
             Assert.That(line, Does.Contain("1830 tests in all"));
         }
 
         [Test]
-        public void AReportReadingTheFileRatherThanTheDocumentShowsAsANumber()
+        public void AReportReadingTheToolRatherThanTheDocumentShowsAsANumber()
         {
-            string line = ToleranceChoice.ReadFromLine(0, 1830, 0, 0);
+            string line = ToleranceChoice.ReadFromLine(0, 1830, 0);
 
-            Assert.That(line, Does.Contain("the clash XML for 1830"));
+            Assert.That(line, Does.Contain("chosen in the tool for 1830"));
             Assert.That(line, Does.Contain("the clash test in the document for 0"));
         }
 
@@ -400,7 +310,6 @@ namespace Federator.Core.Tests
         {
             Assert.That(ToleranceChoice.Words(ToleranceOrigin.Document),
                 Is.EqualTo("the clash test in the document"));
-            Assert.That(ToleranceChoice.Words(ToleranceOrigin.File), Is.EqualTo("the clash XML"));
             Assert.That(ToleranceChoice.Words(ToleranceOrigin.Tool), Is.EqualTo("chosen in the tool"));
             Assert.That(ToleranceChoice.Words((ToleranceOrigin)99), Is.EqualTo("UNKNOWN"));
         }
@@ -443,13 +352,13 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// FR-036. The blocks of tests that never ran are not all the picked file's since a
+        /// FR-036. The blocks of tests that never ran are not all the clash matrix's since a
         /// chosen value reaches their rows, so the line no longer says they read off it.
         /// </summary>
         [Test]
         public void TheBlocksLineNoLongerSaysEveryTestThatNeverRanReadsOffThePickedFile()
         {
-            Assert.That(ToleranceChoice.BlocksLine(18300, 1041), Does.Not.Contain("reads off the picked file"));
+            Assert.That(ToleranceChoice.BlocksLine(18300, 1041), Does.Not.Contain("reads off the clash matrix"));
         }
 
         /// <summary>
@@ -480,7 +389,7 @@ namespace Federator.Core.Tests
             TestReport row = new TestReport(2, "STR vs MEP");
             row.Tolerance = 0.075;
             row.ToleranceUnits = "m";
-            row.ToleranceFrom = ToleranceOrigin.File;
+            row.ToleranceFrom = ToleranceOrigin.Document;
 
             ToleranceChoice.Of(50.0).PutOn(row, "m");
 
@@ -488,20 +397,11 @@ namespace Federator.Core.Tests
             Assert.That(row.ToleranceFrom, Is.EqualTo(ToleranceOrigin.Tool));
         }
 
-        /// <summary>Q54. Under the default a row keeps what the plan gave it, untouched.</summary>
+        /// <summary>A row of null is no row and nothing throws, since F155 the one case where PutOn changes nothing.</summary>
         [Test]
-        public void UnderTheDefaultTheRowKeepsWhatThePlanGaveIt()
+        public void ARowOfNullIsNoRow()
         {
-            TestReport row = new TestReport(1, "ARC vs MEP");
-            row.Tolerance = 0.2460629921;
-            row.ToleranceUnits = "ft";
-            row.ToleranceFrom = ToleranceOrigin.File;
-
-            ToleranceChoice.FromTheFile().PutOn(row, "ft");
-            ToleranceChoice.Of(25.0).PutOn(null, "ft");
-
-            Assert.That(row.Tolerance, Is.EqualTo(0.2460629921));
-            Assert.That(row.ToleranceFrom, Is.EqualTo(ToleranceOrigin.File));
+            Assert.DoesNotThrow(() => ToleranceChoice.Of(25.0).PutOn(null, "ft"));
         }
     }
 }

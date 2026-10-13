@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// Every test of the picked file against what happened, one reason each, F127, Bader's
+    /// Every test of the clash matrix against what happened, one reason each, F127, Bader's
     /// request 2 under Q112: created or not, run or not, and for a test with no results why.
     /// The reason is the runner's own record, read in the order the code applies it, so F77
     /// keeping a test out comes before the coordinates rule skipping the clash.
@@ -556,7 +556,7 @@ namespace Federator.Core.Tests
         // ---------- the saved tests with no XML ----------
 
         /// <summary>
-        /// The reviewer's blocking finding on attempt 1. With no XML picked the plan is read
+        /// The reviewer's blocking finding on attempt 1. With no clash matrix read the plan is read
         /// off the tests saved in the document, and it drops a saved test whose type number
         /// is not one this tool runs and one with no name. Both were read out of the
         /// document, so they are in it, already there and not run, with the plan's own

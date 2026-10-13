@@ -66,7 +66,7 @@ namespace Federator.Core.Coverage
         /// <summary>One verdict per test handed in, in that order.</summary>
         public ReadOnlyCollection<CountedTest> Tests { get; private set; }
 
-        /// <summary>The tests the document holds that the picked file does not, named and not judged.</summary>
+        /// <summary>The tests the document holds that the clash matrix does not, named and not judged.</summary>
         public ReadOnlyCollection<string> NotInTheXml { get; private set; }
 
         /// <summary>
@@ -121,11 +121,11 @@ namespace Federator.Core.Coverage
             {
                 inTheXml.Add(test.Name);
 
-                // A name on two tests of the picked file is judged on neither, since both would be set
+                // A name on two tests of the clash matrix is judged on neither, since both would be set
                 // beside the one test of the document and the one block of the workbook, and the totals
                 // would count a test that does not exist.
                 check.tests.Add(timesNamed[test.Name] > 1
-                    ? NotCompared(test.Name, "the name is on " + timesNamed[test.Name] + " tests of the picked file")
+                    ? NotCompared(test.Name, "the name is on " + timesNamed[test.Name] + " tests of the clash matrix")
                     : One(test, document, workbook, noWorkbookBecause, compacted, inAMerge));
             }
 

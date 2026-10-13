@@ -229,7 +229,7 @@ namespace Federator.Addin.Engine
         public bool InternalWorkbookOnDisk { get; set; }
 
         /// <summary>
-        /// The tests the clash step planned for this group, F127, the picked file's or the ones saved in the
+        /// The tests the clash step planned for this group, F127, the clash matrix's or the ones saved in the
         /// document, or null where it made no plan. The coverage reads every test of it.
         /// </summary>
         public ClashTestPlan ClashPlan { get; set; }

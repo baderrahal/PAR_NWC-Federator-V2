@@ -490,7 +490,7 @@
             <TabItem Header="4. Clash">
                 <DockPanel Margin="8">
                     <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepHeading}"
-                               Text="Pick one XML here and press Run on any step. The run does the whole job for every ticked group: append, save the NWF, build the sets, create the tests, run them, save the NWF again, publish the NWD last. The file can hold sets, clash tests, or both, and the tool reads whatever is in it. Leave this empty and the tests already saved in each NWF are run, with no set built and no test created." />
+                               Text="Press Run on any step. The run does the whole job for every ticked group: append, save the NWF, build the sets, create the tests, run them, save the NWF again, publish the NWD last. The clash matrix is built into the tool. A test of it already saved in an NWF runs where it sits, keeping its results." />
                     <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -500,32 +500,15 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="Clash XML" />
-                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="ExchangeFileBox" VerticalAlignment="Center"
-                                 TextChanged="OnExchangeFileChanged" />
-                        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Click="OnBrowseExchangeFile" />
-                        <!-- F131. Which team map a run reads, the one beside the XML in the box or,
-                             with none there, the one kept for a run with no XML, Q123 answered B.
-                             The words are Core's, TeamMap.WindowLine, set in the code behind. -->
-                        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" x:Name="TeamsLine"
-                                   Style="{StaticResource TickHelp}" />
-                        <!-- F76. The tolerance chosen here beats the XML and the document.
-                             The entries, the label, the grey line and the unit beside the
-                             number box are read off Core in the constructor and never
-                             typed here, because the offered values are a setting and a
-                             copy in the XAML is the one nothing can test. -->
-                        <Label Grid.Row="2" Grid.Column="0" x:Name="ToleranceLabel" />
-                        <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
-                            <ComboBox x:Name="ToleranceBox" MinWidth="200" VerticalAlignment="Center"
-                                      SelectionChanged="OnToleranceChanged" />
-                            <TextBox x:Name="ToleranceOtherBox" Width="80" Margin="8,0,0,0"
-                                     VerticalAlignment="Center" IsEnabled="False" />
-                            <TextBlock x:Name="ToleranceOtherUnit" VerticalAlignment="Center" Margin="4,0,0,0" />
-                        </StackPanel>
-                        <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ToleranceHelp"
+                        <!-- F155. The drop down is the one source of a run's tolerance and its
+                             only control, 25, 50 and 75 mm, 25 selected when the window opens.
+                             The entries, the label and the grey line are read off Core in the
+                             constructor and never typed here. -->
+                        <Label Grid.Row="0" Grid.Column="0" x:Name="ToleranceLabel" />
+                        <ComboBox Grid.Row="0" Grid.Column="1" x:Name="ToleranceBox" MinWidth="200"
+                                  HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ToleranceHelp"
                                    Style="{StaticResource TickHelp}" />
                     </Grid>
 

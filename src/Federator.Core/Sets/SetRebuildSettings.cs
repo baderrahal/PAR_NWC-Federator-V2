@@ -3,7 +3,7 @@ using System;
 namespace Federator.Core.Sets
 {
     /// <summary>
-    /// Whether a set already in the NWF is rebuilt from the picked file where the two
+    /// Whether a set already in the NWF is rebuilt from the clash matrix where the two
     /// have drifted apart, Q72 answered a on 2026-09-20.
     ///
     /// OFF BY DEFAULT, the shape F76 already uses for the tolerance. It changes what is
@@ -44,7 +44,7 @@ namespace Federator.Core.Sets
             RebuildDriftedSets = DefaultRebuildDriftedSets;
         }
 
-        /// <summary>Whether a drifted set is rebuilt from the picked file.</summary>
+        /// <summary>Whether a drifted set is rebuilt from the clash matrix.</summary>
         public bool RebuildDriftedSets { get; set; }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Federator.Core.Sets
                 return null;
             }
 
-            return "Sets that drifted from the picked file are REBUILT in the NWF. The clash tests "
+            return "Sets that drifted from the clash matrix are REBUILT in the NWF. The clash tests "
                 + "pointing at them keep their results and their statuses, which was measured on "
                 + "2026-09-20 before this was built. A set the file no longer names is brought up to date too: an unused one is removed, and one that clash tests point at is renamed into the corrected name rather than removed, Q74.";
         }

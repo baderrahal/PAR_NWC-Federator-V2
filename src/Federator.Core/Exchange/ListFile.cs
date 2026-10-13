@@ -5,7 +5,7 @@ using System.Text;
 namespace Federator.Core.Exchange
 {
     /// <summary>
-    /// How a plain list kept beside the picked XML is read, the one way for every such list:
+    /// How a plain list kept beside the clash matrix is read, the one way for every such list:
     /// the list of corrections, Q113, and the team map, Q114 and Q115. Moved out of
     /// MatrixCorrectionList when the team map came, F131, so the two lists are read by one rule
     /// and cannot come to read a line two ways.
@@ -97,7 +97,7 @@ namespace Federator.Core.Exchange
         {
             if (string.IsNullOrEmpty(xmlPath))
             {
-                throw new ArgumentException("A list is found beside a picked XML, and no XML was named.", "xmlPath");
+                throw new ArgumentException("A list is found beside a clash matrix, and no XML was named.", "xmlPath");
             }
 
             string full = Path.GetFullPath(xmlPath);

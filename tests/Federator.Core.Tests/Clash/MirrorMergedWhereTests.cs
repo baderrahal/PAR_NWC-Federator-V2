@@ -9,7 +9,7 @@ namespace Federator.Core.Tests
     /// <summary>
     /// F132 attempts 12 and 13, Bader's answer A to Q142 of 2026-10-07. A mirror's clashes are
     /// merged into its kept test only where this run created both tests of the pair and every
-    /// set of both from the picked XML. A test the NWF already held under
+    /// set of both from the clash matrix. A test the NWF already held under
     /// either name, an old test renamed under Q136 A, a test renamed back after a change of
     /// roles, and every run with no XML merge nothing: each test keeps its own clashes under its
     /// own name, and the log says why and that a clash both find may be counted twice. Where one
@@ -72,7 +72,7 @@ namespace Federator.Core.Tests
         private const string Element = "LcRevitData_Element";
         private const string Category = "LcRevitPropertyElementCategory";
 
-        /// <summary>The set of the picked file at that path, asking Category equals that value, the way SetBuildPlan plans it.</summary>
+        /// <summary>The set of the clash matrix at that path, asking Category equals that value, the way SetBuildPlan plans it.</summary>
         private static PlannedSet Planned(string path, string wantedValue)
         {
             PlannedCondition wanted = new PlannedCondition(
@@ -119,13 +119,13 @@ namespace Federator.Core.Tests
 
                 Assert.That(rule.Pairs.Count, Is.EqualTo(1), "found by its sides, " + tolerance);
                 Assert.That(Merges(rule), Is.EqualTo(0), "no clash of " + SwapMirror + " goes under " + Kept + ", " + tolerance);
-                Assert.That(rule.Lines()[0], Does.EndWith(". No XML was picked, so no pair is merged: both tests of each "
+                Assert.That(rule.Lines()[0], Does.EndWith(". No clash matrix was read, so no pair is merged: both tests of each "
                     + "pair are run as they are saved and each keeps its own clashes under its own name, and a clash both "
                     + "find may be counted twice"));
             }
         }
 
-        // The breaker's finding 2 on attempt 11. A pair is judged on the picked XML's sets, and a
+        // The breaker's finding 2 on attempt 11. A pair is judged on the clash matrix's sets, and a
         // set already in the NWF keeps the question it was built with. Where the drift check
         // found a set of either test asking another question than the XML, nothing is merged,
         // for the same two sets swapped and for two sets of one rule list alike.
@@ -140,7 +140,7 @@ namespace Federator.Core.Tests
 
             Assert.That(Merges(rule), Is.EqualTo(0));
             Assert.That(rule.Lines(), Does.Contain(NotMerged(Kept, SwapMirror, "the set " + Columns + " was found by the "
-                + "SET DRIFT check asking another question than the picked XML")));
+                + "SET DRIFT check asking another question than the clash matrix")));
 
             SetBuildOutcome byRuleList = MirrorRuleTests.Built(Telecom, Walls);
             Present(byRuleList, Telephone, "Category equals Telephones");
@@ -170,7 +170,7 @@ namespace Federator.Core.Tests
         public void ASetAlreadyInTheDocumentMergesNothingWhateverTheDriftCheckRead()
         {
             const string present = " was already in the document and not created by this run, so whether it asks what the "
-                + "picked XML asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags "
+                + "clash matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags "
                 + "or search";
 
             SetBuildOutcome read = MirrorRuleTests.Built(Ducts);
@@ -263,7 +263,7 @@ namespace Federator.Core.Tests
             Assert.That(rule.Lines()[0], Does.Contain("Both tests of each pair are run. 1 mirror is to be merged by the pair "
                 + "of items into the one kept once both tests of the pair run, the higher priority"));
             Assert.That(rule.Lines()[0], Does.EndWith("since a mirror is merged only where this run created both tests of "
-                + "the pair and every set of both from the picked XML"));
+                + "the pair and every set of both from the clash matrix"));
             Assert.That(names[0].Value, Is.EqualTo("kept of a mirrored pair, the clashes only its mirror " + SwapMirror
                 + " finds are to be added to it once both run"));
             Assert.That(names[1].Value, Does.EndWith(", its clashes to be merged into " + Kept + "'s once both run"));

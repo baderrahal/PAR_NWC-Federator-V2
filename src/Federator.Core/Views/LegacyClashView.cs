@@ -15,7 +15,7 @@ namespace Federator.Core.Views
     ///      sorted them, then an optional size folder, one to three deep
     ///   2. it is a viewpoint and not a folder
     ///   3. its name is a test's name, the name separator, the legacy clash prefix and digits
-    ///   4. that test is one the document or the picked XML holds
+    ///   4. that test is one the document or the clash matrix holds
     ///   5. it carries no comment and no redline, a person's comment making it theirs, and
     ///      redlines that could not be read proving nothing
     ///

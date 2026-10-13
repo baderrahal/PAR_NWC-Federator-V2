@@ -349,7 +349,7 @@ namespace Federator.Core.Tests
 
             string lines = string.Join("\n", new List<string>(outcome.Lines()).ToArray());
 
-            Assert.That(lines, Does.Contain("already there     : 2, 1 of them rebuilt from the picked file and 1 left alone, not copied again"));
+            Assert.That(lines, Does.Contain("already there     : 2, 1 of them rebuilt from the clash matrix and 1 left alone, not copied again"));
             Assert.That(lines, Does.Not.Contain("2, left alone"));
         }
 
@@ -398,7 +398,7 @@ namespace Federator.Core.Tests
         /// <summary>
         /// A SET THIS RUN REBUILT IS NEVER CALLED LEFT ALONE, the reviewer's finding on attempt 1.
         /// The engine's line said every set already there was left alone, and since FR-020 a set
-        /// rebuilt from the picked file is one that changed the document, so with the box ticked
+        /// rebuilt from the clash matrix is one that changed the document, so with the box ticked
         /// the line called a set it had just replaced left alone. The line is Core's and carries
         /// the rebuilt count apart from the ones left alone.
         /// </summary>
@@ -411,7 +411,7 @@ namespace Federator.Core.Tests
             outcome.AddAlreadyPresent("lcop_selection_set_tree/A/Pipes", "Pipes", 1, 3);
 
             Assert.That(outcome.PutInLine(), Is.EqualTo(
-                "put into the document: 0 created, 2 already there, 1 of them rebuilt from the picked file and 1 left alone"));
+                "put into the document: 0 created, 2 already there, 1 of them rebuilt from the clash matrix and 1 left alone"));
         }
 
         /// <summary>With nothing rebuilt every set already there was left alone, and a leftover acted on is said after.</summary>

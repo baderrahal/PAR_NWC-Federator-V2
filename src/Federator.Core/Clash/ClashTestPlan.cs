@@ -63,7 +63,7 @@ namespace Federator.Core.Clash
             this.unknownTestTypes = unknownTestTypes;
         }
 
-        /// <summary>The picked file, or the tests already saved in the document.</summary>
+        /// <summary>The clash matrix, or the tests already saved in the document.</summary>
         public ClashPlanSource Source { get; private set; }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Federator.Core.Clash
 
         /// <summary>
         /// The first CLASH line of a group, FR-058. It is written before the sets are counted,
-        /// so for a picked file it cannot know how many tests are created: set 03 read 1830 to
+        /// so for a clash matrix it cannot know how many tests are created: set 03 read 1830 to
         /// create here and 36 created eight lines on, two counts of one thing. It says how many
         /// passed the file's own checks and where the count of those created is said, the line
         /// of Federator.Core.Clash.CreationPlan. With no file the saved tests are the plan and
@@ -150,7 +150,7 @@ namespace Federator.Core.Clash
 
         /// <summary>
         /// The second way to build a plan: from the tests already saved in the document,
-        /// for a run with no XML picked. Every saved test goes in, by its address, in the
+        /// for a run with no clash matrix read. Every saved test goes in, by its address, in the
         /// order it was found. Nothing is created and nothing is compared, because there
         /// is no file to create from or to drift from. The sets are not touched either.
         ///

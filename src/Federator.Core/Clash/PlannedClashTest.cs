@@ -105,17 +105,6 @@ namespace Federator.Core.Clash
                 MergeComposites, Left, Right, FileIndex, Address);
         }
 
-        /// <summary>
-        /// Both tolerances with both unit names. Which units ClashTest.Tolerance is
-        /// measured in is UNKNOWN until a test runs against a real model, so both numbers
-        /// go in the log and the first real run settles it from the log alone.
-        /// </summary>
-        public string DescribeTolerance()
-        {
-            return EventRow.Tolerance(ToleranceInFileUnits) + " " + FileUnits
-                + " is " + EventRow.Tolerance(Tolerance) + " " + DocumentUnits;
-        }
-
         public override string ToString()
         {
             return Name;

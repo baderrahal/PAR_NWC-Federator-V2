@@ -1,7 +1,7 @@
 namespace Federator.Core.Coverage
 {
     /// <summary>
-    /// The one reason each test of the picked file gets, F127, Bader's request 2 under Q112.
+    /// The one reason each test of the clash matrix gets, F127, Bader's request 2 under Q112.
     /// Read off the clash runner's own record in the order the code applies it, so a test
     /// F77 kept out of the document keeps its side reason in a group whose clash the
     /// coordinates rule skipped. The words are CoverageWords.
@@ -15,7 +15,7 @@ namespace Federator.Core.Coverage
         RanAndFoundNone,
 
         /// <summary>
-        /// The test was not created: the plan dropped a test of the picked file before the
+        /// The test was not created: the plan dropped a test of the clash matrix before the
         /// model, an unknown test type, no locator, no tolerance, no name or units it cannot
         /// convert, or a set it names is not in the document. The words of
         /// ClashTestPlan.Describe go beside it.
@@ -26,7 +26,7 @@ namespace Federator.Core.Coverage
         NoTestResolvesASet,
 
         /// <summary>
-        /// With no XML picked, a test saved in the document that the plan leaves out, a type
+        /// With no clash matrix read, a test saved in the document that the plan leaves out, a type
         /// number this tool does not run or no name. It was read out of the document, so it
         /// is there, and it was not run. The plan's own words go beside it.
         /// </summary>

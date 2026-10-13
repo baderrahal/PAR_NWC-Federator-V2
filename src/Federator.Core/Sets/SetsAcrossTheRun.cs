@@ -310,7 +310,7 @@ namespace Federator.Core.Sets
                     // UNKNOWN on every line, because on a weekly run every set is already
                     // in the NWF and nothing read its question. 5w reads it now, off
                     // SelectionSet.Search, so what is printed is what the set in the
-                    // DOCUMENT asks and never what the picked file asks. Where the two
+                    // DOCUMENT asks and never what the clash matrix asks. Where the two
                     // differ the SET DRIFT lines beside the group say both, Q72.
                     + (string.IsNullOrEmpty(set.Asked)
                         ? "asked UNKNOWN, and its search would not read, which is a fault in the set and not in this block"

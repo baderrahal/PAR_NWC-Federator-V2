@@ -118,7 +118,7 @@ namespace Federator.Addin.Engine
             this.log = log;
             this.guard = guard ?? new RepeatedFailureGuard();
             this.statuses = new ClashStatusEditor(log);
-            Tolerance = ToleranceChoice.FromTheFile();
+            Tolerance = ToleranceChoice.Default();
             SetTreeRoot = ExchangeReader.SelectionSetTreeRoot;
             Priorities = PriorityMap.NothingPicked();
             Mirrors = new MirrorSettings();
@@ -131,7 +131,7 @@ namespace Federator.Addin.Engine
         public PriorityMap Priorities { get; set; }
 
         /// <summary>
-        /// The picked XML's sets, ExchangeDocument.Sets, whose whole questions pair two tests
+        /// The clash matrix's sets, ExchangeDocument.Sets, whose whole questions pair two tests
         /// of two sets alike, F132, or null with no XML, when only the same two sets swapped
         /// pair, which the MIRROR lines say.
         /// </summary>
@@ -140,7 +140,7 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// This group's sets build, F132 attempts 12 and 13, Bader's answer A to Q142, read by
         /// the mirror rule before any merge: a pair merges only where every set of both its
-        /// tests was created by it from the picked XML. Null, the default, is an outcome holding
+        /// tests was created by it from the clash matrix. Null, the default, is an outcome holding
         /// nothing, so with no sets build no pair merges and the MIRROR lines say why.
         /// </summary>
         public SetBuildOutcome SetsBuilt { get; set; }
@@ -265,7 +265,7 @@ namespace Federator.Addin.Engine
         }
 
         /// <summary>
-        /// The plan this run ran, F127: the picked file's tests resolved against the document's sets
+        /// The plan this run ran, F127: the clash matrix's tests resolved against the document's sets
         /// and each mirror under the name it runs under, or the saved tests read with their sides,
         /// so the coverage reads every test by the name the record keeps it under and each side by
         /// its set. Null where the run stopped before it had one, and the coverage then reads the
@@ -710,11 +710,9 @@ namespace Federator.Addin.Engine
                     TestReport report = Report.AddTest(planned.Name);
                     report.LeftLocator = planned.Left.Locator;
                     report.RightLocator = planned.Right.Locator;
-                    report.Tolerance = planned.Tolerance;
-                    report.ToleranceUnits = planned.DocumentUnits;
-                    report.ToleranceFrom = plan.Source == ClashPlanSource.Document
-                        ? ToleranceOrigin.Document
-                        : ToleranceOrigin.File;
+                    // F155. The XML's tolerance is never read into a run, so a row that never ran
+                    // carries the value chosen in the drop down, as every test is set to.
+                    Tolerance.PutOn(report, planned.DocumentUnits);
                     report.TestTypeName = planned.TestTypeName;
                     report.State = TestState.Skipped;
                     byIndex.Add(index, report);
@@ -939,8 +937,9 @@ namespace Federator.Addin.Engine
                     // throw away every Active and Resolved, which is the whole reason the
                     // NWF is never cleared either.
                     //
-                    // Left alone means a tolerance changed in the file never reaches it, so
-                    // the two are compared and every difference is reported by name.
+                    // Left alone means a setting changed in the file never reaches it, so the
+                    // two are compared and every difference is reported by name. The tolerance
+                    // is the one exception, set to the chosen value on every test since F155.
                     outcome.AddAlreadyPresent(planned.Name);
                     CompareAndMaybeApply(clashTests, address, planned, byPath, sets, outcome);
                     ApplyChosenTolerance(clashTests, address, planned);
@@ -1349,6 +1348,8 @@ namespace Federator.Addin.Engine
                 ReportStatus(test, planned.Name);
 
                 TestSettings inFile = TestSettings.FromFile(planned);
+                // F155. The file's settings carry the tolerance chosen in the drop down, never the XML's.
+                inFile.Tolerance = ToleranceFor(planned);
                 TestSettings inDocument = SettingsOf(test);
 
                 SidesNotCompared += TestDrift.SidesNotCompared(inFile, inDocument);
@@ -1514,23 +1515,18 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// What one test's tolerance is set to, F76: the chosen value converted into the
-        /// document units, or otherwise the file's, which the plan already converted. A
+        /// document units, since F155 on every test, the XML's never used. A
         /// unit the table does not know throws here and the test is then skipped by name
         /// through the catch in OneTest, which is F33's rule and never a fallback.
         /// </summary>
         private double ToleranceFor(PlannedClashTest planned)
         {
-            return Tolerance.For(planned.Tolerance, documentUnits);
+            return Tolerance.InDocumentUnits(documentUnits);
         }
 
         /// <summary>The words on the created line, saying which of the two won.</summary>
         private string DescribeSetTolerance(PlannedClashTest planned, double set)
         {
-            if (!Tolerance.ChosenInTheTool)
-            {
-                return planned.DescribeTolerance();
-            }
-
             return Tolerance.Label() + " chosen in the tool is " + Plain(set) + " "
                 + Words.Or(documentUnits, "UNKNOWN units");
         }
@@ -1538,7 +1534,7 @@ namespace Federator.Addin.Engine
         /// <summary>
         /// Puts the chosen tolerance onto a test already in the document, F76, and counts
         /// the test by what happened to it, FR-053, where it was counted as set before it
-        /// was even found. Nothing is touched under the default, and a test already at the
+        /// was even found. A test already at the
         /// chosen value is left exactly as it is, because an edit resets its results and
         /// there would be nothing to change. The copy is the test's OWN, through
         /// SavedItem.CreateCopy, so only the tolerance moves and the file's other settings
@@ -1547,12 +1543,6 @@ namespace Federator.Addin.Engine
         private void ApplyChosenTolerance(DocumentClashTests clashTests, TestAddress address, PlannedClashTest planned)
         {
             string name = planned.Name;
-
-            if (!Tolerance.ChosenInTheTool)
-            {
-                toleranceOnExisting.Record(SavedTestTolerance.LeftAsTheDocumentHasIt);
-                return;
-            }
 
             // Threw until a line below says otherwise, so a test is counted once whichever
             // way it leaves, and one whose edit went through before a log line threw is set.

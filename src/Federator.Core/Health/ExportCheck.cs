@@ -327,7 +327,7 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// Where a set of the picked file asks for a workset that a model here carries in
+        /// Where a set of the clash matrix asks for a workset that a model here carries in
         /// another letter case, S03-2. The match is case sensitive, and Bader refused an
         /// ignore case flag on 2026-09-20, so a condition asking for one spelling finds
         /// none of the items carrying the other. Each pair is named with the sets that ask,
@@ -403,13 +403,13 @@ namespace Federator.Core.Health
 
             if (!anySet)
             {
-                lines.Add("no set was read from a picked file, so no workset name was compared with what a set asks");
+                lines.Add("no set was read from a clash matrix, so no workset name was compared with what a set asks");
                 return;
             }
 
             if (asks.Count == 0)
             {
-                lines.Add("no set of the picked file asks for a workset, so there was nothing to compare");
+                lines.Add("no set of the clash matrix asks for a workset, so there was nothing to compare");
                 return;
             }
 
@@ -436,12 +436,12 @@ namespace Federator.Core.Health
 
             if (pairs.Count == 0)
             {
-                lines.Add("no workset name a set of the picked file asks for differs by letter case alone from one a model here carries");
+                lines.Add("no workset name a set of the clash matrix asks for differs by letter case alone from one a model here carries");
                 return;
             }
 
             lines.Add(pairs.Count + " pair(s) of workset names differ by letter case alone, one asked by a set of the"
-                + " picked file and one carried by a model here. The match is CASE SENSITIVE, so a condition asking"
+                + " clash matrix and one carried by a model here. The match is CASE SENSITIVE, so a condition asking"
                 + " for one spelling finds none of the items that carry the other:");
 
             for (int i = 0; i < pairs.Count; i++)
@@ -489,7 +489,7 @@ namespace Federator.Core.Health
             return Listed(shown);
         }
 
-        /// <summary>One workset value the picked file asks for, the way it asks, and the sets asking it in file order.</summary>
+        /// <summary>One workset value the clash matrix asks for, the way it asks, and the sets asking it in file order.</summary>
         private sealed class WorksetAsk
         {
             internal WorksetAsk(string value, bool contains)

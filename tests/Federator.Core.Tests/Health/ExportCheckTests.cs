@@ -174,7 +174,7 @@ namespace Federator.Core.Tests.Health
         /// The whole point of the block. The names are what a person holds beside the
         /// matrix, and on 2026-09-20 that comparison was the answer to why 33 sets found
         /// nothing: the models carry ME-Ductwork and the matrix asks for ME-DUCTWORK. That
-        /// comparison is now made against the sets of the picked file, the client's own
+        /// comparison is now made against the sets of the clash matrix, the client's own
         /// matrix here, and names each set and both spellings.
         ///
         /// THIS REPLACES A TEST THAT PINNED ONE SENTENCE, S03-2. The block wrote 'The match
@@ -189,7 +189,7 @@ namespace Federator.Core.Tests.Health
 
             Assert.That(block, Does.Contain("worksets seen: AR-EXTERIOR, AR-INTERIOR, ME-Ductwork, ME-Piping, PL-Drainage"));
             Assert.That(block, Does.Contain(
-                "2 pair(s) of workset names differ by letter case alone, one asked by a set of the picked file"
+                "2 pair(s) of workset names differ by letter case alone, one asked by a set of the clash matrix"
                 + " and one carried by a model here. The match is CASE SENSITIVE"));
             Assert.That(block, Does.Contain(
                 "   the file asks for \"ME-DUCTWORK\" in BLD-ME-Ducts&Duct Fittings, BLD-ME-Duct Accessory,"
@@ -213,7 +213,7 @@ namespace Federator.Core.Tests.Health
             Assert.That(block, Does.Not.Contain("CASE SENSITIVE"));
             Assert.That(block, Does.Not.Contain("the file asks for"));
             Assert.That(block, Does.Contain(
-                "no workset name a set of the picked file asks for differs by letter case alone from one a model here carries"));
+                "no workset name a set of the clash matrix asks for differs by letter case alone from one a model here carries"));
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace Federator.Core.Tests.Health
 
             Assert.That(corrected, Does.Not.Contain("CASE SENSITIVE"), corrected);
             Assert.That(corrected, Does.Contain(
-                "no workset name a set of the picked file asks for differs by letter case alone from one a model here carries"));
+                "no workset name a set of the clash matrix asks for differs by letter case alone from one a model here carries"));
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace Federator.Core.Tests.Health
 
             Assert.That(block, Does.Not.Contain("CASE SENSITIVE"));
             Assert.That(block, Does.Contain(
-                "no set was read from a picked file, so no workset name was compared with what a set asks"));
+                "no set was read from a clash matrix, so no workset name was compared with what a set asks"));
         }
 
         [Test]
@@ -292,7 +292,7 @@ namespace Federator.Core.Tests.Health
                 TheRealGroup(), OneSet("BLD-AR-Walls", "equals", "LcRevitPropertyElementCategory", "Walls")));
 
             Assert.That(block, Does.Not.Contain("CASE SENSITIVE"));
-            Assert.That(block, Does.Contain("no set of the picked file asks for a workset, so there was nothing to compare"));
+            Assert.That(block, Does.Contain("no set of the clash matrix asks for a workset, so there was nothing to compare"));
         }
 
         /// <summary>A contains condition asks for part of a name, so it is compared as part of one.</summary>

@@ -983,3 +983,19 @@ Questions 16 to 19 were not in the first list. Bader answered them anyway and th
 164. From the loop, 2026-10-13, F154 and F155, Q162-4 and Q162-5. One matrix pack is built in today, 1104-PAR, a folder of src\Federator.Core\Packs, and every run reads it and names it on its PACK line. You asked for no picker now. With a second pack built in, a run reads no pack and says so on its PACK line, so no priority, no by design pairs and no clash XML reach it, until this is answered. When a second project's matrix arrives, how does a run choose its pack? A, a drop down on the Clash step listing the packs by name, the last one chosen remembered for the next run. B, the pack chosen by the project code read off the NWC file names, part 1 of the name, such as 1104, each pack carrying its project code, and a run whose files match no pack, or more than one, stopped before anything is opened. C, something else you name.
 
     Answer:
+
+165. From the loop, 2026-10-13, F155, Q162-5. Since F155 nothing in src reads a clash XML from the disk. MatrixCorrections.ReadPicked still does, with the team map and the list of corrections beside the file, by the same private Read the built in pack goes through. It is kept for two users outside src: the tests, 30 calls in 8 test files, most of them proving the correction and team rules on a small XML and its lists written into a temp folder, and tools\loop\cut-xml.ps1, which cuts the first 50 tests of an XML for a short loop run. A loop run takes no XML since F155, so a cut file has no run to feed and the loop's item 1 runs the 1830 tests of the pack. A, keep ReadPicked for the tests and leave cut-xml.ps1 as it is. B, delete ReadPicked and cut-xml.ps1, and move the tests onto packs made in the test. C, keep ReadPicked and give the loop a way to run a cut matrix, such as a second pack used only by the loop.
+
+    Answer:
+
+166. From the loop, 2026-10-13, F155, Q162-5. Each group's Run as label reads Weekly run plus XML where its NWF is there and a matrix is read. Since F155 the built in matrix is read on every run, so every weekly run reads Weekly run plus XML, in the window, the confirm and the log, though no XML is picked. Weekly run alone now shows only when no pack is built in. A, rename the label to Weekly run plus matrix. B, leave it as it is.
+
+    Answer:
+
+167. From the loop, 2026-10-13, F155, Q162-5. You said the XML tolerance is never read again. Since F155 no test, no report row and no drift line takes it, the value in the drop down is set on each. Two older checks still read it before a test is planned: a test with no tolerance attribute in the XML is skipped by name, FR-155, and a file that gives no units for its tolerance has every test skipped as UNKNOWN UNITS. Neither happens with the built in matrix, which holds a tolerance and its units on all 1830 tests, read on 2026-10-13. A, stop both checks, so a test with no tolerance in its matrix runs at the chosen value. B, keep both, as checks that a matrix is written whole.
+
+    Answer:
+
+168. From the loop, 2026-10-14, F155, Q162-5. You said a run on an NWF that holds tests still runs the saved ones. Since F155 every run reads the built in matrix, so a weekly run runs the tests of the matrix saved in the NWF where they sit, results kept, and adds a test of the matrix the NWF lacks. A test saved in the NWF that the matrix does not name, such as one a coordinator added by hand in Clash Detective, is not run. It is named in the COVERAGE block. This is what a run with a picked XML did before F155, and it is now every run. A, run those tests too, where they sit, after the tests of the matrix. B, leave them unrun and named in COVERAGE.
+
+    Answer:

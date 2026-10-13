@@ -16,7 +16,7 @@ namespace Federator.Core.Exchange
     /// which are the sets in the folder of the ones already asking it, and the categories
     /// another folder's sets ask. WHAT IT CANNOT READ THERE is a category no other folder's
     /// set asks that another discipline's MODELS carry, so those are measured and handed in
-    /// by the project's list of corrections beside the picked XML, never in the code, Q113
+    /// by the project's list of corrections beside the clash matrix, never in the code, Q113
     /// answered B on 2026-10-04, MatrixCorrectionList.
     /// </summary>
     public sealed class SourceFileRule

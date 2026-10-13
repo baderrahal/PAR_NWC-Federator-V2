@@ -291,7 +291,7 @@ namespace Federator.Core.Rerun
             lines.Add("decision      : " + (openedByThisRun
                 ? "picked NWF, opened by this run where it sits, its file list not compared, nothing appended and nothing cleared"
                 : "opened file, no Decide, nothing appended and nothing cleared"));
-            lines.Add("clash file    : " + Words.Or(clashFile, "none picked"));
+            lines.Add("clash file    : " + Words.Or(clashFile, "none read"));
             lines.Add("clash         : " + Words.Or(clashSummary, "no clash step ran"));
             lines.Add("NWD           : " + Words.Or(nwdPath, "not written, the file has no folder"));
             lines.Add("report folder : " + Words.Or(reportFolder, "not worked out, the file has no folder"));
@@ -317,7 +317,7 @@ namespace Federator.Core.Rerun
         /// <summary>
         /// The same line, led by which workflow this is. The open file is always a Weekly
         /// run, because the NWF already exists and is the document, and there is no First
-        /// run on this path. An XML picked makes it a Weekly run plus XML.
+        /// run on this path. A matrix read, the built in one since F155, makes it a Weekly run plus XML.
         /// </summary>
         public static string Describe(string openPath, string pickedExcelFolder, bool xmlPicked)
         {

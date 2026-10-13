@@ -70,7 +70,7 @@ namespace Federator.Core.Sets
         internal ReadOnlyCollection<string> ModelsNotWalked { get; private set; }
 
         /// <summary>
-        /// The workset spellings the picked file's corrections were chosen from,
+        /// The workset spellings the clash matrix's corrections were chosen from,
         /// SetBuildPlan.Worksets, F116: the names inside Core and those of the list beside the
         /// picked file.
         /// </summary>

@@ -794,7 +794,7 @@ namespace Federator.Core.Tests
                 TheXmlPlan().Buildable, PriorityMap.NothingPicked(), null, new MirrorSettings(), TheXmlPlan(), null));
         }
 
-        // The saved tests are handed once: as the tests where no XML was picked, as the
+        // The saved tests are handed once: as the tests where no clash matrix was read, as the
         // document where one was.
         [Test]
         public void SavedTestsHandedBothWaysAreRefused()

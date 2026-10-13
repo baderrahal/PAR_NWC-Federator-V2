@@ -46,13 +46,13 @@ namespace Federator.Core.Tests
             memory.Remember(PickerKind.Nwf, @"C:\out\nwf");
             memory.Remember(PickerKind.Nwd, @"C:\out\nwd");
             memory.Remember(PickerKind.Excel, @"C:\out\reports");
-            memory.Remember(PickerKind.ClashXml, @"C:\in\clash");
+            memory.Remember(PickerKind.Logo, @"C:\in\logo");
 
             Assert.That(memory.LastFor(PickerKind.Source), Is.EqualTo(@"C:\in\nwc"));
             Assert.That(memory.LastFor(PickerKind.Nwf), Is.EqualTo(@"C:\out\nwf"));
             Assert.That(memory.LastFor(PickerKind.Nwd), Is.EqualTo(@"C:\out\nwd"));
             Assert.That(memory.LastFor(PickerKind.Excel), Is.EqualTo(@"C:\out\reports"));
-            Assert.That(memory.LastFor(PickerKind.ClashXml), Is.EqualTo(@"C:\in\clash"));
+            Assert.That(memory.LastFor(PickerKind.Logo), Is.EqualTo(@"C:\in\logo"));
         }
 
         [Test]
@@ -105,10 +105,10 @@ namespace Federator.Core.Tests
             File.WriteAllText(real, "x");
 
             FolderMemory memory = FolderMemory.Load(file);
-            memory.Remember(PickerKind.ClashXml, real);
+            memory.Remember(PickerKind.Logo, real);
 
-            Assert.That(memory.LastFor(PickerKind.ClashXml), Is.EqualTo(root),
-                "the clash picker should reopen where the file lives");
+            Assert.That(memory.LastFor(PickerKind.Logo), Is.EqualTo(root),
+                "a picker of a file should reopen where the file lives");
         }
 
         // ---------- a folder that has gone falls back ----------
@@ -336,9 +336,9 @@ namespace Federator.Core.Tests
         [Test]
         public void EveryPickerHasItsOwnSlot()
         {
-            // Seven: nine since F129 added the existing NWF picker on the Source step, less the priority
-            // and by design pickers F154 took out when both files were built in.
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(7));
+            // Six: nine since F129 added the existing NWF picker on the Source step, less the priority
+            // and by design pickers F154 took out and the clash XML picker F155 took out, all three built in.
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(6));
             Assert.That(FolderMemory.AllKinds().Length,
                 Is.EqualTo(Enum.GetValues(typeof(PickerKind)).Length),
                 "a picker was added and the memory does not know about it");

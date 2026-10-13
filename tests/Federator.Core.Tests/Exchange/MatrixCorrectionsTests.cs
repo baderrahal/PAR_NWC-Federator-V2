@@ -13,7 +13,7 @@ namespace Federator.Core.Tests
     ///
     /// The project's own set names below are SAMPLE DATA for the generic tests, which is
     /// CLAUDE.md's rule. The project's corrections themselves are not in src: they are its
-    /// list, kept beside the picked XML and read when it is picked, and this project's list
+    /// list, kept beside the clash matrix and read when it is picked, and this project's list
     /// is in the exchange folder beside the corrected XML, Q113 answered B on 2026-10-04.
     ///
     /// The test that matters most is TheCorrectedFileIsExactlyWhatTheRuleProduces. It asserts
@@ -62,7 +62,7 @@ namespace Federator.Core.Tests
         };
 
         /// <summary>
-        /// This project's list, read the way the tool reads it beside a picked file, off the one
+        /// This project's list, read the way the tool reads it beside a clash matrix, off the one
         /// kept in the exchange folder beside the corrected XML, Q113.
         /// </summary>
         private static MatrixCorrectionList TheList()
@@ -278,7 +278,7 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// The corrections the committed file is made with, which since F116 are the ones the
-        /// tool applies to a picked file: the hyphen 121 times, the catch all set rewritten
+        /// tool applies to a clash matrix: the hyphen 121 times, the catch all set rewritten
         /// into seven conditions, one contains and six negated equals, the workset values,
         /// and the four AR sets given Source File contains -AR-.
         /// </summary>
@@ -356,7 +356,7 @@ namespace Federator.Core.Tests
         /// <summary>
         /// THE ONE THAT KEEPS THE ARTIFACT HONEST. The file committed under exchange is
         /// byte for byte what the rule produces from the file under samples, and since F116
-        /// the rule is the one the tool applies to a picked file, Q104, so the file and the
+        /// the rule is the one the tool applies to a clash matrix, Q104, so the file and the
         /// tool cannot drift apart either. Since Q113 the sample is read with this project's
         /// list, the one beside the corrected file in the exchange folder. If anyone edits the
         /// file or the list by hand, this fails.
@@ -425,7 +425,7 @@ namespace Federator.Core.Tests
         /// <summary>
         /// THE TEST BADER ASKED FOR, Q104 on 2026-10-04: the old uncorrected XML and the
         /// exchange file give the same sets once corrected. Both are read the way the tool
-        /// reads a picked file, and every set, condition for condition, and every test come
+        /// reads a clash matrix, and every set, condition for condition, and every test come
         /// out the same. The file picked before F116 is the third: Bader's old matrix is the
         /// sample with the hyphen alone corrected, measured on 2026-10-04 by applying that one
         /// rename to the sample and comparing the two files, 1,443,383 bytes each and sha256
@@ -550,7 +550,7 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// This project's list, kept in the exchange folder beside the corrected XML and read
-        /// the way the tool reads it off a picked file, Q113, holds F87's two decisions and
+        /// the way the tool reads it off a clash matrix, Q113, holds F87's two decisions and
         /// Q103's measured categories, and those categories are exactly what the logs show: a
         /// set of the Architecture folder asking for its category alone found items in a group
         /// holding no AR model. Read off the logs themselves, never a copy of them.
@@ -917,7 +917,7 @@ namespace Federator.Core.Tests
         /// exchange folder or the measured workset list changes. It is a TEST and not a script
         /// so it reads the same samples and the same list the byte for byte test reads and can
         /// never produce something that test would then reject, and since F116 it writes what
-        /// the tool makes of a picked file, Q104.
+        /// the tool makes of a clash matrix, Q104.
         /// </summary>
         [Test]
         [Explicit("Writes the corrected matrix into the exchange folder. Run by hand.")]
@@ -948,7 +948,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// A list of corrections holding that one line, the way the list beside a picked file is
+        /// A list of corrections holding that one line, the way the list beside a clash matrix is
         /// read. Since F131 the Or row of Q69 is an also-ask line of the list, the one way a value
         /// also asks another spelling, and ValueOrRow, which nothing in src called, is gone.
         /// </summary>
@@ -1512,7 +1512,7 @@ namespace Federator.Core.Tests
             Assert.That(new ExchangeReader().ReadText(outcome.Text).Sets[0].Conditions[0].Value.Data, Is.EqualTo("Doors & Windows"));
         }
 
-        // ---------- the picked file read as ReadFile read it, F116 ----------
+        // ---------- the clash matrix read as ReadFile read it, F116 ----------
 
         /// <summary>
         /// ReadPicked reads a file the way ExchangeReader.ReadFile did, in the encoding the file
@@ -1706,7 +1706,7 @@ namespace Federator.Core.Tests
             }
         }
 
-        // ---------- the list beside the picked XML, Q113 ----------
+        // ---------- the list beside the clash matrix, Q113 ----------
 
         /// <summary>
         /// A copy of that XML in that folder, with this project's list out of the exchange folder
@@ -1735,7 +1735,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Q113 B. The list kept beside the picked XML and named after it is what corrects it,
+        /// Q113 B. The list kept beside the clash matrix and named after it is what corrects it,
         /// and the first MATRIX line names that list in full and what it holds, before any
         /// correction. The client's matrix with this project's list beside it gives the sets and
         /// tests of the exchange file.
@@ -1967,7 +1967,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// A value is corrected only from what the list beside the picked XML says, the breaker's
+        /// A value is corrected only from what the list beside the clash matrix says, the breaker's
         /// finding on the Q113 pass. A list of a rename alone corrects no workset value, and each
         /// value line says the list names no spelling of it. A list naming one spelling corrects
         /// that value, asked in every spelling measured with the names inside Core, and leaves
@@ -2100,18 +2100,29 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// Q113 B. No embedded resource of Core is named for corrections, so the list that was
-        /// embedded until Q113 is gone. A list typed into the code or embedded under another
-        /// name would pass this, and the grep of src for the project's names is what proves
-        /// those absent.
+        /// Q113 B, narrowed by Bader's decision of 2026-10-13, F155. No embedded resource of Core is named for
+        /// corrections outside a matrix pack, so the list that was embedded until Q113 is gone, and the one list in
+        /// Core is the pack's, beside the pack's clash XML, the project's data in the project's folder. A list
+        /// typed into the code or embedded under another name would pass this, and the grep of src for the
+        /// project's names is what proves those absent.
         /// </summary>
         [Test]
-        public void NoListOfCorrectionsIsInsideCore()
+        public void NoListOfCorrectionsIsInsideCoreOutsideAMatrixPack()
         {
+            int inAPack = 0;
+
             foreach (string resource in typeof(MatrixCorrections).Assembly.GetManifestResourceNames())
             {
+                if (resource.StartsWith(MatrixPack.Prefix, StringComparison.Ordinal))
+                {
+                    inAPack += resource.Contains("correction") ? 1 : 0;
+                    continue;
+                }
+
                 Assert.That(resource, Does.Not.Contain("correction"), resource);
             }
+
+            Assert.That(inAPack, Is.EqualTo(1), "the one pack holds its one list");
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Federator.Core.Tests
 {
     /// <summary>
     /// This project's team map, the file in the exchange folder beside the corrected XML, F131.
-    /// It is read the way the tool reads it beside a picked XML, and it must read exactly to
+    /// It is read the way the tool reads it beside a clash matrix, and it must read exactly to
     /// Bader's map of Q114 point 1, in his order of point 12, with the size folder of point 11.
     /// </summary>
     [TestFixture]

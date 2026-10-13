@@ -57,7 +57,7 @@ namespace Federator.Core.Clash
         /// <summary>The test kept, the higher priority, and where equal the first in the XML.</summary>
         public PlannedClashTest Kept { get; private set; }
 
-        /// <summary>The mirror as the XML, or the document where no XML was picked, names it.</summary>
+        /// <summary>The mirror as the XML, or the document where no clash matrix was read, names it.</summary>
         public PlannedClashTest Mirror { get; private set; }
 
         public MirrorKind Kind { get; private set; }
@@ -77,7 +77,7 @@ namespace Federator.Core.Clash
         /// Whether the mirror's clashes are merged into the kept test's, Report.MirrorMerge.
         /// False until MirrorRule.JudgeTheMerges, the one rule of Bader's answer A to Q142, says
         /// so, F132 attempt 13, so a pair no judge reached merges nothing: only where this run
-        /// created both tests of the pair and every set of both from the picked XML, and for
+        /// created both tests of the pair and every set of both from the clash matrix, and for
         /// every mirror of one kept test alike. Otherwise each keeps its own clashes under its
         /// own name.
         /// </summary>
@@ -172,7 +172,7 @@ namespace Federator.Core.Clash
         /// <summary>
         /// The priority off the priority file, then every setting the DRIFT block compares,
         /// by its one comparison, TestDrift.Compare, and never a second copy of it: the
-        /// tolerance within TestDrift's epsilon, the test type, merge composites, and each
+        /// test type, never the tolerance since F155, merge composites, and each
         /// side's self intersect and primitive types, the mirror's side set against the side
         /// of the kept test it stands for. A pair read off the document has no XML name to read
         /// a priority by, so its priority is not compared. Its sides were read and ask the kept
@@ -206,6 +206,10 @@ namespace Federator.Core.Clash
 
             otherSettings.LeftLocator = firstSettings.LeftLocator;
             otherSettings.RightLocator = firstSettings.RightLocator;
+
+            // F155. Every test of a run is set to the tolerance chosen in the drop down, so the tolerance
+            // each was planned with, the XML's or the document's, is never compared.
+            otherSettings.Tolerance = firstSettings.Tolerance;
 
             foreach (TestDifference difference in TestDrift.Compare(first.Name, firstSettings, otherSettings))
             {

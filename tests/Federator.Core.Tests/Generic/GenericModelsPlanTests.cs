@@ -488,7 +488,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The names of the plan's sets, which the leftover walk of the picked file's build is handed as wanted,
+        /// The names of the plan's sets, which the leftover walk of the clash matrix's build is handed as wanted,
         /// so a Generic Models set the last run saved is neither removed nor renamed by it.
         /// </summary>
         [Test]

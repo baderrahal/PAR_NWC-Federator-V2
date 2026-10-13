@@ -65,7 +65,7 @@ namespace Federator.Core.Views
         /// <summary>The codes a per clash viewpoint's pair folder is read against.</summary>
         public ICollection<string> KnownCodes { get; set; }
 
-        /// <summary>The test names of the document and the picked XML.</summary>
+        /// <summary>The test names of the document and the clash matrix.</summary>
         public ICollection<string> TestNames { get; set; }
 
         public ViewpointSettings Settings { get; set; }

@@ -87,7 +87,7 @@ namespace NwcFederatorLoop.StandIn
                 log.Block("FOLDERS REMEMBERED", new[]
                 {
                     "Source    C:\\NwcFederatorLoop stand-in remembered\\source",
-                    "ClashXml  D:\\NwcFederatorLoop stand-in remembered\\xml   [gone, opening at nowhere]",
+                    "Logo      D:\\NwcFederatorLoop stand-in remembered\\logo  [gone, opening at nowhere]",
                 });
             }
 
@@ -113,11 +113,10 @@ namespace NwcFederatorLoop.StandIn
             TextBox nwd = new TextBox { Name = "NwdFolderBox" };
             TextBox excel = new TextBox { Name = "ExcelFolderBox" };
 
-            TextBox exchange = new TextBox { Name = "ExchangeFileBox" };
             ComboBox tolerance = new ComboBox { Name = "ToleranceBox" };
-            tolerance.Items.Add("Use the value in the XML");
             tolerance.Items.Add("25 mm");
-            tolerance.Items.Add("Other");
+            tolerance.Items.Add("50 mm");
+            tolerance.Items.Add("75 mm");
             tolerance.SelectedIndex = mode == "tolerance" ? 1 : 0;
             CheckBox penetrations = new CheckBox { Name = "MarkPenetrations", Content = "Mark penetrations", IsChecked = false };
             CheckBox byDesign = new CheckBox { Name = "MarkByDesign", Content = "Mark by design", IsChecked = false };
@@ -169,7 +168,7 @@ namespace NwcFederatorLoop.StandIn
             steps.Items.Add(new TabItem { Header = "1. Source", Content = Stack(source, subfolders, scan, summary, filesGrid) });
             steps.Items.Add(new TabItem { Header = "2. Grouping", Content = Stack(groupsGrid) });
             steps.Items.Add(new TabItem { Header = "3. Outputs", Content = Stack(nwf, nwd, excel) });
-            steps.Items.Add(new TabItem { Header = "4. Clash", Content = Stack(exchange, tolerance, penetrations, byDesign, skip, runOpen, openLine) });
+            steps.Items.Add(new TabItem { Header = "4. Clash", Content = Stack(tolerance, penetrations, byDesign, skip, runOpen, openLine) });
 
             DockPanel dock = new DockPanel();
             DockPanel.SetDock(run, Dock.Bottom);

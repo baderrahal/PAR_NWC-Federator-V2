@@ -148,7 +148,7 @@ namespace Federator.Core.Exchange
     ///
     /// SO IT CORRECTS ONE VALUE TO ONE SPELLING WHERE EXACTLY ONE WAS MEASURED. The
     /// candidates are the workset names READ OFF THE MODELS so far, revit-worksets.txt inside
-    /// Core and the workset lines of the project's list beside the picked XML, Q113, never a
+    /// Core and the workset lines of the project's list beside the clash matrix, Q113, never a
     /// list in the code, and a spelling not measured yet is UNKNOWN.
     ///
     /// AND ONLY WHERE THE LIST BESIDE THE PICKED FILE NAMES A SPELLING OF IT, F116 on the
@@ -171,7 +171,7 @@ namespace Federator.Core.Exchange
         {
         }
 
-        /// <summary>The same, saying whether the list beside the picked file names a spelling of it, F116.</summary>
+        /// <summary>The same, saying whether the list beside the clash matrix names a spelling of it, F116.</summary>
         internal ValueRewrite(string from, IList<string> candidates, bool listed)
         {
             From = from ?? string.Empty;
@@ -180,7 +180,7 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// Whether the list beside the picked file names a spelling of it. Where it names none
+        /// Whether the list beside the clash matrix names a spelling of it. Where it names none
         /// the value is left as the file asks, F116. True for a rewrite handed in whole, whose
         /// caller says what was measured.
         /// </summary>
@@ -350,7 +350,7 @@ namespace Federator.Core.Exchange
 
         /// <summary>
         /// Something the corrections could not do, said first and in capitals where it
-        /// matters, because a picked file the class cannot read is a loud line and never a
+        /// matters, because a clash matrix the class cannot read is a loud line and never a
         /// silent pass, Q104.
         /// </summary>
         internal void Warn(string line)
@@ -477,9 +477,9 @@ namespace Federator.Core.Exchange
     /// THE CLASS NAMES NO SET, AND THE LIST IT IS HANDED DOES. What lives here is only the
     /// rule for applying corrections safely, and the corrections are data. The tool serves
     /// many projects, so the list of one project's corrections is a plain file kept beside
-    /// the picked XML and named after it, read when the XML is picked and named in the log,
+    /// the clash matrix and named after it, read when the XML is picked and named in the log,
     /// Q113 answered B by Bader on 2026-10-04, MatrixCorrectionList. Nothing of any project's
-    /// list is inside Core, and a picked XML with no list beside it is corrected by nothing.
+    /// list is inside Core, and a clash matrix with no list beside it is corrected by nothing.
     ///
     /// SAFE TO RUN TWICE IS THE WHOLE POINT. A correction that is applied to its own
     /// output must change nothing the second time, and TotalChanged coming back zero is
@@ -508,7 +508,7 @@ namespace Federator.Core.Exchange
         /// list and every correction it made. The document carries those lines in Corrections.
         ///
         /// THE LIST IS READ WHEN THE XML IS, beside it and named after it, CorrectionListSettings,
-        /// so every place that reads a picked file reads its list too. No list there, or one that
+        /// so every place that reads a clash matrix reads its list too. No list there, or one that
         /// cannot be read, corrects nothing and the first line says so, and the file is read as
         /// it is written. THE TEAM MAP beside it is read here too, its own file, TeamMap.Beside,
         /// and the document carries it in Teams, F131.
@@ -533,18 +533,60 @@ namespace Federator.Core.Exchange
             }
 
             // In the encoding the file declares, as ReadFile read it.
-            string xml = ExchangeReader.ReadFileText(path);
+            return Read(
+                ExchangeReader.ReadFileText(path),
+                path,
+                MatrixCorrectionList.Beside(path, new CorrectionListSettings()),
+                TeamMap.Beside(path, new TeamMapSettings()));
+        }
 
-            MatrixCorrectionList list = MatrixCorrectionList.Beside(path, new CorrectionListSettings());
+        /// <summary>
+        /// The clash matrix built into the tool, F155, Bader's decision of 2026-10-13, Q162-5: the pack's one clash
+        /// XML, decoded as a file on the disk is, corrected by the list the pack holds beside it by name, with the
+        /// team map the pack holds beside it by name, by the same Read ReadPicked uses, so the same sets and tests
+        /// come out of the pack as out of the same files on the disk. A pack with no clash XML, or two, throws with
+        /// why, since there is then no matrix to read.
+        /// </summary>
+        public static ExchangeDocument ReadPack(MatrixPack pack)
+        {
+            if (pack == null)
+            {
+                throw new ArgumentNullException("pack");
+            }
+
+            string whyNone;
+            string xmlFile = pack.XmlFile(out whyNone);
+
+            if (xmlFile == null)
+            {
+                throw new InvalidDataException(whyNone);
+            }
+
+            ExchangeDocument document = Read(
+                ExchangeReader.DecodeText(pack.ReadBytes(xmlFile)),
+                pack.Describe(xmlFile),
+                MatrixCorrectionList.InPack(pack, xmlFile, new CorrectionListSettings()),
+                TeamMap.InPack(pack, xmlFile, new TeamMapSettings()));
+            document.ReadFrom(pack, xmlFile);
+            return document;
+        }
+
+        /// <summary>
+        /// The one read both take: the corrections applied to the text before any set is built, the document
+        /// carrying one line per correction and every spelling they ask, and the team map, each read on its own so
+        /// a fault in one never leaves the other unread.
+        /// </summary>
+        private static ExchangeDocument Read(string xml, string source, MatrixCorrectionList list, TeamMap teams)
+        {
             CorrectionOutcome outcome = ForPickedFile(xml, list);
-            ExchangeDocument document = new ExchangeReader().ReadText(outcome.Text, path);
+            ExchangeDocument document = new ExchangeReader().ReadText(outcome.Text, source);
 
             // Every spelling the corrections ask, the workset lines and those an also-ask line
             // accepts, so the judge of a set that finds nothing knows each, F116 and F131.
             document.Corrected(outcome.Lines(), RevitWorksets.With(list.Spellings));
 
             // The team map beside the same file, its own file, F131, Q115 answered A.
-            document.TeamsBeside(TeamMap.Beside(path, new TeamMapSettings()));
+            document.TeamsBeside(teams);
             return document;
         }
 
@@ -558,7 +600,7 @@ namespace Federator.Core.Exchange
         /// line names the list and what it holds, Q113.
         ///
         /// NO LIST, ONE THAT COULD NOT BE READ OR ONE HOLDING NONE CORRECTS NOTHING AND SAYS SO,
-        /// and a set the text walk could not read is counted and said, so a picked file is never
+        /// and a set the text walk could not read is counted and said, so a clash matrix is never
         /// passed on as if it were corrected when it was not, and a list never corrects more
         /// than it says, F116.
         /// </summary>
@@ -998,7 +1040,7 @@ namespace Federator.Core.Exchange
                             out widened);
 
                         // What was measured and no more, F116: the spellings are the census
-                        // inside Core and those of the list beside the picked file, RevitWorksets.With,
+                        // inside Core and those of the list beside the clash matrix, RevitWorksets.With,
                         // each of them measured and neither of them every workset, so these are the
                         // ones seen so far.
                         outcome.Add(

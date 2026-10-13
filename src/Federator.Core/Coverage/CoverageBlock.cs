@@ -7,7 +7,7 @@ namespace Federator.Core.Coverage
 {
     /// <summary>
     /// The COVERAGE block of one group, F127, Bader's request 2 under Q112, section 1.7 of the F127 design,
-    /// which the loop keeps outside the repo as turn5\f127-design.md: the tests of the picked file, or of the
+    /// which the loop keeps outside the repo as turn5\f127-design.md: the tests of the clash matrix, or of the
     /// tests saved in the document, counted by presence and by reason, a few named for each reason that has no
     /// results, the count check against the clash workbook and every COVERAGE FAILED line. Read off the one
     /// shape the Coverage sheet is written from, CoverageSheetData, so the block and the sheet cannot say two
@@ -39,7 +39,7 @@ namespace Federator.Core.Coverage
             List<string> lines = new List<string>();
 
             lines.Add("the tests        : " + (data.FromAPickedFile
-                ? data.Tests.Count + " in the picked file " + data.Source + ", sha256 " + data.Sha256 + ", " + data.Corrections
+                ? data.Tests.Count + " in the clash matrix, " + data.Source + ", sha256 " + data.Sha256 + ", " + data.Corrections
                 : data.Tests.Count + " " + data.Source));
             lines.Add("counted          : " + CoverageSheet.Counts(data));
             lines.Add("one reason each  :");
@@ -180,7 +180,7 @@ namespace Federator.Core.Coverage
                 }
 
                 lines.Add("not in the file  : " + check.NotInTheXml.Count + (check.NotInTheXml.Count == 1 ? " test" : " tests")
-                    + " in Clash Detective that the picked file does not name, not compared: " + string.Join(", ", named.ToArray())
+                    + " in Clash Detective that the clash matrix does not name, not compared: " + string.Join(", ", named.ToArray())
                     + (check.NotInTheXml.Count > named.Count ? " and " + (check.NotInTheXml.Count - named.Count) + " more" : string.Empty));
             }
 

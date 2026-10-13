@@ -136,7 +136,7 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// The drafted line copied into this project's own list, beside its workset spellings that
-        /// ask ME-DUCTWORK or ME-Ductwork already, Q102: the picked file gains the HV group beside
+        /// ask ME-DUCTWORK or ME-Ductwork already, Q102: the clash matrix gains the HV group beside
         /// them, and a second run on its own output changes nothing.
         /// </summary>
         [Test]
