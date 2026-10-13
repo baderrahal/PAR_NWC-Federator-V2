@@ -159,9 +159,9 @@ namespace Federator.Core.Report
         /// 1376 MB of them, because a picture is counted here and never on the written list.
         /// The pictures are counted and not listed, since 5679 paths would bury the 88 files a
         /// person looks for. Every size was read back off the disk by the writer, which counts
-        /// a picture only once its file is there. The logo copied beside each report and the
-        /// copy of the log are on neither list, and the line says so rather than leaving them
-        /// to be guessed at.
+        /// a picture only once its file is there. The logo copied beside each report is on
+        /// neither list, and the line says so rather than leaving it to be guessed at. Since
+        /// F151 no copy of the log is written anywhere, so the line names none.
         /// </summary>
         public IList<string> ResultLines()
         {
@@ -177,7 +177,7 @@ namespace Federator.Core.Report
                 "pictures       : " + written + " written beside the files listed below, "
                     + Two(TotalMegabytes) + " MB, every size read back off the disk" + failed,
                 "                 counted and not listed one by one. The logo copied beside each "
-                    + "report and the copy of this log are not counted"
+                    + "report is not counted"
             };
         }
 

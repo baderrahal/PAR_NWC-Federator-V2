@@ -124,33 +124,23 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// A copy of a log whose file stopped is the lines held in memory, which are all of them, and says
-        /// so. Reading the short file would hand out a log that ends part way and calls itself the log. The
+        /// A log whose file stopped is read back as the lines held in memory, which are all of them.
+        /// Reading the short file would hand out a log that ends part way and calls itself the log. The
         /// RESULT size of the file says it is short and does not print it as the size of a whole log.
         /// </summary>
         [Test]
-        public void ACopyAndASizeAfterAFailedWriteAreNeverTheShortFileCalledWhole()
+        public void ASizeAfterAFailedWriteIsNeverTheShortFileCalledWhole()
         {
-            string copies = Path.Combine(folder, "copies");
-
             using (RunLog log = Start())
             {
                 log.Line("before the fault");
                 TheDiskFails(log);
                 log.Line("after the fault");
 
-                string copied;
-
-                Assert.That(log.TryCopyTo(copies, out copied), Is.True);
-
-                string copy = File.ReadAllText(copied);
-
-                Assert.That(copy, Does.Contain("before the fault"));
-                Assert.That(copy, Does.Contain("after the fault"));
-
                 string said = log.ReadAll();
 
-                Assert.That(said, Does.Contain("from the lines held in memory, because the log file stopped taking lines"));
+                Assert.That(said, Does.Contain("before the fault"));
+                Assert.That(said, Does.Contain("after the fault"));
 
                 log.WriteResultBlock();
 
@@ -159,15 +149,13 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The flush a read or a copy makes is a write too, and the first the disk refuses may be that one.
-        /// ReadAll and TryCopyTo called with no line between the fault and them find it themselves, say
-        /// so once, and give the whole log from memory. The break: nothing came out of either call.
+        /// The flush a read makes is a write too, and the first the disk refuses may be that one.
+        /// ReadAll called with no line between the fault and it finds it itself, says so once, and
+        /// gives the whole log from memory. The break: nothing came out of the call.
         /// </summary>
         [Test]
-        public void AFlushThatFailsInAReadOrACopyIsTheFaultAndNeverAThrow()
+        public void AFlushThatFailsInAReadIsTheFaultAndNeverAThrow()
         {
-            string copies = Path.Combine(folder, "copies");
-
             using (RunLog log = Start())
             {
                 List<string> heard = new List<string>();
@@ -184,40 +172,24 @@ namespace Federator.Core.Tests
                 Assert.That(log.IsWritingToDisk, Is.False);
                 Assert.That(CountOf(string.Join("\n", heard.ToArray()), "the log file stopped taking lines"), Is.EqualTo(1));
             }
-
-            using (RunLog log = RunLog.Start(Path.Combine(folder, "second"), new DateTime(2026, 10, 7, 9, 0, 0)))
-            {
-                log.Line("before the fault");
-                TheDiskFails(log);
-
-                string copied = null;
-                bool done = false;
-
-                Assert.DoesNotThrow(() => done = log.TryCopyTo(copies, out copied));
-                Assert.That(done, Is.True);
-                Assert.That(File.ReadAllText(copied), Does.Contain("before the fault"));
-                Assert.That(log.IsWritingToDisk, Is.False);
-            }
         }
 
         /// <summary>
-        /// A copy of a log that was only closed is not a fault. TryCopyTo flushed a writer that Dispose had
-        /// closed, which threw, so a closed log could not be copied, and with a file that stops it would have
-        /// been taken for the file stopping.
+        /// A log that was only closed is not a file that stopped. Reading it after Dispose gives the
+        /// whole log and never takes the closed writer for a fault. Kept from the test of the copy F151
+        /// removed, since this half reads ReadAll, which stays.
         /// </summary>
         [Test]
-        public void ACopyOfAClosedLogIsNotAFileThatStopped()
+        public void AReadOfAClosedLogIsNotAFileThatStopped()
         {
             RunLog log = Start();
             log.Line("a line");
             log.Dispose();
 
-            string copied;
-            bool done = log.TryCopyTo(Path.Combine(folder, "copies"), out copied);
+            string said = log.ReadAll();
 
-            Assert.That(done, Is.True);
-            Assert.That(File.ReadAllText(copied), Does.Contain("a line"));
-            Assert.That(log.ReadAll(), Does.Not.Contain("stopped taking lines"));
+            Assert.That(said, Does.Contain("a line"));
+            Assert.That(said, Does.Not.Contain("stopped taking lines"));
         }
 
         /// <summary>

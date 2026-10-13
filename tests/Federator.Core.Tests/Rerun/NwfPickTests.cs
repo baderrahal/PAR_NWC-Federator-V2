@@ -144,7 +144,6 @@ namespace Federator.Core.Tests
             Assert.That(one.WorkbookPath, Is.EqualTo(ReportPaths.Workbook(reports, Name)));
             Assert.That(one.CanRun, Is.True);
             Assert.That(plan.Paths(), Is.EqualTo(new[] { nwf }));
-            Assert.That(plan.LogFolder, Is.EqualTo(TestPaths.At("Feds")));
         }
 
         [Test]
@@ -196,7 +195,6 @@ namespace Federator.Core.Tests
             Assert.That(plan.CanStart, Is.True, plan.WhyNoRun);
             Assert.That(plan.PickedAFolder, Is.True);
             Assert.That(plan.Paths(), Is.EqualTo(new[] { a, b }));
-            Assert.That(plan.LogFolder, Is.EqualTo(folder));
         }
 
         [Test]

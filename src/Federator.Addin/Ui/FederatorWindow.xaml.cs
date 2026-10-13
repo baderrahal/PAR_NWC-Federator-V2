@@ -330,9 +330,9 @@ namespace Federator.Addin.Ui
         /// Runs every NWF the pick gives, F129, Bader's request 4 under Q112, each opened where it
         /// sits and run by the open file run's route, FederationEngine.RunPickedNwfs. A pick the
         /// rule refuses, two NWFs writing one file among them, is refused here before anything is
-        /// opened. The run settings, the clash file, the lines across the run, RESULT and the
-        /// second copy of the log are the open file run's, with what the choice changes in Core's
-        /// words, NwfPickPlan.SettingsLines and ResultLine.
+        /// opened. The run settings, the clash file, the lines across the run and RESULT are the
+        /// open file run's, with what the choice changes in Core's words, NwfPickPlan.SettingsLines
+        /// and ResultLine.
         /// </summary>
         private void OnRunPickedNwfs(object sender, RoutedEventArgs e)
         {
@@ -412,7 +412,7 @@ namespace Federator.Addin.Ui
             finally
             {
                 log.Line(NwfPick.SourceFindingsSkipped);
-                WriteTheResultAndCopyTheLog(plan.LogFolder, engine, plan.ResultLine());
+                WriteTheResult(engine, plan.ResultLine());
                 running = false;
                 RunPickedNwfsButton.IsEnabled = true;
                 ShowOpenDocument();
@@ -2060,8 +2060,7 @@ namespace Federator.Addin.Ui
             OutputsSummary.Text = ready + " groups ticked to run. " + nwd
                 + " Workbooks go in " + WorkbookFolderOrWhyNot() + "." + xml
                 + " The log is written to "
-                + (log.IsWritingToDisk ? log.Path : "the window only")
-                + " and copied next to the NWF folder at the end.";
+                + (log.IsWritingToDisk ? log.Path : "the window only") + ".";
         }
 
         // ---------- Run ----------
@@ -2479,9 +2478,9 @@ namespace Federator.Addin.Ui
             }
             finally
             {
-                // The result block and the second copy are written whatever happened, so a
-                // run that stopped still leaves a readable log with its summary at the end.
-                WriteTheResultAndCopyTheLog(nwfFolder, engine);
+                // The result block is written whatever happened, so a run that stopped still
+                // leaves a readable log with its summary at the end.
+                WriteTheResult(engine);
                 running = false;
                 RunButton.IsEnabled = true;
             }
@@ -2496,13 +2495,14 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The RESULT block of one run and the second copy of the log. engine is that run's
-        /// engine, or null where the run stopped before one was made, and then the block says
-        /// nothing of the shared coordinates rule or the viewpoints box rather than guess.
-        /// pickedNwfs is NwfPickPlan.ResultLine for a run of picked NWFs, F129, and null for
-        /// every other run.
+        /// The RESULT block of one run. engine is that run's engine, or null where the run
+        /// stopped before one was made, and then the block says nothing of the shared
+        /// coordinates rule or the viewpoints box rather than guess. pickedNwfs is
+        /// NwfPickPlan.ResultLine for a run of picked NWFs, F129, and null for every other run.
+        /// The log stays in the logs folder alone and no copy of it is written anywhere else,
+        /// Bader's decision of 2026-10-13, F151.
         /// </summary>
-        private void WriteTheResultAndCopyTheLog(string nwfFolder, FederationEngine engine, string pickedNwfs = null)
+        private void WriteTheResult(FederationEngine engine, string pickedNwfs = null)
         {
             try
             {
@@ -2519,12 +2519,6 @@ namespace Federator.Addin.Ui
             {
                 log.Failure("writing the result block", error, "kept going, the lines above are still on disk");
             }
-
-            string copied;
-
-            // A failure here is written into the first log and then ignored. Logging is
-            // never the thing that stops a run.
-            log.TryCopyTo(nwfFolder, out copied);
         }
 
         // ---------- Step 4, clash ----------
@@ -2768,11 +2762,9 @@ namespace Federator.Addin.Ui
                 log.Line("SETS     " + SetsAcrossTheRun.BlockTitle.ToLowerInvariant()
                     + " is not written for the open file run, one file is one group and there is nothing to add up across groups");
 
-                // The RESULT block and the second copy of the log are written whatever
-                // happened, the same as the scanned run. The copy goes beside the open
-                // file, where the scanned run puts it beside the NWF folder. This used to
-                // be missing, so an open file run ended with no RESULT block and no copy.
-                WriteTheResultAndCopyTheLog(OpenDocumentJob.FolderOf(open), engine);
+                // The RESULT block is written whatever happened, the same as the scanned run.
+                // This used to be missing, so an open file run ended with no RESULT block.
+                WriteTheResult(engine);
                 running = false;
                 RunOpenButton.IsEnabled = true;
                 ShowOpenDocument();

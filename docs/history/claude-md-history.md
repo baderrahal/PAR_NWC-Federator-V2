@@ -1013,3 +1013,21 @@ Navisworks API. Write those in larger reviewed pieces, not many small attempts.
 No generated-by or co-authored-by line. No emoji. No em dash. No semicolon in
 prose. No comment that repeats the line under it. Say UNKNOWN rather than filling
 a gap. Never report a check that did not run.
+---
+
+# Rules changed since, newest first
+
+Each entry names the rule as it stood, the date it changed, who decided and why, and where
+the rule lives now. The snapshot above stays as it was.
+
+## 2026-10-13, F151, the log is written in one place
+
+The rule was "two places, always", in The diagnostic log above and in core.md: the log at
+%LOCALAPPDATA%\ParsonsNwcFederator\logs and a copy next to the NWF folder at the end, written
+by RunLog.TryCopyTo. Bader's run of 2026-10-13 20:33 on group 1A02MM wrote that copy into his
+NWF folder for C02. He decided the same day that the log stays in the logs folder only and the
+RESULT block is still written. So TryCopyTo, NwfPick.LogFolder and the copy at the end of the
+scanned run, the open file run and the run of picked NWFs are gone, and RESULT is the last
+thing a run writes. The loop's run.ps1 closed a window run once the log held RESULT and a COPY
+line after it, so since F151 it closes it once RESULT is there and the log has been quiet for
+15 s. The rule lives in core.md, The diagnostic log, ONE PLACE.

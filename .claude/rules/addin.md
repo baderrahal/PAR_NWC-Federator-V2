@@ -505,8 +505,8 @@ well as to pass.
   open document goes, marks RUN started and finished, writes RUN SETTINGS with Core's lines and
   the scanned run's own choices through the one SayTheRunsChoices, reads the clash file through
   the open file run's ReadTheXmlForAnOpenFileRun, writes the lines across the run through the
-  one SayWhatAnOpenFileRunAddedUp and SETS ACROSS THE RUN, and RESULT with Core's line, the
-  second copy of the log going to the folder picked or the picked file's folder. The box and
+  one SayWhatAnOpenFileRunAddedUp and SETS ACROSS THE RUN, and RESULT with Core's line. Since
+  F151 no copy of the log goes beside the picked NWFs or anywhere else. The box and
   its three buttons sit in their own row on the Source step under the NWC folder, the label and
   grey line set off Core in the constructor. What a run of it reads on Navisworks is UNKNOWN
   until the proof steps of steps\03_bader_next.md run
@@ -621,7 +621,8 @@ well as to pass.
   F112's second attempt, and the second run of a window listed the first run's groups again
   under the second run's rule state. RunJobs and OnRunOpenDocument hold the engine outside
   their try, so the finally passes engine.CoordinatesAcrossTheRun, or null where no engine
-  was made, to WriteTheResultAndCopyTheLog
+  was made, to WriteTheResult, which since F151 writes the RESULT block and no copy of the
+  log, for the scanned run, the open file run and the picked NWFs alike
 - A step whose content is taller than the window scrolls. Only the Outputs step is,
   measured at 1024x680, 1280x800 and 1600x1000 with tools\probes\probe-window-scroll.ps1 and
   cut off at all three, which is why the naming table could not be reached. The other three

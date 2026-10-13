@@ -1537,8 +1537,8 @@ function FindToolLog($folder, $before, $sinceUtc) {
 # blank line, a line of 64 equals signs, the title and the equals signs again, and Line writes
 # the time, two spaces, a plus, the seconds since the log opened to three places, s and two
 # spaces before the text. Session writes plugin version : and the build stamp, the GROUPS
-# block ends on UntickedGroupsLine, WriteResultBlock writes the RESULT section, and TryCopyTo
-# writes a COPY line or the FAILURE of copying the log next to the NWF folder.
+# block ends on UntickedGroupsLine, and WriteResultBlock writes the RESULT section. Since F151,
+# Bader's decision of 2026-10-13, the tool writes no copy of its log and so no COPY line.
 function LogText($line) { $m = [regex]::Match([string]$line, '^\d\d:\d\d:\d\d\.\d{3}  \+\d+\.\d{3}s  (.*)$'); if ($m.Success) { return $m.Groups[1].Value }; return $null }
 function LogTitleAt($lines, $i) { return ($i -ge 1 -and $i + 1 -lt $lines.Count -and $lines[$i - 1] -match '^=+$' -and $lines[$i + 1] -match '^=+$') }
 function LogPluginVersion($lines) {
@@ -1672,7 +1672,7 @@ function PostClose($sync, $windows) {
 # every pass while it reads anything but unlocked, Q85, reads the driver's exit through the
 # driver's held handle, and ends the run when the tool's window closes: CLOSED or DRIVER after
 # its own WM_CLOSE, BY ITSELF with none. It posts WM_CLOSE through PostClose once the log holds
-# its RESULT block and a COPY line after it and has then been quiet for 15 s, or once the
+# its RESULT block and has then been quiet for 15 s, F151, or once the
 # driver has stopped with nothing that runs pressed while the log shows no run started, and
 # never while a window of the adopted process other than the tool's, the main window and a PANE
 # is up, which is left up for the hang rule or the ceiling, and its line saying so names each
@@ -1720,7 +1720,7 @@ function Monitor($sync) {
   $beatC = $null; $beatL = $null; $lastC = $null; $lastLine = ""
   $win = ($sync.Window -eq $true)
   $lockState = "unlocked"; $lastLen = $null; $lastGrowUtc = [DateTime]::UtcNow
-  $prev = ""; $sawResult = $false; $sawCopy = $false; $sawClosedLine = $false; $runStarted = $false
+  $prev = ""; $sawResult = $false; $sawClosedLine = $false; $runStarted = $false
   $candKey = ""; $toolSeen = $false; $posted = ""; $postedAt = [DateTime]::MinValue; $busyNoted = ""; $driverDone = $false; $startedNoted = $false
   $docs = ([string]$sync.ReadFolder -ne ""); $prog = $null; $readNoted = ""
   # Mask, which MaskLine calls, reads these two from its caller, as it does in the watchdog.
@@ -1806,7 +1806,6 @@ function Monitor($sync) {
               # the RESULT block ends the run through WM_CLOSE, whatever the driver's exit says.
               if (-not $runStarted -and (($ln -ceq "RUN SETTINGS" -and $prev -match '^=+$') -or $ln -match '^\S+\s+\+\S+\s+(RUN      |OPEN     )')) { $runStarted = $true; M "the tool's log shows a run has started, so from here only its RESULT block ends the run through WM_CLOSE" }
               if ($ln -ceq "RESULT" -and $prev -match '^=+$') { $sawResult = $true }
-              elseif ($sawResult -and $ln -match '^\S+\s+\+\S+\s+(COPY |FAILURE  copying the log next to the NWF folder)') { $sawCopy = $true }
               if ($ln -match '^\S+\s+\+\S+\s+Window closed\.$') { $sawClosedLine = $true }
               $prev = $ln
             }
@@ -1939,13 +1938,13 @@ function Monitor($sync) {
         }
         if ($posted -eq "") {
           $why = ""
-          if ($sawResult -and $sawCopy -and ($now - $lastGrowUtc).TotalSeconds -ge $sync.QuietSeconds) { $why = "RESULT" }
+          if ($sawResult -and ($now - $lastGrowUtc).TotalSeconds -ge $sync.QuietSeconds) { $why = "RESULT" }
           elseif ($driverDone -and $sync.DriverExit -ne $sync.DriverPressed) {
             if (-not $runStarted) { $why = "DRIVER" }
             elseif (-not $startedNoted) { $startedNoted = $true; M ("the driver stopped, " + (DriverCodeName $sync.DriverExit) + ", after the tool's log shows a run has started, so WM_CLOSE is not posted for the driver's stop. It waits for the RESULT block, and the hang rule or the ceiling decides if none comes") }
           }
           if ($why -ne "") {
-            $what = $(if ($why -eq "RESULT") { "the tool's log holds its RESULT block and a COPY line after it and has been quiet for " + ($now - $lastGrowUtc).TotalSeconds.ToString("0") + " s" } else { "the driver stopped, " + (DriverCodeName $sync.DriverExit) + ", with nothing that runs pressed" })
+            $what = $(if ($why -eq "RESULT") { "the tool's log holds its RESULT block and has been quiet for " + ($now - $lastGrowUtc).TotalSeconds.ToString("0") + " s" } else { "the driver stopped, " + (DriverCodeName $sync.DriverExit) + ", with nothing that runs pressed" })
             $busy = @($visRecs | Where-Object { $k = WindowKind $_.Class $_.Caption $_.OwnerHandle $_.OwnerVisible $_.OwnerEnabled $_.Enabled; $k -ne "WINDOW" -and $k -ne "MAIN" -and $k -ne "PANE" })
             if ($toolNow.Count -eq 0) {
               M ("the run is over, " + $what + ", and no window of the tool is open to close")

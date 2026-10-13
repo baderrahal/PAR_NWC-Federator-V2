@@ -257,8 +257,6 @@ namespace NwcFederatorLoop.StandIn
                 {
                     WriteRun(log, source.Text, nwf.Text, nwd.Text, groups);
                     log.WriteResultBlock();
-                    string copied;
-                    log.TryCopyTo(nwf.Text, out copied);
                 }
             };
 
@@ -271,8 +269,6 @@ namespace NwcFederatorLoop.StandIn
                 {
                     log.Line("OPEN     no XML picked, so the tests saved in the document run, or nothing runs when it holds none");
                     log.WriteResultBlock();
-                    string copied;
-                    log.TryCopyTo(here, out copied);
                 }
             };
 
@@ -305,8 +301,6 @@ namespace NwcFederatorLoop.StandIn
                     After(25, delegate
                     {
                         log.WriteResultBlock();
-                        string copied;
-                        log.TryCopyTo(here, out copied);
                     });
                 }
             };

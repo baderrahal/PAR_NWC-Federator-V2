@@ -1194,7 +1194,8 @@ and 6 does not read as broken.
 - THE PICTURES ARE COUNTED BESIDE THE FILES WRITTEN AND NEVER LISTED, FR-059. Each group's
   `ImageTally` is added to `RunLog.PicturesAcrossTheRun` as its IMAGES lines are written, and
   RESULT says the count and the MB straight above files written, from sizes the writer read
-  back off the disk, and that the logo copies and the copy of the log are on neither line.
+  back off the disk, and that the logo copies are on neither line. Since F151 no copy of the
+  log is written, so the line names none.
   Set 03 said 88 files written and left out 5679 pictures, 1376 MB
 - THE CLASH TOTAL COUNTS A GROUP THAT RAN NO TEST APART, FR-060. `ClashesAcrossTheRun.Add`
   takes the tests run, and a group at zero clashes that ran none reads `of which ran no test`
@@ -2281,13 +2282,14 @@ survive the crash rather than to be tidy.
   inside a Navisworks call still leaves everything up to that moment on disk
 - it opens on the first line of the button handler, before the folder is read and
   before the window opens, so a run that dies at startup still produces a file
-- two places, always. The fixed path
-  %LOCALAPPDATA%\ParsonsNwcFederator\logs\run-yyyyMMdd-HHmmss.log never depends on
-  a folder the user picked, and a copy goes next to the NWF folder at the end. If
-  that copy fails, the reason goes in the first log and the run carries on
-- logging is never the thing that stops a run. That holds for the copy, for
-  retention, and for the log file itself, which falls back to the temp folder and
-  then to window only output
+- ONE PLACE, the fixed path
+  %LOCALAPPDATA%\ParsonsNwcFederator\logs\run-yyyyMMdd-HHmmss.log, which never depends
+  on a folder the user picked. No copy goes anywhere else, Bader's decision of
+  2026-10-13, F151, after his run of that day on 1A02MM wrote the copy into his NWF
+  folder. RunLog.TryCopyTo and NwfPick.LogFolder are gone, and the RESULT block is the
+  last thing a run writes
+- logging is never the thing that stops a run. That holds for retention and for the
+  log file itself, which falls back to the temp folder and then to window only output
 - a size is only logged after File.Exists passes and the real size is read back.
   Never log a size that was not read
 - A SAVE THAT THREW LISTS NOTHING AS WRITTEN, `RunLog.WriteThrew`, F118-R3. A save goes

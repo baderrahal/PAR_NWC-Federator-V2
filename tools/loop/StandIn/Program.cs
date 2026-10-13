@@ -121,7 +121,6 @@ namespace NwcFederatorLoop.StandIn
                 }
 
                 log.Line("RESULT   the stand-in wrote " + n.ToString(CultureInfo.InvariantCulture) + " ticks");
-                log.Line("COPY     nothing, the stand-in copies nothing");
                 Thread.Sleep(thenSleepSeconds * 1000);
             }
 
@@ -147,10 +146,10 @@ namespace NwcFederatorLoop.StandIn
         /// <summary>
         /// F106. A whole log of a window run written by the tool's own RunLog, with its SESSION
         /// naming the version given, a FOLDERS REMEMBERED block, the RUN SETTINGS and GROUPS
-        /// blocks with the number of groups unticked given, and the RESULT block and its COPY line
-        /// only when asked, then its path written to the result file, so run.ps1's readers of
-        /// the tool's log are proved on the format the tool writes. The copy goes to a folder
-        /// beside the log, never onto the log itself.
+        /// blocks with the number of groups unticked given, and the RESULT block only when asked,
+        /// then its path written to the result file, so run.ps1's readers of the tool's log are
+        /// proved on the format the tool writes. Since F151 the tool writes no copy of its log,
+        /// so neither does this.
         /// </summary>
         private static int ToolLog(string folder, string version, int unticked, bool result, string resultFile)
         {
@@ -175,8 +174,6 @@ namespace NwcFederatorLoop.StandIn
                 if (result)
                 {
                     log.WriteResultBlock();
-                    string copied;
-                    log.TryCopyTo(Path.Combine(folder, "copy"), out copied);
                 }
 
                 log.Line("Window closed.");
