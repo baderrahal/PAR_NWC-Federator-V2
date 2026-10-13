@@ -2,7 +2,7 @@
 
 Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. Status lives in steps\tracker.csv only.
 
-- By status, of 581 rows: open 172, in progress 24, in review 0, merged 338, proven by a run 29, waiting for Bader 1, dropped 17
+- By status, of 581 rows: open 168, in progress 24, in review 0, merged 342, proven by a run 29, waiting for Bader 1, dropped 17
 - By wave: 1 19, 2a 73, 2a and 2b 1, 2b 40, 2b and before any test run 1, 2c 12, 3a 22, 3b 21, 4 58, 5 71, 5 and 4 1, all 1, before any probe or run starts again 4, before any test run 3, before the test of wave 1 9, before the waves 115, beside the waves 7, first of all since Bader's order of 2026-10-05 1, none 114, outside the waves 2, right after F133 merges 6
 - In progress now: F118 workbook and report, F121 the rest, F123 docs and words, and the noise of every area, F134 the code health gate, F137 no site and no clash groups, Q94 code runs every real file itself, full runs of main and the fixes they show, Q98 the full fix round, Q129 a clean tracker and a code health gate (FR-191 to FR-193), Q135 too many autosave copies, F137-R2 the reference model can itself name no site and ModelsRead counts placements not the document's models so a model whose read threw is never judged, Q145 the new order on the laptop, F132 then F128, F120, F114, the timed runs, F129, F130, F109 and the release, Q147 two small fixes, then carry on, the attribution off, item 5's steps in the repo, F114 then F129, F130 and F109, F109-R1 how the 27 people get a built bundle is UNKNOWN, CLAUDE.md saying they have no compiler while INSTALL.md builds with dotnet, answered by Bader's Q149 item 2, the team package F140, Q149-2 the team package prepared, a zip with a one click install, version, commit and date, the previous add-in kept to put back, a plain page, no zip until Bader asks, Q152 Q150's choice as F145, long runs kept from slowing, the 50 test cut, the GPU read, GenerateImage measured, one full 1A04PK only on his word, Q153 keep fixing the time until it is at its minimum, the four targets, the SPEED table, the 150 times gap first, F145 merged, and 8 FR items
 - Waits for Bader, 1 row: F114-K29
@@ -266,20 +266,20 @@ Made by tools\tracker\make-tracker.ps1 from steps\tracker.csv, never by hand. St
 | FR-150 | apply file settings does not save nwf | F121 | silent wrong number | merged | 222 | none | 2026-10-13 |
 | FR-151 | rebuild tally before minus one reads as none | F121 | silent wrong number | merged | 150 | none | 2026-10-07 |
 | FR-152 | undo auto reviewed undoes a persons reviewed | F121 | silent wrong number | merged | 222 | none | 2026-10-13 |
-| FR-153 | regroup throws away typed names and run ticks | F121 | silent wrong number | open | none | none | 2026-10-04 |
+| FR-153 | regroup throws away typed names and run ticks | F121 | silent wrong number | merged | 223 | none | 2026-10-13 |
 | FR-154 | scan findings use group key as building code | F121 | silent wrong number | merged | 150 | none | 2026-10-07 |
 | FR-155 | exchange reader missing attribute becomes zero or false | F121 | silent wrong number | merged | 222 | none | 2026-10-13 |
 | FR-156 | probe csv listed written after write threw | F121 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-157 | probe unread value written as empty value | F121 | silent wrong number | open | none | none | 2026-10-04 |
 | FR-158 | probe category match trims but tally does not | F121 | silent wrong number | merged | 150 | none | 2026-10-07 |
 | FR-159 | emptied pattern field passes name check | F121 | broken feature | merged | 150 | none | 2026-10-07 |
-| FR-160 | cleared name cell pinned as empty name | F121 | broken feature | open | none | none | 2026-10-04 |
+| FR-160 | cleared name cell pinned as empty name | F121 | broken feature | merged | 223 | none | 2026-10-13 |
 | FR-161 | date format has no control | F121 | broken feature | open | none | none | 2026-10-04 |
 | FR-162 | folder memory save failure never reported | F121 | broken feature | merged | 222 | none | 2026-10-13 |
-| FR-163 | title bar close mid run | F121 | broken feature | open | none | none | 2026-10-04 |
+| FR-163 | title bar close mid run | F121 | broken feature | merged | 223 | none | 2026-10-13 |
 | FR-164 | census sets overload returns zero not minus one | F121 | loud failure | merged | 150 | none | 2026-10-07 |
 | FR-165 | cleared name cell throws out of run click | F121 | loud failure | merged | 150, and 160 the second half, a hand typed name Windows refuses | none | 2026-10-07 |
-| FR-166 | tolerance other blank stops hand buttons | F121 | loud failure | open | none | none | 2026-10-04 |
+| FR-166 | tolerance other blank stops hand buttons | F121 | loud failure | merged | 223 | none | 2026-10-13 |
 | F121 | the rest | F121 | fix | in progress | 222, 150 six items, 160 and 173 the SINGLE DISCIPLINE finding merged, FR-150, FR-152, FR-155 and FR-162 in review on fix-F121d, the rest on the laptop | none | 2026-10-13 |
 | F122 | the loop tools | F122 | fix | open | none | none | 2026-10-04 |
 | F125-R1 | a modeless window up after Run stops the driver while the monitor reads a pane | F122 | register row | open | none | none | 2026-10-04 |

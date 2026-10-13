@@ -129,6 +129,7 @@ namespace Federator.Addin.Ui
             // Every line the log writes appears in the window as it is written, so the run
             // is watched rather than read afterwards.
             log.LineWritten += OnLogLine;
+            Closing += OnClosing;
             Closed += delegate { log.LineWritten -= OnLogLine; };
 
             // Which binary this is, in the title bar, because a stale install is otherwise
@@ -237,7 +238,10 @@ namespace Federator.Addin.Ui
 
             log.ScanFinished(found.Length, found.Length - unreadable, unreadable);
 
-            Regroup();
+            // A Scan starts the groups clean, every one ticked and named by its pattern, as it
+            // always has. FR-153 keeps the person's choices only where a regroup follows a file
+            // ticked or unticked within the folder already scanned.
+            Regroup(false);
             Steps.SelectedIndex = 1;
         }
 
@@ -339,19 +343,14 @@ namespace Federator.Addin.Ui
 
             // F76. A tolerance that is not one is refused here, in Core's words, as the scanned
             // run refuses it, before anything is opened.
-            ReportOptions options;
+            ToleranceChoice tolerance = ToleranceOrSayWhyNot("the run of picked NWFs");
 
-            try
+            if (tolerance == null)
             {
-                options = ReportsWanted();
-            }
-            catch (ArgumentOutOfRangeException error)
-            {
-                log.Failure("reading the run settings", error, "the run of picked NWFs did not start");
-                Warn(error.Message);
                 return;
             }
 
+            ReportOptions options = ReportsWanted(tolerance);
             NwfPickPlan plan = PlanThePickedNwfs(options.ExcelFolder);
 
             if (plan == null)
@@ -447,7 +446,9 @@ namespace Federator.Addin.Ui
         private void OnGroupingModeChanged(
             object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            Regroup();
+            // Another grouping makes other groups, and a key means another thing under it, so
+            // the groups start clean as after a Scan.
+            Regroup(false);
         }
 
         private void OnFileRowChanged(object sender, PropertyChangedEventArgs e)
@@ -541,9 +542,27 @@ namespace Federator.Addin.Ui
 
         private void Regroup()
         {
+            Regroup(true);
+        }
+
+        private void Regroup(bool keepChoices)
+        {
             if (suspendRegroup)
             {
                 return;
+            }
+
+            // FR-153. The Run boxes are read before the rows go, so a group the person unticked
+            // stays unticked once the groups are made again. A Scan reads none, so every group
+            // starts ticked.
+            KeptRunTicks runTicks = new KeptRunTicks();
+
+            if (keepChoices)
+            {
+                foreach (GroupRow row in groups)
+                {
+                    runTicks.Read(row.Building, row.IsBlocked, row.Include);
+                }
             }
 
             groups.Clear();
@@ -578,18 +597,28 @@ namespace Federator.Addin.Ui
             BuildingGroupingResult result = BuildingGrouping.Group(ticked, mode, settings);
             lastGroups = new List<BuildingGroup>(result.Groups);
 
-            // The scan feeds the table. Regrouping is a different set of groups, so the
-            // table is built again and any hand edit belonged to groups that no longer
-            // exist. A pattern change goes through Refill instead, which keeps them.
-            nameTable = OutputNameTable.From(result.Groups, naming, settings);
+            // The scan feeds the table, built again for the groups made now. FR-153: a name
+            // typed over in a group that is still a group is kept by its key, where every
+            // one was thrown away. A pattern change goes through Refill instead.
+            OutputNameTable rebuilt = OutputNameTable.From(result.Groups, naming, settings);
+            if (keepChoices)
+            {
+                rebuilt.KeepTypedFrom(nameTable);
+            }
+
+            nameTable = rebuilt;
+            lastRefill = string.Empty;
 
             foreach (BuildingGroup group in result.Groups)
             {
-                groups.Add(GroupRow.Usable(
+                GroupRow made = GroupRow.Usable(
                     group.Building,
                     PathsFor(group.Files, pathsByStem),
                     group.Disciplines,
-                    nameTable.Find(group.Building)));
+                    nameTable.Find(group.Building));
+
+                made.Include = runTicks.StartsTicked(group.Building);
+                groups.Add(made);
             }
 
             foreach (SkippedBuildingGroup skipped in result.Skipped)
@@ -882,14 +911,27 @@ namespace Federator.Addin.Ui
 
         /// <summary>
         /// A name typed straight into the table. Only that one name changes, and only that
-        /// row is left alone by the next pattern change.
+        /// row is left alone by the next pattern change. A cell cleared gives its name back
+        /// to the pattern, FR-160.
         /// </summary>
         private void OnNameEdited(object sender, System.Windows.Controls.DataGridCellEditEndingEventArgs e)
         {
             // The binding writes the value on commit, so nothing is read here. This runs
             // afterwards to refresh what the edit affects.
+            GroupRow edited = e.Row == null ? null : e.Row.Item as GroupRow;
+
             Dispatcher.BeginInvoke(new Action(delegate
             {
+                // FR-160. A cleared cell gave its name back to the pattern, and only a refill
+                // builds it. A name typed over is left alone by the refill, and no other row's
+                // name can have moved, so only the edited row is read back.
+                nameTable.Refill(naming, settings);
+
+                if (edited != null)
+                {
+                    edited.NamesRefilled();
+                }
+
                 lastRefill = string.Empty;
                 RefreshNamePreview();
                 RefreshOutputsSummary();
@@ -1379,39 +1421,26 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// What the drop down says, F76. The entries are the list Choices() gave, in its
-        /// order: the file first, the offered values, then Other with the number box. A
-        /// number that is not a tolerance is refused by ToleranceChoice.Of in its own
-        /// words, and the caller shows those before the run starts.
+        /// What the drop down says, F76, for a run that creates or runs clash tests, read by
+        /// ToleranceChoice.FromThePicker with no throw, FR-166. Null where Other's box is not a
+        /// tolerance, and then the person is told why in Core's words before anything starts.
+        /// The buttons that never use the tolerance do not call this, so a blank box stops none.
         /// </summary>
-        private ToleranceChoice ChosenTolerance()
+        private ToleranceChoice ToleranceOrSayWhyNot(string what)
         {
-            int at = ToleranceBox == null ? 0 : ToleranceBox.SelectedIndex;
+            string refused;
+            ToleranceChoice tolerance = ToleranceChoice.FromThePicker(
+                ToleranceBox == null ? 0 : ToleranceBox.SelectedIndex,
+                ToleranceOtherBox == null ? null : ToleranceOtherBox.Text,
+                out refused);
 
-            if (at <= 0)
+            if (tolerance == null)
             {
-                return ToleranceChoice.FromTheFile();
+                log.Line(ToleranceChoice.Prefix + " " + what + " did not start. " + refused);
+                Warn(refused);
             }
 
-            if (at <= ToleranceChoice.OfferedMillimetres.Length)
-            {
-                return ToleranceChoice.Of(ToleranceChoice.OfferedMillimetres[at - 1]);
-            }
-
-            double typed;
-
-            if (!double.TryParse(
-                Trimmed(ToleranceOtherBox.Text),
-                System.Globalization.NumberStyles.Float,
-                System.Globalization.CultureInfo.InvariantCulture,
-                out typed))
-            {
-                // Not a number, handed over as one so the refusal is Core's wording and
-                // not a second one here.
-                typed = double.NaN;
-            }
-
-            return ToleranceChoice.Of(typed);
+            return tolerance;
         }
 
         /// <summary>
@@ -1601,7 +1630,10 @@ namespace Federator.Addin.Ui
             {
                 log.Line(UndoAutoReview.Prefix + " started by hand on the open document, nothing is saved");
 
-                FederationEngine engine = new FederationEngine(SetProgress, log, null, null, ReportsWanted());
+                // FR-166. The undo creates no clash test and never reads the tolerance, so the
+                // drop down is not read and a blank Other box stops nothing.
+                FederationEngine engine = new FederationEngine(
+                    SetProgress, log, null, null, ReportsWanted(ToleranceChoice.FromTheFile()));
                 UndoAutoReviewed undo = engine.UndoAutoReviewedByHand();
 
                 string said = undo.Tally == null
@@ -1701,7 +1733,9 @@ namespace Federator.Addin.Ui
                 log.Line("PROBE    started by hand, "
                     + (folder == null ? "on the open document" : "over " + folder));
 
-                FederationEngine engine = new FederationEngine(SetProgress, log, null, null, ReportsWanted());
+                // FR-166. The probe creates no clash test and never reads the tolerance.
+                FederationEngine engine = new FederationEngine(
+                    SetProgress, log, null, null, ReportsWanted(ToleranceChoice.FromTheFile()));
                 IList<string> lines = folder == null
                     ? engine.ProbeTheOpenDocumentByHand()
                     : engine.ProbeTheFolderByHand(folder);
@@ -1831,9 +1865,10 @@ namespace Federator.Addin.Ui
 
         /// <summary>
         /// What the run will do about reports. The folder is worked out here so the window
-        /// can say where the workbooks are going before Run is pressed.
+        /// can say where the workbooks are going before Run is pressed. The tolerance is
+        /// handed in, read once by the caller, FR-166.
         /// </summary>
-        private ReportOptions ReportsWanted()
+        private ReportOptions ReportsWanted(ToleranceChoice tolerance)
         {
             ReportOptions options = new ReportOptions();
             options.ExcelFolder = Trimmed(ExcelFolderBox.Text);
@@ -1848,7 +1883,7 @@ namespace Federator.Addin.Ui
             options.ApplyFileSettings = ApplyFileSettings.IsChecked == true;
             options.CompactResolved = CompactResolved.IsChecked == true;
             options.MarkPenetrations = MarkPenetrations.IsChecked == true;
-            options.Tolerance = ChosenTolerance();
+            options.Tolerance = tolerance;
             options.PriorityPath = Trimmed(PriorityBox.Text);
             options.MarkByDesign = MarkByDesign.IsChecked == true;
             options.RebuildDriftedSets = RebuildDriftedSets.IsChecked == true;
@@ -2092,15 +2127,10 @@ namespace Federator.Addin.Ui
 
             // F76. A tolerance that is not one is refused here, in Core's words, rather
             // than reaching 1830 tests and being discovered in a report.
-            ToleranceChoice tolerance;
+            ToleranceChoice tolerance = ToleranceOrSayWhyNot("the run");
 
-            try
+            if (tolerance == null)
             {
-                tolerance = ChosenTolerance();
-            }
-            catch (ArgumentOutOfRangeException error)
-            {
-                Warn(error.Message);
                 return;
             }
 
@@ -2132,7 +2162,7 @@ namespace Federator.Addin.Ui
             log.Block(RunLog.GroupsSectionTitle, GroupListLines());
             log.Block(RunLog.FindingsSectionTitle, findings.Lines());
 
-            RunJobs(jobs, nwfFolder);
+            RunJobs(jobs, nwfFolder, tolerance);
         }
 
         /// <summary>
@@ -2335,7 +2365,7 @@ namespace Federator.Addin.Ui
         /// and the progress line repaint, which is not the same as moving the work onto a
         /// background thread. No Navisworks call may leave this thread.
         /// </summary>
-        private void RunJobs(IList<FederationJob> jobs, string nwfFolder)
+        private void RunJobs(IList<FederationJob> jobs, string nwfFolder, ToleranceChoice tolerance)
         {
             running = true;
             RunButton.IsEnabled = false;
@@ -2373,7 +2403,7 @@ namespace Federator.Addin.Ui
                     SayTheTeamsAndCorrections(exchange, true);
                 }
 
-                ReportOptions options = ReportsWanted();
+                ReportOptions options = ReportsWanted(tolerance);
                 ReportFolderChoice where = options.ChooseFor(nwfFolder);
 
                 if (where.WasRefused)
@@ -2675,6 +2705,15 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            // FR-166. Refused before the run starts, as the scanned run refuses it, where the
+            // throw inside the run stopped it part way and wrote a RESULT for nothing.
+            ToleranceChoice tolerance = ToleranceOrSayWhyNot("the run on the open document");
+
+            if (tolerance == null)
+            {
+                return;
+            }
+
             running = true;
             RunOpenButton.IsEnabled = false;
 
@@ -2686,7 +2725,7 @@ namespace Federator.Addin.Ui
                 TeamMap teams;
                 ExchangeDocument exchange = ReadTheXmlForAnOpenFileRun(out teams);
 
-                ReportOptions options = ReportsWanted();
+                ReportOptions options = ReportsWanted(tolerance);
 
                 // F136. The open file run has no RUN SETTINGS block, and the box holds for
                 // it too, so its state is said here before the group starts.
@@ -2896,8 +2935,10 @@ namespace Federator.Addin.Ui
                 ExchangeDocument exchange = MatrixCorrections.ReadPicked(path);
                 SayTheTeamsAndCorrections(exchange, false);
 
+                // FR-166. Building the sets creates no clash test and never reads the tolerance.
                 FederationEngine engine = new FederationEngine(
-                    SetProgress, log, exchange, keptTeams.ForRun(exchange, teamSettings), ReportsWanted());
+                    SetProgress, log, exchange, keptTeams.ForRun(exchange, teamSettings),
+                    ReportsWanted(ToleranceChoice.FromTheFile()));
                 SetBuildOutcome outcome = engine.BuildSetsByHand();
 
                 ShowSetLines(outcome.Lines());
@@ -2939,6 +2980,15 @@ namespace Federator.Addin.Ui
                 return;
             }
 
+            // FR-166. The tests are created at the chosen tolerance, so it is refused before
+            // anything is read, where it threw as the engine was made.
+            ToleranceChoice tolerance = ToleranceOrSayWhyNot("Tests into open model");
+
+            if (tolerance == null)
+            {
+                return;
+            }
+
             running = true;
             RunTestsButton.IsEnabled = false;
 
@@ -2949,7 +2999,7 @@ namespace Federator.Addin.Ui
                 SayTheTeamsAndCorrections(exchange, false);
 
                 FederationEngine engine = new FederationEngine(
-                    SetProgress, log, exchange, keptTeams.ForRun(exchange, teamSettings), ReportsWanted());
+                    SetProgress, log, exchange, keptTeams.ForRun(exchange, teamSettings), ReportsWanted(tolerance));
                 ClashRunOutcome outcome = engine.RunTestsByHand();
 
                 if (outcome == null)
@@ -3082,15 +3132,27 @@ namespace Federator.Addin.Ui
             }
         }
 
+        /// <summary>The Close button. Whether the window may close is OnClosing's one rule.</summary>
         private void OnClose(object sender, RoutedEventArgs e)
         {
-            if (running)
+            Close();
+        }
+
+        /// <summary>
+        /// Every way the window closes, the Close button, the title bar close and Alt+F4, FR-163.
+        /// Only the Close button refused while a run was going, and the run's repaint pump let
+        /// the other two close the window under it. Now each is cancelled while a run, an undo,
+        /// a probe or a hand button is going, in the words the Close button used.
+        /// </summary>
+        private void OnClosing(object sender, CancelEventArgs e)
+        {
+            if (!running)
             {
-                Warn("The run is still going. Let it finish.");
                 return;
             }
 
-            Close();
+            e.Cancel = true;
+            Warn("The run is still going. Let it finish.");
         }
     }
 }

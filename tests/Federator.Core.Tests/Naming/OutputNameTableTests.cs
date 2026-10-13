@@ -26,10 +26,18 @@ namespace Federator.Core.Tests
             "1104-PAR-1B06BS-ZZZ-EL-MOD-000001.nwc"
         };
 
+        /// <summary>The folder with the one file of 1C07K1 unticked, so that group is gone after a regroup.</summary>
+        private static readonly string[] FolderWithoutK1 = { Folder[0], Folder[1], Folder[3] };
+
         private static OutputNameTable Table(OutputNaming naming)
         {
+            return TableOf(Folder, naming);
+        }
+
+        private static OutputNameTable TableOf(string[] files, OutputNaming naming)
+        {
             BuildingGroupingResult result = BuildingGrouping.GroupNames(
-                Folder, Settings, GroupingMode.PerBuilding);
+                files, Settings, GroupingMode.PerBuilding);
 
             return OutputNameTable.From(result.Groups, naming, Settings, Friday);
         }
@@ -188,6 +196,155 @@ namespace Federator.Core.Tests
 
             Assert.That(table.Find("1C07BC").NwfName,
                 Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-FED-000001"));
+        }
+
+        // ---------- a cell cleared in the grid, FR-160 ----------
+
+        /// <summary>
+        /// FR-160, Q24. A name cell cleared in the group table pinned an empty name as typed over, so
+        /// no pattern change could fill it and only a regroup got the pattern back. A cleared cell,
+        /// empty, spaces or nothing at all, now gives the name back to the pattern, the next refill
+        /// builds it, and the run is no longer refused for an empty name.
+        /// </summary>
+        [Test]
+        public void AClearedCellGivesTheNameBackToThePattern()
+        {
+            foreach (string cleared in new[] { string.Empty, "   ", null })
+            {
+                OutputNaming naming = new OutputNaming();
+                OutputNameTable table = Table(naming);
+                OutputNameRow row = table.Find("1C07BC");
+
+                row.Typed(OutputKind.Nwf, "HAND-TYPED-NAME");
+                row.Typed(OutputKind.Nwf, cleared);
+
+                Assert.That(row.IsByHand(OutputKind.Nwf), Is.False, "cleared to \"" + cleared + "\"");
+
+                naming.Nwf.TypeCode = "FED";
+                table.Refill(naming, Settings);
+
+                Assert.That(row.NwfName, Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-FED-000001"), "cleared to \"" + cleared + "\"");
+                Assert.That(table.Only(new[] { "1C07BC" }).WhyTheRunCannotStart(Internal), Is.Null,
+                    "cleared to \"" + cleared + "\"");
+            }
+        }
+
+        /// <summary>Clearing one cell gives back that one name and leaves the row's other typed names typed.</summary>
+        [Test]
+        public void AClearedCellLeavesTheRowsOtherTypedNamesAlone()
+        {
+            OutputNameTable table = Table(new OutputNaming());
+            OutputNameRow row = table.Find("1C07BC");
+
+            row.Typed(OutputKind.Nwd, "HAND-TYPED-NWD");
+            row.Typed(OutputKind.Nwf, "HAND-TYPED-NAME");
+            row.Typed(OutputKind.Nwf, string.Empty);
+
+            Assert.That(row.IsByHand(OutputKind.Nwf), Is.False);
+            Assert.That(row.IsByHand(OutputKind.Nwd), Is.True);
+            Assert.That(row.NwdName, Is.EqualTo("HAND-TYPED-NWD"));
+            Assert.That(row.WasEdited, Is.True);
+        }
+
+        /// <summary>A name typed into a cell is trimmed and held against a pattern change, as before FR-160.</summary>
+        [Test]
+        public void ANameTypedIntoACellIsTrimmedAndHeld()
+        {
+            OutputNaming naming = new OutputNaming();
+            OutputNameTable table = Table(naming);
+
+            table.Find("1C07BC").Typed(OutputKind.Workbook, "  HAND-TYPED-BOOK  ");
+
+            naming.Workbook.TypeCode = "FED";
+            table.Refill(naming, Settings);
+
+            Assert.That(table.Find("1C07BC").WorkbookName, Is.EqualTo("HAND-TYPED-BOOK"));
+            Assert.That(table.Find("1C07BC").IsByHand(OutputKind.Workbook), Is.True);
+        }
+
+        // ---------- a regroup keeps what was typed, FR-153 ----------
+
+        /// <summary>
+        /// FR-153. Unticking one file rebuilt the table from fresh rows, so every name typed over in
+        /// every other group was lost. A name typed over is kept by its group, and a name of a group
+        /// still under the pattern is built from the pattern.
+        /// </summary>
+        [Test]
+        public void ATypedNameSurvivesARegroupByItsGroup()
+        {
+            OutputNaming naming = new OutputNaming();
+            OutputNameTable before = Table(naming);
+            before.Find("1C07BC").SetByHand(OutputKind.Nwf, "HAND-TYPED-NAME");
+            before.Find("1B06BS").SetByHand(OutputKind.Workbook, "HAND-TYPED-BOOK");
+
+            OutputNameTable after = TableOf(FolderWithoutK1, naming);
+            after.KeepTypedFrom(before);
+
+            Assert.That(after.Find("1C07BC").NwfName, Is.EqualTo("HAND-TYPED-NAME"));
+            Assert.That(after.Find("1C07BC").IsByHand(OutputKind.Nwf), Is.True);
+            Assert.That(after.Find("1B06BS").WorkbookName, Is.EqualTo("HAND-TYPED-BOOK"));
+            Assert.That(after.Find("1C07BC").NwdName, Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
+            Assert.That(after.Find("1C07BC").IsByHand(OutputKind.Nwd), Is.False);
+        }
+
+        /// <summary>A kept name is still typed over, so the next pattern change leaves it alone and refills the rest.</summary>
+        [Test]
+        public void AKeptNameStillHoldsAgainstAPatternChange()
+        {
+            OutputNaming naming = new OutputNaming();
+            OutputNameTable before = Table(naming);
+            before.Find("1C07BC").SetByHand(OutputKind.Nwf, "HAND-TYPED-NAME");
+
+            OutputNameTable after = TableOf(FolderWithoutK1, naming);
+            after.KeepTypedFrom(before);
+
+            naming.Nwf.TypeCode = "FED";
+            int kept = after.Refill(naming, Settings);
+
+            Assert.That(kept, Is.EqualTo(1));
+            Assert.That(after.Find("1C07BC").NwfName, Is.EqualTo("HAND-TYPED-NAME"));
+            Assert.That(after.Find("1B06BS").NwfName, Does.Contain("-FED-"));
+        }
+
+        /// <summary>A name typed for a group the regroup took away goes to no other group.</summary>
+        [Test]
+        public void ANameTypedForAGroupThatIsGoneGoesNowhere()
+        {
+            OutputNaming naming = new OutputNaming();
+            OutputNameTable before = Table(naming);
+            before.Find("1C07K1").SetByHand(OutputKind.Nwf, "HAND-TYPED-K1");
+
+            OutputNameTable after = TableOf(FolderWithoutK1, naming);
+            after.KeepTypedFrom(before);
+
+            Assert.That(after.Find("1C07K1"), Is.Null);
+
+            foreach (OutputNameRow row in after.Rows)
+            {
+                Assert.That(row.WasEdited, Is.False, row.Group);
+            }
+        }
+
+        /// <summary>A name given back to the pattern before the regroup is built from the pattern after it.</summary>
+        [Test]
+        public void ANameGivenBackBeforeARegroupIsNotKept()
+        {
+            OutputNaming naming = new OutputNaming();
+            OutputNameTable before = Table(naming);
+            before.Find("1C07BC").SetByHand(OutputKind.Nwf, "HAND-TYPED-NAME");
+            before.Find("1C07BC").ReleaseToPattern(OutputKind.Nwf);
+
+            OutputNameTable after = TableOf(FolderWithoutK1, naming);
+            after.KeepTypedFrom(before);
+
+            Assert.That(after.Find("1C07BC").IsByHand(OutputKind.Nwf), Is.False);
+            Assert.That(after.Find("1C07BC").NwfName, Is.EqualTo("1104-PAR-1C07BC-ZZZ-BM-MOD-000001"));
+        }
+
+        [Test]
+        public void KeepingFromNoTableIsRefused()
+        {
+            Assert.Throws<ArgumentNullException>(delegate { Table(new OutputNaming()).KeepTypedFrom(null); });
         }
 
         // ---------- two rows on one name stops the run ----------

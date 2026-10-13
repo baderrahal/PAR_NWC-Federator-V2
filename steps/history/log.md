@@ -2,6 +2,86 @@
 
 Newest entry at the top.
 
+## 2026-10-13 F121 wave 4 part two, FR-153, FR-160, FR-163 and FR-166, written by the developer as the lead's delegate
+
+Branch fix-F121e off main 8e100bf6, Bader's order of 2026-10-12 headed BADER SAYS GO, item 7: waves 3, 4 and 5,
+only rows that change what the team sees, under his Q143 limits. Four window rows of area F121 of wave 4, one branch
+and one pull request, beside fix-F121d, pull request 222, whose folder picks this branch leaves alone. Each row's
+evidence in steps\fix-round.md was read again against the code, since the lines had moved. Each held, FR-166 in
+part. Line numbers below are main's at 8e100bf6.
+
+What was done:
+- FR-153, a regroup throwing away the typed names and the Run ticks. The cause was Regroup in
+  FederatorWindow.xaml.cs, groups.Clear() at line 549 and OutputNameTable.From at line 584 building fresh rows, and
+  GroupRow.Usable ticking every row at GroupRow.cs line 39. The rule is Core now: OutputNameTable.KeepTypedFrom
+  carries each name typed over by its group's key, still typed over, and Federator.Core.Grouping.KeptRunTicks keeps
+  a group the person left unticked unticked, matched by its key exactly, every other group ticked, a blocked one
+  included. Regroup reads the boxes before it clears, sets each row made again off StartsTicked, keeps the names,
+  and clears the line of the last refill, which spoke of the table it replaced, the note of the row
+- FR-160, a cleared name cell pinned as an empty name. Bader's answer to Q24 asked for the mistake first, and it is
+  this: a person could not give a name back to the pattern. GroupRow.TypeOver, lines 118 and 126, handed an empty
+  value to SetByHand, which marked it typed over, so Refill skipped it, the run refused it as empty since FR-165,
+  ReleaseToPattern had no caller in src, and only a regroup undid it, which since FR-153 keeps it. On the lead's
+  brief of 2026-10-13 the empty cell gives the name back: OutputNameRow.Typed, what a cell edit does, releases a
+  value empty, spaces or nothing through ReleaseToPattern and types over anything else. GroupRow.TypeOver calls it,
+  and OnNameEdited refills after the commit and reads the edited row back. core.md's sentence that a cell can be
+  given back to the pattern is true now and says how
+- FR-163, the title bar close and Alt+F4 mid run. OnClose, lines 3071 to 3080, refused while running, and it was
+  wired only to the Close button, FederatorWindow.xaml line 61, with no Closing handler, while Pump, lines 2994 to
+  2997, let the other two reach the window. The Closing event, OnClosing, now cancels while running and warns in
+  the words OnClose used, The run is still going. Let it finish. OnClose only calls Close, so the rule is in one
+  place. Window code, no Core test
+- FR-166, the tolerance box on Other with a blank or a bad number. Partly answered before this branch: since F127
+  attempt 2, pull request 209, the name checks at lines 930 and 2055 read the internalWorkbook field and no longer
+  reach the tolerance box. What was left: ReportsWanted, line 1851, still called ChosenTolerance, lines 1387 to
+  1415, which threw from ToleranceChoice.Of, so Undo auto Reviewed at 1604, Probe model properties at 1704 and Sets
+  into open model at 2886, which never use the tolerance, stopped with their stopped message, Tests into open model
+  at 2938 stopped inside its try, and the open file run at 2675 stopped part way and wrote a RESULT. The scanned run
+  at 2097 and the run of picked NWFs at 344 already refused first, by catching the throw. The rule is Core now:
+  ToleranceChoice.FromThePicker reads the drop down with no throw and hands back null and the refusal, blank in
+  ToleranceChoice.OtherIsBlank and the rest in the words Of throws with, one private rule for both, so the window
+  shows no Parameter name line any more. ToleranceOrSayWhyNot logs a TOLERANCE line and warns before anything
+  starts for the four runs that create or run tests, ReportsWanted takes the tolerance, and Undo, Probe and Sets
+  into open model hand the file's
+- The rules in .claude\rules\core.md and addin.md, the section in steps\01_next.md, steps 1100 to 1158 of
+  steps\03_bader_next.md, and the four rows of steps\tracker.csv in review. The F121 area row is left as main has
+  it, since fix-F121d changes that row too and two changes of one line would conflict
+- Proved here: Core tests 3035 passed, 0 failed, 0 skipped on main 8e100bf6. Nineteen new tests run first against
+  the new members written with the old behaviour, 11 failed and 8 passed, the 8 guards of what the fix keeps,
+  %LOCALAPPDATA%\NwcFederatorLoop\turn6\f121e-failing-first.txt with the stubs in f121e-stub.diff.txt. After the
+  fix 3054 passed, 0 failed, 0 skipped. No test was changed but OutputNameTableTests' helper, which now builds a
+  table from any list of files. The solution builds in Release with 0 warnings and 0 errors before and after, the
+  add-in included. check-locals and check-imports read clean. make-tracker and check-tracker read clean
+
+What waits for the local machine: steps 1100 to 1158 of steps\03_bader_next.md, a typed name and an unticked Run box
+across a file unticked in another building, a name cell cleared, the four buttons with Other left blank and with
+abc, and one run closed from the title bar and with Alt+F4 while it goes. FR-163 is proved by nothing else, and the
+window halves of the other three by nothing else. Nothing of it has run on Navisworks.
+
+Known bugs: The refused close warns over the run's pump, so the run waits while the message is open, as it did
+under the Close button's warning. Whether reading the edited row back after a cell edit disturbs a cell of the same
+row the person has already begun typing into is UNKNOWN until step 1119. What the Navisworks main window does when
+it is closed with the tool open is UNKNOWN, the note of FR-163.
+
+What comes next: the lead's reviewer and breaker, the merge after pull request 222 or before it, then the run of
+steps 1100 to 1158.
+
+THE LEAD, before the reading, 2026-10-13:
+- A Scan starts the groups clean again, every one ticked and named by its pattern, as before. FR-153 keeps a typed
+  name and an unticked Run box only where a regroup follows a file ticked or unticked or the grouping changed, which is
+  the fault its row names. With Scan keeping them, F130's own proof steps 557 and 569, all ten ticked after a Scan,
+  would no longer hold. Whether a Scan of the same folder should keep them is put to Bader in the tab
+- F127-R5's step 992 gives the name back by clearing the cell, FR-160, where it pressed Scan again
+- Main 524f4b17 merged in, the records of both sides kept
+- THE READING approved. The grouping change starts clean too, Regroup(false), since the row names a file unticked
+  only and a key means another group under another grouping. The stale known bug on Scan is struck. Steps 1120 and
+  1131 are split to one action each, the section now 1100 to 1158
+- THE STEPS OF F115 put back. Pull request 222 was cut before the renumber of 221, and its merge kept both sides of
+  steps\03_bader_next.md, so main held F115's old steps 664 to 685 under its heading and the renumbered 956 to 977 under
+  F121's, three numbers used twice. The old copy is taken out and 956 to 977 sit under F115 again, read equal to main
+  8e100bf6. turn6\mergemain.py no longer keeps both sides of that file, it stops there for a person to read
+
+
 ## 2026-10-13 F121 wave 4, FR-150, FR-152, FR-155 and FR-162, written by the developer as the lead's delegate
 
 Branch fix-F121d off main 0a54132, Bader's order of 2026-10-12 headed BADER SAYS GO, item 7: waves 3, 4 and 5,
