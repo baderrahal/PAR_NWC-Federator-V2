@@ -1715,3 +1715,64 @@ Three things the add-in pass of F118 changed. FR-036 first, because it costs two
 1064. Press Run, then OK, and wait for it to finish
 1065. Look for, in the group, one line after the `UNITS` line: `GRID     Grid Location empty on N of M clash rows` with the heights of the empty and the filled rows, or `GRID     Grid Location filled on every one of M clash rows`, and the same words on a row of the `.tsv` beside the log, happening `grid location counted`
 1066. Send the logs of steps 1046, 674, 680 and 1064, each named on its `log file` line. Why the Grid Location cells are empty is UNKNOWN, and the heights of step 1065 against the grid levels are the first thing to read
+
+## Proof F121 wave 4 part two, the regroup, a cleared name cell, the tolerance box and the close mid run, added 2026-10-13
+
+Everything runs on copies in two new folders on the desktop, so no NWF of the real folders is changed. The regroup first, then the cleared name cell on the same table, then the tolerance box, then one run that is closed from the title bar while it goes. 1A02WL is used beside 1A02MM because it holds more than one file, so unticking one of them leaves the group in the list.
+
+1100. Install main once fix-F121e has merged, steps 7 to 12
+1101. In Explorer make a new folder on the desktop named `F121e source`
+1102. Copy the NWC files of 1A02MM from `C:\00-NM\Federation Task\C02 + 04\C02` into `F121e source`
+1103. Copy the NWC files of 1A02WL from the same folder into `F121e source`
+1104. Make a second new folder on the desktop named `F121e out`
+1105. Start Navisworks and open the tool
+1106. On 1. Source pick `F121e source`
+1107. Press Scan
+1108. On 3. Outputs pick `F121e out` for the NWF folder
+1109. Pick `F121e out` for the NWD folder
+1110. Pick `F121e out` for the Excel folder
+1111. In the names table on 3. Outputs double click the NWF name cell of 1A02MM
+1112. Type `F121E-TYPED-NWF` and press Enter
+1113. Look for: the Edited cell of 1A02MM reading `by hand`
+1114. On 2. Grouping untick the Run box of 1A02MM
+1115. On 1. Source untick the Use box of one file of 1A02WL
+1116. On 2. Grouping look for: the Run box of 1A02MM still unticked, where before this fix it came back ticked
+1117. Look for: the Run box of 1A02WL ticked
+1118. On 3. Outputs look for: the NWF name of 1A02MM still `F121E-TYPED-NWF` and its Edited cell `by hand`, where before this fix it went back to the pattern's name
+1119. Double click the NWF name cell of 1A02MM
+1120. Press Ctrl+A, then Delete, then Enter
+1121. Look for: the cell holding a name with 1A02MM in it, built the way the NWD name beside it is, and the Edited cell empty, where before this fix the cell stayed empty and read `by hand`
+1122. Look for, under the names: no line `THE RUN CANNOT START` and no `The NWF name of 1A02MM cannot be used, it is empty.`
+1123. Look for: the NWD name and the Workbook name of 1A02MM as they were before step 1119
+1124. On 4. Clash set Clash tolerance to `Other`
+1125. Leave the number box beside it empty
+1126. Press `Undo auto Reviewed`
+1127. Look for: no window saying `The undo stopped.`, and the line beside the button saying how many were put back of how many looked at, or `Nothing was read.`
+1128. Press `Probe model properties`
+1129. Press No, to read the document that is open
+1130. Look for: no window saying `The probe stopped.`, and `Probe finished.` on the progress line
+1131. Press Browse beside Clash XML and pick `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` of the repo
+1132. Press `Sets into open model`
+1133. Look for: no window saying `Building the sets stopped.`, and `Sets finished.` on the progress line
+1134. Press `Tests into open model`
+1135. Look for: a window saying `The clash tolerance is set to Other and no number is typed beside it.`
+1136. Press OK
+1137. Look for, in the log: `TOLERANCE Tests into open model did not start.` with the same words, and no `CLASH    started by hand` line after it
+1138. Type `abc` in the number box
+1139. Press Run
+1140. Look for: a window saying `A tolerance that is not a number is not a tolerance.` with no `Parameter name` line under it
+1141. Press OK
+1142. Look for, in the log: `TOLERANCE the run did not start. A tolerance that is not a number is not a tolerance.`
+1143. Set Clash tolerance back to `Use the value in the XML`
+1144. Press Run, then OK
+1145. While the run is going, press the X at the top right of the tool's window
+1146. Look for: a window saying `The run is still going. Let it finish.`, and the tool's window still open behind it, where before this fix the tool's window closed under the run
+1147. Press OK
+1148. Click on the tool's window and press Alt+F4
+1149. Look for: the same window, and the tool still open
+1150. Press OK
+1151. Wait for the run to finish
+1152. Look for: the RESULT block, with 1A02WL in it and not 1A02MM, which step 1114 unticked
+1153. Press the X at the top right of the tool's window
+1154. Look for: the tool's window closes with no message
+1155. Send the log of steps 1105 to 1154, named on its `log file` line

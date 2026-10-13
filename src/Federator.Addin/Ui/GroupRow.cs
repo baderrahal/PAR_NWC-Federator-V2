@@ -11,7 +11,8 @@ namespace Federator.Addin.Ui
     ///
     /// The three output names are a view onto the row in the name table, so typing one in
     /// the grid marks that one name as typed over and a later pattern change leaves it
-    /// alone. Nothing here holds a second copy of a name.
+    /// alone, and clearing it gives it back to the pattern. Nothing here holds a second
+    /// copy of a name.
     /// </summary>
     public sealed class GroupRow : ObservableObject
     {
@@ -115,15 +116,9 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            string tidied = value == null ? string.Empty : value.Trim();
-
-            if (string.Equals(names.Get(kind), tidied, System.StringComparison.Ordinal)
-                && names.IsByHand(kind))
-            {
-                return;
-            }
-
-            names.SetByHand(kind, tidied);
+            // FR-160. A cleared cell gives the name back to the pattern through Core's rule, and the
+            // window's refill after the edit builds it, so the cell is read back either way.
+            names.Typed(kind, value);
             Raise(property);
             Raise("EditedMark");
         }

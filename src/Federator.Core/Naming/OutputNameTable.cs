@@ -88,6 +88,23 @@ namespace Federator.Core.Naming
             byHand[(int)kind] = false;
         }
 
+        /// <summary>
+        /// A name typed into its cell in the group table, FR-160. A cell cleared to nothing gives
+        /// the name back to the pattern, and the next Refill builds it again. Before, the cleared
+        /// cell was pinned as an empty name typed over, which no pattern change could fill and
+        /// only a regroup undid. Anything else is typed over, as SetByHand says.
+        /// </summary>
+        public void Typed(OutputKind kind, string typed)
+        {
+            if (string.IsNullOrWhiteSpace(typed))
+            {
+                ReleaseToPattern(kind);
+                return;
+            }
+
+            SetByHand(kind, typed);
+        }
+
         internal void Fill(OutputKind kind, string name)
         {
             names[(int)kind] = name;
@@ -160,6 +177,39 @@ namespace Federator.Core.Naming
 
             table.Refill(naming, settings);
             return table;
+        }
+
+        /// <summary>
+        /// Carries the names typed over by hand in the table before a regroup onto this one, FR-153,
+        /// each by its group's key, so unticking one file no longer throws away every name typed in
+        /// every other group. A name of a group the regroup took away goes nowhere, and a name under
+        /// the pattern stays as this table built it. A kept name is still typed over, so the next
+        /// pattern change leaves it alone.
+        /// </summary>
+        public void KeepTypedFrom(OutputNameTable before)
+        {
+            if (before == null)
+            {
+                throw new ArgumentNullException("before");
+            }
+
+            foreach (OutputNameRow row in rows)
+            {
+                OutputNameRow was = before.Find(row.Group);
+
+                if (was == null)
+                {
+                    continue;
+                }
+
+                foreach (OutputKind kind in AllKinds())
+                {
+                    if (was.IsByHand(kind))
+                    {
+                        row.SetByHand(kind, was.Get(kind));
+                    }
+                }
+            }
         }
 
         /// <summary>

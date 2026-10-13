@@ -986,6 +986,26 @@ well as to pass.
   not one of the sixteen tick boxes counted below. The window driver cannot carry Shift
   without real input, turn5\measure-shift-driver-result.md, so its proof is numbered steps in
   steps\03_bader_next.md
+- A REGROUP KEEPS THE RUN TICKS AND THE TYPED NAMES, FR-153, the rule Core's, core.md, A
+  regroup keeps what was typed. `Regroup` reads every row's Run box into `KeptRunTicks`
+  before `groups.Clear()`, sets each usable row made again through Include off
+  `StartsTicked`, and builds the name table with `KeepTypedFrom` the table before. It clears
+  `lastRefill`, which described a refill of the table it replaced. A new Scan regroups too,
+  so a group whose key is the same keeps its tick and its typed names across a Scan
+- A CLEARED NAME CELL GOES BACK TO THE PATTERN, FR-160. `GroupRow.TypeOver` hands the cell to
+  `OutputNameRow.Typed`, and `OnNameEdited`, after the commit, refills the table and reads
+  the edited row back, so the cell shows the pattern's name at once
+- THE WINDOW REFUSES TO CLOSE WHILE ANYTHING RUNS, FR-163. The Closing event, `OnClosing`, is
+  the one rule: while `running` it cancels and warns The run is still going. Let it finish,
+  for the title bar close, Alt+F4 and the Close button alike, which now only calls Close.
+  Before, only the button refused, and the repaint pump let the other two close the window
+  under a run
+- ONLY A RUN THAT CREATES OR RUNS CLASH TESTS READS THE TOLERANCE, FR-166.
+  `ToleranceOrSayWhyNot` reads the drop down through `ToleranceChoice.FromThePicker` and,
+  where it does not read, logs a TOLERANCE line and warns before anything starts. The scanned
+  run, the run of picked NWFs, the open file run and Run tests call it and hand the value to
+  `ReportsWanted`. Undo, Probe and Build sets never read it and hand
+  `ToleranceChoice.FromTheFile()`, so a blank Other box stops none of them
 
 ## What a tick box says
 

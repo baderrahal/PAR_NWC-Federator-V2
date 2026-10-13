@@ -94,6 +94,103 @@ namespace Federator.Core.Tests
                 delegate { ToleranceChoice.Of(double.PositiveInfinity); });
         }
 
+        // ---------- the drop down read without a throw, FR-166 ----------
+
+        private static readonly int OtherAt = ToleranceChoice.Choices().Count - 1;
+
+        /// <summary>
+        /// FR-166. Other chosen with the box blank threw out of every button that read the run's
+        /// settings, the ones that never use the tolerance among them. Read here, a blank box is a
+        /// refusal handed back with no throw, so each caller decides whether it matters.
+        /// </summary>
+        [Test]
+        public void OtherWithTheBoxBlankIsRefusedWithoutAThrow()
+        {
+            foreach (string blank in new[] { null, string.Empty, "   " })
+            {
+                string refused;
+                ToleranceChoice chosen = ToleranceChoice.FromThePicker(OtherAt, blank, out refused);
+
+                Assert.That(chosen, Is.Null, "\"" + blank + "\"");
+                Assert.That(refused, Is.EqualTo(ToleranceChoice.OtherIsBlank), "\"" + blank + "\"");
+            }
+        }
+
+        [Test]
+        public void OtherWithTextThatIsNoNumberIsRefusedWithoutAThrow()
+        {
+            foreach (string text in new[] { "abc", "25mm", "NaN", "Infinity", "-Infinity", "1e400" })
+            {
+                string refused;
+                ToleranceChoice chosen = ToleranceChoice.FromThePicker(OtherAt, text, out refused);
+
+                Assert.That(chosen, Is.Null, text);
+                Assert.That(refused, Is.EqualTo("A tolerance that is not a number is not a tolerance."), text);
+            }
+        }
+
+        [Test]
+        public void OtherBelowZeroIsRefusedWithoutAThrow()
+        {
+            string refused;
+            ToleranceChoice chosen = ToleranceChoice.FromThePicker(OtherAt, "-1", out refused);
+
+            Assert.That(chosen, Is.Null);
+            Assert.That(refused, Is.EqualTo("A tolerance below zero is not a tolerance. Zero is a real one and is allowed."));
+        }
+
+        /// <summary>One rule: the words the drop down hands back are the words Of throws with.</summary>
+        [Test]
+        public void TheRefusalIsInTheSameWordsOfThrowsWith()
+        {
+            string refused;
+            ToleranceChoice.FromThePicker(OtherAt, "-2", out refused);
+
+            ArgumentOutOfRangeException thrown =
+                Assert.Throws<ArgumentOutOfRangeException>(delegate { ToleranceChoice.Of(-2.0); });
+
+            Assert.That(refused, Is.Not.Null);
+            Assert.That(thrown.Message, Does.StartWith(refused));
+        }
+
+        [Test]
+        public void OtherWithANumberIsThatTolerance()
+        {
+            foreach (KeyValuePair<string, double> typed in new Dictionary<string, double>
+            {
+                { "0", 0.0 }, { "12.5", 12.5 }, { " 30 ", 30.0 }
+            })
+            {
+                string refused;
+                ToleranceChoice chosen = ToleranceChoice.FromThePicker(OtherAt, typed.Key, out refused);
+
+                Assert.That(refused, Is.Null, typed.Key);
+                Assert.That(chosen.ChosenInTheTool, Is.True, typed.Key);
+                Assert.That(chosen.Millimetres, Is.EqualTo(typed.Value), typed.Key);
+            }
+        }
+
+        /// <summary>The entries before Other never read the box, so junk left in it refuses nothing.</summary>
+        [Test]
+        public void TheEntriesBeforeOtherNeverReadTheBox()
+        {
+            string refused;
+
+            Assert.That(ToleranceChoice.FromThePicker(0, "junk", out refused).ChosenInTheTool, Is.False);
+            Assert.That(refused, Is.Null);
+            Assert.That(ToleranceChoice.FromThePicker(-1, "junk", out refused).ChosenInTheTool, Is.False,
+                "nothing picked reads as the file");
+
+            for (int at = 1; at < OtherAt; at++)
+            {
+                ToleranceChoice chosen = ToleranceChoice.FromThePicker(at, "junk", out refused);
+
+                Assert.That(refused, Is.Null, ToleranceChoice.Choices()[at]);
+                Assert.That(chosen.Millimetres, Is.EqualTo(ToleranceChoice.OfferedMillimetres[at - 1]));
+                Assert.That(chosen.Label(), Is.EqualTo(ToleranceChoice.Choices()[at]));
+            }
+        }
+
         [Test]
         public void ATypedValueReadsInTheWordsAPersonSays()
         {

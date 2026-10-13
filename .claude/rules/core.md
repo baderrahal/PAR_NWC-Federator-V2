@@ -33,9 +33,21 @@ because one group in twenty usually needs a name the pattern cannot give.
 
 A name typed over is held per CELL, not per row. Changing a pattern refills only the
 cells nobody has touched, so editing an NWF name does not freeze the NWD name beside it,
-and the refill says how many rows it kept. A cell can be given back to the pattern.
+and the refill says how many rows it kept. A cell is given back to the pattern by
+clearing it, FR-160: `OutputNameRow.Typed`, what a cell edit does, releases a name typed
+empty, spaces or nothing through `ReleaseToPattern` and the next refill builds it, where it
+was pinned as an empty name only a regroup undid. Anything else typed is held as typed over.
 Setting a cell to exactly what the pattern already gives still counts as typed over,
 because the person meant that value.
+
+A regroup keeps what was typed, FR-153. Unticking one file makes the groups and the table
+again, and every name typed over in every other group was thrown away. The table made
+again takes each name typed over from the table before by its group's key,
+`OutputNameTable.KeepTypedFrom`, still typed over, and a name of a group that is gone goes
+nowhere. The Run boxes are kept the same way, `Federator.Core.Grouping.KeptRunTicks`: a
+group the person left unticked starts unticked, matched by its key exactly, and every other
+group starts ticked, one new to the list and one that was blocked, whose empty box was never
+a choice, included.
 
 The collision check runs on the table, not on the patterns, so two names typed to the
 same thing is caught the same way two patterns colliding is. It names both groups and
@@ -899,7 +911,12 @@ and 6 does not read as broken.
   The choice is in MILLIMETRES because that is what a person says, converted through
   UnitTable like any other, and a unit the table has not been taught throws rather than
   falling back. Zero is a real tolerance and is allowed. A negative one is refused where
-  it is set rather than reaching 1830 tests. The confirm screen says the value, the
+  it is set rather than reaching 1830 tests. The drop down is read by
+  `ToleranceChoice.FromThePicker`, which never throws, FR-166: Other with its box blank, not
+  a number, below zero or infinite hands back null and the refusal, blank in
+  `ToleranceChoice.OtherIsBlank` and the rest in the words `Of` throws with, one private
+  rule for both, so only a run that creates or runs clash tests refuses on it and a button
+  that never reads the tolerance is not stopped by it. The confirm screen says the value, the
   counts, what it beats, and what changing a saved test actually costs, which is that it
   finds DIFFERENT clashes next run and NOT that its results are reset, 5y, and says
   nothing at all under the default, because a line that reads the same on every run

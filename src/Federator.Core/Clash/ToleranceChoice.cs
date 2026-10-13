@@ -105,20 +105,72 @@ namespace Federator.Core.Clash
         /// </summary>
         public static ToleranceChoice Of(double millimetres)
         {
+            string refused = WhyNot(millimetres);
+
+            if (refused != null)
+            {
+                throw new ArgumentOutOfRangeException("millimetres", refused);
+            }
+
+            return new ToleranceChoice(true, millimetres);
+        }
+
+        /// <summary>Why a number is not a tolerance, or null where it is one. The one rule Of and the drop down read.</summary>
+        private static string WhyNot(double millimetres)
+        {
             if (double.IsNaN(millimetres) || double.IsInfinity(millimetres))
             {
-                throw new ArgumentOutOfRangeException(
-                    "millimetres", "A tolerance that is not a number is not a tolerance.");
+                return "A tolerance that is not a number is not a tolerance.";
             }
 
             if (millimetres < 0)
             {
-                throw new ArgumentOutOfRangeException(
-                    "millimetres",
-                    "A tolerance below zero is not a tolerance. Zero is a real one and is allowed.");
+                return "A tolerance below zero is not a tolerance. Zero is a real one and is allowed.";
             }
 
-            return new ToleranceChoice(true, millimetres);
+            return null;
+        }
+
+        /// <summary>What the drop down hands back where Other is chosen and its box is empty.</summary>
+        public const string OtherIsBlank = "The clash tolerance is set to Other and no number is typed beside it.";
+
+        /// <summary>
+        /// What the drop down says, FR-166, read without a throw: the entry at its place in
+        /// Choices(), the file first, the offered values, then Other with the text of its number
+        /// box. Null where Other's text is not a tolerance, and then refused holds why, in the
+        /// words Of throws with, so each caller decides whether the tolerance matters to it. Before,
+        /// the window called Of on the text and every button that read the run's settings stopped
+        /// on a blank box, Undo, Probe and Build sets among them, which never use the tolerance.
+        /// </summary>
+        public static ToleranceChoice FromThePicker(int at, string otherText, out string refused)
+        {
+            refused = null;
+
+            if (at <= 0)
+            {
+                return FromTheFile();
+            }
+
+            if (at <= OfferedMillimetres.Length)
+            {
+                return Of(OfferedMillimetres[at - 1]);
+            }
+
+            if (string.IsNullOrWhiteSpace(otherText))
+            {
+                refused = OtherIsBlank;
+                return null;
+            }
+
+            double typed;
+
+            if (!double.TryParse(otherText.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out typed))
+            {
+                typed = double.NaN;
+            }
+
+            refused = WhyNot(typed);
+            return refused == null ? new ToleranceChoice(true, typed) : null;
         }
 
         /// <summary>Whether a value was chosen at all.</summary>

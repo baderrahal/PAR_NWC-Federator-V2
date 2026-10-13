@@ -151,20 +151,20 @@ FR-149,older machine account name left in tree,F117,5,noise,open,none,none,2026-
 FR-150,apply file settings does not save nwf,F121,4,silent wrong number,open,none,none,2026-10-04
 FR-151,rebuild tally before minus one reads as none,F121,4,silent wrong number,merged,150,none,2026-10-07
 FR-152,undo auto reviewed undoes a persons reviewed,F121,4,silent wrong number,open,none,none,2026-10-04
-FR-153,regroup throws away typed names and run ticks,F121,4,silent wrong number,open,none,none,2026-10-04
+FR-153,regroup throws away typed names and run ticks,F121,4,silent wrong number,in review,UNKNOWN,none,2026-10-13
 FR-154,scan findings use group key as building code,F121,4,silent wrong number,merged,150,none,2026-10-07
 FR-155,exchange reader missing attribute becomes zero or false,F121,4,silent wrong number,open,none,none,2026-10-04
 FR-156,probe csv listed written after write threw,F121,4,silent wrong number,open,none,none,2026-10-04
 FR-157,probe unread value written as empty value,F121,4,silent wrong number,open,none,none,2026-10-04
 FR-158,probe category match trims but tally does not,F121,4,silent wrong number,merged,150,none,2026-10-07
 FR-159,emptied pattern field passes name check,F121,4,broken feature,merged,150,none,2026-10-07
-FR-160,cleared name cell pinned as empty name,F121,4,broken feature,open,none,none,2026-10-04
+FR-160,cleared name cell pinned as empty name,F121,4,broken feature,in review,UNKNOWN,none,2026-10-13
 FR-161,date format has no control,F121,4,broken feature,open,none,none,2026-10-04
 FR-162,folder memory save failure never reported,F121,4,broken feature,open,none,none,2026-10-04
-FR-163,title bar close mid run,F121,4,broken feature,open,none,none,2026-10-04
+FR-163,title bar close mid run,F121,4,broken feature,in review,UNKNOWN,none,2026-10-13
 FR-164,census sets overload returns zero not minus one,F121,4,loud failure,merged,150,none,2026-10-07
 FR-165,cleared name cell throws out of run click,F121,4,loud failure,merged,"150, and 160 the second half, a hand typed name Windows refuses",none,2026-10-07
-FR-166,tolerance other blank stops hand buttons,F121,4,loud failure,open,none,none,2026-10-04
+FR-166,tolerance other blank stops hand buttons,F121,4,loud failure,in review,UNKNOWN,none,2026-10-13
 FR-167,shared source uses group key not building code,F123,5,noise,open,none,none,2026-10-04
 FR-168,folders memory read failure logged as first run,F123,5,noise,merged,155,none,2026-10-07
 FR-169,document guard unreadable name called unsaved,F123,5,noise,open,none,none,2026-10-04
