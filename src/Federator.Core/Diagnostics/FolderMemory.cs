@@ -46,8 +46,9 @@ namespace Federator.Core.Diagnostics
     /// moment the folder does.
     ///
     /// Nothing here ever throws. Losing the remembered folders is a small annoyance and
-    /// stopping a run over it is not, so every read and write swallows its own failure the
-    /// same way the log does.
+    /// stopping a run over it is not, so every read and write catches its own failure and
+    /// records why in DisabledReason, which the startup block carries, and a write that
+    /// failed is said on the line Remember hands back, FR-162.
     /// </summary>
     public sealed class FolderMemory
     {
@@ -55,6 +56,9 @@ namespace Federator.Core.Diagnostics
 
         private readonly Dictionary<PickerKind, string> folders =
             new Dictionary<PickerKind, string>();
+
+        /// <summary>Whether Remember has said a failed save since the last one that worked, FR-162.</summary>
+        private bool saveFailureSaid;
 
         private FolderMemory(string path)
         {
@@ -221,12 +225,14 @@ namespace Federator.Core.Diagnostics
         /// <summary>
         /// Records where a picker was last pointed and writes it out. A file path is
         /// reduced to its folder, so remembering the clash XML remembers where it lives.
+        /// Hands back the one line for the log where the file could not be written, FR-162,
+        /// and null otherwise.
         /// </summary>
-        public void Remember(PickerKind kind, string folderOrFile)
+        public string Remember(PickerKind kind, string folderOrFile)
         {
             if (string.IsNullOrEmpty(folderOrFile) || folderOrFile.Trim().Length == 0)
             {
-                return;
+                return null;
             }
 
             string value = folderOrFile.Trim();
@@ -245,11 +251,28 @@ namespace Federator.Core.Diagnostics
 
             if (string.IsNullOrEmpty(value))
             {
-                return;
+                return null;
             }
 
             folders[kind] = value;
-            Save();
+
+            if (Save())
+            {
+                saveFailureSaid = false;
+                return null;
+            }
+
+            // FR-162. The session still remembers, and the line says it will not survive a
+            // restart and why. Once until a save works again, so ten picks are not ten lines.
+            if (saveFailureSaid)
+            {
+                return null;
+            }
+
+            saveFailureSaid = true;
+            return "FOLDERS  the folder picked for " + kind + " is remembered for this session only, because "
+                + Words.Or(Path, "the folders file") + " could not be written: "
+                + Words.Or(DisabledReason, "UNKNOWN");
         }
 
         /// <summary>

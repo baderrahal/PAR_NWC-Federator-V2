@@ -555,7 +555,12 @@ well as to pass.
   all. WHAT IT ACTUALLY COSTS is different and real: the test finds DIFFERENT clashes the
   next time it runs, so a clash somebody marked Reviewed may not come back, and a clash
   nobody has seen may appear. That is why the default is still to report and not to act.
-  What drifted is worth knowing every week. Overwriting it is worth doing once
+  What drifted is worth knowing every week. Overwriting it is worth doing once. APPLYING IS
+  A WRITE, FR-150: `ClashRunner.Apply` counts each test it edits on the outcome,
+  `ClashRunOutcome.AddApplied`, and the engine asks for the NWF to be saved again through
+  `ClashRunOutcome.SavesTheNwfAgain`, the one rule of what the clash step wrote, where the
+  engine's own expression left the applied count out and a test applied and then skipped left
+  the NWD carrying the edit and the NWF not, so the next run found the same drift
 - There is no stale marker on the clash API. Nothing named stale, altered, out of date,
   dirty or needs rerun exists on any type in Autodesk.Navisworks.Clash, public or
   private, measured on 2026-08-31, see docs\history\scan.md section 4j. The only thing there is

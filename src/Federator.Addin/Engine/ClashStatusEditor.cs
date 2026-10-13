@@ -38,7 +38,7 @@ namespace Federator.Addin.Engine
 
         /// <summary>
         /// Whether this is an undo, F72c, which may set the exact status its record names
-        /// and nothing else, and writes no record of its own.
+        /// and nothing else, and leaves the record of the undo beside it, FR-152.
         /// </summary>
         public bool AsUndo { get; private set; }
     }
@@ -237,11 +237,17 @@ namespace Federator.Addin.Engine
                     try
                     {
                         // F72c. The record first, on the same handle, and then the status.
-                        // An undo writes none: the record it is undoing stays as the history
-                        // of what happened, and the status alone goes back.
-                        if (wanted.Record != null && !wanted.AsUndo)
+                        // An undo leaves a record of its own beside the one it undoes, FR-152,
+                        // so the next undo reads the clash as put back and a Reviewed a person
+                        // sets after it as the person's.
+                        if (wanted.Record != null)
                         {
-                            WriteTheRecord(document, clashTests, result, wanted.Record);
+                            WriteTheRecord(
+                                document,
+                                clashTests,
+                                result,
+                                wanted.AsUndo ? wanted.Record.UndoneText() : wanted.Record.Text(),
+                                wanted.AsUndo);
                         }
 
                         clashTests.TestsEditResultStatus(result, (ClashResultStatus)(int)want);
@@ -271,10 +277,11 @@ namespace Federator.Addin.Engine
         /// WHERE IT CANNOT BE WRITTEN AT ALL, which is a throw before any record has landed,
         /// the log says so ONCE in Core's words, no further record is tried, and the status
         /// alone is set. A throw after records have landed is that clash's own and is
-        /// logged by name, and the next clash is still tried.
+        /// logged by name, and the next clash is still tried. The text is a move's record or
+        /// an undo's, FR-152, and the one line says which could not be written.
         /// </summary>
         private void WriteTheRecord(
-            Document document, DocumentClashTests clashTests, ClashResult result, AutoReviewRecord record)
+            Document document, DocumentClashTests clashTests, ClashResult result, string text, bool asUndo)
         {
             if (cannotWriteRecords)
             {
@@ -285,8 +292,8 @@ namespace Federator.Addin.Engine
             {
                 using (CommentCollection comments = new CommentCollection(result.Comments))
                 using (Comment comment = document == null
-                    ? new Comment(record.Text(), CommentStatus.New, Author)
-                    : document.CreateCommentWithUniqueId(record.Text(), CommentStatus.New, Author))
+                    ? new Comment(text, CommentStatus.New, Author)
+                    : document.CreateCommentWithUniqueId(text, CommentStatus.New, Author))
                 {
                     comments.Add(comment);
                     clashTests.TestsEditResultComments(result, comments);
@@ -303,8 +310,8 @@ namespace Federator.Addin.Engine
                         "writing the record on " + result.DisplayName,
                         error,
                         "the status alone is set from here on and no further record is tried");
-                    log.Line(UndoAutoReview.CannotLine(
-                        "writing one threw " + error.GetType().Name + " on the first clash"));
+                    string why = "writing one threw " + error.GetType().Name + " on the first clash";
+                    log.Line(asUndo ? UndoAutoReview.CannotRecordTheUndoLine(why) : UndoAutoReview.CannotLine(why));
                     return;
                 }
 

@@ -264,6 +264,19 @@ namespace Federator.Core.Clash
                 return;
             }
 
+            // FR-155. A setting left out read as 0 or false, which is a setting nobody wrote,
+            // so the test is skipped by name the way a test with no tolerance is.
+            if (test.MissingSettings.Count > 0)
+            {
+                skipped.Add(new SkippedClashTest(
+                    test.Name,
+                    ClashSkipReason.MissingSetting,
+                    "the file gives this test no " + string.Join(", ", new List<string>(test.MissingSettings).ToArray())
+                        + ", and a setting is never supplied from anywhere else",
+                    fileIndex));
+                return;
+            }
+
             buildable.Add(new PlannedClashTest(
                 test.Name,
                 kind,
@@ -496,6 +509,8 @@ namespace Federator.Core.Clash
                     return "the tolerance could not be converted";
                 case ClashSkipReason.NoTolerance:
                     return "the file gives it no tolerance";
+                case ClashSkipReason.MissingSetting:
+                    return "the file leaves out a setting of it";
                 case ClashSkipReason.NoName:
                     return "no name";
                 case ClashSkipReason.LocatorNotResolved:

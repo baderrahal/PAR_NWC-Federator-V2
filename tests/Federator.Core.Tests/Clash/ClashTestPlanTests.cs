@@ -414,11 +414,15 @@ namespace Federator.Core.Tests
         [Test]
         public void ResolvingKeepsWhatWasAlreadySkipped()
         {
+            // The good test's sides carry selfintersect and primtypes, as every real file
+            // writes them. Left out, it is skipped by name too, FR-155.
             ClashTestPlan plan = Plan(
                 "<exchange units=\"ft\"><batchtest name=\"b\">"
                 + "<clashtest name=\"good\" test_type=\"hard\" tolerance=\"0.25\" merge_composites=\"1\">"
-                + "<left><clashselection><locator>" + LeftPath + "</locator></clashselection></left>"
-                + "<right><clashselection><locator>" + RightPath + "</locator></clashselection></right>"
+                + "<left><clashselection selfintersect=\"0\" primtypes=\"1\"><locator>" + LeftPath
+                + "</locator></clashselection></left>"
+                + "<right><clashselection selfintersect=\"0\" primtypes=\"1\"><locator>" + RightPath
+                + "</locator></clashselection></right>"
                 + "</clashtest>"
                 + "<clashtest name=\"bad type\" test_type=\"nonsense\" tolerance=\"0.25\" merge_composites=\"1\">"
                 + "<left><clashselection><locator>" + LeftPath + "</locator></clashselection></left>"

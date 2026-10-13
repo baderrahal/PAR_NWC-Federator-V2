@@ -157,7 +157,7 @@ namespace Federator.Addin.Ui
 
             if (picked != null)
             {
-                folders.Remember(PickerKind.Source, picked);
+                RememberFolder(PickerKind.Source, picked);
                 SourceFolderBox.Text = picked;
             }
         }
@@ -293,7 +293,7 @@ namespace Federator.Addin.Ui
         /// </summary>
         private void PickedNwfChosen(string picked)
         {
-            folders.Remember(PickerKind.PickedNwf, picked);
+            RememberFolder(PickerKind.PickedNwf, picked);
             PickedNwfBox.Text = picked;
 
             NwfPickPlan plan = PlanThePickedNwfs(Trimmed(ExcelFolderBox.Text));
@@ -1224,7 +1224,7 @@ namespace Federator.Addin.Ui
 
             if (picked != null)
             {
-                folders.Remember(PickerKind.Nwf, picked);
+                RememberFolder(PickerKind.Nwf, picked);
                 NwfFolderBox.Text = picked;
                 RefreshOutputsSummary();
             }
@@ -1237,7 +1237,7 @@ namespace Federator.Addin.Ui
 
             if (picked != null)
             {
-                folders.Remember(PickerKind.Nwd, picked);
+                RememberFolder(PickerKind.Nwd, picked);
                 NwdFolderBox.Text = picked;
                 RefreshOutputsSummary();
             }
@@ -1468,7 +1468,7 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
-                folders.Remember(PickerKind.Priority, dialog.FileName);
+                RememberFolder(PickerKind.Priority, dialog.FileName);
                 PriorityBox.Text = dialog.FileName;
             }
         }
@@ -1560,7 +1560,7 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
-                folders.Remember(PickerKind.ByDesign, dialog.FileName);
+                RememberFolder(PickerKind.ByDesign, dialog.FileName);
                 ByDesignBox.Text = dialog.FileName;
             }
         }
@@ -1798,7 +1798,7 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
-                folders.Remember(PickerKind.Logo, dialog.FileName);
+                RememberFolder(PickerKind.Logo, dialog.FileName);
                 LogoBox.Text = dialog.FileName;
                 RefreshOutputsSummary();
             }
@@ -1811,7 +1811,7 @@ namespace Federator.Addin.Ui
 
             if (picked != null)
             {
-                folders.Remember(PickerKind.Excel, picked);
+                RememberFolder(PickerKind.Excel, picked);
                 ExcelFolderBox.Text = picked;
                 RefreshOutputsSummary();
             }
@@ -2524,7 +2524,7 @@ namespace Federator.Addin.Ui
                     return;
                 }
 
-                folders.Remember(PickerKind.ClashXml, dialog.FileName);
+                RememberFolder(PickerKind.ClashXml, dialog.FileName);
                 ExchangeFileBox.Text = dialog.FileName;
                 SetsSummary.Text = Describe(dialog.FileName);
             }
@@ -2580,6 +2580,20 @@ namespace Federator.Addin.Ui
         private string StartFor(PickerKind kind, string inTheBox)
         {
             return PickerStart.For(folders, kind, inTheBox);
+        }
+
+        /// <summary>
+        /// Remembers what one picker was pointed at, and logs the one line Core hands back
+        /// where the folders file could not be written, FR-162.
+        /// </summary>
+        private void RememberFolder(PickerKind kind, string picked)
+        {
+            string couldNotKeep = folders.Remember(kind, picked);
+
+            if (couldNotKeep != null)
+            {
+                log.Line(couldNotKeep);
+            }
         }
 
         /// <summary>

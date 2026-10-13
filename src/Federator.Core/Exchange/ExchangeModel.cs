@@ -48,7 +48,8 @@ namespace Federator.Core.Exchange
             string linkageMode,
             IList<string> rules,
             ClashSideDefinition left,
-            ClashSideDefinition right)
+            ClashSideDefinition right,
+            IList<string> missingSettings)
         {
             Name = name;
             TestType = testType;
@@ -61,7 +62,16 @@ namespace Federator.Core.Exchange
             Rules = new ReadOnlyCollection<string>(rules ?? new List<string>());
             Left = left;
             Right = right;
+            MissingSettings = new ReadOnlyCollection<string>(missingSettings ?? new List<string>());
         }
+
+        /// <summary>
+        /// The settings the file left out of this test, FR-155: merge_composites, and per
+        /// side selfintersect and primtypes, named as left primtypes and so on. Each reads as
+        /// 0 or false in its property, which is a setting nobody wrote, so a test naming any
+        /// is skipped by name the way a test with no tolerance is.
+        /// </summary>
+        public ReadOnlyCollection<string> MissingSettings { get; private set; }
 
         public string Name { get; private set; }
 

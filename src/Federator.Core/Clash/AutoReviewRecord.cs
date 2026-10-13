@@ -110,6 +110,54 @@ namespace Federator.Core.Clash
         }
 
         /// <summary>
+        /// The words every record of an undo starts with, FR-152. Not the marker of a move,
+        /// so a record of an undo is never read as a move to Reviewed.
+        /// </summary>
+        public const string UndoneMarker = "Parsons NWC Federator put back";
+
+        /// <summary>
+        /// The comment an undo leaves when it puts this record's clash back, FR-152, so the
+        /// next undo can tell a Reviewed this tool set from one a person set after the undo.
+        /// </summary>
+        public string UndoneText()
+        {
+            return UndoneMarker + " [" + Words(Rule) + "] [to " + WasAt + "] by " + UndoAutoReview.ButtonLabel;
+        }
+
+        /// <summary>Whether this comment is the record of an undo, FR-152.</summary>
+        public static bool IsUndone(string comment)
+        {
+            return !string.IsNullOrEmpty(comment) && comment.StartsWith(UndoneMarker, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// The last comment of the clash that is one of ours, a move or an undo, or an empty
+        /// string. A comment a person wrote is never one of ours, and the last of ours is the
+        /// most recent thing this tool did to the clash, FR-152. Read off the move alone, a
+        /// clash an undo had put back still read as moved by this tool, so a Reviewed a person
+        /// set after the undo went back by the next one.
+        /// </summary>
+        public static string LastOfOurs(IList<string> comments)
+        {
+            string ours = string.Empty;
+
+            if (comments == null)
+            {
+                return ours;
+            }
+
+            foreach (string body in comments)
+            {
+                if (In(body) != null || IsUndone(body))
+                {
+                    ours = body;
+                }
+            }
+
+            return ours;
+        }
+
+        /// <summary>
         /// The record inside that comment, or null where the comment is not one of ours.
         /// A comment a PERSON wrote is never one of ours, however it reads, because it
         /// will not carry the marker and the two brackets in that order.
@@ -148,40 +196,6 @@ namespace Federator.Core.Clash
             }
 
             return new AutoReviewRecord(rule.Value, wasAt, rest.Substring(after).TrimStart());
-        }
-
-        /// <summary>
-        /// Whether an undo may touch this clash. It carries one of our records AND it is
-        /// still at Reviewed.
-        ///
-        /// THE SECOND HALF IS THE ONE THAT MATTERS. A clash this tool set to Reviewed in
-        /// week one and a person moved to Approved in week two still carries the record,
-        /// and pulling it back to New would throw away that person's decision, which is
-        /// the one thing this tool never does.
-        /// </summary>
-        public static bool MayUndo(string comment, ClashStatus now)
-        {
-            return now == ClashStatus.Reviewed && In(comment) != null;
-        }
-
-        /// <summary>
-        /// Why an undo left a clash alone, or null where it may move it. Said in the
-        /// words the block carries, so a person reading it knows whether to look.
-        /// </summary>
-        public static string WhyNotUndone(string comment, ClashStatus now)
-        {
-            if (In(comment) == null)
-            {
-                return "this tool did not move it, so there is nothing of ours to undo";
-            }
-
-            if (now != ClashStatus.Reviewed)
-            {
-                return "this tool moved it and somebody has since moved it to " + now
-                    + ", so that decision stands";
-            }
-
-            return null;
         }
 
         private static bool Bracketed(string text, int from, out string inside, out int after)

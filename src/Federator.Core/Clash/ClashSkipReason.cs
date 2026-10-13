@@ -25,6 +25,13 @@ namespace Federator.Core.Clash
         /// </summary>
         NoTolerance,
 
+        /// <summary>
+        /// The file left out merge_composites, or a side's selfintersect or primtypes, FR-155.
+        /// Each read as 0 or false, a setting nobody wrote, so the test is skipped by name the
+        /// way a test with no tolerance is.
+        /// </summary>
+        MissingSetting,
+
         /// <summary>The test carried no name, so it could never be found again.</summary>
         NoName,
 
