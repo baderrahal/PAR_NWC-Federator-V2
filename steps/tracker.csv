@@ -588,8 +588,8 @@ F114-R2,"a mirror whose open rows are all result groups or that was not read who
 F114-R3,"two clashes inside one result group with the same display name share one key in a view, so the plan holds both under one key and the camera and the address of the second are the first's, fix is in the add-in's ReadTheClashesInside, a counter on the name, not Core only, found with F114-K36",F114,2b,register row,open,none,none,2026-10-13
 F123-R1,"the file name or model count the guard cannot read is said in the discard warning with its reason, but written to the log only on the preview path, so the open file confirm and the run confirm leave no log line of it, the reviewer's second point on pull request 225",F123,5,register row,open,none,none,2026-10-13
 F123-R2,"proof steps 1239 to 1242 can pass whatever NWF the document holds after the per discipline run, since they do not say which path the warning should name, the reviewer's note on pull request 225",F123,5,register row,open,none,none,2026-10-13
-F151,"no copy of the log beside the NWF folder, the picked NWFs or the open file, the log stays in the logs folder, Q162-1",F151,none,fix,in review,UNKNOWN,none,2026-10-13
-Q162-1,"no log copy in the NWF folder, the log in the logs folder only and RESULT still written, F151",none,none,Bader's request,in review,UNKNOWN,none,2026-10-13
+F151,"no copy of the log beside the NWF folder, the picked NWFs or the open file, the log stays in the logs folder, Q162-1",F151,none,fix,merged,232,none,2026-10-13
+Q162-1,"no log copy in the NWF folder, the log in the logs folder only and RESULT still written, F151",none,none,Bader's request,merged,232,none,2026-10-13
 Q162-2,"Excel pictures as linked pictures in the form of his by-hand client workbook, F152",none,none,Bader's request,open,none,none,2026-10-13
 Q162-3,"no Excel rows for tests with no clash, the HTML and the Coverage sheet keep every test, F153",none,none,Bader's request,open,none,none,2026-10-13
 Q162-4,"the priority and by design CSVs built in, the two picker rows gone, F154",none,none,Bader's request,open,none,none,2026-10-13
