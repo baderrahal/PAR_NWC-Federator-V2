@@ -25,8 +25,6 @@ namespace Federator.Core.Report
             Tolerance = ToleranceChoice.FromTheFile();
             MarkByDesign = false;
             RebuildDriftedSets = SetRebuildSettings.DefaultRebuildDriftedSets;
-            PriorityPath = string.Empty;
-            ByDesignPath = string.Empty;
             CompactResolved = false;
             MarkPenetrations = false;
             Penetrations = new PenetrationSettings();
@@ -128,21 +126,6 @@ namespace Federator.Core.Report
         public bool ApplyFileSettings { get; set; }
 
         /// <summary>
-        /// The clash priority CSV picked on the Clash step, F83, or empty. Empty means
-        /// none and NOTHING CHANGES: no Priority column, no extra RESULT line, and the
-        /// measured block order. The same shape LogoPath has, which is the other optional
-        /// picked file, because one optional picker is enough of a pattern.
-        /// </summary>
-        public string PriorityPath { get; set; }
-
-        /// <summary>
-        /// The by design pairs CSV picked on the Clash step, F72b, or empty. Empty means
-        /// none. It is read only when MarkByDesign is on, because a file picked with the
-        /// box off would be read and then ignored, which reads as a file that did nothing.
-        /// </summary>
-        public string ByDesignPath { get; set; }
-
-        /// <summary>
         /// The tolerance chosen on the Clash step, F76. Never null: the default is
         /// ToleranceChoice.FromTheFile, which is what this tool has always done. When a
         /// value is chosen it is set on every clash test in the run, created fresh or
@@ -175,8 +158,8 @@ namespace Federator.Core.Report
         /// F72b. OFF by default, for the same reason the penetration box is: it writes
         /// into the NWF, which is the only record of what has been fixed.
         ///
-        /// It reads ByDesignPath, and with the box on and no file picked it moves nothing
-        /// and says so, rather than inventing a list.
+        /// It reads the by design pairs of the built in matrix pack, F154, and where no pack
+        /// can be read it moves nothing and says so, rather than inventing a list.
         /// </summary>
         public bool MarkByDesign { get; set; }
 

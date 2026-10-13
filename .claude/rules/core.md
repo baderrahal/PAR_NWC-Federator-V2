@@ -1309,20 +1309,35 @@ and 6 does not read as broken.
   Tolerance carries its unit with no space, "0.025m". Distance is the raw signed number,
   negative on a hard clash, written as a number so it still sorts. Type reads
   "Hard (Conservative)". Measured, see docs\history\scan.md section 4k
-- THE CLASH PRIORITY IS THE ONE COLUMN OF OURS ON THE CLIENT'S SHEET, F83, and only
-  when a priority CSV is picked. It sits in T, one past the end of their table, and
+- THE PRIORITIES AND THE BY DESIGN PAIRS ARE BUILT IN, F154, Bader's decision of 2026-10-13,
+  Q162-4. samples\clash-priority-map.csv and samples\by-design-pairs.csv are copied byte for
+  byte into the matrix pack of the project, src\Federator.Core\Packs\<pack>, embedded by the
+  one wildcard of Federator.Core.csproj as Federator.Core.Packs\<pack>\<file>, and
+  `Federator.Core.Exchange.MatrixPack` finds the packs by listing the resource names under that
+  prefix, so no code names a project's file and a project is added by adding a folder. The
+  two files are read by their names, `MatrixPack.PriorityFile` and `ByDesignFile`, through
+  `PriorityMap.Read` and `ByDesignPairs.Read` unchanged. With one pack the run reads it, and
+  with none or more than one it reads none, `MatrixPack.TheOne`, and one PACK line names the
+  pack and its files or says why none was read. THE PRIORITY IS ALWAYS ON, so the Priority
+  column is on every workbook a pack was read for. The by design box stays, and with it on
+  the built in pairs apply. The Priority CSV and By design CSV rows of the Clash step, their
+  pickers and their remembered folders are gone, and so are `ReportOptions.PriorityPath` and
+  `ByDesignPath`. MatrixPackTests holds each copy to its sample and the priority file to one
+  row per test of the built in matrix
+- THE CLASH PRIORITY IS THE ONE COLUMN OF OURS ON THE CLIENT'S SHEET, F83, and since F154
+  on every workbook, read off the matrix pack built into the tool. It sits in T, one past the end of their table, and
   `WorkbookWriter.LastColumn` stays 19 so the title merge, both item fills, the boxing,
-  the width loop and every loop in the check still describe THEIR table. Nothing picked
-  means nothing changes: no heading, no cells, no width, no RESULT line and the measured
+  the width loop and every loop in the check still describe THEIR table. A pack that could
+  not be read means no Priority column: no heading, no cells, no width, no RESULT line and the measured
   block order. Priority is NEVER added to `ClientReportColumns`, which is theirs and is
   re-read off their own exports on every run, and never written into the clash XML,
   because the stylesheet makes a column out of every smarttag and it would then be on the
-  page the client receives. `WorkbookCheck.Of` takes whether a file was picked, because a
+  page the client receives. `WorkbookCheck.Of` takes whether the priorities were read, because a
   column past their table is invisible to every other check in there, and the heading has
-  to be there with a file picked and absent with none. Until FR-199 that flag also switched
+  to be there where they were read and absent where not. Until FR-199 that flag also switched
   the order check off, because a priority sorted workbook was in priority order on purpose,
-  and since FR-199 the order is checked whether or not a file was picked
-- THE BLOCKS STAY IN THE MEASURED ORDER WITH A PRIORITY FILE PICKED, FR-199, Bader's answer
+  and since FR-199 the order is checked whether or not the priorities were read
+- THE BLOCKS STAY IN THE MEASURED ORDER WITH THE PRIORITIES READ, FR-199, Bader's answer
   to Q49 on 2026-10-06 built by F118: the priority is a column to sort on in Excel, and the
   blocks keep the order measured off the client's exports, most clashes first with ties in
   creation order. F83 sorted them A, then B, then C, then the tests the file says nothing
@@ -1332,7 +1347,7 @@ and 6 does not read as broken.
   workbook cannot list the same tests differently and a picture cannot keep a number from
   an order nothing else uses. The map lives on the report, `ClashReport.Priorities`, never
   null, because three callers each passing their own copy is how they stop agreeing. The
-  engine still tells the check a file was picked, which since FR-199 means the Priority
+  engine still tells the check the priorities were read, which since FR-199 means the Priority
   column alone, so no line of its changes
 - THE PRIORITY FILE IS MATCHED ON THE TEST NAME, EXACTLY, Ordinal and never trimmed,
   F83. A test name is built out of two set names and two of those end in a space. The
@@ -1343,7 +1358,7 @@ and 6 does not read as broken.
   THE FILE NAMES TWICE IS A PROBLEM TOO, FR-037, F118: the last row still wins, as it did,
   and the repeat is named with both lines and both letters so a person decides which, and
   `PriorityMap.RowCount` is the rows the file holds, a test named twice counted twice.
-  Picking a file NEVER fails a run: a missing or damaged file is a finding in the log and
+  The priorities NEVER fail a run: a pack that cannot be read is a finding in the log and
   a line in the window and the run goes on with no Priority column. `Priorities` is the
   words and the order, None last, and the workbook cell is EMPTY for None while the
   viewpoint folder is called No priority, because an unnamed folder is not a folder
@@ -1355,7 +1370,7 @@ and 6 does not read as broken.
   discipline and left the source file reaching no output, would come AFTER
   theirs and never in place of any of them, on the CLASH XML and nowhere else. THE ONE
   EXCEPTION IS THE PRIORITY COLUMN ABOVE, which goes on the workbook and not on the clash
-  XML, and only when a file is picked. The Client
+  XML, and only where the priorities were read, which since F154 is every run with a pack. The Client
   columns only tick box that used to switch them off is GONE, because the workbook became
   one sheet laid out as theirs with none of ours on it, so there was nothing left for it to
   remove and it sat in the window doing nothing. Ours says Type Name
@@ -2169,7 +2184,8 @@ and 6 does not read as broken.
 - A SECOND RULE MOVES A CLASH TO REVIEWED, F72b, AND IT IS A LIST AND NOT A JUDGEMENT.
   A column on its foundation, a door in a wall, a valve in a pipe run. Every one is a
   clash and none is a problem. `Federator.Core.Clash.ByDesignPairs` reads a CSV of
-  left_set, right_set, reason, `ByDesignRule` decides and `ByDesignTally` is the block.
+  left_set, right_set, reason, since F154 the one built into the matrix pack and never a
+  picked file, `ByDesignRule` decides and `ByDesignTally` is the block.
   It knows nothing about items, categories, sizes or disciplines, deliberately: reading
   every item once per clash is the walk shape that once built 1.7 million native handles
   in one group, and this rule needs none of it. THE TWO SET NAMES ARE SORTED BEFORE
@@ -2826,7 +2842,7 @@ and the run's tally in RESULT. Nothing of it has run on Navisworks yet.
   Q46, until his answer moved it. A test writes both workbooks of one group and reads the
   clash workbook as one sheet and the internal one as both. ONE ROW
   PER TEST OF THE PICKED FILE, IN THE FILE'S ORDER, A TEST NOT CREATED INCLUDED, with its
-  position, its name, its priority where a file was picked, both sets and their items, its
+  position, its name, its priority where the priorities were read, both sets and their items, its
   presence, whether it ran, the count check's four numbers and verdict where the check holds
   one test of that name, its reason and its detail, `CoverageSheet.TestRows`, the ONE SHAPE
   the writer and any check of the sheet read. AN UNKNOWN VALUE IS THE WORD UNKNOWN, never an

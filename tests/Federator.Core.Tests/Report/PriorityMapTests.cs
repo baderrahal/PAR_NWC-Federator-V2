@@ -432,23 +432,27 @@ namespace Federator.Core.Tests
             Assert.That(ReportOrder.Tests(report)[0].Name, Is.EqualTo(report.InReportOrder()[0].Name));
         }
 
-        /// <summary>A picker that remembers nothing is a picker that opens somewhere else.</summary>
+        /// <summary>
+        /// F154. The priorities and the by design pairs are built in, so neither has a picker any more and no kind of
+        /// the folder memory names them, and every kind on the enum is still remembered by AllKinds.
+        /// </summary>
         [Test]
-        public void ThePriorityPickerRemembersItsOwnFolder()
+        public void ThePrioritiesAndThePairsHaveNoPickerSinceTheyAreBuiltIn()
         {
             List<PickerKind> all = new List<PickerKind>(FolderMemory.AllKinds());
 
-            Assert.That(all, Does.Contain(PickerKind.Priority));
-            Assert.That(all, Does.Contain(PickerKind.ByDesign));
+            Assert.That(Enum.GetNames(typeof(PickerKind)), Does.Not.Contain("Priority"));
+            Assert.That(Enum.GetNames(typeof(PickerKind)), Does.Not.Contain("ByDesign"));
             Assert.That(all.Count, Is.EqualTo(Enum.GetValues(typeof(PickerKind)).Length),
                 "a kind on the enum and missing from AllKinds is remembered by nothing");
         }
 
+        /// <summary>F154. The options carry no path for either file, since both are read off the built in pack.</summary>
         [Test]
-        public void NothingPickedIsWhatTheOptionsStartWith()
+        public void TheOptionsCarryNoPathForEitherFile()
         {
-            Assert.That(new ReportOptions().PriorityPath, Is.EqualTo(string.Empty));
-            Assert.That(new ReportOptions().ByDesignPath, Is.EqualTo(string.Empty));
+            Assert.That(typeof(ReportOptions).GetProperty("PriorityPath"), Is.Null);
+            Assert.That(typeof(ReportOptions).GetProperty("ByDesignPath"), Is.Null);
         }
 
         private static List<string> TestNamesIn(string path)

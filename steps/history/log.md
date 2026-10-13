@@ -2,6 +2,30 @@
 
 Newest entry at the top.
 
+## 2026-10-13 F154 the priority and by design files built in, item 4 of Bader's message of 2026-10-13, Q162-4
+
+Branch fix-F154 off main 82b3075. He decided the two CSVs become embedded resources of Federator.Core in the matrix
+pack, read through the existing readers, the priority always on and the by design box kept.
+
+What was done:
+- The pack folder src\Federator.Core\Packs\1104-PAR holds the two CSVs, copied byte for byte and kept from line end
+  changes, embedded by one wildcard. MatrixPack finds packs by their resource names, so no code names a project's file
+- The engine reads the pack once per run, one PACK line, the priorities always and the pairs with the box on
+- The two picker rows, their handlers and grey lines, PickerKind.Priority and ByDesign, ReportOptions.PriorityPath and
+  ByDesignPath are gone. The by design grey line reads Built in list
+- The loop's driver no longer reads the PriorityBox, Q143 limit 5
+- Q164 asks how a run chooses between two packs, since with two it reads none
+- core.md and the history entry, and the reviewer's points: six rule lines that still said the file is picked,
+  the stand-in's PriorityBox, a test comment and the RUN SETTINGS line
+- Core tests before 3103 passed, 0 failed, 0 skipped, after 3107 passed, 0 failed, 0 skipped. The solution builds in
+  Release with 0 warnings and 0 errors
+
+What remains: not run on Navisworks, steps 1470 to 1482.
+
+Known bugs: none new.
+
+What comes next: F155, the clash matrix built into the same pack and the tolerance from the drop down alone.
+
 ## 2026-10-13 F153 a test with no clash writes nothing in the workbook, item 3 of Bader's message of 2026-10-13, Q162-3
 
 Branch fix-F153 off main 145ce73. His run of 2026-10-13 held 130 tests with clashes and 1700 one row tests after them.

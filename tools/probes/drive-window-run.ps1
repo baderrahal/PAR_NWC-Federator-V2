@@ -38,7 +38,7 @@ param(
 # NwdFolderBox and ExcelFolderBox on 3. Outputs and -Xml into ExchangeFileBox on 4. Clash, then
 # reads every box back, each on its own tab. It presses RunButton only when each box reads
 # exactly what was typed, ExchangeFileBox reading empty for a run with no -Xml, and ToleranceBox
-# reads Use the value in the XML. MarkByDesign, MarkPenetrations and PriorityBox are read,
+# reads Use the value in the XML. MarkByDesign and MarkPenetrations are read, PriorityBox gone since F154,
 # recorded and left as the window opened them, bar a tick box -Untick names, F126 below. The
 # confirm after Run is a #32770 of the pid
 # titled exactly Parsons NWC Federator whose text starts This run federates, IsConfirm in
@@ -107,7 +107,7 @@ param(
 #   records a window that closes by itself as WINDOW CLOSED BY ITSELF
 # The control ids are those of src\Federator.Addin\Ui\FederatorWindow.xaml, read on
 # 2026-10-01: SourceFolderBox, IncludeSubfolders, FilesGrid, GroupsGrid, NwfFolderBox,
-# NwdFolderBox, ExcelFolderBox, ExchangeFileBox, ToleranceBox, PriorityBox, MarkPenetrations,
+# NwdFolderBox, ExcelFolderBox, ExchangeFileBox, ToleranceBox, MarkPenetrations,
 # MarkByDesign, RunButton, RunOpenButton, OpenDocumentLine, SourceSummary, the Scan button by
 # its words, and the tabs 1. Source, 2. Grouping, 3. Outputs and 4. Clash. Whether each answers
 # UI Automation as this script expects in the real window is UNKNOWN until the first window
@@ -458,7 +458,7 @@ try {
       if ($read[$k] -cne $want[$k]) { $wrong.Add($k + " reads " + $(if ($read[$k] -eq "") { "empty" } else { MaskLine $read[$k] }) + " and not " + $(if ($want[$k] -eq "") { "empty" } else { MaskLine $want[$k] })) }
     }
     $tol = ComboText "ToleranceBox"
-    Note ("ToleranceBox reads " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it" + (BarUntick))
+    Note ("ToleranceBox reads " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", each left as the window opened it" + (BarUntick))
     if ($wrong.Count -gt 0) { Done "BOX" (($wrong -join ", and ") + ", so nothing was pressed") }
     if ($tol -cne $tolDefault) { Done "TOLERANCE" ("ToleranceBox reads " + $tol + " and not " + $tolDefault + ", so nothing was pressed") }
     UntickedStill "RunButton"
@@ -512,7 +512,7 @@ try {
   if (-not $enabled) { Done "TOOL REFUSED" ("Run the open file reads disabled, and OpenDocumentLine reads: " + (MaskLine $line)) }
   $x = BoxText "ExchangeFileBox"
   $tol = ComboText "ToleranceBox"
-  Note ("ExchangeFileBox reads " + $(if ($x -eq "") { "empty" } else { MaskLine $x }) + ", ToleranceBox " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", PriorityBox " + $(if ((BoxText "PriorityBox") -eq "") { "empty" } else { MaskLine (BoxText "PriorityBox") }) + ", each left as the window opened it" + (BarUntick))
+  Note ("ExchangeFileBox reads " + $(if ($x -eq "") { "empty" } else { MaskLine $x }) + ", ToleranceBox " + $tol + ", MarkByDesign " + (Toggle "MarkByDesign") + ", MarkPenetrations " + (Toggle "MarkPenetrations") + ", each left as the window opened it" + (BarUntick))
   if ($x -ne "") { Done "BOX" ("ExchangeFileBox reads " + (MaskLine $x) + " and not empty, so nothing was pressed") }
   if ($tol -cne $tolDefault) { Done "TOLERANCE" ("ToleranceBox reads " + $tol + " and not " + $tolDefault + ", so nothing was pressed") }
   $outside = PathsOutside $line $loopRoot

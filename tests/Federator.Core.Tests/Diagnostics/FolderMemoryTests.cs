@@ -336,8 +336,9 @@ namespace Federator.Core.Tests
         [Test]
         public void EveryPickerHasItsOwnSlot()
         {
-            // Nine since F129 added the existing NWF picker on the Source step.
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(9));
+            // Seven: nine since F129 added the existing NWF picker on the Source step, less the priority
+            // and by design pickers F154 took out when both files were built in.
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(7));
             Assert.That(FolderMemory.AllKinds().Length,
                 Is.EqualTo(Enum.GetValues(typeof(PickerKind)).Length),
                 "a picker was added and the memory does not know about it");

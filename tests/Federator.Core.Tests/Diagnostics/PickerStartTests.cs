@@ -103,24 +103,6 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// F83. The priority CSV gets its own kind and not the clash XML's, because the
-        /// two live in different folders as often as not and one shared memory moves the
-        /// other picker, which is the whole reason every picker remembers its own.
-        /// </summary>
-        [Test]
-        public void ThePriorityPickerRemembersItsOwnFolder()
-        {
-            ProveOnePicker(PickerKind.Priority, "priority");
-        }
-
-        /// <summary>F72b. The by design pairs CSV, the same way.</summary>
-        [Test]
-        public void TheByDesignPickerRemembersItsOwnFolder()
-        {
-            ProveOnePicker(PickerKind.ByDesign, "by-design");
-        }
-
-        /// <summary>
         /// F129. The existing NWF or folder of NWFs on the Source step. Its two Browse buttons,
         /// one for a file and one for a folder, share this one kind, so a person picking a
         /// folder after a file opens where the file was.
@@ -134,10 +116,11 @@ namespace Federator.Core.Tests
         [Test]
         public void EveryPickerInTheWindowIsCoveredHere()
         {
-            // Nine kinds and nine tests above, since F129. The existing NWF picker has two
-            // Browse buttons on one kind. If a tenth kind is added this fails until it is
+            // Seven kinds and seven tests above, since F154 took out the priority and by design
+            // pickers. The existing NWF picker has two
+            // Browse buttons on one kind. If another kind is added this fails until it is
             // proved too.
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(9));
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(7));
         }
 
         // ---------- the one that was actually broken ----------
