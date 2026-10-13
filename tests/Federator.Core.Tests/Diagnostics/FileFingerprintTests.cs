@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Federator.Core.Tests
 {
     /// <summary>
-    /// The fingerprint of the picked XML, F127, turn5\f127-design.md section 1.7. Set 03's
+    /// The fingerprint of the clash matrix, F127, turn5\f127-design.md section 1.7. Set 03's
     /// C06 run carries no hash of the XML it picked, so which bytes it read had to be
     /// worked out from its SET lines, which ask ME-PIPING where the exchange file asks
     /// ME-Piping. A SHA-256 named in the block and on the sheet says it outright.

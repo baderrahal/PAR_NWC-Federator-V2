@@ -91,7 +91,7 @@ namespace Federator.Core.Clash
         /// the rule the rebuild line beside it keeps: a sentence that appears on every run
         /// saying nothing will happen teaches people to skip the screen. F132 attempt 2, the
         /// breaker's finding R5: the pass reaches the tests saved in the NWF as well as the
-        /// tests created from the picked file, so the screen says so before the NWF changes.
+        /// tests created from the clash matrix, so the screen says so before the NWF changes.
         /// </summary>
         public static string ConfirmLine(bool wanted)
         {
@@ -101,8 +101,8 @@ namespace Federator.Core.Clash
             }
 
             return "Clashes between two sets the built in by design pairs name are moved to Reviewed in the NWF, "
-                + "in the tests created from the picked file and in the tests already saved in the NWF, whose "
-                + "sides are read off the tests themselves on a run with no clash XML. A clash already Reviewed, "
+                + "in the tests created from the clash matrix and in the tests already saved in the NWF, whose "
+                + "sides are read off the tests themselves on a run with no clash matrix. A clash already Reviewed, "
                 + "Approved or Resolved is left as it is, and the BY DESIGN block of each group says what moved.";
         }
 

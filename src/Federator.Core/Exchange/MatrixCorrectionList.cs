@@ -19,7 +19,7 @@ namespace Federator.Core.Exchange
     ///
     /// A LIST THAT CANNOT BE READ IS SAID, NEVER AN EMPTY ONE. An empty list corrects nothing and
     /// looks like a file that needed nothing, so a list that cannot be opened, is not UTF-8 text
-    /// or holds a line this does not know is Unread, carrying why, and the picked file is
+    /// or holds a line this does not know is Unread, carrying why, and the clash matrix is
     /// corrected not at all and never in part. Never a throw. The file is read, and its lines
     /// split, by ListFile, the one way the team map beside the XML is read too, F131.
     ///
@@ -76,7 +76,7 @@ namespace Federator.Core.Exchange
         /// <summary>The full path the list was read from, or looked for where none is there.</summary>
         internal string ListPath { get; private set; }
 
-        /// <summary>Whether no file is at that path, so nothing corrects the picked XML.</summary>
+        /// <summary>Whether no file is at that path, so nothing corrects the clash matrix.</summary>
         internal bool Missing { get; private set; }
 
         /// <summary>The names wrong everywhere they appear, each with the name it should be.</summary>
@@ -136,7 +136,7 @@ namespace Federator.Core.Exchange
 
         /// <summary>
         /// Whether one of the list's workset lines is a spelling of that value, the same but for
-        /// its case. A workset value of the picked file is corrected only where it is, because a
+        /// its case. A workset value of the clash matrix is corrected only where it is, because a
         /// value is corrected only from what the list beside the file says, F116.
         /// </summary>
         internal bool NamesASpellingOf(string value)
@@ -170,6 +170,35 @@ namespace Federator.Core.Exchange
             }
 
             return ListFile.Read(path, reader => Read(reader, path), why => Refused(path, why));
+        }
+
+        /// <summary>
+        /// The list of a matrix pack, F155: the file of the pack named after its clash XML with the suffix, as the
+        /// list beside a clash matrix is named, read by the same Read and named by the pack. Not in the pack, it is
+        /// Missing. Never a throw.
+        /// </summary>
+        internal static MatrixCorrectionList InPack(MatrixPack pack, string xmlFile, CorrectionListSettings settings)
+        {
+            string file = Path.GetFileNameWithoutExtension(xmlFile) + settings.Suffix;
+            string named = pack.Describe(file);
+
+            if (!pack.Holds(file))
+            {
+                return new MatrixCorrectionList(
+                    named, true, new List<SetRename>(), new List<string[]>(), new List<SourceFileRule>(), new List<string>(), new List<string[]>(), null);
+            }
+
+            try
+            {
+                using (StringReader reader = new StringReader(pack.ReadText(file)))
+                {
+                    return Read(reader, named);
+                }
+            }
+            catch (Exception error)
+            {
+                return Refused(named, error.Message);
+            }
         }
 
         /// <summary>

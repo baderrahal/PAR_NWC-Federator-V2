@@ -7,16 +7,20 @@ engine does.
 
 ## First run
 
-The NWC folder is scanned and grouped, output folders picked, a clash XML picked, Run
-pressed. Per group the tool builds the NWF, builds the sets, adds and runs the tests
-from the XML, writes Excel, HTML, images and the NWD.
+The NWC folder is scanned and grouped, output folders picked, Run pressed. Per group the
+tool builds the NWF, builds the sets, adds and runs the tests of the clash matrix built
+into the tool, writes Excel, HTML, images and the NWD. Each project has a built in matrix
+pack that Bader supplies, F155, so no XML is picked.
 
 ## Weekly run
 
-The same NWC folder, Run pressed with no XML. Per group the tool finds the NWF already
-there, opens it (OPENED), lets Navisworks reload the newer NWCs, runs the tests saved
-inside the NWF, writes Excel, HTML, images and the NWD. An XML is optional and only adds
-or updates tests.
+The same NWC folder, Run pressed. Per group the tool finds the NWF already there, opens
+it (OPENED), lets Navisworks reload the newer NWCs, runs the tests of the built in matrix
+saved inside the NWF where they sit, keeping their results, writes Excel, HTML, images and
+the NWD. Since F155 the matrix is read on every run, so a test of it the NWF lacks is added
+and the label reads Weekly run plus XML. A test saved in the NWF that the matrix does not
+name is not run, and the COVERAGE block names it, Q168. With no pack built in, every saved
+test runs.
 
 ## Rebuilt
 
@@ -30,8 +34,9 @@ on 2026-09-07, Q22. The plan is `Federator.Core.Rerun.NwfRebuildPlan`.
 One per group in the Run as column, counted in the confirm dialog, carried in the log.
 
     First run                  no NWF at the output path yet
-    Weekly run                 the NWF is there and no XML is picked
-    Weekly run plus XML        the NWF is there and an XML is picked
+    Weekly run                 the NWF is there and no matrix is built in
+    Weekly run plus XML        the NWF is there and the built in matrix is read,
+                               every weekly run since F155
     Rebuilt                    the NWF is there and points at a different file list.
                                Only known once the NWF is opened, so the window opens
                                each NWF at Run where nothing open would be lost, and
@@ -46,7 +51,7 @@ from whether the NWF is already at its output path, so Rebuilt never appears the
 `AfterOpening` is the label once the NWF has been opened and compared but not yet run,
 where a comparison that reads Changed shows as Rebuilt, because that is what the person
 is about to get. `Label` is the label once the group has ended, read off the Decide
-result and whether an XML was picked.
+result and whether a matrix was read.
 
 ## The open file
 

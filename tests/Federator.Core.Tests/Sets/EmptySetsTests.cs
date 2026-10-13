@@ -132,7 +132,7 @@ namespace Federator.Core.Tests.Sets
 
         /// <summary>
         /// The judge knows the spellings it is handed, the names inside Core and those of the list
-        /// beside the picked XML, RevitWorksets.With, the ones the corrections asked, F116 on the
+        /// beside the clash matrix, RevitWorksets.With, the ones the corrections asked, F116 on the
         /// Q113 pass. ME-DUCTWORK is a spelling of this project's list and not of Core, so with the
         /// list models in this project carry it and with Core's names alone none does.
         /// </summary>
@@ -304,7 +304,7 @@ namespace Federator.Core.Tests.Sets
 
         /// <summary>
         /// A WORKSET THIS GROUP'S MODELS CARRY IS CARRIED, FR-027, measured by this run's own
-        /// EXPORT CHECK. With no list beside the picked file the names inside Core are the C02
+        /// EXPORT CHECK. With no list beside the clash matrix the names inside Core are the C02
         /// census, and 1B06BC, whose models carry ME-DUCTWORK, set 03 log line 605, would be
         /// told no model in this project carries it.
         /// </summary>

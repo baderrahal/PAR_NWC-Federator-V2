@@ -55,7 +55,15 @@ namespace Federator.Core.Exchange
         /// </summary>
         internal static string ReadFileText(string path)
         {
-            byte[] bytes = File.ReadAllBytes(path);
+            return DecodeText(File.ReadAllBytes(path));
+        }
+
+        /// <summary>
+        /// The text of an exchange file's bytes, the one decoding ReadFileText uses, so the clash XML built into
+        /// the tool, F155, MatrixCorrections.ReadPack, is decoded exactly as a file on the disk was.
+        /// </summary>
+        internal static string DecodeText(byte[] bytes)
+        {
             Encoding declared = null;
 
             using (XmlReader reader = XmlReader.Create(new MemoryStream(bytes), SafeSettings()))

@@ -53,8 +53,8 @@ namespace Federator.Addin.Ui
         private readonly FolderMemory folders = FolderMemory.Load();
 
         /// <summary>
-        /// The team map a run with no clash XML reads, the one the last run with an XML used,
-        /// kept across sessions the way the folders are, Q123 answered B by Bader on 2026-10-05.
+        /// The team map a run with no matrix pack reads, the one the last run with a clash matrix used
+        /// before F155, kept across sessions the way the folders are, Q123 answered B by Bader on 2026-10-05.
         /// </summary>
         private readonly TeamMapMemory keptTeams = TeamMapMemory.Load();
 
@@ -118,10 +118,17 @@ namespace Federator.Addin.Ui
 
             log.Block("FOLDERS REMEMBERED", folders.Lines());
 
-            // F131, Q123 answered B. The map a run with no clash XML reads, named when the window
-            // opens as the remembered folders are, and on the grey line under the XML box.
-            log.Block("TEAMS KEPT", keptTeams.ForNoXml(teamSettings).Lines());
-            ShowTeamsLine();
+            // F131, Q123 answered B. The map a run with no clash matrix reads, named when the window
+            // opens as the remembered folders are. Since F155 a run with a matrix reads the pack's map,
+            // so the block is written only where no matrix is built in.
+            if (!MatrixIsBuiltIn())
+            {
+                log.Block("TEAMS KEPT", keptTeams.ForNoXml(teamSettings).Lines());
+            }
+
+            // F155. The built in matrix is read and judged when the window opens, where a picked
+            // file was read and judged at its pick, so a matrix that will not read shows before Run.
+            ShowTheMatrix();
 
             files.CollectionChanged += delegate { Regroup(); };
 
@@ -388,7 +395,7 @@ namespace Federator.Addin.Ui
                 SayTheRunsChoices(options.Tolerance);
 
                 TeamMap teams;
-                ExchangeDocument exchange = ReadTheXmlForAnOpenFileRun(out teams);
+                ExchangeDocument exchange = ReadTheMatrixForAnOpenFileRun(out teams);
 
                 engine = new FederationEngine(SetProgress, log, exchange, teams, options);
                 engine.RunPickedNwfs(plan.Paths());
@@ -999,7 +1006,7 @@ namespace Federator.Addin.Ui
             }
 
             string nwfFolder = Trimmed(NwfFolderBox.Text);
-            bool xmlPicked = XmlIsPicked();
+            bool xmlPicked = MatrixIsBuiltIn();
 
             // Listed ONCE for the whole refresh and not once per group. F71 asks every
             // group whether the folder already holds a name close to the one it would
@@ -1117,40 +1124,27 @@ namespace Federator.Addin.Ui
             NearbyNwfLine.Visibility = Visibility.Visible;
         }
 
-        /// <summary>The same test the run uses: a path in the box that is really on disk.</summary>
-        private bool XmlIsPicked()
+        /// <summary>
+        /// Whether a run has a clash matrix to read, F155, Bader's decision of 2026-10-13: one matrix pack built
+        /// into the tool, MatrixPack.TheOne. It stands where a path in the Clash XML box stood, so the labels, the
+        /// confirm and the open file run read a built in matrix the way they read a picked one.
+        /// </summary>
+        private static bool MatrixIsBuiltIn()
         {
-            if (ExchangeFileBox == null)
-            {
-                return false;
-            }
-
-            string path = Trimmed(ExchangeFileBox.Text);
-            return path.Length > 0 && File.Exists(path);
-        }
-
-        private void OnExchangeFileChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            RefreshRunPaths();
-            ShowOpenDocument();
-            ShowTeamsLine();
+            string whyNone;
+            return MatrixPack.TheOneWithAMatrix(MatrixPack.All(), out whyNone) != null;
         }
 
         /// <summary>
-        /// The grey line under the XML box, F131: which team map a run would read, the one
-        /// beside the XML in the box or, with none there, the one kept for a run with no XML,
-        /// chosen by Core's one rule, TeamMapMemory.ForPick. The words are Core's,
-        /// TeamMap.WindowLine, read off the map where a test reads them.
+        /// The built in clash matrix, read through MatrixCorrections.ReadPack with the corrections and the team map
+        /// the pack holds beside it, or null with no pack, where the tests saved in each NWF run as they did with
+        /// no clash matrix read. A pack that will not read throws, so the caller says why as it did for a clash matrix.
         /// </summary>
-        private void ShowTeamsLine()
+        private static ExchangeDocument ReadTheMatrix()
         {
-            // The box's change fires while InitializeComponent is still building the controls.
-            if (TeamsLine == null || ExchangeFileBox == null)
-            {
-                return;
-            }
-
-            TeamsLine.Text = keptTeams.ForPick(PickedPath(), teamSettings).WindowLine();
+            string whyNone;
+            MatrixPack pack = MatrixPack.TheOneWithAMatrix(MatrixPack.All(), out whyNone);
+            return pack == null ? null : MatrixCorrections.ReadPack(pack);
         }
 
         /// <summary>The expected label of every group that will run, in list order.</summary>
@@ -1200,7 +1194,7 @@ namespace Federator.Addin.Ui
 
             try
             {
-                IList<string> labels = FederationEngine.PreviewRunPaths(jobs, XmlIsPicked(), log, SetProgress);
+                IList<string> labels = FederationEngine.PreviewRunPaths(jobs, MatrixIsBuiltIn(), log, SetProgress);
 
                 for (int i = 0; i < jobs.Count && i < labels.Count; i++)
                 {
@@ -1380,9 +1374,9 @@ namespace Federator.Addin.Ui
 
 
         /// <summary>
-        /// The tolerance drop down, F76. Every entry, the label, the grey line and the unit
-        /// beside the number box come off Core, because the offered values are a setting
-        /// and a copy typed into the XAML is the one nothing can test.
+        /// The tolerance drop down, F76 and F155. Every entry, the label and the grey line come off Core, because
+        /// the offered values are a setting and a copy typed into the XAML is the one nothing can test. 25 mm is
+        /// selected when the window opens, Bader's decision of 2026-10-13, and the drop down is the only control.
         /// </summary>
         private void FillTolerance()
         {
@@ -1400,37 +1394,19 @@ namespace Federator.Addin.Ui
                 ToleranceBox.Items.Add(choice);
             }
 
-            ToleranceBox.SelectedIndex = 0;
-
-            // The number box is in millimetres, which is what a person says, and the word
-            // beside it is the unit table's rather than typed here.
-            UnitRow millimetres = UnitTable.FindByExchangeCode("mm");
-            ToleranceOtherUnit.Text = millimetres == null ? string.Empty : millimetres.DisplayName;
-        }
-
-        /// <summary>The number box only takes a value under Other, which is the last entry.</summary>
-        private void OnToleranceChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ToleranceBox == null || ToleranceOtherBox == null)
-            {
-                return;
-            }
-
-            ToleranceOtherBox.IsEnabled = ToleranceBox.SelectedIndex == ToleranceBox.Items.Count - 1;
+            ToleranceBox.SelectedIndex = Array.IndexOf(ToleranceChoice.OfferedMillimetres, ToleranceChoice.DefaultMillimetres);
         }
 
         /// <summary>
         /// What the drop down says, F76, for a run that creates or runs clash tests, read by
-        /// ToleranceChoice.FromThePicker with no throw, FR-166. Null where Other's box is not a
-        /// tolerance, and then the person is told why in Core's words before anything starts.
-        /// The buttons that never use the tolerance do not call this, so a blank box stops none.
+        /// ToleranceChoice.FromThePicker with no throw, FR-166. Null where nothing is selected,
+        /// and then the person is told why in Core's words before anything starts.
         /// </summary>
         private ToleranceChoice ToleranceOrSayWhyNot(string what)
         {
             string refused;
             ToleranceChoice tolerance = ToleranceChoice.FromThePicker(
-                ToleranceBox == null ? 0 : ToleranceBox.SelectedIndex,
-                ToleranceOtherBox == null ? null : ToleranceOtherBox.Text,
+                ToleranceBox == null ? -1 : ToleranceBox.SelectedIndex,
                 out refused);
 
             if (tolerance == null)
@@ -1443,15 +1419,15 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// How many tests the picked file holds, for the confirm dialog, or zero where
-        /// nothing is picked or the file will not read. The run reads and reports the
-        /// file itself, so a failure here is not said twice.
+        /// How many tests the built in matrix holds, for the confirm dialog, or zero where
+        /// no pack is built in or it will not read. The run reads and reports the matrix
+        /// itself, so a failure here is not said twice.
         /// </summary>
-        private int TestsInThePickedFile()
+        private int TestsInTheMatrix()
         {
             try
             {
-                ExchangeDocument exchange = PickedExchange();
+                ExchangeDocument exchange = ReadTheMatrix();
                 return exchange == null ? 0 : exchange.Tests.Count;
             }
             catch (Exception)
@@ -1557,9 +1533,9 @@ namespace Federator.Addin.Ui
                 log.Line(UndoAutoReview.Prefix + " started by hand on the open document, nothing is saved");
 
                 // FR-166. The undo creates no clash test and never reads the tolerance, so the
-                // drop down is not read and a blank Other box stops nothing.
+                // drop down is not read and nothing selected in it stops nothing.
                 FederationEngine engine = new FederationEngine(
-                    SetProgress, log, null, null, ReportsWanted(ToleranceChoice.FromTheFile()));
+                    SetProgress, log, null, null, ReportsWanted(ToleranceChoice.Default()));
                 UndoAutoReviewed undo = engine.UndoAutoReviewedByHand();
 
                 string said = undo.Tally == null
@@ -1661,7 +1637,7 @@ namespace Federator.Addin.Ui
 
                 // FR-166. The probe creates no clash test and never reads the tolerance.
                 FederationEngine engine = new FederationEngine(
-                    SetProgress, log, null, null, ReportsWanted(ToleranceChoice.FromTheFile()));
+                    SetProgress, log, null, null, ReportsWanted(ToleranceChoice.Default()));
                 IList<string> lines = folder == null
                     ? engine.ProbeTheOpenDocumentByHand()
                     : engine.ProbeTheFolderByHand(folder);
@@ -2105,10 +2081,8 @@ namespace Federator.Addin.Ui
                 + (MarkPenetrations.IsChecked == true
                     ? "YES, a small service through a wall, floor, roof or structural foundation becomes Reviewed"
                     : "no, every clash keeps the status it has"));
-            log.Line("clash tolerance  : " + tolerance.Label()
-                + (tolerance.ChosenInTheTool
-                    ? ", chosen in the tool, set on every test and beats the XML and the document"
-                    : ", read per test out of the XML"));
+            log.Line("clash tolerance  : " + tolerance.Label() + ", chosen in the tool, the drop down being its only source, "
+                + "set on every test and beats the built in matrix and the document");
             log.Line("priority         : built in, read off the matrix pack built into the tool, so "
                 + "a Priority column where the pack reads, which its PACK and PRIORITY lines say");
             log.Line("by design        : " + (MarkByDesign.IsChecked == true
@@ -2226,11 +2200,10 @@ namespace Federator.Addin.Ui
             string message = string.Join(
                 Environment.NewLine, new List<string>(RunPath.ConfirmLines(runPaths)).ToArray());
 
-            // F76. Said only when a tolerance was chosen, because a line that reads the
-            // same on every run teaches people to skip the screen. The test count is read
-            // off the picked file only then, since it is the one number the lines need.
+            // F76. Since F155 a tolerance is always chosen, so the lines are said on every
+            // run. The test count is read off the clash matrix, the one number they need.
             IList<string> toleranceLines = tolerance.WarningLines(
-                runPaths.Count, tolerance.ChosenInTheTool ? TestsInThePickedFile() : 0);
+                runPaths.Count, TestsInTheMatrix());
 
             if (toleranceLines.Count > 0)
             {
@@ -2252,7 +2225,7 @@ namespace Federator.Addin.Ui
 
             // F132 attempt 2, the breaker's finding R5, and the same rule again: said only
             // when the box is ON. The pass reaches the tests saved in the NWF as well as
-            // those from the picked file, and the NWF is saved with the statuses it moves.
+            // those from the clash matrix, and the NWF is saved with the statuses it moves.
             string byDesignLine = ByDesignPairs.ConfirmLine(MarkByDesign.IsChecked == true);
 
             if (byDesignLine != null)
@@ -2301,26 +2274,29 @@ namespace Federator.Addin.Ui
                 // not the session, which carried 473 seconds of a person reading a table.
                 log.RunStarted(jobs.Count);
 
-                // Read once, before the first group, so a file that will not read stops
-                // the run here rather than part way through the second building.
-                ExchangeDocument exchange = PickedExchange();
+                // Read once, before the first group, so a matrix that will not read stops
+                // the run here rather than part way through the second building. F155: the
+                // matrix is the one built into the tool, and the log names its pack.
+                ExchangeDocument exchange = ReadTheMatrix();
                 TeamMap teams = keptTeams.ForRun(exchange, teamSettings);
 
                 if (exchange == null)
                 {
-                    log.Line("RUN      nothing picked in the Clash step, so no set will be built "
-                        + "and no test created");
+                    string whyNone;
+                    MatrixPack.TheOneWithAMatrix(MatrixPack.All(), out whyNone);
+                    log.Line("RUN      no clash matrix is read, " + whyNone + ", so the tests saved in each NWF "
+                        + "run, no set will be built and no test created");
 
                     // F131, Q123 answered B. The kept map, named before any group reads it.
                     SayLines(teams.Lines());
                 }
                 else
                 {
-                    log.Line("RUN      the Clash step picked " + exchange.SourcePath);
+                    log.Line("RUN      the clash matrix is " + exchange.SourcePath);
                     log.Line("RUN      it holds " + exchange.Sets.Count
                         + (exchange.Sets.Count == 1 ? " set and " : " sets and ")
                         + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test" : " tests"));
-                    SayTheTeamsAndCorrections(exchange, true);
+                    SayTheTeamsAndCorrections(exchange);
                 }
 
                 ReportOptions options = ReportsWanted(tolerance);
@@ -2385,7 +2361,7 @@ namespace Federator.Addin.Ui
                 // one did not.
                 log.Line(ToleranceChoice.BlocksLine(engine.ReportBlocks, engine.ReportRan));
                 log.Line(ToleranceChoice.ReadFromLine(
-                    engine.ToleranceFromDocument, engine.ToleranceFromFile,
+                    engine.ToleranceFromDocument,
                     engine.ToleranceFromTool, engine.ToleranceUnknown));
 
                 log.RunFinished();
@@ -2445,77 +2421,54 @@ namespace Federator.Addin.Ui
         // ---------- Step 4, clash ----------
 
         /// <summary>
-        /// One picker, one file. Nothing about any one file is in here, the file is
-        /// picked every run and can be from any project.
-        ///
-        /// The file can hold sets, tests, or both, and the tool reads what is in it.
-        /// There used to be a second box for a sets file, which meant picking the same
-        /// combined file twice. Reading it once here is also what lets the message say
-        /// which of the three shapes it turned out to be.
+        /// Says what the built in clash matrix holds when the window opens, F155, where the Clash XML picker
+        /// said it of a clash matrix: its pack, its sets and tests counted out of it, and what HealthCheck makes
+        /// of the corrected sets, so a damaged matrix is obvious before a run rather than after one. D1. The
+        /// check's whole summary goes in the log and one line of it under the Clash step.
         /// </summary>
-        private void OnBrowseExchangeFile(object sender, RoutedEventArgs e)
+        private void ShowTheMatrix()
         {
-            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
+            if (SetsSummary == null)
             {
-                dialog.Title = "Pick the clash XML. It can hold sets, tests, or both.";
-                dialog.Filter = "Navisworks exchange XML (*.xml)|*.xml|All files (*.*)|*.*";
-                dialog.CheckFileExists = true;
+                return;
+            }
 
-                // StartFor already gives a FOLDER, for this picker as much as the other
-                // five. Taking the directory name of it opened the parent, so a remembered
-                // folder came back one level too high every time.
-                string folder = StartFor(PickerKind.ClashXml, ExchangeFileBox.Text);
+            // F155. This runs while the window opens, so nothing in it may throw out of it: a fault
+            // anywhere in the read, the TEAMS and MATRIX lines or the health check is said and the
+            // window still opens.
+            try
+            {
+                ExchangeDocument exchange = ReadTheMatrix();
 
-                if (folder.Length > 0 && Directory.Exists(folder))
+                if (exchange == null)
                 {
-                    dialog.InitialDirectory = folder;
-                }
-
-                if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
+                    string whyNone;
+                    MatrixPack.TheOneWithAMatrix(MatrixPack.All(), out whyNone);
+                    log.Line("MATRIX   no clash matrix is read, " + whyNone);
+                    SetsSummary.Text = "No clash matrix is built in, so each NWF runs the tests saved in it.";
                     return;
                 }
 
-                RememberFolder(PickerKind.ClashXml, dialog.FileName);
-                ExchangeFileBox.Text = dialog.FileName;
-                SetsSummary.Text = Describe(dialog.FileName);
-            }
-        }
+                string held = exchange.Sets.Count + (exchange.Sets.Count == 1 ? " set and " : " sets and ")
+                    + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test." : " tests.");
 
-        /// <summary>
-        /// Says what the picked file actually holds, counted out of the file itself, so a
-        /// file with no tests in it is obvious before a run rather than after one, and
-        /// what HealthCheck makes of it, so a damaged export is obvious then too. D1. The
-        /// check's whole summary goes in the log and one line of it under the file.
-        /// </summary>
-        private string Describe(string path)
-        {
-            ExchangeDocument exchange;
+                log.Line("MATRIX   " + exchange.SourcePath + " holds " + held);
 
-            try
-            {
-                exchange = MatrixCorrections.ReadPicked(path);
+                // Q104. The health check judges the sets as the run will build them, corrected.
+                SayTheTeamsAndCorrections(exchange);
+
+                HealthCheckResult health = HealthCheck.Run(exchange);
+                log.Block("HEALTH " + exchange.Pack.Name, health.Summary());
+
+                SetsSummary.Text = "Built in matrix " + exchange.Pack.Name + ". It holds " + held + " " + health.Line(exchange.HasSets);
             }
             catch (Exception error)
             {
-                log.Failure("reading " + path, error, "the file stays picked, nothing was read from it");
+                log.Failure("reading the built in clash matrix", error, "a run reads it again and says why it will not read");
 
                 // A label, so it says where to look and never what was thrown.
-                return "Picked " + path + ", but it would not read. " + RunLog.TheLogSaysWhy();
+                SetsSummary.Text = "The built in clash matrix would not read. " + RunLog.TheLogSaysWhy();
             }
-
-            string held = exchange.Sets.Count + (exchange.Sets.Count == 1 ? " set and " : " sets and ")
-                + exchange.Tests.Count + (exchange.Tests.Count == 1 ? " test." : " tests.");
-
-            log.Line("PICK     " + path + " holds " + held);
-
-            // Q104. The health check judges the sets as the run will build them, corrected.
-            SayTheTeamsAndCorrections(exchange, false);
-
-            HealthCheckResult health = HealthCheck.Run(exchange);
-            log.Block("HEALTH " + Path.GetFileName(path), health.Summary());
-
-            return "Picked " + path + ". It holds " + held + " " + health.Line(exchange.HasSets);
         }
 
         private static string Trimmed(string value)
@@ -2549,43 +2502,15 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The one file picked in the Clash step, read once, with MatrixCorrections applied
-        /// before any set is built, Q104. Null when nothing was picked, and then the run
-        /// builds no set and creates no test, which is a step switched off rather than a
-        /// failure.
+        /// What was read beside the clash matrix, wherever a run or the window's open says which matrix it read:
+        /// the TEAMS lines of its team map with each set whose name carries no code named, F131, then every
+        /// correction MatrixCorrections made to it, Q104, so the TEAMS lines come before the MATRIX lines. Since
+        /// F155 the map is the pack's and is never kept for a later run, so no line says it is.
         /// </summary>
-        private ExchangeDocument PickedExchange()
-        {
-            string path = PickedPath();
-
-            return path.Length == 0 ? null : MatrixCorrections.ReadPicked(path);
-        }
-
-        /// <summary>The path in the XML box where a file is there, or empty, which a run reads as no XML picked.</summary>
-        private string PickedPath()
-        {
-            string path = Trimmed(ExchangeFileBox.Text);
-
-            return path.Length > 0 && File.Exists(path) ? path : string.Empty;
-        }
-
-        /// <summary>
-        /// What the pick read beside the XML, wherever a run or a pick says which file it read:
-        /// the TEAMS lines of its team map with each set whose name carries no code named, F131,
-        /// and for a run whether that map is now the one kept for a run with no XML, Q123
-        /// answered B, then every correction MatrixCorrections made to it, Q104, so the TEAMS
-        /// lines come before the MATRIX lines.
-        /// </summary>
-        private void SayTheTeamsAndCorrections(ExchangeDocument exchange, bool aRunUsesTheMap)
+        private void SayTheTeamsAndCorrections(ExchangeDocument exchange)
         {
             SayLines(exchange.Teams.Lines());
             SayLines(exchange.Teams.SetLines(exchange.Sets, new ViewpointSettings().SetNameSeparator));
-
-            if (aRunUsesTheMap)
-            {
-                log.Line(keptTeams.Remember(exchange.Teams));
-            }
-
             SayLines(exchange.Corrections);
         }
 
@@ -2638,7 +2563,7 @@ namespace Federator.Addin.Ui
             try
             {
                 TeamMap teams;
-                ExchangeDocument exchange = ReadTheXmlForAnOpenFileRun(out teams);
+                ExchangeDocument exchange = ReadTheMatrixForAnOpenFileRun(out teams);
 
                 ReportOptions options = ReportsWanted(tolerance);
 
@@ -2693,26 +2618,27 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The clash file of an open file run and of a run of picked NWFs, F129, read once
-        /// before the first group. It is OPTIONAL. Without one, the tests saved in each
-        /// document are run where they sit, which is the ordinary weekly case, and a document
-        /// holding none means nothing runs and the log says so. The team map is the run's,
-        /// named before any group reads it.
+        /// The clash matrix of an open file run and of a run of picked NWFs, F129, read once before the first
+        /// group. Since F155 it is the matrix built into the tool, whose saved tests each document already holds
+        /// run where they sit. With no pack built in, the tests saved in each document run, the ordinary weekly
+        /// case before F155, and a document holding none means nothing runs and the log says so. The team map is
+        /// the run's, named before any group reads it.
         /// </summary>
-        private ExchangeDocument ReadTheXmlForAnOpenFileRun(out TeamMap teams)
+        private ExchangeDocument ReadTheMatrixForAnOpenFileRun(out TeamMap teams)
         {
-            string path = Trimmed(ExchangeFileBox.Text);
+            ExchangeDocument exchange = ReadTheMatrix();
 
-            if (path.Length > 0 && File.Exists(path))
+            if (exchange != null)
             {
-                ExchangeDocument exchange = MatrixCorrections.ReadPicked(path);
                 teams = keptTeams.ForRun(exchange, teamSettings);
-                log.Line("OPEN     clash file " + path);
-                SayTheTeamsAndCorrections(exchange, true);
+                log.Line("OPEN     clash matrix " + exchange.SourcePath);
+                SayTheTeamsAndCorrections(exchange);
                 return exchange;
             }
 
-            log.Line("OPEN     no XML picked, so the tests saved in the document run, "
+            string whyNone;
+            MatrixPack.TheOneWithAMatrix(MatrixPack.All(), out whyNone);
+            log.Line("OPEN     no clash matrix is read, " + whyNone + ", so the tests saved in the document run, "
                 + "or nothing runs when it holds none");
 
             // F131, Q123 answered B. The kept map, named before the group reads it.
@@ -2747,7 +2673,7 @@ namespace Federator.Addin.Ui
             // one did not.
             log.Line(ToleranceChoice.BlocksLine(engine.ReportBlocks, engine.ReportRan));
             log.Line(ToleranceChoice.ReadFromLine(
-                engine.ToleranceFromDocument, engine.ToleranceFromFile,
+                engine.ToleranceFromDocument,
                 engine.ToleranceFromTool, engine.ToleranceUnknown));
         }
 
@@ -2783,7 +2709,7 @@ namespace Federator.Addin.Ui
             OpenDocumentLine.Text = OpenDocumentJob.Describe(
                 open,
                 ExcelFolderBox == null ? string.Empty : Trimmed(ExcelFolderBox.Text),
-                XmlIsPicked());
+                MatrixIsBuiltIn());
 
             if (RunOpenButton != null)
             {
@@ -2819,7 +2745,7 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The Build sets button. The picked file's sets into whatever document is open,
+        /// The Build sets button. The clash matrix's sets into whatever document is open,
         /// nothing else, through the same engine method the run uses per group, so the
         /// SETS lines in the log read the same either way. D4. Runs on the plugin thread,
         /// like everything else that touches the API.
@@ -2831,11 +2757,9 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            string path = Trimmed(ExchangeFileBox.Text);
-
-            if (path.Length == 0 || !File.Exists(path))
+            if (!MatrixIsBuiltIn())
             {
-                Warn("Pick a clash XML that exists first.");
+                Warn("No clash matrix is built into the tool, so there are no sets to build.");
                 return;
             }
 
@@ -2844,14 +2768,14 @@ namespace Federator.Addin.Ui
 
             try
             {
-                log.Line("SETS     started by hand, reading " + path);
-                ExchangeDocument exchange = MatrixCorrections.ReadPicked(path);
-                SayTheTeamsAndCorrections(exchange, false);
+                log.Line("SETS     started by hand, reading the built in clash matrix");
+                ExchangeDocument exchange = ReadTheMatrix();
+                SayTheTeamsAndCorrections(exchange);
 
                 // FR-166. Building the sets creates no clash test and never reads the tolerance.
                 FederationEngine engine = new FederationEngine(
                     SetProgress, log, exchange, keptTeams.ForRun(exchange, teamSettings),
-                    ReportsWanted(ToleranceChoice.FromTheFile()));
+                    ReportsWanted(ToleranceChoice.Default()));
                 SetBuildOutcome outcome = engine.BuildSetsByHand();
 
                 ShowSetLines(outcome.Lines());
@@ -2860,7 +2784,7 @@ namespace Federator.Addin.Ui
             }
             catch (Exception error)
             {
-                log.Failure("building the sets from " + path, error, "stopped, nothing further was built");
+                log.Failure("building the sets from the built in clash matrix", error, "stopped, nothing further was built");
                 SetProgress("Building the sets stopped on an error.");
                 Warn("Building the sets stopped." + Environment.NewLine + Environment.NewLine + error.Message);
             }
@@ -2872,7 +2796,7 @@ namespace Federator.Addin.Ui
         }
 
         /// <summary>
-        /// The Run tests button. The picked file's tests created into and run against
+        /// The Run tests button. The clash matrix's tests created into and run against
         /// whatever document is open, without federating anything and with no NWF saved,
         /// through the same engine method the run uses per group, so the CLASH lines in
         /// the log read the same either way. D4. Runs on the plugin thread, like
@@ -2885,11 +2809,9 @@ namespace Federator.Addin.Ui
                 return;
             }
 
-            string path = Trimmed(ExchangeFileBox.Text);
-
-            if (path.Length == 0 || !File.Exists(path))
+            if (!MatrixIsBuiltIn())
             {
-                Warn("Pick a clash XML that exists first.");
+                Warn("No clash matrix is built into the tool, so there are no tests to run.");
                 return;
             }
 
@@ -2907,9 +2829,9 @@ namespace Federator.Addin.Ui
 
             try
             {
-                log.Line("CLASH    started by hand, reading " + path);
-                ExchangeDocument exchange = MatrixCorrections.ReadPicked(path);
-                SayTheTeamsAndCorrections(exchange, false);
+                log.Line("CLASH    started by hand, reading the built in clash matrix");
+                ExchangeDocument exchange = ReadTheMatrix();
+                SayTheTeamsAndCorrections(exchange);
 
                 FederationEngine engine = new FederationEngine(
                     SetProgress, log, exchange, keptTeams.ForRun(exchange, teamSettings), ReportsWanted(tolerance));
@@ -2932,7 +2854,7 @@ namespace Federator.Addin.Ui
             catch (Exception error)
             {
                 log.Failure(
-                    "creating and running the clash tests from " + path,
+                    "creating and running the clash tests from the built in clash matrix",
                     error,
                     "stopped, whatever was already created and run is still in the document");
                 SetProgress("The clash tests stopped on an error.");

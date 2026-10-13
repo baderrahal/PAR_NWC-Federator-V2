@@ -1,7 +1,7 @@
 namespace Federator.Core.Coverage
 {
     /// <summary>
-    /// One test of the picked file with the four numbers the count check set side by side,
+    /// One test of the clash matrix with the four numbers the count check set side by side,
     /// F127, and its verdict. A side with no test of that name carries minus one and says so
     /// through InDocument and InWorkbook, because a missing test is not a test holding none.
     /// </summary>

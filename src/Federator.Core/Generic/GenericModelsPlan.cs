@@ -150,7 +150,7 @@ namespace Federator.Core.Generic
         public ReadOnlyCollection<GenericModelSet> Sets { get; private set; }
 
         /// <summary>
-        /// The name of every set of the plan, for the leftover walk of the picked file's build, which removes
+        /// The name of every set of the plan, for the leftover walk of the clash matrix's build, which removes
         /// or renames every set of the document that no plan it is handed names. A Generic Models set the last
         /// run saved in the NWF is wanted, so the walk is handed these beside the file's own.
         /// </summary>
@@ -204,7 +204,7 @@ namespace Federator.Core.Generic
         }
 
         /// <summary>
-        /// Why the picked file's leftover walk must not run this group, or null where it may, F128
+        /// Why the clash matrix's leftover walk must not run this group, or null where it may, F128
         /// attempt 2: the walk removes or renames every set of the document that neither plan names,
         /// so a plan that was not made, because a model's read threw, or that holds no set, because the
         /// document read no models, would hand it no Generic Models name and last week's sets of every
@@ -240,7 +240,7 @@ namespace Federator.Core.Generic
 
         /// <summary>
         /// The sets as the plan the set builder already takes, so the add-in builds them with the machinery
-        /// that builds the picked file's sets and nothing reads a second shape. Every set is buildable and
+        /// that builds the clash matrix's sets and nothing reads a second shape. Every set is buildable and
         /// none is skipped.
         /// </summary>
         public SetBuildPlan ToBuildPlan()
@@ -255,7 +255,7 @@ namespace Federator.Core.Generic
             return SetBuildPlan.Of(planned);
         }
 
-        /// <summary>The full path of the set of a model name, in the shape the picked file's sets are named.</summary>
+        /// <summary>The full path of the set of a model name, in the shape the clash matrix's sets are named.</summary>
         internal string PathOf(string modelName)
         {
             return new ExchangeReader().BuildPath(new List<string> { Folder }, modelName);

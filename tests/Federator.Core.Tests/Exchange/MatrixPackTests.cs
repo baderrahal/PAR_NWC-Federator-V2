@@ -129,5 +129,181 @@ namespace Federator.Core.Tests
         {
             Assert.Throws<FileNotFoundException>(() => TheBuiltInPack().ReadText("not-there.csv"));
         }
+
+        // ---------- F155, the clash matrix built in ----------
+
+        private const string Matrix = "1104-PAR_CLASH_AllInOne_25mm_FIXED";
+
+        /// <summary>
+        /// The pack holds the corrected matrix of exchange with its team map and its list of corrections, each byte for
+        /// byte the file in exchange, so the copy cannot drift from what the rule proves the exchange file to be.
+        /// </summary>
+        [Test]
+        public void ThePackHoldsTheCorrectedMatrixAndItsTwoListsByteForByte()
+        {
+            MatrixPack pack = TheBuiltInPack();
+            string whyNone;
+
+            Assert.That(pack.Files.Count, Is.EqualTo(5), "the two CSVs, the clash XML and its two lists");
+            Assert.That(pack.XmlFile(out whyNone), Is.EqualTo(Matrix + ".xml"), whyNone);
+
+            foreach (string file in new[] { Matrix + ".xml", Matrix + ".teams.txt", Matrix + ".corrections.txt" })
+            {
+                Assert.That(pack.Sha256(file),
+                    Is.EqualTo(Federator.Core.Diagnostics.FileFingerprint.Sha256(Path.Combine(Samples.ExchangeFolder(), file))), file);
+            }
+        }
+
+        /// <summary>
+        /// THE SAME 1830 TESTS AS THE RUN OF 2026-10-13. The pack read through ReadPack, the existing ExchangeReader,
+        /// TeamMap and MatrixCorrections, gives the sets and the tests the same files on the disk give through
+        /// ReadPicked, in the same order and with the same corrections and teams, the lines naming the pack in place of
+        /// the path. The document names its pack and its sha256 is the file's.
+        /// </summary>
+        [Test]
+        public void ThePackReadsAsTheSameFilesOnTheDiskRead()
+        {
+            ExchangeDocument built = MatrixCorrections.ReadPack(TheBuiltInPack());
+            ExchangeDocument onDisk = MatrixCorrections.ReadPicked(Path.Combine(Samples.ExchangeFolder(), Matrix + ".xml"));
+
+            Assert.That(built.Tests.Count, Is.EqualTo(1830));
+            Assert.That(built.Sets.Count, Is.EqualTo(onDisk.Sets.Count));
+            Assert.That(built.Tests.Count, Is.EqualTo(onDisk.Tests.Count));
+
+            for (int i = 0; i < onDisk.Tests.Count; i++)
+            {
+                Assert.That(built.Tests[i].Name, Is.EqualTo(onDisk.Tests[i].Name), "test " + i);
+            }
+
+            for (int i = 0; i < onDisk.Sets.Count; i++)
+            {
+                Assert.That(built.Sets[i].Path, Is.EqualTo(onDisk.Sets[i].Path), "set " + i);
+            }
+
+            Assert.That(built.Corrections.Count, Is.EqualTo(onDisk.Corrections.Count));
+            Assert.That(built.Corrections[0], Does.Contain("the built in matrix pack " + Pack));
+
+            for (int i = 1; i < onDisk.Corrections.Count; i++)
+            {
+                Assert.That(built.Corrections[i], Is.EqualTo(onDisk.Corrections[i]), "correction line " + i);
+            }
+
+            Assert.That(built.Teams.IsRead, Is.True);
+            Assert.That(built.Teams.Teams.Count, Is.EqualTo(onDisk.Teams.Teams.Count));
+            Assert.That(built.Pack.Name, Is.EqualTo(Pack));
+            Assert.That(built.SourcePath, Is.EqualTo("the built in matrix pack " + Pack + ", " + Matrix + ".xml"));
+            Assert.That(built.Sha256(), Is.EqualTo(onDisk.Sha256()));
+        }
+
+        /// <summary>
+        /// A pack is read off its resource names, so a pack with no clash XML, or two, has no matrix and says why,
+        /// ReadPack refuses it, and TheOneWithAMatrix hands back no pack, so the window and every run read no matrix and
+        /// run the tests saved in each NWF, the reviewer's finding on F155.
+        /// </summary>
+        [Test]
+        public void APackWithNoClashXmlOrTwoHasNoMatrixAndSaysWhy()
+        {
+            IList<MatrixPack> packs = MatrixPack.All(new[]
+            {
+                MatrixPack.Prefix + "\\None\\" + MatrixPack.PriorityFile,
+                MatrixPack.Prefix + "\\Two\\a.xml",
+                MatrixPack.Prefix + "\\Two\\b.XML",
+            }, typeof(MatrixPack).Assembly);
+            string whyNone;
+
+            Assert.That(packs[0].XmlFile(out whyNone), Is.Null);
+            Assert.That(whyNone, Is.EqualTo("the matrix pack None holds no clash XML"));
+            Assert.That(packs[1].XmlFile(out whyNone), Is.Null);
+            Assert.That(whyNone, Does.StartWith("the matrix pack Two holds 2 clash XML files, a.xml, b.XML"));
+            Assert.Throws<InvalidDataException>(() => MatrixCorrections.ReadPack(packs[0]));
+            Assert.Throws<InvalidDataException>(() => MatrixCorrections.ReadPack(packs[1]));
+
+            Assert.That(MatrixPack.TheOneWithAMatrix(new[] { packs[0] }, out whyNone), Is.Null);
+            Assert.That(whyNone, Is.EqualTo("the matrix pack None holds no clash XML"));
+            Assert.That(MatrixPack.TheOneWithAMatrix(new[] { packs[1] }, out whyNone), Is.Null);
+            Assert.That(whyNone, Does.StartWith("the matrix pack Two holds 2 clash XML files"));
+            Assert.That(MatrixPack.TheOneWithAMatrix(packs, out whyNone), Is.Null);
+            Assert.That(whyNone, Does.StartWith("2 matrix packs are built into this tool"));
+            Assert.That(MatrixPack.TheOneWithAMatrix(new MatrixPack[0], out whyNone), Is.Null);
+            Assert.That(whyNone, Is.EqualTo("no matrix pack is built into this tool"));
+            Assert.That(MatrixPack.TheOneWithAMatrix(MatrixPack.All(), out whyNone).Name, Is.EqualTo(Pack));
+            Assert.That(whyNone, Is.Null);
+        }
+
+        /// <summary>
+        /// The tests of the pack ask the same questions as the tests of the file on the disk: each side's set, the
+        /// test type, the tolerance and its units and merge composites, test by test, so the built in matrix is the
+        /// corrected exchange file and not merely as many tests of the same names.
+        /// </summary>
+        [Test]
+        public void EachTestOfThePackAsksWhatTheFileOnTheDiskAsks()
+        {
+            ExchangeDocument built = MatrixCorrections.ReadPack(TheBuiltInPack());
+            ExchangeDocument onDisk = MatrixCorrections.ReadPicked(Path.Combine(Samples.ExchangeFolder(), Matrix + ".xml"));
+
+            for (int i = 0; i < onDisk.Tests.Count; i++)
+            {
+                ClashTestDefinition a = built.Tests[i];
+                ClashTestDefinition b = onDisk.Tests[i];
+                string at = "test " + i + ", " + b.Name;
+
+                Assert.That(a.Left.Locator, Is.EqualTo(b.Left.Locator), at);
+                Assert.That(a.Right.Locator, Is.EqualTo(b.Right.Locator), at);
+                Assert.That(a.TestType, Is.EqualTo(b.TestType), at);
+                Assert.That(a.ToleranceInFileUnits, Is.EqualTo(b.ToleranceInFileUnits), at);
+                Assert.That(a.FileUnits, Is.EqualTo(b.FileUnits), at);
+                Assert.That(a.MergeComposites, Is.EqualTo(b.MergeComposites), at);
+            }
+        }
+
+        /// <summary>
+        /// NOTHING IN THE CODE NAMES ANY ONE PROJECT'S FILE, Bader's rule kept by F155: no code line of a .cs or .xaml
+        /// file of src names the pack, so neither its folder nor its matrix, which the code finds by the resource prefix
+        /// alone. A comment may, a line starting // or the part of a line after " // ", since a comment is not code,
+        /// and the pack's own files may, since the folder is the project's data.
+        /// </summary>
+        [Test]
+        public void NoCodeLineOfSrcNamesThePackOrItsMatrix()
+        {
+            string src = Path.Combine(Samples.Repo(), "src");
+            int read = 0;
+
+            foreach (string file in Directory.GetFiles(src, "*.*", SearchOption.AllDirectories))
+            {
+                bool code = file.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)
+                    || file.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase);
+
+                if (!code
+                    || file.IndexOf(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar, StringComparison.Ordinal) >= 0
+                    || file.IndexOf(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.Ordinal) >= 0)
+                {
+                    continue;
+                }
+
+                string[] lines = File.ReadAllLines(file);
+                read++;
+
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    string line = lines[i].Trim();
+
+                    if (line.StartsWith("//", StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    int comment = line.IndexOf(" // ", StringComparison.Ordinal);
+
+                    if (comment >= 0)
+                    {
+                        line = line.Substring(0, comment);
+                    }
+
+                    Assert.That(line, Does.Not.Contain(Pack), file + " line " + (i + 1));
+                }
+            }
+
+            Assert.That(read, Is.GreaterThan(100), "the files of src were read");
+        }
     }
 }

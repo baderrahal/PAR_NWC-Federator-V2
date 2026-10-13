@@ -75,7 +75,8 @@ steps\history only for a line it needs, Bader's message of 2026-10-06, Q139.
   the part positions, the grouping choice, the name fields, the date format, the
   stop after count, the log count, the open statuses, the image size
 - Nothing in the code names any one project's file. Names, counts and property
-  internal names from the clash XML appear in tests as sample data only
+  internal names from the clash XML appear in tests as sample data only, and in the
+  project's built in matrix pack, which Bader supplies, as its data, F155
 - The tool reports what it noticed and never acts on it. Findings, mismatches and
   drift are information in the log and the window. Bader decides
 - Logging never stops a run, and a report check never fails a group

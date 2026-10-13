@@ -1,7 +1,7 @@
 namespace Federator.Core.Coverage
 {
     /// <summary>
-    /// Whether a test of the picked file is in the document, as the clash runner recorded
+    /// Whether a test of the clash matrix is in the document, as the clash runner recorded
     /// it, F127. Kept apart from the reason a test has no results, because a test already
     /// in the NWF can be skipped for the same reason as one created a minute ago, and a
     /// reader has to see both facts.
@@ -18,7 +18,7 @@ namespace Federator.Core.Coverage
         NotInDocument,
 
         /// <summary>
-        /// The runner never looked: the plan dropped a test of the picked file before the
+        /// The runner never looked: the plan dropped a test of the clash matrix before the
         /// model, a set it names is not in the document, no test resolved a set, or the run
         /// never reached it.
         /// </summary>

@@ -166,11 +166,14 @@ well as to pass.
   one, on by default, and a weekly run wanted it every time, so it is fixed on. That is the
   point of a rerun. The NWF pointers are unchanged, so reopening picks up whatever the NWC
   files now hold and the NWD is refreshed without the clash history being touched
-- The clash test file is picked at run time, every run, and can be from any project.
-  Nothing about any one file is written into the code, not names, not counts, not
-  property internal names. Those appear in tests as sample data only. A file may hold
-  sets, tests, or both, and all three are normal. There is one picker, because Bader's
-  file holds both and two boxes meant picking the same file twice
+- EACH PROJECT HAS A BUILT IN MATRIX PACK THAT BADER SUPPLIES, F155, Bader's decision of
+  2026-10-13. It replaced the clash test file picked at run time. The pack is a folder of
+  embedded resources holding the XML, its team map, its list of corrections and the two CSVs,
+  core.md THE CLASH MATRIX IS BUILT IN TOO. Nothing about any one file is written into the
+  code, not names, not counts, not property internal names. Those appear in tests as sample
+  data and in the pack as the project's data only. A file may hold sets, tests, or both, and
+  all three are normal. There is no picker: the one pack is read and a PACK line names it,
+  and how to choose between two packs waits on Q164
 - Per group the order is append, save the NWF, build the sets, create the tests, run
   them, save the NWF again, publish the NWD last. The sets, the tests and the results
   all live in the NWF, so an NWD published before the clash work ships without any of
@@ -380,19 +383,16 @@ well as to pass.
   SavedViewpoints.CanBuild is true since the viewpoints round on 2026-09-19 and nothing
   in src reads it, read on 2026-10-05
 - THE TEAMS, F131. The add-in holds only the calls, and every rule and every word is Core's,
-  .claude\rules\core.md, The teams of the picked file. WHERE A RUN OR A PICK SAYS WHICH FILE IT
+  .claude\rules\core.md, The teams of the matrix. WHERE A RUN OR A PICK SAYS WHICH FILE IT
   READ, the window writes the TEAMS lines of its map, `TeamMap.Lines`, then a line for each set
-  whose name carries no code, `TeamMap.SetLines`, Q117 answered C and A, then, for the scanned
-  run and the open file run, whether that map is now the one kept for a run with no XML,
-  `TeamMapMemory.Remember`, and only then the MATRIX lines, all in one method,
-  SayTheTeamsAndCorrections, so the TEAMS lines come before the MATRIX lines at the pick, the
-  two runs and both hand buttons. A RUN WITH NO XML, the scanned run or the open file run,
+  whose name carries no code, `TeamMap.SetLines`, Q117 answered C and A, and only then the MATRIX lines,
+  all in one method, SayTheTeamsAndCorrections, so the TEAMS lines come before the MATRIX
+  lines at the window's open, the two runs and both hand buttons. Since F155 no map is kept
+  for a later run. A RUN WITH NO XML, the scanned run or the open file run,
   writes the kept map's TEAMS lines in their place, Q123 answered B. The map a run hands the
   engine is `TeamMapMemory.ForRun`, the one rule for it. THE KEPT MAP IS NAMED WHEN THE WINDOW
   OPENS, a TEAMS KEPT block beside FOLDERS REMEMBERED, the memory read once by the field
-  initializer as FolderMemory is. THE GREY LINE under the Clash XML box, x:Name TeamsLine, is
-  `TeamMap.WindowLine` of `TeamMapMemory.ForPick`, the map beside the XML in the box, or the
-  kept map where none is there, set at the open and on every change of the box. EACH GROUP
+  initializer as FolderMemory is. The Clash XML box and its grey line, TeamsLine, are gone since F155. EACH GROUP
   writes a TEAMS block after the EXPORT CHECK block, in WhatTheModelsCarry, the one place both
   runs pass through, in a try of its own after the export check's, so a fault in it names its
   own step and never counts the group's finished export check as not read:
@@ -1017,7 +1017,7 @@ well as to pass.
   where it does not read, logs a TOLERANCE line and warns before anything starts. The scanned
   run, the run of picked NWFs, the open file run and Run tests call it and hand the value to
   `ReportsWanted`. Undo, Probe and Build sets never read it and hand
-  `ToleranceChoice.FromTheFile()`, so a blank Other box stops none of them
+  `ToleranceChoice.Default()`, 25 mm, so the drop down never stops them
 
 ## What a tick box says
 

@@ -2,6 +2,35 @@
 
 Newest entry at the top.
 
+## 2026-10-14 F155 the clash matrix built in, the tolerance from the drop down alone, item 5 of Bader's message of 2026-10-13, Q162-5
+
+Branch fix-F155 off main c26339a. He decided the clash matrix is built in, one per project and no picker now, and
+the tolerance is a drop down only.
+
+What was done:
+- The pack 1104-PAR holds the corrected XML of exchange and its two lists, byte for byte. ReadPack reads them through
+  ExchangeReader, TeamMap and MatrixCorrections
+- The window reads the built in matrix when it opens and at every run. The Clash XML row, Browse, the Teams line, the
+  remembered ClashXml folder and the picked paths are gone, with TeamMap.WindowLine and TeamMapMemory.Remember and ForPick
+- The drop down offers 25, 50 and 75 mm with 25 selected. The XML entry, Other and the typed text are gone. The XML's
+  tolerance reaches no test, no report row and no drift line
+- The loop's driver, run.ps1 and the stand-in take no XML and expect 25 mm, Q143 limit 5
+- Q165 to Q168 ask about ReadPicked and cut-xml.ps1, the Weekly run plus XML label, the two checks that still
+  read the XML's tolerance, and the saved tests the matrix does not name, which are not run
+- core.md, addin.md, CLAUDE.md, docs\workflow.md and the history entry
+- One reviewer. Applied: the window opens when the matrix will not read, a pack with no XML runs the saved tests,
+  mirror pairs compare no tolerance, ToleranceOrigin.File is gone, the log says the clash matrix, tighter pack tests,
+  a note in 03_bader_next.md on the older steps that used the XML box
+- Core tests before 3107 passed, 0 failed, 0 skipped, after 3099 passed, 0 failed, 0 skipped. The solution builds in
+  Release with 0 warnings and 0 errors. prove-run.ps1 gave the same 149 PASS and 28 FAIL on main and here, stopping at
+  the install.ps1 trials, so the window run cases did not run
+
+What remains: not run on Navisworks, steps 1490 to 1506. The driver's change is UNKNOWN until a window run.
+
+Known bugs: prove-run.ps1 stops at its install.ps1 trials on main too, 28 FAIL, not new.
+
+What comes next: the round's proof steps and PROGRESS.
+
 ## 2026-10-13 F154 the priority and by design files built in, item 4 of Bader's message of 2026-10-13, Q162-4
 
 Branch fix-F154 off main 82b3075. He decided the two CSVs become embedded resources of Federator.Core in the matrix

@@ -355,8 +355,8 @@ modes:
   VERDICT: CLOSED BY CLOSEOWN
 
 - Run -Set NN -Item 1 to 5 -Folder <a folder of NMFed\NWC> -Stamp <8 hex>, F106, the window
-  run on the run set's copy runs\NN\NMFed, which tools\loop\prepare-copy.ps1 makes. Item 1
-  takes -Xml, a file of the copy, and item 5 -OpenFile, the plain name of an .nwf in
+  run on the run set's copy runs\NN\NMFed, which tools\loop\prepare-copy.ps1 makes. No item
+  takes -Xml since F155, the matrix being built in. Item 5 takes -OpenFile, the name of an .nwf in
   NMFed\NWF\<Folder> or an .nwd in NMFed\NWD\<Folder>. Every path must resolve under the
   copy. Item 0's refusals, then the copy whole against NMFed.manifest.txt, the outputs as the
   item needs them, item 1's three output folders empty, and the session unlocked, Q85. The

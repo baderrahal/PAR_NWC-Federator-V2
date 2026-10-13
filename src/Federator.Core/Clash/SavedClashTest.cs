@@ -7,7 +7,7 @@ namespace Federator.Core.Clash
     /// <summary>
     /// One clash test as it sits in the open document, read off DocumentClashTests by the
     /// add-in and handed here with no Navisworks types on it. This is the second way a
-    /// plan is built: with no XML picked, the tests already saved in the NWF are run.
+    /// plan is built: with no clash matrix read, the tests already saved in the NWF are run.
     ///
     /// The tolerance is already in the document's units, because it was read out of the
     /// document. The sides are whatever the test was saved with and are not resolved

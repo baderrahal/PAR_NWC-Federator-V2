@@ -174,7 +174,7 @@ namespace Federator.Core.Report
                 }
             }
 
-            return data.Tests.Count + (data.FromAPickedFile ? " tests in the picked file: " : " tests saved in the document: ")
+            return data.Tests.Count + (data.FromAPickedFile ? " tests in the clash matrix: " : " tests saved in the document: ")
                 + created + " created this run, " + alreadyThere + " already there, " + notCreated + " not created"
                 + (unknown > 0 ? ", " + unknown + " whose presence is UNKNOWN" : string.Empty)
                 + ", " + ran + " run, " + withClashes + " with clashes, " + (ran - withClashes) + " without";

@@ -472,7 +472,7 @@ namespace Federator.Core.Tests
             Assert.That(health.SetsAtRoot.Count, Is.EqualTo(0));
             Assert.That(health.DuplicateNames.Count, Is.EqualTo(0));
         }
-        // D1. The one sentence the window puts under the picked file.
+        // D1. The one sentence the window puts under the clash matrix.
         [Test]
         public void TheHealthLineSaysEveryLocatorResolves()
         {

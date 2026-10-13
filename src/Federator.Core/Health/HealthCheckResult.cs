@@ -142,7 +142,7 @@ namespace Federator.Core.Health
         }
 
         /// <summary>
-        /// The one sentence the window puts under the picked file, in a person's words.
+        /// The one sentence the window puts under the clash matrix, in a person's words.
         /// D1. A file with no sets is a normal case, its tests resolve against the sets
         /// already in the model, so its unresolved locators are not a fault of the file.
         /// </summary>

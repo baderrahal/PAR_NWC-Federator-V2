@@ -28,8 +28,8 @@ namespace Federator.Core.Sets
 
         /// <summary>
         /// The workset spellings a set of this plan that finds nothing is judged against, the
-        /// ones the picked file's corrections were chosen from, F116: the names inside Core and
-        /// those of the list beside the picked file. The names inside Core alone for sets handed
+        /// ones the clash matrix's corrections were chosen from, F116: the names inside Core and
+        /// those of the list beside the clash matrix. The names inside Core alone for sets handed
         /// in without their document.
         /// </summary>
         public ReadOnlyCollection<string> Worksets { get; private set; }
@@ -40,7 +40,7 @@ namespace Federator.Core.Sets
         public ReadOnlyCollection<SkippedSet> Skipped { get; private set; }
 
         /// <summary>
-        /// Every set name the picked file holds, the sets it skips among them, which is what the
+        /// Every set name the clash matrix holds, the sets it skips among them, which is what the
         /// leftover walk reads as named by the file, F115 R16. A set the plan skipped was read as
         /// one the file does not name, and with the box ticked one nothing points at was removed.
         /// </summary>
@@ -138,7 +138,7 @@ namespace Federator.Core.Sets
         /// <summary>
         /// A plan of sets that are already planned, F128: the Generic Models sets are made in Core from the
         /// models of a group and not read from a file, so they are handed to the builder as the plan it already
-        /// takes, and it builds them as it builds the picked file's. None is skipped, since a set that cannot be
+        /// takes, and it builds them as it builds the clash matrix's. None is skipped, since a set that cannot be
         /// planned is never made. A null set is left out.
         /// </summary>
         public static SetBuildPlan Of(IEnumerable<PlannedSet> planned)
@@ -181,7 +181,7 @@ namespace Federator.Core.Sets
 
             foreach (SelectionSetDefinition set in sets)
             {
-                // F115 R23. A second set at one path in the picked file is skipped by name. Both were
+                // F115 R23. A second set at one path in the clash matrix is skipped by name. Both were
                 // built into one slot, the second found the first and was counted as one already
                 // there, and the SET DRIFT check compared the first set with the second's question.
                 // Ordinal and never trimmed, as every set name is compared.
@@ -190,7 +190,7 @@ namespace Federator.Core.Sets
                     skipped.Add(new SkippedSet(
                         set.Name,
                         set.Path,
-                        "the picked file holds another set at this path before this one, so only the first is built."
+                        "the clash matrix holds another set at this path before this one, so only the first is built."
                             + " One path holds one set, F28"));
                     continue;
                 }

@@ -55,7 +55,7 @@ namespace Federator.Core.Tests
 
         private const string StandsIn = "   the model's file name stands in for the Source File of its items, which is not read here";
 
-        /// <summary>One spelling of every workset value the picked file's mechanical sets ask, so a model carrying them is reached by every one.</summary>
+        /// <summary>One spelling of every workset value the clash matrix's mechanical sets ask, so a model carrying them is reached by every one.</summary>
         private static readonly string[] EveryMechanicalWorkset =
         {
             "ME-Ductwork", "ME-Equipment", "ME-Piping", "FF-Fire Fighting", "FP-PIPING", "PL-Domestic water", "PL-Drainage"
@@ -464,7 +464,7 @@ namespace Federator.Core.Tests
 
         /// <summary>
         /// The breaker's finding on F131's second attempt. An EMPTY list of sets or of models,
-        /// a group whose models were all dropped or a picked file holding no set, judges nothing
+        /// a group whose models were all dropped or a clash matrix holding no set, judges nothing
         /// just as a list not handed in does, and a group where no model shares a set's team
         /// with another code judges nothing too. Each is said as nothing judged, with why, and
         /// never as the all clear, which would be a statement about sets and models never read.

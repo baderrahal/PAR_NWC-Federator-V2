@@ -136,8 +136,8 @@ namespace Federator.Core.Teams
         }
 
         /// <summary>
-        /// The map of a run with no clash XML picked: the kept one, read at its path, or none kept,
-        /// or why the memory could not be read. Its TEAMS lines and its window line say which.
+        /// The map of a run with no clash matrix read: the kept one, read at its path, or none kept,
+        /// or why the memory could not be read. Its TEAMS lines say which.
         /// </summary>
         public TeamMap ForNoXml(TeamMapSettings settings)
         {
@@ -156,8 +156,8 @@ namespace Federator.Core.Teams
 
         /// <summary>
         /// The map a run uses, the one rule for every run of the window: the map read beside the
-        /// picked XML, which ReadPicked carries in Teams, or the kept one where no XML is picked.
-        /// A document not read by ReadPicked carries no map and is refused, never given one it was
+        /// clash matrix, which ReadPack or ReadPicked carries in Teams, or the kept one where no matrix is read.
+        /// A document read by neither carries no map and is refused, never given one it was
         /// not read with, the breaker's finding on attempt 1.
         /// </summary>
         public TeamMap ForRun(ExchangeDocument picked, TeamMapSettings settings)
@@ -169,83 +169,10 @@ namespace Federator.Core.Teams
 
             if (picked.Teams == null)
             {
-                throw new ArgumentException("A run reads the picked XML through ReadPicked, which reads its team map too.", "picked");
+                throw new ArgumentException("A run reads the clash matrix through ReadPack or ReadPicked, which read its team map too.", "picked");
             }
 
             return picked.Teams;
-        }
-
-        /// <summary>
-        /// The map a run of that path in the XML box reads, the one rule for the window's grey
-        /// line: the map beside it, or the kept one where the box names no file, which the window
-        /// hands in as an empty path. The same map ForRun gives for the document ReadPicked reads
-        /// at that path, the reviewer's finding on F131's add-in half.
-        /// </summary>
-        public TeamMap ForPick(string pickedPath, TeamMapSettings settings)
-        {
-            return string.IsNullOrEmpty(pickedPath) ? ForNoXml(settings) : TeamMap.Beside(pickedPath, settings);
-        }
-
-        /// <summary>
-        /// Keeps the map a run with a clash XML used, where it was read whole with a team, and
-        /// gives the one line the log says, whichever way it went.
-        /// </summary>
-        public string Remember(TeamMap used)
-        {
-            const string Prefix = "TEAMS    ";
-
-            if (used == null || used.NoXmlPicked || !used.IsRead || used.HoldsNone)
-            {
-                return Prefix + (LastMap.Length == 0
-                    ? "no map is kept for a run with no clash XML"
-                    : "the map kept for a run with no clash XML stays " + LastMap)
-                    + ", because this run's map was not read whole with a team";
-            }
-
-            if (Unread == null && string.Equals(used.ListPath, LastMap, StringComparison.OrdinalIgnoreCase))
-            {
-                return Prefix + "this map stays the one kept for a run with no clash XML";
-            }
-
-            string why = Write(used.ListPath);
-
-            if (why != null)
-            {
-                return Prefix + "this map could not be kept for a run with no clash XML, " + Path + " could not be written: " + why;
-            }
-
-            LastMap = used.ListPath;
-            Unread = null;
-            return Prefix + "this map is now the one kept for a run with no clash XML, remembered in " + Path;
-        }
-
-        /// <summary>Writes the memory naming that map, or gives why it could not be, the folder made where it is not there.</summary>
-        private string Write(string map)
-        {
-            StringBuilder text = new StringBuilder();
-            text.Append("# The team map of the last run with a clash XML, read by a run with none. Safe to delete.").Append(Environment.NewLine);
-            text.Append(KeptMarker).Append(' ').Append(map).Append(Environment.NewLine);
-
-            try
-            {
-                string folder = System.IO.Path.GetDirectoryName(Path);
-
-                if (!string.IsNullOrEmpty(folder) && !Directory.Exists(folder))
-                {
-                    Directory.CreateDirectory(folder);
-                }
-
-                File.WriteAllText(Path, text.ToString(), new UTF8Encoding(false));
-                return null;
-            }
-            catch (IOException failed)
-            {
-                return failed.Message.TrimEnd('.');
-            }
-            catch (UnauthorizedAccessException failed)
-            {
-                return failed.Message.TrimEnd('.');
-            }
         }
     }
 }

@@ -62,7 +62,7 @@ namespace Federator.Core.Clash
 
         /// <summary>
         /// How many tests saved in the NWF this group read its sides off, on a run with no
-        /// clash XML, or null on a run whose tests came from the picked file. F132 attempt 2,
+        /// clash XML, or null on a run whose tests came from the clash matrix. F132 attempt 2,
         /// the breaker's finding R5: since F132 reads a saved test's sides as the sets it
         /// points at, this pass reaches the saved tests, where before it matched no pair
         /// there. The pass stays, Q144, and the block says so rather than moving in silence.
@@ -188,7 +188,7 @@ namespace Federator.Core.Clash
                 // from before reading what moved. A pair is counted once however many
                 // clashes reached it.
                 lines.Add("sides read off the NWF : the " + savedTestsRead.Value
-                    + " tests saved in the document, no clash XML picked, so this pass acts on the saved tests, "
+                    + " tests saved in the document, no clash matrix read, so this pass acts on the saved tests, "
                     + "and they reached " + pairsSeen.Count + " of the " + pairsInTheFile
                     + (pairsInTheFile == 1 ? " pair" : " pairs") + " in the file");
             }

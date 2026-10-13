@@ -575,8 +575,8 @@ namespace Federator.Core.Tests
             IList<string> lines = tally.Lines();
 
             Assert.That(tally.SavedTestsRead, Is.EqualTo(1830));
-            Assert.That(lines[0], Is.EqualTo("sides read off the NWF : the 1830 tests saved in the document, no clash XML "
-                + "picked, so this pass acts on the saved tests, and they reached 1 of the 2 pairs in the file"));
+            Assert.That(lines[0], Is.EqualTo("sides read off the NWF : the 1830 tests saved in the document, no clash matrix "
+                + "read, so this pass acts on the saved tests, and they reached 1 of the 2 pairs in the file"));
             Assert.That(lines[1], Does.StartWith("REVIEWED clash 1  in T"));
         }
 
@@ -620,9 +620,9 @@ namespace Federator.Core.Tests
             string line = ByDesignPairs.ConfirmLine(true);
 
             Assert.That(line, Does.Contain("Reviewed"));
-            Assert.That(line, Does.Contain("the tests created from the picked file"));
+            Assert.That(line, Does.Contain("the tests created from the clash matrix"));
             Assert.That(line, Does.Contain("the tests already saved in the NWF"));
-            Assert.That(line, Does.Contain("no clash XML"));
+            Assert.That(line, Does.Contain("no clash matrix"));
             Assert.That(line, Does.Not.Contain(";"));
         }
 

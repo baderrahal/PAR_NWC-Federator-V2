@@ -309,40 +309,7 @@ namespace Federator.Core.Tests
 
             Assert.That(noXml.NoXmlPicked, Is.True);
             Assert.That(noXml.ListPath, Is.Null);
-            Same(noXml.Lines(), "TEAMS    no clash XML was picked and no team map is kept from a run with one" + NothingApplies);
-        }
-
-        /// <summary>The window's grey line at the pick, in plain words held in Core and twelve words at most.</summary>
-        [Test]
-        public void TheWindowLineIsPlainWordsOfTwelveAtMost()
-        {
-            string[][] lines =
-            {
-                new[] { MapOf(BadersMap).WindowLine(), "Teams: 4 read from the map beside the XML" },
-                new[] { TeamMap.Read(new StringReader("team: A | AR\nteams: B\n"), InATest, new TeamMapSettings()).WindowLine(), "Teams: the map beside the XML could not be read" },
-                new[] { MapOf("# nothing\n").WindowLine(), "Teams: the map beside the XML holds no team" },
-                new[] { TeamMap.NoXml(new TeamMapSettings()).WindowLine(), "Teams: no XML picked, no map kept yet" }
-            };
-
-            foreach (string[] line in lines)
-            {
-                Assert.That(line[0], Is.EqualTo(line[1]));
-                Assert.That(line[0].Split(' ').Length, Is.LessThanOrEqualTo(12), line[0]);
-            }
-
-            string folder = TempFolder.Make("f131-window");
-
-            try
-            {
-                string xml = Path.Combine(folder, "a.xml");
-                File.WriteAllText(xml, "<exchange/>");
-
-                Assert.That(TeamMap.Beside(xml, new TeamMapSettings()).WindowLine(), Is.EqualTo("Teams: no map beside the XML, each code is its own team"));
-            }
-            finally
-            {
-                TempFolder.Remove(folder);
-            }
+            Same(noXml.Lines(), "TEAMS    no clash matrix was read and no team map is kept from a run with one" + NothingApplies);
         }
 
         /// <summary>
@@ -489,7 +456,7 @@ namespace Federator.Core.Tests
                 Same(kept.SizeFolderTeams, "Mechanical", "Electrical");
                 Same(
                     kept.Lines(),
-                    "TEAMS    no clash XML was picked, so the teams are read from " + path + ", the team map kept from the last run with"
+                    "TEAMS    no clash matrix was read, so the teams are read from " + path + ", the team map kept from the last run with"
                         + " one. It holds 4 teams and 10 codes, and a code on no line is a team of its own named by its code",
                     "TEAMS    Architecture is AR",
                     "TEAMS    Structure is ST",
@@ -497,7 +464,6 @@ namespace Federator.Core.Tests
                     "TEAMS    Electrical is EL and EV",
                     "TEAMS    a pair is written in the order Architecture, Structure, Mechanical, Electrical, then any other team by its name, then UNKNOWN",
                     "TEAMS    a pair holding Mechanical or Electrical carries the size folder");
-                Assert.That(kept.WindowLine(), Is.EqualTo("Teams: no XML picked, 4 read from the kept map"));
 
                 string gone = Path.Combine(folder, "gone.teams.txt");
                 TeamMap missing = TeamMap.Kept(gone, new TeamMapSettings());
@@ -505,8 +471,7 @@ namespace Federator.Core.Tests
                 Assert.That(missing.Missing, Is.True);
                 Assert.That(missing.IsRead, Is.False);
                 Assert.That(missing.Teams.Count, Is.EqualTo(0));
-                Same(missing.Lines(), "TEAMS    no clash XML was picked, and the team map kept from the last run with one, " + gone + ", is not there" + NothingApplies);
-                Assert.That(missing.WindowLine(), Is.EqualTo("Teams: no XML picked, the kept map is gone"));
+                Same(missing.Lines(), "TEAMS    no clash matrix was read, and the team map kept from the last run with one, " + gone + ", is not there" + NothingApplies);
 
                 string bad = Path.Combine(folder, "bad.teams.txt");
                 File.WriteAllText(bad, "teams: B\n");
@@ -515,22 +480,15 @@ namespace Federator.Core.Tests
                 Assert.That(unread.IsRead, Is.False);
                 Same(
                     unread.Lines(),
-                    "TEAMS    no clash XML was picked, and THE TEAM MAP KEPT FROM THE LAST RUN WITH ONE, " + bad
+                    "TEAMS    no clash matrix was read, and THE TEAM MAP KEPT FROM THE LAST RUN WITH ONE, " + bad
                         + ", COULD NOT BE READ: line 1, \"teams: B\", is not a line of a team map this tool knows" + NothingApplies);
-                Assert.That(unread.WindowLine(), Is.EqualTo("Teams: no XML picked, the kept map could not be read"));
 
                 string empty = Path.Combine(folder, "empty.teams.txt");
                 File.WriteAllText(empty, "# nothing\n");
                 TeamMap none = TeamMap.Kept(empty, new TeamMapSettings());
 
                 Assert.That(none.HoldsNone, Is.True);
-                Same(none.Lines(), "TEAMS    no clash XML was picked, and the team map kept from the last run with one, " + empty + ", holds no team" + NothingApplies);
-                Assert.That(none.WindowLine(), Is.EqualTo("Teams: no XML picked, the kept map holds no team"));
-
-                foreach (TeamMap one in new[] { kept, missing, unread, none })
-                {
-                    Assert.That(one.WindowLine().Split(' ').Length, Is.LessThanOrEqualTo(12), one.WindowLine());
-                }
+                Same(none.Lines(), "TEAMS    no clash matrix was read, and the team map kept from the last run with one, " + empty + ", holds no team" + NothingApplies);
             }
             finally
             {

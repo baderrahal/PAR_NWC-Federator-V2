@@ -22,7 +22,7 @@ namespace Federator.Core.Report
             ExcelFolder = string.Empty;
             SourceFolder = string.Empty;
             ApplyFileSettings = false;
-            Tolerance = ToleranceChoice.FromTheFile();
+            Tolerance = ToleranceChoice.Default();
             MarkByDesign = false;
             RebuildDriftedSets = SetRebuildSettings.DefaultRebuildDriftedSets;
             CompactResolved = false;
@@ -126,10 +126,10 @@ namespace Federator.Core.Report
         public bool ApplyFileSettings { get; set; }
 
         /// <summary>
-        /// The tolerance chosen on the Clash step, F76. Never null: the default is
-        /// ToleranceChoice.FromTheFile, which is what this tool has always done. When a
-        /// value is chosen it is set on every clash test in the run, created fresh or
-        /// already saved in the NWF, and it beats both the XML and the document.
+        /// The tolerance chosen on the Clash step, F76. Never null: the default is 25 mm,
+        /// ToleranceChoice.Default, the drop down being the only source since F155. The
+        /// value is set on every clash test in the run, created fresh or
+        /// already saved in the NWF, and it beats both the built in matrix and the document.
         /// </summary>
         public ToleranceChoice Tolerance { get; set; }
 

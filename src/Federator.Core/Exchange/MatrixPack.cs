@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Federator.Core.Clash;
+using Federator.Core.Diagnostics;
 
 namespace Federator.Core.Exchange
 {
@@ -133,6 +134,23 @@ namespace Federator.Core.Exchange
             return packs[0];
         }
 
+        /// <summary>
+        /// F155. The one pack a run reads its clash matrix from, or null with why: none built in, two or more, or
+        /// the one pack holding no clash XML or two. So a pack that holds no matrix leaves a run on the tests saved
+        /// in each NWF, as no pack does, and never stops it.
+        /// </summary>
+        public static MatrixPack TheOneWithAMatrix(IList<MatrixPack> packs, out string whyNone)
+        {
+            MatrixPack pack = TheOne(packs, out whyNone);
+
+            if (pack == null || pack.XmlFile(out whyNone) == null)
+            {
+                return null;
+            }
+
+            return pack;
+        }
+
         /// <summary>Whether the pack holds a file of that name, Ordinal.</summary>
         public bool Holds(string file)
         {
@@ -166,6 +184,64 @@ namespace Federator.Core.Exchange
         /// <summary>A file of the pack as text, in the encoding its byte order mark gives and UTF-8 where it has none.</summary>
         public string ReadText(string file)
         {
+            using (Stream stream = Open(file))
+            using (StreamReader reader = new StreamReader(stream, new UTF8Encoding(false), true))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        /// <summary>A file of the pack as its bytes, for the clash XML, which is decoded as the file declares, F155.</summary>
+        internal byte[] ReadBytes(string file)
+        {
+            using (Stream stream = Open(file))
+            using (MemoryStream copy = new MemoryStream())
+            {
+                stream.CopyTo(copy);
+                return copy.ToArray();
+            }
+        }
+
+        /// <summary>The sha256 of a file of the pack, 64 lower case hexadecimal characters, FileFingerprint's form, F155.</summary>
+        public string Sha256(string file)
+        {
+            using (Stream stream = Open(file))
+            {
+                return FileFingerprint.Sha256(stream);
+            }
+        }
+
+        /// <summary>
+        /// The pack's clash XML, F155: the one file of the pack whose name ends .xml, any case. Null with why where the
+        /// pack holds none or more than one, since its lists are found beside it by name and two would leave that UNKNOWN.
+        /// </summary>
+        public string XmlFile(out string whyNone)
+        {
+            List<string> found = new List<string>();
+
+            foreach (string file in Files)
+            {
+                if (file.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                {
+                    found.Add(file);
+                }
+            }
+
+            if (found.Count == 1)
+            {
+                whyNone = null;
+                return found[0];
+            }
+
+            whyNone = found.Count == 0
+                ? "the matrix pack " + Name + " holds no clash XML"
+                : "the matrix pack " + Name + " holds " + found.Count + " clash XML files, " + string.Join(", ", found.ToArray())
+                    + ", and its lists are found beside one alone";
+            return null;
+        }
+
+        private Stream Open(string file)
+        {
             string resource;
 
             if (file == null || !resources.TryGetValue(file, out resource))
@@ -173,18 +249,14 @@ namespace Federator.Core.Exchange
                 throw new FileNotFoundException("The " + Describe(file ?? string.Empty) + " is not built in.", file);
             }
 
-            using (Stream stream = assembly.GetManifestResourceStream(resource))
-            {
-                if (stream == null)
-                {
-                    throw new FileNotFoundException("The " + Describe(file) + " could not be opened.", file);
-                }
+            Stream stream = assembly.GetManifestResourceStream(resource);
 
-                using (StreamReader reader = new StreamReader(stream, new UTF8Encoding(false), true))
-                {
-                    return reader.ReadToEnd();
-                }
+            if (stream == null)
+            {
+                throw new FileNotFoundException("The " + Describe(file) + " could not be opened.", file);
             }
+
+            return stream;
         }
 
         /// <summary>The clash priorities of the pack, through PriorityMap.Read, the rule unchanged.</summary>

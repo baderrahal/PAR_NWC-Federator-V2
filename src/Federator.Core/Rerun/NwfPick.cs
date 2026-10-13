@@ -259,7 +259,7 @@ namespace Federator.Core.Rerun
             }
 
             lines.Add("each NWF          : opened where it sits and run the way the open file run runs it, "
-                + "nothing scanned, appended or cleared, the tests of the XML where one is picked "
+                + "nothing scanned, appended or cleared, the tests of the clash matrix where one is read "
                 + "and otherwise the tests saved inside");
             lines.Add("NWD               : beside each NWF with the extension swapped");
             lines.Add("reports           : " + WhereTheReportsGo());

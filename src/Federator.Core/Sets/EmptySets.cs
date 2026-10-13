@@ -70,7 +70,7 @@ namespace Federator.Core.Sets
                     // WHAT THIS READER ACTUALLY KNOWS. The measured lists are one folder of
                     // the project, C02, 374 categories and 39 worksets across its ten
                     // buildings. For a workset the judge adds what this group's own models
-                    // carry, and the spellings of the list beside the picked file where the
+                    // carry, and the spellings of the list beside the clash matrix where the
                     // group is of the lists' project. For a category it adds nothing of this
                     // group, so "the models carry it" means some model somewhere does, NOT
                     // that a model of this group does. A group holding two disciplines out of
@@ -97,8 +97,8 @@ namespace Federator.Core.Sets
     ///
     /// THE VALUES ARE MEASURED AND NEVER TYPED. `RevitCategories` holds the 374 category
     /// values the models really carry, measured in 5i. The workset spellings are handed in,
-    /// every one the picked file's corrections ask, `RevitWorksets.With`: the 39 names measured
-    /// in 5t inside Core, the workset lines of the list beside the picked file, Q113, and every
+    /// every one the clash matrix's corrections ask, `RevitWorksets.With`: the 39 names measured
+    /// in 5t inside Core, the workset lines of the list beside the clash matrix, Q113, and every
     /// spelling an also-ask line of it accepts, F131, so a spelling a MATRIX line says was
     /// measured or accepted is never one this calls carried by no model, F116. A set asking for
     /// something none of them holds is asking for something no model measured so far in this
@@ -341,7 +341,7 @@ namespace Federator.Core.Sets
             }
 
             // A COUNT THAT WAS NOT TAKEN IS NOT A COST OF ZERO. The sides are only counted
-            // on the path that creates tests from a picked file. A run over the tests saved
+            // on the path that creates tests from a clash matrix. A run over the tests saved
             // in the document never resolves a locator, so it has nothing to count with,
             // and it says so rather than reporting that the empty sets cost nothing.
             if (withAnEmptySide < 0)

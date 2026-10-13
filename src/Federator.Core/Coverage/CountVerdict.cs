@@ -1,6 +1,6 @@
 namespace Federator.Core.Coverage
 {
-    /// <summary>What the count check says about one test of the picked file, F127.</summary>
+    /// <summary>What the count check says about one test of the clash matrix, F127.</summary>
     public enum CountVerdict
     {
         /// <summary>The workbook's rows and Clashes cell equal what Clash Detective holds, exactly.</summary>

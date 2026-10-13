@@ -9,7 +9,7 @@ namespace Federator.Core.Coverage
 {
     /// <summary>
     /// What one group's Coverage sheet shows, F127, Bader's request 2 under Q112 and his
-    /// decision under Q46, FR-200: every test of the picked file, or of the tests saved in the
+    /// decision under Q46, FR-200: every test of the clash matrix, or of the tests saved in the
     /// document where none was picked, with what happened to it, so a test that was not created
     /// is on the sheet with its reason and nothing is missed without a line saying so.
     ///
@@ -23,7 +23,7 @@ namespace Federator.Core.Coverage
         /// <summary>The words the sheet carries where no file was picked and the saved tests were run.</summary>
         public const string SavedTests = "the tests saved in the document";
 
-        /// <summary>The words where the picked file had no list of corrections beside it.</summary>
+        /// <summary>The words where the clash matrix had no list of corrections beside it.</summary>
         public const string CorrectedByNothing = "corrected by nothing";
 
         public CoverageSheetData(
@@ -51,13 +51,13 @@ namespace Federator.Core.Coverage
             Priorities = priorities ?? PriorityMap.NothingPicked();
         }
 
-        /// <summary>The picked file's full path, or SavedTests.</summary>
+        /// <summary>The clash matrix's full path, or SavedTests.</summary>
         public string Source { get; private set; }
 
-        /// <summary>The picked file's sha256, FileFingerprint, or UNKNOWN.</summary>
+        /// <summary>The clash matrix's sha256, FileFingerprint, or UNKNOWN.</summary>
         public string Sha256 { get; private set; }
 
-        /// <summary>The full path of the list of corrections read beside the picked file, or CorrectedByNothing.</summary>
+        /// <summary>The full path of the list of corrections read beside the clash matrix, or CorrectedByNothing.</summary>
         public string Corrections { get; private set; }
 
         /// <summary>The group's models as the EXPORT CHECK read them, each with its code and its elements.</summary>
@@ -75,7 +75,7 @@ namespace Federator.Core.Coverage
         /// <summary>The priority file, or NothingPicked.</summary>
         public PriorityMap Priorities { get; private set; }
 
-        /// <summary>Whether the tests are the picked file's rather than the saved ones.</summary>
+        /// <summary>Whether the tests are the clash matrix's rather than the saved ones.</summary>
         public bool FromAPickedFile
         {
             get { return !string.Equals(Source, SavedTests, StringComparison.Ordinal); }

@@ -593,7 +593,7 @@ namespace Federator.Core.Tests
         }
 
         /// <summary>
-        /// The breaker's point 3 on attempt 1 of F114c. A weekly run with no clash XML picked hands
+        /// The breaker's point 3 on attempt 1 of F114c. A weekly run with no clash matrix read hands
         /// the views no set tree, and a side handed as its whole locator then reads exactly the team
         /// its set name read before F114-K30: the code its name carries through the map, so its pair
         /// and its size folder stay, and UNKNOWN with why where its name carries no code.

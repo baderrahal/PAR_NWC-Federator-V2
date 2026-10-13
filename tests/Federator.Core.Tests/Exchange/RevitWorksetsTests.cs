@@ -10,7 +10,7 @@ namespace Federator.Core.Tests
 {
     /// <summary>
     /// The workset list inside Core, and the workset lines of this project's list of
-    /// corrections beside the picked XML, are exactly what was measured off the models and
+    /// corrections beside the clash matrix, are exactly what was measured off the models and
     /// nothing typed beside them, so a spelling the matrix corrections act on is always one a
     /// model was seen to carry. Each is read off its measurement itself, never a copy.
     /// </summary>
@@ -105,7 +105,7 @@ namespace Federator.Core.Tests
             return names;
         }
 
-        /// <summary>This project's list of corrections, read the way the tool reads it beside a picked file, Q113.</summary>
+        /// <summary>This project's list of corrections, read the way the tool reads it beside a clash matrix, Q113.</summary>
         private static MatrixCorrectionList TheProjectsList()
         {
             return MatrixCorrectionList.Beside(Samples.CorrectedMatrix(), new CorrectionListSettings());
@@ -114,7 +114,7 @@ namespace Federator.Core.Tests
         /// <summary>
         /// The list inside Core is the 39 names 5t measured on C02, each once, and nothing
         /// more. The 30 the C06 run listed are this project's and sit in its list of
-        /// corrections beside the picked XML, Q113 answered B on 2026-10-04. The header has said
+        /// corrections beside the clash matrix, Q113 answered B on 2026-10-04. The header has said
         /// a test proves it since 5t and none did until F116.
         /// </summary>
         [Test]

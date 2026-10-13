@@ -413,7 +413,7 @@ namespace Federator.Core.Exchange
         /// <summary>
         /// The workset spellings this file's sets are judged against when one finds nothing, every
         /// one its corrections ask, RevitWorksets.With: the names inside Core and the spellings
-        /// the list beside the picked file names, MatrixCorrectionList.Spellings, F116 and F131.
+        /// the list beside the clash matrix names, MatrixCorrectionList.Spellings, F116 and F131.
         /// The names inside Core alone for a document read as the file stands.
         /// </summary>
         internal ReadOnlyCollection<string> Worksets { get; private set; }
@@ -444,8 +444,8 @@ namespace Federator.Core.Exchange
         }
 
         /// <summary>
-        /// The team map read beside the picked file, F131, Q114 points 1 and 2 and Q115 answered
-        /// A, by ReadPicked wherever it reads the picked file, so the pick, the run, the
+        /// The team map read beside the clash matrix, F131, Q114 points 1 and 2 and Q115 answered
+        /// A, by ReadPicked wherever it reads the clash matrix, so the pick, the run, the
         /// open file run and both hand buttons read one map with one list of corrections. Read on
         /// its own, so a fault in one cannot leave the other unread. Null for a document read as
         /// the file stands, which no run builds from.
@@ -455,6 +455,31 @@ namespace Federator.Core.Exchange
         internal void TeamsBeside(TeamMap teams)
         {
             Teams = teams;
+        }
+
+        /// <summary>
+        /// The matrix pack the document was read from, F155, MatrixCorrections.ReadPack, and its clash XML's
+        /// name in it. Null for a document read from a file. SourcePath then names the pack and the file in
+        /// words and is no path on the disk, so its fingerprint is the pack's, Sha256.
+        /// </summary>
+        public MatrixPack Pack { get; private set; }
+
+        /// <summary>The clash XML's name in the pack, empty for a document read from a file.</summary>
+        public string PackFile { get; private set; }
+
+        internal void ReadFrom(MatrixPack pack, string file)
+        {
+            Pack = pack;
+            PackFile = file ?? string.Empty;
+        }
+
+        /// <summary>
+        /// The sha256 of the bytes the document was read from, the pack's file or the file at SourcePath, the one
+        /// fingerprint a run names, F127 and F155. A file not there throws, as FileFingerprint does.
+        /// </summary>
+        public string Sha256()
+        {
+            return Pack != null ? Pack.Sha256(PackFile) : Federator.Core.Diagnostics.FileFingerprint.Sha256(SourcePath);
         }
 
         public bool HasTests

@@ -136,7 +136,7 @@ namespace Federator.Core.Sets
 
         /// <summary>
         /// THE ONE SHAPE of a condition's key, for a condition read off the document and for one
-        /// the picked file plans, `PlannedCondition.Key`, FR-015. It carries the flag bits that
+        /// the clash matrix plans, `PlannedCondition.Key`, FR-015. It carries the flag bits that
         /// are part of the question and no other, so a negation or the start of an Or group is
         /// a different question, and the Ignore bits are not.
         /// </summary>
@@ -301,7 +301,7 @@ namespace Federator.Core.Sets
                 Asked, condition => PlannedCondition.StartsAGroupWith(condition.Flags), condition => condition.Describe());
         }
 
-        /// <summary>What the picked file asks, as one sentence, the planned set's own, FR-016.</summary>
+        /// <summary>What the clash matrix asks, as one sentence, the planned set's own, FR-016.</summary>
         public string WantedNow()
         {
             return wanted.ConditionCount == 0 ? "nothing at all" : wanted.Describe();

@@ -169,7 +169,7 @@ namespace Federator.Core.Tests
             Assert.That(lines, Has.Some.StartsWith("source folder : not applicable"));
             Assert.That(lines, Has.Some.StartsWith("grouping      : not applicable"));
             Assert.That(lines, Has.Some.StartsWith("files ticked  : not applicable"));
-            Assert.That(lines, Has.Some.StartsWith("clash file    : none picked"));
+            Assert.That(lines, Has.Some.StartsWith("clash file    : none read"));
             Assert.That(lines, Has.Some.StartsWith("clash         : no clash step ran"));
             Assert.That(lines, Has.Some.Contains("FAILED, the NWD was requested and is not on disk"));
 

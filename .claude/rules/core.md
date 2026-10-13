@@ -177,19 +177,21 @@ and 6 does not read as broken.
 
 ### The picked file is corrected before a set is built, F116
 
-- WHICHEVER CLASH XML IS PICKED IS CORRECTED BY THE LIST BESIDE IT, Q104 and Q113 answered
-  by Bader on 2026-10-04. `MatrixCorrections.ReadPicked` is the only way the add-in reads the
-  picked file, at the pick, the run, the open file run and both hand buttons, so the list is
-  read wherever the XML is. It reads the file as `ExchangeReader.ReadFile` did, in the
+- THE CLASH XML IS CORRECTED BY ITS LIST, Q104 and Q113 answered by Bader on 2026-10-04. Since
+  F155 `MatrixCorrections.ReadPack` is the only way the add-in reads the matrix, the XML of the
+  built in pack with the list in the same pack, at the window's open, the run, the open file
+  run and both hand buttons, so the list is read wherever the XML is. `ReadPicked` reads a file
+  on the disk with the list beside it by the same private Read, and no src calls it, Q165. It reads the file as `ExchangeReader.ReadFile` did, in the
   encoding the file declares, through `ExchangeReader.ReadFileText`, reads the list beside it,
   applies the code that writes the exchange file, `ForPickedFile`, before any set is built,
   and the document carries one line per correction, `ExchangeDocument.Corrections`, which the
   window writes as MATRIX lines after the line saying which file it read. The HEALTH block at
   the pick judges the corrected sets, because those are the sets the run builds
-- THE CORRECTIONS ARE ONE PROJECT'S DATA, KEPT BESIDE THE PICKED XML AND NEVER IN CORE, Q113
-  answered B: the tool serves many projects, and nothing in src may name one project's file.
+- THE CORRECTIONS ARE ONE PROJECT'S DATA, KEPT BESIDE THE XML IN ITS PACK AND NEVER IN CODE,
+  Q113 answered B and F155: the tool serves many projects, and nothing in src may name one project's file.
   The list is a plain file named after the XML, its name without the extension and
-  `CorrectionListSettings.Suffix`, default `.corrections.txt`, one full path tested with
+  `CorrectionListSettings.Suffix`, default `.corrections.txt`, read by that name in the pack,
+  `MatrixCorrectionList.InPack`, and beside a file on the disk one full path tested with
   File.Exists and never a search or a wildcard, `MatrixCorrectionList.Beside`. It holds the
   renames, the catch-all sets, the Source File rules and the workset spellings measured in
   the project's models, one a line, the format at the top of this project's list,
@@ -432,19 +434,20 @@ and 6 does not read as broken.
   name. `StoppedBecause` makes a build that stopped say so in `Summary()` and `Lines()`, and
   `AddLeftoverUntouched` counts the leftovers not acted on once the document is damaged
 
-### The teams of the picked file, F131
+### The teams of the matrix, F131
 
-- THE TEAM MAP IS ONE PROJECT'S DATA, IN A FILE OF ITS OWN BESIDE THE PICKED XML, Q114
+- THE TEAM MAP IS ONE PROJECT'S DATA, IN A FILE OF ITS OWN BESIDE THE XML IN ITS PACK, Q114
   points 1 and 2 decided by Bader on 2026-10-04 and Q115 answered A on 2026-10-05. Its name is the
-  XML's without the extension and `TeamMapSettings.Suffix`, default `.teams.txt`, one full
-  path tested with File.Exists and never a search, joined by `ListFile.PathBeside`, the join
+  XML's without the extension and `TeamMapSettings.Suffix`, default `.teams.txt`, read by that
+  name in the pack, `TeamMap.InPack`, and beside a file on the disk one full path tested with
+  File.Exists and never a search, joined by `ListFile.PathBeside`, the join
   the list of corrections is found by. It is read by `ListFile`, the one way a list beside
   the XML is read, so its lines split and its bytes are judged as the list's are.
-  `MatrixCorrections.ReadPicked` reads it on its own and the document carries it in
-  `ExchangeDocument.Teams`, so the pick, the run, the open file run and both hand buttons read
-  one map, and a fault in one list never leaves the other unread. This project's map is
-  exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt beside the corrected XML, held to
-  Bader's map by a test. Nothing in src names a team or a code
+  `MatrixCorrections.ReadPack` reads it on its own, `TeamMap.InPack`, and the document carries it in
+  `ExchangeDocument.Teams`, so the window's open, the run, the open file run and both hand
+  buttons read one map, and a fault in one list never leaves the other unread. This project's
+  map is the pack's byte for byte copy of exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.teams.txt,
+  held to Bader's map by a test. Nothing in src names a team or a code
 - ONE TEAM A LINE, `team: name | code | code`, in the order a pair is written, point 12, and
   `size-folder: team | team`, the teams whose pairs carry the size folder, point 11. Any other
   code is a team of its own named by its code, Bader's rule. Codes compare Ordinal, nothing
@@ -471,26 +474,20 @@ and 6 does not read as broken.
   code read off a file name and would make a team of its own while the map read as whole, F131
   on the breaker's finding of its first attempt. Missing, unread or holding no team the map
   maps nothing: every code is a team of its own and no pair carries the size folder. The TEAMS
-  lines and the window's grey line say which, `TeamMap.Lines` and `WindowLine`, in words held in
-  Core
+  lines say which, `TeamMap.Lines`, in words held in Core
 - A RUN WITH NO CLASH XML READS THE MAP THE WINDOW KEPT, Q123 answered B by Bader on
-  2026-10-05: the window keeps the last team map used, for runs with no XML, and the log names
-  it. `TeamMapMemory`, kept the way `FolderMemory` keeps the picker folders, is one file,
-  `team-map.txt`, beside the logs, holding ONE FULL PATH, `kept: path`, read by `ListFile`, so
-  the map read is the file a person keeps beside the XML and never a copy of it. A run with an
-  XML keeps its map only where it was read whole with a team, `Remember`, so a pick with no map
-  or a map that cannot be read never takes the teams away from the next run with no XML, and
-  the line says which map stays. `TeamMap.Kept` reads the kept map at its path, said as the
-  kept map on every TEAMS line and on the grey line. None kept, it maps nothing and says so.
-  A memory that cannot be read, a line it does not know, a second map or a path that is not a
-  full one, is said and maps nothing, never a throw, and its TEAMS line and grey line name the
-  memory as what could not be read and never call it the kept map, the reviewer's K26.
-  `TeamMapMemory.ForRun` is the one rule for the map of a run: the picked XML's, carried in
-  `ExchangeDocument.Teams` by `ReadPicked`, or the kept one where no XML is picked, and a
-  document not read by `ReadPicked` is refused. `TeamMapMemory.ForPick` is the same rule for a
-  path in the XML box, the map beside it or the kept one where the box names no file, which the
-  window's grey line reads, so the window holds no rule of its own and a test proves the two
-  give the same map
+  2026-10-05. Since F155 every run reads the built in matrix and the map in its pack, so the
+  kept map serves a tool with no pack built in alone. `TeamMapMemory` is one file,
+  `team-map.txt`, beside the logs, holding ONE FULL PATH, `kept: path`, read by `ListFile`.
+  NOTHING WRITES IT SINCE F155, which removed `Remember` and `ForPick` with the XML box, and a
+  file kept before is still read. `TeamMap.Kept` reads the kept map at its path, said as the
+  kept map on every TEAMS line. None kept, it maps nothing and says so. A memory that cannot be
+  read, a line it does not know, a second map or a path that is not a full one, is said and maps
+  nothing, never a throw, and its TEAMS line names the memory as what could not be read and
+  never calls it the kept map, the reviewer's K26. `TeamMapMemory.ForRun` is the one rule for
+  the map of a run: the matrix's, carried in `ExchangeDocument.Teams` by `ReadPack` or
+  `ReadPicked`, or the kept one where no matrix is read, and a document read by neither is
+  refused. The grey line under the XML box, `TeamMap.WindowLine`, went with the box
 - WHERE THE TEAM APPLIES, Q116 answered A by Bader on 2026-10-05. The views read the team, and the log,
   COVERAGE and the form write it beside the code, `TeamMap.CodeWithTeam`, HV in Mechanical.
   The grouping, the one-discipline judgement, the alignment and export checks and the
@@ -920,32 +917,32 @@ and 6 does not read as broken.
   wrong is, and `WrittenCondition.Read` reads such a condition as one it cannot read. Flags and
   disjoint left out still read as 0 and false, and whether Navisworks reads a condition with no
   flags the same way is UNKNOWN
-- THE TOLERANCE CAN BE CHOSEN IN THE TOOL AND THEN IT BEATS EVERYTHING, F76. The Clash
-  step carries a drop down, `Federator.Core.Clash.ToleranceChoice`: Use the value in the
-  XML, which is the default and changes nothing, then 25 mm, 50 mm, 75 mm, then Other
-  with a number box. When anything but the default is chosen that value is set on EVERY
-  test in the run, the ones created fresh from the XML and the ones already saved in the
-  NWF alike, and it beats the XML and it beats the document. ApplyFileSettings keeps
-  exactly the meaning it had, which is whether the FILE'S settings reach a saved test,
-  and this wins over it, because a value a person typed beats a value read out of a file.
-  The choice is in MILLIMETRES because that is what a person says, converted through
-  UnitTable like any other, and a unit the table has not been taught throws rather than
-  falling back. Zero is a real tolerance and is allowed. A negative one is refused where
-  it is set rather than reaching 1830 tests. The drop down is read by
-  `ToleranceChoice.FromThePicker`, which never throws, FR-166: Other with its box blank, not
-  a number, below zero or infinite hands back null and the refusal, blank in
-  `ToleranceChoice.OtherIsBlank` and the rest in the words `Of` throws with, one private
-  rule for both, so only a run that creates or runs clash tests refuses on it and a button
-  that never reads the tolerance is not stopped by it. The confirm screen says the value, the
-  counts, what it beats, and what changing a saved test actually costs, which is that it
-  finds DIFFERENT clashes next run and NOT that its results are reset, 5y, and says
-  nothing at all under the default, because a line that reads the same on every run
-  teaches people to skip the screen. One TOLERANCE line per group carries both counts and
+- THE TOLERANCE IS CHOSEN IN THE TOOL AND BEATS EVERYTHING, F76, AND THE DROP DOWN IS ITS ONLY
+  SOURCE, F155, Bader's decision of 2026-10-13. The Clash step carries a drop down,
+  `Federator.Core.Clash.ToleranceChoice`, offering 25 mm, 50 mm and 75 mm, `OfferedMillimetres`,
+  with 25 mm selected when the window opens, `DefaultMillimetres`. Its value is set on EVERY
+  test in the run, the ones created fresh from the matrix and the ones already saved in the NWF
+  alike, and it beats the matrix and it beats the document. The tolerance written in the XML is
+  never read into a run: the parser still reads the attribute, and a test without it or a file
+  with no units is still skipped, FR-155, Q167, but the value reaches no test, no report row and
+  no drift line, ClashRunner putting the chosen value on each. The entries Use the value in the XML and Other,
+  Other's number box and the reading of typed text are gone with their tests.
+  ApplyFileSettings keeps exactly the meaning it had, which is whether the FILE'S settings
+  reach a saved test, and this wins over it. The choice is in MILLIMETRES because that is what
+  a person says, converted through UnitTable like any other, and a unit the table has not been
+  taught throws rather than falling back. `ToleranceChoice.Of` refuses a negative, NaN or
+  infinite value. The drop down is read by `ToleranceChoice.FromThePicker`, which never throws,
+  FR-166: nothing selected hands back null and `ToleranceChoice.NothingSelected`, so only a run
+  that creates or runs clash tests refuses on it, and a button that never reads the tolerance
+  hands `ToleranceChoice.Default()` and is not stopped by it. The confirm screen says the value,
+  the counts, what it beats, and what changing a saved test actually costs, which is that it
+  finds DIFFERENT clashes next run and NOT that its results are reset, 5y, on every run, since
+  a value is always chosen. One TOLERANCE line per group carries both counts and
   the converted value. Under Set on a saved test counts only where its tolerance was
   changed, FR-053, and every other saved test is named on the same line by what happened
   to it, already at the value, not found, would not copy as a clash test or threw,
   `SavedTestTolerances`, recorded once per test whichever way it left. The line is told the
-  plan's source, FR-063: with no XML picked it says the tolerance is the one each saved test
+  plan's source, FR-063: with no matrix read it says the tolerance is the one each saved test
   holds and a chosen value beats the document alone, and never that an XML was read or
   beaten. Why it exists: the matrix is written at 25 mm, the NWFs on disk
   held tests at 75 mm, a test already in the document is left exactly as it is, so the
@@ -1324,6 +1321,26 @@ and 6 does not read as broken.
   pickers and their remembered folders are gone, and so are `ReportOptions.PriorityPath` and
   `ByDesignPath`. MatrixPackTests holds each copy to its sample and the priority file to one
   row per test of the built in matrix
+- THE CLASH MATRIX IS BUILT IN TOO, F155, Bader's decision of 2026-10-13, Q162-5. EACH PROJECT
+  HAS A BUILT IN MATRIX PACK THAT BADER SUPPLIES, and it replaced the clash XML picked each run.
+  The pack holds the corrected clash XML with its team map and its list of corrections beside
+  the two CSVs, this project's from exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.*, each a byte
+  for byte copy held to exchange by MatrixPackTests. `MatrixPack.XmlFile` is the one .xml file
+  of the pack, and none or two read no matrix and say why. `MatrixCorrections.ReadPack` reads it
+  through `ExchangeReader`, `TeamMap.InPack` and `MatrixCorrectionList.InPack`, the readers and
+  the rules a file on the disk is read by, so the sets, the tests, the corrections and the teams
+  read the same, a test proves it, and `ExchangeDocument.Pack` names the pack, its sha256 the
+  file's. The window's open, every run, both hand buttons and Build sets read the built in
+  matrix, so every weekly run is a Weekly run plus XML: a test of the matrix already saved in an
+  NWF runs where it sits with its results kept, and a test of the matrix the NWF lacks is added.
+  A TEST SAVED IN THE NWF THAT THE MATRIX DOES NOT NAME IS NOT RUN, as on any run with an XML
+  before F155, and the COVERAGE block names it as a test in Clash Detective the matrix does not
+  name, Q168. With no pack
+  built in, the tests saved in each NWF run as before and the RUN line says why no matrix was
+  read. The Clash XML row, its Browse button, the Teams line, the remembered ClashXml folder and
+  the picked paths are gone. NOTHING IN THE CODE NAMES ANY ONE PROJECT'S FILE still holds: the
+  packs are found by the resource prefix alone, and a test reads every code line of src for the
+  pack's name or its matrix's
 - THE CLASH PRIORITY IS THE ONE COLUMN OF OURS ON THE CLIENT'S SHEET, F83, and since F154
   on every workbook, read off the matrix pack built into the tool. It sits in T, one past the end of their table, and
   `WorkbookWriter.LastColumn` stays 19 so the title merge, both item fills, the boxing,

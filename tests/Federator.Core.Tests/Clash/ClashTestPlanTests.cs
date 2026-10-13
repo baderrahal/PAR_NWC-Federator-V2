@@ -218,24 +218,6 @@ namespace Federator.Core.Tests
             Assert.That(plan.Skipped[0].Reason, Does.Contain("UNKNOWN"));
         }
 
-        // Which units ClashTest.Tolerance is measured in is UNKNOWN until a test runs
-        // against a real model, so both numbers and both unit names go in the log and the
-        // first real run settles it from the log alone.
-        [Test]
-        public void BothToleranceNumbersAndBothUnitNamesAreReportable()
-        {
-            string described = Plan(Xml(units: "ft"), "mm").Buildable[0].DescribeTolerance();
-
-            Assert.That(described, Does.Contain("0.2460629921"));
-            Assert.That(described, Does.Contain("ft"));
-            Assert.That(described, Does.Contain("mm"));
-
-            // 0.2460629921 ft is 74.9999999921 mm, not exactly 75. The file carries a
-            // rounded foot value, so the number reported is the converted one and not a
-            // tidied up 75 that was never in the file.
-            Assert.That(described, Does.Contain("74.99"));
-        }
-
         // ---------- an unknown test type is skipped, never approximated ----------
 
         [Test]

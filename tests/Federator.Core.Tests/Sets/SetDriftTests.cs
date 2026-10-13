@@ -7,7 +7,7 @@ namespace Federator.Core.Tests.Sets
 {
     /// <summary>
     /// Q72 answered a on 2026-09-20. A set already in the NWF keeps the question it was
-    /// built with, so a value corrected in the picked file since then never reaches it.
+    /// built with, so a value corrected in the clash matrix since then never reaches it.
     /// The values in these tests are the real ones, measured off his ten groups in 5w.
     /// </summary>
     [TestFixture]
@@ -22,13 +22,13 @@ namespace Federator.Core.Tests.Sets
             return new ReadCondition(Element, property, test, value, flags);
         }
 
-        /// <summary>One condition of the picked file, the way SetBuildPlan plans it.</summary>
+        /// <summary>One condition of the clash matrix, the way SetBuildPlan plans it.</summary>
         private static PlannedCondition Wants(string property, ConditionTest test, string value, int flags = 0)
         {
             return new PlannedCondition(test, flags, Element, "Element", property, null, "wstring", value);
         }
 
-        /// <summary>A set of the picked file at that path, asking those conditions in that order.</summary>
+        /// <summary>A set of the clash matrix at that path, asking those conditions in that order.</summary>
         private static PlannedSet Planned(string path, params PlannedCondition[] conditions)
         {
             string name = path.Substring(path.LastIndexOf('/') + 1);
@@ -447,7 +447,7 @@ namespace Federator.Core.Tests.Sets
             return string.Join("\n", new List<string>(outcome.Lines()).ToArray());
         }
 
-        /// <summary>A rebuilt set read back off the document asking what the picked file asks, a rebuild that took.</summary>
+        /// <summary>A rebuilt set read back off the document asking what the clash matrix asks, a rebuild that took.</summary>
         internal static SetDrift AsksWhatTheFileAsks()
         {
             return SetDrift.Compare(

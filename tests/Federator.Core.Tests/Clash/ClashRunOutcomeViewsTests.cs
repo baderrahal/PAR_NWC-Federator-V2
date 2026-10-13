@@ -7,7 +7,7 @@ namespace Federator.Core.Tests
 {
     /// <summary>
     /// The runner's own record made readable, F127. The coverage of Bader's request 2 says
-    /// for every test of the picked file whether it was created, whether it ran and why it
+    /// for every test of the clash matrix whether it was created, whether it ran and why it
     /// has no results, and the one place that knows each of those is ClashRunOutcome, which
     /// kept the names private and handed out counts alone. These views read the record and
     /// can never change it.

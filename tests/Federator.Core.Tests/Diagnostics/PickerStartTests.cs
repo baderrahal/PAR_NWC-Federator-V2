@@ -91,12 +91,6 @@ namespace Federator.Core.Tests
         }
 
         [Test]
-        public void TheClashXmlPickerRemembersItsOwnFolder()
-        {
-            ProveOnePicker(PickerKind.ClashXml, "clash");
-        }
-
-        [Test]
         public void TheLogoPickerRemembersItsOwnFolder()
         {
             ProveOnePicker(PickerKind.Logo, "branding");
@@ -116,16 +110,16 @@ namespace Federator.Core.Tests
         [Test]
         public void EveryPickerInTheWindowIsCoveredHere()
         {
-            // Seven kinds and seven tests above, since F154 took out the priority and by design
+            // Six kinds and six tests above, since F154 and F155 took out the priority, by design and clash XML
             // pickers. The existing NWF picker has two
             // Browse buttons on one kind. If another kind is added this fails until it is
             // proved too.
-            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(7));
+            Assert.That(FolderMemory.AllKinds().Length, Is.EqualTo(6));
         }
 
         // ---------- the one that was actually broken ----------
 
-        // The clash picker chooses a FILE, and its handler used to take the directory name
+        // The clash picker, gone since F155, chose a FILE, as the logo picker does, and its handler took the directory name
         // of what PickerStart gave it. PickerStart already returns a folder, so that
         // opened the parent, one level above the folder it had remembered.
         [Test]
@@ -136,9 +130,9 @@ namespace Federator.Core.Tests
             File.WriteAllText(picked, "<exchange/>");
 
             FolderMemory memory = FolderMemory.Load(file);
-            memory.Remember(PickerKind.ClashXml, picked);
+            memory.Remember(PickerKind.Logo, picked);
 
-            string opensAt = PickerStart.For(memory, PickerKind.ClashXml, string.Empty);
+            string opensAt = PickerStart.For(memory, PickerKind.Logo, string.Empty);
 
             Assert.That(opensAt, Is.EqualTo(clash), "it should open at the file's own folder");
             Assert.That(opensAt, Is.Not.EqualTo(root), "it opened one level too high");

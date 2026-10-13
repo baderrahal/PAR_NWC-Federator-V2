@@ -3,8 +3,8 @@ using Federator.Core.Exchange;
 namespace Federator.Core.Clash
 {
     /// <summary>
-    /// The three things the clash step can do. Tests from the picked XML, tests already
-    /// saved in the document when no XML was picked, or nothing.
+    /// The three things the clash step can do. Tests from the clash matrix, tests already
+    /// saved in the document when no clash matrix was read, or nothing.
     /// </summary>
     public enum ClashSource
     {
@@ -57,10 +57,10 @@ namespace Federator.Core.Clash
                 case ClashSource.TestsFromXml:
                     return "tests from XML, " + Describe(exchange);
                 case ClashSource.TestsSavedInDocument:
-                    return "tests saved in the document, " + savedTests + " of them, no XML picked";
+                    return "tests saved in the document, " + savedTests + " of them, no clash matrix read";
                 default:
                     return exchange == null
-                        ? "nothing, no XML picked and the document holds no clash test, so nothing ran"
+                        ? "nothing, no clash matrix read and the document holds no clash test, so nothing ran"
                         : "nothing, " + Describe(exchange);
             }
         }
@@ -118,10 +118,10 @@ namespace Federator.Core.Clash
 
             if (!Any(exchange))
             {
-                return "the picked file holds no set and no clash test, so there is nothing to do with it";
+                return "the clash matrix holds no set and no clash test, so there is nothing to do with it";
             }
 
-            return "the picked file holds " + exchange.Sets.Count
+            return "the clash matrix holds " + exchange.Sets.Count
                 + (exchange.Sets.Count == 1 ? " set and " : " sets and ")
                 + exchange.Tests.Count
                 + (exchange.Tests.Count == 1 ? " test" : " tests");

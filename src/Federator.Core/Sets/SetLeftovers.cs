@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Federator.Core.Sets
 {
-    /// <summary>What is to be done about one set the picked file no longer names.</summary>
+    /// <summary>What is to be done about one set the clash matrix no longer names.</summary>
     public enum LeftoverAction
     {
         /// <summary>Nothing points at it, so it goes. 5z proved a removal costs nothing but the set.</summary>
@@ -88,7 +88,7 @@ namespace Federator.Core.Sets
         {
             if (SidesUnknown)
             {
-                return Path + "   the picked file does not name it and the clash test sides of this NWF could not all"
+                return Path + "   the clash matrix does not name it and the clash test sides of this NWF could not all"
                     + " be counted. NOTHING IS DONE, because a set that looks unused may be pointed at by a side"
                     + " that was not counted, and removing it would leave that side resolving to nothing";
             }
@@ -96,11 +96,11 @@ namespace Federator.Core.Sets
             switch (Action)
             {
                 case LeftoverAction.Remove:
-                    return Path + "   the picked file does not name it and NOTHING points at it, so "
+                    return Path + "   the clash matrix does not name it and NOTHING points at it, so "
                         + (boxTicked ? "it is removed" : "a run with the box ticked would remove it");
 
                 case LeftoverAction.RemoveTheTwinThenRename:
-                    return Path + "   the picked file does not name it and " + Sides
+                    return Path + "   the clash matrix does not name it and " + Sides
                         + " clash test side(s) point at it. It asks exactly what \"" + TwinName
                         + "\" asks, which the file DOES name and which nothing points at, so "
                         + (boxTicked
@@ -110,7 +110,7 @@ namespace Federator.Core.Sets
                                 + " sides would keep working and start asking what the file asks");
 
                 default:
-                    return Path + "   the picked file does not name it and " + Sides
+                    return Path + "   the clash matrix does not name it and " + Sides
                         + " clash test side(s) point at it, with no unused twin to rename it into."
                         + " NOTHING IS DONE, because removing it would leave those sides resolving to"
                         + " nothing and they could never find anything again";
@@ -188,7 +188,7 @@ namespace Federator.Core.Sets
     public static class SetLeftovers
     {
         /// <summary>
-        /// Every set in the document the picked file does not name, and what to do about
+        /// Every set in the document the clash matrix does not name, and what to do about
         /// each. Names are compared Ordinal and never trimmed, because two set names in
         /// the reference file end in a space.
         /// </summary>
@@ -345,7 +345,7 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// The block, or empty where the picked file names everything the document holds. boxTicked
+        /// The block, or empty where the clash matrix names everything the document holds. boxTicked
         /// is whether the box of Q72 is on, F115 R20: with it off the leftovers are decided and
         /// reported, and nothing is done, so the block says that what it lists is what a run with
         /// the box ticked would do. With the box off they were neither decided nor reported.
@@ -384,7 +384,7 @@ namespace Federator.Core.Sets
                 }
             }
 
-            lines.Add(leftovers.Count + " set(s) in this NWF are not named by the picked file:");
+            lines.Add(leftovers.Count + " set(s) in this NWF are not named by the clash matrix:");
 
             if (!boxTicked)
             {

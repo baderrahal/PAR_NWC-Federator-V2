@@ -238,7 +238,7 @@ namespace Federator.Core.Tests
 
             Assert.That(reader.ReadText(SetsOnly).Sets[0].Path, Is.EqualTo("other_root/A/One"));
         }
-        // D1. The one sentence the window puts under the picked file.
+        // D1. The one sentence the window puts under the clash matrix.
         [Test]
         public void TheHealthLineOfATestsOnlyFileSaysTheModelSetsAreUsed()
         {

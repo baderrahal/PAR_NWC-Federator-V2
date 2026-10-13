@@ -599,3 +599,8 @@ Q163,"whether each linked picture also carries the client's click link to its jp
 F153,"a test with no clash writes nothing in the workbook, which retires Q73 b, the page and the Coverage sheet keep every test, Q162-3",F153,none,fix,merged,234,none,2026-10-13
 F154,"the priority CSV and the by design CSV built into the matrix pack, read through the existing readers, the two picker rows gone, Q162-4",F154,none,fix,merged,235,none,2026-10-13
 Q164,"how a run chooses its matrix pack once a second project's pack is built in, F154 and F155",none,none,question,waiting for Bader,none,none,2026-10-13
+F155,"the clash matrix built into the matrix pack with its team map and list of corrections, read through ReadPack, the Clash XML row gone, the tolerance from the drop down alone at 25, 50 or 75 mm, Q162-5",F155,none,fix,in review,UNKNOWN,none,2026-10-14
+Q165,"whether MatrixCorrections.ReadPicked and tools\loop\cut-xml.ps1 stay now that no run reads an XML from the disk, F155",none,none,question,waiting for Bader,none,none,2026-10-14
+Q166,"whether the Run as label Weekly run plus XML is renamed now that every weekly run reads the built in matrix, F155",none,none,question,waiting for Bader,none,none,2026-10-14
+Q167,"whether a test with no tolerance or a file with no units is still skipped now that the XML tolerance is never used, F155",none,none,question,waiting for Bader,none,none,2026-10-14
+Q168,"whether a test saved in the NWF that the built in matrix does not name is run too, F155",none,none,question,waiting for Bader,none,none,2026-10-14

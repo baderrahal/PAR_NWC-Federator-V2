@@ -84,7 +84,7 @@ namespace Federator.Core.Coverage
         public int HeldByNeither { get; private set; }
 
         /// <summary>
-        /// The tests Clash Detective holds that the picked file does not name, each name once across the
+        /// The tests Clash Detective holds that the clash matrix does not name, each name once across the
         /// groups as Q127 A counts every other test, so one old test in the NWFs of 46 groups is one. Never
         /// compared, since the workbook carries a block for the file's tests only, and said so.
         /// </summary>
@@ -129,7 +129,7 @@ namespace Federator.Core.Coverage
 
         /// <summary>
         /// One group's tests, rolled in, FR-176 and Q127 answered A: the RESULT block counts the
-        /// tests of the picked file once across the run by name, and the sums over the groups
+        /// tests of the clash matrix once across the run by name, and the sums over the groups
         /// beside them. Counted apart from the check, so a group whose check could not be
         /// made still counts its tests.
         /// </summary>
@@ -287,7 +287,7 @@ namespace Federator.Core.Coverage
             if (NotInTheXml > 0)
             {
                 lines.Add("COVERAGE not named    : " + Words.Counted(NotInTheXml, "test", "tests")
-                    + " in Clash Detective that the picked file does not name"
+                    + " in Clash Detective that the clash matrix does not name"
                     + (notNamedPlaces != NotInTheXml
                         ? " (each name once here, " + notNamedPlaces + " places over the groups)"
                         : string.Empty)

@@ -54,7 +54,7 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// Every present set compared with what the picked file asks, Q72, and whether this
+        /// Every present set compared with what the clash matrix asks, Q72, and whether this
         /// run rebuilt it. One whose question differs is kept as drifted, one whose search
         /// could not be read as not read, FR-021, and one asking what the file asks is not
         /// kept. Apart from the results list because a drifted set is still a present set and
@@ -88,7 +88,7 @@ namespace Federator.Core.Sets
 
             rebuiltCount++;
 
-            // F115 R19. A set replaced from the picked file is read back against the file, and one
+            // F115 R19. A set replaced from the clash matrix is read back against the file, and one
             // that still asks another question, or could not be found or read again, is said as a
             // rebuild that did not take or is UNKNOWN. It was counted rebuilt on every run.
             if (!Took(readBack))
@@ -98,7 +98,7 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// Whether a rebuilt set read back off the document asks what the picked file asks, the one
+        /// Whether a rebuilt set read back off the document asks what the clash matrix asks, the one
         /// rule for a rebuild that took. Not where it could not be found again, not where its search
         /// would not read, and not where it still asks another question.
         /// </summary>
@@ -107,7 +107,7 @@ namespace Federator.Core.Sets
             return readBack != null && !readBack.CouldNotRead && !readBack.Drifted;
         }
 
-        /// <summary>The rebuilt sets that were not read back asking what the picked file asks, F115 R19.</summary>
+        /// <summary>The rebuilt sets that were not read back asking what the clash matrix asks, F115 R19.</summary>
         public ReadOnlyCollection<SetDrift> RebuiltNotTaken
         {
             get { return new ReadOnlyCollection<SetDrift>(rebuiltNotTaken); }
@@ -177,7 +177,7 @@ namespace Federator.Core.Sets
         }
 
         /// <summary>
-        /// Every set the picked file no longer names, and whether this run acted on it.
+        /// Every set the clash matrix no longer names, and whether this run acted on it.
         /// Q74. Kept apart from the results list because a leftover is not a set this run
         /// built, and the log line for one says what pointed at it before anything moved.
         /// </summary>
@@ -228,7 +228,7 @@ namespace Federator.Core.Sets
             LeftoversUntouched++;
         }
 
-        /// <summary>The sets the picked file no longer names.</summary>
+        /// <summary>The sets the clash matrix no longer names.</summary>
         public ReadOnlyCollection<LeftoverSet> Leftovers
         {
             get { return new ReadOnlyCollection<LeftoverSet>(leftovers); }
@@ -240,7 +240,7 @@ namespace Federator.Core.Sets
             get { return actedOnLeftovers; }
         }
 
-        /// <summary>Sets whose question no longer matches the picked file.</summary>
+        /// <summary>Sets whose question no longer matches the clash matrix.</summary>
         public ReadOnlyCollection<SetDrift> Drifted
         {
             get { return new ReadOnlyCollection<SetDrift>(drifted); }
@@ -248,7 +248,7 @@ namespace Federator.Core.Sets
 
         /// <summary>
         /// Why a merge may not rest on the set at that path, or null where this build created
-        /// it from the picked file. The mirrored tests' one merge rule reads it, F132 attempt
+        /// it from the clash matrix. The mirrored tests' one merge rule reads it, F132 attempt
         /// 13, Bader's answer A to Q142, and fails closed, so that no merge rests on a set this
         /// tool did not make: a set the drift check found drifted, rebuilt or not, a set already
         /// in the document whatever the drift check read of it, since that check reads each
@@ -263,7 +263,7 @@ namespace Federator.Core.Sets
             {
                 if (string.Equals(drift.Path, path, StringComparison.Ordinal))
                 {
-                    return "was found by the SET DRIFT check asking another question than the picked XML";
+                    return "was found by the SET DRIFT check asking another question than the clash matrix";
                 }
             }
 
@@ -283,8 +283,8 @@ namespace Federator.Core.Sets
 
                 if (result.Present)
                 {
-                    return "was already in the document and not created by this run, so whether it asks what the picked "
-                        + "XML asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags "
+                    return "was already in the document and not created by this run, so whether it asks what the clash "
+                        + "matrix asks is UNKNOWN, the set drift check reading each condition's values and not a set's flags "
                         + "or search";
                 }
 
@@ -416,7 +416,7 @@ namespace Federator.Core.Sets
 
         /// <summary>
         /// True when this build changed the document: a set created, a drifted set rebuilt
-        /// from the picked file, FR-020, or a set the file no longer names removed or renamed.
+        /// from the clash matrix, FR-020, or a set the file no longer names removed or renamed.
         /// That is what decides whether the NWF is saved again after the sets. A set already
         /// there and left alone put nothing in, so it does not count either way: a rerun that
         /// finds sixty present and creates one still put one in. A rebuild was left out, so
@@ -604,7 +604,7 @@ namespace Federator.Core.Sets
                 + CreatedCount + " created, "
                 + AlreadyPresentCount + " already there"
                 + (RebuiltCount > 0
-                    ? ", " + RebuiltCount + " of them rebuilt from the picked file and "
+                    ? ", " + RebuiltCount + " of them rebuilt from the clash matrix and "
                         + (AlreadyPresentCount - RebuiltCount) + " left alone"
                     : " and left alone")
                 + (RebuiltNotTaken.Count > 0
@@ -745,7 +745,7 @@ namespace Federator.Core.Sets
                 // to be left alone in the window.
                 lines.Add("already there     : " + AlreadyPresentCount
                     + (RebuiltCount > 0
-                        ? ", " + RebuiltCount + " of them rebuilt from the picked file and "
+                        ? ", " + RebuiltCount + " of them rebuilt from the clash matrix and "
                             + (AlreadyPresentCount - RebuiltCount) + " left alone, not copied again"
                         : ", left alone, not copied again"));
 
@@ -768,7 +768,7 @@ namespace Federator.Core.Sets
                 // asks, so all this block could say was that a set finding nothing MAY be
                 // asking an old question. It is read now, so the count is said instead.
                 lines.Add("      a set already in the NWF keeps the conditions it was built with, so a value");
-                lines.Add("      corrected in the picked file since then does not reach it on its own. Q72");
+                lines.Add("      corrected in the clash matrix since then does not reach it on its own. Q72");
 
                 // FR-021. A set whose search could not be read is not one that asks what the
                 // file asks, so the claim that every set does is made only where all were read.
@@ -794,7 +794,7 @@ namespace Federator.Core.Sets
                 else
                 {
                     lines.Add("      " + Drifted.Count + " of them DRIFTED and " + RebuiltCount
-                        + " were REBUILT from the picked file. The clash tests");
+                        + " were REBUILT from the clash matrix. The clash tests");
                     lines.Add("      pointing at a rebuilt set keep their results and their statuses, measured 5v");
 
                     if (NotRebuiltCount > 0)
