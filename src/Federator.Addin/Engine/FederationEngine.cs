@@ -3380,8 +3380,7 @@ namespace Federator.Addin.Engine
                             + "\" is not one this tool creates, every test using it is skipped by name");
                     }
 
-                    log.Line("CLASH    " + job.Building + ", " + plan.TestsInFile + " in the file, "
-                        + plan.Buildable.Count + " to create, " + plan.Skipped.Count + " skipped before the model");
+                    log.Line(plan.PlanLine(job.Building));
                 }
                 else
                 {
@@ -3397,8 +3396,7 @@ namespace Federator.Addin.Engine
                             + " is not one this tool runs, every test with it is skipped by name");
                     }
 
-                    log.Line("CLASH    " + job.Building + ", " + plan.TestsInFile + " saved in the document, "
-                        + plan.Buildable.Count + " to run, " + plan.Skipped.Count + " skipped before the model");
+                    log.Line(plan.PlanLine(job.Building));
                 }
 
                 ClashRunner runner = new ClashRunner(Tick, log, guard);
@@ -3552,7 +3550,7 @@ namespace Federator.Addin.Engine
                 // not a group that found none, and the RESULT block lists it on its own.
                 if (!runner.ClashSkippedOffCoordinates)
                 {
-                    log.ClashesFound.Add(job.Building, clash.TotalClashes, clash.WithClashesCount);
+                    log.ClashesFound.Add(job.Building, clash.TotalClashes, clash.RanCount, clash.WithClashesCount);
                 }
 
                 // 3b, the block his own report made urgent. A set that finds nothing is
@@ -3640,6 +3638,9 @@ namespace Federator.Addin.Engine
                         log.Line(line);
                     }
 
+                    // FR-059. Added to the run's pictures as they are said, so RESULT counts
+                    // the pictures beside the files it lists.
+                    log.PicturesAcrossTheRun.Add(outcome.Report.Images);
                     log.Line(runner.Images.Seconds.Line());
                 }
 

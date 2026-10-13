@@ -96,6 +96,29 @@ namespace Federator.Core.Clash
             get { return buildable.Count > 0; }
         }
 
+        /// <summary>
+        /// The first CLASH line of a group, FR-058. It is written before the sets are counted,
+        /// so for a picked file it cannot know how many tests are created: set 03 read 1830 to
+        /// create here and 36 created eight lines on, two counts of one thing. It says how many
+        /// passed the file's own checks and where the count of those created is said, the line
+        /// of Federator.Core.Clash.CreationPlan. With no file the saved tests are the plan and
+        /// every one is run where it sits, so that count is the one to say.
+        /// </summary>
+        public string PlanLine(string group)
+        {
+            string name = string.IsNullOrEmpty(group) ? "UNKNOWN" : group;
+
+            if (Source == ClashPlanSource.Document)
+            {
+                return "CLASH    " + name + ", " + TestsInFile + " saved in the document, "
+                    + buildable.Count + " to run, " + skipped.Count + " skipped before the model";
+            }
+
+            return "CLASH    " + name + ", " + TestsInFile + " in the file, " + skipped.Count
+                + " skipped before the model, " + buildable.Count
+                + " left, how many of them are created is said once the sets are counted";
+        }
+
         /// <summary>The test type strings this tool creates, for a message that lists them.</summary>
         public static IList<string> KnownTestTypeNames()
         {

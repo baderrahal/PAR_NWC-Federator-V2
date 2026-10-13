@@ -2,6 +2,78 @@
 
 Newest entry at the top.
 
+## 2026-10-13 F123 wave 5, FR-058, FR-059, FR-060, FR-062, FR-063, FR-167 and FR-169, written by the developer as the lead's delegate
+
+Branch fix-F123b off main 402a8155, Bader's order of 2026-10-12 headed BADER SAYS GO, item 7: waves 3, 4 and 5,
+only rows that change what the team sees, under his Q143 limits. Nine rows of area F123, the lines the team reads in
+the log, the RESULT block and the window, on one branch and one pull request. Each row's evidence in
+steps\fix-round.md was read again against main, since the lines had moved, and each held. Seven are fixed and two are
+left open. Line numbers below are main's at 402a8155.
+
+What was done:
+- FR-058, the first CLASH line of a group saying every test was to be created. FederationEngine.cs lines 3383 and
+  3384 wrote the plan's buildable count as to create before the creation plan counted the sides, so set 03 read 1830
+  to create and 36 created eight lines on. The sentence is Core's now, ClashTestPlan.PlanLine: for a picked file it
+  says how many are left after the file's own checks and that how many are created is said once the sets are
+  counted, and with no XML the saved tests to run, as before. The engine writes it at both places
+- FR-059, RESULT saying 88 files written and nothing of 5679 pictures. A picture is counted in its group's
+  ImageTally, ClashImages.cs line 239, and never on the written list, RunLog.cs line 2393. RunLog.PicturesAcrossTheRun
+  adds every group's tally, the engine adding it where it writes the IMAGES lines, which gives ImageTally.Add its
+  first caller in src, and RESULT says the count and the MB straight above files written, from the sizes the writer
+  read back, and that the logo copies and the copy of the log are on neither line. The pictures are not listed
+- FR-060, RESULT counting a group that ran no test under found none. ClashesAcrossTheRun.Add, lines 30 to 35, took
+  no count of tests run. It takes ClashRunOutcome.RanCount now, and a group at zero clashes that ran none reads of
+  which ran no test, its row no test ran. Found none is kept for a group that ran a test
+- FR-062, the UNITS line naming a unit the second read never gave. DocumentUnits.cs lines 118 to 127 kept the units
+  read before in a catch that wrote nothing, and lines 129 to 132 said the document shows them. The three UNITS lines
+  are Core's now, Federator.Core.Units.UnitsLines, and where the second read gave nothing the line says the units
+  could not be read again, that what the document shows now is UNKNOWN, and what it showed before. The catch is a
+  failure line. DocumentUnits.Short and Name, with no caller left, went
+- FR-063, the TOLERANCE line saying read per test out of the XML on a run with no XML. ToleranceChoice.LogLine,
+  lines 270 to 285, took no plan source. It takes the plan's, ClashRunner.cs line 1643 handing RunPlan.Source, and
+  with no XML says the tolerance is the one each saved test holds and a chosen value beats the document alone
+- FR-167, SHARED SOURCE counting groups and not building codes. SourceMismatchFindings.cs lines 240 to 242 grouped
+  by the group key, so per building and discipline every building with two disciplines read as split by a naming
+  error, and lines 209 and 210 said the federation will be called the NWC's building code. SHARED SOURCE counts the
+  building codes on the NWC names now, the row's second way, which needs no add-in change and also sees two codes
+  in one group per discipline, and the mismatch says the tool reads the building code off the NWC file name. The
+  unused Comparison.GroupBuilding and Comparison.Pair went
+- FR-169, the warning before a clear calling a document whose name would not read unsaved. DocumentGuard.cs lines
+  79 to 82 returned null from a catch and lines 52 to 55 then said the current unsaved document. The words are Core's
+  now, Federator.Core.Rerun.DiscardWarning, which says a file name or a model count that would not read with the
+  reason the read gave and never calls such a document unsaved. DocumentGuard hands each read and its reason to it,
+  and the IsClear line carries its reason too
+- The rules in .claude\rules\core.md and addin.md, the section in steps\01_next.md, steps 1200 to 1244 of
+  steps\03_bader_next.md, the seven rows of steps\tracker.csv in review and the F123 area row naming them
+- Proved here: Core tests 3065 passed, 0 failed, 0 skipped on main 402a8155. Twenty four new tests run first against
+  the new members written with the old behaviour, 15 failed and 9 passed, the 9 guards of what the fix keeps,
+  %LOCALAPPDATA%\NwcFederatorLoop\turn6\f123b-failing-first.txt with the run's whole output in
+  f123b-failing-first.raw.txt, and a twenty fifth, a read that threw with no message, came with the fix. After the
+  fix 3090 passed, 0 failed, 0 skipped. The older calls of ClashesAcrossTheRun.Add and LogLine take the tests run and
+  the plan source their new signatures ask for, every assertion kept. Two older assertions of
+  SourceMismatchFindingsTests read the new words, 3 NWC building codes where they read 3 federations, the number
+  kept, and the sentence saying which name the tool reads, since the old words are the ones FR-167 names wrong. The
+  solution builds in Release with 0 warnings and 0 errors before and after, the add-in included. check-locals and
+  check-imports read clean. make-tracker and check-tracker read clean
+
+What remains:
+- FR-128, left open: its fix needs a measurement nobody has made, whether TestsEditTestFromCopy from a fresh
+  ClashTest keeps a saved test's results and statuses, which the row asks for before any wording, since 5y measured
+  TestsReplaceWithCopy with the tolerance changed alone
+- FR-170, left open: nothing a person reads or receives changes today. The unknown unit branch cannot be reached on
+  2025, since UnitTable carries all eleven units, and set 03 read size could not be read : 0 in all 22 groups, so
+  what is left is a comment and a catch that logs nothing for a property throw nobody has seen
+
+What waits for the local machine: steps 1200 to 1244 of steps\03_bader_next.md, one run of 1A02MM with the XML, the
+same with no XML, one run per building and discipline, and the warning with the NWF open. The UNITS line after a
+second read that throws and the warning after a file name that throws cannot be made to happen by hand, so those
+two are proved by Core alone. Nothing of it has run on Navisworks.
+
+Known bugs: The pictures line counts the pictures the writer saw arrive, so a picture a later step removes or
+renames, as none does since F149, would still be counted. Whether Document.Units or the file name ever throws is
+UNKNOWN, the notes of FR-062 and FR-169.
+
+What comes next: the lead's reviewer and breaker, the merge, then the run of steps 1200 to 1244.
 ## 2026-10-13 F114d the views, rows F114-K32, K34, K36 and R1, written by the developer as the lead's delegate
 
 Branch fix-F114d off main 402a8155, worktree %LOCALAPPDATA%\NwcFederatorLoop\wt-f114d, Bader's order of 2026-10-12

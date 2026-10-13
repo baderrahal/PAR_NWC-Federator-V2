@@ -216,7 +216,7 @@ namespace Federator.Core.Tests
         [Test]
         public void TheChosenLineSaysWhatItBeatAndBothCounts()
         {
-            string line = ToleranceChoice.Of(25.0).LogLine(211, Saved(SavedTestTolerance.Set, 1619), "ft");
+            string line = ToleranceChoice.Of(25.0).LogLine(ClashPlanSource.ExchangeFile, 211, Saved(SavedTestTolerance.Set, 1619), "ft");
 
             Assert.That(line, Does.StartWith("TOLERANCE 25 mm chosen in the tool"));
             Assert.That(line, Does.Contain("beats both the XML and the document"));
@@ -232,11 +232,40 @@ namespace Federator.Core.Tests
         public void TheDefaultLineSaysTheDocumentWasLeftAlone()
         {
             string line = ToleranceChoice.FromTheFile()
-                .LogLine(211, Saved(SavedTestTolerance.LeftAsTheDocumentHasIt, 1619), "ft");
+                .LogLine(ClashPlanSource.ExchangeFile, 211, Saved(SavedTestTolerance.LeftAsTheDocumentHasIt, 1619), "ft");
 
             Assert.That(line, Does.Contain("read per test out of the XML"));
             Assert.That(line, Does.Contain("1619 left as the document has them"));
             Assert.That(line, Does.Not.Contain("beats"));
+        }
+
+        /// <summary>
+        /// FR-063. With no XML picked the saved tests are the plan and every tolerance is the
+        /// one the document holds, so a line saying it was read per test out of the XML is
+        /// false on every group of that run.
+        /// </summary>
+        [Test]
+        public void TheDefaultLineOfARunWithNoXmlDoesNotSayTheXmlWasRead()
+        {
+            string line = ToleranceChoice.FromTheFile()
+                .LogLine(ClashPlanSource.Document, 0, Saved(SavedTestTolerance.LeftAsTheDocumentHasIt, 1830), "ft");
+
+            Assert.That(line, Does.Not.Contain("read per test out of the XML"));
+            Assert.That(line, Does.Not.Contain("XML"), "no XML was picked, so none was read and none is beaten");
+            Assert.That(line, Does.StartWith("TOLERANCE as each test saved in the document holds it"));
+            Assert.That(line, Does.Contain("1830 left as the document has them"));
+        }
+
+        /// <summary>FR-063. A value chosen on a run with no XML beats the document alone.</summary>
+        [Test]
+        public void TheChosenLineOfARunWithNoXmlDoesNotSayItBeatTheXml()
+        {
+            string line = ToleranceChoice.Of(25.0)
+                .LogLine(ClashPlanSource.Document, 0, Saved(SavedTestTolerance.Set, 1830), "ft");
+
+            Assert.That(line, Does.Not.Contain("XML"));
+            Assert.That(line, Does.Contain("chosen in the tool, so it beats the document"));
+            Assert.That(line, Does.Contain("Set on 1830 tests"));
         }
 
         /// <summary>
@@ -256,7 +285,7 @@ namespace Federator.Core.Tests
             saved.Record(SavedTestTolerance.WouldNotCopy);
             saved.Record(SavedTestTolerance.Threw);
 
-            string line = ToleranceChoice.Of(25.0).LogLine(10, saved, "ft");
+            string line = ToleranceChoice.Of(25.0).LogLine(ClashPlanSource.ExchangeFile, 10, saved, "ft");
 
             Assert.That(line, Does.Contain("Set on 12 tests, 10 created fresh and 2 already in the document"));
             Assert.That(line, Does.Contain("Not set on 6 saved tests"));
@@ -271,7 +300,7 @@ namespace Federator.Core.Tests
         [Test]
         public void ASavedTestNeverFoundIsNotCountedAsSet()
         {
-            string line = ToleranceChoice.Of(25.0).LogLine(10, Saved(SavedTestTolerance.NotFound, 4), "ft");
+            string line = ToleranceChoice.Of(25.0).LogLine(ClashPlanSource.ExchangeFile, 10, Saved(SavedTestTolerance.NotFound, 4), "ft");
 
             Assert.That(line, Does.Contain("Set on 10 tests, 10 created fresh and 0 already in the document"));
             Assert.That(line, Does.Contain("Not set on 4 saved tests: 4 not found"));
@@ -297,7 +326,7 @@ namespace Federator.Core.Tests
         [Test]
         public void AUnitTheTableDoesNotKnowStillWritesALine()
         {
-            string line = ToleranceChoice.Of(25.0).LogLine(1, new SavedTestTolerances(), "furlongs");
+            string line = ToleranceChoice.Of(25.0).LogLine(ClashPlanSource.ExchangeFile, 1, new SavedTestTolerances(), "furlongs");
 
             Assert.That(line, Does.Contain("UNKNOWN"));
             Assert.That(line, Does.Contain("furlongs"));

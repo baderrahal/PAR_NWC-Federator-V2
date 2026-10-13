@@ -1853,6 +1853,56 @@ Everything runs on copies in two new folders on the desktop, so no NWF of the re
 1157. Look for: the tool's window closes with no message
 1158. Send the log of steps 1105 to 1157, named on its `log file` line
 
+## Proof F123b the log lines, the RESULT block and the warning before a clear, FR-058, FR-059, FR-060, FR-062, FR-063, FR-167 and FR-169, added 2026-10-13
+
+Everything runs on copies in two new folders on the desktop, so no NWF of the real folders is changed. One run of 1A02MM with the clash XML, the same again with no XML, then one run with the XML per building and discipline, then the warning with the NWF open. The UNITS line after a read that throws and the warning after a file name that throws cannot be made to happen by hand, so steps 1218 and 1242 read the ordinary lines, which Core now writes.
+
+1200. Install main once fix-F123b has merged, steps 7 to 12
+1201. In Explorer make a new folder on the desktop named `F123b source`
+1202. Copy the NWC files of 1A02MM from `C:\00-NM\Federation Task\C02 + 04\C02` into `F123b source`
+1203. Make a second new folder on the desktop named `F123b out`
+1204. Start Navisworks and open the tool
+1205. On 1. Source pick `F123b source`
+1206. Press Scan
+1207. On 3. Outputs pick `F123b out` for the NWF folder
+1208. Pick `F123b out` for the NWD folder
+1209. Pick `F123b out` for the Excel folder
+1210. On 4. Clash pick the clash XML `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` of the repo
+1211. Untick `Make saved viewpoints for the clashes`
+1212. Untick `Skip clash when models sit off shared coordinates`
+1213. Press Run
+1214. Press OK on the confirm
+1215. Wait for the run to finish
+1216. Look for, in the log: the first CLASH line of 1A02MM reading `CLASH    1A02MM, N in the file, S skipped before the model, B left, how many of them are created is said once the sets are counted`, where before this fix it read `B to create`
+1217. Look for, a few lines on: `CLASH N in the file, C created, M not created, a side finds nothing`, the one count of the tests created
+1218. Look for: the UNITS line of 1A02MM reading `the document is already in Meters (m)` or naming the models set and ending `so the report is metric whatever this says.`
+1219. Look for: the TOLERANCE line of 1A02MM saying `read per test out of the XML`, which is right on a run with an XML
+1220. Look for, in the RESULT block: a line `pictures       : N written beside the files listed below, X MB, every size read back off the disk` straight above `files written`, where before this fix no line counted the pictures
+1221. Look for: N on that line the same as the number on the `IMAGES` line of 1A02MM
+1222. On 4. Clash clear the Clash XML box
+1223. Press Run
+1224. Press OK on the confirm
+1225. Wait for the run to finish
+1226. Look for: the TOLERANCE line of 1A02MM starting `TOLERANCE as each test saved in the document holds it, since no file of clash tests was picked`, where before this fix it said `read per test out of the XML`
+1227. Look for: the first CLASH line of 1A02MM reading `saved in the document` and `to run`
+1228. On 4. Clash pick the clash XML `exchange\1104-PAR_CLASH_AllInOne_25mm_FIXED.xml` of the repo again
+1229. On 2. Grouping set Make to `One file per building and discipline`
+1230. Look for: 1A02MM listed as one group per discipline
+1231. Press Run
+1232. Press OK on the confirm
+1233. Wait for the run to finish
+1234. Look for, in the `SOURCE FINDINGS` block: no `SHARED SOURCE` line naming the groups of 1A02MM, where before this fix a building split by discipline read as split by a naming error
+1235. Look for: every `SOURCE MISMATCH` line, where there is one, saying `This tool reads the building code off the NWC file name` and none saying `will be called`
+1236. Look for, on the `clashes found` line of the RESULT block: `of which ran no test` wherever a group's CLASH block read `tests run : 0`, where before this fix those groups were counted under `found none`
+1237. Look for: the row of each such group under it reading `no test ran`
+1238. On 2. Grouping set Make back to `One file per building`
+1239. In Explorer open the NWF of 1A02MM in `F123b out` in Navisworks
+1240. In the tool press Run
+1241. Look for: the confirm reading `This will be discarded without saving:`
+1242. Look for, under it: `The open file` with the full path of that NWF and `holding N models.`, as before this fix
+1243. Press Cancel
+1244. Send the log of steps 1204 to 1243, named on its `log file` line
+
 ## Proof F114d the open clashes of a mirror not merged, added 2026-10-13
 
 Core is proved by its tests and the add-in did not change. These steps read the VIEWS block

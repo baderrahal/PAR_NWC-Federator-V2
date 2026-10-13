@@ -1,6 +1,6 @@
 using System;
-using System.Text;
 using Autodesk.Navisworks.Api;
+using Federator.Core.Rerun;
 using NavisworksApplication = Autodesk.Navisworks.Api.Application;
 
 namespace Federator.Addin.Engine
@@ -8,12 +8,14 @@ namespace Federator.Addin.Engine
     /// <summary>
     /// Clearing the document throws away whatever the user has open. This works out what
     /// exactly would be lost so the warning can name it rather than saying "your work".
+    /// The words are Federator.Core.Rerun.DiscardWarning's, FR-169.
     /// </summary>
     public static class DocumentGuard
     {
         /// <summary>
         /// Null when there is nothing to lose. Otherwise the text of the warning, naming
-        /// the open file and how many models are loaded.
+        /// the open file and how many models are loaded. A read that throws is said in the
+        /// text with the reason it gave, FR-169, never read as no name or no model.
         /// </summary>
         public static string WhatClearWouldDiscard()
         {
@@ -30,11 +32,11 @@ namespace Federator.Addin.Engine
             {
                 clear = document.IsClear;
             }
-            catch (Exception)
+            catch (Exception error)
             {
                 // If the state cannot be read, warn rather than assume there is nothing
                 // to lose.
-                return "Navisworks would not say whether anything is open.";
+                return "Navisworks would not say whether anything is open (" + error.Message + ").";
             }
 
             if (clear)
@@ -42,31 +44,18 @@ namespace Federator.Addin.Engine
                 return null;
             }
 
-            StringBuilder what = new StringBuilder();
-            string fileName = SafeFileName(document);
+            string whyNameUnread;
+            string fileName = FileName(document, out whyNameUnread);
+            string whyModelsUnread;
+            int models = ModelCount(document, out whyModelsUnread);
 
-            if (!string.IsNullOrEmpty(fileName))
-            {
-                what.Append("The open file ").Append(fileName);
-            }
-            else
-            {
-                what.Append("The current unsaved document");
-            }
-
-            int models = SafeModelCount(document);
-
-            if (models > 0)
-            {
-                what.Append(", holding ").Append(models).Append(models == 1 ? " model" : " models");
-            }
-
-            what.Append('.');
-            return what.ToString();
+            return DiscardWarning.For(fileName, whyNameUnread, models, whyModelsUnread);
         }
 
-        private static string SafeFileName(Document document)
+        private static string FileName(Document document, out string whyUnread)
         {
+            whyUnread = null;
+
             try
             {
                 if (!string.IsNullOrEmpty(document.CurrentFileName))
@@ -76,20 +65,24 @@ namespace Federator.Addin.Engine
 
                 return document.FileName;
             }
-            catch (Exception)
+            catch (Exception error)
             {
+                whyUnread = error.Message ?? string.Empty;
                 return null;
             }
         }
 
-        private static int SafeModelCount(Document document)
+        private static int ModelCount(Document document, out string whyUnread)
         {
+            whyUnread = null;
+
             try
             {
                 return document.Models == null ? 0 : document.Models.Count;
             }
-            catch (Exception)
+            catch (Exception error)
             {
+                whyUnread = error.Message ?? string.Empty;
                 return 0;
             }
         }

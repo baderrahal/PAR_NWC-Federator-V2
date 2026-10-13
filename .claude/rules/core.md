@@ -579,7 +579,11 @@ and 6 does not read as broken.
   a real test out of the NWF over a number nobody took. One counted line,
   `CLASH 1830 in the file, 211 created, 1619 not created, a side finds nothing`, and which
   tests they were is said by the ordinary skip block, a count and five examples, where
-  every other skip reason is already said. THE WORKBOOK STILL CARRIES A BLOCK FOR EVERY
+  every other skip reason is already said. The group's first CLASH line,
+  `ClashTestPlan.PlanLine`, is written before the sides are counted, so for a picked file it
+  never says how many are to be created, only how many are left after the file's own
+  checks and that the count created is said once the sets are counted, FR-058. It read
+  1830 to create eight lines above 36 created on set 03. THE WORKBOOK STILL CARRIES A BLOCK FOR EVERY
   TEST IN THE FILE. Not creating a test changes what goes in the DOCUMENT and never what
   goes in the report, because the client's report is the whole matrix and a test missing
   from it reads as a test nobody ran rather than as a test that could not clash
@@ -859,8 +863,13 @@ and 6 does not read as broken.
 - The Revit container inside an NWC is often a different building from the NWC.
   Where the building code parsed from the NWC name differs from the code in the
   Revit source name, report SOURCE MISMATCH naming both, and where one Revit
-  building code feeds more than one group, report SHARED SOURCE, because that means
-  one building has been split in two by a naming error. Both codes are read with the
+  building code was published under more than one NWC building code, report SHARED
+  SOURCE, because that means one building has been split in two by a naming error.
+  SHARED SOURCE counts the building codes on the NWC names and never the groups, FR-167,
+  since the group is the grouping a person chose: per building and discipline one
+  building is several groups by choice, and per discipline several codes share a group.
+  Neither finding says what the federation will be called, which only per building is
+  the code. Both codes are read with the
   same parser used on the NWC names, never a separate rule. This is information. It
   does not block, unpick or merge anything. Bader decides
 - When tests skip for the same reason, log the count and at most five examples, then
@@ -933,7 +942,10 @@ and 6 does not read as broken.
   the converted value. Under Set on a saved test counts only where its tolerance was
   changed, FR-053, and every other saved test is named on the same line by what happened
   to it, already at the value, not found, would not copy as a clash test or threw,
-  `SavedTestTolerances`, recorded once per test whichever way it left. Why it exists: the matrix is written at 25 mm, the NWFs on disk
+  `SavedTestTolerances`, recorded once per test whichever way it left. The line is told the
+  plan's source, FR-063: with no XML picked it says the tolerance is the one each saved test
+  holds and a chosen value beats the document alone, and never that an XML was read or
+  beaten. Why it exists: the matrix is written at 25 mm, the NWFs on disk
   held tests at 75 mm, a test already in the document is left exactly as it is, so the
   run clashed at 75 while everybody believed it was clashing at 25
 - THE REPORT READS ITS TOLERANCE OFF THE CLASH TEST IN THE DOCUMENT, F76, because the
@@ -1000,8 +1012,8 @@ and 6 does not read as broken.
   the same way and never what they threw
 - Findings are written in the words a person would say, never in the words the tool
   thinks in. A shape is described by naming a real code that has it, not by printing
-  9A99AA. A shared Revit source says two federations are being built from one Revit
-  building, names both, and says that usually means one NWC file name is wrong. The
+  9A99AA. A shared Revit source says two NWC building codes were published from one Revit
+  building, names both, and says that usually means one NWC file name is wrong, FR-167. The
   short code stays as its own column so it can still be sorted on
 - A group holding fewer than two disciplines cannot clash with anything, whatever the
   test list says, because every clash test is one discipline against another. One NWC is
@@ -1179,6 +1191,22 @@ and 6 does not read as broken.
   them as its own, and a file that was checked rather than written is logged with
   CheckOnDisk, which reports the size and records nothing. A file this run removed
   leaves the list through WriteRemoved, and only once it is gone from the disk
+- THE PICTURES ARE COUNTED BESIDE THE FILES WRITTEN AND NEVER LISTED, FR-059. Each group's
+  `ImageTally` is added to `RunLog.PicturesAcrossTheRun` as its IMAGES lines are written, and
+  RESULT says the count and the MB straight above files written, from sizes the writer read
+  back off the disk, and that the logo copies and the copy of the log are on neither line.
+  Set 03 said 88 files written and left out 5679 pictures, 1376 MB
+- THE CLASH TOTAL COUNTS A GROUP THAT RAN NO TEST APART, FR-060. `ClashesAcrossTheRun.Add`
+  takes the tests run, and a group at zero clashes that ran none reads `of which ran no test`
+  and its row `no test ran`, never `found none`, which is kept for a group that ran a test.
+  Set 03 counted six one discipline groups, every block reading tests run : 0, as found none
+- THE UNITS LINES ARE CORE'S, `Federator.Core.Units.UnitsLines`, FR-062. Where the document's
+  units would not read again after the models were set, the read is a failure line and the
+  UNITS line names no unit as what the document shows, says UNKNOWN and names the units read
+  before as that, since whether the document follows its models is UNKNOWN
+- THE WARNING BEFORE A CLEAR IS CORE'S, `Federator.Core.Rerun.DiscardWarning`, FR-169. A file
+  name or a model count that would not read is said with the reason the read gave, and a
+  document whose name would not read is never called the current unsaved document
 - A WRITE WHOSE OWN CALL SAYS WHETHER IT WROTE HANDS THAT TO THE LOG, FR-189 and FR-044.
   The save of the NWF and the publish of the NWD call `RunLog.WriteFinished` with the bool
   the call gave, false where it threw. A file there after a call that did not report

@@ -68,7 +68,7 @@ namespace Federator.Core.Tests
             log.GroupFinished(tag + "B", GroupOutcome.Failed, 0.5, tag + " group reason", null);
             log.Failure(tag + " failing step", new InvalidOperationException(tag + " boom"), "went on");
             log.WriteFinished("NWF", AFile(tag + ".nwf"));
-            log.ClashesFound.Add(tag + "A", 10, 3);
+            log.ClashesFound.Add(tag + "A", 10, 1830, 3);
             log.PenetrationsWanted = true;
             log.PenetrationsMoved = 4;
             log.PenetrationsAcrossTheRun.Add(tag + "A", 4, 9);
@@ -125,7 +125,7 @@ namespace Federator.Core.Tests
                 log.RunStarted(1);
                 log.GroupStarted("SECONDA", new string[0]);
                 log.GroupFinished("SECONDA", GroupOutcome.Done, 2.0, null, null);
-                log.ClashesFound.Add("SECONDA", 2, 1);
+                log.ClashesFound.Add("SECONDA", 2, 1830, 1);
                 log.WriteFinished("NWD", AFile("SECOND.nwd"));
                 log.RunFinished();
                 log.WriteResultBlock();
@@ -336,12 +336,12 @@ namespace Federator.Core.Tests
             using (RunLog log = RunLog.Start(folder, Started))
             {
                 log.GroupFinished("OPENFILEA", GroupOutcome.Done, 1.0, null, null);
-                log.ClashesFound.Add("OPENFILEA", 7, 2);
+                log.ClashesFound.Add("OPENFILEA", 7, 1830, 2);
                 log.WriteFinished("NWD", AFile("A.nwd"));
                 log.WriteResultBlock();
 
                 log.GroupFinished("OPENFILEB", GroupOutcome.Done, 1.0, null, null);
-                log.ClashesFound.Add("OPENFILEB", 3, 1);
+                log.ClashesFound.Add("OPENFILEB", 3, 1830, 1);
                 log.WriteFinished("NWD", AFile("B.nwd"));
                 log.WriteResultBlock();
 

@@ -22,9 +22,9 @@ namespace Federator.Core.Tests.Clash
         public void TheTotalIsEveryGroupAddedUp()
         {
             ClashesAcrossTheRun run = new ClashesAcrossTheRun();
-            run.Add("1A02BS", 109, 11);
-            run.Add("1A02MM", 542, 57);
-            run.Add("1A02WE", 29, 14);
+            run.Add("1A02BS", 109, 1830, 11);
+            run.Add("1A02MM", 542, 1830, 57);
+            run.Add("1A02WE", 29, 1830, 14);
 
             Assert.That(run.Groups, Is.EqualTo(3));
             Assert.That(run.Total, Is.EqualTo(680));
@@ -34,8 +34,8 @@ namespace Federator.Core.Tests.Clash
         public void TheLineNamesTheTotalAndEveryGroupUnderIt()
         {
             ClashesAcrossTheRun run = new ClashesAcrossTheRun();
-            run.Add("1A02BS", 109, 11);
-            run.Add("1A02MM", 542, 57);
+            run.Add("1A02BS", 109, 1830, 11);
+            run.Add("1A02MM", 542, 1830, 57);
 
             string block = Joined(run.ResultLines());
 
@@ -53,9 +53,9 @@ namespace Federator.Core.Tests.Clash
         public void GroupsThatFoundNothingAreCountedApart()
         {
             ClashesAcrossTheRun run = new ClashesAcrossTheRun();
-            run.Add("1000BS", 0, 0);
-            run.Add("1A0215", 0, 0);
-            run.Add("1A02BS", 109, 11);
+            run.Add("1000BS", 0, 1830, 0);
+            run.Add("1A0215", 0, 1830, 0);
+            run.Add("1A02BS", 109, 1830, 11);
 
             Assert.That(run.GroupsThatFoundNothing, Is.EqualTo(2));
             Assert.That(Joined(run.ResultLines()), Does.Contain("2 of which found none"));
@@ -65,7 +65,7 @@ namespace Federator.Core.Tests.Clash
         public void ARunWhereEveryGroupFoundSomethingSaysNothingAboutGroupsAtZero()
         {
             ClashesAcrossTheRun run = new ClashesAcrossTheRun();
-            run.Add("1A02BS", 109, 11);
+            run.Add("1A02BS", 109, 1830, 11);
 
             Assert.That(Joined(run.ResultLines()), Does.Not.Contain("found none"));
         }
@@ -80,7 +80,7 @@ namespace Federator.Core.Tests.Clash
         public void ARunThatFoundNoClashesAtAllStillSaysSo()
         {
             ClashesAcrossTheRun run = new ClashesAcrossTheRun();
-            run.Add("1000BS", 0, 0);
+            run.Add("1000BS", 0, 1830, 0);
 
             string block = Joined(run.ResultLines());
 
@@ -106,7 +106,7 @@ namespace Federator.Core.Tests.Clash
         public void AGroupWithNoNameIsSaidAsUnknownRatherThanBlank()
         {
             ClashesAcrossTheRun run = new ClashesAcrossTheRun();
-            run.Add(null, 5, 1);
+            run.Add(null, 5, 1830, 1);
 
             Assert.That(Joined(run.ResultLines()), Does.Contain("UNKNOWN"));
         }
@@ -116,10 +116,59 @@ namespace Federator.Core.Tests.Clash
         public void ANegativeCountIsReadAsZeroAndNeverSubtracted()
         {
             ClashesAcrossTheRun run = new ClashesAcrossTheRun();
-            run.Add("a", -4, -1);
-            run.Add("b", 10, 2);
+            run.Add("a", -4, 1830, -1);
+            run.Add("b", 10, 1830, 2);
 
             Assert.That(run.Total, Is.EqualTo(10));
+        }
+
+        // ---------- a group that ran no test, FR-060 ----------
+
+        // Set 03 log:8441 read 6 of which found none, and all six were one discipline groups
+        // whose blocks read tests run : 0. A group that ran no test found nothing because it
+        // looked at nothing, which is not a clean group, so it is counted apart.
+        [Test]
+        public void AGroupThatRanNoTestIsNotCountedAsFoundNone()
+        {
+            ClashesAcrossTheRun run = new ClashesAcrossTheRun();
+            run.Add("1A02BS", 109, 1830, 11);
+            run.Add("1000BS", 0, 0, 0);
+            run.Add("1A0215", 0, 0, 0);
+
+            string block = Joined(run.ResultLines());
+
+            Assert.That(block, Does.Contain("clashes found  : 109 across 3 groups, 2 of which ran no test"));
+            Assert.That(block, Does.Not.Contain("found none"),
+                "a group that ran no test reads like a clean group under found none");
+        }
+
+        // Both kinds in one run: each counted under its own words, none counted twice.
+        [Test]
+        public void FoundNoneAndRanNoTestAreCountedApartInOneRun()
+        {
+            ClashesAcrossTheRun run = new ClashesAcrossTheRun();
+            run.Add("1A02BS", 109, 1830, 11);
+            run.Add("1A02WE", 0, 1830, 0);
+            run.Add("1000BS", 0, 0, 0);
+
+            string block = Joined(run.ResultLines());
+
+            Assert.That(block, Does.Contain("across 3 groups, 1 of which found none, 1 of which ran no test"));
+        }
+
+        // The group's own row says it ran no test, where it read 0 from 0 test(s) that found
+        // something, set 03 log:8444.
+        [Test]
+        public void TheRowOfAGroupThatRanNoTestSaysSo()
+        {
+            ClashesAcrossTheRun run = new ClashesAcrossTheRun();
+            run.Add("1000BS", 0, 0, 0);
+
+            string block = Joined(run.ResultLines());
+
+            Assert.That(block, Does.Contain("1000BS"));
+            Assert.That(block, Does.Contain("no test ran"));
+            Assert.That(block, Does.Not.Contain("from 0 test(s) that found something"));
         }
     }
 }

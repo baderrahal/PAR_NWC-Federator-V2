@@ -593,5 +593,40 @@ namespace Federator.Core.Tests
                     reason + " has no words, so its count in the totals reads as nothing");
             }
         }
+
+        // ---------- the first CLASH line of a group, FR-058 ----------
+
+        // Set 03 log:289 read 1830 to create and log:297, eight lines on, 36 created. The
+        // first line is written before the sides are counted, so it cannot say how many are
+        // created and must not say a number that reads as that.
+        [Test]
+        public void TheFirstClashLineOfAPickedFileSaysNothingIsToBeCreatedYet()
+        {
+            ClashTestPlan plan = Plan(Xml());
+            string line = plan.PlanLine("100000");
+
+            Assert.That(line, Does.StartWith("CLASH    100000, 1 in the file, 0 skipped before the model"));
+            Assert.That(line, Does.Not.Contain("to create"),
+                "the creation plan has not run yet, so no count of tests to create is known");
+            Assert.That(line, Does.Contain("once the sets are counted"),
+                "the line names where the count of created tests is said");
+        }
+
+        // With no XML nothing is created, so the saved tests are the ones to run, and the
+        // line keeps saying so.
+        [Test]
+        public void TheFirstClashLineWithNoFileCountsTheSavedTestsToRun()
+        {
+            ClashTestPlan plan = MirrorRuleTests.SavedPlan("Saved one");
+
+            Assert.That(plan.PlanLine("1C07BC"),
+                Is.EqualTo("CLASH    1C07BC, 1 saved in the document, 1 to run, 0 skipped before the model"));
+        }
+
+        [Test]
+        public void TheFirstClashLineOfAGroupWithNoNameSaysUnknown()
+        {
+            Assert.That(Plan(Xml()).PlanLine(null), Does.StartWith("CLASH    UNKNOWN, "));
+        }
     }
 }

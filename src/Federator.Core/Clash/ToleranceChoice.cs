@@ -266,29 +266,40 @@ namespace Federator.Core.Clash
         /// find out what 25 mm was in a document measuring feet. Under Set on a saved test
         /// counts only where its tolerance was changed, FR-053, and every other saved test is
         /// named by what happened to it.
+        ///
+        /// FR-063. The source is the plan's: with no XML picked the saved tests are the plan,
+        /// so no tolerance was read out of an XML and none was beaten, and the line says the
+        /// tolerance is the one each saved test holds. It said read per test out of the XML on
+        /// every group of such a run.
         /// </summary>
-        public string LogLine(int created, SavedTestTolerances saved, string documentUnits)
+        public string LogLine(ClashPlanSource source, int created, SavedTestTolerances saved, string documentUnits)
         {
             if (saved == null)
             {
                 saved = new SavedTestTolerances();
             }
 
+            bool noXml = source == ClashPlanSource.Document;
+
             if (!chosen)
             {
                 int total = created + saved.Total;
 
-                return Prefix + " read per test out of the XML, which is what this tool does "
-                    + "unless a tolerance is chosen on the Clash step. " + total
-                    + Word(total, " test", " tests") + ", " + created + " created fresh and "
+                return Prefix + (noXml
+                        ? " as each test saved in the document holds it, since no file of clash tests "
+                            + "was picked and no tolerance was chosen on the Clash step. "
+                        : " read per test out of the XML, which is what this tool does "
+                            + "unless a tolerance is chosen on the Clash step. ")
+                    + total + Word(total, " test", " tests") + ", " + created + " created fresh and "
                     + saved.Total + " left as the document has them";
             }
 
             int set = saved.Of(SavedTestTolerance.Set);
             int setOn = created + set;
 
-            return Prefix + " " + Words(millimetres) + " chosen in the tool, so it beats both "
-                + "the XML and the document. Set on " + setOn + Word(setOn, " test", " tests")
+            return Prefix + " " + Words(millimetres) + " chosen in the tool, so it beats "
+                + (noXml ? "the document" : "both the XML and the document")
+                + ". Set on " + setOn + Word(setOn, " test", " tests")
                 + ", " + created + " created fresh and " + set
                 + " already in the document. " + NotSet(saved)
                 + Words(millimetres) + " is " + Converted(documentUnits) + " in this document";
